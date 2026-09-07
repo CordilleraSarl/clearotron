@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 273 — no run codename reaches a tracked file.
+// no run codename reaches a tracked file.
 //
 // THE DETECTOR ALREADY EXISTED AND NOTHING CALLED IT. `shared/identifier-classes.mjs` has carried
 // `codenameRegex` and `codenameHits` since this repository began, reading the two vocabularies out of

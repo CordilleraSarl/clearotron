@@ -426,7 +426,7 @@ function wallVerdictFor(req) {
  * (--dry-run) and `runner.mjs` (the wall itself) call `demoRunAgreement`; the portal, the cockpit and
  * start_run do not, so for one demo request the CLI refuses and the others admit. Asserting uniformity
  * would red on the day it was written, and the fix for that red would be to relocate the wall to every
- * door — which 's own Out-of-scope forbids in as many words. So this asserts the strongest
+ * door — which its own Out-of-scope forbids in as many words. So this asserts the strongest
  * property that is TRUE: a door that answers the wall's question answers it in the wall's words. When
  * another door gains the consultation, it is covered by this the same day, with no edit here.
  */

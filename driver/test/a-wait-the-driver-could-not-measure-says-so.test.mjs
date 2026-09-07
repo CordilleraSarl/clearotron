@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// tracker issue 1828 — A WAIT THIS PROCESS COULD NOT OBSERVE IS RECORDED AS ONE IT DID NOT HAVE.
+// A WAIT THIS PROCESS COULD NOT OBSERVE IS RECORDED AS ONE IT DID NOT HAVE.
 //
 // The tool-time gauge stamps `Date.now()` when it PARSES a line. Every line delivered in one stdout
 // chunk is parsed in a single synchronous loop, so they all share one timestamp. Block this process's
@@ -25,7 +25,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";
-// tracker issue 1673 — both of these answer to two spellings, and setting one loses to an
+// both of these answer to two spellings, and setting one loses to an
 // explicitly-set other. pinEnv writes every spelling from the alias table.
 import { pinEnv } from "../../shared/env-aliases.mjs";
 

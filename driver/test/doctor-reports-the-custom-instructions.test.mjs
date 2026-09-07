@@ -33,7 +33,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 /** Drive the command a user types, not the module behind it.
  *
  *  Takes the overlay VALUE and hands the variable's NAME to pinEnv as an argument. Written instead as a
- *  key in an env object literal, the name reads as a one-spelling pin to 's guard — correctly,
+ *  key in an env object literal, the name reads as a one-spelling pin to the guard — correctly,
  *  because a textual guard cannot see that a helper spreads it through the alias table afterwards.
  *  Passing it as an argument is what the guard asks for and the shape that cannot quietly decay into a
  *  real one-spelling pin later. (Do not write the object-literal form in a comment here either: the
@@ -89,7 +89,7 @@ test("#1724 the doctrine section REPORTS and never judges — drift is not a fau
     writeFileSync(join(skills, "README.md"), "# overridden\n");
     const out = doctorWithSkillsOverlay(skills);
     // The section reports UNKNOWN drift (no recorded provenance point). That must not be a ✗: the user
-    // overriding a doctrine file is a supported thing to do, and 's own rule is that the harness
+    // overriding a doctrine file is a supported thing to do, and its own rule is that the harness
     // records and does not judge.
     const section = out.split("Custom instructions")[1]?.split("Register provider")[0] ?? "";
     assert.ok(section.length > 0, "the section must exist to be judged");

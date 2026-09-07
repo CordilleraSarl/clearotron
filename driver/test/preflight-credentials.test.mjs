@@ -38,7 +38,7 @@ test("#634 …so a candidate env holding the WRONG provider's key is refused, no
   assert.throws(() => preflightCredentials({ CLEAROTRON_DATABASE: "euipo", CORSEARCH_SESSION_KEY: "live" }),
     /missing EUIPO_CLIENT_ID \+ EUIPO_CLIENT_SECRET for register provider "euipo"/,
     "a corsearch key cannot authorise a euipo run, and the pass it used to get was silent");
-  // …and a half-filled OAuth pair is still missing, which is 's rule reaching a candidate env too
+  // …and a half-filled OAuth pair is still missing, which is the rule reaching a candidate env too
   assert.throws(() => preflightCredentials({ CLEAROTRON_DATABASE: "euipo", EUIPO_CLIENT_ID: "id" }),
     /missing EUIPO_CLIENT_SECRET/);
 });
@@ -167,7 +167,7 @@ test("#1027 every provider that declares an executor still passes — including 
 });
 
 test("#1027 the refusal happens for the provider the ENV names, not the ambient one", () => {
-  // 's lesson, re-asserted for the new check: a wizard validating a candidate must be told about
+  // That lesson, re-asserted for the new check: a wizard validating a candidate must be told about
   // the candidate. If this resolved the ambient provider the refusal would fire on the wrong id, and
   // a caller would "fix" a provider that was never the problem.
   const r = preflightCredentials({ CLEAROTRON_DATABASE: "euipo", EUIPO_CLIENT_ID: "id", EUIPO_CLIENT_SECRET: "s" });

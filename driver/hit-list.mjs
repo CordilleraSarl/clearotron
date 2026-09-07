@@ -25,7 +25,7 @@
 // The line drops `_query`/`_queries`/`screen` — 61% of a band row's bytes — and keeps the qid alone,
 // because the completeness witness needs the join and nothing dismisses a record on its provenance.
 
-import { countOrNull } from "./named-band.mjs";   // tracker issue 95 — one copy of "a count I could not take is null, not zero"
+import { countOrNull } from "./named-band.mjs";   // one copy of "a count I could not take is null, not zero"
 
 /**
  * THE FATES. A line ends with exactly one, and the set is closed so completeness is verifiable by

@@ -3,7 +3,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // authority-boundary-probe.mjs — DOES THE CLI OBEY THE BOUNDARY, AND DOES THE RUN SURVIVE IT?
 //
-// 's acceptance, and the half of it CI structurally cannot reach: CI has no claude binary and no
+// That acceptance, and the half of it CI structurally cannot reach: CI has no claude binary and no
 // subscription, so `node --test` can only prove the hook DECIDES correctly. Whether `claude -p` HONOURS
 // the decision — and whether the turn carries on afterwards instead of dying — is a property of the live
 // CLI, and the only honest way to know it is to ask the live CLI.

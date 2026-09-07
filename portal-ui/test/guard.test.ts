@@ -178,7 +178,7 @@ test('Result is keyed on the RUN, because it is not account-scoped', () => {
   // for nothing. The run id is the identity that matters — moving between reads of a mark SHOULD
   // remount, so the frame re-measures instead of inheriting the previous document's height.
   //
-  // tracker issue 1921 — AND ON THE MARK, when the URL names one. The identity is the DOCUMENT being read, and a
+  // AND ON THE MARK, when the URL names one. The identity is the DOCUMENT being read, and a
   // knockout's names are several documents under one run id: without the slug in the key, moving from
   // one name to the next reconciles in place and the new document inherits the height measured for the
   // old one. Same rule as the sentence above, applied to the second argument the route now takes.

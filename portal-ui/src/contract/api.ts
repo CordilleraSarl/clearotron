@@ -853,7 +853,7 @@ export type ProviderState = {
  * Never carries the audience, a secret, the token header's contents, or local mode's single address.
  */
 export type AuthState = {
-  /** The effective mode. Reported verbatim — never a pinned string, so 's rename needs no edit. */
+  /** The effective mode. Reported verbatim — never a pinned string, so the rename needs no edit. */
   readonly mode: string
   /** What was explicitly configured. Null ⇒ nobody set it and the service's default applies. */
   readonly declared: string | null
@@ -1473,7 +1473,7 @@ export const api = {
   /**
    *  — put a stopped run down, for this reader only.
    *
-   * Not a state change, not a delete, and not 's retire: nothing about the run moves and no other
+   * Not a state change, not a delete, and not the retire: nothing about the run moves and no other
    * reader is affected. `state` is the state you are dismissing it in — the server keys on it, so a run
    * that leaves that state reappears rather than staying hidden.
    */

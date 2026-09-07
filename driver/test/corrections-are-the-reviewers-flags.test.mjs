@@ -8,7 +8,7 @@
 // this was found against — an R2 comparison round, 2026-08-22 — the parser returned 10 lines with 0
 // carrying a `[kind:]` token, over a document holding 14 bold-numbered corrections of which 14 were typed.
 //
-// Three consumers, and only one is telemetry: the corrective pass's typed worklist, 's scope
+// Three consumers, and only one is telemetry: the corrective pass's typed worklist, the scope
 // narrowing (which never obtained, because the matched lines carry no `[on:]` either), and the BLOCKING
 // verdict's published `blockingGrounds` — which on that run were five self-check answers that all read as
 // PASSING, over a review whose real ground was a wrong regulatory fact on the opening page.
@@ -272,7 +272,7 @@ test("#1674 the body rule widened WITH the selector — excerpts under a lettere
 });
 
 test("#1674 the numbered and bulleted contracts are byte-unchanged — the widening is additive", () => {
-  // The regression pin. 's untyped-among-typed rule, 's fail-safe and 's body rule all key
+  // The regression pin. That untyped-among-typed rule, the fail-safe and the body rule all key
   // on shapes this change touches, so they are re-asserted against the SAME fixtures here.
   // 5 at HEAD and 5 patched, measured by importing both copies of the module against this same
   // fixture — not counted by eye off the source, which is how this arm first got written with a 4 in it.
@@ -297,7 +297,7 @@ test("#1674 correctionFlagContent, on the lettered shapes it now has to tell apa
 //
 // `countCitedDefects` is the evidence for the check that REFUSES a BLOCKING verdict as degenerate, and
 // verify.mjs states the rule beside it: being wrong there discards a real review, so its evidence must be
-// permissive. It was not. It kept the pre- selector — no `\*{0,2}` prefix — which itself
+// permissive. It was not. It kept the pre-change selector — no `\*{0,2}` prefix — which itself
 // recorded as unable to see `**1.`, the form every typed flag is written in. A BLOCKING review whose
 // only list lines are its bold flags counted ZERO cited defects and was refused.
 //

@@ -5,7 +5,7 @@
 // E3 is "structure is returned, never emitted as text": CI fails a stage message containing a literal
 // JSON skeleton, an "EXACTLY these keys" clause, or a dictated line shape a parser re-parses. 74 such
 // sites exist today across the 19 stages and the skill files they read, so E3 cannot simply go red —
-// and it must not simply go green either. 's judging note applies verbatim:
+// and it must not simply go green either. That judging note applies verbatim:
 //
 //     "a lint that greenlights every existing hole certifies the problem."
 //
@@ -390,7 +390,7 @@ export const E3_BACKLOG = [
     kind: "dictated-line-shape",
     // ── (a) THE ORIGINAL SUBJECT WAS DELETED BY DESIGN — DISCHARGED, NOT FAILED. This row quoted
     // "ARM 2 — a run with NO coverage form … Write one row per coverage unit | Coverage unit | Status |
-    // Reason |". M6 (, 2026-08-14) deleted the code arm and (cdf38676) deleted this
+    // Reason |". M6 (2026-08-14) deleted the code arm and (cdf38676) deleted this
     // skill-file half two days later — exactly the both-sites deletion this row's removedByMove
     // demanded. `git grep "ARM 2"` on the skill file returns nothing. Its evidence sat in
     // E3_EVIDENCE_UNRESOLVED from the day the checker landed; per the ruling the row is
@@ -435,7 +435,7 @@ export const E3_BACKLOG = [
     reparsedBy: "driver/verify.mjs validators.frameDiff + driver/pipeline.mjs runSupplementalSweeps (the parser REFUSES a firing variant directive that dictates nothing dispatchable)",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
-  // DISCHARGED by 's third conversion. The row described SKILL.md's "Then ALSO save the STRUCTURED
+  // DISCHARGED by the third conversion. The row described SKILL.md's "Then ALSO save the STRUCTURED
   // diff … a JSON OBJECT with EXACTLY these keys" skeleton, and that order is gone: the seat calls
   // `record_frame_diff` and the driver serializes the object. What replaced it in the doc is a field list
   // for a typed call, which is not a dictated skeleton — the schema owns those names, and a seat cannot
@@ -791,7 +791,7 @@ export const E3_BACKLOG = [
   // The third is the one worth pausing on: its `removedByMove` said "M2 — the quote half only; the closed
   // three-file enum survives". The enum did not survive the transport, because the transport removed the
   // FIELD it lived in rather than validating it — a schema that cannot express a bad value beats a
-  // validator that rejects one, which is 's ruling applied one lane over.
+  // validator that rejects one, which is the ruling applied one lane over.
 ];
 
 /** Entries with no move on the plan that removes them. */
@@ -804,7 +804,7 @@ export const E3_UNPLANNED = E3_BACKLOG.filter((e) => e.removedByMove === "NOTHIN
  * The registry's failure mode was that a MOVE could delete a dictation and leave the row: the count
  * then overstates the work, and the next agent spends a conversion slot on a hole already filled. Two
  * instances existed when this was written — M6's register-digest arm (deleted 2026-08-14, row survived)
- * and synthesis's disposition list (, deleted the same morning by the agent adding this check).
+ * and synthesis's disposition list (deleted the same morning by the agent adding this check).
  * Both are gone; this list is what remains.
  *
  * A BLANKET ASSERTION WAS THE OBVIOUS BUILD AND IT WOULD HAVE BEEN NOISE. Measured before choosing:
@@ -865,7 +865,7 @@ export const E3_EVIDENCE_UNRESOLVED = [
 /**
  * THE PER-SURFACE CENSUS, PINNED EXACTLY IN BOTH DIRECTIONS.
  *
- * 's urgency claim is that `tool-response` GROWS — one surface at a time, each move taking a row out
+ * That urgency claim is that `tool-response` GROWS — one surface at a time, each move taking a row out
  * of sight while the count stays plausible. A ceiling on that number would fail upward exactly as the E3
  * ceiling did: a surface that shrank would pass silently and leave room for a move nobody
  * recorded. So this is exact. A migration that moves a row from `stage-message` to `tool-response` turns

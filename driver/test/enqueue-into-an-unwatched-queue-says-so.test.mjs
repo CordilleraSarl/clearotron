@@ -161,7 +161,7 @@ test("#1292 the deploy tick and the doors read ONE unit path, so they cannot dis
 //
 // WRONG IN BOTH DIRECTIONS, and the reset is why. Reading the fragment alone OVER-reports (globs the
 // deployment has disowned) and UNDER-reports (the ones it actually uses). On a box whose drop-in resets
-// a path away, the same code would report a directory as watched that nothing watches — 's original
+// a path away, the same code would report a directory as watched that nothing watches — the original
 // harm, produced by the guard built to prevent it. Both directions are pinned below.
 
 /** A HOME whose unit fragment globs `dirs`, plus drop-ins given as `{ "10-name.conf": "<body>" }`. */

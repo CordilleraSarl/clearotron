@@ -13,12 +13,12 @@
 // fails `placementmodel_missing` while the structured sibling `placements.json` is absent — and the seat
 // wrote the prose first (on disk that run: md at 09:08:58, json at 09:15:50, by attempt 2). The kill
 // landed in the gap between the two files, so 31 minutes of finished work were discarded and re-derived
-// from scratch. Raising the wall (, `638f885`) made that less likely; it did not make finished work
+// from scratch. Raising the wall (`638f885`) made that less likely; it did not make finished work
 // survivable, and this does.
 //
 // THE CURE IS AUTHORSHIP, NOT A GUARD. The seat stops writing `placements.json`. The driver renders it
 // from a FORM the seat fills, and an accumulator holds every answer across attempts, parks and process
-// restarts — exactly as 's disposition union and 's coverage union already do for their seats.
+// restarts — exactly as the disposition union and the coverage union already do for their seats.
 // A killed attempt then keeps every tier it had already placed.
 //
 // THE ROW SOURCE IS SELECTION-BY-REFERENCE, and it was settled by measurement, not by design taste. The
@@ -127,7 +127,7 @@ export function formRowKey(row) {
  *
  * DRIVER FACTS COME FROM `canonical`, never from the submitted row. A seat that rewrote `records` or
  * `owner` on its copy cannot widen what binds; only its three judgment fields are read from `row`.
- * That is 's discipline and it is the reason the union cannot be talked into anything.
+ * That is the discipline and it is the reason the union cannot be talked into anything.
  * PURE; never throws.
  */
 export function rowIsSettled(row, canonical) {
@@ -235,7 +235,7 @@ export function buildSelectionIndex({ floors = null, positions = null } = {}) {
       floor_records: floorList.length,
       positions: posList.length,
       selectable_records: byUri.size,
-      // An ABSENCE is recorded in the artifact rather than swallowed — 's rule. "no floors" and "the
+      // An ABSENCE is recorded in the artifact rather than swallowed — the rule. "no floors" and "the
       // band shape would not parse" are different facts and must not read alike.
       floors_unreadable: floors === null,
       positions_unreadable: positions === null,

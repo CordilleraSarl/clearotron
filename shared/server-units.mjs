@@ -28,7 +28,7 @@
 // today and zero right ones tomorrow. `orphanReason` cannot discriminate either — all six carry one, and
 // `clearotron-client-mcp`'s used to say the opposite thing — never install it eagerly, because starting
 // it was the on-demand consent that opened client-account access. That row was rewritten on 2026-09-03
-// when the owner superseded the posture (, settled point 2), which does not rescue the
+// when the owner superseded the posture (settled point 2), which does not rescue the
 // rejected repair: the reason a skip-on-orphan filter fails is that `runsOn: []` records boxes MEASURED,
 // and every unit here starts life unmeasured.
 //
@@ -74,7 +74,7 @@ export const SERVER_INSTALL_SET = Object.freeze([
   // "On demand is fine" — starting the door WAS the consent that opened client-account access, so an
   // installer that placed it would have made that consent meaningless.
   //
-  // The owner superseded that knowingly (, settled point 2): the door auto-starts
+  // The owner superseded that knowingly (settled point 2): the door auto-starts
   // with the product and THE PER-ACCOUNT KEY IS THE GATE, not whether a process runs. A door with no
   // key issued refuses everything, which is the same protection with a different mechanism — and a
   // better one, because it does not depend on a reader finding a verb.
@@ -85,7 +85,7 @@ export const SERVER_INSTALL_SET = Object.freeze([
 ]);
 
 /**
- * Installed and enabled ONLY by `clearotron connect`, never by an install path (,
+ * Installed and enabled ONLY by `clearotron connect`, never by an install path (
  * owner ruling 2026-08-31). Named here so a reader of this file learns it exists and learns it is
  * excluded on purpose — an absence with no reason beside it is the thing this module is against.
  */
@@ -98,7 +98,7 @@ export const ON_DEMAND_UNITS = Object.freeze([]);
 /**
  * Which of the installed units a `--background` REFRESH must restart.
  *
- * — Hera's review of the F15 fix. `enable --now` on an ALREADY-ACTIVE unit is a
+ * — A review of that fix. `enable --now` on an ALREADY-ACTIVE unit is a
  * no-op, so a refresh over an updated checkout leaves the old process running the old files. The restart
  * loop that exists for exactly that named a hardcoded PAIR — the same pair the health check named, three
  * lines below it — with the same stale justification: "the oneshot and its triggers pick the new copies

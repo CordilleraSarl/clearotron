@@ -59,7 +59,7 @@ test("the active page links even if its own file is absent (always shown + highl
 });
 
 // retired the quality subsystem, so the Quality hub and its Feedback console are gone. Both directions
-// are asserted: the entry cannot come back, AND a hub page left on disk by a pre- deploy cannot resurrect a link to
+// are asserted: the entry cannot come back, AND a hub page left on disk by a pre-change deploy cannot resurrect a link to
 // it. Same rule the triage.html stub was already held to.
 test("Quality and Feedback are NOT nav entries (quality subsystem retired, #265)", () => {
   const p = pool(["index.html", "status.html", "quality.html", "feedback.html"]);   // stale pages present on disk

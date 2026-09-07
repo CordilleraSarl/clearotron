@@ -57,7 +57,7 @@
 // each was already in the tree, in `mcp-server/remote/`. The repo's own governance doc names BOTH
 // directories (`docs/architecture/05-config-governance.md`, tier 2); the guard named one.
 //
-// That is the same defect one layer up from the one this file was built to fix. 's inline array made
+// That is the same defect one layer up from the one this file was built to fix. That inline array made
 // a unit's membership of the guarantee an omission; the hardcoded directory made a FILE's membership an
 // omission, and the result was three statements of fact that were false with nothing able to contradict
 // them. The tracked-file lookup is now a repo-wide walk (driver/unit-files.mjs), and `unitInventoryVerdict`
@@ -75,7 +75,7 @@
 /** Where a unit is expected to be installed. "none" is a claim, not an absence — see ORPHANED below. */
 export const BOXES = Object.freeze(["prod", "test", "dev"]);
 
-// ── RESOLVED UNITS (, owner ruling 2026-08-25 — option B) ──────────────────────
+// ── RESOLVED UNITS (owner ruling 2026-08-25 — option B) ──────────────────────
 //
 // `resolved: [...]` names tracked files the INSTALLER rewrites before installing. Three units carry
 // `@NAME@` placeholders because configuration cannot reach them: a `.path` unit reads no environment at
@@ -164,7 +164,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // it loaded no EnvironmentFile and so had no `${VAR}` systemd could expand. The owner's one-config-
     // per-server-box ruling gives it `EnvironmentFile=%h/.env` like every other service, which makes the
     // checkout path an ordinary systemd expansion and leaves no placeholder to render.
-    note: "LIVE ON PRODUCTION. #685's body lists it as never run; that is true of the test box only. "
+    note: "LIVE ON PRODUCTION. an earlier record lists it as never run; that is true of the test box only. "
       + "Was a TEMPLATE unit carrying CF Access values inline; generic since tracker issue 1925.",
   },
   {
@@ -209,7 +209,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // are then enabled like anything else. This one is shipped and DELIBERATELY NOT INSTALLED BY ANY
     // INSTALL PATH — `clearotron start` neither installs nor starts it, and a rebuild must not either.
     //
-    // ── IT INSTALLS WITH THE PRODUCT SINCE 2026-09-03 (, settled point 2) ────────
+    // ── IT INSTALLS WITH THE PRODUCT SINCE 2026-09-03 (settled point 2) ────────
     //
     // Until then it was an orphan BY DESIGN: `clearotron connect` installed and started it on demand,
     // because starting it turned on client-account access and a unit that came up with everything else
@@ -411,7 +411,7 @@ export const UNIT_INVENTORY = Object.freeze([
       + "production must be trusted never to enable.",
   },
   // register-ledger-prune is DELIBERATELY not listed, and the sequence is worth keeping because the
-  // row was right until the moment it was wrong. 's nightly rotation was retired in code by:
+  // row was right until the moment it was wrong. That nightly rotation was retired in code by:
   // bin/register-ledger-prune.mjs is deleted, record bodies now live in each run's own directory and
   // are purged with the run, so there is no global file left to rotate. The row stayed here on
   // purpose while the TIMER was still installed on the test box — dropping it first would have made
@@ -546,7 +546,7 @@ export function unitInventoryVerdict({
   // reporting every production unit missing on a dev box is a false alarm, and it would train a reader
   // to skim this check. But an arm that did not run is not an arm that passed — this file's whole
   // thesis — so an unnameable box is STATED rather than silently skipped.
-  // ABSENT-AND-EXPECTED-TO-BE vs ABSENT-AND-SHOULD-NOT-BE (, criterion 3). A retired
+  // ABSENT-AND-EXPECTED-TO-BE vs ABSENT-AND-SHOULD-NOT-BE (criterion 3). A retired
   // unit that is gone from a box is the ruling taking effect, not drift; reporting it as a fault trains
   // a reader to skim the arm that would have caught a real one. Both are still REPORTED — the
   // distinction is which of them is a fault.

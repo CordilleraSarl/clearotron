@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // What bought, carried forward onto the mechanism that replaced it.
 //
-// 's four hint tests are gone with the hint. Their whole subject was making a TRANSCRIPTION
+// That four hint tests are gone with the hint. Their whole subject was making a TRANSCRIPTION
 // requirement clearable: the token had to name the qid and the exact hit count because those were the
 // only two strings blockIsDisclosed accepted, and the hint had to describe the right arm (class vs term)
 // or it sent the model hunting for a defect the run did not have. The driver writes the qid and the
@@ -60,7 +60,7 @@ test("coverage_form_missing tells the truth: this is not the model's to repair",
 });
 
 test("THE RETURN SHAPE: the calculation carries total_hits and the unaccounted legs", () => {
-  // 's:64-76, unchanged in substance: total_hits was a disclosure key and the gate always had it.
+  // Lines 64-76, unchanged in substance: total_hits was a disclosure key and the gate always had it.
   // It rides the row now instead of a failure token, and the assertion is the same one.
   const plan = { entries: [{ qid: "ic:owner:glimmer+holdings", axis: "incumbent-class", predicate: "owner",
     term: "GLIMMER", owner: "Incumbent Holdings", nice_classes: ["5", "30"], expected_kind: "enumerate" }] };

@@ -87,11 +87,11 @@ export function resetEngineCommit() { cached = undefined; source = undefined; re
 // So attribution has been a reflog reconstruction: join a checkout's reflog against each run's
 // `startedAt`. That reconstruction expires with the reflog, cannot survive a re-clone, is wrong for
 // every run made while the checkout sat detached, and mixes a local-time reflog against UTC stamps.
-// It decided three certifications in one morning (,) and produced two near-miss
+// It decided three certifications in one morning () and produced two near-miss
 // wrong rulings in two days.
 //
 // A SIBLING, NOT A WIDER RETURN TYPE. `engineCommit()` keeps its bare-string contract exactly:
-// 's guard pins its import line by regex AND pins the literal `engineCommit: engineCommit` in
+// That guard pins its import line by regex AND pins the literal `engineCommit: engineCommit` in
 // the publisher, four consumers read the string, and `scripts/freeze-example-run.mjs` asserts in prose
 // that it "is cached to one value and cannot differ between the two". Widening it would break all of
 // that to add a field only one new caller wants.

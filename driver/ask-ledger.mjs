@@ -82,7 +82,7 @@ export function planJoinFrom(planExecution) {
   // KEY predates the instrument — "not recorded" — while one carrying the keys as null is a count the
   // provider could not take. Reading the VALUES alone collapses those two into one sentence, which is
   // the exact confusion exists to remove; `records: null` is indistinguishable from absent.
-  // The first cut of this did read the values, and it reported every pre- receipt as a failed
+  // The first cut of this did read the values, and it reported every pre-change receipt as a failed
   // count. Bare qid strings are tolerated too — no driver ever wrote them, so that arm proved nothing.
   const executed = new Map();
   for (const x of planExecution?.executed ?? []) {
@@ -104,7 +104,7 @@ export function planJoinFrom(planExecution) {
  * What a slice returned, in the reader's words — THREE-VALUED, and never a zero standing in for an
  * absence (register-plan.mjs's join records why). `null` records with a finite count means the provider
  * counted but the block carried no record list; both null means the receipt says nothing about the
- * return, which is what every pre- run looks like. PURE.
+ * return, which is what every pre-change run looks like. PURE.
  */
 export function returnedPhrase(info) {
   if (!info) return "what it returned was not recorded";
@@ -127,7 +127,7 @@ export function returnedPhrase(info) {
  *
  * THE LEGITIMATE CLOSE IS PRESERVED, and it is the whole reason this keys on the RETURN rather than on
  * execution: a probe that ran and found NOTHING has nothing to hand anyone, and closes exactly as it
- * does today. 's own build named that trap before this rule existed.
+ * does today. its own build named that trap before this rule existed.
  *
  * THREE STATES, and only one of them discharges:
  *

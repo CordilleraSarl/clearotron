@@ -1736,7 +1736,7 @@ test("doc-54: '[Time-critical]' never reaches a delivered conditions line, and n
   assert.equal(conds.length, 5, "every condition survives — the 5th is not silently dropped");
   assert.ok(conds.every((c) => !/\[Time-critical\]/.test(c)), "the tag is stripped even when authored inside '**…**'");
   assert.ok(conds.every((c) => !/…/.test(c)), "no ellipsis truncation on any condition");
-  // RE-POINTED AGAIN (, 2026-08-10). This read `/^Identify the publisher of The Unbeatable Path$/`
+  // RE-POINTED AGAIN (2026-08-10). This read `/^Identify the publisher of The Unbeatable Path$/`
   // — the bold lead ALONE was the head, and the clause after it was dropped. That was one of three
   // cuts in this function and the owner ruled all three out: the box renders the ask as authored. The
   // doc-54 property is untouched and is what this test is for — the tag never reaches a client line,
@@ -1814,7 +1814,7 @@ test("the hero names the product the run resolved to — one name, no rung, and 
   const parsed = { fm: { title: "AquaPlus", matter: "TMP1", overall_label: "MEDIUM" }, secs: {} };
 
   // — with no delivery overlay the posture is the DEFAULT line, so the label composes it with the
-  // product. 's guarantee is unchanged and is what is asserted: ONE product name, and it is the
+  // product. That guarantee is unchanged and is what is asserted: ONE product name, and it is the
   // resolver's. The product's own assertions are scoped to the conf label so they cannot pass on some
   // other mention elsewhere in the document.
   const confLabel = (html) => html.match(/<div class="conf">.*?<span class="label">(.*?)<\/span>/)[1];
@@ -2156,7 +2156,7 @@ test("#470: a blank or whitespace-only net falls through the fallback chain exac
 });
 
 // — the completeness half of the ruling: below the fold, nothing is ever cut. A reader who opens a
-// card gets every word the pre- layout showed above it, plus the structured facts that were always
+// card gets every word the pre-change layout showed above it, plus the structured facts that were always
 // down here, in that order — the argument first, the evidence under it.
 test("#470: the positions render below the fold, complete, and lead the drawer", () => {
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo" });
@@ -2234,7 +2234,7 @@ test("#242: an archived (pre-v6) run renders byte-identically to its pre-change 
 
 // ──: the hero verdict caption folds to its first sentence ────────────────────────────────────────
 //
-// 's design ruling — "above any fold, only a statement, a labelled row, a count or a one-line card;
+// That design ruling — "above any fold, only a statement, a labelled row, a count or a one-line card;
 // prose never appears until someone opens something, and once opened nothing is ever cut". cf8dd43 moved
 // the finding cards onto that rule and left the hero caption behind; PR recorded the bullet as
 // still owed and routed it here.

@@ -116,7 +116,7 @@ test("#1556 a MISSING artifact says so, and never renders as 'nothing was fetche
 
 test("#1556 the section NEVER renders empty, in any state", () => {
   // A heading with nothing under it asserts an absence it cannot explain, and a reader cannot tell it from
-  // a run that retrieved everything. 's lesson, one lane over.
+  // a run that retrieved everything. That lesson, one lane over.
   for (const input of [undefined, {}, { records: new Map() }, { findings: { findings: [] } },
     { records: new Map([["a", { goods: "x" }]]), findings: { findings: [] } }]) {
     const md = renderDocumentCoverageSection(documentCoverage(input));

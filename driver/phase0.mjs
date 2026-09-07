@@ -119,7 +119,7 @@ export function archiveDirFor({ slug, date, codename, archiveRoot = config.archi
 //
 // Two runs that draw the same codename for the same slug therefore SHARE A FETCHED SET, and the gate
 // reads a record as fetched that its own run never fetched — `all-fetched`, on a run whose fetcher
-// failed every call. That is 's signature.
+// failed every call. That is the signature.
 //
 // MEASURED, one `npm run test:full`: 252 mints across 57 processes, slug `tmp2201-novapulse` drawn 94
 // times, 10 collisions. Birthday against 400 names predicts ~11. This is the expected rate, not bad luck.

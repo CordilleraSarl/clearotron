@@ -5,7 +5,7 @@
 // THE DEFECT. `case-law-findings.md` is the only artifact case law produces, and its entire contract is
 // `nonEmpty(c, 80)` — a non-empty check on prose. There is no citations ledger, no structured mirror, no
 // per-proceeding record anywhere. So the per-record trace that exists for the register path and
-// for common law (,) cannot be extended to case law at all: there is nothing on the other side
+// for common law () cannot be extended to case law at all: there is nothing on the other side
 // of the join. That was found while scoping the record trace, and it is why closed into this issue.
 //
 // WHAT THAT COSTS. Two of the owner's three sign-off conditions for sending a case-law report to a

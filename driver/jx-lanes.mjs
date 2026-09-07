@@ -183,7 +183,7 @@ export function decideJxLanes({ job, profile, searchPolicy } = {}) {
  *
  * ── THE GATE THAT WAS DECIDING, AND DECIDING OFF ────────────────────────────────────────────────────
  *
- * This function opened with `resolvedPolicy.level !== "clearotron"`. `resolveSearchPolicy` now returns
+ * This function opened with `resolvedPolicy.level !== "prelim"`. `resolveSearchPolicy` now returns
  * `level` = THE PRODUCT ID for all four searches, so that leg was false on every live run and the whole
  * recommendation was dead — silently, with both callers (pipeline.mjs and runner.mjs) live and 3,754
  * driver tests green, because the one test that covered it hand-fed `{ level: "prelim" }`, a value

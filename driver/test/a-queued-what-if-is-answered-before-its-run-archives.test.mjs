@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 240 — a queued what-if whose run archives was never claimed, never settled and never
+// a queued what-if whose run archives was never claimed, never settled and never
 // refused. It left no row anywhere, so a client who asked for an experiment got no answer and no
 // explanation. This drives the REAL queue: real enqueue, real files on disk, real settle.
 import { test } from "node:test";

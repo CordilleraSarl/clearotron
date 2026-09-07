@@ -235,7 +235,7 @@ export function matchesReference(ref, candidate, { sameOwner = false } = {}) {
     return null;
   }
 
-  // 3 — ALIAS. splits this in two, on the same precedent as rules 1 and 4 (, "the scorer calls
+  // 3 — ALIAS. splits this in two, on the same precedent as rules 1 and 4 ("the scorer calls
   // a different owner's longer mark a hit"). This rule was the one cross-owner escape left open.
   //
   // FULL IDENTITY — one name on each side and they are the same name — is NOT a relaxation and stays
@@ -749,7 +749,7 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
  * AND THE DIRECTION IS THE DANGEROUS ONE. A `withheld` that over-counted would be investigated the first
  * round it appeared. This one reads clean.
  *
- * This does NOT compute carry-through — that needs the run's screened set and is 's acceptance 1.
+ * This does NOT compute carry-through — that needs the run's screened set and is the acceptance 1.
  * What it does is stop a bare `0` from reading as "nothing was dropped", by naming on the line how many
  * retrieved marks the number could not have spoken to. The file already refuses a bare `0` for the
  * no-`_driver/` case, in as many words; this is the same refusal for the case that reads clean.
@@ -1638,7 +1638,7 @@ export function ownersMatch(a, b) {
  * derives the same sentence from the delivery-time record instead: slice 1 from its per-lane map
  * (`slices.candidates.lanes[lane]`), slices 2–3 from their own `lane` field. PER LANE, never the
  * run-level join: the SERP grid is zh-only, so `lane ja: executes=candidates+serp-grid` would be a
- * claim about the ja lane that no record supports ('s fix, kept exact here).
+ * claim about the ja lane that no record supports (the fix, kept exact here).
  *
  * THREE ANSWERS, AND THE THIRD IS THE ONE THAT MATTERS:
  *   "candidates+serp-grid"  the named slices ran for this lane
@@ -1710,7 +1710,7 @@ export function readJxLanes(doc) {
       // — DERIVED from fold.slices, with the declaration as a LEGACY fallback only. Two artifact
       // generations reach this line and they are read in this order deliberately:
       //   fold.slices present     → derive. The record of what ran wins, always.
-      //   pre- artifact       → its frozen `lanes.<lane>.executes` string, the only thing that run
+      //   pre-change artifact       → its frozen `lanes.<lane>.executes` string, the only thing that run
       //                             ever recorded (a run minted between  and  carries BOTH, and
       //                             the derived value is the accurate one — hence the order).
       //   neither                 → null ⇒ the scorer prints "(not stated)". Not "none": no statement
@@ -1755,7 +1755,7 @@ export function readJxLanes(doc) {
     why: lanes.length ? null : "_driver/jx-lanes.json is present and declares no lane — the file was written and no jurisdiction lane was built, which is not the same as the file being absent",
     lanes,
     // — the RUN-level statement, three-valued on itself in the same discipline as the rest of this
-    // function: present, or absent with a reason. A pre- artifact and a fold that never ran are both
+    // function: present, or absent with a reason. A pre-change artifact and a fold that never ran are both
     // "the run did not state it", and neither is a pass.
     statement: typeof doc.fold?.executes === "string" ? doc.fold.executes : null,
     slices: doc.fold?.slices ?? null,
@@ -1778,7 +1778,7 @@ export function readJxLanes(doc) {
  *   present, no units    `present:true, units:[]` — its own fact, its own sentence.
  *   present, with units  each unit's own `degraded` / cause / attempts, nothing inferred.
  *
- * `degraded` is TYPEOF-tested, never coerced. A pre- units.json carries the cause STRING in that
+ * `degraded` is TYPEOF-tested, never coerced. A pre-change units.json carries the cause STRING in that
  * field; `Boolean(r.degraded)` would report an old artifact as having stated something it never stated.
  *
  * PURE.

@@ -116,7 +116,7 @@ const MARKUP_ARMS = [
  * shorter, so refusing a value for BEING LONG is right at the compiler and wrong at a corrective
  * stage gate — it hands back a reason with no remedy. An annotation always has a remedy: delete the
  * note, keep the term. — that is also why it may sit ABOVE a word-count floor: `ZEPHYR (root)`
- * is an annotation by no measure a word count can see, exactly as 's one-word `**BIOVELTRIN**`
+ * is an annotation by no measure a word count can see, exactly as the one-word `**BIOVELTRIN**`
  * was markup by no measure a word count could see.
  *
  * Moved here from variant-manifest-model.mjs so the stage gate and the plan compiler share

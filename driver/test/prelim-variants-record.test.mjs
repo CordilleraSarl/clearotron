@@ -205,7 +205,7 @@ test("conversion 3 — the vocabularies are the shipped parser's, not a second c
   // ASSERTED AS AN IDENTITY, not as a literal. This test's first cut wrote the literal
   // ["field", "jurisdiction", "variant", "source"] — which pinned the transport's own COPY of the set
   // rather than the parser's, and so held a second source of truth in place instead of catching it.
-  // 's source scan is what found the disagreement. A literal here can only ever agree with whatever
+  // That source scan is what found the disagreement. A literal here can only ever agree with whatever
   // the module happens to say; the identity cannot be satisfied by a copy at all.
   assert.equal(SCOPE_LAYERS, SHIPPED_LAYERS, "the transport must not hold its own copy of the ledger's layers");
   assert.equal(SCOPE_STATUS, SHIPPED_STATUSES, "…nor of its statuses");
@@ -303,7 +303,7 @@ test("#1273: OMITTING the field is a real answer, and it is the default", () => 
 });
 
 test("#1273: the two states are DISTINGUISHABLE in the delivered artifact", () => {
-  // 's lesson applied before it can bite: two different states must not render identically. A reader
+  // That lesson applied before it can bite: two different states must not render identically. A reader
   // auditing the run has to be able to see that no floor was designated, rather than infer it from the
   // absence of something they would have to know to look for.
   const withFloor = accepted({ search_floor: ["primary-sweep"] }).content;

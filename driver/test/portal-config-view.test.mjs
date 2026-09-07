@@ -295,7 +295,7 @@ test("accessView carries the grants file through, and tolerates not knowing it",
 
 // ── the auth row: the one row on this page the PORTAL answers for ───────────────────────────────────
 //
-// 's fifth criterion, ruled 2026-08-21. Every other row here is snapshot-derived because the portal
+// That fifth criterion, ruled 2026-08-21. Every other row here is snapshot-derived because the portal
 // cannot see the engine's environment. This one inverts that: `PORTAL_AUTH_MODE` is read and acted on by
 // the portal itself, so routing it through the snapshot would publish a second process's guess about
 // this one's own door — and let it go stale, which is the failure the stale notice on this page warns
@@ -441,7 +441,7 @@ test("#1720 no snapshot answers NULL, never demo — an absent file is not an ab
 });
 
 test("#1720 a snapshot that predates engine reporting answers NULL rather than guessing", () => {
-  // `buildFlagSnapshot` with no engine block is every snapshot written before 's writer. The view
+  // `buildFlagSnapshot` with no engine block is every snapshot written before the writer. The view
   // already renders `engine: null` there and says it cannot tell; the mode must not be braver than the
   // field it is derived from.
   const v = flagView(pool(), { now: NOW });

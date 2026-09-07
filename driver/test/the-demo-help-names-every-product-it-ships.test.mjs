@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 201 — `demo --help` listed --run-dir, --base, --port and --no-open, and stopped.
+// `demo --help` listed --run-dir, --base, --port and --no-open, and stopped.
 //
 // `demo/` ships one frozen run per product. `--product` selects one, and the help never mentioned it, so
 // three of the four shipped demos were reachable only by typing the flag wrong and reading the refusal.

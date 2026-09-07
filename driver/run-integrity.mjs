@@ -42,7 +42,7 @@ import { DISPATCH_SUFFIX } from "./dispatch-record.mjs";        // — the dispa
  *
  * ONE PREDICATE, so the snapshot and any future arming decision cannot disagree about the set. Named
  * files are the driver-derived joins and receipts judgment reads; the dispatch records are what was
- * actually asked, including 's `.prev-<sha>` supersede chain.
+ * actually asked, including the `.prev-<sha>` supersede chain.
  *
  * ──: EVERY `.jsonl` IS OUT, BY PATTERN, AND A NEW SINK IS OUT THE MOMENT IT IS CREATED ────────
  *

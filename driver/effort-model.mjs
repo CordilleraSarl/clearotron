@@ -223,7 +223,7 @@ export const costBand = (i) => Math.max(1, Math.min(5, Math.ceil(effortUnits(i) 
  * WHAT THIS REPLACED, and why a constant beat a model. The old quote was a base plus one adder per lane:
  * 1.5h, +0.5 for case law, +0.5 for a native-language lane, +0.5 for a single territory. It missed the
  * actual wall by +66%, +82% and −22% on three consecutive delivered runs, in BOTH directions, on one
- * engine build in one night ('s table). Every wall I could find from either source, eight runs:
+ * engine build in one night (the table). Every wall I could find from either source, eight runs:
  *
  *     quoted 1.5h  ×6   →  actual 2.23  2.28  2.38  2.40  2.49  2.49
  *     quoted 3.0h  ×1   →  actual 2.33      (the run with the MOST lanes came in SHORTER than five others)
@@ -246,7 +246,7 @@ export const TURNAROUND_QUOTE = Object.freeze({
   clearance: Object.freeze({ lowHours: 1.5, highHours: 2.5 }),
   // — OWNER RULING: a knockout quotes 5-10 MINUTES, a range, not a flat figure.
   //
-  // The flat 0.25 came from 's "no compute, just say it, keep it simple", and that ruling is
+  // The flat 0.25 came from the "no compute, just say it, keep it simple", and that ruling is
   // untouched here: this is still one stated figure per pipeline with nothing computed from levers. What
   // changed is the figure, and the shape of it.
   //

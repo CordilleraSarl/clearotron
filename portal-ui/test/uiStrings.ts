@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The strings a USER can read, extracted from the UI source. 's terminology map is measured with
+// The strings a USER can read, extracted from the UI source. That terminology map is measured with
 // this, and TERMINOLOGY.md states the method so its figures can be re-taken.
 //
 // WHY NOT JUST GREP THE SOURCE. `name` matches `Icon name=`, `markName`, and a dozen props; a

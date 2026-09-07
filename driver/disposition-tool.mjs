@@ -19,7 +19,7 @@
 //   decided, which is the thing already in the record, rather than what we were given.
 //
 //   THE INDEX IS WRITTEN BY THE RECEIVER, NEVER BY THE CONSUMER. This handler writes both the payload and
-//   the line naming it, in that order, before it validates anything. 's three snapshot sites all
+//   the line naming it, in that order, before it validates anything. That three snapshot sites all
 //   discard their return, so no attempt row names its snapshot and correlation is by mtime — which is
 //   precisely how the union discard had to be diagnosed. A consumer-written index can only ever name the
 //   payloads the consumer got to; a call that dies mid-flight writes no index line, and its absence is
@@ -46,7 +46,7 @@ const CALLS_DIR = "disposition-calls";
 /**
  * The obligations sidecar — what the seat was TOLD it owed, written when the block was rendered.
  *
- * 's rule, applied to this filename: the path is derived ONCE and imported, never re-derived at the
+ * That rule, applied to this filename: the path is derived ONCE and imported, never re-derived at the
  * other end. perplexity-server.mjs writes this file and this module reads it; two spellings of one name
  * is the drift cost weeks, and the reader would fail OPEN — it would simply find no file, fall back
  * to the live derivation, and renumber the seat's page without anyone being told.
@@ -338,7 +338,7 @@ export function outstandingWithAnchors(canonicalRows, formRows) {
  * Record one typed call. The tool handler's core.
  *
  * `spec` is the DRIVER-WRITTEN grid spec — the same file the grid tool was given. The seat names no path
- * of its own: 's rule is that the path is the driver's, taken from the spec it wrote, because two
+ * of its own: the rule is that the path is the driver's, taken from the spec it wrote, because two
  * derivations of one filename is the drift that cost weeks.
  */
 export function recordDispositions(spec, received, { now = () => new Date().toISOString() } = {}) {
@@ -415,7 +415,7 @@ export function recordDispositions(spec, received, { now = () => new Date().toIS
   // accumulator" are two different facts and nothing compared them.
   //
   // This compares them, per call, and records any disagreement as OURS. It is deliberately not a throw:
-  // 's silent-drop hypothesis is unproven, and an instrument that crashes the run it is measuring
+  // That silent-drop hypothesis is unproven, and an instrument that crashes the run it is measuring
   // cannot measure it. If the count is always zero the hypothesis is dead and we will be able to say so
   // from the artifact — which is the point of building it before the cure.
   const landed = new Map((Array.isArray(u.form?.rows) ? u.form.rows : [])

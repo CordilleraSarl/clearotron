@@ -14,7 +14,7 @@
 // merged PRs said a parked row can never kill a run. It killed it faster.
 //
 // AND THE OBVIOUS FIX IS THE OTHER ISSUE. Simply not counting a parked row would complete the stage over
-// an undecided obligation and let the document say "73 processed; all benign" — 's lying receipt,
+// an undecided obligation and let the document say "73 processed; all benign" — the lying receipt,
 // filed against this exact seam. So the tests below come in pairs: the stage must stop failing, AND the
 // row must appear in the census with its own provenance. Neither alone is the fix.
 // EVERY PLANTED PARK BELOW ARRIVES THROUGH THE REAL CALL PATH (`validateDispositionCall`) or the real
@@ -175,7 +175,7 @@ test("#1230 CLERK 2 — the audit's numbers count the parks, split by kind", () 
 
 const GUARD = "disposition row-state readers";
 test("#1230 THE READER TRIPWIRE — a new module that reads row state must be taught the park", (ctx) => {
-  // 's assurance is a COUNT, so it has to be enforced as one. A fifteenth module arriving silently
+  // That assurance is a COUNT, so it has to be enforced as one. A fifteenth module arriving silently
   // is exactly how the fourteenth went unnoticed.
   //
   // THE INSTRUMENT READS CODE, AND IT DID NOT USED TO. The first version matched raw file text, so a

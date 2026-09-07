@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// contract-audit.mjs — the machinery behind 's E1, E2 and E3 checks.
+// contract-audit.mjs — the machinery behind the E1, E2 and E3 checks.
 //
 // PURE and OFFLINE, like coverage-ledger.mjs and findings-model.mjs: it reads source text and the
 // declarations, and it computes. Nothing here runs on a clearance — no pipeline path imports it and no
@@ -92,7 +92,7 @@ export function arm1Unaccounted(stages) {
 /**
  * ARM 2 — a declared element no validator token speaks about. A RATCHET, not a red build.
  *
- * The owner's ruling (, 2026-08-13) is four conditions, and they are the ruling rather than
+ * The owner's ruling (2026-08-13) is four conditions, and they are the ruling rather than
  * suggestions: the baseline is PER STAGE and carries the ELEMENT NAMES (it is the audit object, not a
  * bare count); CI fails on any per-stage INCREASE so a new hole cannot hide behind a fix elsewhere; arm 1
  * is exempt from the ratchet; and wave 1's moves are expected to move the number.
@@ -157,10 +157,10 @@ const ARROW_TOKEN_RE = /=>\s*[`"']([a-z][a-z0-9]*(?:_[a-z0-9]+)+)/g;
 // nothing re-deriving them — `acceptMatterFrame` mints eight tokens against a row documenting three.
 const REASON_TOKEN_RE = /reason:\s*[`"']([a-z][a-z0-9]*(?:_[a-z0-9]+)+)/g;
 
-// tracker issue 1211 — A CITED SITE MUST BE A MINT. The extractor records the FIRST line a pattern matched, and the
+// A CITED SITE MUST BE A MINT. The extractor records the FIRST line a pattern matched, and the
 // patterns read comment text as readily as code: `no_status` was cited at coverage-form.mjs:802, the
 // JSDoc `@returns {Array<{reason:"no_status"|"form_damaged", …` annotation seventeen lines above the line
-// that writes it. Every tracker issue 1211 ruling cites its mint, so a citation drawn from a sentence about the code
+// that writes it. Every such ruling cites its mint, so a citation drawn from a sentence about the code
 // is a ruling about a sentence.
 //
 // Comment-ONLY lines, never a trailing `//` after code — a token minted on a line that also carries a
@@ -363,7 +363,7 @@ export function stageSourceBlocks(stagesSource) {
 }
 
 /**
- * MECHANICAL **AND** UNSPOKEN-FOR — the highest-value target set for 's moves.
+ * MECHANICAL **AND** UNSPOKEN-FOR — the highest-value target set for the moves.
  *
  * An element in this set is not the model's judgment AND no validator polices it: nothing catches it
  * going wrong, and nothing about it needs a model. Every one is a candidate for the moves, and the set

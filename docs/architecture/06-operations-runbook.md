@@ -254,7 +254,7 @@ the measurement that says so is.
 
 A box upgraded across the rename keeps whatever NAME its **call** ledger already had
 (`corsearch-calls.jsonl`), and across the move keeps whatever DIRECTORY it sits in (the
-pre- telemetry directory), because the resolver reads the file that is there. Read
+pre-change telemetry directory), because the resolver reads the file that is there. Read
 `providers/_shared/ledger-path.mjs` to see which of the four candidates a box resolves to.
 
 ## Access control and instance isolation

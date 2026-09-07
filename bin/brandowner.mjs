@@ -288,7 +288,7 @@ export async function add(argv, {
 } = {}) {
   const args = parseArgs(argv);
   if (!args.key) throw new Refusal(`this command needs a brand owner key.${USAGE}`);
-  // A REFUSAL, NOT A STACK (, acceptance: "refuses malformed input BY NAME — key
+  // A REFUSAL, NOT A STACK (acceptance: "refuses malformed input BY NAME — key
   // pattern"). `assertProfileKey` throws a plain Error, and main() deliberately lets a non-Refusal keep
   // its stack because an unexpected throw here is a defect worth debugging. A key an operator typed is
   // not that: it is the first thing this command validates and the most likely thing to get wrong, and

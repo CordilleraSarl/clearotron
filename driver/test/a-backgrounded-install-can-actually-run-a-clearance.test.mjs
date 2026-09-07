@@ -43,7 +43,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusal,
   REGISTER_ENV, RESEARCH_ENV, POOL_ENV, START, ORDER } from "../run-requirements.mjs";
-// tracker issue 216 — from the module that OWNS the table now, not through the wizard's re-export. The
+// from the module that OWNS the table now, not through the wizard's re-export. The
 // arm should break if the data moves again, and reading it through `bin/` would hide that.
 import { PROVIDERS as REGISTER_TABLE } from "../../shared/register-selection.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
@@ -54,7 +54,7 @@ const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const T = { registers: REGISTER_TABLE, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
 
 /** `~/.env` exactly as F41 measured it: paths and door secrets, nothing that runs a clearance. */
-// PATHS ARE SYNTHETIC, and 's guard is why: no executable line may name a specific account's home
+// PATHS ARE SYNTHETIC, and the guard is why: no executable line may name a specific account's home
 // directory. The finding measured real ones under a real service account; reproducing those literals
 // here would put that account's home in the shipped tree to say something the shape already says. What
 // matters to these arms is which NAMES travelled, never where they pointed.
@@ -96,7 +96,7 @@ test("the environment F41 found refuses AT ORDER TIME, naming what a clearance c
   // EVERY BLOCKING ROW CARRIES ITS CONSEQUENCE. A refusal listing bare names sends an operator to a
   // search engine; the whole point of refusing early is that the reader can act on it where they are.
   for (const r of miss.blocking) assert.ok(r.why.trim().length > 30, `${r.name} refuses without saying what it costs`);
-  // AND THE START IS NOT REFUSED OVER ANY OF THEM. This is the half of tracker issue 216 that a
+  // AND THE START IS NOT REFUSED OVER ANY OF THEM. This is the half of the order-time refusal that a
   // soften-the-set fix would get wrong in the safe-looking direction: leaving one of these at:"start"
   // still bricks the install the owner said must come up.
   for (const n of [REGISTER_ENV, "CLEAROTRON_AI", "CLEAROTRON_CLAUDE_PATH"])
@@ -195,7 +195,7 @@ test("start.mjs wires both halves — composition and guard — at the --backgro
     "--background no longer composes the unit environment from the run requirements");
   assert.match(src, /missingRequirements\(willRead, RUN_TABLES\)/,
     "--background no longer guards the environment it just composed");
-  // tracker issue 216 — and it guards on the START half alone. `miss.blocking` here would refuse over a
+  // and it guards on the START half alone. `miss.blocking` here would refuse over a
   // register the owner ruled an install may come up without.
   assert.match(src, /if \(miss\.atStart\.length\)/,
     "--background refuses over more than what start itself writes");

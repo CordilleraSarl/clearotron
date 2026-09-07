@@ -23,8 +23,8 @@
 // report-derived cover text alone, because a gate that simply stops running is not a gate that passes.
 
 import { REGION_NAMES } from "./publish/regions.mjs";
-import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // tracker issue 134 — one spelling of a territory code
-import { searchedCovers } from "./frame-diff-model.mjs";                // tracker issue 134 — one copy of the EU-reach rule
+import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // one spelling of a territory code
+import { searchedCovers } from "./frame-diff-model.mjs";                // one copy of the EU-reach rule
 import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyFacts } from "./party-facts.mjs";   //
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
@@ -72,7 +72,7 @@ const REF_ALLOWLIST = new Set([
 // ── — A TERRITORY IS NOT A PARTY, AND A MARK IS NOT A PARTY ────────────────────────────────────
 // Two production clearances flagged six "parties the action list names that no finding identifies".
 // FOUR were not parties: "European Union", "United Kingdom", "United Arab Emirates" and a mark. The
-// check then emitted that into the report, which is 's other half.
+// check then emitted that into the report, which is the other half.
 //
 // Territory names come from `publish/regions.mjs` — the ONE naming source every render surface already
 // uses — rather than from the run's own jurisdiction list. Broader, and deliberately: a bare country
@@ -1547,7 +1547,7 @@ export function markAssessmentChecks({ markAssessment, expected }) {
 }
 
 /**
- * The DECLARED CONTRACT VERSION (, moved out of contentModelChecks by).
+ * The DECLARED CONTRACT VERSION (moved out of contentModelChecks by).
  *
  * It used to live inside contentModelChecks, whose first line is `if (!expected) return []`, where
  * `expected` is derived as `schema_version >= 5`. So the one check written to report a down-level
@@ -2237,7 +2237,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
       checks.push(...ownerScreenNegativeChecks({ text: clientSummaryMd, ownerScreen, markVocab, surface: "client-summary" }));
     }
   }
-  // tracker issue 134 — the delivered prose's coverage claims against what the run actually searched.
+  // the delivered prose's coverage claims against what the run actually searched.
   // Top-level, NOT inside the owner-screen guard above: a coverage claim has nothing to do with whether
   // this run has an owner screen, and nesting it there would have silently switched the check off for
   // every run without one. Both prose surfaces: the narrative is where the issue measured the
@@ -2305,7 +2305,7 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
 // The knockout (Stage 0/0.5) lane wrote NO predelivery-lint.json at all, by a decision recorded in
 // docs/DELIVERY.md (2026-07-28). That decision rested on two premises this tranche has since moved:
 // the lint artifact is now the WORKBOOK's QC record (/), so a lane that writes none produces an
-// EMPTY QC record rather than a deliberately-absent one; and 's A10 projects recorded defects onto
+// EMPTY QC record rather than a deliberately-absent one; and the A10 projects recorded defects onto
 // the cover note that reaches the reviewing lawyer, so a knockout defect reached nobody. What has NOT
 // moved is the other half of the memo: this lane's deliverable is store-rendered, and most clearance
 // checks read surfaces it does not produce. So the extension is a SUBSET, derived from what the lane

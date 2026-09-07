@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// 's CONSTRAINT, MADE MEASURABLE: what the coverage form's gate refuses, against what the prose
+// That CONSTRAINT, MADE MEASURABLE: what the coverage form's gate refuses, against what the prose
 // join refused, over one set of digest judgments.
 //
 // THE INVARIANT, in the three parts the design of record now states (docs/design/register-digest-form.md

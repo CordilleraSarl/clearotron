@@ -12,7 +12,7 @@
 // property of the WRITING SITE, not of the name — a field called `outcome` carrying an outcome is fine,
 // and a field called `settled` carrying a dispatch return is the defect. Only reading the writer tells
 // them apart, so the population is SPLIT and classified rather than filtered down to the offenders.
-// Both halves are kept, for 's reason: a filtered population produces no number, and nobody can see
+// Both halves are kept, for the reason: a filtered population produces no number, and nobody can see
 // what was hidden.
 //
 // ── THE TWO HALVES ──────────────────────────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@
 //                   `outcome` for existing readers beside `dispatch` and `verdict`).
 //   "out-of-scope" — never reaches `_driver/*.json` or `run.jsonl`; `atWriteSite` is 0.
 
-/** The result nouns this sweep is about — 's list, verbatim. */
+/** The result nouns this sweep is about — the list, verbatim. */
 export const RESULT_NOUNS = Object.freeze(["outcome", "executed", "permanent", "settled", "closed", "recovered", "verified"]);
 
 export const RESULT_NOUN_FIELDS = Object.freeze([
@@ -66,7 +66,7 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   { file: "driver/pipeline.mjs", noun: "executed", sites: 4, atWriteSite: 3, verdict: "result",
     why: "lengths of the executed set as the join computed it" },
   { file: "driver/pipeline.mjs", noun: "outcome", sites: 11, atWriteSite: 6, verdict: "result",
-    why: "the one member that reported an invocation — taint-rerun's `r.ok ? \"ok\" : …`, which travels on a StageFailure packet — now carries a `cleared` sibling read from the taint, #1529's remedy 10/5 -> 11/6 at tracker issue 1886: the profile-store receipt's `outcome: pr.outcome`. Classified by READING ITS WRITING SITE, which is profiles.mjs and not this file: the value is one of three literals chosen by a situation the resolver decided (`overlay` and `bundled-fallback` are `pass`, `env-arrived-late` is `blocked`), never a call's return read as a verdict. `bundled-fallback` being `pass` is the point of the whole receipt — a legitimate install that nobody was told about is what this row says out loud." },
+    why: "the one member that reported an invocation — taint-rerun's `r.ok ? \"ok\" : …`, which travels on a StageFailure packet — now carries a `cleared` sibling read from the taint, the remedy 10/5 -> 11/6 at the profile-store receipt's `outcome: pr.outcome`. Classified by READING ITS WRITING SITE, which is profiles.mjs and not this file: the value is one of three literals chosen by a situation the resolver decided (`overlay` and `bundled-fallback` are `pass`, `env-arrived-late` is `blocked`), never a call's return read as a verdict. `bundled-fallback` being `pass` is the point of the whole receipt — a legitimate install that nobody was told about is what this row says out loud." },
   { file: "driver/pipeline.mjs", noun: "permanent", sites: 1, atWriteSite: 1, verdict: "result",
     why: "`permanent.length` — a count of the classified set" },
   { file: "driver/pipeline.mjs", noun: "recovered", sites: 3, atWriteSite: 3, verdict: "result",

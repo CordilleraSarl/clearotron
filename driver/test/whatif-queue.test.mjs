@@ -23,7 +23,7 @@ function studio() {
 }
 const op = (runId = "r1") => ({ runId, stage: "report-overview", axis: null, instructions: "treat ACME as expired", model: null });
 
-// ── THE DOOR AND THE WORKER MUST ANSWER THE SAME QUESTION (, found by driving it) ──
+// ── THE DOOR AND THE WORKER MUST ANSWER THE SAME QUESTION (found by driving it) ──
 //
 // There were three copies of "may a what-if touch this run". `whatIfPlan` and `whatIfEnqueue` refused
 // archived-or-delivered; the worker refused any of `.delivered`, `.failed`, `.cancelled`, `.cancel`. So

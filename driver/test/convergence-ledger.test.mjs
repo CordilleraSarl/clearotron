@@ -10,7 +10,7 @@
 //   2. an attempt whose failure is BYTE-IDENTICAL to its predecessor, recorded as `noChange`.
 //
 // RECORDING ONLY. Every assertion here that touches a decision asserts it is UNCHANGED — the sigs are
-// pinned to their pre- literals and decideRecovery's verdict is asserted identical whatever the
+// pinned to their pre-change literals and decideRecovery's verdict is asserted identical whatever the
 // quantity says. What the machinery should DO with a converging ladder is, and is not here.
 //
 // The fixture shape is the shipped one — verify.mjs connotationDispositionFail's own token, as it
@@ -110,8 +110,8 @@ test("#246 ZERO SEMANTICS: a failure with no quantity records ABSENT (null), nev
 });
 
 test("#246 the signature is UNCHANGED — the quantity is the sole new discriminator", () => {
-  // Pinned to the pre- literals. These are what the machinery signs; a diff that moves them moves
-  // which runs go repeat-signature terminal, which is 's decision and not this issue's.
+  // Pinned to the pre-change literals. These are what the machinery signs; a diff that moves them moves
+  // which runs go repeat-signature terminal, which is the decision and not this issue's.
   const sigs = [6, 9, 11, 25, 29].map((n) => failureSignature("common-law-half:b", REASON(n)).sig);
   for (const s of sigs) assert.equal(s, "common-law-half:b|022c140ae114", "the sig still collapses the digit — unchanged");
   // …and the count that the sig cannot see now rides beside it
@@ -189,7 +189,7 @@ test("#246 ladder 7 → 6 → 5, park, 6 → 3 → pass: the count crosses the p
   assert.equal(before.quantity, 5, "the count the run parks ON");
 
   // the park's fresh sample re-rolled ABOVE where it parked (6 > 5) and then converged to a pass. The
-  // ledger says so; whether that is worth another park is 's call, not this record's.
+  // ledger says so; whether that is worth another park is the call, not this record's.
   const after = await replay("resumed", [6, 3, null], { maxRetries: 2 });
   assert.equal(after.ok, true);
   assert.deepEqual(counts("resumed"), [6, 3, null]);

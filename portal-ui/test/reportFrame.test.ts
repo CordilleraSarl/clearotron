@@ -116,10 +116,10 @@ test('a scroll message with the wrong tag or type is not ours', () => {
   assert.equal(readFrameScroll({ source: FRAME_TAG, type: 'height', top: 10 }, true), null)
 })
 
-// ── feedback — THE SECTION THAT WAS HERE IS DELETED (, owner ruling 2026-08-20) ──────────
+// ── feedback — THE SECTION THAT WAS HERE IS DELETED (owner ruling 2026-08-20) ──────────
 //
 // It tested `readFrameFeedback` and `frameFeedbackResult`: the validator a flag crossed on its way out
-// of the null-origin frame, plus 's markIndex arms. Both exports are gone, because
+// of the null-origin frame, plus the markIndex arms. Both exports are gone, because
 // `portal-service.mjs` no longer injects the control that raised the message and the owner asked for
 // the UI options removed rather than hidden.
 //

@@ -9,7 +9,7 @@
 //
 // That is the exact parse conversion 9 removed the need for. A flag the parse misses is a defect the
 // reviewer named and the corrective pass never sees — and the parse CAN miss, which is why the seat stopped
-// choosing the enumeration style in the first place ('s lettered flags were invisible; records
+// choosing the enumeration style in the first place (the lettered flags were invisible; records
 // a second walk that could not see `**1.`).
 //
 // ── HOW THESE ARMS PROVE THE SOURCE, RATHER THAN THE OUTCOME ────────────────────────────────────────

@@ -132,7 +132,7 @@ test("#1365: the blind spot's SCALE is measured, so it cannot grow unnoticed as 
   //
   // A FLOOR, NOT AN EQUALITY. A hard count would red on every new sink, which is the ratchet option 2
   // wanted and option 1 explicitly did not choose. What a floor buys is that this stops being evidence
-  // the moment the enumeration breaks: finding nothing must red, not pass. 's drift guard was
+  // the moment the enumeration breaks: finding nothing must red, not pass. That drift guard was
   // silently narrowed from 13 names to 9 while still passing, for exactly the want of this.
   // THROUGH shared/tracked-files.mjs, NEVER git directly. test-tiers.test.mjs guards that in as many
   // words — "no test enumerates the tracked corpus behind the helper's back" — and the reason is:

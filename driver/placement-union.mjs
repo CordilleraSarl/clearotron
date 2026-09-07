@@ -102,7 +102,7 @@ export function unionPlacementForm(prior, submitted, input) {
   const consumed = new WeakSet();
   // RETRACTION IS EXPLICIT, and it is the only way a row leaves this form.
   //
-  // 's seat rows were retracted by SILENCE — a submission that spoke owned them — and that was right
+  // That seat rows were retracted by SILENCE — a submission that spoke owned them — and that was right
   // there, because that seat rewrote its whole form every pass. This one does not: it writes DELTAS, so a
   // corrective attempt that re-tiers two register rows says nothing about the run's common-law
   // candidates, and silence-retraction would delete every one of them without a word. The 2026-08-09

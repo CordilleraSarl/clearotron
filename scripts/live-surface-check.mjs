@@ -54,7 +54,7 @@
 // WRONG — the deployment was fine; the caller was not. With the portal's own ops token the same call
 // answers `clients: 10`.
 //
-// #98's validation failed because it ran in the wrong ENVIRONMENT. A probe can fail the same way by
+// an earlier validation failed because it ran in the wrong ENVIRONMENT. A probe can fail the same way by
 // running as the wrong IDENTITY. So this check authenticates the way the portal does, and a missing
 // token is reported as "not probed" rather than quietly producing a false failure.
 //
@@ -737,7 +737,7 @@ else {
       // second criterion — an orphaned drainer in a closed login session is a
       // state health must say out loud, whatever the ruling on the posture.
       ppidOf: defaultPpidOf,
-      // tracker issue 206 — THE SAME TWO PROBES THE QUEUE ARM READS, so this arm and that one cannot
+      // THE SAME TWO PROBES THE QUEUE ARM READS, so this arm and that one cannot
       // reach opposite conclusions about one box. They did: the queue arm read the worker unit and said
       // the timer posture is retired here, while this one read nothing and called an absent drainer a
       // fault in the same report. A probe that throws answers `enabled: null`, which the rule resolves

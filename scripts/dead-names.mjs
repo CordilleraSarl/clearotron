@@ -45,7 +45,7 @@ export const GUARD = "dead-names (#853)";
 // `clawdi-lisa` and `clawdi-lidia` are 's, not 's, and they are here rather than in a second
 // scanner because the mechanism is identical: a name that must never reappear. They were per-person
 // agent identities for individuals at this firm, shipped in an operator script's default roster, in a
-// systemd unit watching their queues, and in two test fixtures. 's out-of-scope note ruled `alex`
+// systemd unit watching their queues, and in two test fixtures. That out-of-scope note ruled `alex`
 // and `sam` INVENTED, which is why those stay; these two were never covered by that ruling.
 export const DEAD_NAME_RE = /lorestar|lore_(pool|url|flags)|prelim_lore|lorectl|loreurl|lorecontrols|trademark-lore|\blore\b|\baughra|clawdi-(lisa|lidia)/i;
 

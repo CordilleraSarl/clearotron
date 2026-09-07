@@ -498,7 +498,7 @@ export const validators = {
       // THE TYPED RECORD. findings-model.mjs owns the shape; this is where it becomes a GATE.
       // Unconditional — no shape sniffing: this validator only ever reads a chunk THIS run's assess turn
       // just wrote, so a "looks like the old shape, validate it loosely" arm could only ever be a way to
-      // skip the check. A resumed run holding a pre- chunk file fails here and re-asks the turn
+      // skip the check. A resumed run holding a pre-change chunk file fails here and re-asks the turn
       // (pipeline-knockout.mjs koStage logs stage-stale and re-runs), which is the correct outcome: the
       // report renders `net`/`basis`/`evidence[]` and a prose row cannot fill them.
       //

@@ -253,7 +253,7 @@ function mockCoverageSlices(msg) {
  * is out of reach — the gate is inactive there and the mock must not invent one).
  *
  * MOCK_NO_COVERAGE_FORM     the seat makes no record_coverage call  ⇒ coverage_no_status
- * MOCK_UNPARSEABLE_LEDGER   ditto — the pre- spelling of "this digest produced no readable coverage"
+ * MOCK_UNPARSEABLE_LEDGER   ditto — the pre-change spelling of "this digest produced no readable coverage"
  * MOCK_BAD_COVERAGE_FORM    the DRIVER's accumulator is damaged     ⇒ coverage_form_damaged
  *                           (written to the sidecar: the seat holds no writer onto it any more, so this
  *                           knob now simulates the driver-side fault the token names on live runs)
@@ -449,7 +449,7 @@ export function fixture(name, msg, dir = null) {
     // (ordinal 1, band High = rank 1), so it is legitimately kept and legitimately under the cap — the
     // padding below is 360 CHARS, some three dozen words, nowhere near the 270/330 word ceiling.
     // — MOCK_NARRATIVE_OVER_CAP: finding 1's write-up breaches the word cap on the FIRST emission
-    // and heals on the lint-repair redo. That is 's chain: the over-cap lint failure
+    // and heals on the lint-repair redo. That is the chain: the over-cap lint failure
     // rewrites narrative.md, which is a DECLARED INPUT of narrative-refutation, so the delivery freshness
     // gate stales the reviewer and re-runs it — which is the pass whose verdict nothing reads.
     // Keyed on narrative.md not yet existing, so the redo is recognised by run state rather than by

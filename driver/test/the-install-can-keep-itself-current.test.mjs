@@ -58,7 +58,7 @@ test("#1883 update REFUSES over a queued run — driven through the real entry, 
   // TIMER — which calls the binary, not this function.
   const dir = mkdtempSync(join(tmpdir(), "deploy-guard-"));
   writeFileSync(join(dir, "job-1883.json"), JSON.stringify({ ref: "GUARD" }));
-  // `pinEnv` with the name QUOTED, not `pinEnvAll` with an object literal: 's guard exempts a
+  // `pinEnv` with the name QUOTED, not `pinEnvAll` with an object literal: the guard exempts a
   // file that routes a name through the table, and it looks for the name as a STRING beside the
   // helper. An unquoted object key satisfies the helper and not the guard, so the call would be
   // correct and reported anyway.
@@ -163,7 +163,7 @@ test("#1883 the detector can SEE a real process from this checkout — a zero he
 });
 
 test("2099 the deployment scan sees a program on this checkout where there is no /proc", async () => {
-  // 's scan read `/proc` directly, so on macOS it returned null and doctor told every reader on
+  // That scan read `/proc` directly, so on macOS it returned null and doctor told every reader on
   // that platform "the process table could not be read" — permanently. The listing now comes from
   // shared/process-table.mjs, and this arm drives the branch macOS takes, on a box that has /proc.
   //

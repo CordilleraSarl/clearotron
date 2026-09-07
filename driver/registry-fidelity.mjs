@@ -328,7 +328,7 @@ export function assembleRunRecords(runDir, runPrefix,
       writeFileSync(driverDir(runDir, "receipts.json"), JSON.stringify({ schema_version: 1, receipts: rows }, null, 2) + "\n");
     }
   } catch { /* best-effort — the records map above remains the gate substrate */ }
-  // 's legacy-name notice is REPLACED, not deleted. That one told an operator which of four
+  // That legacy-name notice is REPLACED, not deleted. That one told an operator which of four
   // global candidates was being read; nothing reads any of them for a new run any more, so the sentence
   // had become false. What an operator still needs is the fact underneath it: a box upgraded across this
   // change is carrying a large global record log that is now written by nothing and read by nothing —
@@ -338,7 +338,7 @@ export function assembleRunRecords(runDir, runPrefix,
   //
   // AND THE CALL LEDGER'S OWN NOTICE MOVES HERE RATHER THAN DYING WITH IT. `ledgerDeprecationNotice` had
   // exactly one product caller — the record line above — so deleting that line would have left NOTHING
-  // announcing the ledger that is still global, still live and still on production's pre- filename.
+  // announcing the ledger that is still global, still live and still on production's pre-change filename.
   // Gated on the path ACTUALLY WALKED: the notice re-resolves from the environment, so on a call that
   // passed an explicit `callLogPath` it would describe a file this assembly never opened, and a
   // diagnostic that names something other than what happened is worse than no diagnostic.
@@ -951,7 +951,7 @@ const recClasses = (rec) => {
  * WHICH owner name a delivery artifact SHOWS. ONE definition, deliberately, because the renderer
  * and bindFindingsToRecords each resolve the owner independently — publish/render.mjs does its own
  * record lookup and preferred the record outright, so binding the finding alone changed no heading and
- * no lint surface. A second copy of the same decision is how 's provider default survived two fixes.
+ * no lint surface. A second copy of the same decision is how the provider default survived two fixes.
  *
  * The record decides, not a guess about what "looks romanised": a record carrying BOTH a Latin name and
  * a native-script one is itself saying the Latin field is a transliteration, and only then does a

@@ -60,7 +60,7 @@ test("#766 the server briefs from the SAME file, and each audience gets its OWN 
   assert.equal(account, onDisk("clearotron-account"), "the account briefing is not the file in skills/");
   assert.notEqual(client, account, "both audiences got the same pack — the account one would be told "
     + "that commissioning a search is out of scope, which is the tool it holds");
-  // OPS NOW GETS ITS OWN PACK (, owner ruling 7), which is this arm's own principle
+  // OPS NOW GETS ITS OWN PACK (owner ruling 7), which is this arm's own principle
   // rather than an exception to it: on a self-hosted install the customer IS ops, connects over this
   // connector, and was briefed with nothing while skills/clearotron-ops/SKILL.md shipped and SKILL_DIR
   // mapped it. Asserted the same way as the other two — against the files on disk, so "briefed" and

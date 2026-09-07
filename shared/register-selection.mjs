@@ -31,7 +31,7 @@
 // `driver/run-requirements.mjs` derives from those two fields and never restates them.
 //
 // The vendor sign-up steps travel WITH the table rather than staying behind in the wizard: they are
-// facts about the register, the wizard is one reader of them, and tracker issue 100 asks for the same
+// facts about the register, the wizard is one reader of them, and the same steps are asked for on the same
 // steps on surfaces the wizard does not own.
 
 // The USPTO sizing figures are MEASURED and live in their own module; the warnings below quote them

@@ -38,7 +38,7 @@ test("#854 no shipped markdown claims Apache — the issue's own external check"
   // helper did print its SKIPPED marker, which the merge gate greps for, so the gate would have caught
   // what a single-file run did not.
   //
-  // THE ATTRIBUTIONS FILE IS EXCLUDED, and the exclusion is the narrowest one that works. 's own
+  // THE ATTRIBUTIONS FILE IS EXCLUDED, and the exclusion is the narrowest one that works. its own
   // other row requires `THIRD-PARTY-NOTICES.md` to reproduce each dependency's licence NOTICE — MIT,
   // BSD and ISC all oblige a distributor to, not merely to name the licence — and some dependencies
   // are Apache-2.0. So the issue's external check as literally written became unsatisfiable the moment

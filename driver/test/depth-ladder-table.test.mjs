@@ -42,7 +42,7 @@ const VOCAB = {
   // doubt-closure-grading-cannot-bind.test.mjs gives: no doubt that is still OPEN carries a disposition or
   // band to key on. The two tier words below are implementable and unused: the driver can act on them
   // (doubt-selection.mjs), and no row names one until the owner rules the cut for THIS stage. The ruled
-  // tiers on 's table belong to the placement-inquiry trace row.
+  // tiers on the table belong to the placement-inquiry trace row.
   doubtClosure: ["every-doubt", "headline-candidate", "headline-candidate+sheet-2"],
   envelopeRounds: ["as-today", "one"],
   coverageClosureRounds: ["as-today", "one"],

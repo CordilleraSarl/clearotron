@@ -352,7 +352,7 @@ test("readEnvFile reports what the ENGINE'S loader would apply, not what a secon
   rmSync(home, { recursive: true, force: true });
 });
 
-test("tracker issue 179 — readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
+test("readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
   // ── WHY THIS SPAWNS, WHEN EVERY OTHER GUARD TODAY INJECTED ────────────────────────────────────────
   //
   // Injection cannot catch this one, and finding that out took two wrong guards.
@@ -388,7 +388,7 @@ test("tracker issue 179 — readEnvFile reads THE FILE IT IS GIVEN, on any machi
   }
 });
 
-test("tracker issue 179 — the loader honours a file it is handed, whatever the home says", () => {
+test("the loader honours a file it is handed, whatever the home says", () => {
   // The loader's own contract, held separately: two promises, and either can break without the other.
   const home = mkdtempSync(join(tmpdir(), "onboard-loaderhome-"));
   const asked = mkdtempSync(join(tmpdir(), "onboard-loaderasked-"));
@@ -403,7 +403,7 @@ test("tracker issue 179 — the loader honours a file it is handed, whatever the
   rmSync(asked, { recursive: true, force: true });
 });
 
-test("tracker issue 179 — an arm cannot reach the real home, and a failure names no value", () => {
+test("an arm cannot reach the real home, and a failure names no value", () => {
   // TWO PLANTS, because the fix has two halves that fail in different ways.
   //
   // ONE — the pin. A file is planted in a home that is not this machine's. A reader still resolving
@@ -773,7 +773,7 @@ test("#827 --check prints the pool refusal and the workspace default the CONFIG 
       try { config.poolRoot; return null; } catch (e) { return String(e.message); }
     });
     assert.ok(refusal,
-      "config.poolRoot no longer refuses an unset pool. #774's premise has changed, not this test — "
+      "config.poolRoot no longer refuses an unset pool. the premise has changed, not this test — "
       + "re-derive both arms against whatever the getter does now rather than deleting them.");
     assert.ok(r.out.includes(refusal),
       `--check must print the driver's OWN refusal, so the reader meets the same words here and on their\n`
@@ -994,7 +994,7 @@ test("#1770 the wizard's closing screen leads with the PRODUCT's own start verb"
 
   const commands = nonEmpty(commandsOffered(closingScreen()), "commands advertised by the closing screen");
   assert.equal(commands[0], "clearotron start",
-    "the FIRST thing offered after a successful configuration is not the product. #1719's whole "
+    "the FIRST thing offered after a successful configuration is not the product. the whole "
     + "observation was that a reader who has just finished configuring this gets pointed at the two "
     + `commands that are not it. Advertised: ${JSON.stringify(commands.slice(0, 3))}; all lines: `
     + `${JSON.stringify(lines.slice(0, 4))}`);
@@ -1145,7 +1145,7 @@ test("#1912 a deployment behind its upstream still FAILS — the pinned answer m
 // The arm above proves `pinned` is returned when asked for, but it passes NO `run`, so it never builds
 // an overtaken checkout. That is an arm that cannot fail for the reason it exists: move the pinned
 // branch below the behind computation and it keeps passing while CI reds exactly as before. The gap was
-// found by re-reading 's third criterion against the diff instead of against the
+// found by re-reading the third criterion against the diff instead of against the
 // intention behind it.
 //
 // So: ONE fake git, three commits behind — the precise state a queued job reaches when main moves under

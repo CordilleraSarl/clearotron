@@ -90,7 +90,7 @@ export function knownToolNames() {
  * The intersection is fail-closed on the PROVIDER axis — signa exposes two register tools where
  * corsearch exposes eight — and it duly produced 19 hits saying the register doctrine orders
  * `register_enumerate`, which signa does not carry. Every one of those is true and none of them is
- *: they are findings about a vendor's capability envelope, which 's deferral contract already
+ *: they are findings about a vendor's capability envelope, which the deferral contract already
  * owns and states on the coverage form. Folding them in here would bury the grant/doctrine mismatch
  * this contract exists for under a vendor-capability report nobody asked E12 for.
  */
@@ -101,9 +101,9 @@ export function grantedToolsFor(stage) {
   return out;
 }
 
-// ── 's members: two were known, TEN are real ────────────────────────────────────────────────────
+// ── the members: two were known, TEN are real ────────────────────────────────────────────────────
 //
-// E3's precedent, and 's rule under it: "a lint that greenlights every existing hole certifies the
+// E3's precedent, and the rule under it: "a lint that greenlights every existing hole certifies the
 // problem" — so the lint holds the line and the BACKLOG names what is already there, each entry saying
 // which move removes it. rejects "a whitelist of the two known members as the route to green", and
 // this is not that: it is the measured population, which is FIVE TIMES the two members was filed
@@ -209,7 +209,7 @@ export function contracts() {
     //
     // SCOPED TO THE BACKTICKED FIELD NAME, and the loose form was measured before choosing: `/\banchor\b/`
     // fires 52 times across the served corpus against 10 for this pattern, because `anchor` is also a link
-    // anchor ('s subject) and a variant anchor. A pattern whose extra 42 hits would have to be
+    // anchor (the subject) and a variant anchor. A pattern whose extra 42 hits would have to be
     // excused is a pattern kept green by exemptions rather than by fixes — the whitelist route
     // forbids, arriving as a regex instead of a path filter. `anchor-owed` is in because the corrective
     // ladder ORDERS it in exactly that spelling.

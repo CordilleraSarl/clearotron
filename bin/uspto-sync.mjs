@@ -76,7 +76,7 @@ if (!dbPath) die(`no index path. Pass --db, or set USPTO_LOCAL_DB (the same vari
 //
 // So the old check demanded 43.8 GB for a build that fits in 17, and INSTALL.md told the reader to
 // provision 60. On the free tier that is the difference between "I can try this on the disk I have" and
-// "I cannot", which is the whole of 's Why.
+// "I cannot", which is the whole of the Why.
 //
 // The ratio, the headroom and the arithmetic now live in shared/uspto-index-size.mjs with their
 // provenance, because the same numbers are what the wizard prints and what INSTALL.md promises, and

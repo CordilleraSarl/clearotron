@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// tracker issue 1117 — the FLOOR DUTY reconciler.
+// the FLOOR DUTY reconciler.
 //
 // The floors are the one uncapped obligation in placement-inquiry's doctrine and nothing checked them.
 // Measured on two delivered runs (2026-08-20): 45 of 207 floor rows on one and 99 of 225 on the
@@ -215,7 +215,7 @@ test("#1117 the derivation is disclosure-only — it cannot gate, re-tier or sen
   }
 });
 
-// ── tracker issue 1955 — THE DUTY BECAME A DELIVERY FLOOR, AND THESE ARE THE ARMS THAT LET IT BE ONE ─────────────
+// ── THE DUTY BECAME A DELIVERY FLOOR, AND THESE ARE THE ARMS THAT LET IT BE ONE ─────────────
 //
 // The posture arm above still stands and is still correct: `deriveFloorDuty` cannot gate, re-tier or
 // send a followup. That was NOT loosened. Enforcement lives at the pre-verdict floor, where a throw
@@ -365,7 +365,7 @@ test("tracker 1988 the floor DELIVERS AND CLAMPS at the site, and no longer thro
     "the floor block throws again — a terminal guard that withholds is the defect tracker 1988 removed, and it "
     + "cost a client a whole report on a one-record gap");
 });
-// ── tracker issue 2004 — AN UNDISCHARGED DUTY MAKES THE OUTPUT UNFIT TO SKIP ────────────────────────
+// ── AN UNDISCHARGED DUTY MAKES THE OUTPUT UNFIT TO SKIP ────────────────────────
 //
 // Two parts of the engine disagreed about "valid" for one placement pass. On resume the stage skipped —
 // output present, own validator satisfied — while the delivery floor called that same pass's duty

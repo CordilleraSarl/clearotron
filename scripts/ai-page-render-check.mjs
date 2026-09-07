@@ -41,7 +41,7 @@
 //                    per assistant, with a reason, and render no button. Zero buttons is the pass.
 //   wired-client     the hosted shape: address assistants live, stdio ones honestly absent.
 //   wired-staff      everything on offer at once — the widest bijection.
-import { navigateOrRefuse } from './headless-page.mjs'   // tracker issue 227 — Page.navigate returns an errorText, and nothing read it
+import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs'

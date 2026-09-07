@@ -159,7 +159,7 @@ function findingsOf(runDir) {
       // Its finding rows carry no typed source at all: a `type` ("Active Business", "Famous Brand") that
       // is free model prose, and a `url`. The class is not missing by accident — the lane's register
       // component is a two-predicate count of the mark string and structurally cannot reach a register
-      // family (, ruled and closed). Everything it PUBLISHES comes off the common-law screen.
+      // family (ruled and closed). Everything it PUBLISHES comes off the common-law screen.
       //
       // So the class is asserted here rather than guessed from `type`, and it is asserted in the
       // direction that cannot overstate recall: a register gold entry is never satisfied by a knockout
@@ -496,7 +496,7 @@ function print(id, ref, run, s, delta, refPath) {
   console.log(deliveryLine(run));
   // — THE INSTRUMENT, BESIDE THE NUMBER. `--json` has carried `scorer_version` since this file
   // shipped; the human path did not, and the human path is the one whose numbers get pasted into an
-  // issue. 's body states 6/9 for a run that re-scores 5/2/2 today across two scorer changes
+  // issue. That body states 6/9 for a run that re-scores 5/2/2 today across two scorer changes
   // (`fd9938ce`, `212cdf73`), so every delta quoted from it crosses an unmarked boundary. A number a
   // reader can carry away must carry the instrument with it.
   //
@@ -805,11 +805,11 @@ function print(id, ref, run, s, delta, refPath) {
     // Now: `asked=` and `ran=` side by side, and — per the owner's ruling, flag rather than gate — a
     // LOUD marker when the ask was not met, carrying the cause on the same line so the reader is not
     // sent to the artifact to find out which switch was off (the rule for degradedCause, applied
-    // to the field beside it). An unrecorded verdict prints as unrecorded: a pre- artifact cannot
+    // to the field beside it). An unrecorded verdict prints as unrecorded: a pre-change artifact cannot
     // answer this and must not look like a lane that met its ask.
     // `(not stated)` and `(not established)` are DIFFERENT cells and the row keeps them apart, in the
     // vocabulary it already uses one column over: `not stated` = this artifact never answered the
-    // question (a pre- run), `not established` = it answered and the answer is that its own record
+    // question (a pre-change run), `not established` = it answered and the answer is that its own record
     // cannot settle what ran. Neither is `candidates`, and neither may read as a met ask.
     //
     // THE REASON DOES NOT GO IN THE CELL. A row is a row: the first cut interpolated the verdict's whole

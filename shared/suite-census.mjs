@@ -15,7 +15,7 @@
 //
 // ── `.test(` IS NOT COUNTED, AND THAT IS THE WHOLE CALIBRATION ─────────────────────────────────────
 //
-// 's own thread records the miscount: 177 `RegExp.prototype.test` calls counted as subtests,
+// its own thread records the miscount: 177 `RegExp.prototype.test` calls counted as subtests,
 // genuine subtests ZERO. So this counts `assert.<something>` and a `test(` at the START of a line, and
 // nothing else. Two independent checks that it is calibrated: on the tree it was minted from, the
 // counted test sites match the EXECUTED totals at 415/415 for portal-ui, 382 against 386 for
@@ -105,7 +105,7 @@ export function rootScriptDisagreements(readManifest, declared = CENSUS_ROOT_SCR
 //
 // while 581 of 639 driver test files stop being collected. Both sides agreed because both sides
 // enumerate through the list ABOVE, and nothing in this repository opened a package.json. The census
-// was move-proof about the tests and blind to itself being pointed somewhere else, which is 's own
+// was move-proof about the tests and blind to itself being pointed somewhere else, which is its own
 // doctrine line: an enumerated check is blind to the thing moving; a discovered check is blind to
 // ITSELF moving.
 //
@@ -237,7 +237,7 @@ export function lossBetween(prevPerFile, nextPerFile) {
 }
 
 /**
- * tracker issue 205 — WHICH BUCKET EACH DIFFERENCE LANDS IN, and which of them refuses a re-stamp.
+ * WHICH BUCKET EACH DIFFERENCE LANDS IN, and which of them refuses a re-stamp.
  *
  * `lossBetween` above answers what MOVED. This answers what that MEANS, and it is a separate question
  * with a separate history. A rising skip count is a real difference and it used to refuse: it landed
@@ -343,7 +343,7 @@ export function countTestSites(text) {
  * The 1-based LINE of every assert site, in source order. One site per `assert.<x>` occurrence, so a
  * line carrying two of them appears twice — the same arithmetic `countTestSites` reports.
  *
- * 's fifth member needs the LINES, not just the total: a GATED arm — `if (!process.env.X) return;`
+ * That fifth member needs the LINES, not just the total: a GATED arm — `if (!process.env.X) return;`
  * at the top of a test body — leaves every token in place, so a count cannot see it and only "did this
  * line ever run" can. That question is answered by a coverage pass, and the two sides must ask it of the
  * SAME sites, so the rule lives here once rather than being re-typed against the same file.

@@ -59,7 +59,7 @@
 // MUST NOT run as a user with a virtual-memory ulimit (`ulimit -v`) — Chrome dumps core under one. Run it
 // as a user with `ulimit -v unlimited`. The dbus/UPower errors Chrome prints on a headless box are noise.
 
-import { navigateOrRefuse } from './headless-page.mjs'   // tracker issue 227 — Page.navigate returns an errorText, and nothing read it
+import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { readFileSync, existsSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'

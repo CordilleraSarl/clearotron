@@ -478,7 +478,7 @@ test('ONE context-pack editor, shared — the two levels cannot describe the sam
   assert.doesNotMatch(PROFILE, /8000/, 'and neither screen restates it')
   assert.doesNotMatch(PROJECTS, /8000/)
   // The project pack REPLACES the owner's rather than adding to it. Saying "as well as" would be wrong.
-  // Re-pointed by 's copy pass: the SENTENCE changed, the fact it guards did not, and
+  // Re-pointed by the copy pass: the SENTENCE changed, the fact it guards did not, and
   // the fact is the reason the arm exists. Matched on both halves rather than on one phrase, so a
   // future shortening cannot drop the "not added to it" clause and stay green.
   assert.match(PROJECTS, /Replaces the brand owner's background when set/)
@@ -765,7 +765,7 @@ test("#1435 a saved search on the entry fork sits under its OWN heading, not und
   // `startPills >= 3` is a floor over `.start-pill` that a regrouping like this one leaves intact.
   const prose = flat(body(NEW_CLEARANCE))
 
-  // "Custom searches", not "Saved searches" — 's terminology map settles that noun on the product's
+  // "Custom searches", not "Saved searches" — the terminology map settles that noun on the product's
   // own navigation label, and this heading landed carrying the retired one. The criterion states
   // is "a tag, a label, or its own group under its own heading", which is noun-agnostic.
   assert.match(prose, /Custom searches\{' '\}[\s\S]*?· start from one you built/,

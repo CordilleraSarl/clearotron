@@ -446,7 +446,7 @@ function settleTuple({ r, ev, resumeRef }) {
     killed, wall: r.wall,
     stdout: text, stderr: stderrOut, laneWaitMs: 0,
     json, usage,
-    // MODEL GAUGE (,): the id codex recorded for this turn — from its session rollout under
+    // MODEL GAUGE (): the id codex recorded for this turn — from its session rollout under
     // this run's own CODEX_HOME, since the event stream states none. Still two states and never one:
     // null = "this engine did not report", never the requested tier wearing the word "actual".
     // gateway.mjs records the absence as modelBasis:"unknown".
@@ -478,7 +478,7 @@ function settleTuple({ r, ev, resumeRef }) {
       mcpRefused: mcpToolGauge(ev).mcpToolCallsRefused > 0 || undefined,
       rateLimited: rateLimited || undefined,
       rateLimitBasis: rateLimited ? "text-match" : undefined,
-      // resetsAtBasis (, 2026-08-20): same honesty as rateLimitBasis one line up, for the reset
+      // resetsAtBasis (2026-08-20): same honesty as rateLimitBasis one line up, for the reset
       // CLOCK rather than the classification. codex states its reset as human prose with NO timezone
       // ("try again at Aug 22nd, 2026 9:06 AM"), so the ISO we derive is a reading of that prose in the
       // box's own zone — never a provider fact. Absent when no hint was found, exactly as `resetsAt` is.

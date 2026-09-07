@@ -163,7 +163,7 @@ test("#447: the synthesis dispatch composes both structural blocks, carrying the
 //
 // The three graded classes are the rule. Class (1) — a slice listed MISSING never ran — is the blocking
 // condition on one seat and the unwriteable condition on the other, and it is the same fact about the
-// same receipt. Two copies of it, one per seat, is 's shape: they drift, and the drift is silent
+// same receipt. Two copies of it, one per seat, is the shape: they drift, and the drift is silent
 // because each copy reads correct on its own.
 test("#447: the graded classes are ONE literal — the author's block, the reviewer's, and the repair turn", async () => {
   const { ctx } = fixtureRun();
@@ -228,7 +228,7 @@ test("#447: the synthesis prompt names both machine artifacts and carries assert
   // "governs every layer" (which makes every common-law finding unassertable), or hand the common-law
   // layer a record of its own and name common-law-findings.md as it. That file is the common-law
   // stage's NARRATIVE. Treating it as proof a check ran is how one stage's unsupported assertion
-  // becomes the next stage's supported fact — 's shape, and what this build exists to stop.
+  // becomes the next stage's supported fact — the shape, and what this build exists to stop.
   assert.match(msg, /KNOW WHICH GROUND YOU ARE ON/,
     "the rule stays general by saying which layer has a receipt, not by claiming a register receipt covers all of them");
   assert.ok(!/governs every layer of the opinion/.test(msg),
@@ -243,7 +243,7 @@ test("#447: the synthesis prompt names both machine artifacts and carries assert
   // orders it to read before any clean statement — two opposed instructions about one file in one
   // dispatch. The section is carved back in, and the direction is the load-bearing half: it constrains
   // (a coverage-limited row forbids a clean negative) and never licenses (confirmed-clean there is the
-  // stage's own word). Drop the direction and 's laundering route is open again.
+  // stage's own word). Drop the direction and the laundering route is open again.
   assert.match(msg, /Its `## Coverage ledger` section is the exception you MUST still read, and in one direction only/,
     "the common-law coverage ledger keeps its standing as a coverage input the seat must read");
   assert.match(msg, /can never be written as a clean negative/,

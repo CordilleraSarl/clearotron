@@ -102,7 +102,7 @@ const exemptTarget = (t) => EXEMPT_TARGETS.find((e) => e.target.test(t)) ?? null
  * A citation this checker CANNOT resolve and a human has adjudicated anyway. One rule for every member:
  * the entry names the citing FILE and the cited BASENAME, and it carries the reason resolution is
  * impossible rather than merely hard. Anything ambiguous and undeclared FAILS the run — the bucket is
- * not a backlog to hide in, which is what it was until 's second pass emptied it.
+ * not a backlog to hide in, which is what it was until the second pass emptied it.
  *
  * `citation-line-check.test.mjs` asserts every entry is REACHED — that it still matches a live ambiguous
  * citation — not merely that its regex is well formed. That distinction is the defect this pass found in
@@ -156,7 +156,7 @@ export function indexByBasename(files) {
  *
  * "ambiguous" is a finding AND an error: a citation reading `SKILL.md:41` names fifteen possible files in
  * this tree, so nothing here can judge it and nothing here ever did. That was its whole defect. Since
- * 's second pass the population is empty apart from AMBIGUOUS_DECLARED, and an undeclared one fails.
+ * That second pass the population is empty apart from AMBIGUOUS_DECLARED, and an undeclared one fails.
  */
 export function resolveCited(cited, byBase, exists = (p) => existsSync(join(ROOT, p))) {
   if (exists(cited)) return { state: "exact", path: cited };
@@ -702,7 +702,7 @@ export function symbolMisses(citations, readLines) {
 // are ranges that open on a blank line and then carry exactly the content they promise. Requiring EVERY
 // line of the span to be empty drops both WITHOUT an exemption, and leaves no false positive to exempt.
 // That matters more than the two rows: an exemption list here would be keyed on "this citation looks
-// like prose about citations", which is the shape that hid 's drift inside its own carve-out.
+// like prose about citations", which is the shape that hid the drift inside its own carve-out.
 //
 // WHAT IT CANNOT SEE, and why this stays a slice. A citation that lands on the WRONG NON-BLANK LINE is
 // invisible to it — that looks identical to a correct one. Three of the eleven citations repointed in

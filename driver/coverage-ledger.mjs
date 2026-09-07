@@ -108,7 +108,7 @@ export const CROWD_RULING_UNIT_GRAMMAR = `<axis> / ${CROWD_RULING_TOKEN} (<N> me
 // was accepted, carried through the union, passed the coverage gate, and blocked the run three gates
 // later over a ruling the seat had made. Both readers now call this, so call time and delivery time
 // cannot disagree about what a count is. That is the point of the function, not a tidiness: two copies
-// of this regex would let the refusal and the block drift apart, which is 's defect.
+// of this regex would let the refusal and the block drift apart, which is the defect.
 //
 // THREE ANSWERS, and the middle one is the whole reason the return is not a boolean:
 //   null  — the cell rules no crowd. Every other coverage row, and the overwhelming majority.
@@ -500,11 +500,11 @@ export function parseCoverageLedgerJson(raw, { allowedAxes = REGISTER_AXES, acti
   return rows;
 }
 
-// ── tracker issue 476 — `renderCoverageLedgerJson` IS DELETED, AND THE DIRECTION WITH IT ─────────────────────────
+// ── `renderCoverageLedgerJson` IS DELETED, AND THE DIRECTION WITH IT ─────────────────────────
 //
 // Map #3 code-derived this JSON FROM the model's `## Coverage ledger` prose, which was an improvement
 // (the model stopped authoring the JSON) that left the real source of truth where it was: a markdown
-// table the model wrote. Under tracker issue 476 the DRIVER-WRITTEN coverage form is the source and both the table
+// table the model wrote. The DRIVER-WRITTEN coverage form is the source and both the table
 // and this JSON are renders of it — coverage-form.renderCoverageLedgerJsonFromForm. There is no
 // prose→JSON direction left to keep, and keeping one would be the legacy path this build has none of.
 //

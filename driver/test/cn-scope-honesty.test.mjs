@@ -186,7 +186,7 @@ test("injectZhScopeCoverage: never-kill — a corrupt findings.json is left byte
 //
 // THESE TESTS WERE GREEN OVER A DEAD BRANCH FOR THE WHOLE, and how they managed it is the point.
 //
-// `zhScopeDepthNotes` opened with `resolvedPolicy.level !== "clearotron"`. `resolveSearchPolicy` returns
+// `zhScopeDepthNotes` opened with `resolvedPolicy.level !== "prelim"`. `resolveSearchPolicy` returns
 // `level` = THE PRODUCT ID for all four searches, so that leg was false on every live run and the
 // recommendation returned [] for every one of them — with both callers live (pipeline.mjs, runner.mjs)
 // and 3,754 driver tests passing. The tests passed because they built the policy BY HAND, as

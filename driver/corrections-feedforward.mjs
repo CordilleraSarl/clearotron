@@ -3,7 +3,7 @@
 // corrections-feedforward.mjs — the reviewer's flags reach the corrective pass as DATA, and the recheck
 // is handed what the driver OBSERVED rather than being asked to re-read two documents.
 //
-// 's first acceptance criterion is that a BLOCKING-verdict full re-run becomes structurally
+// That first acceptance criterion is that a BLOCKING-verdict full re-run becomes structurally
 // impossible. `docs/design/clearance-critical-path.md` §4 bounds how that can be built: refutation cannot
 // run before synthesis (`stageInputs["narrative-refutation"]` includes the narrative, and dependencyOrder
 // derives the edge mechanically), so the lever available is the CHANNEL the reviewer already writes into

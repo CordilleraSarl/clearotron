@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // declination-duty.test.mjs — every record synthesis was handed left by a named exit, or the run says
-// which ones did not. ('s missing half; is the incident.)
+// which ones did not. (the missing half; is the incident.)
 //
 // WHAT THESE ARMS ARE FOR. The rule is already dictated — synthesis's contract says a record leaves as
 // a finding or as a declination and there is no third way out — and nothing checked it. So the arms

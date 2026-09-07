@@ -129,7 +129,7 @@ function classify(e, st, rat) {
     // dropped nothing on goods when it dropped and nobody counted". Carrying the cause is what keeps that
     // true here without alarming every ordinary run.
     //
-    // A pre- event carries no `cause`. It is left `null` and stays on the clear side: this surface
+    // A pre-change event carries no `cause`. It is left `null` and stays on the clear side: this surface
     // must not retro-label old runs as incomplete on the strength of a field their engine never wrote.
     case "screen-gate-clean": {
       const cause = e.cause ?? null;

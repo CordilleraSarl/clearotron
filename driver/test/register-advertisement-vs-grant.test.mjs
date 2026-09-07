@@ -15,7 +15,7 @@
 // handshake + 8 tools`, `clarivate … 7`, `uspto-local … 6`, `euipo … the 7 NEUTRAL tools`. Signa was the
 // one provider whose advertisement was never compared to anything. Adding a sixth hand-written sibling
 // would leave the seventh provider unchecked on the day it lands, so the population here is DISCOVERED
-// from `REGISTER_SERVERS` — 's census form, the same move `server-tools-granted-or-stated.test.mjs`
+// from `REGISTER_SERVERS` — the census form, the same move `server-tools-granted-or-stated.test.mjs`
 // made after scanned two scripts by name and was blind to growth.
 //
 // ── WHY THE GRANT IS READ IN A SUBPROCESS ────────────────────────────────────────────────────────────

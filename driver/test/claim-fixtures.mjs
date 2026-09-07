@@ -19,7 +19,7 @@
 // and answers on positive evidence — pid gone ⇒ dead, pid held by anyone else ⇒ starttime mismatch ⇒
 // dead. Deterministic under any load, and it exercises more of the product than the bare pid did.
 //
-// This is 's cure, which landed in runner.takeover.test.mjs and was never carried to the other
+// This is the cure, which landed in runner.takeover.test.mjs and was never carried to the other
 // three files that build the same fixture. It lives here so a fifth copy cannot drift from it.
 //
 // NOT A BIGGER TIMEOUT. says so and it is right: a timing-sensitive test made quieter is not made

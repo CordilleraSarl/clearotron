@@ -650,7 +650,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     // WHICH DOCUMENTS THIS RUN PUBLISHED, and for which name. Every reader that has to open,
     // serve or link a knockout's reports takes the list from here rather than deriving a filename: the
     // naming rule (one mark ⇒ `report.html`, several ⇒ `report-<slug>.html`) is written ONCE, above, and
-    // nobody re-implements it. Absent on every pre- meta, which is exactly the run that has one
+    // nobody re-implements it. Absent on every pre-change meta, which is exactly the run that has one
     // report at `report.html` — so a reader that falls back to that name on absence is reading the
     // archive correctly, not guessing.
     // — `slug` RIDES. It was destructured away here while being computed twenty lines up, and

@@ -374,7 +374,7 @@ test("stampRound refuses a TORN receipt outright — a stamp is not worth the ri
   assert.equal(readFileSync(receiptPath(pool, "R2"), "utf8"), bytes, "and the bytes are untouched");
 });
 
-// ── FIRST-READ IS A FACT ABOUT THE ROUND; LAST-CHECK IS NOT (, 2026-08-14) ──────────────────────
+// ── FIRST-READ IS A FACT ABOUT THE ROUND; LAST-CHECK IS NOT (2026-08-14) ──────────────────────
 //
 // `stampRound` merged `{ ...r, ...patch }` with the patch winning, and `report`'s call site passes a
 // fresh timestamp unconditionally — so every re-read destroyed the original first-read stamp. Measured

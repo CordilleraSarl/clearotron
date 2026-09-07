@@ -17,7 +17,7 @@
 // The first cut narrowed the contract's covered list to the configured members and handed that
 // downstream. It is wrong twice over:
 //
-//   · 's admission gate reads `offices.covered` to decide which territories a client may ORDER.
+//   · the admission gate reads `offices.covered` to decide which territories a client may ORDER.
 //     Narrowing it to EU would refuse a US-only matter AT THE DOOR, on a provider that covers the US.
 // is the report of that shape of refusal and its acceptance is that a US-only scenario is
 //     admitted rather than vetoed. A door that refuses is not a disclosure.
@@ -130,7 +130,7 @@ export function unavailableByOffice(unavailable) {
  * against the full declared coverage and hand them straight to the provider adapter. On a composite
  * that is a fan-out to EVERY member, so the unconfigured one is asked, refuses, and the composite
  * correctly declines to return a partial sum — killing a lane whose other half works perfectly. That
- * is 's observed refusal, and 's acceptance ("free-tier starts and ships a disclosed US
+ * is the observed refusal, and the acceptance ("free-tier starts and ships a disclosed US
  * deferral") was never met on these two lanes.
  *
  * @param regions      what resolveRegions produced, against the FULL coverage. `[]` is meaningful.

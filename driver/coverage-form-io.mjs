@@ -14,10 +14,10 @@
 // written by runDigest on every pass that will actually run, is already the arming key for the off-enum
 // gate, and is already declared in stage-context.VALIDATOR_SIDECARS. adds `form_required: true` and
 // `form_path` to it rather than minting a second stamp, so there is one answer to "was a form required
-// on this run" and archived runs — which carry either no sentinel at all or a pre- one with no
+// on this run" and archived runs — which carry either no sentinel at all or a pre-change one with no
 // `form_required` — leave the whole coverage-form arm OFF and never flip a replay verdict.
 //
-// THE WRITE ORDER IS LOAD-BEARING AND IT IS STAMP FIRST. 's form write is best-effort and only
+// THE WRITE ORDER IS LOAD-BEARING AND IT IS STAMP FIRST. That form write is best-effort and only
 // note()s on failure, and its own comment names the outcome it fears: "an absence reading as a pass,
 // which is the one outcome this file exists to refuse". It is reachable — a full disk fails as "artifact
 // absent", not as a disk error. Writing the FORM first and the stamp second reproduces that hole: a

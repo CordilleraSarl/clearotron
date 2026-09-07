@@ -66,7 +66,7 @@ const restoreHome = () => {
 
 // ──: the RECORD log left the home directory, and the ladder no longer reaches it ───────────────
 //
-// The five tests that used to live here pinned 's existence ladder as `assembleRunRecords` walked
+// The five tests that used to live here pinned the existence ladder as `assembleRunRecords` walked
 // it — legacy name read where it sits, neutral name preferred, unread sibling announced. That contract
 // is now the CALL ledger's alone, and its unit coverage is providers/_shared/test/ledger-path.test.mjs.
 // What replaces them is the pair that makes the move non-silent: the global file is NOT read, and an
@@ -206,7 +206,7 @@ test("#1390 a config with NO register server still builds without a run — the 
 const LEDGER_VENDOR_NAME = /CORSEARCH_(CALL|RECORD)_LOG|corsearch-(calls|records)\.jsonl/;
 const RESOLVER = "providers/_shared/ledger-path.mjs";   // must name them: it is what maps old to new
 
-// EMPTY, AND THAT IS THE POINT (, second pass). It carried one entry: a historical note inside
+// EMPTY, AND THAT IS THE POINT (second pass). It carried one entry: a historical note inside
 // driver/pipeline.mjs that named the old env var, left alone because another agent was mid-flight in
 // that file. The `tallyCorsearchCalls` rename took the line with it, exactly as the note above said it
 // would, so the allowlist has nothing left to excuse.

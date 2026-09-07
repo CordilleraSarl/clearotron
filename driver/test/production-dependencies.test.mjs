@@ -64,7 +64,7 @@ function shippedSources() {
   return tracked.filter((f) => !/(^|\/)(test|tests|bench)\//.test(f) && !/\.test\.(mjs|ts|js|tsx)$/.test(f));
 }
 
-test("tracker issue 99 — every production dependency is imported by something that ships", (ctx) => {
+test("every production dependency is imported by something that ships", (ctx) => {
   const sources = shippedSources();
   if (sources === null) return ctx.skip(skipReason(GUARD));
   nonEmpty(sources, "no shipped sources were walked, so every dependency would read as unused");
@@ -97,7 +97,7 @@ test("tracker issue 99 — every production dependency is imported by something 
     + "manifest, or add it to NO_IMPORT_EXPECTED with the reason it is needed without an import");
 });
 
-test("tracker issue 99 — the import check fails on a package nothing imports", (ctx) => {
+test("the import check fails on a package nothing imports", (ctx) => {
   // THE GUARD HAS TO FAIL BEFORE IT PASSES. A green tree on the day it was written is exactly the
   // evidence that was not enough last time. Drive the negative through the same predicate.
   const sources = shippedSources();
@@ -114,7 +114,7 @@ test("tracker issue 99 — the import check fails on a package nothing imports",
   assert.equal(real, true, "the predicate cannot see a real import, so its `false` means nothing");
 });
 
-test("tracker issue 115 — every production package npm resolves has a notices entry", (ctx) => {
+test("every production package npm resolves has a notices entry", (ctx) => {
   // ── DERIVED WITHOUT ASKING THE GENERATOR ─────────────────────────────────────────────────────
   //
   // The population comes from `npm ls` and is walked HERE, with a traversal that visits every
@@ -168,7 +168,7 @@ test("tracker issue 115 — every production package npm resolves has a notices 
     + "is missing them and that is the defect, not the file");
 });
 
-test("tracker issue 115 — the generator descends through a deduped node", () => {
+test("the generator descends through a deduped node", () => {
   // The mechanism, pinned directly. npm emits a hoisted package more than once and only one
   // occurrence carries its children; meeting the childless one first used to end the walk there and
   // silently drop the whole subtree. Driven on a synthetic tree so it cannot drift with npm's layout.
@@ -184,5 +184,5 @@ test("tracker issue 115 — the generator descends through a deduped node", () =
   };
   const rows = collect(REPO, tree).map((r) => `${r.name}@${r.version}`);
   assert.ok(rows.includes("deep@3.0.0"),
-    "the walk stopped at the deduped occurrence and never reached its children — the tracker issue 115 defect");
+    "the walk stopped at the deduped occurrence and never reached its children");
 });

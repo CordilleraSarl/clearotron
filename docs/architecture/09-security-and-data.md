@@ -203,7 +203,7 @@ stylesheets above.
 | **Doctrine** | `skills/`, framework decks, worked examples | The asset; transfers under the definitive agreement. Worked examples derive from real matters — treat as client-adjacent |
 | **Customer profiles** | `profiles/*.json`, context packs, `_audit.log` | Client-identifying by design (names, own brands, competitor lists) — the reason this *pack* names no clients |
 | **Reference library / calibration corpus** | outside the repo | Built on real client matters — **confidential client material, not freely transferable IP**; transfer needs a client-consent/sanitization plan |
-| **Telemetry** | `~/trademark/telemetry/*.jsonl` (a box upgraded across the move keeps the pre- telemetry directory — resolved by existence, oldest first),`_driver/*.jsonl` | Billing-grade provider usage + attempt telemetry; append-only; no automated retention |
+| **Telemetry** | `~/trademark/telemetry/*.jsonl` (a box upgraded across the move keeps the pre-change telemetry directory — resolved by existence, oldest first),`_driver/*.jsonl` | Billing-grade provider usage + attempt telemetry; append-only; no automated retention |
 
 **Posture commitments** (engineering-true, restated from the outward materials): no client data
 trains any model; each client's context is isolated in its profile bundle and frozen per run;

@@ -4,9 +4,9 @@
 //
 // The dictation invited synthesis to author "one typed row per slice you weighed". The rows that name
 // which slices are still open — the facts a reader checks a sufficiency call against — were therefore
-// prose the model retyped out of a coverage ledger it had never been shown ('s other half: the
+// prose the model retyped out of a coverage ledger it had never been shown (the other half: the
 // ledger reached the reviewer as a table and the author not at all). That is the transcription
-// contract one artifact over, and 's answer applies unchanged: remove the contract, not the elision.
+// contract one artifact over, and the answer applies unchanged: remove the contract, not the elision.
 // The driver holds the ledger and the plan-execution receipt; it writes the rows. What stays the model's
 // is the part that cannot be derived — `sufficient`, and the `reason` for it.
 import { test } from "node:test";
@@ -311,7 +311,7 @@ test("#447: a real delivered run records the stamp's decision in its own journal
   const html = readFileSync(join(ROOT, "pool", poolRun, "report.html"), "utf8");
   const cov = /Coverage read \(internal\):<\/b>([^<]*)/.exec(html);
   assert.ok(cov, "the delivered report carries the coverage read line the rows fold into");
-  // RE-POINTED (, second pass). The property is unchanged — a scopeless row still reaches the reader
+  // RE-POINTED (second pass). The property is unchanged — a scopeless row still reaches the reader
   // saying it covers the whole thing — but the words are no longer the engine's. `plainify` translates the
   // four closed axis identifiers at the render choke point, because a delivered report.html put
   // "primary-sweep", "transliteration-numeric" and "slices" in front of a lawyer. The identifier survives

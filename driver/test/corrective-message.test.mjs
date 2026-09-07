@@ -216,7 +216,7 @@ test("A6: the BARE max_tokens_no_output fault (transport-shaped turn) still gets
 // ──: THE DEFERRED SLICES ARE FORM ROWS, NOT A PROSE BLOCK TO RETYPE ───────────────────────────
 test("#476: the dispatch brief names the form; the corrective arm names the rows — neither recites a qid", async () => {
   const { coverageFormBrief, coverageFormRows } = await import("../coverage-form.mjs");
-  // What 's block did, and why it had to: it printed EVERY deferred qid with its own receipt reason
+  // What the block did, and why it had to: it printed EVERY deferred qid with its own receipt reason
   // because the accounting join was on the qid verbatim, so a qid the stage was never shown could never
   // be named. R1 carried fourteen. That whole economy question disappears when nothing is retyped.
   const many = Array.from({ length: 14 }, (_, i) => `primary-sweep:exact:q${i}`);
@@ -236,7 +236,7 @@ test("#476: the dispatch brief names the form; the corrective arm names the rows
 
   // The DISPATCH names the TOOL and the two fields, and requires none of the fourteen retyped: the rows
   // ride the dispatch with driver-minted row_ids, and a status binds by row_id — never by a qid the
-  // seat reproduces (the typed transport kept 's economy and removed the file).
+  // seat reproduces (the typed transport kept the economy and removed the file).
   const brief = coverageFormBrief({ rows });
   assert.match(brief, /record_coverage/);
   assert.match(brief, /14 row\(s\) are NEVER-SEARCHED slices/);

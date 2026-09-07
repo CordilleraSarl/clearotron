@@ -388,7 +388,7 @@ function dropConnectorToken(html) {
 //
 // That is not a subtle degradation. chrome.css is 35KB of shared typography and layout, and among the
 // rules that went missing was `.lk-flag{width:10px;height:10px}` — sizing a lockup element that has
-// since been retired ( applied 's ruling to this lockup too), an SVG with no intrinsic size
+// since been retired ( applied the ruling to this lockup too), an SVG with no intrinsic size
 // falling back to the browser default for a replaced element and painting at 300x150. The reported
 // symptoms — "a huge flag at the bottom", "font sizings inconsistent, multiple font types" — were one
 // cause: this file did not load. The example is historical; the failure mode is not, and any sizing
@@ -463,7 +463,7 @@ html{scrollbar-gutter:stable}
 // three functions the document already exposes to its own buttons. `openAll`/`pickAll` take a boolean and
 // nothing else; `exportPDF` takes no argument at all.
 const FEEDBACK_CSS = `
-/* tracker issue 260 — the per-finding flag. Injected here rather than in render.mjs, which is frozen and produces
+/* the per-finding flag. Injected here rather than in render.mjs, which is frozen and produces
    every report ever delivered: putting the control at SERVE time means it reaches reports baked long
    before feedback existed, and the document on disk stays exactly what was delivered. */
 .pf-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid var(--line,#e5ded4)}
@@ -590,7 +590,7 @@ const EMBED_JS = `
   // <body>), so by the time it runs for an '#c<ordinal>' link the ancestors are already open and the
   // measured offset is the revealed position. preventDefault stops the frame's dead-end fragment
   // navigation for the links the document's handler does not claim (#common-law, #only-you).
-  // tracker issue 735 — AND WHEN THERE IS NO PARENT, DO NOT CANCEL THE CLICK.
+  // AND WHEN THERE IS NO PARENT, DO NOT CANCEL THE CLICK.
   //
   // Everything above is right INSIDE the portal's Result screen. Un-framed it is a dead link: parent is
   // window, the message is posted to this same document, and the only 'message' listener here requires
@@ -638,7 +638,7 @@ const FEEDBACK_JS = `
 (function(){
   var TAG='cordillera-report';
   function schedule(){ try{ parent.postMessage({source:TAG,type:'height',height:document.body.scrollHeight+16},'*'); }catch(e){} }
-  // tracker issue 260 — PER-FINDING FEEDBACK, and why it posts outward instead of fetching.
+  // PER-FINDING FEEDBACK, and why it posts outward instead of fetching.
   //
   // This frame has NO allow-same-origin (Result.tsx), so its origin is "null": it holds no portal
   // session, a credentials:'include' fetch sends nothing, and a request from here arrives unauthenticated.
@@ -650,11 +650,11 @@ const FEEDBACK_JS = `
   // service reads those from the run's own artifacts, so nothing typed inside this frame can decide
   // which finding a flag lands on or whose matter it is labelled with.
   //
-  // tracker issue 487 — THE POSITION IS TWO NUMBERS ON THE KNOCKOUT LANE, and it used to be none.
+  // THE POSITION IS TWO NUMBERS ON THE KNOCKOUT LANE, and it used to be none.
   //
   // The clearance report numbers its findings once across the document and hangs each on a
   // div.card with id "c<ordinal>". The knockout report has neither: its conflicts render as div.ko-find,
-  // and tracker issue 471 restarts ordinals at 1 FOR EACH MARK. So this selector matched nothing on a knockout report
+  // and the knockout report restarts ordinals at 1 FOR EACH MARK. So this selector matched nothing on a knockout report
   // and the control was never drawn — the channel was not merely resolving wrong, it was absent. A
   // reader could not flag a knockout finding at all.
   //

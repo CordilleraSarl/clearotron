@@ -25,7 +25,7 @@
 //       owns. Measured consequence, not a hypothesis: on 2e203b75 a blind-frame seat obeyed the prose and
 //       hand-wrote a 17182B model with no call capture beside it, on a box whose grant already carried
 //       the tool. The dictation deletes are; this direction is what keeps them deleted.
-//   (c) ORDERED BUT NOT GRANTED.  's seed direction. E12 owns it for skill docs; here it reaches the
+//   (c) ORDERED BUT NOT GRANTED.  That seed direction. E12 owns it for skill docs; here it reaches the
 //       dispatch and the repair ladder too.
 //
 // ── PURE, AND THAT IS WHAT MAKES THE PLANTS CHEAP ────────────────────────────────────────────────────
@@ -182,7 +182,7 @@ export function bareGrant(granted) {
  *   be silent on whichever repair path it did not happen to hold.
  * @param {Array<{surface:string, kind:string, text:string}>} a.union
  * @param {string[]} a.toolUniverse          every tool name that exists anywhere, for direction (c)
- * @param {Array<{stage:string, tool:string}>} [a.backlog]  's named, excused members — ONE list, read
+ * @param {Array<{stage:string, tool:string}>} [a.backlog]  the named, excused members — ONE list, read
  *   from contract-dictation-registry.mjs. A second excuse list here would be authoring number eight, which
  *   is the failure that registry's own header exists to forbid.
  * @param {Set<string>} [a.providerConditionalSurfaces]  surfaces that are provider-conditional BY
@@ -284,7 +284,7 @@ export function agreementFindings({ stage, granted, artifacts, union, toolUniver
   const excused = new Set(backlog.filter((b) => b.stage === stage).map((b) => b.tool));
   for (const tool of [...toolUniverse].sort()) {
     if (held.has(tool)) continue;
-    if (excused.has(tool)) continue;                 // named on 's backlog; the list can only shrink
+    if (excused.has(tool)) continue;                 // named on the backlog; the list can only shrink
     for (const m of union) {
       if (!namesTool(m.text, tool)) continue;
       // ── — A PROVIDER CANNOT SERVE IT, AND THIS ORDER SAYS SO ──────────────────

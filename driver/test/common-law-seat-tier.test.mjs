@@ -9,7 +9,7 @@
 //
 // WHAT THE EVIDENCE WAS. Across six measured clearances the meaning seat never converged on attempt 1
 // on haiku/low. Both candidate confounds were eliminated by shipping them: the write-mode contract
-// (`cdec607`) did not close it, and 's clause split did not close it. Its ladder costs 15–28
+// (`cdec607`) did not close it, and the clause split did not close it. Its ladder costs 15–28
 // minutes of critical path per clearance, and the halves fan in, so on a dense matter that is the
 // wave's whole wall.
 //

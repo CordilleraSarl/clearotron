@@ -62,7 +62,7 @@ test("#917: the recall cap is two budgets — every mark probe dispatches, the o
     CLEAROTRON_REPORTS_DIR: join(ROOT, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
     CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     // The provider is REQUIRED and has no default. The full-suite harness injects it, so a file
-    // that leans on that runs green in the suite and dies alone — 's defect. Set here instead, and
+    // that leans on that runs green in the suite and dies alone — the defect. Set here instead, and
     // BOTH spellings of the renamed variable: driver.config.mjs reads them through `spellingsOf`, and
     // setting only one leaves whatever the other holds to win the disagreement.
     CLEAROTRON_DATABASE: "corsearch", CLEAROTRON_DATABASE: "corsearch",

@@ -24,7 +24,7 @@ const { decideJxLanes, scopeJurisdictions, candidateRefusal, romanizationRefusal
 const { cnipaSubgroupsForClasses, cnipaEditionLabel } = await import("../jx-subclass.mjs");
 // The table is a gitignored build artifact, so this builds it from the committed `public/` export into
 // a temp directory rather than skipping when it is absent — a permanently-skipped arm is a test that
-// stopped guarding, and 's assert census refuses one. ~0.8s, no office document, no network.
+// stopped guarding, and the assert census refuses one. ~0.8s, no office document, no network.
 const SUBCLASS_DB = join(mkdtempSync(join(tmpdir(), "jxsub-units-")), "similar-groups.db");
 execFileSync(process.execPath, ["load-public.mjs", "--out", SUBCLASS_DB],
   { cwd: fileURLToPath(new URL("../../providers/jx-subclass/", import.meta.url)), stdio: ["ignore", "ignore", "pipe"] });

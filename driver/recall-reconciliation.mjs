@@ -62,7 +62,7 @@ export const RECALL_TOP_SLICE = 10;
  * MOVED to coverage-ledger.mjs and re-exported here, so every existing import site is unchanged. It had
  * to move because coverage-form.mjs must carry the same token into the `seat_row_contract` it writes
  * INTO the file the seat edits, and that module is pure by contract while this one is not (it reaches
- * registry-fidelity.mjs, which reads the filesystem). A second copy of the literal is 's defect.
+ * registry-fidelity.mjs, which reads the filesystem). A second copy of the literal is the defect.
  *
  * `crowdRulingCount` moved for the SAME reason and rides the same re-export: the typed coverage
  * call now refuses an uncounted crowd row at call time, and it is pure, so the parser had to sit in the

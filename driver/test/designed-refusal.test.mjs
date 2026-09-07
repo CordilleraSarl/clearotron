@@ -12,7 +12,7 @@
 // REACHES, must never feed failure statistics, and must never trigger recovery machinery.
 //
 // This file drives the REAL knockout terminal — the throw, the catch, the four run-dir records and the
-// returned result — rather than asserting the source text of the writer. 's sweep is explicit about
+// returned result — rather than asserting the source text of the writer. That sweep is explicit about
 // why: `failure-text-not-engine-string.test.mjs` pins a regex over pipeline.mjs that "would pass
 // unchanged if pipeline-knockout.mjs, runner.mjs and buildFailurePacket all dropped the field, which is
 // exactly what they do". A writer test that cannot see the writer is the shape of that mistake.
@@ -293,7 +293,7 @@ test("#848 an ordinary knockout failure carries terminalKind null and reads exac
   const packet = readJson(driverDir(runDir, "failure.json"));
   assert.equal(packet.refused, false);
   assert.match(packet.whatsappText, /FAILED at knockout-scope/);
-  // 's fields land here too, and on a SHORT reason the answer is "nothing was cut" — never a missing key
+  // That fields land here too, and on a SHORT reason the answer is "nothing was cut" — never a missing key
   assert.equal(status.reasonTruncated, false);
   assert.equal(status.reasonFull, null);
 });

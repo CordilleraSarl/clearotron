@@ -8,7 +8,7 @@ import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS 
 import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
 import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join, dirname, basename, resolve } from "node:path";   // resolve: 's resume line must work from any cwd
+import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { terminalClampDecision, orderClausesForLede } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
@@ -108,7 +108,7 @@ import { readAcceptedClosures } from "./doubt-closure-tool.mjs";
 import { CLOSURE_EVIDENCE_FILES } from "./doubt-closure-call.mjs";
 import { doubtsForClosure, doubtSelectionNote } from "./doubt-selection.mjs";   // doubt-closure selection
 import { deriveAsks, applyAskClosure, finalizeOpenHandoffs, summarizeAsks } from "./ask-ledger.mjs";
-import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // tracker issue 240 — a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
+import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whatif-queue.mjs";   // a queued job is settled before its run archives   // PR-6 — every ask ends (2026-07-29)
 import { mintPresenceDoubts } from "./presence-reconciliation.mjs";   // presence-or-reason (2026-07-22 — the unjoined-Sheet-2 leak)
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
@@ -1302,7 +1302,7 @@ function readCoverageJudgment(P) {
 // back in `unknown` — carried in `jurisdictions` too (never dropped), but the caller must surface them
 // LOUDLY (a jurisdiction nobody can place must never be a silent row in the machine record).
 // item 13 — `extractSearchedJurisdictions` LIVED HERE AND IS GONE. It ran a two-letter scan over the
-// coverage ledger's prose to decide which territories a run had searched, and 's narrowing (drop
+// coverage ledger's prose to decide which territories a run had searched, and the narrowing (drop
 // tokens that are not known jurisdiction codes) closed only the half where the junk token was not a real
 // code. The other half cannot be closed by any token list: SA, AG, KG, SL and SE are simultaneously real
 // jurisdiction codes and ordinary European company suffixes, so "… GmbH & Co. KG" reads as Kyrgyzstan and
@@ -1351,7 +1351,7 @@ export const CASE_LAW_TRIGGERS = /watchlist|precedent|case[- ]law|opposition|fam
 // The offering locked with the reviewing lawyer gives the case-law and opposition reading to the Full
 // country search alone, over exactly one country, where it is automatic. Multi-country focus deliberately
 // has no case-law component. `job.caseLaw` is refused at the door and `policy.caseLaw` is set from the
-// product spec, so the REQUESTED path was already confined correctly — and #92's one-territory rule is
+// product spec, so the REQUESTED path was already confined correctly — and the one-territory rule is
 // enforced at that door.
 //
 // The detector was not. It fires mid-run, after admission, on a run already scoped to however many
@@ -2293,7 +2293,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
   // Repair-first D, hotfixed 2026-07-06 (The Quiet Trail e2e): the gate now applies the round's own
   // doctrine to itself — A REPAIRABLE CONDITION NEVER TERMINATES A RUN.
   //   - `repairable` issues (OR-stack width/name length): log-only from ANY provenance — the executor
-  //     chunks oversized stacks at runtime (, proven live). The 2026-07-06 failure was exactly this
+  //     chunks oversized stacks at runtime (proven live). The 2026-07-06 failure was exactly this
   //     gate throwing on a 674-name entry INHERITED byte-identical from a pre-split July-3 store via
   //     the recall-monotone extension — a run the executor would have completed.
   //   - `unexecutable` issues (empty terms, unknown predicate, non-numeric classes, dangling guards):
@@ -2668,7 +2668,7 @@ function deriveFloorDuty(ctx, r, trigger = null) {
     try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
     catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
     const artifact = reconcileFloorDuty({ floors, placements });
-    // The pass's own outcome, beside the rows. 's lesson: a stage that failed or skipped makes every
+    // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
     artifact.pass = { ok: r?.ok === true, skipped: r?.skipped === true };
@@ -2960,7 +2960,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
       // say only that synthesis had not delivered it. The sibling seam one stage earlier
       // (`recordDigestSeam`) has read its stage's own output per record since it was written; this one
       // had nothing to read until `record_declination` gave synthesis somewhere to say it.
-      // The judgment itself is `seamReasonFor`, pure and next door, so 's guarantee has an arm
+      // The judgment itself is `seamReasonFor`, pure and next door, so the guarantee has an arm
       // that does not need a run directory. This callback is now only the plumbing around it.
       return seamReasonFor(declined, uri);
     },
@@ -3024,7 +3024,7 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
     // ── THE RECONCILIATION RATCHET ────────────────────────────────────────────────────────────
     //
     // RECORDED ON EVERY RUN, tripping only against the committed floor. Both halves are deliberate:
-    // a gate that fires on every current run teaches its reader that red means nothing ('s whole
+    // a gate that fires on every current run teaches its reader that red means nothing (the whole
     // complaint), and a warning that never bites is decoration. The floor is what the contract achieves
     // today, dated and seeded from a delivered round, and it moves UP when the seat-compliance work
     // lands.
@@ -3176,7 +3176,7 @@ function plannedChannelsFor(P) {
 
 // ── part 2 — THE CHANNEL COMPARISON, AT SEARCH-STAGE EXIT ────────────────────────────────────
 //
-// Part 1 shipped the comparison and wired the plan into it (,), and it runs at PUBLISH —
+// Part 1 shipped the comparison and wired the plan into it (), and it runs at PUBLISH —
 // where the rest of the carry trace is derived, about two hours after the sweep it describes. The issue
 // asked whether plan-vs-executed is knowable earlier. It is: the merged grid has just been written and
 // the spec has been on disk since dispatch, so both inputs exist at this instant and neither changes.
@@ -3431,7 +3431,7 @@ async function runDigest(ctx, opts = {}) {
   // — THE SAME SENTINEL IS THE COVERAGE FORM'S ERA STAMP, AND THE WRITE ORDER IS THE FAIL-CLOSED
   // LEG. `armCoverageForm` stamps `form_required: true` BEFORE `writeCoverageForm` puts the form on
   // disk. Get that order wrong and a failed form write leaves no stamp, the gate never arms, and the run
-  // passes having judged nothing — which is 's confirmed blocker (a missing sidecar returns
+  // passes having judged nothing — which is the confirmed blocker (a missing sidecar returns
   // {rows:null,error:null}, the validator finds nothing to judge, and a run with NO ruling artifact is
   // byte-for-byte indistinguishable from a fully ruled one). It is reachable: a full disk fails as
   // "artifact absent", not as a disk error. In this order a failed write leaves a stamp saying a form
@@ -3579,7 +3579,7 @@ async function runDigest(ctx, opts = {}) {
 export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, extra = undefined } = {}) {
   const P = ctx.paths;
   let out = extra;
-  // — THE COVERAGE FORM BRIEF, replacing 's deferred-slice block (was A8, 2026-07-30).
+  // — THE COVERAGE FORM BRIEF, replacing the deferred-slice block (was A8, 2026-07-30).
   //
   // What stood here composed a prose list of every deferred qid and told the stage each one "must appear
   // VERBATIM in a Coverage-ledger row". The block's own doc block explained why it could not elide any of
@@ -4197,7 +4197,7 @@ async function stageOnce(name, ctx, opts = {}) {
   // path all reach the seat through here, and three separate pre-dispatch writes would be three chances
   // to disagree about what the seat was handed.
   //
-  // ORDER MATTERS AND IT IS THE FAIL-CLOSED WAY ROUND ('s lesson): the era stamp lands first, above,
+  // ORDER MATTERS AND IT IS THE FAIL-CLOSED WAY ROUND (the lesson): the era stamp lands first, above,
   // so a form write that fails leaves a stamp saying a form was required and no form to fill — a named,
   // loud state — rather than no stamp at all, which would silently disarm the whole arm on exactly the
   // run it governs.
@@ -4267,7 +4267,7 @@ async function stageOnce(name, ctx, opts = {}) {
   // The carry fills the gap BEHIND them: a cold re-dispatch that would otherwise re-commission the stage
   // from def.message(ctx) and throw away everything the parked cycle achieved.
   // — WHAT THIS RUN HAS ALREADY CORRECTED FOR THIS SEAT. Read from `_driver/<seat>.jsonl`, the
-  // same per-attempt record 's acceptance criterion is written against, so the fix and its test
+  // same per-attempt record the acceptance criterion is written against, so the fix and its test
   // bind to one authority. Best-effort by construction: no log, an unreadable log or a damaged line
   // yields an empty list and the followup is byte-identical to what it was before.
   const carry = (opts.followup == null && opts.freshMessage == null && out)
@@ -4717,7 +4717,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     // `failed: true` and `kind: "run-failed"` (added by both callers) are UNCHANGED on a refusal, and
     // deliberately: they are the packet's ROUTING — "this run delivered nothing, send the no-delivery
     // notice" — and every relay, the outbox and docs/DELIVERY.md are built on them. `refused` is the
-    // discriminator beside them, written true OR false on every packet for 's reason: an absent key
+    // discriminator beside them, written true OR false on every packet for the reason: an absent key
     // must not be the only thing separating "not a refusal" from "a packet written before the field
     // existed".
     runId, agent, failed: true, refused,
@@ -5145,7 +5145,7 @@ export function projectStageInput(label, absPath) {
 // that receipt, and this is where it becomes readable off the run rather than inferable from a token
 // that no longer names it.
 //
-// WHY IT ALSO FIRES ON THE FAILURE PATH. The two numbers this writes are the ones 's sequencing
+// WHY IT ALSO FIRES ON THE FAILURE PATH. The two numbers this writes are the ones the sequencing
 // ruling says the boundary gets tuned against — obligations carrying a written disposition that failed
 // to bind, against obligations the model never addressed. Recorded only where the gate PASSED, they
 // would be missing from exactly the runs that need explaining: a run that still goes terminal at
@@ -5183,7 +5183,7 @@ export function connotationAuditSeats(P, runDir) {
 }
 
 // EXPORTED FOR THE SAME REASON `connotationAuditSeats` IS: the seat resolution was testable and the
-// numbers it produces were not, so 's whole point — that the audit READS the verdict ledger — was
+// numbers it produces were not, so the whole point — that the audit READS the verdict ledger — was
 // asserted only in the pure functions it calls. A wiring that never runs in a test is a wiring nobody has
 // seen work.
 export function recordConnotationAudit(run, P) {
@@ -5192,7 +5192,7 @@ export function recordConnotationAudit(run, P) {
     let didNotBind = 0, neverAddressed = 0, quotesUnbound = 0, recordedQueries = 0;
     // — the three numbers that make "never addressed" falsifiable. `unruledAll` is the TOTAL this
     // audit used to report under `obligationsNeverAddressed`, kept as its own field so the split can
-    // never take a headline number to zero without a companion rising to meet it ('s hazard, in the
+    // never take a headline number to zero without a companion rising to meet it (the hazard, in the
     // very number is about).
     let unruledAll = 0, addressedNotDischarged = 0, ledgerCalls = 0, ledgerSeats = 0;
     const refusalReasons = {};              // — the LEDGER's reasons: every refusal and drop recorded
@@ -5296,7 +5296,7 @@ export function recordConnotationAudit(run, P) {
         if (!id || groundsSeen.has(id)) continue;
         groundsSeen.set(id, classifyGroundsNote(r?.note));
       }
-      // The two states 's sequencing ruling asks to be counted apart, in the form's vocabulary: a row
+      // The two states the sequencing ruling asks to be counted apart, in the form's vocabulary: a row
       // the seat WROTE that the gate cannot accept (a damaged form — the disposition exists and is
       // readable) against a row it never filled in at all.
       const damaged = conn.filter((v) => v.reason === "form_damaged");
@@ -5363,7 +5363,7 @@ export function recordConnotationAudit(run, P) {
       // The rename is the fix, not a tidy-up. On R5 round 7a30934b the artifact carried
       // `refusalReasons: {}` beside a ledger of 193 refusals over 8 types, because everything had been
       // discharged by the end. Nothing was wrong with the number; the name promised the other population,
-      // so an empty map read as "nothing was refused" and took 's acceptance criterion C with it.
+      // so an empty map read as "nothing was refused" and took the acceptance criterion C with it.
       if (foldIntoRunTotals) for (const [reason, n] of Object.entries(ledgerReasonHistogram(ledger)))
         refusalReasons[reason] = (refusalReasons[reason] ?? 0) + n;
       // — the part of that histogram that belongs to no row, kept separately so `refusalReasons`
@@ -5444,7 +5444,7 @@ export function recordConnotationAudit(run, P) {
       unruledRefusalReasons,
       // ITS OWN CARDINALITY, NAMED. The issue that found the empty histogram read
       // `distinctReasons: 14` as its count and concluded the map had been dropped after being counted.
-      // It had not: `distinctReasons` is 's SECOND SCALE — distinct executed query SHAPES, from
+      // It had not: `distinctReasons` is the SECOND SCALE — distinct executed query SHAPES, from
       // `connotationReasonKey` over the grid — and has nothing to do with refusal tokens. Two unrelated
       // numbers, one of them named `…Reasons`, one screenful apart. Naming both is the fix for that
       // reading; asserting they agree, which the issue asked for, would assert something false.
@@ -7125,7 +7125,7 @@ export function fullProseOrdinals(findings) {
 // ADVISORY_KINDS member could never reach a client document at all. The 2026-07-16 comment described the
 // behaviour it shipped with and became stale prose sitting next to code that contradicted it.
 //
-// Owner ruling 2026-08-19 (relayed), on a renewal-deadline example: it renders. 's intent is the
+// Owner ruling 2026-08-19 (relayed), on a renewal-deadline example: it renders. That intent is the
 // ruled behaviour. The tag is REQUIRED, not decoration — `advisoryLine` interpolates ADVISORY_TAG[a.kind]
 // directly, so a kind that passes the filter without an entry here renders "- **undefined** …" into a
 // client document. Whoever adds a fifth kind adds it in both places, and render.mjs needs the matching
@@ -7193,7 +7193,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
   //
   // WHAT DOES NOT HOLD, and is not claimed: an ask may still name a party THE RUN NEVER SAW — a
   // supplier, a licensee, a distributor no finding carries. No index built from findings can see it.
-  // 's orphan lint is what catches that at delivery, and this is the producer telling the truth
+  // That orphan lint is what catches that at delivery, and this is the producer telling the truth
   // about its own reach instead of covering for it.
   const byOrd = new Map((findings ?? []).filter((f) => f && f.disposition !== "withdrawn").map((f) => [f.ordinal, f]));
   const partyIndex = cardedParties(findings);
@@ -7222,7 +7222,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
   // Terminal punctuation on the ask BEFORE the subject join. This was written to work around a cut —
   // actYouConditions ended its bound line at the first '.' or ':' before whitespace, and the subject's
   // own "(re:" qualified, so a period-less ask (the synthesis prompt demands one sentence but nothing
-  // enforces terminal punctuation) delivered as a mangled "…terms (re". THAT CUT IS GONE (, owner
+  // enforces terminal punctuation) delivered as a mangled "…terms (re". THAT CUT IS GONE (owner
   // ruling 2026-08-10): the conditions box now renders the ask and its subject whole. The punctuation
   // stays because it was always the right output — "Instruct counsel on the joined-script forms (re: X)"
   // reads as one run-on sentence, and the period is what separates the ask from the driver's own note.
@@ -7332,7 +7332,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // senior-eye-review.md through `parseVerdict` and `parseCorrections` — the SHIPPED parsers, the same
 // ones the corrective ladder builds its worklist from — and never asks a model to restate them.
 //
-// ── NOT BLOCKING-ONLY ANY MORE — OWNER DECISION, 2026-08-26 (, T3b) ─────────────
+// ── NOT BLOCKING-ONLY ANY MORE — OWNER DECISION, 2026-08-26 (T3b) ─────────────
 //
 // This section used to return "" on every verdict but BLOCKING, and the reason it gave was that
 // CONDITIONAL reviews already deliver and their flags already reach the corrective pass. That is true
@@ -7573,7 +7573,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     if (fc.fold) folds.push({ ...fc.fold, surface: "overview:caption" });
   }
   // spec 64 — merge the code-built only-you section into the overview's # Actions block. A model-
-  // authored "### Only you can close these" (pre- prompt, or drift) is REPLACED wholesale —
+  // authored "### Only you can close these" (pre-change prompt, or drift) is REPLACED wholesale —
   // code wins, so the section can never contradict the register the verdict derives from.
   // PR-9 — same pattern for "### Answers to your instructions": code-built from the findings.json
   // ask_answers register joined to the frozen intake asks; an authored section is replaced wholesale.
@@ -7721,7 +7721,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
     // that was checked, and nothing made them.
     //
     // FULL TEXT. Nothing on any surface shortens a judgment sentence — the renderer's 240-character fold
-    // was deleted with (2026-08-06) and no cap replaced it; the sentence is bounded by 's shape
+    // was deleted with (2026-08-06) and no cap replaced it; the sentence is bounded by the shape
     // contract instead. Whitespace is collapsed only so the value cannot break the one-line `- key:`
     // shape parseCards keys on.
     //
@@ -8136,7 +8136,7 @@ async function pipelineInner(job, opts = {}) {
   // recovery ladder's weather lane exists so a 529 does not spend the defect budget. Refusing there would
   // replace a park that recovers with a terminal failure and a human.
   //
-  // GATED like the credential check, not like the binary check, and that is 's ruling rather than
+  // GATED like the credential check, not like the binary check, and that is the ruling rather than
   // this file's: lanes with an injected recordFetcher and explicitly-selected knockout products do not
   // pay for the turn. Both of those lanes DO spawn the engine (preflightEngineBinary's header says so in
   // as many words), so the exemption is narrower than the reasoning that produced it — recorded on the
@@ -8569,7 +8569,7 @@ async function pipelineInner(job, opts = {}) {
   ctx.exclusionSeed = applicantMatchesProfile(ctx.profile, job.customer) ? (ctx.profile.selfExclusionOwners ?? []) : [];
   if (ctx.exclusionSeed.length) runLog(run.runDir, { event: "profile-exclusion-seed", owners: ctx.exclusionSeed.length });
   // On resume, rehydrate the driver-owned notes that must survive a park. (The failover provenance that
-  // used to be rehydrated alongside is deleted with the chain, — no run ever carried any.)
+  // used to be rehydrated alongside is deleted with the chain — no run ever carried any.)
   if (isResume) {
     try {
       const prior = JSON.parse(readFileSync(join(run.runDir, "status.json"), "utf8"));
@@ -9440,7 +9440,7 @@ async function pipelineInner(job, opts = {}) {
           // correctly; renaming would churn a documented vocabulary across two producers, a map and a
           // parameter, to fix a field that is not the one lying.
           //
-          // So the row gains the result as a SIBLING — 's other remedy — and the push moves below the
+          // So the row gains the result as a SIBLING — the other remedy — and the push moves below the
           // taint re-read so there IS a result to state. `cleared` is the same fact `axesRec[a].status`
           // records two lines down, from this same read.
           if (taintRerunDispatch !== null) {
@@ -11794,7 +11794,7 @@ async function pipelineInner(job, opts = {}) {
     // deliver-conditional floor) keys on actions[]; a v4 emission that omits the field entirely would
     // silently disengage it — the exact CLEAR-despite-conditions bug this ships to fix. Same posture as
     // the schema-downlevel demand above: ONE warm re-demand, only when synthesis actually RAN this turn
-    // (a resumed pre- artifact keeps its shape — logged loudly, gates degrade); still-absent
+    // (a resumed pre-change artifact keeps its shape — logged loudly, gates degrade); still-absent
     // after the demand is logged and rides on (deliver-always, the reviewer's actions-unregistered flag
     // and the predelivery coherence lint remain the nets).
     const readActionsPresence = () => {
@@ -12118,7 +12118,7 @@ async function pipelineInner(job, opts = {}) {
         // — what the DECLARED scope was and whether the pass honoured it. Recorded, never refused:
         // a gate here costs a whole extra dispatch on the stage this change exists to make cheaper, and
         // the reviewer is about to read the table anyway — it is better placed than a diff to say
-        // whether a knock-on edit was right. `unbound` is 's `cite_unbound` shape one gate over and
+        // whether a knock-on edit was right. `unbound` is the `cite_unbound` shape one gate over and
         // would earn a refusal if it recurs; this round measures whether it does.
         correctionsScope = scopeDrift(rows, preDoc, postDoc);
         atomicWrite(P.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), verdict,
@@ -13845,7 +13845,7 @@ async function pipelineInner(job, opts = {}) {
           askAnswers: lintAskAnswers,   // PR-9 — present ⇒ the intake-ask check judges the deterministic join, not fuzzy containment
           cardFolds: (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "card-folds.json"), "utf8")).folds; } catch { return null; } })(),   // PR-9 — fold observability (flag-only)
           extraPlatformNames: ctx.profile?.platforms ?? [],   // WS-B: profile marketplaces are run vocabulary
-          // tracker issue 134 — the SAME structure the masthead's coverage_line is stamped from
+          // the SAME structure the masthead's coverage_line is stamped from
           // (scope-facts.json, written by writeScopeFacts). Passing the sidecar rather than re-deriving
           // is the point of the issue: the stamped line and the prose check now answer to one searched
           // set, so they cannot state two different answers about what was searched. Absent sidecar ⇒
@@ -14136,7 +14136,7 @@ async function pipelineInner(job, opts = {}) {
               // thousands of lines earlier, at the gate. Nothing re-reads it, so a reviewer that refuses to
               // sign DURING this repair is written to disk and never heard.
               //
-              // Measured on `bf21580e` (, round of 2026-08-23): verdict-2 CONDITIONAL at 00:22:11;
+              // Measured on `bf21580e` (round of 2026-08-23): verdict-2 CONDITIONAL at 00:22:11;
               // `delivery-stale-repair` at 00:38:35 naming narrative-refutation; the review landing BLOCKING
               // at 00:52:01; delivered. The narrative printed a registration date of 1 March 2011 against a
               // fetched record reading 25 February 2011 — the reviewer said so, in the document nobody read.
@@ -14946,7 +14946,7 @@ async function pipelineInner(job, opts = {}) {
       // is precisely what `recoveryResumesAt` means. So a weather park writes `recoveryResumesAt` like
       // any other recovery park, still leaves `resetsAt` null, and the record says WHICH lane bought
       // the wait in `recoveryLane` instead of implying a provider clock that does not exist.
-      // tracker issue 103 — A CAP PARK IS NOT A STAGE FAILING, and the 2/15/60 ladder cannot survive one.
+      // A CAP PARK IS NOT A STAGE FAILING, and the 2/15/60 ladder cannot survive one.
       // A cap that classifies `rate_limited` already takes the postpone path and waits for its stated
       // reset. One that does NOT lands here, where two things used to go wrong: the provider's own reset
       // hint was dropped even though StageFailure carries it all the way to this site, and the ladder
@@ -14983,7 +14983,7 @@ async function pipelineInner(job, opts = {}) {
       // lane's spend is recomputed from the record rather than from a second counter that could drift
       // (writeRunStatus shallow-merges, so the full array is passed each time).
       // — a PARKED run is the one a reader diagnoses from status.json alone, and this cut at 200
-      // and said nothing. `recovering` is not terminal, so it was never covered by 's terminal
+      // and said nothing. `recovering` is not terminal, so it was never covered by the terminal
       // fields; the reader's problem is identical either way — a sentence that stops mid-thought with
       // no key admitting it stopped. Same three fields, same function, so the two cannot drift.
       writeRunStatus(ctx, { state: "recovering", recoveryAttempts: attempt, recoveryMax, failedStage,
@@ -14993,7 +14993,7 @@ async function pipelineInner(job, opts = {}) {
         //: the row carries the park's progress QUANTITY, so the next failure's comparison can see
         // 9 → 6 (converging) where the signature alone shows only "the same defect again". Written
         // unconditionally as number|null — a row that says null means "this failure had no count", which
-        // is a different fact from a pre- row that has no such key at all.
+        // is a different fact from a pre-change row that has no such key at all.
         //
         //: `quantityToken` and `classSource` ride beside it, written unconditionally as value|null
         // for the same reason. This row is the ONLY one of the three records here that repair-digest.mjs
@@ -15004,7 +15004,7 @@ async function pipelineInner(job, opts = {}) {
         // half the inputs. It also makes the epoch legible: a row with no `classSource` KEY predates
         // this field and was never measured, which is a different fact from a row that says "no gap".
         recoveryHistory: [...recoveryHistory, { sig: failSig.sig, stage: failedStage, class: failClass, lane, attempt, quantity, quantityToken: failSig.quantityToken ?? null, kindToken: failSig.kindToken ?? null, classSource, ts: new Date().toISOString(),
-        // tracker issue 103 — THE SAME FACTS THE RUN LOG ALREADY GETS, in the record that SURVIVES.
+        // THE SAME FACTS THE RUN LOG ALREADY GETS, in the record that SURVIVES.
         // The auto-recovery-parked event below carries capPark/basis/waitMin and says in its own note
         // that a cap has to be legible or nobody can tell a stated reset from our ladder's guess. But
         // run.jsonl is not what the terminal reads: status.json's recoveryHistory is the only record
@@ -15015,7 +15015,7 @@ async function pipelineInner(job, opts = {}) {
         ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin } : {}) }] });
       rollupStatus(run.studioRoot);
       runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
-        // tracker issue 103 — a cap park has to be legible in the record, or the next reader diagnosing
+        // a cap park has to be legible in the record, or the next reader diagnosing
         // "why did this wait 21 hours" cannot tell a provider's stated reset from our own ladder guess.
         // Absent on a non-cap park rather than false: a row that says nothing is honest about not having
         // looked, while `capPark: false` would read as "we checked and it was not one".
@@ -15480,7 +15480,7 @@ async function runExperimentInner(job, opts) {
   // against REGISTER_AXES would refuse the two arms this issue exists to make work.
   //
   // So the membership test is kept and made PER STAGE: every stage that takes an axis names its own
-  // vocabulary, and a stage that takes none still refuses a stray one — 's guarantee, unchanged,
+  // vocabulary, and a stage that takes none still refuses a stray one — the guarantee, unchanged,
   // over a valid set that is now true for each stage rather than true for one of them.
   const vocab = AXIS_VOCABULARY[name] ?? null;
   if (!vocab && axis !== null)
@@ -15952,7 +15952,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
 
   // — reading the job file used to sit OUTSIDE the try below, so a path typo or a stray comma
   // exited on a raw V8 stack trace: a non-clean exit with no honest message, and the one shape of
-  // mistake a first-time reader is likeliest to make. Kept guarded here through 's rebase — the
+  // mistake a first-time reader is likeliest to make. Kept guarded here through the rebase — the
   // pool check above is a separate refusal and must not swallow this one.
   let job;
   try { job = JSON.parse(readFileSync(a.job, "utf8")); }

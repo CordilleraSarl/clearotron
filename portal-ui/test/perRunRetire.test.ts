@@ -76,7 +76,7 @@ test('#1254 the two retires do not both read "Retire" on a threaded name', () =>
 })
 
 test('#1254 both retires are gated by the SAME capability expression', () => {
-  // 's rule: absent ⇒ no control, so a client view cannot grow a curation act by accident. A second
+  // That rule: absent ⇒ no control, so a client view cannot grow a curation act by accident. A second
   // gate written independently is how the two come to disagree about who may curate — the per-run act
   // is the more granular one, so a drift here hands a client the finer control, not the coarser.
   const pairs = body.match(/onRetire=\{canGroup \? retireMark : undefined\}\s*\n\s*onRetireRun=\{canGroup \? retireRun : undefined\}/g) ?? []

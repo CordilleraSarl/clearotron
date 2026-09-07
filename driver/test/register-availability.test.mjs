@@ -80,7 +80,7 @@ test("an unconfigured member yields its offices, WITH the variable that is missi
     }),
   });
   assert.deepEqual(un, [{ office: "US", memberId: "uspto-local", missing: ["USPTO_LOCAL_DB"] }]);
-  // The variable name is the entire point of 's third bullet — a refusal that names the provider
+  // The variable name is the entire point of the third bullet — a refusal that names the provider
   // instead of the variable sent an operator looking for an EUIPO fault on a correct EUIPO config.
   assert.deepEqual(un[0].missing, ["USPTO_LOCAL_DB"]);
 });
@@ -106,15 +106,15 @@ test("unavailableByOffice is a lookup over the same answer, not a second derivat
   assert.equal(m.get("EU"), undefined);
 });
 
-// ── THE CONTRACT IS NOT NARROWED. This is what keeps 's R3 admissible. ──────────────────────────
+// ── THE CONTRACT IS NOT NARROWED. This is what keeps the R3 admissible. ──────────────────────────
 
 test("THE DOOR STILL OFFERS THE US — the invariant that keeps #659's R3 admissible", async () => {
   // The load-bearing cross-issue property, and the one an over-fix breaks silently.
   //
-  // 's admission gate derives the orderable territories from `offices.covered`. The obvious way to
+  // That admission gate derives the orderable territories from `offices.covered`. The obvious way to
   // implement is to narrow that list to the configured members — and it is wrong: a US-only matter
   // would then be REFUSED AT THE DOOR rather than admitted and disclosed, which is the exact opposite of
-  // 's ruling that R3 must start on the free tier. The two issues would each break the other's
+  // That ruling that R3 must start on the free tier. The two issues would each break the other's
   // acceptance, and the only visible symptom would be a scenario that stopped running.
   //
   // Asserted through coveredTerritoryNames rather than by reading the field, because the field is frozen
@@ -165,7 +165,7 @@ test("worldwide on a WIRED box keeps the empty filter byte-for-byte", () => {
 });
 
 test("a single-source provider is completely unaffected", () => {
-  // euipo standalone is 's first acceptance half. It composes nothing, so no overlay applies and
+  // euipo standalone is the first acceptance half. It composes nothing, so no overlay applies and
   // its plans must be identical with and without the parameter.
   const withParam = compile(["EU"], [], EUIPO);
   const without = compileRegisterPlan({
@@ -220,7 +220,7 @@ test("one TRUE coverage gap in the list keeps the coverage sentence", () => {
   assert.match(combined, /CH/, "the territory no register reaches is still named");
 });
 
-// ── the refusal names the variable, not the provider ('s third bullet) ──────────────────────────
+// ── the refusal names the variable, not the provider (the third bullet) ──────────────────────────
 
 test("the count refusal names the VARIABLE that is missing, not the provider", () => {
   // The sentence that sent an operator hunting an EUIPO fault: "the free-tier credential is absent from

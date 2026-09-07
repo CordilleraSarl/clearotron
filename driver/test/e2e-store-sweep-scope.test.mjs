@@ -42,7 +42,7 @@ const E2E_SRC = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..",
  *
  * Bracket-matched, not regex-matched over the file: a whole-file search for `sweepStoreOrDie(id)` passes
  * as long as ANY caller threads an id, which is exactly the assertion that cannot fail when one caller
- * silently stops. ('s door test was rewritten for the same reason.)
+ * silently stops. (the door test was rewritten for the same reason.)
  */
 function sweepArgIn(functionName) {
   const fnAt = E2E_SRC.indexOf(`function ${functionName}(`);
@@ -127,7 +127,7 @@ test("`list` still refuses on EVERY finding — #659 did not ask for a quieter s
 // labelled with the scenario's `id` FIELD, and the scoped sweep matches findings by that label.
 //
 // Those are two different keys, and nothing compared them. They agree across all seven scenarios in the
-// store today — but the store is a DIFFERENT REPO, so the property 's scoping depends on was held by
+// store today — but the store is a DIFFERENT REPO, so the property the scoping depends on was held by
 // coincidence. A file whose id diverged would produce findings labelled with the other name, the scoped
 // refusal would not match, and a scenario the doors refuse would START AND SPEND. That is the failure
 // the whole sweep exists to prevent, reachable through the fix for it.

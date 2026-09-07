@@ -22,7 +22,7 @@
 // PURE — no node imports, so it tests offline, exactly like coverage-ledger.mjs and connotation-search.mjs
 // (whose headers state the same rule for the same reason). `shortId` is IMPORTED from connotation-search
 // rather than re-implemented: it is a generic fnv1a64 id stamp, and a second copy of an id function is
-// two calculations kept in step, which is 's defect.
+// two calculations kept in step, which is the defect.
 //
 // ONE CALCULATION, NOT TWO. `openBlocksByAxis` (register-plan.mjs) computes the open crowd blocks — the
 // same C2..C7 conditions the deleted gate computed, unchanged — and it is called EXACTLY ONCE per pass,
@@ -108,7 +108,7 @@ export const SEAT_ROW_FIELDS = Object.freeze(["kind", "axis", "unit", "status", 
 /**
  * WHAT A SEAT ROW OWES, written INTO the accumulator (and told to the seat in the dispatch brief and
  * the tool's own refusals — the seat no longer opens this file). The allowed axis set is not prose
- * about the file, it is a field OF the file: 's finding was "a fact obeyed as a failure and
+ * about the file, it is a field OF the file: the finding was "a fact obeyed as a failure and
  * ignored as an input", and a closed vocabulary the seat must hit and is never shown is exactly that.
  * PURE data.
  *
@@ -474,7 +474,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
       // the receipt should be able to tell which of the two a run carried.
       deferred_offices: (Array.isArray(plan?.deferred_coverage) ? plan.deferred_coverage : []).length,
       // AN ABSENCE IS A FINDING, RECORDED IN THE ARTIFACT. An axis whose band would not parse
-      // contributes NO open-block rows, exactly as the pre- gate's per-axis catch did — a band
+      // contributes NO open-block rows, exactly as the pre-change gate's per-axis catch did — a band
       // parse defect is refused one stage earlier by validators.registerUnit. Naming the axes here
       // means the gap is visible on the form a reader opens instead of being a silent zero.
       bands_unreadable: [...(bandsUnreadable ?? [])],
@@ -568,7 +568,7 @@ export function coverageAbsenceGaps(parsed) {
 }
 
 /**
- * The sentence a lawyer reads where the ledger would be. NEVER an empty section: 's lesson one lane
+ * The sentence a lawyer reads where the ledger would be. NEVER an empty section: the lesson one lane
  * over — a heading with nothing under it asserts an absence it cannot explain, and a reader cannot tell
  * it from a run that swept nothing. This says which material was missing and, therefore, exactly what
  * the rest of the report does and does not rest on.

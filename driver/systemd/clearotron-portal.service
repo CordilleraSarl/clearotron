@@ -35,7 +35,7 @@ Wants=network-online.target
 # `clearotron-mcp-face.service`, and a deployment that runs the door under another name simply orders
 # against nothing here.
 #
-# IT NARROWS THE RACE RATHER THAN CLOSING IT, and the other half of tracker issue 222 is why that is
+# IT NARROWS THE RACE RATHER THAN CLOSING IT, and what follows is why that is
 # enough. `Type=simple` counts a unit as started once its process is forked, not once it is listening,
 # so the door may still be binding when this starts. The probe's message no longer claims an outage for
 # that, because the submit path re-probes per request and never consults the boot verdict.

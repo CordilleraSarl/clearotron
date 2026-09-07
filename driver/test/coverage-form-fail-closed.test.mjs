@@ -84,7 +84,7 @@ test("NOT ARMED: no era stamp ⇒ the PRE-#476 floor applies, unchanged and unde
     const v = judge(dir);
     assert.equal(v.ok, false, "no form AND no prose table is an ABSENCE of coverage, never a pass");
     assert.match(v.reason, /findings\+ledger/);
-    // …and a pre- sentinel (the D1 off-enum arm alone) is still not a form stamp, so the floor holds.
+    // …and a pre-change sentinel (the D1 off-enum arm alone) is still not a form stamp, so the floor holds.
     armCoverageEnumOnly(dir);
     assert.equal(coverageFormStamp(dir).required, false);
     assert.equal(judge(dir).ok, false);
@@ -99,11 +99,11 @@ test("#850 M6 — THE DISPATCH HAS NO SECOND ARM, and the driver arms before it 
   // WHAT THIS REPLACED, AND WHY THE REPLACEMENT IS NOT WEAKER. Until M6 this asserted the opposite of
   // its own second half: an UNARMED run's dispatch told the seat "the ## Coverage ledger table in your
   // findings is yours to write", because the validator's unstamped arm demanded that table. One stamp,
-  // two instructions — and inside the unarmed one, 's whole correction was reversed: a
+  // two instructions — and inside the unarmed one, the whole correction was reversed: a
   // model-authored markdown table was the source of truth every coverage gate read.
   //
   // M6 deleted the dispatch's second arm, not the validator's. The validator still demands the prose
-  // table on an unstamped run, and that is deliberate and load-bearing: an ARCHIVED pre- run
+  // table on an unstamped run, and that is deliberate and load-bearing: an ARCHIVED pre-change run
   // carries no stamp at all, and changing what it judges to would mutate replay verdicts that people
   // quote. So the asymmetry this test used to pin is real — and UNREACHABLE on a live run, because
   // arming and dispatching are gated on the same `willRun` and the arm runs first. That is what is
@@ -212,7 +212,7 @@ test("ARMED + DAMAGED: present and unusable is a NAMED defect, never read as abs
 
 test("THE WRITE ORDER: the stamp lands BEFORE the form, so a failed form write fails CLOSED", () => {
   // Get this backwards and a failed form write leaves no stamp, the gate never arms, and the run passes
-  // having judged nothing — 's shape rebuilt. armCoverageForm is a separate call precisely so the
+  // having judged nothing — the shape rebuilt. armCoverageForm is a separate call precisely so the
   // failure mode is "stamp present, form absent".
   const dir = runDir();
   try {
@@ -315,7 +315,7 @@ test("FUNNEL: an unreadable band is recorded on the form and its axis contribute
 test("THE CENSUS PARTITIONS: its terms sum to `quantity`, so a converging run never reads as stuck", () => {
   // repairs.mjs CENSUS_RE accepts comma-joined `<name>=<n>` terms and SUMS them. If the terms overlapped
   // — or if one violation were counted twice — progressQuantity would report more outstanding rows than
-  // exist, `progress.kind` would stop tracking, and 's defect (a CONVERGING run reading as stuck)
+  // exist, `progress.kind` would stop tracking, and the defect (a CONVERGING run reading as stuck)
   // comes back. The partition is what makes the discrimination safe to add.
   const CENSUS_RE = /^((?:[a-z_]+=\d+)(?:,[a-z_]+=\d+)*)(?:[;\s]|$)/;
   const dir = runDir();

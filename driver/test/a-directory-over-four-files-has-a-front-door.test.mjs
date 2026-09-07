@@ -21,7 +21,7 @@
 // ── WHY THE DECLARATION IS IN THE ANCESTOR AND NOT A MARKER FILE IN THE DIRECTORY ──────────────────
 //
 // asks for the exceptions to be accounted for AT THE DIRECTORY rather than in a list in this file,
-// on 's `# external:` precedent — a declaration a reader meets where the decision was made beats a
+// on the `# external:` precedent — a declaration a reader meets where the decision was made beats a
 // roster nobody opens. A marker file inside each directory was the obvious reading and it is the wrong
 // one here, for two reasons this tree makes concrete:
 //

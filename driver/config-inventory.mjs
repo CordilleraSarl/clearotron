@@ -388,7 +388,7 @@ export function caseLawInventory(env = process.env) {
   // EUR-Lex reads through the engine's own fetch tool, so there is nothing to configure and nothing that
   // can be missing. It is LISTED anyway: a reader counting case-law sources against a report that named
   // four gaps must be able to find all four here, and a lane that is absent from this page is
-  // indistinguishable from one nobody has heard of. 's fifth criterion.
+  // indistinguishable from one nobody has heard of. That fifth criterion.
   rows.push({
     key: "caselaw", label: "Case law and oppositions", provider: "eur-lex",
     providerLabel: CASELAW_LABELS["eur-lex"],

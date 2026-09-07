@@ -18,7 +18,7 @@
 // Exits non-zero on the first state that fails to draw, scrolls sideways, or renders a pip count that
 // contradicts the run it is drawn from.
 
-import { navigateOrRefuse } from './headless-page.mjs'   // tracker issue 227 — Page.navigate returns an errorText, and nothing read it
+import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
 import { readFileSync, existsSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'

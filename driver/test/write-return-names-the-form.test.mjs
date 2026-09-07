@@ -67,7 +67,7 @@ test("THE FORM WINS THE EMPHASIS — first in the list, and the last word", () =
 
 test("the plural reads correctly when a seat owes more than one form", () => {
   // Not cosmetic: "a dispatch whose form are unfilled" is the kind of sentence that makes a careful
-  // reader distrust the whole instruction, and 's own singular/plural slip is why this is asserted.
+  // reader distrust the whole instruction, and its own singular/plural slip is why this is asserted.
   const s = writeReturn("/run/o.md", ["/run/a.json", "/run/b.json"]);
   assert.match(s, /^YOU OWE 3 FILES, AND THE FORMS ARE WHAT GETS CHECKED\./);
   assert.match(s, /whose forms are unfilled/);

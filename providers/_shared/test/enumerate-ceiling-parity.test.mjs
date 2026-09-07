@@ -46,7 +46,7 @@ const rows = (n, tag) => Array.from({ length: n }, (_, i) => ({ record_id: `/mar
 test("#1104: exactly ONE provider declares a shape ceiling, and the list is discovered not recited", () => {
   // Read off the cores rather than naming them: a tenth provider that quietly starts passing
   // `ceilingFor` has changed the parity claim this file makes, and it must fail here on the commit that
-  // does it rather than at some later round. The same reason 's sweep greps the servers.
+  // does it rather than at some later round. The same reason the sweep greps the servers.
   const cores = readdirSync(PROVIDERS, { withFileTypes: true })
     .filter((d) => d.isDirectory() && d.name !== "_shared" && d.name !== "oauth-mcp-bridge")
     .map((d) => ({ name: d.name, path: join(PROVIDERS, d.name, "src", "core.js") }))

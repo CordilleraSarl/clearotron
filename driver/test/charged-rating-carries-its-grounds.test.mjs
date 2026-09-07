@@ -93,7 +93,7 @@ test("#919 a note that STATES what could not be established reads as grounds", a
 
 test("#919 the corpus's real notes, carried on DECLINED rows: zero grounds", async () => {
   // What e2e measured by reading every note in three runs. If this ever comes out non-zero on these
-  // inputs the classifier moved, not the seat — and 's premise needs re-reading before anyone
+  // inputs the classifier moved, not the seat — and the premise needs re-reading before anyone
   // celebrates.
   //
   // THE CORPUS ITSELF CANNOT BE RE-MEASURED, and that is a fact about the archive, not a gap here. Every

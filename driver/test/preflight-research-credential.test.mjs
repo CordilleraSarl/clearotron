@@ -88,7 +88,7 @@ test("#1149-6 not-applicable is STATED, and names the component it keyed on", ()
   assert.equal(r.credEnv, null, "no credential was consulted, so none is claimed");
 });
 
-// The literal is what makes a check a HALF check the day a second variable arrives (,). The
+// The literal is what makes a check a HALF check the day a second variable arrives (). The
 // door must read the adapter's own credEnv.
 test("#1149-6 the variable comes from the adapter, not a literal in the door", () => {
   const r = preflightResearchCredential(policyFor("full-country-search"), withKey);

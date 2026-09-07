@@ -13,7 +13,7 @@
 //
 // THE TWO INPUTS ARE DIFFERENT QUESTIONS AND GET DIFFERENT ANSWERS:
 //
-//   blank / unset / whitespace   "not configured" ('s documented spelling) — take the DEFAULT.
+//   blank / unset / whitespace   "not configured" (the documented spelling) — take the DEFAULT.
 //   a value that is not a number  "configured wrong" — REFUSE, naming the variable and what it holds.
 //
 // There is no overlap between those inputs, so neither answer weakens the other.

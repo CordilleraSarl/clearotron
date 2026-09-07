@@ -128,7 +128,7 @@ function bandStop(framework, band) {
 
 const DEGRADED_NOTE = 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.';
 
-// tracker issue 760 — THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
+// THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
 // label, no border, nothing on the page saying what it qualified. A reader met one word of a private
 // vocabulary and had to guess whether it described the risk, the confidence or the search.
 //
@@ -266,13 +266,13 @@ function glanceSection(marks, framework, registerCounts) {
       </div>
     </div>`;
   }).join('');
-  // tracker issue 761 — THE FRAMEWORK IS NAMED BESIDE THE CHIPS IT EXPLAINS. Every `.ko-band` chip below speaks one
+  // THE FRAMEWORK IS NAMED BESIDE THE CHIPS IT EXPLAINS. Every `.ko-band` chip below speaks one
   // word out of a framework's vocabulary, and that framework was named exactly once on this page: in the
   // footer, under everything it governs. This is ATTRIBUTION AND NOTHING ELSE — the same "Rated under
   // <name>" the footer prints, moved to where the words it licenses are actually read.
   //
   // NO LADDER HERE. Spelling the band scale out beside the chips would be new furniture on a client
-  // deliverable, and tracker issue 765 rules that a rung buys depth, never furniture. If the knockout reader needs the
+  // deliverable, and a rung buys depth, never furniture. If the knockout reader needs the
   // scale, that is its own decision on its own merits, not a rider on this one.
   //
   // No framework ⇒ NOTHING. A run this render was given no manifest for gets no attribution invented for
@@ -655,6 +655,28 @@ const REGISTER_ORDINAL_FLOOR = 900;
 export const NOT_WEIGHED_LINE = 'Register listing — this card carries no rating of its own';
 const NOT_WEIGHED = NOT_WEIGHED_LINE;
 
+/**
+ * The register card's basis line, which cannot be written without knowing whether the card is rated.
+ *
+ * THE TWO RULINGS MEET HERE AND THEY ALMOST CONTRADICTED EACH OTHER ON A CLIENT PAGE. tracker issue
+ * 1935 retired a code-owned placeholder because a rating nobody performed must not appear; tracker
+ * issue 274 then ruled that the rater's OWN band for a promoted filing must appear, because a filing
+ * the rater weighed into the verdict was rendering as though it had not been. Both hold, and they hold
+ * over different cards.
+ *
+ * `band` and `read` are independent fields — the band comes from `registerReads[].band` and the read
+ * from its `text` — so a filing the rater banded WITHOUT typing a read is reachable, and the first cut
+ * of this rendered the band chip beside the sentence "this card carries no rating of its own". The
+ * report would have been contradicting itself in one card, in the client's voice.
+ *
+ * So: the retired line belongs only to a card with no band. A banded card with no read says nothing
+ * rather than something false — the chip and the source tag already say what the card is.
+ */
+function basisLine(band, read) {
+  if (read) return `<p class="ko-findbasis">${esc(read)}</p>`;
+  return band ? '' : `<p class="ko-findbasis">${esc(NOT_WEIGHED)}</p>`;
+}
+
 
 /**
  * Which listed filings get pointed at. TWO tests, and both fail OPEN — a filing is promoted unless
@@ -860,7 +882,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
             </div>
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>
-            <p class="ko-findbasis">${esc(read || NOT_WEIGHED)}</p>
+            ${basisLine(band, read)}
             ${useCheck ? `<p class="ko-findev">${esc(USE_CHECK_LABEL)} ${isHttpUrl(useCheckSource) ? linkOrText(useCheckSource) : esc(useCheckSource)}</p>` : ''}
             <p class="ko-findev">Register record: ${receipt}</p>
           </div>

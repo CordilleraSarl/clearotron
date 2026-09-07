@@ -103,7 +103,7 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
   });
   assert.match(msg, /THE FINDING SENTENCE/);
   assert.match(msg, /NEVER AN ACTION PRESCRIPTION/);
-  // tracker issue 469 — the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
+  // the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
   // the consequence after '→'"), so rewriting synthesis-rules.md alone would have left the prompt
   // teaching the shape the parser now refuses. These pin the join, not the wording of the section.
   assert.match(msg, /IT IS A CONCLUSION, NOT A CHAIN/);
@@ -115,7 +115,7 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
     "the budget was never the validator's and is no longer the renderer's — nothing asks the model to be brief");
 });
 
-// ── tracker issue 469 — the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────
+// ── the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────
 //
 // The contract these pin was a CHAIN by mandate until 2026-08-06: synthesis-rules.md required a
 // semicolon-chained rights → facts → consequence sentence and render.mjs folded the result at 240
@@ -192,7 +192,7 @@ test("#469 — the markers are punctuation and NOTHING else: no length, no quali
   const long = `Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the United States ${"across every market the applicant has named in its filing instructions ".repeat(8)}on the register material this run holds.`;
   assert.ok(long.length > 600);
   assert.equal(parseAt(7, { net: long }).findings[0].net, long, "no maximum, at any version");
-  // 's prose names "the word so"; the gate deliberately does not, because a word match fires on
+  // That prose names "the word so"; the gate deliberately does not, because a word match fires on
   // "also" and "so-called" and that is a quality judgment code cannot make.
   for (const ok of [
     "The owner is dormant, so the practical exposure is low in the United States.",
@@ -371,7 +371,7 @@ test("#243 — BOTH card renderers read the typed field; compactCard was the one
 // The parser refuses the chain at schema_version 7. This row judges the RECORD instead of the version it
 // declares, for the two paths a version-gated throw cannot reach — the lenient/quarantine parse (which
 // validateNetShape exempts by design) and a down-level emission that would disengage the gate silently.
-// It was the whole gate until FINDINGS_SCHEMA_VERSION reached 7 (, 2026-08-06); it is now the half
+// It was the whole gate until FINDINGS_SCHEMA_VERSION reached 7 (2026-08-06); it is now the half
 // of it that a version-gated throw can never cover.
 // (contentModelChecks is already imported by the block above — ESM hoists it.)
 

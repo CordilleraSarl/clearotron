@@ -26,11 +26,11 @@
 // reading only the claim misses it: the increase is in the evidence stamp.
 //
 // THE LADDER ALREADY EXISTS, so this introduces no vocabulary. `basis` is the run's own certainty
-// ordering and 's demotion is its enforcement; `basis-derivation.json` records every demotion with
+// ordering and the demotion is its enforcement; `basis-derivation.json` records every demotion with
 // its reason and its uri. Arm B is a comparison against an artifact the driver already writes, which is
 // why it needs no fetch ledger and no new plumbing.
 //
-// REPORTS, NEVER THROWS. The caller decides what a violation costs — 's lesson is that a guard
+// REPORTS, NEVER THROWS. The caller decides what a violation costs — the lesson is that a guard
 // which can kill a run is a guard that eventually kills a run over its own false positive.
 
 /** The run's own certainty ordering for a meter's basis. Higher is more certain. */

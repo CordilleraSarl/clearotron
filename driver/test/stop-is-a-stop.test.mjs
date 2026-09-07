@@ -79,7 +79,7 @@ test("2076 recording is best effort and never fatal — a dispatch that cannot w
 test("2076 THE ORDERING: the sentinel is written before the signal, never after", () => {
   // ACCEPTANCE 3, and it is the load-bearing one. The sentinel is what makes the kill clean — the
   // gateway finds an already-recorded cancel instead of an unexplained dead child, and writes a proper
-  // terminal with attribution rather than 's `state:running` orphan. Reversed, this change becomes
+  // terminal with attribution rather than the `state:running` orphan. Reversed, this change becomes
   // the unsafe version of itself while every other arm here still passes.
   const src = readFileSync(
     join(dirname(fileURLToPath(import.meta.url)), "..", "..", "mcp-server", "lib", "ops.mjs"), "utf8");

@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // doubt-selection.mjs — which OPEN doubts the closure seat is asked about, chosen by the DRIVER.
 //
-// 's architecture, one lane over from profile-selection.mjs: "prefer driver selection wherever the
+// That architecture, one lane over from profile-selection.mjs: "prefer driver selection wherever the
 // key precedes the dispatch." The key is on the doubt before doubt-closure is dispatched, so there is
 // nothing here for a directive to ask a seat to judge — the driver lists the ids, and a doubt it does
 // not list is never mentioned.
@@ -68,7 +68,7 @@ export function keptTiersFor(doubtClosure) {
  * WHICH OF THE THREE SILENCES THIS IS. `keptTiersFor` returns null for `every-doubt` AND for a word it
  * does not know, deliberately — a typo must not silently drop every keyed doubt. But that makes the two
  * indistinguishable in the run's event: a misspelt cut records exactly what the shipped cut records, and
- * the product row looks graded while the dispatch is not. 's arm catches a bad word on the ROW; this
+ * the product row looks graded while the dispatch is not. That arm catches a bad word on the ROW; this
  * is the runtime face of the same question, on the run that actually happened.
  *
  * `hasOwnProperty` rather than a truthiness test on the lookup, because `TIER_CUTS[w]` reaches the

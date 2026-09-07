@@ -217,7 +217,7 @@ test("#688 euipo conforms, and its `screened` stays a COUNT while `rows` carries
   const parsed = conforms(out, "euipo", { minRows: 2 });
 
   // The declared hazard, asserted rather than renamed: `screened` READS like a collection and IS a
-  // count. The pre- composite chain `rows ?? screened ?? results ?? records` resolves this integer
+  // count. The pre-change composite chain `rows ?? screened ?? results ?? records` resolves this integer
   // as a screening result the moment `rows` is absent. The gate's job is that it can never become a
   // list without failing here.
   assert.equal(typeof parsed.screened, "number");

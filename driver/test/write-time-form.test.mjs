@@ -237,7 +237,7 @@ test("a form chain DEEPER than the cap falls through to the ladder, visibly", as
 // ── ZERO SEMANTICS 1: a repair turn that writes nothing has NOT repaired anything ────────────────────
 
 test("a repair turn that writes NOTHING is not read as a fix — the original defect reaches the ladder", async () => {
-  // Issue 's shape: the repair turn ends clean and writes nothing at all. Re-judging the same bytes
+  // Issue the shape: the repair turn ends clean and writes nothing at all. Re-judging the same bytes
   // must not be allowed to say "repaired", and the harness's silence must not be reported as the model's
   // answer. The ORIGINAL token is what the ladder gets.
   process.env.MOCK_WARM_MODE = "form_noop";

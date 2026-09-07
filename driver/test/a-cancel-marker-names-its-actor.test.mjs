@@ -140,7 +140,7 @@ test("#1378 with no delegate, every existing caller gets exactly what it got bef
 });
 
 test("#1378 an unidentified session that names a human still says the session could not be named", () => {
-  // Both sentinels survive the compound. 's whole point was that "nobody was identified" and
+  // Both sentinels survive the compound. That whole point was that "nobody was identified" and
   // "nothing was passed" are different words; adding a delegate must not quietly answer the first.
   assert.equal(attributionOf({ kind: "ops", sub: null }, "alice@example.test"),
     `${UNIDENTIFIED}:ops:alice@example.test`);

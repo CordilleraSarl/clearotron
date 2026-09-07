@@ -225,7 +225,7 @@ test("D1 warm eligibility: coverage_status_offenum warms, and its patch targets 
 });
 
 // ── The write-mode branch (E2E R2): a file that EXISTS is patched; a file never written is written whole ──
-// THE WITNESS MOVED, and the move is the point rather than an adjustment (, the same
+// THE WITNESS MOVED, and the move is the point rather than an adjustment (the same
 // shape recorded for blind-frame). This arm used `narrative.md` to witness the Edit branch. After
 // the writer's conversion no repair may name that file at all: the seat holds no Write and gateway's
 // warm-patch branch sends it back through `record_synthesis`. An arm that kept demanding the hand-write
@@ -273,7 +273,7 @@ test("warm patch on a multi-file stage aims the repair at the member the token n
     "aiming at the wrong member is the loop the grid_join hints already guard against");
 });
 
-// ── E2E R1 (2026-08-01), carried to 's vocabulary: the connotation tokens — warm-eligible, and
+// ── E2E R1 (2026-08-01), carried to the vocabulary: the connotation tokens — warm-eligible, and
 // ── routed at the FORM, which is the gap closed on the way past ─────────────────────────────────
 test("connotation defects warm, and the patch orders the TOOL — not the .md, and never any file", () => {
   const okJson = { status: "ok" };
@@ -286,7 +286,7 @@ test("connotation defects warm, and the patch orders the TOOL — not the .md, a
   // ROUTING. B: there is no seat-writable dispositions file, so the patch orders the one route a ruling
   // can take — a `record_dispositions` call aimed at the FAILING MEMBER's own spec — and no file edit of
   // any kind. A patch naming a file here would be the two halves of one message disagreeing about where
-  // the work lands, the exact defect class 's routing fix closed.
+  // the work lands, the exact defect class the routing fix closed.
   const md = "/r/prelim-search/x/common-law-findings.half-b.md";
   const m = warmPatchMessage(half, [md]);
   assert.match(m, /record_dispositions/, "the tool is the route");

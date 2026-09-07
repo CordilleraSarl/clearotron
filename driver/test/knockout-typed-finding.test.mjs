@@ -5,7 +5,7 @@
 // The stage writes structured rows with free-prose cells today — the analysis lives in `bullets[]`,
 // unranked and untyped — so render-knockout.mjs contains no sort at all and prints bullets because that
 // is all it is given. This file pins the record the stage build will emit. It does NOT test the stage:
-// emission is 's own build, and these are the rules that build has to satisfy.
+// emission is its own build, and these are the rules that build has to satisfy.
 //
 // The one decision that had to be made before any of it: the verdict vocabulary is the FRAMEWORK'S BAND
 // WORDS, not a dedicated Blocking/Crowd pair. Reasoning posted on before building; the short form

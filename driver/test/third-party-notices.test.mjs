@@ -9,7 +9,7 @@
 // it with nothing saying so — the failure is silent, which is the only kind worth a guard.
 //
 // The check lives HERE rather than in a CI step of its own, deliberately: enforcement that has to be
-// remembered when someone edits a workflow is enforcement that eventually lives nowhere (,).
+// remembered when someone edits a workflow is enforcement that eventually lives nowhere ().
 // A test runs on every tier that runs tests.
 import { test } from "node:test";
 import assert from "node:assert/strict";

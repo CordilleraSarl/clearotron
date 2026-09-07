@@ -28,7 +28,7 @@ test("2148: the client door IS in the background enable set, and its settings ar
   // issues 1976/2082): starting the unit WAS the on-demand consent, because starting it turned on
   // client-account access, so an enable list containing it made that consent meaningless.
   //
-  // The owner superseded that knowingly (, settled point 2): the door auto-starts
+  // The owner superseded that knowingly (settled point 2): the door auto-starts
   // with the product and THE PER-ACCOUNT KEY IS THE GATE, not whether a process runs. A later reader
   // should meet a ruling that changed, not a guard somebody weakened.
   assert.ok(BACKGROUND_UNITS.includes(CLIENT_DOOR_UNIT),
@@ -146,7 +146,7 @@ test("1863 the disarm runs BEFORE the enable, so the box never holds both draine
     + "the old timer and the new worker draining one queue");
 });
 
-// ── tracker issue 270: a stop that could not stop must not report that it did ─────────────────────────
+// ── a stop that could not stop must not report that it did ─────────────────────────
 //
 // `clearotron stop` exited 0, printed "stopped and removed" for three units and "The background product
 // is stopped and the box runs nothing again", and left all four services active on unchanged pids holding

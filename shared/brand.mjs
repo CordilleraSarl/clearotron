@@ -26,7 +26,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 // index header, nav brand, Excel metadata, connector instructions). Env-overridable per deployment —
 // branding is tenant config, not code. Read once at import (deployment-static, like the systemd env).
 //
-// CASING: THE VALUE IS PROSE, SO IT IS CAPITALISED (, superseding ruling 2026-08-20). The rule is
+// CASING: THE VALUE IS PROSE, SO IT IS CAPITALISED (superseding ruling 2026-08-20). The rule is
 // Clearotron in prose and UI, `clearotron` in config values, commands, binary names and identifiers.
 // This DEFAULT is prose in every place it lands — report and portal <title>, the pool index header,
 // Excel `creator`, the connector steps, "You reached X" — so it takes the capital. The VARIABLE that
@@ -95,7 +95,7 @@ export const BRAND = {
  *
  * ABSENT IS NOT FALSE. The plain confidentiality line claims nothing and is what any legal deliverable
  * carries; collapsing absent into false is precisely the coercion that shipped House-default clearances
- * with no marking at all. That is 's property and it is untouched.
+ * with no marking at all. That is the property and it is untouched.
  *
  * `true` USED TO SELECT A LONGER LINE — the plain marking plus a legal characterisation of the document
  * — and the owner dropped that wording on 2026-08-20. It renders as the default here rather than being
@@ -481,7 +481,7 @@ export const REPORT_ROOT_DARK_EXPLICIT = darkBlock(REPORT_DARK_TOKENS, REPORT_DA
 // the pack (#17150f ground, #ece5d8 text) and error colours with no home at all. Two copies of a palette
 // is how the light palettes drifted before PALETTE existed.
 //
-// THE GATING IS `[data-theme]` ONLY (, correcting what shipped). The portal's doctrine is
+// THE GATING IS `[data-theme]` ONLY (correcting what shipped). The portal's doctrine is
 // that a CLIENT surface never follows the OS colour preference: first view is always light, and dark
 // arrives only from a choice the visitor made themselves. kept the media query on the argument
 // that these pages have no toggle, so removing it would leave a first-time visitor no route to dark —
@@ -574,7 +574,7 @@ header.rep .theme-toggle{float:right;margin-left:12px}
 // emitted page — including reports published by deployments with no connection to that firm (
 // measured it on the demo pool index, twice on one page). Stripping the label was the fix then;
 // removing the watermark removes the surface.
-// THE SWISS FLAG IS GONE, and it is 's ruling rather than a new one. The portal's lockup
+// THE SWISS FLAG IS GONE, and it is the ruling rather than a new one. The portal's lockup
 // dropped it when the product was renamed — portal-ui/src/components/Logo.tsx states the reason and
 // portal-ui/test/lockup.test.ts pins its ABSENCE so a well-meaning restore fails there:
 //
@@ -639,7 +639,7 @@ export const CHROME_CSS = `
 .lockup .lk-tag{margin-top:5px;font-size:7.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 .has-glow{position:relative;isolation:isolate}
 .has-glow::before{content:"";position:absolute;top:0;left:0;width:min(92vw,1100px);aspect-ratio:1.5;background:radial-gradient(farthest-side at 0% 0%,var(--web-glow),transparent 72%);pointer-events:none;z-index:-1}
-/* tracker issue 1431 — the .watermark rule and its ::after are GONE. They masked the parent company's ridge behind
+/* the .watermark rule and its ::after are GONE. They masked the parent company's ridge behind
    every report and the pool index; the owner's call is removal, not a bracket version of the same
    thing. The three body elements that carried the class drop it too, and --wm-alpha goes with them:
    a token nothing reads is a knob somebody re-wires.

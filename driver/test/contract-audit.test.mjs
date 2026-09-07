@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// contract-audit.test.mjs — 's E1, E2 and E3 checks, in CI.
+// contract-audit.test.mjs — the E1, E2 and E3 checks, in CI.
 //
 // This file is the enforcement. Every later move on inherits it, so read what each arm asserts
 // before changing a declaration to make it pass —: "A stage-contract declaration that lists a
@@ -367,7 +367,7 @@ test("#1211: every citation lands on the line that MINTS the code, not near it",
   // comments and unrelated code, and nothing would have said so. A line number in prose is a claim that
   // decays on somebody else's merge, so it is checked rather than maintained.
   //
-  // tracker issue 1211's condition is "each decision cites the site that mints it". A ruling that cites a sentence
+  // the condition is "each decision cites the site that mints it". A ruling that cites a sentence
   // three functions away is not a worse ruling than one citing nothing — it is a more convincing one,
   // which is worse.
   // THE FAILURE OUTPUT IS THE PATCH. A message that says "re-derive the line numbers" hands the next
@@ -450,7 +450,7 @@ test("E2: the stage-unreachable validators are recorded, so the partition's scop
 
 // ── E2 arm 2 — an element no token speaks about: A RATCHET ───────────────────────────────────────────
 //
-// Owner ruling (, 2026-08-13): arm 2 ships as a ratchet, not a red check and not dropped. 138 of 284
+// Owner ruling (2026-08-13): arm 2 ships as a ratchet, not a red check and not dropped. 138 of 284
 // elements have no token today. A check that can never go green is disabled within a week and a
 // permanently red gate teaches everyone that red carries no information (/); dropping the arm is
 // absence-reads-as-a-pass. So: green-or-red on arm 1, ratchet on arm 2.
@@ -465,7 +465,7 @@ test("E2 arm 2: no stage gains an element that no validator token speaks about",
 });
 
 test("E2 arm 2: no PHANTOM row — a recorded element the stage no longer declares is a licence to re-incur it (#1201)", () => {
-  // THE MIRROR OF 's E3 HOLE, on the other instrument. `arm2Regressions` asks only whether a stage
+  // THE MIRROR OF the E3 HOLE, on the other instrument. `arm2Regressions` asks only whether a stage
   // GAINED an element, comparing against the RECORDED list — so a row naming an element the stage has
   // since retired is not inert: re-declaring that exact element is not a gain, and does not trip. The row
   // that recorded a debt has become permission to re-incur it.
@@ -537,7 +537,7 @@ test("E3: every surface EXACTLY matches its baseline — a SHRINK is a red until
     + "class at authoring time. Recording it with --write makes the new dictation the normal.");
   assert.deepEqual(shrank, [],
     "a surface SHRANK and its baseline still stands at the old number, which leaves room a new violation "
-    + "can land in without this check noticing — #1201's hole exactly. Regenerate in the SAME commit:\n"
+    + "can land in without this check noticing — that hole exactly. Regenerate in the SAME commit:\n"
     + "  node driver/test/contract-e3-baseline.mjs --write\n"
     + "and say at the entry site what removed it.");
 });
@@ -597,12 +597,12 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // longer authors a string the driver reparses to locate an extraction span. It gives an ordinal the
   // driver resolves and a fragment the driver only containment-checks, so nothing it types selects bytes
   // for a delivered artifact. A conversion, in the direction this programme exists to move things.
-  // 72 → 70 (, skeptic): BOTH of skeptic's `## Escalation decisions` rows are DISCHARGED — the
+  // 72 → 70 (skeptic): BOTH of skeptic's `## Escalation decisions` rows are DISCHARGED — the
   // stages.mjs copy and the phase2-execution.md copy. The skill-doc row's own note said the shape was
   // dictated TWICE, which is why they had to go in one diff: deleting either alone leaves the other ordering
   // a hand-write the grant now denies. `renderSkepticFlags` is the single authority for the line.
   //
-  // 73 → 72 (, blind-frame): its "Emit the STRUCTURED model … your ONLY output file" row is DISCHARGED,
+  // 73 → 72 (blind-frame): its "Emit the STRUCTURED model … your ONLY output file" row is DISCHARGED,
   // not reworded — the seat hands values to `record_blind_frame` and the driver writes the artifact, so the
   // dictation the row described is gone from served text. Its own `removedByMove` read "NOTHING ON THE
   // PLAN REMOVES THIS", which was true of that plan and false of the category conversion.
@@ -610,10 +610,10 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // four (two literal-json-skeletons, two exactly-these-keys). The ceiling drops with them — this pin is a
   // ratchet and a shrink is the point of it. Nine of the sixty-nine gone in two conversions, and the four
   // just removed are the first whose DERIVATION went with them rather than changing hands.
-  // 56 → 54 (, conversion 5): report-card's TWO dictated-line-shape rows retire — the `::p::`
+  // 56 → 54 (conversion 5): report-card's TWO dictated-line-shape rows retire — the `::p::`
   // bullet position and the final `- Source:` bullet. Its THIRD row does NOT retire and must not: see
   // E3_DATA_INPUT_EXEMPTIONS, printed below.
-  // 60 → 56 (, conversion 4): report-overview's FOUR rows retire together — the front-matter key
+  // 60 → 56 (conversion 4): report-overview's FOUR rows retire together — the front-matter key
   // set, the shell half of delivery-contract.md's 49-line fence, the three dictated-then-overwritten
   // fields, and the `# ACTIONS` line shape.
   //
@@ -666,7 +666,7 @@ test("E3: knockout-frame and knockout-assess are linted but carry no E1 declarat
 });
 
 test("E2: the mechanical-AND-unspoken set is findable — the highest-value target for the moves", () => {
-  // An element here is not the model's judgment AND nothing polices it. Both halves of 's argument
+  // An element here is not the model's judgment AND nothing polices it. Both halves of the argument
   // point at this set: it is work a model should not be doing, and a failure nothing would catch.
   // Recorded rather than gated — the moves are what shrink it, and arm 2's ratchet is what tracks it.
   const set = mechanicalAndUnspoken(STAGES);
@@ -687,7 +687,7 @@ test("E3: no backlog row outlives the dictation it describes", () => {
   // THE FAILURE THIS EXISTS FOR: a move deletes a dictation and the ROW survives. The count then
   // overstates the work left and the next agent spends a conversion slot on a hole already filled.
   // Two instances existed the day it was written — M6's register-digest no-form arm (deleted
-  // 2026-08-14) and synthesis's disposition list (, deleted that same morning by the agent
+  // 2026-08-14) and synthesis's disposition list (deleted that same morning by the agent
   // writing this test). Knowing about the disease did not prevent causing an instance of it.
   const misses = backlogEvidenceMisses(E3_BACKLOG, (f) => {
     try { return readFileSync(join(DRIVER, "..", f), "utf8"); } catch { return null; }
@@ -965,7 +965,7 @@ test("E3 surface: every row declares one, from the closed enum, witnessed by a p
 });
 
 test("E3 surface: the per-surface census is exact in BOTH directions, and its arithmetic closes", () => {
-  // EXACT, NOT A CEILING. 's urgency claim is that `tool-response` GROWS; a ceiling on it fails
+  // EXACT, NOT A CEILING. That urgency claim is that `tool-response` GROWS; a ceiling on it fails
   // upward exactly as the E3 ceiling did in — a surface that shrank would pass silently and leave
   // room for a move nobody recorded. Red on a legitimate migration IS the recording step.
   const now = surfaceCensus(E3_BACKLOG);

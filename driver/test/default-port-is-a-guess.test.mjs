@@ -133,7 +133,7 @@ test("#1194 the flag does NOT touch a configured port", () => {
 });
 
 test("#1194 a caller that has not been taught the question behaves exactly as before", () => {
-  // `portSource` absent = the pre- contract. providers/oauth-mcp-bridge/warm-server.mjs takes its
+  // `portSource` absent = the pre-change contract. providers/oauth-mcp-bridge/warm-server.mjs takes its
   // port as `--port` and reads no environment variable, so it can never take a silent default and is
   // deliberately not changed.
   let exited = null;
@@ -246,7 +246,7 @@ test("1961 a REQUEST to the announced port is answered", async () => {
     // and it tells the next reader nothing about what this arm was asking.
     //
     // The catch RECORDS and the assertions below RUN EVERY TIME. An `assert.fail` inside the catch would
-    // be an assert site that never executes on a green run, which is the shape 's coverage census
+    // be an assert site that never executes on a green run, which is the shape the coverage census
     // exists to refuse — and it is right to: an assertion that never runs has never been checked.
     let text = null, refused = null;
     try {

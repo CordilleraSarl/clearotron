@@ -58,7 +58,7 @@ import { checkoutMove, movePosture, describeMove, describeConflict } from "../sh
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
-  systemdFailure as sharedSystemdFailure } from "../shared/systemd-failure.mjs";   // tracker issue 203 — `start` needed the same three answers
+  systemdFailure as sharedSystemdFailure } from "../shared/systemd-failure.mjs";   // `start` needed the same three answers
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // `userBusEnv` and `busRemedy` MOVED TO shared/systemd-failure.mjs, unchanged, because
@@ -372,7 +372,7 @@ export function unitIsHealthy(name, { show = showUnit, pause = settle } = {}) {
   if (error) {
     // ── A BUS THAT COULD NOT BE REACHED IS NOT A DOOR THAT IS DOWN (tracker issue 130) ────────────
     //
-    // Returning false here is what made the operator worse off than before tracker issue 121's fix.
+    // Returning false here is what made the operator worse off than before that fix.
     // The caller renders false as "the door is not open, so no key was issued" — a confident, wrong,
     // client-facing sentence about a door that is `active`, with the real cause discarded. And it is
     // reachable on the ordinary path: a box whose door is already installed and running never calls

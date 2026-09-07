@@ -81,7 +81,7 @@ export const DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguishe
 // FLOOR 6 and was written as this MOVING constant, which was the same number on the day it was written.
 // Bumping here alone would have made every archived v6 run — v6 shipped 2026-08-03, so real delivered
 // matters carry it — republish through pool-admin doRepublish with the ground-grouped reasoned
-// negatives silently replaced by the pre- region-grouped section. Not a crash: a substance change to
+// negatives silently replaced by the pre-change region-grouped section. Not a crash: a substance change to
 // a report already sent to a client, which is what the render freeze exists to catch. MEASURED at the
 // break: 34,722 → 36,466 body bytes on a three-negative v6 fixture. That line now reads `>= 6`.
 //
@@ -539,7 +539,7 @@ export function sentenceCaseLead(s) {
   return str.slice(0, m[1].length) + m[2].toUpperCase() + str.slice(m[1].length + m[2].length);
 }
 
-// ── tracker issue 601 — THE ONE BOUND AN ASK STILL HAS, AND THE ONLY ONE ─────────────────────────────────────────
+// ── THE ONE BOUND AN ASK STILL HAS, AND THE ONLY ONE ─────────────────────────────────────────
 // The verdict statement renders in index cells, run status, the report hero, the email headline and the
 // xlsx Verdict row — one row each, so an unbounded first condition would swallow the row. This is the
 // last surface in the product that shortens an ask, and it is the honest one: `clipClause` marks the cut
@@ -813,7 +813,7 @@ const onlyKeys = (obj, allowed, tokenFor) => {
  *   | finding_bears_on_invalid:<ordinal> | finding_disposition_invalid:<v> | finding_impact_invalid:<ordinal>
  *   | finding_deadline_invalid:<ordinal> | finding_deadline_key_unknown:<key> | finding_deadline_date_missing:<ordinal>
  *   | findings_context_note_invalid | findings_context_note_key_unknown:<key> | findings_context_note_type_invalid:<v>
- *   | findings_net_chained:<ordinal>   (, v7 only — PLURAL on purpose; see validateNetShape)
+ *   | findings_net_chained:<ordinal>   (v7 only — PLURAL on purpose; see validateNetShape)
  * (the composite>=3 NON-EMPTY-source gate for use_check/own_rights is raised by the caller in verify.mjs —
  *  this parser only enforces SHAPE: object / key-allowlist / source-is-a-string. Both fields are OPTIONAL.)
  *
@@ -1210,7 +1210,7 @@ export function parseFindingsJsonLenient(raw, opts = {}) {
 // A1: a withdrawn finding is a non-mergeable singleton — folding a LIVE filing into a
 // withdrawn base (or vice versa) would either resurrect a killed conflict or silently kill a live
 // one. The `~withdrawn~` suffix keeps it in its own group without touching live-group keys.
-// ── A LATIN NORMALISER STANDING WHERE A COMPARISON SHOULD BE ('s class, third site) ─────────────
+// ── A LATIN NORMALISER STANDING WHERE A COMPARISON SHOULD BE (the class, third site) ─────────────
 //
 // `[^a-z0-9]` folds a CJK, Cyrillic or Arabic value to the EMPTY STRING, and this key is built from two
 // of them. Measured on origin/main before the fix:
@@ -1642,7 +1642,7 @@ function validateBand(f, ord, mode) {
 //   · FACTS AND ASSESSMENT, NEVER AN ACTION PRESCRIPTION. The reader is a lawyer who layers their own
 //     advice on top. The house prose contract already rules prescriptions out everywhere; on this field
 //     it is checked, because it is the sentence most likely to drift into advice.
-//   · A CONCLUSION, NEVER A CHAIN (, 2026-08-06). See validateNetShape below for the ruling, the two
+//   · A CONCLUSION, NEVER A CHAIN (2026-08-06). See validateNetShape below for the ruling, the two
 //     mechanical markers it refuses, and why it is the one net rule that had to be version-gated.
 //   · STILL NO LENGTH MAXIMUM, and now for a second reason. It never came from the validator (a model
 //     told to be brief writes a shorter sentence and drops a fact), and build 1.3 deletes the renderer's
@@ -1670,7 +1670,7 @@ const PRESCRIPTION_RE = /\b(we recommend|we advise|we suggest|you should|should 
 //   · NOT A QUALITY JUDGMENT. "Does this read as a conclusion" is the lawyer's call and the reviewer
 //     stage's; code cannot make it without re-judging the finding, which is the rules-engine failure
 //     this codebase keeps refusing.
-//   · NOT THE WORD "so". 's prose names "a semicolon, an arrow, or the word so", but a word match is
+//   · NOT THE WORD "so". That prose names "a semicolon, an arrow, or the word so", but a word match is
 //     not mechanical: it fires on "also", "so-called", "so long as the owner". Punctuation cannot be
 //     mistaken for anything else, and the prose rule survives in synthesis-rules.md where a reader
 //     applies judgment to it.
@@ -1910,7 +1910,7 @@ function recordUrlOrigin(value) {
  * `"not a url"` and `mailto:…` at this site — a documented decision that the host gate does not judge
  * them. A blanket not-a-URL rule refutes it silently. So this refuses exactly the shapes names:
  * a fragment (addresses THIS document, never a record), a bare path (names no host), and whitespace
- * (a value that is only shaped like one). Anything else is still 's to rule on.
+ * (a value that is only shaped like one). Anything else is still the to rule on.
  *
  * That leaves `mailto:…` and free text composing a live-but-wrong href rather than a dead anchor. It is
  * a real gap and it is NOT this issue's class; recorded on rather than widened into here.
@@ -2275,7 +2275,7 @@ export function validateKnockoutFinding(f, idx, seenOrdinals = new Set(), opts =
       throw new Error(`knockout_finding_band_invalid:${kshort(f.band)} (this run's framework "${manifest.framework_key}" rates in EXACTLY these words: ${manifest.bands.map((b) => b.label).join(" / ")})`);
     f.band = canonical;
   }
-  // THE CONCLUSION SENTENCE — 's contract, unchanged, on the other product. One rule, one gate: a
+  // THE CONCLUSION SENTENCE — the contract, unchanged, on the other product. One rule, one gate: a
   // knockout card and a clearance card are read by the same lawyer in the same week.
   if (typeof f.net !== "string" || !f.net.trim())
     throw new Error(`knockout_finding_net_missing:${ord} (every knockout finding carries the one conclusion sentence the card leads with — see synthesis-rules.md "The finding sentence")`);

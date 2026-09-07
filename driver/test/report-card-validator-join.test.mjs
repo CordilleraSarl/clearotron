@@ -10,7 +10,7 @@
 //
 // shipped a 201-line test for the new dictation. It imports STAGES and card-frame.mjs and never
 // imports verify.mjs, so it pinned one end of a two-ended contract and was green. This file is the join:
-// it imports BOTH and asserts they cannot contradict each other. The class is 's — two ends of a
+// it imports BOTH and asserts they cannot contradict each other. The class is the — two ends of a
 // contract measuring different things with no agreement guard.
 //
 // The warning was already in verify.mjs, written for and sitting two lines above the line that
@@ -42,7 +42,7 @@ has used it continuously since 2014 on overlapping goods, which is what makes th
 rather than a housekeeping note for the client to consider at leisure.
 `;
 
-// The pre- shape, and the one every replayed or archived card still has.
+// The pre-change shape, and the one every replayed or archived card still has.
 const FRAMED_CARD = `## Qori Holdings — QORI
 
 - ord: 1
@@ -116,7 +116,7 @@ test("THE TOKEN NAMES THE MEMBER, on every multi-marker validator — not just t
 test("THE BLAST RADIUS: the group label is PRESERVED, so correctionHint still finds its arm", () => {
   // The obvious fix — emit the failing marker INSTEAD of the label — silently degrades every corrective
   // hint that branches on the label. gateway.mjs:2181 keys on `findings+ledger` and :2188 on
-  // `negative-results|coverage-ledger|audit-trail|findings-heading`, and tracker issue 476 records that first arm
+  // `negative-results|coverage-ledger|audit-trail|findings-heading`, and that first arm was
   // being removed once on a reading true for only one lane, then put back. Appending keeps them matching.
   const specific = correctionHint("invalid_file:/run/register-findings.md:missing:findings+ledger(coverage-ledger)");
   assert.match(specific, /findings heading plus a Coverage ledger/,
@@ -136,7 +136,7 @@ test("NEGATIVE CONTROL: a call site with no names emits the token it always emit
 });
 
 test("VOID CONTROL: the composed dispatch is non-empty and still asks for the judgment half", () => {
-  // Every "the forbidden shape is absent" assertion passes loudest on an empty string. tracker issue 1008's own test
+  // Every "the forbidden shape is absent" assertion passes loudest on an empty string. That rule is stated with the void controls, and it
   // states this rule; it applies to the prompt half of the join above.
   const text = reportCardText();
   assert.ok(text.length > 400, `report-card's message composed to ${text.length} chars — too short to be the real dispatch`);

@@ -4,7 +4,7 @@
 //
 // ── the defect this exists to remove ──────────────────────────────────────────────────────────
 //
-// 's noise floor needs the SAME scenario run twice on one commit. Until this module, `run` wrote
+// That noise floor needs the SAME scenario run twice on one commit. Until this module, `run` wrote
 // `_e2e-doors-<ID>.json` holding exactly one token and `report` scoped itself to whatever token it found
 // there — so the second run of a pair OVERWROTE the only record of the first round's token, and the
 // first half became unreportable. Silently: `report` then described the second run, thirty seconds into
@@ -305,7 +305,7 @@ function runStart(hit) {
 /**
  * The rounds visible ON DISK, grouped by round token.
  *
- * `untokened` counts runs whose ref carries no round token — a pre- round, or one submitted by
+ * `untokened` counts runs whose ref carries no round token — a pre-change round, or one submitted by
  * hand. They belong to no nameable round, and saying how many there are is the difference between
  * "these are all the rounds" and "these are the rounds I could name".
  */

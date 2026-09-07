@@ -13,7 +13,7 @@
 // to read it that narrowly, and one artifact then told them no EUIPO search happened while another
 // reported EUIPO figures.
 //
-// SO THE ARM IS OVER EVERY SEAT, NOT THE TWO WE KNOW ABOUT. 's cure survived in one seat for months
+// SO THE ARM IS OVER EVERY SEAT, NOT THE TWO WE KNOW ABOUT. That cure survived in one seat for months
 // precisely because it was applied by hand to the seat that had failed. A prompt that TELLS a seat to
 // stay off the registers has, by saying so, given it a fact about the run it will reach for when it
 // writes about scope — so a prompt that says the first thing must say the second.
@@ -122,7 +122,7 @@ const RETIRED_RUNGS = [...new Set(
   Object.values(RETIRED_POLICIES).map((p) => p?.stageLabel).filter(Boolean),
 )];
 
-test("tracker issue 1915 — the retired-rung list is DERIVED from the registry, not recited here", () => {
+test("the retired-rung list is DERIVED from the registry, not recited here", () => {
   // A hand list is a second copy of the offering's history, and it goes stale in the direction that
   // passes: a rung retired after this file was written would simply not be looked for.
   assert.ok(RETIRED_RUNGS.length >= 2,
@@ -132,7 +132,7 @@ test("tracker issue 1915 — the retired-rung list is DERIVED from the registry,
     "the rung this issue is about is not in the derived set — the derivation is reading the wrong field");
 });
 
-test("tracker issue 1915 — no live seat prompt carries a retired product rung", () => {
+test("no live seat prompt carries a retired product rung", () => {
   const seats = seatPrompts();
   const offenders = [];
   for (const [name, text] of Object.entries(seats)) {

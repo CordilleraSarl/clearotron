@@ -130,7 +130,7 @@ test('a run predating markName falls back to its title, and still groups with it
 
 // deleted the Stages column outright — depth is a one-to-one encoding of the run type (five level
 // keys, five depth labels, five product names in DEPTH_POLICIES, verified bijective in both directions),
-// so the column said in a number what every read row already says in words. 's rule that the parent
+// so the column said in a number what every read row already says in words. That rule that the parent
 // row shows the LATEST read alone survives it, and is asserted on the cells that remain.
 
 // ── families ─────────────────────────────────────────────────────────────────────────────────────────

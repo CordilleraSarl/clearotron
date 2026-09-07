@@ -194,7 +194,7 @@ const SCRIPT = `
     return false;
   };
   const txt = () => document.body.innerText;
-  // tracker issue 1809 — A MISS THROWS, NAMING WHAT IT MISSED. This returned undefined, and the thirteen sites below
+  // A MISS THROWS, NAMING WHAT IT MISSED. This returned undefined, and the thirteen sites below
   // that dereference it immediately turned a missing button into "Cannot read properties of undefined
   // (reading 'click')" — a message naming no selector, no screen and no step. It was intermittent, so it
   // read as a flaky suite rather than as a driver that could not say what it had not found.
@@ -303,7 +303,7 @@ const SCRIPT = `
 
   // ...and the segmented toggle switches back, persistently.
   findByText('button', /Set it up myself/).click();
-  // tracker issue 1809 — THIS WAIT WAS DEAD. It watched for the text "Start point", which the composer stopped
+  // THIS WAIT WAS DEAD. It watched for the text "Start point", which the composer stopped
   // rendering; the only "Start point" left in the tree is a COMMENT in NewClearance.tsx. Because settle
   // returned false silently, it degraded into a flat 6-second sleep and the check still reported
   // "render check passed" — making the wait loud is what surfaced it. Waits on the picker the manual
@@ -388,7 +388,7 @@ const SCRIPT = `
   out.knockoutTier = /Knockout search/.test(tierText() || '');
   out.knockoutSweep = /1 broad sweep per name/.test(txt());
   out.nativeHiddenOnKnockout = !maybeByText('button', /Native-language investigation/);
-  // tracker issue 706 — the copy changed and the assertion follows it. The OLD string ("not searched; filing counts
+  // the copy changed and the assertion follows it. The OLD string ("not searched; filing counts
   // only") led with the absence and then contradicted it in the same clause; what a Knockout buys at the
   // register is three counts per name in the classes named, and what it does not buy is a reading of the
   // filings behind them. This measures the same thing the ok() below claims: that the card states the
@@ -527,7 +527,7 @@ const SCRIPT = `
   // The blocker text only proves the label. What matters is that NOTHING is posted: a screen that shows
   // a blocker and posts anyway is a screen whose refusal is decoration.
   //
-  // tracker issue 2119 — WAIT FOR THE BUTTON, NOT FOR ITS NEIGHBOUR. The settle above waits for the
+  // WAIT FOR THE BUTTON, NOT FOR ITS NEIGHBOUR. The settle above waits for the
   // failure notice to CLEAR, and the notice can clear before the dialog re-renders its controls. This
   // click then landed on a screen that had not finished and threw "no button matching /Back to edit/ is
   // on screen" — which reads as a missing control and was a missing wait. Measured on CI run
@@ -653,7 +653,7 @@ const SCRIPT = `
     // full product names the table ran ~2x its wrapper and barely two of the columns were visible — a
     // boolean could not tell that from the 40px the 760px min-width has always cost.
     out.matrixOverflowPx = wrap && table ? table.scrollWidth - wrap.clientWidth : null;
-    // ── Refs tracker issue 2144 — THE ESCAPE MUST BE A CHILD OF THE THING THAT CAPS IT ─────────────
+    // ── THE ESCAPE MUST BE A CHILD OF THE THING THAT CAPS IT ─────────────
     // The cap is a direct-child selector. The opt-out spent two rounds of fixing applied to a
     // GRANDCHILD, where lifting the max-width asks a box to be wider than the box it lives in — which
     // is why the table stayed at 718px while reading, in the source, as though it had opted out. No
@@ -732,7 +732,7 @@ const SCRIPT = `
     // assertion to touch a missing key blew up with a TypeError instead. out.steps says how far it got.
     out.fatal = String(e && e.message ? e.message : e);
     out.raw = 'driver threw after: ' + out.steps.join(' -> ');
-    // tracker issue 1809 — the named throw says WHAT was missing; this says what was on screen instead. Without it a
+    // the named throw says WHAT was missing; this says what was on screen instead. Without it a
     // diagnostic fix still loses the diagnosis, which is the whole complaint this change answers.
     out.body = txt().slice(0, 900);
     return out;

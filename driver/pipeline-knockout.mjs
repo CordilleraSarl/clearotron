@@ -140,7 +140,7 @@ function attachKnockoutFramework(ctx) {
 //     cannot read its own ladder back, the driver is contradicting itself and nothing downstream is
 //     trustworthy. Hard fail, before a paid turn.
 //   PRE-EXISTING (a resume, or an archived run replayed) — those bytes predate this process and may
-//     predate this shape. 's own "not claimed" names exactly this risk: a replay turning red is how
+//     predate this shape. its own "not claimed" names exactly this risk: a replay turning red is how
 //     this fix would go wrong. So it is LOUD and it does not stop the run.
 export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for its test: both dispositions are driven directly
   let bands = null;
@@ -1028,7 +1028,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // terminal — the ladder above declined to buy a park: .failed + the standard failure packet
     // — WAS THIS THE PRODUCT REFUSING, OR THE ENGINE BREAKING? Asked once, here, and carried into
     // every record this block writes. Null on an ordinary failure, so nothing about an ordinary failure
-    // changes shape. 's other half — a designed refusal must never reach recovery machinery — was
+    // changes shape. That other half — a designed refusal must never reach recovery machinery — was
     // satisfied by construction while the lane had none. It is now satisfied by CODE: the
     // `if (!terminalKind)` above, which asks the refusal question BEFORE the ladder is consulted and is
     // the reason a refusal cannot buy a park. The arms that prove it are in the ladder's own test file.

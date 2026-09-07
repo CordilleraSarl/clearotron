@@ -460,7 +460,7 @@ test("#723 a SIGNED-IN caller's refusal is journalled WITH the address", async (
   });
 });
 
-// 's Out of scope, at the DOOR. The same door, the same missing credential, the same status — and
+// That Out of scope, at the DOOR. The same door, the same missing credential, the same status — and
 // no row, because the path is not an admin write. The first cut of this change journalled here
 // unconditionally, so every unauthenticated poll and every bounce to the login form filed a line: an
 // access log for the whole portal, arriving through the entrance rather than the router.

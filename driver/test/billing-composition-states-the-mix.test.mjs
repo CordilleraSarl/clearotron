@@ -126,7 +126,7 @@ test("#1209 a fully attributed run says so — `complete` is not decoration", ()
 });
 
 test("#1209 SHAPE FUZZ: null and undefined do not throw", () => {
-  // `= {}` defaults on undefined and NOT on null. Same finding as 's planVsExecutedChannels, which
+  // `= {}` defaults on undefined and NOT on null. Same finding as the planVsExecutedChannels, which
   // threw on a null it was documented to accept.
   for (const [a, b] of [[null, null], [undefined, undefined], [null, undefined], [{}, null]]) {
     const c = billingComposition(a, b);
@@ -142,7 +142,7 @@ test("#1209 the statement is DERIVED — every name in it comes from the buckets
   const modes = new Set(Object.values(LIVE).map((b) => b.authMode));
   // Engines come STRAIGHT from the buckets. Vendors are one derivation away, so the check is that every
   // vendor is the image of an engine that is present — not that a vendor is itself an engine name, which
-  // is the confusion 's remainder was.
+  // is the confusion the remainder was.
   for (const e of c.engines) assert.ok(engines.has(e), `statement names an engine absent from byBilling: ${e}`);
   for (const v of c.vendors) assert.ok([...engines].some((e) => vendorOf(e) === v),
     `statement names a vendor no engine in byBilling bills to: ${v}`);

@@ -47,7 +47,7 @@ export function scanCitations(files, readFn, { paths, excluded, declaredFor, sou
         // Measured at the bound written here: 6 hits, all real. Widen it further only with the same
         // measurement in hand.
         const base = path.endsWith("/") ? null : path.slice(path.lastIndexOf("/") + 1);
-        // AND A DIRECTORY IS CITED BY ITS OWN NAME TOO (, measured 2026-08-24). Three shipping
+        // AND A DIRECTORY IS CITED BY ITS OWN NAME TOO (measured 2026-08-24). Three shipping
         // files named `fixtures/owner-screen-2026-07-29` — a path relative to the file, not to the repo
         // root — so `includes(path)` walked straight past every one of them and the reader got a
         // directory that is not there. The FILES-ONLY bound above was measured against basenames like

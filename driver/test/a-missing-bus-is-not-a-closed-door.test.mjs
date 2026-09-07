@@ -47,7 +47,7 @@ const busFailure = () => ({ fields: null,
   error: Object.assign(new Error("Command failed: systemctl --user show clearotron-client-mcp.service"),
     { stderr: "Failed to connect to bus: No medium found\n" }) });
 
-test("tracker issue 130 — a bus failure at the health read is RAISED, never rendered as a shut door", () => {
+test("a bus failure at the health read is RAISED, never rendered as a shut door", () => {
   assert.throws(() => unitIsHealthy("clearotron-client-mcp.service", { show: busFailure, pause: noPause }),
     (e) => {
       // The remedy has to travel with it. A raise that says "Command failed" has moved the defect
@@ -61,7 +61,7 @@ test("tracker issue 130 — a bus failure at the health read is RAISED, never re
     + "operator the door is not open while the door is running");
 });
 
-test("tracker issue 130 — a unit systemd DID answer about and calls dead is still not healthy", () => {
+test("a unit systemd DID answer about and calls dead is still not healthy", () => {
   // The other half, and the one that keeps the raise from swallowing the ordinary answer. A door that
   // systemd knows about and reports as failed must stay a plain `false` — turning that into an
   // exception would take down a path that is meant to report a state, not blow up on it.
@@ -81,7 +81,7 @@ test("tracker issue 130 — a unit systemd DID answer about and calls dead is st
     + "variables that will not help");
 });
 
-test("tracker issue 130 — the reader asks with the bus filled in and keeps what systemd said", () => {
+test("the reader asks with the bus filled in and keeps what systemd said", () => {
   // The two properties the missed sites lacked, driven by recording what the runner was handed rather
   // than asserted from the source. Both are invisible in the return value and both are the whole fix.
   let seen = null;
@@ -96,7 +96,7 @@ test("tracker issue 130 — the reader asks with the bus filled in and keeps wha
     + "121 was filed about while the writers one screen away succeed");
 });
 
-test("tracker issue 130 — one authority decides what a bus failure looks like", () => {
+test("one authority decides what a bus failure looks like", () => {
   // The classifier is shared by the failure text and the health read. A second copy is how the two
   // would come to disagree about which failures deserve the remedy.
   assert.equal(looksLikeBusFailure("Failed to connect to bus: No medium found"), true);
@@ -110,7 +110,7 @@ test("tracker issue 130 — one authority decides what a bus failure looks like"
   assert.equal(systemdSaid({ message: "Command failed" }), "Command failed");
 });
 
-test("tracker issue 130 — no read site asks systemd directly, which is how this defect arrived", () => {
+test("no read site asks systemd directly, which is how this defect arrived", () => {
   // WHAT INJECTION CANNOT SEE. Every arm above holds `unitIsHealthy` and `showUnit` to their contracts,
   // and all of them stay green against a NEW reader written straight onto execFileSync — which is
   // exactly what happened: the writers were repaired, and two reads sat one screen away untouched.
@@ -127,7 +127,7 @@ test("tracker issue 130 — no read site asks systemd directly, which is how thi
   const bare = direct.filter((d) => !wrapped.includes(d));
   assert.deepEqual(bare.map((d) => d.n), [],
     "a `systemctl` call in this file neither goes through `showUnit` nor carries the derived bus and "
-    + "captured stderr itself. That is the shape of the defect tracker issue 130's third criterion "
+    + "captured stderr itself. That is the shape the third criterion names "
     + `found, one screen from where it was repaired: ${bare.map((d) => `${d.n}: ${d.line.trim()}`).join(" | ")}`);
   assert.ok(direct.length >= 2,
     "the `systemctl` writers have gone from this file, so this arm is watching nothing");
@@ -136,7 +136,7 @@ test("tracker issue 130 — no read site asks systemd directly, which is how thi
     "there is more than one wrapped runner, so `showUnit` is no longer the single read authority");
 });
 
-test("tracker issue 203 — the constant the guard above accepts by name really does pipe stderr", () => {
+test("the constant the guard above accepts by name really does pipe stderr", () => {
   // The guard one arm up now accepts `...CAPTURE_STDERR` as proof a call captures systemd's words. That
   // is only true while the constant says so, and a constant is exactly the thing that can be edited
   // somewhere else. Held to its value here, so the two cannot drift apart silently.
@@ -145,7 +145,7 @@ test("tracker issue 203 — the constant the guard above accepts by name really 
     + "one thing a reader needs — and the source guard above is reading it as compliant");
 });
 
-test("tracker issue 130 — the raise says what a half-finished connect already wrote", () => {
+test("the raise says what a half-finished connect already wrote", () => {
   // The health read fires AFTER the units are placed, so a reader who hits it needs the same
   // half-applied inventory every other failure on this path gives them.
   const e = systemdFailure({ stderr: "Failed to connect to bus: No medium found" },
@@ -156,7 +156,7 @@ test("tracker issue 130 — the raise says what a half-finished connect already 
 
 // ── The three further defects the same drive found, on the same verb ────────────────────────────────
 
-test("tracker issue 130 — the plan and the mint read ONE install, not two", () => {
+test("the plan and the mint read ONE install, not two", () => {
   // The defect: the plan asked the install's ENV FILE whether a signing secret existed and said yes;
   // `mintToken` then read `process.env` and threw "TRADEMARK_MCP_TOKEN_SECRET unset" about a secret
   // that IS set. On a hosted install that is the ordinary case — the installer writes the file and the
@@ -180,7 +180,7 @@ test("tracker issue 130 — the plan and the mint read ONE install, not two", ()
     "a file that is not there was read anyway");
 });
 
-test("tracker issue 130 — a secret supplied for one mint does not outlive it", () => {
+test("a secret supplied for one mint does not outlive it", () => {
   // `connect` spawns systemctl. A secret left in the environment after the call that needed it reaches
   // every child from then on, which is a worse defect than the one being repaired.
   const env = { PATH: "/usr/bin" };
@@ -197,7 +197,7 @@ test("tracker issue 130 — a secret supplied for one mint does not outlive it",
     "a failed mint left the signing secret in the environment of every process spawned afterwards");
 });
 
-test("tracker issue 130 — a loopback address is never called reachable from outside", () => {
+test("a loopback address is never called reachable from outside", () => {
   // The paragraph above this branch says a wrong answer in this direction is the dangerous one: an
   // operator told their door is loopback-only stops thinking about who else can reach it. The claim was
   // made from the VARIABLE being non-empty, and a loopback value is a thing operators set.

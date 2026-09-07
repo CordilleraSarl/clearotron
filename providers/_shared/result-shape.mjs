@@ -66,7 +66,7 @@ export const NEUTRAL_TOOL_RESULT_SHAPE = Object.freeze({
     // key the provider's own kernel is configured to join on is the one its own doBatchScreen emits.
     // See BATCH_SCREEN_JOIN_KEY.
     row: Object.freeze({ identity: Object.freeze(["uri", "record_id"]), verdict: "screen_verdict" }),
-    // euipo answers `screened: <count>`. The free tier's pre- read was
+    // euipo answers `screened: <count>`. The free tier's pre-change read was
     // `parsed.rows ?? parsed.screened ?? parsed.results ?? parsed.records` — on euipo that chain
     // resolves an INTEGER as the screening result the moment `rows` is ever absent. The key is NOT
     // renamed here: the response text is the seat's prompt surface and euipo's own callers read it.
@@ -74,7 +74,7 @@ export const NEUTRAL_TOOL_RESULT_SHAPE = Object.freeze({
     // this file learns the trap instead of rediscovering it.
     reservedScalars: Object.freeze({ screened: "number", asked: "number" }),
   }),
-  // Audited alongside batch screen ('s "worth checking at the same time"): NO split. Every
+  // Audited alongside batch screen (the "worth checking at the same time"): NO split. Every
   // provider that implements search answers `results[]` — corsearch and clarivate through
   // `normalizeSearchResponse`, euipo/uspto-local/free-tier directly — and the driver reads exactly
   // that name (driver/driver.config.mjs `recordsFromSearch`, and the `clarivate` entry).

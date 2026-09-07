@@ -10,7 +10,7 @@
 // All 295 are missing packages and the assertions downstream of them, printed as `not ok` lines with
 // stack traces in driver/test/*.test.mjs — indistinguishable from code defects. Roughly 190 tests never
 // executed, and a regression inside any of them is invisible to a baseline diff taken the same way.
-// 's first full-suite comparison was taken against exactly that baseline.
+// That first full-suite comparison was taken against exactly that baseline.
 //
 // THE ASSERTION IS THE EXIT, not the message. `scripts/test-run.mjs` wraps every invocation, so the
 // question is whether it refuses or runs — and a test that only grepped the wording would go green the

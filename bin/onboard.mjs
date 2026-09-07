@@ -133,7 +133,7 @@ const PROBE_ENGINE = has("--probe-engine");
 // issue 1871 — the same opt-in shape, for the credentials that had no proof at all. Never implied by
 // a plain --check: this SPENDS, and on two of the register adapters the count IS a billable search.
 const PROBE_PROVIDERS = has("--probe-providers");
-// tracker issue 149 — the same opt-in shape again, and this one WRITES: every registration it gets
+// the same opt-in shape again, and this one WRITES: every registration it gets
 // accepted CREATES an OAuth client on the operator's account. `doctor` promises in INSTALL.md that it
 // writes nothing, and that promise is why a reader runs it on a production box without thinking. So
 // this is never implied, it says what it is about to create before it creates it, and it reports what
@@ -141,7 +141,7 @@ const PROBE_PROVIDERS = has("--probe-providers");
 const PROBE_CONNECTOR = has("--probe-connector");
 
 // ── output ───────────────────────────────────────────────────────────────────────────────────────────
-// WEIGHT WHERE THE MEANING IS (, owner ruling 2026-08-31). Every line here used to
+// WEIGHT WHERE THE MEANING IS (owner ruling 2026-08-31). Every line here used to
 // be the same weight, which is why the passphrase and the coverage reason both disappeared into their
 // surroundings — two defects on that issue that are formatting defects wearing other clothes.
 //
@@ -1663,7 +1663,7 @@ export async function runCheck() {
   // could print, and the portal's own config view does — is deliberately not printed here: `doctor` goes
   // to a terminal, into a paste, into an issue.
   // THE ONE CONDITION THAT STOPS THE PORTAL RENDERING, and `doctor` said nothing about it at all
-  // (bb8, F2). `portal-ui/dist` is committed, so an absent bundle means a bad checkout on
+  // (found in review). `portal-ui/dist` is committed, so an absent bundle means a bad checkout on
   // a deployment and an unbuilt tree on a source clone; the service already answers 503 and says so in
   // its boot log, but a reader who runs `doctor` BEFORE `start` — which is the order every document
   // gives — had no way to learn it. The product's OWN predicate decides rather than a second existence
@@ -2093,7 +2093,7 @@ export async function runCheck() {
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
 
   say("\n  Client connector");
-  // THE REVOCATION LIST, REPORTED ( — bb8's F14). `isRevoked` treats an unreadable
+  // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` treats an unreadable
   // denylist as "not revoked", so a named-but-absent file makes every revocation silently ineffective:
   // measured on a default install, a revoked key completed a full handshake with nothing logged. Nothing
   // surfaced that state anywhere, which is why it survived to be found by hand.
@@ -2182,8 +2182,8 @@ export async function runCheck() {
     const doorEnvKnown = !hosted || unitEnv?.known === true;
     const doorEnv = hosted && unitEnv?.known === true ? unitEnv.env : process.env;
     if (!doorEnvKnown) warn(couldNotDetermine("CLIENT_MCP_ACCOUNT_ACCESS", unitEnv));
-    // THE PORT AND ITS ALLOW-LIST ARE ONE SETTING, AND NOTHING SAID SO (, Hera's
-    // operator pass). `start` derives CLIENT_MCP_ALLOWED_HOSTS from the port it resolved, so moving the
+    // THE PORT AND ITS ALLOW-LIST ARE ONE SETTING, AND NOTHING SAID SO (found in an operator pass).
+    //  `start` derives CLIENT_MCP_ALLOWED_HOSTS from the port it resolved, so moving the
     // port THROUGH start works. Moving it in the env file the units load does not: the door binds the
     // new port and then answers "403 Invalid Host header" on every request, because the allow-list still
     // names the old one. A door that is up, listening, and refuses everything is the worst of the three
@@ -2205,7 +2205,7 @@ export async function runCheck() {
       }
     }
 
-    // IS ANYTHING ANSWERING? ( — bb8's F11.) The unit file is evidence about the
+    // IS ANYTHING ANSWERING? (found in review) The unit file is evidence about the
     // background shape only. A foreground `clearotron start` runs the door as its own child with no unit
     // at all, and this section then told a reader whose door was listening that it "is not set up here",
     // pointing them at the command they had just run. One loopback connect settles it, and null stays
@@ -2247,7 +2247,7 @@ export async function runCheck() {
       problem("a valid key is on record but NO revocation list is configured (TRADEMARK_MCP_TOKEN_DENYLIST unset) "
         + `— \`${invoke("disconnect")}\` could not actually revoke it. \`${invoke("connect")}\` arms one; set the variable or reconnect.`);
     }
-    // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (, acceptance 2). Reported here
+    // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (acceptance 2). Reported here
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.
     const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
@@ -2511,7 +2511,7 @@ try {
   // is DERIVED: the engines from ENGINE_BINARIES, the search vendors from the same adapter tables the
   // prompts loop over, each wearing its own table row's where-to-get line. A hand-kept copy here would
   // be the SERPAPI defect again, one screen earlier. Everything is skippable; the list says so.
-  // THE BANNER — once, on entry, named (, owner ruling 2026-08-31). Not on every
+  // THE BANNER — once, on entry, named (owner ruling 2026-08-31). Not on every
   // command: a banner every verb prints is how a product becomes tiresome to use twice. It sits here
   // rather than at the top of main() so that `--check`, which writes nothing and is run repeatedly,
   // does not wear it either.
@@ -2521,7 +2521,7 @@ try {
   say("");
   say(`  ${style.bold("Before you start")} — what this setup can take, so nothing here surprises you:`);
   // `vendor`, not `label`: the labels are engineer sentences carrying flag names, and a question a
-  // lawyer reads may not ('s first rule).
+  // lawyer reads may not (the first rule).
   say(`    · Which AI runs the searches (${Object.values(ENGINE_BINARIES).map((e) => e.vendor).join(" or ")}),`);
   say("      and how it bills — the subscription you already sign in with, or an API key.");
   say("    · Your trademark register vendor's credential, if you have one (a register can be chosen later).");
@@ -2795,7 +2795,7 @@ try {
           }
         }
       }
-      // — bb8's F9, and the same trap closed one prompt over. The default
+      // — found in review, and the same trap closed one prompt over. The default
       // was YES, so Enter re-ran a probe that CANNOT succeed until the reader has signed in somewhere
       // else — and the wizard's own header tells them Enter is the safe key. Driven with Enter it went
       // 19 attempts, no cap and no escape, in a wizard whose header says everything here is skippable.
@@ -3142,7 +3142,7 @@ try {
   candidate.PROFILE_REPO_ROOT = cfg;   // no alias row — this name is current
   for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "PROFILE_REPO_ROOT"]) ok(`${k}=${candidate[k]}`);
 
-  // CLEAROTRON_INSTRUCTIONS_DIR IS DELIBERATELY NOT WRITTEN ( — bb8's F25).
+  // CLEAROTRON_INSTRUCTIONS_DIR IS DELIBERATELY NOT WRITTEN (found in review).
   //
   // Setup used to point it at `<cfg>/skills` and create that directory empty. `clearotron start` then
   // makes `<cfg>` a git repository for saved searches — so the doctrine store ends up INSIDE a checkout
@@ -3269,17 +3269,17 @@ try {
   // They are `clearotron` verbs now for a second reason as well: from an INSTALLED package there is
   // no `npm run example` to type — no package.json, no scripts block — so the old advice was not
   // merely misordered there, it was unrunnable.
-  // ONE COMMAND, AND WHAT TO EXPECT FROM IT (, the owner's point 10). This screen
+  // ONE COMMAND, AND WHAT TO EXPECT FROM IT (the owner's point 10). This screen
   // offered three, each with a sentence, and a reader who has just answered a page of questions is
   // being asked to make one more choice at the moment they most want to be told what to do. Three
   // equally-weighted options is not generosity; it is the decision handed back.
   //
   // `start` is the one, because it is the product — the other two were already ordered behind it for
-  // that reason (, when this screen offered `npm run example` and a raw pipeline invocation and
+  // that reason (when this screen offered `npm run example` and a raw pipeline invocation and
   // named the product nowhere). They keep their place as an afterthought line rather than an option.
   // THE COMMAND LINE STAYS A PLAIN LITERAL, DELIBERATELY. onboard-wizard.test.mjs reads this screen
   // STATICALLY — it extracts every say() literal and asserts which command leads — and that guard is
-  // the only thing standing between this screen and 's defect coming back. Wrapping the command in
+  // the only thing standing between this screen and the defect coming back. Wrapping the command in
   // style.bold() puts a nested template literal inside the say(), the extractor stops matching, and the
   // corpus goes empty. Its own comment records the previous generation of exactly this: the arms went
   // vacuous the moment these lines became template literals.

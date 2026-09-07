@@ -51,7 +51,7 @@ function localPackages() {
     .filter((p) => existsSync(p.manifest));
 
   // A discovered set that came back empty reports every absence below and reads as a clean tree —
-  // 's census exists for exactly this, and the root alone would be a silent narrowing too.
+  // That census exists for exactly this, and the root alone would be a silent narrowing too.
   assert.ok(out.length > 1,
     `only ${out.length} local package(s) found. The workspace list is not resolving, so this guard is `
     + "comparing almost nothing and would pass over any drift in the packages it lost");

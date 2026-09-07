@@ -157,7 +157,7 @@ export function runStreamingChild({
   // timeout; NaN/≤0 clamps to 660s so the wall never silently disables. A non-positive or unparseable
   // PIN falls through to that derivation for the same reason — a pin is an instrument, never an off
   // switch. Without it the floor here is 61 SECONDS at the shortest, which is why this clock had no arm
-  // and why 's grace never reached the line below: no test could drive it without sitting for a
+  // and why the grace never reached the line below: no test could drive it without sitting for a
   // minute.
   const pinnedHard = Number(process.env.CLEAROTRON_HARD_MS);
   const hardMs = pinnedHard > 0 ? pinnedHard : (Number(timeoutSec) > 0 ? Number(timeoutSec) + 60 : 660) * 1000;

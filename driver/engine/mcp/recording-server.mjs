@@ -24,12 +24,12 @@
 //
 // `CLEAROTRON_BAND_RUN_DIR`, read at CALL TIME. `serverEnv()` (gather-config.mjs:162) sets it for every local
 // server, not only band. There is no `run_dir` parameter and there must not be one — the lesson is
-// 's, where an invented `CLEAROTRON_RUN_DIR` fallback sat two lines under a sentence promising the tool
+// the earlier one, where an invented `CLEAROTRON_RUN_DIR` fallback sat two lines under a sentence promising the tool
 // never guesses a run. Call time rather than module load: stdio-server.mjs:29-33 states why for this
 // exact variable.
 // ── THE SECOND CAPABILITY CLASS: A SCOPED READ, and why it does not break the sentence above ────────
 //
-// `search_run_artifacts` is the skeptic's sanctioned read surface ('s ratification hold, unlock
+// `search_run_artifacts` is the skeptic's sanctioned read surface (the ratification hold, unlock
 // path 1): a literal substring search over the calling run's OWN artifact tree, replacing the Bash
 // reads O3c measured the stage using. It still dials nothing and writes nothing — the category's
 // promise is about RETRIEVAL and writes, and a read bounded to CLEAROTRON_BAND_RUN_DIR widens neither.
@@ -464,7 +464,7 @@ serve({
               value: { type: "string", description: "The search term itself — never a label, never an enumeration." },
               // THE CANONICAL ENUM, imported — never a second copy. `parseVariantManifestModel` refuses
               // anything outside it, so a hand-typed list here could drift into promising a category the
-              // parser rejects. 's brief reads the same constant.
+              // parser rejects. That brief reads the same constant.
               category: { type: "string", enum: [...VARIANT_CATEGORIES] },
               rationale: { type: "string" },
               romanization: { type: "string", description: "Latin-script form. NON-LATIN VALUES ONLY — a romanisation on a Latin value is refused as an orphan." },
@@ -848,7 +848,7 @@ serve({
     // The reviewer is the report's only check, and it wrote its own review as prose. Everything
     // downstream then parsed that prose back: the verdict token, the flag list, the `[kind:]`/`[on:]`
     // channels, and the count that decides whether a BLOCKING is degenerate. The seat chose the
-    // enumeration style, so the parse could miss it — 's lettered flags were invisible
+    // enumeration style, so the parse could miss it — the lettered flags were invisible
     // for exactly that reason. Handing values makes the style the driver's, so a flag the parse cannot
     // see stops being possible rather than being detected afterwards.
     //

@@ -8,7 +8,7 @@
 // the ones somebody happened to look at".
 //
 // THE POPULATION IS DERIVED FROM THE TREE, and the table is the classification of it. A row is not an
-// exemption — a pair classified `out-of-scope` still appears, with its counts, for 's reason: a
+// exemption — a pair classified `out-of-scope` still appears, with its counts, for the reason: a
 // filtered population produces no number and nobody can see what was dropped.
 //
 // PARSED, NOT GREPPED. A regex over the same tree returned 66 hits, of which roughly a third were prose

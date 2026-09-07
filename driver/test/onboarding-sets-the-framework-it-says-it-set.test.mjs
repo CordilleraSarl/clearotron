@@ -358,7 +358,7 @@ test("1945 a store that does not exist is refused by name, not as a stack trace"
   assert.match(e.message, /typo/, "and offers the likely cause, because that is the fix");
 });
 
-// ── the refusal reaches the OPERATOR, not the debugger (, acceptance 2) ────────────
+// ── the refusal reaches the OPERATOR, not the debugger (acceptance 2) ────────────
 //
 // SPAWNED, not called. The defect was never in the validation — `assertProfileKey` has always rejected
 // a bad key with the right sentence. It was in the CLASS of what it threw: main() deliberately lets a

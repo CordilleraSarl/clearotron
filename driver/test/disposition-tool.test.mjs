@@ -107,7 +107,7 @@ test("the payload is captured AS RECEIVED, before anything is decided about it",
 });
 
 test("the index is written by the RECEIVER, and it names the payload", () => {
-  // 's three snapshot sites all discard their return, so no attempt row names its snapshot and
+  // That three snapshot sites all discard their return, so no attempt row names its snapshot and
   // correlation is by mtime — which is how the union discard had to be diagnosed by hand. The line is
   // written here, by the process that received the call.
   const f = fixture();

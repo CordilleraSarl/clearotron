@@ -18,7 +18,7 @@
 //   structure  20  written where it OUTLIVES the expression that computed it. (21 when this was
 //                  classified; the one cure that landed removed its site rather than fixing it in place.)
 //
-// THOSE COUNTS ARE A READING, NOT THE RULING. This population moved three times on 's own thread
+// THOSE COUNTS ARE A READING, NOT THE RULING. This population moved three times on its own thread
 // (241 lines, then 248, then 251 sites) and quoting a comment's number instead of a run's is the mistake
 // that thread kept making. What ratchets below is the set of FILES, re-derived every run; the counts are
 // here so a reader knows what the ruling was written against, and they are expected to drift.
@@ -50,7 +50,7 @@
 // its guard, which an arm below pins.
 //
 // STRUCTURE — THE ADJUDICATION SET, RULED ONE BY ONE. A boolean at rest is the only kind fresh data can
-// arrive and contradict. 's `quote_required` was exactly this: a flag on a form, met later by
+// arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
 // ── THE RULING, ALL TWENTY-ONE AS CLASSIFIED — TWENTY IN THE SWEEP TODAY, SEE THE CURE BELOW ─────────
@@ -151,7 +151,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const src = (f) => readFileSync(join(DRIVER, f), "utf8");
 
-/** The adjudication set, re-derived. Never a list — the population moved twice on 's own thread. */
+/** The adjudication set, re-derived. Never a list — the population moved twice on its own thread. */
 const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
   .filter((r) => r.holds === "structure");
 

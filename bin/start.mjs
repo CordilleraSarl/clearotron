@@ -75,7 +75,7 @@
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
 import { envLocalPath, envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
-import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 203 — a refusal, not a stack trace
+import { systemdFailure, systemdSaid, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // a refusal, not a stack trace
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
@@ -129,7 +129,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names one spelling has set nothing that wins
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
-import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // tracker issue 160 — never serve a bundle older than its sources
+import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // never serve a bundle older than its sources
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -321,7 +321,7 @@ export function portsForFlag(portFlag, ports, env = {}) {
 /**
  * Where the grants file is, for a command that is NOT the supervisor.
  *
- * — bb8's F13. `start` injects CLEAROTRON_ACCESS_FILE into the environment of
+ * — found in review. `start` injects CLEAROTRON_ACCESS_FILE into the environment of
  * the services it supervises (see the child env below) and never persists it, so the door finds the
  * roster and every sibling CLI in the operator's own shell does not. `clearotron grant` then refused
  * with "Set CLEAROTRON_ACCESS_FILE" — a variable nothing writes — and enrolling a client had no working
@@ -439,7 +439,7 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   // that included it would have made that consent meaningless. That reasoning was right under that
   // ruling and the exclusion was not an oversight.
   //
-  // The owner superseded it knowingly (, settled point 2): the door auto-starts with
+  // The owner superseded it knowingly (settled point 2): the door auto-starts with
   // the product and the per-account key is the gate. It is now in SERVER_INSTALL_SET — which IS
   // BACKGROUND_UNITS — and the pin/exclusion partition means it cannot be in both, so the row is gone
   // rather than reworded. `--background` writes its settings from `enablePlan` before installing it.
@@ -619,7 +619,7 @@ if (isMain) {
   const argv = process.argv.slice(2);
   const say = (s = "") => process.stdout.write(`${s}\n`);
   const err = (s) => process.stderr.write(`${s}\n`);
-  // Flipped at the first state-changing act ('s third criterion): a refusal AFTER
+  // Flipped at the first state-changing act (the third criterion): a refusal AFTER
   // writes must say what survives and that re-running is safe — the reader's only question at that
   // moment, and one the screen never answered while the writes sat above the port probe.
   let wroteState = false;
@@ -831,7 +831,7 @@ if (isMain) {
   say(`  reports        ${paths.pool}`);
   say(`  signs in as    ${user}`);
 
-  // ── THE PORTS, PROBED BEFORE ANYTHING IS WRITTEN ('s sibling,) ──
+  // ── THE PORTS, PROBED BEFORE ANYTHING IS WRITTEN (the sibling,) ──
   //
   // This block used to sit in section 4, after the secrets were minted, the data plane created, the
   // grants file written and an example report seeded. So a box where another copy already held the port
@@ -854,7 +854,7 @@ if (isMain) {
     s.once("listening", () => s.close(() => resolve(null)));
     s.listen(port, HOST);
   });
-  // ALL THREE DOORS, NOT TWO ( — bb8's F11). The client door's port is resolved
+  // ALL THREE DOORS, NOT TWO (found in review). The client door's port is resolved
   // beside the other two, three lines up, and was left out of the loop written for exactly this
   // principle. So a held client port was discovered AFTER the portal and the engine door had bound: the
   // run fatalled mid-flight, tore down what it had started, and then did not exit — measured at rc=124
@@ -889,7 +889,7 @@ if (isMain) {
         continue;
       }
     }
-    // 's wording, not a second copy of it. That helper already distinguishes EADDRINUSE from EACCES
+    // That wording, not a second copy of it. That helper already distinguishes EADDRINUSE from EACCES
     // on a privileged port and from an address this host does not have, and names the way out of each;
     // the launcher having its own shorter sentence for one of the three would mean a user meets two
     // different answers to the same question depending on which door refused first.
@@ -957,7 +957,7 @@ if (isMain) {
     catch (e) { fatal(`could not create the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
     say(`  created        ${paths.grants} (an empty roster — one staff address, no clients yet)`);
   }
-  // THE REVOCATION LIST, CREATED — not merely named (, bb8's F14).
+  // THE REVOCATION LIST, CREATED — not merely named (found in review).
   //
   // The door is started with TRADEMARK_MCP_TOKEN_DENYLIST pointing here, and since this branch
   // `isRevoked` fails CLOSED on an unreadable file — it refuses the token rather than assuming it was
@@ -1245,7 +1245,7 @@ if (isMain) {
       } catch { /* no file yet — the union is the whole of it */ }
       // ONE COMPOSER for "where do I set these", used by the start-time refusal and by the order-time
       // announcement below it. Two copies of this sentence is how one of them comes to name a file the
-      // reader cannot use — which is the whole of tracker issue 202.
+      // reader cannot use.
       const orderRemedy = (homeEnv) => {
         const cliEnv = envFileRead();
         return cliEnv
@@ -1408,7 +1408,7 @@ if (isMain) {
     // deriving the bus at two of them is worse than at none: `enable --now` would succeed against the
     // derived bus while the health read three screens down still asks the bus-less one, so every unit
     // would start and then be reported as not running. Driven into by accident while building
-    // tracker issue 203 — "4 of 4 unit(s) did not come up" over four units that had just been enabled.
+    // "4 of 4 unit(s) did not come up" over four units that had just been enabled.
     // Making all five derive it is a real improvement to the install path and is its own change with its
     // own drive, not a side effect of repairing a refusal.
     try { execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR); }
@@ -1468,7 +1468,7 @@ if (isMain) {
     }
     // enable --now on an ALREADY-ACTIVE unit is a no-op, so a refresh would leave the old process
     // running the old files. EVERY long-running unit in the set is restarted, not a hardcoded pair
-    // (, Hera's review): the pair here matched the pair the health check used three
+    // (found in review): the pair here matched the pair the health check used three
     // lines down, and carried the same stale justification about "the oneshot and its triggers". There
     // is no oneshot in the set. So a refresh restarted the portal and the engine door onto new code and
     // left the worker and the client door on the old — while the check below now reports all four up,
@@ -1487,7 +1487,7 @@ if (isMain) {
     // reintroduce it through a second door.
     //
     // The restart keeps the port and the key: both live in the unit's environment and the access file,
-    // not in the process. That is tracker issue 228's criterion 2, and it is why this is a restart
+    // not in the process. That is why this is a restart rather than a re-place
     // rather than a re-place.
     if (adoptedClientDoor && !backgroundRefresh) {
       try { execFileSync("systemctl", ["--user", "restart", CLIENT_DOOR_UNIT], { stdio: "ignore" }); }
@@ -1496,7 +1496,7 @@ if (isMain) {
 
     // STARTED IS NOT RUNNING (the connect lesson): settle, then read each service's own state.
     //
-    // EVERY UNIT THIS FLAG INSTALLS, DERIVED FROM THE SET ( — bb8's F15). This checked
+    // EVERY UNIT THIS FLAG INSTALLS, DERIVED FROM THE SET (found in review). This checked
     // a hardcoded PAIR while `enable --now` had just started FOUR. So a client door crash-looping against
     // a held port got no ✗, was never named in the banner, and `start --background` printed its success
     // block and exited 0 over a product that was two-thirds up. The worker was unchecked for the same

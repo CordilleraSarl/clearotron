@@ -65,7 +65,7 @@ function loadDeclinationSpec(runDir) {
 
 async function record_declination(params) {
   // `CLEAROTRON_BAND_RUN_DIR` at CALL TIME, and there is no `run_dir` parameter — the run is not the seat's
-  // to name. 's lesson, where an invented fallback sat two lines under a promise never to guess.
+  // to name. That lesson, where an invented fallback sat two lines under a promise never to guess.
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
   if (!runDir) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };

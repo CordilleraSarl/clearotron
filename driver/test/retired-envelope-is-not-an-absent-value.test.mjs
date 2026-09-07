@@ -44,7 +44,7 @@ test("#1234 THE FIXTURE IS HONEST: the value really does bind when sent as `frag
 });
 
 test("#1234 DISSOLVED by #1172 — the seq-112 shape binds outright, so there is no refusal to word", () => {
-  // 's cure was to word a refusal well: the seat had sent the right characters under the retired
+  // That cure was to word a refusal well: the seat had sent the right characters under the retired
   // name `anchor`, and the message told it it had copied nothing. removes the duty that produced
   // the refusal at all, which is the stronger fix — a row that names a live passage now BINDS whatever
   // envelope any fragment arrived in, or none.

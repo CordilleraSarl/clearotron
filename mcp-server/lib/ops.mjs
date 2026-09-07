@@ -211,7 +211,7 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
       + "which writes the field directly rather than asking this tool for it (tracker issue 2038).",
     promptParts: "the requester's declaration that the prose rides as SIDECAR files. This door assembles from "
       + "structured tool input and writes no sidecars, so a job it built cannot be in that shape. Carrying it "
-      + "would make the manifest claim an intake it did not use, and #1085's check would then report sidecars "
+      + "would make the manifest claim an intake it did not use, and the manifest check would then report sidecars "
       + "missing on a job that never had any.",
     name: "the pre-markName spelling of the search subject. The schema offers markName/marks[]; a second "
       + "name field would give one door two answers to 'what is being cleared'.",
@@ -596,7 +596,7 @@ export function markSent(args = {}) {
   // forever — the alreadySent early-return then suppressed every retry of this cleanup. Making the
   // removal idempotent lets a retried mark_sent finish the cleanup a killed first call left undone.
   //
-  // EVERY FORM THE RUN WAS EVER KNOWN BY, not just one (post-merge audit 2). A pre- packet carries the
+  // EVERY FORM THE RUN WAS EVER KNOWN BY, not just one (post-merge audit 2). A pre-change packet carries the
   // legacy dateless `<slug>-<codename>` runId while the resolved run's own id is the dated canonical
   // `<slug>-<date>-<codename>` — a run delivered on 2026-07-29 still has exactly that pair on disk, its
   // _driver/delivery.json naming the dateless form and its status.json the dated one. That is also why

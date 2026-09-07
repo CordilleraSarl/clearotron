@@ -195,7 +195,7 @@ export function frameCommand(command: FrameCommand, value?: boolean) {
 }
 
 /**
- * THE FLAG HALF OF THIS BRIDGE IS RETIRED (, owner ruling 2026-08-20).
+ * THE FLAG HALF OF THIS BRIDGE IS RETIRED (owner ruling 2026-08-20).
  *
  * `readFrameFeedback`, `frameFeedbackResult`, the `FrameFeedback` type and the `MAX_WHY` mirror lived
  * here and are deleted. They validated a `type: 'feedback'` message carrying a reader's verdict on one

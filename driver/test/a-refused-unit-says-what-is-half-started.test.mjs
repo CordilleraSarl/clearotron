@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 203 — a refusal that arrived as a stack trace, after the run had written everything.
+// a refusal that arrived as a stack trace, after the run had written everything.
 //
 // `start --background` enabled its units in an uncaught loop, so a systemd refusal reached the operator
 // as `node:internal/errors:983`, a status code and `stderr: null`. Two separate failures in one line:
@@ -166,7 +166,7 @@ test("203 and the generic trailer still fires where nothing better was said", as
 });
 
 test("203 the bus branch and the not-the-bus branch give DIFFERENT remedies", () => {
-  // The defect this half inherits from tracker issue 121: one remedy appended to every failure, so a
+  // The defect this half inherits: one remedy appended to every failure, so a
   // unit that would not start for a bound port told the reader to export XDG_RUNTIME_DIR. A confident
   // remedy for a cause that is not the reader's costs more than no remedy.
   const refused = reachedTheEnable(REFUSED);
@@ -213,7 +213,7 @@ test("203 the OTHER systemd catch still lands, and now leads with what systemd s
     assert.match(said, /user manager is not reachable/,
       `this drive did not reach the daemon-reload catch:\n${said.slice(-1200)}`);
     assert.match(said, /Failed to connect to bus: No medium found/,
-      `systemd's own words are still being discarded here — the half of tracker issue 121 that was `
+      `systemd's own words are still being discarded here — the half that was `
       + `never done in this file:\n${said.slice(-1200)}`);
     assert.match(said, /loginctl enable-linger/, "the lingering cause is gone");
     assert.match(said, /export DBUS_SESSION_BUS_ADDRESS/, "the bus-unset cause is gone");

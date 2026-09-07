@@ -3,7 +3,7 @@
 // — A PARK SURVIVES THE HALF-TO-CANONICAL MERGE.
 //
 // THE INCIDENT, and it is the P0's promise broken at a third seam. A run died deterministically on three
-// rows the seat had correctly declared unquotable: it took 's obstacle exit, the park was written
+// rows the seat had correctly declared unquotable: it took the obstacle exit, the park was written
 // properly into the half's form — `parked: true`, `parked_kind: "declared"`, the seat's own sentence,
 // two refusals — and the MERGE cleared all four fields. The canonical validator then read three ruled
 // rows still owing a quote, refused the document, and the run ended with no recovery by class.
@@ -42,7 +42,7 @@ const census = (form) => findConnotationViolations(DOC, 1, { recorded: RECORDED,
 const half = (submitted, opts = {}) =>
   unionDispositionForm({ rows: [] }, { rows: submitted }, OB, { half: "b", ...opts });
 
-/** The seat declaring it cannot evidence the row: 's honest exit. */
+/** The seat declaring it cannot evidence the row: the honest exit. */
 const declaredRow = () => validateDispositionCall([{ row_index: AT, ruling: "loaded", note: "n",
   receipt_index: 1, obstacle: "every passage is an elision marker" }], RECORDED).accepted;
 
@@ -92,7 +92,7 @@ test("#1277 an EXHAUSTED park survives the merge too — this is not specific to
 
 test("#1277 the merged census reports the row as PARKED, not as a ruled row owing a quote", () => {
   // The failure the run actually died of: `connotation_quote_unbound`. The row must be surfaced as
-  // undecided — un-owing it silently is 's lying receipt and the opposite defect.
+  // undecided — un-owing it silently is the lying receipt and the opposite defect.
   const m = mergeOf(half(declaredRow()), { refusals: 2 });
   const reasons = census(m.form).map((v) => v.reason);
   assert.deepEqual(reasons, ["parked"], `the merged census said ${JSON.stringify(reasons)}`);

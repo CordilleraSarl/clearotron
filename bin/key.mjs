@@ -84,7 +84,7 @@ try {
 
 for (const line of minted.notes) console.error(line);
 
-// — bb8's F13. A KEY FOR AN IDENTITY ON NO LIST IS A KEY THAT 403s. This command
+// — found in review. A KEY FOR AN IDENTITY ON NO LIST IS A KEY THAT 403s. This command
 // minted rc 0 for any address, printed the token once — it cannot be shown again — and the operator
 // handed it to a client whose first request was refused, with nothing on either side saying why.
 //

@@ -199,7 +199,7 @@ export const REPAIR_COMPOSERS = [
         // before/after run-pairs read identically, because a clearance narrative's job IS to state what
         // was searched and what came back — the legitimate sentence and the defective one have the same
         // shape and differ only in truth. The typed half of this class IS enforced structurally, on the
-        // corrective pair, by `evidenceClaimViolations` (, pipeline.mjs ~10973) — but it reads
+        // corrective pair, by `evidenceClaimViolations` (pipeline.mjs ~10973) — but it reads
         // `findings.json` meters, and a narrative sentence with no findings-side counterpart is invisible
         // to it. That prose gap is conversion-era work, not an instruction. This is the instruction.
         `A REPAIR MAY NARROW A CLAIM AND MAY NEVER BROADEN ONE. If a flagged statement is wrong because it claims too much, the correction states LESS: strike the claim, or replace it with the smaller claim the evidence actually carries. Never restate the same claim in different words, and never replace a specific sentence with a general one. NARROWING IS NOT HEDGING and the rule above still holds — claiming less is a correction; keeping the claim and wrapping it in "may", "appears to" or "broadly" is the hedge that is forbidden.`,
@@ -233,7 +233,7 @@ export const REPAIR_COMPOSERS = [
         review,
       );
     },
-    // TWO SAMPLES BECAUSE THE COMPOSER HAS TWO SHAPES, and 's saving is the whole point of the
+    // TWO SAMPLES BECAUSE THE COMPOSER HAS TWO SHAPES, and the saving is the whole point of the
     // second: a declared scope narrows the pass, an undeclared one leaves it byte-identical to what it
     // was before that existed. A guard walking only one of them walks half the surface.
     samples: [

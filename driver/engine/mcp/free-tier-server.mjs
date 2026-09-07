@@ -56,7 +56,7 @@ const CAPABILITY_OFFICES = CAPABILITIES.offices.covered.join("+");
 // it a third. It did. This is that third site, and it went on requiring USPTO_LOCAL_DB after the other
 // two stopped.
 //
-// The cost was total. On an EU-only box 's whole path worked — preflight passed, the plan compiled
+// The cost was total. On an EU-only box the whole path worked — preflight passed, the plan compiled
 // with the US split off as a disclosed deferral, the EU entry was executable — and then EVERY register_*
 // tool the seat called was refused here, so the EU half never ran. Everything upstream was right and
 // nothing downstream happened, which is the least legible way for a fix to fail.

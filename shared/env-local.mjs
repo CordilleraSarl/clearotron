@@ -203,7 +203,7 @@ export const NO_DOTFILE = Object.freeze([
   // derived guard caught it in the same commit that created it, which is the eleventh arriving loudly.
   "scripts/post-deploy-validate.mjs",
   // step 4 / — THE DERIVED SCAN COULD NOT SEE THESE TWO, and the reason is worth keeping.
-  // 's scan walked every shebang entry looking for a module-top `process.env` capture of a renamed
+  // That scan walked every shebang entry looking for a module-top `process.env` capture of a renamed
   // name. These capture INSIDE a function, so the scan passed over them — and they were stranding an
   // operator all the same: both read a retired spelling and reached no translation, so a box configured
   // with the name in force handed them nothing and the read fell through to a default. `compare` printed

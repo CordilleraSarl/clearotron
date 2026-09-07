@@ -97,7 +97,7 @@ test("#265: no Quality or Feedback nav entry, even with the retired pages left o
   assert.doesNotMatch(staff, /href="quality\.html"/);
   assert.doesNotMatch(staff, /href="triage\.html"/);
   assert.doesNotMatch(staff, /Engine quality|open Quality/, "the index quality strip went with the hub");
-  // A pre- deploy leaves both pages in the pool. Existence must NOT resurrect a link to either.
+  // A pre-change deploy leaves both pages in the pool. Existence must NOT resurrect a link to either.
   writeFileSync(join(pool, "quality.html"), "<html></html>");
   writeFileSync(join(pool, "triage.html"), "<html></html>");
   regenIndex(pool);

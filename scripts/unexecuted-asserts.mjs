@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// unexecuted-asserts.mjs — 's fifth member: an arm that RAN and asserted nothing.
+// unexecuted-asserts.mjs — the fifth member: an arm that RAN and asserted nothing.
 //
 //   node scripts/unexecuted-asserts.mjs <lcov>            # DRY RUN — prints what would change
 //   node scripts/unexecuted-asserts.mjs <lcov> --apply    # writes it
@@ -199,7 +199,7 @@ if (isEntrypoint(import.meta.url)) {
     // THE REMEDY IS THE WHOLE COMMAND, not a placeholder. Whoever this fires on has probably never heard
     // of CT_COVERAGE_DIR — it is set in ci.yml and nowhere a contributor reads — so `<lcov>` sends them to
     // the workflow file to find out what to substitute. A guard whose remedy has to be looked up is a
-    // guard people delete ('s own rule, applied to its own error message).
+    // guard people delete (its own rule, applied to its own error message).
     console.error(`\nCHECK FAILED — ${grew.length} file(s) grew an assert site that never ran.\n\n`
       + "READ EACH ONE FIRST. An arm that stopped asserting is the defect this exists to find (#1010);\n"
       + "a new honest branch — a platform check, an else nobody takes here — is re-stamped deliberately:\n\n"

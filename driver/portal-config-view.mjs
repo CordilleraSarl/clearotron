@@ -162,7 +162,7 @@ const FRONTED_MODES = new Set(["auth-proxy"]);
 /**
  * The auth row — the one row on this page that is NOT snapshot-derived, and deliberately so.
  *
- * WHY THIS BREAKS THE PAGE'S OWN RULE ON PURPOSE (, ruled 2026-08-21). Every other row here comes
+ * WHY THIS BREAKS THE PAGE'S OWN RULE ON PURPOSE (ruled 2026-08-21). Every other row here comes
  * from a snapshot because the portal cannot see the engine's environment. `PORTAL_AUTH_MODE` is the
  * opposite case: the PORTAL reads it (portal-service.mjs) and acts on it, so the portal is the
  * authoritative source for its own door. Routing it through flag-snapshot.mjs would publish another
@@ -336,7 +336,7 @@ export function accessView({ grants, staffDomains = [], knownAccounts = [], gran
  * because a log is unbounded by nature and this runs inside a web request.
  */
 /**
- * 's outcome rows — the events that record a request being TURNED AWAY rather than done. Kept
+ * That outcome rows — the events that record a request being TURNED AWAY rather than done. Kept
  * beside the reader rather than in portal-service.mjs so this file has no import cycle with the
  * service that writes them; the names are the contract between the two and are asserted in the test.
  */

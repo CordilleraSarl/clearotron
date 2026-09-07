@@ -4,7 +4,7 @@
 //
 // render-units.mjs — RESOLVE THE UNITS CONFIGURATION CANNOT REACH, AND WRITE THE RESOLVED COPIES.
 //
-// Owner ruling 2026-08-25 (, option B): the installer writes resolved unit copies into
+// Owner ruling 2026-08-25 (option B): the installer writes resolved unit copies into
 // ~/.config/systemd/user/, and the tracked units stay generic.
 //
 // WHY THIS EXISTS AT ALL. Most shipped units take what differs per box from `EnvironmentFile=%h/.env`

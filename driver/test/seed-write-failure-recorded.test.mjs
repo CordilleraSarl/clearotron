@@ -9,7 +9,7 @@
 // EACCES lands straight in that empty catch — producing status.json with no identity, a round that
 // settles "unknown" forever, and an operator told the evidence "may have been torn down".
 //
-// This is a BEHAVIOURAL test, deliberately: 's tests are source-text assertions over an ordering
+// This is a BEHAVIOURAL test, deliberately: the tests are source-text assertions over an ordering
 // and a no-op leaves them green. Here the write is stubbed to throw and the forensic row is asserted.
 
 import { test } from "node:test";

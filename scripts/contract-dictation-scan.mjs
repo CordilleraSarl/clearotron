@@ -7,7 +7,7 @@
 // that touches disk, and it exists so the planted-divergence test can hand the checker an invented
 // file instead of writing one into the tree.
 //
-// THE CORPUS IS DISCOVERED, NEVER ENUMERATED, and that is 's hardest requirement rather than a
+// THE CORPUS IS DISCOVERED, NEVER ENUMERATED, and that is the hardest requirement rather than a
 // preference: "plant a divergence in a NEW authoring layer — the check must find it structurally, not
 // because the layer was enumerated." So the corpus is every tracked `.mjs` and `.md` under `driver/`,
 // full stop. A new dispatch module, a new skill file, a seventh authoring surface nobody has thought
@@ -15,7 +15,7 @@
 //
 // `git ls-files`, via shared/tracked-files.mjs, because a directory walk lists a different set (build
 // output, an editor backup, a contributor's scratch file) and because a guard that cannot see its
-// corpus must SAY SO rather than report a clean zero. 's lesson, and CLAUDE.md's hard rule: an
+// corpus must SAY SO rather than report a clean zero. That lesson, and CLAUDE.md's hard rule: an
 // absence is a finding.
 //
 //   node scripts/contract-dictation-scan.mjs           report; exit 1 on any divergence

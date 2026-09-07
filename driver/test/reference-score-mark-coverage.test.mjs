@@ -378,7 +378,7 @@ test("CLI: a mark that was searched and came back with nothing still gets a row"
 });
 
 test("CLI: the OLD gold shape still folds per mark, and says its coverage is not declared", () => {
-  // Back-compat for 's half, over the same run dir: no `covers_marks`, which is what R3.gold.json
+  // Back-compat for the half, over the same run dir: no `covers_marks`, which is what R3.gold.json
   // carries in the config store today. The `counts` block makes the lane pairing legitimate — see
   // makeStore — and changes nothing about what this test measures.
   const store = makeStore();
@@ -394,7 +394,7 @@ test("CLI: the OLD gold shape still folds per mark, and says its coverage is not
 });
 
 test("#814 CLI: a knockout against a similar-marks sheet ALONE is refused, and the sheet is not scored beside a counts block", () => {
-  // The half of 's back-compat guarantee that deliberately revoked. A gold set with no `counts`
+  // The half of the back-compat guarantee that deliberately revoked. A gold set with no `counts`
   // used to score this knockout run and print `found 0` over marks the lane cannot retrieve; it now
   // refuses, names the scenario, and says what to add.
   const bare = makeStore({ counts: undefined });

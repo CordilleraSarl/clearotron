@@ -8,7 +8,7 @@
 // asserts on BEHAVIOUR (a refusal, a dispatched prompt, a failed turn), never on a log line alone.
 //
 //   1. A shadow run's dir can be missing files its own prompt NAMES.   — closed by; verified here
-//      against the PROMPT rather than the manifest, which is the one angle 's own tests do not take.
+//      against the PROMPT rather than the manifest, which is the one angle its own tests do not take.
 //   2. The shadow run is built with a different prompt than the run it is compared against.
 //   3. `--model gemini` logs gemini and runs sonnet.
 //   4. `off` maps to `low` on one engine and `minimal` on the other; the haiku+adaptive guard passes on
@@ -83,7 +83,7 @@ const withEnv = async (vars, fn) => {
 // experiment-context.test.mjs already drives that from the manifest side.
 //
 // This test comes at it from the corruption's own wording — "missing files its own PROMPT names" — and
-// therefore from the side neither 's tests nor `sandboxGaps` reason about: it takes the message the
+// therefore from the side neither the tests nor `sandboxGaps` reason about: it takes the message the
 // stage would actually be sent, extracts every absolute run-dir path IN IT, and requires each one to be
 // on disk in the sandbox. If a prompt could still name a path the manifest does not carry, this fails
 // and the residual gap is a finding rather than a silent thinner context.

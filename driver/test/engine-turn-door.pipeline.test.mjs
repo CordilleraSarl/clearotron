@@ -127,7 +127,7 @@ test("#819 a clean engine leaves a passing verdict on the record, so 'the door r
 });
 
 test("#819 the lanes that do not pay for the door do not get the row either", async () => {
-  // The gate is `!recordFetcher && !koSelector` ('s ruling, mirroring preflightCredentials). An
+  // The gate is `!recordFetcher && !koSelector` (the ruling, mirroring preflightCredentials). An
   // injected fetcher is the test/alternate-fetcher lane; it skips the turn, and the ABSENCE of the row is
   // how a reader tells "skipped" from "passed" — which is why the row carries the verdict and not a bare
   // boolean. (That both exempt lanes still SPAWN the engine is recorded, not decided here.)

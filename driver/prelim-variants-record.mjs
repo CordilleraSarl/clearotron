@@ -55,7 +55,7 @@ export function prelimVariantsCallPaths(runDir) {
 // The first cut of this file declared its own copy of the layer vocabulary — field, jurisdiction,
 // variant, source — under a comment saying "taken from the shipped parser, never re-chosen here", while
 // re-choosing it: the shipped parser orders the same four as variant, field, source, jurisdiction. The
-// comment asserted the exact property it broke, which is why a reader could not catch it and 's scan
+// comment asserted the exact property it broke, which is why a reader could not catch it and the scan
 // could. That check binds every parsed declaration of a closed set to the live import, found two
 // declarations of one name, and reported the disagreement.
 //
@@ -112,7 +112,7 @@ export function renderPrelimVariants(model, scopeRows) {
   //
   // `variantsManifestAudit` (common-law-receipts.mjs) arms a term collector on any heading matching
   // /variants\b/i and closes it on the next heading AT THE SAME DEPTH OR SHALLOWER. Deeper headings are
-  // sub-groups INSIDE the section and deliberately keep it armed — that is 's fix, for a real
+  // sub-groups INSIDE the section and deliberately keep it armed — that is the fix, for a real
   // manifest whose 84 variants sat under seven `####` sub-headings and parsed as zero.
   //
   // So a `## Variants` section followed by a `### Scope ledger` NEVER CLOSES, and every ledger row is

@@ -7,7 +7,7 @@
 // instance the dead runs became the dominant content, crowding out the work actually running, which is
 // the one thing that section exists to show.
 //
-// THE STORE IS THE DESIGN DECISION, and the issue says why: this must NOT reuse 's archive tag.
+// THE STORE IS THE DESIGN DECISION, and the issue says why: this must NOT reuse the archive tag.
 // `archive-tags.json` is pool-wide — retiring hides a run from everyone, the brand owner included.
 // Dashboard clutter is one person's annoyance. One control over both would mean a staff member tidying
 // their own screen silently hiding a client's run, which is a different act entirely.
@@ -24,7 +24,7 @@
 //   · the key carries the STATE                     → break: key on runId alone, arm 5 goes red
 //   · undo puts it straight back                    → break: ignore acknowledged:false, arm 6 goes red
 //   · the file is named by hash, not by address     → break: interpolate the email, arm 7 goes red
-//   · 's tag is not touched by any of it        → break: write archive-tags too, arm 3 goes red
+//   · the tag is not touched by any of it        → break: write archive-tags too, arm 3 goes red
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, mkdirSync, readdirSync, readFileSync, existsSync } from "node:fs";
@@ -202,7 +202,7 @@ test("#613 arm 8 — the door is the only gate, and a junk id cannot become a pa
   assert.match(route, /parts\[1\] === "api" && parts\[2\] === "ack" && method === "POST"/,
     "under /portal/api — a pool-wide act would belong under /portal/admin and be audited");
   assert.deepEqual([...readArchivedSet(pool.root)], [], "and a client's dismissal writes no pool-wide tag");
-  // THE CONTRAST IS THE ARGUMENT. 's retire hides a run from everyone including the brand owner, so
+  // THE CONTRAST IS THE ARGUMENT. That retire hides a run from everyone including the brand owner, so
   // it is staff-only and audited; this one hides nothing from anybody else, so it is neither. Asserting
   // both here is what stops the next reader from "tidying" them into one control.
   assert.equal((await svc.route("POST", "/portal/admin/retired", { email: "c@aurora.example" },

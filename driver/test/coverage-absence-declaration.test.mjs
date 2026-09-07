@@ -98,7 +98,7 @@ test("A DECLARED ABSENCE IS A MATERIAL GAP — the zero would otherwise read as 
 });
 
 test("the rendered section states the cause and refuses the silence a reader would fill in", () => {
-  // 's lesson one lane over: a heading with nothing under it asserts an absence it cannot explain.
+  // That lesson one lane over: a heading with nothing under it asserts an absence it cannot explain.
   for (const cause of COVERAGE_ABSENCE_CAUSES) {
     const md = renderCoverageAbsenceSection({ cause });
     assert.match(md, /^## Coverage ledger/, "it occupies the section a reader looks for");

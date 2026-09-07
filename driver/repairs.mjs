@@ -59,7 +59,7 @@ export const REFUSAL_TERMINAL_KIND = "designed-refusal";
 // rejection carried one, and the errno tokens below matched it; but undici reports a codeless fault as
 // a bare `TypeError: fetch failed` (no cause.code), and that line — transport noise by construction —
 // carried no token either regex knew, so it classified DETERMINISTIC at fan-in: loud-terminal, but it
-// defeated 's weather lane for exactly the unreachable-provider case the lane exists for.
+// defeated the weather lane for exactly the unreachable-provider case the lane exists for.
 export const TRANSIENT_RE = /\btimeout\b|\blane_wedge\b|\bembedded_fallback\b|\bnonzero_exit|\bunparseable_json\b|\bstatus_(timeout|overloaded|error|aborted|rate_limited)\b|\brate_limited\b|\boverloaded\b|\beconnreset\b|\betimedout\b|\benotfound\b|\beai_again\b|socket hang\s?up|\bhttp\s?5\d\d\b|\btransport failure\b/i;
 
 // STRUCTURAL REFUSAL: the provider ANSWERED, and its answer is a verdict on the REQUEST. The remedy is
@@ -140,7 +140,7 @@ export const DETERMINISTIC_RE = /\bhttp\s?4(0[0349]|1[04])\b|uri too long|own no
 //
 // The axis outcome survives as evidence in exactly one case: THE AXIS LANDED NOTHING. Zero qid-stamped
 // blocks means the executor never wrote, so its transport failure really is this slice's story and
-// 's weather lane keeps working for the dead-provider case it exists for. Once the axis HAS landed
+// That weather lane keeps working for the dead-provider case it exists for. Once the axis HAS landed
 // qid-stamped blocks the executor demonstrably ran and wrote, and this qid's absence is an identity or
 // coverage hole that no repair outcome from its axis speaks to.
 //
@@ -309,7 +309,7 @@ const overflowOf = (tail) => { const m = OVERFLOW_RE.exec(tail.trim()); return m
 // The leading CAUSE CENSUS is the exact count stamped at the throw site, so the total is the sum of its
 // numbers — no comma-splitting, and therefore immune to the over-count a query containing a comma used to
 // cause. LEGACY SHAPES still parse and must: this text path exists for the run-level catch, which sees
-// prose only, and a resumed or archived run can still carry a pre- token
+// prose only, and a resumed or archived run can still carry a pre-change token
 // (`connotation_undisposed:<census>;…`, `<q1,q2,…>[ (+N more)]`). A stale token that stopped counting
 // would read as a MISSING quantity, which is what a converged run looks like.
 // The validator's exact count still rides as `quantity` at the throw site and always wins.
@@ -329,7 +329,7 @@ function undisposedCount(tail) {
   // was cut short of its payload — ABSENT, not converged.
   return named ? named + overflow : null;
 }
-// A pre- archived token: `connotation_recurrent_uncited:<one result, ≤80 chars>[ (+N more)]` — ONE
+// A pre-change archived token: `connotation_recurrent_uncited:<one result, ≤80 chars>[ (+N more)]` — ONE
 // named result plus the overflow. Never split on commas: that payload is a copied result title, not a
 // joined list. Nothing emits this shape any more; it is kept so a resumed run's own history still counts.
 function recurrentCount(tail) {
@@ -621,7 +621,7 @@ export function capParkSchedule({ resetsAt = null, attempts = 0, now = Date.now(
 /**
  * capWaitFrom — what a run actually spent WAITING on a provider's cap, read off the park history.
  *
- * tracker issue 103's fourth ask: a run that still dies on a cap has to SAY it was a cap, and say how
+ * The ask: a run that still dies on a cap has to SAY it was a cap, and say how
  * long it held out. The park history is the only record that survives a park/resume cycle, so it is the
  * only place that answer can come from at the terminal.
  *
@@ -695,7 +695,7 @@ export function humanWait(min) {
 // failure's `quantity` and the last recorded quantity for the SAME signature in the park history. It
 // changes no branch below and no caller reads it as an input: the point of the issue is that the
 // comparison can SEE 25 → 9 → 9 as different from 29 → 11 → 0, where today both hash identically.
-// What the machinery DOES with that difference is 's decision, not this function's.
+// What the machinery DOES with that difference is the decision, not this function's.
 export function decideRecovery({ failClass, sig, reason = "", history = [], priorAttempts = 0, recoveryMax = 3, nonRecoverable = false, hasRunDir = true, runCeiling = null, weatherAttempts = 0, defectAttempts = null, weatherCeiling = null, quantity = null }) {
   const hist = Array.isArray(history) ? history : [];
   const sigAttempts = hist.filter((h) => h?.sig === sig).length;

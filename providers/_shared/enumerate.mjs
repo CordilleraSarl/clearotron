@@ -62,7 +62,7 @@ import { clipProviderText } from "./provider-text.mjs";   // — keep the discri
 //
 // Both were 140, and 140 is where the defect lived: the Clarivate Near/Adj refusal is 144 characters
 // and its verdict — `are not allowed` — is the last two words. Cut at 140 it arrived as `are not all`,
-// 's structural predicate could not match, and a refusal that recurs byte-identically forever was
+// That structural predicate could not match, and a refusal that recurs byte-identically forever was
 // filed as weather and retried on every future run of that shape.
 //
 // Raised so the messages actually seen on these paths FIT rather than being reconstructed from a

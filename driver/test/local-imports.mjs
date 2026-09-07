@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // The transitive local-import set of a module, for fixtures that copy a real module into a temp tree.
 //
-// ── WHY THIS IS DERIVED AND NOT TYPED (, after) ────────────────────────────────────────
+// ── WHY THIS IS DERIVED AND NOT TYPED (after) ────────────────────────────────────────
 //
 // A fixture that copies a module and then hand-lists the modules to copy beside it is correct exactly
 // until somebody adds an import. Nothing in the diff that adds it touches the fixture, the PR that adds

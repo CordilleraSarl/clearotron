@@ -44,7 +44,7 @@ function recipe() {
   return src.slice(start, end);
 }
 
-test("tracker issue 172 — the resource indicator is READ from the server, never composed", () => {
+test("the resource indicator is READ from the server, never composed", () => {
   const r = recipe();
   // The fetch, and the field. Both, because a recipe that fetches the metadata and then ignores
   // `.resource` would satisfy a check for either one alone.
@@ -60,7 +60,7 @@ test("tracker issue 172 — the resource indicator is READ from the server, neve
     + "server's own by a trailing slash and fails exactly like sending none");
 });
 
-test("tracker issue 172 — the indicator rides BOTH the authorize step and the exchange", () => {
+test("the indicator rides BOTH the authorize step and the exchange", () => {
   const r = recipe();
   // Binding one leg and not the other is the near-miss: the authorize step alone does not bind the
   // family, and the exchange alone is not what a strict server checks first.
@@ -70,7 +70,7 @@ test("tracker issue 172 — the indicator rides BOTH the authorize step and the 
     "the token exchange sends no resource, so the issued family is bound to nothing");
 });
 
-test("tracker issue 172 — verification reaches the refresh, and checks the token rotated on disk", () => {
+test("verification reaches the refresh, and checks the token rotated on disk", () => {
   const src = text();
   // A `tools/list` on fresh tokens is what shipped and it cannot fail for this reason. The three
   // conditions below are each a different half of "the refresh actually worked", and the rotation is
@@ -87,7 +87,7 @@ test("tracker issue 172 — verification reaches the refresh, and checks the tok
   assert.match(src, /restoring|mv "\$CRED\.bak"/, "a failed refresh does not restore the file it broke");
 });
 
-test("tracker issue 172 — the recipe warns that an authorization code expires in seconds", () => {
+test("the recipe warns that an authorization code expires in seconds", () => {
   // Cost a round-trip on the drive that found all this: the code is dead before the exchange is typed.
   // Asserted because it is the kind of line an edit drops as chatter, and its absence is silent.
   assert.match(recipe(), /SIXTY\s+SECONDS|60 seconds/i,

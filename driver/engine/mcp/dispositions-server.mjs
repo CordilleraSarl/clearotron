@@ -66,7 +66,7 @@ import { MAX_ROWS_PER_CALL } from "../../disposition-call.mjs";
 // can have. Here the serialization is ours, so the class is gone rather than caught.
 //
 // THE SPEC PATH IS THE SEAT'S ONLY PATH ARGUMENT, and it is the same driver-written file the grid tool
-// was given. 's rule: the path is the DRIVER'S, taken from the spec it wrote. Two derivations of one
+// was given. That rule: the path is the DRIVER'S, taken from the spec it wrote. Two derivations of one
 // filename is the drift that cost weeks.
 async function record_dispositions(params) {
   const { grid_spec_path, rows } = params ?? {};

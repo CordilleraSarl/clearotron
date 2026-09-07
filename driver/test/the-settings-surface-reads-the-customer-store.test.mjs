@@ -281,7 +281,7 @@ test("tracker issue 1923 a brand owner in the configured store can read and save
 
     const log = execFileSync("git", ["-C", root, "log", "--oneline", "-1", "--name-only"], { encoding: "utf8" });
     assert.match(log, new RegExp(`profiles/${CUSTOMER}\\.json`),
-      `the write landed but nothing committed it under PROFILE_REPO_ROOT — the tracker issue 1454 shape, `
+      `the write landed but nothing committed it under PROFILE_REPO_ROOT — the shape, `
       + `where the orphan sits untracked until the next store sync refuses [log=${log}]`);
   } finally {
     try { child?.kill("SIGKILL"); } catch { /* gone */ }

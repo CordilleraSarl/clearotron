@@ -212,7 +212,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //     object to a wall paragraph on the render path.
 //   • Charter ruling 1 — opts.depthNote renders as a masthead depth strip naming what the depth
 //     covers/omits (from the run's frozen policy components via search-policy productCoverageNote),
-//     NAME-LED per the ruling: the strip bolds the product's registry name (the same name tracker issue 158's
+//     NAME-LED per the ruling: the strip bolds the product's registry name (the same name the
 //     read pills speak) ahead of the coverage clauses, splitting on the LAST " — " seam because a
 //     registry name may itself carry one ("Preliminary clearance — register only").
 //     Absent (every archived run without a sidecar) ⇒ byte-identical.
@@ -356,7 +356,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   (1) REACHABLE from a republish — yes, and MEASURED to be inert there, by the method of the third,
 //       fifth, seventh and twelfth breaks: the same archived-shape inputs (card markdown carrying `- one:`
 //       and `### The read`, findings carrying NO `net`) rendered through the pre-change and post-change
-//       modules and byte-compared. RE-MEASURED after the rebase onto fa1cd9fc (tracker issue 314's negativeLine
+//       modules and byte-compared. RE-MEASURED after the rebase onto fa1cd9fc (the negativeLine
 //       fallback), against those bytes and not the ones this branch was cut from:
 //         legacy composite/level        107281b  sha256 da68bac4ce1d9497…  IDENTICAL
 //         v5 disposition-mode           105527b  sha256 e886030744dee78b…  IDENTICAL
@@ -369,7 +369,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   (2) It could not live in report.css/brand.mjs — see above.
 //   (3) Hash updated here, in the same commit as the edit.
 //
-// Break of 2026-08-04 (tracker issue 265 — the quality subsystem is retired, so its capture UI leaves the renderer).
+// Break of 2026-08-04 (the quality subsystem is retired, so its capture UI leaves the renderer).
 //
 // The previous report-review system is superseded. (It had two product names; tracker issue 853 retired both, from this
 // log with everything else — the identifiers below are quoted as the shapes that were deleted, renamed here
@@ -415,7 +415,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // names it enumerated was a retired subsystem's. The archived reports it defends are unchanged and still
 // matched — the pages they link to are pool-root siblings, which is what the shape describes.
 //
-// Break of 2026-08-06 (tracker issue 470 — the reasoning moves below the fold, the character cap is deleted, and the
+// Break of 2026-08-06 (the reasoning moves below the fold, the character cap is deleted, and the
 // grouped-negative gate is pinned to a literal floor). THREE changes in ONE break, deliberately: each
 // one alone would re-render every archived client report, and three breaks is three rewrites of the same
 // documents. What moved:
@@ -448,7 +448,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // The checklist, answered:
 //
 //   1. REACHABLE from a republish — all three, and the answers differ, so they are given apart and
-//      MEASURED rather than claimed, by the method of the third, eighth and tracker issue 265 breaks: the same parsed
+//      MEASURED rather than claimed, by the method of the third, eighth and 2026-08-04 breaks: the same parsed
 //      inputs rendered through the pre-change module and through this branch, then diffed. RE-MEASURED
 //      after the rebase onto `aaee3228`, against those bytes and not the ones this branch was cut from —
 //      the rebase note above exists because a PR once bumped a hash over bytes that never reached main,
@@ -473,10 +473,10 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      C/D is the ONE SUBSTANCE ADDITION in this break, and it is named as such rather than folded into
 //      "content moved". fullDetail is the drawer of the full card, the compact card AND each tracker issue 242
 //      reasoned-negative row, so a negative's drawer gains the positions it never had: three blocks,
-//      629 bytes, and the strip-and-compare shows nothing else moves. tracker issue 242's own note promises "each
+//      629 bytes, and the strip-and-compare shows nothing else moves. the twelfth break's own note promises "each
 //      member is a <details> whose body is the same fullDetail block the compact card carries" and that
 //      was untrue of the one field v6 guarantees on every negative. Suppressing it there would need a
-//      conditional whose only purpose is reproducing the pre-tracker issue 470 shape, which is the legacy code path
+//      conditional whose only purpose is reproducing the pre-2026-08-06 shape, which is the legacy code path
 //      this program forbids.
 //
 //      E is the cap, and it is a TEXT change to delivered documents, stated separately from the move
@@ -499,7 +499,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      shape C renders 36,466 bytes instead of 34,722 — every archived v6 run losing its ground-grouped
 //      negatives to the pre-tracker issue 242 region-grouped section, on republish, silently.
 //
-//      WHAT A POST-CHANGE REPUBLISH OF AN ARCHIVED RUN LOOKS LIKE — required by tracker issue 470 before merge, and
+//      WHAT A POST-CHANGE REPUBLISH OF AN ARCHIVED RUN LOOKS LIKE — required by the 2026-08-06 break before merge, and
 //      this is the ruling. There is no second store of delivered bytes: `archive-tags.json` is a list of
 //      retired run ids, not a snapshot, and the pool run dir IS the artifact the portal serves. So a
 //      republish REWRITES what the client can open. After this commit it renders under the new layout,
@@ -516,7 +516,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      the print block gained a comment, because `details>*:not(summary){display:block!important}` just
 //      became load-bearing for the document's CONTENT rather than its completeness — without it the
 //      exported PDF would carry the one-line verdicts and none of the reasoning. PRINT IS DELIBERATELY
-//      UNCHANGED (tracker issue 470: the export keeps the "open everything" behaviour it has today). That stylesheet
+//      UNCHANGED (the export keeps the "open everything" behaviour it has today). That stylesheet
 //      is inlined by render.mjs, so those 1,000 bytes reach every republished report; "not frozen"
 //      means "editable without a hash bump", never "outside the delivered document".
 //
@@ -562,10 +562,10 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //
 // WHY `.identity` AND NOT `.banner`. `banner` joins stageLabel with identity. On the four live products
 // those are the same string and it dedupes, so banner looks harmless — but on a RETIRED row it yields
-// "Depth 4 — Preliminary clearance", and tracker issue 463's whole point is that no depth number, stage label or level
+// "Depth 4 — Preliminary clearance", and the fourteenth break's whole point is that no depth number, stage label or level
 // slug appears on a client surface. Measured, shape B below: banner would have printed the rung.
 //
-// WHY NOT RE-DERIVE FROM PIPELINE + SCOPE HERE. tracker issue 463 says the name is a function of pipeline + scope
+// WHY NOT RE-DERIVE FROM PIPELINE + SCOPE HERE. the fourteenth break says the name is a function of pipeline + scope
 // "resolved at publish, never stored", and the tempting reading is a `productFor()` call in publish. That
 // is the documented WRONG move and the issue's own comment thread says why: `register-plan.json`'s
 // `scope_basis` is a conditional spread, ABSENT (not false) on every archived run, so `!== 'worldwide'`
@@ -579,7 +579,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // The checklist, answered:
 //
 //   1. REACHABLE from a republish — YES, on every shape, and this is the one break where an archived run
-//      is MEANT to move. Measured by the method of the third, eighth and tracker issue 470 breaks: the same parsed
+//      is MEANT to move. Measured by the method of the third, eighth and 2026-08-06 breaks: the same parsed
 //      inputs rendered through the pre-change module and through this one, whole-file bytes:
 //
 //        A  archived, no policy sidecar          103,628 → 103,505   -123   conf row DROPPED
@@ -606,13 +606,13 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      repair class is the second break's (a delivered report carrying a dead connector URL), not the
 //      tenth's. A republish of an archived run now names the product that run was sold as, per the
 //      registry row it still resolves through, and names nothing when that row is gone. `rerender-all`
-//      over the live pool remains a RE-DELIVERY decision, exactly as tracker issue 470's entry ruled.
+//      over the live pool remains a RE-DELIVERY decision, exactly as the 2026-08-06 break's entry ruled.
 //
 //   2. Could it live in report.css or brand.mjs — no. It is the document's statement of what it is.
 //      There is no styling half to this change.
 //
 //   3. Hash updated here, in the same commit as the edit.
-// FIFTEENTH BREAK (tracker issue 470's owed bullet, 2026-08-07) — the hero verdict caption folds to its first
+// FIFTEENTH BREAK (the owed bullet of the 2026-08-06 break, 2026-08-07) — the hero verdict caption folds to its first
 // sentence.
 //
 // This is the ONE criterion of tracker issue 470 that `cf8dd43` did not meet. The issue's design ruling names it
@@ -664,7 +664,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      caught an UNFOLDED caption too and changed the spacing of every archived report that has no
 //      fold. PRINT IS UNCHANGED: the existing `@media print` rule `details>*:not(summary){display:
 //      block!important}` already forces this disclosure open, so the exported PDF carries the whole
-//      caption — tracker issue 470's rule for print.
+//      caption — the 2026-08-06 break's rule for print.
 //
 //   3. Hash updated here, in the same commit as the edit.
 // ── BUMP, tracker issue 599: THE OWNER HEADING STOPS BEING A ROMANISATION ────────────────────────────────────────
@@ -794,9 +794,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   3. WHY IT HAD TO LAND HERE. An exception for the frozen file is a name that survives the sweep
 //      because a hash was inconvenient, which is how a scrub becomes partial.
 //   4. Hash updated here, in the same commit as the edit.
-// ── BUMP #14 (tracker issue 669) — THE PRESENTATION SANITIZER IS OUT OF THE RENDER PATH ─────────────────────────
+// ── BUMP #14 — THE PRESENTATION SANITIZER IS OUT OF THE RENDER PATH ─────────────────────────
 //
-// `plainify` ran nineteen find-and-replace rules over the rendered client surface, and tracker issue 656 is what
+// `plainify` ran nineteen find-and-replace rules over the rendered client surface, and this is what
 // that cost: `axis` -> `group` turned "AXIS Bank filed in class 36" into "group Bank filed in class
 // 36" — a report naming a mark that does not exist, inside the report that clears it. AXIS and SLICE
 // are both live trademarks; the ban list and the trademark register overlap, and this engine exists
@@ -937,7 +937,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      re-renders as shape H/I — still unmarked. That is correct: the frozen profile is the authority on
 //      what a run shipped under. The repair reaches new runs and sidecar-less archives; it is NOT
 //      retroactive for archives that recorded the old explicit false, and `rerender-all` over the live
-//      pool remains a RE-DELIVERY decision exactly as tracker issue 470's entry ruled.
+//      pool remains a RE-DELIVERY decision exactly as the 2026-08-06 break's entry ruled.
 //
 //      THE DELIVERED DOCUMENT ALSO MOVES BY report.css, WHICH THIS TABLE DOES NOT COVER. That file is
 //      inlined into every report and grew 425 bytes — `.gauge .label .gauge-fw` and its comment, 31,229 →
@@ -989,7 +989,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // level up — and the gate is written the way those two are, as a test for §L's own bullet label on the
 // card MARKDOWN. It is a SUBTRACTION: no client string is rewritten, filtered, re-labelled or cut — one
 // code-emitted block stops printing where the card has already printed it. Editing the prose instead was
-// the other direction, and it is the pattern tracker issue 709 and tracker issue 669 exist to forbid.
+// the other direction, and it is the pattern those two rules exist to forbid.
 //
 // THE FIRST CUT OF THIS GATE WAS `proseFull ? '' : …` — any Full-detail prose at all — and it is recorded
 // here because it was WRONG in a way the sample could not show: all 10 cards carry the bullet, so the two
@@ -1004,7 +1004,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // is a card that quietly says less than the record holds, which nobody would ever see.
 //
 // WHERE THERE IS NO PROSE THE TYPED PAIR IS STILL THE ACCOUNT: a structured-only finding, a tracker issue 242
-// reasoned-negative row, a compact card whose report-card stage produced nothing. tracker issue 470's promise that a
+// reasoned-negative row, a compact card whose report-card stage produced nothing. the 2026-08-06 break's promise that a
 // negative's drawer carries its positions is intact — a negative has no Full-detail prose to duplicate.
 // Shapes K and P below are those guarantees, measured.
 //
@@ -1152,12 +1152,12 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      checks panel's `h4` is sized to match the panel headings around it. Both sides of every figure
 //      above are rendered against the NEW stylesheet, so the columns isolate the renderer.
 //
-//      WHAT A REPUBLISH OF AN ARCHIVED RUN LOOKS LIKE, per tracker issue 470's ruling that this must be stated: a run
+//      WHAT A REPUBLISH OF AN ARCHIVED RUN LOOKS LIKE, per the 2026-08-06 break's ruling that this must be stated: a run
 //      with no content model does not move at all (A-I). A run WITH one loses the second copy of its own
 //      reads (L) — that is a subtraction of a duplicate, never of a fact, and the surviving copy is the
 //      card's own reasoned prose, uncut. A run with an Actions section shows its checks without a click
 //      (J). A run with a coverage-limited register row gets a pointer that names the heading it points at
-//      (N). `rerender-all` over the live pool remains a RE-DELIVERY decision, exactly as tracker issue 470 ruled.
+//      (N). `rerender-all` over the live pool remains a RE-DELIVERY decision, exactly as the 2026-08-06 break ruled.
 //
 //   2. COULD IT LIVE IN report.css OR brand.mjs — and the whole visual half DID, which is the point of
 //      asking. Every rule above (`details.scope > summary`, its marker, its print reset, the
@@ -1198,7 +1198,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //
 // THE ORDINAL WAS CHECKED, NOT COUNTED. The sequence above is not sound: "Fifth break" appears twice
 // (spec-66 at the top, PR-11 below it), four entries are dated rather than numbered ("Break of
-// 2026-07-31", 08-04, 08-06), and tracker issue 314 is recorded as deliberately UNNUMBERED. Counting entries gives the
+// 2026-07-31", 08-04, 08-06), and one entry is recorded as deliberately UNNUMBERED. Counting entries gives the
 // wrong answer; the highest ORDINAL written down is the seventeenth, so this is the eighteenth.
 //
 // ── WHAT MOVED ────────────────────────────────────────────────────────────────────────────────────────
@@ -1349,7 +1349,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //     sibling in parse.mjs (stripTelemetry) splits per LINE first and does not have the defect; closing
 //     that divergence is a second frozen-renderer change with its own republish cost and its own
 //     decision, and it is reported with tracker issue 762 rather than folded into it.
-// Break of 2026-08-13 (tracker issue 853 — a retired subsystem's name leaves the tree, including this comment).
+// Break of 2026-08-13 (a retired subsystem's name leaves the tree, including this comment).
 //
 // THE SMALLEST BREAK THIS FREEZE HAS TAKEN, and it is recorded at full length anyway, because a freeze
 // that logs only the interesting breaks is a freeze people learn to skip. One word is deleted from one
@@ -1372,7 +1372,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Why the name could not simply be left in a comment: the repository is being prepared for publication,
 // and flipping a repository public publishes its whole history. A dead product name surviving in a
 // comment is a dead product name published. See tracker issue 853 for the history half, which this commit cannot fix.
-// Break of 2026-08-13 (tracker issue 832 — plainScopeNote stops crossing newlines, and stops being a second copy).
+// Break of 2026-08-13 (plainScopeNote stops crossing newlines, and stops being a second copy).
 //
 // WHAT MOVED. `plainScopeNote` split the WHOLE Methodology block on /(?<=[.;])\s+/ and rejoined the
 // survivors with a space. `\s` matches a newline, so the split crossed LINES: every multi-line note came
@@ -1411,7 +1411,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //        A  ONE paragraph, no telemetry                109,792 → 109,792     0  sha de79676ef3f6c853
 //        B  ONE paragraph WITH a telemetry clause      109,792 → 109,792     0  sha de79676ef3f6c853
 //        C  multi-line, NO telemetry                   109,605 → 109,626   +21
-//        D  tracker issue 832's reproduction (telemetry lead-in)    109,602 → 109,608    +6
+//        D  the 2026-08-13 break's reproduction (telemetry lead-in)    109,602 → 109,608    +6
 //        E  every line telemetry                       109,391 → 109,391     0  sha c9bc420ec6299917
 //        F  two paragraphs, an authored blank line     109,602 → 109,608    +6
 //
@@ -1470,7 +1470,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //
 // EXCLUDING THIS FILE FROM THE SWEEP WAS THE ALTERNATIVE, AND IT IS WORSE: it would leave the one
 // republish-reachable renderer as the only shipped source file in the repository with no licence
-// notice. That is the "present on 80% of files" state tracker issue 854 says is worse than having no policy at all.
+// notice. That is the "present on 80% of files" state, which is worse than having no policy at all at all.
 // Seventh break (2026-08-14, tracker issue 705 — the chrome home link's target).
 //
 // ONE ATTRIBUTE ON ONE ANCHOR: `homeButton` now emits `target="_blank" rel="noopener"`.
@@ -1487,7 +1487,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   2. COULD IT LIVE IN report.css OR brand.mjs? No. `target` is not a visual — it is where a link
 //      goes. The style string beside it is already inline here and untouched.
 //   3. WHY THE RENDERER HAD TO MOVE: `homeButton` is the emitter. There is nowhere else the attribute
-//      could be added, and tracker issue 705 asks explicitly for a decision between `target="_top"` (which needs
+//      could be added, and a decision is asked for explicitly between `target="_top"` (which needs
 //      `allow-top-navigation` in the sandbox) and a new tab. A new tab is the option that does not
 //      widen the boundary a delivered report is held behind, and the sandbox already carries
 //      `allow-popups allow-popups-to-escape-sandbox`.
@@ -1609,7 +1609,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // WHY IT HAD TO LEAVE THIS FILE. `acceptReportCard` now REFUSES a card that carries no "Risk
 // assessment"-led bullet, because this gate deletes the record's typed legal/practical reads wherever it
 // matches. Two copies of that pattern — one deciding what to delete, one deciding what must exist — are
-// exactly the drift breaks three, four and tracker issue 832 were about, and here the drift is not a visible
+// exactly the drift breaks three, four and 2026-08-13 were about, and here the drift is not a visible
 // duplicate but a card that reaches the client with NO risk read at all. So the renderer holds no copy
 // of the rule: it imports the one the card contract owns.
 //
@@ -1658,7 +1658,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   3. Hash updated here, in the same commit as the edit.
 //
 // BOTH CONSTANTS ADVANCE: this is behaviour, not a licence line and not a comment.
-// (tracker issue 1438's values, 5348bfda… / be4f30be…, are superseded by the break below and recorded here only
+// (the earlier values, 5348bfda… / be4f30be…, are superseded by the break below and recorded here only
 //  as the point it started from — the same shape every earlier break in this lineage uses.)
 
 // (Its values, 69b95593… / a247cb66…, are superseded by the break below.)
@@ -1703,7 +1703,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // WHY IT IS WORTH A BREAK AT ALL: findings-model calls that export "the mode switch both sort sites use",
 // and it was not. pipeline.mjs sorts with the shared predicate; this file — the surface that PRINTS the
 // report, and whose isOnField / bandOf / quadrant / keyPanel all read the flag — used a copy. Two
-// definitions of one mode agree until somebody edits one, and nothing said so. tracker issue 1100's class exactly.
+// definitions of one mode agree until somebody edits one, and nothing said so. that class exactly.
 //
 // The checklist, answered:
 //
@@ -1746,7 +1746,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // 29th gains a disclosure it should always have carried. `rerender-all` is an explicit operator
 // command, not something that runs on its own.
 //
-// Owner ruling 2026-08-24 ordered the build and discharged tracker issue 1132's standing "only with a legitimate
+// Owner ruling 2026-08-24 ordered the build and discharged the standing "only with a legitimate
 // renderer change" condition. The arm below pins the empty state, so the next freeze break cannot
 // silently take it away again.
 // Advanced by the fifth break (tracker issue 1903) with the constant below it — this one moves on every
@@ -1828,7 +1828,7 @@ const FROZEN_BEFORE_SPDX = "a5ace818689af3abdf958a3c3db6e3e7f975822d453d766eadd0
 // NEXT BREAK (2026-08-27, tracker issue 1957 — the public-cut prose pass).
 //
 // THE SMALLEST CHANGE THIS FILE CAN TAKE: one comment recomposed, no code touched. The owner ruled one
-// line out of the public tree — the one that explained the tracker issue 599 defect by naming what a delivered
+// line out of the public tree — the one that explained the defect by naming what a delivered
 // report had carried. It was the MIDDLE of a four-line sentence, so cutting it literally welded
 // "preferring the record outright is" onto "file away had the company's proper English name". The rule
 // survives and the evidence for it does not: four comment lines become three, and the record's Latin
@@ -1934,7 +1934,7 @@ const FROZEN_BEFORE_SPDX = "a5ace818689af3abdf958a3c3db6e3e7f975822d453d766eadd0
 // is no change — a republish renders the same bytes it always did; it could not live in report.css or
 // brand.mjs for the same reason; and this hash moves in the commit that restores the arm, which is
 // the commit that says why.
-// SEVENTH BREAK (2026-09-06, tracker issue 147 ruling 5 — the report told a client to sign in, and
+// SEVENTH BREAK (2026-09-06 — the report told a client to sign in, and
 // nobody had ever done that).
 //
 // A behaviour change on the surface with the least supervision. The block said:
@@ -2009,7 +2009,7 @@ test("#854 stripping the two licence lines leaves the file the last break left �
 // next bump and silently rebuild the spec-61 R1 drift — the served report and the MCP client surface
 // answering "what may a client see?" separately. Since the ninth break (one report) the renderer's own
 // client fork is gone, so it still USES only the telemetry rule — plainify and ENGINE_PLAIN are DELETED
-// (tracker issue 669: find-and-replace over a client string ate a trademark) — but none of these may ever be
+// (find-and-replace over a client string ate a trademark) — but none of these may ever be
 // redefined here: a local copy is how the fork grows back.
 //
 // tracker issue 832 SHARPENED WHAT "ONE DEFINITION" MEANS HERE. The renderer imported the PATTERN (TELEMETRY_RE) and
@@ -2026,7 +2026,7 @@ test("the moved client-safety transforms are imported from parse.mjs, never rede
   }
   assert.doesNotMatch(imported, /\bTELEMETRY_RE\b/,
     "#832 — the renderer takes the telemetry RULE (stripTelemetry), never the pattern to re-apply itself");
-  // tracker issue 669 — and the sanitizer is not imported at all, because it no longer exists. A renderer that
+  // and the sanitizer is not imported at all, because it no longer exists. A renderer that
   // reached for it again would be reaching for the mechanism that ate the mark AXIS.
   assert.doesNotMatch(src, /\bplainify\b/, "plainify is deleted (#669) — the driver emits areaLabel instead");
   for (const name of ["stripEngineInternals", "stripTelemetry", "TELEMETRY_RE", "plainify"]) {
@@ -2042,7 +2042,7 @@ test("the moved client-safety transforms are imported from parse.mjs, never rede
   assert.doesNotMatch(src, /opts\.client/, "renderHtml takes no client option any more — one render path");
 });
 
-// tracker issue 1100 — THE SAME ONE-DEFINITION RULE, FOR THE MODE SWITCH. findings-model exports `inDispositionMode`
+// THE SAME ONE-DEFINITION RULE, FOR THE MODE SWITCH. findings-model exports `inDispositionMode`
 // and its own comment calls it "the mode switch both sort sites use". It was not: this file imported it,
 // never called it, and re-typed its body to set `DISPOSITION_MODE` — the flag isOnField, bandOf, quadrant
 // and keyPanel all read. pipeline.mjs sorted with the shared predicate; the surface that PRINTS the

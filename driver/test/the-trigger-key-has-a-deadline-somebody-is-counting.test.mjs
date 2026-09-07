@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 161 — the portal's trigger key ran down to expiry with nothing counting it.
+// the portal's trigger key ran down to expiry with nothing counting it.
 //
 // TWO HALVES, AND ONLY ONE OF THEM IS THE FIX. A `--background` install stores the key in `~/.env`, the
 // file the units load, minted with a thirty-day life. The merge that writes it was add-only, so every

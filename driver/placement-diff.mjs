@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// placement-diff.mjs —: compare two runs' placement tiers, so 's repeat runs can be scored.
+// placement-diff.mjs —: compare two runs' placement tiers, so the repeat runs can be scored.
 //
 // ── why this exists ──────────────────────────────────────────────────────────────────────────────────
 //
-// 's offline half is answered: the band-shape seam moves its input, so the branch is taken and the
+// That offline half is answered: the band-shape seam moves its input, so the branch is taken and the
 // noise floor needs repeat PAID arms on one matter. Those runs are the E2E agent's. When they land there
 // is nothing to compare them with — `placement-carry.mjs` joins placements to the digest surfaces WITHIN
 // one run, and nothing in the tree diffs two `placements.json`.

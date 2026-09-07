@@ -64,7 +64,7 @@ const verbFiles = () => readdirSync(BIN).filter((n) => n.endsWith(".mjs"));
 const read = (n) => readFileSync(join(BIN, n), "utf8");
 const guarded = (src) => /isEntrypoint\(import\.meta\.url\)/.test(src);
 
-test("tracker issue 183 — every verb either guards its dispatch or is declared with the reason", () => {
+test("every verb either guards its dispatch or is declared with the reason", () => {
   const files = nonEmpty(verbFiles(), "bin/*.mjs — no verbs were walked, so this arm checked nothing");
   const undeclared = files.filter((n) => !guarded(read(n)) && !(n in DECLARED_UNGUARDED));
   assert.deepEqual(undeclared, [],
@@ -73,7 +73,7 @@ test("tracker issue 183 — every verb either guards its dispatch or is declared
     + "`isEntrypoint(import.meta.url)` guard, or name the file above with the reason it cannot have one");
 });
 
-test("tracker issue 183 — a declaration that no longer describes its file is a failure", () => {
+test("a declaration that no longer describes its file is a failure", () => {
   // An exemption outliving its condition is the shape this repository keeps paying for. Each claim is
   // checked against the file rather than trusted: still present, still unguarded, still exportless.
   const files = new Set(verbFiles());
@@ -93,7 +93,7 @@ test("tracker issue 183 — a declaration that no longer describes its file is a
   }
 });
 
-test("tracker issue 183 — the two guarded verbs really are guarded, and the check can tell", () => {
+test("the two guarded verbs really are guarded, and the check can tell", () => {
   // The predicate, driven both ways. An `guarded()` that always answered true would make the arms above
   // vacuous, and they are the whole mechanism.
   assert.equal(guarded(read("clearotron.mjs")), true, "the dispatcher's own guard is not detected");

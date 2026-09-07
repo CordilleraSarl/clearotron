@@ -78,7 +78,7 @@ test("a legacy receipt of bare qid strings still joins, and says the return was 
 });
 
 // The arm above tests a shape NO driver ever wrote. `git show c80ca5bf^:driver/register-plan.mjs`
-// says the pre- producer pushed `{ qid, state }` — an object — so the bare-string branch proved
+// says the pre-change producer pushed `{ qid, state }` — an object — so the bare-string branch proved
 // nothing and the real legacy receipt fell through to the failed-count sentence. These three arms are
 // keyed on the literal shape history shows, not on one convenient to construct.
 
@@ -145,7 +145,7 @@ test("returnedPhrase reports a counted crowd whose record list was not carried",
 test("THE POINT: an executed ending states what the probe returned, in audit-facing text", async () => {
   const { deriveAsks } = await import("../ask-ledger.mjs");
   // ON `xcheck`, NOT `recall`, AND THE SWAP IS THE STORY. This arm was written against a recall probe
-  // returning 2 records, and 's ruling (2026-08-19, "no") took that exact case away from it: a
+  // returning 2 records, and the ruling (2026-08-19, "no") took that exact case away from it: a
   // recall probe that came back holding something no longer ends `executed` at all — it ships OPEN with
   // a handoff naming what came back. The arm's own subject is the EVIDENCE TEXT of an executed ending,
   // which xcheck still produces, so it moves rather than being deleted or weakened to `records: 0`.

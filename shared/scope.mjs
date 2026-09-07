@@ -39,7 +39,7 @@ export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_
   let text;
   try { text = readFileSync(denylistPath, "utf8"); }
   catch (e) {
-    // FAIL CLOSED ( — bb8's F14; overwatch ruling, recorded on 1889 for the owner's
+    // FAIL CLOSED (found in review; ruled and recorded for the owner's
     // review with the reversal path, which is this function).
     //
     // This returned false — "not revoked" — on any unreadable list, and that is how a revoked key kept
@@ -64,7 +64,7 @@ export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_
  *
  * NOT AN AUTHENTICATOR. This parses without verifying, which is safe for exactly one job: reading the
  * revocation handle out of our own `mintToken` output so `clearotron connect` can write it down
- * (, owner ruling: record key IDs, never secrets). Anything answering "is this token
+ * (owner ruling: record key IDs, never secrets). Anything answering "is this token
  * good" goes through `verifyToken`; a caller handing this function a token from the WIRE is the defect.
  *
  * Returns null rather than throwing on a malformed string — the caller is recording, and a record of
@@ -302,7 +302,7 @@ export const USER_ARTIFACTS = new Set(["report"]);
 //   SEALED  MODEL IDENTITY, BILLED COUNTS, and THE ENGINE'S JUDGMENT OF ITS OWN OUTPUT. Which model tier
 //           ran a stage and what it cost is the firm's cost structure, not an audit fact — and
 //           `withdrawn_reason` ("confabulated attribution") is an assessment of our own quality that the
-//           client has no counterpart for, already ruled un-forwardable (, scrub.mjs).
+//           client has no counterpart for, already ruled un-forwardable (scrub.mjs).
 //
 // That line is cheap to hold because the code had already drawn it: events.mjs says "Model identity is
 // deliberately NOT projected here: decision_timeline / run_changes are narrative surfaces", trace.mjs and
@@ -713,7 +713,7 @@ export function attributionOf(scope, onBehalfOf = null) {
   // the delegate does not widen what the token may do.
   const delegate = typeof onBehalfOf === "string" && onBehalfOf.trim() ? onBehalfOf.trim() : null;
   if (!delegate) return self;
-  // COUNTS AND IDENTIFIERS, NOT PROSE ('s scope note): this file is a matter record. A delegate
+  // COUNTS AND IDENTIFIERS, NOT PROSE (the scope note): this file is a matter record. A delegate
   // carrying whitespace, a colon or a newline would forge the compound form or spill a sentence into the
   // archive, so anything that is not a bare identifier is refused and the verified half stands alone.
   if (!/^[A-Za-z0-9._%+@-]{1,128}$/.test(delegate)) return self;
@@ -759,7 +759,7 @@ export function authorize(scope, toolName, args = {}) {
     }
     // The PREVIEW only, deliberately — the same line the internal branch draws below.
     //
-    // #53's defect was that the FREE call every principal makes first died on a message naming an
+    // The defect was that the FREE call every principal makes first died on a message naming an
     // internal doc, so that is the call the stamp exists to rescue. Extending it to start_run would
     // quietly remove a spend gate: an ops token's sub is often a connector name or "local", buildJob
     // fills forwarderEmail from `${forwarder}@example.com` when none is given, and the result is a real

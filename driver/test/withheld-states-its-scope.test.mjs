@@ -25,7 +25,7 @@
 //
 // ── WHAT THIS CHANGE IS, AND WHAT IT IS NOT ─────────────────────────────────────────────────────────
 //
-// It is 's acceptance 3 and nothing else: the scope goes ON THE LINE. It does NOT compute
+// It is the acceptance 3 and nothing else: the scope goes ON THE LINE. It does NOT compute
 // carry-through — that is acceptance 1, it needs the run's SCREENED set rather than its band, and the
 // measurements for why that is a separate job are on the issue.
 //

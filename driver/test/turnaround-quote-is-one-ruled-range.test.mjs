@@ -121,7 +121,7 @@ test("#1894 the name count does not move the quote — there is no arithmetic le
   assert.equal(turnaround(k), "5–10 min");
 });
 
-// 's third acceptance line — "exactly one place defines the number" — as something that can fail.
+// That third acceptance line — "exactly one place defines the number" — as something that can fail.
 // The run-slot cap was copied into this module as `CONCURRENCY` and multiplied in by `waveCount`; both
 // are gone, and this is what notices if either comes back. It reads the module's EXPORTS, not its text,
 // so the prose above explaining why they went cannot satisfy it.

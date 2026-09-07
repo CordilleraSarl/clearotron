@@ -204,7 +204,7 @@ test("the tool answers with what is STILL OPEN, so the seat can finish in its ow
   assert.equal(captured.declinations.length, 1, "the payload must be the call as RECEIVED — evidence about what was sent, not about what we liked");
 });
 
-// ── the seam's vocabulary, which is where 's guarantee actually lands ──────────────────────────
+// ── the seam's vocabulary, which is where the guarantee actually lands ──────────────────────────
 
 test("the two reason_source values this build turns on mean opposite things", () => {
   // Asserted here rather than trusted, because the whole fix is a change from one to the other and a
@@ -215,7 +215,7 @@ test("the two reason_source values this build turns on mean opposite things", ()
     "the enum is ordered weakest-last; `absent` must remain the weakest or `unreasoned` is counting the wrong rows");
 });
 
-// ── 's guarantee, asserted on the seam's own decision ─────────────────────────────────────────
+// ── the guarantee, asserted on the seam's own decision ─────────────────────────────────────────
 
 test("#703: a stated decision is recorded AS STATED — step-stated, carrying the seat's own grounds", () => {
   const declined = { present: true, byUri: new Map([["/mark/us/a3", {

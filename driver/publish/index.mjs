@@ -702,7 +702,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   let findings = [], coverage = [], contextNotes = [], quarantined = [], findingsError = null, coverageJudgment = null, markAssessment = null, actionsRegister = null, askAnswers = null, correctionsDoc = null, fourAnswers = null;
   // — the DECLARED findings contract version, threaded to the renderer so the grouped
   // reasoned-negative section fires only on a v6 record. Stays null on the lenient/error paths: fail
-  // closed, an unknown version renders the pre- section.
+  // closed, an unknown version renders the pre-change section.
   let findingsSchemaVersion = null;
   // — THE STORES THIS PUBLISH DID NOT FIND. Declared in publish/publish-inputs.mjs, read through
   // its three-state helper, and recorded onto meta.clientGate below. Before this list existed an absent
@@ -981,7 +981,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // `gateViolations` — those are LOGGED for observability but never a reason to drop the download. (An earlier
   // version made the gate fatal, so a legitimately-sparse run — e.g. no bound Class — silently lost its Excel.)
   // The run's REPORT IDENTITY, off the same registry row that chose its machinery. The FROZEN policy
-  // sidecar names WHICH level ran; the registry names what that level is called TODAY (, one
+  // sidecar names WHICH level ran; the registry names what that level is called TODAY (one
   // numbering system — reportIdentityFor is registry-first, sidecar label only for a level the registry
   // no longer knows). So a republished pre-renumber run renders under the current scale, deliberately.
   // A run with no sidecar (every run older than the level registry) yields undefined and renders

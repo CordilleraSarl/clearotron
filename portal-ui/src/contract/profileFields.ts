@@ -309,7 +309,7 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
   // NOT DELETED FROM STORED PROFILES, and it must not be: an unrendered key rides along untouched by
   // this file's own seed-and-edit rule, so a profile carrying `email: "summary"` keeps it and keeps
   // validating. Removing the control removes the choice, never the data.
-  // THE "YES" OPTION IS GONE, and the field is NOT two-state (, the interim).
+  // THE "YES" OPTION IS GONE, and the field is NOT two-state (the interim).
   //
   // `true` is retired: normalizeDelivery deletes it, so it renders identically to absent and the option
   // claimed a distinction the output cannot carry — the same defect as the Report email control above.

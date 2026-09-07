@@ -132,7 +132,7 @@ async function driveAndKillTheVisiblePid({ forwarding }) {
   }
 }
 
-test("tracker issue 176 — the control: without forwarding, killing the visible pid orphans everything", async () => {
+test("the control: without forwarding, killing the visible pid orphans everything", async () => {
   // THE ORACLE. If this passes, the harness above cannot see an orphan and the subject arm below means
   // nothing. It is the shim as it shipped in 0.1.1, driven the way the stranger drove it.
   const { grand } = await driveAndKillTheVisiblePid({ forwarding: false });
@@ -143,7 +143,7 @@ test("tracker issue 176 — the control: without forwarding, killing the visible
     + "exists to detect — the drive is measuring something other than what it claims");
 });
 
-test("tracker issue 176 — killing the visible pid tears down the verb and what the verb started", async () => {
+test("killing the visible pid tears down the verb and what the verb started", async () => {
   const { verb, grand } = await driveAndKillTheVisiblePid({ forwarding: true });
   assert.equal(verb, false, "the verb the shim dispatched to survived the signal and reparented to init");
   assert.equal(grand, false,
@@ -151,7 +151,7 @@ test("tracker issue 176 — killing the visible pid tears down the verb and what
     + "doors, still bound on a machine the operator believes they have stopped");
 });
 
-test("tracker issue 176 — the shim forwards the three signals a reader can actually send", () => {
+test("the shim forwards the three signals a reader can actually send", () => {
   // Narrow and textual on purpose: the drive above proves the mechanism on SIGTERM, and this holds the
   // SET. SIGINT was never the gap — a terminal delivers it to the whole foreground group — but a
   // backgrounded command reached by `kill -INT` or a closing SSH session's SIGHUP is the same orphan.

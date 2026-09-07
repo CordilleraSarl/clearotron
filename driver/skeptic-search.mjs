@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // skeptic-search.mjs — the skeptic's SANCTIONED READ SURFACE: literal substring search over the run's
-// own artifact tree. 's ratification hold, unlock path 1.
+// own artifact tree. That ratification hold, unlock path 1.
 //
 // ── WHAT THIS REPLACES, measured and nothing more ───────────────────────────────────────────────────
 //

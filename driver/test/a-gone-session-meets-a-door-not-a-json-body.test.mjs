@@ -5,7 +5,7 @@
 // The issue expects `GET /portal` to answer a browser with `{"error":"not signed in"}`, leaving the
 // reader on a shell served from cache. Driven against a real socket on both identity sources, it does
 // not: a navigation is content-negotiated at the door and the document is served `no-store`, so there is
-// no cached shell to render either. The 401 row in 's table was `curl`, which sends no
+// no cached shell to render either. The 401 row in the table was `curl`, which sends no
 // `text/html` — the SPA's own fetches get that same JSON, correctly, and the mid-visit half of 2113 is
 // what answers those.
 //

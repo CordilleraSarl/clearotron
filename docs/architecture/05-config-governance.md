@@ -97,7 +97,7 @@ product doc.
 | **Client allowlist** (`{version, grants:[{email, customer}]}`) | T2 | git + PR on the `CLIENT_ACCESS_MAP` file | see §2 row 4 | LIVE, file-only; surfaced read-only at `admin.access` |
 | **Ops tokens** (scope ops/user, verbs, accounts, TTL) | T4 | `mint-token.mjs` CLI; jti denylist file | operator-held tokens | LIVE, CLI |
 
-## 4b. The install surface names (,)
+## 4b. The install surface names ()
 
 The variables a **customer or installer** ever types carry the product’s own prefix. They are listed
 by name in §5 below and in the upgrade table in INSTALL.md.
@@ -232,7 +232,7 @@ restarted after an upgrade keeps serving the deleted tree),
 `CLEAROTRON_INSTRUCTIONS_DIR` (config store), `CLEAROTRON_CUSTOMERS_DIR` (config store), `CLEAROTRON_RECIPES_DIR`,
 `CLEAROTRON_REPORTS_DIR` (**no default since — unset refuses**),`CLEAROTRON_RUN_LOCK_DIR`, `CLEAROTRON_OUTBOX_DIR`,
 `CLEAROTRON_STAFF_POOL_ROOT`, `CLEAROTRON_REGISTER_CALL_LOG` (~/trademark/telemetry/…, homedir-derived at
-call time, resolved by existence over the pre- telemetry directory too; the pre-
+call time, resolved by existence over the pre-change telemetry directory too; the pre-
 `CORSEARCH_*_LOG` names remain accepted for one release),
 `CLEAROTRON_REGISTER_RECORD_LOG` (**no longer a box path since ** — the driver injects
 `<runDir>/_driver/register-record-bodies.jsonl` per run; setting it by hand pins every run's record
@@ -319,7 +319,7 @@ systemd, writes no heartbeat, and must keep saying "waiting to start" rather tha
 repo** — `git grep process.env.CLIENT_ACCESS` here returns nothing, so they are governed here and
 never appear in the audit).
 
-**Which identity source the portal runs (,) — T4, and it is chosen by name, never inferred.**
+**Which identity source the portal runs () — T4, and it is chosen by name, never inferred.**
 `PORTAL_AUTH_MODE` selects the door: unset or `auth-proxy` (the default for a hosted deployment) means
 any login system in front that authenticates in the browser and forwards a verifiable JWT per request.
 **Any OIDC or JWT proxy is a choice per deployment** — for example Cloudflare Access, which is not a
@@ -334,7 +334,7 @@ values the staff MCP face already reads as `TRADEMARK_MCP_OIDC_ISSUER`, `TRADEMA
 never passed them, which is how one product shipped a provider-agnostic API face and a single-vendor
 web portal.
 
-**ALL FIVE DOORS READ THE FOUR NOW, and 's "the auth mechanism is out of scope" boundary is
+**ALL FIVE DOORS READ THE FOUR NOW, and the "the auth mechanism is out of scope" boundary is
 superseded** (owner, 2026-08-23: an installation brings its own identity provider and this product may
 not force one). The two write services and the client MCP origin gained the set they lacked; the table
 below names every one of the twelve. The client door's four fall back to the staff face's equivalents

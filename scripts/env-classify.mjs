@@ -73,7 +73,7 @@ export function namesMentioned(text) {
 // — NO EXECUTABLE LINE NAMES A SPECIFIC ACCOUNT'S HOME. These paths are per-box facts and this
 // script ships. They arrive as COMMAND-LINE FLAGS, not environment variables.
 //
-// The first fix used four new house-prefixed variables instead, and 's ratchet refused them —
+// The first fix used four new house-prefixed variables instead, and the ratchet refused them —
 // correctly: adding four names to the configuration surface is precisely wrong in the tool built to
 // shrink it, and a maintainer's per-invocation path is an argument. The names are deliberately not
 // written out even here: `namesRead` scans comments too, and a variable that exists only in prose is

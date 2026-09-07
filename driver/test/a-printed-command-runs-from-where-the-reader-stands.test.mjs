@@ -198,7 +198,7 @@ test("1916 the form is decided by the shim and the PATH, never by the working di
 });
 
 test("1916 the reader who arrived by npx is told the bare verb once their own shim is on PATH", () => {
-  // THE PAYOFF, stated as the one thing that must be different from before. 's arms
+  // THE PAYOFF, stated as the one thing that must be different from before. That arms
   // pin that this reader is never told the bare name; that was right when the bare name reached
   // nothing. The install now makes it reach this checkout, and the whole point of putting the verb on
   // PATH is that the advice stops carrying `npx` the moment it does.

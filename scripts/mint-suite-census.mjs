@@ -150,7 +150,7 @@ function main() {
   try { prev = JSON.parse(readFileSync(CENSUS, "utf8")); } catch { /* first mint */ }
 
   const lost = [];
-  // tracker issue 205 — THE THIRD BUCKET, ruled by overwatch 2026-09-06.
+  // THE THIRD BUCKET, ruled by overwatch 2026-09-06.
   //
   // A reasoned skip is neither a pass nor a loss, and this census had no place to put one. Two guards
   // that are each right about their own failure had come to disagree: `a-bail-on-an-unmeetable-
@@ -166,7 +166,7 @@ function main() {
   for (const { ws } of CENSUS_WORKSPACES) {
     const a = prev?.workspaces?.[ws]?.perFile ?? {};
     const b = next.workspaces[ws].perFile;
-    // tracker issue 205 — the buckets are decided in shared/suite-census.mjs, where a test can reach
+    // the buckets are decided in shared/suite-census.mjs, where a test can reach
     // them, and BOTH populations below read the same function. The two loops used to spell the decision
     // out separately and had already drifted on their all-clear line.
     const { added, gone, shrunk, grew, losses, notes, allClear } = censusBuckets({ prev: a, next: b });
@@ -175,14 +175,14 @@ function main() {
         ? `${ws}  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts)`
         : `${ws}  SHRANK   ${f}  ${a[f].tests}\u2192${b[f].tests} tests, ${a[f].asserts}\u2192${b[f].asserts} asserts`);
     }
-    // tracker issue 205 — a rising skip count is NOT a loss and does not refuse. It is collected for
+    // a rising skip count is NOT a loss and does not refuse. It is collected for
     // the bucket printed after both loops, where it is neither excused nor counted against the tree.
     for (const { file: f } of notes) noted.push(`${ws}  ${f}  ${a[f].skips ?? 0}\u2192${b[f].skips ?? 0} skip(s), `
       + `${a[f].todos ?? 0}\u2192${b[f].todos ?? 0} todo(s)`);
     console.log(`\n${ws}: ${Object.keys(next.workspaces[ws].perFile ?? {}).length} file(s)`);
     for (const f of added) console.log(`  + ${f}  (${b[f].tests} tests, ${b[f].asserts} asserts)`);
     // A file leaving the census, or shrinking inside it, is the shape this whole thing exists for.
-    // Printed loudly and separately, and — since 's loss arm — REFUSED below unless --allow-loss
+    // Printed loudly and separately, and — since the loss arm — REFUSED below unless --allow-loss
     // is passed. This comment used to end "an --apply that scrolls past these is the laundering", which
     // was an accurate description of what the code then did: it printed both lines and wrote the file.
     for (const f of gone) console.log(`  REMOVED  ${f}  (was ${a[f].tests} tests, ${a[f].asserts} asserts)`);
@@ -197,7 +197,7 @@ function main() {
     // a verdict. So growth is now printed as its own shape, and the all-clear says what it actually
     // checked instead of implying currency it never established.
     for (const f of grew) console.log(`  grew     ${f}  ${a[f].tests}→${b[f].tests} tests, ${a[f].asserts}→${b[f].asserts} asserts`);
-    // tracker issue 205 — `allClear` counts skips. Without that a file that gained nothing but skips
+    // `allClear` counts skips. Without that a file that gained nothing but skips
     // printed "(unchanged)" over a tree where an arm had stopped running, which is the exact
     // reassuring-narrator failure the growth line above was added to repair.
     if (allClear) console.log("  (unchanged — no file added, removed, grown, shrunk or newly skipped)");
@@ -239,7 +239,7 @@ function main() {
     else if (!undeclaredGone.length && !shrunk.length && !added.length) console.log("  (nothing LOST — the counts above moved, so the census on disk is stale)");
   }
 
-  // tracker issue 205 — PRINTED WHENEVER IT IS NON-EMPTY, on every mode this script has. `--check`
+  // PRINTED WHENEVER IT IS NON-EMPTY, on every mode this script has. `--check`
   // returns before `--apply`'s refusal and `--apply` returns before `--check`'s comparison, so a bucket
   // printed inside either one would be invisible from the other — and the mode a lane gate runs is the
   // one nobody watches.

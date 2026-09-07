@@ -9,7 +9,7 @@
 //
 // Because nothing else in this repo can answer the question. portal-ui runs `node --test` with type
 // stripping and carries no jsdom and no React test renderer — Node cannot import a `.tsx` at all — so the
-import { navigateOrRefuse } from './headless-page.mjs'   // tracker issue 227 — Page.navigate returns an errorText, and nothing read it
+import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
 // four source-text tests over Clearances.tsx can prove a string is in a file and nothing more. They
 // cannot see a width, an alignment, or a scrollbar, which is precisely what and are about.
@@ -192,7 +192,7 @@ const MEASURE = `(async () => {
   });
 
   // Does the NAME wrap? Same method as the date: rendered height against line height. The Name cell is
-  // the one tracker issue 280 says must not wrap for a single mark of ordinary length, and counting characters
+  // the one that must not wrap for a single mark of ordinary length, and counting characters
   // cannot answer that — only the layout engine can.
   const nameIdx = headText.findIndex(t => /^NAME/i.test(t));
   const nameLines = [...table.querySelectorAll('tbody tr.row')].map(tr => {
@@ -360,7 +360,7 @@ const toggle = await value(TOGGLE)
 // is what it did the first time this ran.
 await value(`(async () => { const b = document.querySelector('label.group-toggle input'); if (b && !b.checked) { b.click(); await new Promise(r => setTimeout(r, 300)); } return true })()`)
 
-// The drift probe: the SAME page with one run title made much longer. 's own acceptance test —
+// The drift probe: the SAME page with one run title made much longer. its own acceptance test —
 // "lengthen a run title in the fixture data and nothing except that title moves".
 longTitle = true
 await reload()

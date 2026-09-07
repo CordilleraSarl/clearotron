@@ -888,7 +888,7 @@ test("#562: a forced placement re-run cannot present a prior pass's tiers, and a
 // questions) lives ONLY in the md. Leaving it to model discretion is the loss A9 names, and the named
 // backstop does not cover it: findUnresolvedDisagreements only flags disagreement rows that EXIST, so a
 // table that vanished entirely yields zero flags. The tail therefore rides the corrective dispatch as
-// DATA ('s extractRulingsTail, the same extraction the synthesis corrective pass uses).
+// DATA (the extractRulingsTail, the same extraction the synthesis corrective pass uses).
 //
 // A-2 widened it: the gate used to read `trigger !== "fresh" && !opts.followup`, so a FOLLOWUP digest —
 // the settlement flush, the largest re-digest surface in a run — was the one dispatch denied the tail,

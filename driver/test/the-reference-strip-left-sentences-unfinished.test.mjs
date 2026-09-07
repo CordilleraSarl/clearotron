@@ -1,18 +1,41 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 185 — THE REFERENCE STRIP LEFT SENTENCES WITH THEIR SUBJECT REMOVED, AND THE COUNT IS
-// STILL GOING UP.
+// THE REFERENCE STRIP LEFT SENTENCES WITH THEIR SUBJECT REMOVED.
 //
-// 179 when it was filed. 181 when this arm was written, two days later, with nobody having decided to
-// add any: the strip's shape is what a later edit copies when it edits near one. So the floor below is
-// not a baseline that excuses the backlog — it is the thing that stops it growing while the repair,
-// which is per-sentence and needs a reader, happens at its own pace.
+// 179 when it was filed. 181 two days later, with nobody having decided to add any: the strip's shape is
+// what a later edit copies when it edits near one. The floor below is what stopped it growing.
 //
-// WHY A FLOOR AND NOT ZERO. Repairing 181 sentences means saying what each removed reference SAID, and
-// that is 181 judgements about surrounding code, not a sed. An arm asserting zero would be red from the
-// day it landed, and a permanently red arm teaches people to stop reading the suite — which is how this
-// class got to 181 in the first place.
+// 4 NOW, ALL IN ONE FILE, AND THE DROP IS WHY THE ORIGINAL REASONING WAS WRONG. This was recorded as
+// 181 judgements about surrounding code rather than a sweep, because the repair was thought to need the
+// removed reference back. It did not. Measured against the frozen pre-strip tree, 610 of the recoverable
+// lines had exactly ONE bare citation removed and nothing else — so the noun after the apostrophe was
+// still there, still saying what the thing was, and the sentence had lost only its determiner. The
+// reference is not coming back either way: it is ruled out of the tree. So the repair was a determiner,
+// chosen by what stands in front of the gap, and "pre- " became "pre-change".
+//
+// WHAT IS LEFT IS FOUR LINES IN `driver/publish/render.mjs`, WHICH IS FROZEN AT A CONTENT HASH. Repairing
+// them reddens the break ledger next door, which is the correct behaviour and not a thing to route
+// around: changing that file costs a ledger entry, and a punctuation sweep does not get to spend one.
+// They are the whole remaining backlog, so the floor is now a statement about one frozen file rather
+// than about a class nobody has got to.
+//
+// WHY THE FLOOR STAYS AT ALL. An arm asserting zero would go red the day somebody edits near a surviving
+// one, and a permanently red arm teaches people to stop reading the suite — which is how this class got
+// to 181 in the first place.
+//
+// NOT THE SAME RESIDUE AS THE CITATION SWEEP, AND THE NUMBERS COLLIDE. `tracker issue NNN — ` in a
+// comment is INTACT text a ruling removes; the residue here is DAMAGE — a sentence that lost its
+// subject, which is a defect whether or not anyone rules on citations. The two populations happen to
+// have both sat near 180, and the signature order in reference-strip-signatures.mjs puts the
+// line-anchored one first, so "the anchor in the first signature" has been read as being about
+// `\bpre-\s+[a-z]`, which has no anchor at all. Different residue, different repair, different floor:
+// this one falls to zero as sentences are repaired, the citation one goes to zero the day its sweep
+// runs and then wants a guard against reintroduction instead.
+//
+// THE MEASUREMENT THAT MATTERS IS NOT THIS ONE. The signature this file ships is anchored at the comment
+// leader, so it counts a bare possessive that OPENS a comment and misses the identical damage mid-line.
+// Widened, the same census reads 722 rather than 180. That gap is its own repair and its own number.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

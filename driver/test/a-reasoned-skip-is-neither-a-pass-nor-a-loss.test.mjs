@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 205 — TWO GUARDS, EACH RIGHT, THAT HAD COME TO CONTRADICT EACH OTHER.
+// TWO GUARDS, EACH RIGHT, THAT HAD COME TO CONTRADICT EACH OTHER.
 //
 // `a-bail-on-an-unmeetable-precondition-is-a-skip` requires an arm that cannot meet a precondition to
 // say so with `ctx.skip(...)` rather than a bare `return;`, because node:test counts a bare return as a
@@ -27,20 +27,20 @@ const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const f = (tests, asserts, skips, todos = 0) => ({ tests, asserts, skips, todos });
 const files = (b) => b.map((x) => x.file);
 
-test("tracker issue 205 — a rising skip count is a NOTE, never a loss, and never refuses", () => {
+test("a rising skip count is a NOTE, never a loss, and never refuses", () => {
   const b = censusBuckets({ prev: { "a.test.mjs": f(10, 20, 0) }, next: { "a.test.mjs": f(10, 20, 2) } });
   assert.deepEqual(files(b.notes), ["a.test.mjs"]);
   assert.deepEqual(b.losses, [], "a skip landing in losses is the refusal that made following the bail guard impossible");
   assert.deepEqual(files(b.notes.filter((n) => n.kind === "SKIPPED")), ["a.test.mjs"]);
 });
 
-test("tracker issue 205 — a rising TODO count is the same bucket, for the same reason", () => {
+test("a rising TODO count is the same bucket, for the same reason", () => {
   const b = censusBuckets({ prev: { "a.test.mjs": f(3, 9, 0, 0) }, next: { "a.test.mjs": f(3, 9, 0, 1) } });
   assert.deepEqual(files(b.notes), ["a.test.mjs"]);
   assert.deepEqual(b.losses, []);
 });
 
-test("tracker issue 205 — the bucket is a place to LOOK, not an exemption: a skip is reported whatever else moved", () => {
+test("the bucket is a place to LOOK, not an exemption: a skip is reported whatever else moved", () => {
   // The census counts `skip(` sites in the text. It never sees a reason, honest or otherwise, and this
   // is the arm that stops a later reader assuming it does. A file that gained tests AND skips is in both
   // lists, and a file that lost assertions AND gained skips still refuses.
@@ -53,7 +53,7 @@ test("tracker issue 205 — the bucket is a place to LOOK, not an exemption: a s
   assert.deepEqual(shrankToo.losses.map((l) => l.kind), ["SHRANK"], "and the lost assertions still refuse");
 });
 
-test("tracker issue 205 — a skip-only change is NOT an all-clear", () => {
+test("a skip-only change is NOT an all-clear", () => {
   // The teeth of the second acceptance point. Before this, a file that gained nothing but skips was
   // summarised as "(unchanged)" — an arm that stopped running, reported as a clean tree.
   const b = censusBuckets({ prev: { "a.test.mjs": f(10, 20, 0) }, next: { "a.test.mjs": f(10, 20, 1) } });
@@ -102,7 +102,7 @@ test("ABSENT IS NOT ZERO — a census minted before skips were counted reports n
   assert.deepEqual(lossBetween(prev, { "a.test.mjs": f(10, 20, 3) }).skipped, []);
 });
 
-test("tracker issue 205 — BOTH populations read the one rule, and the script keeps no private copy", () => {
+test("BOTH populations read the one rule, and the script keeps no private copy", () => {
   // The ruling is "one bucket", and that is a property of the source: a second hand-rolled decision is
   // exactly how the two loops came to disagree about their all-clear line in the first place.
   const src = readFileSync(join(ROOT, "scripts", "mint-suite-census.mjs"), "utf8");

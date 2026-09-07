@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// run-economics.test.mjs — 's three instruments. Fully offline, $0.
+// run-economics.test.mjs — the three instruments. Fully offline, $0.
 //
 // The fixtures are shaped from REAL journal rows, not invented ones (invented fixtures certify the bug):
 //   · the killed-turn shape is a 2026-07-29 production clearance's register-digest stage — attempt 2,

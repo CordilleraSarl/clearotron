@@ -3,7 +3,7 @@
 // a-deduped-read-must-exist-on-the-card.test.mjs — the card's risk read is a STRUCTURE, not a habit.
 //
 // render.mjs suppresses the typed `legal_position` / `practical_position` pair on any card whose prose
-// already carries a "Risk assessment"-led bullet (, ONE ACCOUNT PER FACT). Until now that gate was a
+// already carries a "Risk assessment"-led bullet (ONE ACCOUNT PER FACT). Until now that gate was a
 // regex over a lead the dictation calls OPTIONAL and this acceptance never read — the same shape the card
 // INDEX was in before the driver bound it, which O3c measured at 224/0 and then made a structure.
 //

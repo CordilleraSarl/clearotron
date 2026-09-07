@@ -124,7 +124,7 @@ test('2075 the mark and the vocabulary are ONE rule, so they cannot disagree', (
 test('2075 the mark is derived from the SAME three states the vocabulary is', () => {
   // An unknown coverage must never mark a territory as unreachable: `undefined` is a server that did
   // not say and `null` is a register that declares no restriction, and putting a caveat on every
-  // country of a production deployment is the failure mode 's own header is about.
+  // country of a production deployment is the failure mode its own header is about.
   assert.equal(reachesTerritory('Germany', undefined), true, 'an older server marked every territory deferred')
   assert.equal(reachesTerritory('Germany', null), true, 'an unrestricted register marked every territory deferred')
   assert.equal(reachesTerritory('Germany', ['European Union']), false)

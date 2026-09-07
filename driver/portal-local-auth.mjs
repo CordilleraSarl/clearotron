@@ -137,7 +137,7 @@ export function readLocalCredential(path) {
  */
 export function credentialPathFor(env = process.env, home = null) {
   // `homedir()` is resolved ON THE RETURN LINE, not as a signature default, and that is deliberate:
-  // 's arm finds the single line naming the credential's env override and asserts the fallback
+  // That arm finds the single line naming the credential's env override and asserts the fallback
   // derives from homedir() rather than a literal path. A one-line decision gets a one-line check, and
   // a signature default would put the fact where that check cannot see it. `home` stays injectable.
   //

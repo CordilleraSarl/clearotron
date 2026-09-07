@@ -11,7 +11,7 @@
 // WHY A FORWARD PIN RATHER THAN THE FIX npm OFFERS. `npm audit fix --force` resolves it by installing
 // `exceljs@3.4.0` — a two-major downgrade of a shipping output path, to close an advisory in a code path
 // this repository does not execute. Overriding the TRANSITIVE forward keeps `exceljs` at 4.4.0 and takes
-// the advisory to zero, and the `overrides` mechanism is one this tree already uses (, `buffers`).
+// the advisory to zero, and the `overrides` mechanism is one this tree already uses (`buffers`).
 //
 // AN ABSENT DEPENDENCY ALSO REPORTS ZERO, AND THAT IS NOT A FIX. Reached while building this: deleting
 // the `node_modules/uuid` entry from the lockfile and re-resolving printed `found 0 vulnerabilities`

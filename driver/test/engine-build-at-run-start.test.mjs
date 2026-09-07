@@ -7,7 +7,7 @@
 // a run that failed, a run that was aborted, and — the one that cost rulings — the ARCHIVED RUN DIR,
 // which is a different population from the pool copy. So attribution was reconstructed by joining a
 // checkout's reflog against each run's `startedAt`, and that reconstruction decided three
-// certifications in one morning (,) with two near-misses in two days.
+// certifications in one morning () with two near-misses in two days.
 //
 // ── WHAT EACH ARM IS FOR, because "it writes a field" is not the claim ─────────────────────────────
 //

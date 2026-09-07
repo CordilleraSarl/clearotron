@@ -13,7 +13,7 @@
 // closed that bypass on 08-16 and this broke the same day. **The bypass was load-bearing and
 // nobody knew.** The delivered run two days earlier worked only because the workaround still did.
 //
-// The fix is 's shape — the WORK moves out of the guarded tree, never the hook weakened — and it is
+// The fix is the shape — the WORK moves out of the guarded tree, never the hook weakened — and it is
 // also this module obeying its own doctrine, stated fourteen lines above the offending path: `_driver/`
 // files "are the driver's own measurements, NEVER a model's output". An assess chunk is a model output.
 import { test } from "node:test";

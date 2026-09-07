@@ -97,7 +97,7 @@ test("FIRES: a started-and-never-settled call emits connotation_call_truncated",
 // ── THE VOID CONTROL, AND IT IS WHAT MAKES THE TWO ABOVE EVIDENCE ──────────────────────────────────
 
 test("VOID CONTROL: a spec with NO dictated dispositions path emits no call token", () => {
-  // The audit's gate is the dictated path, not a per-run flag. A pre- archived spec dictates no
+  // The audit's gate is the dictated path, not a per-run flag. A pre-change archived spec dictates no
   // dispositions_path, so the audit has no records to read and must stay silent — a `call_never_made`
   // there would be a confident accusation about calls a run was never asked to make.
   const r = run();

@@ -37,7 +37,7 @@ function listDir(dir) {
  * Everything holding this deployment open, named.
  *
  * @param {object} a
- * @param {string} a.queueDirs  EVERY queue tree, not the one this box thinks it uses. 's lesson:
+ * @param {string} a.queueDirs  EVERY queue tree, not the one this box thinks it uses. That lesson:
  *                                a headless CLEAROTRON_QUEUE_DIR and the agent workspace queues are both
  *                                real, and a guard that reads one of them passes over work sitting in
  *                                the other.

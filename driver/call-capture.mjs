@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // call-capture.mjs — the forensic record of what a seat SENT, one file per call, refusals included.
 //
-// 's sibling. Every recording transport captures the payload
+// That sibling. Every recording transport captures the payload
 // BEFORE its decision, so the evidence survives a refusal. Each of them wrote that capture to a path
 // derived from something that does not change between calls — a literal `call-001.json`, an axis name, a
 // finding's ordinal — so a second call to the same subject DESTROYED the first's evidence. Measured on

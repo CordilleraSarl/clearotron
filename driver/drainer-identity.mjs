@@ -34,7 +34,7 @@
 import { readFileSync, writeFileSync, mkdirSync, renameSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
-import { drainPosture, absentDrainerIsNormal } from "./drain-posture.mjs";   // tracker issue 206 — one rule about the box
+import { drainPosture, absentDrainerIsNormal } from "./drain-posture.mjs";   // one rule about the box
 
 export const STAMP_BASENAME = "_drainer-identity.json";
 

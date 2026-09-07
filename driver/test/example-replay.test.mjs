@@ -176,7 +176,7 @@ test("a missing frozen demo says what a frozen demo is and how to make one", () 
   assert.match(r.out, /Products with a demo in this tree:/, r.out);
 });
 
-// ── tracker issue 277: the demo shows a new reader everything the package ships ──────────────────────
+// ── the demo shows a new reader everything the package ships ──────────────────────
 //
 // `npx clearotron demo` replayed `children[0]` and stopped. The package ships one finished report per
 // product; a first-time reader met one of them, with nothing on screen saying the other three existed.

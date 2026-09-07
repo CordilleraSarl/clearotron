@@ -88,7 +88,7 @@ const DEV = process.env.TRADEMARK_MCP_DEV === "1";
 // the opposite of `TRADEMARK_MCP_AUTH_DISABLED` — which authenticates nobody and hands every caller
 // `local-test@disabled` — and the handler refuses outright to build the two together.
 //
-// It exists because 's one-command local install needs the trigger lane, the trigger lane is this
+// It exists because the one-command local install needs the trigger lane, the trigger lane is this
 // face, and a startup command that has to switch authentication off to reach it is the defect that
 // issue is about. The portal holds a verb-scoped, account-capped ops token; this door demands it.
 //

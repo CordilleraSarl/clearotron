@@ -108,7 +108,7 @@ test('1937 §B the context field is out of the collapsible, above it, and shows 
 
 test('1937 §B the comparison table takes the screen measure, without widening the form', () => {
   const src = code(SRC)
-  // ── Refs tracker issue 2144 — WHAT THIS ARM CAN AND CANNOT KNOW ─────────────────────────────────
+  // ── WHAT THIS ARM CAN AND CANNOT KNOW ─────────────────────────────────
   // It used to open by matching the exact markup of the opt-out, and it passed for the whole time that
   // opt-out was INERT: the class was on an element two levels inside the one carrying the cap, so
   // `max-width: none` could never take effect, and no string in this file can see that. A test that

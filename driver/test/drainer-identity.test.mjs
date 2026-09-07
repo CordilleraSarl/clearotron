@@ -90,7 +90,7 @@ test("an unreadable checkout HEAD is a could-not-look, never a pass", () => {
   assert.match(v.message, /could not be read/);
 });
 
-test("Refs tracker issue 2081 — a build named from the archive says so, and still compares", () => {
+test("a build named from the archive says so, and still compares", () => {
   const v = drainerVerdict({ stamp: stampOf({ engineCommitSource: "build-info" }), headCommit: HEAD,
     isAlive: ALIVE, processes: [] });
   assert.equal(v.state, "pass");

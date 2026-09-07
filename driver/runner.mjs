@@ -23,13 +23,13 @@ import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici header
 import { readdirSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, statSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
-// The queue's filename vocabulary, in ONE place — 's rule, extended by to the prose-sidecar and
+// The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES } from "./queue-markers.mjs";
 import { matterLedgerPath } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
-import { orderTimeRefusal } from "./run-requirements.mjs";   // tracker issue 216 — one authority for what a run needs, and when it is asked for
-import { unitEnvPath } from "../shared/env-local.mjs";   // tracker issue 216 — the file the units read, named by its one author
+import { orderTimeRefusal } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
+import { unitEnvPath } from "../shared/env-local.mjs";   // the file the units read, named by its one author
 import { fileURLToPath } from "node:url";
 import { config, preflightDeploymentUrls } from "./driver.config.mjs";
 import { deriveSlug, todayISO, mintFreshCodename } from "./phase0.mjs";
@@ -381,7 +381,7 @@ function cleanupClaimSidecars(procPath) {
  * Returns true when this call moved the marker, false when it was already gone. Any other error still
  * throws: a permissions failure or a full disk is not a sibling.
  */
-export function retireMarker(procPath, destPath, what = "") {   // exported for 's honesty test
+export function retireMarker(procPath, destPath, what = "") {   // exported for the honesty test
   try { renameSync(procPath, destPath); return true; }
   catch (e) {
     if (e?.code !== "ENOENT") throw e;
@@ -389,7 +389,7 @@ export function retireMarker(procPath, destPath, what = "") {   // exported for 
     // <dest> is on disk. On this branch the rename did NOT happen, so <dest> was never created by this
     // call, and the parenthetical named the outcome the caller intended rather than the one an operator
     // would find. It is the single line an operator reads to discover where a job went, and it was
-    // pointing at a file that is not there. The reproduction (, PR) ends with the queue dir
+    // pointing at a file that is not there. The reproduction (PR) ends with the queue dir
     // holding `job-race.processing` and `job-race.processing.pid` and NO `.json` at all, under a log
     // line that said the orphan had been returned to the queue.
     note(`[runner] ${basename(procPath)} was already retired by another runner — this call did NOT create ${basename(destPath)} (it wanted: ${what || "retire the marker"}); the marker is in whatever state that runner left it`);
@@ -433,13 +433,13 @@ export function retireMarker(procPath, destPath, what = "") {   // exported for 
  * marker; the argument holds only because no `<base>.json` exists while we hold the lock (both enqueue
  * doors refuse an id whose `.json` or `.processing` is already present, and this call is the one about
  * to create it). The residual — a fresh enqueue of the SAME id landing between the two renames — is the
- * window 's claim lock and `takeoverClaim` already carry, unchanged here. At a call site where a
+ * window the claim lock and `takeoverClaim` already carry, unchanged here. At a call site where a
  * `<base>.json` CAN coexist with the marker, that argument does not transfer.
  *
  * Returns true when this call moved the marker to `destPath`. False means the claim was not ours to
  * retire — and that nothing on disk was touched.
  */
-export function retireClaimAndSweep(procPath, destPath, what = "", { token = claimToken() } = {}) {   // exported for 's race test
+export function retireClaimAndSweep(procPath, destPath, what = "", { token = claimToken() } = {}) {   // exported for the race test
   const lockPath = `${procPath}.claimed-${token}`;
   try { renameSync(procPath, lockPath); }
   catch (e) {
@@ -482,7 +482,7 @@ export function retireClaimAndSweep(procPath, destPath, what = "", { token = cla
  *     RE-ASSEMBLED from. It is the one deletion that outlives every marker state: the winner's job — a
  *     resume, or a hand-back to `.json` — then cannot be assembled at all.
  *   - `<base>.done.result` / `<base>.failed.result` asserts a terminal that is not on disk. That is
- *     's defect exactly (a line naming the outcome the caller WANTED, not the one an operator would
+ *     That defect exactly (a line naming the outcome the caller WANTED, not the one an operator would
  *     find), one call below the fix for it.
  *   - `dropMatter` marks the matter ledger row `failed`, and `findDuplicateMatter` skips failed rows —
  *     so it re-opens the dedup gate for a matter the winner may be mid-resume, and the ~$40 duplicate
@@ -578,7 +578,7 @@ async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons) {
 // outcome string for the .reason file.
 async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
-  // ── tracker issue 136 — A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
+  // ── A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
   //
   // The observable outcome of a dedup park was an empty queue and no run, which is exactly what an
   // enqueue that vanished looks like — and the two want completely different next actions. That got
@@ -740,7 +740,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // one-at-a-time so the dedup check+record stays race-free even while prior jobs' pipelines run concurrently
 // (Phase-4). Returns the prepared {procPath, base, job} to execute, or null when the job was terminally
 // parked/failed-at-intake, or the claim was lost.
-// ── tracker issue 216 — THE ORDER-TIME REFUSAL, AND WHY IT IS HERE ──────────────────────────────────
+// ── THE ORDER-TIME REFUSAL, AND WHY IT IS HERE ──────────────────────────────────
 //
 // A hosted install now STARTS with no register configured (owner ruling 2026-09-06: "someone can install
 // and select key later so it should still start"). The protection that used to live in
@@ -849,7 +849,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     await failAtIntake(procPath, qdir, base, agentId, job, v, v.errors);
     return null;
   }
-  // ── tracker issue 216 — IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
+  // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
   {
     const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath() });
     if (refusal) {
@@ -1027,7 +1027,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
 // result the whole time and the marker threw it away.
 //
 // WHAT THIS DOES NOT DO: invent a cause. Neither branch classifies anything; each states which park
-// fired and what its clock means. 's damage was a record that could not be contradicted from the
+// fired and what its clock means. That damage was a record that could not be contradicted from the
 // artifacts, so the fix is not a better guess — it is saying less, and saying which.
 export function parkCause(res = {}) {
   const RESOLVED_BY = "a live retry — the stored time is a hint about when to look, not the authority on "
@@ -1182,8 +1182,8 @@ async function runPrepared({ procPath, base, job }, qdir, agentId, resumeMeta = 
       //
       // The pipeline already made this distinction where it writes its own sentinel — "only the recovery
       // sentinel carried a discriminator … the 2026-07-28 postmortem misread: a recovery park diagnosed
-      // as a rate-limit park". The queue-side marker never got it. Same shape as 's terminal fields
-      // reaching two writers and not four, and 's stamp reaching the audit path and not the rebuild.
+      // as a rate-limit park". The queue-side marker never got it. Same shape as the terminal fields
+      // reaching two writers and not four, and the stamp reaching the audit path and not the rebuild.
       ...parkCause(res),
     });
     note(`[runner] ${base} → POSTPONED (${parkCause(res).parkKind}; retries at the earlier of ${res.resetsAt ?? "its due time"} and its next probe — no hand-edit needed if it clears early)`);

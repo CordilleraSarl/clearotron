@@ -38,7 +38,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 // The files that PUBLISH and name a paid vendor. `providers/_shared/` is here deliberately: it is not
-// withheld, it names vendors, and it carried two probe dates that 's own file list did not mention.
+// withheld, it names vendors, and it carried two probe dates that its own file list did not mention.
 const SCANNED = [
   "providers/clarivate/src",
   "providers/corsearch/src",
@@ -57,7 +57,7 @@ const WITHHELD_TEST_TREES = /providers\/(clarivate|corsearch|signa)\/test\//;
  *
  * A listed path that has moved would otherwise contribute nothing and the scan below would report a
  * clean tree over a corpus it could not reach — which is the same defect this guard exists to catch,
- * wearing the guard's own clothes. 's discovered-set census caught the first draft doing exactly
+ * wearing the guard's own clothes. That discovered-set census caught the first draft doing exactly
  * that, so both the missing case and the empty-directory case throw by name.
  *
  * A legitimately deleted file is therefore a deliberate edit to SCANNED, not a silent narrowing.
@@ -69,7 +69,7 @@ function filesUnder(rel, { top = true, base = ROOT } = {}) {
       + "it; if it was deleted, remove it from the list deliberately — a listed path that silently "
       + "contributes nothing makes every absence below meaningless.");
   if (statSync(abs).isFile()) return [rel];
-  // Read, then ASSERT THE SET, then loop. 's discovered-set census wants the non-emptiness stated
+  // Read, then ASSERT THE SET, then loop. That discovered-set census wants the non-emptiness stated
   // before the iteration and not inferred after it, and it is right: a loop over an empty directory
   // completes happily and contributes nothing, which is indistinguishable from a directory of clean
   // files at every point downstream.
@@ -163,7 +163,7 @@ test("#1375 no file in the public cut records HOW a paid vendor's behaviour was 
 });
 
 test("#1375 the scan REFUSES a corpus it cannot reach, rather than reporting it clean", () => {
-  // The failure mode of every absence check, and the one 's discovered-set census caught here in
+  // The failure mode of every absence check, and the one the discovered-set census caught here in
   // review: a listed path that moved contributes nothing, the loop walks a shorter list, and the arm
   // above reports a clean tree. Both ways of reaching nothing now throw by name.
   assert.throws(() => filesUnder("providers/does-not-exist/src"), /is listed in SCANNED and does not exist/);

@@ -19,7 +19,7 @@ import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
-import { systemdSaid, looksLikeBusFailure, busRemedy, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // tracker issue 270 — a stop that could not look must not report that it stopped
+import { systemdSaid, looksLikeBusFailure, busRemedy, CAPTURE_STDERR } from "../shared/systemd-failure.mjs";   // a stop that could not look must not report that it stopped
 import { BACKGROUND_UNITS } from "./start.mjs";
 import { CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";
@@ -90,7 +90,7 @@ for (const u of BACKGROUND_UNITS) {
   say(`  stopped and removed ${u}`);
 }
 // THE COMMENT HERE ALREADY NAMED THE CAUSE AND SHRUGGED AT IT. If there is no user bus, the disables
-// above did not happen either — which is the whole of tracker issue 270 — so this is where that is said.
+// above did not happen either — so this is where that is said.
 try {
   execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR);
 } catch (e) {

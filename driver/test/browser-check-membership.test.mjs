@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// tracker issue 968 — WHERE EACH CHECK RUNS, as data rather than as prose.
+// WHERE EACH CHECK RUNS, as data rather than as prose.
 //
 // The browser checks in scripts/ are the only things in this repository that can observe a scrollbar,
 // a sticky header, a frame two pixels shorter than its contents, or a control meant to be clicked
@@ -17,7 +17,7 @@
 // reason it cannot be. Both halves are asserted, and so is the enumeration itself — a glob that stops
 // matching would otherwise report the same green as full coverage.
 //
-// This is what tracker issue 705 and tracker issue 1000 were routed behind. Their acceptance criteria are browser behaviours no
+// This is what those two were routed behind. Their acceptance criteria are browser behaviours no
 // clearance round touches, and certifying them by hand-clicking is not certifying them.
 
 import { test } from "node:test";

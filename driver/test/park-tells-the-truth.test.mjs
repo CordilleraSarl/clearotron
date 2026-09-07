@@ -22,8 +22,8 @@
 //
 // The pipeline had already drawn this distinction where it writes its own sentinel — "only the recovery
 // sentinel carried a discriminator … the 2026-07-28 postmortem misread: a recovery park diagnosed as a
-// rate-limit park". The queue-side marker never got it. Same shape as 's terminal fields reaching
-// two writers and not four, and 's stamp reaching the audit path and not the rebuild.
+// rate-limit park". The queue-side marker never got it. Same shape as the terminal fields reaching
+// two writers and not four, and the stamp reaching the audit path and not the rebuild.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -89,7 +89,7 @@ test("#1176 the marker is written FROM the park, not asserted over it", () => {
     "a waitingOn STRING LITERAL is back at the park call site — that is the defect, not a style choice");
 });
 
-// ── 's half: a lost state write is no longer silent ────────────────────────────────────────────
+// ── the half: a lost state write is no longer silent ────────────────────────────────────────────
 //
 // WHAT THIS DOES AND DOES NOT CLAIM. reports a park whose run dir read `state:"running"` with no
 // `.postponed` sentinel, and attributes it to the runner-side path. I could not reproduce that

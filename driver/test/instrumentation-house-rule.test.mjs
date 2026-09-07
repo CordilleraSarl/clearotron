@@ -3,7 +3,7 @@
 // AD-4 (2026-07-30 addendum) — the instrumentation house rule at the gateway: every telemetry field is
 // written unconditionally, so "did not happen" stays distinguishable from "not recorded".
 //
-//   (1) `attempt` lands on run.jsonl — ADDITIVE beside the per-stage logs ('s harness reads those and
+//   (1) `attempt` lands on run.jsonl — ADDITIVE beside the per-stage logs (the harness reads those and
 //       keeps doing so): one lean {event:"attempt"} row per model dispatch, with its outcome and cause.
 //       run.jsonl previously carried one "stage" event with attempts:N and no causes (and, on the knockout
 //       lane, no stage events at all), so run.jsonl alone could not distinguish "no retries happened" from
@@ -80,7 +80,7 @@ test("attempt events land on run.jsonl per dispatch — cause on the failed row,
     assert.equal(attempts[1].fail, null, "explicit null — 'did not fail', not 'not recorded'");
     assert.equal(attempts[1].wrote, true, "attempt 2 emitted the artifact");
 
-    // ADDITIVE: the per-stage rows ('s harness substrate) still carry the full per-attempt detail
+    // ADDITIVE: the per-stage rows (the harness substrate) still carry the full per-attempt detail
     const rows = readStageRows(dir, "teststage");
     assert.equal(rows.length, 2);
     assert.equal(rows[0].attempt, 1);
@@ -106,7 +106,7 @@ test("#1456 the BILLING stamp is written even when false — a subscription run 
       }));
     // BOTH LOGS. The per-stage row is where auth.mjs says the stamp lands; run.jsonl's spine is what a
     // sweep across archived runs actually reads, and it carried no billing pair at all — which is why
-    // 's sweep came back empty and the control came back empty with it.
+    // That sweep came back empty and the control came back empty with it.
     for (const [what, row] of [["run.jsonl spine", readRunEvents(dir)[0]], ["per-stage row", readStageRows(dir, "teststage")[0]]]) {
     // PRESENT, and false. `in` and the value are asserted separately on purpose: a key that is absent and
     // a key whose value is falsy read the same through `row.apiBilled`, and the whole defect was the

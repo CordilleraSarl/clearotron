@@ -20,13 +20,13 @@ import { portsForFlag, resolvePorts } from "../../bin/start.mjs";
 
 // ── 166 ──────────────────────────────────────────────────────────────────────────────────────────
 
-test("tracker issue 166 — --port moves every door, not just the portal", () => {
+test("--port moves every door, not just the portal", () => {
   const base = resolvePorts({});
   // The exact numbers from the stranger drive that found this.
   assert.deepEqual(portsForFlag("18860", base, {}), { portal: 18860, mcp: 18861, client: 18862 });
 });
 
-test("tracker issue 166 — a port the operator set explicitly is not moved", () => {
+test("a port the operator set explicitly is not moved", () => {
   // The flag is a convenience over the DEFAULTS. Somebody who set the variable chose that number, and
   // the issue's own evidence is that exporting all three already worked — that path must not change.
   const base = resolvePorts({ TRADEMARK_MCP_HTTP_PORT: "9999" });
@@ -36,13 +36,13 @@ test("tracker issue 166 — a port the operator set explicitly is not moved", ()
   assert.equal(moved.client, 18862);
 });
 
-test("tracker issue 166 — no flag changes nothing", () => {
+test("no flag changes nothing", () => {
   const base = resolvePorts({});
   assert.deepEqual(portsForFlag(undefined, base, {}), base);
   assert.deepEqual(portsForFlag("", base, {}), base);
 });
 
-test("tracker issue 166 — a port with no room for the doors that follow it is refused", () => {
+test("a port with no room for the doors that follow it is refused", () => {
   // Silently binding 65536 and 65537, or wrapping, would be a worse version of the defect: doors on
   // numbers the reader was never shown.
   const base = resolvePorts({});
@@ -58,7 +58,7 @@ test("tracker issue 166 — a port with no room for the doors that follow it is 
 // already has its own arms. What is under test here is what the caller DOES with each verdict, which
 // is where the issue's remaining work lives.
 
-test("tracker issue 160 — a stale bundle is rebuilt", () => {
+test("a stale bundle is rebuilt", () => {
   let ran = null;
   const r = rebuildIfStale({
     repo: "/nonexistent-repo-for-this-arm",
@@ -72,7 +72,7 @@ test("tracker issue 160 — a stale bundle is rebuilt", () => {
   assert.equal(ran, null, "a build was run for a bundle that is merely absent");
 });
 
-test("tracker issue 160 — a failed rebuild is reported and does not throw", () => {
+test("a failed rebuild is reported and does not throw", () => {
   // A box that serves an old screen is worse than one serving a current screen, and better than one
   // that will not start. The caller must keep going, and the reader must be told in full.
   const said = [];
@@ -87,7 +87,7 @@ test("tracker issue 160 — a failed rebuild is reported and does not throw", ()
   assert.equal(typeof r.ok, "boolean");
 });
 
-test("tracker issue 160 — a bundle that cannot be measured is not rebuilt", () => {
+test("a bundle that cannot be measured is not rebuilt", () => {
   // `unmeasured` is a could-not-look. Rebuilding on it would take a confident action on no evidence,
   // which is the same class of mistake as the silence this issue is about.
   let ran = 0;

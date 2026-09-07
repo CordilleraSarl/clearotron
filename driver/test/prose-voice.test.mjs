@@ -145,7 +145,7 @@ test("two-level rule: the skill files teach the same contract, never the retired
 //
 // Same class as everything above, and for the same reason: this asserts that the INSTRUCTIONS still say
 // what the owner ruled, never that a delivered report obeys them. There is no lint here and there must
-// not be one — 's own ruling is that a word filter swaps a banned word for an unbanned one equally
+// not be one — its own ruling is that a word filter swaps a banned word for an unbanned one equally
 // opaque, so the evidence for this half is a delivered report read against the standard, not an assertion.
 //
 // What a string test CAN hold is the two-level rule. The ruling lives in PROSE_VOICE and the mirrors in

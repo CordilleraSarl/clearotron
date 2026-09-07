@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 1847 — TWO NODE PROCESSES SAT ON THE SHARED TEST BOX FOR 2.7 DAYS.
+// TWO NODE PROCESSES SAT ON THE SHARED TEST BOX FOR 2.7 DAYS.
 //
 // `mock-claude-spew-immune.mjs` and a `node -e process.on('SIGTERM',()=>{})…` — `mock-hang-tree.mjs`'s
 // grandchild. Both orphaned to init, both immune to SIGTERM, both needing a human with SIGKILL.
@@ -21,7 +21,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { reapPidfile, reapNow } from "./reap-fixture.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { processTable } from "../../shared/process-table.mjs";   // Refs tracker issue 2099 — /proc is not the only box
+import { processTable } from "../../shared/process-table.mjs";   // /proc is not the only box
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
@@ -132,7 +132,7 @@ process.on("exit", () => reapSpawned());
 //
 // The reaping arms sent SIGKILL, waited a FIXED 250ms and asserted `alive(pid) === false`. That is a
 // load meter wearing an assertion's clothes, and it reddened inside a full-suite run on 2026-08-26 —
-// the second occurrence of the shape, which the tripwire on tracker issue 1847 says to DRIVE rather than re-run.
+// the second occurrence of the shape, which the tripwire says to DRIVE rather than re-run.
 //
 // Driven at a 1ms settle under load average 27: 24 of 25 runs failed, 58 arm failures, all three
 // reaping arms — against 0 of 25 at the shipped 250ms. Then measured directly, 40 trials, SIGKILL and
@@ -382,7 +382,7 @@ test("#1900 a RED arm strands nothing — driven as a child run, because the wir
     // scan and a scan that never happened are the same bytes. This process is itself in that listing,
     // so an empty one is a broken instrument, never a quiet all-clear.
     //
-    // Refs tracker issue 2099: this read `readdirSync("/proc")` and died `ENOENT` on the first macOS
+    // this read `readdirSync("/proc")` and died `ENOENT` on the first macOS
     // run this repository ever had. `processTable()` keeps the distinction the assertion depends on —
     // `null` is could-not-look, never an empty box.
     for (const proc of nonEmpty(processTable(),

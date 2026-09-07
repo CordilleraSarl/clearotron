@@ -20,7 +20,7 @@
 //   so an axis cell can no longer be wrong." Three of the four seat labels it named by example — the
 //   per-jurisdiction reconciliation, the ⭐-floor sweep, the counted dominant-element crowd — normalise
 //   to "" and were REFUSED. The skill taught a shape the gate refuses, by construction, on the first
-//   dispatch. That is 's finding ("a fact obeyed as a failure and ignored as an input") recreated
+//   dispatch. That is the finding ("a fact obeyed as a failure and ignored as an input") recreated
 //   one field over.
 //
 // THE GATE IS EXERCISED THROUGH THE UNION AND THE BYTES, NEVER OVER HAND-BUILT ROWS. verify.mjs judges
@@ -225,7 +225,7 @@ test("HALF 2 — a genuinely unknown axis is still refused; nothing here invents
 // ── HALF 2 — THE ALLOWED SET IS ON EVERY SURFACE THE SEAT READS ────────────────────────────────────
 
 test("the FORM ITSELF carries the allowed axis set — on the pre-dispatch build AND on every union pass", () => {
-  // A value a model must supply and is never shown is 's defect. The form is the file the seat has
+  // A value a model must supply and is never shown is the defect. The form is the file the seat has
   // open, so it is the surface that matters most — and it has to survive the union, because from pass 2
   // onwards the union's output is what writeCoverageForm puts in BOTH copies.
   const dir = runDir();

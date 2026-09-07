@@ -65,7 +65,7 @@ import { snapshotRepo, repoWrites, explainRepoWrites } from "./repo-writes.mjs";
 //     CLEAROTRON_DATABASE=clarivate node scripts/test-run.mjs node -e '<print>'
 //       -> CLEAROTRON_DATABASE = "corsearch"
 //
-// The operator named a vendor and the suite ran as a different one, in silence. That is 's own
+// The operator named a vendor and the suite ran as a different one, in silence. That is its own
 // sentence — "a default is the one wrong value that never announces itself" — reached through the
 // compatibility window rather than through a code default.
 //
@@ -286,7 +286,7 @@ if (missingDeps.length) {
   process.exit(1);
 }
 
-// ── THE SUITE CANNOT READ THE OPERATOR'S CONFIGURATION, IN OR OUT (,) ──────────────────
+// ── THE SUITE CANNOT READ THE OPERATOR'S CONFIGURATION, IN OR OUT () ──────────────────
 //
 // TWO DIRECTIONS, ONE SEAT. The guard below refuses when a data-plane ROOT escapes; these two stop the
 // suite reading the operator's configuration and stop it writing into their data plane. Same wrapper,

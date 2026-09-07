@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // register-presence.mjs — the audit's queryable store of every live, matter-in-scope enumerated record.
 //
-// THE RULING THIS IMPLEMENTS (, owner 2026-08-31): "YES of course they should be in
+// THE RULING THIS IMPLEMENTS (owner 2026-08-31): "YES of course they should be in
 // the audit. always. … we don't need to report on them but we need to store them." On the run this was
 // measured against, 65 live records inside the matter's scope and carrying the client's own dominant
 // element appeared in NO stored artifact — not the report (correct), and not the audit either (the

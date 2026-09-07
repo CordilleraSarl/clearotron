@@ -105,7 +105,7 @@ test("alive checks get their own bucket; the feed is reports-only; no quality su
     { ts: "2026-07-10T09:00:00Z", id: "fire@1", kind: "quality-check", label: "FIRE", case: "fire", state: "done", costUsd: 5 },
   ].map((r) => JSON.stringify(r)).join("\n") + "\n";
   writeFileSync(ledger, lines);
-  // A stale hub status file left on disk by a pre- deploy must be IGNORED, not read.
+  // A stale hub status file left on disk by a pre-change deploy must be IGNORED, not read.
   writeFileSync(join(root, "quality-status.json"), JSON.stringify({ regression_health: "RED", generated_at: now,
     by_case: [{ id: "fire", flag: "RED", stale: false, last_checked: "2026-07-10" }] }));
   const snap = statusSnapshot({

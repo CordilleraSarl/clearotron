@@ -510,7 +510,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
     owed = auto.owed, declined = auto.declined,
     now = () => new Date().toISOString() } = opts;
   const { dir, payload, accepted, refusals } = synthesisCallPaths(dir0);
-  // 's sibling, — ONE FILE PER CALL, refusals included. This used to
+  // Its sibling rule — ONE FILE PER CALL, refusals included. This used to
   // write `payload` every time, so a turn refused twice and accepted on the third kept only the accepted
   // shape: the file promising "including calls that were refused" held the one call that was not.
   // Sequence 1 resolves to the existing `call-001.json`, so every consumer reading that name is unmoved.

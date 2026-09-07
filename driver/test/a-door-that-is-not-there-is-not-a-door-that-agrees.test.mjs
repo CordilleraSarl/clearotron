@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 241 — the audience the EDGE issues, compared against the one this install is configured
+// the audience the EDGE issues, compared against the one this install is configured
 // with. The half of the recreation trap that has no symptom of its own: recreate an Access application,
 // fix the sign-in, and the challenge reads healthy while the stale audience stays invisible until a real
 // request is rejected.

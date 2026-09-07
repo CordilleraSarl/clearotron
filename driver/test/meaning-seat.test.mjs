@@ -22,7 +22,7 @@
 // whole dispatch IS the meaning work, and two grid halves that are handed no meaning obligation at all.
 //
 // WHAT IT DOES NOT CLAIM. That the refusal is gone. This seat can still fail its own gate — the gate is
-// unchanged and 's Out of scope keeps it that way. What is proven here is structural: the gate that
+// unchanged and the Out of scope keeps it that way. What is proven here is structural: the gate that
 // fired on 13 of 14 first attempts can no longer arm on a grid half, because a grid half is dictated
 // nothing to rule. Whether the sweep itself converges first-try is a statement about what a clearance
 // run produced, and it belongs to the round that runs one.
@@ -77,7 +77,7 @@ test("#517 the grid split is untouched: even parity, full platform list, and the
 });
 
 test("#517 the disposition_required stamp still rides every seat", () => {
-  // Unchanged from 's reasoning: it is the receipt-PRESENCE arm, so a stray pr_risk block in a seat
+  // Unchanged from the reasoning: it is the receipt-PRESENCE arm, so a stray pr_risk block in a seat
   // that owes nothing must still be judged rather than waved through because it "should not be there".
   const seats = splitGridSpec(SPEC, {});
   for (const h of GRID_SEATS) assert.equal(seats[h].connotation.disposition_required, true);

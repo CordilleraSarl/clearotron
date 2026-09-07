@@ -18,7 +18,7 @@
 // had something of its own to anchor on.
 //
 // That is the day's defect shape in one stage — a decision taken on a surface token while the record
-// underneath already said it — and it is what 's S2 ruling settled: "the mechanical card fields
+// underneath already said it — and it is what the S2 ruling settled: "the mechanical card fields
 // (headings, ids, links, driver-stamped values) move to code NOW — uncontested."
 //
 // ── WHY THE HEAD RULE IS THE WHOLE REVIEW QUESTION ──────────────────────────────────────────────────

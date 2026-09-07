@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 193 — `clearotron connect` repointed the whole install at whatever checkout it ran from.
+// `clearotron connect` repointed the whole install at whatever checkout it ran from.
 //
 // `CLEAROTRON_CHECKOUT_DIR` decides which tree every unit's ExecStart executes and which tree the
 // deploy timer fast-forwards. `connect` wrote it from its own location, silently. Driven on testuser:
@@ -79,7 +79,7 @@ test("193 a service running from another tree is a CONFLICT, named by unit and t
 });
 
 test("193 the mixed box from the finding: three units on the old tree, one already moved", () => {
-  // Jaw's own table. The one unit `connect` restarted had followed the write; the other three had not,
+  // the deployment's own table. The one unit `connect` restarted had followed the write; the other three had not,
   // and they are the ones that break. A posture that only looked at the door would have said "clear".
   const move = checkoutMove("/opt/clearotron", "/srv/worktree-pr43");
   const p = movePosture({ move, running: [

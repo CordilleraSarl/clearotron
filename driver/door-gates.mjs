@@ -133,7 +133,7 @@ export function doorGates(job, opts = {}) {
   return { ...r, ...gateResolvedRequest({ job, ...r }, opts) };
 }
 
-// ── WHY tracker issue 216'S REFUSAL IS NOT ALSO A DOOR GATE ─────────────────────────────────────────
+// ── WHY THE CONFIGURED-TO-SEARCH REFUSAL IS NOT ALSO A DOOR GATE ─────────────────────────────────────────
 //
 // It was, briefly, and it was removed with a measurement rather than an opinion. Adding "is this box
 // configured to search at all" here reddened `driver/test/doors-agree.test.mjs` — nineteen arms green

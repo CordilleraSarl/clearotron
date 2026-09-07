@@ -9,7 +9,7 @@
 // grounds of a BLOCKING verdict beside the eleven real ones — 17 rows where 11 are real.
 //
 // TWO SPECIMENS, BECAUSE ONE IS NOT A VERIFICATION. The same reviewer skill emits `**1. [kind: …]` on one
-// run and `1. **[kind: …]` on another, so 's failure was intermittent and a fix keyed to one format
+// run and `1. **[kind: …]` on another, so the failure was intermittent and a fix keyed to one format
 // proves nothing about the other. Both preserved reviews are reproduced here structurally:
 //   format A → 14 rows, 14 typed, 0 untyped
 //   format B → 11 rows, 11 typed, 0 untyped   (17/11/6 before this change)
@@ -107,7 +107,7 @@ test("#1570 the allowlist keys on the WORD, because reviews write the heading fi
 });
 
 test("#1570 a document that names NO corrections section still yields its corrections", () => {
-  // 's fixture is exactly this, and 's writes them under `## Corrections`. The allowlist must not
+  // That fixture is exactly this, and the writes them under `## Corrections`. The allowlist must not
   // turn a headless review into a silent zero — the fallback applies only where there is no section
   // structure to get wrong, so it cannot reopen the defect above.
   const headless = "BLOCKING\n\n- the owner is wrong\n- the tier is wrong\n";

@@ -113,7 +113,7 @@ test("#526/#1067 a finding that APPEARED is a change; one that VANISHED is a REM
   // the name claimed a population of two over a population of one. measured what the merge cost: a
   // corrective pass answered a flag by DELETING the fact it named, and this table, the driver's own
   // evidence, called that deletion a change — the outcome that reads as the flag having landed.
-  // 's actual assertion is intact: a removed finding is still not `findings-unchanged`.
+  // That actual assertion is intact: a removed finding is still not `findings-unchanged`.
   const POST = { findings: [PRE.findings[1]] };       // ACME is gone entirely
   const applied = buildCorrectionsApplied(parseCorrections(REVIEW), PRE, POST);
   assert.equal(applied[0].outcome, "findings-removed", "a finding the pass removed is not 'unchanged' — and it is not 'changed' either");

@@ -80,7 +80,7 @@ test("2148 the client door IS placed now, and the superseded ruling is named", (
   // the door WAS the consent that opened client-account access, so an installer placing it would have
   // made that consent meaningless. That reasoning was right under that ruling.
   //
-  // He superseded it knowingly (, settled point 2): the door auto-starts and THE
+  // He superseded it knowingly (settled point 2): the door auto-starts and THE
   // PER-ACCOUNT KEY IS THE GATE, not whether a process runs. A door with no key issued refuses
   // everything — the same protection by a mechanism that does not depend on a reader finding a verb.
   const { dir, placed } = apply();
@@ -322,7 +322,7 @@ test("2148 the signing secret is generated, announced, and never printed", () =>
   assert.ok(!out.includes(secret), "the signing secret was printed to stdout");
 });
 
-test("tracker issue 122 — the portal's secret is generated too, and the portal cannot start without it", () => {
+test("the portal's secret is generated too, and the portal cannot start without it", () => {
   // THE SAME FAMILY, ONE DOOR ALONG. `PORTAL_SECRET` is 32 random bytes minted by `bin/start.mjs` and by
   // nothing else, and driver/portal-service.mjs REFUSES TO START without it. So a box installed strictly
   // from the hosted document got a portal unit that exited at boot, and the only route to a working one
@@ -341,7 +341,7 @@ test("tracker issue 122 — the portal's secret is generated too, and the portal
     "the portal secret and the signing secret are the same value, so rotating one silently voids the other");
 });
 
-test("tracker issue 122 — a live portal secret is never replaced, and TWO things stop it", () => {
+test("a live portal secret is never replaced, and TWO things stop it", () => {
   // Replacing it signs everybody out and voids every outstanding confirmation token.
   //
   // WHAT THIS ARM DOES AND DOES NOT GUARD, stated because I checked. Driving the whole apply path here

@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // — the register record log is run-scoped, and an empty one can never read as "verified".
 //
-// THE WHOLE POINT OF THIS FILE. Moving the record log into the run directory makes 's incident
+// THE WHOLE POINT OF THIS FILE. Moving the record log into the run directory makes the incident
 // shape the DEFAULT rather than an accident: every run now starts with no record log at all, and
 // `forEachLedgerLine` maps a missing file to `error: null` on purpose, because a run before its first
 // fetch genuinely has none. So a run whose record bodies were written somewhere this reader never looks
@@ -140,14 +140,14 @@ test("#743 the log's name cannot be confused with the knockout lane's register-r
   assert.match(runRecordLogPath("/x"), /register-record-bodies\.jsonl$/);
 });
 
-// ── 's route: a composite's rows name the MEMBER that answered ───────────────────────────────────
+// ── the route: a composite's rows name the MEMBER that answered ───────────────────────────────────
 
 test("#743/#546 free-tier exports a ledger binding it must never call — a member's own core writes the row", () => {
   // free-tier's members are searched through their OWN cores, so a composite run's record rows say
   // `euipo` / `uspto-local` and a free-tier count can be audited against the source that produced it.
   // The binding at providers/free-tier/src/core.js is exported and never called; the moment anyone uses
   // it — reasonably, since every sibling core calls its own — every composite row starts saying
-  // "free-tier" and 's attribution route closes with no error anywhere.
+  // "free-tier" and the attribution route closes with no error anywhere.
   const src = readFileSync(new URL("../../providers/free-tier/src/core.js", import.meta.url), "utf8");
   const live = src.split("\n")
     .map((ln, i) => [i + 1, ln])

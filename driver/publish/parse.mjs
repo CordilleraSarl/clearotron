@@ -225,11 +225,11 @@ export function stripTelemetry(md) {
     .join('\n');
 }
 
-// ── tracker issue 831 — THE CLIENT CUT OF THE AUDIT BLOCK'S CROSS-REFERENCE LINES ────────────────────────────────
+// ── THE CLIENT CUT OF THE AUDIT BLOCK'S CROSS-REFERENCE LINES ────────────────────────────────
 //
 // `disposition` is a PLACEMENT key. stages.mjs dictates it as the posture that sets only WHERE a card is
 // placed and never the band; findings-model's DISPOSITION_GROUP maps it to the section heading the report
-// already prints. tracker issue 762 D5 took it off the report's risk chip and tracker issue 833 added the `disposition` KEY to
+// already prints. D5 took it off the report's risk chip and a later change added the `disposition` KEY to
 // scrubCards' strip list — and the word still reached client principals, because audit-from-spine.mjs
 // re-encodes it into two OTHER keys that survive an allowlist keyed on names:
 //
@@ -252,7 +252,7 @@ export function stripTelemetry(md) {
 // resolved to, and which fragment of a contradicted pair the record supports. Deleting the key deletes the
 // pointer along with the word.
 //
-// THIS IS NOT THE SUBSTITUTION tracker issue 669 FORBIDS. Nothing here reads arbitrary client prose for a vocabulary.
+// THIS IS NOT THE FORBIDDEN SUBSTITUTION. Nothing here reads arbitrary client prose for a vocabulary.
 // Each rule is ANCHORED to one position in a grammar THIS ENGINE writes: the disposition token at the head
 // of `resolution`, and the disposition token inside the `(finding #N, …)` parenthetical the contradiction
 // line builds. A mark named ADVERSARIAL survives both — it is not at position 0 of a resolution line, and
@@ -290,7 +290,7 @@ export function contradictionResolutionForClient(v) {
   return String(v).replace(CONTRADICTION_DISPOSITION_RE, '$1)');
 }
 
-// ── tracker issue 669 — ENGINE_PLAIN AND plainify ARE DELETED ────────────────────────────────────────────────────
+// ── ENGINE_PLAIN AND plainify ARE DELETED ────────────────────────────────────────────────────
 //
 // doc-52 put nineteen find-and-replace rules on the rendered client surface. tracker issue 656 is what that cost:
 // `axis` -> `group` turned "AXIS Bank filed in class 36" into "group Bank filed in class 36" — a report

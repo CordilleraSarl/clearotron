@@ -72,10 +72,10 @@ export function dictatedPaths(P, { halves = GRID_SEATS, axes = [] } = {}) {
         }
       } catch { /* no half ledger on this run shape */ }
     }
-    // — 's provenance sidecar, DECLARED. The perplexity server writes
+    // — the provenance sidecar, DECLARED. The perplexity server writes
     // `<ledger>.provenance.json` beside whatever grid ledger it served (grid-provenance.mjs — which
     // provider ran the grid, written because the ledger itself is saved verbatim and cannot carry it).
-    // Its reader is the run-dir AUDITOR, and that reader is real: 's own header records the
+    // Its reader is the run-dir AUDITOR, and that reader is real: its own header records the
     // 2026-08-24 misread — a SerpAPI counter read across this lane, the lane mis-reported as
     // quota-starved, with no artifact saying which provider served it. Derived from the SAME path
     // function the writer uses, one per ledger the tool can serve (full + each half) — never a

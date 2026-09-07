@@ -178,7 +178,7 @@ export async function seatReason({ runDir, runId, assumption, ratedUnder, findin
 
 /**
  * Validate the seat's reply. TYPED, not parsed prose — the reply is a JSON object the skill dictates,
- * so a phrasing choice can never fail it. That is deliberate and it is tracker issue 129's lesson applied
+ * so a phrasing choice can never fail it. That is deliberate and the lesson is applied
  * before the fact: a gate keyed on how a model worded something is one drift from killing the call.
  *
  * Returns { ok, reading } or { ok: false, fail, detail }. Refuses rather than repairing: a memo composed

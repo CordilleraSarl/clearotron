@@ -77,7 +77,7 @@ test("the grant sentence names only what THIS provider serves, for every provide
         `${p}: the grant sentence ${sentence.includes(tool) ? "names" : "omits"} ${tool}, and the provider `
         + `${served.has(tool) ? "serves" : "does not serve"} it. A sentence that asserts a capability the `
         + "deployment lacks is what tracker issue 2034 is; one that omits a tool the seat holds is what "
-        + "tracker issue 1930's other direction is.");
+        + "the other direction is.");
     }
   }
 });
@@ -85,7 +85,7 @@ test("the grant sentence names only what THIS provider serves, for every provide
 test("⭐ PLANT: an UNRESOLVED provider omits the sentence — it never composes an empty one", () => {
   // The trap this arm exists for: `providerUnavailableRegisterTools` answers an unresolved provider with
   // an EMPTY withheld set, deliberately, because it must never throw. Composed into this sentence an
-  // empty withheld set reads as "your grant carries all of them" — 's defect restored
+  // empty withheld set reads as "your grant carries all of them" — the defect restored
   // silently, on exactly the `--experiment` single-stage path a diagnosis reaches for.
   assert.equal(grantVocabularySentence("nonsuch-provider"), null,
     "an unknown provider composed a sentence. Omission is the only honest output when the deployment is "

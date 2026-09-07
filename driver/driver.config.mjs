@@ -115,7 +115,7 @@ export const config = {
   // configured, because a whitespace-only string is TRUTHY in JavaScript — so a variable set to spaces
   // did not fall through to the default, it BECAME the path. `poolRoot` alone trimmed, so "blank" meant
   // two different things depending on which accessor you asked, and `queueDirs` resolved a RELATIVE
-  // queue directory under the process cwd, which is 's own incident shape.
+  // queue directory under the process cwd, which is its own incident shape.
   //
   // Owner ruling 2026-08-19: a whitespace-only value counts as UNSET, everywhere. `X=` already meant
   // "not configured" and this is that rule finishing its sentence — not a reversal of it, which
@@ -229,7 +229,7 @@ export const config = {
   /**
    * Every skills root handed to the engine's file tools (overlay + base, deduped).
    *
-   * NAMED FOR WHAT IT IS, not what we want it to be (, 2026-08-14): it was `skillsReadRoots`, and the
+   * NAMED FOR WHAT IT IS, not what we want it to be (2026-08-14): it was `skillsReadRoots`, and the
    * engine passes it to `--add-dir`, which has no read-only form. The read-only INTENT is real and is
    * enforced by the deny-hook at driver/engine/deny-authority-write.mjs — not by this name.
    */
@@ -766,7 +766,7 @@ export const REGISTER_PROVIDER = (() => {
 // created this constant, so neither branch's tests covered it — it surfaced from reading the two diffs
 // side by side, not from a red run.
 //
-// SIX values now: 's `free-tier` composes the two free sources into ONE register, so an EU+US
+// SIX values now: the `free-tier` composes the two free sources into ONE register, so an EU+US
 // clearance needs no paid vendor. It is a TIER, not a fourth free source — precedence runs between
 // tiers, never within one: a paid vendor configured IS the register alone, and the free sources are not
 // run beside it (corsearch and clarivate already aggregate both offices, so the second call buys
@@ -1366,7 +1366,7 @@ export const PROVIDERS = {
   // It also gated the wrong thing in practice. The US index is the one piece of this tier an operator
   // cannot get in a minute — it is a 41.5 GB build over two bulk products, behind an account with ID.me
   // identity verification, and it takes hours — so requiring it made the free tier unusable for exactly
-  // the person it exists for. 's CODE was merged; the INDEX is what no box had, and that was enough
+  // the person it exists for. That CODE was merged; the INDEX is what no box had, and that was enough
   // to keep and from ever being exercised.
   //
   // The EU pair stays REQUIRED: a free tier with no configured member at all is not degraded, it is
@@ -1471,7 +1471,7 @@ export function providerIdFrom(env) {
   // the CURRENT spelling, through `currentName`, on purpose. Reading only the legacy name answered
   // `null` for a file that names the provider on the one line an operator can see, and `activeProvider`
   // reads that null as "this environment said nothing" and falls back to the ambient value. That is
-  // 's defect exactly, wearing the new name.
+  // That defect exactly, wearing the new name.
   for (const name of ["CLEAROTRON_DATABASE"]) {
     const v = String(env?.[name] ?? "").trim().toLowerCase();
     if (v) return v;

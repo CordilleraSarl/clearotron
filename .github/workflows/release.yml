@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 #
-# tracker issue 97 — a merged pull request becomes a release without anybody typing commands on a laptop.
+# a merged pull request becomes a release without anybody typing commands on a laptop.
 #
 # TWO ACTS, AND ONLY ONE OF THEM IS A PERSON'S. Every user-visible pull request leaves a note in
 # `.changeset/`. This workflow keeps a standing pull request that turns those notes into the next version
@@ -106,7 +106,7 @@ on:
   # catches what the wait gives up on: a version branch whose checks went red and merged an hour later, a
   # run cancelled mid-wait, anything that merges after `WAIT_MS` has run out.
   #
-  # IT DOES NOT CUT ANYTHING, AND THAT IS WHY IT SURVIVES tracker issue 264's "no scheduled beta". This
+  # IT DOES NOT CUT ANYTHING, AND THAT IS WHY IT SURVIVES THE NO-SCHEDULED-BETA RULE. This
   # asks main one question — is there a version here with no tag — and a version only reaches main when a
   # dispatched cut merged the version pull request. With no cut dispatched there is nothing for it to
   # find, which is the acceptance criterion "a night with no cut publishes nothing" holding by
@@ -169,7 +169,7 @@ jobs:
     # IT IS NOT THE PUBLISH WAIT, and this comment said it was until 2026-09-07 (tracker issue 298).
     # That wait is `WAIT_MS` in `release-await-cut.mjs`, and it runs in the `awaited` job, which this
     # job never invokes — as the paragraph further down this same block already says. The arm was
-    # corrected under tracker issue 247 and the sentence beside the number was not, so one block
+    # corrected and the sentence beside it was not, so one block
     # stated two contradictory things about where the wait lives.
     #
     # The reason the number matters either way: a budget that cannot contain its own longest step
@@ -331,8 +331,7 @@ jobs:
       #
       # The version comes from the WORKING TREE here, and that is correct where reading it for the cut
       # decision is not: `changeset version` has just written it, and this commit is the one carrying it.
-      # NOTHING TO CUT IS A REFUSAL WITH A REASON, NOT A QUIET SUCCESS (tracker issue 264's third
-      # acceptance criterion). `changeset version` opens no pull request when no release notes have
+      # NOTHING TO CUT IS A REFUSAL WITH A REASON, NOT A QUIET SUCCESS. `changeset version` opens no pull request when no release notes have
       # accumulated, so an empty `pr-number` on a `beta` dispatch means the last cut already carries
       # everything on main. Saying so is the whole point: a dispatch that published nothing and exited 0
       # would read as a cut that happened.
@@ -902,7 +901,7 @@ jobs:
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
-      #    is `beta` — the on-demand cut tracker issue 264 ruled in. Every other dispatch is still a
+      #    is `beta` — the on-demand cut. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
       #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
       #    publish, and a cut may not.
@@ -1060,7 +1059,7 @@ jobs:
       - name: "`npm install clearotron` works, on these exact bytes"
         run: node scripts/release-install-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
 
-      # PROPERTY 2, PROVED RATHER THAN ASSERTED (tracker issue 97: "prove the beta-to-stable promotion moves no
+      # PROPERTY 2, PROVED RATHER THAN ASSERTED ("prove the beta-to-stable promotion moves no
       # bytes; compare the artefacts, do not assert it from the configuration"). A promotion that rebuilt
       # would produce a different digest here, and two runs can be compared by anyone reading them.
       - name: Record the artefact digest, so a promotion can be shown to move no bytes
@@ -1244,7 +1243,7 @@ jobs:
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
-      #    is `beta` — the on-demand cut tracker issue 264 ruled in. Every other dispatch is still a
+      #    is `beta` — the on-demand cut. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
       #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
       #    publish, and a cut may not.
@@ -1426,7 +1425,7 @@ jobs:
       - name: "`npm install clearotron` works, on these exact bytes"
         run: node scripts/release-install-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
 
-      # PROPERTY 2, PROVED RATHER THAN ASSERTED (tracker issue 97: "prove the beta-to-stable promotion moves no
+      # PROPERTY 2, PROVED RATHER THAN ASSERTED ("prove the beta-to-stable promotion moves no
       # bytes; compare the artefacts, do not assert it from the configuration"). A promotion that rebuilt
       # would produce a different digest here, and two runs can be compared by anyone reading them.
       - name: Record the artefact digest, so a promotion can be shown to move no bytes

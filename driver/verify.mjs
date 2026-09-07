@@ -146,7 +146,7 @@ function nonEmpty(content, min = MIN) {
  * The obvious fix — emit the failing marker INSTEAD of the label — silently breaks the corrective hints.
  * `correctionHint` branches on the label text (`gateway.mjs:2181` on `findings+ledger`, `:2188` on
  * `negative-results|coverage-ledger|audit-trail|findings-heading`), so a renamed token would fall through
- * to a generic hint. 's comment records that arm being removed once already on a reading that was
+ * to a generic hint. That comment records that arm being removed once already on a reading that was
  * true for only one lane, and put back. Appending keeps every existing matcher matching — they all test
  * substrings — and gives the seat the one word it was missing.
  *
@@ -289,7 +289,7 @@ const COMMONLAW_UNAVAILABLE_RE = /(perplexity|marketplace research|common.?law (
 // Deliberately NOT done: loosening the honesty vocabulary. The prose is correct and stays.
 //
 // Driver-bug tokens are never masked. `half_path_unrecognized` says the DRIVER called this validator
-// with a path it does not own; "write NO findings file" is the wrong remedy for that, and pre- the
+// with a path it does not own; "write NO findings file" is the wrong remedy for that, and pre-change the
 // path guard returned before the regex was ever reached. Keep it that way.
 const VETO_NEVER_MASKS = new Set(["half_path_unrecognized"]);
 
@@ -651,7 +651,7 @@ export function parseVerdict(content) {
  * `UPSTREAM_STALE_REPAIR["narrative-refutation"]` re-runs the reviewer at DELIVERY time, long after the
  * verdict gate. Its caller re-reads what the repaired stage wrote — findings.json, the case-law layer —
  * but not `senior-eye-review.md`, which is the one artifact that stage authors. So the reviewer could
- * refuse to sign at 00:52 and the run would deliver on the verdict it settled at 00:22 (,
+ * refuse to sign at 00:52 and the run would deliver on the verdict it settled at 00:22 (
  * `bf21580e`, 2026-08-23: a registration date contradicting the fetched record reached the client).
  *
  * ONE DIRECTION ONLY, and that is deliberate. This returns the file's verdict when it is STRICTER than
@@ -683,7 +683,7 @@ export function verdictHardenedTo(carried, reviewMd) {
 // The two guards must not share a POLICY and they still do not: what separates them is which sections
 // they read, and whether a bullet under a flag is that flag's body. Whether a line is a list item at
 // all is NOT policy — and while each walk carried its own copy of that answer, the copies drifted.
-// taught one of them to see `**1.` and left the other on the pre- pattern, so the walk whose
+// taught one of them to see `**1.` and left the other on the pre-change pattern, so the walk whose
 // job is to decide whether to DISCARD a review quietly became the stricter of the two.
 //
 // Restating the marker in a second place is what made that possible, so it is stated once here. Both
@@ -692,7 +692,7 @@ export function verdictHardenedTo(carried, reviewMd) {
 // The trailing `\*{0,2}` is the bold CLOSER: reviewers write both `**1. [kind: …]** text` (bold around
 // the marker and its tokens) and `**1.** text` (bold around the marker alone). The second counted ZERO
 // on both walks — consistently, so it is not the asymmetry above, but it is the same defect wearing a
-// different style, and 's criterion says a bold-numbered flag must count. It cannot swallow prose:
+// different style, and the criterion says a bold-numbered flag must count. It cannot swallow prose:
 // a single letter or digit must still be followed by its own `.` or `)`, so `**Note.** …` matches nothing.
 const LIST_MARKER = String.raw`(?:\*{0,2})(?:[-*•]|\d+[.)]|[A-Za-z][.)])(?:\*{0,2})\s+`;
 const LIST_LINE_RE = new RegExp(`^${LIST_MARKER}\\S`);
@@ -819,7 +819,7 @@ function parseOn(line) {
 // deferrals`, `Headline, re-derived independently`, `Grounded profiles` and the plan audit.
 //
 // THE HEADLESS FALLBACK IS DELIBERATE AND IT IS NOT A DENYLIST IN DISGUISE. A review with NO corrections
-// heading anywhere still has corrections — 's fixture is exactly that, and 's writes them under
+// heading anywhere still has corrections — the fixture is exactly that, and the writes them under
 // `## Corrections`. So: if the document names a corrections section, ONLY that section is read; if it
 // names none, the whole document is read as before. The fallback cannot reopen this defect, because it
 // only applies to documents that have no section structure to get wrong.
@@ -840,7 +840,7 @@ export const NOT_A_CORRECTIONS_SECTION_RE =
 //
 // THE FAILURE IS SILENT IN THE WORST DIRECTION. An unreadable flag does not error — it is simply not
 // there, and every downstream count agrees with itself about a document it never read. Both directions
-// of 's lesson apply at the LINE level too: too permissive publishes noise as grounds, too strict
+// of the lesson apply at the LINE level too: too permissive publishes noise as grounds, too strict
 // drops the grounds entirely.
 //
 // SCOPE OF THE WIDENING, MEASURED RATHER THAN ASSUMED. Across the 28 distinct reviews on both scratch
@@ -874,7 +874,7 @@ export const opensWithKind = (content) => /^\[kind:/i.test(String(content ?? "")
  * matched and the whole document was skipped". The allowlist fails closed on purpose, and a guard that
  * fails closed silently is how a real defect reads as a clean run.
  *
- * `named: false` is not a fault — it is the headless document 's fixture is built from, and the walk
+ * `named: false` is not a fault — it is the headless document the fixture is built from, and the walk
  * falls back to the whole document. It is reported so a caller can tell the two apart.
  *
  * PURE.
@@ -918,7 +918,7 @@ export function parseCorrections(reviewMd) {
     // underneath as `- "…"` bullets. Those are evidence FOR a correction, not five more corrections,
     // and counting them is how five quoted excerpts became five of the published grounds of a BLOCKING
     // verdict. A review that writes its flags as BULLETS never trips this — no numbered flag is ever
-    // seen, so every bullet stays a flag, which is 's contract and 's fail-safe both intact.
+    // seen, so every bullet stays a flag, which is the contract and the fail-safe both intact.
     // ORDER MATTERS: ask "is this enumerated" FIRST. `**2. [kind: …]` begins with an asterisk, so a
     // bullet test run before the enumerated test swallows every flag after the first as the first
     // one's body.
@@ -1023,7 +1023,7 @@ export function findReviewerCoherenceFlags(md) {
 // divergent arms of one requirement. They are three different contracts:
 //   · commonLawStructural (LIVE) — the common-law findings' prose Coverage ledger still carries these
 //     tokens, and this floor still polices it.
-//   · registerFindings' UNSTAMPED arm (ARCHIVE-ONLY since  M6) — judges pre- archived replays
+//   · registerFindings' UNSTAMPED arm (ARCHIVE-ONLY since  M6) — judges pre-change archived replays
 //     whose seats hand-wrote the prose table. No live run reaches it; replay verdicts get quoted, so
 //     it stays.
 //   · register-digest's LIVE path carries the same three tokens as VALUES through the
@@ -1957,7 +1957,7 @@ export const validators = {
     // So the old floor and the new gate are armed by the SAME condition, and it is this one:
     //   stamped   ⇒ the driver wrote a form, the seat was told not to write a table, and the form is the
     //               whole coverage judgement (below).
-    //   unstamped ⇒ every pre- check applies unchanged, and stages.mjs — reading THIS SAME STAMP —
+    //   unstamped ⇒ every pre-change check applies unchanged, and stages.mjs — reading THIS SAME STAMP —
     //               tells the seat to write the prose table. The two cannot disagree about which
     //               document the run owes.
     //
@@ -1967,7 +1967,7 @@ export const validators = {
     // digest and before it — so NO LIVE RUN reaches here unstamped, and stages.mjs no longer has a
     // second arm to tell a seat to write the prose table. The prose floor below, and the prose-era
     // joins it feeds (findUnaccountedDeferredSlices, findUnverifiedIncompleteCleanClaims), are
-    // therefore DEAD FOR LIVE RUNS and LOAD-BEARING FOR REPLAY: an archived pre- run carries no
+    // therefore DEAD FOR LIVE RUNS and LOAD-BEARING FOR REPLAY: an archived pre-change run carries no
     // stamp at all, and its coverage verdict is judged by exactly this arm.
     //
     // DO NOT DELETE THEM AS DEAD CODE. Removing them does not change any live run's answer; it changes

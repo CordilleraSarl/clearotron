@@ -225,7 +225,7 @@ test("two concurrent runners over one dead claim → exactly one dispatch, one r
   // window. The queue is left with a recoverable `.processing` and nothing dispatched — which in
   // production is a delay, because the next activation re-claims it, and here was a red suite,
   // because both processes had exited and there was no next activation. That is what made this
-  // ~17% flake on a loaded box (, absorbing).
+  // ~17% flake on a loaded box (absorbing).
   //
   // So the run of the test now models what production has instead of hoping the schedule is kind.
   // Every safety assertion below is unchanged and unconditional, and they are what this test is for:
@@ -349,7 +349,7 @@ test("#665 a recycled pid defeats a bare-pid claim and cannot defeat a pid+start
 // not exist; the parenthetical named the caller's intent. Everything about the state was safe and
 // everything about the sentence was wrong.
 //
-// Driven directly rather than through the race, because the race is 's and is out of scope here:
+// Driven directly rather than through the race, because the race is the and is out of scope here:
 // the branch is reached whenever the source marker is absent, for any reason.
 test("#745 a lost retire says the rename did NOT happen, and never names a file it did not create", () => {
   const dir = mkdtempSync(join(tmpdir(), "retire-honesty-"));

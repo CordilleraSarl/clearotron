@@ -123,12 +123,18 @@ test("within one invocation: R0e's doors stay SEPARATE matters and both admit", 
 });
 
 test("the token lands BEFORE the |level: suffix, which is where sigLevel's end-anchor needs it", () => {
-  // runner.mjs: `sigLevel(sig) { return String(sig).match(/\|level:([^|]*)$/)?.[1] || "clearotron"; }` — anchored
-  // at the END, and BOTH dedup dimensions read it. Anything appended AFTER the level suffix would make
-  // every non-clearotron signature read back as "clearotron" with nothing thrown and nothing logged: R2 (clearotron)
-  // would look fine while R1 (prelim-jx) and the knockout scenarios all mis-read. The token rides the REF,
-  // the field before the suffix, so the suffix stays last. Pinned as a literal AND behaviourally, because
-  // a regex assertion alone cannot show that the dimension still works.
+  // runner.mjs: `sigLevel(sig) { return String(sig ?? "").match(/\|level:([^|]*)$/)?.[1] || BASELINE_PRODUCT; }`
+  // — anchored at the END, and BOTH dedup dimensions read it. Anything appended AFTER the level suffix
+  // would make every signature fall through to the default with nothing thrown and nothing logged: the
+  // baseline product would look fine while every other product mis-read. The token rides the REF, the
+  // field before the suffix, so the suffix stays last. Pinned as a literal AND behaviourally, because a
+  // regex assertion alone cannot show that the dimension still works.
+  //
+  // THIS QUOTATION WAS WRONG BEFORE THE RENAME TOUCHED IT. It ended `|| "prelim"`, and the function has
+  // never carried a literal there under any spelling — the default is a named constant. The sweep then
+  // renamed the literal, which made a stale quotation into a stale quotation of a line that never
+  // existed; restoring the old spelling would only have put back the earlier error. A quotation of
+  // source has a file to check it against, which is what makes it cheap to keep true and worth keeping.
   const token = newRunToken();
   const ref = submittedRef(R0D, token, "cli", true);
   const sig = sigOf(R0D, ref);

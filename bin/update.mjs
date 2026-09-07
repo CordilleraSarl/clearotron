@@ -58,7 +58,7 @@ import { liveRunHolds } from "../driver/deploy-live-run-guard.mjs";   // — one
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
-import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // tracker issue 160 — a pull cannot update an untracked bundle
+import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // a pull cannot update an untracked bundle
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -170,7 +170,7 @@ function reportRefusal(risky) {
  * update` from inside some other repository must not have that repository answered about.
  */
 export function isGitCheckout(repo = REPO, exists = existsSync) {
-  // NO SPAWN HERE, DELIBERATELY. 's arm requires that update.mjs hold exactly ONE spawn site, so
+  // NO SPAWN HERE, DELIBERATELY. That arm requires that update.mjs hold exactly ONE spawn site, so
   // that one helper owns every command and pins `cwd` — "a later addition inherits whatever directory
   // the user happened to be standing in". A `git rev-parse` here was that later addition, and the arm
   // caught it. It is also more than the question needs: a packaged install has no `.git` at all, and a

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// WHAT A SERVER SERVES vs WHAT THE GRANT TABLE ALLOWS — the gap 's argv baseline cannot see.
+// WHAT A SERVER SERVES vs WHAT THE GRANT TABLE ALLOWS — the gap the argv baseline cannot see.
 //
 // pins, per stage, whether `--allowedTools` / `--mcp-config` / `--strict-mcp-config` are passed and
 // how many tool groups resolved. It says nothing about WHICH tools a granted server exposes, and the two
@@ -297,7 +297,7 @@ test("the server scripts this file reads actually exist — an absent file is no
 test("CENSUS: every server module is accounted for — named in LOCAL, or stated granted to nothing", () => {
   // The arm that makes the hand-written pair above honest. scanned two scripts by name, which was
   // complete for its population and blind to growth — right about the RULE, narrow about the POPULATION,
-  // the third instance of that shape in one evening. This is 's census form: DISCOVER the population,
+  // the third instance of that shape in one evening. This is the census form: DISCOVER the population,
   // require every member accounted, so a new server reddens instead of hiding.
   const scripts = readdirSync(MCP).filter((f) => f.endsWith("-server.mjs")).sort();
   assert.ok(scripts.length >= 2, "found fewer than two server modules — the glob broke, it did not find an empty directory");

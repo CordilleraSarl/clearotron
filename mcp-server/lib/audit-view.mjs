@@ -102,7 +102,7 @@ export function scrubBlocks(items) {
 /**
  * get_finding — one block.
  *
- * A WITHDRAWN block scrubs away to nothing, and the choice there is 's choice: the tool itself
+ * A WITHDRAWN block scrubs away to nothing, and the choice there is the choice: the tool itself
  * throws on a finding it cannot resolve, so returning `null` would hand a client an empty answer they
  * would believe, on the one call whose whole job is to resolve an id. It REFUSES instead, in the words
  * the record actually supports — the finding exists and was withdrawn, which is why it renders nowhere.
@@ -355,7 +355,7 @@ export function accountWhatIfPlan(result) {
 
 // The enqueue acknowledgement. It is composed in whatIfEnqueue from fields this file names, so nothing is
 // withheld here — it is declared so that a field added to that acknowledgement later cannot arrive
-// unruled, which is what 's default-deny is for.
+// unruled, which is what the default-deny is for.
 const QUEUED_FIELDS = ["queued", "runId", "experimentId", "stage", "axis", "queuedAt", "next"];
 export const accountWhatIfQueued = (result) => (result && typeof result === "object" ? pick(result, QUEUED_FIELDS) : result);
 

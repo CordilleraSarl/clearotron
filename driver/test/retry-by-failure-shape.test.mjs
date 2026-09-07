@@ -70,7 +70,7 @@ const stage = (over = {}) => runStage("test-stage", {
 });
 
 test("#589 arm 1 — the veto keys on the DIRECT STATE, and a missing count reads as ZERO", () => {
-  // 's hold is why this arm exists: the first cut keyed the veto on TOTAL_DEFECT_TOKENS, a closed
+  // That hold is why this arm exists: the first cut keyed the veto on TOTAL_DEFECT_TOKENS, a closed
   // two-member list of form-path token names — and when the typed transport armed, the failure token
   // moved out of the list and the veto silently stood down with every assertion still green. The veto
   // now reads the run's own counted rulings (syncDispositionForm → lastUnion), never a token name, so

@@ -13,7 +13,7 @@ import { mkdtempSync, existsSync, readFileSync, rmSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { runStage, selectEngine } from "../gateway.mjs";
 import { resolveAuthMode } from "../engine/auth.mjs";
-import { pinEnv } from "../../shared/env-aliases.mjs";   // Refs tracker issue 1838 — a fixture pins EVERY spelling
+import { pinEnv } from "../../shared/env-aliases.mjs";   // a fixture pins EVERY spelling
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MOCK = join(HERE, "mock-codex.mjs");

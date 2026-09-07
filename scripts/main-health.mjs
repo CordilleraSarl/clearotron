@@ -15,7 +15,7 @@
 // and that a red no fix can clear turns into a tax. The next person either stops, or learns to reason
 // past a red main, and the second one is how a real regression gets merged over.
 //
-// THIS IS 's DISTINCTION ONE SUBSYSTEM OVER. There it was `systemctl --user` with no bus reported
+// THIS IS the DISTINCTION ONE SUBSYSTEM OVER. There it was `systemctl --user` with no bus reported
 // as "the unit is not there"; here it is an unallocated runner reported as "the suite failed". Both are
 // could-not-look rendered as a finding, and both are fixed by refusing to answer rather than answering
 // wrongly.
