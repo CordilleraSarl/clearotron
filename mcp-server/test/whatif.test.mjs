@@ -150,3 +150,29 @@ test("a memo over a CANCELLED run is still refused, and says why a memo in parti
     /evidence was complete|stopped/i,
   );
 });
+
+test("the memo door hands askArchivedRun a RESOLVER, not just a runId — tracker issue 132", async () => {
+  // The defect this pins. `askArchivedRun` reads `resolveRun` out of its second argument and has no
+  // default for it: `reason` was given one and the resolver was not. Called bare, every memo on every
+  // run came back `memo_run_unresolved` — while the resolver in this function had already resolved that
+  // same run to write the refusal check above it. Composed, openable, and unreachable.
+  //
+  // The arm asserts the SECOND argument, which is the thing the earlier arms could not see: they inject
+  // `async (a) => …` and never look at what else the door passes, so they stayed green through it.
+  const run = deliveredRun();
+  let deps = "NEVER CALLED";
+  await whatif.whatIfRun(
+    { confirmationToken: memoToken("treat the Korean application as abandoned") },
+    {
+      resolveRun: () => run,
+      askArchivedRun: async (_a, d) => { deps = d; return { ok: true, memoId: "m3" }; },
+    },
+  );
+  assert.notEqual(deps, "NEVER CALLED", "the memo branch must reach askArchivedRun");
+  assert.equal(typeof deps?.resolveRun, "function",
+    "askArchivedRun was called with no resolver — it has no default, so this is memo_run_unresolved for every memo");
+  // …and it must be a resolver that WORKS, not merely a function. A door that passed something callable
+  // returning null would satisfy the line above and fail identically in production.
+  assert.equal(deps.resolveRun(run.runId)?.runDir, run.runDir,
+    "the resolver handed over must resolve the run the memo is about");
+});

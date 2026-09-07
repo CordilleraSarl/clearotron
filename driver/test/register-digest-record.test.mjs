@@ -19,7 +19,7 @@ import {
   acceptRegisterDigest, renderRegisterFindings, emptyFacts, readDigestFacts, joinKey,
   identifierCells, mergeDigestPatch, recordRegisterDigest, refusalsFor, registerDigestCallPaths,
   registerDigestWasRecorded, lastAcceptedModel, FACTS_FILE, FINDINGS_FILE,
-  VERIFY_VALUES, ADJUDICATION_DECISIONS,
+  VERIFY_VALUES, ADJUDICATION_DECISIONS, negativeMarkCell,
 } from "../register-digest-record.mjs";
 
 // THE REAL PARSERS. Every import here is a live consumer of the document this module renders.
@@ -559,4 +559,86 @@ test("a patch that names one key leaves EVERY other section byte-identical", () 
   }
   assert.deepEqual(merged.instructed_checks, stored.instructed_checks, "and the keyed lists too");
   assert.deepEqual(merged.disagreement_resolutions, stored.disagreement_resolutions);
+});
+
+// ── THE NEGATIVE TABLE MUST NOT NAME A MARK WHERE IT MEANS ONE RECORD ────────────────────────────────
+//
+// tracker issue 246. A `duplicate-of-surfaced` row says "this registration is already reported under
+// another record". Rendered with the bare mark under a column headed "Mark", the sheet said both
+// "DELFITY — keep, here is the reasoning" (incumbent table) and "DELFITY — No separate row" (negative
+// table), ninety lines apart, about two different records. Nine readers scan this document and one of
+// them decides what the client is shown.
+//
+// ✕ THE ARM PROVES THE RENDERED CELL, NOT A MODEL'S READING OF IT. Whether removing the contradiction
+// changes what a drafting seat carries is a question for a replay, not for this file. Written down
+// because "arm green" must not be read as "the regression is fixed".
+//
+// The class member here is DELFITY/EM on purpose — the row that motivated the change was OSLER
+// DELPHI/WO, and an arm that only tests the member it was written against proves nothing about the class.
+
+const REC_DELFITY_CH = {
+  record_id: "/mark/ch/SWITI377E54D3AEB311E08B41EED32564FCF4", mark_text: "DELFITY", owner_name: "Novartis AG",
+  owner_country: "CH", classes: ["05"], status: "Registered",
+  application_date: "2011-07-12", expiry_date: "2031-07-12",
+};
+const REC_DELFITY_EM = {
+  record_id: "/mark/em/CTMSID282EA13B1A511E09C4FF82ECD3CB984", mark_text: "DELFITY", owner_name: "Novartis AG",
+  owner_country: "CH", classes: ["05"], status: "Registered",
+  application_date: "2011-07-13", expiry_date: "2031-07-13",
+};
+
+test("a duplicate-of-surfaced row names the RECORD, and the plain mark still names the mark everywhere else", () => {
+  const f = factsWith(
+    { ...REC_DELFITY_CH, screen: { screen_verdict: "surface:in-scope-live" } },
+    { ...REC_DELFITY_EM, screen: { screen_verdict: "surface:in-scope-live" } },
+    { ...REC_A, screen: { screen_verdict: "surface:in-scope-live" } });
+  // THE CONTRADICTING SHEET, planted: the mark kept on the incumbent table AND dropped as a duplicate leg.
+  const v = acceptRegisterDigest({
+    incumbent_rows: [{ uri: REC_DELFITY_CH.record_id, flag_reason: "Watchlist entry on the same owner, carried so the seed is answered across its live positions.", verify: "no" }],
+    negative_rows: [
+      { uri: REC_DELFITY_EM.record_id, ground: "duplicate-of-surfaced", variant: "DELF",
+        drop_reason: "No separate row — the EU leg of the Novartis DELFITY position already reported on the watch annex." },
+      // THE CONTROL, a different ground: this row IS about the record on its own terms and its cell
+      // must be untouched, or the change is a blanket rewrite of the column wearing a narrow name.
+      { uri: REC_A.record_id, ground: "off-field", variant: "THORN",
+        drop_reason: "Outside the instructed markets." },
+    ],
+  }, f);
+  assert.ok(v.ok, v.reason);
+
+  const lines = v.content.split("\n");
+  const negStart = lines.findIndex((l) => /^#{1,6}\s.*negative results/i.test(l));
+  assert.ok(negStart > 0, "the negative section must render");
+  const negLines = lines.slice(negStart);
+  const cell0 = (l) => l.split("|").map((c) => c.trim())[1];
+
+  const dupRow = negLines.find((l) => l.includes("EU leg of the Novartis DELFITY"));
+  assert.ok(dupRow, "the duplicate row must render");
+  assert.equal(cell0(dupRow), "DELFITY — EM record",
+    "a duplicate leg must name the record; the bare mark reads as a ruling about the mark");
+
+  // THE CLAIM AS A CLASS, not as one row: no line in this section may put the bare mark in the Mark cell.
+  for (const l of negLines.filter((x) => x.trim().startsWith("|")))
+    assert.notEqual(cell0(l), "DELFITY", `a negative row still reads as the bare mark: ${l}`);
+
+  // …and the control is untouched.
+  const ctlRow = negLines.find((l) => l.includes("Outside the instructed markets"));
+  assert.equal(cell0(ctlRow), "THORNMANTLE", "a non-duplicate ground must keep the bare mark");
+
+  // The incumbent table is unchanged — the mark is still named as the mark where it IS the subject.
+  const incLines = lines.slice(0, negStart);
+  assert.ok(incLines.some((l) => l.includes("| DELFITY |")), "the incumbent row must still name the mark plainly");
+});
+
+test("negativeMarkCell falls back to the bare mark rather than rendering a broken qualifier", () => {
+  // A missing qualifier is a smaller defect than "DELFITY — UNDEFINED record". Every uri in the archived
+  // corpus carries a two-letter office, so this is the degradation path, not the expected one.
+  const dup = (uri) => negativeMarkCell({ ground: "duplicate-of-surfaced", cells: { mark: "DELFITY", uri } });
+  assert.equal(dup("/mark/em/CTMSID1"), "DELFITY — EM record");
+  assert.equal(dup("/mark/WO/INTEI1"), "DELFITY — WO record", "the office is case-insensitive");
+  for (const bad of ["", null, undefined, "nonsense", "/mark/", "/mark/eee/x", "/mark/1/x"])
+    assert.equal(dup(bad), "DELFITY", `a uri with no readable office must degrade to the bare mark: ${JSON.stringify(bad)}`);
+  // Out of scope for every other ground, and for a row with no mark at all.
+  assert.equal(negativeMarkCell({ ground: "off-field", cells: { mark: "DELFITY", uri: "/mark/em/x" } }), "DELFITY");
+  assert.equal(negativeMarkCell({ ground: "duplicate-of-surfaced", cells: { mark: "", uri: "/mark/em/x" } }), "");
 });
