@@ -31,7 +31,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync, renameSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";   // the subtree name from its one definition, never a literal
 import { composeMemo } from "./whatif-memo.mjs";
 
 export const SKILL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "skills");
@@ -83,6 +83,43 @@ export function movedArtifacts(before = {}, after = {}) {
   return [...paths].sort()
     .filter((p) => (before[p] ?? null) !== (after[p] ?? null))
     .map((p) => ({ path: p, before: before[p] ?? null, after: after[p] ?? null }));
+}
+
+/**
+ * Split what moved into the memo's OWN RECORD and everything else.
+ *
+ * A memo legitimately leaves two kinds of trace on its parent. Its documents go under `_memos/`, which
+ * `digestRunDir` already skips. Its DISPATCH leaves driver telemetry — `_driver/whatif-memo.*` and an
+ * appended line in `_driver/run.jsonl` — because the memo rides the same gateway ladder as any seat and
+ * the gateway records what it dispatched. That is the parent gaining a RECORD of the memo, which is
+ * correct behaviour and the same rule the experiment path already lives by; it is not the archive being
+ * rewritten.
+ *
+ * ✕ EVERYTHING ELSE IS THE SEAT WRITING WHERE IT WAS NOT INVITED, and it is refused by name. The seat
+ * has a real file-write grant on the run directory, and on a delivered run it used it: an archived
+ * client run carries `memo-osler-coexistence.json` at its root, which is the seat's reply written to a
+ * path of its own choosing instead of to the `expectFile` it was given. That also explains the retry
+ * that preceded it — the harness looked for the reply where it had asked for it and did not find it.
+ *
+ * `run.jsonl` may only GROW. A shrink or a rewrite is not an append, and an append is the only thing a
+ * dispatch does to it. The check is on size because the digest carries `sha:size` and not the bytes; a
+ * rewrite that happened to keep the same length would pass, and that is written down rather than
+ * claimed against. PURE.
+ */
+export function splitMemoFootprint(moved = []) {
+  const own = [];
+  const foreign = [];
+  const sizeOf = (v) => { const n = Number(String(v ?? "").split(":")[1]); return Number.isFinite(n) ? n : null; };
+  for (const m of moved) {
+    const p = String(m?.path ?? "");
+    if (p.startsWith(`${DRIVER_DIR}/whatif-memo.`)) { own.push(m); continue; }
+    if (p === `${DRIVER_DIR}/run.jsonl`) {
+      const b = sizeOf(m.before); const a = sizeOf(m.after);
+      if (b !== null && a !== null && a > b) { own.push(m); continue; }
+    }
+    foreign.push(m);
+  }
+  return { own, foreign };
 }
 
 /** The profile key the PARENT rated under — read from its frozen sidecar, never re-resolved. */
@@ -299,10 +336,14 @@ export async function askArchivedRun({ runId, question, requestedBy = null } = {
 
   // AFTER the write, deliberately: the check has to cover this call's own behaviour, not merely the
   // reasoning pass's. If writing the memo touched the parent, that is exactly what must be caught.
-  const moved = movedArtifacts(before, digestRunDir(run.runDir));
-  if (moved.length)
+  const { own, foreign } = splitMemoFootprint(movedArtifacts(before, digestRunDir(run.runDir)));
+  if (foreign.length)
     return { ok: false, fail: MEMO_FAILS.PARENT_MOVED,
-      detail: `the parent run's artifacts moved during the memo: ${moved.slice(0, 5).map((m) => m.path).join(", ")}`, moved };
+      // NAMES WHAT IT FOUND AND WHY IT IS WRONG. "the parent's artifacts moved" was true of a correct
+      // memo too — the dispatch telemetry tripped it — so the sentence could not tell a reader whether
+      // the archive had been rewritten or the memo had merely run.
+      detail: `a memo may write only to ${MEMO_DIR}/ and its own reply file; these were written into the parent run instead: ${foreign.slice(0, 5).map((m) => m.path).join(", ")}`,
+      moved: foreign, memoFootprint: own };
 
   return {
     ok: true,
