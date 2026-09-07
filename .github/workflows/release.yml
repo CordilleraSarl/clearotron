@@ -104,7 +104,7 @@ on:
   #
   # THIS CRON REMAINS THE FLOOR UNDER ALL OF IT, and deleting it is still how every release stops. It
   # catches what the wait gives up on: a version branch whose checks went red and merged an hour later, a
-  # run cancelled mid-wait, anything that merges outside the fifteen minutes.
+  # run cancelled mid-wait, anything that merges after `WAIT_MS` has run out.
   #
   # IT DOES NOT CUT ANYTHING, AND THAT IS WHY IT SURVIVES tracker issue 264's "no scheduled beta". This
   # asks main one question — is there a version here with no tag — and a version only reaches main when a
@@ -167,10 +167,10 @@ jobs:
     # the budget above their sum.
     #
     # IT IS NOT THE PUBLISH WAIT, and this comment said it was until 2026-09-07 (tracker issue 298).
-    # That wait is `WAIT_MS` in `release-await-cut.mjs`, it is twenty-five minutes not fifteen, and it
-    # runs in the `awaited` job, which this job never invokes — as the paragraph further down this
-    # same block already says. The arm was corrected under tracker issue 247 and the sentence beside
-    # the number was not, so one block stated two contradictory things about where the wait lives.
+    # That wait is `WAIT_MS` in `release-await-cut.mjs`, and it runs in the `awaited` job, which this
+    # job never invokes — as the paragraph further down this same block already says. The arm was
+    # corrected under tracker issue 247 and the sentence beside the number was not, so one block
+    # stated two contradictory things about where the wait lives.
     #
     # The reason the number matters either way: a budget that cannot contain its own longest step
     # cancels the job at the moment it was about to publish, and a cancelled job reads as neither a
@@ -666,8 +666,8 @@ jobs:
     # This job used to arm on a push whenever a version pull request stood, because a push was what armed
     # auto-merge and the pull request then merged itself minutes later. The cadence change removed that:
     # auto-merge is armed by a dispatched `cut: beta` and by nothing else. The wait was left pointing at
-    # the event that no longer occurs, so every merge to main held a runner for the full budget — twenty
-    # five minutes — waiting for a self-merge that could not come.
+    # the event that no longer occurs, so every merge to main held a runner for the whole of `WAIT_MS`,
+    # waiting for a self-merge that could not come.
     #
     # IT DID NOT GO RED, WHICH IS WHY IT NEEDED FINDING BY EYE. Expiry here is a deliberate quiet exit 0
     # (see the step below), and only a failure to LOOK exits 2. The run stayed green; what showed was a
@@ -685,8 +685,9 @@ jobs:
     # THE BUDGET CONTAINS THE WAIT, with room for the checkout and the fetches around it. A timeout under
     # the wait cancels this at the moment it was about to answer, and a cancelled job reads as neither a
     # pass nor a failure to anybody scanning the run. An arm couples the two numbers.
-    # CONTAINS THE WAIT, WITH ROOM FOR THE CHECKOUT AND INSTALL ABOVE IT. The wait is 25 minutes
-    # (tracker issue 247) and `MIN_JOB_MARGIN_MS` in release-await-cut.mjs is what an arm holds this to.
+    # CONTAINS THE WAIT, WITH ROOM FOR THE CHECKOUT AND INSTALL ABOVE IT. `WAIT_MS` plus
+    # `MIN_JOB_MARGIN_MS`, both in release-await-cut.mjs, is what an arm holds this budget above
+    # (tracker issue 247).
     timeout-minutes: 35
     permissions:
       contents: read
@@ -741,7 +742,7 @@ jobs:
         id: awaited
         env:
           # A rehearsal has nothing coming, so it reads once and reports. Set ONLY here — a real run
-          # takes the file's own fifteen minutes.
+          # takes the file's own `WAIT_MS`.
           CLEAROTRON_RELEASE_WAIT_MS: ${{ github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && '0' || '' }}
         run: node scripts/release-await-cut.mjs
 

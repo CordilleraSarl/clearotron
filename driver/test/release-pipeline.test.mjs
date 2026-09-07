@@ -1380,6 +1380,32 @@ test("208 the rehearsal exercises both publishes, and waits for nothing while do
     "a rehearsal would hold a runner for the full wait to establish that nothing is coming");
 });
 
+test("298 the workflow does not restate the wait's duration, it names the constant", () => {
+  // WHY THIS EXISTS. `WAIT_MS` was raised from fifteen to twenty-five and four sentences in the workflow
+  // carried the figure. Two were repaired when the constant moved and two were not, so the file gave a
+  // reader both numbers and no way to tell which was current — and the second pair was found only after
+  // the first pair had been fixed and the change declared done. A prose number cannot be checked against
+  // the constant it describes; the repair is to have no prose number at all.
+  //
+  // NARROW ON PURPOSE. It fails only on a spelled duration, so it cannot redden a comment for being
+  // long or for discussing the wait. The one exclusion is the cron's own cadence, and it is anchored
+  // to `every five minutes` rather than `five minutes` — the loose form swallows `twenty-five
+  // minutes`, which is the spelling this arm most needs to catch. Found by planting it.
+  const durations = /\b(fifteen|twenty[- ]five|twenty[- ]?five|\d{1,3})[- ]?minutes?\b/gi;
+  const offenders = [];
+  for (const [i, line] of RELEASE_YML.split("\n").entries()) {
+    if (!/^\s*#/.test(line)) continue;
+    if (!/\bwait\b|WAIT_MS/i.test(line)) continue;
+    if (/every five minutes/i.test(line)) continue;   // the cron's cadence, not this wait
+    const hit = line.match(durations);
+    if (hit) offenders.push(`line ${i + 1}: ${hit.join(", ")} — ${line.trim().slice(0, 90)}`);
+  }
+  assert.deepEqual(offenders, [],
+    "a comment about the wait spells its duration instead of naming `WAIT_MS`. That number lives in "
+    + "release-await-cut.mjs and has already gone stale in this file twice — name the constant:\n"
+    + offenders.join("\n"));
+});
+
 test("208 the waiting job's budget contains the wait", () => {
   const job = jobText("awaited");
   const budget = Number(/timeout-minutes:\s*(\d+)/.exec(job)?.[1]);

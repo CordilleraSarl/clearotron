@@ -27,6 +27,9 @@ import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply t
 import { envFrom } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { doorPostureVerdict } from "./door-posture.mjs";   // — say when this door's mode came from another door's variables
+// The local key door (tracker issue 174): a second listener on a unix socket, so a scoped access key has
+// a path that no tunnel can forward to and the TCP door never learns about keys.
+import { keyDoorRefusal, openKeyDoor, KEY_SOCKET_MODE } from "./key-socket.mjs";
 import { demoPostureLine } from "../driver/demo-posture.mjs";   // — the two mis-aimed warnings answer from one place
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
@@ -92,6 +95,10 @@ const DEV = process.env.TRADEMARK_MCP_DEV === "1";
 // NAMED, NEVER INFERRED — the same rule wrote for PORTAL_AUTH_MODE, for the same reason. Unset
 // means exactly what it meant before this line existed, including the dev bypass still working, so a
 // deployment that loses CLEAROTRON_OIDC_AUDIENCE still refuses to start rather than quietly becoming a key door.
+// NAMED, NEVER INFERRED, like every other setting on this door: the key path is opt-in and a deployment
+// that does not set it gets exactly the door it has today. Unset is not "pick a default socket" — a
+// default path would put a key door on every install that never asked for one.
+const KEY_SOCKET = (process.env.TRADEMARK_MCP_KEY_SOCKET || "").trim();
 const AUTH_MODE = (process.env.TRADEMARK_MCP_AUTH_MODE || "").trim().toLowerCase();
 const TOKEN_ONLY = AUTH_MODE === "token";
 const TEAM = process.env.CF_ACCESS_TEAM || "";
@@ -214,6 +221,19 @@ if (isMain) {
     }
   }
 
+  // ── THE KEY PATH, ON THE POSTURE SURFACE (tracker issue 174) ──────────────────────────────────────
+  //
+  // An operator must be able to see that a local key path exists, and with what permissions, WITHOUT
+  // reading a unit file — the acceptance asks for exactly that, and it is the same reasoning as the
+  // posture line above: a door whose shape can only be learned by reading configuration is a door whose
+  // shape nobody checks. The mode is printed in octal because that is how an operator reads `ls -l`.
+  //
+  // The ABSENT case is a line too. Silence would leave "this deployment has no key path" and "this build
+  // does not have the feature" looking identical, which is the confusion this issue is about.
+  log(KEY_SOCKET
+    ? `key path: ${KEY_SOCKET} (mode ${KEY_SOCKET_MODE.toString(8)} once open) — a scoped access key is accepted HERE and nowhere else; the network door never honours one`
+    : "key path: none configured (TRADEMARK_MCP_KEY_SOCKET unset) — a program on this box holding an access key has no door on this process");
+
   // ── THE ROSTER THIS PROCESS CAN ACTUALLY SEE ──────────────────────────────────────────────────────
   //
   // WHAT THIS EXISTS FOR. `start_run` validates `profileKey` against `loadProfiles()`, which reads
@@ -297,4 +317,27 @@ if (isMain) {
     port: PORT, host: HOST, what: "the MCP staff surface", portVar: "TRADEMARK_MCP_HTTP_PORT", portSource: PORT_CHOICE.source, portFile: envFileRead(), log,
     onReady: ({ port: bound }) => log(`listening on http://${HOST}:${bound}/mcp — READ-ONLY staff surface, firmDomains=[${ALLOWED_DOMAINS.join(", ")}], ${door}`),
   });
+
+  // ── THE SECOND DOOR: A LOCAL KEY PATH ON A UNIX SOCKET (tracker issue 174) ────────────────────────
+  //
+  // One process, two transports, two handlers. The TCP door above is untouched and still never honours a
+  // key; this one takes a scoped access key and cannot be reached from any network. A tunnel forwards to
+  // a port, so it cannot reach a socket — which is the whole reason the discriminator is the transport
+  // rather than the peer address. See key-socket.mjs for why a loopback check is not a control here.
+  //
+  // A SEPARATE SESSION MAP, deliberately. The handler already refuses a session whose owner is not the
+  // caller, so sharing one map would probably be safe — but "probably safe" across an authentication
+  // boundary is the kind of reasoning this repository keeps paying for, and two maps cost one allocation.
+  // A session minted behind the key door is not addressable from the tunnel-facing one at all.
+  if (KEY_SOCKET) {
+    const refusal = keyDoorRefusal({ authDisabled: AUTH_DISABLED, accessFile: envFrom(process.env, "CLEAROTRON_ACCESS_FILE"), authMode: AUTH_MODE });
+    if (refusal) { log(`FATAL: ${refusal}`); process.exit(1); }
+    const keyHandler = makeHttpHandler({
+      verify: null, tokenOnly: true, devMode: false,
+      limiter, opsLimiter, sessions: new Map(), createSession, ns: NS, sessionMax: SESSION_MAX,
+      authHeader: AUTH_HEADER, firmDomains: ALLOWED_DOMAINS, log,
+    });
+    openKeyDoor({ handler: keyHandler, path: KEY_SOCKET, log })
+      .catch((e) => { log(`FATAL: could not open the key socket at ${KEY_SOCKET} — ${e.message}`); process.exit(1); });
+  }
 }

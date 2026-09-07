@@ -28,7 +28,7 @@ import { engineProvenance } from "./engine-build.mjs";                  // — �
 import { preflightEngineTurn } from "./engine/probe.mjs";               // — …and the engine can complete a turn, not merely exist
 import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
-import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP,
+import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
   buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs";
@@ -14672,7 +14672,10 @@ async function pipelineInner(job, opts = {}) {
         conversationId: job.conversationId ?? null,   // reply-lane fallback when msgId is not a Graph id
         subject: deliverySubject(emailProductName, job),
         emailBodyHtml: readFileSync(P.emailBody, "utf8"),
-        whatsappTo: AGENT_WHATSAPP[agent] ?? null,
+        // — the notice goes to whoever ASKED, with the operator's copy beside it and a
+        // stated reason when no number is held. It used to go to AGENT_WHATSAPP[agent], which is the
+        // operator on every run because every user shares one agent id.
+        ...whatsappRouting(job, agent),
         whatsappText: `✅ Prelim search for ${mark}${ref}${vtag} is done. Report: ${published.url}`,
         url: published.url, verdict, markName: job.markName ?? job.name ?? null,
       };

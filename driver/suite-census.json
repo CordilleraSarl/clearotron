@@ -2663,7 +2663,7 @@
         },
         "pipeline.anthropic.test.mjs": {
           "tests": 3,
-          "asserts": 75,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
@@ -3304,8 +3304,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 87,
-          "asserts": 334,
+          "tests": 88,
+          "asserts": 335,
           "skips": 0,
           "todos": 0
         },
@@ -4311,6 +4311,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-link-we-send-opens.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-lockfile-agrees-about-install-scripts.test.mjs": {
           "tests": 4,
           "asserts": 10,
@@ -4332,6 +4338,12 @@
         "the-narrative-seat-does-not-describe-the-fetch-lane.test.mjs": {
           "tests": 8,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-notice-goes-to-whoever-asked.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4862,6 +4874,12 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
+          "tests": 13,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "a-memo-survives-the-door-it-arrives-through.test.mjs": {
           "tests": 5,
           "asserts": 15,

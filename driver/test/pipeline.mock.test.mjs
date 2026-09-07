@@ -1255,7 +1255,11 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
   const s = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
   assert.equal(s.state, "delivered");
   assert.equal(s.verdict, "CLEAR");
-  assert.match(s.url, /report\.html$/);
+  // THE RUN'S OWN URL IS THE PORTAL ROUTE (tracker issue 289). This asserted `/report\.html$` — the
+  // pool's directory layout, which is where the documents sit on disk and is not an application route.
+  // The link shipped on every delivered report and, on production, opened the portal's own
+  // `{"error":"not_found"}` for the run's OWN owner.
+  assert.match(s.url, /\/portal\/report\/[^/]+\/$/, "the address a recipient can actually open");
   // STATUS.md (at the stable studio root) shows the delivered run
   const md = readFileSync(join(studioRootOf(res.runDir), "STATUS.md"), "utf8");
   assert.match(md, /TMP-2201 NOVAPULSE — delivered \(CLEAR\)/);
