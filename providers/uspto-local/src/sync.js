@@ -4,7 +4,7 @@
 //
 // ── THE CONTRACT, AND HOW MUCH OF IT IS VERIFIED ─────────────────────────────────────────────────
 // The endpoints, the auth header and the product id below are NOT inherited by analogy from another
-// provider (see skills/clearotron-register/providers/README.md on why that rule exists). They come from
+// provider (see skills/prelim-register/providers/README.md on why that rule exists). They come from
 // USPTO's own OpenAPI description of the Open Data Portal, cross-checked against live probes from this
 // machine:
 //

@@ -3,7 +3,7 @@
 // a-failed-run-points-at-evidence-that-resolves.test.mjs —.
 //
 // THE FINDING, AND THE HALF OF IT THAT WAS ALREADY FIXED. Every failed run of 2026-08-19 recorded a
-// `status.reason` of exactly 200 characters ending ".../studio/clearotron-se" — a directory that does not
+// `status.reason` of exactly 200 characters ending ".../studio/prelim-se" — a directory that does not
 // exist, in place of the senior-eye-review.md that does. The e2e lane stat'd it, got ENOENT, and filed
 // the pointer as unrecoverable. Replayed against the four preserved runs, it was not: 's
 // `reasonFull` held the whole path on every one of them and `reasonTruncated` was true on every one.

@@ -23,9 +23,9 @@ Environment=PATH=%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 # This face is an auth surface: CF_ACCESS_*, the allowed-domain list and the token secret all arrive
 # from the EnvironmentFile above. http-server.mjs is a CLI entry that reads <repo>/.env for a laptop
 # first run (shared/env-local.mjs), so pin the door shut — a file inside the checkout must never be
-# able to contribute to who this process admits. Same line on clearotron-driver.service.
+# able to contribute to who this process admits. Same line on prelim-driver.service.
 Environment=CLEAROTRON_NO_ENV_FILE=1
-# NO WorkingDirectory=, deliberately -- see clearotron-driver.service for the full reasoning. systemd does
+# NO WorkingDirectory=, deliberately -- see prelim-driver.service for the full reasoning. systemd does
 # not expand variables in WorkingDirectory=, it does expand ${VAR} in ExecStart= arguments, and nothing
 # here reads the working directory: this entry point resolves what it needs from its OWN file location.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server.mjs

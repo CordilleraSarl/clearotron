@@ -445,7 +445,7 @@ node pipeline.mjs --resume <codename> --experiment <stage> [--label <t>]        
 - **`--from`** forces stages at or after the named ordinal even if their outputs validate; earlier
   stages still skip. A `--from synthesis` fork deliberately does *not* lock the digest.
 - **`--experiment`** runs one stage in a shadow dir (`_experiments/<ts>-<tag>/`) on copies of its
-  inputs, under a `clearotron-exp-…` session key that is excluded from the run's provider-usage
+  inputs, under a `prelim-exp-…` session key that is excluded from the run's provider-usage
   attribution. The canonical run is untouched.
 - **Orphan self-resume**: a manually resumed run that parks has no queue sidecars; the runner scans
   run dirs for due, payload-complete `.postponed` sentinels not owned by any queue and resumes them

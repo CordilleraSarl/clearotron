@@ -4588,7 +4588,7 @@ function must(r, name) {
  * absence reads as an empty cause — which is the whole defect, one level along. PURE.
  *
  * — VISIBLE IN THE STRING, not only in a sibling key. `reason` was a bare slice, so a cut sentence
- * read as a finished one. Three failed runs of 2026-08-19 ended theirs mid-path — ".../studio/clearotron-se"
+ * read as a finished one. Three failed runs of 2026-08-19 ended theirs mid-path — ".../studio/prelim-se"
  * — and the reader who stat'd that directory got ENOENT and diagnosed a working mechanism as a broken
  * one. Nothing had been lost: `reasonFull` carried the whole path on all three and `reasonTruncated` was
  * true on all three. The field that gets read FIRST simply never said it was short. `abbrev` is this
@@ -15374,7 +15374,7 @@ export async function repairStale(job, opts = {}) {
 
 // --experiment <stage>: re-run ONE stage SANDBOXED — no canonical ARTIFACT is read back or overwritten. The
 // stage reads COPIES of its canonical inputs from a shadow dir and writes its output there; a distinct
-// `clearotron-exp-…` session key never collides with the canonical session AND sorts outside the run's
+// `prelim-exp-…` session key never collides with the canonical session AND sorts outside the run's
 // provider-usage prefix (experiment Corsearch calls are not billed to the canonical run). Single-model by
 // design (the canonical primary unless --model overrides) so the comparison is clean.
 //

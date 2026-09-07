@@ -50,7 +50,7 @@ Environment=CLIENT_MCP_ALLOWED_HOSTS=clients-mcp.example.com
 # tenant — an account with no runCaps.dailyRuns can start paid searches all day.
 # Environment=CLIENT_MCP_ACCOUNT_ACCESS=1
 # Environment=CLEAROTRON_ACCESS_FILE=%h/portal-grants.json
-# NO WorkingDirectory=, deliberately -- see clearotron-driver.service for the full reasoning. systemd does
+# NO WorkingDirectory=, deliberately -- see prelim-driver.service for the full reasoning. systemd does
 # not expand variables in WorkingDirectory=, it does expand ${VAR} in ExecStart= arguments, and nothing
 # here reads the working directory: this entry point resolves what it needs from its OWN file location.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server-client.mjs

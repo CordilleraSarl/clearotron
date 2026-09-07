@@ -73,7 +73,7 @@ whether the stage makes **billed** external calls, **what downstream is NOT reco
   report downstream are **not** recomputed (a finished-report answer would need a full cascade, which is out of
   scope for v1 — see Future).
 
-`what_if_run` takes the `confirmationToken` and re-runs the one stage in `_experiments/…` under a `clearotron-exp-…`
+`what_if_run` takes the `confirmationToken` and re-runs the one stage in `_experiments/…` under a `prelim-exp-…`
 session key (canonical bytes untouched, its billed calls keyed off-run), then diffs it against canonical.
 **Live (undelivered) runs only.** Express the change with `instructions` (e.g. *"treat ACME's mark as
 expired"*) and/or `model`.
