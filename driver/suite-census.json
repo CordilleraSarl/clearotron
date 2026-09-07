@@ -2657,7 +2657,7 @@
         },
         "pipeline.anthropic.test.mjs": {
           "tests": 3,
-          "asserts": 75,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },

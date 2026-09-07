@@ -339,11 +339,6 @@ export const AGENT_WHATSAPP = (() => {
   return { clawdi: "+10000000001", "clawdi-alex": "+10000000002", "clawdi-sam": "+10000000003" };
 })();
 
-// The completion notice's routing — who it is FOR, rather than which agent ran it — lives at the END of
-// this file (`whatsappRouting`, tracker issue 289). Deliberately not here beside the roster it reads:
-// inserting fifty lines mid-file shifts every line citation aimed below them, and this module is cited by
-// line from several others. Topical adjacency is not worth staling references nobody would re-check.
-
 
 // D3 — the escalation-risk SHADOW apparatus (ESCALATION_RISK_MENU + parseEscalationRisk +
 // the CLEAROTRON_ESCALATION_FILTER flag) is DELETED: it logged a category per ESCALATE line for a filter
