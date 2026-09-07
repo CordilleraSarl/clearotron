@@ -304,8 +304,8 @@
           "todos": 0
         },
         "a-memo-over-a-delivered-report-leaves-it-alone.test.mjs": {
-          "tests": 9,
-          "asserts": 45,
+          "tests": 13,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -721,6 +721,12 @@
           "tests": 8,
           "asserts": 25,
           "skips": 1,
+          "todos": 0
+        },
+        "an-observed-model-id-says-whether-it-is-pinned.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
           "todos": 0
         },
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {

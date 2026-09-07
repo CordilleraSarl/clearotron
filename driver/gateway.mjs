@@ -13,7 +13,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, wri
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
-import { config, resolveModel, modelFamily, envOn, envGateOn } from "./driver.config.mjs";
+import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn } from "./driver.config.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
@@ -1142,6 +1142,11 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     const modelRequested = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model);
     const modelActual = (typeof turn.modelWire === "string" && turn.modelWire) ? turn.modelWire : null;
     const modelBasis = modelActual ? "actual" : "unknown";
+    // WHETHER THE OBSERVED ID NAMES A FIXED BUILD. `modelBasis: "actual"` says the provider answered,
+    // not that the answer is pinned: two of the three tiers come back as undated aliases the provider
+    // may repoint, and recorded beside a dated one they read identically. null when there is nothing to
+    // judge, never collapsed into "alias".
+    const modelSnapshot = modelSnapshotKind(modelActual);
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
     // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
     // back as `claude-haiku-4-5-20251001`. THREE-VALUED: null when either side names no family this
@@ -1570,7 +1575,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         //   modelMismatch — true/false when both sides name a family, null when either does not.
         // Written even on the rows where they are null, so "this engine cannot report" stays visibly
         // different from "this record predates the gauge".
-        modelActual, modelBasis, modelMismatch,
+        modelActual, modelBasis, modelSnapshot, modelMismatch,
         // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
         // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
         // — the actual proof is the provider console (claude's stream also reports apiKeySource; codex does
@@ -1705,7 +1710,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: !fail, fail: fail ?? null,
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
-          model: modelRequested, modelActual, modelBasis, modelMismatch,
+          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
           rescued: rescued ?? undefined, killed: killed || undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row
