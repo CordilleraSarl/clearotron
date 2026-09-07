@@ -190,8 +190,8 @@
           "todos": 0
         },
         "a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": {
-          "tests": 13,
-          "asserts": 53,
+          "tests": 19,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },

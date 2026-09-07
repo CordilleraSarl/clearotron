@@ -126,9 +126,45 @@ function decodeSegment(seg) {
  *   disagree         `kid` and the token's `aud` name different audiences.
  *   read             one audience, agreed by both sources.
  */
-export function readAudience({ location = "", status = null, error = null } = {}) {
+// The marker an Access-fronted API path puts in `WWW-Authenticate`. Keyed on the RESOURCE-METADATA path
+// rather than on "Bearer", which any OAuth resource anywhere would send — this names Cloudflare Access
+// specifically, and it is the string the real door returns.
+const ACCESS_RESOURCE_RE = /cloudflare-access-protected-resource/i;
+
+export function readAudience({ location = "", status = null, error = null, wwwAuthenticate = "", viaEdge = false } = {}) {
   if (error) return { kind: "unreachable", why: String(error?.message ?? error).slice(0, 200) };
+  // ── THREE DOORS, NOT ONE (tracker issue 251) ────────────────────────────────────────────────────
+  //
+  // This returned `not-fronted` for every response with no redirect, and measured against production's
+  // four configured hostnames that one label covered three materially different states:
+  //
+  //   trademark.cordillera.ch        302  redirect present  → audience read, kid agrees
+  //   mcp.cordillera.ch/mcp          401  no redirect       → not-fronted   ← FALSE, it IS fronted
+  //   clients-mcp.cordillera.ch/mcp  401  no redirect       → not-fronted   ← FALSE, it IS fronted
+  //   agent-mcp.cordillera.ch/mcp    502  no redirect       → not-fronted   ← an origin fault
+  //
+  // None of these was a false pass — every one returned ok:false, which is the property that matters
+  // most and is untouched. It was a WRONG DIAGNOSIS on a safe failure, and the cost is a reader's hour
+  // spent hunting an Access application that exists and is working.
   if (!location) {
+    // FRONTED, API PATH. Managed OAuth on an MCP path answers RFC 9728 style instead of redirecting a
+    // browser: a 401 whose `WWW-Authenticate` names a Cloudflare Access protected-resource document.
+    // Measured on the real door — that document resolves 200, says `protected: true`, and carries NO
+    // audience. So this is a stated could-not-look about the audience ON A DOOR THAT IS CONFIRMED
+    // PRESENT, which is neither a pass nor "no door".
+    if (ACCESS_RESOURCE_RE.test(String(wwwAuthenticate ?? ""))) {
+      return { kind: "fronted-api",
+        why: `the hostname answered ${status ?? "401"} as an OAuth-protected resource, naming a Cloudflare `
+          + "Access protected-resource document — it is fronted, and this route carries no audience to read" };
+    }
+    // THE EDGE ANSWERED AND THE ORIGIN DID NOT. A 5xx carrying `cf-ray` is Cloudflare reporting that it
+    // reached the door and the thing behind it did not answer. Calling that "nothing is fronting this
+    // hostname" is exactly backwards.
+    if (viaEdge && Number(status) >= 500) {
+      return { kind: "origin-failed",
+        why: `the edge answered ${status} for this hostname — Cloudflare reached the door and the origin `
+          + "behind it did not answer, so the audience could not be asked for" };
+    }
     return { kind: "not-fronted", why: `the hostname answered ${status ?? "with no redirect"} and sent no Access challenge` };
   }
   let url;
@@ -180,6 +216,18 @@ export function audienceVerdict({ configured = "", read = {} } = {}) {
       return { kind: "not-fronted", ok: false,
         message: `nothing is fronting this hostname with Access — ${read.why}. A door that is not there `
           + "cannot be the one this install is configured for, so this is a finding rather than a pass." };
+    // NEITHER A PASS NOR "NO DOOR". The door is confirmed present and the audience is not readable by
+    // this route — that is a stated could-not-look, and it must not read as either of the two things it
+    // is not. Whether an API path's audience is reachable at all is open; nothing in the
+    // protected-resource document carries it.
+    case "fronted-api":
+      return { kind: "fronted-api", ok: false,
+        message: `this hostname IS fronted by Access — ${read.why}. The audience could not be compared, `
+          + "which is a could-not-look about the audience and not a finding about the door." };
+    case "origin-failed":
+      return { kind: "could-not-look", ok: false,
+        message: `the edge is up and the origin behind it is not — ${read.why}. Nothing here says anything `
+          + "about the audience; it says the service is down." };
     case "unreadable":
       return { kind: "could-not-look", ok: false,
         message: `the Access challenge is there but its audience could not be read (${read.why}). `
@@ -225,7 +273,13 @@ export async function probeAudience({ url, fetchImpl = fetch, timeoutMs = 5000, 
   const t = ac ? setTimeout(() => ac.abort(new Error(`no answer within ${timeoutMs}ms`)), timeoutMs) : null;
   try {
     const res = await fetchImpl(url, { redirect: "manual", signal: signalFor ?? ac.signal });
-    return { status: res.status, location: res.headers?.get?.("location") ?? "" };
+    // TWO MORE HEADERS, AND THEY ARE THE WHOLE OF tracker issue 251. Without them every non-redirecting
+    // answer collapses to "no redirect", and three different doors read as one. `www-authenticate` is
+    // how an Access-fronted API path announces itself; `cf-ray` is how a 5xx says the EDGE answered and
+    // the origin behind it did not. Both are on the response already — nothing extra is fetched.
+    return { status: res.status, location: res.headers?.get?.("location") ?? "",
+      wwwAuthenticate: res.headers?.get?.("www-authenticate") ?? "",
+      viaEdge: Boolean(res.headers?.get?.("cf-ray")) };
   } catch (e) {
     return { error: e };
   } finally {
