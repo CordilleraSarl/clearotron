@@ -1920,7 +1920,7 @@ test("264 a merge to main publishes nothing, because auto-merge is turned on onl
   const version = jobBlock("version");
   const step = version.slice(version.indexOf("- name: Let it merge itself once its checks pass"));
   const condition = step.slice(step.indexOf("if:"), step.indexOf("\n        env:"));
-  assert.match(condition, /inputs\.cut == 'beta'/,
+  assert.match(condition, /inputs\.cut != 'rehearse'/,
     "the version pull request is set to merge itself without asking whether this run is a requested cut. "
     + "That is the behaviour tracker issue 264 removed: it publishes a pre-release on every merge.\n"
     + condition);
@@ -1931,7 +1931,7 @@ test("264 a merge to main publishes nothing, because auto-merge is turned on onl
 test("264 mutated: a merge step that lost its dispatch condition is caught", () => {
   // The mutation is the exact regression this replaced: the condition the file carried before.
   const before = "if: steps.changesets.outputs.pr-number != ''";
-  const passes = (text) => /inputs\.cut == 'beta'/.test(text);
+  const passes = (text) => /inputs\.cut != 'rehearse'/.test(text);
   assert.ok(!passes(before),
     "the check above would pass on the pre-2026-09-07 condition, so it cannot see the regression it exists for");
 });
@@ -1952,7 +1952,7 @@ test("264 a dispatched cut with nothing to cut refuses, and the message says wha
 
 test("264 a rehearsal still cannot publish, and a requested cut can — in each publishing job", () => {
   for (const [name, body] of PUBLISHING) {
-    assert.match(body, /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \] && \[ "\$\{\{ inputs\.cut \}\}" != "beta" \]; then/,
+    assert.match(body, /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \] && \[ "\$\{\{ inputs\.cut \}\}" = "rehearse" \]; then/,
       `${name}: the dry-run branch does not distinguish a rehearsal from a requested cut, so either every `
       + `dispatch publishes for real or none of them can`);
     assert.match(body, /dry_flag=--dry-run/, `${name}: the rehearsal no longer runs npm publish with --dry-run`);
@@ -1970,7 +1970,7 @@ test("264 the wait is real on a requested cut and instant on a rehearsal", () =>
   const awaited = jobBlock("awaited");
   const line = awaited.split("\n").find((l) => l.includes("CLEAROTRON_RELEASE_WAIT_MS"));
   assert.ok(line, "the wait job sets no budget, so a rehearsal would hold a runner for the full wait");
-  assert.match(line, /inputs\.cut != 'beta'/,
+  assert.match(line, /inputs\.cut == 'rehearse'/,
     "the wait is zeroed on every dispatch, including a requested cut — so the cut would stop waiting "
     + `before the version pull request could merge, and publish nothing\n${line}`);
 });
@@ -2020,6 +2020,66 @@ test("271 a merge to main starts no wait job — the wait belongs to a requested
   // AND THE REHEARSAL MUST STILL REACH IT — a step nobody rehearses is one whose first real run is the
   // day it matters. The zero budget is what makes that free.
   const wait = awaited.slice(awaited.indexOf("CLEAROTRON_RELEASE_WAIT_MS"));
-  assert.match(wait.split("\n")[0], /inputs\.cut != 'beta'/,
+  assert.match(wait.split("\n")[0], /inputs\.cut == 'rehearse'/,
     "the rehearsal no longer gets its zero budget, so it would hold a runner for the full wait");
+});
+
+// ── tracker issue 279: the input decides the channel, and the artefact confirms it ────────────────────
+//
+// After the 0.2.1 stable, `changeset version` DELETED `.changeset/pre.json` rather than leaving it saying
+// "exit". In that state a `cut: beta` dispatch would have computed a stable version and published it to
+// `latest` — a stable release out of a button marked beta, with nothing in the run saying so.
+
+test("279 the cut input offers a stable, and still defaults to the mode that cannot publish", () => {
+  const on = triggers();
+  for (const option of ["rehearse", "beta", "stable"]) {
+    assert.match(on, new RegExp(`^\\s+- ${option}$`, "m"), `the cut input offers no \`${option}\``);
+  }
+  assert.match(on, /default:\s*rehearse/,
+    "the dispatch defaults to something other than `rehearse`, so pressing the button without reading it "
+    + "would publish");
+});
+
+test("279 no condition keys on a CHANNEL where it means 'is this a real cut'", () => {
+  // THE REGRESSION THIS EXISTS FOR. Every one of these read `inputs.cut != 'beta'` when `beta` was the
+  // only real cut, so adding `stable` silently made a stable dispatch behave as a rehearsal — a publish
+  // path that quietly does nothing, which is the failure that looks most like success.
+  const yml = RELEASE_YML;
+  const lines = yml.split("\n")
+    .map((l, i) => ({ l, n: i + 1 }))
+    .filter(({ l }) => /inputs\.cut\s*[!=]=\s*'beta'/.test(l));
+  assert.deepEqual(lines.map(({ l, n }) => `${n}: ${l.trim()}`), [],
+    "a condition still compares the cut input against `beta`. Where the question is whether this run is a "
+    + "real cut, the test is `!= 'rehearse'`; naming a channel there breaks the moment another is added.");
+});
+
+test("279 the tree is put in the mode the chosen channel needs, before the version is computed", () => {
+  const version = jobBlock("version");
+  const at = version.indexOf("- name: Put the tree in the mode this cut needs");
+  assert.ok(at >= 0, "nothing puts the tree in pre-release mode, so the input cannot decide the channel");
+  const step = version.slice(at, version.indexOf("- name: Open or update the standing version pull request"));
+  assert.ok(at < version.indexOf("- name: Open or update the standing version pull request"),
+    "the mode is set AFTER the version is computed, which is too late to affect it");
+  assert.match(step, /changeset pre enter beta/, "a beta cut does not enter pre-release mode");
+  assert.match(step, /changeset pre exit/, "a stable cut does not leave pre-release mode");
+  // Both directions must be no-ops when the tree is already right, or an ordinary second cut fails.
+  assert.match(step, /already in pre-release mode/, "entering when already in pre mode is not handled");
+  assert.match(step, /not in pre-release mode/, "exiting when already out of pre mode is not handled");
+});
+
+test("279 the refusal asks the VERSION, not the arrangement that produced it", () => {
+  const version = jobBlock("version");
+  const at = version.indexOf("- name: The version this cut computed is the channel that was asked for");
+  assert.ok(at >= 0, "nothing checks that the computed version matches the channel that was asked for");
+  const step = version.slice(at, at + 2200);
+  assert.match(step, /release-dist-tag\.mjs "\$VERSION" --prerelease/,
+    "the check does not ask the version whether it is a pre-release — anything else is trusting the mechanism");
+  assert.match(step, /inputs\.cut \}\}" = "beta" \] && \[ "\$PRE" != "true"/,
+    "a beta input that computed a stable version is not refused");
+  assert.match(step, /inputs\.cut \}\}" = "stable" \] && \[ "\$PRE" = "true"/,
+    "a stable input that computed a pre-release is not refused");
+  // AND IT MUST NOT JUDGE A VERSION NOBODY CUT. With no version pull request there is no new version.
+  const nothingToCut = version.indexOf("- name: A cut needs something to cut");
+  assert.ok(nothingToCut >= 0 && nothingToCut < at,
+    "the version check runs before the nothing-to-cut refusal, so it would judge the version already on main");
 });
