@@ -26,10 +26,10 @@
 import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { envFrom } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
-import { doorPostureVerdict } from "./door-posture.mjs";
+import { doorPostureVerdict } from "./door-posture.mjs";   // — say when this door's mode came from another door's variables
 // The local key door (tracker issue 174): a second listener on a unix socket, so a scoped access key has
 // a path that no tunnel can forward to and the TCP door never learns about keys.
-import { keyDoorRefusal, openKeyDoor, KEY_SOCKET_MODE } from "./key-socket.mjs";   // — say when this door's mode came from another door's variables
+import { keyDoorRefusal, openKeyDoor, KEY_SOCKET_MODE } from "./key-socket.mjs";
 import { demoPostureLine } from "../driver/demo-posture.mjs";   // — the two mis-aimed warnings answer from one place
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
@@ -330,7 +330,7 @@ if (isMain) {
   // boundary is the kind of reasoning this repository keeps paying for, and two maps cost one allocation.
   // A session minted behind the key door is not addressable from the tunnel-facing one at all.
   if (KEY_SOCKET) {
-    const refusal = keyDoorRefusal({ authDisabled: AUTH_DISABLED, accessFile: envFrom(process.env, "CLEAROTRON_ACCESS_FILE") });
+    const refusal = keyDoorRefusal({ authDisabled: AUTH_DISABLED, accessFile: envFrom(process.env, "CLEAROTRON_ACCESS_FILE"), authMode: AUTH_MODE });
     if (refusal) { log(`FATAL: ${refusal}`); process.exit(1); }
     const keyHandler = makeHttpHandler({
       verify: null, tokenOnly: true, devMode: false,

@@ -60,7 +60,27 @@ export const KEY_SOCKET_MODE = 0o660;
  *
  * @returns {string|null} the refusal sentence, or null when the door may open.
  */
-export function keyDoorRefusal({ authDisabled, accessFile }) {
+export function keyDoorRefusal({ authDisabled, accessFile, authMode = "" }) {
+  // THE COMBINATION THAT MAKES BOTH DOORS KEY DOORS, and the one this whole issue exists to prevent.
+  //
+  // The mutual exclusion in makeHttpHandler is between `verify` and `tokenOnly` on ONE handler. It says
+  // nothing about two handlers in one process — and the TCP handler is built with `tokenOnly: TOKEN_ONLY`,
+  // which is `TRADEMARK_MCP_AUTH_MODE === "token"`. So with the mode set to token AND a socket configured,
+  // BOTH listeners accept a key, the TCP one is reachable through the tunnel, and the posture line below
+  // would announce that a key is "accepted HERE and nowhere else" while that is false.
+  //
+  // The loopback refusal in token mode does not save it: the tunnel daemon runs on this box and connects
+  // over loopback, which is the exact reason this door is a socket rather than a loopback port.
+  //
+  // AND IT IS THE LIKELY CONFIGURATION, not a contrived one. The deployment this issue was raised from is
+  // in token mode today, because somebody switched it to make one path work. An operator adding the socket
+  // is far more likely to leave the mode alone than to change it, so this refusal is the one that will
+  // actually fire. Found in review, not by me.
+  if (String(authMode).trim().toLowerCase() === "token") {
+    return "TRADEMARK_MCP_KEY_SOCKET is set and TRADEMARK_MCP_AUTH_MODE=token — that mode makes the NETWORK "
+      + "door take a key too, and a tunnel can reach it. The socket exists so a key has one door: unset the "
+      + "mode (the network door then takes a proxy identity) or unset the socket. Refusing to open both.";
+  }
   if (authDisabled) {
     return "TRADEMARK_MCP_KEY_SOCKET is set and TRADEMARK_MCP_AUTH_DISABLED=1 — one demands a valid access "
       + "key on every request, the other authenticates nobody. Unset the bypass. Refusing to open the key door.";
@@ -111,12 +131,46 @@ export function probeSocket(path, { timeoutMs = 500 } = {}) {
  * umask was 0, which is the kind of thing nobody notices until it is the finding.
  */
 export async function openKeyDoor({ handler, path, log = () => {}, chmod = chmodSync, stat = statSync, unlink = unlinkSync, probe = probeSocket, listen = null }) {
+  // ── THE DIRECTORY, NOT JUST THE SOCKET (found in review) ───────────────────────────────────────────
+  //
+  // 0660 on the socket says who may CONNECT to it. It says nothing about who may REPLACE it: unlinking a
+  // file is governed by write permission on the containing directory. So a socket in a world-writable
+  // directory without the sticky bit can be removed by any local account, which then binds its own
+  // listener on the path — and the portal presents its ops key to that listener. The mode on the socket
+  // does not prevent one line of it.
+  //
+  // The stale-socket handling below makes that reachable rather than theoretical: an impostor who binds
+  // first simply reads as "live", this process refuses by design, and the impostor is left holding the
+  // path with the door it replaced never having started.
+  //
+  // WORLD-WRITABLE WITHOUT STICKY IS REFUSED. Group-writable is NOT: the socket is already group-
+  // readable, so the group is the trust boundary an operator has chosen for this door, and a service
+  // directory owned by the service group at 0770 is the ordinary correct shape. The sticky bit is
+  // honoured because that is exactly what it means — /tmp is world-writable and safe for this precisely
+  // because of it.
+  const dir = dirname(path);
+  const dmode = stat(dir).mode & 0o7777;
+  if ((dmode & 0o002) && !(dmode & 0o1000)) {
+    throw new Error(`the directory holding the key socket is world-writable without the sticky bit (${dir}, mode ${dmode.toString(8)}) `
+      + "— any local account could remove this socket and bind its own listener in its place, and callers would present their key to it. "
+      + "Tighten the directory, or set the sticky bit.");
+  }
+
   const state = await probe(path);
   if (state === "live") {
     throw new Error(`a process is already serving the key socket at ${path} — refusing to take the path from it. `
       + "Stop that process, or point TRADEMARK_MCP_KEY_SOCKET somewhere else.");
   }
   if (state === "stale") { try { unlink(path); } catch { /* it may have gone between the probe and here */ } }
+  // THE FOURTH STATE, which was handled by accident (found in review). A socket owned by another account
+  // whose mode this process cannot reach answers EACCES — neither ENOENT nor ECONNREFUSED — and fell
+  // through to `listen`, which then failed with a bare EADDRINUSE and no sentence. That is precisely the
+  // case the probe exists for: something is at this path and this process cannot tell what.
+  if (state === "unknown") {
+    throw new Error(`something is at the key socket path and this process cannot determine what (${path}) `
+      + "— most often a socket owned by another account. Refusing to unlink a path this process cannot inspect. "
+      + "Check its owner and mode, or point TRADEMARK_MCP_KEY_SOCKET somewhere this service owns.");
+  }
 
   const server = createServer(handler);
   await new Promise((resolve, reject) => {
@@ -125,6 +179,6 @@ export async function openKeyDoor({ handler, path, log = () => {}, chmod = chmod
   });
   chmod(path, KEY_SOCKET_MODE);
   const mode = stat(path).mode & 0o777;
-  log(`key door listening on ${path} (mode ${mode.toString(8)}, dir ${dirname(path)}) — access key required, no auth proxy, unreachable from any network`);
+  log(`key door listening on ${path} (mode ${mode.toString(8)}, dir ${dir} mode ${dmode.toString(8)}) — access key required, no auth proxy, unreachable from any network`);
   return { server, path, mode };
 }

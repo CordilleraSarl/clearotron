@@ -20,7 +20,7 @@
 // own secret, so a refusal here can only be about which door it arrived at.
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, existsSync, statSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, statSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { request } from "node:http";
@@ -179,14 +179,18 @@ function bootUntil(env, re, timeoutMs = 30000) {
 test("174: the real server opens the key door, and its posture line names the socket and mode", async () => {
   const d = mkdtempSync(join(tmpdir(), "keydoor-boot-"));
   const p = join(d, "engine.sock");
+  // THE PROXY MODE, which is the shape this door exists for: a network door taking an identity, and a
+  // socket taking a key. Booting this in token mode is now REFUSED — see the arm above — and that
+  // refusal is what this test originally tripped over, which is the arm doing its job.
   const r = await bootUntil({
-    TRADEMARK_MCP_AUTH_MODE: "token",
+    TRADEMARK_MCP_AUTH_MODE: "cf-access",
     TRADEMARK_MCP_AUTH_DISABLED: "", TRADEMARK_MCP_DEV: "",
     TRADEMARK_MCP_HTTP_HOST: "127.0.0.1", TRADEMARK_MCP_HTTP_PORT: "0",
     TRADEMARK_MCP_ALLOWED_HOSTS: "127.0.0.1:18790",
     CLEAROTRON_ACCESS_FILE: "/tmp/does-not-need-to-exist.json",
     TRADEMARK_MCP_KEY_SOCKET: p,
-    CF_ACCESS_TEAM: "", CLEAROTRON_OIDC_AUDIENCE: "",
+    CF_ACCESS_TEAM: "a-team", CLEAROTRON_OIDC_AUDIENCE: "an-audience",
+    MCP_ALLOWED_EMAIL_DOMAINS: "example.test",   // the identity gate is fail-closed and refuses to start without one
   }, /key door listening on/);
 
   try {
@@ -219,4 +223,52 @@ test("174: a deployment that sets no socket is told it has no key path, rather t
     // looking identical, which is the confusion the issue is about.
     assert.match(r.stderr, /has no door on this process/);
   } finally { try { r.child?.kill(); } catch { /* gone */ } }
+});
+
+// ── what review found, and what each arm would have missed ───────────────────────────────────────────
+//
+// Three defects, all caught by a second reader rather than by me. Each gets an arm here, because a fix
+// with no arm is a fix the next change can undo.
+
+// THE ONE THAT MATTERED. The mutual exclusion in makeHttpHandler is between `verify` and `tokenOnly` on
+// ONE handler; it says nothing about two handlers in one process. The TCP handler is built with
+// `tokenOnly: TRADEMARK_MCP_AUTH_MODE === "token"`, so token mode plus a socket yields TWO key doors —
+// and the TCP one is reachable through the tunnel, which is the whole thing this issue prevents. It is
+// also production's current configuration, so it is the upgrade path rather than a contrived case.
+test("174: token mode PLUS a socket is refused — otherwise both doors take a key", () => {
+  const r = keyDoorRefusal({ authDisabled: false, accessFile: "/tmp/grants.json", authMode: "token" });
+  assert.match(r, /makes the NETWORK door take a key/, "the refusal names what would actually be wrong");
+  assert.match(r, /unset the mode|unset the socket/, "and tells the operator the two ways out");
+  assert.equal(keyDoorRefusal({ authDisabled: false, accessFile: "/tmp/grants.json", authMode: "TOKEN" }), r,
+    "the mode is matched however it is spelled — an operator's capitalisation is not a security boundary");
+  assert.equal(keyDoorRefusal({ authDisabled: false, accessFile: "/tmp/grants.json", authMode: "cf-access" }), null,
+    "and the proxy mode, which is the shape this door is FOR, still opens");
+});
+
+// 0660 says who may CONNECT. Who may REPLACE is the containing directory's write bit — a different
+// permission entirely, and the one that lets a local account stand up an impostor the portal then hands
+// its key to.
+test("174: a world-writable directory without the sticky bit is refused", async () => {
+  const open = mkdtempSync(join(tmpdir(), "keydoor-open-"));
+  chmodSync(open, 0o777);   // world-writable, NOT sticky
+  await assert.rejects(
+    openKeyDoor({ handler: (_q, s) => s.end(), path: join(open, "engine.sock"), log: () => {} }),
+    /world-writable without the sticky bit/,
+    "any local account could remove the socket and bind its own listener in its place");
+
+  // The sticky bit is exactly the thing that makes a shared directory safe for this, so it is honoured.
+  chmodSync(open, 0o1777);
+  const d = await openKeyDoor({ handler: (_q, s) => s.end(), path: join(open, "engine.sock"), log: () => {} });
+  try { assert.ok(d.mode === KEY_SOCKET_MODE, "and a sticky directory opens normally"); }
+  finally { try { d.server.close(); } catch { /* closing */ } rmSync(open, { recursive: true, force: true }); }
+});
+
+// The probe returns four states and only two were acted on. A socket owned by another account answers
+// EACCES — neither ENOENT nor ECONNREFUSED — and fell through to `listen`, surfacing as a bare
+// EADDRINUSE with no sentence. That is the case the probe exists for.
+test("174: a path this process cannot inspect is named, not left to fail as a bare address-in-use", async () => {
+  await assert.rejects(
+    openKeyDoor({ handler: (_q, s) => s.end(), path: join(dir, "opaque.sock"), log: () => {}, probe: async () => "unknown" }),
+    /cannot determine what/,
+    "refusing to unlink a path it cannot inspect, and saying why");
 });
