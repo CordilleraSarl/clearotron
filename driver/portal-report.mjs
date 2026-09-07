@@ -654,7 +654,7 @@ const FEEDBACK_JS = `
   //
   // The clearance report numbers its findings once across the document and hangs each on a
   // div.card with id "c<ordinal>". The knockout report has neither: its conflicts render as div.ko-find,
-  // and tracker issue 471 restarts ordinals at 1 FOR EACH MARK. So this selector matched nothing on a knockout report
+  // and the knockout report restarts ordinals at 1 FOR EACH MARK. So this selector matched nothing on a knockout report
   // and the control was never drawn — the channel was not merely resolving wrong, it was absent. A
   // reader could not flag a knockout finding at all.
   //

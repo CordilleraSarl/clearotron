@@ -166,7 +166,7 @@ test("203 and the generic trailer still fires where nothing better was said", as
 });
 
 test("203 the bus branch and the not-the-bus branch give DIFFERENT remedies", () => {
-  // The defect this half inherits from tracker issue 121: one remedy appended to every failure, so a
+  // The defect this half inherits: one remedy appended to every failure, so a
   // unit that would not start for a bound port told the reader to export XDG_RUNTIME_DIR. A confident
   // remedy for a cause that is not the reader's costs more than no remedy.
   const refused = reachedTheEnable(REFUSED);

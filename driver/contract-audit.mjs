@@ -160,7 +160,7 @@ const REASON_TOKEN_RE = /reason:\s*[`"']([a-z][a-z0-9]*(?:_[a-z0-9]+)+)/g;
 // A CITED SITE MUST BE A MINT. The extractor records the FIRST line a pattern matched, and the
 // patterns read comment text as readily as code: `no_status` was cited at coverage-form.mjs:802, the
 // JSDoc `@returns {Array<{reason:"no_status"|"form_damaged", …` annotation seventeen lines above the line
-// that writes it. Every tracker issue 1211 ruling cites its mint, so a citation drawn from a sentence about the code
+// that writes it. Every such ruling cites its mint, so a citation drawn from a sentence about the code
 // is a ruling about a sentence.
 //
 // Comment-ONLY lines, never a trailing `//` after code — a token minted on a line that also carries a

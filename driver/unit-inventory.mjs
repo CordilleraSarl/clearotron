@@ -164,7 +164,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // it loaded no EnvironmentFile and so had no `${VAR}` systemd could expand. The owner's one-config-
     // per-server-box ruling gives it `EnvironmentFile=%h/.env` like every other service, which makes the
     // checkout path an ordinary systemd expansion and leaves no placeholder to render.
-    note: "LIVE ON PRODUCTION. #685's body lists it as never run; that is true of the test box only. "
+    note: "LIVE ON PRODUCTION. an earlier record lists it as never run; that is true of the test box only. "
       + "Was a TEMPLATE unit carrying CF Access values inline; generic since tracker issue 1925.",
   },
   {

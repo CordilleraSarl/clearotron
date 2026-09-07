@@ -20,7 +20,7 @@
 // failure by its exact error string in its own header — and is invoked by no workflow and no npm
 // script on main. Measured: every reference to it in the tree is prose or a comment.
 //
-// That is tracker issue 189's shape twice over, which is why these arms are placed where they are: the
+// That is the same shape twice over — an instrument that exists, has stopped being reachable, and whose silence is indistinguishable from a pass, which is why these arms are placed where they are: the
 // two that matter most read the WORKFLOW, because a correct script nothing calls is what shipped five
 // broken releases.
 //

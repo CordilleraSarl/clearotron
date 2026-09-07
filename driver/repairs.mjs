@@ -621,7 +621,7 @@ export function capParkSchedule({ resetsAt = null, attempts = 0, now = Date.now(
 /**
  * capWaitFrom — what a run actually spent WAITING on a provider's cap, read off the park history.
  *
- * tracker issue 103's fourth ask: a run that still dies on a cap has to SAY it was a cap, and say how
+ * The ask: a run that still dies on a cap has to SAY it was a cap, and say how
  * long it held out. The park history is the only record that survives a park/resume cycle, so it is the
  * only place that answer can come from at the terminal.
  *

@@ -59,7 +59,7 @@ test("#1393 NO doctrine file asks for the environment in the findings — the wh
   const offenders = docs.filter((p) => TAG_FORM.test(readFileSync(p, "utf8")));
   assert.deepEqual(offenders.map(rel), [],
     "a skills doc commands the environment tag in the findings. The driver records the corpus on every "
-    + "receipt in _driver/receipts.json; a seat asked to type it as well is #1393's regression returning. "
+    + "receipt in _driver/receipts.json; a seat asked to type it as well is that regression returning. "
     + "If this is a doc QUOTING the retired instruction to forbid it, reword the quote — this guard is "
     + "deliberately permissive and cannot tell a command from a citation of one.");
 });

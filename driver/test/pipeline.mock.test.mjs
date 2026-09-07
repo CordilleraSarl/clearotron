@@ -179,7 +179,7 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   // (`order.includes("case-law")`) is the defect at integration level — a case-law pass starting mid-run
   // on a product that does not carry it, past no door and with no scope guard.
   assert.ok(!order.includes("case-law"),
-    "case-law must not run on a product that does not carry the reading — this is #519's whole subject");
+    "case-law must not run on a product that does not carry the reading — this is the whole subject");
   const clDecision = events.find((e) => e.event === "case-law-decision");
   assert.ok(clDecision, "the decision is journalled UNCONDITIONALLY — its absence is what made this invisible");
   assert.equal(clDecision.detected, true, "the run's own reading still noticed the watchlist mention");
@@ -1740,7 +1740,7 @@ test("Fix2 #1: a wrong-class 0/0 dispatch does NOT sweep the directive — the d
   assert.equal(res.verdict, "CONDITIONAL", "the standing dominant-element gap clamped CLEAR→CONDITIONAL");
 
   // tracker issue 248 WIRING — the remedy term ledger reaches the receipt, and a term that ran and returned
-  // nothing carries its EXECUTED QUERY next to the zero. This is the pipeline half of tracker issue 248: the pure
+  // nothing carries its EXECUTED QUERY next to the zero. This is the pipeline half of it: the pure
   // module is unit-tested elsewhere, and this asserts the field is actually written by the run.
   assert.ok(Array.isArray(receipt.remedy_terms) && receipt.remedy_terms.length >= 1,
     `the receipt carries per-term rows, not just qid strings: ${JSON.stringify(receipt.remedy_terms)}`);
@@ -2416,7 +2416,7 @@ test("P2-C split: an undisposed receipt fails AT THE OWNING HALF SEAT and the co
   const owner = events.find((e) => e.event === "stage" && e.stage === `common-law-half:${MEANING_SEAT}` && e.trigger === "fresh");
   assert.equal(owner.ok, true);
   assert.equal(owner.attempts, 2, "attempt 1 failed the disposition arm; the corrective retry healed it in-stage");
-  // …and it healed on a FRESH dispatch, which is tracker issue 589's whole subject. This fixture leaves the seat's
+  // …and it healed on a FRESH dispatch, which is the whole subject of this arm. This fixture leaves the seat's
   // form with zero of its one row ruled and no seat-owned field set anywhere — a TOTAL defect — and a
   // resumed session re-reads its own output, so the warm patch is vetoed and attempt 2 runs fresh. That
   // is R6's measured 1007 seconds, not spent.
@@ -2681,7 +2681,7 @@ test("#753 a SPLIT run records the split and the quantity that armed it", async 
 });
 
 test("#753 an UNSPLIT run records WHICH surviving term decided it — the branch that emitted nothing before", async () => {
-  // Was the flag-off branch. tracker issue 753's property was never about the flag: it is that a run which did NOT
+  // Was the flag-off branch. the property was never about the flag: it is that a run which did NOT
   // split says so, and says why, on the path that used to emit nothing at all. Deleting the switch
   // removed one reason from the conjunction and left the property untouched.
   const { res, events } = await resumedUnsplitRun();

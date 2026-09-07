@@ -119,7 +119,7 @@ async function settleOne(entry, exec) {
   if (!job) return null;                       // another worker won it, or the manifest was recorded bad
   const { runDir, id } = entry;
   // The verdict is rendered HERE and not in the scan, because only now is the job's kind known. A
-  // delivered run refuses a stage re-run and welcomes a memo — that is the whole of tracker issue 132 —
+  // delivered run refuses a stage re-run and welcomes a memo — that is the whole distinction —
   // and a scan over run directories cannot tell those apart.
   const refusal = whatIfRefusal({ markers: entry.markers ?? [], kind: job.op?.kind ?? "stage" });
   if (refusal) {

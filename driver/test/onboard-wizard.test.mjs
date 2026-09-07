@@ -773,7 +773,7 @@ test("#827 --check prints the pool refusal and the workspace default the CONFIG 
       try { config.poolRoot; return null; } catch (e) { return String(e.message); }
     });
     assert.ok(refusal,
-      "config.poolRoot no longer refuses an unset pool. #774's premise has changed, not this test — "
+      "config.poolRoot no longer refuses an unset pool. the premise has changed, not this test — "
       + "re-derive both arms against whatever the getter does now rather than deleting them.");
     assert.ok(r.out.includes(refusal),
       `--check must print the driver's OWN refusal, so the reader meets the same words here and on their\n`

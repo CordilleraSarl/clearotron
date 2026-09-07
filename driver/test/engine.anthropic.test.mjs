@@ -511,7 +511,7 @@ test("NO-PROGRESS watchdog: a turn whose TOOL CALL NEVER RETURNS is still killed
   // (`progress()` fires on the `user` event, never on an outstanding ask), so a call that never returns
   // cannot hold the turn open — and it is bounded TIGHTER here than the elapsed ceiling ever bounded it.
   //
-  // Nothing exercised that before this arm. tracker issue 1624's own file covers the tiling identity, which is
+  // Nothing exercised that before this arm. its own file covers the tiling identity, which is
   // instrumentation, not the kill — a change to the kill path whose safety argument no test touches.
   const t0 = Date.now();
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },

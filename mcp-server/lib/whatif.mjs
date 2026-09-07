@@ -252,7 +252,7 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
     // askArchivedRun answers {ok:true, memoPath, memoId, parentRunId, assumption, ratedUnder,
     // statedLimits} or {ok:false, fail, detail} — a stable MEMO_FAILS code, never a throw, because the
     // worker records what it is handed and a throw there becomes a string nobody can branch on.
-    // THE RESOLVER IS HANDED OVER, and this line is the whole of tracker issue 132's first defect.
+    // THE RESOLVER IS HANDED OVER, and this line is the whole of the first defect.
     // `askArchivedRun` takes its resolver from `deps` and has no default for it — `reason` was given one
     // and `resolveRun` was not — so calling it bare returned `memo_run_unresolved` for every memo on
     // every run, while `resolveRun(runId)` eight lines above had already resolved that same run fine.

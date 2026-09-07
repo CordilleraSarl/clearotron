@@ -802,7 +802,7 @@ test("a measured cost always states a wall, so `run` can never print an empty nu
   const { readFileSync, readdirSync } = await import("node:fs");
   const dir = new URL("../e2e/", import.meta.url);
   const cases = readdirSync(dir).filter((x) => x.endsWith(".json"));
-  // tracker issue 1010 FOUND THIS: `driver/e2e/` carries a README and no JSON in the product tree, so this loop has
+  // THIS WAS FOUND: `driver/e2e/` carries a README and no JSON in the product tree, so this loop has
   // been walking an empty set and reporting a green over zero files. A SKIP is not a pass — it is
   // visible in the run and countable — and it is the honest state until the fixtures are here or the
   // guard is retired. Silently iterating nothing is the one option that is not on the table.
@@ -1045,7 +1045,7 @@ test("#508: ordering an ADMISSION and getting a refusal is still a defect, howev
     assert.equal(doorRefusal(REFUSED("x"), "E2E-R0h", { terminal: want }).orderedAdmission, false, want);
 });
 
-// ── absent (tracker issue 519's config half) ───────────────────────────────────────────────────────────────────────
+// ── absent (the config half) ───────────────────────────────────────────────────────────────────────
 // The one op where a missing file is PASS, because absence is the asserted contract: an enforced
 // never-produce (a case-law artifact on a non-Full-country run). Everywhere else absence stays a
 // failure; these pins hold both directions so the op can never drift into a general missing-file pass.

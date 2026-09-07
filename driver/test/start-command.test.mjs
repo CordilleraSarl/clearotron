@@ -436,7 +436,7 @@ test("2071: refused on a held port, `start` has written NOTHING — no env file,
     });
     assert.ok(!child.error, `the spawn did not come back (${child.error?.message}) — a could-not-look, not a verdict`);
     assert.equal(child.status, 1, `start must refuse on the held port (status=${child.status}, signal=${child.signal})\nstderr: ${child.stderr}`);
-    assert.match(child.stderr, /in use/i, "the refusal names the taken port, in #773's own words");
+    assert.match(child.stderr, /in use/i, "the refusal names the taken port, in the refusal's own words");
     // THE ACCEPTANCE: nothing was written, minted or seeded before the refusal. The env file start
     // writes is the REPO'S — ENV_PATH is join(REPO, ".env"), not the home's — and the first cut of
     // this arm asserted the home path and stayed GREEN through a planted pre-probe write. The plant

@@ -54,7 +54,7 @@
 // WRONG — the deployment was fine; the caller was not. With the portal's own ops token the same call
 // answers `clients: 10`.
 //
-// #98's validation failed because it ran in the wrong ENVIRONMENT. A probe can fail the same way by
+// an earlier validation failed because it ran in the wrong ENVIRONMENT. A probe can fail the same way by
 // running as the wrong IDENTITY. So this check authenticates the way the portal does, and a missing
 // token is reported as "not probed" rather than quietly producing a false failure.
 //

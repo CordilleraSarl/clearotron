@@ -17,7 +17,7 @@
 // reason it cannot be. Both halves are asserted, and so is the enumeration itself — a glob that stops
 // matching would otherwise report the same green as full coverage.
 //
-// This is what tracker issue 705 and tracker issue 1000 were routed behind. Their acceptance criteria are browser behaviours no
+// This is what those two were routed behind. Their acceptance criteria are browser behaviours no
 // clearance round touches, and certifying them by hand-clicking is not certifying them.
 
 import { test } from "node:test";

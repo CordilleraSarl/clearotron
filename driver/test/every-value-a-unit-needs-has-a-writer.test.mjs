@@ -168,7 +168,7 @@ test("every value a placed unit refuses over is written by the install, or decla
     .filter((n) => !written.has(n) && !(n in SUPPLIED_ELSEWHERE));
   assert.deepEqual(undeclared, [],
     "a unit the documented install places refuses to start over a value nothing in that install writes, "
-    + "and no line in SUPPLIED_ELSEWHERE says who does. That is tracker issue 122's family exactly: the "
+    + "and no line in SUPPLIED_ELSEWHERE says who does. That is the family exactly: the "
     + "box comes up with correct units, correct code and a value nobody set. Either make the install "
     + `write it, or declare who supplies it and why the installer cannot: ${undeclared.join(", ")}`);
 });

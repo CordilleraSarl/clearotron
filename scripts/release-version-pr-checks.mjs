@@ -194,7 +194,7 @@ export function surfacesFor(repo, sha, api = gh) {
 }
 
 /**
- * What each verdict costs the run — the half of tracker issue 208 that had the defect, so the half
+ * What each verdict costs the run — the half that had the defect, so the half
  * worth driving rather than reading.
  *
  * `0` is not "everything is fine"; it is "nothing here needs to stop the release". A parked run clears

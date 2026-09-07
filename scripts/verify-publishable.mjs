@@ -49,7 +49,7 @@ const staging = mkdtempSync(join(tmpdir(), "clearotron-verify-"));
 // ── CAN THIS RUN ON THE TREE IT IS POINTED AT — tracker issue 196 ───────────────────────────────────
 //
 // THIS SCRIPT WAS INVOKED BY NOTHING for as long as it has existed on the public tree: no workflow, no
-// npm script, every other mention of its name a comment. That is tracker issue 189's shape — an
+// npm script, every other mention of its name a comment. That is the shape — an
 // instrument that exists, has stopped being reachable, and whose silence is indistinguishable from a
 // pass. Five uninstallable releases shipped past it.
 //
@@ -82,7 +82,7 @@ if (!existsSync(CUT_TABLE)) {
   console.error("  dependency, in CI and again at publish. That covers the manifest. It does not type the verbs");
   console.error("  and it does not check the substitution.\n");
   console.error("  To make this runnable, the pack's reconcile step needs either the cut table or a decision that");
-  console.error("  it does not need it. That decision is tracker issue 196's stated out-of-scope and is nobody's yet.");
+  console.error("  it does not need it. That decision is stated out of scope and is nobody's yet.");
   process.exit(2);
 }
 

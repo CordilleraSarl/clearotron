@@ -1487,7 +1487,7 @@ if (isMain) {
     // reintroduce it through a second door.
     //
     // The restart keeps the port and the key: both live in the unit's environment and the access file,
-    // not in the process. That is tracker issue 228's criterion 2, and it is why this is a restart
+    // not in the process. That is why this is a restart rather than a re-place
     // rather than a re-place.
     if (adoptedClientDoor && !backgroundRefresh) {
       try { execFileSync("systemctl", ["--user", "restart", CLIENT_DOOR_UNIT], { stdio: "ignore" }); }

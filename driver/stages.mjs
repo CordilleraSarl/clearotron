@@ -2902,7 +2902,7 @@ export const STAGES = {
       },
       "findings[].source.resolved_link — the record URL actually fetched": {
         class: "mechanical:code-extracted", tokens: ["finding_source_invalid", "finding_record_url_foreign_host"],
-        why: "the URL is composable in code from the record's own uri plus the provider host table — the skill file says so outright, and #495's foreign-host gate exists only because the model types it",
+        why: "the URL is composable in code from the record's own uri plus the provider host table — the skill file says so outright, and the foreign-host gate exists only because the model types it",
       },
       "findings[].source.source_type — register-vendor / register-euipo / common-law-marketplace / common-law-web / case-law": {
         class: "mechanical:code-extracted", tokens: ["finding_source_type_invalid", "finding_source_key_unknown"],
@@ -2942,7 +2942,7 @@ export const STAGES = {
       },
       "findings[].own_rights.source — the record URI(s) the own-portfolio check returned, or the scoped negative": {
         class: "mechanical:code-extracted", tokens: ["finding_own_rights_source_missing", "finding_own_rights_invalid", "finding_own_rights_key_unknown"],
-        why: "the check runs through band_lookup / band_record, and reading-log.jsonl captures those tools' args and results (#850's own contrast with tool-calls.jsonl) — the URIs the lookup returned are on disk before the model retypes them",
+        why: "the check runs through band_lookup / band_record, and reading-log.jsonl captures those tools' args and results (the contrast with tool-calls.jsonl) — the URIs the lookup returned are on disk before the model retypes them",
       },
       "findings[].bears_on — what a risk-raising fact proves about THIS conflict": {
         class: "judgment", tokens: ["finding_bears_on_invalid"],
@@ -3506,7 +3506,7 @@ export const STAGES = {
       },
       "the section titled exactly \"PLAN-EXECUTION CHECK\"": {
         class: "mechanical:code-rendered", tokens: ["plan_audit_missing"],
-        why: "a heading a validator string-matches. This is #850's stated case in its purest form: read stages.mjs alone and the token is armed with no invitation anywhere. Code renders the section frame from the driver's own table; the model fills the audit",
+        why: "a heading a validator string-matches. This is that case in its purest form: read stages.mjs alone and the token is armed with no invitation anywhere. Code renders the section frame from the driver's own table; the model fills the audit",
       },
       "the plan-execution audit judgment — a clean claim resting on a MISSING slice is blocking; a crowd/incomplete descriptor is a signal for judgment, never a verdict input; a machine-manufactured conditional is flagged in either direction": {
         class: "judgment", tokens: ["plan_audit_missing"],

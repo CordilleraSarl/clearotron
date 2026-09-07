@@ -272,7 +272,7 @@ function glanceSection(marks, framework, registerCounts) {
   // <name>" the footer prints, moved to where the words it licenses are actually read.
   //
   // NO LADDER HERE. Spelling the band scale out beside the chips would be new furniture on a client
-  // deliverable, and tracker issue 765 rules that a rung buys depth, never furniture. If the knockout reader needs the
+  // deliverable, and a rung buys depth, never furniture. If the knockout reader needs the
   // scale, that is its own decision on its own merits, not a rider on this one.
   //
   // No framework ⇒ NOTHING. A run this render was given no manifest for gets no attribution invented for

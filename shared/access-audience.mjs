@@ -273,7 +273,7 @@ export async function probeAudience({ url, fetchImpl = fetch, timeoutMs = 5000, 
   const t = ac ? setTimeout(() => ac.abort(new Error(`no answer within ${timeoutMs}ms`)), timeoutMs) : null;
   try {
     const res = await fetchImpl(url, { redirect: "manual", signal: signalFor ?? ac.signal });
-    // TWO MORE HEADERS, AND THEY ARE THE WHOLE OF tracker issue 251. Without them every non-redirecting
+    // TWO MORE HEADERS, AND THEY ARE THE WHOLE OF THIS CHECK. Without them every non-redirecting
     // answer collapses to "no redirect", and three different doors read as one. `www-authenticate` is
     // how an Access-fronted API path announces itself; `cf-ray` is how a 5xx says the EDGE answered and
     // the origin behind it did not. Both are on the response already — nothing extra is fetched.

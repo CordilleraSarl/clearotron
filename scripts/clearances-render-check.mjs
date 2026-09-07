@@ -192,7 +192,7 @@ const MEASURE = `(async () => {
   });
 
   // Does the NAME wrap? Same method as the date: rendered height against line height. The Name cell is
-  // the one tracker issue 280 says must not wrap for a single mark of ordinary length, and counting characters
+  // the one that must not wrap for a single mark of ordinary length, and counting characters
   // cannot answer that — only the layout engine can.
   const nameIdx = headText.findIndex(t => /^NAME/i.test(t));
   const nameLines = [...table.querySelectorAll('tbody tr.row')].map(tr => {

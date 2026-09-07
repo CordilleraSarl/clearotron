@@ -56,7 +56,7 @@ test("1996 the settings page and the server agree, entry by entry, on what a mar
   }
   assert.deepEqual(disagreed, [],
     "the page would accept in silence something the server refuses, or warn about something it accepts — "
-    + "that gap IS tracker issue 1996's complaint, and the copy is only allowed to exist because this arm holds");
+    + "that gap is the complaint, and the copy is only allowed to exist because this arm holds");
 });
 
 test("1996 the corpus actually exercises BOTH verdicts, so agreement is not vacuous", () => {

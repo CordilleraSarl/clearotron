@@ -476,7 +476,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      629 bytes, and the strip-and-compare shows nothing else moves. tracker issue 242's own note promises "each
 //      member is a <details> whose body is the same fullDetail block the compact card carries" and that
 //      was untrue of the one field v6 guarantees on every negative. Suppressing it there would need a
-//      conditional whose only purpose is reproducing the pre-tracker issue 470 shape, which is the legacy code path
+//      conditional whose only purpose is reproducing the pre-2026-08-06 shape, which is the legacy code path
 //      this program forbids.
 //
 //      E is the cap, and it is a TEXT change to delivered documents, stated separately from the move
@@ -989,7 +989,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // level up — and the gate is written the way those two are, as a test for §L's own bullet label on the
 // card MARKDOWN. It is a SUBTRACTION: no client string is rewritten, filtered, re-labelled or cut — one
 // code-emitted block stops printing where the card has already printed it. Editing the prose instead was
-// the other direction, and it is the pattern tracker issue 709 and tracker issue 669 exist to forbid.
+// the other direction, and it is the pattern those two rules exist to forbid.
 //
 // THE FIRST CUT OF THIS GATE WAS `proseFull ? '' : …` — any Full-detail prose at all — and it is recorded
 // here because it was WRONG in a way the sample could not show: all 10 cards carry the bullet, so the two
@@ -1198,7 +1198,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //
 // THE ORDINAL WAS CHECKED, NOT COUNTED. The sequence above is not sound: "Fifth break" appears twice
 // (spec-66 at the top, PR-11 below it), four entries are dated rather than numbered ("Break of
-// 2026-07-31", 08-04, 08-06), and tracker issue 314 is recorded as deliberately UNNUMBERED. Counting entries gives the
+// 2026-07-31", 08-04, 08-06), and one entry is recorded as deliberately UNNUMBERED. Counting entries gives the
 // wrong answer; the highest ORDINAL written down is the seventeenth, so this is the eighteenth.
 //
 // ── WHAT MOVED ────────────────────────────────────────────────────────────────────────────────────────
@@ -1470,7 +1470,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //
 // EXCLUDING THIS FILE FROM THE SWEEP WAS THE ALTERNATIVE, AND IT IS WORSE: it would leave the one
 // republish-reachable renderer as the only shipped source file in the repository with no licence
-// notice. That is the "present on 80% of files" state tracker issue 854 says is worse than having no policy at all.
+// notice. That is the "present on 80% of files" state, which is worse than having no policy at all at all.
 // Seventh break (2026-08-14, tracker issue 705 — the chrome home link's target).
 //
 // ONE ATTRIBUTE ON ONE ANCHOR: `homeButton` now emits `target="_blank" rel="noopener"`.
@@ -1703,7 +1703,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // WHY IT IS WORTH A BREAK AT ALL: findings-model calls that export "the mode switch both sort sites use",
 // and it was not. pipeline.mjs sorts with the shared predicate; this file — the surface that PRINTS the
 // report, and whose isOnField / bandOf / quadrant / keyPanel all read the flag — used a copy. Two
-// definitions of one mode agree until somebody edits one, and nothing said so. tracker issue 1100's class exactly.
+// definitions of one mode agree until somebody edits one, and nothing said so. that class exactly.
 //
 // The checklist, answered:
 //

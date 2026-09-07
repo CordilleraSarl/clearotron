@@ -127,7 +127,7 @@ test("no read site asks systemd directly, which is how this defect arrived", () 
   const bare = direct.filter((d) => !wrapped.includes(d));
   assert.deepEqual(bare.map((d) => d.n), [],
     "a `systemctl` call in this file neither goes through `showUnit` nor carries the derived bus and "
-    + "captured stderr itself. That is the shape of the defect tracker issue 130's third criterion "
+    + "captured stderr itself. That is the shape the third criterion names "
     + `found, one screen from where it was repaired: ${bare.map((d) => `${d.n}: ${d.line.trim()}`).join(" | ")}`);
   assert.ok(direct.length >= 2,
     "the `systemctl` writers have gone from this file, so this arm is watching nothing");

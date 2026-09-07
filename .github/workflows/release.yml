@@ -106,7 +106,7 @@ on:
   # catches what the wait gives up on: a version branch whose checks went red and merged an hour later, a
   # run cancelled mid-wait, anything that merges after `WAIT_MS` has run out.
   #
-  # IT DOES NOT CUT ANYTHING, AND THAT IS WHY IT SURVIVES tracker issue 264's "no scheduled beta". This
+  # IT DOES NOT CUT ANYTHING, AND THAT IS WHY IT SURVIVES THE NO-SCHEDULED-BETA RULE. This
   # asks main one question — is there a version here with no tag — and a version only reaches main when a
   # dispatched cut merged the version pull request. With no cut dispatched there is nothing for it to
   # find, which is the acceptance criterion "a night with no cut publishes nothing" holding by
@@ -902,7 +902,7 @@ jobs:
 
       # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
       #  · a real publish happens on a push, on the cron, or on a `workflow_dispatch` whose `cut` input
-      #    is `beta` — the on-demand cut tracker issue 264 ruled in. Every other dispatch is still a
+      #    is `beta` — the on-demand cut that replaced the scheduled one. Every other dispatch is still a
       #    rehearsal and still runs `npm publish --dry-run`. THE BRANCH CHECK BELOW IS WHAT HOLDS A
       #    DISPATCHED CUT TO `main`: a rehearsal may run from any branch precisely because it cannot
       #    publish, and a cut may not.

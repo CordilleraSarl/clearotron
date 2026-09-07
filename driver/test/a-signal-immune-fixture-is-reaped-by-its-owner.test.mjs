@@ -132,7 +132,7 @@ process.on("exit", () => reapSpawned());
 //
 // The reaping arms sent SIGKILL, waited a FIXED 250ms and asserted `alive(pid) === false`. That is a
 // load meter wearing an assertion's clothes, and it reddened inside a full-suite run on 2026-08-26 —
-// the second occurrence of the shape, which the tripwire on tracker issue 1847 says to DRIVE rather than re-run.
+// the second occurrence of the shape, which the tripwire says to DRIVE rather than re-run.
 //
 // Driven at a 1ms settle under load average 27: 24 of 25 runs failed, 58 arm failures, all three
 // reaping arms — against 0 of 25 at the shipped 250ms. Then measured directly, 40 trials, SIGKILL and

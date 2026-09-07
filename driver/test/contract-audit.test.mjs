@@ -367,7 +367,7 @@ test("#1211: every citation lands on the line that MINTS the code, not near it",
   // comments and unrelated code, and nothing would have said so. A line number in prose is a claim that
   // decays on somebody else's merge, so it is checked rather than maintained.
   //
-  // tracker issue 1211's condition is "each decision cites the site that mints it". A ruling that cites a sentence
+  // the condition is "each decision cites the site that mints it". A ruling that cites a sentence
   // three functions away is not a worse ruling than one citing nothing — it is a more convincing one,
   // which is worse.
   // THE FAILURE OUTPUT IS THE PATCH. A message that says "re-derive the line numbers" hands the next
@@ -537,7 +537,7 @@ test("E3: every surface EXACTLY matches its baseline — a SHRINK is a red until
     + "class at authoring time. Recording it with --write makes the new dictation the normal.");
   assert.deepEqual(shrank, [],
     "a surface SHRANK and its baseline still stands at the old number, which leaves room a new violation "
-    + "can land in without this check noticing — #1201's hole exactly. Regenerate in the SAME commit:\n"
+    + "can land in without this check noticing — that hole exactly. Regenerate in the SAME commit:\n"
     + "  node driver/test/contract-e3-baseline.mjs --write\n"
     + "and say at the entry site what removed it.");
 });

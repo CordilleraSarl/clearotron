@@ -395,7 +395,7 @@ ${HELPERS}
   out.bringBackOnProject = allByText('button', /^Bring back$/).length >= 1;
   out.projectArchiveOnRow = allByText('button', /^Archive$/).length >= 1;
   findByText('button', /New project/).click();
-  // "Project name" since tracker issue 1958's copy pass, which shortened the label from "What is this
+  // "Project name" since the copy pass that shortened the label from "What is this
   // project called?". A driver that opens the real screen is the one thing that notices a rename like
   // this, and it noticed: the whole lifecycle failed here rather than anywhere near the cause.
   await mustSettle(() => /Project name/.test(txt()), 8000, 'the project name prompt never appeared');

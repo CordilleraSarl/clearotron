@@ -252,7 +252,7 @@ export function stripTelemetry(md) {
 // resolved to, and which fragment of a contradicted pair the record supports. Deleting the key deletes the
 // pointer along with the word.
 //
-// THIS IS NOT THE SUBSTITUTION tracker issue 669 FORBIDS. Nothing here reads arbitrary client prose for a vocabulary.
+// THIS IS NOT THE FORBIDDEN SUBSTITUTION. Nothing here reads arbitrary client prose for a vocabulary.
 // Each rule is ANCHORED to one position in a grammar THIS ENGINE writes: the disposition token at the head
 // of `resolution`, and the disposition token inside the `(finding #N, …)` parenthetical the contradiction
 // line builds. A mark named ADVERSARIAL survives both — it is not at position 0 of a resolution line, and

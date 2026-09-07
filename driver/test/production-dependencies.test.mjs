@@ -184,5 +184,5 @@ test("the generator descends through a deduped node", () => {
   };
   const rows = collect(REPO, tree).map((r) => `${r.name}@${r.version}`);
   assert.ok(rows.includes("deep@3.0.0"),
-    "the walk stopped at the deduped occurrence and never reached its children — the tracker issue 115 defect");
+    "the walk stopped at the deduped occurrence and never reached its children");
 });

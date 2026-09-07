@@ -42,7 +42,7 @@ test("a dead credential fails with THE PROVIDER'S OWN REASON, not a generic one"
     + "reproduce the call by hand to learn what this already knew");
 });
 
-// ── THE COULD-NOT-LOOK DISTINCTION, one subsystem over from tracker issues 1864 and 1874 ─────────
+// ── THE COULD-NOT-LOOK DISTINCTION, one subsystem over from the bus and allocation-failure classifiers ─────────
 test("a provider that CANNOT be counted is `cannot-prove`, never `failed`", async () => {
   const r = await probe(healthy, { countProbe: "none" })({}, {});
   assert.equal(r.state, "cannot-prove",
