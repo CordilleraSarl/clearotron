@@ -257,6 +257,13 @@ function Engine({ engine, programDisputed = false }: { readonly engine: EngineSt
     // SELECTED IS NOT USABLE, and this row is where those two got drawn the same. `binaryPresent` above
     // is this deployment's own reading; the engine that last started disagreed with it, and the screen a
     // reader would go to next believes that other answer. Naming it here is the only place the two meet.
+    //
+    // THE `&& engine.binaryPresent` IS DELIBERATE AND NOT A BUG. A disagreement has two directions and
+    // only one of them needs a sentence here. This machine sees the program and the engine did not: that
+    // is this line, because every other row on the page says the engine is fine. The mirror — the engine
+    // saw it and this machine does not — is already covered by the fault directly above, which fires on
+    // `!binaryPresent` and says the program cannot be found or run. Dropping the condition would print
+    // both at once and contradict itself.
     ...(programDisputed && engine.binaryPresent
       ? ['The engine program is on this machine, but the engine could not find it when it last started — '
          + 'so a new search will refuse. Restart the engine service, or install the CLI where the service can see it.']

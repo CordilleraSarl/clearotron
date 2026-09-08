@@ -1271,8 +1271,21 @@ export async function runCheck() {
           + `refuse while that is true. Restart the engine service so it re-reads its PATH, or install the `
           + `CLI where the service can see it.`);
       }
-    } catch {
-      // A doctor that cannot read the capture says nothing about it rather than claiming agreement.
+    } catch (e) {
+      // WHAT ACTUALLY REACHES THIS CATCH, established by driving it rather than by reading it.
+      //
+      // Not a box with no pool: `poolRootOrNull` answers null and `readFlagSnapshot(null)` answers null,
+      // neither throwing. And NOT an unreadable capture either — `readFlagSnapshot` has its own try and
+      // returns null for a corrupt file, so a damaged capture is already indistinguishable from an absent
+      // one by the time this code sees it. That is worth knowing and is not this change's to fix.
+      //
+      // So this catch covers an import that has broken or an unexpected throw out of the comparison —
+      // the check having stopped running. A doctor silent about its own failure is the defect the rest of
+      // this change is about, an absence rendered as a clean bill, so it says so. A caution rather than a
+      // problem: the engine may be perfectly fine and it is this check that is broken.
+      info(`Could not compare this machine against what the engine last recorded (${e?.message ?? e}). `
+        + `That comparison is what catches a settings page reading healthy while a search will not start, `
+        + `so this run has not checked it either way.`);
     }
 
     // item 5 — WHICH BILLING LANE, reported rather than left to be inferred from a variable's
