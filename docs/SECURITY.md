@@ -49,6 +49,13 @@ asks. A webmail or shared provider is refused outright, because a rule built fro
 The People & access screen names the setting the rule came from and the file it is written in, so a
 rule can be traced and undone by whoever finds it.
 
+**That check is on the DERIVATION, not on the value.** A `PORTAL_STAFF_DOMAINS` you set yourself is
+taken as written and never classified: `PORTAL_STAFF_DOMAINS=gmail.com` is accepted, and it admits
+everyone at that provider who gets past the sign-in door. This is deliberate — a value someone typed is
+a decision already taken, and the defect being fixed was a rule created with nobody asked — but it means
+the protection is against the accident and not against the configuration. Read what you set, or set
+nothing and answer the question the install asks.
+
 
 - **On the proxy door**, every HTTP request re-validates a JWT from the fronting auth proxy. The
   proxy is yours to choose — issuer, JWKS URL, claim and header are config
