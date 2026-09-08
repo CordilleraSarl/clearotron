@@ -1288,8 +1288,8 @@
           "todos": 0
         },
         "contract-audit.test.mjs": {
-          "tests": 52,
-          "asserts": 164,
+          "tests": 54,
+          "asserts": 167,
           "skips": 0,
           "todos": 0
         },
