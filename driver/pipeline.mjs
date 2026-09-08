@@ -6084,8 +6084,21 @@ function plainRegisterExtra(ctx) {
     }
     if (!hits.length) return "";
 
+    // THE LAST SENTENCE IS DERIVED, NEVER ASSERTED, and the reason is that it is the one the seat acts
+    // on. `about` is built from three optional job keys and from owners found in the record, and
+    // nothing guarantees any of them is present — so on a run where the exclusion found nothing, an
+    // absolute claim that every mark was removed is false in exactly the state where a hit IS the mark.
+    // Found in review, 2026-09-08, driven on a job carrying no marks.
+    //
+    // THE EMPTY STATE SAYS SO RATHER THAN GOING QUIET. Dropping the clause would leave the seat with no
+    // reading of a fact that changes what it should do; telling it the mark was not excluded is more
+    // useful than telling it nothing, and far more useful than telling it the opposite.
+    const excluded = [...new Set([...(about.marks ?? []), ...(about.owners ?? [])])];
+    const exclusionNote = excluded.length
+      ? `The ${excluded.length} name(s) this run is about were removed before reading, so none of these is a hit inside a name being cleared.`
+      : "THIS RUN NAMED NO MARK OR OWNER TO EXCLUDE, so nothing was removed before reading — a flag below may BE the mark under clearance. Check each against the matter before rewriting it.";
     return lines(
-      `PLAIN WORDS ON WHAT THE READER SEES FIRST: a deterministic read of this run's default-visible lines — the ones a client meets before opening anything — flagged the lines below. Treat each as a candidate FLAGGED CORRECTION [kind: narrative] and handle it exactly as you handle the reader-owned nouns above: quote the sentence and give the rewrite that keeps every fact. THIS IS EVIDENCE, NOT A VERDICT — judge each in context and pass over any where the word is the subject rather than the profession's shorthand. Every mark and owner this run is about was removed before reading, so none of these is a hit inside a name being cleared.`,
+      `PLAIN WORDS ON WHAT THE READER SEES FIRST: a deterministic read of this run's default-visible lines — the ones a client meets before opening anything — flagged the lines below. Treat each as a candidate FLAGGED CORRECTION [kind: narrative] and handle it exactly as you handle the reader-owned nouns above: quote the sentence and give the rewrite that keeps every fact. THIS IS EVIDENCE, NOT A VERDICT — judge each in context and pass over any where the word is the subject rather than the profession's shorthand. ${exclusionNote}`,
       ...hits,
     );
   } catch (e) {

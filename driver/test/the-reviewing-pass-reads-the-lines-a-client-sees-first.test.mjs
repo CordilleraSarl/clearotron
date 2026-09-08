@@ -127,3 +127,45 @@ test("the block is bound to the reviewing stage and to no other", () => {
     assert.ok(!out.ids.some((x) => x.id === "refute-plain-register"), `it reached ${stage}`);
   }
 });
+
+// ── THE BLOCK MAY NOT CLAIM AN EXCLUSION IT DID NOT MAKE ────────────────────────────────────────────
+//
+// The closing sentence used to be an absolute: every mark and owner was removed before reading, so no
+// flag is a hit inside the name being cleared. `about` is built from three optional job keys and from
+// owners found in the record, and nothing guarantees any of them is present — so on a run that named
+// none, the block asserted the guarantee in exactly the state where it fails, and the seat is told to
+// trust it on the one report where a hit inside the cleared mark costs most.
+//
+// BOTH STATES ARE ASSERTED, because the repair has two ways to be wrong: the claim surviving into the
+// empty state, and the warning surviving into the state where the exclusion really did happen.
+test("the block claims an exclusion only when it made one, and says so plainly when it did not", () => {
+  const findings = plant("PREVAIL has a strong reputation in class 9.");
+
+  const withMark = compose(findings, { marks: [{ name: "NORTHWIND" }] });
+  assert.match(withMark.text, /were removed before reading/,
+    "a run that named a mark must say the exclusion happened");
+  assert.doesNotMatch(withMark.text, /NAMED NO MARK OR OWNER/,
+    "and must not carry the warning for the empty state");
+
+  // THE EMPTY STATE NEEDS BOTH HALVES, which the first version of this arm missed: `about.owners` is
+  // built from the RECORD, so a job naming no marks still excludes every owner the findings carry —
+  // thirteen of them on this one — and the claim was true. The arm passed for the wrong reason until
+  // the owners were stripped too. An empty exclusion means the job named nothing AND the record
+  // carries no owner.
+  const noNames = withRecord((doc) => {
+    doc.findings = doc.findings.map((f, i) => ({
+      ...f,
+      owner: undefined, owner_name: undefined,
+      net: i === 0 ? "PREVAIL has a strong reputation in class 9." : "A short clean line.",
+    }));
+  });
+
+  for (const job of [{ marks: [] }, {}, undefined]) {
+    const out = compose(noNames, job);
+    if (!out.ids.some((x) => x.id === "refute-plain-register")) continue;   // nothing flagged, nothing to claim
+    assert.match(out.text, /NAMED NO MARK OR OWNER TO EXCLUDE/,
+      `a run with no mark to exclude claimed an exclusion it did not make (job ${JSON.stringify(job)})`);
+    assert.doesNotMatch(out.text, /none of these is a hit inside a name being cleared/,
+      "the absolute claim survived into the state where it is false");
+  }
+});
