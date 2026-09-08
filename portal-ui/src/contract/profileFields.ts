@@ -15,7 +15,7 @@
 //   one. A project overlay that silently deleted a client-mandated marketplace is a documented past
 //   defect; the additive-only helper below is the fix expressed as code rather than as care.
 
-import { isKnownTerritory } from './composerProduct.ts'
+import { isTerritoryEntry } from './composerProduct.ts'
 
 /** Fields the UI must never send. The server strips them too — this is the near wall, not the only one. */
 export const CODE_OWNED = ['frameworkPath', 'workedExamplesPath', 'allowedRecipes', 'jxPolicy', 'runCaps'] as const
@@ -260,7 +260,7 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     //
     // The vocabulary is the composer's own, not a second list. A picker that suggests a territory the box
     // then flags as unknown would be two controls disagreeing under one label.
-    item: { ok: isKnownTerritory, expected: 'a territory from the picker below' },
+    item: { ok: isTerritoryEntry, expected: 'a territory from the picker below, or a two-letter code' },
     // THE HINT SAYS WHAT THE FIELD DOES WITH WHAT YOU TYPE, which is the question that was actually
     // asked: "Is this validated? It accepts 'XX' so I guess not." It IS checked, and the check is
     // assistive by design — it flags and stores rather than refusing, because the engine deliberately
@@ -271,7 +271,8 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // picker's own vocabulary rather than a second spelling. Which vocabulary this field should speak is
     // a real and larger question, because the staff editor documents codes while this checks names; that
     // is with the owner and is deliberately not pre-empted here.
-    hint: 'One per line or comma-separated — pick from the list below. A region counts as one entry: '
+    hint: 'One per line or comma-separated — pick from the list below, or type a two-letter code like '
+      + 'US, EU or GB; both are understood. A region counts as one entry: '
       + 'European Union covers its member states, so there is no need to add them. Anything not in the '
       + 'list is kept and flagged rather than refused, because a search can name a territory this list '
       + 'does not carry.' },

@@ -19,7 +19,7 @@ import {
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
-} from '../src/contract/composerProduct.ts'
+  isTerritoryEntry, isKnownTerritory, ALL_TERRITORIES } from '../src/contract/composerProduct.ts'
 import type { Draft } from '../src/contract/composerProduct.ts'
 import { PRODUCTS, assertMatchesRegistry } from './products.fixture.ts'
 
@@ -326,4 +326,37 @@ test('nothing here is a reason to refuse a SAVE', () => {
   assert.ok(gaps.length > 0)
   assert.deepEqual(blockers(EMPTY_DRAFT, null, 0).filter((b) => gaps.includes(b)), [],
     'a form gap leaked into blockers(), which would take Save away from a half-filled form')
+})
+
+// ── one stored field, one answer (public issue 158) ─────────────────────────────────────────────────
+//
+// The staff editor tells an operator to type "US, EU, UK". The portal checked those against display
+// names and flagged all three as unknown. The engine validates nothing and normalises whatever arrives.
+// A user who followed one editor's instruction was told by the other that they were wrong, and asked.
+test('158: the jurisdictions field accepts what BOTH editors tell a reader to type', () => {
+  for (const named of ['European Union', 'United States', '  united states ']) {
+    assert.ok(isTerritoryEntry(named), `${JSON.stringify(named)} is a territory this build names`)
+  }
+  for (const code of ['US', 'EU', 'GB', 'ch']) {
+    assert.ok(isTerritoryEntry(code), `${code} is what the staff editor instructs, and it was flagged as unknown`)
+  }
+})
+
+test('158: a code is a SHAPE, not a licence for anything short', () => {
+  // The check stays assistive — it flags and stores rather than refusing — so accepting a two-letter
+  // shape it cannot resolve matches what the engine does with one. What it must not do is stop
+  // flagging entries that are neither: the owner's own example, typed into the live page, produced no
+  // notice at all before this field had a check, and that silence is what this must not return to.
+  for (const junk of ['USFrance', 'XXX', 'U', '', '  ', '1', 'United Stat']) {
+    assert.equal(isTerritoryEntry(junk), false, `${JSON.stringify(junk)} is neither a named territory nor a code`)
+  }
+})
+
+test('158: the picker and the composer keep the name vocabulary they had', () => {
+  // NOT A VOCABULARY CHANGE where a client chooses countries. A picker offering names beside a box that
+  // accepted only codes would be two controls disagreeing under one label — this defect pointed the
+  // other way. Codes are accepted in ADDITION, on the one field whose other editor documents them.
+  assert.ok(ALL_TERRITORIES.includes('European Union'), 'the picker vocabulary is still names')
+  assert.equal(isKnownTerritory('EU'), false,
+    'the NAME check must not start answering for codes — the composer reads it, and its list is names')
 })

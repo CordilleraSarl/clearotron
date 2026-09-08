@@ -503,6 +503,30 @@ export const isKnownTerritory = (entry: string): boolean => {
   return e.length > 0 && ALL_TERRITORIES.some((t) => t.toLowerCase() === e)
 }
 
+/**
+ * A two-letter territory CODE, which the engine resolves and this vocabulary does not list.
+ *
+ * ONE STORED FIELD WAS DESCRIBED THREE WAYS. The staff editor tells an operator to type
+ * "US, EU, UK"; the portal checked those against display names and flagged all three as unknown; and
+ * the engine validates nothing and normalises whatever arrives. So a user who followed one editor's
+ * instruction was told by the other that they were wrong, which is what an outside user asked about.
+ *
+ * WHY A SHAPE AND NOT A TABLE. The driver holds the real list, and mirroring it into the browser would
+ * put a second copy of ~250 codes here with a parity test to keep them in step — the effort model's
+ * arrangement, taken on for a field that flags and never refuses. This check is assistive by design, so
+ * the honest rule is the one the engine actually applies: a two-letter code is carried and resolved,
+ * including one this build does not recognise. A wrong code is not silently accepted as correct; it is
+ * accepted as typed, which is what the engine does with it, and the hint says so.
+ *
+ * NOT a vocabulary change to the picker or to the composer's territory list, both of which stay
+ * name-shaped: a picker offering names beside a box that only accepted codes would be two controls
+ * disagreeing under one label, which is this defect in the other direction.
+ */
+export const isTerritoryCode = (entry: string): boolean => /^[A-Za-z]{2}$/.test(String(entry).trim())
+
+/** What the jurisdictions field accepts: a territory this build names, or a code the engine resolves. */
+export const isTerritoryEntry = (entry: string): boolean => isKnownTerritory(entry) || isTerritoryCode(entry)
+
 export const MAX_TERRITORIES = 20
 
 // ── the effort model ────────────────────────────────────────────────────────────────────────────────
