@@ -68,8 +68,20 @@ test("343: the frozen demo artefacts say the same as the manifest they came from
   // test that looked at nothing, which is the shape this file exists to refuse in the product.
   //
   // Asserted against the NAMED list rather than against a bare count, so a manifest renamed or dropped
-  // out of the directory is a failure here rather than a quietly smaller set: the two ways of finding
-  // these files have to keep agreeing.
+  // out of the directory is a failure here rather than a quietly smaller set: a floor only catches zero,
+  // and four-where-five-are-expected is the shape with nothing under it.
+  //
+  // WHAT THIS DOES NOT COVER, said plainly so nobody reads it as more than it is. Both sides compared
+  // here are TREE-side — `manifestDir` is the source directory, and the named list sits beside it in
+  // this file. What actually reaches a customer is decided by `package.json`'s `files` array, which this
+  // check never opens. A manifest can sit in that directory, satisfy every assertion below, and ship to
+  // nobody.
+  //
+  // That is live rather than tidy-minded: the packaging rules exclude `risk-framework-*` and then
+  // re-include the demo and triage manifests BY NAME. The house default is not re-included by name. It
+  // ships only because the exclusion pattern carries a hyphen and its filename carries a dot, so the
+  // pattern structurally cannot reach it. Narrow that pattern to `risk-framework*` and the house default
+  // stops shipping while this file stays green, because the source file it walks has not moved.
   const discovered = readdirSync(manifestDir).filter((x) => x.endsWith(".manifest.json"));
   assert.ok(discovered.length > 0,
     `no framework manifest was found in ${manifestDir} — the walker broke, or the packaging rules moved them. `
