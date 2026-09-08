@@ -1248,6 +1248,33 @@ export async function runCheck() {
         + "clearotron doctor --probe-engine to find out.");
     }
 
+    // AND WHETHER THE ENGINE AGREES, which is a different question from the one above and the reason an
+    // outside user gave up on this product. This command reads its OWN environment; the portal's New
+    // clearance screen reads what the engine recorded when it last started. Both were right and they
+    // said opposite things, so a reader who checked the confident-looking one first was told the engine
+    // was fine while no search would start. Reported here in the same words the configuration page uses,
+    // because a doctor that cannot see a contradiction the product ships with is the wrong doctor.
+    try {
+      const { readFlagSnapshot, postureDisagreement } = await import("../driver/flag-snapshot.mjs");
+      // THE READ-SIDE ACCESSOR, because this is a read: `config.poolRoot` throws on a box with no pool
+      // configured, and `readFlagSnapshot(null)` already answers "no capture" for exactly that case.
+      const snap = readFlagSnapshot(config.poolRootOrNull);
+      const rows = snap
+        ? postureDisagreement(snap, { flags: {}, engine: engineInventory(invEnv) })
+        : null;
+      // NULL IS NOT AGREEMENT and neither is an empty pool — a box with no capture has nothing to
+      // disagree with, and saying so beats printing a clean bill nobody measured.
+      const clash = (rows ?? []).find((r) => r.what === "engine program");
+      if (clash) {
+        problem(`The engine that last ran and this machine disagree about the engine program: the last run `
+          + `recorded it as ${clash.capture}, this machine reads it as ${clash.live}. A NEW search will `
+          + `refuse while that is true. Restart the engine service so it re-reads its PATH, or install the `
+          + `CLI where the service can see it.`);
+      }
+    } catch {
+      // A doctor that cannot read the capture says nothing about it rather than claiming agreement.
+    }
+
     // item 5 — WHICH BILLING LANE, reported rather than left to be inferred from a variable's
     // absence. `--check` named the engine and its binary and never said how the box pays, so the two
     // states that matter — metered per token, or drawn against a subscription — were indistinguishable

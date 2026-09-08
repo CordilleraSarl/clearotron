@@ -161,6 +161,63 @@ test("the engine and the billing mode are compared too, because both change the 
   assert.ok(named.includes("billing mode"), `billing change not reported: ${JSON.stringify(named)}`);
 });
 
+// ── THE FIELD THAT DECIDES WHETHER A SEARCH CAN START ───────────────────────────────────────────────
+//
+// An outside user photographed two screens of one install, taken at the same moment. The configuration
+// page drew a green Engine row; the New clearance screen said no engine was attached and rendered no
+// start button at all. He wrote "Engine seems to be there, but I see no CTA on how to do it. I'm giving
+// up," and that is the last thing he did with the product.
+//
+// Both screens were right about their own question. The configuration page reads the LIVE posture; the
+// New clearance screen reads `engineMode` off the capture, which is what the ENGINE could see when it
+// last started. `binaryPresent` was the one field they differed on and the one field this comparison did
+// not look at — so `disagrees` came back `[]`, which this page renders as "the last run ran under this
+// same configuration". Not silence: a positive assurance of agreement, on the screen an operator checks
+// first, while the other screen refused to start a search.
+const engineWith = (binaryPresent) => ({ id: "engine-a", billing: { mode: "subscription" }, binaryPresent });
+
+test("THE DEFECT: the capture and the box disagreeing about the engine program is REPORTED", () => {
+  const rows = postureDisagreement(
+    posture({ engine: engineWith(false) }),   // what the engine recorded when it last started
+    posture({ engine: engineWith(true) }),    // what this deployment reads now
+  );
+  const row = rows.find((r) => r.what === "engine program");
+  assert.ok(row, `the field that decides whether a search can start is not compared: ${JSON.stringify(rows.map((r) => r.what))}`);
+  assert.match(String(row.effect), /NEW search can start/, "the row does not say what it costs the reader");
+  assert.match(String(row.effect), /Restart the engine service|install the CLI/, "…and does not say what to do about it");
+});
+
+test("…and it reads as words, because the browser contract parses these two values with asString", () => {
+  // `capture` and `live` cross to the page through `asString`, which answers null for a boolean. Emitting
+  // the raw flags would land the row on screen with both its values blank and only the effect sentence
+  // left — the two facts a reader needs, gone, with nothing saying they were dropped.
+  const row = postureDisagreement(
+    posture({ engine: engineWith(false) }),
+    posture({ engine: engineWith(true) }),
+  ).find((r) => r.what === "engine program");
+  assert.equal(typeof row.capture, "string", "a boolean here is erased by the contract on the way to the page");
+  assert.equal(typeof row.live, "string");
+  assert.equal(row.capture, "not found");
+  assert.equal(row.live, "found");
+});
+
+test("CONTROL: agreeing about the engine program reports nothing — the row is not green by construction", () => {
+  for (const both of [true, false]) {
+    const rows = postureDisagreement(posture({ engine: engineWith(both) }), posture({ engine: engineWith(both) }));
+    assert.equal(rows.find((r) => r.what === "engine program"), undefined,
+      `agreement at binaryPresent=${both} was reported as a disagreement`);
+  }
+});
+
+test("CONTROL: a capture written before the field existed is silent about it, not in conflict", () => {
+  // Every capture on every box predates this comparison. If absence read as disagreement, this row would
+  // fire on every deployment the moment the build shipped, and the one real instance would be noise.
+  const older = posture({ engine: { id: "engine-a", billing: { mode: "subscription" } } });
+  const rows = postureDisagreement(older, posture({ engine: engineWith(true) }));
+  assert.equal(rows.find((r) => r.what === "engine program"), undefined,
+    "a capture that never recorded the field is being reported as disagreeing with a box that has it");
+});
+
 // ── THE COMPARISON IS ONLY WORTH THE INDEPENDENCE OF ITS TWO SIDES ──────────────────────────────────
 //
 // Raised by role-e2e before driving it, and it was a live defect for about an hour: "a page that reports
