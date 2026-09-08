@@ -225,7 +225,7 @@ const CITED_URI_RE = /\/mark\/[a-z]{2,6}\/[a-z0-9][a-z0-9_-]*/gi;
  * opening the channel. Exported because a guard that can only be asserted by reading source is a guard
  * whose behaviour was never tested. PURE; never throws.
  */
-export function connotationRemedyToken(err) {
+export function connotationRemedyToken(err) {   // @internal
   const re = new RegExp(`${CONNOTATION_FORM_TOKEN_SRC}[^)]*`);
   for (const text of [err?.message, err?.detail]) {
     const m = String(text ?? "").match(re);
@@ -301,7 +301,7 @@ const FALLBACK_ELIGIBLE = [
   /^timeout$/, /^lane_wedge$/, /^embedded_fallback$/, /^nonzero_exit/,
   /^status_timeout$/, /^status_overloaded$/, /^status_error$/, /^status_aborted$/, /^status_rate_limited$/,
 ];
-export function isFallbackEligible(fail) {
+export function isFallbackEligible(fail) {   // @internal
   return Boolean(fail) && FALLBACK_ELIGIBLE.some((re) => re.test(fail));
 }
 
@@ -313,7 +313,7 @@ export function isFallbackEligible(fail) {
 // HTTP 502 …"). repairs.mjs's own doctrine says those are sampling noise, not a content verdict — so
 // anything classifyFailureReason calls transient breaks the streak too. Exported so the strike tests
 // exercise THIS predicate, not a hand-rolled stand-in.
-export function isContentShapedFail(fail) {
+export function isContentShapedFail(fail) {   // @internal
   return classifyFailureReason(String(fail ?? "")) !== "transient" && !isFallbackEligible(fail);
 }
 
@@ -326,7 +326,7 @@ export { parseCoverageLedger, parseCoverageLedgerFull } from "./coverage-ledger.
 // Called FRESH at each gate — register-findings.md AND the JSON are rewritten by re-digests, so a
 // cached read could span a rewrite. An unreadable machine ledger here is near-impossible (the file
 // passed the stage validator) — fall back to prose rather than crash; the validator owns that failure.
-export function loadCoverageLedger(runDir) {
+export function loadCoverageLedger(runDir) {   // @internal
   // Keystone (#1): every consumer reads through here, so the tool-absence→deferred relabel applies ONCE,
   // at the single choke point — the escalation-skip gate, the deadline envelope, and the U1 clamp all then
   // act on the corrected status. The relabel is a pure backstop over coverageLedger.coerceToolAbsenceDeferred
@@ -354,7 +354,7 @@ export function loadCoverageLedger(runDir) {
 // `named_band_*` tokens — a parse miss is a stage fail with the token, never a hard crash. mergeNamedBands
 // de-dups enumerated records by record_id and preserves every crowd descriptor. Returns the merged band
 // object {enumerated, crowds} plus { axes:[…], invalid:[{axis,reason}] } so the caller can flag a bad axis.
-export function mergeRegisterBands(P, axes = []) {
+export function mergeRegisterBands(P, axes = []) {   // @internal
   const bands = [];
   const merged = [];
   const invalid = [];
@@ -409,7 +409,7 @@ export function mergeRegisterBands(P, axes = []) {
 // supplemental is skeleton-tracked and receipt-durable exactly like a dictated entry — the taint
 // chain, the clean-gates, and dispatchPlanQids cover them with zero extra code. Run-local only: the
 // slug store is never written (clearances run once; senior lawyer 2026-07-10).
-export function readRegisterBands(P, axes) {
+export function readRegisterBands(P, axes) {   // @internal
   const byAxis = {};
   for (const a of axes ?? []) {
     if (!existsSync(P.registerBand(a))) continue;
@@ -421,12 +421,12 @@ export function readRegisterBands(P, axes) {
   return byAxis;
 }
 /** The plan-execution receipt in hand (ctx first, then the on-disk copy). Never throws. */
-export function readPlanExecution(ctx) {
+export function readPlanExecution(ctx) {   // @internal
   if (ctx?.planExecution) return ctx.planExecution;
   const p = ctx?.paths?.planExecution;
   try { return p && existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; }
 }
-export function writePlanExecutionReceipt(ctx, joinRes) {
+export function writePlanExecutionReceipt(ctx, joinRes) {   // @internal
   const P = ctx.paths;
   // — the ONE place the receipt is written is the one place this decision is taken. The
   // reclassification is keyed off the receipt already on disk (ladderExhaustedQids), so every writer
@@ -512,7 +512,7 @@ export function writePlanExecutionReceipt(ctx, joinRes) {
  *
  * Returns the record it wrote, or null if the findings file could not be read.
  */
-export function settleDerivedBases(ctx, at) {
+export function settleDerivedBases(ctx, at) {   // @internal
   const P = ctx.paths;
   try {
     const recordFile = (uri) => join(P.runDir, "_records", String(uri).replace(/^\/mark\//, "").replace(/[^a-z0-9]+/gi, "-") + ".json");
@@ -584,7 +584,7 @@ export function settleDerivedBases(ctx, at) {
   }
 }
 
-export function foldSupplementalProposals(ctx) {
+export function foldSupplementalProposals(ctx) {   // @internal
   if (!ctx.registerPlan) return [];
   const P = ctx.paths;
   const entries = [];
@@ -632,7 +632,7 @@ export function foldSupplementalProposals(ctx) {
 // Post-followup accounting: escalation/envelope/reopen turns may have proposed new supplementals —
 // fold them and refresh the receipt so plan-execution.json (the not-finished substrate every gate
 // reads) always includes them. NEVER-KILL: accounting must not fail a run the followup just repaired.
-export function refreshSupplementalExecution(ctx) {
+export function refreshSupplementalExecution(ctx) {   // @internal
   if (!ctx.registerPlan) return;
   try {
     const added = foldSupplementalProposals(ctx);
@@ -760,7 +760,7 @@ function deriveOwnerScreenArtifact(ctx, band) {
 }
 
 /** Read the owner-screen receipt back (the lint + the digest/skeptic data block read it). */
-export function readOwnerScreen(P) {
+export function readOwnerScreen(P) {   // @internal
   try { return existsSync(P.ownerScreen) ? JSON.parse(readFileSync(P.ownerScreen, "utf8")) : null; }
   catch { return null; }
 }
@@ -773,7 +773,7 @@ export function readOwnerScreen(P) {
  * instrumentation house rule exists to kill. The absence is therefore also RECORDED either way, with
  * the reason, so "this matter has no owner lane" and "the receipt went missing" are distinguishable.
  */
-export function ownerScreenForDelivery(ctx) {
+export function ownerScreenForDelivery(ctx) {   // @internal
   const P = ctx.paths;
   const onDisk = readOwnerScreen(P);
   if (onDisk?.owners?.length) return onDisk;
@@ -1067,7 +1067,7 @@ function deriveGridSpec(ctx) {
 // the reason this issue could not be answered by persisting and replaying: all three `probeOrder` seams
 // sit INSIDE band-shape.mjs's derivation functions, so a rig that replayed a persisted band-shape.json
 // would hand a seeded arm the unseeded artifact and report — byte-identically, and wrongly — no effect.
-export const DERIVATION_RUNNERS = {
+export const DERIVATION_RUNNERS = {   // @internal
   "band-shape": (ctx) => {
     const P = ctx.paths;
     if (!existsSync(P.registerNamedBand)) return false;
@@ -1164,7 +1164,7 @@ const DISPATCH_EXTRA_BUILDERS = {
  * bug. Collapsing the two would make the bug read as an ordinary run — an absence that is not a
  * finding. The prompt says which of the two it is, and the note() still fires for the run log.
  */
-export function composeDispatchExtra(name, ctx, opts = {}) {
+export function composeDispatchExtra(name, ctx, opts = {}) {   // @internal
   const parts = [], ids = [], failed = [];
   for (const x of DISPATCH_EXTRAS) {
     if (x.stage !== name) continue;
@@ -1242,7 +1242,7 @@ const AXIS_VOCABULARY = {
 // Which production pass an --experiment arm may reproduce. "fresh" is the first full dispatch (the one
 // a preserved run's canonical artefact came from); the rest are the re-dispatch triggers runDigest
 // labels, and they carry the placement rulings tail a fresh pass does not.
-export const DISPATCH_TRIGGERS = ["fresh", "escalation", "envelope", "late-bind", "stale-repair", "settlement-flush", "corrective"];   // — the corrective pass is the seam the losses happen in; see driver/corrective-arm.mjs for warm vs cold
+export const DISPATCH_TRIGGERS = ["fresh", "escalation", "envelope", "late-bind", "stale-repair", "settlement-flush", "corrective"];   // @internal — — the corrective pass is the seam the losses happen in; see driver/corrective-arm.mjs for warm vs cold
 
 /**
  * The sha of a sandbox file AS IT WOULD READ on the canonical run — the sandbox's own directory
@@ -1344,7 +1344,7 @@ const isCoverageLedgerFail = (fail) => /invalid_file:[^:]*:coverage_(ledger|axis
  */
 // The five words whose presence in the draft narrative means the run's own reading turned on a precedent
 // or an opposition. Exported so a probe binds to it instead of retyping it (the rule).
-export const CASE_LAW_TRIGGERS = /watchlist|precedent|case[- ]law|opposition|famous mark/i;
+export const CASE_LAW_TRIGGERS = /watchlist|precedent|case[- ]law|opposition|famous mark/i;   // @internal
 
 // — CASE LAW HAS EXACTLY ONE HOME, AND THE PRODUCT DECIDES IT, NOT THE NARRATIVE.
 //
@@ -1366,7 +1366,7 @@ export const CASE_LAW_TRIGGERS = /watchlist|precedent|case[- ]law|opposition|fam
 // "a case-law question exists in territory X — a Full country search would examine it" recommendation,
 // and NO report or email sentence for it exists here: no wording enters a deliverable that the owner has
 // not agreed.
-export const CASE_LAW_PRODUCT = "full-country-search";
+export const CASE_LAW_PRODUCT = "full-country-search";   // @internal
 
 /**
  * Does the case-law grounding stage run? PRODUCT-GATED, requested-or-detected within it.
@@ -1382,7 +1382,7 @@ export const CASE_LAW_PRODUCT = "full-country-search";
  *
  * PURE; never throws.
  */
-export function decideCaseLaw({ job, narrative, policy } = {}) {
+export function decideCaseLaw({ job, narrative, policy } = {}) {   // @internal
   const requested = job?.caseLaw === true || policy?.caseLaw === true;
   const m = CASE_LAW_TRIGGERS.exec(String(narrative ?? ""));
   const detected = Boolean(m);
@@ -1411,7 +1411,7 @@ export function decideCaseLaw({ job, narrative, policy } = {}) {
 // T1 (J2): default 500→150. 500 detail-fetches cannot fit the 1500s stage wall — the old default
 // contradicted the prompt's own "a bounded WRITTEN band beats an exhaustive one killed mid-fetch" and drove
 // the 48% reopen-timeout class ( F5). 150 fits the wall with margin; env-tunable for deep closure.
-export function reopenFetchCeiling(envVal) {
+export function reopenFetchCeiling(envVal) {   // @internal
   const n = Number(envVal);
   return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 150;
 }
@@ -1426,7 +1426,7 @@ export function reopenFetchCeiling(envVal) {
 // The exact subset of the resolved profile frozen into the run sidecar (_driver/profile.json). Exported so
 // the freeze contract is unit-testable (the bug this guards: a per-customer field configured in a profile
 // but DROPPED here is silently never applied — the stages read the frozen copy, not the raw profile).
-export function freezeProfile(p, project = null) {
+export function freezeProfile(p, project = null) {   // @internal
   const frozen = {
     profileKey: p.key,
     name: p.name,
@@ -1507,7 +1507,7 @@ function canonicalJson(v) {
   if (v && typeof v === "object") return `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canonicalJson(v[k])}`).join(",")}}`;
   return JSON.stringify(v) ?? "null";
 }
-export function profileShaOf(frozen) {
+export function profileShaOf(frozen) {   // @internal
   const { profileSha: _omit, ...rest } = frozen ?? {};
   return createHash("sha256").update(canonicalJson(rest)).digest("hex");
 }
@@ -1630,7 +1630,7 @@ function attachFramework(ctx, { write = true } = {}) {
  *  list still unions in later at the gather door). Idempotent by construction, so the resume
  *  re-fold from the frozen sidecar changes nothing; sidecars frozen before recipeScope existed
  *  carry null and no-op. */
-export function foldRecipeScope(job, searchPolicy) {
+export function foldRecipeScope(job, searchPolicy) {   // @internal
   const s = searchPolicy?.recipeScope;
   if (!s || typeof s !== "object") return job;
   const nonEmpty = (a) => Array.isArray(a) && a.length > 0;
@@ -1659,7 +1659,7 @@ export function foldRecipeScope(job, searchPolicy) {
   return job;
 }
 
-export function attachSearchPolicy(ctx, job, { write = true } = {}) {
+export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @internal
   const sidecarPath = driverDir(ctx.paths.runDir, "search-policy.json");
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
@@ -1891,7 +1891,7 @@ function renderDocumentCoverageFromRecords(ctx, trigger) {
 // returns empty facts; every seat-sent uri then refuses by name (`registerdigest_uri_unknown`) on the
 // first call. So a driver fault surfaces as a loud refusal on call 1 rather than as a document of blank
 // identifier cells — the same fail-closed direction the coverage form's write order takes.
-export function writeRegisterDigestFacts(ctx, trigger) {
+export function writeRegisterDigestFacts(ctx, trigger) {   // @internal
   const P = ctx.paths;
   try {
     const records = existsSync(P.registerNamedBand)
@@ -2345,7 +2345,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
  * from the searched set, and log/note them. `plan.deferred_coverage` is [{jurisdiction, reason}].
  * Exported for test; never throws (a plan without the key is a fully-covered plan → no-op).
  */
-export function registerDeferredCoverage(ctx, plan) {
+export function registerDeferredCoverage(ctx, plan) {   // @internal
   const deferred = Array.isArray(plan?.deferred_coverage) ? plan.deferred_coverage : [];
   // A12: recorded in the CANONICAL vocabulary (UK→GB, EM/EUTM/EUIPO→EU) so the scope backstop's
   // subtraction meets extractSearchedJurisdictions on the same codes — never GB-vs-UK as two territories.
@@ -2413,7 +2413,7 @@ function mechanicalFormGapDirectives(ctx) {
  * runDigest re-arms and re-writes the form before the next dispatch, and in the window between, a stamp
  * with no form is `coverage_form_missing` — the fail-closed direction.
  */
-export function taintParkJudgmentArtifacts(P, runDir) {
+export function taintParkJudgmentArtifacts(P, runDir) {   // @internal
   const form = coverageFormPaths(runDir, coverageFormStamp(runDir).formName);
   return [P.registerFindings, P.registerCoverageLedger, form.seat, form.sidecar];
 }
@@ -2509,7 +2509,7 @@ const RECALL_FOLLOWUP_MAX = 2;
 // tell a graded product from an ungraded one, and every measurement across the change is unattributable.
 // `source` is the load-bearing field — `default-ungraded` says a product this build has no row for fell
 // back to one-country values, which otherwise looks exactly like a deliberate setting.
-export function depthLadderEvent(ctx) {
+export function depthLadderEvent(ctx) {   // @internal
   const depth = ctx?.depth ?? null;
   return {
     event: "depth-ladder",
@@ -2521,7 +2521,7 @@ export function depthLadderEvent(ctx) {
   };
 }
 
-export const recallFollowupMaxFor = (ctx) => {
+export const recallFollowupMaxFor = (ctx) => {   // @internal
   const n = ctx?.depth?.recallFollowupMax;
   return Number.isInteger(n) && n > 0 ? n : RECALL_FOLLOWUP_MAX;
 };
@@ -2971,7 +2971,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
 // `findings` is passed in rather than read here so the caller proves it has them. The previous version
 // read the file itself, from inside register-digest, which runs BEFORE synthesis authors it — so it
 // joined against `[]` and reported every record that became a finding as dropped.
-export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   // exported for its CALL-SITE test ( leg b)
+export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   // @internal — exported for its CALL-SITE test ( leg b)
   const P = ctx.paths;
   const write = (artifact) => {
     try {
@@ -3576,7 +3576,7 @@ async function runDigest(ctx, opts = {}) {
 // EXTRACTION ONLY. Same blocks, same order, same guards: A8 and the owner receipt are unconditional,
 // the rulings tail keeps `willRun && trigger !== "fresh"`. Returns `extra` UNCHANGED — by identity, so
 // a caller can tell nothing was appended — when no block fires.
-export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, extra = undefined } = {}) {
+export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, extra = undefined } = {}) {   // @internal
   const P = ctx.paths;
   let out = extra;
   // — THE COVERAGE FORM BRIEF, replacing the deferred-slice block (was A8, 2026-07-30).
@@ -3680,7 +3680,7 @@ export function digestDispatchExtra(ctx, { trigger = "fresh", willRun = true, ex
 //
 // NO DESIGNATION ⇒ NO BREACH, and that is load-bearing rather than incidental: a floor that defaulted to
 // on would manufacture the hold on every run, which is worse than the widening closes.
-export function findFloorBreaches(ledger, floorAxes) {
+export function findFloorBreaches(ledger, floorAxes) {   // @internal
   const floors = new Set((floorAxes ?? []).map((a) => String(a ?? "").trim().toLowerCase()).filter(Boolean));
   if (!floors.size) return [];
   return (ledger ?? [])
@@ -3700,7 +3700,7 @@ export function findFloorBreaches(ledger, floorAxes) {
  * through `checkSiblingJson` and fails prelim-variants with `variantmodel_missing`. Checked, because
  * "something else refuses it" is exactly the assumption that turns a swallowed error into a silent pass.
  */
-export function readFloorAxes(paths) {
+export function readFloorAxes(paths) {   // @internal
   try { return parseVariantManifestModel(readFileSync(paths.variantManifestModel, "utf8")).search_floor ?? []; }
   catch { return []; }
 }
@@ -3711,7 +3711,7 @@ export function readFloorAxes(paths) {
 // It is `deferred` only because a non-search must not be dressed as a clean — it is NOT floor work left
 // open. Keyed on the self-digest scope (deterministic, skill-dictated), never a genuine floor's
 // substantive scope, so a real open floor can never be swept out.
-export function isInactiveAxisRow(r) {
+export function isInactiveAxisRow(r) {   // @internal
   return /\bnot[\s-]?applicable\b/i.test(String(r?.unit ?? r?.scope ?? ""));
 }
 
@@ -3727,7 +3727,7 @@ export function isInactiveAxisRow(r) {
 //
 // The breach line names WHY it is disclosed, because "unit X" on a disclosure a client reads is not a
 // finding — it is a word.
-export function computeOpenFloors(ledger, floorAxes) {
+export function computeOpenFloors(ledger, floorAxes) {   // @internal
   return (ledger ?? []).filter((r) => r.status === "deferred" && !isInactiveAxisRow(r)).map((r) => r.unit)
     .concat(findFloorBreaches(ledger, floorAxes)
       .map((b) => `${b.unit} (labelled coverage-limited — search-floor work on a designated axis, without a found/not-found result)`));
@@ -3741,7 +3741,7 @@ export function computeOpenFloors(ledger, floorAxes) {
 // must reach the in-flight run: before matter-frame consumes the job ⇒ fold normally; after matter-frame
 // but before the narrative exists ⇒ exclusion is a FILTER — re-classify at (re-)digest, never re-run
 // searches; after the narrative exists ⇒ too late to bind silently — the answer ships as a delivery note.
-export function lateBindAction({ matterFrameRan, digestRan, narrativeExists }) {
+export function lateBindAction({ matterFrameRan, digestRan, narrativeExists }) {   // @internal
   if (narrativeExists) return "front-matter-note";
   if (digestRan) return "warm-redigest";
   if (matterFrameRan) return "digest-message";
@@ -3757,7 +3757,7 @@ export function lateBindAction({ matterFrameRan, digestRan, narrativeExists }) {
 // can log them and leave them standing. They are NOT resolved, NOT relabelled and NOT quietly dropped:
 // a held row stays `deferred`, keeps its open-floor status, and ships disclosed with its mechanical
 // cause. The coverage floor's right to refuse a clean verdict over that slice is exactly the point.
-export function envelopeDecision({ deferredAxes, deadline, now, estCloseSec, heldAxes = [] }) {
+export function envelopeDecision({ deferredAxes, deadline, now, estCloseSec, heldAxes = [] }) {   // @internal
   const held = [...new Set((heldAxes ?? []).map((a) => String(a)))];
   const closeable = (deferredAxes ?? []).filter((a) => !held.includes(String(a)));
   const heldNote = held.length
@@ -3784,7 +3784,7 @@ export function envelopeDecision({ deferredAxes, deadline, now, estCloseSec, hel
  * deferred end to end. The AUTHORITY half of the capability-gap split; prose only ever narrows inside
  * an axis this set already names. PURE.
  */
-export function capabilityGapAxes(plan, receipt) {
+export function capabilityGapAxes(plan, receipt) {   // @internal
   const axisOf = new Map((plan?.entries ?? []).map((e) => [String(e?.qid ?? ""), String(e?.axis ?? "").toLowerCase()]));
   const out = new Set();
   for (const d of receipt?.deferred ?? []) {
@@ -3862,7 +3862,7 @@ function forceFromActive(ctx, name) {
 // warm-resume a session no engine ever opened. A code-side winner therefore recovers its TRUE model (the
 // telemetry stays honest in the skip event) with key:null — the same "resumed-past axis" contract
 // runSaturationProbeCodeSide already declares (null unitKey ⇒ escalation/envelope use their code/fresh lanes).
-export function recoverWinningAttempt(runDir, label) {
+export function recoverWinningAttempt(runDir, label) {   // @internal
   try {
     const lines = readFileSync(driverDir(runDir, `${label}.jsonl`), "utf8").trim().split("\n");
     for (let i = lines.length - 1; i >= 0; i--) {
@@ -3891,7 +3891,7 @@ export function recoverWinningAttempt(runDir, label) {
 // Returns the stageOnce result shape. sessionKey is ALWAYS null: there is no live session to
 // warm-resume, so the escalation/envelope arms and the plan-join treat the axis as resumed-past and use
 // their code/fresh lanes (they already must — resumed-past axes have had a null unitKey since).
-export async function runSaturationProbeCodeSide(ctx, planExec) {
+export async function runSaturationProbeCodeSide(ctx, planExec) {   // @internal
   const P = ctx.paths;
   const a = "saturation-probe";
   const label = `register-unit:${a}`;
@@ -4917,7 +4917,7 @@ async function runBatched(items, limit, fn) {
 // Pure text→text so the extraction tests offline; "" when the heading is absent (a legacy or
 // register-less run costs the dispatch nothing). Capped so a crowded band's rulings cannot balloon
 // a followup dispatch — the cut lands on a line boundary and says so, never a silent mid-row chop.
-export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {
+export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {   // @internal
   const text = String(placementMd ?? "");
   const m = text.match(/^#{2,4}\s*Coverage rulings\b.*$/im);
   if (!m) return "";
@@ -4952,7 +4952,7 @@ export function extractRulingsTail(placementMd, { cap = 8000 } = {}) {
  * Composed from the same function the fresh dispatch uses, so the two are the same string rather than
  * two texts that agree today.
  */
-export function stageCharter(stageName, depth, framework = null) {
+export function stageCharter(stageName, depth, framework = null) {   // @internal
   // THE BAND ORDER RIDES THE CHARTER, because rule 2 names the run's own band labels and a warm dispatch
   // that composed them from nothing would send a DIFFERENT directive to the same seat — which is the
   // whole failure this helper exists to prevent, reintroduced one argument down.
@@ -4971,7 +4971,7 @@ export function stageCharter(stageName, depth, framework = null) {
  * A re-emission that is not told the rung is not a repair of the rung's output. It is a fresh write
  * under the default contract, wearing the corrective pass's name.
  */
-export function correctionsExtra(P, depth = null, framework = null) {
+export function correctionsExtra(P, depth = null, framework = null) {   // @internal
   const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
   const rulingsTail = extractRulingsTail(existsSync(P.placement) ? readFileSync(P.placement, "utf8") : "");
   // — THE FLAGS ARRIVE AS A TYPED WORKLIST, not only as a wall of prose. The reviewer already
@@ -5039,7 +5039,7 @@ export function correctionsExtra(P, depth = null, framework = null) {
 // means: a receipt exists AND the review + narrative bytes are exactly the ones the completed cycle
 // left behind (both non-null — an absent file is never "settled"). Either file moving re-arms the
 // cycle: a recomputed narrative or a fresh review is new work, never a replay.
-export function correctiveCycleSettledDecision(receipt, current) {
+export function correctiveCycleSettledDecision(receipt, current) {   // @internal
   return Boolean(receipt?.shas
     && receipt.shas.review != null && receipt.shas.review === current?.review
     && receipt.shas.narrative != null && receipt.shas.narrative === current?.narrative);
@@ -5074,7 +5074,7 @@ export function correctiveCycleSettledDecision(receipt, current) {
  * Logged rather than thrown: the freshness module is best-effort by contract, and killing a run over
  * bookkeeping would trade a cheap park for a dead one.
  */
-export function settleOneShotStamp(runDir, label, files, why) {
+export function settleOneShotStamp(runDir, label, files, why) {   // @internal
   const changed = [], missed = [];
   for (const f of files.filter(Boolean)) {
     const r = restampStage(runDir, label, f, { project: projectStageInput });
@@ -5126,7 +5126,7 @@ export function settleOneShotStamp(runDir, label, files, why) {
 // artifact is blessed past a live consumer. And it narrows what is COMPARED, never what is DECLARED —
 // narrowing the declaration would let a card be repaired ahead of its stale upstream, which is the one
 // thing item 15a exists to prevent, and dependency-repair.test.mjs pins that edge.
-export function projectStageInput(label, absPath) {
+export function projectStageInput(label, absPath) {   // @internal
   if (typeof label !== "string" || !label.startsWith("report-card:")) return null;
   if (basename(String(absPath ?? "")) !== "findings.json") return null;
   const ord = Number(label.slice("report-card:".length));
@@ -5157,7 +5157,7 @@ export function projectStageInput(label, absPath) {
 // document at its canonical path — the surviving copy is the preserved best draft — so that is read
 // too, and `source` says which, since a best draft is the model's last work and not necessarily its
 // final one. Best-effort throughout: an audit that cannot be written must never cost a run.
-export function connotationAuditSeats(P, runDir) {
+export function connotationAuditSeats(P, runDir) {   // @internal
   const seats = [];
   // B — the audit reads the ACCUMULATORS in `_driver/` (formSidecarPath), the same copies the gate
   // judges. The seat-facing mirrors this used to read died with the form path; reading a path nothing
@@ -5186,7 +5186,7 @@ export function connotationAuditSeats(P, runDir) {
 // numbers it produces were not, so the whole point — that the audit READS the verdict ledger — was
 // asserted only in the pure functions it calls. A wiring that never runs in a test is a wiring nobody has
 // seen work.
-export function recordConnotationAudit(run, P) {
+export function recordConnotationAudit(run, P) {   // @internal
   try {
     const seats = [];
     let didNotBind = 0, neverAddressed = 0, quotesUnbound = 0, recordedQueries = 0;
@@ -5620,8 +5620,8 @@ const UPSTREAM_STALE_REPAIR = {
   // settleOneShotStamp above, not a re-run.
 };
 
-export const DELIVERY_TAIL_LABEL_RE = /^(report-overview|report-card:.+)$/;
-export function partitionDeliveryStale(staleStages) {
+export const DELIVERY_TAIL_LABEL_RE = /^(report-overview|report-card:.+)$/;   // @internal
+export function partitionDeliveryStale(staleStages) {   // @internal
   const tail = [], upstream = [];
   for (const s of staleStages ?? []) (DELIVERY_TAIL_LABEL_RE.test(String(s?.label ?? "")) ? tail : upstream).push(s);
   return { tail, upstream };
@@ -5684,7 +5684,7 @@ function snapshotFindingsForCorrections(P, runDir) {
  *
  * Returns the rollback record, or null to mean "this one still throws".
  */
-export function rollbackCorrectivePass(P, runDir, pre, fail) {
+export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
   if (fail?.fail === "rate_limited" || fail?.resetsAt) return null;
   if (!pre?.raw) return null;
   let now = null;
@@ -5737,7 +5737,7 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {
  *
  * @returns {null | {restoredFindings: {ordinal: *, mark: *}[], restoredKeys: string[], leftRemoved: {ordinal: *, mark: *}[]}}
  */
-export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks) {
+export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks) {   // @internal
   if (!pre?.raw) return null;                                   // nothing held — nothing to compare against
   let preDoc = null, postDoc = null, postRaw = null;
   try { preDoc = JSON.parse(pre.raw); } catch { return null; }
@@ -5803,7 +5803,7 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks)
  * "" WHEN NOTHING WAS RESTORED, which is every ordinary run: `lines()` drops an empty string, so the
  * dispatch is byte-identical to the one before this existed unless the repair actually fired.
  */
-export function restoredFindingsTable(repair) {
+export function restoredFindingsTable(repair) {   // @internal
   const rows = repair?.restoredFindings ?? [];
   if (!rows.length) return "";
   return [
@@ -5928,7 +5928,7 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
 // authority (stages.mjs also lists them as inputs) but the rows are already here, so nothing has to
 // be re-derived to answer the escalation question. Best-effort by construction: the skeptic is
 // non-fatal and a missing block only returns it to the prose it reads anyway.
-export function skepticDeferralExtra(ctx) {
+export function skepticDeferralExtra(ctx) {   // @internal
   const P = ctx.paths;
   try {
     const rows = loadCoverageLedger(P.runDir).rows;
@@ -6170,7 +6170,7 @@ function sentinel(runDir, name, obj) {
  * Best-effort throughout: a failure to settle must never stop the archive, because a run that cannot
  * archive is a much larger problem than a job with no row.
  */
-export function settlePendingWhatIfsBeforeArchive(run) {
+export function settlePendingWhatIfsBeforeArchive(run) {   // @internal
   let pending = [];
   // NOT a silent catch. This function exists because a job went unanswered with no row anywhere; a
   // failure to enumerate that returned quietly would reproduce exactly that, one level up, and the
@@ -6340,7 +6340,7 @@ function inScopeClassList(job, profile) {
 // account's default territories: the register plan swept seven countries for a search sold as
 // everywhere, and nothing anywhere disagreed. An empty list is the worldwide answer downstream
 // (register-plan.mjs treats emptiness as unrestricted), so the fix is the ladder, not a special case.
-export function registerJurisdictions(job, profile) {
+export function registerJurisdictions(job, profile) {   // @internal
   const list = resolveTerritories(job, profile).jurisdictions;
   return [...new Set((Array.isArray(list) ? list : []).map((x) => String(x ?? "").trim()).filter(Boolean))];
 }
@@ -6360,7 +6360,7 @@ export function registerJurisdictions(job, profile) {
 // every downstream message builder. Section missing on a fresh run ⇒ ONE warm save-only followup
 // (the grid-ledger-followup posture), then proceed with [] + a logged note — never-kill, replay-safe
 // (archived runs simply have no sidecar and all consumers falsy-skip).
-export function parseIntakeAsks(matterContextMd) {
+export function parseIntakeAsks(matterContextMd) {   // @internal
   const m = String(matterContextMd ?? "").match(/^###\s*Intake asks\s*\n([\s\S]*?)(?=^#{1,3}\s|$(?![\s\S]))/im);
   if (!m) return null;                                        // section absent (legacy / model miss)
   const asks = [];
@@ -6528,7 +6528,7 @@ const DEFERRAL_AREA_ITEM_BUDGET = 48;      // characters after "Follow-up / " �
 /** Cut `s` to at most `max` characters at a WORD boundary, marking the cut with an explicit "…".
  *  Trailing punctuation and whitespace are trimmed before the ellipsis so no heading ends "monitoring …"
  *  or with a dangling bracket. Returns `s` unchanged when it already fits. PURE. */
-export function clipToWord(s, max) {
+export function clipToWord(s, max) {   // @internal
   const t = String(s ?? "").trim();
   if (t.length <= max) return t;
   const cut = t.slice(0, max);
@@ -6539,7 +6539,7 @@ export function clipToWord(s, max) {
 
 /** — ONE deferral's reader-visible coverage row. Exported so the shape a client reads is testable
  *  without a run directory: injectDeferralCoverage below is the file-I/O wrapper around this. PURE. */
-export function deferralCoverageRow(directive, reason) {
+export function deferralCoverageRow(directive, reason) {   // @internal
   const full = plainDirective(directive);
   return {
     area: `Follow-up / ${clipToWord(full, DEFERRAL_AREA_ITEM_BUDGET)}`,
@@ -6625,7 +6625,7 @@ function coverageRowAreaFrom(axis, unit, unitText, scopeless) {
   return u.toLowerCase() === a.toLowerCase() ? `${unitText} ${scopeless}` : unitText;
 }
 
-export function coverageRowArea(axis, unit) {
+export function coverageRowArea(axis, unit) {   // @internal
   return coverageRowAreaFrom(axis, unit, String(unit ?? "").trim(), "(entire axis)");
 }
 
@@ -6634,14 +6634,14 @@ export function coverageRowArea(axis, unit) {
 // nothing downstream has to recognise an axis token inside a string it was handed — which is the
 // mechanism that ate the mark AXIS. null when the identifier is already plain English: three
 // driver injectors write areas like "Follow-up / …", and a label repeating them would be noise.
-export function coverageRowAreaLabel(axis, unit) {
+export function coverageRowAreaLabel(axis, unit) {   // @internal
   const u = String(unit ?? "").trim();
   const labelled = coverageUnitLabel(u);
   if (!u || labelled === u) return null;
   return coverageRowAreaFrom(axis, unit, labelled, "(all of it)");
 }
 
-export function coverageJudgmentRows(ledgerRows, planExecution) {
+export function coverageJudgmentRows(ledgerRows, planExecution) {   // @internal
   const open = [];
   for (const r of ledgerRows ?? []) {
     if (!r || String(r.status ?? "").toLowerCase() === "confirmed-clean") continue;
@@ -6671,7 +6671,7 @@ export function coverageJudgmentRows(ledgerRows, planExecution) {
   return rows.filter((r) => r.area && r.note);
 }
 
-export function stampCoverageJudgmentRows(P, runDir, note, ctx) {
+export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     const doc = JSON.parse(readFileSync(P.findings, "utf8"));
@@ -6770,8 +6770,8 @@ function injectDeferralCoverage(P, runDir, note) {
 // The remedy now comes from products.mjs (NATIVE_LANGUAGE_REMEDY), which is where the offering's names
 // live and the one place that moves when the offering does. "at this level" goes with it: there is no
 // ladder for a level to sit on, and the honest subject is the search the client bought.
-export const ZH_SCOPE_COVERAGE_AREA = "Chinese-script register equivalents (CN / HK / TW / MO)";
-export const ZH_SCOPE_COVERAGE_NOTE = `Chinese-script same-meaning/phonetic register equivalents not searched on this search — ${NATIVE_LANGUAGE_REMEDY}`;
+export const ZH_SCOPE_COVERAGE_AREA = "Chinese-script register equivalents (CN / HK / TW / MO)";   // @internal
+export const ZH_SCOPE_COVERAGE_NOTE = `Chinese-script same-meaning/phonetic register equivalents not searched on this search — ${NATIVE_LANGUAGE_REMEDY}`;   // @internal
 const WORLDWIDE_SCOPE_RE = /^(worldwide|global|all|all[- ]jurisdictions)$/i;
 /** What a synthesis-authored Stage-1.5 coverage row looks like when it has ALREADY made this
  *  disclosure — see the suppression in injectScriptScopeCoverage. Both the current vocabulary and the
@@ -6781,7 +6781,7 @@ const SCRIPT_SCOPE_RECOMMENDATION_TOKENS = Object.freeze(["native-language inves
 /** The disclosure vocabulary for ONE candidate lane, derived (never tabulated). Returns
  *  `{area, note, territories, marker}` — `marker` is the lowercased script prefix the suppression
  *  check keys on. Null for a lane with no LANGUAGE_LANES spec or no territory routed to it. PURE. */
-export function scriptScopeDisclosure(lane) {
+export function scriptScopeDisclosure(lane) {   // @internal
   const spec = LANGUAGE_LANES[lane];
   if (!spec) return null;
   const prefix = String(spec.label ?? "").replace(/\s*deepening\s*$/i, "").trim();   // "Chinese-script"
@@ -6801,7 +6801,7 @@ export function scriptScopeDisclosure(lane) {
  *  `laneDepthOff`: customer config always wins (the golden rule) — a customer who configured
  *  jxPolicy.laneDepth.zh "off" has already declined the lane; re-advertising it on every report
  *  would nag against their own config. */
-export function decideScriptScopeHonesty({ lane = "zh", scope = [], laneRan = false, laneDepthOff = false } = {}) {
+export function decideScriptScopeHonesty({ lane = "zh", scope = [], laneRan = false, laneDepthOff = false } = {}) {   // @internal
   if (laneRan || laneDepthOff) return null;
   const d = scriptScopeDisclosure(lane);
   if (!d) return null;
@@ -6817,7 +6817,7 @@ export function decideScriptScopeHonesty({ lane = "zh", scope = [], laneRan = fa
 
 /** The zh-bound form, kept because it is the name the existing callers and tests use. Delegates —
  *  there is one decision, not two. PURE. */
-export function decideZhScopeHonesty(opts = {}) {
+export function decideZhScopeHonesty(opts = {}) {   // @internal
   return decideScriptScopeHonesty({ ...opts, lane: "zh" });
 }
 
@@ -6838,7 +6838,7 @@ export function decideZhScopeHonesty(opts = {}) {
  *  run whose units never executed; keeping a leg on a variable nothing sets any more would read false
  *  forever and tell every client the lane did not run, including the runs where it did. So the legs
  *  track the switches that SURVIVE, which is what "mirrors the jx-units gating legs" has to mean. */
-export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = process.env } = {}) {
+export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = process.env } = {}) {   // @internal
   if (!searchPolicy?.components?.jxLanes) return false;
   if (!laneArmed(lane, env)) return false;   // — the shared fail-open reader
   let sidecar = null;
@@ -6872,7 +6872,7 @@ export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = pr
 }
 
 /** The zh-bound form, kept for the existing callers and tests. PURE apart from the sidecar read. */
-export function zhLaneRanOnRun(runDir, opts = {}) {
+export function zhLaneRanOnRun(runDir, opts = {}) {   // @internal
   return scriptLaneRanOnRun(runDir, "zh", opts);
 }
 
@@ -6880,7 +6880,7 @@ export function zhLaneRanOnRun(runDir, opts = {}) {
  *  discipline, same "the reader always gets the row" purpose. Idempotent on resume: the row is keyed
  *  by its area, and a coverage row that already discloses the Stage-1.5 recommendation (a synthesis
  *  that weighed it in on a re-run) suppresses the injection rather than duplicating it. */
-export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null, job = null, profile = null, env = process.env, lanes = Object.keys(LANGUAGE_LANES) } = {}) {
+export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null, job = null, profile = null, env = process.env, lanes = Object.keys(LANGUAGE_LANES) } = {}) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     const scope = jxScopeJurisdictions(job ?? {}, profile ?? {});
@@ -6929,7 +6929,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
 }
 
 /** The zh-only form, kept because it is the name the existing tests use. One writer, one lane. */
-export function injectZhScopeCoverage(P, runDir, note, opts = {}) {
+export function injectZhScopeCoverage(P, runDir, note, opts = {}) {   // @internal
   return injectScriptScopeCoverage(P, runDir, note, { ...opts, lanes: ["zh"] });
 }
 
@@ -6951,7 +6951,7 @@ export function injectZhScopeCoverage(P, runDir, note, opts = {}) {
  *  must not manufacture a disclosure either).
  *
  *  Same posture as its two siblings: never-kill, re-validate, atomic write, idempotent by area. */
-export function injectLaneDepthCoverage(P, runDir, note) {
+export function injectLaneDepthCoverage(P, runDir, note) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     let sidecar = null;
@@ -6996,7 +6996,7 @@ export function injectLaneDepthCoverage(P, runDir, note) {
 // crash between the gate and delivery. This reader prefers the in-process ctx rows (this session
 // produced them); the sidecar is the resume shape — a pass that reaches the coverage floor without
 // having re-entered the gate still owes the clamp. Exported for the unit tests.
-export function loadScreenGateUnresolved(runDir, ctx = {}) {
+export function loadScreenGateUnresolved(runDir, ctx = {}) {   // @internal
   if (Array.isArray(ctx.screenGateUnresolved) && ctx.screenGateUnresolved.length) return ctx.screenGateUnresolved;
   try {
     const rows = JSON.parse(readFileSync(driverDir(runDir, "screen-gate-unresolved.json"), "utf8"))?.unresolved;
@@ -7011,7 +7011,7 @@ export function loadScreenGateUnresolved(runDir, ctx = {}) {
  *  screenGateGap arm reading the same ctx/sidecar set. This function only makes that disclosure
  *  legible on the report. Idempotent by mark+uri (the area string carries both), so a resume or a
  *  second injection pass never duplicates a row. Exported for the unit tests. */
-export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {
+export function injectScreenGateCoverage(P, runDir, note, ctx = {}) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     const unresolved = loadScreenGateUnresolved(runDir, ctx);
@@ -7157,14 +7157,14 @@ const softNorm = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "")
  * So the guard that catches the next one walks THIS list against what actually reaches a seat, and a
  * section joins the list by the same act that makes it code-built: its builder returning one of these.
  */
-export const CODE_BUILT_SECTIONS = Object.freeze({
+export const CODE_BUILT_SECTIONS = Object.freeze({   // @internal
   onlyYou: "### Only you can close these",
   reviewerOpenPoints: "### Reviewer's open questions",
   askAnswers: "### Answers to your instructions",
   reasonedNegatives: "# Reasoned negatives",
 });
 
-export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), withinDays = 60, graceDays = 14 } = {}) {
+export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), withinDays = 60, graceDays = 14 } = {}) {   // @internal
   const { conditionActions, advisoryActions } = deriveActionConditions(actions, findings);
   // ── PR-3 (report voice), CORRECTED BY — WHAT THE SUBJECT JOIN DOES AND DOES NOT GUARANTEE ───
   //
@@ -7366,7 +7366,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // impossible, and rendering nothing would ship a report whose body reads as reviewed while the reviewer
 // refused. Silence is the one thing the section exists to prevent. The wording is the sidecar's own,
 // already carried at the degenerate branch above — one sentence for one fact, in both places.
-export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {
+export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {   // @internal
   const blocking = parseVerdict(reviewMd) === "BLOCKING";
   const cited = blocking ? parseCorrections(reviewMd) : [];
   const unfixed = unresolvedFlags(appliedRows);
@@ -7447,7 +7447,7 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {
 // the lint judges), so the answer the client reads and the answer the lint verifies are one record.
 // Frozen-intake order leads (the requester's own sequence); answers that join no frozen ask follow in
 // register order (an answer synthesis chose to give is never dropped). Returns "" when no answers.
-export function buildAskAnswersSection(askAnswers, intakeAsks) {
+export function buildAskAnswersSection(askAnswers, intakeAsks) {   // @internal
   const entries = (Array.isArray(askAnswers) ? askAnswers : [])
     .filter((a) => a && typeof a.ask === "string" && a.ask.trim() && typeof a.answer === "string" && a.answer.trim());
   if (!entries.length) return "";
@@ -7539,7 +7539,7 @@ export function buildAskAnswersSection(askAnswers, intakeAsks) {
  * This section itself is untouched by the ladder: the grouping is not extended and not re-keyed. 's
  * graded entries render in a SIBLING section (buildGradedEntriesSection) using the same line grammar.
  */
-export function buildReasonedNegativesSection(findings) {
+export function buildReasonedNegativesSection(findings) {   // @internal
   const { total, groups } = reasonedNegativeGroups(findings ?? []);
   // ZERO IS NOT ABSENCE — the same rule the HTML section states. A run that grouped and found none says
   // so, so a reader never has to guess whether there were no negatives or the grouping never ran.
@@ -7560,7 +7560,7 @@ export function buildReasonedNegativesSection(findings) {
   return `${CODE_BUILT_SECTIONS.reasonedNegatives}\n\n${lines.join("\n\n")}`;
 }
 
-export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRight = false } = {}) {
+export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRight = false } = {}) {   // @internal
   const overviewRaw = existsSync(P.reportOverview) ? readFileSync(P.reportOverview, "utf8") : "---\n---\n";
   let overview = overviewRaw.split(/^#\s+Marks\b/m)[0].replace(/\s*$/, "");   // defensive: overview owns down to # Marks
   // PR-9 (Levels) — the caption budget, enforced at assembly: overall_caption clipped at 3 sentences,
@@ -7778,7 +7778,7 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
 // Mechanics live in slot-lock.mjs (shared with the WS-C turn cap): pid:nonce tokens, ATOMIC stale
 // reclaim, ownership-verified release — the old read-then-rm reclaim had a TOCTOU two concurrent
 // acquirers (legal under cap 3) could use to end up sharing a slot. Returns a handle {slot, token}.
-export async function acquireRunSlot(agent = null) {
+export async function acquireRunSlot(agent = null) {   // @internal
   // — one read, through the config getter. This line used to read `process.env`
   // first and fall through `config.maxConcurrentRuns || 1`, which READ as a third default and could
   // never produce one: the getter it fell through returns either a number >= 1 or NaN, and NaN is
@@ -7830,7 +7830,7 @@ function reconcilePassStamps(runRef, ctx) {
 // — the live slot, exposed so the CLI's unsettled-run net can release it. `pipeline`'s own
 // `finally` is the normal path and is unchanged; this is only reachable when that finally never runs,
 // which is exactly the case a deadlock produces.
-export let liveRunSlot = null;
+export let liveRunSlot = null;   // @internal
 
 /**
  * — WHY THIS RESUME MUST NOT HAPPEN, OR null.
@@ -7849,7 +7849,7 @@ export let liveRunSlot = null;
  * delivery markers it found, and it refuses for a different reason (a duplicate report, not a
  * countermanded decision). Two refusals, two messages a reader can act on.
  */
-export function resumeStopRefusal(runDir) {
+export function resumeStopRefusal(runDir) {   // @internal
   if (!runDir) return null;
   if (isCancelled(runDir)) return "an operator asked it to stop (.cancel present)";
   // ── CANCELLED ONLY, AND THE FIRST CUT OF THIS WAS WRONG ────────────────────────────────────────
@@ -7961,7 +7961,7 @@ export function stageWallFields(tDispatch, tSettled = Date.now()) {
   };
 }
 
-export function journalStageInputs(paths = [], { reads = null, readsTruncated = null, warm = false } = {}) {
+export function journalStageInputs(paths = [], { reads = null, readsTruncated = null, warm = false } = {}) {   // @internal
   const readSet = Array.isArray(reads) ? new Set(reads) : null;
   // A-1 — `followup` was an arm of this predicate and is not any more. It encoded the same false premise
   // the composer above fixes: that a followup is a resumed session whose files were not re-offered. It is
@@ -7999,7 +7999,7 @@ export function journalStageInputs(paths = [], { reads = null, readsTruncated = 
 // run) — they are append-only and the LAST row is the run's outcome; the earlier ones are the honest record
 // of how long each leg took. HOURS ONLY: the tokens-only directive holds and no currency appears here.
 // Best-effort telemetry — this must never affect a delivery, a failure notice or a park.
-export function logTurnaroundReconciliation(runDir, quote, state) {
+export function logTurnaroundReconciliation(runDir, quote, state) {   // @internal
   if (!runDir) return null;
   try {
     let startedAt = null;
@@ -15192,7 +15192,7 @@ function resolveRun(job, opts) {
 
 // Rebuild the ctx a single stage needs WITHOUT re-running upstream: axes from the persisted manifest, verdict
 // from status.json, publishedUrl from .published. (Mirrors what pipeline() accumulates mid-run.)
-export function reconstructCtx(job, opts) {
+export function reconstructCtx(job, opts) {   // @internal
   const run = resolveRun(job, opts);
   const P = paths(run.runDir);
   // A KNOCKOUT run has none of the clearance stages this tooling drives — and letting it through would
@@ -15343,7 +15343,7 @@ function snapshotOutputs(ctx, name, reason) {
 //
 // Returns null when there is nothing recorded to repair — the caller then resumes as it always has, so
 // this is an accelerator that can never become a requirement.
-export async function repairStale(job, opts = {}) {
+export async function repairStale(job, opts = {}) {   // @internal
   const ctx = reconstructCtx(job, opts);
   const P = ctx.paths;
   let rec = null;
@@ -15396,9 +15396,9 @@ export async function repairStale(job, opts = {}) {
  * built and an arm that legitimately holds no tools are opposite facts, and `{groups: []}` for both
  * would be the same absence-read-as-pass the rest of this file spends its comments on.
  */
-export const dispatchLabel = (name, axis) => name + (axis ? `:${axis}` : "");
+export const dispatchLabel = (name, axis) => name + (axis ? `:${axis}` : "");   // @internal
 
-export function experimentWiring(name, axis, { sessionKey, agent, runDir } = {}) {
+export function experimentWiring(name, axis, { sessionKey, agent, runDir } = {}) {   // @internal
   const label = dispatchLabel(name, axis);
   let groups;
   try { groups = experimentToolGroups(label); }
@@ -15450,7 +15450,7 @@ function experimentEngineName() {
  * The cap is deliberately far above any real number of concurrent draws, because this lock exists to be
  * SEEN and never to ration. A draw that blocked here would be a new failure mode in place of an old one.
  */
-export async function runExperiment(job, opts) {
+export async function runExperiment(job, opts) {   // @internal
   const lock = await acquireSlot({ dir: config.runLockDir, cap: 1024, prefix: "draw" });
   try {
     return await runExperimentInner(job, opts);
@@ -15765,7 +15765,7 @@ const RETIRED_FLAGS = {
 };
 
 // The refusal for the first retired flag in argv, or null. Pure: the CLI block prints it and exits 2.
-export function retiredFlagRefusal(argv) {
+export function retiredFlagRefusal(argv) {   // @internal
   for (const arg of argv) if (Object.hasOwn(RETIRED_FLAGS, arg)) return `error: ${arg} was deleted — ${RETIRED_FLAGS[arg]}`;
   return null;
 }
@@ -15832,7 +15832,7 @@ export function retiredEnvWarnings(env = process.env) {
 //
 // ABSOLUTE PATHS on purpose: this line is read hours later, possibly from a different directory, and a
 // relative path that silently resolves somewhere else would be a worse answer than no line at all.
-export function resumeCommand({ script, jobPath, codename, agent = null }) {
+export function resumeCommand({ script, jobPath, codename, agent = null }) {   // @internal
   if (!script || !jobPath || !codename) return null;
   return `node ${script} --job ${jobPath}${agent ? ` --agent ${agent}` : ""} --resume ${codename}`;
 }
@@ -15851,7 +15851,7 @@ export function resumeCommand({ script, jobPath, codename, agent = null }) {
 // And where NO identity exists yet (the door preflights: tier sanity, engine binary, register credential,
 // an unresolvable resume codename), the honest line says there is nothing to resume rather than printing a
 // command with a hole in it.
-export function resumeAdvice({ result = null, error = null, signal = null, script = null, jobPath = null, agent = null, codename = null, experiment = false, noResume = false } = {}) {
+export function resumeAdvice({ result = null, error = null, signal = null, script = null, jobPath = null, agent = null, codename = null, experiment = false, noResume = false } = {}) {   // @internal
   if (result?.ok) return [];
   if (experiment) return [];
   if (noResume || error?.noResume) return [];
