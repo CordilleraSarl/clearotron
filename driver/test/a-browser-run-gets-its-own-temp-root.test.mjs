@@ -113,7 +113,7 @@ test("the group is signalled BEFORE any root is removed", () => {
   // worse than none — it teaches a reader to re-run rather than to look. So this reads the order the
   // handler is WRITTEN in, which is the decision the comment beside it argues for.
   //
-  // It was added because the ordering was reversed as a plant and every other arm here still passed.
+  // It was added because reversing the order deliberately left every other arm in this file passing.
   const src = readFileSync(join(ROOT, "shared/reap-on-exit.mjs"), "utf8");
   const body = src.slice(src.indexOf("function reapAll()"), src.indexOf("function install()"));
   assert.ok(body.length > 0, "reapAll must still be the function that does both");
