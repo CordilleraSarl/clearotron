@@ -24,6 +24,7 @@ import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
 
 type Saved = { readonly at: number; readonly sha: string | null }
 
@@ -107,7 +108,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
         <div className="notice">
           <b>Choose a brand owner first</b>
           <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            A profile belongs to one brand owner. Pick one at the top left.
+            A profile belongs to one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}
           </p>
         </div>
       </div>
@@ -263,12 +264,31 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           >
             Save
           </button>
-          <span style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
+        {/* THE REASON WAS ALREADY HERE AND IT DID NOT LAND. An outside user hit the disabled Save and
+            wrote that they could not click save and found it frustrating — with this sentence already
+            on screen beside the button, in muted twelve-point, in the same treatment as the state that
+            reports nothing is wrong.
+
+            So this is not a missing string, it is a blocking condition dressed as an aside. Only one of
+            the three states stops the reader: nothing edited is not a problem, and checked-and-ready is
+            good news. Dirty-and-unchecked is the one where the button they are reaching for will not
+            respond, and it is the one that now carries weight and colour. The other two stay quiet,
+            because making all three loud is the same as making none of them loud.
+
+            Verb first, too. "Check first" describes the situation; "Press Check" is the thing to do, and
+            the control it names is the one sitting immediately to the left. */}
+          <span
+            style={
+              dirty && !checked
+                ? { fontSize: 13, color: 'var(--tone-medium)', fontWeight: 600 }
+                : { fontSize: 12.5, color: 'var(--text-muted)' }
+            }
+          >
             {!dirty
               ? 'No changes.'
               : checked
                 ? 'Checked — safe to save.'
-                : 'Check first. A profile the engine cannot read stops this account searching.'}
+                : 'Press Check before saving. A profile the engine cannot read stops this account searching.'}
           </span>
         </div>
       </div>
@@ -420,14 +440,23 @@ function FrameworkBlock({
         )}
       </div>
 
+      {/* THE ROW NEEDS TO SAY WHAT IT IS A ROW OF. Unlabelled, four coloured pills under a heading
+          reading "Risk framework in force" are four things under a heading about frameworks, and an
+          outside user read them exactly that way: "how do I have FOUR risk frameworks live at the same
+          time?" He had one. Four words fix it, and they have to name the framework's OWNERSHIP of the
+          scale — "its ratings", not "ratings" — because the sentence directly above names the framework
+          and the ambiguity is whether these belong to it or sit beside it. */}
       {bands.length ? (
-        <div className="fw-ladder">
-          {bands.map((b, i) => {
-            const band = rec(b)
-            const label = str(band?.['label'])
-            return label ? <BandPill key={i} label={label} tone={band?.['tone']} /> : null
-          })}
-        </div>
+        <>
+          <div className="fw-ladder-label">Its ratings, strongest concern first:</div>
+          <div className="fw-ladder">
+            {bands.map((b, i) => {
+              const band = rec(b)
+              const label = str(band?.['label'])
+              return label ? <BandPill key={i} label={label} tone={band?.['tone']} /> : null
+            })}
+          </div>
+        </>
       ) : null}
 
       {/* The decks are Privileged & Confidential, so every line lifted from one is data-anon="mark" —
@@ -642,7 +671,7 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
     case 'conflict':
       return { title: 'Someone else changed this first', lines: [r.message ?? 'Reload and reapply your change.'] }
     case 'notFound':
-      return { title: 'That is not available to you', lines: ['Check the brand owner selected at the top left.'] }
+      return { title: 'That is not available to you', lines: ['Check which brand owner is selected.'] }
     // SPLIT FROM `notFound`. They are different answers and only one of them has
     // anything to do with the selector. `notFound` may well BE the wrong brand owner, so that advice is
     // right there. `noAccess` is the door refusing the identity itself — reachable only for door checks,
