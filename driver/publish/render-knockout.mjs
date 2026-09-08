@@ -45,7 +45,7 @@ import {
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
-import { knockoutFindingViews } from '../findings-model.mjs';
+import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
 import { demoBannerHtml } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
 // here. `makeClassifyStatus` and `isAllClass` are the screening lane's own, already shipped, already
@@ -220,6 +220,28 @@ const KO_CSS = `
      saved to PDF would drop the narrative this block exists to preserve. The beforeprint handler below
      opens them; this hides the now-pointless toggle in print. */
   @media print{.ko-full summary{display:none}}
+  /* THE LABELS THE READER ACTUALLY READS. ko-lbl above is 9.5px uppercase grey — the owner's
+     "what holds what?" was asked of a label in that style, so a new word in the same style is the
+     same defect with different letters. These are body size and body colour, and they carry the
+     band's own word ("Why High"), which is what makes them answerable without a legend. */
+  .ko-lbl2{display:block;font-size:14px;font-weight:700;color:var(--ink);margin:0 0 5px;letter-spacing:0}
+  /* The card's fold. ko-full rides with it so openAll() and the beforeprint handler reach it —
+     what folds on screen still prints, which is the rule this template already states for the
+     narrative fold. ko-why carries only the spacing a card needs inside its own body. */
+  .ko-why{margin:6px 0 5px}
+  .ko-why summary{font-size:12px;text-transform:none;letter-spacing:0;color:var(--rose,var(--faint));font-weight:600}
+  /* "About this request" — what was asked, and any flag on the asking. It sits in the hero because a
+     mis-scoped request makes every number below it answer the wrong question. */
+  .ko-req{margin:14px 0 0;padding:13px 16px;border:1px solid var(--line);border-radius:3px}
+  .ko-req .ko-lbl2{margin-bottom:6px}
+  .ko-req p{margin:0 0 6px;font-size:13.5px;color:var(--slate);line-height:1.6}
+  .ko-req p:last-child{margin-bottom:0}
+  .ko-reqflag{border-left:3px solid var(--rose,var(--line));padding-left:11px;margin-top:9px}
+  /* THE PURPLE NOTES COME OFF THE EXPORT, exactly as the clearance page removes its internal notes
+     ("Internal (review-only) notes are removed on export"). The knockout's export is window.print()
+     via exportPDF(), so print is the whole export path and this rule is the whole strip. Without it
+     a knockout PDF forwarded to a client carries the reviewing lawyer's notes. */
+  @media print{.internal{display:none !important}}
   .ko-reg{margin:11px 0 0;padding:8px 0 0;border-top:1px solid var(--line);
     font-family:var(--mono);font-size:12px;color:var(--faint);line-height:1.5}
   .ko-filings{padding:14px 0 2px;border-bottom:1px solid var(--line)}
@@ -297,8 +319,111 @@ function glanceSection(marks, framework, registerCounts) {
 // all-classes figure alongside a class-scoped one would be a second count — one more provider call per
 // mark per predicate, billable on Corsearch — and that is a spend the owner has not ruled on. Raised as
 // a follow-up rather than assumed here (tracker issue 717).
+// ── TERRITORIES IN WORDS, NEVER CODES (tracker issue 331 C) ─────────────────────────────────────────
+//
+// The line read "territories: EM, US, WO". On a worldwide run the same line printed every register code
+// the provider offers — roughly two hundred, AD through ZZ, internal groupings among them — which the
+// owner called a meaningless list, correctly: a reader cannot tell anything from two hundred codes and
+// cannot tell much from three.
+//
+// TWO CODES ARE REGISTERS RATHER THAN COUNTRIES and neither is an ISO region, so neither can be resolved
+// by a country table: EM is the EU Intellectual Property Office and WO is WIPO's international register.
+// They are named here because they are the two a reader meets constantly.
+//
+// A CODE THIS TABLE CANNOT NAME IS DROPPED, NOT PRINTED. The provider's internal groupings (XA, XG, XS,
+// XW, ZZ and their like) name no register a reader could look up, and printing one is the defect this
+// change exists to remove. Dropping them is safe because the COUNT of registers is stated separately and
+// is taken before any naming — so a reader is never told about fewer registers than were counted.
+// TWO FORMS PER REGISTER, because English needs both: "Counted in the United States" takes the article
+// and "United States application" refuses it. One map with one form produced "the United States
+// application (pending)" on a card, which is why they are separate fields rather than a regex over one.
+const REGISTER_NAMES = Object.freeze({
+  EM: { bare: 'European Union', phrase: 'the European Union' },
+  EU: { bare: 'European Union', phrase: 'the European Union' },
+  WO: { bare: 'international', phrase: 'the WIPO register' },
+  US: { bare: 'United States', phrase: 'the United States' },
+  GB: { bare: 'United Kingdom', phrase: 'the United Kingdom' },
+  UK: { bare: 'United Kingdom', phrase: 'the United Kingdom' },
+  CH: { bare: 'Swiss', phrase: 'Switzerland' },
+});
+
+/**
+ * A register code as a reader's words, or '' when this build cannot name it. NEVER returns a code.
+ * `bare: true` gives the attributive form for a phrase like "United States application".
+ */
+function territoryName(code, { bare = false } = {}) {
+  const c = String(code ?? '').trim().toUpperCase();
+  if (!c) return '';
+  if (REGISTER_NAMES[c]) return bare ? REGISTER_NAMES[c].bare : REGISTER_NAMES[c].phrase;
+  // The provider's internal groupings all sit in the X* and Z* space and name no lookup-able register.
+  if (/^[XZ]/.test(c)) return '';
+  try {
+    const name = new Intl.DisplayNames(['en'], { type: 'region' }).of(c);
+    // Intl hands the CODE back when it knows no region by that name — which would print exactly the
+    // thing this function exists to prevent, so an unresolved code is an empty string.
+    return name && name.toUpperCase() !== c ? name : '';
+  } catch { return ''; }
+}
+
+/** "a, b and c" — the reader's list, not a join on commas. */
+function listWords(items) {
+  const xs = (items ?? []).filter(Boolean);
+  if (xs.length <= 1) return xs[0] ?? '';
+  return `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
+}
+
+/**
+ * The counted scope, in one sentence (tracker issue 331 C). Three shapes, and the shape is chosen by
+ * how many registers were counted rather than by which they were:
+ *
+ *   every register the provider offers  -> "Counted worldwide, 190 registers, on Clarivate Compumark."
+ *   up to six                           -> named in full
+ *   more than six, not all              -> the count, and where the list is
+ *
+ * The provider is named here and nowhere else on the page; 331 D takes the vendor's name off the cards.
+ */
+const TERRITORY_NAME_CAP = 6;
+function territoriesLine(registerCounts) {
+  const provider = registerCounts?.providerLabel ?? registerCounts?.provider ?? 'the register';
+  const regions = (registerCounts?.scope?.regions ?? []).filter(Boolean);
+  const worldwide = registerCounts?.scope?.worldwide === true || regions.length === 0;
+  if (worldwide) {
+    const n = regions.length;
+    return n
+      ? `Counted worldwide, ${n} registers, on ${provider}.`
+      : `Counted worldwide on ${provider}.`;
+  }
+  const named = regions.map(territoryName).filter(Boolean);
+  if (named.length && named.length <= TERRITORY_NAME_CAP) {
+    return `Counted in ${listWords(named)}, on ${provider}.`;
+  }
+  return `Counted on ${regions.length} registers, listed on the workbook's Register Counts sheet, on ${provider}.`;
+}
+
+/** What the counts do and do not say — the one line that replaces the count-basis paragraph on the page. */
+const COUNTS_READER_LINE = 'Counts include live, pending and dead filings. '
+  + 'A count is not a conflict; the cards above say which filings matter.';
+
 function countsSection(marks, registerCounts) {
-  const head = COUNT_PREDICATES.map((p) => `<th>${esc(p.label)}</th>`).join('');
+  // ── THE DEFINITION MOVES INTO THE COLUMN HEADER (tracker issue 331 B) ────────────────────────────
+  //
+  // The 70-word count-basis paragraph existed because three one-word headers — Identical, Containing,
+  // Close variations — did not say what they counted, so the definition had to go somewhere. Put it in
+  // the header and the paragraph has nothing left to do.
+  //
+  // ONE NAME ⇒ THE HEADER NAMES IT, because "Exactly ORBIT" needs no gloss at all. Several names share
+  // one table and no header can name one of them, so they keep the general form and each row's own
+  // forms line (already rendered, unchanged) carries that row's near-spellings.
+  const single = marks.length === 1 ? String(marks[0]?.name ?? '').trim() : '';
+  const forms = single
+    ? ((countsForMark(registerCounts, single)?.counts?.close?.forms ?? []).map((f) => String(f?.form ?? '').trim()).filter(Boolean))
+    : [];
+  const headLabel = (pk) => {
+    if (pk === 'identical') return single ? `Exactly ${single}` : 'Exactly the name';
+    if (pk === 'containing') return single ? `Contains ${single}` : 'Contains the name';
+    return forms.length ? `Near-spellings (${forms.join(', ')})` : 'Near-spellings';
+  };
+  const head = COUNT_PREDICATES.map((p) => `<th>${esc(headLabel(p.key))}</th>`).join('');
   const rows = marks.map((m) => {
     const e = countsForMark(registerCounts, m.name);
     const cells = COUNT_PREDICATES.map((p) => {
@@ -326,11 +451,13 @@ function countsSection(marks, registerCounts) {
     return `<tr><td><b>${esc(m.name)}</b><br><span class="ko-classes">${esc(scope)}</span></td>${cells}</tr>`
       + (forms ? `<tr class="ko-forms"><td colspan="${COUNT_PREDICATES.length + 1}">${esc(forms)}</td></tr>` : '');
   }).join('');
-  const provider = registerCounts.providerLabel ?? registerCounts.provider ?? 'the register';
-  const territories = (registerCounts.scope?.regions ?? []).join(', ') || 'worldwide';
+  // COUNT_BASIS IS OFF THE PAGE, NOT OUT OF THE RECORD (tracker issue 331 B). It is still written to
+  // report-data.json (knockoutReportData -> registerCountBasis) and still on the workbook, which is where
+  // 331 says it belongs; what it stops doing is printing twice on a page whose headers now say the same
+  // thing in three words each.
   return `<div class="panel">
   <div class="ko-counts ko-scroll"><table><thead><tr><th>Name</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
-  <p class="ko-basis">${esc(COUNT_BASIS)}<br>Counted on <b>${esc(provider)}</b> · territories: ${esc(territories)}.</p>
+  <p class="ko-basis">${esc(COUNTS_READER_LINE)}<br>${esc(territoriesLine(registerCounts))}</p>
 </div>`;
 }
 
@@ -532,6 +659,29 @@ function tierAbsenceLine(registerCounts, probeRan) {
 // A NAME is deliberately not emitted here for the control to send. `ref` is right there and reads
 // nicely, but portal-ui/src/contract/reportFrame.ts refuses a mark from the document side on purpose,
 // and the composite key IS a mark name. The server reads `ref` back off disk once it has resolved.
+/**
+ * THE CARD'S DETAIL, FOLDED (tracker issue 331 A.3).
+ *
+ * Visible on a card: the reference, the name, the band chip, the source chip, the one-sentence read and
+ * the evidence links. Folded: the paragraph that argues the band, and on a register card the use-check
+ * line and the record link with it.
+ *
+ * WHY A FOLD AND NOT A CUT. The paragraph is the reasoning, and 331 rejects "shortening by dropping the
+ * reasons" in as many words. It is one click away and it still prints — `ko-full` is on the element, so
+ * openAll() and the beforeprint handler both reach it and a saved PDF carries the whole argument.
+ *
+ * EMPTY IN, EMPTY OUT. A card with no detail renders no fold rather than an empty one, which is also the
+ * archived-run path: a run whose findings carry no `basis` renders exactly the card it was delivered.
+ */
+function whyBandFold(inner) {
+  const body = String(inner ?? '').trim();
+  if (!body) return '';
+  return `<details class="ko-full ko-why"><summary>${esc(WHY_BAND_LABEL)}</summary>${body}</details>`;
+}
+
+/** The card fold's own word. Stated once so the renderer and its tests read the same string. */
+const WHY_BAND_LABEL = 'Why this band';
+
 function findingBlock(v, framework, markIndex) {
   const meta = [v.type, v.owner].filter(Boolean).map((s) => esc(s)).join(' · ');
   const ev = v.evidence.map((u) => linkOrText(u)).join(' · ');
@@ -564,7 +714,7 @@ function findingBlock(v, framework, markIndex) {
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
             ${v.lead ? `<p class="ko-findnet">${inlineMd(v.lead)}</p>` : ''}
-            ${v.detail ? `<p class="ko-findbasis">${inlineMd(v.detail)}</p>` : ''}
+            ${whyBandFold(v.detail ? `<p class="ko-findbasis">${inlineMd(v.detail)}</p>` : '')}
             ${ev ? `<p class="ko-findev">Evidence: ${ev}</p>` : ''}
           </div>
         </div>
@@ -714,18 +864,52 @@ export function promotableRecords(entry, mark) {
 /** One sentence of what the filing IS, composed from the register's own fields. No adjective that the
  *  record did not supply, and every absent field says it is absent rather than rendering as a blank —
  *  a blank cell and an unstated field read alike to a human and only one is honest. */
+// ── THE OFFICE, NOT THE VENDOR (tracker issue 331 D) ────────────────────────────────────────────────
+//
+// The sentence read "A filing of the identical name on Clarivate Compumark — held by ..., status
+// PENDING, classes 9, 38, 45, territory us." Clarivate Compumark is the search vendor; the filing is at
+// the United States office. Naming the vendor in the position where a reader expects the register says
+// the filing exists somewhere it does not, and prints a raw two-letter territory code besides.
+//
+// The provider is still named — once, in scope, as the data source (territoriesLine), which is what it
+// is. A card states the office, the kind of right, its status, its owner and its classes.
+//
+// STATUS IS THE RECORD'S OWN WORD, lower-cased for the sentence and never re-classified: "pending" here
+// is the register's PENDING, not this renderer's reading of it. A record that states none says so.
+const REGISTRATION_WORDS = /^(?:reg|registered|registration)/i;
+
+/** "United States application (pending)" — the office and the kind of right, from the record's own fields. */
+function registerRightPhrase(r) {
+  const office = territoryName(r?.territory, { bare: true });
+  const status = String(r?.status ?? '').trim();
+  // A right whose status names a registration is a registration; anything else is an application. The
+  // record's raw word rides in the bracket either way, so the reader never has to trust the reading.
+  const kind = REGISTRATION_WORDS.test(status) ? 'registration' : 'application';
+  const where = office ? `${office} ` : '';
+  // The bracket exists to show the register's OWN word where that word adds something. On a record whose
+  // status already names the kind ("REGISTERED" beside "registration") it adds nothing but noise, so it
+  // is dropped — the reader has the same fact either way, in one word instead of two.
+  // "registration (registered)" and "application (application)" say the kind twice. Both roots are
+  // tested rather than stemmed, because a stemmer that turns "registered" and "registration" into one
+  // token also turns "pending" and "pended" into one, and "(pending)" is a fact the reader wants.
+  const echoes = (kind === 'registration' && REGISTRATION_WORDS.test(status))
+    || (kind === 'application' && /^(?:appl|filed?)/i.test(status));
+  const bracket = status && !echoes ? ` (${status.toLowerCase()})` : '';
+  return `${where}${kind}${bracket}`.trim();
+}
+
 function registerStatement(r, provider) {
-  const what = r.matchedBasis === 'close'
-    ? `A filing on ${provider} found under the close variation ${r.matchedForm ?? '—'}`
-    : `A filing of the identical name on ${provider}`;
+  const name = String(r?.mark ?? r?.name ?? '').trim();
   const classes = (Array.isArray(r.classes) ? r.classes : []).filter((n) => Number.isFinite(Number(n)));
-  const bits = [
-    r.owner ? `held by ${r.owner}` : 'proprietor not stated on the record',
-    r.status ? `status ${r.status}` : 'status not stated on the record',
-    classes.length ? `class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : 'classes not stated on the record',
-    r.territory ? `territory ${r.territory}` : null,
-  ].filter(Boolean);
-  return `${what} — ${bits.join(', ')}.`;
+  const lead = [name, registerRightPhrase(r)].filter(Boolean).join(', ');
+  const owner = r.owner ? `by ${r.owner}` : 'owner not stated on the record';
+  const cls = classes.length
+    ? `class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}`
+    : 'classes not stated on the record';
+  // A close-variation card says WHICH near-form matched, because the name at the head of the sentence is
+  // then not the name the client asked about and a reader must not have to guess which it is.
+  const via = r.matchedBasis === 'close' && r.matchedForm ? ` Found under the close variation ${r.matchedForm}.` : '';
+  return `${lead} ${owner}, ${cls}.${via}`;
 }
 
 /**
@@ -741,6 +925,72 @@ function registerStatement(r, provider) {
  * form would point a reader at a row that does not exist. Its receipt is the register record itself,
  * which the card links.
  */
+/**
+ * WHICH OF A MARK'S REGISTER CARDS THE PAGE DRAWS (tracker issue 331 A.3).
+ *
+ * THIS FILTERS THE PAGE, NEVER THE RECORD, and that separation is the whole point. 331 rejects dropping
+ * anything from report-data.json or the workbook to make the page shorter, so `registerCardViews` still
+ * builds every promoted filing and still assigns the ordinals it always did — knockoutReportData reads
+ * that, unchanged. This function decides only what is DRAWN.
+ *
+ * Keeping one projection also keeps the flag path honest: portal-service resolves a flag as
+ * `marks[i].findings.find(f => f.ordinal === ordinal)`, so a card on the page carries the ordinal its
+ * own data entry has. A card the page does not draw cannot be flagged, because there is nothing to click.
+ *
+ * ONLY AN EXPLICIT LOWEST-RUNG BAND SUPPRESSES A CARD. Absence never does, and that is the whole rule —
+ * there is no second condition and no archived-run special case, because this one covers both.
+ *
+ * The first cut read an absent band as "lowest" and needed a clause-F escape hatch beside it: if no
+ * filing on the mark carried a band, keep them all. That escape hatch is what a wrong default looks
+ * like. It handled the run with NO bands and silently mishandled the run with SOME: `band` is optional
+ * per row, so a rater who bands the filings that matter and leaves the rest alone is doing what the
+ * shape invites — and the mark whose one typed band happened to be the bottom rung lost every card it
+ * had, including the filings nobody ruled on.
+ *
+ * `atLowestBand` below already argues this, one function down: a band it cannot place on the ladder
+ * is kept, because "the rater said something, and the safe reading of something we cannot rank is that
+ * it is worth pointing at". An absent band is strictly LESS information than an unrankable one, so if
+ * unknown keeps, absent keeps. Dropping it would be this renderer deciding a filing is immaterial on
+ * the rater's behalf — the same claim tracker issue 274 removed from these cards for the same reason.
+ *
+ * A run that carries no bands at all still renders every card it was delivered with, which is what
+ * clause F asks for; it now falls out of the rule instead of being carved around it.
+ */
+function registerCardsOnPage(cards, mark, framework) {
+  return cards.filter((v) => !atLowestBand(framework, readBandFor(mark, v?.record?.recordId)));
+}
+
+/**
+ * DID THE RATER PUT THIS FILING ON THE LADDER'S LOWEST RUNG? (tracker issue 331 A.3)
+ *
+ * The ladder runs worst-first, so the lowest rung is the LAST entry. A filing the rater put there is one
+ * the rater called manageable, and 331 keeps those in the filings table rather than on a card: three
+ * cards whose own text says the filing does not bear materially on the rating cost the reader more than
+ * they told him.
+ *
+ * Stated as "is it AT the lowest rung" rather than "is it above it", because that is the only direction
+ * a caller may act on. Every other answer — a rung higher up, a word this build cannot place on the
+ * run's own ladder, no band at all — is a filing that keeps its card. An unplaceable word is not a band
+ * this function may quietly demote: the rater said something, and the safe reading of something we
+ * cannot rank is that it is worth pointing at. Absence says even less, so it keeps the card too.
+ */
+function atLowestBand(framework, band) {
+  const ladder = Array.isArray(framework?.bands) ? framework.bands : [];
+  const word = String(band ?? '').trim().toLowerCase();
+  if (!word || !ladder.length) return false;
+  const lowest = String(ladder[ladder.length - 1]?.label ?? '').trim().toLowerCase();
+  return Boolean(lowest) && word === lowest;
+}
+
+/** The rater's band for one filing, off the row that names it. `null` when the rater gave none. */
+function readBandFor(mark, recordId) {
+  const id = String(recordId ?? '').trim();
+  if (!id) return null;
+  const row = (Array.isArray(mark?.registerReads) ? mark.registerReads : [])
+    .find((x) => String(x?.recordId ?? '').trim() === id);
+  return String(row?.band ?? '').trim() || null;
+}
+
 function registerCardViews(mark, framework, registerRecords) {
   if (!registerRecords || registerRecords.unavailable) return { cards: [], entry: null, promoted: 0 };
   const entry = recordsForMark(registerRecords, mark?.name);
@@ -819,7 +1069,7 @@ function sourceChips(v) {
 // already defines — the same one the clearance report uses for this material — so a reader can see whose
 // voice a line is in. Merging them into the client-voiced body would make the reviewer's asides read as
 // findings about the mark, which is the one way this ruling could produce a worse document.
-const REVIEWER_NOTES_LEGEND = 'Information for your reference/context that likely does not need to be shared with the business is shown in purple.';
+const REVIEWER_NOTES_LEGEND = 'Purple notes are for the reviewing lawyer. Remove them before this goes to the client.';
 
 // The clearance lane's own label, copied rather than re-worded (tracker issue 276). One spelling across
 // both products is the point: a reader who has seen it on a clearance report knows what it means here.
@@ -833,12 +1083,46 @@ function ownerCheckFor(ownerChecks, recordId) {
     .find((c) => (Array.isArray(c?.recordIds) ? c.recordIds : []).some((x) => String(x).trim() === id)) ?? null;
 }
 
+// The two-place sort lives in findings-model.mjs (splitKnockoutNotes) because the predelivery lint
+// needs the same answer: the page files each note, and the reviewer warns a writer whose note will file
+// the way they did not intend. One reader, so the two can never disagree.
+/**
+ * "About this request" — what was asked, and any flag on the asking (tracker issue 331 A.1).
+ *
+ * WHAT WAS ASKED IS CODE-OWNED. It is read off the run's own frozen instructed scope, never off model
+ * prose, so the line states the request the run was given rather than a paraphrase of it. An archived run
+ * that carries no such sidecar renders the flags alone, and a run with neither renders nothing at all —
+ * the block never appears empty and never appears with a heading over nothing.
+ *
+ * THE FLAGS ARE THE REVIEWER'S OWN WORDS, unedited. This surface moves them; it does not rewrite them.
+ * They keep the purple convention here exactly as they wear it under the cards, which is also what keeps
+ * them off the export: the strip is one rule on .internal and it reaches both places.
+ */
+function aboutRequestBlock(scope, requestNotes) {
+  const goods = String(scope?.goods ?? '').trim();
+  const classes = (Array.isArray(scope?.classes) ? scope.classes : []).filter((c) => c || c === 0);
+  const jx = (Array.isArray(scope?.jurisdictions) ? scope.jurisdictions : []).map((t) => territoryName(t)).filter(Boolean);
+  const asked = [
+    classes.length ? `Class${classes.length === 1 ? '' : 'es'} ${classes.join(', ')}` : '',
+    goods,
+  ].filter(Boolean).join(' — ');
+  const where = jx.length ? `Searched in ${listWords(jx)}.` : '';
+  const flags = (requestNotes ?? []).filter(Boolean);
+  if (!asked && !where && !flags.length) return '';
+  return `<div class="ko-req">
+      <span class="ko-lbl2">About this request</span>
+      ${asked ? `<p>${esc(asked)}</p>` : ''}
+      ${where ? `<p>${esc(where)}</p>` : ''}
+      ${flags.length ? `<div class="internal ko-reqflag">${
+        flags.map((n) => `<p class="ko-bul">${inlineMd(n)}</p>`).join('')}</div>` : ''}
+    </div>`;
+}
+
 function reviewerNotesBlock(m) {
-  const notes = (Array.isArray(m?.purpleNotes) ? m.purpleNotes : [])
-    .map((n) => String(n ?? '').trim()).filter(Boolean);
+  const notes = splitKnockoutNotes(m).name;
   if (!notes.length) return '';
   return `<div class="internal">
-            <span class="tag">For your reference</span>
+            <span class="tag">For the reviewing lawyer</span>
             ${notes.map((n) => `<p class="ko-bul">${inlineMd(n)}</p>`).join('')}
           </div>`;
 }
@@ -1003,34 +1287,117 @@ function coverageClause(mark, registerCounts, probeRan) {
 // NOTHING IS DISCARDED. Where a run carries both the typed fields and prose bullets the bullets survive
 // under a collapsed "Full narrative" — the reader who wants the long form still has it, one click away,
 // and no sentence the stage wrote is dropped on the floor.
-function readBlock(m) {
+/**
+ * THE LABELS, IN THE READER'S WORDS (tracker issue 331 A.2).
+ *
+ * The old pair was "What holds it there" and "What would move it", 9.5px grey capitals. The owner read
+ * the first one and asked "what holds what?" — so the fix is not a synonym in the same style, it is a
+ * label that carries the band's own word and answers the question by itself.
+ *
+ *   factors        → "Why High"              (the mark's own band)
+ *   counterFactors → "Why not Very High"     (the rung ABOVE it on the run's own ladder)
+ *   mitigation     → "What would lower the risk"
+ *
+ * The ladder runs worst-first, so the rung above is the PREVIOUS entry. At the top rung there is no
+ * higher band to name and the honest label is "What keeps it here" — the same question, asked where the
+ * comparative form has no answer. A band this build cannot find on the ladder gets that label too,
+ * rather than a comparative naming a rung that may not exist.
+ */
+function counterLabel(framework, band) {
+  const ladder = Array.isArray(framework?.bands) ? framework.bands : [];
+  const i = ladder.findIndex((b) => String(b?.label ?? '').trim().toLowerCase() === String(band ?? '').trim().toLowerCase());
+  const up = i > 0 ? String(ladder[i - 1]?.label ?? '').trim() : '';
+  return up ? `Why not ${up}` : 'What keeps it here';
+}
+
+const ASSESSMENT_FOLD_LABEL = 'Read the full assessment';
+
+/** The scope block's own words, as one string, so the caveat filter reads exactly what the page prints. */
+const SCOPE_BLOCK_TEXT = 'What this is. A fast screen for obvious blockers to using each name, from '
+  + 'marketplace and web use plus a count of register filings. What it is not. A clearance search. We '
+  + 'drew no register conclusions and give no filing advice. A name that passes here is not clear; it '
+  + 'goes on to clearance. Every conflict above links to the material we found. The audit workbook holds '
+  + 'every search run, every empty result and the working notes. Register data.';
+
+/** Words that carry no claim, so their presence or absence says nothing about what a sentence asserts. */
+const STOPWORDS = new Set(['a', 'an', 'and', 'are', 'as', 'at', 'be', 'been', 'but', 'by', 'can', 'do',
+  'does', 'each', 'for', 'from', 'has', 'have', 'here', 'in', 'is', 'it', 'its', 'no', 'not', 'of', 'on',
+  'or', 'that', 'the', 'their', 'them', 'there', 'these', 'they', 'this', 'to', 'up', 'was', 'we', 'were',
+  'what', 'when', 'which', 'will', 'with', 'you', 'your']);
+
+const contentWords = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9\s-]/g, ' ')
+  .split(/\s+/).filter((w) => w.length > 2 && !STOPWORDS.has(w));
+
+/**
+ * Does this line assert anything the reference text does not already assert?
+ *
+ * TRUE unless every content word in the line is already in the reference. An empty line has nothing to
+ * say and returns false; a line with one unfamiliar word is kept. Singular/plural is folded so that
+ * "conclusion" does not read as new beside "conclusions".
+ */
+function saysSomethingNew(line, reference) {
+  // The stem must be IDEMPOTENT on the singular, or the fold does nothing: an earlier form stripped
+  // "es" and turned "gives" into "giv" while leaving "give" alone, so the two never matched and every
+  // caveat looked new. Strip one trailing "s" and nothing else.
+  const stem = (w) => w.replace(/ies$/, 'y').replace(/s$/, '');
+  const known = new Set(contentWords(reference).map(stem));
+  const words = contentWords(line);
+  if (!words.length) return false;
+  return words.some((w) => !known.has(stem(w)));
+}
+
+function readBlock(m, framework) {
   const factors = (m.factors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const counter = (m.counterFactors ?? []).filter((s) => typeof s === 'string' && s.trim());
   const structured = Boolean(m.basis || factors.length || counter.length || m.mitigation);
   const bullets = (m.bullets ?? []).map((b) => `<li>${inlineMd(b)}</li>`).join('');
   if (!structured) return bullets ? `<ul class="ko-bul">${bullets}</ul>` : '';
+  const assessment = String(m.assessment ?? '').trim();
+  const band = String(m.rating ?? '').trim();
   return [
     m.basis ? `<p class="ko-basisline">${inlineMd(m.basis)}</p>` : '',
-    factors.length ? `<ul class="ko-bul">${factors.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul>` : '',
-    counter.length ? `<div class="ko-counter"><span class="ko-lbl">What holds it there</span><ul class="ko-bul">${
+    factors.length ? `<div class="ko-why-band">${band ? `<span class="ko-lbl2">Why ${esc(band)}</span>` : ''}<ul class="ko-bul">${
+      factors.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
+    counter.length ? `<div class="ko-counter"><span class="ko-lbl2">${esc(counterLabel(framework, band))}</span><ul class="ko-bul">${
       counter.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
-    m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl">What would move it</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
-    bullets ? `<details class="ko-full"><summary>Full narrative</summary><ul class="ko-bul">${bullets}</ul></details>` : '',
+    m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">What would lower the risk</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
+    // ── THE ASSESSMENT REPLACES THE "FULL NARRATIVE" FOLD (tracker issue 331 A.2) ────────────────────
+    //
+    // The model writes both. `bullets` (five) say in other words what `factors` (four) already say
+    // visible above; `assessment` is the long-form read under its own four headings, and until now the
+    // page rendered it NOWHERE — validated, carried in report-data.json and the workbook, never shown.
+    // The owner found the bullets fold by accident and called it the most useful block on the page; the
+    // assessment is the better version of the same thing.
+    //
+    // `bullets` is NOT dropped from the record — knockoutReportData still carries it and the workbook
+    // still writes it. What retires is one fold on one page, replaced by a longer answer to the same
+    // question. 331 rejects dropping the field itself, and this does not.
+    //
+    // CLAUSE F. An archived run carries bullets and no assessment: it keeps the fold it was delivered
+    // with, under its own old label. The fallback is the old block, never an empty new one.
+    assessment
+      ? `<details class="ko-full"><summary>${esc(ASSESSMENT_FOLD_LABEL)}</summary><div class="ko-assess">${mdParagraphs(assessment)}</div></details>`
+      : (bullets ? `<details class="ko-full"><summary>Full narrative</summary><ul class="ko-bul">${bullets}</ul></details>` : ''),
   ].filter(Boolean).join('');
 }
 
 function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [] } = {}) {
   const cards = marks.map((m, markIndex) => {
     const stop = bandStop(framework, m.rating);
-    const bullets = readBlock(m);
+    const bullets = readBlock(m, framework);
     // — the promoted register filings, in the SAME list as the common-law conflicts. They render
     // after the typed findings and that position is not a rank: a card with no band already sorts last
     // under compareKnockoutBlockingPower, so appending them is the ladder's own rule applied to a row
     // that has no rung, not a new one invented for the register.
     const reg = registerCardViews(m, framework, registerRecords);
-    const regBlocks = reg.cards.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks)).join('');
-    const overflow = reg.promoted > reg.cards.length
-      ? `<p class="ko-bul">${esc(`${reg.promoted - reg.cards.length} further filing${reg.promoted - reg.cards.length === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
+    const drawn = registerCardsOnPage(reg.cards, m, framework);
+    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks)).join('');
+    // The overflow counts what is NOT on the page against what met the promotion test — cards held back
+    // by the cap and cards the rater put on the lowest rung alike, because from the reader's side they
+    // are the same fact: further filings for this name, all of them listed below.
+    const held = reg.promoted - drawn.length;
+    const overflow = held > 0
+      ? `<p class="ko-bul">${esc(`${held} further filing${held === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
       : '';
     // THE DEFECT THIS CLOSES. This line was `(m.findings ??).filter((f) => f?.url)`, and a
     // typed finding has no `url` — so every conflict was dropped from the page and a mark whose findings
@@ -1121,87 +1488,6 @@ function depthStrip(note) {
 // says what the lines under it are. It is not a filter and it rewrites no caveat.
 const CAVEAT_LEAD = 'This screen also carries the following limits:';
 
-/**
- * WHAT THIS RUN SEARCHED AND DID NOT, FROM THE RUN'S OWN POLICY.
- *
- * The line this replaces was composed from `registerCounts` — an ARTIFACT — and said "Common-law/
- * marketplace screen only, register searches are addressed separately" whenever no counts were present.
- * That reads the absence of a result as a statement of scope, which is the class this repo keeps paying
- * for: a run INSTRUCTED to take register counts whose provider refused printed the same sentence as a
- * run never instructed to take them at all. One of those is a scope statement and the other is a gap in
- * the record, and a client cannot tell them apart.
- *
- * The clearance report composes its scope from the run's frozen components (`productCoverageNote`,
- * search-policy.mjs) and this now does the same, from the same object, so the two lanes cannot describe
- * the same component in different words.
- *
- * THE ARTIFACT IS STILL REPORTED — separately, and as what it is. Where the policy says a component ran
- * and its output is missing, that is disclosed as a gap rather than folded into "we did not do it".
- *
- * @returns {string[]} lines, most load-bearing first. Empty when there is no policy to read, and the
- *          caller falls back to the artifact-derived sentence rather than printing nothing.
- */
-export function knockoutScopeLines(policy, { registerCounts = null, probeRan = false } = {}) {
-  const c = policy?.components;
-  if (!c) return [];
-  const lines = [];
-  lines.push('This is a screen, not a clearance search: it triages names against use we can see, '
-    + 'and makes no filing recommendation.');
-  if (c.registerProbe) {
-    const who = registerCounts?.providerLabel ?? registerCounts?.provider ?? null;
-    // THE BASIS RIDES WITH THE COMPONENT THAT NEEDS IT, in methodLine's own words rather than new ones.
-    // Composing this section from the policy moved methodLine off the page for every run that HAS a
-    // policy — which is every live run — and took COUNT_BASIS and "Counting is not searching" with it.
-    // That is the sentence saying a count weighs nothing and decides nothing, on the page that prints
-    // the counts. `runner.knockout-e2e.test.mjs` caught it and this branch called it pre-existing;
-    // it is not — origin/main's renderer passes that arm 3/3 in the same worktree.
-    lines.push(registerCounts
-      ? `Registers were searched for a hit-count per name${who ? ` on ${who}` : ''}, and the filings behind `
-        + `the narrow counts are listed below. ${COUNT_BASIS} Counting is not searching: no register `
-        + `conclusions, no filing advice, and a full register clearance is a separate piece of work.`
-      : 'Registers were searched for a hit-count per name, and no counts reached this report — '
-        + 'that is a gap in the record for this run, not a statement that registers were left out.');
-  } else if (c.registerProbe === false) {
-    lines.push(probeRan
-      ? 'Registers were not part of this search. A register count screen ran separately; full register analysis is its own piece of work.'
-      : 'Registers were not searched in this search.');
-  }
-  // A COMPONENT THE POLICY DOES NOT MENTION IS NOT A COMPONENT THAT WAS OFF. Same rule as the missing
-  // policy above, one level down: `undefined` is silence, and silence is not `false`. Reached only when
-  // `components` arrives without this key — every row in search-policy.mjs states all three, so the
-  // product table cannot produce it; `{ ...policyFor(product)?.components, ...r.components }` can, when
-  // the product resolves to nothing. Driven before this line existed: an empty `components` printed
-  // "Registers were not searched in this search" on a report that was carrying a register hit-count
-  // table, which is the document contradicting itself in the section that exists to state scope. Saying
-  // nothing is the honest answer, and it needs no new sentence in front of a client.
-  //
-  // THE TWO BELOW STAY `!== true`, and the difference is the population rather than the principle.
-  // `registerProbe` is true on two knockout rows (knockout-search, knockout-register), so silence about
-  // it is genuinely ambiguous. `commonLawGrid` and `jxLanes` are false on EVERY row this template
-  // renders — they are what the clearance search is — so silence there states a thing that is true of
-  // the whole population, and making them conditional would drop a disclosure the clearance report
-  // makes about itself. Symmetry here would cost a client the sentence naming the lane they did not buy.
-  // Stated because the clearance report states its own absence of them, in these words. A reader
-  // comparing two documents must not have to infer that a lane is missing from its silence.
-  if (c.commonLawGrid !== true) {
-    lines.push('The systematic common-law grid sweep is not part of this search — that is the clearance search.');
-  }
-  if (c.jxLanes !== true) {
-    lines.push('The per-jurisdiction native-script deep dive is not part of this search.');
-  }
-  return lines;
-}
-
-function methodLine(registerCounts, probeRan, { citedFindings = 0, uncitedFindings = 0 } = {}) {
-  const receipts = (citedFindings && !uncitedFindings)
-    ? ` Every conflict named above cites material held in this run's own research payload for that name.`
-    : '';
-  return (registerCounts
-    ? `Common-law/marketplace screen, plus a register HIT-COUNT per name on ${registerCounts.providerLabel ?? registerCounts.provider ?? 'the register'}. ${COUNT_BASIS} `
-      + `Counting is not searching: no register conclusions, no filing advice, and a full register clearance is a separate piece of work.`
-    : `Common-law/marketplace screen only — register searches are addressed separately${probeRan ? ' (a register count screen ran; full register analysis follows separately)' : ''}. `
-      + `A knockout screen is triage, not a clearance search: no register conclusions, no filing advice.`) + receipts;
-}
 
 /**
  * Render the knockout report.
@@ -1231,6 +1517,12 @@ export function renderKnockoutHtml(findings, framework, {
   // instructed to do rather than what its artifacts happen to show. Defaults to null, and an archived
   // run that carries none keeps the artifact-derived sentence it was delivered with.
   searchPolicy = null,
+  // — the run's own frozen instructed scope (tracker issue 331 A.1): the goods, classes and
+  // territories the requester asked for, in the requester's words. Defaults to null, and an archived run
+  // that carries no such sidecar renders "About this request" from its request-level notes alone, or not
+  // at all when it has none. Never derived from model prose — this is what was ASKED, not what was said
+  // about it.
+  instructedScope = null,
   // — the run's frozen delivery overlay. It defaults to null, which is the NO-OPINION state and
   // renders the same plain "Privileged & Confidential" this template always printed — so the ~15 unit
   // fixtures and both render-check scripts, none of which pass one, are unchanged by its arrival.
@@ -1257,7 +1549,12 @@ export function renderKnockoutHtml(findings, framework, {
   const allViews = marks.flatMap((m) => knockoutFindingViews(m, { manifest: framework }));
   const citedFindings = allViews.filter((v) => v.evidence.length).length;
   const uncitedFindings = allViews.length - citedFindings;
-  const glance = glanceSection(marks, framework, registerCounts);
+  // ── A ONE-NAME PAGE HAS NO INDEX (tracker issue 331 A.6) ────────────────────────────────────────
+  //
+  // The glance row exists to let a reader of a BATCH find the name they care about. With one name there
+  // is nothing to index, and the row printed that name, its band and its classes for the first of three
+  // times before the reader reached a single sentence of reading. On a batch it stays exactly as it was.
+  const glance = marks.length > 1 ? glanceSection(marks, framework, registerCounts) : '';
   const hasCounts = Boolean(registerCounts?.marks?.length);
   // The register block is a table when counts were taken and a SENTENCE when they were not — never
   // nothing. It renders in the place the numbers would have occupied, at the top of the section that
@@ -1266,7 +1563,24 @@ export function renderKnockoutHtml(findings, framework, {
   const counts = hasCounts
     ? countsSection(marks, registerCounts)
     : `<div class="panel"><p class="ko-tier">${esc(tierLine)}</p></div>`;
+  // ── A CAVEAT THAT SAYS NOTHING THE SCOPE BLOCK HAS NOT SAID IS NOT RENDERED (tracker issue 331 E) ──
+  //
+  // The four model-written caveats on the measured run overlap the fixed text completely — 331 item 9,
+  // and 333 rule 4 ("say it once") fixes it at the source for runs written under that doctrine. This is
+  // the reader for the ones already written.
+  //
+  // THE TEST IS SUBSET, NOT SIMILARITY, and the difference is the whole safety argument. A caveat is
+  // dropped only when EVERY content word in it already appears in the scope block. A caveat making any
+  // new claim brings at least one new content word with it and is kept — so this cannot silently delete
+  // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
+  // could; that is why there isn't one.
+  const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
   const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks });
+  // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
+  // They are about the asking, not about a name, so a batch repeating them per mark would be the same
+  // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
+  const requestNotes = marks.flatMap((m) => splitKnockoutNotes(m).request);
+  const aboutRequest = aboutRequestBlock(instructedScope, requestNotes);
   const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
   // and never as an empty table. A knockout with no sidecar publishes exactly the counts-only document.
@@ -1277,7 +1591,10 @@ export function renderKnockoutHtml(findings, framework, {
   // promoted filing that sentence sent a reader to a row that does not exist. A false pointer on the
   // audit trail is worse than no pointer, and the honest fix is to narrow the claim rather than mint a
   // second drill-through key for a card whose receipt is the register record itself.
-  const registerCardCount = marks.reduce((n, m) => n + registerCardViews(m, framework, registerRecords).cards.length, 0);
+  // Counted over what the page DRAWS: the sentence explains a REG reference a reader can see, so a run
+  // whose register cards are all held back needs no sentence about them.
+  const registerCardCount = marks.reduce((n, m) =>
+    n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
   const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
   const onFieldSec = `<div class="sec"><span class="num">${num()}</span><h2>On-field conflicts</h2><span class="note">${hasCounts ? `register hit-counts (${esc(provider)}) and the read, per name` : 'what we found, per name'}</span></div>
@@ -1338,6 +1655,7 @@ window.addEventListener('beforeprint',o);})();</script>
     ${depthStrip(depthNote)}
     <h1 class="mark">${esc(title)}</h1>
     ${productContext ? `<p class="ko-classes" style="font-size:13.5px;margin:0 0 16px">${inlineMd(productContext)}</p>` : ''}
+    ${aboutRequest}
     ${summary ? `<div class="sub">${mdParagraphs(summary)}</div>` : ''}
   </header>
 
@@ -1359,14 +1677,31 @@ window.addEventListener('beforeprint',o);})();</script>
       // FROM THE POLICY WHERE THERE IS ONE (tracker issue 1935). The fallback is not a tidy default: an
       // archived run froze no policy, and re-rendering it must not invent a scope claim about a run
       // nobody can now ask. It keeps the sentence it was delivered with.
-      const lines = knockoutScopeLines(searchPolicy, { registerCounts, probeRan });
-      if (!lines.length) return `<p class="ko-scope">${esc(methodLine(registerCounts, probeRan, { citedFindings, uncitedFindings }))}</p>`;
-      const receipts = citedFindings && !uncitedFindings
-        ? '<p class="ko-scope">Every conflict named above cites material held in this run\'s own research payload for that name.</p>'
+      // ── THE SCOPE BLOCK, WHOLE (tracker issue 331 E) ──────────────────────────────────────────────
+      //
+      // The composed lines said one thing five times in 362 words: "not a clearance" three times,
+      // "proceeds to clearance" twice, and the count-basis sentence a second time after the counts table
+      // had already carried it. This is the owner's replacement text, and its two halves are the two
+      // questions a reader of a screen actually has.
+      //
+      // "Every conflict above links to the material we found" STAYS CONDITIONAL and that is not a
+      // stylistic carry-over: said unconditionally it is an absence claim wider than what was examined,
+      // which this file refuses elsewhere in the same words. It prints only when every rendered conflict
+      // cites something.
+      const linked = citedFindings && !uncitedFindings
+        ? ' Every conflict above links to the material we found.'
         : '';
-      return `${lines.map((l) => `<p class="ko-scope">${esc(l)}</p>`).join('')}${receipts}`;
+      const source = registerCounts
+        ? ` Register data: ${registerCounts.providerLabel ?? registerCounts.provider ?? 'the register'}.`
+        : '';
+      return `<p class="ko-scope"><b>What this is.</b> A fast screen for obvious blockers to using each `
+        + `name, from marketplace and web use plus a count of register filings.</p>`
+        + `<p class="ko-scope"><b>What it is not.</b> A clearance search. We drew no register conclusions `
+        + `and give no filing advice. A name that passes here is not clear; it goes on to clearance.</p>`
+        + `<p class="ko-scope">${linked.trim()}${linked ? ' ' : ''}The audit workbook holds every search run, `
+        + `every empty result and the working notes.${source}</p>`;
     })()}
-    ${caveats.length ? `<p class="ko-scope" style="border-top:1px solid var(--line)">${CAVEAT_LEAD}<br>${caveats.map((c) => inlineMd(c)).join('<br>')}</p>` : ''}
+    ${newCaveats.length ? `<p class="ko-scope" style="border-top:1px solid var(--line)">${CAVEAT_LEAD}<br>${newCaveats.map((c) => inlineMd(c)).join('<br>')}</p>` : ''}
     ${auditFile ? `<p class="ko-scope" style="border-top:1px solid var(--line)"><a href="${escAttr(auditFile)}">Download the audit workbook (Excel)</a> — every search run, every negative result, and the working notes behind these ratings.${
     citedFindings ? ` The reference beside each common-law conflict above (for example <span class="mono">${esc(firstRef(marks, framework))}</span>) is its row on the workbook's Findings sheet.${
       registerCardCount ? ` A <span class="mono">REG</span> reference is a register filing rather than a common-law conflict — it has no Findings row, and its receipt is the register record the card links.` : ''}` : ''}</p>` : ''}

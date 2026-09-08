@@ -460,8 +460,15 @@ test("the report prints the figures as their own section, and the model's guess 
   assert.match(html, /class="ko-counts/, "the counts table renders");
   assert.match(html, /<td class="num">3<\/td>/);
   assert.match(html, /<td class="num">41<\/td>/);
-  // Three columns, and the third is the one counsel asked for.
-  assert.match(html, /<th>Close variations<\/th>/, "the close-variation column is on the page");
+  // THREE COLUMNS, AND THE HEADER CARRIES THE DEFINITION (tracker issue 331 B). The headers used to
+  // read Identical / Containing / Close variations, which said nothing, so a 70-word paragraph under the
+  // table had to say what they counted. With one name on the table the header names it outright and the
+  // paragraph has nothing left to do.
+  assert.match(html, /<th>Exactly IRONWHISK<\/th>/, "the identical column says what identical means");
+  assert.match(html, /<th>Contains IRONWHISK<\/th>/, "and the containing column likewise");
+  assert.match(html, /<th>Near-spellings \([^<]*\)<\/th>/, "and the close column names the forms it counted");
+  assert.doesNotMatch(html, /Filings on the register of any status, counted by name only/,
+    "the count-basis paragraph is off the page — it stays in report-data.json and the workbook");
   for (const f of variantForms("IRONWHISK").forms.map((v) => v.form))
     assert.ok(html.includes(f), `the form ${f} the number was counted over is printed under the table`);
   assert.match(html, /class="ko-forms"/);
@@ -504,7 +511,13 @@ test("the report prints the figures as their own section, and the model's guess 
   assert.match(plain, /not included in this product tier/, "absence reads as a tier fact, never as an omission");
   assert.match(plain, /identical · containing · close variations/, "and names what the tier that has them includes");
   assert.doesNotMatch(plain, /moderate filings expected/, "a report with no counts still does not print the guess");
-  assert.match(plain, /register searches are addressed separately/);
+  // THE SCOPE BLOCK IS CODE-OWNED AND UNCONDITIONAL (tracker issue 331 E). It replaced a composed set
+  // of lines that said "not a clearance" three times and "proceeds to clearance" twice in 362 words.
+  // What it says does not depend on a frozen policy, so an archived run gets the same two paragraphs.
+  assert.match(plain, /<b>What this is\.<\/b> A fast screen for obvious blockers/);
+  assert.match(plain, /<b>What it is not\.<\/b> A clearance search\./);
+  // The provider is named as the data source only where there IS register data to source.
+  assert.doesNotMatch(plain, /Register data:/, "a run with no counts names no register data source");
 
   const failed = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: null, probeRan: true });
   assert.match(failed, /none could be taken on this run/, "a bought-but-failed count is a gap, not a lesser tier");
