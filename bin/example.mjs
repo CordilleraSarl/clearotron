@@ -95,6 +95,10 @@ const die = (...lines) => { console.error(`\n${lines.join("\n")}\n`); process.ex
 // already walked a container — every child holding a meta.json and a run/ — and `bin/start.mjs` seeds the
 // portal's archive from it. A bare run directory here would have left that call finding nothing and the
 // installed portal serving an empty archive, silently. Same directory, both readers, no second mechanism.
+// THE PLAYER IS THE DEMO, so it asks for the demo account the same way `start --demo` does. Without
+// this the roster it resolves is a fresh install's — `generic` alone — and the account whose reports
+// it is about would not be there to name.
+process.env.CLEAROTRON_DEMO_PROFILES ??= "1";
 const DEMO_ROOT = join(REPO, "demo");
 // The rule lives in `driver/demo-container.mjs` — ONE definition, because it used to be three and they
 // disagreed. That file records what a knockout demo carries instead of a report.md, and why this line
