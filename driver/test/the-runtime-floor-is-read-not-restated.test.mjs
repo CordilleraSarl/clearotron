@@ -90,3 +90,37 @@ test("278 the comparison reads all three parts, in order", () => {
   assert.equal(meetsFloor("22.19.4", [22, 19, 5]), false, "a lower patch loses when major and minor tie");
   assert.equal(meetsFloor("23.0.0", [22, 19, 5]), true, "a higher major wins whatever follows");
 });
+
+test("278 AN UNREADABLE RUNNING VERSION PASSES — a parser gap must not become an outage", () => {
+  // Found in review, 2026-09-08, by driving it rather than reading it. `partsOf`
+  // used to answer [0, 0, 0] for a string it could not read, which compares below every floor — so this
+  // file would have refused an install over its own gap, on a runtime that was probably fine.
+  for (const v of ["not-a-version", "", "v22", null, undefined]) {
+    assert.equal(nodeFloorVerdict({ current: v, root: ROOT }).ok, true,
+      `an unparseable running version (${JSON.stringify(v)}) was refused`);
+  }
+  // A suffix is not unreadable — the three numbers are there and are what the floor is about.
+  const [maj, min, pat] = floorOf(declaredRange(ROOT));
+  assert.equal(nodeFloorVerdict({ current: `${maj}.${min}.${pat}-nightly20260101`, root: ROOT }).ok, true);
+});
+
+test("278 …while the DECLARED range still throws, because that one is ours to fix", () => {
+  // The asymmetry, asserted so it cannot be flattened later by someone making both sides "safe": a
+  // manifest this reader cannot parse is a packaging fault we own and must be loud. A runtime version
+  // it cannot parse is not.
+  assert.throws(() => floorOf("whatever"), /does not understand/);
+  assert.equal(nodeFloorVerdict({ current: "whatever", root: ROOT }).ok, true);
+});
+
+test("278 the `v` prefix is read, because both spellings are in reach", () => {
+  // `process.versions.node` has no prefix; `process.version` does. Without the optional `v` a caller
+  // handed the prefixed form got null, and null PASSES — so an out-of-date runtime would have been waved
+  // through by the guard written to stop it. The permissive direction, which is the one that fails
+  // silently. Found in review, 2026-09-08.
+  const [maj, min, pat] = floorOf(declaredRange(ROOT));
+  const below = min > 0 ? `${maj}.${min - 1}.${pat}` : `${maj - 1}.99.0`;
+  assert.equal(nodeFloorVerdict({ current: `v${below}`, root: ROOT }).ok, false,
+    `a prefixed below-floor version (v${below}) was waved through`);
+  assert.equal(nodeFloorVerdict({ current: `v${maj}.${min}.${pat}`, root: ROOT }).ok, true,
+    "a prefixed version at the floor must still run");
+});

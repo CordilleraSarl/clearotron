@@ -1686,12 +1686,21 @@ if (isMain) {
     // The last lines of that child's stderr, forwarded on as they arrive so nothing is delayed or
     // swallowed, and kept so the failure can QUOTE them rather than refer to them.
     const tail = [];
+    // A CHUNK IS NOT A LINE. `data` arrives on whatever boundary the pipe gives us, so a stream split
+    // mid-sentence would push two half-lines and the quoted last words would reach the reader cut in
+    // half — on precisely the message that exists because they could not see the original. The partial
+    // remainder is held over and completed by the next chunk; whatever is left when the stream ends is
+    // flushed, because a process that dies mid-line still said the thing it was saying.
+    let pending = "";
+    const keep = (line) => { if (line.trim()) tail.push(line); while (tail.length > 12) tail.shift(); };
     child.stderr?.setEncoding("utf8");
     child.stderr?.on("data", (chunk) => {
       process.stderr.write(chunk);
-      for (const line of String(chunk).split("\n")) if (line.trim()) tail.push(line);
-      while (tail.length > 12) tail.shift();
+      const parts = (pending + String(chunk)).split("\n");
+      pending = parts.pop() ?? "";
+      for (const line of parts) keep(line);
     });
+    child.stderr?.on("end", () => { keep(pending); pending = ""; });
     const rec = { name, script, child, alive: true, tail };
     children.push(rec);
     child.on("exit", (code, signal) => {

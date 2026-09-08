@@ -45,15 +45,31 @@ export function floorOf(range) {
   return [Number(m[1]), Number(m[2] ?? 0), Number(m[3] ?? 0)];
 }
 
-/** `"22.16.0"` → [22, 16, 0], ignoring any pre-release or build suffix. */
+/**
+ * `"22.16.0"` → [22, 16, 0], ignoring any pre-release or build suffix. NULL when it cannot be read.
+ *
+ * Null rather than zeroes, and the difference is the whole of it: `[0, 0, 0]` compares as below every
+ * floor, so a version string this reader did not understand would REFUSE — and this file would become
+ * the reason an install fails on a Node that is probably fine. A parser gap must not become an outage.
+ * Found in review, 2026-09-08.
+ */
 export const partsOf = (v) => {
-  const m = /^(\d+)\.(\d+)\.(\d+)/.exec(String(v).trim());
-  return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : [0, 0, 0];
+  // THE `v` IS OPTIONAL AND MUST BE, because both spellings are in reach: `process.versions.node` has
+  // no prefix and `process.version` does. Without it a caller handed the prefixed form gets null,
+  // null passes, and an out-of-date runtime is waved through by the guard written to stop it — the
+  // permissive half of the same asymmetry, which is the direction that fails silently.
+  const m = /^v?(\d+)\.(\d+)\.(\d+)/.exec(String(v).trim());
+  return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
 };
 
 /** Is `current` at or above `floor`? ALL THREE PARTS, in order — the defect this replaces compared one. */
 export function meetsFloor(current, floor) {
   const c = partsOf(current);
+  // AN UNREADABLE RUNNING VERSION PASSES, and that asymmetry is deliberate. The DECLARED range is our
+  // own manifest and throws loudly when it cannot be read, because that is a packaging fault we own.
+  // The running version is whatever the runtime reports, and refusing one we failed to parse would
+  // stop a working install over our own gap. Refuse only what we can show is below the floor.
+  if (!c) return true;
   for (let i = 0; i < 3; i += 1) {
     if (c[i] > floor[i]) return true;
     if (c[i] < floor[i]) return false;

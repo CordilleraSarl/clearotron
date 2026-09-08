@@ -45,3 +45,27 @@ test("278 a signal death says which signal, rather than a code that does not exi
   assert.match(said, /exited on SIGKILL/);
   assert.doesNotMatch(said, /with code null/, "a signalled child has no exit code to print");
 });
+
+// The retained tail is assembled from stream chunks, and a chunk is not a line. This drives the
+// assembly the supervisor uses rather than asserting on the shape of the message alone.
+const assemble = (chunks, max = 12) => {
+  const tail = []; let pending = "";
+  const keep = (line) => { if (line.trim()) tail.push(line); while (tail.length > max) tail.shift(); };
+  for (const c of chunks) { const parts = (pending + c).split("\n"); pending = parts.pop() ?? ""; for (const l of parts) keep(l); }
+  keep(pending);
+  return tail;
+};
+
+test("278 a line split across two chunks is quoted whole, not in halves", () => {
+  // The pipe gives whatever boundary it gives. Splitting each chunk on its own would push two half-lines
+  // and hand the reader a cut sentence — on precisely the message that exists because they could not see
+  // the original. Found in review, 2026-09-08.
+  const whole = "FATAL: CLEAROTRON_ACCESS_FILE is unset — refusing to start.";
+  const tail = assemble(["FATAL: CLEAROTRON_ACC", "ESS_FILE is unset — refusing to start.\n"]);
+  assert.deepEqual(tail, [whole], `the line arrived in pieces: ${JSON.stringify(tail)}`);
+});
+
+test("278 a process that dies mid-line still has its last words kept", () => {
+  // No trailing newline, because it did not get that far. The remainder is the thing it was saying.
+  assert.deepEqual(assemble(["one\n", "two\n", "three, unterminated"]), ["one", "two", "three, unterminated"]);
+});
