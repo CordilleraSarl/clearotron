@@ -93,6 +93,34 @@ export function standFrom(dir) {
 }
 
 /**
+ * WHICH ROUTE THIS INSTALL ARRIVED BY — a package, or a source checkout.
+ *
+ * The setup wizard has two spellings and only one of them works for any given reader. Someone who ran
+ * `npm i clearotron` has no package scripts, so `npm run setup` is a command they cannot type; someone
+ * working in a clone of the source has the scripts but no `clearotron` binary linked for them, because
+ * npm links a package's bin for its dependencies and never for itself. Naming one of the two on a
+ * screen is a coin flip, and the screen that names it is read by people who have just installed and
+ * have nothing else to go on.
+ *
+ * The answer is a property of where this file sits on disk, so it is derived from that. A package —
+ * local or global — is unpacked inside a `node_modules` directory; a checkout is not. `standFrom`
+ * already draws that line for the sibling question of where to stand, and reusing it is deliberate:
+ * two predicates for "am I a package" would be two chances to disagree.
+ *
+ * NO PATH IS RETURNED, and that is the point of splitting it out from `invocationForm`. That function's
+ * `prefix` can be `cd /srv/whatever && npx `, which is the server's own layout, its account name and
+ * its directory structure. This answers the same question with a word, so the answer can travel to a
+ * browser without carrying the machine with it.
+ *
+ * @param {string} dir  where this module is installed
+ * @returns {'packaged'|'checkout'}
+ */
+export function installRoute(dir = INSTALL_DIR) {
+  const s = String(dir ?? "");
+  return standFrom(s) === s ? "checkout" : "packaged";
+}
+
+/**
  * WHERE npm PUT THE EXECUTABLE for a GLOBAL install of this package —.
  *
  * ✕ AND THIS IS STILL NOT `which`, FOR THE SAME REASON THE HEADER GIVES. Read the prohibition above

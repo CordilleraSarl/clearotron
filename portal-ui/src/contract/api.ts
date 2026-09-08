@@ -200,6 +200,21 @@ export type Me = {
    */
   readonly engineMode: 'demo' | 'engine-unproven' | null
   /**
+   * HOW THIS INSTALL ARRIVED, so a screen can name the setup command this reader can actually type.
+   *
+   *   'packaged'  installed as a package — `npx clearotron install`
+   *   'checkout'  working in a clone of the source — `npm run setup`
+   *   null        THIS CANNOT ANSWER — an older portal-service that does not send the field. The
+   *               caller then names both routes and says which is which, rather than picking one and
+   *               being wrong for half its readers.
+   *
+   * The two commands are the SAME wizard, and each is unrunnable on the other route: a package install
+   * has no npm scripts, and a source checkout has no `clearotron` binary linked for itself. The server
+   * sends a word rather than a command line on purpose — the function that resolves a runnable form
+   * can answer with the server's own absolute path, and this value is rendered in a browser.
+   */
+  readonly setupRoute: 'packaged' | 'checkout' | null
+  /**
    * WHO OPERATES THIS DEPLOYMENT — the `CLEAROTRON_BRAND_NAME` seam, read, never restated.
    *
    * The staff role label is "<operator> staff", and it used to be that name as a literal in
@@ -1413,6 +1428,10 @@ export const api = {
       // treats as "leave the button alone". Widening this to pass strings through would let an
       // unrecognised value reach a comparison that reads it as demo.
       engineMode: b['engineMode'] === 'demo' ? 'demo' : b['engineMode'] === 'engine-unproven' ? 'engine-unproven' : null,
+      // Same closed set, same reason as engineMode above. This value chooses which command a reader is
+      // told to type, so an unrecognised string must never reach the screen — it lands as null and the
+      // screen names both routes instead.
+      setupRoute: b['setupRoute'] === 'packaged' ? 'packaged' : b['setupRoute'] === 'checkout' ? 'checkout' : null,
       brand: typeof b['brand'] === 'string' ? b['brand'] : '',
       // — a control the deployment cannot serve says so instead of always failing.
       // Absent field (an older portal-service) ⇒ available: the button behaves exactly as before.

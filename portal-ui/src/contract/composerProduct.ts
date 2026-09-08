@@ -317,6 +317,54 @@ export function nameBudget(
 }
 
 /**
+ * The pieces the form has not been given yet, in plain sentences.
+ *
+ * ── WHY THIS IS A SEPARATE LIST FROM blockers() ─────────────────────────────────────────────────────
+ *
+ * `blockers()` is about the SEARCH — the wrong product for the geography, too many names, a territory
+ * cap. Everything in it is a reason the search on screen could not run as described, and the composer
+ * gates saving on it, because a saved search that cannot run is worth nothing to whoever opens it next.
+ *
+ * This list is about the FORM. A name, and something saying what the name is for. They are not reasons
+ * a search is wrong; they are pieces nobody has typed yet, and a half-filled form is a perfectly good
+ * thing to save and come back to. Merging the two lists would take saving away from someone who has
+ * picked their levers and wants to keep them.
+ *
+ * ── AND IT EXISTS BECAUSE THE PREDICATE HAD NO SENTENCES ────────────────────────────────────────────
+ *
+ * The screen computed this condition as one boolean, fed it into `ready`, and rendered nothing. Every
+ * other term in `ready` has a sentence somewhere on the page; this one had none, so the primary action
+ * was greyed out with nothing anywhere saying which field would ungrey it. An outside user with one
+ * name typed and no goods read that as a screen with no way to start a search and stopped using the
+ * product. The sentences ARE the predicate now — the screen asks whether this list is empty rather
+ * than re-deriving the condition — so the reason cannot go missing again without the check going with
+ * it.
+ *
+ * @param names    the mark names on the form
+ * @param classes  the Nice classes resolved for this draft, from wherever they came
+ * @param goods    the free-text goods and services description
+ */
+export function missingPieces(
+  names: readonly string[], classes: readonly number[], goods: string,
+): readonly string[] {
+  const out: string[] = []
+  if (!names.length) {
+    out.push('Add the brand name you want cleared, in Names above.')
+    // ONE AT A TIME, most structural first. With no name at all, telling someone their goods are also
+    // missing is two chores where the first one may fill in the second — the brief reader takes a
+    // sentence and fills both.
+    return out
+  }
+  // EITHER, never both. This mirrors what the request schema accepts: classes or a description, and
+  // demanding the classes be retyped when the brand owner's own are already on the card is the kind of
+  // busywork that makes a form feel broken.
+  if (!classes.length && !goods.trim()) {
+    out.push('Say what the name is used for — pick classes, or describe the goods and services. Either one is enough.')
+  }
+  return out
+}
+
+/**
  * Everything standing between this draft and a run, in plain sentences.
  *
  * Deliberately NOT a boolean. Each of these is a different thing to fix, and a disabled button with no
@@ -362,6 +410,74 @@ export function blockers(d: Draft, product: Product | null, names = 0): readonly
     out.push(`That is ${named.length} territories — a search takes at most ${MAX_TERRITORIES}. Remove some.`)
   if (!product.available) out.push(product.unavailableNote || 'That search is not available just now.')
   return out
+}
+
+// ── readiness, and the sentence that goes with it ───────────────────────────────────────────────────
+//
+// ONE FUNCTION, because they are one fact. The screen used to compute `ready` as a chain of six `&&`
+// terms in the JSX and the reason as a separate chain of `??` fallbacks 800 lines further down, and
+// nothing tied the two together. Adding a seventh term to the boolean and forgetting the seventh
+// sentence was a one-line edit that greyed the primary action out in silence — which is the defect
+// this screen was rebuilt to end, returning wearing the fix.
+//
+// So `ready` and `blockedBy` are derived from the SAME ordered list, and the relation is not a
+// convention anybody has to remember:
+//
+//     ready === (blockedBy === null)
+//
+// Every condition carries its sentence at the same site. A new term is added to `CHAIN` or it does not
+// affect readiness at all, and the compiler asks for the sentence.
+//
+// TOTAL BY CONSTRUCTION. `blockedBy` is never null and never blank while `ready` is false: the last
+// entry is a sentence with no condition of its own to fail, and a condition whose sentence came back
+// empty falls through to it rather than to nothing. That last case is defensive rather than live —
+// `blockers()` already answers when no product is picked — and it is what stops a future empty string
+// in one of the lists from reaching a reader as a blank explanation under a dead button.
+
+export type Readiness = {
+  /** Whether the search on screen can be started. */
+  readonly ready: boolean
+  /** The first reason it cannot, as one sentence. Non-empty whenever `ready` is false; null when it is true. */
+  readonly blockedBy: string | null
+}
+
+/**
+ * Whether this draft can be started, and the first reason it cannot.
+ *
+ * Ordered the way the notices on the page are ordered, because the footer shows one sentence and the
+ * reader fixes them from the top: the names they typed, then the pieces the form still wants, then the
+ * search itself, then the allowances.
+ *
+ * @param i.gaps       missingPieces() — what the form has not been given
+ * @param i.stops      blockers() — why the search as described could not run
+ * @param i.nameStops  the mark names the server's own length limit refuses
+ * @param i.budget     nameBudget() — more names than this product reads, with both figures
+ * @param i.exhausted  today's allowance is spent
+ * @param i.hasProduct a product is picked at all
+ */
+export function readiness(i: {
+  readonly gaps: readonly string[]
+  readonly stops: readonly string[]
+  readonly nameStops: readonly string[]
+  readonly budget: { readonly allowed: number; readonly over: number } | null
+  readonly exhausted: boolean
+  readonly hasProduct: boolean
+}): Readiness {
+  const NOTHING_PICKED = 'Pick one of the searches above to begin.'
+  const chain: readonly (readonly [boolean, string])[] = [
+    [i.nameStops.length > 0, i.nameStops[0] ?? ''],
+    [i.gaps.length > 0, i.gaps[0] ?? ''],
+    [i.stops.length > 0, i.stops[0] ?? ''],
+    [i.budget != null, i.budget
+      ? `This search reads ${i.budget.allowed} name${i.budget.allowed === 1 ? '' : 's'} at a time, and you have ${i.budget.allowed + i.budget.over}.`
+      : ''],
+    [i.exhausted, 'No searches left on today’s allowance.'],
+    [!i.hasProduct, NOTHING_PICKED],
+  ]
+  const blocking = chain.filter(([when]) => when)
+  if (!blocking.length) return { ready: true, blockedBy: null }
+  const said = blocking.map(([, sentence]) => sentence).find((s) => s.trim().length > 0)
+  return { ready: false, blockedBy: said ?? NOTHING_PICKED }
 }
 
 /**

@@ -2248,8 +2248,8 @@
           "todos": 0
         },
         "invocation-prefix.test.mjs": {
-          "tests": 9,
-          "asserts": 15,
+          "tests": 12,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -2590,9 +2590,9 @@
           "todos": 0
         },
         "one-name-per-command.test.mjs": {
-          "tests": 2,
-          "asserts": 4,
-          "skips": 2,
+          "tests": 4,
+          "asserts": 9,
+          "skips": 4,
           "todos": 0
         },
         "one-repeat-detector-three-receivers.test.mjs": {
@@ -2854,8 +2854,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 116,
-          "asserts": 621,
+          "tests": 117,
+          "asserts": 626,
           "skips": 0,
           "todos": 0
         },
@@ -5228,8 +5228,8 @@
       "ext": "ts",
       "perFile": {
         "api.test.ts": {
-          "tests": 34,
-          "asserts": 124,
+          "tests": 35,
+          "asserts": 128,
           "skips": 0,
           "todos": 0
         },
@@ -5252,8 +5252,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 21,
-          "asserts": 93,
+          "tests": 27,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -5300,8 +5300,8 @@
           "todos": 0
         },
         "guard.test.ts": {
-          "tests": 14,
-          "asserts": 37,
+          "tests": 15,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -5354,8 +5354,8 @@
           "todos": 0
         },
         "newClearanceStructure.test.ts": {
-          "tests": 3,
-          "asserts": 29,
+          "tests": 8,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -5398,6 +5398,12 @@
         "profileFields.test.ts": {
           "tests": 48,
           "asserts": 141,
+          "skips": 0,
+          "todos": 0
+        },
+        "readiness.test.ts": {
+          "tests": 6,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

@@ -46,7 +46,7 @@ is the one this repo keeps re-finding — right about the rule, narrow about the
    search` and six others walked through: **5 sites found of the 12 a direct search showed.** Fixed by
    matching the column case-insensitively and carrying one spelling per row.
 2. **Line wrapping.** With casing fixed it found all 12 and reported green — over a **thirteenth** site
-   that was live in the tree. JSX prose wraps, and `NewClearance.tsx:1051` read *"…yours to set — the
+   that was live in the tree. JSX prose wraps, and one line of `NewClearance.tsx` read *"…yours to set — the
    saved"* / *"search does not fix it"* across two source lines. No single line held the phrase, so a
    line-by-line matcher saw nothing. **It was found by an unrelated test failing on the same rename, not
    by the guard.** Fixed by matching whole-file with `\s+` between the words.
