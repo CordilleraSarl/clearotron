@@ -17,6 +17,8 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
 
@@ -374,4 +376,94 @@ test("331 E: a caveat making a NEW claim survives; one that only restates the bl
   );
   assert.ok(html.includes("worst-case exposure"), "a caveat with a new claim is kept");
   assert.ok(!html.includes(restates), "one whose every content word is already in the block is not repeated");
+});
+
+// ── the word budget (tracker issue 331's "how to judge it") ─────────────────────────────────────────
+//
+// The complaint this whole redesign answers was length: one name, 2,000 words before the reader reached
+// the note saying the request may have been scoped to the wrong market. The design asks for under 1,200
+// visible words with every fold closed, and nothing measured it — so the page can grow back to where it
+// started with every other arm in this file green.
+//
+// AGAINST THE REAL RUN, NOT THE FIXTURES ABOVE. Those are three sentences per mark: a budget asserted
+// over them would pass at any page size and say nothing, which is the arm this file did not need. The
+// demo run is committed, is what `npm run example` publishes, and is one name.
+//
+// VISIBLE MEANS FOLDS CLOSED: a `<summary>` is on screen, the rest of a closed `<details>` is not, and
+// `<script>`/`<style>`/comments never are. A BLOCK BOUNDARY IS A WORD BOUNDARY — generated markup
+// carries no whitespace between adjacent block elements, so a walker that concatenates text reads
+// `</p><p>` as one token and under-reads by one word per join, silently. The inline set is listed
+// because an unknown tag is far more likely to be a block than a span, and guessing the other way loses
+// words rather than inventing them.
+const INLINE_TAGS = new Set(["a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn", "em",
+  "i", "kbd", "mark", "q", "s", "samp", "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr"]);
+const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
+  "source", "track", "wbr"]);
+const NEVER_READ = new Set(["script", "style", "head", "template", "noscript"]);
+
+function visibleWords(html, { foldsOpen = false } = {}) {
+  const out = [];
+  const stack = [];
+  let i = 0;
+  while (i < html.length) {
+    if (html.startsWith("<!--", i)) { const e = html.indexOf("-->", i); i = e < 0 ? html.length : e + 3; continue; }
+    if (html[i] === "<") {
+      const e = html.indexOf(">", i);
+      if (e < 0) break;
+      const raw = html.slice(i + 1, e);
+      const closing = raw[0] === "/";
+      const tag = raw.replace(/^\//, "").split(/[\s/>]/)[0].toLowerCase();
+      if (tag) {
+        if (closing) { for (let k = stack.length - 1; k >= 0; k--) if (stack[k].tag === tag) { stack.length = k; break; } }
+        // A `<details open>` IS ON SCREEN. The first version of this ignored the attribute and treated
+        // every fold as closed, which made it blind to the one change that would put the folded detail
+        // back in front of the reader — planted by opening a fold, and the arm passed. What is being
+        // measured is what a reader sees, not what the markup could hide if it chose to.
+        else if (!raw.endsWith("/") && !VOID_TAGS.has(tag)) stack.push({ tag, open: /\sopen(\s|=|$|\/)/i.test(raw) });
+        if (!INLINE_TAGS.has(tag)) out.push(" ");
+      }
+      i = e + 1;
+      continue;
+    }
+    const e = html.indexOf("<", i);
+    const skipping = stack.some((e) => NEVER_READ.has(e.tag));
+    // Inside a CLOSED <details>, everything is hidden EXCEPT the <summary> that labels it.
+    const hidden = !foldsOpen && stack.some((e, k) =>
+      e.tag === "details" && !e.open && !stack.slice(k + 1).some((f) => f.tag === "summary"));
+    if (!skipping && !hidden) out.push(html.slice(i, e < 0 ? html.length : e).replace(/&nbsp;/g, " ").replace(/&[a-z]+;|&#\d+;/gi, "x"));
+    i = e < 0 ? html.length : e;
+  }
+  return out.join("").trim().split(/\s+/).filter(Boolean).length;
+}
+
+test("331: the one-name page stays inside its word budget, folds closed", () => {
+  const at = (p) => fileURLToPath(new URL(`../../demo/knockout-search/run/${p}`, import.meta.url));
+  const j = (p) => JSON.parse(readFileSync(at(p), "utf8"));
+  const findings = j("knockout-findings.json");
+  assert.equal((findings.marks ?? []).length, 1, "the budget in the issue is stated for a ONE-NAME page");
+
+  const html = renderKnockoutHtml(findings, j("_driver/framework.json"), {
+    runId: "budget", overall: null, issued: "2026-09-07",
+    registerCounts: j("_driver/register-counts.json"),
+    registerRecords: j("_driver/register-records.json"),
+    instructedScope: j("_driver/instructed-scope.json"),
+    identity: null, matter: "budget", demoData: false,
+    delivery: { privileged: false },
+  });
+
+  const closed = visibleWords(html);
+  const open = visibleWords(html, { foldsOpen: true });
+
+  // A FLOOR AS WELL AS A CEILING. A renderer that emitted almost nothing would satisfy a ceiling alone,
+  // and a page that has stopped rendering its content reads exactly like a page that got shorter.
+  assert.ok(closed > 400, `the page rendered only ${closed} visible words — that is not a shorter page, it is a broken one`);
+  assert.ok(closed < 1200,
+    `the one-name page is ${closed} visible words with every fold closed; the design asks for under 1,200. `
+    + `The complaint this answers was 2,000 words before the reader reached the request flag.`);
+
+  // AND THE FOLDS MUST ACTUALLY HOLD SOMETHING. Without this, deleting every <details> would drive the
+  // closed count down and pass — the detail would be gone from the page rather than folded off it, and
+  // "folds closed" would be measuring a page that has no folds.
+  assert.ok(open > closed + 200,
+    `opening the folds added only ${open - closed} words, so the detail is not being folded away — it is missing`);
 });
