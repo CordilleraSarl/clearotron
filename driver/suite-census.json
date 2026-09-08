@@ -111,9 +111,9 @@
           "skips": 0,
           "todos": 0
         },
-        "a-clean-install-offers-generic-and-the-demo.test.mjs": {
-          "tests": 5,
-          "asserts": 7,
+        "a-clean-install-offers-generic-alone.test.mjs": {
+          "tests": 9,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -1630,8 +1630,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 23,
-          "asserts": 62,
+          "tests": 24,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
