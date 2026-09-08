@@ -13,7 +13,7 @@
 // `--check` re-derives and exits non-zero if the committed table disagrees with the tree, which is what
 // CI runs. Without it, the table is rewritten.
 import { readFileSync, writeFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { publishedPopulation } from "./published-population.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SIGNATURES, censusOf } from "../driver/reference-strip-signatures.mjs";
@@ -21,8 +21,13 @@ import { SIGNATURES, censusOf } from "../driver/reference-strip-signatures.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TABLE = join(ROOT, "driver/test/fixtures/reference-strip-backlog.json");
 
-const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
-  .split("\n").filter(Boolean);
+// THE PUBLISHED POPULATION, NOT THE INDEX. `git ls-files` reads the index, and an overlay run stages
+// the withheld corpus over a clone without committing it — so minting there wrote withheld hits into
+// this public table with nothing reporting it. See scripts/published-population.mjs.
+const tracked = publishedPopulation(ROOT, {
+  includeStaged: process.argv.includes("--include-staged"),
+  what: "the reference-strip backlog",
+});
 const minted = censusOf(ROOT, tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
 
 if (process.argv.includes("--check")) {

@@ -57,7 +57,7 @@
 // intact text that a ruling removes, whose population goes to zero the day the sweep runs and then
 // wants a guard against reintroduction rather than a backlog. Different residue, different repair.
 import { readFileSync, writeFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { publishedPopulation } from "./published-population.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -122,8 +122,13 @@ export function surveyOf(files, read) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
-    .split("\n").filter(Boolean);
+  // THE PUBLISHED POPULATION, NOT THE INDEX — see scripts/published-population.mjs. The counts this
+  // prints are read as a statement about the public tree, and under an overlay `git ls-files` would
+  // have made them a statement about the withheld corpus instead.
+  const tracked = publishedPopulation(ROOT, {
+    includeStaged: process.argv.includes("--include-staged"),
+    what: "this survey",
+  });
   const s = surveyOf(tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
   // BEFORE ANYTHING ELSE, because every number under it is about the files that COULD be read.
   if (s.unreadable.length) {

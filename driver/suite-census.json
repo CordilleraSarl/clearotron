@@ -273,6 +273,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-floor-is-minted-over-the-published-tree.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-gone-session-meets-a-door-not-a-json-body.test.mjs": {
           "tests": 4,
           "asserts": 16,
