@@ -654,7 +654,7 @@ function readProfilesLayer(dir) {
  *
  *  `dir` names the OVERLAY, not the whole store: passing it keeps the bundled set underneath, which is
  *  what makes an empty store a working install. Pass `dir: null` for the bundled set alone. */
-export function loadProfiles({ dir, force = false, includeTestFixtures } = {}) {
+export function loadProfiles({ dir, force = false, includeTestFixtures, includeDemo } = {}) {
   // — LAYERING APPLIES ONLY TO THE ENV-RESOLVED STORE, and that boundary is deliberate.
   //
   // `dir` OMITTED => resolve the deployment's store, overlay over base. `dir` PASSED => that directory
@@ -669,7 +669,10 @@ export function loadProfiles({ dir, force = false, includeTestFixtures } = {}) {
   const explicit = dir !== undefined;
   const overlay = explicit ? null : PROFILES_OVERLAY_DIR;
   const baseDir = explicit ? (dir || PROFILES_BASE_DIR) : PROFILES_BASE_DIR;
-  const cacheKey = `${overlay ?? ""} :: ${baseDir} :: ${includeTestFixtures ?? "env"} :: ${process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ?? ""}`;
+  // EVERY DIMENSION THAT CHANGES THE ANSWER IS IN THE KEY. A cache keyed on the directory alone
+  // serves the demo's roster to the next caller that did not ask for it, which is the defect this
+  // gate exists to prevent, arriving from inside.
+  const cacheKey = `${overlay ?? ""} :: ${baseDir} :: ${includeTestFixtures ?? "env"} :: ${process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ?? ""} :: ${includeDemo ?? "env"} :: ${process.env.CLEAROTRON_DEMO_PROFILES ?? ""}`;
   if (cache && !force && cache.key === cacheKey) return cache.profiles;
 
   // FAIL LOUD ON AN UNREADABLE OVERLAY, the same ruling as the doctrine tree's. existsSync() answers
@@ -707,10 +710,13 @@ export function loadProfiles({ dir, force = false, includeTestFixtures } = {}) {
   // So the loader answers it. A profile marked `testFixture` is refused from the roster this returns, on
   // every route, whether it was excluded from a tarball or not — and the suite asks for it by name.
   //
-  // WHY NOT `demoData`, WHICH ALREADY MEANS FICTION. Because it means a DIFFERENT fiction:
-  // `demo-brand-owner` carries it, and must stay offered wherever the demo is — that flag marks
-  // provenance, and refuses a real clearance, while leaving the account listable. This one marks
-  // visibility. Overloading the first would have hidden the demo account the demo exists to show.
+  // TWO FLAGS, TWO QUESTIONS, AND THE SECOND ONE'S ANSWER CHANGED. `testFixture` marks visibility:
+  // a suite fixture is never offered. `demoData` marks provenance: the account is fiction and the
+  // admission wall refuses a real clearance under it. This file argued that `demoData` must leave its
+  // account LISTABLE, because the demo needed to show it — true until the owner ruled otherwise on
+  // 2026-09-08. A fresh install now resolves `generic` alone, and the demo asks for its own account
+  // when it runs, so the demo account is refused here too. The flags stay separate because the
+  // questions are: a fixture is never shown to anybody, a demo account is shown to the demo.
   //
   // ONE ROSTER, NOT TWO. The tested set and the resolvable set are now the same files with a flag,
   // rather than five profiles the suite exercises against two a customer receives. That disjoint pair is
@@ -723,7 +729,7 @@ export function loadProfiles({ dir, force = false, includeTestFixtures } = {}) {
   //
   // That leaves the tested roster larger than the resolved one, which is the disjoint-roster shape this
   // module's header narrates and the reason a packaging-only fix was refused. What makes it one roster
-  // rather than two is `a-clean-install-offers-generic-and-the-demo`: it names both sides — every file
+  // rather than two is `a-clean-install-offers-generic-alone`: it names both sides — every file
   // in the directory, and exactly what a resolved roster returns — so the difference between them is
   // asserted rather than assumed, and adding a fixture without marking it reds that check.
   //
@@ -735,6 +741,39 @@ export function loadProfiles({ dir, force = false, includeTestFixtures } = {}) {
     ? includeTestFixtures
     : String(process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ?? "").trim() === "1";
   if (!asked) for (const [k, p] of [...profiles]) if (p?.testFixture === true) profiles.delete(k);
+
+  // THE DEMO ACCOUNT IS NOT PART OF A FRESH INSTALL EITHER — owner ruling, 2026-09-08: a clean install
+  // resolves `generic` and nothing else, and the demo brings its own account when somebody runs it.
+  // Nobody should have to clean demo material out of an environment they just created.
+  //
+  // Same shape as the gate above and for the same reason: the packaging exclusion cannot answer this,
+  // because `git clone && npm install` is a documented route on which the checkout IS the bundled
+  // directory. The loader answers it on every route.
+  const askedDemo = includeDemo !== undefined
+    ? includeDemo
+    : String(process.env.CLEAROTRON_DEMO_PROFILES ?? "").trim() === "1";
+
+  // — AND IT GATES THE LAYER, NOT THE FLAG. The ruling is about the demo account this PRODUCT bundles.
+  // A deployment that put a `demoData` account in its OWN configured store chose to have it: that is an
+  // operator's decision about their own roster, and the admission wall still refuses a real clearance
+  // under it, so nothing is spent. Gating on the flag alone would have reached into a configured store
+  // and deleted an account nobody asked us to hide — the test deployment has one. When an overlay is
+  // configured this loader reads that store and not the bundled directory, so the question is which
+  // directory was actually read — NOT whether an overlay was set. An explicit `dir` pointing at a
+  // configured store leaves `overlay` null while reading somebody's own roster, and `!overlay` would
+  // have called that bundled and gated it.
+  const bundled = (overlay ?? baseDir) === PROFILES_BASE_DIR;
+  //
+  // THE MORE SPECIFIC FLAG DECIDES. Every shipped profile but `generic` carries `demoData`, the three
+  // suite fixtures included, so a demo gate applied to all of them would swallow a roster somebody had
+  // explicitly asked for: `includeTestFixtures: true` would return `generic` alone, silently, and a
+  // check that asks for its own fixtures would pass having exercised nothing. That is the same vacuous
+  // green two of this loader's own checks produced before the argument beat the environment. A fixture's
+  // visibility is answered by its own gate above; this one answers only for accounts that are demo data
+  // and nothing more specific.
+  if (!askedDemo && bundled) {
+    for (const [k, p] of [...profiles]) if (p?.demoData === true && p?.testFixture !== true) profiles.delete(k);
+  }
   if (overlay && !profiles.has("generic")) {
     const base = readProfilesLayer(baseDir);
     if (base.has("generic")) profiles.set("generic", base.get("generic"));
@@ -803,14 +842,22 @@ let projectCache = null;
  * whose projects are beside it" from "a project directory whose customer is gone". Those want different
  * answers and the file is the only place that still holds the difference.
  */
-function isTestFixtureKey(roots, key) {
+function readProfileFlag(roots, key, flag) {
   for (const root of roots) {
     const f = join(root, `${key}.json`);
     if (!existsSync(f)) continue;
-    try { return JSON.parse(readFileSync(f, "utf8"))?.testFixture === true; } catch { return false; }
+    try { return JSON.parse(readFileSync(f, "utf8"))?.[flag] === true; } catch { return false; }
   }
   return false;
 }
+
+const isTestFixtureKey = (roots, key) => readProfileFlag(roots, key, "testFixture");
+
+/** Is this project directory's customer an account the DEMO brings, rather than one this install has?
+ *  Read from the FILE for the same reason as the fixture check beside it: the roster handed to this walk
+ *  has already dropped the account, so asking the roster cannot tell "the demo's, and hidden" from "the
+ *  customer is gone", and the second is an authoring error that must still hard-fail. */
+const isDemoKey = (roots, key) => readProfileFlag(roots, key, "demoData");
 
 /** Load every profiles/projects/<customer>/<slug>.json → Map("<customer>/<slug>" → overlay). Each overlay is
  *  validated in SPARSE mode (PROJECT_KEYS optional, customer-only keys rejected) and carries its lifted-out
@@ -856,6 +903,12 @@ export function loadProjects({ dir, profiles, force = false } = {}) {
     // marker from the file, because the roster this walk was handed is the one that already dropped it.
     if (!roster.has(ck)) {
       if (isTestFixtureKey(roots, ck)) continue;
+      // AND THE DEMO'S OWN PROJECTS, for the identical reason. `profiles/projects/demo-brand-owner/`
+      // ships, and since a fresh install stopped resolving that account this walk met a project whose
+      // customer it could not see — a HARD startup failure, from the product's own files, on every
+      // clean install. Caught by the arm below, not by review; it is the third time this shape has been
+      // found in this loader.
+      if (isDemoKey(roots, ck)) continue;
       throw new Error(`profiles/projects/${ck}/: no customer profile "${ck}" — a project must live under a known customer (add profiles/${ck}.json first)`);
     }
     const cdir = join(projDir, ck);

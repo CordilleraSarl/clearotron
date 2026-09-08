@@ -27,6 +27,7 @@ import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
 
 export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   const account = ctx.owner
@@ -56,7 +57,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
         <div className="notice">
           <b>Choose a brand owner first</b>
           <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            Projects belong to one brand owner. Pick one at the top left.
+            Projects belong to one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}
           </p>
         </div>
       </div>

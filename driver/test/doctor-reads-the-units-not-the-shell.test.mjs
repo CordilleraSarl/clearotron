@@ -507,10 +507,33 @@ test("342 the demo account is named as the demo's, never counted as an onboarded
     "the roster refused to load, so no accounts line printed at all and every assertion below is about silence");
   const line = accountsLine(out);
   assert.match(line, /`generic` is the account this install rates under/, "generic is still the answer");
-  assert.match(line, /demo-brand-owner/, "and the demo account is still disclosed, not hidden");
+  // OWNER RULING 2026-09-08 hides the BUNDLED demo account from a fresh install. It does not reach into
+  // a store somebody configured: this arm writes its own store, so the account in it is that
+  // deployment's choice and stays disclosed. The two readings of `demoData` are told apart by the layer
+  // the file is in, not by the flag — see the gate in profiles.mjs.
+  assert.match(line, /demo-brand-owner/, "an account this deployment's own store carries is still disclosed");
   assert.match(line, /DEMO DATA/, "…with the marking that says a real clearance under it is refused");
   assert.doesNotMatch(line, /1 brand owner\(s\) resolve here/,
     "the exact sentence measured on a fresh install: a customer the reader never onboarded");
+});
+
+test("342 where a demo account DOES resolve, doctor still names it and marks it", () => {
+  // The grant half. The two arms above prove doctor stops naming an account this install does not
+  // offer; on their own they are satisfied by a doctor that can no longer name a demo account at all,
+  // which would hide it from the one context where it is real. Asked for by environment, the way the
+  // demo asks.
+  const home = installedHome(GOOD_ENV);
+  const store = profileStore(home, "profiles-demo-asked", {
+    generic: { name: "Generic" }, "demo-brand-owner": { name: "Demo Brand Owner", demoData: true },
+  });
+  const out = doctor(home, { CLEAROTRON_CUSTOMERS_DIR: store, CLEAROTRON_DEMO_PROFILES: "1" }).out;
+  assert.match(out, new RegExp(store.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    "doctor did not resolve the store this arm wrote — the assertions below would be about the bundled roster");
+  const line = accountsLine(out);
+  assert.match(line, /demo-brand-owner/, "the demo's own account, where it genuinely resolves");
+  assert.match(line, /DEMO DATA/, "…with the marking that says a real clearance under it is refused");
+  assert.doesNotMatch(line, /1 brand owner\(s\) resolve here/,
+    "still never counted as somebody's onboarded customer");
 });
 
 test("342 an onboarded owner IS counted, and the demo is named beside it rather than among it", () => {
@@ -529,6 +552,6 @@ test("342 an onboarded owner IS counted, and the demo is named beside it rather 
     "the roster refused to load, so no accounts line printed at all and every assertion below is about silence");
   const line = accountsLine(out);
   assert.match(line, /1 brand owner\(s\) resolve here: acme/, "one real owner, counted as one");
-  assert.match(line, /demo-brand-owner/, "the demo named separately");
+  assert.match(line, /demo-brand-owner/, "the demo named separately, not counted among the owners");
   assert.doesNotMatch(line, /2 brand owner\(s\)/, "the demo must never be counted into the total");
 });

@@ -235,6 +235,9 @@ if (!providerChosen) process.env.CLEAROTRON_DATABASE = "corsearch";
 // and it is visible: a reader of this file can see that the suite runs against a roster no install
 // resolves, which is a thing worth being able to see rather than a default nobody set.
 process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ??= "1";
+// The demo account is refused from a fresh install's roster for the same reason and by the same
+// mechanism; the suite asks for it here, once, so no check has to know it was hidden.
+process.env.CLEAROTRON_DEMO_PROFILES ??= "1";
 
 // ── A PARTLY-BLIND SUITE IS NOT A FAILING SUITE ────────────────────────────────────────────
 //

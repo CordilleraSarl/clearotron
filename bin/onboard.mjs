@@ -1248,6 +1248,46 @@ export async function runCheck() {
         + "clearotron doctor --probe-engine to find out.");
     }
 
+    // AND WHETHER THE ENGINE AGREES, which is a different question from the one above and the reason an
+    // outside user gave up on this product. This command reads its OWN environment; the portal's New
+    // clearance screen reads what the engine recorded when it last started. Both were right and they
+    // said opposite things, so a reader who checked the confident-looking one first was told the engine
+    // was fine while no search would start. Reported here in the same words the configuration page uses,
+    // because a doctor that cannot see a contradiction the product ships with is the wrong doctor.
+    try {
+      const { readFlagSnapshot, postureDisagreement } = await import("../driver/flag-snapshot.mjs");
+      // THE READ-SIDE ACCESSOR, because this is a read: `config.poolRoot` throws on a box with no pool
+      // configured, and `readFlagSnapshot(null)` already answers "no capture" for exactly that case.
+      const snap = readFlagSnapshot(config.poolRootOrNull);
+      const rows = snap
+        ? postureDisagreement(snap, { flags: {}, engine: engineInventory(invEnv) })
+        : null;
+      // NULL IS NOT AGREEMENT and neither is an empty pool — a box with no capture has nothing to
+      // disagree with, and saying so beats printing a clean bill nobody measured.
+      const clash = (rows ?? []).find((r) => r.what === "engine program");
+      if (clash) {
+        problem(`The engine that last ran and this machine disagree about the engine program: the last run `
+          + `recorded it as ${clash.capture}, this machine reads it as ${clash.live}. A NEW search will `
+          + `refuse while that is true. Restart the engine service so it re-reads its PATH, or install the `
+          + `CLI where the service can see it.`);
+      }
+    } catch (e) {
+      // WHAT ACTUALLY REACHES THIS CATCH, established by driving it rather than by reading it.
+      //
+      // Not a box with no pool: `poolRootOrNull` answers null and `readFlagSnapshot(null)` answers null,
+      // neither throwing. And NOT an unreadable capture either — `readFlagSnapshot` has its own try and
+      // returns null for a corrupt file, so a damaged capture is already indistinguishable from an absent
+      // one by the time this code sees it. That is worth knowing and is not this change's to fix.
+      //
+      // So this catch covers an import that has broken or an unexpected throw out of the comparison —
+      // the check having stopped running. A doctor silent about its own failure is the defect the rest of
+      // this change is about, an absence rendered as a clean bill, so it says so. A caution rather than a
+      // problem: the engine may be perfectly fine and it is this check that is broken.
+      info(`Could not compare this machine against what the engine last recorded (${e?.message ?? e}). `
+        + `That comparison is what catches a settings page reading healthy while a search will not start, `
+        + `so this run has not checked it either way.`);
+    }
+
     // item 5 — WHICH BILLING LANE, reported rather than left to be inferred from a variable's
     // absence. `--check` named the engine and its binary and never said how the box pays, so the two
     // states that matter — metered per token, or drawn against a subscription — were indistinguishable
@@ -1498,30 +1538,36 @@ export async function runCheck() {
         // onboarded — counting it would tell an operator with an empty store that they have one.
         //
         // A DEMO ACCOUNT IS NOT AN ONBOARDED OWNER EITHER, and until this line it was counted as one. A
-        // fresh install ships the demo account, so `doctor` reported "1 brand owner(s) resolve here:
-        // demo-brand-owner (DEMO DATA)" on a machine where nobody had onboarded anything — and never
-        // named `generic`, which is the account that actually rates a run there. The reader is told they
-        // have a customer and not told what they are running on. Both halves wrong from one list.
+        // fresh install used to ship the demo account into every roster, so `doctor` reported "1 brand
+        // owner(s) resolve here: demo-brand-owner (DEMO DATA)" on a machine where nobody had onboarded
+        // anything — and never named `generic`, which is the account that actually rates a run there.
+        // The reader is told they have a customer and not told what they are running on. Both halves
+        // wrong from one list.
+        //
+        // SINCE 2026-09-08 A FRESH INSTALL RESOLVES `generic` ALONE (owner ruling): nobody should have to
+        // clean demo material out of an environment they just created. So the demo branch below no longer
+        // fires on a plain install — it fires inside the demo, which asks for its own account. It is kept
+        // rather than deleted because it is still reachable, and a reader who meets the demo account
+        // there is owed the same two facts: it is fiction, and a real clearance under it is refused at
+        // the admission wall.
         //
         // Three states, told apart, because they mean three different things to whoever is reading:
-        // an onboarded roster, the house default alone, and the house default plus what the demo brings.
-        // The demo account keeps its DEMO DATA marking wherever it appears — that marking is the
-        // member-level half of the same honesty, and a real clearance under it is refused at the
-        // admission wall, which an operator should learn here rather than from that refusal.
+        // an onboarded roster, the house default alone, and the house default beside what the demo
+        // brought with it.
         const owners = keys.filter((k) => k !== "generic" && !demo.includes(k));
         if (!owners.length) {
           const base = "`generic` is the account this install rates under — the house default, and the "
             + "only one a clean install has";
           if (demo.length) {
-            info(`${base}. Also present, marked DEMO DATA: ${demo.join(", ")} — fiction that ships with `
-              + "this install rather than an account anybody onboarded, and a real clearance under one is refused");
+            info(`${base}. The demo brought one with it, marked DEMO DATA: ${demo.join(", ")} — fiction `
+              + "rather than an account anybody onboarded, and a real clearance under one is refused");
           } else {
             info(`${base}. An empty store is a working install on Generic defaults; it is also what a `
               + "store pointed at the wrong directory looks like");
           }
         } else {
           const line = `${owners.length} brand owner(s) resolve here: ${owners.join(", ")}`;
-          if (demo.length) info(`${line}. Also present, marked DEMO DATA: ${demo.join(", ")} — not counted above, and a real clearance under one is refused`);
+          if (demo.length) info(`${line}. The demo brought one with it, marked DEMO DATA: ${demo.join(", ")} — not counted above, and a real clearance under one is refused`);
           else ok(line);
         }
         try {
