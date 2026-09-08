@@ -3517,7 +3517,7 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
       // local-auth block, so calling it from here threw ReferenceError and this route answered 500 —
       // worse than the dead link it replaced, because a dead link looks like a dead link and a 500
       // looks like the server broke. Found by `npm run lint:driver`, which says it in one line
-      // (`'redirect' is not defined`), and by role-dev/Grogu driving the route rather than reading it.
+      // (`'redirect' is not defined`), and by driving the route rather than reading it (review, 2026-08).
       // Hoisting that helper would move it away from the comment explaining its own no-`?next=` rule,
       // so the four lines live here instead.
       if (!localAuth && url.pathname === "/portal/sign-out") {

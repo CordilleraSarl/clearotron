@@ -283,6 +283,21 @@ jobs:
       # actually kept, rather than the ones the source sets.
       - run: node scripts/report-frame-check.mjs
 
+      # DRIVEN IN BOTH DIRECTIONS, because a refusal that only ever runs on a supported Node has never
+      # been shown to refuse. The runner is always above the floor, so the second half raises the floor
+      # in a COPY of the manifest and requires exit 1 — the guard's own reason for existing, exercised
+      # rather than asserted. The copy is restored whatever happens, so a failure here cannot leave the
+      # tree edited for the steps that follow.
+      - name: The install refuses an unsupported Node, and only an unsupported one
+        run: |
+          set -euo pipefail
+          node scripts/preinstall-node-check.mjs
+          cp package.json package.json.bak
+          trap 'mv package.json.bak package.json' EXIT
+          node -e 'const f="package.json";const j=JSON.parse(require("node:fs").readFileSync(f,"utf8"));j.engines.node=">=99.0.0";require("node:fs").writeFileSync(f,JSON.stringify(j,null,2)+"\n")'
+          if node scripts/preinstall-node-check.mjs; then echo "the floor guard passed a version below the floor"; exit 1; fi
+          echo "refused as it should"
+
       - run: node scripts/home-render-check.mjs
       - run: node scripts/clearances-render-check.mjs
       - run: node scripts/composer-render-check.mjs

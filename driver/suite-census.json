@@ -2637,6 +2637,12 @@
           "skips": 4,
           "todos": 0
         },
+        "one-node-floor-read-in-one-place.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
         "one-repeat-detector-three-receivers.test.mjs": {
           "tests": 7,
           "asserts": 16,
