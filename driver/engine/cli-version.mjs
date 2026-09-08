@@ -22,12 +22,24 @@
 // tell a tool that would not answer from a record written before anybody asked. That distinction is the
 // reason for the field, so failing to write it is failing at the thing rather than at the edge of it.
 //
-// ── ONE SPAWN PER ENGINE PER RUN ────────────────────────────────────────────────────────────────────
+// ── ONE SPAWN PER BUILD, NOT PER PROCESS ────────────────────────────────────────────────────────────
 //
-// A dispatch is many stages and every stage would otherwise pay. The cache is keyed by the RESOLVED
-// binary path rather than by the engine id, because two engines can point at one binary and one engine
-// can be repointed mid-run by an operator — keying on the id would then serve a version for a file that
-// is no longer the one being spawned.
+// A dispatch is many stages and every stage would otherwise pay. But the cache lives as long as the
+// process, and the process is NOT one run: the drainer's watch loop calls the pipeline for job after job
+// without exiting. A first version cached there would be reported as fact for every later run in that
+// process — including runs served by a binary somebody upgraded in place underneath it.
+//
+// That is the exact silence this field exists to end, reintroduced by the cache meant to make it cheap,
+// and it would have been invisible: the record would carry a version, confidently, and be wrong.
+//
+// So the key is the path AND what the filesystem says about the file — an in-place upgrade changes the
+// modification time and the size, so it misses the cache and is probed again. The path alone is not
+// enough (two engines can point at one binary, an engine can be repointed) and the engine id is not
+// enough for the same reason.
+//
+// A file the filesystem cannot describe is NOT CACHED at all. Caching an unreadable probe under a key
+// derived from a failed stat would pin the failure for the life of the process, so a binary that
+// appeared a moment later would keep reading as absent.
 // ── WHAT THIS DEPENDS ON, WHICH IS NOT ENFORCEABLE FROM HERE ────────────────────────────────────────
 //
 // A probe that can change what it probes is not a probe. This one spawns the engine binary, so it rests
@@ -42,6 +54,7 @@
 // asserts every engine stand-in answers — the cheap ratchet under a condition that cannot be checked at
 // the call site.
 import { execFileSync } from "node:child_process";
+import { statSync } from "node:fs";
 
 /** Live for the process, keyed by resolved path. A run is one process; a probe is one spawn. */
 const CACHE = new Map();
@@ -63,9 +76,11 @@ export function parseVersion(out) {
  *
  * Never throws. A probe that could take down a dispatch would be a worse defect than the gap it closes.
  */
-export function probeCliVersion(bin, { run = null, timeoutMs = 5000, cache = CACHE } = {}) {
+export function probeCliVersion(bin, { run = null, timeoutMs = 5000, cache = CACHE, stat = statSync } = {}) {
   if (!bin) return { version: null, probe: "unreadable", why: "no engine binary was resolved" };
-  if (cache.has(bin)) return cache.get(bin);
+  let key = null;
+  try { const st = stat(bin); key = `${bin}\u0000${st.mtimeMs}:${st.size}`; } catch { /* not cacheable */ }
+  if (key && cache.has(key)) return cache.get(key);
   const spawn = run ?? ((b) => execFileSync(b, ["--version"], {
     encoding: "utf8", timeout: timeoutMs, stdio: ["ignore", "pipe", "ignore"],
   }));
@@ -80,7 +95,7 @@ export function probeCliVersion(bin, { run = null, timeoutMs = 5000, cache = CAC
   } catch (e) {
     result = { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160) };
   }
-  cache.set(bin, result);
+  if (key) cache.set(key, result);
   return result;
 }
 

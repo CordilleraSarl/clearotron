@@ -84,8 +84,44 @@ test("one spawn per binary, however many stages ask", () => {
   const cache = fresh();
   let spawns = 0;
   const run = () => { spawns++; return "2.1.241"; };
-  for (let i = 0; i < 10; i++) probeCliVersion("/bin/thing", { run, cache });
+  const stat = () => ({ mtimeMs: 1, size: 1 });
+  for (let i = 0; i < 10; i++) probeCliVersion("/bin/thing", { run, cache, stat });
   assert.equal(spawns, 1, "a dispatch is many stages and every one would otherwise pay");
+});
+
+// ── THE CACHE MUST NOT OUTLIVE THE BUILD IT DESCRIBES ───────────────────────────────────────────────
+//
+// The cache lives as long as the process, and the process is not one run: the drainer's watch loop runs
+// job after job without exiting. Keyed by path alone, the first version would be reported as fact for
+// every later run in that process — including runs served by a binary upgraded in place underneath it.
+// That is the silence this field exists to end, reintroduced by the cache meant to make it cheap, and it
+// would be invisible: the record would carry a version, confidently, and be wrong.
+
+test("a binary upgraded IN PLACE is probed again — the cache cannot outlive the build", () => {
+  const cache = new Map();
+  let spawns = 0;
+  let st = { mtimeMs: 1000, size: 40 };
+  const stat = () => st;
+  assert.equal(probeCliVersion("/bin/e", { run: () => (spawns++, "1.0.0"), cache, stat }).version, "1.0.0");
+  assert.equal(probeCliVersion("/bin/e", { run: () => (spawns++, "1.0.0"), cache, stat }).version, "1.0.0");
+  assert.equal(spawns, 1, "the same build must not be probed twice");
+
+  st = { mtimeMs: 2000, size: 41 };                       // somebody upgraded it under a running drainer
+  const after = probeCliVersion("/bin/e", { run: () => (spawns++, "2.0.0"), cache, stat });
+  assert.equal(after.version, "2.0.0",
+    "the record would have carried 1.0.0 for every run after the upgrade — confidently, and wrong");
+  assert.equal(spawns, 2, "a changed build must cost exactly one more spawn, not none and not one per stage");
+});
+
+test("a binary the filesystem cannot describe is NOT cached — a failure must not pin itself", () => {
+  const cache = new Map();
+  const r = probeCliVersion("/bin/gone", {
+    run: () => "9.9.9", cache, stat: () => { throw new Error("ENOENT"); },
+  });
+  assert.equal(r.probe, "ok", "an unstatable path is still probed — stat is for the cache key, not a gate");
+  assert.equal(cache.size, 0,
+    "caching under a key derived from a failed stat would pin the answer for the life of the process, "
+    + "so a binary that appeared a moment later would keep reading as it did before");
 });
 
 test("the cache is keyed by the RESOLVED PATH, not the engine id", () => {
@@ -94,9 +130,10 @@ test("the cache is keyed by the RESOLVED PATH, not the engine id", () => {
   const cache = fresh();
   const seen = [];
   const run = (b) => { seen.push(b); return b === "/bin/a" ? "1.0.0" : "2.0.0"; };
-  assert.equal(probeCliVersion("/bin/a", { run, cache }).version, "1.0.0");
-  assert.equal(probeCliVersion("/bin/b", { run, cache }).version, "2.0.0");
-  assert.equal(probeCliVersion("/bin/a", { run, cache }).version, "1.0.0");
+  const stat = () => ({ mtimeMs: 1, size: 1 });          // one build, so only the PATH can separate them
+  assert.equal(probeCliVersion("/bin/a", { run, cache, stat }).version, "1.0.0");
+  assert.equal(probeCliVersion("/bin/b", { run, cache, stat }).version, "2.0.0");
+  assert.equal(probeCliVersion("/bin/a", { run, cache, stat }).version, "1.0.0");
   assert.deepEqual(seen, ["/bin/a", "/bin/b"], "the second read of the first path must not spawn again");
   forgetCliVersions(cache);
   assert.equal(cache.size, 0, "and a deliberate repoint can clear it");
