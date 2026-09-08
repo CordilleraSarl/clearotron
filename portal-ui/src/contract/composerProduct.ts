@@ -317,6 +317,54 @@ export function nameBudget(
 }
 
 /**
+ * The pieces the form has not been given yet, in plain sentences.
+ *
+ * ── WHY THIS IS A SEPARATE LIST FROM blockers() ─────────────────────────────────────────────────────
+ *
+ * `blockers()` is about the SEARCH — the wrong product for the geography, too many names, a territory
+ * cap. Everything in it is a reason the search on screen could not run as described, and the composer
+ * gates saving on it, because a saved search that cannot run is worth nothing to whoever opens it next.
+ *
+ * This list is about the FORM. A name, and something saying what the name is for. They are not reasons
+ * a search is wrong; they are pieces nobody has typed yet, and a half-filled form is a perfectly good
+ * thing to save and come back to. Merging the two lists would take saving away from someone who has
+ * picked their levers and wants to keep them.
+ *
+ * ── AND IT EXISTS BECAUSE THE PREDICATE HAD NO SENTENCES ────────────────────────────────────────────
+ *
+ * The screen computed this condition as one boolean, fed it into `ready`, and rendered nothing. Every
+ * other term in `ready` has a sentence somewhere on the page; this one had none, so the primary action
+ * was greyed out with nothing anywhere saying which field would ungrey it. An outside user with one
+ * name typed and no goods read that as a screen with no way to start a search and stopped using the
+ * product. The sentences ARE the predicate now — the screen asks whether this list is empty rather
+ * than re-deriving the condition — so the reason cannot go missing again without the check going with
+ * it.
+ *
+ * @param names    the mark names on the form
+ * @param classes  the Nice classes resolved for this draft, from wherever they came
+ * @param goods    the free-text goods and services description
+ */
+export function missingPieces(
+  names: readonly string[], classes: readonly number[], goods: string,
+): readonly string[] {
+  const out: string[] = []
+  if (!names.length) {
+    out.push('Add the brand name you want cleared, in Names above.')
+    // ONE AT A TIME, most structural first. With no name at all, telling someone their goods are also
+    // missing is two chores where the first one may fill in the second — the brief reader takes a
+    // sentence and fills both.
+    return out
+  }
+  // EITHER, never both. This mirrors what the request schema accepts: classes or a description, and
+  // demanding the classes be retyped when the brand owner's own are already on the card is the kind of
+  // busywork that makes a form feel broken.
+  if (!classes.length && !goods.trim()) {
+    out.push('Say what the name is used for — pick classes, or describe the goods and services. Either one is enough.')
+  }
+  return out
+}
+
+/**
  * Everything standing between this draft and a run, in plain sentences.
  *
  * Deliberately NOT a boolean. Each of these is a different thing to fix, and a disabled button with no

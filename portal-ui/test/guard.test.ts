@@ -11,6 +11,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { registerGuard, hasUnsaved, confirmDiscard, attachBeforeUnload } from '../src/state/guard.ts'
+import { unsavedChanges } from '../src/state/useUnsaved.ts'
 
 const src = (p: string) => readFileSync(new URL(`../src/${p}`, import.meta.url), 'utf8')
 
@@ -128,10 +129,41 @@ test('every screen with an editable form registers, and reuses its own Save flag
   }
 })
 
+// ── what "unsaved" means, driven ────────────────────────────────────────────────────────────────────
+//
+// This was a source grep for the composer's own inline expression. It is a real predicate now, so it is
+// exercised instead: the grep could only ever say the old spelling was still there, and it would have
+// gone red on any correct rewrite while staying green on a wrong one that kept the words.
+const EMPTY = JSON.stringify({ names: [] })
+const TYPED = JSON.stringify({ names: ['AQUAPLUS'] })
+const MORE = JSON.stringify({ names: ['AQUAPLUS', 'AQUAPLUSS'] })
+
 test('the composer stands down once the run is submitted', () => {
   // Otherwise "Start another" and "View in Clearances" would both prompt about a draft that has already
   // been sent — the one moment on that screen when there is genuinely nothing left to lose.
-  assert.match(src('screens/NewClearance.tsx'), /submitted == null &&\s*JSON\.stringify\(draft\)/)
+  assert.equal(unsavedChanges({ current: TYPED, empty: EMPTY, saved: null, submitted: true }), false)
+  // And the control: the same draft, not yet sent, IS worth warning about.
+  assert.equal(unsavedChanges({ current: TYPED, empty: EMPTY, saved: null, submitted: false }), true)
+  // The screen still hands the predicate its own `submitted`, which no assertion above can see.
+  assert.match(src('screens/NewClearance.tsx'), /submitted: submitted != null/,
+    'the composer stopped telling the guard whether the run has been sent')
+})
+
+test('a fresh composer has nothing to lose, and a saved one has nothing to lose either', () => {
+  // ── THE DEFECT THIS PREDICATE WAS EXTRACTED TO FIX ─────────────────────────────────────────────
+  //
+  // The composer compared its draft against EMPTY and nothing else, so a save never cleared the flag.
+  // Somebody saved a search, was warned on the way out that they would lose it, came back, and found it
+  // had been saved all along. Both halves of what they reported — the save that looked like it did
+  // nothing, and the warning that was false — come from this one missing term.
+  assert.equal(unsavedChanges({ current: EMPTY, empty: EMPTY, saved: null, submitted: false }), false,
+    'an untouched form prompted')
+  assert.equal(unsavedChanges({ current: TYPED, empty: EMPTY, saved: TYPED, submitted: false }), false,
+    'a form that has just been saved still counts as unsaved work — the reported defect')
+  assert.equal(unsavedChanges({ current: MORE, empty: EMPTY, saved: TYPED, submitted: false }), true,
+    'an edit made AFTER a save must warn — otherwise the fix has simply switched the guard off')
+  // A save that returned the form to pristine still counts as clean, by either route.
+  assert.equal(unsavedChanges({ current: EMPTY, empty: EMPTY, saved: TYPED, submitted: false }), false)
 })
 
 test('useLoad clears on a DEPS change and keeps data across a reload', () => {

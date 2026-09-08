@@ -909,6 +909,37 @@ input.filter {
   max-width: 420px;   /* tracker issue 2086 — the note's width is the note's own, not its call site's */
 }
 
+/* The line beside the primary action: what happens next when it is available, and why it is not when
+   it is not. Capped here rather than at the call site for the same reason the note above is — width is
+   a decision this file makes. Narrower than the note because it sits IN the action row, beside a
+   button, rather than replacing it. */
+.footer-hint {
+  max-width: 260px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* The acknowledgement a save leaves beside the button that was pressed.
+   Quiet on purpose: it is a receipt, not an alert, and it sits in the same row as the primary action
+   without competing with it. No new colour — `--tone-minimal` (the palette's clear-green) and the hairline are what the rest of
+   this file already uses for a settled, good state. */
+.save-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--text-body);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+  border-radius: 7px;
+  padding: 7px 11px;
+}
+.save-done svg {
+  color: var(--tone-minimal);
+  flex: none;
+}
+
 .fw-meta {
   font-size: 12px;
   color: var(--text-muted);
