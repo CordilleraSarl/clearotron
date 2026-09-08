@@ -378,7 +378,7 @@ test("331 E: a caveat making a NEW claim survives; one that only restates the bl
   assert.ok(!html.includes(restates), "one whose every content word is already in the block is not repeated");
 });
 
-// ── the word budget (tracker issue 331's "how to judge it") ─────────────────────────────────────────
+// ── the word budget ─────────────────────────────────────────────────────────────────────────────────
 //
 // The complaint this whole redesign answers was length: one name, 2,000 words before the reader reached
 // the note saying the request may have been scoped to the wrong market. The design asks for under 1,200

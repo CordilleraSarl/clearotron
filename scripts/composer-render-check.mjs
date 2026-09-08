@@ -875,8 +875,12 @@ const REACH_AND_READ = `(async () => {
   // The notice REPLACES the start button, so either one appearing means the footer is painted and the
   // screen has decided. Waiting for the notice alone would hang for the full budget on a regression that
   // renders the button instead, and report it as "nothing rendered" rather than as what it is.
-  await settle(() => document.querySelector('.footer-demo-note') || /Start a search/.test(txt()), 8000);
+  // READ, never discarded. A wait whose answer is thrown away cannot tell "the screen decided" from
+  // "the budget ran out", and the two produce the same empty read downstream — which the assertions
+  // would then report as "nothing rendered" rather than as a screen that never finished painting.
+  const painted = await settle(() => document.querySelector('.footer-demo-note') || /Start a search/.test(txt()), 8000);
   const n = document.querySelector('.footer-demo-note');
+  if (!painted) return { fatal: 'neither the notice nor the start button appeared within 8s' };
   return {
     text: n ? n.textContent.replace(/[\\s\\u00a0]+/g, ' ').trim() : null,
     buttons: n ? [...n.querySelectorAll('button')].map((b) => b.textContent.trim()) : [],
