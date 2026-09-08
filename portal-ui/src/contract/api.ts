@@ -928,6 +928,14 @@ export type AccessView = {
   readonly people: readonly Person[]
   /** Where access is actually changed. Null when the file could not be stat'd — never a guess. */
   readonly grantsFile: { readonly name: string; readonly modifiedAt: string } | null
+  /**
+   * Which setting created the staff rule, and where that setting is written.
+   *
+   * Null when there is no staff rule, or when the service could not tell which file configured it —
+   * a sentence naming the wrong file is worse than no sentence, because the reader edits it and
+   * nothing changes.
+   */
+  readonly staffRule: { readonly name: string; readonly where: string } | null
 }
 
 /** One identity seen in the activity log. NOT an access record — see ObservedView. */
@@ -2009,6 +2017,14 @@ export const api = {
         // Both halves or nothing. A filename with no date reads as "changed at some unknown time",
         // which is worse on this screen than not claiming to know.
         return name && modifiedAt ? { name, modifiedAt } : null
+      })(),
+      staffRule: (() => {
+        const s = b['staffRule'] as Record<string, unknown> | null | undefined
+        const name = asString(s?.['name'])
+        const where = asString(s?.['where'])
+        // Both halves or nothing, for the reason `grantsFile` takes the same shape: half of this
+        // sentence sends a reader to look for a setting without saying where it lives.
+        return name && where ? { name, where } : null
       })(),
     })),
 

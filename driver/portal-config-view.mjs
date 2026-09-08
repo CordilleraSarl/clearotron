@@ -240,13 +240,48 @@ export function authView({ mode = "", oidcIssuer = "", team = "", jwksUrl = "", 
 }
 
 /**
+ * Where the staff-domain rule was written, so a reader can go and undo it.
+ *
+ * ── WHY A PAGE THAT NAMES A RULE MUST ALSO NAME ITS ADDRESS ─────────────────────────────────────────
+ *
+ * The People & access screen renders the rule — "Anyone at <domain> — a rule, not a person" — and said
+ * nothing about where it came from. A reader who does not recognise the domain therefore learns that
+ * strangers may hold an administrator's view of their instance and has no next step at all: the value
+ * is in an environment variable, in one of two files depending on how the instance is run, and neither
+ * is named anywhere on the screen. The one outside reader who met this reported it as a back door,
+ * twice, which is the correct thing to do with an access rule you cannot trace.
+ *
+ * PURE, and it answers "could not tell" as itself. `envLoad` is `shared/env-local.mjs`'s own report of
+ * what this process read, so the answer describes the process actually serving the page rather than
+ * being composed from a path that some other process would have read — the distinction that module
+ * exists for. A service started by systemd took its configuration from an EnvironmentFile; a child of
+ * `clearotron start` was handed an explicit environment and read no file at all; a hand-run CLI read
+ * the CLI's file. Each gets its own sentence, because the remedy is a different file in each.
+ */
+export function staffRuleSource({ name = "PORTAL_STAFF_DOMAINS", value = "", envLoad = null,
+                                  unitEnvFile = null, cliEnvFile = null } = {}) {
+  if (!String(value ?? "").trim()) return null;
+  const reason = envLoad?.reason ?? null;
+  const applied = Array.isArray(envLoad?.applied) ? envLoad.applied : [];
+  if (reason === "read" && applied.includes(name))
+    return { name, where: `read from ${envLoad.path}` };
+  if (reason === "service-managed")
+    return { name, where: unitEnvFile ? `set in this service's environment file, ${unitEnvFile}` : "set in this service's environment" };
+  if (reason === "opted-out")
+    return { name, where: cliEnvFile
+      ? `handed to this service by the command that started it, which takes it from ${cliEnvFile} or derives it from the sign-in address`
+      : "handed to this service by the command that started it" };
+  return { name, where: cliEnvFile ? `set in this service's environment (the file it would otherwise read is ${cliEnvFile})` : "set in this service's environment" };
+}
+
+/**
  * The enrolment view: who is granted what, and where an enrolment is half done.
  *
  * `grants` is the parsed grants file. `staffDomains` are admitted by domain rather than by grant, so
  * they are reported separately — a staff member absent from the grants file is normal, not a fault,
  * and listing them as "unenrolled" would bury the real problems.
  */
-export function accessView({ grants, staffDomains = [], knownAccounts = [], grantsFile = null }) {
+export function accessView({ grants, staffDomains = [], knownAccounts = [], grantsFile = null, staffRule = null }) {
   const tenants = grants?.tenants ?? {};
   const known = new Set(knownAccounts);
   const people = [];
@@ -277,6 +312,10 @@ export function accessView({ grants, staffDomains = [], knownAccounts = [], gran
   return {
     people: people.sort((a, b) => a.email.localeCompare(b.email)),
     staffDomains: [...staffDomains],
+    // An ADDITIONAL field rather than a reshape of `staffDomains`: that array is parsed by the browser
+    // contract and read by three screens' worth of arms, and a rule nobody can trace is a copy problem,
+    // not a data-shape problem. Null when there is no rule, or when the source could not be told.
+    staffRule,
     // Accounts named in grants that no profile matches — the other typo direction.
     unknownAccounts: [...unknownAccounts].sort(),
     // Where to go to change any of this — a filename and a date, so "I want to add someone" has a
