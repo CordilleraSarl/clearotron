@@ -95,7 +95,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
               Staff <span style={{ color: 'var(--text-faint)' }}>— a config rule, not a person</span>
             </div>
             <div style={{ display: 'grid', gap: 6 }}>
-              <StaffRuleRow domains={v.staffDomains} />
+              <StaffRuleRow domains={v.staffDomains} rule={v.staffRule} />
             </div>
           </>
         ) : null}
@@ -158,8 +158,25 @@ function Roles({ brand }: { readonly brand: string }) {
   )
 }
 
-/** The staff domain rule, rendered as an entry rather than as a footnote about the entries. */
-function StaffRuleRow({ domains }: { readonly domains: readonly string[] }) {
+/**
+ * The staff domain rule, rendered as an entry rather than as a footnote about the entries.
+ *
+ * ── AND IT SAYS WHERE THE RULE IS WRITTEN ───────────────────────────────────────────────────────────
+ *
+ * This row used to state the rule and stop. An outside reader who did not recognise the domain
+ * therefore learned that everyone at it can see every brand owner on their instance, and had no next
+ * step: the value is a setting, in one of two files depending on how the instance runs, and neither
+ * this row nor anything else on the screen named either. They reported it as a back door, twice.
+ * Naming the setting and the file is what turns the row from an alarm into something a reader can act
+ * on — and the sentence is deliberately about UNDOING it, because that is the question being asked.
+ *
+ * `rule` is null when the service could not tell which file configured it. The row then states the
+ * rule alone, as before, rather than naming a file the reader would edit to no effect.
+ */
+function StaffRuleRow({ domains, rule }: {
+  readonly domains: readonly string[]
+  readonly rule: AccessView['staffRule']
+}) {
   return (
     <div
       style={{
@@ -175,6 +192,12 @@ function StaffRuleRow({ domains }: { readonly domains: readonly string[] }) {
         </span>
         <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }}>a rule, not a person</span>
       </div>
+      {rule ? (
+        <p style={{ margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 12.5 }}>
+          Granted by <b className="mono">{rule.name}</b>, {rule.where}. Change or remove that setting and
+          restart this instance to undo the rule. Nothing outside this machine created it.
+        </p>
+      ) : null}
     </div>
   )
 }

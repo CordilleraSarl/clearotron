@@ -579,6 +579,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-staff-domain-is-a-grant-not-a-guess.test.mjs": {
+          "tests": 17,
+          "asserts": 77,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,

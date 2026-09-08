@@ -328,8 +328,8 @@ test("226 THE PLANT — a genuine lockout still fires, or the fix is a silencer"
 test("226 a local install with NO staff domain and no rows is still reported — the mode is not an exemption", () => {
   // The fix originally filed was "exempt PORTAL_AUTH_MODE=local". It would have been wrong twice: the
   // variable was absent from the file being read, AND a local install genuinely admitting nobody is a
-  // real lockout. `portal-service.mjs:4438` states the rule — a local sign-in produces an email and
-  // nothing else, and the roster still decides.
+  // real lockout. `portal-service.mjs:4461-4462` states the rule — a local sign-in produces an email
+  // and nothing else, and the roster still decides.
   const home = homeWithGrants(["PORTAL_AUTH_MODE=local", "PORTAL_LOCAL_USER=op@localhost"]);
   try {
     const r = doctor(home);
