@@ -812,3 +812,74 @@ test('2015 the demo landing is decided by the server, and never claims a run sta
   assert.doesNotMatch(untilElse, /setSubmitted/, 'a demo order reports itself as a started clearance')
   assert.match(untilElse, /ctx\.go\(`\/portal\/result\//, 'the landing does not open the report it resolved to')
 })
+
+// ── THE FIRST HOUR: four things an outside user met, and what each one now says ──────────────────────
+//
+// From one person's unedited notes on their first hour with the product. Every arm below is a sentence
+// they read and could not act on, so the assertions are on what the sentence says rather than on where
+// it is — the point of each fix is that a reader who does not already know the product can act.
+
+test('no screen tells a reader to look at a corner that may not be on screen', () => {
+  // "Pick one at the top left" was written out on four screens. With the sidebar collapsed to icons
+  // there is no top left, and the reader who followed it found nothing and stopped. The directive is
+  // now one function of the sidebar's own state, so it cannot be wrong on one screen and right on
+  // another, and it cannot be edited into a claim about a position nobody can see.
+  for (const src of [NEW_CLEARANCE, SAVED_SEARCHES, PROFILE, read('../src/screens/Projects.tsx')]) {
+    assert.doesNotMatch(body(src), /at the top left/,
+      'a screen states where the brand-owner control is without knowing whether it is rendered')
+  }
+})
+
+test('…and the shared directive answers differently in the two sidebar states', async () => {
+  const { ownerPickerHint } = await import('../src/shell/ownerPickerHint.ts')
+  const open = ownerPickerHint(false)
+  const shut = ownerPickerHint(true)
+  assert.notEqual(open, shut, 'one sentence for both states is the defect, not the fix')
+  assert.match(open, /top left/, 'with the sidebar open, its position is the fastest way to find it')
+  assert.match(shut, /menu/i, 'collapsed, the reader is told to open the menu rather than to look at a gap')
+  assert.doesNotMatch(shut, /top left/, 'the collapsed sentence still points at a corner with nothing in it')
+})
+
+test('the disabled Save names its blocking condition LOUDER than its harmless ones', () => {
+  // The reason was already on screen when this user gave up on it — muted, twelve point, in the same
+  // treatment as "No changes." Only one of the three states stops the reader, so only that one carries
+  // weight and colour now. Making all three loud would be the same as making none of them loud.
+  //
+  // Asserted as three properties of the file rather than as a window around a phrase. The first draft
+  // of this arm sliced around "No changes." and read the copy of that phrase sitting in the comment
+  // beside the code — `body()` strips `//` lines and leaves JSX `{/* ... */}` blocks, so prose in this
+  // package is searchable text. An anchor that can match prose is not an anchor.
+  const src = body(PROFILE)
+  assert.match(src, /dirty && !checked\s*\?/, 'the blocking state is not branched on separately from the other two')
+  assert.match(src, /Press Check before saving/, 'the blocking line does not name the control to press')
+  assert.match(src, /tone-medium/, 'nothing on this screen is drawn in the attention treatment')
+  // …and the harmless states keep the quiet one, because three loud lines are no louder than none.
+  assert.match(src, /fontSize: 12\.5, color: 'var\(--text-muted\)'/,
+    'the non-blocking states lost their muted treatment, which is what made the blocking one stand out')
+})
+
+test('the risk bands say whose scale they are', () => {
+  // "How do I have FOUR risk frameworks live at the same time?" They had one. Four coloured pills with
+  // no label, under a heading reading "Risk framework in force", are four things under a heading about
+  // frameworks. BOTH editors draw this row and both are asserted: fixing one and leaving the other is
+  // how a reader who sees both ends up more confused, not less.
+  assert.match(body(PROFILE), /Its ratings, strongest concern first/,
+    'the portal draws the band row with nothing saying what it is a row of')
+  const staff = readFileSync(new URL('../../driver/profile-page.html', import.meta.url), 'utf8')
+  assert.match(staff, /Its ratings, strongest concern first/,
+    'the staff editor still draws an unlabelled band row')
+})
+
+test('the default-classes hint explains before it names', () => {
+  // "Probably I need to be an IP lawyer to understand this. No idea what this means." The hint opened
+  // with "Nice classes", which tells someone who already knows what the field is that it is that field.
+  const fields = read('../src/contract/profileFields.ts')
+  const at = fields.indexOf("key: 'defaultClasses'")
+  assert.notEqual(at, -1)
+  const spec = fields.slice(at, at + 900)
+  const hint = spec.slice(spec.indexOf('hint:'))
+  assert.match(hint, /numbered categories/, 'the hint does not say what a class is')
+  assert.ok(hint.indexOf('numbered categories') < hint.indexOf('Nice classes'),
+    'the jargon still comes before the explanation, which is the thing that failed')
+  assert.match(hint, /9 is software|25 is clothing/, 'no example, and the example is what makes it land')
+})

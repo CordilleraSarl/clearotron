@@ -239,7 +239,16 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
   // It had no hint at all, which left the first row of the project form an unlabelled box.
   { key: 'industry', label: 'Industry', kind: 'text', group: 'defaults',
     hint: 'The trade this name sits in. Sets the sector a matter is read against.' },
-  { key: 'defaultClasses', label: 'Default classes', kind: 'numbers', group: 'defaults', picker: 'classes', hint: 'Default Nice classes, 1-45, always changeable at search time. Commas, spaces or new lines all work.' },
+  // THE GLOSS COMES BEFORE THE TERM, because the reader who needs the hint is the one who does not know
+  // the term. An outside user met this field and wrote "probably I need to be an IP lawyer to understand
+  // this. No idea what this means." The old hint opened with "Nice classes", which is the jargon rather
+  // than the explanation — it told someone who already knew what the field was that it was that field.
+  // The example is the load-bearing part: two familiar numbers say more about what a class IS than a
+  // definition does, and the range and the paste rules still follow for the reader who wanted those.
+  { key: 'defaultClasses', label: 'Default classes', kind: 'numbers', group: 'defaults', picker: 'classes',
+    hint: 'The numbered categories a trademark is registered in — 9 is software, 25 is clothing, 41 is training. '
+      + 'These are the Nice classes, 1 to 45. Leave this empty and each search states its own. '
+      + 'Commas, spaces or new lines all work.' },
   { key: 'defaultJurisdictions', label: 'Default jurisdictions', kind: 'lines', group: 'defaults', commaSeparated: true,
     picker: 'territories',
     // ASSISTIVE, NOT STRICT ( item 7). The engine deliberately carries a territory it
@@ -252,7 +261,20 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // The vocabulary is the composer's own, not a second list. A picker that suggests a territory the box
     // then flags as unknown would be two controls disagreeing under one label.
     item: { ok: isKnownTerritory, expected: 'a territory from the picker below' },
-    hint: 'One per line or comma-separated. Searched by default unless a clearance specifies otherwise.' },
+    // THE HINT SAYS WHAT THE FIELD DOES WITH WHAT YOU TYPE, which is the question that was actually
+    // asked: "Is this validated? It accepts 'XX' so I guess not." It IS checked, and the check is
+    // assistive by design — it flags and stores rather than refusing, because the engine deliberately
+    // carries a territory it does not recognise. A reader cannot tell an assistive notice from no
+    // validation at all unless the field says which it is, and this one did not.
+    //
+    // It also answers the other half of his question — whether a region counts as one entry — using the
+    // picker's own vocabulary rather than a second spelling. Which vocabulary this field should speak is
+    // a real and larger question, because the staff editor documents codes while this checks names; that
+    // is with the owner and is deliberately not pre-empted here.
+    hint: 'One per line or comma-separated — pick from the list below. A region counts as one entry: '
+      + 'European Union covers its member states, so there is no need to add them. Anything not in the '
+      + 'list is kept and flagged rather than refused, because a search can name a territory this list '
+      + 'does not carry.' },
   { key: 'platforms', label: 'Marketplaces', kind: 'lines', group: 'defaults',
     // MIRRORS THE SERVER'S RULE, and this is a COPY because portal-ui cannot import from driver/ — the
     // same constraint the `defaultProduct` note below describes. A copy drifts silently, so
