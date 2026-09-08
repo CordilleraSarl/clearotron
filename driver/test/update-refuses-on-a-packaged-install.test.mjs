@@ -20,6 +20,30 @@ import { isGitCheckout } from "../../bin/update.mjs";
 import { packagedBuild } from "../../bin/onboard.mjs";
 import { main as writeBuildInfoMain } from "../../scripts/write-build-info.mjs";
 
+/**
+ * The text of ONE `askValue` call, from `const <name> = await askValue(` to its matching `)`.
+ *
+ * SCOPING IS THE POINT. An assertion against the whole file is satisfied by a comment as readily as by
+ * code, which is how an arm here came to rest on prose recording that the wording it grepped for had
+ * been removed. Bounded to the call, an assertion is about what the wizard does.
+ *
+ * Parentheses are BALANCED rather than matched to the first `)`, because the options object contains
+ * calls of its own; and the search is anchored on the assignment rather than on the prompt text, so a
+ * reworded question is still found and a DELETED one is not. Returns null when the call is gone — the
+ * caller asserts on that rather than being handed an empty string that every match would fail against
+ * for the wrong reason.
+ */
+function askValueCall(src, name) {
+  const open = src.indexOf(`const ${name} = await askValue(`);
+  if (open < 0) return null;
+  let depth = 0;
+  for (let i = src.indexOf("(", open); i < src.length; i++) {
+    if (src[i] === "(") depth++;
+    else if (src[i] === ")" && --depth === 0) return src.slice(open, i + 1);
+  }
+  return null;
+}
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 test("#1929 a directory that is not a checkout is told apart from one that is", () => {
@@ -108,25 +132,33 @@ test("#1929 the install ASKS about the report URL by name, and says what empty c
   // absent. An operator who was never asked cannot know they answered wrong, and the first person to
   // find out is a client opening a notification with nothing to click.
   const src = readFileSync(join(ROOT, "bin", "onboard.mjs"), "utf8");
-  // Anchored on the question as it is actually asked. The wording moved when the install's first ten
-  // minutes were rewritten for the reader — "the pool" became "the reports folder" — and this line was
-  // left behind, so it failed while the wizard was doing exactly what the criterion requires.
-  //
-  // THE REASON TO KEEP THE LITERAL IS NOT THAT A LOOSER PATTERN WOULD SURVIVE THE QUESTION GOING. It
-  // would not: match on the call and the call's absence reds it. The reason is underneath all four
-  // assertions here, and it is that they search the WHOLE FILE, so a comment satisfies them as well as
-  // code does — and one of them already is satisfied that way. `empty for none` occurs twice in
-  // `onboard.mjs` and both are comments recording that the phrase was taken OUT of the prompt, so the
-  // assertion that empty is a legitimate answer rests entirely on prose explaining the wording it
-  // greps for is gone. Delete those two comments and this reds with behaviour unchanged; drop the flag
-  // that actually makes empty legitimate and it stays green. The repair is to scope these four to the
-  // call and pin the flag rather than the wording — filed, and not this branch's to make.
-  assert.match(src, /askValue\("Public base URL for the reports folder/,
+  // SCOPED TO THE CALL, NOT THE FILE, and that is the whole repair. These four assertions used to search
+  // the whole of `onboard.mjs`, so a comment satisfied them as readily as code — and one of them was
+  // satisfied that way. `empty for none` occurs twice in this file and both are comments recording that
+  // the phrase was taken OUT of the prompt, so the assertion that empty is a legitimate answer rested
+  // entirely on prose explaining that the wording it grepped for is gone. Deleting those two comments
+  // reddened this arm with behaviour unchanged; dropping the flag that actually makes empty legitimate
+  // left it green. An assertion a comment can satisfy is not an assertion about behaviour.
+  const call = askValueCall(src, "reportsUrl");
+  assert.ok(call, "the reports-URL question moved — this arm is reading a call that is no longer there");
+
+  // The wording moved once already, when the install's first ten minutes were rewritten for the reader:
+  // "the pool" became "the reports folder" and this literal was left behind, failing while the wizard did
+  // exactly what the criterion requires. The literal stays anyway. What it pins is that THIS question is
+  // put to the operator, and scoping is what makes keeping it safe — a scoped arm fails because the
+  // question went, not because somebody improved its wording somewhere else in the file.
+  assert.match(call, /askValue\("Public base URL for the reports folder/,
     "the wizard must ASK — the criterion's other half, a doc that mentions it, leaves the operator "
     + "reading rather than answering");
-  assert.match(src, /CLEAROTRON_REPORTS_URL/, "and by name, so the answer is findable afterwards");
-  // ASKED, NOT REQUIRED: a local install with no web front is a real shape.
-  assert.match(src, /empty for none/i, "empty must be a legitimate answer, not a refusal");
-  assert.match(src, /left unset — runs will deliver, and their notifications will carry no link/,
+  assert.match(call, /CLEAROTRON_REPORTS_URL/, "and by name, so the answer is findable afterwards");
+
+  // ASKED, NOT REQUIRED: a local install with no web front is a real shape. THE FLAG IS THE MECHANISM,
+  // and the wording never was. Without `skippable`, `{ def: "" }` makes Enter yield the empty string,
+  // `present("")` is false, and `askValue` loops on "A value is needed here." — driven on the merged tree
+  // at sixty enters and killed at a cap, every cycle this prompt. That is what "empty is legitimate"
+  // means, so that is what this pins.
+  assert.match(call, /skippable:\s*true/,
+    "empty must be a legitimate answer, and `skippable` is what makes it one — not a phrase in a comment");
+  assert.match(call, /left unset — runs will deliver, and their notifications will carry no link/,
     "and the consequence of empty must be said out loud, or the silence is the same silence as before");
 });
