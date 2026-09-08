@@ -4,6 +4,39 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.2.2
+
+### New
+
+- An assistant on a clearance account can now answer "what if this were different" about a report already delivered. It writes a short memo reasoning over the evidence already gathered, instead of asking for a new search.
+- A Knockout search now looks up what the owner of a registered right actually sells, and the report says where that answer came from. Before, the assessment inferred the owner's trade from the company name alone, then told you to go and obtain the registration's own goods list. The name is not evidence of the trade. It happened to read correctly on one search and would have read confidently wrong on the next.
+- One engine process can now serve both people arriving through a tunnel and programs on the same machine holding an access key. It listens for the key on a local socket, which no tunnel can forward to, and the network door never accepts a key at all. Deployments that needed both used to run the process twice, on two ports, with two units to keep in step.
+- A Knockout report now carries the whole assessment behind its ratings. You get the reviewer's notes and the reviewer's own opening read of each name. You also get the reasoning that holds a name at its rating, and what would move it. This was written during every search and reached only the audit workbook, so the report showed a rating without the thinking under it. The notes are marked as reference material rather than mixed into the findings.
+- The tools that show how a search reached its answer now work on a Knockout search. You can ask what it found, what it looked at, where it searched and came back empty, and read the delivered report itself. Until now they returned nothing at all for a Knockout search, so anyone asking how one of these results was reached saw a blank record.
+
+### Fixed
+
+- The configuration audit now refuses when one of the files it reads is missing, instead of reporting that nothing sets the variables that file records. Its answer decides which settings look unused, so a file it could not read was being counted as a file with nothing in it.
+- A scheduled deploy no longer updates the working copy while an experiment run is in progress. It now waits, as it already did for a clearance run.
+- A client account asking about a mark in a knockout screen now receives the risk band, the reason for it and the findings behind it. It previously returned an empty answer.
+- A knockout report no longer shows a register filing's risk band beside a line saying that filing carries no rating. The band shows when the reviewer gave one, and the line appears only when they did not.
+- The unit inventory again records why every shipped unit that runs on no box is still shipped. One entry lost its reason when its name was superseded.
+- Stopping the demo now stops everything it started, including when the stop signal reaches only the command you can see rather than the whole terminal.
+- The architecture diagrams in the public documentation render with their intended colours again, and thirteen code comments state the colour they meant.
+- The deployment check now reports the services a box is actually running. It had been asking systemd about unit names left behind by a rename, so a healthy box reported nothing running.
+- The "your screen is done" notice for a knockout search now goes to the person who ordered it, with the operator kept as a copy. It previously went to the operator alone, whoever had asked for the search.
+- The link in your completion email and message now opens the report. It previously pointed at a path the site does not serve, so it led to a sign-in and then a dead page. This affected every delivered report on both search products, in the email, the chat notice and the assistant's own answer. The workbook link in the same email was always correct and is unchanged.
+- A live registration covering the goods you asked about is no longer left out of a report for want of room. It is reported, or the report says why it is distant.
+- A what-if memo is now refused if it writes anywhere in the delivered run except its own memo folder, and the refusal names the file.
+- A what-if question left queued when its run is archived now comes back with a reason, instead of never being answered.
+- The delivery record now states plainly when a report's write-up length and ranking rules could not be checked against the delivered text. It says the rules were applied to nothing on that run. Before, this was recorded as an unlabelled failed check. It looked like any other, so a run could deliver with those rules unverified and nobody would see it.
+- The deployment check now says which checkout a service is running from even when its unit file does not declare one.
+- The demo and the install steps now start on native Windows, where they previously crashed on the first internal module they loaded.
+
+### For operators
+
+- Each run record now says whether the model id it observed was a pinned snapshot or an alias the provider can repoint.
+
 ## 0.3.0-beta.0
 
 ### New
