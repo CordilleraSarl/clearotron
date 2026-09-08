@@ -69,6 +69,7 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved, unsavedChanges } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -476,9 +477,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       case 'rateLimited':
         return { title: 'Too many requests just now', lines: ['Wait a moment and try again.'] }
       case 'pickAccount':
-        return { title: 'Choose a brand owner', lines: ['Pick who this clearance is for, at the top left.'] }
+        return { title: 'Choose a brand owner', lines: [`Pick who this clearance is for. ${ownerPickerHint(ctx.sidebarCollapsed)}`] }
       case 'notFound':
-        return { title: 'That is not available to you', lines: ['Check the brand owner selected at the top left.'] }
+        return { title: 'That is not available to you', lines: ['Check which brand owner is selected.'] }
       // SPLIT FROM `notFound`. They are different answers and only one of them has
       // anything to do with the selector. `notFound` may well BE the wrong brand owner, so that advice is
       // right there. `noAccess` is the door refusing the identity itself — reachable only for door checks,
@@ -676,7 +677,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
         <div className="notice">
           <b>Choose a brand owner first</b>
           <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            A clearance is filed for one brand owner. Pick one at the top left, then start the search.
+            A clearance is filed for one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}{' '}
+            Then start the search.
           </p>
         </div>
       </div>

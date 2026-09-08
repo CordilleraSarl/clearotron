@@ -5450,8 +5450,8 @@
           "todos": 0
         },
         "screenCopy.test.ts": {
-          "tests": 51,
-          "asserts": 163,
+          "tests": 56,
+          "asserts": 178,
           "skips": 0,
           "todos": 0
         },
