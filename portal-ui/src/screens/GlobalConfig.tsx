@@ -85,7 +85,19 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
         </Group>
 
         <Group title="Engine">
-          {v.engine ? <Engine engine={v.engine} /> : <NotRecorded what="which engine is running" source={v.source} />}
+          {v.engine ? (
+            <Engine
+              engine={v.engine}
+              /* THE ROW ANSWERS THE READER'S QUESTION, NOT ITS OWN. This row reports the LIVE posture,
+                 and the screen that decides whether a search can start reads the capture instead — so a
+                 box where those disagree about the engine program drew a green row here while New
+                 clearance replaced its start button with "no search engine is attached". Green on the
+                 page an operator checks first is what made that contradiction cost a user. */
+              programDisputed={(v.lastRun?.disagrees ?? []).some((d) => d.what === 'engine program')}
+            />
+          ) : (
+            <NotRecorded what="which engine is running" source={v.source} />
+          )}
         </Group>
 
         <Group title="Providers">
@@ -232,7 +244,7 @@ function Auth({ auth }: { readonly auth: AuthState }) {
   )
 }
 
-function Engine({ engine }: { readonly engine: EngineState }) {
+function Engine({ engine, programDisputed = false }: { readonly engine: EngineState; readonly programDisputed?: boolean }) {
   // Believe `apiBilled`, not `mode`. They agree except in one state — the engine is set to bill an API
   // key that is not set — and that is the state worth showing, because the driver refuses a run in it.
   const billed = engine.billing.apiBilled ? 'API key' : 'Subscription'
@@ -242,6 +254,20 @@ function Engine({ engine }: { readonly engine: EngineState }) {
       ? [`Set to bill an API key, and ${engine.billing.missing.join(' and ')} is not set — a run is refused rather than billed to the subscription.`]
       : []),
     ...(engine.binaryPresent ? [] : ['The engine program cannot be found or run on this machine.']),
+    // SELECTED IS NOT USABLE, and this row is where those two got drawn the same. `binaryPresent` above
+    // is this deployment's own reading; the engine that last started disagreed with it, and the screen a
+    // reader would go to next believes that other answer. Naming it here is the only place the two meet.
+    //
+    // THE `&& engine.binaryPresent` IS DELIBERATE AND NOT A BUG. A disagreement has two directions and
+    // only one of them needs a sentence here. This machine sees the program and the engine did not: that
+    // is this line, because every other row on the page says the engine is fine. The mirror — the engine
+    // saw it and this machine does not — is already covered by the fault directly above, which fires on
+    // `!binaryPresent` and says the program cannot be found or run. Dropping the condition would print
+    // both at once and contradict itself.
+    ...(programDisputed && engine.binaryPresent
+      ? ['The engine program is on this machine, but the engine could not find it when it last started — '
+         + 'so a new search will refuse. Restart the engine service, or install the CLI where the service can see it.']
+      : []),
   ]
 
   return (
