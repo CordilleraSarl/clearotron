@@ -4168,8 +4168,8 @@
           "todos": 0
         },
         "test-full-runs-every-corpus-or-names-the-one-it-did-not.test.mjs": {
-          "tests": 12,
-          "asserts": 39,
+          "tests": 16,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -4408,8 +4408,8 @@
           "todos": 0
         },
         "the-inventory-names-the-units-this-box-runs.test.mjs": {
-          "tests": 11,
-          "asserts": 27,
+          "tests": 12,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },

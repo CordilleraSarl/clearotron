@@ -46,19 +46,32 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-/** Every `<dir>/test/*.test.mjs` under `providers/`, deduplicated and ordered. */
+/**
+ * Every `*.test.mjs` under `providers/`, at any depth, deduplicated and ordered.
+ *
+ * RECURSIVE, AND THAT IS THE POINT. This read `providers/<dir>/test/*.test.mjs` and nothing else, one
+ * level deep — and the exemption check below counted a covered workspace's own files with the SAME
+ * shape. So a test at `providers/x/y.test.mjs`, or at `providers/x/test/sub/y.test.mjs`, was in no
+ * corpus at all, both sides missed it together and therefore agreed, and every check reported clean
+ * under a command whose whole claim is that it runs every corpus. Two derived sides sharing one
+ * assumption cannot disagree about it; that is this file's own argument, and it applied here.
+ *
+ * `node_modules` is excluded because an installed dependency's tests are not this repository's corpus.
+ * Nothing else is: a file is either collected or it is a fault, never quietly outside the shape.
+ */
 export function providerTestFiles(root = ROOT) {
   const base = join(root, "providers");
   if (!existsSync(base)) return [];
   const out = new Set();
-  for (const d of readdirSync(base, { withFileTypes: true })) {
-    if (!d.isDirectory()) continue;
-    const dir = join(base, d.name, "test");
-    if (!existsSync(dir)) continue;
-    for (const f of readdirSync(dir)) {
-      if (f.endsWith(".test.mjs")) out.add(`providers/${d.name}/test/${f}`);
+  const walk = (dir, rel) => {
+    for (const d of readdirSync(dir, { withFileTypes: true })) {
+      if (d.name === "node_modules") continue;
+      const here = `${rel}/${d.name}`;
+      if (d.isDirectory()) walk(join(dir, d.name), here);
+      else if (d.name.endsWith(".test.mjs")) out.add(here);
     }
-  }
+  };
+  walk(base, "providers");
   // DEDUPLICATED ON PURPOSE. The shell form this replaced listed `providers/_shared/test/*.test.mjs`
   // and then `providers/*/test/*.test.mjs`, which matches `_shared` as well — 51 paths for 37 files.
   // Measured before it was called a defect: `node --test` runs a repeated path once, so the old form
