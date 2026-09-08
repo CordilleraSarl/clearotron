@@ -2,7 +2,7 @@
   "schema_version": 1,
   "framework_key": "house-default",
   "title": "Generic default risk framework",
-  "source_deck": "Generic house default — IP Risk Assessment Framework.pptx (Privileged & Confidential), completed by the reviewing lawyer 2026-08-31; supersedes the 2026-07-05 transcription (doc 50), which was partial",
+  "source_deck": "Cordillera house risk framework, authored in-house and reviewed by counsel; 2026-08-31 revision",
   "entity_label": "the company",
   "bands": [
     {

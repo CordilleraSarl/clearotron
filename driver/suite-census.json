@@ -82,8 +82,8 @@
           "todos": 0
         },
         "a-capture-that-stopped-describing-the-box-says-so.test.mjs": {
-          "tests": 12,
-          "asserts": 23,
+          "tests": 16,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -138,6 +138,12 @@
         "a-crowded-zone-is-on-the-list-it-could-not-fill.test.mjs": {
           "tests": 10,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-declared-non-knob-is-not-a-deletion-candidate.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -336,6 +342,12 @@
         "a-missing-bus-is-not-a-closed-door.test.mjs": {
           "tests": 10,
           "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-new-citation-carries-something-that-can-be-checked.test.mjs": {
+          "tests": 7,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -570,6 +582,12 @@
         "a-shared-proprietor-is-not-a-bucket-collision.test.mjs": {
           "tests": 6,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-shipped-framework-states-provenance-a-customer-can-read.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -2545,6 +2563,12 @@
           "tests": 6,
           "asserts": 13,
           "skips": 4,
+          "todos": 0
+        },
+        "no-test-account-reaches-the-package.test.mjs": {
+          "tests": 15,
+          "asserts": 26,
+          "skips": 0,
           "todos": 0
         },
         "no-test-writes-inside-the-checkout.test.mjs": {
@@ -5456,8 +5480,8 @@
           "todos": 0
         },
         "screenCopy.test.ts": {
-          "tests": 51,
-          "asserts": 163,
+          "tests": 56,
+          "asserts": 178,
           "skips": 0,
           "todos": 0
         },
