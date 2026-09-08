@@ -62,6 +62,13 @@ export const CENSUS_ROOT_SCRIPTS = Object.freeze([
   Object.freeze({
     script: "test:providers",
     globs: Object.freeze(["providers/_shared/test/*.test.mjs", "providers/*/test/*.test.mjs"]),
+    // THE COMMAND NO LONGER SPELLS THOSE GLOBS; it reaches them through this file, which builds the
+    // list in code so the corpus has one definition and two entry points. The literals above stay
+    // exactly as they were — they are this module's EXPECTATION, and deleting them in favour of the
+    // resolved list would leave two derived sides with nothing to disagree about, which is the defect
+    // the block above this table exists to record. What changes is only how the measurement is taken:
+    // the resolved list is asked whether it still reaches each glob.
+    resolvedBy: "scripts/test-full.mjs",
   }),
 ]);
 
@@ -74,7 +81,7 @@ export const CENSUS_ROOT_SCRIPTS = Object.freeze([
  *
  * PURE: `readManifest` is injected, so the canary drives every branch over a planted manifest.
  */
-export function rootScriptDisagreements(readManifest, declared = CENSUS_ROOT_SCRIPTS) {
+export function rootScriptDisagreements(readManifest, declared = CENSUS_ROOT_SCRIPTS, resolveFiles = null) {
   const root = readManifest("package.json");
   if (!root) return ["the root package.json could not be read, so what the root scripts collect is unknown"];
   const scripts = root.scripts ?? {};
@@ -86,8 +93,23 @@ export function rootScriptDisagreements(readManifest, declared = CENSUS_ROOT_SCR
       continue;
     }
     for (const g of globs) {
-      if (!line.includes(g)) {
+      if (line.includes(g)) continue;
+      // THE COMMAND DOES NOT SPELL THIS GLOB. That is a disagreement unless the script says it
+      // resolves the corpus elsewhere AND the resolved list is available to be checked. A declared
+      // `resolvedBy` with no resolver in hand is a could-not-look, never a pass: it would let an
+      // entry opt out of the whole check by naming a file.
+      const via = declared.find((d) => d.script === script)?.resolvedBy;
+      if (!via) {
         out.push(`\`${script}\` is censused as collecting ${g} and its command is: ${line.trim()}`);
+      } else if (!line.includes(via)) {
+        out.push(`\`${script}\` is censused as resolving its corpus through ${via}, and its command `
+          + `does not name it: ${line.trim()}`);
+      } else if (typeof resolveFiles !== "function") {
+        out.push(`\`${script}\` resolves its corpus through ${via} and no resolver was supplied, so `
+          + `what it collects could not be read — which is not the same as it being right`);
+      } else if (!resolveFiles(script).some((f) => globMatches(g, f))) {
+        out.push(`\`${script}\` is censused as collecting ${g}; ${via} resolves a corpus that `
+          + `reaches no such file`);
       }
     }
   }
@@ -116,6 +138,12 @@ export function rootScriptDisagreements(readManifest, declared = CENSUS_ROOT_SCR
 //
 // PURE AND INJECTABLE. `readManifest` is passed in, so the canary drives every branch over planted
 // manifests without touching the tree — the same rule the rest of this module follows.
+
+/** Does one `*`-style glob match this path? `*` stops at a separator, as a shell's does. */
+export function globMatches(glob, path) {
+  const re = new RegExp("^" + glob.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^/]*") + "$");
+  return re.test(path);
+}
 
 /** `npm run <name>` inside a script, so an indirection resolves within its own manifest. */
 const NPM_RUN = /^\s*npm\s+run\s+([A-Za-z0-9:_-]+)\s*$/;

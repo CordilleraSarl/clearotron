@@ -6,16 +6,27 @@
 # executed against a full checkout of this tree and is here because it came back green:
 #
 #   npm ci                              ok
-#   npm run test:full                   8,091 tests, 0 failures  (portal-ui's own `test` typechecks first)
-#   npm run test:providers              450 tests, 0 failures
+#   (every figure below re-measured 2026-09-08; the two that had drifted are noted under the list)
+#   npm run test:full                  10,117 tests, 0 failures  (every corpus — see below)
+#   npm run test:providers                454 tests, 0 failures
 #   npm run lint:driver                 ok
-#   node scripts/spdx-headers.mjs       ok — 1,508 files carry the licence line
+#   node scripts/spdx-headers.mjs       ok — 1,594 files carry the licence line
 #   npm run notices:check               ok
 #   npm run tokens:check                ok
 #   npm run build:ui                    ok
 #
 # A step nobody has watched pass is a step that will fail for the first contributor who touches it, and
 # a green badge over an unrun check is worse than no badge.
+#
+# TWO FIGURES HAD DRIFTED AND ARE RE-MEASURED. The licence count read 1,508 against a tree carrying
+# 1,594 — a count in a comment is a claim with a timestamp, and this one had been read as present tense
+# for as long as it was wrong. The step itself was always right; only the note about it was stale.
+#
+# THE FIRST TWO NUMBERS USED TO OVERLAP AND NOW DO NOT. `test:full` was `--workspaces --if-present`,
+# which reached driver, mcp-server and portal-ui and no more; the 454 provider tests were run only by
+# the step below it. It now runs every corpus and prints what it ran, so the first figure contains the
+# second — driver 8,598, mcp-server 493, portal-ui 572, providers 454, measured 2026-09-08. The second
+# step is kept anyway, deliberately, for the reason written beside it.
 #
 # ── THE CITATION CHECK RUNS HERE, AND IT TOOK A RULING TO MAKE THAT POSSIBLE ─────────────────────
 #
@@ -143,6 +154,14 @@ jobs:
             exit 1
           }
 
+      # DELIBERATELY A SECOND RUN OF A CORPUS THE STEP ABOVE ALREADY COVERED, and that is the point.
+      # `npm run test:full` now runs every corpus, the provider adapters included, so this step is no
+      # longer the only thing executing those 37 files — but it is the only thing executing them that
+      # does not depend on scripts/test-full.mjs being correct. A defect in how that runner assembles
+      # or reports the provider corpus would otherwise take all 454 of those tests with it, silently,
+      # and the register adapters are the code that decides whether a clearance can cite a registry at
+      # all. The duplicated wall-clock is a few seconds; the failure it covers is a green run over an
+      # unexecuted corpus, which is the exact defect this pair of steps was changed to fix.
       - run: npm run test:providers
 
   checks:
@@ -424,3 +443,14 @@ jobs:
       # It reads source, not history, so it needs no base and answers the same on every event.
       - name: A drive of a real command says what environment it drives it in
         run: node scripts/drive-env-check.mjs
+
+      # EVERY GENERATED FILE, NOT THE ONE SOMEBODY REMEMBERED. `scripts/` holds four minters, each
+      # writing a committed derived file and each taking `--check`; until now this workflow ran exactly
+      # one of them, so three could go stale on `main` with nothing here saying so. That is not
+      # theoretical: `shared/names-in-force.mjs` did, and the only thing that ever noticed was a private
+      # control which refuses to START on a stale fixture — the most expensive place to learn it and the
+      # furthest from whoever caused it. The check enumerates `scripts/mint-*.mjs` rather than naming
+      # them, so a fifth minter is covered without anybody extending a list, and it treats an empty
+      # population as a fault rather than reporting all-current over nothing.
+      - name: Every generated file in the tree is current
+        run: node scripts/generated-files-are-current.mjs
