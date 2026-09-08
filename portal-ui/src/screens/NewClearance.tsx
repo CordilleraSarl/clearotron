@@ -1910,14 +1910,14 @@ function Footer({
           // reader to install a program they already have is the advice that cost an outside user the
           // product, and it is not a decision to leave where nothing can check it.
           (() => {
-            const n = engineNotice({ programDisputed, canOpenSettings: onSettings !== null })
+            const n = engineNotice({ programDisputed })
             return (
               <div className="footer-demo-note" role="status" style={{ fontSize: 12.5, lineHeight: 1.45 }}>
                 <strong>{n.headline}</strong>{' '}
                 {n.before}
                 {n.namesSetupCommand ? <>{' '}<SetupCommand route={setupRoute} /></> : null}
                 {n.after ? <>{' '}{n.after}</> : null}
-                {n.linksToSettings && onSettings ? (
+                {onSettings ? (
                   <>
                     {' '}
                     <button type="button" className="link-btn" onClick={onSettings}>

@@ -36,9 +36,9 @@ const ANTHROPIC: EngineFacts = {
 }
 
 /** Both screens, from one reading. The only place either answer is produced in this file. */
-const surfaces = (r: Reading, { canOpenSettings = true } = {}) => ({
+const surfaces = (r: Reading) => ({
   row: engineRowFaults(r.engine, { programDisputed: r.engineProgramDisputed === true }),
-  notice: engineNotice({ programDisputed: r.engineProgramDisputed, canOpenSettings }),
+  notice: engineNotice({ programDisputed: r.engineProgramDisputed }),
 })
 
 test('one reading, no engine program anywhere: the row is not green and names both words, and the notice takes the demo branch', () => {
@@ -121,17 +121,11 @@ test('the row cannot name a program this build does not ship, and says the hones
   assert.ok(!/null/.test(sentence), 'a missing program name reached the reader as the word null')
 })
 
-test('a client is offered no link to a page a client cannot open', () => {
-  const staff = engineNotice({ programDisputed: true, canOpenSettings: true })
-  const client = engineNotice({ programDisputed: true, canOpenSettings: false })
-  assert.equal(staff.linksToSettings, true)
-  assert.equal(client.linksToSettings, false,
-    'a client following this link lands on "the configuration cannot be read from here", which is worse than no link')
-  // Everything else about the two is identical: the remedy does not depend on who is reading.
-  assert.equal(staff.state, client.state)
-  assert.equal(staff.headline, client.headline)
-  assert.equal(staff.before, client.before)
-})
+// The link to the configuration page is NOT decided here, and the arm that used to live at this spot
+// went with the field it tested. `linksToSettings` always equalled the argument it was handed, so an arm
+// over it asserted that an assignment assigns. Who sees that control is decided at the call site, which
+// passes no handler to a reader who cannot open the page — held by the navigation arm, which reds on the
+// gate omitted, inverted, or written across two lines, and driven in a real browser for both roles.
 
 test('the row is green exactly when it has no fault — the relation, over every combination', () => {
   // The property that stops a condition being added without a sentence, or a sentence without a

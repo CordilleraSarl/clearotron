@@ -1123,12 +1123,14 @@ for (const n of notices) {
   const disputed = n.expect.me.engineProgramDisputed === true
   ok(disputed !== /install a reasoning CLI/.test(got.text),
     `${n.state}: the install advice and the restart remedy are not exclusive — a reader is being told both`)
-  // WHAT THIS ASSERTION REACHES, established by planting rather than by reading. Widening the contract's
-  // own `linksToSettings` to true for everybody does NOT fail here: the screen also requires a handler,
-  // and the call site passes none for a client. Two gates, and this sees the outer one. What it DOES
-  // catch is the gate that actually decides it — removing the role test at the call site puts the link
-  // in front of a client, and both client states go red. That is the failure worth catching; the inner
-  // one is covered where it is written, in the contract arms and in the navigation guard.
+  // WHAT THIS ASSERTION REACHES, established by planting rather than by reading — and the first version
+  // of this comment got it wrong in a way worth recording. It said "two gates, this sees the outer one",
+  // because widening a contract flag did not red the check. There were never two: that flag was assigned
+  // the same condition the screen already tested, so it was one gate written twice, and a plant against a
+  // relay can only ever pass. Raised in review, and the relay is gone.
+  //
+  // There is ONE gate — the call site passes no handler to a reader who cannot open that page — and this
+  // catches it: removing the role test puts the link in front of a client and both client states go red.
   ok(got.buttons.length === (n.expect.link ? 1 : 0),
     `${n.state}: the link to the configuration page is ${n.expect.link ? 'missing' : 'offered to a reader who cannot open that page'} `
     + `(buttons: ${JSON.stringify(got.buttons)})`)

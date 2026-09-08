@@ -95,17 +95,19 @@ export type EngineNotice = {
   readonly namesSetupCommand: boolean
   /** The sentences after the setup command. Empty when there are none. */
   readonly after: string
-  /** Whether to offer the link to the configuration page. */
-  readonly linksToSettings: boolean
 }
 
-export function engineNotice({
-  programDisputed, canOpenSettings,
-}: {
-  readonly programDisputed: boolean | null
-  /** False for a reader who cannot open the configuration page — a link there is worse than no link. */
-  readonly canOpenSettings: boolean
-}): EngineNotice {
+// WHO MAY OPEN THE CONFIGURATION PAGE IS NOT DECIDED HERE, and a field saying so was removed rather
+// than documented. It read `linksToSettings: canOpenSettings` in both branches — always equal to its
+// input, so the screen's `notice.linksToSettings && onSettings` was one condition written twice, not
+// two gates. A contract field that always returns what it was handed occupies a slot without holding
+// anything, and the next reader simplifies one side away believing the other still guards.
+//
+// The real gate is the call site, which passes no handler to a reader who cannot open that page. It is
+// held by the navigation arm and driven in a browser, which is where a question about who sees a
+// control belongs. Raised in review on this change.
+
+export function engineNotice({ programDisputed }: { readonly programDisputed: boolean | null }): EngineNotice {
   if (programDisputed === true) {
     return {
       state: 'disputed',
@@ -116,7 +118,6 @@ export function engineNotice({
       // here would be the third piece of advice that cannot work in this state.
       namesSetupCommand: false,
       after: '',
-      linksToSettings: canOpenSettings,
     }
   }
   return {
@@ -131,7 +132,6 @@ export function engineNotice({
     // page explaining why. That is the loop an outside user could not get out of.
     after: 'Then restart the service: this reading was taken when it started, and it will not notice a '
       + 'new install until it starts again.',
-    linksToSettings: canOpenSettings,
   }
 }
 
