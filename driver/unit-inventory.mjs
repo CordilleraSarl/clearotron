@@ -283,8 +283,11 @@ export const UNIT_INVENTORY = Object.freeze([
       + "alternatives, and running both puts a second claimant on one queue.",
   },
   {
-    unit: "trademark-portal", runsOn: ["prod"],
-      measured: "2026-09-07, test box: LoadState=not-found. No unit of this name exists there. The `test` claim was inherited from before the rename to clearotron-* and was never remeasured; the `prod` claim is left alone because production was NOT measured here.", tracked: null,
+    unit: "trademark-portal", runsOn: [],
+      orphanReason: "THE PRE-RENAME PORTAL. The deployment account runs `clearotron-portal`; this name is "
+      + "what that service used to be called, and the 2026-09-08 reading finds no unit of this name under "
+      + "any account. It ran on production until the rename and the entry was never re-measured after it.",
+      measured: "2026-09-08: production read by account — the deployment account carries six clearotron-* unit files and the doctrine-sync timer, the legacy account carries five units of the other product plus unloadable residue, and no unit of THIS name is under either. Names and enable state only. This line previously carried a 2026-09-07 reading of the test deployment — LoadState=not-found there, with the production claim left alone because production had not been measured. It has been now, and this is that reading.", tracked: null,
     untrackedReason: "the deployed copy carries real Cloudflare Access team/AUD/domain values inline. "
       + "A tracked file would be the placeholder TEMPLATE, merged by hand after a "
       + "diff — writing one carelessly replaces working auth with placeholders that look configured.",
@@ -295,13 +298,19 @@ export const UNIT_INVENTORY = Object.freeze([
     supersededName: "portal-service.service (deleted, owner-ruled 2026-08-14)",
   },
   {
-    unit: "trademark-ops-mcp", runsOn: ["prod"],
-      measured: "2026-09-07, test box: LoadState=not-found. No unit of this name exists there. The `test` claim was inherited from before the rename to clearotron-* and was never remeasured; the `prod` claim is left alone because production was NOT measured here.", tracked: null,
+    unit: "trademark-ops-mcp", runsOn: [],
+      orphanReason: "THE PRE-RENAME OPERATOR DOOR. The deployment account runs `clearotron-mcp-face`; the "
+      + "2026-09-08 reading finds no unit of this name under any account. Same rename as the portal it "
+      + "serves, and the same claim carried across it unmeasured.",
+      measured: "2026-09-08: production read by account — the deployment account carries six clearotron-* unit files and the doctrine-sync timer, the legacy account carries five units of the other product plus unloadable residue, and no unit of THIS name is under either. Names and enable state only. This line previously carried a 2026-09-07 reading of the test deployment — LoadState=not-found there, with the production claim left alone because production had not been measured. It has been now, and this is that reading.", tracked: null,
     untrackedReason: "same CF Access inline-values shape as the portal it serves.",
   },
   {
-    unit: "client-mcp", runsOn: ["prod"],
-      measured: "2026-09-07, test box: LoadState=not-found. No unit of this name exists there. The `test` claim was inherited from before the rename to clearotron-* and was never remeasured; the `prod` claim is left alone because production was NOT measured here.", tracked: ["client-mcp.service"],
+    unit: "client-mcp", runsOn: [],
+      orphanReason: "THE PRE-RENAME CLIENT DOOR. `clearotron-client-mcp` runs on both the production and "
+      + "the test deployments; the 2026-09-08 reading finds no unit of THIS name under any account. The "
+      + "tracked template stays because the repository still ships it — see the note.",
+      measured: "2026-09-08: production read by account — the deployment account carries six clearotron-* unit files and the doctrine-sync timer, the legacy account carries five units of the other product plus unloadable residue, and no unit of THIS name is under either. Names and enable state only. This line previously carried a 2026-09-07 reading of the test deployment — LoadState=not-found there, with the production claim left alone because production had not been measured. It has been now, and this is that reading.", tracked: ["client-mcp.service"],
     note: "TRACKED, in mcp-server/remote/ — this entry said it had no file, and the file was there. It is "
       + "a banner-marked TEMPLATE, so the live copy differing from it is the arrangement, not drift. "
       + "#1147 ADDED THE TEST BOX (2026-08-18): the client surface ran nowhere but production, so the test "
@@ -312,12 +321,21 @@ export const UNIT_INVENTORY = Object.freeze([
       + "not the default.",
   },
   {
-    unit: "client-mcp-apikey", runsOn: ["prod"], tracked: ["client-mcp-apikey.service"],
+    unit: "client-mcp-apikey", runsOn: ["test"],
+      measured: "2026-09-08, read by account: enabled and present on the TEST deployment, beside the "
+      + "renamed `clearotron-client-mcp`. Absent from production under any account. The entry declared "
+      + "production and the reading puts it on the other deployment — the claim was not stale, it named "
+      + "the wrong machine. Why it runs there at all beside the renamed door is a separate question.",
+      tracked: ["client-mcp-apikey.service"],
     note: "TRACKED, in mcp-server/remote/. Same correction as client-mcp: the old reason claimed the live "
       + "key made a tracked file impossible, and the tracked TEMPLATE — which holds no key — already existed.",
   },
   {
-    unit: "trademark-artifacts-http", runsOn: ["prod"], tracked: ["trademark-artifacts-http.service"],
+    unit: "trademark-artifacts-http", runsOn: [],
+      orphanReason: "A PRE-RENAME NAME OF THE RETIRED DEPLOYMENT, and the one of them whose tracked file "
+      + "is GENERIC rather than a template — so the file is ready to be compared against a live copy the "
+      + "day something runs it, and nothing does. Read as absent under every account on 2026-09-08.",
+      measured: "2026-09-08: production read by account — no unit of this name is under the deployment account or the legacy one. Names and enable state only; no unit contents were read.", tracked: ["trademark-artifacts-http.service"],
     note: "TRACKED, in mcp-server/remote/. GENERIC, not a template: it carries no banner and no "
       + "placeholder, and defers its CF Access values to the EnvironmentFile — so its live copy is "
       + "expected to MATCH the tracked file, and a difference is real drift.",
@@ -370,7 +388,12 @@ export const UNIT_INVENTORY = Object.freeze([
       + "longer silent.",
   },
   {
-    unit: "client-access", runsOn: ["prod"], tracked: null,
+    unit: "client-access", runsOn: [],
+      orphanReason: "NOT THIS REPOSITORY'S SERVICE, and no longer running under this name: the legacy "
+      + "account holds it only as `client-access.service.retired-20260904`, a suffix systemd never reads. "
+      + "Declared here so a unit sharing a machine with ours is not invisible, and now declared as gone.",
+      measured: "2026-09-08: present on the legacy account ONLY as a retired-suffixed filename, which "
+      + "systemd does not load. No loadable unit of this name under any account.", tracked: null,
     untrackedReason: "it is not this repo's service. Its ExecStart runs a script from a different "
       + "product's checkout on the same box, not under this clone — so there is no code here to "
       + "template, and the old reason (CF Access values inline) would send the next reader hunting for a "
