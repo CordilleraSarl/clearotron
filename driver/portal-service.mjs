@@ -1344,8 +1344,7 @@ export function makePortalService({
   // WHAT IT COSTS ON A NORMAL PAGE VIEW: NOTHING, and that is structural rather than a promise. The
   // question only has a wrong answer in one state — the capture says there is no engine program — so
   // the live reading is taken only in that state. An install with a working engine never reaches the
-  // probe, and /me is the hottest endpoint in the portal. In the state that DOES reach it the reading
-  // is held for `PROGRAM_READING_TTL_MS`, so a page fetching /me on every screen change pays it once.
+  // probe, and /me is the hottest endpoint in the portal.
   //
   // AND IT IS THE SAME MECHANISM THE SETTINGS PAGE USES, deliberately: `flagView` with a live posture,
   // and the same `engine program` row out of `lastRun.disagrees`. Two surfaces answering this question

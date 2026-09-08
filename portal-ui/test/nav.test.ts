@@ -218,7 +218,20 @@ test('every in-app navigation target is a route that resolves', () => {
     // carries the role test on the same line, which is exactly the shape a reviewer can see. A carve-out
     // by path name would have asserted nothing about the call site and passed a bare link forever.
     if (!screenForPath(t, 'client')) {
-      for (const line of sites.get(t) ?? []) {
+      // THE LINE SCAN MUST HAVE FOUND THIS TARGET, or the check below iterates nothing and passes.
+      // `targets` is collected over the whole file and `sites` line by line with the same pattern, and
+      // `\s*` spans newlines — so a `go(` whose path sits on the next line is in the first set and not
+      // the second, the loop runs zero times, and a staff-only link with no gate at all ships green.
+      // Driven before this line existed: an ungated call, wrapped across two lines, passed.
+      //
+      // The failure is silence, so the fix is to refuse it rather than to widen the pattern. Widening
+      // would move the blind spot rather than close it; this says "I could not look" in the one place
+      // where not looking reads as a pass. Same shape as the `targets.size >= 4` drift guard above.
+      const lines = sites.get(t) ?? []
+      assert.ok(lines.length,
+        `${t} does not resolve for a client, and the line scan found no call site for it — the gate `
+        + `check cannot run. The literal is probably wrapped across two lines; put it on one.`)
+      for (const line of lines) {
         // THE TARGET MUST SIT IN THE TRUE BRANCH, not merely on a line that mentions the role. The
         // first version of this asserted the line contained `role === 'staff'` anywhere, and
         // `role === 'staff' ? null : go(target)` passed it — the gate inverted, which is the failure

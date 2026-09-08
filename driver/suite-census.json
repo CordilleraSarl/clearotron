@@ -5409,7 +5409,7 @@
         },
         "nav.test.ts": {
           "tests": 12,
-          "asserts": 45,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
