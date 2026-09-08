@@ -57,7 +57,7 @@ import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
   EMPTY_DRAFT, blockers, effortUnits, costBand, turnaround, checksSummary, runsNote, machineryFor,
   territoryMatches, addTerritory, removeTerritory, reachesTerritory, vocabularyFor, offerableFor,
-  inherited, composeSaved, draftFromSaved, nameBudget, missingPieces,
+  inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
   chooseProduct, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
 } from '../contract/composerProduct.ts'
 import { productMatrix, LEGEND } from '../contract/productMatrix.ts'
@@ -718,7 +718,6 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // somebody to delete their own work — see NameWall. ONE predicate, shared with blockers(); the
   // component needs the numbers to offer that way out, which is why it returns them.
   const budget = nameBudget(activeLevel, names.length)
-  const overBudget = budget != null
   const exhausted = usage?.capped === true && usage.dailyRuns != null && usage.today >= usage.dailyRuns
   // classes OR goods, which is what the schema accepts. Requiring both would refuse requests the engine
   // runs — and with the owner's own classes on screen in the card, demanding they be retyped is worse.
@@ -728,7 +727,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // condition beside it, is what stops the reason going missing again — there is nothing left to forget
   // to render.
   const gaps = missingPieces(names, classes, draft.goods)
-  const ready = !gaps.length && !stops.length && !nameStops.length && !overBudget && !exhausted && activeLevel != null
+  // ONE CALL, both answers. `ready` and the sentence under the button come out of the same ordered list
+  // in contract/composerProduct.ts, so `ready === (blockedBy === null)` holds by construction rather
+  // than by two chains in two files staying in step. Adding a condition without its sentence is no
+  // longer a thing this screen can do.
+  const { ready, blockedBy } = readiness({
+    gaps, stops, nameStops, budget, exhausted, hasProduct: activeLevel != null,
+  })
   // WHAT THE FOOTER CALLS THIS SEARCH, and there is only one answer now. It used to be `tierLabel`,
   // which invented seven strings for distinctions "the registry has no word for" — "Deep dive — United
   // States", "Full clearance". The registry has the word: it is the product's own name, the same string
@@ -1554,16 +1559,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             // footer is sticky — so on a long form the greyed button and its explanation are routinely
             // not on screen together. One sentence rather than the list: the reader fixes them one at a
             // time anyway, and a paragraph in a footer bar is not read. Ordered the way the notices are.
-            blockedBy={ready ? null : (
-              nameStops[0]
-              ?? gaps[0]
-              ?? stops[0]
-              ?? (budget
-                ? `This search reads ${budget.allowed} name${budget.allowed === 1 ? '' : 's'} at a time, and you have ${budget.allowed + budget.over}.`
-                : null)
-              ?? (exhausted ? 'No searches left on today’s allowance.' : null)
-              ?? 'Pick one of the searches above to begin.'
-            )}
+            blockedBy={blockedBy}
             onSaveOpen={() => { setSaveOpen(true); setSaveName(activeLevel ? `${activeLevel.name}` : 'Custom search') }}
             onSaveName={setSaveName}
             onSaveText={setSaveText}

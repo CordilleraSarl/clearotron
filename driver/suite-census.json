@@ -5371,6 +5371,12 @@
           "skips": 0,
           "todos": 0
         },
+        "readiness.test.ts": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "reads.test.ts": {
           "tests": 18,
           "asserts": 38,

@@ -194,8 +194,13 @@ test('a greyed primary action always has its reason on screen, and at the contro
   // makes the reason impossible to forget to render.
   assert.match(flat(src), /const gaps = missingPieces\(names, classes, draft\.goods\)/,
     'the form-gap condition is being derived somewhere other than the list of sentences')
-  assert.match(flat(src), /const ready = !gaps\.length &&/,
-    'readiness stopped being computed from the sentences the reader is shown')
+  // BOTH ANSWERS FROM ONE CALL. This used to read `const ready = !gaps.length && …` here and a separate
+  // chain of `??` fallbacks 800 lines below, and nothing tied them together — a seventh term in the
+  // boolean without a seventh sentence greyed the button in silence, which is this screen's original
+  // defect returning wearing its fix. `readiness()` derives both from one ordered list, and
+  // readiness.test.ts drives the relation `ready === (blockedBy === null)` rather than reading for it.
+  assert.match(flat(src), /const \{ ready, blockedBy \} = readiness\(\{/,
+    'readiness and its sentence are being derived separately again')
   assert.doesNotMatch(flat(src), /const missing = !names\.length/,
     'the reasonless boolean is back')
   // Rendered as a list on the form …
@@ -203,7 +208,7 @@ test('a greyed primary action always has its reason on screen, and at the contro
   // … AND at the button. The footer is sticky and the notice is not, so on a long form the greyed
   // button and its explanation are routinely not on screen at the same time. That is the state the
   // reader was in.
-  assert.match(flat(src), /blockedBy=\{ready \? null :/, 'the footer is not told why the action is off')
+  assert.match(flat(src), /blockedBy=\{blockedBy\}/, 'the footer is not told why the action is off')
   assert.match(flat(src), /\{blockedBy \?\? /, 'the reason is passed to the footer and never rendered')
 })
 
