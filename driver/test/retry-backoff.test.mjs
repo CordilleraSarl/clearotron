@@ -26,6 +26,10 @@ const MOCK_DIR = mkdtempSync(join(tmpdir(), "backoff-mock-"));
 const MOCK = join(MOCK_DIR, "mock-claude-mini.mjs");
 writeFileSync(MOCK, `#!/usr/bin/env node
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
+// \`--version\` answers and exits, like the binary this stands in for. Without it the driver's
+// dispatch-time version probe falls through to the switch below and CONSUMES a flake count, so
+// attempt 1 recovers and the retry this file measures never happens.
+if (process.argv.slice(2).includes("--version")) { process.stdout.write("mock-mini 1.0.0\\n"); process.exit(0); }
 const ok = () => process.stdout.write(JSON.stringify({ type: "result", subtype: "success", is_error: false,
   duration_ms: 5, num_turns: 1, result: "mock ok", stop_reason: "end_turn", session_id: "mock-mini",
   total_cost_usd: 0, usage: { input_tokens: 1, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } }) + "\\n");
