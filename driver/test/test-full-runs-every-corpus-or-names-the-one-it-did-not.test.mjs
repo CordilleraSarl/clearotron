@@ -9,7 +9,7 @@
 // to test them. The suite runs files in parallel, so nothing here touches a shared path.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -201,4 +201,87 @@ test("the whole check exits 0 on this tree, and every minter it found is current
   const out = execFileSync("node", ["scripts/generated-files-are-current.mjs"], { cwd: REPO, encoding: "utf8" });
   assert.match(out, /checked [4-9]\d* minter\(s\)/);
   assert.doesNotMatch(out, /STALE/);
+});
+
+// ── TWO RESIDUALS FROM THE REVIEW OF THIS FILE'S OWN CHANGE ──────────────────────────────────────
+//
+// Both were latent rather than live, and both are the defect this file exists for, one level in: a
+// check that reads one shape of the thing it governs and reports clean on every other shape.
+
+test("a provider test is collected wherever it sits under providers/, not only in the one shape", () => {
+  // THE SHAPE-BOUND ENUMERATION. This read `providers/<dir>/test/*.test.mjs` one level deep, and the
+  // covered-workspace check counted that workspace's own files the SAME way — so a file outside the
+  // shape was in no corpus, both sides missed it together and therefore agreed, and every check
+  // reported clean under a command whose whole claim is that it runs every corpus.
+  const root = mkdtempSync(join(tmpdir(), "prov-shape-"));
+  try {
+    const put = (p) => {
+      mkdirSync(join(root, dirname(p)), { recursive: true });
+      writeFileSync(join(root, p), "// planted\n");
+    };
+    put("providers/a/test/in-the-shape.test.mjs");
+    put("providers/b/off-the-shape.test.mjs");            // no test/ directory at all
+    put("providers/c/test/deeper/still-a-test.test.mjs"); // below the one level that was read
+    put("providers/d/test/not-a-test.mjs");               // must NOT be collected
+    mkdirSync(join(root, "providers/e/node_modules/dep/test"), { recursive: true });
+    writeFileSync(join(root, "providers/e/node_modules/dep/test/vendor.test.mjs"), "// a dependency's\n");
+
+    const files = providerTestFiles(root);
+    assert.deepEqual(files.sort(), [
+      "providers/a/test/in-the-shape.test.mjs",
+      "providers/b/off-the-shape.test.mjs",
+      "providers/c/test/deeper/still-a-test.test.mjs",
+    ], "every test under providers/ is collected, at any depth, and nothing else is");
+    // BOTH DIRECTIONS. A walk that collected everything would satisfy the half above.
+    assert.ok(!files.some((f) => f.includes("node_modules")), "an installed dependency's tests are not this corpus");
+    assert.ok(!files.some((f) => f.endsWith("not-a-test.mjs")), "only .test.mjs is collected");
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test("this tree's provider corpus reaches every provider test on disk, with nothing left over", () => {
+  // The arm above proves the walk; this one proves it against the real tree, because a walk that is
+  // correct in a fixture and pointed at the wrong directory here would pass it.
+  const collected = new Set(providerTestFiles(REPO));
+  const onDisk = execFileSync("find", ["providers", "-name", "*.test.mjs", "-type", "f", "-not", "-path", "*/node_modules/*"],
+    { cwd: REPO, encoding: "utf8" }).split("\n").filter(Boolean);
+  assert.ok(onDisk.length > 30, `expected the real corpus, found ${onDisk.length}`);
+  const missed = onDisk.filter((f) => !collected.has(f));
+  assert.deepEqual(missed, [], "a provider test on disk that no corpus runs");
+  assert.equal(collected.size, onDisk.length, "and nothing collected that is not on disk");
+});
+
+test("a minter that WRITES while running --check is caught, not logged as current", async () => {
+  // `--check` IS A CONTRACT AND NOTHING WAS VERIFYING IT. A minter that ignores the flag and re-mints
+  // repairs the drift on whoever ran it, leaves the commit without the repair, and reports `current`
+  // over a check that never happened — a pass from a minter that did not look.
+  const { checkAll } = await import("../../scripts/generated-files-are-current.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "minters-contract-"));
+  const sentinel = join(dir, "state");
+  try {
+    writeFileSync(sentinel, "0");
+    // Honours the contract: reports, changes nothing.
+    writeFileSync(join(dir, "mint-honest.mjs"), `process.exit(0);\n`);
+    // Ignores it: re-mints and reports clean, which is the harmful form.
+    writeFileSync(join(dir, "mint-inert.mjs"),
+      `import { writeFileSync } from "node:fs";\n`
+      + `writeFileSync(${JSON.stringify(sentinel)}, String(Date.now()));\nprocess.exit(0);\n`);
+
+    const r = checkAll({ dir, root: dir, log: () => {}, readTree: () => readFileSync(sentinel, "utf8") });
+    assert.equal(r.wrote.length, 1, "the minter that wrote during --check is caught");
+    assert.match(r.wrote[0].m, /mint-inert/);
+    assert.equal(r.stale.length, 0, "and it is not filed as merely stale — different remedy");
+    // THE CONTROL. Without it, a probe that flagged everything would satisfy the half above.
+    assert.ok(!r.wrote.some((w) => /mint-honest/.test(w.m)), "the minter that honoured the contract is not accused");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("the contract probe says so when it could not read the tree, rather than passing quietly", async () => {
+  const { checkAll } = await import("../../scripts/generated-files-are-current.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "minters-notree-"));
+  try {
+    writeFileSync(join(dir, "mint-x.mjs"), "process.exit(0);\n");
+    const r = checkAll({ dir, root: dir, log: () => {}, readTree: () => null });
+    assert.equal(r.contractChecked, false, "an unreadable tree is a stated limit, not a silent pass");
+    assert.deepEqual(r.wrote, [], "and nothing is accused on a reading that could not be taken");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
