@@ -17,7 +17,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
-import { invocationPrefix, invoke, standFrom } from "../../shared/invocation.mjs";
+import { invocationPrefix, invoke, standFrom, installRoute } from "../../shared/invocation.mjs";
 import { INSTALL_DIR } from "../../shared/verb-shim.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -158,4 +158,40 @@ test("2175-F7 the NEAREST project root wins, and a lookalike directory is not on
   assert.equal(standFrom("/a/node_modules/@s/x/node_modules/clearotron"), "/a/node_modules/@s/x");
   // Separator-delimited, so a directory that merely starts with the name is left alone.
   assert.equal(standFrom("/srv/node_modules_backup/clearotron"), "/srv/node_modules_backup/clearotron");
+});
+
+// ── which route the reader installed by ─────────────────────────────────────────────────────────────
+//
+// The setup wizard has two spellings and each one is unrunnable on the other route: a package install
+// has no npm scripts, and a source checkout has no `clearotron` linked for itself. The portal's
+// no-engine notice named `npm run setup` unconditionally, so every reader who installed the package was
+// handed the one command they could not type — at the one moment they had nothing else to go on.
+
+test("a package is 'packaged' — local or global — and a checkout is 'checkout'", () => {
+  assert.equal(installRoute("/srv/example/app/node_modules/clearotron"), "packaged",
+    "an ordinary package install");
+  // A GLOBAL INSTALL IS A PACKAGE TOO, and it is the case a `node_modules`-free rule would get wrong.
+  // npm unpacks it at <prefix>/lib/node_modules/clearotron, so the same test answers it.
+  assert.equal(installRoute("/opt/tools/lib/node_modules/clearotron"), "packaged");
+  // A package that itself sits under somebody else's node_modules is still a package.
+  assert.equal(installRoute("/a/node_modules/b/node_modules/clearotron"), "packaged");
+  assert.equal(installRoute("/srv/example/clearotron-checkout"), "checkout");
+  assert.equal(installRoute("/opt/src/clearotron"), "checkout");
+});
+
+test("the answer is always one of the two words, and never a path", () => {
+  // The value travels to a browser. `invocationForm`'s prefix, the other answer to a nearby question,
+  // can be `cd /srv/whatever && npx ` — this one must never be able to become that.
+  for (const dir of ["", "/", "/a/node_modules/clearotron", "/plain", INSTALL_DIR]) {
+    const r = installRoute(dir);
+    assert.ok(r === "packaged" || r === "checkout", `unnamed route ${JSON.stringify(r)} for ${dir}`);
+  }
+});
+
+test("installRoute and standFrom cannot disagree — there is one predicate", () => {
+  // Two definitions of "am I a package" would be two chances to drift, and the drift would be silent:
+  // a screen naming the wrong command still renders perfectly.
+  for (const dir of ["/a/node_modules/clearotron", "/plain/checkout", INSTALL_DIR]) {
+    assert.equal(installRoute(dir), standFrom(dir) === dir ? "checkout" : "packaged", dir);
+  }
 });

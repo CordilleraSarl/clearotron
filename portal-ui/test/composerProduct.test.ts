@@ -17,6 +17,7 @@ import {
   EMPTY_DRAFT, REGIONS, COUNTRIES, tierOf, vocabularyFor, territoryMatches, addTerritory,
   removeTerritory, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited,
+  missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
 } from '../src/contract/composerProduct.ts'
 import type { Draft } from '../src/contract/composerProduct.ts'
@@ -263,4 +264,66 @@ test('inherited reads the project overlay when there is one, and says which', ()
   assert.equal(own.classesFrom, 'from Console line')
   assert.deepEqual([...own.territories], ['FR'])
   assert.equal(own.territoriesFrom, 'from Console line')
+})
+
+
+// ── the pieces the form has not been given yet ──────────────────────────────────────────────────────
+//
+// THE DEFECT: this condition existed on the screen as a bare boolean feeding the primary action's
+// `disabled`, and rendered nowhere. Every other term in that expression puts a sentence in front of the
+// reader; this one greyed the button out in silence. An outside user with a working install, one name
+// typed and no goods, read the result as a product with no way to start a search and stopped using it.
+//
+// The arms below are about the SENTENCES, not the boolean. A version of this that returned true/false
+// would satisfy the screen and reproduce the defect exactly.
+
+test('a form with nothing in it asks for the name first, and only the name', () => {
+  const out = missingPieces([], [], '')
+  assert.equal(out.length, 1, `expected one thing to fix and got ${out.length}: ${JSON.stringify(out)}`)
+  assert.match(out[0]!, /name/i)
+  // NOT two chores. With no name at all the brief reader can fill both from one sentence, and a list
+  // that opens with two demands is the tone this screen was rebuilt to get away from.
+  assert.doesNotMatch(out[0]!, /classes/i)
+})
+
+test('a name with nothing said about it asks what it is for, and offers either answer', () => {
+  const out = missingPieces(['AQUAPLUS'], [], '')
+  assert.equal(out.length, 1)
+  // EITHER, never both — the request schema accepts classes or a description, and the screen must not
+  // demand more than the door does.
+  assert.match(out[0]!, /classes/i)
+  assert.match(out[0]!, /goods/i)
+  assert.match(out[0]!, /either/i)
+})
+
+test('classes alone are enough, and a description alone is enough', () => {
+  assert.deepEqual(missingPieces(['AQUAPLUS'], [32], ''), [])
+  assert.deepEqual(missingPieces(['AQUAPLUS'], [], 'energy drinks'), [])
+  assert.deepEqual(missingPieces(['AQUAPLUS'], [32], 'energy drinks'), [])
+})
+
+test('whitespace is not a description', () => {
+  // The screen's own predicate trimmed; a rewrite that forgot to would let the primary action light up
+  // over a request the door then refuses, which is the round trip this list exists to save.
+  assert.equal(missingPieces(['AQUAPLUS'], [], '   \n  ').length, 1)
+})
+
+test('every sentence is a fixable instruction, not a statement that something is wrong', () => {
+  // ANTI-VACUITY AND TONE IN ONE. These strings are the entire product of this function — a rewrite
+  // returning empty strings, or error-shaped ones, would pass every count above.
+  for (const s of [...missingPieces([], [], ''), ...missingPieces(['X'], [], '')]) {
+    assert.ok(s.length > 20, `too short to instruct anybody: ${JSON.stringify(s)}`)
+    assert.doesNotMatch(s, /error|invalid|required|must/i,
+      `${JSON.stringify(s)} tells somebody they are wrong. This list is things nobody has typed yet.`)
+  }
+})
+
+test('nothing here is a reason to refuse a SAVE', () => {
+  // The screen gates saving on blockers(), never on this list, and the two must stay different
+  // questions: a half-filled form is a perfectly good thing to save and come back to. The user who
+  // reported this had saved exactly such a form.
+  const gaps = missingPieces([], [], '')
+  assert.ok(gaps.length > 0)
+  assert.deepEqual(blockers(EMPTY_DRAFT, null, 0).filter((b) => gaps.includes(b)), [],
+    'a form gap leaked into blockers(), which would take Save away from a half-filled form')
 })

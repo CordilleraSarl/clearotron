@@ -51,6 +51,15 @@ import { dirname } from "node:path";
 import { applyStageWrites } from "./mock-stage-fixtures.mjs";
 
 const argv = process.argv.slice(2);
+
+// `--version` ANSWERS AND EXITS, like the binary this stands in for. A real CLI prints a version, writes
+// nothing, reads no stdin and records no turn — and the driver now probes it at dispatch to record which
+// build served a run. A mock that fell through to the stage path would block on a stdin that never
+// closes, append a line to the call log, and make every attempt count in every arm one higher than the
+// dispatch it is measuring. Faithfulness here is not a courtesy to the probe; it is what keeps the mock
+// a stand-in rather than a different program.
+if (argv.includes("--version")) { process.stdout.write("2.1.241 (Claude Code)\n"); process.exit(0); }
+
 // The engine now pipes the prompt on STDIN (no `-p` positional) — read it to EOF. Fallback to a positional
 // after `-p` for any direct-CLI caller / TTY (a token starting with `-` is the NEXT flag, not the prompt).
 const pIdx = argv.indexOf("-p");

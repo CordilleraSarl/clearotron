@@ -2836,3 +2836,35 @@ test("2015 a demo may only land on a run this principal could open anyway", asyn
   assert.doesNotMatch(JSON.stringify(run.json), /demo-elsewhere/, "and it named the run it must not have seen");
   assert.deepEqual(w.triggers, []);
 });
+
+// ── the setup command a screen may offer ────────────────────────────────────────────────────────────
+//
+// The portal's no-engine notice names the wizard that would fix the install. It named one spelling,
+// `npm run setup`, which exists only for somebody working in a copy of the source: a reader who
+// installed the package has no npm scripts at all, so the only fix the product offered them was a
+// command that does not exist on their machine. The screen cannot work out which route it is on; the
+// server can, because the answer is where its own code sits.
+test("/portal/api/me says which route this install arrived by, as a WORD", async () => {
+  const { poolRoot, workspaceRoot } = world();
+  const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
+    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {} });
+  const me = await svc.route("GET", "/portal/api/me", CLIENT);
+  assert.equal(me.status, 200);
+  assert.ok(["packaged", "checkout"].includes(me.json.setupRoute),
+    `setupRoute must be one of the two routes and was ${JSON.stringify(me.json.setupRoute)}`);
+
+  // ── AND NEVER A PATH ────────────────────────────────────────────────────────────────────────────
+  //
+  // This is the reason the route is derived separately rather than read off `invocationForm`, whose
+  // `prefix` can be `cd /srv/whatever && npx ` — the server's own directory layout, its account name
+  // and its install location, on a page rendered in somebody's browser. A later change that "improves"
+  // this field by sending the runnable command would publish all three, and it would look like better
+  // copy while doing it.
+  assert.doesNotMatch(String(me.json.setupRoute), /[\/\\ ]/,
+    "setupRoute is a single word, never a path and never a command line");
+  const wire = JSON.stringify(me.json);
+  assert.doesNotMatch(wire, /node_modules|\/home\/|\/srv\/|\/opt\/|\/Users\//,
+    "an absolute path reached /portal/api/me — this route publishes no filesystem layout");
+  assert.doesNotMatch(wire, /npx |npm run |cd \//,
+    "a command line reached the wire; the screen composes the command from the word");
+});
