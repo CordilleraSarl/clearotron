@@ -332,6 +332,10 @@ export async function askArchivedRun({ runId, question, requestedBy = null } = {
     body: String(reading?.body ?? ""),
     limits: Array.isArray(reading?.limits) ? reading.limits : [],
     mark: run.markName ?? null,
+    // The authority the seat was instructed to assess under, carried to the artifact rather than ending
+    // at the return value. `parentRatedUnder` answers null for a run that froze no profile, which is a
+    // fact the memo states rather than omits.
+    ratedUnder,
   });
   if (!composed.ok)
     return { ok: false, fail: MEMO_FAILS.COMPOSE_REFUSED, detail: composed.reason, missing: composed.missing };

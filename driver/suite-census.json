@@ -310,8 +310,8 @@
           "todos": 0
         },
         "a-memo-over-a-delivered-report-leaves-it-alone.test.mjs": {
-          "tests": 13,
-          "asserts": 52,
+          "tests": 16,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },

@@ -43,9 +43,24 @@ export const REQUIRED = Object.freeze(["assumption", "parentRunId", "parentRepor
  * needs new evidence" — it is a claim, and `limitsStated` records which claim was made rather than
  * leaving a reader to infer it from silence.
  */
-export function composeMemo({ assumption, parentRunId, parentReport, date, body, limits = [], mark = null } = {}) {
+export function composeMemo({ assumption, parentRunId, parentReport, date, body, limits = [], mark = null, ratedUnder } = {}) {
   const missing = REQUIRED.filter((k) => !String({ assumption, parentRunId, parentReport, date, body }[k] ?? "").trim());
   if (missing.length) return { ok: false, missing, reason: `a memo cannot be composed without: ${missing.join(", ")}` };
+
+  // THE RATING AUTHORITY IS REQUIRED BY PRESENCE, NOT BY TRUTHINESS, because `null` is a real answer.
+  // A memo is reasoned under an authority — the seat is instructed to assess under a named framework, or
+  // told the run froze none and to stay with the house default — and until this line the only thing that
+  // reached disk was the reasoning. A lawyer may act on this document; it has to say what it was rated
+  // under.
+  //
+  // Three states, and the third is the one worth separating. A named key is one fact. The house default
+  // is a DIFFERENT fact, not an absence, and it is recorded rather than left blank. A caller that never
+  // resolved an authority at all is neither, and refusing it is the point: a memo whose artifact is
+  // silent about its authority is exactly the defect this closes, so it must not be composable.
+  if (ratedUnder === undefined)
+    return { ok: false, missing: ["ratedUnder"],
+      reason: "a memo cannot be composed without its rating authority — pass the resolved key, or null "
+        + "for a run that froze no customer profile. Absent is not the same fact as either." };
 
   const limitLines = limits
     .map((l) => ({ cannot: String(l?.cannot ?? "").trim(), smallestSearch: String(l?.smallestSearch ?? "").trim() }))
@@ -64,6 +79,9 @@ export function composeMemo({ assumption, parentRunId, parentReport, date, body,
     "",
     `**Date:** ${date}`,
     `**Derived from:** ${parentReport} (run ${parentRunId})`,
+    `**Rated under:** ${ratedUnder === null
+      ? "the house default — this report's run froze no customer profile"
+      : String(ratedUnder).trim()}`,
     "",
     "## The assumption you asked me to apply",
     "",
