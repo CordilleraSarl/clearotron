@@ -136,6 +136,11 @@ boxes rebuild.
 
 ## 5. Env-var register (by domain → tier)
 
+**[`04-configuration-reference.md`](04-configuration-reference.md) is the variable table**, and it is
+the one two instruments read — `driver/doc-constants.mjs` and `scripts/env-audit.mjs`. What follows
+here is the governance view: which tier a name sits in and who may change it. When the two disagree
+about what a variable *does*, 04 is right and this page is stale.
+
 Tiers: T3 = operator-tunable (candidate for read-only display); T4 = backend-only (secret,
 structural, or dev seam); [dev] = dev/test seam, never set in prod.
 

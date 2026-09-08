@@ -122,8 +122,8 @@ test("#238 corruption 2: narrative-refutation's driver-computed blocks are REGIS
   // DISPATCH_EXTRAS declared NEITHER — so `sandboxManifest("narrative-refutation")` had no driver-side
   // edge at all and the arm's `extra` was undefined while every canonical dispatch carried both.
   const declared = SC.DISPATCH_EXTRAS.filter((x) => x.stage === "narrative-refutation").map((x) => x.id).sort();
-  assert.deepEqual(declared, ["plan-audit", "refute-registry-check"],
-    "both blocks refute() composes must be declared — an undeclared one is invisible to the sandbox by construction");
+  assert.deepEqual(declared, ["plan-audit", "refute-plain-register", "refute-registry-check"],
+    "every block refute() composes must be declared — an undeclared one is invisible to the sandbox by construction");
 
   // Each declaration states its own read set, and every path it names reaches the sandbox manifest.
   // (Several of these were already in the manifest for OTHER reasons — plan-execution as a validator

@@ -146,7 +146,7 @@ npm run typecheck -w portal-ui
 npm run tokens:check
 node scripts/markdown-link-check.mjs
 node scripts/spdx-headers.mjs --check
-npm run build:ui && git add portal-ui/dist    # only if you changed portal-ui/src — CI requires byte equality
+npm run build:ui                              # only if you changed portal-ui/src — CI builds it too, and dist is not committed
 ```
 
 Grep the suite log for `[repo-guard] SKIPPED`: a guard that skipped cleared nothing, and CI asserts there

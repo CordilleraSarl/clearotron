@@ -111,7 +111,10 @@ test("a frozen example replays into a demo pool with NO credentials in the envir
   assert.ok(html.length > 10000, `the report is a rendered document, not a stub (${html.length} bytes)`);
   assert.match(html, /PROJECT AQUAPLUS/, "the mark reaches the rendered report");
   // The label is not a footnote — it is on the terminal before the browser opens.
-  assert.match(r.out, /no keys, no model calls/, r.out);
+  assert.match(r.out, /no account, no key and no network/, r.out);
+  assert.match(r.out, /captured against Clarivate Compumark/, r.out,
+    "the provenance names the register the runs were actually captured against — all four record "
+    + "`\"provider\": \"clarivate\"`, and the label said EU register until this was measured");
   assert.match(r.out, /example, not advice/, r.out);
   rmSync(root, { recursive: true, force: true });
 });

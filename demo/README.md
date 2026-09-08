@@ -37,7 +37,7 @@ they are machine output with a fixed shape, described here instead:
   the search policy, the receipts, the pre-delivery lint. These are what the report is assembled from
   and what the audit surfaces read.
 - `<product-id>/run/_records/` — the register records the run actually retrieved, one file per record,
-  named by register and number. Real EUIPO records for a fictional mark.
+  named by register and number. Real Clarivate Compumark records for a fictional mark.
 
 `<product-id>/PROVENANCE.md` says how each run was frozen, what was dropped, and how to regenerate it.
 

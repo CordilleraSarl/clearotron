@@ -40,8 +40,8 @@
           "todos": 0
         },
         "a-bare-reference-added-in-a-diff-is-refused.test.mjs": {
-          "tests": 15,
-          "asserts": 32,
+          "tests": 21,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -413,7 +413,7 @@
         },
         "a-public-clone-is-told-why-a-command-cannot-run.test.mjs": {
           "tests": 3,
-          "asserts": 13,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -2015,7 +2015,7 @@
         },
         "example-replay.test.mjs": {
           "tests": 8,
-          "asserts": 31,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -4497,6 +4497,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-public-residue-is-a-floor.test.mjs": {
+          "tests": 9,
+          "asserts": 34,
+          "skips": 5,
+          "todos": 0
+        },
         "the-published-door-must-answer-not-merely-exist.test.mjs": {
           "tests": 5,
           "asserts": 14,
@@ -4554,6 +4560,12 @@
         "the-report-shell-keeps-what-a-repair-does-not-resend.test.mjs": {
           "tests": 6,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reviewing-pass-reads-the-lines-a-client-sees-first.test.mjs": {
+          "tests": 10,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
