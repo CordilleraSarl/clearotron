@@ -26,11 +26,12 @@ import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached gro
 // it as a user with `ulimit -v unlimited`.
 
 import { createServer } from 'node:http'
-import { readFileSync, existsSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
+import { readFileSync, existsSync, writeFileSync, rmSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
 import { tmpdir } from 'node:os'
+import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = join(HERE, '..', 'portal-ui', 'dist')
@@ -255,7 +256,9 @@ const MEASURE = `(async () => {
 
 // ── chrome ──────────────────────────────────────────────────────────────────────────────────────────
 
-const userDir = mkdtempSync(join(tmpdir(), 'clearances-check-'))
+// The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
+// lock it writes there leaves with the root instead of accumulating in the shared one.
+const { profile: userDir, env: chromeEnv } = browserRun("clearances-check-")
 // NO NETWORK, deliberately. CI runs this with no route to api.fontshare.com, so the brand webfonts never
 // arrive and the page renders in a wider fallback — which is exactly when a cell wraps and a table
 // overflows. A check that passes only when the fonts load is a check that passes on the developer's
@@ -267,7 +270,7 @@ const chrome = spawn('google-chrome', [
   '--remote-debugging-port=0', `${origin}/portal/clearances`,
   // — DETACHED so Chrome LEADS A PROCESS GROUP. Its renderer, GPU and zygote processes are
   // separate PIDs, and without a group there is nothing to signal them with.
-], { stdio: ['ignore', 'pipe', 'pipe'], detached: true })
+], { stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: chromeEnv })
 // — and the group dies with THIS script, on every exit it can observe.
 // The teardown below runs on the paths somebody wrote a branch for; a cancelled CI job (SIGTERM),
 // a Ctrl-C, or a throw elsewhere in this file are not among them — and that is where the measured

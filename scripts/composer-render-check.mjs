@@ -25,10 +25,11 @@ import { readFileSync, existsSync, writeFileSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { productRows } from '../driver/product-rows.mjs'
 import { RETIRED_PRODUCTS } from '../driver/search-policy.mjs'
+import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = join(HERE, '..', 'portal-ui', 'dist')
@@ -740,7 +741,9 @@ const SCRIPT = `
 })()
 `
 
-const userDir = mkdtempSync(join(tmpdir(), 'composer-check-'))
+// The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
+// lock it writes there leaves with the root instead of accumulating in the shared one.
+const { profile: userDir, env: chromeEnv } = browserRun("composer-check-")
 
 // Chrome's --dump-dom cannot run our driver script, so the driving happens via the DevTools protocol —
 // but standing that up needs no extra dependency: a plain evaluate over the websocket is enough.
@@ -750,7 +753,7 @@ const chrome = spawn('google-chrome', [
   '--remote-debugging-port=0', `${origin}/portal/new`,
   // — DETACHED so Chrome LEADS A PROCESS GROUP. Its renderer, GPU and zygote processes are
   // separate PIDs, and without a group there is nothing to signal them with.
-], { stdio: ['ignore', 'pipe', 'pipe'], detached: true })
+], { stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: chromeEnv })
 // — and the group dies with THIS script, on every exit it can observe.
 // The teardown below runs on the paths somebody wrote a branch for; a cancelled CI job (SIGTERM),
 // a Ctrl-C, or a throw elsewhere in this file are not among them — and that is where the measured
