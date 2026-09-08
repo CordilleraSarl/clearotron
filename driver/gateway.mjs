@@ -13,7 +13,8 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, wri
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
-import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn } from "./driver.config.mjs";
+import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary } from "./driver.config.mjs";
+import { probeCliVersion } from "./engine/cli-version.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
 import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
@@ -1147,6 +1148,20 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // may repoint, and recorded beside a dated one they read identically. null when there is nothing to
     // judge, never collapsed into "alias".
     const modelSnapshot = modelSnapshotKind(modelActual);
+    // WHICH BUILD OF THE TOOL SERVED THIS TURN. `modelSnapshot` above answers "did the model move";
+    // this answers "did the tool move", and the two have one symptom — a run whose judgment differs from
+    // last week's. Captured at dispatch rather than read back afterwards, because the binary a reader
+    // could probe later is not necessarily the one that ran.
+    //
+    // Written as an object with its own `probe` field, so an unreadable version is a RECORDED state
+    // rather than a missing one. Omitting it on failure would collapse "asked and could not say" into
+    // "written before anybody asked", which is the distinction the field exists for. One spawn per
+    // binary per process; a probe never throws, because taking down a dispatch to record a version
+    // would be a worse defect than the gap it closes.
+    const cli = (() => {
+      try { return probeCliVersion(preflightEngineBinary(process.env)?.resolved ?? null); }
+      catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160) }; }
+    })();
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
     // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
     // back as `claude-haiku-4-5-20251001`. THREE-VALUED: null when either side names no family this
@@ -1576,6 +1591,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // Written even on the rows where they are null, so "this engine cannot report" stays visibly
         // different from "this record predates the gauge".
         modelActual, modelBasis, modelSnapshot, modelMismatch,
+        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
         // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
         // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
         // — the actual proof is the provider console (claude's stream also reports apiKeySource; codex does
@@ -1711,6 +1727,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
           model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch,
+          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
           rescued: rescued ?? undefined, killed: killed || undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row

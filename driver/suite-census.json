@@ -507,6 +507,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-records-the-tool-that-served-it.test.mjs": {
+          "tests": 10,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-that-cannot-settle-says-so.test.mjs": {
           "tests": 4,
           "asserts": 12,
