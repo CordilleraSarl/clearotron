@@ -500,6 +500,59 @@ export const CHECKED_UNITS = Object.freeze(
   UNIT_INVENTORY.filter((u) => u.runsOn.length > 0).map((u) => u.unit),
 );
 
+/**
+ * The TIMER units this deployment claims to have, by name, as systemd spells them.
+ *
+ * ── WHY A SECOND LIST AND NOT MORE NAMES IN THE ONE ABOVE ───────────────────────────────────────────
+ *
+ * `CHECKED_UNITS` holds BARE names, and that is load-bearing rather than an accident: the verdict
+ * appends the suffixes itself when matching what a box is running, so one entry answers for a unit's
+ * service, timer and path alike. The health check then asks `systemctl show <bare>`, and systemd
+ * resolves a bare name to the `.service`.
+ *
+ * For a timer-driven unit that is the wrong question, and it is wrong in the direction that hides the
+ * failure. The service of a timer-driven unit reads `ActiveState=inactive` **between runs** — it is
+ * meant to — and it reads `inactive` when its timer has been STOPPED. Identical strings, opposite
+ * meanings, and the check could report the unit exists while being unable to say whether anything
+ * still starts it. That is the whole of what a timer entry is for.
+ *
+ * The signal lives on the `.timer`, whose `ActiveState` separates `active` (armed and waiting) from
+ * `inactive` (stopped, and nothing will fire the service again).
+ *
+ * ── WHERE THE NAMES COME FROM ───────────────────────────────────────────────────────────────────────
+ *
+ * From `tracked`, which already lists the files an entry accounts for, so a shipped timer is covered
+ * with nothing new to declare and cannot be forgotten. An UNTRACKED unit has no file list to read, so
+ * it says so with `systemdUnits:` — the systemd names to ask about, which is a different fact from the files
+ * the repository ships and is why it is not folded into `tracked`. Claiming a tracked file that does
+ * not exist is a fault; naming a unit this deployment runs is a claim about a box.
+ */
+export const CHECKED_TIMERS = Object.freeze(
+  UNIT_INVENTORY.filter((u) => u.runsOn.length > 0)
+    .flatMap((u) => (u.systemdUnits ?? u.tracked ?? []).filter((f) => f.endsWith(".timer")))
+    .sort(),
+);
+
+/**
+ * Judge the timers. PURE — the caller reads systemd.
+ *
+ * `inactive` is the finding here, which inverts the reflex a reader brings from services. A stopped
+ * timer breaks nothing now and nothing fails: the service simply never fires again, and every surface
+ * that reports on the service keeps saying `inactive`, which is what it says when the timer is working.
+ */
+export function timerVerdict(timers, { probeFailed = null } = {}) {
+  if (probeFailed) return { state: "unknown", stopped: [], absent: [], message: `could not ask systemd about the timers: ${probeFailed}. That is this check failing to look, not a report about them.` };
+  const rows = timers ?? [];
+  if (!rows.length) return { state: "pass", stopped: [], absent: [], message: "no timer is declared for this box" };
+  const absent = rows.filter((t) => t.load === "not-found").map((t) => t.unit).sort();
+  const stopped = rows.filter((t) => t.load !== "not-found" && t.active !== "active").map((t) => t.unit).sort();
+  const parts = [`${rows.length} declared timer(s)`];
+  if (stopped.length) parts.push(`STOPPED: ${stopped.join(", ")} — the service each one drives will not fire again, and its own state stays 'inactive' either way`);
+  if (absent.length) parts.push(`${absent.length} declared timer(s) do not exist on this box`);
+  if (!stopped.length && !absent.length) parts.push("all armed");
+  return { state: stopped.length ? "fail" : "pass", stopped, absent, message: parts.join("; ") };
+}
+
 /** Every tracked file the inventory accounts for, flattened. */
 export const ACCOUNTED_FILES = Object.freeze(
   UNIT_INVENTORY.flatMap((u) => u.tracked ?? []),
