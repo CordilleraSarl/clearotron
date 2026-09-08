@@ -289,6 +289,48 @@ export const UNIT_INVENTORY = Object.freeze([
       + "expected to MATCH the tracked file, and a difference is real drift.",
   },
   {
+    unit: "clearotron-mcp-local", runsOn: ["prod"], tracked: null,
+    untrackedReason: "the fifth hand-made door on production, on 18793, kept as it is by ruling while "
+      + "the product fix lands. Known and hand-made is not the same as declared: it was running on "
+      + "production and named by no inventory, no unit file and no line of code in this repo, so the "
+      + "health check could not see it and nothing would have said if it stopped. Declared here to end "
+      + "that, not to bless the arrangement.",
+  },
+  {
+    unit: "clearotron-doctrine-sync", runsOn: ["prod"], tracked: null,
+    // WHAT SYSTEMD KNOWS THIS UNIT AS, which `tracked` cannot say here. For a tracked unit the file
+    // list carries the suffixes — `clearotron-deploy` names its `.service` AND its `.timer` — so a
+    // reader deriving systemd queries from the entry gets both. An UNTRACKED unit ships no files, so
+    // `tracked: null` leaves nothing to derive from and the bare name silently means `.service`.
+    // Stated separately so the two questions stay apart: `tracked` is what this repo SHIPS,
+    // `systemdUnits` is what the box RUNS.
+    systemdUnits: ["clearotron-doctrine-sync.service", "clearotron-doctrine-sync.timer"],
+    // ── THE ONE WHOSE SILENCE REACHES A CLIENT ────────────────────────────────────────────────────
+    //
+    // This is the timer half of production's doctrine refresh. The stages read doctrine to decide what
+    // they do, so if it stops, production runs clearances against whatever doctrine last landed and NO
+    // SURFACE ANYWHERE SAYS SO — the client receives a report that looks exactly like a current one.
+    //
+    // That is a client-facing failure with no detector, which is what the drift check exists for, and
+    // the drift check could not see this unit because the unit was in no list.
+    //
+    // BEING IN THIS LIST IS NOT YET DETECTION, AND SAYING SO IS THE POINT OF THIS PARAGRAPH. Every name
+    // here is bare, and `systemctl show <bare>` answers for the `.service`. For a timer-driven unit that
+    // service is `inactive` BETWEEN RUNS and `inactive` when its timer has been stopped — the same
+    // answer to both questions. So the health check can now say this unit exists and cannot say whether
+    // anything still starts it, which is the failure the entry was written for.
+    //
+    // The signal lives on `clearotron-doctrine-sync.timer`, whose ActiveState separates `active`
+    // (waiting) from `inactive` (stopped). Reaching it needs the check to ask about a unit name this
+    // list does not carry — every entry is bare, and `unitInventoryVerdict` appends `.service`/`.timer`/
+    // `.path` itself when it matches tracked files. That is a change to a production health instrument
+    // and it is raised rather than made here, alongside the declaration it completes.
+    untrackedReason: "the doctrine refresh on production, timer-driven, running from no file in "
+      + "driver/systemd/ and named nowhere in this repo. It CAN be tracked — it carries no "
+      + "identity-edge value — and nobody wrote it down. Until it is, its absence is at least no "
+      + "longer silent.",
+  },
+  {
     unit: "client-access", runsOn: ["prod"], tracked: null,
     untrackedReason: "it is not this repo's service. Its ExecStart runs a script from a different "
       + "product's checkout on the same box, not under this clone — so there is no code here to "

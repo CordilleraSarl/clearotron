@@ -303,6 +303,20 @@ Staff MCP: `TRADEMARK_MCP_HTTP_PORT` (18790), `TRADEMARK_MCP_HTTP_HOST`,
 `TRADEMARK_MCP_EMAIL_CLAIM`, `TRADEMARK_MCP_AUTH_HEADER`, `TRADEMARK_MCP_URL`,
 `TRADEMARK_MCP_AUTH_MODE` (see below),
 `TRADEMARK_MCP_AUTH_DISABLED` / `TRADEMARK_MCP_DEV` (dev seams — never set in prod).
+
+`TRADEMARK_MCP_KEY_SOCKET` is the local key door, and it is a PATH rather than a port on purpose. This
+interface serves two populations that authenticate differently: people arriving through a tunnel, who
+prove themselves with a proxy identity, and programs on the same machine holding a scoped access key,
+which can never produce one. "Only accept a key from loopback" does not separate them — the tunnel daemon
+runs on the same machine, so a request forwarded from the internet and one from the local portal arrive
+with the same peer address. A tunnel forwards to a port and cannot reach a unix socket, so the transport
+is the discriminator and the two doors are separate objects with opposite rules.
+
+Unset means no key door, and a deployment gets exactly the door it had before. The socket is created
+`0660` — owner and group only — with the mode set after `listen`, because `listen` creates the file and
+the umask decides what it starts as. It refuses to open at all with no grants file, alongside
+`TRADEMARK_MCP_AUTH_DISABLED`, or when `TRADEMARK_MCP_AUTH_MODE` is `token`: that mode makes the NETWORK
+door take a key too, which is the thing this exists to prevent. Read by `mcp-server/key-socket.mjs`.
 Client MCP: `CLIENT_MCP_HTTP_PORT` (code default 18811, matching the deployed unit; it was 18795,
 which collided with a co-hosted warm-MCP block, so keep any unit override that names a port),
 `CLIENT_MCP_HTTP_HOST`, `CLIENT_MCP_ALLOWED_HOSTS`,
