@@ -147,6 +147,8 @@ are worked examples of the one failure, not its boundary:
 | prevail | win |
 | citable prior rights | earlier marks the office can raise against you |
 | vulnerable to a non-use attack | could be cancelled for not being used |
+| on the record as it stands | on what we found |
+| the marks-and-goods comparison | same name, same goods |
 | the confusion comparison meets on every limb | same name, same goods, same shops |
 | belt-and-braces classes | extra classes |
 | dispatch, instructed | the request, what was asked |
@@ -164,6 +166,10 @@ The target is the level of these, each the standard for its line:
 > searched. We see no argument against it."
 
 > **The batch opener.** "One name screened: ORBIT, rated High."
+
+**Shortening by dropping the reason is not the fix.** The "why" stays, in plain words. A visible
+line that is short because it no longer says why is worse than the long one it replaced, and it
+passes every length rule on this page while telling the reader less.
 
 **Say it once.** A caveat, a limit or a finding belongs in one place. Four `standardCaveats` that each
 restate "this is not a clearance" are one caveat and three repetitions — and the report's scope block
