@@ -369,6 +369,19 @@ export const DISPATCH_EXTRAS = [
       { path: join(P.runDir, "_records"), dir: true, why: "assembleRunRecords — the fetched official records each claimed field is checked against; without them the check finds zero mismatches and the block silently vanishes" },
     ],
   },
+  {
+    // Rule 1 of the two-register rule, measured over the record's default-visible lines and handed to
+    // the pass that already rewrites. Advisory by construction: it reaches the writer, never the reader.
+    //
+    // It reads the RECORD rather than the narrative, and that is the point — the lines a client meets
+    // first are typed fields (each conflict's one sentence, the coverage notes, the actions, the mark
+    // assessment's two reads), not prose to be re-parsed out of a document. A sandbox without this file
+    // composes no block, which is correct and visible: the composer stamps what it built.
+    id: "refute-plain-register", stage: "narrative-refutation",
+    reads: (P) => [
+      { path: P.findings, why: "plainRegisterExtra reads the typed default-visible fields — net, coverage notes, actions, mark assessment — and the owners it must blank before reading" },
+    ],
+  },
   // ── — synthesis's two, and the asymmetry they close ─────────────────────────────────────────
   //
   // The reviewer received the plan-execution receipt as a code-derived table; the stage it reviews
