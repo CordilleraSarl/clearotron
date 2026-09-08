@@ -245,5 +245,33 @@ test("every workspace routes its tests through the runner, or that workspace kee
   assert.match(read("../package.json").scripts.test, /scripts\/test-run\.mjs/);
   assert.match(read("../../mcp-server/package.json").scripts.test, /scripts\/test-run\.mjs/);
   assert.match(read("../../portal-ui/package.json").scripts.test, /scripts\/test-run\.mjs/);
-  assert.match(read("../../package.json").scripts["test:providers"], /scripts\/test-run\.mjs/);
+});
+
+test("and the corpora the aggregate runner spawns route through it too, every one of them", async () => {
+  // THE SAME PROPERTY, ONE HOP FURTHER OUT. `test:providers` used to name the runner in the manifest
+  // and now reaches it through scripts/test-full.mjs, so a check reading the manifest string sees an
+  // ordinary node invocation and cannot tell a contained run from an uncontained one. Following the
+  // hop is the fix; accepting the new spelling would be the hole, because the next entry point added
+  // there would be accepted on its name rather than on where it goes.
+  //
+  // It also discovers its own population rather than naming corpora, so a fifth one is covered here
+  // by construction instead of by somebody remembering to extend a list.
+  const { plan } = await import("../../scripts/test-full.mjs");
+  const { corpora, faults } = plan();
+  assert.deepEqual(faults, [], `the shipped manifest must be accountable: ${faults.join("; ")}`);
+
+  const spawning = corpora.filter((c) => c.argv);
+  assert.ok(spawning.length >= 4, `expected every corpus to be checked, saw ${spawning.length}`);
+  for (const c of spawning) {
+    const line = c.argv.join(" ");
+    if (c.kind === "files") {
+      assert.match(line, /scripts\/test-run\.mjs/, `${c.name} must be contained by the runner`);
+    } else {
+      // A WORKSPACE CORPUS DELEGATES, so the containment lives in that workspace's own script — which
+      // the assertions above hold for each of them. What is asserted here is that it really does
+      // delegate, rather than reaching a test runner directly and skipping the hop that contains it.
+      assert.match(line, /^npm run test:full -w /, `${c.name} must delegate to its workspace script`);
+      assert.doesNotMatch(line, /--test\b/, `${c.name} must not reach the test runner directly`);
+    }
+  }
 });
