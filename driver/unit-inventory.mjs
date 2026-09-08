@@ -148,10 +148,23 @@ export const UNIT_INVENTORY = Object.freeze([
     // `live-surface-check` FAILED on a healthy box — the worst kind of red, because it teaches a reader
     // to scroll past the check that would catch a unit genuinely gone missing.
     //
-    // THE ROW STAYS, AND DELETING IT WOULD HAVE BEEN THE WRONG FIX. The unit is LIVE ON PRODUCTION, as
-    // the note below has said all along. Removing the entry would make this inventory stop knowing about
-    // something that is running — the same failure it exists to prevent, pointed the other way. What was
-    // false is the `tracked` claim, not the unit.
+    // THE ROW STAYS, AND DELETING IT WOULD HAVE BEEN THE WRONG FIX. What was false then was the
+    // `tracked` claim, not the row. Removing the entry would make this inventory stop knowing about a
+    // unit it ships nothing for — the same failure it exists to prevent, pointed the other way.
+    //
+    // ── AND THE OTHER HALF OF THAT PARAGRAPH HAS NOW BEEN MEASURED FALSE TOO ───────────────────────
+    //
+    // It read "The unit is LIVE ON PRODUCTION, as the note below has said all along", and it had been
+    // said all along without ever being enumerated. Production was read on 2026-09-08 — every account
+    // on the machine, unit file names and enable state — and no unit of this name exists under any of
+    // them. An earlier reading the same day reached the same answer from the other direction while
+    // closing a different question.
+    //
+    // So `runsOn` is empty and the note says what was measured. This is a change to what this
+    // repository CLAIMS about production, made because a reading contradicted the claim, and not a
+    // statement that production should not run it — that is a deployment question and it is the
+    // owner's. If the answer is yes, `runsOn` gains "prod" in the change that deploys it, against a
+    // fresh enumeration, which is this file's own rule rather than an exception to it.
     //
     // Declared the way its siblings are: `tracked: null` with the reason, which this file's own header
     // calls the sanctioned way to say the repo does not carry one.
@@ -162,16 +175,31 @@ export const UNIT_INVENTORY = Object.freeze([
     // is a change which ADDS a file, measured against the deployed copy, and it is not this one. Two
     // prose references in driver/systemd/render-units.mjs also describe this file as though it were in
     // the tree; they are stale today either way.
-    unit: "profile-service", runsOn: ["prod"], tracked: null,
+    unit: "profile-service", runsOn: [],
+      measured: "2026-09-08: production read by account — the deployment account carries six clearotron-* "
+      + "unit files and the doctrine-sync timer, the legacy account carries five units belonging to the "
+      + "other product plus unloadable residue, and no unit of THIS name is under either. Names and enable "
+      + "state only; no unit contents were read.",
+    tracked: null,
     untrackedReason: "the repository has never carried this file — `git log --all` on the path is empty. "
-      + "It deploys from the production box's own copy, in the same CF Access template family as "
-      + "trademark-portal and trademark-ops-mcp. Whether a placeholder should now ship is open: see above.",
+      + "It was described as deploying from a copy held on the deployment itself, in the same "
+      + "identity-provider template family as two other pre-rename names; the 2026-09-08 reading finds no "
+      + "such copy under any account, so that description is history rather than current state. Whether a "
+      + "placeholder should now ship is open: see above.",
     // NO LONGER RESOLVED AT INSTALL. It carried `@CLEAROTRON_CHECKOUT_DIR@` because
     // it loaded no EnvironmentFile and so had no `${VAR}` systemd could expand. The owner's one-config-
     // per-server-box ruling gives it `EnvironmentFile=%h/.env` like every other service, which makes the
     // checkout path an ordinary systemd expansion and leaves no placeholder to render.
-    note: "LIVE ON PRODUCTION. an earlier record lists it as never run; that is true of the test box only. "
-      + "Was a TEMPLATE unit carrying CF Access values inline; generic since tracker issue 1925.",
+    note: "NOT RUNNING ANYWHERE, measured 2026-09-08. This row said LIVE ON PRODUCTION for as long as it "
+      + "existed and no enumeration ever supported it. Was a TEMPLATE unit carrying identity-provider "
+      + "values inline; generic since tracker issue 1925.",
+    orphanReason: "CLAIMED A DEPLOYMENT IT WAS NEVER MEASURED ON, which is a FOURTH kind of orphan and "
+      + "the only one that was ever a wrong claim rather than a waiting decision: the other three run "
+      + "under another name, were deliberately switched off, or have simply never been installed. This "
+      + "one was declared live and read as absent. The row is kept because the deployment question is "
+      + "open and belongs to the owner — whether production should run this service at all — and an "
+      + "inventory that deleted the row would lose the only place that question is written down. It "
+      + "gains a deployment the day an enumeration shows it, never the day someone intends it.",
   },
   {
     // RUNS ON NO BOX YET, AND THAT IS THE HONEST DECLARATION. `runsOn: ["prod"]` is a claim about a
