@@ -136,7 +136,7 @@ export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf =
     : "";
 
   if (!alive) {
-    // ── THE ONE BRANCH THE POSTURE DECIDES (tracker issue 206, ruled by overwatch 2026-09-06).
+    // ── THE ONE BRANCH THE POSTURE DECIDES (tracker issue 206, decided 2026-09-06).
     //
     // The same empty answer means two opposite things. Where a worker holds the queue open, a gone
     // drainer is the outage: nothing is executing runs and nothing will start one. Where the box drains

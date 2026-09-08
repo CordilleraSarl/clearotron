@@ -90,7 +90,7 @@ test("2025 the engine commit comes from meta.json when the pool dir has no statu
 });
 
 test("2025 the fixture's premise is PINNED to the publisher, so it cannot drift from a real pool dir", () => {
-  // No real pool directory is readable from this account (/home/testuser is drwxr-x--- testuser:testuser),
+  // No real pool directory is readable from this account (the pool's home is readable only by the account that owns it),
   // so these arms drive a shape rather than a delivered artifact. The shape is only trustworthy while
   // this stays true: publish writes meta.json into the POOL run dir and nowhere else, which is what
   // makes "meta.json present, status.json absent" the archived-run signature.

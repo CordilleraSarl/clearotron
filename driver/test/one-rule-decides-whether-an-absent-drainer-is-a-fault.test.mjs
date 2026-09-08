@@ -8,7 +8,7 @@
 // retired here — and that an absent drainer is a fault under the timer-era rule. One arm had read the
 // units; the other had not looked at all and applied the rule anyway.
 //
-// The ruling (overwatch, 2026-09-06) is one rule, printed: the check reads the box's posture, calls an
+// The ruling (2026-09-06) is one rule, printed: the check reads the box's posture, calls an
 // absent drainer a fault where draining is continuous, calls it normal where the timer posture is live,
 // and says which posture it read either way.
 //

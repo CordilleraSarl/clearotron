@@ -9,7 +9,7 @@
 // The criterion was certified by an ad-hoc direct-call script that ran 7/7 and was never committed. That
 // was honest point-in-time evidence and nobody is calling the measurement wrong — but a script that ran
 // once asserts nothing GOING FORWARD, which is the distinction the criterion's own wording draws. Ruled
-// by overwatch 2026-08-17: parity claims of this class get committed pins here, on the b04d6d58
+// decided 2026-08-17: parity claims of this class get committed pins here, on the b04d6d58
 // byte-level-argv precedent. stays open until this is on main.
 //
 // ── WHAT "BYTE-IDENTICAL" HAS TO MEAN TO BE TESTABLE ────────────────────────────────────────────────

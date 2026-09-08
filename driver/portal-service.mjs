@@ -2142,7 +2142,7 @@ export function makePortalService({
         // command is a true fact about THIS INSTALL'S OWN DISK, useful to anyone with a shell on the
         // box and useless to a hosted client who has no checkout. On a local install the reader IS the
         // operator, which is why the split that already exists does the work an "is this deployment
-        // local" inference would have done badly. Agreed with overwatch before building, because it
+        // local" inference would have done badly. Agreed before building, because it
         // changes what a signed-in staff user is shown.
         //
         // COMPOSED IN ONE PLACE and handed over as a string. The browser cannot know this install's

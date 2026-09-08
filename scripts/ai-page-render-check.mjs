@@ -164,7 +164,7 @@ await cmd('Browser.grantPermissions', {
 }).catch(() => {});
 // AND THE DOCUMENT MUST BE FOCUSED. A clipboard write needs a focused document as well as the
 // permission, which is why granting alone left every press on the refused path. Found independently by
-// role-e2e driving this page and by this file's first run coming back with every `copied` false.
+// testing driving this page and by this file's first run coming back with every `copied` false.
 await cmd('Page.bringToFront').catch(() => {});
 const evalIn = async (expr) => (await cmd('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result?.result?.value
 
@@ -198,7 +198,7 @@ const arrivalProbe = (expect) => `(async () => {
     questionShown: !!screen.querySelector('.ai-where-q'),
     // TWO CONTROLS IN ONE GROUP MUST BE TELLABLE APART. Every other check on this page asks about ROWS,
     // and the rows are correct for whichever segment happens to be selected — so a group offering the
-    // same words twice passes everything and is unreadable to a person. Suggested by role-e2e after
+    // same words twice passes everything and is unreadable to a person. Suggested in review after
     // driving the staff decks and finding exactly that.
     segLabels: [...screen.querySelectorAll('.ai-seg-btn')].map((b) => flat(b.innerText)),
     // Nothing is expanded on arrival: the slot holds its empty line, not a panel.
@@ -510,7 +510,7 @@ for (const state of Object.keys(STATES)) {
 }
 
 
-// THE ANTI-VACUITY GUARD FOR THE WHOLE BATTERY. Raised by role-e2e as the symptom to watch for once CI
+// THE ANTI-VACUITY GUARD FOR THE WHOLE BATTERY. Raised in review as the symptom to watch for once CI
 // began running this job: "if it ever goes green with every `copied` false, that is the symptom, not a
 // page regression." Written as a check rather than left as a caution, because a caution in a message is
 // not read by whoever meets the green job eighteen months from now.

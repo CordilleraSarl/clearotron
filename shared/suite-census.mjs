@@ -38,7 +38,7 @@ export const CENSUS_WORKSPACES = Object.freeze([
 
 // ── — THE FOURTH POPULATION, AND WHY IT IS NOT A FOURTH WORKSPACE ROW ───────────────────────
 //
-// MEASURED (eggie/Jerry, 2026-08-24): `npm run test:providers` on the control tree ran 59 files / 624
+// MEASURED (in testing, 2026-08-24): `npm run test:providers` on the control tree ran 59 files / 624
 // tests; on the cut tree, 47 files / 426 tests. **198 tests disappeared and the command exited 0.** No
 // failure, no warning, no line saying a file was not picked up.
 //

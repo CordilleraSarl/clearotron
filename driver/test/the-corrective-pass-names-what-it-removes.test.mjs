@@ -13,7 +13,7 @@
 // one. That is fixed at the schema, and a targeted edit cannot remove a finding: an ordinal names one to
 // replace and there is no shape that deletes. These arms cover the whole-document path that remains.
 //
-// REPAIR AND DELIVER, ruled by overwatch under authority the owner delegated in session. The client gets
+// REPAIR AND DELIVER, decided under authority the owner delegated in session. The client gets
 // the reviewer's corrections AND anything that vanished unexplained, restored whole. The three
 // alternatives were weighed: rolling back trades one silent loss for another, printing the removals tells
 // the client about a hole instead of filling it, and holding the report is against deliver-always.

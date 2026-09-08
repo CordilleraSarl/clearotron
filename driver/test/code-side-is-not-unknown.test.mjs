@@ -5,7 +5,7 @@
 // honestly as `code|not-provider-billed`. Two rollups, one run, one dispatch, two answers.
 //
 // The bucket is the point. `unknown` is supposed to mean "a dispatch we could not attribute", and
-// role-e2e doctrine reads a non-empty `unknown` byEngine as a real signal. Putting a known,
+// The testing doctrine reads a non-empty `unknown` byEngine as a real signal. Putting a known,
 // self-declaring, zero-token step in it does not mislabel one row — it destroys what the bucket is FOR.
 //
 // The fix imports `isCodeSide` from run-economics rather than copying it, and these tests pin both

@@ -5715,7 +5715,7 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {
  * replace and there is no shape that deletes. This runs underneath, for the whole-document path that
  * remains reachable.
  *
- * REPAIR AND DELIVER, ruled by overwatch under authority the owner delegated in session on 2026-08-27.
+ * REPAIR AND DELIVER, decided under authority the owner delegated in session on 2026-08-27.
  * The three alternatives were weighed and written down: rolling back gives the client every finding but
  * none of the reviewer's corrections — one silent loss traded for another; printing the removals as open
  * points tells the client about a hole instead of filling it; holding the report is against the standing
@@ -7340,7 +7340,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // pass, be worked, and leave the report unchanged — and the client then reads a delivered report with
 // no sign that the reviewer objected to something nobody fixed.
 //
-// Put to Krzys as the client outcome, with options. His answer, verbatim: PRINT THEM, ANY VERDICT.
+// Decided as the client outcome, with options put first: print them, on any verdict.
 // So the set is no longer chosen by the verdict. It is:
 //
 //   BLOCKING            every ground the reviewer cites — unchanged, the reviewer refused to sign

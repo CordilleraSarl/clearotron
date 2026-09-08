@@ -2257,7 +2257,7 @@ export async function runCheck() {
     //
     // `describeDoorState` was written for exactly this block and then never called from it: the split
     // it encodes sat in `shared/client-door.mjs` with no caller in `bin/` or `driver/`, while doctor
-    // went on printing the three sentences the split replaces. The defect role-e2e measured is one of
+    // went on printing the three sentences the split replaces. The defect testing measured is one of
     // them — a `connect` that died at `daemon-reload` had already written the fence and placed both
     // units, and doctor said "the client door is on" over a unit that was inactive with nothing on its
     // port. Every angle read as configured, because configured is all anything asked.

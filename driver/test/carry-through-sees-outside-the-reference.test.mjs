@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // — THE TWO MEASUREMENTS MUST BE VISIBLY DIFFERENT, AND ONLY A PLANT OUTSIDE THE REFERENCE SHOWS IT.
 //
-// Every bucket `score.mjs` prints is built from REFERENCE entries. `withheld` — the bucket role-e2e
+// Every bucket `score.mjs` prints is built from REFERENCE entries. `withheld` — the bucket testing
 // calls "the one that changes what you fix" — therefore rises only when the mark the run dropped is a
 // mark the lawyer's list happens to name. On R2 `ed1d7248` the reviewer returned BLOCKING on two live
 // in-class rights the run retrieved and dropped, and the scorer printed `withheld 0`. Both numbers were

@@ -61,9 +61,9 @@ ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
 # `-` prefix: a snapshot is a diagnostic surface, and failing to write one must never fail the service.
 ExecStartPost=-/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/flag-snapshot.mjs
 #
-# THIS LINE DOES NOT REACH A RUNNING BOX BY DEPLOYING (tracker issue 191; measured by role-e2e on
-# testuser, 2026-09-05). `clearotron update` pulls and rebuilds; it does not refresh unit files, and
-# neither does the hourly timer. testuser's installed copy of this unit had NO ExecStartPost while the
+# THIS LINE DOES NOT REACH A RUNNING BOX BY DEPLOYING (tracker issue 191; measured on
+# the test deployment, 2026-09-05). `clearotron update` pulls and rebuilds; it does not refresh unit files, and
+# neither does the hourly timer. The deployment's installed copy of this unit had NO ExecStartPost while the
 # tracked one had it, so the capture sat four hours stale on a box whose checkout was current.
 #
 # AND THE VERB ALREADY EXISTS, which is what makes it a one-line defect rather than a missing feature.
