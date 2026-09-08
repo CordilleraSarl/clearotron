@@ -38,6 +38,7 @@ the vendor flags approximate is UNKNOWN, never a number.
 | [`PORTAL.md`](PORTAL.md) | The portal: what it serves, and who sees what |
 | [`CLIENT-MCP.md`](CLIENT-MCP.md) | Publishing a connector your customers sign in to, and how their access is scoped. To connect *your own* app to *your own* runs, use [`../mcp-server/CONNECT.md`](../mcp-server/CONNECT.md) instead |
 | [`E2E.md`](E2E.md) | Proving a deployment works end to end |
+| [`GLOSSARY.md`](GLOSSARY.md) | The words this codebase uses in a particular way — one line each, for a contributor meeting them for the first time |
 | [`SECURITY.md`](SECURITY.md) | The security envelope — what protects what, and where it is enforced in code. To report a vulnerability, use [`../SECURITY.md`](../SECURITY.md) |
 
 Access control is stated once, in [`SECURITY.md`](SECURITY.md): who may see which runs, what an unset

@@ -25,7 +25,8 @@ resolves the running commit for artifact provenance, but it cannot be the shared
 | `listen.mjs` | The one place a bind failure becomes a sentence rather than a stack trace. |
 | `driver-dir.mjs` | Where a run's `_driver/` is: the name, the path, and the one creation call. Product code no longer builds it by hand, so the directory's location — and one day its mode — is a decision in one place rather than a convention in 1123. |
 | `site-nav.mjs`, `anon-overlay.mjs` | The single top nav shared by the internal staff pages, and the display-only overlay that masks client names and marks so those pages can be screen-shared. |
-| `identifier-scan.mjs`, `identifier-blocklist.mjs`, `vetted-identities.mjs` | One matcher, one name table, one list of declared exceptions — shared by the guard that sweeps the tracked tree and the scan that sweeps the whole history. |
+| `identifier-scan.mjs`, `identifier-sentinels.mjs`, `vetted-identities.mjs` | One matcher, one name table, one list of declared exceptions — shared by the guard that sweeps the tracked tree and the scan that sweeps the whole history. The real table is private; the sentinels are what make a zero from that sweep mean something. |
+| `reference-guard-classes.mjs` | What a public tree must not acquire, as one table: citations, account names, home directories on the build machines, private repository names, this project's own words for how it is organised, and both attribution trailers. Read by the diff guard in `scripts/added-reference-check.mjs` and by the per-file floor beside it. |
 
 `brand/assets/` holds the vendored logo SVGs. `tools/` holds the two brand-system generators — see
 [`tools/README.md`](tools/README.md).

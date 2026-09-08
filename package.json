@@ -54,17 +54,11 @@
     "bench:uspto": "node providers/uspto-local/bench/bench.mjs",
     "verify:uspto": "node providers/uspto-local/bin/verify-index.mjs",
     "lint:driver": "eslint --no-error-on-unmatched-pattern --max-warnings 0 --config eslint.driver.config.mjs \"driver/**/*.mjs\" \"bin/**/*.mjs\" \"shared/**/*.mjs\" \"mcp-server/**/*.mjs\" \"scripts/**/*.mjs\" \"cut/**/*.mjs\"",
-    "deploy:drift": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/deploy-drift-check.mjs';if(!existsSync(p)){console.error('npm run deploy:drift requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
     "doctrine-report": "node scripts/doctrine-report.mjs",
     "notices": "node scripts/third-party-notices.mjs",
     "notices:check": "node scripts/third-party-notices.mjs --check",
     "grant": "node bin/grant.mjs",
-    "generators": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/regen-baselines.mjs';if(!existsSync(p)){console.error('npm run generators requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
-    "assert-census": "node scripts/unexecuted-asserts.mjs",
-    "guard:messages": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/commit-message-guard.mjs';if(!existsSync(p)){console.error('npm run guard:messages requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
-    "guard:messages:self-test": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/commit-message-guard.mjs';if(!existsSync(p)){console.error('npm run guard:messages:self-test requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p,'--self-test'],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
-    "hooks:install": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/install-hooks.mjs';if(!existsSync(p)){console.error('npm run hooks:install requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
-    "hooks:check": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/install-hooks.mjs';if(!existsSync(p)){console.error('npm run hooks:check requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p,'--check'],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\""
+    "assert-census": "node scripts/unexecuted-asserts.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.1",

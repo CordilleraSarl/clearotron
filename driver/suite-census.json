@@ -40,8 +40,8 @@
           "todos": 0
         },
         "a-bare-reference-added-in-a-diff-is-refused.test.mjs": {
-          "tests": 15,
-          "asserts": 32,
+          "tests": 21,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -413,7 +413,7 @@
         },
         "a-public-clone-is-told-why-a-command-cannot-run.test.mjs": {
           "tests": 3,
-          "asserts": 13,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -2015,7 +2015,7 @@
         },
         "example-replay.test.mjs": {
           "tests": 8,
-          "asserts": 31,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -4495,6 +4495,12 @@
           "tests": 9,
           "asserts": 16,
           "skips": 0,
+          "todos": 0
+        },
+        "the-public-residue-is-a-floor.test.mjs": {
+          "tests": 9,
+          "asserts": 34,
+          "skips": 5,
           "todos": 0
         },
         "the-published-door-must-answer-not-merely-exist.test.mjs": {
