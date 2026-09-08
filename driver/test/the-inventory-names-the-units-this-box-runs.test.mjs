@@ -55,7 +55,11 @@ test("EVERY entry that claims a box carries the measurement behind the claim", (
                    "trademark-test-deploy"];
   for (const u of touched) {
     const e = UNIT_INVENTORY.find((x) => x.unit === u);
-    assert.match(e.measured ?? "", /2026-09-07/, `${u} carries no dated measurement`);
+    // A DATE, not THE date. This read `/2026-09-07/` — the day these entries were first measured — so
+    // remeasuring one on any later day failed with "carries no dated measurement" while the entry
+    // carried a measurement dated that morning. The rule is that the claim is dated, and going back to
+    // look again is the behaviour it exists to encourage; pinning one day punished exactly that.
+    assert.match(e.measured ?? "", /\b20\d\d-\d\d-\d\d\b/, `${u} carries no dated measurement`);
   }
 });
 

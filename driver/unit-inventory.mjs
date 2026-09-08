@@ -123,16 +123,22 @@ export const UNIT_INVENTORY = Object.freeze([
     // exists to make impossible — and a mechanism that installs itself is the easiest kind to ship
     // undeclared.
     unit: "clearotron-deploy", runsOn: ["test"],
-      measured: "2026-09-07, test box: the timer and its service are installed under ~/.config/systemd/user/ and the service has run — see /home/testuser/deploy/autodeploy.log. The timer's ARMED state is not part of this claim; a lane may hold it, and a hold is recorded in the deploy log rather than inferred from ActiveState.",
+      measured: "2026-09-08, the test deployment: the timer and its service are installed for that deployment's own user, the timer is enabled and ACTIVE, and it last fired within the hour — `systemctl --user list-timers`. The service's own state says nothing about this: it is `inactive` between runs and `inactive` when the timer has been stopped. The timer's ActiveState is what says anything will start it again.",
     tracked: ["clearotron-deploy.service", "clearotron-deploy.timer"],
-    note: "the install's own updater. Ships tracked, runs nowhere yet.",
-    orphanReason: "SHIPPED AND PLACED ON NO BOX YET, which is a THIRD kind of orphan and not either of "
-      + "the other two: courtlistener-mcp runs on production under another name, feedback-mint was "
-      + "deliberately switched off, and this one has simply never been installed. `runsOn` gains "
-      + "\"test\" the day a test deploy places it and \"prod\" when the owner asks for it. Until then it "
-      + "stays out of CHECKED_UNITS, because asking systemd about a unit nobody installed produces a "
-      + "\"not compared\" row that reads like a fault and is not one. It goes on with "
-      + "`systemctl --user enable --now clearotron-deploy.timer` once bin/onboard.mjs has written both files.",
+    note: "the install's own updater. Placed on the test deployment, where it pulls hourly; production takes it when the owner asks.",
+    // IT WAS AN ORPHAN, AND THE CONDITION IT NAMED HAS BEEN MET. This entry carried an `orphanReason`
+    // saying it had been shipped and installed nowhere, and that `runsOn` would gain "test" the day a
+    // deploy placed it. It has: the timer is installed, enabled and firing, and `runsOn` says so. The prose
+    // stayed behind the field, which is the ordinary way a declaration and its explanation come apart —
+    // and it matters more here than usual, because this entry is now what puts a real timer into the
+    // timer list. An entry describing itself as installed nowhere, whose timer the check asks systemd
+    // about by name, is a contradiction a reader has to resolve before trusting either half.
+    //
+    // AND THE POSTURE IS NOW STATED, because it is a change in what a red means rather than in code: a
+    // STOPPED deploy timer FAILS. The service reads `inactive` between runs and `inactive` when nothing
+    // will ever run it again, so the timer's own state is the only thing separating a deployment that
+    // tracks the main branch from one quietly frozen on whatever it last built. If the timer is ever
+    // held deliberately, a check that says so for as long as the hold lasts is the behaviour to want.
   },
   {
     // ── `tracked` WAS A CLAIM ABOUT A FILE THAT HAS NEVER EXISTED (tracker issue 175) ──────────────
