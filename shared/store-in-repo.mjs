@@ -38,13 +38,34 @@
 // that does not exist yet is still misconfigured if it names another tree — the service would create it
 // and then fail every commit — so the lexical judgment stands where the filesystem cannot overturn it.
 
-import { resolve, dirname } from "node:path";
+import { resolve, dirname, relative, isAbsolute } from "node:path";
 import { realpathSync } from "node:fs";
 
 /** `resolve`, then the symlink-resolved form when the path exists — null when it cannot be read. */
 const real = (p) => { try { return realpathSync(resolve(p)); } catch { return null; } };
 
-const within = (dir, root) => dir === root || dir.startsWith(root.endsWith("/") ? root : root + "/");
+// CONTAINMENT IS ASKED OF THE PATH LIBRARY, NOT OF THE STRING.
+//
+// This was `dir.startsWith(root + "/")`, with the separator written in. On Windows `resolve()` returns
+// backslashes, so `C:\…\config\recipes` does not start with `C:\…\config/` and a folder plainly inside
+// its parent read as OUTSIDE — an operator on a correct install was told their recipe store was outside
+// the repository root, and the saved-search door refused. Measured on his paths.
+//
+// The posix control passed throughout, which is why it survived: the string test is right on the platform
+// it was written on and wrong on the one nobody here runs.
+//
+// `relative` also settles two cases a prefix test gets wrong on Windows even with the separator fixed: a
+// different drive letter yields an absolute path rather than a `..` walk, and path comparison there is
+// case-insensitive in a way `startsWith` is not. A sibling directory whose name merely begins with the
+// root's — `config` and `configXX` — is still outside, which the old `+ "/"` also got right and any
+// replacement had to keep.
+// `impl` is the path module to ask, injected ONLY so a check can drive the Windows behaviour from a
+// Linux runner. That matters here more than usual: this defect was invisible on the platform every one
+// of us runs, and a guard that can only be exercised on Windows is a guard nobody will ever see fail.
+export const within = (dir, root, impl = { relative, isAbsolute }) => {
+  const rel = impl.relative(root, dir);
+  return rel === "" || (!rel.startsWith("..") && !impl.isAbsolute(rel));
+};
 
 /**
  * Is `storeDir` somewhere `git -C repoRoot add` could stage it?
