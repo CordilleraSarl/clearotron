@@ -72,7 +72,8 @@ test("343: the frozen demo artefacts say the same as the manifest they came from
   // these files have to keep agreeing.
   const discovered = readdirSync(manifestDir).filter((x) => x.endsWith(".manifest.json"));
   assert.ok(discovered.length > 0,
-    `no manifest was discovered in ${manifestDir} — the walker broke, not the tree, and every assertion below would pass by looking at nothing`);
+    `no framework manifest was found in ${manifestDir} — the walker broke, or the packaging rules moved them. `
+    + `Either way every assertion below would pass by looking at nothing`);
   for (const named of SHIPPED_MANIFESTS) {
     assert.ok(discovered.includes(named),
       `${named} is named as shipped but this directory walk does not find it — the two ways of naming these files have drifted apart`);
