@@ -1,5 +1,6 @@
 {
   "name": "Petcary",
+  "testFixture": true,
   "demoData": true,
   "matchDomains": [],
   "industry": "animal health — veterinary pharmaceuticals, supplements, diagnostics & services",

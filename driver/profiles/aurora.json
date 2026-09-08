@@ -1,5 +1,6 @@
 {
   "name": "Aurora Interactive",
+  "testFixture": true,
   "demoData": true,
   "matchDomains": [
     "aurora-interactive.example"

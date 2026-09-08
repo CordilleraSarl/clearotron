@@ -38,6 +38,11 @@ const NOT_FROZEN = {
   // (minCellsPerVariant, batchSize) are in the sidecar. Freezing the input as well would be harmless
   // and would prove nothing the derived values do not already prove.
   marketplaceDensity: "profiles.mjs",
+  // Consumed at RESOLUTION, like matchDomains: it decides whether an account appears in a roster at all,
+  // and once one is picked nothing asks again. The run-level fact — that a report under this account is
+  // fiction — is `demoData`, which IS frozen and which all three fixtures carry; freezing this one as
+  // well would record a picker's decision in a sidecar that nothing reads it from.
+  testFixture: "profiles.mjs",
   // DELIBERATELY LIVE. Admission caps are read at claimAndPrep from the current roster, because a cap is
   // a statement about what the account may spend NOW. A frozen cap would let a queued job outlive the
   // policy that bounded it.

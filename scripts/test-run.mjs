@@ -223,6 +223,19 @@ const providerChosen = ["CLEAROTRON_DATABASE"]
   .some((n) => String(process.env[n] ?? "").trim() !== "");
 if (!providerChosen) process.env.CLEAROTRON_DATABASE = "corsearch";
 
+// ── THE SUITE'S OWN BRAND-OWNER FIXTURES, ASKED FOR IN ONE PLACE ──────────────────────────────────
+//
+// Three profiles in `driver/profiles/` are the suite's, and a resolved roster no longer offers them:
+// an outside user's brand-owner picker listed them on a `git clone` install, where the packaging
+// exclusion that protects the tarball does not apply. They are marked `testFixture` and the loader
+// refuses them on every route.
+//
+// The checks still need them, under the same keys the baselines use, and most do not call the loader —
+// they exercise code that does, so there is no argument to pass. One variable here is the whole ask,
+// and it is visible: a reader of this file can see that the suite runs against a roster no install
+// resolves, which is a thing worth being able to see rather than a default nobody set.
+process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ??= "1";
+
 // ── A PARTLY-BLIND SUITE IS NOT A FAILING SUITE ────────────────────────────────────────────
 //
 // `git worktree add` gives you no `node_modules`, nothing in this repo creates one, and the tracker asks
