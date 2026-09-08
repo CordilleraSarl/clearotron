@@ -2734,8 +2734,8 @@
           "todos": 0
         },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
-          "tests": 10,
-          "asserts": 28,
+          "tests": 13,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },

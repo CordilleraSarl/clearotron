@@ -31,6 +31,7 @@ import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";  
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
+import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
 
 // V4-3: diacritics FOLD (NFD strip) instead of being deleted — "Televisión" must normalize to
 // "television" (deletion made it "televisin", so a diacritic mention never matched its introduction).
@@ -2434,8 +2435,33 @@ export function plainLanguageChecks({ findings, surface = "findings" } = {}) {
       if (n > PLAIN_SENTENCE_WORDS) longSentences.push(`${where}: ${n} words`);
     }
   }
+  // ── A NOTE THAT WILL PRINT IN THE PLACE ITS WRITER DID NOT MEAN ────────────────────────────────────
+  //
+  // The page files a reviewer's note by what it TALKS ABOUT: name the request and it prints at the top,
+  // above the conflicts; otherwise it prints under that name's cards. That is what lets an archived run
+  // put its mis-scoping flag where the owner asked for it without a new field.
+  //
+  // THE COST OF THAT CHOICE IS EXACTLY THIS FLAG. A note plainly about the asking — the client's stated
+  // industry, its own prior use, whether the goods are the right ones — that never says "the request"
+  // sorts as a note about the NAME and prints at the bottom, which is the defect the move exists to fix.
+  // Nothing about the page would look wrong; the line would simply be in the last place read.
+  //
+  // So the reviewer says so, to the one person who can fix it, in the one place a fix belongs: the note.
+  // The page never guesses. Adding a clause naming the request is the whole remedy.
+  const misfiled = [];
+  for (const m of findings?.marks ?? []) {
+    for (const raw of m?.purpleNotes ?? []) {
+      const v = knockoutNoteView(raw);
+      if (!v.text || v.about) continue;              // the rater said which; nothing is inferred
+      if (REQUEST_NOTE_WORDS.test(v.text)) continue; // it names the request and will print at the top
+      if (!REQUEST_SUBJECT_WORDS.test(v.text)) continue;
+      misfiled.push(`${m?.name ?? "a mark"}: "${v.text.trim().replace(/\s+/g, " ").slice(0, 70)}…"`);
+    }
+  }
   const say = (hits) => `${hits.slice(0, 5).join("; ")}${hits.length > 5 ? `; +${hits.length - 5} more` : ""}`;
   return [
+    check("reviewer-note-subject", "voice", surface, misfiled.length === 0,
+      misfiled.length ? `a note about what was asked that never names the request — it will print under this name's conflicts rather than at the top of the page, where a question about the request belongs. Name the request in the note: ${say(misfiled)}` : ""),
     check("plain-language-vocabulary", "voice", surface, vocab.length === 0,
       vocab.length ? `the lawyer's vocabulary on lines a reader meets before opening anything — rewrite the line in the words the reader already owns (the skill carries the swaps): ${say(vocab)}` : ""),
     check("plain-language-sentence-length", "voice", surface, longSentences.length === 0,

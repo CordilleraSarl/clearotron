@@ -101,6 +101,39 @@ test("333: every default-visible field is read, and the folded ones are not", ()
   assert.equal(flagged(FINDINGS({ contextFraming: seeded, registerEstimate: seeded }), VOCAB).pass, true);
 });
 
+// ── the note that would print in the wrong place ─────────────────────────────────────────────────────
+//
+// The page sorts a reviewer's note by what it talks about, which is what lets an archived run put its
+// mis-scoping flag at the top without a new field. The cost of that choice is that a note plainly about
+// the asking which never says "the request" prints at the bottom instead — the exact defect the move
+// exists to fix, and invisible, because nothing about the page looks wrong.
+
+test("333/331: a note about the asking that never names the request is flagged for its writer", () => {
+  const c = flagged(FINDINGS({ purpleNotes: [
+    "Confirm the intended goods with the client before any filing step.",
+    "Ask whether the client already has prior use of IRONWHISK in these goods.",
+  ] }), "reviewer-note-subject");
+  assert.equal(c.pass, false, "both notes are about the request and neither says so");
+  assert.match(c.detail, /print under this name's conflicts rather than at the top/,
+    "the flag says what will happen, not that a rule was broken");
+});
+
+test("333/331: naming the request clears it, and a note about the NAME never trips it", () => {
+  assert.equal(flagged(FINDINGS({ purpleNotes: [
+    "Check the request. We were asked to screen Class 9 software, and the client is described as a beverages business.",
+  ] }), "reviewer-note-subject").pass, true, "it names the request, so it prints at the top");
+  assert.equal(flagged(FINDINGS({ purpleNotes: [
+    "Pull EG Tech's full goods list at clearance. It is the record most likely to change the picture.",
+  ] }), "reviewer-note-subject").pass, true, "a note about the name is not about the asking");
+});
+
+test("333/331: the rater's own `about` ends the question — nothing is inferred over it", () => {
+  const c = flagged(FINDINGS({ purpleNotes: [
+    { about: "name", text: "Confirm the intended goods with the client before any filing step." },
+  ] }), "reviewer-note-subject");
+  assert.equal(c.pass, true, "a typed note is taken at its word, whatever the words are");
+});
+
 // ── how the flag travels ─────────────────────────────────────────────────────────────────────────────
 
 test("333: a hit is a rewrite, never a disclosure — the flags never reach a delivery surface", () => {

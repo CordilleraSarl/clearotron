@@ -45,7 +45,7 @@ import {
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
-import { knockoutFindingViews } from '../findings-model.mjs';
+import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
 import { demoBannerHtml } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
 // here. `makeClassifyStatus` and `isAllClass` are the screening lane's own, already shipped, already
@@ -1071,55 +1071,9 @@ function ownerCheckFor(ownerChecks, recordId) {
     .find((c) => (Array.isArray(c?.recordIds) ? c.recordIds : []).some((x) => String(x).trim() === id)) ?? null;
 }
 
-// ── WHICH NOTES ARE ABOUT THE REQUEST, AND WHICH ARE ABOUT THE NAME (tracker issue 331 A.4) ─────────
-//
-// 331 moves the request-level notes to the top of the page, because a note saying the screen may have
-// been scoped to the wrong market is the most consequential line on it and it was sitting under roughly
-// 1,900 words of conflicts. The rest stay under the cards where they were.
-//
-// TWO MECHANISMS, IN PRECEDENCE ORDER, AND THE SECOND NEVER RUNS WHEN THE FIRST CAN ANSWER:
-//
-//   1. THE RATER SAYS SO. tracker issue 333 rule 5 rules that the reviewer's notes are written split by
-//      what they are about, so a note may arrive as { about: "request" | "name", text }. Where it does,
-//      that is the answer and nothing is inferred.
-//
-//   2. A CLOSED FALLBACK FOR RUNS DELIVERED BEFORE THAT RULE. Every archived knockout carries bare
-//      strings, and R12 — the run 331 is measured on — is one of them, so a typed-field-only mechanism
-//      would render no request flag on the very page the issue judges. The fallback keys on the nouns a
-//      request is CALLED BY, listed here rather than described: a note that talks about the dispatch, the
-//      request or what was instructed is a note about the asking.
-//
-// THE FALLBACK'S POPULATION IS CLOSED AND SHRINKING. 333 rule 3 retires "dispatch" and "instructed" from
-// note vocabulary, and rule 5 supplies the typed field, so a run written under the new doctrine is
-// answered by mechanism 1 and never reaches mechanism 2. It is a reader for archived text, not a rule
-// for new text.
-//
-// IT SORTS, IT NEVER DELETES. Every note renders exactly once, in one of the two places. A note this
-// reader cannot place is a note about the name, which is where they all rendered before this change.
-const REQUEST_NOTE_WORDS = /\b(?:dispatch|the request|the requester|instructed|was asked)\b/i;
-
-/** One note, in either shape, as { about, text }. `about` is null when nothing has classified it. */
-function noteView(n) {
-  if (n && typeof n === 'object' && !Array.isArray(n)) {
-    const text = String(n.text ?? n.note ?? '').trim();
-    const about = String(n.about ?? '').trim().toLowerCase();
-    return { text, about: about === 'request' || about === 'name' ? about : null };
-  }
-  return { text: String(n ?? '').trim(), about: null };
-}
-
-/** The mark's notes, split. Typed notes are taken at their word; untyped ones meet the fallback. */
-function splitNotes(m) {
-  const all = (Array.isArray(m?.purpleNotes) ? m.purpleNotes : []).map(noteView).filter((v) => v.text);
-  const request = [];
-  const name = [];
-  for (const v of all) {
-    const isRequest = v.about ? v.about === 'request' : REQUEST_NOTE_WORDS.test(v.text);
-    (isRequest ? request : name).push(v.text);
-  }
-  return { request, name, all: all.map((v) => v.text) };
-}
-
+// The two-place sort lives in findings-model.mjs (splitKnockoutNotes) because the predelivery lint
+// needs the same answer: the page files each note, and the reviewer warns a writer whose note will file
+// the way they did not intend. One reader, so the two can never disagree.
 /**
  * "About this request" — what was asked, and any flag on the asking (tracker issue 331 A.1).
  *
@@ -1153,7 +1107,7 @@ function aboutRequestBlock(scope, requestNotes) {
 }
 
 function reviewerNotesBlock(m) {
-  const notes = splitNotes(m).name;
+  const notes = splitKnockoutNotes(m).name;
   if (!notes.length) return '';
   return `<div class="internal">
             <span class="tag">For the reviewing lawyer</span>
@@ -1613,7 +1567,7 @@ export function renderKnockoutHtml(findings, framework, {
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
-  const requestNotes = marks.flatMap((m) => splitNotes(m).request);
+  const requestNotes = marks.flatMap((m) => splitKnockoutNotes(m).request);
   const aboutRequest = aboutRequestBlock(instructedScope, requestNotes);
   const provider = hasCounts ? (registerCounts.providerLabel ?? registerCounts.provider ?? 'the register') : null;
   // The filings appendix renders only when the run produced a listing artifact — never on its absence,
