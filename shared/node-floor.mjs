@@ -29,13 +29,20 @@ export function declaredRange(root = join(HERE, "..")) {
   return String(range);
 }
 
-/** `">=22.19.0"` → [22, 19, 0]. Only the `>=` form is understood, because it is the only form this
- *  repository declares; anything else throws rather than being guessed at. A floor read wrongly is worse
- *  than one not read, since it would pass every version. */
+/**
+ * `">=22.19.0"` → [22, 19, 0]. `">=22"` and `">=22.19"` are accepted too, with the absent parts read as
+ * zero, because that is what they mean and not a guess — and because the field is edited by whoever
+ * changes the floor, who should not have to know which spelling this reader was written against. A
+ * coordination failure between two people editing one number is the defect this whole file exists for.
+ *
+ * ONLY the `>=` family. A caret or tilde range, or an `||` union, THROWS rather than being interpreted:
+ * a floor read wrongly is worse than one not read at all, because it would silently pass every version
+ * and take every check built on it with it.
+ */
 export function floorOf(range) {
-  const m = /^>=\s*(\d+)\.(\d+)\.(\d+)/.exec(String(range).trim());
-  if (!m) throw new Error(`engines.node is ${range}, which this reader does not understand — expected ">=x.y.z"`);
-  return [Number(m[1]), Number(m[2]), Number(m[3])];
+  const m = /^>=\s*(\d+)(?:\.(\d+))?(?:\.(\d+))?\s*$/.exec(String(range).trim());
+  if (!m) throw new Error(`engines.node is ${range}, which this reader does not understand — expected ">=x", ">=x.y" or ">=x.y.z"`);
+  return [Number(m[1]), Number(m[2] ?? 0), Number(m[3] ?? 0)];
 }
 
 /** `"22.16.0"` → [22, 16, 0], ignoring any pre-release or build suffix. */

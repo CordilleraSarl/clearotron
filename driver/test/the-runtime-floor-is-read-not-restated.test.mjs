@@ -30,38 +30,57 @@ test("278 the floor is READ from package.json, not restated anywhere", () => {
 });
 
 test("278 a version below the floor by its MINOR is refused — the defect this replaces", () => {
-  // 22.16.0 is the version the report came in on. Under the old major-only test it passed.
-  assert.equal(nodeFloorVerdict({ current: "22.16.0", root: ROOT }).ok, false);
-  assert.equal(nodeFloorVerdict({ current: "22.18.9", root: ROOT }).ok, false, "one patch below the floor is below it");
+  // DERIVED FROM THE DECLARED FLOOR, not written out. A check that restates the number is the defect it
+  // is testing for: when the floor moves this must move with it, and a literal would either break or,
+  // worse, keep passing while asserting about a floor nobody declares any more.
+  const [maj, min, pat] = floorOf(declaredRange(ROOT));
+  const below = min > 0 ? `${maj}.${min - 1}.${pat}` : `${maj - 1}.99.0`;
+  assert.equal(nodeFloorVerdict({ current: below, root: ROOT }).ok, false,
+    `${below} is below the declared floor and must be refused`);
+
+  // And the comparison itself, at minor precision, against an EXPLICIT floor — so this keeps proving the
+  // major-only defect is gone however the declared floor is later set. 22.16.0 is the version the
+  // original report came in on, and under the old test it passed a floor of 22.19.0.
+  assert.equal(meetsFloor("22.16.0", [22, 19, 0]), false, "a major-only comparison would have said true");
+  assert.equal(meetsFloor("22.18.9", [22, 19, 0]), false);
 });
 
 test("278 the floor itself and everything above it runs", () => {
   // Without this the arm above is satisfied by a check that refuses every version, which would stop the
   // product working entirely while passing a test named for correctness.
-  for (const v of ["22.19.0", "22.19.1", "22.23.2", "23.0.0", "24.1.0"]) {
+  const [maj, min, pat] = floorOf(declaredRange(ROOT));
+  for (const v of [`${maj}.${min}.${pat}`, `${maj}.${min}.${pat + 1}`, `${maj}.${min + 1}.0`, `${maj + 1}.0.0`]) {
     assert.equal(nodeFloorVerdict({ current: v, root: ROOT }).ok, true, `${v} must run`);
   }
 });
 
 test("278 a major below the floor is refused whatever its minor", () => {
-  for (const v of ["20.19.4", "20.99.99", "18.20.0"]) {
+  const [maj] = floorOf(declaredRange(ROOT));
+  for (const v of [`${maj - 1}.19.4`, `${maj - 1}.99.99`, `${maj - 2}.20.0`]) {
     assert.equal(nodeFloorVerdict({ current: v, root: ROOT }).ok, false, `${v} must be refused`);
   }
 });
 
 test("278 the refusal names both versions, because a reader must know what to install", () => {
-  const v = nodeFloorVerdict({ current: "22.16.0", root: ROOT });
+  const required = floorOf(declaredRange(ROOT)).join(".");
+  const v = nodeFloorVerdict({ current: "1.2.3", root: ROOT });
   const said = nodeFloorRefusal(v);
-  assert.match(said, /22\.19\.0/, "the version they need");
-  assert.match(said, /22\.16\.0/, "the version they have");
+  assert.ok(said.includes(required), `the version they need (${required}) must be in the sentence`);
+  assert.ok(said.includes("1.2.3"), "the version they have");
   assert.doesNotMatch(said, /\bNODE_FLOOR\b|process\.versions/, "a person is not told the name of a variable");
 });
 
 test("278 an unreadable or absent declaration THROWS rather than passing everything", () => {
   // A floor that cannot be read is a could-not-look. Defaulting to "fine" would make a packaging fault
   // silently disable every check built on it, which is how this class of guard usually dies.
-  assert.throws(() => floorOf(">=22"), /does not understand/, "a range this reader cannot parse is refused");
-  assert.throws(() => floorOf("^22.19.0"), /does not understand/);
+  // `>=22` and `>=22.19` ARE understood — absent parts are zero, which is what they mean. The floor is
+  // edited by whoever changes it, and they should not have to know which spelling this reader expects.
+  assert.deepEqual(floorOf(">=22"), [22, 0, 0]);
+  assert.deepEqual(floorOf(">=22.19"), [22, 19, 0]);
+  // What is refused is a range whose meaning this reader would have to GUESS at.
+  assert.throws(() => floorOf("^22.19.0"), /does not understand/, "a caret range is not a floor");
+  assert.throws(() => floorOf("~22.19"), /does not understand/);
+  assert.throws(() => floorOf(">=20 || >=22"), /does not understand/, "a union has no single floor");
   assert.throws(() => declaredRange("/nonexistent-root-for-this-check"), /ENOENT|no such file/i);
 });
 
