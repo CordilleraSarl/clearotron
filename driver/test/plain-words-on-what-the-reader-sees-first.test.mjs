@@ -17,7 +17,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-import { plainLanguageChecks, runKnockoutLint } from "../predelivery-lint.mjs";
+import { plainLanguageChecks, runKnockoutLint, NEVER_PROJECTED, INTERNAL_SURFACE } from "../predelivery-lint.mjs";
 
 const SKILL = new URL("../skills/knockout-assess/SKILL.md", import.meta.url);
 
@@ -144,6 +144,55 @@ test("333: a hit is a rewrite, never a disclosure — the flags never reach a de
   assert.ok(mine.length > 0, "the reviewer ran and flagged");
   // The caller projects on `surface === "report"` exactly. "findings" is scanned and never projected.
   for (const f of mine) assert.equal(f.surface, "findings", `${f.id} must not be projectable`);
+});
+
+// ── the rule, rather than a run that satisfies it (public issue 150) ────────────────────────────────
+//
+// The arm above asserts that today's callers produce an internal surface. That is the property holding
+// BY BEHAVIOUR: every caller happens to pass nothing, and a future one passing `report` would have put
+// a plain-language hit on the page a client reads with nothing going red. The arms below hold it by
+// construction instead, from both ends — the surface cannot be ASKED for, and it cannot be RELABELLED
+// afterwards, which is the same edit one step later and looks like every line around it.
+
+test("150: the internal three cannot be ASKED for on a projectable surface", () => {
+  // The parameter is gone. Passing one is not a thing a caller can do, so this asserts the shape rather
+  // than a value: whatever a caller sends, the surface is the one this module pins.
+  const checks = plainLanguageChecks({ findings: FINDINGS({ basis: "The proprietor would prevail." }), surface: "report" });
+  assert.ok(checks.length > 0, "nothing ran, so nothing was asserted about what it labelled itself");
+  for (const c of checks) {
+    assert.equal(c.surface, INTERNAL_SURFACE,
+      `${c.id} took its surface from the caller — a caller asking for "report" puts an internal note on the client's page`);
+  }
+});
+
+test("150: and they cannot be RELABELLED onto the delivery surface by the lane that pushes them", () => {
+  // Driven through the real lint rather than by calling the relabeller, because the relabeller is the
+  // thing under test and reaching past it would prove nothing about the path that runs.
+  const lint = runKnockoutLint({
+    findings: FINDINGS({
+      findings: [{ ordinal: 1, net: "The proprietor would prevail." }],
+      purpleNotes: ["The stated industry does not match the goods."],
+    }),
+  });
+  const projected = lint.checks.filter((c) => c.surface === "report").map((c) => c.id);
+  assert.ok(projected.length > 0, "no check reached the delivery surface at all — the lane did not run");
+  for (const id of NEVER_PROJECTED) {
+    assert.ok(!projected.includes(id),
+      `${id} is internal by design and reached the surface the caller projects from`);
+  }
+});
+
+test("150: the set names every internal check the lane actually produces, not a subset of them", () => {
+  // A set that has drifted from the checks it governs is the same defect wearing the fix's clothes: the
+  // arm above would pass over an id nobody added, and that id would project. `reviewer-note-subject` is
+  // the live example — it is internal for the same reason as the other two and the arm that predates
+  // this one matched only the `plain-language-` prefix, so it never covered it.
+  const ids = plainLanguageChecks({ findings: FINDINGS({ basis: "The proprietor would prevail." }) }).map((c) => c.id);
+  assert.ok(ids.length > 0);
+  for (const id of ids) {
+    assert.ok(NEVER_PROJECTED.has(id),
+      `${id} is produced by the internal reviewer and is not in NEVER_PROJECTED, so the lane may relabel it onto the client's page`);
+  }
 });
 
 test("333: the reviewer decides nothing — a flagged run still returns a receipt, not a refusal", () => {

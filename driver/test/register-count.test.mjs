@@ -518,6 +518,13 @@ test("the report prints the figures as their own section, and the model's guess 
   assert.match(plain, /<b>What it is not\.<\/b> A clearance search\./);
   // The provider is named as the data source only where there IS register data to source.
   assert.doesNotMatch(plain, /Register data:/, "a run with no counts names no register data source");
+  // AND THE POSITIVE DIRECTION, which nothing asserted (public issue 150). A negative alone is satisfied
+  // by a page that has stopped naming the provider at all: delete the line and this arm goes green while
+  // every report that HAS register data stops saying where it came from. The two together say the line
+  // is conditional; either on its own says only that it is sometimes absent.
+  const sourced = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: doc });
+  assert.match(sourced, /Register data:/,
+    "a run WITH counts does not name its register data source — a reader cannot tell whose register was counted");
 
   const failed = renderKnockoutHtml(findings, fw, { ...opts, registerCounts: null, probeRan: true });
   assert.match(failed, /none could be taken on this run/, "a bought-but-failed count is a gap, not a lesser tier");

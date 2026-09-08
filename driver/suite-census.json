@@ -2800,8 +2800,8 @@
           "todos": 0
         },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
-          "tests": 14,
-          "asserts": 35,
+          "tests": 17,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -3293,7 +3293,7 @@
         },
         "register-count.test.mjs": {
           "tests": 20,
-          "asserts": 153,
+          "asserts": 154,
           "skips": 0,
           "todos": 0
         },
