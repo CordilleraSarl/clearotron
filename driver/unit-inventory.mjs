@@ -321,10 +321,15 @@ export const UNIT_INVENTORY = Object.freeze([
     // anything still starts it, which is the failure the entry was written for.
     //
     // The signal lives on `clearotron-doctrine-sync.timer`, whose ActiveState separates `active`
-    // (waiting) from `inactive` (stopped). Reaching it needs the check to ask about a unit name this
-    // list does not carry — every entry is bare, and `unitInventoryVerdict` appends `.service`/`.timer`/
-    // `.path` itself when it matches tracked files. That is a change to a production health instrument
-    // and it is raised rather than made here, alongside the declaration it completes.
+    // (waiting) from `inactive` (stopped). What is missing is not the NAME — `systemdUnits` below
+    // carries it — but a consumer: the check derives its queries from the bare unit rather than from
+    // that field, so the timer is written down and never asked about.
+    //
+    // WHEN THE CHECK DERIVES ITS QUERIES FROM `systemdUnits` RATHER THAN FROM THE BARE NAME, THIS
+    // PARAGRAPH IS OBSOLETE — and the field below is what it will read. Stated as a condition rather
+    // than as a pointer to where it is being done, because a condition is self-verifying: a reader
+    // confirms or refutes it by looking at the check today, and the day the derivation lands this reads
+    // as history instead of as an open item.
     untrackedReason: "the doctrine refresh on production, timer-driven, running from no file in "
       + "driver/systemd/ and named nowhere in this repo. It CAN be tracked — it carries no "
       + "identity-edge value — and nobody wrote it down. Until it is, its absence is at least no "
