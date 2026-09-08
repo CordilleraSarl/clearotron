@@ -152,6 +152,91 @@ test("333: the reviewer decides nothing — a flagged run still returns a receip
   assert.ok(Array.isArray(lint.notApplicable), "the receipt still says what it did not run");
 });
 
+// ── THE LIST AND THE PAGE, HELD TOGETHER ────────────────────────────────────────────────────────────
+//
+// The checked fields are written out one by one rather than derived, which is right — deriving them
+// would make "what a reader sees" a guess. The cost is that the list must be revisited whenever a field
+// leaves a fold or joins one, and that dependency otherwise lives only in a comment.
+//
+// So the two are compared directly. For each field, a page is rendered carrying a marker in that field
+// alone; stripping every CLOSED <details> body says whether a reader meets it without clicking; and the
+// reviewer is asked whether it reads that field. The two answers must agree, field by field. Move a
+// field into a fold and forget the list, or draw a folded field and forget the list, and this fails
+// naming the field.
+
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+
+const FW_R = { framework_key: "t", bands: [{ label: "Blocking", tone: "severe" }, { label: "Medium", tone: "medium" }] };
+const MARKER = "zzmarkerzz";
+
+/**
+ * Is the marker on the page WITHOUT opening anything?
+ *
+ * THE STYLESHEET AND THE SCRIPT COME OFF FIRST, and skipping that made this read false for every field
+ * including ones that plainly render. The page inlines both, and they mention the fold element by name;
+ * a non-greedy strip therefore started inside the stylesheet and ran to the document's first real
+ * closing tag, swallowing the body between them. The page's own comments do the same thing.
+ */
+const seenWithoutClicking = (html) => {
+  const body = String(html)
+    .replace(/<style>[\s\S]*?<\/style>/g, "")
+    .replace(/<script>[\s\S]*?<\/script>/g, "")
+    .replace(/<!--[\s\S]*?-->/g, "");
+  const shut = body.replace(/<details(?![^>]*\sopen)[^>]*>[\s\S]*?<\/details>/g, "");
+  return shut.includes(MARKER);
+};
+
+/** Does the plain-language reviewer read this field? Seed a term only it would flag. */
+const readByTheReviewer = (findings) =>
+  plainLanguageChecks({ findings }).some((c) => c.id === VOCAB && !c.pass);
+
+test("333: every field a reader meets without clicking is a field the reviewer reads", () => {
+  // Both halves of the partition, so the arm fails in either direction rather than only one.
+  const fields = [
+    ["basis",            (m) => { m.basis = `The proprietor ${MARKER}.`; }],
+    ["mitigation",       (m) => { m.mitigation = `The proprietor ${MARKER}.`; }],
+    ["factors",          (m) => { m.factors = [`The proprietor ${MARKER}.`]; }],
+    ["counterFactors",   (m) => { m.counterFactors = [`The proprietor ${MARKER}.`]; }],
+    ["purpleNotes",      (m) => { m.purpleNotes = [`The proprietor ${MARKER}.`]; }],
+    ["a finding's net",  (m) => { m.findings = [{ ordinal: 1, name: "N", net: `The proprietor ${MARKER}.` }]; }],
+    ["assessment",       (m) => { m.assessment = `The proprietor ${MARKER}.`; }],
+    ["a finding's basis",(m) => { m.findings = [{ ordinal: 1, name: "N", net: "Plain.", basis: `The proprietor ${MARKER}.` }]; }],
+  ];
+  const rows = [];
+  for (const [name, seed] of fields) {
+    const m = { name: "IRONWHISK", classesSearched: [8], rating: "Medium", basis: "Plain enough.",
+      factors: ["Plain."], counterFactors: ["Plain."], mitigation: "Plain.", purpleNotes: [],
+      findings: [], negatives: [] };
+    seed(m);
+    const findings = { batch: { executiveSummary: "One name screened.", standardCaveats: [] }, marks: [m] };
+    const html = renderKnockoutHtml(findings, FW_R, { runId: "r", overall: "Medium" });
+    rows.push({
+      name,
+      // THE THIRD FACT, without which a folded field and a field that renders NOWHERE look identical:
+      // both are invisible and both are unchecked, so both would satisfy the equality below while one
+      // of them tests nothing. Every row must first prove the marker reached the document.
+      present: html.includes(MARKER),
+      visible: seenWithoutClicking(html),
+      checked: readByTheReviewer(findings),
+    });
+  }
+  // Every row prints before any assertion: a failure should arrive with the whole table beside it,
+  // not with the first row that tripped.
+  for (const r of rows) {
+    console.log(`  present=${String(r.present).padEnd(5)} visible=${String(r.visible).padEnd(5)} `
+      + `checked=${String(r.checked).padEnd(5)} ${r.name}`);
+  }
+  for (const r of rows) {
+    assert.ok(r.present, `${r.name} rendered nowhere at all — this row proves nothing either way`);
+  }
+  for (const r of rows) {
+    assert.equal(r.checked, r.visible,
+      r.visible
+        ? `${r.name} is on the page before any click and the reviewer does not read it`
+        : `${r.name} is behind a fold and the reviewer reads it — folded reasoning keeps its precision`);
+  }
+});
+
 // ── the doctrine that teaches it ─────────────────────────────────────────────────────────────────────
 
 test("333: the skill carries the two-register rule, and its worked examples obey it", () => {

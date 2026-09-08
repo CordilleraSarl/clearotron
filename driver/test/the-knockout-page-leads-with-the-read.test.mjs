@@ -173,7 +173,7 @@ test("331 A.3: a finding with no basis renders no fold rather than an empty one"
   assert.doesNotMatch(html, /Why this band/);
 });
 
-test("331 A.3: a filing becomes a card only when the rater banded it ABOVE the ladder's lowest rung", () => {
+test("331 A.3: only an EXPLICIT lowest-rung band takes a filing off the page", () => {
   const records = [REC({ recordId: "R-1" }), REC({ recordId: "R-2", owner: "Second Owner Ltd" })];
   const lowest = FW.bands[FW.bands.length - 1].label;
   const html = RENDER(
@@ -197,16 +197,48 @@ test("331 A.3: the suppressed filings are still in the RECORD and still counted 
   assert.match(html, /further filing/, "and the page says how many it held back rather than hiding them");
 });
 
-test("331 A.3 clause F: a run whose rater banded NO filing keeps every card it was delivered with", () => {
-  const records = [REC({ recordId: "R-1" }), REC({ recordId: "R-2", owner: "Second Owner Ltd" })];
+// ── AN ABSENT BAND IS NOT A LOW BAND ────────────────────────────────────────────────────────────────
+//
+// `band` is optional per row, so a rater who bands the filings that matter and leaves the rest alone is
+// doing what the shape invites. An earlier cut read absence as "lowest" and needed a clause-F escape
+// beside it — keep everything when NO filing on the mark carries a band. That handled the run with no
+// bands and silently mishandled the run with some: a mark whose one typed band happened to be the
+// bottom rung lost every card it had, the unruled filings included.
+//
+// These four are one rule seen from four sides, and the archived case now falls out of it rather than
+// being carved around it. The counts are printed per row because "0 cards" is the answer this filter
+// gives when it is working AND when it is over-reaching, and only the input tells the two apart.
+const cardCount = (html) => (html.match(/<span class="fnum">[^<]*REG #\d[^<]*<\/span>/g) ?? []).length;
+
+test("331 A.3: an absent band keeps a filing's card — it says less than an unrankable one, not more", () => {
+  const records = [REC({ recordId: "R-1" }), REC({ recordId: "R-2", owner: "Second Owner Ltd" }),
+    REC({ recordId: "R-3", owner: "Third Owner Ltd" })];
   const opts = { registerRecords: RECORDS(records), registerCounts: COUNTS() };
-  // Reads present, bands absent — the shape of every run between the read landing and the band landing.
-  const reads = RENDER([MARK({ registerReads: [{ recordId: "R-1", read: "A read with no band." }] })], opts);
-  assert.equal((reads.match(/<span class="fnum">[^<]*REG #\d[^<]*<\/span>/g) ?? []).length, 2,
-    "an unbanded run is not read as rated-and-all-lowest");
-  // And the older shape still: no registerReads field at all.
-  const none = RENDER([MARK()], opts);
-  assert.equal((none.match(/<span class="fnum">[^<]*REG #\d[^<]*<\/span>/g) ?? []).length, 2);
+  const lowest = FW.bands[FW.bands.length - 1].label;
+  const draw = (reads) => cardCount(RENDER([MARK(reads ? { registerReads: reads } : {})], opts));
+
+  // 1. No registerReads at all — a run archived before the field existed.
+  assert.equal(draw(null), 3, "an archived run renders every card it was delivered with");
+  // 2. Reads present, no bands — every run between the read landing and the band landing.
+  assert.equal(draw([{ recordId: "R-1", read: "x" }, { recordId: "R-2", read: "y" }, { recordId: "R-3", read: "z" }]),
+    3, "reads without bands are not rated-and-all-lowest");
+  // 3. PARTIALLY banded, the band above the floor. The two the rater left alone keep their cards.
+  assert.equal(draw([{ recordId: "R-1", read: "x", band: "Blocking" }, { recordId: "R-2", read: "y" }, { recordId: "R-3", read: "z" }]),
+    3, "banding one filing is not a ruling about the others");
+  // 4. PARTIALLY banded, and the one band typed IS the floor. Only that one goes.
+  assert.equal(draw([{ recordId: "R-1", read: "x", band: lowest }, { recordId: "R-2", read: "y" }, { recordId: "R-3", read: "z" }]),
+    2, `only the filing put on ${lowest} leaves the page`);
+  // 5. And the design's own case: every filing explicitly on the floor draws nothing.
+  assert.equal(draw([{ recordId: "R-1", read: "x", band: lowest }, { recordId: "R-2", read: "y", band: lowest },
+    { recordId: "R-3", read: "z", band: lowest }]), 0, "the case 331 exists to fix");
+});
+
+test("331 A.3: a band this build cannot place on the ladder keeps its card", () => {
+  const records = [REC({ recordId: "R-1" })];
+  const html = RENDER([MARK({ registerReads: [{ recordId: "R-1", read: "x", band: "Catastrophic" }] })],
+    { registerRecords: RECORDS(records), registerCounts: COUNTS() });
+  assert.equal(cardCount(html), 1,
+    "the rater said something; a word we cannot rank is not a word we may quietly demote");
 });
 
 // ── A.4 / A.5 — the reviewer's notes, and their absence from the export ──────────────────────────────

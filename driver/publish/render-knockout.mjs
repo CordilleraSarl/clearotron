@@ -937,37 +937,49 @@ function registerStatement(r, provider) {
  * `marks[i].findings.find(f => f.ordinal === ordinal)`, so a card on the page carries the ordinal its
  * own data entry has. A card the page does not draw cannot be flagged, because there is nothing to click.
  *
- * THE CONDITION IS A BAND, NOT A ROW (clause F). `registerReads` has existed since the rater could type
- * a READ; the band arrived later and is independently optional, so a run can carry ten reads and no band
- * at all. Keying on the row's presence would read those runs as rated-and-all-lowest and silently delete
- * every card they were delivered with. Keying on a band present anywhere on the mark asks the only
- * question that matters: did THIS rater use the field this clause reads?
+ * ONLY AN EXPLICIT LOWEST-RUNG BAND SUPPRESSES A CARD. Absence never does, and that is the whole rule —
+ * there is no second condition and no archived-run special case, because this one covers both.
+ *
+ * The first cut read an absent band as "lowest" and needed a clause-F escape hatch beside it: if no
+ * filing on the mark carried a band, keep them all. That escape hatch is what a wrong default looks
+ * like. It handled the run with NO bands and silently mishandled the run with SOME: `band` is optional
+ * per row, so a rater who bands the filings that matter and leaves the rest alone is doing what the
+ * shape invites — and the mark whose one typed band happened to be the bottom rung lost every card it
+ * had, including the filings nobody ruled on.
+ *
+ * `atLowestBand` below already argues this, one function down: a band it cannot place on the ladder
+ * is kept, because "the rater said something, and the safe reading of something we cannot rank is that
+ * it is worth pointing at". An absent band is strictly LESS information than an unrankable one, so if
+ * unknown keeps, absent keeps. Dropping it would be this renderer deciding a filing is immaterial on
+ * the rater's behalf — the same claim tracker issue 274 removed from these cards for the same reason.
+ *
+ * A run that carries no bands at all still renders every card it was delivered with, which is what
+ * clause F asks for; it now falls out of the rule instead of being carved around it.
  */
 function registerCardsOnPage(cards, mark, framework) {
-  const rated = (Array.isArray(mark?.registerReads) ? mark.registerReads : [])
-    .some((r) => String(r?.band ?? '').trim());
-  if (!rated) return cards;
-  return cards.filter((v) => aboveLowestBand(framework, readBandFor(mark, v?.record?.recordId)));
+  return cards.filter((v) => !atLowestBand(framework, readBandFor(mark, v?.record?.recordId)));
 }
 
 /**
- * IS THIS BAND ABOVE THE LADDER'S LOWEST RUNG? (tracker issue 331 A.3)
+ * DID THE RATER PUT THIS FILING ON THE LADDER'S LOWEST RUNG? (tracker issue 331 A.3)
  *
- * The ladder runs worst-first, so the lowest rung is the LAST entry. A filing the rater put on that rung
- * is a filing the rater said is manageable, and 331 keeps those in the filings table rather than on a
- * card: three cards whose own text says the filing does not bear materially on the rating cost the
- * reader more than they told him.
+ * The ladder runs worst-first, so the lowest rung is the LAST entry. A filing the rater put there is one
+ * the rater called manageable, and 331 keeps those in the filings table rather than on a card: three
+ * cards whose own text says the filing does not bear materially on the rating cost the reader more than
+ * they told him.
  *
- * UNKNOWN WORD ⇒ TRUE, deliberately. A band this build cannot place on the run's own ladder is not a
- * band this function may quietly demote — the rater said something, and the safe reading of something
- * we cannot rank is that it is worth pointing at. Only a word that IS the lowest rung suppresses a card.
+ * Stated as "is it AT the lowest rung" rather than "is it above it", because that is the only direction
+ * a caller may act on. Every other answer — a rung higher up, a word this build cannot place on the
+ * run's own ladder, no band at all — is a filing that keeps its card. An unplaceable word is not a band
+ * this function may quietly demote: the rater said something, and the safe reading of something we
+ * cannot rank is that it is worth pointing at. Absence says even less, so it keeps the card too.
  */
-function aboveLowestBand(framework, band) {
+function atLowestBand(framework, band) {
   const ladder = Array.isArray(framework?.bands) ? framework.bands : [];
   const word = String(band ?? '').trim().toLowerCase();
   if (!word || !ladder.length) return false;
   const lowest = String(ladder[ladder.length - 1]?.label ?? '').trim().toLowerCase();
-  return Boolean(lowest) && word !== lowest;
+  return Boolean(lowest) && word === lowest;
 }
 
 /** The rater's band for one filing, off the row that names it. `null` when the rater gave none. */
