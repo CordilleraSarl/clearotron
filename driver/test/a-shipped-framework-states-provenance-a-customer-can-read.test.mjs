@@ -57,7 +57,9 @@ test("343: a shipped framework's provenance carries nothing a stranger would mis
 test("343: the frozen demo artefacts say the same as the manifest they came from", () => {
   // Joined on framework_key, so this cannot be satisfied by two files that merely both look tidy.
   const byKey = new Map();
-  // THE SET THIS WALK DISCOVERS IS ASSERTED BEFORE IT IS WALKED (guard #1010, which caught this).
+  // THE SET THIS WALK DISCOVERS IS ASSERTED BEFORE IT IS WALKED. Named rather than numbered, because a
+  // citation in code is refused here and rightly: the guard is
+  // `a-discovered-set-can-be-empty-and-still-pass.test.mjs`, and it is what caught this.
   //
   // `readdirSync(...).filter(...)` deciding to return nothing is indistinguishable, from inside the loop,
   // from a tree where every manifest agrees. The join below would then compare each frozen artefact
