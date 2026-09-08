@@ -2424,7 +2424,31 @@ function knockoutVisibleProse(findings) {
  * sentence carrying more than one idea. Each names the field, so a hit is a line somebody can rewrite
  * rather than a score.
  */
-export function plainLanguageChecks({ findings, surface = "findings" } = {}) {
+/**
+ * The checks that are internal BY DESIGN, named once so the rule lives beside the thing it governs.
+ *
+ * A hit on any of these is a line for whoever is fixing the run to rewrite. It is never something a
+ * client is shown and it never fails a run — see the header above and the doctrine these implement.
+ * Every other check on this lane is relabelled `report` as it is pushed, one line at a time, and these
+ * three sit in the middle of that list: making them projectable is a one-line edit that looks exactly
+ * like its neighbours and that no test would have caught, because the arms enumerating failure ids
+ * filter these three out before asserting — correctly, for what those arms check.
+ */
+export const NEVER_PROJECTED = Object.freeze(new Set([
+  "reviewer-note-subject", "plain-language-vocabulary", "plain-language-sentence-length",
+]));
+
+/** The surface a check that must never reach a reader carries. Not `report`, and not a caller's choice. */
+export const INTERNAL_SURFACE = "findings";
+
+/**
+ * THE SURFACE IS NOT THE CALLER'S TO CHOOSE. It used to be a parameter with a default, so the property
+ * held because every caller happened to pass nothing — a run that satisfies a rule rather than a rule.
+ * A future caller passing `report` would have put a plain-language hit on the page a client reads, with
+ * nothing going red.
+ */
+export function plainLanguageChecks({ findings } = {}) {
+  const surface = INTERNAL_SURFACE;
   const fields = knockoutVisibleProse(findings);
   const vocab = [];
   const longSentences = [];
@@ -2529,7 +2553,12 @@ export function runKnockoutLint({ findings }) {
   // "all", because on the clearance lane it asserts agreement BETWEEN surfaces. This lane has one
   // surface, so "report" is also the truer label here. The filter is deliberately not `!== "findings"`:
   // that would default a check added next year to PROJECTING onto a surface a client principal reads.
-  const onReport = (list) => list.map((c) => ({ ...c, surface: "report" }));
+  // AND IT REFUSES TO PROMOTE THE THREE THAT ARE INTERNAL BY DESIGN. Pinning the surface inside
+  // `plainLanguageChecks` stops a caller ASKING for a projectable one; it does not stop this line
+  // relabelling the answer afterwards, which is the same edit one step later and looks like every other
+  // line around it. So the rule is enforced where the surface is actually chosen. Anything added to
+  // NEVER_PROJECTED is covered here by construction rather than by whoever adds it remembering.
+  const onReport = (list) => list.map((c) => (NEVER_PROJECTED.has(c.id) ? c : { ...c, surface: "report" }));
   checks.push(...permissionProseChecks({ text: report, surface: "report", idSuffix: ":knockout", structural: true, cards: false }));
   checks.push(...onReport(scopeNumberProseChecks({ reportMd: report })));
   checks.push(...onReport(countingChecks({ report })));

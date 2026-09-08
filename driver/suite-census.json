@@ -2800,8 +2800,8 @@
           "todos": 0
         },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
-          "tests": 14,
-          "asserts": 35,
+          "tests": 17,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -3293,7 +3293,7 @@
         },
         "register-count.test.mjs": {
           "tests": 20,
-          "asserts": 153,
+          "asserts": 154,
           "skips": 0,
           "todos": 0
         },
@@ -4414,8 +4414,8 @@
           "todos": 0
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
-          "tests": 27,
-          "asserts": 64,
+          "tests": 28,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },
@@ -5336,8 +5336,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 27,
-          "asserts": 108,
+          "tests": 30,
+          "asserts": 113,
           "skips": 0,
           "todos": 0
         },
@@ -5356,6 +5356,12 @@
         "effortModelParity.test.ts": {
           "tests": 7,
           "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "engineState.test.ts": {
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
