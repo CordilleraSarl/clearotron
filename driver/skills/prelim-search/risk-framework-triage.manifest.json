@@ -2,7 +2,7 @@
   "schema_version": 1,
   "framework_key": "house-triage",
   "title": "House knockout triage ladder (Stage 0)",
-  "source_deck": "Ported from the interactive knockout-searches skill's 5-tier rating system (SKILL.md rating table + calibration rules), doc 50 shape",
+  "source_deck": "Cordillera house triage scale for knockout screening, authored in-house; five rating tiers",
   "entity_label": "the client",
   "bands": [
     { "label": "Very High", "tone": "severe" },

@@ -561,6 +561,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-shipped-framework-states-provenance-a-customer-can-read.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": {
           "tests": 10,
           "asserts": 20,

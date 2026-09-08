@@ -2,7 +2,7 @@
   "schema_version": 1,
   "framework_key": "demo",
   "title": "Demo Brand Owner risk framework",
-  "source_deck": "Demo Brand Owner risk framework, doc 50 shape",
+  "source_deck": "Demo Brand Owner risk framework, authored in-house for the demonstration account",
   "entity_label": "Demo Brand Owner",
   "bands": [
     { "label": "Very High", "tone": "severe" },
