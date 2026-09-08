@@ -76,10 +76,11 @@ The other half is structural: it fails on any undeclared identity inside a matte
 which is the half that catches something new. Without the private table the guard runs on synthetic
 sentinels: the machinery is exercised and there is nothing real to find.
 
-**Demo clients are synthetic.** A Generic default (`generic`) plus three inventions — `aurora`
-(gaming), `zephyr` (functional drinks), `petcary` (animal health). They exercise the per-client
-machinery and the test suite. Real client bundles load at runtime from a private store
-(`CLEAROTRON_CUSTOMERS_DIR`) and are never committed here.
+**Demo clients are synthetic.** The published package carries a Generic default (`generic`) and one
+demo brand owner. The repository holds three further invented accounts — gaming, functional drinks and
+animal health — which exercise the per-client machinery and the test suite and are never published.
+Real client bundles load at runtime from a private store (`CLEAROTRON_CUSTOMERS_DIR`) and are never
+committed here.
 
 **Real third-party names are deliberate.** Registers, marketplaces, regulators, research providers and
 the parties to published decisions are named throughout the code, tests and fixtures — as facts about

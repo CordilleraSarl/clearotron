@@ -168,8 +168,8 @@ export const ACTION_KINDS = [...CONDITION_KINDS, ...ADVISORY_KINDS];
 export const CLIENT_TIER_BY_COMPOSITE = { 1: "LOW", 2: "MANAGEABLE", 3: "MEDIUM", 4: "HIGH", 5: "VERY HIGH" };
 
 // ── doc 50 — band mode (schema_version 4): the framework in force rates the matter ────────────────────
-// A v4 finding carries `band` — one of the frozen framework manifest's ordered band words (zephyr says
-// "Medium", the Generic default says "Moderate", aurora has a "Low") — and NO composite/level/
+// A v4 finding carries `band` — one of the frozen framework manifest's ordered band words (one ladder
+// says "Medium", the Generic default says "Moderate", another has a "Low") — and NO composite/level/
 // dispute_type (one rating authority; the retired scale is FORBIDDEN, not just optional). Presentation
 // joins on the band's TONE (a closed enum in the manifest) so 4-band and 5-band ladders both land on the
 // existing badge/gauge ramps without any per-framework code.
@@ -2441,6 +2441,56 @@ export function knockoutFindingViews(mark, { manifest = null } = {}) {
  * Derived through knockoutFindingViews rather than re-deriving that fallback here — one projection
  * decides what a finding's number is, and this cell cannot disagree with the sheet it points into.
  */
+// ── THE REVIEWER'S NOTES: WHAT EACH ONE IS ABOUT (tracker issues 331 A.4, 333 rule 5) ───────────────
+//
+// The knockout page prints a note about the REQUEST at the top, above the conflicts, and a note about
+// the NAME under that name's cards. A note saying the screen may have been scoped to the wrong market
+// is the most consequential line on the page and it used to sit under roughly 1,900 words.
+//
+// THE READER LIVES HERE BECAUSE TWO MODULES NEED THE SAME ANSWER. The renderer sorts the notes; the
+// predelivery lint warns a writer whose note will sort the way they did not intend. Two copies of this
+// regex would drift, and the drift would be silent — the page would file a note one way while the
+// reviewer told the writer it went the other.
+//
+// IT SORTS ON WHAT THE NOTE TALKS ABOUT, and the doctrine is written to match: a note about the request
+// NAMES the request. The word set spans both vocabularies deliberately — "dispatch" and "instructed"
+// are what runs written before tracker issue 333 say, "the request" and "was asked" are what runs
+// written after it say — so one reader serves the archive and the new doctrine at once.
+export const REQUEST_NOTE_WORDS = /\b(?:dispatch|the request|the requester|instructed|was asked)\b/i;
+
+// Subjects that belong to the ASKING rather than to the name. A note on one of these that never names
+// the request will be filed under the name, which is why the lint flags it rather than the page
+// guessing: the fix is one clause in the note, and only its writer can add it.
+export const REQUEST_SUBJECT_WORDS =
+  /\b(?:customer industry|client(?:'s)? (?:own )?(?:prior|earlier) use|prior use|intended goods|the goods we|wrong market|described as an? )/i;
+
+/** One note, in either shape, as { text, about }. `about` is null when nothing has classified it. */
+export function knockoutNoteView(n) {
+  if (n && typeof n === "object" && !Array.isArray(n)) {
+    const about = String(n.about ?? "").trim().toLowerCase();
+    return { text: String(n.text ?? n.note ?? "").trim(), about: about === "request" || about === "name" ? about : null };
+  }
+  return { text: String(n ?? "").trim(), about: null };
+}
+
+/**
+ * A mark's notes, split into the two places the page prints them.
+ *
+ * The rater's own `about` wins outright where one is given; only an unclassified note meets the word
+ * reader. That precedence is the whole design: it means a run written under a doctrine that no longer
+ * uses these words is answered without them.
+ */
+export function splitKnockoutNotes(mark) {
+  const all = (Array.isArray(mark?.purpleNotes) ? mark.purpleNotes : []).map(knockoutNoteView).filter((v) => v.text);
+  const request = [];
+  const name = [];
+  for (const v of all) {
+    const isRequest = v.about ? v.about === "request" : REQUEST_NOTE_WORDS.test(v.text);
+    (isRequest ? request : name).push(v.text);
+  }
+  return { request, name, all: all.map((v) => v.text) };
+}
+
 export function knockoutFindingRange(mark) {
   const ords = knockoutFindingViews(mark).map((v) => v.ordinal).sort((a, b) => a - b);
   const markName = String(mark?.name ?? "").trim();

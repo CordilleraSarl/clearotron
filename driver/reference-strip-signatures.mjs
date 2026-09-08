@@ -30,6 +30,26 @@ export const SIGNATURES = [
     // the strip's residue always leaves whitespace after the hyphen.
     re: /\bpre-\s+[a-z]/,
   },
+  {
+    name: "a parenthesis opening on a comma",
+    // THE THIRD RESIDUE, and the floor could not see it for two years because the first two are
+    // WORD-level — a bare possessive, a dangling `pre-` — and this one is PUNCTUATION. It looks like
+    // ordinary code to a reader scanning for broken English, which is exactly why a census built from
+    // the shapes somebody had noticed reads like a census of the whole problem.
+    //
+    // Where the removed reference was the entire content of a parenthesis, nothing is left but `(,)`.
+    // Where it opened one, the sentence now begins on a comma: `(, 2026-08-21)`. Two ran off the end of
+    // their line.
+    //
+    // THE LOOKAHEAD IS THE WHOLE PRECISION AND IT IS DERIVED, NOT GUESSED. `(,` also occurs in code —
+    // inside a character class (`[(,=:…]`, `[;{\s(,]`) and in an alternation (`(,|$)`) — where those two
+    // characters are syntax rather than damage. Every code instance is followed by a regex metacharacter
+    // and no residue instance is, so the exclusion is `|`, `]` and `=` rather than a list of files that
+    // would go stale. Measured against the tree as it stood before the repair: 123 matches, which is the
+    // residue count the finding reported, and 0 after it. A signature that reproduces the number it was
+    // derived from is one that is reading the same thing.
+    re: /\(\s*,(?![|\]=])/,
+  },
 ];
 
 // THE RULE'S OWN DEFINITION IS THE ONLY EXEMPTION, and it is named rather than pattern-matched.

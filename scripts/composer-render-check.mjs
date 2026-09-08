@@ -62,9 +62,9 @@ const PLATFORMS = [
 const stubLevels = () => productRows().map((r) => ({ ...r, available: true, unavailableNote: '' }))
 
 const ROUTES = {
-  '/portal/api/me': { role: 'client', email: 'demo@example.test', accounts: ['zephyr'], allAccounts: false },
+  '/portal/api/me': { role: 'client', email: 'demo@example.test', accounts: ['coastline'], allAccounts: false },
   '/portal/api/searches': {
-    account: 'zephyr',
+    account: 'coastline',
     products: stubLevels(),
     // `nativeLanguage` rides the list row because the composer has to say what geography a saved search
     // accepts while the row is being clicked. Stubbed as the wire sends it.
@@ -72,7 +72,7 @@ const ROUTES = {
     read: { available: true, maxBrief: 12000, note: null },
   },
   '/portal/api/config/profile': {
-    account: 'zephyr',
+    account: 'coastline',
     profile: {
       platforms: PLATFORMS,
       defaultClasses: [5, 32],
@@ -83,7 +83,7 @@ const ROUTES = {
   },
   '/portal/api/config/projects': [],
   '/portal/api/usage': {
-    account: 'zephyr', today: 1, thisMonth: 4, queued: 0,
+    account: 'coastline', today: 1, thisMonth: 4, queued: 0,
     dailyRuns: 3, monthlyRuns: null, maxQueued: null, capped: true,
   },
 }
@@ -138,7 +138,7 @@ const server = createServer((req, res) => {
     res.writeHead(502, { 'content-type': 'application/json' })
     res.end(JSON.stringify({
       error: 'start_run refused upstream: job rejected — profileKey "sim-praxis" names no known customer '
-        + '— the roster this process can see is [aurora, generic, petcary, zephyr]',
+        + '— the roster this process can see is [burrowell, coastline, foxglade, generic]',
     }))
     return
   }
@@ -314,7 +314,7 @@ const SCRIPT = `
   out.segmented = Boolean(document.querySelector('.segmented-entry'));
 
   // The footer must be there before anything is typed — that is the point of a running total.
-  out.footerAtRest = /Review clearance/.test(txt());
+  out.footerAtRest = /Start a search/.test(txt());
   out.startingFrom = /starting from ·/i.test(txt());
   // THE FOUR, each with the geography it accepts and the name count it reads — both the SERVER's own
   // figures. A row that stated a limit the wall does not enforce is what this build deleted.
@@ -429,7 +429,7 @@ const SCRIPT = `
   await sleep(180);
   out.oneCountryBlocked = /reads a region, or two or more countries/.test(txt());
   out.oneCountryNamesWayOut = /pick a Full country search to read France/.test(txt());
-  const revOne = maybeByText('button', /Review clearance/);
+  const revOne = maybeByText('button', /Start a search/);
   out.reviewShutOnOneCountry = revOne ? revOne.disabled === true : null;
   out.steps.push('one-country blocker');
 
@@ -491,7 +491,7 @@ const SCRIPT = `
   out.viewportWidth = window.innerWidth;
 
   // ── the wire ──
-  findByText('button', /Review clearance/).click();
+  findByText('button', /Start a search/).click();
   await mustSettle(() => /review before you start/i.test(txt()), 5000, 'the review dialog never opened');
   out.reviewOpened = /review before you start/i.test(txt());
   out.reviewIsModal = Boolean(document.querySelector('.modal-scrim'));
@@ -539,7 +539,7 @@ const SCRIPT = `
   await mustSettle(() => Boolean(maybeByText('button', /Back to edit/)), 6000,
     'Back to edit never came back after the failure notice cleared');
   findByText('button', /Back to edit/).click();
-  await mustSettle(() => /Review clearance/.test(txt()), 5000, 'the composer never came back after Back to edit');
+  await mustSettle(() => /Start a search/.test(txt()), 5000, 'the composer never came back after Back to edit');
   pickProduct(/Full country search/);
   await sleep(200);
   // Scoped to a TERRITORY chip. The chip-own class is the class chips' class too, so an unscoped search
@@ -550,11 +550,11 @@ const SCRIPT = `
   if (dropOne) dropOne.click();
   await sleep(220);
   out.noTerritoryBlocked = /reads one country/.test(txt());
-  out.refusedReviewShut = findByText('button', /Review clearance/).disabled === true;
+  out.refusedReviewShut = findByText('button', /Start a search/).disabled === true;
   // Pressed anyway. A disabled button that still fires is the shape this whole check exists for, and the
   // server-side assertion below (no plan post ever named a shape the offering refuses) is what proves it
   // did not.
-  findByText('button', /Review clearance/).click();
+  findByText('button', /Start a search/).click();
   await sleep(400);
   // CASE-INSENSITIVE, and that is the whole assertion. The dialog's eyebrow reads "Review before you
   // start" in the markup, and .eyebrow carries text-transform:uppercase (portal-ui/src/base.css), so
@@ -570,8 +570,8 @@ const SCRIPT = `
   // exactly the shape of the last two incidents on this screen.
   pickProduct(/Knockout search/);
   await sleep(220);
-  out.knockoutReviewable = findByText('button', /Review clearance/).disabled === false;
-  findByText('button', /Review clearance/).click();
+  out.knockoutReviewable = findByText('button', /Start a search/).disabled === false;
+  findByText('button', /Start a search/).click();
   await mustSettle(() => /review before you start/i.test(txt()), 5000, 'the review dialog never opened for the knockout');   // the eyebrow renders uppercase
   out.steps.push('planned a knockout');
 
@@ -591,7 +591,7 @@ const SCRIPT = `
   const usAgain = [...document.querySelectorAll('.typeahead button')].find((b) => /United States/.test(b.innerText));
   if (usAgain) usAgain.click();
   await sleep(220);
-  out.fullRunnable = findByText('button', /Review clearance/).disabled === false;
+  out.fullRunnable = findByText('button', /Start a search/).disabled === false;
 
   // MARKETPLACES — the add control sits beside the chips, so typing in it must MOVE the estimate.
   // Before, extras rode the wire and the engine ran a grid column for each while checksPerName, the
@@ -925,7 +925,7 @@ ok(out.multiOffersRegion, 'a Multi-country focus search does not offer regions, 
 ok(out.nativeToggleOffered, 'the ONE toggle in the offering is missing from the one product that offers it')
 ok(out.oneCountryBlocked, 'one country on a Multi-country focus search was accepted silently — the engine refuses it, and the user would find out at the gate')
 ok(out.oneCountryNamesWayOut, 'the blocker states no way out — enforcement without an invitation is what this screen exists to stop')
-ok(out.reviewShutOnOneCountry === true, 'Review clearance stayed live on a search the server will refuse')
+ok(out.reviewShutOnOneCountry === true, 'the start action stayed live on a search the server will refuse')
 ok(out.fullSaysRegionsNotOffered, 'a Full country search does not say that regions are not offered on it')
 ok(out.fullOffersNoRegion === true,
   'a Full country search offered a REGION in its typeahead — the control must fit the product, so the refusal never has to happen')

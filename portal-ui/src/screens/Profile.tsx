@@ -349,7 +349,7 @@ function BandPill({ label, tone }: { readonly label: string; readonly tone: unkn
  * someone to try, and implies the page could write it if only it were enabled. It cannot: a framework is
  * selected in code under review, and the server strips these fields from every write.
  *
- * Role only decides the PATHS now (`skills/prelim-search/risk-framework-zephyr.md`), and it decides them
+ * Role only decides the PATHS now (`skills/prelim-search/risk-framework-<customer>.md`), and it decides them
  * upstream in portal-upstream.frameworkView — by the time this renders, a client's payload no longer
  * carries them. visibleReadOnlyFields stays as the second wall, not the only one.
  */
@@ -389,7 +389,7 @@ function FrameworkBlock({
 
           THREE states, not two. The first cut of this had `custom && title ? custom : house`, which
           collapsed "no custom framework on file" together with "a custom framework IS on file and its
-          manifest would not load" — and answered both with "House default". So Aurora Interactive's page told a
+          manifest would not load" — and answered both with "House default". So a customer's page told a
           lawyer their client was rated under the firm's house framework when the profile says otherwise.
           A settings page may render nothing it cannot substantiate; it may never substitute a confident
           wrong answer for a missing one. `custom` comes from the profile (frameworkPath is set) and

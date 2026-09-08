@@ -25,3 +25,10 @@ tmp[0-9]*-*/*-audit.xlsx
 [0-9][0-9][0-9][0-9]-[0-9][0-9]-*/report.client.html
 [0-9][0-9][0-9][0-9]-[0-9][0-9]-*/findings.json
 [0-9][0-9][0-9][0-9]-[0-9][0-9]-*/*-audit.xlsx
+
+# A STAGE'S OWN INVENTION, WRITTEN INTO THE CHECKOUT. `stage-cwd` and the stray-artifact detector both
+# use this exact name as their specimen — the shape of a document a model addressed to nowhere — so a
+# test that exercises them leaves one behind. One was committed by a `git add -A`, which is how a file
+# the detector exists to name ended up tracked beside the detector.
+MARK_Search_Results.csv
+MARK_Supplementary_Search_Matrix.md

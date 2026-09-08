@@ -26,8 +26,8 @@ surfaces as a failing test rather than as a wrong report.
 (`loadGrants` in `shared/scope.mjs`) and asserted to grant what it looks like it grants — `../INSTALL.md`
 §8 tells an installer to copy this file, and a row that silently resolves to nothing means an empty
 world on their first sign-in. **Read it as a shape, not as a starting roster.** Most of the accounts it
-names — `aurora`, `zephyr`, `petcary` — are fixtures the test suite reads and are not part of the
-published package; the one a fresh install actually has is `demo-brand-owner`. Replace the names with
+names are invented and resolve to nothing on a fresh install; the one account a fresh install
+actually has is `demo-brand-owner`. Replace the names with
 your own accounts and keep the shapes: a tenant with every account, a tenant with one, a tenant whose
 users see different subsets.
 

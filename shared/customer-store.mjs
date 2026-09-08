@@ -7,7 +7,7 @@
 // `process.env.PROFILE_DIR || join(HERE, "profiles")` while the runs, the roster, the account picker and
 // the artifacts door read `CLEAROTRON_CUSTOMERS_DIR`. Nothing set `PROFILE_DIR` — not `onboard`, not
 // `.env.example`, not the box's own env — so the settings surface served the product's BUNDLED DEMO
-// BUNDLE (aurora, generic, petcary, zephyr) while the runs served the real store.
+// BUNDLE while the runs served the real store.
 //
 // WHAT THE CLIENT SAW: every brand owner added the documented way was "These settings are not available
 // to you." The clearance itself submitted and ran under their framework. Only the surface that

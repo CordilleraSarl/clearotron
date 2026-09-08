@@ -68,7 +68,11 @@ import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that
 import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
 import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight where the meaning is
-import { bracketAsciiCells } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
+import { bracketAsciiCells, BRAND } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
+// ONE CLASSIFIER, shared with `bin/start.mjs`. The wizard asks the question; the launcher enforces the
+// answer. Two copies of "what does this domain admit" is a wizard that consents to one rule and a
+// launcher that builds another.
+import { classifyStaffDomain, domainOfEmail, staffDomainRefusal, staffGrantSentence } from "../shared/staff-domain.mjs";
 import { join, dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
@@ -586,6 +590,80 @@ export const AMBIENT_KEYS = [
 
 // ── helpers ──────────────────────────────────────────────────────────────────────────────────────────
 const present = (v) => typeof v === "string" && v.trim() !== "";
+
+/**
+ * Ask who signs in, and take a real yes for the access rule that address implies.
+ *
+ * ── WHY THIS QUESTION EXISTS AT ALL ─────────────────────────────────────────────────────────────────
+ *
+ * Setup never asked for an address. `clearotron start` therefore took one from `--user`, from
+ * `PORTAL_LOCAL_USER`, or from the local account as `<account>@localhost` — and derived a STAFF RULE
+ * from everything after its `@`. On the local-account default that rule is `localhost`: one machine,
+ * one identity, nothing granted to anyone. Given a real address it is that address's whole domain, and
+ * the settings page then reports it back as "Anyone at <domain> — a rule, not a person".
+ *
+ * An outside install reached exactly that state. Nobody typed the address into this wizard, because
+ * this wizard had no prompt for it; an assistant filled one into the environment file on the operator's
+ * behalf, and the install granted a documentation domain. They read their own settings page and
+ * reported it as a back door. They were right to: a grant to a group had been made, by nobody.
+ *
+ * So the address is asked for here, where a person is definitionally present, and the grant it implies
+ * is shown in the words the settings page uses BEFORE it is written. `start` no longer guesses: it
+ * refuses a rule wider than one machine unless `PORTAL_STAFF_DOMAINS` says so in writing, which is what
+ * a yes here writes.
+ *
+ * THE DEFAULT IS THE LOCAL ACCOUNT AND NOTHING ELSE — not the git author, not the hostname, not a shell
+ * variable. An identity that becomes an access rule comes from the person, or from the one source that
+ * cannot name a second person.
+ *
+ * `io` IS INJECTED for the reason `offerUsptoSync`'s is: the branch that matters is the one where a
+ * reader pressed Enter at the grant question and NOTHING must be granted, and closed over a terminal
+ * that branch is asserted nowhere. Returns the `.env` keys to write and nothing else.
+ */
+export async function askSignIn(io, { localAccount = "user", staffLabel = "Staff", envPath = "" } = {}) {
+  const { askValue, confirm, say = () => {}, ok = () => {}, info = () => {},
+          warn = () => {}, problem = () => {} } = io;
+  const localDefault = `${localAccount}@localhost`;
+  prose("The portal admits one address on this install, and that address is also what decides who is an",
+        "administrator. Enter accepts the local-account form, which is this machine and nobody else.");
+  for (;;) {
+    const typed = String(await askValue("Sign-in address:", { def: localDefault })).trim().toLowerCase();
+    if (!typed.includes("@") || typed.indexOf("@") !== typed.lastIndexOf("@")) {
+      problem(`"${typed}" is not a single email address. The portal refuses a multi-@ identity outright, `
+        + "so this would sign in and then be denied at the door.");
+      continue;
+    }
+    const domain = domainOfEmail(typed);
+    const verdict = classifyStaffDomain(domain);
+    if (verdict === "public" || verdict === "reserved") {
+      // The classifier's own sentence, never a second copy: `clearotron start` prints these same words
+      // when it meets the same domain, and two wordings of one refusal is how a reader comes to believe
+      // they have met two different problems.
+      problem(staffDomainRefusal(domain));
+      continue;
+    }
+    if (verdict === "narrow") {
+      ok(`${typed} — this machine only. No domain rule is written, and nobody else is granted anything.`);
+      return { PORTAL_LOCAL_USER: typed };
+    }
+    // `wide`: a real domain, so the grant is a grant. Stated first, in the settings page's own words,
+    // and Enter is NOT a yes — the default is no, because this is the one answer in the wizard that
+    // admits people the reader has never met.
+    say("");
+    warn(`${typed} makes this a rule about ${domain}, not about you.`);
+    say(`    ${staffGrantSentence(domain, { staffLabel })}`);
+    say("");
+    say(`  Everyone at ${domain} who gets past this install's sign-in door would see every brand owner`);
+    say("  on it — every clearance, every report, every configuration. On a laptop that is only you,");
+    say("  because only one address can sign in. Behind a company login it is the whole domain.");
+    say("");
+    if (await confirm(`Grant ${domain} that, and write it down as PORTAL_STAFF_DOMAINS?`, false))
+      return { PORTAL_LOCAL_USER: typed, PORTAL_STAFF_DOMAINS: domain };
+    info(`nothing granted${envPath ? `, and nothing written to ${envPath}` : ""}. ${typed} would sign in `
+      + "and every page would refuse it, because signing in is not being enrolled — so choose the "
+      + "local-account form, or answer yes above.");
+  }
+}
 
 /**
  * An engine binary, resolved the way the engine resolves it — and the trap that resolution carries.
@@ -1366,7 +1444,7 @@ export async function runCheck() {
       // Both lines were honest about their own source and neither said what it was. The first reads this
       // command's env file; the second reads THIS PROCESS's resolution, and a CLI is started by a login
       // shell that carries none of the units' `EnvironmentFile`. The deployment was correct and served
-      // zephyr, aurora and generic throughout.
+      // the configured roster throughout.
       //
       // THE UNITS' ENV IS NOT PASSED INTO `profileStoreResolution`, deliberately. `PROFILES_OVERLAY_DIR`
       // is captured when profiles.mjs LOADS, so handing it the units' value would set `live` with no
@@ -1418,17 +1496,38 @@ export async function runCheck() {
         const demo = keys.filter((k) => roster.get(k)?.demoData === true);
         // `generic` is the universal fallback the module requires by name, not a brand owner somebody
         // onboarded — counting it would tell an operator with an empty store that they have one.
-        const owners = keys.filter((k) => k !== "generic");
+        //
+        // A DEMO ACCOUNT IS NOT AN ONBOARDED OWNER EITHER, and until this line it was counted as one. A
+        // fresh install used to ship the demo account into every roster, so `doctor` reported "1 brand
+        // owner(s) resolve here: demo-brand-owner (DEMO DATA)" on a machine where nobody had onboarded
+        // anything — and never named `generic`, which is the account that actually rates a run there.
+        // The reader is told they have a customer and not told what they are running on. Both halves
+        // wrong from one list.
+        //
+        // SINCE 2026-09-08 A FRESH INSTALL RESOLVES `generic` ALONE (owner ruling): nobody should have to
+        // clean demo material out of an environment they just created. So the demo branch below no longer
+        // fires on a plain install — it fires inside the demo, which asks for its own account. It is kept
+        // rather than deleted because it is still reachable, and a reader who meets the demo account
+        // there is owed the same two facts: it is fiction, and a real clearance under it is refused at
+        // the admission wall.
+        //
+        // Three states, told apart, because they mean three different things to whoever is reading:
+        // an onboarded roster, the house default alone, and the house default beside what the demo
+        // brought with it.
+        const owners = keys.filter((k) => k !== "generic" && !demo.includes(k));
         if (!owners.length) {
-          info(`no brand owners resolve here — only the \`generic\` fallback. An empty store is a working `
-            + `install on Generic defaults; it is also what a store pointed at the wrong directory looks like`);
+          const base = "`generic` is the account this install rates under — the house default, and the "
+            + "only one a clean install has";
+          if (demo.length) {
+            info(`${base}. The demo brought one with it, marked DEMO DATA: ${demo.join(", ")} — fiction `
+              + "rather than an account anybody onboarded, and a real clearance under one is refused");
+          } else {
+            info(`${base}. An empty store is a working install on Generic defaults; it is also what a `
+              + "store pointed at the wrong directory looks like");
+          }
         } else {
-          const marked = owners.map((k) => (demo.includes(k) ? `${k} (DEMO DATA)` : k)).join(", ");
-          const line = `${owners.length} brand owner(s) resolve here: ${marked}`;
-          // The demo marker is the member-level half: naming the store is not the
-          // same as saying the accounts in it are fiction, and a real clearance under one is refused at
-          // the admission wall — which an operator should learn here rather than from that refusal.
-          if (demo.length) info(`${line} — accounts marked DEMO DATA cannot start a real clearance`);
+          const line = `${owners.length} brand owner(s) resolve here: ${owners.join(", ")}`;
+          if (demo.length) info(`${line}. The demo brought one with it, marked DEMO DATA: ${demo.join(", ")} — not counted above, and a real clearance under one is refused`);
           else ok(line);
         }
         try {
@@ -2310,6 +2409,27 @@ export async function runCheck() {
         // unreachable; repeating it as a second failure teaches the reader that this section
         // double-counts. It still states what was NOT established, which is the whole job.
         else if (v.kind === "could-not-look") info(v.message);
+        // NO ACCESS IN FRONT OF THE CLIENT DOOR IS A POSTURE, NOT A FAULT (owner ruling 2026-09-08).
+        //
+        // This is the CLIENT connector's address, and how a client reaches it is the client's decision:
+        // "client access sitting behind OAuth is totally up to a client — plenty might just run it token
+        // based on their own laptop." A door answering with its own Bearer challenge and no Access front
+        // is a supported shape, not a misconfiguration, so raising it made `doctor` exit 1 on a healthy
+        // deployment and taught its reader to skim the one command that must never be skimmed.
+        //
+        // It is still SAID rather than dropped, and it still states what was not established: an
+        // audience that was never compared is not an audience that agreed. What changed is that the
+        // sentence no longer calls a client's own arrangement a finding about this install.
+        //
+        // Scoped deliberately to `not-fronted` on THIS address. A configured audience that DISAGREES
+        // with the one the edge issues is still a fault, and the portal and ops surfaces are untouched —
+        // they are checked elsewhere and Access in front of them is not optional.
+        else if (v.kind === "not-fronted") {
+          info(`nothing is fronting this hostname with Access — ${read.why}. That is this client door's `
+            + "posture rather than a fault: a client may reach it with its own token and no Access in "
+            + "front, which is a supported shape. The configured audience was not compared against this "
+            + "address, so nothing here says the two agree.");
+        }
         else problem(v.message);
       }
     }
@@ -3174,6 +3294,22 @@ try {
   say("  Left empty. The bundled instructions show through file-by-file, and generic.json — the universal");
   say("  fallback — falls through by name, so an empty store is a working install. Your own customers");
   say("  are added here by name; the bundled demo customers never show through into your roster.");
+
+  // 7c ── WHO SIGNS IN, AND WHAT THAT ADDRESS GRANTS
+  //
+  // Setup never asked for an address, so `clearotron start` derived one — and derived a staff-domain
+  // rule from everything after its `@`. The whole reasoning, and the install that granted a
+  // documentation domain to a reader who had never been asked, is on `askSignIn` above.
+  section("Who signs in");
+  const localAccount = (() => {
+    try { return userInfo().username || "user"; } catch { return "user"; }
+  })();
+  // ONE CALL SITE. The loop itself lives in `askSignIn` so that the branch that matters — a reader who
+  // pressed Enter at the grant question, and a staff rule that must therefore NOT be written — is
+  // reachable without a terminal. The same seam and the same reason as `offerUsptoSync`.
+  Object.assign(candidate, await askSignIn(
+    { askValue, confirm, say, ok, info, warn, problem },
+    { localAccount, staffLabel: `${BRAND.name} staff`, envPath: ENV_PATH }));
 
   // 8 ── the engine's own preflight over the whole candidate
   //

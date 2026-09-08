@@ -1301,7 +1301,7 @@ export const STAGES = {
       job.jurisdictions ? `Instructed territories (AUTHORITATIVE scope — do NOT widen to "major markets"): ${Array.isArray(job.jurisdictions) ? job.jurisdictions.join(", ") : job.jurisdictions}` : "",
       job.customer ? `Customer/applicant (from the intake brief — drives the self-exclusion set): ${job.customer}` : "",
       // WS-B profile defaults — falsy-omitted, so an empty profile renders this message byte-identical
-      // to the pre-profile shape (the aurora/generic regression anchor).
+      // to the pre-profile shape (the regression anchor).
       // Industry is CONTEXT not a rule (Design Law #1): it sharpens which sectors/adjacencies matter for
       // the vertical (e.g. food/ingestible adjacency for a beverage brand), it never dictates a conclusion.
       profile?.industry ? `Customer industry (context for sector framing — let it sharpen the relevant sectors and adjacencies for this vertical; it is context, never a rule that decides a finding): ${profile.industry}.` : "",
@@ -1813,7 +1813,7 @@ export const STAGES = {
       // DETERMINISTIC GRID (robust fix, 2026-06-14): when the driver wrote a grid-spec, the model is OUT
       // of the grid data path entirely — it passes grid_spec_path, the plugin runs the dictated cells and
       // WRITES common-law-grid.json from the API response (no truncation, no dropped/mis-keyed cells), and
-      // the model only judges the returned candidates. This is the structural cure for both the Zephyr
+      // the model only judges the returned candidates. This is the structural cure for both the dense-marketplace
       // truncation and the NOVA PULSE dropped-cell failures (no tier bump would fix the output ceiling).
       if (gridSpecPath) {
         return lines(
@@ -2353,7 +2353,7 @@ export const STAGES = {
       },
       "placements.json — the structured mirror, keys EXACTLY {mark, owner, jurisdiction, records, tier, reason} + optional borderline": {
         class: "mechanical:code-rendered", tokens: ["placementmodel_missing", "placements_unparseable", "placements_key_unknown", "placement_invalid", "placement_key_unknown"],
-        why: "The driver renders it: renderPlacementsJson() in placement-form.mjs over the union, landed by gateway.mjs:706 (the #562 union-then-render block; re-verified 2026-08-29 — the old :507 predated this branch and pointed at the engine-resolution doc comment). The skill file was not updated with #562, so the stage's two sources contradict each other — the contract that escapes if E1 is authored against stages.mjs alone. [citation unverified]",
+        why: "The driver renders it: renderPlacementsJson() in placement-form.mjs over the union, landed by `syncPlacementForm` in gateway.mjs (the union-then-render block). Cited by SYMBOL because the number has now moved twice: an earlier :507 pointed at an engine-resolution comment, and :706 went blank when an unrelated block was inserted above it. The skill file was not updated with #562, so the stage's two sources contradict each other — the contract that escapes if E1 is authored against stages.mjs alone.",
       },
       "mark / owner / records / territories / classes on a SELECTED row": {
         class: "mechanical:code-extracted", tokens: [],
@@ -3222,7 +3222,7 @@ export const STAGES = {
       // lane's own prose contract. Two of the four longest sentences in the delivered report were
       // coverage/gap prose, and NOTHING governed it: the code-stamped `coverage_line:` front-matter
       // (scope-facts.mjs,) is EXCLUDED from predelivery-lint's prose scan by design
-      // (stripFrontMatterBlock, predelivery-lint.mjs:374), so a coverage number re-typed into prose
+      // (stripFrontMatterBlock, predelivery-lint.mjs:375), so a coverage number re-typed into prose
       // beside it is caught only if the prose form itself trips SCOPE_NUMBER_RE — which the narrative's
       // own phrasings routinely dodge. Prompt-only per §7; the fix is to stop authoring the duplicate.
       `COVERAGE PROSE (the lane that runs longest — hold it to the house budgets): the register coverage line a reader sees is COMPUTED from this run's own record and STAMPED BY CODE as front-matter (the proportion, the class states, the searched registers). Do NOT re-type its numbers anywhere in prose — not in a coverage[] note, not in the coverage_judgment reason, not in the narrative. Nothing catches the duplicate for you (the code-stamped line sits outside the prose checks precisely because ITS numbers are the authoritative ones), so a re-typed count does not disagree with the record — it silently drifts from it a redelivery later. Carry the SUBSTANCE and drop the number: "the remaining forms are non-Latin script" says the useful half; the code says how many. State each coverage fact ONCE, in ONE place — an area's state belongs in its coverage[] row, the sufficiency read belongs in coverage_judgment.reason, and neither is re-narrated in the other or in the findings. And say WHICH KIND of negative you hold every time: a source this run actually queried and got nothing from reads "searched — none found"; a source it did not reach reads "not searched this run" or "could not be searched — <the reason>". The same source must never wear both readings in one report.`,

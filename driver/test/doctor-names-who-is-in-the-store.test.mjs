@@ -81,8 +81,14 @@ test("1911 AN EMPTY STORE SAYS SO, and says what else it could mean", () => {
   // `generic` is the fallback the loader requires by name, not a brand owner anybody onboarded.
   // Counting it would tell an operator with an empty store that they have one.
   const out = doctorOver(store());
-  assert.match(out, /no brand owners resolve here/);
-  assert.match(out, /generic/, "names what IS there, so the line is not mistaken for a broken read");
+  // The wording moved with tracker issue 342: the line now LEADS with the account an install rates
+  // under, because a fresh install reported a brand owner it had and never named the one its runs
+  // resolve to. What this arm pins is unchanged — that an empty store is named as such, and named
+  // apart from a store pointed somewhere wrong.
+  assert.match(out, /`generic` is the account this install rates under/,
+    "names what IS there, so the line is not mistaken for a broken read");
+  assert.doesNotMatch(out, /brand owner\(s\) resolve here/,
+    "an empty store must not report an onboarded owner it does not have");
   assert.match(out, /wrong directory/i,
     "an empty store and a store pointed somewhere wrong look identical — the operator is told that");
 });
@@ -90,9 +96,12 @@ test("1911 AN EMPTY STORE SAYS SO, and says what else it could mean", () => {
 test("1911 a DEMO account is marked, because a real clearance under one is refused", () => {
   const dir = store({ pretend: { name: "Pretend Co", platforms: ["amazon.com"], demoData: true } });
   const out = doctorOver(dir);
-  assert.match(out, /pretend \(DEMO DATA\)/);
-  assert.match(out, /cannot start a real clearance/,
+  assert.match(out, /marked DEMO DATA: pretend/,
+    "named, and named as fiction — 342 moved it out of the brand-owner COUNT, not out of the report");
+  assert.match(out, /refused/,
     "the consequence, not just the label — an operator should learn it here, not from the refusal");
+  assert.doesNotMatch(out, /1 brand owner\(s\) resolve here/,
+    "a demo account is present, not onboarded: counting it tells a reader they have a customer");
 });
 
 test("1911 A ROSTER THAT WILL NOT LOAD IS A FINDING, NEVER AN EMPTY LIST", () => {

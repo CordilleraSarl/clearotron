@@ -85,3 +85,78 @@ test("the checkout documents that keep the npm form still carry it — the excep
       + "verb, in which case remove it from CHECKOUT_DOCS, or the exception is now excluding nothing.");
   }
 });
+
+// ── AND THE SURFACE THE GUARD ABOVE COULD NOT SEE ───────────────────────────────────────────────────
+//
+// The scan above filters `.md`. The portal's own on-screen copy is `.tsx`, so it sat outside a guard
+// that exists for exactly its defect — and it carried one: the no-engine notice told every reader to
+// run `npm run setup`, which is a command that does not exist for anybody who installed the package.
+// That notice is read by somebody who has just installed, has no engine, and has nothing else to go on,
+// which makes it the worst place in the product to name a command the reader cannot type.
+//
+// A SEPARATE TEST RATHER THAN A WIDER FILTER. The scan above needs `shipped.length >= 8` to mean
+// anything, and that figure is calibrated for markdown; folding screens into its `docs` list would make
+// its own anti-vacuity check free. This one counts its own population.
+//
+// ONE NAMED EXCEPTION, with a control, the way CHECKOUT_DOCS is done above. The screen that renders the
+// notice may hold both spellings, because it shows the reader the one matching the route the server
+// says this install arrived by — a conditional on a derived fact, which is the compliant case and the
+// only one. Anywhere else in the UI a checkout-only command is an author's guess about a stranger's
+// machine.
+const UI_ROUTE_MAP = "portal-ui/src/screens/NewClearance.tsx";
+
+/**
+ * Code only. A comment EXPLAINING why a command is wrong for a reader is not the product saying it, and
+ * a guard that cannot tell those apart makes the defect undocumentable — the first person to write down
+ * what went wrong trips it. Same treatment portal-ui's own source-level arms use.
+ */
+const codeOnly = (src) => src
+  .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))
+  .split("\n").map((l) => l.replace(/(^|[^:])\/\/.*$/, "$1")).join("\n");
+
+test("on-screen copy names no checkout-only command outside the one route map", (ctx) => {
+  const tracked = trackedFiles(GUARD, { root: ROOT });
+  if (!tracked) return ctx.skip(skipReason(GUARD));
+  const ui = tracked.filter((f) => f.startsWith("portal-ui/src/") && /\.tsx?$/.test(f));
+
+  // ANTI-VACUITY, counted on this file set rather than borrowed from the one above: a path filter that
+  // selected nothing would pass this test forever.
+  assert.ok(ui.length >= 20,
+    `only ${ui.length} UI source file(s) matched — this scan is reading almost nothing, so the `
+    + "assertion below would be free");
+
+  const offenders = [];
+  for (const f of ui) {
+    if (f === UI_ROUTE_MAP) continue;
+    codeOnly(read(f)).split("\n").forEach((line, i) => {
+      for (const [form, instead] of CHECKOUT_ONLY) {
+        if (form.test(line)) offenders.push(`${f}:${i + 1} — write \`${instead}\`, or derive it from the install route`);
+      }
+    });
+  }
+  assert.deepEqual(offenders, [],
+    "a screen names a command that exists only in a source checkout. The reader of a portal page may "
+    + "have installed either way, and the page cannot guess:\n  " + offenders.join("\n  "));
+});
+
+test("the route map still holds BOTH spellings — the exception is not a dead letter", (ctx) => {
+  const tracked = trackedFiles(GUARD, { root: ROOT });
+  if (!tracked) return ctx.skip(skipReason(GUARD));
+  assert.ok(tracked.includes(UI_ROUTE_MAP), `${UI_ROUTE_MAP} is named as an exception and is not tracked`);
+  const src = codeOnly(read(UI_ROUTE_MAP));
+  // ── A CONTROL, AND IT PAIRS THE ROUTE WITH ITS COMMAND ─────────────────────────────────────────
+  //
+  // If this screen were rewritten to name one command again, the exception above would be excluding
+  // nothing and the scan would quietly stop guarding the surface it was written for — while still
+  // passing, because a file that names no checkout-only command offends nothing.
+  //
+  // The pairing is asserted rather than the mere presence of the two strings. Driven and caught: with
+  // the checkout branch changed to hand back the PACKAGE command, a presence check stayed green,
+  // because the unknown-route sentence further down names both spellings and satisfied it. A screen
+  // that offers every reader the same wrong command would have shipped under a passing control.
+  const flat1 = src.replace(/\s+/g, " ");
+  assert.match(flat1, /route === 'checkout'\) return <><code>npm run setup<\/code>/,
+    `${UI_ROUTE_MAP} no longer hands a source checkout the command a source checkout can run.`);
+  assert.match(flat1, /route === 'packaged'\) return <><code>npx clearotron install<\/code>/,
+    `${UI_ROUTE_MAP} no longer hands a package install the command a package install can run.`);
+});

@@ -1,6 +1,6 @@
 # Saved searches ("recipes")
 
-One subdirectory per customer — `aurora/` and `zephyr/` — each holding one JSON file per saved search at
+One subdirectory per customer, each holding one JSON file per saved search at
 `<customer>/<slug>.json`; the loader walks directories only, so nothing else here is a store. A recipe is a
 small named bundle: a base product, optional component toggles, an optional `scope` block (where the
 machinery points: `jurisdictions`, `platforms`, `classes`), and instruction-shaped `extras`.
@@ -23,27 +23,20 @@ path segment from the resolved account; `../dev-portal.mjs` proxies `/recipes/*`
 searches — not that it falls back to this directory. That fallback existed and was removed: production is
 exactly where the variable is unset, so it would have surfaced invented customers inside the product.
 
-## These are synthetic demos
+## What this directory holds
 
-`aurora` and `zephyr` are fictional customers (`../profiles/aurora.json`, `../profiles/zephyr.json`) that
-exist so the dev cockpit and the test suite have something to render. A real deployment's recipes live
-outside the repo, in the customer-config store beside the profiles — no client data in git.
+Synthetic saved searches for the test suite and the dev cockpit, so both have something to render. They
+are not shipped with the published package, and they are not a fallback: a real deployment's recipes live
+outside the repository, in the customer-config store beside the profiles — no client data in git.
 
-| File | Base product, and any extras it carries |
-|---|---|
-| `aurora/quarterly-screen.json` | `knockout-search`, `extras.emailTable` |
-| `aurora/screen-with-register-counts.json` | `knockout-search` |
-| `zephyr/standard-clearance.json` | `multi-country-focus-search`, `extras.standingInstructions` + `extras.defaultDeadlineDays` |
-
-Two of them carry settings the product no longer offers, which is not an oversight: `emailTable` is inert
+Some of them carry settings the product no longer offers, which is not an oversight: `emailTable` is inert
 but still validated so recipes written while it worked keep loading, and `defaultDeadlineDays` is a retired
 extra that `loadRecipes` drops on read and `validateRecipe` refuses on save. A stored recipe must not brick
 on a change it never asked for.
 
 ## Where to start
 
-`zephyr/standard-clearance.json` — twelve lines, and the one whose `extras` show both what an
-instruction-shaped setting looks like (`standingInstructions`) and what a retired one looks like still
-sitting in a stored file. Then the recipe block in `../search-policy.mjs` (`RECIPE_KEYS`,
-`RECIPE_SCOPE_KEYS`, `RECIPE_EXTRA_KEYS`, `validateRecipe`), which is where every rule above is enforced
-and commented.
+Any twelve-line recipe carrying `extras.standingInstructions` shows both what an instruction-shaped
+setting looks like and what a retired one looks like still sitting in a stored file. Then the recipe block
+in `../search-policy.mjs` (`RECIPE_KEYS`, `RECIPE_SCOPE_KEYS`, `RECIPE_EXTRA_KEYS`, `validateRecipe`),
+which is where every rule above is enforced and commented.

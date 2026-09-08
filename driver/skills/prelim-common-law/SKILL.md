@@ -173,7 +173,7 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
 | Sony "Pulse Elevate" portfolio | Sony products | https://... | Sony uses "Elevate" in audio products; flagged for prelim-register cross-check |
-| Aurora "Borealis" console "Raise Your Play" tagline (prior usage) | Aurora Interactive marketing | https://... | Client's own prior use — note as supportive |
+| Foxglade "Borealis" console "Raise Your Play" tagline (prior usage) | Foxglade Interactive marketing | https://... | Client's own prior use — note as supportive |
 
 ### PR / reputational risk
 

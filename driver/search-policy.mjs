@@ -877,7 +877,7 @@ export const RECIPE_KEYS = [
  * The saved-search SCOPE block — where the machinery points, as against `base`/`components`, which
  * choose which machinery runs.
  *
- * This is what makes a saved search a saved SEARCH rather than a saved depth. "Zephyr Beverages knockouts — US
+ * This is what makes a saved search a saved SEARCH rather than a saved depth. "Drinks knockouts — US
  * focus" is a label over exactly this: base `knockout`, scope `{jurisdictions:["US"]}`. Without it a
  * saved search could only ever restate a level that is already one click away, which is why the recipe
  * store existed for weeks with nothing worth putting in it.
@@ -1066,7 +1066,7 @@ let recipeCache = null;
  * THE STORE IS NAMED, NEVER GUESSED. `CLEAROTRON_RECIPES_DIR` unset means this deployment has no saved
  * searches — not that it should use the ones bundled with the source.
  *
- * `driver/recipes/` ships synthetic demos for two FICTIONAL customers (aurora, zephyr) so the dev
+ * `driver/recipes/` ships synthetic demos for two test accounts so the dev
  * cockpit and the tests have something to render. It used to be the fallback when the env var was
  * unset, which is a foot-gun that only fires in production: the real deployment does not set the
  * variable, so switching saved searches on there would have surfaced invented customers inside the

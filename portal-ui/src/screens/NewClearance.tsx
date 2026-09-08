@@ -57,7 +57,7 @@ import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
   EMPTY_DRAFT, blockers, effortUnits, costBand, turnaround, checksSummary, runsNote, machineryFor,
   territoryMatches, addTerritory, removeTerritory, reachesTerritory, vocabularyFor, offerableFor,
-  inherited, composeSaved, draftFromSaved, nameBudget,
+  inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
   chooseProduct, geographyFor, geographyNote, nativeLanguageControl, toggleNativeLanguage,
 } from '../contract/composerProduct.ts'
 import { productMatrix, LEGEND } from '../contract/productMatrix.ts'
@@ -67,7 +67,7 @@ import type { BriefRead, ReadTarget } from '../contract/composeRead.ts'
 import { resolveRead, applyRead, appliedNotes } from '../contract/composeRead.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
-import { useUnsaved } from '../state/useUnsaved.ts'
+import { useUnsaved, unsavedChanges } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
@@ -185,6 +185,14 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   const [saveName, setSaveName] = useState('')
   const [saveText, setSaveText] = useState('')
   const [saveNote, setSaveNote] = useState<string | null>(null)
+  /**
+   * The name a save just wrote, held so the footer can confirm it where the button was.
+   *
+   * Separate from `saveNote`, which is the full sentence including the warning a live-but-uncommitted
+   * write carries. This is the acknowledgement — short enough to sit in the action row, and cleared the
+   * moment the form changes again, because a tick beside edited work is a lie about what is on disk.
+   */
+  const [saveDone, setSaveDone] = useState<string | null>(null)
   const [plan, setPlan] = useState<Plan | null>(null)
   /** A refusal from the RUN door, shown inside the dialog. Separate from `problem`, which belongs to
    *  the form and is read while composing — this one is read at the moment of pressing the button. */
@@ -193,13 +201,29 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   const [problem, setProblem] = useState<{ readonly title: string; readonly lines: readonly string[] } | null>(null)
   const [submitted, setSubmitted] = useState<string | null>(null)
 
+  /**
+   * WHAT THE FORM LOOKED LIKE WHEN IT WAS LAST WRITTEN DOWN, serialised. Null until something is.
+   *
+   * The unsaved-changes guard had no such baseline: it compared the draft against EMPTY and nothing
+   * ever reset it, so a form that had just been saved still counted as unsaved work. Someone saved a
+   * search, was warned on the way out that they would lose it, came back, and found it had been there
+   * all along. The warning was false and the save looked like it had failed — one missing term causing
+   * both halves of what they reported.
+   */
+  const [savedDraft, setSavedDraft] = useState<string | null>(null)
+
   // A composed-but-unsent clearance is unsaved work like any form's, and this is the screen where losing
-  // it costs the most — it can be twenty names, a goods description and a set of levers. Compared against
-  // EMPTY rather than a loaded baseline because a fresh composer HAS no baseline; once submitted there is
-  // nothing left to lose, so the guard stands down and "Start another" stays one click.
+  // it costs the most — it can be twenty names, a goods description and a set of levers. EMPTY is the
+  // baseline a fresh composer has, `savedDraft` the one it earns; once submitted there is nothing left
+  // to lose, so the guard stands down and "Start another" stays one click.
   const composerDirty = useMemo(
-    () => submitted == null && JSON.stringify(draft) !== JSON.stringify(EMPTY),
-    [draft, submitted],
+    () => unsavedChanges({
+      current: JSON.stringify(draft),
+      empty: JSON.stringify(EMPTY),
+      saved: savedDraft,
+      submitted: submitted != null,
+    }),
+    [draft, submitted, savedDraft],
   )
   useUnsaved(composerDirty)
 
@@ -247,7 +271,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     const scope = (editing.recipe['scope'] ?? {}) as Record<string, unknown>
     const classes = Array.isArray(scope['classes']) ? (scope['classes'] as unknown[]).filter((c): c is number => typeof c === 'number') : []
     const platforms = Array.isArray(scope['platforms']) ? (scope['platforms'] as unknown[]).filter((p): p is string => typeof p === 'string') : []
-    setDraft((d) => ({
+    writeDraft((d) => ({
       ...d,
       pick: editingPick,
       // NOT `savedSearch`: that key means "run this saved search as-is", which hides the picker. Editing
@@ -338,10 +362,31 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     density: own.density,
   }
 
+  /**
+   * THE ONE WRITER OF THE DRAFT — and the reason it exists is the acknowledgement.
+   *
+   * A tick reading "Saved as X" beside a form that has changed since is a false statement about what is
+   * on disk, and a worse defect than the silence it replaced. Clearing it in `edit` covers the levers
+   * and the fields; it does NOT cover the brief reader, which writes the draft directly and would have
+   * left the tick standing over a form it had just rewritten — the same claim, on the one path most
+   * likely to change everything at once.
+   *
+   * So every write goes through here and `setDraft` is called in exactly one place. That is a property
+   * a test can check by counting, which is what `newClearanceStructure.test.ts` does: the next writer is
+   * covered because there is nowhere else to write.
+   *
+   * The unsaved-changes baseline is deliberately untouched. That comparison is what NOTICES the edit,
+   * and resetting it here would put the guard back where it started.
+   */
+  const writeDraft: typeof setDraft = (next) => {
+    setSaveDone(null)
+    setDraft(next)
+  }
+
   // Any edit invalidates the preview. See the header note: the server would refuse the stale ticket
   // anyway, so the only question is whether the user finds out now or after pressing the money button.
   const edit = (patch: Partial<Draft>) => {
-    setDraft((d) => ({ ...d, ...patch }))
+    writeDraft((d) => ({ ...d, ...patch }))
     setPlan(null)
     setProblem(null)
     setSaveNote(null)
@@ -370,7 +415,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     const { read, dropped, worldwide } = resolveRead(r.value)
     // The diff is taken against the draft as it stands NOW, inside the setter, so a read that lands
     // after the user has carried on typing applies to what is on screen rather than to a stale copy.
-    setDraft((d) => {
+    writeDraft((d) => {
       const before: ReadTarget = { draft: d.pick, names: d.names, classes: d.classes, goods: d.goods, ref: d.ref, deadline: d.deadline }
       // The owner's own classes travel with it: a ghost list materialises FROM them, never from empty.
       // `worldwide` is the one instruction allowed to remove chips — a brief that says everywhere over
@@ -531,6 +576,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
    * something means. A create has no slug yet and derives one from the name, as it always has.
    */
   const doSave = async () => {
+    // Cleared FIRST. Every branch below either replaces it or reports a failure, and a tick from an
+    // earlier save sitting beside "that could not be saved" is the same false claim in its worst place.
+    setSaveDone(null)
     const label = saveName.trim()
     const slug = editingSlug ?? label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 39)
     if (slug.length < 2) {
@@ -564,6 +612,26 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     })
     setBusy(false)
     if (isOk(r)) {
+      // ── THE BASELINE THE UNSAVED GUARD COMPARES AGAINST ─────────────────────────────────────────
+      //
+      // Without it the form stays "dirty" forever and warns the reader they are about to lose work that
+      // is already on disk — which is what shipped, and which made the save look as though it had done
+      // nothing at all.
+      //
+      // WHAT IS RECORDED IS WHAT THE SAVE WROTE, NOT WHAT IS ON SCREEN, and the difference is the whole
+      // correctness of this. `composeSaved` carries the levers, the classes and the marketplaces;
+      // `draftFromSaved` restores exactly those. The mark names, the goods text, the reference and the
+      // deadline belong to the run being composed and reach no file. Snapshotting the draft WHOLE would
+      // mark those clean too — so somebody who typed twenty names, pressed Save and left would lose
+      // them with no warning at all, which is a worse failure than the false alarm being fixed here and
+      // silent where that one was merely wrong.
+      //
+      // So the un-persisted fields are recorded at their EMPTY values: the form reads clean when the
+      // only thing that has changed is what was written down, and still warns while anything the save
+      // could not carry is sitting in it.
+      setSavedDraft(JSON.stringify({
+        ...EMPTY, pick: draft.pick, classes: draft.classes, platforms: draft.platforms,
+      }))
       // An EDIT came from Custom searches and belongs back there — the list is where the result of the
       // change is visible. A create stays put: the levers on screen are the search being started.
       if (editingSlug) { ctx.go('/portal/brand/searches'); return }
@@ -575,6 +643,14 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       setSaveNote(uncommitted
         ? `Saved as “${label}”. ${uncommitted}`
         : `Saved as “${label}” — it is in your custom searches.`)
+      // ── SAID WHERE THE READER IS LOOKING, AT THE MOMENT IT HAPPENS ──────────────────────────────
+      //
+      // `saveNote` alone was not a confirmation. It renders in the footer's far LEFT column, under the
+      // running total, at 12px — while this same branch closes the panel, so the only thing that
+      // changes under the reader's cursor is that the button they pressed disappears. An outside user
+      // pressed Save, reported "Nothing!", and went looking for the feature somewhere else. The note
+      // stays where it is for the record; this puts the answer beside the control that was pressed.
+      setSaveDone(label)
     } else if (r.kind === 'conflict') {
       setSaveNote('Someone else changed this custom search while you were editing. Reload and re-apply.')
     } else {
@@ -586,7 +662,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     return (
       <Submitted
         go={ctx.go}
-        onAnother={() => { setSubmitted(null); setDraft(EMPTY); setEntry(null) }}
+        onAnother={() => { setSubmitted(null); writeDraft(EMPTY); setEntry(null) }}
       />
     )
   }
@@ -642,12 +718,22 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // somebody to delete their own work — see NameWall. ONE predicate, shared with blockers(); the
   // component needs the numbers to offer that way out, which is why it returns them.
   const budget = nameBudget(activeLevel, names.length)
-  const overBudget = budget != null
   const exhausted = usage?.capped === true && usage.dailyRuns != null && usage.today >= usage.dailyRuns
   // classes OR goods, which is what the schema accepts. Requiring both would refuse requests the engine
   // runs — and with the owner's own classes on screen in the card, demanding they be retyped is worse.
-  const missing = !names.length || (!classes.length && !draft.goods.trim())
-  const ready = !missing && !stops.length && !nameStops.length && !overBudget && !exhausted && activeLevel != null
+  // THE SENTENCES ARE THE PREDICATE. This used to be a bare boolean with no render site anywhere on the
+  // screen: every other term in `ready` puts a sentence in front of the reader and this one greyed the
+  // primary action out in silence. Asking whether the list is empty, rather than re-deriving the
+  // condition beside it, is what stops the reason going missing again — there is nothing left to forget
+  // to render.
+  const gaps = missingPieces(names, classes, draft.goods)
+  // ONE CALL, both answers. `ready` and the sentence under the button come out of the same ordered list
+  // in contract/composerProduct.ts, so `ready === (blockedBy === null)` holds by construction rather
+  // than by two chains in two files staying in step. Adding a condition without its sentence is no
+  // longer a thing this screen can do.
+  const { ready, blockedBy } = readiness({
+    gaps, stops, nameStops, budget, exhausted, hasProduct: activeLevel != null,
+  })
   // WHAT THE FOOTER CALLS THIS SEARCH, and there is only one answer now. It used to be `tierLabel`,
   // which invented seven strings for distinctions "the registry has no word for" — "Deep dive — United
   // States", "Full clearance". The registry has the word: it is the product's own name, the same string
@@ -1388,7 +1474,21 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             </Details>
 
             {/* Everything standing in the way, each as its own fixable sentence. A disabled button with no
-                reason is exactly what this screen was rebuilt to stop doing. */}
+                reason is exactly what this screen was rebuilt to stop doing.
+
+                `gaps` JOINS THE LIST. It was the one term in `ready` with no sentence anywhere, and the
+                two headings are different claims on purpose: a form nobody has finished filling in is
+                not the same thing as a search that is set up wrongly, and telling someone their work is
+                "not runnable" when all they have done so far is type a name reads as a fault. */}
+            {gaps.length ? (
+              <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
+                <b>{gaps.length === 1 ? 'One thing left to fill in' : 'A couple of things left to fill in'}</b>
+                <ul style={{ margin: '8px 0 0', paddingLeft: 18, color: 'var(--text-muted)' }}>
+                  {gaps.map((g, i) => <li key={`g${i}`} style={{ marginBottom: 3 }}>{g}</li>)}
+                </ul>
+              </div>
+            ) : null}
+
             {stops.length || nameStops.length ? (
               <div className="notice" style={{ borderColor: 'var(--tone-medium)', margin: 0 }}>
                 <b>Not runnable as set</b>
@@ -1447,12 +1547,19 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             // been written; that is "cannot answer", and answering it as demo would take the button away
             // from a working install because a file is missing.
             demoMode={ctx.me.engineMode === 'demo'}
+            setupRoute={ctx.me.setupRoute}
             saveOpen={saveOpen}
             saveName={saveName}
             saveText={saveText}
             saveNote={saveNote}
+            saveDone={saveDone}
             editing={editingSlug != null}
             canSave={!draft.savedSearch && !stops.length}
+            // THE FIRST REASON, AT THE BUTTON. The full list is a notice further up the page, and the
+            // footer is sticky — so on a long form the greyed button and its explanation are routinely
+            // not on screen together. One sentence rather than the list: the reader fixes them one at a
+            // time anyway, and a paragraph in a footer bar is not read. Ordered the way the notices are.
+            blockedBy={blockedBy}
             onSaveOpen={() => { setSaveOpen(true); setSaveName(activeLevel ? `${activeLevel.name}` : 'Custom search') }}
             onSaveName={setSaveName}
             onSaveText={setSaveText}
@@ -1465,6 +1572,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             }}
             onSave={doSave}
             onReview={doPlan}
+            onSeeSaved={() => ctx.go('/portal/brand/searches')}
           />
 
           {plan ? (
@@ -1629,9 +1737,9 @@ function NameWall({
  * user cannot tell what they picked, which is the gap this line closes.
  */
 function Footer({
-  startedFrom, tier, detail, units, cost, duration, runs, ready, busy, demoMode,
-  saveOpen, saveName, saveText, saveNote, editing, canSave,
-  onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview,
+  startedFrom, tier, detail, units, cost, duration, runs, ready, busy, demoMode, setupRoute,
+  saveOpen, saveName, saveText, saveNote, saveDone, editing, canSave, blockedBy,
+  onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview, onSeeSaved,
 }: {
   readonly startedFrom: string
   readonly tier: string
@@ -1650,11 +1758,29 @@ function Footer({
    * first-time visitor gets told their working install is broken.
    */
   readonly demoMode: boolean
+  /**
+   * HOW THIS INSTALL ARRIVED, so the no-engine notice names a command this reader can type.
+   *
+   * Null means the server did not say — an older portal-service — and the notice then names both
+   * routes and which is which. That is worse copy than one command and better than a coin flip: the
+   * shipped sentence named `npm run setup`, which does not exist for anybody who installed the package,
+   * and a reader who cannot run the one command they are given has been told nothing.
+   */
+  readonly setupRoute: 'packaged' | 'checkout' | null
+  /**
+   * THE REASON THE PRIMARY ACTION IS NOT AVAILABLE, in one line, or null when it is available.
+   *
+   * The footer is sticky and the list of reasons is not: someone reading the bottom of the screen can
+   * have the explanation scrolled off above them. This is the same sentence, at the control.
+   */
+  readonly blockedBy: string | null
   readonly saveOpen: boolean
   readonly saveName: string
   /** The saved search's note. Free text, for whoever picks it up next; the engine never reads it. */
   readonly saveText: string
   readonly saveNote: string | null
+  /** The name a save just wrote, or null. Acknowledged beside the button that was pressed. */
+  readonly saveDone: string | null
   /** True while this composer is open OVER an existing saved search, rather than composing a new one. */
   readonly editing: boolean
   readonly canSave: boolean
@@ -1664,6 +1790,8 @@ function Footer({
   readonly onSaveCancel: () => void
   readonly onSave: () => void
   readonly onReview: () => void
+  /** Where the thing that was just saved now lives. */
+  readonly onSeeSaved: () => void
 }) {
   return (
     <div className="composer-footer">
@@ -1733,25 +1861,76 @@ function Footer({
             <button type="button" className="btn-ghost" style={{ padding: '8px 10px' }} onClick={onSaveCancel} aria-label={editing ? 'Stop editing' : 'Cancel saving'}>×</button>
           </span>
         ) : null}
+        {/* SAID AT THE CONTROL THAT WAS PRESSED. `saveNote` still carries the full sentence in the
+            left column; this is the acknowledgement, in the place the cursor already is, and it names
+            what was written and where it went. Without it the only visible effect of a successful save
+            was the panel closing, which reads as the click having been swallowed. */}
+        {saveDone ? (
+          <span className="save-done" role="status">
+            <Icon name="check" size={13} />
+            Saved as “{saveDone}”
+            <button type="button" className="link-btn" onClick={onSeeSaved}>See it</button>
+          </span>
+        ) : null}
         {demoMode ? (
           // NO DEAD BUTTON. Before this the button was live, the click was accepted, and the
           // refusal arrived as a 502 several seconds later — a user cannot tell that from a broken
           // product. The sentence says where they are and the one command that moves them, which is
           // the difference between "you are missing four things" and "you are here".
+          //
+          // AND THE COMMAND IS THE READER'S OWN NOW. It was one hard-coded spelling, and it was the
+          // wrong one for anybody who installed the package rather than cloning the source: they have
+          // no npm scripts, so the single fix this notice offered was a command that does not exist on
+          // their machine. The server says which route it is; when it cannot, both are named.
           <div className="footer-demo-note" role="status" style={{ fontSize: 12.5, lineHeight: 1.45 }}>
             <strong>No search engine is attached to this install.</strong>{' '}
             Everything else works — the example report, its audit trail and the assistant connection are
-            live right now. To start new searches, install a reasoning CLI and sign in, then run{' '}
-            <code>npm run setup</code> again.
+            live right now. To start new searches, install a reasoning CLI and sign in, then run the
+            setup wizard again{' '}
+            <SetupCommand route={setupRoute} />
           </div>
         ) : (
-          <button type="button" className="btn-primary" disabled={!ready || busy} onClick={onReview}>
-            {busy ? 'Checking…' : 'Review clearance'}
-            <Icon name="arrow-right" size={14} />
-          </button>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            {/* THE VERB. This said "Review clearance", which is what the button does and not what the
+                reader came here to do — it reads as looking at a clearance that already exists, and an
+                outside user with a fully configured install read the whole screen, found no action that
+                promised to run anything, and stopped. The step behind it is unchanged and deliberately
+                so: the confirmation carries the coverage, the effort and the legal caveat, and those
+                are read before anything is spent. The line beside the button says so, which is the
+                honest way to put a verb on a door that opens onto one more step. */}
+            <button type="button" className="btn-primary" disabled={!ready || busy} onClick={onReview}>
+              {busy ? 'Checking…' : 'Start a search'}
+              <Icon name="arrow-right" size={14} />
+            </button>
+            <span className="footer-hint">
+              {blockedBy ?? 'You will see the coverage and what it costs before anything runs.'}
+            </span>
+          </span>
         )}
       </div>
     </div>
+  )
+}
+
+/**
+ * The setup wizard, named the way this reader can type it.
+ *
+ * ONE WIZARD, TWO SPELLINGS, AND EACH ONE IS UNRUNNABLE ON THE OTHER ROUTE. A package install has no
+ * npm scripts; a source checkout has no `clearotron` linked for itself. The screen cannot work this out
+ * for itself and does not try — the server derives it from where its own code sits and sends a word.
+ *
+ * NULL IS ANSWERED BY NAMING BOTH, not by picking the likelier one. An older server that does not send
+ * the field leaves this genuinely unknown, and a reader who is told which of two commands applies to
+ * them can act; a reader given the wrong one cannot, and has no way to tell that is what happened.
+ */
+function SetupCommand({ route }: { readonly route: 'packaged' | 'checkout' | null }) {
+  if (route === 'packaged') return <><code>npx clearotron install</code>.</>
+  if (route === 'checkout') return <><code>npm run setup</code>.</>
+  return (
+    <>
+      — <code>npx clearotron install</code> if you installed the package, or <code>npm run setup</code>{' '}
+      from a copy of the source.
+    </>
   )
 }
 

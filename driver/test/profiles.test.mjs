@@ -416,7 +416,7 @@ const MSPROJ = { name: "Aurora Interactive Corporation", matchDomains: ["aurora.
   selfExclusionOwners: ["Aurora Interactive"], delivery: { email: "summary", privileged: true }, industry: "tech",
   riskAppetite: "conservative posture", frameworkPath: "skills/prelim-search/risk-framework-aurora.md" };
 
-test("spec 62 + search spine: the key split partitions KNOWN_PROFILE_KEYS exactly (8 project + 9 customer-only = 17)", () => {
+test("spec 62 + search spine: the key split partitions KNOWN_PROFILE_KEYS exactly (8 project + 10 customer-only = 18)", () => {
   // `demoData` joined CUSTOMER_ONLY, and the level was the decision rather than a
   // formality: a project overlay marking a real customer's run as demo would refuse legitimate work, and
   // an overlay UN-marking a demo customer would put fiction through the runner's admission wall. The
@@ -427,7 +427,7 @@ test("spec 62 + search spine: the key split partitions KNOWN_PROFILE_KEYS exactl
   assert.deepEqual([...PROJECT_KEYS].sort(),
     ["defaultClasses", "defaultJurisdictions", "defaultProduct", "delivery", "industry", "marketplaceDensity", "platforms", "riskAppetite"]);
   assert.deepEqual([...CUSTOMER_ONLY_KEYS].sort(),
-    ["allowedRecipes", "demoData", "frameworkPath", "jxPolicy", "matchDomains", "name", "runCaps", "selfExclusionOwners", "workedExamplesPath"]);
+    ["allowedRecipes", "demoData", "frameworkPath", "jxPolicy", "matchDomains", "name", "runCaps", "selfExclusionOwners", "testFixture", "workedExamplesPath"]);
   const union = new Set([...PROJECT_KEYS, ...CUSTOMER_ONLY_KEYS]);
   assert.equal(union.size, PROJECT_KEYS.length + CUSTOMER_ONLY_KEYS.length, "the two lists are disjoint");
   assert.deepEqual([...union].sort(), [...KNOWN_PROFILE_KEYS].sort(), "union === KNOWN_PROFILE_KEYS (every field picks a level)");

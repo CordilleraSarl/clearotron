@@ -489,8 +489,8 @@ function predicateClause(predicate, term) {
       // predicate. Unanchored, because corporate names arrive in every spelling there is.
       //
       // NO FTS NARROWER HERE, deliberately, and it is the same trap as the suffix one. An FTS
-      // token-prefix candidate set is NOT a superset of an unanchored contains: owner "AURORA INTERACTIVE"
-      // searched for "URORA" satisfies the LIKE, but no token starts with URORA, so the narrower
+      // token-prefix candidate set is NOT a superset of an unanchored contains: owner "FOXGLADE INTERACTIVE"
+      // searched for "OXGLADE" satisfies the LIKE, but no token starts with URORA, so the narrower
       // would drop a true match and the verification could never put it back. A narrower may only
       // ever be a superset of its verifier. So this is an honest full scan, and how expensive that is
       // at register scale is UNMEASURED.

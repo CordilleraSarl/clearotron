@@ -21,6 +21,7 @@ error would otherwise reach a committed bundle. `npm run typecheck -w portal-ui`
 | `home.test.ts` | The home projection |
 | `failure.test.ts` | Failure states — that each one renders as itself rather than as a generic error |
 | `guard.test.ts` | The unsaved-changes registry: every exit is intercepted, and a clean screen never prompts |
+| `readiness.test.ts` | Whether the Start button is on, and the sentence under it — driven over every combination, because `ready === (blockedBy === null)` is the property that stops a greyed action with no reason |
 | `niceClasses.test.ts`, `ownerNames.test.ts` | Class parsing and owner-name normalisation |
 | `productMatrix.test.ts`, `effortModelParity.test.ts` | That the UI's product claims match `../../driver/products.mjs` and `effort-model.mjs` |
 | `profileFields.test.ts` | The profile field definitions and their copy |

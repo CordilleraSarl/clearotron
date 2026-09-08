@@ -47,7 +47,7 @@ function NotYet({ title, phase, what }: { readonly title: string; readonly phase
  *
  * Every account-scoped screen re-fetched on an owner change and none of them reset their own state, so
  * the data swapped underneath a form that did not. The worst of it was the composer: a clearance drafted
- * for Aurora Interactive survived a switch to Zephyr Beverages while the context card, the project list and the allowance
+ * for one brand owner survived a switch to another while the context card, the project list and the allowance
  * all changed around it — and the project key in that draft usually did not exist under the new owner.
  * Brand profile was quieter and worse: when the new owner's payload landed, the seeding effect wrote it
  * straight over unsaved edits with nothing said. Brand projects kept the expanded project key and asked
