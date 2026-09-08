@@ -6,7 +6,7 @@
 // Feedback console went with the quality subsystem, so two of those five had not rendered for
 // months. Lets us screen-share the site without
 // revealing real client names or the marks being cleared: client names map to descriptive aliases
-// (e.g. Zephyr Beverages → "Beverage company") and marks blur out, behind ONE site-wide toggle (no
+// (e.g. Coastline Drinks → "Beverage company") and marks blur out, behind ONE site-wide toggle (no
 // hover-reveal). Display-only — it never mutates stored data, run metadata, or form values.
 //
 // SHAPE (mirrors site-nav.mjs's NAV_CSS/siteNav split):
@@ -19,7 +19,7 @@
 //   • anonToggle(cfg?)   — the toggle button markup for the nav ('' when disabled).
 //
 // Tagging conventions the browser overlay understands:
-//   <span data-anon="client" data-anon-key="zephyr">Zephyr Beverages</span>  → text swapped for the alias
+//   <span data-anon="client" data-anon-key="coastline">Coastline Drinks</span>  → text swapped for the alias
 //   <span data-anon="mark" data-anon-key="…" data-anon-run="…">NOVA PULSE</span> → blurred (unless exempt)
 //   <a data-anon-href data-anon-key="…" data-anon-run="…" href="…">     → href neutralised to # (unless exempt)
 // A run/client is EXEMPT (shown real) when its key ∈ demoAllow.clientKeys or its run matches
@@ -81,7 +81,7 @@ const OVERLAY_BODY = `(function(){
   var DEAD_TITLE = "hidden in privacy mode — toggle Privacy OFF to open";
   var DA = C.demoAllow || {clientKeys:[],runs:[]};
   // Case-insensitive client lookup, and the reason it is not redundant: surfaces tag rows by profile
-  // KEY ("zephyr") and by display NAME ("Zephyr"), so lowercasing both makes a single-token name
+  // KEY ("coastline") and by display NAME ("Coastline"), so lowercasing both makes a single-token name
   // resolve to its key's alias. The two surfaces that tagged by NAME were Quality and Feedback, both
   // retired (tracker issue 265) — the fold stays because it is what makes the lookup total over either spelling,
   // not because those pages are coming back.

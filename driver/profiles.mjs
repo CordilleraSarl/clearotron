@@ -4,7 +4,7 @@
 //
 // One git-owned JSON file per customer under profiles/ — hand-authored, PR-reviewed, onboarded one
 // customer at a time. generic.json is the universal fallback and MUST exist;
-// aurora.json reproduces today's behavior exactly (the regression anchor). Every field shipped
+// one test-suite profile reproduces today's behavior exactly (the regression anchor). Every field shipped
 // here has working machinery behind it — parked knobs live in profiles/README.md, not in the files.
 //
 // Resolution is FORWARDER-DOMAIN ONLY: the profile describes WHO ASKS US (the
@@ -143,10 +143,10 @@ export const SAFE_GRID_CELLS = 98;
 // A DENSE marketplace profile (long retail URLs + many listings per cell — e.g. beverages/supplements on
 // Amazon/GNC/iHerb) makes each grid cell ~5-10x heavier in OUTPUT BYTES than a sparse gaming-store cell, so
 // the cell-count budget above (calibrated on sparse stores) overflows the worker's output channel and the
-// verbatim stdout transcription truncates mid-JSON (Zephyr KINETIC, 2026-06-14: ~21 dense cells ≈ 20KB cut
+// verbatim stdout transcription truncates mid-JSON (measured on a dense beverages profile, 2026-06-14: ~21 dense cells ≈ 20KB cut
 // the ledger unparseable). A dense profile gets a much smaller cell budget so each grid call's stdout stays
 // well under that ceiling (a 7-platform dense profile ⇒ floor 8 ⇒ batchSize 2 ⇒ ≤16 cells/call). The
-// gaming/Aurora budget is unchanged (default density = sparse).
+// gaming budget is unchanged (default density = sparse).
 export const DENSE_GRID_CELLS = 16;
 
 // The two values a profile may hold, as a LIST rather than as a phrase repeated at each site.
@@ -238,6 +238,9 @@ export const KNOWN_PROFILE_KEYS = [
   // queue was a cost bomb the run-slot cap doesn't stop. Visible, git-tracked profile config (never a
   // hidden env var); enforced at the runner's admission chokepoint for BOTH doors (email + portal).
   "runCaps",
+  // AN ACCOUNT THE SUITE USES AND NO INSTALL OFFERS. `testFixture: true` keeps a profile in the tree,
+  // under its own name, and out of every roster this module resolves — see loadProfiles.
+  "testFixture",
   // THIS RECORD IS FICTION. `demoData: true` marks a profile as demo data, and a
   // real clearance refuses to start under it — at the runner's admission wall, so no door can miss it.
   //
@@ -276,6 +279,12 @@ export const CUSTOMER_ONLY_KEYS = [
   // may trigger (allowedRecipes) nor re-declare its jx deepening policy — both are the same
   // rating-authority-adjacent discipline as frameworkPath, one notch out.
   "allowedRecipes", "jxPolicy",
+  // WHETHER AN ACCOUNT IS OFFERED AT ALL is the account's own fact, and a project overlay must not touch
+  // it in either direction. Un-marking would put a test account into a customer's picker through an
+  // overlay nobody reviewed as identity; marking would hide a real account from its own owner. Same
+  // reasoning as `demoData` one notch out — that one decides whether fiction may spend money, this one
+  // decides whether it is visible, and neither is a project's to decide.
+  "testFixture",
   // Admission caps bind the ACCOUNT: a project widening its own caps would hollow the customer's.
   "runCaps",
   // Provenance binds the ACCOUNT and cannot be overlaid in either direction: a project marking a real
@@ -305,6 +314,7 @@ export const FIELD_CONSUMERS = {
   allowedRecipes:       { file: "search-policy.mjs", symbol: "allowedRecipes" },                // entitlement gate on the resolved search selection
   jxPolicy:             { file: "pipeline.mjs",      symbol: "jxPolicy" },                      // frozen into the run sidecar for the Stage-1.5 lanes (resume-safe)
   demoData:             { file: "runner.mjs",        symbol: "demoData" },                      // the admission wall refuses a real clearance on demo data
+  testFixture:          { file: "profiles.mjs",      symbol: "loadProfiles" },                  // never offered by a resolved roster; the suite asks for it by name
   runCaps:              { file: "runner.mjs",        symbol: "runCaps" },                       // admission caps at claimAndPrep (queued + monthly, both doors)
 };
 
@@ -644,7 +654,7 @@ function readProfilesLayer(dir) {
  *
  *  `dir` names the OVERLAY, not the whole store: passing it keeps the bundled set underneath, which is
  *  what makes an empty store a working install. Pass `dir: null` for the bundled set alone. */
-export function loadProfiles({ dir, force = false } = {}) {
+export function loadProfiles({ dir, force = false, includeTestFixtures } = {}) {
   // — LAYERING APPLIES ONLY TO THE ENV-RESOLVED STORE, and that boundary is deliberate.
   //
   // `dir` OMITTED => resolve the deployment's store, overlay over base. `dir` PASSED => that directory
@@ -659,7 +669,7 @@ export function loadProfiles({ dir, force = false } = {}) {
   const explicit = dir !== undefined;
   const overlay = explicit ? null : PROFILES_OVERLAY_DIR;
   const baseDir = explicit ? (dir || PROFILES_BASE_DIR) : PROFILES_BASE_DIR;
-  const cacheKey = `${overlay ?? ""} :: ${baseDir}`;
+  const cacheKey = `${overlay ?? ""} :: ${baseDir} :: ${includeTestFixtures ?? "env"} :: ${process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ?? ""}`;
   if (cache && !force && cache.key === cacheKey) return cache.profiles;
 
   // FAIL LOUD ON AN UNREADABLE OVERLAY, the same ruling as the doctrine tree's. existsSync() answers
@@ -675,7 +685,7 @@ export function loadProfiles({ dir, force = false } = {}) {
   // chosen. driver/test/pool-admin-reassign.test.mjs asserts "with CLEAROTRON_CUSTOMERS_DIR unset it REFUSES
   // rather than validating against the demo roster", and mcp-server's roster boot check counts the
   // configured roster exactly. Layering the whole bundled set underneath a configured store would put
-  // aurora/petcary/zephyr into every deployment's roster: a typo'd customer key would be checked
+  // the three test accounts into every deployment's roster: a typo'd customer key would be checked
   // against demo fixtures, and a boot check that says "N customers" would count ours among theirs.
   //
   // `generic` is different in kind from the rest of that directory. It is not a demo customer — it is
@@ -683,6 +693,48 @@ export function loadProfiles({ dir, force = false } = {}) {
   // is the one file whose absence makes an empty store a refusal, so that is the only one that falls
   // through. Everything else in a deployment's roster is the deployment's own.
   const profiles = overlay ? readProfilesLayer(overlay) : readProfilesLayer(baseDir);
+
+  // ── A TEST FIXTURE IS PRESENT AND NEVER OFFERED ─────────────────────────────────────────────────
+  //
+  // An outside user installed this product and their brand-owner picker offered three of our test
+  // accounts. The picker was not wrong: it listed the roster, and the roster was the bundled directory.
+  //
+  // `package.json` already excludes those files, and that exclusion works — the published tarball
+  // carries two profiles. It protects ONE route. `INSTALL.md` documents `git clone && npm install` as a
+  // first-class way in, and on that route nothing is excluded, the checkout IS the bundled directory,
+  // and every fixture loads. A packaging rule cannot answer a question the loader is asked.
+  //
+  // So the loader answers it. A profile marked `testFixture` is refused from the roster this returns, on
+  // every route, whether it was excluded from a tarball or not — and the suite asks for it by name.
+  //
+  // WHY NOT `demoData`, WHICH ALREADY MEANS FICTION. Because it means a DIFFERENT fiction:
+  // `demo-brand-owner` carries it, and must stay offered wherever the demo is — that flag marks
+  // provenance, and refuses a real clearance, while leaving the account listable. This one marks
+  // visibility. Overloading the first would have hidden the demo account the demo exists to show.
+  //
+  // ONE ROSTER, NOT TWO. The tested set and the resolvable set are now the same files with a flag,
+  // rather than five profiles the suite exercises against two a customer receives. That disjoint pair is
+  // the defect this module's own header narrates from 2026-07-19, and a packaging-only fix recreates it.
+  //
+  // THE SUITE ASKS ONCE, BY ENVIRONMENT, RATHER THAN AT NINETY-FOUR CALL SITES. Most of the checks that
+  // need a fixture do not call this function — they exercise code that calls it, so there is no argument
+  // to pass. `scripts/test-run.mjs` sets the variable for every child, which keeps the ask visible in
+  // one place and OFF everywhere else, including any process that merely imports this module.
+  //
+  // That leaves the tested roster larger than the resolved one, which is the disjoint-roster shape this
+  // module's header narrates and the reason a packaging-only fix was refused. What makes it one roster
+  // rather than two is `a-clean-install-offers-generic-and-the-demo`: it names both sides — every file
+  // in the directory, and exactly what a resolved roster returns — so the difference between them is
+  // asserted rather than assumed, and adding a fixture without marking it reds that check.
+  //
+  // AN EXPLICIT ARGUMENT BEATS THE ENVIRONMENT, and the distinction is `undefined` rather than falsiness.
+  // The suite sets the variable for every child, so a check asking for the RESOLVED roster — the one a
+  // customer gets — would otherwise be handed the suite's own. Two of this change's own arms failed that
+  // way before this line: they asked for what an install offers and were told what the suite runs with.
+  const asked = includeTestFixtures !== undefined
+    ? includeTestFixtures
+    : String(process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ?? "").trim() === "1";
+  if (!asked) for (const [k, p] of [...profiles]) if (p?.testFixture === true) profiles.delete(k);
   if (overlay && !profiles.has("generic")) {
     const base = readProfilesLayer(baseDir);
     if (base.has("generic")) profiles.set("generic", base.get("generic"));
@@ -742,6 +794,24 @@ export function resolveProfile(job, { profiles = loadProfiles() } = {}) {
 const PROJECTS_SUBDIR = "projects";
 let projectCache = null;
 
+
+/**
+ * Is `key` a profile that exists in one of these roots and is marked as a test fixture?
+ *
+ * Read from the FILE rather than from the roster, deliberately: the roster handed to the projects walk
+ * is the resolved one, which has already dropped every fixture — so asking it cannot tell "a fixture
+ * whose projects are beside it" from "a project directory whose customer is gone". Those want different
+ * answers and the file is the only place that still holds the difference.
+ */
+function isTestFixtureKey(roots, key) {
+  for (const root of roots) {
+    const f = join(root, `${key}.json`);
+    if (!existsSync(f)) continue;
+    try { return JSON.parse(readFileSync(f, "utf8"))?.testFixture === true; } catch { return false; }
+  }
+  return false;
+}
+
 /** Load every profiles/projects/<customer>/<slug>.json → Map("<customer>/<slug>" → overlay). Each overlay is
  *  validated in SPARSE mode (PROJECT_KEYS optional, customer-only keys rejected) and carries its lifted-out
  *  `projectName` (default = slug) + optional sibling `<slug>.context.md`. A project directory under an unknown
@@ -778,8 +848,16 @@ export function loadProjects({ dir, profiles, force = false } = {}) {
   for (const ent of readdirSync(projDir, { withFileTypes: true })) {
     if (!ent.isDirectory()) continue;   // only <customer>/ subdirs participate; a stray file is ignored
     const ck = ent.name;
-    if (!roster.has(ck))
+    // A PROJECT UNDER A TEST FIXTURE IS SKIPPED, NOT A FAULT. The refusal below is right and stays: a
+    // project directory with no customer is a typo or a half-deleted account, and resolving it silently
+    // would attach an overlay to nothing. But a fixture's own projects are in the same checkout as the
+    // fixture, and the roster no longer offers the fixture — so on a clone install this refusal would
+    // fire on the product's own files and stop the process at load. Skipped by reading the fixture
+    // marker from the file, because the roster this walk was handed is the one that already dropped it.
+    if (!roster.has(ck)) {
+      if (isTestFixtureKey(roots, ck)) continue;
       throw new Error(`profiles/projects/${ck}/: no customer profile "${ck}" — a project must live under a known customer (add profiles/${ck}.json first)`);
+    }
     const cdir = join(projDir, ck);
     for (const f of readdirSync(cdir).filter((n) => n.endsWith(".json")).sort()) {
       const slug = f.replace(/\.json$/, "");
@@ -845,7 +923,7 @@ export function resolveEffectiveProfile(job, { profiles = loadProfiles(), projec
       //
       // The customer's platforms are CLIENT-MANDATED — the account asked for those marketplaces to be
       // searched, and a project may add to that instruction but never revoke it. Replace semantics meant a
-      // project that stated its own marketplaces silently DELETED the customer's: the Aurora Interactive account
+      // project that stated its own marketplaces silently DELETED the customer's: one test account
       // names 7 games storefronts, its console-ecosystem project names 9 mostly-retail sites, and every run
       // of that project searched the 9 — dropping store.epicgames.com, itch.io, apps.microsoft.com and
       // mobygames.com. The report still read as clean coverage, because the sweep faithfully covered the
@@ -888,10 +966,11 @@ export function resolveEffectiveProfile(job, { profiles = loadProfiles(), projec
 }
 
 /** The self-exclusion gate: a profile's selfExclusionOwners[]
- *  may only inject when the job's APPLICANT is the profile's customer — an aurora-interactive.example-forwarded
- *  search for a third-party applicant must NOT classify Aurora-owned conflicts as own rights
- *  (that would delete true conflicts from a delivered clearance). Word-boundary containment of the
- *  profile name in the applicant string ("Aurora Interactive" ⊂ "Aurora Interactive Ltd"), never fuzzy. */
+ *  may only inject when the job's APPLICANT is the profile's customer — a search forwarded from a
+ *  customer's own domain, but asking about a THIRD-PARTY applicant, must not classify that
+ *  customer's conflicts as own rights (that would delete true conflicts from a delivered
+ *  clearance). Word-boundary containment of the profile name in the applicant string
+ *  ("Foxglade Interactive" ⊂ "Foxglade Interactive Ltd"), never fuzzy. */
 export function applicantMatchesProfile(profile, customer) {
   const n = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
   const c = n(customer);

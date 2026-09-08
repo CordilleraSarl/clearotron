@@ -278,8 +278,8 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   // The reconstruction above carries six fields and resolveProfile keys on none of them. It reads
   // `job.profileKey` first, then falls back to `job.forwarderDomain`; the job has `forwarder` but not
   // `forwarderDomain`, and no profileKey at all. So BOTH resolution routes were dead here and every
-  // what-if silently resolved to the house `generic` profile. Measured on a petcary run:
-  // {"event":"profile-mismatch","sidecar":"petcary","resolved":"generic"} — while the client-facing
+  // what-if silently resolved to the house `generic` profile. Measured on a test-account run:
+  // {"event":"profile-mismatch","sidecar":"burrowell","resolved":"generic"} — while the client-facing
   // result reported ok:true and "Sandboxed re-run complete" and said nothing.
   //
   // WHY THAT IS WORSE THAN A WRONG LABEL. A what-if changes ONE thing and reads the difference. This

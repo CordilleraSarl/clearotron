@@ -1301,7 +1301,7 @@ export const STAGES = {
       job.jurisdictions ? `Instructed territories (AUTHORITATIVE scope — do NOT widen to "major markets"): ${Array.isArray(job.jurisdictions) ? job.jurisdictions.join(", ") : job.jurisdictions}` : "",
       job.customer ? `Customer/applicant (from the intake brief — drives the self-exclusion set): ${job.customer}` : "",
       // WS-B profile defaults — falsy-omitted, so an empty profile renders this message byte-identical
-      // to the pre-profile shape (the aurora/generic regression anchor).
+      // to the pre-profile shape (the regression anchor).
       // Industry is CONTEXT not a rule (Design Law #1): it sharpens which sectors/adjacencies matter for
       // the vertical (e.g. food/ingestible adjacency for a beverage brand), it never dictates a conclusion.
       profile?.industry ? `Customer industry (context for sector framing — let it sharpen the relevant sectors and adjacencies for this vertical; it is context, never a rule that decides a finding): ${profile.industry}.` : "",
@@ -1813,7 +1813,7 @@ export const STAGES = {
       // DETERMINISTIC GRID (robust fix, 2026-06-14): when the driver wrote a grid-spec, the model is OUT
       // of the grid data path entirely — it passes grid_spec_path, the plugin runs the dictated cells and
       // WRITES common-law-grid.json from the API response (no truncation, no dropped/mis-keyed cells), and
-      // the model only judges the returned candidates. This is the structural cure for both the Zephyr
+      // the model only judges the returned candidates. This is the structural cure for both the dense-marketplace
       // truncation and the NOVA PULSE dropped-cell failures (no tier bump would fix the output ceiling).
       if (gridSpecPath) {
         return lines(

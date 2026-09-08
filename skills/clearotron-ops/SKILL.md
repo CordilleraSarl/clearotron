@@ -41,7 +41,7 @@ Extract from the request, faithfully (verbatim beats paraphrase):
 - **`forwarder`** (+ `forwarderEmail`) — the requester/reply route. REQUIRED, no default: this is
   where the report goes; a wrong route misdelivers a confidential document.
 - **`profileKey`** — call **`list_profiles`** and resolve by JUDGMENT: an explicit name, a
-  misspelling ("Zefyr" → zephyr), or an implicit reference ("our functional-beverage client") all
+  misspelling (a name typed as it sounds), or an implicit reference ("our functional-beverage client") all
   map to a key. OMIT it for a new/unknown customer (the neutral generic profile applies — this is
   non-blocking by design). Ask the requester only when you genuinely cannot tell. **Never pick a
   profile from the sender's email domain.**

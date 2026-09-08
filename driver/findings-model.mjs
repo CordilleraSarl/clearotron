@@ -168,8 +168,8 @@ export const ACTION_KINDS = [...CONDITION_KINDS, ...ADVISORY_KINDS];
 export const CLIENT_TIER_BY_COMPOSITE = { 1: "LOW", 2: "MANAGEABLE", 3: "MEDIUM", 4: "HIGH", 5: "VERY HIGH" };
 
 // ── doc 50 — band mode (schema_version 4): the framework in force rates the matter ────────────────────
-// A v4 finding carries `band` — one of the frozen framework manifest's ordered band words (zephyr says
-// "Medium", the Generic default says "Moderate", aurora has a "Low") — and NO composite/level/
+// A v4 finding carries `band` — one of the frozen framework manifest's ordered band words (one ladder
+// says "Medium", the Generic default says "Moderate", another has a "Low") — and NO composite/level/
 // dispute_type (one rating authority; the retired scale is FORBIDDEN, not just optional). Presentation
 // joins on the band's TONE (a closed enum in the manifest) so 4-band and 5-band ladders both land on the
 // existing badge/gauge ramps without any per-framework code.

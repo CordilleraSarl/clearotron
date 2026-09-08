@@ -673,7 +673,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                   {newGroup ? (
                     // — A SECTION HEADER, not a decorative divider. This was the smallest,
                     // lowest-contrast, most letterspaced type on the page, which read as a rule between
-                    // rows rather than as "everything below this belongs to Aurora Interactive".
+                    // rows rather than as "everything below this belongs to Foxglade Interactive".
                     <tr className="group-head">
                       <td colSpan={(canGroup ? 6 : 5) + (showOwnerColumn ? 1 : 0)}>
                         <span className="owner-name" data-anon="mark">

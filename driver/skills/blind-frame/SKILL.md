@@ -27,7 +27,7 @@ Decompose the mark into its element(s) and name the **dominant element** (the sp
 
 - **Drop** characters: shorten the element (VELTRIN → VELTRI). A dropped letter is the commonest missed-cluster cause — the shorter root is its own crowded field.
 - **Add** characters / **composite**: the element living inside a larger mark (DELPHI Diagnostics, Osler Delphi, Delphic). A composite that shares your dominant element is on the board.
-- **Phonetic / homophone**: sound-alikes (ZEPHYR / ZEFFYR / ZEPHUR).
+- **Phonetic / homophone**: sound-alikes (NORTHWIND / NORTHWYND / NORTHWINDE).
 - **Neighbour**: a one-keystroke real-word or famous-mark neighbour (CHROME on a NOVAPULSE clearance). A famous neighbour is carried for diligence even when off-field.
 
 For each, give the value, the direction, and one line of rationale.

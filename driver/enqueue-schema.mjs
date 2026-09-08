@@ -237,7 +237,7 @@ function niceClassErrors(list, label) {
 //   and reaches the report body, where it REVERSES THE DISPLAY of everything after it. The report is a
 //   legal deliverable that goes to a client.
 //
-//   A zero-width joiner makes "AUR\u200DORA" render as AURORA and compare unequal to it, so
+//   A zero-width joiner makes "IRON\u200DWHISK" render as IRONWHISK and compare unequal to it, so
 //   `selfExclusionOwners` and dedup both miss a mark a human reads as the account's own.
 //
 //   NFD "SIRÈNE" !== NFC "SIRÈNE", so one mark submitted two ways is two matters, two searches, two bills.
@@ -285,7 +285,7 @@ const markNameSites = (job) => {
   for (const f of ["markName", "name"]) if (job?.[f] != null) sites.push([f, () => job[f], (v) => { job[f] = v; }]);
   if (Array.isArray(job?.marks)) job.marks.forEach((m, i) => {
     // A BARE STRING IS A MARK NAME, and this shape reaches validateJob unconverted. `assembleFromFlags`
-    // turns `marks: ["AURORA"]` into `[{ name: "AURORA" }]`, so every door that assembles is already
+    // turns `marks: ["IRONWHISK"]` into `[{ name: "IRONWHISK" }]`, so every door that assembles is already
     // covered — but the runner's wall calls validateJob({ atClaim: true }) on the MANIFEST AS IT SITS ON
     // DISK, which nothing re-assembles. The kebab-collision check below reads the same shape for exactly
     // that reason. Walking only `m.name` would leave this guard covering every door except the one it
@@ -778,16 +778,16 @@ export function validateJob(job, { atClaim = false } = {}) {
   // that would drop the customer's platforms, self-exclusion seed and the framework that RATES the matter".
   // A MISSING key returns generic in silence. Both produce the same wrong deliverable, and only one says so.
   //
-  // It has already happened: a paid Zephyr Beverages clearance was rated on the Generic default scale because the
-  // request named the customer in prose and left the account field empty. Nothing objected. A person
-  // noticed hours later and re-ran it.
+  // It has already happened: a paid clearance for a test account was rated on the Generic default scale
+  // because the request named the customer in prose and left the account field empty. Nothing objected.
+  // A person noticed hours later and re-ran it.
   //
   // WHY THIS IS NOT SIMPLY "customer present, key absent". That shape is byte-identical to a LEGITIMATE
   // third-party search — a firm asking us to clear a mark for their own client, who is not our account —
   // and the applicant deliberately never selects a profile, because a third-party search must never inherit
   // a customer's exclusions. Clarifying on that shape alone would bounce real work every day.
   //
-  // The discriminator is the ROSTER. The Zephyr Beverages request differed in one way that matters: we hold an
+  // The discriminator is the ROSTER. That request differed in one way that matters: we hold an
   // account by that name. A named applicant we have no account for is a third-party search and runs
   // untouched; a named applicant who IS one of our customers, with no key, is ambiguous in a way only a
   // person can settle — did intake forget to tag it, or is this genuinely a search against a name that
@@ -965,7 +965,7 @@ export const EXAMPLE_JOB = {
   rawRequest: "<the verbatim forwarded email text, untouched — archived as inbound-request.txt (§A5)>",
   brief: "<the confirmation brief exactly as sent to the requester — archived as confirmation-brief.md>",
   deadline: "2026-06-20T17:00:00Z",     // optional; drives the §A3 deadline-envelope arithmetic
-  profileKey: "aurora",              // D4.1: the customer ACCOUNT the intake AI resolved → selects the
+  profileKey: "demo-brand-owner",    // D4.1: the customer ACCOUNT the intake AI resolved → selects the
                                         // profile (marketplaces/classes/delivery/appetite); omit ⇒ generic
   product: "multi-country-focus-search",// WHICH OF THE FOUR (OPTIONAL): one of products.mjs PRODUCT_IDS.
                                         // Omit ⇒ the project/customer defaultProduct, else the product
@@ -987,7 +987,7 @@ export const EXAMPLE_JOB = {
   projectKey: "console-ecosystem",      // spec 62 (OPTIONAL): the PROJECT/engagement under the customer whose
                                         // overlay (its own marketplaces/classes/sector/posture) rates this
                                         // matter; omit ⇒ runs on the customer profile. Unknown key ⇒ clarify.
-  customer: "Aurora Interactive",                // applicant/owner → affiliate self-exclusion set (§B3.2)
+  customer: "Demo Brand Owner",                  // applicant/owner → affiliate self-exclusion set (§B3.2)
   customerUnknown: false,               // B5: true when the applicant is neither stated nor forwarder-implied —
                                         // arms candidate-self classification + the late-bind watch (NEVER inferred from the mark)
   // caseLaw — NOT A FIELD. The case-law and opposition reading is what a Full country search IS

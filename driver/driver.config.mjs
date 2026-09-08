@@ -248,7 +248,7 @@ export const config = {
   // 2026-07-19: these were joined against DRIVER_DIR, so the driver read framework manifests out of
   // its BUNDLED driver/skills while CLEAROTRON_INSTRUCTIONS_DIR pointed the agent at the config store. A
   // customer whose framework lives only in the config store therefore hard-failed at attachFramework
-  // with `framework_manifest_missing` — the first Aurora Interactive run died there before any stage ran.
+  // with `framework_manifest_missing` — a test account's first run died there before any stage ran.
   get skillsRoot() { return dirname(this.skillsDir); },
 
   // ── Per-agent paths ───────────────────────────────────────────────────────

@@ -17,7 +17,7 @@ const domainOf = (email) => { const e = String(email ?? "").toLowerCase(); const
 /**
  * makePrincipal({ email, grants, staffDomains }) →
  *   { role: "staff",  email, accounts: "*" }            — firm identity: everything, acting-for allowed
- * | { role: "client", email, accounts: ["aurora", …] }  — enrolled client: exactly the granted accounts
+ * | { role: "client", email, accounts: ["foxglade", …] }  — enrolled client: exactly the granted accounts
  * | null                                                — unknown identity: no portal (the door 403s)
  * Staff wins over an (accidental) grants row; a client row with a tenant-wide "*" grant is honored
  * but the role stays client (no staff surfaces).

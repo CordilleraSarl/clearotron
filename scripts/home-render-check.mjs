@@ -46,7 +46,7 @@ const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css
 const now = Date.now()
 const ago = (m) => new Date(now - m * 60_000).toISOString()
 const run = (o) => ({
-  runId: o.runId, account: o.account ?? 'zephyr', title: o.mark, markName: o.mark,
+  runId: o.runId, account: o.account ?? 'coastline', title: o.mark, markName: o.mark,
   projectKey: o.projectKey ?? null, projectName: o.projectName ?? null,
   // `product` is meta.searchLevel off the wire, and it holds a PRODUCT ID. The fixtures said `clearotron`
   // — a RETIRED slug — for every state, so this check could not see that depthLabel had no case for any
@@ -69,7 +69,7 @@ const run = (o) => ({
 })
 
 // Three frameworks, three different ladders and three sets of words — the chip must take an arbitrary
-// label, because Zephyr Beverages has four bands and Aurora Interactive's say something else entirely.
+// label, because Coastline Drinks has four bands and Foxglade Interactive's say something else entirely.
 // Two of the three sit under projects, so "pick up where you left off" has something to draw. The
 // project NAMES are deliberately long: a matter is called "Q3 packaging refresh — EU", not "spring",
 // and a column tuned on a short slug tears the moment a real one arrives.
@@ -132,12 +132,12 @@ const STATES = {
   // emptied the moment someone picked one, with no way back.
   firm: {
     runs: [
-      run({ runId: 'a', account: 'zephyr', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(96) }),
-      run({ runId: 'b', account: 'aurora', mark: 'NORTHWIND', state: 'running', step: 'Framing the matter', stepN: 1, stepTotal: 9, startedAt: ago(6) }),
+      run({ runId: 'a', account: 'coastline', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(96) }),
+      run({ runId: 'b', account: 'foxglade', mark: 'NORTHWIND', state: 'running', step: 'Framing the matter', stepN: 1, stepTotal: 9, startedAt: ago(6) }),
       run({ runId: 'c', account: 'ridgeform', mark: 'EMBER FORGE', state: 'queued', queuePos: 1 }),
       ...FINISHED,
     ],
-    accounts: ['zephyr', 'aurora', 'ridgeform'],
+    accounts: ['coastline', 'foxglade', 'ridgeform'],
     expectCards: 2, expectQueue: 1, expectFirstCardPips: 9, expectStops: 2,
     // A FIRM HOLDING THREE BRAND OWNERS HAS NO SINGLE ACCOUNT NAME the portal knows — it knows the
     // owners they hold, not what the firm calls itself. So the account-scoped title says what is
@@ -172,9 +172,9 @@ const server = createServer((req, res) => {
   const json = (o) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)) }
   const s = STATES[current]
   if (path === '/portal/api/me') {
-    const accounts = s.accounts ?? ['zephyr']
-    return json({ role: 'client', email: 'counsel@zephyr.com', accounts, concurrentRuns: s.cap ?? 2,
-      accountNames: { zephyr: 'Zephyr Beverages', aurora: 'Aurora Interactive', ridgeform: 'Ridgeform' } })
+    const accounts = s.accounts ?? ['coastline']
+    return json({ role: 'client', email: 'counsel@coastline.test', accounts, concurrentRuns: s.cap ?? 2,
+      accountNames: { coastline: 'Coastline Drinks', foxglade: 'Foxglade Interactive', ridgeform: 'Ridgeform' } })
   }
   if (path === '/portal/api/runs') {
     // What portal-service actually answers a multi-owner client who has named nobody. The browser
@@ -197,9 +197,9 @@ const server = createServer((req, res) => {
     }
     return json({ runs: s.runs })
   }
-  if (path === '/portal/admin/roster') return json({ customers: [{ key: 'zephyr', name: 'Zephyr Beverages' }, { key: 'aurora', name: 'Aurora Interactive' }, { key: 'ridgeform', name: 'Ridgeform' }] })
+  if (path === '/portal/admin/roster') return json({ customers: [{ key: 'coastline', name: 'Coastline Drinks' }, { key: 'foxglade', name: 'Foxglade Interactive' }, { key: 'ridgeform', name: 'Ridgeform' }] })
   if (path === '/portal/api/usage') {
-    return json({ account: 'zephyr', today: s.capped ? 2 : 1, thisMonth: 6, queued: 2, dailyRuns: 2, monthlyRuns: null, maxQueued: null, capped: true })
+    return json({ account: 'coastline', today: s.capped ? 2 : 1, thisMonth: 6, queued: 2, dailyRuns: 2, monthlyRuns: null, maxQueued: null, capped: true })
   }
   if (path.startsWith('/portal/api/') || path.startsWith('/portal/admin/')) return json({})
 
@@ -496,7 +496,7 @@ for (const [name, spec] of Object.entries(STATES)) {
 
     // The top bar names the SCOPE. Home is account-scoped, so it names the account — never one brand
     // owner over a screen that is showing several.
-    const wantTitle = spec.expectTitle ?? 'Zephyr Beverages'
+    const wantTitle = spec.expectTitle ?? 'Coastline Drinks'
     say(out.title === wantTitle, `${name}/${theme}: top bar reads "${out.title}" (expected "${wantTitle}")`)
     const wantAccount = spec.expectAccount !== false
     say(out.accountLabelled === wantAccount,

@@ -168,8 +168,8 @@ export type ShellContext = {
    *
    * The portal is keyed by slug and read by people: `vantor` is a route parameter, "Vantor Labs"
    * is the client. Before this existed only the sidebar switcher resolved a name, and only for staff
-   * (it read the staff-only roster) — so the same brand owner read "Aurora Interactive" in the rail and
-   * "aurora" in the heading beside it, and a client, who had no name source at all, saw the slug
+   * (it read the staff-only roster) — so the same brand owner read "Foxglade Interactive" in the rail and
+   * "foxglade" in the heading beside it, and a client, who had no name source at all, saw the slug
    * everywhere. Two sources, two answers, one entity.
    *
    * Falls back to the key, never to a blank: a name we do not have is a cosmetic gap, an empty label
@@ -237,7 +237,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // SWITCHING BRAND OWNER IS NOT A NAVIGATION, WHICH IS WHY IT NEEDED ITS OWN GUARD.
   //
   // It is a <select> in the sidebar, so it never touches `go` — and it is the exit the owner actually
-  // hit: editing Aurora Interactive's Brand profile, switch to Zephyr Beverages, and every edit is gone with nothing said.
+  // hit: editing one brand owner's Brand profile, switch to another, and every edit is gone with nothing said.
   // The wording names the switch rather than a page, because from the user's side nothing "left".
   const setOwnerGuarded = useCallback((next: string | null) => {
     if (!confirmDiscard('Switch brand owner?')) return

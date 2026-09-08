@@ -75,7 +75,7 @@ function manifestFor(fwPath) {
 // shipped decks, so a deck edit that breaks extraction fails CI instead of silently blanking the box.
 const stripMd = (s) => String(s ?? "").replace(/\*+/g, "").trim();
 
-// matrix-shaped decks (aurora): the deck's "Band meanings" table is the only table whose FIRST cell is
+// matrix-shaped decks: the deck's "Band meanings" table is the only table whose FIRST cell is
 // exactly the band label (the matrix table suffixes its labels with the deck's internal indices, e.g.
 // "**Very High** *(5)*") — take that row's cells as { band, meaning, response }.
 function matrixBandMeanings(deck, manifest) {
@@ -97,7 +97,7 @@ function matrixBandMeanings(deck, manifest) {
   return out;
 }
 
-// bands-shaped decks (house, zephyr): each band lives under its own heading ("## VERY HIGH RISK") — find
+// bands-shaped decks (the house default among them): each band lives under its own heading ("## VERY HIGH RISK") — find
 // the section whose heading STARTS WITH the band label ("High" must never steal "VERY HIGH RISK") and lift
 // EVERY rung the band states, in the deck's own order.
 //
@@ -172,8 +172,8 @@ function bandMeaningsFor(fwPath, manifest) {
 
 // CODE-OWNED fields — the framework SELECTION. The editor page has no form fields for these, so a save
 // assembled from the form omits them, and defaultWriteProfile rewrites the whole file: the 2026-07-04/05 UI
-// saves (587324ab, cea0ca2f, c59030a1) silently stripped frameworkPath/workedExamplesPath from zephyr and
-// aurora, flipping both customers to the house-default framework. The on-disk value ALWAYS wins here — a
+// saves (587324ab, cea0ca2f, c59030a1) silently stripped frameworkPath/workedExamplesPath from two
+// profiles, flipping both customers to the house-default framework. The on-disk value ALWAYS wins here — a
 // client body can neither drop, change, nor introduce a framework selection (git + review gated, per the
 // header rules). Applied to validate AND save so the dry run judges exactly what a save would write.
 // Search-depth spine: allowedRecipes/jxPolicy/runCaps have NO form fields on the editor page — without

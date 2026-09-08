@@ -154,7 +154,7 @@ export function countMatrixCells(findingsContent) {
  * "丝绸与铁 / 席尔克": each alternate is its own search term with its own grid — the copper-conduit worker
  * keyed the split forms with full receipts while the validator demanded the compound key, 2026-06-12);
  * or WORD-BOUNDARY substring coverage (a fully-receipted variant covers a LONGER variant containing it
- * as a whole-word phrase — "Aurora Legends II: Oak & Ember" ⊃ "Oak & Ember"; a marketplace phrase
+ * as a whole-word phrase — "Foxglade Legends II: Oak & Ember" ⊃ "Oak & Ember"; a marketplace phrase
  * search for the short form surfaces every listing of the long form. Mid-word containment does NOT
  * count: "venzyy" ⊅ "venzy" — storefront search tokenizes, a doubled-letter variant is its own term).
  */

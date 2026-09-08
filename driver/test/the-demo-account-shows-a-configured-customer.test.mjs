@@ -99,6 +99,6 @@ test("2014 the tenant grants exactly the demo account, and nothing else", () => 
 
   // The existing fixtures are untouched: adding a tenant must not re-scope anybody else's access, and
   // several portal arms assert those exact account lists.
-  assert.deepEqual(g.tenants["aurora-direct"].accounts, ["aurora"]);
-  assert.deepEqual(g.tenants["evaluation"].accounts, ["zephyr", "petcary"]);
+  assert.deepEqual(g.tenants["brand-owner-direct"].accounts, [KEY]);
+  assert.deepEqual(g.tenants["evaluation"].accounts, [KEY]);
 });

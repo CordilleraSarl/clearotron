@@ -21,7 +21,7 @@ import { SUMMARY_BLOCK_LINE } from "../shared/summary-blocks.mjs";
 // a brand lockup, links to the pool index, status, profiles, and a "Clients" dropdown listing
 // EVERY customer by key:
 //
-//     <a href="../customer/zephyr/">…  <a href="../customer/aurora/">…
+//     <a href="../customer/coastline/">…  <a href="../customer/foxglade/">…
 //
 // That is correct for a file a lawyer opens from the archive, and it is a disclosure of the client list
 // to anybody else. It has to come out before the document is embedded, and not because the nav is ugly:

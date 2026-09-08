@@ -463,7 +463,7 @@ export function regenIndex(poolDir) {
   // Do NOT chmod the customer dirs: they inherit the set-gid pool group (an explicit dir chmod here was the
   // 2026-06-02→-06-08 Caddy-403 bug — see the publishReport comment). Only the index FILES get 0o640.
   // The page heading speaks the customer's DISPLAY name (profile .name), never the internal key slug —
-  // "Trademark clearance — aurora" read as an internal id on a client-facing page. Best-effort: profiles
+  // "Trademark clearance — foxglade" read as an internal id on a client-facing page. Best-effort: profiles
   // unreadable ⇒ fall back to the filter label (the runs' client string) ⇒ the key (displayOf, built above).
   for (const [key, crs] of byCustomer) {
     // LEAK-#9 fail-closed: NEVER emit a client-facing customer/generic/index.html. 'generic' is the shared
@@ -1426,7 +1426,7 @@ export const RISK_TIERS = [
   [/LOW/,            { bg: '#4472C4', fg: '#fff', label: 'LOW',        txt: '#2f55a4' }],
 ];
 // doc 50 — the run's band LADDER (from opts.bands / meta.framework.bands): per-run vocabulary with the
-// same template palette keyed by TONE, so "Moderate" (house) and "Medium" (zephyr) both colour correctly
+// same template palette keyed by TONE, so "Moderate" (house) and "Medium" (a customer ladder) both colour correctly
 // and a 5-band matrix framework (incl. "Low") lands on the same ramp. Set per compose; null = legacy.
 let EMAIL_BANDS = null;
 export const TONE_TIER = {

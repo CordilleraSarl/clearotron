@@ -102,7 +102,7 @@ export function parseFrameworkManifest(raw) {
 // `rootDir` may be a string (legacy: join against it) OR a resolver function taking the manifest's
 // skills-relative path and returning an absolute one — the layered overlay-over-base lookup
 // (driver.config.resolveSkillPath). The driver MUST resolve a framework exactly as the agent does, or the
-// two read different files: that divergence is what killed the first Aurora Interactive run (framework_manifest_missing
+// two read different files: that divergence is what killed a test account's first run (framework_manifest_missing
 // against the bundled tree while the agent was pointed at the config store).
 export function loadFrameworkManifest(rootDir, fwPath) {
   const rel = manifestPathFor(fwPath);

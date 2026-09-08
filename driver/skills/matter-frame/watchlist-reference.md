@@ -47,6 +47,6 @@ watchlists come from in any case, and is why this file was never authority.
 
 ## Cross-sector
 
-- **Aurora Interactive** — `major_brand_owners`. Broad AURORA / NEBULA / VANGUARD families;
-  on an Aurora Interactive-adjacent matter watch the relevant family token and name
+- **Foxglade Interactive** — `major_brand_owners`. Broad FOXGLADE / NEBULA / VANGUARD families;
+  on a Foxglade Interactive-adjacent matter watch the relevant family token and name
   ecosystem partners with their partnership context rather than as bare conflicts.

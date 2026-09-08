@@ -16,7 +16,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -108,7 +108,7 @@ const NODE_BIN = (() => {
   return d;
 })();
 
-function doctor(home) {
+function doctor(home, extraEnv = {}) {
   try {
     // THE SHELL IS EMPTY ON PURPOSE. This is the criterion: none of the names doctor reports on are in
     // this environment, and all of them are in the units'. A doctor that reads the shell fails here.
@@ -124,7 +124,7 @@ function doctor(home) {
       // `handRunEnv` over an EMPTY base rather than over `process.env`, which is what it usually takes:
       // the empty shell is this file's whole criterion — none of the names doctor reports on may be in
       // this environment — so inheriting the real one would defeat the arms while satisfying the guard.
-      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}),
+      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...extraEnv }, {}),
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
@@ -438,4 +438,97 @@ test("223 the agreement line says which environment it compared, and what it can
         `the old unqualified agreement claim is still printed:\n${r.out}`);
     }
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── WHICH ACCOUNTS DOCTOR SAYS THIS INSTALL HAS (tracker issue 342) ─────────────────────────────────
+//
+// Measured on a fresh 0.2.2 install: `1 brand owner(s) resolve here: demo-brand-owner (DEMO DATA)`, and
+// `generic` named nowhere. Both halves wrong from one list. The demo account ships, so it resolved; it
+// was counted as an onboarded brand owner, so a reader was told they had a customer they had never
+// onboarded — and was not told the name of the account their runs would actually be rated under.
+//
+// Three states, because they mean three different things to whoever is reading:
+//   · the house default alone            — a clean install, and `generic` is the answer
+//   · the house default plus the demo    — what a fresh install with the demo installed really has
+//   · an onboarded roster                — brand owners, with the demo named separately if present
+//
+// The demo account keeps its DEMO DATA marking wherever it appears. That marking is not decoration: a
+// real clearance under it is refused at the admission wall, and an operator should meet that here.
+
+
+/**
+ * A profile store built from the product's OWN profiles, with `name`/`demoData` overridden per arm.
+ *
+ * A hand-built stub does not load: the schema requires real fields, and a refusal to load prints no
+ * accounts line at all — which every assertion below would then read as silence rather than as a
+ * refusal. Copying the shipped file makes the fixture a profile rather than a shape that looks like one.
+ */
+function profileStore(home, sub, entries) {
+  const dir = join(home, sub);
+  mkdirSync(dir, { recursive: true });
+  const base = JSON.parse(readFileSync(join(HERE, "..", "profiles", "generic.json"), "utf8"));
+  for (const [key, over] of Object.entries(entries))
+    writeFileSync(join(dir, `${key}.json`), JSON.stringify({ ...base, ...over }));
+  return dir;
+}
+
+const accountsLine = (out) => out.split("\n").find((l) => /generic|brand owner\(s\)/.test(l)) ?? "";
+
+test("342 a store with only the house default names `generic`, and claims no brand owner", () => {
+  const home = installedHome(GOOD_ENV);
+  const store = profileStore(home, "profiles-house", { generic: { name: "Generic" } });
+  // THROUGH THE CHILD ENV, NOT THE .env FILE. The suite runner sets `CLEAROTRON_NO_ENV_FILE` for every
+  // child, so a store written into `.env` here is ignored and the BUNDLED roster answers instead — and
+  // two of these three arms passed on it before this line existed, for a reason neither of them names.
+  const out = doctor(home, { CLEAROTRON_CUSTOMERS_DIR: store }).out;
+  assert.match(out, new RegExp(store.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    "doctor did not resolve the store this arm wrote — every assertion below would be about the bundled roster");
+  assert.doesNotMatch(out, /the roster did not load/,
+    "the roster refused to load, so no accounts line printed at all and every assertion below is about silence");
+  const line = accountsLine(out);
+  assert.match(line, /`generic` is the account this install rates under/,
+    "a clean install must name the account its runs are rated under");
+  assert.doesNotMatch(line, /brand owner\(s\) resolve here/,
+    "and must not report a brand owner nobody onboarded");
+});
+
+test("342 the demo account is named as the demo's, never counted as an onboarded owner", () => {
+  const home = installedHome(GOOD_ENV);
+  const store = profileStore(home, "profiles-demo", {
+    generic: { name: "Generic" }, "demo-brand-owner": { name: "Demo Brand Owner", demoData: true },
+  });
+  // THROUGH THE CHILD ENV, NOT THE .env FILE. The suite runner sets `CLEAROTRON_NO_ENV_FILE` for every
+  // child, so a store written into `.env` here is ignored and the BUNDLED roster answers instead — and
+  // two of these three arms passed on it before this line existed, for a reason neither of them names.
+  const out = doctor(home, { CLEAROTRON_CUSTOMERS_DIR: store }).out;
+  assert.match(out, new RegExp(store.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    "doctor did not resolve the store this arm wrote — every assertion below would be about the bundled roster");
+  assert.doesNotMatch(out, /the roster did not load/,
+    "the roster refused to load, so no accounts line printed at all and every assertion below is about silence");
+  const line = accountsLine(out);
+  assert.match(line, /`generic` is the account this install rates under/, "generic is still the answer");
+  assert.match(line, /demo-brand-owner/, "and the demo account is still disclosed, not hidden");
+  assert.match(line, /DEMO DATA/, "…with the marking that says a real clearance under it is refused");
+  assert.doesNotMatch(line, /1 brand owner\(s\) resolve here/,
+    "the exact sentence measured on a fresh install: a customer the reader never onboarded");
+});
+
+test("342 an onboarded owner IS counted, and the demo is named beside it rather than among it", () => {
+  const home = installedHome(GOOD_ENV);
+  const store = profileStore(home, "profiles-both", {
+    generic: { name: "Generic" }, "demo-brand-owner": { name: "Demo Brand Owner", demoData: true },
+    acme: { name: "Acme" },
+  });
+  // THROUGH THE CHILD ENV, NOT THE .env FILE. The suite runner sets `CLEAROTRON_NO_ENV_FILE` for every
+  // child, so a store written into `.env` here is ignored and the BUNDLED roster answers instead — and
+  // two of these three arms passed on it before this line existed, for a reason neither of them names.
+  const out = doctor(home, { CLEAROTRON_CUSTOMERS_DIR: store }).out;
+  assert.match(out, new RegExp(store.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    "doctor did not resolve the store this arm wrote — every assertion below would be about the bundled roster");
+  assert.doesNotMatch(out, /the roster did not load/,
+    "the roster refused to load, so no accounts line printed at all and every assertion below is about silence");
+  const line = accountsLine(out);
+  assert.match(line, /1 brand owner\(s\) resolve here: acme/, "one real owner, counted as one");
+  assert.match(line, /demo-brand-owner/, "the demo named separately");
+  assert.doesNotMatch(line, /2 brand owner\(s\)/, "the demo must never be counted into the total");
 });

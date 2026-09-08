@@ -23,7 +23,7 @@ export const CODE_OWNED = ['frameworkPath', 'workedExamplesPath', 'allowedRecipe
 /**
  * Code-owned fields whose VALUE is a path inside the engine.
  *
- * These render as `skills/prelim-search/risk-framework-aurora.md` — the internal directory layout,
+ * These render as `skills/prelim-search/risk-framework-<customer>.md` — the internal directory layout,
  * the naming convention, and a customer key embedded in a filename, which together let a reader guess
  * the path of another client's framework. Not catastrophic, and not a client's business either.
  *
@@ -173,7 +173,7 @@ export type FieldSpec = {
    * Not a display nicety: `delivery.privileged: true` is retired and `normalizeDelivery` deletes it
    * before anything renders, so `true` and absent produce an identical report. Offering it as a choice
    * was a control that could not be taken, and simply removing the option would
-   * leave a stored `true` — `driver/profiles/aurora.json` holds one — selecting nothing at all in the
+   * leave a stored `true` — one of the bundled profiles holds one — selecting nothing at all in the
    * dropdown. Folding it to the cleared state shows what the value MEANS to the engine rather than what
    * the file happens to say.
    *
