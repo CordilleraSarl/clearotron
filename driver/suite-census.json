@@ -5335,6 +5335,12 @@
           "skips": 0,
           "todos": 0
         },
+        "engineState.test.ts": {
+          "tests": 8,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
         "exportControls.test.ts": {
           "tests": 10,
           "asserts": 25,
