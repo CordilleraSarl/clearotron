@@ -1,5 +1,61 @@
 # clearotron-driver
 
+## 0.2.3
+
+### Patch Changes
+
+- 54ea03a: Fixed: The configuration check no longer reports a problem when the client connector's address is reached with its own token. Putting a single sign-on front before it is the client's choice, and running it token-based is supported. The check still says the sign-in audience was not compared against that address, so it never implies the two agree.
+- 4b6be02: Fixed: A bundled risk framework now states where it came from in words a customer can read. The note used to carry a confidentiality marking, a filename for a document not included, an internal reference number and revision history. It says whose framework it is, who stands behind it and which revision, and nothing else.
+- 63f916c: Fixed: A fresh install's brand-owner list now offers Generic and, with the demo, the demo account. It offered three of our test accounts as well, on the install route that clones the repository.
+- 5d12baa: Fixed: A run record now says which version of the engine's command-line tool served it. A change in results can be traced to a tool upgrade rather than guessed at.
+  
+  Fixed: A version the tool could not report is recorded as unreadable. An absent field could not be told apart from a probe that never ran.
+- 888de5d: Fixed: The deployment check now says whether each scheduled job's timer is still armed. A timer-driven service reads "inactive" between runs and when its timer has been stopped. So a check that asked only about the service could report nothing wrong while the scheduled work had quietly stopped happening.
+- 3a75e22: Fixed: A supplementary memo now succeeds on its first attempt. It cost two turns instead of one, and left a retried-stage mark on a report that had been delivered cleanly.
+  
+  Fixed: A supplementary memo states the rating framework it was reasoned under. A report assessed under a customer's own framework said so; a memo written from it did not.
+- fe22384: Fixed: Installing on a Node version the engine cannot run on now stops at once. It names the version you have, the version needed, and the command that fixes it. Before, the install finished and the first US register search failed with an error that never mentioned Node. The supported floor is Node 22.13 or newer.
+- 74b2cdd: Fixed: Setup now asks which address signs in, instead of turning it into an access rule covering everyone who shares its email domain.
+  
+  For operators: The People & access page now names the setting behind a staff rule, and the file to edit to undo it.
+- 9053919: Fixed: Five things a first-time reader could not act on.
+  
+  A screen that needs a brand owner chosen no longer points at the top left when the menu is collapsed and there is nothing there.
+  
+  The profile editor's Save button now states the one thing that is blocking it. That reason was always there, but it looked the same as the states where nothing is wrong.
+  
+  The default jurisdictions field now says what it does with what you type. Entries are checked against the list and kept, never refused. A region counts as one entry.
+  
+  The trademark categories field explains what those numbers are, with examples, before naming the standard they come from.
+  
+  The row of coloured ratings under "Risk framework in force" now says it belongs to that framework. It used to read as a list of several frameworks. Both editors say it the same way.
+- fe22384: For operators: Clearotron runs on Node 22.13 or newer again, down from 22.19, because its HTTP client moves back to version 7. Anyone who upgraded Node for the last release has nothing to undo.
+- bb899a7: New: A screening report now leads with the read. Each conflict shows its name, band, source and a one-sentence verdict. The paragraph arguing that verdict is one click away. Register filings appear as conflicts only where the reviewer rated them above the lowest band; the rest stay in the filings table.
+  
+  New: What was asked is now at the top of a screening report, with any question about whether it was the right thing to ask. Both used to sit at the bottom.
+  
+  New: The long per-name assessment now opens from the read. The engine has always written it and the page never showed it.
+  
+  New: Register counts say what they counted in their column headers. Territories are named rather than printed as two-letter codes.
+  
+  New: The lines a reader meets before opening anything are written in plain language. That is the summary, the basis line, each conflict's one sentence and the reviewer's notes. Legal vocabulary stays where the detail is.
+  
+  Fixed: Reviewer notes no longer appear on a screening report exported to PDF. They are for the reviewing lawyer, and a report forwarded to a client used to carry them.
+- 2a812d6: Fixed: The New clearance screen now has a **Start a search** button. The button that ran a search used to say "Review clearance", and people could not tell it was the way to begin.
+  
+  Fixed: When a search cannot start yet, the screen says what is still missing, both on the form and beside the button. It used to grey the button out and give no reason at all.
+  
+  Fixed: **Save as search** now confirms the save beside the button that was pressed, names what was saved, and links to it. It gave no sign at the point of the click.
+  
+  Fixed: The unsaved-changes warning no longer fires on a search you have just saved. It compared the form against a blank one and nothing ever reset it.
+  
+  Fixed: The message shown when no search engine is attached now names the setup command for the way you installed. It used to name the one that only works in a copy of the source.
+- 58af0b7: Fixed: The settings page no longer shows the engine as healthy when the engine program cannot be found.
+  
+  That page reports which engine is configured. The New clearance screen reports whether a search can start right now. When those two readings disagreed, neither screen said so.
+  
+  An install could therefore show a green engine while no search would start, and nothing explained the gap. The settings page now names the disagreement and says what to do about it. Running `clearotron doctor` reports the same thing in the same words.
+
 ## 0.2.2
 
 ### Patch Changes
