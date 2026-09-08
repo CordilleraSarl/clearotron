@@ -1538,30 +1538,36 @@ export async function runCheck() {
         // onboarded — counting it would tell an operator with an empty store that they have one.
         //
         // A DEMO ACCOUNT IS NOT AN ONBOARDED OWNER EITHER, and until this line it was counted as one. A
-        // fresh install ships the demo account, so `doctor` reported "1 brand owner(s) resolve here:
-        // demo-brand-owner (DEMO DATA)" on a machine where nobody had onboarded anything — and never
-        // named `generic`, which is the account that actually rates a run there. The reader is told they
-        // have a customer and not told what they are running on. Both halves wrong from one list.
+        // fresh install used to ship the demo account into every roster, so `doctor` reported "1 brand
+        // owner(s) resolve here: demo-brand-owner (DEMO DATA)" on a machine where nobody had onboarded
+        // anything — and never named `generic`, which is the account that actually rates a run there.
+        // The reader is told they have a customer and not told what they are running on. Both halves
+        // wrong from one list.
+        //
+        // SINCE 2026-09-08 A FRESH INSTALL RESOLVES `generic` ALONE (owner ruling): nobody should have to
+        // clean demo material out of an environment they just created. So the demo branch below no longer
+        // fires on a plain install — it fires inside the demo, which asks for its own account. It is kept
+        // rather than deleted because it is still reachable, and a reader who meets the demo account
+        // there is owed the same two facts: it is fiction, and a real clearance under it is refused at
+        // the admission wall.
         //
         // Three states, told apart, because they mean three different things to whoever is reading:
-        // an onboarded roster, the house default alone, and the house default plus what the demo brings.
-        // The demo account keeps its DEMO DATA marking wherever it appears — that marking is the
-        // member-level half of the same honesty, and a real clearance under it is refused at the
-        // admission wall, which an operator should learn here rather than from that refusal.
+        // an onboarded roster, the house default alone, and the house default beside what the demo
+        // brought with it.
         const owners = keys.filter((k) => k !== "generic" && !demo.includes(k));
         if (!owners.length) {
           const base = "`generic` is the account this install rates under — the house default, and the "
             + "only one a clean install has";
           if (demo.length) {
-            info(`${base}. Also present, marked DEMO DATA: ${demo.join(", ")} — fiction that ships with `
-              + "this install rather than an account anybody onboarded, and a real clearance under one is refused");
+            info(`${base}. The demo brought one with it, marked DEMO DATA: ${demo.join(", ")} — fiction `
+              + "rather than an account anybody onboarded, and a real clearance under one is refused");
           } else {
             info(`${base}. An empty store is a working install on Generic defaults; it is also what a `
               + "store pointed at the wrong directory looks like");
           }
         } else {
           const line = `${owners.length} brand owner(s) resolve here: ${owners.join(", ")}`;
-          if (demo.length) info(`${line}. Also present, marked DEMO DATA: ${demo.join(", ")} — not counted above, and a real clearance under one is refused`);
+          if (demo.length) info(`${line}. The demo brought one with it, marked DEMO DATA: ${demo.join(", ")} — not counted above, and a real clearance under one is refused`);
           else ok(line);
         }
         try {
