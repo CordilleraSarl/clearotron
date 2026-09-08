@@ -323,10 +323,40 @@ export const UNIT_INVENTORY = Object.freeze([
   {
     unit: "client-mcp-apikey", runsOn: ["test"],
       measured: "2026-09-08, read by account: enabled and present on the TEST deployment, beside the "
-      + "renamed `clearotron-client-mcp`. Absent from production under any account. The entry declared "
-      + "production and the reading puts it on the other deployment — the claim was not stale, it named "
-      + "the wrong machine. Why it runs there at all beside the renamed door is a separate question.",
+      + "renamed `clearotron-client-mcp`, and INACTIVE — enabled with no running process. Absent from "
+      + "production under any account. The entry declared production and the reading puts it on the "
+      + "other deployment — the claim was not stale, it named the wrong machine.",
       tracked: ["client-mcp-apikey.service"],
+    // THE SEPARATE QUESTION, ANSWERED. The line above used to end by saying that why it runs beside the
+    // renamed door was a question for somebody else. It is a survivor of the rename, not a posture
+    // anyone still wants: the key-based access it is named for moved to the other scheme, and this unit
+    // serves the same surface as the renamed door from a second name.
+    //
+    // ENABLED IS THE PART THAT MATTERS, and it is why this is a retirement rather than a note. An
+    // inactive unit does nothing today; an ENABLED one comes back on the next reboot, and it would come
+    // back onto a second endpoint that no entry declares, nothing checks and nothing routes to. That is
+    // the difference between a leftover and a decision, and it is the shape that produced the
+    // two-clone straddle: one surface served from two places with nothing asserting they agree.
+    retired: {
+      ruled: "2026-09-08",
+      filesStayUntil: "test",
+      why: "a survivor of the client-door rename, not a wanted posture: the key-based access this unit "
+        + "is named for moved to the other scheme, and it serves the same surface as the renamed door "
+        + "under a second name. ENABLED AND INACTIVE on the test deployment as this is written, which "
+        + "is the whole reason it is a retirement: an inactive unit does nothing, an enabled one "
+        + "returns on the next reboot onto an endpoint nothing declares. Nothing wants it but "
+        + "default.target, so disabling takes nothing with it. THE DISABLE FOLLOWS THIS ENTRY ONTO THE "
+        + "BOX RATHER THAN PRECEDING IT, and the order is measured rather than chosen: with this entry "
+        + "not yet deployed, a disabled unit whose file is still present FAILS `every live unit is "
+        + "declared` and un-stamps the deploy, because the arm reads a unit declared for this box and "
+        + "not among the live ones as absent, and only a retired entry moves it to the branch that is "
+        + "reported without being a fault. So no box state may be green ahead of the repo. Once this "
+        + "deploys the disable is one command, and it belongs to the lane that owns that box. It will "
+        + "not be masked: mask exits 1 while the unit file occupies the path it wants, and that file "
+        + "stays deliberately. The tracked TEMPLATE stays until that box no longer carries the unit, "
+        + "because deleting the only tracked description of a unit a box still holds is the mistake "
+        + "this file already recorded twice.",
+    },
     note: "TRACKED, in mcp-server/remote/. Same correction as client-mcp: the old reason claimed the live "
       + "key made a tracked file impossible, and the tracked TEMPLATE — which holds no key — already existed.",
   },

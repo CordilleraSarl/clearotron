@@ -118,17 +118,22 @@ test("the checker asks systemd for LoadState — without it none of the above ca
     "both push paths must carry it — one carries units with no clone, which is where the stale names land");
 });
 
-// ── THE RETIREMENT BRANCH, PLANTED — because the real table has no member to exercise it ─────────────
+// ── THE RETIREMENT BRANCH, PLANTED — and now also driven against the real table ──────────────────────
 //
-// `retired:` carried two entries and both left with their files once production was rebuilt. So
-// `absentByRetirement` and the sentence it feeds are unreachable against the real inventory: they run,
-// find nothing, and report nothing, on every deployment, forever. A reader of the file sees a mechanism
-// that tells absent-and-expected from absent-and-should-not-be; what is actually there is a branch that
-// has not fired since its last member left and would not be noticed if it stopped working.
+// `retired:` carried two entries and both left with their files once production was rebuilt, so for a
+// time `absentByRetirement` and the sentence it feeds were unreachable against the real inventory: they
+// ran, found nothing, and reported nothing, on every deployment, forever. A reader saw a mechanism that
+// tells absent-and-expected from absent-and-should-not-be; what was there was a branch that had not
+// fired since its last member left and would not have been noticed if it stopped working.
 //
-// That is this file's own failure mode aimed at itself — a check that silently does not fire — so the
-// mechanism is kept and PLANTED rather than trusted. The next retirement finds something that works.
-test("a RETIRED unit's absence is EXPECTED, not drift — planted, because no real entry carries the field", () => {
+// That is this file's own failure mode aimed at itself, so the mechanism was kept and PLANTED. The
+// planted arm stays — a real member can leave again, and the day it does this is what is left.
+//
+// THE REAL TABLE NOW CARRIES ONE, and the arm below drives it. A planted inventory proves the branch
+// computes; only the real one proves the field is spelled the way the branch reads it. Those are
+// different claims, and the gap between them is where a mechanism that "works" sits beside a table
+// nothing in it can reach.
+test("a RETIRED unit's absence is EXPECTED, not drift — planted, because the branch must work with or without a real member", () => {
   const planted = [
     { unit: "planted-retired", runsOn: ["test"], tracked: [], retired: { ruled: "2026-01-01", filesStayUntil: "prod", why: "planted" } },
     { unit: "planted-live", runsOn: ["test"], tracked: [] },
@@ -147,4 +152,50 @@ test("the retirement excuse is NOT universal — it is read off the entry, never
   const v = unitInventoryVerdict({ live: [], files: [], box: "test", probe: { ok: true }, inventory: planted });
   assert.doesNotMatch(v.message, /absent BY RETIREMENT/, "an inventory with no retired entry must say nothing about retirement");
   assert.deepEqual(v.absent, ["planted-live"]);
+});
+
+// ── THE SAME BRANCH, AGAINST THE SHIPPED TABLE ──────────────────────────────────────────────────────
+//
+// The arms above inject an inventory. This one does not: it reads `UNIT_INVENTORY` as it ships, so it
+// fails if the field is renamed, mistyped, or spelled onto an entry the verdict never looks at — none
+// of which a planted table can see, because the plant supplies its own spelling.
+//
+// BOTH STATES, because the point of the field is that neither is a fault. A unit whose posture has been
+// ruled away is still on the box until somebody removes it, and an inventory that could only be honest
+// after that removal would force the entry and the box to disagree for the length of the window — which
+// is the disagreement it exists to record.
+test("the shipped inventory's retired entries are reported as expected in BOTH states", () => {
+  const retired = UNIT_INVENTORY.filter((u) => u.retired);
+  // A FLOOR, NOT A LOOP OVER WHATEVER IS THERE. With no member this arm would pass having asserted
+  // nothing, which is the exact state that made the branch unreachable in the first place.
+  assert.ok(retired.length >= 1,
+    "no shipped entry carries `retired:`, so this arm asserts nothing and the branch is back to being "
+    + "reachable only by injection — see the planted arm above for why that is not enough");
+
+  const files = UNIT_INVENTORY.flatMap((u) => u.tracked ?? []);
+  for (const u of retired) {
+    for (const box of u.runsOn) {
+      const unitFile = `${u.unit}.service`;
+      // STILL ON THE BOX: it is running, so "declared here and not running" is false and it is in no
+      // bucket at all. The entry records the ruling; the check has nothing to report yet.
+      const on = unitInventoryVerdict({ live: [unitFile], files, box, probe: { ok: true } });
+      assert.ok(!on.undeclared.includes(u.unit),
+        `${u.unit} reads as undeclared while its entry is right there — a retirement is not a removal`);
+      assert.ok(!on.absent.includes(u.unit), `${u.unit} landed in the drift list while it is still running`);
+
+      // GONE FROM THE BOX: now it is absent, and absent-BY-RETIREMENT rather than absent-and-wrong.
+      const off = unitInventoryVerdict({ live: [], files, box, probe: { ok: true } });
+      assert.ok(!off.absent.includes(u.unit),
+        `${u.unit} is retired and its absence was reported as drift — the ruling on the entry was not read`);
+      assert.match(off.message, new RegExp(`absent BY RETIREMENT[^.]*${u.unit}`),
+        `${u.unit}'s absence is not named as a retirement, so a reader cannot tell it from a missing unit`);
+
+      // AND THE RULING IS LEGIBLE. A field that satisfies the branch while saying nothing a reader can
+      // act on is the shape this whole file exists to refuse.
+      for (const k of ["ruled", "filesStayUntil", "why"]) {
+        assert.ok(typeof u.retired[k] === "string" && u.retired[k].trim(),
+          `${u.unit}'s retirement has no \`${k}\` — the branch would still fire and the reader would still not know`);
+      }
+    }
+  }
 });
