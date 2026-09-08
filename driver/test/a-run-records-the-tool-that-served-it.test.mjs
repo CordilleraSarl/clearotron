@@ -104,6 +104,26 @@ test("the cache is keyed by the RESOLVED PATH, not the engine id", () => {
 
 // ── AND THAT THE DISPATCH ACTUALLY WRITES IT ─────────────────────────────────────────────────────────
 
+// ── THE CONDITION THE PROBE RESTS ON, RATCHETED ─────────────────────────────────────────────────────
+//
+// The probe spawns the engine binary, so it depends on `--version` being side-effect-free. That is true
+// of every real CLI and cannot be enforced from the probe. It bit on the first run: the stand-ins fell
+// through to their stage path, and one counts invocations to decide when to fail, so the probe consumed
+// the failure a retry test was measuring. The symptom was an attempt count off by one, three files from
+// the cause — which is why this is asserted rather than remembered.
+test("every engine stand-in answers --version and exits, like the binary it stands in for", () => {
+  for (const mock of ["mock-claude.mjs", "mock-codex.mjs"]) {
+    const src = readFileSync(join(ROOT, "driver", "test", mock), "utf8");
+    assert.match(src, /argv\.includes\("--version"\)/,
+      `${mock} falls through to its stage path on --version: it will block on stdin, log a call, and put `
+      + "every attempt count in every arm one out");
+    assert.match(src, /process\.exit\(0\)/, `${mock} must EXIT, not continue`);
+  }
+  // The one test that writes its own stand-in inline needs it too, and forgetting is the same defect.
+  const inline = readFileSync(join(ROOT, "driver", "test", "retry-backoff.test.mjs"), "utf8");
+  assert.match(inline, /--version/, "the inline stand-in consumes a flake count on the probe without it");
+});
+
 test("the attempt record carries the version AND its probe state, on both rows", () => {
   // Textual, because the alternative is driving a real dispatch. What it pins is that the probe state
   // travels beside the value: a record with a null version and no probe field cannot be told apart from

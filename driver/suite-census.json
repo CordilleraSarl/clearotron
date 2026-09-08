@@ -508,8 +508,8 @@
           "todos": 0
         },
         "a-run-records-the-tool-that-served-it.test.mjs": {
-          "tests": 10,
-          "asserts": 22,
+          "tests": 11,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },

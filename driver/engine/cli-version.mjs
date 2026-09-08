@@ -28,6 +28,19 @@
 // binary path rather than by the engine id, because two engines can point at one binary and one engine
 // can be repointed mid-run by an operator — keying on the id would then serve a version for a file that
 // is no longer the one being spawned.
+// ── WHAT THIS DEPENDS ON, WHICH IS NOT ENFORCEABLE FROM HERE ────────────────────────────────────────
+//
+// A probe that can change what it probes is not a probe. This one spawns the engine binary, so it rests
+// on `--version` being side-effect-free — true of every real CLI and not something this module can make
+// true. It bit immediately: the suite's engine stand-ins fell through to their stage path, and one of
+// them counts invocations to decide when to fail, so the probe consumed the failure a retry test was
+// measuring and the retry never happened. The symptom was an attempt count off by one, three files away
+// from the cause.
+//
+// The stand-ins now answer `--version` and exit, which is what the binaries they stand in for do. A new
+// one that forgets will produce the same off-by-one, so `driver/test/a-run-records-the-tool-that-served-it`
+// asserts every engine stand-in answers — the cheap ratchet under a condition that cannot be checked at
+// the call site.
 import { execFileSync } from "node:child_process";
 
 /** Live for the process, keyed by resolved path. A run is one process; a probe is one spawn. */
