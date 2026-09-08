@@ -64,6 +64,7 @@ import { stdin as input, stdout as output } from "node:process";
 import { accessSync, constants, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync, chmodSync } from "node:fs";   // read the process table here; moved that to shared/process-table.mjs
 import { homedir, userInfo } from "node:os";
 import { invocationPrefix } from "../shared/invocation.mjs";   // — one rule for how the reader invokes us
+import { nodeFloorVerdict } from "../shared/node-floor.mjs";   // — the floor is package.json engines, not a constant here
 import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that form
 import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
@@ -125,7 +126,6 @@ const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed
 // command is applying. Writes stay on ENV_PATH: a writer that followed the file backwards would keep an
 // install in the directory npm replaces forever.
 const READ_ENV_PATH = () => activeEnvPath({ repoRoot: REPO });
-const NODE_FLOOR = 22;
 
 const argv = process.argv.slice(2);
 const has = (n) => argv.includes(n);
@@ -1076,9 +1076,9 @@ export async function runCheck() {
   }
 
   say("\n  Node");
-  const major = Number(process.versions.node.split(".")[0]);
-  if (major >= NODE_FLOOR) ok(`node ${process.versions.node}`);
-  else problem(`node ${process.versions.node} — this engine needs >= ${NODE_FLOOR} (node:sqlite and TS type-stripping are load-bearing)`);
+  const nodeV = nodeFloorVerdict();
+  if (nodeV.ok) ok(`node ${nodeV.current}`);
+  else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer (node:sqlite and TS type-stripping are load-bearing)`);
 
   // Read the file up here rather than at the `.env` heading below: the engine section is the first that
   // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
@@ -2654,13 +2654,13 @@ try {
 
   // 1 ── Node
   say("  Node");
-  const major = Number(process.versions.node.split(".")[0]);
-  if (major < NODE_FLOOR) {
-    problem(`node ${process.versions.node} — this engine needs >= ${NODE_FLOOR}. Upgrade Node and run setup again.`);
+  const nodeV = nodeFloorVerdict();
+  if (!nodeV.ok) {
+    problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer. Upgrade Node and run setup again.`);
     aborted = "node";
     throw new Error("node floor");
   }
-  ok(`node ${process.versions.node}`);
+  ok(`node ${nodeV.current}`);
 
   // 2 ── the engine: which one, which binary, and PROOF that it can run a turn
   //

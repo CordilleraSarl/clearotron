@@ -1668,10 +1668,31 @@ if (isMain) {
       // sequence rather than a race between the terminal's signal and ours. It also means the group
       // kill below reaches anything a child spawns, not just the child.
       detached: true,
-      stdio: ["ignore", "inherit", "inherit"],
+      // — STDERR IS TEED RATHER THAN INHERITED, AND ONLY STDERR.
+      //
+      // These children announce a refusal as one FATAL line on stderr and exit 1. With `inherit` the
+      // parent holds no copy, so the failure message below could only point at output it had never seen —
+      // and on one report that output never reached the reader's terminal at all. It said "its own output
+      // above says why" about a line that was not above, which is worse than saying nothing: it sends
+      // somebody scrolling for a sentence they will not find.
+      //
+      // stdout stays inherited. It carries no refusal — measured: on a refusing door stdout is empty and
+      // stderr holds the whole of it — and leaving it alone keeps the child's terminal detection and any
+      // progress rendering intact. Piping a stream costs the child its TTY, so only the stream that has to
+      // be read is piped.
+      stdio: ["ignore", "inherit", "pipe"],
       env: { ...process.env, ...env },
     });
-    const rec = { name, script, child, alive: true };
+    // The last lines of that child's stderr, forwarded on as they arrive so nothing is delayed or
+    // swallowed, and kept so the failure can QUOTE them rather than refer to them.
+    const tail = [];
+    child.stderr?.setEncoding("utf8");
+    child.stderr?.on("data", (chunk) => {
+      process.stderr.write(chunk);
+      for (const line of String(chunk).split("\n")) if (line.trim()) tail.push(line);
+      while (tail.length > 12) tail.shift();
+    });
+    const rec = { name, script, child, alive: true, tail };
     children.push(rec);
     child.on("exit", (code, signal) => {
       rec.alive = false;
@@ -1684,7 +1705,7 @@ if (isMain) {
           + ` but nothing is draining the queue now. Start one with:\n    node ${script} --watch\n`);
         return;
       }
-      err(`\nstart: ${name} (${script}) exited ${signal ? `on ${signal}` : `with code ${code}`} — its own output above says why. Stopping the rest.\n`);
+      err(childExitReport({ name, script, code, signal, tail }));
       void shutdown(1);
     });
     child.on("error", (e) => {
@@ -1954,4 +1975,26 @@ if (isMain) {
   say(`  To get your prompt back instead, stop this and run  ${invoke("start")} --background`);
   say("  — same product, managed by systemd, and it survives logout.");
   say("");
+}
+
+/**
+ * What a reader is told when a child this install cannot run without exits.
+ *
+ * QUOTED, NOT POINTED AT. This used to end "its own output above says why" while the parent inherited
+ * the child's stderr and therefore held no copy of it. On one report that output never reached the
+ * reader's terminal at all, so the sentence sent somebody scrolling for a line that was not there —
+ * worse than saying nothing, because it reads as a working instruction.
+ *
+ * An empty tail is reported as an empty tail. A child that exits silently is a finding about the child,
+ * and printing a heading with nothing under it would hide exactly that.
+ *
+ * PURE, and exported, so this can be driven without starting a supervisor — the failure path of a
+ * process manager is the one nobody exercises by hand.
+ */
+export function childExitReport({ name, script, code, signal, tail = [] }) {
+  const how = signal ? `on ${signal}` : `with code ${code}`;
+  const said = tail.length
+    ? `Its last line${tail.length > 1 ? "s" : ""}:\n${tail.map((l) => `    ${l}`).join("\n")}\n`
+    : "It exited without printing anything, which is itself the thing to report.\n";
+  return `\nstart: ${name} (${script}) exited ${how}. Stopping the rest.\n${said}`;
 }
