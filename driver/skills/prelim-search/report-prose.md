@@ -19,6 +19,88 @@ writes lives in that stage's own file — the finding sentence and the grouped r
 [synthesis-rules.md](synthesis-rules.md), the card and section shape in
 [delivery-contract.md](delivery-contract.md). What is below is general and is stated only here.
 
+## Two registers, and the reader of the first one is not a lawyer
+
+**The reader is a lawyer who layers advice on top — and that lawyer's client reads the same page.** The
+band, the summary, the basis line and the one-liners are the whole product for the second reader, and
+they were the hardest text on it: single sentences of seventy-odd words in the vocabulary of the
+profession.
+
+So the page has two registers, and which one a line is written in is decided by whether the reader has
+to open something to see it.
+
+**DEFAULT-VISIBLE TEXT CARRIES NO LEGAL OR ENGINE VOCABULARY.** Default-visible means anything a reader
+meets before opening a fold: the summary and the opening line, the basis for the rating, the points for
+and against and what would soften them, the one sentence under each name, the four answers, the
+reviewer's notes, the caveats, the coverage rows and the lines saying what needs a decision. Ordinary
+nouns. One idea per sentence. **No visible sentence over 25 words.** The conclusion first.
+
+Which stored fields those are is not prose's business and is not listed here — `DEFAULT_VISIBLE_FIELDS`
+in `driver/plain-register.mjs` names them for both products, in one place, so a field renamed once does
+not leave a doctrine file quietly describing a shape that no longer exists.
+
+**INSIDE A FOLD THE PROFESSION'S VOCABULARY IS ALLOWED**, where a plain word would lose precision: the
+card's detail paragraph, provenance, the drill bullets. Even there a term is glossed at first use on the
+page. Nothing is removed from the drill and the workbook is unchanged.
+
+### The swaps, as worked examples rather than a banned list
+
+A list of forbidden words is not the mechanism and must never become one. These are what the plain form
+sounds like; the instruction is always to rewrite the sentence, never to substitute the word and leave
+the rest of a lawyer's sentence standing around it.
+
+| written for a lawyer | what the reader needs |
+|---|---|
+| proprietor | owner |
+| subsisting | live |
+| senior | earlier, or came first |
+| specification | goods list |
+| DELPH-formative | names built on DELPH- |
+| prevail | win |
+| citable prior rights | earlier marks the office can raise against you |
+| vulnerable to a non-use attack | could be cancelled for not being used |
+| on the record as it stands | on what we found |
+| the marks-and-goods comparison | same name, same goods |
+| the confusion comparison meets on every limb | same name, same goods, same shops |
+| belt-and-braces classes | extra classes |
+| dispatch, instructed | the request, what was asked |
+| lane | class, or channel — whichever is meant |
+| chunk | never; it is an engine word |
+
+### The standard, in full sentences
+
+A basis line, rewritten: *"ORBIT is already the name of two satellite-tracking apps on the same app
+stores, and of an established satellite-communications company. Any of them would likely win a dispute
+over this name for this software. The word is a weak mark for these goods, which is why this is High and
+not Very High."*
+
+An answer, rewritten: *"Blocked. An identical earlier mark for the same goods stops registration in
+Switzerland, the EU and the US. Below that, earlier DELPH- marks in EU class 5 and US class 42 can be
+raised against the application."*
+
+A card's detail — allowed the fold's vocabulary, still written plainly: *"Same name, same goods, and
+their Swiss filing came first in every territory we searched. We see no argument against it."*
+
+A note, rewritten: *"Ask the client whether it already uses ORBIT. Its own earlier use would change the
+picture and is not reflected here."*
+
+**Shortening by dropping the reason is not the fix.** The "why" stays, in plain words. A visible line
+that is short because it no longer says why is worse than the long one it replaced.
+
+### What reads this, and what does not
+
+**No delivery gate fails on any of it, and no report is ever marked for it.** The reviewing stage that
+already rejects engine vocabulary applies this test to the default-visible fields and hands back a
+rewrite, in the same pass and the same voice it uses for everything else. A hit is a sentence rewritten.
+It is never a disclosure to the client, never a run failure, and it moves no band, no evidence and
+nothing that is searched — this is presentation.
+
+The reviewer is helped by `driver/plain-register.mjs`, which offers the plain form beside the term it
+found and never decides anything. **It cannot flag the mark the run is clearing**: half of these words
+are ordinary English and several — PREVAIL, SENIOR, SPECIFICATION — are perfectly good trademarks, so
+every term the run is about is removed from the text before it is read. A check that could not tell a
+mark from the profession's vocabulary would put its noise on the one report where it matters most.
+
 ## Fact · assessment · prescription
 
 Three different things, and only two of them belong in a report.
