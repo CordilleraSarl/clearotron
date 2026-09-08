@@ -1027,6 +1027,29 @@ jobs:
       - name: The published manifest is not this repository's manifest
         run: node scripts/release-artifact-seal.mjs --tarball "${{ steps.what.outputs.tarball }}"
 
+      # ── NO TEST ACCOUNT AND NO FIXTURE LEAVE EITHER, AND THIS IS THE CHECK THAT WAS MISSING ───────
+      #
+      # Three invented account names, and the fixture files that use them, shipped in every published
+      # version and nothing went red. The two checks around this one each answer a different question:
+      # `files[]` excludes PATHS and these were mentions written inside documents about something else,
+      # and `verify-publishable` proves the package RUNS without reading what it says.
+      #
+      # THE LIST IS IN THE REPOSITORY, in scripts/test-account-names.mjs. The names are invented, so a
+      # list of them is not worth a secret — and a check a contributor cannot read locally is a check a
+      # contributor trips over. Real customer names are covered before a merge instead, by the private
+      # checks, which is where a name nobody may publish belongs.
+      #
+      # FAIL CLOSED ON ITS OWN INPUTS ONLY: no tarball, or a list that will not load or has nothing in
+      # it, exit 2 and stop the publish. A gate that passes when it could not look is the exact shape
+      # that let the names out.
+      #
+      # In BOTH publishing jobs. They pack independently, so guarding one leaves the other publishing.
+      - name: No test account or fixture leaves in the packed bytes
+        # The SAME handle every neighbouring step uses. The first draft invented one, which renders empty
+        # and makes this fail closed for a reason that is not the one it is about — a gate that refuses
+        # for the wrong reason teaches its reader to ignore the right one.
+        run: node scripts/no-test-account-reaches-the-package.mjs "${{ steps.what.outputs.tarball }}"
+
       - name: No secret leaves in the packed bytes
         run: |
           set -euo pipefail
@@ -1392,6 +1415,29 @@ jobs:
       # that script's own exported policy function to the packed artefact instead of restating it.
       - name: The published manifest is not this repository's manifest
         run: node scripts/release-artifact-seal.mjs --tarball "${{ steps.what.outputs.tarball }}"
+
+      # ── NO TEST ACCOUNT AND NO FIXTURE LEAVE EITHER, AND THIS IS THE CHECK THAT WAS MISSING ───────
+      #
+      # Three invented account names, and the fixture files that use them, shipped in every published
+      # version and nothing went red. The two checks around this one each answer a different question:
+      # `files[]` excludes PATHS and these were mentions written inside documents about something else,
+      # and `verify-publishable` proves the package RUNS without reading what it says.
+      #
+      # THE LIST IS IN THE REPOSITORY, in scripts/test-account-names.mjs. The names are invented, so a
+      # list of them is not worth a secret — and a check a contributor cannot read locally is a check a
+      # contributor trips over. Real customer names are covered before a merge instead, by the private
+      # checks, which is where a name nobody may publish belongs.
+      #
+      # FAIL CLOSED ON ITS OWN INPUTS ONLY: no tarball, or a list that will not load or has nothing in
+      # it, exit 2 and stop the publish. A gate that passes when it could not look is the exact shape
+      # that let the names out.
+      #
+      # In BOTH publishing jobs. They pack independently, so guarding one leaves the other publishing.
+      - name: No test account or fixture leaves in the packed bytes
+        # The SAME handle every neighbouring step uses. The first draft invented one, which renders empty
+        # and makes this fail closed for a reason that is not the one it is about — a gate that refuses
+        # for the wrong reason teaches its reader to ignore the right one.
+        run: node scripts/no-test-account-reaches-the-package.mjs "${{ steps.what.outputs.tarball }}"
 
       - name: No secret leaves in the packed bytes
         run: |

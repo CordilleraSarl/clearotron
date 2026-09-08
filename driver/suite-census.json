@@ -82,8 +82,8 @@
           "todos": 0
         },
         "a-capture-that-stopped-describing-the-box-says-so.test.mjs": {
-          "tests": 12,
-          "asserts": 23,
+          "tests": 16,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -105,15 +105,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-child-failure-quotes-the-child.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-claim-may-not-outlive-its-evidence.test.mjs": {
           "tests": 14,
           "asserts": 46,
           "skips": 0,
           "todos": 0
         },
-        "a-clean-install-offers-generic-and-the-demo.test.mjs": {
-          "tests": 5,
-          "asserts": 7,
+        "a-clean-install-offers-generic-alone.test.mjs": {
+          "tests": 9,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -132,6 +138,12 @@
         "a-crowded-zone-is-on-the-list-it-could-not-fill.test.mjs": {
           "tests": 10,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-declared-non-knob-is-not-a-deletion-candidate.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -330,6 +342,12 @@
         "a-missing-bus-is-not-a-closed-door.test.mjs": {
           "tests": 10,
           "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-new-citation-carries-something-that-can-be-checked.test.mjs": {
+          "tests": 7,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -567,6 +585,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-shipped-framework-states-provenance-a-customer-can-read.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": {
           "tests": 10,
           "asserts": 20,
@@ -649,6 +673,12 @@
           "tests": 3,
           "asserts": 19,
           "skips": 2,
+          "todos": 0
+        },
+        "a-visible-line-is-written-for-the-client.test.mjs": {
+          "tests": 10,
+          "asserts": 23,
+          "skips": 0,
           "todos": 0
         },
         "a-wait-the-driver-could-not-measure-says-so.test.mjs": {
@@ -1630,8 +1660,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 23,
-          "asserts": 62,
+          "tests": 24,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -2541,6 +2571,12 @@
           "skips": 4,
           "todos": 0
         },
+        "no-test-account-reaches-the-package.test.mjs": {
+          "tests": 15,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "no-test-writes-inside-the-checkout.test.mjs": {
           "tests": 16,
           "asserts": 35,
@@ -2603,7 +2639,7 @@
         },
         "one-node-floor-read-in-one-place.test.mjs": {
           "tests": 7,
-          "asserts": 22,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -4012,8 +4048,8 @@
           "todos": 0
         },
         "store-in-repo.test.mjs": {
-          "tests": 19,
-          "asserts": 54,
+          "tests": 23,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
@@ -4545,6 +4581,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-runtime-floor-is-read-not-restated.test.mjs": {
+          "tests": 10,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "the-seats-attestation-decides-the-use-source.test.mjs": {
           "tests": 5,
           "asserts": 9,
@@ -4596,6 +4638,12 @@
         "the-two-env-files-are-named-where-they-appear.test.mjs": {
           "tests": 5,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-two-register-rule-says-the-same-thing-to-both-products.test.mjs": {
+          "tests": 5,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -5450,8 +5498,8 @@
           "todos": 0
         },
         "screenCopy.test.ts": {
-          "tests": 51,
-          "asserts": 163,
+          "tests": 56,
+          "asserts": 178,
           "skips": 0,
           "todos": 0
         },

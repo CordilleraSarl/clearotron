@@ -51,10 +51,14 @@ export function floorOf(range) {
  * Null rather than zeroes, and the difference is the whole of it: `[0, 0, 0]` compares as below every
  * floor, so a version string this reader did not understand would REFUSE — and this file would become
  * the reason an install fails on a Node that is probably fine. A parser gap must not become an outage.
- * Found in review, 2026-09-08, by driving it rather than reading it.
+ * Found in review, 2026-09-08.
  */
 export const partsOf = (v) => {
-  const m = /^(\d+)\.(\d+)\.(\d+)/.exec(String(v).trim());
+  // THE `v` IS OPTIONAL AND MUST BE, because both spellings are in reach: `process.versions.node` has
+  // no prefix and `process.version` does. Without it a caller handed the prefixed form gets null,
+  // null passes, and an out-of-date runtime is waved through by the guard written to stop it — the
+  // permissive half of the same asymmetry, which is the direction that fails silently.
+  const m = /^v?(\d+)\.(\d+)\.(\d+)/.exec(String(v).trim());
   return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
 };
 

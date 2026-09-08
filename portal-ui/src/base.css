@@ -834,11 +834,21 @@ input.filter {
   color: var(--text-strong);
 }
 
+/* Says what the row of pills below it is a row OF. Sentence case and body-weight rather than the
+   uppercase section treatment above: this is a caption belonging to the statement it follows, and
+   giving it a heading's weight would make it look like a new section — which is the misreading the
+   label exists to end. Sits tight to its pills and away from the statement above. */
+.fw-ladder-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 14px 0 0;
+}
+
 .fw-ladder {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 10px 0 4px;
+  margin: 6px 0 4px;
 }
 
 .fw-bmh {

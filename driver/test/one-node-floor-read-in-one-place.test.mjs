@@ -10,7 +10,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { declaredRange, floorOf, meetsFloor, nodeFloorVerdict } from "../../shared/node-floor.mjs";
+import { declaredRange, floorOf, meetsFloor, partsOf, nodeFloorVerdict } from "../../shared/node-floor.mjs";
 
 test("364 the floor is READ from the manifest, never restated", () => {
   const declared = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")).engines.node;
@@ -21,7 +21,14 @@ test("364 a MAJOR-ONLY comparison is what let 22.12 through, and this does not r
   const floor = floorOf(">=22.13.0");
   assert.equal(meetsFloor("22.12.0", floor), false, "22.12 carries no node:sqlite and must be refused");
   assert.equal(meetsFloor("22.13.0", floor), true, "the floor itself is supported");
+  // BOTH SPELLINGS, AND THE REFUSAL IS THE HALF THAT MATTERS. `process.versions.node` has no prefix
+  // and `process.version` does. Asserting only that a prefixed CURRENT version passes is satisfied by a
+  // reader that cannot parse the prefix at all — unreadable passes, so the arm goes green while the
+  // guard waves through every prefixed old runtime. Measured: with the prefix unhandled,
+  // meetsFloor("v20.19.0") returned true.
   assert.equal(meetsFloor("v22.23.2", floor), true, "a leading v is the shape process.version uses");
+  assert.equal(meetsFloor("v20.19.0", floor), false, "and a PREFIXED old version must still be refused");
+  assert.deepEqual(partsOf("v22.23.2"), [22, 23, 2], "the prefix is parsed, not merely tolerated");
   assert.equal(meetsFloor("23.0.0", floor), true);
   assert.equal(meetsFloor("20.19.0", floor), false);
 });
