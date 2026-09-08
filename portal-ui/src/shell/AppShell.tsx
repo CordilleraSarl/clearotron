@@ -197,6 +197,18 @@ export type ShellContext = {
    * screen would need to reset, and should not have to.
    */
   readonly visit: number
+  /**
+   * Whether the sidebar is collapsed to icons right now.
+   *
+   * Screens need it for one reason: several of them tell a reader with no brand owner selected to pick
+   * one "at the top left", and with the sidebar collapsed there is no top left — an outside user read
+   * that sentence, found nothing where it pointed, and stopped. A sentence about WHERE a control is has
+   * to know whether that control is on screen, and only the shell knows.
+   *
+   * It is not a general licence for screens to lay themselves out around the chrome. This is the shell
+   * answering a question about the shell, which a screen cannot answer and must not guess.
+   */
+  readonly sidebarCollapsed: boolean
 }
 
 /**
@@ -368,7 +380,8 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const ownerInView = owner ?? sole
 
   const body = entry
-    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, ownerName, ownerKeys, go, visit })
+    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, ownerName, ownerKeys, go, visit,
+        sidebarCollapsed: collapsed })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">
         <div className="empty">
