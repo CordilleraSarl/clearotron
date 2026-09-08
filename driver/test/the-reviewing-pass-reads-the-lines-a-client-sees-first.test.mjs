@@ -138,6 +138,30 @@ test("the block is bound to the reviewing stage and to no other", () => {
 //
 // BOTH STATES ARE ASSERTED, because the repair has two ways to be wrong: the claim surviving into the
 // empty state, and the warning surviving into the state where the exclusion really did happen.
+// ── THE MARK IS WHAT THE REASSURANCE IS ABOUT, AND OWNERS DO NOT STAND IN FOR IT ────────────────────
+//
+// Two exclusions feed this block and they come from different places: marks from the JOB, owners from
+// the RECORD. Keying the reassurance on the union was the first repair, and it moved the defect: a
+// record carrying owners with a job naming no mark made the set non-empty, so the block told the seat
+// no flag was the mark under clearance — over a flag that was exactly that.
+//
+// THAT MIXED STATE IS THE ONE TO DRIVE, and the arm that missed it stripped the owners, so it tested
+// the all-empty case correctly and never entered this one. A fixture built to reach one failing state
+// is not evidence about a neighbouring one.
+test("the reassurance is about the MARK, and owners in the record do not buy it", () => {
+  // The likely production shape: the record carries its owners, the job names no mark.
+  const withOwners = plant("PREVAIL has a strong reputation in class 9.");
+  const out = compose(withOwners, { marks: [] });
+  assert.ok(out.ids.some((x) => x.id === "refute-plain-register"), "the line must flag for this arm to mean anything");
+  assert.match(out.text, /NAMED NO MARK TO EXCLUDE/,
+    "owners in the record bought a reassurance about the mark, which they do not protect");
+  assert.doesNotMatch(out.text, /none of these is a hit inside the name being cleared/,
+    "the reassurance survived into the state where no mark was excluded");
+  // AND the owner exclusion is still reported, because it did happen and it is a different fact.
+  assert.match(out.text, /owner name\(s\) from the record were also removed/,
+    "the owners were excluded and the block no longer says so");
+});
+
 test("the block claims an exclusion only when it made one, and says so plainly when it did not", () => {
   const findings = plant("PREVAIL has a strong reputation in class 9.");
 
