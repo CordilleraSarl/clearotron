@@ -370,6 +370,12 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   let ownerChecks = [];
   try { ownerChecks = JSON.parse(readFileSync(driverDir(runDir, 'owner-checks.json'), 'utf8')).checks ?? []; }
   catch { ownerChecks = []; }
+  // The request the run was given, read the same tolerant way as the sidecars above and for the same
+  // reason (tracker issue 331 A.1). It is what "About this request" states; a run archived before the
+  // sidecar existed has none, and its page renders exactly as it was delivered.
+  let instructedScope = null;
+  try { instructedScope = JSON.parse(readFileSync(driverDir(runDir, 'instructed-scope.json'), 'utf8')); }
+  catch { instructedScope = null; }
 
   // ── — THIS LANE HAD NO RECORD-ORIGIN LOGIC AT ALL ─────────────────────────────────────────────
   //
@@ -534,7 +540,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     };
     const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
-      runId, overall: markBand, issued, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, identity, matter: runId,
+      runId, overall: markBand, issued, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
       // — an invented mark says so on its own report. Resolved ONCE above the loop:
       // the answer is a property of the run, and asking per mark would let a multi-mark demo mark some
       // documents and not others if the roster moved mid-publish.
