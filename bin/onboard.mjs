@@ -104,6 +104,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 // tracker issues 1861/1882 — one synopsis reader for every verb that prints one.
 import { usageBlock } from "../shared/usage-block.mjs";
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
+import { declaredRange, floorOf, meetsFloor } from "../shared/node-floor.mjs";   // — ONE floor, read from the manifest, shared with the install guard and the launcher
 import { parseEnvFile } from "../driver/systemd/render-units.mjs";   // — ONE KEY=value reader; a second copy would drift from what systemd actually reads
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";   // — F34: claim about the UNITS only from the units' own environment
 
@@ -125,7 +126,11 @@ const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed
 // command is applying. Writes stay on ENV_PATH: a writer that followed the file backwards would keep an
 // install in the directory npm replaces forever.
 const READ_ENV_PATH = () => activeEnvPath({ repoRoot: REPO });
-const NODE_FLOOR = 22;
+// The floor is package.json's `engines.node` and is read, never restated. It was `22` here, a MAJOR,
+// which passed every 22.x — including the releases that carry no `node:sqlite` and fail at the first
+// search rather than at this check. See scripts/supported-node.mjs.
+const NODE_RANGE = declaredRange(REPO);
+const NODE_FLOOR_PARTS = floorOf(NODE_RANGE);
 
 const argv = process.argv.slice(2);
 const has = (n) => argv.includes(n);
@@ -1076,9 +1081,8 @@ export async function runCheck() {
   }
 
   say("\n  Node");
-  const major = Number(process.versions.node.split(".")[0]);
-  if (major >= NODE_FLOOR) ok(`node ${process.versions.node}`);
-  else problem(`node ${process.versions.node} — this engine needs >= ${NODE_FLOOR} (node:sqlite and TS type-stripping are load-bearing)`);
+  if (meetsFloor(process.versions.node, NODE_FLOOR_PARTS)) ok(`node ${process.versions.node}`);
+  else problem(`node ${process.versions.node} — this engine needs ${NODE_RANGE}; node:sqlite is not a built-in module before then`);
 
   // Read the file up here rather than at the `.env` heading below: the engine section is the first that
   // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
@@ -2648,9 +2652,8 @@ try {
 
   // 1 ── Node
   say("  Node");
-  const major = Number(process.versions.node.split(".")[0]);
-  if (major < NODE_FLOOR) {
-    problem(`node ${process.versions.node} — this engine needs >= ${NODE_FLOOR}. Upgrade Node and run setup again.`);
+  if (!meetsFloor(process.versions.node, NODE_FLOOR_PARTS)) {
+    problem(`node ${process.versions.node} — this engine needs ${NODE_RANGE}. Upgrade Node and run setup again.`);
     aborted = "node";
     throw new Error("node floor");
   }

@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-AGPL--3.0--only-860F09?style=flat-square" alt="Licence: AGPL-3.0-only"></a>
-  <a href=".nvmrc"><img src="https://img.shields.io/badge/node-%E2%89%A5%2022-250902?style=flat-square" alt="Node 22+"></a>
+  <a href=".nvmrc"><img src="https://img.shields.io/badge/node-%E2%89%A5%2022.13-250902?style=flat-square" alt="Node 22.13+"></a>
 </p>
 
 Give it a mark, its classes and a territory. Clearotron searches the trademark registers and the open
@@ -35,8 +35,9 @@ calls to us.
 npm install -g clearotron
 ```
 
-Node 22 or newer, on macOS, Linux, or Windows via WSL2. That puts `clearotron` on your `PATH`; every
-command below works in that short form.
+Node 22.13 or newer, on macOS or Linux. That puts `clearotron` on your `PATH`; every command below
+works in that short form. **On Windows the demo above runs natively; a real clearance needs WSL2** —
+the engine resolves the reasoning CLI the POSIX way and refuses at preflight otherwise.
 
 That command gives you the **stable** release — the one that has run a real clearance end to end before it
 was published. If you want the newest code instead, a beta is published whenever there is something worth
@@ -48,17 +49,6 @@ npm install -g clearotron@beta
 
 What each channel promises, and when a stable is cut: [docs/RELEASES.md](docs/RELEASES.md). If you are not
 sure, the first command is the one you want.
-
-**Or run it from source**, which is what you want if you intend to change it:
-
-```bash
-git clone https://github.com/CordilleraSarl/Clearotron
-cd clearotron
-npm install                    # every workspace
-npm run build -w portal-ui     # the browser bundle is not committed — build it once
-```
-
-From a clone the commands are `npx clearotron …`, run from that directory.
 
 ## Quick start
 
@@ -135,12 +125,17 @@ credential.
 
 ## Development
 
+A clone is the working tree, not a way to install the product — install it from the package above.
+
 ```bash
 git clone https://github.com/CordilleraSarl/Clearotron
 cd Clearotron
-npm install
-npm test          # the offline suite — no credentials, no network
+npm install                    # every workspace
+npm run build -w portal-ui     # the browser bundle is not committed — build it once
+npm test                       # the offline suite — no credentials, no network
 ```
+
+From a clone the commands are `npx clearotron …`, run from that directory.
 
 `npm test` is the whole verification story for someone with no credentials, and it is the first thing
 [CONTRIBUTING.md](CONTRIBUTING.md) asks of a contributor.
