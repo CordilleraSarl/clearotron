@@ -569,7 +569,7 @@
         },
         "a-shipped-framework-states-provenance-a-customer-can-read.test.mjs": {
           "tests": 2,
-          "asserts": 6,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
