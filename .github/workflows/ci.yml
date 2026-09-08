@@ -370,6 +370,21 @@ jobs:
         # the guard prints a zero-line read rather than a clean verdict on a change it never had.
         run: node scripts/added-reference-check.mjs --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
 
+      # THE SAME BASE AGAIN, AND ITS SIBLING QUESTION. That guard refuses a bare reference a range adds;
+      # this one refuses a CITATION a range adds that nothing can check — a file and a line number with no
+      # symbol beside it.
+      #
+      # It belongs here rather than beside the citation check in the lint job, because that check answers
+      # about the TREE and this one answers about the RANGE, and only this job carries the history to ask.
+      # The lint job's checkout is shallow; `origin/main...HEAD` there would exit 2 on every build, which
+      # is honest and useless.
+      #
+      # The existing corpus is untouched by design. A ruling declined a form guard without an allowlist
+      # for the citations already here, and judging only what a range ADDS is that allowlist written as a
+      # rule rather than as a list that would go stale.
+      - name: No uncheckable citation is added
+        run: node scripts/citation-line-check.mjs --ratchet --base "${{ github.event.pull_request.base.sha || 'origin/main' }}"
+
       # THE SAME BASE, AND THE SAME REASON FOR WRITING IT OUT. This asks whether a change a reader can
       # see arrived with something for them to read. It refuses a range that changes shipped code and
       # adds no release note, unless a commit in it says `Release-note: none` and gives a reason.
