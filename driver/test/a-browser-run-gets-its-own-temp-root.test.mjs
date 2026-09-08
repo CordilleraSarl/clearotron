@@ -1,0 +1,114 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// The temp root a browser is launched under: that it fits, that it is exported, and that it goes.
+//
+// WHY THE BUDGET ARM MATTERS MOST. Over the limit the browser does not degrade and does not report —
+// it aborts with a core dump and a fatal line about a socket path. Nothing about that names the cause,
+// which is the length of the directory the run was started from. So the refusal is the product here,
+// and these arms drive the boundary from both sides rather than asserting the constant equals itself:
+// a check that reads MAX_ROOT_LENGTH and compares it to MAX_ROOT_LENGTH passes on any value.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import {
+  SUN_PATH_MAX, LOCK_SUFFIX, MAX_ROOT_LENGTH,
+  rootRefusal, assertRootFits, browserEnv, browserRun, browserTempRoot,
+} from "../../shared/browser-temp-root.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+test("the budget is the socket field minus what the lock adds, and both terms are real", () => {
+  // Not a restatement of the arithmetic: these are the two measured quantities the limit is made of.
+  assert.equal(SUN_PATH_MAX, 107, "a unix socket address field holds 108 bytes, the last a terminator");
+  assert.equal(LOCK_SUFFIX, "/com.google.Chrome.XXXXXX/SingletonSocket");
+  assert.equal(MAX_ROOT_LENGTH, SUN_PATH_MAX - LOCK_SUFFIX.length);
+  // The boundary measured on a real browser: 66 starts, 67 aborts.
+  assert.equal(MAX_ROOT_LENGTH, 66);
+});
+
+test("a root at the limit is accepted and one character more is refused", () => {
+  const at = "/" + "x".repeat(MAX_ROOT_LENGTH - 1);
+  const over = "/" + "x".repeat(MAX_ROOT_LENGTH);
+  assert.equal(at.length, MAX_ROOT_LENGTH);
+  assert.equal(over.length, MAX_ROOT_LENGTH + 1);
+  assert.equal(rootRefusal(at), null, "a root exactly at the limit must be usable");
+  assert.notEqual(rootRefusal(over), null, "one character past the limit must refuse");
+});
+
+test("the refusal names the length it measured, the limit and the path", () => {
+  const over = "/" + "y".repeat(MAX_ROOT_LENGTH);
+  const why = rootRefusal(over);
+  assert.match(why, new RegExp(String(over.length)), "the measured length is what tells a reader how far over it is");
+  assert.match(why, new RegExp(String(MAX_ROOT_LENGTH)), "the limit must be stated, not left to be looked up");
+  assert.ok(why.includes(over), "the path is the thing the reader has to change");
+  assert.throws(() => assertRootFits(over), /limit is 66/);
+});
+
+test("an empty or absent root is a refusal, not a pass", () => {
+  // A zero-length path is shorter than the limit. Reading only the length would accept it.
+  for (const bad of ["", null, undefined, 7]) {
+    assert.notEqual(rootRefusal(bad), null, `${JSON.stringify(bad)} must not read as a usable root`);
+  }
+});
+
+test("browserRun puts the profile inside the root and exports the root as TMPDIR", () => {
+  const { root, profile, env } = browserRun("arm-run-");
+  assert.ok(existsSync(profile), "the profile directory must exist before a browser is pointed at it");
+  assert.ok(profile.startsWith(root + "/"), "the profile must be INSIDE the root, so one removal covers both");
+  assert.equal(env.TMPDIR, root, "TMPDIR is the whole mechanism — the browser reads the lock location from it");
+  assert.equal(rootRefusal(root), null, "a root this module made must itself fit the budget");
+});
+
+test("browserEnv refuses a root that cannot work rather than handing it over", () => {
+  const over = "/" + "z".repeat(MAX_ROOT_LENGTH);
+  assert.throws(() => browserEnv(over), /limit is 66/);
+});
+
+test("the root is removed when the process exits normally", () => {
+  const dir = mkdtempSync(join(tmpdir(), "arm-exit-"));
+  const namefile = join(dir, "name");
+  const src = join(dir, "child.mjs");
+  writeFileSync(src, `
+    import { writeFileSync } from "node:fs";
+    import { browserRun } from ${JSON.stringify(join(ROOT, "shared/browser-temp-root.mjs"))};
+    const { root } = browserRun("arm-exit-run-");
+    writeFileSync(${JSON.stringify(namefile)}, root);
+  `);
+  execFileSync(process.execPath, [src], { stdio: "ignore" });
+  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  assert.ok(root.length > 0, "the child must have reported the root it made");
+  assert.equal(existsSync(root), false, `the root survived a normal exit: ${root}`);
+});
+
+test("the root is removed on SIGTERM — the exit a cancelled job produces", () => {
+  const dir = mkdtempSync(join(tmpdir(), "arm-term-"));
+  const namefile = join(dir, "name");
+  const src = join(dir, "child.mjs");
+  writeFileSync(src, `
+    import { writeFileSync } from "node:fs";
+    import { browserRun } from ${JSON.stringify(join(ROOT, "shared/browser-temp-root.mjs"))};
+    const { root } = browserRun("arm-term-run-");
+    writeFileSync(${JSON.stringify(namefile)}, root);
+    setInterval(() => {}, 1000);
+  `);
+  // Driven through a shell so the child is signalled by a pid this arm recorded, never by name.
+  execFileSync("bash", ["-c",
+    `"$1" "$2" & p=$!; for i in $(seq 1 50); do [ -s "$3" ] && break; sleep 0.2; done; ` +
+    `kill -TERM $p; for i in $(seq 1 50); do [ -d /proc/$p ] || break; sleep 0.2; done`,
+    "bash", process.execPath, src, namefile], { stdio: "ignore" });
+  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  assert.ok(root.length > 0, "the child must have reported the root before it was signalled");
+  assert.equal(existsSync(root), false, `the root survived SIGTERM: ${root}`);
+});
+
+test("a root is rooted at the ambient temp directory, so it inherits a runner's own root", () => {
+  // Under the suite runner TMPDIR is already this run's root, and a browser root must land INSIDE it
+  // rather than beside it — that is what makes the runner's own cleanup carry it away.
+  const root = browserTempRoot("arm-nest-");
+  assert.ok(root.startsWith(tmpdir() + "/"), `expected a root under ${tmpdir()}, got ${root}`);
+});
