@@ -9,7 +9,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 734,
+  "total": 732,
   "files": {
     ".gitattributes": [
       0,
@@ -293,7 +293,7 @@
     ],
     "driver/drainer-identity.mjs": [
       0,
-      2,
+      1,
       0,
       0,
       0,
@@ -663,7 +663,7 @@
     ],
     "driver/systemd/clearotron-worker.service": [
       0,
-      4,
+      3,
       0,
       0,
       0,
