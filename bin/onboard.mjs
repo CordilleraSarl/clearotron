@@ -2388,6 +2388,27 @@ export async function runCheck() {
         // unreachable; repeating it as a second failure teaches the reader that this section
         // double-counts. It still states what was NOT established, which is the whole job.
         else if (v.kind === "could-not-look") info(v.message);
+        // NO ACCESS IN FRONT OF THE CLIENT DOOR IS A POSTURE, NOT A FAULT (owner ruling 2026-09-08).
+        //
+        // This is the CLIENT connector's address, and how a client reaches it is the client's decision:
+        // "client access sitting behind OAuth is totally up to a client — plenty might just run it token
+        // based on their own laptop." A door answering with its own Bearer challenge and no Access front
+        // is a supported shape, not a misconfiguration, so raising it made `doctor` exit 1 on a healthy
+        // deployment and taught its reader to skim the one command that must never be skimmed.
+        //
+        // It is still SAID rather than dropped, and it still states what was not established: an
+        // audience that was never compared is not an audience that agreed. What changed is that the
+        // sentence no longer calls a client's own arrangement a finding about this install.
+        //
+        // Scoped deliberately to `not-fronted` on THIS address. A configured audience that DISAGREES
+        // with the one the edge issues is still a fault, and the portal and ops surfaces are untouched —
+        // they are checked elsewhere and Access in front of them is not optional.
+        else if (v.kind === "not-fronted") {
+          info(`nothing is fronting this hostname with Access — ${read.why}. That is this client door's `
+            + "posture rather than a fault: a client may reach it with its own token and no Access in "
+            + "front, which is a supported shape. The configured audience was not compared against this "
+            + "address, so nothing here says the two agree.");
+        }
         else problem(v.message);
       }
     }
