@@ -151,8 +151,6 @@ export function noticeBody({ runUrl, sha, subject, failedJobs = [], lastGreenAt,
         + "passes — a run that never started cannot make the platform green."
       : "This thread is reused for every red night. Close it once the platform is green again — the next "
         + "red opens a new one.",
-    "",
-    "Agent: role-dev · bergface",
   ].join("\n");
 }
 

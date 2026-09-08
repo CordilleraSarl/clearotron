@@ -83,7 +83,7 @@ test("2176-F26 the summary names BOTH doors, their ports, and who each is for", 
     "a door that failed to start must be reported, not omitted — an absence reads as 'fine'");
   // The branch must turn on the SYNCHRONOUS truth. `rec.alive` is flipped by an async exit handler, so
   // reading it asks whether the event loop has delivered the exit yet — the margin is real today and
-  // nothing pinned it. Found in review by role-dev/Grogu.
+  // nothing pinned it. Found in review, 2026-08.
   assert.match(START_SRC, /clientDoor\?\.child\?\.exitCode === null/,
     "the not-running branch must read child.exitCode, which the runtime sets when the process is reaped");
 });

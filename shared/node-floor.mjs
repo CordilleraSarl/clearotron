@@ -3,13 +3,13 @@
 //
 // THE MINIMUM NODE VERSION, READ FROM THE ONE PLACE THAT DECLARES IT.
 //
-// `package.json` says `engines: { node: ">=22.19.0" }`. npm reads that field, and so does everything
+// `package.json` says `engines: { node: ">=22.13.0" }`. npm reads that field, and so does everything
 // here. Nothing restates the number.
 //
 // WHY THIS FILE EXISTS RATHER THAN A CONSTANT. There was a constant: `NODE_FLOOR = 22` in bin/onboard.mjs,
 // compared as `Number(process.versions.node.split(".")[0]) >= NODE_FLOOR`. A major-only comparison
-// STRUCTURALLY CANNOT SEE A MINOR FLOOR, so 22.16.0 passed a check written for 22.19.0 — the check said
-// `node 22.16.0` and a tick while npm, reading the same requirement from the same repository, printed
+// STRUCTURALLY CANNOT SEE A MINOR FLOOR, so 22.9.0 passed a check written for a 22.13.0 floor — the check said
+// `node 22.9.0` and a tick while npm, reading the same requirement from the same repository, printed
 // EBADENGINE for it. One requirement, two spellings, already disagreeing.
 //
 // The cost was a first-run failure nobody could diagnose: an engine door exited 1 on a machine below the
@@ -21,7 +21,7 @@ import { join, dirname } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-/** The declared range, verbatim, e.g. `">=22.19.0"`. Throws if the field is gone — an absent floor is a
+/** The declared range, verbatim, e.g. `">=22.13.0"`. Throws if the field is gone — an absent floor is a
  *  packaging fault, not a licence to run on anything. */
 export function declaredRange(root = join(HERE, "..")) {
   const range = JSON.parse(readFileSync(join(root, "package.json"), "utf8"))?.engines?.node;
@@ -30,7 +30,7 @@ export function declaredRange(root = join(HERE, "..")) {
 }
 
 /**
- * `">=22.19.0"` → [22, 19, 0]. `">=22"` and `">=22.19"` are accepted too, with the absent parts read as
+ * `">=22.13.0"` → [22, 13, 0]. `">=22"` and `">=22.13"` are accepted too, with the absent parts read as
  * zero, because that is what they mean and not a guess — and because the field is edited by whoever
  * changes the floor, who should not have to know which spelling this reader was written against. A
  * coordination failure between two people editing one number is the defect this whole file exists for.

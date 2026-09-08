@@ -1078,7 +1078,7 @@ export async function runCheck() {
   say("\n  Node");
   const nodeV = nodeFloorVerdict();
   if (nodeV.ok) ok(`node ${nodeV.current}`);
-  else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer (node:sqlite and TS type-stripping are load-bearing)`);
+  else problem(`node ${nodeV.current} — this engine needs ${nodeV.required} or newer; node:sqlite is not a built-in module before then`);
 
   // Read the file up here rather than at the `.env` heading below: the engine section is the first that
   // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
