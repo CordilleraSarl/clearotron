@@ -852,7 +852,7 @@ function plainScopeNote(text) {
   if (!t) return '';
   return stripTelemetry(t).trim();   // trim: an all-telemetry note leaves only newlines, and '' is falsy
 }
-function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false) {
+function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false, hasIndexEntry = false) {
   const parts = [];
   // B3 (spec 2026-07-30 §4) — record provenance, stated ONCE, here, instead of a hedge stamped on
   // every card. This is the single home of what "fetched", "register-index entry" and "inferred"
@@ -868,7 +868,11 @@ function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, co
   // conditions: a copy is a thing that drifts, and over-including costs one explanatory paragraph in a
   // collapsed section while under-including costs a reader an unexplained label. The fetched-records
   // sentence stays conditional on hasRecordSet, so a run WITH a record set is byte-identical to B3.
-  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registry identifiers on the finding cards are read from the official register records fetched this run. ' : ''}A registration shown as a register-index entry was seen in the register index; its full record was not pulled. An enforcer appetite marked “inferred” rests on reputation or profile signals rather than a fetched record.</p>`);
+  // THREE SENTENCES EXPLAINING ONE WORD, and the middle one printed on every report whether or not the
+  // page had a register-index entry on it — a definition of a label the reader could not see. It renders
+  // now only where such an entry does, and the remaining two say what "inferred" means in the words a
+  // reader would use for it rather than in the renderer's.
+  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}“Inferred” beside an owner’s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p>`);
   // — this is the one part of §4 that does NOT fold. Same markup, same heading, same marker; it is
   // emitted beside the <details> instead of inside it, wrapped in the panel the only-you section already
   // uses so it reads as a region of the page rather than a stray heading.
@@ -896,7 +900,11 @@ function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, co
       + `<p class="covnone" style="margin:0 0 6px;font-size:13px">No coverage record was produced for this run. `
       + `This section normally lists what each search covered and what is still open; its absence here is a gap `
       + `in the record, not a finding that nothing is open. Ask us before relying on it.</p>`);
-  if (coverageJudgment && coverageJudgment.reason) parts.push(`<p class="cov-read" style="margin:8px 0 0;font-size:13px;color:var(--faint)"><b>Coverage read (internal):</b> ${esc(String(coverageJudgment.reason))}</p>`);
+  // THE INTERNAL COVERAGE READ IS NOT RENDERED. It concatenated the engine's own search-unit names into
+  // about a thousand characters of prose — and on the measured run it ended mid-word, because it is a
+  // machine's working note and nothing was reading it as a sentence. Every fact in it is already in the
+  // coverage cells directly above, in plain words. It stays in the run's artifacts and in the workbook,
+  // where the reader is someone who wants it.
   const meth = plainScopeNote(methodologyText);
   if (meth) parts.push(`<p class="scoperead" style="margin:10px 0 4px;font-weight:600">How this search was run</p><div class="methnote" style="font-size:13px">${renderProse(meth)}</div>`);
   const cn = contextNotesBlock(contextNotes);
@@ -2293,8 +2301,12 @@ ${opts.nav || ''}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
-        ? `Working draft for legal review. Risk bands (${esc(FRAMEWORK.title)}): <span class="mono">${esc(FRAMEWORK.bands.map(b => b.label).join(' / '))}</span> — the framework in force's own vocabulary, one word per finding on every surface. Internal notes are review-only and removed on export.`
-        : 'Working draft for legal review. Risk levels: <span class="mono">LOW / MANAGEABLE / MEDIUM / HIGH / VERY HIGH</span> (one vocabulary on every surface); the <span class="mono">Level A–E</span> · <span class="mono">Composite 1–5</span> codes beside them are the internal legal shorthand. Internal notes are review-only and removed on export.'}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
+        // TWO SENTENCES. What stood here explained the bands to a developer — "the framework in force's
+        // own vocabulary, one word per finding on every surface" is a note about how the renderer works,
+        // printed on every report a client receives. The framework's NAME is on the "Rated under" line
+        // below, once, which is where a reader who wants it will look.
+        ? `Risk bands: <span class="mono">${esc(FRAMEWORK.bands.map(b => b.label).join(' / '))}</span>. Purple notes are for the reviewing lawyer and are removed on export.`
+        : 'Risk bands: <span class="mono">LOW / MANAGEABLE / MEDIUM / HIGH / VERY HIGH</span>. Purple notes are for the reviewing lawyer and are removed on export.'}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>
