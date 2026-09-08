@@ -97,6 +97,13 @@ test("185 the signatures still FIRE — a matcher that stopped matching reports 
     [0, "# 's sibling. Every recording transport captures the payload"],
     [1, "// …false ⇒ the pre- section, byte-identical, for every archived run."],
     [1, "| **Deprecated, honoured for one release.** The pre- names. Unset on every deployed box"],
+    // The third residue: a parenthesis whose contents were the reference. Four shapes, all real —
+    // opening on a comma, holding nothing at all, running off the end of the line, and one in the
+    // configuration reference a deploying user reads.
+    [2, "// WEIGHT WHERE THE MEANING IS (, owner ruling 2026-08-31)."],
+    [2, "// ── THE SUITE CANNOT READ THE OPERATOR'S CONFIGURATION, IN OR OUT (,) ──"],
+    [2, " * …would deliver on the verdict it settled at 00:22 (,"],
+    [2, "// for exactly this class of defect (,: the instruction asserted the wrong thing)."],
   ];
   for (const [i, line] of specimens) {
     assert.ok(SIGNATURES[i].re.test(line), `signature ${i} (${SIGNATURES[i].name}) no longer fires on: ${line}`);
@@ -109,6 +116,12 @@ test("185 the signatures still FIRE — a matcher that stopped matching reports 
     "// pre-flight checks run before the seat is dispatched",
     "const preFlight = true;",
     "// a pre-delivery lint pass",
+    // ✕ AND THE CODE SHAPES THE THIRD SIGNATURE MUST NEVER CLAIM. `(,` is syntax inside a character
+    // class and inside an alternation, and a signature that flagged those would put working regexes in
+    // a backlog of broken English — which is how somebody ends up "repairing" a matcher.
+    "const canStart = /[(,=:[!&|?+\\-*%;{}]$/.test(before);",
+    "assert.ok(!/(^|,)(Write|Edit)(,|$)/.test(firstAllowed));",
+    "const COLOUR_PROPERTY = /(?:^|[;{\\s(,])(?:color|fill)/;",
   ]) {
     assert.ok(!SIGNATURES.some((s) => s.re.test(innocent)),
       `a signature fired on ordinary prose, which is how this arm gets deleted: ${innocent}`);
@@ -123,10 +136,15 @@ test("185 the census COUNTS — driven on a synthetic tree, so it is not trusted
     "b.md": "renders the pre- section\n",
     "c.mjs": "// nothing wrong here\n",
     "d.png": "// 's ignored — not a scannable extension\n",
+    // The third signature, planted with its code near-miss beside it: one is residue, one is a regex,
+    // and a census that counted both would report a repaired file as broken forever.
+    "e.mjs": "// the ruling (, 2026-08-21) settled it\nconst re = /[(,=]/;\n",
   };
   const got = censusOf("/synthetic", Object.keys(fake), (f) => fake[f]);
-  assert.equal(got.total, 3, `planted 3 breaks across 2 files, census said ${got.total}`);
-  assert.deepEqual(got.files, { "a.mjs": [2, 0], "b.md": [0, 1] });
+  assert.equal(got.total, 4, `planted 4 breaks across 3 files, census said ${got.total}`);
+  assert.deepEqual(got.files, { "a.mjs": [2, 0, 0], "b.md": [0, 1, 0], "e.mjs": [0, 0, 1] },
+    "the per-file counts are POSITIONAL: a signature appended last keeps the first two columns meaning "
+    + "what the committed table already said they meant");
   assert.ok(!isScannable("d.png") && !isScannable("portal-ui/dist/x.mjs"),
     "the scannable filter stopped excluding binaries or generated output");
 });

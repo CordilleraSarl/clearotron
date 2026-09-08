@@ -4156,8 +4156,8 @@
           "todos": 0
         },
         "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -4451,7 +4451,7 @@
         },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 3,
           "todos": 0
         },
