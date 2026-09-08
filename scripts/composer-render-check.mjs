@@ -63,6 +63,18 @@ const stubLevels = () => productRows().map((r) => ({ ...r, available: true, unav
 
 const ROUTES = {
   '/portal/api/me': { role: 'client', email: 'demo@example.test', accounts: ['coastline'], allAccounts: false },
+  // ── the engine states, driven in phase two ────────────────────────────────────────────────────────
+  //
+  // The composer above is measured on a working install, which is the state that renders no notice at
+  // all. The notice is what an install with no usable engine shows INSTEAD of the start button, and it
+  // decides what a blocked reader is told to do — install the program, or restart the service that
+  // cannot see one already installed. Those two remedies are not interchangeable: telling someone to
+  // install a program they already have is the advice an outside user followed to no effect before
+  // giving up on a working machine.
+  //
+  // It is served from here rather than tested in portal-ui because that suite has no DOM, no jsdom and
+  // no React test renderer — Node cannot import a `.tsx` there at all. The decision behind the notice is
+  // driven in the contract layer; this is the half that proves the screen renders what it decides.
   '/portal/api/searches': {
     account: 'coastline',
     products: stubLevels(),
@@ -90,6 +102,14 @@ const ROUTES = {
 
 /** Every plan body the page posts, so the check can assert what the levers actually put on the wire. */
 const posted = []
+
+/**
+ * What /me says about the engine RIGHT NOW. Empty for the main pass — a working install — and set by
+ * phase two before each reload. A mutable answer rather than four servers: the page is reloaded between
+ * states anyway, and one server keeps the pool, the profile and the products identical across them, so
+ * the only thing that differs between two renders is the thing being measured.
+ */
+let meEngine = {}
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json' }
 
@@ -166,7 +186,10 @@ const server = createServer((req, res) => {
   const base = path.split('?')[0]
   if (ROUTES[base] !== undefined) {
     res.writeHead(200, { 'content-type': 'application/json' })
-    res.end(JSON.stringify(ROUTES[base]))
+    // /me carries whatever phase two has set about the engine; every other route is a constant. Merged
+    // rather than replaced so the identity, the accounts and the roster stay exactly what the main pass
+    // measured — a state that changed two things at once would not say which one moved the screen.
+    res.end(JSON.stringify(base === '/portal/api/me' ? { ...ROUTES[base], ...meEngine } : ROUTES[base]))
     return
   }
 
@@ -810,6 +833,66 @@ await new Promise((r) => setTimeout(r, 1500))
 const res = await evalIn(SCRIPT)
 const out = res.result?.result?.value ?? { fatal: 'evaluate returned nothing', raw: JSON.stringify(res).slice(0, 900) }
 
+// ── phase two: the notice, in each state a blocked reader can be in ─────────────────────────────────
+//
+// Same browser, same server, same everything except what /me says about the engine. The composer above
+// was measured on a working install and never renders this at all.
+//
+// READ FROM THE LIVE DOM, not from a string the page was given: the point is that the screen renders
+// the remedy its own contract chose, and a check that asserted the contract's output would be asserting
+// the thing that produced it.
+const NOTICE_STATES = [
+  { name: 'no engine program, packaged install, client',
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: false, role: 'client' },
+    says: /install a reasoning CLI/, alsoSays: /npx clearotron install/, andSays: /restart the service/i,
+    link: false },
+  { name: 'no engine program, source checkout, staff',
+    me: { engineMode: 'demo', setupRoute: 'checkout', engineProgramDisputed: false, role: 'staff' },
+    says: /install a reasoning CLI/, alsoSays: /npm run setup/, andSays: /restart the service/i,
+    link: true },
+  { name: 'the program is here and the engine cannot see it, client',
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, role: 'client' },
+    says: /could not find it when it last started/, alsoSays: /Restart the engine service/,
+    andSays: /will not change this/, link: false },
+  { name: 'the program is here and the engine cannot see it, staff',
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, role: 'staff' },
+    says: /could not find it when it last started/, alsoSays: /Restart the engine service/,
+    andSays: /will not change this/, link: true },
+]
+
+// Reaching the notice needs the entry fork answered — the composer's footer is not on the first screen,
+// and a bare reload lands short of it. "Set it up myself" is the shorter of the two doors and skips the
+// brief reader entirely, which is not being measured here.
+const REACH_AND_READ = `(async () => {
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const txt = () => document.body.innerText;
+  const settle = async (pred, ms) => { const t0 = Date.now();
+    while (Date.now() - t0 < ms) { if (pred()) return true; await sleep(60); } return false; };
+  const byText = (sel, re) => [...document.querySelectorAll(sel)].find((e) => re.test(e.innerText || ''));
+
+  if (!await settle(() => /Set it up myself/.test(txt()), 8000)) return { fatal: 'the entry fork never painted' };
+  byText('button', /Set it up myself/)?.click();
+  // The notice REPLACES the start button, so either one appearing means the footer is painted and the
+  // screen has decided. Waiting for the notice alone would hang for the full budget on a regression that
+  // renders the button instead, and report it as "nothing rendered" rather than as what it is.
+  await settle(() => document.querySelector('.footer-demo-note') || /Start a search/.test(txt()), 8000);
+  const n = document.querySelector('.footer-demo-note');
+  return {
+    text: n ? n.textContent.replace(/[\\s\\u00a0]+/g, ' ').trim() : null,
+    buttons: n ? [...n.querySelectorAll('button')].map((b) => b.textContent.trim()) : [],
+    startButton: [...document.querySelectorAll('button')].some((b) => /Start a search/.test(b.textContent)),
+  };
+})()`
+
+const notices = []
+for (const st of NOTICE_STATES) {
+  meEngine = st.me
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))          // the navigation itself, not the render
+  const read = (await evalIn(REACH_AND_READ)).result?.result?.value ?? null
+  notices.push({ state: st.name, expect: st, got: read })
+}
+
 // A picture of the state the driver left it in. Not a test — evidence a human can look at, which is the
 // one thing a measurement cannot be.
 if (shotAt) {
@@ -1015,6 +1098,37 @@ ok(out.worldwideCleared, 'an explicit worldwide brief did not clear the named te
 ok(out.worldwideChipsGone, 'the countries survived a worldwide read — the scope on screen is not what was asked for')
 ok(out.worldwideChipShown, 'the Where field does not say Worldwide after clearing — an empty box states nothing')
 ok(out.leftClean, 'the check left the composer in a blocked state')
+
+// ── phase two's verdict ─────────────────────────────────────────────────────────────────────────────
+//
+// Each state asserted by what it MUST say and by what it must NOT: the install advice is correct on an
+// empty machine and useless on one that already has the program, and the restart remedy is the reverse.
+// Asserting only the presence of the right sentence would pass a notice that printed both.
+for (const n of notices) {
+  const got = n.got
+  ok(got, `${n.state}: nothing rendered — neither the notice nor a start button`)
+  if (!got) continue
+  ok(got.text, `${n.state}: no notice at all, and the start button ${got.startButton ? 'IS' : 'is not'} drawn`)
+  if (!got.text) continue
+  ok(!got.startButton, `${n.state}: a start button is drawn on an install that cannot start a search`)
+  for (const [what, re] of [['says', n.expect.says], ['also says', n.expect.alsoSays], ['and says', n.expect.andSays]]) {
+    ok(re.test(got.text), `${n.state}: the notice does not ${what} ${re} — it read: ${got.text.slice(0, 200)}`)
+  }
+  // THE TWO REMEDIES ARE EXCLUSIVE. This is the assertion that carries the harm: an install with the
+  // program present must not be told to install one, and an empty machine must not be told to restart.
+  const disputed = n.expect.me.engineProgramDisputed === true
+  ok(disputed !== /install a reasoning CLI/.test(got.text),
+    `${n.state}: the install advice and the restart remedy are not exclusive — a reader is being told both`)
+  // WHAT THIS ASSERTION REACHES, established by planting rather than by reading. Widening the contract's
+  // own `linksToSettings` to true for everybody does NOT fail here: the screen also requires a handler,
+  // and the call site passes none for a client. Two gates, and this sees the outer one. What it DOES
+  // catch is the gate that actually decides it — removing the role test at the call site puts the link
+  // in front of a client, and both client states go red. That is the failure worth catching; the inner
+  // one is covered where it is written, in the contract arms and in the navigation guard.
+  ok(got.buttons.length === (n.expect.link ? 1 : 0),
+    `${n.state}: the link to the configuration page is ${n.expect.link ? 'missing' : 'offered to a reader who cannot open that page'} `
+    + `(buttons: ${JSON.stringify(got.buttons)})`)
+}
 
 console.log(JSON.stringify({ ...out, planBody, countsBody }, null, 2))
 if (shotAt) writeFileSync(shotAt + '.json', JSON.stringify({ ...out, planBody, countsBody }, null, 2))
