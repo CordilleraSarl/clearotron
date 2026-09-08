@@ -171,16 +171,45 @@ export const CLASSES = [
       + "documentation uses, or name the setting rather than the path.",
   },
   {
+    // ── DECLARED HERE, SPELLED ELSEWHERE, AND THE REASON IS THIS ENTRY'S OWN SENTENCE ──────────────
+    //
+    // This class had a pattern naming two private repositories as literals, and it shipped in the tree
+    // it protects — so the guard published exactly what it exists to refuse. Its own `why` says it: a
+    // public tree naming one publishes it, and the name outlives every link to it.
+    //
+    // THE SPLIT AT THE TOP OF THIS FILE ALREADY HAD THE ANSWER and this entry was on the wrong side of
+    // it. A generic account name discloses nobody, which is why the logins are spelled out. A
+    // repository name is not a generic word: it is a unique identifier of a private asset, and it
+    // belongs with the personal names in the private table rather than here.
+    //
+    // FOUND BY A REVIEWER, AND DEMONSTRATED RATHER THAN ARGUED. The private scan refused their review
+    // on its first pass, because reporting the defect meant quoting the pattern. A class whose literals
+    // cannot be discussed in a public review without tripping a guard does not belong in a public file
+    // — which is this file's own no-exemption-for-quoting rule, arriving from the other side.
+    //
+    // WHAT IS LOST, SAID PLAINLY RATHER THAN LEFT AS AN ABSENCE. Commit bodies are covered: the private
+    // merge scan refuses this class today. What this entry would have added is FILE coverage, and
+    // public CI cannot have it without the literals. So the class is declared with no pattern, skipped
+    // here, and populated only where the roster is. A guard that cannot spell what it looks for says so
+    // rather than looking clean.
     id: "private-repo-name",
-    pattern: /cordillera\.ch-trademark[a-z-]*|clearotron-scratch-private/i,
+    pattern: null,
     why: "a private repository name. A public tree naming one publishes it, and the name outlives "
-      + "every link to it.",
+      + "every link to it. Refused in commit bodies by the private merge scan; not spellable here.",
   },
   {
     // THE FOUR ARE SPELLED OUT RATHER THAN `role-\w+`. `role-shaping` is a real phrase in
     // driver/portal-service.mjs about what the report does with a party's role, and a prefix rule
     // refuses it — the first false positive would land on product prose, which is how a guard loses
     // its `&&`.
+    // AND ONE OF THEM IS A REGISTERED MARK, which matters in this product and nowhere else. The bare
+    // word in the pattern below — the one that is not prefixed `role-` — is banned because 20 files
+    // carry it as our own word for a role, and no current use of it as a mark is in this tree today. But the corpus this product searches is MARKS, and that is
+    // a well-known registered one — so the first false positive here will be a fixture, a worked example
+    // or a doctrine line that names it legitimately. That is the same defect this codebase has met three
+    // times in a different costume: a check that cannot tell a mark from its own vocabulary. When it
+    // arrives, the fix is a site rule that exempts the mark where a mark belongs — not a widened pattern,
+    // and not deleting the class, which would put 20 real leaks back.
     id: "role-name",
     pattern: /\brole-(?:dev|e2e|design|overwatch)\b|\boverwatch\b|\bclearance-runs\b/i,
     why: "our own word for how this is built, not the reader's. Say what was done and how it was "
@@ -218,15 +247,20 @@ export const CLASSES = [
 // citations on one line and read back 1. For the diff guard the difference is cosmetic — the reader is
 // shown the line either way — but the backlog is a COUNT, and a count that stops at the first hit lets
 // a floored line quietly gain a second one. The permissive half of a gate is the dangerous half.
-const EVERY_MATCH = new Map(CLASSES.map((c) => [c.id, new RegExp(c.pattern.source, c.pattern.flags + "g")]));
+const EVERY_MATCH = new Map(CLASSES.filter((c) => c.pattern).map((c) => [c.id, new RegExp(c.pattern.source, c.pattern.flags + "g")]));
 
 export function offendingClasses(path, line) {
   if (!isScannable(path) || !isProse(path, line)) return [];
   const text = withoutColourValues(withoutLinkTargets(line));
   const out = [];
   for (const c of CLASSES) {
+    // A CLASS WITH NO PATTERN IS ONE THIS TREE CANNOT SPELL, not one with nothing to find. It stays in
+    // the table so the census keeps its column and a reader meets the limit where the rule is, rather
+    // than inferring it from an absence.
+    const re = EVERY_MATCH.get(c.id);
+    if (!re) continue;
     // A capture group, where a class has one, is the offending text with its surroundings dropped.
-    for (const m of text.matchAll(EVERY_MATCH.get(c.id))) out.push({ id: c.id, token: m[1] ?? m[0], why: c.why });
+    for (const m of text.matchAll(re)) out.push({ id: c.id, token: m[1] ?? m[0], why: c.why });
   }
   return out;
 }

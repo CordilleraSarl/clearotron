@@ -9,7 +9,7 @@
 // reading none of them and reporting the same clean exit as a tree with nothing to find.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isProse, isScannable, withoutLinkTargets, offendingTokens, addedLines } from "../../scripts/added-reference-check.mjs";
+import { CLASSES, isProse, isScannable, withoutLinkTargets, offendingTokens, addedLines } from "../../scripts/added-reference-check.mjs";
 
 test("a bare reference in a source comment is refused", () => {
   assert.deepEqual(offendingTokens("driver/x.mjs", "  // see #1234 for the ruling"), ["#1234"]);
@@ -208,16 +208,30 @@ test("a home directory on a build machine is refused", () => {
     ["testuser", "/home/testuser"]);
 });
 
-test("a private repository name is refused", () => {
-  assert.deepEqual(offendingTokens("docs/x.md", "The bundles live in cordillera.ch-trademark-config."),
-    ["cordillera.ch-trademark-config"]);
-  assert.deepEqual(offendingTokens("driver/x.mjs", "// restored from clearotron-scratch-private"),
-    ["clearotron-scratch-private"]);
+// THE ONE CLASS THIS TREE CANNOT SPELL, and the arm says so rather than leaving an absence.
+//
+// The class had a pattern naming two private repositories as literals, in a file that ships in the
+// tree it protects — the guard publishing exactly what it refuses. The literals belong with the
+// personal names in the private table; what is left here is the declaration and the reason.
+//
+// ASSERTED IN BOTH DIRECTIONS, because "it does not fire" is also what a broken class looks like. The
+// entry must still be in the table with a `why` a reader can act on, and it must genuinely not match.
+test("the private-repo-name class is DECLARED and deliberately unspellable here", () => {
+  const entry = CLASSES.find((c) => c.id === "private-repo-name");
+  assert.ok(entry, "the class is gone from the table, so the census lost a column and the reason went with it");
+  assert.equal(entry.pattern, null,
+    "this class has a pattern again. A repository name is a unique identifier of a private asset, and a "
+    + "pattern here spells it in the public tree — which is this class's own `why`, applied to itself");
+  assert.match(entry.why, /private merge scan/,
+    "the entry does not say where the class IS enforced, so its absence here reads as nothing to check");
 
-  // THE PUBLIC DOMAIN IS NOT THE PRIVATE REPOSITORY. `cordillera.ch` is the firm's site and is named
-  // freely; it is the suffixed repository names that are private, which is why the pattern requires
-  // the suffix rather than matching the domain.
-  assert.deepEqual(offendingTokens("README.md", "Cordillera Sàrl publishes this at cordillera.ch."), []);
+  // AND IT DOES NOT FIRE. A declared class with no pattern must be skipped, not crash and not match
+  // everything — both of which a `null` reaching a regex call would produce.
+  assert.deepEqual(offendingTokens("docs/x.md", "Some repository name goes here."), []);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// see the other repository for the ruling"), []);
+
+  // The other seven still fire, so the skip did not take the loop with it.
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// driven on testuser"), ["testuser"]);
 });
 
 test("our own word for how this is built is refused, and product prose that looks like it is not", () => {

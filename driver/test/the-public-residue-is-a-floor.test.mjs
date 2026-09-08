@@ -128,10 +128,19 @@ test("the classes with no standing residue are held at zero, not floored", (ctx)
   const now = census();
   if (now === null) return ctx.skip(skipReason(GUARD));
 
-  const ZERO = ["bare-reference", "private-repo-name", "agent-trailer", "machine-trailer"];
+  // `private-repo-name` IS NOT IN THIS LIST, and its absence is the point. It has no pattern in this
+  // tree — the literals would publish the private names the class exists to refuse — so a zero from it
+  // is what an unspellable class reports, not what a clean tree does. Asserting it here would be an
+  // arm that can never fail, dressed as coverage. The class is asserted where it can be: the arm in
+  // a-bare-reference-added-in-a-diff-is-refused pins that it is declared, has no pattern, and says
+  // where it IS enforced.
+  const ZERO = ["bare-reference", "agent-trailer", "machine-trailer"];
   for (const id of ZERO) {
     const i = CLASSES.findIndex((c) => c.id === id);
     assert.notEqual(i, -1, `${id} is no longer a class — this arm is asserting about nothing`);
+    assert.ok(CLASSES[i].pattern,
+      `${id} has no pattern, so a zero from it means "not looked for" rather than "not there" — take it `
+      + "out of this list rather than letting it report a clean tree");
     assert.equal(TABLE.files && Object.values(TABLE.files).reduce((a, v) => a + v[i], 0), 0,
       `${id} has a recorded residue, so this arm's premise is wrong — it is a floor class, not a zero one`);
     const found = Object.entries(now.files).filter(([, v]) => v[i] > 0).map(([p, v]) => `${p} (${v[i]})`);

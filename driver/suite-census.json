@@ -41,7 +41,7 @@
         },
         "a-bare-reference-added-in-a-diff-is-refused.test.mjs": {
           "tests": 21,
-          "asserts": 66,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -4499,7 +4499,7 @@
         },
         "the-public-residue-is-a-floor.test.mjs": {
           "tests": 9,
-          "asserts": 33,
+          "asserts": 34,
           "skips": 5,
           "todos": 0
         },
