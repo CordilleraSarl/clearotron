@@ -21,11 +21,11 @@ import { pinEnvAll } from "../../shared/env-aliases.mjs";   // — a spread carr
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, symlinkSync, writeFileSync, rmSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, win32, posix } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
-import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, commitWithAuditRow, resolveStoreRepoRoot } from "../../shared/store-in-repo.mjs";
+import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, commitWithAuditRow, resolveStoreRepoRoot, within } from "../../shared/store-in-repo.mjs";
 
 const DRIVER = dirname(fileURLToPath(import.meta.url)).replace(/\/test$/, "");
 
@@ -357,4 +357,45 @@ test("#1566 both doors read the same order — asserted against the source, not 
   assert.equal(orders[0], orders[1],
     `the doors read different orders again: ${orders.join("  vs  ")}`);
   assert.equal(orders[0], "RECIPE_REPO_ROOT,PROFILE_REPO_ROOT");
+});
+
+// ── CONTAINMENT ON A PLATFORM NOBODY HERE RUNS (278) ──────────────────────────────────────────────
+//
+// This check answers a defect that was invisible to every posix reading of the same code. The test was
+// `dir.startsWith(root + "/")` with the separator written in, so on Windows a folder plainly inside its
+// parent read as OUTSIDE, an operator on a correct install was told their store was outside the
+// repository root, and the saved-search door refused. Every posix case passed throughout.
+//
+// The path module is injected for exactly that reason: a guard that can only be exercised on Windows is
+// one nobody here will ever see fail, so it would have gone in green and stayed green.
+test("278 a Windows store inside its repository root is inside it", () => {
+  const W = { relative: win32.relative, isAbsolute: win32.isAbsolute };
+  assert.equal(within("C:\\Users\\k\\config\\recipes", "C:\\Users\\k\\config", W), true,
+    "the reported case: a child folder read as outside its own parent");
+  assert.equal(within("C:\\Users\\k\\config", "C:\\Users\\k\\config", W), true, "a root contains itself");
+});
+
+test("278 …and the three it must still refuse, so the fix is not merely permissive", () => {
+  // Without these the arm above is satisfied by a predicate that answers true to everything, which would
+  // turn a containment guard into a decoration while reading as a fix.
+  const W = { relative: win32.relative, isAbsolute: win32.isAbsolute };
+  assert.equal(within("D:\\other\\recipes", "C:\\Users\\k\\config", W), false, "a different drive is not inside");
+  assert.equal(within("C:\\Users\\k\\configXX", "C:\\Users\\k\\config", W), false,
+    "a sibling whose name merely begins with the root's is outside — the one thing the old prefix test got right");
+  assert.equal(within("C:\\Users", "C:\\Users\\k\\config", W), false, "a parent is not inside its child");
+});
+
+test("278 Windows path comparison is case-insensitive, which a prefix test could not have been", () => {
+  // Not a bonus: an installer who typed a drive letter in the other case would have been refused by the
+  // old test even after the separator was fixed.
+  const W = { relative: win32.relative, isAbsolute: win32.isAbsolute };
+  assert.equal(within("c:\\users\\k\\config\\recipes", "C:\\Users\\k\\config", W), true);
+});
+
+test("278 the posix behaviour this replaced is unchanged", () => {
+  const P = { relative: posix.relative, isAbsolute: posix.isAbsolute };
+  assert.equal(within("/srv/cfg/recipes", "/srv/cfg", P), true);
+  assert.equal(within("/srv/cfg", "/srv/cfg", P), true);
+  assert.equal(within("/srv/cfgXX", "/srv/cfg", P), false);
+  assert.equal(within("/srv/elsewhere", "/srv/cfg", P), false);
 });

@@ -22,6 +22,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { constants as SIG } from "node:os";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { nodeFloorVerdict, nodeFloorRefusal } from "../shared/node-floor.mjs";   // — one floor, read from package.json
 import { invocationPrefix } from "../shared/invocation.mjs";   // — print a command the reader can type
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -131,6 +132,27 @@ const [verb, ...rest] = process.argv.slice(2);
     // Name what was typed and what exists. A bare "unknown command" makes a typo cost a second guess.
     console.error(`clearotron: no such verb "${verb}". One of: ${Object.keys(VERBS).join(", ")}`);
     process.exit(2);
+  }
+
+  // — THE RUNTIME FLOOR, REFUSED HERE, AND THE ONE THING THIS DISPATCHER LOOKS AT.
+  //
+  // This file's header says it implements nothing and does not inspect what it forwards, and that rule
+  // is right: a second, weaker copy of a check that already exists is worse than no copy. This is not
+  // that. It is not about the verb — it is about whether ANY verb can run, which is prior to dispatch
+  // and cannot live inside a child that will not start.
+  //
+  // It exists because the checks we had were in `doctor` and `setup`, which are things you run AFTER
+  // `npm install` succeeds. A reader whose runtime is too old meets a failure inside a command instead,
+  // and on one report it was an engine door exiting 1 with its message lost. `npx clearotron demo` and
+  // `clearotron start` never reached the sentence written for them.
+  //
+  // `--version` and `--help` above are DELIBERATELY on the near side of this. They are the two things a
+  // person runs while writing a bug report, and refusing them would take away the answer to the first
+  // question we ask.
+  const floor = nodeFloorVerdict();
+  if (!floor.ok) {
+    console.error(`clearotron: ${nodeFloorRefusal(floor)}`);
+    process.exit(1);
   }
 
   // — EVERY VERB ANSWERS --help, INCLUDING THE TWO WHOSE CHILDREN REFUSE IT.
