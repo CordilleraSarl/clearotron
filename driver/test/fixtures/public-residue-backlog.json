@@ -1,0 +1,2925 @@
+{
+  "classes": [
+    "bare-reference",
+    "spelled-citation",
+    "login",
+    "home-path",
+    "private-repo-name",
+    "role-name",
+    "agent-trailer",
+    "machine-trailer"
+  ],
+  "total": 778,
+  "files": {
+    ".gitattributes": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    ".github/dependabot.yml": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    ".github/workflows/ci.yml": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    ".github/workflows/cla.yml": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    ".github/workflows/release.yml": [
+      0,
+      26,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    ".gitignore": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    ".gitleaks.toml": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "CONTRIBUTING.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "INSTALL.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/clearotron.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/connect.mjs": [
+      0,
+      13,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/disconnect.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/example.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/onboard.mjs": [
+      0,
+      27,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    "bin/start.mjs": [
+      0,
+      23,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/stop.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/update.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "docs/E2E.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "docs/architecture/04-configuration-reference.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "docs/architecture/05-config-governance.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/ask-ledger.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/case-law-sources.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/compose-read.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/config-inventory.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/deliver-trigger.sh": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/digest-queue.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/doc-constants.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/doubt-selection.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/drain-posture.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/drainer-identity.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/driver.config.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/effort-model.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    "driver/engine/CONTRACT.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/engine/anthropic-agent.mjs": [
+      0,
+      9,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/findings-model.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/flag-snapshot.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/frame-diff-model.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/gateway.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/hit-list.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/jx-lanes.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/outbox-backoff.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/owner-use-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/pipeline-knockout.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/pipeline.mjs": [
+      0,
+      7,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/plain-register.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/portal-config-view.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/portal-report.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/portal-service.mjs": [
+      0,
+      7,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/predelivery-lint.mjs": [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/profile-page.html": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/index.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/knockout.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/parse.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/render-knockout.mjs": [
+      0,
+      32,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/report-data.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/seed-pool.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/templates/report.css": [
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/queue-watch-verdict.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/record-carry.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/reference-score.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/reference-strip-signatures.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/repairs.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/replay-archive.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/search-policy.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/stages-knockout.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/stages.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/systemd/clearotron-client-mcp.service": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/systemd/clearotron-deploy.service": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/systemd/clearotron-mcp-face.service": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/systemd/clearotron-portal.service": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/systemd/clearotron-worker.service": [
+      0,
+      4,
+      2,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/systemd/install-census.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/systemd/render-units.mjs": [
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/README.md": [
+      0,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-bail-on-an-unmeetable-precondition-is-a-skip.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-bare-reference-added-in-a-diff-is-refused.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-capability-is-named-before-the-report-names-it.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-capture-that-stopped-describing-the-box-says-so.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/a-case-law-gap-names-the-right-reason.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-check-does-not-read-another-accounts-processes.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-child-failure-quotes-the-child.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-clean-install-offers-generic-alone.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-credential-is-not-a-wired-lane.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-crowded-zone-is-on-the-list-it-could-not-fill.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-declared-non-knob-is-not-a-deletion-candidate.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-drop-with-a-stated-reason-is-checked.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-half-applied-connect-says-so.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-memo-has-a-door-onto-it.test.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-missing-bus-is-not-a-closed-door.test.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-new-citation-carries-something-that-can-be-checked.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-packaged-install-survives-its-own-upgrade.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-pool-copy-is-not-a-refusal.test.mjs": [
+      0,
+      0,
+      3,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-port-refusal-names-the-file-it-reads.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-provider-cap-is-not-a-stage-failing.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-real-install-starts-with-an-empty-archive.test.mjs": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-reasoned-skip-is-neither-a-pass-nor-a-loss.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/a-refusal-means-nothing-without-its-control.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-refusal-names-what-resolves-it.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-refused-unit-says-what-is-half-started.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-release-note-is-written-for-its-reader.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-screenshot-of-an-error-page-is-not-a-report.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-section-gate-cannot-be-failed-by-its-wording.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-shared-proprietor-is-not-a-bucket-collision.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-shipped-framework-states-provenance-a-customer-can-read.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-signal-reaches-what-the-shim-started.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-source-the-classifier-could-not-read-is-not-empty.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-timer-is-asked-about-as-a-timer.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-verb-is-a-module-until-it-is-the-command.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/a-visible-line-is-written-for-the-client.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-wait-the-driver-could-not-measure-says-so.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-what-if-keeps-the-runs-rating-authority.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/an-arrival-check-exercises-the-trigger-lane.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/an-experiment-receipt-names-its-engine.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/ask-ledger.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/browser-check-membership.test.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/carry-through-sees-outside-the-reference.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/case-law-credential-state.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/code-side-is-not-unknown.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/commonlaw-reconciliation-callsite.test.mjs": [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/connect-clients-are-data.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/connect-does-not-move-the-deployment-in-silence.test.mjs": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/connect-prints-the-steps-it-already-holds.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/connector-annotations-and-pack.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/contract-audit.test.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/coverage-form-seat-axis.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/deployment-hostnames.test.mjs": [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/doctor-names-who-is-in-the-store.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/doctor-reads-the-units-not-the-shell.test.mjs": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/doors-agree.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/drive-env.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/e2e-assertions.test.mjs": [
+      0,
+      13,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/engine.anthropic.test.mjs": [
+      0,
+      13,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/euipo-environment-doctrine.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/every-dispatch-carries-the-charter.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/every-own-pass-digest-is-declared.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/every-value-a-unit-needs-has-a-writer.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/every-verb-answers-help.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/floor-duty.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/health-tells-the-truth-about-the-bundle.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/knockout-structured-read.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/no-nul-bytes.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/no-test-account-reaches-the-package.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/onboard-wizard.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/one-clause-net.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/one-node-floor-read-in-one-place.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/one-rule-decides-whether-an-absent-drainer-is-a-fault.test.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/pipeline.anthropic.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/pipeline.mock.test.mjs": [
+      0,
+      29,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/plain-words-on-what-the-reader-sees-first.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/portal-config-view.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/portal-service.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/portal-upstream.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/production-dependencies.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/reading-the-demo-does-not-edit-the-repository.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/reference-score-owner-identity.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/register-count.test.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/register-digest-record.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/release-pipeline.test.mjs": [
+      0,
+      12,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/removing-the-demo-is-one-directory.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/render-frozen.test.mjs": [
+      0,
+      81,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/repair-composer-registry.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/runner.dedup.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/runner.failure-backstop.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/runner.knockout-e2e.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/start-background-units.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/suite-ledger-is-not-the-box-ledger.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/surface-prose-names-what-renders.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-connector-offers-a-memo-on-a-delivered-report.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-corrective-pass-names-what-it-removes.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/the-door-answers-the-address-it-advertises.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-doubt-carries-its-placement-tier.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    "driver/test/the-drain-check-names-this-deployments-drainer.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-env-file-lives-where-an-upgrade-cannot-reach.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-executable-bits-survive-the-cut.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-install-places-what-a-server-needs.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-installer-advice-matches-the-box-it-is-given.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-knockout-page-leads-with-the-read.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-link-we-send-opens.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-narrative-is-checked-against-its-depth-rules.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-notice-goes-to-whoever-asked.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-owner-of-a-promoted-filing-is-searched.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-package-ships-only-the-demo-customers.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-portal-asks-whether-its-engine-will-take-it.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-prose-cannot-claim-coverage-the-run-never-searched.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-published-manifest-is-not-the-repos-manifest.test.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-reference-strip-left-sentences-unfinished.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-report-carries-what-the-assessment-wrote.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-runtime-floor-is-read-not-restated.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-summary-carries-structure.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-two-register-rule-says-the-same-thing-to-both-products.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/third-party-notices.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/test/unit-entries-load-env-local.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/verify-knockout.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/withheld-states-its-scope.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/tokens.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "driver/unit-inventory.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/verify-knockout.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/verify.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/whatif-memo-run.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/whatif-queue.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/whatif-worker.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/http-server.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/key-socket.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/audit-view.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/driver.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/instructions.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/knockout.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/whatif.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/remote/client-mcp-apikey.service": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/remote/client-mcp.service": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/remote/trademark-artifacts-http.service": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/server.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/_fixture.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/a-key-has-one-door-and-it-is-not-the-network.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/a-knockout-trace-survives-the-client-door.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/a-memo-survives-the-door-it-arrives-through.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/connector-skills-are-one-copy.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/knockout-audit-tools.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/ops-token.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "mcp-server/test/scope.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "mcp-server/test/whatif.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "portal-ui/src/base.css": [
+      0,
+      24,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "portal-ui/src/contract/api.ts": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "portal-ui/src/contract/summaryBlocks.ts": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "portal-ui/src/screens/GlobalConfig.tsx": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "portal-ui/src/screens/UseYourAI.tsx": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "portal-ui/src/shell/AppShell.tsx": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "portal-ui/test/api.test.ts": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "portal-ui/test/useYourAI.test.ts": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "providers/_shared/test/enumerate-ceiling-parity.test.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "providers/oauth-mcp-bridge/systemd/courtlistener-mcp.service": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "providers/oauth-mcp-bridge/test/the-bootstrap-recipe-binds-a-resource.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/ai-page-render-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+    ],
+    "scripts/citation-line-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/clearances-render-check.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/composer-render-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/drive-env-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/e2e.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    "scripts/env-audit.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/headless-page.mjs": [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/live-surface-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/mint-names-in-force.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/mint-reference-strip-backlog.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/mint-suite-census.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "scripts/pack-publishable.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/preinstall-node-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-await-cut.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-cut-decision.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-dist-tag.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-install-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-publish-guard.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-version-pr-checks.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/render-check.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/repo-writes.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/report-frame-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/report-screenshot.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/retire-bare-refs.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/score.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "scripts/strip-tracker-citations.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/test-run.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/third-party-notices.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/verify-publishable.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/access-audience.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/anon-overlay.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/bundle-freshness.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/checkout-move.mjs": [
+      0,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/client-door.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    "shared/connect-clients.mjs": [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/connector-signin-probe.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/env-aliases.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/env-local.mjs": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/install-auth.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/listen.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/mcp-challenge.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/names-in-force.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/register-selection.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/scope.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/secret-file.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/suite-census.mjs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "shared/summary-blocks.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/systemd-failure.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/tracked-files.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/trigger-lane.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/usage-block.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

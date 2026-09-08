@@ -6,6 +6,10 @@ you cannot run and why, and the three rules that fail CI if you miss them.
 Start with [README.md](README.md) for what the engine does and [INSTALL.md](INSTALL.md) for a real
 installation.
 
+If a word in the code means something you did not expect, [`docs/GLOSSARY.md`](docs/GLOSSARY.md)
+defines the ones that carry a local meaning — arm, seat, plant, ledger, receipt, carry-through and
+the rest — with the file that owns each.
+
 ## What you can run, with nothing but a clone
 
 **Node 22 is a hard floor.** `package.json` declares it, `.nvmrc` pins it, and the free US register
@@ -91,13 +95,13 @@ any writing pass over the documentation, applies to them.
 
 ## The three rules that fail CI
 
-**1. Rebuild `portal-ui/dist` before you push.** The bundle is not committed — CI builds it from
-source and requires byte equality, so a change under `portal-ui/src` that does not build cleanly
-fails:
+**1. Build `portal-ui/dist` before you push.** The bundle is not committed; it is gitignored, and
+CI runs `npm run build:ui` from source. So there is nothing to add — run it locally when you touch
+`portal-ui/src`, because a bundle that does not build fails CI and there is no committed copy to
+fall back on:
 
 ```bash
 npm run build:ui
-git add portal-ui/dist
 ```
 
 CI builds on the exact Node version named in
