@@ -336,6 +336,55 @@ test('#1439 — engine and provider rows survive the hop with the fields the pag
   assert.equal(providers?.[1]?.configured, true)
 })
 
+test('the engine program and its install command cross the hop, and an older server costs the row nothing', async () => {
+  // WHAT THE ROW SAYS WHEN IT GOES RED. The settings Engine row names the program and the command that
+  // installs it, and both arrive as words on this wire. A server that sends neither is not a defect —
+  // it is an older portal-service, and the row falls back to the sentence it has always had rather than
+  // rendering "undefined" at an operator.
+  const withWords = await withFetch(200, {
+    available: true, note: null, built: null, flags: [], providers: [],
+    engine: {
+      id: 'anthropic-agent', vendor: 'Anthropic', known: true, binaryPresent: false,
+      billing: { mode: 'subscription', apiBilled: false, missing: [] },
+      program: 'claude', install: 'npm install -g @anthropic-ai/claude-code',
+    },
+  }, () => api.adminConfig())
+  assert.ok(isOk(withWords))
+  assert.equal(withWords.value.engine?.program, 'claude')
+  assert.equal(withWords.value.engine?.install, 'npm install -g @anthropic-ai/claude-code')
+
+  const older = await withFetch(200, {
+    available: true, note: null, built: null, flags: [], providers: [],
+    engine: {
+      id: 'anthropic-agent', vendor: 'Anthropic', known: true, binaryPresent: false,
+      billing: { mode: 'subscription', apiBilled: false, missing: [] },
+    },
+  }, () => api.adminConfig())
+  assert.ok(isOk(older))
+  assert.equal(older.value.engine?.program, null, 'a missing field must arrive as null, not undefined')
+  assert.equal(older.value.engine?.install, null)
+})
+
+test('engineProgramDisputed decodes to three values, and the third is not false', async () => {
+  // THE WHOLE POINT OF THE FIELD IS THAT IT HAS THREE ANSWERS. Collapsing "could not check" into
+  // "no disagreement" would print the remedy for an empty machine — install a CLI — at a reader whose
+  // machine already has one, which is the defect this field exists to end, arriving by another route.
+  const base = { role: 'client', email: 'a@b.example', accounts: ['aurora'] }
+  for (const [wire, want] of [[true, true], [false, false]] as const) {
+    const r = await withFetch(200, { ...base, engineProgramDisputed: wire }, () => api.me())
+    assert.ok(isOk(r))
+    assert.equal(r.value.engineProgramDisputed, want)
+  }
+  // Everything else is "cannot answer": an absent field from an older server, and anything that is not
+  // a boolean at all.
+  for (const wire of [undefined, null, 'true', 1, {}, []]) {
+    const r = await withFetch(200, { ...base, engineProgramDisputed: wire }, () => api.me())
+    assert.ok(isOk(r))
+    assert.equal(r.value.engineProgramDisputed, null,
+      `engineProgramDisputed ${JSON.stringify(wire)} decoded to something a screen would act on`)
+  }
+})
+
 test('#1720 engineMode decodes to demo or unproven, and EVERYTHING else is null', async () => {
   // The two values a caller may act on survive; anything else lands as null, which every caller treats
   // as "leave the button alone". The direction that matters is the one that takes a working install's

@@ -13,6 +13,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { flagView, accessView, observedView, authView } from "../portal-config-view.mjs";
+import { ENGINE_BINARIES } from "../driver.config.mjs";   // — the row is asserted against the table, never a literal
 import { buildFlagSnapshot, snapshotPath } from "../flag-snapshot.mjs";
 
 // The three admission kill switches this file used to render (CLEAROTRON_KNOCKOUT_MODE, CLEAROTRON_JX_LANES,
@@ -127,7 +128,14 @@ test("#1439 — an instance with nothing wired up sends ROWS saying so, and they
   writeFileSync(p, JSON.stringify(buildFlagSnapshot({}, { capturedAt: AT, engine, providers })));
 
   const v = flagView(root, { now: NOW });
-  assert.deepEqual(v.engine, engine);
+  // EVERY STORED FIELD SURVIVES THE VIEW — which is what this arm is about, and the reason it is a
+  // deep comparison rather than a spot check. `program` and `install` are DERIVED from the id at read
+  // time and are named separately below: they are not in the capture and never have been, so folding
+  // them into the expectation here would quietly turn a round-trip assertion into a shape assertion.
+  const { program, install, ...stored } = v.engine;
+  assert.deepEqual(stored, engine);
+  assert.equal(program, "claude", "the derived program name did not reach the view");
+  assert.ok(install, "the derived install command did not reach the view");
   assert.equal(v.providers.length, 2, "every row survives — an unconfigured provider is not dropped");
   assert.ok(v.providers.every((r) => r.configured === false));
   assert.deepEqual(v.providers.map((r) => r.missing).flat(), ["CLEAROTRON_DATABASE", "SERPAPI_API_KEY"]);
@@ -430,6 +438,37 @@ test("#1720 no binary is DEMO, a binary is ENGINE-UNPROVEN, and neither is ever 
     + "and fails at the first stage");
   assert.notEqual(unproven.engineMode, "engine-ready",
     "READY is reachable only from a completed probe turn, and this process never spends one");
+});
+
+test("the engine row carries the program's name and the command that installs it", () => {
+  // THE HALF THAT WAS MISSING. The row already went red when the program could not be found; it said
+  // "the engine program cannot be found or run on this machine" and stopped there, on the one page a
+  // reader opens to find out what to do. A fault that names a problem and no action is a fault the
+  // reader carries away unchanged.
+  const v = flagView(poolWithEngine({ id: "anthropic-agent", known: true, binaryPresent: false }), { now: NOW });
+  assert.equal(v.engine.program, ENGINE_BINARIES["anthropic-agent"].fallback,
+    "the row cannot name the program a reader has to install");
+  assert.equal(v.engine.install, ENGINE_BINARIES["anthropic-agent"].install,
+    "the row cannot name the command that installs it");
+
+  // AGAINST THE TABLE, NEVER AGAINST A LITERAL. The wizard and the run-door preflight read these same
+  // two fields; asserting the spelling here would let this page describe an engine differently from
+  // the command that starts it, which is the class of defect this whole issue is.
+  assert.notEqual(v.engine.program, null);
+  assert.notEqual(v.engine.install, null);
+
+  // NO PATH. `program` is the bare name a reader types. The resolved path is this machine's layout and
+  // this value is rendered in a browser — the snapshot has never carried one and must not start.
+  assert.ok(!v.engine.program.includes("/"), "a resolved path reached a value the browser renders");
+});
+
+test("an engine this build does not ship names no program and no command", () => {
+  // AN INVENTED FACT IS WORSE THAN A MISSING ONE. There is no program to name for an engine that is not
+  // here, and the row already has its own sentence for that state ("this build does not ship an engine
+  // called X"). A fallback spelling would send a reader off to install something unrelated.
+  const v = flagView(poolWithEngine({ id: "not-an-engine-this-ships", known: false, binaryPresent: false }), { now: NOW });
+  assert.equal(v.engine.program, null, "a program was named for an engine that does not exist here");
+  assert.equal(v.engine.install, null, "a command was named for an engine that does not exist here");
 });
 
 test("#1720 no snapshot answers NULL, never demo — an absent file is not an absent engine", () => {
