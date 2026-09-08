@@ -1418,17 +1418,32 @@ export async function runCheck() {
         const demo = keys.filter((k) => roster.get(k)?.demoData === true);
         // `generic` is the universal fallback the module requires by name, not a brand owner somebody
         // onboarded — counting it would tell an operator with an empty store that they have one.
-        const owners = keys.filter((k) => k !== "generic");
+        //
+        // A DEMO ACCOUNT IS NOT AN ONBOARDED OWNER EITHER, and until this line it was counted as one. A
+        // fresh install ships the demo account, so `doctor` reported "1 brand owner(s) resolve here:
+        // demo-brand-owner (DEMO DATA)" on a machine where nobody had onboarded anything — and never
+        // named `generic`, which is the account that actually rates a run there. The reader is told they
+        // have a customer and not told what they are running on. Both halves wrong from one list.
+        //
+        // Three states, told apart, because they mean three different things to whoever is reading:
+        // an onboarded roster, the house default alone, and the house default plus what the demo brings.
+        // The demo account keeps its DEMO DATA marking wherever it appears — that marking is the
+        // member-level half of the same honesty, and a real clearance under it is refused at the
+        // admission wall, which an operator should learn here rather than from that refusal.
+        const owners = keys.filter((k) => k !== "generic" && !demo.includes(k));
         if (!owners.length) {
-          info(`no brand owners resolve here — only the \`generic\` fallback. An empty store is a working `
-            + `install on Generic defaults; it is also what a store pointed at the wrong directory looks like`);
+          const base = "`generic` is the account this install rates under — the house default, and the "
+            + "only one a clean install has";
+          if (demo.length) {
+            info(`${base}. Also present, marked DEMO DATA: ${demo.join(", ")} — fiction that ships with `
+              + "this install rather than an account anybody onboarded, and a real clearance under one is refused");
+          } else {
+            info(`${base}. An empty store is a working install on Generic defaults; it is also what a `
+              + "store pointed at the wrong directory looks like");
+          }
         } else {
-          const marked = owners.map((k) => (demo.includes(k) ? `${k} (DEMO DATA)` : k)).join(", ");
-          const line = `${owners.length} brand owner(s) resolve here: ${marked}`;
-          // The demo marker is the member-level half: naming the store is not the
-          // same as saying the accounts in it are fiction, and a real clearance under one is refused at
-          // the admission wall — which an operator should learn here rather than from that refusal.
-          if (demo.length) info(`${line} — accounts marked DEMO DATA cannot start a real clearance`);
+          const line = `${owners.length} brand owner(s) resolve here: ${owners.join(", ")}`;
+          if (demo.length) info(`${line}. Also present, marked DEMO DATA: ${demo.join(", ")} — not counted above, and a real clearance under one is refused`);
           else ok(line);
         }
         try {

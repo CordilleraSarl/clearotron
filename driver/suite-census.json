@@ -1606,8 +1606,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 20,
-          "asserts": 47,
+          "tests": 23,
+          "asserts": 62,
           "skips": 0,
           "todos": 0
         },
