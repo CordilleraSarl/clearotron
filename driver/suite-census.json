@@ -4745,7 +4745,7 @@
         },
         "update-refuses-on-a-packaged-install.test.mjs": {
           "tests": 6,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
