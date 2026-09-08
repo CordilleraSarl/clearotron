@@ -87,7 +87,7 @@ export function todayISO(now = new Date()) {
 }
 
 // The resolved customer = the profile key (profiles.mjs resolveProfile, forwarder-domain only). This was
-// a aurora-interactive.example-vs-generic HARDCODE (D4.1); the engine is already profile-driven, so resolveProfile is
+// a customer-vs-generic HARDCODE (D4.1); the engine is already profile-driven, so resolveProfile is
 // the single source of truth. ctx.customer is telemetry-only (the run-start log line); per-customer
 // DELIVERY reads the FROZEN sidecar ctx.profile.profileKey (which wins on resume) — never read
 // ctx.customer for a delivery decision, or a profiles/ edit between run and resume would diverge.

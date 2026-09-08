@@ -83,10 +83,10 @@ function accessFor({ role, url }) {
       ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) => [shape, stdioConnectFor(shape, { workDir: null })]))
       : {},
     publicAddress: url,
-    operator: 'counsel@zephyr.com',
+    operator: 'counsel@coastline.test',
   })
   return {
-    url, keyUrl: null, email: 'counsel@zephyr.com', enabled: !!url, stdio,
+    url, keyUrl: null, email: 'counsel@coastline.test', enabled: !!url, stdio,
     // THE ROUTE'S OWN MAPPING, not a copy of it.
     offers: offersForWire(offers),
   }
@@ -100,12 +100,12 @@ const server = createServer((req, res) => {
   const json = (o) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)) }
   const s = STATES[current]
   if (path === '/portal/api/me') {
-    return json({ role: s.role, email: 'counsel@zephyr.com', accounts: s.role === 'staff' ? [] : ['zephyr'],
-      allAccounts: s.role === 'staff', accountNames: { zephyr: 'Zephyr Beverages' } })
+    return json({ role: s.role, email: 'counsel@coastline.test', accounts: s.role === 'staff' ? [] : ['coastline'],
+      allAccounts: s.role === 'staff', accountNames: { coastline: 'Coastline Drinks' } })
   }
   if (path === '/portal/api/mcp-access') return json(accessFor(s))
   if (path === '/portal/api/connect-key' && req.method === 'POST') { mints++; return json(MINTED) }
-  if (path === '/portal/admin/roster') return json({ customers: [{ key: 'zephyr', name: 'Zephyr Beverages' }] })
+  if (path === '/portal/admin/roster') return json({ customers: [{ key: 'coastline', name: 'Coastline Drinks' }] })
   if (path.startsWith('/portal/api/') || path.startsWith('/portal/admin/')) return json({})
   const file = path === '/' || (path.startsWith('/portal') && !path.includes('.')) ? '/index.html' : path.replace(/^\/portal/, '')
   const full = join(DIST, file)

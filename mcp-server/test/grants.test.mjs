@@ -212,8 +212,8 @@ test("examples/grants.example.json loads through loadGrants and grants what it l
   // Each documented resolution path is exercised by a row: a tenant-wide "*", a narrower per-user
   // list, and a *@domain wildcard. An example that only ever produced "*" would teach nothing.
   assert.equal(accountsForEmail("principal@firm.example", g), "*", "a user of '*' on an accounts:'*' tenant sees everything");
-  assert.deepEqual(accountsForEmail("associate@firm.example", g), ["aurora"], "a per-user list narrows inside the tenant");
-  assert.deepEqual(accountsForEmail("anyone@aurora.example", g), ["aurora"], "*@domain expands to the tenant's grant");
+  assert.deepEqual(accountsForEmail("associate@firm.example", g), ["demo-brand-owner"], "a per-user list narrows inside the tenant");
+  assert.deepEqual(accountsForEmail("anyone@brand-owner.example", g), ["demo-brand-owner"], "*@domain expands to the tenant's grant");
   assert.deepEqual(accountsForEmail("stranger@nowhere.example", g), [], "an address in no tenant is granted nothing");
 
   // `generic` is the house account and portal-access.mjs strips it from every client grant, so a

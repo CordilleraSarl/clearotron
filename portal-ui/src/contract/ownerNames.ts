@@ -6,7 +6,7 @@
 // different strings for one entity, and for a long time the app resolved the second one in exactly one
 // place — the sidebar switcher — and only for staff, because the names came from the staff-only roster.
 // A client, whose own company it is, had no name source at all and read the slug everywhere. So the
-// same brand owner appeared as "Aurora Interactive" in the rail and "aurora" in the heading beside it,
+// same brand owner appeared as "Foxglade Interactive" in the rail and "foxglade" in the heading beside it,
 // and differently again depending on who had signed in.
 //
 // This module is that resolution, once, as data:
@@ -49,7 +49,7 @@ export const ownerNameFrom = (names: OwnerNames, key: string | null): string =>
  * Owners in the order a person can predict.
  *
  * By what is READ, not by what is stored: a menu ordered by slug files "Vantor Labs" under `o` and
- * "Aurora Interactive" under `a` and agrees with the eye only by luck.
+ * "Foxglade Interactive" under `f` and agrees with the eye only by luck.
  */
 export const sortOwners = (
   names: OwnerNames,

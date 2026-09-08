@@ -111,6 +111,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-clean-install-offers-generic-alone.test.mjs": {
+          "tests": 9,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -1625,13 +1631,13 @@
         },
         "doctor-names-who-is-in-the-store.test.mjs": {
           "tests": 5,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 20,
-          "asserts": 47,
+          "tests": 24,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },

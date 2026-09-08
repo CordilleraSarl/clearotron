@@ -3,8 +3,8 @@
 > Part of the architecture pack (`docs/architecture/`). The driver's module tree and the headless
 > integrator contract are in [`driver/README.md`](../../driver/README.md).
 > This chapter describes the profile *mechanism*. Real customer bundles load from an external store
-> via `CLEAROTRON_CUSTOMERS_DIR` and no customer is named here; the repository ships `generic` plus the
-> synthetic demo customers `aurora`, `zephyr` and `petcary` — see
+> via `CLEAROTRON_CUSTOMERS_DIR` and no customer is named here; the package ships `generic` and the demo
+> brand owner, and the repository holds three further synthetic profiles for the test suite — see
 > [`driver/profiles/`](../../driver/profiles/).
 
 One engine, never forked — three layers. The reasoning core is shared by every client; the client

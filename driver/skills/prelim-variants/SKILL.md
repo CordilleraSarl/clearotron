@@ -125,8 +125,8 @@ LUMENGARDE is the distinctive anchor — risk concentrates on coined-word axes a
 
 **A variant VALUE is a mark term, never a note about one.** A parenthetical, sentence punctuation
 (`—`, `;`) or a space-flanked slash makes it a label, and a label dispatched verbatim returns a
-confident zero over marks that exist — a nil search that reads as a clean. Write `ZEPHYR`, not
-`ZEPHYR (root)`; the rationale column is where the note belongs. The compiler refuses annotated values
+confident zero over marks that exist — a nil search that reads as a clean. Write `COASTLINE`, not
+`COASTLINE (root)`; the rationale column is where the note belongs. The compiler refuses annotated values
 whatever their length, so a two-word one is caught the same way a long one is.
 
 **If a value genuinely IS a mark carrying that punctuation** — a device mark recorded with its Vienna
@@ -178,7 +178,7 @@ silently narrows what was searched, and the deferred row is the honest outcome.
 
 ### Watchlists
 
-- **Aggressive enforcers:** Nordwave, Aurora Interactive
+- **Aggressive enforcers:** Nordwave, Foxglade Interactive
 - **Major brand owners:** Sony, Aureon, Nintendo, HP, Activision, Take-Two, EA
 - **Competitors:** Epic Games, Valve, Unity, Riot Games
 

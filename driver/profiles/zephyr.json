@@ -1,5 +1,6 @@
 {
   "name": "Zephyr Beverages",
+  "testFixture": true,
   "demoData": true,
   "matchDomains": [],
   "industry": "functional beverages, supplements & sporting goods",

@@ -61,7 +61,7 @@ function readRunProfile(p) {
 
 // ── doc 50: the run-scoped FROZEN framework manifest ────────────────────────────────────────────────
 // _driver/framework.json is the framework-in-force's manifest, frozen beside profile.json at
-// attachProfile time — the band vocabulary every v4 gate joins against (zephyr "Medium" vs house
+// attachProfile time — the band vocabulary every v4 gate joins against (a customer ladder's "Medium" vs house
 // "Moderate" stays consistent within a run and across resume). Same walk-up + fail-closed convention as
 // readRunProfile: absent ⇒ null (archived/legacy runs); unreadable ⇒ invalid (driver-written, so a
 // corrupt one is a bug that must surface, never a silent downgrade to the wrong vocabulary).

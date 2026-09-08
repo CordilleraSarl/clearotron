@@ -1766,7 +1766,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // which could only ever say "something changed".
 // Advanced again by the seventh break above (tracker issue 147): a behaviour change on the connect
 // block, so both constants move together for the same measured reason as the sixth.
-const FROZEN_BEFORE_SPDX = "a5ace818689af3abdf958a3c3db6e3e7f975822d453d766eadd0e2909ffaf7f7";
+const FROZEN_BEFORE_SPDX = "5ba5aca04c14096639c5944a57acbc4c690e98c05aedce56adca945ae67c11aa";
 // FIFTH BREAK (2026-08-26, tracker issue 1903 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -1972,7 +1972,19 @@ const FROZEN_BEFORE_SPDX = "a5ace818689af3abdf958a3c3db6e3e7f975822d453d766eadd0
 // claim about OUR address, read out of `render.mjs`'s own composition and the door that accepts it,
 // not a claim about a dialog anybody opened. The ChatGPT recipe stays unstamped because it stays
 // undriven.
-const FROZEN = "91944d77e61bcc9c62de45df0f450a4a74942d36662c88d121c139fbda0596df";
+// EIGHTH BREAK (2026-09-08 — no shipped file names a test account).
+//
+// The smallest break this freeze can take: two COMMENT lines, and nothing else. A worked example about
+// substring collisions used a test account's name, and a past duplication was labelled with another. This
+// file is a packed member, so the owner ruling that no published byte names one of the three reaches it,
+// and a comment is the one place a name cannot be excluded away.
+//
+// The checklist, answered rather than assumed. It is reachable from a republish — every break here is —
+// but the rendered bytes cannot move, and that is checked instead of claimed: the module parsed before and
+// after yields an IDENTICAL program (acorn, positions and comments excluded, 695958 characters of AST both
+// sides). A comment carries no output. NOT licence-only, so FROZEN_BEFORE_SPDX advances with it. It could not live in report.css or brand.mjs, because it is prose
+// about this file's own matching rule and belongs beside it.
+const FROZEN = "4897cc6af99af808fbc7f7b4aa308c65316ff562a8c3b767b2243464fe9baf5a";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

@@ -301,7 +301,7 @@ async function loadOutbox(){const r=await(await fetch("/dev/outbox")).json();
 let REG=null;
 const esc=(s)=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 async function loadSearches(){
- const cust=$("#s_cust").value.trim()||"aurora";
+ const cust=$("#s_cust").value.trim()||"demo-brand-owner";
  try{
   const all=await(await fetch("/recipes")).json();
   if(all.error){$("#searches").innerHTML='<span class="err">'+esc(all.error)+'</span>';return;}
@@ -320,7 +320,7 @@ async function loadSearches(){
 function useProduct(k){const f=$("#f");f.product.value=k;$("#f_recipe").value="";f.mark.focus();}
 function useRecipe(cust,slug){const f=$("#f");f.product.value="";$("#f_recipe").value=slug;f.profile.value=cust;f.mark.focus();}
 async function composeSubmit(save){
- const cust=$("#s_cust").value.trim()||"aurora";
+ const cust=$("#s_cust").value.trim()||"demo-brand-owner";
  const fd=new FormData($("#sf"));
  const recipe={label:(fd.get("label")||"").trim(),base:fd.get("base")};
  if(fd.get("registerProbe")!=null)recipe.components={registerProbe:true};

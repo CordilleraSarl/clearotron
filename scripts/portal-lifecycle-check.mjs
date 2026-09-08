@@ -51,8 +51,8 @@ if (!existsSync(join(DIST, 'index.html'))) {
 const KEY = 'vantor'
 const NAME = 'Vantor Labs'
 
-const KEY2 = 'aurora'
-const NAME2 = 'Aurora Interactive'
+const KEY2 = 'foxglade'
+const NAME2 = 'Foxglade Interactive'
 
 /** Which identity /portal/api/me answers as. Flipped between passes. */
 let role = 'client'
@@ -144,7 +144,7 @@ const server = createServer((req, res) => {
   // Staff-only, and answered as such: a client pass that somehow reached it would be a real finding.
   if (p === '/portal/admin/roster') {
     if (role !== 'staff') { res.writeHead(404); res.end('{}'); return }
-    return json(res, { customers: [{ key: KEY, name: NAME }, { key: 'aurora', name: 'Aurora Interactive' }] })
+    return json(res, { customers: [{ key: KEY, name: NAME }, { key: 'foxglade', name: 'Foxglade Interactive' }] })
   }
   if (p === '/portal/api/searches') {
     return json(res, {
@@ -565,7 +565,7 @@ if (asMulti && !asMulti.fatal) {
     `the switcher lists keys rather than names for a multi-account client: ${JSON.stringify(asMulti.railOwner)}`)
   ok(!asMulti.railOwner.some((t) => t === KEY || t === KEY2),
     `a raw account key is in the brand-owner pulldown: ${JSON.stringify(asMulti.railOwner)}`)
-  // Ordered by what is READ. "Aurora Interactive" before "Vantor Labs" — which is also the opposite of
+  // Ordered by what is READ. "Foxglade Interactive" before "Vantor Labs" — which is also the opposite of
   // the order the grants list them in, so a pass-through would show.
   ok(asMulti.railOwner[0] === NAME2, `the switcher is not sorted by name: ${JSON.stringify(asMulti.railOwner)}`)
 }

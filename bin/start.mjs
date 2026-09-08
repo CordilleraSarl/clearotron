@@ -836,6 +836,10 @@ if (isMain) {
   // bound anywhere else in any mode. Sign-in is untouched — the demo signs in like any first start, and
   // the portal mints and prints its passphrase exactly as it does for a real one.
   const DEMO = argv.includes("--demo");
+  // THE DEMO BRINGS ITS OWN ACCOUNT. A fresh install resolves `generic` and nothing else (owner
+  // ruling, 2026-09-08), so the demo account is refused from the roster unless somebody asked for it.
+  // Asked here, once and visibly, rather than at each site that happens to read a roster.
+  if (DEMO) process.env.CLEAROTRON_DEMO_PROFILES ??= "1";
   // ── `--port` MOVES EVERY DOOR IT OPENS (tracker issue 166) ───────────────────────────────────────
   //
   // It used to move ONE of the three. `resolvePorts` reads three independent variables with three

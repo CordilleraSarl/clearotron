@@ -888,7 +888,7 @@ function deriveGridSpec(ctx) {
   // Deterministic grid contract (robust fix, 2026-06-14): write the EXACT terms × platforms the grid
   // will run as a code-owned spec. The perplexity plugin reads this, runs only these cells, and writes
   // common-law-grid.json ITSELF from the API response — the large grid JSON never round-trips through
-  // the model's bounded turn-output (no truncation: Zephyr/marble-causeway) and the model never re-types
+  // the model's bounded turn-output (no truncation: measured on a dense beverages run) and the model never re-types
   // the keys or cells (no drops/mis-keys: NOVA PULSE/marble-anvil). The receipts gate joins against THIS
   // same file, so it can never demand a key the grid did not run. No profile (no dictated platforms) ⇒
   // legacy model-authored path (back-compat; the gate falls back to the prose manifest).
@@ -918,7 +918,7 @@ function deriveGridSpec(ctx) {
     const gridSpecPath = P.gridSpec;
     // #5 — required channels: a NAMED profile's curated platforms are authoritative. The GENERIC fallback
     // derives the channels from the MATTER FRAME's industry/goods reasoning (its "Search channels:" line) so
-    // a regulated/B2B matter (petcary vet-pharma) searches its real channels (EMA/FDA registers) instead of
+    // a regulated/B2B matter (veterinary pharma, say) searches its real channels (EMA/FDA registers) instead of
     // being forced onto — and invalidated by — consumer storefronts. No static class→channel table: the
     // frame names them the way a lawyer reasons about the vertical, so it generalises to ANY industry. The
     // deterministic grid runs grid-spec.platforms and the receipts gate joins the SAME file, so this is the
@@ -1465,7 +1465,7 @@ export function freezeProfile(p, project = null) {
     demoData: p.demoData === true,
     // BUGFIX 2026-06-19: per-customer reasoning-skill SELECTION must be frozen too. It was missing here, so
     // frameworkFor()/workedExamplesFor() (stages.mjs) read the frozen ctx.profile, found no path, and silently
-    // fell back to the firm-neutral DEFAULT for EVERY run — aurora.json/zephyr.json's configured frameworks
+    // fell back to the firm-neutral DEFAULT for EVERY run — the profiles' configured frameworks
     // were never applied. RAW value (NOT `?? ""`): absent ⇒ undefined ⇒ JSON drops it ⇒ frameworkFor falls back
     // to DEFAULT; an empty string would NOT trigger the `?? DEFAULT` and would break the read.
     frameworkPath: p.frameworkPath,
@@ -1490,7 +1490,7 @@ export function freezeProfile(p, project = null) {
   };
   // spec 62 — when the run is under a PROJECT, record which project rated it and the per-field origin map,
   // added AFTER the 14-field base so a NO-PROJECT freeze stays byte-identical to a pre-62 sidecar (the
-  // aurora regression anchor and every existing run's profileSha are preserved; profileShaOf sorts keys,
+  // regression anchor and every existing run's profileSha are preserved; profileShaOf sorts keys,
   // so these hash in only when present, making "which project rated this run" verifiable, never asserted).
   if (project?.projectKey) {
     frozen.projectKey = project.projectKey;
@@ -14633,7 +14633,7 @@ async function pipelineInner(job, opts = {}) {
     // ratings (joinFindingToBlock), never the summary's own words.
     try { emailVerdictOpts.findings = parseFindingsJsonLenient(readFileSync(P.findings, "utf8"))?.findings ?? undefined; } catch { /* no findings — table falls back to the summary words */ }
     // doc 50 — the run's band ladder: the email table colours + sorts by the framework in force's own
-    // vocabulary (zephyr "Medium", house "Moderate", aurora's five bands) instead of the fixed table.
+    // vocabulary (one framework's "Medium", the house's "Moderate", another's five bands) instead of the fixed table.
     if (ctx.framework) emailVerdictOpts.bands = ctx.framework.bands.map((b) => ({ label: b.label, tone: b.tone }));
     // ONE report (spec 2026-07-30 §6): the cover note is a cover note — verdict, one-line summary, link.
     // A10 (addendum, 2026-07-30) NARROWS the old "machine-QC never on the email" rule rather than
