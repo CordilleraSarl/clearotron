@@ -385,16 +385,49 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
     // ── A DOCUMENT SAYING "THIS IS NOT A KNOB" KEEPS ITS NAME OFF THIS LIST ────────────────────────
     //
     // The classifier keys on the NAME and `tuning` is its residual — what a name falls to when no shape
-    // matches. So a name whose catalogue row declares `silent-output-change`, `disclosed-gate` or
-    // `credential` reaches the deletion walk on a class that its own documentation contradicts.
+    // matches. So a name whose catalogue row declares any other effect reaches the deletion walk on a
+    // class its own documentation contradicts.
     //
-    // MEASURED 2026-09-08, over the full catalogue: fifteen names are in exactly that position, and
-    // every one of them leaves the walk further down for an UNRELATED reason — thirteen match the
-    // instrument regex on their spelling, one has a non-numeric default, one has no default found. The
-    // file already says what that is worth about a different name: exclusion "for an unrelated reason
-    // (no default found), which is luck, not a rule". Rename one of the thirteen to something without
-    // `DUMP` or `PROBE` in it and it joins the deletion population with a document beside it saying it
-    // changes what a run produces.
+    // THE TEST IS `!== "tuning"`, SO IT EXCLUDES ALL FIVE OTHER CLASSES. `tuning` is the only declared
+    // effect that AGREES with being a knob, so it is the only one that may reach the walk. Each of the
+    // five, in the catalogue's own words, and why deleting the name would cost something:
+    //
+    //   silent-output-change  "changes what a run produces, and nothing in the run's own artifacts says
+    //                         so" — the worst one to delete, because the loss is invisible in the output.
+    //   disclosed-gate        "changes what a run covers, AND the run discloses the gap" — deleting it
+    //                         silently restores coverage the operator chose to switch off, or removes
+    //                         their ability to switch it off at all.
+    //   credential            "absent, the run refuses at preflight by name" — deleting it turns a
+    //                         named refusal into an unexplained one.
+    //   deployment            "where input and output live; the conclusion a run reaches is unchanged"
+    //                         — unchanged CONCLUSION is not unchanged behaviour. This is the class the
+    //                         whole rule comes from: two notification addresses, legitimately unset on
+    //                         the deployment being read, were proposed for deletion on exactly this
+    //                         mismatch. Excluding it is the original finding, not an extension of it.
+    //   harness               "read only on a fixture, replay or self-test path; no production run
+    //                         reaches it" — the one that reads as safe to delete and is not. Deleting a
+    //                         harness name does not remove a knob nobody uses; it removes the only way
+    //                         a test can run. That argument is already made below for `instrument`, and
+    //                         it is the same argument. A declaration is a stronger version of it,
+    //                         because it does not depend on the spelling.
+    //
+    // The alternative — narrowing to the three classes this comment used to name — would put
+    // `deployment` back on the list and re-admit the defect the rule exists to stop.
+    //
+    // WHAT THIS TREE CAN SHOW YOU, and it is not the number to look for. Measured 2026-09-08: this tree
+    // carries 43 catalogued rows and 12 declarations, and NO name is in the contradicting position, so
+    // the rule changes nothing here and a check written against the live catalogue would pass while
+    // looking at nothing. That is why the checks plant a catalogue rather than reading this one. Over
+    // the full catalogue the same day the position holds seventeen names — ten declared
+    // `silent-output-change`, four `disclosed-gate`, two `harness`, one `credential` — and every one of
+    // them leaves the walk further down for an UNRELATED reason: the instrument regex matching their
+    // spelling, a non-numeric default, or no default found. The file already says what that is worth
+    // about a different name: exclusion "for an unrelated reason (no default found), which is luck, not
+    // a rule". Rename one of them to something without `DUMP` or `PROBE` in it and it joins the deletion
+    // population with a document beside it saying it changes what a run produces.
+    //
+    // Those counts are a dated reading and they move; two of the seventeen were added the same week.
+    // The RULE is what is being asserted here, not the population.
     //
     // So the declaration is read FIRST and it is the rule. Nothing is silently dropped: the names land
     // in their own bucket, and the row carries the declaration that put them there.

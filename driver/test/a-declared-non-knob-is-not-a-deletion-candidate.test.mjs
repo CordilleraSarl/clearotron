@@ -4,24 +4,36 @@
 //
 // THE CLASSIFIER KEYS ON THE NAME, and `tuning` is its residual — what a name falls to when no shape
 // matches. The deletion walk starts from `tuning` with no recorded set-site. So a name whose catalogue
-// row declares `silent-output-change`, `disclosed-gate` or `credential` reaches that walk on a class its
-// own documentation contradicts, and the only thing that then keeps it off the candidate list is
-// whatever the later filters happen to make of its spelling.
+// row declares ANY effect other than `tuning` reaches that walk on a class its own documentation
+// contradicts, and the only thing that then keeps it off the candidate list is whatever the later
+// filters happen to make of its spelling.
 //
-// MEASURED over the full catalogue: fifteen names sit in exactly that position, and every one of them
-// leaves the walk for an UNRELATED reason — thirteen because their names contain `DUMP`, `PROBE`,
-// `DISPATCH_RECORD` and the like, one for a non-numeric default, one for no default found. Not one is
-// excluded because a document says it changes what a run produces. `scripts/env-classify.mjs` already
-// wrote the verdict on that, about a different name: exclusion "for an unrelated reason (no default
-// found), which is luck, not a rule."
+// FIVE CLASSES, NOT THREE. `tuning` is the only declared effect that agrees with being a knob, so the
+// rule is `!== "tuning"` and every other class is excluded: `silent-output-change`, `disclosed-gate`,
+// `credential`, `deployment` and `harness`. The two that read as safe to delete are the two that must
+// not be missed — `deployment` is the class the rule comes from (notification addresses, legitimately
+// unset on the deployment being read, proposed for deletion on exactly this mismatch), and `harness`
+// looks deletable because no production run reaches it, when deleting it removes the only way a test
+// can run. Every one of the five is driven below.
+//
+// MEASURED 2026-09-08 over the full catalogue: seventeen names sit in exactly that position — ten
+// declared `silent-output-change`, four `disclosed-gate`, two `harness`, one `credential` — and every
+// one of them leaves the walk for an UNRELATED reason: their names contain `DUMP`, `PROBE`,
+// `DISPATCH_RECORD` and the like, or a non-numeric default, or no default found. Not one is excluded
+// because a document says it changes what a run produces. `scripts/env-classify.mjs` already wrote the
+// verdict on that, about a different name: exclusion "for an unrelated reason (no default found), which
+// is luck, not a rule."
+//
+// That count is a dated reading and it moves — two of the seventeen were added the same week. What is
+// asserted below is the RULE, and none of it is asserted on a count.
 //
 // ── WHY THIS PLANTS A CATALOGUE INSTEAD OF READING THE REAL ONE ─────────────────────────────────────
 //
-// The half of the catalogue those fifteen live in is not on this tree — the public checkout carries 43
-// rows and 12 declarations, and none of the fifteen is among them. A check written against the real
-// catalogue would pass here while checking nothing, which is the shape that has cost this repository
-// more than any other. So every name below is planted, and the members are deliberately not all of one
-// declared effect: a filter written for one spelling of "not a knob" must refuse the others too.
+// The half of the catalogue those seventeen live in is not on this tree — this checkout carries 43 rows
+// and 12 declarations, and NO name here is in the contradicting position at all. A check written against
+// the real catalogue would pass here while checking nothing, which is the shape that has cost this
+// repository more than any other. So every name below is planted, and the members are deliberately one
+// per declared class: a filter written for one spelling of "not a knob" must refuse the others too.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { classify } from "../../scripts/env-classify.mjs";
@@ -33,13 +45,16 @@ const run = (catalogue, declared) =>
   classify({ catalogue, sources: NOTHING_SET, setup: new Set(), declared: new Map(declared) });
 
 test("350 a declared non-knob leaves the deletion walk by RULE, whatever its spelling", () => {
-  // Four declared effects, four spellings that match none of the later filters — so if the declaration
-  // were not read, every one of these would walk on to be judged by its default.
+  // EVERY declared class except `tuning`, one name each, in spellings that match none of the later
+  // filters — so if the declaration were not read, every one of these would walk on to be judged by its
+  // default. Driving four of the five would leave the fifth excluded by a predicate no arm exercises,
+  // and `deployment` is the class the whole rule was written for.
   const declared = [
     ["CLEAROTRON_ALPHA_SETTING", "silent-output-change"],
     ["CLEAROTRON_BETA_SETTING", "disclosed-gate"],
     ["CLEAROTRON_GAMMA_SETTING", "credential"],
     ["CLEAROTRON_DELTA_SETTING", "harness"],
+    ["CLEAROTRON_EPSILON_SETTING", "deployment"],
   ];
   const { buckets } = run(declared.map(([n]) => n), declared);
   assert.deepEqual(buckets["declared-not-a-knob"], declared.map(([n]) => n).sort(),
