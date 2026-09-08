@@ -13,7 +13,7 @@
 // So the rules live here and nowhere else. Anything that wants to know whether a line is clean imports
 // from this file.
 //
-// THE TABLE IS NOT HERE. shared/identifier-blocklist.mjs owns the names (sentinels, or sentinels ∪ the
+// THE TABLE IS NOT HERE. shared/identifier-sentinels.mjs owns the names (sentinels, or sentinels ∪ the
 // private roster). This file owns only the matching — it names no identity of its own beyond the
 // platform tokens ALLOWED_CONTEXT has to spell out, which is why it declares itself in
 // DECLARATION_SOURCES.

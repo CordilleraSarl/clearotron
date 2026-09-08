@@ -15,7 +15,7 @@ web for conflicts, reasons about the risk the way a clearance lawyer would, and 
 report with a machine-readable audit trail behind every finding. It runs headless on your own machine:
 no gateway, no platform, and nothing about your matters reaches us.
 
-[Install & operate](INSTALL.md) · [Docs](docs/README.md) · [Security](docs/SECURITY.md) · [Contributing](CONTRIBUTING.md) · [Licence](#licence)
+[Quickstart](QUICKSTART.md) · [Install & operate](INSTALL.md) · [Docs](docs/README.md) · [Security](docs/SECURITY.md) · [Contributing](CONTRIBUTING.md) · [Licence](#licence)
 
 ## Install
 
@@ -71,7 +71,7 @@ sentence, or set the classes, marketplaces and search depth yourself:
 ![The new-clearance screen — classes, marketplaces and the four search depths](docs/assets/portal-new-clearance.png)
 
 A finished clearance reads like this — the verdict, the risk band and the four answers. **The mark
-VENQORI is invented; the EUIPO register data behind it is real and live**, and the report says so on
+VENQORI is invented; the register data behind it is real and live**, and the report says so on
 its own face:
 
 ![A finished clearance report — the verdict, the risk band and the four answers](docs/assets/portal-clearance-report.jpg)
@@ -90,7 +90,7 @@ npx clearotron run --job my-job.json
 
 ## How it fits together
 
-- **A reasoning CLI does the thinking.** Every stage runs as a headless turn of the [Claude CLI](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`), installed and signed in. An `ANTHROPIC_API_KEY` is not a substitute: the key decides what the child process is handed, not whether one is spawned.
+- **A reasoning CLI does the thinking.** Every stage runs as a headless turn of the [Claude CLI](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`), which must be installed. `CLEAROTRON_AI_BILLING` chooses what pays for the turn: your signed-in subscription, or an API key. Either way the CLI is what runs — there is no path that calls the model directly.
 - **One register credential sets coverage and cost.** `CLEAROTRON_DATABASE` has no default — a run refuses rather than picking a vendor for you. EUIPO and a local USPTO index cost nothing; Signa, Clarivate and Corsearch are subscriptions. [The six, and what each reaches](providers/README.md).
 - **One research key.** `PERPLEXITY_API_KEY` covers the open web and the marketplaces. A clearance refuses without it at the door, before a register stage has spent.
 - **A run takes hours, and survives interruption.** Every finished stage stays on disk; a resume re-runs only what is missing, and a run parked on a provider cap continues by itself.
@@ -115,7 +115,8 @@ credential.
 
 | Goal | Start here |
 |---|---|
-| Install, configure and operate it | [INSTALL.md](INSTALL.md) |
+| Get one search running | [QUICKSTART.md](QUICKSTART.md) |
+| Install, configure and operate it | [INSTALL.md](INSTALL.md) — the reference |
 | Pick a register, or run without a paid vendor | [INSTALL.md § 3a](INSTALL.md#3a-running-without-a-paid-register-vendor) |
 | Submit jobs, or consume what a run emits | [INTAKE](docs/INTAKE.md) · [DELIVERY](docs/DELIVERY.md) |
 | Read and question a finished run from a chat app | [mcp-server/CONNECT.md](mcp-server/CONNECT.md) |
@@ -128,8 +129,8 @@ credential.
 A clone is the working tree, not a way to install the product — install it from the package above.
 
 ```bash
-git clone https://github.com/CordilleraSarl/Clearotron
-cd Clearotron
+git clone https://github.com/CordilleraSarl/clearotron
+cd clearotron
 npm install                    # every workspace
 npm run build -w portal-ui     # the browser bundle is not committed — build it once
 npm test                       # the offline suite — no credentials, no network
