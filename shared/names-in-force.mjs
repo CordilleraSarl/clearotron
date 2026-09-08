@@ -8,7 +8,9 @@
 //
 //   node scripts/mint-names-in-force.mjs
 //
-// driver/test/retired-env-spellings.test.mjs regenerates this and refuses a stale copy.
+// CI refuses a stale copy, from the guards job: scripts/generated-files-are-current.mjs runs every
+// minter in scripts/ with --check. (This line used to name a test file that does not exist in this
+// tree, so the only thing that ever caught this drifting was a private control refusing to start.)
 
 export const NAMES_IN_FORCE = Object.freeze([
   "CLEAROTRON_ACCESS_DOMAIN",
@@ -68,6 +70,7 @@ export const NAMES_IN_FORCE = Object.freeze([
   "CLEAROTRON_GATHER_SESSION_KEY",
   "CLEAROTRON_HARD_MS",
   "CLEAROTRON_HTTP_TIMEOUT_MS",
+  "CLEAROTRON_IDENTIFIER_BLOCKLIST",
   "CLEAROTRON_INSTRUCTIONS_DIR",
   "CLEAROTRON_INVOKED_AS",
   "CLEAROTRON_JX_",

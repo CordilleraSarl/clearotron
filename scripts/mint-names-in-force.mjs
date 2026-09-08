@@ -21,7 +21,7 @@
 // ── THE ORACLE THIS DERIVATION IS CHECKED AGAINST ────────────────────────────────────────────────
 //
 // A derivation that is only ever compared against itself proves nothing, which is the shape this repo
-// keeps paying for. So the arm in driver/test/retired-env-spellings.test.mjs holds this output to the
+// keeps paying for. So scripts/generated-files-are-current.mjs, in CI's guards job, holds this output to the
 // THIRTEEN dead names Cart measured in the production install's own env file on 2026-09-05 — a
 // population this script never saw and cannot influence. All thirteen must resolve to a replacement.
 // If a future sweep breaks the suffix rule, that arm reds on real-world data rather than on a
@@ -82,7 +82,9 @@ function render(names) {
 //
 //   node scripts/mint-names-in-force.mjs
 //
-// driver/test/retired-env-spellings.test.mjs regenerates this and refuses a stale copy.
+// CI refuses a stale copy, from the guards job: scripts/generated-files-are-current.mjs runs every
+// minter in scripts/ with --check. (This line used to name a test file that does not exist in this
+// tree, so the only thing that ever caught this drifting was a private control refusing to start.)
 
 export const NAMES_IN_FORCE = Object.freeze([
 ${names.map((n) => `  "${n}",`).join("\n")}
