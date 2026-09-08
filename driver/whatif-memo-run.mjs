@@ -230,6 +230,11 @@ export function validateMemoReply(raw) {
  * The findings are handed over as the run's own JSON rather than summarised: a memo that reasoned over
  * our paraphrase of the evidence would be answering about the paraphrase.
  */
+// `ratedUnder` DEFAULTS HERE AND IS REFUSED BY `composeMemo`, and that asymmetry is only safe while the
+// artifact is the gate. One resolution is threaded to both, and nothing reaches disk without the memo
+// composing — so a forgotten field is caught there. It stops being safe the moment a dispatch path calls
+// this composer alone: the seat would be instructed "house default" with no artifact refusal behind it,
+// because no artifact would be composed. A caller that dispatches without composing owes its own check.
 export function composeMemoMessage({ assumption, findings, ratedUnder = null, skill = "", replyPath = null } = {}) {
   return [
     skill.trim(),
