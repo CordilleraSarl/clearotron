@@ -433,12 +433,23 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   assert.match(report, /<td class="num">41<\/td>/);
   assert.match(report, /not available/, "an untaken count says so, in words — never a blank and never a 0");
   assert.doesNotMatch(report, /Register estimate/, "the model's guess gives way to the measurement");
-  assert.match(report, /Counting is not searching/, "the basis is stated where the numbers are");
+  // WHAT THE NUMBERS MEAN IS STATED WHERE THEY ARE — but in the column headers now, not in a 70-word
+  // paragraph beneath them (tracker issue 331 B). The paragraph printed twice on the page and the owner
+  // asked what it meant; the headers answer that in three words each. It is still written to
+  // report-data.json and to the workbook, which is where the issue puts it, and that is asserted below
+  // rather than here so a failure names which surface lost it.
+  assert.match(report, /<th>Exactly IRONWHISK<\/th>/, "the header says what the identical column counted");
+  assert.match(report, /A count is not a conflict/, "and the one line under the table says what a count is not");
+  assert.doesNotMatch(report, /Counting is not searching/, "the retired paragraph is off the page");
   // The same numbers, machine-readable, for whatever drafts a client-facing note from this run.
   const metaC = JSON.parse(readFileSync(join(pool, dir, "meta.json"), "utf8"));
   const datas = metaC.reports.map((r) => JSON.parse(readFileSync(join(pool, dir, r.dataFile), "utf8")));
   for (const d of datas) assert.equal(d.level.stageLabel, "Knockout search");
   assert.equal(datas.flatMap((d) => d.marks).find((m) => m.registerCounts)?.registerCounts?.identical, 3);
+  // 331 B moved the count-basis sentence off the page and rejects dropping it from the record. This is
+  // the half that says it survived the move.
+  for (const d of datas) assert.match(String(d.registerCountBasis ?? ""), /counted by name only/,
+    "the basis sentence is still in report-data.json, which is where it now lives");
 
   // the stepper grew a step, and the run walked it
   const status = JSON.parse(readFileSync(join(rd, "status.json"), "utf8"));

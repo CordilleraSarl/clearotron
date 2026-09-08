@@ -926,6 +926,31 @@ function registerStatement(r, provider) {
  * which the card links.
  */
 /**
+ * WHICH OF A MARK'S REGISTER CARDS THE PAGE DRAWS (tracker issue 331 A.3).
+ *
+ * THIS FILTERS THE PAGE, NEVER THE RECORD, and that separation is the whole point. 331 rejects dropping
+ * anything from report-data.json or the workbook to make the page shorter, so `registerCardViews` still
+ * builds every promoted filing and still assigns the ordinals it always did — knockoutReportData reads
+ * that, unchanged. This function decides only what is DRAWN.
+ *
+ * Keeping one projection also keeps the flag path honest: portal-service resolves a flag as
+ * `marks[i].findings.find(f => f.ordinal === ordinal)`, so a card on the page carries the ordinal its
+ * own data entry has. A card the page does not draw cannot be flagged, because there is nothing to click.
+ *
+ * THE CONDITION IS A BAND, NOT A ROW (clause F). `registerReads` has existed since the rater could type
+ * a READ; the band arrived later and is independently optional, so a run can carry ten reads and no band
+ * at all. Keying on the row's presence would read those runs as rated-and-all-lowest and silently delete
+ * every card they were delivered with. Keying on a band present anywhere on the mark asks the only
+ * question that matters: did THIS rater use the field this clause reads?
+ */
+function registerCardsOnPage(cards, mark, framework) {
+  const rated = (Array.isArray(mark?.registerReads) ? mark.registerReads : [])
+    .some((r) => String(r?.band ?? '').trim());
+  if (!rated) return cards;
+  return cards.filter((v) => aboveLowestBand(framework, readBandFor(mark, v?.record?.recordId)));
+}
+
+/**
  * IS THIS BAND ABOVE THE LADDER'S LOWEST RUNG? (tracker issue 331 A.3)
  *
  * The ladder runs worst-first, so the lowest rung is the LAST entry. A filing the rater put on that rung
@@ -958,18 +983,7 @@ function registerCardViews(mark, framework, registerRecords) {
   if (!registerRecords || registerRecords.unavailable) return { cards: [], entry: null, promoted: 0 };
   const entry = recordsForMark(registerRecords, mark?.name);
   if (!entry) return { cards: [], entry: null, promoted: 0 };
-  let promoted = promotableRecords(entry, mark);
-  // ── THE BAND FILTER, AND WHY IT IS CONDITIONAL (tracker issue 331 A.3, clause F) ──────────────────
-  //
-  // A run that carries `registerReads` was rated filing by filing, so "the rater gave this one a band
-  // above the lowest" is a question its own record can answer, and the answer decides the card.
-  //
-  // A run that carries NO registerReads at all cannot answer it — the field did not exist when it was
-  // delivered. Asking anyway would read every absent band as "lowest" and silently delete every register
-  // card from every archived knockout, which is precisely the re-render-as-delivered promise clause F
-  // makes. So the filter applies only where the field it reads is present.
-  const rated = Array.isArray(mark?.registerReads) && mark.registerReads.length > 0;
-  if (rated) promoted = promoted.filter((r) => aboveLowestBand(framework, readBandFor(mark, r?.recordId)));
+  const promoted = promotableRecords(entry, mark);
   const typed = knockoutFindingViews(mark, { manifest: framework });
   const floor = Math.max(REGISTER_ORDINAL_FLOOR, ...typed.map((v) => Number(v.ordinal) || 0));
   const markName = String(mark?.name ?? '').trim();
@@ -1356,7 +1370,10 @@ const contentWords = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9\s-]/
  * "conclusion" does not read as new beside "conclusions".
  */
 function saysSomethingNew(line, reference) {
-  const stem = (w) => w.replace(/(?:ies|es|s)$/, '');
+  // The stem must be IDEMPOTENT on the singular, or the fold does nothing: an earlier form stripped
+  // "es" and turned "gives" into "giv" while leaving "give" alone, so the two never matched and every
+  // caveat looked new. Strip one trailing "s" and nothing else.
+  const stem = (w) => w.replace(/ies$/, 'y').replace(/s$/, '');
   const known = new Set(contentWords(reference).map(stem));
   const words = contentWords(line);
   if (!words.length) return false;
@@ -1407,9 +1424,14 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // under compareKnockoutBlockingPower, so appending them is the ladder's own rule applied to a row
     // that has no rung, not a new one invented for the register.
     const reg = registerCardViews(m, framework, registerRecords);
-    const regBlocks = reg.cards.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks)).join('');
-    const overflow = reg.promoted > reg.cards.length
-      ? `<p class="ko-bul">${esc(`${reg.promoted - reg.cards.length} further filing${reg.promoted - reg.cards.length === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
+    const drawn = registerCardsOnPage(reg.cards, m, framework);
+    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks)).join('');
+    // The overflow counts what is NOT on the page against what met the promotion test — cards held back
+    // by the cap and cards the rater put on the lowest rung alike, because from the reader's side they
+    // are the same fact: further filings for this name, all of them listed below.
+    const held = reg.promoted - drawn.length;
+    const overflow = held > 0
+      ? `<p class="ko-bul">${esc(`${held} further filing${held === 1 ? '' : 's'} for this name met the same test — every one of them is in the filings section below.`)}</p>`
       : '';
     // THE DEFECT THIS CLOSES. This line was `(m.findings ??).filter((f) => f?.url)`, and a
     // typed finding has no `url` — so every conflict was dropped from the page and a mark whose findings
@@ -1500,87 +1522,6 @@ function depthStrip(note) {
 // says what the lines under it are. It is not a filter and it rewrites no caveat.
 const CAVEAT_LEAD = 'This screen also carries the following limits:';
 
-/**
- * WHAT THIS RUN SEARCHED AND DID NOT, FROM THE RUN'S OWN POLICY.
- *
- * The line this replaces was composed from `registerCounts` — an ARTIFACT — and said "Common-law/
- * marketplace screen only, register searches are addressed separately" whenever no counts were present.
- * That reads the absence of a result as a statement of scope, which is the class this repo keeps paying
- * for: a run INSTRUCTED to take register counts whose provider refused printed the same sentence as a
- * run never instructed to take them at all. One of those is a scope statement and the other is a gap in
- * the record, and a client cannot tell them apart.
- *
- * The clearance report composes its scope from the run's frozen components (`productCoverageNote`,
- * search-policy.mjs) and this now does the same, from the same object, so the two lanes cannot describe
- * the same component in different words.
- *
- * THE ARTIFACT IS STILL REPORTED — separately, and as what it is. Where the policy says a component ran
- * and its output is missing, that is disclosed as a gap rather than folded into "we did not do it".
- *
- * @returns {string[]} lines, most load-bearing first. Empty when there is no policy to read, and the
- *          caller falls back to the artifact-derived sentence rather than printing nothing.
- */
-export function knockoutScopeLines(policy, { registerCounts = null, probeRan = false } = {}) {
-  const c = policy?.components;
-  if (!c) return [];
-  const lines = [];
-  lines.push('This is a screen, not a clearance search: it triages names against use we can see, '
-    + 'and makes no filing recommendation.');
-  if (c.registerProbe) {
-    const who = registerCounts?.providerLabel ?? registerCounts?.provider ?? null;
-    // THE BASIS RIDES WITH THE COMPONENT THAT NEEDS IT, in methodLine's own words rather than new ones.
-    // Composing this section from the policy moved methodLine off the page for every run that HAS a
-    // policy — which is every live run — and took COUNT_BASIS and "Counting is not searching" with it.
-    // That is the sentence saying a count weighs nothing and decides nothing, on the page that prints
-    // the counts. `runner.knockout-e2e.test.mjs` caught it and this branch called it pre-existing;
-    // it is not — origin/main's renderer passes that arm 3/3 in the same worktree.
-    lines.push(registerCounts
-      ? `Registers were searched for a hit-count per name${who ? ` on ${who}` : ''}, and the filings behind `
-        + `the narrow counts are listed below. ${COUNT_BASIS} Counting is not searching: no register `
-        + `conclusions, no filing advice, and a full register clearance is a separate piece of work.`
-      : 'Registers were searched for a hit-count per name, and no counts reached this report — '
-        + 'that is a gap in the record for this run, not a statement that registers were left out.');
-  } else if (c.registerProbe === false) {
-    lines.push(probeRan
-      ? 'Registers were not part of this search. A register count screen ran separately; full register analysis is its own piece of work.'
-      : 'Registers were not searched in this search.');
-  }
-  // A COMPONENT THE POLICY DOES NOT MENTION IS NOT A COMPONENT THAT WAS OFF. Same rule as the missing
-  // policy above, one level down: `undefined` is silence, and silence is not `false`. Reached only when
-  // `components` arrives without this key — every row in search-policy.mjs states all three, so the
-  // product table cannot produce it; `{ ...policyFor(product)?.components, ...r.components }` can, when
-  // the product resolves to nothing. Driven before this line existed: an empty `components` printed
-  // "Registers were not searched in this search" on a report that was carrying a register hit-count
-  // table, which is the document contradicting itself in the section that exists to state scope. Saying
-  // nothing is the honest answer, and it needs no new sentence in front of a client.
-  //
-  // THE TWO BELOW STAY `!== true`, and the difference is the population rather than the principle.
-  // `registerProbe` is true on two knockout rows (knockout-search, knockout-register), so silence about
-  // it is genuinely ambiguous. `commonLawGrid` and `jxLanes` are false on EVERY row this template
-  // renders — they are what the clearance search is — so silence there states a thing that is true of
-  // the whole population, and making them conditional would drop a disclosure the clearance report
-  // makes about itself. Symmetry here would cost a client the sentence naming the lane they did not buy.
-  // Stated because the clearance report states its own absence of them, in these words. A reader
-  // comparing two documents must not have to infer that a lane is missing from its silence.
-  if (c.commonLawGrid !== true) {
-    lines.push('The systematic common-law grid sweep is not part of this search — that is the clearance search.');
-  }
-  if (c.jxLanes !== true) {
-    lines.push('The per-jurisdiction native-script deep dive is not part of this search.');
-  }
-  return lines;
-}
-
-function methodLine(registerCounts, probeRan, { citedFindings = 0, uncitedFindings = 0 } = {}) {
-  const receipts = (citedFindings && !uncitedFindings)
-    ? ` Every conflict named above cites material held in this run's own research payload for that name.`
-    : '';
-  return (registerCounts
-    ? `Common-law/marketplace screen, plus a register HIT-COUNT per name on ${registerCounts.providerLabel ?? registerCounts.provider ?? 'the register'}. ${COUNT_BASIS} `
-      + `Counting is not searching: no register conclusions, no filing advice, and a full register clearance is a separate piece of work.`
-    : `Common-law/marketplace screen only — register searches are addressed separately${probeRan ? ' (a register count screen ran; full register analysis follows separately)' : ''}. `
-      + `A knockout screen is triage, not a clearance search: no register conclusions, no filing advice.`) + receipts;
-}
 
 /**
  * Render the knockout report.
@@ -1684,7 +1625,10 @@ export function renderKnockoutHtml(findings, framework, {
   // promoted filing that sentence sent a reader to a row that does not exist. A false pointer on the
   // audit trail is worse than no pointer, and the honest fix is to narrow the claim rather than mint a
   // second drill-through key for a card whose receipt is the register record itself.
-  const registerCardCount = marks.reduce((n, m) => n + registerCardViews(m, framework, registerRecords).cards.length, 0);
+  // Counted over what the page DRAWS: the sentence explains a REG reference a reader can see, so a run
+  // whose register cards are all held back needs no sentence about them.
+  const registerCardCount = marks.reduce((n, m) =>
+    n + registerCardsOnPage(registerCardViews(m, framework, registerRecords).cards, m, framework).length, 0);
   const hasRecords = Boolean(registerRecords && (registerRecords.marks?.length || registerRecords.unavailable));
   const filings = hasRecords ? filingsSection(marks, registerRecords) : '';
   const onFieldSec = `<div class="sec"><span class="num">${num()}</span><h2>On-field conflicts</h2><span class="note">${hasCounts ? `register hit-counts (${esc(provider)}) and the read, per name` : 'what we found, per name'}</span></div>
