@@ -39,6 +39,23 @@ Exactly two roles exist: **staff**, admitted by an email-domain rule (`PORTAL_ST
 created in the guest-list file by whoever administers the box — `npm run grant` is the editor for it —
 never from a browser. The file is re-read per request, so a grant lands without a restart.
 
+**A staff domain is a grant to everyone at that domain, so nothing derives one for you.** Every address
+at a listed domain that gets past the sign-in door is staff, and staff sees every brand owner on the
+instance. The install therefore derives `PORTAL_STAFF_DOMAINS` only from a sign-in address that names no
+second person — the `<account>@localhost` form a single-user machine gets by default. Given a real
+address it states the rule it would create, in the words the People & access screen will later use,
+and refuses to write it: set `PORTAL_STAFF_DOMAINS` yourself, or answer the question `clearotron install`
+asks. A webmail or shared provider is refused outright, because a rule built from one admits the public.
+The People & access screen names the setting the rule came from and the file it is written in, so a
+rule can be traced and undone by whoever finds it.
+
+**That check is on the DERIVATION, not on the value.** A `PORTAL_STAFF_DOMAINS` you set yourself is
+taken as written and never classified: `PORTAL_STAFF_DOMAINS=gmail.com` is accepted, and it admits
+everyone at that provider who gets past the sign-in door. This is deliberate — a value someone typed is
+a decision already taken, and the defect being fixed was a rule created with nobody asked — but it means
+the protection is against the accident and not against the configuration. Read what you set, or set
+nothing and answer the question the install asks.
+
 
 - **On the proxy door**, every HTTP request re-validates a JWT from the fronting auth proxy. The
   proxy is yours to choose — issuer, JWKS URL, claim and header are config

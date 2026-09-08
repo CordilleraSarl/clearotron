@@ -130,6 +130,9 @@ import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13
 import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names one spelling has set nothing that wins
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // never serve a bundle older than its sources
+// ONE CLASSIFIER FOR WHAT A STAFF RULE ADMITS, shared with the setup wizard. Two copies of this
+// judgement would be a wizard that asks about one rule and a launcher that writes another.
+import { classifyStaffDomain, staffDomainRefusal, staffGrantSentence } from "../shared/staff-domain.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -366,6 +369,11 @@ export function installPaths(base) {
   };
 }
 
+/** A staff rule this command will not build. Carries the sentence the operator reads, and why. */
+export class StaffDomainRefused extends Error {
+  constructor(domain, message) { super(message); this.name = "StaffDomainRefused"; this.domain = domain; }
+}
+
 /**
  * The one address that signs in, and the staff domain derived from it.
  *
@@ -374,10 +382,61 @@ export function installPaths(base) {
  * it safe here and would not be safe on a hosted instance. Without it the sign-in succeeds and every
  * page 403s, because signing in is not being enrolled (portal-access.mjs decides that, and it is
  * deliberately blind to which door you came through).
+ *
+ * ── AND THAT PARAGRAPH IS ONLY TRUE OF `<account>@localhost` ─────────────────────────────────────────
+ *
+ * "admits exactly that address and nobody else" is a property of the DOMAIN, not of the mode. It holds
+ * for `localhost`. It does not hold for a domain other people have addresses at: the rule this line
+ * produces from `alex@a-firm.example-tld` says *anyone at that domain*, the settings page then reports
+ * it back in those words, and on a deployment where identity arrives from an external login system the
+ * domain is the whole of the check. Nobody was asked, and there is nothing on the box recording that a
+ * grant was made.
+ *
+ * So the derivation now refuses the domains that can never be a staff rule — a webmail provider, a
+ * documentation domain — and hands anything wider than one machine back to the caller to state and
+ * confirm. `shared/staff-domain.mjs` is the one classifier, shared with the setup wizard, so the
+ * question the wizard asks and the rule this command builds cannot drift apart.
+ *
+ * An UNPARSEABLE address still returns `""`, and that is not the same answer as a refusal: nothing was
+ * classified, so nothing was decided. The caller already refuses a non-address one line earlier.
  */
 export function staffDomainFor(email) {
   const at = String(email ?? "").lastIndexOf("@");
-  return at > 0 ? String(email).slice(at + 1).toLowerCase() : "";
+  const domain = at > 0 ? String(email).slice(at + 1).toLowerCase() : "";
+  if (!domain) return "";
+  const refusal = staffDomainRefusal(domain);
+  if (refusal) throw new StaffDomainRefused(domain, refusal);
+  return domain;
+}
+
+/**
+ * What to say when the derived domain is a real one — wider than this machine, and never assumed.
+ *
+ * A REFUSAL RATHER THAN A PROMPT, and the reason is that this command has no reader. `start` runs from
+ * a script, from `--background`, and from a service manager as often as from a terminal; a question
+ * asked there either hangs or is answered by whatever happens to be on stdin. Every other decision on
+ * this boundary already refuses instead — an unset access file, a multi-`@` identity, local mode off
+ * loopback — so this is the idiom the rest of the door speaks.
+ *
+ * The consent itself lives where a person is definitionally present: `clearotron install` asks for the
+ * address, shows this same sentence, and writes the answer down as an explicit `PORTAL_STAFF_DOMAINS`.
+ * After that the `||` above this call short-circuits and the derivation is never reached again.
+ */
+export function wideStaffDomainRefusal({ user, domain, envPath }) {
+  return `${user} would make every address at ${domain} an administrator of this install.\n`
+    + "\n"
+    + `  The rule that would be written is:  ${staffGrantSentence(domain, { staffLabel: `${BRAND.name} staff` })}\n`
+    + "\n"
+    + "  That is a grant to a group, and this command will not make one on your behalf. Pick the one\n"
+    + "  that is true here:\n"
+    + "\n"
+    + `    · only you use this machine — start without --user, or use ${String(user).slice(0, String(user).lastIndexOf("@"))}@localhost.\n`
+    + `      The rule is then this machine and nobody else, and nothing is granted to anyone.\n`
+    + `    · your colleagues at ${domain} should all be administrators — say so once, in writing:\n`
+    + `        PORTAL_STAFF_DOMAINS=${domain}\n`
+    + `      in ${envPath}, or in the environment. The settings page then names that file as where the\n`
+    + "      rule came from, so whoever reads it later can undo it.\n"
+    + `    · run \`${invocationPrefix()}clearotron install\`, which asks for the address and this question with it.`;
 }
 
 /**
@@ -812,16 +871,47 @@ if (isMain) {
     run: (cmd, args) => spawnSync(cmd, args, { cwd: REPO, stdio: "inherit", shell: process.platform === "win32" }).status ?? 1,
   });
 
-  // Nobody is asked for this. A local install has one user, this machine already knows their name, and
-  // the address never leaves the machine — `--user` is there for a reader who wants their real one, and
-  // whatever is resolved here is written to `.env` so the question is never put twice.
+  // The ADDRESS is not asked for here: a local install has one user, this machine already knows their
+  // name, and the address never leaves the machine — `--user` is there for a reader who wants their real
+  // one, and whatever is resolved here is written to `.env` so the question is never put twice. What IS
+  // asked for, and used not to be, is the staff rule the address implies once it is a real one; that is
+  // the block below the address, and `clearotron install` is where the question is actually put.
   let whoami = "user";
   try { whoami = userInfo().username || "user"; } catch { /* a container with no passwd entry */ }
   // In a demo the address is the demo's own and is never written anywhere: see the DEMO block above.
   const user = String(flag("--user", DEMO ? "demo@localhost" : (process.env.PORTAL_LOCAL_USER || `${whoami}@localhost`))).trim().toLowerCase();
   if (!user.includes("@") || user.indexOf("@") !== user.lastIndexOf("@"))
     fatal(`--user "${user}" is not a single email address. It is the one identity that signs in here, and the portal refuses a multi-@ identity outright.`);
-  const staffDomains = process.env.PORTAL_STAFF_DOMAINS || staffDomainFor(user);
+  // ── THE STAFF RULE THIS ADDRESS IMPLIES, STATED BEFORE IT IS WRITTEN ──────────────────────────────
+  //
+  // An explicit `PORTAL_STAFF_DOMAINS` is a decision somebody already made in writing, and it wins
+  // untouched — including a domain the classifier would otherwise refuse, because an operator who
+  // typed it has said what they mean and this command does not overrule that.
+  //
+  // Absent one, the rule is DERIVED from the single address, and that derivation is the defect this
+  // block exists to close. Three outcomes:
+  //
+  //   `localhost` (or any bare hostname)  — one machine, no second person, nothing to ask. Silent, as
+  //                                         it has always been. This is the default path and the only
+  //                                         one a laptop ever reaches.
+  //   a webmail or documentation domain   — refused by `staffDomainFor` itself; there is no yes that
+  //                                         makes it right.
+  //   any other real domain               — refused HERE, with the rule quoted in the words the
+  //                                         settings page uses and the three ways out named.
+  //
+  // BEFORE THIS RUN CHANGES THE BOX, deliberately — it sits above the state-written divide further
+  // down, with the units gate, the auth-mode gate and the port probe. A refused start has written no
+  // `.env`, minted no secret and placed no unit, so the reader's only question — is my install
+  // half-made — has one answer.
+  let staffDomains = process.env.PORTAL_STAFF_DOMAINS;
+  if (!staffDomains) {
+    let derived = "";
+    try { derived = staffDomainFor(user); }
+    catch (e) { fatal(e.message); }
+    if (derived && classifyStaffDomain(derived) === "wide")
+      fatal(wideStaffDomainRefusal({ user, domain: derived, envPath: ENV_PATH }));
+    staffDomains = derived;
+  }
 
   say("");
   say(`  ${BRAND.name} ${BRAND.product.toLowerCase()} — local install`);
