@@ -157,7 +157,7 @@ export async function seatReason({ runDir, runId, assumption, ratedUnder, findin
   const replyPath = join(runDir, MEMO_DIR, `reply-${sha(`${runId}${assumption}`).slice(0, 10)}.json`);
   mkdirSync(join(runDir, MEMO_DIR), { recursive: true });
   const r = await dispatch("whatif-memo", {
-    message: composeMemoMessage({ assumption, findings, ratedUnder, skill }),
+    message: composeMemoMessage({ assumption, findings, ratedUnder, skill, replyPath }),
     model,
     // A BOUNDED READING, and the ceiling says so. This re-reads evidence already gathered; a memo that
     // needed the clearance's own ceiling would not be the cheap thing the plan promised the reader.
@@ -230,7 +230,7 @@ export function validateMemoReply(raw) {
  * The findings are handed over as the run's own JSON rather than summarised: a memo that reasoned over
  * our paraphrase of the evidence would be answering about the paraphrase.
  */
-export function composeMemoMessage({ assumption, findings, ratedUnder = null, skill = "" } = {}) {
+export function composeMemoMessage({ assumption, findings, ratedUnder = null, skill = "", replyPath = null } = {}) {
   return [
     skill.trim(),
     "",
@@ -250,8 +250,21 @@ export function composeMemoMessage({ assumption, findings, ratedUnder = null, sk
     JSON.stringify(findings ?? null, null, 2),
     "```",
     "",
-    "Write the JSON object the skill dictates, and nothing else.",
-  ].join("\n");
+    // NAME THE FILE, IN THE FIRST MESSAGE. The skill says what to write and the harness was told where
+    // to look, and until this line nothing told the SEAT where to put it. A seat given a write grant and
+    // no destination writes somewhere reasonable of its own choosing — an archived run carries one such
+    // reply at its run root — and the harness then looks where it asked, does not find it, and fails the
+    // attempt on `missing_file`. The warm patch names the path, which is the whole reason the retry
+    // succeeded: the second attempt was the first one that said where.
+    //
+    // The cost of not saying it was never the failure. It was that every memo billed two dispatches for
+    // one document and left a retried stage on the parent run's ledger — an INVESTIGATE line on a report
+    // that had already been delivered clean.
+    replyPath
+      ? `Write it to this ABSOLUTE path (create parent dirs if needed): ${replyPath}`
+      : "Write the JSON object the skill dictates, and nothing else.",
+    replyPath ? "Write the JSON object the skill dictates, and nothing else." : null,
+  ].filter((l) => l !== null).join("\n");
 }
 
 /**

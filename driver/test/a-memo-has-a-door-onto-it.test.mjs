@@ -163,6 +163,34 @@ test("the dispatch carries the assumption verbatim, the parent's framework, and 
   assert.match(houseMsg, /froze no customer profile/, "and null says which fact that is");
 });
 
+// ── THE FIRST ATTEMPT MUST SAY WHERE, or it is not the attempt that lands ────────────────────────────
+//
+// Two memo drives twelve hours apart on two trees failed attempt 1 with `missing_file` and succeeded on
+// the warm-patch retry, same reply id both times. The retry was the first message that named the file.
+// The seat has a real write grant and, given no destination, wrote somewhere reasonable of its own
+// choosing — an archived client run carries one such reply at its run root.
+//
+// The cost was never the failure. It was two dispatches billed for one document and a retried stage on
+// the parent's ledger, so a reader auditing a report that was delivered clean found an INVESTIGATE line
+// against it.
+
+test("the dispatch NAMES the reply file — the first attempt is told where, not only what", () => {
+  const msg = composeMemoMessage({
+    assumption: "x", findings: {}, skill: "# skill",
+    replyPath: "/srv/run/_memos/reply-0123456789.json",
+  });
+  assert.match(msg, /\/srv\/run\/_memos\/reply-0123456789\.json/, "the seat is not told where to write");
+  assert.match(msg, /ABSOLUTE path/, "and told that it is absolute, so a relative guess is not invited");
+  assert.match(msg, /the JSON object the skill dictates, and nothing else/,
+    "naming the path must not displace what to write");
+});
+
+test("with no path to name, the instruction is unchanged — a caller that cannot say where says nothing false", () => {
+  const msg = composeMemoMessage({ assumption: "x", findings: {}, skill: "" });
+  assert.match(msg, /Write the JSON object the skill dictates, and nothing else\./);
+  assert.doesNotMatch(msg, /ABSOLUTE path/, "no path, no promise of one");
+});
+
 // ── the reply contract: typed, so a phrasing choice can never fail it ────────────────────────────────
 
 test("a valid reply passes, fenced or bare", () => {
