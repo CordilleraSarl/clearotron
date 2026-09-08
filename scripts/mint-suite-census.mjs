@@ -36,6 +36,9 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CENSUS_WORKSPACES, CENSUS_ROOT_SCRIPTS, countTestSites, collectionFromManifests, censusDisagreements,
   rootScriptDisagreements, censusBuckets } from "../shared/suite-census.mjs";
+// THE MEASUREMENT SIDE of the root-script check: the census states the globs it expects and this
+// supplies what the corpus actually resolves to, so the two can disagree.
+import { providerTestFiles } from "./test-full.mjs";
 import { withheldEntryFor, announceWithheldMode } from "../shared/withheld-paths-access.mjs";   // — withheld is a stated absence, not a loss.: the record does not ship, and without it every absence is a loss
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
@@ -129,7 +132,7 @@ function main() {
   // — the same question of the ROOT scripts. Narrowing `test:providers`' glob silences a third of
   // that population at exit 0, and no per-workspace check can see it: `providers` is not a workspace.
   const disagreements = [...censusDisagreements(collectionFromManifests(readManifest)),
-    ...rootScriptDisagreements(readManifest)];
+    ...rootScriptDisagreements(readManifest, undefined, () => providerTestFiles())];
   if (disagreements.length) {
     // — the message names BOTH declared sources now. It used to say "the census and `npm run
     // test:full` disagree" whatever had moved, so a root-script disagreement sent the reader to look at

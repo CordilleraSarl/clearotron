@@ -200,6 +200,21 @@ export type Me = {
    */
   readonly engineMode: 'demo' | 'engine-unproven' | null
   /**
+   * WHETHER THE ENGINE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT.
+   *
+   *   true   the program is here; the engine did not find it when it last started. A new search
+   *          refuses, and installing the program again fixes nothing — the remedy is a restart of the
+   *          service that cannot see it, or installing it where that service looks.
+   *   false  no disagreement. Either there is no engine program at all, in which case installing one
+   *          IS the remedy, or the engine can see it and this question does not arise.
+   *   null   THIS CANNOT ANSWER — an older portal-service, or the comparison itself failed. The
+   *          caller falls back to the general advice rather than naming a remedy it cannot support.
+   *
+   * Only reaches anything but false when `engineMode` is 'demo': that is the one state in which a
+   * screen refuses a search, and it is the only state the server takes a live reading in.
+   */
+  readonly engineProgramDisputed: boolean | null
+  /**
    * HOW THIS INSTALL ARRIVED, so a screen can name the setup command this reader can actually type.
    *
    *   'packaged'  installed as a package — `npx clearotron install`
@@ -827,6 +842,15 @@ export type EngineState = {
   }
   /** Whether the binary every stage spawns can actually be found and executed. */
   readonly binaryPresent: boolean
+  /**
+   * The program this engine spawns, by the name a reader types — never a resolved path.
+   *
+   * Null ⇒ this build ships no engine by that id, or an older portal-service that does not send the
+   * field. A row that cannot name the program says the general sentence instead of inventing one.
+   */
+  readonly program: string | null
+  /** The command that installs that program, same source and same null rule as `program`. */
+  readonly install: string | null
 }
 
 /**
@@ -1428,6 +1452,11 @@ export const api = {
       // treats as "leave the button alone". Widening this to pass strings through would let an
       // unrecognised value reach a comparison that reads it as demo.
       engineMode: b['engineMode'] === 'demo' ? 'demo' : b['engineMode'] === 'engine-unproven' ? 'engine-unproven' : null,
+      // THREE VALUES, AND THE THIRD IS NOT FALSE. `=== true` alone would collapse "could not check"
+      // into "no disagreement", and the screen would then print the remedy for a missing program at a
+      // reader who has one — the defect this field exists to end, arriving by a different route.
+      engineProgramDisputed:
+        b['engineProgramDisputed'] === true ? true : b['engineProgramDisputed'] === false ? false : null,
       // Same closed set, same reason as engineMode above. This value chooses which command a reader is
       // told to type, so an unrecognised string must never reach the screen — it lands as null and the
       // screen names both routes instead.
@@ -1976,6 +2005,11 @@ export const api = {
                 missing: asStrings(bill['missing']),
               },
               binaryPresent: e['binaryPresent'] === true,
+              // Words, not booleans, and `asString` answers null for anything that is not a string —
+              // which is the behaviour wanted here: an older server sends neither field, and both
+              // arrive null, which the row already has a sentence for.
+              program: asString(e['program']),
+              install: asString(e['install']),
             }
           })()
         : null,

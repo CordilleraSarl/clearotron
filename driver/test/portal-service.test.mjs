@@ -24,7 +24,7 @@ import { PRODUCT_IDS } from "../products.mjs";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -2210,6 +2210,85 @@ test("/portal/api/me names the accounts it grants, and never more than it grants
   assert.deepEqual(staff.json.accountNames, {}, "an all-accounts identity gets no map, it gets the roster");
   assert.deepEqual((await svc.route("GET", "/portal/admin/roster", STAFF)).json.customers.map((c) => c.key),
     ["aurora", "zephyr", "secret-client"], "the roster is the staff answer, and it is still staff-only");
+});
+
+// ── the engine program, on the one route every screen fetches ──────────────────────────────────────
+//
+// WHY THIS RIDES ON /me AT ALL. The settings page can ask /portal/admin/config, which already computes
+// the live-versus-capture comparison. New clearance cannot: that route is staff-only, and the reader
+// who gets stuck is as often a client. A screen asking it would get a 404 and fall back to the general
+// advice — "install a reasoning CLI" — at a reader whose machine already has one. That advice is what
+// an outside user followed to no effect before giving up on a working install.
+//
+// THE THREE VALUES ARE THREE DIFFERENT REMEDIES, and the arms below are one per value:
+//   false  no disagreement — either nothing is installed (installing it IS the remedy) or all is well
+//   true   it is installed and the engine cannot see it (restart the service; installing again is futile)
+//   null   could not be checked — the general advice, because a remedy nothing measured is a guess
+const { buildFlagSnapshot: buildSnap, snapshotPath: snapPath } = await import("../flag-snapshot.mjs");
+const captureWith = (poolRoot, engine) => {
+  const f = snapPath(poolRoot);
+  mkdirSync(dirname(f), { recursive: true });
+  writeFileSync(f, JSON.stringify(buildSnap({}, { capturedAt: "2026-09-08T00:00:00Z", engine })));
+};
+// The env the LIVE reading is taken from. `preflightEngineBinary` wants something absolute and
+// executable, and this process is one — so node's own binary stands in for an installed CLI. Restored
+// every time: these are real process-wide variables and the rest of this file reads the environment.
+const withLiveProgram = async (present, fn) => {
+  const before = { ai: process.env.CLEAROTRON_AI, path: process.env.CLEAROTRON_CLAUDE_PATH };
+  process.env.CLEAROTRON_AI = "anthropic-agent";
+  if (present) process.env.CLEAROTRON_CLAUDE_PATH = process.execPath;
+  else process.env.CLEAROTRON_CLAUDE_PATH = join(tmpdir(), "no-such-engine-program-anywhere");
+  try { return await fn(); } finally {
+    if (before.ai === undefined) delete process.env.CLEAROTRON_AI; else process.env.CLEAROTRON_AI = before.ai;
+    if (before.path === undefined) delete process.env.CLEAROTRON_CLAUDE_PATH; else process.env.CLEAROTRON_CLAUDE_PATH = before.path;
+  }
+};
+// A FRESH SERVICE PER ARM, because each arm needs its own capture on disk. The reading itself is taken
+// on every request and held nowhere — a held one would go on telling a reader to restart a service
+// they have just restarted, which is the staleness this change is about.
+const meWith = async (engine, livePresent) => {
+  const { poolRoot, workspaceRoot } = world();
+  if (engine) captureWith(poolRoot, engine);
+  const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
+    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {}, loadProfilesImpl: async () => new Map() });
+  return withLiveProgram(livePresent, async () => (await svc.route("GET", "/portal/api/me", STAFF)).json);
+};
+
+test("/portal/api/me: no capture is not a disagreement, and an engine that runs is not one either", async () => {
+  // AN ABSENCE IS NOT A FINDING. No capture means nobody has written one, which the screen already
+  // renders as "leave the button alone" — and a screen told there is a disagreement would print a
+  // restart instruction to somebody whose install is simply new.
+  const fresh = await meWith(null, true);
+  assert.equal(fresh.engineMode, null, "no capture cannot answer, and must not answer demo");
+  assert.equal(fresh.engineProgramDisputed, false,
+    "an absent capture was reported as a disagreement — there is nothing to disagree with");
+
+  // NOT DEMO, NO READING TAKEN. This is the normal page view: the capture found the program, the
+  // screen is not refusing a search, and there is no question to answer. The live reading is skipped
+  // in this state, which is what keeps the cost of this field off the hottest endpoint in the portal.
+  const working = await meWith({ id: "anthropic-agent", known: true, binaryPresent: true }, false);
+  assert.equal(working.engineMode, "engine-unproven");
+  assert.equal(working.engineProgramDisputed, false,
+    "a working engine produced a disagreement, or the live reading was taken when nothing needed it");
+});
+
+test("/portal/api/me: the program on the box and absent from the engine's reading is the state that gets its own remedy", async () => {
+  // BOTH READINGS AGREE THERE IS NOTHING. The general advice is correct here: install a CLI. This is
+  // the arm that stops the new sentence from firing at everyone in demo mode — which would be the
+  // original defect inverted, telling someone with no engine to restart a service instead of
+  // installing one.
+  const nothing = await meWith({ id: "anthropic-agent", known: true, binaryPresent: false }, false);
+  assert.equal(nothing.engineMode, "demo");
+  assert.equal(nothing.engineProgramDisputed, false,
+    "an empty machine was told to restart a service when what it needs is an install");
+
+  // AND THE STATE AN OUTSIDE USER ACTUALLY HIT. The capture says there is no engine program; this box
+  // has one. Installing it again changes nothing and neither does the setup wizard — the engine reads
+  // its PATH when it starts, and it has not started since.
+  const disputed = await meWith({ id: "anthropic-agent", known: true, binaryPresent: false }, true);
+  assert.equal(disputed.engineMode, "demo", "the screen still refuses a search, which is correct");
+  assert.equal(disputed.engineProgramDisputed, true,
+    "the program is on this box and the capture says it is not — the one state whose remedy is a restart");
 });
 
 test("an unreadable profile store costs a name, never the door", async () => {

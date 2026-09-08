@@ -1550,6 +1550,12 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             // from a working install because a file is missing.
             demoMode={ctx.me.engineMode === 'demo'}
             setupRoute={ctx.me.setupRoute}
+            programDisputed={ctx.me.engineProgramDisputed}
+            // ONE CLICK TO THE PAGE THAT EXPLAINS IT, and only for a reader who can open it. Global
+            // config is staff-only at the door: a client following this link would land on "the
+            // configuration cannot be read from here", which is a worse answer than no link at all.
+            // Null is the honest shape for "there is nowhere to send this reader", not a dead button.
+            onSettings={ctx.me.role === 'staff' ? () => ctx.go('/portal/admin/config') : null}
             saveOpen={saveOpen}
             saveName={saveName}
             saveText={saveText}
@@ -1740,6 +1746,7 @@ function NameWall({
  */
 function Footer({
   startedFrom, tier, detail, units, cost, duration, runs, ready, busy, demoMode, setupRoute,
+  programDisputed, onSettings,
   saveOpen, saveName, saveText, saveNote, saveDone, editing, canSave, blockedBy,
   onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview, onSeeSaved,
 }: {
@@ -1769,6 +1776,17 @@ function Footer({
    * and a reader who cannot run the one command they are given has been told nothing.
    */
   readonly setupRoute: 'packaged' | 'checkout' | null
+  /**
+   * WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — and therefore which of two
+   * remedies this notice gives. They are not interchangeable: telling someone to install a program
+   * they already have is the advice that made an outside user give up on a working machine.
+   *
+   * Null is "could not check", and it prints the general advice — the sentence that shipped before
+   * this distinction existed, which is right whenever the state cannot be told apart.
+   */
+  readonly programDisputed: boolean | null
+  /** Open the page that shows what is and is not ready, or null when this reader cannot open it. */
+  readonly onSettings: (() => void) | null
   /**
    * THE REASON THE PRIMARY ACTION IS NOT AVAILABLE, in one line, or null when it is available.
    *
@@ -1885,11 +1903,50 @@ function Footer({
           // no npm scripts, so the single fix this notice offered was a command that does not exist on
           // their machine. The server says which route it is; when it cannot, both are named.
           <div className="footer-demo-note" role="status" style={{ fontSize: 12.5, lineHeight: 1.45 }}>
-            <strong>No search engine is attached to this install.</strong>{' '}
-            Everything else works — the example report, its audit trail and the assistant connection are
-            live right now. To start new searches, install a reasoning CLI and sign in, then run the
-            setup wizard again{' '}
-            <SetupCommand route={setupRoute} />
+            {programDisputed === true ? (
+              // THE PROGRAM IS HERE AND THE ENGINE CANNOT SEE IT. The sentence below this one is
+              // correct advice for an empty machine and useless on this one: the CLI is installed,
+              // installing it again changes nothing, and the setup wizard does not touch the PATH of a
+              // service that is already running. Same words as the settings row and the doctor, so a
+              // reader who checks two of the three is not told two different things.
+              <>
+                <strong>
+                  The engine program is on this machine, but the engine could not find it when it last
+                  started.
+                </strong>{' '}
+                So a new search will refuse. Restart the engine service, or install the CLI where the
+                service can see it — installing it again where it already is will not change this.
+              </>
+            ) : (
+              // NO PROGRAM, OR NOTHING COULD BE READ. Both get the general advice, which is right in
+              // the first case and the honest fallback in the second: a screen that named a remedy it
+              // could not support would be the same defect pointed the other way.
+              <>
+                <strong>No search engine is attached to this install.</strong>{' '}
+                Everything else works — the example report, its audit trail and the assistant connection
+                are live right now. To start new searches, install a reasoning CLI and sign in, then run
+                the setup wizard again{' '}
+                <SetupCommand route={setupRoute} />{' '}
+                {/* THE MISSING SENTENCE. This reading was taken when the engine last started and is
+                    never refreshed, so a reader who installs the CLI and comes back here sees exactly
+                    this notice again, with nothing on the page explaining why. That is the loop an
+                    outside user could not get out of, and one sentence ends it. */}
+                Then restart the service: this reading was taken when it started, and it will not notice
+                a new install until it starts again.
+              </>
+            )}
+            {onSettings ? (
+              // ONE CLICK TO THE PAGE THAT EXPLAINS IT. A blocked reader should never have to find the
+              // surface whose whole job is to say what is and is not ready — and this is the general
+              // rule, not an engine special case: the same destination answers for a missing provider,
+              // an unset register or an expired credential. Those notices are not wired to it here.
+              <>
+                {' '}
+                <button type="button" className="link-btn" onClick={onSettings}>
+                  See what this install has
+                </button>
+              </>
+            ) : null}
           </div>
         ) : (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>

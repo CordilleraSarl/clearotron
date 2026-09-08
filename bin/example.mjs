@@ -257,8 +257,8 @@ const published = results[0].published;
 
 // THE LABEL. The reader is about to look at a document that reads like advice about a real mark. It is
 // not, and the demo says so before the browser opens rather than in a footnote nobody reaches.
-console.log("  Real engine output for the fictional mark VENQORI — captured 2026-08-11 against the");
-console.log("  production EU register, replayed locally: no keys, no model calls, no register queried.");
+console.log("  Real engine output for the fictional mark VENQORI, captured against Clarivate Compumark.");
+console.log("  Replaying it needs no account, no key and no network.");
 console.log("  Every number, band and citation below was produced by that real run and is being");
 console.log("  re-rendered from its artifacts. It is an example, not advice.\n");
 // NAMES THE POPULATION. This printed "13 finding(s)" beside a report showing

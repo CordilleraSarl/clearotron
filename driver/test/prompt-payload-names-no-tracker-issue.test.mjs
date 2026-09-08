@@ -36,6 +36,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { COLOUR_SITE } from "../../shared/reference-guard-classes.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const GUARD = "prompt payload names no tracker issue";
@@ -44,8 +45,11 @@ const GUARD = "prompt payload names no tracker issue";
 const HASH = new RegExp("#" + "[0-9]{3,5}\\b");
 const WORDED = new RegExp("tracker\\s+(?:issue\\s+)?[0-9]{3,5}\\b|\\bissue\\s+[0-9]{3,5}\\b", "i");
 
-/** A CSS declaration — the property is what settles it, never the digit count. */
-const COLOUR_SITE = /(?:^|[;{\s])(?:color|background|background-color|border|border-color|fill|stroke|outline|box-shadow|text-shadow)\s*:/i;
+// THE COLOUR RULE MOVED TO shared/reference-guard-classes.mjs, where the diff guard reads it too. It
+// was written here first and copied there, which is two spellings of one rule and the arrangement that
+// lets a fix to one not be a fix to the other. The LINE-SCOPED reading is the right one for this file
+// and only for this file: a stylesheet line here is a declaration and nothing else, so there is no
+// second thing on it to miss.
 
 /** Every line of `source` that cites a tracker issue. Colour declarations are not citations. */
 export function citationsIn(source) {

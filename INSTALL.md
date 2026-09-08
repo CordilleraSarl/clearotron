@@ -1,4 +1,6 @@
-# Install & Operate
+# Install & Operate — the reference
+
+[QUICKSTART.md](QUICKSTART.md) gets one search running in three commands. This is everything else.
 
 Two documents in one file, and most readers need only the first. The engine needs no agent gateway — the
 reasoning stages' only external LLM dependency is a coding CLI: the Claude CLI (the default) or the codex

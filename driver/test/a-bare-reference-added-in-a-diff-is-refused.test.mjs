@@ -9,7 +9,7 @@
 // reading none of them and reporting the same clean exit as a tree with nothing to find.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isProse, withoutLinkTargets, offendingTokens, addedLines } from "../../scripts/added-reference-check.mjs";
+import { CLASSES, isProse, isScannable, withoutLinkTargets, offendingTokens, addedLines } from "../../scripts/added-reference-check.mjs";
 
 test("a bare reference in a source comment is refused", () => {
   assert.deepEqual(offendingTokens("driver/x.mjs", "  // see #1234 for the ruling"), ["#1234"]);
@@ -38,9 +38,26 @@ test("CONTROL — a link target is an address, not a reference", () => {
   assert.deepEqual(offendingTokens("docs/x.md", "Read <https://example.test/b#1234> first."), []);
 });
 
-test("CONTROL — the form this project writes passes, because it carries no hash at all", () => {
-  assert.deepEqual(offendingTokens("driver/x.mjs", "  // ruled on tracker issue 1234"), []);
-  assert.deepEqual(offendingTokens("docs/x.md", "Ruled on tracker issue 1234."), []);
+// THE SPELLED FORM WAS THIS CHECK'S OWN REMEDY, AND THAT IS WHY THE FLIP NEEDS SAYING OUT LOUD. The
+// two assertions here used to require `tracker issue NNN` to pass, because it carries no hash and
+// GitHub cannot linkify it. That was right about the linkifying and beside the point: the tree carries
+// the reason for a decision, never its address, and a reader outside this project cannot open the
+// number in either spelling. The citation belongs in the commit message and the pull request body.
+//
+// Anyone reading a blame here will find the guard telling authors to write the exact form it now
+// refuses. Both directions are asserted below so neither reading can be inferred from silence.
+test("the spelled citation form is refused too — the hash was never the whole problem", () => {
+  assert.deepEqual(offendingTokens("driver/x.mjs", "  // ruled on tracker issue 1234"), ["tracker issue 1234"]);
+  assert.deepEqual(offendingTokens("docs/x.md", "Ruled on tracker issue 1234."), ["tracker issue 1234"]);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "  // see tracker issues 1234 and 1235"), ["tracker issues 1234"],
+    "the plural is the same citation and must not be a way around it");
+
+  // AND THE REASON STILL PASSES. The remedy is to say why, not to find an unbanned spelling of where,
+  // so a comment that explains itself with no number in it has to survive — otherwise the guard is
+  // teaching authors to delete the explanation.
+  assert.deepEqual(offendingTokens("driver/x.mjs", "  // the register answers twice, so the second read wins"), []);
+  assert.deepEqual(offendingTokens("docs/x.md", "The issue was that two reads disagreed."), [],
+    "`issue` as an ordinary noun is not a citation");
 });
 
 test("CONTROL — two digits is not a reference, and the boundary is asserted rather than assumed", () => {
@@ -155,5 +172,117 @@ test("a hex colour is passed, and the same digits in prose are still refused", (
 
   // 3. The check's whole purpose, unchanged: a bare reference in a comment is still caught.
   assert.deepEqual(offendingTokens("driver/x.mjs", "// see #1431 for the ruling"), ["#1431"]);
-  assert.deepEqual(offendingTokens("driver/x.mjs", "// tracker issue 2038 is the right form"), []);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// tracker issue 2038 is the right form"), ["tracker issue 2038"],
+    "the spelled form is a class of its own now — see the arm above for why the comment it replaced was wrong");
+});
+
+// ── THE CLASSES ADDED BEYOND THE REFERENCE ──────────────────────────────────────────────────────
+//
+// A guard reads what it is given, so every arm below is written as a PAIR: the thing that must be
+// refused, and the nearest thing to it that must pass. The refusals are cheap to get right and the
+// passes are where a widened pattern gets found — each of the three false positives asserted here was
+// live in the tree while the pattern that would have refused it was being written.
+
+test("an account name from the build machines is refused, and the documented placeholder is not", () => {
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// driven on testuser, 2026-09-05"), ["testuser"]);
+  assert.deepEqual(offendingTokens("docs/x.md", "The timer runs as azureuser."), ["azureuser"]);
+  assert.deepEqual(offendingTokens("driver/test/README.md", "root      devuser1"), ["devuser1"],
+    "the numbered form is the same account family, and it is how the logins actually appear");
+
+  // THE PLACEHOLDER IS WHAT A STRANGER COPIES FIRST. `/home/you/...` is what INSTALL.md and docs/E2E.md
+  // tell a reader to write, so a `/home/<anything>/` rule would refuse the install instructions on the
+  // page the guard exists to protect. This is the pass that decided the pattern names the accounts.
+  assert.deepEqual(offendingTokens("INSTALL.md", "CLEAROTRON_REPORTS_DIR=/home/you/trademark/pool"), []);
+  assert.deepEqual(offendingTokens("docs/E2E.md", "CLEAROTRON_WORK_DIR=/home/you/trademark-dev/workspace"), []);
+  assert.deepEqual(offendingTokens("docs/x.md", "A user directory is not a finding."), [],
+    "`user` on its own is an ordinary word");
+});
+
+test("a home directory on a build machine is refused", () => {
+  // ONE CLASS, NOT TWO. `clearotron` is the product's own name and the account the package installs
+  // as; it is not in the login class, because a tree that could not say `clearotron` could not
+  // document itself. It is the PATH that is private, so only the path class fires.
+  assert.deepEqual(offendingTokens("bin/start.mjs", "// /home/clearotron/trademark/pool — the published directory"),
+    ["/home/clearotron"]);
+  assert.deepEqual(offendingTokens("docs/x.md", "Reports land under /home/testuser/trademark/pool."),
+    ["testuser", "/home/testuser"]);
+});
+
+// THE ONE CLASS THIS TREE CANNOT SPELL, and the arm says so rather than leaving an absence.
+//
+// The class had a pattern naming two private repositories as literals, in a file that ships in the
+// tree it protects — the guard publishing exactly what it refuses. The literals belong with the
+// personal names in the private table; what is left here is the declaration and the reason.
+//
+// ASSERTED IN BOTH DIRECTIONS, because "it does not fire" is also what a broken class looks like. The
+// entry must still be in the table with a `why` a reader can act on, and it must genuinely not match.
+test("the private-repo-name class is DECLARED and deliberately unspellable here", () => {
+  const entry = CLASSES.find((c) => c.id === "private-repo-name");
+  assert.ok(entry, "the class is gone from the table, so the census lost a column and the reason went with it");
+  assert.equal(entry.pattern, null,
+    "this class has a pattern again. A repository name is a unique identifier of a private asset, and a "
+    + "pattern here spells it in the public tree — which is this class's own `why`, applied to itself");
+  assert.match(entry.why, /private merge scan/,
+    "the entry does not say where the class IS enforced, so its absence here reads as nothing to check");
+
+  // AND IT DOES NOT FIRE. A declared class with no pattern must be skipped, not crash and not match
+  // everything — both of which a `null` reaching a regex call would produce.
+  assert.deepEqual(offendingTokens("docs/x.md", "Some repository name goes here."), []);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// see the other repository for the ruling"), []);
+
+  // The other seven still fire, so the skip did not take the loop with it.
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// driven on testuser"), ["testuser"]);
+});
+
+test("our own word for how this is built is refused, and product prose that looks like it is not", () => {
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// relayed by role-overwatch"), ["role-overwatch"]);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// the defect role-e2e measured is one of two"), ["role-e2e"]);
+  assert.deepEqual(offendingTokens("shared/x.mjs", "// Overwatch ruled on this the same day."), ["Overwatch"]);
+  assert.deepEqual(offendingTokens("docs/x.md", "See the clearance-runs notes."), ["clearance-runs"]);
+
+  // `role-shaping` IS PRODUCT PROSE AND IT IS LIVE. driver/portal-service.mjs describes what the report
+  // does with a party's role in exactly these words. A `role-\w+` rule refuses it, which would put the
+  // guard's first false positive on the engine's own comments — so the four are spelled out.
+  assert.deepEqual(offendingTokens("driver/portal-service.mjs", "// role-shaping left: the held-run suppression is retired"), []);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// the owner's role in the mark is what decides"), []);
+
+  // `deploy` IS A SKILL NAME AND IS DELIBERATELY NOT BANNED — an ordinary English word whose paragraph
+  // would be refused line by line.
+  assert.deepEqual(offendingTokens("docs/x.md", "Deploy the package, then confirm health."), []);
+});
+
+test("an attribution trailer is refused in either spelling", () => {
+  // TWO CLASSES ON ONE LINE, reported in table order: the trailer carries a role name, so the role
+  // class fires as well. Both are said, because a reader who removes only the trailer has left half.
+  assert.deepEqual(offendingTokens("docs/x.md", "Agent: role-dev · someone"), ["role-dev", "Agent: role-dev"]);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// Agent: role-design"), ["role-design", "Agent: role-design"]);
+
+  // THE MACHINE-WRITTEN ONE IS THE ONE THAT LANDS, because nobody reads it as prose — it arrives in a
+  // template and survives review by looking like machinery.
+  assert.deepEqual(offendingTokens("docs/x.md", "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"),
+    ["Co-Authored-By: Claude"]);
+  assert.deepEqual(offendingTokens("docs/x.md", "Generated with [Claude Code](https://claude.com/claude-code)"),
+    ["Generated with [Claude"]);
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// Claude-Session: https://example.test/x"), ["Claude-Session:"]);
+
+  // NAMING THE TOOL IS NOT THE TRAILER. Prose about the CLI is ordinary documentation and the guard
+  // must not refuse it, or the first thing it costs is the ability to write about the tooling.
+  assert.deepEqual(offendingTokens("docs/x.md", "Run the claude CLI from the project root."), []);
+  assert.deepEqual(offendingTokens("docs/x.md", "An agent role is not a trailer."), []);
+});
+
+test("the two trees this guard does not read stay unread, in both directions", () => {
+  // A hit in either tree must come back empty — not because the line is clean, but because the path is
+  // not read. The same line under a read path is asserted beside it, so an empty result cannot be the
+  // pattern having quietly stopped matching.
+  const line = "// driven on testuser against tracker issue 1234";
+  assert.deepEqual(offendingTokens("demo/full-country-search/x.mjs", line), []);
+  assert.deepEqual(offendingTokens("driver/skills/matter-frame/SKILL.md", line), []);
+  assert.deepEqual(offendingTokens("driver/x.mjs", line), ["tracker issue 1234", "testuser"],
+    "the same line under a read path must fire — otherwise the exclusion above proves nothing");
+
+  assert.equal(isScannable("demo/x.json"), false);
+  assert.equal(isScannable("driver/skills/x.md"), false);
+  assert.equal(isScannable("driver/demo-notes.mjs"), true,
+    "the exclusion is a directory, not a prefix — `demo` inside a filename is not the demo tree");
 });

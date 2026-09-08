@@ -150,6 +150,7 @@ import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
+import { plainRegisterFlags } from "./plain-register.mjs";
 import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
@@ -1117,6 +1118,7 @@ const DISPATCH_EXTRA_BUILDERS = {
   // corruption 2 — narrative-refutation's two, composed inline at the dispatch site until now.
   "plan-audit": (ctx) => planAuditExtra(ctx),
   "refute-registry-check": (ctx) => refuteRegistryCheckExtra(ctx),
+  "refute-plain-register": (ctx) => plainRegisterExtra(ctx),
   // — the SAME receipt derivation, one seat earlier. A distinct id rather than a second
   // `plan-audit` entry so the dispatch receipt (`extras`) still says which stage carried which block;
   // the builder delegates, so there is one derivation and one set of graded classes.
@@ -6010,6 +6012,109 @@ function refuteRegistryCheckExtra(ctx) {
       ...probs.map((p) => `- ${p}`),
     );
   } catch (e) { note(`refute registry pre-check (non-fatal): ${e.message}`); return ""; }
+}
+
+/**
+ * Rule 1 of the two-register rule, over the clearance's default-visible lines, as a prompt block.
+ *
+ * ADVISORY, AND IT STAYS ADVISORY. A hit is a rewritten sentence in the reviewer's own flags — never a
+ * disclosure to the client, never a run failure. It moves no band, no evidence and nothing that is
+ * searched. That is the whole reason it rides THIS stage rather than the pre-delivery lint: the
+ * reviewing pass already quotes a sentence and hands back the rewrite, in the voice it uses for
+ * everything else, and it reaches the writer instead of the reader.
+ *
+ * THE DRIVER MEASURES, THE SEAT JUDGES. `plainRegisterFlags` is deterministic; this block reports what
+ * it found — which line carries a word of the profession's, and how long a sentence ran. Whether the
+ * sentence is actually wrong, and what replaces it, is the reviewer's call. The decision this
+ * implements rejects a word list AS THE MECHANISM, so the block hands the seat evidence and never a
+ * verdict: half these words are ordinary English and several are plausible marks.
+ *
+ * AND IT IS BLIND TO THE RUN'S OWN NOUNS. Every mark, variant and owner the run is about is blanked
+ * before the text is read, because a check that flagged the mark being cleared would put its noise on
+ * the one report where it matters most — the same defect one level in that turned "AXIS Bank filed in
+ * class 36" into "group Bank filed in class 36" on a report clearing AXIS.
+ *
+ * WHY THE FIELDS ARE THE RECORD'S OWN KEYS AND NOT `DEFAULT_VISIBLE_FIELDS.clearance`. That list's
+ * clearance half names five fields nothing in this tree reads — `oneLiner`, `freedomToOperate`,
+ * `thirdPartyRights`, `ownRights` and `batchOpener`, in either casing. Iterating it would open nothing
+ * and report a clean result over text it never read, which is the absence-as-pass this block exists to
+ * avoid. The keys below are the ones the record actually carries, and they are the surfaces the
+ * READER-OWNED NOUNS directive already names as reaching the client. Reconciling that list is its own
+ * change because it is shared with the knockout half, which IS real.
+ *
+ * An absent or malformed findings.json yields no block, and the composer records the id as not built —
+ * so "nothing to say" and "could not look" are told apart on the dispatch receipt rather than inferred.
+ */
+function plainRegisterExtra(ctx) {
+  try {
+    const P = ctx.paths;
+    if (!existsSync(P.findings)) return "";
+    // ABSENT IS NOT CORRUPT, and the composer already tells them apart — so let a parse failure THROW.
+    // Swallowing it here would return "" and land the id in neither `ids` nor `failed`, which reads on
+    // the dispatch receipt as "this run had nothing to say" over a record nobody could open. The file
+    // being missing is the legitimately empty case and returns above; a record that exists and will not
+    // parse is a real defect, and the receipt should carry it.
+    const doc = parseFindingsJson(readFileSync(P.findings, "utf8"));
+
+    const about = {
+      marks: [
+        ...(Array.isArray(ctx.job?.marks) ? ctx.job.marks.map((m) => (typeof m === "string" ? m : m?.name)) : []),
+        ctx.job?.markName, ctx.job?.name,
+      ].filter((x) => typeof x === "string" && x),
+      owners: (doc.findings ?? [])
+        .flatMap((f) => [f?.owner, f?.owner_name, f?.owner?.name])
+        .filter((x) => typeof x === "string" && x),
+    };
+
+    // The surfaces a clearance reader meets before opening anything, named one by one so adding a
+    // field to the page is a deliberate addition here too.
+    const visible = [];
+    const add = (where, v) => { const t = String(v ?? "").trim(); if (t) visible.push({ where, text: t }); };
+    for (const f of doc.findings ?? []) add(`conflict ${f?.ordinal ?? "?"}'s one sentence`, f?.net);
+    for (const c of doc.coverage ?? []) add(`the coverage line for "${c?.area ?? "an area"}"`, c?.note);
+    for (const a of doc.actions ?? []) add(`the action "${a?.id ?? a?.kind ?? ""}"`.replace(/ ""$/, ""), a?.text);
+    for (const k of ["distinctiveness", "connotation"]) {
+      const v = doc.markAssessment?.[k];
+      add(`the mark assessment's ${k}`, typeof v === "string" ? v : v?.read);
+    }
+
+    const hits = [];
+    for (const { where, text } of visible) {
+      for (const flag of plainRegisterFlags(text, about)) hits.push(`- ${where} — ${flag.say}`);
+    }
+    if (!hits.length) return "";
+
+    // THE LAST SENTENCE IS DERIVED, NEVER ASSERTED, and the reason is that it is the one the seat acts
+    // on. `about` is built from three optional job keys and from owners found in the record, and
+    // nothing guarantees any of them is present — so on a run where the exclusion found nothing, an
+    // absolute claim that every mark was removed is false in exactly the state where a hit IS the mark.
+    // Found in review, 2026-09-08, driven on a job carrying no marks.
+    //
+    // THE EMPTY STATE SAYS SO RATHER THAN GOING QUIET. Dropping the clause would leave the seat with no
+    // reading of a fact that changes what it should do; telling it the mark was not excluded is more
+    // useful than telling it nothing, and far more useful than telling it the opposite.
+    // TWO EXCLUSIONS, TWO FACTS, AND ONLY ONE OF THEM PROTECTS THE MARK. Keying the reassurance on
+    // marks ∪ owners was the first repair and it moved the defect rather than closing it: owners come
+    // from the RECORD and marks from the JOB, so a record carrying thirteen owners and a job naming no
+    // mark made the set non-empty, fired the reassurance, and told the seat no flag was the mark under
+    // clearance over a flag that was exactly that. That mixed state is the LIKELIER one in production —
+    // records carry owners; a job missing its marks is the unusual half. Found in review, 2026-09-08,
+    // driven on the first repair's own head.
+    const marks = about.marks ?? [], owners = about.owners ?? [];
+    const ownerNote = owners.length ? ` The ${owners.length} owner name(s) from the record were also removed.` : "";
+    const exclusionNote = marks.length
+      ? `The ${marks.length} mark(s) this run is about were removed before reading, so none of these is a hit inside the name being cleared.${ownerNote}`
+      : `THIS RUN NAMED NO MARK TO EXCLUDE, so the mark under clearance was NOT removed before reading — a flag below may BE that mark. Check each against the matter before rewriting it.${ownerNote}`;
+    return lines(
+      `PLAIN WORDS ON WHAT THE READER SEES FIRST: a deterministic read of this run's default-visible lines — the ones a client meets before opening anything — flagged the lines below. Treat each as a candidate FLAGGED CORRECTION [kind: narrative] and handle it exactly as you handle the reader-owned nouns above: quote the sentence and give the rewrite that keeps every fact. THIS IS EVIDENCE, NOT A VERDICT — judge each in context and pass over any where the word is the subject rather than the profession's shorthand. ${exclusionNote}`,
+      ...hits,
+    );
+  } catch (e) {
+    // Re-thrown, not swallowed: composeDispatchExtra notes it and records the id under `failed`, so an
+    // unreadable record is visible on the receipt instead of looking like a clean run. A prompt block is
+    // additive context and the composer already refuses to fail a dispatch over one.
+    throw new Error(`plain-register pre-check: ${String(e?.message ?? e).slice(0, 120)}`);
+  }
 }
 
 // ── THE RECEIPT, AND THE THREE CLASSES, STATED ONCE ────────────────────────────────────────────────

@@ -30,7 +30,7 @@ that should have changed. Not "tests pass" — the command whose output proves i
 
 - [ ] No run artifact, pool path, real mark, real party name, or matter number appears in this diff.
 - [ ] `npm test` passes.
-- [ ] Touched `portal-ui/src`? Ran `npm run build:ui` (CI rebuilds it and requires byte equality; `portal-ui/dist` is not committed) and `npm run typecheck -w portal-ui` passes.
+- [ ] Touched `portal-ui/src`? Ran `npm run build:ui` (`portal-ui/dist` is not committed; CI builds it from source) and `npm run typecheck -w portal-ui` passes.
 - [ ] Added an environment variable? Added its row to `docs/architecture/05-config-governance.md`.
 - [ ] An empty result, a missing file, or a match that found nothing is reported as an absence, not as a pass.
 - [ ] Release note added under `.changeset/`, written for a lawyer, passes `node scripts/release-notes-lint.mjs`.
