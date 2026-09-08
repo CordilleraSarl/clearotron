@@ -9,7 +9,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 778,
+  "total": 734,
   "files": {
     ".gitattributes": [
       0,
@@ -27,7 +27,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -147,7 +147,7 @@
       0,
       1,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -281,16 +281,6 @@
       0,
       0
     ],
-    "driver/doubt-selection.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/drain-posture.mjs": [
       0,
       1,
@@ -307,7 +297,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -318,16 +308,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/effort-model.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      2,
       0,
       0
     ],
@@ -381,16 +361,6 @@
       0,
       0
     ],
-    "driver/gateway.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/hit-list.mjs": [
       0,
       1,
@@ -408,16 +378,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/outbox-backoff.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ],
@@ -447,7 +407,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -487,7 +447,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -641,16 +601,6 @@
       0,
       0
     ],
-    "driver/search-policy.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/stages-knockout.mjs": [
       0,
       3,
@@ -714,10 +664,10 @@
     "driver/systemd/clearotron-worker.service": [
       0,
       4,
-      2,
       0,
       0,
-      1,
+      0,
+      0,
       0,
       0
     ],
@@ -788,16 +738,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/test/a-capture-that-stopped-describing-the-box-says-so.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ],
@@ -941,16 +881,6 @@
       0,
       0
     ],
-    "driver/test/a-pool-copy-is-not-a-refusal.test.mjs": [
-      0,
-      0,
-      3,
-      1,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/test/a-port-refusal-names-the-file-it-reads.test.mjs": [
       0,
       1,
@@ -966,16 +896,6 @@
       2,
       0,
       0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/test/a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": [
-      0,
-      0,
-      1,
-      1,
       0,
       0,
       0,
@@ -1211,16 +1131,6 @@
       0,
       0
     ],
-    "driver/test/carry-through-sees-outside-the-reference.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/test/case-law-credential-state.test.mjs": [
       0,
       1,
@@ -1228,16 +1138,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/test/code-side-is-not-unknown.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ],
@@ -1255,16 +1155,6 @@
       0,
       1,
       0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/test/connect-does-not-move-the-deployment-in-silence.test.mjs": [
-      0,
-      0,
-      1,
       0,
       0,
       0,
@@ -1391,16 +1281,6 @@
       0,
       0
     ],
-    "driver/test/every-dispatch-carries-the-charter.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/test/every-own-pass-digest-is-declared.test.mjs": [
       0,
       1,
@@ -1517,7 +1397,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -1751,16 +1631,6 @@
       0,
       0
     ],
-    "driver/test/the-corrective-pass-names-what-it-removes.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/test/the-door-answers-the-address-it-advertises.test.mjs": [
       0,
       1,
@@ -1768,16 +1638,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/test/the-doubt-carries-its-placement-tier.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      2,
       0,
       0
     ],
@@ -1981,16 +1841,6 @@
       0,
       0
     ],
-    "driver/test/third-party-notices.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/test/unit-entries-load-env-local.test.mjs": [
       0,
       1,
@@ -2008,26 +1858,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/test/withheld-states-its-scope.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
-    "driver/tokens.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ],
@@ -2337,7 +2167,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -2371,16 +2201,6 @@
       0,
       0
     ],
-    "providers/_shared/test/enumerate-ceiling-parity.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "providers/oauth-mcp-bridge/systemd/courtlistener-mcp.service": [
       0,
       1,
@@ -2407,7 +2227,7 @@
       0,
       0,
       0,
-      3,
+      0,
       0,
       0
     ],
@@ -2457,7 +2277,7 @@
       0,
       0,
       0,
-      2,
+      0,
       0,
       0
     ],
@@ -2508,16 +2328,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "scripts/mint-suite-census.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ],
@@ -2657,7 +2467,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -2734,7 +2544,7 @@
     "shared/checkout-move.mjs": [
       0,
       2,
-      1,
+      0,
       0,
       0,
       0,
@@ -2747,7 +2557,7 @@
       0,
       0,
       0,
-      2,
+      0,
       0,
       0
     ],
