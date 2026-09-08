@@ -119,6 +119,84 @@ Measured tone only — no "extremely difficult", "most dangerous", "massive", "e
 colour communicates urgency. No quantitative claims from research ("major streaming hit", never
 "294M streams"; "significant market presence", never revenue figures).
 
+## Plain language — the two-register rule
+
+The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page. The
+band, the summary, the basis line and the one-liners are the whole product for the second reader. They
+were the hardest lines on the page.
+
+**Everything a reader sees before opening a fold is written for the client's business owner.** Ordinary
+nouns, one idea per sentence, no sentence over 25 words, the conclusion first. On this product that is:
+`chunkSummary`, `basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every
+`registerReads[].read`, the `purpleNotes`, and `standardCaveats`.
+
+**Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision — a
+finding's `basis`, the provenance, the long `assessment`. Even there, a term is explained the first time
+it appears on the page.
+
+The rule is the test, not the list. Ask of every noun: *does the reader already own this word?* These
+are worked examples of the one failure, not its boundary:
+
+| Instead of | Write |
+|---|---|
+| proprietor | owner |
+| subsisting | live |
+| senior | earlier, or came first |
+| specification | goods list |
+| DELPH-formative | names built on DELPH- |
+| prevail | win |
+| citable prior rights | earlier marks the office can raise against you |
+| vulnerable to a non-use attack | could be cancelled for not being used |
+| the confusion comparison meets on every limb | same name, same goods, same shops |
+| belt-and-braces classes | extra classes |
+| dispatch, instructed | the request, what was asked |
+| lane | class, or channel — whichever you mean |
+| chunk | never; say the batch, or these names |
+
+The target is the level of these, each the standard for its line:
+
+> **Basis.** "ORBIT is already the name of two satellite-tracking apps on the same app stores, and of an
+> established satellite-communications company. Any of them would likely win a dispute over this name
+> for this software. The word is a weak mark for these goods, which is why this is High and not Very
+> High."
+
+> **A finding's `net`.** "Same name, same goods, and their filing came first in every territory we
+> searched. We see no argument against it."
+
+> **The batch opener.** "One name screened: ORBIT, rated High."
+
+**Say it once.** A caveat, a limit or a finding belongs in one place. Four `standardCaveats` that each
+restate "this is not a clearance" are one caveat and three repetitions — and the report's scope block
+already carries that sentence in the renderer's own words, so a caveat repeating it is dropped before
+the reader sees it. Write the one thing the scope block does not say, or write none.
+
+**A note is verb-first, one line, and about one of two things.** Write each `purpleNotes` entry as an
+instruction to the reviewing lawyer, opening on the verb. Every note is about the REQUEST — what was
+asked, and whether it holds together — or about the NAME. The report prints the first kind at the top,
+above the conflicts, and the second under that name's cards, so a note that mixes the two lands in one
+place and reads oddly in it. Write two notes.
+
+A note about the request NAMES the request in the note — "the request", or "what we were asked". That is
+not a formality: the report sorts the two kinds by what the note talks about, so a request note that
+never mentions the request is filed under the name and prints in the wrong place.
+
+> "Check the request. The client is described as a beverages and supplements business, but we were asked
+> to screen satellite-tracking software in Class 9. We screened the software. If beverages is the real
+> business, this screen looked at the wrong market."
+
+> "Ask the client whether it already uses ORBIT. The request does not say, and the client's own earlier
+> use would change the picture."
+
+A note about the name opens on what the lawyer should do about the name:
+
+> "Pull EG Tech's full goods list at clearance. It is the record most likely to change the picture in
+> either direction."
+
+> "Search Classes 42 and 38 in their own right. Both carry live ORBIT filings, not spillover from
+> Class 9."
+
+A note that restates a finding already on the page is not a note. Cut it.
+
 ## The per-mark opening read (`assessment`)
 
 Each mark's report is delivered on its own, and `assessment` is the first thing its reader meets —

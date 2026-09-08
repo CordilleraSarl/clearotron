@@ -92,7 +92,7 @@ import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
-import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
+import { flagView, accessView, observedView, authView, staffRuleSource } from "./portal-config-view.mjs";
 import { livePosture } from "./flag-snapshot.mjs";   // — for the capture-vs-box comparison only, never for a value
 import { familiesView, groupRuns, ungroupRuns } from "./portal-families.mjs";
 import { validateJob } from "./enqueue-schema.mjs";
@@ -1029,6 +1029,11 @@ function outcomeRow({ event = "request-refused", method, path, email = null, sta
 export function makePortalService({
   poolRoot, workspaceRoot, recipesDir = undefined, secret,
   staffDomains = [], grants = null,
+  // Where the staff-domain rule is written, for the People & access page to name. INJECTED, because
+  // the answer is a fact about the PROCESS — which file, if any, it took its configuration from — and
+  // this constructor is deliberately pure over its inputs. Null means "no rule, or could not tell",
+  // and the page then says nothing rather than guessing at a path.
+  staffRule = null,
   // The queue directories the RUNNER drains — the same list it hands checkRunCaps. The allowance counter
   // and the quota pre-check read their ledger beside these, so they count what the wall counts (:
   // they used to reconstruct a workspace-relative path that resolved to nothing once the queue moved out
@@ -2822,7 +2827,7 @@ export function makePortalService({
             const p = envFrom(process.env, "CLEAROTRON_ACCESS_FILE");
             if (p) grantsFile = { name: basename(p), modifiedAt: new Date(statSync(p).mtimeMs).toISOString() };
           } catch { /* reported as unknown; a failed stat must not take down the page that explains access */ }
-          return { status: 200, json: accessView({ grants: grantsNow(), staffDomains, knownAccounts, grantsFile }) };
+          return { status: 200, json: accessView({ grants: grantsNow(), staffDomains, knownAccounts, grantsFile, staffRule }) };
         }
         // /portal/admin/observed — who has actually USED this instance lately, from the audit log.
         //
@@ -3915,6 +3920,14 @@ const PORT = PORT_CHOICE.port;
   const grants = () => loadGrants({});
   const staffDomains = (process.env.PORTAL_STAFF_DOMAINS || "").split(",").map((s) => s.trim()).filter(Boolean);
   if (!staffDomains.length && !grants()) { log(`FATAL: neither PORTAL_STAFF_DOMAINS nor CLEAROTRON_ACCESS_FILE configured — nobody could ever sign in (fail-closed).`); process.exit(1); }
+  // WHERE THAT RULE IS WRITTEN, resolved once at boot and handed to the service. `loaded` is this
+  // process's own report of which file configured it — never a path composed here, which would answer
+  // for a process that read nothing (see `envFileRead`'s note in shared/env-local.mjs).
+  const { loaded, unitEnvPath, envLocalPath } = await import("../shared/env-local.mjs");
+  const staffRule = staffRuleSource({
+    value: process.env.PORTAL_STAFF_DOMAINS, envLoad: loaded,
+    unitEnvFile: unitEnvPath(), cliEnvFile: envLocalPath(),
+  });
 
   const { config } = await import("./driver.config.mjs");
   const { appendFileSync: append } = await import("node:fs");
@@ -4356,7 +4369,7 @@ const PORT = PORT_CHOICE.port;
   const service = makePortalService({ poolRoot: config.poolRoot, workspaceRoot: config.workspaceRoot,
     // Re-read per request (a getter that rescans), so a workspace created after boot is counted.
     queueDirs: () => config.queueDirs,
-    secret, staffDomains, grants, trigger, stopRun, audit, auditPath, upstream, composeRead, stopControl,
+    secret, staffDomains, staffRule, grants, trigger, stopRun, audit, auditPath, upstream, composeRead, stopControl,
     // — the ONLY place the environment is read for this. `bin/start.mjs` is the
     // only thing that sets it, and it sets it explicitly rather than passing the operator's inherited
     // environment through, so a stray `.env` can neither put a live install into demo mode nor take a

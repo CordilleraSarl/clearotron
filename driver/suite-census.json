@@ -190,8 +190,8 @@
           "todos": 0
         },
         "a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": {
-          "tests": 19,
-          "asserts": 69,
+          "tests": 20,
+          "asserts": 75,
           "skips": 0,
           "todos": 0
         },
@@ -304,14 +304,14 @@
           "todos": 0
         },
         "a-memo-has-a-door-onto-it.test.mjs": {
-          "tests": 24,
-          "asserts": 80,
+          "tests": 26,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
         "a-memo-over-a-delivered-report-leaves-it-alone.test.mjs": {
-          "tests": 13,
-          "asserts": 52,
+          "tests": 16,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -585,6 +585,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-staff-domain-is-a-grant-not-a-guess.test.mjs": {
+          "tests": 17,
+          "asserts": 77,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -601,6 +607,12 @@
           "tests": 2,
           "asserts": 5,
           "skips": 2,
+          "todos": 0
+        },
+        "a-timer-is-asked-about-as-a-timer.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
           "todos": 0
         },
         "a-unit-configuration-cannot-reach-is-resolved-at-install.test.mjs": {
@@ -2344,8 +2356,8 @@
           "todos": 0
         },
         "knockout-structured-read.test.mjs": {
-          "tests": 10,
-          "asserts": 47,
+          "tests": 11,
+          "asserts": 53,
           "skips": 0,
           "todos": 0
         },
@@ -2736,6 +2748,12 @@
         "placement-model.test.mjs": {
           "tests": 14,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "plain-words-on-what-the-reader-sees-first.test.mjs": {
+          "tests": 14,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -3227,7 +3245,7 @@
         },
         "register-count.test.mjs": {
           "tests": 20,
-          "asserts": 148,
+          "asserts": 153,
           "skips": 0,
           "todos": 0
         },
@@ -3629,7 +3647,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 112,
+          "asserts": 115,
           "skips": 0,
           "todos": 0
         },
@@ -4162,8 +4180,8 @@
           "todos": 0
         },
         "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -4341,6 +4359,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-page-leads-with-the-read.test.mjs": {
+          "tests": 27,
+          "asserts": 64,
+          "skips": 0,
+          "todos": 0
+        },
         "the-link-we-send-opens.test.mjs": {
           "tests": 6,
           "asserts": 14,
@@ -4457,7 +4481,7 @@
         },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 3,
           "todos": 0
         },
@@ -4739,7 +4763,7 @@
         },
         "update-refuses-on-a-packaged-install.test.mjs": {
           "tests": 6,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },

@@ -153,14 +153,28 @@ test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two 
   const html = RENDER([markRow()]);
   assert.match(html, /class="ko-basisline"/, "the basis leads the card");
   assert.match(html, /class="ko-counter"/, "counter-factors are their own block");
-  assert.match(html, /What holds it there/);
+  // THE LABELS CARRY THE BAND'S OWN WORD (tracker issue 331 A.2). The old pair — "What holds it there"
+  // and "What would move it" — was 9.5px grey capitals, and the owner read the first and asked "what
+  // holds what?". These name the rung the mark is on and the rung above it, off this fixture's own
+  // ladder (Blocking > Medium > Manageable > Low), so the label answers the question by itself.
+  assert.match(html, /Why Manageable/, "the factors are labelled with the band the mark actually has");
+  assert.match(html, /Why not Medium/, "and the counter-factors with the rung above it on THIS ladder");
+  assert.doesNotMatch(html, /What holds it there|What would move it/, "the muted pair is retired");
+  assert.match(html, /class="ko-lbl2"/, "at body size and body colour, not the 9.5px grey style");
   assert.match(html, /class="ko-mitig"/, "mitigation is visually distinct");
-  assert.match(html, /What would move it/);
+  assert.match(html, /What would lower the risk/);
   // Every factor is its own <li> — the wall is gone because the emission changed, not because a
   // renderer split a paragraph on full stops.
   for (const f of markRow().factors) assert.ok(html.includes(f), `factor on the page: ${f.slice(0, 30)}`);
   assert.match(html, /class="ko-band"/, "the rating chip is still the head of the card");
   assert.match(html, /Classes 8/, "…with the classes beside it");
+});
+
+test("331: at the TOP rung there is no higher band to name, so the label stops being comparative", () => {
+  const html = RENDER([markRow({ rating: "Blocking" })]);
+  assert.match(html, /Why Blocking/, "the factors still carry the mark's own band");
+  assert.match(html, /What keeps it here/, "and the counter-factors ask the same question without a rung to name");
+  assert.doesNotMatch(html, /Why not /, "a comparative here would name a band this ladder does not have");
 });
 
 test("NOTHING IS DISCARDED — prose bullets survive under the full narrative", () => {
