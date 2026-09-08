@@ -31,12 +31,15 @@
 // That last paragraph prints on every run, including a clean one, because a guard whose "clean" is
 // near-meaningless and does not say so is worse than no guard: its presence reads as coverage.
 //
-// The remedy is the convention, not this script — CONTRIBUTING.md, "Cite the SYMBOL, not the line
-// number". A symbol survives every move; a number survives none. This guard cannot enforce that (the
+// The remedy is the convention, not this script — ADR-0005, "Cite the symbol, not the line": a symbol
+// survives every move and a number survives none, and where the target is not a named symbol, quote a few
+// words of it. This used to name CONTRIBUTING.md, which contains no such section — that record says in as
+// many words that it SUPERSEDES CONTRIBUTING's instruction, so the pointer was to the superseded half. This guard cannot enforce that (the
 // ruling explicitly declines a form guard without an allowlist for the ~800 existing citations), so it
 // holds the decidable perimeter and names the gap.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";   // — the ratchet reads a range; injected in tests
 import { fileURLToPath } from "node:url";
 import { join, dirname, basename } from "node:path";
 
@@ -370,6 +373,41 @@ function main() {
   // — the no-symbol slice: a cited span that is entirely blank or brace-only.
   const { misses: blankTarget, unshipped: blankUnshipped } = structuralMisses(citations, readLines);
 
+  // ── `--ratchet`: refuse a NEW citation that carries a line number and no symbol ────────────────────
+  //
+  // Separate mode rather than folded into the default run, because it answers about a RANGE and the rest
+  // of this script answers about the tree. Mixing them would make one exit code stand for two questions.
+  if (process.argv.includes("--ratchet")) {
+    const i = process.argv.indexOf("--base");
+    const base = i >= 0 ? process.argv[i + 1] : "origin/main";
+    const { error, lines } = addedLinesSince(base);
+    if (error) {
+      // A RANGE THAT COULD NOT BE READ IS NOT A RANGE THAT ADDED NOTHING, and 2 keeps the two apart —
+      // 1 already means "found something" here.
+      console.error(`${GUARD} --ratchet: ${error}`);
+      console.error("  That is this check failing to look, not a clean range. Nothing was judged.");
+      process.exit(2);
+    }
+    const bare = newBareCitations(lines);
+    console.log(`${GUARD} --ratchet: ${lines.length} added line(s) against ${base}, ${bare.length} new bare citation(s)`);
+    for (const b of bare) console.log(`  ${b.file}:${b.line}  cites ${b.cited}:${b.start} with no symbol\n    ${b.text.slice(0, 110)}`);
+    if (bare.length) {
+      console.error("\nA citation carrying a line number and no symbol is checked for EXISTENCE and nothing");
+      console.error("else, so it drifts onto a different real line and every test here still passes.");
+      console.error("");
+      console.error("The documented form (ADR-0005) carries no line number at all:");
+      console.error("    `toolGroupsForStage()` in `gather-config.mjs`");
+      console.error("Where the target is not a named symbol, quote a few words of it. A line number is also");
+      console.error("accepted when a bare identifier sits directly beside it — `pipeline.mjs:875 recordsFromSearch`");
+      console.error("— because that one this script can check. Backticks around the symbol are NOT stepped over,");
+      console.error("so a line number with a backticked symbol still reads as bare.");
+      console.error("");
+      console.error("The existing corpus is not your problem: this judges only what the range ADDS.");
+      process.exit(1);
+    }
+    process.exit(0);
+  }
+
   if (process.argv.includes("--json")) {
     console.log(JSON.stringify({
       files: corpus.length, citations: citations.length, resolved: resolved.length,
@@ -595,6 +633,87 @@ const CALLS = /^\s*\(/;
 const OWN_NUMBER = /^\s*(?:at\s+\d|:\d)/;
 
 /** The symbol-shaped tokens adjoining a citation, in BOTH grammars: `cite SYM` and `SYM (cite)`. PURE. */
+// ── THE RATCHET: A NEWLY ADDED CITATION CARRIES A SYMBOL (tracker issue 125) ────────────────────────
+//
+// The blindness above is not closeable on the existing corpus. Of the line citations in this tree only a
+// minority name a symbol beside the number, and the rest are checked for EXISTENCE and nothing more — a
+// citation that drifted onto a different real line reads as correct to every test here. Repointing them by
+// hand is not the repair: the two hand measurements recorded in BLINDNESS both found wrong lines
+// introduced by exactly that kind of pass.
+//
+// So this closes the class GOING FORWARD, at the only moment the correct symbol is cheap to write — when
+// the author still knows what they meant. Same shape as the catalogue and release-note ratchets: the
+// existing population is left to convert by attrition, and the number that must not grow is the number of
+// citations nothing can check.
+//
+// WHAT IS REFUSED IS NARROW, and the two questions the issue left open are answered here rather than
+// assumed:
+//
+//   · a line number WITH a symbol is fine. The symbol is what makes it checkable, and `symbolClaims`
+//     above already verifies it; forbidding the number as well would be stricter than the harm.
+//   · a citation with NO line number is fine, symbol or not. It cannot go stale from an edit above it,
+//     which is the whole failure. This is also the answer for a data file, a fixture or a generated
+//     table, where there is no symbol to name — cite the file, leave the line off.
+//
+// Refused, therefore, is exactly one shape: a NEW citation carrying a line number and no symbol.
+//
+// PURE, and the added lines are injected, so a test drives it without a git repository — a ratchet that
+// can only run against the real tree cannot be shown to fail.
+// THE RULE'S OWN DEFINITION IS EXEMPT, AND NAMED RATHER THAN PATTERN-MATCHED. Its specimens are bare
+// citations on purpose — a test that cannot write the shape it refuses cannot exercise it — so scanning it
+// puts the guard's own examples into the population it polices, and the ratchet refuses its own arrival.
+// Caught by driving the check against a range containing it, not by review.
+//
+// The cost of naming a file is that a REAL bare citation added there also escapes. That is the same trade
+// the reference-strip signatures make for the same reason, and it is preferable to a pattern, which would
+// quietly widen to files nobody considered.
+export const RATCHET_EXEMPT = ["driver/test/a-new-citation-carries-something-that-can-be-checked.test.mjs"];
+
+export function newBareCitations(addedLines) {
+  const out = [];
+  for (const { file, line, text } of addedLines ?? []) {
+    if (RATCHET_EXEMPT.includes(file)) continue;
+    for (const m of String(text ?? "").matchAll(CITE_RE)) {
+      // The same discriminator the corpus scan uses: a second `:number` closing a paren is a V8 stack
+      // frame, not a citation. Reading them as citations would refuse a fixture that captured a trace.
+      if (/^:\d+\)/.test(String(text).slice(m.index + m[0].length))) continue;
+      if (symbolsBeside(String(text), m.index, m[0].length).length > 0) continue;
+      out.push({ file, line, cited: m[1], start: Number(m[2]), text: String(text).trim() });
+    }
+  }
+  return out;
+}
+
+/**
+ * The lines a range ADDS, as `{ file, line, text }`. `run` is injected for the same reason as above.
+ *
+ * `--unified=0` so context lines are not read as additions — with context, every citation near an edit
+ * would be reported as new and the ratchet would refuse changes that added nothing.
+ */
+export function addedLinesSince(base = "origin/main", run = null) {
+  const exec = run ?? ((...a) => execFileSync("git", ["-C", ROOT, ...a], { encoding: "utf8", maxBuffer: 1e9 }));
+  let diff;
+  try { diff = exec("diff", "--unified=0", "--no-color", `${base}...HEAD`); }
+  catch (e) {
+    // A range that could not be read is not a range that added nothing, and the caller must not confuse them.
+    return { error: `could not diff ${base}...HEAD (${String(e?.message ?? e).split("\n")[0].slice(0, 90)})`, lines: [] };
+  }
+  const lines = [];
+  let file = null, next = 0;
+  for (const raw of diff.split("\n")) {
+    // The two file headers git writes, matched in full rather than by a "+++" prefix. An added line
+    // beginning with "++" arrives here as "+++...", so a prefix test drops it AND numbers every line
+    // after it in the hunk one low, because the line it skipped never advanced the counter. Both
+    // forms are exact: a deletion's header is the bare string, with no path and no timestamp.
+    if (raw.startsWith("+++ b/")) { file = raw.slice(6); continue; }
+    if (raw === "+++ /dev/null") { file = null; continue; }
+    const h = raw.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
+    if (h) { next = Number(h[1]); continue; }
+    if (raw.startsWith("+")) { lines.push({ file, line: next++, text: raw.slice(1) }); }
+  }
+  return { error: null, lines };
+}
+
 export function symbolsBeside(line, index, length) {
   const after = String(line).slice(index + length).replace(SEP_AFTER, "");
   const am = after.match(/^[A-Za-z_$][A-Za-z0-9_$]*/);

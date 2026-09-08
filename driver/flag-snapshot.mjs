@@ -318,6 +318,26 @@ export function postureDisagreement(snapshot, live) {
     "silent-output-change — a different engine answers differently and nobody is told");
   differ("billing mode", snapshot.engine?.billing?.mode ?? null, live.engine?.billing?.mode ?? null,
     "what a run costs, and who it is billed to");
+  // THE FIELD THAT DECIDES WHETHER A SEARCH CAN START, and the one this comparison could not see.
+  //
+  // The configuration page reads the LIVE posture and the New clearance screen reads this capture, so a
+  // box where they differ on this one boolean draws a green Engine row on one screen while the other
+  // replaces its start button with "no search engine is attached". That is not a hypothetical: it is
+  // what an outside user photographed, and he gave up on the product because the greener screen looked
+  // more authoritative. Both readings were correct about their own question and nothing compared them.
+  //
+  // Worse than silence, before this line: `disagrees` came back `[]` — which this page renders as "the
+  // last run ran under this same configuration". The one field they actually disagreed on was not in the
+  // comparison, so the page positively affirmed agreement while the two surfaces contradicted each other.
+  // STRINGS, NOT THE BOOLEANS THEMSELVES. Every other row here compares names and modes, so the browser
+  // contract parses `capture` and `live` with `asString` — handed `false` it yields null, and the row
+  // would reach the page with its two values blank and only the effect sentence left. The words are also
+  // the better answer for a reader: "found" against "not found" says it without a legend.
+  const found = (v) => (v === true ? "found" : v === false ? "not found" : null);
+  differ("engine program", found(snapshot.engine?.binaryPresent), found(live.engine?.binaryPresent),
+    "whether a NEW search can start — the engine that last ran and this deployment do not agree that the "
+    + "engine program can be found, so one screen offers a search the other refuses. Restart the engine "
+    + "service so it re-reads its PATH, or install the CLI where the service can see it");
 
   // Flags: compare only names BOTH sides declare, for the same reason `differ` skips absent values —
   // a build that adds a flag must not read as every older capture disagreeing with it.

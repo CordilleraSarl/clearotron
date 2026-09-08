@@ -463,7 +463,12 @@ test('#1920 THE CONTROL — notFound KEEPS the selector advice, which is right f
     const src = readFileSync(new URL(`../src/screens/${f}`, import.meta.url), 'utf8')
     const at = src.indexOf("case 'notFound':")
     assert.notEqual(at, -1, `${f} must still handle notFound`)
-    assert.match(src.slice(at, at + 260), /Check the brand owner selected at the top left/,
+    // MATCHED ON THE ADVICE, NOT ON WHERE THE CONTROL SITS. This read the whole sentence including
+    // "at the top left", which made it a guard on two things at once — that notFound still sends the
+    // reader to the selector, which is what it is for, and that the sentence still describes a
+    // position, which was never its subject. That position was wrong with the sidebar collapsed and
+    // has been dropped from these two lines; the advice it was protecting is unchanged.
+    assert.match(src.slice(at, at + 260), /brand owner is selected/,
       `${f}: the selector advice belongs on notFound and must not have been thrown away with the fix`)
   }
 })
