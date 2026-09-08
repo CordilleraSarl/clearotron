@@ -139,7 +139,7 @@ test("#1851 a `progname: message` diagnostic is not a command and keeps the bare
 // documentation disagreeing is a defect whichever of them is technically correct.
 //
 // npm puts the executable in `<project>/node_modules/.bin` and npx resolves it from the PROJECT ROOT —
-// driven on a real packaged tree by role-dev/Grogu: `npx clearotron doctor` from the root exits 0.
+// driven on a real packaged tree in review, 2026-08: `npx clearotron doctor` from the root exits 0.
 
 test("2175-F7 a packaged install sends the reader to the project, not into node_modules", () => {
   assert.equal(standFrom("/srv/example/app/node_modules/clearotron"), "/srv/example/app");

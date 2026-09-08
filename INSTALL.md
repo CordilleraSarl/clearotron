@@ -38,13 +38,15 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   ```
 
   Skip this on any machine that already builds software.
-- **Node.js >= 22**, and npm. A hard floor: `package.json` declares it, `.nvmrc` pins it, and the free
-  US register runs on `node:sqlite`, which ships with FTS5 from Node 22. Node 20 installs and then fails
-  at the first US search. `nvm use` picks the pin up.
-- **macOS, Linux, or native Windows for the demo; WSL2 with Node 22 for a clearance.** `npx clearotron
+- **Node.js >= 22.13**, and npm. A hard floor, and the minor matters: the free US register runs on
+  `node:sqlite`, which is not a built-in module before 22.13 — measured across releases, 2026-09-08. On
+  Node 20, or on 22.0 through 22.12, the install succeeds and the first US search fails with
+  `ERR_UNKNOWN_BUILTIN_MODULE`, saying nothing about Node. `package.json` declares the floor, the
+  install refuses below it before writing anything, and `nvm use` picks the pin up.
+- **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
   demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine resolves
   the reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI
-  on `PATH`. On Windows, `wsl --install`, then install Node 22 **inside** the Linux distribution and work
+  on `PATH`. On Windows, `wsl --install`, then install Node 22.13 or newer **inside** the Linux distribution and work
   through this page from there. A *hosted*
   deployment needs Linux for one further thing, the systemd outbox trigger —
   [driver/systemd/README.md](driver/systemd/README.md).

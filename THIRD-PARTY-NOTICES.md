@@ -6193,7 +6193,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## undici@8.10.2
+## undici@7.29.1
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/nodejs/undici

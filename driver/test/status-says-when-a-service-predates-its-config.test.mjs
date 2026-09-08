@@ -92,7 +92,7 @@ test("2179-F48 `status` asks the question, and reports a could-not-look as one",
 });
 
 test("2179-F48 the timestamp parse is DRIVEN over systemd's three real outputs", () => {
-  // Measured on systemd 255 by role-dev/Grogu, on a box with a user bus — which this session has not
+  // Measured on systemd 255 in review, 2026-08, on a machine with a user bus — which this run has not
   // got, and is why the parse was moved out of the shell-out and into the pure module rather than left
   // asserted by grepping status.mjs for a flag string.
   assert.equal(parseSystemdTimestamp("@1788409761"), 1788409761000,

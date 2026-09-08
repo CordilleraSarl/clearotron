@@ -13,7 +13,7 @@
   },
   "description": "Clearotron — trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
   "engines": {
-    "node": ">=22.19.0"
+    "node": ">=22.13.0"
   },
   "workspaces": [
     "driver",
@@ -27,6 +27,7 @@
     "browserslist": "^4.28.8"
   },
   "scripts": {
+    "preinstall": "node scripts/preinstall-node-check.mjs",
     "postinstall": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');if(existsSync('scripts/install-hooks.mjs'))execFileSync(process.execPath,['scripts/install-hooks.mjs'],{stdio:'inherit'})\"",
     "prepack": "node scripts/write-build-info.mjs",
     "prepublishOnly": "node scripts/release-completeness-check.mjs",
@@ -77,7 +78,7 @@
     "buffers": "file:vendor/buffers",
     "exceljs": "^4.4.0",
     "jose": "^6.2.3",
-    "undici": "^8.10.1"
+    "undici": "^7.29.1"
   },
   "bin": {
     "clearotron": "bin/clearotron.mjs"

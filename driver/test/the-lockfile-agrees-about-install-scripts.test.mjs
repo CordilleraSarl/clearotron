@@ -95,10 +95,11 @@ test("#2007 the comparison can actually SEE a declared install script — CONTRO
   // would read as declaring nothing, the lock's `absent` would agree with it everywhere, and the drift
   // this file exists for would be invisible.
   const root = join(ROOT, "package.json");
-  assert.deepEqual(declaredInstallScripts(root), ["postinstall"],
-    "the root no longer declares `postinstall`. If that was deliberate the lock must lose "
-    + "`hasInstallScript` in the same commit; if it was not, the push guards no longer arm themselves "
-    + "on install, which is tracker issue 1978 back again");
+  assert.deepEqual(declaredInstallScripts(root), ["preinstall", "postinstall"],
+    "the root no longer declares both install scripts. `preinstall` refuses an unsupported Node before "
+    + "anything is written (tracker issue 364) and `postinstall` arms the push guards (tracker issue "
+    + "1978). If dropping one was deliberate the lock must lose `hasInstallScript` in the same commit; "
+    + "if it was not, that protection is gone");
 
   // And the negative direction, so the reader is not simply returning everything it is asked about.
   assert.deepEqual(declaredInstallScripts(join(ROOT, "driver", "package.json")), [],
