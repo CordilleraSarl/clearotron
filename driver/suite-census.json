@@ -603,6 +603,12 @@
           "skips": 2,
           "todos": 0
         },
+        "a-timer-is-asked-about-as-a-timer.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-unit-configuration-cannot-reach-is-resolved-at-install.test.mjs": {
           "tests": 5,
           "asserts": 14,

@@ -90,7 +90,7 @@ import { unitsActiveVerdict } from "../driver/unit-state-verdict.mjs";
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — extracted; one allowlist, two readers
 import { unitFileDriftVerdict } from "../driver/unit-file-drift.mjs";   //
 import { placeholdersIn, resolveValues, renderUnit } from "../driver/systemd/render-units.mjs";   //
-import { CHECKED_UNITS, unitInventoryVerdict, serviceCommitVerdict, unitWorkingDirectory, unitClone } from "../driver/unit-inventory.mjs";   // · -bundle ·
+import { CHECKED_UNITS, CHECKED_TIMERS, timerVerdict, unitInventoryVerdict, serviceCommitVerdict, unitWorkingDirectory, unitClone } from "../driver/unit-inventory.mjs";   // · -bundle ·
 import { entrypointOf } from "../driver/systemd/install-census.mjs";   // the ONE ExecStart parser — a unit says which module it runs
 import { treeOfRunning } from "../shared/checkout-move.mjs";           // …and the live argv says which tree that module came from
 import { findUnitFiles, unitFilePath } from "../driver/unit-files.mjs";   //
@@ -226,6 +226,35 @@ function userBusEnv() {
 // Returns {clones, probe}. `probe` is the honest answer to "could I look at all?" — {ok, why} — and it is
 // SEPARATE from the clones list on purpose. "enumerated, nothing to compare" and "could not enumerate"
 // were the same empty array before, and this suite exists because absences were read as successes.
+/**
+ * Ask each declared TIMER about itself, as a timer.
+ *
+ * Deliberately not folded into the loop below. That loop asks a service for its WorkingDirectory and
+ * MainPID and attributes a running process to a checkout — none of which a `.timer` has, so putting
+ * timers through it would produce rows whose every attribution field is empty for a reason that is not
+ * a finding. Two questions, two calls, and each says what it could not answer.
+ */
+function declaredTimers() {
+  if (!CHECKED_TIMERS.length) return { rows: [], probeFailed: null };
+  const env = userBusEnv();
+  const rows = [];
+  let probeFailed = null;
+  for (const unit of CHECKED_TIMERS) {
+    try {
+      const shown = execFileSync("systemctl", ["--user", "show", unit, "-p", "ActiveState", "-p", "LoadState"],
+        { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] });
+      const f = Object.fromEntries(shown.split("\n").filter(Boolean).map((l) => { const [k, ...v] = l.split("="); return [k, v.join("=")]; }));
+      // An EMPTY answer is the no-session-bus case, and it must not read as a stopped timer — that is
+      // the shape that turns "could not ask" into a finding about the box.
+      if (!f.ActiveState) { probeFailed = probeFailed ?? `systemctl --user answered nothing for ${unit}`; continue; }
+      rows.push({ unit, active: f.ActiveState || null, load: f.LoadState || null });
+    } catch (e) {
+      probeFailed = probeFailed ?? String(e?.message ?? e).slice(0, 120);
+    }
+  }
+  return { rows, probeFailed };
+}
+
 function serviceClones() {
   // — the list is DECLARED, not written here. It used to be eight names inline, which put a unit
   // inside the drift guarantee or outside it by omission: `client-access` was live on production and in
@@ -889,6 +918,14 @@ else {
   const v = unitInventoryVerdict({ live: liveUnits, files: walk.files, collisions: walk.collisions,
     filesError: walk.error, box, probe });
   record("every live unit is declared", v.state, v.message);
+
+  // — AND WHETHER ANYTHING STILL STARTS THE TIMER-DRIVEN ONES. Reported separately from the line above
+  // because it answers a different question: that one says a declared unit exists and is not adrift,
+  // this one says its timer is still armed. A service whose timer was stopped satisfies the first and
+  // fails the second, and reads `inactive` for both — which is why one line could not carry both.
+  const t = declaredTimers();
+  const tv = timerVerdict(t.rows, { probeFailed: t.probeFailed });
+  record("every declared timer is still armed", tv.state, tv.message);
 }
 
 // ── — EVERY QUEUE THIS DEPLOYMENT WOULD DRAIN IS WATCHED BY SOMETHING ──────────────────────────
