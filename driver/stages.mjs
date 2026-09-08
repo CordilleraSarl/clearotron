@@ -2353,7 +2353,7 @@ export const STAGES = {
       },
       "placements.json — the structured mirror, keys EXACTLY {mark, owner, jurisdiction, records, tier, reason} + optional borderline": {
         class: "mechanical:code-rendered", tokens: ["placementmodel_missing", "placements_unparseable", "placements_key_unknown", "placement_invalid", "placement_key_unknown"],
-        why: "The driver renders it: renderPlacementsJson() in placement-form.mjs over the union, landed by `syncPlacementForm` in gateway.mjs (the union-then-render block). Cited by SYMBOL because the number has now moved twice: an earlier :507 pointed at an engine-resolution comment, and :706 went blank when an unrelated block was inserted above it. The skill file was not updated with #562, so the stage's two sources contradict each other — the contract that escapes if E1 is authored against stages.mjs alone. [citation unverified]",
+        why: "The driver renders it: renderPlacementsJson() in placement-form.mjs over the union, landed by `syncPlacementForm` in gateway.mjs (the union-then-render block). Cited by SYMBOL because the number has now moved twice: an earlier :507 pointed at an engine-resolution comment, and :706 went blank when an unrelated block was inserted above it. The skill file was not updated with #562, so the stage's two sources contradict each other — the contract that escapes if E1 is authored against stages.mjs alone.",
       },
       "mark / owner / records / territories / classes on a SELECTED row": {
         class: "mechanical:code-extracted", tokens: [],
