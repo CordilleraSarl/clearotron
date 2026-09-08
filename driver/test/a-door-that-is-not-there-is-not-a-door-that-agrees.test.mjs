@@ -350,3 +350,33 @@ test("251 probeAudience CARRIES the two headers, or the reader can never see the
   assert.match(src, /wwwAuthenticate:\s*res\.headers/, "the probe must return www-authenticate");
   assert.match(src, /viaEdge:\s*Boolean\(res\.headers/, "and whether the edge answered at all");
 });
+
+test("a client door with no Access in front is REPORTED, never raised — owner ruling 2026-09-08", () => {
+  // SCOPED TO THE BLOCK, not the file. A whole-file search for `not-fronted` and `info` would pass on
+  // any source that mentions both anywhere, which is how an assertion ends up satisfied by a neighbour.
+  // The block is the one that consumes `audienceVerdict` in the client-connector section.
+  const src = readFileSync(ONBOARD, "utf8");
+  const at = src.indexOf("const v = audienceVerdict(");
+  assert.ok(at > 0, "the client-connector audience block moved — this arm is reading the wrong place");
+  const block = src.slice(at, src.indexOf("CAN AN ASSISTANT ACTUALLY SIGN IN", at));
+  assert.ok(block.length > 0 && block.length < 4000, "the block bounds moved; re-anchor before trusting this");
+
+  // How a client reaches its own door is the client's decision, so an absent Access front is a posture.
+  // Raised, it made `doctor` exit 1 on a healthy deployment.
+  assert.match(block, /v\.kind === "not-fronted"/,
+    "the client door's not-fronted case must be handled on its own");
+  const branch = block.slice(block.indexOf('v.kind === "not-fronted"'));
+  assert.match(branch.slice(0, 600), /info\(/,
+    "not-fronted must be SAID — a state the reader is told, not a problem counted against the box");
+
+  // AND IT MUST STILL SAY WHAT WAS NOT ESTABLISHED. A state that quietly implies agreement is the
+  // failure this whole file exists to keep out: an audience nobody compared is not an audience that
+  // agreed, and dropping that sentence would trade one wrong reading for another.
+  assert.match(branch.slice(0, 600), /not compared|nothing here says the two agree/i,
+    "the state must still record that the configured audience was never compared");
+
+  // THE FAULTS ARE UNTOUCHED. A configured audience that DISAGREES with the edge is still a problem,
+  // and so is everything else the verdict can return.
+  assert.match(block, /else problem\(v\.message\)/,
+    "every other unhappy verdict must still be raised");
+});

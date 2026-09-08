@@ -15,7 +15,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
+import { existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { OPENER, ANY_CITATION, EXCLUDED, isScannable, surveyOf } from "../../scripts/strip-tracker-citations.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const strip = (line) => (OPENER.test(line) ? line.replace(OPENER, "$1") : line);
 
@@ -95,9 +101,45 @@ test("the survey counts openers and hands off the rest, over a planted tree", ()
 // THE EXCLUSIONS ARE BY NAME, and that is the point: a pattern that could recognise "this file uses a
 // citation as test data" could also stop recognising it. Both directions, so the list cannot quietly
 // empty itself and cannot quietly swallow the tree.
+// ── THE REPORT IS AN ARTEFACT TOO, and these are the two states it used to collapse ─────────────────
+//
+// Both were found by a reader rather than by the arms below, which is the point worth keeping: every
+// test here asks what the sweep DOES, and neither asked what its report CLAIMS. A hundred-file rewrite
+// is authorised by that report.
+
+test("a line that is stripped AND still carries a citation reaches the hand-off list", () => {
+  const fake = { "a.mjs": "// tracker issue 1 — this half goes, and tracker issue 2 stays mid-sentence\n" };
+  const s = surveyOf(Object.keys(fake), (f) => fake[f]);
+  assert.equal(s.strippedTotal, 1, "the opener is still stripped");
+  assert.equal(s.handoff.length, 1,
+    "the survivor was invisible: the line counted as done and never reached the list a person reads");
+  assert.match(s.handoff[0].text, /stays mid-sentence/);
+  assert.doesNotMatch(s.handoff[0].text, /^\/\/ tracker issue 1/,
+    "and the hand-off shows the line as it will BE, not as it was — a reader opens the file after the sweep");
+});
+
+test("a file that cannot be read is REPORTED, not skipped into silence", () => {
+  const s = surveyOf(["a.mjs", "gone.mjs"], (f) => {
+    if (f === "gone.mjs") throw new Error("EACCES: permission denied");
+    return "// nothing here\n";
+  });
+  assert.equal(s.unreadable.length, 1, "'I could not open this' and 'there was nothing to do' are different answers");
+  assert.equal(s.unreadable[0].file, "gone.mjs");
+  assert.match(s.unreadable[0].why, /EACCES/, "and the reason is carried, or the report cannot be acted on");
+  assert.equal(s.strippedTotal, 0);
+});
+
 test("the excluded files are excluded, and nothing else is", () => {
   assert.ok(EXCLUDED.length > 0, "an empty exclusion list means the sweep would rewrite the guard's own corpus");
   for (const f of EXCLUDED) assert.equal(isScannable(f), false, `${f} must be excluded by name`);
+  // THIS FILE AND THE SCRIPT ARE ON THAT LIST, and the omission was real rather than theoretical: the
+  // sweep would have rewritten thirteen of its own specimens and worked examples, leaving arms that
+  // assert a stripped line equals a stripped line.
+  for (const own of ["scripts/strip-tracker-citations.mjs",
+                     "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs"]) {
+    assert.ok(EXCLUDED.includes(own), `${own} defines the rule and must not be swept by it`);
+    assert.ok(existsSync(join(ROOT, own)), `${own} is exempted and is not there — an exemption keyed to a moved file exempts nothing`);
+  }
   for (const f of ["driver/pipeline.mjs", "INSTALL.md", "docs/architecture/02-architecture.md"]) {
     assert.equal(isScannable(f), true, `${f} must be swept`);
   }
