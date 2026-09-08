@@ -585,6 +585,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-staff-domain-is-a-grant-not-a-guess.test.mjs": {
+          "tests": 17,
+          "asserts": 77,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -601,6 +607,12 @@
           "tests": 2,
           "asserts": 5,
           "skips": 2,
+          "todos": 0
+        },
+        "a-timer-is-asked-about-as-a-timer.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
           "todos": 0
         },
         "a-unit-configuration-cannot-reach-is-resolved-at-install.test.mjs": {
@@ -2344,8 +2356,8 @@
           "todos": 0
         },
         "knockout-structured-read.test.mjs": {
-          "tests": 10,
-          "asserts": 47,
+          "tests": 11,
+          "asserts": 53,
           "skips": 0,
           "todos": 0
         },
@@ -2736,6 +2748,12 @@
         "placement-model.test.mjs": {
           "tests": 14,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "plain-words-on-what-the-reader-sees-first.test.mjs": {
+          "tests": 14,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -3227,7 +3245,7 @@
         },
         "register-count.test.mjs": {
           "tests": 20,
-          "asserts": 148,
+          "asserts": 153,
           "skips": 0,
           "todos": 0
         },
@@ -3629,7 +3647,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 112,
+          "asserts": 115,
           "skips": 0,
           "todos": 0
         },
@@ -4338,6 +4356,12 @@
         "the-inventory-names-the-units-this-box-runs.test.mjs": {
           "tests": 11,
           "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-page-leads-with-the-read.test.mjs": {
+          "tests": 27,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
