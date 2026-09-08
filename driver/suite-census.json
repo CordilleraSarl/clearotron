@@ -327,6 +327,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-new-citation-carries-something-that-can-be-checked.test.mjs": {
+          "tests": 7,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-packaged-install-resolves-every-workspace-dependency.test.mjs": {
           "tests": 2,
           "asserts": 7,
