@@ -11,7 +11,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -104,6 +104,26 @@ test("the root is removed on SIGTERM — the exit a cancelled job produces", () 
   const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
   assert.ok(root.length > 0, "the child must have reported the root before it was signalled");
   assert.equal(existsSync(root), false, `the root survived SIGTERM: ${root}`);
+});
+
+test("the group is signalled BEFORE any root is removed", () => {
+  // STRUCTURAL, AND DELIBERATELY SO. The defect this holds is a race: a removal that runs while the
+  // browser's renderer and GPU children are still writing throws ENOTEMPTY and leaves the root behind.
+  // Reproducing it on demand means winning a race on purpose, and an arm that only sometimes fails is
+  // worse than none — it teaches a reader to re-run rather than to look. So this reads the order the
+  // handler is WRITTEN in, which is the decision the comment beside it argues for.
+  //
+  // It was added because the ordering was reversed as a plant and every other arm here still passed.
+  const src = readFileSync(join(ROOT, "shared/reap-on-exit.mjs"), "utf8");
+  const body = src.slice(src.indexOf("function reapAll()"), src.indexOf("function install()"));
+  assert.ok(body.length > 0, "reapAll must still be the function that does both");
+  const kill = body.indexOf("groups.clear()");
+  const remove = body.indexOf("rmSync(");
+  assert.ok(kill !== -1, "reapAll must still signal the watched groups");
+  assert.ok(remove !== -1, "reapAll must still remove the watched directories");
+  assert.ok(kill < remove,
+    "the process groups must be signalled before any directory is removed: a removal that runs first "
+    + "races the browser's surviving children and throws ENOTEMPTY, leaving the root behind");
 });
 
 test("a root is rooted at the ambient temp directory, so it inherits a runner's own root", () => {
