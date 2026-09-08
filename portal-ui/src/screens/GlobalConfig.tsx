@@ -253,7 +253,22 @@ function Engine({ engine, programDisputed = false }: { readonly engine: EngineSt
     ...(engine.billing.missing.length
       ? [`Set to bill an API key, and ${engine.billing.missing.join(' and ')} is not set — a run is refused rather than billed to the subscription.`]
       : []),
-    ...(engine.binaryPresent ? [] : ['The engine program cannot be found or run on this machine.']),
+    // NAMES THE PROGRAM AND THE COMMAND. The sentence here used to end at "cannot be found or run on
+    // this machine", which tells a reader they have a problem and not one thing to do about it — on
+    // the page they opened to find out what to do. Both words come from the engine table the wizard
+    // and the run door already read, so this row cannot describe an engine differently from them.
+    //
+    // AND THE RESTART, which is the sentence that was missing everywhere. Installing the program does
+    // not change what the engine last recorded: the service reads its PATH when it starts, and until
+    // it starts again every screen goes on showing the old answer with nothing saying why.
+    ...(engine.binaryPresent
+      ? []
+      : engine.program && engine.install
+        ? [`The engine program \`${engine.program}\` cannot be found or run on this machine. `
+           + `Install it with \`${engine.install}\`, then restart this service so it re-reads its PATH.`]
+        // Neither word available — an older service, or an engine this build does not ship, which the
+        // `known` fault above already names. The sentence that shipped before, unchanged.
+        : ['The engine program cannot be found or run on this machine.']),
     // SELECTED IS NOT USABLE, and this row is where those two got drawn the same. `binaryPresent` above
     // is this deployment's own reading; the engine that last started disagreed with it, and the screen a
     // reader would go to next believes that other answer. Naming it here is the only place the two meet.

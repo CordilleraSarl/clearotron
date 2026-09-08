@@ -2848,8 +2848,8 @@
           "todos": 0
         },
         "portal-config-view.test.mjs": {
-          "tests": 33,
-          "asserts": 85,
+          "tests": 35,
+          "asserts": 94,
           "skips": 0,
           "todos": 0
         },
@@ -2902,8 +2902,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 117,
-          "asserts": 626,
+          "tests": 119,
+          "asserts": 634,
           "skips": 0,
           "todos": 0
         },
@@ -5288,8 +5288,8 @@
       "ext": "ts",
       "perFile": {
         "api.test.ts": {
-          "tests": 35,
-          "asserts": 128,
+          "tests": 37,
+          "asserts": 138,
           "skips": 0,
           "todos": 0
         },
@@ -5409,7 +5409,7 @@
         },
         "nav.test.ts": {
           "tests": 12,
-          "asserts": 45,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
