@@ -184,8 +184,18 @@ test('every in-app navigation target is a route that resolves', () => {
         'Preferences', 'UseYourAI', 'PeopleAccess', 'GlobalConfig'].map((s) => `screens/${s}.tsx`),
   ]
   const targets = new Set<string>()
+  // WHERE each literal was written, so a target that only resolves for staff can be asked whether its
+  // call site is gated. Without this the arm has two answers available — pass everything, or carve the
+  // path out by name — and neither of them checks the thing that matters to a client.
+  const sites = new Map<string, readonly string[]>()
   for (const f of files) {
     const src = readFileSync(new URL(f, dir), 'utf8')
+    for (const line of src.split('\n')) {
+      for (const m of line.matchAll(/go\((?:\s*)['"`](\/portal[^'"`$]*)/g)) {
+        const t = m[1] as string
+        sites.set(t, [...(sites.get(t) ?? []), line])
+      }
+    }
     // The RAW literal is what gets asserted — query string and all. This test once stripped the `?`
     // itself before asking screenForPath, which let `go('/portal/new?search=x')` dead-end in the app
     // while the test stayed green (found 2026-07-22): go() used to store the full string in router
@@ -200,6 +210,31 @@ test('every in-app navigation target is a route that resolves', () => {
     // A run id is appended at runtime, so the bare /portal/result is what the literal carries and what
     // must resolve. Both roles, because a client landing on a staff-only literal is the same dead end.
     assert.ok(screenForPath(t, 'staff'), `${t} is navigated to but does not resolve for staff`)
-    assert.ok(screenForPath(t, 'client'), `${t} is navigated to but does not resolve for a client`)
+    // A STAFF-ONLY TARGET IS ALLOWED, AND ONLY BEHIND THE ROLE THAT CAN OPEN IT. The rule this arm
+    // holds is that no reader meets a link to a page they cannot open — not that no such path may be
+    // written. A blocked client on New clearance needs to be sent somewhere; a client cannot read the
+    // configuration route at all, so the honest answer is that the link is not drawn for them, and
+    // what has to be checked is that it is not drawn for them. Every line writing a staff-only literal
+    // carries the role test on the same line, which is exactly the shape a reviewer can see. A carve-out
+    // by path name would have asserted nothing about the call site and passed a bare link forever.
+    if (!screenForPath(t, 'client')) {
+      for (const line of sites.get(t) ?? []) {
+        // THE TARGET MUST SIT IN THE TRUE BRANCH, not merely on a line that mentions the role. The
+        // first version of this asserted the line contained `role === 'staff'` anywhere, and
+        // `role === 'staff' ? null : go(target)` passed it — the gate inverted, which is the failure
+        // this arm is for, arriving in the shape the arm was watching for. Everything between the `?`
+        // and the first `:` is the staff branch; a path carries no colon of its own, so that window
+        // is exact for these literals.
+        //
+        // AND IT IS A TEXT HEURISTIC, said plainly: it reads one line, so a gate written across two
+        // lines, or in a variable computed above, is invisible to it and reads as ungated. That is
+        // the safe direction — it refuses what it cannot see rather than passing it — but it is not
+        // a proof that no client can reach the link.
+        const staffBranch = new RegExp(`role === 'staff'\\s*\\?[^:]*${t.replace(/[/.]/g, '\\$&')}`)
+        assert.match(line, staffBranch,
+          `${t} does not resolve for a client and is not inside the staff branch of a role test on `
+          + `the line that navigates to it: ${line.trim()}`)
+      }
+    }
   }
 })

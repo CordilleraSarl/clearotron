@@ -1242,7 +1242,14 @@ export async function runCheck() {
     if (installMode === ENGINE_MODES.DEMO) {
       info("MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
         + "and the MCP connection are live right now; `npm run example` needs no engine.");
-      info(`To leave demo: install ${engSpec.vendor}'s CLI (\`${engSpec.fallback}\`), then ${engSpec.signIn}.`);
+      // NAMES THE COMMAND, AND THE RESTART. The settings page says both now, and a doctor that named
+      // the program but not how to install it — or that left out the restart, which is what actually
+      // unsticks a reader who has just installed it — would be the third opinion this issue exists to
+      // remove. Same words on all three surfaces, taken from the same table.
+      info(`To leave demo: install ${engSpec.vendor}'s CLI (\`${engSpec.fallback}\`)`
+        + `${engSpec.install ? ` with \`${engSpec.install}\`` : ""}, then ${engSpec.signIn}.`);
+      info("Restart any running engine service afterwards so it re-reads its PATH: the portal reports "
+        + "what the engine saw when it last started, and it will not notice a new install until then.");
     } else {
       info("The engine program is installed. Whether it is signed in cannot be read from disk: run "
         + "clearotron doctor --probe-engine to find out.");

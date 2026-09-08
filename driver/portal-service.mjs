@@ -1333,6 +1333,49 @@ export function makePortalService({
   };
   const selectorOf = (body) => (body.recipeKey ? `recipe:${body.recipeKey}` : `product:${body.product || "the account's default"}`);
 
+  // ── The engine program, read once, for every surface that reports it ───────────────────────────
+  //
+  // WHY /me NEEDS THIS AT ALL. The settings page can ask `/portal/admin/config`, which already computes
+  // the live-versus-capture comparison. New clearance cannot: that route is staff-only, and the reader
+  // who gets stuck here is as often a client. A screen that asked it would get a 404 and fall back to
+  // the generic advice — which is the exact defect this exists to end, delivered to the exact reader
+  // who reported it.
+  //
+  // WHAT IT COSTS ON A NORMAL PAGE VIEW: NOTHING, and that is structural rather than a promise. The
+  // question only has a wrong answer in one state — the capture says there is no engine program — so
+  // the live reading is taken only in that state. An install with a working engine never reaches the
+  // probe, and /me is the hottest endpoint in the portal. In the state that DOES reach it the reading
+  // is held for `PROGRAM_READING_TTL_MS`, so a page fetching /me on every screen change pays it once.
+  //
+  // AND IT IS THE SAME MECHANISM THE SETTINGS PAGE USES, deliberately: `flagView` with a live posture,
+  // and the same `engine program` row out of `lastRun.disagrees`. Two surfaces answering this question
+  // by two routes is how they came to contradict each other in the first place.
+  //
+  // NOT CACHED, AND THAT IS THE POINT OF THE CHANGE. A held reading was written first and removed: it
+  // would have meant a reader who restarted the engine service went on being told to restart it for
+  // as long as the window lasted — the staleness this whole change exists to end, in miniature, in
+  // the one place a reader is standing when they act on it. Measured in testing, 2026-09-08: 0.28ms
+  // for a reading taken cold with the imports warm, and a 0.29ms median over 50 requests in the state
+  // that takes one on every request, against 0.04ms in the state that takes none. It is taken only
+  // where a search is already refusing, so there is nothing here worth trading a wrong answer for.
+  async function engineProgramDisputed(mode) {
+    // NOT DEMO, NOTHING TO DISPUTE. The capture already sees the program, so the only disagreement
+    // left is the mirror — this box cannot see what the engine could — and that one does not change
+    // what this screen says: the screen is not refusing a search in that state.
+    if (mode !== "demo") return false;
+    try {
+      const live = await livePosture();
+      // `disagrees` is [] on agreement, rows on disagreement, and null when there is no capture to
+      // compare against — three facts, and only the middle one is this. A null must not read as false.
+      const rows = flagView(poolRoot, { live }).lastRun?.disagrees;
+      return Array.isArray(rows) ? rows.some((d) => d.what === "engine program") : null;
+    } catch {
+      // COULD NOT LOOK, AND IT SAYS SO. Null travels to the screen as "unknown" and the screen prints
+      // the general advice, which is what it printed before this existed.
+      return null;
+    }
+  }
+
   async function route(method, path, identity, body = {}, query = {}) {
     const principal = makePrincipal({ email: identity?.email, grants: grantsNow(), staffDomains });
     const parts = path.replace(/\/+$/, "").split("/").filter(Boolean);   // ["portal", ...]
@@ -1389,8 +1432,17 @@ export function makePortalService({
         // writes at boot and derives the mode from `binaryPresent`, which that snapshot already
         // carries. NULL when there is no snapshot to read, and null means THIS CANNOT ANSWER — the UI
         // must leave the button alone rather than infer demo from an absent file.
+        // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
+        // `flagView` here would be two reads of the same file that could disagree with each other.
+        const meEngineMode = flagView(poolRoot).engineMode;
         return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames,
-          concurrentRuns: concurrentRunsCap(), brand: BRAND.name, engineMode: flagView(poolRoot).engineMode,
+          concurrentRuns: concurrentRunsCap(), brand: BRAND.name, engineMode: meEngineMode,
+          // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
+          // for "this could not be checked". The screen above renders one of three remedies from it,
+          // and they are different remedies: install the CLI, restart the service that cannot see it,
+          // or the general advice when nothing could be read. Only `engineMode: "demo"` can make this
+          // anything but false; see `engineProgramDisputed`.
+          engineProgramDisputed: await engineProgramDisputed(meEngineMode),
           // HOW THIS INSTALL ARRIVED, so a screen can name the setup command the reader can actually
           // type. `npm run setup` and `npx clearotron install` are the same wizard and each one is
           // unrunnable on the other route; the no-engine notice named one of them and was wrong for

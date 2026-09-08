@@ -49,6 +49,11 @@ import { readFlagSnapshot, engineFor, providersFor, postureDisagreement } from "
 // reading is, because the question it was standing in for — does this still describe the box — now has
 // a direct answer in `lastRun.disagrees`.
 import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVED at read time, never stored
+// THE ENGINE TABLE, READ FOR TWO WORDS. A row saying an engine cannot run has to name the program it
+// could not find and the command that installs it, or the reader is told they have a problem and not
+// what to do about it — and this table is already where the wizard and the run-door preflight read
+// both of those, so naming them here adds no second description of an engine.
+import { ENGINE_BINARIES } from "./driver.config.mjs";
 
 /**
  * The flag view.
@@ -60,6 +65,30 @@ import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVE
 // One projection, used for whichever posture is the answer. Extracted when the live posture became that
 // answer, so the LIVE reading and the LAST-RUN capture cannot be shaped differently and quietly invite a
 // reader to compare two things that were built by two rules.
+/**
+ * The engine block, plus the two words a reader needs when it cannot run.
+ *
+ * DERIVED FROM THE ID AT READ TIME, never stored in the capture. A capture written by an older build
+ * carries neither field, and a page that read them out of the capture would go quiet about the engine
+ * on exactly the deployments most likely to be misconfigured. The id is in every capture there has
+ * ever been, and the table is in this build.
+ *
+ * NULL FOR AN ENGINE THIS BUILD DOES NOT SHIP, which the row already has its own sentence for. Naming
+ * a program for an engine that does not exist here would be an invented fact.
+ */
+function withProgram(engine) {
+  if (!engine) return engine;
+  const spec = ENGINE_BINARIES[engine.id] ?? null;
+  return {
+    ...engine,
+    // A BARE NAME, NEVER A RESOLVED PATH. `fallback` is what the table calls the program when nothing
+    // overrides it — "claude" — and it is what a reader types. The resolved path is this machine's
+    // layout and is deliberately kept out of anything a browser renders.
+    program: spec?.fallback ?? null,
+    install: spec?.install ?? null,
+  };
+}
+
 function postureView(snap) {
   return {
     flags: Object.entries(snap.flags ?? {}).map(([name, f]) => ({
@@ -72,7 +101,7 @@ function postureView(snap) {
       killSwitch: (snap.killSwitches ?? []).includes(name),
     })),
     built: snap.built ?? null,
-    engine: engineFor(snap),
+    engine: withProgram(engineFor(snap)),
     engineMode: engineFor(snap) ? engineMode(engineFor(snap)) : null,
     providers: providersFor(snap),
   };
