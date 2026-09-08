@@ -135,6 +135,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-declared-non-knob-is-not-a-deletion-candidate.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-deduped-read-must-exist-on-the-card.test.mjs": {
           "tests": 8,
           "asserts": 16,

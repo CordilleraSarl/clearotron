@@ -321,7 +321,7 @@ export function defaultAtReadSite(name, root = ROOT) {
 
 /** The whole classification, pure over its inputs so a test drives it without a box. */
 export function classify({ catalogue, sources, setup = setupNames(), readSites = defaultAtReadSite,
-  deploymentNames = DEPLOYMENT_NAMES } = {}) {
+  deploymentNames = DEPLOYMENT_NAMES, declared = new Map() } = {}) {
   // NAMED OVERRIDES, listed rather than folded into a pattern so that each can be argued with.
   //
   // `CLEAROTRON_AGENT_WHATSAPP` matches no deployment shape and is not a knob: production sets it to a
@@ -370,7 +370,11 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
 
   const rows = catalogue.map((name) => {
     const setIn = ["prod", "test", "config", "ci", "e2e"].filter((k) => sources[k]?.has(name));
-    return { name, class: cls(name), everSet: setIn, documented: Boolean(sources.docs?.has(name)) };
+    // `declared` is the catalogue's own `# effect:` for this name, carried on the row so the artifact
+    // says what the document claims beside what this script derived. The two are different questions and
+    // the row is where a reader compares them.
+    return { name, class: cls(name), everSet: setIn, declared: declared.get(name) ?? null,
+      documented: Boolean(sources.docs?.has(name)) };
   });
 
   // "Set nowhere" is not by itself a licence to delete, and this is where 62 of 84 left the list.
@@ -378,6 +382,24 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
   const GATE_RE = /(===|!==|==|!=)\s*"[01]"|"[01]"\s*(===|!==|==|!=)|\|\|\s*"1"/;
   const sub = {};
   for (const n of tuning) {
+    // ── A DOCUMENT SAYING "THIS IS NOT A KNOB" KEEPS ITS NAME OFF THIS LIST ────────────────────────
+    //
+    // The classifier keys on the NAME and `tuning` is its residual — what a name falls to when no shape
+    // matches. So a name whose catalogue row declares `silent-output-change`, `disclosed-gate` or
+    // `credential` reaches the deletion walk on a class that its own documentation contradicts.
+    //
+    // MEASURED 2026-09-08, over the full catalogue: fifteen names are in exactly that position, and
+    // every one of them leaves the walk further down for an UNRELATED reason — thirteen match the
+    // instrument regex on their spelling, one has a non-numeric default, one has no default found. The
+    // file already says what that is worth about a different name: exclusion "for an unrelated reason
+    // (no default found), which is luck, not a rule". Rename one of the thirteen to something without
+    // `DUMP` or `PROBE` in it and it joins the deletion population with a document beside it saying it
+    // changes what a run produces.
+    //
+    // So the declaration is read FIRST and it is the rule. Nothing is silently dropped: the names land
+    // in their own bucket, and the row carries the declaration that put them there.
+    const say = declared.get(n);
+    if (say && say !== "tuning") { sub[n] = "declared-not-a-knob"; continue; }
     const body = git("grep", "-n", "--", n, "--", "*.mjs", "*.js")
       .split("\n").filter((l) => l && !/(^|\/)test\//.test(l)).join("\n");
     const onlyTests = git("grep", "-l", "--", n, "--", "*.mjs", "*.js").split("\n").filter(Boolean)
@@ -405,6 +427,7 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
     instrument: of("instrument"), "path-switch": of("path-switch"),
     "model-or-agent-selector": of("model-or-agent-selector"),
     "non-numeric-default": of("non-numeric-default"), "no-default-found": of("no-default-found"),
+    "declared-not-a-knob": of("declared-not-a-knob"),
     "deletable-number": of("deletable-number"),
   } };
 }
@@ -414,7 +437,11 @@ function build() {
     { encoding: "utf8", cwd: ROOT, maxBuffer: 1e8 }));
   const catalogue = audit.catalogue.rows.map((r) => r.name);
   const sources = gather();
-  const { rows, buckets } = classify({ catalogue, sources });
+  // The catalogue's own declarations, handed in so the deletion walk can read them. Same rows the
+  // audit already produced — not a second parse of the same documents, which would be a second thing
+  // to keep in step.
+  const declared = new Map(audit.catalogue.rows.filter((r) => r.effect).map((r) => [r.name, r.effect]));
+  const { rows, buckets } = classify({ catalogue, sources, declared });
   const prodRead = sources.prodRead;
   const by = (k) => rows.filter((r) => r.class === k).length;
   return {
@@ -428,6 +455,10 @@ function build() {
       names: buckets["deletable-number"], count: buckets["deletable-number"].length,
     },
     _excludedFromDeletion: {
+      // FIRST, because it is the only one of these that is a RULE rather than an observation about a
+      // name's spelling or its default: the catalogue says this name changes what a run produces, so it
+      // is not a spare knob whatever its shape suggests.
+      "declared-not-a-knob": buckets["declared-not-a-knob"],
       instrument: buckets.instrument, "path-switch": buckets["path-switch"],
       "model-or-agent-selector": buckets["model-or-agent-selector"],
       "non-numeric-default": buckets["non-numeric-default"], "no-default-found": buckets["no-default-found"],
