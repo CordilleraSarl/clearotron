@@ -31,6 +31,7 @@ import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";  
 import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } from "./registry-fidelity.mjs";
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
+import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
 
 // V4-3: diacritics FOLD (NFD strip) instead of being deleted — "Televisión" must normalize to
 // "television" (deletion made it "televisin", so a diacritic mention never matched its introduction).
@@ -2352,6 +2353,122 @@ const knockoutSurfaces = (findings) => {
   return { report: report.filter(Boolean).join("\n\n"), working: working.filter(Boolean).join("\n\n") };
 };
 
+// ── PLAIN LANGUAGE ON WHAT A READER SEES FIRST (tracker issue 333) ─────────────────────────────────
+//
+// The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page.
+// The band, the summary, the basis line and the one-liners are the whole product for the second reader,
+// and they were the hardest lines on it: "a prior owner is likely to prevail on the marks-and-goods
+// comparison", "subsisting European rights", "the confusion comparison meets on every limb".
+//
+// THE PARTITION IS DEFAULT-VISIBLE vs FOLDED, WHICH IS NOT THE report/working SPLIT ABOVE. Since the
+// page folds each card's argument (tracker issue 331 A.3), a finding's `basis` is now behind a click,
+// and 333 rule 2 allows the lawyer's vocabulary there where a plain word would lose precision. The same
+// is true of the long `assessment`. So this check reads exactly the fields the renderer DRAWS without
+// a click, and reads nothing else — a check whose population is "the report" would flag the very
+// paragraphs the design deliberately moved out of the reader's way.
+//
+// THE WORD LIST IS A TRIPWIRE, NOT THE RULE. 333 rejects a banned-word list as the mechanism, and it is
+// right to: the rule is "does the reader already own this word?", which no list bounds. The list is what
+// a machine can check, seeded from the terms actually found on the two delivered pages. The teaching is
+// in the skill, where a writer reads it.
+//
+// FLAG-ONLY, AND NEVER PROJECTED. 333: "A hit is a rewrite of that line, never a disclosure and never a
+// run failure." These carry surface "findings", which runKnockoutLint's caller does not project onto
+// the cover note or the workbook — so a flag reaches whoever is fixing the run and nobody else.
+const LAWYER_VOCAB = [
+  ["proprietor", /\bproprietors?\b/i],
+  ["subsisting", /\bsubsisting\b/i],
+  ["senior right", /\bsenior (?:right|mark|position)/i],
+  ["specification", /\bspecifications?\b/i],
+  ["formative", /\bformatives?\b/i],
+  ["prevail", /\bprevails?\b|\bprevailing\b/i],
+  ["citable", /\bcitable\b/i],
+  ["limb", /\bon every limb\b|\ball limbs\b/i],
+  ["non-use attack", /\bnon-?use attack\b/i],
+  ["belt-and-braces", /\bbelt-?and-?braces\b/i],
+  ["dispatch", /\bdispatch(?:ed|es)?\b/i],
+  ["lane", /\blanes?\b/i],
+  ["on the record as it stands", /\bon the record as it stands\b/i],
+  ["the marks-and-goods comparison", /\bmarks-and-goods comparison\b/i],
+  ["chunk", /\bchunks?\b/i],
+];
+
+/** The longest a default-visible sentence may run before it stops being one idea (333 rule 1). */
+const PLAIN_SENTENCE_WORDS = 25;
+
+/**
+ * The fields a reader of the knockout meets before opening anything, named one by one rather than
+ * derived, so adding a field to the page is a deliberate addition here too.
+ */
+function knockoutVisibleProse(findings) {
+  const out = [];
+  const add = (where, v) => { const t = String(v ?? "").trim(); if (t) out.push({ where, text: t }); };
+  add("the batch summary", findings?.batch?.executiveSummary);
+  for (const c of findings?.batch?.standardCaveats ?? []) add("a standing caveat", c);
+  for (const m of findings?.marks ?? []) {
+    const n = String(m?.name ?? "a mark");
+    add(`${n}'s basis line`, m?.basis);
+    for (const f of m?.factors ?? []) add(`${n}'s "why this band" list`, f);
+    for (const f of m?.counterFactors ?? []) add(`${n}'s "why not the next band" list`, f);
+    add(`${n}'s mitigation line`, m?.mitigation);
+    for (const p of m?.purpleNotes ?? []) add(`${n}'s note to the reviewing lawyer`, p?.text ?? p);
+    for (const r of m?.registerReads ?? []) add(`${n}'s read of a filing`, r?.read);
+    // The finding's ONE sentence. Its `basis` is folded and is deliberately not read here.
+    for (const f of m?.findings ?? []) add(`${n} conflict ${f?.ordinal ?? ""}`.trim(), f?.net);
+  }
+  return out;
+}
+
+/**
+ * plainLanguageChecks — two flags over the default-visible prose: the lawyer's vocabulary, and a
+ * sentence carrying more than one idea. Each names the field, so a hit is a line somebody can rewrite
+ * rather than a score.
+ */
+export function plainLanguageChecks({ findings, surface = "findings" } = {}) {
+  const fields = knockoutVisibleProse(findings);
+  const vocab = [];
+  const longSentences = [];
+  for (const { where, text } of fields) {
+    for (const [name, re] of LAWYER_VOCAB) if (re.test(text)) vocab.push(`${where}: "${name}"`);
+    for (const sentence of text.split(/(?<=[.!?])\s+|\n+/)) {
+      const n = sentence.trim().split(/\s+/).filter(Boolean).length;
+      if (n > PLAIN_SENTENCE_WORDS) longSentences.push(`${where}: ${n} words`);
+    }
+  }
+  // ── A NOTE THAT WILL PRINT IN THE PLACE ITS WRITER DID NOT MEAN ────────────────────────────────────
+  //
+  // The page files a reviewer's note by what it TALKS ABOUT: name the request and it prints at the top,
+  // above the conflicts; otherwise it prints under that name's cards. That is what lets an archived run
+  // put its mis-scoping flag where the owner asked for it without a new field.
+  //
+  // THE COST OF THAT CHOICE IS EXACTLY THIS FLAG. A note plainly about the asking — the client's stated
+  // industry, its own prior use, whether the goods are the right ones — that never says "the request"
+  // sorts as a note about the NAME and prints at the bottom, which is the defect the move exists to fix.
+  // Nothing about the page would look wrong; the line would simply be in the last place read.
+  //
+  // So the reviewer says so, to the one person who can fix it, in the one place a fix belongs: the note.
+  // The page never guesses. Adding a clause naming the request is the whole remedy.
+  const misfiled = [];
+  for (const m of findings?.marks ?? []) {
+    for (const raw of m?.purpleNotes ?? []) {
+      const v = knockoutNoteView(raw);
+      if (!v.text || v.about) continue;              // the rater said which; nothing is inferred
+      if (REQUEST_NOTE_WORDS.test(v.text)) continue; // it names the request and will print at the top
+      if (!REQUEST_SUBJECT_WORDS.test(v.text)) continue;
+      misfiled.push(`${m?.name ?? "a mark"}: "${v.text.trim().replace(/\s+/g, " ").slice(0, 70)}…"`);
+    }
+  }
+  const say = (hits) => `${hits.slice(0, 5).join("; ")}${hits.length > 5 ? `; +${hits.length - 5} more` : ""}`;
+  return [
+    check("reviewer-note-subject", "voice", surface, misfiled.length === 0,
+      misfiled.length ? `a note about what was asked that never names the request — it will print under this name's conflicts rather than at the top of the page, where a question about the request belongs. Name the request in the note: ${say(misfiled)}` : ""),
+    check("plain-language-vocabulary", "voice", surface, vocab.length === 0,
+      vocab.length ? `the lawyer's vocabulary on lines a reader meets before opening anything — rewrite the line in the words the reader already owns (the skill carries the swaps): ${say(vocab)}` : ""),
+    check("plain-language-sentence-length", "voice", surface, longSentences.length === 0,
+      longSentences.length ? `a default-visible sentence carrying more than one idea (over ${PLAIN_SENTENCE_WORDS} words) — split it, conclusion first: ${say(longSentences)}` : ""),
+  ];
+}
+
 /**
  * KNOCKOUT_ABSENT_BY_DESIGN — the clearance checks this lane does NOT run, each with the reason its
  * input does not exist here. This is the third state (/'s rule, in the lint's own vocabulary):
@@ -2423,6 +2540,9 @@ export function runKnockoutLint({ findings }) {
   // (publish/report-registry.mjs re-renders archived findings without re-running the merged validator)
   // this scan is the only permission-prose coverage there is.
   if (working.trim()) checks.push(...permissionProseChecks({ text: working, surface: "findings", idSuffix: ":knockout-working", structural: true, cards: false }));
+  // tracker issue 333 — the plain-language reviewer, over the fields a reader meets before opening a
+  // fold. Internal by surface, so a hit reaches whoever is fixing the run and never a delivery surface.
+  checks.push(...plainLanguageChecks({ findings }));
   const failures = checks.filter((c) => !c.pass);
   return { checks, failures, notApplicable: KNOCKOUT_ABSENT_BY_DESIGN };
 }
