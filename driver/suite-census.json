@@ -5324,8 +5324,8 @@
           "todos": 0
         },
         "composerProduct.test.ts": {
-          "tests": 27,
-          "asserts": 108,
+          "tests": 30,
+          "asserts": 113,
           "skips": 0,
           "todos": 0
         },
