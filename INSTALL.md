@@ -459,9 +459,9 @@ matches, the neutral Generic default applies.
 
 - **Bundled with the package** (`driver/profiles/`): `generic.json` (the Generic default) and
   `demo-brand-owner.json`, the account the demo runs as, so you can run and read the machinery
-  immediately. `driver/profiles/README.md` documents every field. (A clone carries three more —
-  `aurora`, `zephyr`, `petcary` — which are fixtures the test suite reads, not accounts to run
-  clearances for. They are excluded from the published package for exactly that reason.)
+  immediately. `driver/profiles/README.md` documents every field. (A clone of the repository carries
+  three more, marked `testFixture` in their own files: the test suite reads them, no install offers
+  them, and they are excluded from the published package as well.)
 - **Your real customers live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
   config store and the engine loads *those* accounts instead. **Same engine, different config path** —
   the code carries no customer identities.
@@ -480,8 +480,8 @@ working examples in `driver/profiles/`:
   the engine attaches to the profile it loads. One ships beside a bundled demo customer.
 - **Project overlays** — `projects/<customer-key>/<slug>.json`. A project is one engagement under a
   customer: a launch screening, a flagship clearance, a regional push. Each may carry its own
-  `<slug>.context.md` beside it. `projects/aurora/console-ecosystem.json` and
-  `projects/demo-brand-owner/japan-and-korea-app-launch.json` are the shipped examples.
+  `<slug>.context.md` beside it. `projects/demo-brand-owner/japan-and-korea-app-launch.json` is the
+  shipped example.
 
 ### What a project may and may not change
 
@@ -536,7 +536,7 @@ Copy or author the customers, context packs and project overlays you want; assum
      "forwarder": "alex",
      "forwarderEmail": "alex@example.com",
      "forwarderDomain": "example.com",
-     "marks": [{ "ref": "TM-0001", "name": "AURORA SKY", "classes": [9, 42] }],
+     "marks": [{ "ref": "TM-0001", "name": "IRONWHISK", "classes": [9, 42] }],
      "goods": "cloud software for weather analytics",
      "jurisdictions": ["US"],
      "product": "knockout-search"

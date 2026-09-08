@@ -60,7 +60,7 @@ const REF_ALLOWLIST = new Set([
   // marketplace-platform vocabulary (the common-law sweep's standing surfaces, not entities to introduce).
   // LOAD-BEARING — do NOT delete to "de-gaming" the lint: the per-run profile-platform union (runLint
   // `extraVocab`) is DOMAIN-derived, so a single-label domain yields the bare brand ("walmart.com" →
-  // "walmart", so Zephyr Beverages' Walmart/Target/GNC are already covered with no static) but a MULTI-part domain
+  // "walmart", so a drinks account's Walmart/Target/GNC are already covered with no static) but a MULTI-part domain
   // does NOT ("store.steampowered.com" → "store steampowered", never "steam"), and "xbox"/"playstation"/
   // "nintendo" appear in NO platform domain at all. Removing these would fire false orphan flags on every
   // gaming report. The structural de-gaming fix is per-customer marketplace ALIASES in the bundle data
