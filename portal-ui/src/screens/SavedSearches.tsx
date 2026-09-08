@@ -3,7 +3,7 @@
 // Custom searches — the named set-ups a brand owner runs clearances under.
 //
 // A saved search is a name over two things: a DEPTH (which machinery runs) and a SCOPE (where it points).
-// "Zephyr Beverages knockouts — US focus" is exactly that: a quick screen, aimed at the US. Without the scope half
+// "Coastline Drinks knockouts — US focus" is exactly that: a quick screen, aimed at the US. Without the scope half
 // it would only ever restate a level that is already one click away in the composer, which is why saving
 // one is worth doing at all.
 //

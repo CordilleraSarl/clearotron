@@ -115,9 +115,10 @@ under that framework. Absent, the generic set applies.
 
 ## 3. Client profiles
 
-One JSON file per client under [`driver/profiles/`](../driver/profiles/). Four ship as working
-examples: `generic` (the Generic default) plus three synthetic demo clients — `aurora` (gaming),
-`zephyr` (functional drinks) and `petcary` (animal health).
+One JSON file per client under [`driver/profiles/`](../driver/profiles/). Two are published as working
+examples: `generic` (the Generic default) and the demo brand owner. Three further synthetic profiles —
+gaming, functional drinks and animal health — exist in the repository for the test suite and are left
+out of the package.
 
 A job picks its profile by **forwarding domain** — `matchDomains[]`, exact host or dot-suffix. The
 applicant named in a request never selects a profile. Resolution happens once at run start and is

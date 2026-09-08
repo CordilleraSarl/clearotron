@@ -456,8 +456,8 @@ function meter(name, entry) {
 // (emitted by the report-card stage, parsed into card.meta.ord) and the driver already orders +
 // provenance-checks cards by it — so match on THAT exact, injective key. The old fuzzy owner/mark
 // containment collapsed distinct findings onto one card (`.find()` first-match): two findings sharing
-// a mark, or whose mark is a substring of another's ("aura" ⊂ "aurora"), all matched the first card,
-// rendering one card's prose under every finding (the PETCARY "02 On-field conflicts" duplication). The
+// a mark, or whose mark is a substring of another's ("nova" ⊂ "novadex"), all matched the first card,
+// rendering one card's prose under every finding (the "02 On-field conflicts" duplication). The
 // fuzzy match is kept ONLY as a fallback for legacy artifacts whose cards predate the `- ord:` line.
 function matchCard(finding, cards) {
   const list = cards || [];

@@ -18,7 +18,7 @@
 // ── the shape ────────────────────────────────────────────────────────────────────────────────────────
 //
 //   { "schema": 1,
-//     "families": { "hydra-range": { "name": "Hydra range", "account": "aurora" } },
+//     "families": { "hydra-range": { "name": "Hydra range", "account": "foxglade" } },
 //     "of":       { "<runId>": "hydra-range" } }
 //
 // Keyed by RUN rather than by mark. A mark is not a thing the pool stores — it is a grouping the browser

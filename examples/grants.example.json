@@ -5,27 +5,26 @@
       "users": {
         "principal@firm.example": "*",
         "associate@firm.example": [
-          "aurora"
+          "demo-brand-owner"
         ]
       }
     },
-    "aurora-direct": {
+    "brand-owner-direct": {
       "accounts": [
-        "aurora"
+        "demo-brand-owner"
       ],
       "users": {
-        "*@aurora.example": "*"
+        "*@brand-owner.example": "*"
       }
     },
     "evaluation": {
       "accounts": [
-        "zephyr",
-        "petcary"
+        "demo-brand-owner"
       ],
       "users": {
         "reviewer@partner.example": "*",
         "observer@partner.example": [
-          "zephyr"
+          "demo-brand-owner"
         ]
       }
     },

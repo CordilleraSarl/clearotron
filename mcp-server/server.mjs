@@ -232,7 +232,7 @@ const tools = {
         projects: (byCustomer.get(p.key) ?? []).sort((a, b) => a.key.localeCompare(b.key)) }))
       .sort((a, b) => a.key.localeCompare(b.key));
     return {
-      _note: "Customer roster for intake resolution. Resolve by JUDGMENT — an explicit name, a misspelling (\"Zefyr\"→zephyr), or an implicit reference (\"our functional-beverage client\") all map to a key. Set the job's profileKey to the chosen customer key; OMIT it for a new/unknown customer (⇒ the neutral generic profile). If the request names a specific PROJECT/engagement under that customer (listed in `projects[]`), also set projectKey to that project's key; OMIT projectKey when no project is meant (⇒ the customer profile). CLARIFY if you cannot tell either. Never pick a profile from the sender's email domain.",
+      _note: "Customer roster for intake resolution. Resolve by JUDGMENT — an explicit name, a misspelling of one of the keys below, or an implicit reference (\"our functional-beverage client\") all map to a key. Set the job's profileKey to the chosen customer key; OMIT it for a new/unknown customer (⇒ the neutral generic profile). If the request names a specific PROJECT/engagement under that customer (listed in `projects[]`), also set projectKey to that project's key; OMIT projectKey when no project is meant (⇒ the customer profile). CLARIFY if you cannot tell either. Never pick a profile from the sender's email domain.",
       clients,
       genericFallback: "generic",
     };

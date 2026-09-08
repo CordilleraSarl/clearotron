@@ -45,7 +45,7 @@ CLEAROTRON_DATABASE=corsearch                      # REQUIRED, no default (track
 CORSEARCH_SESSION_KEY=dev-offline                       # the credential preflight wants it set; never fetches under the mock
 CLEAROTRON_SATPROBE_CODESIDE=0                              # the probe dials the provider; a mock run cannot
 CLEAROTRON_BAND_TRUTH_GATE=0                                # the gate evidences bands against the production call ledger
-CLEAROTRON_CUSTOMERS_DIR=                                    # unset ⇒ the in-repo demo customers (aurora/zephyr/petcary)
+CLEAROTRON_CUSTOMERS_DIR=                                    # unset ⇒ the demo customer bundled with the repo
 # MCP face (optional): TRADEMARK_MCP_DEV=1 TRADEMARK_MCP_AUTH_DISABLED=1 + loopback host + an ABSOLUTE
 #   CLEAROTRON_ACCESS_FILE=/abs/path/grants.json. All four, or it refuses to start: with auth off and no
 #   grants file every token-less caller resolves to internal read-all across every customer.
@@ -59,8 +59,8 @@ and the refusal prints the absolute path to write.
 Drive one run through the whole spine by hand:
 
 ```bash
-node driver/enqueue.mjs --mark "AURORA PROBE" --classes 9,41 --goods "game software" \
-  --forwarder ops --profile aurora
+node driver/enqueue.mjs --mark "NORTHWIND PROBE" --classes 9,41 --goods "water-quality monitoring software" \
+  --forwarder ops --profile demo-brand-owner
 node driver/runner.mjs            # claims, runs all stages on the mock, publishes, writes the packets
 ls /home/you/trademark-dev/outbox # → <runId>.pending (+ failure/intake packets on the sad paths)
 cat <archived run>/_driver/delivery.json
@@ -75,7 +75,7 @@ outbox packet kind — on a real filesystem with real process boundaries, for fr
 this, from a clean `env -i` shell: enqueue → runner → `DELIVERED (verdict CLEAR)` → archived run dir
 + `<runId>.pending` outbox marker + `_driver/delivery.json` (runId, forwarder, subject,
 `emailBodyHtml`, url, verdict — no profile field; that is `_driver/profile.json` beside it, the run's
-frozen `aurora` demo profile, and the file to open to prove which profile resolved).
+frozen demo profile, and the file to open to prove which profile resolved).
 
 ### Tier 1b — the UI PORTAL (browse the dev instance; develop UI features against it)
 
@@ -105,7 +105,7 @@ so a dev instance beside a live one must be given its own (`PORTAL_PORT`, `PROFI
 silently — each is a proxy to a port, and the port is all it knows. `/recipes/*` is the worse half:
 its save endpoint writes and git-commits into whichever recipe store it reached.
 
-A pass here looks like: index, run report, the aurora customer page and the profile-editor UI all
+A pass here looks like: index, run report, the demo customer page and the profile-editor UI all
 render against the Tier-1 pool; the `/profiles/*` proxy round-trips; traversal and non-loopback binds
 are refused (unit-tested).
 

@@ -54,7 +54,7 @@ export const CLIENT_FRONT_MATTER = new Set([
 // `Generic default (generic) · Generic default framework · profile d37721cda899` → drop the profile segment.
 // The framework title is client-facing (report footer: "Rated under <title>"); the profile hash is the
 // internal identity of the config that rated the matter and is not. A custom framework carries its source
-// FILENAME too (`custom framework: Aurora Interactive ACP risk framework (risk-framework-aurora.md)`) — the
+// FILENAME too (`custom framework: Foxglade Interactive ACP risk framework (risk-framework-foxglade.md)`) — the
 // human title stays, the file is config identity and goes.
 function ratedUnderForClient(v) {
   return String(v ?? "").split("·").map((s) => s.trim())

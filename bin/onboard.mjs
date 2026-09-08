@@ -1444,7 +1444,7 @@ export async function runCheck() {
       // Both lines were honest about their own source and neither said what it was. The first reads this
       // command's env file; the second reads THIS PROCESS's resolution, and a CLI is started by a login
       // shell that carries none of the units' `EnvironmentFile`. The deployment was correct and served
-      // zephyr, aurora and generic throughout.
+      // the configured roster throughout.
       //
       // THE UNITS' ENV IS NOT PASSED INTO `profileStoreResolution`, deliberately. `PROFILES_OVERLAY_DIR`
       // is captured when profiles.mjs LOADS, so handing it the units' value would set `live` with no

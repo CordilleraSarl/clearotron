@@ -60,8 +60,8 @@ const NAME = 'Vantor Labs'
 // — a SECOND brand owner, because the toggle only exists when there is more than one and the four
 // rows the E2E suite seeds are one per owner. The issue says the fault is not observable on that data
 // and to say so if arranging otherwise is awkward; here it is not, because this fixture is ours.
-const KEY2 = 'petcary'
-const NAME2 = 'Petcary'
+const KEY2 = 'burrowell'
+const NAME2 = 'Burrowell'
 const LONG_TITLE_MARK = 'A DELIBERATELY VERY LONG MARK NAME FOR THE DRIFT PROBE'
 
 const bands = [

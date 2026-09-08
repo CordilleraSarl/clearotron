@@ -29,8 +29,8 @@ original message. It does not guess.
 
 ## Late applicant binding
 
-Requester (mid-run): *"the applicant will be Zephyr Beverages Ltd"* → `feed_context { runId,
-customer: "Zephyr Beverages Ltd" }` → the outbox later carries a `late-bind-ack` to relay.
+Requester (mid-run): *"the applicant will be Coastline Drinks Ltd"* → `feed_context { runId,
+customer: "Coastline Drinks Ltd" }` → the outbox later carries a `late-bind-ack` to relay.
 
 ## Courier wake
 

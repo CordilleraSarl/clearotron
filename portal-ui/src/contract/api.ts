@@ -561,7 +561,7 @@ export type PlanEffort = {
  * A saved search, in full — the editable record, as against the `Searches['recipes']` row which is the
  * list view and carries only enough to draw a line in a table.
  *
- * `scope` is what makes this a saved SEARCH rather than a saved depth: "Zephyr Beverages knockouts — US focus"
+ * `scope` is what makes this a saved SEARCH rather than a saved depth: "Coastline Drinks knockouts — US focus"
  * is a label over base `knockout` plus scope `{jurisdictions:["US"]}`.
  */
 export type SavedSearchDetail = {

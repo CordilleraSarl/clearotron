@@ -226,8 +226,8 @@ const corpusHasKind = (set, kind) => {
 /**
  * The form of a party's name to match ENTRIES against.
  *
- * Register owners carry legal forms ("Aurora Therapeutics SA"); web candidate titles carry whatever the
- * web uses ("Aurora Therapeutics"). That asymmetry is systematic — one corpus is the register, the other
+ * Register owners carry legal forms ("Foxglade Therapeutics SA"); web candidate titles carry whatever the
+ * web uses ("Foxglade Therapeutics"). That asymmetry is systematic — one corpus is the register, the other
  * is search results — so requiring the full string admits SOME entries about a party and excludes others
  * purely by name form. A half-scoped corpus is the failure this scoping was built to avoid, inverted: it
  * still reports a contradiction, now against a source the run plainly holds.

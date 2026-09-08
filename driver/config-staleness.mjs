@@ -5,7 +5,7 @@
 // ── THE OUTCOME THIS EXISTS TO STOP ─────────────────────────────────────────────────────────────────
 //
 // After the F41 repair the owner restarted the worker, as instructed, and refreshed the portal. It
-// showed the BUNDLED DEMO ROSTER — aurora, petcary, zephyr — and not his own account.
+// showed the BUNDLED DEMO ROSTER and not his own account.
 //
 //     ~/.env repaired   10:51:16
 //     worker            10:51:21   ← new config

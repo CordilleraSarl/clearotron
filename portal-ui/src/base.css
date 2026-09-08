@@ -516,7 +516,7 @@ table.data tr.row:hover td {
 /* tracker issue 277 — A SECTION HEADER, not a decorative divider.
    Brand owner is the organising principle of the whole list, and a reader had to work it out: the name
    was set in the smallest, lowest-contrast, most letterspaced type on the page, which reads as a rule
-   BETWEEN rows rather than as "everything below this belongs to Aurora Interactive".
+   BETWEEN rows rather than as "everything below this belongs to Foxglade Interactive".
    Body-text size, medium weight, full-strength ink, sentence case rather than letterspaced caps — and a
    hairline rule spanning the table beneath it, so containment is visible without reading anything. */
 table.data tr.group-head td {

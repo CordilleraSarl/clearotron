@@ -133,14 +133,14 @@ rather than quietly opening a passphrase door instead; and local mode refuses a 
 `PORTAL_SERVICE_HOST`, because off loopback the passphrase and the session cookie are on the wire in
 clear. Put a TLS-terminating proxy in front if it has to be reachable.
 
-Grants fixture: `{"tenants":{"demo":{"accounts":["aurora"],"users":{"cli@celta.example":["aurora"]}}}}`.
+Grants fixture: `{"tenants":{"demo":{"accounts":["foxglade"],"users":{"cli@celta.example":["foxglade"]}}}}`.
 
 The trigger lane needs the MCP HTTP face and an accounts-scoped ops token; without both, the run step
 reports the trigger lane unwired and the plan step still works. **The face no longer has to be run in
 its dev bypass to provide that**:`TRADEMARK_MCP_AUTH_MODE=token` runs it with a mandatory scoped
 access key and no auth proxy — loopback only, and refused outright alongside
 `TRADEMARK_MCP_AUTH_DISABLED`, which authenticates nobody. Mint the key with
-`mint-token.mjs --scope ops --sub portal --verbs start_run,stop_run --accounts aurora`, or let
+`mint-token.mjs --scope ops --sub portal --verbs start_run,stop_run --accounts foxglade`, or let
 `npx clearotron start` mint one in memory at every start and never write it down.
 
 ## Putting your own login provider in front

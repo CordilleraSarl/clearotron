@@ -4,7 +4,7 @@
 //
 // One git-owned JSON file per customer under profiles/ — hand-authored, PR-reviewed, onboarded one
 // customer at a time. generic.json is the universal fallback and MUST exist;
-// aurora.json reproduces today's behavior exactly (the regression anchor). Every field shipped
+// one test-suite profile reproduces today's behavior exactly (the regression anchor). Every field shipped
 // here has working machinery behind it — parked knobs live in profiles/README.md, not in the files.
 //
 // Resolution is FORWARDER-DOMAIN ONLY: the profile describes WHO ASKS US (the
@@ -143,10 +143,10 @@ export const SAFE_GRID_CELLS = 98;
 // A DENSE marketplace profile (long retail URLs + many listings per cell — e.g. beverages/supplements on
 // Amazon/GNC/iHerb) makes each grid cell ~5-10x heavier in OUTPUT BYTES than a sparse gaming-store cell, so
 // the cell-count budget above (calibrated on sparse stores) overflows the worker's output channel and the
-// verbatim stdout transcription truncates mid-JSON (Zephyr KINETIC, 2026-06-14: ~21 dense cells ≈ 20KB cut
+// verbatim stdout transcription truncates mid-JSON (measured on a dense beverages profile, 2026-06-14: ~21 dense cells ≈ 20KB cut
 // the ledger unparseable). A dense profile gets a much smaller cell budget so each grid call's stdout stays
 // well under that ceiling (a 7-platform dense profile ⇒ floor 8 ⇒ batchSize 2 ⇒ ≤16 cells/call). The
-// gaming/Aurora budget is unchanged (default density = sparse).
+// gaming budget is unchanged (default density = sparse).
 export const DENSE_GRID_CELLS = 16;
 
 // The two values a profile may hold, as a LIST rather than as a phrase repeated at each site.
@@ -685,7 +685,7 @@ export function loadProfiles({ dir, force = false, includeTestFixtures } = {}) {
   // chosen. driver/test/pool-admin-reassign.test.mjs asserts "with CLEAROTRON_CUSTOMERS_DIR unset it REFUSES
   // rather than validating against the demo roster", and mcp-server's roster boot check counts the
   // configured roster exactly. Layering the whole bundled set underneath a configured store would put
-  // aurora/petcary/zephyr into every deployment's roster: a typo'd customer key would be checked
+  // the three test accounts into every deployment's roster: a typo'd customer key would be checked
   // against demo fixtures, and a boot check that says "N customers" would count ours among theirs.
   //
   // `generic` is different in kind from the rest of that directory. It is not a demo customer — it is
@@ -923,7 +923,7 @@ export function resolveEffectiveProfile(job, { profiles = loadProfiles(), projec
       //
       // The customer's platforms are CLIENT-MANDATED — the account asked for those marketplaces to be
       // searched, and a project may add to that instruction but never revoke it. Replace semantics meant a
-      // project that stated its own marketplaces silently DELETED the customer's: the Aurora Interactive account
+      // project that stated its own marketplaces silently DELETED the customer's: one test account
       // names 7 games storefronts, its console-ecosystem project names 9 mostly-retail sites, and every run
       // of that project searched the 9 — dropping store.epicgames.com, itch.io, apps.microsoft.com and
       // mobygames.com. The report still read as clean coverage, because the sweep faithfully covered the
@@ -966,10 +966,11 @@ export function resolveEffectiveProfile(job, { profiles = loadProfiles(), projec
 }
 
 /** The self-exclusion gate: a profile's selfExclusionOwners[]
- *  may only inject when the job's APPLICANT is the profile's customer — an aurora-interactive.example-forwarded
- *  search for a third-party applicant must NOT classify Aurora-owned conflicts as own rights
- *  (that would delete true conflicts from a delivered clearance). Word-boundary containment of the
- *  profile name in the applicant string ("Aurora Interactive" ⊂ "Aurora Interactive Ltd"), never fuzzy. */
+ *  may only inject when the job's APPLICANT is the profile's customer — a search forwarded from a
+ *  customer's own domain, but asking about a THIRD-PARTY applicant, must not classify that
+ *  customer's conflicts as own rights (that would delete true conflicts from a delivered
+ *  clearance). Word-boundary containment of the profile name in the applicant string
+ *  ("Foxglade Interactive" ⊂ "Foxglade Interactive Ltd"), never fuzzy. */
 export function applicantMatchesProfile(profile, customer) {
   const n = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
   const c = n(customer);

@@ -62,9 +62,9 @@ const PLATFORMS = [
 const stubLevels = () => productRows().map((r) => ({ ...r, available: true, unavailableNote: '' }))
 
 const ROUTES = {
-  '/portal/api/me': { role: 'client', email: 'demo@example.test', accounts: ['zephyr'], allAccounts: false },
+  '/portal/api/me': { role: 'client', email: 'demo@example.test', accounts: ['coastline'], allAccounts: false },
   '/portal/api/searches': {
-    account: 'zephyr',
+    account: 'coastline',
     products: stubLevels(),
     // `nativeLanguage` rides the list row because the composer has to say what geography a saved search
     // accepts while the row is being clicked. Stubbed as the wire sends it.
@@ -72,7 +72,7 @@ const ROUTES = {
     read: { available: true, maxBrief: 12000, note: null },
   },
   '/portal/api/config/profile': {
-    account: 'zephyr',
+    account: 'coastline',
     profile: {
       platforms: PLATFORMS,
       defaultClasses: [5, 32],
@@ -83,7 +83,7 @@ const ROUTES = {
   },
   '/portal/api/config/projects': [],
   '/portal/api/usage': {
-    account: 'zephyr', today: 1, thisMonth: 4, queued: 0,
+    account: 'coastline', today: 1, thisMonth: 4, queued: 0,
     dailyRuns: 3, monthlyRuns: null, maxQueued: null, capped: true,
   },
 }
@@ -138,7 +138,7 @@ const server = createServer((req, res) => {
     res.writeHead(502, { 'content-type': 'application/json' })
     res.end(JSON.stringify({
       error: 'start_run refused upstream: job rejected — profileKey "sim-praxis" names no known customer '
-        + '— the roster this process can see is [aurora, generic, petcary, zephyr]',
+        + '— the roster this process can see is [burrowell, coastline, foxglade, generic]',
     }))
     return
   }

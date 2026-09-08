@@ -1343,7 +1343,7 @@ export function makePortalService({
         assertPrincipal(principal, { door: true });   // door check only — a multi-account client enters and gets the picker list
         // `accountNames` — the DISPLAY name of each account this identity holds, and nothing else.
         //
-        // Every profile carries a name ("Vantor Labs", "Aurora Interactive"); the account KEY is a
+        // Every profile carries a name ("Vantor Labs", "Foxglade Interactive"); the account KEY is a
         // slug ("vantor"). Staff read names because the account picker fetches the staff-only
         // roster; a client had no name source at all, so the identical screen printed the slug at them.
         // The same brand owner therefore read two different ways depending on who signed in, which is
@@ -4201,7 +4201,7 @@ const PORT = PORT_CHOICE.port;
       // The result was not a failure. It was worse. With the overlay unset, resolveSkillPath falls back
       // to the PRODUCT REPO's own driver/skills — where the customer frameworks either do not exist
       // (a config-store-only customer → the page's fail-loud "could not be read" card) or exist as the SYNTHETIC
-      // DEMO fixtures the sellable codebase ships (Aurora, Zephyr → "Aurora Interactive risk framework
+      // DEMO fixtures the repository carries for the suite (a framework titled "… risk framework
       // (synthetic demo)", source_deck "content invented"). The second case renders with a title, a band
       // ladder and band meanings, and is indistinguishable on screen from the client's real framework.
       // A lawyer read invented risk definitions as their client's own for as long as this was live.
