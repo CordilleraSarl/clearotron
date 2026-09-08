@@ -38,7 +38,7 @@ import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStoreRepoRoot, makeStoreCommit } from "../shared/store-in-repo.mjs";   //,
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
-import { bareInvocation, invocationPrefix } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
+import { bareInvocation, invocationPrefix, installRoute } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 // — the portal became an ISSUANCE PATH here, deliberately and by owner ruling.
@@ -1391,6 +1391,12 @@ export function makePortalService({
         // must leave the button alone rather than infer demo from an absent file.
         return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames,
           concurrentRuns: concurrentRunsCap(), brand: BRAND.name, engineMode: flagView(poolRoot).engineMode,
+          // HOW THIS INSTALL ARRIVED, so a screen can name the setup command the reader can actually
+          // type. `npm run setup` and `npx clearotron install` are the same wizard and each one is
+          // unrunnable on the other route; the no-engine notice named one of them and was wrong for
+          // half its readers. A WORD, never a command line and never a prefix: `invocationForm` can
+          // answer with this machine's absolute path, and this value is rendered in a browser.
+          setupRoute: installRoute(),
           // — a button that always fails must not render as available. The reason is
           // operator-shaped and staff-only; a client reads the generic sentence the button carries.
           controls: { stop: { available: stopControl.available !== false,

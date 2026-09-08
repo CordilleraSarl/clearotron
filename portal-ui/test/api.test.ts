@@ -360,6 +360,32 @@ test('#1720 engineMode decodes to demo or unproven, and EVERYTHING else is null'
   }
 })
 
+test('setupRoute decodes to one of the two routes, and EVERYTHING else is null', async () => {
+  // This value decides which command a reader is told to type when their install has no engine. It came
+  // off the wire, so it gets the same closed-set treatment engineMode gets above: a string this build
+  // does not recognise must not reach a screen and be rendered as a command.
+  const me = (wire: unknown) => withFetch(
+    200, { role: 'client', email: 'a@b.example', accounts: ['aurora'], setupRoute: wire }, () => api.me())
+
+  for (const good of ['packaged', 'checkout'] as const) {
+    const r = await me(good)
+    assert.ok(isOk(r))
+    if (isOk(r)) assert.equal(r.value.setupRoute, good)
+  }
+
+  // NULL IS A REAL ANSWER HERE, not a degraded one: an older portal-service sends no field, and the
+  // screen answers that by naming both routes and saying which is which. Guessing one would put the
+  // reader back where they started — given a command they cannot run, with no way to tell.
+  for (const wire of [undefined, null, '', 'source', 'PACKAGED', 'npm run setup', 42, {}]) {
+    const r = await me(wire)
+    assert.ok(isOk(r))
+    if (isOk(r)) {
+      assert.equal(r.value.setupRoute, null,
+        `setupRoute ${JSON.stringify(wire)} decoded to something a screen would print as a command`)
+    }
+  }
+})
+
 // ── — AN UNBUILT SURFACE IS NOT AN ACCESS REFUSAL ─────────────────────────────────
 //
 // The config routes answered 404 when the surface failed to construct, so the screens rendered

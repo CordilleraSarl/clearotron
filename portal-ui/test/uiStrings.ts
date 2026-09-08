@@ -33,7 +33,7 @@ export const FILES: readonly string[] = readdirSync(ROOT, { withFileTypes: true 
 /** Source with comments blanked — a comment explaining a term is not the product saying it.
  *
  *  LINE-COUNT PRESERVING, on purpose. Deleting comment lines shifts every line number after them, and a
- *  guard that reports `NewClearance.tsx:623` for a string that lives at `:880` sends its reader to the
+ *  guard that reports line 623 of a screen for a string that lives at line 880 sends its reader to the
  *  wrong place — which is worse than not reporting a line at all. Block comments keep their newlines. */
 export const stripComments = (src: string): string =>
   src

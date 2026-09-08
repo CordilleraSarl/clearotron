@@ -156,3 +156,128 @@ test('1937 §B the comparison table takes the screen measure, without widening t
   assert.ok(col > 0 && SRC.indexOf('<Footer', col) > SRC.indexOf('\n          </div>', col),
     'the footer moved inside the composer column, where the field measure now caps it')
 })
+
+// ── an install that is configured must offer a way to start ─────────────────────────────────────────
+//
+// An outside user installed the product, configured it — sign-in, engine, register, common-law
+// research and case-law lookup all reporting configured — opened this screen, found no control that
+// promised to run anything, and stopped using it. What was there was a primary action labelled "Review
+// clearance", greyed out because the form was missing a piece nothing on the page named, beside a
+// "Save as search" button that gave no sign of having worked.
+//
+// SOURCE-LEVEL, for the reason the head of this file gives: this runner has no JSX transform and cannot
+// mount the screen. These hold that each part is present and wired; that they LOOK right is a person in
+// front of the screen, and the walkthrough is recorded on the issue.
+
+test('the primary action on the search screen is a verb that promises a search', () => {
+  const src = code(SRC)
+  // "Review clearance" reads as inspecting a clearance that already exists. It was the only action on
+  // the screen that started anything, and the reader who needed it did not recognise it as one.
+  assert.doesNotMatch(flat(src), /'Review clearance'/,
+    'the primary action went back to a label that does not say a search will run')
+  assert.match(flat(src), /'Start a search'/, 'the search screen has no action labelled with a verb')
+  // AND IT IS THE PRIMARY ONE, not a link somewhere. The complaint was that the only thing offered was
+  // the ghost-styled Save button.
+  assert.match(flat(src), /className="btn-primary" disabled=\{!ready \|\| busy\} onClick=\{onReview\}/,
+    'the start action is no longer the footer primary button')
+  // The confirmation step is deliberately kept — it carries the coverage, the effort and the legal
+  // caveat, which are read before anything is spent. So the button must say that is what comes next.
+  assert.match(flat(src), /before anything runs/,
+    'nothing tells the reader the button opens a confirmation rather than spending immediately')
+  assert.match(flat(src), /'Start clearance'/, 'the confirmation lost the button that actually starts')
+})
+
+test('a greyed primary action always has its reason on screen, and at the control', () => {
+  const src = code(SRC)
+  // ONE PREDICATE. The condition used to be re-derived inline as a boolean beside the sentences that
+  // explain the others, and it was the one with no sentences. Asking whether the list is empty is what
+  // makes the reason impossible to forget to render.
+  assert.match(flat(src), /const gaps = missingPieces\(names, classes, draft\.goods\)/,
+    'the form-gap condition is being derived somewhere other than the list of sentences')
+  // BOTH ANSWERS FROM ONE CALL. This used to read `const ready = !gaps.length && …` here and a separate
+  // chain of `??` fallbacks 800 lines below, and nothing tied them together — a seventh term in the
+  // boolean without a seventh sentence greyed the button in silence, which is this screen's original
+  // defect returning wearing its fix. `readiness()` derives both from one ordered list, and
+  // readiness.test.ts drives the relation `ready === (blockedBy === null)` rather than reading for it.
+  assert.match(flat(src), /const \{ ready, blockedBy \} = readiness\(\{/,
+    'readiness and its sentence are being derived separately again')
+  assert.doesNotMatch(flat(src), /const missing = !names\.length/,
+    'the reasonless boolean is back')
+  // Rendered as a list on the form …
+  assert.match(flat(src), /\{gaps\.map\(/, 'the gap sentences have no render site')
+  // … AND at the button. The footer is sticky and the notice is not, so on a long form the greyed
+  // button and its explanation are routinely not on screen at the same time. That is the state the
+  // reader was in.
+  assert.match(flat(src), /blockedBy=\{blockedBy\}/, 'the footer is not told why the action is off')
+  assert.match(flat(src), /\{blockedBy \?\? /, 'the reason is passed to the footer and never rendered')
+})
+
+test('a save says so where the button was pressed', () => {
+  const src = code(SRC)
+  // The success branch closed the panel and wrote a 12px line into the footer's far LEFT column, under
+  // the running total. At the point of interaction the only change was that the control disappeared —
+  // reported as "Let's try saving, what happens. ... Nothing!"
+  assert.match(flat(src), /setSaveDone\(label\)/, 'a successful save no longer acknowledges itself')
+  assert.match(flat(src), /className="save-done" role="status"/,
+    'the acknowledgement is not in the action row, or is not announced')
+  assert.match(CSS, /\.save-done \{/, 'the acknowledgement has no styles')
+  // ── AND IT IS CLEARED BY EVERY WRITE, COUNTED ──────────────────────────────────────────────────
+  //
+  // A tick beside changed work is a false statement about what is on disk, and a worse defect than the
+  // silence it replaced. This was asserted against the `edit` helper alone and that was not enough: the
+  // brief reader writes the draft directly, so pressing "Fill it in for me" after a save rewrote the
+  // whole form and left the tick standing over it.
+  //
+  // COUNTED, NOT MATCHED. A second string match would cover the second writer and nothing else, and the
+  // defect is that a NEW writer appears. There is one writer now — `writeDraft`, which clears the
+  // acknowledgement and is the only caller of the state setter — so the next one is covered because
+  // there is nowhere else to write.
+  const setters = (flat(src).match(/setDraft\(/g) ?? []).length
+  assert.equal(setters, 1,
+    `the draft is written from ${setters} place(s). It must be written from exactly one — writeDraft — `
+    + 'so that clearing the save acknowledgement cannot be forgotten at a new call site.')
+  assert.match(flat(src), /const writeDraft: typeof setDraft = \(next\) => \{ setSaveDone\(null\) setDraft\(next\) \}/,
+    'the one writer no longer clears the save acknowledgement')
+  // A failed save must not leave an earlier tick standing beside its own error message.
+  assert.match(flat(src), /const doSave = async \(\) => \{ .{0,220}setSaveDone\(null\)/,
+    'doSave does not clear a previous acknowledgement before it reports')
+})
+
+test('the unsaved-changes warning has a baseline to compare against', () => {
+  const src = code(SRC)
+  // Compared against EMPTY and never reset, so a saved form stayed dirty forever: the user was warned
+  // they would lose work that was already on disk, went back, and found it there. guard.test.ts drives
+  // the predicate itself; this holds that the screen keeps the baseline and hands it over.
+  assert.match(flat(src), /setSavedDraft\(JSON\.stringify\(\{ \.\.\.EMPTY, pick: draft\.pick, classes: draft\.classes, platforms: draft\.platforms, \}\)\)/,
+    'the baseline is no longer the projection the save actually wrote')
+  // ── AND IT IS NOT THE WHOLE DRAFT ───────────────────────────────────────────────────────────────
+  //
+  // `composeSaved` carries the levers, classes and marketplaces; `draftFromSaved` restores those and
+  // nothing else. Recording the draft whole would mark the mark names and the goods text clean when no
+  // file holds them, so somebody who typed twenty names, saved, and left would lose them in silence —
+  // the same guard failing in the opposite and worse direction.
+  assert.doesNotMatch(flat(src), /setSavedDraft\(JSON\.stringify\(draft\)\)/,
+    'the baseline records fields the save does not persist')
+  assert.match(flat(src), /saved: savedDraft/, 'the guard is not given the baseline')
+  assert.doesNotMatch(flat(src), /submitted == null && JSON\.stringify\(draft\) !== JSON\.stringify\(EMPTY\)/,
+    'the baseline-free comparison is back')
+})
+
+test('the no-engine notice names a command THIS reader can run', () => {
+  const src = code(SRC)
+  // `npm run setup` exists only for somebody working in a copy of the source. A reader who installed
+  // the package has no npm scripts at all, so the single fix the notice offered was a command that does
+  // not exist on their machine — and the notice had no way to tell which of the two they were.
+  assert.match(flat(src), /<SetupCommand route=\{setupRoute\} \/>/,
+    'the notice went back to a hard-coded command')
+  assert.match(flat(src), /route === 'packaged'/, 'the package route has no command')
+  assert.match(flat(src), /route === 'checkout'/, 'the source-checkout route has no command')
+  assert.match(flat(src), /npx clearotron install/)
+  assert.match(flat(src), /npm run setup/)
+  // NULL IS ANSWERED BY NAMING BOTH. An older server sends no route, and picking the likelier one there
+  // is the same coin flip in a smaller place — the reader cannot tell they were given the wrong one.
+  const fn = src.match(/function SetupCommand\([\s\S]*?\n\}/)?.[0] ?? ''
+  assert.ok(fn, 'SetupCommand is gone')
+  assert.match(fn, /if you installed the package/,
+    'the unknown-route branch picks one command instead of naming both')
+})
