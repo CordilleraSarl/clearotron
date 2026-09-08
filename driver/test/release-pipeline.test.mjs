@@ -1289,7 +1289,7 @@ test("208 the wait runs AFTER the first publish, or it answers about the wrong v
 });
 
 test("208 the second publish proves its OWN bytes — it does not reuse the first artefact", () => {
-  // Founding's requirement, and the reason this is a duplicated job rather than a promotion step: a
+  // A stated requirement, and the reason this is a duplicated job rather than a promotion step: a
   // second publish that reused the first tarball would ship the previous version's bytes under a new
   // number, and every check that passed did so on the wrong content.
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
