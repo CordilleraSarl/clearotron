@@ -77,6 +77,15 @@ export const EXCLUDED = [
   "driver/test/a-bare-reference-added-in-a-diff-is-refused.test.mjs",
   "driver/test/prompt-payload-names-no-tracker-issue.test.mjs",
   "driver/test/euipo-environment-doctrine.test.mjs",
+  // THIS RULE'S OWN DEFINITION, and it caught itself. Both files below QUOTE the residue in order to
+  // define it — the specimens the sweep is tested against, and the worked examples in the header above.
+  // Sweeping them rewrites the corpus this instrument is checked by, and it would then pass on something
+  // it had stopped checking: the arms would assert that a stripped line equals a stripped line. The
+  // sibling module that counts the earlier strip's residue learned the same lesson and names its own
+  // three files for the same reason. Found by running the sweep after fixing its report, which is the
+  // only reason it surfaced: before that, these lines were counted and never listed.
+  "scripts/strip-tracker-citations.mjs",
+  "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs",
   // Pinned at a content hash; a prose repair is not worth spending a freeze on.
   "driver/publish/render.mjs",
 ];
@@ -86,28 +95,42 @@ export const isScannable = (f) =>
 
 /** Per-file classification. PURE, and `read` is injected so an arm can drive it over a synthetic tree. */
 export function surveyOf(files, read) {
-  const stripped = {}, handoff = [];
+  const stripped = {}, handoff = [], unreadable = [];
   let strippedTotal = 0, remainingTotal = 0;
   for (const f of files.filter(isScannable)) {
     let text;
-    try { text = read(f); } catch { continue; }
+    // AN UNREADABLE FILE IS A FINDING, NOT A QUIET SKIP. This used to `continue` into no counter and no
+    // error channel, so "I could not open this" and "there was nothing to do here" produced identical
+    // output — in the report whose whole job is to tell somebody a hundred-file rewrite is safe. The
+    // count is reported before anything else when it is non-zero.
+    try { text = read(f); } catch (e) { unreadable.push({ file: f, why: String(e?.message ?? e).slice(0, 120) }); continue; }
     let n = 0;
+    // CLASSIFY AFTER REPLACING, NOT INSTEAD OF IT. The replacement is not global, so a line carrying an
+    // opener AND a second citation further along was stripped once, counted as done, and never reached
+    // the hand-off list a person is told to read — its survivor was invisible in the one place it should
+    // have been named. Test the RESULT: a line can be both stripped and still owed to a reader.
     const out = text.split("\n").map((line, i) => {
-      if (OPENER.test(line)) { n++; return line.replace(OPENER, "$1"); }
-      if (ANY_CITATION.test(line)) handoff.push({ file: f, line: i + 1, text: line.trim() });
-      return line;
+      const after = OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;
+      if (ANY_CITATION.test(after)) handoff.push({ file: f, line: i + 1, text: after.trim() });
+      return after;
     });
     if (n) { stripped[f] = n; strippedTotal += n; }
     remainingTotal += out.filter((l) => ANY_CITATION.test(l)).length;
     if (APPLY && n) writeFileSync(join(ROOT, f), out.join("\n"));
   }
-  return { strippedTotal, remainingTotal, stripped, handoff };
+  return { strippedTotal, remainingTotal, stripped, handoff, unreadable };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
     .split("\n").filter(Boolean);
   const s = surveyOf(tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
+  // BEFORE ANYTHING ELSE, because every number under it is about the files that COULD be read.
+  if (s.unreadable.length) {
+    console.log(`${s.unreadable.length} file(s) COULD NOT BE READ — every count below excludes them:`);
+    for (const u of s.unreadable) console.log(`  ${u.file}  ${u.why}`);
+    console.log("");
+  }
   console.log(`${APPLY ? "stripped" : "would strip"} ${s.strippedTotal} opener(s) across ${Object.keys(s.stripped).length} file(s)`);
   console.log(`${s.handoff.length} citation(s) are NOT openers and need a reader — the hand-off list:`);
   for (const h of s.handoff) console.log(`  ${h.file}:${h.line}  ${h.text.slice(0, 110)}`);

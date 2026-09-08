@@ -39,7 +39,43 @@ const OK = {
   body: "Finding 2 rests on that application being live. Under the assumption it stops driving the verdict,\nand the remaining on-field conflict is finding 5.",
   limits: [{ cannot: "Whether the application is in fact abandoned", smallestSearch: "a register status check on the single KR application" }],
   mark: "VENQORI",
+  ratedUnder: "venqori",
 };
+
+// ── THE RATING AUTHORITY, IN THE ARTIFACT ────────────────────────────────────────────────────────────
+//
+// The seat is instructed to assess under a named framework — or told the run froze none and to stay with
+// the house default — and until this was recorded the only thing that reached disk was the reasoning.
+// A memo is a document a lawyer may act on; it has to say what it was rated under.
+//
+// THREE STATES, and separating the third is the point. A named key is one fact. The house default is a
+// DIFFERENT fact rather than an absence, so it is written out. A caller that resolved no authority at
+// all is neither, and it cannot compose: a memo silent about its own authority is the defect this
+// closes, so it must not be reachable.
+
+test("a named authority is written into the memo itself", () => {
+  const memo = composeMemo({ ...OK, ratedUnder: "petcary" });
+  assert.equal(memo.ok, true);
+  assert.match(memo.text, /\*\*Rated under:\*\* petcary/,
+    "the artifact does not say which authority it was reasoned under");
+});
+
+test("no frozen profile is RECORDED as the house default, not left blank", () => {
+  const memo = composeMemo({ ...OK, ratedUnder: null });
+  assert.equal(memo.ok, true);
+  assert.match(memo.text, /\*\*Rated under:\*\* the house default/);
+  assert.match(memo.text, /froze no customer profile/,
+    "and it says WHY it is the house default, which is the fact a reader needs");
+});
+
+test("an authority nobody resolved REFUSES — absent is not the same fact as either", () => {
+  const { ratedUnder, ...withoutIt } = OK;
+  const r = composeMemo(withoutIt);
+  assert.equal(r.ok, false, "a memo composed in silence about its authority is the defect itself");
+  assert.deepEqual(r.missing, ["ratedUnder"]);
+  assert.match(r.reason, /or null for a run that froze no customer profile/,
+    "the refusal must name the answer for the null case, or a caller will invent a string");
+});
 
 /**
  * The parent's files, hashed BY NAME rather than by walking what happens to be there.
