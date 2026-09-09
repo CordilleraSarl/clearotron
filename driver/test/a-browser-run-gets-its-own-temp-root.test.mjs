@@ -16,7 +16,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  SUN_PATH_MAX, LOCK_SUFFIX, MAX_ROOT_LENGTH,
+  SUN_PATH_MAX, LOCK_SUFFIX, MAX_ROOT_LENGTH, ROOT_PREFIX,
   rootRefusal, assertRootFits, browserEnv, browserRun, browserTempRoot,
 } from "../../shared/browser-temp-root.mjs";
 
@@ -75,7 +75,7 @@ test("browserEnv MERGES into the environment rather than replacing it", () => {
   //
   // Raised in review of the sibling change that wires two more launchers — by a reader who checked
   // the merge before checking anything else, because it is the thing that breaks quietly.
-  const root = browserTempRoot("arm-merge-");
+  const root = browserTempRoot();
   const ambient = { PATH: "/probe/bin", HOME: "/probe/home", LANG: "C" };
   const env = browserEnv(root, ambient);
   assert.equal(env.TMPDIR, root);
@@ -153,6 +153,31 @@ test("keep() leaves the root behind, which is what --keep promises", () => {
   rmSync(root, { recursive: true, force: true });
 });
 
+test("the root prefix leaves room for a real ambient temp directory under the suite runner", () => {
+  // THE MIDDLE ROW IS THE ONE THAT BITES, and it must be computed rather than measured HERE: under the
+  // suite runner `tmpdir()` already IS this run's root, so reading it would price the nested case and
+  // call it the single-level one. The first version of this arm did exactly that and failed on a
+  // correct tree — the arm was wrong, not the fix.
+  //
+  // So the property is stated host-independently: how long may the machine's REAL temp directory be
+  // and still leave a browser root that fits, on an ordinary single-level run?
+  //
+  //   ambient + /ct-testrun-XXXXXX (18) + /<ROOT_PREFIX>XXXXXX  <=  MAX_ROOT_LENGTH
+  //
+  // Naming each root after the check put a 22-character name in that last term and the answer came out
+  // at 19. This machine's temp directory is 18. One character of headroom on an ordinary run, with
+  // nothing nested — a host with /var/tmp/something, or this one renamed a level deeper, and every
+  // browser check refuses at once while the tree looks broken.
+  const RUNNER_LEVEL = 1 + "ct-testrun-".length + 6;          // the suite runner's own mkdtemp
+  const OURS = 1 + ROOT_PREFIX.length + 6;                    // and ours inside it
+  const maxAmbient = MAX_ROOT_LENGTH - RUNNER_LEVEL - OURS;
+  assert.ok(maxAmbient >= 24,
+    `ROOT_PREFIX leaves room for an ambient temp directory of only ${maxAmbient} characters under one `
+    + `suite-runner level. Common ones are short, but this machine's is 18 — so that is a margin of `
+    + `${maxAmbient - 18}, not a design. Shorten ROOT_PREFIX; the check's name belongs in the directory `
+    + `INSIDE the root, where length is free.`);
+});
+
 test("the group is signalled BEFORE any root is removed", () => {
   // STRUCTURAL, AND DELIBERATELY SO. The defect this holds is a race: a removal that runs while the
   // browser's renderer and GPU children are still writing throws ENOTEMPTY and leaves the root behind.
@@ -176,6 +201,6 @@ test("the group is signalled BEFORE any root is removed", () => {
 test("a root is rooted at the ambient temp directory, so it inherits a runner's own root", () => {
   // Under the suite runner TMPDIR is already this run's root, and a browser root must land INSIDE it
   // rather than beside it — that is what makes the runner's own cleanup carry it away.
-  const root = browserTempRoot("arm-nest-");
+  const root = browserTempRoot();
   assert.ok(root.startsWith(tmpdir() + "/"), `expected a root under ${tmpdir()}, got ${root}`);
 });

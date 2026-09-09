@@ -47,6 +47,29 @@ export const LOCK_SUFFIX = "/com.google.Chrome.XXXXXX/SingletonSocket";
 export const MAX_ROOT_LENGTH = SUN_PATH_MAX - LOCK_SUFFIX.length;
 
 /**
+ * The root's own prefix, and it is SHORT ON PURPOSE — this is the one lever on the budget.
+ *
+ * Every character here is spent on every browser run, and roots nest: under the suite runner the
+ * ambient temp directory already carries one `ct-testrun-XXXXXX` level before this is appended.
+ * Measured on a development machine 2026-09-09, ambient temp 18 characters:
+ *
+ *              root length     worst case with a 22-character name in the root   with this prefix
+ *   ambient        18                       47  (19 to spare)                     29  (37 to spare)
+ *   one runner     36                       65  (ONE to spare)                    47  (19 to spare)
+ *   nested         54                       83  (refuses)                         65  (1 to spare)
+ *
+ * The middle row is why this is not cosmetic. Naming the root after the check spent the budget on a
+ * label, and left an ordinary single-level suite run one character from refusing — a host with a
+ * temp directory one character longer, or this one renamed a level deeper, and every browser check
+ * would refuse at once while the tree looked broken. So the root is named for what it IS, and the
+ * check that made it is named by the directory INSIDE it, where length costs nothing.
+ *
+ * A leaked root is still sweepable by name, which was the point of naming it at all, and now it is
+ * attributable too: open it and the profile directory says which check left it.
+ */
+export const ROOT_PREFIX = "ctb-";
+
+/**
  * Why `dir` cannot be a browser temp root, or `null` if it can.
  *
  * Returned rather than thrown so a caller can decide: a check that has already produced a result
@@ -80,8 +103,8 @@ export function assertRootFits(dir) {
  * still correct — under a test runner that has already exported its own root, this lands inside it
  * and is carried away with it.
  */
-export function browserTempRoot(prefix = "browser-run-") {
-  const root = mkdtempSync(join(tmpdir(), prefix));
+export function browserTempRoot() {
+  const root = mkdtempSync(join(tmpdir(), ROOT_PREFIX));
   assertRootFits(root);
   removeOnExit(root);
   return root;
@@ -104,11 +127,14 @@ export function browserEnv(root, env = process.env) {
  * profile directly in the shared temp directory and remove it on their success path; that left the
  * singleton lock behind on every other path, which is the leak this module exists for.
  */
-export function browserRun(prefix = "browser-run-") {
-  const root = mkdtempSync(join(tmpdir(), prefix));
+export function browserRun(label = "browser") {
+  const root = mkdtempSync(join(tmpdir(), ROOT_PREFIX));
   assertRootFits(root);
   const keep = removeOnExit(root);
-  const profile = join(root, "profile");
+  // The CALLER'S NAME GOES HERE, inside the root, where it costs nothing against the socket budget.
+  // Callers pass the name they used to prefix the root with, trailing dash and all, so this reads as
+  // `<root>/home-check` and an operator opening a leaked root learns which check left it.
+  const profile = join(root, label.replace(/-+$/, "") || "browser");
   mkdirSync(profile, { recursive: true });
   // `keep` deregisters the root from the exit sweep. A caller with a `--keep` flag MUST call it, or
   // the flag reads as working while the directory it promised goes at exit.

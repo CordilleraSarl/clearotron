@@ -58,8 +58,8 @@
           "todos": 0
         },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
-          "tests": 12,
-          "asserts": 32,
+          "tests": 13,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
