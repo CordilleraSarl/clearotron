@@ -690,6 +690,44 @@ export function resolveEngineBin(bin) {
 const isExec = (p) => { try { accessSync(p, constants.X_OK); return statSync(p).isFile(); } catch { return false; } };
 
 /**
+ * What doctor says about the engine on a platform the run door refuses outright, or `null` where the
+ * ordinary binary checks apply.
+ *
+ * `platform` IS INJECTABLE, and for the reason `preflightEngineBinary` gives at its own refusal: the
+ * population this protects is the one that cannot run this suite to find out. An arm on a Linux runner
+ * has to be able to ask what a Windows reader is shown, or the Windows text is asserted by nobody —
+ * and reading `process.platform` inside the caller would make that arm read source instead of driving
+ * the answer.
+ */
+export function platformEngineRefusal({ platform = process.platform } = {}) {
+  if (platform !== "win32") return null;
+  return "this engine does not run on native Windows — stage subprocesses are spawned with POSIX path "
+    + "and process semantics, so the run door refuses before it reads PATH. Run it under WSL2, or in "
+    + "the devcontainer. The demo works here as it is: it replays finished reports and needs no engine.";
+}
+
+/**
+ * How to leave demo mode, which is not the same instruction everywhere.
+ *
+ * On the platform the run door refuses, the standard advice is a loop: install a CLI the reader may
+ * already have, then restart a service — neither of which can change the answer, because the refusal
+ * is about the platform rather than the program. Naming WSL2 is the only instruction that ends it.
+ */
+export function leaveDemoAdvice(engSpec, { platform = process.platform } = {}) {
+  if (platform === "win32") {
+    return [`To leave demo on Windows: run the product under WSL2, or in the devcontainer. Installing `
+      + `${engSpec.vendor}'s CLI natively will not change this — the run door refuses on the platform, `
+      + "not on the program."];
+  }
+  return [
+    `To leave demo: install ${engSpec.vendor}'s CLI (\`${engSpec.fallback}\`)`
+      + `${engSpec.install ? ` with \`${engSpec.install}\`` : ""}, then ${engSpec.signIn}.`,
+    "Restart any running engine service afterwards so it re-reads its PATH: the portal reports what the "
+      + "engine saw when it last started, and it will not notice a new install until then.",
+  ];
+}
+
+/**
  * The engine menu, built from the driver's registry so the wizard cannot offer an adapter that does not
  * exist — or hide one that does. Same guarantee the register-provider list has.
  *
@@ -1201,7 +1239,28 @@ export async function runCheck() {
     const binSet = !!binEff;
     const binSetting = binEff?.v || engSpec.fallback;
     const bin = resolveEngineBin(binSetting);
-    if (bin.executable && !bin.relative) ok(`${bin.path}`);
+    // ── NATIVE WINDOWS IS ANSWERED HERE, BEFORE ANY PATH IS RESOLVED OR REPORTED ──────────────────
+    //
+    // `resolveEngineBin` tests a candidate with `accessSync(X_OK)` and `isFile()`. Windows has no
+    // execute bit, so X_OK is satisfied by any file that exists — and an npm global install writes
+    // BOTH `claude`, an extensionless shell script for Git Bash, and `claude.cmd`. The POSIX test
+    // passes on the shell script, so this line reported the engine FOUND at a path CreateProcess
+    // cannot start, and the probe then failed with `spawn claude ENOENT`. Reported from a real
+    // Windows run, 2026-09-09.
+    //
+    // RESOLVING `claude.cmd` INSTEAD WOULD MOVE THE CONTRADICTION, NOT REMOVE IT.
+    // `preflightEngineBinary` refuses native Windows by name, and the run door calls it
+    // unconditionally — so a clearance cannot run here whatever this line finds. Making the probe
+    // succeed would produce a doctor that says ready, a probe that passes, and a run that refuses
+    // anyway: the same disagreement one step later, and more convincing for having spawned something.
+    //
+    // So doctor says what the run door says. That is the property — the two agree — and the reader
+    // gets one refusal they can act on instead of a found-then-failed sequence that sends them
+    // looking for a PATH problem they do not have. The demo is unaffected: it replays finished runs
+    // and needs no engine, which is why four reports published on that same Windows box.
+    const platformRefusal = platformEngineRefusal();
+    if (platformRefusal) problem(platformRefusal);
+    else if (bin.executable && !bin.relative) ok(`${bin.path}`);
     // The FACT only. It used to carry "install it for a real run (`npm run example` needs no engine)",
     // which is the absence framing was filed about — and it now says half of what the MODE line
     // below says, in worse words. One statement of a state, in the place that states states.
@@ -1246,10 +1305,11 @@ export async function runCheck() {
       // the program but not how to install it — or that left out the restart, which is what actually
       // unsticks a reader who has just installed it — would be the third opinion this issue exists to
       // remove. Same words on all three surfaces, taken from the same table.
-      info(`To leave demo: install ${engSpec.vendor}'s CLI (\`${engSpec.fallback}\`)`
-        + `${engSpec.install ? ` with \`${engSpec.install}\`` : ""}, then ${engSpec.signIn}.`);
-      info("Restart any running engine service afterwards so it re-reads its PATH: the portal reports "
-        + "what the engine saw when it last started, and it will not notice a new install until then.");
+      // THE WAY OUT IS NOT THE SAME ON EVERY PLATFORM, and on the one where it differs the standard
+      // advice is a loop: a Windows reader is told to install a CLI they may already have, and then to
+      // restart a service — neither of which can change the answer, because the refusal is about the
+      // platform rather than the binary. Naming WSL2 is the only instruction that ends this state.
+      for (const line of leaveDemoAdvice(engSpec)) info(line);
     } else {
       info("The engine program is installed. Whether it is signed in cannot be read from disk: run "
         + "clearotron doctor --probe-engine to find out.");

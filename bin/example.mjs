@@ -6,7 +6,7 @@
 //   npx clearotron demo                    replay demo into ~/trademark-demo and open the portal
 //   npx clearotron demo --product <id>     replay a different product's demo (the ids are listed below)
 //   npx clearotron demo --run-dir <dir>    replay a frozen example from somewhere else
-//   npx clearotron demo --base <dir>       put the whole demo somewhere else (remove it with one rm -rf)
+//   npx clearotron demo --base <dir>       put the whole demo somewhere else (one directory to remove later)
 //   npx clearotron demo --port 9000        serve on another port (the demo opens three doors:
 //                                          9000, 9001 and 9002)
 //   npx clearotron demo --no-open          do not try to open a browser
@@ -39,6 +39,7 @@ import "../shared/env-local.mjs";   // step 4 / — FIRST: this program read a
 // back-filled. Placed above every other import because a side-effecting import runs in order.
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
+import { removeDirectory } from "../shared/os-advice.mjs";
 import { invoke } from "../shared/invocation.mjs";   // — the printed command is resolved once, for the reader who is actually standing there
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -315,7 +316,7 @@ if (has("--once")) {
   // the base there would tell a reader to remove a directory that does not exist and leave the one that
   // does — worse than silence, because it reads as an answer.
   const created = flag("--pool") ? poolRoot : demoBase;
-  console.log(`  Removing it later is one directory:  rm -rf ${created}\n`);
+  console.log(`  Removing it later is one directory:  ${removeDirectory(created)}\n`);
   // NOT A BARE ZERO. A demo that failed to replay one of its four sets `exitCode` above, and exiting 0
   // here would discard it — printing the failure and then reporting success, which is the shape this
   // change exists to remove. `--once` is also the invocation a script is most likely to use, so it is
@@ -364,7 +365,7 @@ const startArgs = ["--demo", "--base", demoBase];
 if (flag("--port")) startArgs.push("--port", flag("--port"));
 if (has("--no-open")) startArgs.push("--no-open");
 
-console.log(`  Removing this demo later is one directory:  rm -rf ${demoBase}`);
+console.log(`  Removing this demo later is one directory:  ${removeDirectory(demoBase)}`);
 strayFromAnOlderDemo();
 console.log("");
 

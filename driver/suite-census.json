@@ -4191,6 +4191,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
+          "tests": 5,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "the-attempt-record-carries-tool-time.test.mjs": {
           "tests": 13,
           "asserts": 47,

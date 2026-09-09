@@ -65,9 +65,11 @@
 // WHAT THIS DELIBERATELY DOES NOT DO: look up who holds the port. Node cannot see another user's
 // process without privilege, and a probe that usually cannot look would print "no other instance" when
 // it means "could not check" — which is the same class of lie this whole issue is about. The EADDRINUSE
-// message already tells the operator `ss -ltnp`, which is the instruction that works.
+// message already tells the operator how to find the holder, in the shell they are actually in.
 
 /** The environment variable a shared box sets once to ban silent defaults for every service on it. */
+import { whatHoldsPort, stopThatProcess } from "./os-advice.mjs";
+
 export const REQUIRE_EXPLICIT_PORTS = "CLEAROTRON_REQUIRE_EXPLICIT_PORTS";
 
 /**
@@ -160,8 +162,8 @@ export function listenErrorMessage(err, { what, host, port, portVar, portFlag = 
             + `address — and had it been down just now, this process would have taken it silently. `
             + `Set ${portVar ?? "the port variable"} for this instance.\n`
           : "")
-        + `  See what holds it:  ss -ltnp 'sport = :${port}'   (or: lsof -i :${port})\n`
-        + `  Then stop that process${move ? `, or ${move}` : ""}.\n`
+        + `  See what holds it:  ${whatHoldsPort(port)}\n`
+        + `  Then ${stopThatProcess()}${move ? `, or ${move}` : ""}.\n`
         + whichFile
         + `  Refusing to start — it will NOT quietly move to another port, because whatever is in front `
         + `of it is still addressed to ${at}.`;
