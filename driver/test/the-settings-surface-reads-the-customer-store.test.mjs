@@ -27,12 +27,12 @@ const BUNDLED = "/bundled/demo";
 
 // ── THE RESOLVER, DRIVEN ────────────────────────────────────────────────────────────────────────────
 
-test("tracker issue 1923 the store is the configured one when CLEAROTRON_CUSTOMERS_DIR is set", () => {
+test("the store is the configured one when CLEAROTRON_CUSTOMERS_DIR is set", () => {
   const r = customerStoreDir({ env: { CLEAROTRON_CUSTOMERS_DIR: "/srv/store" }, bundledDir: BUNDLED });
   assert.deepEqual(r, { dir: "/srv/store", source: "configured" });
 });
 
-test("tracker issue 1923 PROFILE_DIR is NOT a fallback — the retired name must not pull a second store", () => {
+test("PROFILE_DIR is NOT a fallback — the retired name must not pull a second store", () => {
   // THE POINT OF THE WHOLE ISSUE. Keeping it as a fallback arm would leave a box that sets only the old
   // name serving a different directory to the settings surface than to its runs, which is the split.
   const r = customerStoreDir({ env: { PROFILE_DIR: "/srv/old-store" }, bundledDir: BUNDLED });
@@ -40,7 +40,7 @@ test("tracker issue 1923 PROFILE_DIR is NOT a fallback — the retired name must
   assert.equal(r.source, "bundled");
 });
 
-test("tracker issue 1923 an unset store falls back to the bundle DELIBERATELY, and never throws", () => {
+test("an unset store falls back to the bundle DELIBERATELY, and never throws", () => {
   // The negative case, and it matters: a house-defaults install has no customer store and must still get
   // a working settings surface. Turning a wrong-store bug into an outage on every such install would be
   // a worse defect than the one being fixed.
@@ -50,7 +50,7 @@ test("tracker issue 1923 an unset store falls back to the bundle DELIBERATELY, a
     "a caller with no bundle must be refused rather than handed undefined, which would read the cwd");
 });
 
-test("tracker issue 1923 the startup line says WHICH store, and says when it is only the bundle", () => {
+test("the startup line says WHICH store, and says when it is only the bundle", () => {
   // Criterion 2. The log named the artifacts roster and the recipes store and never the profile store,
   // which is why finding this took a /proc read.
   const configured = customerStoreLine("settings surface", { dir: "/srv/store", source: "configured" });
@@ -64,7 +64,7 @@ test("tracker issue 1923 the startup line says WHICH store, and says when it is 
 
 // ── THE DIVERGENCE REPORT, DRIVEN, WITH A CONTROL ───────────────────────────────────────────────────
 
-test("tracker issue 1923 doctor's divergence check reports a split, and can say no", () => {
+test("doctor's divergence check reports a split, and can say no", () => {
   assert.deepEqual(
     customerStoreDivergence({ surfaceDir: "/bundled/demo", rosterDir: "/srv/store" }),
     { surface: "/bundled/demo", roster: "/srv/store" },
@@ -167,7 +167,7 @@ function boot(extra, { waitMs = 25000 } = {}) {
   });
 }
 
-test("tracker issue 1923 the booted portal serves the CONFIGURED store, and says so", async () => {
+test("the booted portal serves the CONFIGURED store, and says so", async () => {
   const { root, store } = storeInRepo("testowner");
   let child;
   try {
@@ -186,7 +186,7 @@ test("tracker issue 1923 the booted portal serves the CONFIGURED store, and says
   }
 });
 
-test("tracker issue 1923 a box that sets ONLY the retired name gets the bundle, not its old store", async () => {
+test("a box that sets ONLY the retired name gets the bundle, not its old store", async () => {
   // The regression arm for the fallback that was deliberately not kept. If PROFILE_DIR ever comes back as
   // a fallback, this boot starts naming `store` again and this arm reds.
   const { root, store } = storeInRepo("testowner");
@@ -215,7 +215,7 @@ test("tracker issue 1923 a box that sets ONLY the retired name gets the bundle, 
 // reasons, and the second is the one that matters: the test needs to sign in, and a minted passphrase is
 // PRINTED to stderr on first boot, so a boot that mints is a boot that publishes a secret into whatever
 // captures its output.
-test("tracker issue 1923 a brand owner in the configured store can read and save their settings", async () => {
+test("a brand owner in the configured store can read and save their settings", async () => {
   const { establishCredential } = await import("../portal-local-auth.mjs");
   const CUSTOMER = "testowner";
   const { root, store } = storeInRepo(CUSTOMER);
@@ -289,7 +289,7 @@ test("tracker issue 1923 a brand owner in the configured store can read and save
   }
 });
 
-test("tracker issue 1989 an unbuilt config surface NAMES itself, instead of answering the bare not_found that reads as a refusal", async () => {
+test("an unbuilt config surface NAMES itself, instead of answering the bare not_found that reads as a refusal", async () => {
   // THE DEFECT, DRIVEN. `PROFILE_REPO_ROOT` that does not contain the store makes `storeInRepo` throw,
   // `makeUpstream` return null, and every /portal/api/config/* route refuse. It refused with 404, which
   // the screens render as "Projects are not available to you" — so a deployment misconfiguration wore
