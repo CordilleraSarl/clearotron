@@ -203,3 +203,16 @@ test("the sweep applies both rules and reports the count of each line it rewrote
   assert.equal(s.handoff.length, 1, "the ruling line is the only one owed to a reader");
   assert.match(s.handoff[0].text, /decided 2026-01-01/, "and it is the one carrying content in its brackets");
 });
+
+test("a line carrying another citation is handed off, never rewritten", () => {
+  // REWRITING RE-AGES. A diff has no partial edit: touching one character puts the whole line on the
+  // added side, so a by-line citation that has sat there for months becomes newly-added and fails the
+  // check that refuses new ones. Two lines in this tree are in that state and rewriting them turned a
+  // strip into three new bare citations.
+  const line = '  { target: /^diffcase/, why: "FIXTURE NAMES (tracker issue 1941). `keep.mjs:4` is DATA" },';
+  const tree = { "a.mjs": [line, "// a plain one (tracker issue 12)", ""].join("\n") };
+  const s = surveyOf(Object.keys(tree), (f) => tree[f]);
+  assert.equal(s.strippedTotal, 1, "the line carrying `keep.mjs:4` was rewritten anyway");
+  assert.equal(s.handoff.length, 1, "and it must reach the reader instead");
+  assert.ok(s.handoff[0].text.includes("keep.mjs:4"), "the held-back line is the one carrying the by-line citation");
+});

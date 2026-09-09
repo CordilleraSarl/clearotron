@@ -77,13 +77,13 @@ export const OPENER = /((?:^|["'`(\[]|\/\/|\/\*|#|\*|·|──)\s*)(?:refs\s+)?t
 // sentence rather than part of it — the same shape as an opener, wearing brackets.
 //
 // ONLY WHEN THE BRACKETS HOLD NOTHING ELSE, and that is the whole of the narrowing. Sixty-eight of them
-// read "(tracker issue 264, owner's ruling 2026-09-07)" or "(tracker issue 208 / tracker issue 229)",
+// read "(tracker issue NNN, owner's ruling 2026-09-07)" or "(tracker issue NNN / tracker issue NNN)",
 // where the brackets carry a ruling, a date or a second citation. Removing those brackets deletes
 // content, so they are not mechanical and they go to the reader with the rest. A pattern wide enough to
 // take them would be a pattern that deletes rulings.
 //
 // AND THE DRAWN RULE IS KEPT THE LENGTH IT WAS. A hundred and six of them sit in a box heading —
-// `// ── WHAT THIS DOES (tracker issue 279) ─────────` — where removing twenty characters leaves the
+// `// ── WHAT THIS DOES (tracker issue NNN) ─────────` — where removing twenty characters leaves the
 // rule twenty short and the heading ragged against every other heading in the file. Every one measured
 // uses U+2500 and sits in a .mjs or .yml comment, so there is no markdown `---` to mistake for a rule.
 // The replacement re-pads by exactly what it removed, which keeps the line the length it was and makes
@@ -108,6 +108,20 @@ export function stripParenthetical(line) {
 // Any remaining citation, mechanical or not. The difference between this count and the opener count is
 // the hand-off: a citation inside a sentence cannot be removed without rewriting the sentence around it.
 export const ANY_CITATION = /\btracker issues?\s+\d+/i;
+
+// ── A LINE CARRYING ANOTHER CITATION IS NOT REWRITTEN, IT IS HANDED OFF ─────────────────────────────
+//
+// REWRITING A LINE RE-AGES EVERY CITATION ON IT. A diff has no notion of a partial edit: touching one
+// character puts the whole line on the added side, so a by-line citation that has sat there for months
+// becomes newly-added and fails the check that refuses new ones. Two lines in this tree are in that
+// state — the citation guard's own exemption table, which quotes synthetic fixture citations as DATA —
+// and rewriting them turned a strip into three new bare citations.
+//
+// MEASURED ON THE WRONG POPULATION FIRST, which is why this is written down rather than just fixed. I
+// checked the lines the sweep LEAVES and found none carrying a by-line citation, and reported the
+// hazard as absent. The hazard is on the lines the sweep REWRITES, and I had not looked at those at
+// all. An answer about the wrong set is not a smaller answer, it is a different question.
+export const CARRIES_ANOTHER_CITATION = /[A-Za-z0-9_.\-/]+\.(?:mjs|js|md|yml|json|ts):\d+/;
 
 export const EXCLUDED = [
   // Citations used as literal test DATA — the corpus the citation guard is checked against.
@@ -147,8 +161,10 @@ export function surveyOf(files, read) {
     // the hand-off list a person is told to read — its survivor was invisible in the one place it should
     // have been named. Test the RESULT: a line can be both stripped and still owed to a reader.
     const out = text.split("\n").map((line, i) => {
-      const opened = OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;
-      const after = PARENTHETICAL.test(opened) ? (n++, stripParenthetical(opened)) : opened;
+      // Refused before either rule runs, so a line is never half-swept: it goes to the reader whole.
+      const holdBack = CARRIES_ANOTHER_CITATION.test(line);
+      const opened = !holdBack && OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;
+      const after = !holdBack && PARENTHETICAL.test(opened) ? (n++, stripParenthetical(opened)) : opened;
       if (ANY_CITATION.test(after)) handoff.push({ file: f, line: i + 1, text: after.trim() });
       return after;
     });
