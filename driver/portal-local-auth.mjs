@@ -47,6 +47,7 @@ import { randomBytes, scryptSync, timingSafeEqual, createHmac } from "node:crypt
 import { readFileSync, writeFileSync, mkdirSync, chmodSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
+import { envPrefix } from "../shared/os-advice.mjs";
 
 // ── the credential record ────────────────────────────────────────────────────────────────────────
 //
@@ -164,7 +165,10 @@ export function passphraseResetCommand({ prefix = "", credentialPath = null, env
   const base = `${prefix}clearotron passphrase --reset`;
   const path = credentialPath ?? env.PORTAL_LOCAL_CREDENTIAL ?? null;
   if (!path || path === credentialPathFor({}, home)) return base;
-  return `PORTAL_LOCAL_CREDENTIAL=${path} ${base}`;
+  // `VAR=value cmd` IS POSIX-ONLY. PowerShell has no such juxtaposition — the assignment is its own
+  // statement there — so this line told a Windows reader their variable name was not a cmdlet, naming
+  // the wrong half of the command as the fault. Reported from a real run.
+  return `${envPrefix("PORTAL_LOCAL_CREDENTIAL", path)}${base}`;
 }
 
 /**

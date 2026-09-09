@@ -162,8 +162,24 @@ export function listenErrorMessage(err, { what, host, port, portVar, portFlag = 
             + `address — and had it been down just now, this process would have taken it silently. `
             + `Set ${portVar ?? "the port variable"} for this instance.\n`
           : "")
+        // ── THE HOLDER IS NOT ALWAYS SOMETHING TO KILL, AND THIS USED TO ASSUME IT WAS ─────────────
+        //
+        // "Then stop that process" is right for a stray second copy and wrong for the other common
+        // holder: an editor's port forward. A reader working over a remote session has the port
+        // forwarded to their laptop by the editor itself, so the thing holding it is the tool they are
+        // reading this message in — and stopping it drops the session that printed the advice.
+        //
+        // So the holder is named as a question rather than a verdict, moving THIS instance comes
+        // first among the remedies, and stopping the holder is offered second and only as the
+        // reader's own call. Nothing here claims to know which it is: that cannot be seen from
+        // inside this process, and the previous wording claimed it by implication.
         + `  See what holds it:  ${whatHoldsPort(port)}\n`
-        + `  Then ${stopThatProcess()}${move ? `, or ${move}` : ""}.\n`
+        + "  A forwarded port counts: an editor forwarding this port to your machine holds it exactly "
+        + "as a second copy would, and stopping that would end the session you are reading this in.\n"
+        + (move
+          ? `  Move this instance instead — ${move} — or, once you know what the holder is and that you `
+            + `do not need it, ${stopThatProcess()}.\n`
+          : `  Once you know what the holder is and that you do not need it, ${stopThatProcess()}.\n`)
         + whichFile
         + `  Refusing to start — it will NOT quietly move to another port, because whatever is in front `
         + `of it is still addressed to ${at}.`;

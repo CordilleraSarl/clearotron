@@ -54,3 +54,38 @@ export const stopThatProcess = ({ platform = process.platform } = {}) =>
  */
 export const removeDirectory = (dir, { platform = process.platform } = {}) =>
   (isWindows(platform) ? `Remove-Item -Recurse -Force "${dir}"` : `rm -rf ${dir}`);
+
+/**
+ * Set one environment variable for the length of one command.
+ *
+ * `VAR=value cmd` is a POSIX shell construct with no PowerShell equivalent — there it is a statement of
+ * its own, so the pair has to be separated rather than juxtaposed. A reader who pastes the POSIX form
+ * into PowerShell is told the variable name is not a recognised cmdlet, which names the wrong half of
+ * the line as the problem.
+ */
+export const envPrefix = (name, value, { platform = process.platform } = {}) =>
+  (isWindows(platform) ? `$env:${name}="${value}"; ` : `${name}=${value} `);
+
+/**
+ * Move to a directory, then run what follows.
+ *
+ * `&&` IS THE PART THAT FAILS, not the path. Windows PowerShell 5.1 — still the default shell on a
+ * stock machine — has no `&&` operator at all, so `cd X && npx …` is a parse error there before the
+ * backslashes matter. `;` runs in both 5.1 and 7, and quoting the directory covers the spaces a
+ * Windows home path routinely carries.
+ *
+ * The POSIX form keeps `&&` deliberately: it is not a separator there, it is a guard, and running the
+ * command from the wrong directory because the `cd` failed is worse than not running it.
+ */
+export const chdirPrefix = (dir, { platform = process.platform } = {}) =>
+  (isWindows(platform) ? `cd "${dir}"; ` : `cd ${dir} && `);
+
+/**
+ * What keeps a background instance alive, named for the thing that actually does it.
+ *
+ * `null` where this platform has no such mechanism in the product, so a caller prints nothing rather
+ * than naming a service manager the reader does not have. Windows was told the background form was
+ * "managed by systemd", which is not on the machine and cannot be installed onto it.
+ */
+export const backgroundManager = ({ platform = process.platform } = {}) =>
+  (isWindows(platform) ? null : "systemd");

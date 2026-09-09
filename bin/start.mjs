@@ -133,6 +133,7 @@ import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // never serve 
 // ONE CLASSIFIER FOR WHAT A STAFF RULE ADMITS, shared with the setup wizard. Two copies of this
 // judgement would be a wizard that asks about one rule and a launcher that writes another.
 import { classifyStaffDomain, staffDomainRefusal, staffGrantSentence } from "../shared/staff-domain.mjs";
+import { backgroundManager } from "../shared/os-advice.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -1981,8 +1982,21 @@ if (isMain) {
   // run". Saying it here, before the commands go by, is the whole fix.
   say("  This terminal is now the product: it runs only while this command does, and Ctrl-C — or closing");
   say("  the window — stops everything it started. So the commands above need a SECOND terminal.");
-  say(`  To get your prompt back instead, stop this and run  ${invoke("start")} --background`);
-  say("  — same product, managed by systemd, and it survives logout.");
+  // ── THE BACKGROUND ROUTE IS NOT OFFERED WHERE IT CANNOT WORK ────────────────────────────────────
+  //
+  // `--background` installs and enables service units. There are none on Windows, so both the offer
+  // and the sentence naming what manages them were wrong there — a reader was told to run a flag that
+  // cannot succeed and given a service manager that is not on the machine and cannot be put there.
+  // Reported from a real run. Same rule as the engine refusal above: do not name a route this platform
+  // does not have.
+  const manager = backgroundManager();
+  if (manager) {
+    say(`  To get your prompt back instead, stop this and run  ${invoke("start")} --background`);
+    say(`  — same product, managed by ${manager}, and it survives logout.`);
+  } else {
+    say("  There is no background form on this platform: the product runs as long as this window does.");
+    say("  Leave it open and use a second terminal for the commands above.");
+  }
   say("");
 }
 

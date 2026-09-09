@@ -18,7 +18,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { whatHoldsPort, stopThatProcess, removeDirectory } from "../../shared/os-advice.mjs";
+import { whatHoldsPort, stopThatProcess, removeDirectory, chdirPrefix, envPrefix, backgroundManager } from "../../shared/os-advice.mjs";
+import { listenErrorMessage } from "../../shared/listen.mjs";
 import { platformEngineRefusal, leaveDemoAdvice } from "../../bin/onboard.mjs";
 
 const POSIX = ["linux", "darwin"];
@@ -92,4 +93,52 @@ test("the way out of demo mode is the one that can work on that platform", () =>
     assert.match(posix[0], /install Anthropic's CLI/);
     assert.match(posix[1], /Restart any running engine service/);
   }
+});
+
+// ── the invocation string every surface prints, and the two prefixes that compose into it ───────────
+//
+// These are not demo lines. `invocationPrefix` feeds doctor, the wizard, the start banner and the
+// stop/disconnect advice, so one wrong separator is wrong on every surface at once — which is why the
+// arms are here at the helper rather than at each caller.
+
+test("the directory prefix uses a separator the reader's shell actually has", () => {
+  // `&&` IS THE PART THAT FAILS, not the backslashes. Windows PowerShell 5.1 — the default shell on a
+  // stock machine — has no `&&` operator, so `cd X && npx` is a parse error there.
+  assert.equal(chdirPrefix("/opt/x", { platform: "linux" }), "cd /opt/x && ");
+  const win = chdirPrefix("C:\\Users\\you\\npm-cache", { platform: "win32" });
+  assert.doesNotMatch(win, /&&/, "PowerShell 5.1 has no && at all");
+  assert.match(win, /;\s*$/, "the pair still has to be sequenced");
+  // Plain containment rather than a pattern: a backslash path in a regex literal needs doubling twice
+  // over, and the first version of this arm failed on its own escaping while the value was correct —
+  // an assertion whose escaping is harder than its subject reports the test as the defect.
+  assert.ok(win.includes('cd "C:\\Users\\you\\npm-cache"; '),
+    `the directory must be quoted for the spaces a Windows home path carries: ${win}`);
+});
+
+test("a one-command environment variable is set the way that shell sets it", () => {
+  assert.equal(envPrefix("VAR", "/tmp/x", { platform: "linux" }), "VAR=/tmp/x ");
+  const win = envPrefix("VAR", "C:\\tmp\\x", { platform: "win32" });
+  // `VAR=value cmd` is POSIX juxtaposition with no PowerShell equivalent: pasted there, the variable
+  // NAME is reported as an unrecognised cmdlet, which names the wrong half of the line as the fault.
+  assert.equal(win, '$env:VAR="C:\\tmp\\x"; ');
+  assert.doesNotMatch(win, /^VAR=/, "the POSIX juxtaposition survived onto a shell that has no such form");
+});
+
+test("the background route is offered only where the product has one", () => {
+  assert.equal(backgroundManager({ platform: "linux" }), "systemd");
+  // `--background` installs and enables service units. There are none on Windows, so offering it named
+  // a flag that cannot succeed and a service manager that cannot be installed.
+  assert.equal(backgroundManager({ platform: "win32" }), null);
+});
+
+test("the port refusal does not tell a reader to stop the thing they are reading it in", () => {
+  const said = listenErrorMessage({ code: "EADDRINUSE" },
+    { what: "the portal", host: "127.0.0.1", port: 18802, portVar: "PORTAL_PORT", portSource: "default" });
+  assert.match(said, /forwarded port counts/,
+    "an editor forwarding this port holds it exactly as a second copy does, and that is the case the "
+    + "old wording sent a reader to kill");
+  assert.match(said, /Move this instance instead/, "moving this instance must come before stopping the holder");
+  // BOTH HALVES. Removing the stop advice entirely would leave a reader with a stray second copy and
+  // no way to clear it; the fix is the ORDER and the condition, not the absence.
+  assert.match(said, /once you know what the holder is and that you do not need it/);
 });
