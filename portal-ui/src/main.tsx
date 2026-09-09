@@ -9,6 +9,7 @@ import { Home } from './screens/Home.tsx'
 import { Clearances } from './screens/Clearances.tsx'
 import { Result } from './screens/Result.tsx'
 import { NewClearance } from './screens/NewClearance.tsx'
+import { NewCompany } from './screens/NewCompany.tsx'
 import { SavedSearches } from './screens/SavedSearches.tsx'
 import { Preferences } from './screens/Preferences.tsx'
 import { UseYourAI } from './screens/UseYourAI.tsx'
@@ -124,6 +125,11 @@ function screen(id: ScreenId, ctx: ShellContext) {
       return <Projects key={ownerKey(ctx)} ctx={ctx} />
     case 'brand.searches':
       return <SavedSearches key={ownerKey(ctx)} ctx={ctx} />
+    // NOT keyed on the company in view. There is no company yet, and keying on whatever the switcher
+    // happens to hold would throw the half-typed form away the moment somebody changed it — the switcher
+    // is still on screen while this page is open. `about` and `preferences` are the unkeyed precedents.
+    case 'brand.new':
+      return <NewCompany ctx={ctx} />
     case 'preferences':
       return <Preferences ctx={ctx} />
     // No ctx: the source offer is the same for every reader and depends on no account, no owner and

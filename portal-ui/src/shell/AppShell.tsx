@@ -166,6 +166,19 @@ export type ShellContext = {
    */
   readonly setOwner: (owner: string | null) => void
   /**
+   * Ask for the company list again.
+   *
+   * The roster is fetched once when the shell mounts and does not poll, which is right for a list that
+   * changes when somebody makes it change and never on its own. It made exactly one screen impossible:
+   * creating a company and then selecting it, because the shell's list would not contain the key the
+   * create had just written. The company would be selected, the rail would show its slug rather than its
+   * name, and the picker would not list it at all — a finished feature that looks broken on the one path
+   * it exists for.
+   *
+   * A screen that CHANGES the list calls this. Nothing polls it.
+   */
+  readonly refreshCompanies: () => void
+  /**
    * A company's DISPLAY NAME, from its account key. The one resolver in the app.
    *
    * The portal is keyed by slug and read by people: `vantor` is a route parameter, "Vantor Labs"
@@ -304,7 +317,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // route, so asking would spend one of their 120/min on a refusal — the guard is what keeps this from
   // being a request every client makes on every load.
   const isStaff = meResult?.kind === 'ok' && meResult.value.role === 'staff'
-  const { result: rosterResult } = useLoad(
+  const { result: rosterResult, reload: reloadRoster } = useLoad(
     () => (isStaff ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly RosterCompany[] })),
     [isStaff],
   )
@@ -403,8 +416,8 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const ownerInView = owner ?? sole
 
   const body = entry
-    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, ownerName, ownerKeys, factsFor, go, visit,
-        sidebarCollapsed: collapsed })
+    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, refreshCompanies: reloadRoster,
+        ownerName, ownerKeys, factsFor, go, visit, sidebarCollapsed: collapsed })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">
         <div className="empty">

@@ -490,11 +490,30 @@ test('the coverage figure is drawn from `derived`, which was parsed and then ign
   assert.match(PROFILE, /batchSize/)
 })
 
-test('both editors treat prose as multi-line — one screen learning it is not enough', () => {
-  // riskAppetite is project-editable, so it renders on Projects.tsx too. If only Profile.tsx branches on
-  // `prose`, the same paragraph is a textarea on one page and a one-line input on the other.
-  for (const [name, src] of [['Profile', PROFILE], ['Projects', PROJECTS]] as const) {
+test('every editor treats prose as multi-line — one screen learning it is not enough', () => {
+  // riskAppetite is project-editable, so it renders on the project overlay too. If one renderer branches
+  // on `prose` and another does not, the same paragraph is a textarea on one page and a one-line input on
+  // the other.
+  //
+  // RE-POINTED AT THE RENDERERS, not at the screens. The rule has not changed and neither has the reason
+  // for it; what changed is that the profile screen no longer has a field renderer of its own — it and
+  // the create screen share one. Pasting the new file into the old loop would have kept the sentence and
+  // dropped half the guarantee, because the shared renderer is now the thing that has to branch and the
+  // screen that uses it has nothing to check.
+  //
+  // So: every renderer branches, AND the screens that share one do not grow a second. The second half is
+  // what keeps this honest — without it, a screen could quietly re-introduce its own single-line input
+  // and every assertion above would still pass.
+  const RENDERERS = [
+    ['ProfileField', read('../src/components/ProfileField.tsx')],
+    ['Projects', PROJECTS],
+  ] as const
+  for (const [name, src] of RENDERERS) {
     assert.match(src, /spec\.kind === 'lines' \|\| spec\.kind === 'prose'/, `${name}.tsx renders prose multi-line`)
+  }
+  for (const [name, src] of [['Profile', PROFILE], ['NewCompany', read('../src/screens/NewCompany.tsx')]] as const) {
+    assert.doesNotMatch(src, /^function Field\(/m, `${name}.tsx renders fields through the shared component`)
+    assert.match(src, /from '\.\.\/components\/ProfileField\.tsx'/, `${name}.tsx imports that component`)
   }
 })
 

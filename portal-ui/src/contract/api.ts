@@ -815,6 +815,23 @@ export type ProfileConfig = {
 export type ProjectSummary = { readonly key: string; readonly name: string; readonly archived: boolean }
 
 /**
+ * What creating a company hands back — the receipt, in the two facts a person needs and the one they
+ * must not be spared.
+ *
+ * The framework and the marketplace count each carry whether they were CHOSEN or DEFAULTED. That
+ * distinction is the whole point of saying them: "rated under the general framework" is a fact somebody
+ * may want to change, and "rated under the framework you named" is not.
+ */
+export type CreatedCompany = {
+  readonly key: string
+  readonly name: string
+  readonly framework: { readonly path: string; readonly defaulted: boolean }
+  readonly marketplaces: { readonly count: number; readonly defaulted: boolean }
+  /** Present ⇒ the company is LIVE and the commit recording it failed. Never collapse this into a failure. */
+  readonly commitError: string | null
+}
+
+/**
  * One engine feature switch, as staff see it.
  *
  * `effect` is the field that stops this screen lying. `clarify` means the switch being off refuses the
@@ -1222,10 +1239,22 @@ const decodeRun = (raw: unknown): Run | null => {
   }
 }
 
-/** Pull the human-readable errors out of a body without ever inventing one. */
+/**
+ * Pull the human-readable errors out of a body without ever inventing one.
+ *
+ * `errors` is a list of sentences and wins. `message` is ONE sentence, sent beside a machine token in
+ * `error` for a caller that wants to switch on the kind — and it is read before `error` because that is
+ * the whole reason both are there. Reading `error` first put the words "needs_name" on screen where the
+ * server had already written "A company needs a name."
+ *
+ * `error` remains the last resort. Most routes send prose in it, and a route that sends a token and no
+ * sentence is still better rendered as the token than as a generic apology that hides which one it was.
+ */
 const errorsOf = (body: Record<string, unknown>): string[] => {
   const list = asArray(body['errors']).filter((e): e is string => typeof e === 'string')
   if (list.length) return list
+  const sentence = asString(body['message'])
+  if (sentence) return [sentence]
   const one = asString(body['error'])
   return one ? [one] : ['The request could not be completed.']
 }
@@ -1787,6 +1816,40 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ ...body, ...(account ? { account } : {}) }),
     }),
+
+  /**
+   * Create a company.
+   *
+   * NOT `saveProfile` with a new key. `save` is an upsert, and its preserve step deletes every
+   * code-owned field that has nothing on disk — so a company created that way is written with no risk
+   * framework and every matter for it is rated under the house default, silently. That is a live defect
+   * this route exists not to repeat, and the reason there is a second verb at all.
+   *
+   * The body is FLAT. `saveProfile` sends `{profile: {…}}` and this route reads the fields at the top
+   * level; sending the nested shape here creates a company called nothing.
+   *
+   * Send only the fields somebody actually filled in. An untouched box that contributes `platforms: []`
+   * is not "no marketplaces" — it is the same input as omitting the key, and the company silently
+   * inherits the house list. Build the draft with the profile field contract's own `applyField`, which
+   * omits rather than empties, and this stays true without anyone remembering it.
+   */
+  createCompany: (body: Readonly<Record<string, unknown>>): Promise<Result<CreatedCompany>> =>
+    call('/portal/api/config/companies', (b) => ({
+      key: asString(b['key']) ?? '',
+      name: asString(b['name']) ?? '',
+      framework: {
+        path: asString((b['framework'] as Record<string, unknown> | undefined)?.['path']) ?? '',
+        defaulted: (b['framework'] as Record<string, unknown> | undefined)?.['defaulted'] === true,
+      },
+      marketplaces: {
+        count: asNumber((b['marketplaces'] as Record<string, unknown> | undefined)?.['count']) ?? 0,
+        defaulted: (b['marketplaces'] as Record<string, unknown> | undefined)?.['defaulted'] === true,
+      },
+      // WRITTEN AND RECORDED ARE TWO EVENTS. The company is live the instant the file lands; the commit
+      // that records it can fail on its own. A screen that reports them as one tells somebody nothing
+      // happened about a company that is already governing their searches.
+      commitError: asString(b['commitError']),
+    }), { method: 'POST', body: JSON.stringify(body) }),
 
   projects: (account: string | null): Promise<Result<readonly ProjectSummary[]>> =>
     call(`/portal/api/config/projects${accountQuery(account)}`, (b) =>

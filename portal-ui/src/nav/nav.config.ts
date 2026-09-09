@@ -39,6 +39,7 @@ export type ScreenId =
   | 'brand.profile'
   | 'brand.projects'
   | 'brand.searches'
+  | 'brand.new'
   // staff administration — dot-scoped under a real parent that SHOULD highlight for them
   | 'admin'
   | 'admin.access'
@@ -130,6 +131,19 @@ export const NAV: readonly NavEntry[] = [
   { id: 'brand.profile', label: 'Profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
   { id: 'brand.projects', label: 'Projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
   { id: 'brand.searches', label: 'Custom searches', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
+  // Creating a company. `hidden`, because it is reached from `+ New company` on the pick panel and from
+  // nowhere else — routing is DERIVED from this array, so the entry is what makes that button work, not
+  // what puts it in the rail. A visible entry would also red the two sidebar assertions, and the repair
+  // for those is not to edit them.
+  //
+  // NO `scope`. An 'owner'-scoped id prints the SELECTED company's name in the top bar, which over a
+  // page for making a different one is the conflation this whole family exists to remove. Scope-less
+  // reads as 'account', which is right: the page belongs to the installation, not to a company.
+  //
+  // `roles` rather than a check in the markup, per this file's opening rule. It is the same set as the
+  // control that opens it — the people who may manage — and the access model converts this FIELD along
+  // with every other role test, not this entry.
+  { id: 'brand.new', label: 'New company', path: '/portal/brand/new', icon: 'plus-circle', roles: ['staff'], hidden: true },
 
   // Staff administration, now reached from the AVATAR MENU rather than the sidebar — it is rare, it is
   // not part of the work lane, and it belongs to the person rather than to either scope. `hidden`, not
