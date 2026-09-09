@@ -2908,8 +2908,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 119,
-          "asserts": 634,
+          "tests": 120,
+          "asserts": 642,
           "skips": 0,
           "todos": 0
         },
@@ -5529,13 +5529,13 @@
         },
         "screenCopy.test.ts": {
           "tests": 56,
-          "asserts": 178,
+          "asserts": 181,
           "skips": 0,
           "todos": 0
         },
         "shell.test.ts": {
-          "tests": 7,
-          "asserts": 17,
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
