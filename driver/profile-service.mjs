@@ -33,6 +33,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, commitWithAuditRow, makeStoreCommit } from "../shared/store-in-repo.mjs";   //
 import { resolveFramework, resolvePlatforms, buildProfile, assertRosterAccepts, companyKeyFrom } from "./company-bundle.mjs";
+import { defaultTerritoryState } from "./effective-scope.mjs";   // one reading of which stored territories the engine can search
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import {
   loadProfiles as loadProfilesDefault, validateProfileEdit as validateProfileEditDefault,
@@ -284,7 +285,15 @@ export function makeProfileService({
       key: profile.key,
       profile: stripDerived(profile),
       contextPack: readPack(profile.key),
-      derived: { minCellsPerVariant: derivedFloor(profile), batchSize: derivedBatchSize(profile) },
+      derived: { minCellsPerVariant: derivedFloor(profile), batchSize: derivedBatchSize(profile),
+        // The stored default territories the engine cannot search, NAMED. Without this the profile
+        // screen shows the entries back exactly as typed and the engine quietly ignores them — which is
+        // what a person saw before: a setting that reads as in force and does nothing.
+        //
+        // It is computed here rather than read off a run, because it is a fact about the PROFILE. A
+        // reader who only hears about it on the runs where it happened to apply learns about a broken
+        // setting at random.
+        unrecognizedTerritories: defaultTerritoryState(profile).unrecognized },
       framework: {
         path: fwPath,
         // CUSTOM MEANS "NOT THE GENERIC DEFAULT", which is what the word means to the lawyer reading the

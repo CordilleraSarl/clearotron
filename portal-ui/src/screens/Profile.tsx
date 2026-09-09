@@ -198,6 +198,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
               ))}
               {/* Coverage is derived from the marketplaces and density in THIS group, so it reads as a
                   consequence of the boxes above it rather than as a stray statistic. */}
+              {group.id === 'defaults' ? <UnsearchableTerritories derived={loaded.derived} /> : null}
               {group.id === 'defaults' ? <CoverageNote derived={loaded.derived} /> : null}
             </div>
           )
@@ -293,6 +294,30 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
  * states the CONSEQUENCE of a setting rather than its value, which is why it belongs directly under the
  * settings it is computed from rather than in a panel of its own.
  */
+/**
+ * Stored default territories the engine cannot search, named.
+ *
+ * The field accepts these no longer — but a profile written before it did still holds them, and the box
+ * shows them back exactly as they were typed. So the screen read as though the setting were in force
+ * while the engine ignored it, and the only way to find out was to read the prompt of a finished run.
+ *
+ * It NAMES the entries rather than counting them: the whole difficulty is that one of six is misspelled
+ * and nothing says which one.
+ */
+function UnsearchableTerritories({ derived }: { readonly derived: Record<string, unknown> | null }) {
+  const bad = derived?.['unrecognizedTerritories']
+  if (!Array.isArray(bad) || bad.length === 0) return null
+  const named = bad.filter((t): t is string => typeof t === 'string')
+  if (!named.length) return null
+  return (
+    <p style={{ margin: '10px 0 0', fontSize: 12.5, color: 'var(--tone-high)', fontWeight: 600 }} role="status">
+      Not searched: {named.join(', ')}.{' '}
+      {named.length === 1 ? 'That is not a territory' : 'Those are not territories'} the engine can
+      search, so it is stored and does nothing. Replace it from the list below, or remove it.
+    </p>
+  )
+}
+
 function CoverageNote({ derived }: { readonly derived: Record<string, unknown> | null }) {
   const batch = derived?.['batchSize']
   const cells = derived?.['minCellsPerVariant']
