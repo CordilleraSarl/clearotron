@@ -56,23 +56,31 @@ const src = (f) => readFileSync(join(SCRIPTS, f), "utf8");
  */
 const hasAPopulation = (text) => /"ls-files"/.test(text) || /from "\.\.\/shared\/tracked-files\.mjs"/.test(text);
 
+/** Those that actually take a population, so no arm below is ever created with nothing to measure. */
+const governed = () => minters().filter((f) => hasAPopulation(src(f)));
+
 test("the population is derived, and it is not empty", () => {
   // The silent-pass mode of every check below: a directory read that returns nothing, or a filter that
-  // stops matching, leaves each `for` loop with no body and this file green over nothing at all.
-  const found = minters();
-  assert.ok(found.length >= 5, `read ${found.length} script(s) — the derivation has stopped matching`);
+  // stops matching, leaves the loop with no body and this file green over nothing at all.
+  //
+  // AND THE FILTER IS ASSERTED, NOT TRUSTED. A script dropping out of `governed` is how one of these
+  // stops being checked — silently, because a check that was never created cannot fail. The five are
+  // named here for exactly that: `hasAPopulation` narrowing, or a minter rewritten to take its files
+  // from somewhere this cannot see, reds this arm rather than shrinking the suite quietly.
+  const found = governed();
+  assert.ok(found.length >= 5, `only ${found.length} script(s) are governed — the derivation has stopped matching`);
   for (const known of ["mint-suite-census.mjs", "mint-names-in-force.mjs", "mint-public-residue.mjs",
     "mint-reference-strip-backlog.mjs", "strip-tracker-citations.mjs"]) {
-    assert.ok(found.includes(known), `${known} is no longer reached by the derivation`);
+    assert.ok(found.includes(known), `${known} is no longer governed by this check`);
   }
 });
 
-for (const f of minters()) {
+// FILTERED HERE RATHER THAN BAILED INSIDE. An arm that returns early on a precondition reports its
+// subject clean having measured none of it, because a bare `return` counts as a pass. A script with no
+// population has nothing to filter and gets no arm at all; that it is out of scope is asserted above.
+for (const f of governed()) {
   test(`${f} takes its population from what HEAD publishes`, () => {
     const text = src(f);
-    // A script that never enumerates the tree has no population to filter, and requiring the helper of
-    // it would be requiring a call with nothing to pass.
-    if (!hasAPopulation(text)) return;   // nothing to filter, so nothing to require
     assert.match(text, /publishedOf\(/, `${f} takes a tracked population and never filters it to what HEAD carries`);
     assert.match(text, /from "\.\.\/shared\/reference-guard-classes\.mjs"/,
       `${f} must use the shared helper, not a second spelling of the same rule`);
