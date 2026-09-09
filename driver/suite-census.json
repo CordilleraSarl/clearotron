@@ -2842,13 +2842,8 @@
           "todos": 0
         },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
-<<<<<<< HEAD
           "tests": 20,
           "asserts": 50,
-=======
-          "tests": 19,
-          "asserts": 45,
->>>>>>> origin/main
           "skips": 0,
           "todos": 0
         },

@@ -2103,7 +2103,7 @@ export function applyStageWrites(msg, argv) {
   // against a real record. What the e2e needs from this branch is that the stage COMPLETES through the
   // real transport, which a declined row does exactly as well.
   if (/record_knockout_review/.test(msg)) {
-    const runDir = runDirFromArgv(argv);
+    const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock knockout-review: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
     recordMockToolCall(runDir, "record_knockout_review", "recording-knockout-review");
     const declined = [];
