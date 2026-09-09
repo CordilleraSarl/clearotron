@@ -9,41 +9,11 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 423,
+  "total": 312,
   "files": {
     ".gitattributes": [
       0,
       1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    ".github/dependabot.yml": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    ".github/workflows/cla.yml": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    ".github/workflows/release.yml": [
-      0,
-      6,
       0,
       0,
       0,
@@ -71,29 +41,9 @@
       0,
       0
     ],
-    "INSTALL.md": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "bin/connect.mjs": [
-      0,
-      4,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "bin/onboard.mjs": [
       0,
-      5,
+      0,
       0,
       1,
       0,
@@ -103,29 +53,9 @@
     ],
     "bin/start.mjs": [
       0,
-      8,
+      0,
       0,
       1,
-      0,
-      0,
-      0,
-      0
-    ],
-    "docs/architecture/04-configuration-reference.md": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "docs/architecture/05-config-governance.md": [
-      0,
-      1,
-      0,
-      0,
       0,
       0,
       0,
@@ -171,36 +101,6 @@
       0,
       0
     ],
-    "driver/driver.config.mjs": [
-      0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/engine/anthropic-agent.mjs": [
-      0,
-      7,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/findings-model.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/frame-diff-model.mjs": [
       0,
       1,
@@ -221,39 +121,9 @@
       0,
       0
     ],
-    "driver/pipeline-knockout.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/pipeline.mjs": [
-      0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/plain-register.mjs": [
       0,
       1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/portal-config-view.mjs": [
-      0,
-      2,
       0,
       0,
       0,
@@ -284,36 +154,6 @@
     "driver/profile-page.html": [
       0,
       2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/publish/knockout.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/publish/parse.mjs": [
-      0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/publish/render-knockout.mjs": [
-      0,
-      20,
       0,
       0,
       0,
@@ -401,26 +241,6 @@
       0,
       0
     ],
-    "driver/systemd/install-census.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/systemd/render-units.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/test/README.md": [
       0,
       2,
@@ -452,16 +272,6 @@
       0
     ],
     "driver/test/a-bare-reference-added-in-a-diff-is-refused.test.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/test/a-capability-is-named-before-the-report-names-it.test.mjs": [
       0,
       2,
       0,
@@ -991,16 +801,6 @@
       0,
       0
     ],
-    "driver/test/portal-service.test.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/test/production-dependencies.test.mjs": [
       0,
       1,
@@ -1211,16 +1011,6 @@
       0,
       0
     ],
-    "driver/test/the-published-manifest-is-not-the-repos-manifest.test.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/test/the-reference-strip-left-sentences-unfinished.test.mjs": [
       0,
       1,
@@ -1271,26 +1061,6 @@
       0,
       0
     ],
-    "driver/verify-knockout.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "mcp-server/lib/whatif.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "mcp-server/remote/client-mcp-apikey.service": [
       0,
       1,
@@ -1312,26 +1082,6 @@
       0
     ],
     "mcp-server/remote/trademark-artifacts-http.service": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "mcp-server/server.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "mcp-server/test/a-knockout-trace-survives-the-client-door.test.mjs": [
       0,
       1,
       0,
@@ -1364,16 +1114,6 @@
     "portal-ui/src/base.css": [
       0,
       24,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "portal-ui/src/contract/api.ts": [
-      0,
-      3,
       0,
       0,
       0,
@@ -1421,26 +1161,6 @@
       0,
       0
     ],
-    "portal-ui/test/api.test.ts": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "portal-ui/test/useYourAI.test.ts": [
-      0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "providers/oauth-mcp-bridge/systemd/courtlistener-mcp.service": [
       0,
       1,
@@ -1451,49 +1171,9 @@
       0,
       0
     ],
-    "providers/oauth-mcp-bridge/test/the-bootstrap-recipe-binds-a-resource.test.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "scripts/ai-page-render-check.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "scripts/clearances-render-check.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "scripts/e2e.mjs": [
       0,
       1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "scripts/headless-page.mjs": [
-      0,
-      2,
       0,
       0,
       0,
@@ -1561,77 +1241,7 @@
       0,
       0
     ],
-    "scripts/test-run.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "scripts/verify-publishable.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/client-door.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/connect-clients.mjs": [
-      0,
-      4,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/connector-signin-probe.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/env-local.mjs": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/names-in-force.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/register-selection.mjs": [
       0,
       1,
       0,
@@ -1648,36 +1258,6 @@
       0,
       0,
       1,
-      0,
-      0
-    ],
-    "shared/summary-blocks.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/systemd-failure.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "shared/usage-block.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
       0,
       0
     ]
