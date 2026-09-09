@@ -92,7 +92,7 @@ function render(names) {
 //
 // Every \`CLEAROTRON_*\` name this build reads. It exists so the retired-spelling check can name the
 // replacement for an old \`PRELIM_*\` line rather than only saying the old one is dead — see
-// shared/env-aliases.mjs and tracker issue 168. Re-mint with:
+// shared/env-aliases.mjs. Re-mint with:
 //
 //   node scripts/mint-names-in-force.mjs
 //
