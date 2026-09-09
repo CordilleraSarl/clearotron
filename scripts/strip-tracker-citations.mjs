@@ -166,6 +166,12 @@ export const EXCLUDED = [
   "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs",
   // Pinned at a content hash; a prose repair is not worth spending a freeze on.
   "driver/publish/render.mjs",
+  // The residue FLOOR's own specimens. Seven citations here, every one a synthetic number (1234, 1235)
+  // inside a string this file writes to a temp tree or hands to the counter, so the guard can be checked
+  // against a known population. Sweeping them edits the corpus the floor is measured on, and the floor
+  // would then hold against something it had stopped counting — the same trap the two files above name,
+  // in the module that counts rather than the one that strips.
+  "driver/test/the-public-residue-is-a-floor.test.mjs",
 ];
 
 export const isScannable = (f) =>
@@ -202,7 +208,14 @@ export function surveyOf(files, read) {
       return after;
     });
     if (n) { stripped[f] = n; strippedTotal += n; }
-    remainingTotal += out.filter((l) => ANY_CITATION.test(l)).length;
+    // COUNTED THE WAY THE HAND-OFF LIST IS BUILT, and the two used to disagree by exactly the wrapped
+    // ones. This was `out.filter(ANY_CITATION)` — one line at a time — and a wrapped citation matches on
+    // NEITHER of its lines alone, which is the whole reason it needed a pair-aware detector three lines
+    // up. So the list said 305 and this said 285, and the closing line is the number a reader quotes.
+    // A total that cannot see a class the same function already detects is worse than no total: it is
+    // low by a fixed amount, in the direction that flatters, and nothing about it looks wrong.
+    remainingTotal += out.filter((l) => ANY_CITATION.test(l)).length
+      + out.filter((l, i) => !ANY_CITATION.test(l) && wrapsInto(l, out[i + 1])).length;
     if (APPLY && n) writeFileSync(join(ROOT, f), out.join("\n"));
   }
   return { strippedTotal, remainingTotal, stripped, handoff, unreadable };
