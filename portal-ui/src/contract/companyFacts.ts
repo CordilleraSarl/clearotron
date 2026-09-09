@@ -50,3 +50,25 @@ export function companyFactsLine(facts: CompanyFacts | undefined): string {
     facts.territories.length ? facts.territories.join(', ') : null,
   ].filter((seg): seg is string => seg !== null).join(' · ')
 }
+
+/**
+ * Merge the two fact sources into one map, exactly as `ownerNameMap` does for names.
+ *
+ * TWO SOURCES, ONE MAP, and the same precedence: a client's own grants arrive on `/portal/api/me`,
+ * staff reach every company through the staff-only roster, and roster entries win where both carry a
+ * key — which only happens for a staff identity, where the roster is the fuller answer by construction.
+ *
+ * Deliberately parallel to the name map rather than folded into it. The two arrive on the same two
+ * routes but a name is required for a company to be pickable at all, while facts are a nicety that may
+ * be missing; merging them into one record would make an absent facts entry look like an absent
+ * company.
+ */
+export function companyFactsMap(
+  granted: Readonly<Record<string, CompanyFacts>>,
+  roster: readonly { readonly key: string; readonly facts: CompanyFacts }[],
+): Readonly<Record<string, CompanyFacts>> {
+  const out: Record<string, CompanyFacts> = {}
+  for (const [k, v] of Object.entries(granted)) if (k && v) out[k] = v
+  for (const c of roster) if (c.key && c.facts) out[c.key] = c.facts
+  return out
+}

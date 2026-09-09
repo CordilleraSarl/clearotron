@@ -42,7 +42,7 @@ import type { SavedSearchStatus } from '../contract/savedSearches.ts'
 import { draftFromSaved } from '../contract/composerProduct.ts'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
 
 export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // Who this is FOR — resolved exactly as the composer resolves it. A staff member acting for a client
@@ -62,7 +62,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   const [confirming, setConfirming] = useState<string | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
 
-  if (needsOwner) return <PickOwner sidebarCollapsed={ctx.sidebarCollapsed} />
+  if (needsOwner) return <PickCompany ctx={ctx} />
 
   // Every non-ok shape is handled BEFORE the empty state, and the ordering is the whole point.
   //
@@ -71,7 +71,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // refusal — a rate limit, a 404, a dropped tunnel, a staff identity that has not named an account —
   // into a confident statement that this brand owner has none.
   if (!result) return <div className="screen" />
-  if (result.kind === 'pickAccount') return <PickOwner sidebarCollapsed={ctx.sidebarCollapsed} />
+  if (result.kind === 'pickAccount') return <PickCompany ctx={ctx} />
 
   if (result.kind !== 'ok') {
     return (
@@ -338,17 +338,8 @@ function Empty({ go }: { readonly go: (path: string) => void }) {
   )
 }
 
-function PickOwner({ sidebarCollapsed }: { readonly sidebarCollapsed: boolean }) {
-  return (
-    <div className="screen">
-      <div className="notice">
-        <b>Choose a brand owner first</b>
-        <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-          Custom searches belong to one brand owner. {ownerPickerHint(sidebarCollapsed)}
-        </p>
-      </div>
-    </div>
-  )
+function PickCompany({ ctx }: { readonly ctx: ShellContext }) {
+  return <CompanyGate ctx={ctx} eyebrow="Company" heading="Custom searches" line="Pick a company to see its custom searches." />
 }
 
 /** The screen's own title. The brand owner is named in the rail, and once is enough. */

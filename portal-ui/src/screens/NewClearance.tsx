@@ -70,7 +70,7 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved, unsavedChanges } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -478,7 +478,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       case 'rateLimited':
         return { title: 'Too many requests just now', lines: ['Wait a moment and try again.'] }
       case 'pickAccount':
-        return { title: 'Choose a brand owner', lines: [`Pick who this clearance is for. ${ownerPickerHint(ctx.sidebarCollapsed)}`] }
+        return { title: 'Choose a company', lines: ['Pick the company this clearance is for, then start the search.'] }
       case 'notFound':
         return { title: 'That is not available to you', lines: ['Check which brand owner is selected.'] }
       // SPLIT FROM `notFound`. They are different answers and only one of them has
@@ -674,15 +674,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // there: a form that cannot be filled in and says nothing about why.
   if (needsOwner || searches?.kind === 'pickAccount') {
     return (
-      <div className="screen">
-        <div className="notice">
-          <b>Choose a brand owner first</b>
-          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            A clearance is filed for one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}{' '}
-            Then start the search.
-          </p>
-        </div>
-      </div>
+      <CompanyGate ctx={ctx} eyebrow="New clearance" heading="New clearance"
+        line="Pick a company to run this clearance on." />
     )
   }
 

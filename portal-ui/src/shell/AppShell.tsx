@@ -23,6 +23,8 @@ import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom, sortOwners } from '../contract/ownerNames.ts'
+import { companyFactsMap, type CompanyFacts } from '../contract/companyFacts.ts'
+import type { RosterCompany } from '../contract/api.ts'
 
 const MOBILE = '(max-width: 899px)'
 
@@ -188,6 +190,13 @@ export type ShellContext = {
    * a person is most likely to be looking for.
    */
   readonly ownerKeys: readonly string[]
+  /**
+   * The three facts about a company — what it sells, how many marketplaces, which territories.
+   *
+   * `undefined` for a company we hold no facts about, which the pick panel renders as a company with a
+   * name and no line under it. That is the fresh-install case and a newly created company, not an error.
+   */
+  readonly factsFor: (key: string) => CompanyFacts | undefined
   readonly go: (path: string, opts?: { replace?: boolean }) => void
   /**
    * Bumped when someone navigates to the screen they are already on.
@@ -299,7 +308,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // being a request every client makes on every load.
   const isStaff = meResult?.kind === 'ok' && meResult.value.role === 'staff'
   const { result: rosterResult } = useLoad(
-    () => (isStaff ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly { key: string; name: string }[] })),
+    () => (isStaff ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly RosterCompany[] })),
     [isStaff],
   )
 
@@ -366,6 +375,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value : [])
   const ownerName = (key: string | null): string => ownerNameFrom(names, key)
 
+  // The same two sources and the same precedence, for the three facts that tell one company from
+  // another in the pick panel. Parallel to the name map rather than folded into it: a company with no
+  // facts is a company, a company with no name is a broken row.
+  const facts = companyFactsMap(me.accountFacts, rosterResult?.kind === 'ok' ? rosterResult.value : [])
+  const factsFor = (key: string): CompanyFacts | undefined => facts[key]
+
   // WHICH owners are offered is a separate question from what they are CALLED, and it is answered from
   // the roster's own key list — not from the keys of the name map. An account whose profile carries no
   // name contributes no entry to that map, and deriving the menu from it would make such an account
@@ -380,7 +395,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const ownerInView = owner ?? sole
 
   const body = entry
-    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, ownerName, ownerKeys, go, visit,
+    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, ownerName, ownerKeys, factsFor, go, visit,
         sidebarCollapsed: collapsed })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">

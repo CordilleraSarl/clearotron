@@ -27,7 +27,7 @@ import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
 
 export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   const account = ctx.owner
@@ -52,16 +52,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   // Same rule as Profile: a multi-account client's ownerless read answers pickAccount, and that is
   // "choose an owner", never "could not be loaded".
   if (needsOwner || result?.kind === 'pickAccount') {
-    return (
-      <div className="screen">
-        <div className="notice">
-          <b>Choose a brand owner first</b>
-          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            Projects belong to one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}
-          </p>
-        </div>
-      </div>
-    )
+    return <CompanyGate ctx={ctx} eyebrow="Company" heading="Projects" line="Pick a company to see its projects." />
   }
   if (result && result.kind !== 'ok') {
     return (

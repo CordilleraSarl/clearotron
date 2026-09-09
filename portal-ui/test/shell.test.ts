@@ -7,7 +7,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 
 const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url), 'utf8')
 /** The markup with commentary stripped, so a comment explaining a rule cannot satisfy the rule. */
@@ -86,9 +86,39 @@ test('the avatar menu is MAPPED FROM DATA — no role guard around a staff path 
   assert.doesNotMatch(body, /go\('\/portal\/admin/, 'no admin path is written out in the shell')
 })
 
-test('the owner keys a screen may offer come from the shell, resolved once', () => {
-  // Home needs brand owners that have NO runs, so it cannot derive the list from the run list. Passing
-  // the roster the shell already fetched beats a second fetch of the same thing.
+test('the company list a screen may offer comes from the shell, resolved once', () => {
+  // Home needs companies that have NO runs, so it cannot derive the list from the run list. Passing the
+  // roster the shell already fetched beats a second fetch of the same thing.
+  //
+  // PINNED TO THE PROPERTY, NOT TO THE ARGUMENT SPELLING. This read `/ownerName, ownerKeys, go, visit/`
+  // — a fixed neighbour sequence, which reds on any added context field and says "the spelling moved"
+  // while sounding like "a screen started fetching its own list". The repair that turns it green is to
+  // paste in the new spelling, which keeps the sentence and drops the guarantee. What actually has to
+  // hold is below: the fields are on the context, they reach the one render call, and NO SCREEN FETCHES
+  // THE ROSTER FOR ITSELF.
   assert.match(body, /readonly ownerKeys: readonly string\[\]/)
-  assert.match(body, /ownerName, ownerKeys, go, visit/)
+  assert.match(body, /readonly factsFor: \(key: string\) => CompanyFacts \| undefined/)
+
+  const renderCall = /\brender\(entry\.id, \{([\s\S]*?)\}\)/.exec(body)
+  assert.ok(renderCall, 'the shell renders the active screen through one call')
+  for (const field of ['ownerKeys', 'factsFor', 'ownerName', 'setOwner']) {
+    assert.match(renderCall[1]!, new RegExp(`\\b${field}\\b`),
+      `${field} reaches every screen through the shell, so no screen resolves it twice`)
+  }
+})
+
+test('no screen fetches the company roster for itself', () => {
+  // The guarantee the test above used to make by accident. A screen that fetched its own roster would
+  // hold a second list that drifts from the rail's — the "second piece of state" defect by construction.
+  const dir = new URL('../src/screens/', import.meta.url)
+  const screens = readdirSync(dir).filter((f) => f.endsWith('.tsx'))
+
+  // A FLOOR ON THE POPULATION FIRST. A glob that matched nothing would pass this test in silence and
+  // say nothing about any screen at all.
+  assert.ok(screens.length >= 8, `expected the screens directory to be populated, found ${screens.length}`)
+
+  for (const f of screens) {
+    assert.doesNotMatch(readFileSync(new URL(f, dir), 'utf8'), /api\.roster\(/,
+      `${f} resolves companies through the shell context, never by fetching the roster again`)
+  }
 })

@@ -24,7 +24,7 @@ import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
 
 type Saved = { readonly at: number; readonly sha: string | null }
 
@@ -103,16 +103,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   // showing that as "could not be loaded" reads as a fault that retrying never fixes (C7's fix
   // covered the four other account-scoped screens; this one was missed).
   if (needsOwner || result?.kind === 'pickAccount') {
-    return (
-      <div className="screen">
-        <div className="notice">
-          <b>Choose a brand owner first</b>
-          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            A profile belongs to one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}
-          </p>
-        </div>
-      </div>
-    )
+    return <CompanyGate ctx={ctx} eyebrow="Company" heading="Profile" line="Pick a company to see its profile." />
   }
   if (result && result.kind !== 'ok') return <Unavailable kind={result.kind} />
   if (!loaded || !draft || pack == null) return <div className="screen" />

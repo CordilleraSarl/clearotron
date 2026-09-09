@@ -830,14 +830,33 @@ test('no screen tells a reader to look at a corner that may not be on screen', (
   }
 })
 
-test('…and the shared directive answers differently in the two sidebar states', async () => {
-  const { ownerPickerHint } = await import('../src/shell/ownerPickerHint.ts')
-  const open = ownerPickerHint(false)
-  const shut = ownerPickerHint(true)
-  assert.notEqual(open, shut, 'one sentence for both states is the defect, not the fix')
-  assert.match(open, /top left/, 'with the sidebar open, its position is the fastest way to find it')
-  assert.match(shut, /menu/i, 'collapsed, the reader is told to open the menu rather than to look at a gap')
-  assert.doesNotMatch(shut, /top left/, 'the collapsed sentence still points at a corner with nothing in it')
+test('…and the screen now does the picking itself rather than pointing at a control', async () => {
+  // The sentence this replaces sent the reader to the rail. Both of its states are gone: the page
+  // presents the list, so there is no position to name and no state in which naming one is right.
+  const { pickerRows, GENERIC_KEY } = await import('../src/shell/companyRows.ts')
+  const names: Record<string, string> = { generic: 'Generic default', zephyr: 'Zephyr Beverages', acme: 'Acme Ltd' }
+  const name = (k: string | null) => (k ? (names[k] ?? k) : '')
+  const facts = (k: string) =>
+    k === 'acme' ? { industry: 'animal health', platformCount: 6, territories: ['US', 'EU'] } : undefined
+
+  const staff = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'staff')
+  assert.equal(staff[0]?.key, GENERIC_KEY, 'the entry you can always run under is read first')
+  assert.equal(staff[0]?.generic, true, 'and it is marked, so the wash is not a colour somebody chose per screen')
+  assert.deepEqual(staff.slice(1).map((r) => r.name), ['Acme Ltd', 'Zephyr Beverages'],
+    'the rest sort by what is READ, the same rule the rail switcher uses')
+  assert.equal(staff.find((r) => r.key === 'acme')?.line, 'Animal health · 6 marketplaces · US, EU')
+
+  // A company we hold no facts for still offers: a name and no line under it is the fresh-install case
+  // and every newly created company, not an error state.
+  assert.equal(staff.find((r) => r.key === 'zephyr')?.line, '')
+
+  // THE ENGINE BOUNDARY, not a preference. `generic` answers 404 to a non-staff principal on the runs
+  // list and on every report route, so offering it here would seat a client on a company whose every
+  // page then refuses them.
+  const client = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'client')
+  assert.equal(client.some((r) => r.key === GENERIC_KEY), false,
+    'a client surface never lists the house account')
+  assert.deepEqual(client.map((r) => r.key), ['acme', 'zephyr'], 'and loses nothing else')
 })
 
 test('the disabled Save names its blocking condition LOUDER than its harmless ones', () => {
