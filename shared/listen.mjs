@@ -126,6 +126,40 @@ export function explicitPortRequiredMessage({ what, port, portVar }) {
  *             response-body and bundle assertion in the suite, so naming it is free and correct.
  *  `portFlag` an optional CLI equivalent, for the entry points that take one.
  */
+/**
+ * The first free port at or after `from`, or `null` when nothing in range is free — owner ruling,
+ * 2026-09-09.
+ *
+ * WHAT THIS IS FOR AND WHAT IT IS NOT. A collision on a DEFAULT port is this process discovering it
+ * guessed somebody else's address: nobody stated that number and nothing outside is addressed to it,
+ * so stepping to the next free one loses nothing. A collision on a port the reader SET is an address
+ * conflict they can reason about, and moving it silently would take the product away from where they
+ * pointed it. The caller decides which case it is; this only walks.
+ *
+ * AND IT IS ONLY EVER SAFE WHERE NOTHING FRONTS THESE DOORS. A proxy, an Access team or an OIDC issuer
+ * means something outside this process is addressed to these numbers, and a door that moved would be
+ * up and unreachable — the worst of the three outcomes, because it looks like success. That is the
+ * caller's question too, for the same reason: only it knows which deployment shape it is.
+ *
+ * `isFree` IS INJECTED and may be sync or async. A walker testable only by occupying real ports would
+ * be tested against whichever ports happened to be free on the machine that ran it, which is not a
+ * test of the rule.
+ *
+ * NULL RATHER THAN A GUESS when the range is exhausted. The caller then refuses on the port that was
+ * actually asked for, and the reader is told the truth — that address is taken — instead of being sent
+ * to one this could not prove was free either.
+ */
+export async function nextFreePort(from, isFree, { limit = 64, claimed = new Set() } = {}) {
+  for (let p = from + 1; p <= 65535 && p < from + limit; p += 1) {
+    // CLAIMED PORTS ARE NOT FREE, even though nothing is listening on them yet. The doors are chosen
+    // one after another and bound later, so two of them landing on one number is the same collision
+    // deferred — and the second to bind would be the one that failed.
+    if (claimed.has(p)) continue;
+    if (await isFree(p)) return p;
+  }
+  return null;
+}
+
 export function listenErrorMessage(err, { what, host, port, portVar, portFlag = null, portSource = null,
   portFile = null }) {
   const at = `${host}:${port}`;

@@ -17,9 +17,10 @@
 // is the other half, because this shipped to people who are using it today.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import { whatHoldsPort, stopThatProcess, removeDirectory, chdirPrefix, envPrefix, backgroundManager } from "../../shared/os-advice.mjs";
-import { listenErrorMessage } from "../../shared/listen.mjs";
+import { listenErrorMessage, nextFreePort } from "../../shared/listen.mjs";
 import { platformEngineRefusal, leaveDemoAdvice } from "../../bin/onboard.mjs";
 
 const POSIX = ["linux", "darwin"];
@@ -141,4 +142,60 @@ test("the port refusal does not tell a reader to stop the thing they are reading
   // BOTH HALVES. Removing the stop advice entirely would leave a reader with a stray second copy and
   // no way to clear it; the fix is the ORDER and the condition, not the absence.
   assert.match(said, /once you know what the holder is and that you do not need it/);
+});
+
+// ── a door nobody addressed moves; one somebody stated does not ─────────────────────────────────────
+//
+// Owner ruling, 2026-09-09. A collision on a DEFAULT port is this process discovering it guessed
+// somebody else's address — nobody stated that number, so stepping off it loses nothing. A collision
+// on a port the reader SET is an address conflict they can reason about, and moving it silently takes
+// the product away from where they pointed it.
+//
+// `isFree` is injected here for the same reason the platform is above: a walker driven by occupying
+// real ports is tested against whichever ports happened to be free on the machine that ran it. The
+// end-to-end drive against a real listener is in the PR body; these hold the rule.
+
+test("the walk steps over what is held and stops at the first free port", async () => {
+  const held = new Set([5000, 5001, 5002]);
+  assert.equal(await nextFreePort(5000, (p) => !held.has(p)), 5003);
+});
+
+test("a port already claimed by another door is not free, though nothing is listening on it yet", async () => {
+  // The doors are chosen one after another and bound later. Two landing on one number is the same
+  // collision deferred, and the second to bind would be the one that failed.
+  const held = new Set([5000]);
+  assert.equal(await nextFreePort(5000, (p) => !held.has(p), { claimed: new Set([5001, 5002]) }), 5003);
+});
+
+test("nothing free in range answers null, so the caller refuses on the port that was asked for", async () => {
+  // NOT A FALLBACK. Sending a reader to a port this could not prove was free either would be a second
+  // guess dressed as an answer, and the honest refusal already exists.
+  assert.equal(await nextFreePort(5000, () => false, { limit: 4 }), null);
+});
+
+test("the walk is bounded, and does not run off the end of the port space", async () => {
+  assert.equal(await nextFreePort(65534, () => false), null);
+});
+
+test("the move is wired behind all three conditions, and the refusal still stands under it", () => {
+  // STRUCTURAL, AND THE ALTERNATIVE REALLY IS UNAVAILABLE HERE rather than merely awkward. The three
+  // conditions are inline reads inside `if (isMain)` — an entry-point block, not a function — so there
+  // is nothing to hand a recorder to without spawning the CLI and starting the product. The RULE it
+  // guards is driven above, on injected inputs; what this holds is that the rule is actually reached
+  // and that the previous refusal was not replaced by it.
+  //
+  // Say what it cannot see: it reads the order and presence of the conditions, not their effect. An
+  // end-to-end drive against a real planted listener is in the change's own description.
+  const src = readFileSync(new URL("../../bin/start.mjs", import.meta.url), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^\s*\/\/.*$/gm, " ");
+
+  const guard = src.match(/if \(code === "EADDRINUSE"[^\n]*\)/)?.[0] ?? "";
+  assert.ok(guard, "the move is gone, or its guard no longer keys on the address being taken");
+  assert.match(guard, /!fronted\.length/, "a fronted deployment would have its doors moved out from under it");
+  assert.match(guard, /process\.env\[portVar\]/, "a port the reader stated would be moved");
+
+  // AND THE REFUSAL IS STILL THERE. Replacing it rather than falling through to it would turn every
+  // other bind failure — EACCES, a fronted collision, an exhausted range — into silence.
+  assert.match(src, /if \(code\) fatal\(listenErrorMessage\(/,
+    "the ordinary refusal was replaced rather than left underneath the move");
 });

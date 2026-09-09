@@ -983,7 +983,7 @@
         },
         "both-doors-start-on-both-paths.test.mjs": {
           "tests": 26,
-          "asserts": 59,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -4192,8 +4192,8 @@
           "todos": 0
         },
         "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
-          "tests": 9,
-          "asserts": 35,
+          "tests": 14,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },

@@ -116,7 +116,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 // tolerate and never manage"; settled point 2 superseded that.)
 import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
-import { listenErrorMessage } from "../shared/listen.mjs";
+import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke } from "../shared/invocation.mjs";   // — the banner names the verb
@@ -963,7 +963,19 @@ if (isMain) {
   // loop because both paths below have to act on it: the background path must RESTART the door it
   // adopted, and the foreground path must not spawn a second one beside it.
   let adoptedClientDoor = false;
-  for (const [what, port, portVar, doorUnit = null] of [["portal", ports.portal, "PORTAL_SERVICE_PORT"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT", CLIENT_DOOR_UNIT]]) {
+  // ── WHETHER ANYTHING OUTSIDE THIS PROCESS IS ADDRESSED TO THESE NUMBERS ────────────────────────
+  //
+  // A door may only be moved off a port nobody chose when nothing fronts it. A proxy, an Access team
+  // or an OIDC issuer means something external resolves to these numbers, and a door that quietly
+  // moved would be up and unreachable — which looks like success and is the worst of the three
+  // outcomes. The auth-mode half of this is already closed further up: a foreground start refuses
+  // outright when PORTAL_AUTH_MODE names a hosted door, and again when the units are installed and
+  // serving. What is left to check is the settings that can be present with the mode unset.
+  const fronted = ["CF_ACCESS_TEAM", "PORTAL_OIDC_ISSUER", "TRADEMARK_MCP_OIDC_ISSUER"]
+    .filter((k) => String(process.env[k] ?? "").trim());
+  const claimedPorts = new Set([ports.portal, ports.mcp, ports.client]);
+  const movedDoors = [];
+  for (const [what, port, portVar, doorUnit = null, key = null] of [["portal", ports.portal, "PORTAL_SERVICE_PORT", null, "portal"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT", null, "mcp"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT", CLIENT_DOOR_UNIT, "client"]]) {
     // A --background REFRESH runs over its own healthy units, which hold these ports on purpose;
     // systemd's restart is the handover. Probing would refuse the flag exactly once it has worked.
     // The narrow carve above already proved every installed unit is ours.
@@ -988,7 +1000,37 @@ if (isMain) {
     // on a privileged port and from an address this host does not have, and names the way out of each;
     // the launcher having its own shorter sentence for one of the three would mean a user meets two
     // different answers to the same question depending on which door refused first.
+    // ── A PORT NOBODY CHOSE IS MOVED RATHER THAN REFUSED (owner ruling, 2026-09-09) ─────────────
+    //
+    // Three conditions, and each is a different reason:
+    //   · the address is genuinely taken — anything else is not this case;
+    //   · the reader did not state this port, so no one is addressed to it. An explicitly set port is
+    //     a stated address and is refused exactly as before;
+    //   · nothing fronts these doors, so nothing outside resolves to the old number.
+    // With any of those false the refusal below fires unchanged, which is the whole of the previous
+    // behaviour kept intact underneath this.
+    if (code === "EADDRINUSE" && key && !fronted.length && !String(process.env[portVar] ?? "").trim()) {
+      const next = await nextFreePort(port, async (p) => (await probe(p)) === null, { claimed: claimedPorts });
+      // NULL IS NOT A FALLBACK. Nothing free in range means the reader is told the truth about the
+      // port they asked for, rather than sent to one this could not prove was free either.
+      if (next) {
+        claimedPorts.delete(port);
+        claimedPorts.add(next);
+        ports[key] = next;
+        movedDoors.push({ what, portVar, from: port, to: next });
+        continue;
+      }
+    }
     if (code) fatal(listenErrorMessage({ code }, { what, host: HOST, port, portVar, portFile }));
+  }
+  // SAID OUT LOUD, EVERY TIME. A door that moved is at an address the reader did not ask for and will
+  // not find by memory — and the portal's own URL is printed from `ports.portal` further down, so a
+  // silent move would leave the two disagreeing with nothing explaining it.
+  if (movedDoors.length) {
+    say("");
+    say(`  ${movedDoors.length === 1 ? "One door was" : `${movedDoors.length} doors were`} already in use, so ${movedDoors.length === 1 ? "it" : "they"} moved:`);
+    for (const d of movedDoors) say(`    the ${d.what}: ${d.from} → ${d.to}   (set ${d.portVar} to pin it)`);
+    say("  Nothing outside this machine is addressed to these, so nothing else needed changing.");
   }
 
   // ── 2. the two secrets, generated once and kept ────────────────────────────────────────────────────
