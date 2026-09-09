@@ -117,6 +117,9 @@ test('every screen with an editable form registers, and reuses its own Save flag
     ['screens/Profile.tsx', 'dirty'],
     ['screens/Projects.tsx', 'dirty'],
     ['screens/NewClearance.tsx', 'composerDirty'],
+    // A create form has as much to lose as an edit form and neither list knew about it: this population
+    // is hand-kept, so a new screen is in neither half and forgetting the guard passes silently.
+    ['screens/NewCompany.tsx', 'dirty && !result'],
   ] as const) {
     const s = src(file)
     assert.match(s, new RegExp(`useUnsaved\\(${flag}\\)`), `${file} registers ${flag}`)
@@ -192,9 +195,12 @@ test('account-scoped screens are keyed on the company', () => {
     'the composer keys on owner AND the edited search — both change its identity')
   // Deployment- and browser-scoped screens must NOT be keyed: remounting them on a brand switch would
   // throw away state that has nothing to do with the company.
-  for (const screen of ['UseYourAI', 'Preferences', 'GlobalConfig', 'PeopleAccess']) {
+  for (const screen of ['UseYourAI', 'Preferences', 'GlobalConfig', 'PeopleAccess', 'NewCompany']) {
     assert.doesNotMatch(m, new RegExp(`<${screen}\\s+key=`), `${screen} is not account-scoped`)
   }
+  // NewCompany is in the NOT-keyed half deliberately, and it is the one screen where that needs saying:
+  // there is no company yet, so keying it on the one in view would throw a half-typed form away the
+  // moment somebody touched the switcher — which is still on screen while the page is open.
 })
 
 test('Result is keyed on the RUN, because it is not account-scoped', () => {
