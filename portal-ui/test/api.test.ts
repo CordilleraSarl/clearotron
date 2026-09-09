@@ -88,7 +88,7 @@ test('409 splits: the confirmation gate is rendered verbatim, a version conflict
 })
 
 test('409 written as `errors[]` reaches the reader — the demo refusal is the one they meet first', async () => {
-  // tracker issue 94, F14. The server writes this refusal under `errors[]`; most others use `error`.
+  // F14. The server writes this refusal under `errors[]`; most others use `error`.
   // Reading only the singular threw away three sentences telling a first-time visitor exactly where they
   // were, and handed them "This action could not be completed." instead — under a title saying their
   // clearance had failed. Owner, driving the demo, met this one.
@@ -645,8 +645,8 @@ test('2113 any 401, from any request, announces that the session has gone', asyn
     assert.equal(seen.length, 2, 'a 401 on a save did not announce')
 
     // AND THE RESULT IS STILL RETURNED. The caller that asked has a branch to render; swallowing the
-    // answer here would leave it holding a promise that never resolves, which is the defect tracker
-    // issue 2074 was filed about.
+    // answer here would leave it holding a promise that never resolves, which is the defect this arm
+    // exists to catch.
     assert.ok(save.kind === 'signedOut')
   } finally {
     stop()

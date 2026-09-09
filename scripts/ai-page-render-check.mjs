@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
 // ai-page-render-check.mjs — the "Use your AI" page, drawn in a real browser, in the states a reader
-// actually meets (tracker issues 1938, 1976).
+// actually meets.
 //
 //   node scripts/ai-page-render-check.mjs
 //

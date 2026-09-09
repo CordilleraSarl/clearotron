@@ -478,8 +478,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
       //
       // `failClass: "deterministic"` says the same thing to the OTHER reader: repairs.mjs's ladder. It
       // was stamped when this lane had no ladder for it to reach — "so the fact travels with the throw
-      // rather than being re-guessed from prose by whichever catch the throw ends up in." As of tracker
-      // issue 1889 that catch is this lane's own, the stamp is LIVE, and it is what buys this refusal
+      // rather than being re-guessed from prose by whichever catch the throw ends up in." That catch is
+      // now this lane's own, the stamp is LIVE, and it is what buys this refusal
       // zero parks without the ladder having to read a word of the prose.
       if (refusal) throw new StageFailure("knockout-register-count", refusal, null,
         { refusal: true, failClass: "deterministic" });
@@ -934,7 +934,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       conversationId: job.conversationId ?? null,
       subject: `Knockout trademark review — ${job.ref ?? markNames[0] ?? "batch"} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
       emailBodyHtml: emailHtml,
-      // THE SAME ROUTING AS THE CLEARANCE PACKET (tracker issue 289 part b). This read
+      // THE SAME ROUTING AS THE CLEARANCE PACKET (part b). This read
       // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout
       // completion paged the operator and told the person who ordered it nothing. The clearance packet
       // was moved off that and this one was not, which is the half that shipped: one call site fixed,

@@ -4,7 +4,7 @@
 //
 // ── why this exists ─────────────────────────────────────────────────────────────
 //
-// Tracker issue 149. Two settings at the identity provider decide whether a remote assistant can sign
+// Two settings at the identity provider decide whether a remote assistant can sign
 // in at all, and this product could see neither. The first — the challenge form — is covered:
 // `shared/mcp-challenge.mjs` reads it out of an unauthenticated response and `doctor` reports it.
 //

@@ -329,7 +329,7 @@ export async function writeInstallEnv(envFile) {
   // strictly from the document got a portal unit that exited at boot, and the only route to a working
   // one was running the local-install command the instructions say a server does not need.
   //
-  // That is the family tracker issue 122 is about: a value whose sole writer is a command outside the
+  // That is the family this is about: a value whose sole writer is a command outside the
   // documented install. Naming the variable in a warning does not help, because there is no action
   // behind the name — the reader cannot invent 32 random bytes that the portal will accept.
   //
@@ -419,7 +419,7 @@ export async function writeInstallEnv(envFile) {
   // `host:port` shape, refuses to start without a value in the same words, and was composed by NOTHING
   // on a hosted install — `bin/start.mjs` injects one into its own children's environment, which no
   // systemd unit inherits. So the documented install asked an operator for a value while writing the
-  // identical one next to it. That asymmetry was found by the census tracker issue 122 asked for, on
+  // identical one next to it. That asymmetry was found by the census that called for it, on
   // its first run, which is what that check is for.
   //
   // The pair is DATA now (`DOOR_ALLOW_LISTS`), and the composition is one function taking the public

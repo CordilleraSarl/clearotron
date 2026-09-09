@@ -41,7 +41,7 @@ const delivered = {
 };
 const ASSUMPTION = "the Korean application were abandoned";
 
-test("tracker issue 315 the account briefing names the memo and ties it to a DELIVERED report", () => {
+test("the account briefing names the memo and ties it to a DELIVERED report", () => {
   const pack = accountPack();
   assert.ok(pack.length > 0, "no account briefing was served at all — every arm below would pass vacuously");
   assert.match(pack, /\bmemo\b/i,
@@ -51,7 +51,7 @@ test("tracker issue 315 the account briefing names the memo and ties it to a DEL
     + "does not know WHEN to offer it will keep asking for the step re-run that gets refused");
 });
 
-test("tracker issue 315 the briefing tells the assistant to check the state before refusing", () => {
+test("the briefing tells the assistant to check the state before refusing", () => {
   // The failure this issue was filed on is a refusal, not a wrong answer. The instruction that prevents
   // it has to be about checking, not about the memo existing somewhere in the document.
   assert.match(accountPack(), /before you tell anyone the question cannot be answered/i,
@@ -61,7 +61,7 @@ test("tracker issue 315 the briefing tells the assistant to check the state befo
 
 // ── THE JOIN: every bound the skill states is the engine's own ───────────────────────────────────────
 
-test("tracker issue 315 the refusal the briefing warns about is the refusal the engine actually gives", () => {
+test("the refusal the briefing warns about is the refusal the engine actually gives", () => {
   const plan = whatIfPlan({ run: delivered, stage: STAGE_ORDER[0], instructions: ASSUMPTION });
   assert.equal(plan.runnable, false, "a step re-run on a delivered run is supposed to be refused");
   assert.match(plan.reason, /live runs only/i,
@@ -69,14 +69,14 @@ test("tracker issue 315 the refusal the briefing warns about is the refusal the 
     + "delivered report, so the two have drifted");
 });
 
-test("tracker issue 315 the memo the briefing offers is the memo the engine admits", () => {
+test("the memo the briefing offers is the memo the engine admits", () => {
   const plan = whatIfPlan({ run: delivered, kind: "memo", instructions: ASSUMPTION });
   assert.equal(plan.runnable, true,
     "the briefing now tells assistants to offer a memo on a delivered report and the engine refuses one");
   assert.equal(plan.kind, "memo");
 });
 
-test("tracker issue 315 the three bounds the briefing states are the ones the engine keeps", () => {
+test("the three bounds the briefing states are the ones the engine keeps", () => {
   const plan = whatIfPlan({ run: delivered, kind: "memo", instructions: ASSUMPTION });
   const pack = accountPack();
 
@@ -101,7 +101,7 @@ test("tracker issue 315 the three bounds the briefing states are the ones the en
 
 // ── THE AUDIENCE, WHICH IS THE HALF THE ISSUE GOT WRONG ──────────────────────────────────────────────
 
-test("tracker issue 315 the report-link door does NOT serve the memo, so its briefing must not offer one", () => {
+test("the report-link door does NOT serve the memo, so its briefing must not offer one", () => {
   // The issue asked for this in the client pack. Its audience cannot call the tools at all, and a
   // briefing that offers what the door refuses is the defect the grant-sentence arm exists to catch.
   const clientSees = visibleTools({ kind: "user", local: false });
@@ -115,7 +115,7 @@ test("tracker issue 315 the report-link door does NOT serve the memo, so its bri
     + "reach report-link clients, the fix is clientSafe on the tool scopes, not a sentence in a skill");
 });
 
-test("tracker issue 315 the account door DOES serve it — the briefing and the gate agree", () => {
+test("the account door DOES serve it — the briefing and the gate agree", () => {
   const accountSees = visibleTools({ kind: "account", local: false });
   assert.equal(accountSees("what_if_plan"), true,
     "the account door stopped serving what_if_plan, so the briefing above now offers a capability this "

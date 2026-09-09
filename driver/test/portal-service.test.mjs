@@ -1823,7 +1823,7 @@ test("the config surface never reports 'all off' from an absence, and names whic
   // WHAT THIS ARM IS FOR, UNCHANGED: reporting "everything off" from a thing nobody could read would
   // send a staff member to go switch on what is already running.
   //
-  // WHAT MOVED (owner ruling 2026-09-05, tracker issue 170): `available` used to mean "a snapshot
+  // WHAT MOVED (owner ruling 2026-09-05): `available` used to mean "a snapshot
   // exists", and this arm used it as the precondition for "the fixture pool has no snapshot". The page
   // now answers LIVE, always, so it can be available with no capture at all — the absence of a capture
   // is reported by `lastRun`, and `source` says which reading the answer is. Asserting `available:
@@ -1879,7 +1879,7 @@ test("#1439 — the auth row survives a MISSING snapshot, because it does not co
   const r = await service.route("GET", "/portal/admin/config", STAFF, {}, {});
   // The precondition is that there is no CAPTURE — which is what this arm always meant. It used to be
   // spelled `available === false`, and that spelling stopped meaning it when the page began answering
-  // live (owner ruling 2026-09-05, tracker issue 170): a box with no capture is now perfectly available.
+  // live (owner ruling 2026-09-05): a box with no capture is now perfectly available.
   assert.equal(r.json.lastRun, null, "precondition: this fixture genuinely has no capture");
   assert.ok(r.json.auth, "the portal's own door is answerable with no snapshot at all");
   assert.equal(typeof r.json.auth.mode, "string");

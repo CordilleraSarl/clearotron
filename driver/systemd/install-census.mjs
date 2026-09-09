@@ -4,7 +4,7 @@
 //
 // ── why this exists ─────────────────────────────────────────────────────────────
 //
-// Tracker issue 122 named a family rather than a bug: four values this product needs are each written
+// This names a family rather than a bug: four values this product needs are each written
 // by exactly one command, and for three of them that command is not the documented install. A box built
 // strictly from the document therefore came up with correct units, correct code, and a value nothing
 // ever set — and each one failed as something else. A 502 on submit. An empty screen. A door that would
