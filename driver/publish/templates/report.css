@@ -37,7 +37,7 @@
   h1.mark{font-weight:900;font-size:58px;line-height:1.0;letter-spacing:-.022em;margin:0 0 14px}
   .sub{font-size:17.5px;color:var(--slate);max-width:700px;line-height:1.5;margin:0 0 30px}
   .sub b{color:var(--ink);font-weight:700}
-  /* tracker issue 470 — the hero caption folds to its first sentence; the remainder sits behind this disclosure.
+  /* the hero caption folds to its first sentence; the remainder sits behind this disclosure.
      The visible sentence loses its bottom margin (the fold row carries the spacing instead) so a folded
      caption occupies the same vertical run as an unfolded one. `details.sub-more` is styled here and NOT
      in the frozen renderer, and the existing @media print rule that forces every <details> open already
@@ -56,7 +56,7 @@
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
   .gauge{padding:22px 24px}
   .gauge .label{margin-bottom:18px}
-  /* tracker issue 761 — the framework that owns the ticks, named where they are read. Normal case and un-tracked on
+  /* the framework that owns the ticks, named where they are read. Normal case and un-tracked on
      purpose: `.label` is an uppercase eyebrow, and a proper name in the eyebrow's own letterforms reads
      as a second heading rather than as the thing being cited. */
   .gauge .label .gauge-fw{display:block;margin-top:5px;font-size:11px;font-weight:600;letter-spacing:0;
@@ -320,7 +320,7 @@
   .gbody{padding:0 12px 8px}
   .rgroup .card{margin:0 0 10px} .rgroup .card:last-child{margin-bottom:4px}
 
-  /* tracker issue 242 — a grouped reasoned negative. The shared ground is in the .fold-lead above the run of rows;
+  /* a grouped reasoned negative. The shared ground is in the .fold-lead above the run of rows;
      each row carries only what is its own, so the line has to stay ONE line's worth of weight: the mark
      and owner anchor it, the jurisdictions/classes sit quiet, and the finding's own sentence takes the
      remaining width and wraps rather than truncating. Denser than .rgroup because these are cleared
@@ -412,7 +412,7 @@
   .fourans ul.fa-obstacles li{margin:0 0 4px;font-size:13px}
   @media (max-width:640px){.fourans .fa-row{flex-direction:column;gap:2px}.fourans .fa-k{flex:auto}}
 
-  /* ── tracker issue 763 — the coverage ledger stops being the page's smallest print ─────────────────────────────
+  /* ── the coverage ledger stops being the page's smallest print ─────────────────────────────
      `details.scope` had NO screen rule at all: its summary rendered at the browser default, in the
      browser's default weight, under the browser's default triangle, at the foot of a document whose
      every other section carries a numbered spine header. The section that states what the search did

@@ -174,8 +174,26 @@ export const EXCLUDED = [
   "driver/test/the-public-residue-is-a-floor.test.mjs",
 ];
 
+/**
+ * WHICH FILES THE SWEEP CAN SEE — and it could not see enough.
+ *
+ * This named six extensions and reported ZERO openers left, over a population that omitted every
+ * stylesheet, every unit file, the shell script, the HTML template, the React components and the
+ * dotfiles. Sixty-four citations sat in those, most of them the plainest mechanical case there is — a
+ * `/* tracker issue NNN — ` opening a comment — and the sweep's own report said the mechanical pass was
+ * finished. A filter that names file types cannot see the ones it omits, and the number it prints is
+ * true about its population and silent about the gap.
+ *
+ * The population is now the residue floor's: every tracked text file the public tree publishes. The two
+ * instruments disagreed about which files exist, which is a worse disagreement than the one their
+ * headers already explain.
+ */
+const SCANNABLE_EXT = /\.(mjs|md|yml|yaml|ts|tsx|js|jsx|json|css|html|sh|service|timer|toml)$/;
+const SCANNABLE_NAME = /^(?:.*\/)?\.(gitattributes|gitignore)$/;
+
 export const isScannable = (f) =>
-  /\.(mjs|md|yml|ts|js|json)$/.test(f) && !f.startsWith("portal-ui/dist/") && !EXCLUDED.includes(f);
+  (SCANNABLE_EXT.test(f) || SCANNABLE_NAME.test(f))
+  && !f.startsWith("portal-ui/dist/") && !EXCLUDED.includes(f);
 
 /** Per-file classification. PURE, and `read` is injected so an arm can drive it over a synthetic tree. */
 export function surveyOf(files, read) {

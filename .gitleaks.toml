@@ -39,7 +39,7 @@ paths = [
 # A scan this repository treats as a security record must not be decided by alignment, so the entry goes
 # in rather than waiting for the next sweep to find it again.
 #
-# ── A MODEL IDENTIFIER IS NOT A CREDENTIAL, AND THE RULE IS READING ITS NEIGHBOUR (tracker issue 1948)
+# ── A MODEL IDENTIFIER IS NOT A CREDENTIAL, AND THE RULE IS READING ITS NEIGHBOUR
 #
 # Surfaced by moving the pin from 8.18.4 to 8.30.1. Measured over the whole tracked tree, that move
 # takes the scan from 0 findings to 3 — and all three are ONE string, in ONE file

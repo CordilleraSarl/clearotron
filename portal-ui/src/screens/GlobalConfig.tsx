@@ -178,7 +178,7 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
  * instance with nothing configured sends rows, each of them saying so.
  */
 //
-// AND THE REMEDY DEPENDS ON WHICH READING FAILED (tracker issue 170). Since the page answers LIVE, a
+// AND THE REMEDY DEPENDS ON WHICH READING FAILED. Since the page answers LIVE, a
 // missing field usually is not an old snapshot at all — it is this deployment's own posture failing to
 // derive, and "it will say after the next run" would send a reader to wait for something that will not
 // help. The capture wording survives for the branch it is still true of.

@@ -45,7 +45,7 @@ Type=simple
 EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
-# ── NO PORT, NO HOST, NO ALLOW-LIST HERE (tracker issue 191) ─────────────────────────────────────────
+# ── NO PORT, NO HOST, NO ALLOW-LIST HERE ─────────────────────────────────────────────────────────────
 #
 # This unit used to carry three Environment= lines pinning the host, the port and the allow-list, and it
 # was the ONLY one of the four that pinned anything a box can legitimately differ on. `Environment=` is
