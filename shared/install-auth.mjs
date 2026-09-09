@@ -124,3 +124,38 @@ export function describeAuthGaps({ gaps, modes }, envFile) {
   }
   return out;
 }
+
+// ── WHAT PUTS SOMETHING IN FRONT OF A DOOR ───────────────────────────────────────────────────────────
+//
+// A different question from the one above, and kept apart from it deliberately: `authRequirements`
+// answers "what will this unit refuse to start without", which includes values that say nothing about
+// what is in front of it — a grants file, a local passphrase user, an allowed-domain list. This answers
+// "does something OUTSIDE this deployment resolve to these port numbers", which is the only question a
+// launcher may move a door on.
+//
+// Every name here is an alternative in some door's `oneOf`: a Cloudflare Access team, or that door's own
+// OIDC issuer. The AUDIENCES are deliberately absent — they are `all` entries, not alternatives, and an
+// audience set with neither a team nor an issuer refuses to start on every face, so it can never be the
+// only evidence of a proxy.
+//
+// THE CLIENT DOOR HAS ITS OWN ISSUER SPELLING and it is not legacy: `mcp-server/http-server-client.mjs`
+// reads `CLIENT_MCP_OIDC_ISSUER || TRADEMARK_MCP_OIDC_ISSUER`, and its fail-closed admits a start on the
+// client spelling alone with no team set. A deployment fronting only its client door that way once read
+// as unfronted here, which is the state that would have moved a door behind a proxy addressed to the old
+// number — up, and unreachable.
+//
+// An arm holds this list to the doors themselves rather than to this comment: it reads the entrypoints
+// `bin/start.mjs` spawns and asserts every team-or-issuer name they read appears below.
+export const FRONTING_VARIABLES = Object.freeze([
+  "CF_ACCESS_TEAM",
+  "PORTAL_OIDC_ISSUER",
+  "TRADEMARK_MCP_OIDC_ISSUER",
+  "CLIENT_MCP_OIDC_ISSUER",
+]);
+
+/**
+ * The fronting values this environment has set — empty means nothing outside resolves to these doors.
+ *
+ * @returns {string[]} the names that are set, in the order above
+ */
+export const frontingVariablesSet = (env = {}) => FRONTING_VARIABLES.filter((k) => SET(env, k));

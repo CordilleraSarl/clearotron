@@ -134,6 +134,7 @@ import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // never serve 
 // judgement would be a wizard that asks about one rule and a launcher that writes another.
 import { classifyStaffDomain, staffDomainRefusal, staffGrantSentence } from "../shared/staff-domain.mjs";
 import { backgroundManager } from "../shared/os-advice.mjs";
+import { frontingVariablesSet } from "../shared/install-auth.mjs";   // — one owner for what counts as a proxy in front of a door
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -971,8 +972,13 @@ if (isMain) {
   // outcomes. The auth-mode half of this is already closed further up: a foreground start refuses
   // outright when PORTAL_AUTH_MODE names a hosted door, and again when the units are installed and
   // serving. What is left to check is the settings that can be present with the mode unset.
-  const fronted = ["CF_ACCESS_TEAM", "PORTAL_OIDC_ISSUER", "TRADEMARK_MCP_OIDC_ISSUER"]
-    .filter((k) => String(process.env[k] ?? "").trim());
+  //
+  // PORTAL_AUTH_MODE IS ABSENT FROM THAT LIST ON PURPOSE, and only a rule in another file makes that
+  // safe: `driver/portal-service.mjs` refuses to start in auth-proxy without CF_ACCESS_TEAM or
+  // PORTAL_OIDC_ISSUER, so a portal fronted by the mode alone cannot come up at all. Relaxing that
+  // refusal without adding the mode here would let this under-report — which is why the list has one
+  // owner in `shared/install-auth.mjs` with an arm holding it to the doors themselves.
+  const fronted = frontingVariablesSet(process.env);
   const claimedPorts = new Set([ports.portal, ports.mcp, ports.client]);
   const movedDoors = [];
   for (const [what, port, portVar, doorUnit = null, key = null] of [["portal", ports.portal, "PORTAL_SERVICE_PORT", null, "portal"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT", null, "mcp"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT", CLIENT_DOOR_UNIT, "client"]]) {

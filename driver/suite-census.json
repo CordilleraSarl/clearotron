@@ -213,6 +213,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-door-is-moved-only-when-nothing-outside-resolves-to-it.test.mjs": {
+          "tests": 7,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": {
           "tests": 20,
           "asserts": 75,
