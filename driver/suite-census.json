@@ -5407,6 +5407,12 @@
           "skips": 0,
           "todos": 0
         },
+        "createFieldsReachTheStore.test.ts": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "customPropertiesResolve.test.ts": {
           "tests": 4,
           "asserts": 11,
