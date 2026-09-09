@@ -360,6 +360,12 @@ export function makeProfileService({
           // route exists to prevent, arriving through the route that prevents it.
           framework,
           industry: isStr(body?.industry) && body.industry.trim() ? body.industry.trim() : null,
+          // Carried, not dropped. A form that offers a field and a route that ignores it is the silent
+          // data loss this whole route exists to stop, arriving one layer further in. Arrays only —
+          // anything else is left absent rather than guessed at, and the validator then rules on it.
+          tradingNames: Array.isArray(body?.selfExclusionOwners) ? body.selfExclusionOwners : [],
+          classes: Array.isArray(body?.defaultClasses) ? body.defaultClasses : [],
+          territories: Array.isArray(body?.defaultJurisdictions) ? body.defaultJurisdictions : [],
         });
         // The proposed roster, validated whole. A colliding domain does not fail this company — it
         // stops the deployment resolving ANY of them at the next start, so it is caught before a write

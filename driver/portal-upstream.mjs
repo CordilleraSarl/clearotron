@@ -394,7 +394,10 @@ export function makeUpstream({ callUpstream, callRecipes = null, roster = async 
  * Everything else the profile carries has a default the create path resolves, or is code-owned and set
  * there. `frameworkPath` is deliberately absent — see `createCompany`.
  */
-export const CREATABLE_FIELDS = Object.freeze(["name", "key", "industry", "matchDomains", "platforms"]);
+export const CREATABLE_FIELDS = Object.freeze([
+  "name", "key", "industry", "matchDomains", "platforms",
+  "selfExclusionOwners", "defaultClasses", "defaultJurisdictions",
+]);
 
 /**
  * A project key must be a plain slug.

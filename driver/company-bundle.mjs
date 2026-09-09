@@ -121,7 +121,8 @@ export function resolvePlatforms(supplied, roster) {
   return { platforms: [...house], source: "house default" };
 }
 
-export function buildProfile({ key, name, domains, platforms, framework, industry }) {
+export function buildProfile({ key, name, domains, platforms, framework, industry,
+  tradingNames, classes, territories }) {
   // NO `key` IN THE DOCUMENT. The loader derives it from the FILENAME and injects it — readProfilesLayer
   // composes `{ key, ...p }` — so a `key` written here is redundant on the way in and fatal on the way
   // out: it is not in KNOWN_PROFILE_KEYS, and the deny-unknown-key gate hard-fails the whole roster over
@@ -131,6 +132,13 @@ export function buildProfile({ key, name, domains, platforms, framework, industr
   const profile = { name, platforms };
   if (domains?.length) profile.matchDomains = domains;
   if (industry) profile.industry = industry;
+  // THE OPTIONAL THREE, OMITTED WHEN EMPTY RATHER THAN WRITTEN AS `[]`. An empty array is a real
+  // instruction to the reader of a profile, not the absence of one, so writing it for a field nobody
+  // filled in states something nobody said. The whole create path treats absent and empty as different
+  // and this is where that has to hold.
+  if (tradingNames?.length) profile.selfExclusionOwners = tradingNames;
+  if (classes?.length) profile.defaultClasses = classes;
+  if (territories?.length) profile.defaultJurisdictions = territories;
   // ALWAYS SET, per the ruling. `frameworkFor` would fall back to the same value if this were absent —
   // but "the tool sets it" is the point of the setup, and an explicit selection is what makes the
   // receipt below mean anything.
