@@ -30,7 +30,7 @@ test("the POSIX advice is byte-for-byte what it always was", () => {
   for (const platform of POSIX) {
     assert.equal(whatHoldsPort(18802, { platform }), "ss -ltnp 'sport = :18802'   (or: lsof -i :18802)");
     assert.equal(stopThatProcess({ platform }), "kill <the pid above>");
-    assert.equal(removeDirectory("/home/you/demo", { platform }), "rm -rf /home/you/demo");
+    assert.equal(removeDirectory("/srv/demo", { platform }), "rm -rf /srv/demo");
   }
 });
 
