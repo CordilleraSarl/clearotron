@@ -23,6 +23,7 @@ import { Field } from '../components/ProfileField.tsx'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { companyKeyFrom } from '../contract/companyKey.ts'
+import { handOff } from '../contract/companyCreated.ts'
 
 /**
  * What a person may state when making a company.
@@ -81,15 +82,28 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
     const r = await api.createCompany(body)
     setBusy(false)
     setResult(r)
-    if (isOk(r)) {
-      // The shell fetched the company list once when it mounted and does not poll. Without this the
-      // company is selected, the rail shows its slug instead of its name, and the picker does not list
-      // the thing that was just made.
-      ctx.refreshCompanies()
-      ctx.setOwner(r.value.key)
-      ctx.go('/portal/new')
-    }
   }
+
+  // LEAVING HAPPENS AFTER THE RENDER THAT MAKES THIS PAGE CLEAN, and that is the whole reason this is an
+  // effect rather than three more lines inside `create`.
+  //
+  // The unsaved-changes guard reads its flag through a ref written during render, and it is asked at the
+  // moment of navigation. Calling `go` straight after `setResult` asks it before React has re-rendered,
+  // so it still holds the value from before the create — and somebody who had just successfully made a
+  // company would be asked whether they want to discard it. That is the exact defect the guard's own
+  // file describes: a warning that fires on saved work teaches people to click through every warning,
+  // including the true one.
+  useEffect(() => {
+    if (!result || !isOk(result)) return
+    handOff(result.value)
+    // The shell fetched the company list once when it mounted and does not poll. Without this the
+    // company is selected, the rail shows its slug instead of its name, and the picker does not list
+    // the thing that was just made.
+    ctx.refreshCompanies()
+    ctx.setOwner(result.value.key)
+    ctx.go('/portal/new')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result])
 
   const rejected = result && !isOk(result) && result.kind === 'reject' ? result.errors : null
   const otherFailure = result && !isOk(result) && result.kind !== 'reject' ? result : null
@@ -266,29 +280,5 @@ function failureTitle(kind: string): string {
       return 'Too many requests just now. Wait a moment and try again.'
     default:
       return 'Nothing was created. Try again shortly.'
-  }
-}
-
-/**
- * What the create hands back, for the strip on the screen the person lands on.
- *
- * WRITTEN AND RECORDED ARE TWO EVENTS. `commitError` means the company is LIVE — it is already
- * governing searches — and the commit that records it failed. Reporting that as a failure would tell
- * somebody nothing happened about a company that exists.
- */
-export function createdStrip(created: CreatedCompany): { readonly line: string; readonly warning: string | null } {
-  const rating = created.framework.defaulted ? 'General default rating' : 'Your own rating framework'
-  const stores = created.marketplaces.defaulted
-    ? `${created.marketplaces.count} marketplaces by default`
-    : `${created.marketplaces.count} marketplaces`
-  return {
-    line: `${created.name} added. ${rating} · ${stores}`,
-    // Read off the field itself rather than through the shared helper: that helper answers for a SAVE,
-    // whose sentence is "it can be lost, tell an administrator". This is a company that now exists and
-    // is already searchable, and telling somebody it might be lost would be the wrong alarm.
-    warning: created.commitError
-      ? 'The company is live and searchable. Recording it in the configuration history failed, '
-        + 'so it is not in that history yet. Tell an administrator.'
-      : null,
   }
 }

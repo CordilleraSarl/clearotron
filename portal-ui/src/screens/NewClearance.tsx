@@ -71,6 +71,8 @@ import { useLoad } from '../state/useApi.ts'
 import { useUnsaved, unsavedChanges } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
+import type { CreatedCompany } from '../contract/api.ts'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -741,6 +743,10 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   return (
     <div className="screen">
       <div className="eyebrow">{editingSlug ? 'Custom search' : 'New clearance'}</div>
+      {/* WHAT WAS JUST DECIDED FOR YOU, on the page you came here to use. A confirmation page of its own
+          was drawn and turned down: easier to make unmissable, and it interrupts the one thing the person
+          came to do. The framework was the only reason that page existed, and this still names it. */}
+      <CreatedStrip />
       <h1 style={{ fontSize: 27, margin: '4px 0 14px', color: 'var(--text-strong)' }}>
         {editingSlug ? 'Edit a custom search' : 'New clearance'}
       </h1>
@@ -2496,6 +2502,42 @@ function Submitted({ go, onAnother }: { readonly go: (p: string) => void; readon
           <button type="button" className="btn-ghost" onClick={onAnother}>Start another</button>
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * The strip a person meets straight after making a company.
+ *
+ * TAKEN ONCE, in an effect rather than during render: taking it is a write, and a render that mutates
+ * module state runs twice under React's development double-render and the second read finds nothing.
+ * The strip would then appear on some machines and not others, which is the worst way for a message to
+ * be unreliable.
+ *
+ * Dismissable, because it is an announcement and not a decision.
+ */
+function CreatedStrip() {
+  const [created, setCreated] = useState<CreatedCompany | null>(null)
+  const [dismissed, setDismissed] = useState(false)
+  useEffect(() => { setCreated(takeCreated()) }, [])
+
+  if (!created || dismissed) return null
+  const { line, warning } = createdStrip(created)
+  return (
+    <div className="empty" style={{ textAlign: 'left', margin: '4px 0 14px' }} role="status">
+      <div style={{ display: 'flex', gap: 14, alignItems: 'baseline' }}>
+        <p style={{ margin: 0, flex: 1, color: 'var(--text-strong)' }}>{line}</p>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label="Dismiss"
+          style={{ background: 'none', border: 'none', padding: 0, font: 'inherit',
+                   color: 'var(--text-muted)', cursor: 'pointer' }}
+        >
+          Dismiss
+        </button>
+      </div>
+      {warning ? <p style={{ margin: '6px 0 0', color: 'var(--tone-high)', fontSize: 13 }}>{warning}</p> : null}
     </div>
   )
 }
