@@ -1063,3 +1063,25 @@ test("surfaceWitnesses: all four surfaces, including the one with no live member
   assert.deepEqual(surfaceWitnesses("driver/skills/unread/SKILL.md", tree), []);
   assert.deepEqual(surfaceWitnesses("docs/architecture/04-configuration-reference.md", tree), []);
 });
+
+// ── `EXACTLY the` is ordinary English until it says what follows ────────────────────────────────────
+//
+// The `exactly-these-keys` alternation carried a bare `EXACTLY (?:these|one of|the)`, and the pattern is
+// case-insensitive, so any sentence containing "exactly the" counted as a dictated key set. That is a
+// phrase prose reaches for constantly.
+//
+// BOTH ARMS, AND THE SECOND IS THE ONE THAT MATTERS. A narrow that stopped firing altogether would
+// satisfy the first on its own — an empty counter is not a correct counter — so the real dictation
+// forms are asserted individually, including the `EXACTLY the following` shape the narrowing has to
+// keep and is the likeliest thing to lose.
+test("prose saying \"exactly the\" is not a dictated key set", () => {
+  assert.equal(e3Counts("would put its noise on exactly the report that matters most")["exactly-these-keys"], 0,
+    "ordinary English counted as a dictated key set");
+  assert.equal(e3Counts("that is exactly the point of the split")["exactly-these-keys"], 0);
+});
+
+test("a real dictation is still counted, in each form the pattern must keep", () => {
+  for (const line of ["return EXACTLY these keys", "emit EXACTLY the following keys", "EXACTLY the fields named below"]) {
+    assert.equal(e3Counts(line)["exactly-these-keys"], 1, `stopped counting a real dictation: ${line}`);
+  }
+});

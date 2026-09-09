@@ -9,7 +9,7 @@
 // so that one line decides which tree the whole deployment executes — and connect said nothing about
 // having written it.
 //
-// Driven on testuser: a lane made a worktree to test a branch, ran `connect` from it once, and
+// Driven on the test deployment: a lane made a worktree to test a branch, ran `connect` from it once, and
 //
 //   · the next deploy tick fast-forwarded the DETACHED worktree and failed with "You are not currently
 //     on a branch" — a message about branches, for a box that was silently a merge behind; and

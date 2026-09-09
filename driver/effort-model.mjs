@@ -218,7 +218,7 @@ export const costBand = (i) => Math.max(1, Math.min(5, Math.ceil(effortUnits(i) 
 // range is the thing this section was rebuilt to remove; do not reintroduce one without a new ruling.
 
 /**
- * THE QUOTED BOUNDS. ONE SOURCE — owner ruling, 2026-08-23, relayed by overwatch.
+ * THE QUOTED BOUNDS. ONE SOURCE — owner ruling, 2026-08-23.
  *
  * WHAT THIS REPLACED, and why a constant beat a model. The old quote was a base plus one adder per lane:
  * 1.5h, +0.5 for case law, +0.5 for a native-language lane, +0.5 for a single territory. It missed the
@@ -264,7 +264,7 @@ export const quoteBoundsFor = (l) => TURNAROUND_QUOTE[deriveMode(l) === "knockou
 /**
  * The bounds for THIS job. The ruled range, and NOTHING is done to it.
  *
- * — OWNER RULING, 2026-08-26, relayed by overwatch: "No compute. We just say 1.5–2.5 hours for
+ * — OWNER RULING, 2026-08-26: "No compute. We just say 1.5–2.5 hours for
  * big reports, period. Keep it simple." The question put to him was which run-slot cap the quote should
  * divide by, and he removed the division instead of answering it.
  *

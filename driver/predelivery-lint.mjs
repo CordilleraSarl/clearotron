@@ -23,6 +23,7 @@
 // report-derived cover text alone, because a gate that simply stops running is not a gate that passes.
 
 import { REGION_NAMES } from "./publish/regions.mjs";
+import { PLAIN_FORMS, SENTENCE_WORD_LIMIT, termMatcher } from "./plain-register.mjs";   // the pinned rule, not a fourth copy
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // one spelling of a territory code
 import { searchedCovers } from "./frame-diff-model.mjs";                // one copy of the EU-reach rule
 import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyFacts } from "./party-facts.mjs";   //
@@ -2375,26 +2376,25 @@ const knockoutSurfaces = (findings) => {
 // FLAG-ONLY, AND NEVER PROJECTED. 333: "A hit is a rewrite of that line, never a disclosure and never a
 // run failure." These carry surface "findings", which runKnockoutLint's caller does not project onto
 // the cover note or the workbook — so a flag reaches whoever is fixing the run and nobody else.
-const LAWYER_VOCAB = [
-  ["proprietor", /\bproprietors?\b/i],
-  ["subsisting", /\bsubsisting\b/i],
-  ["senior right", /\bsenior (?:right|mark|position)/i],
-  ["specification", /\bspecifications?\b/i],
-  ["formative", /\bformatives?\b/i],
-  ["prevail", /\bprevails?\b|\bprevailing\b/i],
-  ["citable", /\bcitable\b/i],
-  ["limb", /\bon every limb\b|\ball limbs\b/i],
-  ["non-use attack", /\bnon-?use attack\b/i],
-  ["belt-and-braces", /\bbelt-?and-?braces\b/i],
-  ["dispatch", /\bdispatch(?:ed|es)?\b/i],
-  ["lane", /\blanes?\b/i],
-  ["on the record as it stands", /\bon the record as it stands\b/i],
-  ["the marks-and-goods comparison", /\bmarks-and-goods comparison\b/i],
-  ["chunk", /\bchunks?\b/i],
-];
-
-/** The longest a default-visible sentence may run before it stops being one idea (333 rule 1). */
-const PLAIN_SENTENCE_WORDS = 25;
+// ── THE RULE IS NOT WRITTEN HERE ANY MORE ───────────────────────────────────────────────────────────
+//
+// This file carried its own vocabulary list and its own sentence limit, imported nothing, and was the
+// copy that actually ran on every knockout delivery — a fourth copy of a rule the other three are pinned
+// to each other by a test. It had already drifted: it flagged `senior right`, `limb` and `lane`, which
+// appear in no pinned copy, so a seat was corrected against a rule it was never taught; and it did not
+// flag `instructed`, which the doctrine does teach. It also carried no plain form at all, naming the
+// term and deferring the replacement to a skill — and the replacement is the half the doctrine calls
+// load-bearing.
+//
+// It reads the pinned source now. The three untaught terms go with it: teaching a term is a doctrine
+// change, and `PLAIN_FORMS` is pinned to both documents by
+// `the-two-register-rule-says-the-same-thing-to-both-products.test.mjs`, so a term added here without
+// its worked swap in both would red that test rather than silently widening what a seat is corrected on.
+//
+// WHAT WAS NOT LOST IN THE CONSOLIDATION. The patterns here handled inflections and the pinned source
+// did not — `proprietors`, `prevailing`. Reading terms from the weaker matcher would have narrowed the
+// live check while looking like a tidy-up, so the inflections moved INTO the pinned source as
+// `termMatcher`, and both sides use it.
 
 /**
  * The fields a reader of the knockout meets before opening anything, named one by one rather than
@@ -2453,10 +2453,10 @@ export function plainLanguageChecks({ findings } = {}) {
   const vocab = [];
   const longSentences = [];
   for (const { where, text } of fields) {
-    for (const [name, re] of LAWYER_VOCAB) if (re.test(text)) vocab.push(`${where}: "${name}"`);
+    for (const [term] of PLAIN_FORMS) if (termMatcher(term).test(text)) vocab.push(`${where}: "${term}"`);
     for (const sentence of text.split(/(?<=[.!?])\s+|\n+/)) {
       const n = sentence.trim().split(/\s+/).filter(Boolean).length;
-      if (n > PLAIN_SENTENCE_WORDS) longSentences.push(`${where}: ${n} words`);
+      if (n > SENTENCE_WORD_LIMIT) longSentences.push(`${where}: ${n} words`);
     }
   }
   // ── A NOTE THAT WILL PRINT IN THE PLACE ITS WRITER DID NOT MEAN ────────────────────────────────────
@@ -2489,7 +2489,7 @@ export function plainLanguageChecks({ findings } = {}) {
     check("plain-language-vocabulary", "voice", surface, vocab.length === 0,
       vocab.length ? `the lawyer's vocabulary on lines a reader meets before opening anything — rewrite the line in the words the reader already owns (the skill carries the swaps): ${say(vocab)}` : ""),
     check("plain-language-sentence-length", "voice", surface, longSentences.length === 0,
-      longSentences.length ? `a default-visible sentence carrying more than one idea (over ${PLAIN_SENTENCE_WORDS} words) — split it, conclusion first: ${say(longSentences)}` : ""),
+      longSentences.length ? `a default-visible sentence carrying more than one idea (over ${SENTENCE_WORD_LIMIT} words) — split it, conclusion first: ${say(longSentences)}` : ""),
   ];
 }
 

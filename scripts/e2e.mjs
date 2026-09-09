@@ -630,7 +630,7 @@ export function bandForScenario(scenario, resolve = resolveForDoor) {
 /**
  * — WHICH ENGINE COMMIT THIS RUN LOADED, read from the run's own artifacts.
  *
- * `role-e2e`'s handover requires the commit on every run, and until this existed it was reconstructed
+ * the testing handover requires the commit on every run, and until this existed it was reconstructed
  * by joining a checkout's reflog against `startedAt`. That reconstruction expires with the reflog,
  * dies with a re-clone, and is simply wrong for any run made while the checkout sat detached — it
  * produced two near-miss wrong certifications in two days.
@@ -1354,7 +1354,7 @@ function evalAssertion(a, runDir) {
     // ── — THIS IS A DELIVERY CONTRACT, AND A RUN THAT DID NOT DELIVER NEVER ENTERED IT ────────
     //
     // Owner ruling, 2026-08-22, verbatim: "clean up the failed runs. they owe the client nothing."
-    // (Relayed by role-overwatch; recorded here because the rule this line encodes is a product
+    // (Recorded here because the rule this line encodes is a product
     // decision, not a harness preference.)
     //
     // Measured before the ruling: `sendPending` is carried by 25 of 25 delivered runs and 0 of 29

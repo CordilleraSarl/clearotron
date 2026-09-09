@@ -100,7 +100,7 @@ export function doubtsForClosure({ doubts = null, doubtClosure = null } = {}) {
   // The event exists to answer whether a cut is WORTH giving a value, before any row has one: if most
   // doubts carry no tier the cut saves nothing. A count written only when the cut is live needs the cut
   // to exist in order to measure whether the cut should exist — the circularity pipeline.mjs's own
-  // comment says this event prevents. Found by role-e2e eggie on the R2 artifacts.
+  // comment says this event prevents. Found in review on the R2 artifacts.
   //
   // `keepSet` null means "keep everything": nothing is ever dropped, `ids` is discarded below, and the
   // dispatch stays byte-identical. Only the COUNTS change.

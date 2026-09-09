@@ -312,3 +312,46 @@ test("333: the skill's own worked notes sort the way the skill says they do", ()
   assert.ok(isRequest(reqB), "and so must the prior-use example");
   for (const n of names) assert.ok(!isRequest(n), `a name note must not sort as a request note: ${n.slice(0, 40)}`);
 });
+
+// ── the live check reads the pinned rule, rather than a fourth copy of it ────────────────────────────
+//
+// The rule is written three times on purpose — the two products' doctrine documents and PLAIN_FORMS —
+// and a test pins those three to each other, because a seat taught half a rule writes half a report.
+// The copy that actually RAN on every delivery was a fourth, in the pre-delivery lint, importing
+// nothing and outside that pinning. It had drifted in both directions at once.
+test("395: the terms the live check flags are exactly the pinned ones", () => {
+  const flaggedTerms = (basis) => {
+    const c = plainLanguageChecks({ findings: FINDINGS({ basis }) }).find((x) => x.id === VOCAB);
+    return c && !c.pass ? c.detail : "";
+  };
+
+  // TAUGHT AND NOW ENFORCED. `instructed` is in the doctrine both products read and the fourth copy did
+  // not carry it, so a seat was taught to avoid a word nothing checked.
+  assert.match(flaggedTerms("We searched what was instructed."), /instructed/,
+    "a term the doctrine teaches is still not enforced by the check that runs");
+
+  // NOT TAUGHT, SO NOT ENFORCED. These three were flagged by the fourth copy and appear in no pinned
+  // copy, so a seat was corrected against a rule it was never given. Teaching one is a doctrine change:
+  // adding it to PLAIN_FORMS without its worked swap in both documents reds the pinning test, which is
+  // the point of that test.
+  for (const [term, prose] of [
+    ["lane", "The register lane returned nothing."],
+    ["limb", "It fails on every limb of the test."],
+    ["senior right", "They hold a senior right here."],
+  ]) {
+    assert.equal(flaggedTerms(prose), "", `"${term}" is flagged by the live check and taught in no pinned copy`);
+  }
+});
+
+test("395: consolidating on the pinned source did not narrow what is caught", () => {
+  // THE REGRESSION THIS COULD HAVE BEEN. The fourth copy's patterns handled inflections and the pinned
+  // source's did not — it built `\bproprietor\b` and matched neither plural. Reading terms from the
+  // weaker matcher would have quietly narrowed the live check while looking like a tidy-up, so the
+  // inflections moved INTO the pinned source and both sides use one matcher.
+  for (const prose of ["Two proprietors objected.", "The earlier mark is prevailing here.", "Both chunks were screened."]) {
+    const c = plainLanguageChecks({ findings: FINDINGS({ basis: prose }) }).find((x) => x.id === VOCAB);
+    assert.equal(c.pass, false, `an inflected form stopped being caught: ${prose}`);
+  }
+  assert.equal(plainLanguageChecks({ findings: FINDINGS({ basis: "Two shops sell under this name in the same goods." }) })
+    .find((x) => x.id === VOCAB).pass, true, "clean prose was flagged");
+});

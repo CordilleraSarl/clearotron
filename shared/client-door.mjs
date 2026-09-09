@@ -163,7 +163,7 @@ export function clientDoorState({ env = {}, unitDir, exists, active = null, list
   const standing = fenceOn && unitInstalled;
   // ── CONFIGURED IS NOT RUNNING ──────────────────────────────────────────────
   //
-  // Measured by role-e2e: a `connect` that died at `daemon-reload` had ALREADY written the denylist and
+  // Measured in testing: a `connect` that died at `daemon-reload` had ALREADY written the denylist and
   // installed both unit files, and `doctor` then said "the client door is on" while the unit was
   // inactive and nothing listened on its port. The trigger was a shell without a session bus, which is
   // not the product's fault — but any failure at that step leaves the same half-applied state
@@ -188,7 +188,7 @@ export function clientDoorState({ env = {}, unitDir, exists, active = null, list
  * FIVE answers, and the two that matter are the two the caller used to get wrong in opposite directions.
  *
  * CONFIGURED IS NOT RUNNING. A `connect` that died at `daemon-reload` has already
- * written the fence and placed both units, so every angle reads as set up; role-e2e measured `doctor`
+ * written the fence and placed both units, so every angle reads as set up; testing measured `doctor`
  * saying "the client door is on" over an inactive unit with nothing on its port. That state is a
  * problem and it is the reason this function exists.
  *

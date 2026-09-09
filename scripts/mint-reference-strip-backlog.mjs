@@ -14,6 +14,7 @@
 // CI runs. Without it, the table is rewritten.
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { publishedOf } from "../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SIGNATURES, censusOf } from "../driver/reference-strip-signatures.mjs";
@@ -21,8 +22,18 @@ import { SIGNATURES, censusOf } from "../driver/reference-strip-signatures.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TABLE = join(ROOT, "driver/test/fixtures/reference-strip-backlog.json");
 
-const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
+// THE PUBLISHED POPULATION, NOT THE INDEX. `git ls-files` reads the index, and an overlay run stages
+// the withheld corpus over a clone without committing it — so minting there wrote withheld hits into
+// this public table with nothing reporting it. `publishedOf` filters the tracked list down to what
+// HEAD carries; one helper, shared with the residue floor, because two spellings of this rule would
+// disagree under the overlay and `--check` would report a difference that is only the two
+// instruments asking different questions.
+const all = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
   .split("\n").filter(Boolean);
+const p = publishedOf(all, ROOT);
+if (p.error) { console.error(`mint-reference-strip-backlog: ${p.error}`); process.exit(2); }
+if (p.laid) console.log(`mint-reference-strip-backlog: ${p.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted`);
+const tracked = p.files;
 const minted = censusOf(ROOT, tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
 
 if (process.argv.includes("--check")) {

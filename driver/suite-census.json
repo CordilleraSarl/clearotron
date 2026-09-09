@@ -51,6 +51,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-block-that-ran-and-said-nothing-is-not-a-block-that-never-ran.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-borrowed-node-modules-is-not-a-licence-defect.test.mjs": {
           "tests": 8,
           "asserts": 28,
@@ -1300,8 +1306,8 @@
           "todos": 0
         },
         "contract-audit.test.mjs": {
-          "tests": 52,
-          "asserts": 164,
+          "tests": 54,
+          "asserts": 167,
           "skips": 0,
           "todos": 0
         },
@@ -2812,8 +2818,8 @@
           "todos": 0
         },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
-          "tests": 17,
-          "asserts": 41,
+          "tests": 19,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -4455,6 +4461,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-minters-read-the-published-tree.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-narrative-is-checked-against-its-depth-rules.test.mjs": {
           "tests": 19,
           "asserts": 70,
@@ -4506,6 +4518,12 @@
         "the-portal-bundle-is-the-one-its-sources-would-build.test.mjs": {
           "tests": 11,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-probe-spawns-the-environment-it-validated.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -4794,6 +4812,12 @@
         "undeclared-key-census.test.mjs": {
           "tests": 5,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "under-wsl-the-windows-binary-on-path-is-not-the-engine.test.mjs": {
+          "tests": 8,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },

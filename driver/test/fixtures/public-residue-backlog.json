@@ -9,7 +9,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 473,
+  "total": 732,
   "files": {
     ".gitattributes": [
       0,
@@ -27,7 +27,17 @@
       0,
       0,
       0,
-      1,
+      0,
+      0,
+      0
+    ],
+    ".github/workflows/ci.yml": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
@@ -43,7 +53,7 @@
     ],
     ".github/workflows/release.yml": [
       0,
-      6,
+      26,
       0,
       0,
       0,
@@ -71,7 +81,27 @@
       0,
       0
     ],
+    "CONTRIBUTING.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "INSTALL.md": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/clearotron.mjs": [
       0,
       1,
       0,
@@ -83,6 +113,26 @@
     ],
     "bin/connect.mjs": [
       0,
+      13,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/disconnect.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/example.mjs": [
+      0,
       4,
       0,
       0,
@@ -93,19 +143,49 @@
     ],
     "bin/onboard.mjs": [
       0,
-      5,
+      27,
       0,
       1,
       0,
-      1,
+      0,
       0,
       0
     ],
     "bin/start.mjs": [
       0,
-      8,
+      23,
       0,
       1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/stop.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bin/update.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "docs/E2E.md": [
+      0,
+      1,
+      0,
+      0,
       0,
       0,
       0,
@@ -131,7 +211,27 @@
       0,
       0
     ],
+    "driver/ask-ledger.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/case-law-sources.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/compose-read.mjs": [
       0,
       1,
       0,
@@ -143,7 +243,7 @@
     ],
     "driver/config-inventory.mjs": [
       0,
-      1,
+      2,
       0,
       0,
       0,
@@ -161,13 +261,23 @@
       0,
       0
     ],
-    "driver/doubt-selection.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "driver/digest-queue.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/doc-constants.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
@@ -187,13 +297,13 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
     "driver/driver.config.mjs": [
       0,
-      3,
+      4,
       0,
       0,
       0,
@@ -201,19 +311,19 @@
       0,
       0
     ],
-    "driver/effort-model.mjs": [
+    "driver/engine/CONTRACT.md": [
+      0,
+      1,
       0,
       0,
       0,
       0,
-      0,
-      2,
       0,
       0
     ],
     "driver/engine/anthropic-agent.mjs": [
       0,
-      7,
+      9,
       0,
       0,
       0,
@@ -231,7 +341,7 @@
       0,
       0
     ],
-    "driver/frame-diff-model.mjs": [
+    "driver/flag-snapshot.mjs": [
       0,
       1,
       0,
@@ -241,13 +351,13 @@
       0,
       0
     ],
-    "driver/gateway.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "driver/frame-diff-model.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
@@ -261,19 +371,29 @@
       0,
       0
     ],
-    "driver/outbox-backoff.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "driver/jx-lanes.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/owner-use-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
     "driver/pipeline-knockout.mjs": [
       0,
-      1,
+      3,
       0,
       0,
       0,
@@ -283,11 +403,11 @@
     ],
     "driver/pipeline.mjs": [
       0,
-      3,
+      7,
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -311,19 +431,29 @@
       0,
       0
     ],
+    "driver/portal-report.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/portal-service.mjs": [
       0,
-      1,
+      7,
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
     "driver/predelivery-lint.mjs": [
       0,
-      1,
+      5,
       0,
       0,
       0,
@@ -341,9 +471,19 @@
       0,
       0
     ],
+    "driver/publish/index.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/publish/knockout.mjs": [
       0,
-      2,
+      4,
       0,
       0,
       0,
@@ -363,7 +503,27 @@
     ],
     "driver/publish/render-knockout.mjs": [
       0,
-      20,
+      32,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/report-data.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/publish/seed-pool.mjs": [
+      0,
+      1,
       0,
       0,
       0,
@@ -381,6 +541,56 @@
       0,
       0
     ],
+    "driver/queue-watch-verdict.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/record-carry.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/reference-score.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/reference-strip-signatures.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/repairs.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/replay-archive.mjs": [
       0,
       1,
@@ -391,19 +601,19 @@
       0,
       0
     ],
-    "driver/search-policy.mjs": [
+    "driver/stages-knockout.mjs": [
+      0,
+      3,
       0,
       0,
       0,
       0,
-      0,
-      1,
       0,
       0
     ],
-    "driver/stages-knockout.mjs": [
+    "driver/stages.mjs": [
       0,
-      1,
+      2,
       0,
       0,
       0,
@@ -453,11 +663,11 @@
     ],
     "driver/systemd/clearotron-worker.service": [
       0,
-      4,
-      2,
+      3,
       0,
       0,
-      1,
+      0,
+      0,
       0,
       0
     ],
@@ -473,7 +683,7 @@
     ],
     "driver/systemd/render-units.mjs": [
       0,
-      2,
+      8,
       0,
       0,
       0,
@@ -531,16 +741,6 @@
       0,
       0
     ],
-    "driver/test/a-capture-that-stopped-describing-the-box-says-so.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/test/a-case-law-gap-names-the-right-reason.test.mjs": [
       0,
       1,
@@ -581,6 +781,16 @@
       0,
       0
     ],
+    "driver/test/a-credential-is-not-a-wired-lane.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/test/a-crowded-zone-is-on-the-list-it-could-not-fill.test.mjs": [
       0,
       1,
@@ -592,6 +802,26 @@
       0
     ],
     "driver/test/a-declared-non-knob-is-not-a-deletion-candidate.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-drop-with-a-stated-reason-is-checked.test.mjs": [
       0,
       1,
       0,
@@ -613,7 +843,7 @@
     ],
     "driver/test/a-memo-has-a-door-onto-it.test.mjs": [
       0,
-      1,
+      3,
       0,
       0,
       0,
@@ -623,7 +853,7 @@
     ],
     "driver/test/a-missing-bus-is-not-a-closed-door.test.mjs": [
       0,
-      3,
+      4,
       0,
       0,
       0,
@@ -651,21 +881,21 @@
       0,
       0
     ],
-    "driver/test/a-pool-copy-is-not-a-refusal.test.mjs": [
+    "driver/test/a-port-refusal-names-the-file-it-reads.test.mjs": [
       0,
-      0,
-      3,
       1,
+      0,
+      0,
       0,
       0,
       0,
       0
     ],
-    "driver/test/a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": [
+    "driver/test/a-provider-cap-is-not-a-stage-failing.test.mjs": [
+      0,
+      2,
       0,
       0,
-      1,
-      1,
       0,
       0,
       0,
@@ -703,7 +933,7 @@
     ],
     "driver/test/a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs": [
       0,
-      2,
+      3,
       0,
       0,
       0,
@@ -723,7 +953,7 @@
     ],
     "driver/test/a-refused-unit-says-what-is-half-started.test.mjs": [
       0,
-      1,
+      2,
       0,
       0,
       0,
@@ -741,9 +971,49 @@
       0,
       0
     ],
-    "driver/test/a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": [
+    "driver/test/a-screenshot-of-an-error-page-is-not-a-report.test.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-section-gate-cannot-be-failed-by-its-wording.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-shared-proprietor-is-not-a-bucket-collision.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-shipped-framework-states-provenance-a-customer-can-read.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": [
+      0,
+      3,
       0,
       0,
       0,
@@ -811,7 +1081,37 @@
       0,
       0
     ],
+    "driver/test/a-what-if-keeps-the-runs-rating-authority.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/test/an-arrival-check-exercises-the-trigger-lane.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/an-experiment-receipt-names-its-engine.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/ask-ledger.test.mjs": [
       0,
       1,
       0,
@@ -831,16 +1131,6 @@
       0,
       0
     ],
-    "driver/test/carry-through-sees-outside-the-reference.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "driver/test/case-law-credential-state.test.mjs": [
       0,
       1,
@@ -848,16 +1138,6 @@
       0,
       0,
       0,
-      0,
-      0
-    ],
-    "driver/test/code-side-is-not-unknown.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
       0,
       0
     ],
@@ -875,16 +1155,6 @@
       0,
       1,
       0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/test/connect-does-not-move-the-deployment-in-silence.test.mjs": [
-      0,
-      0,
-      1,
       0,
       0,
       0,
@@ -913,7 +1183,7 @@
     ],
     "driver/test/contract-audit.test.mjs": [
       0,
-      2,
+      3,
       0,
       0,
       0,
@@ -953,7 +1223,7 @@
     ],
     "driver/test/doctor-reads-the-units-not-the-shell.test.mjs": [
       0,
-      0,
+      1,
       0,
       1,
       0,
@@ -961,9 +1231,29 @@
       0,
       0
     ],
+    "driver/test/doors-agree.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/drive-env.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/test/e2e-assertions.test.mjs": [
       0,
-      11,
+      13,
       0,
       0,
       0,
@@ -991,13 +1281,13 @@
       0,
       0
     ],
-    "driver/test/every-dispatch-carries-the-charter.test.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "driver/test/every-own-pass-digest-is-declared.test.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
@@ -1012,6 +1302,16 @@
       0
     ],
     "driver/test/every-verb-answers-help.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/floor-duty.test.mjs": [
       0,
       1,
       0,
@@ -1063,7 +1363,7 @@
     ],
     "driver/test/onboard-wizard.test.mjs": [
       0,
-      1,
+      2,
       0,
       0,
       0,
@@ -1097,13 +1397,23 @@
       0,
       0,
       0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/pipeline.anthropic.test.mjs": [
+      0,
       1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
     "driver/test/pipeline.mock.test.mjs": [
       0,
-      23,
+      29,
       0,
       0,
       0,
@@ -1121,6 +1431,16 @@
       0,
       0
     ],
+    "driver/test/portal-config-view.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/test/portal-service.test.mjs": [
       0,
       2,
@@ -1131,7 +1451,37 @@
       0,
       0
     ],
+    "driver/test/portal-upstream.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/test/production-dependencies.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/reading-the-demo-does-not-edit-the-repository.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/reference-score-owner-identity.test.mjs": [
       0,
       1,
       0,
@@ -1143,7 +1493,7 @@
     ],
     "driver/test/register-count.test.mjs": [
       0,
-      2,
+      3,
       0,
       0,
       0,
@@ -1163,7 +1513,7 @@
     ],
     "driver/test/release-pipeline.test.mjs": [
       0,
-      2,
+      12,
       0,
       0,
       0,
@@ -1183,7 +1533,7 @@
     ],
     "driver/test/render-frozen.test.mjs": [
       0,
-      69,
+      81,
       0,
       0,
       0,
@@ -1231,6 +1581,26 @@
       0,
       0
     ],
+    "driver/test/start-background-units.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/suite-ledger-is-not-the-box-ledger.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "driver/test/surface-prose-names-what-renders.test.mjs": [
       0,
       1,
@@ -1251,13 +1621,13 @@
       0,
       0
     ],
-    "driver/test/the-corrective-pass-names-what-it-removes.test.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "driver/test/the-connector-offers-a-memo-on-a-delivered-report.test.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
@@ -1271,17 +1641,17 @@
       0,
       0
     ],
-    "driver/test/the-doubt-carries-its-placement-tier.test.mjs": [
+    "driver/test/the-drain-check-names-this-deployments-drainer.test.mjs": [
+      0,
+      1,
       0,
       0,
       0,
       0,
-      0,
-      2,
       0,
       0
     ],
-    "driver/test/the-drain-check-names-this-deployments-drainer.test.mjs": [
+    "driver/test/the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": [
       0,
       1,
       0,
@@ -1294,6 +1664,16 @@
     "driver/test/the-env-file-lives-where-an-upgrade-cannot-reach.test.mjs": [
       0,
       2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-executable-bits-survive-the-cut.test.mjs": [
+      0,
+      1,
       0,
       0,
       0,
@@ -1323,6 +1703,26 @@
     ],
     "driver/test/the-knockout-page-leads-with-the-read.test.mjs": [
       0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-link-we-send-opens.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-narrative-is-checked-against-its-depth-rules.test.mjs": [
+      0,
       1,
       0,
       0,
@@ -1332,6 +1732,16 @@
       0
     ],
     "driver/test/the-notice-goes-to-whoever-asked.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-owner-of-a-promoted-filing-is-searched.test.mjs": [
       0,
       1,
       0,
@@ -1353,6 +1763,16 @@
     ],
     "driver/test/the-portal-asks-whether-its-engine-will-take-it.test.mjs": [
       0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-prose-cannot-claim-coverage-the-run-never-searched.test.mjs": [
+      0,
       1,
       0,
       0,
@@ -1363,7 +1783,7 @@
     ],
     "driver/test/the-published-manifest-is-not-the-repos-manifest.test.mjs": [
       0,
-      2,
+      4,
       0,
       0,
       0,
@@ -1372,6 +1792,16 @@
       0
     ],
     "driver/test/the-reference-strip-left-sentences-unfinished.test.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/test/the-report-carries-what-the-assessment-wrote.test.mjs": [
       0,
       1,
       0,
@@ -1411,39 +1841,29 @@
       0,
       0
     ],
-    "driver/test/third-party-notices.test.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "driver/test/unit-entries-load-env-local.test.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
-    "driver/test/withheld-states-its-scope.test.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "driver/test/verify-knockout.test.mjs": [
       0,
       1,
       0,
-      0
-    ],
-    "driver/tokens.mjs": [
       0,
       0,
       0,
-      0,
-      0,
-      1,
       0,
       0
     ],
     "driver/unit-inventory.mjs": [
       0,
-      1,
+      3,
       0,
       0,
       0,
@@ -1461,9 +1881,109 @@
       0,
       0
     ],
-    "mcp-server/lib/whatif.mjs": [
+    "driver/verify.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/whatif-memo-run.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/whatif-queue.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver/whatif-worker.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/http-server.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/key-socket.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/audit-view.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/driver.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/instructions.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/knockout.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/lib/whatif.mjs": [
+      0,
+      4,
       0,
       0,
       0,
@@ -1503,6 +2023,26 @@
     ],
     "mcp-server/server.mjs": [
       0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/_fixture.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/a-key-has-one-door-and-it-is-not-the-network.test.mjs": [
+      0,
       1,
       0,
       0,
@@ -1512,6 +2052,36 @@
       0
     ],
     "mcp-server/test/a-knockout-trace-survives-the-client-door.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/a-memo-survives-the-door-it-arrives-through.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/connector-skills-are-one-copy.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "mcp-server/test/knockout-audit-tools.test.mjs": [
       0,
       1,
       0,
@@ -1538,6 +2108,16 @@
       0,
       0,
       1,
+      0,
+      0
+    ],
+    "mcp-server/test/whatif.test.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
@@ -1587,7 +2167,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0
     ],
@@ -1621,16 +2201,6 @@
       0,
       0
     ],
-    "providers/_shared/test/enumerate-ceiling-parity.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0
-    ],
     "providers/oauth-mcp-bridge/systemd/courtlistener-mcp.service": [
       0,
       1,
@@ -1657,7 +2227,17 @@
       0,
       0,
       0,
-      3,
+      0,
+      0,
+      0
+    ],
+    "scripts/citation-line-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
@@ -1671,19 +2251,59 @@
       0,
       0
     ],
-    "scripts/e2e.mjs": [
+    "scripts/composer-render-check.mjs": [
       0,
       1,
       0,
       0,
       0,
-      2,
+      0,
+      0,
+      0
+    ],
+    "scripts/drive-env-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/e2e.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/env-audit.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
     "scripts/headless-page.mjs": [
       0,
-      2,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/live-surface-check.mjs": [
+      0,
+      1,
       0,
       0,
       0,
@@ -1693,6 +2313,16 @@
     ],
     "scripts/mint-names-in-force.mjs": [
       0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/mint-reference-strip-backlog.mjs": [
+      0,
       1,
       0,
       0,
@@ -1701,19 +2331,29 @@
       0,
       0
     ],
-    "scripts/mint-suite-census.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "scripts/pack-publishable.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
     "scripts/preinstall-node-check.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-await-cut.mjs": [
+      0,
+      3,
       0,
       0,
       0,
@@ -1731,9 +2371,49 @@
       0,
       0
     ],
-    "scripts/render-check.mjs": [
+    "scripts/release-dist-tag.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-install-check.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-publish-guard.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/release-version-pr-checks.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/render-check.mjs": [
+      0,
+      2,
       0,
       0,
       0,
@@ -1751,19 +2431,49 @@
       0,
       0
     ],
-    "scripts/score.mjs": [
-      0,
-      0,
-      0,
-      0,
+    "scripts/report-frame-check.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/report-screenshot.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/retire-bare-refs.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/score.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
       0,
       0
     ],
     "scripts/strip-tracker-citations.mjs": [
       0,
-      8,
+      4,
       0,
       0,
       0,
@@ -1772,6 +2482,16 @@
       0
     ],
     "scripts/test-run.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scripts/third-party-notices.mjs": [
       0,
       1,
       0,
@@ -1791,10 +2511,40 @@
       0,
       0
     ],
-    "shared/checkout-move.mjs": [
+    "shared/access-audience.mjs": [
       0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/anon-overlay.mjs": [
       0,
       1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/bundle-freshness.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/checkout-move.mjs": [
+      0,
+      2,
+      0,
       0,
       0,
       0,
@@ -1803,17 +2553,17 @@
     ],
     "shared/client-door.mjs": [
       0,
-      1,
+      4,
       0,
       0,
       0,
-      2,
+      0,
       0,
       0
     ],
     "shared/connect-clients.mjs": [
       0,
-      4,
+      5,
       0,
       0,
       0,
@@ -1831,9 +2581,49 @@
       0,
       0
     ],
+    "shared/env-aliases.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "shared/env-local.mjs": [
       0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/install-auth.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/listen.mjs": [
+      0,
       2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/mcp-challenge.mjs": [
+      0,
+      1,
       0,
       0,
       0,
@@ -1852,6 +2642,26 @@
       0
     ],
     "shared/register-selection.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/scope.mjs": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/secret-file.mjs": [
       0,
       1,
       0,
@@ -1882,6 +2692,26 @@
       0
     ],
     "shared/systemd-failure.mjs": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/tracked-files.mjs": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "shared/trigger-lane.mjs": [
       0,
       1,
       0,

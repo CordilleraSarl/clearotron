@@ -58,6 +58,7 @@
 // wants a guard against reintroduction rather than a backlog. Different residue, different repair.
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { publishedOf } from "../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -159,8 +160,15 @@ export function surveyOf(files, read) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
+  // THE PUBLISHED POPULATION, NOT THE INDEX. The counts this prints are read as a statement about the
+  // public tree, and under an overlay `git ls-files` would have made them a statement about the
+  // withheld corpus instead. Same helper as the residue floor and the backlog minter.
+  const all = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
     .split("\n").filter(Boolean);
+  const pub = publishedOf(all, ROOT);
+  if (pub.error) { console.error(`strip-tracker-citations: ${pub.error}`); process.exit(2); }
+  if (pub.laid) console.log(`${pub.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not read`);
+  const tracked = pub.files;
   const s = surveyOf(tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
   // BEFORE ANYTHING ELSE, because every number under it is about the files that COULD be read.
   if (s.unreadable.length) {
