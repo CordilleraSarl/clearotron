@@ -20,10 +20,11 @@
 // "fix" either to match the other.
 import { spawn } from "node:child_process";
 import { assertPageLoaded, cjkCharsIn, cjkVerdict, fontsCovering } from "./headless-page.mjs";   // did chrome open the report, or its own error page?
-import { mkdtempSync, writeFileSync, existsSync } from "node:fs";
+import { writeFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = resolve(process.argv[3] ?? join(ROOT, "docs", "assets", "example-report.png"));
@@ -43,12 +44,14 @@ if (!existsSync(page)) {
   process.exit(2);
 }
 
-const userDir = mkdtempSync(join(tmpdir(), "report-shot-"));
+// The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
+// lock it writes there leaves with the root instead of accumulating in the shared one.
+const { profile: userDir, env: chromeEnv } = browserRun("report-shot-");
 const chrome = spawn("google-chrome", [
   "--headless=new", "--disable-gpu", "--no-sandbox", "--hide-scrollbars",
   `--user-data-dir=${userDir}`, `--window-size=${WIDTH},${HEIGHT}`,
   "--remote-debugging-port=0", `file://${page}`,
-], { stdio: ["ignore", "pipe", "pipe"] });
+], { stdio: ["ignore", "pipe", "pipe"], env: chromeEnv });
 
 let stderr = "";
 const wsUrl = await new Promise((res, rej) => {
