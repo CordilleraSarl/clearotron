@@ -2212,6 +2212,58 @@ test("/portal/api/me names the accounts it grants, and never more than it grants
     ["aurora", "zephyr", "secret-client"], "the roster is the staff answer, and it is still staff-only");
 });
 
+// The pick panel tells one company from another by industry, marketplace count and territories. Staff
+// read those off the roster and a client off their own /me, so the two routes have to agree about the
+// same company — and the client route has to stay scoped to what it grants.
+test("the company facts ride both routes, in one shape, and /me still names only what it grants", async () => {
+  const profiles = new Map([
+    ["aurora", { key: "aurora", name: "Aurora Interactive", industry: "gaming",
+      platforms: ["a.com", "b.com", "c.com"], defaultJurisdictions: ["NZ", "PH"] }],
+    ["zephyr", { key: "zephyr", name: "Zephyr Beverages", industry: "soft drinks",
+      platforms: ["a.com"], defaultJurisdictions: [] }],
+    ["secret-client", { key: "secret-client", name: "A Customer Nobody Asked About",
+      industry: "defence", platforms: ["x.com"], defaultJurisdictions: ["US"] }],
+  ]);
+  const { poolRoot, workspaceRoot } = world();
+  const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
+    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    loadProfilesImpl: async () => profiles });
+
+  const multi = await svc.route("GET", "/portal/api/me", { email: "boss@celta.example" });
+  assert.deepEqual(multi.json.accountFacts.aurora,
+    { industry: "gaming", platformCount: 3, territories: ["NZ", "PH"] },
+    "a client reads the facts for a company they hold");
+
+  // THE SAME BOUNDARY the names carry, asserted on the new field rather than assumed to inherit it:
+  // this route is reachable by every signed-in identity and may never become a roster.
+  assert.equal("secret-client" in multi.json.accountFacts, false,
+    "an account nobody granted contributes no facts to the route everybody can reach");
+
+  // A staff identity holds "*", so the map is empty here and the roster is the answer — the same split
+  // the names already make. Asserted so a future widening of one field cannot quietly widen the other.
+  const staff = await svc.route("GET", "/portal/api/me", STAFF);
+  assert.deepEqual(staff.json.accountFacts, {}, "an all-accounts identity gets no facts map either");
+
+  // ONE SHAPE. The defect this guards is the roster and /me describing one company two ways, which is
+  // what the panel would then render differently depending on who signed in.
+  const roster = (await svc.route("GET", "/portal/admin/roster", STAFF)).json.customers;
+  const rosterAurora = roster.find((c) => c.key === "aurora");
+  assert.deepEqual(
+    { industry: rosterAurora.industry, platformCount: rosterAurora.platformCount, territories: rosterAurora.territories },
+    multi.json.accountFacts.aurora,
+    "the roster and /me describe the same company identically");
+
+  // THE COUNT, NEVER THE LIST — the platform array is which marketplaces we sweep for this account, and
+  // no surface here asks for it. A regression that spread the whole profile would restore it silently.
+  assert.equal("platforms" in rosterAurora, false, "the roster sends the marketplace count, not the list");
+  assert.equal("platforms" in multi.json.accountFacts.aurora, false, "and neither does /me");
+
+  // A company with nothing configured still answers: zero is a fact, absent industry is null.
+  const bare = roster.find((c) => c.key === "zephyr");
+  assert.deepEqual(bare.territories, [], "no territories is an empty list, not a missing field");
+  assert.equal(bare.platformCount, 1);
+});
+
 // ── the engine program, on the one route every screen fetches ──────────────────────────────────────
 //
 // WHY THIS RIDES ON /me AT ALL. The settings page can ask /portal/admin/config, which already computes

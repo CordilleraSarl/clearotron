@@ -216,6 +216,31 @@ export function withRunPlatforms(profile, jobPlatforms) {
   return { profile: { ...profile, platforms: [...(profile?.platforms ?? []), ...added] }, added };
 }
 
+// The three facts that tell one company from another at a glance, for the surfaces a person picks on.
+//
+// ONE SHAPE, TWO ROUTES. The staff roster and a client's own /me both answer this, and they answered
+// different questions before: the roster carried key and name, /me carried names alone. A picker that
+// renders a facts line from one and a bare name from the other shows the same company two ways
+// depending on who signed in — the exact defect ownerNames.mjs was written to end for the NAME.
+//
+// THE COUNT, NEVER THE LIST. `platformCount` is what a reader sees ("6 marketplaces"); the platform
+// list is which marketplaces this account has us sweep, and no surface here asks for it. Sending the
+// array so the browser can call `.length` would put that on the wire for every granted identity.
+//
+// Absent industry reads as null and the caller omits the segment: "Generic default" carries no
+// industry and no territories, and a line reading "· 3 marketplaces ·" with empty ends is worse than
+// a shorter line.
+export function companyFactsOf(profile) {
+  const industry = typeof profile?.industry === "string" && profile.industry.trim() ? profile.industry.trim() : null;
+  return {
+    industry,
+    platformCount: Array.isArray(profile?.platforms) ? profile.platforms.length : 0,
+    territories: Array.isArray(profile?.defaultJurisdictions)
+      ? profile.defaultJurisdictions.filter((t) => typeof t === "string" && t.trim()).map((t) => t.trim())
+      : [],
+  };
+}
+
 // F7 — the closed set of profile-file keys (deny-unknown-key). Every key here has a live consumer
 // recorded in FIELD_CONSUMERS; an unknown key is a dead knob or a typo and hard-fails at load (the
 // loader silently tolerated unknowns before). `minCellsPerVariant`/`batchSize` are intentionally

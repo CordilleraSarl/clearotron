@@ -1395,18 +1395,29 @@ export function makePortalService({
         // Cordillera's customer list on the one route every signed-in identity can reach — the exact
         // leak /profiles is never proxied for (portal-upstream: "a client reaching it would learn the
         // customer base"). `"*"` identities get {} and keep using the roster, which is staff-gated.
+        //
+        // `accountFacts` rides in the SAME loop, under the SAME scoping decision, for the same reason
+        // the names do: the pick panel shows industry, marketplace count and territories per company,
+        // and a client with several grants meets that panel. One loop, so there is one answer to
+        // "which accounts may this identity learn about" rather than two that can drift apart. A `"*"`
+        // identity gets {} here exactly as it does for names and keeps reading the staff-only roster.
         let accountNames = {};
+        let accountFacts = {};
         if (Array.isArray(principal.accounts) && principal.accounts.length) {
           try {
+            const { companyFactsOf } = await import("./profiles.mjs");
             const profiles = await loadProfilesImpl();
             for (const key of principal.accounts) {
-              const name = profiles.get(key)?.name;
+              const profile = profiles.get(key);
+              const name = profile?.name;
               if (typeof name === "string" && name) accountNames[key] = name;
+              if (profile) accountFacts[key] = companyFactsOf(profile);
             }
           } catch {
             // A name is a nicety; the door is not. An unreadable profile store must not lock a user
             // out of the portal, so this degrades to the keys the UI already falls back to.
             accountNames = {};
+            accountFacts = {};
           }
         }
         // HOW MANY RUNS THIS DEPLOYMENT EXECUTES AT ONCE. Deployment-wide, not account-scoped, which is
@@ -1434,7 +1445,7 @@ export function makePortalService({
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
-        return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames,
+        return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames, accountFacts,
           concurrentRuns: concurrentRunsCap(), brand: BRAND.name, engineMode: meEngineMode,
           // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
           // for "this could not be checked". The screen above renders one of three remedies from it,
@@ -2710,7 +2721,13 @@ export function makePortalService({
           // by typing ?account=generic but invisible in the switcher, which is how they stop being
           // looked at. The client-facing boundary is unchanged: /portal/api/runs and the report route
           // both 404 `generic` for a non-staff principal.
-          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name })) } };
+          // THE FACTS RIDE WITH THE NAME. The pick panel tells companies apart by industry, marketplace
+          // count and territories, and it renders for staff from here and for a client from /me. Shaping
+          // both through `companyFactsOf` is what stops the same company reading two ways depending on
+          // who signed in. Dynamic import deliberately: `profiles.mjs` captures the store directory at
+          // MODULE LOAD (see this file's note above), so it is never pulled in at our own load time.
+          const { companyFactsOf } = await import("./profiles.mjs");
+          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })) } };
         }
         // /portal/admin/config — what this deployment actually has switched on. Read from the SNAPSHOT,
         // never from process.env: this process has no engine environment, so asking its own env would

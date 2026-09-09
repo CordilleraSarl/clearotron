@@ -22,6 +22,7 @@
 import type { Tone, Band } from './tone.ts'
 import { asTone } from './tone.ts'
 import type { BriefRead } from './composeRead.ts'
+import type { CompanyFacts } from './companyFacts.ts'
 
 export type Result<T> =
   | { kind: 'ok'; value: T }
@@ -175,6 +176,15 @@ export type Me = {
    * "no name available" and the caller falls back to the key; it never means the account is unnamed.
    */
   readonly accountNames: Readonly<Record<string, string>>
+  /**
+   * The three facts about each granted company, keyed the same way `accountNames` is.
+   *
+   * Scoped identically and by the same server loop, so "which companies may this identity learn about"
+   * has ONE answer rather than two that can drift. Empty for an `allAccounts` identity — staff read the
+   * roster, which carries the same shape. A missing entry means "no facts available" and the caller
+   * renders no line; it never means the company has none.
+   */
+  readonly accountFacts: Readonly<Record<string, CompanyFacts>>
   /**
    * How many runs this deployment executes at once — ONE GLOBAL CAP, never per brand owner.
    *
@@ -1394,6 +1404,34 @@ const decodeRead = (v: unknown): BriefRead => {
 const asStrings = (v: unknown): readonly string[] => asArray(v).filter((x): x is string => typeof x === 'string')
 
 /**
+ * The company facts, off whichever route carried them.
+ *
+ * ONE DECODER for both surfaces — the staff roster spreads them onto each customer, a client's `/me`
+ * keys them by account — because two decoders is how the same company comes to read two ways depending
+ * on who signed in. Reads its fields off whatever record it is handed, so the roster can pass the
+ * customer object itself rather than a nested one.
+ *
+ * A missing count decodes to 0, not null: the renderer states the count unconditionally, and "0
+ * marketplaces" is true of a company nobody has configured. Absent industry stays null and drops its
+ * segment.
+ */
+const asCompanyFacts = (v: unknown): CompanyFacts => {
+  const r = asRecord(v)
+  return {
+    industry: asString(r['industry']),
+    platformCount: asNumber(r['platformCount']) ?? 0,
+    territories: asStrings(r['territories']),
+  }
+}
+
+/** A company on the staff roster: how it is keyed, what it is called, and the facts that tell it apart. */
+export type RosterCompany = {
+  readonly key: string
+  readonly name: string
+  readonly facts: CompanyFacts
+}
+
+/**
  * The resolved scope block, or null when the server did not send one.
  *
  * Null rather than an empty shape on purpose: an empty scope and an unresolvable one look the same in a
@@ -1446,6 +1484,11 @@ export const api = {
       accountNames: Object.fromEntries(
         Object.entries(asRecord(b['accountNames'])).filter(([, v]) => typeof v === 'string' && v),
       ) as Readonly<Record<string, string>>,
+      // Same rule one field down: a malformed entry is dropped, never rendered. The panel falls back to
+      // no facts line, which is a company with a name and nothing else — already the fresh-install case.
+      accountFacts: Object.fromEntries(
+        Object.entries(asRecord(b['accountFacts'])).map(([k, v]) => [k, asCompanyFacts(v)]),
+      ) as Readonly<Record<string, CompanyFacts>>,
       concurrentRuns: asNumber(b['concurrentRuns']),
       // Only the two values a caller may act on survive. Anything else — 'engine-ready' from a future
       // server, a typo, a missing field on an older portal-service — lands as null, which every caller
@@ -2152,11 +2195,11 @@ export const api = {
       body: JSON.stringify(input),
     }),
 
-  roster: (): Promise<Result<readonly { key: string; name: string }[]>> =>
+  roster: (): Promise<Result<readonly RosterCompany[]>> =>
     call('/portal/admin/roster', (b) =>
       asArray(b['customers']).map((c) => {
         const r = c as Record<string, unknown>
-        return { key: asString(r['key']) ?? '', name: asString(r['name']) ?? '' }
+        return { key: asString(r['key']) ?? '', name: asString(r['name']) ?? '', facts: asCompanyFacts(r) }
       }),
     ),
 }
