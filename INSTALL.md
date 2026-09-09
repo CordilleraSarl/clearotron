@@ -48,9 +48,22 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 - **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
   demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine resolves
   the reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI
-  on `PATH`. On Windows, `wsl --install`, then install Node 22.13 or newer **inside** the Linux distribution and work
-  through this page from there. A *hosted*
-  deployment needs Linux for one further thing, the systemd outbox trigger —
+  on `PATH`. On Windows, `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
+  from **inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no
+  curl and no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node at all, and
+  apt's package is below the floor above, so `npx` answers "not found" before anything of ours runs.
+  From the Ubuntu prompt:
+
+  ```bash
+  sudo apt update && sudo apt install -y curl
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+  . "$HOME/.nvm/nvm.sh" && nvm install 22    # 22.13 or newer, per the floor above
+  npm install -g @anthropic-ai/claude-code
+  claude                              # once, interactively, to sign in
+  npx clearotron install
+  ```
+
+  A *hosted* deployment needs Linux for one further thing, the systemd outbox trigger —
   [driver/systemd/README.md](driver/systemd/README.md).
 - **A reasoning CLI on your `PATH`, signed in.** This is the prerequisite people miss. Every stage runs
   as a headless turn of a third-party binary, and `CLEAROTRON_AI` picks which one for the whole install.
