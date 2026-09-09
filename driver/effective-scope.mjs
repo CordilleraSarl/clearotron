@@ -118,9 +118,30 @@ export const jobJurisdictions = (job) =>
  * carries thirty-odd line-number citations from other files, so inserting explanation into it silently
  * repoints all of them. Keeping the reasoning where the rule lives costs that file no lines.
  */
+/**
+ * The account's default territories, split by whether the engine can search them.
+ *
+ * ONE reading of `defaultJurisdictions`, because there were two and they disagreed in silence. The
+ * prompt line below dropped what the vocabulary did not recognize; the resolved scope carried the same
+ * entries through untouched. So a misspelled default was simultaneously absent from what the model was
+ * told and present in what the search planned against — and the person who typed it saw neither.
+ *
+ * `unrecognized` is what `recognizedTerritories` calls `dropped`, renamed at this boundary because its
+ * own docstring states the rule the caller has to keep: it is A FINDING, NEVER A SILENCE. Returning it
+ * is what makes that possible; `resolveEffectiveScope` is where it reaches somebody.
+ *
+ * NOT a filter on what gets searched. What a stored default DOES is a client-outcome question and it is
+ * not this function's to answer — tracker issue 417 is explicit that the request path's tolerance for an
+ * unrecognized territory stays exactly as it is. This reports; it does not narrow.
+ */
+export function defaultTerritoryState(profile) {
+  const { kept, dropped } = recognizedTerritories(profile ? profile.defaultJurisdictions ?? [] : []);
+  return { kept, unrecognized: dropped };
+}
+
 export function defaultJurisdictionsLine(job, profile) {
   if (jobJurisdictions(job).length) return [];
-  const { kept } = recognizedTerritories(profile ? profile.defaultJurisdictions ?? [] : []);
+  const { kept } = defaultTerritoryState(profile);
   return kept.length
     ? [`Customer-default jurisdictions that materially matter (the request names none — apply these): ${kept.join(", ")}.`]
     : [];
@@ -203,6 +224,14 @@ export function resolveEffectiveScope(job = {}, profile = null, resolved = null)
     // The common-law grid's size follows the platform list, so widening the marketplaces widens the
     // work. Surfaced because it is the part a requester cannot infer from their own request.
     gridCellsPerVariant: profile ? derivedFloor(widened) : null,
+    // The stored defaults the engine cannot search — named, so the person approving a run can see that
+    // the configuration says more than the search will do. Empty on a profile with none, which is every
+    // profile written through an editor that refuses them at the point of entry.
+    //
+    // Reported off the PROFILE rather than off this run's ladder outcome. A default that lost to a
+    // request is still a default that will never work, and a reader who only hears about it on the runs
+    // where it happened to apply learns about a broken setting at random.
+    unrecognizedDefaultTerritories: defaultTerritoryState(profile).unrecognized,
   };
 }
 
