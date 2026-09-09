@@ -3,7 +3,7 @@
 //
 // headless-page.mjs — did the browser open the page we asked for, or something of its own?
 //
-// (and, since tracker issue 227 criteria 3-4, whether this box can draw what that page says)
+// (and, since criteria 3-4, whether this box can draw what that page says)
 //
 // ── WHY THIS EXISTS ─────────────────────────────────────────────────────────────────────────────────
 //
@@ -204,7 +204,7 @@ export function chromeErrorPage(dom = "") {
     || /jstcache=|<body[^>]*\bid="?neterror"?/.test(t);
 }
 
-// ── CAN THIS BOX DRAW WHAT THE PAGE SAYS? (tracker issue 227, criteria 3 and 4) ──────────────────────
+// ── CAN THIS BOX DRAW WHAT THE PAGE SAYS? (criteria 3 and 4) ─────────────────────────────────────────
 //
 // The default demo product is a full-country search, and its report carries the mark's native-script
 // renderings — ベンクリ, ベンコリ, ヴェンコリ. They are LOAD-BEARING: the verdict sentence reads "A live

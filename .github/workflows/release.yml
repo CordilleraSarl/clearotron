@@ -9,7 +9,7 @@
 # the merge — the tag, the GitHub release, the publish to npm — happens here.
 #
 # WHO PERFORMS THAT ACT DEPENDS ON THE CHANNEL. A beta is a maintainer's call, dispatched on demand. A
-# stable is the owner's word: it exits pre mode and goes to `latest` (tracker issue 230, unchanged).
+# stable is the owner's word: it exits pre mode and goes to `latest`, and that has not changed.
 #
 # HOW IT PUBLISHES, AND WHY THERE IS NO TOKEN. npm Trusted Publishing: the registry is configured to
 # trust this repository, this workflow file, and the `npm` environment, and npm exchanges the run's OIDC
@@ -23,7 +23,7 @@
 # act under the owner's 2026-08-26 ruling. Two rulings moved it — 2026-09-04, tag-triggered publish from
 # CI approved; 2026-09-05, Trusted Publishing configured for this repository.)
 #
-# WHAT FIRES THE PUBLISH, AND WHAT NO LONGER DOES (tracker issue 264, owner's ruling 2026-09-07).
+# WHAT FIRES THE PUBLISH, AND WHAT NO LONGER DOES — owner's ruling, 2026-09-07.
 # A MERGE PUBLISHES NOTHING. A beta is cut on demand, by a maintainer, at the natural points — after a
 # bundle lands that a tester should see, or while a stable is being prepared — days apart, never hours.
 # That is `workflow_dispatch` with `cut: beta`. Everything else fires a publish exactly as before: a tag
@@ -114,7 +114,7 @@ on:
   schedule:
     - cron: '*/5 * * * *'
   #
-  # `workflow_dispatch` IS HOW A BETA IS CUT (tracker issue 264, owner's ruling 2026-09-07), and it is
+  # `workflow_dispatch` IS HOW A BETA IS CUT — owner's ruling, 2026-09-07 — and it is
   # still the rehearsal. Two modes, and the default is the old behaviour: `rehearse` dry-runs everything
   # exactly as before, `beta` cuts one pre-release on demand. Nothing publishes on a merge any more, so
   # this input is the only thing that starts a release during the pre-release phase.
@@ -548,7 +548,7 @@ jobs:
           CLEAROTRON_CUT_REF: ${{ github.sha }}
         run: node scripts/release-cut-decision.mjs
 
-      # ── AND THE GATE COMES AFTER IT (tracker issue 208 / tracker issue 229) ─────────────────────────
+      # ── AND THE GATE COMES AFTER IT ─────────────────────────────────────────────────────────────────
       #
       # ORDER IS THE POINT. The decision above is what notices a version sitting cut and unpublished, and
       # it used to run AFTER the step below. On 2026-09-06 that step failed on a parked run and both
@@ -795,7 +795,7 @@ jobs:
       cut: ${{ steps.awaited.outputs.cut }}
       version: ${{ steps.awaited.outputs.version }}
       # THE COMMIT THE WAIT DECIDED ABOUT, so the publish below packs that tree and not whatever `main`
-      # has become since — see tracker issue 238 and the guard in that job.
+      # has become since — see the guard in that job.
       sha: ${{ steps.awaited.outputs.sha }}
     steps:
       # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` ──────────────────────────────────────
@@ -1108,8 +1108,8 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
-      # A PRE-RELEASE IS TAGGED AND GETS A PRE-RELEASE ENTRY (owner's ruling 2026-09-07, tracker issue
-      # 264, reversing his 2026-09-06 ruling that it should get none). The objection that ruling was
+      # A PRE-RELEASE IS TAGGED AND GETS A PRE-RELEASE ENTRY (owner's ruling 2026-09-07, reversing
+      # his 2026-09-06 ruling that it should get none). The objection that ruling was
       # made on — one entry per beta buries the stable somebody came for — is answered by the flag
       # rather than by silence: GitHub shows the latest NON-prerelease as the release, and marked
       # pre-releases sit under it. That is what openclaw's page does with 240 entries on it, which is
@@ -1242,8 +1242,7 @@ jobs:
       # the bytes of the previous version and publish them under the new number. But `main` is a NAME,
       # and between the wait's last read and this checkout it can move on to a commit that changes no
       # version: an instrument fix with no note passes the tip check below untouched, because that check
-      # compares VERSIONS. Naming the commit is what makes the two ends talk about one tree. tracker
-      # issue 238.
+      # compares VERSIONS. Naming the commit is what makes the two ends talk about one tree.
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.awaited.outputs.sha }}
@@ -1497,8 +1496,8 @@ jobs:
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
-      # A PRE-RELEASE IS TAGGED AND GETS A PRE-RELEASE ENTRY (owner's ruling 2026-09-07, tracker issue
-      # 264, reversing his 2026-09-06 ruling that it should get none). The objection that ruling was
+      # A PRE-RELEASE IS TAGGED AND GETS A PRE-RELEASE ENTRY (owner's ruling 2026-09-07, reversing
+      # his 2026-09-06 ruling that it should get none). The objection that ruling was
       # made on — one entry per beta buries the stable somebody came for — is answered by the flag
       # rather than by silence: GitHub shows the latest NON-prerelease as the release, and marked
       # pre-releases sit under it. That is what openclaw's page does with 240 entries on it, which is
