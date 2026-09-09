@@ -726,7 +726,10 @@ test('the marketplaces column says what the shops are and where they come from',
   //
   // Flagged on the issue. His wording is the acceptance and it ships; what it drops is his to decide.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /forced deep dive inherited from Company and\s+then Project configuration/,
+  // The two nouns read as nouns here, not as screen names. A mechanical sweep left this as "inherited
+  // from Company and then Project configuration", which is the field's label read aloud rather than a
+  // sentence about where the marketplaces came from.
+  assert.match(prose, /forced deep dive inherited from the company and\s+then the project/,
     'says what the shops are and that they are inherited rather than chosen here')
   assert.match(prose, /common law sweeps everything it can find on the\s+open web/,
     'and that the open web is swept anyway, so a reader knows what the list ADDS')

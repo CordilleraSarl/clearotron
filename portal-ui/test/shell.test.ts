@@ -16,12 +16,15 @@ const body = shell.split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join
 test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN, not the screen', () => {
   // The screen name earned nothing up there — the sidebar already highlights the active item.
   //
-  // It says the COMPANY on an owner-scoped screen and the ACCOUNT on an account-scoped one, and
-  // that it varies is the point rather than an inconsistency: Home and Clearances span everything the
-  // account holds and deliberately ignore the switcher, so naming one company over them would
-  // assert a filter that is not being applied. Read off the screen's own `scope` — the same field that
-  // decides which side of the switcher it sits on — so the two can never disagree.
-  assert.match(body, /scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : accountName/)
+  // It says the COMPANY on a company-scoped screen and NOTHING on an account-scoped one. That it varies
+  // is the point rather than an inconsistency: Home spans everything the identity holds, so naming one
+  // company over it would assert a filter that is not being applied. Read off the screen's own `scope`
+  // — the same field that decides which side of the switcher it sits on — so the two cannot disagree.
+  //
+  // THE EMPTY HALF USED TO BE `accountName`, which was the COMPANY for a client holding one grant. With
+  // that slot now carrying the organisation for everyone, repeating it here would print one name twice
+  // on one bar, which is how a label stops being read.
+  assert.match(body, /scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : ''/)
   assert.doesNotMatch(body, /<h1>\{entry\?\.label/, 'the screen label no longer heads the page')
 })
 

@@ -930,9 +930,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                       reader asks of both. (The footnote treatment it replaced put the answer to "why can
                       I not remove these" at 11px beside class chips that all carry an ×.) */}
                   <p style={{ margin: '9px 0 0', fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                    Every marketplace listed here is a forced deep dive inherited from Company and
-                    then Project configuration. By default common law sweeps everything it can find on the
-                    open web, but this ensures particular focus to important markets.
+                    Every marketplace listed here is a forced deep dive inherited from the company and
+                    then the project. By default common law sweeps everything it can find on the open web,
+                    but this ensures particular focus to important markets.
                   </p>
                   <div style={{ marginTop: 10 }}>
                     <div className="field-label">Add more for this search</div>

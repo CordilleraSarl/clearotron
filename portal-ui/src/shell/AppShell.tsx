@@ -527,12 +527,13 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
               deliberately ignore the switcher, so naming one company over them would be actively
               misleading — it would assert a filter that is not being applied. Below the line the title
               and the switcher agree, because there the switcher is what chose it.
-              ACCOUNT is untouched at the right, labelled. The two nouns stay rigidly apart (see the
-              header of this file); on an account-scoped screen the title and that label are the same
-              fact, which is why the label carries the word "Account" and the title does not.
+              AND ON AN ACCOUNT-SCOPED SCREEN IT SAYS NOTHING. It used to say `accountName`, which was
+              the COMPANY for a client holding one grant — so the bar named a company over Home, which
+              spans all of them. With that slot now carrying the ORGANISATION for everyone, repeating it
+              here would print one name twice on one bar, which is how a label stops being read.
               Screens keep their own heading in the body, so nothing is lost to a screen reader. */}
           <h1 data-anon="mark">
-            {!entry ? 'Not found' : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : accountName ?? ownerName(ownerInView)}
+            {!entry ? 'Not found' : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : ''}
           </h1>
 
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, position: 'relative' }}>
