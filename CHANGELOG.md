@@ -4,6 +4,16 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.2.4
+
+### Fixed
+
+- A search that was planned and never run is disclosed on the report again, even when another search mentions the same word.
+- Seven fixed sentences on the clearance report are now written for the person reading it.
+- The demo now names the register its example run was captured against.
+- The lines a client reads first are now checked for the profession's vocabulary and for sentences carrying more than one idea. The reviewing pass rewrites them before delivery. Nothing about the check is shown to the client, and no run fails over it. A report clearing a name like PREVAIL is unaffected, because the mark being cleared is never read as a legal term.
+- The screen that will not start a search now gives advice that fits your machine.
+
 ## 0.2.3
 
 ### New
