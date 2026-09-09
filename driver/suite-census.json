@@ -4251,6 +4251,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-bar-names-no-organisation-nobody-named.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-boot-line-cannot-claim-a-lane-it-has-not-got.test.mjs": {
           "tests": 4,
           "asserts": 10,
@@ -4332,6 +4338,12 @@
         "the-door-answers-the-address-it-advertises.test.mjs": {
           "tests": 9,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-door-sees-a-company-created-after-it-booted.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -5389,6 +5401,12 @@
           "skips": 0,
           "todos": 0
         },
+        "companyOrder.test.ts": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "compose.test.ts": {
           "tests": 8,
           "asserts": 29,
@@ -5564,8 +5582,8 @@
           "todos": 0
         },
         "profileFields.test.ts": {
-          "tests": 48,
-          "asserts": 141,
+          "tests": 49,
+          "asserts": 145,
           "skips": 0,
           "todos": 0
         },
