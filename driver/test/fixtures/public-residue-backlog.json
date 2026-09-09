@@ -9,7 +9,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 424,
+  "total": 423,
   "files": {
     ".gitattributes": [
       0,
@@ -1462,16 +1462,6 @@
       0
     ],
     "scripts/ai-page-render-check.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "scripts/citation-line-check.mjs": [
       0,
       1,
       0,

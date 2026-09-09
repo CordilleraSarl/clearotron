@@ -15,7 +15,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -215,4 +216,21 @@ test("a line carrying another citation is handed off, never rewritten", () => {
   assert.equal(s.strippedTotal, 1, "the line carrying diffcase-keep.mjs:4 keepRow was rewritten anyway");
   assert.equal(s.handoff.length, 1, "and it must reach the reader instead");
   assert.ok(s.handoff[0].text.includes("diffcase-keep.mjs:4 keepRow"), "the held-back line is the one carrying the by-line citation");
+});
+
+test("the sweep is a fixed point on the tree it has already swept", () => {
+  // WHAT THIS CATCHES, AND IT IS NOT HYPOTHETICAL. Repairing two re-aged lines by restoring the whole
+  // file put a sweepable citation back with them, and it then sat in NEITHER pile: not stripped,
+  // because the sweep had not been re-run, and not on the hand-off list either, because the survey
+  // strips a line before classifying what remains. A line in neither pile is invisible to every count
+  // this file prints. Found in review.
+  //
+  // Driven over the real tracked tree rather than a fixture: a fixture would prove the property of the
+  // fixture, and the defect was in what the repository actually held.
+  const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
+    .split("\n").filter(Boolean);
+  const s = surveyOf(tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
+  assert.ok(tracked.length > 100, `read ${tracked.length} tracked path(s) — the population is not the tree`);
+  assert.equal(s.strippedTotal, 0,
+    `the sweep would still rewrite ${s.strippedTotal} line(s) of a tree it has already swept — re-run it and commit the result`);
 });

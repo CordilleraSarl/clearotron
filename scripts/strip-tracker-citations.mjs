@@ -121,7 +121,13 @@ export const ANY_CITATION = /\btracker issues?\s+\d+/i;
 // checked the lines the sweep LEAVES and found none carrying a by-line citation, and reported the
 // hazard as absent. The hazard is on the lines the sweep REWRITES, and I had not looked at those at
 // all. An answer about the wrong set is not a smaller answer, it is a different question.
-export const CARRIES_ANOTHER_CITATION = /[A-Za-z0-9_.\-/]+\.(?:mjs|js|md|yml|json|ts):\d+/;
+// A DOT-EXTENSION, NOT A LIST OF THEM. Naming six extensions made this blind to the rest: the tree
+// carries three by-line citations outside that list — one into a stylesheet and two into a run log —
+// and any of them sitting on a sweepable line would have been rewritten and re-aged silently. It is the
+// `:<line>` that makes a citation, not which language the target happens to be written in. Widening it
+// changes nothing on today's tree, which is the point: the same answer from a rule that cannot go blind
+// the day somebody cites a seventh kind of file.
+export const CARRIES_ANOTHER_CITATION = /[A-Za-z0-9_.\-/]+\.[A-Za-z0-9]+:\d+/;
 
 export const EXCLUDED = [
   // Citations used as literal test DATA — the corpus the citation guard is checked against.
