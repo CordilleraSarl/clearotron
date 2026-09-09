@@ -33,6 +33,7 @@ import { findRegistryArithmeticIssues, findRegistryViolations, splitBlocks } fro
 import { CLIENT_TIER_BY_COMPOSITE, joinFindingToBlock, parseBlockOrd, worstLiveBand, NO_RATED_CONFLICTS, deriveActionConditions, isUnconditionalProceed, verdictStance, joinAskToAnswer, projectAssessmentField, POSITION_REQUIRED_DISPOSITIONS, OFF_FIELD_GROUNDS, FINDINGS_SCHEMA_VERSION, netChainMarkers, STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";
 import { normalizeBand } from "./framework.mjs";
 import { knockoutNoteView, REQUEST_NOTE_WORDS, REQUEST_SUBJECT_WORDS } from "./findings-model.mjs";   // one reader for where a note prints
+import { isEngineAppendedCaveat } from "./verify-knockout.mjs";   // ONE derivation for "the engine appended this caveat, not a seat"
 
 // V4-3: diacritics FOLD (NFD strip) instead of being deleted — "Televisión" must normalize to
 // "television" (deletion made it "televisin", so a diacritic mention never matched its introduction).
@@ -2399,22 +2400,39 @@ const knockoutSurfaces = (findings) => {
 /**
  * The fields a reader of the knockout meets before opening anything, named one by one rather than
  * derived, so adding a field to the page is a deliberate addition here too.
+ *
+ * EVERY ENTRY CARRIES A TYPED ADDRESS as well as its human label, and the reviewing pass binds its
+ * rewrites to that address rather than to the label. The label is prose for a person; two marks whose
+ * names differ only in case produce two different labels for one field, and a rewrite matched on prose
+ * would land on whichever the seat quoted. `at` is {field, mark?, index?, ordinal?} and is what the
+ * merge joins on — the knockout has no correction cycle to inherit a join key from, so this lane
+ * defines its own rather than resolving prose after the fact.
+ *
+ * `at.engineOwned` marks the sentences the ENGINE appends, not a seat: the survivor-boundary note and
+ * the skipped-capability note. They stay in the walk because the internal lint should still read
+ * them — an over-long engine caveat is a real defect, for whoever edits the code that emits it. They
+ * are not offered to the reviewing pass: a rewrite there would either break `SURVIVOR_BOUNDARY_RE` at
+ * delivery or append a second copy of the note, and both are silent. `isEngineAppendedCaveat` is the
+ * derivation that already tells them apart; this does not write a second one.
  */
-function knockoutVisibleProse(findings) {
+export function knockoutVisibleProse(findings) {
   const out = [];
-  const add = (where, v) => { const t = String(v ?? "").trim(); if (t) out.push({ where, text: t }); };
-  add("the batch summary", findings?.batch?.executiveSummary);
-  for (const c of findings?.batch?.standardCaveats ?? []) add("a standing caveat", c);
+  const add = (where, v, at) => { const t = String(v ?? "").trim(); if (t) out.push({ where, text: t, at }); };
+  add("the batch summary", findings?.batch?.executiveSummary, { field: "batch.executiveSummary" });
+  (findings?.batch?.standardCaveats ?? []).forEach((c, i) =>
+    add("a standing caveat", c, { field: "batch.standardCaveats", index: i, engineOwned: isEngineAppendedCaveat(c) }));
   for (const m of findings?.marks ?? []) {
     const n = String(m?.name ?? "a mark");
-    add(`${n}'s basis line`, m?.basis);
-    for (const f of m?.factors ?? []) add(`${n}'s "why this band" list`, f);
-    for (const f of m?.counterFactors ?? []) add(`${n}'s "why not the next band" list`, f);
-    add(`${n}'s mitigation line`, m?.mitigation);
-    for (const p of m?.purpleNotes ?? []) add(`${n}'s note to the reviewing lawyer`, p?.text ?? p);
-    for (const r of m?.registerReads ?? []) add(`${n}'s read of a filing`, r?.read);
+    add(`${n}'s basis line`, m?.basis, { field: "basis", mark: n });
+    (m?.factors ?? []).forEach((f, i) => add(`${n}'s "why this band" list`, f, { field: "factors", mark: n, index: i }));
+    (m?.counterFactors ?? []).forEach((f, i) => add(`${n}'s "why not the next band" list`, f, { field: "counterFactors", mark: n, index: i }));
+    add(`${n}'s mitigation line`, m?.mitigation, { field: "mitigation", mark: n });
+    (m?.purpleNotes ?? []).forEach((p, i) => add(`${n}'s note to the reviewing lawyer`, p?.text ?? p, { field: "purpleNotes", mark: n, index: i }));
+    (m?.registerReads ?? []).forEach((r, i) => add(`${n}'s read of a filing`, r?.read, { field: "registerReads", mark: n, index: i }));
     // The finding's ONE sentence. Its `basis` is folded and is deliberately not read here.
-    for (const f of m?.findings ?? []) add(`${n} conflict ${f?.ordinal ?? ""}`.trim(), f?.net);
+    // BOUND BY ORDINAL, NOT BY POSITION: the merged gate re-ranks and renumbers findings on the band,
+    // so an index into this array is a different row after normalisation and the ordinal is not.
+    for (const f of m?.findings ?? []) add(`${n} conflict ${f?.ordinal ?? ""}`.trim(), f?.net, { field: "findings.net", mark: n, ordinal: f?.ordinal });
   }
   return out;
 }
