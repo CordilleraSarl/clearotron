@@ -1,5 +1,39 @@
 # clearotron-driver
 
+## 0.2.4
+
+### Patch Changes
+
+- d35dd9b: Fixed: A search that was planned and never run is disclosed on the report again, even when another search mentions the same word.
+  
+  One row on the coverage section says a planned search never reached the register. That row was removed whenever another row's heading carried the same words. A row for a search that had run and found nothing could remove it.
+  
+  So a report could mention a term in its coverage section and say nothing was left undone. The only disclosure of the gap had been dropped. A completed search no longer stands in for an uncompleted one.
+  
+  Re-rendering an archived report restores the row where this had removed it.
+- b47be41: Fixed: Seven fixed sentences on the clearance report are now written for the person reading it.
+  
+  These lines print on every report and none of them was written for a client. The footer explained the risk-band vocabulary to a developer. A paragraph defined a label most readers never saw on their page. An internal coverage note ran to about a thousand characters of the engine's own search names and ended mid-word.
+  
+  Registration numbers no longer carry "(placeholder)" where the register has no per-record link — the number stands on its own. A gap that was disclosed twice, once in the model's words and once in the engine's, is disclosed once. Three section captions say what the section is rather than how it was produced. And a use check that found nothing no longer prints an evidence tag beside it, which read as a contradiction.
+  
+  The page also no longer calls itself a working draft for legal review. That sentence printed on every report and went with the footer rewrite; it is a deliberate removal, not a casualty of one.
+  
+  Nothing here changes what was searched, counted, rated or judged. Every fact about where a record came from is still there: the registration numbers, the dates they were read, the year each was registered.
+- a4c9045: Fixed: The demo now names the register its example run was captured against.
+  
+  `clearotron demo` said the run came from a production EU register. It did not. All four frozen runs were captured against Clarivate Compumark, which is what their own records and the reports say. The label also carried a capture date that matches none of the four runs, so it has gone.
+  
+  The line now says what it is: a real run against Clarivate Compumark, and replaying it needs no account, no key and no network. That last part was always true and is worth saying where a reader meets it.
+- f3bab16: Fixed: The lines a client reads first are now checked for the profession's vocabulary and for sentences carrying more than one idea. The reviewing pass rewrites them before delivery. Nothing about the check is shown to the client, and no run fails over it. A report clearing a name like PREVAIL is unaffected, because the mark being cleared is never read as a legal term.
+- 862f76a: Fixed: The screen that will not start a search now gives advice that fits your machine.
+  
+  An install with the engine program present, but invisible to the engine service, was told to install a program it already had. That advice cannot work. Following it changes nothing, because the engine reads its PATH when it starts. Until it is restarted, every screen reports what it saw at startup. Nothing said so.
+  
+  The New clearance notice now tells those two states apart. Where the program is absent it gives the install advice as before. It adds that the service has to be restarted afterwards before it will notice. Where the program is present and the engine cannot see it, the notice says that instead, and names the restart as the remedy. Staff also get a link from that notice to the configuration page.
+  
+  The configuration page's engine row now names the program it could not find. It names the command that installs it too, and `clearotron doctor` says the same, in the same words.
+
 ## 0.2.3
 
 ### Patch Changes
