@@ -44,21 +44,53 @@ const LONG = "This sentence is deliberately written to run well past the limit a
   + "is allowed to carry so that the deterministic read has something it must flag on the surface "
   + "being planted into rather than somewhere else entirely.";
 
-test("the walk and the addressable set name the same fields — neither may drift below the other", () => {
-  // A field in the walk and NOT addressable is a line a reader meets that the pass cannot reach, which
-  // is the defect this stage exists to close. A field addressable and not in the walk is an address the
-  // seat can be handed for a line nobody sees. Compared as SETS: two counts agreeing is not agreement.
+test("the addressable set is what a CLIENT sees first, and every difference from the walk is named", () => {
+  // The walk and this set are different on purpose, in two directions, and the arm names each difference
+  // rather than asserting they match. Compared as SETS: two counts agreeing is not agreement, and these
+  // two lists held nine entries each while being different nines.
   const walked = new Set(knockoutVisibleProse(record()).map((v) => v.at.field));
   const addressable = new Set(Object.keys(ADDRESSABLE));
-  for (const f of walked) assert.ok(addressable.has(f), `"${f}" is walked as default-visible and cannot be addressed`);
-  // The demo record carries one mark, so it exercises most of the walk but not every branch of it —
-  // `registerReads` is empty there. The set it DOES reach must be a subset, and the addressable set is
-  // allowed to be wider only by fields the walk would produce on a record that carries them.
-  for (const f of addressable) {
-    assert.ok(
-      walked.has(f) || ["registerReads"].includes(f),
-      `"${f}" is addressable but the walk never produces it — an address for a line nobody sees`);
+
+  // WIDER BY DESIGN, and only by the fields whose exclusion has a stated reason. `registerReads` is
+  // walked and is not in DEFAULT_VISIBLE_FIELDS.knockout, so it is not a line a client meets first and
+  // the pass does not reach it; reconciling the two product lists is filed separately. Any OTHER field
+  // appearing here is a surface a reader meets that nothing can rewrite — the defect this pass closes.
+  const WALKED_NOT_ADDRESSABLE = ["registerReads"];
+  for (const f of walked) {
+    assert.ok(addressable.has(f) || WALKED_NOT_ADDRESSABLE.includes(f),
+      `"${f}" is walked as visible prose, cannot be addressed, and has no stated reason`);
   }
+  // The reason has to stay true: a field named here that the walk can no longer produce is a stale
+  // exclusion. Driven against a record that CARRIES one — the delivered demo has an empty
+  // `registerReads`, so asserting this off that record would test the fixture and not the walk.
+  const carrying = record();
+  carrying.marks[0].registerReads = [{ recordId: "r1", read: "A read of one filing." }];
+  const walkedOnAFullRecord = new Set(knockoutVisibleProse(carrying).map((v) => v.at.field));
+  for (const f of WALKED_NOT_ADDRESSABLE) {
+    assert.ok(walkedOnAFullRecord.has(f), `"${f}" is excluded from the pass and the walk no longer produces it — stale`);
+    assert.equal(addressable.has(f), false, `"${f}" is both excluded and addressable`);
+  }
+  // Nothing addressable may be absent from what a reader meets, or the seat holds an address for a line
+  // nobody sees.
+  for (const f of addressable) {
+    assert.ok(walked.has(f), `"${f}" is addressable but the walk never produces it — an address for a line nobody sees`);
+  }
+});
+
+test("a line the pass cannot address is never OFFERED to it either", () => {
+  // Withholding it from ADDRESSABLE alone would leave the dispatch listing a line and the applier
+  // refusing it — the seat's turn spent on a rewrite that was never going to land.
+  const doc = record();
+  doc.marks[0].registerReads = [{ recordId: "r1", read: LONG }];
+  const ev = reviewEvidence(doc, reviewAbout(doc, null));
+  assert.equal(ev.rows.some((r) => r.at.field === "registerReads"), false,
+    "a field outside the pass was offered as evidence");
+  // …and the control: the same planted sentence on an addressable field IS offered, so the arm above
+  // is not satisfied by a measurement that found nothing at all.
+  doc.marks[0].mitigation = LONG;
+  const ev2 = reviewEvidence(doc, reviewAbout(doc, null));
+  assert.ok(ev2.rows.some((r) => r.at.field === "mitigation"),
+    "the evidence pass found nothing on an addressable field — it is measuring nothing");
 });
 
 test("the walk reaches a plausibly large surface — a floor, so a broken walk cannot read as a clean one", () => {

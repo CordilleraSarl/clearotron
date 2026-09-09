@@ -65,11 +65,29 @@ const DECLARED = {
 /**
  * The addressable fields, and the shape each address takes.
  *
- * STATED HERE, and asserted against `knockoutVisibleProse` by an arm. The walk is the authority on what
- * a reader sees; this is the authority on what a rewrite may reach, and the two are different sets on
- * purpose: the engine's own appended caveats are in the walk and are not addressable. An arm that let
- * this list drift below the walk would leave a surface silently unreachable, which is the defect the
- * pass exists to close, so the arm compares the SETS rather than the counts.
+ * THE SET IS WHAT A CLIENT SEES FIRST, WHICH IS NARROWER THAN THE WALK — in two different directions,
+ * and each has to be said or the next reader repairs the wrong one.
+ *
+ * NARROWER BY WHO WROTE IT. The engine appends two of the standing caveats itself. They are in the walk
+ * because an over-long engine caveat is a real defect for whoever edits the code that emits it, and they
+ * are not addressable because a rewrite there breaks a delivery-time match or appends a second copy of
+ * the note, silently either way.
+ *
+ * NARROWER BY WHAT A READER MEETS. `marks[].registerReads[].read` is in the walk and is NOT in
+ * `DEFAULT_VISIBLE_FIELDS.knockout`. The walk is the authority on what the internal lint should READ;
+ * that list is the authority on what a client meets before opening anything, and this pass is scoped to
+ * the second — its own instruction to the seat says "a line a reader meets before opening anything", and
+ * the ruling that authorised it says the lines a client reads. So a field that is visible to the lint and
+ * not on that list is outside the pass, and the pass reaches eight.
+ *
+ * THAT THE TWO LISTS DISAGREE AT ALL IS A SEPARATE DEFECT, and it is filed as one rather than repaired
+ * here. Reconciling them is a change to what the product calls default-visible; making the pass ACT on
+ * the disagreement — which is what including `registerReads` did — would settle that question as a side
+ * effect of a rewrite pass, on delivered prose, with nothing recording that it had been decided.
+ *
+ * An arm compares the SETS rather than the counts, and names each difference. Both lists happened to
+ * hold nine entries while being different nines, which is exactly how a reconciliation reads as correct
+ * when it is not.
  */
 export const ADDRESSABLE = Object.freeze({
   "batch.executiveSummary": Object.freeze([]),
@@ -79,7 +97,6 @@ export const ADDRESSABLE = Object.freeze({
   factors: Object.freeze(["mark", "index"]),
   counterFactors: Object.freeze(["mark", "index"]),
   purpleNotes: Object.freeze(["mark", "index"]),
-  registerReads: Object.freeze(["mark", "index"]),
   "findings.net": Object.freeze(["mark", "ordinal"]),
 });
 
@@ -205,7 +222,10 @@ export function mergeKnockoutReviewCall(was, now) {
 export function reviewEvidence(merged, about = {}) {
   const rows = [];
   for (const { where, text, at } of knockoutVisibleProse(merged)) {
-    if (at?.engineOwned) continue;
+    // OFFERED ONLY WHAT CAN BE REWRITTEN. The walk is wider than this pass in both directions — see
+    // ADDRESSABLE — and handing a seat a line it cannot address wastes the turn and teaches it that a
+    // refused address is normal.
+    if (at?.engineOwned || !Object.hasOwn(ADDRESSABLE, at?.field)) continue;
     const flags = plainRegisterFlags(text, about);
     if (!flags.length) continue;
     rows.push({ at, where, says: flags.map((f) => f.say) });
