@@ -1907,10 +1907,44 @@ function upstreamSpy(over = {}) {
       writeProject: rec("writeProject"),
       writeProfile: rec("writeProfile"),
       listRoster: rec("listRoster"),
+      createCompany: rec("createCompany"),
       ...over.methods,
     },
   };
 }
+
+test("creating a company is mounted, reaches the wall, and takes no account from the body", async () => {
+  const { calls, up } = upstreamSpy();
+  const { service } = world({ upstream: up });
+
+  const r = await service.route("POST", "/portal/api/config/companies", STAFF,
+    { name: "Aurora Holdings", account: "zephyr" }, {});
+  assert.equal(r.status, 200, "the spy answers 200; what matters is which method it reached");
+  assert.deepEqual(calls.map((c) => c.name), ["createCompany"]);
+  // The route hands the wall the principal and the body, and nothing else. An account argument here
+  // would be the second implementation of tenancy this block's own header refuses to have.
+  assert.equal(calls[0].args.length, 2, "principal and body — no account argument");
+  // The RESOLVED principal, not the raw identity: the wall's permission test reads `role`, which only
+  // exists after makePrincipal has run. Asserting the fixture object here would pass on a route that
+  // forwarded an unresolved identity, and the wall would then refuse every create.
+  assert.equal(calls[0].args[0].email, STAFF.email);
+  assert.equal(calls[0].args[0].role, "staff", "the wall is handed something it can make a decision from");
+  assert.equal(calls[0].args[1].name, "Aurora Holdings");
+});
+
+test("a wrong verb on the create route is NOT FOUND, never method-not-allowed", async () => {
+  const { calls, up } = upstreamSpy();
+  const { service } = world({ upstream: up });
+
+  // 405 would make this endpoint distinguishable from one that does not exist, which is the fact the
+  // 404 rule protects. Both other verbs, so a branch answering only for GET could not pass.
+  for (const method of ["GET", "PUT"]) {
+    const r = await service.route(method, "/portal/api/config/companies", STAFF, {}, {});
+    assert.equal(r.status, 404, `${method} is not found`);
+    assert.deepEqual(r.json, { error: "not_found" });
+  }
+  assert.deepEqual(calls, [], "no verb but POST reached the wall");
+});
 
 test("saved searches: list, read and write are mounted, and the account is never taken from the body", async () => {
   const { calls, up } = upstreamSpy();

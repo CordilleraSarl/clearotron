@@ -14,7 +14,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { makeUpstream, stripCodeOwned, serializeProfile, readOnlyFields, frameworkView, PATH_FIELDS, CODE_OWNED_FIELDS } from "../portal-upstream.mjs";
+import { makeUpstream, stripCodeOwned, serializeProfile, readOnlyFields, frameworkView, PATH_FIELDS, CODE_OWNED_FIELDS, CREATABLE_FIELDS } from "../portal-upstream.mjs";
 import { makePrincipal, PortalDeny } from "../portal-access.mjs";
 
 const GRANTS = { tenants: {
@@ -76,6 +76,75 @@ test("the customer ROSTER is never proxied to a client — it is the list of eve
   const up = makeUpstream({ callUpstream: async () => ({ status: 200, json: {} }), roster: async () => [{ key: "aurora" }] });
   assert.equal((await up.listRoster(CLIENT)).status, 404);
   assert.equal((await up.listRoster(STAFF)).status, 200);
+});
+
+// ── creating a company: the one method that resolves no account ─────────────────────────────────────
+
+test("BREACH: a client cannot create a company, and is not told the endpoint exists", async () => {
+  const { calls, up } = spy();
+  const r = await up.createCompany(CLIENT, { name: "Aurora Holdings" });
+
+  // 404, never 403. A 403 would confirm the endpoint is there and that somebody else may use it.
+  assert.equal(r.status, 404);
+  assert.deepEqual(r.json, { error: "not_found" });
+  // Nothing reached upstream. A refusal that still made the call would have written the company.
+  assert.deepEqual(calls, []);
+});
+
+test("BREACH: a browser cannot set the framework that rates a company, on the way in", async () => {
+  const { calls, up } = spy();
+  // The attack is the same one the save path is guarded against, through the newer door: point a
+  // brand-new company at a framework that rates everything clear, at the moment nobody is looking.
+  await up.createCompany(STAFF, {
+    name: "Aurora Holdings",
+    frameworkPath: "frameworks/always-clear.md",
+    workedExamplesPath: "evil.md",
+    allowedRecipes: ["*"],
+    runCaps: { all: true },
+    author: "someone-else@example.com",
+  });
+
+  assert.equal(calls.length, 1, "the create reached upstream");
+  const sent = calls[0].body;
+  assert.equal(sent.name, "Aurora Holdings", "what the person typed is carried");
+  for (const k of ["frameworkPath", "workedExamplesPath", "allowedRecipes", "runCaps", "author"]) {
+    assert.ok(!(k in sent), `${k} did not cross the wall`);
+  }
+  // The floor: a wall that dropped EVERYTHING would satisfy every line above.
+  assert.deepEqual(Object.keys(sent), ["name"], "exactly the stated field, and nothing invented");
+});
+
+test("what a browser MAY state is a named list, and every name on it survives the wall", async () => {
+  const { calls, up } = spy();
+  const draft = { name: "Aurora", key: "aurora-2", industry: "beverages",
+    matchDomains: ["aurora.example"], platforms: ["shop.example"] };
+  await up.createCompany(STAFF, draft);
+
+  // Driven against the exported list rather than a copy of it, so a field added there without being
+  // thought about here fails this rather than shipping.
+  assert.deepEqual(Object.keys(calls[0].body).sort(), [...CREATABLE_FIELDS].sort());
+  assert.deepEqual(calls[0].body, draft, "carried verbatim, not reshaped");
+  assert.equal(calls[0].path, "/profiles", "the create route, not a per-account one");
+  assert.equal(calls[0].method, "POST");
+});
+
+test("a create names NO account — the one method here that resolves none", async () => {
+  const { calls, up } = spy();
+  // A body that tries to name one anyway. There is no account yet; a wall that resolved one would
+  // either refuse a legitimate create or file the new company under somebody else's key.
+  await up.createCompany(STAFF, { name: "Aurora", account: "zephyr", customer: "zephyr" });
+  assert.equal(calls[0].path, "/profiles");
+  assert.ok(!("account" in calls[0].body));
+  assert.ok(!("customer" in calls[0].body));
+});
+
+test("a create with no company object is refused before it reaches upstream", async () => {
+  const { calls, up } = spy();
+  for (const bad of [null, undefined, "Aurora", ["Aurora"], 42]) {
+    const r = await up.createCompany(STAFF, bad);
+    assert.equal(r.status, 400, `${JSON.stringify(bad) ?? "undefined"} is not a company`);
+  }
+  assert.deepEqual(calls, [], "none of them reached the store");
 });
 
 // ── rule 3: the code-owned fields ───────────────────────────────────────────────────────────────────

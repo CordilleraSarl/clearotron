@@ -2116,6 +2116,22 @@ export function makePortalService({
           }
           return r;
         }
+        // /portal/api/config/companies — CREATE. No account segment, because there is no account yet.
+        //
+        // It does not hang off `profile` for a reason worth stating: every route under that word acts on
+        // ONE company, resolved from the caller, and this one is the act of there not being one. Reusing
+        // the noun would put "the company you are in" and "the company you are making" behind the same
+        // path, which is the conflation the pick panel exists to remove.
+        //
+        // The audit row is written upstream by the create route itself, in the same commit as the file,
+        // so there is none here. An audit call copied from its neighbours would also be wrong twice: it
+        // would test `status === 200` against a 201, and file nothing.
+        if (parts[3] === "companies") {
+          if (parts.length === 4 && method === "POST") return await upstream.createCompany(principal, body);
+          // 404 for a wrong verb, as the profile branch above explains at length: 405 would make this
+          // endpoint distinguishable from one that does not exist.
+          return { status: 404, json: { error: "not_found" } };
+        }
         // /portal/api/config/projects[/:project[/{validate,save}]]
         if (parts[3] === "projects") {
           if (parts.length === 4 && method === "GET") return await upstream.listProjects(principal, acct);

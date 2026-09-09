@@ -351,8 +351,50 @@ export function makeUpstream({ callUpstream, callRecipes = null, roster = async 
       if (principal?.role !== "staff") return { status: 404, json: { error: "not_found" } };
       return { status: 200, json: { customers: await roster() } };
     },
+
+    /**
+     * Create a company. The ONE method here that does not resolve an account, because the account is
+     * what it is making.
+     *
+     * THE RULE THIS LOOKS LIKE IT BREAKS. Rule 1 at the top of this file says the account comes from
+     * the principal and never from the path or the body — and a create's key IS a body field. The rule
+     * is about REACHING an account: substituting the caller's own so nobody can name someone else's. A
+     * create names no existing account, so there is nothing to substitute and nothing to reach. What
+     * takes its place is the permission test on the line below, and the roster check further upstream,
+     * which refuses a key that already exists rather than opening it.
+     *
+     * That makes this the second account-less method, after the roster, and it is gated the same way
+     * and for the same reason. The browser's own Manage check decides whether the control is drawn; it
+     * is not a boundary and cannot be one. This line is the boundary.
+     *
+     * 404 rather than 403, per rule 2: a refusal that distinguishes "you may not" from "there is no
+     * such endpoint" tells a stranger which endpoints exist.
+     *
+     * THE FIELDS ARE NAMED, not forwarded. Two reasons, and the second is the load-bearing one. A body
+     * passed through whole hands the upstream route whatever a future caller invents. And
+     * `frameworkPath` is a real input on that route — so forwarding the body would put a framework
+     * chooser one fetch away from any browser, which the design rejected outright: no browser path sets
+     * a framework, the create resolves the house default and the receipt names it. Leaving the field
+     * out here is what makes that true by construction rather than by the screen's good manners.
+     */
+    async createCompany(principal, body) {
+      if (principal?.role !== "staff") return { status: 404, json: { error: "not_found" } };
+      if (!body || typeof body !== "object" || Array.isArray(body))
+        return { status: 400, json: { error: "a company is required" } };
+      const draft = {};
+      for (const k of CREATABLE_FIELDS) if (body[k] !== undefined) draft[k] = body[k];
+      return call("POST", "/profiles", draft, principal);
+    },
   };
 }
+
+/**
+ * What a browser may state when creating a company.
+ *
+ * Everything else the profile carries has a default the create path resolves, or is code-owned and set
+ * there. `frameworkPath` is deliberately absent — see `createCompany`.
+ */
+export const CREATABLE_FIELDS = Object.freeze(["name", "key", "industry", "matchDomains", "platforms"]);
 
 /**
  * A project key must be a plain slug.
