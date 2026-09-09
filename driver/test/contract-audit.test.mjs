@@ -655,10 +655,10 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
     "if nothing is unplanned any more, every dictated structure has a move — say so in the handover, it is a milestone");
 });
 
-test("E3: knockout-frame and knockout-assess are linted but carry no E1 declaration (a recorded gap)", () => {
-  // audits both; they live in stages-knockout.mjs, not STAGES, so this scaffolding does not declare
-  // them. Recorded rather than skipped so the next agent does not read their absence as coverage.
-  assert.deepEqual(Object.keys(KO_STAGES).sort(), ["knockout-assess", "knockout-frame"]);
+test("E3: the knockout stages are linted but carry no E1 declaration (a recorded gap)", () => {
+  // audits all three; they live in stages-knockout.mjs, not STAGES, so this scaffolding does not
+  // declare them. Recorded rather than skipped so the next agent does not read their absence as coverage.
+  assert.deepEqual(Object.keys(KO_STAGES).sort(), ["knockout-assess", "knockout-frame", "knockout-review"]);
   for (const k of Object.keys(KO_STAGES)) {
     assert.equal(KO_STAGES[k].contractElements, undefined,
       "the knockout lane has gained a declaration — fold it into ALL_STAGES and the partition, and delete this test");

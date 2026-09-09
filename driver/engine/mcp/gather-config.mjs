@@ -551,6 +551,23 @@ const RECORDING = Object.freeze({
       + "CALLS, UNMEASURED PRE-CONVERSION — this lane's seats hold no tools today, so the first "
       + "converted run is where the count comes from",
   },
+  // THE LANE'S THIRD CONVERSION, and the only stage on it that was born typed — there is no
+  // pre-conversion knockout-review that wrote its own file, so nothing here is a migration.
+  //
+  // NOT FANNED. The pass reads the WHOLE merged record in one turn, because the rule it applies is about
+  // consistency across the lines a reader meets: two marks' basis lines rewritten in separate turns drift
+  // apart in register, which is the defect the pass exists to remove.
+  "knockout-review": {
+    seatWrites: false,
+    tools: Object.freeze(["record_knockout_review"]),
+    reason: "hands back rewrites as VALUES, each naming the line it replaces by the typed address the "
+      + "driver measured and handed over. The address is what makes this a transport rather than a "
+      + "matching problem: prose quoted back has to be found again in the record, and the finder then "
+      + "decides where the rewrite lands. Refused by name at the call when an address names no line on "
+      + "this run's record, so a seat learns while it can still send a repair turn. EXPECTED FROM THE "
+      + "DICTATION'S ORDERED CALLS, UNMEASURED PRE-CONVERSION — this lane's seats hold no tools today, "
+      + "so the first converted run is where the count comes from",
+  },
 });
 
 // stage → its server key. DERIVED, and the alphabet is checked rather than assumed: an underscore in a
@@ -1247,6 +1264,14 @@ export const RECORDING_TOOLS = Object.freeze({
   // retrieval grant here would contradict its own dispatch. Its reads are the instructed-scope sidecar
   // and its skill doc, which the seeded Read grant serves.
   "knockout-frame": Object.freeze(["Read", "mcp__recording-knockout-frame__record_knockout_frame"]),
+  // THE LANE'S THIRD AND LAST CONVERSION. BY HAND, like every row here — O1 asserts the resolved grant
+  // EQUALS this row, so a derived row would compare a value with itself.
+  //
+  // `Read` and its one record tool, and NO Write: this stage's artifact is the driver's. No search tool
+  // and no register tools — the pass reads lines and rewrites them, and a retrieval grant would invite a
+  // rewrite that adds a fact the rating never weighed. Its one read is the merged record the dispatch
+  // names by path, which the seeded Read grant serves.
+  "knockout-review": Object.freeze(["Read", "mcp__recording-knockout-review__record_knockout_review"]),
   // THE WRITER. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a
   // derived row would compare a value with itself. This stage keeps three retrieval groups, and O1
   // compares the WHOLE grant, so they are listed: a row naming only the recording half would be a row

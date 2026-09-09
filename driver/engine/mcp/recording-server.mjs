@@ -64,6 +64,7 @@ import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
+import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 
 async function record_blind_frame(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
@@ -112,6 +113,16 @@ async function record_knockout_frame(params) {
   // that stage is fanned per chunk, this one frames the whole batch in a single turn. There is nothing
   // for the driver to bind, so there is nothing for a payload to usurp.
   return recordKnockoutFrame(runDir, params);
+}
+
+async function record_knockout_review(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) {
+    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
+  }
+  // NO BOUND ORDINAL. The pass reads the whole merged record in one turn, so there is nothing for the
+  // driver to bind and nothing for a payload to usurp — the same asymmetry knockout-frame states.
+  return recordKnockoutReview(runDir, params);
 }
 
 async function record_prelim_variants(params) {
@@ -1170,6 +1181,67 @@ serve({
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: record_knockout_assess,
+  }, {
+    name: "record_knockout_review",
+    description:
+      "Hand back your REWRITES of the lines a reader meets first, as VALUES. The driver writes them into " +
+      "the rated record itself, so you never format JSON and never write a file. Each rewrite names the " +
+      "line it replaces by the `at` address you were handed in the dispatch, copied verbatim — you do " +
+      "not quote the sentence and there is no field for one. An address naming no line on this run's " +
+      "record is refused by name, so a mistyped address costs you a turn rather than landing your text " +
+      "on the wrong line. A repair turn may send only the rows it is correcting: the driver merges BY " +
+      "ADDRESS onto what it already accepted, so rows you omit survive.",
+    inputSchema: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        schema_version: { type: "integer", description: "Accepted and ignored — the driver stamps its own." },
+        rewrites: {
+          type: "array",
+          description:
+            "One row per line you are replacing. A rewrite keeps every fact and changes only the " +
+            "register — the same band, names, reasons and conclusion, in the words the reader owns.",
+          items: {
+            type: "object", additionalProperties: false, required: ["at", "text"],
+            properties: {
+              at: {
+                type: "object", additionalProperties: false, required: ["field"],
+                description: "The address, copied VERBATIM from the dispatch row. Do not compose one.",
+                properties: {
+                  field: { type: "string", description: "The field this line lives in." },
+                  mark: { type: "string", description: "The mark's name, where the field is a mark's." },
+                  index: { type: "integer", description: "The position, where the field is a list." },
+                  ordinal: { type: "integer", description: "The finding's ordinal, for a conflict's one sentence." },
+                },
+              },
+              text: { type: "string", description: "The replacement prose, finished — written into the field exactly as sent." },
+              why: { type: "string", description: "Optional: what was wrong with the line you replaced." },
+            },
+          },
+        },
+        declined: {
+          type: "array",
+          description:
+            "One row per flagged line you are LEAVING ALONE, with the reason. A line you neither " +
+            "rewrite nor decline cannot be told afterwards from a line nobody read.",
+          items: {
+            type: "object", additionalProperties: false, required: ["at", "why"],
+            properties: {
+              at: {
+                type: "object", additionalProperties: false, required: ["field"],
+                properties: {
+                  field: { type: "string" }, mark: { type: "string" },
+                  index: { type: "integer" }, ordinal: { type: "integer" },
+                },
+              },
+              why: { type: "string", description: "Why the line stands as written." },
+            },
+          },
+        },
+      },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_knockout_review,
   }, {
     name: "record_knockout_frame",
     description:

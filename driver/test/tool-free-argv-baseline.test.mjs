@@ -187,14 +187,36 @@ test("the walk is reading a real argv — the same resolution with groups produc
   assert.ok(args.includes("--mcp-config"));
 });
 
-test("the category holds EXACTLY the stages whose rows were retired — pinned by name, both directions", () => {
+// A STAGE CAN JOIN THIS CATEGORY WITHOUT HAVING BEEN CONVERTED, and knockout-review is the first.
+//
+// `CONVERTED_BEFORE` is the before-half of a differential: what a stage measured as while it was
+// tool-free, which its conversion is a change against. A stage born typed has no such measurement, and
+// inventing a row of zeroes for it would put a number in the differential that nobody ever measured —
+// the table would still balance and one of its rows would be fiction.
+//
+// So it is named here instead. The membership assertion below is against the UNION, which keeps both
+// directions live: a conversion that forgets to retire its BASELINE row still reds, and so does a row
+// here for a stage that is not in the category.
+const BORN_TYPED = Object.freeze(["knockout-review"]);
+
+test("the category holds EXACTLY the stages whose rows were retired, plus the ones born typed", () => {
   // INVERTED, never deleted. This asserted `RECORDING_STAGES` was empty; blind-frame's conversion made
   // that false, and deleting the check would have retired the only thing tracking which BASELINE rows
   // stopped describing current state. Now it pins the membership by name in both directions, so a second
   // conversion that forgets to retire its row goes red, and so does a retired row for a stage that never
   // converted.
-  assert.deepEqual(Object.keys(RECORDING_STAGES).sort(), Object.keys(CONVERTED_BEFORE).sort(),
-    "the recording category and the retired-row table disagree; every converted stage keeps its BEFORE row here and no others");
+  assert.deepEqual(
+    Object.keys(RECORDING_STAGES).sort(),
+    [...Object.keys(CONVERTED_BEFORE), ...BORN_TYPED].sort(),
+    "the recording category disagrees with the retired-row table plus the born-typed list; a converted stage keeps its BEFORE row, a stage born typed is named in BORN_TYPED, and nothing else is in the category");
+  // BORN_TYPED IS NOT A BACK DOOR ROUND THE DIFFERENTIAL. A stage that HAS a before-row must not also
+  // be listed as born typed — that would let a real conversion skip its measurement by claiming it
+  // never needed one.
+  for (const s of BORN_TYPED) {
+    assert.equal(s in CONVERTED_BEFORE, false,
+      `${s} is listed as born typed AND carries a retired tool-free row — one of the two is wrong`);
+    assert.equal(s in BASELINE, false, `${s} is listed as born typed and still sits in BASELINE`);
+  }
   assert.deepEqual(Object.keys(BASELINE).filter((s) => s in RECORDING_STAGES), [],
     "a converted stage is still in BASELINE — its row describes what it WAS, and belongs in CONVERTED_BEFORE");
 });
