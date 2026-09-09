@@ -5503,6 +5503,12 @@
           "skips": 0,
           "todos": 0
         },
+        "permissions.test.ts": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "productMatrix.test.ts": {
           "tests": 22,
           "asserts": 46,
@@ -5572,6 +5578,12 @@
         "terminology.test.ts": {
           "tests": 4,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "territoryCodeParity.test.ts": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
