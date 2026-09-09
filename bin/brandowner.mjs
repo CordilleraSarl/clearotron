@@ -248,7 +248,7 @@ export async function add(argv, {
       if (gap.uncovered.length) {
         out("");
         out(`  ⚠ NOT YET STARTABLE — ${triggerCapWarning(gap)}`);
-        out(`    The portal will offer a clearance for ${args.key} and the engine door will refuse it until the trigger token is re-minted.`);
+        out(`    The portal will still start a clearance for ${args.key}: it re-takes its credential on each call. This matters when it cannot — then it uses the token above and the door refuses.`);
       }
     }
   } catch (e) {
