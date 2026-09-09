@@ -9,31 +9,11 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 312,
+  "total": 193,
   "files": {
-    ".gitattributes": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    ".gitignore": [
-      0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     ".gitleaks.toml": [
       0,
-      4,
+      3,
       0,
       0,
       0,
@@ -74,16 +54,6 @@
     "driver/config-inventory.mjs": [
       0,
       1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/deliver-trigger.sh": [
-      0,
-      3,
       0,
       0,
       0,
@@ -151,19 +121,9 @@
       0,
       0
     ],
-    "driver/profile-page.html": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/publish/templates/report.css": [
       0,
-      8,
+      4,
       0,
       0,
       0,
@@ -193,16 +153,6 @@
     ],
     "driver/systemd/clearotron-client-mcp.service": [
       0,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/systemd/clearotron-deploy.service": [
-      0,
       2,
       0,
       0,
@@ -214,26 +164,6 @@
     "driver/systemd/clearotron-mcp-face.service": [
       0,
       1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/systemd/clearotron-portal.service": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "driver/systemd/clearotron-worker.service": [
-      0,
-      3,
       0,
       0,
       0,
@@ -851,16 +781,6 @@
       0,
       0
     ],
-    "driver/test/render-frozen.test.mjs": [
-      0,
-      69,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "driver/test/repair-composer-registry.test.mjs": [
       0,
       0,
@@ -1061,36 +981,6 @@
       0,
       0
     ],
-    "mcp-server/remote/client-mcp-apikey.service": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "mcp-server/remote/client-mcp.service": [
-      0,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "mcp-server/remote/trademark-artifacts-http.service": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
     "mcp-server/test/ops-token.test.mjs": [
       0,
       0,
@@ -1113,7 +1003,7 @@
     ],
     "portal-ui/src/base.css": [
       0,
-      24,
+      2,
       0,
       0,
       0,
@@ -1122,16 +1012,6 @@
       0
     ],
     "portal-ui/src/contract/summaryBlocks.ts": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "portal-ui/src/screens/GlobalConfig.tsx": [
       0,
       1,
       0,
@@ -1172,16 +1052,6 @@
       0
     ],
     "scripts/e2e.mjs": [
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "scripts/mint-names-in-force.mjs": [
       0,
       1,
       0,
