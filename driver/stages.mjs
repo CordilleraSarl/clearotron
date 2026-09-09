@@ -2093,7 +2093,7 @@ export const STAGES = {
       },
       "per-axis prose digest — the SHORT AUDIT NOTE at register-units/<axis>.md": {
         class: "judgment", tokens: ["too_short"],
-        why: "#850 rules the per-axis prose digest J (keep) and I do not re-litigate. The only arm that speaks about it is nonEmpty at 40 or 80 chars, in validators.registerUnit — the branch reading `return /not applicable|n\\/a|no .*(hits|results)/i.test(c) ? nonEmpty(c, 40) : nonEmpty(c, 80)`. CONVERTED at tracker issue 1893 and the ruling STANDS: the judgment half — is this axis a null result, and the one observation the counts cannot carry — is still the seat's, sent as values through `record_unit_note`. What left is the part that was never judgment: the three COUNTS (queries enumerated, incomplete blocks, records carried forward) are aggregates over the tool-written band, so the driver derives them and the note cannot disagree with the material it describes. The floor is checked at the call now as well as by the validator, so a short note surfaces as a refusal the seat can act on rather than as a stage failure.",
+        why: "#850 rules the per-axis prose digest J (keep) and I do not re-litigate. The only arm that speaks about it is nonEmpty at 40 or 80 chars, in validators.registerUnit — the branch reading `return /not applicable|n\\/a|no .*(hits|results)/i.test(c) ? nonEmpty(c, 40) : nonEmpty(c, 80)`. CONVERTED, and the ruling STANDS: the judgment half — is this axis a null result, and the one observation the counts cannot carry — is still the seat's, sent as values through `record_unit_note`. What left is the part that was never judgment: the three COUNTS (queries enumerated, incomplete blocks, records carried forward) are aggregates over the tool-written band, so the driver derives them and the note cannot disagree with the material it describes. The floor is checked at the call now as well as by the validator, so a short note surfaces as a refusal the seat can act on rather than as a stage failure.",
       },
       "escalation judgement — the CROWD BOUND: attempt each dangerous-category slice once class-scoped, gate on the RESULT, stop terminal on a crowd, and write a block only for the distinctive anchor": {
         class: "judgment", tokens: [],
@@ -2474,7 +2474,7 @@ export const STAGES = {
       },
       "the Sheet-1 findings row's identifier cells — URI, Mark, Owner, Country, Classes, Status, Filed, Expiry": {
         class: "mechanical:tool-written", tokens: ["registerdigest_uri_missing", "registerdigest_uri_unknown"],
-        why: "CONVERTED (conversion 11, tracker issue 1893): the seat sends the position's `uri` and the driver renders every cell from the band record it names — record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date. The join is now the check: a uri no band record carries is refused AT THE CALL, where restating it costs nothing, instead of producing a plausible row of retyped cells that fails downstream or nowhere. The DECISION that a position earns a row stays judgment (element above); the cells were never anything but transcription.",
+        why: "CONVERTED (conversion 11): the seat sends the position's `uri` and the driver renders every cell from the band record it names — record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date. The join is now the check: a uri no band record carries is refused AT THE CALL, where restating it costs nothing, instead of producing a plausible row of retyped cells that fails downstream or nowhere. The DECISION that a position earns a row stays judgment (element above); the cells were never anything but transcription.",
       },
       "the full clickable record URL, composed from providers/<name>.md 'Record base host' plus the record `uri`": {
         class: "mechanical:tool-written", tokens: [],
@@ -2618,8 +2618,8 @@ export const STAGES = {
       `YOU DO NOT SEND — AND MUST NOT RETYPE — any record's Mark, Owner, Country, Classes, Status, Filed or Expiry, the clickable record URL, the register name, the summary counts, the audit trail or the record ids you read. Every one of those is rendered from the band record your \`uri\` names or from this run's own receipts. The uri IS the join: a uri no band record carries is refused on the call, naming it, rather than rendered as a row of blank cells.`,
       // ── — THE SEAT MARKS THE LIST, AND THE RULE NAMES THE FIELD IT SENDS ─────────
       //
-      // Stated as a FIELD ON THE CALL, deliberately. The failure this avoids is measured: tracker issue
-      // 1955 ruled a rule that described a downstream effect — "the string you sweep" — the seat opened
+      // Stated as a FIELD ON THE CALL, deliberately. The failure this avoids is measured: an earlier
+      // ruling covered a rule that described a downstream effect — "the string you sweep" — the seat opened
       // the file, and it reached one variant of thirty-six, because the seat authors rows and had no
       // field to put the effect in. A rule the seat cannot map onto something it sends produces nothing
       // and no refusal.

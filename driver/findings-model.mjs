@@ -2441,7 +2441,7 @@ export function knockoutFindingViews(mark, { manifest = null } = {}) {
  * Derived through knockoutFindingViews rather than re-deriving that fallback here — one projection
  * decides what a finding's number is, and this cell cannot disagree with the sheet it points into.
  */
-// ── THE REVIEWER'S NOTES: WHAT EACH ONE IS ABOUT (tracker issues 331 A.4, 333 rule 5) ───────────────
+// ── THE REVIEWER'S NOTES: WHAT EACH ONE IS ABOUT (A.4, rule 5) ──────────────────────────────────────
 //
 // The knockout page prints a note about the REQUEST at the top, above the conflicts, and a note about
 // the NAME under that name's cards. A note saying the screen may have been scoped to the wrong market
@@ -2454,7 +2454,7 @@ export function knockoutFindingViews(mark, { manifest = null } = {}) {
 //
 // IT SORTS ON WHAT THE NOTE TALKS ABOUT, and the doctrine is written to match: a note about the request
 // NAMES the request. The word set spans both vocabularies deliberately — "dispatch" and "instructed"
-// are what runs written before tracker issue 333 say, "the request" and "was asked" are what runs
+// are what earlier runs say, "the request" and "was asked" are what runs
 // written after it say — so one reader serves the archive and the new doctrine at once.
 export const REQUEST_NOTE_WORDS = /\b(?:dispatch|the request|the requester|instructed|was asked)\b/i;
 

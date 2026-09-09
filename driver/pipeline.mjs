@@ -699,7 +699,7 @@ function deriveHitList(ctx, band) {
     // as a fallback so a provider that promotes the field is not silently ignored.
     const lines = (band?.enumerated ?? []).map((r) =>
       slimLine(r, r?.screen?.mark_transliteration ?? r?.mark_transliteration ?? null));
-    // ── CROWDS RIDE BESIDE THE LINES (Option A, ruled on tracker issue 95) ────────────────────────
+    // ── CROWDS RIDE BESIDE THE LINES (Option A, as ruled) ─────────────────────────────────────────
     //
     // A crowd is a zone that could NOT be enumerated. Without it on the list, `band_lookup` answering
     // from the list returns nothing for a crowded zone — and nothing is indistinguishable from
@@ -4653,7 +4653,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     // verbatim reason below this line names which.
     [REFUSAL_TERMINAL_KIND]: "Nothing failed. This deployment does not serve the search that was ordered, and said so before any work was done — the reason below names what is missing and what to change. Re-running it unchanged returns the same answer.",
   };
-  // ── A CAP DEATH IS A SUBSCRIPTION OUTCOME, NOT AN OUTAGE (tracker issue 103, the fourth ask) ──────
+  // ── A CAP DEATH IS A SUBSCRIPTION OUTCOME, NOT AN OUTAGE (the fourth ask) ─────────────────────────
   //
   // The weather lane carries BOTH an overloaded provider and a usage cap, and its one sentence
   // described the first: "stayed overloaded or unreachable … Re-trigger once the provider is healthy."
@@ -6249,7 +6249,7 @@ function sentinel(runDir, name, obj) {
 }
 
 /**
- * Settle every queued what-if BEFORE the run dir moves into the archive — tracker issue 240.
+ * Settle every queued what-if BEFORE the run dir moves into the archive.
  *
  * A queued job lives under the run directory, and the worker enumerates candidates with `liveRunDirs`,
  * which skips `archive` outright. So archiving carried a pending job out of the worker's reach: not
@@ -13695,7 +13695,7 @@ async function pipelineInner(job, opts = {}) {
                 if (askApplied.carryIntoFindings?.length)
                   writeFileSync(driverDir(run.runDir, "marks-owed-a-finding.json"),
                     JSON.stringify({
-                      _provenance: "recall asks that could not close because the mark they found is absent from findings.json — owner ruling 2026-09-07, tracker issue 246 Option A, worded about the MARK",
+                      _provenance: "recall asks that could not close because the mark they found is absent from findings.json — owner ruling 2026-09-07, Option A, worded about the MARK",
                       _notWritten: "these are NOT appended to findings.json: a finding carries a band, a net line and a legal position, and a row minted here would carry none of them. The repair belongs where the findings are authored.",
                       count: askApplied.carryIntoFindings.length,
                       marks: askApplied.carryIntoFindings,
