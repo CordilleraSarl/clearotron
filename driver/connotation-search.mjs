@@ -769,7 +769,7 @@ export function segmentBinding({ segment_index, fragment } = {}, candidate) {
   //
   // SO THE MEASUREMENT SURVIVES THE ENFORCEMENT. A fragment that arrives is still weighed and still
   // matched, and the verdict rides out on `fragmentState` for the receipts histogram — which is how the
-  // transcription-quality signal scruffy used to settle this stays measurable after the duty that
+  // transcription-quality signal testing used to settle this stays measurable after the duty that
   // produced it is gone. Never charge for it: an unbound fragment is a fact about the model, and the
   // seat's ruling is not worse for it.
   const frag = String(fragment ?? "").trim();

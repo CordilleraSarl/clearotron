@@ -222,10 +222,10 @@ test("absolutizeSkillRefs: rewrites bare skills/…md under skillsDir's parent; 
 });
 
 test("absolutizeSkillRefs: IDEMPOTENT — an already-absolute path containing skills/ is NOT double-prefixed", () => {
-  const once = absolutizeSkillRefs("read skills/matter-frame/SKILL.md", "%h/cordillera.ch-trademark/driver/skills");
-  assert.equal(once, "read %h/cordillera.ch-trademark/driver/skills/matter-frame/SKILL.md");
+  const once = absolutizeSkillRefs("read skills/matter-frame/SKILL.md", "%h/clearotron/driver/skills");
+  assert.equal(once, "read %h/clearotron/driver/skills/matter-frame/SKILL.md");
   // re-running (e.g. a corrective/warm re-wrap of an already-absolutized message) must be a no-op
-  assert.equal(absolutizeSkillRefs(once, "%h/cordillera.ch-trademark/driver/skills"), once, "no path doubling");
+  assert.equal(absolutizeSkillRefs(once, "%h/clearotron/driver/skills"), once, "no path doubling");
   // a generic absolute path that merely contains 'skills/' mid-path is left alone
   assert.equal(absolutizeSkillRefs("write /run/x/skills/out.md", "/ws/skills"), "write /run/x/skills/out.md");
 });

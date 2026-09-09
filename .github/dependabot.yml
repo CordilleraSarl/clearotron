@@ -27,7 +27,7 @@ updates:
       #
       # MEASURED, THE HOUR THIS LANDED: majors with no group of their own open ONE PR EACH. The first
       # dependabot pass produced ten PRs, seven of them single majors, and they queued ahead of build
-      # branches on shared self-hosted runners until overwatch cancelled them. So majors group WITH EACH
+      # branches on shared self-hosted runners until they were cancelled. So majors group WITH EACH
       # OTHER — still their own diff, still never mixed with patches, but one per workspace.
       root-minor-and-patch:
         update-types: [minor, patch]

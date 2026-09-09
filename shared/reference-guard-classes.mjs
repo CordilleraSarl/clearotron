@@ -285,7 +285,8 @@ const COLUMN = new Map(CLASSES.map((c, i) => [c.id, i]));
 // arms would have gone red on files the committed fixture cannot record: writing them into it would
 // publish the withheld path list, which is the thing the cut exists to prevent.
 //
-// `isWithheld` is the instrument for that question and this is its sixth caller. Its own file states
+// `isWithheld` is the instrument for that question and this is its THIRD reader — corrected 2026-09-09
+// from "sixth", which counted three readers that do not exist. Its own file states
 // the condition a new caller must meet — the fallback has to make the caller STRICTER, never looser —
 // and this one does: with no cut record it answers false for everything, nothing is skipped, and the
 // census counts the whole tree.

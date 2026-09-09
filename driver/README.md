@@ -1,4 +1,4 @@
-# clearotron-driver — deterministic driver for the prelim-search trademark workflow
+# clearotron driver — deterministic orchestration for the trademark clearance workflow
 
 Orchestration in **code**; the LLM does only judgment leaves. Each pipeline stage is **one blocking
 engine turn** (default engine: `anthropic-agent`, shelling `claude -p` per stage); fan-out/fan-in/
@@ -18,8 +18,7 @@ the gather MCP servers live.
 ```
 integrator ──job JSON (enqueue CLI / start_run / queue file)──┐
                                                               ▼
-                    systemd .path (watches every queue) ──▶ prelim-driver.service
-                    systemd .timer (~90s fallback re-drain) ─▶ (same oneshot)
+                    clearotron-worker.service (the built-in worker, watches every queue)
    └─ node runner.mjs ─▶ for each queue: claim ─▶ pipeline(job, {agent}) ─▶ runStage() ─▶
                          engine turn (`claude -p`, blocking) ─▶ leaf turn
 ```
@@ -42,8 +41,28 @@ identity ran it. Headless deployments with no per-agent workspaces use one expli
   delivered report, run failure, intake rejection, duplicate skip, late-bind ack — is a
   self-contained packet in the outbox (`outbox.mjs`). Integrators consume events over the ops MCP
   (`list_outbox_events` → `get_delivery_packet` → send → `mark_sent`/`ack_event`) and never touch the
-  driver's filesystem. `deliver-trigger.sh` + `systemd/prelim-outbox.*` are the reference wake-up for
-  an agent-based integrator.
+  driver's filesystem. `deliver-trigger.sh` is the reference wake-up for an
+  agent-based integrator. The outbox units beside it are retired — see the units row below.
+
+## What a file name tells you
+
+Eleven suffixes carry a meaning across the whole directory. They are a naming convention rather than
+a framework — nothing enforces them — but they are consistent enough that the suffix tells you what
+kind of thing a module is before you open it.
+
+| suffix | what the module is |
+|---|---|
+| `-model` | a pure parser or shape: text or JSON in, a validated structure out, no I/O |
+| `-record` | a recording transport — the typed call a stage makes and the row it writes |
+| `-form` | a driver-written form a stage fills in, with its own validation |
+| `-io` | the reader and writer for a form's file, kept apart from the form's shape |
+| `-union` | the accumulator that merges many writes into one form |
+| `-call` | the model-call half of a pair: what the stage is asked to send |
+| `-tool` | the driver-write half of the same pair: what the driver does with what came back |
+| `-duty` | an obligation check — was something the run owed actually done |
+| `-gate` | a refusal: a condition that stops a run or a stage rather than reporting on it |
+| `-ledger` | an append-only account of what happened, read back for coverage and audit |
+| `-verdict` | a pure function from evidence to a stated answer, with its reason |
 
 ## Files
 
@@ -63,7 +82,7 @@ identity ran it. Headless deployments with no per-agent workspaces use one expli
 | `coverage-ledger.mjs` | Machine coverage-ledger contract: strict JSON-mirror parser (token-first throws), prose parser, `REGISTER_AXES`/`decideAxes`. |
 | `enqueue-schema.mjs` | Job-file shape + `validateJob`. |
 | `dev-portal.mjs` | Loopback-only dev-instance UI (static pool + `/profiles/*` proxy) for dry-run testing — see `../docs/E2E.md` Tier 1b. |
-| `systemd/*` | Reference units: `prelim-driver.path` (watches the queues) + `prelim-driver.timer` (fallback re-drain) → `prelim-driver.service` (oneshot drain); `prelim-outbox.*` (outbox wake). |
+| `systemd/*` | `clearotron-worker.service` is the live worker and what a deployment runs. The path/timer/oneshot drain units and the outbox-wake units beside them are RETIRED: the built-in worker replaced that posture. Their files stay until the production rebuild — `unit-inventory.mjs` records the ruling and the reason, and reports a retired unit's absence as expected rather than as a fault. They keep their original names because a deployed box still holds them under those names. |
 
 ## Key engine facts
 

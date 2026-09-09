@@ -276,7 +276,11 @@ export const E3_BACKLOG_KINDS = [...E3_KINDS, "other"];
 
 const E3_PATTERNS = [
   { kind: "literal-json-skeleton", re: /```json|\{\s*"[a-z_]+"\s*:/i },
-  { kind: "exactly-these-keys", re: /EXACTLY (?:these|one of|the)|keys EXACTLY|EXACTLY \{|closed enum|key set is closed|additionalProperties/i },
+  // `EXACTLY the` USED TO STAND ALONE, and it is ordinary English: "puts its noise on exactly the
+  // report that matters most" is prose about a report, not a dictated key set, and the pattern is
+  // case-insensitive so the lower-case form matched too. The alternative now names what may follow it,
+  // which is the only form that dictates a set. Everything else in this pattern is byte-identical.
+  { kind: "exactly-these-keys", re: /EXACTLY (?:these|one of)|EXACTLY the (?:following|keys|fields)|keys EXACTLY|EXACTLY \{|closed enum|key set is closed|additionalProperties/i },
   // A quoted or backticked template carrying a <placeholder>, close to an instruction to emit it. The
   // placeholder class is deliberately loose (`<comma-separated DOMAINS>`, `<N>`, `<one record URI>`) —
   // the tell is a shape dictated for a parser to read back, not the casing inside the angle brackets.

@@ -13,7 +13,7 @@
 // "waiting to start". IT WAS NEVER CALLED. `scanAccountRuns` looked for queues at exactly one shape —
 // `workspace-*/studio/prelim-search/queue` — and a documented headless install has no workspaces at all.
 //
-// Measured on the test box: `CLEAROTRON_QUEUE_DIR=/home/testuser/trademark/queue`, that directory is the
+// Measured on the test deployment, with `CLEAROTRON_QUEUE_DIR` set to its own queue path, that directory is the
 // ONLY queue anywhere under the tree, and it holds portal-prefixed jobs. The scan ran zero times.
 //
 // WHY EVERY EXISTING ARM PASSED THROUGH ALL OF IT. portal-queue-order.test.mjs and portal-service's own

@@ -123,7 +123,13 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   if (!tuple) return v("failed", "none", `${id} returned nothing`, "The adapter settled no tuple — this is a driver bug, not a configuration one.");
   const s = tuple.signals ?? {};
   const text = `${tuple.stderr ?? ""}\n${tuple.stdout ?? ""}`;
-  const detail = tail(tuple.stderr);
+  // READ FROM THE SAME STREAMS THE CLASSIFICATION IS. Every branch below matches over `text`, which is
+  // stderr AND stdout, while this carried stderr alone — so a CLI that reports its failure on stdout
+  // produced a verdict with its evidence dropped, and the reader got a headline with nothing under it.
+  // stderr stays FIRST because that is where a diagnostic belongs and where these CLIs put theirs; the
+  // fallback exists so that "the engine said nothing" is a claim about the engine rather than about
+  // which pipe this happened to look at.
+  const detail = tail(tuple.stderr) ?? tail(tuple.stdout);
 
   if (tuple.code === 0) return { ok: true, engine: id, mode: "ok", basis: "completed-turn", headline: `${id} completed a turn`, fix: null, detail: null };
 
@@ -249,13 +255,47 @@ export function probeWeatherWarning(verdict) {
  * whatever the operator's shell happens to have set and report a pass for the wrong engine — the same
  * frozen-provider trap `preflightCandidate` works around one file over.
  *
- * ONLY the engine-selection keys are applied. Credentials and billing-mode variables are deliberately
- * NOT copied: the probe must bill exactly the way a run on this box would, and moving a spend variable
- * to make a probe pass is the one thing this must never do.
+ * THE SPEND VARIABLES ARE APPLIED TOO, and the rule this replaces had it backwards. It said they were
+ * deliberately not copied, so that "the probe must bill exactly the way a run on this machine would" —
+ * the aim is right and withholding them defeated it. The caller supplies the lane and the credential
+ * precisely because they are not in the environment yet; not copying them left the probe billing the
+ * way the operator's shell happened to be set, while the run that followed billed the way the reader
+ * had just chosen. The probe proved a lane nobody was going to use. Measured: an API-key install failed
+ * as "not signed in" because the adapter removes the key under any mode that is not the API-key one,
+ * and the mode it read was the unset one.
+ *
+ * WHAT IS STILL NEVER DONE, which is the sentence that was worth keeping: nothing here defaults,
+ * repairs, invents or falls back. It copies what the caller passed and nothing else, so a probe cannot
+ * pass on a credential a run would not have — the caller is the wizard about to write these very values
+ * to disk, or a command reading the values already there.
+ *
+ * AND IT PUTS EVERYTHING BACK. Widening what this writes onto the process widens what it must remove
+ * again; a credential outliving the check that borrowed it would be a worse defect than the one this
+ * fixed, and a check drives the restore rather than trusting it.
  */
 function applyEngineEnv(env) {
   if (!env || env === process.env) return () => {};
-  const keys = ["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).map((s) => s.env)];
+  // EVERY VARIABLE THAT DECIDES WHAT THE SPAWN IS, not only the ones that decide WHICH BINARY.
+  //
+  // This list used to carry CLEAROTRON_AI and the binary paths. It did not carry the billing mode or
+  // the API key — so a caller could hand this function a correct api-key environment, watch
+  // `resolveAuthMode` accept it, and then have `runTurn` read `process.env`, where neither had arrived.
+  // `anthropic-agent.spawnEnv` deletes ANTHROPIC_API_KEY under any mode that is not api-key, and the
+  // mode it read was unset, so it deleted the key the reader had just typed. The turn then failed as
+  // "not signed in" — correctly, about an environment nobody had asked for.
+  //
+  // Reported from a real WSL2 install, 2026-09-09: the setup wizard's api-key lane, a valid key, and a
+  // sign-in failure the reader could only get past by exporting the key into their own shell.
+  //
+  // A SET, AND THE DUPLICATE IS NOT HYPOTHETICAL. Both engines name the same billing variable, so this
+  // list contains CLEAROTRON_AI_BILLING twice — and the save below is `saved.set(k, process.env[k])`
+  // inside the same loop that writes. On the second visit it saved the value the FIRST visit had just
+  // written, so the restore put that back instead of deleting it, and the mode leaked into the rest of
+  // the process. Caught by the arm that exists to prove the restore, which is the only reason widening
+  // this list was safe to do at all.
+  const keys = [...new Set(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES)
+    .flatMap((s) => [s.env, s.authEnv, s.apiKeyEnv, s.headless?.tokenEnv])
+    .filter(Boolean)])];
   const saved = new Map();
   for (const k of keys) {
     saved.set(k, process.env[k]);

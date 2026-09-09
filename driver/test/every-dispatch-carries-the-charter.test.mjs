@@ -101,7 +101,7 @@ test("#1503 the UNGRADED product adds nothing, and an unknown stage adds nothing
 // synthesis dispatches, all ok — fresh (charter), corrective (charter), then lint-repair (none). The
 // lint-repair was triggered by `narrative-write-ups:over-cap:1`, 362 words against the 330 cap. **The
 // dispatch sent to fix a charter violation was the one dispatched without the charter.** Found by
-// role-e2e scruffy in the run dir; the population by eggie and this arm.
+// The test pass in the run dir; the population in testing and this arm.
 //
 // Walking the tree does not fix a hand-typed shape, it moves the blind spot into the regex. So this
 // scan balances braces instead of matching a call shape, reads shorthand properties (`followup,` as well

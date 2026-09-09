@@ -8,33 +8,50 @@
 // private." `shared/withheld-paths.mjs` STAYS BEHIND. The reading where it ships with a rewritten
 // header is dead and must not be revived.
 //
-// Five files read that record and are wanted on the public tree: `scripts/citation-line-check.mjs`,
-// `scripts/mint-suite-census.mjs`, and the arms `no-caveat-repair`,
-// `signa-mock-lane-is-unreachable-from-a-run` and `the-providers-suite-is-censused`. A static import of
-// a module that is not there throws before anything runs — for a test that means its cases VANISH FROM
-// THE COUNT rather than failing, which is the 354-to-279 shape already records. This
-// module is how they degrade on purpose instead.
+// THREE files read that record, and all three are in this repository:
+// `scripts/citation-line-check.mjs`, `scripts/mint-suite-census.mjs` and
+// `shared/reference-guard-classes.mjs`. A static import of a module that is not there throws before
+// anything runs, and for a test that means its cases VANISH FROM THE COUNT rather than failing. This
+// module is how those three degrade on purpose instead.
+//
+// The list above was wrong in both directions and is corrected here (measured 2026-09-09): it said
+// five, naming three tests that exist in this repository under no path, and it omitted
+// `shared/reference-guard-classes.mjs`, which had already recorded itself as a reader in its own file.
 //
 // ── WHY DEGRADING IS SAFE HERE, WHICH IS THE WHOLE ARGUMENT ──────────────────────────────────────
 //
-// Every one of the five asks the record ONE question: is this file absent because it was deliberately
+// Every one of the three asks the record ONE question: is this file absent because it was deliberately
 // withheld, or absent because something broke? On the public tree nothing was withheld FROM that tree,
 // so the honest answer is "nothing is withheld" — and each caller then becomes STRICTER, never weaker:
 //
 //   citation-line-check   every file crosses the cut, so every citation must resolve
 //   mint-suite-census     no exemption, so a removed test file is a LOSS
-//   the three arms        an absence is damage, never a stated consequence
+//   reference-guard-classes  nothing is skipped, so the whole tree is counted
+//
+// MEASURED, not argued (2026-09-09): `censusOf` was run twice over one file list. With no record it
+// counted four files and skipped none; with a record naming two of them it counted two and skipped
+// two. Absent, the record cannot hide a defect.
 //
 // A fallback that can only tighten is one that cannot hide a defect. That is the property that makes
 // this safe to do without a flag, and it is the property to re-check before adding a sixth caller: if a
 // new caller would be LOOSER without the record, it does not belong here.
 //
-// ── AND IT ANNOUNCES, SO IT CANNOT FIRE UNNOTICED WHERE IT MUST NOT ──────────────────────────────
+// ── NO TREE CARRIES THE RECORD TODAY, AND THE MODE LINE SAYS WHICH WAY THAT LEANS ───────────────
 //
-// On our tree the record exists and behaviour is unchanged. If it ever went missing here, the fallback
-// would quietly relax five checks — the exact silent-pass this repository keeps paying for. So the mode
-// is announced once to stderr, the way `announceBlocklistMode` does for the identifier roster, and an
-// arm pins that the announcement happens.
+// This block used to say the record exists here and that losing it "would quietly relax five checks".
+// Both halves were false, and the second contradicted the paragraph above it. Measured 2026-09-09:
+// `CUT_RECORD_PRESENT` is false here and false in the larger tree the suite is also run against — the
+// record exists in neither, so every reader has always run in fallback, and fallback is the strict side.
+//
+// The mode is still announced once to stderr, the way `announceBlocklistMode` does for the identifier
+// roster. What the line may NOT do is call itself an alarm: this module can see whether the record is
+// present, and cannot see whether it ought to be. So it states the mode and what that means for the
+// three readers, and leaves the judgement to a reader who knows which tree they are looking at.
+//
+// NOTHING PINS THIS ANNOUNCEMENT, and this block used to claim something did. Measured 2026-09-09: no
+// test in either repository imports `announceWithheldMode` or asserts its line, so the wording above is
+// held by nothing and a silent removal of it would pass. That gap is filed rather than fixed here,
+// because closing it adds a test file and this change is comment text only.
 
 let record = null;
 try {
@@ -59,15 +76,16 @@ export const isWithheld = (relPath) => (record ? record.isWithheld(relPath) : fa
 
 let announced = false;
 /**
- * Say which mode this process is in, once, to stderr. A green run in fallback mode on a tree that
- * SHOULD carry the record is five checks quietly relaxed, and the only thing standing between that and
- * silence is this line.
+ * Say which mode this process is in, once, to stderr. Fallback is the strict side, so this line is a
+ * statement of fact rather than a warning: it reports what the three readers will do, and whether that
+ * is right depends on the tree, which this module cannot see.
  */
 export function announceWithheldMode() {
   const line = CUT_RECORD_PRESENT
     ? `[repo-guard] cut record present — ${WITHHELD.length} withheld entry/entries; absences they cover are stated consequences`
-    : "[repo-guard] NO cut record in this tree — nothing counts as withheld, so every absence is damage "
-      + "and every citation must resolve. This is correct on the published tree and an ALARM anywhere else.";
+    : "[repo-guard] no cut record in this tree — nothing counts as withheld, so every absence is damage "
+      + "and every citation must resolve. This is the STRICTER of the two modes: it cannot hide a defect, "
+      + "and it is the expected mode wherever nothing was withheld from the tree in hand.";
   if (!announced) { announced = true; console.error(line); }
   return line;
 }
