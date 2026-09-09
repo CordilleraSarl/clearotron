@@ -131,7 +131,7 @@ export function bandsPresent(bands: readonly Band[], labels: readonly (string | 
 /**
  * Group runs into marks.
  *
- * Keyed on account AND mark. Two brand owners clearing the same word at the same time is ordinary, and a
+ * Keyed on account AND mark. Two companies clearing the same word at the same time is ordinary, and a
  * key without the account would put one client's reads under another client's name. The server already
  * scopes what it returns; this is the second wall, not the first.
  */

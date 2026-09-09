@@ -9,7 +9,7 @@
 // browser.
 //
 // THE NAMING RULE THAT SHAPES THIS FILE: a saved search is displayed by its `label`, never by its `name`
-// and never by its slug. `name` is a profile key — the brand owner's legal identity — and the backend
+// and never by its slug. `name` is a profile key — the company's legal identity — and the backend
 // holds a tested disjointness invariant between the recipe key set and the profile key set precisely so
 // the two can never be confused. Nothing here may erode that from the browser side by printing one where
 // the other belongs.

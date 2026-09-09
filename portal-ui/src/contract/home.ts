@@ -112,7 +112,7 @@ export function recentProjects(runs: readonly Run[], limit = 4): readonly Projec
   const byKey = new Map<string, Run[]>()
   for (const r of runs) {
     if (!r.projectKey) continue
-    // Account AND project. Project keys are slugs scoped to a customer, so two brand owners can each
+    // Account AND project. Project keys are slugs scoped to a customer, so two companies can each
     // hold a "launch" — the same reason marksOf keys on the account.
     // The separator is the \u0000 ESCAPE, never the literal byte: a raw NUL in the source made
     // grep/ugrep classify this file as binary and silently skip it (2026-07-29 build note). The
@@ -144,7 +144,7 @@ export function recentProjects(runs: readonly Run[], limit = 4): readonly Projec
     .slice(0, limit)
 }
 
-/** One brand owner, with enough beside it to say whether it wants attention. */
+/** One company, with enough beside it to say whether it wants attention. */
 export type OwnerSummary = {
   readonly key: string
   readonly name: string
@@ -154,13 +154,13 @@ export type OwnerSummary = {
 }
 
 /**
- * The brand owners this identity may act for.
+ * The companies this identity may act for.
  *
  * KEYS COME FROM THE SHELL, NOT FROM THE RUNS. An owner that has been set up and never used has no run
  * to be derived from, and that is exactly the owner someone is most likely to be hunting for — deriving
  * the list from activity would hide it. Runs only decorate the entries.
  *
- * Ordered by what needs a person: live work first, then most recent activity, then name. A brand owner
+ * Ordered by what needs a person: live work first, then most recent activity, then name. A company
  * with something running is never below one that has been quiet for a month.
  */
 export function ownerSummaries(
@@ -200,9 +200,9 @@ export function projectNote(p: ProjectUse): string {
 }
 
 /**
- * What sits under a brand owner's name on its row.
+ * What sits under a company's name on its row.
  *
- * Never a zero. "0 clearances" beside a brand owner reads as a fault; "Nothing yet" reads as a state,
+ * Never a zero. "0 clearances" beside a company reads as a fault; "Nothing yet" reads as a state,
  * and for a newly enrolled client it is the correct and expected one.
  */
 export function ownerNote(o: OwnerSummary): string {
@@ -237,10 +237,10 @@ export function sentence(rows: InFlight, { owners = 0 }: { owners?: number } = {
   if (owners > 1) {
     const live = rows.length - failed
     // NEVER "no in flight". `count(0)` is the word "no", so a staff view with only stopped work read
-    // "32 stopped · no in flight, five brand owners." — a sentence that leads with a number nobody can
+    // "32 stopped · no in flight, five companies." — a sentence that leads with a number nobody can
     // act on and then says nothing is happening. When nothing is live, say only what stopped.
     if (!live) return `${cap(count(failed))} stopped, nothing running.`
-    const head = `${cap(count(live))} in flight, ${count(owners)} brand owner${owners === 1 ? '' : 's'}`
+    const head = `${cap(count(live))} in flight, ${count(owners)} ${owners === 1 ? 'company' : 'companies'}`
     return failed ? `${cap(count(failed))} stopped · ${head.toLowerCase()}.` : `${head}.`
   }
 
@@ -270,17 +270,17 @@ export function sentence(rows: InFlight, { owners = 0 }: { owners?: number } = {
 export const openingLine = (rows: InFlight, anyHistory: boolean, known = true): string =>
   // AND A THIRD THING, WHICH IS NEITHER: we have not been told.
   //
-  // A client holding several brand owners cannot ask for "all of them" — the server answers 404 to
+  // A client holding several companies cannot ask for "all of them" — the server answers 404 to
   // anyone but staff — so until they pick one there are no runs, and BOTH sentences above are lies. A
   // firm with a decade of history opened this page and read "Nothing has run yet." The honest line is
   // the instruction that unblocks them, which is also the only thing the page can act on.
-  !known ? 'Pick a brand owner to see their work.'
+  !known ? 'Pick a company to see its work.'
     : rows.length ? sentence(rows) : anyHistory ? 'Nothing running.' : 'Nothing has run yet.'
 
 /**
- * "Two run at once, across all brand owners."
+ * "Two run at once, across all companies."
  *
- * THE DESIGN SAID "per brand owner" AND THAT IS FALSE. CLEAROTRON_MAX_CONCURRENT_RUNS is a single global cap
+ * THE DESIGN SAID "per company" AND THAT IS FALSE. CLEAROTRON_MAX_CONCURRENT_RUNS is a single global cap
  * over one lock directory, with the per-agent tag deliberately omitted — two owners each running one
  * search fill the entire deployment. Told per-owner it over-promises throughput, which is the worst
  * direction for a line a lawyer might repeat to a client.
@@ -289,7 +289,7 @@ export const slotNote = (busy: number | null, slots: number | null): string | nu
   if (slots == null) return null
   // The plural was inverted — it read "Two run at once" and "One runs at once". Invisible in a string
   // test, unmissable the moment the line was drawn in a browser.
-  const c = `${count(slots)} run${slots === 1 ? '' : 's'} at once, across all brand owners`
+  const c = `${count(slots)} run${slots === 1 ? '' : 's'} at once, across all companies`
   return busy == null ? cap(c) : `${busy} of ${slots} running · ${c}`
 }
 

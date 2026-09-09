@@ -169,7 +169,7 @@ export function applyRead(
   const names = read.names.length > 0 ? read.names.join('\n') : draft.names
   // A read that names classes is a user touch: the draft stops being a ghost and starts being an
   // explicit list. What it must NOT do is start that list from empty — `draft.classes === null` means
-  // "use the brand owner's own", so materialising it has to begin from THOSE, exactly as adding a class
+  // "use the company's own", so materialising it has to begin from THOSE, exactly as adding a class
   // by hand does (`draft.classes ?? own.classes` in NewClearance). Starting from [] silently deletes
   // every inherited class the moment a brief mentions one, and the deletion is invisible: the chips
   // just stop being there, and the search runs narrower than the account is set up for.
@@ -179,7 +179,7 @@ export function applyRead(
     names,
     // And a ghost that gains NOTHING stays a ghost. A brief that names class 32 for an owner who
     // already carries 32 has changed nothing the user can see — converting the list to an explicit one
-    // anyway would freeze today's profile into the request, so a class added to the brand owner
+    // anyway would freeze today's profile into the request, so a class added to the company
     // tomorrow would silently not apply to a search composed today.
     classes: newClasses.length > 0 || (draft.classes !== null && read.classes.length > 0)
       ? [...base, ...newClasses]

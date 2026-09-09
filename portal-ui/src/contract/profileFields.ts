@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Editing a brand owner's configuration.
+// Editing a company's configuration.
 //
 // The rules here are the ones that make a settings page safe to point at a legal product. Two of them
 // have already caused real incidents in this codebase, and both are the same shape: a form that sends
@@ -133,7 +133,21 @@ export type FieldSpec = {
    * Declared rather than tested by key, so a second field needing a shape declares one instead of
    * growing a branch in the notice builder.
    */
-  readonly item?: { readonly ok: (entry: string) => boolean; readonly expected: string }
+  /**
+   * A per-entry check for a `lines` field.
+   *
+   * `strict` decides what happens to an entry that fails it, and the two answers are both correct for
+   * different fields. Domains and marketplaces are DELIBERATELY tolerant: this build does not know which
+   * suffixes exist, and a validator that rejects a real domain stops somebody recording something true,
+   * which is worse than admitting a fake one. Territories are the opposite — the engine holds a closed
+   * list, so an entry outside it is not "possibly right", it is a setting that will silently do nothing.
+   */
+  readonly item?: {
+    readonly ok: (entry: string) => boolean
+    readonly expected: string
+    /** Refuse rather than flag. The server refuses the same values on the same path. */
+    readonly strict?: boolean
+  }
   /**
    * Offer a picker beside the box, and WHICH KIND — because the two are not the same control.
    *
@@ -218,9 +232,9 @@ export function isSet(draft: Record<string, unknown>, spec: FieldSpec): boolean 
 export const CLEARED_LABEL = 'Generic default'
 
 export const PROFILE_FIELDS: readonly FieldSpec[] = [
-  // ── who the brand owner is ──
+  // ── who the company is ──
   { key: 'name', label: 'Legal name', kind: 'text', group: 'identity',
-    hint: 'Used so a search does not flag the client against their own marks. Should be the registered owner name.' },
+    hint: 'Used so a search does not report the company against its own marks. Should be the registered owner name.' },
   { key: 'matchDomains', label: 'Domains', kind: 'lines', group: 'identity',
     commaSeparated: true,
     // A hostname, not a URL: at least one dot, no scheme, no path, no spaces. Deliberately loose — this
@@ -229,9 +243,9 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // only the first stops someone recording something true.
     item: { ok: (e) => /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i.test(e),
             expected: 'a domain like example.com' },
-    hint: 'Common law domains, e.g. example.com, one per line or comma-separated. Used to recognise the client.' },
+    hint: 'Common law domains, e.g. example.com, one per line or comma-separated. Used to recognise the company.' },
   { key: 'selfExclusionOwners', label: 'Own trading names', kind: 'lines', group: 'identity',
-    hint: 'One per line. Marks held by the client that should never be reported as a conflict with themselves.' },
+    hint: 'One per line. Marks the company holds, which are never reported as a conflict with itself.' },
 
   // ── what a clearance does when the request does not say ──
   // `industry` moved down out of the identity run: it scopes what a search LOOKS AT, which is a default,
@@ -251,21 +265,22 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
       + 'Commas, spaces or new lines all work.' },
   { key: 'defaultJurisdictions', label: 'Default jurisdictions', kind: 'lines', group: 'defaults', commaSeparated: true,
     picker: 'territories',
-    // ASSISTIVE, NOT STRICT ( item 7). The engine deliberately carries a territory it
-    // does not recognise, so this must never refuse — it says so and stores it. What it replaces is
-    // SILENCE: the field had no `item` at all, so `fieldNotices` returned nothing for anything, and the
-    // owner's own example typed into the live page — "USFrance" — produced no notice whatsoever. That is
-    // the whole of "the Check button appears to check nothing": the mechanism was present and unarmed on
-    // the two fields he actually tested.
+    // STRICT, BY OWNER RULING. This was assistive — it flagged and stored — on the reasoning that the
+    // engine deliberately carries a territory it does not recognise. That reasoning confused two paths.
+    // A REQUEST may still name anything, and that tolerance is untouched. A STORED DEFAULT is the
+    // opposite case: it is set once by somebody who then stops watching, the engine drops it before the
+    // prompt, and the profile screen goes on showing it back exactly as typed. Storing it is storing a
+    // setting that silently does nothing, so it is refused where it is typed.
+    //
+    // The server refuses the same values on the same path (`validateProfileEdit`), so this is not the
+    // only thing standing between a person and a bad profile — it is the half that tells them WHERE.
     //
     // The vocabulary is the composer's own, not a second list. A picker that suggests a territory the box
     // then flags as unknown would be two controls disagreeing under one label.
-    item: { ok: isTerritoryEntry, expected: 'a territory from the picker below, or a two-letter code' },
+    item: { ok: isTerritoryEntry, strict: true, expected: 'a territory from the picker below, or a two-letter code' },
     // THE HINT SAYS WHAT THE FIELD DOES WITH WHAT YOU TYPE, which is the question that was actually
-    // asked: "Is this validated? It accepts 'XX' so I guess not." It IS checked, and the check is
-    // assistive by design — it flags and stores rather than refusing, because the engine deliberately
-    // carries a territory it does not recognise. A reader cannot tell an assistive notice from no
-    // validation at all unless the field says which it is, and this one did not.
+    // asked: "Is this validated? It accepts 'XX' so I guess not." It is, and it now refuses rather than
+    // flags, so the honest sentence is the shorter one.
     //
     // It also answers the other half of his question — whether a region counts as one entry — using the
     // picker's own vocabulary rather than a second spelling. Which vocabulary this field should speak is
@@ -273,9 +288,9 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // is with the owner and is deliberately not pre-empted here.
     hint: 'One per line or comma-separated — pick from the list below, or type a two-letter code like '
       + 'US, EU or GB; both are understood. A region counts as one entry: '
-      + 'European Union covers its member states, so there is no need to add them. Anything not in the '
-      + 'list is kept and flagged rather than refused, because a search can name a territory this list '
-      + 'does not carry.' },
+      + 'European Union covers its member states, so there is no need to add them. Anything the engine '
+      + 'cannot search is refused rather than stored, because a stored one is a default that quietly '
+      + 'does nothing.' },
   { key: 'platforms', label: 'Marketplaces', kind: 'lines', group: 'defaults',
     // MIRRORS THE SERVER'S RULE, and this is a COPY because portal-ui cannot import from driver/ — the
     // same constraint the `defaultProduct` note below describes. A copy drifts silently, so
@@ -292,9 +307,9 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     hint: 'One per line. A project can add to this list; it can never remove one.' },
   { key: 'riskAppetite', label: 'Risk appetite', kind: 'prose', group: 'defaults',
     // Level-NEUTRAL wording, deliberately: this same spec renders on the project form, where "how this
-    // BRAND OWNER wants risk communicated" was describing the wrong thing entirely. And the two clauses
+    // COMPANY wants risk communicated" was describing the wrong thing entirely. And the two clauses
     // that survive the cut are the two the server enforces — plain prose, and never a rating input.
-    hint: 'How risk is put to this client: what to lead with, how cautious to be. Example: "Lead with the biggest risk. Flag anything that could be a problem, even if unlikely." Changes how the report reads, never what is rated.' },
+    hint: 'How risk is put to this company: what to lead with, how cautious to be. Example: "Lead with the biggest risk. Flag anything that could be a problem, even if unlikely." Changes how the report reads, never what is rated.' },
   // MARKETPLACE LISTING SIZE HAS NO CONTROL, ON ANY SURFACE. Owner ruling, 2026-08-29:
   // "if it doesn't actually affect search why is it there — get rid of it completely. there is no such
   // thing as staff only." It was removed from this page AND from the staff editor in the same change.
@@ -610,8 +625,13 @@ export function fieldNotices(spec: FieldSpec, raw: string): readonly FieldNotice
   if (spec.item) {
     const bad = items.filter((e) => !spec.item!.ok(e))
     if (bad.length) {
-      out.push({ tone: 'check',
-        message: `Saved, but check ${bad.join(', ')} — each entry should be ${spec.item.expected}.` })
+      out.push({ tone: spec.item.strict ? 'dropped' : 'check',
+        message: spec.item.strict
+          // A STRICT FIELD REFUSES, so its notice may not say "Saved". The two tones are the difference
+          // between "we kept this and you should look at it" and "this will not be written", and a field
+          // that refuses while its notice says the value was saved is worse than no notice at all.
+          ? `Not saved: ${bad.join(', ')} — each entry should be ${spec.item.expected}.`
+          : `Saved, but check ${bad.join(', ')} — each entry should be ${spec.item.expected}.` })
     }
   }
   return out

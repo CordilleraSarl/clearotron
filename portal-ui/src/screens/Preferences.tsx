@@ -30,7 +30,7 @@
 // WHAT THE BLUR COVERS IS A SMALLER SET THAN THIS PAGE USED TO CLAIM, and the correction is the reason
 // this section is worded the way it is. The whole mechanism is one CSS rule in base.css —
 // `html.anon-on [data-anon='mark']` — so it reaches exactly those elements that THIS app renders and
-// tags. That is the lists, this page, and the mark and brand owner printed above a report (Result.tsx
+// tags. That is the lists, this page, and the mark and company printed above a report (Result.tsx
 // tags `run.title` and `run.account`). It is not the report itself. The report is an iframe sandboxed
 // deliberately WITHOUT allow-same-origin, which gives the embedded document a null origin: no rule in
 // this document's stylesheet applies inside it, and no script here could reach in to add one. Nor does
@@ -97,15 +97,15 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
             <dt style={{ color: 'var(--text-muted)' }}>Role</dt>
             <dd style={{ margin: 0, color: 'var(--text-strong)' }}>{role}</dd>
             {/*
-              Brand owners are listed only when the server actually sent a list. A staff identity is
+              Companies are listed only when the server actually sent a list. A staff identity is
               granted everything, which arrives as a wildcard rather than as names — the roster is its
               own endpoint — so rendering a count or a list for staff here would mean inventing one.
               Saying what is true and stopping is the whole rule.
             */}
-            <dt style={{ color: 'var(--text-muted)' }}>Brand owners</dt>
+            <dt style={{ color: 'var(--text-muted)' }}>Companies</dt>
             <dd style={{ margin: 0, color: 'var(--text-strong)' }}>
               {ctx.me.allAccounts ? (
-                `Every brand owner ${operatorName(ctx.me.brand)} holds`
+                `Every company ${operatorName(ctx.me.brand)} holds`
               ) : ctx.me.accounts.length ? (
                 <span data-anon="mark">{ctx.me.accounts.join(', ')}</span>
               ) : (
@@ -115,7 +115,7 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
           </dl>
 
           <p style={{ margin: '14px 0 0', fontSize: 13, color: 'var(--text-muted)' }}>
-            To change the address, the role or the brand owners on it, ask {operatorName(ctx.me.brand)} —
+            To change the address, the role or the companies on it, ask {operatorName(ctx.me.brand)} —
             enrolment is done for you, not from this page.
           </p>
           {/* — F47. The portal resolves sign-out per auth mode; linking to
@@ -150,7 +150,7 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
             </span>
           </div>
           <p style={{ margin: '12px 0 0', color: 'var(--text-muted)', fontSize: 13.5 }}>
-            Pressing it blurs every brand name, mark and brand owner the portal puts on screen — in the
+            Pressing it blurs every brand name, mark and company the portal puts on screen — in the
             lists, on this page, in the heading above a report, and the report itself — so you can put the
             portal on a call or a projector without showing whose names are in clearance. Nothing is
             hidden from you: the text

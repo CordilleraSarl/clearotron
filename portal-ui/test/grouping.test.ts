@@ -96,7 +96,7 @@ test('marks are keyed by ACCOUNT as well as name — one client never sees anoth
     run({ runId: 'ours', account: 'aurora' }),
     run({ runId: 'theirs', account: 'borealis' }),
   ])
-  assert.equal(marks.length, 2, 'the same word for two brand owners is two marks')
+  assert.equal(marks.length, 2, 'the same word for two companies is two marks')
   for (const m of marks) assert.equal(m.reads.length, 1)
 })
 

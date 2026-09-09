@@ -42,7 +42,7 @@ export function useLoad<T>(fetcher: () => Promise<Result<T>>, deps: readonly unk
 
   // A DEPS CHANGE IS A DIFFERENT QUESTION. A RELOAD IS THE SAME QUESTION ASKED AGAIN.
   //
-  // That distinction is the whole fix. `result` used to survive both, so switching brand owner left the
+  // That distinction is the whole fix. `result` used to survive both, so switching company left the
   // PREVIOUS owner's data fully painted for the entire in-flight window — every screen gates on `result`
   // and not on `loading`, so nothing indicated a fetch was even happening. The page had re-rendered and
   // re-fetched; it simply showed the wrong client until the answer came back. Read as "toggling the brand

@@ -135,6 +135,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-company-created-after-boot-can-still-search.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-company-created-in-the-browser-is-a-whole-company.test.mjs": {
+          "tests": 7,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -643,6 +655,12 @@
           "tests": 3,
           "asserts": 11,
           "skips": 1,
+          "todos": 0
+        },
+        "a-stored-territory-that-does-nothing-is-named.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
+          "skips": 0,
           "todos": 0
         },
         "a-terminal-guard-delivers-and-clamps.test.mjs": {
@@ -1995,6 +2013,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-engine-call-asks-for-the-refreshed-credential.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "every-lane-declares-its-transport-position.test.mjs": {
           "tests": 7,
           "asserts": 12,
@@ -2920,8 +2944,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 119,
-          "asserts": 634,
+          "tests": 122,
+          "asserts": 651,
           "skips": 0,
           "todos": 0
         },
@@ -2932,8 +2956,8 @@
           "todos": 0
         },
         "portal-upstream.test.mjs": {
-          "tests": 36,
-          "asserts": 108,
+          "tests": 41,
+          "asserts": 124,
           "skips": 0,
           "todos": 0
         },
@@ -4233,6 +4257,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-bar-names-no-organisation-nobody-named.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-boot-line-cannot-claim-a-lane-it-has-not-got.test.mjs": {
           "tests": 4,
           "asserts": 10,
@@ -4314,6 +4344,12 @@
         "the-door-answers-the-address-it-advertises.test.mjs": {
           "tests": 9,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-door-sees-a-company-created-after-it-booted.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -5359,6 +5395,24 @@
           "skips": 0,
           "todos": 0
         },
+        "companyCreated.test.ts": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "companyKeyParity.test.ts": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "companyOrder.test.ts": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "compose.test.ts": {
           "tests": 8,
           "asserts": 29,
@@ -5380,6 +5434,12 @@
         "copyLint.test.ts": {
           "tests": 6,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "createFieldsReachTheStore.test.ts": {
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -5515,6 +5575,12 @@
           "skips": 0,
           "todos": 0
         },
+        "permissions.test.ts": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "productMatrix.test.ts": {
           "tests": 22,
           "asserts": 46,
@@ -5522,8 +5588,8 @@
           "todos": 0
         },
         "profileFields.test.ts": {
-          "tests": 48,
-          "asserts": 141,
+          "tests": 49,
+          "asserts": 145,
           "skips": 0,
           "todos": 0
         },
@@ -5565,13 +5631,13 @@
         },
         "screenCopy.test.ts": {
           "tests": 56,
-          "asserts": 178,
+          "asserts": 183,
           "skips": 0,
           "todos": 0
         },
         "shell.test.ts": {
-          "tests": 7,
-          "asserts": 17,
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -5584,6 +5650,12 @@
         "terminology.test.ts": {
           "tests": 4,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "territoryCodeParity.test.ts": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
