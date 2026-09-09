@@ -1313,12 +1313,6 @@ export async function runCheck() {
     const platformRefusal = platformEngineRefusal();
     if (platformRefusal) problem(platformRefusal);
     else if (bin.executable && !bin.relative) ok(`${bin.path}`);
-    // SAID WHETHER OR NOT ONE WAS FOUND, and that is the point of putting it here rather than in the
-    // not-found branch. Under WSL a Windows build on the appended PATH is passed over; if a Linux one
-    // was found the reader still needs to know which of the two they are looking at, and if none was,
-    // "no binary" over a machine whose own `which` prints one is a refusal they cannot act on.
-    const shimNote = windowsShimNote(bin.skipped, engSpec.fallback);
-    if (shimNote) info(shimNote);
     // The FACT only. It used to carry "install it for a real run (`npm run example` needs no engine)",
     // which is the absence framing was filed about — and it now says half of what the MODE line
     // below says, in worse words. One statement of a state, in the place that states states.
@@ -1329,6 +1323,15 @@ export async function runCheck() {
     else if (bin.relative) problem(`${engSpec.env}="${binSetting}" is RELATIVE — stage subprocesses run with cwd set to the run directory, so it will not resolve there. Use an absolute path (${bin.path} from here)`);
     else if (!bin.path) problem(`${engSpec.env}="${binSetting}" resolves to nothing on PATH`);
     else problem(`${engSpec.env}="${binSetting}" → ${bin.path} is not an executable file`);
+    // SAID AFTER THE CHAIN ABOVE, AND OUTSIDE IT. This block is one if/else-if ladder, so a statement
+    // placed between two of its clauses re-parents every clause below onto the new `if` — measured:
+    // it made doctor report an executable mock binary as "not an executable file", because the ladder's
+    // tail became the else of THIS condition. Said whether or not a binary was found: under WSL a
+    // Windows build on the appended PATH is passed over, and if a Linux one was found the reader still
+    // needs to know which of the two they have, while if none was, "no binary" over a machine whose own
+    // `which` prints one is a refusal nobody can act on.
+    const shimNote = windowsShimNote(bin.skipped, engSpec.fallback);
+    if (shimNote) info(shimNote);
 
     // ── — WHICH MODE THIS INSTALL IS IN, said as a mode rather than as a list of absences ──────
     //

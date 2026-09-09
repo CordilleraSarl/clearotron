@@ -33,7 +33,7 @@ const binIn = (rel) => {
   return dir;
 };
 const WINDOWS = binIn("mnt/c/nvm4w/nodejs");     // stands in for /mnt/c/…
-const LINUX = binIn("home/you/.nvm/versions/node/v22/bin");
+const LINUX = binIn("opt/node/v22/bin");
 // The predicate the production pattern would answer for a real /mnt/c path.
 const onWindowsDrive = (p) => p.startsWith(join(root, "mnt", "c"));
 const PATH_BOTH = `${WINDOWS}:${LINUX}`;
@@ -97,7 +97,7 @@ test("the production pattern matches a Windows drive and not an ordinary /mnt di
   // disk on this very machine and must not be swept.
   for (const p of ["/mnt/c/nvm4w/nodejs/claude", "/mnt/d/tools/claude", "/mnt/C/x/claude"])
     assert.ok(ON_A_WINDOWS_DRIVE.test(p), `${p} is a Windows drive`);
-  for (const p of ["/mnt/datadisk1/x/claude", "/mnt/data/claude", "/home/you/claude", "/usr/bin/claude", "/mnt/claude"])
+  for (const p of ["/mnt/datadisk1/x/claude", "/mnt/data/claude", "/opt/tools/claude", "/usr/bin/claude", "/mnt/claude"])
     assert.ok(!ON_A_WINDOWS_DRIVE.test(p), `${p} is not a Windows drive`);
 });
 
