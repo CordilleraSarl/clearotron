@@ -21,7 +21,7 @@
 import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
-import { readFileSync, existsSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
+import { readFileSync, existsSync, writeFileSync, rmSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
@@ -30,6 +30,7 @@ import { tmpdir } from 'node:os'
 // Hardcoding the string here would let the fixture and the wire drift, which is the defect the comment
 // on `product` below already records once.
 import { reportIdentityFor } from '../driver/search-policy.mjs'
+import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = join(HERE, '..', 'portal-ui', 'dist')
@@ -214,14 +215,16 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r))
 const origin = `http://127.0.0.1:${server.address().port}`
 
-const userDir = mkdtempSync(join(tmpdir(), 'home-check-'))
+// The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
+// lock it writes there leaves with the root instead of accumulating in the shared one.
+const { profile: userDir, env: chromeEnv } = browserRun("home-check-")
 const chrome = spawn('google-chrome', [
   '--headless=new', '--disable-gpu', '--no-sandbox', '--hide-scrollbars',
   `--user-data-dir=${userDir}`, '--window-size=1280,1000',
   '--remote-debugging-port=0', 'about:blank',
   // — DETACHED so Chrome LEADS A PROCESS GROUP. Its renderer, GPU and zygote processes are
   // separate PIDs, and without a group there is nothing to signal them with.
-], { stdio: ['ignore', 'pipe', 'pipe'], detached: true })
+], { stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: chromeEnv })
 // — and the group dies with THIS script, on every exit it can observe.
 // The teardown below runs on the paths somebody wrote a branch for; a cancelled CI job (SIGTERM),
 // a Ctrl-C, or a throw elsewhere in this file are not among them — and that is where the measured

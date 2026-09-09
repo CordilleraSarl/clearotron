@@ -59,7 +59,8 @@
 // coupling ever bites, that is the moment to mount the real component instead of copying it.
 
 import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync, existsSync, readdirSync } from "node:fs";
-import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
+import { reapOnExit, removeOnExit } from "../shared/reap-on-exit.mjs";
+import { assertRootFits, browserEnv } from "../shared/browser-temp-root.mjs";   // — a detached group dies with this script
 import { execFileSync, spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { basename, extname } from "node:path";
@@ -76,6 +77,16 @@ const has = (n) => process.argv.includes(`--${n}`);
 
 const ZOOMS = arg("zoom", "1.0,1.25").split(",").map((z) => z.trim()).filter(Boolean);
 const WORK = join(tmpdir(), `render-check-${process.pid}`);
+// WORK is this run's browser temp root as well as its scratch: the browser is spawned with TMPDIR
+// pointing here, so the process-singleton lock it creates lands inside and leaves with it. Asserted
+// rather than assumed, because the budget is on the PATH and nothing about this one is fixed.
+assertRootFits(WORK);
+// The removal below runs on the paths somebody wrote a branch for. This one also covers the exits
+// nobody writes a branch for, which is where the leaked locks came from.
+const stopRootSweep = removeOnExit(WORK);
+// ...unless the caller asked to keep it. Read here rather than at the cleanup below, because the
+// sweep is registered at import time and `--keep` has to be honoured before any exit can happen.
+if (has("keep")) stopRootSweep();
 
 /**
  * Replay the committed frozen run into a fresh pool and return its path.
@@ -412,7 +423,7 @@ async function measureAtZoom(zoom, deadlineMs = 90_000) {
   // — DETACHED so Chrome LEADS A PROCESS GROUP. Its renderer, GPU and zygote processes are
   // separate PIDs; without a group there is nothing to signal them with, and the teardown below could
   // only ever reach the parent.
-  ], { stdio: ["ignore", "ignore", "ignore"], detached: true });
+  ], { stdio: ["ignore", "ignore", "ignore"], detached: true, env: browserEnv(WORK) });
   // — and the group dies with THIS script, on every exit it can observe.
   // The teardown below runs on the paths somebody wrote a branch for; a cancelled CI job (SIGTERM),
   // a Ctrl-C, or a throw elsewhere in this file are not among them — and that is where the measured

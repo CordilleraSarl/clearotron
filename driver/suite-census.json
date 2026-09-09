@@ -57,6 +57,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-browser-run-gets-its-own-temp-root.test.mjs": {
+          "tests": 13,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "a-cancel-marker-names-its-actor.test.mjs": {
           "tests": 14,
           "asserts": 34,
@@ -205,6 +211,12 @@
           "tests": 2,
           "asserts": 6,
           "skips": 1,
+          "todos": 0
+        },
+        "a-door-is-moved-only-when-nothing-outside-resolves-to-it.test.mjs": {
+          "tests": 7,
+          "asserts": 12,
+          "skips": 0,
           "todos": 0
         },
         "a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": {
@@ -977,7 +989,7 @@
         },
         "both-doors-start-on-both-paths.test.mjs": {
           "tests": 26,
-          "asserts": 59,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -1000,9 +1012,9 @@
           "todos": 0
         },
         "browser-check-membership.test.mjs": {
-          "tests": 4,
-          "asserts": 12,
-          "skips": 4,
+          "tests": 8,
+          "asserts": 17,
+          "skips": 8,
           "todos": 0
         },
         "bundle-rebuild-and-ports.test.mjs": {
@@ -1409,7 +1421,7 @@
         },
         "coverage-judgment-rows.test.mjs": {
           "tests": 9,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -3418,8 +3430,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 152,
-          "asserts": 621,
+          "tests": 153,
+          "asserts": 627,
           "skips": 0,
           "todos": 0
         },
@@ -4185,6 +4197,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
+          "tests": 14,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
         "the-attempt-record-carries-tool-time.test.mjs": {
           "tests": 13,
           "asserts": 47,
@@ -4510,8 +4528,8 @@
           "todos": 0
         },
         "the-public-residue-is-a-floor.test.mjs": {
-          "tests": 9,
-          "asserts": 34,
+          "tests": 13,
+          "asserts": 51,
           "skips": 5,
           "todos": 0
         },

@@ -61,12 +61,13 @@
 
 import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
-import { readFileSync, existsSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
+import { readFileSync, existsSync, writeFileSync, rmSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { reapOnExit } from '../shared/reap-on-exit.mjs' // — a detached group dies with this script
+import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = join(HERE, '..', 'portal-ui', 'dist')
@@ -174,11 +175,13 @@ const origin = `http://127.0.0.1:${server.address().port}`
 
 // ── chrome ──────────────────────────────────────────────────────────────────────────────────────────
 
-const profile = mkdtempSync(join(tmpdir(), 'revisit-check-'))
+// The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
+// lock it writes there leaves with the root instead of accumulating in the shared one.
+const { profile, env: chromeEnv } = browserRun("revisit-check-")
 const chrome = spawn('google-chrome', [
   '--headless=new', '--disable-gpu', '--no-sandbox', '--remote-debugging-port=0',
   `--user-data-dir=${profile}`, '--window-size=1440,900', 'about:blank',
-], { stdio: ['ignore', 'ignore', 'pipe'] })
+], { stdio: ['ignore', 'ignore', 'pipe'], env: chromeEnv })
 reapOnExit(chrome)
 
 const wsUrl = await new Promise((resolve, reject) => {

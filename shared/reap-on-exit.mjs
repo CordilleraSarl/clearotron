@@ -36,8 +36,27 @@
 //
 // IDEMPOTENT, and unregistering is the caller's normal path: a child that exits on its own drops out,
 // so the reaper never signals a pid that has been recycled onto somebody else's process.
+//
+// ── WHY DIRECTORY REMOVAL LIVES IN THIS FILE AND NOT BESIDE IT ────────────────────────────────────
+//
+// A browser run's temp root can only be removed AFTER its process group is dead. Chrome's renderer,
+// GPU and zygote children keep writing the profile while they live, so a removal that runs first
+// races them and throws ENOTEMPTY — a race three of the call sites below already carry a comment
+// about, on their own success paths.
+//
+// Two separate exit handlers cannot express that ordering: Node runs `exit` listeners in
+// registration order, so the guarantee would depend on which module a caller happened to import
+// first. One handler doing both, in the order written here, is the whole reason `removeOnExit` is
+// not its own module.
+//
+// The removal is best-effort for the same reason the kill is: a handler that throws on the way out
+// of a crashing script replaces one problem with a worse one. `maxRetries` covers ENOTEMPTY, which
+// is the error the surviving-children race actually produces.
+
+import { rmSync } from "node:fs";
 
 const groups = new Set();
+const dirs = new Set();
 let installed = false;
 
 function reapAll() {
@@ -49,6 +68,11 @@ function reapAll() {
     try { process.kill(-pid, "SIGKILL"); } catch { try { process.kill(pid, "SIGKILL"); } catch { /* already gone */ } }
   }
   groups.clear();
+  // ONLY NOW, with the groups signalled, is the temp root removable. See the note above.
+  for (const dir of dirs) {
+    try { rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); } catch { /* a stray temp root is not worth failing an exit over */ }
+  }
+  dirs.clear();
 }
 
 function install() {
@@ -77,7 +101,25 @@ export function reapOnExit(child) {
   return stop;
 }
 
+/**
+ * Remove `dir` when THIS process exits, by any route it can observe, and only after every watched
+ * process group has been signalled.
+ *
+ * @returns {() => void} stop watching, for a caller that removes the directory itself.
+ */
+export function removeOnExit(dir) {
+  if (typeof dir !== "string" || dir === "") return () => {};
+  dirs.add(dir);
+  install();
+  return () => dirs.delete(dir);
+}
+
 /** The pids currently watched. For arms — a reaper nobody can inspect is a reaper nobody can test. */
 export function watchedGroups() {
   return [...groups];
+}
+
+/** The directories currently watched, for the same reason. */
+export function watchedDirs() {
+  return [...dirs];
 }

@@ -39,6 +39,7 @@
 import { existsSync } from "node:fs";
 import { basename, sep } from "node:path";
 import { INSTALL_DIR, inspectShim, pathPosition, shimDir, shimPath } from "./verb-shim.mjs";
+import { chdirPrefix } from "./os-advice.mjs";
 
 /**
  * Filesystem reads, injectable so the arms can drive a machine that is not this one.
@@ -209,7 +210,10 @@ export function invocationForm(env = process.env, io = FS, installDir = INSTALL_
   // to fix it — through the very shim it had just called broken. The advice for repairing a route
   // cannot travel that route. Both remaining forms go around it.
   return {
-    form: "in-place", prefix: `cd ${standFrom(installDir)} && npx `, shim: path, dir,
+    // THE SEPARATOR IS THE PART THAT FAILS OFF POSIX, not the path. `chdirPrefix` answers for the
+    // shell the reader is actually in; on Windows PowerShell 5.1 there is no `&&` at all, so this
+    // line was a parse error there before its backslashes mattered. Reported from a real run.
+    form: "in-place", prefix: `${chdirPrefix(standFrom(installDir))}npx `, shim: path, dir,
     onPath: false, shadowedBy: null, shimKind: shim.kind, otherInstall: shim.installDir,
     staleInterpreter: shim.interpreterMissing === true ? shim.interpreter : null,
   };

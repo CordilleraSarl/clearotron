@@ -1766,7 +1766,10 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // which could only ever say "something changed".
 // Advanced again by the seventh break above (tracker issue 147): a behaviour change on the connect
 // block, so both constants move together for the same measured reason as the sixth.
-const FROZEN_BEFORE_SPDX = "5ba5aca04c14096639c5944a57acbc4c690e98c05aedce56adca945ae67c11aa";
+// Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
+// clearance page, which is a behaviour change and not licence-only, so both constants move for the same
+// measured reason.
+const FROZEN_BEFORE_SPDX = "d94481834383fbf0c62bcccd2f9ebb25b849a9d1103a4e78151b49158d74ed7c";
 // FIFTH BREAK (2026-08-26, tracker issue 1903 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -1984,7 +1987,32 @@ const FROZEN_BEFORE_SPDX = "5ba5aca04c14096639c5944a57acbc4c690e98c05aedce56adca
 // after yields an IDENTICAL program (acorn, positions and comments excluded, 695958 characters of AST both
 // sides). A comment carries no output. NOT licence-only, so FROZEN_BEFORE_SPDX advances with it. It could not live in report.css or brand.mjs, because it is prose
 // about this file's own matching rule and belongs beside it.
-const FROZEN = "4897cc6af99af808fbc7f7b4aa308c65316ff562a8c3b767b2243464fe9baf5a";
+// THE SEVEN FIXED SENTENCES ON THE CLEARANCE PAGE. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES, and that is the point rather than a cost. Every sentence
+//      here is one the renderer prints on every report — a note to a developer in the footer, a
+//      definition of a label the reader could not see, a thousand characters of the engine's own unit
+//      names that ended mid-word, "(placeholder)" beside twenty-four registrations, a coverage gap
+//      disclosed twice, three captions in an engineer's voice, and an evidence tag beside "nothing
+//      found". Re-rendering an archived run replaces those with the sentences the owner ruled. That is
+//      a repair of already-delivered documents, not a rewrite of their substance: no finding, band,
+//      count, record or date moves.
+//   2. Could it live in report.css or brand.mjs? NO. Every one of them is words, and those files carry
+//      no words.
+//   3. The hash moves HERE, in this commit.
+//
+// ADVANCED ONCE MORE IN REVIEW, comment-only: the note above the footer argued the developer sentence
+// and said nothing about "Working draft for legal review.", which left the same commit. It is a ruled
+// removal and it is written down as one now. No rendered byte moves — the two renders either side of
+// that edit are identical.
+//
+// MEASURED, not asserted. Both renders of the committed demo pool, before and after, diffed line by
+// line: the clearance page moves 26 lines and the knockout page moves only its timestamp, because that
+// is a different renderer. The issue's own acceptance greps over the rendered page read zero for
+// "placeholder", "framework in force", "one word per finding" and "returne.". One "(internal)" survives
+// and it is NOT one of the seven — it is the configuration-provenance block, which is stripped before a
+// reader sees it, and the strip has a defect of its own that is filed rather than widened into here.
+const FROZEN = "0e4e8f4a2a41953a25c9268c6be4103f5d8e8f0e0d125e82c71030f2f15e3987";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

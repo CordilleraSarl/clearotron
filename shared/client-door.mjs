@@ -41,6 +41,7 @@
 
 import { join } from "node:path";
 import { challengeVerdict, blockedByAccessChallenge, challengeNote } from "./mcp-challenge.mjs";   // — F57
+import { whatHoldsPort } from "./os-advice.mjs";
 
 /** The unit that runs the client door. Installed like any other; started only by this module. */
 export const CLIENT_DOOR_UNIT = "clearotron-client-mcp.service";
@@ -278,7 +279,7 @@ export function describeDoorState(door, {
           + "That is very likely why it cannot start: the product's ports are fixed defaults, so another "
           + "install or a stray process holds it, and the unit fails over and over against a port it will "
           + `never get. Find the holder before re-applying anything — \`${startCmd}\`'s own refusal names `
-          + "the port and the variable, and `ss -ltnp` names the process." };
+          + `the port and the variable, and \`${whatHoldsPort("<the door's port>")}\` names the process.` };
     }
     if (looping) {
       return { level: "problem",

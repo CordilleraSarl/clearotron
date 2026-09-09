@@ -1258,7 +1258,19 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
     { runId: "noref-669", coverageJudgment: projectCoverageJudgment({ sufficient: false, reason: "open",
         rows: [{ area: "incumbent-class / AXIS portfolio", areaLabel: "owner portfolio sweep / AXIS portfolio",
                  note: "coverage-limited — the owner lane did not close" }] }) });
-  assert.match(labelled, /owner portfolio sweep \/ AXIS portfolio/i, "the label is what the page prints");
+  // THE LABEL IS NOW ASSERTED WHERE IT LIVES. This read it off the page, and the surface it read —
+  // "Coverage read (internal)", the block the judgment rows fold into — is not rendered any more: it
+  // concatenated the engine's own unit names into a thousand characters of prose that ended mid-word on
+  // the measured run. So the positive moves to the projection, which is where the guarantee was always
+  // held, and the negative stays on the page and is STRONGER for the removal: the raw identifier now has
+  // no route to a reader at all.
+  const projected = projectCoverageJudgment({ sufficient: false, reason: "open",
+    rows: [{ area: "incumbent-class / AXIS portfolio", areaLabel: "owner portfolio sweep / AXIS portfolio",
+             note: "coverage-limited — the owner lane did not close" }] });
+  assert.match(JSON.stringify(projected), /owner portfolio sweep \/ AXIS portfolio/i,
+    "the driver's label is what the projection carries");
+  assert.doesNotMatch(labelled, /owner portfolio sweep/i,
+    "the internal coverage read is off the page — if it is back, this arm is measuring the old surface");
   assert.doesNotMatch(labelled, /incumbent-class/, "…and the identifier is not on the page");
   assert.match(labelled, /AXIS and Axis both enumerated to zero/, "the seat's sentence rides verbatim — both casings of the mark intact");
   // exactly ONE collapsible Scope section
@@ -1341,7 +1353,8 @@ test("B3: provenance once in Scope — no per-card coherence line, index entries
   assert.match(html, /\(register-index entry\)/, "unfetched legs still marked — never shown as confirmed");
   assert.equal((html.match(/Record provenance/g) || []).length, 1, "the provenance statement renders exactly once, in Scope");
   assert.match(html, /register-index entry was seen in the register index; its full record was not pulled/);
-  assert.match(html, /read from the official register records fetched this run/, "with a record set, the fetched sentence leads — byte-identical to B3 as shipped");
+  assert.match(html, /Registration numbers on the cards were read from the register records\./,
+    "with a record set, the fetched sentence leads");
 
   // NO record set (2026-07-31 — B3 shipped this branch inverted). The labels the paragraph exists to
   // explain still render here: "(register-index entry)" comes out of the registration render's second
@@ -1354,7 +1367,7 @@ test("B3: provenance once in Scope — no per-card coherence line, index entries
   assert.match(bare, /\(register-index entry\)/, "the label still renders with no record set");
   assert.equal((bare.match(/Record provenance/g) || []).length, 1, "…so its explanation renders too, still exactly once");
   assert.match(bare, /register-index entry was seen in the register index; its full record was not pulled/);
-  assert.doesNotMatch(bare, /read from the official register records fetched this run/,
+  assert.doesNotMatch(bare, /Registration numbers on the cards were read from the register records/,
     "no record set ⇒ the run never claims records were fetched");
 
   // Nothing to explain ⇒ nothing said: no cards, no labels, no paragraph.
@@ -1462,8 +1475,13 @@ test("#761 the gauge names the framework whose ladder it is printing, right abov
   const gauge = html.match(/<div class="panel gauge">[\s\S]*?<div class="ticks">/)[0];
   assert.match(gauge, /<span class="gauge-fw">/, "the name sits inside the gauge panel, above the scale and the ticks");
   // ONE name for one framework. A second, composed short form here would rebuild in another corner.
-  assert.equal((html.match(/Aurora Interactive ACP risk framework/g) ?? []).length, 2,
-    "named twice and only twice — the gauge and the footer provenance line");
+  // ONE NAME FOR ONE FRAMEWORK, and the count moved when the footer stopped restating it. The footer
+  // carried "Risk bands (Aurora Interactive ACP risk framework): …" plus a sentence explaining the
+  // vocabulary to a developer; both are gone. The name now sits in the gauge, and on the "Rated under"
+  // line when the run records one — this fixture records none, which is why the count here is one.
+  // What the arm holds is unchanged: the name is never rebuilt in another corner of the page.
+  assert.equal((html.match(/Aurora Interactive ACP risk framework/g) ?? []).length, 1,
+    "named once — the gauge; the footer no longer restates it");
 });
 
 test("#761 the legacy gauge names nothing — an archived run with no manifest is byte-identical", () => {
@@ -2347,7 +2365,11 @@ const NO_RESULT = "perplexity_research — no result";
 test("#762 D7: the sentinel renders as client words on the finding card, and the tool name is nowhere", () => {
   const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-  assert.match(html, /<b>Use checked\.<\/b> Marketplace search run — no result found\./);
+  assert.match(html, /<b>Use checked\.<\/b> Nothing found in the marketplaces searched\./);
+  // AND NO EVIDENCE TAG. "Evidence: inferred" beside "nothing found" reads as a contradiction: the tag
+  // qualifies how a FINDING was established and there is no finding here.
+  assert.doesNotMatch(html, /Nothing found in the marketplaces searched\.<\/li>[\s\S]{0,40}Evidence:/,
+    "an evidence tag was hung off an empty result");
   assert.doesNotMatch(html, /perplexity_research/, "the raw tool name reached a client's page");
   assert.doesNotMatch(html, /perplexity/i, "…in any casing");
 });
@@ -2370,7 +2392,7 @@ test("2097 the sentinel matches on NORMALISED punctuation — the seat's hyphen 
   for (const variant of ["perplexity_research - no result", "perplexity_research – no result", "perplexity_research  —  no result"]) {
     const f = [{ ...FINDINGS[0], use_check: { source: variant } }];
     const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
-    assert.match(html, /Marketplace search run — no result found\./, `variant not mapped: ${variant}`);
+    assert.match(html, /Nothing found in the marketplaces searched\./, `variant not mapped: ${variant}`);
     assert.doesNotMatch(html, /perplexity/i, `the raw tool name reached the page for: ${variant}`);
   }
   // And a real source containing a hyphen is untouched — the fold is not a rule over strings.
@@ -2614,4 +2636,38 @@ test("#1132 the populated branch is untouched — a republish of a normal run re
     + "on its next republish");
   // And the grid is really there, so "no empty-state sentence" is not passing on an empty section.
   assert.match(html, /class="cov"/, "the grid itself is missing, so the assertion above passed over an empty section");
+});
+
+// ── one row per gap ─────────────────────────────────────────────────────────────────────────────────
+//
+// A deferred search was named twice on the page: once as the model wrote it, and once as the driver
+// composes it from the envelope ("Follow-up / …  — not completed this run — …"). The run's own reviewer
+// flagged the duplicate and it shipped, because the second row is composed at render time and the
+// reviewer reads what the model wrote.
+//
+// BOTH DIRECTIONS, because a dedupe that has only ever been shown NOT to fire is not a dedupe. The
+// suppression errs toward keeping: a surplus row is today's behaviour, a wrongly-dropped one hides a gap.
+test("332: the driver's follow-up row goes when the model already named that search, and stays when it did not", () => {
+  const modelRow = { area: "the English word DOLPHIN as a dedicated exact search", state: "open",
+    note: "planned and not reached" };
+  const driverRow = { area: "Follow-up / dolphin", state: "open",
+    note: "dolphin — not completed this run — the search for it was planned and never reached the register" };
+
+  const both = renderHtml(parsedOf(REPORT), FINDINGS, [modelRow, driverRow], { runId: "dedupe-1" });
+  assert.match(both, /the English word DOLPHIN as a dedicated exact search/i, "the model's row is what survives");
+  assert.doesNotMatch(both, /Follow-up \/ dolphin/,
+    "the driver's row for a search the model already named is drawn a second time");
+
+  // The same driver row with NOTHING naming that search: it is the only disclosure of the gap and must
+  // stay. Dropping it here would hide an open item from the reader, which is the failure worth avoiding.
+  const alone = renderHtml(parsedOf(REPORT), FINDINGS, [driverRow], { runId: "dedupe-2" });
+  assert.match(alone, /Follow-up \/ dolphin/,
+    "the only row disclosing this gap was suppressed — a reader is now told nothing about it");
+
+  // A NEAR match keeps both: the rule requires every significant word of the directive, so an unrelated
+  // row mentioning dolphins in passing does not silently swallow the gap.
+  const near = renderHtml(parsedOf(REPORT), FINDINGS,
+    [{ area: "marketplace sweep", state: "open", note: "dolphin toys were out of scope" }, driverRow],
+    { runId: "dedupe-3" });
+  assert.match(near, /Follow-up \/ dolphin/, "a partial word overlap suppressed a gap it does not cover");
 });

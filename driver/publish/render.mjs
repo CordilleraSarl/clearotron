@@ -416,7 +416,7 @@ const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?.
 // EXACT EQUALITY, exactly as EVIDENCE_LABEL maps `_status`. The sentinel itself does not move: archived
 // runs carry the old value forever and a fourth spelling of it would have to be accepted everywhere.
 const USE_CHECK_NO_RESULT = 'perplexity_research — no result';
-const USE_CHECK_NO_RESULT_CITE = 'Marketplace search run — no result found.';
+const USE_CHECK_NO_RESULT_CITE = 'Nothing found in the marketplaces searched.';
 const USE_CHECK_NO_RESULT_SHORT = 'marketplace search — no result found';
 // — MATCHED ON NORMALISED PUNCTUATION, NOT ONE SPELLING. The constant itself does not
 // move (archived runs carry it forever, the validators name it), but the SEAT emitted a hyphen where
@@ -852,7 +852,7 @@ function plainScopeNote(text) {
   if (!t) return '';
   return stripTelemetry(t).trim();   // trim: an all-telemetry note leaves only newlines, and '' is falsy
 }
-function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false) {
+function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false, hasIndexEntry = false) {
   const parts = [];
   // B3 (spec 2026-07-30 §4) — record provenance, stated ONCE, here, instead of a hedge stamped on
   // every card. This is the single home of what "fetched", "register-index entry" and "inferred"
@@ -868,7 +868,11 @@ function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, co
   // conditions: a copy is a thing that drifts, and over-including costs one explanatory paragraph in a
   // collapsed section while under-including costs a reader an unexplained label. The fetched-records
   // sentence stays conditional on hasRecordSet, so a run WITH a record set is byte-identical to B3.
-  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registry identifiers on the finding cards are read from the official register records fetched this run. ' : ''}A registration shown as a register-index entry was seen in the register index; its full record was not pulled. An enforcer appetite marked “inferred” rests on reputation or profile signals rather than a fetched record.</p>`);
+  // THREE SENTENCES EXPLAINING ONE WORD, and the middle one printed on every report whether or not the
+  // page had a register-index entry on it — a definition of a label the reader could not see. It renders
+  // now only where such an entry does, and the remaining two say what "inferred" means in the words a
+  // reader would use for it rather than in the renderer's.
+  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}“Inferred” beside an owner’s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p>`);
   // — this is the one part of §4 that does NOT fold. Same markup, same heading, same marker; it is
   // emitted beside the <details> instead of inside it, wrapped in the panel the only-you section already
   // uses so it reads as a region of the page rather than a stray heading.
@@ -896,7 +900,11 @@ function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, co
       + `<p class="covnone" style="margin:0 0 6px;font-size:13px">No coverage record was produced for this run. `
       + `This section normally lists what each search covered and what is still open; its absence here is a gap `
       + `in the record, not a finding that nothing is open. Ask us before relying on it.</p>`);
-  if (coverageJudgment && coverageJudgment.reason) parts.push(`<p class="cov-read" style="margin:8px 0 0;font-size:13px;color:var(--faint)"><b>Coverage read (internal):</b> ${esc(String(coverageJudgment.reason))}</p>`);
+  // THE INTERNAL COVERAGE READ IS NOT RENDERED. It concatenated the engine's own search-unit names into
+  // about a thousand characters of prose — and on the measured run it ended mid-word, because it is a
+  // machine's working note and nothing was reading it as a sentence. Every fact in it is already in the
+  // coverage cells directly above, in plain words. It stays in the run's artifacts and in the workbook,
+  // where the reader is someone who wants it.
   const meth = plainScopeNote(methodologyText);
   if (meth) parts.push(`<p class="scoperead" style="margin:10px 0 4px;font-weight:600">How this search was run</p><div class="methnote" style="font-size:13px">${renderProse(meth)}</div>`);
   const cn = contextNotesBlock(contextNotes);
@@ -1230,11 +1238,16 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   //                 ("Download full audit (Excel)"), because that is the string the reader hunts for on
   //                 the page. NOT an inline .xlsx link: portal-report.mjs strips those, correctly — the
   //                 portal REPLACES them with its own download control (portal-ui Result.tsx).
-  //   placeholder — a register UI exists and we do not know its per-record address. Labelled as a
-  //                 placeholder so it reads as unfinished rather than as a citation a reader can check.
+  //   placeholder — a register UI exists and we do not know its per-record address. It CARRIES NO NOTE:
+  //                 the number stands on its own, because "(placeholder)" beside twenty-four
+  //                 registrations reads to a client as a broken report rather than as a missing link.
+  // THE PLACEHOLDER NOTE IS GONE. It printed " — no record link available yet (placeholder)" beside
+  // every registration a register UI has no per-record address for — twenty-four times on the measured
+  // page — and a client reads "placeholder" as a broken report. The number is the fact; when there is a
+  // link the number IS the link, and when there is not, the number still stands on its own. The
+  // workbook note stays: it tells a reader where the full record actually is.
   const NO_LINK_NOTE = {
     workbook: ' — full record in the audit workbook (“Download full audit (Excel)”)',
-    placeholder: ' — no record link available yet (placeholder)',
   };
   const regUri = (u, fb) => {
     const h = regHref(u);
@@ -1350,7 +1363,11 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // D7 — the code-owned "searched, nothing found" sentinel becomes client words HERE, by exact
   // equality against the one constant. Any other value is a source string and rides through untouched.
   const useSrc = isUseCheckNoResult(f.use_check?.source) ? USE_CHECK_NO_RESULT_CITE : f.use_check?.source;
-  const useChk = cite(useSrc, 'Use checked.', useStatus);
+  // NO EVIDENCE TAG ON AN EMPTY RESULT. The line read "Use checked. Marketplace search run — no result
+  // found. Evidence: inferred", and "inferred" beside "no result" reads as a contradiction: it qualifies
+  // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
+  // whole of what the line has to say.
+  const useChk = cite(useSrc, 'Use checked.', isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
   const ownR = cite(f.own_rights?.source, 'Own-portfolio sweep.', EVIDENCE_LABEL[f.own_rights?._status]);
   const proseFull = cardBlock(card, /^full detail/i);
   const proseFullShown = proseFull;   // one report: the full prose; portal-report strips serve-time chrome, never analysis
@@ -1627,7 +1644,51 @@ const COV_STATE = {
   'not-searched': { cls: 'todo', ic: '→', word: 'Not run this run' },
   note: { cls: 'info', ic: 'i', word: 'Note' },
 };
+/**
+ * ONE ROW PER GAP, where the driver's follow-up row and the model's own row are the same search.
+ *
+ * A run deferred the English word DOLPHIN and the page said so twice: once as the model wrote it — "the
+ * English word DOLPHIN as a dedicated exact search · Open item" — and once as the driver composes it
+ * from the envelope, "Follow-up / dolphin · Open item: dolphin — not completed this run — the search for
+ * it was planned and never reached the register…". The run's own reviewer flagged the duplicate and it
+ * shipped anyway, because the second row is composed HERE and the reviewer reads what the model wrote.
+ *
+ * RENDER-SIDE ONLY. Both rows stay in the record and in the workbook; this decides what the page draws.
+ * Dropping the driver's row from `coverage[]` would change what the run recorded, and this issue is
+ * presentation.
+ *
+ * IT ERRS TOWARD KEEPING BOTH. A surplus row is today's behaviour; a wrongly-suppressed one hides a gap
+ * from the reader, which is the failure worth avoiding. So the driver's row goes only when another row
+ * carries EVERY significant word of the directive it names — a near-match keeps both.
+ */
+const FOLLOW_UP_PREFIX = 'Follow-up / ';
+const COV_STOPWORDS = new Set(['the', 'a', 'an', 'as', 'for', 'of', 'in', 'on', 'and', 'or', 'to', 'is',
+  'was', 'it', 'its', 'this', 'that', 'with', 'by', 'at', 'be', 'been', 'run', 'search', 'searched']);
+const covWords = (t) => new Set(String(t || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !COV_STOPWORDS.has(w)) ?? []);
+
+function dedupeFollowUps(coverage) {
+  const composed = (c) => String(c?.area || '').startsWith(FOLLOW_UP_PREFIX);
+  const written = coverage.filter((c) => !composed(c));
+  if (!written.length) return coverage;
+  return coverage.filter((c) => {
+    if (!composed(c)) return true;
+    // The directive is the note's opening clause — the same string the area was clipped from, unclipped.
+    const directive = covWords(String(c.note || '').split('—')[0]);
+    if (!directive.size) return true;
+    // MATCHED AGAINST THE OTHER ROW'S AREA, not its whole text. The rule is "the two rows name the same
+    // search", and a row names its search in its area; its note is free prose about it. Matching the
+    // note as well was wrong in the direction that costs a reader: a one-word directive like "dolphin"
+    // is contained by any row that mentions dolphins in passing, so an unrelated marketplace row
+    // silently swallowed a disclosed gap. Driven — that case is an arm.
+    return !written.some((w) => {
+      const theirs = covWords(w.area);
+      return [...directive].every((word) => theirs.has(word));
+    });
+  });
+}
+
 function coverageGrid(coverage) {
+  coverage = dedupeFollowUps(coverage);
   if (!coverage.length) return '';
   const cell = (c) => {
     const s = COV_STATE[c.state] || COV_STATE.note;
@@ -1753,7 +1814,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=doc
 function markAssessmentBlock(ma) {
   if (ma == null) return '';
   const structured = typeof ma.distinctiveness === 'object' || typeof ma.connotation === 'object';
-  const SEC = `<div class="sec"><span class="num">✦</span><h2>The mark itself</h2><span class="note">standing read of the applicant's own mark — advisory, carries no rating</span></div>`;
+  const SEC = `<div class="sec"><span class="num">✦</span><h2>The mark itself</h2><span class="note">how strong the name is on its own</span></div>`;
   if (!structured) {
     const dist = String(ma?.distinctiveness ?? '').trim(), conn = String(ma?.connotation ?? '').trim();
     if (!dist && !conn) return '';
@@ -2130,7 +2191,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
     ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">Session-wide notice</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
     : '';
-  const CL_SEC = (n) => `<div class="sec" id="common-law"><span class="num">${n}</span><h2>Common-law &amp; marketplace</h2><span class="note">unregistered-use signals — not register rights</span></div>
+  const CL_SEC = (n) => `<div class="sec" id="common-law"><span class="num">${n}</span><h2>Common-law &amp; marketplace</h2><span class="note">who is using similar names, registered or not</span></div>
   ${clNotice}${clBody}`;
   const hasCL = Boolean(clBody || clNotice);
   let findingsSections, covNum;
@@ -2269,7 +2330,7 @@ ${opts.nav || ''}
   ${ruledOutSection(ruledOut, recordsByUri)}
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, after the findings. -->
-  ${buckets.you ? `<div class="sec" id="only-you"><span class="num">✔</span><h2>What only you can close</h2><span class="note">forward decisions only you can make — each tied to a finding above</span></div>
+  ${buckets.you ? `<div class="sec" id="only-you"><span class="num">✔</span><h2>What only you can close</h2><span class="note">decisions that need you</span></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
     .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
     .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
@@ -2287,14 +2348,32 @@ ${opts.nav || ''}
 
   <!-- doc-52 §4 SCOPE & WHAT WE DIDN'T SEARCH — one collapsible section, last; replaces "Checks we ran"
        + "Methodology" + the coverage grid. Nothing here leads. -->
-  ${scopeSection(buckets.ran, coverage, opts.coverageJudgment, secs['Methodology'], DISPOSITION_MODE ? [] : contextNotes, fm, recordsByUri.size > 0, findings.length > 0)}
+  ${scopeSection(buckets.ran, coverage, opts.coverageJudgment, secs['Methodology'], DISPOSITION_MODE ? [] : contextNotes, fm, recordsByUri.size > 0, findings.length > 0,
+    // WHETHER A REGISTER-INDEX ENTRY IS ACTUALLY ON THIS PAGE, mirroring the registration render's own
+    // second disjunct rather than restating it loosely: a cited registration with no fetched body, which
+    // is the state that draws the "(register-index entry)" label. The provenance paragraph explains that
+    // label, so it renders where the label can and stays off every page where it cannot.
+    findings.some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
+      && (recordsByUri.size > 0 || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length))))))}
 
   ${askAiHtml}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
-        ? `Working draft for legal review. Risk bands (${esc(FRAMEWORK.title)}): <span class="mono">${esc(FRAMEWORK.bands.map(b => b.label).join(' / '))}</span> — the framework in force's own vocabulary, one word per finding on every surface. Internal notes are review-only and removed on export.`
-        : 'Working draft for legal review. Risk levels: <span class="mono">LOW / MANAGEABLE / MEDIUM / HIGH / VERY HIGH</span> (one vocabulary on every surface); the <span class="mono">Level A–E</span> · <span class="mono">Composite 1–5</span> codes beside them are the internal legal shorthand. Internal notes are review-only and removed on export.'}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
+        // TWO SENTENCES, and that count is the ruled shape rather than a consequence of trimming.
+        //
+        // Two things left. The band note — "the framework in force's own vocabulary, one word per
+        // finding on every surface" — is a note about how the renderer works, printed on every report a
+        // client receives; the framework's NAME is on the "Rated under" line below, once, which is
+        // where a reader who wants it will look.
+        //
+        // AND "Working draft for legal review.", which is a separate decision and is recorded as one.
+        // A delivered clearance is not a draft, and a document that calls itself one on every page is
+        // describing its own status inaccurately to the person paying for it. Raised in review because
+        // the first version of this comment argued only the band note and left the reader to infer that
+        // the status line had gone along for the ride.
+        ? `Risk bands: <span class="mono">${esc(FRAMEWORK.bands.map(b => b.label).join(' / '))}</span>. Purple notes are for the reviewing lawyer and are removed on export.`
+        : 'Risk bands: <span class="mono">LOW / MANAGEABLE / MEDIUM / HIGH / VERY HIGH</span>. Purple notes are for the reviewing lawyer and are removed on export.'}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
     ${logoLockup({ mark: 16 })}
   </footer>
 </div>

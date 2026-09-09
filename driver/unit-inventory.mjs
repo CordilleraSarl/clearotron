@@ -123,7 +123,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // exists to make impossible — and a mechanism that installs itself is the easiest kind to ship
     // undeclared.
     unit: "clearotron-deploy", runsOn: ["test"],
-      measured: "2026-09-08, the test deployment: the timer and its service are installed for that deployment's own user, the timer is enabled and ACTIVE, and it last fired within the hour — `systemctl --user list-timers`. The service's own state says nothing about this: it is `inactive` between runs and `inactive` when the timer has been stopped. The timer's ActiveState is what says anything will start it again.",
+      measured: "2026-09-08, the test deployment: the timer and its service are installed for that deployment's own user, the timer is enabled and ACTIVE, and it last fired within the hour — `systemctl --user list-timers`. The service's own state says nothing about this: it is `inactive` between runs and `inactive` when the timer has been stopped. The timer's ActiveState says the timer itself is still up. It is NOT a next elapse and does not promise one: `active` means UP, never SCHEDULED. Proving something will still fire takes a real next elapse, which `systemctl list-timers --all` supplies and `show -p ActiveState` cannot. Measured in testing 2026-09-09: a timer reading `ActiveState=active` whose `OnCalendar` names a date already past, so `list-timers` reports its next fire as null and it will never run again.",
     tracked: ["clearotron-deploy.service", "clearotron-deploy.timer"],
     note: "the install's own updater. Placed on the test deployment, where it pulls hourly; production takes it when the owner asks.",
     // IT WAS AN ORPHAN, AND THE CONDITION IT NAMED HAS BEEN MET. This entry carried an `orphanReason`
