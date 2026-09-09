@@ -53,6 +53,31 @@ const CHECK_BY_NAME = ["scripts/*-check.mjs"];
 // talks about the browser. The binary has to appear as the first argument to a spawning function.
 const DRIVES_A_BROWSER = /(?:spawn|spawnSync|exec|execSync|execFile|execFileSync)\s*\(\s*["'`]google-chrome["'`]/;
 
+// THE OPTIONS OBJECT OF EACH BROWSER SPAWN, so the arm below can ask what was passed rather than
+// whether a word appears somewhere in the file. A file-wide search for `env` would pass on a script
+// that mentions the environment in a comment and hands the browser nothing.
+//
+// `null` for a spawn whose options this cannot find, which the arm reports as a failure rather than
+// skipping: a call shaped in a way this reader does not understand is exactly the case where the
+// answer "no environment was passed" and the answer "I could not tell" must not look alike.
+export const browserSpawnOptions = (text) => {
+  const out = [];
+  const re = new RegExp(DRIVES_A_BROWSER.source, "g");
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const argsEnd = text.indexOf("], {", m.index);
+    if (argsEnd === -1) { out.push(null); continue; }
+    const open = text.indexOf("{", argsEnd);
+    let depth = 0, end = -1;
+    for (let j = open; j < text.length; j++) {
+      if (text[j] === "{") depth++;
+      else if (text[j] === "}") { depth--; if (depth === 0) { end = j; break; } }
+    }
+    out.push(end === -1 ? null : text.slice(open, end + 1));
+  }
+  return out;
+};
+
 const populations = () => {
   const byName = trackedFiles(GUARD, { root: ROOT, pathspec: CHECK_BY_NAME });
   const allScripts = trackedFiles(GUARD, { root: ROOT, pathspec: ["scripts/*.mjs"] });
@@ -197,4 +222,88 @@ test("#968 the enumeration and the invocation parse both have floors — a broke
   // And the parse must be reading STEPS, not the prose around them: this string appears only in a
   // comment, so a parse that counted comment lines would pick it up.
   assert.ok(!ci.has("scripts/does-not-exist.mjs"));
+});
+
+// ── EVERY BROWSER SPAWN GETS A TEMP ROOT OF ITS OWN ──────────────────────────────────────────────
+//
+// A browser writes its process-singleton lock into the SYSTEM temp directory, not into the profile
+// directory it is given, and under a name the caller never learns. Every check here removed its own
+// profile and none could remove that; the residue was thousands of lock directories under one shared
+// temp root, left by runs that ended before their cleanup.
+//
+// The fix is per-run and therefore per-call-site, which is what makes it worth a guard: a check added
+// later that spawns a browser the old way leaks again, and nothing about its own run would say so.
+// This asserts the WIRING — that the helper reaches the spawn — over the same discovered population
+// the rest of this file uses, so a launcher cannot be outside both checks at once.
+const TEMP_ROOT_MODULE = "shared/browser-temp-root.mjs";
+
+test("every script that spawns a browser passes it an environment", (ctx) => {
+  const p = populations();
+  if (p === null) return ctx.skip(skipReason(GUARD));
+  const faults = [];
+  for (const f of p.byProperty) {
+    const text = readFileSync(join(ROOT, f), "utf8");
+    const blocks = browserSpawnOptions(text);
+    if (blocks.length === 0) { faults.push(`${f}: matched as driving a browser but no spawn was found`); continue; }
+    blocks.forEach((b, i) => {
+      if (b === null) faults.push(`${f}: spawn ${i + 1} has options this arm could not read — say so, do not assume`);
+      else if (!/\benv\s*:/.test(b)) faults.push(`${f}: spawn ${i + 1} passes no env, so the browser inherits the shared temp directory`);
+    });
+  }
+  assert.deepEqual(faults, [],
+    `these browser spawns leak a lock directory into the shared temp root:\n  ${faults.join("\n  ")}\n`
+    + `Take the root and the environment from ${TEMP_ROOT_MODULE} and pass it as the spawn's \`env\`.`);
+});
+
+test("and takes that environment from the one module that owns the temp root", (ctx) => {
+  const p = populations();
+  if (p === null) return ctx.skip(skipReason(GUARD));
+  // The env assertion above can be satisfied by any object. This is what stops a second, hand-rolled
+  // TMPDIR appearing beside the helper — two definitions of where a browser's lock goes is one
+  // definition and one imitation of it, and the imitation is whichever the reader did not run.
+  const missing = p.byProperty.filter((f) => !readFileSync(join(ROOT, f), "utf8").includes(TEMP_ROOT_MODULE));
+  assert.deepEqual(missing, [],
+    `these spawn a browser without importing ${TEMP_ROOT_MODULE}:\n  ${missing.join("\n  ")}\n`
+    + `The budget check lives there too: past 66 characters of root the browser aborts with a core dump `
+    + `rather than reporting anything, and only that module refuses instead of letting it.`);
+});
+
+test("the temp-root population has a floor — an empty one is not a clean sweep", (ctx) => {
+  const p = populations();
+  if (p === null) return ctx.skip(skipReason(GUARD));
+  // Both arms above iterate `byProperty`. An empty list passes both while asserting nothing, and the
+  // property matcher CAN empty itself — it reads a literal call site, so a refactor behind a helper
+  // module removes every member at once.
+  assert.ok(p.byProperty.length >= 9,
+    `only ${p.byProperty.length} script(s) matched as spawning a browser; the two arms above iterate `
+    + `that list, so this is the enumeration breaking rather than the tree being clean`);
+});
+
+// A CHECK THAT PROMISES TO KEEP THE PROFILE MUST TAKE ITS ROOT OUT OF THE SWEEP.
+//
+// The profile directory now lives inside a run root that is removed when the process exits. Four of
+// these checks take a `--keep` flag whose entire purpose is to leave that directory behind for
+// somebody to open after a run that went wrong. Wiring the root without wiring the flag defeated all
+// four at once, and defeated them SILENTLY: the flag still parsed, and the removal it guarded still
+// did not run, so nothing about the check's own output changed.
+//
+// Neither arm above can see it — an environment still reaches the spawn and the module is still
+// imported. The property is different: the flag must reach the deregistration.
+const KEEP_FLAG = /--keep/;
+const DEREGISTERS = /if\s*\(\s*(?:keep|has\(\s*["']keep["']\s*\))\s*\)\s*[A-Za-z_$][\w$]*\s*\(\s*\)/;
+
+test("a browser check offering --keep takes its run root out of the exit sweep", (ctx) => {
+  const p = populations();
+  if (p === null) return ctx.skip(skipReason(GUARD));
+  const offering = p.byProperty.filter((f) => KEEP_FLAG.test(readFileSync(join(ROOT, f), "utf8")));
+  // A FLOOR ON THE POPULATION, because the arm is vacuous over an empty one and the selector is a
+  // regex over source: rename the flag and this stops looking at anything while staying green.
+  assert.ok(offering.length >= 4,
+    `only ${offering.length} check(s) matched as offering --keep; four do, so this is the selector `
+    + `breaking rather than the flag going away`);
+  const broken = offering.filter((f) => !DEREGISTERS.test(readFileSync(join(ROOT, f), "utf8")));
+  assert.deepEqual(broken, [],
+    `these offer --keep but let the exit sweep remove the root anyway:\n  ${broken.join("\n  ")}\n`
+    + `Call the handle browserRun returns as \`keep\` (or removeOnExit's return) when the flag is set, `
+    + `or the flag reads as working while the directory it promises goes at exit.`);
 });

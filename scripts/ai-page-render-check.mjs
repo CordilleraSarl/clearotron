@@ -44,13 +44,14 @@
 import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
-import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs'
+import { readFileSync, existsSync, rmSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { connectOffers, offersForWire } from '../shared/connect-clients.mjs'
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from '../shared/stdio-connect.mjs'
+import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(REPO, 'portal-ui', 'dist')
@@ -116,11 +117,13 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r))
 const origin = `http://127.0.0.1:${server.address().port}`
 
-const userDir = mkdtempSync(join(tmpdir(), 'ai-page-check-'))
+// The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
+// lock it writes there leaves with the root instead of accumulating in the shared one.
+const { profile: userDir, env: chromeEnv } = browserRun("ai-page-check-")
 const chrome = spawn('google-chrome', [
   '--headless=new', '--disable-gpu', '--no-sandbox', '--hide-scrollbars',
   `--user-data-dir=${userDir}`, '--window-size=1280,1000', '--remote-debugging-port=0', 'about:blank',
-], { stdio: ['ignore', 'pipe', 'pipe'], detached: true })
+], { stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: chromeEnv })
 // — and the group dies with THIS script, on every exit it can observe.
 // The teardown below runs on the paths somebody wrote a branch for; a cancelled CI job (SIGTERM),
 // a Ctrl-C, or a throw elsewhere in this file are not among them — and that is where the measured

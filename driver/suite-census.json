@@ -57,6 +57,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-browser-run-gets-its-own-temp-root.test.mjs": {
+          "tests": 13,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "a-cancel-marker-names-its-actor.test.mjs": {
           "tests": 14,
           "asserts": 34,
@@ -1000,9 +1006,9 @@
           "todos": 0
         },
         "browser-check-membership.test.mjs": {
-          "tests": 4,
-          "asserts": 12,
-          "skips": 4,
+          "tests": 8,
+          "asserts": 17,
+          "skips": 8,
           "todos": 0
         },
         "bundle-rebuild-and-ports.test.mjs": {

@@ -29,6 +29,8 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
+import { removeOnExit } from "../shared/reap-on-exit.mjs";
+import { assertRootFits, browserEnv } from "../shared/browser-temp-root.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -48,6 +50,11 @@ function main() {
   console.log(`shipped sandbox: ${tokens.join(" ")}`);
 
   const work = mkdtempSync(join(tmpdir(), "frame-check-"));
+  // The browser inherits TMPDIR from here, so its process-singleton lock lands under `work` and goes
+  // with it. `removeOnExit` covers the exits the `finally` below cannot see — a cancelled job, a
+  // Ctrl-C — which are the ones that left locks behind in the shared temp directory.
+  assertRootFits(work);
+  removeOnExit(work);
   try {
     // The page builds the frame with the SHIPPED string and reports what the browser kept.
     writeFileSync(join(work, "verify.html"), `<!doctype html><title>pending</title><body>
@@ -62,7 +69,7 @@ function main() {
       "--headless=new", "--disable-gpu", "--no-sandbox",
       `--user-data-dir=${join(work, "prof")}`,
       "--virtual-time-budget=8000", "--dump-dom", `file://${join(work, "verify.html")}`,
-    ], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 120000 });
+    ], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 120000, env: browserEnv(work) });
 
     // ── IS THIS OUR PAGE, OR CHROME'S ERROR PAGE? (tracker issue 227) ───────────────────────────────
     //
