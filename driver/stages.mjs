@@ -68,31 +68,8 @@ export { REGISTER_AXES, decideAxes };
 // extras are declared, imports stages.mjs too. stages.mjs is the one home both sides can reach.)
 export function stampDispatchBlocks(ctx, stage, { built = [], failed = [], empty = [] } = {}) {
   if (!ctx || typeof ctx !== "object") return;
-  ctx.dispatchBlocks = {
-    ...(ctx.dispatchBlocks ?? {}),
-    [stage]: { built: [...built], failed: [...failed], empty: empty.map((e) => ({ ...e })) },
-  };
+  ctx.dispatchBlocks = { ...(ctx.dispatchBlocks ?? {}), [stage]: { built: [...built], failed: [...failed], empty: empty.map((e) => ({ ...e })) } };
 }
-
-// ── A BUILDER THAT RAN AND SAID NOTHING SAYS SO, AND SAYS WHICH NOTHING ────────────────────────────
-//
-// The receipt used to record a builder only when it produced text. An empty return landed in neither
-// list, so "this run had nothing to flag" and "this builder never ran" were the same reading — and the
-// second is a defect while the first is an ordinary run. Found in review on the narrative refutation
-// block: it reached the seat with hits and the seat rewrote none, and the receipt could not be used to
-// tell that apart from a block that never built.
-//
-// TWO EMPTIES, NOT ONE, because collapsing them repeats the fault one level in. A builder that read
-// the record and found nothing to flag has made a NEGATIVE FINDING; a builder whose source file was
-// not there has not looked at all. A single `empty` class would make "no flags over forty visible
-// lines" indistinguishable from "there was no record to open", which is the same ambiguity one size
-// down. So a builder returns one of these rather than a bare "", and a bare "" from a builder nobody
-// has taught to discriminate is recorded as exactly that — unstated — rather than counted as either.
-export const nothingFound = (why) => ({ dispatchEmpty: "nothing-found", why: String(why) });
-export const nothingToRead = (why) => ({ dispatchEmpty: "nothing-to-read", why: String(why) });
-/** The sentinel a builder returned, or null when it returned something else. PURE. */
-export const emptyReturn = (v) =>
-  (v && typeof v === "object" && typeof v.dispatchEmpty === "string" && typeof v.why === "string" ? v : null);
 
 // Three states, and the third is the point: ABSENT IS NOT CORRUPT. A run with no register plan is a
 // legitimate shape the codebase documents (attachRegisterPlan degrades to null on a class-less matter
@@ -108,17 +85,7 @@ export function dispatchBlockState(ctx, stage, id) {
   if (!rec) return "absent";
   if (rec.built?.includes(id)) return "present";
   if (rec.failed?.some((f) => f.id === id)) return "failed";
-  // Ran and produced no text. WHICH nothing it was is the builder's own word, carried verbatim: this
-  // returns the state and `dispatchBlockWhy` returns the sentence. A reader that knows only the older
-  // three states treats each of these as not-present, which is what it did before they existed.
-  const e = rec.empty?.find((x) => x.id === id);
-  if (e) return e.kind;
-  return "absent";
-}
-
-/** Why a builder that ran produced nothing — its own sentence, or null when it is not in that state. PURE. */
-export function dispatchBlockWhy(ctx, stage, id) {
-  return ctx?.dispatchBlocks?.[stage]?.empty?.find((x) => x.id === id)?.why ?? null;
+  return rec.empty?.find((x) => x.id === id)?.kind ?? "absent";   // ran and produced no text; WHICH nothing is the builder's own word — see `nothingFound` at the foot of this file
 }
 
 // ── The two synthesis lines that make a claim about the blocks, branched in ONE place ──────────────
@@ -4649,4 +4616,51 @@ export function whatsappRouting(job, agentId) {
     whatsappToReason: to ? null : `no chat number is held for ${who} — set one in CLEAROTRON_REQUESTER_WHATSAPP to notify them`,
     whatsappCcOperator: OPERATOR_WHATSAPP_COPY ? (AGENT_WHATSAPP[agentId] ?? null) : null,
   };
+}
+
+// ── A BUILDER THAT RAN AND SAID NOTHING SAYS SO, AND SAYS WHICH NOTHING ────────────────────────────
+//
+// AT THE FOOT OF THE FILE ON PURPOSE, and not because it belongs here. It belongs beside
+// `dispatchBlockState`, which is where a reader will look for it. Sixty-one line citations elsewhere in
+// the tree point INTO this file by number, and inserting twenty-three lines near the top moved every one
+// of them — three onto blank lines, where a guard caught them, and the rest onto real code, where one
+// guard could not see them and a second one could. Repointing them then rewrote their lines, which put
+// fifty-four pre-existing bare citations on the ADDED side of the diff and failed the check that refuses
+// newly-added ones. Appending costs a reader one jump; shifting costs the tree ninety-four citations and
+// two guards' worth of churn. The same reasoning is written up on the export tagging in bin/onboard.mjs.
+//
+// The receipt used to record a builder only when it produced text. An empty return landed in neither
+// list, so "this run had nothing to flag" and "this builder never ran" were the same reading — and the
+// second is a defect while the first is an ordinary run. Found in review on the narrative refutation
+// block: it reached its stage with flags and the stage rewrote none, and the receipt could not be used
+// to tell that apart from a block that never built.
+//
+// TWO EMPTIES, NOT ONE, because collapsing them repeats the fault one size down. A builder that read the
+// record and found nothing to flag has made a NEGATIVE FINDING; a builder whose source file was not
+// there has not looked at all. A single `empty` class would make "no flags over forty visible lines"
+// indistinguishable from "there was no record to open". So a builder returns one of these rather than a
+// bare "", and a bare "" from a builder nobody has taught to discriminate is recorded as exactly that —
+// unstated — rather than being counted as either.
+export const nothingFound = (why) => ({ dispatchEmpty: "nothing-found", why: String(why) });
+export const nothingToRead = (why) => ({ dispatchEmpty: "nothing-to-read", why: String(why) });
+
+/** The sentinel a builder returned, or null when it returned something else. PURE. */
+export const emptyReturn = (v) =>
+  (v && typeof v === "object" && typeof v.dispatchEmpty === "string" && typeof v.why === "string" ? v : null);
+
+/**
+ * Sort one builder's return into the three lists the receipt carries. Mutates the arrays it is given,
+ * which is what keeps its caller two lines long — and its caller is inside a file whose line numbers
+ * thirty-three citations depend on.
+ */
+export function recordEmptyReturn(built, id, { parts, ids, empty }) {
+  const said = emptyReturn(built);
+  if (said) empty.push({ id, kind: said.dispatchEmpty, why: said.why });
+  else if (typeof built === "string" && built) { parts.push(built); ids.push({ id, chars: built.length }); }
+  else empty.push({ id, kind: "empty-unstated", why: "the builder returned nothing and named no reason" });
+}
+
+/** Why a builder that ran produced nothing — its own sentence, or null when it is not in that state. PURE. */
+export function dispatchBlockWhy(ctx, stage, id) {
+  return ctx?.dispatchBlocks?.[stage]?.empty?.find((x) => x.id === id)?.why ?? null;
 }

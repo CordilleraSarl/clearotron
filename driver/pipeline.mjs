@@ -31,7 +31,7 @@ import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
   buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, emptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs";
+  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective, inquiryRungDirective } from "./stages.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
@@ -1172,13 +1172,7 @@ export function composeDispatchExtra(name, ctx, opts = {}) {   // @internal
     if (x.stage !== name) continue;
     try {
       const built = DISPATCH_EXTRA_BUILDERS[x.id](ctx, opts);
-      // EVERY BUILDER THAT RAN IS RECORDED, not only the ones that produced text. `if (built)` alone
-      // put an empty return in neither list, so a block that ran with nothing to flag read on the
-      // receipt exactly like a block that never ran — and only one of those is a defect.
-      const said = emptyReturn(built);
-      if (said) empty.push({ id: x.id, kind: said.dispatchEmpty, why: said.why });
-      else if (typeof built === "string" && built) { parts.push(built); ids.push({ id: x.id, chars: built.length }); }
-      else empty.push({ id: x.id, kind: "empty-unstated", why: "the builder returned nothing and named no reason" });
+      recordEmptyReturn(built, x.id, { parts, ids, empty });   // EVERY builder that ran is recorded, not only those that produced text: `if (built)` alone put an empty return in neither list, so a block that ran with nothing to flag read exactly like one that never ran — and only the second is a defect. The three-way sort lives in stages.mjs beside the sentinels it reads.
     } catch (e) {
       const detail = String(e?.message ?? e).slice(0, 100);
       failed.push({ id: x.id, error: detail });
@@ -6054,9 +6048,7 @@ function refuteRegistryCheckExtra(ctx) {
 function plainRegisterExtra(ctx) {
   try {
     const P = ctx.paths;
-    // NOT THE SAME NOTHING as the one below, and the receipt must not read them alike. No record means
-    // this never looked at a line; no hits means it read every visible line and found none to flag.
-    if (!existsSync(P.findings)) return nothingToRead(`no findings record at ${P.findings}, so no visible line was read`);
+    if (!existsSync(P.findings)) return nothingToRead(`no findings record at ${P.findings}, so no visible line was read`);   // NOT the same nothing as the one below: this never read a line
     // ABSENT IS NOT CORRUPT, and the composer already tells them apart — so let a parse failure THROW.
     // Swallowing it here would return "" and land the id in neither `ids` nor `failed`, which reads on
     // the dispatch receipt as "this run had nothing to say" over a record nobody could open. The file
@@ -6090,10 +6082,7 @@ function plainRegisterExtra(ctx) {
     for (const { where, text } of visible) {
       for (const flag of plainRegisterFlags(text, about)) hits.push(`- ${where} — ${flag.say}`);
     }
-    // A NEGATIVE FINDING, and it is stated as one: the count of lines actually read travels with it, so
-    // the receipt distinguishes a clean read from a read of nothing at all. Zero visible lines over a
-    // parsed record is its own state and would otherwise hide inside "no hits".
-    if (!hits.length) return nothingFound(`no plain-words flag over ${visible.length} visible line(s)`);
+    if (!hits.length) return nothingFound(`no plain-words flag over ${visible.length} visible line(s)`);   // a NEGATIVE FINDING, and the count travels with it so a clean read is not a read of nothing
 
     // THE LAST SENTENCE IS DERIVED, NEVER ASSERTED, and the reason is that it is the one the seat acts
     // on. `about` is built from three optional job keys and from owners found in the record, and

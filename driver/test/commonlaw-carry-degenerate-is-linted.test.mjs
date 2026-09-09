@@ -117,7 +117,7 @@ test("the pipeline actually LOADS both carry artifacts and passes them", () => {
 
   // ANCHOR ON THE SEAM'S OWN BINDING, NOT ON THE EXPRESSION.: the first version of this arm
   // grepped the whole file for `[P.commonLawCarry, P.jxZhCarry].map(…)`, and that expression is
-  // DELIBERATELY shared with the reconciliation siblings at pipeline.mjs:2982 — reusing it is how a
+  // DELIBERATELY shared with the reconciliation siblings at pipeline.mjs:2976 — reusing it is how a
   // third hand-written list is kept from drifting. So replacing the lint seam's load with
   // `const lintCommonLawCarries = []` left the arm green: it was matching the OTHER site. The very
   // reuse the arm was written to reward is what made it unable to see the deletion.
