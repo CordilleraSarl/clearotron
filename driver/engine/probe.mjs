@@ -123,7 +123,13 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   if (!tuple) return v("failed", "none", `${id} returned nothing`, "The adapter settled no tuple — this is a driver bug, not a configuration one.");
   const s = tuple.signals ?? {};
   const text = `${tuple.stderr ?? ""}\n${tuple.stdout ?? ""}`;
-  const detail = tail(tuple.stderr);
+  // READ FROM THE SAME STREAMS THE CLASSIFICATION IS. Every branch below matches over `text`, which is
+  // stderr AND stdout, while this carried stderr alone — so a CLI that reports its failure on stdout
+  // produced a verdict with its evidence dropped, and the reader got a headline with nothing under it.
+  // stderr stays FIRST because that is where a diagnostic belongs and where these CLIs put theirs; the
+  // fallback exists so that "the engine said nothing" is a claim about the engine rather than about
+  // which pipe this happened to look at.
+  const detail = tail(tuple.stderr) ?? tail(tuple.stdout);
 
   if (tuple.code === 0) return { ok: true, engine: id, mode: "ok", basis: "completed-turn", headline: `${id} completed a turn`, fix: null, detail: null };
 
@@ -255,7 +261,27 @@ export function probeWeatherWarning(verdict) {
  */
 function applyEngineEnv(env) {
   if (!env || env === process.env) return () => {};
-  const keys = ["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).map((s) => s.env)];
+  // EVERY VARIABLE THAT DECIDES WHAT THE SPAWN IS, not only the ones that decide WHICH BINARY.
+  //
+  // This list used to carry CLEAROTRON_AI and the binary paths. It did not carry the billing mode or
+  // the API key — so a caller could hand this function a correct api-key environment, watch
+  // `resolveAuthMode` accept it, and then have `runTurn` read `process.env`, where neither had arrived.
+  // `anthropic-agent.spawnEnv` deletes ANTHROPIC_API_KEY under any mode that is not api-key, and the
+  // mode it read was unset, so it deleted the key the reader had just typed. The turn then failed as
+  // "not signed in" — correctly, about an environment nobody had asked for.
+  //
+  // Reported from a real WSL2 install, 2026-09-09: the setup wizard's api-key lane, a valid key, and a
+  // sign-in failure the reader could only get past by exporting the key into their own shell.
+  //
+  // A SET, AND THE DUPLICATE IS NOT HYPOTHETICAL. Both engines name the same billing variable, so this
+  // list contains CLEAROTRON_AI_BILLING twice — and the save below is `saved.set(k, process.env[k])`
+  // inside the same loop that writes. On the second visit it saved the value the FIRST visit had just
+  // written, so the restore put that back instead of deleting it, and the mode leaked into the rest of
+  // the process. Caught by the arm that exists to prove the restore, which is the only reason widening
+  // this list was safe to do at all.
+  const keys = [...new Set(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES)
+    .flatMap((s) => [s.env, s.authEnv, s.apiKeyEnv, s.headless?.tokenEnv])
+    .filter(Boolean)])];
   const saved = new Map();
   for (const k of keys) {
     saved.set(k, process.env[k]);

@@ -3082,7 +3082,20 @@ try {
         break engine;
       }
       problem(probeFailureText(v));
+      // ── THE ENGINE'S OWN LAST LINES, UNDER EVERY VERDICT, ON BOTH LANES ──────────────────────────
+      //
+      // This used to be `if (v.detail)`, so a verdict carrying no detail printed a headline and nothing
+      // else — and the reader had a classification with no evidence to check it against. That is the
+      // worst shape for a heuristic: the signed-out test is a text match over the engine's output, it
+      // matches broadly on purpose, and a reader shown only its conclusion cannot tell a genuinely
+      // signed-out CLI from an unrelated failure whose words happened to match.
+      //
+      // SAY WHICH IT IS, INCLUDING WHEN THERE IS NOTHING. "The engine printed nothing" is itself the
+      // diagnosis on a binary that died before it opened its mouth, and printing no line at all leaves
+      // a reader unable to tell that from a wizard that decided not to show them.
       if (v.detail) info(`engine said: ${v.detail}`);
+      else info("engine said: nothing — it produced no output on either stream before it stopped.");
+      if (v.basis) info(`(that reading is ${v.basis === "text-match" ? "matched out of the text above, not a signal from the provider" : v.basis})`);
       // — THE HAND-OFF. Signing in is the one step of this sequence nobody here can perform for
       // someone, so the wizard names the command, waits, and re-probes rather than ending at a
       // description of what is wrong. The text comes from ENGINE_BINARIES so the two adapters cannot
