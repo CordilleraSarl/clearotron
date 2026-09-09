@@ -41,6 +41,28 @@ import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — 
 import { bareInvocation, invocationPrefix, installRoute } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
+
+/**
+ * The ops credential for one trigger call: the boot token's cap, re-taken against the roster now.
+ *
+ * Separated from the call site and exported because the service's `trigger` is injected in tests, so
+ * logic left inside it can only ever be asserted by reading the source — and the case that matters is
+ * the one where something fails.
+ *
+ * BOTH FALLBACKS HAND BACK THE BOOT TOKEN, never an uncapped one. An empty roster is the single case
+ * the boot mint reads as "do not cap", so re-deriving it here would turn an unreadable store into a
+ * token good for every account. A mint that throws — an unset secret — lands the same way. The failure
+ * direction is the whole point: a stale cap refuses the newest company, which is the bug being fixed;
+ * a widened cap admits every company, which is a larger and quieter one.
+ */
+export function opsTokenFor({ bootToken, roster, mint }) {
+  if (!Array.isArray(roster) || !roster.length) return bootToken;
+  try {
+    return mint({ scope: "ops", sub: "portal", verbs: ["start_run", "stop_run"],
+      accounts: roster, ttlSec: 300 });
+  } catch { return bootToken; }
+}
+
 // — the portal became an ISSUANCE PATH here, deliberately and by owner ruling.
 // A comment further down this file said "the portal cannot mint from here … this process deliberately
 // holds no engine/MCP secrets — issuance is one path on purpose". MEASURED 2026-08-31: that wall is not
@@ -4217,9 +4239,38 @@ const PORT = PORT_CHOICE.port;
     }
   }
   const { mcpToolCall } = await import("./portal-mcp-client.mjs");
+  // ── the trigger credential is stamped WHEN A SEARCH STARTS, not when the portal booted ────────────
+  //
+  // `bin/start.mjs` mints PORTAL_OPS_TOKEN capped to the roster as it stood at boot. That cap is a real
+  // second wall and it stays. What was wrong is its AGE: a company created afterwards is not in it, so
+  // the portal offered the clearance and the engine door refused it —
+  //
+  //     FORBIDDEN (start_run): your grant [generic] does not include account "<key>"
+  //
+  // — which is the first thing a person meets after being told to set a company up. `brandowner add`
+  // detects it and prints NOT YET STARTABLE with a remedy, deliberately reporting rather than
+  // re-minting, because a create COMMAND holding the signing secret would be a larger surprise than the
+  // bug. That boundary is about the command, and it is untouched: this process is not a create command,
+  // it already holds the secret, and it already mints account credentials with it for the connector.
+  //
+  // So the cap is re-taken against the roster as it stands, for the length of one call.
+  //
+  // FALLS BACK TO THE BOOT TOKEN, never to an uncapped one. If the secret is unreadable or the store
+  // cannot be listed, this returns exactly what it returned before — a stale cap that refuses a new
+  // company at the door — rather than widening the wall to get the call through. The failure direction
+  // matters more than the feature: "the newest company cannot search yet" is the bug being fixed, and
+  // "any account can be started" is not a worse version of it, it is a different and larger one.
+  const currentOpsToken = async () => {
+    let roster = [];
+    try {
+      const { loadProfiles } = await import("./profiles.mjs");
+      roster = [...loadProfiles({ force: true }).keys()];
+    } catch { return OPS_TOKEN; }
+    return opsTokenFor({ bootToken: OPS_TOKEN, roster, mint: mintToken });
+  };
   const trigger = async (args) => {
     if (!MCP_URL || !OPS_TOKEN) throw new Error("PORTAL_MCP_URL / PORTAL_OPS_TOKEN unset — the trigger lane is not wired on this instance");
-    return mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "start_run", args });
+    return mcpToolCall({ url: MCP_URL, token: await currentOpsToken(), tool: "start_run", args });
   };
   const stopRun = async (args) => {
     if (!MCP_URL || !OPS_TOKEN) throw new Error("PORTAL_MCP_URL / PORTAL_OPS_TOKEN unset — the stop lane is not wired on this instance");
