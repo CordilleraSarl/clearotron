@@ -116,8 +116,12 @@ test("BREACH: a browser cannot set the framework that rates a company, on the wa
 
 test("what a browser MAY state is a named list, and every name on it survives the wall", async () => {
   const { calls, up } = spy();
+  // EVERY name on the list, so the deepEqual below is a real check rather than a check of five of eight.
+  // A field added to CREATABLE_FIELDS and not added here reds this, which is the point: the list is what
+  // a browser may state, and widening it is a decision that has to be made somewhere on purpose.
   const draft = { name: "Aurora", key: "aurora-2", industry: "beverages",
-    matchDomains: ["aurora.example"], platforms: ["shop.example"] };
+    matchDomains: ["aurora.example"], platforms: ["shop.example"],
+    selfExclusionOwners: ["Aurora Holdings"], defaultClasses: [32], defaultJurisdictions: ["GB"] };
   await up.createCompany(STAFF, draft);
 
   // Driven against the exported list rather than a copy of it, so a field added there without being
