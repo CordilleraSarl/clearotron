@@ -671,21 +671,73 @@ export async function askSignIn(io, { localAccount = "user", staffLabel = "Staff
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
  * this file still assumed one engine, and a name that lies is how the second adapter stayed invisible.
  */
-export function resolveEngineBin(bin) {
+export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null } = {}) {
+  // The predicate, not just the pattern, because /mnt/c cannot be created on a Linux runner without
+  // root — so an arm that could only supply a PATH could never drive the skip, and the branch would
+  // ship asserted by nobody. `ON_A_WINDOWS_DRIVE` is held to real paths by its own arm.
+  const onDrive = onWindowsDrive ?? ((x) => ON_A_WINDOWS_DRIVE.test(x));
   // driver/engine/anthropic-agent.mjs — `CLEAROTRON_CLAUDE_PATH || "claude"`; openai-agent.mjs — the same
   // shape on `CLEAROTRON_CODEX_PATH || "codex"`. A RELATIVE path is the trap for BOTH: stage subprocesses are
   // spawned with cwd set to the RUN DIRECTORY (driver/engine/common.mjs resolveSpawnCwd, shared by the
   // two adapters), so a relative binary resolves against a directory that did not exist at setup time.
+  const underWsl = wsl ?? isWsl({ env });
   if (bin.includes("/")) {
     const abs = resolve(bin);
-    if (!isAbsolute(bin)) return { path: abs, executable: isExec(abs), relative: true };
-    return { path: abs, executable: isExec(abs), relative: false };
+    // A PATH SOMEBODY TYPED IS NOT OVERRULED, only reported. The reader stated this one, and silently
+    // resolving somewhere else would be the launcher moving a door off a port that was asked for.
+    return { path: abs, executable: isExec(abs), relative: !isAbsolute(bin), windowsShim: underWsl && onDrive(abs), skipped: [] };
   }
-  for (const dir of (process.env.PATH || "").split(delimiter).filter(Boolean)) {
+  // ── UNDER WSL, THE WINDOWS PATH IS APPENDED TO THIS ONE ────────────────────────────────────────
+  //
+  // So `claude` on a fresh WSL2 Ubuntu resolves to /mnt/c/…/claude — the WINDOWS shim — before any
+  // Linux install is reached, and it is executable by every test this makes. It then fails the proof
+  // turn as "not signed in", because the credential it is looking for is the Linux one, and a reader
+  // is sent to fix a sign-in that was never the problem. Reported from a real WSL2 attempt.
+  //
+  // SKIPPED, AND NAMED. Passing over a candidate silently would leave the reader with "no binary
+  // found" on a machine where `which claude` prints one, so the skips travel back for the caller to
+  // say out loud. A missing Linux install then reports as missing, which is the true answer.
+  const skipped = [];
+  for (const dir of (env.PATH || "").split(delimiter).filter(Boolean)) {
     const p = join(dir, bin);
-    if (isExec(p)) return { path: p, executable: true, relative: false };
+    if (!isExec(p)) continue;
+    if (underWsl && onDrive(p)) { skipped.push(p); continue; }
+    return { path: p, executable: true, relative: false, windowsShim: false, skipped };
   }
-  return { path: null, executable: false, relative: false };
+  return { path: null, executable: false, relative: false, windowsShim: false, skipped };
+}
+
+/** A path on a Windows drive as WSL mounts it. */
+export const ON_A_WINDOWS_DRIVE = /^\/mnt\/[a-z]\//i;
+
+/**
+ * Whether this is a Linux running under Windows.
+ *
+ * BOTH SIGNALS INJECTABLE, for the reason `platformEngineRefusal` gives: the readers this protects
+ * are the ones who cannot run this suite to find out, so a Linux runner has to be able to drive both
+ * answers rather than read the source and agree with it.
+ *
+ * A READ THAT FAILS ANSWERS "NOT WSL", and that is the direction that changes nothing: it leaves the
+ * resolution exactly as it was before this existed. Claiming WSL on a could-not-read would start
+ * refusing candidates under /mnt on an ordinary Linux box with an ordinary mount.
+ */
+export function isWsl({ env = process.env, procVersion = null } = {}) {
+  if (String(env.WSL_DISTRO_NAME ?? "").trim()) return true;
+  if (String(env.WSL_INTEROP ?? "").trim()) return true;
+  const v = procVersion ?? (() => { try { return readFileSync("/proc/version", "utf8"); } catch { return ""; } })();
+  return /microsoft|wsl/i.test(v);
+}
+
+/**
+ * What to say about candidates passed over because they sit on a Windows drive — or `null` when none
+ * were. Plural because a reader can have both a shim and a wrapper on PATH.
+ */
+export function windowsShimNote(skipped, bin) {
+  if (!skipped?.length) return null;
+  return `ignored ${skipped.length === 1 ? "a `" + bin + "` on a Windows drive" : skipped.length + " `" + bin + "` binaries on Windows drives"} `
+    + `(${skipped.join(", ")}): WSL appends the Windows PATH to this one, and a Windows build cannot run a `
+    + `stage here — it fails the proof turn as "not signed in" while holding a credential this side never `
+    + `wrote. Install it inside the Linux distribution instead.`;
 }
 const isExec = (p) => { try { accessSync(p, constants.X_OK); return statSync(p).isFile(); } catch { return false; } };
 
@@ -1261,6 +1313,12 @@ export async function runCheck() {
     const platformRefusal = platformEngineRefusal();
     if (platformRefusal) problem(platformRefusal);
     else if (bin.executable && !bin.relative) ok(`${bin.path}`);
+    // SAID WHETHER OR NOT ONE WAS FOUND, and that is the point of putting it here rather than in the
+    // not-found branch. Under WSL a Windows build on the appended PATH is passed over; if a Linux one
+    // was found the reader still needs to know which of the two they are looking at, and if none was,
+    // "no binary" over a machine whose own `which` prints one is a refusal they cannot act on.
+    const shimNote = windowsShimNote(bin.skipped, engSpec.fallback);
+    if (shimNote) info(shimNote);
     // The FACT only. It used to carry "install it for a real run (`npm run example` needs no engine)",
     // which is the absence framing was filed about — and it now says half of what the MODE line
     // below says, in worse words. One statement of a state, in the place that states states.
@@ -2797,7 +2855,32 @@ try {
     if (!pick.id) { sayNoEngine(); break; }
     const eng = ENGINE_BINARIES[pick.id];
 
+    // ── NATIVE WINDOWS IS ANSWERED HERE TOO, AND THE ESCAPE IS OFFERED RATHER THAN LEFT ON A MENU ──
+    //
+    // Doctor learned this and the wizard did not, and the gap is worse than it sounds: the two "no
+    // engine" escapes below both sit behind "no usable binary", and on Windows that is FALSE. X_OK is
+    // satisfied by any file that exists, so the wizard says "found C:\...\claude", walks past both
+    // escapes, asks which lane pays, spends a proof turn, and meets `spawn claude ENOENT`. The only
+    // prompt left then defaults to No and returns to the engine menu — with nothing changed between
+    // iterations, on either lane. Reported from a real Windows run: the menu's last row was the one
+    // way out and nothing on screen said so.
+    //
+    // So the refusal is stated before a candidate is resolved, and finishing with no engine is OFFERED
+    // rather than being a row the reader has to notice. Declining leaves them on the menu exactly as
+    // before, which is the branch that was already there.
+    const wizardRefusal = platformEngineRefusal();
+    if (wizardRefusal) {
+      problem(wizardRefusal);
+      if (await confirm("Finish setup with no engine configured?", true)) { sayNoEngine(); break engine; }
+      continue;
+    }
+
     let bin = resolveEngineBin(process.env[eng.env] || eng.fallback);
+    // Under WSL the Windows build on the appended PATH has been passed over. Said before the install
+    // offer below, because otherwise a reader whose Linux install is genuinely missing is asked to
+    // install a binary their own `which` already prints — and would decline for the wrong reason.
+    const shimNote = windowsShimNote(bin.skipped, eng.fallback);
+    if (shimNote) info(shimNote);
     if (!(bin.executable && !bin.relative) && eng.install) {
       // ── — INSTALLING IT IS ONE COMMAND, AND WE USED TO STOP AT A SENTENCE ───────────────────
       //
