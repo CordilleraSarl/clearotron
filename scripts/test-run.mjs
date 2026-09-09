@@ -223,10 +223,10 @@ const providerChosen = ["CLEAROTRON_DATABASE"]
   .some((n) => String(process.env[n] ?? "").trim() !== "");
 if (!providerChosen) process.env.CLEAROTRON_DATABASE = "corsearch";
 
-// ── THE SUITE'S OWN BRAND-OWNER FIXTURES, ASKED FOR IN ONE PLACE ──────────────────────────────────
+// ── THE SUITE'S OWN COMPANY FIXTURES, ASKED FOR IN ONE PLACE ──────────────────────────────────
 //
 // Three profiles in `driver/profiles/` are the suite's, and a resolved roster no longer offers them:
-// an outside user's brand-owner picker listed them on a `git clone` install, where the packaging
+// an outside user's company picker listed them on a `git clone` install, where the packaging
 // exclusion that protects the tarball does not apply. They are marked `testFixture` and the loader
 // refuses them on every route.
 //

@@ -41,7 +41,7 @@
 // Multi-country focus search. Exactly ONE selector goes on the wire, `product` or `recipeKey` (the
 // engine refuses both), which is why picking a saved search suppresses the product picker.
 //
-// THE SCOPE FIELDS ARE GHOSTS, NOT BLANKS. Untouched means "use what the brand owner already has" — the
+// THE SCOPE FIELDS ARE GHOSTS, NOT BLANKS. Untouched means "use what the company already has" — the
 // context card shows what that is, tagged with where it came from — and the server's precedence ladder
 // resolves it. An empty territory list is not a request to search nowhere; it is worldwide, in this
 // screen and in the engine alike. The summary quotes the SERVER's scope and never echoes this form.
@@ -70,7 +70,9 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved, unsavedChanges } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
+import type { CreatedCompany } from '../contract/api.ts'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -123,7 +125,7 @@ type Draft = {
   /**
    * The class OVERRIDE, and null while untouched.
    *
-   * Null and [] are different statements. Null means "whatever the brand owner already has", which the
+   * Null and [] are different statements. Null means "whatever the company already has", which the
    * card shows and the server resolves; [] means the user cleared every class, which the composer sends
    * as no class list at all rather than silently reinterpreting.
    */
@@ -149,7 +151,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // `reload` is wired to a retry button below. A composer that cannot fetch its own depth menu has
   // nothing to poll for and nothing to recover on its own, so the user needs a way to ask again.
   const { result: searches, reload: retrySearches } = useLoad(() => api.searches(account), [account])
-  // The brand owner's own defaults, for the context card and the effort model. A failure here is
+  // The company's own defaults, for the context card and the effort model. A failure here is
   // survivable — the card falls back to plain words — so it never gates the form.
   const { result: profileRes } = useLoad(() => api.profile(account), [account])
   const { result: projectsRes } = useLoad(() => api.projects(account), [account])
@@ -293,14 +295,14 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
 
   const names = useMemo(() => parseNames(draft.names), [draft.names])
 
-  // The brand owner as a PERSON reads it. `profile.account` is the account key the server echoed back,
+  // The company as a PERSON reads it. `profile.account` is the account key the server echoed back,
   // which is a slug — printing it here put "vantor" in the context card while the rail beside it
   // said "Vantor Labs". Resolved through the shell's one resolver so those two can never disagree.
-  // The brand owner as a PERSON reads it. The fallback used to be `profile.account` — the account key
+  // The company as a PERSON reads it. The fallback used to be `profile.account` — the account key
   // the server echoes back — so whenever no owner was in view this card printed "vantor" beside a
   // rail that said "Vantor Labs". A slug is never the answer to "who is this for"; when there is no
   // owner in view the honest answer is a phrase, not a key.
-  const ownerLabel = account ? ctx.ownerName(account) : 'this brand owner'
+  const ownerLabel = account ? ctx.ownerName(account) : 'this company'
   const projectLabel = projects.find((p) => p.key === draft.project)?.name || draft.project || null
 
   const own = useMemo(
@@ -478,11 +480,11 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       case 'rateLimited':
         return { title: 'Too many requests just now', lines: ['Wait a moment and try again.'] }
       case 'pickAccount':
-        return { title: 'Choose a brand owner', lines: [`Pick who this clearance is for. ${ownerPickerHint(ctx.sidebarCollapsed)}`] }
+        return { title: 'Choose a company', lines: ['Pick the company this clearance is for, then start the search.'] }
       case 'notFound':
-        return { title: 'That is not available to you', lines: ['Check which brand owner is selected.'] }
+        return { title: 'That is not available to you', lines: ['Check which company is selected.'] }
       // SPLIT FROM `notFound`. They are different answers and only one of them has
-      // anything to do with the selector. `notFound` may well BE the wrong brand owner, so that advice is
+      // anything to do with the selector. `notFound` may well BE the wrong company, so that advice is
       // right there. `noAccess` is the door refusing the identity itself — reachable only for door checks,
       // never for anything tenant-scoped — and telling that person to check the selector sends them to the
       // one thing that is not wrong. Someone who signs in successfully and can do nothing should be told
@@ -494,7 +496,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       case 'noAccess':
         return {
           title: 'This address has no access yet',
-          lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different brand owner cannot change that — an administrator needs to add it to one.'],
+          lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different company cannot change that — an administrator needs to add it to one.'],
         }
       case 'tooLarge':
         return { title: 'That is too much to send at once', lines: ['Shorten the goods description, or split the names across two searches.'] }
@@ -674,15 +676,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // there: a form that cannot be filled in and says nothing about why.
   if (needsOwner || searches?.kind === 'pickAccount') {
     return (
-      <div className="screen">
-        <div className="notice">
-          <b>Choose a brand owner first</b>
-          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            A clearance is filed for one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}{' '}
-            Then start the search.
-          </p>
-        </div>
-      </div>
+      <CompanyGate ctx={ctx} eyebrow="New clearance" heading="New clearance"
+        line="Pick a company to run this clearance on." />
     )
   }
 
@@ -748,6 +743,10 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   return (
     <div className="screen">
       <div className="eyebrow">{editingSlug ? 'Custom search' : 'New clearance'}</div>
+      {/* WHAT WAS JUST DECIDED FOR YOU, on the page you came here to use. A confirmation page of its own
+          was drawn and turned down: easier to make unmissable, and it interrupts the one thing the person
+          came to do. The framework was the only reason that page existed, and this still names it. */}
+      <CreatedStrip />
       <h1 style={{ fontSize: 27, margin: '4px 0 14px', color: 'var(--text-strong)' }}>
         {editingSlug ? 'Edit a custom search' : 'New clearance'}
       </h1>
@@ -792,7 +791,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       <div className="ctx-card">
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           <div style={{ minWidth: 190, flex: 1 }}>
-            <div className="field-label">Brand owner</div>
+            <div className="field-label">Company</div>
             {ctx.me.accounts.length > 1 ? (
               // The same value the sidebar switcher sets — the shell's own filter, mirrored where the
               // decision is being made. It is NEVER a request field: the server stamps identity from the
@@ -801,10 +800,10 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                 value={account ?? ''}
                 onChange={(e) => ctx.setOwner(e.target.value || null)}
                 className="ctx-select"
-                aria-label="Brand owner"
+                aria-label="Company"
                 data-anon="mark"
               >
-                <option value="">Choose a brand owner…</option>
+                <option value="">Choose a company…</option>
                 {/* Value stays the KEY — it is what every request is keyed by. Only the label is named.
                     Sorted by the LABEL, and through the same helper the rail's switcher uses: these are
                     two views of one control, and a client meeting the same list in two orders on one
@@ -846,12 +845,12 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                 /* AN EMPTY LIST IS NOT "NO CLASSES", AND SAYING SO WOULD BE THE LIE.
                    The composer sends no `classes` key when the list is empty, and the scope resolver's
                    nonEmpty() collapses undefined, null and [] into one branch — so it hands back the
-                   brand owner's FULL inherited list. "None set" described the form, not the search that
+                   company's FULL inherited list. "None set" described the form, not the search that
                    would run. Clearing every class is simply not expressible on this wire; rather than
                    pretend otherwise, the screen now says what will actually happen. */
                 <span style={{ fontSize: 12.5, color: 'var(--tone-medium)' }}>
                   {own.classes.length
-                    ? `Cleared — this will search ${own.classesFrom || "the brand owner's classes"} again (${own.classes.join(', ')}). Add one to narrow it.`
+                    ? `Cleared — this will search ${own.classesFrom || "the company's classes"} again (${own.classes.join(', ')}). Add one to narrow it.`
                     : 'None set — add one, or describe the goods below.'}
                 </span>
               ) : classes.map((c) => (
@@ -907,7 +906,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             </div>
             {draft.classes ? (
               <button type="button" className="link-btn" style={{ marginTop: 7 }} onClick={() => edit({ classes: null })}>
-                Use the brand owner’s classes instead
+                Use the company’s classes instead
               </button>
             ) : null}
           </div>
@@ -937,9 +936,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                       reader asks of both. (The footnote treatment it replaced put the answer to "why can
                       I not remove these" at 11px beside class chips that all carry an ×.) */}
                   <p style={{ margin: '9px 0 0', fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                    Every marketplace listed here is a forced deep dive inherited from Brand Owner and
-                    then Project configuration. By default common law sweeps everything it can find on the
-                    open web, but this ensures particular focus to important markets.
+                    Every marketplace listed here is a forced deep dive inherited from the company and
+                    then the project. By default common law sweeps everything it can find on the open web,
+                    but this ensures particular focus to important markets.
                   </p>
                   <div style={{ marginTop: 10 }}>
                     <div className="field-label">Add more for this search</div>
@@ -953,7 +952,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                     <p style={{ margin: '6px 0 0', fontSize: 11.5, color: 'var(--text-faint)', lineHeight: 1.45 }}>
                       To edit the default list see{' '}
                       <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/profile')}>
-                        Brand profile
+                        Profile
                       </button>
                       .
                     </p>
@@ -961,7 +960,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                 </>
               ) : (
                 <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                  None on file — the open web is searched regardless. Add shops on Brand profile, or name
+                  None on file — the open web is searched regardless. Add shops on Profile, or name
                   extra ones for this search below.
                 </p>
               )
@@ -2159,7 +2158,7 @@ function ReviewDialog({
         </div>
 
         <div style={{ padding: '6px 24px' }}>
-          <Row label="Brand owner"><span data-anon="mark">{owner}</span></Row>
+          <Row label="Company"><span data-anon="mark">{owner}</span></Row>
           <Row label="Project">{project ?? 'No project'}</Row>
           <Row label="Names"><span data-anon="mark">{names.join(', ') || String(plan.marks)}</span></Row>
           {scope && scope.jurisdictions.length ? (
@@ -2208,7 +2207,7 @@ function ReviewDialog({
                     <span key={i} className={i <= plan.effort!.units ? 'bar bar-on' : 'bar'} />
                   ))}
                 </span>
-                <Muted>{plan.effort.units}/10 for this brand owner</Muted>
+                <Muted>{plan.effort.units}/10 for this company</Muted>
                 <span style={{ display: 'inline-flex', gap: 3 }} aria-hidden>
                   {[1, 2, 3, 4, 5].map((i) => (
                     <span key={i} className={i <= plan.effort!.costBand ? 'dot dot-on' : 'dot'} />
@@ -2503,6 +2502,42 @@ function Submitted({ go, onAnother }: { readonly go: (p: string) => void; readon
           <button type="button" className="btn-ghost" onClick={onAnother}>Start another</button>
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * The strip a person meets straight after making a company.
+ *
+ * TAKEN ONCE, in an effect rather than during render: taking it is a write, and a render that mutates
+ * module state runs twice under React's development double-render and the second read finds nothing.
+ * The strip would then appear on some machines and not others, which is the worst way for a message to
+ * be unreliable.
+ *
+ * Dismissable, because it is an announcement and not a decision.
+ */
+function CreatedStrip() {
+  const [created, setCreated] = useState<CreatedCompany | null>(null)
+  const [dismissed, setDismissed] = useState(false)
+  useEffect(() => { setCreated(takeCreated()) }, [])
+
+  if (!created || dismissed) return null
+  const { line, warning } = createdStrip(created)
+  return (
+    <div className="empty" style={{ textAlign: 'left', margin: '4px 0 14px' }} role="status">
+      <div style={{ display: 'flex', gap: 14, alignItems: 'baseline' }}>
+        <p style={{ margin: 0, flex: 1, color: 'var(--text-strong)' }}>{line}</p>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label="Dismiss"
+          style={{ background: 'none', border: 'none', padding: 0, font: 'inherit',
+                   color: 'var(--text-muted)', cursor: 'pointer' }}
+        >
+          Dismiss
+        </button>
+      </div>
+      {warning ? <p style={{ margin: '6px 0 0', color: 'var(--tone-high)', fontSize: 13 }}>{warning}</p> : null}
     </div>
   )
 }

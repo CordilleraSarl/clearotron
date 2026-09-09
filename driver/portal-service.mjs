@@ -41,6 +41,37 @@ import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — 
 import { bareInvocation, invocationPrefix, installRoute } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
+
+/**
+ * The ops credential for one trigger call: the boot token's cap, re-taken against the roster now.
+ *
+ * Separated from the call site and exported because the service's `trigger` is injected in tests, so
+ * logic left inside it can only ever be asserted by reading the source — and the case that matters is
+ * the one where something fails.
+ *
+ * BOTH FALLBACKS HAND BACK THE BOOT TOKEN, never an uncapped one. An empty roster is the single case
+ * the boot mint reads as "do not cap", so re-deriving it here would turn an unreadable store into a
+ * token good for every account. A mint that throws — an unset secret — lands the same way. The failure
+ * direction is the whole point: a stale cap refuses the newest company, which is the bug being fixed;
+ * a widened cap admits every company, which is a larger and quieter one.
+ */
+export function opsTokenFor({ bootToken, roster, mint }) {
+  if (!Array.isArray(roster) || !roster.length) return bootToken;
+  try {
+    return mint({ scope: "ops", sub: "portal", verbs: ["start_run", "stop_run"],
+      accounts: roster, ttlSec: 300 });
+  } catch (e) {
+    // THE FALLBACK DIRECTION IS RIGHT AND ITS SILENCE WAS NOT. Handing back the boot credential is
+    // correct — it is narrower than the one that failed to mint, never wider — but a bare catch here
+    // restores the exact refusal this lane exists to remove, for a company created after boot, with
+    // nothing anywhere naming the cause. An unset signing secret and an unreadable store both land here
+    // and both look like the feature simply not working.
+    console.error(`[portal] could not re-mint the engine credential (${String(e?.message ?? e)}) — `
+      + `falling back to the one minted at boot, which does not cover companies created since`);
+    return bootToken;
+  }
+}
+
 // — the portal became an ISSUANCE PATH here, deliberately and by owner ruling.
 // A comment further down this file said "the portal cannot mint from here … this process deliberately
 // holds no engine/MCP secrets — issuance is one path on purpose". MEASURED 2026-08-31: that wall is not
@@ -113,7 +144,7 @@ import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./port
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
-import { BRAND, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { BRAND, ORGANISATION_NAME, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
 import { envFrom, pinEnv } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
@@ -1395,18 +1426,29 @@ export function makePortalService({
         // Cordillera's customer list on the one route every signed-in identity can reach — the exact
         // leak /profiles is never proxied for (portal-upstream: "a client reaching it would learn the
         // customer base"). `"*"` identities get {} and keep using the roster, which is staff-gated.
+        //
+        // `accountFacts` rides in the SAME loop, under the SAME scoping decision, for the same reason
+        // the names do: the pick panel shows industry, marketplace count and territories per company,
+        // and a client with several grants meets that panel. One loop, so there is one answer to
+        // "which accounts may this identity learn about" rather than two that can drift apart. A `"*"`
+        // identity gets {} here exactly as it does for names and keeps reading the staff-only roster.
         let accountNames = {};
+        let accountFacts = {};
         if (Array.isArray(principal.accounts) && principal.accounts.length) {
           try {
+            const { companyFactsOf } = await import("./profiles.mjs");
             const profiles = await loadProfilesImpl();
             for (const key of principal.accounts) {
-              const name = profiles.get(key)?.name;
+              const profile = profiles.get(key);
+              const name = profile?.name;
               if (typeof name === "string" && name) accountNames[key] = name;
+              if (profile) accountFacts[key] = companyFactsOf(profile);
             }
           } catch {
             // A name is a nicety; the door is not. An unreadable profile store must not lock a user
             // out of the portal, so this degrades to the keys the UI already falls back to.
             accountNames = {};
+            accountFacts = {};
           }
         }
         // HOW MANY RUNS THIS DEPLOYMENT EXECUTES AT ONCE. Deployment-wide, not account-scoped, which is
@@ -1434,8 +1476,8 @@ export function makePortalService({
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
-        return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames,
-          concurrentRuns: concurrentRunsCap(), brand: BRAND.name, engineMode: meEngineMode,
+        return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames, accountFacts,
+          concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
           // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
           // for "this could not be checked". The screen above renders one of three remedies from it,
           // and they are different remedies: install the CLI, restart the service that cannot see it,
@@ -2083,6 +2125,22 @@ export function makePortalService({
           }
           return r;
         }
+        // /portal/api/config/companies — CREATE. No account segment, because there is no account yet.
+        //
+        // It does not hang off `profile` for a reason worth stating: every route under that word acts on
+        // ONE company, resolved from the caller, and this one is the act of there not being one. Reusing
+        // the noun would put "the company you are in" and "the company you are making" behind the same
+        // path, which is the conflation the pick panel exists to remove.
+        //
+        // The audit row is written upstream by the create route itself, in the same commit as the file,
+        // so there is none here. An audit call copied from its neighbours would also be wrong twice: it
+        // would test `status === 200` against a 201, and file nothing.
+        if (parts[3] === "companies") {
+          if (parts.length === 4 && method === "POST") return await upstream.createCompany(principal, body);
+          // 404 for a wrong verb, as the profile branch above explains at length: 405 would make this
+          // endpoint distinguishable from one that does not exist.
+          return { status: 404, json: { error: "not_found" } };
+        }
         // /portal/api/config/projects[/:project[/{validate,save}]]
         if (parts[3] === "projects") {
           if (parts.length === 4 && method === "GET") return await upstream.listProjects(principal, acct);
@@ -2193,7 +2251,7 @@ export function makePortalService({
         // command is a true fact about THIS INSTALL'S OWN DISK, useful to anyone with a shell on the
         // box and useless to a hosted client who has no checkout. On a local install the reader IS the
         // operator, which is why the split that already exists does the work an "is this deployment
-        // local" inference would have done badly. Agreed with overwatch before building, because it
+        // local" inference would have done badly. Agreed before building, because it
         // changes what a signed-in staff user is shown.
         //
         // COMPOSED IN ONE PLACE and handed over as a string. The browser cannot know this install's
@@ -2710,7 +2768,13 @@ export function makePortalService({
           // by typing ?account=generic but invisible in the switcher, which is how they stop being
           // looked at. The client-facing boundary is unchanged: /portal/api/runs and the report route
           // both 404 `generic` for a non-staff principal.
-          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name })) } };
+          // THE FACTS RIDE WITH THE NAME. The pick panel tells companies apart by industry, marketplace
+          // count and territories, and it renders for staff from here and for a client from /me. Shaping
+          // both through `companyFactsOf` is what stops the same company reading two ways depending on
+          // who signed in. Dynamic import deliberately: `profiles.mjs` captures the store directory at
+          // MODULE LOAD (see this file's note above), so it is never pulled in at our own load time.
+          const { companyFactsOf } = await import("./profiles.mjs");
+          return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })) } };
         }
         // /portal/admin/config — what this deployment actually has switched on. Read from the SNAPSHOT,
         // never from process.env: this process has no engine environment, so asking its own env would
@@ -4200,13 +4264,48 @@ const PORT = PORT_CHOICE.port;
     }
   }
   const { mcpToolCall } = await import("./portal-mcp-client.mjs");
+  // ── the trigger credential is stamped WHEN A SEARCH STARTS, not when the portal booted ────────────
+  //
+  // `bin/start.mjs` mints PORTAL_OPS_TOKEN capped to the roster as it stood at boot. That cap is a real
+  // second wall and it stays. What was wrong is its AGE: a company created afterwards is not in it, so
+  // the portal offered the clearance and the engine door refused it —
+  //
+  //     FORBIDDEN (start_run): your grant [generic] does not include account "<key>"
+  //
+  // — which is the first thing a person meets after being told to set a company up. `brandowner add`
+  // detects it and prints NOT YET STARTABLE with a remedy, deliberately reporting rather than
+  // re-minting, because a create COMMAND holding the signing secret would be a larger surprise than the
+  // bug. That boundary is about the command, and it is untouched: this process is not a create command,
+  // it already holds the secret, and it already mints account credentials with it for the connector.
+  //
+  // So the cap is re-taken against the roster as it stands, for the length of one call.
+  //
+  // FALLS BACK TO THE BOOT TOKEN, never to an uncapped one. If the secret is unreadable or the store
+  // cannot be listed, this returns exactly what it returned before — a stale cap that refuses a new
+  // company at the door — rather than widening the wall to get the call through. The failure direction
+  // matters more than the feature: "the newest company cannot search yet" is the bug being fixed, and
+  // "any account can be started" is not a worse version of it, it is a different and larger one.
+  const currentOpsToken = async () => {
+    let roster = [];
+    try {
+      const { loadProfiles } = await import("./profiles.mjs");
+      roster = [...loadProfiles({ force: true }).keys()];
+    } catch (e) {
+      // Same rule one layer out: the roster could not be read at all, so there is nothing to re-mint
+      // against. Narrow and said out loud, rather than narrow and silent.
+      console.error(`[portal] could not read the company roster to re-mint the engine credential `
+        + `(${String(e?.message ?? e)}) — falling back to the credential minted at boot`);
+      return OPS_TOKEN;
+    }
+    return opsTokenFor({ bootToken: OPS_TOKEN, roster, mint: mintToken });
+  };
   const trigger = async (args) => {
     if (!MCP_URL || !OPS_TOKEN) throw new Error("PORTAL_MCP_URL / PORTAL_OPS_TOKEN unset — the trigger lane is not wired on this instance");
-    return mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "start_run", args });
+    return mcpToolCall({ url: MCP_URL, token: await currentOpsToken(), tool: "start_run", args });
   };
   const stopRun = async (args) => {
     if (!MCP_URL || !OPS_TOKEN) throw new Error("PORTAL_MCP_URL / PORTAL_OPS_TOKEN unset — the stop lane is not wired on this instance");
-    return mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "stop_run", args });
+    return mcpToolCall({ url: MCP_URL, token: await currentOpsToken(), tool: "stop_run", args });
   };
 
   // The config surface. profile-service is constructed IN-PROCESS rather than called over HTTP: it

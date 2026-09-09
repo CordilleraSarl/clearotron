@@ -3,18 +3,30 @@
 > Part of the architecture pack (`docs/architecture/`). The driver's module tree and the headless
 > integrator contract are in [`driver/README.md`](../../driver/README.md).
 
-The clearotron driver turns a plain-language clearance request into a delivered, lawyer-vetted
-preliminary trademark clearance report. One matter in, one decision out — with the investigation,
-the reasoning, the challenge, and the paper trail in between run by deterministic code that treats
-the model as a reasoning step, never as the orchestrator.
+The clearotron driver turns a clearance request into a delivered preliminary trademark clearance
+report. One matter in, one decision out — with the investigation, the reasoning, the challenge, and
+the paper trail in between run by deterministic code that treats the model as a reasoning step,
+never as the orchestrator.
 
 ## What it does
 
-A lawyer forwards a clearance request by email. The system resolves the matter (mark, client,
-scope, deadline), investigates worldwide — trademark registers and the live marketplace, in the
-variations a lawyer would try — reasons the risk in the client's own framework, challenges its own
-draft twice, and delivers a client-formatted report with every factual claim traceable to a fetched
-source record. A lawyer vets the result, then it moves.
+**Who this is for.** Anyone who needs to know whether a name is free to use and is willing to run the
+search themselves: a lawyer, a brand team, or an individual clearing their own mark. You need three
+self-serve accounts: a reasoning CLI, a register, and web research.
+
+**What you get.** Four searches at different depths. A knockout screens up to eight names in minutes.
+A global preliminary, a multi-country focus, or a full country search takes one name deeper, and the
+full country search adds case law. Each delivers a written report with the records behind every
+finding. What you do with it is your call.
+
+The four searches are declared in `driver/products.mjs`, and that declaration is what the rest of the
+system reads: a knockout screens up to eight names and skips case law, and only the full country
+search turns case law on. A knockout takes 5 to 10 minutes; the other three take 1.5 to 2.5 hours.
+
+Under any of them the system resolves the matter (mark, scope, deadline), investigates the trademark
+registers and the live marketplace in the variations a searcher would try, reasons the risk in the
+matter's own framework, challenges its own draft twice, and delivers a report with every factual
+claim traceable to a fetched source record.
 
 The driver is the machine that runs that whole distance. It is **not an agent**: it is a plain
 Node.js process, launched by systemd, that executes a fixed pipeline of stages. Each stage that

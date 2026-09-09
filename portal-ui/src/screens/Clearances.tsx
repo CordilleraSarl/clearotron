@@ -34,6 +34,7 @@ import { RiskDot, StatusCell } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { CompanyChips } from '../shell/CompanyChips.tsx'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -70,7 +71,7 @@ const TERMINAL = new Set<Run['state']>(['delivered', 'failed', 'cancelled'])
 const PAGE = 50
 
 /**
- * Whether to group by brand owner. ON by default — grouped is right for the common case, which is
+ * Whether to group by company. ON by default — grouped is right for the common case, which is
  * a person working one client's book.
  *
  * localStorage with a try/catch, which is the only persistence pattern this SPA has (Preferences.tsx
@@ -103,10 +104,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set())
   const [page, setPage] = useState(0)
 
-  // CLEARANCES IS THE ARCHIVE OF EVERYTHING THIS ACCOUNT HOLDS, and the brand owner is a FILTER inside
+  // CLEARANCES IS THE ARCHIVE OF EVERYTHING THIS ACCOUNT HOLDS, and the company is a FILTER inside
   // it rather than a scope around it.
   //
-  // One request, whoever is asking: `?scope=mine` returns every brand owner the identity holds — all of
+  // One request, whoever is asking: `?scope=mine` returns every company the identity holds — all of
   // them for staff, its own for a client — so this screen never asks who is looking. It is above the
   // line in the sidebar for that reason (nav.config), and it is where Home hands off: Home spans the
   // account, so a Clearances that spanned one owner would narrow the list at the very moment someone
@@ -116,7 +117,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   const { result, reload } = useLoad(() => api.runsMine(), [])
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
 
-  // THE BRAND OWNER FILTER IS THE SIDEBAR SWITCHER. There is one control, and it is in the nav.
+  // THE COMPANY FILTER IS THE SIDEBAR SWITCHER. There is one control, and it is in the nav.
   //
   // This screen used to carry its own <select>, with its own state, next to a sidebar switcher that did
   // nothing here at all — Clearances never read `ctx.owner`, so moving the switcher remounted the screen
@@ -136,7 +137,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // `?owner=` promoted into the shell, once, on arrival — Home deep-links into one owner's work and that
   // link has to keep landing. It sets the SHELL's owner rather than a local filter so the sidebar agrees
   // with the list it produced; a deep link that filtered the table while the switcher still read "All
-  // brand owners" would be the same two-sources-of-truth bug in a new place.
+  // companies" would be the same two-sources-of-truth bug in a new place.
   const seeded = useRef(false)
   useEffect(() => {
     if (seeded.current) return
@@ -176,7 +177,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   )
   const retired: readonly Run[] = retiredResult?.kind === 'ok' ? retiredResult.value : []
 
-  // The comment above is a promise the code has to keep: switching brand owner replaces every row,
+  // The comment above is a promise the code has to keep: switching company replaces every row,
   // so a selection made under the previous owner is ticks over rows that no longer exist — the
   // grouping bar shows a stale count and "Group as a family" can only fail.
   useEffect(() => { setPicked(new Set()) }, [ownerFilter])
@@ -186,11 +187,11 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     rateLimited: result?.kind === 'rateLimited',
   })
 
-  // Grouping is a property of the VIEW, not of the data: rows group under a brand-owner heading only
+  // Grouping is a property of the VIEW, not of the data: rows group under a company heading only
   // when several owners are on screen at once. With one owner selected, a heading repeating that
   // owner's name on every group would be noise.
   //
-  // Counted off the runs actually held rather than off a roster: an identity granted six brand owners
+  // Counted off the runs actually held rather than off a roster: an identity granted six companies
   // with work under one of them needs no headings, and the roster cannot tell us that.
   const ownersHeld = useMemo(() => new Set(allRuns.map((r) => r.account)).size, [allRuns])
   // GROUPING IS A TOGGLE, on by default.
@@ -307,9 +308,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     return (
       <div className="screen">
         <div className="notice">
-          <b>Choose a brand owner</b>
+          <b>Choose a company</b>
           <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            This sign-in covers several brand owners. Pick one in the sidebar to see its clearances.
+            This sign-in covers several companies. Pick one in the sidebar to see its clearances.
           </p>
         </div>
       </div>
@@ -462,10 +463,19 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       <h1 style={{ fontSize: 27, margin: '4px 0 6px', color: 'var(--text-strong)' }}>
         {ownerFilter ? ctx.ownerName(ownerFilter) : 'Clearances'}
       </h1>
+      {/* THE SUBTITLE IS GONE. "Every name in clearance and where it stands" restated the heading for a
+          reader who had already read it, directly above a control row that says something they cannot
+          work out for themselves. The allowance line was the only load-bearing part and it stays. */}
       <p style={{ margin: 0, color: 'var(--text-muted)' }}>
-        Every name in clearance and where it stands. Open a row to see each read on that name.
         <AllowanceLine account={account} />
       </p>
+
+      {/* Which company's clearances these are, as a filter rather than as a fact about the rail. This
+          screen has always been filtered by the switcher; the chips are the first thing on it to SAY
+          so, and they set the same value the switcher sets. */}
+      <div className="controls">
+        <CompanyChips ctx={ctx} label="Filter by company" />
+      </div>
 
       <div className="controls">
         <div className="segmented" role="group" aria-label="Filter by status">
@@ -494,7 +504,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           ))}
         </div>
 
-        {/* NO BRAND-OWNER SELECT HERE. It lived in this toolbar beside an identical sidebar switcher —
+        {/* NO COMPANY SELECT HERE. It lived in this toolbar beside an identical sidebar switcher —
             two controls for one decision, and the reader had no way to tell which was live. The nav
             switcher is the one, and it now scopes this list (see ownerFilter above). */}
 
@@ -513,7 +523,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                 resetPage()
               }}
             />
-            Group by brand owner
+            Group by company
           </label>
         ) : null}
         <span className="mono" style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: 13 }}>
@@ -643,9 +653,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               {canGroup ? <th aria-label="Select for grouping" /> : null}
               <th>{sortBtn('title', 'Name')}</th>
               {/* — UNGROUPED, THE OWNER MOVES INTO A COLUMN. The issue rejects an ungrouped mode
-                  that drops the brand owner: the information has to survive the toggle. A column rather
+                  that drops the company: the information has to survive the toggle. A column rather
                   than a chip, so it is sortable-adjacent, scannable, and in the grid  built. */}
-              {showOwnerColumn ? <th>Brand owner</th> : null}
+              {showOwnerColumn ? <th>Company</th> : null}
               {/* deleted the Stages column: it spent width on a rung number saying something the
                   page already says in words on every read row, which is the product's own name.
                   then retired the ladder itself — there are FOUR SEARCHES and a client buys one of them
@@ -747,7 +757,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Brand owner</th>
+                    <th>Company</th>
                     <th>Updated</th>
                     <th aria-label="Restore" />
                   </tr>
@@ -877,7 +887,7 @@ function FamilyRows({
   readonly onToggle: (id: string) => void
   readonly go: (p: string) => void
   readonly picking: boolean
-  /** — ungrouped, the brand owner is a column, so every row shape needs its cell. */
+  /** — ungrouped, the company is a column, so every row shape needs its cell. */
   readonly showOwner?: boolean
   readonly ownerLabel?: string
   readonly isPicked: (id: string) => boolean
@@ -998,7 +1008,7 @@ function MarkRow({
   /** True when the row sits under a family, which is the only thing that indents it. */
   readonly indent?: boolean
   readonly picking?: boolean
-  /** — ungrouped, the brand owner moves from the section header into a column on every row. */
+  /** — ungrouped, the company moves from the section header into a column on every row. */
   readonly showOwner?: boolean
   readonly ownerLabel?: string
   readonly picked?: boolean
@@ -1082,7 +1092,7 @@ function MarkRow({
               {threaded ? `Retire all ${mark.reads.length}` : 'Retire'}
             </button>
           ) : null}
-          {/* deleted the brand-owner chip.
+          {/* deleted the company chip.
               It only ever rendered when grouping was ON (grouped AND the name ambiguous), which is
               precisely when a section header sits directly above the row already saying the same thing.
               So it was the same string twice on one line — the thing the header was failing to
@@ -1204,7 +1214,7 @@ function ReadRow({
   readonly go: (p: string) => void
   readonly picking: boolean
   readonly indent?: boolean
-  /** — a spacer under the brand-owner column, so a read row still matches the grid when shown. */
+  /** — a spacer under the company column, so a read row still matches the grid when shown. */
   readonly showOwner?: boolean
   /** The read the parent row speaks for. Marked, so the latest-read rule has a visible ordering key. */
   readonly current?: boolean
@@ -1381,7 +1391,7 @@ function FirstRun({ go }: { readonly go: (p: string) => void }) {
  * into the run list would couple a counter to a poll that runs every few seconds.
  */
 function AllowanceLine({ account }: { readonly account: string | null }) {
-  // '*' is the staff "all brand owners" view. An allowance is per-account, so there is no answer to give
+  // '*' is the staff "all companies" view. An allowance is per-account, so there is no answer to give
   // — and asking would 400 on every load of the page staff use most. Skipped rather than swallowed.
   const { result } = useLoad(
     () => (account === '*' ? Promise.resolve({ kind: 'pickAccount' as const }) : api.usage(account)),

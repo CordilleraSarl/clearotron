@@ -18,7 +18,7 @@ import type { Role } from '../contract/api.ts'
  * AppShell). That makes an id's dot structure a behavioural claim, not a naming convention: any entry
  * whose id is a dot-prefix of the current screen lights up.
  *
- * The old scheme filed the brand-owner screens under `settings.*` alongside `settings` itself, so
+ * The old scheme filed the company screens under `settings.*` alongside `settings` itself, so
  * standing on `settings.profile` highlighted the Settings parent — a top-level item claiming to be the
  * page you are on when it is not. The three brand screens are therefore `brand.*` and DELIBERATELY have
  * NO `brand` parent entry: nothing can be a dot-prefix of them, so nothing can falsely highlight. If a
@@ -35,10 +35,11 @@ export type ScreenId =
   | 'result'
   | 'preferences'
   | 'about'
-  // brand-owner screens — no `brand` parent exists, on purpose (see above)
+  // company screens — no `brand` parent exists, on purpose (see above)
   | 'brand.profile'
   | 'brand.projects'
   | 'brand.searches'
+  | 'brand.new'
   // staff administration — dot-scoped under a real parent that SHOULD highlight for them
   | 'admin'
   | 'admin.access'
@@ -67,10 +68,10 @@ export type NavEntry = {
   /** Routable, but not listed in the sidebar. For screens reached from a row or a link. */
   readonly hidden?: boolean
   /**
-   * WHAT THE BRAND OWNER SWITCHER REACHES.
+   * WHAT THE COMPANY SWITCHER REACHES.
    *
    * `'account'` — the screen spans everything the account holds and IGNORES the switcher.
-   * `'owner'`   — the screen is about one brand owner, and the switcher chooses which.
+   * `'owner'`   — the screen is about one company, and the switcher chooses which.
    *
    * This is the field that makes the switcher's scope visible instead of mysterious. The sidebar draws
    * the switcher as the header of the `owner` group, so what it governs is everything printed beneath
@@ -78,7 +79,7 @@ export type NavEntry = {
    * owner. The top bar reads the same field: it names the scope you are in, the account or the owner.
    *
    * It is NOT a role test. Both groups are identical for everyone who signs in; what differs is how
-   * many brand owners they hold, and quantity is a rendering decision, never a layout.
+   * many companies they hold, and quantity is a rendering decision, never a layout.
    */
   readonly scope?: 'account' | 'owner'
 }
@@ -86,29 +87,33 @@ export type NavEntry = {
 // ARRAY ORDER IS SIDEBAR ORDER — AppShell maps this straight into the nav list.
 //
 // ── THE LINE, AND WHY IT IS WHERE IT IS ──────────────────────────────────────────────────────────
-// Everything with `scope: 'account'` comes first, then the brand-owner switcher, then everything with
+// Everything with `scope: 'account'` comes first, then the company switcher, then everything with
 // `scope: 'owner'`. Above the line you REVIEW ACROSS EVERYTHING; below it you CONFIGURE AND START WORK
 // FOR ONE OWNER. The switcher stops being a filter of unknown reach and becomes the label on the group
 // it governs.
 //
-// Clearances is above the line, with brand owner as one more filter inside it. It is where Home hands
+// Clearances is above the line, with company as one more filter inside it. It is where Home hands
 // off ("All clearances →") and Home is account-wide, so an owner-scoped Clearances would break that
 // handoff at the seam — and a multi-brand user would have no single archive. It is also already the
 // screen built for slicing: filter, sort, search, paging, families. One more filter costs it nothing;
 // a second place to be confused about scope costs plenty.
 export const NAV: readonly NavEntry[] = [
   // Home leads: it is where the portal opens and it answers "what is happening with my work" before
-  // anything is clicked. Clearances stays, as the archive it always was.
+  // anything is clicked. It spans everything and stays above the line.
   { id: 'home', label: 'Home', path: '/portal/home', icon: 'panel-left', scope: 'account' },
-  { id: 'clearances', label: 'Clearances', path: '/portal/clearances', icon: 'layers', scope: 'account' },
   // The engine being model-agnostic and reachable over MCP is a selling point, not a settings detail —
-  // and the connector is issued per identity, not per brand owner, so it belongs above the line.
+  // and the connector is issued per identity, not per company, so it belongs above the line.
   { id: 'ai', label: 'Use your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
 
-  // ── below the switcher: one brand owner at a time ─────────────────────────────────────────────
-  // New clearance leads the group because it is the one ACTION here, and it is owner-specific by
-  // nature: a run is started for exactly one brand owner, under that owner's framework and defaults.
+  // ── below the switcher: one company at a time ─────────────────────────────────────────────────
+  // New clearance leads the group because it is the one ACTION here, and it is company-specific by
+  // nature: a run is started for exactly one company, under that company's framework and defaults.
   { id: 'new', label: 'New clearance', path: '/portal/new', icon: 'plus-circle', scope: 'owner' },
+  // CLEARANCES MOVED DOWN HERE, and it is a correction rather than a preference: the screen has always
+  // filtered its rows by the switcher's value while sitting in the group whose whole definition is that
+  // the switcher does not reach it. It obeyed a control the layout said did not apply to it, and nothing
+  // on the page said it was filtered. Below the line the two agree.
+  { id: 'clearances', label: 'Clearances', path: '/portal/clearances', icon: 'layers', scope: 'owner' },
   // Reached from a row, never from the sidebar — but it must still RESOLVE, or "Open the report" leads
   // to "That page does not exist." `hidden` keeps it out of the nav while keeping it routable; a screen
   // you can navigate to and a screen you can see in a menu are different questions.
@@ -120,11 +125,25 @@ export const NAV: readonly NavEntry[] = [
   // from this array, so an entry removed to tidy the sidebar turns the menu link into a dead one.
   { id: 'about', label: 'About', path: '/portal/about', icon: 'info', hidden: true },
 
-  // The brand owner's own configuration. Flat by design: there is no `brand` parent entry, so none of
-  // these can be falsely highlighted by a dot-prefix match.
-  { id: 'brand.profile', label: 'Brand profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
-  { id: 'brand.projects', label: 'Brand projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
+  // The company's own configuration. Flat by design: there is no `brand` parent entry, so none of these
+  // can be falsely highlighted by a dot-prefix match. The ids and routes keep the `brand` spelling —
+  // the rename here is to what a reader sees, and a route is neither read nor renamed.
+  { id: 'brand.profile', label: 'Profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
+  { id: 'brand.projects', label: 'Projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
   { id: 'brand.searches', label: 'Custom searches', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
+  // Creating a company. `hidden`, because it is reached from `+ New company` on the pick panel and from
+  // nowhere else — routing is DERIVED from this array, so the entry is what makes that button work, not
+  // what puts it in the rail. A visible entry would also red the two sidebar assertions, and the repair
+  // for those is not to edit them.
+  //
+  // NO `scope`. An 'owner'-scoped id prints the SELECTED company's name in the top bar, which over a
+  // page for making a different one is the conflation this whole family exists to remove. Scope-less
+  // reads as 'account', which is right: the page belongs to the installation, not to a company.
+  //
+  // `roles` rather than a check in the markup, per this file's opening rule. It is the same set as the
+  // control that opens it — the people who may manage — and the access model converts this FIELD along
+  // with every other role test, not this entry.
+  { id: 'brand.new', label: 'New company', path: '/portal/brand/new', icon: 'plus-circle', roles: ['staff'], hidden: true },
 
   // Staff administration, now reached from the AVATAR MENU rather than the sidebar — it is rare, it is
   // not part of the work lane, and it belongs to the person rather than to either scope. `hidden`, not
@@ -170,7 +189,7 @@ export function navFor(role: Role, entries: readonly NavEntry[] = NAV): readonly
 }
 
 /**
- * The sidebar in two groups, with the brand-owner switcher belonging between them.
+ * The sidebar in two groups, with the company switcher belonging between them.
  *
  * The split is read off `scope`, never off role and never off a hardcoded id list — so adding a screen
  * puts it on the correct side of the switcher by declaring one field, and cannot put it on the wrong
@@ -193,7 +212,7 @@ export function navGroupsFor(role: Role, entries: readonly NavEntry[] = NAV): {
  * What the screen you are on is scoped to — which is what the top bar names.
  *
  * An unknown or unscoped screen reads `'account'`, matching navGroupsFor's default: the title then
- * names the account, which is true of every signed-in identity, rather than naming a brand owner the
+ * names the account, which is true of every signed-in identity, rather than naming a company the
  * screen may not be showing.
  */
 export function scopeOf(id: string | null, entries: readonly NavEntry[] = NAV): 'account' | 'owner' {

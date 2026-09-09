@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Custom searches — the named set-ups a brand owner runs clearances under.
+// Custom searches — the named set-ups a company runs clearances under.
 //
 // A saved search is a name over two things: a DEPTH (which machinery runs) and a SCOPE (where it points).
 // "Coastline Drinks knockouts — US focus" is exactly that: a quick screen, aimed at the US. Without the scope half
@@ -20,7 +20,7 @@
 // TWO WORDS ARE HELD APART HERE, as they are in the engine:
 //
 //   LABEL — what the customer called this set-up. The only thing displayed.
-//   NAME  — a profile key: the brand owner's own legal identity. Belongs to a different record entirely,
+//   NAME  — a profile key: the company's own legal identity. Belongs to a different record entirely,
 //           and the backend keeps the two key sets provably disjoint so they can never be conflated.
 //
 // RETIRED, NEVER DELETED is a rule of the record, not of the UI. A saved search that produced a report is
@@ -42,7 +42,7 @@ import type { SavedSearchStatus } from '../contract/savedSearches.ts'
 import { draftFromSaved } from '../contract/composerProduct.ts'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
 
 export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // Who this is FOR — resolved exactly as the composer resolves it. A staff member acting for a client
@@ -53,7 +53,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
 
   const { result, reload } = useLoad(() => api.savedSearches(account), [account])
   // The OFFERING, for the "Builds on" column. A separate call because it is a different question — what
-  // this deployment offers, as against what this brand owner has saved — and a refusal of one must not
+  // this deployment offers, as against what this company has saved — and a refusal of one must not
   // blank the other.
   const { result: menu } = useLoad(() => api.searches(account), [account])
   const levels: readonly Product[] = menu?.kind === 'ok' ? menu.value.products : []
@@ -62,16 +62,16 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   const [confirming, setConfirming] = useState<string | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
 
-  if (needsOwner) return <PickOwner sidebarCollapsed={ctx.sidebarCollapsed} />
+  if (needsOwner) return <PickCompany ctx={ctx} />
 
   // Every non-ok shape is handled BEFORE the empty state, and the ordering is the whole point.
   //
   // The tidy-looking version of this screen reads the rows out with `result?.kind === 'ok' ? … : []` and
   // then renders "no saved searches yet" when the list is short. On a listing screen that turns every
   // refusal — a rate limit, a 404, a dropped tunnel, a staff identity that has not named an account —
-  // into a confident statement that this brand owner has none.
+  // into a confident statement that this company has none.
   if (!result) return <div className="screen" />
-  if (result.kind === 'pickAccount') return <PickOwner sidebarCollapsed={ctx.sidebarCollapsed} />
+  if (result.kind === 'pickAccount') return <PickCompany ctx={ctx} />
 
   if (result.kind !== 'ok') {
     return (
@@ -338,20 +338,11 @@ function Empty({ go }: { readonly go: (path: string) => void }) {
   )
 }
 
-function PickOwner({ sidebarCollapsed }: { readonly sidebarCollapsed: boolean }) {
-  return (
-    <div className="screen">
-      <div className="notice">
-        <b>Choose a brand owner first</b>
-        <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-          Custom searches belong to one brand owner. {ownerPickerHint(sidebarCollapsed)}
-        </p>
-      </div>
-    </div>
-  )
+function PickCompany({ ctx }: { readonly ctx: ShellContext }) {
+  return <CompanyGate ctx={ctx} eyebrow="Company" heading="Custom searches" line="Pick a company to see its custom searches." />
 }
 
-/** The screen's own title. The brand owner is named in the rail, and once is enough. */
+/** The screen's own title. The company is named in the rail, and once is enough. */
 function Heading() {
   return (
     <>

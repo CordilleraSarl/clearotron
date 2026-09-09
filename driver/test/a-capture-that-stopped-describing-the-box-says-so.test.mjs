@@ -220,7 +220,7 @@ test("CONTROL: a capture written before the field existed is silent about it, no
 
 // ── THE COMPARISON IS ONLY WORTH THE INDEPENDENCE OF ITS TWO SIDES ──────────────────────────────────
 //
-// Raised by role-e2e before driving it, and it was a live defect for about an hour: "a page that reports
+// Raised in review before driving it, and it was a live defect for about an hour: "a page that reports
 // two sources agreeing is the easiest thing in the world to pass by accident — if both halves read the
 // same underlying value, they agree by construction and the row certifies nothing."
 //

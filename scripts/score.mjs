@@ -583,7 +583,7 @@ function print(id, ref, run, s, delta, refPath) {
     // workspace archive instead of the pool — and the lane fact is visible on the `lane:` line anyway.
     console.log(row("withheld", "n/a", s.collapseReason));
   } else {
-    // — THE SCOPE ON THE LINE, not in a footnote. `role-e2e` calls this "the bucket that changes
+    // — THE SCOPE ON THE LINE, not in a footnote. The testing doctrine calls this "the bucket that changes
     // what you fix", so a bare `0` beside that sentence reads as "no seam defect this round" — and on
     // the round that measured it, two live in-class rights the run retrieved and dropped were outside
     // the reference and could not have raised it. The footnote saying `withheld` is a reference-entry

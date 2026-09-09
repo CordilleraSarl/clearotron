@@ -28,7 +28,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 // A directory that cannot exist, so every enrollable row reads as NOT set up and carries its remedy.
-const UNENROLLED = { OAUTH_BRIDGE_CREDS_DIR: "/nonexistent/k2so-2175-f16" };
+const UNENROLLED = { OAUTH_BRIDGE_CREDS_DIR: "/nonexistent/unenrolled-2175-f16" };
 const URL_RE = /https?:\/\/[^\s,)]+/;
 const GUARD = "every credential names where to get it";
 

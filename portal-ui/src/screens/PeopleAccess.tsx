@@ -57,7 +57,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
             <b>{broken.length === 1 ? 'One grant names an account that does not exist' : `${broken.length} grants name accounts that do not exist`}</b>
             <p style={{ margin: '6px 0 8px', color: 'var(--text-muted)', fontSize: 13 }}>
               Usually a spelling mistake. It fails silently: the person signs in and simply cannot see
-              that brand owner, with nothing to explain why.
+              that company, with nothing to explain why.
             </p>
             <ul style={{ margin: 0, paddingLeft: 18, color: 'var(--text-muted)', fontSize: 13 }}>
               {broken.map((p) => (
@@ -71,7 +71,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
 
         {v.unknownAccounts.length ? (
           <div className="notice" style={{ borderColor: 'var(--tone-medium)', marginBottom: 18 }}>
-            <b>Accounts with no brand owner configured</b>
+            <b>Accounts with no company configured</b>
             <p style={{ margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>
               Named in the access list but with no profile: <b>{v.unknownAccounts.join(', ')}</b>. Anyone
               granted one of these will sign in and find nothing there.
@@ -144,15 +144,15 @@ function Roles({ brand }: { readonly brand: string }) {
   return (
     <div className="notice quiet" style={{ marginBottom: 18 }}>
       <div className="eyebrow">Two roles currently exist</div>
-      <Role name={staffLabel(brand)}>capable to see every brand owner.</Role>
-      {/* THE NEAREST TRUE FORM. The owner's line read "the brand owners and its
+      <Role name={staffLabel(brand)}>capable to see every company.</Role>
+      {/* THE NEAREST TRUE FORM. The owner's line read "the companies and its
           projects named in their grants", and a grant names ACCOUNTS only — `grant add <email> --tenant
-          <name> --accounts <key,key|*>`. A project belongs to a brand owner's configuration, so a client
+          <name> --accounts <key,key|*>`. A project belongs to a company's configuration, so a client
           reaches one by INHERITANCE and never by being named. Saying otherwise would send someone
           looking for a per-project grant that cannot be written. Flagged on the issue. */}
       <Role name="Clients">
-        reaches only the brand owners named in their grants, and those brand owners&rsquo; projects, and
-        nothing else. A brand owner they are not granted is not visible.
+        reaches only the companies named in their grants, and those companies&rsquo; projects, and
+        nothing else. A company it is not granted is not visible.
       </Role>
     </div>
   )
@@ -164,7 +164,7 @@ function Roles({ brand }: { readonly brand: string }) {
  * ── AND IT SAYS WHERE THE RULE IS WRITTEN ───────────────────────────────────────────────────────────
  *
  * This row used to state the rule and stop. An outside reader who did not recognise the domain
- * therefore learned that everyone at it can see every brand owner on their instance, and had no next
+ * therefore learned that everyone at it can see every company on their instance, and had no next
  * step: the value is a setting, in one of two files depending on how the instance runs, and neither
  * this row nor anything else on the screen named either. They reported it as a back door, twice.
  * Naming the setting and the file is what turns the row from an alarm into something a reader can act
@@ -281,7 +281,7 @@ function Row({ person }: { readonly person: Person }) {
         </span>
         <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }} data-anon="mark">{person.tenant}</span>
         {person.wildcard ? (
-          // Worth surfacing: this grant follows the tenant. Adding a brand owner to that tenant silently
+          // Worth surfacing: this grant follows the tenant. Adding a company to that tenant silently
           // widens what this person can see, which is right but should not be a surprise.
           <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }}>all of this tenant</span>
         ) : null}
@@ -290,7 +290,7 @@ function Row({ person }: { readonly person: Person }) {
         {person.accounts.length ? (
           <>Reaches: <span style={{ color: 'var(--text-strong)' }} data-anon="mark">{person.accounts.join(', ')}</span></>
         ) : (
-          'Reaches nothing — signed in, but granted no brand owner.'
+          'Reaches nothing — signed in, but granted no company.'
         )}
       </div>
     </div>

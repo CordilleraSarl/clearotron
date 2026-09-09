@@ -17,7 +17,7 @@
     },
     "common-law": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 3,
+      "exactly-these-keys": 2,
       "dictated-line-shape": 0
     },
     "common-law-half": {
@@ -52,7 +52,7 @@
     },
     "synthesis": {
       "literal-json-skeleton": 10,
-      "exactly-these-keys": 9,
+      "exactly-these-keys": 8,
       "dictated-line-shape": 5
     },
     "case-law": {
@@ -114,7 +114,7 @@
     },
     "skills/prelim-common-law/SKILL.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 2,
+      "exactly-these-keys": 1,
       "dictated-line-shape": 2
     },
     "skills/prelim-register/SKILL.md": {
@@ -129,7 +129,7 @@
     },
     "skills/placement-inquiry/SKILL.md": {
       "literal-json-skeleton": 1,
-      "exactly-these-keys": 4,
+      "exactly-these-keys": 3,
       "dictated-line-shape": 1
     },
     "skills/prelim-register/digest.md": {
@@ -139,7 +139,7 @@
     },
     "skills/prelim-search/phase2-execution.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 2,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 3
     },
     "skills/frame-diff/SKILL.md": {
@@ -149,12 +149,12 @@
     },
     "skills/prelim-search/synthesis-rules.md": {
       "literal-json-skeleton": 1,
-      "exactly-these-keys": 7,
+      "exactly-these-keys": 1,
       "dictated-line-shape": 2
     },
     "skills/prelim-search/firm-wide-reasoning.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 2,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
     "skills/prelim-search/risk-framework.md": {
@@ -164,7 +164,7 @@
     },
     "skills/prelim-search/worked-examples.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
     "skills/prelim-search/report-prose.md": {
@@ -179,7 +179,7 @@
     },
     "skills/narrative-refutation/SKILL.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 3,
+      "exactly-these-keys": 2,
       "dictated-line-shape": 1
     },
     "skills/prelim-search/delivery-contract.md": {
@@ -189,7 +189,7 @@
     }
   },
   "totals": {
-    "stages": 47,
-    "files": 78
+    "stages": 45,
+    "files": 64
   }
 }

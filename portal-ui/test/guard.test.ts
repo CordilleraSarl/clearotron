@@ -100,8 +100,8 @@ test('BOTH shell exits are guarded — the brand switcher is not a navigation', 
   // and it is the exit that looks least like leaving a page.
   const shell = src('shell/AppShell.tsx')
   assert.match(shell, /if \(!opts\?\.replace && !confirmDiscard\(/, 'in-app navigation asks first')
-  assert.match(shell, /const setOwnerGuarded[\s\S]{0,200}confirmDiscard\('Switch brand owner\?'\)/,
-    'and so does switching brand owner')
+  assert.match(shell, /const setOwnerGuarded[\s\S]{0,200}confirmDiscard\('Switch company\?'\)/,
+    'and so does switching company')
   assert.match(shell, /onChange=\{setOwnerGuarded\}/, 'the switcher is wired to the guarded setter')
   assert.match(shell, /setOwner: setOwnerGuarded/, 'and so is the copy handed to screens')
   assert.match(shell, /attachBeforeUnload\(\)/, 'reload, close and the Access logout link are covered')
@@ -117,6 +117,9 @@ test('every screen with an editable form registers, and reuses its own Save flag
     ['screens/Profile.tsx', 'dirty'],
     ['screens/Projects.tsx', 'dirty'],
     ['screens/NewClearance.tsx', 'composerDirty'],
+    // A create form has as much to lose as an edit form and neither list knew about it: this population
+    // is hand-kept, so a new screen is in neither half and forgetting the guard passes silently.
+    ['screens/NewCompany.tsx', 'dirty && !result'],
   ] as const) {
     const s = src(file)
     assert.match(s, new RegExp(`useUnsaved\\(${flag}\\)`), `${file} registers ${flag}`)
@@ -169,7 +172,7 @@ test('a fresh composer has nothing to lose, and a saved one has nothing to lose 
 test('useLoad clears on a DEPS change and keeps data across a reload', () => {
   // Two failures, one line apart in the source, and they pull in opposite directions.
   //
-  // Not clearing on a deps change is the reported bug: switch brand owner and the previous owner's data
+  // Not clearing on a deps change is the reported bug: switch company and the previous owner's data
   // stays fully painted for the whole in-flight window, because every screen gates on `result` and not
   // on `loading`. Clearing on EVERY run would be worse — `nonce` drives the 5-second poll, so every list
   // in the app would blank itself twice a minute. The fix has to tell those two apart.
@@ -180,7 +183,7 @@ test('useLoad clears on a DEPS change and keeps data across a reload', () => {
   assert.match(s, /\}, \[depsKey, nonce\]\)/, 'and a reload re-runs without clearing')
 })
 
-test('account-scoped screens are keyed on the brand owner', () => {
+test('account-scoped screens are keyed on the company', () => {
   // The other half of the same bug: the fetch swapped, the local state did not. Keying resets every
   // useState in the subtree, which fixes the class rather than four instances of it.
   const m = src('main.tsx')
@@ -191,17 +194,20 @@ test('account-scoped screens are keyed on the brand owner', () => {
   assert.match(m, /key=\{`\$\{ownerKey\(ctx\)\}::\$\{new URLSearchParams/,
     'the composer keys on owner AND the edited search — both change its identity')
   // Deployment- and browser-scoped screens must NOT be keyed: remounting them on a brand switch would
-  // throw away state that has nothing to do with the brand owner.
-  for (const screen of ['UseYourAI', 'Preferences', 'GlobalConfig', 'PeopleAccess']) {
+  // throw away state that has nothing to do with the company.
+  for (const screen of ['UseYourAI', 'Preferences', 'GlobalConfig', 'PeopleAccess', 'NewCompany']) {
     assert.doesNotMatch(m, new RegExp(`<${screen}\\s+key=`), `${screen} is not account-scoped`)
   }
+  // NewCompany is in the NOT-keyed half deliberately, and it is the one screen where that needs saying:
+  // there is no company yet, so keying it on the one in view would throw a half-typed form away the
+  // moment somebody touched the switcher — which is still on screen while the page is open.
 })
 
 test('Result is keyed on the RUN, because it is not account-scoped', () => {
   // RESULT USED TO BE IN THE LIST ABOVE, and that was the bug rather than the fix.
   //
   // It fetched `api.runs(ctx.owner ?? …)` and looked the run up in whatever came back, so selecting a
-  // brand owner could make an OPEN report vanish — a `generic` run is in no account-scoped answer, and
+  // company could make an OPEN report vanish — a `generic` run is in no account-scoped answer, and
   // the switcher is not a statement about which report you are reading. It now asks `runsMine()`, the
   // same question Clearances asks, so the list and the screen can no longer disagree about what exists.
   //
@@ -217,7 +223,7 @@ test('Result is keyed on the RUN, because it is not account-scoped', () => {
   const m = src('main.tsx')
   assert.match(m, /<Result\s+key=\{`\$\{runId\}\/\$\{markSlug \?\? ''\}#\$\{ctx\.visit\}`\}/,
     'keyed on the run and the mark, plus the visit counter')
-  assert.doesNotMatch(m, /<Result\s+key=\{ownerKey\(ctx\)\}/, 'and NOT on the brand owner')
+  assert.doesNotMatch(m, /<Result\s+key=\{ownerKey\(ctx\)\}/, 'and NOT on the company')
   // The fetch is the other half of the same rule — a Result that went back to an account-scoped read
   // would re-open the gap even with the key fixed.
   assert.match(src('screens/Result.tsx'), /useLoad\(\(\) => api\.runsMine\(\), \[\]\)/,

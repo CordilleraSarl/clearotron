@@ -274,7 +274,7 @@ export function settleProgress(agent, now = Date.now()) {
 // disposed of on the box.
 //
 // **Owner ruling, 2026-08-24, SUPERSEDING THIS SWEEP'S HALF OF IT: failed runs' notification packets get
-// the same re-drop cover as delivered ones.** (Relayed by role-overwatch.)
+// the same re-drop cover as delivered ones.**
 //
 // BOTH ARE KEPT BECAUSE BOTH ARE STILL TRUE, and reading them as a reversal is the mistake to avoid. A
 // failed run owes the CLIENT no report — that is 2026-08-22, and `scripts/e2e.mjs`'s delivery assertion

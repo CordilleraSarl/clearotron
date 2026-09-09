@@ -917,8 +917,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
   // until the wall. ONE free rung per ladder is the concession; a second zero-usage warm turn in the
   // same ladder is charged, and the record says so rather than leaving the difference to be inferred.
   //
-  // PROVISIONAL, and deliberately one line to change: the number below is a routed parameter (2026-08-22,
-  // overwatch), not a measured optimum. Nobody has yet counted how often a second free rung would have
+  // PROVISIONAL, and deliberately one line to change: the number below is a routed parameter (2026-08-22),
+  // not a measured optimum. Nobody has yet counted how often a second free rung would have
   // converted, and until someone does, 1 is the smallest concession that closes the defect.
   //
   // THE CHARGING BRANCH CANNOT FIRE TODAY, and that is stated rather than left to be discovered. `warm`

@@ -9,7 +9,7 @@
 //     reach the portal's storage, DOM, cookies or API, however much script it runs. That retires the
 //     stored-XSS class for every report ever delivered — not just the ones we have looked at.
 //   • The identity above the frame comes from the RUN, never from the document. A report's own title is
-//     model-authored; the mark, the brand owner and the band on this screen come from the API.
+//     model-authored; the mark, the company and the band on this screen come from the API.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Run } from '../contract/api.ts'
@@ -408,7 +408,7 @@ export function Result({
 }) {
   // EVERY RUN THIS IDENTITY HOLDS — the same question Clearances asks, deliberately.
   //
-  // This used to fetch `api.runs(ctx.owner ?? …)`, i.e. the list narrowed to whichever brand owner the
+  // This used to fetch `api.runs(ctx.owner ?? …)`, i.e. the list narrowed to whichever company the
   // sidebar switcher had selected, and then find the run in it. Clearances lists with `runsMine()`,
   // which for staff spans every account including the staff-only `generic`. The two disagreed, and the
   // gap was the whole bug: you could see a row on the list and not open it, and — worse — changing the

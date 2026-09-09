@@ -167,13 +167,13 @@ test("#1764 the row set is never empty — an attributions file over nothing is 
 
 // ── — THE THIRD DIRECTION: DOES THE DECLARATION STILL APPLY *NARROWLY*? ───────────────────────
 //
-// Measured by scruffy, 2026-08-23: widening this file's shipped matcher from `/^invalid: uuid@/` to
+// Measured in testing, 2026-08-23: widening this file's shipped matcher from `/^invalid: uuid@/` to
 // `/^invalid:/` leaves this suite at 11 pass / 0 fail. Not stale — it still matches what npm reports.
 // Not empty — the table has an entry. And now silently accepting every future invalid resolution in the
 // tree, which is exactly what a named exception is supposed to prevent.
 //
 // Both existing directions check that the exception still APPLIES. Neither checks that it still applies
-// NARROWLY, and overwatch ruled the answer once for both homes it appeared in: a declaration carries a
+// NARROWLY, and the answer was ruled once for both homes it appeared in: a declaration carries a
 // NEAR-MISS — a canonical instance one step broader than what it was written for — asserted NOT to match.
 //
 // THE CONTROL IS A FIELD, NOT AN ARM. A hand-written case covers the entry that existed when it was

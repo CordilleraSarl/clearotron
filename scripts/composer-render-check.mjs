@@ -653,7 +653,7 @@ const SCRIPT = `
   // reaches the browser as a literal s+, which turns a correct assertion into a red nobody can explain
   // from reading it. That cost one run here before it was caught locally.
   out.marketplacesSayWhereTheyComeFrom =
-    /forced\\s+deep\\s+dive\\s+inherited\\s+from\\s+Brand\\s+Owner/.test(txt())
+    /forced\\s+deep\\s+dive\\s+inherited\\s+from\\s+the\\s+company/.test(txt())
     && /common\\s+law\\s+sweeps\\s+everything\\s+it\\s+can\\s+find/.test(txt());
 
   // THE COMPARISON, and the scrollbar it must keep to itself. It replaced a delta view that priced a

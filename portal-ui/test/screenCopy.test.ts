@@ -91,7 +91,7 @@ test('Preferences warns that a report blurs WHOLE, which is not what a reader wo
   assert.match(prose, /deliberate/i, 'and named as a choice, so it does not read as a fault')
 
   // What is covered is still claimed plainly, because it is true and it is why the feature exists.
-  assert.match(prose, /blurs every brand name, mark and brand owner/, 'the promise is still made')
+  assert.match(prose, /blurs every brand name, mark and company/, 'the promise is still made')
 })
 
 test('Preferences keeps the report boundary factual rather than apologetic', () => {
@@ -456,7 +456,7 @@ test('the context pack is EDITABLE at BOTH levels, not merely round-tripped', ()
   // The PROJECT level had the same defect and kept it a release longer: the pre-React portal had a
   // "Project background & concerns" field, the rebuild dropped the control and kept the pass-through, and
   // the one project in production ended up with doctrine the engine reads and nobody could edit.
-  assert.match(PROFILE, /<ContextPackEditor/, 'the brand owner has the editor')
+  assert.match(PROFILE, /<ContextPackEditor/, 'the company has the editor')
   assert.match(PROFILE, /contextPack:\s*pack\b/, 'and its save sends the edited value')
   assert.doesNotMatch(PROFILE, /contextPack:\s*loaded\.contextPack/, 'not the untouched loaded copy')
   assert.match(PROFILE, /pack !== loaded\.contextPack/, 'a pack edit counts as dirty')
@@ -481,7 +481,7 @@ test('ONE context-pack editor, shared — the two levels cannot describe the sam
   // Re-pointed by the copy pass: the SENTENCE changed, the fact it guards did not, and
   // the fact is the reason the arm exists. Matched on both halves rather than on one phrase, so a
   // future shortening cannot drop the "not added to it" clause and stay green.
-  assert.match(PROJECTS, /Replaces the brand owner's background when set/)
+  assert.match(PROJECTS, /Replaces the company's background when set/)
   assert.match(PROJECTS, /it is not added to it/)
 })
 
@@ -490,11 +490,30 @@ test('the coverage figure is drawn from `derived`, which was parsed and then ign
   assert.match(PROFILE, /batchSize/)
 })
 
-test('both editors treat prose as multi-line — one screen learning it is not enough', () => {
-  // riskAppetite is project-editable, so it renders on Projects.tsx too. If only Profile.tsx branches on
-  // `prose`, the same paragraph is a textarea on one page and a one-line input on the other.
-  for (const [name, src] of [['Profile', PROFILE], ['Projects', PROJECTS]] as const) {
+test('every editor treats prose as multi-line — one screen learning it is not enough', () => {
+  // riskAppetite is project-editable, so it renders on the project overlay too. If one renderer branches
+  // on `prose` and another does not, the same paragraph is a textarea on one page and a one-line input on
+  // the other.
+  //
+  // RE-POINTED AT THE RENDERERS, not at the screens. The rule has not changed and neither has the reason
+  // for it; what changed is that the profile screen no longer has a field renderer of its own — it and
+  // the create screen share one. Pasting the new file into the old loop would have kept the sentence and
+  // dropped half the guarantee, because the shared renderer is now the thing that has to branch and the
+  // screen that uses it has nothing to check.
+  //
+  // So: every renderer branches, AND the screens that share one do not grow a second. The second half is
+  // what keeps this honest — without it, a screen could quietly re-introduce its own single-line input
+  // and every assertion above would still pass.
+  const RENDERERS = [
+    ['ProfileField', read('../src/components/ProfileField.tsx')],
+    ['Projects', PROJECTS],
+  ] as const
+  for (const [name, src] of RENDERERS) {
     assert.match(src, /spec\.kind === 'lines' \|\| spec\.kind === 'prose'/, `${name}.tsx renders prose multi-line`)
+  }
+  for (const [name, src] of [['Profile', PROFILE], ['NewCompany', read('../src/screens/NewCompany.tsx')]] as const) {
+    assert.doesNotMatch(src, /^function Field\(/m, `${name}.tsx renders fields through the shared component`)
+    assert.match(src, /from '\.\.\/components\/ProfileField\.tsx'/, `${name}.tsx imports that component`)
   }
 })
 
@@ -607,7 +626,7 @@ test('Projects no longer says Cordillera sets them up, because the screen now do
   // Bounded by the row list that follows the empty branch. NOT by the first `projects.map(` in the
   // file — that one is the `taken={…}` prop above, so slicing to it yields an empty string and the
   // assertion below passes on nothing at all.
-  const emptyAt = PROJECTS.indexOf('No projects for this brand owner')
+  const emptyAt = PROJECTS.indexOf('No projects for this company')
   const listAt = PROJECTS.indexOf('{projects.map(', emptyAt)
   assert.ok(emptyAt > 0 && listAt > emptyAt, 'the empty branch is bounded by the row list that follows it')
   const empty = PROJECTS.slice(emptyAt, listAt)
@@ -644,8 +663,8 @@ test('Custom searches offers retire AND the way back from it', () => {
   assert.match(body(SAVED_SEARCHES), /archived: retired/, 'and it sends the flag explicitly, in both directions')
 })
 
-test('no screen prints an account key where a brand owner belongs', () => {
-  // The key is a slug ("vantor"); the brand owner is a name ("Vantor Labs"). Every label goes
+test('no screen prints an account key where a company belongs', () => {
+  // The key is a slug ("vantor"); the company is a name ("Vantor Labs"). Every label goes
   // through ctx.ownerName, so a client and a staff member read the same words — which is the whole
   // point, and the kind of thing that reads fine in a screenshot taken from one login.
   const CLEARANCES = read('../src/screens/Clearances.tsx')
@@ -726,7 +745,10 @@ test('the marketplaces column says what the shops are and where they come from',
   //
   // Flagged on the issue. His wording is the acceptance and it ships; what it drops is his to decide.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /forced deep dive inherited from Brand Owner and\s+then Project configuration/,
+  // The two nouns read as nouns here, not as screen names. A mechanical sweep left this as "inherited
+  // from Company and then Project configuration", which is the field's label read aloud rather than a
+  // sentence about where the marketplaces came from.
+  assert.match(prose, /forced deep dive inherited from the company and\s+then the project/,
     'says what the shops are and that they are inherited rather than chosen here')
   assert.match(prose, /common law sweeps everything it can find on the\s+open web/,
     'and that the open web is swept anyway, so a reader knows what the list ADDS')
@@ -826,18 +848,37 @@ test('no screen tells a reader to look at a corner that may not be on screen', (
   // another, and it cannot be edited into a claim about a position nobody can see.
   for (const src of [NEW_CLEARANCE, SAVED_SEARCHES, PROFILE, read('../src/screens/Projects.tsx')]) {
     assert.doesNotMatch(body(src), /at the top left/,
-      'a screen states where the brand-owner control is without knowing whether it is rendered')
+      'a screen states where the company control is without knowing whether it is rendered')
   }
 })
 
-test('…and the shared directive answers differently in the two sidebar states', async () => {
-  const { ownerPickerHint } = await import('../src/shell/ownerPickerHint.ts')
-  const open = ownerPickerHint(false)
-  const shut = ownerPickerHint(true)
-  assert.notEqual(open, shut, 'one sentence for both states is the defect, not the fix')
-  assert.match(open, /top left/, 'with the sidebar open, its position is the fastest way to find it')
-  assert.match(shut, /menu/i, 'collapsed, the reader is told to open the menu rather than to look at a gap')
-  assert.doesNotMatch(shut, /top left/, 'the collapsed sentence still points at a corner with nothing in it')
+test('…and the screen now does the picking itself rather than pointing at a control', async () => {
+  // The sentence this replaces sent the reader to the rail. Both of its states are gone: the page
+  // presents the list, so there is no position to name and no state in which naming one is right.
+  const { pickerRows, GENERIC_KEY } = await import('../src/shell/companyRows.ts')
+  const names: Record<string, string> = { generic: 'Generic default', zephyr: 'Zephyr Beverages', acme: 'Acme Ltd' }
+  const name = (k: string | null) => (k ? (names[k] ?? k) : '')
+  const facts = (k: string) =>
+    k === 'acme' ? { industry: 'animal health', platformCount: 6, territories: ['US', 'EU'] } : undefined
+
+  const staff = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'staff')
+  assert.equal(staff[0]?.key, GENERIC_KEY, 'the entry you can always run under is read first')
+  assert.equal(staff[0]?.generic, true, 'and it is marked, so the wash is not a colour somebody chose per screen')
+  assert.deepEqual(staff.slice(1).map((r) => r.name), ['Acme Ltd', 'Zephyr Beverages'],
+    'the rest sort by what is READ, the same rule the rail switcher uses')
+  assert.equal(staff.find((r) => r.key === 'acme')?.line, 'Animal health · 6 marketplaces · US, EU')
+
+  // A company we hold no facts for still offers: a name and no line under it is the fresh-install case
+  // and every newly created company, not an error state.
+  assert.equal(staff.find((r) => r.key === 'zephyr')?.line, '')
+
+  // THE ENGINE BOUNDARY, not a preference. `generic` answers 404 to a non-staff principal on the runs
+  // list and on every report route, so offering it here would seat a client on a company whose every
+  // page then refuses them.
+  const client = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'client')
+  assert.equal(client.some((r) => r.key === GENERIC_KEY), false,
+    'a client surface never lists the house account')
+  assert.deepEqual(client.map((r) => r.key), ['acme', 'zephyr'], 'and loses nothing else')
 })
 
 test('the disabled Save names its blocking condition LOUDER than its harmless ones', () => {

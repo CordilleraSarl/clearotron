@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Does the portal call a brand owner by name, and can a person manage their own searches and projects?
+// Does the portal call a company by name, and can a person manage their own searches and projects?
 //
 //   node scripts/portal-lifecycle-check.mjs [--keep] [--shot <path>]
 //
 // ── why this exists ──────────────────────────────────────────────────────────────────────────────────
 //
 // Three of the four things checked here are LOGIN-DEPENDENT, and that is the whole difficulty. The bug
-// this was written for — the same brand owner reading "Vantor Labs" in one place and "vantor" in
+// this was written for — the same company reading "Vantor Labs" in one place and "vantor" in
 // another — was invisible from a staff session, because staff had a name source and clients did not. A
 // screenshot from one login is not evidence about the other, and no string test in portal-ui can see a
 // rendered label at all.
@@ -45,7 +45,7 @@ if (!existsSync(join(DIST, 'index.html'))) {
 
 // ── the stub portal ─────────────────────────────────────────────────────────────────────────────────
 //
-// ONE brand owner, whose key and name differ in exactly the way every real one does: a lowercase slug
+// ONE company, whose key and name differ in exactly the way every real one does: a lowercase slug
 // against a capitalised name. That difference is the entire subject of the first half of this check, so
 // a fixture where they matched would pass while the product was broken.
 
@@ -262,7 +262,7 @@ const HELPERS = `
 `
 
 /**
- * Pass one, run under BOTH roles: is the brand owner called by its name, everywhere?
+ * Pass one, run under BOTH roles: is the company called by its name, everywhere?
  *
  * The sidebar is read from the DOM rather than from innerText of the page, because "Vantor Labs" also
  * appears in the composer's card — a whole-page search would pass on a screen where only one of the two
@@ -277,32 +277,32 @@ ${HELPERS}
 
   // WHERE THE NAME LIVES DEPENDS ON HOW MANY OWNERS THE IDENTITY REACHES, and that is a ruling
   // (2026-07-28) rather than an accident. An identity that can switch gets a <select> in the rail. A
-  // single-owner identity IS its own brand owner, so the rail block would print that name a third time
+  // single-owner identity IS its own company, so the rail block would print that name a third time
   // on one screen — rail, title, Account corner — and it was removed. The name did not go away; it
   // MOVED to the topbar Account corner, at the other end of the same bar.
   //
   // So this reads BOTH ends and asserts per identity below. Reading only the rail is how this check
   // spent six days reporting a client-facing defect that had been a design decision since 07-28.
   const rail = document.querySelector('.sidebar');
-  const railSelect = rail && rail.querySelector('select[aria-label="Brand owner"]');
+  const railSelect = rail && rail.querySelector('select[aria-label="Company"]');
   out.railKind = railSelect ? 'select' : 'none';
   out.railOwner = railSelect
-    ? [...railSelect.options].map((o) => o.textContent.trim()).filter((t) => t !== 'All brand owners')
+    ? [...railSelect.options].map((o) => o.textContent.trim()).filter((t) => t !== 'All companies')
     : [];
   // The rail must carry NO owner block when there is nothing to switch. Asserted positively, so a
   // regression back to naming the owner three times on one screen fails here too.
   out.railHasOwnerBlock = !!(rail && [...rail.querySelectorAll('.eyebrow')]
-    .some((e) => e.textContent.trim() === 'Brand owner'));
+    .some((e) => e.textContent.trim() === 'Company'));
 
-  // The topbar Account corner: an "Account" eyebrow with the name in the element after it.
+  // The topbar identity corner: an "Organisation" eyebrow with the name in the element after it.
   const topbar = document.querySelector('.topbar');
   const cornerLabel = topbar && [...topbar.querySelectorAll('.eyebrow')]
-    .find((e) => e.textContent.trim() === 'Account');
+    .find((e) => e.textContent.trim() === 'Organisation');
   out.accountCorner = cornerLabel && cornerLabel.nextElementSibling
     ? cornerLabel.nextElementSibling.innerText.trim()
     : null;
 
-  // Staff open on "All brand owners", so pick one — the heading below is scoped to whoever is selected.
+  // Staff open on "All companies", so pick one — the heading below is scoped to whoever is selected.
   if (railSelect) {
     set(railSelect, '${KEY}');
     await sleep(700);
@@ -310,13 +310,13 @@ ${HELPERS}
 
   // The SCREEN's heading, not the top bar's. The top bar carries an <h1> with the nav label ("Clearances")
   // and it comes first in the document, so a bare h1 selector reads the one place that is supposed to say
-  // the screen's name and never the brand owner's.
+  // the screen's name and never the company's.
   const h1 = document.querySelector('.main .screen h1');
   out.clearancesHeading = h1 ? h1.innerText.trim() : null;
   out.topbarHeading = (document.querySelector('.topbar h1') || {}).innerText || null;
 
   await goto('/portal/new');
-  // THIS WAIT WAS IDENTITY-DEPENDENT AND SILENTLY DEAD FOR ONE OF THE THREE. "Brand owner" is
+  // THIS WAIT WAS IDENTITY-DEPENDENT AND SILENTLY DEAD FOR ONE OF THE THREE. "Company" is
   // the rail switcher's eyebrow (AppShell.tsx), which a SINGLE-OWNER client never gets — that identity
   // reads its owner in the Account corner instead. So this timed out on every client run, and because
   // settle returned false without objecting it degraded into an 8-second sleep. Waits on the context
@@ -537,22 +537,24 @@ const ok = (cond, msg) => { if (!cond) fail.push(msg) }
 // Which end of the bar must name the owner, per identity. A switcher identity reads it in the rail; a
 // single-owner identity reads it in the topbar Account corner. Both are asserted, and so is the
 // ABSENCE of the other — a name in both places at once is the repetition the 07-28 ruling removed.
-const SWITCHES = { client: false, staff: true, 'multi-account client': true }
-
+// ONE SHAPE FOR EVERY IDENTITY — there is no per-role layout, and there is no longer a per-QUANTITY one
+// either. The switcher used to be withheld from an identity with a single company, so this loop asked a
+// different question of each login: switchers read the rail, everyone else read the topbar corner. Both
+// halves of that are retired. The switcher renders on every install, and the corner carries the
+// organisation rather than the company, so every login is asked the same two questions below.
 for (const [who, out] of [['client', asClient], ['staff', asStaff], ['multi-account client', asMulti]]) {
   if (!out || out.fatal) { fail.push(`${who}: ${out?.fatal ?? 'the driver returned nothing'}`); continue }
-  if (SWITCHES[who]) {
-    ok(out.railOwner.some((t) => t.includes(NAME)),
-      `${who}: the rail switcher does not name the brand owner — read ${JSON.stringify(out.railOwner)}`)
-  } else {
-    ok((out.accountCorner ?? '').includes(NAME),
-      `${who}: the topbar Account corner does not name the brand owner — read ${JSON.stringify(out.accountCorner)}`)
-    ok(!out.railHasOwnerBlock,
-      `${who}: the rail carries a brand-owner block for an identity with nothing to switch — the name is printed three times on one screen`)
-  }
+  ok(out.railOwner.some((t) => t.includes(NAME)),
+    `${who}: the rail switcher does not name the company — read ${JSON.stringify(out.railOwner)}`)
+  ok(out.railHasOwnerBlock,
+    `${who}: the rail carries no company block — the switcher renders on every install, whatever is in it`)
+  // ONE SLOT, ONE NOUN. The company is read in the rail and in the heading; the corner is the
+  // organisation. A company name appearing here is the dual meaning coming back.
+  ok(!(out.accountCorner ?? '').includes(NAME),
+    `${who}: the identity corner names the company — read ${JSON.stringify(out.accountCorner)}`)
   ok(out.clearancesHeading === NAME, `${who}: the Clearances heading reads ${JSON.stringify(out.clearancesHeading)}, not ${JSON.stringify(NAME)}`)
-  ok(out.composerCard?.includes(NAME), `${who}: the New clearance context card does not name the brand owner — read ${JSON.stringify(out.composerCard)}`)
-  ok(out.nameOnScreen, `${who}: the brand owner's name is nowhere on the composer`)
+  ok(out.composerCard?.includes(NAME), `${who}: the New clearance context card does not name the company — read ${JSON.stringify(out.composerCard)}`)
+  ok(out.nameOnScreen, `${who}: the company's name is nowhere on the composer`)
   ok(!out.slugOnScreen, `${who}: the account KEY "${KEY}" is printed on screen where the name belongs`)
 }
 // The regression this whole change is for: every login must agree, word for word.
@@ -560,17 +562,17 @@ const headings = [['client', asClient], ['staff', asStaff], ['multi-account clie
   .filter(([, o]) => o && !o.fatal)
 for (const [who, out] of headings) {
   ok(out.clearancesHeading === headings[0][1].clearancesHeading,
-    `the same brand owner reads "${out.clearancesHeading}" to a ${who} and "${headings[0][1].clearancesHeading}" to a ${headings[0][0]}`)
+    `the same company reads "${out.clearancesHeading}" to a ${who} and "${headings[0][1].clearancesHeading}" to a ${headings[0][0]}`)
 }
 
 // The multi-account client is the ONLY identity whose switcher is populated from `me` rather than from
 // the roster, and it is the login the bug was reported from. Its options must be NAMES.
 if (asMulti && !asMulti.fatal) {
-  ok(asMulti.railKind === 'select', 'a client with several grants must get the brand-owner switcher')
+  ok(asMulti.railKind === 'select', 'a client with several grants must get the company switcher')
   ok(asMulti.railOwner.includes(NAME) && asMulti.railOwner.includes(NAME2),
     `the switcher lists keys rather than names for a multi-account client: ${JSON.stringify(asMulti.railOwner)}`)
   ok(!asMulti.railOwner.some((t) => t === KEY || t === KEY2),
-    `a raw account key is in the brand-owner pulldown: ${JSON.stringify(asMulti.railOwner)}`)
+    `a raw account key is in the company pulldown: ${JSON.stringify(asMulti.railOwner)}`)
   // Ordered by what is READ. "Foxglade Interactive" before "Vantor Labs" — which is also the opposite of
   // the order the grants list them in, so a pass-through would show.
   ok(asMulti.railOwner[0] === NAME2, `the switcher is not sorted by name: ${JSON.stringify(asMulti.railOwner)}`)
@@ -642,4 +644,4 @@ if (fail.length) {
   for (const f of fail) console.error(` ✗ ${f}`)
   process.exit(1)
 }
-console.log('\nOK — one name for a brand owner under both logins; searches and projects manageable from their own screens.')
+console.log('\nOK — one name for a company under both logins; searches and projects manageable from their own screens.')

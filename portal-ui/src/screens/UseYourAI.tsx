@@ -87,7 +87,7 @@ const WHERE: Record<string, string> = {
  * Treating it as its own route produced a defect a reader meets rather than an arm: on a staff deck it
  * rendered a SECOND segment also labelled "On this computer", because `either` was mapped to the same
  * words as `disk`. The question was answered twice, identically, and pressing the wrong one silently
- * changed what got copied. Found by role-e2e driving the staff decks.
+ * changed what got copied. Found in review driving the staff decks.
  *
  * A distinct label would be the wrong fix — the owner ruled TWO groups and a third to accommodate one
  * row is sorting by vendor again. So an `either` offer belongs to BOTH groups: whichever place the

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Profile — how a brand owner's clearances are scoped, rated and delivered.
+// Profile — how a company's clearances are scoped, rated and delivered.
 //
 // This screen writes to the file the engine loads at the start of every run. A profile that fails
 // validation does not fail politely: it takes that account's searches down until someone fixes it by
@@ -15,16 +15,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api, isOk, notCommitted } from '../contract/api.ts'
 import type { ProfileConfig } from '../contract/api.ts'
-import { PROFILE_FIELDS, FIELD_GROUPS, CLEARED_LABEL, boxValue, applyField, stripCodeOwned, visibleReadOnlyFields, choiceLabel, fieldNotices } from '../contract/profileFields.ts'
-import { FieldNotices } from '../components/FieldNotices.tsx'
-import { FieldPicker } from '../components/FieldPicker.tsx'
+import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, applyField, stripCodeOwned, visibleReadOnlyFields } from '../contract/profileFields.ts'
+import { Field } from '../components/ProfileField.tsx'
 import type { FieldSpec } from '../contract/profileFields.ts'
 import { Icon } from '../components/Icon.tsx'
 import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
 
 type Saved = { readonly at: number; readonly sha: string | null }
 
@@ -95,24 +94,15 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   )
 
   // The same flag that enables Save is the flag the shell asks before letting anyone leave — including
-  // by switching brand owner, which is not a navigation and used to discard edits silently.
+  // by switching company, which is not a navigation and used to discard edits silently.
   useUnsaved(dirty)
 
   // needsOwner covers staff (allAccounts, owner not yet chosen); pickAccount covers a CLIENT whose
-  // grant spans several brand owners — the server refuses an ownerless read with pickAccount, and
+  // grant spans several companies — the server refuses an ownerless read with pickAccount, and
   // showing that as "could not be loaded" reads as a fault that retrying never fixes (C7's fix
   // covered the four other account-scoped screens; this one was missed).
   if (needsOwner || result?.kind === 'pickAccount') {
-    return (
-      <div className="screen">
-        <div className="notice">
-          <b>Choose a brand owner first</b>
-          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            A profile belongs to one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}
-          </p>
-        </div>
-      </div>
-    )
+    return <CompanyGate ctx={ctx} eyebrow="Company" heading="Profile" line="Pick a company to see its profile." />
   }
   if (result && result.kind !== 'ok') return <Unavailable kind={result.kind} />
   if (!loaded || !draft || pack == null) return <div className="screen" />
@@ -169,7 +159,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
       <div className="measure">
         {/* The framework leads the EDITABLE page, under the scope notice above it.
             It is the one thing here nobody can edit and the one thing that decides what every clearance
-            for this account COMES OUT AS — doc 50's rule that a brand owner's own framework rates their
+            for this account COMES OUT AS — doc 50's rule that a company's own framework rates its
             matters. Sitting last, under the editable fields, it read as an appendix to the settings
             rather than as the authority the settings operate under. The notice now precedes it because
             a sentence about what saving does is useless read after the saving; the framework still
@@ -178,10 +168,10 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
             fields, where a sentence about what saving does is read after the saving. The owner's
             "changes need the CLI" wording is NOT used here: he ruled option (a) on 2026-08-26 — the
             editor stays, so the page must say what is true of it. The CLI gap he was actually pointing
-            at is creating a brand owner, which this page has never done and which is filed separately. */}
+            at is creating a company, which this page has never done and which is filed separately. */}
         <div className="notice quiet" style={{ margin: '0 0 18px' }}>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
-            These settings scope every clearance for this brand owner. Changes are checked against the
+            These settings scope every clearance for this company. Changes are checked against the
             same rules the search engine applies when it starts a run, and each save is recorded against
             your sign-in.
           </p>
@@ -208,6 +198,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
               ))}
               {/* Coverage is derived from the marketplaces and density in THIS group, so it reads as a
                   consequence of the boxes above it rather than as a stray statistic. */}
+              {group.id === 'defaults' ? <UnsearchableTerritories derived={loaded.derived} /> : null}
               {group.id === 'defaults' ? <CoverageNote derived={loaded.derived} /> : null}
             </div>
           )
@@ -217,7 +208,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           value={pack}
           onChange={editPack}
           title="Background &amp; standing concerns"
-          hint="Useful background about this brand owner — competitors to watch, recurring concerns, lessons from past matters. Every clearance reads it before it writes. Facts and concerns, not rules: it shapes what a report emphasises, never what a finding is rated."
+          hint="Useful background about this company — competitors to watch, recurring concerns, lessons from past matters. Every clearance reads it before it writes. Facts and concerns, not rules: it shapes what a report emphasises, never what a finding is rated."
         />
 
         {problem ? (
@@ -303,6 +294,30 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
  * states the CONSEQUENCE of a setting rather than its value, which is why it belongs directly under the
  * settings it is computed from rather than in a panel of its own.
  */
+/**
+ * Stored default territories the engine cannot search, named.
+ *
+ * The field accepts these no longer — but a profile written before it did still holds them, and the box
+ * shows them back exactly as they were typed. So the screen read as though the setting were in force
+ * while the engine ignored it, and the only way to find out was to read the prompt of a finished run.
+ *
+ * It NAMES the entries rather than counting them: the whole difficulty is that one of six is misspelled
+ * and nothing says which one.
+ */
+function UnsearchableTerritories({ derived }: { readonly derived: Record<string, unknown> | null }) {
+  const bad = derived?.['unrecognizedTerritories']
+  if (!Array.isArray(bad) || bad.length === 0) return null
+  const named = bad.filter((t): t is string => typeof t === 'string')
+  if (!named.length) return null
+  return (
+    <p style={{ margin: '10px 0 0', fontSize: 12.5, color: 'var(--tone-high)', fontWeight: 600 }} role="status">
+      Not searched: {named.join(', ')}.{' '}
+      {named.length === 1 ? 'That is not a territory' : 'Those are not territories'} the engine can
+      search, so it is stored and does nothing. Replace it from the list below, or remove it.
+    </p>
+  )
+}
+
 function CoverageNote({ derived }: { readonly derived: Record<string, unknown> | null }) {
   const batch = derived?.['batchSize']
   const cells = derived?.['minCellsPerVariant']
@@ -359,7 +374,7 @@ function BandPill({ label, tone }: { readonly label: string; readonly tone: unkn
 /**
  * How this account is rated, and what it may run.
  *
- * Doc 50's rule is that a brand owner's OWN framework rates their matters, falling back to the house one
+ * Doc 50's rule is that a company's OWN framework rates their matters, falling back to the house one
  * — so the first thing this block does is say which, unmistakably. Everything under it is the framework
  * describing itself: the ladder in its own order and vocabulary, what each band MEANS in the deck's own
  * words, the axes it reasons on, the entity it voices the client side as. That presentation existed on
@@ -423,18 +438,18 @@ function FrameworkBlock({
             <b>
               Custom framework: <span data-anon="mark">{title}</span>
             </b>{' '}
-            — this brand owner&rsquo;s own framework rates every matter for them, in its own words.
+            — this company&rsquo;s own framework rates every matter for it, in its own words.
           </>
         ) : custom ? (
           <>
             <b style={{ color: 'var(--tone-high)' }}>This account&rsquo;s framework could not be read.</b>{' '}
-            A custom framework is on file for this brand owner, so their matters are <b>not</b> rated
+            A custom framework is on file for this company, so its matters are <b>not</b> rated
             under the Generic default — but its definitions are unavailable, so the bands cannot be shown
             here. This needs an administrator to look at it.
           </>
         ) : (
           <>
-            <b>Generic default</b> — no custom framework is on file for this brand owner; their matters
+            <b>Generic default</b> — no custom framework is on file for this company; its matters
             are rated under the generic framework.
           </>
         )}
@@ -576,70 +591,6 @@ function Row({ label, value }: { readonly label: string; readonly value: string 
   )
 }
 
-function Field({
-  spec,
-  value,
-  choices,
-  onChange,
-}: {
-  readonly spec: FieldSpec
-  readonly value: string
-  /** null while the options are still loading, or if loading them failed. */
-  readonly choices: readonly { readonly value: string; readonly label: string }[] | null
-  readonly onChange: (v: string) => void
-}) {
-  const picker = spec.kind === 'choice' || spec.kind === 'boolean'
-  // A paragraph gets a taller box than a list does. Both are textareas; only `lines` parses to an array.
-  const multi = spec.kind === 'lines' || spec.kind === 'prose'
-  return (
-    <label style={{ display: 'block', marginTop: 18 }}>
-      <div style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 14 }}>{spec.label}</div>
-      {spec.hint ? (
-        <div style={{ fontSize: 12.5, color: 'var(--text-muted)', margin: '2px 0 7px' }}>{spec.hint}</div>
-      ) : (
-        <div style={{ height: 7 }} />
-      )}
-      {picker && choices?.length ? (
-        <select value={value} onChange={(e) => onChange(e.target.value)} style={inputStyle}>
-          {/* The cleared state is a real, choosable option, not the absence of a choice. Picking it
-              sends "" — which the server reads as "unset this back to the Generic default" — rather than
-              omitting the key, which it would read as "leave whatever is on disk alone". */}
-          <option value="">{spec.clearedLabel ?? CLEARED_LABEL}</option>
-          {choices.map((c) => (
-            <option key={c.value} value={c.value}>{c.label}</option>
-          ))}
-        </select>
-      ) : picker ? (
-        // Options unavailable: show what is set, as text. An empty dropdown would invite a person to
-        // open it, find nothing, and conclude the setting is broken — and if they did manage to pick
-        // the blank, they would clear a setting they only came to read. Same reasoning as the
-        // NewClearance failure branch.
-        //
-        // What is NOT printed here is the raw stored value. For defaultProduct that is a registry
-        // key (`prelim-jx`, `knockout-register`) whose display face is `stageLabel` — and this screen
-        // is client-reachable, so the key is internal vocabulary leaking to a client. The labels
-        // arrive over the wire with the options, so on the degraded path there is nothing to resolve
-        // it against; say a value is set and say why its name is missing.
-        <div style={{ ...inputStyle, color: value ? 'var(--text-strong)' : 'var(--text-muted)' }}>
-          {value
-            ? choiceLabel(spec, value) ?? 'Set — the options could not be loaded just now'
-            : (spec.clearedLabel ?? CLEARED_LABEL)}
-        </div>
-      ) : multi ? (
-        <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={spec.kind === 'prose' ? 5 : 3} style={inputStyle} />
-      ) : (
-        <input value={value} onChange={(e) => onChange(e.target.value)} style={inputStyle} />
-      )}
-      {/* Derived from the RAW box contents, not from the saved draft: the point is the gap between what
-          was typed and what will be stored, and after applyField that gap no longer exists to report. */}
-      <FieldNotices notices={fieldNotices(spec, value)} />
-      {/* The picker edits the same raw text the box does, so there is one write path and the notices
-          above keep describing exactly what is in the box. */}
-      <FieldPicker spec={spec} value={value} onChange={onChange} />
-    </label>
-  )
-}
-
 function Unavailable({ kind }: { readonly kind: string }) {
   return (
     <div className="screen">
@@ -671,9 +622,9 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
     case 'conflict':
       return { title: 'Someone else changed this first', lines: [r.message ?? 'Reload and reapply your change.'] }
     case 'notFound':
-      return { title: 'That is not available to you', lines: ['Check which brand owner is selected.'] }
+      return { title: 'That is not available to you', lines: ['Check which company is selected.'] }
     // SPLIT FROM `notFound`. They are different answers and only one of them has
-    // anything to do with the selector. `notFound` may well BE the wrong brand owner, so that advice is
+    // anything to do with the selector. `notFound` may well BE the wrong company, so that advice is
     // right there. `noAccess` is the door refusing the identity itself — reachable only for door checks,
     // never for anything tenant-scoped — and telling that person to check the selector sends them to the
     // one thing that is not wrong. Someone who signs in successfully and can do nothing should be told
@@ -685,7 +636,7 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
     case 'noAccess':
       return {
         title: 'This address has no access yet',
-        lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different brand owner cannot change that — an administrator needs to add it to one.'],
+        lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different company cannot change that — an administrator needs to add it to one.'],
       }
     case 'surfaceUnavailable':
       return {
@@ -699,14 +650,3 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
   }
 }
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '9px 11px',
-  borderRadius: 9,
-  border: '1px solid var(--border-hairline)',
-  background: 'var(--surface-raised)',
-  color: 'var(--text-strong)',
-  fontFamily: 'inherit',
-  fontSize: 14,
-  resize: 'vertical',
-}

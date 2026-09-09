@@ -14,9 +14,26 @@
 
 import { existsSync } from "node:fs";
 
-/** A refusal is a sentence for the operator, not a stack trace. Every one names what was wrong. */
+/**
+ * A refusal is a sentence for the operator, not a stack trace. Every one names what was wrong.
+ *
+ * IT ALSO CARRIES A CODE AND THE FACTS BEHIND IT, because the same refusal now reaches two very
+ * different readers. The command line's reader typed a flag and is standing in a terminal, so a sentence
+ * naming that flag and the directory it wrote to is exactly right. The browser's reader is a lawyer who
+ * has never seen either, and a sentence mentioning `--platforms` and a filesystem path tells them
+ * nothing they can act on — it tells them they are in the wrong product.
+ *
+ * So the message stays the command line's, and `code` plus `detail` let the other door write its own
+ * sentence from the same facts. A door with no wording for a code falls back to the message, which is
+ * wrong for a browser but never blank — an unworded refusal must not become a silent one.
+ */
 export class Refusal extends Error {
-  constructor(message) { super(message); this.name = "Refusal"; }
+  constructor(message, { code = null, ...detail } = {}) {
+    super(message);
+    this.name = "Refusal";
+    this.code = code;
+    this.detail = detail;
+  }
 }
 
 /**

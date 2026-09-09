@@ -136,7 +136,7 @@ test('#278: the focus ring is focus-VISIBLE and sits on the row, not on a cell',
 
 // ──: the grouping reads as grouping ────────────────────────────────────────────────────────────
 
-test('#277: the brand-owner heading is a SECTION HEADER, not the smallest type on the page', () => {
+test('#277: the company heading is a SECTION HEADER, not the smallest type on the page', () => {
   // It was `.eyebrow`: 9.5px, letterspaced caps, --text-faint. That reads as a rule between rows rather
   // than as "everything below this belongs to Aurora Interactive", which is the whole fault.
   assert.match(CLEARANCES, /className="owner-name"/)
@@ -156,7 +156,7 @@ test('#277: a rule spans the table under the heading and its child rows are inde
   assert.match(BASE, /tr\.group-head ~ tr\.row > td:first-child \{\s*padding-left: 22px/)
 })
 
-test('#277: GROUP · N and the brand-owner chip are GONE — removal, not restyling', () => {
+test('#277: GROUP · N and the company chip are GONE — removal, not restyling', () => {
   // `GROUP · 1` announced a group of one, which is not a group. And the owner chip only ever rendered
   // when grouping was ON — precisely when a header directly above the row said the same thing — so it
   // was the same string twice on one line.
@@ -268,7 +268,7 @@ test('#281: grouping is ON by default and the toggle state is visible without op
   // In the toolbar, not behind a menu: a toggle whose state you have to go looking for explains nothing
   // about why the sort looked wrong.
   assert.match(CLEARANCES, /className="group-toggle"/)
-  assert.match(CLEARANCES, /Group by brand owner/)
+  assert.match(CLEARANCES, /Group by company/)
   assert.match(BASE, /\.group-toggle \{/)
 })
 
@@ -280,9 +280,9 @@ test('#281: the toggle only appears when it can do something', () => {
   assert.match(CLEARANCES, /\{groupable \? \(\s*\n\s*<label className="group-toggle">/)
 })
 
-test('#281: UNGROUPED, the brand owner survives as a column — the issue rejects dropping it', () => {
+test('#281: UNGROUPED, the company survives as a column — the issue rejects dropping it', () => {
   assert.match(CLEARANCES, /const showOwnerColumn = groupable && !groupByOwner/)
-  assert.match(CLEARANCES, /\{showOwnerColumn \? <th>Brand owner<\/th> : null\}/)
+  assert.match(CLEARANCES, /\{showOwnerColumn \? <th>Company<\/th> : null\}/)
   // Every row SHAPE needs the cell, or the grid built stops lining up: the mark row, the family
   // row, and a spacer on the read row.
   assert.equal((CLEARANCES.match(/\{showOwner \? \(/g) || []).length, 2, 'mark row and family row both carry an owner cell')

@@ -22,13 +22,16 @@
 import type { Tone, Band } from './tone.ts'
 import { asTone } from './tone.ts'
 import type { BriefRead } from './composeRead.ts'
+import type { CompanyFacts } from './companyFacts.ts'
 
 export type Result<T> =
   | { kind: 'ok'; value: T }
   /** 422 WITH a classify block — the engine needs an answer before it can plan. */
   | { kind: 'clarify'; questions: string[] }
   /** 400 — the request is malformed or fails validation. */
-  | { kind: 'reject'; errors: string[] }
+  // `detail` is present when the server sent a structured refusal beside the sentence. A screen that
+  // ignores it renders exactly what it rendered before; one that reads it can offer a way forward.
+  | { kind: 'reject'; errors: string[]; detail?: { readonly code: string; readonly key: string | null } }
   /** 422 with NO classify — mark-batch names collide after kebab-casing. */
   | { kind: 'collision'; errors: string[] }
   /** 409 from the confirmation gate. `message` is one of seven strings; render it as-is. */
@@ -159,7 +162,7 @@ export type Me = {
    * Empty for staff — and empty does not mean "none". The wire sends `"*"` for an identity granted
    * everything (portal-access.mjs), which is not a list and cannot be turned into one client-side: the
    * set of accounts is the roster, and the roster is its own staff-only endpoint. Decoding `"*"` to `[]`
-   * without saying so is how a staff sidebar ends up rendering "no brand owners".
+   * without saying so is how a staff sidebar ends up rendering "no companies".
    */
   readonly accounts: readonly string[]
   /** True when the wire said `"*"`. Ask /portal/admin/roster for the actual list. */
@@ -169,14 +172,23 @@ export type Me = {
   /**
    * The DISPLAY name of each granted account, keyed by account key.
    *
-   * The key is a slug ("vantor"); the name is what the brand owner is actually called ("Ion
+   * The key is a slug ("vantor"); the name is what the company is actually called ("Ion
    * Partners"). Empty for an `allAccounts` identity — those read names off the roster instead, which
    * is staff-gated for a reason. Empty is also what a degraded server sends, so a missing entry means
    * "no name available" and the caller falls back to the key; it never means the account is unnamed.
    */
   readonly accountNames: Readonly<Record<string, string>>
   /**
-   * How many runs this deployment executes at once — ONE GLOBAL CAP, never per brand owner.
+   * The three facts about each granted company, keyed the same way `accountNames` is.
+   *
+   * Scoped identically and by the same server loop, so "which companies may this identity learn about"
+   * has ONE answer rather than two that can drift. Empty for an `allAccounts` identity — staff read the
+   * roster, which carries the same shape. A missing entry means "no facts available" and the caller
+   * renders no line; it never means the company has none.
+   */
+  readonly accountFacts: Readonly<Record<string, CompanyFacts>>
+  /**
+   * How many runs this deployment executes at once — ONE GLOBAL CAP, never per company.
    *
    * Null when the server does not send it (an older portal-service), and the caller must then say
    * nothing rather than assume a number: a stated cap that is wrong over-promises throughput, which is
@@ -278,7 +290,7 @@ export type RunState = 'queued' | 'running' | 'paused' | 'delivered' | 'failed' 
  */
 export type Run = {
   readonly runId: string
-  /** The brand owner this run belongs to. Always present, so a row never has to infer it. */
+  /** The company this run belongs to. Always present, so a row never has to infer it. */
   readonly account: string
   /**
    * The report's own headline — model-authored front matter, NOT the mark.
@@ -773,7 +785,7 @@ export type Accepted = {
 }
 
 /**
- * The editable half of a brand owner's configuration.
+ * The editable half of a company's configuration.
  *
  * Deliberately loose (`Record<string, unknown>`) rather than a field-by-field type. The authoritative
  * key list lives in the engine (`KNOWN_PROFILE_KEYS`), the server strips what the UI may not send, and
@@ -803,6 +815,23 @@ export type ProfileConfig = {
  * greys those rows. Nothing is deleted either way — archive is a save with a flag.
  */
 export type ProjectSummary = { readonly key: string; readonly name: string; readonly archived: boolean }
+
+/**
+ * What creating a company hands back — the receipt, in the two facts a person needs and the one they
+ * must not be spared.
+ *
+ * The framework and the marketplace count each carry whether they were CHOSEN or DEFAULTED. That
+ * distinction is the whole point of saying them: "rated under the general framework" is a fact somebody
+ * may want to change, and "rated under the framework you named" is not.
+ */
+export type CreatedCompany = {
+  readonly key: string
+  readonly name: string
+  readonly framework: { readonly path: string; readonly defaulted: boolean }
+  readonly marketplaces: { readonly count: number; readonly defaulted: boolean }
+  /** Present ⇒ the company is LIVE and the commit recording it failed. Never collapse this into a failure. */
+  readonly commitError: string | null
+}
 
 /**
  * One engine feature switch, as staff see it.
@@ -1212,10 +1241,36 @@ const decodeRun = (raw: unknown): Run | null => {
   }
 }
 
-/** Pull the human-readable errors out of a body without ever inventing one. */
+/**
+ * Pull the human-readable errors out of a body without ever inventing one.
+ *
+ * `errors` is a list of sentences and wins. `message` is ONE sentence, sent beside a machine token in
+ * `error` for a caller that wants to switch on the kind — and it is read before `error` because that is
+ * the whole reason both are there. Reading `error` first put the words "needs_name" on screen where the
+ * server had already written "A company needs a name."
+ *
+ * `error` remains the last resort. Most routes send prose in it, and a route that sends a token and no
+ * sentence is still better rendered as the token than as a generic apology that hides which one it was.
+ */
+/**
+ * A refusal's structured half, when it has one.
+ *
+ * `errors` and `message` are what a person reads. This is what a SCREEN can act on — offering a link to
+ * the company that already holds a key, rather than printing its slug into a sentence and leaving the
+ * reader to find it.
+ */
+export type RefusalDetail = { readonly code: string; readonly key: string | null }
+
+export const refusalDetail = (body: Record<string, unknown>): RefusalDetail | null => {
+  const code = asString(body['code'])
+  return code ? { code, key: asString(body['key']) } : null
+}
+
 const errorsOf = (body: Record<string, unknown>): string[] => {
   const list = asArray(body['errors']).filter((e): e is string => typeof e === 'string')
   if (list.length) return list
+  const sentence = asString(body['message'])
+  if (sentence) return [sentence]
   const one = asString(body['error'])
   return one ? [one] : ['The request could not be completed.']
 }
@@ -1232,7 +1287,10 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       // UI state (show the account picker), not an error to print at someone.
       const msg = asString(body['error']) ?? ''
       if (/name an account/i.test(msg)) return { kind: 'pickAccount' }
-      return { kind: 'reject', errors: errorsOf(body) }
+      const detail = refusalDetail(body)
+      return detail
+        ? { kind: 'reject', errors: errorsOf(body), detail }
+        : { kind: 'reject', errors: errorsOf(body) }
     }
     case 401:
       // — the session is gone or was never established. Every other status here
@@ -1394,6 +1452,34 @@ const decodeRead = (v: unknown): BriefRead => {
 const asStrings = (v: unknown): readonly string[] => asArray(v).filter((x): x is string => typeof x === 'string')
 
 /**
+ * The company facts, off whichever route carried them.
+ *
+ * ONE DECODER for both surfaces — the staff roster spreads them onto each customer, a client's `/me`
+ * keys them by account — because two decoders is how the same company comes to read two ways depending
+ * on who signed in. Reads its fields off whatever record it is handed, so the roster can pass the
+ * customer object itself rather than a nested one.
+ *
+ * A missing count decodes to 0, not null: the renderer states the count unconditionally, and "0
+ * marketplaces" is true of a company nobody has configured. Absent industry stays null and drops its
+ * segment.
+ */
+const asCompanyFacts = (v: unknown): CompanyFacts => {
+  const r = asRecord(v)
+  return {
+    industry: asString(r['industry']),
+    platformCount: asNumber(r['platformCount']) ?? 0,
+    territories: asStrings(r['territories']),
+  }
+}
+
+/** A company on the staff roster: how it is keyed, what it is called, and the facts that tell it apart. */
+export type RosterCompany = {
+  readonly key: string
+  readonly name: string
+  readonly facts: CompanyFacts
+}
+
+/**
  * The resolved scope block, or null when the server did not send one.
  *
  * Null rather than an empty shape on purpose: an empty scope and an unresolvable one look the same in a
@@ -1442,10 +1528,15 @@ export const api = {
       accounts: asArray(b['accounts']).filter((a): a is string => typeof a === 'string'),
       allAccounts: b['accounts'] === '*',
       // Only string→string pairs survive. A malformed entry is dropped rather than rendered, because
-      // the fallback (the key) is always correct and "[object Object]" beside a brand owner is not.
+      // the fallback (the key) is always correct and "[object Object]" beside a company is not.
       accountNames: Object.fromEntries(
         Object.entries(asRecord(b['accountNames'])).filter(([, v]) => typeof v === 'string' && v),
       ) as Readonly<Record<string, string>>,
+      // Same rule one field down: a malformed entry is dropped, never rendered. The panel falls back to
+      // no facts line, which is a company with a name and nothing else — already the fresh-install case.
+      accountFacts: Object.fromEntries(
+        Object.entries(asRecord(b['accountFacts'])).map(([k, v]) => [k, asCompanyFacts(v)]),
+      ) as Readonly<Record<string, CompanyFacts>>,
       concurrentRuns: asNumber(b['concurrentRuns']),
       // Only the two values a caller may act on survive. Anything else — 'engine-ready' from a future
       // server, a typo, a missing field on an older portal-service — lands as null, which every caller
@@ -1471,9 +1562,9 @@ export const api = {
     })),
 
   /**
-   * Runs for one brand owner, or for ALL of them.
+   * Runs for one company, or for ALL of them.
    *
-   * `'*'` is the staff "All brand owners" view and is answered in a single pass over the pool. Asking
+   * `'*'` is the staff "All companies" view and is answered in a single pass over the pool. Asking
    * the browser to fan out across the roster instead would spend a roster-sized slice of the 120/min
    * rate limit on every poll. A client who sends `'*'` gets a 404, the same as any account not theirs.
    */
@@ -1485,7 +1576,7 @@ export const api = {
     ),
 
   /**
-   * Runs across every brand owner this identity holds — one call, whoever is asking.
+   * Runs across every company this identity holds — one call, whoever is asking.
    *
    * Staff get every account; a client gets exactly its own. The REQUEST IS IDENTICAL either way, which
    * is the point: a screen that is account-scoped rather than owner-scoped never has to ask who is
@@ -1717,7 +1808,7 @@ export const api = {
       { method: 'POST', body: JSON.stringify({ ...body, ...(account ? { account } : {}) }) },
     ),
 
-  /** The brand owner's configuration. The account is resolved server-side from who you signed in as. */
+  /** The company's configuration. The account is resolved server-side from who you signed in as. */
   profile: (account: string | null): Promise<Result<ProfileConfig>> =>
     call(`/portal/api/config/profile${accountQuery(account)}`, (b) => ({
       account: asString(b['account']) ?? '',
@@ -1744,6 +1835,40 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ ...body, ...(account ? { account } : {}) }),
     }),
+
+  /**
+   * Create a company.
+   *
+   * NOT `saveProfile` with a new key. `save` is an upsert, and its preserve step deletes every
+   * code-owned field that has nothing on disk — so a company created that way is written with no risk
+   * framework and every matter for it is rated under the house default, silently. That is a live defect
+   * this route exists not to repeat, and the reason there is a second verb at all.
+   *
+   * The body is FLAT. `saveProfile` sends `{profile: {…}}` and this route reads the fields at the top
+   * level; sending the nested shape here creates a company called nothing.
+   *
+   * Send only the fields somebody actually filled in. An untouched box that contributes `platforms: []`
+   * is not "no marketplaces" — it is the same input as omitting the key, and the company silently
+   * inherits the house list. Build the draft with the profile field contract's own `applyField`, which
+   * omits rather than empties, and this stays true without anyone remembering it.
+   */
+  createCompany: (body: Readonly<Record<string, unknown>>): Promise<Result<CreatedCompany>> =>
+    call('/portal/api/config/companies', (b) => ({
+      key: asString(b['key']) ?? '',
+      name: asString(b['name']) ?? '',
+      framework: {
+        path: asString((b['framework'] as Record<string, unknown> | undefined)?.['path']) ?? '',
+        defaulted: (b['framework'] as Record<string, unknown> | undefined)?.['defaulted'] === true,
+      },
+      marketplaces: {
+        count: asNumber((b['marketplaces'] as Record<string, unknown> | undefined)?.['count']) ?? 0,
+        defaulted: (b['marketplaces'] as Record<string, unknown> | undefined)?.['defaulted'] === true,
+      },
+      // WRITTEN AND RECORDED ARE TWO EVENTS. The company is live the instant the file lands; the commit
+      // that records it can fail on its own. A screen that reports them as one tells somebody nothing
+      // happened about a company that is already governing their searches.
+      commitError: asString(b['commitError']),
+    }), { method: 'POST', body: JSON.stringify(body) }),
 
   projects: (account: string | null): Promise<Result<readonly ProjectSummary[]>> =>
     call(`/portal/api/config/projects${accountQuery(account)}`, (b) =>
@@ -2152,11 +2277,11 @@ export const api = {
       body: JSON.stringify(input),
     }),
 
-  roster: (): Promise<Result<readonly { key: string; name: string }[]>> =>
+  roster: (): Promise<Result<readonly RosterCompany[]>> =>
     call('/portal/admin/roster', (b) =>
       asArray(b['customers']).map((c) => {
         const r = c as Record<string, unknown>
-        return { key: asString(r['key']) ?? '', name: asString(r['name']) ?? '' }
+        return { key: asString(r['key']) ?? '', name: asString(r['name']) ?? '', facts: asCompanyFacts(r) }
       }),
     ),
 }

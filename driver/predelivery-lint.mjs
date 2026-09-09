@@ -2471,6 +2471,7 @@ export function plainLanguageChecks({ findings } = {}) {
   const vocab = [];
   const longSentences = [];
   for (const { where, text } of fields) {
+<<<<<<< HEAD
     // THE REPLACEMENT TRAVELS WITH THE FLAG. Naming the term and pointing at a document for the swap is
     // the half the doctrine calls load-bearing, left out — and it is the half a pass that REWRITES the
     // line needs in hand. The pinned source already carries a worked plain form for every term; there
@@ -2479,6 +2480,9 @@ export function plainLanguageChecks({ findings } = {}) {
       if (!termMatcher(term).test(text)) continue;
       vocab.push(plain ? `${where}: "${term}" → "${plain}"` : `${where}: "${term}" (an engine word — cut it)`);
     }
+=======
+    for (const [term] of PLAIN_FORMS) if (termMatcher(term).test(text)) vocab.push(`${where}: "${term}"`);
+>>>>>>> origin/main
     for (const sentence of text.split(/(?<=[.!?])\s+|\n+/)) {
       const n = sentence.trim().split(/\s+/).filter(Boolean).length;
       if (n > SENTENCE_WORD_LIMIT) longSentences.push(`${where}: ${n} words`);
