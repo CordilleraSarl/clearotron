@@ -73,7 +73,8 @@ export function resolveFramework(requested, {
     throw new Refusal(
       `--framework names ${path}, and there is no such document on this install (resolved to ${deck}). `
       + `Refusing rather than rating this brand owner's matters under the Generic default: a framework `
-      + `somebody chose and that does not resolve is a mistake, not an absence.`);
+      + `somebody chose and that does not resolve is a mistake, not an absence.`,
+      { code: "framework_missing", path });
 
   // The manifest is DERIVED from the deck path, never a separate knob — and it is what the validators,
   // the renderer and the profile page read to know the framework's band vocabulary. A deck whose
@@ -117,7 +118,8 @@ export function resolvePlatforms(supplied, roster) {
   if (!house.length)
     throw new Refusal(
       "no --platforms was given and the Generic default carries none, so there is nothing to onboard this "
-      + "brand owner with. Pass --platforms, or repair the generic profile in the store.");
+      + "brand owner with. Pass --platforms, or repair the generic profile in the store.",
+      { code: "no_marketplaces" });
   return { platforms: [...house], source: "house default" };
 }
 
@@ -228,13 +230,15 @@ export function assertRosterAccepts({ store, key, profile, loadProfiles }) {
 
   const v = validateProfileEdit(key, profile);
   if (!v.ok)
-    throw new Refusal(`the company bundle is not valid, so nothing was written:\n  ${v.errors.join("\n  ")}`);
+    throw new Refusal(`the company bundle is not valid, so nothing was written:\n  ${v.errors.join("\n  ")}`,
+      { code: "invalid_bundle", errors: v.errors });
 
   const existing = rosterAsItStands(store, loadProfiles);
   if (existing.has(key))
     throw new Refusal(
       `a brand owner "${key}" already exists in ${store}. This command creates; it does not overwrite an `
-      + `existing bundle. Edit it in the portal, or remove the file deliberately first.`);
+      + `existing bundle. Edit it in the portal, or remove the file deliberately first.`,
+      { code: "key_exists", key });
 
   for (const d of profile.matchDomains ?? []) {
     const dl = String(d).toLowerCase();
@@ -243,7 +247,8 @@ export function assertRosterAccepts({ store, key, profile, loadProfiles }) {
         throw new Refusal(
           `domain "${dl}" is already claimed by the brand owner "${otherKey}". Two owners claiming one `
           + `domain makes the WHOLE roster refuse to load on the next start — not just this bundle — so `
-          + `nothing has been written.`);
+          + `nothing has been written.`,
+          { code: "domain_claimed", domain: dl, heldBy: otherKey });
     }
   }
 }

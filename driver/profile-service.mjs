@@ -150,6 +150,47 @@ function bandsBandMeanings(deck, manifest) {
   return out;
 }
 
+/**
+ * A refusal, worded for the person in the browser.
+ *
+ * THE SAME FACTS, A DIFFERENT READER. The shared create path's own sentences are written for somebody who
+ * typed a command: they name the flag that was missing and the directory that was written to, which is
+ * exactly what that reader needs. The person on the New company page typed neither. A sentence about
+ * `--platforms` and a filesystem path does not tell them what to do; it tells them they are in the wrong
+ * product.
+ *
+ * So the code is worded here and the facts ride alongside, which is what lets the screen offer a link to
+ * the company that already holds a key rather than printing its slug. An unrecognised code falls back to
+ * the original message: wrong for this reader, but never blank — an unworded refusal must not become a
+ * silent one.
+ */
+export function browserRefusal(e) {
+  const d = e?.detail ?? {};
+  switch (e?.code) {
+    case "key_exists":
+      return { error: "refused", code: "key_exists", key: d.key,
+        message: `A company is already filed under "${d.key}". Open it to make changes, or choose a different name.` };
+    case "domain_claimed":
+      return { error: "refused", code: "domain_claimed", domain: d.domain, heldBy: d.heldBy,
+        message: `${d.domain} is already used by another company. An address can only belong to one, `
+          + `because the engine uses it to tell them apart. Remove it here, or take it off the other company first.` };
+    case "no_marketplaces":
+      return { error: "refused", code: "no_marketplaces",
+        message: "This installation has no default marketplaces set up, so there is nothing to search. "
+          + "Add at least one marketplace for this company, or ask an administrator to set the defaults." };
+    case "framework_missing":
+      return { error: "refused", code: "framework_missing",
+        message: "The risk framework this company was pointed at is not on this installation, so nothing "
+          + "was created. Rating a company under a framework nobody chose is worse than refusing." };
+    case "invalid_bundle":
+      // The validator collects, so these are already per-field sentences written for a reader.
+      return { error: "refused", code: "invalid_bundle", errors: d.errors ?? [],
+        message: (d.errors ?? []).join(" ") || String(e.message) };
+    default:
+      return { error: "refused", message: String(e.message) };
+  }
+}
+
 /** Pure extraction (exported for the tests): deck text + validated manifest → [{ band, meaning, response? }]
  *  in manifest band order, or null on ANY miss. Never throws. */
 export function extractBandMeanings(deckText, manifest) {
@@ -381,7 +422,7 @@ export function makeProfileService({
         // rather than discovered by the next process to read profiles.
         assertRosterAccepts({ store: profileDir, key: wanted, profile, loadProfiles });
       } catch (e) {
-        if (e?.name === "Refusal") return { status: 400, json: { error: "refused", message: String(e.message) } };
+        if (e?.name === "Refusal") return { status: 400, json: browserRefusal(e) };
         throw e;
       }
 

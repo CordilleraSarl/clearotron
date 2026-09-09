@@ -29,7 +29,9 @@ export type Result<T> =
   /** 422 WITH a classify block — the engine needs an answer before it can plan. */
   | { kind: 'clarify'; questions: string[] }
   /** 400 — the request is malformed or fails validation. */
-  | { kind: 'reject'; errors: string[] }
+  // `detail` is present when the server sent a structured refusal beside the sentence. A screen that
+  // ignores it renders exactly what it rendered before; one that reads it can offer a way forward.
+  | { kind: 'reject'; errors: string[]; detail?: { readonly code: string; readonly key: string | null } }
   /** 422 with NO classify — mark-batch names collide after kebab-casing. */
   | { kind: 'collision'; errors: string[] }
   /** 409 from the confirmation gate. `message` is one of seven strings; render it as-is. */
@@ -1250,6 +1252,20 @@ const decodeRun = (raw: unknown): Run | null => {
  * `error` remains the last resort. Most routes send prose in it, and a route that sends a token and no
  * sentence is still better rendered as the token than as a generic apology that hides which one it was.
  */
+/**
+ * A refusal's structured half, when it has one.
+ *
+ * `errors` and `message` are what a person reads. This is what a SCREEN can act on — offering a link to
+ * the company that already holds a key, rather than printing its slug into a sentence and leaving the
+ * reader to find it.
+ */
+export type RefusalDetail = { readonly code: string; readonly key: string | null }
+
+export const refusalDetail = (body: Record<string, unknown>): RefusalDetail | null => {
+  const code = asString(body['code'])
+  return code ? { code, key: asString(body['key']) } : null
+}
+
 const errorsOf = (body: Record<string, unknown>): string[] => {
   const list = asArray(body['errors']).filter((e): e is string => typeof e === 'string')
   if (list.length) return list
@@ -1271,7 +1287,10 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       // UI state (show the account picker), not an error to print at someone.
       const msg = asString(body['error']) ?? ''
       if (/name an account/i.test(msg)) return { kind: 'pickAccount' }
-      return { kind: 'reject', errors: errorsOf(body) }
+      const detail = refusalDetail(body)
+      return detail
+        ? { kind: 'reject', errors: errorsOf(body), detail }
+        : { kind: 'reject', errors: errorsOf(body) }
     }
     case 401:
       // — the session is gone or was never established. Every other status here

@@ -129,6 +129,11 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   }, [result])
 
   const rejected = result && !isOk(result) && result.kind === 'reject' ? result.errors : null
+  // The one refusal a person can be walked out of rather than left to re-read: the key is taken, and the
+  // company that holds it is one they can open.
+  const takenBy = result && !isOk(result) && result.kind === 'reject' && result.detail?.code === 'key_exists'
+    ? result.detail.key
+    : null
   const otherFailure = result && !isOk(result) && result.kind !== 'reject' ? result : null
 
   return (
@@ -147,6 +152,18 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
             {rejected.map((e, i) => (
               <p key={i} style={{ color: 'var(--tone-high)' }}>{e}</p>
             ))}
+            {takenBy ? (
+              <button
+                type="button"
+                onClick={() => { ctx.setOwner(takenBy); ctx.go('/portal/brand/profile') }}
+                style={{
+                  background: 'none', border: 'none', padding: 0, font: 'inherit',
+                  color: 'var(--text-accent)', cursor: 'pointer', textDecoration: 'underline',
+                }}
+              >
+                Open that company
+              </button>
+            ) : null}
           </div>
         ) : null}
         {otherFailure ? (

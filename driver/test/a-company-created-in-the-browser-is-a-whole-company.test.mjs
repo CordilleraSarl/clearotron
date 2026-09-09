@@ -12,7 +12,9 @@ import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { makeProfileService } from "../profile-service.mjs";
+import { makeProfileService, browserRefusal } from "../profile-service.mjs";
+import { Refusal } from "../../shared/onboarding-store.mjs";
+import { readFileSync } from "node:fs";
 import { DEFAULT_FRAMEWORK } from "../framework.mjs";
 
 const STAFF = { email: "staff@example-firm.com" };
@@ -80,7 +82,16 @@ test("an existing key is refused, and so is the house default's own key", async 
   const { service, writeCalls } = svc();
   const dup = await service.route("POST", "/profiles", STAFF, { name: "Acme", key: "acme" });
   assert.equal(dup.status, 400);
-  assert.match(dup.json.message, /already exists/);
+  // PINNED TO WHAT THE REFUSAL MUST CARRY, not to its words. This used to match the command line's own
+  // sentence — and the command line's sentence is the wrong one to send a browser: it names the flag that
+  // was missing and the directory that was written to, neither of which the person on the New company
+  // page has ever seen. The wording is now each door's own, so the rule here is what the browser's
+  // refusal has to DO: name the key, and carry the code that lets the screen offer a way to that company.
+  assert.equal(dup.json.code, "key_exists", "the screen can act on the kind, not on the prose");
+  assert.equal(dup.json.key, "acme", "and it knows WHICH company already holds it");
+  assert.match(dup.json.message, /acme/, "the sentence names it too, for a reader who only sees the text");
+  assert.doesNotMatch(dup.json.message, /--|\/(home|srv|tmp|var)\//,
+    "no flag names and no filesystem paths reach a browser");
 
   // `generic` is the fallback every unprofiled clearance resolves to. The key rule's own comment claimed
   // the create path never allowed it while the regex matched it happily, so the rule was a sentence
@@ -118,4 +129,43 @@ test("a name is required, and the refusal is the one a person can act on", async
   assert.equal(r.status, 400);
   assert.equal(r.json.error, "needs_name");
   assert.match(r.json.message, /needs a name/i);
+});
+
+test("NO REFUSAL SENDS TERMINAL VOCABULARY TO A BROWSER", () => {
+  // The shared create path's own sentences are written for somebody standing in a terminal: they name
+  // the flag that was missing and the directory that was written to, which is right for that reader and
+  // useless to a lawyer on the New company page. Each refusal now carries a code, and this door words it.
+  //
+  // Driven over EVERY code the shared path can raise rather than the two that were easy to reach, and
+  // taken from the create path itself rather than a list retyped here — a code added there without a
+  // wording here fails this rather than reaching somebody as a flag name.
+  const cases = [
+    { code: "key_exists", detail: { key: "acme" } },
+    { code: "domain_claimed", detail: { domain: "acme.example", heldBy: "other" } },
+    { code: "no_marketplaces", detail: {} },
+    { code: "framework_missing", detail: { path: "own/deck.md" } },
+    { code: "invalid_bundle", detail: { errors: ["profiles/acme.json: name is required"] } },
+  ];
+
+  // FLOOR: every code the create path actually raises is covered above. A silently shrinking list is how
+  // this arm would pass while a new refusal reached a browser saying "--platforms".
+  const src = readFileSync(new URL("../company-bundle.mjs", import.meta.url), "utf8");
+  const raised = [...src.matchAll(/code:\s*"([a-z_]+)"/g)].map((m) => m[1]).sort();
+  assert.deepEqual(raised, cases.map((c) => c.code).sort(),
+    "every refusal the create path raises is worded for the browser here");
+
+  for (const { code, detail } of cases) {
+    const e = new Refusal("no --platforms was given; repair the generic profile in /srv/store", { code, ...detail });
+    const worded = browserRefusal(e);
+    assert.equal(worded.code, code, `${code} keeps its kind`);
+    assert.ok(worded.message && worded.message.length > 20, `${code} says something a person can read`);
+    assert.doesNotMatch(worded.message, /--[a-z]/, `${code} names no command-line flag`);
+    assert.doesNotMatch(worded.message, /\/(home|srv|tmp|var|Users)\//, `${code} prints no filesystem path`);
+    assert.doesNotMatch(worded.message, /brand owner/i, `${code} does not use the retired noun`);
+  }
+
+  // The other direction: an UNKNOWN code must still say something. An unworded refusal becoming a silent
+  // one is worse than an unworded refusal.
+  const unknown = browserRefusal(new Refusal("something else went wrong", { code: "not_a_code_we_word" }));
+  assert.match(unknown.message, /something else went wrong/);
 });
