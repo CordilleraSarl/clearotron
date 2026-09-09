@@ -83,7 +83,10 @@ const WORK = join(tmpdir(), `render-check-${process.pid}`);
 assertRootFits(WORK);
 // The removal below runs on the paths somebody wrote a branch for. This one also covers the exits
 // nobody writes a branch for, which is where the leaked locks came from.
-removeOnExit(WORK);
+const stopRootSweep = removeOnExit(WORK);
+// ...unless the caller asked to keep it. Read here rather than at the cleanup below, because the
+// sweep is registered at import time and `--keep` has to be honoured before any exit can happen.
+if (has("keep")) stopRootSweep();
 
 /**
  * Replay the committed frozen run into a fresh pool and return its path.

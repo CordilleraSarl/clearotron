@@ -438,7 +438,10 @@ ${HELPERS}
 
 // The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
 // lock it writes there leaves with the root instead of accumulating in the shared one.
-const { profile: userDir, env: chromeEnv } = browserRun("lifecycle-check-")
+const { profile: userDir, env: chromeEnv, keep: keepRoot } = browserRun("lifecycle-check-")
+// --keep means LEAVE THE PROFILE: take the run root out of the exit sweep, or the flag
+// would go on reading as working while the directory it promises is removed anyway.
+if (keep) keepRoot()
 const chrome = spawn('google-chrome', [
   '--headless=new', '--disable-gpu', '--no-sandbox', '--hide-scrollbars',
   `--user-data-dir=${userDir}`, '--window-size=1280,900',

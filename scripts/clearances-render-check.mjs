@@ -258,7 +258,10 @@ const MEASURE = `(async () => {
 
 // The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
 // lock it writes there leaves with the root instead of accumulating in the shared one.
-const { profile: userDir, env: chromeEnv } = browserRun("clearances-check-")
+const { profile: userDir, env: chromeEnv, keep: keepRoot } = browserRun("clearances-check-")
+// --keep means LEAVE THE PROFILE: take the run root out of the exit sweep, or the flag
+// would go on reading as working while the directory it promises is removed anyway.
+if (keep) keepRoot()
 // NO NETWORK, deliberately. CI runs this with no route to api.fontshare.com, so the brand webfonts never
 // arrive and the page renders in a wider fallback — which is exactly when a cell wraps and a table
 // overflows. A check that passes only when the fonts load is a check that passes on the developer's

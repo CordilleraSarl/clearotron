@@ -766,7 +766,10 @@ const SCRIPT = `
 
 // The profile goes inside a run root whose TMPDIR the browser inherits, so the singleton
 // lock it writes there leaves with the root instead of accumulating in the shared one.
-const { profile: userDir, env: chromeEnv } = browserRun("composer-check-")
+const { profile: userDir, env: chromeEnv, keep: keepRoot } = browserRun("composer-check-")
+// --keep means LEAVE THE PROFILE: take the run root out of the exit sweep, or the flag
+// would go on reading as working while the directory it promises is removed anyway.
+if (keep) keepRoot()
 
 // Chrome's --dump-dom cannot run our driver script, so the driving happens via the DevTools protocol —
 // but standing that up needs no extra dependency: a plain evaluate over the websocket is enough.

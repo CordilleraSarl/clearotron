@@ -278,3 +278,32 @@ test("the temp-root population has a floor — an empty one is not a clean sweep
     `only ${p.byProperty.length} script(s) matched as spawning a browser; the two arms above iterate `
     + `that list, so this is the enumeration breaking rather than the tree being clean`);
 });
+
+// A CHECK THAT PROMISES TO KEEP THE PROFILE MUST TAKE ITS ROOT OUT OF THE SWEEP.
+//
+// The profile directory now lives inside a run root that is removed when the process exits. Four of
+// these checks take a `--keep` flag whose entire purpose is to leave that directory behind for
+// somebody to open after a run that went wrong. Wiring the root without wiring the flag defeated all
+// four at once, and defeated them SILENTLY: the flag still parsed, and the removal it guarded still
+// did not run, so nothing about the check's own output changed.
+//
+// Neither arm above can see it — an environment still reaches the spawn and the module is still
+// imported. The property is different: the flag must reach the deregistration.
+const KEEP_FLAG = /--keep/;
+const DEREGISTERS = /if\s*\(\s*(?:keep|has\(\s*["']keep["']\s*\))\s*\)\s*[A-Za-z_$][\w$]*\s*\(\s*\)/;
+
+test("a browser check offering --keep takes its run root out of the exit sweep", (ctx) => {
+  const p = populations();
+  if (p === null) return ctx.skip(skipReason(GUARD));
+  const offering = p.byProperty.filter((f) => KEEP_FLAG.test(readFileSync(join(ROOT, f), "utf8")));
+  // A FLOOR ON THE POPULATION, because the arm is vacuous over an empty one and the selector is a
+  // regex over source: rename the flag and this stops looking at anything while staying green.
+  assert.ok(offering.length >= 4,
+    `only ${offering.length} check(s) matched as offering --keep; four do, so this is the selector `
+    + `breaking rather than the flag going away`);
+  const broken = offering.filter((f) => !DEREGISTERS.test(readFileSync(join(ROOT, f), "utf8")));
+  assert.deepEqual(broken, [],
+    `these offer --keep but let the exit sweep remove the root anyway:\n  ${broken.join("\n  ")}\n`
+    + `Call the handle browserRun returns as \`keep\` (or removeOnExit's return) when the flag is set, `
+    + `or the flag reads as working while the directory it promises goes at exit.`);
+});

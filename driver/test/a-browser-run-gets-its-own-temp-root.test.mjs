@@ -11,7 +11,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -104,6 +104,29 @@ test("the root is removed on SIGTERM — the exit a cancelled job produces", () 
   const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
   assert.ok(root.length > 0, "the child must have reported the root before it was signalled");
   assert.equal(existsSync(root), false, `the root survived SIGTERM: ${root}`);
+});
+
+test("keep() leaves the root behind, which is what --keep promises", () => {
+  // Four of these checks take a `--keep` flag so somebody can open the profile after a run that went
+  // wrong. Moving the profile inside a swept root defeated that flag in every one of them, silently:
+  // the flag still parsed, the removal it guarded still did not run, and the directory went at exit
+  // anyway. A diagnostic that quietly stopped working is worse than the leak this module exists for,
+  // because nobody knows to distrust it.
+  const dir = mkdtempSync(join(tmpdir(), "arm-keep-"));
+  const namefile = join(dir, "name");
+  const src = join(dir, "child.mjs");
+  writeFileSync(src, `
+    import { writeFileSync } from "node:fs";
+    import { browserRun } from ${JSON.stringify(join(ROOT, "shared/browser-temp-root.mjs"))};
+    const { root, keep } = browserRun("arm-keep-run-");
+    writeFileSync(${JSON.stringify(namefile)}, root);
+    keep();
+  `);
+  execFileSync(process.execPath, [src], { stdio: "ignore" });
+  const root = execFileSync("cat", [namefile], { encoding: "utf8" }).trim();
+  assert.ok(root.length > 0, "the child must have reported the root it made");
+  assert.equal(existsSync(root), true, `keep() did not keep the root: ${root} was removed anyway`);
+  rmSync(root, { recursive: true, force: true });
 });
 
 test("the group is signalled BEFORE any root is removed", () => {

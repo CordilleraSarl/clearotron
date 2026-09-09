@@ -105,8 +105,12 @@ export function browserEnv(root, env = process.env) {
  * singleton lock behind on every other path, which is the leak this module exists for.
  */
 export function browserRun(prefix = "browser-run-") {
-  const root = browserTempRoot(prefix);
+  const root = mkdtempSync(join(tmpdir(), prefix));
+  assertRootFits(root);
+  const keep = removeOnExit(root);
   const profile = join(root, "profile");
   mkdirSync(profile, { recursive: true });
-  return { root, profile, env: browserEnv(root) };
+  // `keep` deregisters the root from the exit sweep. A caller with a `--keep` flag MUST call it, or
+  // the flag reads as working while the directory it promised goes at exit.
+  return { root, profile, env: browserEnv(root), keep };
 }
