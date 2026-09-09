@@ -4480,8 +4480,8 @@
           "todos": 0
         },
         "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
-          "tests": 14,
-          "asserts": 53,
+          "tests": 15,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
