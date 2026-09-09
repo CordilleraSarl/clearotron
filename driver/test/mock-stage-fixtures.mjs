@@ -35,6 +35,7 @@ import { recordCoverage, MAX_ROWS_PER_CALL } from "../coverage-tool.mjs";
 import { recordBlindFrame } from "../blind-frame-record.mjs";
 import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
+import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
 import { recordSynthesis } from "../synthesis-record.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
@@ -2089,6 +2090,31 @@ export function applyStageWrites(msg, argv) {
     const verdict = recordKnockoutAssess(runDir, chunk, { boundOrdinal: boundChunk });
     if (!verdict.written) return `mock knockout-assess: the transport refused the composed chunk — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout assess ok";
+  }
+  // ── THE REVIEWING PASS ────────────────────────────────────────────────────────────────────────────
+  //
+  // THE ADDRESSES ARE READ BACK OUT OF THE DISPATCH, never invented. The driver measured them and put
+  // them in the message; a mock that composed its own would be asserting that the addresses it makes up
+  // resolve, which is a fact about the mock. Reading them back is also what a seat does, so a dispatch
+  // that stopped carrying addresses fails here rather than passing on fabricated ones.
+  //
+  // IT DECLINES RATHER THAN REWRITES. A fixture inventing replacement prose would put mock sentences on
+  // the record every knockout e2e then asserts against, and the rewrite path is driven by its own arms
+  // against a real record. What the e2e needs from this branch is that the stage COMPLETES through the
+  // real transport, which a declined row does exactly as well.
+  if (/record_knockout_review/.test(msg)) {
+    const runDir = runDirFromArgv(argv);
+    if (!runDir) return "mock knockout-review: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
+    recordMockToolCall(runDir, "record_knockout_review", "recording-knockout-review");
+    const declined = [];
+    for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
+      try { declined.push({ at: JSON.parse(m[1]), why: "mock review: the line reads plainly enough in context" }); }
+      catch { /* a row whose address will not parse is not one this mock can answer */ }
+    }
+    if (!declined.length) return "mock knockout-review: the dispatch carried no address to answer — the driver measures them and puts them in the message";
+    const verdict = recordKnockoutReview(runDir, { declined });
+    if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
+    return "mock knockout review ok";
   }
   // Repair-first A4: the single-artifact findings repair names ONLY findings.json ("Fix ONLY these
   // objects …", then the shared repair tail aimed at <findings.json>) — mirror the tool-shape: rewrite

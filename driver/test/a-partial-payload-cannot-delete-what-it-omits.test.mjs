@@ -62,6 +62,7 @@ import { acceptBlindFrame } from "../blind-frame-record.mjs";
 import { acceptSkeptic } from "../skeptic-record.mjs";
 import { acceptKnockoutAssess, recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { acceptKnockoutFrame, recordKnockoutFrame, knockoutFrameFiles } from "../knockout-frame-record.mjs";
+import { acceptKnockoutReview, recordKnockoutReview } from "../knockout-review-record.mjs";
 import { mkdtempSync, readFileSync as readFile } from "node:fs";
 import { tmpdir } from "node:os";
 
@@ -285,6 +286,27 @@ const PLANTED = Object.freeze({
       ],
     },
   },
+  // The reviewing pass. It MERGES BY ADDRESS rather than by key, which is what the drop-each-key arm
+  // below reads back: dropping `rewrites` must leave the stored rewrites standing, not delete them.
+  record_knockout_review: {
+    expect: "merges",
+    accept: (params) => acceptKnockoutReview(params),
+    record: (runDir, params) => recordKnockoutReview(runDir, params),
+    full: {
+      schema_version: 1,
+      rewrites: [
+        { at: { field: "basis", mark: "NOVAPULSE" },
+          text: "The name is already crowded in drinks. Two live registrations sit close to it.",
+          why: "one 44-word sentence carrying three ideas" },
+        { at: { field: "findings.net", mark: "NOVAPULSE", ordinal: 1 },
+          text: "They would probably win if they objected." },
+      ],
+      declined: [
+        { at: { field: "batch.executiveSummary" },
+          why: "\"belt-and-braces\" is the requester's own phrase from the instructions, not the profession's" },
+      ],
+    },
+  },
 });
 
 /** The two kinds of planted transport, split by the answer each gives a partial. */
@@ -502,6 +524,22 @@ test("a required field is enforced by the ACCEPTOR, because nothing before it en
 
   for (const [tool, spec] of Object.entries(PLANTED)) {
     const required = requiredFields(served.get(tool));
+
+    // A TRANSPORT WHOSE DEMAND IS A DISJUNCTION HAS NO REQUIRED FIELD TO PLANT, and the drop-a-field
+    // assertion below is therefore vacuous for it rather than false. It is not skipped: the arm's
+    // subject is that SOMETHING between the seat and the artifact refuses an under-specified call, so
+    // the empty call is driven instead — the refusal that transport actually makes. Without this branch
+    // the member is either excluded from the census, which loses its merge coverage, or forced into an
+    // assertion its shape cannot satisfy.
+    if (tool in DECLARES_NONE_BY_DESIGN) {
+      assert.equal(required.length, 0,
+        `${tool} is stated to declare nothing by design and now declares ${required.join(", ")} — the row is stale`);
+      const v = spec.accept({});
+      assert.equal(v.ok, false,
+        `${tool} declares no required field BY DESIGN and its acceptor took an empty call — nothing anywhere refuses an under-specified call to it`);
+      continue;
+    }
+
     assert.ok(required.length > 0, `${tool} declares no required field — this arm would plant nothing`);
 
     for (const field of required) {
@@ -553,6 +591,13 @@ const DECLARES_NONE_BY_DESIGN = Object.freeze({
     + "seat and unit-note-server.mjs injects it, so the seat is told to omit it. Every other field merges "
     + "onto the axis's last accepted note (register-unit-record.mjs:233). Measured: acceptUnitNote "
     + "accepts a call carrying nothing but the bound axis.",
+  record_knockout_review:
+    "What its acceptor demands is a DISJUNCTION — at least one of `rewrites` or `declined` — and "
+    + "`required[]` can only state a conjunction. Declaring either would refuse a legitimate call: a "
+    + "pass that rewrote every flagged line sends no declined rows, and one that judged every flag to "
+    + "be the subject rather than the profession's shorthand sends no rewrites. Both are real outcomes "
+    + "and the refusal that matters is of the call sending NEITHER, which acceptKnockoutReview makes by "
+    + "name because an empty call cannot be told from a stage that never ran.",
 });
 
 /** Pure, so a plant can drive it: transports promising nothing with no stated reason. */

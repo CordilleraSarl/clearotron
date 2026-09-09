@@ -449,7 +449,7 @@ test("recording server: handshake + the served list pinned + missing-run guard r
     // surface of any converted artifact (nine readers). Served is not granted: this list is every tool
     // the one recording module exposes, and `toolGroupsForStage` is what decides which stage may call
     // which. The list is pinned by NAME so a conversion that lands a tool cannot land it silently.
-    assert.deepEqual(toolNames(r), ["record_blind_frame", "record_doubt_closure", "record_frame_diff", "record_knockout_assess", "record_knockout_frame", "record_matter_frame", "record_narrative_refutation", "record_prelim_variants", "record_register_digest", "record_report_card", "record_report_overview", "record_skeptic", "record_synthesis", "search_run_artifacts"]);
+    assert.deepEqual(toolNames(r), ["record_blind_frame", "record_doubt_closure", "record_frame_diff", "record_knockout_assess", "record_knockout_frame", "record_knockout_review", "record_matter_frame", "record_narrative_refutation", "record_prelim_variants", "record_register_digest", "record_report_card", "record_report_overview", "record_skeptic", "record_synthesis", "search_run_artifacts"]);
   // The guard answer is a structured {error} payload, same as record_blind_frame's: the server answers
   // rather than erroring, and the text names the contract (per-run wiring, no run_dir parameter).
   const text = r.responses[3]?.result?.content?.[0]?.text ?? "";

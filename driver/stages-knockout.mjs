@@ -52,8 +52,8 @@ export function koPaths(runDir) {
     plan: join(runDir, "knockout-plan.json"),
     findings: join(runDir, "knockout-findings.json"),
     assessment: join(runDir, "knockout-assessment.md"),
-    // The reviewing pass's own record, under `_driver/`: it is the pass's account of what it rewrote
-    // and what it let stand, not a surface a client is shown.
+    // The reviewing pass's record of what it rewrote and what it let stand. At the RUN ROOT, like the
+    // assess chunks and for the same reason: it is a model output, and `_driver/` is behind a deny hook.
     review: knockoutReviewFile(runDir),
     // Depth 2: the code-authoritative count sidecar + its per-call receipts. Both live under
     // _driver/ — they are the driver's own measurements, never a model's output.

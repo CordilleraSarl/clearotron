@@ -89,9 +89,21 @@ export function knockoutReviewCallPaths(runDir) {
   return { dir, accepted: join(dir, "accepted.json"), refusals: join(dir, "refusals.jsonl") };
 }
 
-/** The artifact this transport writes. Under `_driver/` — it is the pass's record, not a client surface. */
+/**
+ * The artifact this transport writes, AT THE RUN ROOT.
+ *
+ * NOT UNDER `_driver/`, and the lane learned that the expensive way. `_driver/` is the driver's own
+ * measurements and is behind a deny hook; a stage whose `out` lands there has a seat that will be
+ * refused on Write and on Bash, and a corrective ladder that exhausts against a dispatch ordering a
+ * write nothing permits. The assess chunk was relocated out of it for exactly that reason. This file is
+ * a MODEL output — the seat's rewrites — so the run root is where it belongs by the same rule, and an
+ * arm sweeps both stage tables to keep it there.
+ *
+ * The CALL captures stay under `_driver/`: those are the driver's record of what arrived, not a seat's
+ * output, and nothing dispatches against them.
+ */
 export function knockoutReviewFile(runDir) {
-  return driverDir(String(runDir ?? ""), "knockout-review.json");
+  return join(String(runDir ?? ""), "knockout-review.json");
 }
 
 /**
