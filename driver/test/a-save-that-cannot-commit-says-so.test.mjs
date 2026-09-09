@@ -62,7 +62,7 @@ test("2005 the audit trail records the gap — a create that did not persist doe
   const r = commitWithAuditRow({
     audit: (row) => { rows.push(row); return null; },
     gitCommit: () => { throw new Error("fatal: detected dubious ownership in repository at '/opt/store'"); },
-    files: ["projects/generic/etatat.json"], message: "m", by: "krzys@example.test",
+    files: ["projects/generic/etatat.json"], message: "m", by: "reviewer@example.test",
     row: { event: "project-create", key: "generic/etatat" },
   });
   assert.ok(r.commitError, "the caller is told");
