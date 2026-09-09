@@ -1415,7 +1415,7 @@
         },
         "coverage-judgment-rows.test.mjs": {
           "tests": 9,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
