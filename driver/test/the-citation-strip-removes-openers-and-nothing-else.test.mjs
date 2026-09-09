@@ -16,13 +16,15 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { existsSync, readFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
+import { publishedOf } from "../../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { OPENER, PARENTHETICAL, ANY_CITATION, EXCLUDED, isScannable, surveyOf, stripParenthetical, wrapsInto } from "../../scripts/strip-tracker-citations.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const GUARD = "the citation sweep is a fixed point";
 
 const strip = (line) => (OPENER.test(line) ? line.replace(OPENER, "$1") : line);
 
@@ -218,7 +220,7 @@ test("a line carrying another citation is handed off, never rewritten", () => {
   assert.ok(s.handoff[0].text.includes("diffcase-keep.mjs:4 keepRow"), "the held-back line is the one carrying the by-line citation");
 });
 
-test("the sweep is a fixed point on the tree it has already swept", () => {
+test("the sweep is a fixed point on the tree it has already swept", (ctx) => {
   // WHAT THIS CATCHES, AND IT IS NOT HYPOTHETICAL. Repairing two re-aged lines by restoring the whole
   // file put a sweepable citation back with them, and it then sat in NEITHER pile: not stripped,
   // because the sweep had not been re-run, and not on the hand-off list either, because the survey
@@ -227,10 +229,19 @@ test("the sweep is a fixed point on the tree it has already swept", () => {
   //
   // Driven over the real tracked tree rather than a fixture: a fixture would prove the property of the
   // fixture, and the defect was in what the repository actually held.
-  const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
-    .split("\n").filter(Boolean);
+  // THROUGH THE HELPER, AND THROUGH `publishedOf`. Enumerating here would be this pack's own rule
+  // broken by its newest check — and it was, until the private control caught it. Two things follow
+  // from the helper: a checkout it cannot read becomes a stated skip rather than a wall of failures,
+  // and the population is what HEAD publishes, so a laid corpus is not counted. Without the second, this
+  // arm reds under the overlay for the correct reason and the wrong subject: laid files carry citations
+  // nobody has swept, and they are not this tree's to sweep.
+  const all = trackedFiles(GUARD, { root: ROOT });
+  if (all === null) { ctx.skip(skipReason(GUARD)); return; }
+  const p = publishedOf(all, ROOT);
+  if (p.error) { ctx.skip(`${GUARD} — ${p.error}`); return; }
+  const tracked = p.files;
   const s = surveyOf(tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
-  assert.ok(tracked.length > 100, `read ${tracked.length} tracked path(s) — the population is not the tree`);
+  assert.ok(tracked.length > 100, `read ${tracked.length} published path(s) — the population is not the tree`);
   assert.equal(s.strippedTotal, 0,
     `the sweep would still rewrite ${s.strippedTotal} line(s) of a tree it has already swept — re-run it and commit the result`);
 });
