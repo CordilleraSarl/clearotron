@@ -142,8 +142,8 @@
           "todos": 0
         },
         "a-company-created-in-the-browser-is-a-whole-company.test.mjs": {
-          "tests": 6,
-          "asserts": 26,
+          "tests": 7,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -658,8 +658,8 @@
           "todos": 0
         },
         "a-stored-territory-that-does-nothing-is-named.test.mjs": {
-          "tests": 4,
-          "asserts": 7,
+          "tests": 6,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
