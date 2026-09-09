@@ -168,7 +168,7 @@ you want the second one** — the first assumes access to the repository, which 
 
 **This is the development tree, and it is for contributors.** If you want to run a clearance, take one
 of the two routes above instead. A clone is not a smaller version of the package — it carries the
-fixtures and sample brand owners the project develops against, and those load as real records. They
+fixtures and sample companies the project develops against, and those load as real records. They
 are not yours and they are not in the package, which excludes them deliberately.
 
 ```
@@ -453,8 +453,8 @@ the reader.
 | What it is | The word the product uses | Where it lives | What creates it |
 |---|---|---|---|
 | The deployment's own boundary — one installation's whole world | **tenant** | a key in `grants.json` | nothing yet; you write the key by hand |
-| A brand owner you do clearances for | **account**, and the CLI calls it **brand owner** | a bundle in the customer store, keyed by an account key | `npx clearotron brandowner add <key>` |
-| One engagement under that brand owner — its classes, jurisdictions, platforms | **project** | inside that account's bundle | `npx clearotron project add` |
+| A company you do clearances for | **account**, and the CLI calls it **brand owner** | a bundle in the customer store, keyed by an account key | `npx clearotron brandowner add <key>` |
+| One engagement under that company — its classes, jurisdictions, platforms | **project** | inside that account's bundle | `npx clearotron project add` |
 | A person who may see some of it | **user** | `grants.json`, under the tenant | `npx clearotron grant add`, then `npx clearotron key issue` |
 
 Nesting, in one line: **a tenant contains accounts; an account contains projects; a user is enrolled in
@@ -463,7 +463,7 @@ a tenant and reaches a named subset of that tenant's accounts.**
 Two consequences worth stating, because both surprised the person who commissioned the product:
 
 - **An account does not span tenants.** `grants.json` maps each tenant to its own account keys, so the
-  same brand owner reached from two tenants is two grants, not one shared object.
+  same company reached from two tenants is two grants, not one shared object.
 - **A key grants no reach of its own.** `npx clearotron key issue` mints the identity a person's assistant
   presents; what that identity may see is decided by their `grant`. Enrol first, issue second — a key
   without a grant reaches nothing, and is not an error anywhere.
@@ -888,7 +888,7 @@ set:
 
 ### The client connector's ingress is not integrator-supplied
 
-The client connector is the door a brand owner's assistant talks to, and it
+The client connector is the door a company's assistant talks to, and it
 is **part of the product** rather than something a deployment invents. A reader who reaches the
 Use-your-AI page and finds Connect buttons that do nothing has been failed by the install, not by
 their own integration work.
@@ -1032,10 +1032,17 @@ Said plainly rather than dressed as a verb, because the distinction costs real t
 key issue` mints ACCOUNT keys only**, and `npx clearotron grant` mints nothing at all. This page
 previously sent readers to `grant` for an ops token, which is why the sentence is now this long.
 
-**When you have to re-mint one.** The portal's own trigger lane runs on a pinned ops token, and its
-account list is frozen at the moment it was minted. Add a brand owner afterwards and clearances for that
-account are refused — `your grant [...] does not include account "..."` — until the token is re-minted
-with the new list and the environment updated. Nothing re-mints it for you.
+**When you have to re-mint one.** Not on the ordinary path any more, and this paragraph used to say
+otherwise. The portal takes its ops credential afresh at the start of each call, capped to the company
+roster as it stands, so a company created after the portal started can run a clearance and stop one
+without anybody re-minting anything.
+
+The pinned credential minted at startup is still the fallback, and it is where this matters. If the
+signing secret cannot be read or the company store cannot be listed, the portal uses that one rather than
+widening the cap to get the call through — so its account list is frozen at the moment it was minted, and
+a company created since is refused at the door with `your grant [...] does not include account "..."`.
+The portal says so in its log when it happens. That is when you re-mint by hand, with the new list, and
+update the environment.
 
 ### Putting a surface behind your identity provider
 

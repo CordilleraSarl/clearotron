@@ -41,6 +41,7 @@ import { CENSUS_WORKSPACES, CENSUS_ROOT_SCRIPTS, countTestSites, collectionFromM
 import { providerTestFiles } from "./test-full.mjs";
 import { withheldEntryFor, announceWithheldMode } from "../shared/withheld-paths-access.mjs";   // — withheld is a stated absence, not a loss.: the record does not ship, and without it every absence is a loss
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
+import { publishedOf } from "../shared/reference-guard-classes.mjs";
 
 // — say which mode this run is in, so a relaxed check is never silent.
 announceWithheldMode();
@@ -72,14 +73,44 @@ const README = [
   "RE-STAMP DELIBERATELY:  node scripts/mint-suite-census.mjs --apply",
 ];
 
+/**
+ * The tracked files matching `globs` that HEAD actually carries.
+ *
+ * `git ls-files` reads the INDEX. The private control stages a withheld corpus over a clone without
+ * committing it, so under that overlay the index holds files HEAD does not — and this census, minted
+ * on the published tree and checked against the overlaid one, reported every laid test file as an
+ * addition. The stamp was current and the check said stale, permanently, because the two runs were
+ * counting different populations rather than disagreeing about one.
+ *
+ * `publishedOf` is the discriminator the residue floor and the reference-strip backlog already use.
+ * One helper rather than three spellings: three drift, and the drift shows only under the overlay,
+ * which is the place nobody runs by accident.
+ *
+ * THE TWO CASES ARE NOT THE SAME and are not treated the same. A path in the index and absent from
+ * HEAD is LAID and is not counted. A path in HEAD and modified in the index is ordinary work in
+ * progress and is counted exactly as before — refusing that would make this refuse a normal edit.
+ * `publishedOf` filters on membership of HEAD, so a modified-but-committed file stays in.
+ *
+ * A tree with no HEAD cannot say what it published. That is a failure to look, and it exits rather
+ * than reading as "nothing is laid here", which is the permissive answer and the one that passes.
+ */
+function publishedFiles(root, globs) {
+  let all = [];
+  try {
+    all = execFileSync("git", ["-C", root, "ls-files", "--", ...globs], { encoding: "utf8" })
+      .split("\n").map((x) => x.trim()).filter(Boolean);
+  } catch { return []; }
+  if (!all.length) return [];
+  const p = publishedOf(all, root);
+  if (p.error) { console.error(`mint-suite-census: ${p.error}`); process.exit(2); }
+  if (p.laid) console.log(`mint-suite-census: ${p.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted`);
+  return p.files.slice().sort();
+}
+
 export function buildCensus(root = ROOT) {
   const out = { _README: README, workspaces: {}, rootScripts: {} };
   for (const { ws, ext } of CENSUS_WORKSPACES) {
-    let files = [];
-    try {
-      files = execFileSync("git", ["-C", root, "ls-files", "--", `${ws}/test/*.test.${ext}`], { encoding: "utf8" })
-        .split("\n").map((s) => s.trim()).filter(Boolean).sort();
-    } catch { files = []; }
+    const files = publishedFiles(root, [`${ws}/test/*.test.${ext}`]);
     const perFile = {};
     for (const f of files) {
       const abs = join(root, f);
@@ -99,11 +130,7 @@ export function buildCensus(root = ROOT) {
   // one: these globs span two shapes (`providers/_shared/test/` and `providers/<id>/test/`), and a
   // stripped key would collide the moment two providers shipped a file of the same name.
   for (const { script, globs } of CENSUS_ROOT_SCRIPTS) {
-    let files = [];
-    try {
-      files = execFileSync("git", ["-C", root, "ls-files", "--", ...globs], { encoding: "utf8" })
-        .split("\n").map((x) => x.trim()).filter(Boolean).sort();
-    } catch { files = []; }
+    const files = publishedFiles(root, globs);
     const perFile = {};
     for (const f of files) {
       const abs = join(root, f);
