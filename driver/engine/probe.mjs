@@ -255,9 +255,23 @@ export function probeWeatherWarning(verdict) {
  * whatever the operator's shell happens to have set and report a pass for the wrong engine — the same
  * frozen-provider trap `preflightCandidate` works around one file over.
  *
- * ONLY the engine-selection keys are applied. Credentials and billing-mode variables are deliberately
- * NOT copied: the probe must bill exactly the way a run on this box would, and moving a spend variable
- * to make a probe pass is the one thing this must never do.
+ * THE SPEND VARIABLES ARE APPLIED TOO, and the rule this replaces had it backwards. It said they were
+ * deliberately not copied, so that "the probe must bill exactly the way a run on this machine would" —
+ * the aim is right and withholding them defeated it. The caller supplies the lane and the credential
+ * precisely because they are not in the environment yet; not copying them left the probe billing the
+ * way the operator's shell happened to be set, while the run that followed billed the way the reader
+ * had just chosen. The probe proved a lane nobody was going to use. Measured: an API-key install failed
+ * as "not signed in" because the adapter removes the key under any mode that is not the API-key one,
+ * and the mode it read was the unset one.
+ *
+ * WHAT IS STILL NEVER DONE, which is the sentence that was worth keeping: nothing here defaults,
+ * repairs, invents or falls back. It copies what the caller passed and nothing else, so a probe cannot
+ * pass on a credential a run would not have — the caller is the wizard about to write these very values
+ * to disk, or a command reading the values already there.
+ *
+ * AND IT PUTS EVERYTHING BACK. Widening what this writes onto the process widens what it must remove
+ * again; a credential outliving the check that borrowed it would be a worse defect than the one this
+ * fixed, and a check drives the restore rather than trusting it.
  */
 function applyEngineEnv(env) {
   if (!env || env === process.env) return () => {};
