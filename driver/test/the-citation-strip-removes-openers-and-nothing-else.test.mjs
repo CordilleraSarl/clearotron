@@ -209,10 +209,10 @@ test("a line carrying another citation is handed off, never rewritten", () => {
   // added side, so a by-line citation that has sat there for months becomes newly-added and fails the
   // check that refuses new ones. Two lines in this tree are in that state and rewriting them turned a
   // strip into three new bare citations.
-  const line = '  { target: /^diffcase/, why: "FIXTURE NAMES (tracker issue 1941). `keep.mjs:4` is DATA" },';
+  const line = '  { target: /^diffcase/, why: "FIXTURE NAMES (tracker issue 1941). diffcase-keep.mjs:4 keepRow is DATA" },';
   const tree = { "a.mjs": [line, "// a plain one (tracker issue 12)", ""].join("\n") };
   const s = surveyOf(Object.keys(tree), (f) => tree[f]);
-  assert.equal(s.strippedTotal, 1, "the line carrying `keep.mjs:4` was rewritten anyway");
+  assert.equal(s.strippedTotal, 1, "the line carrying diffcase-keep.mjs:4 keepRow was rewritten anyway");
   assert.equal(s.handoff.length, 1, "and it must reach the reader instead");
-  assert.ok(s.handoff[0].text.includes("keep.mjs:4"), "the held-back line is the one carrying the by-line citation");
+  assert.ok(s.handoff[0].text.includes("diffcase-keep.mjs:4 keepRow"), "the held-back line is the one carrying the by-line citation");
 });
