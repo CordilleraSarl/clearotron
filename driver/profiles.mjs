@@ -20,6 +20,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ORDERABLE_PRODUCTS } from "./search-policy.mjs";
+import { recognizedTerritories } from "./territory-tiers.mjs";   // which stored territories the engine can actually search
 import { envFrom } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 
 // CLEAROTRON_CUSTOMERS_DIR selects the customer config STORE; the bundled driver/profiles is the
@@ -644,6 +645,27 @@ export function validateProfileEdit(key, profileObj, contextPack = "", { sparse 
   try { validateProfileShape(String(key), profileObj, { sparse }); } catch (e) { errors.push(String(e.message)); }
   if (contextPack && String(contextPack).trim()) {
     try { assertContextPackShape(String(contextPack), "context pack"); } catch (e) { errors.push(String(e.message)); }
+  }
+  // A DEFAULT TERRITORY THE ENGINE CANNOT SEARCH IS REFUSED WHERE IT IS WRITTEN.
+  //
+  // HERE AND NOT IN validateProfileShape, and the difference is a roster-wide outage. That function runs
+  // on the LOAD path, so a refusal there would stop every profile already holding such an entry from
+  // loading — and when the loader throws, it does not fail that one bundle, it fails the deployment's
+  // whole roster and every customer's clearance with it. This wrapper is the WRITE path: the two doors
+  // that create, the two that save, and the repository lint. Nothing here can refuse a profile that is
+  // already on disk.
+  //
+  // It does not narrow what a REQUEST may name. That tolerance is deliberate and is a decision about what
+  // a client receives; this is the stored default, which is the opposite case — it is set once, by
+  // somebody who then stops watching, and its failure is silent by construction.
+  if (!sparse || profileObj?.defaultJurisdictions !== undefined) {
+    const { dropped } = recognizedTerritories(profileObj?.defaultJurisdictions ?? []);
+    if (dropped.length) {
+      errors.push(`profiles/${key}.json: ${dropped.map((d) => JSON.stringify(d)).join(", ")} `
+        + `${dropped.length === 1 ? "is not a territory" : "are not territories"} the engine can search, `
+        + `so storing ${dropped.length === 1 ? "it" : "them"} would be a default that silently does `
+        + `nothing. Use a country name, or a two-letter code such as US, GB or EU.`);
+    }
   }
   return { ok: errors.length === 0, errors };
 }

@@ -83,3 +83,54 @@ test("A PROFILE WITH NO TERRITORIES AT ALL IS NOT A PROFILE WITH A PROBLEM", asy
       `${JSON.stringify(stored)} is not a finding`);
   }
 });
+
+test("A CREATE NAMING A TERRITORY THE ENGINE CANNOT SEARCH WRITES NOTHING", async () => {
+  // The ruling: an entry the engine cannot search is REFUSED where it is typed, on every editor that
+  // writes this field. The create route is one of those editors and had no territory check at all — it
+  // accepted the value, wrote it, and the entry then did nothing for the life of the company.
+  //
+  // The assertion that matters is the second one. A refusal that still wrote the file would satisfy a
+  // status check and leave the defect exactly where it was.
+  const dir = mkdtempSync(join(tmpdir(), "create-bad-territory-"));
+  writeFileSync(join(dir, "generic.json"),
+    JSON.stringify({ name: "Generic default", platforms: ["amazon.com"] }));
+  const written = [];
+  const svc = makeProfileService({
+    profileDir: dir,
+    writeProfile: (a) => { written.push(a.key); return { files: [] }; },
+    gitCommit: () => "sha",
+    audit: () => {},
+  });
+
+  const r = await svc.route("POST", "/profiles", STAFF, {
+    name: "Acme Ltd",
+    defaultJurisdictions: ["US", "XQ"],
+  });
+
+  assert.equal(r.status, 400, "refused");
+  assert.deepEqual(written, [], "NOTHING was written");
+  assert.match(String(r.json?.message ?? ""), /XQ/, "the refusal names the entry, not just the field");
+});
+
+test("A CREATE WHOSE TERRITORIES ARE ALL SEARCHABLE IS WRITTEN", async () => {
+  // The other direction. A refusal that fired on everything would pass the arm above and make the form
+  // impossible to use, which is the failure mode a one-directional check cannot see.
+  const dir = mkdtempSync(join(tmpdir(), "create-good-territory-"));
+  writeFileSync(join(dir, "generic.json"),
+    JSON.stringify({ name: "Generic default", platforms: ["amazon.com"] }));
+  const written = [];
+  const svc = makeProfileService({
+    profileDir: dir,
+    writeProfile: (a) => { written.push(a.key); return { files: [] }; },
+    gitCommit: () => "sha",
+    audit: () => {},
+  });
+
+  const r = await svc.route("POST", "/profiles", STAFF, {
+    name: "Acme Ltd",
+    defaultJurisdictions: ["US", "European Union", "GB"],
+  });
+
+  assert.equal(r.status, 201, `created — got ${r.status} ${JSON.stringify(r.json?.message ?? r.json?.error ?? "")}`);
+  assert.deepEqual(written, ["acme-ltd"]);
+});

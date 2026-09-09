@@ -17,7 +17,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api, isOk } from '../contract/api.ts'
 import type { CreatedCompany, Result } from '../contract/api.ts'
-import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, typeField } from '../contract/profileFields.ts'
+import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, typeField, parseLines } from '../contract/profileFields.ts'
 import type { FieldSpec, FormEdit } from '../contract/profileFields.ts'
 import { Field } from '../components/ProfileField.tsx'
 import { useUnsaved } from '../state/useUnsaved.ts'
@@ -72,9 +72,25 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   // afterwards. The engine resolves the default at write time and the receipt names what it resolved.
   const houseMarketplaces = ctx.factsFor('generic')?.platformCount ?? null
 
+  // Anything a STRICT field would refuse, found before the post rather than after it. The server refuses
+  // the same values on the same path, so this is not the only thing standing between a person and a bad
+  // profile — it is the half that stops them pressing a button that cannot work, and says which entry.
+  const refusedEntries = specs().flatMap((spec) => {
+    if (!spec.item?.strict) return []
+    const raw = boxValue(state, spec)
+    if (!raw.trim()) return []
+    return parseLines(raw, spec.commaSeparated ?? false).filter((e) => !spec.item!.ok(e))
+  })
+
   // Create states its unmet condition BESIDE the button, never after it. A button that looks available
   // and then refuses is the shape this whole family is removing.
-  const unmet = !typedName ? 'Needs a name.' : !key ? 'Needs a key — type one below.' : null
+  const unmet = !typedName
+    ? 'Needs a name.'
+    : !key
+      ? 'Needs a key — type one below.'
+      : refusedEntries.length
+        ? `${refusedEntries.join(', ')} cannot be searched — fix or remove ${refusedEntries.length === 1 ? 'it' : 'them'}.`
+        : null
 
   async function create() {
     if (unmet || busy) return
