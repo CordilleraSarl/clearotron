@@ -244,6 +244,18 @@ export const SYSTEM_OWNED = new Set([
   // pushed back is right to have made this an explicit decision rather than an omission: they ARE read
   // by product code, and the only honest answers were a row or this list.
   "NO_COLOR", "FORCE_COLOR",
+  // ── WINDOWS SUBSYSTEM FOR LINUX ─────────────────────────────────────────────────────────────────
+  //
+  // Set by WSL itself on every session inside it, which is what makes them worth reading: `isWsl()` in
+  // bin/onboard.mjs tests both, because under WSL a Windows binary on PATH is not the engine and the
+  // installer has to say so. Nobody configures a Clearotron install by setting them, and an
+  // .env.example row would invite somebody to try — the same argument NO_COLOR gets above, and TERM
+  // before it.
+  //
+  // The alternative was a governance row, and it would have been a false claim about a document: the
+  // row would describe a decision this product does not make. Excluded rather than documented, which
+  // is what this list is for.
+  "WSL_DISTRO_NAME", "WSL_INTEROP",
   // ── THE GITHUB ACTIONS RUNTIME (tracker issue 213) ──────────────────────────────────────────────
   //
   // `CI` above is already here for exactly this reason; these two arrived with the release scripts and
