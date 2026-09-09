@@ -4463,7 +4463,7 @@
         },
         "the-minters-read-the-published-tree.test.mjs": {
           "tests": 2,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

@@ -31,6 +31,7 @@
 //   --check  exit 1 if the committed file disagrees with a fresh derivation, printing the difference
 
 import { execFileSync } from "node:child_process";
+import { publishedOf } from "../shared/reference-guard-classes.mjs";   // the published population, one helper for every minter
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -48,10 +49,23 @@ const OUT = join(REPO, "shared", "names-in-force.mjs");
  * wrong answers on this tree before.
  */
 export function sourceFiles(root = REPO) {
-  const tracked = execFileSync("git", ["-C", root, "ls-files", "*.mjs", "*.js", "*.ts"], {
+  // THE PUBLISHED POPULATION, NOT THE INDEX. `git ls-files` reads the index, and an overlay run stages
+  // the withheld corpus over a clone without committing it — so minting there counted withheld names
+  // into this public floor with nothing reporting it: the number is simply too high, and the next
+  // person to re-mint from a clean checkout is shown a shrink and told to record it. Same helper as the
+  // other three minters, because two spellings of this rule disagree under the overlay and `--check`
+  // then reports a difference that is only the two instruments asking different questions.
+  //
+  // Found by deriving the population of this guard rather than listing it: the check that holds the
+  // other three named them by hand and this file was not among them, so the guard passed over the
+  // fourth caller of the defect it exists to stop.
+  const all = execFileSync("git", ["-C", root, "ls-files", "*.mjs", "*.js", "*.ts"], {
     encoding: "utf8", maxBuffer: 64 * 1024 * 1024,
   }).split("\n").filter(Boolean);
-  return tracked.filter((f) => !/(^|\/)(test|tests|bench)\//.test(f) && !/\.test\.(mjs|ts|js)$/.test(f));
+  const p = publishedOf(all, root);
+  if (p.error) { console.error(`mint-names-in-force: ${p.error}`); process.exit(2); }
+  if (p.laid) console.log(`mint-names-in-force: ${p.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted`);
+  return p.files.filter((f) => !/(^|\/)(test|tests|bench)\//.test(f) && !/\.test\.(mjs|ts|js)$/.test(f));
 }
 
 const NAME_RE = /\bCLEAROTRON_[A-Z0-9_]+/g;
