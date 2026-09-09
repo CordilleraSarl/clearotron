@@ -29,11 +29,36 @@ cut, not before: `cut/rules.mjs` treats a rule matching nothing as a refusal, so
 does not yet exist cannot be pre-added, and `driver/test/release-pipeline.test.mjs` reds the moment the
 file exists undecided.
 
-**The drop list is `shared/withheld-paths.mjs`, and it is the only place a cut decision is recorded.** Two
-tests read it: `driver/test/publication-scrub.test.mjs` fails a shipped file that cites a withheld path
-without a declared reason, and `driver/test/no-caveat-repair.test.mjs` treats an absent-and-declared file
-as a stated consequence rather than damage. A decision recorded anywhere else — an issue, a chat, a comment
-— is not recorded.
+**The drop list is `shared/withheld-paths.mjs`, and it is the only place a cut decision is recorded.** A
+decision recorded anywhere else — an issue, a chat, a comment — is not recorded.
+
+**Amended 2026-09-09.** This paragraph named two tests as the enforcement: `publication-scrub` and
+`no-caveat-repair`. Neither exists. Measured across both repositories that day: neither file is tracked,
+neither is on disk, and neither was ever added or deleted in either repository's history. A decision
+record that names enforcement which was never written is worse than one that names none, because a
+reader stops looking. What follows is what actually holds the line.
+
+**The drop list itself does not ship.** It stays with the archive by owner ruling, 2026-08-31, so the
+published tree carries no copy — and neither, today, does any other tree. `CUT_RECORD_PRESENT` is false
+everywhere the code runs.
+
+**What enforces the cut today is `shared/withheld-paths-access.mjs` and its three readers.** The accessor
+is the only thing that reads the drop list, and it is written to work where the list is absent:
+
+| Reader | With the list | Without it, which is every tree today |
+|---|---|---|
+| `scripts/citation-line-check.mjs` | a withheld file's citations need not resolve | every file crosses the cut, so every citation must resolve |
+| `scripts/mint-suite-census.mjs` | a withheld test file is a stated absence | a removed test file is a LOSS |
+| `shared/reference-guard-classes.mjs` | withheld paths are skipped | nothing is skipped, so the whole tree is counted |
+
+Every one degrades **stricter**, never weaker, which is the property that makes the absence safe. A
+separate record of what was cut is kept with the archive rather than published, so this repository can be
+checked without it.
+
+**The gap, stated rather than left to be found.** Because no tree carries the list, the with-the-list
+column above has never run. What is enforced today is the strict fallback, not the record — and a check
+that has never executed its other branch is a check whose other branch is unproven. The accessor
+announces which mode it is in, once, so a reader of any run can tell which column applies.
 
 **What survives a withheld document is the fact itself, moved to where the code enforces it:**
 

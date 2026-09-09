@@ -423,12 +423,22 @@ test("228 the probe loop CONSULTS that decision, and only 'ours' escapes the ref
   // driven — the arms above do that — and this one pins the wiring, which is the half a pure function
   // cannot protect. Same posture as the 2191 restart-loop arm twelve tests up.
   const loop = START_SRC.slice(START_SRC.indexOf("for (const [what, port, portVar, doorUnit"));
-  const body = loop.slice(0, 2000);
+  // THE WINDOW IS THE LOOP, NOT A CHARACTER COUNT. This read the first 2,000 characters, and the
+  // ordering assertion below compared two `indexOf` results inside it — so anything that grew the loop
+  // pushed the refusal past the edge, `indexOf` answered -1, and the comparison failed on an absence
+  // it reported as a wrong ORDER. It fails the other way too, and that is the dangerous half: with the
+  // adoption gone its own index is -1, `-1 < n` is true, and the arm passes over the defect it exists
+  // to catch. Both indices are now required to exist before either is compared.
+  const body = loop.slice(0, loop.indexOf("\n  }\n") + 1 || loop.length);
   assert.ok(body.includes("clientDoorOwner({ probeCode: code, port, ...liveClientDoor() })"),
     "the probe does not ask whose socket it is, so our own door is refused as a stranger again");
   assert.match(body, /owner === "ours"/,
     "nothing narrows the adoption to 'ours' — a wider test here silences the lockout the probe is for");
-  assert.ok(body.indexOf('owner === "ours"') < body.indexOf("fatal(listenErrorMessage"),
+  const adoption = body.indexOf('owner === "ours"');
+  const refusal = body.indexOf("fatal(listenErrorMessage");
+  assert.ok(adoption !== -1, "the adoption is gone from the probe loop");
+  assert.ok(refusal !== -1, "the refusal is gone from the probe loop");
+  assert.ok(adoption < refusal,
     "the adoption must be reached before the refusal, or it can never fire");
 });
 

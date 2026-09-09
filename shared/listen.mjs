@@ -65,9 +65,11 @@
 // WHAT THIS DELIBERATELY DOES NOT DO: look up who holds the port. Node cannot see another user's
 // process without privilege, and a probe that usually cannot look would print "no other instance" when
 // it means "could not check" — which is the same class of lie this whole issue is about. The EADDRINUSE
-// message already tells the operator `ss -ltnp`, which is the instruction that works.
+// message already tells the operator how to find the holder, in the shell they are actually in.
 
 /** The environment variable a shared box sets once to ban silent defaults for every service on it. */
+import { whatHoldsPort, stopThatProcess } from "./os-advice.mjs";
+
 export const REQUIRE_EXPLICIT_PORTS = "CLEAROTRON_REQUIRE_EXPLICIT_PORTS";
 
 /**
@@ -124,6 +126,40 @@ export function explicitPortRequiredMessage({ what, port, portVar }) {
  *             response-body and bundle assertion in the suite, so naming it is free and correct.
  *  `portFlag` an optional CLI equivalent, for the entry points that take one.
  */
+/**
+ * The first free port at or after `from`, or `null` when nothing in range is free — owner ruling,
+ * 2026-09-09.
+ *
+ * WHAT THIS IS FOR AND WHAT IT IS NOT. A collision on a DEFAULT port is this process discovering it
+ * guessed somebody else's address: nobody stated that number and nothing outside is addressed to it,
+ * so stepping to the next free one loses nothing. A collision on a port the reader SET is an address
+ * conflict they can reason about, and moving it silently would take the product away from where they
+ * pointed it. The caller decides which case it is; this only walks.
+ *
+ * AND IT IS ONLY EVER SAFE WHERE NOTHING FRONTS THESE DOORS. A proxy, an Access team or an OIDC issuer
+ * means something outside this process is addressed to these numbers, and a door that moved would be
+ * up and unreachable — the worst of the three outcomes, because it looks like success. That is the
+ * caller's question too, for the same reason: only it knows which deployment shape it is.
+ *
+ * `isFree` IS INJECTED and may be sync or async. A walker testable only by occupying real ports would
+ * be tested against whichever ports happened to be free on the machine that ran it, which is not a
+ * test of the rule.
+ *
+ * NULL RATHER THAN A GUESS when the range is exhausted. The caller then refuses on the port that was
+ * actually asked for, and the reader is told the truth — that address is taken — instead of being sent
+ * to one this could not prove was free either.
+ */
+export async function nextFreePort(from, isFree, { limit = 64, claimed = new Set() } = {}) {
+  for (let p = from + 1; p <= 65535 && p < from + limit; p += 1) {
+    // CLAIMED PORTS ARE NOT FREE, even though nothing is listening on them yet. The doors are chosen
+    // one after another and bound later, so two of them landing on one number is the same collision
+    // deferred — and the second to bind would be the one that failed.
+    if (claimed.has(p)) continue;
+    if (await isFree(p)) return p;
+  }
+  return null;
+}
+
 export function listenErrorMessage(err, { what, host, port, portVar, portFlag = null, portSource = null,
   portFile = null }) {
   const at = `${host}:${port}`;
@@ -160,8 +196,24 @@ export function listenErrorMessage(err, { what, host, port, portVar, portFlag = 
             + `address — and had it been down just now, this process would have taken it silently. `
             + `Set ${portVar ?? "the port variable"} for this instance.\n`
           : "")
-        + `  See what holds it:  ss -ltnp 'sport = :${port}'   (or: lsof -i :${port})\n`
-        + `  Then stop that process${move ? `, or ${move}` : ""}.\n`
+        // ── THE HOLDER IS NOT ALWAYS SOMETHING TO KILL, AND THIS USED TO ASSUME IT WAS ─────────────
+        //
+        // "Then stop that process" is right for a stray second copy and wrong for the other common
+        // holder: an editor's port forward. A reader working over a remote session has the port
+        // forwarded to their laptop by the editor itself, so the thing holding it is the tool they are
+        // reading this message in — and stopping it drops the session that printed the advice.
+        //
+        // So the holder is named as a question rather than a verdict, moving THIS instance comes
+        // first among the remedies, and stopping the holder is offered second and only as the
+        // reader's own call. Nothing here claims to know which it is: that cannot be seen from
+        // inside this process, and the previous wording claimed it by implication.
+        + `  See what holds it:  ${whatHoldsPort(port)}\n`
+        + "  A forwarded port counts: an editor forwarding this port to your machine holds it exactly "
+        + "as a second copy would, and stopping that would end the session you are reading this in.\n"
+        + (move
+          ? `  Move this instance instead — ${move} — or, once you know what the holder is and that you `
+            + `do not need it, ${stopThatProcess()}.\n`
+          : `  Once you know what the holder is and that you do not need it, ${stopThatProcess()}.\n`)
         + whichFile
         + `  Refusing to start — it will NOT quietly move to another port, because whatever is in front `
         + `of it is still addressed to ${at}.`;

@@ -213,6 +213,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-door-is-moved-only-when-nothing-outside-resolves-to-it.test.mjs": {
+          "tests": 7,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-door-that-is-not-there-is-not-a-door-that-agrees.test.mjs": {
           "tests": 20,
           "asserts": 75,
@@ -983,7 +989,7 @@
         },
         "both-doors-start-on-both-paths.test.mjs": {
           "tests": 26,
-          "asserts": 59,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -4191,6 +4197,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
+          "tests": 14,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
         "the-attempt-record-carries-tool-time.test.mjs": {
           "tests": 13,
           "asserts": 47,
@@ -4510,8 +4522,8 @@
           "todos": 0
         },
         "the-public-residue-is-a-floor.test.mjs": {
-          "tests": 9,
-          "asserts": 34,
+          "tests": 13,
+          "asserts": 51,
           "skips": 5,
           "todos": 0
         },
