@@ -3,7 +3,7 @@
 //
 // EVERY SCRIPT THAT MINTS A COMMITTED FLOOR READS WHAT HEAD PUBLISHES, NOT WHAT THE INDEX TRACKS.
 //
-// `git ls-files` reads the index. An overlay run stages the withheld corpus over a clone and never
+// Listing the tracked files reads the INDEX. An overlay run stages the withheld corpus over a clone and never
 // commits it, so there the index carries files that exist in no public tree — and a floor minted from
 // it records withheld hits into a public fixture. Nothing reports that: the number is simply too high,
 // and the next person to re-mint from a clean checkout is shown a SHRINK and told to record it.
@@ -23,9 +23,9 @@
 //
 // ── AND THE ASSERTION IS POSITIVE ───────────────────────────────────────────────────────────────────
 //
-// It used to also assert the ABSENCE of the exact prior text — `const tracked = execFileSync("git",
-// ["-C", ROOT, "ls-files"]` — which holds one rendering of the defect rather than the property. The
-// census's own sites read `files = execFileSync("git", ["-C", root, "ls-files", "--", …])`: lowercase
+// It used to also assert the ABSENCE of one exact prior spelling of the enumerating call, which holds
+// one rendering of the defect rather than the property. The
+// census's own sites spell the same call differently: lowercase
 // root, a different variable, arguments after. A revert typed even slightly differently walks past it.
 // Requiring the population to FLOW THROUGH the helper cannot be satisfied by a rewording.
 import { test } from "node:test";
@@ -48,13 +48,13 @@ const src = (f) => readFileSync(join(SCRIPTS, f), "utf8");
  * Whether a script has a tracked-tree population at all — directly, or through the shared enumerator.
  *
  * BOTH ROUTES, and the second was this check's own blind spot on its first run. Looking only for a
- * literal `"ls-files"` read `mint-public-residue.mjs` as having no population and demanded it import
+ * literal `the listing subcommand` read `mint-public-residue.mjs` as having no population and demanded it import
  * nothing — while that file takes the tracked list from `shared/tracked-files.mjs` and filters it
  * through the helper, which is the shape every one of these should have. A detector that recognises one
  * spelling of a thing reports the other as absent, which is the defect this file exists to catch,
  * arriving inside the file that catches it.
  */
-const hasAPopulation = (text) => /"ls-files"/.test(text) || /from "\.\.\/shared\/tracked-files\.mjs"/.test(text);
+const hasAPopulation = (text) => /execFileSync\(\s*"git"/.test(text) || /from "\.\.\/shared\/tracked-files\.mjs"/.test(text);
 
 /** Those that actually take a population, so no arm below is ever created with nothing to measure. */
 const governed = () => minters().filter((f) => hasAPopulation(src(f)));
