@@ -127,6 +127,27 @@ export const ANY_CITATION = /\btracker issues?\s+\d+/i;
 // `:<line>` that makes a citation, not which language the target happens to be written in. Widening it
 // changes nothing on today's tree, which is the point: the same answer from a rule that cannot go blind
 // the day somebody cites a seventh kind of file.
+// ── A CITATION THAT WRAPPED IS IN NEITHER PILE ─────────────────────────────────────────────────────
+//
+// Every rule here reads one line, so a citation broken across a line break is invisible to all of them:
+// `tracker issue` at the end of one line and its number at the start of the next matches no pattern,
+// counts in no total, and appears on no hand-off list. Thirty-six of them are in the tree. That is the
+// same shape as a line stripped before it is classified — not a smaller number, an absent one.
+//
+// FOUND AND HANDED OFF, NOT JOINED. Joining rewrites BOTH lines, which re-ages every citation on either
+// and re-flows the prose around them; and the removal itself is a sentence repair across a break, which
+// is precisely the work the hand-off exists for. So this makes them visible and stops there.
+export const WRAPPED_HEAD = /\btracker\s*$|\btracker issues?\s*$/i;
+export const WRAPPED_TAIL = /^\s*(?:\/\/|#|\*|--)?\s*(?:issues?\s+)?\d+/i;
+
+/** True when `a` ends a citation that `b` completes. PURE. */
+export const wrapsInto = (a, b) => {
+  if (!WRAPPED_HEAD.test(a) || b === undefined) return false;
+  // `tracker` alone must be completed by the word `issue`; `tracker issue` by a bare number. Without
+  // this split, a line ending in "tracker" followed by any numbered list item reads as a citation.
+  return /\btracker\s*$/i.test(a) ? /^\s*(?:\/\/|#|\*|--)?\s*issues?\s+\d+/i.test(b) : /^\s*(?:\/\/|#|\*|--)?\s*\d+/.test(b);
+};
+
 export const CARRIES_ANOTHER_CITATION = /[A-Za-z0-9_.\-/]+\.[A-Za-z0-9]+:\d+/;
 
 export const EXCLUDED = [
@@ -166,7 +187,13 @@ export function surveyOf(files, read) {
     // opener AND a second citation further along was stripped once, counted as done, and never reached
     // the hand-off list a person is told to read — its survivor was invisible in the one place it should
     // have been named. Test the RESULT: a line can be both stripped and still owed to a reader.
-    const out = text.split("\n").map((line, i) => {
+    const lines = text.split("\n");
+    // The wrapped form, before the per-line rules: it belongs to a PAIR, so no single-line pass can see
+    // it. Reported at the line the citation starts on, which is the one a reader has to open.
+    lines.forEach((line, i) => {
+      if (wrapsInto(line, lines[i + 1])) handoff.push({ file: f, line: i + 1, text: `${line.trim()} ⏎ ${String(lines[i + 1]).trim()}`.slice(0, 200) });
+    });
+    const out = lines.map((line, i) => {
       // Refused before either rule runs, so a line is never half-swept: it goes to the reader whole.
       const holdBack = CARRIES_ANOTHER_CITATION.test(line);
       const opened = !holdBack && OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;

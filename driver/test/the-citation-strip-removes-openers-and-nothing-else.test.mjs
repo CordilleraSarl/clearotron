@@ -20,7 +20,7 @@ import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { OPENER, PARENTHETICAL, ANY_CITATION, EXCLUDED, isScannable, surveyOf, stripParenthetical } from "../../scripts/strip-tracker-citations.mjs";
+import { OPENER, PARENTHETICAL, ANY_CITATION, EXCLUDED, isScannable, surveyOf, stripParenthetical, wrapsInto } from "../../scripts/strip-tracker-citations.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -233,4 +233,44 @@ test("the sweep is a fixed point on the tree it has already swept", () => {
   assert.ok(tracked.length > 100, `read ${tracked.length} tracked path(s) — the population is not the tree`);
   assert.equal(s.strippedTotal, 0,
     `the sweep would still rewrite ${s.strippedTotal} line(s) of a tree it has already swept — re-run it and commit the result`);
+});
+
+// ── a citation that wrapped across a line break ─────────────────────────────────────────────────────
+//
+// Every rule in this file reads ONE line, so a citation broken across a break matched nothing, counted
+// in no total and appeared on no hand-off list. Thirty-six were in the tree. That is not a smaller
+// number than the truth, it is an absent one — the same shape as a line stripped before it is
+// classified, which this file already has a check for.
+
+test("a citation broken across a line break is found and handed off", () => {
+  for (const [a, b] of [
+    ["// the rule is stated in tracker", "// issue 264 and nowhere else"],
+    ["// the rule is stated in tracker issue", "// 264 and nowhere else"],
+    ["# a comment ending in tracker", "#   issues 1149 item 2"],
+  ]) {
+    assert.equal(wrapsInto(a, b), true, `missed: ${a} ⏎ ${b}`);
+  }
+});
+
+test("a line ending in the word tracker is not a citation because a number follows it", () => {
+  // THE OVER-MATCH THIS COULD HAVE BEEN. `tracker` is an ordinary word and numbered lists are ordinary
+  // prose, so requiring `issue` after a bare `tracker` is what keeps a sentence about a bug tracker,
+  // followed by a step 3, from reading as a citation and being handed to somebody to rewrite.
+  for (const [a, b] of [
+    ["// we open a ticket in the tracker", "//   3. then the run resumes"],
+    ["// see the tracker", "// for the current state"],
+    ["// nothing to do with a tracker issue at all", "// a following line"],
+  ]) {
+    assert.equal(wrapsInto(a, b), false, `false positive: ${a} ⏎ ${b}`);
+  }
+  assert.equal(wrapsInto("// ends in tracker", undefined), false, "the last line of a file has no successor");
+});
+
+test("the survey reports the wrapped pair at the line the citation starts on", () => {
+  const tree = { "a.mjs": ["// a plain one (tracker issue 12)", "// the rule is in tracker", "// issue 264 and nowhere else", ""].join("\n") };
+  const s = surveyOf(Object.keys(tree), (f) => tree[f]);
+  assert.equal(s.strippedTotal, 1, "the bracketed one on line 1 is still swept");
+  const wrapped = s.handoff.filter((h) => h.text.includes("⏎"));
+  assert.equal(wrapped.length, 1, "the wrapped citation is on no hand-off list");
+  assert.equal(wrapped[0].line, 2, "reported at the line a reader has to open, not the one holding the number");
 });
