@@ -2671,3 +2671,42 @@ test("332: the driver's follow-up row goes when the model already named that sea
     { runId: "dedupe-3" });
   assert.match(near, /Follow-up \/ dolphin/, "a partial word overlap suppressed a gap it does not cover");
 });
+
+// ── a completed search must not stand in for an uncompleted one ─────────────────────────────────────
+//
+// FOUND ON A DELIVERED PAGE, not here. The first version of the duplicate-row rule suppressed the
+// composed row whenever any written row's area contained every significant word of the directive — and
+// with a one-word directive that is a very low bar. On a real run a COMPLETED saturation probe into
+// third-party dolphin-word rights suppressed the UNCOMPLETED exact-word register search for DOLPHIN,
+// because both areas carry the word. The client read a coverage section that mentioned dolphin and
+// disclosed nothing left undone, and the suppressed row was the page's only disclosure of the gap.
+//
+// WHY MY OWN NEAR-MATCH ARM DID NOT CATCH IT. Its fixture put the shared word in the other row's NOTE.
+// When the rule narrowed to matching the AREA, that fixture stopped exercising the containment path at
+// all and passed for the wrong reason — a fixture built for one failing state cannot reach the one
+// beside it. These three drive the states, not a variation of one.
+test("332: a completed search does not suppress the row disclosing an uncompleted one", () => {
+  const composedRow = { area: "Follow-up / dolphin", state: "open",
+    note: "dolphin — not completed this run — the exact-word search was planned and never reached the register" };
+
+  // 1. THE GAP. An unrelated row, for a search that RAN, mentioning the same word.
+  const gap = renderHtml(parsedOf(REPORT), FINDINGS, [
+    { area: "register / dolphin-word saturation probe", state: "confirmed-clean",
+      note: "third-party dolphin-word rights outside the client's field — searched, nothing live" },
+    composedRow,
+  ], { runId: "gap" });
+  assert.match(gap, /Follow-up \/ dolphin/,
+    "a completed search suppressed the only row disclosing that a planned search never ran");
+
+  // 2. THE INTENDED DUPLICATE still goes: the model's own row, for the same search, and open.
+  const dupe = renderHtml(parsedOf(REPORT), FINDINGS, [
+    { area: "the English word DOLPHIN as a dedicated exact search", state: "open", note: "planned and not reached" },
+    composedRow,
+  ], { runId: "dupe" });
+  assert.doesNotMatch(dupe, /Follow-up \/ dolphin/,
+    "the model's own row for the same open search no longer suppresses the driver's duplicate");
+
+  // 3. THE CONTROL. Nothing else names it, so it is the only disclosure and must stand.
+  const alone = renderHtml(parsedOf(REPORT), FINDINGS, [composedRow], { runId: "alone" });
+  assert.match(alone, /Follow-up \/ dolphin/, "the only row disclosing this gap was suppressed");
+});
