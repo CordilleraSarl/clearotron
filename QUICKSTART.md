@@ -18,6 +18,12 @@ The register is the one with a real choice in it. EUIPO and a local USPTO index 
 reach one office each; Signa is the recommended paid route and the fastest to a real clearance.
 [The six, and what each reaches](providers/README.md).
 
+**macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `clearotron demo` runs
+anywhere Node does, native Windows included. A real clearance does not: the engine resolves the
+reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI on
+`PATH`. On Windows, `wsl --install`, then install Node **inside** the Linux distribution and work
+through this page from there. [INSTALL.md](INSTALL.md) has the version floor and the rest.
+
 ## Install
 
 ```bash
