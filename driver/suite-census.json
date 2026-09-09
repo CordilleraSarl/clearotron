@@ -2926,8 +2926,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 120,
-          "asserts": 642,
+          "tests": 122,
+          "asserts": 651,
           "skips": 0,
           "todos": 0
         },
@@ -2938,8 +2938,8 @@
           "todos": 0
         },
         "portal-upstream.test.mjs": {
-          "tests": 36,
-          "asserts": 108,
+          "tests": 41,
+          "asserts": 124,
           "skips": 0,
           "todos": 0
         },
@@ -5347,6 +5347,12 @@
           "skips": 0,
           "todos": 0
         },
+        "companyKeyParity.test.ts": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "compose.test.ts": {
           "tests": 8,
           "asserts": 29,
@@ -5559,7 +5565,7 @@
         },
         "screenCopy.test.ts": {
           "tests": 56,
-          "asserts": 181,
+          "asserts": 183,
           "skips": 0,
           "todos": 0
         },
