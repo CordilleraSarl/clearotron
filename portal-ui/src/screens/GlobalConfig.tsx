@@ -36,6 +36,7 @@
 
 import type { CSSProperties } from 'react'
 import { api } from '../contract/api.ts'
+import { engineRow } from '../contract/engineState.ts'
 import type { AuthState, EngineState, FlagView, ProviderState } from '../contract/api.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
@@ -244,56 +245,18 @@ function Auth({ auth }: { readonly auth: AuthState }) {
   )
 }
 
+// THE ROW IS THE SHARED DECISION'S OUTPUT, SPREAD — no second expression for anything it carries.
+//
+// This used to assemble the row here: a fault list built in place, and `ok={faults.length === 0}` beside
+// it. Driving the fault list then proved the list and said nothing about whether this screen asked for
+// it, which is the same shape as the defect the issue is about — a row drawn green while the data under
+// it said otherwise. Recomputing `ok`, or adding a condition next to it, would have left every test on
+// the list green and put the reader back in front of a lying row.
+//
+// One call site, spread whole, so the row is covered by construction rather than by this file agreeing
+// with another one. `engineState.test.ts` holds both the relation and this call site.
 function Engine({ engine, programDisputed = false }: { readonly engine: EngineState; readonly programDisputed?: boolean }) {
-  // Believe `apiBilled`, not `mode`. They agree except in one state — the engine is set to bill an API
-  // key that is not set — and that is the state worth showing, because the driver refuses a run in it.
-  const billed = engine.billing.apiBilled ? 'API key' : 'Subscription'
-  const faults = [
-    ...(engine.known ? [] : [`This build does not ship an engine called ${engine.id}.`]),
-    ...(engine.billing.missing.length
-      ? [`Set to bill an API key, and ${engine.billing.missing.join(' and ')} is not set — a run is refused rather than billed to the subscription.`]
-      : []),
-    // NAMES THE PROGRAM AND THE COMMAND. The sentence here used to end at "cannot be found or run on
-    // this machine", which tells a reader they have a problem and not one thing to do about it — on
-    // the page they opened to find out what to do. Both words come from the engine table the wizard
-    // and the run door already read, so this row cannot describe an engine differently from them.
-    //
-    // AND THE RESTART, which is the sentence that was missing everywhere. Installing the program does
-    // not change what the engine last recorded: the service reads its PATH when it starts, and until
-    // it starts again every screen goes on showing the old answer with nothing saying why.
-    ...(engine.binaryPresent
-      ? []
-      : engine.program && engine.install
-        ? [`The engine program \`${engine.program}\` cannot be found or run on this machine. `
-           + `Install it with \`${engine.install}\`, then restart this service so it re-reads its PATH.`]
-        // Neither word available — an older service, or an engine this build does not ship, which the
-        // `known` fault above already names. The sentence that shipped before, unchanged.
-        : ['The engine program cannot be found or run on this machine.']),
-    // SELECTED IS NOT USABLE, and this row is where those two got drawn the same. `binaryPresent` above
-    // is this deployment's own reading; the engine that last started disagreed with it, and the screen a
-    // reader would go to next believes that other answer. Naming it here is the only place the two meet.
-    //
-    // THE `&& engine.binaryPresent` IS DELIBERATE AND NOT A BUG. A disagreement has two directions and
-    // only one of them needs a sentence here. This machine sees the program and the engine did not: that
-    // is this line, because every other row on the page says the engine is fine. The mirror — the engine
-    // saw it and this machine does not — is already covered by the fault directly above, which fires on
-    // `!binaryPresent` and says the program cannot be found or run. Dropping the condition would print
-    // both at once and contradict itself.
-    ...(programDisputed && engine.binaryPresent
-      ? ['The engine program is on this machine, but the engine could not find it when it last started — '
-         + 'so a new search will refuse. Restart the engine service, or install the CLI where the service can see it.']
-      : []),
-  ]
-
-  return (
-    <Row
-      ok={faults.length === 0}
-      name={engine.vendor ?? engine.id}
-      mono={engine.id}
-      state={billed}
-      faults={faults}
-    />
-  )
+  return <Row {...engineRow(engine, { programDisputed })} />
 }
 
 function Provider({ p }: { readonly p: ProviderState }) {
