@@ -2013,6 +2013,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-engine-call-asks-for-the-refreshed-credential.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "every-lane-declares-its-transport-position.test.mjs": {
           "tests": 7,
           "asserts": 12,

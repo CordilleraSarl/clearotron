@@ -4305,7 +4305,7 @@ const PORT = PORT_CHOICE.port;
   };
   const stopRun = async (args) => {
     if (!MCP_URL || !OPS_TOKEN) throw new Error("PORTAL_MCP_URL / PORTAL_OPS_TOKEN unset — the stop lane is not wired on this instance");
-    return mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "stop_run", args });
+    return mcpToolCall({ url: MCP_URL, token: await currentOpsToken(), tool: "stop_run", args });
   };
 
   // The config surface. profile-service is constructed IN-PROCESS rather than called over HTTP: it
