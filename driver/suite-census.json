@@ -51,6 +51,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-block-that-ran-and-said-nothing-is-not-a-block-that-never-ran.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-borrowed-node-modules-is-not-a-licence-defect.test.mjs": {
           "tests": 8,
           "asserts": 28,
