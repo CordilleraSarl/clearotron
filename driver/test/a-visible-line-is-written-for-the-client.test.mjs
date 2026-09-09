@@ -12,7 +12,8 @@
 // It changes no band, no evidence and nothing that is searched.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { plainRegisterFlags, PLAIN_FORMS, SENTENCE_WORD_LIMIT, DEFAULT_VISIBLE_FIELDS } from "../plain-register.mjs";
+import { readFileSync } from "node:fs";
+import { plainRegisterFlags, PLAIN_FORMS, SENTENCE_WORD_LIMIT, DEFAULT_VISIBLE_FIELDS, resolveVisiblePath } from "../plain-register.mjs";
 
 // The two lines the acceptance names, taken from the delivered pages the owner read.
 const KNOCKOUT_NET = "The proprietor of the subsisting registration would prevail on the marks-and-goods comparison.";
@@ -85,16 +86,52 @@ test("333 a line already written for the reader is left alone", () => {
   assert.deepEqual(plainRegisterFlags(good, { mark: "DELPH" }), []);
 });
 
-test("333 both products declare the fields the rule reaches, and they are not empty", () => {
-  // The knockout and the clearance drifted apart once already. One list, named where both read it.
-  for (const product of ["knockout", "clearance"]) {
+// ── THE LIST NAMES SOMETHING REAL, AND THIS IS WHAT MAKES THAT CHECKABLE ────────────────────────────
+//
+// THE ARM THIS REPLACES PINNED THE DEFECT. It asserted the list contained `summary`, `reviewerNotes` and
+// `oneLiner` — three of the six names that resolved to nothing in any casing. So the list was wrong, the
+// arm held it wrong, and both were green: the rule's own paperwork sat inside the population the rule
+// governs. Asserting membership of a list of bare names can only ever check that somebody typed the
+// same string twice.
+//
+// A PATH RESOLVES OR IT DOES NOT, which is the whole repair. Each entry is walked against the delivered
+// runs under `demo/` — the shapes a real run writes, not a fixture of mine, which would only prove the
+// fixture matches the reader.
+test("395 every default-visible path resolves to prose in a delivered record", () => {
+  const records = {
+    knockout: ["knockout-search/run/knockout-findings.json"],
+    clearance: [
+      "global-preliminary-search/run/findings.json",
+      "full-country-search/run/findings.json",
+      "multi-country-focus-search/run/findings.json",
+    ],
+  };
+  for (const [product, files] of Object.entries(records)) {
+    const docs = files.map((f) => JSON.parse(readFileSync(new URL(`../../demo/${f}`, import.meta.url), "utf8")));
     const fields = DEFAULT_VISIBLE_FIELDS[product];
-    assert.ok(Array.isArray(fields) && fields.length > 0, `${product} declares no default-visible fields`);
-    assert.ok(fields.includes("summary"), `${product} does not count its summary as visible`);
-    assert.ok(fields.includes("reviewerNotes"), `${product} does not count the reviewer's notes as visible`);
+    assert.ok(Array.isArray(fields) && fields.length >= 5, `${product} declares ${fields?.length} default-visible fields`);
+    for (const path of fields) {
+      const found = docs.reduce((n, d) => n + resolveVisiblePath(d, path).length, 0);
+      // ACROSS the records, not in each: an optional field absent from one delivered run is a fact about
+      // that run. A path absent from every one of them names nothing and is the defect.
+      assert.ok(found > 0,
+        `${product}: "${path}" resolves to no prose in any delivered record — it names nothing, which is `
+        + "exactly what six entries on this list did while reading as correct");
+    }
   }
-  assert.ok(DEFAULT_VISIBLE_FIELDS.knockout.includes("net"), "the knockout's one sentence per finding");
-  assert.ok(DEFAULT_VISIBLE_FIELDS.clearance.includes("oneLiner"), "the clearance's one-liner");
+});
+
+test("395 the resolver can fail — a path that names nothing returns nothing", () => {
+  // Every assertion above is that something was found. If the resolver returned a non-empty answer for
+  // anything at all, the arm would pass over a list of invented names, so the failing direction is
+  // driven here. Both shapes of wrong: a key that does not exist, and a real key walked as the wrong
+  // kind of container.
+  const doc = JSON.parse(readFileSync(new URL("../../demo/global-preliminary-search/run/findings.json", import.meta.url), "utf8"));
+  assert.deepEqual(resolveVisiblePath(doc, "oneLiner"), [], "an absent key resolved to something");
+  assert.deepEqual(resolveVisiblePath(doc, "thirdPartyRights"), [], "the miscased name resolved — the repair was unnecessary");
+  assert.deepEqual(resolveVisiblePath(doc, "four_answers[].read"), [],
+    "an object-keyed register walked as a list resolved — the arm cannot tell a wrong path from a right one");
+  assert.ok(resolveVisiblePath(doc, "four_answers.*.read").length > 0, "…and the correct path does resolve");
 });
 
 test("333 every worked form offers a plain alternative, or says the word simply goes", () => {

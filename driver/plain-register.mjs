@@ -127,8 +127,82 @@ export function plainRegisterFlags(text, about = {}) {
 /**
  * The fields a reader meets before opening anything. Named here rather than at each call site so the
  * two products answer to one list — the knockout and the clearance drifted apart once already.
+ *
+ * EVERY ENTRY IS A PATH INTO A DELIVERED RECORD, and an arm resolves each one against the runs under
+ * `demo/`. That is the whole repair. The clearance half named eight fields of which six did not exist
+ * in any casing, and the reason nobody noticed is that a list of names is only ever read BY a person:
+ * `thirdPartyRights` beside a record carrying `four_answers.third_party_rights` reads as correct, and a
+ * loop over it opens nothing and reports a clean result over text it never read. A path either resolves
+ * or the arm says so.
+ *
+ * THE PATHS ARE THE SURFACES THE LIVE CHECK ALREADY READS. `plainRegisterExtra` in pipeline.mjs walks
+ * the clearance record's own keys and had a comment explaining that it could not use this list. The list
+ * is now what that walk reads, plus the four answers, which render on the report as prose and were
+ * missing from both. One definition, and the walk is the thing that made it checkable.
+ *
+ * `[]` MARKS A LIST and `*` an object's own values: `findings[].net` is one sentence per finding, and
+ * `four_answers.*.read` one per answer — that register is keyed by answer name and is not an array.
+ *
+ * WHAT CAME OFF, AND WHY EACH. `oneLiner` and `freedomToOperate` exist in no record in either casing and
+ * name no surface anybody could point at — they are gone rather than renamed, because inventing a target
+ * for them would be a guess in the one place a guess reads as a fact. `ownRights` resolves to
+ * `findings[].own_rights.source`, which is a record URI and not prose: a citation has no register, and
+ * running a plain-words check over one would flag the profession's vocabulary inside a machine
+ * identifier. `batchOpener` was in the KNOCKOUT half and is dead in both casings there.
+ *
+ * KNOWN INCOMPLETE, DELIBERATELY. `marks[].registerReads[].read` is walked as knockout-visible prose by
+ * `knockoutVisibleProse` and is not on the knockout list here. Adding it would widen what the reviewing
+ * pass rewrites on a delivered report, which is a change to what a client receives and not this repair's
+ * to make. The acceptance here is that every entry names something real, not that the list is complete;
+ * the completeness question is recorded on the issue rather than settled in passing.
  */
 export const DEFAULT_VISIBLE_FIELDS = Object.freeze({
-  knockout: ["summary", "batchOpener", "basis", "net", "factors", "counterFactors", "mitigation", "standardCaveats", "reviewerNotes"],
-  clearance: ["summary", "oneLiner", "registrability", "thirdPartyRights", "ownRights", "freedomToOperate", "reviewerNotes", "coverage"],
+  knockout: [
+    "batch.executiveSummary", "batch.standardCaveats[]",
+    "marks[].basis", "marks[].factors[]", "marks[].counterFactors[]", "marks[].mitigation",
+    "marks[].purpleNotes[]", "marks[].findings[].net",
+  ],
+  clearance: [
+    "mark_assessment.distinctiveness", "mark_assessment.connotation",
+    "four_answers.*.read", "findings[].net", "coverage[].note", "actions[].text",
+  ],
 });
+
+/**
+ * Every string a path in `DEFAULT_VISIBLE_FIELDS` reaches in one delivered record.
+ *
+ * THIS IS WHAT MAKES THE LIST CHECKABLE, and its absence is why six dead names sat there for months. A
+ * list of bare names can only be read by a person; a path can be resolved, so an arm can say which
+ * entries open nothing.
+ *
+ * `[]` walks a list, `*` walks an object's own values — `four_answers` is keyed by answer name rather
+ * than being an array, and a path that assumed a list there resolved to nothing while looking right.
+ *
+ * TWO FIELDS ARRIVE AS EITHER A STRING OR AN OBJECT, and this reads both because the code that renders
+ * them does. A reviewer's note is `p?.text ?? p` in `knockoutVisibleProse`; an assessment field is
+ * `typeof v === "string" ? v : v?.read` where the structured form carries typed rows beside the prose.
+ * Resolving only the string form would have reported both as dead on a record that carries them, which
+ * is the same absence-dressed-as-a-fact this repair exists to remove — measured, on the delivered runs.
+ *
+ * A missing key yields NOTHING rather than throwing. An absent optional field is a fact about that
+ * record, and the arm decides what an absence means across several of them.
+ */
+export function resolveVisiblePath(record, path) {
+  let nodes = [record];
+  for (const seg of String(path).split(".")) {
+    const list = seg.endsWith("[]");
+    const key = list ? seg.slice(0, -2) : seg;
+    const next = [];
+    for (const n of nodes) {
+      if (n == null || typeof n !== "object") continue;
+      if (key === "*") { next.push(...Object.values(n)); continue; }
+      const v = key ? n[key] : n;
+      if (v == null) continue;
+      if (list && Array.isArray(v)) next.push(...v); else next.push(v);
+    }
+    nodes = next;
+  }
+  return nodes
+    .map((n) => (typeof n === "string" ? n : (typeof n?.text === "string" ? n.text : n?.read)))
+    .filter((s) => typeof s === "string" && s.trim());
+}

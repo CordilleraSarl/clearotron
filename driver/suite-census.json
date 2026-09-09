@@ -712,8 +712,8 @@
           "todos": 0
         },
         "a-visible-line-is-written-for-the-client.test.mjs": {
-          "tests": 10,
-          "asserts": 23,
+          "tests": 11,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
