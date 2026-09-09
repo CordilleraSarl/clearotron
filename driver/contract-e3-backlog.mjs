@@ -301,7 +301,7 @@ export const E3_BACKLOG = [
   {
     stage: "placement-inquiry",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:2403",
+    where: "driver/stages.mjs:2436",
     surface: "stage-message",
     evidence: "· tier EXACTLY one of headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered.",
     reparsedBy: "driver/placement-form.mjs / driver/placement-model.mjs via validators.placement",
@@ -590,7 +590,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3063 (restated at driver/skills/prelim-search/synthesis-rules.md:428)",
+    where: "driver/stages.mjs:3096 (restated at driver/skills/prelim-search/synthesis-rules.md:428)",
     surface: "stage-message",
     evidence: "END that finding's actual-use line with a literal \"- **Use-check source:** <result URL | \"perplexity_research — no result\">\" line",
     reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal at driver/gateway.mjs:2153",
@@ -703,7 +703,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:1869 and driver/skills/narrative-refutation/SKILL.md:41-50",
+    where: "driver/stages.mjs:1902 and driver/skills/narrative-refutation/SKILL.md:41-50",
     // RE-QUOTED 2026-08-16. The dictated SENTENCE survives in narrative-refutation's SKILL.md — it is the
     // `evidence` below, verbatim. What changed is that the four kinds moved from an inline list after the
     // colon onto their own `- [kind: …]` bullet lines. Measured, not assumed: the old anchor matched 59 of
