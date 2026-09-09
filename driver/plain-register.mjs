@@ -49,6 +49,21 @@ export const PLAIN_FORMS = Object.freeze([
 /** The longest visible sentence a reader should meet. The issue's number, not a derived one. */
 export const SENTENCE_WORD_LIMIT = 25;
 
+/**
+ * How a term in `PLAIN_FORMS` is looked for in prose — ONE definition, because two of them drift.
+ *
+ * THE INFLECTIONS ARE THE POINT, and they were the reason a second copy of this rule survived. The
+ * pre-delivery lint carried its own hand-tuned patterns — `\bproprietors?\b`, `\bprevails?\b|\bprevailing\b`
+ * — while this file built `\bproprietor\b` and matched neither plural. So the pinned source was the
+ * WEAKER of the two, and reading terms from it without this would have quietly narrowed what the live
+ * check catches: a consolidation that loses coverage is a regression wearing a tidy-up's clothes.
+ *
+ * A trailing `s`, `es`, `ed` or `ing` after the term, and a hyphen matching a space, which is how the
+ * same phrase is written in two documents by two people.
+ */
+export const termMatcher = (term) => new RegExp(
+  `\\b${term.replace(/[-]/g, "[- ]").replace(/\s+/g, "\\s+")}(?:e?s|ed|ing)?\\b`, "i");
+
 /** Everything the run is ABOUT — the mark, its variants, the owners named. Never flagged. */
 const ownTerms = (about = {}) => {
   const out = [];
@@ -85,8 +100,7 @@ export function plainRegisterFlags(text, about = {}) {
 
   const flags = [];
   for (const [term, plain] of PLAIN_FORMS) {
-    const re = new RegExp(`\\b${term.replace(/[-]/g, "[- ]").replace(/\s+/g, "\\s+")}\\b`, "i");
-    if (!re.test(scan)) continue;
+    if (!termMatcher(term).test(scan)) continue;
     flags.push({
       kind: "vocabulary",
       term,
