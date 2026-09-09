@@ -508,7 +508,7 @@ export const ALL_TERRITORIES: readonly string[] = [...REGIONS, ...COUNTRIES]
  * a code is something "the engine resolves and this vocabulary does not list". The engine does not
  * resolve any two letters: it holds 262 codes and treats everything else as unknown. So `XQ` was
  * accepted here, stored, carried, and then dropped before the prompt — with nothing said at any point.
- * That is the whole of tracker issue 417 in one predicate.
+ * A shape check for a value the engine resolves against a list can only ever be a guess at that list.
  */
 export const JURISDICTION_CODE_FOLD: Readonly<Record<string, string>> = Object.freeze({
   UK: "GB",
@@ -583,9 +583,9 @@ export const isTerritoryCode = (entry: string): boolean => isKnownJurisdictionCo
  * engine actually holds.
  *
  * ITS ONE CONSUMER IS THE STORED ACCOUNT DEFAULT (`profileFields.ts`), and that is deliberate. What a
- * REQUEST may name is a separate and more tolerant question — tracker issue 417 is explicit that the
- * request path's tolerance is a client-outcome decision and stays as it is. A stored default is the
- * opposite case: nobody is watching when it fails, so it is refused where it is typed.
+ * REQUEST may name is a separate and more tolerant question: that tolerance is a decision about what a
+ * client receives and it stays as it is. A stored default is the opposite case — nobody is watching when
+ * it fails, so it is refused where it is typed.
  */
 export const isTerritoryEntry = (entry: string): boolean => isKnownTerritory(entry) || isTerritoryCode(entry)
 

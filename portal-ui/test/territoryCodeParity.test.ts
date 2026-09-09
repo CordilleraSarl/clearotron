@@ -4,8 +4,8 @@
 //
 // The same pin as effortModelParity, for the same reason. A mirrored constant is a copy, and a copy
 // drifts silently: the browser goes on accepting a code the engine stopped recognising, the person is
-// told their entry is fine, and the entry is dropped before the prompt. That is the defect tracker issue
-// 417 names, arriving through the fix for it.
+// told their entry is fine, and the entry is dropped before the prompt — which is the defect this pin
+// exists to stop, arriving through the fix for it.
 //
 // It reads the driver module rather than restating its contents, so this file cannot be "repaired" by
 // pasting the new list into both sides — the only way to make it pass is to make them agree.
@@ -76,7 +76,7 @@ test('THE PREDICATE AGREES ON THE CASES THAT CAUSED THE DEFECT', () => {
 })
 
 test('THE STORED-DEFAULTS FIELD REFUSES WHAT THE ENGINE CANNOT SEARCH', () => {
-  // The field's own predicate, which is the point of entry tracker issue 417 asks to hold the line at.
+  // The field's own predicate — the point of entry, which is where a stored default has to be refused.
   assert.equal(isTerritoryEntry('United States'), true, 'a name this build lists')
   assert.equal(isTerritoryEntry('US'), true, 'the code the staff editor tells people to type')
   assert.equal(isTerritoryEntry('EU'), true, 'the EUIPO, which the display-name check used to flag')

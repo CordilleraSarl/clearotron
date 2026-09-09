@@ -131,8 +131,8 @@ export const jobJurisdictions = (job) =>
  * is what makes that possible; `resolveEffectiveScope` is where it reaches somebody.
  *
  * NOT a filter on what gets searched. What a stored default DOES is a client-outcome question and it is
- * not this function's to answer — tracker issue 417 is explicit that the request path's tolerance for an
- * unrecognized territory stays exactly as it is. This reports; it does not narrow.
+ * not this function's to answer, and the ruling behind this change is explicit that the request path's
+ * tolerance for an unrecognized territory stays exactly as it is. This reports; it does not narrow.
  */
 export function defaultTerritoryState(profile) {
   const { kept, dropped } = recognizedTerritories(profile ? profile.defaultJurisdictions ?? [] : []);
