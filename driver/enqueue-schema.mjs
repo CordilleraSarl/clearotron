@@ -752,8 +752,26 @@ export function validateJob(job, { atClaim = false } = {}) {
     let known = false;
     let roster = [];
     try {
-      const profiles = loadProfiles();
-      known = profiles.has(String(job.profileKey).trim());
+      const key = String(job.profileKey).trim();
+      let profiles = loadProfiles();
+      known = profiles.has(key);
+      // THE ROSTER MOVES WHILE THIS PROCESS RUNS, and until this re-read it could not see that.
+      //
+      // `loadProfiles()` answers from a module cache with no expiry and no invalidation hook, filled
+      // when this process started. The engine door is a long-lived process of its own, so a company
+      // created through the portal AFTER it booted was refused here — "names no known customer" — while
+      // its file sat on disk and the portal had already told the person they could search under it.
+      // That is the whole of the defect the credential re-mint was meant to remove: the grant wall
+      // stopped refusing and this did not, so the person met the same dead end one step further in.
+      //
+      // ON THE MISS ONLY, so the ordinary request pays nothing: a hit is answered from the cache exactly
+      // as before, and a directory read happens just when the alternative is a wrong refusal. This is
+      // what "the door checks the company exists on disk now" has to mean for a process that has been
+      // up for a week.
+      if (!known) {
+        profiles = loadProfiles({ force: true });
+        known = profiles.has(key);
+      }
       roster = [...profiles.keys()].sort();
     } catch { known = true; }
     // NAME THE ROSTER THIS PROCESS CAN SEE, always.
