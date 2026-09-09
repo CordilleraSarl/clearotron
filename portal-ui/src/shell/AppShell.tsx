@@ -22,7 +22,8 @@ import { Icon } from '../components/Icon.tsx'
 import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
-import { ALL_OWNERS, ownerNameMap, ownerNameFrom, sortOwners } from '../contract/ownerNames.ts'
+import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
+import { orderedCompanyKeys } from './companyRows.ts'
 import { companyFactsMap, type CompanyFacts } from '../contract/companyFacts.ts'
 import type { RosterCompany } from '../contract/api.ts'
 
@@ -506,7 +507,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                 // between one thing and itself.
                 <div style={{ marginBottom: 10 }}>
                   <div className="eyebrow">Company</div>
-                  <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={ownerInView} onChange={setOwnerGuarded} />
+                  <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={ownerInView} role={role} onChange={setOwnerGuarded} />
                 </div>
               )}
               <NavList entries={groups.owner} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
@@ -602,7 +603,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
               className="icon-btn"
               aria-haspopup="menu"
               aria-expanded={avatarOpen}
-              aria-label="Account menu"
+              aria-label="Settings and about"
               style={{ borderRadius: '50%', background: 'var(--surface-float)', border: '1px solid var(--border-hairline)', fontSize: 11, fontWeight: 700 }}
               onClick={() => setAvatarOpen((o) => !o)}
             >
@@ -675,14 +676,20 @@ function BrandOwnerSwitcher({
   keys,
   ownerName,
   value,
+  role,
   onChange,
 }: {
   readonly keys: readonly string[]
   readonly ownerName: (key: string | null) => string
+  /** The same test the panel applies, so the one place Generic is withheld is the one place it is ordered. */
+  readonly role: Role
   readonly value: string | null
   readonly onChange: (v: string | null) => void
 }) {
-  const options = sortOwners(Object.fromEntries(keys.map((k) => [k, ownerName(k)])), keys)
+  // THE SAME ORDER THE PANEL USES, from the same function. Sorting every key here — Generic included —
+  // put the default in the middle of the alphabet on one control while the panel beside it lifted it to
+  // the front.
+  const options = orderedCompanyKeys(keys, ownerName, role).map((k) => ({ key: k, name: ownerName(k) }))
 
   return (
     <select

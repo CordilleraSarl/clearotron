@@ -35,6 +35,29 @@ export type CompanyRow = {
  * everywhere"). Offering it to a client here would seat them on a company whose every page then refuses
  * them — the offered-by-the-portal, refused-by-the-engine shape this screen exists to end.
  */
+/**
+ * The order companies are offered in, wherever they are offered.
+ *
+ * ONE ORDER, because there were two and they disagreed on the ordinary install. The pick panel and the
+ * chips lift Generic to the front — it is the default, and a default that sorts alphabetically among the
+ * companies is a default nobody finds. The rail's switcher sorted every key by display name, so on an
+ * install holding the house account and one company called "Acme Ltd" the rail read *All companies, Acme
+ * Ltd, Generic default* while the panel beside it read *Generic default, Acme Ltd*. Same install, two
+ * orders, on adjacent controls.
+ *
+ * Takes the same role test as the panel, so the one place Generic is withheld is the one place it is
+ * ordered.
+ */
+export function orderedCompanyKeys(
+  keys: readonly string[],
+  companyName: (key: string | null) => string,
+  role: Role,
+): readonly string[] {
+  const others = keys.filter((k) => k !== GENERIC_KEY)
+  const named = sortOwners(Object.fromEntries(others.map((k) => [k, companyName(k)])), others).map((o) => o.key)
+  return role === 'staff' && keys.includes(GENERIC_KEY) ? [GENERIC_KEY, ...named] : named
+}
+
 export function pickerRows(
   keys: readonly string[],
   companyName: (key: string | null) => string,

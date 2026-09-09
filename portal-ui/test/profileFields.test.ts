@@ -537,23 +537,49 @@ test('1990: the shared cleared label is the owner\'s generic term, and does NOT 
 // every input, including his own "USFrance", returned an empty array. The mechanism was present and
 // unarmed, which is indistinguishable from absent to the person clicking the button.
 
-test('1996: the owner\'s own example is called out — "USFrance" is not silence any more', () => {
+test('the owner\'s own example is called out — "USFrance" is not silence any more', () => {
   const jur = spec('defaultJurisdictions')
   const notices = fieldNotices(jur, 'USFrance')
-  const check = notices.find((x) => x.tone === 'check')
-  assert.ok(check, 'the exact string he typed into the live page must produce a notice')
-  assert.match(check!.message, /USFrance/, 'and must quote the entry back, so he can see WHICH one')
-  assert.match(check!.message, /Saved, but check/,
-    'assistive: the ruled design accepts an unknown territory WHILE SAYING SO — this is the saying-so')
+  const dropped = notices.find((x) => x.tone === 'dropped')
+  assert.ok(dropped, 'the exact string he typed into the live page must produce a notice')
+  assert.match(dropped!.message, /USFrance/, 'and must quote the entry back, so he can see WHICH one')
+  assert.match(dropped!.message, /Not saved/,
+    'the field REFUSES an unrecognised territory, so the notice may not say the value was saved')
 })
 
-test('1996: the jurisdictions notice is assistive, never a refusal', () => {
+test('a stored territory the engine cannot search is REFUSED, not flagged and kept', () => {
   const jur = spec('defaultJurisdictions')
-  // The value is still stored exactly as typed. A validator that dropped it would be the opposite defect,
-  // and the engine deliberately carries a territory it does not recognise.
+
+  // RE-POINTED BY A RULING, and the previous rule is written down here because it was defensible and is
+  // now wrong. This field used to flag and store, on the reasoning that the engine deliberately carries a
+  // territory it does not recognise. That confused two paths. A REQUEST may still name anything, and that
+  // tolerance is deliberate and untouched. A STORED DEFAULT is the opposite case: it is set once by
+  // somebody who then stops watching, the engine drops it before the prompt, and the profile screen goes
+  // on showing it back exactly as typed — a setting that reads as in force and does nothing.
+  const notice = fieldNotices(jur, 'USFrance')[0]
+  assert.equal(notice?.tone, 'dropped', 'the tone a reader sees as a problem, not as a note')
+
+  // THE BOX STILL HOLDS WHAT WAS TYPED, and that is not the old behaviour surviving. The refusal is at the
+  // point of submission — the create form holds its button and names the entry, and the server refuses the
+  // same value on the same path. A box that erased what somebody typed as they typed it would be a worse
+  // control, and they would never see which entry was wrong.
   assert.deepEqual(applyField({}, jur, 'USFrance')['defaultJurisdictions'], ['USFrance'],
-    'the notice must describe what was saved, not prevent it')
-  assert.equal(fieldNotices(jur, 'European Union').length, 0, 'and a territory it knows says nothing at all')
+    'the notice describes the entry; it does not delete it out from under the person')
+
+  // Both directions, so a field that refused everything could not pass.
+  assert.equal(fieldNotices(jur, 'European Union').length, 0, 'a territory it knows says nothing at all')
+  assert.equal(fieldNotices(jur, 'US').length, 0, 'and so does the code form of the same place')
+})
+
+test('marketplaces stay ASSISTIVE, because the two fields are not the same question', () => {
+  // The ruling covers territories. It must not be read as a general move to strictness: this build does
+  // not know which domain suffixes exist, and a validator that rejects a real marketplace stops somebody
+  // recording something true — which is worse than admitting a fake one. Territories are the opposite,
+  // because the engine holds a closed list.
+  const plat = spec('platforms')
+  const notice = fieldNotices(plat, 'not a domain')[0]
+  assert.equal(notice?.tone, 'check', 'flagged')
+  assert.match(notice!.message, /Saved, but check/, 'and kept')
 })
 
 test('1996: a marketplace that the SERVER would refuse is called out here first', () => {
