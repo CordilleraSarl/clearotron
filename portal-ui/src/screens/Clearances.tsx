@@ -34,6 +34,7 @@ import { RiskDot, StatusCell } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { CompanyChips } from '../shell/CompanyChips.tsx'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -462,10 +463,19 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       <h1 style={{ fontSize: 27, margin: '4px 0 6px', color: 'var(--text-strong)' }}>
         {ownerFilter ? ctx.ownerName(ownerFilter) : 'Clearances'}
       </h1>
+      {/* THE SUBTITLE IS GONE. "Every name in clearance and where it stands" restated the heading for a
+          reader who had already read it, directly above a control row that says something they cannot
+          work out for themselves. The allowance line was the only load-bearing part and it stays. */}
       <p style={{ margin: 0, color: 'var(--text-muted)' }}>
-        Every name in clearance and where it stands. Open a row to see each read on that name.
         <AllowanceLine account={account} />
       </p>
+
+      {/* Which company's clearances these are, as a filter rather than as a fact about the rail. This
+          screen has always been filtered by the switcher; the chips are the first thing on it to SAY
+          so, and they set the same value the switcher sets. */}
+      <div className="controls">
+        <CompanyChips ctx={ctx} label="Filter by company" />
+      </div>
 
       <div className="controls">
         <div className="segmented" role="group" aria-label="Filter by status">

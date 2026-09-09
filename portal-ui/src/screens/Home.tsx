@@ -24,6 +24,7 @@
 // own reset time, which is why it is the only thing here that ever states a time.
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { CompanyChips } from '../shell/CompanyChips.tsx'
 import type { Run, StopOutcome } from '../contract/api.ts'
 import type { Row } from '../contract/grouping.ts'
 import type { Tone } from '../contract/tone.ts'
@@ -115,7 +116,16 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         count={cards.length + queue.length}
         note={slotNote(null, ctx.me.concurrentRuns)}
         onNew={() => ctx.go('/portal/new')}
+        onAll={() => ctx.go('/portal/clearances')}
       />
+
+      {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because it is
+          the dashboard — the line in the rail separates "your dashboard" from "working on one company",
+          not "everything below here is filtered". The chips are how this screen offers the same choice
+          without claiming to be one of the company screens, and they set the same value the rail sets. */}
+      <div style={{ margin: '0 0 18px' }}>
+        <CompanyChips ctx={ctx} label="Filter by company" />
+      </div>
 
       {answer === 'error' ? (
         <p className="home2-notice">
@@ -179,10 +189,12 @@ function InFlightBand({
   count,
   note,
   onNew,
+  onAll,
 }: {
   readonly count: number
   readonly note: string | null
   readonly onNew: () => void
+  readonly onAll: () => void
 }) {
   // A GRID, not a spacer-and-wrap. The button stays pinned right at every width; a flex-wrap
   // construction drops it onto its own line the moment the note gets long, which is exactly when the
@@ -193,6 +205,13 @@ function InFlightBand({
       <span className="home2-band-count mono">{count}</span>
       <span className="home2-band-rule" />
       <span className="home2-band-note">{note}</span>
+      {/* The way OUT of the dashboard and into the archive. Home shows what is in flight; everything
+          that has finished lives on Clearances, and the rail was the only route there. */}
+      <button type="button" className="nav-item" onClick={onAll}
+        style={{ width: 'auto', flex: 'none', marginRight: 8 }}>
+        <Icon name="layers" />
+        <span>All clearances</span>
+      </button>
       <button type="button" className="home2-new" onClick={onNew}>
         <Icon name="plus-circle" />
         New clearance
