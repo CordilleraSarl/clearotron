@@ -2453,7 +2453,14 @@ export function plainLanguageChecks({ findings } = {}) {
   const vocab = [];
   const longSentences = [];
   for (const { where, text } of fields) {
-    for (const [term] of PLAIN_FORMS) if (termMatcher(term).test(text)) vocab.push(`${where}: "${term}"`);
+    // THE REPLACEMENT TRAVELS WITH THE FLAG. Naming the term and pointing at a document for the swap is
+    // the half the doctrine calls load-bearing, left out — and it is the half a pass that REWRITES the
+    // line needs in hand. The pinned source already carries a worked plain form for every term; there
+    // was no reason for this flag to name only the fault.
+    for (const [term, plain] of PLAIN_FORMS) {
+      if (!termMatcher(term).test(text)) continue;
+      vocab.push(plain ? `${where}: "${term}" → "${plain}"` : `${where}: "${term}" (an engine word — cut it)`);
+    }
     for (const sentence of text.split(/(?<=[.!?])\s+|\n+/)) {
       const n = sentence.trim().split(/\s+/).filter(Boolean).length;
       if (n > SENTENCE_WORD_LIMIT) longSentences.push(`${where}: ${n} words`);
@@ -2487,7 +2494,7 @@ export function plainLanguageChecks({ findings } = {}) {
     check("reviewer-note-subject", "voice", surface, misfiled.length === 0,
       misfiled.length ? `a note about what was asked that never names the request — it will print under this name's conflicts rather than at the top of the page, where a question about the request belongs. Name the request in the note: ${say(misfiled)}` : ""),
     check("plain-language-vocabulary", "voice", surface, vocab.length === 0,
-      vocab.length ? `the lawyer's vocabulary on lines a reader meets before opening anything — rewrite the line in the words the reader already owns (the skill carries the swaps): ${say(vocab)}` : ""),
+      vocab.length ? `the lawyer's vocabulary on lines a reader meets before opening anything — rewrite the sentence in the words the reader already owns, do not swap the word: ${say(vocab)}` : ""),
     check("plain-language-sentence-length", "voice", surface, longSentences.length === 0,
       longSentences.length ? `a default-visible sentence carrying more than one idea (over ${SENTENCE_WORD_LIMIT} words) — split it, conclusion first: ${say(longSentences)}` : ""),
   ];
