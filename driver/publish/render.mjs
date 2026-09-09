@@ -416,7 +416,7 @@ const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?.
 // EXACT EQUALITY, exactly as EVIDENCE_LABEL maps `_status`. The sentinel itself does not move: archived
 // runs carry the old value forever and a fourth spelling of it would have to be accepted everywhere.
 const USE_CHECK_NO_RESULT = 'perplexity_research — no result';
-const USE_CHECK_NO_RESULT_CITE = 'Marketplace search run — no result found.';
+const USE_CHECK_NO_RESULT_CITE = 'Nothing found in the marketplaces searched.';
 const USE_CHECK_NO_RESULT_SHORT = 'marketplace search — no result found';
 // — MATCHED ON NORMALISED PUNCTUATION, NOT ONE SPELLING. The constant itself does not
 // move (archived runs carry it forever, the validators name it), but the SEAT emitted a hyphen where
@@ -1238,11 +1238,16 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   //                 ("Download full audit (Excel)"), because that is the string the reader hunts for on
   //                 the page. NOT an inline .xlsx link: portal-report.mjs strips those, correctly — the
   //                 portal REPLACES them with its own download control (portal-ui Result.tsx).
-  //   placeholder — a register UI exists and we do not know its per-record address. Labelled as a
-  //                 placeholder so it reads as unfinished rather than as a citation a reader can check.
+  //   placeholder — a register UI exists and we do not know its per-record address. It CARRIES NO NOTE:
+  //                 the number stands on its own, because "(placeholder)" beside twenty-four
+  //                 registrations reads to a client as a broken report rather than as a missing link.
+  // THE PLACEHOLDER NOTE IS GONE. It printed " — no record link available yet (placeholder)" beside
+  // every registration a register UI has no per-record address for — twenty-four times on the measured
+  // page — and a client reads "placeholder" as a broken report. The number is the fact; when there is a
+  // link the number IS the link, and when there is not, the number still stands on its own. The
+  // workbook note stays: it tells a reader where the full record actually is.
   const NO_LINK_NOTE = {
     workbook: ' — full record in the audit workbook (“Download full audit (Excel)”)',
-    placeholder: ' — no record link available yet (placeholder)',
   };
   const regUri = (u, fb) => {
     const h = regHref(u);
@@ -1358,7 +1363,11 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   // D7 — the code-owned "searched, nothing found" sentinel becomes client words HERE, by exact
   // equality against the one constant. Any other value is a source string and rides through untouched.
   const useSrc = isUseCheckNoResult(f.use_check?.source) ? USE_CHECK_NO_RESULT_CITE : f.use_check?.source;
-  const useChk = cite(useSrc, 'Use checked.', useStatus);
+  // NO EVIDENCE TAG ON AN EMPTY RESULT. The line read "Use checked. Marketplace search run — no result
+  // found. Evidence: inferred", and "inferred" beside "no result" reads as a contradiction: it qualifies
+  // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
+  // whole of what the line has to say.
+  const useChk = cite(useSrc, 'Use checked.', isUseCheckNoResult(f.use_check?.source) ? null : useStatus);
   const ownR = cite(f.own_rights?.source, 'Own-portfolio sweep.', EVIDENCE_LABEL[f.own_rights?._status]);
   const proseFull = cardBlock(card, /^full detail/i);
   const proseFullShown = proseFull;   // one report: the full prose; portal-report strips serve-time chrome, never analysis
@@ -1635,7 +1644,51 @@ const COV_STATE = {
   'not-searched': { cls: 'todo', ic: '→', word: 'Not run this run' },
   note: { cls: 'info', ic: 'i', word: 'Note' },
 };
+/**
+ * ONE ROW PER GAP, where the driver's follow-up row and the model's own row are the same search.
+ *
+ * A run deferred the English word DOLPHIN and the page said so twice: once as the model wrote it — "the
+ * English word DOLPHIN as a dedicated exact search · Open item" — and once as the driver composes it
+ * from the envelope, "Follow-up / dolphin · Open item: dolphin — not completed this run — the search for
+ * it was planned and never reached the register…". The run's own reviewer flagged the duplicate and it
+ * shipped anyway, because the second row is composed HERE and the reviewer reads what the model wrote.
+ *
+ * RENDER-SIDE ONLY. Both rows stay in the record and in the workbook; this decides what the page draws.
+ * Dropping the driver's row from `coverage[]` would change what the run recorded, and this issue is
+ * presentation.
+ *
+ * IT ERRS TOWARD KEEPING BOTH. A surplus row is today's behaviour; a wrongly-suppressed one hides a gap
+ * from the reader, which is the failure worth avoiding. So the driver's row goes only when another row
+ * carries EVERY significant word of the directive it names — a near-match keeps both.
+ */
+const FOLLOW_UP_PREFIX = 'Follow-up / ';
+const COV_STOPWORDS = new Set(['the', 'a', 'an', 'as', 'for', 'of', 'in', 'on', 'and', 'or', 'to', 'is',
+  'was', 'it', 'its', 'this', 'that', 'with', 'by', 'at', 'be', 'been', 'run', 'search', 'searched']);
+const covWords = (t) => new Set(String(t || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => !COV_STOPWORDS.has(w)) ?? []);
+
+function dedupeFollowUps(coverage) {
+  const composed = (c) => String(c?.area || '').startsWith(FOLLOW_UP_PREFIX);
+  const written = coverage.filter((c) => !composed(c));
+  if (!written.length) return coverage;
+  return coverage.filter((c) => {
+    if (!composed(c)) return true;
+    // The directive is the note's opening clause — the same string the area was clipped from, unclipped.
+    const directive = covWords(String(c.note || '').split('—')[0]);
+    if (!directive.size) return true;
+    // MATCHED AGAINST THE OTHER ROW'S AREA, not its whole text. The rule is "the two rows name the same
+    // search", and a row names its search in its area; its note is free prose about it. Matching the
+    // note as well was wrong in the direction that costs a reader: a one-word directive like "dolphin"
+    // is contained by any row that mentions dolphins in passing, so an unrelated marketplace row
+    // silently swallowed a disclosed gap. Driven — that case is an arm.
+    return !written.some((w) => {
+      const theirs = covWords(w.area);
+      return [...directive].every((word) => theirs.has(word));
+    });
+  });
+}
+
 function coverageGrid(coverage) {
+  coverage = dedupeFollowUps(coverage);
   if (!coverage.length) return '';
   const cell = (c) => {
     const s = COV_STATE[c.state] || COV_STATE.note;
@@ -1761,7 +1814,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=doc
 function markAssessmentBlock(ma) {
   if (ma == null) return '';
   const structured = typeof ma.distinctiveness === 'object' || typeof ma.connotation === 'object';
-  const SEC = `<div class="sec"><span class="num">✦</span><h2>The mark itself</h2><span class="note">standing read of the applicant's own mark — advisory, carries no rating</span></div>`;
+  const SEC = `<div class="sec"><span class="num">✦</span><h2>The mark itself</h2><span class="note">how strong the name is on its own</span></div>`;
   if (!structured) {
     const dist = String(ma?.distinctiveness ?? '').trim(), conn = String(ma?.connotation ?? '').trim();
     if (!dist && !conn) return '';
@@ -2138,7 +2191,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const clNotice = (clNoticeText && CASE_LAW_BY_ORD.size)
     ? `<div class="panel" style="padding:12px 16px;margin:0 0 12px"><p style="margin:0 0 4px;font-weight:700;font-size:13px">Session-wide notice</p><div style="font-size:13px">${renderProse(clNoticeText)}</div></div>`
     : '';
-  const CL_SEC = (n) => `<div class="sec" id="common-law"><span class="num">${n}</span><h2>Common-law &amp; marketplace</h2><span class="note">unregistered-use signals — not register rights</span></div>
+  const CL_SEC = (n) => `<div class="sec" id="common-law"><span class="num">${n}</span><h2>Common-law &amp; marketplace</h2><span class="note">who is using similar names, registered or not</span></div>
   ${clNotice}${clBody}`;
   const hasCL = Boolean(clBody || clNotice);
   let findingsSections, covNum;
@@ -2277,7 +2330,7 @@ ${opts.nav || ''}
   ${ruledOutSection(ruledOut, recordsByUri)}
 
   <!-- doc-52 §3 WHAT ONLY YOU CAN CLOSE — forward decisions, plain English, after the findings. -->
-  ${buckets.you ? `<div class="sec" id="only-you"><span class="num">✔</span><h2>What only you can close</h2><span class="note">forward decisions only you can make — each tied to a finding above</span></div>
+  ${buckets.you ? `<div class="sec" id="only-you"><span class="num">✔</span><h2>What only you can close</h2><span class="note">decisions that need you</span></div>
   <div class="panel actions"><div class="actgrp act-you">${renderProse(buckets.you.body)
     .replace(/\[Time-critical\]\s*/gi, '<span class="src cl" style="margin-right:6px">Time-critical</span> ')
     .replace(/\[Open question\]\s*/gi, '<span class="src" style="margin-right:6px">Open question</span> ')
@@ -2295,7 +2348,13 @@ ${opts.nav || ''}
 
   <!-- doc-52 §4 SCOPE & WHAT WE DIDN'T SEARCH — one collapsible section, last; replaces "Checks we ran"
        + "Methodology" + the coverage grid. Nothing here leads. -->
-  ${scopeSection(buckets.ran, coverage, opts.coverageJudgment, secs['Methodology'], DISPOSITION_MODE ? [] : contextNotes, fm, recordsByUri.size > 0, findings.length > 0)}
+  ${scopeSection(buckets.ran, coverage, opts.coverageJudgment, secs['Methodology'], DISPOSITION_MODE ? [] : contextNotes, fm, recordsByUri.size > 0, findings.length > 0,
+    // WHETHER A REGISTER-INDEX ENTRY IS ACTUALLY ON THIS PAGE, mirroring the registration render's own
+    // second disjunct rather than restating it loosely: a cited registration with no fetched body, which
+    // is the state that draws the "(register-index entry)" label. The provenance paragraph explains that
+    // label, so it renders where the label can and stays off every page where it cannot.
+    findings.some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
+      && (recordsByUri.size > 0 || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length))))))}
 
   ${askAiHtml}
 
