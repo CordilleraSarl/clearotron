@@ -280,7 +280,7 @@ const SHELL_EXPANSION = /\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/;
 /**
  * ── WHERE THIS INSTALL'S `.env` LIVES — ruled, 2026-09-05 ────────────────────────────────────────────
  *
- * `~/.config/clearotron/.env`. The owner's decision, recorded on tracker issue 140, taken from the three
+ * `~/.config/clearotron/.env`. The owner's decision, taken from the three
  * candidates below.
  *
  * WHAT IT FIXES. On a packaged install the wizard wrote `.env` to the package root, which is
@@ -349,7 +349,7 @@ export const LEGACY_ENV_LOCAL_LOCATION = "package-root";
  * what a run can see, and it is the only honest address to give a reader whose units are missing a value.
  *
  * NAMED HERE BECAUSE TWO PLACES NEED IT AND ONE OF THEM IS NOT A CLI. `bin/start.mjs` composed this
- * literal inline while it was the only writer; tracker issue 216 moved the run-configuration refusal to
+ * literal inline while it was the only writer; a later change moved the run-configuration refusal to
  * `driver/runner.mjs`, which must name the same file in the same words. Two `join(homedir(), ".env")`
  * calls are two authorities for one path, and the way that breaks is quiet: a refusal that sends an
  * operator to edit a file the units do not read.

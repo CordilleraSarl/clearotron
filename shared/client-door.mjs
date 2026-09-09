@@ -354,7 +354,7 @@ export function describeDoorState(door, {
  * differ in ONE value — which variable carries that public address — so the composition is one function
  * with that name as a parameter rather than two functions that agree until they do not.
  *
- * Written down after tracker issue 192, where the census found the asymmetry: the client door's
+ * Written down after the census found the asymmetry: the client door's
  * allow-list is composed by the installer and the engine door's was composed by nothing at all, so a
  * hosted operator was asked for a value sitting next to an identical one the product works out. Two
  * authors composing `host:port` in two places is what let them diverge in the first place.

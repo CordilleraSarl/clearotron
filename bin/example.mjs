@@ -50,7 +50,7 @@ import { isFrozen, demoChildren, publishSource } from "../driver/demo-container.
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-import { usageBlock } from "../shared/usage-block.mjs";   // tracker issues 1861/1882
+import { usageBlock } from "../shared/usage-block.mjs";
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 const has = (n) => argv.includes(n);

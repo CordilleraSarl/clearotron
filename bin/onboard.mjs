@@ -95,14 +95,14 @@ import { resolveAuthMode } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
 import { processTable } from "../shared/process-table.mjs";   // — /proc is not the only box
-import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";   // tracker issue 193
+import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";
 import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
 import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC } from "../driver/engine/probe.mjs";
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-// tracker issues 1861/1882 — one synopsis reader for every verb that prints one.
+// one synopsis reader for every verb that prints one.
 import { usageBlock } from "../shared/usage-block.mjs";
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { parseEnvFile } from "../driver/systemd/render-units.mjs";   // — ONE KEY=value reader; a second copy would drift from what systemd actually reads
@@ -2518,8 +2518,8 @@ export async function runCheck() {
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.
     const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
-    // FROM THE FILE THE UNITS LOAD, NOT THE SHELL THIS COMMAND WAS TYPED IN (the tracker issue 226
-    // family, met again here). On a hosted box the published address lives in the units' environment,
+    // FROM THE FILE THE UNITS LOAD, NOT THE SHELL THIS COMMAND WAS TYPED IN (the same family,
+    // met again here). On a hosted box the published address lives in the units' environment,
     // and reading `process.env` reported "no client connector address is published — that is correct
     // for a local install" about a deployment that publishes one. Every verdict below rests on this
     // value, including the audience comparison, so a wrong reading here is not one wrong line.
@@ -2602,7 +2602,7 @@ export async function runCheck() {
       }
     }
 
-    // ── CAN AN ASSISTANT ACTUALLY SIGN IN? (tracker issue 149, opt-in) ────────────────────────────
+    // ── CAN AN ASSISTANT ACTUALLY SIGN IN? (opt-in) ───────────────────────────────────────────────
     //
     // The check above reads the CHALLENGE FORM, which is the first of two provider settings that decide
     // this. The second — whether the vendor's own redirect address may register — has no symptom a
@@ -3052,8 +3052,8 @@ try {
     // the run has started. So setup will not write an engine it has not exercised — and the menu's last
     // row exists so that refusal always has somewhere to go.
     say("");
-    // — tracker issue 100 point 2, the owner's own words on reading the three lines this replaces:
-    // "wtf does this mean". They named `.env` and "stage failure" and "wearing the shape of a model
+    // — the three lines this replaces were not understood by the reader they were written for.
+    // They named `.env` and "stage failure" and "wearing the shape of a model
     // fault" at a reader who is about to answer yes or no, and every one of those is our vocabulary.
     //
     // THE CHECK IS UNCHANGED AND THE REFUSAL IS UNCHANGED. He valued both, and the issue puts them out
@@ -3248,8 +3248,8 @@ try {
     }
   }
   if (registerSelected && !spec.validateEuipo && !spec.uspToLocalKey) {
-    // — tracker issue 100 point 7. The owner asked "why not validate the register provider quickly?" and
-    // the issue sets the fallback where a cheap non-billing call does not exist: say in ONE LINE why it
+    // — decided: validate the register provider quickly where that is cheap, and where it is not,
+    // set the fallback so a check that cannot be made says in ONE LINE why it
     // cannot be checked AND what happens if it is wrong. The first half was already here; the second was
     // not, so a reader was told about our billing scruple and nothing about their own risk.
     //

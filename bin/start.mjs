@@ -124,7 +124,7 @@ import { unitEnvPath } from "../shared/env-local.mjs";   // — the file the uni
 import { homedir, userInfo } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { usageBlock } from "../shared/usage-block.mjs";   // tracker issues 1861/1882
+import { usageBlock } from "../shared/usage-block.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names one spelling has set nothing that wins
@@ -175,7 +175,7 @@ export function homeEnvUpdate(homeText, union) {
 }
 
 /**
- * What a `--background` run has ALREADY DONE when systemd refuses to enable a unit — tracker issue 203.
+ * What a `--background` run has ALREADY DONE when systemd refuses to enable a unit.
  *
  * THE READER'S QUESTION IS NOT THAT A STEP FAILED. It is whether they now have a half-installed
  * deployment, and whether to run this again, undo it, or leave it alone. This step is the worst-placed
@@ -214,7 +214,7 @@ const HOST = "127.0.0.1";
 // ── pure helpers (exported for driver/test/start-command.test.mjs) ───────────────────────────────────
 
 /**
- * WHOSE socket is on the client door's port — tracker issue 228.
+ * WHOSE socket is on the client door's port.
  *
  * `clearotron stop` removes three units and DELIBERATELY leaves the client door running, because a
  * product stop must not silently revoke an assistant's connection. `start` then manages that same door
@@ -294,7 +294,7 @@ export function resolvePorts(env = {}) {
 }
 
 /**
- * Apply `--port <n>` to the three doors — tracker issue 166.
+ * Apply `--port <n>` to the three doors.
  *
  * PURE, AND EXPORTED, because the inline version of this could only be tested by spawning a supervisor
  * and reading `ss`. The defect it fixes was found by a reader watching a log line, which is exactly
@@ -495,7 +495,7 @@ export const BACKGROUND_RETIRED = Object.freeze([]);
 export const BACKGROUND_EXCLUDED = Object.freeze({
   // ── `clearotron-client-mcp.service` LEFT THIS TABLE ON 2026-09-03, AND SAYING SO IS THE POINT ────
   //
-  // It was the rebuild-seam gate of record (owner rulings, tracker issues 1976/2082): starting the unit
+  // It was the rebuild-seam gate of record (owner rulings): starting the unit
   // WAS the on-demand consent, because starting it turned on client-account access, so an enable list
   // that included it would have made that consent meaningless. That reasoning was right under that
   // ruling and the exclusion was not an oversight.
@@ -1310,7 +1310,7 @@ if (isMain) {
   // what makes re-running safe, and the same idempotence sentence the foreground fatal carries applies.
   if (wantBackground) {
     // ONE AUTHOR for this path — `driver/runner.mjs` names the same file in the same words since
-    // tracker issue 216 moved the run-configuration refusal there, and two composers of one path
+    // A later change moved the run-configuration refusal there, and two composers of one path
     // fail quietly: a refusal that sends an operator to edit a file the units do not read.
     const HOME_ENV = unitEnvPath();
     const union = { ...envs.mcp, ...envs.portal, ...(envs.worker ?? {}),
@@ -1472,7 +1472,7 @@ if (isMain) {
         // and offered `install` — a wizard that refuses a non-terminal, so the one reader who arrives
         // here by a scripted or hosted install was handed a route they cannot take.
         //
-        // tracker issue 216 moved that refusal to order time, so this screen is where these values are
+        // A later change moved that refusal to order time, so this screen is where these values are
         // now named to an operator. The remedy travels with them RATHER THAN BEING DELETED WITH THE
         // REFUSAL — 202's property is about the class ("a message about a value names the file that sets
         // it"), not about which gate happened to print it, and the arms in
@@ -1518,7 +1518,7 @@ if (isMain) {
       say(`      ${ENV_PATH}  — the CLI reads this one when you type a command in a shell.`);
       say(`    Editing one does not change the other. To change what the RUNNING product does, edit the`);
       say(`    first and restart the units.`);
-      // PORTS ARE THE EXCEPTION, and leaving it unsaid is what tracker issue 200 was filed about. The
+      // PORTS ARE THE EXCEPTION, and leaving it unsaid is what that gap was. The
       // sentence above is true — a unit takes its port from the EnvironmentFile like everything else —
       // but THIS command probes for a collision using the value it read from the CLI file, before any
       // unit exists. A reader who has just been told to edit the first file, and whose next run refuses
@@ -1541,7 +1541,7 @@ if (isMain) {
       writeFileSync(join(UNIT_DIR, u), renderUnit(text, { ...process.env, ...union }));
     }
     // STDERR IS CAPTURED, not discarded. `stdio: "ignore"` threw systemd's own explanation away before
-    // anyone could read it, which is half of what tracker issue 121 fixed in `connect` and was never
+    // anyone could read it, which is half of what was fixed in `connect` and was never
     // done here. The two-cause remedy below is right and stays; what was missing was the sentence
     // systemd itself wrote.
     //

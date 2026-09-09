@@ -54,7 +54,7 @@ import { atomicWrite } from "../driver/progress.mjs";
 // — F40. SERVER_INSTALL_SET is what `bin/start.mjs` re-exports as
 // BACKGROUND_UNITS; taken from shared/ so this verb does not reach into another bin/ entry point.
 import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mjs";
-import { checkoutMove, movePosture, describeMove, describeConflict } from "../shared/checkout-move.mjs";   // tracker issue 193
+import { checkoutMove, movePosture, describeMove, describeConflict } from "../shared/checkout-move.mjs";
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
@@ -68,7 +68,7 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // does not do it at two of its five.
 
 /**
- * What a half-finished connect has ALREADY written by the time `step` failed — tracker issue 121.
+ * What a half-finished connect has ALREADY written by the time `step` failed.
  *
  * The reader's problem is not only that a step failed; it is not knowing whether to run `connect` again,
  * run `disconnect` first, or leave it alone. A message that names a command and stops leaves a
@@ -108,7 +108,7 @@ function alreadyApplied(step) {
 /**
  * Does this failure say the SESSION BUS is missing, rather than anything about the unit?
  *
- * ONE AUTHORITY, because two readers now ask it (tracker issue 130, criterion 3). The failure text
+ * ONE AUTHORITY, because two readers now ask it (criterion 3). The failure text
  * below offers the bus remedy on a yes, and the health reader refuses to translate a yes into "the door
  * is not open" — that mistranslation is the defect, and a second copy of this test is how the two would
  * come to disagree about which failures are bus failures.
@@ -282,7 +282,7 @@ function portOwnerOf(port, bound) {
 /**
  * Read properties off a user unit — the ONE place this file asks systemd anything read-only.
  *
- * ── WHY IT EXISTS (tracker issue 130, criterion 3) ───────────────────────────────────────────────────
+ * ── WHY IT EXISTS (criterion 3) ──────────────────────────────────────────────────────────────────────
  *
  * Two readers here called `systemctl --user show` directly and neither did what the WRITERS in this
  * same file already do: neither passed `userBusEnv()`, so both failed in exactly the shell tracker issue
@@ -713,7 +713,7 @@ async function main() {
 // failure path opened an interactive prompt and hung the suite. `bin/clearotron.mjs` carries the same
 // guard for the same reason, written up there: "importing it to read the verb table would DISPATCH".
 //
-// Ten other files under bin/ still lack it. That is a class, filed as tracker issue 183 rather than
+// Ten other files under bin/ still lack it. That is a class, filed separately rather than
 // swept in here — each one needs verifying that it still runs as a command.
 if (isEntrypoint(import.meta.url)) {
   main().then((code) => process.exit(code ?? 0), (e) => { console.error(`connect: ${e.message}`); process.exit(2); });

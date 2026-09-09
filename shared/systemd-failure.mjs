@@ -31,7 +31,7 @@ import { existsSync } from "node:fs";
 /**
  * Does this failure say the SESSION BUS is missing, rather than anything about the unit?
  *
- * ONE AUTHORITY, because more than one reader asks it (tracker issue 130, criterion 3). The failure text
+ * ONE AUTHORITY, because more than one reader asks it (criterion 3). The failure text
  * below offers the bus remedy on a yes, and connect's health reader refuses to translate a yes into "the
  * door is not open" — that mistranslation is the defect, and a second copy of this test is how the two
  * would come to disagree about which failures are bus failures.
