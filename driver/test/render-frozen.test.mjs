@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "85dda41d30ccf951c6d0653dc5ae2bd776d12f9813d28e3838dcfee8269e60b9";
+const FROZEN_BEFORE_SPDX = "d94481834383fbf0c62bcccd2f9ebb25b849a9d1103a4e78151b49158d74ed7c";
 // FIFTH BREAK (2026-08-26, tracker issue 1903 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2001,13 +2001,18 @@ const FROZEN_BEFORE_SPDX = "85dda41d30ccf951c6d0653dc5ae2bd776d12f9813d28e3838dc
 //      no words.
 //   3. The hash moves HERE, in this commit.
 //
+// ADVANCED ONCE MORE IN REVIEW, comment-only: the note above the footer argued the developer sentence
+// and said nothing about "Working draft for legal review.", which left the same commit. It is a ruled
+// removal and it is written down as one now. No rendered byte moves — the two renders either side of
+// that edit are identical.
+//
 // MEASURED, not asserted. Both renders of the committed demo pool, before and after, diffed line by
 // line: the clearance page moves 26 lines and the knockout page moves only its timestamp, because that
 // is a different renderer. The issue's own acceptance greps over the rendered page read zero for
 // "placeholder", "framework in force", "one word per finding" and "returne.". One "(internal)" survives
 // and it is NOT one of the seven — it is the configuration-provenance block, which is stripped before a
 // reader sees it, and the strip has a defect of its own that is filed rather than widened into here.
-const FROZEN = "fb5b190f2d2a5a00fc70e30cf6b267bce46545d1682ecc2509e9dc8655cb7b1c";
+const FROZEN = "0e4e8f4a2a41953a25c9268c6be4103f5d8e8f0e0d125e82c71030f2f15e3987";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

@@ -2360,10 +2360,18 @@ ${opts.nav || ''}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
-        // TWO SENTENCES. What stood here explained the bands to a developer — "the framework in force's
-        // own vocabulary, one word per finding on every surface" is a note about how the renderer works,
-        // printed on every report a client receives. The framework's NAME is on the "Rated under" line
-        // below, once, which is where a reader who wants it will look.
+        // TWO SENTENCES, and that count is the ruled shape rather than a consequence of trimming.
+        //
+        // Two things left. The band note — "the framework in force's own vocabulary, one word per
+        // finding on every surface" — is a note about how the renderer works, printed on every report a
+        // client receives; the framework's NAME is on the "Rated under" line below, once, which is
+        // where a reader who wants it will look.
+        //
+        // AND "Working draft for legal review.", which is a separate decision and is recorded as one.
+        // A delivered clearance is not a draft, and a document that calls itself one on every page is
+        // describing its own status inaccurately to the person paying for it. Raised in review because
+        // the first version of this comment argued only the band note and left the reader to infer that
+        // the status line had gone along for the ride.
         ? `Risk bands: <span class="mono">${esc(FRAMEWORK.bands.map(b => b.label).join(' / '))}</span>. Purple notes are for the reviewing lawyer and are removed on export.`
         : 'Risk bands: <span class="mono">LOW / MANAGEABLE / MEDIUM / HIGH / VERY HIGH</span>. Purple notes are for the reviewing lawyer and are removed on export.'}<br>Matter ${esc(fm.matter || '')}${fm.run ? ` · ${esc(fm.run)}` : ''}.${fm.rated_under ? `<br>Rated under: <span class="mono">${esc(fm.rated_under)}</span>.` : ''}${fm.run_under_project ? `<br>Run under project: <span class="mono">${esc(fm.run_under_project)}</span>.` : ''}</span>
     ${logoLockup({ mark: 16 })}
