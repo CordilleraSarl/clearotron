@@ -220,7 +220,7 @@ export const CLEARED_LABEL = 'Generic default'
 export const PROFILE_FIELDS: readonly FieldSpec[] = [
   // ── who the company is ──
   { key: 'name', label: 'Legal name', kind: 'text', group: 'identity',
-    hint: 'Used so a search does not flag the client against their own marks. Should be the registered owner name.' },
+    hint: 'Used so a search does not report the company against its own marks. Should be the registered owner name.' },
   { key: 'matchDomains', label: 'Domains', kind: 'lines', group: 'identity',
     commaSeparated: true,
     // A hostname, not a URL: at least one dot, no scheme, no path, no spaces. Deliberately loose — this
@@ -229,9 +229,9 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // only the first stops someone recording something true.
     item: { ok: (e) => /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i.test(e),
             expected: 'a domain like example.com' },
-    hint: 'Common law domains, e.g. example.com, one per line or comma-separated. Used to recognise the client.' },
+    hint: 'Common law domains, e.g. example.com, one per line or comma-separated. Used to recognise the company.' },
   { key: 'selfExclusionOwners', label: 'Own trading names', kind: 'lines', group: 'identity',
-    hint: 'One per line. Marks held by the client that should never be reported as a conflict with themselves.' },
+    hint: 'One per line. Marks the company holds, which are never reported as a conflict with itself.' },
 
   // ── what a clearance does when the request does not say ──
   // `industry` moved down out of the identity run: it scopes what a search LOOKS AT, which is a default,
@@ -294,7 +294,7 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // Level-NEUTRAL wording, deliberately: this same spec renders on the project form, where "how this
     // COMPANY wants risk communicated" was describing the wrong thing entirely. And the two clauses
     // that survive the cut are the two the server enforces — plain prose, and never a rating input.
-    hint: 'How risk is put to this client: what to lead with, how cautious to be. Example: "Lead with the biggest risk. Flag anything that could be a problem, even if unlikely." Changes how the report reads, never what is rated.' },
+    hint: 'How risk is put to this company: what to lead with, how cautious to be. Example: "Lead with the biggest risk. Flag anything that could be a problem, even if unlikely." Changes how the report reads, never what is rated.' },
   // MARKETPLACE LISTING SIZE HAS NO CONTROL, ON ANY SURFACE. Owner ruling, 2026-08-29:
   // "if it doesn't actually affect search why is it there — get rid of it completely. there is no such
   // thing as staff only." It was removed from this page AND from the staff editor in the same change.

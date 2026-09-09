@@ -506,7 +506,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                 // between one thing and itself.
                 <div style={{ marginBottom: 10 }}>
                   <div className="eyebrow">Company</div>
-                  <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={owner} onChange={setOwnerGuarded} />
+                  <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={ownerInView} onChange={setOwnerGuarded} />
                 </div>
               )}
               <NavList entries={groups.owner} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />

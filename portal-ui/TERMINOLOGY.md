@@ -132,7 +132,7 @@ to exactly one.
 | | |
 |---|---|
 | **Canonical** | **Company** / Companies |
-| **Retired** | Brand owner |
+| **Retired** | Brand owner / the client / this client / a client's |
 
 **Ruled by the owner, 2026-09-09**, against mockups he approved — not measured into existence like the
 Custom search row above. The evidence that made it a ruling rather than a preference: an outside user met
@@ -175,15 +175,23 @@ extractor is known to drop a string:
 |---|---|---|
 | **Company** | 36 | the canonical term, ruled — listed for scale, not as an open question |
 | **Account** | 11 | the sign-in, enrolment and spend identity — *"this account has not been granted access"* |
-| **Client** | 5 | two different things at once: an access role, and the party a firm acts for |
+| **Client** | 0 visible | RULED and gone from copy. The access ROLE identifier (`Role = 'staff' \| 'client'`) remains, and is wire vocabulary |
 | **Customer** | 3 | the deployment's own operator language — *"a server setting on this deployment"* |
 | **Tenant** | 1 | *"all of this tenant"*, one pill on People & access. The extractor drops it; a direct search finds it |
 | **Organisation** | 1 | the top-bar label, ruled |
 
-**Why these are still open when *brand owner* was ruled.** The ruling covered the noun a stranger meets
-first. These four are the access model's own vocabulary — who may sign in, what they may do — and that
-model is itself parked pending a design decision on one privilege model with a read-only tier. Renaming
-its words before that is settled would be a sweep over something about to change shape.
+**Why three of these are still open, and why *Client* no longer is.** The earlier reasoning here was
+that all four are the access model's own vocabulary and that model was parked pending a decision on one
+privilege model. **That decision has been taken** — an owner design session replaced the two role words
+with access points and two permissions — so the reason for parking *Client* has gone with it.
+
+What was ruled is the NOUN a reader meets: the party a firm acts for is the **company**, and the phrases
+that called it a client are retired above and enforced. What is NOT ruled here is the access-role
+identifier `Role = 'staff' | 'client'`, which is wire vocabulary and moves when the access model is
+built, not before.
+
+*Account*, *Customer* and *Tenant* stay open for the reason below: they are single words and live
+identifiers, and the ruling that replaces them is a change to the wire rather than to copy.
 
 **Why *Account* is not in the Retired column, stated rather than left for the next reader to rediscover.**
 The guard scans comment-stripped source, and that is only safe while every retired spelling contains a

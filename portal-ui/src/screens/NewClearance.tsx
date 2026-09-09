@@ -952,7 +952,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                     <p style={{ margin: '6px 0 0', fontSize: 11.5, color: 'var(--text-faint)', lineHeight: 1.45 }}>
                       To edit the default list see{' '}
                       <button type="button" className="link-btn" onClick={() => ctx.go('/portal/brand/profile')}>
-                        Brand profile
+                        Profile
                       </button>
                       .
                     </p>
@@ -960,7 +960,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
                 </>
               ) : (
                 <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                  None on file — the open web is searched regardless. Add shops on Brand profile, or name
+                  None on file — the open web is searched regardless. Add shops on Profile, or name
                   extra ones for this search below.
                 </p>
               )

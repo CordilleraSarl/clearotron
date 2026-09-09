@@ -60,7 +60,16 @@ export function opsTokenFor({ bootToken, roster, mint }) {
   try {
     return mint({ scope: "ops", sub: "portal", verbs: ["start_run", "stop_run"],
       accounts: roster, ttlSec: 300 });
-  } catch { return bootToken; }
+  } catch (e) {
+    // THE FALLBACK DIRECTION IS RIGHT AND ITS SILENCE WAS NOT. Handing back the boot credential is
+    // correct — it is narrower than the one that failed to mint, never wider — but a bare catch here
+    // restores the exact refusal this lane exists to remove, for a company created after boot, with
+    // nothing anywhere naming the cause. An unset signing secret and an unreadable store both land here
+    // and both look like the feature simply not working.
+    console.error(`[portal] could not re-mint the engine credential (${String(e?.message ?? e)}) — `
+      + `falling back to the one minted at boot, which does not cover companies created since`);
+    return bootToken;
+  }
 }
 
 // — the portal became an ISSUANCE PATH here, deliberately and by owner ruling.
@@ -135,7 +144,7 @@ import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./port
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
-import { BRAND, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { BRAND, ORGANISATION_NAME, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
 import { envFrom, pinEnv } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
@@ -1468,7 +1477,7 @@ export function makePortalService({
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
         return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames, accountFacts,
-          concurrentRuns: concurrentRunsCap(), brand: BRAND.name, engineMode: meEngineMode,
+          concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
           // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
           // for "this could not be checked". The screen above renders one of three remedies from it,
           // and they are different remedies: install the CLI, restart the service that cannot see it,
@@ -4281,7 +4290,13 @@ const PORT = PORT_CHOICE.port;
     try {
       const { loadProfiles } = await import("./profiles.mjs");
       roster = [...loadProfiles({ force: true }).keys()];
-    } catch { return OPS_TOKEN; }
+    } catch (e) {
+      // Same rule one layer out: the roster could not be read at all, so there is nothing to re-mint
+      // against. Narrow and said out loud, rather than narrow and silent.
+      console.error(`[portal] could not read the company roster to re-mint the engine credential `
+        + `(${String(e?.message ?? e)}) — falling back to the credential minted at boot`);
+      return OPS_TOKEN;
+    }
     return opsTokenFor({ bootToken: OPS_TOKEN, roster, mint: mintToken });
   };
   const trigger = async (args) => {
