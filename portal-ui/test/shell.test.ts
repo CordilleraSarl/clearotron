@@ -16,9 +16,9 @@ const body = shell.split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join
 test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN, not the screen', () => {
   // The screen name earned nothing up there — the sidebar already highlights the active item.
   //
-  // It says the BRAND OWNER on an owner-scoped screen and the ACCOUNT on an account-scoped one, and
+  // It says the COMPANY on an owner-scoped screen and the ACCOUNT on an account-scoped one, and
   // that it varies is the point rather than an inconsistency: Home and Clearances span everything the
-  // account holds and deliberately ignore the switcher, so naming one brand owner over them would
+  // account holds and deliberately ignore the switcher, so naming one company over them would
   // assert a filter that is not being applied. Read off the screen's own `scope` — the same field that
   // decides which side of the switcher it sits on — so the two can never disagree.
   assert.match(body, /scopeOf\(entry\.id\) === 'owner' \? ownerName\(ownerInView\) : accountName/)
@@ -72,7 +72,7 @@ test('ONE SLOT, ONE NOUN: the identity corner can never name a company', () => {
 })
 
 test('THE SWITCHER LABELS THE GROUP IT GOVERNS', () => {
-  // What the brand-owner control actually reaches used to be unknowable: it floated above the whole
+  // What the company control actually reaches used to be unknowable: it floated above the whole
   // nav, and the only way to find out which screens it changed was to pick one and watch. Drawn as the
   // header of the `owner` group, its reach is simply what is printed beneath it.
   //

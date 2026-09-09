@@ -356,7 +356,7 @@ export function missingPieces(
     return out
   }
   // EITHER, never both. This mirrors what the request schema accepts: classes or a description, and
-  // demanding the classes be retyped when the brand owner's own are already on the card is the kind of
+  // demanding the classes be retyped when the company's own are already on the card is the kind of
   // busywork that makes a form feel broken.
   if (!classes.length && !goods.trim()) {
     out.push('Say what the name is used for — pick classes, or describe the goods and services. Either one is enough.')
@@ -658,7 +658,7 @@ export function effortRaw(i: EffortInput): number {
 /**
  * ── WHAT THE 1–10 BAR MEANS ─────────────────────────────────────────────────────────────────────────
  *
- * How deep this search is FOR THIS BRAND OWNER: 1 is the lightest thing we run for them, 10 the deepest
+ * How deep this search is FOR THIS COMPANY: 1 is the lightest thing we run for them, 10 the deepest
  * they can buy. Not an absolute quantity of work — which is what it was, and it did not work, because a
  * constant divisor let the OWNER'S PROFILE dominate: an owner with 13 shops on a dense grid saturated at
  * 10 whatever they pressed.
@@ -774,7 +774,7 @@ export function runsNote(i: EffortInput): string {
 /**
  * The composed draft as a saved search, for the footer's Save.
  *
- * SCOPE, NOT GHOSTS. The composer leaves a field empty to mean "use the brand owner's own", and the
+ * SCOPE, NOT GHOSTS. The composer leaves a field empty to mean "use the company's own", and the
  * server's precedence ladder resolves it per run. A saved search that baked today's resolved classes in
  * would freeze that answer: change the owner's defaults next month and every saved search would quietly
  * keep searching last month's. So only what the user EXPLICITLY set travels.
@@ -868,7 +868,7 @@ export function draftFromSaved(
   }, product)
 }
 
-// ── what the brand owner already has ────────────────────────────────────────────────────────────────
+// ── what the company already has ────────────────────────────────────────────────────────────────
 //
 // The context card shows the classes and the marketplaces this search will use BEFORE anything is typed,
 // each tagged with where it came from. That is not decoration: selecting a project narrows the classes,
@@ -881,7 +881,7 @@ export type Inherited = {
   readonly classes: readonly number[]
   readonly classesFrom: string
   /**
-   * The brand owner's own territories, and where they came from.
+   * The company's own territories, and where they came from.
    *
    * Absent from this contract until, which is why the composer could say "Worldwide" over an empty
    * territory list while the engine resolved that same emptiness to the account's `defaultJurisdictions`.

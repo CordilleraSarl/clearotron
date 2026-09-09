@@ -18,7 +18,7 @@ import type { Role } from '../contract/api.ts'
  * AppShell). That makes an id's dot structure a behavioural claim, not a naming convention: any entry
  * whose id is a dot-prefix of the current screen lights up.
  *
- * The old scheme filed the brand-owner screens under `settings.*` alongside `settings` itself, so
+ * The old scheme filed the company screens under `settings.*` alongside `settings` itself, so
  * standing on `settings.profile` highlighted the Settings parent — a top-level item claiming to be the
  * page you are on when it is not. The three brand screens are therefore `brand.*` and DELIBERATELY have
  * NO `brand` parent entry: nothing can be a dot-prefix of them, so nothing can falsely highlight. If a
@@ -35,7 +35,7 @@ export type ScreenId =
   | 'result'
   | 'preferences'
   | 'about'
-  // brand-owner screens — no `brand` parent exists, on purpose (see above)
+  // company screens — no `brand` parent exists, on purpose (see above)
   | 'brand.profile'
   | 'brand.projects'
   | 'brand.searches'
@@ -67,10 +67,10 @@ export type NavEntry = {
   /** Routable, but not listed in the sidebar. For screens reached from a row or a link. */
   readonly hidden?: boolean
   /**
-   * WHAT THE BRAND OWNER SWITCHER REACHES.
+   * WHAT THE COMPANY SWITCHER REACHES.
    *
    * `'account'` — the screen spans everything the account holds and IGNORES the switcher.
-   * `'owner'`   — the screen is about one brand owner, and the switcher chooses which.
+   * `'owner'`   — the screen is about one company, and the switcher chooses which.
    *
    * This is the field that makes the switcher's scope visible instead of mysterious. The sidebar draws
    * the switcher as the header of the `owner` group, so what it governs is everything printed beneath
@@ -78,7 +78,7 @@ export type NavEntry = {
    * owner. The top bar reads the same field: it names the scope you are in, the account or the owner.
    *
    * It is NOT a role test. Both groups are identical for everyone who signs in; what differs is how
-   * many brand owners they hold, and quantity is a rendering decision, never a layout.
+   * many companies they hold, and quantity is a rendering decision, never a layout.
    */
   readonly scope?: 'account' | 'owner'
 }
@@ -86,12 +86,12 @@ export type NavEntry = {
 // ARRAY ORDER IS SIDEBAR ORDER — AppShell maps this straight into the nav list.
 //
 // ── THE LINE, AND WHY IT IS WHERE IT IS ──────────────────────────────────────────────────────────
-// Everything with `scope: 'account'` comes first, then the brand-owner switcher, then everything with
+// Everything with `scope: 'account'` comes first, then the company switcher, then everything with
 // `scope: 'owner'`. Above the line you REVIEW ACROSS EVERYTHING; below it you CONFIGURE AND START WORK
 // FOR ONE OWNER. The switcher stops being a filter of unknown reach and becomes the label on the group
 // it governs.
 //
-// Clearances is above the line, with brand owner as one more filter inside it. It is where Home hands
+// Clearances is above the line, with company as one more filter inside it. It is where Home hands
 // off ("All clearances →") and Home is account-wide, so an owner-scoped Clearances would break that
 // handoff at the seam — and a multi-brand user would have no single archive. It is also already the
 // screen built for slicing: filter, sort, search, paging, families. One more filter costs it nothing;
@@ -175,7 +175,7 @@ export function navFor(role: Role, entries: readonly NavEntry[] = NAV): readonly
 }
 
 /**
- * The sidebar in two groups, with the brand-owner switcher belonging between them.
+ * The sidebar in two groups, with the company switcher belonging between them.
  *
  * The split is read off `scope`, never off role and never off a hardcoded id list — so adding a screen
  * puts it on the correct side of the switcher by declaring one field, and cannot put it on the wrong
@@ -198,7 +198,7 @@ export function navGroupsFor(role: Role, entries: readonly NavEntry[] = NAV): {
  * What the screen you are on is scoped to — which is what the top bar names.
  *
  * An unknown or unscoped screen reads `'account'`, matching navGroupsFor's default: the title then
- * names the account, which is true of every signed-in identity, rather than naming a brand owner the
+ * names the account, which is true of every signed-in identity, rather than naming a company the
  * screen may not be showing.
  */
 export function scopeOf(id: string | null, entries: readonly NavEntry[] = NAV): 'account' | 'owner' {

@@ -140,13 +140,13 @@ const STATES = {
     ],
     accounts: ['coastline', 'foxglade', 'ridgeform'],
     expectCards: 2, expectQueue: 1, expectFirstCardPips: 9, expectStops: 2,
-    // A FIRM HOLDING THREE BRAND OWNERS HAS NO SINGLE ACCOUNT NAME the portal knows — it knows the
+    // A FIRM HOLDING THREE COMPANIES HAS NO SINGLE ACCOUNT NAME the portal knows — it knows the
     // owners they hold, not what the firm calls itself. So the account-scoped title says what is
-    // actually on screen ("All brand owners") and the Account block is absent rather than picking one
+    // actually on screen ("All companies") and the Account block is absent rather than picking one
     // of their own clients and labelling it their identity. Home still shows every owner's work; this
     // is about what the bar can truthfully NAME, not about scope.
-    expectTitle: 'All brand owners', expectAccount: false,
-    // Several brand owners means several daily allowances and no single number. The line is ABSENT
+    expectTitle: 'All companies', expectAccount: false,
+    // Several companies means several daily allowances and no single number. The line is ABSENT
     // rather than reading "unavailable", which would claim a fault where there is none.
     expectLimits: false,
   },
@@ -309,13 +309,13 @@ const PROBE = `(() => {
     firstRun: !!q('.home2-firstrun'),
     notice: (q('.home2-notice')?.textContent ?? '').trim(),
     title: (q('.topbar h1')?.textContent ?? '').trim(),
-    accountLabelled: all('.topbar .eyebrow').some((n) => n.textContent.trim() === 'Account'),
+    accountLabelled: all('.topbar .eyebrow').some((n) => n.textContent.trim() === 'Organisation'),
     // Every mark, owner and project must be blurrable — the class is not the contract, the attribute is.
     untaggedMarks: all('.home2-card-mark, .home2-card-owner, .home2-qmark, .home2-qowner, .home2-done-mark')
       .filter((n) => n.getAttribute('data-anon') !== 'mark').length,
     sidewaysOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     // The sidebar's owner group must be labelled by the switcher, not floating above everything.
-    switcherInNav: !!q('.sidebar-scroll select[aria-label="Brand owner"]'),
+    switcherInNav: !!q('.sidebar-scroll select[aria-label="Company"]'),
     theme: document.documentElement.getAttribute('data-theme') ?? 'light',
   }
 })()`
@@ -506,7 +506,7 @@ for (const [name, spec] of Object.entries(STATES)) {
       `${name}/${theme}: Account ${wantAccount ? 'is still labelled' : 'is absent — a firm has no single account to name'}`)
     // The switcher belongs INSIDE the nav, as the header of the group it governs.
     if (spec.accounts && spec.accounts.length > 1) {
-      say(out.switcherInNav, `${name}/${theme}: the brand-owner switcher labels its nav group`)
+      say(out.switcherInNav, `${name}/${theme}: the company switcher labels its nav group`)
     }
 
     if (shotDir) {

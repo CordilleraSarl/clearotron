@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Profile — how a brand owner's clearances are scoped, rated and delivered.
+// Profile — how a company's clearances are scoped, rated and delivered.
 //
 // This screen writes to the file the engine loads at the start of every run. A profile that fails
 // validation does not fail politely: it takes that account's searches down until someone fixes it by
@@ -95,11 +95,11 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   )
 
   // The same flag that enables Save is the flag the shell asks before letting anyone leave — including
-  // by switching brand owner, which is not a navigation and used to discard edits silently.
+  // by switching company, which is not a navigation and used to discard edits silently.
   useUnsaved(dirty)
 
   // needsOwner covers staff (allAccounts, owner not yet chosen); pickAccount covers a CLIENT whose
-  // grant spans several brand owners — the server refuses an ownerless read with pickAccount, and
+  // grant spans several companies — the server refuses an ownerless read with pickAccount, and
   // showing that as "could not be loaded" reads as a fault that retrying never fixes (C7's fix
   // covered the four other account-scoped screens; this one was missed).
   if (needsOwner || result?.kind === 'pickAccount') {
@@ -160,7 +160,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
       <div className="measure">
         {/* The framework leads the EDITABLE page, under the scope notice above it.
             It is the one thing here nobody can edit and the one thing that decides what every clearance
-            for this account COMES OUT AS — doc 50's rule that a brand owner's own framework rates their
+            for this account COMES OUT AS — doc 50's rule that a company's own framework rates its
             matters. Sitting last, under the editable fields, it read as an appendix to the settings
             rather than as the authority the settings operate under. The notice now precedes it because
             a sentence about what saving does is useless read after the saving; the framework still
@@ -169,10 +169,10 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
             fields, where a sentence about what saving does is read after the saving. The owner's
             "changes need the CLI" wording is NOT used here: he ruled option (a) on 2026-08-26 — the
             editor stays, so the page must say what is true of it. The CLI gap he was actually pointing
-            at is creating a brand owner, which this page has never done and which is filed separately. */}
+            at is creating a company, which this page has never done and which is filed separately. */}
         <div className="notice quiet" style={{ margin: '0 0 18px' }}>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
-            These settings scope every clearance for this brand owner. Changes are checked against the
+            These settings scope every clearance for this company. Changes are checked against the
             same rules the search engine applies when it starts a run, and each save is recorded against
             your sign-in.
           </p>
@@ -208,7 +208,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           value={pack}
           onChange={editPack}
           title="Background &amp; standing concerns"
-          hint="Useful background about this brand owner — competitors to watch, recurring concerns, lessons from past matters. Every clearance reads it before it writes. Facts and concerns, not rules: it shapes what a report emphasises, never what a finding is rated."
+          hint="Useful background about this company — competitors to watch, recurring concerns, lessons from past matters. Every clearance reads it before it writes. Facts and concerns, not rules: it shapes what a report emphasises, never what a finding is rated."
         />
 
         {problem ? (
@@ -350,7 +350,7 @@ function BandPill({ label, tone }: { readonly label: string; readonly tone: unkn
 /**
  * How this account is rated, and what it may run.
  *
- * Doc 50's rule is that a brand owner's OWN framework rates their matters, falling back to the house one
+ * Doc 50's rule is that a company's OWN framework rates their matters, falling back to the house one
  * — so the first thing this block does is say which, unmistakably. Everything under it is the framework
  * describing itself: the ladder in its own order and vocabulary, what each band MEANS in the deck's own
  * words, the axes it reasons on, the entity it voices the client side as. That presentation existed on
@@ -414,18 +414,18 @@ function FrameworkBlock({
             <b>
               Custom framework: <span data-anon="mark">{title}</span>
             </b>{' '}
-            — this brand owner&rsquo;s own framework rates every matter for them, in its own words.
+            — this company&rsquo;s own framework rates every matter for it, in its own words.
           </>
         ) : custom ? (
           <>
             <b style={{ color: 'var(--tone-high)' }}>This account&rsquo;s framework could not be read.</b>{' '}
-            A custom framework is on file for this brand owner, so their matters are <b>not</b> rated
+            A custom framework is on file for this company, so its matters are <b>not</b> rated
             under the Generic default — but its definitions are unavailable, so the bands cannot be shown
             here. This needs an administrator to look at it.
           </>
         ) : (
           <>
-            <b>Generic default</b> — no custom framework is on file for this brand owner; their matters
+            <b>Generic default</b> — no custom framework is on file for this company; its matters
             are rated under the generic framework.
           </>
         )}
@@ -662,9 +662,9 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
     case 'conflict':
       return { title: 'Someone else changed this first', lines: [r.message ?? 'Reload and reapply your change.'] }
     case 'notFound':
-      return { title: 'That is not available to you', lines: ['Check which brand owner is selected.'] }
+      return { title: 'That is not available to you', lines: ['Check which company is selected.'] }
     // SPLIT FROM `notFound`. They are different answers and only one of them has
-    // anything to do with the selector. `notFound` may well BE the wrong brand owner, so that advice is
+    // anything to do with the selector. `notFound` may well BE the wrong company, so that advice is
     // right there. `noAccess` is the door refusing the identity itself — reachable only for door checks,
     // never for anything tenant-scoped — and telling that person to check the selector sends them to the
     // one thing that is not wrong. Someone who signs in successfully and can do nothing should be told
@@ -676,7 +676,7 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
     case 'noAccess':
       return {
         title: 'This address has no access yet',
-        lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different brand owner cannot change that — an administrator needs to add it to one.'],
+        lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different company cannot change that — an administrator needs to add it to one.'],
       }
     case 'surfaceUnavailable':
       return {

@@ -4,10 +4,10 @@
 //
 // ── WHAT WAS HERE BEFORE ────────────────────────────────────────────────────────────────────────────
 //
-// Four screens refused to render and printed a notice: "Choose a brand owner first. Pick one at the top
+// Four screens refused to render and printed a notice: "Choose a company first. Pick one at the top
 // left." It named a concept it did not explain, pointed away from itself at a control that is not on
 // screen when the rail is collapsed, and offered nothing to do. An outside user read it, did not know
-// what a brand owner was or where "top left" was, gave up, and edited the configuration files instead.
+// what a company was or where "top left" was, gave up, and edited the configuration files instead.
 //
 // So the page does the work itself: it lists what there is to pick, each entry carrying enough to tell
 // it from the next, and it carries the way to make a new one.

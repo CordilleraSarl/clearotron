@@ -62,8 +62,8 @@ The strongest evidence for a canonical term is what a user clicks to reach the t
 carries thirteen labels, and they are treated here as settled by the product:
 
 ```
-Home · Clearances · Use your AI · New clearance · Clearance · About
-Brand profile · Brand projects · Custom searches
+Home · Use your AI · New clearance · Clearances · Clearance · About
+Profile · Projects · Custom searches
 Admin settings · People & access · Global config · Your preferences
 ```
 
@@ -124,6 +124,36 @@ wording; neither is evidence about the product's canonical noun, and the wider m
 taken. Both headings now read **Custom searches**. That acceptance criterion was *"a tag, a label, or
 its own group under its own heading"* — noun-agnostic — so this changes the word, not the fix.
 
+### Company
+
+The business whose names are being checked. Every clearance, report, project and custom search belongs
+to exactly one.
+
+| | |
+|---|---|
+| **Canonical** | **Company** / Companies |
+| **Retired** | Brand owner |
+
+**Ruled by the owner, 2026-09-09**, against mockups he approved — not measured into existence like the
+Custom search row above. The evidence that made it a ruling rather than a preference: an outside user met
+*brand owner*, did not know whether it meant him, and configured the product by hand instead. The term
+means nothing outside trademark practice, and it is the first noun a stranger meets.
+
+**Organisation is the other half of the same ruling** and is not a retirement, because the product had no
+word for it at all. It names the firm or company running the installation, it appears in the top bar and
+nowhere else, and it is deliberately NOT in the table above: there is no retired spelling to enforce, so
+a row here would be a rule with nothing to catch.
+
+Both words are on screen at once, which is exactly how a sweep gets one of them wrong. *Company* is what
+you are looking at; *Organisation* is who you are.
+
+**The code keeps its own names**, on the same rule the Custom search row states: `account`, `accounts`,
+`?account=`, `Role = 'staff' | 'client'`, the `brand.*` screen ids and routes, the CSS classes
+`owner-name` and `owner-count`, the `cordillera-clearances-group-by-owner` storage key, and
+`demo-brand-owner` in the package manifest are untouched. 167 of the 428 raw `account` hits sit in
+`contract/`, which is the wire; a sweep that took them would have rewritten the API and passed CI.
+
+---
 ---
 
 ## OPEN — measured, NOT ruled
@@ -131,27 +161,42 @@ its own group under its own heading"* — noun-agnostic — so this changes the 
 's rules say *"when the existing copy is ambiguous… flag it for product or legal review. Do not
 resolve the ambiguity by guessing."* These are flagged, not resolved. The guard does not enforce them.
 
-### Brand owner · Account · Client — three terms, and they are genuinely three things
+### Account · Client · Customer · Tenant — four words left, and only one has been ruled on
 
-Not a collision. `UseYourAI.tsx` uses two of them in one breath, as different things:
+*Brand owner* left this table on 2026-09-09; it is settled above and the guard enforces it. What it
+leaves behind is the half the ruling deliberately did not touch, re-measured here rather than carried
+over — the old figures in this row were stale, and both strings it quoted as evidence are gone from the
+tree.
 
-> *"Access over MCP is scoped to your own account and brand owners."*
+Counts are over the extractor's corpus, taken 2026-09-09, with a direct source search where the
+extractor is known to drop a string:
 
 | term | count | what it appears to mean |
 |---|---|---|
-| **Brand owner** | 38 | the organisation whose marks are being cleared |
-| **Account** | 12 | the sign-in, enrolment and spend identity — *"enrolled for any account"*, *"spends against your account"*, *"Account menu"* |
-| **Client** | 3 | a person who is not staff — an access role. `PeopleAccess.tsx` only |
-| **Customer** | 1 | *"balance customer use and quality with cost"*, in the beta notice |
+| **Company** | 36 | the canonical term, ruled — listed for scale, not as an open question |
+| **Account** | 11 | the sign-in, enrolment and spend identity — *"this account has not been granted access"* |
+| **Client** | 5 | two different things at once: an access role, and the party a firm acts for |
+| **Customer** | 3 | the deployment's own operator language — *"a server setting on this deployment"* |
+| **Tenant** | 1 | *"all of this tenant"*, one pill on People & access. The extractor drops it; a direct search finds it |
+| **Organisation** | 1 | the top-bar label, ruled |
 
-**The finding is not that they conflict — it is that the distinction is never stated.** requires
-*"if two terms refer to genuinely different things, make the distinction explicit at their first
-meaningful use."* Nothing in the UI tells a reader that their account is not their brand owner, and the
-sidebar carries **both** as labels on two different controls. Needs a ruling on where that sentence goes
-before any screen is swept.
+**Why these are still open when *brand owner* was ruled.** The ruling covered the noun a stranger meets
+first. These four are the access model's own vocabulary — who may sign in, what they may do — and that
+model is itself parked pending a design decision on one privilege model with a read-only tier. Renaming
+its words before that is settled would be a sweep over something about to change shape.
 
-*Customer* (1 use) names nothing the other three do not; it looks like a stray rather than a fourth
-concept, but it sits in a commercial statement about beta pricing, so it is flagged rather than swept.
+**Why *Account* is not in the Retired column, stated rather than left for the next reader to rediscover.**
+The guard scans comment-stripped source, and that is only safe while every retired spelling contains a
+space, because identifiers do not. *Account*, *Client*, *Customer* and *Tenant* are all single words and
+all live identifiers — `me.accounts`, `?account=`, `Role`, `person.tenant`. Retiring them here would flag
+several hundred identifiers, and narrowing the guard to the extractor's corpus to compensate would trade
+a real safety net for one that states its own inadequacy at the top of `uiStrings.ts`.
+
+So the instrument is chosen per row rather than per table. Multi-word spellings are enforced by the guard
+over the wide corpus. The one visible *Account* that was actually wrong — the top-bar label over a slot
+that rendered the organisation for staff and the company for a client — was fixed under the same ruling
+and is pinned by a named assertion in `test/shell.test.ts`, which exercises the derivation rather than
+scanning for a word. A single-word retirement needs that kind of arm, not a row here.
 
 ### Clearance · Search — 48 and 58, both load-bearing
 

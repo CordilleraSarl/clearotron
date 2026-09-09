@@ -40,7 +40,7 @@ export function pageWindow<T>(rows: readonly T[], page: number, size: number) {
 }
 
 /**
- * Mark names that belong to more than one brand owner.
+ * Mark names that belong to more than one company.
  *
  * Two AquaPlus clearances exist for two different clients. Under owner headings they are correctly
  * separated — but a heading is only true while it is on screen, and paging or scrolling takes it away.

@@ -67,7 +67,7 @@ test('a client sees no admin surface anywhere, and admin left the sidebar for th
 
   // What changed is where staff reach it from. NOBODY has it in the sidebar now — it belongs to the
   // person rather than to either scope, and in the sidebar it would have had to sit on one side of the
-  // brand-owner switcher, claiming to be account-scoped or owner-scoped when it is neither.
+  // company switcher, claiming to be account-scoped or owner-scoped when it is neither.
   assert.equal(navFor('staff').some((e) => e.id.startsWith('admin')), false, 'not in the staff sidebar either')
   assert.deepEqual(avatarMenuFor('staff').map((e) => e.id), ['preferences', 'admin.access', 'admin.config', 'about'])
   // …and the role gate still lives in the DATA, so a client's menu is simply shorter.

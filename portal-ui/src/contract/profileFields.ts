@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Editing a brand owner's configuration.
+// Editing a company's configuration.
 //
 // The rules here are the ones that make a settings page safe to point at a legal product. Two of them
 // have already caused real incidents in this codebase, and both are the same shape: a form that sends
@@ -218,7 +218,7 @@ export function isSet(draft: Record<string, unknown>, spec: FieldSpec): boolean 
 export const CLEARED_LABEL = 'Generic default'
 
 export const PROFILE_FIELDS: readonly FieldSpec[] = [
-  // ── who the brand owner is ──
+  // ── who the company is ──
   { key: 'name', label: 'Legal name', kind: 'text', group: 'identity',
     hint: 'Used so a search does not flag the client against their own marks. Should be the registered owner name.' },
   { key: 'matchDomains', label: 'Domains', kind: 'lines', group: 'identity',
@@ -292,7 +292,7 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     hint: 'One per line. A project can add to this list; it can never remove one.' },
   { key: 'riskAppetite', label: 'Risk appetite', kind: 'prose', group: 'defaults',
     // Level-NEUTRAL wording, deliberately: this same spec renders on the project form, where "how this
-    // BRAND OWNER wants risk communicated" was describing the wrong thing entirely. And the two clauses
+    // COMPANY wants risk communicated" was describing the wrong thing entirely. And the two clauses
     // that survive the cut are the two the server enforces — plain prose, and never a rating input.
     hint: 'How risk is put to this client: what to lead with, how cautious to be. Example: "Lead with the biggest risk. Flag anything that could be a problem, even if unlikely." Changes how the report reads, never what is rated.' },
   // MARKETPLACE LISTING SIZE HAS NO CONTROL, ON ANY SURFACE. Owner ruling, 2026-08-29:

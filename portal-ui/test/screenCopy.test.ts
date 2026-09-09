@@ -91,7 +91,7 @@ test('Preferences warns that a report blurs WHOLE, which is not what a reader wo
   assert.match(prose, /deliberate/i, 'and named as a choice, so it does not read as a fault')
 
   // What is covered is still claimed plainly, because it is true and it is why the feature exists.
-  assert.match(prose, /blurs every brand name, mark and brand owner/, 'the promise is still made')
+  assert.match(prose, /blurs every brand name, mark and company/, 'the promise is still made')
 })
 
 test('Preferences keeps the report boundary factual rather than apologetic', () => {
@@ -456,7 +456,7 @@ test('the context pack is EDITABLE at BOTH levels, not merely round-tripped', ()
   // The PROJECT level had the same defect and kept it a release longer: the pre-React portal had a
   // "Project background & concerns" field, the rebuild dropped the control and kept the pass-through, and
   // the one project in production ended up with doctrine the engine reads and nobody could edit.
-  assert.match(PROFILE, /<ContextPackEditor/, 'the brand owner has the editor')
+  assert.match(PROFILE, /<ContextPackEditor/, 'the company has the editor')
   assert.match(PROFILE, /contextPack:\s*pack\b/, 'and its save sends the edited value')
   assert.doesNotMatch(PROFILE, /contextPack:\s*loaded\.contextPack/, 'not the untouched loaded copy')
   assert.match(PROFILE, /pack !== loaded\.contextPack/, 'a pack edit counts as dirty')
@@ -481,7 +481,7 @@ test('ONE context-pack editor, shared — the two levels cannot describe the sam
   // Re-pointed by the copy pass: the SENTENCE changed, the fact it guards did not, and
   // the fact is the reason the arm exists. Matched on both halves rather than on one phrase, so a
   // future shortening cannot drop the "not added to it" clause and stay green.
-  assert.match(PROJECTS, /Replaces the brand owner's background when set/)
+  assert.match(PROJECTS, /Replaces the company's background when set/)
   assert.match(PROJECTS, /it is not added to it/)
 })
 
@@ -607,7 +607,7 @@ test('Projects no longer says Cordillera sets them up, because the screen now do
   // Bounded by the row list that follows the empty branch. NOT by the first `projects.map(` in the
   // file — that one is the `taken={…}` prop above, so slicing to it yields an empty string and the
   // assertion below passes on nothing at all.
-  const emptyAt = PROJECTS.indexOf('No projects for this brand owner')
+  const emptyAt = PROJECTS.indexOf('No projects for this company')
   const listAt = PROJECTS.indexOf('{projects.map(', emptyAt)
   assert.ok(emptyAt > 0 && listAt > emptyAt, 'the empty branch is bounded by the row list that follows it')
   const empty = PROJECTS.slice(emptyAt, listAt)
@@ -644,8 +644,8 @@ test('Custom searches offers retire AND the way back from it', () => {
   assert.match(body(SAVED_SEARCHES), /archived: retired/, 'and it sends the flag explicitly, in both directions')
 })
 
-test('no screen prints an account key where a brand owner belongs', () => {
-  // The key is a slug ("vantor"); the brand owner is a name ("Vantor Labs"). Every label goes
+test('no screen prints an account key where a company belongs', () => {
+  // The key is a slug ("vantor"); the company is a name ("Vantor Labs"). Every label goes
   // through ctx.ownerName, so a client and a staff member read the same words — which is the whole
   // point, and the kind of thing that reads fine in a screenshot taken from one login.
   const CLEARANCES = read('../src/screens/Clearances.tsx')
@@ -726,7 +726,7 @@ test('the marketplaces column says what the shops are and where they come from',
   //
   // Flagged on the issue. His wording is the acceptance and it ships; what it drops is his to decide.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /forced deep dive inherited from Brand Owner and\s+then Project configuration/,
+  assert.match(prose, /forced deep dive inherited from Company and\s+then Project configuration/,
     'says what the shops are and that they are inherited rather than chosen here')
   assert.match(prose, /common law sweeps everything it can find on the\s+open web/,
     'and that the open web is swept anyway, so a reader knows what the list ADDS')
@@ -826,7 +826,7 @@ test('no screen tells a reader to look at a corner that may not be on screen', (
   // another, and it cannot be edited into a claim about a position nobody can see.
   for (const src of [NEW_CLEARANCE, SAVED_SEARCHES, PROFILE, read('../src/screens/Projects.tsx')]) {
     assert.doesNotMatch(body(src), /at the top left/,
-      'a screen states where the brand-owner control is without knowing whether it is rendered')
+      'a screen states where the company control is without knowing whether it is rendered')
   }
 })
 

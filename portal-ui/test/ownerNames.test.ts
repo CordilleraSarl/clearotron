@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The bug this module exists to end: one brand owner, two names, depending on who signed in.
+// The bug this module exists to end: one company, two names, depending on who signed in.
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom, sortOwners } from '../src/contract/ownerNames.ts'
 
-test('a client and a staff member read the same brand owner the same way', () => {
+test('a client and a staff member read the same company the same way', () => {
   // The client's own grants, named by /portal/api/me…
   const asClient = ownerNameMap({ 'vantor': 'Vantor Labs' }, [])
   // …and the staff view of the same customer, named by the roster.
@@ -24,7 +24,7 @@ test('a client and a staff member read the same brand owner the same way', () =>
 
 test('an unknown key reads as itself, and nothing ever renders blank', () => {
   const names = ownerNameMap({ aurora: 'Aurora Interactive' }, [])
-  // A brand owner whose profile carries no name, a stale key, a degraded server that sent {} — all
+  // A company whose profile carries no name, a stale key, a degraded server that sent {} — all
   // the same answer, and it is always something a person can act on.
   assert.equal(ownerNameFrom(names, 'zephyr'), 'zephyr')
   assert.equal(ownerNameFrom({}, 'zephyr'), 'zephyr')
@@ -41,7 +41,7 @@ test('a de-slugged key is never invented', () => {
 
 test('an empty name is a miss, not a name', () => {
   // Both sources can carry one — a profile with `"name": ""`, or a roster row built from it. Storing
-  // it would render a brand owner as nothing at all, which is the one output worse than the slug.
+  // it would render a company as nothing at all, which is the one output worse than the slug.
   const names = ownerNameMap({ aurora: '' }, [{ key: 'zephyr', name: '' }])
   assert.deepEqual(names, {})
   assert.equal(ownerNameFrom(names, 'aurora'), 'aurora')

@@ -43,11 +43,11 @@ function NotYet({ title, phase, what }: { readonly title: string; readonly phase
 }
 
 /**
- * THE BRAND OWNER AND THE VISIT ARE PART OF A SCREEN'S IDENTITY, SO THEY ARE PART OF THE KEY.
+ * THE COMPANY AND THE VISIT ARE PART OF A SCREEN'S IDENTITY, SO THEY ARE PART OF THE KEY.
  *
  * Every account-scoped screen re-fetched on an owner change and none of them reset their own state, so
  * the data swapped underneath a form that did not. The worst of it was the composer: a clearance drafted
- * for one brand owner survived a switch to another while the context card, the project list and the allowance
+ * for one company survived a switch to another while the context card, the project list and the allowance
  * all changed around it — and the project key in that draft usually did not exist under the new owner.
  * Brand profile was quieter and worse: when the new owner's payload landed, the seeding effect wrote it
  * straight over unsaved edits with nothing said. Brand projects kept the expanded project key and asked
@@ -105,7 +105,7 @@ function screen(id: ScreenId, ctx: ShellContext) {
         ctx.go('/portal/clearances', { replace: true })
         return <div className="screen" />
       }
-      // KEYED ON THE RUN, NOT ON THE BRAND OWNER. Every other screen is owner-scoped and remounts when
+      // KEYED ON THE RUN, NOT ON THE COMPANY. Every other screen is owner-scoped and remounts when
       // the switcher moves; this one is not — it shows one identified run, and the switcher has no say
       // in which. Keying it on `ownerKey` remounted an open report every time someone touched the
       // switcher, discarding the measured frame height and reloading the document for no reason. The

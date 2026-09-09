@@ -6,17 +6,17 @@
 // ready. Then get out of the way.
 //
 // ── WHAT THE PREVIOUS ATTEMPT GOT WRONG, SO IT IS NOT REPEATED ───────────────────────────────────
-// It buried in-flight work under a long list of brand owners; picking one made that work vanish with no
+// It buried in-flight work under a long list of companies; picking one made that work vanish with no
 // way back; and it re-listed finished runs at lower fidelity than Clearances, whose grouping, threading,
 // families, filters and sort it could not match. Three rules fall out of that, and each is a defect if
 // it goes missing:
 //
-//   1. ACCOUNT-SCOPED, NEVER OWNER-SCOPED. Every brand owner this account holds, always, with the owner
+//   1. ACCOUNT-SCOPED, NEVER OWNER-SCOPED. Every company this account holds, always, with the owner
 //      as a label on the row. The sidebar switcher does not reach this screen — it sits above the line
 //      in nav.config for exactly that reason — so nothing here can be emptied by a filter choice.
 //   2. NO FINISHED LIST. One line, then a link INTO Clearances. A lower-fidelity copy of a screen that
 //      already does the job well loses to it, and teaches people not to go there.
-//   3. NO ROLE SPLIT. There is no staff Home and no client Home. What differs is how many brand owners
+//   3. NO ROLE SPLIT. There is no staff Home and no client Home. What differs is how many companies
 //      someone holds, and quantity is a rendering decision.
 //
 // There is no ETA and no percent-complete anywhere on this page: nothing in the system measures or
@@ -72,7 +72,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // ONE REQUEST, WHOEVER IS ASKING. Staff get every account, a client gets its own, and the request is
   // identical — so this screen never branches on role, and cannot grow a staff layout by accident.
   const { result, reload } = useLoad(() => api.runsMine(), [])
-  // THE ALLOWANCE IS PER BRAND OWNER, AND THIS SCREEN SPANS THEM ALL.
+  // THE ALLOWANCE IS PER COMPANY, AND THIS SCREEN SPANS THEM ALL.
   //
   // So it is stated only where there IS one owner to state it for: the one selected, or the only one
   // held. A multi-brand account has several daily allowances and no single number, and the line is

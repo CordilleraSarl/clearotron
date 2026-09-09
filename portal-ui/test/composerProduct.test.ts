@@ -251,14 +251,14 @@ test('a saved search reads back as a draft — and a product the offering no lon
   assert.equal(draftFromSaved({}, PRODUCTS), null)
 })
 
-// ── what the brand owner already carries ─────────────────────────────────────────────────────────────
+// ── what the company already carries ─────────────────────────────────────────────────────────────
 
 test('inherited reads the project overlay when there is one, and says which', () => {
   const own = inherited({
     profile: { defaultClasses: [9, 3], defaultJurisdictions: ['US'], platforms: ['a.com'], marketplaceDensity: 'dense' },
     projectEffective: { defaultClasses: [28], defaultJurisdictions: ['FR'], platforms: [] },
     projectOrigins: { defaultClasses: 'project', defaultJurisdictions: 'project' },
-    ownerLabel: 'the brand owner', projectLabel: 'Console line',
+    ownerLabel: 'the company', projectLabel: 'Console line',
   })
   assert.deepEqual([...own.classes], [28])
   assert.equal(own.classesFrom, 'from Console line')

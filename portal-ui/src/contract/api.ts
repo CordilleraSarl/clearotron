@@ -160,7 +160,7 @@ export type Me = {
    * Empty for staff — and empty does not mean "none". The wire sends `"*"` for an identity granted
    * everything (portal-access.mjs), which is not a list and cannot be turned into one client-side: the
    * set of accounts is the roster, and the roster is its own staff-only endpoint. Decoding `"*"` to `[]`
-   * without saying so is how a staff sidebar ends up rendering "no brand owners".
+   * without saying so is how a staff sidebar ends up rendering "no companies".
    */
   readonly accounts: readonly string[]
   /** True when the wire said `"*"`. Ask /portal/admin/roster for the actual list. */
@@ -170,7 +170,7 @@ export type Me = {
   /**
    * The DISPLAY name of each granted account, keyed by account key.
    *
-   * The key is a slug ("vantor"); the name is what the brand owner is actually called ("Ion
+   * The key is a slug ("vantor"); the name is what the company is actually called ("Ion
    * Partners"). Empty for an `allAccounts` identity — those read names off the roster instead, which
    * is staff-gated for a reason. Empty is also what a degraded server sends, so a missing entry means
    * "no name available" and the caller falls back to the key; it never means the account is unnamed.
@@ -186,7 +186,7 @@ export type Me = {
    */
   readonly accountFacts: Readonly<Record<string, CompanyFacts>>
   /**
-   * How many runs this deployment executes at once — ONE GLOBAL CAP, never per brand owner.
+   * How many runs this deployment executes at once — ONE GLOBAL CAP, never per company.
    *
    * Null when the server does not send it (an older portal-service), and the caller must then say
    * nothing rather than assume a number: a stated cap that is wrong over-promises throughput, which is
@@ -288,7 +288,7 @@ export type RunState = 'queued' | 'running' | 'paused' | 'delivered' | 'failed' 
  */
 export type Run = {
   readonly runId: string
-  /** The brand owner this run belongs to. Always present, so a row never has to infer it. */
+  /** The company this run belongs to. Always present, so a row never has to infer it. */
   readonly account: string
   /**
    * The report's own headline — model-authored front matter, NOT the mark.
@@ -783,7 +783,7 @@ export type Accepted = {
 }
 
 /**
- * The editable half of a brand owner's configuration.
+ * The editable half of a company's configuration.
  *
  * Deliberately loose (`Record<string, unknown>`) rather than a field-by-field type. The authoritative
  * key list lives in the engine (`KNOWN_PROFILE_KEYS`), the server strips what the UI may not send, and
@@ -1480,7 +1480,7 @@ export const api = {
       accounts: asArray(b['accounts']).filter((a): a is string => typeof a === 'string'),
       allAccounts: b['accounts'] === '*',
       // Only string→string pairs survive. A malformed entry is dropped rather than rendered, because
-      // the fallback (the key) is always correct and "[object Object]" beside a brand owner is not.
+      // the fallback (the key) is always correct and "[object Object]" beside a company is not.
       accountNames: Object.fromEntries(
         Object.entries(asRecord(b['accountNames'])).filter(([, v]) => typeof v === 'string' && v),
       ) as Readonly<Record<string, string>>,
@@ -1514,9 +1514,9 @@ export const api = {
     })),
 
   /**
-   * Runs for one brand owner, or for ALL of them.
+   * Runs for one company, or for ALL of them.
    *
-   * `'*'` is the staff "All brand owners" view and is answered in a single pass over the pool. Asking
+   * `'*'` is the staff "All companies" view and is answered in a single pass over the pool. Asking
    * the browser to fan out across the roster instead would spend a roster-sized slice of the 120/min
    * rate limit on every poll. A client who sends `'*'` gets a 404, the same as any account not theirs.
    */
@@ -1528,7 +1528,7 @@ export const api = {
     ),
 
   /**
-   * Runs across every brand owner this identity holds — one call, whoever is asking.
+   * Runs across every company this identity holds — one call, whoever is asking.
    *
    * Staff get every account; a client gets exactly its own. The REQUEST IS IDENTICAL either way, which
    * is the point: a screen that is account-scoped rather than owner-scoped never has to ask who is
@@ -1760,7 +1760,7 @@ export const api = {
       { method: 'POST', body: JSON.stringify({ ...body, ...(account ? { account } : {}) }) },
     ),
 
-  /** The brand owner's configuration. The account is resolved server-side from who you signed in as. */
+  /** The company's configuration. The account is resolved server-side from who you signed in as. */
   profile: (account: string | null): Promise<Result<ProfileConfig>> =>
     call(`/portal/api/config/profile${accountQuery(account)}`, (b) => ({
       account: asString(b['account']) ?? '',

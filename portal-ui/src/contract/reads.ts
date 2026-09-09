@@ -108,7 +108,7 @@ export function inSentence(name: string, max = 60): string {
 }
 
 /**
- * Every read of the same mark, for the same brand owner, newest first.
+ * Every read of the same mark, for the same company, newest first.
  *
  * Scoped to the account as well as the mark, and that is not belt-and-braces: two different brand
  * owners can be clearing the same word at the same time, and a strip that grouped on the mark alone

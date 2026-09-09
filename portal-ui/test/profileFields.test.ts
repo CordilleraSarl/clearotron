@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Editing a brand owner's configuration.
+// Editing a company's configuration.
 //
 // Two of these pin defects that have already happened here: a form that drops a field it did not render,
 // and a project overlay that silently revoked a marketplace its customer mandated.
