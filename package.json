@@ -1,7 +1,7 @@
 {
   "name": "clearotron",
   "type": "module",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
@@ -61,7 +61,7 @@
     "assert-census": "node scripts/unexecuted-asserts.mjs"
   },
   "devDependencies": {
-    "@changesets/cli": "3.0.1",
+    "@changesets/cli": "3.0.2",
     "@types/node": "^26",
     "acorn": "^8.18.0",
     "eslint": "^10.8.1",

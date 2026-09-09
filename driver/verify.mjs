@@ -144,7 +144,7 @@ function nonEmpty(content, min = MIN) {
  * ── WHY THE LABEL STAYS AND THE MEMBER IS APPENDED ──────────────────────────────────────────────────
  *
  * The obvious fix — emit the failing marker INSTEAD of the label — silently breaks the corrective hints.
- * `correctionHint` branches on the label text (`gateway.mjs:2181` on `findings+ledger`, `:2188` on
+ * `correctionHint` in gateway.mjs branches on the label text (its `findings+ledger` arm, and the arm on
  * `negative-results|coverage-ledger|audit-trail|findings-heading`), so a renamed token would fall through
  * to a generic hint. That comment records that arm being removed once already on a reading that was
  * true for only one lane, and put back. Appending keeps every existing matcher matching — they all test
@@ -192,7 +192,7 @@ function needs(content, markers, label, names = []) {
 // nothing else. Once seats emit anchors reliably, the fallback can be measured and retired; that is a
 // later decision needing evidence, not this change.
 //
-// The label is unchanged on purpose: `correctionHint` (gateway.mjs:2181, :2188) branches on the label
+// The label is unchanged on purpose: `correctionHint` in gateway.mjs branches on the label
 // TEXT, so renaming a token here silently downgrades the seat's corrective hint to a generic one.
 const SECTION_ANCHOR_RE = (name) =>
   new RegExp(`<!--\\s*clearotron:section\\s*=\\s*${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*-->`, "i");

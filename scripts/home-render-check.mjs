@@ -140,13 +140,12 @@ const STATES = {
     ],
     accounts: ['coastline', 'foxglade', 'ridgeform'],
     expectCards: 2, expectQueue: 1, expectFirstCardPips: 9, expectStops: 2,
-    // A FIRM HOLDING THREE BRAND OWNERS HAS NO SINGLE ACCOUNT NAME the portal knows — it knows the
-    // owners they hold, not what the firm calls itself. So the account-scoped title says what is
-    // actually on screen ("All brand owners") and the Account block is absent rather than picking one
-    // of their own clients and labelling it their identity. Home still shows every owner's work; this
-    // is about what the bar can truthfully NAME, not about scope.
-    expectTitle: 'All brand owners', expectAccount: false,
-    // Several brand owners means several daily allowances and no single number. The line is ABSENT
+    // A FIRM HOLDING THREE COMPANIES still has an organisation, and that is what the corner names. The
+    // account-scoped title says what is actually on screen ("All companies"); the corner says who is
+    // signed in. This used to expect the corner ABSENT here, because it rendered a COMPANY and a firm
+    // holding three has no single one to name — the ruling that made it the organisation is what
+    // retired that expectation, not a relaxation of it.
+    // Several companies means several daily allowances and no single number. The line is ABSENT
     // rather than reading "unavailable", which would claim a fault where there is none.
     expectLimits: false,
   },
@@ -174,7 +173,12 @@ const server = createServer((req, res) => {
   const s = STATES[current]
   if (path === '/portal/api/me') {
     const accounts = s.accounts ?? ['coastline']
+    // `brand` IS THE ORGANISATION — the firm running this install, which every install names. The corner
+    // used to render the COMPANY here for a client holding one grant; it renders the organisation for
+    // everyone now, so a fixture that supplies no brand would exercise the empty case on every state
+    // rather than the one it means to.
     return json({ role: 'client', email: 'counsel@coastline.test', accounts, concurrentRuns: s.cap ?? 2,
+      brand: 'Tolliver & Quillon',
       accountNames: { coastline: 'Coastline Drinks', foxglade: 'Foxglade Interactive', ridgeform: 'Ridgeform' } })
   }
   if (path === '/portal/api/runs') {
@@ -309,13 +313,17 @@ const PROBE = `(() => {
     firstRun: !!q('.home2-firstrun'),
     notice: (q('.home2-notice')?.textContent ?? '').trim(),
     title: (q('.topbar h1')?.textContent ?? '').trim(),
-    accountLabelled: all('.topbar .eyebrow').some((n) => n.textContent.trim() === 'Account'),
+    accountLabelled: all('.topbar .eyebrow').some((n) => n.textContent.trim() === 'Organisation'),
+    // The VALUE beside the label, so the arm below can say what the corner names rather than only that
+    // it names something. A label with the wrong noun under it is the failure being guarded.
+    accountName: (all('.topbar .eyebrow').find((n) => n.textContent.trim() === 'Organisation')
+      ?.nextElementSibling?.textContent ?? '').trim(),
     // Every mark, owner and project must be blurrable — the class is not the contract, the attribute is.
     untaggedMarks: all('.home2-card-mark, .home2-card-owner, .home2-qmark, .home2-qowner, .home2-done-mark')
       .filter((n) => n.getAttribute('data-anon') !== 'mark').length,
     sidewaysOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     // The sidebar's owner group must be labelled by the switcher, not floating above everything.
-    switcherInNav: !!q('.sidebar-scroll select[aria-label="Brand owner"]'),
+    switcherInNav: !!q('.sidebar-scroll select[aria-label="Company"]'),
     theme: document.documentElement.getAttribute('data-theme') ?? 'light',
   }
 })()`
@@ -499,14 +507,26 @@ for (const [name, spec] of Object.entries(STATES)) {
 
     // The top bar names the SCOPE. Home is account-scoped, so it names the account — never one brand
     // owner over a screen that is showing several.
-    const wantTitle = spec.expectTitle ?? 'Coastline Drinks'
+    // HOME IS ACCOUNT-SCOPED, SO THE BAR'S TITLE IS EMPTY. It used to read the company, which was wrong
+    // on a screen that spans every company the identity holds; the organisation is named at the right,
+    // once. Every state below expects the same empty title, which is why this no longer varies per spec.
+    const wantTitle = spec.expectTitle ?? ''
     say(out.title === wantTitle, `${name}/${theme}: top bar reads "${out.title}" (expected "${wantTitle}")`)
     const wantAccount = spec.expectAccount !== false
     say(out.accountLabelled === wantAccount,
-      `${name}/${theme}: Account ${wantAccount ? 'is still labelled' : 'is absent — a firm has no single account to name'}`)
+      `${name}/${theme}: the Organisation label ${wantAccount ? 'is still there' : 'is absent as expected'}`)
+    // ONE SLOT, ONE NOUN. The corner carries the organisation; the company is read in the rail and in
+    // the heading. A company name appearing here is the dual meaning coming back, and it would look
+    // entirely correct on a screen where the two happen to be the same word.
+    if (wantAccount) {
+      say(out.accountName === 'Tolliver & Quillon',
+        `${name}/${theme}: the corner names the organisation, read "${out.accountName}"`)
+      say(!/Coastline|Foxglade|Ridgeform/.test(out.accountName),
+        `${name}/${theme}: the corner names a COMPANY — "${out.accountName}"`)
+    }
     // The switcher belongs INSIDE the nav, as the header of the group it governs.
     if (spec.accounts && spec.accounts.length > 1) {
-      say(out.switcherInNav, `${name}/${theme}: the brand-owner switcher labels its nav group`)
+      say(out.switcherInNav, `${name}/${theme}: the company switcher labels its nav group`)
     }
 
     if (shotDir) {

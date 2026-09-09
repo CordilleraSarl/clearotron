@@ -58,7 +58,7 @@ if (!existsSync(join(DIST, 'index.html'))) {
 
 const KEY = 'vantor'
 const NAME = 'Vantor Labs'
-// — a SECOND brand owner, because the toggle only exists when there is more than one and the four
+// — a SECOND company, because the toggle only exists when there is more than one and the four
 // rows the E2E suite seeds are one per owner. The issue says the fault is not observable on that data
 // and to say so if arranging otherwise is awkward; here it is not, because this fixture is ours.
 const KEY2 = 'burrowell'
@@ -105,7 +105,7 @@ const RUNS = () => [
     failedStage: 'common-law-half:b',
     reason: 'invalid_file:prelim-search/tmpe2er1-vibrante-frostplum/2026-08-02-fixture/common-law-findings.half-b.md:connotation_undisposed:VIBRANTE FROSTPLUM urban dictionary,FROSTPLUM meaning slang,FR',
   }),
-  // A second brand owner, so the grouping toggle has something to group.
+  // A second company, so the grouping toggle has something to group.
   run({ runId: 'tmpd-other', account: KEY2, markName: 'ASTERION', title: 'ASTERION', date: '2026-08-03', band: 'Severe', tone: 'severe', stageLabel: 'Depth 4', product: 'global-preliminary-search' }),
   // A batch.
   run({
@@ -337,7 +337,7 @@ const short = await value(MEASURE)
 // column on every row. The information has to survive the toggle, and the sort has to go global.
 const TOGGLE = `(async () => {
   const box = [...document.querySelectorAll('label.group-toggle input[type=checkbox]')][0];
-  if (!box) return { fatal: 'no grouping toggle on the page — is there more than one brand owner in view?' };
+  if (!box) return { fatal: 'no grouping toggle on the page — is there more than one company in view?' };
   const before = {
     checked: box.checked,
     headers: [...document.querySelectorAll('tr.group-head')].length,
@@ -351,7 +351,7 @@ const TOGGLE = `(async () => {
     cols: [...document.querySelectorAll('table.data thead th')].map(t => (t.textContent || '').trim()),
     // Every row must still say who it belongs to.
     ownerCells: [...document.querySelectorAll('table.data tbody tr.row')].map(tr => {
-      const i = [...document.querySelectorAll('table.data thead th')].findIndex(t => /Brand owner/i.test(t.textContent || ''));
+      const i = [...document.querySelectorAll('table.data thead th')].findIndex(t => /Company/i.test(t.textContent || ''));
       return i < 0 ? null : (tr.children[i] ? (tr.children[i].textContent || '').trim() : null);
     }),
     // And the read rows must still line up: one cell per column.
@@ -454,11 +454,11 @@ if (!toggle || toggle.fatal) {
   fail.push(`the grouping toggle: ${toggle?.fatal ?? 'no result'}`)
 } else {
   ok(toggle.before.checked === true, 'grouping is not on by default')
-  ok(toggle.before.headers > 0, 'grouped, but no brand-owner section headers rendered')
-  ok(!toggle.before.cols.some((c) => /Brand owner/i.test(c)), 'grouped, and an owner COLUMN rendered too — the owner is stated twice')
+  ok(toggle.before.headers > 0, 'grouped, but no company section headers rendered')
+  ok(!toggle.before.cols.some((c) => /Company/i.test(c)), 'grouped, and an owner COLUMN rendered too — the owner is stated twice')
   ok(toggle.after.checked === false, 'clicking the toggle did not turn grouping off')
   ok(toggle.after.headers === 0, `ungrouped, but ${toggle.after.headers} section header(s) survived — the list is not flat`)
-  ok(toggle.after.cols.some((c) => /Brand owner/i.test(c)), 'ungrouped, and the brand owner is nowhere — the information did not survive the toggle')
+  ok(toggle.after.cols.some((c) => /Company/i.test(c)), 'ungrouped, and the company is nowhere — the information did not survive the toggle')
   ok(toggle.after.ownerCells.every((c) => c), `ungrouped, a row does not say who it belongs to: ${JSON.stringify(toggle.after.ownerCells)}`)
   ok(new Set(toggle.after.readCols).size === 1 && toggle.after.readCols[0] === toggle.after.cols.length,
     `ungrouped, the read rows no longer match the grid: ${JSON.stringify(toggle.after.readCols)} cells against ${toggle.after.cols.length} columns`)

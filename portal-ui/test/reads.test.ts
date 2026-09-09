@@ -44,7 +44,7 @@ test('case and surrounding whitespace group; internal spacing does NOT', () => {
   assert.notEqual(markKey('AQUA PLUS'), markKey('AQUAPLUS'))
 })
 
-test('a thread never crosses brand owners, even on an identical mark', () => {
+test('a thread never crosses companies, even on an identical mark', () => {
   // Two clients clearing the same word at the same time is ordinary, not exotic. The server already
   // scopes what it returns; this is the second wall.
   const mine = run({ runId: 'a', account: 'aurora', title: 'NOVAPULSE' })

@@ -33,6 +33,13 @@ const KO_CTX = {
   "knockout-frame": () => ({ K, job: { mark: "TESTMARK", marks: [{ mark: "TESTMARK" }], classes: [25], jurisdictions: ["CH"] }, profile: { key: "demo" } }),
   "knockout-assess": () => ({ K, chunkNo: 0, chunkMarks: [{ name: "TESTMARK" }], chunkTotal: 1,
     framework: { bands: [{ label: "HIGH" }, { label: "LOW" }] }, frameworkPath: `${RUN}/framework.md`, probeNote: "" }),
+  // The reviewing pass is rendered WITH its measured evidence, because that is the branch a production
+  // dispatch takes. Rendering the empty branch here would check the one shape this arm is not about:
+  // the write-order sweep is looking for a path the seat is told to write to, and the evidence rows are
+  // where a path would appear if one ever did.
+  "knockout-review": () => ({ K,
+    evidenceLines: [`- TESTMARK's basis line — address {"field":"basis","mark":"TESTMARK"} — 40 words in one sentence.`],
+    exclusionNote: "The 1 mark(s) this run is about were removed before reading." }),
 };
 
 const render = (name) => {

@@ -132,7 +132,7 @@ test('RECENT MEANS LAST RUN AGAINST, and a project nothing ran under is absent',
   assert.equal(rows[0]!.date, '2026-07-25')
 })
 
-test('two brand owners can hold the same project key without merging', () => {
+test('two companies can hold the same project key without merging', () => {
   const rows = recentProjects([
     run({ runId: '1', account: 'zephyr', projectKey: 'launch', projectName: 'Launch', date: '2026-07-25', state: 'delivered' }),
     run({ runId: '2', account: 'aurora', projectKey: 'launch', projectName: 'Launch', date: '2026-07-24', state: 'delivered' }),
@@ -159,7 +159,7 @@ test('row notes are capitalised — they are cells, not clauses', () => {
   assert.equal(projectNote(p!), 'Two clearances')
 })
 
-test('BRAND OWNERS COME FROM THE ROSTER, not from the runs', () => {
+test('COMPANIES COME FROM THE ROSTER, not from the runs', () => {
   // An owner set up and never used has no run to be derived from — and is exactly the one somebody is
   // most likely to be hunting for. Deriving the list from activity would hide it.
   const names: Record<string, string> = { zephyr: 'Zephyr Beverages', aurora: 'Aurora Interactive', quiet: 'Quiet Co' }
@@ -203,7 +203,7 @@ test('a failure leads the sentence, and keeps the rest of the picture beside it'
 })
 
 test('the staff sentence NEVER says "no in flight"', () => {
-  // What the staff view opened to: "32 stopped · no in flight, five brand owners." — a sentence that leads with a
+  // What the staff view opened to: "32 stopped · no in flight, five companies." — a sentence that leads with a
   // number nobody can act on and then says nothing is happening. `count(0)` is the word "no", so the
   // multi-owner branch composed it happily. (The 32 were dead letters and are gone at the source; this
   // pins the sentence so the construction cannot come back with any data.)
@@ -216,13 +216,13 @@ test('the staff sentence NEVER says "no in flight"', () => {
   assert.equal(line, 'Two stopped, nothing running.')
 })
 
-test('the staff view counts brand owners, not names', () => {
+test('the staff view counts companies, not names', () => {
   const rows = inFlight([
     run({ runId: '1', account: 'zephyr', state: 'running' }),
     run({ runId: '2', account: 'aurora', state: 'running' }),
     run({ runId: '3', account: 'aurora', state: 'queued' }),
   ])
-  assert.equal(sentence(rows, { owners: 3 }), 'Three in flight, three brand owners.')
+  assert.equal(sentence(rows, { owners: 3 }), 'Three in flight, three companies.')
 })
 
 test('a brand-new account and a quiet one say different things', () => {
@@ -233,10 +233,10 @@ test('a brand-new account and a quiet one say different things', () => {
 })
 
 test('AND "WE HAVE NOT BEEN TOLD" IS A THIRD THING, not the empty one', () => {
-  // A client holding several brand owners cannot ask for all of them — the server answers 404 to anyone
+  // A client holding several companies cannot ask for all of them — the server answers 404 to anyone
   // but staff — so until they pick, there are no runs and both sentences above are lies. A firm with a
   // decade of history opened the page and read "Nothing has run yet."
-  assert.equal(openingLine(inFlight([]), false, false), 'Pick a brand owner to see their work.')
+  assert.equal(openingLine(inFlight([]), false, false), 'Pick a company to see its work.')
   assert.equal(openingLine(inFlight([]), true, true), 'Nothing running.', 'and a known-quiet account still reads as quiet')
 })
 
@@ -247,13 +247,13 @@ test('counts spell out to seven, then go numeric', () => {
   assert.equal(count(8), '8')
 })
 
-test('THE SLOT NOTE SAYS "ACROSS ALL BRAND OWNERS" — the design said per-owner and that is false', () => {
+test('THE SLOT NOTE SAYS "ACROSS ALL COMPANIES" — the design said per-owner and that is false', () => {
   // CLEAROTRON_MAX_CONCURRENT_RUNS is one global cap over one lock directory, with the per-agent tag
   // deliberately omitted: two owners each running one search fill the whole deployment. Said per-owner
   // it over-promises throughput, which is the wrong direction for a line a lawyer repeats to a client.
-  assert.match(slotNote(1, 2)!, /across all brand owners/)
-  assert.doesNotMatch(slotNote(1, 2)!, /per brand owner/)
-  assert.equal(slotNote(1, 2), '1 of 2 running · two runs at once, across all brand owners')
+  assert.match(slotNote(1, 2)!, /across all companies/)
+  assert.doesNotMatch(slotNote(1, 2)!, /per company/)
+  assert.equal(slotNote(1, 2), '1 of 2 running · two runs at once, across all companies')
   assert.equal(slotNote(null, null), null, 'no cap known ⇒ no claim made')
 })
 
@@ -305,7 +305,7 @@ test('Home renders no internal stage numbers to a client', () => {
   assert.doesNotMatch(home, /Stage \d/)
 })
 
-test('every mark and brand owner on Home is blurrable', () => {
+test('every mark and company on Home is blurrable', () => {
   // The screen-share blur only covers what is tagged. An untagged name is a client name on a projector.
   const marks = home.match(/data-anon="mark"/g) ?? []
   assert.ok(marks.length >= 4, `expected the card mark, the card owner, and both finished-row names — got ${marks.length}`)
@@ -339,10 +339,10 @@ test('"NOT REPLIED YET" IS NOT "IT FAILED" — the answer is keyed on what arriv
   assert.match(home, /!result \? 'loading'/)
   assert.match(home, /result\.kind === 'ok' \? 'ok' : 'error'/)
   assert.match(home, /Too many requests just now/, 'a fault is stated, in the words Clearances uses')
-  assert.doesNotMatch(home, /Pick a brand owner/, 'nothing to pick: the request spans every owner held')
+  assert.doesNotMatch(home, /Pick a company/, 'nothing to pick: the request spans every owner held')
 })
 
-test('HOME IS ACCOUNT-SCOPED — the brand-owner switcher cannot empty it', () => {
+test('HOME IS ACCOUNT-SCOPED — the company switcher cannot empty it', () => {
   // The previous Home lost every in-flight run the moment an owner was selected, with no way back. The
   // fix is structural rather than careful: one request for everything this identity holds, and no
   // reference to the switcher at all.
@@ -360,7 +360,7 @@ test('the finished line leads into Clearances, and Home lists nothing else', () 
 })
 
 test('THERE IS NO ROLE SPLIT ON THIS PAGE', () => {
-  // There is no staff-specific page. Staff and clients differ in how many brand owners they hold, and
+  // There is no staff-specific page. Staff and clients differ in how many companies they hold, and
   // quantity is a rendering decision — never a layout, and never a branch on role.
   assert.doesNotMatch(home, /role === 'staff'/)
   assert.doesNotMatch(home, /allAccounts/)
@@ -473,8 +473,8 @@ test('the slot note counts in English — "Two runs", never "Two run"', () => {
   assert.match(slotNote(null, 2)!, /Two runs at once/)
   assert.match(slotNote(null, 1)!, /One run at once/)
   assert.doesNotMatch(slotNote(null, 2)!, /Two run /)
-  // …and it is still stated across all brand owners, never per-owner: the cap is ONE global lock.
-  assert.match(slotNote(null, 2)!, /across all brand owners/)
+  // …and it is still stated across all companies, never per-owner: the cap is ONE global lock.
+  assert.match(slotNote(null, 2)!, /across all companies/)
 })
 
 

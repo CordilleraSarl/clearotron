@@ -79,6 +79,20 @@ export const BRAND = {
 };
 
 /**
+ * The organisation running this installation, or NULL when nobody has named one.
+ *
+ * NOT `BRAND.name`, and the difference is the whole point. That value falls back to the product's own
+ * name so a sentence the product speaks always has something to call itself — "ask Clearotron to enrol
+ * it" reads correctly on an installation nobody has branded. This is the other question: WHO runs this
+ * installation, which on a fresh install has no answer, and answering it with the product's name puts
+ * "Organisation: Clearotron" on the top bar of every install that never set it.
+ *
+ * Null rather than an empty string, so a caller cannot render it by accident. Nothing sets the variable
+ * today; setup gains the question that will.
+ */
+export const ORGANISATION_NAME = process.env.CLEAROTRON_BRAND_NAME?.trim() || null;
+
+/**
  * THE CONFIDENTIALITY POSTURE ON A DELIVERED DOCUMENT — one rule, both report templates.
  *
  * It lives here because the alternative is what the issue is about. render.mjs printed the extended

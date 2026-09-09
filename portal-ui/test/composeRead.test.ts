@@ -80,11 +80,11 @@ test('applyRead: classes EXTEND the draft rather than replacing it', () => {
 })
 
 test('applyRead: a ghost class list stays a ghost when the brief adds nothing to it', () => {
-  // null means "use the brand owner's own" — the composer sends no `classes` at all and the server's
+  // null means "use the company's own" — the composer sends no `classes` at all and the server's
   // precedence ladder resolves it. A read that mentions no goods must not turn that into [].
   assert.equal(applyRead(EMPTY_TARGET, EMPTY_READ, [5, 32]).classes, null)
   // Nor may a read that names only what the owner already carries. Nothing on screen changed, and
-  // freezing today's profile into the request would mean a class added to the brand owner tomorrow
+  // freezing today's profile into the request would mean a class added to the company tomorrow
   // silently does not apply to a search composed today.
   assert.equal(applyRead(EMPTY_TARGET, read({ classes: [32] }), [5, 32]).classes, null)
 })

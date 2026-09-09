@@ -356,7 +356,7 @@ export function missingPieces(
     return out
   }
   // EITHER, never both. This mirrors what the request schema accepts: classes or a description, and
-  // demanding the classes be retyped when the brand owner's own are already on the card is the kind of
+  // demanding the classes be retyped when the company's own are already on the card is the kind of
   // busywork that makes a form feel broken.
   if (!classes.length && !goods.trim()) {
     out.push('Say what the name is used for — pick classes, or describe the goods and services. Either one is enough.')
@@ -496,6 +496,60 @@ export function readiness(i: {
  */
 export const ALL_TERRITORIES: readonly string[] = [...REGIONS, ...COUNTRIES]
 
+/**
+ * The engine's territory-code universe, mirrored.
+ *
+ * A VERBATIM mirror of `driver/jurisdiction-codes.mjs`, kept honest the way the effort model above is
+ * kept honest: `portal-ui/test/territoryCodeParity.test.ts` reads the driver module and fails the moment
+ * the two disagree. Mirrored rather than fetched because a field refuses as you type, and a refusal that
+ * needs a round trip is a refusal that does not happen.
+ *
+ * WHY THE SHAPE CHECK WAS NOT ENOUGH. `isTerritoryCode` accepted any two letters, on the reasoning that
+ * a code is something "the engine resolves and this vocabulary does not list". The engine does not
+ * resolve any two letters: it holds 262 codes and treats everything else as unknown. So `XQ` was
+ * accepted here, stored, carried, and then dropped before the prompt — with nothing said at any point.
+ * A shape check for a value the engine resolves against a list can only ever be a guess at that list.
+ */
+export const JURISDICTION_CODE_FOLD: Readonly<Record<string, string>> = Object.freeze({
+  UK: "GB",
+  EM: "EU",
+  EUTM: "EU",
+  EUIPO: "EU",
+})
+
+export const KNOWN_JURISDICTION_CODES: ReadonlySet<string> = Object.freeze(new Set([
+  "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AW", "AX",
+  "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR",
+  "BS", "BT", "BV", "BW", "BX", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL",
+  "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ",
+  "EA", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "EU", "FI", "FJ", "FK", "FM", "FO", "FR", "GA",
+  "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU",
+  "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "IB", "ID", "IE", "IL", "IM", "IN", "IO", "IQ",
+  "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW",
+  "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD",
+  "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV",
+  "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ",
+  "OA", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY",
+  "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK",
+  "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH",
+  "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY",
+  "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WO", "WS", "XA", "XG", "XK", "XS", "XW",
+  "YE", "YT", "ZA", "ZM", "ZW", "ZZ",
+])) as ReadonlySet<string>
+
+/** A code as the engine records it: uppercased, and the habits folded onto the office they name. */
+export const canonicalJurisdictionCode = (code: string): string => {
+  const c = String(code ?? '').trim().toUpperCase()
+  if (!c) return ''
+  return JURISDICTION_CODE_FOLD[c] ?? c
+}
+
+/** Is this token, after the canonical fold, inside the engine's known universe? */
+export const isKnownJurisdictionCode = (code: string): boolean => {
+  const c = canonicalJurisdictionCode(code)
+  return Boolean(c) && KNOWN_JURISDICTION_CODES.has(c)
+}
+
 /** Whether a typed entry is a territory this product's vocabulary knows. Case- and space-insensitive,
  *  because the box is free text and "  united states " is the same answer as "United States". */
 export const isKnownTerritory = (entry: string): boolean => {
@@ -522,9 +576,17 @@ export const isKnownTerritory = (entry: string): boolean => {
  * name-shaped: a picker offering names beside a box that only accepted codes would be two controls
  * disagreeing under one label, which is this defect in the other direction.
  */
-export const isTerritoryCode = (entry: string): boolean => /^[A-Za-z]{2}$/.test(String(entry).trim())
+export const isTerritoryCode = (entry: string): boolean => isKnownJurisdictionCode(String(entry).trim())
 
-/** What the jurisdictions field accepts: a territory this build names, or a code the engine resolves. */
+/**
+ * What the stored-defaults jurisdictions field accepts: a territory this build names, or a code the
+ * engine actually holds.
+ *
+ * ITS ONE CONSUMER IS THE STORED ACCOUNT DEFAULT (`profileFields.ts`), and that is deliberate. What a
+ * REQUEST may name is a separate and more tolerant question: that tolerance is a decision about what a
+ * client receives and it stays as it is. A stored default is the opposite case — nobody is watching when
+ * it fails, so it is refused where it is typed.
+ */
 export const isTerritoryEntry = (entry: string): boolean => isKnownTerritory(entry) || isTerritoryCode(entry)
 
 export const MAX_TERRITORIES = 20
@@ -658,7 +720,7 @@ export function effortRaw(i: EffortInput): number {
 /**
  * ── WHAT THE 1–10 BAR MEANS ─────────────────────────────────────────────────────────────────────────
  *
- * How deep this search is FOR THIS BRAND OWNER: 1 is the lightest thing we run for them, 10 the deepest
+ * How deep this search is FOR THIS COMPANY: 1 is the lightest thing we run for them, 10 the deepest
  * they can buy. Not an absolute quantity of work — which is what it was, and it did not work, because a
  * constant divisor let the OWNER'S PROFILE dominate: an owner with 13 shops on a dense grid saturated at
  * 10 whatever they pressed.
@@ -774,7 +836,7 @@ export function runsNote(i: EffortInput): string {
 /**
  * The composed draft as a saved search, for the footer's Save.
  *
- * SCOPE, NOT GHOSTS. The composer leaves a field empty to mean "use the brand owner's own", and the
+ * SCOPE, NOT GHOSTS. The composer leaves a field empty to mean "use the company's own", and the
  * server's precedence ladder resolves it per run. A saved search that baked today's resolved classes in
  * would freeze that answer: change the owner's defaults next month and every saved search would quietly
  * keep searching last month's. So only what the user EXPLICITLY set travels.
@@ -868,7 +930,7 @@ export function draftFromSaved(
   }, product)
 }
 
-// ── what the brand owner already has ────────────────────────────────────────────────────────────────
+// ── what the company already has ────────────────────────────────────────────────────────────────
 //
 // The context card shows the classes and the marketplaces this search will use BEFORE anything is typed,
 // each tagged with where it came from. That is not decoration: selecting a project narrows the classes,
@@ -881,7 +943,7 @@ export type Inherited = {
   readonly classes: readonly number[]
   readonly classesFrom: string
   /**
-   * The brand owner's own territories, and where they came from.
+   * The company's own territories, and where they came from.
    *
    * Absent from this contract until, which is why the composer could say "Worldwide" over an empty
    * territory list while the engine resolved that same emptiness to the account's `defaultJurisdictions`.

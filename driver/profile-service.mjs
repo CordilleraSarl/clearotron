@@ -32,6 +32,8 @@ import { resolvePort } from "../shared/listen.mjs";   // — the port SOURCE, de
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, commitWithAuditRow, makeStoreCommit } from "../shared/store-in-repo.mjs";   //
+import { resolveFramework, resolvePlatforms, buildProfile, assertRosterAccepts, companyKeyFrom } from "./company-bundle.mjs";
+import { defaultTerritoryState } from "./effective-scope.mjs";   // one reading of which stored territories the engine can search
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import {
   loadProfiles as loadProfilesDefault, validateProfileEdit as validateProfileEditDefault,
@@ -146,6 +148,47 @@ function bandsBandMeanings(deck, manifest) {
     out.push({ band: b.label, meaning: rungs[rungs.length - 1].text, rungs });
   }
   return out;
+}
+
+/**
+ * A refusal, worded for the person in the browser.
+ *
+ * THE SAME FACTS, A DIFFERENT READER. The shared create path's own sentences are written for somebody who
+ * typed a command: they name the flag that was missing and the directory that was written to, which is
+ * exactly what that reader needs. The person on the New company page typed neither. A sentence about
+ * `--platforms` and a filesystem path does not tell them what to do; it tells them they are in the wrong
+ * product.
+ *
+ * So the code is worded here and the facts ride alongside, which is what lets the screen offer a link to
+ * the company that already holds a key rather than printing its slug. An unrecognised code falls back to
+ * the original message: wrong for this reader, but never blank — an unworded refusal must not become a
+ * silent one.
+ */
+export function browserRefusal(e) {
+  const d = e?.detail ?? {};
+  switch (e?.code) {
+    case "key_exists":
+      return { error: "refused", code: "key_exists", key: d.key,
+        message: `A company is already filed under "${d.key}". Open it to make changes, or choose a different name.` };
+    case "domain_claimed":
+      return { error: "refused", code: "domain_claimed", domain: d.domain, heldBy: d.heldBy,
+        message: `${d.domain} is already used by another company. An address can only belong to one, `
+          + `because the engine uses it to tell them apart. Remove it here, or take it off the other company first.` };
+    case "no_marketplaces":
+      return { error: "refused", code: "no_marketplaces",
+        message: "This installation has no default marketplaces set up, so there is nothing to search. "
+          + "Add at least one marketplace for this company, or ask an administrator to set the defaults." };
+    case "framework_missing":
+      return { error: "refused", code: "framework_missing",
+        message: "The risk framework this company was pointed at is not on this installation, so nothing "
+          + "was created. Rating a company under a framework nobody chose is worse than refusing." };
+    case "invalid_bundle":
+      // The validator collects, so these are already per-field sentences written for a reader.
+      return { error: "refused", code: "invalid_bundle", errors: d.errors ?? [],
+        message: (d.errors ?? []).join(" ") || String(e.message) };
+    default:
+      return { error: "refused", message: String(e.message) };
+  }
 }
 
 /** Pure extraction (exported for the tests): deck text + validated manifest → [{ band, meaning, response? }]
@@ -283,7 +326,15 @@ export function makeProfileService({
       key: profile.key,
       profile: stripDerived(profile),
       contextPack: readPack(profile.key),
-      derived: { minCellsPerVariant: derivedFloor(profile), batchSize: derivedBatchSize(profile) },
+      derived: { minCellsPerVariant: derivedFloor(profile), batchSize: derivedBatchSize(profile),
+        // The stored default territories the engine cannot search, NAMED. Without this the profile
+        // screen shows the entries back exactly as typed and the engine quietly ignores them — which is
+        // what a person saw before: a setting that reads as in force and does nothing.
+        //
+        // It is computed here rather than read off a run, because it is a fact about the PROFILE. A
+        // reader who only hears about it on the runs where it happened to apply learns about a broken
+        // setting at random.
+        unrecognizedTerritories: defaultTerritoryState(profile).unrecognized },
       framework: {
         path: fwPath,
         // CUSTOM MEANS "NOT THE GENERIC DEFAULT", which is what the word means to the lawyer reading the
@@ -318,6 +369,80 @@ export function makeProfileService({
     const parts = path.replace(/\/+$/, "").split("/").filter(Boolean);   // ["profiles", key?, action?]
     if (parts[0] !== "profiles") return { status: 404, json: { error: "not_found" } };
 
+    // POST /profiles — CREATE, which is not the same act as save and must not route through it.
+    //
+    // `save` is an upsert and looks like it would do: it would not. `preserveCodeOwned` takes the
+    // on-disk value of every code-owned field and DELETES the field when there is none, and a company
+    // being created has nothing on disk — so a create through save writes no `frameworkPath`, silently,
+    // and the company is rated under the house default from then on. That is live today through the
+    // staff page and it is what this route exists not to repeat.
+    //
+    // Every question below is asked of `driver/company-bundle.mjs`, which the command line asks too.
+    // There is no second opinion here about what a valid company is.
+    if (parts.length === 1 && method === "POST") {
+      const name = isStr(body?.name) ? body.name.trim() : "";
+      if (!name) return { status: 400, json: { error: "needs_name", message: "A company needs a name." } };
+
+      // The key is derived from the name unless one was asked for, and it is REFUSED rather than
+      // repaired: a name of punctuation alone derives nothing, and inventing a key there would file a
+      // company under something nobody chose.
+      const wanted = isStr(body?.key) && body.key.trim() ? body.key.trim().toLowerCase() : companyKeyFrom(name);
+      if (!wanted) {
+        return { status: 400, json: { error: "needs_key",
+          message: `No key could be made from "${name}". Type one — lowercase letters, digits and hyphens.` } };
+      }
+      try { assertProfileKey(wanted); }
+      catch (e) { return { status: 400, json: { error: "bad_key", message: String(e.message) } }; }
+
+      const existing = resolveExisting();
+      let framework, platforms, profile;
+      try {
+        // ALWAYS SET, NEVER ABSENT — the company's own when one is supplied, the house default named
+        // otherwise. This is the whole reason a create does not go through save.
+        framework = resolveFramework(isStr(body?.frameworkPath) ? body.frameworkPath : null);
+        platforms = resolvePlatforms(Array.isArray(body?.platforms) ? body.platforms : null, existing);
+        profile = buildProfile({
+          key: wanted, name,
+          domains: Array.isArray(body?.matchDomains) ? body.matchDomains : [],
+          platforms: platforms.platforms,
+          // The whole resolution, not its path: buildProfile reads `.path` off it, and handing it the
+          // string writes `frameworkPath: undefined` — which is precisely the silent-absence defect this
+          // route exists to prevent, arriving through the route that prevents it.
+          framework,
+          industry: isStr(body?.industry) && body.industry.trim() ? body.industry.trim() : null,
+          // Carried, not dropped. A form that offers a field and a route that ignores it is the silent
+          // data loss this whole route exists to stop, arriving one layer further in. Arrays only —
+          // anything else is left absent rather than guessed at, and the validator then rules on it.
+          tradingNames: Array.isArray(body?.selfExclusionOwners) ? body.selfExclusionOwners : [],
+          classes: Array.isArray(body?.defaultClasses) ? body.defaultClasses : [],
+          territories: Array.isArray(body?.defaultJurisdictions) ? body.defaultJurisdictions : [],
+        });
+        // The proposed roster, validated whole. A colliding domain does not fail this company — it
+        // stops the deployment resolving ANY of them at the next start, so it is caught before a write
+        // rather than discovered by the next process to read profiles.
+        assertRosterAccepts({ store: profileDir, key: wanted, profile, loadProfiles });
+      } catch (e) {
+        if (e?.name === "Refusal") return { status: 400, json: browserRefusal(e) };
+        throw e;
+      }
+
+      const { files } = writeProfile({ profileDir, key: wanted, profile, contextPack: "" });
+      // WRITTEN AND RECORDED ARE TWO EVENTS. The write is live the instant it renames; the commit can
+      // fail on its own. Reporting them as one is how somebody is told nothing happened about a company
+      // that is already governing runs.
+      const message = `chore(clearotron): create company ${wanted} (via portal, by ${by})`;
+      const { commit, commitError } = commitWithAuditRow({ audit, gitCommit, files, message, by,
+        row: { event: "profile-create", key: wanted, by, fields: Object.keys(profile) } });
+      return { status: 201, json: {
+        key: wanted, name, written: true, created: true, commit,
+        // The receipt reads off THESE, so it can say which framework and how many marketplaces, and
+        // whether each was chosen or defaulted, rather than restating what was typed.
+        framework: { path: framework.path, defaulted: framework.source === "default" },
+        marketplaces: { count: platforms.platforms.length, defaulted: platforms.source !== "supplied" },
+        ...(commitError ? { commitError: `created and LIVE, but the git commit failed (${commitError}) — the audit line records the gap` } : {}),
+      } };
+    }
+
     // GET /profiles — roster
     if (parts.length === 1) {
       if (method !== "GET") return { status: 405, json: { error: "method_not_allowed" } };
@@ -332,6 +457,7 @@ export function makeProfileService({
         products: productRows(),
       } };
     }
+
 
     const key = parts[1];
     const action = parts[2];

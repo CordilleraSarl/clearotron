@@ -99,7 +99,7 @@ test('409 written as `errors[]` reaches the reader — the demo refusal is the o
       + 'nothing was charged — every search here resolves to a report that already exists, and this one '
       + 'has not been captured. Pick a search the demo has a report for.',
     ] },
-    () => api.runs('demo-brand-owner'),
+    () => api.runs('demo-company'),
   )
   assert.equal(demo.kind, 'gate', 'a demo refusal is a gate — nothing was started and nothing conflicts')
   const message = demo.kind === 'gate' ? demo.message : ''
@@ -113,7 +113,7 @@ test('409 written as `errors[]` reaches the reader — the demo refusal is the o
 test('409 with neither spelling still says something, and says it once', async () => {
   // The fallback is the last resort, not the first. A body carrying no refusal at all must not render
   // empty — an empty gate message is a dialog with a title and nothing in it.
-  const bare = await withFetch(409, { ok: false }, () => api.runs('demo-brand-owner'))
+  const bare = await withFetch(409, { ok: false }, () => api.runs('demo-company'))
   assert.equal(bare.kind, 'gate')
   const msg = bare.kind === 'gate' ? bare.message : ''
   assert.ok(msg.length > 0, 'a 409 with no refusal text rendered nothing at all')
@@ -121,7 +121,7 @@ test('409 with neither spelling still says something, and says it once', async (
 
 test('a staff identity granted everything is not a client with no accounts', async () => {
   // The wire sends "*" — not a list, and not something to silently coerce to []. A sidebar that read
-  // an empty array here would tell a Cordillera lawyer they have no brand owners.
+  // an empty array here would tell a Cordillera lawyer they have no companies.
   const staff = await withFetch(200, { role: 'staff', email: 'x@cordillera.ch', accounts: '*' }, () => api.me())
   assert.ok(isOk(staff))
   if (isOk(staff)) {
@@ -480,7 +480,7 @@ test('#1989 both settings screens answer three ways, not two', () => {
 // ── — A STAFF-LESS IDENTITY IS TOLD WHY, ON THE PAGE ──────────────────────────────
 //
 // Someone on no staff domain and in no grants row signs in successfully and can do nothing. Both screens
-// collapsed `notFound` and `noAccess` into one answer — "Check the brand owner selected at the top left"
+// collapsed `notFound` and `noAccess` into one answer — "Check the company selected at the top left"
 // — which sends that person to the one thing that is not wrong. The cause was stated only in a boot log.
 
 test('#1920 the two refusals decode apart, and 403 is the door refusing the identity itself', async () => {
@@ -500,14 +500,14 @@ test('#1920 both screens answer them DIFFERENTLY, and only one mentions the sele
       `${f} still answers both refusals with one sentence — that is the defect`)
     assert.match(src, /no staff domain and in no grants row/,
       `${f} must name the actual cause, in the words portal-service already logs at boot`)
-    assert.match(src, /Selecting a different brand owner cannot change that/,
+    assert.match(src, /Selecting a different company cannot change that/,
       `${f} must say plainly that the selector is not the fix, since that is where it used to send them`)
   }
 })
 
 test('#1920 THE CONTROL — notFound KEEPS the selector advice, which is right for it', () => {
   // Without this, the fix passes just as well if the advice were deleted from both branches. A wrong
-  // brand owner really is the likely cause of a not-found, and that sentence is the useful one there.
+  // company really is the likely cause of a not-found, and that sentence is the useful one there.
   for (const f of ['Profile.tsx', 'NewClearance.tsx']) {
     const src = readFileSync(new URL(`../src/screens/${f}`, import.meta.url), 'utf8')
     const at = src.indexOf("case 'notFound':")
@@ -517,14 +517,14 @@ test('#1920 THE CONTROL — notFound KEEPS the selector advice, which is right f
     // reader to the selector, which is what it is for, and that the sentence still describes a
     // position, which was never its subject. That position was wrong with the sidebar collapsed and
     // has been dropped from these two lines; the advice it was protecting is unchanged.
-    assert.match(src.slice(at, at + 260), /brand owner is selected/,
+    assert.match(src.slice(at, at + 260), /company is selected/,
       `${f}: the selector advice belongs on notFound and must not have been thrown away with the fix`)
   }
 })
 
 test('#1920 the shared sentence for noAccess never sends anyone to the selector either', () => {
   const text = saveFailureText({ kind: 'noAccess' })
-  assert.doesNotMatch(text, /brand owner|top left|selector/i,
+  assert.doesNotMatch(text, /company|top left|selector/i,
     'the one-line form must not contradict the screens it sits beside')
   assert.match(text, /signed in/i, 'and must still say the sign-in worked, because it did')
 })

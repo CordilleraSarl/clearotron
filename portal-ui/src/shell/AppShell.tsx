@@ -6,9 +6,9 @@
 // conflating them is how a filter turns into a security boundary in someone's head:
 //
 //   ACCOUNT     — who you signed in as (the tenant). Fixed identity. Never switchable in the app.
-//   BRAND OWNER — the client a clearance is FOR. A work filter, switchable, purely presentational.
+//   COMPANY — the client a clearance is FOR. A work filter, switchable, purely presentational.
 //
-// The server enforces the account; the brand-owner switcher only narrows what is already permitted.
+// The server enforces the account; the company switcher only narrows what is already permitted.
 
 import { useCallback, useEffect, useState } from 'react'
 // React 19's @types/react removed the GLOBAL `JSX` namespace — it lives under `React.JSX` now. Importing
@@ -22,7 +22,10 @@ import { Icon } from '../components/Icon.tsx'
 import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
-import { ALL_OWNERS, ownerNameMap, ownerNameFrom, sortOwners } from '../contract/ownerNames.ts'
+import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
+import { orderedCompanyKeys } from './companyRows.ts'
+import { companyFactsMap, type CompanyFacts } from '../contract/companyFacts.ts'
+import type { RosterCompany } from '../contract/api.ts'
 
 const MOBILE = '(max-width: 899px)'
 
@@ -152,10 +155,10 @@ function NavList({
 
 export type ShellContext = {
   readonly me: Me
-  /** The brand owner in view, or null for "All brand owners". Staff and multi-owner accounts only. */
+  /** The company in view, or null for "All companies". Staff and multi-owner accounts only. */
   readonly owner: string | null
   /**
-   * Set the brand owner in view — the same value the sidebar switcher sets.
+   * Set the company in view — the same value the sidebar switcher sets.
    *
    * Exposed so a screen can offer the choice where the decision is being made (New clearance opens with
    * "who is this for"), without a second source of truth: this narrows what is already permitted and is
@@ -164,30 +167,50 @@ export type ShellContext = {
    */
   readonly setOwner: (owner: string | null) => void
   /**
-   * A brand owner's DISPLAY NAME, from its account key. The one resolver in the app.
+   * Ask for the company list again.
+   *
+   * The roster is fetched once when the shell mounts and does not poll, which is right for a list that
+   * changes when somebody makes it change and never on its own. It made exactly one screen impossible:
+   * creating a company and then selecting it, because the shell's list would not contain the key the
+   * create had just written. The company would be selected, the rail would show its slug rather than its
+   * name, and the picker would not list it at all — a finished feature that looks broken on the one path
+   * it exists for.
+   *
+   * A screen that CHANGES the list calls this. Nothing polls it.
+   */
+  readonly refreshCompanies: () => void
+  /**
+   * A company's DISPLAY NAME, from its account key. The one resolver in the app.
    *
    * The portal is keyed by slug and read by people: `vantor` is a route parameter, "Vantor Labs"
    * is the client. Before this existed only the sidebar switcher resolved a name, and only for staff
-   * (it read the staff-only roster) — so the same brand owner read "Foxglade Interactive" in the rail and
+   * (it read the staff-only roster) — so the same company read "Foxglade Interactive" in the rail and
    * "foxglade" in the heading beside it, and a client, who had no name source at all, saw the slug
    * everywhere. Two sources, two answers, one entity.
    *
    * Falls back to the key, never to a blank: a name we do not have is a cosmetic gap, an empty label
-   * where a brand owner should be is a broken screen. `null` is the "All brand owners" view.
+   * where a company should be is a broken screen. `null` is the "All companies" view.
    *
    * NEVER use the result as a value. Requests, `<option value>` and grouping keys stay keyed by key.
    */
   readonly ownerName: (key: string | null) => string
   /**
-   * Every brand owner this identity may act for, keyed.
+   * Every company this identity may act for, keyed.
    *
    * Resolved HERE because the shell already holds both sources — the roster it fetched for the
    * switcher, and a client's own grants off `me` — so a screen that needs the list costs no request.
-   * Home needs it and cannot derive it from the run list: a brand owner with no clearances yet has no
+   * Home needs it and cannot derive it from the run list: a company with no clearances yet has no
    * run to be derived from, and a set-up-but-unused owner vanishing from the list is precisely the one
    * a person is most likely to be looking for.
    */
   readonly ownerKeys: readonly string[]
+  /**
+   * The three facts about a company — what it sells, how many marketplaces, which territories.
+   *
+   * `undefined` for a company we hold no facts about, which the pick panel renders as a company with a
+   * name and no line under it. That is the fresh-install case and a newly created company, not an error.
+   */
+  readonly factsFor: (key: string) => CompanyFacts | undefined
   readonly go: (path: string, opts?: { replace?: boolean }) => void
   /**
    * Bumped when someone navigates to the screen they are already on.
@@ -200,7 +223,7 @@ export type ShellContext = {
   /**
    * Whether the sidebar is collapsed to icons right now.
    *
-   * Screens need it for one reason: several of them tell a reader with no brand owner selected to pick
+   * Screens need it for one reason: several of them tell a reader with no company selected to pick
    * one "at the top left", and with the sidebar collapsed there is no top left — an outside user read
    * that sentence, found nothing where it pointed, and stopped. A sentence about WHERE a control is has
    * to know whether that control is on screen, and only the shell knows.
@@ -246,13 +269,13 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [owner, setOwner] = useState<string | null>(null)
 
-  // SWITCHING BRAND OWNER IS NOT A NAVIGATION, WHICH IS WHY IT NEEDED ITS OWN GUARD.
+  // SWITCHING COMPANY IS NOT A NAVIGATION, WHICH IS WHY IT NEEDED ITS OWN GUARD.
   //
   // It is a <select> in the sidebar, so it never touches `go` — and it is the exit the owner actually
-  // hit: editing one brand owner's Brand profile, switch to another, and every edit is gone with nothing said.
+  // hit: editing one company's Brand profile, switch to another, and every edit is gone with nothing said.
   // The wording names the switch rather than a page, because from the user's side nothing "left".
   const setOwnerGuarded = useCallback((next: string | null) => {
-    if (!confirmDiscard('Switch brand owner?')) return
+    if (!confirmDiscard('Switch company?')) return
     setOwner(next)
   }, [])
 
@@ -271,10 +294,10 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 
   // A SINGLE-OWNER IDENTITY IS ALWAYS IN THAT OWNER'S VIEW.
   //
-  // `owner` starts null, meaning "no particular brand owner", and for staff that is the real state they
+  // `owner` starts null, meaning "no particular company", and for staff that is the real state they
   // begin in. For a client with exactly one grant it never was: there is no second world to be looking
   // at, and nothing renders a switcher for them. But every screen reads `ctx.owner` to decide what to
-  // CALL the brand owner, so a permanent null had them all falling back to "no owner in view" — which
+  // CALL the company, so a permanent null had them all falling back to "no owner in view" — which
   // is why a client's Clearances page was headed "Clearances" and the composer's context card printed
   // the account slug it had got from the server's echo instead of a name.
   //
@@ -289,17 +312,14 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // two settled values. It showed up as render-check.mjs failing intermittently at 99px and 14px on
   // alternate runs — a real symptom of a redundant render, caught only because that check drives a
   // real browser.
-  const sole = meResult?.kind === 'ok' && !meResult.value.allAccounts && meResult.value.accounts.length === 1
-    ? meResult.value.accounts[0] ?? null
-    : null
 
   // The roster, fetched HERE rather than inside the switcher, because names are needed by every screen
   // and not only by the control that picks one. Staff-only by construction: a client gets 404 from this
   // route, so asking would spend one of their 120/min on a refusal — the guard is what keeps this from
   // being a request every client makes on every load.
   const isStaff = meResult?.kind === 'ok' && meResult.value.role === 'staff'
-  const { result: rosterResult } = useLoad(
-    () => (isStaff ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly { key: string; name: string }[] })),
+  const { result: rosterResult, reload: reloadRoster } = useLoad(
+    () => (isStaff ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly RosterCompany[] })),
     [isStaff],
   )
 
@@ -362,9 +382,15 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // ONE name map, from both sources, resolved once. A client's own grants carry names on `me`; staff
   // reach every customer and take theirs from the roster. Neither source is per-screen, so neither is
   // consulted per-screen. While the roster is still in flight a staff member reads the key for a frame,
-  // which is the same fallback a missing name gets — never a blank where a brand owner should be.
+  // which is the same fallback a missing name gets — never a blank where a company should be.
   const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value : [])
   const ownerName = (key: string | null): string => ownerNameFrom(names, key)
+
+  // The same two sources and the same precedence, for the three facts that tell one company from
+  // another in the pick panel. Parallel to the name map rather than folded into it: a company with no
+  // facts is a company, a company with no name is a broken row.
+  const facts = companyFactsMap(me.accountFacts, rosterResult?.kind === 'ok' ? rosterResult.value : [])
+  const factsFor = (key: string): CompanyFacts | undefined => facts[key]
 
   // WHICH owners are offered is a separate question from what they are CALLED, and it is answered from
   // the roster's own key list — not from the keys of the name map. An account whose profile carries no
@@ -375,13 +401,24 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
       ? (rosterResult?.kind === 'ok' ? rosterResult.value.map((c) => c.key) : [])
       : me.accounts
 
-  // What every screen means by "the brand owner in view": the switcher's choice, or — for an identity
-  // with exactly one grant and therefore no switcher — that one owner.
+  // NOBODY IS ASKED TO CHOOSE BETWEEN ONE THING AND ITSELF.
+  //
+  // This asked the wrong question for a long time. It keyed on how many companies the LOGIN was granted,
+  // so it fired for a client holding one and never for the person running the install — who holds all of
+  // them, and was therefore asked to pick from a list of one on every screen of a one-company install.
+  //
+  // Asked of the company list itself, it is right for both: a client with one grant has one, and a fresh
+  // install has one because Generic ships with every install and is a company like any other. While the
+  // roster is still in flight the list is empty and nothing is auto-selected, which is the same one-frame
+  // tolerance the name resolution already carries.
+  const sole = ownerKeys.length === 1 ? ownerKeys[0] ?? null : null
+
+  // What every screen means by "the company in view": the switcher's choice, or the only one there is.
   const ownerInView = owner ?? sole
 
   const body = entry
-    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, ownerName, ownerKeys, go, visit,
-        sidebarCollapsed: collapsed })
+    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, refreshCompanies: reloadRoster,
+        ownerName, ownerKeys, factsFor, go, visit, sidebarCollapsed: collapsed })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">
         <div className="empty">
@@ -393,16 +430,24 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
       </div>
 
   // Staff always get the switcher (their reach is the roster, not a named list); a client gets one only
-  // when their grant actually covers more than one brand owner.
-  const multiOwner = me.allAccounts || me.accounts.length > 1
+  // when their grant actually covers more than one company.
 
   // WHO YOU SIGNED IN AS — where the portal actually knows. Staff are the operator, read from the brand
   // seam rather than written here (: the literal was one deployment's firm name, shipped to every
-  // fork); a client with exactly one grant is that brand owner. A client with several is a firm whose own
+  // fork); a client with exactly one grant is that company. A client with several is a firm whose own
   // name this portal has never been told, and naming one of their clients instead would be worse than
   // staying quiet. Null ⇒ the block is not rendered at all; see the identity corner below — so a staff
   // identity on a deployment that sent no brand renders nothing here rather than an empty label.
-  const accountName = role === 'staff' ? (me.brand || null) : (me.accounts.length === 1 ? ownerName(me.accounts[0]!) : null)
+  // THE ORGANISATION, FOR EVERYONE. One slot, one meaning.
+  //
+  // It used to render the organisation for staff and the COMPANY for a client holding one grant — one
+  // label over two different nouns, so it was true for staff and false for the commonest client case.
+  // The company is already named in the rail and in the page heading; a client loses nothing here, and
+  // the dual meaning goes with it.
+  //
+  // Null ⇒ the block is not rendered at all, so an install that was sent no organisation name shows
+  // nothing rather than an empty label.
+  const accountName = me.brand || null
 
   return (
     <div className="app">
@@ -420,7 +465,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
             <Logo markOnly={collapsed && !mobile} />
           </button>
 
-          {/* BRAND OWNER LIVES HERE, in the rail, above the navigation it filters.
+          {/* COMPANY LIVES HERE, in the rail, above the navigation it filters.
               It sat in the top bar briefly and the placement was wrong: up there it read as a sibling
               of the screen title, when what it actually is is the thing every item below it is scoped
               to. Next to the nav, the relationship is the layout. What the top-bar version got right
@@ -433,12 +478,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 
         {/* ── THE SIDEBAR, IN TWO GROUPS, WITH THE SWITCHER BETWEEN THEM ────────────────────────────
             The switcher used to float above the whole nav, governing an unstated subset of it — so the
-            only way to know whether picking a brand owner changed a screen was to pick one and watch.
+            only way to know whether picking a company changed a screen was to pick one and watch.
             Drawn as the HEADER OF THE GROUP IT GOVERNS, its reach is simply visible: everything printed
-            beneath it is about one brand owner, everything above spans the account.
+            beneath it is about one company, everything above spans the account.
 
             The split is read off each entry's `scope`, never off role. Both groups are identical for
-            everyone who signs in — what differs is how many brand owners they hold, and quantity is a
+            everyone who signs in — what differs is how many companies they hold, and quantity is a
             rendering decision. */}
         <div className="sidebar-scroll">
           <NavList entries={groups.account} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
@@ -451,18 +496,19 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                 // the boundary survives even when the label cannot.
                 <div style={{ height: 1, background: 'var(--border-hairline)', margin: '0 8px 12px' }} />
               ) : (
-                // NOTHING AT ALL WHEN THERE IS NOTHING TO SWITCH. A single-owner identity IS its own
-                // brand owner, so naming it here would print that name a third time on one screen —
-                // rail, title and Account corner — and a label repeated three times stops being read
-                // anywhere. It would also label a distinction that does not exist for them: with one
-                // owner there is no "which owner", so the group needs no header to disambiguate.
-                // Quantity is a rendering decision, never a layout.
-                multiOwner ? (
-                  <div style={{ marginBottom: 10 }}>
-                    <div className="eyebrow">Brand owner</div>
-                    <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={owner} onChange={setOwnerGuarded} />
-                  </div>
-                ) : null
+                // THE SWITCHER ALWAYS RENDERS. It used to appear only for an identity holding more than
+                // one company, which meant a fresh install had no control at all and one materialised
+                // later, when a second company was added — and a control that appears by itself reads as
+                // a bug rather than as a simplification.
+                //
+                // There is also never nothing to list: Generic ships with every install and is a company
+                // like any other, so the empty state this condition was protecting against cannot occur.
+                // With exactly one company the switcher opens on it, and nobody is asked to choose
+                // between one thing and itself.
+                <div style={{ marginBottom: 10 }}>
+                  <div className="eyebrow">Company</div>
+                  <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={ownerInView} role={role} onChange={setOwnerGuarded} />
+                </div>
               )}
               <NavList entries={groups.owner} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
             </div>
@@ -490,39 +536,40 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
               The screen name earned nothing up here — the sidebar already highlights the active item, so
               the top bar spent its largest text repeating it. What it says instead is read off the
               screen's own `scope`, the same field that decides which side of the switcher it sits on:
-              an owner-scoped screen names the brand owner, an account-scoped one names the account.
+              an owner-scoped screen names the company, an account-scoped one names the account.
               THAT IT VARIES IS THE POINT. Home and Clearances span everything the account holds and
-              deliberately ignore the switcher, so naming one brand owner over them would be actively
+              deliberately ignore the switcher, so naming one company over them would be actively
               misleading — it would assert a filter that is not being applied. Below the line the title
               and the switcher agree, because there the switcher is what chose it.
-              ACCOUNT is untouched at the right, labelled. The two nouns stay rigidly apart (see the
-              header of this file); on an account-scoped screen the title and that label are the same
-              fact, which is why the label carries the word "Account" and the title does not.
+              AND ON AN ACCOUNT-SCOPED SCREEN IT SAYS NOTHING. It used to say `accountName`, which was
+              the COMPANY for a client holding one grant — so the bar named a company over Home, which
+              spans all of them. With that slot now carrying the ORGANISATION for everyone, repeating it
+              here would print one name twice on one bar, which is how a label stops being read.
               Screens keep their own heading in the body, so nothing is lost to a screen reader. */}
           <h1 data-anon="mark">
-            {!entry ? 'Not found' : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : accountName ?? ownerName(ownerInView)}
+            {!entry ? 'Not found' : scopeOf(entry.id) === 'owner' ? ownerName(ownerInView) : ''}
           </h1>
 
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, position: 'relative' }}>
             {/* ACCOUNT — who you signed in as. It belongs up here, at the far right beside the avatar,
                 because that is the identity corner: it is not selectable, it never changes while you
                 are signed in, and putting it next to the person's own initials says "this is you"
-                without a sentence. It used to sit in the rail directly above the brand-owner control,
+                without a sentence. It used to sit in the rail directly above the company control,
                 where two adjacent bold values under two 9.5px labels invited exactly the conflation
                 the header of this file warns about.
                 The label stays. Different regions already separate the two nouns, but a bare bold word
-                beside an avatar could still be read as a brand owner by someone who has not been told.
+                beside an avatar could still be read as a company by someone who has not been told.
 
                 RENDERED ONLY WHEN THERE IS A TRUE ANSWER. This used to print `accounts[0]` for any
                 client, which is right for the ordinary case — one grant, and the account IS the brand
                 owner — and false for a firm holding three: it picked one of their CLIENTS at random and
-                labelled it their identity. Invisible while the brand owner lived in a select in the
+                labelled it their identity. Invisible while the company lived in a select in the
                 rail; unmissable now that the two sit at either end of one bar. A firm's own name is not
                 a fact this portal holds, so the honest move is to say nothing and let the avatar menu
                 (which carries the signed-in address) answer "who am I". */}
             {!mobile && accountName ? (
               <div style={{ textAlign: 'right', marginRight: 8, minWidth: 0 }}>
-                <div className="eyebrow">Account</div>
+                <div className="eyebrow">Organisation</div>
                 <div
                   style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 14, lineHeight: 1.2, whiteSpace: 'nowrap' }}
                   data-anon="mark"
@@ -556,7 +603,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
               className="icon-btn"
               aria-haspopup="menu"
               aria-expanded={avatarOpen}
-              aria-label="Account menu"
+              aria-label="Settings and about"
               style={{ borderRadius: '50%', background: 'var(--surface-float)', border: '1px solid var(--border-hairline)', fontSize: 11, fontWeight: 700 }}
               onClick={() => setAvatarOpen((o) => !o)}
             >
@@ -583,7 +630,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                     looking for their brand's settings to the wrong page. */}
                 {/* PREFERENCES AND ADMIN LIVE HERE, and they are MAPPED FROM DATA, not written out.
                     Admin moved off the sidebar because it belongs to the PERSON rather than to either
-                    scope — in the sidebar it would have had to sit on one side of the brand-owner
+                    scope — in the sidebar it would have had to sit on one side of the company
                     switcher, claiming to be account-scoped or owner-scoped when it is neither.
                     Rendering the list rather than guarding literals with `role === 'staff'` is this
                     file's own rule (nav.config's header): a JSX guard puts role logic back in markup,
@@ -618,7 +665,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 }
 
 /**
- * Which brand owner's world you are looking at.
+ * Which company's world you are looking at.
  *
  * It no longer knows anything about ROLE, and that is the point of this shape. It used to branch —
  * roster names for staff, bare keys for anyone else — which is how one control came to answer the same
@@ -629,20 +676,26 @@ function BrandOwnerSwitcher({
   keys,
   ownerName,
   value,
+  role,
   onChange,
 }: {
   readonly keys: readonly string[]
   readonly ownerName: (key: string | null) => string
+  /** The same test the panel applies, so the one place Generic is withheld is the one place it is ordered. */
+  readonly role: Role
   readonly value: string | null
   readonly onChange: (v: string | null) => void
 }) {
-  const options = sortOwners(Object.fromEntries(keys.map((k) => [k, ownerName(k)])), keys)
+  // THE SAME ORDER THE PANEL USES, from the same function. Sorting every key here — Generic included —
+  // put the default in the middle of the alphabet on one control while the panel beside it lifted it to
+  // the front.
+  const options = orderedCompanyKeys(keys, ownerName, role).map((k) => ({ key: k, name: ownerName(k) }))
 
   return (
     <select
       value={value ?? ''}
       onChange={(e) => onChange(e.target.value || null)}
-      aria-label="Brand owner"
+      aria-label="Company"
       style={{
         width: '100%',
         marginTop: 4,

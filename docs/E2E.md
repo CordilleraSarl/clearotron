@@ -6,6 +6,12 @@ How to prove a deployment of this product works end to end, at four cost tiers. 
 doubles as the **dev/prod instance split**: a dev instance is just a second env-file pointing every
 data-plane path somewhere isolated — the code is identical.
 
+> **This page is written for a checkout, and the installed package is not one.** The published package
+> deliberately excludes the test tree, so `driver/test/` does not exist in an npm install — Tier 0 and
+> the `$0` mock engine below are reachable only from a clone. Everything from Tier 1 down applies to an
+> installed deployment as written. If a path here starting `driver/test/` is not on your disk, that is
+> the reason, and it is not a mistake in your configuration.
+
 ## Tier 0 — offline, in-repo (already in `npm run test:full`, $0)
 
 `driver/test/pipeline.anthropic.test.mjs` runs the full clearance pipeline on the production engine
@@ -38,7 +44,7 @@ CLEAROTRON_WORK_DIR=/home/you/trademark-dev/workspace
 CLEAROTRON_REPORTS_DIR=/home/you/trademark-dev/pool
 CLEAROTRON_OUTBOX_DIR=/home/you/trademark-dev/outbox
 CLEAROTRON_AI=anthropic-agent
-CLEAROTRON_CLAUDE_PATH=/home/you/clearotron/driver/test/mock-claude.mjs   # $0 mock engine; ABSOLUTE — see below
+CLEAROTRON_CLAUDE_PATH=/home/you/clearotron/driver/test/mock-claude.mjs   # $0 mock engine; CHECKOUT ONLY, and ABSOLUTE — see below
 MOCK_VERDICT=CLEAR
 MOCK_SKEPTIC=no flags surfaced                          # clean skeptic pass under the mock (quotes optional; both work)
 CLEAROTRON_DATABASE=corsearch                      # REQUIRED, no default — the mock never calls it
@@ -50,6 +56,10 @@ CLEAROTRON_CUSTOMERS_DIR=                                    # unset ⇒ the dem
 #   CLEAROTRON_ACCESS_FILE=/abs/path/grants.json. All four, or it refuses to start: with auth off and no
 #   grants file every token-less caller resolves to internal read-all across every customer.
 ```
+
+**From an installed package there is no such file at all** — the test tree is excluded from it, so
+before reading the next paragraph check that the path exists. That check is worth making first because
+the failure below looks the same and has a different cause.
 
 `CLEAROTRON_CLAUDE_PATH` must be absolute, and this is the one that catches everybody: the engine child is
 spawned with the RUN DIRECTORY as its cwd, so`driver/test/mock-claude.mjs` is looked for

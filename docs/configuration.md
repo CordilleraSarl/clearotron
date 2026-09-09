@@ -111,6 +111,82 @@ wanted. A framework and its manifest are checked as a pair.
 Alongside it, `workedExamplesPath` sets the analysis depth target — worked clearances calibrated
 under that framework. Absent, the generic set applies.
 
+### Writing your own, step by step
+
+**Nothing here is a code change.** Two files go into your own store; a profile points at one of them.
+
+**1. Write the deck.** A markdown document. It is reasoned *with*, so write it the way you would brief a
+colleague: what each band means, what it turns on, what to do about it. Give **every band a heading of
+its own**, spelled exactly as you will spell it in the manifest, and under each heading write the rungs
+as bold-led bullets:
+
+```markdown
+## High
+
+- **What it is.** A live registration for a similar mark in a class the client will trade in.
+- **What it turns on.** Whether the goods actually overlap, and whether the owner is using the mark.
+- **What to do.** Advise against adoption unless the owner's non-use can be established.
+```
+
+That shape is not decoration. The profile screen extracts what the bands mean from these headings and
+bullets, and **it is all or nothing**: one band without a heading, or one heading with no bold-led
+bullet, and the box explaining your bands silently does not render at all — while the title and the
+coloured pills still do, so the page looks finished. Two of the frameworks in this repository are in
+exactly that state today.
+
+**2. Write the manifest**, beside the deck and named after it: `your-framework.md` needs
+`your-framework.manifest.json`. The path is derived, never configured, so the two cannot drift apart.
+
+```json
+{
+  "schema_version": 1,
+  "framework_key": "your-firm-2026",
+  "title": "Your firm's clearance risk framework",
+  "source_deck": "Where this came from, and when it was last reviewed",
+  "entity_label": "the company",
+  "bands": [
+    { "label": "Very High", "tone": "severe" },
+    { "label": "High",      "tone": "high" },
+    { "label": "Moderate",  "tone": "medium" },
+    { "label": "Manageable","tone": "low" }
+  ],
+  "structure": { "kind": "bands" }
+}
+```
+
+Every key above is required and **no other key is allowed** — an unknown one is refused by name rather
+than ignored. `schema_version` is `1`. `framework_key` is lowercase letters, digits and hyphens.
+`bands` runs **most severe first**; that order is the framework's severity order everywhere the engine
+names a risk. A band label may contain letters, spaces, slashes and hyphens, and **no digits** — a band
+called "Level 3" invites arithmetic where judgement is wanted. `tone` is one of `severe`, `high`,
+`medium`, `low`, `minimal`, and it chooses a colour, nothing else. `entity_label` is how your deck names
+the client side in prose. If your deck is a matrix rather than a ladder, say
+`"structure": { "kind": "matrix" }` — the matrix itself lives in the deck prose, never here.
+
+**The manifest carries vocabulary and order only.** No threshold, no mapping table, no decision rule.
+Those belong in the deck, where they are read as reasoning rather than applied as arithmetic.
+
+**3. Put both files in your own store** and point a profile at the deck with `frameworkPath`. Client
+rubrics deliberately do not live inside a checkout of this product.
+
+**4. Check it before it is in force.** Open the profile screen for a company using it. You should see the
+framework's title, your band names in your order, and a box explaining what each band means. **If that
+last box is missing, the deck does not have the shape above** — the title and pills render from the
+manifest alone, so they are not evidence that the deck was read.
+
+### What is checked, and what is not
+
+| | |
+|---|---|
+| The deck file exists | checked, and a run refuses without it |
+| The manifest parses, and its keys and band labels are legal | checked, by name |
+| The deck's headings and bullets match the manifest's bands | **not checked** — it fails by rendering nothing |
+| Whether the rubric is any good | **not checked, and cannot be** |
+
+That last row is the one to hold on to. A framework is reasoned with on every search the company ever
+runs, and nothing reads it for sense. **A framework that is subtly wrong produces confident ratings that
+look exactly like right ones.** Have it read by whoever would sign the advice, before it is pointed at.
+
 ---
 
 ## 3. Client profiles

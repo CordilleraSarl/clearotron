@@ -7,7 +7,7 @@
 // emphasises and never what a finding is rated, and the engine's validator refuses decision-rule
 // phrasing outright.
 //
-// SHARED BECAUSE THERE ARE TWO OF THEM AND THEY MUST NOT DRIFT. The brand owner has a pack; so does each
+// SHARED BECAUSE THERE ARE TWO OF THEM AND THEY MUST NOT DRIFT. The company has a pack; so does each
 // project, and the project's wins outright when present. They are the same field with the same limit and
 // the same warning, so a second hand-rolled copy would be two places to fix the character budget and two
 // chances to describe the same thing differently to the same person on adjacent screens.

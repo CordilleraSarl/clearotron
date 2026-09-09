@@ -444,6 +444,14 @@ const RECORDING_GRANTS = Object.freeze({
     "mcp__coverage__record_coverage",
     "mcp__recording-register-digest__record_register_digest",
   ]),
+  // The knockout lane's reviewing pass: its record tool alone, and deliberately nothing else. No
+  // retrieval and no register tools — the pass rewrites lines that are already rated, and a grant that
+  // let it look something up would invite a rewrite carrying a fact the rating never weighed. That
+  // would be a band change wearing a rewrite's clothes, on the one stage whose whole claim is that it
+  // decides nothing.
+  "knockout-review": Object.freeze([
+    "mcp__recording-knockout-review__record_knockout_review",
+  ]),
 });
 
 test("RECORDING: every served tool is granted to exactly one stage, and each stage's grant is pinned literally", () => {

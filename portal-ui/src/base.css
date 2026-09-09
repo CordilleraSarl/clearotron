@@ -1175,6 +1175,18 @@ input.filter {
   line-height: 1.5;
 }
 
+/* The house account, in the pick panel: first in the list and marked as the one you can always run
+   under. The wash rather than a chip or a badge — it is not a warning about the entry, it is the entry
+   a reader should land on when they have no reason to pick another. */
+.pick-generic {
+  background: var(--accent-wash);
+  border-color: var(--accent-ink);
+}
+
+.pick-generic .entry-title {
+  color: var(--text-accent);
+}
+
 .start-pill {
   padding: 8px 14px;
   border: 1px solid var(--border-strong);

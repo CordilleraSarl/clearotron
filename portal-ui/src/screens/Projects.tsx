@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Projects — per-engagement overlays on a brand owner's defaults.
+// Projects — per-engagement overlays on a company's defaults.
 //
 // A project is a SPARSE overlay, not a second profile. It re-states the operational knobs a distinct
 // engagement legitimately runs differently — its own marketplaces, classes, jurisdictions, delivery,
@@ -27,7 +27,7 @@ import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { ownerPickerHint } from '../shell/ownerPickerHint.ts'
+import { CompanyGate } from '../shell/CompanyPicker.tsx'
 
 export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   const account = ctx.owner
@@ -52,16 +52,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   // Same rule as Profile: a multi-account client's ownerless read answers pickAccount, and that is
   // "choose an owner", never "could not be loaded".
   if (needsOwner || result?.kind === 'pickAccount') {
-    return (
-      <div className="screen">
-        <div className="notice">
-          <b>Choose a brand owner first</b>
-          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-            Projects belong to one brand owner. {ownerPickerHint(ctx.sidebarCollapsed)}
-          </p>
-        </div>
-      </div>
-    )
+    return <CompanyGate ctx={ctx} eyebrow="Company" heading="Projects" line="Pick a company to see its projects." />
   }
   if (result && result.kind !== 'ok') {
     return (
@@ -133,7 +124,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
         <div className="notice quiet" style={{ marginBottom: 18 }}>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
             A project runs a distinct engagement with its own defaults — different marketplaces, classes
-            or depth — while keeping the brand owner&rsquo;s identity and rating. Anything a project does
+            or depth — while keeping the company&rsquo;s identity and rating. Anything a project does
             not set is inherited.
           </p>
         </div>
@@ -151,11 +142,11 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
         </div>
 
         {projects.length === 0 ? (
-          // "No projects FOR THIS BRAND OWNER", deliberately not "no projects exist" — the phrasing
+          // "No projects FOR THIS COMPANY", deliberately not "no projects exist" — the phrasing
           // survives from when archived projects were hidden from clients entirely, and it stays right
-          // for a different reason now: this list is one brand owner's, not the instance's.
+          // for a different reason now: this list is one company's, not the instance's.
           <div className="empty">
-            <p>No projects for this brand owner. Every clearance uses their own defaults.</p>
+            <p>No projects for this company. Every clearance uses its own defaults.</p>
             <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
               Add one when an engagement needs its own marketplaces, classes or depth. Archive it when it
               ends — the reports it produced stay exactly as issued.
@@ -249,7 +240,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
  *
  * WHAT IS NOT HERE, and must never be: `name`. That is the CUSTOMER's legal identity and the anchor for
  * the own-rights self-exclusion check. A project supplying its own would make that check match against
- * the project's name and quietly disable the brand owner's exclusion of their own marks.
+ * the project's name and quietly disable the company's exclusion of their own marks.
  */
 function NewProject({
   account, taken, onDone, onCancel,
@@ -273,7 +264,7 @@ function NewProject({
   const keyProblem = slug.length < 2
     ? 'The key needs at least two letters or numbers.'
     : taken.includes(slug)
-      ? 'This brand owner already has a project with that key.'
+      ? 'This company already has a project with that key.'
       : null
 
   const create = async () => {
@@ -318,7 +309,7 @@ function NewProject({
         <div className="notice quiet" style={{ marginBottom: 18 }}>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
             Name it — the next screen sets what this engagement runs differently, and anything you leave
-            alone is inherited from the brand owner.
+            alone is inherited from the company.
           </p>
         </div>
 
@@ -446,7 +437,7 @@ function ProjectEditor({
   )
 
   // The same flag that enables Save is the flag the shell asks before letting anyone leave — including
-  // by switching brand owner, which is not a navigation and used to discard edits silently.
+  // by switching company, which is not a navigation and used to discard edits silently.
   useUnsaved(dirty)
 
   if (result && result.kind !== 'ok') {
@@ -567,7 +558,7 @@ function ProjectEditor({
         <div className="notice quiet" style={{ marginBottom: 18 }}>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>
             Anything left blank is inherited from {detail.customerName || detail.customer}. Identity and
-            rating stay with the brand owner and are not set here.
+            rating stay with the company and are not set here.
           </p>
         </div>
 
@@ -594,13 +585,13 @@ function ProjectEditor({
             round-tripping the value on every save. So the engagement doctrine sitting in the live config
             store was readable by the engine and editable by nobody: the only project in production has a
             hand-written .context.md that no one could see from this screen.
-            The project's pack WINS OUTRIGHT over the brand owner's when set — it does not merge — which
+            The project's pack WINS OUTRIGHT over the company's when set — it does not merge — which
             is why the hint says so rather than leaving someone to find out from a report. */}
         <ContextPackEditor
           value={pack ?? ''}
           onChange={(v) => { setPack(v); setChecked(false); setSaved(false) }}
           title="Project background &amp; concerns"
-          hint="What this engagement covers and the concerns particular to it. Replaces the brand owner's background when set — it is not added to it."
+          hint="What this engagement covers and the concerns particular to it. Replaces the company's background when set — it is not added to it."
           rows={6}
         />
 
@@ -609,7 +600,7 @@ function ProjectEditor({
 
         {wouldRevoke.length ? (
           <div className="notice" style={{ borderColor: 'var(--tone-high)', marginTop: 18 }}>
-            <b>This would remove a marketplace the brand owner requires</b>
+            <b>This would remove a marketplace the company requires</b>
             <p style={{ margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>
               A project can add marketplaces, never drop one. Put {wouldRevoke.length === 1 ? 'this back' : 'these back'} to
               save: <b>{wouldRevoke.join(', ')}</b>, or empty the box to inherit the list unchanged.
@@ -793,12 +784,12 @@ function OverlayField({
           Fifteen lines above, the placeholder resolves the same value through `choiceLabel` — with a
           comment saying exactly why: it must read "Inherited — Standard", never "Inherited — sparse".
           This line printed it raw, so a choice field showed BOTH on the same control, and a prose field
-          dumped the brand owner's entire stored risk appetite — sixty words of configured doctrine — as
+          dumped the company's entire stored risk appetite — sixty words of configured doctrine — as
           a grey caption under an empty box. That is what "Inherits: Defensibility-first and
           conservative: lead every matter with…" was: not copy anyone wrote, a value nobody clamped.
 
           A long value is summarised rather than truncated mid-sentence, and the whole of it stays one
-          hover away. It is never edited here — this is the BRAND OWNER's setting, seen from a project. */}
+          hover away. It is never edited here — this is the COMPANY's setting, seen from a project. */}
       {/* THE SAME NOTICES AS THE BRAND PROFILE PAGE, and this is the half exists to
           catch. Both forms render the same specs, so `99` was dropped in silence on BOTH — a fix written
           into Profile.tsx alone would have left this form doing it, on the page nobody re-checked. Same

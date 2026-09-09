@@ -6,17 +6,17 @@
 // ready. Then get out of the way.
 //
 // ── WHAT THE PREVIOUS ATTEMPT GOT WRONG, SO IT IS NOT REPEATED ───────────────────────────────────
-// It buried in-flight work under a long list of brand owners; picking one made that work vanish with no
+// It buried in-flight work under a long list of companies; picking one made that work vanish with no
 // way back; and it re-listed finished runs at lower fidelity than Clearances, whose grouping, threading,
 // families, filters and sort it could not match. Three rules fall out of that, and each is a defect if
 // it goes missing:
 //
-//   1. ACCOUNT-SCOPED, NEVER OWNER-SCOPED. Every brand owner this account holds, always, with the owner
+//   1. ACCOUNT-SCOPED, NEVER OWNER-SCOPED. Every company this account holds, always, with the owner
 //      as a label on the row. The sidebar switcher does not reach this screen — it sits above the line
 //      in nav.config for exactly that reason — so nothing here can be emptied by a filter choice.
 //   2. NO FINISHED LIST. One line, then a link INTO Clearances. A lower-fidelity copy of a screen that
 //      already does the job well loses to it, and teaches people not to go there.
-//   3. NO ROLE SPLIT. There is no staff Home and no client Home. What differs is how many brand owners
+//   3. NO ROLE SPLIT. There is no staff Home and no client Home. What differs is how many companies
 //      someone holds, and quantity is a rendering decision.
 //
 // There is no ETA and no percent-complete anywhere on this page: nothing in the system measures or
@@ -24,6 +24,7 @@
 // own reset time, which is why it is the only thing here that ever states a time.
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { CompanyChips } from '../shell/CompanyChips.tsx'
 import type { Run, StopOutcome } from '../contract/api.ts'
 import type { Row } from '../contract/grouping.ts'
 import type { Tone } from '../contract/tone.ts'
@@ -72,7 +73,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // ONE REQUEST, WHOEVER IS ASKING. Staff get every account, a client gets its own, and the request is
   // identical — so this screen never branches on role, and cannot grow a staff layout by accident.
   const { result, reload } = useLoad(() => api.runsMine(), [])
-  // THE ALLOWANCE IS PER BRAND OWNER, AND THIS SCREEN SPANS THEM ALL.
+  // THE ALLOWANCE IS PER COMPANY, AND THIS SCREEN SPANS THEM ALL.
   //
   // So it is stated only where there IS one owner to state it for: the one selected, or the only one
   // held. A multi-brand account has several daily allowances and no single number, and the line is
@@ -115,7 +116,16 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         count={cards.length + queue.length}
         note={slotNote(null, ctx.me.concurrentRuns)}
         onNew={() => ctx.go('/portal/new')}
+        onAll={() => ctx.go('/portal/clearances')}
       />
+
+      {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because it is
+          the dashboard — the line in the rail separates "your dashboard" from "working on one company",
+          not "everything below here is filtered". The chips are how this screen offers the same choice
+          without claiming to be one of the company screens, and they set the same value the rail sets. */}
+      <div style={{ margin: '0 0 18px' }}>
+        <CompanyChips ctx={ctx} label="Filter by company" />
+      </div>
 
       {answer === 'error' ? (
         <p className="home2-notice">
@@ -179,10 +189,12 @@ function InFlightBand({
   count,
   note,
   onNew,
+  onAll,
 }: {
   readonly count: number
   readonly note: string | null
   readonly onNew: () => void
+  readonly onAll: () => void
 }) {
   // A GRID, not a spacer-and-wrap. The button stays pinned right at every width; a flex-wrap
   // construction drops it onto its own line the moment the note gets long, which is exactly when the
@@ -193,6 +205,13 @@ function InFlightBand({
       <span className="home2-band-count mono">{count}</span>
       <span className="home2-band-rule" />
       <span className="home2-band-note">{note}</span>
+      {/* The way OUT of the dashboard and into the archive. Home shows what is in flight; everything
+          that has finished lives on Clearances, and the rail was the only route there. */}
+      <button type="button" className="nav-item" onClick={onAll}
+        style={{ width: 'auto', flex: 'none', marginRight: 8 }}>
+        <Icon name="layers" />
+        <span>All clearances</span>
+      </button>
       <button type="button" className="home2-new" onClick={onNew}>
         <Icon name="plus-circle" />
         New clearance

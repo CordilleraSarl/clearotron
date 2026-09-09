@@ -218,7 +218,7 @@ test("a document with NO anchor is judged exactly as before — archived replays
 test("needsSection and needsSectionsLabeled both exist, and the labelled token shape is preserved", () => {
   assert.match(VERIFY, /function needsSection\(/, "the single-section form");
   assert.match(VERIFY, /function needsSectionsLabeled\(/, "the multi-section form for findings+ledger");
-  // correctionHint (gateway.mjs:2181, :2188) branches on the label TEXT. A renamed token silently
+  // correctionHint branches on the label TEXT. A renamed token silently
   // downgrades the seat's corrective hint to a generic one, which is how a run stalls without saying why.
   assert.match(VERIFY, /"findings\+ledger"/,
     "the findings+ledger label must survive verbatim — correctionHint branches on it");

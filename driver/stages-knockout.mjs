@@ -14,6 +14,7 @@ import { kebab } from "./search-policy.mjs";
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
 import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
+import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
 const lines = (...xs) => xs.filter(Boolean).join("\n");
@@ -51,6 +52,9 @@ export function koPaths(runDir) {
     plan: join(runDir, "knockout-plan.json"),
     findings: join(runDir, "knockout-findings.json"),
     assessment: join(runDir, "knockout-assessment.md"),
+    // The reviewing pass's record of what it rewrote and what it let stand. At the RUN ROOT, like the
+    // assess chunks and for the same reason: it is a model output, and `_driver/` is behind a deny hook.
+    review: knockoutReviewFile(runDir),
     // Depth 2: the code-authoritative count sidecar + its per-call receipts. Both live under
     // _driver/ — they are the driver's own measurements, never a model's output.
     registerCounts: driverDir(runDir, "register-counts.json"),
@@ -483,6 +487,66 @@ export const KO_STAGES = {
       chunkNo === 0
         ? `As the FIRST chunk you also send \`batch\` (productContext, standardCaveats) and \`framework\`.`
         : `As a CONTINUATION chunk you send \`marks\` and \`chunkSummary\` only — batch and framework came from chunk 1.`,
+    ),
+  },
+
+  // ── THE REVIEWING PASS ──────────────────────────────────────────────────────
+  //
+  // The third stage, after assess. It rewrites the lines a reader meets before opening anything, in the
+  // words that reader already owns, and it does nothing else.
+  //
+  // SMALLER THAN THE STAGE IT COPIES, DELIBERATELY. The clearance lane's refutation stage re-derives the
+  // headline, audits the plan and grades corrections; this one is handed a list of lines and returns
+  // replacements for the ones it agrees are wrong. It has no verdict, no band, no evidence and no
+  // decision. Copying that stage's SHAPE was the design; copying its size would have made a rewrite pass
+  // into a second reviewer, on a product that screens rather than clears.
+  //
+  // NOT THE PRE-DELIVERY LINT, AND THIS IS THE REASON. That lint is deterministic and its own header
+  // states what happens to a failing check: it ships as a visible flag at the top of the client's report.
+  // That is a disclosure, and putting a note about the lawyer's vocabulary on the client's own page is
+  // the opposite of the intent, on the surface the rule exists to protect. The lint is the right
+  // instrument for a mechanical defect and the wrong one for a rewrite.
+  //
+  // MODEL AND EFFORT. Opus at high, like the two stages before it. A rewrite that keeps every fact while
+  // changing the register is the same judgment the rating seats make, and the whole value of the pass is
+  // that the replacement reads better than what it replaced. A cheaper rung would produce replacements
+  // nobody would ship, which is a pass that runs and achieves nothing.
+  "knockout-review": {
+    model: "opus", thinking: "high", timeoutSec: 600, stallSec: 420,
+    // DECLARATIVE ONLY on this lane, exactly as the assess stage records: nothing in koStage reads
+    // `skillReads`, and the effective read is the `reads([...])` call in the message below. The two are
+    // edited together and the asymmetry is written down rather than left to be discovered.
+    skillReads: ["skills/prelim-search/report-prose.md"],
+    out: (K) => K.review,
+    validate: validateKnockoutReviewFile,
+    // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
+    //
+    // `evidenceLines` is the driver's measurement, passed at dispatch. Two things follow, and the arms
+    // found both: the defaults must not be absent — a message that throws on a ctx without them cannot
+    // be composed by anything except the production call site, which is how a dispatch goes unexamined
+    // — and the promise has to branch. A stage message that says "the lines are below" and then lists
+    // none has handed the seat an absence dressed as a pass, which is the reading this whole rule
+    // exists to stop. The driver does not dispatch on an empty measurement; the branch is here because
+    // "it cannot happen" is not a property a message should depend on.
+    message: ({ K, evidenceLines = [], exclusionNote = "" }) => lines(
+      reads(["skills/prelim-search/report-prose.md"]),
+      `You are the REVIEWING PASS on a knockout screen. The batch is already rated and nothing about that rating is yours to change. Your job is the words.`,
+      `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
+      `The rated record: ${K.findings}. Read it — the lines named below are quoted from it and you are rewriting them in place.`,
+      evidenceLines.length
+        ? `THE DRIVER MEASURED THESE LINES. Each row is the line, the ADDRESS that names it, and what a deterministic read found. THIS IS EVIDENCE, NOT A VERDICT: judge each in context and pass over any where the word is the subject rather than the profession's shorthand. ${exclusionNote}`
+        : `THE DRIVER'S READ FLAGGED NO LINE ON THIS RECORD, so there is no table below and nothing here is evidence of a fault. Read the record yourself against the rule above; if it is already plain, send one \`declined\` row saying so rather than inventing a rewrite to fill the call.`,
+      ...evidenceLines,
+      // ── THE DICTATION NAMES THE FIELD, NOT AN EFFECT ────────────────────────────────
+      //
+      // "Make the report plainer" is read and not applied, and nothing refuses — it simply does not
+      // happen. The address IS the field, so every rewrite this stage returns names the exact line it
+      // replaces and the driver writes it there.
+      `HAND YOUR REWRITES BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none for you to write to. Send \`rewrites\`: one row per line you are replacing, each carrying the \`at\` address COPIED VERBATIM from the row above and \`text\`, the replacement prose. The driver writes your text into that field exactly as you send it.`,
+      `A REWRITE KEEPS EVERY FACT. You are changing the register, never the content: the same band, the same names, the same reasons, the same conclusion, in the words the reader already owns. Splitting one long sentence into two short ones is the commonest right answer. Dropping the reason to make a line shorter is the commonest wrong one.`,
+      `SEND \`declined\` FOR A LINE YOU ARE LEAVING ALONE, with \`why\`. A word that is a mark being screened, a client's own product name, or a term with no plainer form that keeps the meaning — say so and leave it. A line you neither rewrite nor decline is indistinguishable afterwards from a line nobody read.`,
+      `YOU MOVE NOTHING ELSE. No band, no finding, no ordinal, no count, no piece of evidence and no caveat the engine wrote. There is no field for any of them and a payload naming one is refused.`,
+      `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges BY ADDRESS onto what it already accepted, so a row you omit keeps what you sent for it before.`,
     ),
   },
 };

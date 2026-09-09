@@ -379,18 +379,43 @@ async function submit(write) {
     }
     showMsg("", write ? "Saving…" : "Checking…");
     const action = write ? "save" : "validate";
-    const r = await jpost(`${API}${encodeURIComponent(key)}/${action}`, { profile, contextPack });
+    // CREATING IS ITS OWN ROUTE, and this is the whole of the defect it fixes. `save` is an upsert: its
+    // preserve step takes the on-disk value of every code-owned field and DELETES the field when there is
+    // nothing on disk. A customer being created has nothing on disk, so creating through `save` wrote no
+    // risk framework at all, silently, and every matter for that customer was rated under the general
+    // default from then on with nothing on any screen saying so.
+    //
+    // The create route asks the same questions the command line asks, always sets the framework, and
+    // refuses a colliding email domain before writing rather than leaving the next start unable to
+    // resolve ANY customer. Its body is FLAT; `save` takes a nested profile.
+    const r = (write && current.isNew)
+      ? await jpost(API.replace(/\/$/, ""), {
+          name: profile.name, key,
+          industry: profile.industry,
+          matchDomains: profile.matchDomains,
+          platforms: profile.platforms,
+        })
+      : await jpost(`${API}${encodeURIComponent(key)}/${action}`, { profile, contextPack });
     if (!write) {
       if (r.json.ok) showMsg("ok", r.json.isNew ? "Looks good — ready to create this customer." : "Looks good — ready to save.");
       else showServerErrors("Almost there — please fix:", r.json.errors);
       return;
     }
-    if (r.status === 200 && r.json.written) {
-      showMsg("ok", `Saved — ${r.json.created?"created":"updated"} ${key} · commit ${String(r.json.commit||"").slice(0,9)}`);
+    if ((r.status === 200 || r.status === 201) && r.json.written) {
+      // 201 from the create route, 200 from a save. Testing only for 200 would report a successful
+      // creation as a failure, which is the one answer that sends somebody to make the customer twice.
+      const fw = r.json.framework
+        ? ` · ${r.json.framework.defaulted ? "general default rating" : "its own rating framework"}`
+        : "";
+      showMsg("ok", `Saved — ${r.json.created?"created":"updated"} ${key}${fw} · commit ${String(r.json.commit||"").slice(0,9)}`);
       await loadRoster(key);
       if (current.isNew) openCustomer(key);
     } else if (r.json.error === "validation_failed") {
       showServerErrors("Couldn’t save — please fix:", r.json.errors);
+    } else if (r.json.message) {
+      // The create route names its refusals in a sentence and puts a machine token beside it. Showing
+      // the token is showing engine vocabulary to a lawyer.
+      showMsg("err", r.json.message);
     } else {
       showMsg("err", `Couldn’t save (${r.status}). ${r.json.error||"Please try again."}`);
     }
