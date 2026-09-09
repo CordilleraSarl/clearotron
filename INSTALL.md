@@ -153,6 +153,11 @@ you want the second one** — the first assumes access to the repository, which 
 
 ### From the repository
 
+**This is the development tree, and it is for contributors.** If you want to run a clearance, take one
+of the two routes above instead. A clone is not a smaller version of the package — it carries the
+fixtures and sample brand owners the project develops against, and those load as real records. They
+are not yours and they are not in the package, which excludes them deliberately.
+
 ```
 git clone <this-repo> && cd <repo>
 npm install            # installs all workspaces
