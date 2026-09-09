@@ -64,6 +64,30 @@ test("browserRun puts the profile inside the root and exports the root as TMPDIR
   assert.equal(rootRefusal(root), null, "a root this module made must itself fit the budget");
 });
 
+test("browserEnv MERGES into the environment rather than replacing it", () => {
+  // `env:` on spawn and execFileSync REPLACES the child's environment; it does not merge. A browser
+  // handed only TMPDIR loses HOME and PATH, and it does not fail by saying so — it fails as a render
+  // fault, which is the hardest kind of failure to attribute to a change like this one.
+  //
+  // Measured while writing this: execFileSync with `env: { TMPDIR }` gives the child HOME=[] and a
+  // fallback PATH. So the whole safety of every call site is the spread in this one function, one
+  // module away from the spawns that depend on it, and nothing else here was asserting it.
+  //
+  // Raised in review of the sibling change that wires two more launchers — by a reader who checked
+  // the merge before checking anything else, because it is the thing that breaks quietly.
+  const root = browserTempRoot("arm-merge-");
+  const ambient = { PATH: "/probe/bin", HOME: "/probe/home", LANG: "C" };
+  const env = browserEnv(root, ambient);
+  assert.equal(env.TMPDIR, root);
+  for (const [k, v] of Object.entries(ambient)) {
+    assert.equal(env[k], v, `browserEnv dropped ${k}: a browser without it fails as a render fault, not as a missing variable`);
+  }
+  // And the default source is the real environment, or every call site that omits the second argument
+  // gets an empty one.
+  assert.equal(browserEnv(root).PATH, process.env.PATH,
+    "browserEnv must default to this process's environment, not to an empty object");
+});
+
 test("browserEnv refuses a root that cannot work rather than handing it over", () => {
   const over = "/" + "z".repeat(MAX_ROOT_LENGTH);
   assert.throws(() => browserEnv(over), /limit is 66/);
