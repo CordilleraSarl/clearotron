@@ -18,12 +18,14 @@ test('a screen reached from a row still resolves, even though the sidebar never 
   assert.equal(ids.includes('result'), false)
   // The sidebar order IS this array's order, so asserting it is asserting the deliverable.
   //
-  // The order now encodes THE LINE: everything the brand-owner switcher does NOT reach comes first
-  // (Home, Clearances, Use your AI), then everything it does (New clearance and the brand screens).
-  // The switcher is drawn between them, so what it governs is exactly what is printed beneath it.
-  // Admin is no longer here at all — it moved to the avatar menu, where it belongs to the person
-  // rather than to either scope.
-  assert.deepEqual(ids, ['home', 'clearances', 'ai', 'new', 'brand.profile', 'brand.projects', 'brand.searches'])
+  // The order encodes THE LINE: everything the company switcher does NOT reach comes first (Home, Use
+  // your AI), then everything it does. The switcher is drawn between them, so what it governs is
+  // exactly what is printed beneath it. Admin is no longer here at all — it moved to the avatar menu,
+  // where it belongs to the person rather than to either scope.
+  //
+  // CLEARANCES SITS BELOW THE LINE. It always filtered its rows by the switcher's value; it merely sat
+  // above the line while doing so, which is the disagreement this order corrects.
+  assert.deepEqual(ids, ['home', 'ai', 'new', 'clearances', 'brand.profile', 'brand.projects', 'brand.searches'])
 })
 
 test('THE LINE: every sidebar entry declares which side of the switcher it is on', () => {
@@ -35,9 +37,9 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
     assert.ok(e.scope === 'account' || e.scope === 'owner', `${e.id} does not say which side of the switcher it is on`)
   }
   const g = navGroupsFor('client')
-  assert.deepEqual(g.account.map((e) => e.id), ['home', 'clearances', 'ai'], 'reviewed across everything')
-  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'brand.profile', 'brand.projects', 'brand.searches'], 'one owner at a time')
-  // Staff differ only in QUANTITY of brand owners, never in the shape of the page.
+  assert.deepEqual(g.account.map((e) => e.id), ['home', 'ai'], 'reviewed across everything')
+  assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand.profile', 'brand.projects', 'brand.searches'], 'one company at a time')
+  // Staff and clients differ only in HOW MANY companies they hold, never in the shape of the page.
   assert.deepEqual(navGroupsFor('staff').account.map((e) => e.id), g.account.map((e) => e.id))
   assert.deepEqual(navGroupsFor('staff').owner.map((e) => e.id), g.owner.map((e) => e.id))
 })

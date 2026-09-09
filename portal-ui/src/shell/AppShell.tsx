@@ -298,9 +298,6 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // two settled values. It showed up as render-check.mjs failing intermittently at 99px and 14px on
   // alternate runs — a real symptom of a redundant render, caught only because that check drives a
   // real browser.
-  const sole = meResult?.kind === 'ok' && !meResult.value.allAccounts && meResult.value.accounts.length === 1
-    ? meResult.value.accounts[0] ?? null
-    : null
 
   // The roster, fetched HERE rather than inside the switcher, because names are needed by every screen
   // and not only by the control that picks one. Staff-only by construction: a client gets 404 from this
@@ -390,8 +387,19 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
       ? (rosterResult?.kind === 'ok' ? rosterResult.value.map((c) => c.key) : [])
       : me.accounts
 
-  // What every screen means by "the brand owner in view": the switcher's choice, or — for an identity
-  // with exactly one grant and therefore no switcher — that one owner.
+  // NOBODY IS ASKED TO CHOOSE BETWEEN ONE THING AND ITSELF.
+  //
+  // This asked the wrong question for a long time. It keyed on how many companies the LOGIN was granted,
+  // so it fired for a client holding one and never for the person running the install — who holds all of
+  // them, and was therefore asked to pick from a list of one on every screen of a one-company install.
+  //
+  // Asked of the company list itself, it is right for both: a client with one grant has one, and a fresh
+  // install has one because Generic ships with every install and is a company like any other. While the
+  // roster is still in flight the list is empty and nothing is auto-selected, which is the same one-frame
+  // tolerance the name resolution already carries.
+  const sole = ownerKeys.length === 1 ? ownerKeys[0] ?? null : null
+
+  // What every screen means by "the company in view": the switcher's choice, or the only one there is.
   const ownerInView = owner ?? sole
 
   const body = entry
@@ -409,7 +417,6 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 
   // Staff always get the switcher (their reach is the roster, not a named list); a client gets one only
   // when their grant actually covers more than one brand owner.
-  const multiOwner = me.allAccounts || me.accounts.length > 1
 
   // WHO YOU SIGNED IN AS — where the portal actually knows. Staff are the operator, read from the brand
   // seam rather than written here (: the literal was one deployment's firm name, shipped to every
@@ -417,7 +424,16 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // name this portal has never been told, and naming one of their clients instead would be worse than
   // staying quiet. Null ⇒ the block is not rendered at all; see the identity corner below — so a staff
   // identity on a deployment that sent no brand renders nothing here rather than an empty label.
-  const accountName = role === 'staff' ? (me.brand || null) : (me.accounts.length === 1 ? ownerName(me.accounts[0]!) : null)
+  // THE ORGANISATION, FOR EVERYONE. One slot, one meaning.
+  //
+  // It used to render the organisation for staff and the COMPANY for a client holding one grant — one
+  // label over two different nouns, so it was true for staff and false for the commonest client case.
+  // The company is already named in the rail and in the page heading; a client loses nothing here, and
+  // the dual meaning goes with it.
+  //
+  // Null ⇒ the block is not rendered at all, so an install that was sent no organisation name shows
+  // nothing rather than an empty label.
+  const accountName = me.brand || null
 
   return (
     <div className="app">
@@ -466,18 +482,19 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                 // the boundary survives even when the label cannot.
                 <div style={{ height: 1, background: 'var(--border-hairline)', margin: '0 8px 12px' }} />
               ) : (
-                // NOTHING AT ALL WHEN THERE IS NOTHING TO SWITCH. A single-owner identity IS its own
-                // brand owner, so naming it here would print that name a third time on one screen —
-                // rail, title and Account corner — and a label repeated three times stops being read
-                // anywhere. It would also label a distinction that does not exist for them: with one
-                // owner there is no "which owner", so the group needs no header to disambiguate.
-                // Quantity is a rendering decision, never a layout.
-                multiOwner ? (
-                  <div style={{ marginBottom: 10 }}>
-                    <div className="eyebrow">Brand owner</div>
-                    <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={owner} onChange={setOwnerGuarded} />
-                  </div>
-                ) : null
+                // THE SWITCHER ALWAYS RENDERS. It used to appear only for an identity holding more than
+                // one company, which meant a fresh install had no control at all and one materialised
+                // later, when a second company was added — and a control that appears by itself reads as
+                // a bug rather than as a simplification.
+                //
+                // There is also never nothing to list: Generic ships with every install and is a company
+                // like any other, so the empty state this condition was protecting against cannot occur.
+                // With exactly one company the switcher opens on it, and nobody is asked to choose
+                // between one thing and itself.
+                <div style={{ marginBottom: 10 }}>
+                  <div className="eyebrow">Company</div>
+                  <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={owner} onChange={setOwnerGuarded} />
+                </div>
               )}
               <NavList entries={groups.owner} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
             </div>
@@ -537,7 +554,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                 (which carries the signed-in address) answer "who am I". */}
             {!mobile && accountName ? (
               <div style={{ textAlign: 'right', marginRight: 8, minWidth: 0 }}>
-                <div className="eyebrow">Account</div>
+                <div className="eyebrow">Organisation</div>
                 <div
                   style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 14, lineHeight: 1.2, whiteSpace: 'nowrap' }}
                   data-anon="mark"
@@ -657,7 +674,7 @@ function BrandOwnerSwitcher({
     <select
       value={value ?? ''}
       onChange={(e) => onChange(e.target.value || null)}
-      aria-label="Brand owner"
+      aria-label="Company"
       style={{
         width: '100%',
         marginTop: 4,

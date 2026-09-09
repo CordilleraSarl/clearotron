@@ -98,17 +98,21 @@ export type NavEntry = {
 // a second place to be confused about scope costs plenty.
 export const NAV: readonly NavEntry[] = [
   // Home leads: it is where the portal opens and it answers "what is happening with my work" before
-  // anything is clicked. Clearances stays, as the archive it always was.
+  // anything is clicked. It spans everything and stays above the line.
   { id: 'home', label: 'Home', path: '/portal/home', icon: 'panel-left', scope: 'account' },
-  { id: 'clearances', label: 'Clearances', path: '/portal/clearances', icon: 'layers', scope: 'account' },
   // The engine being model-agnostic and reachable over MCP is a selling point, not a settings detail —
-  // and the connector is issued per identity, not per brand owner, so it belongs above the line.
+  // and the connector is issued per identity, not per company, so it belongs above the line.
   { id: 'ai', label: 'Use your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
 
-  // ── below the switcher: one brand owner at a time ─────────────────────────────────────────────
-  // New clearance leads the group because it is the one ACTION here, and it is owner-specific by
-  // nature: a run is started for exactly one brand owner, under that owner's framework and defaults.
+  // ── below the switcher: one company at a time ─────────────────────────────────────────────────
+  // New clearance leads the group because it is the one ACTION here, and it is company-specific by
+  // nature: a run is started for exactly one company, under that company's framework and defaults.
   { id: 'new', label: 'New clearance', path: '/portal/new', icon: 'plus-circle', scope: 'owner' },
+  // CLEARANCES MOVED DOWN HERE, and it is a correction rather than a preference: the screen has always
+  // filtered its rows by the switcher's value while sitting in the group whose whole definition is that
+  // the switcher does not reach it. It obeyed a control the layout said did not apply to it, and nothing
+  // on the page said it was filtered. Below the line the two agree.
+  { id: 'clearances', label: 'Clearances', path: '/portal/clearances', icon: 'layers', scope: 'owner' },
   // Reached from a row, never from the sidebar — but it must still RESOLVE, or "Open the report" leads
   // to "That page does not exist." `hidden` keeps it out of the nav while keeping it routable; a screen
   // you can navigate to and a screen you can see in a menu are different questions.
@@ -120,10 +124,11 @@ export const NAV: readonly NavEntry[] = [
   // from this array, so an entry removed to tidy the sidebar turns the menu link into a dead one.
   { id: 'about', label: 'About', path: '/portal/about', icon: 'info', hidden: true },
 
-  // The brand owner's own configuration. Flat by design: there is no `brand` parent entry, so none of
-  // these can be falsely highlighted by a dot-prefix match.
-  { id: 'brand.profile', label: 'Brand profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
-  { id: 'brand.projects', label: 'Brand projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
+  // The company's own configuration. Flat by design: there is no `brand` parent entry, so none of these
+  // can be falsely highlighted by a dot-prefix match. The ids and routes keep the `brand` spelling —
+  // the rename here is to what a reader sees, and a route is neither read nor renamed.
+  { id: 'brand.profile', label: 'Profile', path: '/portal/brand/profile', icon: 'user', scope: 'owner' },
+  { id: 'brand.projects', label: 'Projects', path: '/portal/brand/projects', icon: 'folder', scope: 'owner' },
   { id: 'brand.searches', label: 'Custom searches', path: '/portal/brand/searches', icon: 'bookmark', scope: 'owner' },
 
   // Staff administration, now reached from the AVATAR MENU rather than the sidebar — it is rare, it is

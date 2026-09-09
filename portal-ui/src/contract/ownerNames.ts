@@ -20,7 +20,7 @@
 //     the answer, so guessing would be inventing a client's name.
 
 /** The "no particular brand owner" view. One string, so the switcher and every label agree on it. */
-export const ALL_OWNERS = 'All brand owners'
+export const ALL_OWNERS = 'All companies'
 
 export type OwnerNames = Readonly<Record<string, string>>
 

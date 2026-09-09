@@ -25,42 +25,50 @@ test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN, not the screen', () => {
   assert.doesNotMatch(body, /<h1>\{entry\?\.label/, 'the screen label no longer heads the page')
 })
 
-test('ACCOUNT SURVIVES, LABELLED, in the identity corner', () => {
-  // The brand owner moving into the title makes the label on the right matter MORE, not less: two bold
-  // names on one bar, one of them a switchable work filter and the other fixed identity, is precisely
-  // the conflation the shell's own header warns about. Deleting the label to reduce clutter would be
-  // the wrong economy.
+test('THE ORGANISATION SURVIVES, LABELLED, in the identity corner', () => {
+  // The company moving into the title makes the label on the right matter MORE, not less: two bold names
+  // on one bar, one of them a switchable work filter and the other fixed identity, is precisely the
+  // conflation the shell's own header warns about. Deleting the label to reduce clutter would be the
+  // wrong economy — and with both nouns on screen at once, an unlabelled name is the conflation itself.
   const corner = body.slice(body.indexOf('marginLeft:'))
-  assert.match(corner, /className="eyebrow">Account</)
+  assert.match(corner, /className="eyebrow">Organisation</)
+  assert.doesNotMatch(corner, /className="eyebrow">Account</, 'the account noun is retired from the bar')
   // — a staff identity is labelled with the OPERATOR, read from the brand seam. It used to be the
   // string literal 'Cordillera', so every fork of this portal labelled its own staff with a Swiss firm's
   // name. Pinned as a source assertion because the failure it guards is silent: a literal put back here
   // renders correctly on the deployment that wrote it and wrongly on every other one.
-  assert.match(body, /const accountName = role === 'staff' \? \(me\.brand \|\| null\)/)
+  assert.match(body, /const accountName = me\.brand \|\| null/)
   assert.doesNotMatch(body, /role === 'staff' \? '[A-Z]/,
-    'the staff label is the brand seam, never a hardcoded operator name')
+    'the operator label is the brand seam, never a hardcoded operator name')
 })
 
-test('ACCOUNT IS RENDERED ONLY WHERE THERE IS A TRUE ANSWER', () => {
+test('THE IDENTITY CORNER IS RENDERED ONLY WHERE THERE IS A TRUE ANSWER', () => {
   // It used to print `accounts[0]` for any client — right for one grant, and false for a firm holding
-  // three, where it picked one of their CLIENTS at random and labelled it their identity. Invisible
-  // while the brand owner lived in a rail select; unmissable with the two at either end of one bar.
-  assert.match(body, /me\.accounts\.length === 1 \? ownerName\(me\.accounts\[0\]!\) : null/)
+  // three, where it picked one of their CLIENTS at random and labelled it their identity. That whole
+  // branch is gone; the slot now carries the organisation and nothing else. What survives is the rule
+  // that produced it: an answer we do not have is not rendered.
+  assert.match(body, /const accountName = me\.brand \|\| null/)
   assert.match(body, /!mobile && accountName \?/, 'no answer ⇒ no block, never a placeholder dash')
   assert.doesNotMatch(body, /: '—'/, 'and never a placeholder dash where a name belongs')
 })
 
-test('the brand owner is printed ONCE, not three times', () => {
-  // The rail carried a static copy of the name for single-owner identities, justified in its own comment
-  // by "previously they saw no brand owner anywhere on the page". It is the page title now, so a client
-  // was reading their own name in the rail, the title and the Account corner on one screen — and a label
-  // repeated three times stops being read anywhere.
+test('ONE SLOT, ONE NOUN: the identity corner can never name a company', () => {
+  // A client once read their own name in the rail, in the page title AND in the identity corner on one
+  // screen, and a label repeated three times stops being read anywhere. That used to be prevented by
+  // hiding the rail switcher when there was only one company to switch between — which the owner then
+  // overturned, because a control that materialises when a second company appears reads as a bug.
   //
-  // This survived the switcher moving into the sidebar as the header of the group it governs: with one
-  // brand owner there is nothing to switch AND nothing to disambiguate, so the header is absent
-  // entirely rather than printing the name a third time.
-  assert.match(body, /multiOwner \? \([\s\S]{0,400}BrandOwnerSwitcher[\s\S]{0,200}\) : null/,
-    'the group header holds a SWITCHER when there is something to switch, and nothing when there is not')
+  // So the guarantee moved to where it is structural rather than conditional: the identity corner
+  // resolves the ORGANISATION and has no path to a company name at all. The company is read in two
+  // places, the rail and the heading, on every install and for every role.
+  //
+  // Pinned as the property, not as the old expression: the derivation may be rewritten, but it may not
+  // start depending on the company again.
+  const derivation = /const accountName = .*/.exec(body)?.[0] ?? ''
+  assert.ok(derivation, 'the identity corner resolves its name in one place')
+  assert.doesNotMatch(derivation, /ownerName|accounts\[/,
+    'the identity corner names the organisation and can reach no company name')
+  assert.match(body, /const accountName = me\.brand/, 'and it reads the organisation from the brand seam')
 })
 
 test('THE SWITCHER LABELS THE GROUP IT GOVERNS', () => {
