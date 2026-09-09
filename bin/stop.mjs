@@ -27,7 +27,7 @@ import { invoke } from "../shared/invocation.mjs";
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const say = (s = "") => console.log(s);
 // ON STDERR, because a refusal that scrolls past in the same stream as the success lines is a
-// refusal a script cannot act on and a reader skims (tracker issue 270).
+// refusal a script cannot act on and a reader skims.
 const err = (s = "") => console.error(s);
 
 const argv = process.argv.slice(2);
@@ -49,7 +49,7 @@ for (const u of BACKGROUND_UNITS) {
   const file = join(UNIT_DIR, u);
   if (!existsSync(file)) continue;
   found++;
-  // ── THE STOP IS VERIFIED, AND THE FILE GOES ONLY IF IT WORKED (tracker issue 270) ────────────────
+  // ── THE STOP IS VERIFIED, AND THE FILE GOES ONLY IF IT WORKED ────────────────────────────────────
   //
   // This was `catch { /* already down */ }` — a COMMENT standing in for a check. The comment guessed why
   // the call failed, the next line deleted the unit file regardless, and the line after that announced

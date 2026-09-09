@@ -230,7 +230,7 @@ export const CONNECT_CLIENTS = Object.freeze([
  * A stub that restates a wire is a second author for one shape. This is the shape; both callers ask.
  */
 // `sub`, `verifiedOn` and `by` ride only where the ROW carries them, and absent means absent rather than
-// null (tracker issue 147). Two of the three are load-bearing on the page:
+// null. Two of the three are load-bearing on the page:
 //
 //   • `sub` is how one app can appear once per route without two rows claiming to be two products —
 //     "Claude · app, web, and Cowork" and "Claude · app, on this computer" are one product met two ways.

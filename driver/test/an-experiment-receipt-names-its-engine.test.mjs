@@ -98,7 +98,7 @@ test("1967 a non-default-engine arm is distinguishable from a default one by the
   assert.notEqual(telemetryDelta(def, alt).includes("anthropic-agent"), false);
 });
 
-// ── THE RATING AUTHORITY THE ARM RAN UNDER (tracker issue 268) ───────────────────────────────────────
+// ── THE RATING AUTHORITY THE ARM RAN UNDER ───────────────────────────────────────────────────────────
 //
 // `whatIfRun` resolves the profile correctly and returned it IN MEMORY ONLY: a walk of a real
 // experiment directory for either `ratedUnder` or the resolved key found nothing, and `matter-frame`

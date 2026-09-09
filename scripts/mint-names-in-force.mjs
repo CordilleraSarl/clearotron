@@ -6,7 +6,7 @@
 //
 // ── WHY THIS IS DERIVED AND NOT WRITTEN BY HAND ──────────────────────────────────────────────────
 //
-// It is the replacement half of the retired-spelling check (tracker issue 168). The DETECTION half
+// It is the replacement half of the retired-spelling check. The DETECTION half
 // needs nothing from this file: no product code reads a `PRELIM_*` name any more, so a `PRELIM_*` that
 // is set is dead whatever this list says. What the list decides is the second half of the sentence —
 // which name to tell the operator to use instead — and that is where a hand list does damage. A hand
@@ -45,7 +45,7 @@ const OUT = join(REPO, "shared", "names-in-force.mjs");
  * and a name only a test mentions is not a name this build reads. Including them would mint
  * replacements for settings the product does not have. `.js` and `.ts` are in with `.mjs` because
  * the providers' own `src` directories carry non-test `.js` — a `.mjs`-only derivation has produced
- * wrong answers on this tree before (tracker issue 96).
+ * wrong answers on this tree before.
  */
 export function sourceFiles(root = REPO) {
   const tracked = execFileSync("git", ["-C", root, "ls-files", "*.mjs", "*.js", "*.ts"], {

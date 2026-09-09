@@ -415,7 +415,7 @@ export function activeEnvPath({ repoRoot = REPO_ROOT, home = homedir(), location
  */
 export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = defaultNote,
                               home = homedir(), location = ENV_LOCAL_LOCATION, file = null } = {}) {
-  // ── `file` NAMES A FILE OUTRIGHT, AND EXISTS BECAUSE A CALLER COULD NOT (tracker issue 179) ────────
+  // ── `file` NAMES A FILE OUTRIGHT, AND EXISTS BECAUSE A CALLER COULD NOT ────────────────────────────
   //
   // `readEnvFile(path)` in the wizard means "tell me what THIS file holds". It could only ask by handing
   // over `repoRoot: dirname(path)` and hoping the resolution below landed there — and it did, by
@@ -514,7 +514,7 @@ export const loaded = isCliEntry(process.argv[1]) ? loadEnvLocal() : null;
  *
  * `read` and `absent` are both a yes — absent only means nobody has written it yet, and that IS the file
  * to write. `service-managed`, `opted-out` and `unreadable` are a no, and a no means say nothing rather
- * than guess (tracker issue 200).
+ * than guess.
  */
 export function envFileRead(l = loaded) {
   return l && (l.reason === "read" || l.reason === "absent") ? l.path : null;

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The audit tools, on a delivered KNOCKOUT run (tracker issue 275).
+// The audit tools, on a delivered KNOCKOUT run.
 //
 // THESE CALL THE TOOL HANDLERS, not the projections underneath them. The issue's own judging rule is that
 // each acceptance line "must be shown by the tool's actual output on a real delivered knockout, not by a

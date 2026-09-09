@@ -5,7 +5,7 @@
 //
 // ── ONE DEFINITION, BECAUSE THE SECOND CALLER HAD NONE ───────────────────────────────────────────────
 //
-// `connect` learned this the expensive way (tracker issue 121): its `systemctl` calls ran with
+// `connect` learned this the expensive way: its `systemctl` calls ran with
 // `stdio: "ignore"`, so systemd's own explanation was thrown away before anyone could read it and the
 // whole output was `connect: Command failed: systemctl --user daemon-reload`; and the session-bus remedy
 // was appended to EVERY failure, so a unit that would not start for a bound port or a bad ExecStart was
@@ -14,7 +14,7 @@
 //
 // `start --background` never learned it. Its `enable --now` loop ran uncaught, so the same refusal
 // arrived as a raw Node stack trace — `at genericNodeError (node:internal/errors:983:15)`, a status
-// code, and no statement of what had happened to the install (tracker issue 203). That is the failure
+// code, and no statement of what had happened to the install. That is the failure
 // `shared/listen.mjs` was written to end one layer down, and its rule is the rule here: an unrecognised
 // failure still gets a sentence and still exits non-zero; what it must not do is arrive as a stack trace
 // with no statement of consequence.

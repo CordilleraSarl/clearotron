@@ -65,7 +65,7 @@ async function driveToEnable(stderrLine) {
     // A hand-run environment from the one definition. Either of the two variables `handRunEnv` clears
     // would make this drive read no .env, so the values written above never arrive and it stops at an
     // earlier refusal — the guard `reachedTheEnable` names rather than lets an arm read past
-    // (tracker issue 204).
+    //.
     env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
       PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
       CLIENT_MCP_HTTP_PORT: String(ports.client) }) });

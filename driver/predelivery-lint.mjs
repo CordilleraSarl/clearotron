@@ -699,7 +699,7 @@ export function competitorClaimChecks({ text, ownerScreen, recordsByUri, markVoc
   return failures.length ? failures : [check("competitor-claim-verification", "registry", surface, true, "")];
 }
 
-// ── COVERAGE CLAIMS IN PROSE vs WHAT THE RUN ACTUALLY SEARCHED (tracker issue 134) ──────────────────
+// ── COVERAGE CLAIMS IN PROSE vs WHAT THE RUN ACTUALLY SEARCHED ──────────────────────────────────────
 //
 // THE DEFECT. `coverage_line:` is code-stamped from scope-facts.json; the narrative is model-written
 // prose. Nothing bound them to one searched-territory set. On one recorded run the masthead read
@@ -2353,7 +2353,7 @@ const knockoutSurfaces = (findings) => {
   return { report: report.filter(Boolean).join("\n\n"), working: working.filter(Boolean).join("\n\n") };
 };
 
-// ── PLAIN LANGUAGE ON WHAT A READER SEES FIRST (tracker issue 333) ─────────────────────────────────
+// ── PLAIN LANGUAGE ON WHAT A READER SEES FIRST ─────────────────────────────────────────────────────
 //
 // The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page.
 // The band, the summary, the basis line and the one-liners are the whole product for the second reader,
@@ -2569,7 +2569,7 @@ export function runKnockoutLint({ findings }) {
   // (publish/report-registry.mjs re-renders archived findings without re-running the merged validator)
   // this scan is the only permission-prose coverage there is.
   if (working.trim()) checks.push(...permissionProseChecks({ text: working, surface: "findings", idSuffix: ":knockout-working", structural: true, cards: false }));
-  // tracker issue 333 — the plain-language reviewer, over the fields a reader meets before opening a
+  // the plain-language reviewer, over the fields a reader meets before opening a
   // fold. Internal by surface, so a hit reaches whoever is fixing the run and never a delivery surface.
   checks.push(...plainLanguageChecks({ findings }));
   const failures = checks.filter((c) => !c.pass);
@@ -2714,7 +2714,7 @@ export function deliveryFlagLines(failures) {
     const id = String(f?.id ?? "");
     const base = id.split(":")[0];
     const family = String(f?.family ?? "");
-    // A CHECK WHOSE DISTINCTION LIVES IN ITS SUFFIX COULD NOT BE SAID HERE (tracker issue 267).
+    // A CHECK WHOSE DISTINCTION LIVES IN ITS SUFFIX COULD NOT BE SAID HERE.
     //
     // Grouping on `base` alone is right for the common case — a word-cap violation on nine write-ups is
     // one delivery line, not nine. But it also collapsed `narrative-write-ups:could-not-read` into the

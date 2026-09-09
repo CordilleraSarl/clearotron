@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The knockout page's reading order, folds and labels (tracker issue 331).
+// The knockout page's reading order, folds and labels.
 //
 // The complaint the redesign answers is digestibility, not correctness: on a one-name report the reader
 // met the name, band and classes three times before a sentence of reading, then nine unfolded conflict

@@ -92,7 +92,7 @@ test("289b: an unconfigured requester roster is EMPTY, never a demo one", async 
   process.env.CLEAROTRON_REQUESTER_WHATSAPP = saved;
 });
 
-// ── EVERY COMPLETION PACKET, NOT THE ONE I HAPPENED TO EDIT (tracker issue 321) ──────────────────────
+// ── EVERY COMPLETION PACKET, NOT THE ONE I HAPPENED TO EDIT ──────────────────────────────────────────
 //
 // The fix above landed on ONE of the two call sites. `driver/pipeline.mjs` routed through
 // `whatsappRouting` and `driver/pipeline-knockout.mjs` kept `AGENT_WHATSAPP[agent]`, so every knockout

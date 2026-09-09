@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The structural section contract (tracker issue 129).
+// The structural section contract.
 //
 // THE CLASS. verify.mjs's required-section floors keyed on prose the model composes, so each was one
 // phrasing drift from killing a run that had produced the section perfectly — and the failure reads as

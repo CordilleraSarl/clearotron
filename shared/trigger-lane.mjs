@@ -135,7 +135,7 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
       message: `the trigger lane answers at ${raw}${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
   }
   const why = probe.error ? probe.error : `it answered ${probe.status}`;
-  // ── A DOOR THAT IS NOT LISTENING YET IS NOT A DOOR THAT IS DOWN (tracker issue 222) ───────────────
+  // ── A DOOR THAT IS NOT LISTENING YET IS NOT A DOOR THAT IS DOWN ───────────────────────────────────
   //
   // On a simultaneous restart of the unit set the portal binds before the engine door does — the units
   // carry no ordering between them — and this branch logged an OUTAGE in the present indicative, with a

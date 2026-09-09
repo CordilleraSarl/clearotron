@@ -45,7 +45,7 @@
 name: Release
 
 on:
-  # A TAG PUSH IS NOT A PUBLISH PATH, AND MUST NOT BECOME ONE AGAIN (tracker issue 264).
+  # A TAG PUSH IS NOT A PUBLISH PATH, AND MUST NOT BECOME ONE AGAIN.
   #
   # `tags: ['v*']` was here until 2026-09-07 and it made pushing a tag publish the version at it. That is
   # dangerous in this pipeline specifically, because TAGS ARE ALSO ITS MEMORY: `release-cut-decision.mjs`
@@ -66,7 +66,7 @@ on:
   # WHY A CRON IS HERE, AND WHY DELETING IT STOPS EVERY RELEASE. A dispatched cut turns on auto-merge on
   # the version pull request and it then merges itself — ONLY THEN. A push to main updates that pull
   # request and stops, which is what the `version` job's condition below says and what this sentence
-  # omitted until 2026-09-07 (tracker issue 298): read alone it says main publishes on every merge, and
+  # omitted until 2026-09-07: read alone it says main publishes on every merge, and
   # the repair it invites — leaving pre mode to stop the publishing — breaks the beta line instead.
   #
   # GitHub performs that self-merge with the built-in `GITHUB_TOKEN` — a push made with that token starts
@@ -97,7 +97,7 @@ on:
   # opens the version pull request, somebody approves its parked run, and somebody's NEXT push to main is
   # what publishes it. Two stable releases went out that way and neither was published by this cron.
   #
-  # WHAT CLOSED IT (tracker issue 208) is in the `version` job, not here: the human push that opens the
+  # WHAT CLOSED IT is in the `version` job, not here: the human push that opens the
   # version pull request now stays alive and watches main for that pull request to merge, then publishes
   # it. The waiting run is the one a person started, which is the only run this design can be sure will
   # exist — see the note on that step for the attempt that failed first and why.
@@ -150,7 +150,7 @@ env:
 jobs:
   version:
     name: Open the version pull request, or cut the beta this dispatch asked for
-    # A PUSH KEEPS THE VERSION PULL REQUEST CURRENT; A DISPATCH IS WHAT MERGES IT (tracker issue 264).
+    # A PUSH KEEPS THE VERSION PULL REQUEST CURRENT; A DISPATCH IS WHAT MERGES IT.
     # Both events run this job and they leave by different doors: the push updates the standing pull
     # request and stops there, the `beta` dispatch updates it and then turns on auto-merge. The rehearsal
     # does not reach this job at all, which is what it has always done.
@@ -166,7 +166,7 @@ jobs:
     # constants live in `release-version-pr-checks.mjs`, which this job runs below, and an arm holds
     # the budget above their sum.
     #
-    # IT IS NOT THE PUBLISH WAIT, and this comment said it was until 2026-09-07 (tracker issue 298).
+    # IT IS NOT THE PUBLISH WAIT, and this comment said it was until 2026-09-07.
     # That wait is `WAIT_MS` in `release-await-cut.mjs`, and it runs in the `awaited` job, which this
     # job never invokes — as the paragraph further down this same block already says. The arm was
     # corrected and the sentence beside it was not, so one block
@@ -256,7 +256,7 @@ jobs:
       # take their new spellings; @v2 shims the old input names, which is exactly why using them would
       # leave the next reader thinking the version did not matter. `push-with-git-cli: true` keeps @v1's
       # behaviour rather than taking @v2's new default, because one variable moves at a time.
-      # ── THE INPUT DECIDES THE CHANNEL, AND THE CHANNEL IS PRE MODE (tracker issue 279) ──────────────
+      # ── THE INPUT DECIDES THE CHANNEL, AND THE CHANNEL IS PRE MODE ──────────────────────────────────
       #
       # The channel is derived from the VERSION, and the version is decided by whether `.changeset/pre.json`
       # says this tree is in pre-release mode when `changeset version` runs. So the input has to put the
@@ -341,7 +341,7 @@ jobs:
           echo "::error::Nothing to cut: no release notes have accumulated since the last beta, so there is no version pull request to merge. Land a change carrying a note in .changeset/, then dispatch again."
           exit 1
 
-      # ── THE ARTEFACT DECIDES, NOT THE INTENT (tracker issue 279) ────────────────────────────────────
+      # ── THE ARTEFACT DECIDES, NOT THE INTENT ────────────────────────────────────────────────────────
       #
       # Everything above arranges for the right version to be computed. This checks that it WAS, by asking
       # the version itself rather than by trusting the arrangement — because the arrangement is what will
@@ -370,7 +370,7 @@ jobs:
             exit 1
           fi
 
-      # ── THE VERSION COMMIT ANSWERS THE SIGNATURE CHECK ITSELF (tracker issue 264) ───────────────────
+      # ── THE VERSION COMMIT ANSWERS THE SIGNATURE CHECK ITSELF ───────────────────────────────────────
       #
       # `cla` is a REQUIRED check on `main` and the version pull request could never satisfy it. Two
       # deliberate things combined to make that permanent:
@@ -470,7 +470,7 @@ jobs:
           fi
           echo "signature check answered on $HEAD_SHA (pull request $PR)"
 
-      # ONLY ON A DISPATCHED CUT (tracker issue 264). This step used to run on every push, which is what
+      # ONLY ON A DISPATCHED CUT. This step used to run on every push, which is what
       # made a beta come out of every merge. The pull request still opens and updates on every push — it
       # is the standing answer to "what would the next version be" — and it merges when a maintainer asks
       # for a cut, days apart, never on its own.
@@ -531,7 +531,7 @@ jobs:
       # reported that a push had cut `0.1.1-beta.0` when main still carried 0.1.0 and nobody had merged
       # anything — and the publish job started. It failed for an unrelated reason, which is the only thing
       # that stopped it.
-      # ── ASKED OF THE PUSH, NOT OF WHATEVER HEAD HAS BECOME (tracker issue 208) ─────────────────────
+      # ── ASKED OF THE PUSH, NOT OF WHATEVER HEAD HAS BECOME ─────────────────────────────────────────
       #
       # The changesets step above has already run `changeset version` AND COMMITTED the bump by the time
       # this runs, so HEAD carries the version branch's number while main carries the pushed one. Without
@@ -574,7 +574,7 @@ jobs:
         run: node scripts/release-version-pr-checks.mjs "${{ steps.changesets.outputs.pr-number }}"
 
 
-  # ── THE DETECTOR THAT CANNOT BE SKIPPED BY THE THING IT DETECTS (tracker issue 229) ────────────────
+  # ── THE DETECTOR THAT CANNOT BE SKIPPED BY THE THING IT DETECTS ────────────────────────────────────
   #
   # Three strandings, none self-reported, all the same shape: the job that notices a cut sitting on main
   # unpublished was downstream of the gate that stranded it, so every time it mattered it was `skipped`.
@@ -598,7 +598,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` (tracker issue 245) ──────────────────
+      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` ──────────────────────────────────────
       #
       # This checked out `ref: main` and then ran scripts from it. The workflow YAML comes from the ref
       # the run started on, so on a `workflow_dispatch` from a branch the file was the branch's and the
@@ -693,7 +693,7 @@ jobs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
     steps:
-      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` (tracker issue 245) ──────────────────
+      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` ──────────────────────────────────────
       #
       # This checked out `ref: main` and then ran scripts from it. The workflow YAML comes from the ref
       # the run started on, so on a `workflow_dispatch` from a branch the file was the branch's and the
@@ -740,7 +740,7 @@ jobs:
           CLEAROTRON_CUT_REF: origin/main
         run: node scripts/release-cut-decision.mjs
 
-  # ── THE WAIT, AS ITS OWN JOB SO IT CAN ACTUALLY ARM (tracker issue 208) ────────────────────────────
+  # ── THE WAIT, AS ITS OWN JOB SO IT CAN ACTUALLY ARM ────────────────────────────────────────────────
   #
   # It lived inside `version`, conditioned on `cut != 'true'`, and could not arm in the rhythm this
   # repository actually has: a version pull request self-merges firing nothing, the next push publishes
@@ -761,7 +761,7 @@ jobs:
   awaited:
     name: Wait for the version this cut asked for to merge itself
     needs: [version, publish]
-    # A DISPATCHED CUT ONLY, AND THE PUSH ARM IS WHY THIS COMMENT EXISTS (tracker issue 271).
+    # A DISPATCHED CUT ONLY, AND THE PUSH ARM IS WHY THIS COMMENT EXISTS.
     #
     # This job used to arm on a push whenever a version pull request stood, because a push was what armed
     # auto-merge and the pull request then merged itself minutes later. The cadence change removed that:
@@ -787,7 +787,7 @@ jobs:
     # pass nor a failure to anybody scanning the run. An arm couples the two numbers.
     # CONTAINS THE WAIT, WITH ROOM FOR THE CHECKOUT AND INSTALL ABOVE IT. `WAIT_MS` plus
     # `MIN_JOB_MARGIN_MS`, both in release-await-cut.mjs, is what an arm holds this budget above
-    # (tracker issue 247).
+    #.
     timeout-minutes: 35
     permissions:
       contents: read
@@ -798,7 +798,7 @@ jobs:
       # has become since — see tracker issue 238 and the guard in that job.
       sha: ${{ steps.awaited.outputs.sha }}
     steps:
-      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` (tracker issue 245) ──────────────────
+      # ── THE INSTRUMENT IS THIS REF; THE SUBJECT IS `main` ──────────────────────────────────────
       #
       # This checked out `ref: main` and then ran scripts from it. The workflow YAML comes from the ref
       # the run started on, so on a `workflow_dispatch` from a branch the file was the branch's and the
@@ -1013,7 +1013,7 @@ jobs:
           test -f "${{ steps.what.outputs.tarball }}"
 
       # THE PUBLISHED MANIFEST IS NOT THIS REPOSITORY'S MANIFEST, AND FIVE RELEASES SHIPPED AS THOUGH IT
-      # WERE (tracker issue 180). `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
+      # WERE. `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
       # for the unlicensed `buffers@0.1.1` while resolving THIS tree; npm's `$name` syntax resolves only
       # in a root project's own manifest, so a consumer installing this package as a dependency has
       # nothing to resolve it against and npm aborts the whole install. `npm install clearotron` failed
@@ -1280,7 +1280,7 @@ jobs:
       #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
       #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
       #    repository, which is the one thing this design forbids. One publish, one tag.
-      # ── IT PUBLISHES THE VERSION IT AWAITED, OR NOTHING (tracker issue 208) ────────────────────────
+      # ── IT PUBLISHES THE VERSION IT AWAITED, OR NOTHING ────────────────────────────────────────────
       #
       # This job checks out `main` AFTER a wait, so the tip it packs is whatever main carries by then —
       # which is the point, and also the risk: another merge can land in the window, and this would then
@@ -1402,7 +1402,7 @@ jobs:
           test -f "${{ steps.what.outputs.tarball }}"
 
       # THE PUBLISHED MANIFEST IS NOT THIS REPOSITORY'S MANIFEST, AND FIVE RELEASES SHIPPED AS THOUGH IT
-      # WERE (tracker issue 180). `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
+      # WERE. `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
       # for the unlicensed `buffers@0.1.1` while resolving THIS tree; npm's `$name` syntax resolves only
       # in a root project's own manifest, so a consumer installing this package as a dependency has
       # nothing to resolve it against and npm aborts the whole install. `npm install clearotron` failed

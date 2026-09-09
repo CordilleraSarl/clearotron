@@ -226,7 +226,7 @@ test("#1503 `graded` distinguishes the two zeroes at the source, not by guessing
   assert.equal(graded.findingsTotal, FINDINGS.findings.length);
 });
 
-// ── the could-not-read signal reaches a surface a lane reads (tracker issue 267) ──────────────────────
+// ── the could-not-read signal reaches a surface a lane reads ──────────────────────────────────────────
 //
 // This check was never broken. It reported, correctly and in writing, that the depth rules had been
 // enforced on NOTHING — and then that report sat as one row among fifty-odd in a lint receipt nothing

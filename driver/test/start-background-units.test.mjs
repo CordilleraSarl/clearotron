@@ -129,7 +129,7 @@ test("1863 the disarm runs BEFORE the enable, so the box never holds both draine
   // ANCHORED ON THE CALL, NOT ON THE LOOP AROUND IT — and both weaker anchors were tried and failed
   // here, which is worth writing down. It first matched `for (const u of BACKGROUND_UNITS) execFileSync`
   // and lost its subject when that loop grew a body, which it did when the enable step learned to catch
-  // a systemd refusal instead of throwing a stack trace (tracker issue 203). Matching the loop HEADER
+  // a systemd refusal instead of throwing a stack trace. Matching the loop HEADER
   // instead was worse: three loops in that file open with those exact words, `indexOf` found the first
   // — the one that renders the unit files, which is legitimately BEFORE the disarm — and the ordering
   // assertion failed over code that is correctly ordered.

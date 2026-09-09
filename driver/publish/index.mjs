@@ -1189,7 +1189,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
 
   const total = skipRegen ? null : regenIndex(poolRoot);
   if (!skipRegen) await regenSurfaces(poolRoot);
-  // THE PORTAL ROUTE, not the pool's directory layout (tracker issue 289). This was
+  // THE PORTAL ROUTE, not the pool's directory layout. This was
   // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
   // Composed rather than spelled here so the report link is built the same way the audit link always was.
   const url = reportRouteFor(poolUrl, runId);
@@ -1244,7 +1244,7 @@ export function accessNoteHtml(font, domain = config.accessDomain) {
  * the edge's own legacy-report regexp character for character, so this function admits exactly the URLs the
  * deployment admits and no others.
  */
-// ── TWO SHAPES, AND THE SECOND ONE IS HISTORY (tracker issue 289) ────────────────────────────────────
+// ── TWO SHAPES, AND THE SECOND ONE IS HISTORY ────────────────────────────────────────────────────────
 //
 // The block quoted above describes an edge rewrite that IS NOT IN FORCE ON PRODUCTION. Settled by the
 // account owner against the live deployment, signed in as a delivered run's own owner: the emailed link
@@ -1279,7 +1279,7 @@ export function auditRouteFor(origin, runId) {
 }
 
 /**
- * THE REPORT'S ROUTE, from an origin and a run id (tracker issue 289).
+ * THE REPORT'S ROUTE, from an origin and a run id.
  *
  * The delivered link used to be the pool's directory layout pasted behind the public origin —
  * `<origin>/<runId>/report.html` — which is where the documents sit on disk and is not an application

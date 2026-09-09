@@ -175,7 +175,7 @@ const blocking = (s) => { blockers.push(s); say(`  ${style.warn("!")} ${s}`); };
 // ── A FOURTH STATE, AND THE COMPOSITE EXIT CONTRACT IT COMPLETES ────────────────────────────────────
 //
 // `inertSetting` is for configuration the operator SET that the build does not read: a retired
-// spelling left behind by an upgrade (tracker issue 168), and anything else of that shape. It needed
+// spelling left behind by an upgrade, and anything else of that shape. It needed
 // its own state because neither existing one is honest about it.
 //
 //   `warn`     prints `!` and keeps rc 0 — but rc 0 is the exact reading that let thirteen ignored
@@ -190,10 +190,10 @@ const blocking = (s) => { blockers.push(s); say(`  ${style.warn("!")} ${s}`); };
 // ── THE CONTRACT, STATED ONCE BECAUSE TWO ISSUES IN ONE BUNDLE BOTH CHANGE IT ───────────────────────
 //
 // rc 1 means: SOMETHING THE OPERATOR SET IS NOT DOING WHAT THEY THINK IT IS DOING.
-//   · `problem`      — set wrongly. A credential present but unusable is this (tracker issue 173): the
+//   · `problem`      — set wrongly. A credential present but unusable is this: the
 //                      file exists, doctor called it enrolled, and the report then disclosed an outage
 //                      that never happened.
-//   · `inertSetting` — set, and not read at all (tracker issue 168).
+//   · `inertSetting` — set, and not read at all.
 // rc 0 means: nothing set is being ignored or misapplied. An ABSENCE stays rc 0 — a fresh machine is
 // not a broken one, and `blocking` exists so an absence that stops the product is still said out loud.
 //
@@ -316,7 +316,7 @@ const prose = (...parts) => { for (const l of wrapProse(parts.join(" "), proseWi
  * @returns {"no-sources"|"unbuilt"|"unversioned"|"guarded"|"tracked-unguarded"|"unmeasured"|"current"|"stale"}
  */
 // `bundleFreshness` and its three readers moved to `shared/bundle-freshness.mjs` when `/portal/health`
-// became a second caller (tracker issue 160): health answered `ui: "built", ok: true` over a tree this
+// became a second caller: health answered `ui: "built", ok: true` over a tree this
 // command refuses at rc 1, because the two surfaces each had their own idea of what a usable bundle is.
 // One definition, both readers, so they cannot disagree again.
 
@@ -565,7 +565,7 @@ export async function offerUsptoSync(dbPath, io, deps = {}) {
 // sales-gated. It used to open with the free tier, and a test asserted that it must — an assertion that
 // argued a case the ADR had already answered. The reasoning is in ADR-0001 and in providers/README.md,
 // which is the canonical statement; this list carries no competing recommendation of its own.
-// ── THE REGISTER SELECTION TABLE MOVED TO `shared/register-selection.mjs` (tracker issue 216) ───────
+// ── THE REGISTER SELECTION TABLE MOVED TO `shared/register-selection.mjs` ───────────────────────────
 //
 // Re-exported here under the name every existing reader uses — this file's own call sites read
 // `PROVIDERS`, and so does the run-requirements arm. It moved because the runner's intake wall and the
@@ -763,7 +763,7 @@ export function engineOptions() {
 export function readEnvFile(path, { home = homedir() } = {}) {
   if (!existsSync(path)) return {};
   const env = {};
-  // NAMED, NOT INFERRED (tracker issue 179). This passed `repoRoot: dirname(path)` and relied on the
+  // NAMED, NOT INFERRED. This passed `repoRoot: dirname(path)` and relied on the
   // loader's resolution happening to land back on the same directory. It did — through the LEGACY
   // fallback, and only while the reader had no `~/.config/clearotron/.env` of their own. With one, this
   // function returned THAT file's contents for any path it was given, including a temporary fixture.
@@ -1076,7 +1076,7 @@ export async function runCheck() {
     warn(`could not tell whether running programs are on the current tree: ${running.detail}`);
   }
 
-  // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE (tracker issue 193) ──────────
+  // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE ──────────────────────────────
   //
   // The block above asks whether a process predates this checkout's last move. This asks whether it is
   // executing a DIFFERENT checkout entirely, which is what `clearotron connect` used to cause silently
@@ -1179,7 +1179,7 @@ export async function runCheck() {
         home: homedir() })
     : null;
 
-  // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION (tracker issue 226) ──────────────────────────
+  // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION ──────────────────────────────────────────────
   //
   // The reading above was hoisted here from further down for this. It used to be resolved BELOW the
   // door check, so the one section making the loudest claim about the running service — "NOBODY can
@@ -1455,7 +1455,7 @@ export async function runCheck() {
   }
 
   say("\n  .env");
-  // ── THE FILE MOVED, SO ASK THE SAME QUESTION THE LOADER ASKS (tracker issue 159) ─────────────────
+  // ── THE FILE MOVED, SO ASK THE SAME QUESTION THE LOADER ASKS ─────────────────────────────────────
   //
   // `.env` now resolves to `~/.config/clearotron/.env`, and an install configured before that ruling has
   // it at the old path, where the loader still reads it. Doctor reporting "no .env" over a file every
@@ -1539,7 +1539,7 @@ export async function runCheck() {
       const mod = await import(`../driver/profiles.mjs?doctor=${Date.now()}`);
       const r = mod.profileStoreResolution();
       const where = `profiles resolve from ${r.store}`;
-      // ── ON A HOSTED BOX THE SERVICES' ANSWER COMES FIRST (tracker issue 223) ────────────────────────
+      // ── ON A HOSTED BOX THE SERVICES' ANSWER COMES FIRST ────────────────────────────────────────────
       //
       // One run of this command reported the SAME variable as both set and unset, and concluded a
       // production box was a demo install:
@@ -1666,7 +1666,7 @@ export async function runCheck() {
       // a named disagreement instead of as a tenancy refusal a reader will read as a permissions problem.
       try {
         const cs = await import(`../shared/customer-store.mjs?doctor=${Date.now()}`);
-        // ── ONE ENVIRONMENT ON BOTH SIDES, AND THE LINE SAYS WHICH (tracker issue 223) ────────────────
+        // ── ONE ENVIRONMENT ON BOTH SIDES, AND THE LINE SAYS WHICH ────────────────────────────────────
         //
         // This compared a surface resolved from THIS PROCESS's environment against a roster resolved
         // from this process's module load — so on a hosted box it certified agreement between two
@@ -1683,7 +1683,7 @@ export async function runCheck() {
             + `${split.surface}, runs: ${split.roster}. A brand owner in one and not the other is refused `
             + `by the surface with a tenancy message, which reads as a permissions problem and is not one.`);
         } else {
-          // ── WHAT THIS ✓ CERTIFIES, AND WHAT IT CANNOT (tracker issue 223) ──────────────────────────
+          // ── WHAT THIS ✓ CERTIFIES, AND WHAT IT CANNOT ──────────────────────────────────────────────
           //
           // Both sides derive from `CLEAROTRON_CUSTOMERS_DIR`, which is what 1923 settled — so this
           // cannot catch two environments disagreeing, and reading it as "production is configured"
@@ -1723,7 +1723,7 @@ export async function runCheck() {
   try {
     const report = overlayReport({ baseRoot: config.skillsBaseDir, overlayRoot: config.skillsOverlayDir });
     for (const line of renderOverlayReport(report, { indent: "" })) say(`  ${line}`);
-    // ── AND THE SERVICES MAY HAVE ONE THIS PROCESS CANNOT SEE (tracker issue 223) ───────────────────
+    // ── AND THE SERVICES MAY HAVE ONE THIS PROCESS CANNOT SEE ───────────────────────────────────────
     //
     // `config.skillsOverlayDir` resolves from this process's environment. On a production box that
     // printed "none configured — this install overrides nothing" while CLEAROTRON_INSTRUCTIONS_DIR was
@@ -1825,7 +1825,7 @@ export async function runCheck() {
       // other search is unaffected — so it is a `warn`, which says it out loud and leaves the exit code
       // alone. Nothing here can be misconfigured: there is no variable to get wrong.
       //
-      // ── AND A PRESENT-BUT-BROKEN CREDENTIAL IS NEITHER (tracker issue 173) ─────────────────────
+      // ── AND A PRESENT-BUT-BROKEN CREDENTIAL IS NEITHER ─────────────────────────────────────────
       //
       // It is a MISCONFIGURATION: the operator enrolled, the file is there, and it cannot work. That
       // exits non-zero under this command's contract, and it must not be filed under the absence rule
@@ -1930,7 +1930,7 @@ export async function runCheck() {
     blocking(`the portal bundle could not be read — ${e.message} — so whether /portal can render is unknown`);
   }
 
-  // ── THE TRIGGER KEY, AND THE DEADLINE NOBODY WAS COUNTING (tracker issue 161) ────────────────────
+  // ── THE TRIGGER KEY, AND THE DEADLINE NOBODY WAS COUNTING ────────────────────────────────────────
   //
   // A `--background` install stores the portal's trigger key in `~/.env`, the file the units load, and
   // it is minted with a thirty-day life. Nothing counted it down. Thirty days after an install, on a
@@ -2000,7 +2000,7 @@ export async function runCheck() {
     // The reading is still worth printing — it is what a hand-run process here would use, and it is
     // what `clearotron start` would launch from. It is stated as that, and the sentence below says
     // where the running answer lives.
-    // NAMED, NOT CAVEATED (tracker issue 226). This used to disclaim itself — "what THIS environment
+    // NAMED, NOT CAVEATED. This used to disclaim itself — "what THIS environment
     // implies, not what the running service serves" — directly above a ✗ that asserted a lockout on the
     // live box. The values now come from the file the service actually loads, so the line says which
     // file that was and the verdicts below stand on it.
@@ -2047,7 +2047,7 @@ export async function runCheck() {
     // this command's whole contract.
     try {
       const { makePrincipal } = await import("../driver/portal-access.mjs");
-      // ASKED OF THE SERVICE'S OWN ENVIRONMENT (tracker issue 226). Reading this command's file here is
+      // ASKED OF THE SERVICE'S OWN ENVIRONMENT. Reading this command's file here is
       // what produced a hard ✗ claiming nobody could use a portal that was admitting its operator as
       // staff on every request.
       const staffDomains = String(effectiveForService("PORTAL_STAFF_DOMAINS")?.v ?? "")
@@ -2061,7 +2061,7 @@ export async function runCheck() {
       const rows = Object.values(grants?.tenants ?? {})
         .reduce((n, t) => n + Object.keys(t?.users ?? {}).length, 0);
 
-      // A FAILURE TO LOOK IS NOT A LOCKOUT (tracker issue 226). On a hosted box whose unit environment
+      // A FAILURE TO LOOK IS NOT A LOCKOUT. On a hosted box whose unit environment
       // could not be read, every name above resolves empty — which is indistinguishable from a box that
       // has genuinely configured nothing, and would print the loudest ✗ in this command on no evidence.
       if (!serviceKnown) {
@@ -2478,7 +2478,7 @@ export async function runCheck() {
         // returns null when the header is absent — a looked-and-none answer, not a did-not-look — and
         // the readers separate those, so a probe that omits the field reads as never-looked rather
         // than silently as "no challenge".
-        // THE REDIRECT TARGET TRAVELS WITH IT (tracker issue 241). This request is already made with
+        // THE REDIRECT TARGET TRAVELS WITH IT. This request is already made with
         // `redirect: "manual"`, so the Location an unauthenticated caller is handed is right here —
         // and it is where Cloudflare Access puts the audience. Reading it from THIS response rather
         // than asking a second time keeps `doctor` to one request per address, and keeps both answers
@@ -2492,7 +2492,7 @@ export async function runCheck() {
     else if (reach.state === "fail") problem(reach.message);
     else info(reach.message);
 
-    // ── AND IS IT THE AUDIENCE THIS INSTALL CHECKS AGAINST? (tracker issue 241) ───────────────────
+    // ── AND IS IT THE AUDIENCE THIS INSTALL CHECKS AGAINST? ───────────────────────────────────────
     //
     // The other half of the recreation trap, and the half with no symptom of its own. Deleting and
     // recreating an Access application changes the audience; the existing warning fires on the
@@ -3449,7 +3449,7 @@ try {
   // 9 ── write, atomically
   say("\n  Writing configuration");
   // THE DIRECTORY MAY NOT EXIST, and on a fresh machine it does not. `.env` now lives under
-  // `~/.config/clearotron/` (tracker issue 140), which nothing else creates — and the failure without
+  // `~/.config/clearotron/`, which nothing else creates — and the failure without
   // this line lands on the temporary file below, so it reads as a permissions problem writing `.env`
   // rather than a missing folder. Mode 700: the file inside is 600 and holds credentials, so a
   // world-readable directory around it advertises that it is there.
@@ -3558,7 +3558,7 @@ try {
   say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job examples/job.euipo.json\` runs a first real clearance on the EU register.`)}`);
   say(`  ${style.dim("Each still works the old way too — `npm start`, `npm run example`, `node driver/pipeline.mjs`.")}\n`);
 
-  // WHY THOSE LINES LOOK THE WAY THEY DO, when they are not the bare verb (Refs tracker issue 1916).
+  // WHY THOSE LINES LOOK THE WAY THEY DO, when they are not the bare verb.
   //
   // A login profile adds `~/.local/bin` to PATH only if the directory existed when the shell started,
   // so the shim written seconds ago is usually absent from THIS terminal's PATH and arrives at the next

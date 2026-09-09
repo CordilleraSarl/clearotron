@@ -348,7 +348,7 @@ const POLICY_RETIRED_KO = { ...POLICY_KNOCKOUT, level: "knockout", stageLabel: "
 const POLICY_RETIRED_KOREG = { ...POLICY_KNOCKOUT, level: "knockout-register", stageLabel: "Depth 2" };
 
 test("#463: names-configured-depth checks the name the renderers print, on a retired row too", () => {
-  // The line the knockout renderer actually emits for this level — `.identity`, no rung (tracker issue 463).
+  // The line the knockout renderer actually emits for this level — `.identity`, no rung.
   withRun({ "_driver/search-policy.json": POLICY_RETIRED_KO, "report.html": "<b>Knockout review</b> — screens each name" }, (dir) => {
     const r = evalAssertion({ op: "names-configured-depth", path: "report.html" }, dir);
     assert.equal(r.ok, true, r.saw);
@@ -552,7 +552,7 @@ test("a degraded lane and a non-delivered terminal state are each flagged", () =
     st: { state: "failed", failedStage: "knockout-frame", reason: "status_overloaded" },
     attempts: [{ stage: "knockout-frame", attempt: 1, wall: 206, fail: "status_overloaded" }],
     // rows now name their own KIND — units degrade for different reasons than lanes do, so the
-    // "lane degraded —" prefix investigate() used to hardcode would mislabel every unit row (tracker issue 525)
+    // "lane degraded —" prefix investigate() used to hardcode would mislabel every unit row
     degraded: ['lane zh: ANTHROPIC_API_KEY absent from driver env (accepted 0)'],
   });
   assert.ok(flags.some((f) => /degraded — lane zh/.test(f)));

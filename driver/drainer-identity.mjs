@@ -86,7 +86,7 @@ export const DRAINER_CMD = /\b(runner\.mjs|clearotron[^\s]*\s+start)\b/;
  * @returns {{state: "pass"|"fail"|"warn", message: string}}
  */
 export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf = null, posture = null }) {
-  // ── WHICH POSTURE IS THIS BOX IN, and say it out loud whatever the answer (tracker issue 206).
+  // ── WHICH POSTURE IS THIS BOX IN, and say it out loud whatever the answer.
   //
   // Only ONE branch below changes state on it — a stamped drainer whose process is gone. That is the
   // state the ruling is about: between ticks on a scheduled box, and nothing is executing runs on a

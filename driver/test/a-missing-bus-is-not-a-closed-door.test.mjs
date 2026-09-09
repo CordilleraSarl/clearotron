@@ -121,7 +121,7 @@ test("no read site asks systemd directly, which is how this defect arrived", () 
   // TWO SPELLINGS OF ONE FACT, and the named one is now the definition. `CAPTURE_STDERR` in
   // shared/systemd-failure.mjs IS `stdio: ["ignore", "ignore", "pipe"], encoding: "utf8"` — the arm
   // below holds it to that, so widening here cannot be satisfied by a constant that stopped piping.
-  // Matching only the literal made this guard fire on a call that had lost nothing (tracker issue 203).
+  // Matching only the literal made this guard fire on a call that had lost nothing.
   const captures = (line) => /stdio: \["ignore", "ignore", "pipe"\]/.test(line) || /\.\.\.CAPTURE_STDERR/.test(line);
   const wrapped = direct.filter(({ line }) => captures(line) && /env: userBusEnv\(\)/.test(line));
   const bare = direct.filter((d) => !wrapped.includes(d));

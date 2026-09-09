@@ -482,7 +482,7 @@ test("the report prints the figures as their own section, and the model's guess 
 
   // THE STAFF NOTE IS ON THE PAGE SINCE 2026-09-07, and this arm used to assert the opposite
   // (`doesNotMatch(/Register search pending/)`). The owner ruled that there is one report and the person
-  // who ran Clearotron reads it, so notes written for the reviewer belong on it (tracker issue 274). The
+  // who ran Clearotron reads it, so notes written for the reviewer belong on it. The
   // two halves of the old rule came apart: the ESTIMATE is still off the page — it is a guess sitting
   // beside a measurement of the same thing — and the NOTE is on it.
   //

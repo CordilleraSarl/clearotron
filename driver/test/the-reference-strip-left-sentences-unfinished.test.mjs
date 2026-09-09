@@ -48,7 +48,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const TABLE = JSON.parse(readFileSync(join(ROOT, "driver/test/fixtures/reference-strip-backlog.json"), "utf8"));
 
 const GUARD = "reference-strip-backlog";
-// Through the helper (tracker issue 235): `null` is a stated skip, not an empty corpus. An empty one
+// Through the helper: `null` is a stated skip, not an empty corpus. An empty one
 // here would read as a repaired tree — every count zero, the floor satisfied — which is the precise
 // failure the backlog table exists to make impossible.
 const tracked = () => trackedFiles(GUARD, { root: ROOT });

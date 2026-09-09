@@ -440,7 +440,7 @@ test("223 the agreement line says which environment it compared, and what it can
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-// ── WHICH ACCOUNTS DOCTOR SAYS THIS INSTALL HAS (tracker issue 342) ─────────────────────────────────
+// ── WHICH ACCOUNTS DOCTOR SAYS THIS INSTALL HAS ─────────────────────────────────────────────────────
 //
 // Measured on a fresh 0.2.2 install: `1 brand owner(s) resolve here: demo-brand-owner (DEMO DATA)`, and
 // `generic` named nowhere. Both halves wrong from one list. The demo account ships, so it resolved; it

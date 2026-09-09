@@ -256,7 +256,7 @@ export { romanizationRefusal, romanizationSpellings };
 // The jx model calls (fold completions, serp-judge, nativeread) are the ONLY dispatches in the driver
 // that produce a per-token provider invoice. This comment used to name their executor as a
 // `@anthropic-ai/sdk` Messages call; that has not been true since the lane lost its own destination
-// and credential, and the SDK is no longer a dependency of this product at all (tracker issue 99).
+// and credential, and the SDK is no longer a dependency of this product at all.
 // The lane goes wherever the run's resolved program goes — the CLI opens every connection, and no
 // driver code calls a provider — so one run never mixes a subscription login with an API key. What
 // survives unchanged is the BILLING distinction this block is about: these calls land on a per-token

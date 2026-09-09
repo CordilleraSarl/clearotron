@@ -1502,7 +1502,7 @@ function evalAssertion(a, runDir) {
 //
 // Three states, not two: "cannot tell" is reported as itself rather than as breakage, because
 // systemctl --user needs XDG_RUNTIME_DIR and a plain `sudo -u <user> node …` does not set it.
-// ── IT ASKS ABOUT THE WORKER FIRST, BECAUSE THE WORKER IS THE DRAIN (tracker issue 181) ────────────
+// ── IT ASKS ABOUT THE WORKER FIRST, BECAUSE THE WORKER IS THE DRAIN ────────────────────────────────
 //
 // This function knew only about `prelim-driver.timer` and `prelim-driver.path` — the two RETIRED units.
 // On a deployment drained by `clearotron-worker.service` it therefore found neither, concluded nothing
@@ -1908,7 +1908,7 @@ async function cmdRun(id) {
   console.log(`\n${queuedIds.length} job(s) queued across ${doors.length} door(s)${
     queuedIds.some((x) => !x) ? ` — ${queuedIds.filter((x) => !x).length} did not report an id` : ""
   }. The QUEUE is the source of truth for what is in flight; watch it, not this list.`);
-  // THE COMMAND IS PRINTED ONLY WHEN NO DRAINER HOLDS THIS QUEUE (tracker issue 181), and the unit it
+  // THE COMMAND IS PRINTED ONLY WHEN NO DRAINER HOLDS THIS QUEUE, and the unit it
   // names is the one this deployment actually uses. It used to be printed on the strength of two RETIRED
   // units being inactive, which on a worker-drained box meant telling the operator to start a second
   // drainer beside a running one. Suggesting a second drainer is the failure here, not the absence of a

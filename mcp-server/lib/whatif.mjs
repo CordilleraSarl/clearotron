@@ -80,7 +80,7 @@ function completeness(stage) {
 /** whatIfPlan — pure dry-run. run = resolved Run ({runId, slug, codename, agent, runDir, P, status, location}). */
 export function whatIfPlan({ run, stage, axis = null, instructions = null, model = null, kind = "stage" }) {
   if (!run) throw new Error("whatIfPlan: run is required");
-  // ── PLANNING A MEMO (tracker issue 132) ────────────────────────────────────────────────────────
+  // ── PLANNING A MEMO ────────────────────────────────────────────────────────────────────────────
   //
   // Without this branch the memo capability is COMPOSED AND UNREACHABLE. whatif-memo.mjs composes one,
   // whatIfRefusal already admits `kind: "memo"` on a finished run, and decodeOp already validates a memo
@@ -220,7 +220,7 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   const run = resolveRun(runId);
   if (!run) throw new Error(`whatIfRun: run "${runId}" not found.`);
 
-  // ── A MEMO IS NOT A STAGE RE-RUN, AND THIS IS THE DOOR IT WAS MISSING (tracker issue 132) ────────
+  // ── A MEMO IS NOT A STAGE RE-RUN, AND THIS IS THE DOOR IT WAS MISSING ────────────────────────────
   //
   // Every piece of the memo capability existed and nothing reached it. whatIfPlan mints the token,
   // decodeOp validates it on its own terms, whatIfEnqueue queues it and answers the client
@@ -273,7 +273,7 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   if (deriveSlug(job) !== run.slug)
     throw new Error(`whatIfRun: cannot reconstruct the job for ${runId} (derived slug "${deriveSlug(job)}" != "${run.slug}"). status.json lacks the original ref/markName.`);
 
-  // ── THE RATING AUTHORITY TRAVELS WITH THE JOB (tracker issue 135) ──────────────────────────────
+  // ── THE RATING AUTHORITY TRAVELS WITH THE JOB ──────────────────────────────────────────────────
   //
   // The reconstruction above carries six fields and resolveProfile keys on none of them. It reads
   // `job.profileKey` first, then falls back to `job.forwarderDomain`; the job has `forwarder` but not

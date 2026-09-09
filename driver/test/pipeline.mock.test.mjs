@@ -394,7 +394,7 @@ test("#250 zero semantics: a settled frame, a frame nobody asked about, and a sw
   assert.notDeepEqual(shape(a), shape(c), "settled ≠ swept");
   assert.notDeepEqual(shape(b), shape(c), "never-asked ≠ swept");
 
-  // …and wherever the question IS asked, it is answered BEFORE the one placement dispatch (tracker issue 250)
+  // …and wherever the question IS asked, it is answered BEFORE the one placement dispatch
   for (const { events } of [clean, reopened]) {
     const fdIdx = events.findIndex((e) => e.event === "frame-diff");
     const plIdx = events.findIndex((e) => e.event === "stage" && e.stage === "placement-inquiry");
@@ -1021,7 +1021,7 @@ test("senior-right closure: an UNREACHABLE senior right → plain-English open i
 test("repair-first A4: one malformed finding object is REFUSED AT THE CALL and restated — the run delivers", async () => {
   // MOCK_BAD_FINDING plants an invented key in finding #1 (finding_key_unknown).
   //
-  // RE-AIMED, NOT RELAXED (tracker issue 1893). This asserted a driver-orchestrated repair: the bad
+  // RE-AIMED, NOT RELAXED. This asserted a driver-orchestrated repair: the bad
   // object reached disk, a validator named it, and the driver re-dispatched synthesis with a composer
   // that NAMED the object — `finding-reemit`. The writer's conversion moves the catch EARLIER: the
   // record is validated at the call, so the malformed object is refused before anything is written and
@@ -1255,7 +1255,7 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
   const s = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
   assert.equal(s.state, "delivered");
   assert.equal(s.verdict, "CLEAR");
-  // THE RUN'S OWN URL IS THE PORTAL ROUTE (tracker issue 289). This asserted `/report\.html$` — the
+  // THE RUN'S OWN URL IS THE PORTAL ROUTE. This asserted `/report\.html$` — the
   // pool's directory layout, which is where the documents sit on disk and is not an application route.
   // The link shipped on every delivered report and, on production, opened the portal's own
   // `{"error":"not_found"}` for the run's OWN owner.
@@ -2225,7 +2225,7 @@ async function resumedUnsplitRun(extra = {}) {
 test("A1 split: the merged canonical ledger accounts for exactly the DICTATED grid (cells/gaps/pr_risk)", async () => {
   const split = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   assert.equal(split.res.ok, true, JSON.stringify(split.res));
-  // member shape: the two grid halves AND the meaning seat (tracker issue 517) — never the single member
+  // member shape: the two grid halves AND the meaning seat — never the single member
   const clStages = stageOrder(split.events).filter((s) => s.startsWith("common-law"));
   assert.deepEqual(clStages.sort(), ["common-law-half:a", "common-law-half:b", `common-law-half:${MEANING_SEAT}`].sort(),
     "split gather = two grid halves + the meaning seat");
@@ -2822,7 +2822,7 @@ test("#979 selector/record disagreement FAULTS, and the record is written BEFORE
 test("#1101: a malformed ACTION gets its own named re-emit and the run recovers — it used to exhaust", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_ACTIONS: "condition-broken" });
   assert.equal(res.ok, true, `the run should recover through the action re-emit: ${JSON.stringify(res)}`);
-  // RE-AIMED (tracker issue 1893): the action-shaped defect is refused at the call now, so there is no
+  // RE-AIMED: the action-shaped defect is refused at the call now, so there is no
   // `action-reemit` and no warm re-dispatch to observe — the seat restates in the same turn. Everything
   // this arm is FOR is asserted below and unchanged: the run recovers, the condition survives, and the
   // verdict it gates is still CONDITIONAL.
@@ -2844,7 +2844,7 @@ test("#1101: a malformed ask_answers entry gets its OWN named re-emit — the la
   // dropped one ships a question the client committed at intake unanswered: worth a repair, not a shrug.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_ASK_ANSWER_BAD: "1" });
   assert.equal(res.ok, true, `the run should recover through the ask_answers re-emit: ${JSON.stringify(res)}`);
-  // RE-AIMED (tracker issue 1893): refused at the call, restated in the same turn, so there is no
+  // RE-AIMED: refused at the call, restated in the same turn, so there is no
   // `ask-answer-reemit` and no warm re-dispatch. The subject is unchanged and is asserted below — a
   // dropped ask_answer ships a question the client committed at intake UNANSWERED, and that is what
   // must not happen however the defect is caught.

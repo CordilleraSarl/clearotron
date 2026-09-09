@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The connector OFFERS the memo, and offers it to the audience whose door serves it (tracker issue 315).
+// The connector OFFERS the memo, and offers it to the audience whose door serves it.
 //
 // WHAT WAS WRONG. The memo engine was finished and verified. The assistant briefing never mentioned it,
 // so the capability shipped dark: an assistant reading the account pack was told "a what-if re-runs one

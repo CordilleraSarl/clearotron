@@ -3,7 +3,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
 // Mints `driver/test/fixtures/reference-strip-backlog.json` — the per-file floor under the repair of
-// the sentences the reference strip broke (tracker issue 185).
+// the sentences the reference strip broke.
 //
 // Run it AFTER repairing lines, never to make a red arm green: the arm it feeds refuses any count that
 // went UP, so re-minting is how a repair is recorded, not how a regression is absorbed.

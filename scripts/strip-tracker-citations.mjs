@@ -68,6 +68,42 @@ const APPLY = process.argv.includes("--apply");
 // survives the replacement.
 export const OPENER = /((?:^|["'`(\[]|\/\/|\/\*|#|\*|·|──)\s*)(?:refs\s+)?tracker issues?\s+\d+\s*[—:–-]\s+/i;
 
+// ── THE SECOND MECHANICAL CASE: A CITATION STANDING BESIDE A SENTENCE, IN PARENTHESES ──────────────
+//
+// Measured before it was written, because "the sweep is nearly done" was false: two openers were left
+// and seven hundred and fifty citations were not openers at all. Of those, three hundred and twenty-one
+// sit in parentheses that hold the citation AND NOTHING ELSE, which makes them a label beside a
+// sentence rather than part of it — the same shape as an opener, wearing brackets.
+//
+// ONLY WHEN THE BRACKETS HOLD NOTHING ELSE, and that is the whole of the narrowing. Sixty-eight of them
+// read "(tracker issue 264, owner's ruling 2026-09-07)" or "(tracker issue 208 / tracker issue 229)",
+// where the brackets carry a ruling, a date or a second citation. Removing those brackets deletes
+// content, so they are not mechanical and they go to the reader with the rest. A pattern wide enough to
+// take them would be a pattern that deletes rulings.
+//
+// AND THE DRAWN RULE IS KEPT THE LENGTH IT WAS. A hundred and six of them sit in a box heading —
+// `// ── WHAT THIS DOES (tracker issue 279) ─────────` — where removing twenty characters leaves the
+// rule twenty short and the heading ragged against every other heading in the file. Every one measured
+// uses U+2500 and sits in a .mjs or .yml comment, so there is no markdown `---` to mistake for a rule.
+// The replacement re-pads by exactly what it removed, which keeps the line the length it was and makes
+// the diff say "the citation left" rather than "this heading was reflowed".
+export const PARENTHETICAL = /[ \t]*\(\s*(?:refs\s+)?tracker issues?\s+\d+\s*\)/i;
+
+/**
+ * Remove a bracketed citation, keeping a trailing drawn rule as long as it was. PURE.
+ *
+ * Returns the line unchanged when the brackets hold anything besides the citation, which is the case
+ * the pattern above already declines to match.
+ */
+export function stripParenthetical(line) {
+  if (!PARENTHETICAL.test(line)) return line;
+  const was = line.length;
+  const out = line.replace(PARENTHETICAL, "");
+  const rule = /─+$/.exec(out);
+  if (!rule) return out;
+  return out.slice(0, rule.index) + "─".repeat(rule[0].length + (was - out.length));
+}
+
 // Any remaining citation, mechanical or not. The difference between this count and the opener count is
 // the hand-off: a citation inside a sentence cannot be removed without rewriting the sentence around it.
 export const ANY_CITATION = /\btracker issues?\s+\d+/i;
@@ -110,7 +146,8 @@ export function surveyOf(files, read) {
     // the hand-off list a person is told to read — its survivor was invisible in the one place it should
     // have been named. Test the RESULT: a line can be both stripped and still owed to a reader.
     const out = text.split("\n").map((line, i) => {
-      const after = OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;
+      const opened = OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;
+      const after = PARENTHETICAL.test(opened) ? (n++, stripParenthetical(opened)) : opened;
       if (ANY_CITATION.test(after)) handoff.push({ file: f, line: i + 1, text: after.trim() });
       return after;
     });

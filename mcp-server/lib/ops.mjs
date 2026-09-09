@@ -208,7 +208,7 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
   notCarried: Object.freeze({
     registerFixtures: "a run that reads canned register payloads instead of calling a register. This door "
       + "starts real work for staff and agents; a fixture round is composed as job files by the e2e harness, "
-      + "which writes the field directly rather than asking this tool for it (tracker issue 2038).",
+      + "which writes the field directly rather than asking this tool for it.",
     promptParts: "the requester's declaration that the prose rides as SIDECAR files. This door assembles from "
       + "structured tool input and writes no sidecars, so a job it built cannot be in that shape. Carrying it "
       + "would make the manifest claim an intake it did not use, and the manifest check would then report sidecars "

@@ -347,7 +347,7 @@ export function caseLawInventory(env = process.env) {
       // in to from one that is simply part of the build.
       enrolment: "oauth",
       configured,
-      // THE THIRD STATE, WHICH `configured` CANNOT HOLD (tracker issue 173). `configured` is a boolean
+      // THE THIRD STATE, WHICH `configured` CANNOT HOLD. `configured` is a boolean
       // and the world has three cases in it: never enrolled, enrolled and usable, enrolled and NOT
       // usable. Collapsing the third into either of the others is the defect — into the first it
       // reads as "not set up" and hides a credential the operator believes in; into the second it

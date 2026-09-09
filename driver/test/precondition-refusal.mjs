@@ -46,7 +46,7 @@ export function requiresTheSuiteRunner(what) {
   if (missing.length === 0) return;
   throw new Error(
     `REFUSING TO RUN — ${what} needs environment this invocation did not supply, so it would fail as a `
-    + "wrong answer about the product rather than as an absent precondition (tracker issue 2030).\n\n"
+    + "wrong answer about the product rather than as an absent precondition.\n\n"
     + missing.map(([k, why]) => `  missing  ${k}\n           ${why}`).join("\n")
     + "\n\n  Run it through the suite runner, which supplies them:\n"
     + "      node scripts/test-run.mjs node --test <this file>\n"
@@ -103,7 +103,7 @@ export function refuseOnPreRunFailure(outboxDir, what) {
   throw new Error(
     `REFUSING TO READ THIS AS A RESULT — ${what}: the runner refused before any run started, so every `
     + "assertion below would measure an absent precondition and report it as a product defect "
-    + "(tracker issue 2030).\n\n"
+    + ".\n\n"
     + `  ${failed.length} job(s) parked pre-run, with the runner's own reason:\n`
     + (reasons.length
       ? reasons.map((r) => `      ${r}`).join("\n")

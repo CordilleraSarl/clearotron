@@ -646,7 +646,7 @@ function print(id, ref, run, s, delta, refPath) {
     for (const c of B.collisions)
       console.log(`    · ${c.owner}: reference "${c.entry}" is ${c.bucket}, surfaced "${c.noise}" is noise`);
   }
-  // ── SAME PROPRIETOR, DIFFERENT MARKS — REPORTED, NEVER SUPPRESSING (tracker issue 249) ───────────
+  // ── SAME PROPRIETOR, DIFFERENT MARKS — REPORTED, NEVER SUPPRESSING ───────────────────────────────
   //
   // These used to print under the line above, which tells the reader not to read the recall numbers.
   // One large filer anywhere in a matter therefore suppressed a whole run's measurement, and did: R2's

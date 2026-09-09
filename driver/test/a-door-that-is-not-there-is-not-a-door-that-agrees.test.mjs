@@ -279,7 +279,7 @@ test("241 doctor does not call a stale audience healthy when the two agree", asy
   } finally { edge.close(); }
 });
 
-// ── THREE DOORS, NOT ONE (tracker issue 251) ───────────────────────────────────────────────────────
+// ── THREE DOORS, NOT ONE ───────────────────────────────────────────────────────────────────────────
 //
 // `not-fronted` was returned for every response with no redirect. Measured against production's four
 // configured hostnames, that one label covered three materially different states — and called the

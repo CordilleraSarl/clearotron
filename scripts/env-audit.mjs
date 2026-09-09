@@ -244,7 +244,7 @@ export const SYSTEM_OWNED = new Set([
   // pushed back is right to have made this an explicit decision rather than an omission: they ARE read
   // by product code, and the only honest answers were a row or this list.
   "NO_COLOR", "FORCE_COLOR",
-  // ── THE GITHUB ACTIONS RUNTIME (tracker issue 213) ──────────────────────────────────────────────
+  // ── THE GITHUB ACTIONS RUNTIME ──────────────────────────────────────────────────────────────────
   //
   // `CI` above is already here for exactly this reason; these two arrived with the release scripts and
   // want the same answer. GitHub sets both INSIDE a workflow run — `GITHUB_OUTPUT` is the step-output

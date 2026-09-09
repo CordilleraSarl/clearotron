@@ -72,7 +72,7 @@ export function audienceLabel(aud) {
   return list.map((a) => `${String(a).slice(0, 8)}…`).join(",");
 }
 
-// ── THE AUDIENCE THE EDGE ISSUES, AS OPPOSED TO THE ONE THIS INSTALL EXPECTS (tracker issue 241) ───
+// ── THE AUDIENCE THE EDGE ISSUES, AS OPPOSED TO THE ONE THIS INSTALL EXPECTS ───────────────────────
 //
 // Everything above reads LOCAL configuration. What follows reads the EDGE, so `doctor` can compare the
 // two — the half of the recreation trap with no symptom of its own. Deleting and recreating a
@@ -133,7 +133,7 @@ const ACCESS_RESOURCE_RE = /cloudflare-access-protected-resource/i;
 
 export function readAudience({ location = "", status = null, error = null, wwwAuthenticate = "", viaEdge = false } = {}) {
   if (error) return { kind: "unreachable", why: String(error?.message ?? error).slice(0, 200) };
-  // ── THREE DOORS, NOT ONE (tracker issue 251) ────────────────────────────────────────────────────
+  // ── THREE DOORS, NOT ONE ────────────────────────────────────────────────────────────────────────
   //
   // This returned `not-fronted` for every response with no redirect, and measured against production's
   // four configured hostnames that one label covered three materially different states:

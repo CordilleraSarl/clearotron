@@ -434,7 +434,7 @@ test("⭐ both ledgers answer 'does this quote appear verbatim' IDENTICALLY — 
 
 // ── OPTION A: A RECALL ASK CLOSES ONLY WHEN THE MARK REACHED THE CLIENT ──────────────────────────────
 //
-// Owner ruling 2026-09-07 (tracker issue 246), worded ABOUT THE MARK. The defect: a recall probe found
+// Owner ruling 2026-09-07, worded ABOUT THE MARK. The defect: a recall probe found
 // OSLER DELPHI, the closure stage cited `register-findings.md` — where the mark genuinely IS reasoned,
 // at length — and the ask closed as immaterial. The citation was true. `register-findings.md` is the
 // run's own working sheet and not the document the client reads, and nothing checked the difference.

@@ -635,7 +635,7 @@ const SCRIPT = `
     shopsBox.dispatchEvent(new Event('input', { bubbles: true }));
     await sleep(180);
   }
-  // REWRITTEN TO THE OWNER'S COPY (tracker issue 1937). This is the SECOND implementation of the rule
+  // REWRITTEN TO THE OWNER'S COPY. This is the SECOND implementation of the rule
   // — portal-ui/test/screenCopy.test.ts holds the first, against the source — so the copy change reds
   // here too, and re-aiming one without the other leaves a guard asserting a sentence nobody ships.
   //

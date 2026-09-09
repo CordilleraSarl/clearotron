@@ -987,7 +987,7 @@ export const anthropicAgentEngine = {
           // nothing unmeasurable), following toolWaitByTool's own rule that absence and "cannot report"
           // must not look alike. `toolWaitMs` and the per-tool split are untouched.
           toolWaitUnmeasurable: [...unmeasurable],
-          // MODEL GAUGE (tracker issue 238): the id the WIRE reported, or null when the stream never said. Assistant
+          // MODEL GAUGE: the id the WIRE reported, or null when the stream never said. Assistant
           // message first (what served the call), init second (what the session was configured with).
           // Never the requested alias — see the declaration above.
           modelWire: wireModelAssistant ?? wireModelInit ?? null,
@@ -1023,7 +1023,7 @@ function errResult(t0, e, resumeRef) {
     stderr: `anthropic-agent spawn error: ${e?.message ?? e}`, laneWaitMs: 0,
     // reads: a spawn error means NO turn ran — [] is the true observation (nothing was read), not a gap.
     // modelWire: null for the opposite reason — no turn ran, so the wire said nothing about a model, and
-    // the record must say UNKNOWN rather than inherit the alias that was asked for (tracker issue 238).
+    // the record must say UNKNOWN rather than inherit the alias that was asked for.
     json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, sessionRef: resumeRef ?? null,
   };
 }

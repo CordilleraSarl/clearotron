@@ -86,7 +86,7 @@ function run(args, env = {}) {
       // a .env" writes `<repo>/.env` and requires the wizard to read it. Either of those two variables
       // would make `shared/env-local.mjs` skip the file and hand the command BUILT-IN DEFAULTS with no
       // error — the suite runner sets the first for every child, and the second is inherited by any
-      // descendant of a systemd unit, which on a hosted CI runner includes the job (tracker issue 204).
+      // descendant of a systemd unit, which on a hosted CI runner includes the job.
       // Neither is spread here, so neither arrives. Recorded rather than left to be re-derived, and
       // measured: this file passes with both set in the parent.
       env: {

@@ -230,7 +230,7 @@ export const TOOL_SCOPES = {
   // note and drops the other two. The enqueue acknowledgement is projected for the same reason every
   // client-reachable result is — so a field added to it later cannot arrive unruled.
   //
-  // `readOnly` IS SET HERE BECAUSE `write` IS THE WRONG ANSWER FOR THIS ONE TOOL (tracker issue 148).
+  // `readOnly` IS SET HERE BECAUSE `write` IS THE WRONG ANSWER FOR THIS ONE TOOL.
   // The MCP `readOnlyHint` annotation is derived from `write` so there is one source of truth and not
   // two names for one fact — but the paragraph above says plainly that `write: true` sits on
   // what_if_plan for the OPS ALLOWLIST's sake, not because it mutates or spends. Deriving the hint
@@ -263,7 +263,7 @@ export const TOOL_SCOPES = {
 // status.json, …) is internal and stays sealed from a user token.
 // Exported so the server's Resources surface (ListResources/ReadResource) gates to the SAME set.
 /**
- * Does this tool only READ? — the source of MCP's `readOnlyHint` annotation (tracker issue 148).
+ * Does this tool only READ? — the source of MCP's `readOnlyHint` annotation.
  *
  * WHY IT IS DERIVED. Without annotations a client cannot tell `brief` from `start_run`, so it asks
  * before every call — the owner, driving the ops connector: "it prompts all the time." The cost is not

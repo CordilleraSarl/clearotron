@@ -66,7 +66,7 @@ function driveStart(ports, extra = {}) {
   // A hand-run environment from the one definition: `handRunEnv` clears CLEAROTRON_NO_ENV_FILE and
   // INVOCATION_ID, either of which would make this drive read no .env and take built-in defaults with
   // no error, and `extra` lands after it so the arm ABOUT the service-managed path sets one back
-  // deliberately (tracker issue 204). The engine values go with them: a developer's shell or a CI
+  // deliberately. The engine values go with them: a developer's shell or a CI
   // secret carrying one would clear the refusal, and the arms would measure a run that never refused.
   const env = handRunEnv({ HOME: home, PORTAL_SERVICE_PORT: String(ports.portal),
     TRADEMARK_MCP_HTTP_PORT: String(ports.mcp), CLIENT_MCP_HTTP_PORT: String(ports.client),

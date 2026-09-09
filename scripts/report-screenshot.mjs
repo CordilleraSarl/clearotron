@@ -77,7 +77,7 @@ const cmd = (method, params = {}) => new Promise((r) => { const n = ++id; pendin
 
 await cmd("Page.enable");
 
-// ── IS THIS THE REPORT, OR CHROME'S OWN ERROR PAGE? (tracker issue 227) ──────────────────────────────
+// ── IS THIS THE REPORT, OR CHROME'S OWN ERROR PAGE? ──────────────────────────────────────────────────
 //
 // Chrome is launched with the file URL as an ARGUMENT, so there is no navigation response to check and
 // nothing here ever asked. When the file could not be read, Chrome showed `ERR_ACCESS_DENIED` — a page
@@ -126,7 +126,7 @@ if (typeof top !== "number") {
   console.error(`report-screenshot: no element matched ${JSON.stringify(ANCHOR)} — nothing to anchor the frame to.`);
   chrome.kill(); process.exit(1);
 }
-// ── CAN THIS BOX DRAW WHAT THE PAGE SAYS? (tracker issue 227) ───────────────────────────────────────
+// ── CAN THIS BOX DRAW WHAT THE PAGE SAYS? ───────────────────────────────────────────────────────────
 //
 // The default demo product's report carries the mark's native-script renderings — ベンクリ, ベンコリ,
 // ヴェンコリ — and they are load-bearing: the verdict sentence reads "A live Japanese class 9

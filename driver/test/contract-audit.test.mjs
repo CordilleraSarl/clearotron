@@ -347,7 +347,7 @@ test("#1211: a cited site is a MINT, never a sentence about the code", () => {
     "a token's cited site is a comment line, so any ruling written from it cites a sentence about the "
     + "code rather than the line that mints it");
   // The line number moves whenever anything above it in coverage-form.mjs does — it shifted +8 when the
-  // park fields were added to `parseCoverageForm`'s projection (tracker issue 1239). What the arm PINS is not the
+  // park fields were added to `parseCoverageForm`'s projection. What the arm PINS is not the
   // number but the property: the cited site must be the line that WRITES `reason: "no_status"`, not the
   // JSDoc `@returns` seventeen lines above it, which is where it used to point.
   const noStatusSite = ex.get("no_status");

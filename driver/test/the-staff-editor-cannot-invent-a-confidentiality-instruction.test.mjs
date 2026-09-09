@@ -169,6 +169,6 @@ test("1991: neither marking control is a checkbox — the shape that cannot hold
     const labels = [...renderControl(id, {}).matchAll(/<option value="([^"]*)"[^>]*>([^<]*)<\/option>/g)];
     assert.deepEqual(labels.map((m) => m[1]), ["", "no"], `${id} offers exactly the two live states`);
     assert.deepEqual(labels.map((m) => m[2]), ["Privileged &amp; Confidential", "No marking"],
-      `${id} carries the owner's ruled labels (tracker issue 1983)`);
+      `${id} carries the owner's ruled labels`);
   }
 });

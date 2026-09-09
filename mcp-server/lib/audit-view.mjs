@@ -324,7 +324,7 @@ export function accountTimeline(result, { brandName = "The firm" } = {}) {
 // those out and none is added here; this is the same cost/chain line the audit reads draw, applied to the
 // one tool that would otherwise walk straight through it.
 //
-// THE MEMO KIND ADDS THREE, AND LEAVING THEM OUT BROKE IT SILENTLY (tracker issue 132). This list is
+// THE MEMO KIND ADDS THREE, AND LEAVING THEM OUT BROKE IT SILENTLY. This list is
 // default-deny, so a plan kind whose fields nobody added here arrives stripped rather than refused. A
 // memo plan was composed correctly and reached a client missing `kind` (so it could not be told from a
 // stage plan), `assumption` (so it did not say what it was about) and `parentUntouched` (so it did not

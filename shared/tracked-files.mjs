@@ -117,7 +117,7 @@ export function grepTrackedFiles(guard, { root, args }) {
 /**
  * The tracked corpus WITH ITS INDEX MODES, or null when this tree has no checkout to read it from.
  *
- * WHY THIS IS HERE RATHER THAN LEFT TO ITS ONE CALLER (tracker issue 235). The executable-bits guard
+ * WHY THIS IS HERE RATHER THAN LEFT TO ITS ONE CALLER. The executable-bits guard
  * needs `ls-files -s`, which carries the mode, and `trackedFiles` above deliberately returns paths
  * only. So that guard called the helper for its skip contract and then spawned git a SECOND time,
  * raw, for the modes — correct, because the raw call sits behind the helper's null check, but

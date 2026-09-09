@@ -74,7 +74,7 @@ test("whatIfRun refuses without a confirmation", async () => {
   await assert.rejects(() => whatif.whatIfRun({}), /confirmationToken/);
 });
 
-// ── THE MEMO DOOR (tracker issue 132) ────────────────────────────────────────────────────────────
+// ── THE MEMO DOOR ────────────────────────────────────────────────────────────────────────────────
 //
 // The capability was composed and unreachable: whatIfPlan minted a memo token, decodeOp validated it,
 // whatIfEnqueue answered the client `queued: true` — and whatIfRun, which the worker calls to execute

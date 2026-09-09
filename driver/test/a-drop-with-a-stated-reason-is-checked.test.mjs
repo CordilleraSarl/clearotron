@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A finding dropped WITH a stated reason is checked by something (tracker issue 248).
+// A finding dropped WITH a stated reason is checked by something.
 //
 // THE GAP. `silentlyLostFindings` covers `step-silent` — a finding-ending followed by silence. It is
 // correct and its boundary is deliberate. The stated case sat outside it and is the one that reached a

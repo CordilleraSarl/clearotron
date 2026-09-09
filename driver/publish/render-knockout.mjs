@@ -318,7 +318,7 @@ function glanceSection(marks, framework, registerCounts) {
 // There is ONE figure per predicate per row, at ONE scope, and the table says which. A second
 // all-classes figure alongside a class-scoped one would be a second count — one more provider call per
 // mark per predicate, billable on Corsearch — and that is a spend the owner has not ruled on. Raised as
-// a follow-up rather than assumed here (tracker issue 717).
+// a follow-up rather than assumed here.
 // ── TERRITORIES IN WORDS, NEVER CODES (tracker issue 331 C) ─────────────────────────────────────────
 //
 // The line read "territories: EM, US, WO". On a worldwide run the same line printed every register code
@@ -474,7 +474,7 @@ function countsSection(marks, registerCounts) {
 // of them is a finding. recordsLine owns all three wordings so the report, the workbook and
 // report-data.json cannot phrase them differently.
 /**
- * MATERIALITY, FOR BOTH REGISTER SURFACES (tracker issue 1927).
+ * MATERIALITY, FOR BOTH REGISTER SURFACES.
  *
  * Two caps decide which filings a client sees — the appendix table and the promoted cards — and both
  * took the provider's arrival order. Measured on a delivered four-mark run: one name fetched 23 records,
@@ -591,7 +591,7 @@ function filingsSection(marks, registerRecords) {
       return `<div class="ko-row"><div><p class="ko-name">${esc(m.name)}</p></div>
         <div><p class="ko-bul">${esc(line ?? 'No filings listing was recorded for this name.')}</p></div></div>`;
     }
-    // RANKED, AND DELIBERATELY NOT FILTERED (tracker issue 1927). This table is the evidence behind a
+    // RANKED, AND DELIBERATELY NOT FILTERED. This table is the evidence behind a
     // COUNT: dropping a cancelled or out-of-class row would leave a reader unable to reconcile the table
     // with the number above it, and "we did not show you that one" is a different promise from "it is
     // not material". The cards promote and therefore filter; the appendix evidences and therefore ranks.
@@ -844,7 +844,7 @@ function basisLine(band, read) {
  * Neither test is a judgment about the filing. Whether any of it blocks anything is lawyer work this
  * product does not do — the same line register-records.mjs rule 3 has held since the lane shipped.
  */
-// EXPORTED so the pipeline can ask the same question the page asks (tracker issue 276). The owner
+// EXPORTED so the pipeline can ask the same question the page asks. The owner
 // use-check runs on PROMOTED filings only, and "promoted" has to mean here what it means on the report —
 // a second predicate would let the engine search an owner whose filing the report never shows, or skip
 // one it does.
@@ -1025,7 +1025,7 @@ function registerCardViews(mark, framework, registerRecords) {
  * THE BAND CHIP IS DRAWN ONLY WHEN THE RATER SENT ONE, and that condition is the whole rule. The old note
  * here said "no band chip and no `bandStop`, ever: a rung of the run's ladder would be a rating nobody
  * performed" — which was true for as long as nothing could carry the rater's rating of an individual
- * filing. `registerReads[].band` now can (tracker issue 274), so the objection is answered where it was
+ * filing. `registerReads[].band` now can, so the objection is answered where it was
  * raised: with a band, the rating WAS performed, by the seat, in the framework's own words, and the chip
  * states it. With no band the old rule stands unchanged — --faint rail, no chip, nothing claimed — and
  * that is still what every archived run renders.
@@ -1071,7 +1071,7 @@ function sourceChips(v) {
 // findings about the mark, which is the one way this ruling could produce a worse document.
 const REVIEWER_NOTES_LEGEND = 'Purple notes are for the reviewing lawyer. Remove them before this goes to the client.';
 
-// The clearance lane's own label, copied rather than re-worded (tracker issue 276). One spelling across
+// The clearance lane's own label, copied rather than re-worded. One spelling across
 // both products is the point: a reader who has seen it on a clearance report knows what it means here.
 const USE_CHECK_LABEL = 'Use-check source:';
 
@@ -1143,7 +1143,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   // colour an unknown word as though it were rated.
   const band = row?.band || null;
   const stop = band ? bandStop(framework, band) : null;
-  // ── WHERE THE OWNER'S TRADE WAS LOOKED UP (tracker issue 276) ──────────────────────────────────
+  // ── WHERE THE OWNER'S TRADE WAS LOOKED UP ──────────────────────────────────────────────────────
   //
   // The source is the DRIVER'S, joined by this filing's own recordId — never a URL the seat typed. That
   // is the whole reason a reader can trust it: the row exists because the driver made the call, so
@@ -1509,7 +1509,7 @@ const CAVEAT_LEAD = 'This screen also carries the following limits:';
 export function renderKnockoutHtml(findings, framework, {
   runId, overall, issued = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
-  // The driver's own record of the owner lookups it ran (tracker issue 276). Defaults to [] so an
+  // The driver's own record of the owner lookups it ran. Defaults to [] so an
   // archived run that predates the lane renders exactly as it was delivered.
   ownerChecks = [],
   identity = null, matter = null, homeHref = null, chromeHref = null, depthNote = null,
@@ -1631,7 +1631,7 @@ ${filings}`
 </div>
 <div class="fab-stack">${themeButton()}</div>
 <script>
-/* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose (tracker issue 1922).
+/* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose.
    The portal frames this document and drives it by postMessage. The bridge injected at serve time looks
    up exportPDF, pickAll and openAll BY NAME and replies "this report has no <verb>" when a name is not
    there. Every one of these lived inside an IIFE, so a knockout answered that to all three and every
@@ -1664,7 +1664,7 @@ window.addEventListener('beforeprint',o);})();</script>
   ${filingsSec}
 
   <div class="sec"><span class="num">${num()}</span><h2>Scope &amp; what we didn't search</h2><span class="note">what this screen is</span></div>
-  <!-- COLLAPSED, like the clearance report's (tracker issue 1935). Both documents already inline the
+  <!-- COLLAPSED, like the clearance report's. Both documents already inline the
        same report.css, and details.scope is its vocabulary — this section was the one place the two
        lanes presented the same thing differently, with the knockout's open panel pushing the filings
        table and the footer down the page on every read. What is inside is unchanged; a reader who
@@ -1674,7 +1674,7 @@ window.addEventListener('beforeprint',o);})();</script>
   <details class="scope"><summary>Scope &amp; what we didn't search</summary>
   <div class="panel drillbody">
     ${(() => {
-      // FROM THE POLICY WHERE THERE IS ONE (tracker issue 1935). The fallback is not a tidy default: an
+      // FROM THE POLICY WHERE THERE IS ONE. The fallback is not a tidy default: an
       // archived run froze no policy, and re-rendering it must not invent a scope claim about a run
       // nobody can now ask. It keeps the sentence it was delivered with.
       // ── THE SCOPE BLOCK, WHOLE (tracker issue 331 E) ──────────────────────────────────────────────
@@ -1771,7 +1771,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
         classesDriving: m.classesDriving ?? [],
         degraded: Boolean(m.degraded),
         points: m.bullets ?? [],
-        // ── THE ASSESSMENT THE RUN ALREADY WROTE (tracker issue 274) ──────────────────────────────
+        // ── THE ASSESSMENT THE RUN ALREADY WROTE ──────────────────────────────────────────────────
         //
         // Seven keys the assess stage writes into knockout-findings.json reached this file as nothing.
         // They were not withheld by a rule — no code decided against them; this projection is an explicit
@@ -1828,7 +1828,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
           // `shape: 'register'` is the load-bearing field: a consumer can tell a weighed conflict from a
           // pointed-at filing without parsing prose.
           //
-          // `band` AND `basis` NOW CARRY THE RATER'S READ WHEN IT SENT ONE (tracker issue 274). Before
+          // `band` AND `basis` NOW CARRY THE RATER'S READ WHEN IT SENT ONE. Before
           // this, both were constants — `band: null` and the not-weighed sentence — on every filing of
           // every run, including runs where the seat had written a full read of that exact filing and the
           // HTML card was already printing it. The page and this file disagreed, and this file is the one

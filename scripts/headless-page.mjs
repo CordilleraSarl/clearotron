@@ -5,7 +5,7 @@
 //
 // (and, since tracker issue 227 criteria 3-4, whether this box can draw what that page says)
 //
-// ── WHY THIS EXISTS (tracker issue 227) ─────────────────────────────────────────────────────────────
+// ── WHY THIS EXISTS ─────────────────────────────────────────────────────────────────────────────────
 //
 // Seven scripts drive headless Chrome and none of them asked. They cannot ask the obvious way: Chrome is
 // launched with the file URL as a COMMAND-LINE ARGUMENT, so there is no navigation call whose response
@@ -80,7 +80,7 @@ export function pageVerdict({ href = "", expected = "", marker = null, markerNam
         + "captured is Chrome's interstitial, not the artefact — and that page carries an `<h1>`, a "
         + "`<title>` and a body, so a content check alone reads it as a success." };
   }
-  // ── THE BROWSER'S START PAGE IS NOT A WRONG DOCUMENT (tracker issue 273) ────────────────────────
+  // ── THE BROWSER'S START PAGE IS NOT A WRONG DOCUMENT ────────────────────────────────────────────
   //
   // `about:blank` is what Chrome shows before it has navigated anywhere. Reaching the check below, it
   // compares unequal to the expected URL and was reported as `wrong-document` — "a redirect, a stale tab
@@ -131,7 +131,7 @@ export function pageVerdict({ href = "", expected = "", marker = null, markerNam
 export async function assertPageLoaded(evaluate, { expected, marker = null, markerName = "the page's own content", what = "this page", errorText = null,
   graceMs = NAVIGATION_GRACE_MS, pollMs = NAVIGATION_POLL_MS,
   sleep = (ms) => new Promise((r) => setTimeout(r, ms)), now = () => Date.now() } = {}) {
-  // ── WAIT FOR THE BROWSER TO LEAVE ITS START PAGE, THEN JUDGE (tracker issue 273) ─────────────────
+  // ── WAIT FOR THE BROWSER TO LEAVE ITS START PAGE, THEN JUDGE ─────────────────────────────────────
   //
   // Three of these scripts launch Chrome with the URL as an argument and get no response to wait on, so
   // the first read of `location.href` can land before the browser has moved. On an idle box it never

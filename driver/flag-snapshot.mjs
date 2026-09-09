@@ -277,7 +277,7 @@ export function postureDelta(snapshot, expected = PRODUCTION_POSTURE) {
  * hardcoded expectation. This answers how it differs from the box it is being read on, which is the
  * question a staff member actually has in front of the capability page.
  *
- * WHY AN AGE IS NOT THE GUARD IT LOOKS LIKE (tracker issue 170). The snapshot's only writers were a run
+ * WHY AN AGE IS NOT THE GUARD IT LOOKS LIKE. The snapshot's only writers were a run
  * and the launcher, so a deployment being CONFIGURED — which runs nothing by definition — holds a
  * capture that is stale for exactly as long as somebody is working on it, which is exactly when they
  * are looking at the page. Found live: the register provider was moved from signa to clarivate and every

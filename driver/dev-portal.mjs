@@ -76,7 +76,7 @@ export const DEV_COCKPIT_JOB_FIELDS = Object.freeze({
   notCarried: Object.freeze({
     registerFixtures: "a run that reads canned register payloads instead of calling a register. The cockpit "
       + "is a form for composing REAL dev runs; a fixture run is declared by the job file that wants one, so "
-      + "the fact travels with the run rather than with whoever filled in a form (tracker issue 2038).",
+      + "the fact travels with the run rather than with whoever filled in a form.",
     promptParts: "the requester's declaration that the prose rides as SIDECAR files. The cockpit composes a job "
       + "from its own form and writes no sidecars, so it may not claim that shape (#1085).",
     forwarderDomain: "the cockpit's assembler defaults it; a dev form has no forwarding domain to state.",

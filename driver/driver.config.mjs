@@ -13,7 +13,7 @@ import { readdirSync, existsSync, accessSync, statSync, statfsSync, constants as
 import { homedir } from "node:os";
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
-import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none (tracker issue 202)
+import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
 import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs";   // — a number, or a refusal that names the variable; never NaN
 
 const { X_OK } = FS;
@@ -377,7 +377,7 @@ export const config = {
     //
     // "`install` writes one for you" is the whole remedy this carried, and `install` refuses a
     // non-terminal. This message reaches `start --background`'s screen, which is the scripted and hosted
-    // install route, so its reader was being sent to a wizard they cannot open (tracker issue 202).
+    // install route, so its reader was being sent to a wizard they cannot open.
     //
     // `envFileRead()` rather than a path composed here, for the reason its header gives: this is a
     // library reached by CLI entries AND by unit-booted services, and a service read no file of its own.

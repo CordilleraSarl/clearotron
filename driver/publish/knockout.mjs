@@ -364,7 +364,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   let registerRecords = null;
   try { registerRecords = JSON.parse(readFileSync(driverDir(runDir, 'register-records.json'), 'utf8')); }
   catch { registerRecords = null; }
-  // The owner lookups this run made (tracker issue 276), read the same tolerant way as the records above:
+  // The owner lookups this run made, read the same tolerant way as the records above:
   // an archived run that predates the lane has no file, and its cards then render exactly as they were
   // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
   let ownerChecks = [];
@@ -492,7 +492,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // once as string surgery on the report URL, once as this function, and both spelled a pool path.
   //
   // A SINGLE MARK USED TO KEEP THE LEGACY SHAPE, on the reasoning that `<runId>/report.html` is what the
-  // rewrite exists for and that it resolves. THAT IS FALSE ON PRODUCTION (tracker issue 289) and the
+  // rewrite exists for and that it resolves. THAT IS FALSE ON PRODUCTION and the
   // paragraph is kept, corrected, because its warning is still the right instinct and only its premise
   // was wrong.
   //

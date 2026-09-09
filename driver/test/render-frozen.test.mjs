@@ -29,7 +29,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-// The header strings come from the sweep script that WRITES them (tracker issue 854). Spelled out here as literals,
+// The header strings come from the sweep script that WRITES them. Spelled out here as literals,
 // this test had its own copy of the identifier and the AGPL flip made that copy wrong — the filter
 // matched nothing, the "header is present exactly once" assertion failed, and the message pointed at
 // the freeze rather than at the licence. Importing them means the break still fires where it should,
@@ -760,7 +760,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //
 //   4. Hash updated here, in the same commit as the edit.
 //
-// ── The eleventh break: seven COMMENTS, zero executable bytes (tracker issue 623) ────────────────────────────────
+// ── The eleventh break: seven COMMENTS, zero executable bytes ────────────────────────────────────────────────────
 //
 // The repo is being cut as a public snapshot, and seven comments in render.mjs cited a real client
 // matter by its mark — the shorthand this codebase used for a class of layout defect ("the <mark>
@@ -780,7 +780,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      survives because a hash was inconvenient.
 //   4. Hash updated here, in the same commit as the edit.
 //
-// ── The twelfth break: two COMMENTS, zero executable bytes (tracker issue 623) ───────────────────────────────────
+// ── The twelfth break: two COMMENTS, zero executable bytes ───────────────────────────────────────────────────────
 //
 // Same class as the eleventh, one round later and for people rather than marks. Two comments credited
 // a content-model ruling to the reviewing lawyer by first name. The attribution is the useful part —
@@ -1016,7 +1016,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // disclaimer. It is now emitted beside that <details> instead of inside it. Same markup, same authored
 // heading, same ✓ marker, same position at the head of §4; the long not-run / partially-covered ledger,
 // the methodology note and the internal provenance rows stay folded, in the same order, under the same
-// summary. Placement, not furniture (tracker issue 765).
+// summary. Placement, not furniture.
 //
 // The masthead footnote read `coverage-limited (see “What we covered”)`. The heading is "What we covered
 // — and what's open", so the quoted words were a PREFIX of a title rather than a title, and there is no
@@ -1749,13 +1749,13 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Owner ruling 2026-08-24 ordered the build and discharged the standing "only with a legitimate
 // renderer change" condition. The arm below pins the empty state, so the next freeze break cannot
 // silently take it away again.
-// Advanced by the fifth break (tracker issue 1903) with the constant below it — this one moves on every
+// Advanced by the fifth break with the constant below it — this one moves on every
 // break that is not licence-only, so what it guards is the NEXT licence sweep.
-// Advanced again by the break below (tracker issue 1935): prose inside the file, so neither
+// Advanced again by the break below: prose inside the file, so neither
 // licence-only nor comment-only.
-// Advanced again by the break below (tracker issue 1957). A comment REWRITE is not licence-only,
+// Advanced again by the break below. A comment REWRITE is not licence-only,
 // so this constant moves with the other one.
-// Advanced again by the sixth break below (tracker issue 2097): behaviour, so both constants move.
+// Advanced again by the sixth break below: behaviour, so both constants move.
 // AND THIS ONE ADVANCES WITH IT, for the same measured reason and not by convention. The two
 // constants are supposed to move together only when a break is NOT licence-only, and this one is not
 // licence-only in the strictest sense: the reference strip rewrote comments throughout. It changed no
@@ -1764,7 +1764,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // What this constant guards is unchanged and still armed: the NEXT licence sweep that drags a
 // behavioural edit along with it moves these bytes and fails here rather than in the first assertion,
 // which could only ever say "something changed".
-// Advanced again by the seventh break above (tracker issue 147): a behaviour change on the connect
+// Advanced again by the seventh break above: a behaviour change on the connect
 // block, so both constants move together for the same measured reason as the sixth.
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
@@ -1857,7 +1857,7 @@ const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4
 //
 //   3. HASH UPDATED IN THE SAME COMMIT. Both constants advance: a deletion is neither licence-only nor
 //      no-change.
-//   FOURTEENTH BREAK — THE ADDITIONAL-TERMS NOTICE (tracker issue 1740), answering the checklist above:
+//   FOURTEENTH BREAK — THE ADDITIONAL-TERMS NOTICE, answering the checklist above:
 //
 //   1. REACHABLE FROM A REPUBLISH? No. One comment line: this file's existing copyright line now carries
 //      counsel's notice sentence after it. No executable byte moves.
@@ -1868,7 +1868,7 @@ const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4
 //      bytes the thirteenth break left. Measured before either constant was touched — which is the
 //      reason this file is swept rather than excluded from the sweep. An exclusion would have declared
 //      the change harmless; the double-hash shape lets it be PROVED, which is what it exists for.
-//   FIFTEENTH BREAK — THE DEMONSTRATION BANNER (tracker issue 2013), answering the checklist above:
+//   FIFTEENTH BREAK — THE DEMONSTRATION BANNER, answering the checklist above:
 //
 //   1. REACHABLE FROM A REPUBLISH? YES, and that is the point rather than a side effect. A demo report
 //      is the only artefact in this thread that leaves the machine, and the marking must appear on
@@ -2040,7 +2040,7 @@ test("#854 stripping the two licence lines leaves the file the last break left �
   const text = readFileSync(at("../publish/render.mjs"), "utf8");
   const lines = text.split("\n");
   // THE COPYRIGHT LINE IS MATCHED BY PREFIX because it now CARRIES the additional-terms notice
-  // (tracker issue 1740): counsel's sentence sits on that line rather than on a third one, so that the
+  //: counsel's sentence sits on that line rather than on a third one, so that the
   // sweep changes no file's line COUNT and no line-numbered citation moves.
   //
   // The property this arm protects is unchanged, and the definitional question was asked before the

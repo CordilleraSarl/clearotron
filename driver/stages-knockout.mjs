@@ -20,7 +20,7 @@ const lines = (...xs) => xs.filter(Boolean).join("\n");
 const reads = (skillReads) => `First, read and follow exactly: ${skillReads.join(", ")}.`;
 
 /**
- * One line per owner the driver looked up, for the assess dispatch (tracker issue 276).
+ * One line per owner the driver looked up, for the assess dispatch.
  *
  * BOTH OUTCOMES ARE NAMED, and that is the point. A row whose search answered gets its payload path; a
  * row whose search did NOT answer says so in the dispatch itself. Listing only the answered ones would
@@ -318,7 +318,7 @@ export const KO_STAGES = {
       existsSync(K.registerRecords)
         ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read them and WEIGH them for the marks you are rating. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
-      // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED (tracker issue 276) ────────────────────────
+      // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED ────────────────────────────────────────────
       //
       // The defect this closes is not that the seat lacked an instruction — it is that the seat had no
       // way to know. It was handed an owner's NAME and its class numbers and nothing else, so a read

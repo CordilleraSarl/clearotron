@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A bucket collision is about a RECORD, not a proprietor (tracker issue 249).
+// A bucket collision is about a RECORD, not a proprietor.
 //
 // THE DEFECT. The collision rule's only condition was `ownersMatch`. Its own heading says "A RECORD MAY
 // NEVER APPEAR IN TWO BUCKETS" and the code implemented a different class: any proprietor with more than

@@ -360,7 +360,7 @@ test("#1900 a RED arm strands nothing — driven as a child run, because the wir
   if (process.env.REAP_1847_FORCE_PREMISE_RED) return;
 
   // Its own TMPDIR, so "did anything survive" is answerable EXACTLY rather than by a pattern over the
-  // whole box. Counting by pattern is what reported clean while eight of these were running (tracker issue 1900).
+  // whole box. Counting by pattern is what reported clean while eight of these were running.
   const home = mkdtempSync(join(tmpdir(), "reap-childrun-"));
   try {
     // NODE_TEST_CONTEXT MUST NOT TRAVEL. node's runner sets it in the process it forks, and inheriting it
@@ -377,7 +377,7 @@ test("#1900 a RED arm strands nothing — driven as a child run, because the wir
     // Survivors are processes whose command line names THIS run's temp home. Read by process, never by
     // a pattern over process names.
     const survivors = [];
-    // THE SET IS ASSERTED BEFORE IT IS WALKED (tracker issue 1010). A reader that could not look yields no pids,
+    // THE SET IS ASSERTED BEFORE IT IS WALKED. A reader that could not look yields no pids,
     // `survivors` stays `[]`, and the assertion below passes while having examined NOTHING — a clean
     // scan and a scan that never happened are the same bytes. This process is itself in that listing,
     // so an empty one is a broken instrument, never a quiet all-clear.

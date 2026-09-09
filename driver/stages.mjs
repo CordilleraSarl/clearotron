@@ -991,7 +991,7 @@ export const pharmaMatter = (job) =>
 // The reach is pinned by report-prose-standard.test.mjs, because nothing FAILS if these rules never
 // arrive: the stage simply writes to model defaults and every other test still passes.
 const REPORT_PROSE = "skills/prelim-search/report-prose.md";
-// THE SPINE RIDES WITH synthesis-rules.md EVERYWHERE IT IS READ (tracker issue 1926). 412 lines MOVED
+// THE SPINE RIDES WITH synthesis-rules.md EVERYWHERE IT IS READ. 412 lines MOVED
 // out of that file into `firm-wide-reasoning.md` so the knockout lane can read the same copy instead of
 // carrying its own retired transcription. A move, not a copy — which means every stage that read
 // synthesis-rules.md for that material must now read both, or it silently LOSES doctrine it has had all
@@ -4561,7 +4561,7 @@ export function assertTierSanity() {
   return true;
 }
 
-// ── WHO THE COMPLETION NOTICE IS FOR (tracker issue 289) ─────────────────────────────────────────────
+// ── WHO THE COMPLETION NOTICE IS FOR ─────────────────────────────────────────────────────────────────
 //
 // It went to whoever runs the agent, never to whoever asked. `AGENT_WHATSAPP` is keyed by AGENT ID, and
 // every user of this deployment shares the one agent, so on every run the operator was paged for work

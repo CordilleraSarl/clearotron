@@ -105,7 +105,7 @@ export function frozenSamples(examplesDir) {
  */
 export async function seedPool({ pool, examplesDir, republish }) {
   const existing = poolRunIds(pool);
-  // ── A POOL THAT ALREADY HOLDS SOMETHING IS TOPPED UP, NOT SKIPPED (tracker issue 277) ──────────────
+  // ── A POOL THAT ALREADY HOLDS SOMETHING IS TOPPED UP, NOT SKIPPED ──────────────────────────────────
   //
   // This used to return early on any non-empty pool. That was invisible while `demo/` shipped one child:
   // seeding one and seeding all were the same act. When the other three landed, every box seeded before

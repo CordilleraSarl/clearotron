@@ -29,7 +29,7 @@ import { fileURLToPath } from "node:url";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const GUARD = "one-name-per-command (tracker issue 2131)";
+const GUARD = "one-name-per-command";
 
 /** Documents whose reader is in the checkout, so the package script IS the right name for them. */
 const CHECKOUT_DOCS = new Set(["AGENTS.md", "bin/README.md", "driver/engine/README.md"]);

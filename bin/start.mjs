@@ -687,7 +687,7 @@ if (isMain) {
   const markStateWritten = () => { wroteState = true; };
   // `stated` is a caller that has already said what stands, in terms this generic line cannot reach —
   // which unit refused, which ones are up, what re-running does. Without it the systemd refusal printed
-  // both, and the pair read as two different answers to the reader's one question (tracker issue 203).
+  // both, and the pair read as two different answers to the reader's one question.
   const fatal = (msg, { stated = false } = {}) => {
     err(`\nstart: ${msg}\n`);
     if (wroteState && !stated) err("  This run had already written state (env file, data directories, grants, seeded example).\n  Every one of those writes is idempotent — re-running `clearotron start` is safe and nothing needs undoing.\n");
@@ -842,7 +842,7 @@ if (isMain) {
   // ruling, 2026-09-08), so the demo account is refused from the roster unless somebody asked for it.
   // Asked here, once and visibly, rather than at each site that happens to read a roster.
   if (DEMO) process.env.CLEAROTRON_DEMO_PROFILES ??= "1";
-  // ── `--port` MOVES EVERY DOOR IT OPENS (tracker issue 166) ───────────────────────────────────────
+  // ── `--port` MOVES EVERY DOOR IT OPENS ───────────────────────────────────────────────────────────
   //
   // It used to move ONE of the three. `resolvePorts` reads three independent variables with three
   // fixed defaults, and this line set only the portal's — so `demo --port 18860` put the portal on
@@ -865,7 +865,7 @@ if (isMain) {
     Object.assign(ports, moved);
   }
 
-  // ── A BUNDLE OLDER THAN ITS SOURCES IS REBUILT, NOT SERVED (tracker issue 160) ───────────────────
+  // ── A BUNDLE OLDER THAN ITS SOURCES IS REBUILT, NOT SERVED ───────────────────────────────────────
   //
   // Only reachable on a source checkout: `portal-ui/dist` is untracked there, so a `git pull` that
   // changed `portal-ui/src` leaves the bundle behind and every surface still reads healthy. A packaged
@@ -958,9 +958,9 @@ if (isMain) {
   // down, which is what the paragraph above says this check is for.
   // The file to send the reader to, MEASURED rather than composed — `envFileRead()` reports what
   // shared/env-local.mjs actually did in this process, and answers null when it read nothing. Its own
-  // header carries the reasoning (tracker issue 200).
+  // header carries the reasoning.
   const portFile = envFileRead();
-  // Set when the probe met OUR OWN client door on its own port (tracker issue 228). Carried out of this
+  // Set when the probe met OUR OWN client door on its own port. Carried out of this
   // loop because both paths below have to act on it: the background path must RESTART the door it
   // adopted, and the foreground path must not spawn a second one beside it.
   let adoptedClientDoor = false;
@@ -987,7 +987,7 @@ if (isMain) {
     // The narrow carve above already proved every installed unit is ours.
     if (backgroundRefresh) break;
     const code = await probe(port);
-    // ── OUR OWN DOOR IS NOT A COLLISION (tracker issue 228) ──────────────────
+    // ── OUR OWN DOOR IS NOT A COLLISION ──────────────────────────────────────
     //
     // `stop` leaves this door up on purpose and says so; refusing here made `stop`'s own "plain
     // `clearotron start` works in a terminal from here" a lie, and left `clearotron demo` unrunnable on
@@ -1197,7 +1197,7 @@ if (isMain) {
     // — `clearotron demo` hands over to this — so fixing the player alone left the defect where it was.
     const { publishSource } = await import("../driver/demo-container.mjs");
     const seed = await seedPool({ pool: paths.pool, examplesDir: publishSource(join(REPO, "demo"), { repoRoot: REPO }), republish: republishRun });
-    // WHAT WAS ALREADY THERE IS SAID TOO (tracker issue 277). This branch used to run only when the pool
+    // WHAT WAS ALREADY THERE IS SAID TOO. This branch used to run only when the pool
     // was empty; it now tops a stale pool up to the package's set, so "seeded 1" on an upgrade is a fact
     // about what was MISSING and says nothing on its own about how many are now listed.
     if (seed.already?.length) {
@@ -1402,7 +1402,7 @@ if (isMain) {
       };
       const willRead = { ...already, ...union };
       const miss = missingRequirements(willRead, RUN_TABLES);
-      // ── — WHICH HALF OF `blocking` MAY REFUSE A START (tracker issue 216) ─────
+      // ── — WHICH HALF OF `blocking` MAY REFUSE A START ─────────────────────────
       //
       // Owner ruling 2026-09-06, in session: "someone can install and select key later so it should
       // still start." So the register, its credential, the engine and the engine's binary NO LONGER
@@ -1426,7 +1426,7 @@ if (isMain) {
         // of them, and offered `install` as the route. `install` REFUSES a non-terminal — "this is an
         // interactive wizard and stdin is not a terminal", rc 2 — so the one reader who arrives here by a
         // scripted or hosted install was handed a route they cannot take and no address for the route
-        // they can. Same defect as naming a variable and not the file, one level up (tracker issue 202).
+        // they can. Same defect as naming a variable and not the file, one level up.
         //
         // BOTH FILES, and that is the difference from the port refusals, which say `~/.env` "is NOT read
         // here". They are right: nothing in that file reaches a port decision. Here both are true. The
@@ -1456,7 +1456,7 @@ if (isMain) {
           + `client's first search, which is where this surfaced before: as a failed run and a notice saying `
           + `they had been notified.`);
       }
-      // ── THE BOX STARTS AND SAYS WHAT IT CANNOT DO YET (tracker issue 216) ──
+      // ── THE BOX STARTS AND SAYS WHAT IT CANNOT DO YET ──────────────────────
       //
       // An install that comes up unconfigured must not come up SILENTLY unconfigured — that is the
       // failure one step along from the one being fixed: a reader who is told nothing concludes they are
@@ -1466,7 +1466,7 @@ if (isMain) {
         say(`    the doors and the portal are up, and every run is refused at order time, before`);
         say(`    anything is spent, naming what is missing.`);
         for (const r of miss.atOrder) say(`      ${r.name} — ${r.why}`);
-        // ── THE SAME REMEDY THE REFUSAL USED TO CARRY, AND THE SAME TWO FILES (tracker issue 202) ──
+        // ── THE SAME REMEDY THE REFUSAL USED TO CARRY, AND THE SAME TWO FILES ──────────────────────
         //
         // 202's subject was a refusal on THESE values that named no file, on a product with two of them,
         // and offered `install` — a wizard that refuses a non-terminal, so the one reader who arrives
@@ -1587,7 +1587,7 @@ if (isMain) {
     //
     // This loop ran uncaught. When systemd declined to enable a unit the whole output was
     // `node:internal/errors:983`, a Node stack trace and a status code — no name for what failed, and no
-    // statement of what had happened to the install (tracker issue 203). It is the worst-placed refusal
+    // statement of what had happened to the install. It is the worst-placed refusal
     // in this command: by here the env file, the data directories, the grants roster and the seeded
     // example are written and every unit file is rendered, so the reader is left not knowing whether
     // they have a half-installed deployment. Every other refusal in this command says whether anything
@@ -1620,7 +1620,7 @@ if (isMain) {
     if (backgroundRefresh) for (const u of unitsToRestartOnRefresh(BACKGROUND_UNITS, unitTypeOf)) {
       try { execFileSync("systemctl", ["--user", "restart", u], { stdio: "ignore" }); } catch { /* health check below reports it */ }
     }
-    // ── AN ADOPTED DOOR IS RESTARTED, OR IT KEEPS RUNNING THE OLD TREE (tracker issue 228) ──────────
+    // ── AN ADOPTED DOOR IS RESTARTED, OR IT KEEPS RUNNING THE OLD TREE ──────────────────────────────
     //
     // `enable --now` is a NO-OP on an already-active unit — the finding `unitsToRestartOnRefresh` exists
     // for, measured on the test box as an unchanged MainPID. So a door this run adopted rather than
@@ -1910,7 +1910,7 @@ if (isMain) {
   // supported state and a useful one; an install that refuses to come up at all because a door could
   // not bind is not. The door's own refusal is loud and carries its remedy — measured and recorded as
   // working — so a reader sees why in its output rather than losing the portal along with it.
-  // ADOPTED, NOT RE-SPAWNED (tracker issue 228). On a box where `stop` left the door unit up, spawning a
+  // ADOPTED, NOT RE-SPAWNED. On a box where `stop` left the door unit up, spawning a
   // second door here would bind-fail against the first and print a refusal about a port the reader's
   // assistant is correctly connected to. The unit IS the door; this path just does not add another.
   const clientDoor = adoptedClientDoor
@@ -1937,7 +1937,7 @@ if (isMain) {
   // is reaped, so it is the same fact without the race. The failure mode being avoided is this
   // finding's own defect relocated into its failure path: a dead door announced as one a client's
   // assistant connects to, which is worse than the silence F26 replaced.
-  // AN ADOPTED DOOR IS RUNNING (tracker issue 228). Without this the banner reported "NOT RUNNING …
+  // AN ADOPTED DOOR IS RUNNING. Without this the banner reported "NOT RUNNING …
   // its output above says why" about a door that is up and serving, and pointed the reader at output
   // that does not exist — the one sentence on this screen a reader would act on, and false.
   const doorRunning = adoptedClientDoor || clientDoor?.child?.exitCode === null;

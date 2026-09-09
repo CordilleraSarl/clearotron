@@ -124,7 +124,7 @@ function pathFor(runDir, id, suffix) { return join(whatIfQueueDir(runDir), `${id
  */
 export function enqueueWhatIf(runDir, { op, requestedBy = null, account = null, now = Date.now() }) {
   if (!op || typeof op !== "object" || !op.runId) throw new Error("enqueueWhatIf: op must carry runId and stage");
-  // ── A MEMO CARRIES NO STAGE, AND THIS GUARD USED TO REQUIRE ONE (tracker issue 132) ──────────────
+  // ── A MEMO CARRIES NO STAGE, AND THIS GUARD USED TO REQUIRE ONE ──────────────────────────────────
   //
   // Two consecutive guards, mutually exclusive for a memo. decodeOp refuses a memo token that CARRIES
   // a stage — "a memo re-runs no stage, so a token carrying one was not planned as a memo" — and this

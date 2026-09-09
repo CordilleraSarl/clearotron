@@ -21,7 +21,7 @@
 // A FIX THAT MAKES THE GAP QUIETER WOULD BE WORSE THAN THE DEFECT. The report never claimed there was no
 // adverse case law; every surface disclosed the gap. That discipline is untouched here — this changes
 // the REASON attached to an honest gap, never whether the gap is stated.
-// ── AND A SOURCE NOBODY COULD CHECK IS NOT A SOURCE WE DO NOT HAVE (tracker issue 173) ──────────────
+// ── AND A SOURCE NOBODY COULD CHECK IS NOT A SOURCE WE DO NOT HAVE ──────────────────────────────────
 //
 // The credential reader has four states — absent, usable, unusable, unreadable — and the caller used to
 // flatten them into one boolean before this composer saw them. Three of those states then shared one
