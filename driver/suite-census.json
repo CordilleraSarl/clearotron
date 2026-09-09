@@ -407,7 +407,7 @@
         },
         "a-partial-payload-cannot-delete-what-it-omits.test.mjs": {
           "tests": 11,
-          "asserts": 42,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
@@ -2842,8 +2842,8 @@
           "todos": 0
         },
         "plain-words-on-what-the-reader-sees-first.test.mjs": {
-          "tests": 19,
-          "asserts": 45,
+          "tests": 20,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -4479,6 +4479,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
+          "tests": 15,
+          "asserts": 57,
+          "skips": 0,
+          "todos": 0
+        },
         "the-link-we-send-opens.test.mjs": {
           "tests": 6,
           "asserts": 14,
@@ -4769,7 +4775,7 @@
         },
         "tool-free-argv-baseline.test.mjs": {
           "tests": 16,
-          "asserts": 81,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },

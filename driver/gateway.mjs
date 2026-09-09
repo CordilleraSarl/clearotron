@@ -65,6 +65,13 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
     refusals: (runDir) => frameRefusalsFor(runDir) }],
   ["knockout-frame.md", { tool: "record_knockout_frame", what: "the batch scope note",
     refusals: (runDir) => frameRefusalsFor(runDir) }],
+  // The knockout lane's reviewing pass. ONE EXACT BASENAME, and it sits under `_driver/` rather than the
+  // run root because the artifact is the pass's account of what it rewrote, not a surface a client is
+  // shown — the lookup keys on the basename either way. The row is what makes a repair on this stage a
+  // CALL: the seat's grant carries no Write, so a ladder handing it the write form would order a
+  // hand-write it cannot perform, on a stage whose failure is deliberately quiet.
+  ["knockout-review.json", { tool: "record_knockout_review", what: "your rewrites of the lines a reader sees first",
+    refusals: (runDir) => knockoutReviewRefusalsFor(runDir) }],
   [BLIND_FRAME_MODEL_FILE, { tool: "record_blind_frame", what: "the threat model" }],
   [SKEPTIC_FLAGS_FILE, { tool: "record_skeptic", what: "your flags and escalation decisions" }],
   ["senior-eye-review.md", { tool: "record_narrative_refutation", what: "your verdict and typed flags" }],
@@ -227,6 +234,7 @@ import { KNOCKOUT_ASSESS_CHUNK_RE, knockoutAssessChunkFile } from "./knockout-as
 // The frame transport's refusal reader, so a missing plan or note can be told apart from a stage that
 // never called its tool — the distinction, which its sibling stage still lacks.
 import { frameRefusalsFor } from "./knockout-frame-record.mjs";
+import { knockoutReviewRefusalsFor } from "./knockout-review-record.mjs";
 import { profilesStoreDir } from "./profiles.mjs";
 // The supplemental lane's single source (stages.mjs). The import is acyclic — stages.mjs reads
 // verify/coverage-ledger/config/framework and never reaches back here.

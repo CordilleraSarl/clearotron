@@ -342,6 +342,7 @@ test("the two shared DERIVED structures keep their shape — order and multiplic
     "recording-server.mjs",
     "recording-server.mjs",
     "recording-server.mjs",
+    "recording-server.mjs",
   ], "LOCAL's derived script list changed shape — a key was added, removed, reordered or deduped");
 });
 

@@ -355,3 +355,25 @@ test("395: consolidating on the pinned source did not narrow what is caught", ()
   assert.equal(plainLanguageChecks({ findings: FINDINGS({ basis: "Two shops sell under this name in the same goods." }) })
     .find((x) => x.id === VOCAB).pass, true, "clean prose was flagged");
 });
+
+// ── the flag carries the replacement, not only the fault ────────────────────────────────────────────
+//
+// The doctrine's own words: the swap is the load-bearing half. This flag named the term and pointed at
+// a document for what to write instead — which is the half a reviewing pass that REWRITES the line needs
+// in hand, and the half a reader of the flag cannot act on without going somewhere else.
+test("89: a vocabulary flag says what to write instead, and where the pinned source has no swap it says to cut", () => {
+  const detail = (basis) => plainLanguageChecks({ findings: FINDINGS({ basis }) })
+    .find((x) => x.id === VOCAB).detail;
+
+  const d = detail("The proprietor would prevail here.");
+  assert.match(d, /"proprietor" → "owner"/, "the flag names the fault and not the remedy");
+  assert.match(d, /"prevail" → "win"/, "…for every term on the line, not just the first");
+  assert.match(d, /do not swap the word/,
+    "the instruction to rewrite the sentence is gone — a word-for-word swap is the cheap wrong fix the doctrine names");
+
+  // AN ENGINE WORD HAS NO PLAIN FORM, deliberately: there is nothing a reader should see in its place,
+  // so the instruction is to cut rather than to replace. A blank arrow would read as a missing swap.
+  const engine = detail("The chunk was screened overnight.");
+  assert.match(engine, /"chunk" \(an engine word — cut it\)/, "an engine word was offered a replacement it has none of");
+  assert.doesNotMatch(engine, /chunk" → ""/, "an empty swap reached the flag");
+});

@@ -55,6 +55,7 @@ import { capabilitiesFor } from "./register-capabilities.mjs";
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
+import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
 import { writeRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
@@ -164,6 +165,62 @@ export function readBackLadder(ctx, sidecarPath, { minted }) {   // exported for
 
 // ── koStage: the slim lane's stage runner — skip-if-output-valid (the stageOnce pattern), one
 // runStage call, StageFailure on exhaustion (rate_limited rides to pipeline()'s postpone catch).
+/**
+ * Rewrite the lines a reader meets first, and NEVER cost a client a report doing it.
+ *
+ * Every failure path returns the record it was handed. A stage that fails, times out, returns nothing,
+ * returns something that will not parse, or produces a rewrite the merged gate then refuses, all end the
+ * same way: the rated record ships, unrewritten, exactly as it shipped before this stage existed. This
+ * pass is presentation. A refusal is never a pass, and "no report" is a product failure — so the last
+ * thing added to the delivery path is the last thing that should be able to stop it.
+ *
+ * THE EMPTY CASE IS NOT A FAILURE AND IS NOT SILENT. A batch whose default-visible lines are all already
+ * plain has nothing to dispatch, and paying for a turn to be told so is waste. It is logged with the
+ * count, so "nothing was flagged" and "the pass never ran" are different rows in the journal rather than
+ * one absent one.
+ */
+async function knockoutReviewingPass({ ctx, run, K, merged, plan }) {
+  const about = reviewAbout(merged, plan);
+  const evidence = reviewEvidence(merged, about);
+  if (!evidence.rows.length) {
+    runLog(run.runDir, { event: "knockout-review", outcome: "nothing-flagged", flagged: 0,
+      marks: merged.marks.length, excludedMarks: about.marks.length, excludedOwners: about.owners.length });
+    return merged;
+  }
+
+  const keep = (outcome, detail) => {
+    runLog(run.runDir, { event: "knockout-review", outcome, flagged: evidence.rows.length, applied: 0,
+      delivered: "the rated record, unrewritten", ...detail });
+    note(`reviewing pass: ${outcome} — the rated record ships unrewritten`);
+    return merged;
+  };
+
+  try {
+    await koStage("knockout-review", ctx, {
+      msgCtx: { evidenceLines: reviewEvidenceLines(evidence), exclusionNote: evidence.exclusionNote },
+    });
+  } catch (e) {
+    return keep("stage-failed", { reason: String(e?.message ?? e).slice(0, 200) });
+  }
+
+  let review;
+  try { review = JSON.parse(readFileSync(knockoutReviewFile(run.runDir), "utf8")); }
+  catch (e) { return keep("artifact-unreadable", { reason: String(e?.message ?? e).slice(0, 200) }); }
+
+  const { doc, receipt } = applyKnockoutReview(merged, review);
+  // THE REWRITTEN RECORD GOES THROUGH THE SAME GATE. Not a lighter one and not none: this is the record
+  // a client receives, and the only reason it is trusted is that it passed what the rated one passed.
+  const mv = validateMergedFindings(run.runDir, doc, plan);
+  if (!mv.ok) return keep("rewrite-refused-by-the-merged-gate", { failures: mv.failures.slice(0, 5) });
+
+  atomicWrite(K.findings, JSON.stringify(doc, null, 2) + "\n");
+  runLog(run.runDir, { event: "knockout-review", outcome: "applied", flagged: evidence.rows.length,
+    applied: receipt.applied, declined: receipt.declined,
+    unresolved: receipt.unresolved.length, refused: receipt.refused.length,
+    excludedMarks: about.marks.length, excludedOwners: about.owners.length });
+  return doc;
+}
+
 async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
   // — the stage's own start, captured before ANY work: before the existsSync, before the validator
   // read, before the message composition. states why on the spine — capture it after the await and
@@ -811,7 +868,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
     for (let c = 0; c < chunks.length; c++) {
       await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework } });
     }
-    const merged = { schema_version: 1, framework: null, batch: null, marks: [] };
+    // `let`, because the reviewing pass below returns a REWRITTEN record rather than editing this one:
+    // the original has to survive intact as the thing that ships if the pass cannot finish cleanly.
+    let merged = { schema_version: 1, framework: null, batch: null, marks: [] };
     const summaries = [];
     for (let c = 0; c < chunks.length; c++) {
       // READ prefers the new location and falls back to the pre-relocation one, so a run whose chunks
@@ -896,6 +955,20 @@ export async function knockoutInner(ctx, job, opts = {}) {
     if (!mv.ok) throw new StageFailure("knockout-assess", `merged findings failed the lint: ${mv.failures.join("; ")}`, null);
     runLog(run.runDir, { event: "knockout-receipts", ...mv.receipts });
     atomicWrite(K.findings, JSON.stringify(merged, null, 2) + "\n");
+    // ── THE REVIEWING PASS, AFTER THE RECORD IS ON DISK AND BEFORE ANYTHING READS IT ─────────────────
+    //
+    // ORDER MATTERS THREE WAYS. The record is written FIRST so the stage's validator has something to
+    // join every address against — an address that names no line is refused while the seat can still
+    // send a repair turn, rather than reported as unresolved after the stage was declared good. It also
+    // means a run that dies inside the pass has already left a complete, valid, deliverable record: the
+    // rated one, unrewritten, which is exactly what shipped before this stage existed. And the rewritten
+    // record goes back through `validateMergedFindings` before it replaces that one, so nothing reaches
+    // a client that has not been through the same gate.
+    //
+    // NO NEW STEP LABEL. `stepTotal` is derived from `koSteps()`, so adding one would renumber the
+    // progress screen a client watches for a pass that takes a minute. It runs inside "Knockout
+    // assessment", which is what it is part of.
+    merged = await knockoutReviewingPass({ ctx, run, K, merged, plan });
     try { writeFileSync(K.assessment, String(merged.batch.executiveSummary ?? "")); } catch { /* prose mirror, best-effort */ }
 
     // 4 — publish (report + workbook + meta + index)

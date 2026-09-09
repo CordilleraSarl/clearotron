@@ -116,7 +116,7 @@ test("#1022 no run dir at all is not a grant and not a disagreement", () => {
 
 // ── PROOF 3 — the population, derived so nobody re-derives ten ──────────────────────────────────────
 
-test("#1022 the seat-write-free population is THIRTEEN, read from the frozen table", () => {
+test("#1022 the seat-write-free population is FOURTEEN, read from the frozen table", () => {
   // A naive grep for `seatWrites: false` returns more hits than the population: some are comment text,
   // one in blind-frame's FIRST OCCUPANT note and one in allowedToolsFor's own paragraph. A fix
   // sized from the grep widens itself by stages that were never in the set — which is why this is
@@ -148,10 +148,15 @@ test("#1022 the seat-write-free population is THIRTEEN, read from the frozen tab
   // than a single file. That is what makes the declaration load-bearing for it: the note had no
   // validator of its own — the stage's `out` is the plan — so before this conversion a seat could skip
   // the document entirely and pass.
+  // knockout-review joins as the FOURTEENTH, and it is the first member that was never anything else:
+  // every stage above declared `seatWrites: false` at a conversion, as a change against a measured
+  // tool-free row. This one was born typed, so its declaration records no transition — which makes it
+  // the first member for which "the seat writes nothing here" is a property of the design rather than
+  // the outcome of removing a Write grant.
   assert.deepEqual([...SEAT_WRITE_FREE_STAGES], [
-    "blind-frame", "doubt-closure", "frame-diff", "knockout-assess", "knockout-frame", "matter-frame",
-    "narrative-refutation", "prelim-variants", "register-digest", "report-card", "report-overview",
-    "skeptic", "synthesis",
+    "blind-frame", "doubt-closure", "frame-diff", "knockout-assess", "knockout-frame", "knockout-review",
+    "matter-frame", "narrative-refutation", "prelim-variants", "register-digest", "report-card",
+    "report-overview", "skeptic", "synthesis",
   ]);
 });
 
