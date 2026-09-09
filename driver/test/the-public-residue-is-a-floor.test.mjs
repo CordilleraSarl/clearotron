@@ -25,8 +25,8 @@
 // residue has no reason to be given room to grow.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, rmSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -289,4 +289,84 @@ test("a staged-but-uncommitted file is laid over this tree, not published in it"
   assert.equal(censusOf(tracked, read).total, 2, "the control: unfiltered, both files count — so the filter is what removed one");
 
   rmSync(dir, { recursive: true, force: true });
+});
+
+// ── THE CUT-RECORD MODE ANNOUNCEMENT IS PINNED, BECAUSE IT WAS HELD BY NOTHING ──────────────────────
+//
+// `announceWithheldMode()` says which mode the accessor is in, once, to stderr. Its own header claimed a
+// test pinned that. Measured: no test in either repository imported it or asserted its line, so the
+// wording was held by nothing and deleting the announcement entirely would have passed every gate.
+//
+// THESE ARMS PIN THE PROPERTY, NOT THE SENTENCE, and that is deliberate rather than lazy. The header and
+// the line are under correction on another branch; an arm matching the exact wording would go red when
+// that lands, and the obvious repair — re-point the literal — is how a check gets quietly weakened into
+// a change-detector. What has to hold either way: the two modes say different things, the present one
+// counts its entries, the absent one says nothing is withheld, and it is emitted ONCE.
+
+/** Drive the accessor in a throwaway tree, with or without a record. Returns { out, err, json }. */
+function driveAccessor({ record = null, calls = 1 } = {}) {
+  const dir = mkdtempSync(join(tmpdir(), "withheld-mode-"));
+  const shared = join(dir, "shared");
+  mkdirSync(shared, { recursive: true });
+  writeFileSync(join(shared, "withheld-paths-access.mjs"),
+    readFileSync(join(ROOT, "shared", "withheld-paths-access.mjs"), "utf8"));
+  if (record) writeFileSync(join(shared, "withheld-paths.mjs"), record);
+  const probe = join(dir, "probe.mjs");
+  writeFileSync(probe, `
+    const m = await import("./shared/withheld-paths-access.mjs");
+    const lines = [];
+    for (let i = 0; i < ${calls}; i++) lines.push(m.announceWithheldMode());
+    console.log(JSON.stringify({
+      present: m.CUT_RECORD_PRESENT, withheld: m.WITHHELD.length,
+      isWithheld: m.isWithheld("corpus/a.mjs"), entry: m.withheldEntryFor("corpus/a.mjs"),
+      lines,
+    }));
+  `);
+  const r = spawnSync(process.execPath, [probe], { cwd: dir, encoding: "utf8" });
+  const parsed = JSON.parse(r.stdout);
+  rmSync(dir, { recursive: true, force: true });
+  return { json: parsed, err: r.stderr ?? "" };
+}
+
+const A_RECORD = `
+  export const WITHHELD = [{ path: "corpus/a.mjs", why: "withheld by the cut" }];
+  export const withheldEntryFor = (p) => WITHHELD.find((e) => e.path === p) ?? null;
+  export const isWithheld = (p) => withheldEntryFor(p) !== null;
+`;
+
+test("with NO cut record every accessor degrades to the strict answer, and says so", () => {
+  const { json, err } = driveAccessor();
+  assert.equal(json.present, false);
+  assert.equal(json.withheld, 0);
+  assert.equal(json.isWithheld, false, "nothing is withheld, so every citation must resolve");
+  assert.equal(json.entry, null);
+  assert.ok(json.lines[0].length > 0, "the mode is stated, not left to be inferred");
+  assert.match(err, /repo-guard/, "and it reaches stderr, where a run can see it");
+  assert.match(json.lines[0], /nothing counts as withheld/i);
+});
+
+test("with a record present the accessor answers from it, and the line COUNTS the entries", () => {
+  const { json, err } = driveAccessor({ record: A_RECORD });
+  assert.equal(json.present, true);
+  assert.equal(json.withheld, 1);
+  assert.equal(json.isWithheld, true);
+  assert.deepEqual(json.entry, { path: "corpus/a.mjs", why: "withheld by the cut" });
+  assert.match(json.lines[0], /\b1\b/, `the present line must carry its entry count: ${json.lines[0]}`);
+  assert.match(err, /repo-guard/);
+});
+
+test("THE TWO MODES SAY DIFFERENT THINGS — one line for both would be no announcement at all", () => {
+  const absent = driveAccessor().json.lines[0];
+  const present = driveAccessor({ record: A_RECORD }).json.lines[0];
+  assert.notEqual(absent, present);
+});
+
+test("it is announced ONCE however often it is asked, and still RETURNS on every call", () => {
+  // The latch is the whole design: this is called at module scope by more than one script, and a line
+  // repeated per import is a line people stop reading.
+  const { json, err } = driveAccessor({ calls: 4 });
+  assert.equal(json.lines.length, 4, "every call returns the line");
+  assert.equal(new Set(json.lines).size, 1, "and returns the same one");
+  const emitted = err.split("\n").filter((l) => l.includes("repo-guard")).length;
+  assert.equal(emitted, 1, `emitted ${emitted} times to stderr across four calls; the latch is gone`);
 });
