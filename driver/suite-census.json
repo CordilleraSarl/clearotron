@@ -389,7 +389,7 @@
         },
         "a-partial-payload-cannot-delete-what-it-omits.test.mjs": {
           "tests": 11,
-          "asserts": 42,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
