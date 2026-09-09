@@ -27,8 +27,8 @@
 //
 // `proven` · `failed` (with the provider's own reason) · `cannot-prove` (with why).
 //
-// Reporting a provider that CANNOT be probed as `failed` is the could-not-look defect that tracker
-// issues 1864 and 1874 both closed this week — a check that could not run reported as a check that
+// Reporting a provider that CANNOT be probed as `failed` is the could-not-look defect that two
+// separate filings closed this week — a check that could not run reported as a check that
 // found something wrong. The count kernel beside this file sets the precedent: it returns `total: null`
 // with a reason rather than a zero it did not count.
 //

@@ -712,7 +712,7 @@ export function describeForAudience(def, kind) {
 }
 
 /**
- * Attach MCP tool annotations — tracker issue 148.
+ * Attach MCP tool annotations.
  *
  * No tool declared any, so a client could not tell `brief` from `start_run` and asked before every
  * call. `readOnlyHint` is DERIVED from the scope table's `write` flag (`readOnlyFor`) rather than

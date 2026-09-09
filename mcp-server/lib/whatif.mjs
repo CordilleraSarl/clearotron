@@ -230,7 +230,7 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   //   1. askArchivedRun (driver/whatif-memo-run.mjs, 323 lines with its own arms) was imported by
   //      nothing but its own test. Composed and completely unreachable.
   //   2. The refusal below was called WITHOUT `kind`, so it defaulted to "stage" and refused every
-  //      memo with "what-if runs on live runs only" — the exact sentence tracker issue 132 was filed
+  //      memo with "what-if runs on live runs only" — the exact sentence the fix was written
   //      to delete. whatIfEnqueue passes the kind (see its own note); this door did not.
   //
   // So a memo was accepted at the front door, PROMISED to the client, and killed in the worker where
