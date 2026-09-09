@@ -706,7 +706,7 @@ export type ConnectOffer = {
   /**
    * Where the reader MEETS this assistant, when one product is reachable two ways — "app, web, and
    * Cowork" against "app, on this computer". It exists so one app can appear once per route without two
-   * rows implying two products (tracker issue 147; owner: "its just ONE APP"). Absent on a row only
+   * rows implying two products (decided: it is just one app). Absent on a row only
    * reachable one way, and absent means absent rather than empty.
    */
   readonly sub?: string
@@ -723,7 +723,7 @@ export type ConnectOffer = {
    *
    * The page composes `Paste it into {name}`, which works for every proper noun — Claude, ChatGPT,
    * Perplexity — and not for a row whose name is a description: "Paste it into Another agent" is not
-   * English (tracker issue 147, owner ruling 2026-09-06, option B). Absent on every row where the
+   * English (owner ruling 2026-09-06, option B). Absent on every row where the
    * composed sentence reads, and absent means compose it — never an empty string.
    *
    * ON THE ROW RATHER THAN IN THE SCREEN because no surface may branch on a client's identity; a branch
@@ -1251,7 +1251,7 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       if (asString(body['error']) === 'config_surface_unavailable') return { kind: 'surfaceUnavailable' }
       return { kind: 'notFound' }
     case 409: {
-      // ── READ BOTH SPELLINGS (tracker issue 94, finding F14) ────────────────────────────────────────
+      // ── READ BOTH SPELLINGS (finding F14) ────────────────────────────────────────
       //
       // The server writes a refusal under `error` in most places and under `errors[]` in others, and
       // this branch read only the singular — so the one 409 a first-time visitor is most likely to meet,

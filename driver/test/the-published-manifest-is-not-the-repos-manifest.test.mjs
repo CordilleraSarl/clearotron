@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The published manifest is not this repository's manifest — tracker issue 180.
+// The published manifest is not this repository's manifest.
 //
 // ── the outage these arms are made of ───────────────────────────────────────────────────────────────
 //
@@ -99,7 +99,7 @@ test("the strip is one policy, and the repo manifest still carries what it strip
 
   // AND THE REASON THE KEY IS THERE AT ALL. `overrides` pins the clean-room replacement for the
   // unlicensed `buffers@0.1.1` while resolving THIS tree. If it ever leaves package.json this arm
-  // should be the thing that says so, because the fix for tracker issue 180 would then look like
+  // should be the thing that says so, because the fix would then look like
   // deleting the key from the repository — which throws away the licence substitution to fix the
   // packaging, and both problems come back.
   const repo = JSON.parse(readFileSync(join(REPO, "package.json"), "utf8"));

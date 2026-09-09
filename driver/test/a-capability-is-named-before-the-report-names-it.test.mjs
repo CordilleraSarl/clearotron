@@ -36,7 +36,7 @@ import { PRODUCTS } from "../products.mjs";
 const withCreds = (enrolled) => {
   const dir = mkdtempSync(join(tmpdir(), "caselaw-creds-"));
   // A CREDENTIAL, NOT AN EMPTY FILE. This wrote `"{}"`, which modelled enrolment as "a file exists" —
-  // the very test tracker issue 173 replaced, because a zero-byte or contentless file read as an
+  // the very test this replaced, because a zero-byte or contentless file read as an
   // enrolled source and made a delivered report disclose an outage that never happened. What a
   // one-time OAuth exchange actually writes is a token pair, and `tokens.refresh_token` is the part
   // that makes the credential usable, so that is what a fixture standing in for one has to carry.
@@ -174,7 +174,7 @@ test("2087 arm 6 — doctor and install both name it, and install still collects
   const body = section.slice(0, section.indexOf("issue 1891"));
   // THE PROPERTY, DRIVEN — not "does the word `problem(` appear in this slice".
   //
-  // That grep was the arm until tracker issue 173, and it was a proxy: it protected the exit contract
+  // That grep was the arm until this change, and it was a proxy: it protected the exit contract
   // by forbidding a CALL, and the contract is about a STATE. 173 added a third case the original two
   // could not express — a credential that is PRESENT and cannot work — which is a misconfiguration and
   // must exit non-zero, while an absence must still exit 0. Under the old grep those two are the same

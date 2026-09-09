@@ -70,7 +70,7 @@ export const knockoutStatement = (framework, marks) =>
 // renders through publish/render-knockout.mjs in the product's own design language, off the same shared
 // stylesheet and brand tokens as the clearance report.
 //
-// THE REVIEWER'S NOTES ARE ON THE REPORT SINCE 2026-09-07 (owner ruling, tracker issue 274). This
+// THE REVIEWER'S NOTES ARE ON THE REPORT SINCE 2026-09-07 (owner ruling). This
 // paragraph used to end "internal working material (the purple staff notes, the model's registerEstimate)
 // is not IN the report; it lives in the audit workbook". That is now true of `registerEstimate` only: the
 // notes render on the page, labelled, and the workbook keeps its copy. See render-knockout.mjs's header
@@ -371,7 +371,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   try { ownerChecks = JSON.parse(readFileSync(driverDir(runDir, 'owner-checks.json'), 'utf8')).checks ?? []; }
   catch { ownerChecks = []; }
   // The request the run was given, read the same tolerant way as the sidecars above and for the same
-  // reason (tracker issue 331 A.1). It is what "About this request" states; a run archived before the
+  // reason (A.1). It is what "About this request" states; a run archived before the
   // sidecar existed has none, and its page renders exactly as it was delivered.
   let instructedScope = null;
   try { instructedScope = JSON.parse(readFileSync(driverDir(runDir, 'instructed-scope.json'), 'utf8')); }

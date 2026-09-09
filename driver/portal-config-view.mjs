@@ -10,7 +10,7 @@
 // ── THE FLAG PART ───────────────────────────────────────────────────────────────────────────────────
 //
 // This RENDERS the snapshot, NOT process.env, and that is still the rule — but the reason written here
-// until tracker issue 170 was measurably out of date, so it is restated rather than repeated. It said
+// until it was measurably out of date, so it is restated rather than repeated. It said
 // "portal-service's unit deliberately carries no environment file". It does:
 // `driver/systemd/clearotron-portal.service` carries `EnvironmentFile=%h/.env`, and sets
 // `CLEAROTRON_NO_ENV_FILE=1` precisely because systemd has already supplied it.
@@ -44,8 +44,8 @@
 import { statSync, openSync, readSync, closeSync } from "node:fs";
 
 import { readFlagSnapshot, engineFor, providersFor, postureDisagreement } from "./flag-snapshot.mjs";
-// `isStale` is deliberately NOT imported any more: the age banner is retired (owner ruling, tracker
-// issue 170). The function stays exported for other readers; this page no longer asks how old a
+// `isStale` is deliberately NOT imported any more: the age banner is retired (owner ruling,
+// 2026-09-05). The function stays exported for other readers; this page no longer asks how old a
 // reading is, because the question it was standing in for — does this still describe the box — now has
 // a direct answer in `lastRun.disagrees`.
 import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVED at read time, never stored
@@ -110,7 +110,7 @@ function postureView(snap) {
 /**
  * The configuration view.
  *
- * THE ANSWER IS THE LIVE CONFIGURATION, ALWAYS — owner ruling 2026-09-05, on tracker issue 170:
+ * THE ANSWER IS THE LIVE CONFIGURATION, ALWAYS — owner ruling 2026-09-05:
  * "the global configuration page shows LIVE configuration, always. No run-time snapshot as the source of
  * truth — I don't see why it needs to take an old snapshot." Age banners go with it.
  *

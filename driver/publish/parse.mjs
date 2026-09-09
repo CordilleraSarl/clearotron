@@ -243,7 +243,7 @@ export function stripTelemetry(md) {
 // packaged MCP and any future consumer get it from one definition.
 //
 // WHY NOT RE-WORD THE BUILDER. The audit workbook and the internal surfaces keep the engine's vocabulary
-// by ruling (tracker issue 831 "Out of scope"), and `resolution` is the audit trail's own record of which finding a
+// by ruling ("Out of scope"), and `resolution` is the audit trail's own record of which finding a
 // claim resolved to. Changing what buildAuditMd stamps would take the word off an internal surface that is
 // entitled to it. The boundary is where the audience changes, so the boundary is where the cut belongs —
 // the same shape as scrubCards' `rated_under` → ratedUnderForClient, which is the precedent in that file.
@@ -256,7 +256,7 @@ export function stripTelemetry(md) {
 // Each rule is ANCHORED to one position in a grammar THIS ENGINE writes: the disposition token at the head
 // of `resolution`, and the disposition token inside the `(finding #N, …)` parenthetical the contradiction
 // line builds. A mark named ADVERSARIAL survives both — it is not at position 0 of a resolution line, and
-// it is not inside a finding-reference parenthetical. That is the tracker issue 656 lesson applied: match a POSITION in
+// it is not inside a finding-reference parenthetical. That is the lesson applied: match a POSITION in
 // a grammar we own, never a word anywhere in a string we do not.
 //
 // The enum is IMPORTED (top of file), never retyped: a sixth disposition added to findings-model must not
@@ -292,7 +292,7 @@ export function contradictionResolutionForClient(v) {
 
 // ── ENGINE_PLAIN AND plainify ARE DELETED ────────────────────────────────────────────────────
 //
-// doc-52 put nineteen find-and-replace rules on the rendered client surface. tracker issue 656 is what that cost:
+// doc-52 put nineteen find-and-replace rules on the rendered client surface. This is what that cost:
 // `axis` -> `group` turned "AXIS Bank filed in class 36" into "group Bank filed in class 36" — a report
 // naming a mark that does not exist, inside the report that clears it. AXIS and SLICE are both live
 // trademarks. The ban list and the trademark register overlap, and this engine exists to search the
