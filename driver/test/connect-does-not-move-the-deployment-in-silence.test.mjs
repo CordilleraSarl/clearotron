@@ -4,7 +4,7 @@
 // `clearotron connect` repointed the whole install at whatever checkout it ran from.
 //
 // `CLEAROTRON_CHECKOUT_DIR` decides which tree every unit's ExecStart executes and which tree the
-// deploy timer fast-forwards. `connect` wrote it from its own location, silently. Driven on testuser:
+// deploy timer fast-forwards. `connect` wrote it from its own location, silently. Driven on the test deployment:
 // the next deploy tick fast-forwarded a DETACHED worktree and failed with "You are not currently on a
 // branch", and one unit was left executing the temporary worktree while three still ran the real
 // checkout — because only the one connect restarted had restarted. Deleting that worktree would have

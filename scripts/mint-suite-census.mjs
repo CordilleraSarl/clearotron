@@ -153,7 +153,7 @@ function main() {
   try { prev = JSON.parse(readFileSync(CENSUS, "utf8")); } catch { /* first mint */ }
 
   const lost = [];
-  // THE THIRD BUCKET, ruled by overwatch 2026-09-06.
+  // THE THIRD BUCKET, decided 2026-09-06.
   //
   // A reasoned skip is neither a pass nor a loss, and this census had no place to put one. Two guards
   // that are each right about their own failure had come to disagree: `a-bail-on-an-unmeetable-

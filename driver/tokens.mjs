@@ -144,7 +144,7 @@ export function rollupTokens(runDir) {
       // `model: "code"` / `modelUsed: "code:execute-plan"` and carries NO engine and NO authMode fields,
       // because no engine served it and nobody was billed. Read with `?? "unknown"` it landed in the
       // bucket that means "we could not attribute this dispatch" — beside genuinely unstamped rows — and
-      // destroyed that bucket's whole diagnostic value, which role-e2e doctrine actively reads. It also
+      // destroyed that bucket's whole diagnostic value, which the testing doctrine actively reads. It also
       // made this rollup contradict `run-economics.byBilling`, which had the branch and got it right, on
       // the same dispatch in the same run. `isCodeSide` is IMPORTED from that module, not copied: one
       // definition, because two copies drifting apart is how the disagreement started.

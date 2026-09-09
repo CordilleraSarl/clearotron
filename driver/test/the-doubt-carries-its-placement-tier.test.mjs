@@ -136,7 +136,7 @@ test("#1503 the note states what was dropped and what was asked for want of a ke
 //
 // That architecture table has THREE rows and its columns are `P4 | P3 | P2`. The row that carries
 // these tier words is `placement-inquiry trace`, whose typed key is the placement tier. The
-// `doubt-closure` row carries `all | bands 1+2 | band 1`, keyed on FINDING CLASS — and eggie measured
+// `doubt-closure` row carries `all | bands 1+2 | band 1`, keyed on FINDING CLASS — and testing measured
 // 0 of 420 open doubts joining on finding class, which is why the key had to move at all.
 //
 // So these values are the placement-inquiry row's, adopted for doubt-closure BECAUSE IT IS NOW THE SAME
@@ -160,7 +160,7 @@ test("#1503 exactly the ruled products resolve to a live doubt-closure cut, and 
   //   global-preliminary-search  → NOTHING red, across all three doubt test files
   //   multi-country-focus-search → NOTHING red
   //
-  // Found in review by role-e2e scruffy, on merged code. A guard's subject list is as complete as
+  // Found in review, on merged code. A guard's subject list is as complete as
   // whoever typed it, and mine had one name in it. The arm now pins the ruled set the same way, so a
   // fourth product, or a changed cut, is a deliberate edit here and not a drift.
   const { PRODUCT_POLICIES, depthFor } = await import("../search-policy.mjs");
@@ -270,7 +270,7 @@ test("#1503 the pipeline reads the cut, and the SIDECAR lists exactly what the D
 test("#1503 the tier counts are REAL under `every-doubt` — the only cut that ships", () => {
   // THE DEFECT THIS PINS. `doubtsForClosure` returned `{keyed: 0, keyless: 0}` before the loop whenever
   // no cut was live, and `TIER_CUTS["every-doubt"] === null`, so every shipped product recorded hard
-  // zeros. R2 on 44654e02: `{of: 31, selected: 31, keyed: 0, keyless: 0}`. Found by role-e2e eggie on
+  // zeros. R2 on 44654e02: `{of: 31, selected: 31, keyed: 0, keyless: 0}`. Found in review on
   // the artifacts, not by this suite — the arm above asserts `ids === null` and says nothing about the
   // counts, so the counts were RECORDING-ONLY and a recording-only field is protected by a test or by
   // nothing.

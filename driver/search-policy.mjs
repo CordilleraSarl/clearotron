@@ -207,7 +207,7 @@ export const PRODUCT_POLICIES = {
       // 199 of those same 420 carry one. The driver now reads this row and can cut on that tier
       // (doubt-selection.mjs).
       //
-      //, owner-ruled 2026-08-23, product by product (reached this branch as an overwatch relay on
+      //, owner-ruled 2026-08-23, product by product (reached this branch on
       // that thread, not as a comment from the owner's own hand — the box has one `gh` identity).
       // It is the P2 column of that table's `placement-inquiry trace` row — the row whose typed key is
       // the placement tier. This stage's OWN row reads `bands 1+2 / band 1` on FINDING CLASS, which is

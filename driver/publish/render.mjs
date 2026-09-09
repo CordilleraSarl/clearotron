@@ -1675,12 +1675,28 @@ function dedupeFollowUps(coverage) {
     // The directive is the note's opening clause — the same string the area was clipped from, unclipped.
     const directive = covWords(String(c.note || '').split('—')[0]);
     if (!directive.size) return true;
-    // MATCHED AGAINST THE OTHER ROW'S AREA, not its whole text. The rule is "the two rows name the same
-    // search", and a row names its search in its area; its note is free prose about it. Matching the
-    // note as well was wrong in the direction that costs a reader: a one-word directive like "dolphin"
-    // is contained by any row that mentions dolphins in passing, so an unrelated marketplace row
-    // silently swallowed a disclosed gap. Driven — that case is an arm.
+    // A COMPLETED SEARCH NEVER STANDS IN FOR AN UNCOMPLETED ONE. This is the discriminator the first
+    // version lacked, and it hid a real gap from a client on a delivered page.
+    //
+    // The composed row exists to say a planned search never ran. Suppressing it requires another row
+    // saying THE SAME THING about the same search — so the row that suppresses must itself be open. A
+    // row reporting a search that RAN is reporting the opposite, and the two are not interchangeable
+    // however many words they share.
+    //
+    // Found on a real run, driven on the shipped renderer: a completed saturation probe into
+    // third-party dolphin-word rights suppressed the uncompleted exact-word register search for DOLPHIN,
+    // because both areas contain "dolphin". The client then read a coverage section that mentioned the
+    // word and disclosed nothing left undone, and the suppressed row was the page's only disclosure of
+    // it. That is exactly the failure this function's header calls the one worth avoiding, and the
+    // header was right while the code was not.
+    //
+    // WHAT THIS STILL CANNOT DO, said rather than implied: it is word containment, so two genuinely
+    // different OPEN searches sharing every word of a short directive would still collapse to one. The
+    // discriminator a reader would want is which search a row names, and the rows carry no identity to
+    // join on — that is why the issue's own wording is "name the same search" rather than a rule. The
+    // narrowing here is the strongest one the data supports, and it errs toward keeping both.
     return !written.some((w) => {
+      if (COV_STATE[w?.state]?.cls === 'ok') return false;   // a searched-and-clean row reports the opposite
       const theirs = covWords(w.area);
       return [...directive].every((word) => theirs.has(word));
     });

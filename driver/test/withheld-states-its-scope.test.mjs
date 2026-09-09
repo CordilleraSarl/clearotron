@@ -13,7 +13,7 @@
 // mark is among the nine reference marks, so neither was ever examined, and `withheld` could not have
 // risen for them however many there were.
 //
-// WHY THAT MATTERS MORE THAN THE DEFECT IT HID. `role-e2e` calls `withheld` "the bucket that changes
+// WHY THAT MATTERS MORE THAN THE DEFECT IT HID. The testing doctrine calls `withheld` "the bucket that changes
 // what you fix — a mark the run retrieved and then dropped before the findings list is a
 // gather-to-judgment seam defect, not a recall one". A bare `0` beside that sentence reads as "no seam
 // defect this round". And the run's own coverage ledger said `confirmed-clean`, "every right found is
