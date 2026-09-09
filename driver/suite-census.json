@@ -135,6 +135,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-company-created-in-the-browser-is-a-whole-company.test.mjs": {
+          "tests": 6,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,

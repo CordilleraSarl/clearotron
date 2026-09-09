@@ -167,6 +167,33 @@ export function buildProfile({ key, name, domains, platforms, framework, industr
  * by name rather than broadly, because every other thing that loader throws — an overlapping domain, an
  * unknown key, an unreadable store — is a real refusal this command must still relay.
  */
+/**
+ * The key a company gets from its name — the filename, and the key every screen and route uses.
+ *
+ * ONE SPELLING FOR BOTH DOORS. The command line takes the key as an argument and the browser derives it
+ * from the name, so without this the two doors would file "Acme Ltd" under different keys depending on
+ * which one you used, and neither would be wrong.
+ *
+ * Capped well under the validator's 39 characters and stripped of leading and trailing hyphens, so a
+ * name made entirely of punctuation produces nothing rather than a key of dashes — the caller then
+ * refuses and asks for the key, which is honest, where inventing one would file a company under a name
+ * nobody chose.
+ */
+export function companyKeyFrom(name) {
+  return String(name ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    // COMBINING MARKS ARE DROPPED, NOT SEPARATED. NFKD splits "ü" into "u" + a combining diaeresis, and
+    // the class below would turn that mark into a hyphen — so "Zürich Präzision" filed as
+    // "zu-rich-pra-zision". Accented company names are the normal case in the languages this product
+    // works in, not an edge.
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 39)
+    .replace(/-+$/, "");
+}
+
 export function rosterAsItStands(store, loadProfiles) {
   try { return loadProfiles({ dir: store, force: true }); }
   catch (e) {
@@ -181,9 +208,19 @@ export function assertRosterAccepts({ store, key, profile, loadProfiles }) {
   // here, before anything is written. Everything below this line reads the store AS IT STANDS, which is
   // why none of it could ever see a bad field in the file about to be added: the candidate never met the
   // loader until the next command did, and by then the write had landed.
+  // `generic` IS RESERVED AND THE KEY RULE DOES NOT SAY SO. `PROFILE_KEY_RE` matches it, while the
+  // comment above that regex claims the create path never allows it — so the rule was a sentence rather
+  // than a check. On a store with no `generic.json` of its own, creating one here writes a file that
+  // shadows the bundled universal fallback for every job that names no company, which is silent and
+  // affects every clearance rather than one. Refused at the gate both doors pass through.
+  if (String(key).toLowerCase() === "generic")
+    throw new Refusal(
+      `"generic" is the house default every unprofiled clearance falls back to, so it cannot be created `
+      + `as a company. Nothing has been written. Pick another key.`);
+
   const v = validateProfileEdit(key, profile);
   if (!v.ok)
-    throw new Refusal(`the brand owner bundle is not valid, so nothing was written:\n  ${v.errors.join("\n  ")}`);
+    throw new Refusal(`the company bundle is not valid, so nothing was written:\n  ${v.errors.join("\n  ")}`);
 
   const existing = rosterAsItStands(store, loadProfiles);
   if (existing.has(key))
