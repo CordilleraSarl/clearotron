@@ -22,6 +22,7 @@ import { Icon } from '../components/Icon.tsx'
 import type { CompanyFacts } from '../contract/companyFacts.ts'
 import type { Role } from '../contract/api.ts'
 import { pickerRows, GENERIC_KEY, type CompanyRow } from './companyRows.ts'
+import { canManage } from './permissions.ts'
 
 export { pickerRows, GENERIC_KEY }
 
@@ -77,7 +78,7 @@ export function CompanyPicker({
   readonly factsFor: (key: string) => CompanyFacts | undefined
   readonly role: Role
   readonly onPick: (key: string) => void
-  /** Absent ⇒ no create control. A client never gets one. */
+  /** Absent ⇒ no create control. Someone without Manage never gets one. */
   readonly onAdd?: (() => void) | undefined
 }) {
   const rows = pickerRows(keys, companyName, factsFor, role)
@@ -120,7 +121,10 @@ export function CompanyPicker({
  * reason the four call sites are one line each: the last version of this was a paragraph of JSX
  * repeated four times, and all four copies were wrong together.
  *
- * `+ New company` is staff-only and opens the create screen, which is level 2 and lands with it.
+ * `+ New company` is shown to people who may MANAGE — add companies, add people, change settings —
+ * and opens the create screen, which is level 2 and lands with it. The control asks the permission
+ * rather than the role word: the role is what the wire happens to carry today, the permission is
+ * what the product means. `shell/permissions.ts` holds the one derivation.
  */
 export function CompanyGate({
   ctx,
@@ -150,7 +154,7 @@ export function CompanyGate({
       factsFor={ctx.factsFor}
       role={ctx.me.role}
       onPick={(key) => ctx.setOwner(key)}
-      onAdd={ctx.me.role === 'staff' ? () => ctx.go(NEW_COMPANY_PATH) : undefined}
+      onAdd={canManage(ctx.me) ? () => ctx.go(NEW_COMPANY_PATH) : undefined}
     />
   )
 }
