@@ -163,6 +163,18 @@ export const GUARDED_AT_THE_WALK = [
   },
 
   {
+    file: "driver/test/framework-lint.test.mjs",
+    symbol: "dir",
+    expr: "readdirSync(dir).filter((x) => /^risk-framework.*\\.md$/.test(x))",
+    provedBy: "the framework population refuses to be empty, and a store with no frameworks of its own is not empty",
+    why: "the per-root step of the two-root framework sweep. A configured store carrying no framework of "
+       + "its own is the ORDINARY state — the repository's decks answer — so refusing at each root would "
+       + "refuse a healthy install. What must never be empty is the union, because every arm in that file "
+       + "asserts a rule over the frameworks it found and would pass over none. reachableFrameworks() "
+       + "guards what the two roots collected, names them in its refusal, and takes them as a parameter.",
+  },
+
+  {
     file: "driver/test/a-failed-run-tells-the-client-what-to-do.test.mjs",
     symbol: "walk",
     expr: "readdirSync(dir, { withFileTypes: true })",

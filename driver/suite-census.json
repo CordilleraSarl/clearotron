@@ -2218,8 +2218,8 @@
           "todos": 0
         },
         "framework-lint.test.mjs": {
-          "tests": 8,
-          "asserts": 38,
+          "tests": 11,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -3040,8 +3040,8 @@
           "todos": 0
         },
         "profile-service.test.mjs": {
-          "tests": 31,
-          "asserts": 157,
+          "tests": 32,
+          "asserts": 162,
           "skips": 0,
           "todos": 0
         },

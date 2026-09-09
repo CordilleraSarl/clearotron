@@ -204,6 +204,58 @@ test("view lifts bandMeanings from the REAL shipped decks — matrix table (auro
   assert.equal("bandMeanings" in ms.manifest, false, "bandMeanings must never become a manifest field");
 });
 
+// ── the framework a customer no longer has, answered by the shipped file of the same name ────────────────
+//
+// The install's config store holds each customer's own deck. Take one out — a bad sync, a hand-edit, a
+// restore from the wrong backup — and resolution falls through to the repository, which ships
+// `risk-framework-aurora.md` and `risk-framework-zephyr.md` under exactly the names customers use. What
+// arrives is readable, valid and somebody else's rubric, and every page and every rating carried on as
+// though nothing had happened. This is the line that says otherwise.
+//
+// ONCE PER PATH, and the second half of this arm is the load-bearing one: these run on every profile view,
+// and a warning printed per view is a warning that gets filtered out of the log by the person reading it.
+test("a framework served by the repository while a store is configured is reported, once", async () => {
+  const store = mkdtempSync(join(tmpdir(), "fw-store-"));
+  const before = process.env.CLEAROTRON_INSTRUCTIONS_DIR;
+  const said = [];
+  const realErr = console.error;
+  console.error = (...a) => { said.push(a.join(" ")); };
+  try {
+    // the store holds zephyr's pair and NOT aurora's — one customer's deck present, one gone
+    mkdirSync(join(store, "skills", "prelim-search"), { recursive: true });
+    for (const f of ["risk-framework-zephyr.md", "risk-framework-zephyr.manifest.json"])
+      writeFileSync(join(store, "skills", "prelim-search", f),
+        readFileSync(join(DRIVER_ROOT, "skills", "prelim-search", f), "utf8"));
+    process.env.CLEAROTRON_INSTRUCTIONS_DIR = join(store, "skills");
+
+    const { service } = svcWithFramework();
+    const a1 = (await service.route("GET", "/profiles/aurora", STAFF)).json.framework;
+    // THE PAGE STILL WORKS, which is the whole problem — the substitution is invisible on the surface
+    assert.ok(a1.bandMeanings?.length, "the shipped deck renders perfectly well; nothing on the page is wrong");
+
+    const swapped = said.filter((l) => /served from the shipped tree/.test(l));
+    assert.ok(swapped.length >= 1, `the substitution must be said: ${JSON.stringify(said)}`);
+    assert.ok(swapped.every((l) => /risk-framework-aurora/.test(l)), "it names the framework that was substituted");
+
+    const afterFirst = swapped.length;
+    await service.route("GET", "/profiles/aurora", STAFF);
+    await service.route("GET", "/profiles/aurora", STAFF);
+    assert.equal(said.filter((l) => /served from the shipped tree/.test(l)).length, afterFirst,
+      "said once per path — a line per view is a line that gets filtered out");
+
+    // and the customer whose deck IS in the store draws no line at all
+    const beforeZ = said.length;
+    await service.route("GET", "/profiles/zephyr", STAFF);
+    assert.equal(said.slice(beforeZ).filter((l) => /served from the shipped tree/.test(l)).length, 0,
+      "a deck the store holds is not a substitution");
+  } finally {
+    console.error = realErr;
+    if (before === undefined) delete process.env.CLEAROTRON_INSTRUCTIONS_DIR;
+    else process.env.CLEAROTRON_INSTRUCTIONS_DIR = before;
+    rmSync(store, { recursive: true, force: true });
+  }
+});
+
 test("bandMeanings is best-effort: a missing framework asset serves the view WITHOUT the key — never a 500", async () => {
   const dir = mkdtempSync(join(tmpdir(), "profile-svc-"));
   writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "House default", platforms: ["amazon.com"] }));
