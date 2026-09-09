@@ -49,6 +49,10 @@ const specs = (): readonly FieldSpec[] => PROFILE_FIELDS.filter((f) => CREATE_FI
 export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   const [state, setState] = useState<FormEdit>({ draft: {}, edits: {} })
   const [keyEdited, setKeyEdited] = useState<string | null>(null)
+  // Whether anybody has touched the trading-names box. Until they have, it FOLLOWS the name — and after
+  // they have, it stops, the same rule the key follows. A box that kept re-deriving would overwrite what
+  // somebody had just typed into it on the next keystroke in the name field.
+  const [namesTouched, setNamesTouched] = useState(false)
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<Result<CreatedCompany> | null>(null)
 
@@ -79,6 +83,9 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
     // server derives the same key from the same rule when none is sent.
     const body: Record<string, unknown> = { ...state.draft }
     if (keyEdited) body['key'] = keyEdited
+    // What the box was showing is what gets sent. Untouched, it was showing the name, and a box a person
+    // read and accepted has to mean the same thing as a box they typed into.
+    if (!namesTouched && typedName) body['selfExclusionOwners'] = [typedName]
     const r = await api.createCompany(body)
     setBusy(false)
     setResult(r)
@@ -142,9 +149,18 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
                 <div key={spec.key}>
                   <Field
                     spec={spec}
-                    value={boxValue(state, spec)}
+                    // The company's own name IS a trading name, and the reasoning reads that set as the
+                    // company's own rights — so a company created without one is checked against itself
+                    // and can come back as a conflict with its own mark. It follows the name rather than
+                    // being posted invisibly, so somebody can see it and add the brands it trades under.
+                    value={spec.key === 'selfExclusionOwners' && !namesTouched
+                      ? typedName
+                      : boxValue(state, spec)}
                     choices={null}
-                    onChange={(v) => setState((s) => typeField(s, spec, v))}
+                    onChange={(v) => {
+                      if (spec.key === 'selfExclusionOwners') setNamesTouched(true)
+                      setState((st) => typeField(st, spec, v))
+                    }}
                   />
                   {spec.key === 'name' ? <KeyLine value={key} onChange={setKeyEdited} /> : null}
                   {spec.key === 'platforms' && !boxValue(state, spec).trim() ? (
