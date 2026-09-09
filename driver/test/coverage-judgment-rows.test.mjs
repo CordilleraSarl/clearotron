@@ -302,29 +302,44 @@ test("#447: a real delivered run records the stamp's decision in its own journal
   assert.ok(!cj.rows.some((r) => r.area === "incumbent-class"),
     "and the bare token is not what ships");
 
-  // AND ON THE RENDERED SURFACE. Every other assertion in both new files stops at findings.json, so a
-  // change that reads fine as JSON and badly as prose would pass all of them. `projectCoverageJudgment`
-  // folds rows[] into the reason string and render.mjs prints it as "Coverage read (internal)" inside
-  // report.html — which, under the one-report rule, is the report the client gets.
+  // AND ON THE RENDERED SURFACE. Every other assertion in this file stops at findings.json, so a change
+  // that reads fine as JSON and badly as prose would pass all of them.
+  //
+  // RE-POINTED A THIRD TIME, and this time the surface it read is GONE rather than reworded. The rows
+  // folded into "Coverage read (internal)", which the clearance page no longer renders: it ran to about
+  // a thousand characters of the engine's own search-unit names and ended mid-word on the measured run,
+  // and every fact in it is in the coverage cells above in plain words. It stays in the artifacts and
+  // the workbook.
+  //
+  // So the positive moves to the projection — the same fold, asserted where it is produced — and what
+  // stays on the page is the NEGATIVE, which the removal makes stronger rather than weaker: the engine
+  // identifier now has no route to a reader at all.
   const poolRun = readdirSync(join(ROOT, "pool")).find((d) => d.includes("tmp447cj"));
   assert.ok(poolRun, "the delivered run publishes into the pool — that is the copy a reader opens");
   const html = readFileSync(join(ROOT, "pool", poolRun, "report.html"), "utf8");
-  const cov = /Coverage read \(internal\):<\/b>([^<]*)/.exec(html);
-  assert.ok(cov, "the delivered report carries the coverage read line the rows fold into");
-  // RE-POINTED (second pass). The property is unchanged — a scopeless row still reaches the reader
-  // saying it covers the whole thing — but the words are no longer the engine's. `plainify` translates the
-  // four closed axis identifiers at the render choke point, because a delivered report.html put
-  // "primary-sweep", "transliteration-numeric" and "slices" in front of a lawyer. The identifier survives
-  // where it is joined on (the deepEqual on cj.rows above, unchanged); only the surface changes.
-  // RE-POINTED AGAIN. The property is unchanged — a scopeless row reaches the reader saying it
-  // covers the whole thing — but it now arrives as a FIELD the driver emitted rather than as a
-  // substitution run over the rendered page. "(entire axis)" survives verbatim inside the label,
-  // because `coverageUnitLabel` rewrites the axis HEAD and nothing else: the tail is where a mark
-  // appears, and is what rewriting the tail costs.
-  assert.match(cov[1], /owner portfolio sweep \(all of it\): coverage-limited/,
-    "the whole-axis row reaches the reader saying it is the whole thing, not as a bare engine token");
-  assert.match(cov[1], /owner portfolio sweep \/ extra script group: coverage-limited/,
+
+  const { projectCoverageJudgment } = await import("../findings-model.mjs");
+  const folded = JSON.stringify(projectCoverageJudgment(cj));
+  assert.match(folded, /owner portfolio sweep \(all of it\): coverage-limited/,
+    "the whole-axis row reaches the fold saying it is the whole thing, not as a bare engine token");
+  assert.match(folded, /owner portfolio sweep \/ extra script group: coverage-limited/,
     "and a scoped row keeps the scope the ledger gave it");
-  assert.ok(!/incumbent-class/.test(cov[1]),
-    "…and the engine identifier that scope was derived from is not on the page");
+
+  assert.ok(!/Coverage read \(internal\)/.test(html),
+    "the internal coverage read is back on the delivered page — if it is, this arm is measuring a surface that was removed");
+  assert.ok(!/incumbent-class/.test(folded),
+    "…and the engine identifier that scope was derived from is not in what the fold produces");
+
+  // WHAT THIS ARM NO LONGER CLAIMS, said out loud rather than narrowed in silence. The version before
+  // this one asserted the identifier was absent from the COVERAGE READ LINE, and I widened it to the
+  // whole page — which failed, correctly: `incumbent-class` is on the page and always was, in a coverage
+  // CELL, because a cell prints the ledger row's `area` while the fold printed the driver's `areaLabel`.
+  // The cells are explicitly out of scope for the change that removed the read.
+  //
+  // So the plain label's only appearance on the page has gone with the block that carried it, and the
+  // identifier's has not. That is a consequence of this change and not a regression in it — the cell
+  // said the same thing before — and it is filed rather than fixed here.
+  assert.match(html, /Register \/ incumbent-class/,
+    "the coverage cell still prints the ledger's area — if this stops being true the cell has changed, "
+    + "and the note above it about which surface prints which field is stale");
 });
