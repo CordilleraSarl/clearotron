@@ -657,6 +657,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-stored-territory-that-does-nothing-is-named.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-terminal-guard-delivers-and-clamps.test.mjs": {
           "tests": 11,
           "asserts": 40,
