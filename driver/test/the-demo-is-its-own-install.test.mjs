@@ -24,6 +24,11 @@
 //
 // The switcher is asked through the shell's own `switcherKeys`, fed what the booted portal serves, so the
 // arm is about the list a person sees rather than a copy of the rule that builds it.
+//
+// THE ENVIRONMENT EVERY DRIVE HERE RUNS IN is composed from scratch: PATH and HOME, plus exactly the
+// variables an arm names. So neither CLEAROTRON_NO_ENV_FILE, which the suite runner sets, nor
+// INVOCATION_ID, which a process under systemd inherits (a CI job included), reaches a real entry, and
+// each reads the planted settings file the way a user's shell would have it read.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync, execFileSync } from "node:child_process";
@@ -136,9 +141,15 @@ async function signIn(port, passphrase) {
 }
 
 const PASS = "the demo arm signs in with this";
+/**
+ * Give the demo a credential this test knows. Called again once the demo is up: a demo may replace its
+ * own credential when it starts, and the passphrase it then mints is printed only on a terminal. Sign-in
+ * reads the file at every attempt, so the one written here is the one checked.
+ */
 function demoCredential(home) {
   const path = installPaths(join(home, "trademark-demo")).credential;
   mkdirSync(dirname(path), { recursive: true });
+  rmSync(path, { force: true });
   establishCredential({ path, email: "demo@localhost", passphrase: PASS });
 }
 
@@ -298,6 +309,7 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
         { PATH: process.env.PATH, HOME: home, CLEAROTRON_REPORTS_DIR: join(real, "pool"), CLEAROTRON_CUSTOMERS_DIR: store });
       assert.ok(await portalUp(base, run), `the demo's portal never answered:\n${safe(run.said()).slice(-3000)}`);
 
+      demoCredential(home);
       const cookie = await signIn(base, PASS);
       assert.ok(cookie, `signing in to the demo with its own credential returned no session:\n${safe(run.said()).slice(-1500)}`);
       const get = async (p) => {

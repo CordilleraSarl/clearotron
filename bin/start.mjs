@@ -1242,7 +1242,10 @@ if (isMain) {
   // store with its projects (`seedDemoStore`), only when the store does not already hold it.
   if (DEMO) {
     try {
-      mkdirSync(paths.skills, { recursive: true });
+      // Both directories before anything is copied: the children are pointed at the store whether or not
+      // the copy below succeeds, and a store that does not exist fails every roster read rather than
+      // showing Generic alone.
+      for (const d of [paths.profiles, paths.skills]) mkdirSync(d, { recursive: true });
       const copied = seedDemoStore({ from: join(REPO, "driver", "profiles"), to: paths.profiles, accounts: demoAccounts() });
       if (copied.length) {
         // Committed, so the store is identifiable like any other. A failure leaves the files readable,
