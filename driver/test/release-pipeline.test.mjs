@@ -779,6 +779,76 @@ test("tracker 97 the release note a customer reads is the sentence, not the comm
 });
 
 
+test("every paragraph of a note reaches the changelog, under the group it belongs to", () => {
+  // Reading only the bullets kept a note's first line and dropped every later paragraph without a word,
+  // so the 0.2.3 page carried "Five things a first-time reader could not act on." and none of the five.
+  const dir = mkdtempSync(join(tmpdir(), "release-assemble-"));
+  try {
+    mkdirSync(join(dir, "driver"), { recursive: true });
+    writeFileSync(join(dir, "driver", "CHANGELOG.md"), [
+      "# clearotron-driver", "", "## 0.3.0", "", "### Minor Changes", "",
+      "- 1a2b3c4: New: People lists who can use the installation.",
+      "  ",
+      "  Enter their email address and save.",
+      "  They sign in the same way you do.",
+      "  ",
+      "  Fixed: A framework served from the product's own files now says so.",
+      "  ",
+      "  Your store is looked in first.",
+      "- 5d6e7f8: For operators: Who may sign in is decided by each person's own entry.",
+      "  ",
+      "  - Anyone admitted by their email domain needs an entry.",
+      "  - For operators: Each person who starts clearances needs Run.",
+      "  ",
+      "  After upgrading, sign in to check.",
+      "", "### Patch Changes", "",
+      "- 9a8b7c6: Fixed: Five things a first-time reader could not act on.",
+      "  ",
+      "  A screen no longer points at a menu that is not there.",
+      "",
+    ].join("\n"));
+    const { groups, ungrouped } = assembleRoot("0.3.0", dir);
+    assert.deepEqual(ungrouped, []);
+    assert.deepEqual(groups.New, [
+      "People lists who can use the installation.",
+      "Enter their email address and save. They sign in the same way you do.",
+    ], "a later paragraph is an entry of its own, its lines joined");
+    assert.deepEqual(groups.Fixed, [
+      "A framework served from the product's own files now says so.",
+      "Your store is looked in first.",
+      "Five things a first-time reader could not act on.",
+      "A screen no longer points at a menu that is not there.",
+    ], "a paragraph naming its own group starts that group, and the paragraph after it follows it there");
+    assert.deepEqual(groups["For operators"], [
+      "Who may sign in is decided by each person's own entry.",
+      "Anyone admitted by their email domain needs an entry.",
+      "Each person who starts clearances needs Run.",
+      "After upgrading, sign in to check.",
+    ], "a list item is an entry, with or without its own group, and so is the paragraph after the list");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("a note that names no group is refused whole, and a note in two workspaces is read once", () => {
+  const dir = mkdtempSync(join(tmpdir(), "release-assemble-"));
+  try {
+    mkdirSync(join(dir, "driver"), { recursive: true });
+    mkdirSync(join(dir, "mcp-server"), { recursive: true });
+    const note = "- 1a2b3c4: Fixed: The assistant lists a new company at once.\n  \n  It used to wait for a restart.\n";
+    writeFileSync(join(dir, "driver", "CHANGELOG.md"),
+      `# clearotron-driver\n\n## 0.3.0\n\n### Patch Changes\n\n${note}- 2b3c4d5: The demo is shorter.\n  \n  It runs in a minute.\n`);
+    writeFileSync(join(dir, "mcp-server", "CHANGELOG.md"), `# trademark-artifacts-mcp\n\n## 0.3.0\n\n### Patch Changes\n\n${note}`);
+    const { groups, ungrouped } = assembleRoot("0.3.0", dir);
+    assert.deepEqual(groups.Fixed, ["The assistant lists a new company at once.", "It used to wait for a restart."],
+      "the same note in two workspaces is one note");
+    assert.deepEqual(ungrouped, ["The demo is shorter.", "It runs in a minute."],
+      "the refusal names every paragraph of the note, not only its first line");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("tracker 97 a version that merged itself still publishes, because that merge fires nothing", async () => {
   // THE DEADLOCK THIS EXISTS FOR, measured 2026-09-05 on commit `65e634a6`. The version pull request
   // merged itself and the version landed on main — and GitHub performed that merge with the built-in

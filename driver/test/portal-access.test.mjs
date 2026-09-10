@@ -142,3 +142,19 @@ test("an unknown identity gets no principal, and a multi-@ identity is refused r
   assert.equal(who("kay@northwind.example@evil.com"), null);
   assert.equal(makePrincipal({ email: "kay@northwind.example", grants: null }), null, "no grants file: nobody");
 });
+
+test("a person with one company still resolves it without naming it", () => {
+  // A client holding one company never had to name it, and the access model keeps that: the single
+  // company is implied. Tam holds Harbour and nothing else.
+  assert.equal(assertPrincipal(who("tam@harbour.example"), { account: null }), "harbour",
+    "the single company is implied");
+  // Two companies, or none of their own, and the request must name one — a 400, never a guess.
+  const two = { ...grants, tenants: { ...grants.tenants,
+    northwind: { ...grants.tenants.northwind, accounts: ["generic", "harbour", "zephyr"],
+      users: { ...grants.tenants.northwind.users, "tam@harbour.example": ["harbour", "zephyr"] } } } };
+  assert.throws(() => assertPrincipal(who("tam@harbour.example", two), { account: null }),
+    (e) => e.status === 400 && /several/.test(e.message), "two companies were resolved to one of them");
+  assert.throws(() => assertPrincipal(who("pat@southbank.example"), { account: null }),
+    (e) => e.status === 400 && /no company of its own/.test(e.message),
+    "an organisation holding no company resolved to something anyway");
+});
