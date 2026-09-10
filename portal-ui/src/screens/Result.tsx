@@ -26,6 +26,7 @@ import { askAiOffer } from '../contract/askAi.ts'
 import { useLoad } from '../state/useApi.ts'
 import { resultPath } from '../nav/nav.config.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { runKey } from '../contract/genericKey.ts'
 
 /**
  * Size the frame to its document, and drive the document's own controls from outside it.
@@ -543,7 +544,7 @@ export function Result({
           {heading}
         </h1>
         <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-          <span data-anon="mark">{ctx.ownerName(run.account)}</span>
+          <span data-anon="mark">{ctx.ownerName(runKey(run))}</span>
           {/* NOT `data-anon` — a product name is what we sell, not what a client bought it for. The
               screen-share blur covers the mark and the owner; blurring "Full country search" would hide
               the one word that tells the reader which of two open reads is in front of them. */}

@@ -120,6 +120,7 @@ test('every screen with an editable form registers, and reuses its own Save flag
     // A create form has as much to lose as an edit form and neither list knew about it: this population
     // is hand-kept, so a new screen is in neither half and forgetting the guard passes silently.
     ['screens/NewCompany.tsx', 'dirty && !result'],
+    ['screens/GiveAccess.tsx', 'dirty && !saved'],
   ] as const) {
     const s = src(file)
     assert.match(s, new RegExp(`useUnsaved\\(${flag}\\)`), `${file} registers ${flag}`)
@@ -195,7 +196,7 @@ test('account-scoped screens are keyed on the company', () => {
     'the composer keys on owner AND the edited search — both change its identity')
   // Deployment- and browser-scoped screens must NOT be keyed: remounting them on a brand switch would
   // throw away state that has nothing to do with the company.
-  for (const screen of ['UseYourAI', 'Preferences', 'GlobalConfig', 'PeopleAccess', 'NewCompany']) {
+  for (const screen of ['UseYourAI', 'Preferences', 'GlobalConfig', 'PeopleAccess', 'NewCompany', 'GiveAccess']) {
     assert.doesNotMatch(m, new RegExp(`<${screen}\\s+key=`), `${screen} is not account-scoped`)
   }
   // NewCompany is in the NOT-keyed half deliberately, and it is the one screen where that needs saying:

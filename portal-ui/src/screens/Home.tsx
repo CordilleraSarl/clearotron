@@ -32,12 +32,14 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote,
+  recentlyFinished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { readableFailure } from '../contract/failure.ts'
+import { canRun } from '../shell/permissions.ts'
+import { runKey } from '../contract/genericKey.ts'
 
 const TERMINAL = new Set<Run['state']>(['delivered', 'failed', 'cancelled'])
 
@@ -99,10 +101,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // moving. The screen would sit still and look finished. What is displayed is scoped; what decides
   // whether to keep looking is not.
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
-  const runs = useMemo(
-    () => (ctx.owner ? allRuns.filter((r) => r.account === ctx.owner) : allRuns),
-    [allRuns, ctx.owner],
-  )
+  const runs = useMemo(() => runsFor(allRuns, ctx.owner), [allRuns, ctx.owner])
   const rows = useMemo(() => inFlight(runs), [runs])
   // — what this reader has put down. A COUNT, not a silent disappearance: acknowledging must not
   // be the same act as forgetting, so the number is on screen and one click opens the list.
@@ -131,7 +130,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       <InFlightBand
         count={cards.length + queue.length}
         note={slotNote(null, ctx.me.concurrentRuns)}
-        onNew={() => ctx.go('/portal/new')}
+        onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null}
         onAll={() => ctx.go('/portal/clearances')}
       />
 
@@ -191,7 +190,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       {lastDone ? <LastFinished row={lastDone} ctx={ctx} /> : null}
 
       {answer === 'ok' && !cards.length && !queue.length && !lastDone ? (
-        <FirstRun onNew={() => ctx.go('/portal/new')} />
+        <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
       ) : null}
 
       {usageRes?.kind === 'ok' ? (
@@ -209,7 +208,8 @@ function InFlightBand({
 }: {
   readonly count: number
   readonly note: string | null
-  readonly onNew: () => void
+  /** Null for a person who may not start a clearance: the button is absent, never present and refusing. */
+  readonly onNew: (() => void) | null
   readonly onAll: () => void
 }) {
   // A GRID, not a spacer-and-wrap. The button stays pinned right at every width; a flex-wrap
@@ -228,10 +228,12 @@ function InFlightBand({
         <Icon name="layers" />
         <span>All clearances</span>
       </button>
-      <button type="button" className="home2-new" onClick={onNew}>
-        <Icon name="plus-circle" />
-        New clearance
-      </button>
+      {onNew ? (
+        <button type="button" className="home2-new" onClick={onNew}>
+          <Icon name="plus-circle" />
+          New clearance
+        </button>
+      ) : null}
     </div>
   )
 }
@@ -335,7 +337,7 @@ function Card({
           {displayName(run)}
         </div>
         <div className="home2-card-owner" data-anon="mark">
-          {ctx.ownerName(run.account)}
+          {ctx.ownerName(runKey(run))}
           {run.projectName || run.projectKey ? ` · ${run.projectName ?? run.projectKey}` : ''}
         </div>
 
@@ -365,7 +367,9 @@ function Card({
               </pre>
             </details>
           ) : null}
-          {canStop && !stopping ? (
+          {/* Stopping is part of Run clearances. A person without it has no Stop here — not a Stop that
+              refuses them, which is the one control this card must never offer. */}
+          {canStop && !stopping && canRun(ctx.me) ? (
             ctx.me.stopControl.available ? (
               <button type="button" className="home2-stop" onClick={() => setAsking(true)} disabled={busy}>
                 {busy ? 'Stopping…' : 'Stop'}
@@ -578,6 +582,9 @@ function Queue({
   const [order, setOrder] = useState<readonly string[]>(() => rows.map((r) => r.runId))
   const [dragging, setDragging] = useState<string | null>(null)
   const [over, setOver] = useState<string | null>(null)
+  // Reordering and cancelling are Run clearances. Without it the queue is still shown — what is waiting,
+  // in what order — and offers no handle to drag and no Cancel that would only refuse.
+  const mayRun = canRun(ctx.me)
 
   // The server is the source of truth for what is queued. Re-seed whenever the SET of ids changes — a
   // job that started, or one that arrived from the email door, must not leave a stale ordinal on screen.
@@ -607,7 +614,7 @@ function Queue({
           <strong>{shown.length}</strong> waiting for a slot
         </span>
         <span className="home2-queue-spacer" />
-        <span className="home2-queue-note">Drag to reorder — the top one takes the next free slot</span>
+        {mayRun ? <span className="home2-queue-note">Drag to reorder — the top one takes the next free slot</span> : null}
         <span className={`home2-queue-chev${open ? ' open' : ''}`}>
           <Icon name="chevron-right" />
         </span>
@@ -619,7 +626,7 @@ function Queue({
             <div
               key={r.runId}
               className={`home2-qrow${dragging === r.runId ? ' dragging' : ''}${over === r.runId ? ' target' : ''}`}
-              draggable
+              draggable={mayRun}
               onDragStart={(e) => {
                 e.dataTransfer.effectAllowed = 'move'
                 setDragging(r.runId)
@@ -630,7 +637,7 @@ function Queue({
               }}
               onDrop={(e) => {
                 e.preventDefault()
-                if (dragging) void commit(moveBefore(order, dragging, r.runId))
+                if (dragging && mayRun) void commit(moveBefore(order, dragging, r.runId))
                 setDragging(null)
                 setOver(null)
               }}
@@ -639,18 +646,20 @@ function Queue({
                 setOver(null)
               }}
             >
-              <span className="home2-grip">
-                <Icon name="grip-vertical" />
-              </span>
+              {mayRun ? (
+                <span className="home2-grip">
+                  <Icon name="grip-vertical" />
+                </span>
+              ) : null}
               <span className={`home2-pos mono${i === 0 ? ' first' : ''}`}>{i + 1}</span>
               <span className="home2-qmark" data-anon="mark">
                 {displayName(r)}
               </span>
               <span className="home2-qowner" data-anon="mark">
-                {ctx.ownerName(r.account)}
+                {ctx.ownerName(runKey(r))}
               </span>
               <span className="home2-qdepth">{runProductLabel(r.productName, r.marks.length)}</span>
-              <CancelButton run={r} onChanged={onChanged} />
+              {mayRun ? <CancelButton run={r} onChanged={onChanged} /> : null}
             </div>
           ))}
         </div>
@@ -707,7 +716,7 @@ function LastFinished({
         </span>
         {row.band ? <span className="home2-done-verdict">{row.band}</span> : null}
         <span className="home2-done-meta" data-anon="mark">
-          · {ctx.ownerName(row.account)}
+          · {ctx.ownerName(runKey(row))}
           {row.date ? ` · ${row.date}` : ''}
         </span>
         <span className="home2-done-spacer" />
@@ -727,9 +736,20 @@ function LastFinished({
   )
 }
 
-function FirstRun({ onNew }: { readonly onNew: () => void }) {
+function FirstRun({ onNew }: { readonly onNew: (() => void) | null }) {
   // Nothing has run. One sentence and the button — no empty card slots, no zeroes, and no section
   // headings standing over nothing.
+  //
+  // FOR A PERSON WHO MAY NOT START ONE, a different sentence and no button. Both halves of the first
+  // sentence would be false for them — they cannot clear a name, and they cannot stop anything — and a
+  // button that leads to a page that does not exist for them is worse than no button.
+  if (!onNew) {
+    return (
+      <div className="home2-firstrun">
+        <p>Nothing has been run for the companies you can see yet. Reports appear here as they are delivered.</p>
+      </div>
+    )
+  }
   return (
     <div className="home2-firstrun">
       <p>

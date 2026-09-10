@@ -73,6 +73,7 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
 import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
+import { canManage } from '../shell/permissions.ts'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -490,13 +491,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // one thing that is not wrong. Someone who signs in successfully and can do nothing should be told
       // why on the page, not in a boot log nobody reads.
       //
-      // The words are the ones portal-service already logs at boot: on no staff domain, in no grants row.
+      // The words are the door's own: the page it serves an address with no access says the same thing.
       // Nothing here is tenant-scoped, so it leaks nothing the 404-never-403 rule protects — it is a fact
       // about the caller's own identity, and it is the only fact that helps them.
       case 'noAccess':
         return {
           title: 'This address has no access yet',
-          lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different company cannot change that — an administrator needs to add it to one.'],
+          lines: ['You are signed in, but this address has not been given access to the portal, so every page refuses it. Selecting a different company cannot change that — someone who can add people here needs to add it.'],
         }
       case 'tooLarge':
         return { title: 'That is too much to send at once', lines: ['Shorten the goods description, or split the names across two searches.'] }
@@ -1555,7 +1556,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             // config is staff-only at the door: a client following this link would land on "the
             // configuration cannot be read from here", which is a worse answer than no link at all.
             // Null is the honest shape for "there is nowhere to send this reader", not a dead button.
-            onSettings={ctx.me.role === 'staff' ? () => ctx.go('/portal/admin/config') : null}
+            onSettings={canManage(ctx.me) ? () => ctx.go('/portal/admin/config') : null}
             saveOpen={saveOpen}
             saveName={saveName}
             saveText={saveText}
@@ -2285,8 +2286,8 @@ const Muted = ({ children }: { readonly children: React.ReactNode }) => (
 /**
  * The daily allowance, stated quietly.
  *
- * Only for principals it BINDS. Staff are uncapped, and telling a staff member "2 of 3 used" would be
- * both wrong and alarming. A null cap means the server could not tell us the limit — that renders as
+ * Only for principals it BINDS. A person with access to everything is uncapped, and telling them "2 of 3
+ * used" would be both wrong and alarming. A null cap means the server could not tell us the limit — that renders as
  * nothing at all rather than as zero or as unlimited, because inventing either would be a claim about
  * someone's contract.
  */

@@ -1,39 +1,70 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The Manage permission: both answers driven, and the one control that asks for it.
+// The two permissions: every combination driven, the words they print in, and the one control that asks.
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { canManage } from '../src/shell/permissions.ts'
-import type { Role } from '../src/contract/api.ts'
+import { canManage, canRun } from '../src/shell/permissions.ts'
+import { permissionsPhrase, accessChips, accessSentence } from '../src/shell/accessWords.ts'
+import type { Permissions } from '../src/contract/api.ts'
 
-// EVERY member of the role union, written out. A permission test that exercises one member is a claim
-// about that member and says nothing about the distinction it is named for — so the list is exhaustive
-// and the arm below fails if the union grows without this file being told.
-const EVERY_ROLE: readonly Role[] = ['staff', 'client']
+// EVERY combination of the two switches, written out. A permission test that exercises one person is a
+// claim about that person and says nothing about the distinction it is named for — so the list is
+// exhaustive, and the floor below fails if it is ever narrowed.
+const EVERY: readonly Permissions[] = [
+  { run: false, manage: false },
+  { run: true, manage: false },
+  { run: false, manage: true },
+  { run: true, manage: true },
+]
 
-test('MANAGE IS ANSWERED FOR EVERY ROLE THE WIRE CAN SEND, not just the one that gets the control', () => {
-  const answers = new Map(EVERY_ROLE.map((role) => [role, canManage({ role })]))
-
-  // The floor: if the union is ever narrowed to one member, "both directions" quietly becomes one
-  // direction and every assertion below still passes.
-  assert.equal(answers.size, 2, 'the role union has two members; a change here changes what this proves')
-
-  assert.equal(answers.get('staff'), true, 'the people who run the install may add companies')
-  assert.equal(answers.get('client'), false, "a customer's own user may not")
-
-  // Both directions are represented. An always-true or always-false derivation passes each single
-  // assertion above in isolation; it cannot pass this one.
-  assert.equal(new Set(answers.values()).size, 2, 'the permission DISCRIMINATES — it is not a constant')
+test('EACH PERMISSION IS ANSWERED BY ITS OWN SWITCH, for every combination, and by nothing else', () => {
+  assert.equal(new Set(EVERY.map((p) => `${p.run}${p.manage}`)).size, 4, 'all four combinations, once each')
+  for (const permissions of EVERY) {
+    assert.equal(canRun({ permissions }), permissions.run, `run on ${JSON.stringify(permissions)}`)
+    assert.equal(canManage({ permissions }), permissions.manage, `manage on ${JSON.stringify(permissions)}`)
+  }
+  // Both functions DISCRIMINATE, and on DIFFERENT switches. An implementation reading one switch for
+  // both questions passes every single assertion for the two diagonal people; it cannot pass this.
+  const split = EVERY.find((p) => p.run !== p.manage) as Permissions
+  assert.notEqual(canRun({ permissions: split }), canManage({ permissions: split }),
+    'the two questions are answered separately — Manage is not a rank above Run')
 })
 
-test('THE CREATE CONTROL ASKS THE PERMISSION, never the role word', () => {
-  // Why this is not simply a spelling check: the rule being kept is that there is ONE derivation of
-  // Manage. The way that rule dies is a screen deciding for itself — reading `me.role` at the point of
-  // the control because the role happens to be in scope — which is how the same person comes to be
-  // offered a control on one screen and refused it on the next. It is also the sweep bundle 2 has to do,
-  // and every site doing it correctly now is one it does not have to find.
+test('THE WORDS: what a person may do, never a role noun, and "none" is the view-only person', () => {
+  assert.equal(permissionsPhrase({ run: true, manage: true }), 'Runs clearances · Manages')
+  assert.equal(permissionsPhrase({ run: true, manage: false }), 'Runs clearances')
+  assert.equal(permissionsPhrase({ run: false, manage: true }), 'Manages')
+  // Both off is somebody who reads every report inside their access. "None" would read as a revoked
+  // account to the person it describes.
+  assert.equal(permissionsPhrase({ run: false, manage: false }), 'View reports')
+  for (const p of EVERY) {
+    assert.doesNotMatch(permissionsPhrase(p), /staff|client|admin|viewer/i, 'no role noun is ever printed')
+  }
+})
+
+test('THE ACCESS CHIPS: the root reads "Everything" and leads; a single company reads last', () => {
+  const chips = accessChips([
+    { kind: 'company', key: 'harbour', name: 'Harbour Ltd' },
+    { kind: 'organisation', key: 'birch', name: 'Birch & Co' },
+  ])
+  assert.deepEqual(chips.map((c) => c.label), ['Birch & Co', 'Harbour Ltd'], 'organisations before single companies')
+  assert.deepEqual(chips.map((c) => c.top), [false, false])
+
+  const root = accessChips([{ kind: 'everything', key: '*', name: 'ignored' }])
+  assert.deepEqual(root.map((c) => [c.label, c.top]), [['Everything', true]],
+    'the root is named by the product, never by whatever the wire put in its name field')
+  // Keys are unique across kinds, so an organisation and a company that share a key cannot collide as
+  // React keys and drop a chip.
+  const same = accessChips([{ kind: 'organisation', key: 'acme', name: 'Acme' }, { kind: 'company', key: 'acme', name: 'Acme Ltd' }])
+  assert.equal(new Set(same.map((c) => c.key)).size, 2)
+})
+
+test('THE CREATE CONTROL ASKS THE PERMISSION, never a role word', () => {
+  // The rule being kept is that there is ONE derivation of Manage. The way that rule dies is a screen
+  // deciding for itself at the point of the control, which is how the same person comes to be offered a
+  // control on one screen and refused it on the next.
   const src = readFileSync(new URL('../src/shell/CompanyPicker.tsx', import.meta.url), 'utf8')
   const body = src
     .split('\n')
@@ -48,9 +79,42 @@ test('THE CREATE CONTROL ASKS THE PERMISSION, never the role word', () => {
   const controlLine = body.split('\n').find((l) => l.includes('onAdd={'))
   assert.ok(controlLine, 'the control has a wiring line')
   assert.match(controlLine, /canManage\(/, 'the control is gated on the permission')
+  assert.doesNotMatch(controlLine, /\brole\b|staff/, 'and on nothing that re-derives it from a role word')
+})
+
+test('THE SENTENCE says what the new person will and will not see, before anything is saved', () => {
+  const run = { run: true, manage: false }
+  // One organisation whole and one company in another: the case a reader most often gets wrong, because
+  // the company's organisation is only PARTLY given.
+  assert.equal(
+    accessSentence({ who: 'dana@birch.example', permissions: run, everything: false, organisations: ['Birch & Co'],
+      companies: [{ name: 'Harbour Ltd', organisation: 'Alder Group' }] }),
+    'dana@birch.example will see everything under Birch & Co and under Harbour Ltd, and can run clearances there. '
+      + 'They will not see any other Alder Group clearances, and cannot add companies or people.')
+  assert.equal(
+    accessSentence({ who: 'a@b.test', permissions: { run: true, manage: true }, everything: true, organisations: [], companies: [] }),
+    'a@b.test will see everything on this Clearotron, including organisations added later, and can run clearances and add companies and people there.',
+    'everything, both switches: nothing to warn about')
+  assert.equal(
+    accessSentence({ who: 'a@b.test', permissions: { run: false, manage: false }, everything: false, organisations: ['Birch & Co'], companies: [] }),
+    'a@b.test will see everything under Birch & Co, and can read every report there. They cannot start clearances or add companies or people.',
+    'the view-only person is told what they CAN do first')
+  assert.equal(
+    accessSentence({ who: ' ', permissions: run, everything: false, organisations: [], companies: [] }),
+    'Choose what this person can see.',
+    'nothing chosen and no address yet: an instruction, not a claim')
+  assert.match(accessSentence({ who: '', permissions: run, everything: true, organisations: [], companies: [] }),
+    /^This person will see everything/, 'the stand-in subject is capitalised where it opens the sentence')
+  // A company picked inside an organisation that is ALSO picked whole is not a partial organisation.
   assert.doesNotMatch(
-    controlLine,
-    /\brole\b/,
-    'the control does not re-derive Manage from a role word at the point of use',
-  )
+    accessSentence({ who: 'a@b.test', permissions: run, everything: false, organisations: ['Alder Group'],
+      companies: [{ name: 'Harbour Ltd', organisation: 'Alder Group' }] }),
+    /any other/)
+  // Never a pronoun guessed from a name: only "they".
+  for (const who of ['dana@birch.example', 'tom@harbour.example', '']) {
+    for (const permissions of [run, { run: false, manage: false }]) {
+      const s = accessSentence({ who, permissions, everything: false, organisations: [], companies: [{ name: 'Harbour Ltd', organisation: 'Alder Group' }] })
+      assert.doesNotMatch(s, /\b(she|he|her|his|him|hers)\b/i, s)
+    }
+  }
 })

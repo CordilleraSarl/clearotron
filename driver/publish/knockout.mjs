@@ -619,6 +619,10 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     markName: batchMarkName(markNames) ?? undefined,
     engineCommit: engineCommit(),
     client: null, customerKey: customerKey || 'generic',
+    // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as
+    // the clearance publisher reads it. Absent on a company's batch and on one filed before
+    // organisations existed.
+    organisation: (() => { try { const f = JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')); return typeof f?.organisation === 'string' && f.organisation ? f.organisation : undefined; } catch { return undefined; } })(),
     issuedAt: (() => { try { const prev = JSON.parse(readFileSync(join(poolRunDir, 'meta.json'), 'utf8')); return prev?.issuedAt ?? new Date().toISOString(); } catch { return new Date().toISOString(); } })(),
     kind: 'knockout-batch',
     marks: (findings.marks ?? []).map((m) => ({ name: m.name, band: m.rating })),
