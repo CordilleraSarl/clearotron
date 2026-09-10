@@ -14651,6 +14651,9 @@ async function pipelineInner(job, opts = {}) {
       // already published has delivered, and refusing at that point would record a delivered run as
       // cancelled — the same defect pointed the other way.
       assertNotCancelledBeforePublish(run.runDir, "clearance");
+      // Same fact, same moment, same words as the knockout lane: past this line a stop cannot prevent
+      // delivery, and the screen is told so rather than working it out.
+      writeRunStatus(ctx, { stoppable: false });
       published = await publishReport({
         runId: `${run.slug}-${run.date}-${run.codename}`, codename: run.codename,
         reportMd: P.report, auditMd: P.audit, findingsJson: P.findings, poolRoot: config.poolRoot, poolUrl: config.poolUrl,

@@ -475,6 +475,11 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
         // preserved by writeRunStatus's spread-merge, replaced by the terminal when the honour check
         // fires. The UI derives "Stopping…" from this beside a non-terminal state.
         stopRequestedAt: typeof s.stopRequestedAt === "string" ? s.stopRequestedAt : null,
+        // — whether a stop can still prevent delivery. FALSE only once a lane has written it, at the
+        // moment it commits to publishing. Absent means the run has not reached that point, which is
+        // the truthful reading on this build: both lanes write it immediately after their last cancel
+        // read. The screen shows its promise on true and withdraws it on false.
+        stoppable: s.stoppable === false ? false : true,
         // A failed run with no reason on screen is a run the user has to phone somebody about. Both
         // fields are already written by every failure path (pipeline-knockout.mjs, the driver's
         // writeRunStatus); the listing simply used to drop them.

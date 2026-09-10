@@ -373,6 +373,7 @@ function Card({
             <StopChoice
               name={displayName(run)}
               step={run.step}
+              stoppable={run.stoppable}
               onImmediate={() => void stop(true)}
               onBoundary={() => void stop(false)}
               onCancel={() => setAsking(false)}
@@ -471,9 +472,10 @@ function AckUndo({ run, onChanged }: { readonly run: Run; readonly onChanged: ()
  * check reddened main on by giving Acknowledge that class. Two more of them inside a dialog would
  * break a browser arm that no unit test can see.
  */
-function StopChoice({ name, step, onImmediate, onBoundary, onCancel }: {
+function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }: {
   readonly name: string
   readonly step: string | null
+  readonly stoppable: boolean
   readonly onImmediate: () => void
   readonly onBoundary: () => void
   readonly onCancel: () => void
@@ -493,9 +495,17 @@ function StopChoice({ name, step, onImmediate, onBoundary, onCancel }: {
           <span className="modal-rule" aria-hidden />
           <span className="eyebrow" style={{ color: 'var(--accent-quiet)' }}>Stop this clearance</span>
           <h2 style={{ margin: '7px 0 3px', fontSize: 19, fontWeight: 700, color: 'var(--text-strong)' }} data-anon="mark">{name}</h2>
+          {/* THE PROMISE IS WITHDRAWN WHEN IT CANNOT BE KEPT. A run that has committed to publishing is
+              past its last stoppable point, and this line used to tell the reader the opposite -- a
+              report was published a hundred seconds after somebody was told nothing would be. Offering
+              a mode whose stated outcome the run cannot produce is worse than saying so, because the
+              person stops watching. */}
           <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)' }}>
-            Either way it cannot be undone, nothing is delivered, and what has already been spent is
-            spent.
+            {stoppable
+              ? <>Either way it cannot be undone, nothing is delivered, and what has already been spent is
+                spent.</>
+              : <>This run is already writing its report, so stopping it may not prevent delivery. What
+                has been spent is spent, and it cannot be undone either way.</>}
           </p>
         </div>
 

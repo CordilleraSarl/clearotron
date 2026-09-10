@@ -410,6 +410,8 @@ export type Run = {
   /** A stop has been asked for and the step in flight is finishing. Beside a
    *  non-terminal state this is the screen's "Stopping…"; the terminal replaces it. */
   readonly stopRequestedAt: string | null
+  /** Whether a stop can still prevent delivery. False once a lane commits to publishing. */
+  readonly stoppable: boolean
   /** Why a run stopped. A failed run with no reason on screen is a run the user has to ask about. */
   readonly reason: string | null
   readonly failedStage: string | null
@@ -1229,6 +1231,11 @@ const decodeRun = (raw: unknown): Run | null => {
       : [],
     step: asString(r['step']),
     stopRequestedAt: asString(r['stopRequestedAt']),
+    // DEFAULTS TRUE, and the default is the truthful one rather than the convenient one: the field is
+    // written only at the moment a lane commits to publishing, so its absence means the run has not
+    // reached that point. A door that omitted it entirely would be an older build, where the promise
+    // was unreliable anyway -- that is a deployment mismatch, not a state this screen can repair.
+    stoppable: r['stoppable'] !== false,
     stepN: asNumber(r['stepN']),
     stepTotal: asNumber(r['stepTotal']),
     reason: asString(r['reason']),
