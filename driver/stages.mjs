@@ -1430,7 +1430,7 @@ export const STAGES = {
       },
       "variants[].value — the search terms themselves": {
         class: "judgment", tokens: ["variantmodel_term_markup"],
-        why: "the repo forbids code from minting a search term twice over — stages.mjs:777-773 and variant-manifest-model.mjs:387 (\"VALIDATES, NEVER GENERATES… the moment code mints a search term, judgment has moved into the funnel\"). variantmodel_term_markup is therefore a shape rule that stays model-facing BY DESIGN; do not reclassify it mechanical to satisfy E6. It also walks dominant_element and elements[].value (variantTermShapeGaps), which is why they carry no token of their own [citation unverified]",
+        why: "the repo forbids code from minting a search term twice over — stages.mjs:777-779 and variant-manifest-model.mjs:387 (\"VALIDATES, NEVER GENERATES… the moment code mints a search term, judgment has moved into the funnel\"). variantmodel_term_markup is therefore a shape rule that stays model-facing BY DESIGN; do not reclassify it mechanical to satisfy E6. It also walks dominant_element and elements[].value (variantTermShapeGaps), which is why they carry no token of their own [citation unverified]",
       },
       "variants[].category — one of core|phonetic|visual|transliteration|numeric|composite|other": {
         class: "judgment", tokens: [],
@@ -2327,7 +2327,7 @@ export const STAGES = {
       },
       "reason — the short paragraph carrying the stated ground for the tier (owner characterisation, customer/channel read, decisive ground, Stage-2 mitigant)": {
         class: "judgment", tokens: ["placement_reason_missing", "placement_reason_bare"],
-        why: "Four downstream stages adopt or counter-reason BY ARGUING WITH THIS TEXT (stages.mjs:2491-2489). It is authored reasoning, not a value any artifact holds. [citation unverified]",
+        why: "Four downstream stages adopt or counter-reason BY ARGUING WITH THIS TEXT (stages.mjs:2491-2495). It is authored reasoning, not a value any artifact holds. [citation unverified]",
       },
       "borderline: true — the declaration that the promotion question could be argued either way on this record": {
         class: "judgment", tokens: ["placement_borderline_invalid"],
@@ -2673,7 +2673,7 @@ export const STAGES = {
       },
       "the `risk: <category>` field inside that dictated ESCALATE line": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "IT HAS NO CONSUMER AT ALL. stages.mjs:339-336 records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file. [citation unverified]",
+        why: "IT HAS NO CONSUMER AT ALL. stages.mjs:339-342 records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file. [citation unverified]",
       },
       "return payload — a 2-3 line summary; the audit itself rides record_skeptic": {
         class: "mechanical:tool-written", tokens: ["skeptic_"],

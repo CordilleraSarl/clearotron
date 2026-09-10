@@ -100,7 +100,7 @@ export const NOT_READ_BY_NAME = {
 // from "undeclared store" instead of demanding a gating for something that has none.
 export const CALLER_SUPPLIED = {
   "report.md": "the reportMd ARGUMENT — read unconditionally by `parseReport` in index.mjs; an unreadable one throws, which is correct (there is no report to publish)",
-  "audit.md": "the auditMd ARGUMENT — existence-gated at index.mjs:962-943; a run with no audit markdown legitimately publishes without a workbook",
+  "audit.md": "the auditMd ARGUMENT — existence-gated at index.mjs:962-963; a run with no audit markdown legitimately publishes without a workbook",
 };
 
 /**

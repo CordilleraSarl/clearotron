@@ -110,7 +110,7 @@ export const E3_BACKLOG = [
   //                             `record_prelim_variants`'s schema IS that shape now, so the key-set and
   //                             enum families are unreachable from a typed call rather than caught after
   //                             the file is written.
-  //   stages.mjs:780-808        the same skeleton's category enum, same fate.
+  //   stages.mjs:780-814        the same skeleton's category enum, same fate.
   //   prelim-variants SKILL.md  the `### Scope ledger` markdown table and its column contract. The rows
   //                             arrive typed; the driver renders the table AND serialises
   //                             scope-ledger.json from them through one shared function.
@@ -152,7 +152,7 @@ export const E3_BACKLOG = [
     where: "driver/skills/blind-frame/SKILL.md:62-83",
     surface: "skill-file",
     evidence: "A JSON OBJECT with EXACTLY these keys:\\n```json\\n{\\n \"schema_version\": 1,\\n \"dominant_element\": \"the spine, verbatim\",\\n \"variants\": [{\"value\": \"DELPHI\", \"direction\": \"drop\", \"rationale\": \"…\"}],\\n \"fields\": […],\\n \"sources\": […],\\n \"ranking_basis\": \"goods-overlap\"\\n}\\n``` … `direction` is EXACTLY on",
-    reparsedBy: "driver/verify.mjs validators.blindFrame — emits invalid_file:…:blindframe_* on an off-enum or missing key (stages.mjs:958-957 doc block)",
+    reparsedBy: "driver/verify.mjs validators.blindFrame — emits invalid_file:…:blindframe_* on an off-enum or missing key (stages.mjs:958-963 doc block)",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   // ── DISCHARGED 2026-08-17 by, and the row said this could not happen ──────────────────────────
@@ -292,7 +292,7 @@ export const E3_BACKLOG = [
   {
     stage: "placement-inquiry",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:2355-2353",
+    where: "driver/stages.mjs:2355-2359",
     surface: "stage-message",
     evidence: "PLACEMENT FORM (MANDATORY): record every placement in <path> — {\"rows\":[…]} … · A REGISTER candidate: {\"select\":\"<one record URI it holds>\",\"tier\":\"…\",\"reason\":\"…\"} (+ optional \"borderline\":true) … · A COMMON-LAW candidate …: {\"kind\":\"seat\",\"mark\",\"owner\",\"jurisdiction\",\"records\":[],\"tier\",\"reason\"}",
     reparsedBy: "driver/placement-form.mjs (SELECT_ROW_FIELDS at placement-form.mjs:93, the seat-row contract at 97-105, formRowKey/rowIsSettled/renderEntry at 117-141) via validators.placement. The same field list is ALSO carried in the driver-written form's own seat_row_contract, so the shape exists twice",
@@ -697,7 +697,7 @@ export const E3_BACKLOG = [
     // `[on: -]` case went from a value to an ABSENCE — you omit the field — which is the one part a
     // reader could get wrong from the old wording, since there is no value meaning "no finding".
     evidence: "**AND EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT** — the `on` field, an array of ordinals. Same rule as `kind`: you send the values, the driver renders the token.",
-    reparsedBy: "driver/verify.mjs:759 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message at stages.mjs:1848-1877 never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
+    reparsedBy: "driver/verify.mjs:759 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message at stages.mjs:1848-1883 never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
