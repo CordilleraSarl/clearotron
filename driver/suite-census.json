@@ -718,8 +718,8 @@
           "todos": 0
         },
         "a-stale-classification-names-the-rows-that-moved.test.mjs": {
-          "tests": 5,
-          "asserts": 17,
+          "tests": 6,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },

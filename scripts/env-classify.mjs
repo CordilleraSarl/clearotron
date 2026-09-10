@@ -576,17 +576,29 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
  *   `header` names the top-level keys other than `rows` that differ, such as the counts.
  */
 export function classificationDrift(prev, next) {
-  const rowsOf = (a) => new Map((Array.isArray(a?.rows) ? a.rows : []).map((r) => [r?.name, r]));
+  // A NAME CAN SIT ON MORE THAN ONE ROW. The catalogue can list a name more than once, and the
+  // classification then carries it once per listing, the rows identical in every field. So rows are
+  // grouped by name and compared as lists. Keyed by name alone, the last row of each name hid the others,
+  // and a change to the first of two rows read as "only the formatting differs".
+  const rowsOf = (a) => {
+    const m = new Map();
+    for (const r of Array.isArray(a?.rows) ? a.rows : []) m.set(r?.name, [...(m.get(r?.name) ?? []), r]);
+    return m;
+  };
   const was = rowsOf(prev), now = rowsOf(next);
   const added = [...now.keys()].filter((n) => !was.has(n)).sort();
   const removed = [...was.keys()].filter((n) => !now.has(n)).sort();
   const changed = [];
-  for (const [name, row] of now) {
+  for (const [name, rows] of now) {
     const before = was.get(name);
     if (!before) continue;
-    const fields = [...new Set([...Object.keys(before), ...Object.keys(row)])]
-      .filter((k) => JSON.stringify(before[k]) !== JSON.stringify(row[k])).sort();
-    if (fields.length) changed.push({ name, fields });
+    if (before.length !== rows.length) { changed.push({ name, fields: [`${before.length} row${before.length === 1 ? "" : "s"}, now ${rows.length}`] }); continue; }
+    const fields = new Set();
+    rows.forEach((row, i) => {
+      for (const k of new Set([...Object.keys(before[i]), ...Object.keys(row)]))
+        if (JSON.stringify(before[i][k]) !== JSON.stringify(row[k])) fields.add(k);
+    });
+    if (fields.size) changed.push({ name, fields: [...fields].sort() });
   }
   changed.sort((a, b) => a.name.localeCompare(b.name));
   const header = [...new Set([...Object.keys(prev ?? {}), ...Object.keys(next ?? {})])]

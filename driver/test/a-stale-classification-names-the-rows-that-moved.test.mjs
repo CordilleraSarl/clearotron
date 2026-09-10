@@ -58,3 +58,21 @@ test("a long list is capped and says how many more there are", () => {
   assert.match(said, /15 row\(s\) added: NAME_00, .*NAME_11 and 3 more/);
   assert.doesNotMatch(said, /NAME_12/);
 });
+
+test("a name with more than one row: a change to any of them, and a row more or less, are each named", () => {
+  // The committed classification repeats a name once per catalogue row. Keyed by name alone, only the
+  // last of a name's rows was compared, and a change to the first read as a formatting difference.
+  const two = artifact([row("BILLING", "tuning"), row("BILLING", "setup"), row("OTHER", "setup")]);
+  const firstChanged = classificationDrift(two, artifact([row("BILLING", "deployment"), row("BILLING", "setup"), row("OTHER", "setup")]));
+  assert.deepEqual(firstChanged.changed, [{ name: "BILLING", fields: ["class"] }], "a change to the first of two rows is a change");
+  assert.doesNotMatch(describeDrift(firstChanged).join("\n"), /formatting/);
+  const oneLess = classificationDrift(two, artifact([row("BILLING", "setup"), row("OTHER", "setup")]));
+  assert.deepEqual(oneLess.changed, [{ name: "BILLING", fields: ["2 rows, now 1"] }]);
+  assert.deepEqual(oneLess.removed, [], "the name is still there, so it is not removed");
+  assert.deepEqual(classificationDrift(artifact([row("BILLING", "setup"), row("OTHER", "setup")]), two).changed,
+    [{ name: "BILLING", fields: ["1 row, now 2"] }], "one row is one row");
+  const oneMore = classificationDrift(two, artifact([row("BILLING", "tuning"), row("BILLING", "setup"), row("BILLING", "tuning"), row("OTHER", "setup")]));
+  assert.deepEqual(oneMore.changed, [{ name: "BILLING", fields: ["2 rows, now 3"] }]);
+  const same = classificationDrift(two, structuredClone(two));
+  assert.deepEqual(same, { added: [], removed: [], changed: [], header: [] }, "repeated rows that match are not drift");
+});
