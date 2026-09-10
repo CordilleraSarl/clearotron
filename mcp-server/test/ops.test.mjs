@@ -652,7 +652,8 @@ test("mark_sent: a marker minted under the DERIVED <slug>-<codename> form is cle
 });
 
 test("an immediate stop reports that a stop was SENT, never that the step has ended", () => {
-  // — RULING 142, DRIVEN AT THE BRANCH THAT MISREPORTED IT.
+  // — THE OWNER'S RULE, DRIVEN AT THE BRANCH THAT BROKE IT: a control's words say what the
+  // mechanism does, never what the reader hopes it did.
   //
   // The owner pressed "Stop now" on a real knockout on his WSL install of 0.3.0-beta.1. The card said
   // the step in flight had been ended and the run would be terminal in seconds. It stopped at the next

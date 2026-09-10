@@ -47,7 +47,7 @@ test('the old class is gone from every surface, not just from this screen', () =
 })
 
 test('"Stop now" does not promise the step has ended', () => {
-  // Ruling 142, and the same shape it was written for: a control whose copy states an outcome the
+  // The same shape the owner's rule was written for: a control whose copy states an outcome the
   // mechanism cannot guarantee. The dialog offers the mode; it must not assert the result.
   const opt = /Stop now<\/b>\s*<span>([\s\S]*?)<\/span>/.exec(SRC)
   assert.ok(opt, 'the Stop now option is gone from the dialog')
