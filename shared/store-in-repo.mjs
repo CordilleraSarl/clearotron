@@ -445,21 +445,27 @@ export function whereSavesGo(dir, { env = process.env } = {}) {
     // A bare `git push` on a branch with no tracking still publishes it in three configurations. Measured
     // with git 2.43 against real remotes, 2026-09-10, after a review drove the first one:
     // `push.autoSetupRemote=true` (the push sets up tracking as it goes), `push.default=current`, and
-    // `push.default=matching` once the remote has a branch of the same name. Git's default (`simple`),
-    // `upstream` and `nothing` refuse with no upstream, and so does `simple` with only `remote.pushDefault`
-    // or the branch's `pushRemote` set. Where a push goes is git's order: the branch's push remote, then
-    // `remote.pushDefault`, then `origin`, then the only remote there is. The test beside this pushes
-    // for real in each configuration and holds this function to what git did.
+    // `push.default=matching` once the remote has a branch of the same name. `upstream` and `nothing` refuse
+    // with no upstream. Git's default, `simple`, refuses too, UNLESS the push is triangular: a push remote
+    // (the branch's `pushRemote`, or `remote.pushDefault`) that is not the remote the branch fetches from.
+    // Then `simple` pushes as `current` does. A review drove that case with git 2.43 after this comment had
+    // said `simple` refuses whenever only those keys are set; that is true only while they name the fetch
+    // remote. Where a push goes is git's order: the branch's push remote, then `remote.pushDefault`, then
+    // `origin`, then the only remote there is. The remote a branch with no upstream fetches from is found
+    // the same way without the first two. The test beside this pushes for real in each configuration and
+    // holds this function to what git did.
     const pushRemote = setting(`branch.${branch}.pushRemote`), pushDefault = setting("remote.pushDefault"), mode = setting("push.default");
     for (const x of [pushRemote, pushDefault, mode]) if (x.why) return { state: "could-not-look", why: x.why };
     const auto = ask("config", "--type=bool", "--get", "push.autoSetupRemote");
     if (!auto.ok && auto.status !== 1) return { state: "could-not-look", why: auto.why };
-    const dest = pushRemote.value || pushDefault.value
-      || (remote.value === "." ? null : remotes.includes("origin") ? "origin" : remotes.length === 1 ? remotes[0] : null);
+    const fallback = remotes.includes("origin") ? "origin" : remotes.length === 1 ? remotes[0] : null;
+    const fetchesFrom = remote.value || fallback;
+    const dest = pushRemote.value || pushDefault.value || (remote.value === "." ? null : fallback);
     const pushing = mode.value || "simple";
     const via = !dest || !remotes.includes(dest) ? null
       : pushing === "current" ? "push.default is current"
       : (pushing === "simple" || pushing === "upstream") && auto.ok && auto.out === "true" ? "push.autoSetupRemote is on"
+      : pushing === "simple" && dest !== fetchesFrom ? `push.default is simple, and it pushes to ${dest}, not the remote this branch fetches from`
       : pushing === "matching" && ask("rev-parse", "--verify", "-q", `refs/remotes/${dest}/${branch}`).ok
         ? "push.default is matching, and the remote has this branch"
       : null;

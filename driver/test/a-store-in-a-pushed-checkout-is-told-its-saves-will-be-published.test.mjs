@@ -201,11 +201,21 @@ test("a branch with no tracking PUBLISHES when a bare push would carry it — he
     ["push.default=matching, the remote lacks the branch", ["origin"], { "push.default": "matching" }],
     ["push.default=matching, the remote has the branch", ["origin"], { "push.default": "matching" }, { seeded: true }],
     ["push.autoSetupRemote with no remote at all", [], { "push.autoSetupRemote": "true" }],
+    // TRIANGULAR: under git's default, a push remote that is not the remote the branch fetches from makes
+    // `simple` push as `current` does. A review measured the first two; the rest are their controls, and
+    // the cases whose answer nobody here predicted are left for the push to decide.
+    ["simple, the branch's pushRemote names a second remote", ["origin", "second"], { "branch.main.pushRemote": "second" }],
+    ["simple, remote.pushDefault names a second remote", ["origin", "second"], { "remote.pushDefault": "second" }],
+    ["simple, the branch's pushRemote names origin beside a second remote", ["origin", "second"], { "branch.main.pushRemote": "origin" }],
+    ["simple, the only remote is not origin and remote.pushDefault names it", ["other"], { "remote.pushDefault": "other" }],
+    ["simple, two remotes, neither origin, remote.pushDefault names one", ["one", "two"], { "remote.pushDefault": "one" }],
+    ["simple, a branch tracking a local branch, remote.pushDefault names origin", ["origin"],
+      { "branch.main.remote": ".", "branch.main.merge": "refs/heads/base", "remote.pushDefault": "origin" }, { base: true }],
   ];
   const s = scratch();
   const tally = { published: 0, stayed: 0 };
   try {
-    CASES.forEach(([name, remotes, config, { seeded = false } = {}], i) => {
+    CASES.forEach(([name, remotes, config, { seeded = false, base = false } = {}], i) => {
       const repo = join(s.dir, `r${i}`);
       s.git(s.dir, "init", "-q", "-b", "main", `r${i}`);
       s.commit(repo, "seed");
@@ -216,6 +226,7 @@ test("a branch with no tracking PUBLISHES when a bare push would carry it — he
         return bare;
       });
       if (seeded) { s.git(repo, "push", "-q", remotes[0], "main"); s.commit(repo, "a save"); }
+      if (base) s.git(repo, "branch", "base");
       for (const [k, v] of Object.entries(config)) s.git(repo, "config", k, v);
       const said = whereSavesGo(repo, { env: s.env });
       const head = execFileSync("git", ["-C", repo, "rev-parse", "HEAD"], { env: s.env, encoding: "utf8" }).trim();
