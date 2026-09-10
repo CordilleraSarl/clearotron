@@ -226,3 +226,17 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
       + "nothing has been charged. Please contact whoever administers it.",
   };
 }
+
+// THE ENV FILE `clearotron start` READ, when it started this runner: the one file a refusal can honestly
+// name for a runner that read none itself (`startFile` above). A command-line flag rather than a variable,
+// for two reasons. A unit's ExecStart is fixed at `--watch` and never carries it, so a runner holding it
+// was started by that command. And a variable read by product code belongs in the environment catalogue,
+// which describes settings an operator makes, and this is not one. `bin/start.mjs` puts it on the
+// worker's command line, and `driver/runner.mjs` reads it off its own.
+export const START_ENV_FILE_FLAG = "--start-env-file=";
+
+/** The path `argv` carries in `--start-env-file=<path>`, or null when it carries none or an empty one. PURE. */
+export function startEnvFileOf(argv = []) {
+  const flag = argv.find((t) => String(t).startsWith(START_ENV_FILE_FLAG));
+  return flag ? flag.slice(START_ENV_FILE_FLAG.length) || null : null;
+}

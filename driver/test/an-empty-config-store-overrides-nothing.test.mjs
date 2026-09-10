@@ -86,10 +86,19 @@ function envFor(s) {
 /** Stderr with any passphrase line removed before it can reach an assertion message. */
 const safe = (said) => said.split("\n").map((l) => (/passphrase/i.test(l) ? "<a passphrase line, redacted by the test>" : l)).join("\n");
 
-// A fixed port per boot: asked for port 0 the portal cannot say which one it chose. These are this file's.
-let PORT = 18971;
-function boot(env, { waitMs = 25000 } = {}) {
-  const port = String(PORT++);
+// A port free at the moment of each boot. Not port 0, because a portal asked for port 0 cannot say which
+// one it chose; and not a fixed one, because a port something else holds reds this file for a reason that
+// has nothing to do with its name. Two full suites on one box do exactly that.
+async function freePort() {
+  const { createServer } = await import("node:net");
+  const server = createServer();
+  await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
+  const { port } = server.address();
+  await new Promise((resolve) => server.close(resolve));
+  return port;
+}
+async function boot(env, { waitMs = 25000 } = {}) {
+  const port = String(await freePort());
   return new Promise((resolve) => {
     const child = spawn(process.execPath, [SERVICE], { env: { ...env, PORTAL_SERVICE_PORT: port }, stdio: ["ignore", "pipe", "pipe"] });
     let said = "";

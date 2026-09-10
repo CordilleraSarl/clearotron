@@ -31,7 +31,7 @@ import { fileURLToPath } from "node:url";
 // A namespace import, not a named one: a named import of an export a tree does not have fails the WHOLE
 // file before any arm runs, and every other arm here would then read as red for a reason it never tested.
 import * as probe from "../engine/probe.mjs";
-import { orderTimeRefusal } from "../run-requirements.mjs";
+import { orderTimeRefusal, startEnvFileOf } from "../run-requirements.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
@@ -210,7 +210,8 @@ test("start hands its file to the worker as a flag no unit carries, and the runn
   const envs = composeChildEnv({ ports: { portal: 18802, mcp: 18790 }, paths: layoutOf("/srv/op/trademark"), user: "op@localhost",
     portalSecret: "p", tokenSecret: "t", opsToken: "o", localWorker: true });
   assert.ok(!/start-env-file|START_ENV_FILE/.test(JSON.stringify(envs)), "the handoff leaked into the composition the units' file is written from");
-  assert.match(readFileSync(join(ROOT, "driver", "runner.mjs"), "utf8"), /startFile: startEnvFile\(\)/, "and the runner must pass it to the refusal");
+  assert.match(readFileSync(join(ROOT, "driver", "runner.mjs"), "utf8"), /startFile: startEnvFileOf\(process\.argv\)/,
+    "and the runner must hand the refusal what its own command line carries");
 });
 
 test("the runner accepts start's flag and still refuses an argument it does not know", () => {
@@ -220,4 +221,18 @@ test("the runner accepts start's flag and still refuses an argument it does not 
     { encoding: "utf8", env: process.env, timeout: 60_000 });
   assert.equal(r.status, 2, `the runner did not refuse the unknown argument (exit ${r.status}): ${String(r.stderr).slice(0, 300)}`);
   assert.match(String(r.stderr), /unknown argument --not-a-flag/, "it must name the argument it does not know, and not start's flag");
+});
+
+test("the runner finds start's file on its own command line, and nowhere else", () => {
+  // The sentence above is driven with the file handed in, and the runner only as far as its argument check,
+  // so a parse that always answered null would pass both. The parse is driven here.
+  const file = "/srv/op/.config/clearotron/.env";
+  const rows = [
+    [["node", "runner.mjs", "--watch", `--start-env-file=${file}`], file, "the worker start runs"],
+    [["node", "runner.mjs", `--start-env-file=${file}`, "--watch"], file, "the flag first"],
+    [["node", "runner.mjs", "--watch"], null, "a unit's runner, whose command line never carries it"],
+    [["node", "runner.mjs", "--watch", "--start-env-file="], null, "an empty path, which names no file"],
+    [["node", "runner.mjs", "--watch", "--start-env-file", file], null, "the bare word, which the runner refuses as unknown"],
+  ];
+  for (const [argv, want, shape] of rows) assert.equal(startEnvFileOf(argv), want, shape);
 });
