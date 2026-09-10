@@ -25,7 +25,10 @@ const ONBOARD = join(REPO, "bin", "onboard.mjs");
 
 function scratch() {
   const dir = mkdtempSync(join(tmpdir(), "where-saves-go-"));
-  const env = { ...process.env, GIT_CEILING_DIRECTORIES: dir };
+  // THE MACHINE'S OWN GIT SETTINGS ARE SHUT OUT. A global `push.autoSetupRemote` or `push.default` changes
+  // where a push goes, which is exactly what these arms measure, so every answer here is git's own default
+  // plus what the arm sets.
+  const env = { ...process.env, GIT_CEILING_DIRECTORIES: dir, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" };
   const git = (cwd, ...args) => execFileSync("git",
     ["-c", "user.email=t@example.com", "-c", "user.name=t", ...args], { cwd, env, stdio: "pipe" });
   const commit = (repo, m = "a save") => git(repo, "commit", "-q", "--allow-empty", "-m", m);
@@ -158,7 +161,7 @@ test("doctor WARNS about a store whose checkout publishes its saves, and its exi
           // An empty base, so nothing from the shell running the suite reaches doctor but what is named
           // here; `handRunEnv` also clears the two variables that would make it ignore this home.
           env: handRunEnv({ HOME: home, PATH: [bin, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1",
-            CLEAROTRON_CUSTOMERS_DIR: store, GIT_CEILING_DIRECTORIES: s.dir }, {}),
+            CLEAROTRON_CUSTOMERS_DIR: store, GIT_CEILING_DIRECTORIES: s.dir, GIT_CONFIG_NOSYSTEM: "1" }, {}),
         });
         return { code: 0, out };
       } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
@@ -175,5 +178,70 @@ test("doctor WARNS about a store whose checkout publishes its saves, and its exi
     assert.equal(treated.code, control.code,
       "a warning, never a refusal: a store in a repository someone pushes is a legitimate deployment, so the "
       + "only difference between these two runs must be the line, not the exit status");
+  } finally { s.cleanup(); }
+});
+
+test("a branch with no tracking PUBLISHES when a bare push would carry it — held to what git does when it pushes", () => {
+  // Each row sets one configuration on a fresh repository whose branch tracks nothing, asks where a save
+  // goes, and then runs a bare `git push` and looks at the remotes. The answer and the push must agree.
+  // Driven rather than matched: the rule is git's, so git is the table's oracle.
+  const CASES = [
+    ["git's own defaults", ["origin"], {}],
+    ["push.autoSetupRemote", ["origin"], { "push.autoSetupRemote": "true" }],
+    ["push.default=current", ["origin"], { "push.default": "current" }],
+    ["push.default=upstream", ["origin"], { "push.default": "upstream" }],
+    ["push.default=upstream with push.autoSetupRemote", ["origin"], { "push.default": "upstream", "push.autoSetupRemote": "true" }],
+    ["push.default=nothing with push.autoSetupRemote", ["origin"], { "push.default": "nothing", "push.autoSetupRemote": "true" }],
+    ["remote.pushDefault alone", ["origin"], { "remote.pushDefault": "origin" }],
+    ["the branch's pushRemote alone", ["origin"], { "branch.main.pushRemote": "origin" }],
+    ["push.default=current to the branch's pushRemote", ["origin", "backup"], { "push.default": "current", "branch.main.pushRemote": "backup" }],
+    ["the only remote is not origin, push.default=current", ["other"], { "push.default": "current" }],
+    ["the only remote is not origin, push.autoSetupRemote", ["other"], { "push.autoSetupRemote": "true" }],
+    ["two remotes, neither origin, push.default=current", ["one", "two"], { "push.default": "current" }],
+    ["push.default=matching, the remote lacks the branch", ["origin"], { "push.default": "matching" }],
+    ["push.default=matching, the remote has the branch", ["origin"], { "push.default": "matching" }, { seeded: true }],
+    ["push.autoSetupRemote with no remote at all", [], { "push.autoSetupRemote": "true" }],
+    // TRIANGULAR: under git's default, a push remote that is not the remote the branch fetches from makes
+    // `simple` push as `current` does. A review measured the first two; the rest are their controls, and
+    // the cases whose answer nobody here predicted are left for the push to decide.
+    ["simple, the branch's pushRemote names a second remote", ["origin", "second"], { "branch.main.pushRemote": "second" }],
+    ["simple, remote.pushDefault names a second remote", ["origin", "second"], { "remote.pushDefault": "second" }],
+    ["simple, the branch's pushRemote names origin beside a second remote", ["origin", "second"], { "branch.main.pushRemote": "origin" }],
+    ["simple, the only remote is not origin and remote.pushDefault names it", ["other"], { "remote.pushDefault": "other" }],
+    ["simple, two remotes, neither origin, remote.pushDefault names one", ["one", "two"], { "remote.pushDefault": "one" }],
+    ["simple, a branch tracking a local branch, remote.pushDefault names origin", ["origin"],
+      { "branch.main.remote": ".", "branch.main.merge": "refs/heads/base", "remote.pushDefault": "origin" }, { base: true }],
+  ];
+  const s = scratch();
+  const tally = { published: 0, stayed: 0 };
+  try {
+    CASES.forEach(([name, remotes, config, { seeded = false, base = false } = {}], i) => {
+      const repo = join(s.dir, `r${i}`);
+      s.git(s.dir, "init", "-q", "-b", "main", `r${i}`);
+      s.commit(repo, "seed");
+      const bares = remotes.map((r) => {
+        const bare = join(s.dir, `r${i}-${r}.git`);
+        s.git(s.dir, "init", "-q", "--bare", "-b", "main", bare);
+        s.git(repo, "remote", "add", r, bare);
+        return bare;
+      });
+      if (seeded) { s.git(repo, "push", "-q", remotes[0], "main"); s.commit(repo, "a save"); }
+      if (base) s.git(repo, "branch", "base");
+      for (const [k, v] of Object.entries(config)) s.git(repo, "config", k, v);
+      const said = whereSavesGo(repo, { env: s.env });
+      const head = execFileSync("git", ["-C", repo, "rev-parse", "HEAD"], { env: s.env, encoding: "utf8" }).trim();
+      try { s.git(repo, "push"); } catch { /* a refused push is an outcome, read from the remotes below */ }
+      const landed = bares.some((b) => {
+        try { return execFileSync("git", ["-C", b, "rev-parse", "-q", "--verify", "refs/heads/main"], { env: s.env, encoding: "utf8" }).trim() === head; }
+        catch { return false; }
+      });
+      tally[landed ? "published" : "stayed"]++;
+      assert.equal(said.state === "publishes", landed,
+        `${name}: whereSavesGo answered ${JSON.stringify(said)}, and a bare push ${landed ? "DID" : "did not"} publish the branch`);
+      if (landed) assert.ok(said.via && said.via !== "tracking", `${name}: a push with no tracking must say which setting sent it`);
+    });
+    // FLOORS on both outcomes: a table in which nothing published, or everything did, could pass by agreeing
+    // with a function that always answers one way.
+    assert.ok(tally.published >= 5 && tally.stayed >= 5, `the table must exercise both outcomes: ${JSON.stringify(tally)}`);
   } finally { s.cleanup(); }
 });
