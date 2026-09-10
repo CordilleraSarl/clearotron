@@ -119,6 +119,16 @@ const USAGE = `
     --context    a file whose contents become this owner's context pack
     --dry-run    say exactly what would be written, and write nothing
 
+  clearotron brandowner framework <key> <path>
+
+    Point an existing company at a risk framework, as skills/prelim-search/<file>.md.
+    The deck is checked before anything is written: a path that does not resolve, or a
+    manifest that will not load, is refused and the company is left exactly as it was.
+
+    This is the route a company created in the browser gets a framework by. The browser
+    deliberately sets no framework — frameworkPath is code-owned and the profile screen
+    shows it read-only — so without this verb there was no supported route at all.
+
   Exit codes: 0 written and recorded · 1 refused, nothing written · 2 usage
               3 written but NOT recorded — the bundle is written and the store has no record of it
 `;
@@ -266,11 +276,94 @@ export async function add(argv, {
   return { written: true, store, profile, framework, commit, commitError };
 }
 
+/**
+ * Point an existing company at a risk framework.
+ *
+ * THE LINT IS `resolveFramework`, NOT A SECOND OPINION. That function already refuses a path of the
+ * wrong shape, one that does not resolve on this install, and one whose manifest will not load — in the
+ * words the create path uses. A second check here would be a second set of messages to keep in step, and
+ * the one this file could write is the one that would go stale.
+ *
+ * IT REFUSES BEFORE IT WRITES. A framework somebody chose that does not resolve is a mistake, not an
+ * absence, and the company is left exactly as it was — which matters more here than on a create, because
+ * there is an existing company whose rating this would change.
+ *
+ * THE WHOLE PROFILE IS REWRITTEN, one field changed. `defaultWriteProfile` is the one writer, so this
+ * cannot invent a second shape of profile file; the read-modify-write is deliberate and the alternative
+ * — patching a key in place — is how two writers come to disagree about what a bundle contains.
+ */
+export async function framework(argv, {
+  resolution = profileStoreResolution(),
+  out = console.log,
+} = {}) {
+  const [key, path] = argv;
+  if (!key) throw new Refusal(`this command needs a company key.${USAGE}`);
+  if (!path) throw new Refusal(`this command needs a framework path, as skills/prelim-search/<file>.md.${USAGE}`);
+  try { assertProfileKey(key); }
+  catch (e) { throw new Refusal(e?.message ?? String(e)); }
+
+  const store = storeForAdd(resolution);
+  const file = join(store, `${key}.json`);
+  // AN ABSENT COMPANY IS NAMED, not created. `add` is the verb that creates; a typo here would
+  // otherwise write a bundle carrying nothing but a framework path.
+  if (!existsSync(file))
+    throw new Refusal(`no company "${key}" in ${store} — "brandowner add ${key} --name ..." creates one.`);
+
+  // Refuses here, before anything is read for writing.
+  const resolved = resolveFramework(path);
+
+  const profile = JSON.parse(readFileSync(file, "utf8"));
+  const was = profile.frameworkPath ?? null;
+  if (was === resolved.path) {
+    out(`  ${key} already rates under ${resolved.path} — nothing to change.`);
+    return { written: false, store, framework: resolved };
+  }
+  // THE CONTEXT PACK IS READ AND HANDED BACK, because omitting it is not "leave it alone".
+  // `defaultWriteProfile` reads an absent pack as "this company has none" and REMOVES the sibling file.
+  // `add` never meets that branch: it always passes the pack it was given. This verb is the first caller
+  // that rewrites a company which already exists, so it is the first one that can reach it — and setting
+  // a framework would have deleted the company's context pack, and committed the deletion under a
+  // message about the framework. Found in review, driven before the fix: a store holding acme.json and
+  // acme.context.md kept only acme.json.
+  //
+  // Re-writing the pack is deliberate rather than clever. It lands in the commit's file list, git sees
+  // no change in a pack that was already stored the way this writer stores it, and the commit still
+  // carries only the profile. NOT byte-for-byte in every case: `defaultWriteProfile` trims and ends
+  // with one newline, so a pack hand-edited with blank lines around its text comes back without them.
+  // The words are untouched, which is what the arm below checks. A pack holding nothing but whitespace
+  // is still removed, which is what every other reader of this store already means by an empty pack.
+  const packPath = join(store, CONTEXT_PACK_FILE(key));
+  const contextPack = existsSync(packPath) ? readFileSync(packPath, "utf8") : "";
+  const { files } = defaultWriteProfile({
+    profileDir: store, key, profile: { ...profile, frameworkPath: resolved.path }, contextPack,
+  });
+
+  const repoRoot = resolveStoreRepoRoot({ names: ["CLEAROTRON_CUSTOMERS_DIR"], fallback: store }).root;
+  const audit = makeCommittableAudit({ auditPath: join(store, "audit.jsonl"), repoRoot });
+  const gitCommit = makeStoreCommit({ repoRoot, what: "customers" });
+  let by = "unknown";
+  try { by = userInfo().username || "unknown"; } catch { /* no passwd entry — the row still gets written */ }
+  const { commit, commitError } = commitWithAuditRow({
+    audit, gitCommit, files, by,
+    message: `company ${key} rates under ${resolved.path}${was ? ` (was ${was})` : ""}`,
+  });
+
+  out(`  ${key} now rates under ${resolved.path}${was ? ` — was ${was}` : " — it had none of its own"}.`);
+  if (commit) out(`  recorded ${commit}`);
+  if (commitError) out(`  WROTE THE CHANGE BUT DID NOT RECORD IT: ${commitError} — the audit line is on disk; fix the store's git state`);
+  return { written: true, store, framework: resolved, was, commit, commitError };
+}
+
 async function main() {
   const [sub, ...rest] = process.argv.slice(2);
   if (!sub || sub === "--help" || sub === "-h" || sub === "help") { console.log(USAGE); process.exit(sub ? 0 : 1); }
-  if (sub !== "add") { console.error(`brandowner: no such action "${sub}". One of: add`); process.exit(2); }
+  if (sub !== "add" && sub !== "framework") { console.error(`brandowner: no such action "${sub}". One of: add, framework`); process.exit(2); }
   try {
+    if (sub === "framework") {
+      const r = await framework(rest);
+      if (r?.commitError) process.exit(3);
+      return;
+    }
     // WROTE-BUT-DID-NOT-RECORD IS NOT SUCCESS. The write stands — rolling a written bundle back
     // would lose the operator's work over a git fault they can fix — but a scripted onboarding
     // reading exit 0 concludes the store recorded it, and the store did not. Exit 3 says both
