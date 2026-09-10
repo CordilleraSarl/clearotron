@@ -128,7 +128,7 @@ const SUPPLIED_ELSEWHERE = Object.freeze({
 
   // ── LOCAL SIGN-IN, WHICH THE WIZARD ASKS FOR ────────────────────────────────────────────────────
   PORTAL_LOCAL_USER: "the one address that signs in to a local install; `clearotron install` asks and `clearotron start` injects it",
-  PORTAL_LOCAL_CREDENTIAL: "a passphrase file the portal creates itself on first local start, never an install-time value",
+  PORTAL_LOCAL_CREDENTIAL: "the sign-in file: the portal creates it on first local start, and `clearotron start` names the install's own when it has one — never an install-time value",
 });
 
 test("the census can look inside every unit the documented install places", () => {

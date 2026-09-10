@@ -276,7 +276,9 @@ test("the worker is handed NO door configuration — it talks to the queue, not 
 
 test("the worker is NON-FATAL — an install with no worker is a supported state, so its death must not take the portal", () => {
   const src = bodyOf("bin/start.mjs");
-  assert.match(src, /start\("the worker", "driver\/runner\.mjs", envs\.worker, \{ args: \["--watch"\], fatal: false \}\)/,
+  // PINNED TO THE PROPERTY, fatal:false on the worker's own call, not to the environment it is handed:
+  // that argument now carries a spawn-time handoff, and this arm must not care what the worker is told.
+  assert.match(src, /start\("the worker", "driver\/runner\.mjs", [^\n]*\{ args: \["--watch"[^\n]*\], fatal: false \}\)/,
     "the worker is not started with fatal:false — a worker that dies would call shutdown(1) and take the portal down with it");
   assert.match(src, /const start = \(name, script, env, \{ args = \[\], fatal = true \} = \{\}\) =>/,
     "start() no longer distinguishes a fatal child from a non-fatal one, so fatal:false above is inert");
@@ -551,6 +553,12 @@ test("the demo posture reaches the portal and changes nothing about either door"
     "the demo's sign-in credential is outside its own base, so removing the demo leaves it behind");
   assert.equal(live.portal.PORTAL_LOCAL_CREDENTIAL, undefined,
     "a live install had its credential path rewritten — that is not this flag's business");
+  // AND A LIVE INSTALL IS HANDED ONLY THE CREDENTIAL START CHOSE FOR IT. `installCredential` decides, in
+  // start's own run; this composer carries the answer and adds nothing of its own, in either direction.
+  assert.equal(childEnv({ ...common, credential: paths.credential }).portal.PORTAL_LOCAL_CREDENTIAL, paths.credential,
+    "a live install that start gave its own credential was not handed it, so its portal would sign in with the shared file");
+  assert.equal(childEnv({ ...common, demo: true, credential: "/elsewhere/cred.json" }).portal.PORTAL_LOCAL_CREDENTIAL, paths.credential,
+    "a demo keeps its own credential whatever it is handed");
   assert.equal(demo.portal.PORTAL_AUTH_MODE, "local", "sign-in is out of scope and must be untouched");
   assert.equal(demo.url, live.url, "a demo is served at the same address by the same service");
 });

@@ -178,3 +178,46 @@ test("THE CONTROL: with everything the gate asks for, doctor says so and refuses
     assert.doesNotMatch(r.out, /a search is refused until/);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
+
+// ── A RUNNER THAT `clearotron start` STARTED ─────────────────────────────────────────────────────
+//
+// A foreground `clearotron start` reads the install's own file and hands its values to the runner with
+// CLEAROTRON_NO_ENV_FILE=1, so the runner read nothing and the refusal named only the units' file: on a
+// box with no units, a file that does not exist. Measured on a fresh install, 2026-09-10.
+
+import { childEnv as composeChildEnv, installPaths as layoutOf } from "../../bin/start.mjs";
+
+test("a runner that `clearotron start` started names the file start read, and only that one", () => {
+  const unit = "/srv/op/.env", started = "/srv/op/.config/clearotron/.env";
+  const r = orderTimeRefusal({}, TABLES, { envFile: unit, readFile: null, startFile: started });
+  assert.ok(r.operator.includes(`Set them in ${started} — the file \`clearotron start\` read when it started this runner`),
+    "the refusal must name the file this runner's values came from");
+  assert.ok(!r.operator.includes(unit), "the units' file reaches nothing on this runner, so it must not be offered");
+  // The other two shapes keep their answers: a runner that read its own file names both, a unit's names its own.
+  assert.match(orderTimeRefusal({}, TABLES, { envFile: unit, readFile: started, startFile: started }).operator, /either of these — both reach a run/);
+  assert.ok(orderTimeRefusal({}, TABLES, { envFile: unit }).operator.includes(`Set them in ${unit} and restart`));
+});
+
+test("start hands its file to the worker as a flag no unit carries, and the runner passes it on", () => {
+  const start = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
+  assert.match(start, /start\("the worker", "driver\/runner\.mjs", envs\.worker, \{ args: \["--watch", \.\.\.\(envFileRead\(\) \? \[`--start-env-file=\$\{envFileRead\(\)\}`\] : \[\]\)\], fatal: false \}\)/,
+    "the worker is no longer told which file its supervisor read");
+  // A unit's runner is started by its unit file, whose command line is fixed: it must never carry the flag,
+  // or a unit's refusal would name the supervisor's file instead of its own.
+  const exec = readFileSync(join(ROOT, "driver", "systemd", "clearotron-worker.service"), "utf8").split("\n").find((l) => l.startsWith("ExecStart="));
+  assert.ok(exec && /runner\.mjs --watch\s*$/.test(exec) && !exec.includes("--start-env-file"), `the worker unit's command line changed: ${exec}`);
+  // And nothing of it is in the environments start composes, which is what `--background` writes to the units.
+  const envs = composeChildEnv({ ports: { portal: 18802, mcp: 18790 }, paths: layoutOf("/srv/op/trademark"), user: "op@localhost",
+    portalSecret: "p", tokenSecret: "t", opsToken: "o", localWorker: true });
+  assert.ok(!/start-env-file|START_ENV_FILE/.test(JSON.stringify(envs)), "the handoff leaked into the composition the units' file is written from");
+  assert.match(readFileSync(join(ROOT, "driver", "runner.mjs"), "utf8"), /startFile: startEnvFile\(\)/, "and the runner must pass it to the refusal");
+});
+
+test("the runner accepts start's flag and still refuses an argument it does not know", () => {
+  // Driven, because the runner refuses unrecognised arguments on purpose: a flag it did not know would stop
+  // every foreground install's worker at its first breath.
+  const r = spawnSync(process.execPath, [join(ROOT, "driver", "runner.mjs"), "--start-env-file=/srv/op/.config/clearotron/.env", "--not-a-flag"],
+    { encoding: "utf8", env: process.env, timeout: 60_000 });
+  assert.equal(r.status, 2, `the runner did not refuse the unknown argument (exit ${r.status}): ${String(r.stderr).slice(0, 300)}`);
+  assert.match(String(r.stderr), /unknown argument --not-a-flag/, "it must name the argument it does not know, and not start's flag");
+});

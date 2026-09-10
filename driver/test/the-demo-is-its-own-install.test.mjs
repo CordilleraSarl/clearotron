@@ -416,7 +416,9 @@ test("a demo first, then a real start in the same home: the real install carries
       try { who = userInfo().username; } catch { /* a container with no passwd entry */ }
       assert.match(settings, new RegExp(`^PORTAL_LOCAL_USER=${(who || "user").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}@localhost$`, "m"),
         "the real install signs in as someone other than its own local account");
-      const cred = JSON.parse(readFileSync(join(home, ".cordillera", "portal-local-credential.json"), "utf8"));
+      // A first start signs in with a credential it mints inside its own base, so that is the one read.
+      assert.ok(existsSync(real.credential), "the real install's first start minted no credential of its own");
+      const cred = JSON.parse(readFileSync(real.credential, "utf8"));
       assert.notEqual(cred.email, "demo@localhost", "the real install's sign-in credential is the demo's");
     } finally {
       if (run) await stop(run, ports).catch(() => {});

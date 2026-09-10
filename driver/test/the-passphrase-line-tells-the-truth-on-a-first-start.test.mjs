@@ -29,6 +29,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { laterStartLines } from "../portal-local-auth.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -57,7 +58,10 @@ test("the credential is checked BEFORE the portal that mints it is started", () 
 });
 
 test("both sentences still exist, and the first-run one names how to recover", () => {
-  assert.match(SRC, /minted on an earlier start and is NOT reprinted/,
+  // THE RETURNING-OPERATOR SENTENCE LIVES IN A COMPOSER NOW (`laterStartLines`), so it is DRIVEN here rather
+  // than found in start.mjs's text, and the later-start branch is held to calling it below.
+  assert.match(laterStartLines({ user: "op@localhost", reset: "RESET", credentialPath: "/x/cred.json" }).join("\n"),
+    /minted on an earlier start and is NOT reprinted/,
     "the returning-operator sentence is gone — a real second start now claims the value was printed");
   // — F10 REPLACED the first-run sentence rather than deleting it. "printed
   // once, above" was the tell for that finding: a summary sending the reader back into eleven lines of
@@ -68,9 +72,13 @@ test("both sentences still exist, and the first-run one names how to recover", (
   // THE VALUE IS UNRECOVERABLE, so both branches have to name the one command that mints a new one.
   // Composed once as `reset` and referenced by both, which is why this counts references and pins the
   // definition rather than counting a literal that now appears once.
-  const branchBlock = SRC.slice(SRC.indexOf("if (mintedPassphrase)"), SRC.indexOf("if (mintedPassphrase)") + 1400);
-  assert.equal((branchBlock.match(/\$\{reset\}/g) ?? []).length, 2,
-    "a branch stopped naming the reset command — a reader who lost the value is left with nothing to do");
+  const branchBlock = SRC.slice(SRC.indexOf("if (mintedPassphrase)"), SRC.indexOf("if (mintedPassphrase)") + 1800);
+  assert.equal((branchBlock.match(/\$\{reset\}/g) ?? []).length, 1,
+    "the first-run frame stopped naming the reset command — a reader who lost the value is left with nothing to do");
+  assert.match(branchBlock, /laterStartLines\(\{ user, reset,/,
+    "the later-start branch stopped handing the reset command to the composer that says it");
+  assert.match(laterStartLines({ user: "op@localhost", reset: "RESET", credentialPath: "/x/cred.json", source: "shared" })[0], /RESET/,
+    "and the composer must name it on its FIRST line: the way back in comes before the explanation");
   assert.match(SRC, /const reset = passphraseResetCommand\(\{/,
     "and `reset` must be composed by the one function that knows when the credential needs naming — the "
     + "bare command, run as the demo printed it, exits 1 over a credential that is sitting there");

@@ -3665,6 +3665,11 @@ try {
   // rather than fall back, so a permissions fault can never silently swap a customer's framework for the
   // Generic default). Nothing is written INTO them — see the note at step 7b.
   for (const k of ["CLEAROTRON_CUSTOMERS_DIR"]) mkdirSync(candidate[k], { recursive: true });
+  // AND THE SKILLS FOLDER THE NOTE AT 7b TELLS THE READER TO USE, created and NOT configured.
+  // CLEAROTRON_INSTRUCTIONS_DIR stays unset, so the engine uses the product's own instructions, and the
+  // portal reads an empty folder the same way: it overrides nothing. It is here so that the place an
+  // override goes exists, and so the line below is true of both folders it describes.
+  mkdirSync(join(cfg, "skills"), { recursive: true });
   ok(`configuration directories created under ${cfg} (empty — the bundled instructions and the generic fallback show through; customers are yours to add)`);
 
   // 9a ── PUT THE VERB ON THIS OPERATOR'S PATH
