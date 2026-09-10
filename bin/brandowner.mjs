@@ -326,10 +326,12 @@ export async function framework(argv, {
   // message about the framework. Found in review, driven before the fix: a store holding acme.json and
   // acme.context.md kept only acme.json.
   //
-  // Re-writing the same bytes is deliberate rather than clever. The file lands in the commit's file
-  // list, git sees no change in it, and the commit still carries only the profile. A pack that holds
-  // nothing but whitespace is still removed, which is what every other reader of this store already
-  // means by an empty pack.
+  // Re-writing the pack is deliberate rather than clever. It lands in the commit's file list, git sees
+  // no change in a pack that was already stored the way this writer stores it, and the commit still
+  // carries only the profile. NOT byte-for-byte in every case: `defaultWriteProfile` trims and ends
+  // with one newline, so a pack hand-edited with blank lines around its text comes back without them.
+  // The words are untouched, which is what the arm below checks. A pack holding nothing but whitespace
+  // is still removed, which is what every other reader of this store already means by an empty pack.
   const packPath = join(store, CONTEXT_PACK_FILE(key));
   const contextPack = existsSync(packPath) ? readFileSync(packPath, "utf8") : "";
   const { files } = defaultWriteProfile({

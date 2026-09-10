@@ -100,7 +100,7 @@ test("the verb is reachable — it is in the usage and in the dispatch", async (
 // A company's context pack is prose somebody wrote about that business. Losing it while setting a
 // framework is silent — the verb reports the framework it set, the removal goes into the same commit
 // under a message about the framework, and nothing on any screen says the pack is gone.
-test("setting a framework leaves the company's context pack exactly as it was", async () => {
+test("setting a framework leaves the company's context pack, words untouched", async () => {
   const prose = "Acme sells industrial fasteners.\nIts marks are used on packaging, not on the parts.\n";
   const dir = store({ pack: prose });
   const r = await run(dir, ["acme", "skills/prelim-search/risk-framework.md"]);
