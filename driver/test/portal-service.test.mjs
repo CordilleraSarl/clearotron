@@ -42,34 +42,54 @@ const { listFlags } = await import("../feedback-store.mjs");
 // — the door the searches payload's budget is promising to describe.
 const { validateJob } = await import("../enqueue-schema.mjs");
 
-const GRANTS = { tenants: {
-  celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"], "boss@celta.example": "*" } },
-} };
-const STAFF_DOMAINS = ["example-firm.com"];
+// One organisation holding two companies. CLIENT holds one company and may run clearances in it; BOSS
+// holds the whole organisation and may only view; STAFF has access to everything by their own entry
+// under `people` — never by the part of the address after the `@`.
 const STAFF = { email: "staff@example-firm.com" };
 const CLIENT = { email: "cli@celta.example" };
 const STRANGER = { email: "who@nowhere.example" };
+const GRANTS = {
+  tenants: {
+    celta: { accounts: ["aurora", "zephyr"], users: { [CLIENT.email]: ["aurora"], "boss@celta.example": "*" } },
+  },
+  people: {
+    [STAFF.email]: { run: true, manage: true, everything: true },
+    [CLIENT.email]: { run: true },
+  },
+};
+// The same world with CLIENT also holding Manage — saving a company's profile or a project is Manage's.
+// A separate fixture rather than the default, because the default CLIENT is also the person the Manage-gated
+// surfaces must refuse.
+const GRANTS_CLIENT_MANAGES = { ...GRANTS, people: { ...GRANTS.people, [CLIENT.email]: { run: true, manage: true } } };
 
 // ── principal + chokepoint ─────────────────────────────────────────────────────────────────────────
-test("makePrincipal: staff by domain (*), client by grants, stranger = null (403 at the door)", () => {
-  assert.deepEqual(makePrincipal({ email: STAFF.email, grants: GRANTS, staffDomains: STAFF_DOMAINS }),
-    { role: "staff", email: STAFF.email, accounts: "*" });
-  assert.deepEqual(makePrincipal({ email: CLIENT.email, grants: GRANTS, staffDomains: STAFF_DOMAINS }),
-    { role: "client", email: CLIENT.email, accounts: ["aurora"] });
-  assert.equal(makePrincipal({ email: STRANGER.email, grants: GRANTS, staffDomains: STAFF_DOMAINS }), null);
-  assert.equal(makePrincipal({ email: "", grants: GRANTS, staffDomains: STAFF_DOMAINS }), null);
+test("makePrincipal: everything by the person's own entry, a company by grants, stranger = null (403 at the door)", () => {
+  assert.deepEqual(makePrincipal({ email: STAFF.email, grants: GRANTS }),
+    { email: STAFF.email, everything: true, permissions: { run: true, manage: true }, access: [{ kind: "everything" }],
+      accounts: "*", organisations: ["celta"], genericOrgs: ["celta"], accountOrgs: { aurora: "celta", zephyr: "celta" } });
+  assert.deepEqual(makePrincipal({ email: CLIENT.email, grants: GRANTS }),
+    { email: CLIENT.email, everything: false, permissions: { run: true, manage: false },
+      access: [{ kind: "company", key: "aurora", org: "celta" }],
+      accounts: ["aurora"], organisations: ["celta"], genericOrgs: [], accountOrgs: { aurora: "celta" } });
+  // What used to admit staff was the domain. A colleague on STAFF's domain, with no entry of their own, gets
+  // no principal at all.
+  assert.equal(makePrincipal({ email: "colleague@example-firm.com", grants: GRANTS }), null,
+    "an address is admitted by its own entry, never by its domain");
+  assert.equal(makePrincipal({ email: STRANGER.email, grants: GRANTS }), null);
+  assert.equal(makePrincipal({ email: "", grants: GRANTS }), null);
 });
 
 test("assertPrincipal: clients FORCED to their grant (foreign = 404); staff act for anyone; door mode never resolves; multi-account = actionable 400", () => {
-  const client = makePrincipal({ email: CLIENT.email, grants: GRANTS, staffDomains: STAFF_DOMAINS });
-  const staff = makePrincipal({ email: STAFF.email, grants: GRANTS, staffDomains: STAFF_DOMAINS });
-  const boss = makePrincipal({ email: "boss@celta.example", grants: GRANTS, staffDomains: STAFF_DOMAINS });
+  const client = makePrincipal({ email: CLIENT.email, grants: GRANTS });
+  const staff = makePrincipal({ email: STAFF.email, grants: GRANTS });
+  const boss = makePrincipal({ email: "boss@celta.example", grants: GRANTS });
   assert.equal(assertPrincipal(client, { account: "aurora" }), "aurora");
   assert.equal(assertPrincipal(client), "aurora", "single-account client defaults to it");
   assert.throws(() => assertPrincipal(client, { account: "zephyr" }), (e) => e instanceof PortalDeny && e.status === 404,
     "a foreign account is a 404 — existence never leaks");
   assert.equal(assertPrincipal(staff, { account: "zephyr" }), "zephyr");
-  assert.throws(() => assertPrincipal(client, { staffOnly: true }), (e) => e.status === 404);
+  // The install-wide gate: a person without access to everything meets a 404, not a 403.
+  assert.throws(() => assertPrincipal(client, { everything: true }), (e) => e instanceof PortalDeny && e.status === 404);
   assert.throws(() => assertPrincipal(null), (e) => e.status === 403);
   // review 2026-07-18: a 2-account client was LOCKED OUT (404) at every bare door
   assert.deepEqual(boss.accounts, ["aurora", "zephyr"], "user-level * expands to the tenant's accounts");
@@ -77,8 +97,9 @@ test("assertPrincipal: clients FORCED to their grant (foreign = 404); staff act 
   assert.throws(() => assertPrincipal(boss), (e) => e.status === 400 && /name an account/.test(e.message),
     "unresolved multi-account = actionable 400, never a lockout");
   assert.equal(assertPrincipal(boss, { account: "zephyr" }), "zephyr");
-  // review 2026-07-18: last-@ semantics + multi-@ refusal (the staff bit must agree with the edge parse)
-  assert.equal(makePrincipal({ email: "x@example-firm.com@evil.com", grants: GRANTS, staffDomains: STAFF_DOMAINS }), null,
+  // review 2026-07-18: last-@ semantics + multi-@ refusal. The everything person's own address with a
+  // second `@` appended must not match their entry — the resolver must agree with the edge parse.
+  assert.equal(makePrincipal({ email: `${STAFF.email}@evil.com`, grants: GRANTS }), null,
     "multi-@ identities are refused outright");
 });
 
@@ -176,7 +197,7 @@ function world(opts = {}) {
   writeFileSync(join(recipesDir, "aurora", "screen.json"), JSON.stringify({ version: 1, label: "Quarterly screen", base: "knockout-search" }));
   const triggers = [], audits = [];
   const service = makePortalService({ poolRoot, workspaceRoot, recipesDir, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS,
+    grants: GRANTS,
     // The queues the runner drains, injected the way serve() injects config.queueDirs. Omitted by
     // default so the allowance counter reports `complete:false` — a world with no queue wiring must
     // read as "could not count", never as "no runs today".
@@ -556,7 +577,7 @@ test("upstream trigger refusal: audited ok:false and surfaced as an honest 502, 
   const workspaceRoot = tempDir("portal-refuse-ws-");
   const audits2 = [];
   const refusing = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS,
+    grants: GRANTS,
     trigger: async () => { throw new Error("FORBIDDEN (start_run): grant mismatch"); },
     audit: (r) => audits2.push(r) });
   const body = { markName: "SOLO", classes: [9], goods: "software" };
@@ -612,8 +633,13 @@ test("runs + reports: account-filtered listing; foreign/missing reports are 404,
   assert.equal((await service.route("GET", "/portal/report/ghost/", CLIENT)).status, 404);
   assert.equal((await service.route("GET", "/portal/report/..%2Fescape/", CLIENT)).status, 404, "traversal-shaped runId = 404");
   assert.equal((await service.route("GET", "/portal/report/tmp3-zephyr-run/", STAFF)).status, 200, "staff read any");
+  // Generic belongs to an organisation and is seen only with organisation-level access or everything.
+  // CLIENT holds one of celta's companies; BOSS holds celta whole — the pair makes the 404 about the level
+  // of access, not about Generic being unreachable.
   assert.equal((await service.route("GET", "/portal/api/runs", CLIENT, {}, { account: "generic" })).status, 404,
-    "generic is STAFF-only on every client surface (LEAK-#9 alignment)");
+    "a company-level grant never reaches its organisation's Generic");
+  assert.equal((await service.route("GET", "/portal/api/runs", { email: "boss@celta.example" }, {}, { account: "generic" })).status, 200,
+    "an organisation-level grant does");
 });
 
 // ── report feedback — RETIRED, and still tested ───────────────────────────────────────
@@ -1224,8 +1250,8 @@ test('runs?account=*: staff see every account tagged; a client sees a 404, not a
   assert.deepEqual([...new Set(one.json.runs.map((r) => r.account))], ["aurora"]);
 });
 
-// The wildcard branch read `principal.role` directly. `principal` is null for any identity that is
-// neither staff nor granted anything — which is exactly the caller the "every customer" route most needs
+// The wildcard branch once read the principal's role directly (a field the access model has since
+// removed). `principal` is null for any identity granted nothing anywhere — which is exactly the caller the "every customer" route most needs
 // to refuse — so the read threw a TypeError, which is not a PortalDeny and so escaped route()'s catch
 // and became a 500. The route that lists every account answered a server error to an unenrolled prober
 // while every other surface refused them cleanly.
@@ -1261,7 +1287,7 @@ test("the config surface checks the DOOR before the method — and a wrong shape
   const upstream = makeUpstream({ callUpstream: async (m, p) => { seen.push(p); return { status: 200, json: { profile: {} } }; } });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: () => {} });   // the save below is Manage's
 
   // Every method reads identically to an unadmitted identity, and identically to the front door.
   const atTheDoor = await svc.route("GET", "/portal/api/me", STRANGER);
@@ -1303,7 +1329,7 @@ test('a failure reason reaches staff verbatim and never reaches a client', async
   writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora" }));
 
   const service = makePortalService({ poolRoot, workspaceRoot, secret: "s",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS });
+    grants: GRANTS });
 
   const asStaff = await service.route("GET", "/portal/api/runs", STAFF, {}, { account: "aurora" });
   assert.equal(asStaff.json.runs[0].reason, TRACE, "staff get the engine's own words");
@@ -1688,7 +1714,7 @@ test("a saved search's own territories are honoured at the gate — and the deep
 test("a trigger failure tells a CLIENT the facts and an OPERATOR the cause — never a variable name", async () => {
   const { poolRoot, workspaceRoot } = world();
   const mk = (msg) => makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     trigger: async () => { throw new Error(msg) } });
 
   const body = { markName: "SOLO", classes: [9], goods: "software" };
@@ -1734,7 +1760,7 @@ test("BREACH: a client cannot reach another customer's config through the ROUTER
   const upstream = makeUpstream({ callUpstream: async (m, p, b, id) => { seen.push({ p, id }); return { status: 200, json: { profile: {} } }; } });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS, upstream, audit: () => {} });
 
   for (const path of ["/portal/api/config/profile", "/portal/api/config/projects"]) {
     const r = await svc.route("GET", path, CLIENT, {}, { account: "zephyr" });
@@ -1755,7 +1781,7 @@ test("BREACH: the code-owned fields cannot be written through the ROUTER either"
   const upstream = makeUpstream({ callUpstream: async (m, p, b) => { sent = b; return { status: 200, json: { ok: true } }; } });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: () => {} });   // a profile save is Manage's
 
   const r = await svc.route("POST", "/portal/api/config/profile/save", CLIENT,
     { profile: { name: "Aurora", frameworkPath: "evil.md", runCaps: { perMonth: 99999 } } }, {});
@@ -1778,7 +1804,7 @@ test("a save is AUDITED with the human who did it", async () => {
   const { poolRoot, workspaceRoot } = world();
   const audits = [];
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: (r) => audits.push(r) });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: (r) => audits.push(r) });   // a profile save is Manage's
 
   await svc.route("POST", "/portal/api/config/profile/save", CLIENT, { profile: { name: "Aurora" } }, {});
   assert.ok(audits.some((a) => a.event === "profile-save" && a.by === "cli@celta.example"));
@@ -1795,6 +1821,14 @@ test("the staff config and access surfaces are STAFF-ONLY, and a client gets a p
     assert.deepEqual(asClient.json, { error: "not_found" },
       "byte-identical to a path that does not exist — a distinct body would confirm the surface is there");
     assert.equal((await service.route("GET", p, STAFF, {}, { account: "aurora" })).status, 200, `${p} for staff`);
+  }
+  // The split the access model draws: the access page is Manage's, the install-wide pages need access to
+  // everything. A manager who does not see everything reaches the first and neither of the others.
+  const { poolRoot, workspaceRoot } = world();
+  const managed = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret", grants: GRANTS_CLIENT_MANAGES, audit: () => {} });
+  assert.equal((await managed.route("GET", "/portal/admin/access", CLIENT, {}, {})).status, 200, "Manage opens the access page");
+  for (const p of ["/portal/admin/config", "/portal/admin/observed"]) {
+    assert.equal((await managed.route("GET", p, CLIENT, {}, {})).status, 404, `${p} needs access to everything, not Manage`);
   }
 });
 
@@ -1924,11 +1958,14 @@ test("creating a company is mounted, reaches the wall, and takes no account from
   // The route hands the wall the principal and the body, and nothing else. An account argument here
   // would be the second implementation of tenancy this block's own header refuses to have.
   assert.equal(calls[0].args.length, 2, "principal and body — no account argument");
-  // The RESOLVED principal, not the raw identity: the wall's permission test reads `role`, which only
-  // exists after makePrincipal has run. Asserting the fixture object here would pass on a route that
-  // forwarded an unresolved identity, and the wall would then refuse every create.
+  // The RESOLVED principal, not the raw identity: the wall's permission test reads `permissions.manage`,
+  // and where the company is filed reads the person's organisations — both exist only after makePrincipal
+  // has run. Asserting the fixture object here would pass on a route that forwarded an unresolved
+  // identity, and the wall would then refuse every create.
   assert.equal(calls[0].args[0].email, STAFF.email);
-  assert.equal(calls[0].args[0].role, "staff", "the wall is handed something it can make a decision from");
+  assert.deepEqual(calls[0].args[0].permissions, { run: true, manage: true },
+    "the wall is handed something it can make a decision from");
+  assert.deepEqual(calls[0].args[0].access, [{ kind: "everything" }]);
   assert.equal(calls[0].args[1].name, "Aurora Holdings");
 });
 
@@ -2224,7 +2261,7 @@ test("/portal/api/me names the accounts it grants, and never more than it grants
   ]);
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     loadProfilesImpl: async () => profiles });
 
   const single = await svc.route("GET", "/portal/api/me", CLIENT);
@@ -2260,7 +2297,7 @@ test("the company facts ride both routes, in one shape, and /me still names only
   ]);
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     loadProfilesImpl: async () => profiles });
 
   const multi = await svc.route("GET", "/portal/api/me", { email: "boss@celta.example" });
@@ -2336,7 +2373,7 @@ const meWith = async (engine, livePresent) => {
   const { poolRoot, workspaceRoot } = world();
   if (engine) captureWith(poolRoot, engine);
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {}, loadProfilesImpl: async () => new Map() });
+    grants: GRANTS, audit: () => {}, loadProfilesImpl: async () => new Map() });
   return withLiveProgram(livePresent, async () => (await svc.route("GET", "/portal/api/me", STAFF)).json);
 };
 
@@ -2380,7 +2417,7 @@ test("/portal/api/me: the program on the box and absent from the engine's readin
 test("an unreadable profile store costs a name, never the door", async () => {
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     loadProfilesImpl: async () => { throw new Error("profiles/generic.json is REQUIRED"); } });
   const me = await svc.route("GET", "/portal/api/me", CLIENT);
   assert.equal(me.status, 200, "a cosmetic lookup must not decide whether someone can sign in");
@@ -2419,7 +2456,7 @@ test("a client creates a project for their OWN account, end to end, and cannot c
   });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: () => {} });   // adding a project is Manage's
 
   const body = { profile: { projectName: "EU launch 2027" }, contextPack: "" };
   const path = "/portal/api/config/projects/eu-launch-2027";
@@ -3012,7 +3049,7 @@ test("2015 a demo may only land on a run this principal could open anyway", asyn
 test("/portal/api/me says which route this install arrived by, as a WORD", async () => {
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {} });
+    grants: GRANTS, audit: () => {} });
   const me = await svc.route("GET", "/portal/api/me", CLIENT);
   assert.equal(me.status, 200);
   assert.ok(["packaged", "checkout"].includes(me.json.setupRoute),

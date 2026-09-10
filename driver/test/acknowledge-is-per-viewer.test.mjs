@@ -57,8 +57,12 @@ const poolWith = (runs = {}) => {
 const svcOn = ({ root, ws }) =>
   makePortalService({
     poolRoot: root, workspaceRoot: ws, secret: "s",
-    staffDomains: ["staff.example"],
-    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } } }),
+    // Both staff readers are people with access to everything; the client is view-only.
+    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } },
+      people: {
+        "k@staff.example": { run: true, manage: true, everything: true },
+        "j@staff.example": { run: true, manage: true, everything: true },
+      } }),
   });
 
 const STAFF = { email: "k@staff.example" };

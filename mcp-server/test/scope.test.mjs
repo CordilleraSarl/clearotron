@@ -54,7 +54,10 @@ test("resolveScope: local=ops; firm-staff+no-token=internal; user-token=run-boun
   // The fail-closed §E semantics (internal requires PROVEN firm staff) carry the product's full scope
   // shape: sub/verbs (ops-token least-privilege) + accounts (GRANTS) ride on every resolved scope.
   assert.deepEqual(resolveScope({ local: true }), { kind: "ops", runId: null, sub: "local", verbs: null, accounts: "*" });
-  assert.deepEqual(resolveScope({ firmStaff: true }), { kind: "internal", runId: null, sub: null, verbs: null, accounts: "*" });
+  // No grants file is enforcement off: the staff face sees everything, and its switches are off — the
+  // internal arm of authorize() refuses every write whatever they say.
+  assert.deepEqual(resolveScope({ firmStaff: true }), { kind: "internal", runId: null, sub: null, verbs: null, accounts: "*",
+    everything: true, genericOrgs: [], permissions: { run: false, manage: false } });
   assert.deepEqual(resolveScope({ innerToken: mintToken({ scope: "ops" }) }), { kind: "ops", runId: null, sub: null, verbs: null, accounts: "*" });
   assert.deepEqual(resolveScope({ innerToken: mintToken({ scope: "user", runId: "R" }) }), { kind: "user", runId: "R", sub: null, verbs: null, accounts: null });
 }));

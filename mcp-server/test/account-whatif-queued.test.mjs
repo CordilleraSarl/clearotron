@@ -92,6 +92,8 @@ before(async () => {
       acme: { accounts: ["acme"], users: { "lawyer@acme.example": "*" } },
       myrkur: { accounts: ["myrkur"], users: { "counsel@myrkur.example": "*" } },
     },
+    // Both hold Run: every what-if verb that plans or spends is gated on that switch.
+    people: { "lawyer@acme.example": { run: true }, "counsel@myrkur.example": { run: true } },
   }));
   pinEnv(process.env, "CLEAROTRON_ACCESS_FILE", join(gdir, "grants.json"));
   process.env.CLIENT_MCP_ACCOUNT_ACCESS = "1";

@@ -19,7 +19,9 @@ import { writeFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
-const GRANTS = { tenants: { acme: { accounts: ["acme", "acme-eu"], users: { "lawyer@acme.example": "*" } } } };
+// The lawyer holds Run: start_run, plan_run and the what-if verbs are gated on that switch.
+const GRANTS = { tenants: { acme: { accounts: ["acme", "acme-eu"], users: { "lawyer@acme.example": "*" } } },
+  people: { "lawyer@acme.example": { run: true } } };
 const dir = mkdtempSync(join(tmpdir(), "acct-grants-"));
 const grantsPath = join(dir, "grants.json");
 writeFileSync(grantsPath, JSON.stringify(GRANTS));

@@ -57,8 +57,9 @@ const audits = [];
 const svcOn = (root) =>
   makePortalService({
     poolRoot: root, workspaceRoot: "/nonexistent", secret: "s",
-    staffDomains: ["staff.example"],
-    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } } }),
+    // STAFF is a person with access to everything (the /portal/admin gate); the client is view-only.
+    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } },
+      people: { "k@staff.example": { run: true, manage: true, everything: true } } }),
     audit: (rec) => audits.push(rec),
   });
 
