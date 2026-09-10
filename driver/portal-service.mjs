@@ -4467,7 +4467,9 @@ const PORT = PORT_CHOICE.port;
       // profile-service's own unit sets the instructions dir correctly — neither should learn a fallback
       // from the portal's mistake. Setting the env var (rather than threading a value) is what the
       // getter reads, and this process never runs the engine.
-      if (!envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR") && process.env.PROFILE_REPO_ROOT) {
+      // NOT IN A DEMO, which overrides no instruction: its store's repository holds none, and an empty
+      // folder pinned as the overlay reads as a blocked doctrine store.
+      if (!isDemo(process.env) && !envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR") && process.env.PROFILE_REPO_ROOT) {
         // `pinEnv`, not a bare assignment. This write lands at RUNTIME, long after `applyEnvAliases`
         // back-filled the spellings at load, so assigning one name reaches only the readers already
         // converted. `pinEnv` writes every spelling, which is what keeps a half-converted tree honest.
@@ -4478,23 +4480,24 @@ const PORT = PORT_CHOICE.port;
       // repo's demo fixtures, which is exactly the silence this guard exists to break. Mirrors the
       // roster-vs-ops-token boot check below: one directory read, once, at boot.
       const overlay = envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR");
-      if (!overlay || !existsSync(overlay)) {
-        // — SAME FACT, DIFFERENT READER. In a demo there is no customer whose
-        // framework could be shown wrongly: Demo Brand Owner rates under the generic default, which is
-        // the real house rubric rather than a fixture. Naming two environment variables and a config
-        // store at a first-time visitor tells them the thing they just started is broken — and this
-        // output is what gets captured for the website.
-        //
-        // OUTSIDE A DEMO IT IS UNCHANGED AND STILL A WARNING. It is load-bearing on a real deployment:
-        // it says a page may show synthetic data as though it were a customer's own, which is exactly
-        // the class of thing that must stay loud. The defect was the audience, not the content.
-        const posture = demoPostureLine(process.env);
-        if (posture) log(posture);
-        else log(`WARNING: skills overlay ${overlay ? `unreadable (${overlay})` : "unset"} — customer risk `
+      // — SAME FACT, DIFFERENT READER. In a demo there is no customer whose framework could be shown
+      // wrongly: the demo's company is marked demo data and rates under the framework shipped for it.
+      // Naming two environment variables and a config store at a first-time visitor tells them the
+      // thing they just started is broken — and this output is what gets captured for the website.
+      //
+      // ASKED BEFORE THE OVERLAY IS. A demo points at a skills directory of its own under its base, so an
+      // unset overlay no longer tells a demo from an operator's install.
+      //
+      // OUTSIDE A DEMO IT IS UNCHANGED AND STILL A WARNING. It is load-bearing on a real deployment:
+      // it says a page may show synthetic data as though it were a customer's own, which is exactly
+      // the class of thing that must stay loud. The defect was the audience, not the content.
+      const posture = demoPostureLine(process.env);
+      if (posture) log(posture);
+      else if (!overlay || !existsSync(overlay))
+        log(`WARNING: skills overlay ${overlay ? `unreadable (${overlay})` : "unset"} — customer risk `
           + `frameworks will resolve to this repo's demo fixtures and the Brand profile page will show `
           + `either "could not be read" or a SYNTHETIC framework as though it were the customer's own. `
           + `Set CLEAROTRON_INSTRUCTIONS_DIR (or PROFILE_REPO_ROOT) to the config store.`);
-      }
       // — SAY IT WHEN IT HAPPENS. The core catches this and reports `commitError` on the response and
       // in the audit row, both read by whoever made the save and nobody else. A failed commit leaves a
       // permanent sync blocker, so the service journal needs it too: the boot check above removes the

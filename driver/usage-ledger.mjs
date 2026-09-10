@@ -22,12 +22,12 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { isLiveQueueMarker } from "./queue-markers.mjs";   // the wall's live-state vocabulary, not a fourth copy
 
-// The daily allowance a brand owner gets when its profile names no runCaps. Declared here rather
-// than imported from runner.mjs: a request path must not pull the runner (and its queue/dispatch
-// machinery) in. A test pins the two constants to the same value so they cannot drift apart.
+// The daily allowance a brand owner gets when its profile names no runCaps. THE ONE DECLARATION, here in
+// the leaf because a request path must not pull the runner (and its queue/dispatch machinery) in;
+// runner.mjs imports it from here. There used to be a second, held equal by a test, and the screen that
+// advertises the allowance and the gate that enforces it now cannot disagree by construction.
 //
-// THIS ONE IS THE ADVERTISER AND runner.mjs IS THE ENFORCER, so they move together or the screen promises
-// what the gate refuses. raised both from the beta's 2 to 20.
+// Raised from the beta's 2 to 20.
 export const DEFAULT_CLIENT_DAILY_RUNS = 20;
 
 /**
