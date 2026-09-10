@@ -57,6 +57,25 @@ export function resolveUpdaterStampPath(deployDir, env = process.env) {
   return deployDir ? updaterStampPath(deployDir) : null;
 }
 
+/**
+ * PURE. Why this box has no updater to judge, or null when it has one.
+ *
+ * A box with no updater unit (production today, and any install that nothing keeps current) answers
+ * `systemctl show` for it with `LoadState=not-found`, an empty WorkingDirectory and no process, and it
+ * arrives as an idle row. Judging that row fails on "where it stamps could not be resolved", a red that
+ * nothing on that box can clear. So an absent unit is a skip that says why, unless the environment
+ * redirects the stamp, which says an updater exists somewhere and is to be judged. No row at all is a
+ * could-not-look, and is left to the check that says so.
+ *
+ * @param {object|undefined} row  the updater's row from the unit probe
+ * @param {object} [env]          process.env, injectable so a test can drive the redirect
+ */
+export function updaterAbsentHere(row, env = process.env) {
+  if (!row || row.load !== "not-found") return null;
+  if (resolveUpdaterStampPath(null, env)) return null;
+  return "this box has no updater unit, so nothing deploys it on a schedule and there is no running copy to compare — NOT PROBED";
+}
+
 /** The stamp, or null when there is none to read. A parse failure is a null — the verdict says so. */
 export function readUpdaterStamp(deployDir, { read = null, env = process.env } = {}) {
   const rd = read ?? ((p) => readFileSync(p, "utf8"));

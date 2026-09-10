@@ -100,7 +100,7 @@ import { config } from "../driver/driver.config.mjs";                          /
 import { probeQueueWatch, probeWorker, probeTimer } from "../driver/queue-watch-probe.mjs";   // · and, tracker issue 206, the units that say HOW this box drains
 import { doorPostureVerdict } from "../mcp-server/door-posture.mjs";   // — a door whose mode came from another door's variables
 import { readDrainerStamp, drainerVerdict, defaultPpidOf } from "../driver/drainer-identity.mjs";   // — the process that EXECUTES runs
-import { readUpdaterStamp, updaterVerdict, resolveUpdaterStampPath, UPDATER_STAMP_BASENAME } from "../driver/updater-identity.mjs";   // — the mechanism that PLACES commits
+import { readUpdaterStamp, updaterVerdict, resolveUpdaterStampPath, updaterAbsentHere, UPDATER_STAMP_BASENAME } from "../driver/updater-identity.mjs";   // — the mechanism that PLACES commits
 import { claimerIsAlive } from "../driver/claim-liveness.mjs";                       // the shared liveness test, same polarity as the queue's
 import { processTable } from "../shared/process-table.mjs";                          // — /proc is not the only box
 import { envFrom } from "../shared/env-aliases.mjs";   // — the name a reader is told to set is the one in force
@@ -830,6 +830,11 @@ else {
   // halves cannot look in different places. A reader-only variable would let a redirected updater stamp
   // one path while this looked at another and reported "no stamp" — the loud branch — about a
   // deployment that is working. What is derived here is only the fallback.
+  //
+  // A BOX WITH NO UPDATER IS ASKED FIRST (updaterAbsentHere): skipped with its reason, never failed.
+  const absent = updaterAbsentHere(clones.find((c) => c.unit === "clearotron-deploy"));
+  if (absent) skip("the updater that deploys this box is the current one", absent);
+  else {
   let deployDir = null, resolveWhy = null;
   {
     const row = clones.find((c) => c.unit === "clearotron-deploy");
@@ -864,6 +869,7 @@ else {
       deployClone,
     });
     record("the updater that deploys this box is the current one", v.state, v.message);
+  }
   }
 }
 

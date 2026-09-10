@@ -12,10 +12,11 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { updaterVerdict, readUpdaterStamp, updaterStampPath, resolveUpdaterStampPath, UPDATER_STAMP_BASENAME }
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { updaterVerdict, readUpdaterStamp, updaterStampPath, resolveUpdaterStampPath, updaterAbsentHere, UPDATER_STAMP_BASENAME }
   from "../updater-identity.mjs";
 import { serviceCommitVerdict, STAMP_ATTRIBUTED_UNITS, CHECKED_UNITS, UNIT_INVENTORY }
   from "../unit-inventory.mjs";
@@ -130,6 +131,24 @@ test("an updater that feeds a different tree than the one being checked fails", 
 test("a trailing slash is not a different tree", () => {
   const v = updaterVerdict({ stamp: stampOf({ checkout: `${CLONE}/` }), now: NOW, deployClone: CLONE });
   assert.equal(v.state, "pass");
+});
+
+// ── A BOX WITH NO UPDATER. Production has none today, and the probe still hands this check a row for it.
+test("a box with no updater unit is skipped with its reason, and a redirected stamp is still judged", () => {
+  const absent = { unit: "clearotron-deploy", load: "not-found", active: "inactive", clone: null, head: null, unreadable: null };
+  assert.match(updaterAbsentHere(absent, {}), /no updater unit/);
+  assert.equal(updaterAbsentHere(absent, { CLEAROTRON_UPDATER_STAMP: "/elsewhere/stamp.json" }), null,
+    "a redirected stamp says an updater exists somewhere, so it is judged");
+  assert.equal(updaterAbsentHere({ ...absent, load: "loaded" }, {}), null, "an installed updater is judged");
+  assert.equal(updaterAbsentHere(undefined, {}), null, "no row at all is a could-not-look, left to the check that says so");
+});
+
+test("deploy health asks whether this box has an updater before it resolves where one stamps", () => {
+  const src = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "scripts", "live-surface-check.mjs"), "utf8");
+  const asked = src.indexOf('const absent = updaterAbsentHere(clones.find((c) => c.unit === "clearotron-deploy"));');
+  const resolved = src.indexOf("if (!resolveUpdaterStampPath(deployDir))");
+  assert.ok(asked > 0 && resolved > asked, "the absent-unit question must come before the resolution that fails without one");
+  assert.match(src, /if \(absent\) skip\("the updater that deploys this box is the current one", absent\);/);
 });
 
 // ── THE READER. A parse failure and an absent file are the same null, and the verdict above says so.
