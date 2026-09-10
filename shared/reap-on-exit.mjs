@@ -59,26 +59,39 @@ const groups = new Set();
 const dirs = new Set();
 let installed = false;
 
-function reapAll() {
-  for (const pid of groups) {
-    // The GROUP first — that is what detaching bought, and it is what reaches the child's children.
-    // Falling back to the bare pid keeps a non-detached caller honest rather than silently reaping
-    // nothing; both are best-effort, because a reaper that throws on the way out of a crashing script
-    // replaces one problem with a worse one.
-    try { process.kill(-pid, "SIGKILL"); } catch { try { process.kill(pid, "SIGKILL"); } catch { /* already gone */ } }
-  }
-  groups.clear();
+// The GROUP first — that is what detaching bought, and it is what reaches the child's children.
+// Falling back to the bare pid keeps a non-detached caller honest rather than silently reaping
+// nothing; both are best-effort, because a reaper that throws on the way out of a crashing script
+// replaces one problem with a worse one.
+function killGroup(pid) {
+  try { process.kill(-pid, "SIGKILL"); } catch { try { process.kill(pid, "SIGKILL"); } catch { /* already gone */ } }
+}
+function removeDir(dir) {
+  try { rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); } catch { /* a stray temp root is not worth failing an exit over */ }
+}
+
+/**
+ * Signal every watched group, then remove every watched directory — in that order, which is the whole
+ * point of this function (see the note above).
+ *
+ * THE TWO EFFECTS AND THE STATE ARE PARAMETERS so a test can record the order the calls HAPPEN in. The
+ * arm that held this before read the order the lines were written in, and passed on edits that reversed
+ * the effect while keeping the lines: a removal moved into a helper called above the kill, or a second
+ * removal added earlier. The defaults are the real calls and this module's own sets.
+ */
+export function reapAll({ kill = killGroup, remove = removeDir } = {}, state = { groups, dirs }) {
+  for (const pid of state.groups) kill(pid);
+  state.groups.clear();
   // ONLY NOW, with the groups signalled, is the temp root removable. See the note above.
-  for (const dir of dirs) {
-    try { rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); } catch { /* a stray temp root is not worth failing an exit over */ }
-  }
-  dirs.clear();
+  for (const dir of state.dirs) remove(dir);
+  state.dirs.clear();
 }
 
 function install() {
   if (installed) return;
   installed = true;
-  process.on("exit", reapAll);
+  // A wrapper, not the function: "exit" hands its listener the exit code, which reapAll would read as its options.
+  process.on("exit", () => reapAll());
   // 128 + signo is the shell's convention for "died by this signal", and preserving it matters: CI
   // reads the exit code to tell a cancellation from a failure, and a reaper that exits 0 on SIGTERM
   // would turn every cancelled job green.
