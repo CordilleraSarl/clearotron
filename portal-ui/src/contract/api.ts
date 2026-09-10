@@ -333,19 +333,7 @@ export type Me = {
 }
 
 /**
- * THE STAFF ROLE LABEL — "<operator> staff", from the brand seam, in one place.
- *
- * It was a hardcoded operator name in three screens and a test. One deployment's identity written
- * as the product's: every fork of this portal would have told its own users they were staff of a Swiss
- * firm they have nothing to do with. Centralised because four copies of a string is how three of them
- * end up stale, and because the degraded case has to be decided once — with no brand from the server
- * the label is a bare "Staff", which is less specific rather than untrue.
- */
-export const staffLabel = (brand: string): string => (brand ? `${brand} staff` : 'Staff')
-
-/**
- * THE OPERATOR'S NAME, FOR PROSE. Same seam as `staffLabel`, different job: that one builds a
- * role label, this one drops the name into a sentence ("ask X to enrol it").
+ * THE OPERATOR'S NAME, FOR PROSE: the name dropped into a sentence ("ask X to enrol it").
  *
  * The degraded case is why it exists rather than each screen writing `me.brand || something`. With no
  * brand from the server the honest sentence names the ROLE, not a blank — "ask the operator" is still
@@ -720,7 +708,8 @@ export type SavedSearchRow = SavedSearchListing & {
  * What an account has spent against its allowance.
  *
  * Caps are NULLABLE and null means "we cannot tell you your limit" — never zero, never unlimited.
- * `capped` is false for staff, who are deliberately not bound by a client's daily allowance.
+ * `capped` is false for a person with access to everything, who is deliberately not bound by a daily
+ * allowance.
  */
 export type Usage = {
   readonly account: string
