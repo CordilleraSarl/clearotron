@@ -202,8 +202,8 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
   // file and handed its values down with CLEAROTRON_NO_ENV_FILE=1, so `readFile` is null there exactly as
   // it is under a unit, and this sentence named the units' file: on a box with no units, a file that does
   // not exist, while the file the values came from went unnamed. Measured on a fresh install, 2026-09-10.
-  // `startFile` is the file that supervisor read. It is handed to the runner at its spawn and is never part
-  // of what the units' file is written from, so it is set exactly when `clearotron start` is the parent.
+  // `startFile` is the file that supervisor read. It reaches the runner as a command-line flag that a unit's
+  // fixed ExecStart never carries, so it is set exactly when `clearotron start` is the parent.
   const cmd = "`clearotron install` in a terminal, which writes them for you";
   const both = readFile && envFile && readFile !== envFile;
   const one = readFile || envFile;

@@ -1937,11 +1937,11 @@ if (isMain) {
   // NON-FATAL on purpose. An install with no worker is a supported state (--no-worker), so a worker that
   // dies must leave the portal serving rather than take the whole install down with it.
   const worker = wantWorker
-    // THE FILE THIS SUPERVISOR READ, HANDED AT THE SPAWN AND NOT IN `envs.worker`: that composition is also
-    // what `--background` writes into the units' file, and a unit's runner is configured by that file, not
-    // this one. So a runner holding this value was started by this command, and its order-time refusal can
-    // name the file its values came from rather than one nothing on this box reads.
-    ? start("the worker", "driver/runner.mjs", { ...envs.worker, CLEAROTRON_START_ENV_FILE: envFileRead() ?? undefined }, { args: ["--watch"], fatal: false })
+    // THE FILE THIS SUPERVISOR READ, HANDED AS A FLAG. A unit's ExecStart is fixed at `--watch` and never
+    // carries it, so a runner holding it was started by this command, and its order-time refusal can name
+    // the file its values came from rather than one nothing on this box reads (driver/runner.mjs,
+    // startEnvFile). Not a variable, and not in `envs.worker`, which `--background` writes to the units.
+    ? start("the worker", "driver/runner.mjs", envs.worker, { args: ["--watch", ...(envFileRead() ? [`--start-env-file=${envFileRead()}`] : [])], fatal: false })
     : null;
 
   // ── 5c. the client door — the OTHER door, on this path too ( — F26) ───────
