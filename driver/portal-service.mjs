@@ -661,7 +661,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
 // A failure `reason` is NOT client-safe, and the listing must not hand it to a browser.
 //
 // The engine writes `reason = String(e?.stack ?? e)` truncated to 200 characters
-// (pipeline.mjs:5366, pipeline-knockout.mjs:312). That is a raw stack trace: absolute filesystem
+// (pipeline.mjs:5366, pipeline-knockout.mjs:311). That is a raw stack trace: absolute filesystem
 // paths, internal module names, provider error text. Useful to staff, and none of a client's business
 // — and redacting it in the UI would be theatre, because the field still travels over the wire and
 // sits in devtools whatever React chooses to render.

@@ -1649,7 +1649,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //   1. REACHABLE from a republish, and NOT inert — which is the point. A republished archived run on a
 //      provider that publishes no record page LOSES links it used to render. Those links were wrong:
 //      every one pointed at a host the provider does not publish (measured on this tree before the fix
-//      existed — 28 absolute anchors on one clarivate run, publish/index.mjs:774). The acceptance
+//      existed — 28 absolute anchors on one clarivate run, publish/index.mjs:754). The acceptance
 //      criterion is that a republish introduces no link it did not have; removing false ones is the
 //      requirement, not a side effect. A run on corsearch, EUIPO or USPTO republishes byte-identically.
 //   2. It could NOT live elsewhere. The hrefs are CONSTRUCTED here, from `registrations[].uri` paths, at

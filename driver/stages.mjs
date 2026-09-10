@@ -279,13 +279,7 @@ export function paths(runDir) {
     // What was DECIDED about the receipt's deferrals, and when — kept apart from plan-execution.json,
     // which is an execution-FACTS receipt several validators fail-closed on. See envelope-settle.mjs.
     envelopeDecision: p(driverRel("envelope-decision.json")),
-    instructedScope: p(driverRel("instructed-scope.json")),
-    // The account defaults the engine cannot search, read off the run's own frozen profile. A SEPARATE
-    // file from instructed-scope.json deliberately: that one is the job's own words and the matter frame
-    // is ordered to quote its values verbatim, so a misspelled stored territory placed there would reach
-    // client-facing prose as though the requester had asked for it — the defect this record exists to
-    // report. Written by the driver at intake, read by no stage.
-    defaultTerritories: p(driverRel("default-territories.json")),
+    instructedScope: p(driverRel("instructed-scope.json")), defaultTerritories: p(driverRel("default-territories.json")),   // the stored account defaults the engine cannot search — written at intake, read by no stage (pipeline.mjs writes it)
     // compute-don't-author — the per-class scope truth (scope-facts.mjs): instructed × frozen plan ×
     // band states × coverage ledger. The masthead classes/coverage_line are stamped FROM this sidecar.
     scopeFacts: p(driverRel("scope-facts.json")),
@@ -1278,7 +1272,7 @@ export const STAGES = {
       },
       "Applicant's own & affiliated marks — the self-exclusion set (mandatory)": {
         class: "judgment", tokens: [],
-        why: "naming affiliates beyond the seed is judgment; the profile half is already pre-bound — stages.mjs:850 hands the model exclusionSeed verbatim and _driver/instructed-scope.json carries job.customer [citation unverified]",
+        why: "naming affiliates beyond the seed is judgment; the profile half is already pre-bound — stages.mjs:844 hands the model exclusionSeed verbatim and _driver/instructed-scope.json carries job.customer [citation unverified]",
       },
       "Campaign shape (stated) — the intake's campaign facts retyped from the `Stated campaign shape` line the dispatch already carries": {
         class: "mechanical:code-rendered", tokens: [],
@@ -1430,7 +1424,7 @@ export const STAGES = {
       },
       "variants[].value — the search terms themselves": {
         class: "judgment", tokens: ["variantmodel_term_markup"],
-        why: "the repo forbids code from minting a search term twice over — stages.mjs:777-779 and variant-manifest-model.mjs:387 (\"VALIDATES, NEVER GENERATES… the moment code mints a search term, judgment has moved into the funnel\"). variantmodel_term_markup is therefore a shape rule that stays model-facing BY DESIGN; do not reclassify it mechanical to satisfy E6. It also walks dominant_element and elements[].value (variantTermShapeGaps), which is why they carry no token of their own [citation unverified]",
+        why: "the repo forbids code from minting a search term twice over — stages.mjs:771-773 and variant-manifest-model.mjs:387 (\"VALIDATES, NEVER GENERATES… the moment code mints a search term, judgment has moved into the funnel\"). variantmodel_term_markup is therefore a shape rule that stays model-facing BY DESIGN; do not reclassify it mechanical to satisfy E6. It also walks dominant_element and elements[].value (variantTermShapeGaps), which is why they carry no token of their own [citation unverified]",
       },
       "variants[].category — one of core|phonetic|visual|transliteration|numeric|composite|other": {
         class: "judgment", tokens: [],
@@ -2327,7 +2321,7 @@ export const STAGES = {
       },
       "reason — the short paragraph carrying the stated ground for the tier (owner characterisation, customer/channel read, decisive ground, Stage-2 mitigant)": {
         class: "judgment", tokens: ["placement_reason_missing", "placement_reason_bare"],
-        why: "Four downstream stages adopt or counter-reason BY ARGUING WITH THIS TEXT (stages.mjs:2491-2495). It is authored reasoning, not a value any artifact holds. [citation unverified]",
+        why: "Four downstream stages adopt or counter-reason BY ARGUING WITH THIS TEXT (stages.mjs:2485-2489). It is authored reasoning, not a value any artifact holds. [citation unverified]",
       },
       "borderline: true — the declaration that the promotion question could be argued either way on this record": {
         class: "judgment", tokens: ["placement_borderline_invalid"],
@@ -2661,11 +2655,11 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1472; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1466; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "#850 rules the line shape M: typed rows, code renders. The axis is one of the closed list the driver wrote into the same message (`Valid axes: ${axes}`, stages.mjs:2634), and the parse at skeptic-record.mjs:49-53 recognises only /ESCALATE:\\s*<axis>\\b/i per known axis — the em-dash, the reason, the section title and the literal 'none' are parsed by nothing. NO TOKEN: skepticFlags never inspects these lines, so a malformed ESCALATE line is a silent no-escalation, not a failure. [citation unverified]",
+        why: "#850 rules the line shape M: typed rows, code renders. The axis is one of the closed list the driver wrote into the same message (`Valid axes: ${axes}`, stages.mjs:2628), and the parse at skeptic-record.mjs:49-53 recognises only /ESCALATE:\\s*<axis>\\b/i per known axis — the em-dash, the reason, the section title and the literal 'none' are parsed by nothing. NO TOKEN: skepticFlags never inspects these lines, so a malformed ESCALATE line is a silent no-escalation, not a failure. [citation unverified]",
       },
       "the verbatim ESCALATE string dictated for a `translit-too-generic` unit digest": {
         class: "mechanical:code-rendered", tokens: [],
@@ -2673,7 +2667,7 @@ export const STAGES = {
       },
       "the `risk: <category>` field inside that dictated ESCALATE line": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "IT HAS NO CONSUMER AT ALL. stages.mjs:339-342 records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file. [citation unverified]",
+        why: "IT HAS NO CONSUMER AT ALL. stages.mjs:333-336 records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file. [citation unverified]",
       },
       "return payload — a 2-3 line summary; the audit itself rides record_skeptic": {
         class: "mechanical:tool-written", tokens: ["skeptic_"],
@@ -2892,7 +2886,7 @@ export const STAGES = {
       },
       "findings[].meters.use.token / meters.enforcer.token — the two strengths with no quadrant axis": {
         class: "judgment", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],
-        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (the quadrant element in this file's own findings dictation), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry. [citation unverified]",
+        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (stages.mjs:1733), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry. [citation unverified]",
       },
       "findings[].meters.mark_similarity.token / meters.goods_proximity.token — the coarse 3-pip restatement of the quadrant position": {
         class: "mechanical:code-assigned", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],

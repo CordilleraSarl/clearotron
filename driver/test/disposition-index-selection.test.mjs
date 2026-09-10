@@ -306,7 +306,7 @@ test("#850 M1 NO SECOND AUTHORING of the instruction survives anywhere in the tr
   assert.ok(files.includes("driver/stages.mjs"),
     "the file that carried three of the four copies must be IN the corpus being searched");
   assert.ok(OFFENDER.test('set "receipt_id" to the candidate you ruled on, "ruling" to exactly benign'),
-    "the pattern must still match the text it was written to ban — origin/main's stages.mjs:1400");
+    "the pattern must still match the text it was written to ban — origin/main's stages.mjs:1394");
   assert.ok(OFFENDER.test("- `receipt_id` — the id of the candidate you actually ruled on, from the ones listed"),
     "AND the SKILL.md phrasing. The first version of this guard tested one sentence and passed while a "
     + "FIFTH copy of the contract sat in the doctrine, telling the seat the opposite of what M1 asks");
