@@ -75,7 +75,9 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** The declaration a commit makes when the change genuinely has nothing to tell a reader. */
-export const NO_NOTE = /^\s*Release-note:\s*none\b\s*[—:-]?\s*(?<reason>.*\S)?\s*$/im;
+// Horizontal space only. `\s` crosses a line break, so a bare `none` with any line after it, a trailer or
+// another paragraph, read that line as its reason and passed as a declared decision.
+export const NO_NOTE = /^[ \t]*Release-note:[ \t]*none\b[ \t]*[—:-]?[ \t]*(?<reason>.*\S)?[ \t]*$/im;
 
 /**
  * Does this path ship, per the package's own `files` list?

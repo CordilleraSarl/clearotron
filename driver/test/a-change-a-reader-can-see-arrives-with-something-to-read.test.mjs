@@ -106,6 +106,16 @@ test("a declared `none` with NO reason is refused — the reason is the whole po
   } finally { repo.clean(); }
 });
 
+test("a bare `none` is bare even when another line follows it: the reason is read from its own line", () => {
+  const repo = repoWith({ "bin/thing.mjs": "export const a = 3;\n" },
+    "a change\n\nRelease-note: none\n\nCo-Authored-By: A Name <a@b.c>\n");
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `the line after a bare \`none\` was read as its reason:\n${r.said}`);
+    assert.match(r.said, /gives no reason/);
+  } finally { repo.clean(); }
+});
+
 test("tests and documents alone need no note — the exemption, against the package's own list", () => {
   const repo = repoWith({
     "driver/test/a-thing.test.mjs": "// an arm\n",
