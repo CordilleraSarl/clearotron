@@ -2890,8 +2890,8 @@
           "todos": 0
         },
         "portal-access.test.mjs": {
-          "tests": 12,
-          "asserts": 47,
+          "tests": 13,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -3466,8 +3466,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 89,
-          "asserts": 347,
+          "tests": 91,
+          "asserts": 353,
           "skips": 0,
           "todos": 0
         },
@@ -3628,8 +3628,8 @@
           "todos": 0
         },
         "roster-verdict.test.mjs": {
-          "tests": 11,
-          "asserts": 22,
+          "tests": 17,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -5150,6 +5150,12 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-company-created-after-the-door-starts-is-listed.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
           "asserts": 33,

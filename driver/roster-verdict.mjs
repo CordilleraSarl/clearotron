@@ -29,9 +29,13 @@
  * @param {string[]|null} o.onDisk   keys in the configured store, sorted — null when none is configured
  * @param {string[]} o.bundledDemos  the roster shipped in the product repo, sorted
  * @param {boolean} o.expectDemos    CLEAROTRON_E2E_EXPECT_DEMO_ROSTER=1 — "this instance is allowed to break"
+ * @param {{readable: boolean, accounts: string[]|null}} [o.caller]
+ *                                   the claims of the key the door was asked with, in opsTokenPosture's
+ *                                   shape. ABSENT, or `accounts: null`, means uncapped — every account — the
+ *                                   way triggerCapGap reads a null cap. Never an empty one.
  * @returns {{state: "pass"|"fail"|"skip", message: string}}
  */
-export function rosterVerdict({ keys, onDisk, bundledDemos, expectDemos }) {
+export function rosterVerdict({ keys, onDisk, bundledDemos, expectDemos, caller }) {
   const sameSet = (a, b) => a.length === b.length && a.every((k, i) => k === b[i]);
   const isBundled = sameSet(keys, bundledDemos);
 
@@ -40,9 +44,26 @@ export function rosterVerdict({ keys, onDisk, bundledDemos, expectDemos }) {
     return { state: "skip", message: "the session resolved zero accounts — this probe is unscoped for this door, so the roster is NOT probed rather than failed" };
 
   if (onDisk) {
-    if (!sameSet(keys, onDisk))
+    // THE DOOR ANSWERS FOR THE KEY THAT ASKED. `list_profiles` is narrowed to the caller's account cap,
+    // so a key minted before a company existed does not list it, and correctly. Compared with the whole
+    // store, that read as the door and the store disagreeing, and the message below then pointed at a
+    // stale roster (measured in testing, 2026-09-10). So the store is narrowed by the same cap before the
+    // two are compared; a company outside the cap is the key's gap, which the caller reports on its own line.
+    const unreadable = caller?.readable === false;
+    const cap = !unreadable && Array.isArray(caller?.accounts) ? caller.accounts : null;
+    const expected = cap ? onDisk.filter((k) => cap.includes(k)) : onDisk;
+    if (!sameSet(keys, expected) && unreadable)
+      // A KEY WHOSE CLAIMS CANNOT BE READ may be narrowing the answer, and a narrowing looks exactly like a
+      // door that disagrees with its store. Neither passed nor failed: not compared, and said so.
+      return { state: "skip", message: `the door sees ${keys.length} customer(s) (${keys.join(", ")}), `
+        + `the configured store holds ${onDisk.length} (${onDisk.join(", ")}), and the claims of the key this `
+        + "check asked with could not be read — so a narrowing by that key cannot be told from a door that "
+        + "disagrees with its store. NOT compared" };
+    if (!sameSet(keys, expected))
       return { state: "fail", message: `the door sees ${keys.length} customer(s) (${keys.join(", ")}), `
-        + `the configured store holds ${onDisk.length} (${onDisk.join(", ")}) — they disagree`
+        + `the configured store holds ${onDisk.length} (${onDisk.join(", ")})`
+        + (cap ? `, ${expected.length} of them within the cap of the key this check asked with` : "")
+        + " — they disagree"
         // THE CAUSE IS NOT DERIVABLE FROM THIS COMPARISON, and it used to be asserted anyway. `isBundled`
         // is a set equality over NAMES, and a configured store ordinarily CONTAINS the bundled demo
         // names — so "the door resolved exactly the bundled roster" is equally true of a door with no
@@ -58,6 +79,8 @@ export function rosterVerdict({ keys, onDisk, bundledDemos, expectDemos }) {
             + "it read before the store changed. Check the door's environment and when it last read the store."
           : "") };
     return { state: "pass", message: `${keys.length} customer(s), matching the configured store`
+      + (cap && expected.length < onDisk.length
+        ? ` within the cap of the key this check asked with (${expected.length} of ${onDisk.length})` : "")
       + (expectDemos ? " — and this instance declares itself a test box, which the store's own CI keeps free of real client bundles" : "") };
   }
 

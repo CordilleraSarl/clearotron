@@ -214,9 +214,25 @@ const tools = {
     // Each customer carries its PROJECTS (engagements) so intake can resolve a projectKey too. A bad
     // project file must never blank the whole roster, so the project read is best-effort (its own loud failure
     // surfaces at run time via loadProjects in the driver).
+    //
+    // READ FRESH ON EVERY CALL. `loadProfiles()` and `loadProjects()` answer from module caches with no
+    // expiry, filled by this process's first read — the boot line's — so a company or project created in
+    // the portal after the door started was missing here until the door restarted, while start_run, which
+    // re-reads on a miss (driver/enqueue-schema.mjs), already accepted it. This is the list an assistant
+    // resolves a customer against: a company it cannot see is a company it cannot pick. One read of the
+    // roster, handed to the project walk, so the two cannot come from different moments.
+    //
+    // A COMPANY FILE THAT CANNOT BE READ must not take every other company off this list. Re-reading made
+    // that possible: a bad file added after the door started used to go unread, because the door answered
+    // from its boot read, and now it would fail every call until fixed. So a failed re-read keeps the
+    // roster this process last read, and the reply says so. With no earlier read there is nothing to keep,
+    // and the call fails as it always did.
+    let roster, storeError = null;
+    try { roster = loadProfiles({ force: true }); }
+    catch (e) { storeError = String(e?.message ?? e); roster = loadProfiles(); }
     let byCustomer = new Map();
     try {
-      for (const [fq, ov] of loadProjects()) {
+      for (const [fq, ov] of loadProjects({ profiles: roster, force: true })) {
         // An ARCHIVED project is not offered for new work: this list is what the intake AI resolves a
         // projectKey against, so a name it cannot see is a name it cannot pick. Already-queued and
         // finished runs are untouched — a run freezes its effective profile at admission.
@@ -226,7 +242,7 @@ const tools = {
         byCustomer.set(ov.customerKey, list);
       }
     } catch { byCustomer = new Map(); }
-    const clients = [...loadProfiles().values()]
+    const clients = [...roster.values()]
       .filter((p) => p.key !== "generic")
       .map((p) => ({ key: p.key, name: p.name, industry: p.industry ?? null,
         projects: (byCustomer.get(p.key) ?? []).sort((a, b) => a.key.localeCompare(b.key)) }))
@@ -235,6 +251,9 @@ const tools = {
       _note: "Customer roster for intake resolution. Resolve by JUDGMENT — an explicit name, a misspelling of one of the keys below, or an implicit reference (\"our functional-beverage client\") all map to a key. Set the job's profileKey to the chosen customer key; OMIT it for a new/unknown customer (⇒ the neutral generic profile). If the request names a specific PROJECT/engagement under that customer (listed in `projects[]`), also set projectKey to that project's key; OMIT projectKey when no project is meant (⇒ the customer profile). CLARIFY if you cannot tell either. Never pick a profile from the sender's email domain.",
       clients,
       genericFallback: "generic",
+      // Staff-only tool (TOOL_SCOPES), so the reason may name the file: no client door sees this reply.
+      ...(storeError ? { storeUnreadable: `The company store could not be re-read (${storeError}). This is the list as `
+        + "last read, so a company added or changed since may be missing until that file is fixed." } : {}),
     };
   },
   async describe_options(args, extra) {

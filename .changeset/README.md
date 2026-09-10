@@ -45,6 +45,11 @@ That is the one thing the standard below does not spell out, because it is the m
 rule — the page groups notes New / Fixed / For operators and only the person writing the note knows which
 it is, so the note carries it and the changelog reads it off. A note without one is refused.
 
+Every paragraph of a note reaches the page as an entry of its own, and so does each list item, so write
+each one to be read on its own. An entry that opens with no group goes under the group of the entry
+before it: a `New:` note that goes on to describe a fix opens that paragraph `Fixed:`, and the
+paragraphs after it are listed as fixes too.
+
     ---
     "clearotron-driver": patch
     ---
