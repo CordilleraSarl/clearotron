@@ -825,7 +825,7 @@ export function symbolMisses(citations, readLines) {
 //
 // WHAT IT CANNOT SEE, and why this stays a slice. A citation that lands on the WRONG NON-BLANK LINE is
 // invisible to it — that looks identical to a correct one. Three of the eleven citations repointed in
-// `stages.mjs` under this issue were exactly that: `stages.mjs:1474` pointed at a transliteration `why:`
+// `stages.mjs` under this issue were exactly that: `stages.mjs:1480` pointed at a transliteration `why:`
 // row, `pipeline.mjs:2908` at a different function entirely, and neither line was blank. Only 's
 // arm can decide those, and only where the citation names a symbol. A clean run here is evidence about
 // punctuation, not about correctness.

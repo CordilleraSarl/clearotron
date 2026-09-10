@@ -56,7 +56,7 @@
         "methodology",
         "handling_note"
       ],
-      "why": "a caption-only call renders 149B, clears the 120-char floor, and ships a SECTION OF THE CLIENT'S ONE REPORT without the 'Checks we ran' bullets, the methodology or the handling note. Traced: report-overview.md is the head of report.md (assembleReportMd() in pipeline.mjs) which renders to the HTML (publish/index.mjs:648). The 'Only you can close these' register is NOT lost — it is code-built from findings.json under spec 64's 'code wins' ruling."
+      "why": "a caption-only call renders 149B, clears the 120-char floor, and ships a SECTION OF THE CLIENT'S ONE REPORT without the 'Checks we ran' bullets, the methodology or the handling note. Traced: report-overview.md is the head of report.md (assembleReportMd() in pipeline.mjs) which renders to the HTML (publish/index.mjs:668). The 'Only you can close these' register is NOT lost — it is code-built from findings.json under spec 64's 'code wins' ruling."
     },
     {
       "tool": "record_prelim_variants",

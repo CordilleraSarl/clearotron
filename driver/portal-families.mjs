@@ -9,7 +9,7 @@
 //
 // ── why this is a sidecar and not a field in meta.json ────────────────────────────────────────────────
 //
-// The same reason `archive-tags.json` is one, recorded at publish/index.mjs:338: "meta.json is rewritten
+// The same reason `archive-tags.json` is one, recorded at publish/index.mjs:358: "meta.json is rewritten
 // on every republish so a flag there would be lost." That is not hypothetical here — a `rerender-all`
 // pass over the pool is a live plan, and a family written into meta would be erased by the very operation
 // meant to bring old reports up to date. Curation state that a person entered by hand must outlive a

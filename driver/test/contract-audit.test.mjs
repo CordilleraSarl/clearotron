@@ -862,11 +862,11 @@ test("VOID CONTROL: the matcher really can find a quote, and really can miss one
 // pin, so the corpus below is invented and self-contained.
 
 test("wherePaths: every distinct path, de-duplicated; the same file at two lines is ONE path", () => {
-  assert.deepEqual(wherePaths("driver/stages.mjs:1869 and driver/skills/narrative-refutation/SKILL.md:41-50"),
+  assert.deepEqual(wherePaths("driver/stages.mjs:1875 and driver/skills/narrative-refutation/SKILL.md:41-50"),
     ["driver/stages.mjs", "driver/skills/narrative-refutation/SKILL.md"]);
   // The same file twice is one SITE. Counting it as two is how "10 multi-file rows" was over-reported
   // by 2× before this function existed to answer the question.
-  assert.deepEqual(wherePaths("driver/stages.mjs:1054 and driver/stages.mjs:1062"), ["driver/stages.mjs"]);
+  assert.deepEqual(wherePaths("driver/stages.mjs:1060 and driver/stages.mjs:1068"), ["driver/stages.mjs"]);
   assert.deepEqual(wherePaths("driver/skills/a/SKILL.md:175 (restated at driver/skills/b/rules.md:427)"),
     ["driver/skills/a/SKILL.md", "driver/skills/b/rules.md"]);
   // A bare filename in prose is not a location — a path needs at least one slash.

@@ -265,7 +265,7 @@ export const E3_KINDS = ["literal-json-skeleton", "exactly-these-keys", "dictate
  *
  *   other — the dictate is not in the text being linted. Two shapes found: a stage message that
  *           DELEGATES its whole envelope to a skill file ("dictated keys + closed enums per the skill",
- *           stages.mjs:974 for blind-frame — a lint reading the message sees nothing and the skeleton
+ *           stages.mjs:980 for blind-frame — a lint reading the message sees nothing and the skeleton
  *           escapes); and a field DICTATED THEN OVERWRITTEN, where the instruction annotates its own
  *           fields as driver-replaced in the model's own reading (delivery-contract.md:34-37).
  *

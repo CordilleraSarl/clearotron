@@ -35,7 +35,7 @@
 // its own population needs an exception list — which would rebuild this issue's defect inside its fix:
 //
 //   · `driver/stage-freshness.mjs` creates a CHILD, `join(runDir, "_driver", STAMP_DIR)`.
-//   · `driver/pipeline.mjs:15053` passes a shadow dispatch sandbox under `_experiments/`, not a run
+//   · `driver/pipeline.mjs:15086` passes a shadow dispatch sandbox under `_experiments/`, not a run
 //     directory. It is a run-dir-SHAPED base, which is why the parameter is `base` and not `runDir`.
 //
 // ── WHAT THIS DELIBERATELY DOES NOT DO ────────────────────────────────────────────────────────────

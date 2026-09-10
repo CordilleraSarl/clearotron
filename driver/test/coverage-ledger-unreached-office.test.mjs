@@ -25,7 +25,7 @@
 // this exact shape — it was closed for the whole-plan coverage-gap case and left open for the office
 // split. `registerDeferredCoverage` does log it and does feed the jurisdiction-scope backstop, but a
 // runLog event and a `note()` are not the artifact a lawyer reads, and that backstop is gated on an LLM
-// stage succeeding AND parsing (the `if (parsed)` gate, pipeline.mjs:9231), with three non-fatal skips above it.
+// stage succeeding AND parsing (the `if (parsed)` gate, pipeline.mjs:9250), with three non-fatal skips above it.
 //
 // WHAT THE TESTS BELOW PIN. Not "a row exists" — the pair that a bug can only pass by being fixed:
 // the gap is DISCLOSED, and the disclosure cannot be discharged by a clean claim on anything else.
