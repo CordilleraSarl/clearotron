@@ -354,7 +354,9 @@ function Card({
               </pre>
             </details>
           ) : null}
-          {canStop && !stopping ? (
+          {/* Stopping is part of Run clearances. A person without it has no Stop here — not a Stop that
+              refuses them, which is the one control this card must never offer. */}
+          {canStop && !stopping && canRun(ctx.me) ? (
             ctx.me.stopControl.available ? (
               <button type="button" className="home2-stop" onClick={() => setAsking(true)} disabled={busy}>
                 {busy ? 'Stopping…' : 'Stop'}
@@ -557,6 +559,9 @@ function Queue({
   const [order, setOrder] = useState<readonly string[]>(() => rows.map((r) => r.runId))
   const [dragging, setDragging] = useState<string | null>(null)
   const [over, setOver] = useState<string | null>(null)
+  // Reordering and cancelling are Run clearances. Without it the queue is still shown — what is waiting,
+  // in what order — and offers no handle to drag and no Cancel that would only refuse.
+  const mayRun = canRun(ctx.me)
 
   // The server is the source of truth for what is queued. Re-seed whenever the SET of ids changes — a
   // job that started, or one that arrived from the email door, must not leave a stale ordinal on screen.
@@ -586,7 +591,7 @@ function Queue({
           <strong>{shown.length}</strong> waiting for a slot
         </span>
         <span className="home2-queue-spacer" />
-        <span className="home2-queue-note">Drag to reorder — the top one takes the next free slot</span>
+        {mayRun ? <span className="home2-queue-note">Drag to reorder — the top one takes the next free slot</span> : null}
         <span className={`home2-queue-chev${open ? ' open' : ''}`}>
           <Icon name="chevron-right" />
         </span>
@@ -598,7 +603,7 @@ function Queue({
             <div
               key={r.runId}
               className={`home2-qrow${dragging === r.runId ? ' dragging' : ''}${over === r.runId ? ' target' : ''}`}
-              draggable
+              draggable={mayRun}
               onDragStart={(e) => {
                 e.dataTransfer.effectAllowed = 'move'
                 setDragging(r.runId)
@@ -609,7 +614,7 @@ function Queue({
               }}
               onDrop={(e) => {
                 e.preventDefault()
-                if (dragging) void commit(moveBefore(order, dragging, r.runId))
+                if (dragging && mayRun) void commit(moveBefore(order, dragging, r.runId))
                 setDragging(null)
                 setOver(null)
               }}
@@ -618,9 +623,11 @@ function Queue({
                 setOver(null)
               }}
             >
-              <span className="home2-grip">
-                <Icon name="grip-vertical" />
-              </span>
+              {mayRun ? (
+                <span className="home2-grip">
+                  <Icon name="grip-vertical" />
+                </span>
+              ) : null}
               <span className={`home2-pos mono${i === 0 ? ' first' : ''}`}>{i + 1}</span>
               <span className="home2-qmark" data-anon="mark">
                 {displayName(r)}
@@ -629,7 +636,7 @@ function Queue({
                 {ctx.ownerName(runKey(r))}
               </span>
               <span className="home2-qdepth">{runProductLabel(r.productName, r.marks.length)}</span>
-              <CancelButton run={r} onChanged={onChanged} />
+              {mayRun ? <CancelButton run={r} onChanged={onChanged} /> : null}
             </div>
           ))}
         </div>

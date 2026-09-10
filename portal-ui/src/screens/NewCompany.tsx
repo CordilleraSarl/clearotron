@@ -55,6 +55,11 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   // somebody had just typed into it on the next keystroke in the name field.
   const [namesTouched, setNamesTouched] = useState(false)
   const [busy, setBusy] = useState(false)
+  // Where a company can be created: the organisations this person holds whole. One is the answer; several
+  // is a question the form asks.
+  const orgsHeld = ctx.me.genericOrgs
+  const [org, setOrg] = useState<string | null>(null)
+  const orgChosen = orgsHeld.length === 1 ? (orgsHeld[0] ?? null) : org
   const [result, setResult] = useState<Result<CreatedCompany> | null>(null)
 
   const typedName = String(state.edits['name'] ?? '').trim()
@@ -89,6 +94,8 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
     ? 'Needs a name.'
     : !key
       ? 'Needs a key — type one below.'
+      : !orgChosen
+        ? 'Choose the organisation it belongs to.'
       : refusedEntries.length
         ? `${refusedEntries.join(', ')} cannot be searched — fix or remove ${refusedEntries.length === 1 ? 'it' : 'them'}.`
         : null
@@ -100,6 +107,10 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
     // server derives the same key from the same rule when none is sent.
     const body: Record<string, unknown> = { ...state.draft }
     if (keyEdited) body['key'] = keyEdited
+    // THE ORGANISATION IT BELONGS TO. A company sits in exactly one, and the server needs to be told which
+    // when the person creating it holds more than one. Sent whenever there is an answer, so the request
+    // says what the screen showed.
+    if (orgChosen) body['tenant'] = orgChosen
     // What the box was showing is what gets sent. Untouched, it was showing the name, and a box a person
     // read and accepted has to mean the same thing as a box they typed into.
     if (!namesTouched && typedName) body['selfExclusionOwners'] = [typedName]
@@ -150,6 +161,28 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
           The business whose names you are checking. Only the name is needed; everything else has a
           default you can change later.
         </p>
+
+        {/* Asked only of a person who holds more than one organisation whole — the only case with a
+            choice to make. Everyone else creates the company in the one organisation they hold. */}
+        {orgsHeld.length > 1 ? (
+          <div style={{ marginBottom: 8 }}>
+            <label className="field-label" htmlFor="new-company-organisation">Organisation</label>
+            <select
+              id="new-company-organisation"
+              className="ctx-input"
+              value={org ?? ''}
+              onChange={(e) => setOrg(e.target.value || null)}
+            >
+              <option value="">Choose one…</option>
+              {orgsHeld.map((k) => (
+                <option key={k} value={k}>{ctx.organisations.find((o) => o.key === k)?.name ?? k}</option>
+              ))}
+            </select>
+            <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 5 }}>
+              A company belongs to exactly one organisation, and only people with access there can see it.
+            </p>
+          </div>
+        ) : null}
 
         {rejected ? (
           <div className="empty" style={{ textAlign: 'left', marginBottom: 18 }} role="alert">
