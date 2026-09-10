@@ -33,6 +33,67 @@ export const mayRun = (p) => p?.permissions?.run === true;
 /** Manage: add people, add companies, change settings, inside the person's access. */
 export const mayManage = (p) => p?.permissions?.manage === true;
 
+/** An organisation's display name: its `name` in the grants file, else its key. */
+export function organisationName(grants, key) {
+  const n = grants?.tenants?.[key]?.name;
+  return typeof n === "string" && n.trim() ? n.trim() : key;
+}
+
+/** An access point as the portal shows it: names attached, keys kept. `everything` carries no key. */
+export function namedPoint(p, grants, companyNames = {}) {
+  if (p.kind === "everything") return { kind: "everything" };
+  if (p.kind === "organisation") return { kind: "organisation", key: p.key, name: organisationName(grants, p.key) };
+  return { kind: "company", key: p.key, name: companyNames[p.key] ?? p.key, org: p.org };
+}
+
+/**
+ * What `/portal/api/me` says about a person's reach and switches — the fields the screens read, so no
+ * screen derives a visibility rule of its own. `organisations` is every organisation the person sees
+ * anything in (a company's heading needs its organisation's name); `genericOrgs` is the ones whose
+ * Generic they see.
+ */
+export function principalView(principal, grants, companyNames = {}) {
+  return {
+    permissions: { run: mayRun(principal), manage: mayManage(principal) },
+    access: (principal.access ?? []).map((p) => namedPoint(p, grants, companyNames)),
+    organisations: (principal.organisations ?? []).map((key) => ({ key, name: organisationName(grants, key) })),
+    accountOrgs: { ...(principal.accountOrgs ?? {}) },
+    genericOrgs: [...(principal.genericOrgs ?? [])],
+  };
+}
+
+/**
+ * May this person read a run, given who it belongs to? The ONE answer for every run-scoped route: the
+ * listing, the report, the summary, the feedback form. `owner` is the run's company key (`generic` when it
+ * had none); `organisation` is the organisation a Generic run was filed under, null for one filed before
+ * organisations existed.
+ *
+ * A company's run: the company must be inside the person's access. A Generic run: the person must see
+ * that organisation's Generic — and an unfiled one is visible only to a person who sees everything, which
+ * is exactly who could read it before.
+ */
+export function mayReadRun(principal, { owner, organisation = null }) {
+  if (!principal) return false;
+  if (owner !== "generic") return principal.accounts === "*" || (Array.isArray(principal.accounts) && principal.accounts.includes(owner));
+  if (seesEverything(principal)) return true;
+  return organisation != null && Array.isArray(principal.genericOrgs) && principal.genericOrgs.includes(organisation);
+}
+
+/**
+ * Does everything `other` holds sit inside `viewer`'s reach? Switches belong to the person, not to an
+ * access point, so a manager may set someone's switches only when that person's whole access is inside
+ * the manager's own — otherwise changing them would change what the person may do somewhere the manager
+ * cannot see.
+ */
+export function reachCovers(viewer, other) {
+  if (seesEverything(viewer)) return true;
+  if (!other || seesEverything(other)) return false;
+  const orgs = viewer?.genericOrgs ?? [];
+  const companies = Array.isArray(viewer?.accounts) ? viewer.accounts : [];
+  return (other.access ?? []).every((p) => p.kind === "organisation" ? orgs.includes(p.key)
+    : p.kind === "company" ? orgs.includes(p.org) || companies.includes(p.key) : false);
+}
+
 export class PortalDeny extends Error {
   constructor(status, message) { super(message); this.name = "PortalDeny"; this.status = status; }
 }
