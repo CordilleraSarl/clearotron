@@ -386,7 +386,16 @@ export function stopRun(args = {}, { scope } = {}) {
       } else {
         try {
           process.kill(child.pid, "SIGTERM");
-          immediate = { attempted: true, signalled: "SIGTERM", pid: child.pid };
+          // SIGNALLED IS NOT ENDED, and the sentence below is written from this field. `process.kill`
+          // returning without throwing means the signal was accepted by the OS for delivery — not that
+          // the child took it, not that it exited, and not that the step is over. A process that
+          // handles SIGTERM, or ignores it, leaves this line looking exactly the same.
+          //
+          // Measured on the owner's WSL install of 0.3.0-beta.1: this branch answered "the step in
+          // flight has been ended ... terminal in seconds" and the run stopped at the next step
+          // boundary. `ended` is null because nothing here observes it, and the copy says so rather
+          // than reading an outcome off an attempt.
+          immediate = { attempted: true, signalled: "SIGTERM", pid: child.pid, ended: null };
         } catch (e) {
           // ESRCH — it died between the liveness read and the signal, which is a race we lose harmlessly.
           // EPERM — it is not ours to signal, which is a real finding and must not read as success.
@@ -446,12 +455,12 @@ export function stopRun(args = {}, { scope } = {}) {
     if (alreadyStopping) {
       return { ok: true, action: "already-stopping", runId: run.runId, requestedAt: rec?.ts ?? null, immediate,
         note: immediate?.attempted
-          ? `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"}, and the step in flight has now been ended. The run goes terminal in seconds.`
+          ? `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"}, and a stop has been sent to the step in flight. If it takes it the run ends in seconds; if not, it ends at the next step boundary.`
           : `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"} and the step in flight is being allowed to finish. Pressing again changes nothing.` };
     }
     if (immediate?.attempted && immediate.signalled)
       return { ok: true, action: "cancel-requested", runId: run.runId, requestedAt: rec?.ts ?? null, immediate,
-        note: "Stopping now. The step in flight has been ended rather than allowed to finish, so the run goes terminal in seconds. What that step had already spent is spent, and everything recorded before it is kept." };
+        note: "Stopping now. A stop has been sent to the step in flight: if it takes it, the run ends in seconds; if it does not, the run ends at its next step boundary. What that step has already spent is spent, everything recorded before it is kept, and nothing will be delivered." };
     if (args.immediate === true)
       return { ok: true, action: "cancel-requested", runId: run.runId, requestedAt: rec?.ts ?? null, immediate,
         note: `Stopping at the next step boundary. An immediate stop was asked for and could not be made: ${immediate?.why ?? immediate?.error ?? "the step in flight could not be ended"}. A step already under way finishes first. Nothing will be delivered.` };

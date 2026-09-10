@@ -1967,9 +1967,14 @@ input.filter {
   cursor: not-allowed;
 }
 
-/* the sentence that replaces the Stop button while a stop is in flight. */
-.home2-stopping {
+/* The sentence that replaces the Stop button while a stop is in flight.
+   ITS OWN ROW, BELOW THE FOOT, not a flex item inside it. `home2-card-foot` is a flex row of short
+   things — the elapsed line and one button — and this is a paragraph. As a member of that row it
+   squeezed "1 min so far" into a two-character column and the card read as garbled on a real run. */
+.home2-stop-note {
+  margin-top: 10px;
   font-size: 12px;
+  line-height: 1.5;
   color: var(--text-muted);
   font-style: italic;
 }
