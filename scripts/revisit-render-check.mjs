@@ -68,6 +68,7 @@ import { spawn } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { reapOnExit } from '../shared/reap-on-exit.mjs' // — a detached group dies with this script
 import { browserRun } from "../shared/browser-temp-root.mjs";
+import { textDifference } from './text-difference.mjs' // — a text pair that differs says where, not only that
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = join(HERE, '..', 'portal-ui', 'dist')
@@ -345,8 +346,11 @@ const twice = async (name, enter, expectPath, away = 'Home') => {
   // otherwise sail through a count comparison as "identical".
   say((t1 || '').trim().length > 0, `${name}: visit 1 rendered text`)
   say((t2 || '').trim().length > 0, `${name}: visit 2 rendered text`)
-  say((t2 || '').trim().length > 0 && (t1 || '').trim().length > 0 && t1 === t2,
-    `${name}: the screen renders the same text on both visits`)
+  // On a FAIL this line carries where the two texts first differ and a window of each side, because a red
+  // that does not reproduce leaves nothing else to read. The ok line is unchanged, so two passing runs
+  // still diff to nothing.
+  const sameText = (t2 || '').trim().length > 0 && (t1 || '').trim().length > 0 && t1 === t2
+  say(sameText, `${name}: the screen renders the same text on both visits${sameText ? '' : ` — ${textDifference(t1, t2) ?? 'neither visit rendered any text'}`}`)
 
   // The unmount half. Equal counts mean the listener added on visit 1 was removed when the screen was
   // left, rather than accumulating one per visit.
