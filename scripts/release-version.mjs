@@ -54,7 +54,8 @@ export function groupVersion(root = ROOT) {
  * fixed group means one note commonly lands in several files unchanged.
  */
 export function assembleRoot(version, root = ROOT) {
-  const bullets = [];
+  const entries = [];
+  const seen = new Set();
   for (const w of GROUP) {
     const p = join(root, w, "CHANGELOG.md");
     if (!existsSync(p)) continue;
@@ -68,17 +69,72 @@ export function assembleRoot(version, root = ROOT) {
     const sections = text.split(/^## /m).slice(1);
     const mine = sections.find((sec) => sec.split("\n", 1)[0].trim() === version);
     if (!mine) continue;
-    for (const line of mine.split("\n")) {
-      const b = /^\s*-\s+(.*\S)\s*$/.exec(line);
+    for (const note of notesOf(mine)) {
+      const key = note.join("\n");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      entries.push(...note);
+    }
+  }
+  return { version, ...group(entries) };
+}
+
+/**
+ * One version section of a workspace changelog, as the notes it holds. Each note is the list of its
+ * entries in order, and each entry opens with the group it belongs under, unless none was named.
+ *
+ * EVERY PARAGRAPH IS AN ENTRY. Changesets writes a note's first line as a bullet and indents every later
+ * line beneath it. Reading only the bullets kept each note's first line and dropped the rest without a
+ * word: the 0.2.3 page reads "Five things a first-time reader could not act on." with none of the five
+ * under it, and a dry run of 0.3.0 put 8 of the 75 sentences in eight pending notes on the page
+ * (measured 2026-09-10). So each later paragraph is an entry of its own, and so is each list item.
+ *
+ * AN ENTRY THAT NAMES NO GROUP TAKES THE GROUP OF THE ENTRY BEFORE IT. A note opens with its group, and a
+ * paragraph that opens with another group starts that group's entries: `Fixed:` two paragraphs into a
+ * `New:` note is a fix, and so is the paragraph after it that explains the fix. A note whose first line
+ * names no group gives the rest of it none either, so the whole note is refused, not only its first line.
+ */
+export function notesOf(section) {
+  const notes = [];
+  let note = null, lines = null, current = null;
+  const close = () => {
+    if (!lines) return;
+    const text = lines.join(" ");
+    lines = null;
+    const own = /^(New|Fixed|For operators):\s/.exec(text)?.[1];
+    if (own) current = own;
+    note.push(own || !current ? text : `${current}: ${text}`);
+  };
+  for (const line of section.split("\n").slice(1)) {
+    const top = /^-\s+(.*\S)\s*$/.exec(line);
+    const item = /^\s+-\s+(.*\S)\s*$/.exec(line);
+    if (top) {
+      close();
+      note = [];
+      notes.push(note);
+      current = null;
       // THE COMMIT SHA COMES OFF. Changesets' default generator prefixes every bullet with the commit
       // that carried the note, so a squashed release writes the SAME seven characters at the head of
       // every line — `- f7c1570:` seven times over, telling a reader nothing they can use. This is the
       // file a customer opens to decide whether to upgrade; the provenance they can act on is the tag
       // and the release page, both of which name that commit once.
-      if (b && !bullets.includes(b[1])) bullets.push(b[1].replace(/^[0-9a-f]{7,40}: /, ""));
+      lines = [top[1].replace(/^[0-9a-f]{7,40}: /, "")];
+    } else if (!note) {
+      continue;                              // the version heading, or anything before the first note
+    } else if (line.startsWith("#")) {
+      close();                               // `### Patch Changes`: a new set of notes starts here
+      note = null;
+    } else if (!line.trim()) {
+      close();                               // a blank line ends a paragraph
+    } else if (item) {
+      close();
+      lines = [item[1]];
+    } else {
+      (lines ??= []).push(line.trim());      // a paragraph's next line, or its first after a blank line
     }
   }
-  return { version, ...group(bullets) };
+  close();
+  return notes;
 }
 
 /**
