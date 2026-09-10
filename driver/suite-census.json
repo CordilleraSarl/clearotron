@@ -135,6 +135,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-company-can-be-given-a-framework-after-it-exists.test.mjs": {
+          "tests": 8,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-created-after-boot-can-still-search.test.mjs": {
           "tests": 3,
           "asserts": 10,
@@ -3371,7 +3377,7 @@
         },
         "register-count.test.mjs": {
           "tests": 20,
-          "asserts": 154,
+          "asserts": 153,
           "skips": 0,
           "todos": 0
         },
@@ -4517,7 +4523,7 @@
         },
         "the-knockout-page-leads-with-the-read.test.mjs": {
           "tests": 28,
-          "asserts": 68,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -5500,6 +5506,12 @@
         "askAi.test.ts": {
           "tests": 5,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "clearancesKeepsItsControls.test.ts": {
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },

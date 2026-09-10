@@ -492,7 +492,6 @@ test("the report prints the figures as their own section, and the model's guess 
   // what the arm checks.
   assert.match(html, /Register search pending/, "the reviewer's note reaches the report");
   assert.match(html, /class="internal"/, "…in the purple internal convention, not merged into the body");
-  assert.match(html, /class="ko-refnote"/, "…under the legend that names the convention");
   const noteBlock = html.slice(html.indexOf('class="internal"'));
   assert.ok(noteBlock.indexOf("Register search pending") < noteBlock.indexOf("</div>") + 400,
     "the note sits INSIDE the labelled block rather than anywhere on the page");

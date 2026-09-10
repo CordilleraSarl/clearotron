@@ -248,7 +248,15 @@ test("A.3: a band this build cannot place on the ladder keeps its card", () => {
 test("A.4/A.5: the notes say who they are for, and the export strips them", () => {
   const html = RENDER([MARK({ purpleNotes: ["Pull the full goods list before advising."] })]);
   assert.match(html, /For the reviewing lawyer/, "the label names the reader");
-  assert.match(html, /Purple notes are for the reviewing lawyer\. Remove them before this goes to the client\./);
+  // NO LEGEND, by owner ruling. The line read "Purple notes are for the reviewing lawyer. Remove them
+  // before this goes to the client." — an instruction to the reader, printed on the document. The label
+  // above stays because it names a reader, which is a fact about the note; the legend told somebody what
+  // to do about it, which is not. Asserted ABSENT rather than deleted, so the sentence cannot come back
+  // quietly on the next edit near it.
+  assert.doesNotMatch(html, /Remove them before this goes to the client/,
+    "the legend is back — a caveat telling the reader how to handle the document, which was ruled out");
+  assert.doesNotMatch(html, /Purple notes are for the reviewing lawyer/,
+    "the legend is back in another spelling");
   // The knockout's export IS window.print() (exportPDF), so the print rule is the whole strip.
   assert.match(html, /@media print\{\.internal\{display:none ?!important\}\}/,
     "internal notes come off the PDF, as the clearance page has always done");
