@@ -268,8 +268,8 @@
           "todos": 0
         },
         "a-dynamic-import-of-a-path-is-a-file-url.test.mjs": {
-          "tests": 7,
-          "asserts": 15,
+          "tests": 8,
+          "asserts": 17,
           "skips": 1,
           "todos": 0
         },

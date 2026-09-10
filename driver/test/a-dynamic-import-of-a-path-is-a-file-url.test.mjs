@@ -69,7 +69,7 @@ function importsIn(src) {
 function portable(a) {
   const child = /^\$\{JSON\.stringify\((.*)\)\}$/.exec(a);
   if (child) return portable(child[1]);
-  return /^(['"])(\.\.?\/|node:|@?[a-z])[^'"]*\1$/.test(a)                   // a quoted relative or bare specifier
+  return /^(['"])(\.\.?\/[^'"]*|node:[^'"]*|@?[a-z][^'":]*)\1$/.test(a)     // a quoted relative, built-in or bare specifier; a bare one has no colon
     || /^`\.\.?\//.test(a)                                                  // a template that opens relative
     || /^pathToFileURL\(.*\)\.href$/.test(a)                                // a file URL from pathToFileURL
     || /^`\$\{pathToFileURL\(.*\)\.href\}/.test(a)                          // …heading a template that adds a query
@@ -174,4 +174,14 @@ test("Windows paths round-trip through a file URL — a space, a #, a % and a ne
     assert.equal(new URL(href).hash, "", `part of ${p} became a URL fragment: ${href}`);
     assert.equal(fileURLToPath(href, { windows: true }), p, `${p} did not come back from ${href}`);
   }
+});
+
+test("a quoted drive-letter path is not a package name, in either case", () => {
+  // The bare branch once took any quoted specifier opening with a lower-case letter, so a lower-case
+  // c:\\x\\y.mjs read as a package while the same path with C: was named, and the loader refuses both
+  // for their scheme. A bare specifier carries no colon, and node: has its own branch.
+  for (const a of [String.raw`"c:\\x\\y.mjs"`, String.raw`'c:/x/y.mjs'`, String.raw`"C:\\x\\y.mjs"`, String.raw`'C:/x/y.mjs'`])
+    assert.equal(portable(a), false, `${a} read as portable`);
+  for (const a of [`"exceljs"`, `'@modelcontextprotocol/sdk/client/index.js'`, `"node:fs"`, `"./x.mjs"`, `'../x.mjs'`])
+    assert.equal(portable(a), true, `${a} read as not portable`);
 });
