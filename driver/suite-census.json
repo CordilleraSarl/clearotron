@@ -357,6 +357,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-finding-carries-every-key-its-doctrine-teaches.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
           "tests": 9,
           "asserts": 37,
