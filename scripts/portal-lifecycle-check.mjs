@@ -361,6 +361,13 @@ ${HELPERS}
   out.railGroups = railSelect ? [...railSelect.querySelectorAll('optgroup')].map((g) => g.label) : [];
   out.genericOptions = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).length : 0;
   out.railNav = rail ? [...rail.querySelectorAll('.nav-item')].map((b) => b.innerText.trim()).filter(Boolean) : [];
+  out.genericLabels = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).map((o) => o.textContent.trim()) : [];
+  // The avatar menu, opened, read and closed again. People lives there for a person with Manage, directly
+  // above Global config, and in the rail for nobody.
+  const avatar = document.querySelector('button[aria-label="Settings and about"]');
+  if (avatar) { avatar.click(); await settle(() => !!document.querySelector('[role="menu"]')); }
+  out.avatarMenu = [...document.querySelectorAll('[role="menu"] [role="menuitem"]')].map((b) => b.innerText.trim()).filter(Boolean);
+  if (avatar && document.querySelector('[role="menu"]')) avatar.click();
 
   // Staff open on "All companies", so pick one — the heading below is scoped to whoever is selected.
   if (railSelect) {
@@ -753,20 +760,30 @@ if (asMulti && !asMulti.fatal) {
 // ── the access model's screens ──────────────────────────────────────────────────────────────────────
 // Two organisations visible: the switcher heads its rows by organisation, one Generic under each, and the
 // top bar names none of them. One organisation visible: no heading, and the bar names it. People is in
-// the rail for Manage and nowhere else; New clearance for Run and nowhere else.
+// the avatar menu for Manage, directly above Global config, and in the rail for nobody; New clearance is
+// in the rail for Run and nowhere else. Each Generic in the switcher carries its Default tag as words.
 if (asStaff && !asStaff.fatal) {
   ok(JSON.stringify(asStaff.railGroups) === JSON.stringify(['Apmxc Group', 'Foxglade Group']),
     `two organisations visible, but the switcher's headings read ${JSON.stringify(asStaff.railGroups)}`)
   ok(asStaff.genericOptions === 2, `each organisation's Generic should be offered once — the switcher offers ${asStaff.genericOptions}`)
   ok(asStaff.accountCorner === null,
     `a person who can see two organisations is named one of them in the top bar: ${JSON.stringify(asStaff.accountCorner)}`)
-  ok(asStaff.railNav.includes('People'), `People is not in the rail for a person with Manage: ${JSON.stringify(asStaff.railNav)}`)
+  ok(asStaff.genericLabels.length === 2 && asStaff.genericLabels.every((t) => /\(Default\)$/.test(t)),
+    `each Generic in the switcher should read as the Default: ${JSON.stringify(asStaff.genericLabels)}`)
+  ok(!asStaff.railOwner.some((t) => /\(Default\)$/.test(t) && !/Generic/.test(t)),
+    `a company other than Generic carries the Default tag: ${JSON.stringify(asStaff.railOwner)}`)
+  ok(!asStaff.railNav.includes('People'), `People is back in the rail: ${JSON.stringify(asStaff.railNav)}`)
+  const peopleAt = asStaff.avatarMenu.indexOf('People')
+  ok(peopleAt >= 0 && asStaff.avatarMenu[peopleAt + 1] === 'Global config',
+    `People should sit directly above Global config in the avatar menu of a person with Manage: ${JSON.stringify(asStaff.avatarMenu)}`)
 }
 for (const [who, out] of [['client', asClient], ['multi-account client', asMulti]]) {
   if (!out || out.fatal) continue
   ok(out.railGroups.length === 0, `${who}: one organisation visible, yet the switcher draws headings ${JSON.stringify(out.railGroups)}`)
   ok(out.accountCorner === 'Apmxc Group', `${who}: the top bar should name the one organisation — read ${JSON.stringify(out.accountCorner)}`)
   ok(!out.railNav.includes('People'), `${who}: People is in the rail for a person without Manage`)
+  ok(out.avatarMenu.length >= 2, `${who}: the avatar menu was not read: ${JSON.stringify(out.avatarMenu)}`)
+  ok(!out.avatarMenu.includes('People'), `${who}: People is in the avatar menu for a person without Manage: ${JSON.stringify(out.avatarMenu)}`)
   ok(out.railNav.includes('New clearance'), `${who}: New clearance is missing for a person who may run clearances`)
 }
 if (!people || people.fatal) {
