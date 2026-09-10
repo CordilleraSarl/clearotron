@@ -18,7 +18,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { childEnv, installPaths, mergeEnvFile, resolvePorts, staffDomainFor } from "../../bin/start.mjs";
+import { childEnv, installPaths, mergeEnvFile, resolvePorts } from "../../bin/start.mjs";
 import { listenErrorMessage } from "../../shared/listen.mjs";
 import { snapshot, unchanged } from "./secret-file-compare.mjs";   // — the repo's .env is compared, never rendered
 
@@ -28,7 +28,6 @@ const plan = (ports) => childEnv({
   ports,
   paths: installPaths("/install-root/trademark"),
   user: "tester@localhost",
-  staffDomains: "localhost",
   portalSecret: "portal-secret",
   tokenSecret: "token-secret",
   opsToken: "v1.body.sig",
@@ -136,14 +135,6 @@ test("the data plane is explicit — never the code default, which is a real arc
   // The store is its OWN directory, not the install base: recipe-service commits through git, and a
   // repository rooted over the pool and the queue would see every run as untracked.
   assert.notEqual(e.portal.RECIPE_REPO_ROOT, "/install-root/trademark");
-});
-
-test("the staff domain is derived from the one address that can sign in", () => {
-  assert.equal(staffDomainFor("alex@example-firm.com"), "example-firm.com");
-  assert.equal(staffDomainFor("Alex@Example-Firm.com"), "example-firm.com");
-  assert.equal(staffDomainFor("svc-runner@localhost"), "localhost");
-  assert.equal(staffDomainFor("nonsense"), "");
-  assert.equal(staffDomainFor(undefined), "");
 });
 
 test("the .env writer is ADD-ONLY — it can never lose what `npm run setup` collected", () => {
@@ -305,7 +296,7 @@ test("#1721 --no-worker is honoured, and the old two-terminal instruction surviv
 
 test("#1721 the portal is told about a worker ONLY when this launcher supervises one", () => {
   const ports = { mcp: 18801, portal: 18802 };
-  const base = { paths: installPaths("/install-root/trademark"), user: "tester@localhost", staffDomains: "localhost",
+  const base = { paths: installPaths("/install-root/trademark"), user: "tester@localhost",
     portalSecret: "portal-secret", tokenSecret: "token-secret", opsToken: "v1.body.sig" };
   const withWorker = childEnv({ ...base, ports, localWorker: true });
   const without = childEnv({ ...base, ports, localWorker: false });
@@ -489,7 +480,7 @@ test("1986: the ops token start mints carries EVERY write verb the portal actual
 test("2015 the demo posture reaches the portal and changes nothing about either door", () => {
   const paths = installPaths("/srv/demo-base");
   const common = { ports: { portal: 18802, mcp: 18790 }, paths, user: "demo@localhost",
-    staffDomains: "localhost", portalSecret: "p", tokenSecret: "t", opsToken: "o" };
+    portalSecret: "p", tokenSecret: "t", opsToken: "o" };
   const demo = childEnv({ ...common, demo: true });
   const live = childEnv({ ...common });
 

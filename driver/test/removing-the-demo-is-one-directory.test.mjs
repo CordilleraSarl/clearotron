@@ -25,7 +25,7 @@ import { credentialPathFor } from "../portal-local-auth.mjs";
 // derivation from this change's files and only fires on a full run. It cost this branch one.
 const ports = { portal: 1, mcp: 2, client: 3 };
 const demoEnv = (base) => childEnv({
-  ports, paths: installPaths(base), user: "someone@example.com", staffDomains: [],
+  ports, paths: installPaths(base), user: "someone@example.com",
   portalSecret: "s", tokenSecret: "t", opsToken: "v1.x.y", demo: true, env: {},
 });
 
@@ -56,7 +56,7 @@ test("94 the revocation list is the demo's own, and only the demo's", () => {
   assert.equal(installPaths(base).denylist, undefined,
     "installPaths grew a denylist key — that moves every existing install's revocation list");
   const live = childEnv({
-    ports, paths: installPaths("/srv/operator/trademark"), user: "op@example.com", staffDomains: [],
+    ports, paths: installPaths("/srv/operator/trademark"), user: "op@example.com",
     portalSecret: "s", tokenSecret: "t", opsToken: "v1.x.y", demo: false, env: {},
   });
   assert.ok(!String(live.client?.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").startsWith("/srv/operator/trademark/"),

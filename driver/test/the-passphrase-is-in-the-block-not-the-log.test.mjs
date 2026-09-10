@@ -37,7 +37,7 @@ test("2175-F10 the passphrase is NOT part of the composed portal environment", (
     ports: resolvePorts({}),
     paths: { base: "/i", pool: "/i/pool", workspace: "/i/w", queue: "/i/q", outbox: "/i/o",
       locks: "/i/l", grants: "/i/grants.json", audit: "/i/audit", recipes: "/i/r", configStore: "/i/c" },
-    user: "op@localhost", staffDomains: "localhost",
+    user: "op@localhost",
     portalSecret: "s", tokenSecret: "t", opsToken: "o",
   });
   for (const [name, block] of Object.entries(envs)) {

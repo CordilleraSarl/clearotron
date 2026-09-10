@@ -70,10 +70,9 @@ import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm 
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
 import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight where the meaning is
 import { bracketAsciiCells, BRAND } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
-// ONE CLASSIFIER, shared with `bin/start.mjs`. The wizard asks the question; the launcher enforces the
-// answer. Two copies of "what does this domain admit" is a wizard that consents to one rule and a
-// launcher that builds another.
-import { classifyStaffDomain, domainOfEmail, staffDomainRefusal, staffGrantSentence } from "../shared/staff-domain.mjs";
+// THE REFUSALS ABOUT THE SIGN-IN ADDRESS ITSELF, shared with `bin/start.mjs`. Two copies would be a
+// wizard that accepts an address the launcher then sends back.
+import { addressRefusal } from "../shared/staff-domain.mjs";
 import { join, dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
@@ -592,40 +591,47 @@ export const AMBIENT_KEYS = [
 const present = (v) => typeof v === "string" && v.trim() !== "";
 
 /**
- * Ask who signs in, and take a real yes for the access rule that address implies.
+ * Ask who signs in, and what their organisation is called.
  *
- * ── WHY THIS QUESTION EXISTS AT ALL ─────────────────────────────────────────────────────────────────
+ * ── WHY THE ADDRESS IS ASKED AT ALL ─────────────────────────────────────────────────────────────────
  *
  * Setup never asked for an address. `clearotron start` therefore took one from `--user`, from
- * `PORTAL_LOCAL_USER`, or from the local account as `<account>@localhost` — and derived a STAFF RULE
- * from everything after its `@`. On the local-account default that rule is `localhost`: one machine,
- * one identity, nothing granted to anyone. Given a real address it is that address's whole domain, and
- * the settings page then reports it back as "Anyone at <domain> — a rule, not a person".
+ * `PORTAL_LOCAL_USER`, or from the local account as `<account>@localhost`. An outside install reached a
+ * state nobody chose that way: an assistant filled a documentation address into the environment file on
+ * the operator's behalf, because this wizard had no prompt for it. So the address is asked for here,
+ * where a person is definitionally present.
  *
- * An outside install reached exactly that state. Nobody typed the address into this wizard, because
- * this wizard had no prompt for it; an assistant filled one into the environment file on the operator's
- * behalf, and the install granted a documentation domain. They read their own settings page and
- * reported it as a back door. They were right to: a grant to a group had been made, by nobody.
+ * WHAT IT NO LONGER DECIDES. The part after its `@` used to decide who was an administrator: everyone at
+ * that domain was staff. That rule is deleted, with the question about granting the domain and the
+ * setting it wrote. The address is the first person on the install — Run, Manage, access to everything —
+ * written as their own entry in the grants file by `clearotron start` (`installerGrants`), and it admits
+ * nobody else whatever its domain.
  *
- * So the address is asked for here, where a person is definitionally present, and the grant it implies
- * is shown in the words the settings page uses BEFORE it is written. `start` no longer guesses: it
- * refuses a rule wider than one machine unless `PORTAL_STAFF_DOMAINS` says so in writing, which is what
- * a yes here writes.
+ * TWO REFUSALS ABOUT THE ADDRESS ITSELF STAY: not a single email address, and a public or reserved
+ * domain (shared/staff-domain.mjs, shared with `clearotron start` so the two refuse the same addresses).
+ *
+ * THE ORGANISATION'S NAME, directly after the address and required. It is the organisation the install
+ * starts with and the label the portal shows for it; `clearotron start` files it in the grants file the
+ * first time that file holds none, and it is renamed there. WRITTEN QUOTED, because the loader reads
+ * `.env` with Node's `parseEnv`, which ends an unquoted value at `#` and trims it — measured: "Café #1
+ * Sàrl" written bare comes back "Café". Quoted it survives whole, except a double quote, which ends the
+ * value, so a name holding one is sent back.
  *
  * THE DEFAULT IS THE LOCAL ACCOUNT AND NOTHING ELSE — not the git author, not the hostname, not a shell
- * variable. An identity that becomes an access rule comes from the person, or from the one source that
+ * variable. The address that becomes the first person comes from the person, or from the one source that
  * cannot name a second person.
  *
- * `io` IS INJECTED for the reason `offerUsptoSync`'s is: the branch that matters is the one where a
- * reader pressed Enter at the grant question and NOTHING must be granted, and closed over a terminal
- * that branch is asserted nowhere. Returns the `.env` keys to write and nothing else.
+ * `io` IS INJECTED for the reason `offerUsptoSync`'s is: the branches that matter are the answers that
+ * must be sent back, and closed over a terminal they are asserted nowhere. Returns the `.env` keys to
+ * write and nothing else.
  */
-export async function askSignIn(io, { localAccount = "user", staffLabel = "Staff", envPath = "" } = {}) {
-  const { askValue, confirm, say = () => {}, ok = () => {}, info = () => {},
-          warn = () => {}, problem = () => {} } = io;
+export async function askSignIn(io, { localAccount = "user" } = {}) {
+  const { askValue, ok = () => {}, problem = () => {} } = io;
   const localDefault = `${localAccount}@localhost`;
-  prose("The portal admits one address on this install, and that address is also what decides who is an",
-        "administrator. Enter accepts the local-account form, which is this machine and nobody else.");
+  prose("The portal admits one address on this install, and that address is the first person on it:",
+        "access to everything, with both permissions — Run clearances and Manage. Enter accepts the",
+        "local-account form, which is this machine and nobody else.");
+  let address;
   for (;;) {
     const typed = String(await askValue("Sign-in address:", { def: localDefault })).trim().toLowerCase();
     if (!typed.includes("@") || typed.indexOf("@") !== typed.lastIndexOf("@")) {
@@ -633,35 +639,27 @@ export async function askSignIn(io, { localAccount = "user", staffLabel = "Staff
         + "so this would sign in and then be denied at the door.");
       continue;
     }
-    const domain = domainOfEmail(typed);
-    const verdict = classifyStaffDomain(domain);
-    if (verdict === "public" || verdict === "reserved") {
-      // The classifier's own sentence, never a second copy: `clearotron start` prints these same words
-      // when it meets the same domain, and two wordings of one refusal is how a reader comes to believe
-      // they have met two different problems.
-      problem(staffDomainRefusal(domain));
+    // The refusal's own sentence, never a second copy: `clearotron start` prints these same words when it
+    // meets the same address, and two wordings of one refusal is how a reader comes to believe they have
+    // met two different problems.
+    const refusal = addressRefusal(typed);
+    if (refusal) { problem(refusal); continue; }
+    address = typed;
+    break;
+  }
+  ok(`${address} — the first person on this install, with access to everything.`);
+  for (;;) {
+    const name = String(await askValue("Your organisation's name:") ?? "").trim();
+    if (!name) {
+      problem("A name is needed here: it is the organisation this install starts with. It can be renamed later.");
       continue;
     }
-    if (verdict === "narrow") {
-      ok(`${typed} — this machine only. No domain rule is written, and nobody else is granted anything.`);
-      return { PORTAL_LOCAL_USER: typed };
+    if (name.includes('"')) {
+      problem(`${name} holds a double quote, and the settings file cannot keep one — it ends the value. Leave it out.`);
+      continue;
     }
-    // `wide`: a real domain, so the grant is a grant. Stated first, in the settings page's own words,
-    // and Enter is NOT a yes — the default is no, because this is the one answer in the wizard that
-    // admits people the reader has never met.
-    say("");
-    warn(`${typed} makes this a rule about ${domain}, not about you.`);
-    say(`    ${staffGrantSentence(domain, { staffLabel })}`);
-    say("");
-    say(`  Everyone at ${domain} who gets past this install's sign-in door would see every brand owner`);
-    say("  on it — every clearance, every report, every configuration. On a laptop that is only you,");
-    say("  because only one address can sign in. Behind a company login it is the whole domain.");
-    say("");
-    if (await confirm(`Grant ${domain} that, and write it down as PORTAL_STAFF_DOMAINS?`, false))
-      return { PORTAL_LOCAL_USER: typed, PORTAL_STAFF_DOMAINS: domain };
-    info(`nothing granted${envPath ? `, and nothing written to ${envPath}` : ""}. ${typed} would sign in `
-      + "and every page would refuse it, because signing in is not being enrolled — so choose the "
-      + "local-account form, or answer yes above.");
+    ok(`${name} — your organisation. \`clearotron start\` files it in the grants file, where it can be renamed.`);
+    return { PORTAL_LOCAL_USER: address, CLEAROTRON_ORGANISATION_NAME: `"${name}"` };
   }
 }
 
@@ -1238,10 +1236,12 @@ export async function runCheck() {
   // use this portal" — was the one section that could not consult it.
   //
   // MEASURED 2026-09-06 on a healthy packaged install: `doctor` printed that ✗ and exited 1 on a box
-  // where the local user signs in and `GET /portal/api/me` returns `{"role":"staff"}`. The units' file
-  // carries `PORTAL_STAFF_DOMAINS=localhost`, the identity is `<user>@localhost`, and the running
-  // service admits it as staff. This command reads the CLI's own `.env`, where neither that name nor
-  // `PORTAL_AUTH_MODE` appears — so the check was not ignoring the auth mode, it never saw it.
+  // where the local user signs in and `GET /portal/api/me` returned `{"role":"staff"}`. The units' file
+  // carried `PORTAL_STAFF_DOMAINS=localhost` (a staff-domain rule, since deleted), the identity was
+  // `<user>@localhost`, and the running service admitted it as staff. This command read the CLI's own
+  // `.env`, where neither that name nor `PORTAL_AUTH_MODE` appeared — so the check was not ignoring the
+  // auth mode, it never saw it. What admits a person now is their entry in the grants file, and the
+  // units' file is still the only place that names which grants file.
   //
   // The disclosure was already here and one severity too quiet: a `·` saying "what THIS environment
   // implies, not what the running service serves", directly above a `✗` phrased in the present
@@ -2093,68 +2093,66 @@ export async function runCheck() {
     //
     // The door is only half the question. The owner signed into the test portal and every action
     // refused — submitting a search, saving a custom search, loading the Generic defaults — because his
-    // identity was on no staff domain and in no grants row, so it held no accounts. Three symptoms,
-    // one cause, and the product KNEW: portal-service logs a warning at boot naming the identity, both
-    // conditions, both variables and the remedy. It was invisible to everyone who needed it, because
-    // the operator was in a browser and whoever restarted the service checked ports, not the log.
+    // identity held no access in the grants file. Three symptoms, one cause, and the product KNEW:
+    // portal-service logs a warning at boot naming the identity and the remedy. It was invisible to
+    // everyone who needed it, because the operator was in a browser and whoever restarted the service
+    // checked ports, not the log.
     //
-    // ASKED OF `makePrincipal`, the function the door itself uses, so this cannot drift from the
-    // refusal it predicts. A second opinion about who holds access is how a report comes to disagree
-    // with the thing it reports on.
+    // ASKED OF `makePrincipal`, the function the door itself uses, for every address the grants file
+    // names — so this cannot drift from the refusal it predicts. A person is admitted by their own entry
+    // and nothing else: an entry under `people` with access to everything admits with no tenant row at
+    // all, and an entry holding only switches admits nobody, so counting rows in either section would be
+    // a second opinion about who holds access, which is how a report comes to disagree with the thing it
+    // reports on.
     //
-    // OFFLINE, and that is what makes it worth having here: if no staff domain is set AND the grants
-    // file holds no rows, then NO identity can hold access — whoever signs in, whatever the door. That
-    // is knowable from the filesystem, so `--check` can answer it without calling anybody, which is
-    // this command's whole contract.
+    // OFFLINE, and that is what makes it worth having here: if the grants file admits no address, then
+    // NO identity can hold access — whoever signs in, whatever the door. That is knowable from the
+    // filesystem, so `--check` can answer it without calling anybody, which is this command's whole
+    // contract.
     try {
       const { makePrincipal } = await import("../driver/portal-access.mjs");
-      // ASKED OF THE SERVICE'S OWN ENVIRONMENT. Reading this command's file here is
-      // what produced a hard ✗ claiming nobody could use a portal that was admitting its operator as
-      // staff on every request.
-      const staffDomains = String(effectiveForService("PORTAL_STAFF_DOMAINS")?.v ?? "")
-        .split(",").map((d) => d.trim()).filter(Boolean);
+      // ASKED OF THE SERVICE'S OWN ENVIRONMENT. Reading this command's file here is what produced a hard
+      // ✗ claiming nobody could use a portal that was admitting its operator on every request.
       const grantsFile = effectiveForService("CLEAROTRON_ACCESS_FILE")?.v ?? "";
       let grants = null, unreadable = null;
       if (grantsFile) {
         try { grants = JSON.parse(readFileSync(grantsFile, "utf8")); }
         catch (e) { unreadable = String(e?.message ?? e).slice(0, 120); }
       }
-      const rows = Object.values(grants?.tenants ?? {})
-        .reduce((n, t) => n + Object.keys(t?.users ?? {}).length, 0);
+      const named = new Set([...Object.keys(grants?.people ?? {}),
+        ...Object.values(grants?.tenants ?? {}).flatMap((t) => Object.keys(t?.users ?? {}))]);
+      const admitted = [...named].filter((address) => makePrincipal({ email: address, grants }));
 
       // A FAILURE TO LOOK IS NOT A LOCKOUT. On a hosted box whose unit environment
       // could not be read, every name above resolves empty — which is indistinguishable from a box that
       // has genuinely configured nothing, and would print the loudest ✗ in this command on no evidence.
       if (!serviceKnown) {
         info("who may use this portal is not judged here: the units' environment could not be read, so a "
-          + "staff domain or a guest list configured there would be invisible to this check");
+          + "grants file configured there would be invisible to this check");
       } else if (unreadable) {
         problem(`the guest list at ${grantsFile} could not be read (${unreadable}) — the portal refuses `
           + `every request while that is true, and this is a failure to look rather than an empty list`);
-      } else if (!staffDomains.length && !rows) {
+      } else if (!admitted.length) {
         // PRESENT-AND-WRONG vs ABSENT. A configured portal that grants nobody is wrong: every page
         // refuses and the symptom reads as a broken login. A box that has configured neither is a
         // fresh install, which is loud but not a failure — the same rule the rest of this command uses.
         const configured = Boolean(grantsFile) || Boolean(effectiveForService("PORTAL_AUTH_MODE")?.v);
-        const sentence = `NOBODY can use this portal, per ${serviceEnvFile}: no staff domain is set (PORTAL_STAFF_DOMAINS) and `
-          + `the guest list holds no rows${grantsFile ? ` (${grantsFile})` : " (CLEAROTRON_ACCESS_FILE is unset)"}. `
+        const sentence = `NOBODY can use this portal, per ${serviceEnvFile}: the grants file gives nobody access`
+          + `${grantsFile ? ` (${grantsFile})` : " (CLEAROTRON_ACCESS_FILE is unset)"}. `
           + "Any identity that signs in is refused at the door on every page, which reads as a broken "
           + `login rather than as missing access. Fix with \`${invocationPrefix()}clearotron grant add\`, `
-          + "or by setting a staff domain.";
+          + `or give the person who installed an entry under "people" in that file, with "everything": true.`;
         if (configured) problem(sentence); else info(sentence);
       } else {
-        const who = [];
-        if (staffDomains.length) who.push(`${staffDomains.length} staff domain(s): ${staffDomains.join(", ")}`);
-        if (rows) who.push(`${rows} guest-list row(s)`);
-        ok(`somebody can use this portal — ${who.join(", ")}`);
+        ok(`somebody can use this portal — ${admitted.length} address(es) in the grants file have access`);
         // AND THE ONE IDENTITY THIS BOX SIGNS IN, when the local door is what this environment implies.
         // NAMES the address because it is this operator's own, on their own box, in a report they asked
         // for — the same address `clearotron start` prints back at them.
         const localUser = effectiveForService("PORTAL_LOCAL_USER")?.v ?? "";
         if (door.shape === "local" && localUser) {
-          if (makePrincipal({ email: localUser, grants, staffDomains })) ok(`  and ${localUser} is one of them`);
-          else problem(`  but ${localUser} — the identity this box's local sign-in produces — is on no staff `
-            + `domain and in no guest-list row, so it signs in and is then refused on every page`);
+          if (makePrincipal({ email: localUser, grants })) ok(`  and ${localUser} is one of them`);
+          else problem(`  but ${localUser} — the identity this box's local sign-in produces — has no access in `
+            + `${grantsFile}, so it signs in and is then refused on every page. Give it an entry under "people" there.`);
         }
       }
     } catch (e) {
@@ -3501,21 +3499,18 @@ try {
   say("  fallback — falls through by name, so an empty store is a working install. Your own customers");
   say("  are added here by name; the bundled demo customers never show through into your roster.");
 
-  // 7c ── WHO SIGNS IN, AND WHAT THAT ADDRESS GRANTS
+  // 7c ── WHO SIGNS IN, AND WHAT THEIR ORGANISATION IS CALLED
   //
-  // Setup never asked for an address, so `clearotron start` derived one — and derived a staff-domain
-  // rule from everything after its `@`. The whole reasoning, and the install that granted a
-  // documentation domain to a reader who had never been asked, is on `askSignIn` above.
+  // The address is the first person on the install and the name is its first organisation. The whole
+  // reasoning, including the domain rule this step no longer writes, is on `askSignIn` above.
   section("Who signs in");
   const localAccount = (() => {
     try { return userInfo().username || "user"; } catch { return "user"; }
   })();
-  // ONE CALL SITE. The loop itself lives in `askSignIn` so that the branch that matters — a reader who
-  // pressed Enter at the grant question, and a staff rule that must therefore NOT be written — is
-  // reachable without a terminal. The same seam and the same reason as `offerUsptoSync`.
-  Object.assign(candidate, await askSignIn(
-    { askValue, confirm, say, ok, info, warn, problem },
-    { localAccount, staffLabel: `${BRAND.name} staff`, envPath: ENV_PATH }));
+  // ONE CALL SITE. The loop itself lives in `askSignIn` so that the branches that matter — an address
+  // that must be sent back, a name that is missing — are reachable without a terminal. The same seam
+  // and the same reason as `offerUsptoSync`.
+  Object.assign(candidate, await askSignIn({ askValue, ok, problem }, { localAccount }));
 
   // 8 ── the engine's own preflight over the whole candidate
   //

@@ -744,10 +744,12 @@ You sign in as `<your-username>@localhost` unless you say otherwise:
 npx clearotron start --user you@example.com
 ```
 
-The address is written to `.env`, so it is asked for once. It is also the staff identity for this
-install: in this mode the portal admits exactly one address, so it sees everything, and enrolling
-clients is the grants file (`CLEAROTRON_ACCESS_FILE`, §8) exactly as on a
-hosted instance.
+The address is written to `.env`, so it is asked for once. It is also the first person on this
+install: the first start writes it into the grants file (`CLEAROTRON_ACCESS_FILE`, §8) with access to
+everything and both permissions, Run clearances and Manage. Setup asks for your organisation's name
+directly after the address, and the same start files it there as your first organisation. The address
+admits nobody else at its domain; enrolling anyone else is that same file, exactly as on a hosted
+instance.
 
 **No authentication is switched off to make this work, and none can be.** Both doors prove who the
 caller is — the portal by passphrase and a signed session cookie, the engine door by a mandatory
@@ -1008,10 +1010,22 @@ infer it from an install step. The operational side — issuing and rotating gra
 What belongs here is only what you set at install time.
 
 **The guest list.** `CLEAROTRON_ACCESS_FILE` turns account scoping on for **every face at once** — the
-portal, the MCP read face, and the client connector. `npx clearotron start` (§6) writes an empty
-roster (`{"tenants": {}}`) into its state directory, which is your own staff access and no clients yet.
+portal, the MCP read face, and the client connector. `npx clearotron start` (§6) writes one into its
+state directory the first time it runs: you, with access to everything, your organisation if setup was
+told its name, and nobody else yet.
 [examples/grants.example.json](examples/grants.example.json) is a runnable guest list over the demo
 clients.
+
+**Giving someone access.** `npx clearotron grant add` writes the same file the portal's People page
+writes:
+
+```
+npx clearotron grant add <email> --tenant <organisation> --accounts <key,key|*> [--run] [--manage]
+```
+
+`--accounts '*'` is the whole organisation, including companies filed under it later. `--run` lets the
+person start and stop clearances; `--manage` lets them add people and companies and change settings.
+With neither, they can see what their access covers and start nothing.
 
 **Keys for people.** `npx clearotron grant` enrols someone; it decides what they may see and issues
 nothing. The key their assistant actually presents comes from a different verb:
