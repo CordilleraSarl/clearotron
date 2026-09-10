@@ -20,6 +20,13 @@ export {
 // exists: a second copy of a path table drifts, and the drift shows up as an artifact reported missing.
 export { koPaths } from "../../driver/stages-knockout.mjs";
 
+// HOW PUBLISH ADDRESSES A KNOCKOUT'S LISTED FILINGS. On a register with no record pages of its own, each
+// filing with an office number is given the office's own page, or the office and the number and why that is
+// not a link, and the report, the workbook and report-data.json state it. The evidence view states it from
+// this same function rather than from a second reading of the numbers. office-record-links.mjs imports
+// nothing, so the read-only server stays light.
+export { addressListedFilings } from "../../driver/publish/office-record-links.mjs";
+
 // stripInternal/stripEngineInternals/stripTelemetry are the driver's OWN client-safety transforms — the
 // same ones publish/render.mjs applies to the client HTML export. lib/scrub.mjs composes them so the MCP
 // client surface and the delivered report answer "what may a client see?" from ONE definition ( R1:

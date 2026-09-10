@@ -574,20 +574,26 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
     "CLEAROTRON_RUN_LOCK_DIR": paths.locks,
     "CLEAROTRON_ACCESS_FILE": paths.grants,
 
+    // THE SAVED-SEARCHES STORE, for every child on every install. The portal lists and saves searches in
+    // it; the MCP door lists them and plans runs from them through `loadRecipes()`, which reads no store
+    // when it is handed no directory and answers that the install has none. Outside a demo this reached
+    // the portal alone, so an assistant connected to a local install could neither see nor plan a saved
+    // search its portal showed. Unset, saved searches are not "off" in any visible way either:
+    // `/portal/api/config/searches` answers 404 and a settings panel renders an error. So the store is
+    // named here and created by this command, and where an operator has set their own, `paths` holds it.
+    "CLEAROTRON_RECIPES_DIR": paths.recipes,
+    "RECIPE_REPO_ROOT": paths.configStore,
+
     // THE DEMO'S OWN STORE, and every name that chooses a store pinned to it, for every child and not
     // only the portal. Inherited, a CLEAROTRON_CUSTOMERS_DIR, CLEAROTRON_INSTRUCTIONS_DIR or
     // PROFILE_REPO_ROOT hands the demo's children the reader's real config store, and a company created
-    // in the demo is written into it. An inherited CLEAROTRON_RECIPES_DIR has the MCP door list that
-    // install's saved searches, and plan runs against them, while the portal shows the demo's own.
-    // Empty is unset to every reader. The demo overrides no instruction, so the product's own are read
-    // (the portal derives no overlay in a demo), and the two audit logs and the feedback directory fall
-    // back to their places inside the demo's own directories.
+    // in the demo is written into it. Empty is unset to every reader. The demo overrides no instruction,
+    // so the product's own are read (the portal derives no overlay in a demo), and the two audit logs and
+    // the feedback directory fall back to their places inside the demo's own directories.
     ...(demo ? {
       "CLEAROTRON_CUSTOMERS_DIR": paths.profiles,
       "CLEAROTRON_INSTRUCTIONS_DIR": "",
       "PROFILE_REPO_ROOT": paths.configStore,
-      "CLEAROTRON_RECIPES_DIR": paths.recipes,
-      "RECIPE_REPO_ROOT": paths.configStore,
       "PROFILE_AUDIT": "",
       "RECIPE_AUDIT": "",
       "CLEAROTRON_FEEDBACK_DIR": "",
@@ -709,11 +715,6 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       // "waiting for a worker": a deployed instance drains via systemd and writes no heartbeat, so without
       // this the portal must keep saying "waiting to start" rather than invent an alarm.
       ...(localWorker ? { PORTAL_LOCAL_WORKER: "1" } : {}),
-      // Unset, saved searches are not "off" in any visible way — `/portal/api/config/searches` simply
-      // answers 404 and a panel in the settings surface renders an error. A panel degraded to a string
-      // is the failure this command exists to remove, so the store is named and created.
-      CLEAROTRON_RECIPES_DIR: paths.recipes,
-      RECIPE_REPO_ROOT: paths.configStore,
     },
   };
 }
