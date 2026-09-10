@@ -28,7 +28,7 @@ import { tmpdir } from "node:os";
 import { createServer as createTcpServer } from "node:net";   // #1865 — a real closed port
 import { execFileSync } from "node:child_process";
 import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -1291,7 +1291,7 @@ test("a parenthesised OWNER row still passes — the harness inherits the bindin
     // would drive a module that never saw it. This is the same reason the not-configured arm above runs
     // in a process with no port in scope rather than deleting the variable.
     const port = await closedPort();
-    const src = `const { enqueueViaMcp, doorAnswerClass } = await import(${JSON.stringify(join(REPO_ROOT, "scripts/e2e.mjs"))});
+    const src = `const { enqueueViaMcp, doorAnswerClass } = await import(${JSON.stringify(pathToFileURL(join(REPO_ROOT, "scripts/e2e.mjs")).href)});
       const a = await enqueueViaMcp({ ref: "E2E-ARM-1865" });
       console.log("RESULT " + JSON.stringify({ ...a, cls: doorAnswerClass({ door: "ops-mcp", ...a }) }));`;
     const out = execFileSync(process.execPath, ["--input-type=module", "-e", src], {
