@@ -445,33 +445,36 @@ staleness thresholds that decide when an index is too old to trust are in
 
 ### The four things, and what contains what
 
-Read this before the rest of the section. The product uses three words for overlapping ideas, and
-nothing until now said how they nest — the owner of this product reached for a fourth word, "org",
-which names nothing here at all. That confusion is real and it belongs to the documentation, not to
-the reader.
+Read this before the rest of the section. Everything is one tree, and a person is given access to
+points on it.
 
-| What it is | The word the product uses | Where it lives | What creates it |
+| What it is | What the product calls it | Where it lives | What creates it |
 |---|---|---|---|
-| The deployment's own boundary — one installation's whole world | **tenant** | a key in `grants.json` | nothing yet; you write the key by hand |
-| A company you do clearances for | **account**, and the CLI calls it **brand owner** | a bundle in the customer store, keyed by an account key | `npx clearotron brandowner add <key>` |
-| One engagement under that company — its classes, jurisdictions, platforms | **project** | inside that account's bundle | `npx clearotron project add` |
-| A person who may see some of it | **user** | `grants.json`, under the tenant | `npx clearotron grant add`, then `npx clearotron key issue` |
+| A group of people and the companies they clear for — a firm, a brand team, one customer of a hosted install | **organisation** (`tenant` in `grants.json`) | a key under `tenants` in `grants.json`, with its `name` | setup creates the first; after that, a key you add to `grants.json` |
+| A company you do clearances for | **company** (`account` in `grants.json` and on the wire; the CLI calls it **brand owner**) | a bundle in the customer store, keyed by an account key, and listed under exactly one organisation | the portal's `+ New company`, or `npx clearotron brandowner add <key>` |
+| One engagement under that company — its classes, jurisdictions, platforms | **project** | inside that company's bundle | `npx clearotron project add` |
+| Someone who may see some of it | **person** | `grants.json`: their access under each organisation's `users`, their two switches under `people` | the portal's People page, or `npx clearotron grant add` |
 
-Nesting, in one line: **a tenant contains accounts; an account contains projects; a user is enrolled in
-a tenant and reaches a named subset of that tenant's accounts.**
+Nesting, in one line: **an organisation contains companies; a company contains projects; a person is
+given access to points on that tree — the whole install, an organisation, or one company — and sees
+everything below them.**
 
-Two consequences worth stating, because both surprised the person who commissioned the product:
+Three consequences worth stating, because each has surprised someone:
 
-- **An account does not span tenants.** `grants.json` maps each tenant to its own account keys, so the
-  same company reached from two tenants is two grants, not one shared object.
+- **A company belongs to exactly one organisation.** The guest list is refused at load if a company is
+  listed under two; another organisation's people are given access to it where it lives.
+- **A person holds two switches, and nothing else is a permission.** **Run clearances** starts and
+  stops them; **Manage** adds people, adds companies and changes settings. Viewing is not a permission:
+  access is viewing. A person with no entry under `people` sees what their access covers and starts
+  nothing.
 - **A key grants no reach of its own.** `npx clearotron key issue` mints the identity a person's assistant
-  presents; what that identity may see is decided by their `grant`. Enrol first, issue second — a key
-  without a grant reaches nothing, and is not an error anywhere.
+  presents; what that identity may see and do is decided by the guest list at the moment of each call.
+  Enrol first, issue second — a key for someone with no access reaches nothing, and is not an error
+  anywhere.
 
-**⚠ The words are not yet aligned across the surfaces.** `grants.json` says *tenant*, the CLI verb is
-*brandowner*, and the portal and `grant`'s own output say *account*. This table states the containment
-so a reader can act today; choosing ONE customer-facing word and moving the file, the CLI and the UI
-onto it is a product decision that has not been taken.
+**The file keeps its words.** The screens say organisation, company and person; `grants.json`, the wire
+and the command line keep `tenant` and `account`, and the CLI verb stays `brandowner`. Moving them would
+break every file and script written against them.
 
 
 A clearance run is shaped by a **customer profile** — a small JSON file that declares that customer's
