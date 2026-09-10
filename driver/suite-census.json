@@ -465,6 +465,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-real-dispatch-records-the-tool-that-served-it.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-real-install-starts-with-an-empty-archive.test.mjs": {
           "tests": 6,
           "asserts": 16,
