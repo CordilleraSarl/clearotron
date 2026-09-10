@@ -75,7 +75,7 @@ const published = () => {
 };
 const census = () => { const files = published(); return files === null ? null : censusOf(ROOT, files, (f) => readFileSync(join(ROOT, f), "utf8")); };
 
-test("185 the reference-strip backlog is a FLOOR — no file may carry more than it is recorded with", (ctx) => {
+test("the reference-strip backlog is a FLOOR — no file may carry more than it is recorded with", (ctx) => {
   const files = published();
   if (files === null) return ctx.skip(skipReason(GUARD));
   // THE FLOOR ON THE POPULATION, not on its contents. The filter above narrows what is counted, and a
@@ -102,7 +102,7 @@ test("185 the reference-strip backlog is a FLOOR — no file may carry more than
     + "the table to absorb it.");
 });
 
-test("185 the table is not stale — a repair is RECORDED, so the backlog cannot quietly stop shrinking", (ctx) => {
+test("the table is not stale — a repair is RECORDED, so the backlog cannot quietly stop shrinking", (ctx) => {
   // The other direction, and the one a floor alone misses: repair ten lines, leave the table at 181, and
   // ten new breaks fit underneath it silently. The table must equal the tree, both ways.
   const now = census();
@@ -116,7 +116,7 @@ test("185 the table is not stale — a repair is RECORDED, so the backlog cannot
   console.error(`[185] ${TABLE.total} unfinished sentence(s) remain, in ${Object.keys(TABLE.files).length} file(s)`);
 });
 
-test("185 the signatures still FIRE — a matcher that stopped matching reports a repaired tree", () => {
+test("the signatures still FIRE — a matcher that stopped matching reports a repaired tree", () => {
   // The specimens are the real residue shapes, from the issue. If the strip's output is ever re-derived
   // and these stop matching, this arm says so instead of the census quietly reaching zero.
   const specimens = [
@@ -156,7 +156,7 @@ test("185 the signatures still FIRE — a matcher that stopped matching reports 
   }
 });
 
-test("185 the census COUNTS — driven on a synthetic tree, so it is not trusted on its own word", () => {
+test("the census COUNTS — driven on a synthetic tree, so it is not trusted on its own word", () => {
   // The census reads the real repository, where the right answer is whatever it says. Planted, it has to
   // agree with an answer known in advance. A helper that returned {} would pass every arm above.
   const fake = {
@@ -177,7 +177,7 @@ test("185 the census COUNTS — driven on a synthetic tree, so it is not trusted
     "the scannable filter stopped excluding binaries or generated output");
 });
 
-test("185 the one USER-FACING instance is repaired — documentation, not a comment", () => {
+test("the one USER-FACING instance is repaired — documentation, not a comment", () => {
   // Every other instance is a code comment, read by somebody with the repository open. This one is a row
   // in the configuration reference, which is what a deploying user reads to decide what to set.
   const doc = readFileSync(join(ROOT, "docs/architecture/04-configuration-reference.md"), "utf8");
@@ -187,7 +187,7 @@ test("185 the one USER-FACING instance is repaired — documentation, not a comm
     + "deciding what to set meets it as documentation that stops mid-clause.");
 });
 
-test("185 the rule's own definition is the ONLY exemption, and every exempt file still exists", (ctx) => {
+test("the rule's own definition is the ONLY exemption, and every exempt file still exists", (ctx) => {
   // An exemption keyed to a path that has been renamed away stops exempting anything, and the guard then
   // counts its own specimens as backlog — silently, because the number only goes up by two and nobody
   // reads a floor that moved. Both directions: the list is exactly these three, and all three are tracked.

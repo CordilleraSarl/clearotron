@@ -13,14 +13,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { CHECKED_TIMERS, timerVerdict, UNIT_INVENTORY } from "../unit-inventory.mjs";
 
-test("323 a stopped timer is a FAIL and says what stopping it costs", () => {
+test("a stopped timer is a FAIL and says what stopping it costs", () => {
   const v = timerVerdict([{ unit: "clearotron-doctrine-sync.timer", active: "inactive", load: "loaded" }]);
   assert.equal(v.state, "fail", "a stopped timer read as a pass, which is the state this arm exists for");
   assert.deepEqual(v.stopped, ["clearotron-doctrine-sync.timer"]);
   assert.match(v.message, /will not fire again/, "the message says what it costs, not merely that a state differs");
 });
 
-test("323 an ARMED timer passes — the refusal is not universal", () => {
+test("an ARMED timer passes — the refusal is not universal", () => {
   // Without this the arm above is satisfied by a verdict that fails everything, which would pass while
   // making the instrument useless.
   const v = timerVerdict([{ unit: "clearotron-deploy.timer", active: "active", load: "loaded" }]);
@@ -28,7 +28,7 @@ test("323 an ARMED timer passes — the refusal is not universal", () => {
   assert.deepEqual(v.stopped, []);
 });
 
-test("323 a timer that is not on this box is INFORMATION, never a verdict", () => {
+test("a timer that is not on this box is INFORMATION, never a verdict", () => {
   // The inventory spans prod and test, so a unit legitimately absent here would otherwise fail every run
   // on the other box — the same reasoning the service check already applies to LoadState=not-found.
   const v = timerVerdict([{ unit: "clearotron-deploy.timer", active: "inactive", load: "not-found" }]);
@@ -37,7 +37,7 @@ test("323 a timer that is not on this box is INFORMATION, never a verdict", () =
   assert.match(v.message, /do not exist on this box/);
 });
 
-test("323 no session bus is a COULD-NOT-LOOK, not a report about the timers", () => {
+test("no session bus is a COULD-NOT-LOOK, not a report about the timers", () => {
   // `systemctl --user` answers nothing when the caller has no session bus, and a two-state verdict
   // renders that as "stopped". This is the third state.
   const v = timerVerdict(null, { probeFailed: "systemctl --user answered nothing" });
@@ -46,7 +46,7 @@ test("323 no session bus is a COULD-NOT-LOOK, not a report about the timers", ()
   assert.match(v.message, /failing to look, not a report/);
 });
 
-test("323 the timers come from the inventory, so a shipped one cannot be forgotten", () => {
+test("the timers come from the inventory, so a shipped one cannot be forgotten", () => {
   // Derived from what each entry already accounts for rather than listed a second time by hand: a list
   // written here would go stale the first time a unit shipped a timer and nobody remembered this file.
   assert.ok(CHECKED_TIMERS.length >= 1, "no timer is derived at all — the probe would ask about nothing");
@@ -57,7 +57,7 @@ test("323 the timers come from the inventory, so a shipped one cannot be forgott
     "the derived list and the inventory disagree, so one of them is describing a deployment that does not exist");
 });
 
-test("323 the list names BOTH timers, and each is in it for its own reason", () => {
+test("the list names BOTH timers, and each is in it for its own reason", () => {
   // ── WHY AN ANSWER AND NOT ONLY A DERIVATION ───────────────────────────────────────────────────────
   //
   // The check above recomputes the same expression the export computes and compares the two. It holds
@@ -80,7 +80,7 @@ test("323 the list names BOTH timers, and each is in it for its own reason", () 
     "the timer list changed: a deployment gained or lost a timer, or the derivation stopped reaching one");
 });
 
-test("323 an entry may declare units it does not TRACK — the two are different facts", () => {
+test("an entry may declare units it does not TRACK — the two are different facts", () => {
   // A unit running on a box that this repository does not ship has no file list to read, so it says so
   // with `units:`. Claiming a tracked file that is absent is a fault; naming a unit a deployment runs is
   // a claim about a box, and folding them together would make one of the two lie.

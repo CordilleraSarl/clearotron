@@ -51,7 +51,7 @@
  *     "1.5–2.5 hours" and a knockout from 45 to 15 minutes — and a stored quote is honoured at the version
  *     it was given. A version-2 quote must therefore not be read against this table.
  * 4 —: the wave multiplier is gone and the turnaround quote is a table lookup with no arithmetic
- *     (owner ruling 2026-08-26, recorded at `turnaroundBounds`). No weight moved and no unit changed.
+ *     (ruling 2026-08-26, recorded at `turnaroundBounds`). No weight moved and no unit changed.
  *     The SHAPE did, which is what this counter tracks — but state the size of it honestly: `runCount`
  *     is 1 for every job any door will admit, so the removed term was 1 on every quote that has ever
  *     been stored. No version-3 quote in any run record holds a number this table would not reproduce.
@@ -214,11 +214,11 @@ export const costBand = (i) => Math.max(1, Math.min(5, Math.ceil(effortUnits(i) 
 // ── turnaround ──────────────────────────────────────────────────────────────────────────────────────
 //
 // THERE IS NO ARITHMETIC IN THIS SECTION, AND THAT IS THE DESIGN. The quote is a table lookup and
-// nothing else — owner ruling 2026-08-26, below. Anything that multiplies, adds to or scales the ruled
+// nothing else — ruling 2026-08-26, below. Anything that multiplies, adds to or scales the ruled
 // range is the thing this section was rebuilt to remove; do not reintroduce one without a new ruling.
 
 /**
- * THE QUOTED BOUNDS. ONE SOURCE — owner ruling, 2026-08-23.
+ * THE QUOTED BOUNDS. ONE SOURCE — ruling, 2026-08-23.
  *
  * WHAT THIS REPLACED, and why a constant beat a model. The old quote was a base plus one adder per lane:
  * 1.5h, +0.5 for case law, +0.5 for a native-language lane, +0.5 for a single territory. It missed the
@@ -239,12 +239,12 @@ export const costBand = (i) => Math.max(1, Math.min(5, Math.ceil(effortUnits(i) 
  * harness judges against — see reconcileTurnaround.
  *
  * KNOCKOUT was quoted 45 min against 4–6 min delivered. Ruled "~15 min" — and SUPERSEDED by a later
- * owner ruling to 5-10 minutes, a range. Recorded rather than rewritten,
+ * ruling to 5-10 minutes, a range. Recorded rather than rewritten,
  * because the 4–6 min measurement beside it is the reason 5-10 is the better quote: 15 never sat on it.
  */
 export const TURNAROUND_QUOTE = Object.freeze({
   clearance: Object.freeze({ lowHours: 1.5, highHours: 2.5 }),
-  // — OWNER RULING: a knockout quotes 5-10 MINUTES, a range, not a flat figure.
+  // — RULING: a knockout quotes 5-10 MINUTES, a range, not a flat figure.
   //
   // The flat 0.25 came from the "no compute, just say it, keep it simple", and that ruling is
   // untouched here: this is still one stated figure per pipeline with nothing computed from levers. What
@@ -264,7 +264,7 @@ export const quoteBoundsFor = (l) => TURNAROUND_QUOTE[deriveMode(l) === "knockou
 /**
  * The bounds for THIS job. The ruled range, and NOTHING is done to it.
  *
- * — OWNER RULING, 2026-08-26: "No compute. We just say 1.5–2.5 hours for
+ * — RULING, 2026-08-26: "No compute. We just say 1.5–2.5 hours for
  * big reports, period. Keep it simple." The question put to him was which run-slot cap the quote should
  * divide by, and he removed the division instead of answering it.
  *

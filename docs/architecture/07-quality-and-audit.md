@@ -283,7 +283,7 @@ run dir and the ledgers. The auth model (four principal kinds; run-bound client 
 exactly `brief`, `read_artifact` gated to the report, and `list_findings` gated to the curated card
 groups) is documented in [09 — Security and data](09-security-and-data.md).
 
-**A signed-in client account reads the audit chain** (owner ruling 2026-08-27). The audit trail is
+**A signed-in client account reads the audit chain** (ruling 2026-08-27). The audit trail is
 what makes a clearance defensible, and the person who has to defend the filing is the client's
 lawyer — so `audit`, `narrative`, the record artifacts and a register axis are readable through
 `read_artifact`, the raw `list_findings` path returns the AT#/F#/NR# records, and `get_run`, `trace`

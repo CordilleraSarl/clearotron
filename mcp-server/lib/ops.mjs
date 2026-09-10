@@ -99,6 +99,9 @@ export function buildJob(args = {}, { scope } = {}) {
     profileKey: args.profileKey || undefined,
     // the project/engagement under the customer — its overlay rates the matter
     projectKey: args.projectKey || undefined,
+    // which organisation's Generic — `authorize` stamps it on a Generic job from the verified person, and
+    // an ops caller is trusted to route it. Dropped here, a Generic run lost the organisation it belongs to.
+    tenant: args.tenant || undefined,
     // per-run SCOPE — where the machinery points, as against the selectors above which choose WHICH
     // machinery runs. Passed through verbatim: validateJob owns the vocabulary (shape, caps, dedupe,
     // the bare-string normalization) so this door cannot drift from the CLI or the portal.
@@ -197,7 +200,7 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
     // and "I said nothing" are two different searches and only a positive instruction can tell them apart.
     "geography",
     "product", "recipeKey", "nativeLanguage", "caseLaw", "searchLevel", "deliveryRoute", "parentRunId",
-    "customer", "profileKey", "projectKey", "customerUnknown",
+    "customer", "profileKey", "projectKey", "customerUnknown", "tenant",
     "upfrontInstructions", "brief", "rawRequest", "deliverableSpec", "commercialFlexibility",
     "priorUse", "campaignShape", "deadline",
     "dupOverride", "clientPrincipal", "enqueuedAt", "enqueuedVia",
@@ -346,7 +349,7 @@ export function stopRun(args = {}, { scope } = {}) {
 
     // ── — IMMEDIATE MODE: SENTINEL FIRST, THEN THE SIGNAL ─────────────────────
     //
-    // Owner ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should be
+    // Ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should be
     // a 'stop immediately or at next boundary to preserve data' kind of question when you press it."
     // The boundary stop is unchanged and stays the default; this is the other half of the choice.
     //

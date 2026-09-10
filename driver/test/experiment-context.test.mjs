@@ -115,7 +115,7 @@ const FRESHNESS_GOLDEN = {
   "doubt-closure": ["findings.json", "register-findings.md", "register-coverage-ledger.json"],
 };
 
-test("#236 hazard 1: stageInputs matches the frozen freshness contract, stage for stage", () => {
+test("hazard 1: stageInputs matches the frozen freshness contract, stage for stage", () => {
   const P = ST.paths("/run");
   const rel = (p) => p.slice("/run/".length);
   const actual = {};
@@ -193,7 +193,7 @@ function assertContextByteEqual(stage, canonRunDir, shadowDir) {
 
 // ── 2. THE TWO KNOWN-BROKEN CASES BECOME THE PROOF ───────────────────────────────────────────────────
 
-test("#236: --experiment common-law-half — the arm RUNS at all, and its context is byte-equal to the canonical run's", async () => {
+test("--experiment common-law-half — the arm RUNS at all, and its context is byte-equal to the canonical run's", async () => {
   const { job, runDir, codename } = await canonicalRun();
   // The precondition the issue names: the half-spec sidecar is DERIVED in pipeline() and DECLARED
   // nowhere, so the old rig copied stageInputs() and the validator then refused for want of it.
@@ -217,7 +217,7 @@ test("#236: --experiment common-law-half — the arm RUNS at all, and its contex
   console.log(`      common-law-half: ${checked.length} context artefacts byte-equal`);
 });
 
-test("#236: --experiment register-digest — the derived band shape is IN the sandbox and byte-equal", async () => {
+test("--experiment register-digest — the derived band shape is IN the sandbox and byte-equal", async () => {
   const { job, runDir, codename } = await canonicalRun();
   const P = ST.paths(runDir);
   assert.ok(existsSync(P.bandShape), "the canonical run must carry _driver/band-shape.json");
@@ -231,7 +231,7 @@ test("#236: --experiment register-digest — the derived band shape is IN the sa
   console.log(`      register-digest: ${checked.length} context artefacts byte-equal`);
 });
 
-test("#236: band_shape returns ok:true against a sandboxed register-digest (the tier filter is armed)", async () => {
+test("band_shape returns ok:true against a sandboxed register-digest (the tier filter is armed)", async () => {
   const { job, runDir, codename } = await canonicalRun();
   const ex = await PL.runExperiment(job, { codename, experiment: "register-digest", label: "band tool" });
   // The band MCP server resolves the run it serves from CLEAROTRON_BAND_RUN_DIR, which gateway.mjs sets to
@@ -264,7 +264,7 @@ test("#236: band_shape returns ok:true against a sandboxed register-digest (the 
 
 // ── 3. AN ABSENCE IS A FINDING ───────────────────────────────────────────────────────────────────────
 
-test("#236 zero semantics: a sandbox that loses a context artefact REFUSES by name, it does not dispatch", () => {
+test("zero semantics: a sandbox that loses a context artefact REFUSES by name, it does not dispatch", () => {
   // The unit under test is the gap check itself, over a hand-built canonical/sandbox pair: the runtime
   // integration proves the happy path, this proves the failing one without needing to break a stage.
   const canon = mkdtempSync(join(tmpdir(), "gap-canon-"));
@@ -300,7 +300,7 @@ test("#236 zero semantics: a sandbox that loses a context artefact REFUSES by na
   rmSync(canon, { recursive: true, force: true }); rmSync(shadow, { recursive: true, force: true });
 });
 
-test("#236: an empty directory is MISSING, not present (a _records/ with nothing in it serves no record)", () => {
+test("an empty directory is MISSING, not present (a _records/ with nothing in it serves no record)", () => {
   const canon = mkdtempSync(join(tmpdir(), "gap-canon2-"));
   const shadow = mkdtempSync(join(tmpdir(), "gap-shadow2-"));
   mkdirSync(join(canon, "_records"), { recursive: true });
@@ -313,7 +313,7 @@ test("#236: an empty directory is MISSING, not present (a _records/ with nothing
 
 // ── 4. THE PROVENANCE ROW, AND THE DRIVER-COMPUTED BLOCKS ────────────────────────────────────────────
 
-test("#236: an --experiment arm writes the order-probe provenance row on its OWN record", async () => {
+test("an --experiment arm writes the order-probe provenance row on its OWN record", async () => {
   const { job, runDir, codename } = await canonicalRun();
   const ex = await PL.runExperiment(job, { codename, experiment: "skeptic", label: "probe row" });
   const rows = events(ex.shadowDir).filter((e) => e.event === "order-probe");
@@ -325,7 +325,7 @@ test("#236: an --experiment arm writes the order-probe provenance row on its OWN
   assert.ok("seed" in bread, "the canonical breadcrumb also records the arm's ordering");
 });
 
-test("#236: a sandboxed register-digest carries the driver-computed prompt blocks runDigest composes", async () => {
+test("a sandboxed register-digest carries the driver-computed prompt blocks runDigest composes", async () => {
   const { job, codename } = await canonicalRun();
   const ctx = PL.reconstructCtx(job, { codename });
   // The extraction is output-identical by construction: this pins the composed string per trigger, so a
@@ -343,7 +343,7 @@ test("#236: a sandboxed register-digest carries the driver-computed prompt block
 
 // ── 5. THE DECLARATION CANNOT DRIFT AWAY FROM verify.mjs ─────────────────────────────────────────────
 
-test("#236 drift guard: every _driver sidecar verify.mjs resolves is declared for some stage", () => {
+test("drift guard: every _driver sidecar verify.mjs resolves is declared for some stage", () => {
   const src = readFileSync(join(HERE, "..", "verify.mjs"), "utf8");
   const found = new Set();
   // — verify.mjs now says driverDir(dir, "name.json") where it used to say join(dir, "_driver",
@@ -376,7 +376,7 @@ test("#236 drift guard: every _driver sidecar verify.mjs resolves is declared fo
 
 // ── 6. WHY THIS IS DERIVE-IN-THE-RIG AND NOT PERSIST-AND-REPLAY ──────────────────────────────────────
 
-test("#236 → #256: an order-SEEDED arm re-executes the band-shape seams instead of replaying them", async () => {
+test("→ #256: an order-SEEDED arm re-executes the band-shape seams instead of replaying them", async () => {
   const { job, runDir, codename } = await canonicalRun();
   const before = process.env.CLEAROTRON_ORDER_PROBE_SEED;
   process.env.CLEAROTRON_ORDER_PROBE_SEED = "7";
@@ -419,7 +419,7 @@ async function canonicalCardRun() {
   return CANON_CARD;
 }
 
-test("#236: --experiment report-card rebuilds its INLINE context, and refuses when it cannot", async () => {
+test("--experiment report-card rebuilds its INLINE context, and refuses when it cannot", async () => {
   const { job, runDir, codename } = await canonicalCardRun();
   // findings.json is a passed-inline edge: the agent never opens it, so it is NOT in the sandbox.
   const P = ST.paths(runDir);
@@ -446,7 +446,7 @@ test("#236: --experiment report-card rebuilds its INLINE context, and refuses wh
 // made --axis a MEMBERSHIP test against REGISTER_AXES for every stage. needs `--axis b`
 // (a grid half) and `--axis 3` (a finding ordinal), which are the suffixes production's own dispatch
 // labels already use. The membership test is kept and made PER STAGE — this pins both halves of that.
-test("#236 x #251: --axis is a per-stage membership test, and a stage that takes none still refuses one", async () => {
+test("x #251: --axis is a per-stage membership test, and a stage that takes none still refuses one", async () => {
   const job = jobFor("TMPAXISVOCAB");
   const bogus = "no-such-codename";
   // the vocabulary REFUSES, before the run dir is touched (the bogus codename would fail loudly otherwise)
@@ -465,7 +465,7 @@ test("#236 x #251: --axis is a per-stage membership test, and a stage that takes
       (e) => !/--axis/.test(String(e?.message ?? e)), `--experiment ${stage} --axis "${good}" is valid`);
 });
 
-test("#236: --dispatch-trigger refuses an unknown value rather than composing a quietly different arm", async () => {
+test("--dispatch-trigger refuses an unknown value rather than composing a quietly different arm", async () => {
   const { job, codename } = await canonicalRun();
   await assert.rejects(() => PL.runExperiment(job, { codename, experiment: "register-digest", dispatchTrigger: "escalaton" }),
     /unknown value "escalaton"/, "a typo in the trigger must refuse — it decides which prompt blocks compose");
@@ -559,7 +559,7 @@ test("conversion 11: the derivation refuses to claim it derived anything without
   rmSync(runDir, { recursive: true, force: true });
 });
 
-test("#236: blind-frame stays STARVED — widening the sandbox did not widen the blind pass", async () => {
+test("blind-frame stays STARVED — widening the sandbox did not widen the blind pass", async () => {
   const P = ST.paths("/run");
   const manifest = SC.sandboxManifest("blind-frame", P, { axes: ST.REGISTER_AXES });
   assert.deepEqual(manifest.map((e) => e.path), [P.inboundRequest],

@@ -58,7 +58,7 @@ function clientFacingSources(base = ROOT, roots = SOURCE_ROOTS) {
   return nonEmpty(out, `the client-facing source walk under ${base} (${roots.join(", ")})`);
 }
 
-test("2179 the sentence states the failure and names who to tell, and claims nothing about who knows", () => {
+test("the sentence states the failure and names who to tell, and claims nothing about who knows", () => {
   const said = clientFailureNote();
   assert.match(said, /stopped before it finished/, "the client must learn their search did not complete");
   assert.match(said, /nothing was delivered/, "and that they are not waiting on a report that is coming");
@@ -68,7 +68,7 @@ test("2179 the sentence states the failure and names who to tell, and claims not
     assert.doesNotMatch(said, new RegExp(claim, "i"), `the retired claim "${claim}" is back`);
 });
 
-test("2179 a run that never STARTED is not described as having stopped part-way", () => {
+test("a run that never STARTED is not described as having stopped part-way", () => {
   // A client told their search "stopped before it finished" when it never began has been told something
   // false about their own order. The surfaces that know the difference already branched on it, so the
   // shared sentence has to keep that distinction rather than flatten it.
@@ -79,7 +79,7 @@ test("2179 a run that never STARTED is not described as having stopped part-way"
     "the action is the same whichever way it failed");
 });
 
-test("2179 the MCP surface returns the shared sentence, not its own copy of it", () => {
+test("the MCP surface returns the shared sentence, not its own copy of it", () => {
   // Driven, not read: this export used to build the sentence itself from a brand name, and the point of
   // the change is that it no longer can.
   assert.equal(MCP_NOTE("Anything"), clientFailureNote(),
@@ -88,7 +88,7 @@ test("2179 the MCP surface returns the shared sentence, not its own copy of it",
     assert.doesNotMatch(MCP_NOTE("Anything"), new RegExp(claim, "i"), claim);
 });
 
-test("2179 NO client-facing source states a retired claim outside a comment", () => {
+test("NO client-facing source states a retired claim outside a comment", () => {
   // The class arm. Naming the three sites that existed would pass while a fourth is written tomorrow.
   //
   // LINE-BASED, and its limit is stated rather than hidden: a line carrying a retired phrase must be a
@@ -120,7 +120,7 @@ test("2179 NO client-facing source states a retired claim outside a comment", ()
     + `tell their operator:\n${offenders.join("\n")}`);
 });
 
-test("2179 the walked population is real, and the arm can still SEE an offender", () => {
+test("the walked population is real, and the arm can still SEE an offender", () => {
   //, and the instrument check with it. An empty offenders list from an empty walk is not a pass,
   // and neither is one from a matcher that cannot match.
   const n = clientFacingSources().length;
@@ -133,7 +133,7 @@ test("2179 the walked population is real, and the arm can still SEE an offender"
   assert.ok(prose.trim().startsWith("//"), "the comment exemption is what lets this file explain itself");
 });
 
-test("2179 the source walk refuses an empty corpus, and an empty leaf is not one", () => {
+test("the source walk refuses an empty corpus, and an empty leaf is not one", () => {
   // The proof GUARDED_AT_THE_WALK's entry for this file points at. The recursion step is deliberately
   // unguarded, so the only thing standing between an empty tree and a green class arm above is the
   // aggregate — and a table that merely CLAIMS that reads identically whether the guard is still there

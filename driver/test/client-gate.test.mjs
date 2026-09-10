@@ -192,7 +192,7 @@ test("assembleReleaseInputs: sinks + findings triage feed the gate the same sign
 // What this asserts is the RECORDING, not a refusal. findings.json is ruled `optional` (archived runs
 // predate it and must not be re-rendered into released:false), so the gate deliberately still releases;
 // the fix is that the absence now exists as a fact instead of as an indistinguishable empty.
-test("#873 assembleReleaseInputs: an ABSENT findings.json is RECORDED as absent, never a clean empty", () => {
+test("assembleReleaseInputs: an ABSENT findings.json is RECORDED as absent, never a clean empty", () => {
   const dir = mkdtempSync(join(tmpdir(), "preflight-absent-"));
   mkdirSync(driverDir(dir), { recursive: true });
   const reportMd = join(dir, "report.md");
@@ -218,7 +218,7 @@ test("#873 assembleReleaseInputs: an ABSENT findings.json is RECORDED as absent,
   assert.ok(!g.reasonCodes.includes("publish-input-absent"), "the closing arm is a tripwire for a required store, and none is required today");
 });
 
-test("#873 evaluateClientGate: the publish-input-absent arm CLOSES when the store is ruled required", () => {
+test("evaluateClientGate: the publish-input-absent arm CLOSES when the store is ruled required", () => {
   // The arm cannot fire from the shipped table (nothing is `required`), so exercise it the only way that
   // is honest: assert the wiring on a name that IS required, via the same predicate the gate uses. This
   // is the tripwire's own test — without it the arm is unexercised code that could rot silently.

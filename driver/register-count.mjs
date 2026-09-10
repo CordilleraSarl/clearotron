@@ -19,7 +19,7 @@
 // 2. A COUNT WE COULD NOT TAKE IS NEVER ZERO. Every failure path carries `total: null` plus a reason,
 //    and the surfaces render "not available". A provider that cannot count at all
 //    (capabilities.countProbe "none") does not degrade to zeroes: the lane REFUSES before spending
-//    anything (see countPreflight) — that is the owner ruling, and it is the difference between a
+//    anything (see countPreflight) — that is the ruling, and it is the difference between a
 //    degraded answer and a wrong one.
 //
 // 3. THE NUMBER IS NEVER BANDED. No colour, no threshold, no "high/low". The moment a count carries a
@@ -187,7 +187,7 @@ export function countPreflight({ capabilities, jurisdictions, credentialPresent 
         + `read as though it covered the ones ordered. Name a territory ${id} covers, or switch the register provider.`;
     }
   }
-  // — EMPTY COVERAGE REFUSES EARLY; PARTIAL COVERAGE DISCLOSES (owner ruling, 2026-08-12).
+  // — EMPTY COVERAGE REFUSES EARLY; PARTIAL COVERAGE DISCLOSES (ruling, 2026-08-12).
   //
   // The check above is about the CONTRACT: territories the provider does not cover. This one is about
   // the BOX: territories it covers and this deployment cannot reach, because a member is unconfigured.
@@ -442,7 +442,7 @@ export async function countRegisterHits({
       // report of exactly that.
       ...(deferred.length ? { deferredScope: deferred.map((d) => d.jurisdiction) } : {}),
       // The generated set, recorded whether or not the aggregate landed: the report prints WHICH forms
-      // were checked, and a number whose forms are not on the page is unauditable (owner ruling).
+      // were checked, and a number whose forms are not on the page is unauditable (ruling).
       variants: { cap: variantCap, generated: variants.generated, truncated: variants.truncated, forms: variants.forms.map((f) => f.form) },
       ...(reusedCells === COUNT_PREDICATES.length ? { reused: true } : {}),
     };

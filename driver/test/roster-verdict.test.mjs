@@ -11,6 +11,7 @@
 // one exists, and against the bundled roster only where one does not.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { rosterVerdict } from "../roster-verdict.mjs";
 
 const DEMOS = ["aurora", "petcary", "zephyr"];          // as list_profiles reports them — no `generic`
@@ -22,14 +23,14 @@ const v = (o) => rosterVerdict({ bundledDemos: DEMOS, ...o });
 
 // ── the regression this issue exists for ─────────────────────────────────────────────────────────────
 
-test("#327: a four-bundle store on a test box PASSES — it must not read as leaked client config", () => {
+test("a four-bundle store on a test box PASSES — it must not read as leaked client config", () => {
   // The store holds aurora/generic/petcary/zephyr; list_profiles reports the three clients.
   const r = v({ keys: ["aurora", "petcary", "zephyr"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });
   assert.equal(r.state, "pass", `a correctly configured test store must not fail: ${r.message}`);
   assert.match(r.message, /matching the configured store/);
 });
 
-test("#327: the pre-fix behaviour is what would have failed — expectDemos must not blanket-refuse a configured store", () => {
+test("the pre-fix behaviour is what would have failed — expectDemos must not blanket-refuse a configured store", () => {
   // Exactly the state the test instance is in once CLEAROTRON_CUSTOMERS_DIR is set. Before the fix this
   // reported "real client config has reached an instance that must not have it", which was untrue.
   const r = v({ keys: ["aurora", "petcary", "zephyr"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });
@@ -118,4 +119,61 @@ test("production: ten clients against a ten-client store passes, with no test-bo
 test("both sides are compared as SETS — the caller sorts, and equal sets in any input order agree", () => {
   const r = v({ keys: ["aurora", "petcary"].sort(), onDisk: ["petcary", "aurora"].sort(), expectDemos: true });
   assert.equal(r.state, "pass");
+});
+
+// ── the door answers for the key that asked ─────────────────────────────────────────────────
+
+test("a company outside the asking key's cap is not a disagreement — the store is narrowed by the same cap", () => {
+  // Measured in testing, 2026-09-10: a company created after the portal's key was minted, a door that
+  // listed only that key's companies — correctly — and this verdict reporting the door and the store
+  // disagreeing, with a message that pointed at a stale roster.
+  const r = v({ keys: DEMOS, onDisk: [...DEMOS, "newco"].sort(), expectDemos: true,
+    caller: { readable: true, accounts: DEMOS } });
+  assert.equal(r.state, "pass", `a key's cap was reported as a door fault: ${r.message}`);
+  assert.match(r.message, /within the cap/);
+  assert.match(r.message, /3 of 4/, "the pass no longer says how much of the store the key could see");
+});
+
+test("within the cap, a door that disagrees with its store still FAILS", () => {
+  const r = v({ keys: ["aurora"], onDisk: [...DEMOS, "newco"].sort(), expectDemos: true,
+    caller: { readable: true, accounts: DEMOS } });
+  assert.equal(r.state, "fail");
+  assert.match(r.message, /3 of them within the cap/);
+});
+
+test("a customer the store does not hold still FAILS, whatever the key's cap allows", () => {
+  const r = v({ keys: [...DEMOS, "stranger-co"].sort(), onDisk: DEMOS, expectDemos: true,
+    caller: { readable: true, accounts: [...DEMOS, "stranger-co"] } });
+  assert.equal(r.state, "fail");
+});
+
+test("an uncapped key, and no key given at all, are compared against the whole store", () => {
+  for (const caller of [undefined, { readable: true, accounts: null }]) {
+    assert.equal(v({ keys: ["aurora", "petcary"], onDisk: DEMOS, expectDemos: true, caller }).state, "fail",
+      "a door missing a company passed — an absent cap was read as a narrowing one");
+    assert.equal(v({ keys: DEMOS, onDisk: DEMOS, expectDemos: true, caller }).state, "pass",
+      "a door serving its whole store failed — an absent cap was read as an EMPTY one, the inversion trigger-cap.mjs warns about");
+  }
+});
+
+test("a key whose claims cannot be read: a difference is NOT compared, and agreement still passes", () => {
+  const unreadable = { readable: false, accounts: null };
+  const r = v({ keys: ["aurora"], onDisk: DEMOS, expectDemos: true, caller: unreadable });
+  assert.equal(r.state, "skip", "a difference that may be the key's own narrowing was judged as if the cap were known");
+  assert.match(r.message, /could not be read/);
+  assert.equal(v({ keys: DEMOS, onDisk: DEMOS, expectDemos: true, caller: unreadable }).state, "pass",
+    "the door listed the whole store, which no cap can explain away");
+});
+
+test("the live surface check hands the verdict the claims of the key it asked with", () => {
+  // The verdict can only narrow by a cap it is given, and its one caller is a top-level-await script no
+  // test can run. So the wiring is held here: one call, passing the key's claims, and the key's gap
+  // measured against the same store with the portal's own function.
+  const src = readFileSync(new URL("../../scripts/live-surface-check.mjs", import.meta.url), "utf8");
+  const calls = [...src.matchAll(/rosterVerdict\(\{([^}]*)\}\)/g)];
+  assert.equal(calls.length, 1, "the surface check no longer calls the verdict exactly once");
+  assert.match(calls[0][1], /\bcaller\b/,
+    "the surface check calls the verdict without the key's claims, so every cap reads as a disagreement again");
+  assert.match(src, /triggerCapGap\(\{\s*accounts:\s*caller\.accounts,\s*roster:\s*onDisk\s*\}\)/,
+    "the key's gap is no longer measured against the store the roster was compared with");
 });

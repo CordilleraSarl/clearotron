@@ -86,7 +86,7 @@ export const SERVER_INSTALL_SET = Object.freeze([
 
 /**
  * Installed and enabled ONLY by `clearotron connect`, never by an install path (
- * owner ruling 2026-08-31). Named here so a reader of this file learns it exists and learns it is
+ * ruling 2026-08-31). Named here so a reader of this file learns it exists and learns it is
  * excluded on purpose — an absence with no reason beside it is the thing this module is against.
  */
 // SUPERSEDED 2026-09-03 and deliberately kept EMPTY rather than deleted. The

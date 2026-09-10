@@ -103,7 +103,7 @@ test("THE THREE OUTCOMES, and a client we cannot serve says why AND what would c
   }
 });
 
-test("2148 §9 NO ROW EVER ASKS TO OPEN A DOOR — the on-demand branch is gone, not quiet", () => {
+test("§9 NO ROW EVER ASKS TO OPEN A DOOR — the on-demand branch is gone, not quiet", () => {
   // ── THIS ARM RAN THE OTHER WAY UNTIL THE RULING ─────────────────────────────────────────────────
   // It used to REQUIRE at least one row carrying `enables: { door: "client", setting:
   // "CLIENT_MCP_ACCOUNT_ACCESS" }` — the on-demand consent branch, which existed because the client
@@ -120,7 +120,7 @@ test("2148 §9 NO ROW EVER ASKS TO OPEN A DOOR — the on-demand branch is gone,
   assert.ok(connectOffers(PUBLISHED).length >= 6, "the offering emptied — the loop above asserts nothing");
 });
 
-test("2148 settled 8 A LAUNCH URL MUST CARRY THE EVIDENCE THAT SOMEBODY DROVE IT", () => {
+test("settled 8 A LAUNCH URL MUST CARRY THE EVIDENCE THAT SOMEBODY DROVE IT", () => {
   // The mechanism is built and the table is empty, deliberately. A URL written from memory is a button
   // that looks like it works and does not — which is the failure the owner has met twice on this page.
   // So a row may name a launch page only WITH the date it was driven and who drove it.
@@ -142,7 +142,7 @@ test("2148 settled 8 A LAUNCH URL MUST CARRY THE EVIDENCE THAT SOMEBODY DROVE IT
     "a row gained a launch page — good, now update this count and say who drove it");
 });
 
-test("2148 §3 NO OFFER EVER CARRIES A LOOPBACK ADDRESS, on any deployment", () => {
+test("§3 NO OFFER EVER CARRIES A LOOPBACK ADDRESS, on any deployment", () => {
   // The defect this replaces was live in the shipped product: Cowork was classified
   // `runsOn: "readers-machine"`, took a loopback address, and `connect --client cowork` printed one it
   // rejects. A remote connector is reached from the VENDOR'S CLOUD even when the app runs on the

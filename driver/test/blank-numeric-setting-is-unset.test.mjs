@@ -63,7 +63,7 @@ function withEnv(vars, fn) {
   }
 }
 
-test("#1340 every numeric setting takes its DEFAULT for unset, empty and whitespace alike", () => {
+test("every numeric setting takes its DEFAULT for unset, empty and whitespace alike", () => {
   for (const blank of [undefined, "", "   ", "\t", "\n"]) {
     const env = Object.fromEntries(VARS.map((v) => [v, blank]));
     withEnv(env, () => {
@@ -76,7 +76,7 @@ test("#1340 every numeric setting takes its DEFAULT for unset, empty and whitesp
   }
 });
 
-test("#1340 the two that failed on the DOCUMENTED empty spelling, named so the regression is legible", () => {
+test("the two that failed on the DOCUMENTED empty spelling, named so the regression is legible", () => {
   // Kept as their own case because these were not whitespace bugs. `X=` is what tells an operator to
   // write for "not configured", and these two answered it with the most degenerate value in range.
   withEnv({ CLEAROTRON_MAX_CLAIM_AGE_MS: "" }, () => {
@@ -88,7 +88,7 @@ test("#1340 the two that failed on the DOCUMENTED empty spelling, named so the r
   });
 });
 
-test("#1340 a REAL value still works, including one that is legitimately zero-ish", () => {
+test("a REAL value still works, including one that is legitimately zero-ish", () => {
   // The fix must not swallow configured values, and a floor is not the same as a default.
   withEnv({ CLEAROTRON_GATHER_CONCURRENCY: "1" }, () => assert.equal(config.gatherConcurrency, 1));
   withEnv({ CLEAROTRON_MAX_CLAIM_AGE_MS: "0" }, () => assert.equal(config.maxClaimAgeMs, 0,
@@ -101,7 +101,7 @@ test("#1340 a REAL value still works, including one that is legitimately zero-is
   withEnv({ CLEAROTRON_CARD_CONCURRENCY: "banana" }, () => assert.equal(config.cardConcurrency, 8));
 });
 
-test("#1340 no numeric accessor reads process.env directly again", () => {
+test("no numeric accessor reads process.env directly again", () => {
   // The growth property. Every one of these went through the same shape, so a new one written the old way
   // reintroduces the defect silently — there is no symptom until a tuned default is quietly replaced.
   const src = readFileSync(CONFIG_SRC, "utf8");

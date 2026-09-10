@@ -113,7 +113,7 @@ const findings = () => {
   return out;
 };
 
-test("#1375 the scan reads a real corpus and its matcher works — CONTROL, before any absence is believed", () => {
+test("the scan reads a real corpus and its matcher works — CONTROL, before any absence is believed", () => {
   // A scan that reads nothing reports every absence, and a pattern that matches nothing reports a clean
   // tree. Both are the failure this issue is about wearing the fix's clothes, so neither is assumed.
   const files = SCANNED.flatMap(filesUnder);
@@ -139,7 +139,7 @@ test("#1375 the scan reads a real corpus and its matcher works — CONTROL, befo
     "the hit-count rule stopped matching the shape it was added for");
 });
 
-test("#1375 the FUNCTIONAL probe vocabulary is NOT flagged — or this guard gets deleted within a week", () => {
+test("the FUNCTIONAL probe vocabulary is NOT flagged — or this guard gets deleted within a week", () => {
   // The other half of the control, and the reason this is scoped to shapes rather than to the word.
   // `countProbe` is a capability VALUE and "probes /count first" is what the code does; a check that
   // called those defects would be unrunnable, and an unrunnable guard is removed rather than obeyed.
@@ -153,7 +153,7 @@ test("#1375 the FUNCTIONAL probe vocabulary is NOT flagged — or this guard get
       `the guard flags functional vocabulary: ${innocent.trim()}`);
 });
 
-test("#1375 no file in the public cut records HOW a paid vendor's behaviour was discovered", () => {
+test("no file in the public cut records HOW a paid vendor's behaviour was discovered", () => {
   const found = findings();
   assert.deepEqual(found, [],
     "vendor provenance is back in the published tree. State the capability, not how it was learned: "
@@ -162,7 +162,7 @@ test("#1375 no file in the public cut records HOW a paid vendor's behaviour was 
     + "does not publish — see providers/README.md.\n  " + found.join("\n  "));
 });
 
-test("#1375 the scan REFUSES a corpus it cannot reach, rather than reporting it clean", () => {
+test("the scan REFUSES a corpus it cannot reach, rather than reporting it clean", () => {
   // The failure mode of every absence check, and the one the discovered-set census caught here in
   // review: a listed path that moved contributes nothing, the loop walks a shorter list, and the arm
   // above reports a clean tree. Both ways of reaching nothing now throw by name.

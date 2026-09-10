@@ -113,11 +113,12 @@ test('a URL nobody can decode fails to find a run, instead of taking the screen 
 })
 
 test('both forms still resolve to the result screen', () => {
-  // Parsing the URL correctly and routing it nowhere is the same dead end as before. Both roles: a
-  // client landing on a path that resolves only for staff gets "That page does not exist."
-  for (const role of ['client', 'staff'] as const) {
-    assert.equal(screenForPath('/portal/result/tmp1-aurora-run', role)?.id, 'result')
-    assert.equal(screenForPath('/portal/result/tmp1-ironwhisk-batch/ironwhisk', role)?.id, 'result')
+  // Parsing the URL correctly and routing it nowhere is the same dead end as before. Both ends of the
+  // permission range: a view-only person landing on a path that resolves only with a permission gets
+  // "That page does not exist."
+  for (const who of [{ permissions: { run: false, manage: false } }, { permissions: { run: true, manage: true } }]) {
+    assert.equal(screenForPath('/portal/result/tmp1-aurora-run', who)?.id, 'result')
+    assert.equal(screenForPath('/portal/result/tmp1-ironwhisk-batch/ironwhisk', who)?.id, 'result')
   }
 })
 
@@ -191,7 +192,7 @@ test('THE PAIR HELD APART: what the frame loads is never what the link goes to',
 
 // ── the cross-mark assessment ────────────────────────────────────────────────────────────────────────
 //
-// The grouped page carries the paragraph that reads the names against each other (owner ruling
+// The grouped page carries the paragraph that reads the names against each other (ruling
 // 2026-08-26). The server answers it for ANY run that has one, because `report.md` is written on every
 // run and a 404 for some of them would report an absence that is not true. Which view renders it is this
 // screen's question, and it has exactly one rule.

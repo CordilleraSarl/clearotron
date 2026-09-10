@@ -11,11 +11,11 @@
 // is listening. The person most likely to believe "I turned it off" is the one who just stopped the
 // service.
 //
-// Owner ruling, 2026-08-31: record key IDs never secrets; the id goes to the denylist; the record is
+// Ruling, 2026-08-31: record key IDs never secrets; the id goes to the denylist; the record is
 // struck. REVOCATION COMES FIRST in the apply order — if this dies halfway, the half that must already
 // have happened is the credential being dead.
 //
-// ── WHAT THIS VERB STOPPED DOING ON 2026-09-03 (owner ruling, Q3) ─────────────
+// ── WHAT THIS VERB STOPPED DOING ON 2026-09-03 (ruling, Q3) ─────────────
 //
 // It used to stop and REMOVE the unit, and turn `CLIENT_MCP_ACCOUNT_ACCESS` back off. Both were right
 // while the door existed only because a reader had asked for it. The door now comes up with the

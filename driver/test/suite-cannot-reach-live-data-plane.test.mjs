@@ -56,7 +56,7 @@ function runWrapper(vars, { child = `console.log(${JSON.stringify(SENTINEL)})` }
 
 // ── the refusal ─────────────────────────────────────────────────────────────────────────────────────
 
-test("#1243 a live data-plane path REFUSES, and the child never executes", () => {
+test("a live data-plane path REFUSES, and the child never executes", () => {
   const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue" });
   assert.equal(r.code, 1, "a refusal that exits 0 is not a refusal");
   assert.match(r.err, /REFUSING TO RUN/);
@@ -65,14 +65,14 @@ test("#1243 a live data-plane path REFUSES, and the child never executes", () =>
   assert.ok(!r.all.includes(SENTINEL), "the child ran — this is a receipt, not a guard");
 });
 
-test("#1243 the refusal names the offending variable AND its value's root", () => {
+test("the refusal names the offending variable AND its value's root", () => {
   const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue" });
   assert.match(r.err, /CLEAROTRON_QUEUE_DIR/, "a refusal that does not name the variable teaches nothing");
   assert.match(r.err, /\/srv\/clearotron\/queue/, "the value the operator actually set");
   assert.match(r.err, /root:\s*\/srv/, "the root is what says 'this is a live estate' at a glance");
 });
 
-test("#1243 the home-directory shape the incident actually had is refused", () => {
+test("the home-directory shape the incident actually had is refused", () => {
   // DERIVED FROM homedir, not written as a literal, for two reasons that point the same way.
   // forbids a specific account's home in executable code — it is wrong under every other service
   // account and in every public clone, and that guard caught this test when it was a literal. And the
@@ -88,7 +88,7 @@ test("#1243 the home-directory shape the incident actually had is refused", () =
 
 // ── the void control: the negatives below are worthless without this one ────────────────────────────
 
-test("#1243 VOID CONTROL — every name the guard claims to watch actually refuses", () => {
+test("VOID CONTROL — every name the guard claims to watch actually refuses", () => {
   assert.ok(WATCHED.length >= 3,
     `the derived name list collapsed to ${WATCHED.length} — a rename left this guard watching nothing`);
   // Named one at a time rather than counted, so a name dropping out of the wrapper's list fails here
@@ -107,13 +107,13 @@ test("#1243 VOID CONTROL — every name the guard claims to watch actually refus
 
 // ── what must still run ─────────────────────────────────────────────────────────────────────────────
 
-test("#1243 a contained path runs normally", () => {
+test("a contained path runs normally", () => {
   const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/tmp/contained-queue" });
   assert.equal(r.code, 0, r.err.slice(-800));
   assert.ok(r.all.includes(SENTINEL), "the guard refused correct work — the expensive direction");
 });
 
-test("#1243 an unset queue dir falls back INSIDE the run root, never to a live path", () => {
+test("an unset queue dir falls back INSIDE the run root, never to a live path", () => {
   const r = runWrapper({}, { child: "console.log('Q=' + process.env.CLEAROTRON_QUEUE_DIR)" });
   assert.equal(r.code, 0, r.err.slice(-800));
   const q = /Q=(\S+)/.exec(r.out)?.[1];
@@ -122,7 +122,7 @@ test("#1243 an unset queue dir falls back INSIDE the run root, never to a live p
   assert.ok(!q.startsWith("/home/"), "unset fell back to a home path — #1243 acceptance 2");
 });
 
-test("#1243 an EMPTY queue dir is unset, not a configured live path (#1216's shape)", () => {
+test("an EMPTY queue dir is unset, not a configured live path (#1216's shape)", () => {
   // `X=` in an EnvironmentFile means "not configured". An empty string reaching a `||` default is the
   // defect is filed for; here it must land in the run root like any other unset.
   const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "" }, { child: "console.log('Q=' + process.env.CLEAROTRON_QUEUE_DIR)" });
@@ -130,7 +130,7 @@ test("#1243 an EMPTY queue dir is unset, not a configured live path (#1216's sha
   assert.match(/Q=(\S+)/.exec(r.out)?.[1] ?? "", /ct-testrun-/);
 });
 
-test("#1243 the wrapper sets NO workspace root — pre-setting either spelling splits the run", () => {
+test("the wrapper sets NO workspace root — pre-setting either spelling splits the run", () => {
   // MEASURED, not preferred: setting one took the driver suite from 0 red to 7 (runner claim, takeover
   // and jx families). The runner tests build child envs from process.env and inject CLEAROTRON_WORK_DIR,
   // so a legacy value pre-set here arrives beside a disagreeing current one and the run derives the root
@@ -146,7 +146,7 @@ test("#1243 the wrapper sets NO workspace root — pre-setting either spelling s
   assert.match(r.out, /NEW=<unset>/, "the wrapper pre-set a current-spelling workspace root — it would override a test's own value");
 });
 
-test("#1243 CLEAROTRON_REPORTS_DIR is deliberately NOT given a temp default", () => {
+test("CLEAROTRON_REPORTS_DIR is deliberately NOT given a temp default", () => {
   // It has no default by design and refuses when unset — acceptance 2's other arm, already
   // satisfied by the config. Handing it a temp value here would silently delete that coverage.
   const r = runWrapper({}, { child: "console.log('POOL=' + (process.env.CLEAROTRON_REPORTS_DIR ?? '<unset>'))" });
@@ -156,7 +156,7 @@ test("#1243 CLEAROTRON_REPORTS_DIR is deliberately NOT given a temp default", ()
 
 // ── the way through, and why it cannot be quiet ─────────────────────────────────────────────────────
 
-test("#1243 the override lets a live path through and SAYS SO", () => {
+test("the override lets a live path through and SAYS SO", () => {
   const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue", CT_ALLOW_LIVE_DATA_PLANE: "1" });
   assert.equal(r.code, 0, r.err.slice(-800));
   assert.ok(r.all.includes(SENTINEL), "the named override did not let the run through");
@@ -164,7 +164,7 @@ test("#1243 the override lets a live path through and SAYS SO", () => {
   assert.match(r.err, /CLEAROTRON_QUEUE_DIR=\/srv\/clearotron\/queue/, "the warning must name what it let through");
 });
 
-test("#1243 the override must be set to something — an empty value is not consent", () => {
+test("the override must be set to something — an empty value is not consent", () => {
   const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue", CT_ALLOW_LIVE_DATA_PLANE: "" });
   assert.equal(r.code, 1, "an empty override waved a live data plane through");
   assert.ok(!r.all.includes(SENTINEL));

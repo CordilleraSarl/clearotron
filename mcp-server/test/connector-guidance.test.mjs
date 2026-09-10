@@ -44,7 +44,7 @@ test("a CLIENT principal is briefed, and with the pack that matches what it can 
 });
 
 test("no principal gets the CLIENT pack wrongly — ops gets its own, staff still gets none", () => {
-  // THIS ARM CHANGED DELIBERATELY (owner ruling 7). It used to assert that ops got
+  // THIS ARM CHANGED DELIBERATELY (ruling 7). It used to assert that ops got
   // NOTHING, and that was right while ops meant OUR agents — briefed separately by the Claude Code
   // plugin, and reaching an engineering tool set the client pack does not describe.
   //
@@ -66,7 +66,7 @@ test("no principal gets the CLIENT pack wrongly — ops gets its own, staff stil
   assert.equal(instructionsFor(null), undefined, "and so does an absent scope");
 });
 
-test("1976 serving a pack widens what an assistant is TOLD, never what a principal may DO", () => {
+test("serving a pack widens what an assistant is TOLD, never what a principal may DO", () => {
   // A pack is guidance, not auth. This arm exists because "ops now gets something it did not get" is
   // the shape a reader could mistake for a privilege change — the verbs and the account scope are
   // decided in shared/scope.mjs and this function cannot reach them. Asserted by driving the scope
@@ -126,7 +126,7 @@ test("wire: initialize carries the RIGHT pack for each token, ops included", asy
   assert.ok(client.instructions, "instructions absent on the wire — a connecting client is briefed by nothing");
   assert.match(client.instructions, /plain language/i);
 
-  // CHANGED BY OWNER RULING 7: an ops token used to receive nothing here. On a
+  // CHANGED BY RULING 7: an ops token used to receive nothing here. On a
   // self-hosted install the customer IS ops — they connect over this connector and were briefed with
   // nothing while the ops pack shipped, mapped and undelivered.
   const ops = await initialize(mintToken({ scope: "ops", sub: "guidance-test", ttlSec: 3600 }));
@@ -197,7 +197,7 @@ async function servedTools(kind) {
   throw new Error(`no tools/list handler for ${kind}`);
 }
 
-test("2164 a bare MARK NAME finds its runs — the filter that told a client his data did not exist", () => {
+test("a bare MARK NAME finds its runs — the filter that told a client his data did not exist", () => {
   const marks = (rs) => rs.map((r) => r.markName);
   // THE POPULATION FIRST. The exact-slug assertion below is satisfied identically by a working filter
   // and by an EMPTY WORKSPACE, and it passed against an empty one on this arm's first run — the fixture
@@ -246,7 +246,7 @@ test("2164 a bare MARK NAME finds its runs — the filter that told a client his
   assert.deepEqual(tools.list_runs({ mark: "" }).length, everything.size, "an empty mark silently narrowed the list");
 });
 
-test("2164 the tool descriptions a CLIENT reads carry no operator vocabulary — and ops keeps its own", async () => {
+test("the tool descriptions a CLIENT reads carry no operator vocabulary — and ops keeps its own", async () => {
   // THE HOLE. visibleTools() filters tool NAMES per audience; nothing filtered the text riding with
   // them, so a lawyer's assistant was handed "ENGINEERING/AUDIT view", run.jsonl, the skeptic stage —
   // and start_run opening with "OPS-ONLY" at the one principal entitled to call it.
@@ -275,7 +275,7 @@ test("2164 the tool descriptions a CLIENT reads carry no operator vocabulary —
   }
 });
 
-test("2164 named prompts are offered to the client audiences, gated, and refused by name otherwise", async () => {
+test("named prompts are offered to the client audiences, gated, and refused by name otherwise", async () => {
   const list = async (kind) => (await servedSurface(kind).get(ListPromptsRequestSchema)({ params: {} })).prompts.map((p) => p.name);
   const account = await list("account");
   const user = await list("user");
@@ -310,7 +310,7 @@ test("2164 named prompts are offered to the client audiences, gated, and refused
   }
 });
 
-test("2164 the packs teach the product, and teach not to say the machinery out loud", () => {
+test("the packs teach the product, and teach not to say the machinery out loud", () => {
   // ACCEPTANCE CASE #1 (the owner's transcript, 2026-09-03): the assistant told a client "nothing in
   // the findings touches meaning" about a clearance that ran a meaning seat, dozens of connotation
   // queries and native-language lanes. It was faithful to the findings list and wrong about the
@@ -325,7 +325,7 @@ test("2164 the packs teach the product, and teach not to say the machinery out l
     // A reading that ran and returned nothing is a RESULT. This is the absence-as-pass rule, stated for
     // the surface that talks to the client.
     assert.match(pack, /is a result/i, `the ${who} pack does not teach that an empty reading is a result`);
-    // THE VOICE CONTRACT (owner ruling, 2026-09-03): clean prose for a lawyer, and the machinery stays
+    // THE VOICE CONTRACT (ruling, 2026-09-03): clean prose for a lawyer, and the machinery stays
     // out of the answer. The pack still names tools — it has to, to steer which one is called — so the
     // rule is about what is SAID, not about what the pack may contain.
     assert.match(pack, /Never name a tool[^.]*in your answer/i, `the ${who} pack does not forbid naming tools to the client`);

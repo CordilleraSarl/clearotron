@@ -18,7 +18,7 @@ import { armProduced, readArmSurfaces, producedNothingLine } from "../experiment
 
 const FULL = { wrote: false, toolCalls: 0, typedCalls: 0, outputSha: "aaa", dispatchSha: "aaa" };
 
-test("1966 THE DEFECT: nothing written, no calls, output identical to the sandbox's copy", () => {
+test("THE DEFECT: nothing written, no calls, output identical to the sandbox's copy", () => {
   const r = armProduced(FULL);
   assert.equal(r.verdict, "produced-nothing", r.why);
   assert.match(r.why, /wrote nothing/);
@@ -27,7 +27,7 @@ test("1966 THE DEFECT: nothing written, no calls, output identical to the sandbo
   assert.match(producedNothingLine("register-digest", r.why), /copy the sandbox put there as an INPUT/);
 });
 
-test("1966 any ONE positive tell settles it — each alone is enough to have produced something", () => {
+test("any ONE positive tell settles it — each alone is enough to have produced something", () => {
   for (const [field, value, label] of [
     ["wrote", true, "an expected artifact was written"],
     ["toolCalls", 3, "tool calls"],
@@ -40,7 +40,7 @@ test("1966 any ONE positive tell settles it — each alone is enough to have pro
   assert.equal(armProduced({ ...FULL, outputSha: "bbb" }).verdict, "produced-something");
 });
 
-test("1966 `wrote` is THREE-valued — null is a stage with nothing to emit, NEVER a condemnation", () => {
+test("`wrote` is THREE-valued — null is a stage with nothing to emit, NEVER a condemnation", () => {
   // The trap this arm exists for. `wrote` is true/false when the stage has expected files and NULL when it
   // has none. A falsy test would refuse every stage that emits nothing by design — the over-wide shape
   // that gets a check turned off within a day.
@@ -50,7 +50,7 @@ test("1966 `wrote` is THREE-valued — null is a stage with nothing to emit, NEV
   assert.notEqual(r.verdict, "produced-nothing");
 });
 
-test("1966 an unreadable surface is COULD-NOT-TELL, never a refusal", () => {
+test("an unreadable surface is COULD-NOT-TELL, never a refusal", () => {
   // Refusing on what could not be read would be this defect facing the other way.
   for (const patch of [{ toolCalls: null }, { typedCalls: null }, { outputSha: null }, { dispatchSha: null }]) {
     const r = armProduced({ ...FULL, ...patch });
@@ -60,7 +60,7 @@ test("1966 an unreadable surface is COULD-NOT-TELL, never a refusal", () => {
   assert.equal(armProduced({}).verdict, "could-not-tell");
 });
 
-test("1966 the surfaces are READ from the arm's own dir, and an absent typed-call dir is zero", () => {
+test("the surfaces are READ from the arm's own dir, and an absent typed-call dir is zero", () => {
   const root = mkdtempSync(join(tmpdir(), "exp-1966-"));
   const dd = join(root, "_driver");
   mkdirSync(dd, { recursive: true });

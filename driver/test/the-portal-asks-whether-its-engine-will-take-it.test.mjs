@@ -122,7 +122,7 @@ test("a boot diagnostic never stops the portal coming up", () => {
 // own try/catch and never consults this verdict, so nothing about a boot-time refusal determines what a
 // clearance does. It printed on every reboot and cost a diagnostic detour during the 0.1.6 upgrade.
 
-test("222 nothing listening yet does not claim a clearance returns 502", () => {
+test("nothing listening yet does not claim a clearance returns 502", () => {
   const v = verdictFor({ status: null, ok: false, challenge: null, error: "ECONNREFUSED" });
   assert.equal(v.state, "unsettled");
   assert.doesNotMatch(v.message, /502/,
@@ -138,7 +138,7 @@ test("222 nothing listening yet does not claim a clearance returns 502", () => {
     "a reader whose door is genuinely down is left with no next step");
 });
 
-test("222 a door that ANSWERED wrongly keeps the full warning — the fix is not a mute", () => {
+test("a door that ANSWERED wrongly keeps the full warning — the fix is not a mute", () => {
   // The same branch emits the real thing, and that is exactly why the split has to be on evidence
   // rather than on tone. A 500 is a fault no amount of waiting repairs.
   for (const probe of [{ status: 500, ok: false, challenge: null, error: null },
@@ -149,7 +149,7 @@ test("222 a door that ANSWERED wrongly keeps the full warning — the fix is not
   }
 });
 
-test("222 only `fail` is logged as a WARNING, so the word still means something", () => {
+test("only `fail` is logged as a WARNING, so the word still means something", () => {
   const src = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
   assert.match(src, /if \(lane\.state === "fail"\) log\(`WARNING: trigger lane/,
     "a real lane failure no longer announces itself as a warning");
@@ -158,7 +158,7 @@ test("222 only `fail` is logged as a WARNING, so the word still means something"
     + "a door which answered — and prints a status of `?` for a probe that got nothing");
 });
 
-test("222 the portal unit is ordered after the engine door it calls", () => {
+test("the portal unit is ordered after the engine door it calls", () => {
   const unit = readFileSync(join(REPO, "driver", "systemd", "clearotron-portal.service"), "utf8");
   assert.match(unit, /^After=clearotron-mcp-face\.service$/m,
     "the portal carries no ordering against the engine door, so a simultaneous restart races them");

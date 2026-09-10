@@ -115,6 +115,8 @@ export const DECLARED_JOB_FIELDS = Object.freeze([
   "deliveryRoute", "parentRunId",
   // whose rulebook rates it
   "profileKey", "projectKey", "customer", "customerUnknown",
+  // which organisation's Generic — set by a door only on a Generic run, from the verified principal
+  "tenant",
   // intake fidelity — posture and prose, verbatim from the request
   "deliverableSpec", "commercialFlexibility", "priorUse", "campaignShape",
   "upfrontInstructions", "brief", "rawRequest", "deadline", "provider",
@@ -675,7 +677,7 @@ export function validateJob(job, { atClaim = false } = {}) {
     errs.push(`both product (${JSON.stringify(rawProduct)}) and recipeKey (${JSON.stringify(rawRecipe)}) are set — name ONE selector (a saved search already carries its product)`);
   if (rawProduct && !ORDERABLE_PRODUCTS.includes(rawProduct))
     errs.push(unknownProductMessage(job.product));
-  // caseLaw: NOT A REQUEST FIELD ANY MORE (owner ruling 2026-08-06). It is what a Full country search IS.
+  // caseLaw: NOT A REQUEST FIELD ANY MORE (ruling 2026-08-06). It is what a Full country search IS.
   // REFUSED rather than ignored, and that is the whole point: a flag accepted and dropped is the
   // "accepted, then quietly narrower" shape — a requester who sent it believes they bought the deep
   // reading. The sentence names the product that carries it, so the refusal is one edit away from a

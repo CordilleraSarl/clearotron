@@ -47,7 +47,7 @@ const TABLE = {
   },
 };
 
-test("#1491 a bare territory resolves to the same regions it does today, per provider", () => {
+test("a bare territory resolves to the same regions it does today, per provider", () => {
   for (const [territory, byProvider] of Object.entries(TABLE)) {
     for (const [name, expected] of Object.entries(byProvider)) {
       const { regions } = resolveRegions([territory], PROVIDERS[name]);
@@ -59,7 +59,7 @@ test("#1491 a bare territory resolves to the same regions it does today, per pro
   }
 });
 
-test("#1491 CORSEARCH IS BYTE-IDENTICAL, which is what the carve-out actually means", () => {
+test("CORSEARCH IS BYTE-IDENTICAL, which is what the carve-out actually means", () => {
   // The owner said not to touch corsearch. It already expands — the carve-out is "change nothing",
   // not "prevent an expansion", and its expansion stays UNVERIFIED until its auth reopens and a probe
   // can confirm it. That exposure is recorded; this arm only holds the behaviour still.
@@ -68,7 +68,7 @@ test("#1491 CORSEARCH IS BYTE-IDENTICAL, which is what the carve-out actually me
   assert.deepEqual(resolveRegions(["DE", "CH"], corsearch).regions, ["DE", "CH", "EU", "WO"]);
 });
 
-test("#1491 THE PLAN AND THE DISCLOSURE AGREE — every binding layer reads as searched, both shapes", () => {
+test("THE PLAN AND THE DISCLOSURE AGREE — every binding layer reads as searched, both shapes", () => {
   // The end-to-end the owner's ruling is actually about: what the plan resolves, handed to the function
   // that writes the client-facing coverage sentence. `searchedOffices` is what the compiler resolved for
   // the matter, so feeding it the bare national office is asking a different question — one where
@@ -97,7 +97,7 @@ test("#1491 THE PLAN AND THE DISCLOSURE AGREE — every binding layer reads as s
   assert.ok(checked >= 9, `only ${checked} territory reports examined — the fixture stopped enumerating`);
 });
 
-test("#1491 signa's translate still REFUSES the office code, and that pin is not collateral", () => {
+test("signa's translate still REFUSES the office code, and that pin is not collateral", () => {
   // Signa's own territory-expansion suite pins this too, with a stated reason: `EM` is an office code,
   // not a territory, and a future caller passing one should get a refusal rather than a quiet
   // deferral. I aliased it while chasing the wrong finding above; this arm is here so the next person

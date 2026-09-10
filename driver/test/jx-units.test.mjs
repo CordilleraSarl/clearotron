@@ -115,7 +115,7 @@ test("buildCandidateRequest: ja/ko prompts exist, carry the office framing, and 
   }
 });
 
-test("#1227 CNIPA groups are READ, and an unreachable table REFUSES BY NAME rather than reading empty", () => {
+test("CNIPA groups are READ, and an unreachable table REFUSES BY NAME rather than reading empty", () => {
   // REPLACES the seed-table arm. That arm pinned `vetted:false` and `cnSubgroupsFor(33) === null`, and
   // both were properties of a hand-written subset: five classes, 4 of the 22 groups in class 9, and a
   // null for class 33 that actually holds group 3301. Neither is a property worth keeping.
@@ -135,7 +135,7 @@ test("#1227 CNIPA groups are READ, and an unreachable table REFUSES BY NAME rath
     "the sidecar must not carry an edition label the lookup cannot answer from");
 });
 
-test("#1227 with the table built, every class answers from the office's own data, with its edition", () => {
+test("with the table built, every class answers from the office's own data, with its edition", () => {
   // SKIPPED, NOT FAKED, when the artifact is absent: this asserts what the real table says, and a
   // fixture standing in for it would assert what I typed. The skip names the command that fixes it.
   const [c9, c33] = cnipaSubgroupsForClasses([9, 33], { path: SUBCLASS_DB });
@@ -353,7 +353,7 @@ test("crash-window repair: plan folded but receipt missing ⇒ NO re-bill, recei
 });
 
 // ──: every fold-lane writer states `degraded` as a boolean ────────────────────────────────────
-test("#525 SHAPE SWEEP: every record in fold.lanes states `degraded` as a BOOLEAN, whichever writer built it", async () => {
+test("SHAPE SWEEP: every record in fold.lanes states `degraded` as a BOOLEAN, whichever writer built it", async () => {
   // Three writers build a fold-lane record and before not one of them stated a boolean. A test per
   // path would pass while a fourth writer went on omitting the field, so this walks EVERY value in
   // fold.lanes and type-checks it — one assertion that covers whatever wrote the record.

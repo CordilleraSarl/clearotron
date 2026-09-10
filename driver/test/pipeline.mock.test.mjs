@@ -281,7 +281,7 @@ test("P2-C: derived meaning angles ride the dictated sweep beside the floor — 
 // question that change has to answer is what happens when the model does NOT land: the stage used to gate
 // on a prose file, and a gate that no longer exists is how an absence starts reading as a pass. It must
 // fail by NAME. MOCK_NO_BLIND_MODEL is a turn that completes and writes nothing at all — the exact shape.
-test("#254: a blind-frame turn that writes no model FAILS by name (missing_file) — the run degrades, it never passes silently", async () => {
+test("a blind-frame turn that writes no model FAILS by name (missing_file) — the run degrades, it never passes silently", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_NO_BLIND_MODEL: "1" });
   const runDir = res.runDir;
   assert.ok(!existsSync(join(runDir, "blind-frame-model.json")), "the knob really did suppress the model");
@@ -354,7 +354,7 @@ test("frame-omission: a firing frame-diff fires a supplemental sweep BEFORE plac
 // "the reopen never ran"? Both are an absence of frame-reopen rows, so the discriminator cannot be an
 // absence — it has to be positive evidence, and every ending now writes one. This test is the guard on
 // that: three runs, three distinct endings, none of them inferrable from silence.
-test("#250 zero semantics: a settled frame, a frame nobody asked about, and a swept reopen are three DISTINCT endings in run.jsonl", async () => {
+test("zero semantics: a settled frame, a frame nobody asked about, and a swept reopen are three DISTINCT endings in run.jsonl", async () => {
   const clean = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   const noModel = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_NO_BLIND_MODEL: "1" });
   const reopened = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FRAME_DIFF: "reopen" });
@@ -484,7 +484,7 @@ test("escalation NOT skipped: an axis with a `deferred` gap still re-runs even a
   assert.ok(events.some((e) => e.event === "skeptic-escalation" && !e.escalated.includes("transliteration-numeric")), "skipped axis is not in the escalated set");
 });
 
-test("#1273 THE HOLD — a designated floor axis excused as coverage-limited is NOT skipped, and IS disclosed", async () => {
+test("THE HOLD — a designated floor axis excused as coverage-limited is NOT skipped, and IS disclosed", async () => {
   // BOTH knobs on the SAME axis, and that is the whole design of this arm rather than belt-and-braces.
   //
   // The first version designated `primary-sweep`, and it passed while asserting nothing. primary-sweep
@@ -516,7 +516,7 @@ test("#1273 THE HOLD — a designated floor axis excused as coverage-limited is 
     "the breach reached delivery as a bare unit name, or not at all — a client reading it learns nothing");
 });
 
-test("#1273 THE CONTROL — the SAME ledger with no designation still skips, so the arm above is not vacuous", async () => {
+test("THE CONTROL — the SAME ledger with no designation still skips, so the arm above is not vacuous", async () => {
   // Identical run, one difference: no `search_floor`. If this also refused to skip, the arm above would
   // be measuring the ledger rather than the designation, and the mechanism would be defaulting to ON —
   // the failure the build was explicitly conditioned against.
@@ -530,7 +530,7 @@ test("#1273 THE CONTROL — the SAME ledger with no designation still skips, so 
     "an UNdesignated coverage-limited axis stopped being skippable — the floor is defaulting to on");
 });
 
-// The C-2 acceptance arm and Fix2 #7 are RETIRED with the ⭐ search floor (owner ruling). They
+// The C-2 acceptance arm and Fix2 #7 are RETIRED with the ⭐ search floor (ruling). They
 // drove `MOCK_STAR_FLOOR` through a full mock run and asserted the breach reached the delivery
 // disclosure. Both were real end-to-end coverage of a mechanism that is now deleted: after recording
 // conversion 3 no typed field can designate a ⭐, and the owner ruled the capability removed rather than
@@ -1114,7 +1114,7 @@ test("repair-first A5: a REASONED BLOCKING (cited defects) is never re-asked —
 });
 
 test("T3a: persistent BLOCKING after corrective + re-check → the run DELIVERS, with the open points printed", async () => {
-  // Owner ruling 2026-08-26, verbatim: "Deliver always, with open points printed. The refusal on a
+  // Ruling 2026-08-26, verbatim: "Deliver always, with open points printed. The refusal on a
   // blocking review goes." This REVERSES spec-49 T3, whose flip to fail-on-BLOCKING is itself recorded in
   // itself an owner-approved decision. Both are his; this is the standing one. This arm is the
   // inversion of the one that stood here, kept at the same name-adjacent place on purpose: the two
@@ -2543,7 +2543,7 @@ test("A1 split frame-reopen: one half's sweep failing mechanically DEFERS the om
 // still refuse (the recovery ladder keeps its chance at a bad minute), and the resume MUST deliver with
 // the slices named. A test that only asserted the second half would pass on an engine that had simply
 // stopped checking.
-test("#577 a provider hard-error refuses ONCE, then ships as a disclosed deferral — never as clean", async () => {
+test("a provider hard-error refuses ONCE, then ships as a disclosed deferral — never as clean", async () => {
   try {
     const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
       MOCK_PLAN_HARD_ERROR: "+merch", CLEAROTRON_RECOVERY_MAX: "3" });
@@ -2615,7 +2615,7 @@ test("#577 a provider hard-error refuses ONCE, then ships as a disclosed deferra
 //     delivered findings.json files the old pass measured, its own stamp counts did not hold (35→37,
 //     28→31, 37→38, 41→40): stamps entered the deliverable after the only check that policed them.
 //   · no synthesis dispatch carries `trigger: "read-verification"` any more. That is the ~10 minutes.
-test("#563 the basis derivation runs at both seams, and no third synthesis pass runs at all", async () => {
+test("the basis derivation runs at both seams, and no third synthesis pass runs at all", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   assert.equal(res.ok, true, JSON.stringify(res));
 
@@ -2666,7 +2666,7 @@ const readPathRecord = (runDir) => {
   return JSON.parse(readFileSync(p, "utf8"));
 };
 
-test("#753 a SPLIT run records the split and the quantity that armed it", async () => {
+test("a SPLIT run records the split and the quantity that armed it", async () => {
   const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   assert.equal(res.ok, true, JSON.stringify(res));
   const rec = readPathRecord(res.runDir);
@@ -2680,7 +2680,7 @@ test("#753 a SPLIT run records the split and the quantity that armed it", async 
     "and the members it actually assembled");
 });
 
-test("#753 an UNSPLIT run records WHICH surviving term decided it — the branch that emitted nothing before", async () => {
+test("an UNSPLIT run records WHICH surviving term decided it — the branch that emitted nothing before", async () => {
   // Was the flag-off branch. the property was never about the flag: it is that a run which did NOT
   // split says so, and says why, on the path that used to emit nothing at all. Deleting the switch
   // removed one reason from the conjunction and left the property untouched.
@@ -2696,7 +2696,7 @@ test("#753 an UNSPLIT run records WHICH surviving term decided it — the branch
   assert.equal(ev[0].reason, "resumed-unsplit");
 });
 
-test("#753 the record can never explain a path the run did not take", async () => {
+test("the record can never explain a path the run did not take", async () => {
   // deriveGridSpec's branch and the gather assembly derive the path from DIFFERENT values, so a future
   // edit can make the explanation describe the wrong path — a confident wrong answer to the exact
   // question this issue was opened to answer. A divergence must overwrite the reason, never sit quietly
@@ -2736,7 +2736,7 @@ test("#753 the record can never explain a path the run did not take", async () =
 // profile instead; that is impossible — profiles.mjs validateProfileShape refuses a whole profile whose
 // platforms array is empty OR absent ("platforms must be a non-empty array of store-domain strings"),
 // and loadProfiles validates at load, so no such profile can exist to be selected.
-test("#979 a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CONDITIONAL and names the gap", async () => {
+test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CONDITIONAL and names the gap", async () => {
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   assert.equal(r1.ok, false);
   // a run created before the profile freeze existed: strip the sidecar the cold start minted
@@ -2773,7 +2773,7 @@ test("#979 a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR�
   assert.ok(clamp[0].gridVariants > 0);
 });
 
-test("#979 a legitimate unsplit path is NOT a failure: a pre-split resume still delivers CLEAR", async () => {
+test("a legitimate unsplit path is NOT a failure: a pre-split resume still delivers CLEAR", async () => {
   // "Deliberately NOT proposed: making the unsplit path itself a failure. It is the legitimate rollback
   // path." The flag was one legitimate reason to be unsplit and is deleted; resumed-unsplit is another,
   // and the clamp must still discriminate. THIS ARM IS THE PAIR to the no-grid-spec arm above — that one
@@ -2796,7 +2796,7 @@ test("#979 a legitimate unsplit path is NOT a failure: a pre-split resume still 
 // that the throw EXISTS and sits AFTER the record is durable. Asserted against the module's own source,
 // on the dependency-repair.test.mjs:76-95 precedent, because the failure being guarded is a future edit
 // quietly demoting it back to a recorded row, not a particular run.
-test("#979 selector/record disagreement FAULTS, and the record is written BEFORE the throw", async () => {
+test("selector/record disagreement FAULTS, and the record is written BEFORE the throw", async () => {
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   // ANCHORED ON THE PROSE, NOT THE ISSUE NUMBER. The heading carried a bare issue reference and the cut
   // strips those out of comments, so the old anchor stopped existing. This arm's vacuity control caught
@@ -2819,7 +2819,7 @@ test("#979 selector/record disagreement FAULTS, and the record is written BEFORE
 });
 
 // ── the salvage lane repairs what it admits ─────────────────────────────────────────────
-test("#1101: a malformed ACTION gets its own named re-emit and the run recovers — it used to exhaust", async () => {
+test("a malformed ACTION gets its own named re-emit and the run recovers — it used to exhaust", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_ACTIONS: "condition-broken" });
   assert.equal(res.ok, true, `the run should recover through the action re-emit: ${JSON.stringify(res)}`);
   // RE-AIMED: the action-shaped defect is refused at the call now, so there is no
@@ -2837,7 +2837,7 @@ test("#1101: a malformed ACTION gets its own named re-emit and the run recovers 
   assert.ok(!("bogus_key" in findings.actions[0]), "the unknown key is gone");
 });
 
-test("#1101: a malformed ask_answers entry gets its OWN named re-emit — the last family the lane admitted and could not name", async () => {
+test("a malformed ask_answers entry gets its OWN named re-emit — the last family the lane admitted and could not name", async () => {
   // `finding_ask_answer_key_unknown` matches the lane's `finding_[a-z]` admission test, and the lenient
   // parser used to DROP a malformed ask_answer with no record in any list — so the lane admitted a
   // defect nothing could name and the run exhausted. ask_answers joins to the FROZEN intake asks, so a

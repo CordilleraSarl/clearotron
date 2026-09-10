@@ -29,7 +29,7 @@ const ONBOARD = join(REPO, "bin", "onboard.mjs");
 
 // ── THE PURE HALF: three-valued, and the third value is the one that matters ────────────────────────
 
-test("2176-F34 a name the units carry reads as SET, and one they do not carry reads as UNSET", () => {
+test("a name the units carry reads as SET, and one they do not carry reads as UNSET", () => {
   const units = [{ name: "u.service", text: "EnvironmentFile=/etc/x.env\n" }];
   const r = unitEnvironment({ units, readEnvFile: () => "PORTAL_MCP_URL=http://127.0.0.1:18790\n" });
   assert.equal(r.known, true);
@@ -38,7 +38,7 @@ test("2176-F34 a name the units carry reads as SET, and one they do not carry re
     "a name genuinely absent from a file we DID read is a real finding and must stay reportable");
 });
 
-test("2176-F34 an unreadable REQUIRED environment file is UNKNOWN — never the 'unset' that reads as a fault", () => {
+test("an unreadable REQUIRED environment file is UNKNOWN — never the 'unset' that reads as a fault", () => {
   // The whole finding in one arm. The units exist, the file they require cannot be read, and the
   // tempting answer — "the name is not set" — is an assertion about the world made by a reader that
   // failed. Every name must come back unknown, including ones we happened to see in another file.
@@ -53,7 +53,7 @@ test("2176-F34 an unreadable REQUIRED environment file is UNKNOWN — never the 
     "the could-not-look sentence must not assert the absence it exists to avoid asserting");
 });
 
-test("2176-F34 an OPTIONAL missing file is not a hole, but an UNRESOLVED specifier is", () => {
+test("an OPTIONAL missing file is not a hole, but an UNRESOLVED specifier is", () => {
   const optional = unitEnvironment({
     units: [{ name: "u.service", text: "Environment=A=1\nEnvironmentFile=-/etc/gone.env\n" }],
     readEnvFile: () => null });
@@ -69,7 +69,7 @@ test("2176-F34 an OPTIONAL missing file is not a hole, but an UNRESOLVED specifi
   }
 });
 
-test("2176-F34 %h expands to the unit's home, and later assignments win as systemd applies them", () => {
+test("%h expands to the unit's home, and later assignments win as systemd applies them", () => {
   const r = unitEnvironment({
     units: [{ name: "u.service", text: "EnvironmentFile=%h/.env\nEnvironment=B=from-unit C=3\n" }],
     readEnvFile: (p) => (p === "/srv/example/.env" ? "A=1\nB=from-file\n" : null),
@@ -81,7 +81,7 @@ test("2176-F34 %h expands to the unit's home, and later assignments win as syste
     "Environment= appears after EnvironmentFile= here, and systemd lets the later assignment win");
 });
 
-test("2176-F34 no units at all is UNKNOWN, and says so in words a reader can act on", () => {
+test("no units at all is UNKNOWN, and says so in words a reader can act on", () => {
   const r = unitEnvironment({ units: [] });
   assert.equal(r.known, false);
   assert.equal(unitValue(r, "ANY").state, "unknown");
@@ -140,7 +140,7 @@ const GOOD_ENV = [
   "CLIENT_MCP_ACCOUNT_ACCESS=1",
 ].join("\n") + "\n";
 
-test("2176-F34 doctor run from a shell with NOTHING set does not report the units' values as missing", () => {
+test("doctor run from a shell with NOTHING set does not report the units' values as missing", () => {
   assert.ok(UNITS.length > 0, "the background unit set should not be empty — this arm needs units to install");
   const home = installedHome(GOOD_ENV);
   try {
@@ -155,7 +155,7 @@ test("2176-F34 doctor run from a shell with NOTHING set does not report the unit
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2176-F34 THE PLANT — with the value genuinely absent from the units, doctor DOES report it", () => {
+test("THE PLANT — with the value genuinely absent from the units, doctor DOES report it", () => {
   // Why this arm exists: the one above asserts an absence of output, and an absence of output is what
   // a doctor that stopped checking would also produce. This plants the real fault — units installed,
   // env file present, PORTAL_MCP_URL genuinely not in it — and requires the message back. The pair is
@@ -184,7 +184,7 @@ const ENV_WITH_TOKEN = [
   "PORTAL_OPS_TOKEN=v1.not-a-real-token.for-this-arm",
 ].join("\n") + "\n";
 
-test("2196 an ops token the UNITS carry is not reported missing to a reader with an empty shell", () => {
+test("an ops token the UNITS carry is not reported missing to a reader with an empty shell", () => {
   const home = installedHome(ENV_WITH_TOKEN);
   try {
     const r = doctor(home);
@@ -196,7 +196,7 @@ test("2196 an ops token the UNITS carry is not reported missing to a reader with
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2196 THE PLANT — with the token genuinely absent from the units, doctor still says so", () => {
+test("THE PLANT — with the token genuinely absent from the units, doctor still says so", () => {
   // Without this, the arm above is satisfied by a doctor that stopped checking the token at all.
   const home = installedHome(GOOD_ENV);   // PORTAL_MCP_URL, deliberately no PORTAL_OPS_TOKEN
   try {
@@ -231,7 +231,7 @@ function doctorWithLoginctl(home, script) {
   finally { rmSync(shim, { recursive: true, force: true }); }
 }
 
-test("2192-F9 units installed and lingering OFF is named, with the command that fixes it", () => {
+test("units installed and lingering OFF is named, with the command that fixes it", () => {
   const home = installedHome(GOOD_ENV);
   try {
     const r = doctorWithLoginctl(home, "#!/bin/sh\necho Linger=no\n");
@@ -244,7 +244,7 @@ test("2192-F9 units installed and lingering OFF is named, with the command that 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2192-F9 lingering ON is reported and manufactures no finding", () => {
+test("lingering ON is reported and manufactures no finding", () => {
   const home = installedHome(GOOD_ENV);
   try {
     const r = doctorWithLoginctl(home, "#!/bin/sh\necho Linger=yes\n");
@@ -253,7 +253,7 @@ test("2192-F9 lingering ON is reported and manufactures no finding", () => {
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2192-F9 a loginctl that cannot answer is a could-not-look, never an 'it is off'", () => {
+test("a loginctl that cannot answer is a could-not-look, never an 'it is off'", () => {
   const home = installedHome(GOOD_ENV);
   try {
     const r = doctorWithLoginctl(home, "#!/bin/sh\necho 'Failed to connect to bus: No medium found' >&2\nexit 1\n");
@@ -274,14 +274,18 @@ test("2192-F9 a loginctl that cannot answer is a could-not-look, never an 'it is
 // indicative, about the live box, with a non-zero exit.
 //
 // MEASURED 2026-09-06 on a healthy packaged install: that ✗ printed while `GET /portal/api/me` returned
-// `{"role":"staff"}` for the local user. The units' file carried `PORTAL_STAFF_DOMAINS=localhost` and
-// the identity was `<user>@localhost`, so the running service admitted it as staff on every request.
-// Doctor read the CLI's own `.env`, where that name does not appear.
+// `{"role":"staff"}` for the local user. The units' file carried the setting that then admitted
+// `<user>@localhost` — a staff-domain rule, since deleted — so the running service admitted it on every
+// request. Doctor read the CLI's own `.env`, where that setting did not appear.
+//
+// What admits a person now is their own entry in the grants file, and the units' file is still the only
+// place that names WHICH grants file — so the property is unchanged: the fact that admits the local user
+// is reachable only through the file the units load.
 //
 // BOTH DIRECTIONS ARE DRIVEN HERE, and that pairing is the acceptance rather than a courtesy: a fix
 // that only satisfies the quiet direction is indistinguishable from deleting the check, and the check
-// guards a real incident — 2026-08-26, a leftover PORTAL_STAFF_DOMAINS locked the owner out of his own
-// portal while every surface looked healthy.
+// guards a real incident — 2026-08-26, a leftover setting locked the owner out of his own portal while
+// every surface looked healthy.
 
 const LOCKOUT = /NOBODY can use this portal/;
 
@@ -294,18 +298,19 @@ function homeWithGrants(envLines, grants = { tenants: {} }) {
   return home;
 }
 
-test("226 a local install whose UNITS name a staff domain is not reported as locking everybody out", () => {
-  // The measured shape: local sign-in, one user, no guest-list rows, and the staff domain that admits
-  // them living in the file the units load and nowhere else.
+test("a local install whose UNITS name a grants file admitting its user is not reported as locking everybody out", () => {
+  // The measured shape, in today's terms: local sign-in, one user, no tenant rows, and the entry that
+  // admits them in a grants file only the units' environment names.
   const home = homeWithGrants([
     "PORTAL_AUTH_MODE=local",
-    "PORTAL_STAFF_DOMAINS=localhost",
     "PORTAL_LOCAL_USER=op@localhost",
-  ]);
+  ], { tenants: {}, people: { "op@localhost": { run: true, manage: true, everything: true } } });
   try {
     const r = doctor(home);
     assert.doesNotMatch(r.out, LOCKOUT,
-      `doctor claimed nobody can use a portal whose units admit op@localhost as staff:\n${r.out}`);
+      `doctor claimed nobody can use a portal whose grants file gives op@localhost access to everything:\n${r.out}`);
+    assert.match(r.out, /op@localhost is one of them/,
+      `the local user's own entry was not recognised, so the quiet result above measured nothing:\n${r.out}`);
     // AND IT SAYS WHERE IT LOOKED. The old text disclaimed itself in a `·` — "what THIS environment
     // implies, not what the running service serves" — directly above the ✗. A caveat does not repair a
     // false claim standing beside it; naming the file does, because the reader can check it.
@@ -314,8 +319,8 @@ test("226 a local install whose UNITS name a staff domain is not reported as loc
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("226 THE PLANT — a genuine lockout still fires, or the fix is a silencer", () => {
-  // No staff domain, no rows, and a mode that is not local: nothing here admits anybody, and this is
+test("THE PLANT — a genuine lockout still fires, or the fix is a silencer", () => {
+  // Nobody in the grants file, and a mode that is not local: nothing here admits anybody, and this is
   // the 2026-08-26 incident's shape. If this goes quiet the check has been deleted, not repaired.
   const home = homeWithGrants(["PORTAL_AUTH_MODE=auth-proxy"]);
   try {
@@ -325,7 +330,7 @@ test("226 THE PLANT — a genuine lockout still fires, or the fix is a silencer"
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("226 a local install with NO staff domain and no rows is still reported — the mode is not an exemption", () => {
+test("a local install whose grants file admits nobody is still reported — the mode is not an exemption", () => {
   // The fix originally filed was "exempt PORTAL_AUTH_MODE=local". It would have been wrong twice: the
   // variable was absent from the file being read, AND a local install genuinely admitting nobody is a
   // real lockout. `portal-service.mjs:4461-4462` states the rule — a local sign-in produces an email
@@ -338,7 +343,7 @@ test("226 a local install with NO staff domain and no rows is still reported —
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("226 units whose environment cannot be read withhold the verdict rather than guessing it", () => {
+test("units whose environment cannot be read withhold the verdict rather than guessing it", () => {
   // Every name resolves empty when the read fails, which is indistinguishable from a box that has
   // configured nothing — and would print the loudest ✗ in this command on no evidence at all. This is
   // F34's own lesson applied to the section F34 did not reach.
@@ -375,7 +380,7 @@ function hostedHomeWith(envLines, extraDirs = []) {
   return home;
 }
 
-test("223 a units-configured customer store is not reported as the bundled demo roster", () => {
+test("a units-configured customer store is not reported as the bundled demo roster", () => {
   const home = hostedHomeWith([], ["profiles"]);
   writeFileSync(join(home, ".env"),
     [`CLEAROTRON_CUSTOMERS_DIR=${join(home, "profiles")}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
@@ -388,7 +393,7 @@ test("223 a units-configured customer store is not reported as the bundled demo 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("223 THE CONTRADICTION — no line calls the variable unset while another reports its value", () => {
+test("THE CONTRADICTION — no line calls the variable unset while another reports its value", () => {
   // This is the acceptance in the issue's own words. A reader cannot act on a report that says both.
   //
   // THE FIXTURE HAS TO CARRY BOTH FILES, and the first cut of this arm did not — so it passed against
@@ -410,7 +415,7 @@ test("223 THE CONTRADICTION — no line calls the variable unset while another r
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("223 custom instructions the UNITS name are not reported as nothing configured", () => {
+test("custom instructions the UNITS name are not reported as nothing configured", () => {
   const home = hostedHomeWith([], ["doctrine"]);
   writeFileSync(join(home, ".env"),
     [`CLEAROTRON_INSTRUCTIONS_DIR=${join(home, "doctrine")}`, ...GOOD_ENV.trim().split("\n")].join("\n") + "\n");
@@ -421,7 +426,7 @@ test("223 custom instructions the UNITS name are not reported as nothing configu
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("223 the agreement line says which environment it compared, and what it cannot catch", () => {
+test("the agreement line says which environment it compared, and what it cannot catch", () => {
   // The old `✓` read "the settings surface serves the same store as the runs" — a claim a reader takes
   // as "production is configured". Both sides derive from one variable, so it cannot catch two
   // environments disagreeing, which is exactly what had gone wrong above it.
@@ -474,7 +479,7 @@ function profileStore(home, sub, entries) {
 
 const accountsLine = (out) => out.split("\n").find((l) => /generic|brand owner\(s\)/.test(l)) ?? "";
 
-test("342 a store with only the house default names `generic`, and claims no brand owner", () => {
+test("a store with only the house default names `generic`, and claims no brand owner", () => {
   const home = installedHome(GOOD_ENV);
   const store = profileStore(home, "profiles-house", { generic: { name: "Generic" } });
   // THROUGH THE CHILD ENV, NOT THE .env FILE. The suite runner sets `CLEAROTRON_NO_ENV_FILE` for every
@@ -492,7 +497,7 @@ test("342 a store with only the house default names `generic`, and claims no bra
     "and must not report a brand owner nobody onboarded");
 });
 
-test("342 the demo account is named as the demo's, never counted as an onboarded owner", () => {
+test("the demo account is named as the demo's, never counted as an onboarded owner", () => {
   const home = installedHome(GOOD_ENV);
   const store = profileStore(home, "profiles-demo", {
     generic: { name: "Generic" }, "demo-brand-owner": { name: "Demo Brand Owner", demoData: true },
@@ -507,7 +512,7 @@ test("342 the demo account is named as the demo's, never counted as an onboarded
     "the roster refused to load, so no accounts line printed at all and every assertion below is about silence");
   const line = accountsLine(out);
   assert.match(line, /`generic` is the account this install rates under/, "generic is still the answer");
-  // OWNER RULING 2026-09-08 hides the BUNDLED demo account from a fresh install. It does not reach into
+  // RULING 2026-09-08 hides the BUNDLED demo account from a fresh install. It does not reach into
   // a store somebody configured: this arm writes its own store, so the account in it is that
   // deployment's choice and stays disclosed. The two readings of `demoData` are told apart by the layer
   // the file is in, not by the flag — see the gate in profiles.mjs.
@@ -517,7 +522,7 @@ test("342 the demo account is named as the demo's, never counted as an onboarded
     "the exact sentence measured on a fresh install: a customer the reader never onboarded");
 });
 
-test("342 where a demo account DOES resolve, doctor still names it and marks it", () => {
+test("where a demo account DOES resolve, doctor still names it and marks it", () => {
   // The grant half. The two arms above prove doctor stops naming an account this install does not
   // offer; on their own they are satisfied by a doctor that can no longer name a demo account at all,
   // which would hide it from the one context where it is real. Asked for by environment, the way the
@@ -536,7 +541,7 @@ test("342 where a demo account DOES resolve, doctor still names it and marks it"
     "still never counted as somebody's onboarded customer");
 });
 
-test("342 an onboarded owner IS counted, and the demo is named beside it rather than among it", () => {
+test("an onboarded owner IS counted, and the demo is named beside it rather than among it", () => {
   const home = installedHome(GOOD_ENV);
   const store = profileStore(home, "profiles-both", {
     generic: { name: "Generic" }, "demo-brand-owner": { name: "Demo Brand Owner", demoData: true },

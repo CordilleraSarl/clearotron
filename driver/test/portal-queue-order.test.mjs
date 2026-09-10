@@ -18,15 +18,15 @@ import { join } from "node:path";
 
 const { makePortalService, scanAccountRuns } = await import("../portal-service.mjs");
 
-const STAFF_DOMAINS = ["example-firm.com"];
 const STAFF = { email: "staff@example-firm.com" };
-// One tenant, two brand owners, and a user who holds BOTH — the law-firm-with-several-clients shape.
+// One tenant, two brand owners, and a user who holds BOTH — the law-firm-with-several-clients shape. STAFF
+// has access to everything by its own entry.
 const GRANTS = { tenants: {
   celta: { accounts: ["aurora", "zephyr"], users: {
     "multi@celta.example": ["aurora", "zephyr"],
     "solo@celta.example": ["aurora"],
   } },
-} };
+}, people: { "staff@example-firm.com": { run: true, manage: true, everything: true } } };
 const MULTI = { email: "multi@celta.example" };
 const SOLO = { email: "solo@celta.example" };
 
@@ -111,7 +111,7 @@ test("scanAccountRuns takes an ARRAY of accounts — the union of what that call
 // ── the route ─────────────────────────────────────────────────────────────────────────────────────
 const serviceFor = ({ poolRoot, workspaceRoot }, grants = GRANTS) => makePortalService({
   poolRoot, workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "pq-rec-")),
-  secret: "test-secret", staffDomains: STAFF_DOMAINS, grants,
+  secret: "test-secret", grants,
   trigger: async () => ({ ok: true }), audit: () => {},
 });
 
@@ -160,8 +160,10 @@ test("?scope=mine does NOT relax the wildcard — `*` still means every account,
 });
 
 test("?scope=mine : the grants-absent '*' sentinel is NOT a list and is never expanded", async () => {
-  // With no grants file, enforcement is OFF and every identity reads accounts: "*". Expanding that
-  // sentinel here would turn a missing config file into a cross-tenant read.
+  // With no grants file there is no roster to judge anyone by, and expanding that absence here would turn
+  // a missing config file into a cross-tenant read. The portal now refuses it one step earlier than it
+  // did: with no grants, makePrincipal answers NO PRINCIPAL AT ALL, so the door refuses (403) before any
+  // scoping question is asked — where it used to admit the identity as "*" and 404 the scope.
   const world = queueWorld([
     { id: "q-a1", mark: "AURORA ONE", account: "aurora" },
     { id: "q-o1", mark: "OTHER", account: "othercorp" },
@@ -170,7 +172,8 @@ test("?scope=mine : the grants-absent '*' sentinel is NOT a list and is never ex
 
   const res = await service.route("GET", "/portal/api/runs", { email: "anyone@nowhere.example" }, null, { scope: "mine" });
   assert.notEqual(res.status, 200, `the sentinel must not resolve to a run list (got ${res.status})`);
-  assert.equal(res.status, 404);
+  assert.equal(res.status, 403, "no grants file: no principal, so the door refuses before the scope is read");
+  assert.equal(res.json?.runs, undefined, "and no run list rides along with the refusal");
 });
 
 test("?scope=mine : an unenrolled identity is still refused at the door", async () => {

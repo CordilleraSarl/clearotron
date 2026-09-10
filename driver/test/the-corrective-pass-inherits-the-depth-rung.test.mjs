@@ -38,7 +38,7 @@ function fixtureP() {
   return P;
 }
 
-test("#1503 the corrective dispatch carries the rung BYTE-IDENTICALLY with the fresh one", () => {
+test("the corrective dispatch carries the rung BYTE-IDENTICALLY with the fresh one", () => {
   const P = fixtureP();
   const fresh = proseRungDirective(depth(WORLDWIDE));
   assert.ok(fresh.length > 100,
@@ -48,13 +48,13 @@ test("#1503 the corrective dispatch carries the rung BYTE-IDENTICALLY with the f
     + "rung governs a draft and not the delivery");
 });
 
-test("#1503 the UNGRADED product adds nothing — the corrective pass stays byte-identical there", () => {
+test("the UNGRADED product adds nothing — the corrective pass stays byte-identical there", () => {
   const P = fixtureP();
   assert.equal(correctionsExtra(P, depth(ONE)), correctionsExtra(P, null),
     "the one-country corrective dispatch grew a directive it never had");
 });
 
-test("#1503 THE CALL SITE passes the depth — a composer arm cannot see a dispatch that never asked", () => {
+test("THE CALL SITE passes the depth — a composer arm cannot see a dispatch that never asked", () => {
   // That lesson applied to its own fix. The arms above hand `correctionsExtra` a depth and check what
   // it builds, which is true of a function nobody calls that way. The defect was never in the composer:
   // it was a dispatch calling it WITHOUT a depth, so the composer answered correctly for the argument it

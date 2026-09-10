@@ -122,10 +122,11 @@ function allowanceFor(profile, { scope, now = Date.now() } = {}) {
     dailyRunsEffective: dailyRuns,
     monthlyRuns: caps?.monthlyRuns ?? null,
     maxQueued: caps?.maxQueued ?? null,
-    // Only a CLIENT principal is capped — the same positive-only rule the runner applies (checkRunCaps
-    // bites jobs stamped clientPrincipal:true, and only the account door stamps them). Staff previewing
-    // for this customer see the counts and are not blocked by them.
-    capped: scope?.kind === "account",
+    // Only a session whose jobs are stamped for the cap is capped — the same positive-only rule the runner
+    // applies (checkRunCaps bites jobs stamped clientPrincipal:true, and the account door stamps every job
+    // except a person's with access to everything). Anyone else previewing sees the counts and is not
+    // blocked by them.
+    capped: scope?.kind === "account" && scope?.everything !== true,
   };
   if (!usage?.complete) {
     return { ...shared, complete: false, today: null, thisMonth: null, queued: null, exhausted: false };
@@ -136,7 +137,7 @@ function allowanceFor(profile, { scope, now = Date.now() } = {}) {
     ...shared,
     complete: true,
     today: usage.today, thisMonth: usage.thisMonth, queued: usage.queued,
-    exhausted: scope?.kind === "account" && usage.today >= dailyRuns,
+    exhausted: scope?.kind === "account" && scope?.everything !== true && usage.today >= dailyRuns,
   };
 }
 
@@ -289,7 +290,7 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // ── — AND WHAT THE REGISTER CANNOT REACH, on the door that commits ──────
   //
   // The same argument the coverage arm above makes, one rung further along. A worldwide search is
-  // ORDERABLE on a partial register now (owner ruling 2026-08-31), so it stops being a blocker and
+  // ORDERABLE on a partial register now (ruling 2026-08-31), so it stops being a blocker and
   // becomes something a requester has to be TOLD before they confirm. The portal says it twice — at
   // the point of choosing and again in the review step — and `describe_options` says it on the menu.
   // Without it here, an assistant can walk a client through the one door that spends and never

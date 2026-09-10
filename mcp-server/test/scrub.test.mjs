@@ -115,7 +115,7 @@ describe("scrub: internal-only content is REMOVED", () => {
   // D5 — the report's risk chip stopped printing `disposition`, and this is the other door it left
   // through. It is not a rating: stages.mjs dictates it as the posture that sets only WHERE a card is
   // placed. `group` already carries that fact in the client report's own heading words.
-  test("#762: disposition is stripped — the placement key never reaches a client, on either surface", () => {
+  test("disposition is stripped — the placement key never reaches a client, on either surface", () => {
     const [c] = scrubCards([{ who: "X", group: "on-field", disposition: "adversarial", one: "…" }]);
     assert.equal(c.disposition, undefined, "the engine's placement word left over list_findings");
     assert.equal(c.group, "on-field", "…and the client-vocabulary equivalent is untouched");
@@ -129,7 +129,7 @@ describe("scrub: internal-only content is REMOVED", () => {
   // SHAPE — the object parseBlocks actually produces — reaching the strip at all. Its withdrawn example
   // is no longer stripped-and-served, it is not served, so the shape claim is made on a live block and
   // the withdrawn one is asserted absent.
-  test("#762: the audit-block shape that actually carries it is the shape this strips", () => {
+  test("the audit-block shape that actually carries it is the shape this strips", () => {
     const [c] = scrubCards([{ _title: "PROPEL AQUAPLUS", disposition: "adversarial", one: "…" }]);
     assert.equal(c.disposition, undefined);
     assert.equal(c._title, "PROPEL AQUAPLUS", "the block itself is not otherwise touched");
@@ -150,7 +150,7 @@ describe("scrub: internal-only content is REMOVED", () => {
     return parseBlocks(findingsSection);
   };
 
-  test("#831: `resolution` loses the placement word and KEEPS the pointer", () => {
+  test("`resolution` loses the placement word and KEEPS the pointer", () => {
     const raw = auditCards([ADVERSARIAL_FINDING]).find((b) => b.resolution);
     assert.ok(raw, "premise: the builder stamps a resolution line on this shape");
     assert.equal(raw.resolution, "adversarial / MEDIUM — see finding #7",
@@ -162,14 +162,14 @@ describe("scrub: internal-only content is REMOVED", () => {
       "the band and the cross-reference survive — deleting the key would delete the pointer with the word");
   });
 
-  test("#831: a resolution with NO band keeps its cross-reference too", () => {
+  test("a resolution with NO band keeps its cross-reference too", () => {
     const raw = auditCards([OFF_FIELD_FINDING]).find((b) => b.resolution);
     assert.equal(raw.resolution, "off-field — see finding #7", "premise: off-field carries no band");
     assert.equal(scrubCards([raw])[0].resolution, "see finding #7",
       "the pointer is the whole client value here — it must not be emptied");
   });
 
-  test("#831: `contradiction_resolution` loses the word from inside the finding reference", () => {
+  test("`contradiction_resolution` loses the word from inside the finding reference", () => {
     const blocks = parseSpineFindingBlocks(CONTRA_SPINE_MD, "");
     const doubts = stitchDoubts(mintContradictionDoubts(blocks), { findings: { findings: [ADVERSARIAL_FINDING], actions: [] } });
     const raw = auditCards([ADVERSARIAL_FINDING], doubts).filter((b) => b.contradiction_resolution);
@@ -185,7 +185,7 @@ describe("scrub: internal-only content is REMOVED", () => {
 
   // That lesson, as an arm rather than a promise: these rules match a POSITION in a grammar this engine
   // writes, never a word anywhere in a string it does not. A trademark spelled like a disposition survives.
-  test("#831: a MARK that spells a disposition is untouched — this is not a ban list", () => {
+  test("a MARK that spells a disposition is untouched — this is not a ban list", () => {
     const [c] = scrubCards([{
       _title: "ADVERSARIAL",
       resolution: "adversarial / MEDIUM — see finding #3",
@@ -197,7 +197,7 @@ describe("scrub: internal-only content is REMOVED", () => {
     assert.equal(c.resolution, "MEDIUM — see finding #3", "only the anchored position moves");
   });
 
-  test("#831: a block carrying neither key gains neither — absent stays absent, never null", () => {
+  test("a block carrying neither key gains neither — absent stays absent, never null", () => {
     const [c] = scrubCards([{ _title: "X", result_summary: "…" }]);
     assert.ok(!("resolution" in c), "a key the block never had must not materialise");
     assert.ok(!("contradiction_resolution" in c), "…nor this one");
@@ -272,7 +272,7 @@ describe("scrub: document shape", () => {
 // withdrawn finding renders nowhere. publish/report-data.mjs already refuses to carry it for exactly
 // that reason. The two client surfaces disagreed about one field; they now agree.
 describe("scrub: #903 withdrawn_reason", () => {
-  test("#903 withdrawn_reason is STRIPPED from a curated card — it has no client-meaningful residue", () => {
+  test("withdrawn_reason is STRIPPED from a curated card — it has no client-meaningful residue", () => {
     // now drops the whole block when it is marked withdrawn, so the KEY strip is tested on the
     // shape that can still reach a client: an ORPHANED withdrawn_reason. findings-model.mjs:1258 calls
     // that a shape error ("withdrawn_reason is only valid when disposition is withdrawn") and throws on
@@ -290,7 +290,7 @@ describe("scrub: #903 withdrawn_reason", () => {
     assert.deepEqual(scrubCards([{ _title: "X", disposition: "withdrawn", withdrawn_reason: "confabulated attribution" }]), []);
   });
 
-  test("#903 stripped, NOT transformed — unlike resolution, there is no pointer to keep", () => {
+  test("stripped, NOT transformed — unlike resolution, there is no pointer to keep", () => {
     // resolution/contradiction_resolution are rewritten rather than dropped because each carries a
     // client-meaningful cross-reference. This one carries an assessment of our own confabulation.
     const [c] = scrubCards([{ _title: "X", withdrawn_reason: "confabulated product page; owner-site search found no such product" }]);
@@ -298,12 +298,12 @@ describe("scrub: #903 withdrawn_reason", () => {
       "a transformed key would still be PRESENT with softened prose — this one must be absent");
   });
 
-  test("#903 an absent key stays absent — the scrub never invents one", () => {
+  test("an absent key stays absent — the scrub never invents one", () => {
     const [c] = scrubCards([{ _title: "X", group: "on-field" }]);
     assert.equal("withdrawn_reason" in c, false);
   });
 
-  test("#903 THE ISSUE'S OWN JUDGING METHOD: buildAuditMd \u2192 parseBlocks \u2192 scrubCards, end to end", () => {
+  test("THE ISSUE'S OWN JUDGING METHOD: buildAuditMd \u2192 parseBlocks \u2192 scrubCards, end to end", () => {
     // says how to judge it, and this is that \u2014 on the REAL builder, over the same synthetic spine
     // uses, rather than a hand-made card. audit-from-spine.mjs stamps the reviewer's prose onto any
     // block that joins a withdrawn finding, and that join is done by real code here.
@@ -332,7 +332,7 @@ describe("scrub: #903 withdrawn_reason", () => {
       `reviewer prose reached the client view through another key:\n${JSON.stringify(client, null, 2)}`);
   });
 
-  test("#903 the two client surfaces now answer the same question the same way", () => {
+  test("the two client surfaces now answer the same question the same way", () => {
     // report-data.mjs's ruling, on its own surface: only LIVE findings, and no withdrawn_reason. The MCP
     // used to hand over what the data file refused to write. The comparison is the point of the fix.
     const withdrawn = { _title: "X", disposition: "withdrawn", withdrawn_reason: "confabulated attribution" };
@@ -362,7 +362,7 @@ describe("scrub: #903 withdrawn_reason", () => {
 // predelivery-lint.mjs depends on `- disposition: withdrawn` being there to catch a withdrawn finding
 // resurrected in the report. The internal record is complete; the client view is filtered.
 describe("scrub: #1187 the withdrawn block is not served", () => {
-  test("#1187 scrubCards DROPS a withdrawn block and keeps the live ones", () => {
+  test("scrubCards DROPS a withdrawn block and keeps the live ones", () => {
     const out = scrubCards([
       { _title: "LIVE ONE", group: "on-field", one: "…" },
       { _title: "KILLED", group: "on-field", disposition: "withdrawn", withdrawn_reason: "confabulated attribution" },
@@ -375,7 +375,7 @@ describe("scrub: #1187 the withdrawn block is not served", () => {
     assert.equal(out[1].disposition, undefined);
   });
 
-  test("#1187 THE END-TO-END SHAPE THE RULING NAMES: present in the audit md, ABSENT from the client view", () => {
+  test("THE END-TO-END SHAPE THE RULING NAMES: present in the audit md, ABSENT from the client view", () => {
     const REASON = "confabulated attribution — no source ties this registration to the named owner";
     const WITHDRAWN = { ...ADVERSARIAL_FINDING, disposition: "withdrawn", withdrawn_reason: REASON };
     const { md } = buildAuditMd(CONTRA_SPINE_MD, "", { findings: [WITHDRAWN] });
@@ -397,7 +397,7 @@ describe("scrub: #1187 the withdrawn block is not served", () => {
     assert.ok(!JSON.stringify(client).includes("confabulated"), "reviewer prose survived somewhere in the client view");
   });
 
-  test("#1187 the two client surfaces now agree BY CONSTRUCTION, not key by key", () => {
+  test("the two client surfaces now agree BY CONSTRUCTION, not key by key", () => {
     // report-data.mjs filters the whole finding out; scrubCards now does the same for its block. The
     // point of the ruling was that a key-by-key allowlist is what keeps letting one through.
     const dataSurface = readFileSync(join(HERE, "..", "..", "driver", "publish", "report-data.mjs"), "utf8");

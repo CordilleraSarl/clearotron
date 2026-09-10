@@ -12,7 +12,7 @@ import { PRODUCT_POLICIES, depthFor } from "../search-policy.mjs";
 const DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguished", "off-field"];
 const rowFor = (product) => depthFor({ product });
 
-test("#1503 ONE COUNTRY IS FULL FOR EVERY FINDING — the byte-identical argument, structurally", () => {
+test("ONE COUNTRY IS FULL FOR EVERY FINDING — the byte-identical argument, structurally", () => {
   const one = rowFor("full-country-search");
   for (const disposition of DISPOSITIONS) {
     assert.equal(writeUpForm(one, { disposition }), "full",
@@ -21,7 +21,7 @@ test("#1503 ONE COUNTRY IS FULL FOR EVERY FINDING — the byte-identical argumen
   }
 });
 
-test("#1503 an UNGRADED or unrecognised depth is FULL — every other branch can only remove a card", () => {
+test("an UNGRADED or unrecognised depth is FULL — every other branch can only remove a card", () => {
   for (const [what, depth] of [
     ["no depth at all", null],
     ["an empty row", {}],
@@ -36,7 +36,7 @@ test("#1503 an UNGRADED or unrecognised depth is FULL — every other branch can
   }
 });
 
-test("#1503 A TIER-IDENTICAL FLOOR IS FULL IN EVERY PRODUCT — the owner's standing non-negotiable", () => {
+test("A TIER-IDENTICAL FLOOR IS FULL IN EVERY PRODUCT — the owner's standing non-negotiable", () => {
   for (const product of Object.keys(PRODUCT_POLICIES)) {
     for (const disposition of DISPOSITIONS) {
       assert.equal(writeUpForm(rowFor(product), { disposition }, { floorTier: "identical" }), "full",
@@ -47,20 +47,20 @@ test("#1503 A TIER-IDENTICAL FLOOR IS FULL IN EVERY PRODUCT — the owner's stan
   }
 });
 
-test("#1503 the floor rule is tested BEFORE the judgment, so no future disposition can route around it", () => {
+test("the floor rule is tested BEFORE the judgment, so no future disposition can route around it", () => {
   // A disposition vocabulary this build has never seen must still not cost a floor its card.
   assert.equal(writeUpForm(rowFor("global-preliminary-search"),
     { disposition: "some-disposition-invented-later" }, { floorTier: "identical" }), "full");
 });
 
-test("#1503 `adversarial` is full in every graded product — it never renders below a short entry", () => {
+test("`adversarial` is full in every graded product — it never renders below a short entry", () => {
   for (const product of ["multi-country-focus-search", "global-preliminary-search"]) {
     assert.equal(writeUpForm(rowFor(product), { disposition: "adversarial" }), "full",
       `${product} demoted an adversarial finding — a conflict genuinely in the way`);
   }
 });
 
-test("#1503 the graded products DO grade — a predicate that never removes a card is decoration", () => {
+test("the graded products DO grade — a predicate that never removes a card is decoration", () => {
   let entries = 0;
   for (const product of ["multi-country-focus-search", "global-preliminary-search"]) {
     for (const disposition of ["coexistence-partner", "distinguished", "off-field"]) {
@@ -71,14 +71,14 @@ test("#1503 the graded products DO grade — a predicate that never removes a ca
     + "the predicate is not grading anything, and every arm above would still pass");
 });
 
-test("#1503 NEAR-identical is not identical — only the exact tier carries the non-negotiable", () => {
+test("NEAR-identical is not identical — only the exact tier carries the non-negotiable", () => {
   assert.equal(writeUpForm(rowFor("global-preliminary-search"),
     { disposition: "off-field" }, { floorTier: "near-identical" }), "entry",
     "near-identical was treated as the floor tier. The two are distinct rungs in band-shape.mjs and the "
     + "ruling names `identical`; widening it here would quietly re-full-card a whole tier nobody ruled on.");
 });
 
-test("#1503 gradedWriteUpRung — only the two graded rungs answer yes, and an unknown one fails SAFE", () => {
+test("gradedWriteUpRung — only the two graded rungs answer yes, and an unknown one fails SAFE", () => {
   assert.equal(gradedWriteUpRung({ narrativeProse: "adversarial" }), true);
   assert.equal(gradedWriteUpRung({ narrativeProse: "adversarial+floors" }), true);
   assert.equal(gradedWriteUpRung({ narrativeProse: "every-finding" }), false, "one country is not a graded rung");
@@ -89,7 +89,7 @@ test("#1503 gradedWriteUpRung — only the two graded rungs answer yes, and an u
     assert.equal(gradedWriteUpRung(bad), false, `${JSON.stringify(bad)} was treated as a graded rung`);
 });
 
-test("#1503 the write-up-forms JOURNAL ROW is gated on the RUNG, never on the entry count", () => {
+test("the write-up-forms JOURNAL ROW is gated on the RUNG, never on the entry count", () => {
   // My defect, from §9. The row was written `if (entryOrdinals.length)`, which conflates two
   // different empties: one country is empty BY CONSTRUCTION (every form is `full`) while a graded run
   // where every finding earned a card is empty AS A MEASUREMENT — and that second one is the number the

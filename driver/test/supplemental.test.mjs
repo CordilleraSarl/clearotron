@@ -474,7 +474,7 @@ test("audit 2 (b): HUA WEI BOA then HUA WEI BAO — stored form kept, conflict s
 });
 
 // ──: the driver-side screen closes the model-settable `term_literal` path ─────────────────────
-test("#516 pipeline fold: a model-shielded markup entry is REFUSED at the fold and lands in rejected[]", async () => {
+test("pipeline fold: a model-shielded markup entry is REFUSED at the fold and lands in rejected[]", async () => {
   // `term_literal` is a field the MODEL fills in on a proposal. It used to suppress every term rule,
   // including at the executor, which runs the same walk — so a `**`-wrapped term wearing it passed the
   // mint, was persisted to this sidecar, folded into the run plan unexamined, and dispatched. It came
@@ -519,7 +519,7 @@ test("#516 pipeline fold: a model-shielded markup entry is REFUSED at the fold a
 // `state` through. A delivered run's receipt (2026-08-15) opened with
 // `{"qid":"…","state":"incomplete"}` inside `executed`, reported `executed: 146, missing: []`, and a
 // reader had to open the band files to learn that 45 of 161 blocks were incomplete.
-test("#960: plan-execution.json states `answered` and `incomplete`, not just `executed`", async () => {
+test("plan-execution.json states `answered` and `incomplete`, not just `executed`", async () => {
   const { writePlanExecutionReceipt } = await import("../pipeline.mjs");
   const { joinPlanToBands } = await import("../register-plan.mjs");
   const { mkdirSync, writeFileSync: wf, readFileSync: rf } = await import("node:fs");

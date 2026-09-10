@@ -45,7 +45,7 @@ accounts their email is granted (`CLEAROTRON_ACCESS_FILE` — the same guest lis
 Enrolment is therefore the portal's: no second credential to mint, rotate or revoke, and revoking portal
 access revokes this with it. **Off unless `CLIENT_MCP_ACCOUNT_ACCESS=1`.**
 
-**Who turns that on. The installer, since 2026-09-03** — owner ruling, settled
+**Who turns that on. The installer, since 2026-09-03** — ruling, settled
 point 2. `render-units.mjs --apply` and `npx clearotron start --background` both write the settings this
 door refuses to start without and then place and enable `clearotron-client-mcp.service`. The settings
 come from one authority, `enablePlan` in `shared/client-door.mjs`, which is also what
@@ -79,7 +79,7 @@ under the report, not just its prose. It projects named structured fields and en
 them — `mcp-server/lib/evidence.mjs` states that there is no code path forwarding free prose, and
 that is the one declared exception to the scrub.
 
-**The audit chain is open by owner ruling, 2026-08-27** ("I don't see why we don't open it or just
+**The audit chain is open by ruling, 2026-08-27** ("I don't see why we don't open it or just
 give it to clients. Ignore the call spend."). The same lawyer who needs the records also has to be
 able to show *how* the answer was reached, so the decision chain is client product now. Unlike the
 evidence layer this one does forward prose — a chain of reasoning is prose — so it is bounded a

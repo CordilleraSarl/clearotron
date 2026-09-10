@@ -18,7 +18,7 @@ import { beatsBest, readBestDraft, recordBestDraft, bestDraftDir } from "../best
 import { runStage, registerEngine, draftCarryEligible } from "../gateway.mjs";
 
 // ── beatsBest — ABSENT IS NOT ZERO ────────────────────────────────────────────────────────────────
-test("#408: beatsBest — a non-finite score NEVER wins, a lower score does, a tie does not", () => {
+test("beatsBest — a non-finite score NEVER wins, a lower score does, a tie does not", () => {
   // The rule this module would break most silently. Most failures carry no quantity at all (a timeout, a
   // missing file). Letting one of those become "the best draft" would record it as 0 items outstanding —
   // which is what a PASS looks like — and the next park would then patch a document nobody scored.
@@ -33,7 +33,7 @@ test("#408: beatsBest — a non-finite score NEVER wins, a lower score does, a t
   assert.equal(beatsBest(4, { quantity: 4 }), false, "a tie buys nothing and only risks a later, no-better draft");
 });
 
-test("#408: record/read round-trip — the best draft survives, and a worse one never displaces it", () => {
+test("record/read round-trip — the best draft survives, and a worse one never displaces it", () => {
   const dir = mkdtempSync(join(tmpdir(), "bestdraft-"));
   const out = join(dir, "common-law-findings.half-b.md");
   try {
@@ -54,7 +54,7 @@ test("#408: record/read round-trip — the best draft survives, and a worse one 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#408: an absent or unreadable store reads as null, never as a zero-scored draft", () => {
+test("an absent or unreadable store reads as null, never as a zero-scored draft", () => {
   const dir = mkdtempSync(join(tmpdir(), "bestdraft-absent-"));
   try {
     assert.equal(readBestDraft(dir, "common-law-half:b"), null);
@@ -68,7 +68,7 @@ test("#408: an absent or unreadable store reads as null, never as a zero-scored 
 });
 
 // ── draftCarryEligible — one allowlist, shared with the warm retry ────────────────────────────────
-test("#408: only a PATCH-class rejection is carriable — a token meaning 'the sweep did not run' is not", () => {
+test("only a PATCH-class rejection is carriable — a token meaning 'the sweep did not run' is not", () => {
   const inv = (t) => `invalid_file:x/common-law-findings.half-b.md:${t}`;
   assert.equal(draftCarryEligible(inv("connotation_no_ruling:no_ruling=2;Q-ABCDEFGH")), true);
   assert.equal(draftCarryEligible(inv("connotation_form_damaged:form_damaged=1;receipt_id R-Z is not a candidate")), true);
@@ -106,7 +106,7 @@ const hardWallTurn = (timeoutSec) => ({ code: 137, killed: true, wall: timeoutSe
 // the shape the connotation gate throws: a count that falls attempt over attempt
 const connFail = (n) => ({ ok: false, reason: `connotation_no_ruling:no_ruling=${n};Q-ABCDEFGH [DELPHI gang]`, quantity: n });
 
-test("#408: the ladder's BEST rejected draft is preserved — the converged one, not the last one", async () => {
+test("the ladder's BEST rejected draft is preserved — the converged one, not the last one", async () => {
   const dir = mkdtempSync(join(tmpdir(), "carry-preserve-"));
   const out = join(dir, "common-law-findings.half-b.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -128,7 +128,7 @@ test("#408: the ladder's BEST rejected draft is preserved — the converged one,
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#408: a draft written by a KILLED attempt is never preserved — a torn file is not a base to patch", async () => {
+test("a draft written by a KILLED attempt is never preserved — a torn file is not a base to patch", async () => {
   const dir = mkdtempSync(join(tmpdir(), "carry-kill-"));
   const out = join(dir, "common-law-findings.half-b.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -144,7 +144,7 @@ test("#408: a draft written by a KILLED attempt is never preserved — a torn fi
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#408: a rejection whose remedy is a RE-SEARCH is not preserved — carrying it would manufacture a clean read", async () => {
+test("a rejection whose remedy is a RE-SEARCH is not preserved — carrying it would manufacture a clean read", async () => {
   const dir = mkdtempSync(join(tmpdir(), "carry-nosearch-"));
   const out = join(dir, "common-law-findings.half-b.md");
   mkdirSync(driverDir(dir), { recursive: true });

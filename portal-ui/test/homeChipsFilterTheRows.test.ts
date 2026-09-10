@@ -26,10 +26,15 @@ const HOME = read('../src/screens/Home.tsx')
 const NAV = read('../src/nav/nav.config.ts')
 
 test('Home scopes its rows to the selected company', () => {
-  assert.match(HOME, /allRuns\.filter\(\(r\) => r\.account === ctx\.owner\)/,
+  // THROUGH runsFor, which compares by runKey. An organisation's Generic is the owner key
+  // `generic:<org>` while its runs carry the wire account `generic`, so a bare comparison of the run's
+  // account with the owner keeps nothing under a picked Generic. What runsFor keeps — for a company, for
+  // a Generic, and for All companies — is driven in companyOrder.test.ts; this holds Home to calling it
+  // over the unfiltered set with the picked owner.
+  assert.match(HOME, /runsFor\(allRuns, ctx\.owner\)/,
     'Home no longer filters its rows by the selected company — the chips are decorative again')
-  assert.match(HOME, /ctx\.owner \? allRuns\.filter/,
-    'the filter is unconditional, so All companies would show nothing')
+  assert.doesNotMatch(HOME, /r\.account === ctx\.owner/,
+    "Home compares a run's wire account with the owner again, which drops every Generic run under a picked Generic")
 })
 
 test('the poll is armed from the UNFILTERED set', () => {

@@ -65,7 +65,7 @@ const ONE_COUNTRY_TODAY = Object.freeze({
   coverageClosureRounds: "as-today",
 });
 
-test("#1503 the one-country row is TODAY'S behaviour, value by value — this is the byte-identical guard", () => {
+test("the one-country row is TODAY'S behaviour, value by value — this is the byte-identical guard", () => {
   const depth = PRODUCT_POLICIES["full-country-search"]?.depth;
   assert.ok(depth, "full-country-search carries no depth row, so the dispatch has no table to read for it "
     + "and product 4's path is a branch again");
@@ -100,7 +100,7 @@ const PARKED_UNREAD = ["inquiryWriteUpWords"];
 // actually GRADED are a different set, and only they carry the fields above.
 const DIRECTIVE_PRODUCTS = ["global-preliminary-search", "multi-country-focus-search"];
 
-test("#1503 every graded product carries a COMPLETE row — a missing key is not a default", () => {
+test("every graded product carries a COMPLETE row — a missing key is not a default", () => {
   const shared = Object.keys(ONE_COUNTRY_TODAY);
   for (const p of GRADED_PRODUCTS) {
     const depth = PRODUCT_POLICIES[p]?.depth;
@@ -116,7 +116,7 @@ test("#1503 every graded product carries a COMPLETE row — a missing key is not
   }
 });
 
-test("#1503 the ONE-COUNTRY row carries NONE of the graded-only fields", () => {
+test("the ONE-COUNTRY row carries NONE of the graded-only fields", () => {
   // The other half, and the one that keeps the byte-identical guarantee honest. Adding either field to
   // this row emits a directive into a dispatch that has never had one.
   const depth = PRODUCT_POLICIES["full-country-search"].depth;
@@ -126,7 +126,7 @@ test("#1503 the ONE-COUNTRY row carries NONE of the graded-only fields", () => {
       + "graded-only field on it produces a directive where there was none.");
 });
 
-test("#1503 every value is in its field's closed vocabulary — a typo cannot mean 'as today'", () => {
+test("every value is in its field's closed vocabulary — a typo cannot mean 'as today'", () => {
   for (const p of GRADED_PRODUCTS) {
     const depth = PRODUCT_POLICIES[p].depth;
     for (const [field, allowed] of Object.entries(VOCAB)) {
@@ -140,7 +140,7 @@ test("#1503 every value is in its field's closed vocabulary — a typo cannot me
   }
 });
 
-test("#1503 the ladder grades the graded products and NOT product 1", () => {
+test("the ladder grades the graded products and NOT product 1", () => {
   assert.equal(PRODUCT_POLICIES["knockout-search"]?.depth, undefined,
     "the knockout carries a depth row. Product 1 is out of scope by the spec — it has its own machinery, "
     + "and a row here invites a consumer to grade it.");
@@ -167,7 +167,7 @@ const DECLARED_ONLY = {
   coverageClosureRounds: "coverage closure already runs exactly ONE warm followup, idempotent across resumes",
 };
 
-test("#1503 every depth row is either CONSUMED by the driver or listed as declared-only, with a reason", () => {
+test("every depth row is either CONSUMED by the driver or listed as declared-only, with a reason", () => {
   const sources = ["../pipeline.mjs", "../stages.mjs"]
     .map((f) => readFileSync(new URL(f, import.meta.url), "utf8")).join("\n");
   const fields = Object.keys(PRODUCT_POLICIES["full-country-search"].depth);
@@ -186,7 +186,7 @@ test("#1503 every depth row is either CONSUMED by the driver or listed as declar
   }
 });
 
-test("#1503 every product RESOLVES to a row, graded or not — no product runs on an absent setting", () => {
+test("every product RESOLVES to a row, graded or not — no product runs on an absent setting", () => {
   for (const product of Object.keys(PRODUCT_POLICIES)) {
     const depth = depthFor({ product });
     assert.ok(depth && depth.source, `${product} resolves to no depth at all, so every rung reading it `
@@ -197,7 +197,7 @@ test("#1503 every product RESOLVES to a row, graded or not — no product runs o
   }
 });
 
-test("#1503 `default-ungraded` means ONE thing — a product this build does not recognise", () => {
+test("`default-ungraded` means ONE thing — a product this build does not recognise", () => {
   for (const product of Object.keys(PRODUCT_POLICIES)) {
     assert.notEqual(depthFor({ product }).source, "default-ungraded",
       `${product} resolves to the unrecognised-product fallback. A product this build does not know is a `
@@ -208,7 +208,7 @@ test("#1503 `default-ungraded` means ONE thing — a product this build does not
   assert.equal(depthFor({}).source, "default-ungraded", "a policy with no product must reach the fallback");
 });
 
-test("#1503 a KNOWN but ungraded product names itself, and runs at one-country depth", () => {
+test("a KNOWN but ungraded product names itself, and runs at one-country depth", () => {
   // The knockout carries no depth row on purpose (see the arm above): a row would invite a consumer to
   // grade a lane the spec puts out of scope. It must still be told apart from an unrecognised product.
   assert.equal(PRODUCT_POLICIES["knockout-search"]?.depth, undefined,
@@ -225,7 +225,7 @@ test("#1503 a KNOWN but ungraded product names itself, and runs at one-country d
 
 const PARKED_GUARD = "#1503 parked-parameter";
 
-test("#1503 a PARKED parameter is read by nothing — and that is asserted, not assumed", (ctx) => {
+test("a PARKED parameter is read by nothing — and that is asserted, not assumed", (ctx) => {
   // The whole point of parking a value in the table is that the decision is recorded where the other
   // parameters live. The risk is that it half-activates: someone wires a consumer, two products start
   // being graded by a number nobody re-derived, and the only symptom is shorter output.
@@ -247,7 +247,7 @@ test("#1503 a PARKED parameter is read by nothing — and that is asserted, not 
   }
 });
 
-test("#1503 the multi-country inquiry cap is not set BELOW worldwide's", () => {
+test("the multi-country inquiry cap is not set BELOW worldwide's", () => {
   // These numbers shipped once at 80 / 60, annotated "p90 of full traces (measured)". The 60 was read
   // off PER-RUN p90s (63, 68) rather than the pooled distribution; pooled, the two products are level
   // with multi-country marginally the longer — 78 against 75 — so 60 clipped 18% of traces where a

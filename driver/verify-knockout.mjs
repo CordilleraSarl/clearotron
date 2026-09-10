@@ -117,7 +117,7 @@ export function knockoutReceipts(runDir, marks) {
   return { ok: failures.length === 0, failures, checked };
 }
 
-// ── ratingQualifier: the closed SECOND axis (owner ruling, 2026-08-06) ────────────────────────
+// ── ratingQualifier: the closed SECOND axis (ruling, 2026-08-06) ────────────────────────
 //
 // The band is the rating; the qualifier is the only sub-gradation the doctrine allows, and until now it
 // was free text on the mark row — validated by nothing, rendered verbatim on the client page
@@ -165,7 +165,7 @@ export const REGISTER_CLAIM_RE =
 
 // ── THE SUMMARY'S SHAPE ──────────────────────────────────────────────────
 //
-// Owner ruling 2026-08-31: "keep the length, add the structure, so long as length is consistent more or
+// Ruling 2026-08-31: "keep the length, add the structure, so long as length is consistent more or
 // less." Two rules follow, and they are deliberately unlike each other.
 //
 // 1. AN H1 IS A CORRECTNESS DEFECT, refused outright. `# ` opens a SECTION of the delivered report:
@@ -360,7 +360,7 @@ export const validators = {
       if (!rating) return { ok: false, reason: `mark "${m.name}": rating is required` };
       if (ladder.length && bandIdx(ladder, rating) < 0)
         return { ok: false, reason: `knockout_band_unknown:${m.name}: rating "${rating}" is not in the frozen ladder (${ladder.join(" / ")}) — rate in the framework's own vocabulary` };
-      // the second axis, closed here because this is where the first one is closed ( owner ruling)
+      // the second axis, closed here because this is where the first one is closed ( ruling)
       if (m.ratingQualifier != null && !normalizeKnockoutQualifier(m.ratingQualifier))
         return { ok: false, reason: `knockout_qualifier_unknown:${m.name}: ratingQualifier "${m.ratingQualifier}" is not one of ${KNOCKOUT_RATING_QUALIFIERS.join(" / ")} — the qualifier is a closed sub-gradation that can only cap a band, and anything else belongs in the band word itself` };
       if (!Array.isArray(m.bullets) || m.bullets.length < 1 || m.bullets.length > 5)
@@ -419,7 +419,7 @@ export const validators = {
       // paragraph names every mark, so publish blanked it rather than put other clients' marks on this
       // client's page, and nothing owed a replacement.
       //
-      // Owner ruling: every mark's own report opens with a model-authored paragraph about that mark.
+      // Ruling: every mark's own report opens with a model-authored paragraph about that mark.
       // Required rather than optional, because the failure it replaces was a page that opened with
       // NOTHING and looked deliberate — publish blanked the batch paragraph on a per-mark document (it
       // names other clients' marks) and no one field owed a replacement.

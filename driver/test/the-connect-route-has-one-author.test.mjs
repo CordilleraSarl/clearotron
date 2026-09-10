@@ -29,7 +29,7 @@ import { stdioConnectCommand, stdioConnectOffer, STDIO_SERVER_NAME, INSTALL_ROOT
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const GUARD = "the-connect-route-has-one-author";
 
-test("1959 the command is the one CONNECT.md documents, with this install's own path", () => {
+test("the command is the one CONNECT.md documents, with this install's own path", () => {
   const cmd = stdioConnectCommand({ workDir: "/tmp/workspace" });
   assert.match(cmd, /^claude mcp add /, "not the documented verb — a reader following CONNECT.md would diverge");
   assert.match(cmd, new RegExp(`\\b${STDIO_SERVER_NAME}\\b`), "the server name must match what `claude mcp remove` takes");
@@ -41,7 +41,7 @@ test("1959 the command is the one CONNECT.md documents, with this install's own 
     "CONNECT.md no longer documents this registration under this name — one of the two moved without the other");
 });
 
-test("1959 a null workDir omits the setting rather than inventing a directory", () => {
+test("a null workDir omits the setting rather than inventing a directory", () => {
   // Handing a reader a plausible-looking path they never chose is worse than omitting it: the server has
   // its own default, and a wrong workspace root reads as a working connector over an empty pile.
   assert.doesNotMatch(stdioConnectCommand({ workDir: null }), /-e /,
@@ -61,7 +61,7 @@ function codeOnly(src, rel) {
     .split("\n").map((l) => l.replace(/(^|[^:])\/\/.*$/, "$1")).join("\n");   // line comments, sparing a URL's //
 }
 
-test("1959 ONE AUTHOR — no surface composes this command for itself", () => {
+test("ONE AUTHOR — no surface composes this command for itself", () => {
   const tracked = trackedFiles(GUARD, { root: REPO });
   if (!tracked) { assert.ok(skipReason(GUARD), "no corpus and no stated reason"); return; }
   const offenders = [];
@@ -85,7 +85,7 @@ test("1959 ONE AUTHOR — no surface composes this command for itself", () => {
     + "who follows the stale one gets a command that does not work.");
 });
 
-test("1959 `clearotron start` prints the route, and prints the COMPOSED one", () => {
+test("`clearotron start` prints the route, and prints the COMPOSED one", () => {
   const src = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
   assert.match(src, /stdioConnectOffer/,
     "the closing block does not offer the connect route. That block is the last thing a first-time "
@@ -94,7 +94,7 @@ test("1959 `clearotron start` prints the route, and prints the COMPOSED one", ()
     "start.mjs spells the command itself instead of taking the composed one");
 });
 
-test("1959 the offer carries what a reader needs to judge it, not just the command", () => {
+test("the offer carries what a reader needs to judge it, not just the command", () => {
   const offer = stdioConnectOffer({ workDir: null });
   assert.ok(offer.note.length > 40, "no note — a bare command does not say what it does or where it works");
   assert.match(offer.note, /this install/i, "the note must say it only works on a machine with this install");

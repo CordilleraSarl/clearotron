@@ -412,7 +412,7 @@ test("the fixture executor is the $0 path, and a missing figure is unavailable r
   assert.match(doc.marks[2].counts.identical.unavailable, /fixture missing/);
 });
 
-test("#2038 no fixture directory means the provider is called — the ambient switch is gone", () => {
+test("no fixture directory means the provider is called — the ambient switch is gone", () => {
   // THE DIRECTION THAT MATTERS. With the environment read in place, a shell that had exported the old
   // variable made this return fixtures no matter what the caller asked for. Nothing can now put this
   // lane on fixtures except the caller saying so.

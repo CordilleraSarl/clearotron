@@ -54,7 +54,7 @@ import { leversFromResolved, turnaround, turnaroundHours } from "./effort-model.
  *     multi-country-focus-search   2.5h    1.5–2.5 hours
  *     full-country-search          2.5h    1.5–2.5 hours
  *
- * ALL THREE CLEARANCES ARE IDENTICAL HERE and that is the owner ruling, not a flattening to fix.
+ * ALL THREE CLEARANCES ARE IDENTICAL HERE and that is the ruling, not a flattening to fix.
  * The table above used to separate them with lane adders (+0.5 case law, +0.5 native, +0.5 single
  * territory). Eight delivered runs refuted that: the full-country run — the only one carrying every lane,
  * quoted 3.0h — came in at 2.33h, SHORTER than five of the other seven, which carried fewer lanes and were

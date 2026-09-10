@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // terminal-clamp.mjs — WHAT A TERMINAL GUARD DOES WHEN IT FINDS THE REPORT INCOMPLETE.
 //
-// Owner ruling, 2026-08-27, verbatim intent: **reports always ship**. When a terminal guard finds the
+// Ruling, 2026-08-27, verbatim intent: **reports always ship**. When a terminal guard finds the
 // report incomplete at delivery, the engine sends it with the gap patched conservatively and the defect
 // named in the run record. It never withholds.
 //

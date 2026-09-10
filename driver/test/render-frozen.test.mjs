@@ -735,7 +735,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // check I had just added, which measures length. "Inc.", "Ltd.", "U.S.", "No. 2" and any internal colon
 // all do it, and those are the words an ask about a company is made of.
 //
-// Owner ruling 2026-08-10: stop cutting. Both cuts are deleted and CONDITION_HEAD_MAX with them.
+// Ruling 2026-08-10: stop cutting. Both cuts are deleted and CONDITION_HEAD_MAX with them.
 //
 //   1. REACHABLE FROM A REPUBLISH, AND INTENDED. An archived CONDITIONAL run re-rendered after this
 //      lands gets the whole ask on its email banner instead of the fragment. That is the same
@@ -1746,7 +1746,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // 29th gains a disclosure it should always have carried. `rerender-all` is an explicit operator
 // command, not something that runs on its own.
 //
-// Owner ruling 2026-08-24 ordered the build and discharged the standing "only with a legitimate
+// Ruling 2026-08-24 ordered the build and discharged the standing "only with a legitimate
 // renderer change" condition. The arm below pins the empty state, so the next freeze break cannot
 // silently take it away again.
 // Advanced by the fifth break with the constant below it — this one moves on every
@@ -1795,7 +1795,7 @@ const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4
 // the shared theme key. This removes the automatic part only.
 // NEXT BREAK (2026-08-27 — the word a client does not read).
 //
-// Owner ruling: "weighed is not a law-friendly term." It went first on the knockout report, where he
+// Ruling: "weighed is not a law-friendly term." It went first on the knockout report, where he
 // read it; he was then asked whether the rule reaches the clearance report and its workbook, WITH the
 // republish consequence below stated, and ruled that it does. Two strings in this file move:
 //
@@ -1902,7 +1902,7 @@ const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4
 //   2. COULD IT LIVE ELSEWHERE? No — it is the evidence wording and the sentinel match, not a visual.
 //   3. HASH UPDATED IN THE SAME COMMIT; not licence-only, so FROZEN_BEFORE_SPDX moves with it.
 //
-// ── BREAK, 2026-09-04 — THE GLOBAL NAMESPACE RENAME (owner ruling, pre-cut) ────────────────────────
+// ── BREAK, 2026-09-04 — THE GLOBAL NAMESPACE RENAME (ruling, pre-cut) ────────────────────────
 //
 //   WHAT MOVED: two lines, and both carry the renamed token. One comment, and one real read —
 //   `process.env.PRELIM_MCP_URL` became `process.env.CLEAROTRON_MCP_URL`. Verified as the WHOLE of the
@@ -1913,8 +1913,8 @@ const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4
 //      `doRepublish()` re-renders archived runs, so a box whose environment still spells this variable
 //      the old way would re-render a DELIVERED report with an empty "Ask your AI" target and drop the
 //      link. That is safe here only because the rename is global and lands with the environment in the
-//      same change — greenfield, no public installs, our own boxes rebuilt rather than migrated (owner
-//      ruling 2026-09-04). It would NOT be safe as a code-only edit, and a future reader deciding
+//      same change — greenfield, no public installs, our own boxes rebuilt rather than migrated (ruling
+//      2026-09-04). It would NOT be safe as a code-only edit, and a future reader deciding
 //      whether to backport this line should stop at that sentence.
 //   2. COULD IT LIVE ELSEWHERE? No. It is a variable name, and the whole point of the ruling is that
 //      one namespace exists. Leaving this one read spelled the old way is the half-converted tree the
@@ -1979,7 +1979,7 @@ const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4
 //
 // The smallest break this freeze can take: two COMMENT lines, and nothing else. A worked example about
 // substring collisions used a test account's name, and a past duplication was labelled with another. This
-// file is a packed member, so the owner ruling that no published byte names one of the three reaches it,
+// file is a packed member, so the ruling that no published byte names one of the three reaches it,
 // and a comment is the one place a name cannot be excluded away.
 //
 // The checklist, answered rather than assumed. It is reachable from a republish — every break here is —
@@ -2033,7 +2033,7 @@ test("render.mjs is frozen at its post-recolor content hash", () => {
   assert.equal(actual, FROZEN, "render.mjs changed — read the header of this file before updating the hash");
 });
 
-test("#854 stripping the two licence lines leaves the file the last break left — a licence sweep carries nothing else", () => {
+test("stripping the two licence lines leaves the file the last break left — a licence sweep carries nothing else", () => {
   // Strip exactly the two header lines and nothing else, then compare with the hash from before the
   // sweep. This is what makes "comment-only" a checked claim rather than a promise in a comment: a
   // behavioural edit that rode in with the licence sweep changes these bytes and fails right here.
@@ -2105,7 +2105,7 @@ test("the moved client-safety transforms are imported from parse.mjs, never rede
 // The check is the CALL and the ABSENCE OF THE TABLE. Asserting the call alone leaves the copy free to
 // come back beside it; asserting the table's absence is what makes the copy impossible to write, because
 // the body cannot be typed without `DISPOSITION_BAND`.
-test("#1100 the disposition mode has ONE definition, and the renderer calls it rather than re-typing it", () => {
+test("the disposition mode has ONE definition, and the renderer calls it rather than re-typing it", () => {
   const src = readFileSync(at("../publish/render.mjs"), "utf8");
   assert.match(src, /DISPOSITION_MODE\s*=\s*inDispositionMode\(/,
     "render.mjs derives its module-wide disposition mode some other way again — every prominence helper "
@@ -2127,7 +2127,7 @@ test("#1100 the disposition mode has ONE definition, and the renderer calls it r
 // that answer is checked here rather than argued in the lineage note: the deleted line was the imported
 // predicate's body with `||` where it has `??`, so the two can only part on a `findings` that is falsy
 // but not nullish — and `[...findings]` thirty lines further down throws on every such value.
-test("#1100 the shared predicate answers exactly what the deleted copy answered", () => {
+test("the shared predicate answers exactly what the deleted copy answered", () => {
   const deletedCopy = (findings) => (findings || []).some((f) => f && f.disposition && DISPOSITION_BAND[f.disposition]);
   const CASES = [
     [], null, undefined,

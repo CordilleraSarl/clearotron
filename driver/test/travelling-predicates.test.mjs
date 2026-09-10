@@ -22,7 +22,7 @@ const buckets = (src) => scanSource(src, "fixture.mjs").map((r) => r.bucket);
 
 // ── the climb, which is the whole trick ──────────────────────────────────────────────────────────────
 
-test("#1100 a predicate under && is classified by where the ENCLOSING expression goes", () => {
+test("a predicate under && is classified by where the ENCLOSING expression goes", () => {
   // Classifying on the immediate parent files this as "inside a LogicalExpression" and loses it. The
   // measured cost of getting this wrong was 22% travelling against a true 37% — nearly a third of the
   // population sits under exactly this shape.
@@ -34,7 +34,7 @@ test("#1100 a predicate under && is classified by where the ENCLOSING expression
 
 // ── the bug this classifier had, and the distinction that fixes it ───────────────────────────────────
 
-test("#1100 a NAMED predicate travels; an INLINE one passed to filter does not", () => {
+test("a NAMED predicate travels; an INLINE one passed to filter does not", () => {
   // Both have `arrow.body === theCall`. Treating the arrow itself as the verdict made this classifier
   // report 111 travelling where an independently written one measured 93 — and the 18 it added were all
   // this shape. What decides is where the ARROW goes, so the arrow is plumbing and the climb continues.
@@ -48,7 +48,7 @@ test("#1100 a NAMED predicate travels; an INLINE one passed to filter does not",
 
 // ── decided in place ─────────────────────────────────────────────────────────────────────────────────
 
-test("#1100 a predicate consumed by a test right here is DECIDED, not a candidate", () => {
+test("a predicate consumed by a test right here is DECIDED, not a candidate", () => {
   for (const src of [
     `if (xs.some((x) => x.q)) { go(); }`,
     `const v = xs.some((x) => x.q) ? 1 : 2;`,
@@ -57,7 +57,7 @@ test("#1100 a predicate consumed by a test right here is DECIDED, not a candidat
   ]) assert.deepEqual(buckets(src), ["decided"], src);
 });
 
-test("#1100 a ternary BRANCH is plumbing, and a ternary TEST is a decision", () => {
+test("a ternary BRANCH is plumbing, and a ternary TEST is a decision", () => {
   // These two look alike and are opposites. The test position decides right there; a branch position
   // hands the boolean onward, and the climb has to continue to whatever holds the ternary.
   //
@@ -76,7 +76,7 @@ test("#1100 a ternary BRANCH is plumbing, and a ternary TEST is a decision", () 
     assert.ok(!buckets(src).includes("unresolved"), `unresolved: ${src}`);
 });
 
-test("#1100 the travelling shapes are each recognised, and named apart", () => {
+test("the travelling shapes are each recognised, and named apart", () => {
   assert.deepEqual(where(`const a = xs.some((x) => x.q);`), ["local"]);
   assert.deepEqual(where(`function f() { return xs.some((x) => x.q); }`), ["return"]);
   assert.deepEqual(where(`o.flag = xs.some((x) => x.q);`), ["assign"]);
@@ -86,7 +86,7 @@ test("#1100 the travelling shapes are each recognised, and named apart", () => {
   assert.deepEqual(buckets(`const a = xs.some((x) => x.q);`), ["travels"]);
 });
 
-test("#1100 only a NON-COMPUTED some/every member call is hunted", () => {
+test("only a NON-COMPUTED some/every member call is hunted", () => {
   assert.deepEqual(scanSource(`const a = xs["some"]((x) => x.q);`, "f.mjs"), [],
     "a computed member is not the syntactic pattern, and counting it would inflate the population");
   assert.deepEqual(scanSource(`const a = somebody(xs);`, "f.mjs"), []);
@@ -94,7 +94,7 @@ test("#1100 only a NON-COMPUTED some/every member call is hunted", () => {
 
 // ── an unparsed file is a HOLE in the population, and must never be silent ───────────────────────────
 
-test("#1100 a file that cannot be parsed is REPORTED, never skipped", () => {
+test("a file that cannot be parsed is REPORTED, never skipped", () => {
   const rows = scanSource(`const a = ;;;(((`, "broken.mjs");
   assert.equal(rows.length, 1);
   assert.equal(rows[0].bucket, "unparsed",
@@ -104,7 +104,7 @@ test("#1100 a file that cannot be parsed is REPORTED, never skipped", () => {
 
 // ── the real corpus, with a floor ────────────────────────────────────────────────────────────────────
 
-test("#1100 the classifier still finds a population, and none of it is unparsed", (ctx) => {
+test("the classifier still finds a population, and none of it is unparsed", (ctx) => {
   const rows = sweep();
   // — the marker IS printed, and node:test still counts a bare return as a PASS. The gate greps
   // stderr; a reader watching the run sees a green arm that read nothing.

@@ -35,7 +35,7 @@ const entry = (extra = {}) => ({
 
 // ── the disclosure ───────────────────────────────────────────────────────────────────────────────────
 
-test("#821 countLine names an ordered territory the register does not cover", () => {
+test("countLine names an ordered territory the register does not cover", () => {
   const line = countLine(entry({ deferredScope: ["JP"] }));
   assert.match(line, /JP was ordered for this matter/);
   assert.match(line, /outside this register's coverage entirely/);
@@ -44,20 +44,20 @@ test("#821 countLine names an ordered territory the register does not cover", ()
   assert.match(line, /needs a register that covers it/);
 });
 
-test("#821 the figures are still stated — this is a qualification, not a replacement", () => {
+test("the figures are still stated — this is a qualification, not a replacement", () => {
   const line = countLine(entry({ deferredScope: ["JP", "KR"] }));
   assert.match(line, /3 identical/, "the count the run DID take is still the headline");
   assert.match(line, /JP, KR were ordered/);
   assert.match(line, /they were not counted/);
 });
 
-test("#821 a run whose scope is fully covered says nothing extra — byte-identical to before", () => {
+test("a run whose scope is fully covered says nothing extra — byte-identical to before", () => {
   const before = countLine(entry());
   assert.doesNotMatch(before, /ordered for this matter/);
   assert.equal(before, countLine(entry({ deferredScope: [] })), "an empty list is not a disclosure");
 });
 
-test("#821 the two gaps are separate sentences, and both appear when both are true", () => {
+test("the two gaps are separate sentences, and both appear when both are true", () => {
   const line = countLine(entry({
     deferredScope: ["JP"],
     officeScope: { counted: ["EU"], uncounted: [{ office: "US", why: "unconfigured" }] },
@@ -70,14 +70,14 @@ test("#821 the two gaps are separate sentences, and both appear when both are tr
     "the box gap and the coverage gap are distinct claims and must remain distinct sentences");
 });
 
-test("#821 recordsLine carries it on the EMPTY branch, where a clean negative is most dangerous", () => {
+test("recordsLine carries it on the EMPTY branch, where a clean negative is most dangerous", () => {
   const line = recordsLine({ name: "KURENA", terms: [{ term: "KURENA", ok: true }], records: [], deferredScope: ["JP"] });
   assert.match(line, /the register returned none/, "the sentence that reads as a clean sweep");
   assert.match(line, /JP was ordered for this matter/, "…now qualified by what was never searched");
   assert.match(line, /no filing from it could appear here whatever the register holds/);
 });
 
-test("#821 recordsLine carries it on the POPULATED branch too", () => {
+test("recordsLine carries it on the POPULATED branch too", () => {
   const line = recordsLine({
     name: "KURENA", terms: [{ term: "KURENA", ok: true }],
     records: [{ recordId: "/mark/eu/1", mark: "KURENA" }], available: 1, deferredScope: ["JP"],
@@ -94,7 +94,7 @@ test("#821 recordsLine carries it on the POPULATED branch too", () => {
 const caps = (extra = {}) => ({ id: "free-tier", label: "Free tier", countProbe: "total",
   offices: { translate: (c) => ({ EU: "EM" })[c] ?? c, covered: ["EM", "US"] }, ...extra });
 
-test("#821 an entirely uncovered scope refuses BEFORE spend, on a provider that declares no regionsRequired", () => {
+test("an entirely uncovered scope refuses BEFORE spend, on a provider that declares no regionsRequired", () => {
   // The arm this replaces was gated on `capabilities.regionsRequired`, which NO provider in this repo
   // declares — so the refusal could never fire on the free tier, the one a stranger runs.
   const why = countPreflight({ capabilities: caps(), jurisdictions: ["JP"] });
@@ -105,12 +105,12 @@ test("#821 an entirely uncovered scope refuses BEFORE spend, on a provider that 
     "the reason must say why counting the covered territories instead would be wrong, not just that it stopped");
 });
 
-test("#821 PARTIAL coverage runs and discloses — refusing it would put back what #790 fixed", () => {
+test("PARTIAL coverage runs and discloses — refusing it would put back what #790 fixed", () => {
   assert.equal(countPreflight({ capabilities: caps(), jurisdictions: ["EU", "JP"] }), null,
     "one covered territory is a scope; the rest is a disclosure, per the 2026-08-12 ruling");
 });
 
-test("#821 a WORLDWIDE run is not an empty scope, and must never be refused as one", () => {
+test("a WORLDWIDE run is not an empty scope, and must never be refused as one", () => {
   // resolveRegions returns `regions: []` for BOTH "no territory filter" and "every named territory was
   // deferred". Reading the empty list alone refuses every worldwide run on every provider — the same
   // conflation had to thread `worldwide` through reachableRegions to avoid.
@@ -118,6 +118,6 @@ test("#821 a WORLDWIDE run is not an empty scope, and must never be refused as o
   assert.equal(countPreflight({ capabilities: caps(), jurisdictions: null }), null, "none at all");
 });
 
-test("#821 a fully covered scope is untouched", () => {
+test("a fully covered scope is untouched", () => {
   assert.equal(countPreflight({ capabilities: caps(), jurisdictions: ["EU", "US"] }), null);
 });

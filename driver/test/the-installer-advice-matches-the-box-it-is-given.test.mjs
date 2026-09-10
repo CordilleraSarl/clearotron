@@ -31,14 +31,14 @@ const posture = (o = {}) => ({ readable: true, scope: "ops", sub: "portal", verb
 
 // ── 107 ─────────────────────────────────────────────────────────────────────────────────────────────
 
-test("107 the re-mint command carries the token's OWN verbs, not the two the string used to name", () => {
+test("the re-mint command carries the token's OWN verbs, not the two the string used to name", () => {
   const said = accountCapAdvice(posture({ verbs: ["start_run", "stop_run", "feed_context"], sub: "portal-alpha" }));
   assert.match(said, /--verbs start_run,stop_run,feed_context/,
     "the advice named a narrower verb set than the token has, so following it silently drops a verb");
   assert.match(said, /--sub portal-alpha/, "the advice re-mints under a different subject than the token carries");
 });
 
-test("107 the advice NEVER narrows a token, for any verb set — the property, not one example", () => {
+test("the advice NEVER narrows a token, for any verb set — the property, not one example", () => {
   // The arm above is one token. This is the class: whatever the token carries, every verb of it must
   // survive the command a reader is told to run.
   for (const verbs of [["start_run"], ["stop_run"], ["start_run", "stop_run"],
@@ -52,7 +52,7 @@ test("107 the advice NEVER narrows a token, for any verb set — the property, n
   }
 });
 
-test("107 a FULL-OPS token is offered no --verbs flag at all — null is every verb, not none", () => {
+test("a FULL-OPS token is offered no --verbs flag at all — null is every verb, not none", () => {
   // The inversion that would make this advice harmful. `verbs: null` means the claim is absent, which
   // is the WIDEST posture; naming any list there is the narrowing the whole fix is about.
   const said = accountCapAdvice(posture({ verbs: null }));
@@ -61,7 +61,7 @@ test("107 a FULL-OPS token is offered no --verbs flag at all — null is every v
   assert.match(said, /--accounts <keys>/, "and it still has to say how to add the accounts cap");
 });
 
-test("107 an UNREADABLE payload is given no command to run", () => {
+test("an UNREADABLE payload is given no command to run", () => {
   // `opsTokenPosture` answers readable:false with every claim null, and that lands in this warning
   // because accountCapped is false when nothing could be read. A command built from those nulls is a
   // guess presented as an instruction — in the one case where following it destroys the token.
@@ -72,7 +72,7 @@ test("107 an UNREADABLE payload is given no command to run", () => {
 
 // ── 197 ─────────────────────────────────────────────────────────────────────────────────────────────
 
-test("197 re-deriving the allow-list follows the port, and keeps what the operator added", () => {
+test("re-deriving the allow-list follows the port, and keeps what the operator added", () => {
   const merged = allowedHostsMerged("127.0.0.1:18811,localhost:18811,mcp.example-firm.com", 18899);
   assert.match(merged, /127\.0\.0\.1:18899/, "the door binds 18899 and its allow-list does not name it — every request 403s");
   assert.match(merged, /localhost:18899/);
@@ -81,13 +81,13 @@ test("197 re-deriving the allow-list follows the port, and keeps what the operat
   assert.doesNotMatch(merged, /18811/, "the stale loopback entries were kept, so the list grows on every port change");
 });
 
-test("197 an allow-list that is already right is left exactly as it is", () => {
+test("an allow-list that is already right is left exactly as it is", () => {
   const right = allowedHosts(18899);
   assert.equal(allowedHostsMerged(right, 18899), right,
     "a correct list was rewritten, which would report a change on every run and teach a reader to ignore it");
 });
 
-test("197 --apply re-derives the allow-list after a port change, and says that it did", () => {
+test("--apply re-derives the allow-list after a port change, and says that it did", () => {
   // DRIVEN THROUGH THE REAL CLI, twice against one env file, because the defect is in the MERGE and a
   // single apply cannot see it: the first run writes the list, and only a second run over a changed
   // port can leave it stale.
@@ -120,7 +120,7 @@ test("197 --apply re-derives the allow-list after a port change, and says that i
 
 // ── 194 ─────────────────────────────────────────────────────────────────────────────────────────────
 
-test("194 a REFUSED apply announces no secret, because it wrote none", () => {
+test("a REFUSED apply announces no secret, because it wrote none", () => {
   // The refusal exits before anything reaches disk. Announcing a generated secret above it told the
   // reader a file holds 32 bytes it does not hold — and a reader who believes the secret exists does
   // not go looking for the reason their door will not start.
@@ -150,7 +150,7 @@ test("194 a REFUSED apply announces no secret, because it wrote none", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("194 an apply that SUCCEEDS still announces both secrets — the fix moved them, it did not delete them", () => {
+test("an apply that SUCCEEDS still announces both secrets — the fix moved them, it did not delete them", () => {
   // The other half, and the one a careless repair breaks: an installer that begins generating
   // cryptographic material is a posture change the reader meets in the output of the command that did
   // it. Silence on the success path would be a different defect wearing this fix's clothes.

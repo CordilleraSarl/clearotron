@@ -104,7 +104,7 @@ test('no field hint runs past 40 words', () => {
 test('the hint the owner named by hand is short, and keeps the clause that matters', () => {
   const fields = read('../src/contract/profileFields.ts')
   // marketplaceDensity was the other hint pinned here. Its CONTROL was removed from every surface by
-  // owner ruling (2026-08-29), so there is no hint left to keep short — the field survives as a stored
+  // ruling (2026-08-29), so there is no hint left to keep short — the field survives as a stored
   // value with no page behind it, and driver/test/a-removed-control-does-not-delete-the-setting-behind-it
   // is what guards that. Nothing to assert here; this is not an omission.
 

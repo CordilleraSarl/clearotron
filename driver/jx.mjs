@@ -164,7 +164,7 @@ export function deriveJxSliceStatement({ sidecar, units = null, env = process.en
 // A reader concludes the deep lane ran. It does not follow: a profile set to `full` on an unarmed
 // deployment and one set to `candidates` on an armed deployment execute identically.
 //
-// OWNER RULING (2026-08-17): flag, do not gate. "If we can't run deep dive on serpAPI we need to flag
+// RULING (2026-08-17): flag, do not gate. "If we can't run deep dive on serpAPI we need to flag
 // it." So `depth` is not deleted and it does not start gating anything — the run derives what the lane
 // ACTUALLY got from the same durable record `executes` already comes from, and says so beside the ask.
 // Gating would change what a run executes and therefore what it bills; a flag changes only what the

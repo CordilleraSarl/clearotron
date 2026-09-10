@@ -32,13 +32,13 @@ const COMPLETE = Object.freeze({
 });
 const without = (cat) => ({ ...COMPLETE, variants: COMPLETE.variants.filter((x) => x.category !== cat) });
 
-test("#1503 CONTROL — a complete manifest clears the floor, so a gap below means something", () => {
+test("CONTROL — a complete manifest clears the floor, so a gap below means something", () => {
   assert.deepEqual(variantCompletenessGaps(COMPLETE, { jurisdictions: ["CN"] }), [],
     "the floor flagged a manifest that states every floor category and a Han rendering for a CN-scope "
     + "matter. It reports gaps on everything, so no arm below discriminates.");
 });
 
-test("#1503 a graded manifest that drops the Han rendering is REFUSED — the rung cannot cause a nil search", () => {
+test("a graded manifest that drops the Han rendering is REFUSED — the rung cannot cause a nil search", () => {
   const gaps = variantCompletenessGaps(without("transliteration"), { jurisdictions: ["CN"] });
   assert.ok(gaps.some((g) => g.startsWith("script-coverage:han")),
     `dropping the only Han rendering on a CN-scope matter produced ${JSON.stringify(gaps)} — no script `
@@ -46,7 +46,7 @@ test("#1503 a graded manifest that drops the Han rendering is REFUSED — the ru
     + "the #935 class the owner made non-negotiable.");
 });
 
-test("#1503 a non-Latin mark with no transliteration family is REFUSED", () => {
+test("a non-Latin mark with no transliteration family is REFUSED", () => {
   const nonLatin = { mark: "红隼", dominant_element: "红隼", elements: [{ value: "红隼" }],
     variants: [v("core", "红隼"), v("phonetic", "红隼"), v("visual", "红隼")] };
   const gaps = variantCompletenessGaps(nonLatin, { jurisdictions: [] });
@@ -55,14 +55,14 @@ test("#1503 a non-Latin mark with no transliteration family is REFUSED", () => {
     + "transliteration-numeric axis would compile empty and nothing would say so.");
 });
 
-test("#1503 a graded manifest that drops a floor CATEGORY is refused too", () => {
+test("a graded manifest that drops a floor CATEGORY is refused too", () => {
   for (const cat of ["core", "phonetic", "visual"]) {
     assert.ok(variantCompletenessGaps(without(cat), { jurisdictions: ["CN"] }).includes(`category:${cat}`),
       `dropping the ${cat} family cleared the floor — the rung could thin the search family itself`);
   }
 });
 
-test("#1503 THE TIE — the rung changes the PROMPT and changes NOTHING about the floor", () => {
+test("THE TIE — the rung changes the PROMPT and changes NOTHING about the floor", () => {
   const paths = new Proxy({}, { get: (_t, k) => (typeof k === "string" ? `<${k}>` : undefined) });
   const msg = (product) => STAGES["prelim-variants"].message({
     paths, job: { mark: "KESTREL", classes: [25], territories: ["CN"] }, profile: { key: "demo" },

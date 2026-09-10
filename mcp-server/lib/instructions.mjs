@@ -105,7 +105,7 @@ function pack(audience) {
  * engineering tool set neither pack describes". That premise held while ops meant OUR agents, briefed
  * separately by the Claude Code plugin which installs the same packs as files.
  *
- * Owner ruling (2026-08-27, ruling 7): on a SELF-HOSTED install the customer IS ops. The person who owns
+ * Ruling (2026-08-27, ruling 7): on a SELF-HOSTED install the customer IS ops. The person who owns
  * the box connects over this same connector and is briefed with nothing, while
  * `skills/clearotron-ops/SKILL.md` sits shipped and undelivered — SKILL_DIR has mapped it the whole
  * time. So the premise is false for that deployment, and the exclusion went with it.

@@ -40,7 +40,7 @@ const NO_US = [{ office: "US", memberId: "uspto-local", missing: ["USPTO_LOCAL_D
 
 // ── the pure narrowing ──────────────────────────────────────────────────────────────────────────────
 
-test("#790 an ordered EU+US scope narrows to the offices this box can reach", () => {
+test("an ordered EU+US scope narrows to the offices this box can reach", () => {
   const { regions, dropped } = reachableRegions(["EU", "US"], NO_US, FREE_TIER.offices.covered, false);
   assert.deepEqual(regions, ["EU"]);
   assert.deepEqual(dropped.map((d) => d.office), ["US"]);
@@ -52,7 +52,7 @@ test("#790 an ordered EU+US scope narrows to the offices this box can reach", ()
 // every member, the unconfigured one included. So filtering [] yields [] and fixes nothing. The
 // reachable list has to be SUBSTITUTED. Without this test the fix passes on the EU+US case and the
 // worldwide case still dies exactly as reported.
-test("#790 a worldwide scope substitutes the reachable offices — an empty region filter is not an empty scope", () => {
+test("a worldwide scope substitutes the reachable offices — an empty region filter is not an empty scope", () => {
   const { regions, dropped } = reachableRegions([], NO_US, FREE_TIER.offices.covered, true);
   assert.deepEqual(regions, ["EU"], "[] would route to every member, including the one that is not wired");
   assert.deepEqual(dropped.map((d) => d.office), ["US"]);
@@ -63,13 +63,13 @@ test("#790 a worldwide scope substitutes the reachable offices — an empty regi
 // fell outside this provider's coverage" — a JP-only matter on the free tier. Substituting the covered
 // list there counts a Japanese matter over the EU and tells the client its US coverage is incomplete:
 // two registers they never ordered, one of them dressed as a gap in their search.
-test("#790 an entirely UNCOVERED scope is not treated as worldwide, and yields no office gap", () => {
+test("an entirely UNCOVERED scope is not treated as worldwide, and yields no office gap", () => {
   const { regions, dropped } = reachableRegions([], NO_US, FREE_TIER.offices.covered, false);
   assert.deepEqual(regions, [], "the EU was never ordered — it must not be substituted in");
   assert.deepEqual(dropped, [], "and the US is not a gap in a matter that named Japan");
 });
 
-test("#790 nothing unreachable is byte-identical in and out, for every single-source provider", () => {
+test("nothing unreachable is byte-identical in and out, for every single-source provider", () => {
   for (const input of [["EU", "US"], [], ["JP"]]) {
     for (const worldwide of [true, false]) {
       const { regions, dropped } = reachableRegions(input, [], ["EU", "US"], worldwide);
@@ -79,7 +79,7 @@ test("#790 nothing unreachable is byte-identical in and out, for every single-so
   }
 });
 
-test("#790 dropped names only the offices this scope asked for", () => {
+test("dropped names only the offices this scope asked for", () => {
   // Ordered EU only, on a box missing the US. The US is unreachable and IRRELEVANT — disclosing it
   // would tell a client their EU-only search has a US gap, which is not a fact about their matter.
   const { regions, dropped } = reachableRegions(["EU"], NO_US, FREE_TIER.offices.covered, false);
@@ -89,7 +89,7 @@ test("#790 dropped names only the offices this scope asked for", () => {
 
 // ── the boundary: empty coverage refuses BEFORE spend ───────────────────────────────────────────────
 
-test("#790 a US-only matter on a box with no US index refuses by name, before spend", () => {
+test("a US-only matter on a box with no US index refuses by name, before spend", () => {
   const refusal = countPreflight({
     capabilities: FREE_TIER, jurisdictions: ["US"], unreachable: NO_US,
   });
@@ -99,13 +99,13 @@ test("#790 a US-only matter on a box with no US index refuses by name, before sp
   assert.doesNotMatch(refusal, /\bEU\b/, "the EU is not part of this refusal — it was never ordered");
 });
 
-test("#790 a partial scope does NOT refuse — that is the whole ruling", () => {
+test("a partial scope does NOT refuse — that is the whole ruling", () => {
   assert.equal(countPreflight({ capabilities: FREE_TIER, jurisdictions: ["EU", "US"], unreachable: NO_US }), null);
   assert.equal(countPreflight({ capabilities: FREE_TIER, jurisdictions: null, unreachable: NO_US }), null,
     "worldwide on a half-wired free tier runs over the half it has");
 });
 
-test("#790 a fully wired box reaches the same preflight verdict as before the split existed", () => {
+test("a fully wired box reaches the same preflight verdict as before the split existed", () => {
   for (const j of [["US"], ["EU", "US"], null]) {
     assert.equal(countPreflight({ capabilities: FREE_TIER, jurisdictions: j, unreachable: [] }), null);
   }
@@ -114,7 +114,7 @@ test("#790 a fully wired box reaches the same preflight verdict as before the sp
 // The JP case through the real preflight. `reachable` is empty here too — but for the OTHER reason,
 // and the refusal above must not fire, because naming USPTO_LOCAL_DB at someone who ordered Japan
 // sends them to fix a variable that would not have helped.
-test("#790 an entirely uncovered scope does not trigger the unreachable-office refusal", () => {
+test("an entirely uncovered scope does not trigger the unreachable-office refusal", () => {
   const refusal = countPreflight({ capabilities: FREE_TIER, jurisdictions: ["JP"], unreachable: NO_US });
   // landed the other half: this scope IS now refused, by the COVERAGE arm. The assertion that
   // matters is unchanged and is the whole reason this test exists — WHICH fact the operator is handed.
@@ -126,7 +126,7 @@ test("#790 an entirely uncovered scope does not trigger the unreachable-office r
     "JP is uncovered, not unreachable — a different fact with a different remedy");
 });
 
-test("#790 a JP-only matter is never counted over the EU, and is never told its US coverage is short", async () => {
+test("a JP-only matter is never counted over the EU, and is never told its US coverage is short", async () => {
   const seen = [];
   const doc = await countRegisterHits({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["JP"],
@@ -156,7 +156,7 @@ function watchfulCounter(seen) {
   };
 }
 
-test("#790 the count lane no longer asks for the register it cannot reach, so the EU half produces figures", async () => {
+test("the count lane no longer asks for the register it cannot reach, so the EU half produces figures", async () => {
   const seen = [];
   const doc = await countRegisterHits({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["EU", "US"],
@@ -171,7 +171,7 @@ test("#790 the count lane no longer asks for the register it cannot reach, so th
   assert.equal(identical.total, 7, "before this fix every cell was unavailable on this exact configuration");
 });
 
-test("#790 the figures carry the register they cover, and the rendered line says which was not searched", async () => {
+test("the figures carry the register they cover, and the rendered line says which was not searched", async () => {
   const doc = await countRegisterHits({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["EU", "US"],
     provider: "free-tier", capabilities: FREE_TIER, counter: watchfulCounter([]),
@@ -191,7 +191,7 @@ test("#790 the figures carry the register they cover, and the rendered line says
   assert.doesNotMatch(line, /USPTO_LOCAL_DB/, "an env var name is for the operator, not the client's report");
 });
 
-test("#790 a fully wired count renders exactly the line it rendered before", async () => {
+test("a fully wired count renders exactly the line it rendered before", async () => {
   const doc = await countRegisterHits({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["EU", "US"],
     provider: "free-tier", capabilities: FREE_TIER, counter: async () => ({ ok: true, total: 7 }),
@@ -204,7 +204,7 @@ test("#790 a fully wired count renders exactly the line it rendered before", asy
 
 // ── the record lane: the same defect, the same fix ──────────────────────────────────────────────────
 
-test("#790 the record lane narrows too, and its empty listing is not reported as a clean negative", async () => {
+test("the record lane narrows too, and its empty listing is not reported as a clean negative", async () => {
   const seen = [];
   const doc = await listRegisterRecords({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["EU", "US"],
@@ -226,7 +226,7 @@ test("#790 the record lane narrows too, and its empty listing is not reported as
   assert.match(line, /EU/, "and it says which register the 'none' actually covers");
 });
 
-test("#790 a fully wired listing renders exactly the line it rendered before", async () => {
+test("a fully wired listing renders exactly the line it rendered before", async () => {
   const doc = await listRegisterRecords({
     marks: [{ name: "IRONWHISK" }], classes: [9], jurisdictions: ["EU", "US"],
     provider: "free-tier", capabilities: FREE_TIER,
@@ -239,7 +239,7 @@ test("#790 a fully wired listing renders exactly the line it rendered before", a
 
 // ── the binding stays single ────────────────────────────────────────────────────────────────────────
 
-test("#790 there is exactly one binding of the office split to the environment", async () => {
+test("there is exactly one binding of the office split to the environment", async () => {
   const { readFileSync } = await import("node:fs");
   const { fileURLToPath } = await import("node:url");
   const { join, dirname } = await import("node:path");
@@ -262,7 +262,7 @@ test("#790 there is exactly one binding of the office split to the environment",
     `the member→variable lookup must live in one file, found in: ${callers.join(", ")}`);
 });
 
-test("#790 unavailableOffices and reachableRegions agree on the same box", () => {
+test("unavailableOffices and reachableRegions agree on the same box", () => {
   // End to end over the two pure functions, with the member→variable lookup the real binding injects.
   const unavailable = unavailableOffices(FREE_TIER, {
     requirementsFor: (id) => (id === "uspto-local"

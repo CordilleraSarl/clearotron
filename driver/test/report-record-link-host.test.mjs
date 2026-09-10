@@ -203,7 +203,7 @@ const anchorsOf = (html) => [...html.matchAll(/<a\b[^>]*\shref="([^"]*)"[^>]*>/g
 const covered = [];
 
 for (const id of Object.keys(PROVIDERS)) {
-  test(`#775 a run on ${id} links records only to hosts ${id} publishes — and leaves evidence alone`, async () => {
+  test(`a run on ${id} links records only to hosts ${id} publishes — and leaves evidence alone`, async () => {
     const origins = recordOriginsFor(id);
     const html = await publishAs(id);
     covered.push(id);
@@ -282,7 +282,7 @@ for (const id of Object.keys(PROVIDERS)) {
   });
 }
 
-test("#775 reducing a record uri to its path RE-BINDS it to the record the run actually fetched", async () => {
+test("reducing a record uri to its path RE-BINDS it to the record the run actually fetched", async () => {
   // THE CONSEQUENCE THAT IS NOT ABOUT HREFS, pinned here because it changes what a card SAYS and because
   // pool-admin's doRepublish() re-renders archived deliveries.
   //
@@ -327,7 +327,7 @@ test("#775 reducing a record uri to its path RE-BINDS it to the record the run a
   assert.match(html, /record fetched 2026-08-12/, "the fetch receipt line is not stated");
 });
 
-test("#775 the enumeration ran over the WHOLE provider table", () => {
+test("the enumeration ran over the WHOLE provider table", () => {
   // The point of the loop is the provider nobody has written a test for yet. If the table grows and this
   // file silently iterates the old set — or the config stops loading and it iterates nothing — that has to
   // be a failure here rather than a green run that proves less than it did yesterday.

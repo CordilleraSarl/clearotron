@@ -80,7 +80,7 @@ function runDirWithRecords(rows) {
   return runDir;
 }
 
-test("#743 the record log is read from THE RUN, not from the home directory", () => {
+test("the record log is read from THE RUN, not from the home directory", () => {
   // Both present, different rows. The run's own log is the one that answers — if the global leg were
   // still unioned in, `fromLedger` would be 2 and a run would be citing another run's evidence.
   fakeHome({ "corsearch-records.jsonl": ROW("/mark/eu/018922211", { registrationNumber: "GLOBAL" }) });
@@ -94,7 +94,7 @@ test("#743 the record log is read from THE RUN, not from the home directory", ()
   } finally { restoreHome(); }
 });
 
-test("#743 an upgraded box is TOLD its global record log is retired — the cutover is never silent", () => {
+test("an upgraded box is TOLD its global record log is retired — the cutover is never silent", () => {
   // Production carries 432 MB here and test 2.0 GB. Nothing reads either now. Saying nothing would leave
   // an operator with a large file, no explanation, and no reason to think anything had changed.
   const tel = fakeHome({ "corsearch-records.jsonl": ROW("/mark/eu/018922211", { registrationNumber: "9" }) });
@@ -108,7 +108,7 @@ test("#743 an upgraded box is TOLD its global record log is retired — the cuto
   } finally { restoreHome(); }
 });
 
-test("#594 the CALL ledger's legacy-name notice survives the record log's move", () => {
+test("the CALL ledger's legacy-name notice survives the record log's move", () => {
   // `ledgerDeprecationNotice` had ONE product caller: the record line that replaced. Production's
   // call ledger is still `corsearch-calls.jsonl`, still global and still live — losing this would leave
   // an operator with no way to learn the neutral name exists.
@@ -121,7 +121,7 @@ test("#594 the CALL ledger's legacy-name notice survives the record log's move",
   } finally { restoreHome(); }
 });
 
-test("#743 NEITHER log present is a genuine empty, not a loud failure and nothing to announce", () => {
+test("NEITHER log present is a genuine empty, not a loud failure and nothing to announce", () => {
   // A run before its first fetch has no record log, and that is ordinary. This is the pin that stops
   // someone 'fixing' the guard below by throwing on ENOENT.
   fakeHome({});
@@ -133,7 +133,7 @@ test("#743 NEITHER log present is a genuine empty, not a loud failure and nothin
   } finally { restoreHome(); }
 });
 
-test("#743 an EXPLICIT record-log path is the one walked", () => {
+test("an EXPLICIT record-log path is the one walked", () => {
   // Every test that pins a fixture log passes one positionally, and any future one-off audit will too.
   fakeHome({ "corsearch-records.jsonl": ROW("/mark/eu/018922211", { registrationNumber: "9" }) });
   try {
@@ -148,7 +148,7 @@ test("#743 an EXPLICIT record-log path is the one walked", () => {
 
 // ── the spawned server gets a resolved path, not a guess ────────────────────────────────────────────
 
-test("#594/#743 a spawned register server is handed a RESOLVED call ledger and THIS RUN's record log", () => {
+test("a spawned register server is handed a RESOLVED call ledger and THIS RUN's record log", () => {
   fakeHome({ "corsearch-records.jsonl": "x", "corsearch-calls.jsonl": "x" });
   try {
     const runDir = mkdtempSync(join(tmpdir(), "run743-"));
@@ -164,7 +164,7 @@ test("#594/#743 a spawned register server is handed a RESOLVED call ledger and T
   } finally { restoreHome(); }
 });
 
-test("#1390 no run dir REFUSES — the box-global record ledger is retired, not a fallback", () => {
+test("no run dir REFUSES — the box-global record ledger is retired, not a fallback", () => {
   // This arm asserted the opposite until, on the reasoning that "losing a record body is worse
   // than filing it somewhere an operator has been told about". What the operator is told —
   // docs/architecture/06-operations-runbook.md — is that the global file is written by nothing and can
@@ -182,7 +182,7 @@ test("#1390 no run dir REFUSES — the box-global record ledger is retired, not 
   } finally { restoreHome(); }
 });
 
-test("#1390 a config with NO register server still builds without a run — the refusal is scoped", () => {
+test("a config with NO register server still builds without a run — the refusal is scoped", () => {
   // caselaw is bridges only and perplexity writes no record bodies; neither needs a run dir, and a
   // refusal that caught them would be a wider change than the issue asked for.
   fakeHome({ "corsearch-records.jsonl": "x" });
@@ -258,7 +258,7 @@ const modulesUnder = (dir, label = relative(REPO, dir)) => {
   }
 };
 
-test("#594 no product module names a vendor for the shared register ledger", () => {
+test("no product module names a vendor for the shared register ledger", () => {
   const offenders = [];
   const walkedCounts = {};
   for (const root of LEDGER_ROOTS) {
@@ -318,14 +318,14 @@ test("tracker 2018 the ledger walk refuses an empty tree and names the root it f
 // The legacy ENV NAMES must NOT be declared any more. They were a one-release alias; measured before
 // removal, zero of the four env files on the test and production boxes set either, and no systemd unit
 // does. An expiry nobody enforces is a deprecation that never ends.
-test("#605 the resolver still maps the legacy FILENAMES — production is on them today", () => {
+test("the resolver still maps the legacy FILENAMES — production is on them today", () => {
   const text = readFileSync(join(REPO, RESOLVER), "utf8");
   for (const name of ["corsearch-calls.jsonl", "corsearch-records.jsonl"]) {
     assert.ok(text.includes(name), `${name} must be declared in ${RESOLVER} or a deployed box loses its ledger`);
   }
 });
 
-test("#605 …and no longer maps the legacy ENV names, anywhere in the product", () => {
+test("…and no longer maps the legacy ENV names, anywhere in the product", () => {
   const text = readFileSync(join(REPO, RESOLVER), "utf8");
   for (const name of ["CORSEARCH_CALL_LOG", "CORSEARCH_RECORD_LOG"]) {
     // A COMMENT may name them — prose about a retired alias is not the alias — so this is the same

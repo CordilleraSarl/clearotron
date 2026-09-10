@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// ── — OWNER RULING, 2026-08-31: coverage is disclosed, never refused ─────────
+// ── — RULING, 2026-08-31: coverage is disclosed, never refused ─────────
 //
 // The owner, ordering from the portal on his own fresh install with a partial register wired:
 //
@@ -37,7 +37,7 @@ const PARTIAL = ["United States", "European Union", "Germany", "France", "United
 const worldwide = PRODUCTS.find((p) => p.geography === "worldwide, and nothing else");
 const oneCountry = PRODUCTS.find((p) => p.geography === "exactly one country");
 
-test("2075 arm 1 — a worldwide search is ORDERABLE on a register that reaches part of the world", () => {
+test("arm 1 — a worldwide search is ORDERABLE on a register that reaches part of the world", () => {
   assert.ok(worldwide, "no product declares the worldwide geography — the fixture has rotted");
   // The cause is still COMPUTED. It has to be: it is what the disclosure is keyed on. What changed is
   // that computing it no longer removes the product.
@@ -49,7 +49,7 @@ test("2075 arm 1 — a worldwide search is ORDERABLE on a register that reaches 
   }), null, "the worldwide product is still removed on a partial register");
 });
 
-test("2075 arm 2 — register-cannot-count is NOT covered by the ruling and still refuses", () => {
+test("arm 2 — register-cannot-count is NOT covered by the ruling and still refuses", () => {
   // The issue rules it out in as many words: a register that cannot return counts cannot produce the
   // search's core output, which is a capability gap rather than a coverage one.
   const knockout = PRODUCTS.find((p) => PRODUCT_POLICIES[p.id]?.components?.registerProbe);
@@ -60,7 +60,7 @@ test("2075 arm 2 — register-cannot-count is NOT covered by the ruling and stil
   assert.ok(UNAVAILABLE_NOTE["register-cannot-count"], "and it still has a sentence to say");
 });
 
-test("2075 arm 3 — the disclosure names what IS covered, not only what is not", () => {
+test("arm 3 — the disclosure names what IS covered, not only what is not", () => {
   const d = coverageDisclosure(worldwide.geography, PARTIAL);
   assert.ok(d, "a partial register discloses nothing at all");
   assert.deepEqual([...d.reached].sort(), [...PARTIAL].sort(),
@@ -80,14 +80,14 @@ test("2075 arm 3 — the disclosure names what IS covered, not only what is not"
     "the disclosure is the refusal's sentence, so the two have been collapsed back together");
 });
 
-test("2075 arm 4 — there is nothing to disclose where there is nothing to disclose", () => {
+test("arm 4 — there is nothing to disclose where there is nothing to disclose", () => {
   assert.equal(coverageDisclosure(worldwide.geography, [...PROMPT_TERRITORIES]), null,
     "a register reaching everything a reader can name still carries a caveat");
   assert.equal(coverageDisclosure(oneCountry.geography, PARTIAL), null,
     "a one-country search carries the worldwide caveat");
 });
 
-test("2075 arm 5 — the three coverage states stay apart", () => {
+test("arm 5 — the three coverage states stay apart", () => {
   // `null` is a register declaring no restriction, `undefined` is a server that did not say. Neither is
   // "reaches nothing", and `covered ?? []` anywhere on this path puts a caveat on a production box that
   // deliberately declares null.
@@ -97,7 +97,7 @@ test("2075 arm 5 — the three coverage states stay apart", () => {
   assert.equal(productAvailability(PRODUCT_POLICIES[worldwide.id], { geography: worldwide.geography }), null);
 });
 
-test("2075 arm 6 — the promise the sentence makes is one the engine keeps", () => {
+test("arm 6 — the promise the sentence makes is one the engine keeps", () => {
   // The lane rule: where a sentence changes MEANING, check it is TRUE of the
   // code before shipping it — a hint promising behaviour the engine lacks is worse than the old one.
   // The sentence promises that an unreached territory is DISCLOSED as deferred coverage rather than
@@ -110,7 +110,7 @@ test("2075 arm 6 — the promise the sentence makes is one the engine keeps", ()
   assert.match(ledger, /deferred/, "the coverage ledger no longer knows the word the disclosure promises");
 });
 
-test("2075 arm 7 — every door that shows a product also shows what the register cannot reach", () => {
+test("arm 7 — every door that shows a product also shows what the register cannot reach", () => {
   // ONE PRODUCT, ONE ANSWER, WHICHEVER DOOR ASKED — the rule this file's neighbours already enforce for
   // availability, applied to the disclosure that replaced one of its causes. Three surfaces show a
   // client a product: the portal's menu, the MCP menu (describe_options), and the two review steps that
@@ -142,13 +142,13 @@ test("2075 arm 7 — every door that shows a product also shows what the registe
     "the worldwide coverage cause is back in the refusal map, so every caller reads it as a refusal again");
 });
 
-// ── D6 — OWNER RULING 2026-09-02: disclosure yes, in line with the picker ────
+// ── D6 — RULING 2026-09-02: disclosure yes, in line with the picker ────
 //
 // The 08-31 ruling named only the worldwide cause, and I left `register-coverage` refusing and raised it
 // as a question. D6 answers it: a coverage fact refuses nowhere. The picker offers a territory the
 // register cannot reach and says so at the control, and a product refused for the same fact was the last
 // place the two controls on one screen could still disagree.
-test("2075 D6 arm 1 — NO coverage cause refuses, on either gate, for any product", () => {
+test("D6 arm 1 — NO coverage cause refuses, on either gate, for any product", () => {
   // THE WHOLE MATRIX rather than the one product that happens to fire: this is a rule about a class of
   // cause, and an arm that checked one product would pass on a build that only fixed that one.
   const EU_ONLY = ["European Union"];
@@ -162,7 +162,7 @@ test("2075 D6 arm 1 — NO coverage cause refuses, on either gate, for any produ
     "the cause stopped being computed, so the disclosure has nothing to key on");
 });
 
-test("2075 D6 arm 2 — and the fact moved to the disclosure rather than disappearing", () => {
+test("D6 arm 2 — and the fact moved to the disclosure rather than disappearing", () => {
   const EU_ONLY = ["European Union"];
   const oneCountry = PRODUCTS.find((p) => p.geography === "exactly one country");
   const d = coverageDisclosure(oneCountry.geography, EU_ONLY);
@@ -186,7 +186,7 @@ test("2075 D6 arm 2 — and the fact moved to the disclosure rather than disappe
   assert.equal(UNAVAILABLE_NOTE["register-not-worldwide"], undefined);
 });
 
-// ── D7 — OWNER RULING 2026-09-02: the quote is a FLAT 1.5–2.5 hours ──────────
+// ── D7 — RULING 2026-09-02: the quote is a FLAT 1.5–2.5 hours ──────────
 //
 // Ruled after I reported that the turnaround was "sized from the territories asked for, not the ones the
 // register will reach". THAT REPORT WAS WRONG, and this arm is the measurement that says so — inherited
@@ -198,7 +198,7 @@ test("2075 D6 arm 2 — and the fact moved to the disclosure rather than disappe
 // So the ruling describes the shipped state and there was nothing to remove. What it changes is that the
 // behaviour is now RULED rather than incidental — so it gets an arm, on both copies of the model, which
 // is the difference between "true today" and "cannot drift".
-test("2075 D7 — the turnaround is a flat ruled range and does not move with territories", () => {
+test("D7 — the turnaround is a flat ruled range and does not move with territories", () => {
   const bounds = TURNAROUND_QUOTE.clearance;
   assert.deepEqual({ ...bounds }, { lowHours: 1.5, highHours: 2.5 }, "the ruled clearance range moved");
 

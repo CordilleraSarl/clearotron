@@ -11,7 +11,7 @@
 // was the RELATION between them at run time. portal-ui carries no DOM, so this is where the question
 // "does a press leave a reader looking at anything" can be asked at all.
 //
-// WHAT THIS FILE ASSERTS SINCE THE RUTHLESS CUT (owner ruling, 2026-08-31). The page renders what
+// WHAT THIS FILE ASSERTS SINCE THE RUTHLESS CUT (ruling, 2026-08-31). The page renders what
 // `/portal/api/mcp-access` hands it and derives nothing, so the browser questions are relational:
 //
 //   · a button renders EXACTLY for each assistant this deployment serves — no silent drop, no button
@@ -101,7 +101,9 @@ const server = createServer((req, res) => {
   const json = (o) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)) }
   const s = STATES[current]
   if (path === '/portal/api/me') {
-    return json({ role: s.role, email: 'counsel@coastline.test', accounts: s.role === 'staff' ? [] : ['coastline'],
+    // The deck's `role` names who is looking in the resolver's own terms; the wire carries the switches.
+    return json({ permissions: { run: true, manage: s.role === 'staff' },
+      email: 'counsel@coastline.test', accounts: s.role === 'staff' ? [] : ['coastline'],
       allAccounts: s.role === 'staff', accountNames: { coastline: 'Coastline Drinks' } })
   }
   if (path === '/portal/api/mcp-access') return json(accessFor(s))

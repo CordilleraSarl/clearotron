@@ -178,7 +178,7 @@ const RULED = new Map([
 
 const shortName = (f) => f.replace(/^driver\//, "");
 
-test("#1100 every site in the unit sub-shape's adjudication set has been ruled on", () => {
+test("every site in the unit sub-shape's adjudication set has been ruled on", () => {
   const found = structureSites();
   assert.ok(found.length >= 16,
     `the sweep found ${found.length} structure sites — it is measuring less than it did when this was `
@@ -207,7 +207,7 @@ test("#1100 every site in the unit sub-shape's adjudication set has been ruled o
     + "blind to a member it used to see.");
 });
 
-test("#1100 THE POSITIVE CONTROL — the collapse is computed, and all three holds are populated", () => {
+test("THE POSITIVE CONTROL — the collapse is computed, and all three holds are populated", () => {
   // Without this the ruling above could be passing because the hold analysis answers "contained" to
   // everything, which would empty the adjudication set and read as a complete classification.
   const rows = nonEmpty(sweep(), "travelling-predicates sweep()").filter((r) => r.holds);
@@ -225,7 +225,7 @@ test("#1100 THE POSITIVE CONTROL — the collapse is computed, and all three hol
 
 // ── THE DISAGREEMENT: TWO PRODUCERS OF `wrote`, TWO UNITS FOR THE EMPTY CASE ─────────────────────────
 
-test("#1100 the reader's two units are genuinely different — false is billed as waste, null is not", () => {
+test("the reader's two units are genuinely different — false is billed as waste, null is not", () => {
   // The call-site arm. This is what makes the producer mismatch a defect rather than a tidiness point:
   // run-economics reads `wrote === false` as "this dispatch emitted tokens and moved nothing".
   const dir = mkdtempSync(join(tmpdir(), "unit-pair-"));
@@ -244,7 +244,7 @@ test("#1100 the reader's two units are genuinely different — false is billed a
     "`wrote:false` stopped counting as waste — the two units this test is about have collapsed into one");
 });
 
-test("#1100 BOTH producers of `wrote` answer the same unit when nothing is expected", () => {
+test("BOTH producers of `wrote` answer the same unit when nothing is expected", () => {
   // The source arm. Driving a real repair turn needs a live stage; what has to hold is that neither
   // producer can answer `false` on an empty expectation, and the shape of that is one guard each.
   const gw = src("gateway.mjs");
@@ -261,7 +261,7 @@ test("#1100 BOTH producers of `wrote` answer the same unit when nothing is expec
 
 // ── THE `value` BUCKET'S ONE NAMED MEMBER KEEPS ITS GUARD ───────────────────────────────────────────
 
-test("#1100 the join-shaped `value` member named in the header still carries its guard", () => {
+test("the join-shaped `value` member named in the header still carries its guard", () => {
   // The header rules the whole `value` bucket as a class and names the one that escapes the rule. That naming is worth
   // nothing if the guard it points at can be deleted silently — the ruling would then describe a member
   // as covered while it is not, which is this issue's own defect committed by its own bookkeeping.

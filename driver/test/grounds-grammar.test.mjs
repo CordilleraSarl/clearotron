@@ -22,7 +22,7 @@ const REAL_NOTES = [
   "Wikipedia article documenting 1871 race riot, negative historical violence event",
 ];
 
-test("#919 THE DEFECT, ON REAL DATA: the notes the seat actually writes describe the material", () => {
+test("THE DEFECT, ON REAL DATA: the notes the seat actually writes describe the material", () => {
   for (const note of REAL_NOTES) {
     const r = classifyGroundsNote(note);
     assert.equal(r.verdict, "description", `${JSON.stringify(note)} → ${r.verdict} (${r.why})`);
@@ -33,7 +33,7 @@ test("#919 THE DEFECT, ON REAL DATA: the notes the seat actually writes describe
     "if this ever passes, the seat's behaviour changed and #919's premise needs re-reading");
 });
 
-test("#919 the checker FIRES on a planted violation — the spec's proof before first use", () => {
+test("the checker FIRES on a planted violation — the spec's proof before first use", () => {
   // Planted: a note that describes the material, in the shape a seat would write it, must redden the
   // check. This is the assertion the spec names; without it the instrument is an opinion.
   const planted = "Blog post describing a criminal conviction, negative reputational content";
@@ -44,7 +44,7 @@ test("#919 the checker FIRES on a planted violation — the spec's proof before 
   assert.equal(classifyGroundsNote(clean).verdict, "grounds");
 });
 
-test("#919 A DESCRIPTION CONTAINING A LIMIT PHRASE IS STILL A DESCRIPTION — the keyword-probe trap", () => {
+test("A DESCRIPTION CONTAINING A LIMIT PHRASE IS STILL A DESCRIPTION — the keyword-probe trap", () => {
   // e2e's warning on the original measurement: "a keyword probe on prose is exactly the instrument
   // that misleads". This is that trap, made into an assertion.
   //
@@ -73,7 +73,7 @@ test("#919 A DESCRIPTION CONTAINING A LIMIT PHRASE IS STILL A DESCRIPTION — th
   }
 });
 
-test("#919 a note that is neither is UNCLEAR, and unclear is a finding rather than a pass", () => {
+test("a note that is neither is UNCLEAR, and unclear is a finding rather than a pass", () => {
   // The third arm, and the reason there are three. A two-way classifier has to guess, and guessing on
   // prose is how the probe misleads. Absence is a finding: a note nobody can read as either shape is
   // not a note that satisfies the instruction.
@@ -86,7 +86,7 @@ test("#919 a note that is neither is UNCLEAR, and unclear is a finding rather th
   assert.equal(classifyGroundsNote(undefined).verdict, "unclear");
 });
 
-test("#919 the grounds arm recognises the forms the instruction actually asks for", () => {
+test("the grounds arm recognises the forms the instruction actually asks for", () => {
   // VALIDATED AGAINST CONSTRUCTED EXAMPLES ONLY, and that is stated rather than glossed: the corpus
   // contains NO note that states what could not be established — that absence IS the defect, so there
   // is nothing real to validate this arm against. The first real one to arrive is worth re-reading
@@ -106,7 +106,7 @@ test("#919 the grounds arm recognises the forms the instruction actually asks fo
   }
 });
 
-test("#919 the verdict set is closed, and every answer carries a why a reader can act on", () => {
+test("the verdict set is closed, and every answer carries a why a reader can act on", () => {
   const samples = [...REAL_NOTES, "", "Could not establish anything.", "some prose with no shape at all"];
   for (const s of samples) {
     const r = classifyGroundsNote(s);

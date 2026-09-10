@@ -31,7 +31,7 @@ const SKILL = readFileSync(new URL("../skills/prelim-variants/SKILL.md", import.
 // longer exists.
 const literalStamp = (t) => (!termMarkupIssue(t) && termShapeIssue(t) ? { term_literal: true } : {});
 
-test("#1622 the MARK carrying a bracketed element is already shielded — no new flag is needed", () => {
+test("the MARK carrying a bracketed element is already shielded — no new flag is needed", () => {
   // The case the issue was filed about, at the place it actually arrives. A device mark recorded with
   // its Vienna code is manifest provenance, so it takes term_literal automatically.
   assert.deepEqual(literalStamp("DOLPHIN DEVICE (VIENNA 03.09.14)"), { term_literal: true });
@@ -39,7 +39,7 @@ test("#1622 the MARK carrying a bracketed element is already shielded — no new
   assert.deepEqual(literalStamp("**BOLD**"), {});
 });
 
-test("#1622 a model-authored variant is still refused — the lint is not weakened", () => {
+test("a model-authored variant is still refused — the lint is not weakened", () => {
   // The whole point of not adding the flag to the manifest: the earliest, cheapest stage must not be
   // able to self-certify a bypass of the lint that catches its own mistakes.
   for (const t of ["ZEPHYR (root)", "ORVELLA (root)", "ONE; TWO"]) {
@@ -48,7 +48,7 @@ test("#1622 a model-authored variant is still refused — the lint is not weaken
   assert.equal(variantTermIssue("DOLPHIN DEVICE"), null, "and an ordinary mark still compiles");
 });
 
-test("#1622 the refusal names a route for BOTH readings, not just the label one", () => {
+test("the refusal names a route for BOTH readings, not just the label one", () => {
   const v = variantTermIssue("ZEPHYR (root)");
   // The label reading, which was always there and stays.
   assert.match(v, /author the mark-shaped term\(s\) it stands for/);
@@ -62,7 +62,7 @@ test("#1622 the refusal names a route for BOTH readings, not just the label one"
   assert.equal(/remove the punctuation|strip the/i.test(v), false);
 });
 
-test("#1622 the variants doctrine states the route, so an author meeting the refusal has somewhere to go", () => {
+test("the variants doctrine states the route, so an author meeting the refusal has somewhere to go", () => {
   // A refusal message is read once, by a model mid-turn. The skill is the surface that stops the value
   // being written in the first place, and it carried nothing about term shape at all before this.
   const FLAT = SKILL.replace(/\s+/g, " ");

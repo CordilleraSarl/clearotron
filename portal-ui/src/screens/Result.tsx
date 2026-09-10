@@ -26,6 +26,7 @@ import { askAiOffer } from '../contract/askAi.ts'
 import { useLoad } from '../state/useApi.ts'
 import { resultPath } from '../nav/nav.config.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { runKey } from '../contract/genericKey.ts'
 
 /**
  * Size the frame to its document, and drive the document's own controls from outside it.
@@ -353,7 +354,7 @@ function ExportMenu({
  * `<script>`, because React escapes every text node and nothing here is ever markup.
  */
 /* / — THE SUMMARY'S BLOCKS, not only its paragraphs.
-   The assess seat writes sub-headers and bullets inside the summary now (owner ruling 2026-08-31:
+   The assess seat writes sub-headers and bullets inside the summary now (ruling 2026-08-31:
    "keep the length, add the structure"). <Prose> renders INLINE spans only, so before this a reader met
    the literal characters `##` and `-` on the page the ruling was about.
    A chunk with no block line renders as the same <p> it always did — which is what keeps an already
@@ -543,7 +544,7 @@ export function Result({
           {heading}
         </h1>
         <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-          <span data-anon="mark">{ctx.ownerName(run.account)}</span>
+          <span data-anon="mark">{ctx.ownerName(runKey(run))}</span>
           {/* NOT `data-anon` — a product name is what we sell, not what a client bought it for. The
               screen-share blur covers the mark and the owner; blurring "Full country search" would hide
               the one word that tells the reader which of two open reads is in front of them. */}
@@ -651,7 +652,7 @@ export function Result({
         </div>
       ) : run.reports.length > 1 ? (
         <>
-        {/* THE CROSS-MARK ASSESSMENT, and it leads (, owner ruling 2026-08-26).
+        {/* THE CROSS-MARK ASSESSMENT, and it leads (, ruling 2026-08-26).
             This paragraph is the only place the names are read against each other: the engine composes
             it on every grouped run, deliberately keeps it OFF each per-mark document (where it would be
             another name's answer under this name's heading), and wrote it to a file no route reached.

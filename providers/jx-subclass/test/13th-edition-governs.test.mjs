@@ -3,7 +3,7 @@
 //
 // — WHICH EDITION ANSWERS A CHINA SIMILAR-GROUP LOOKUP.
 //
-// Three sources gave three codes for one good. Owner ruling, 2026-08-20: "13th edition. done." — option
+// Three sources gave three codes for one good. Ruling, 2026-08-20: "13th edition. done." — option
 // 2, accepting that the 12th's assignments lose authority WHEREVER THE EDITIONS DISAGREE.
 //
 // That last clause is what these arms are about, because disagreement is not the only case:
@@ -67,7 +67,7 @@ function db() {
 
 const ask = (d, term) => subclassesFor(d, { country: "CN", term, niceClass: 9 });
 
-test("#1391 THE FIXTURE IS REAL — the two editions genuinely disagree about the specimen", () => {
+test("THE FIXTURE IS REAL — the two editions genuinely disagree about the specimen", () => {
   // Without this the governing arm below could pass over two tables that say the same thing.
   const d = db();
   const twelfth = d.prepare("SELECT group_code FROM cn_goods WHERE no = '090726'").get();
@@ -77,7 +77,7 @@ test("#1391 THE FIXTURE IS REAL — the two editions genuinely disagree about th
   assert.notEqual(twelfth.group_code, thirteenth.code, "the fixture no longer disagrees, so nothing below is about anything");
 });
 
-test("#1391 the 13th edition GOVERNS where the two disagree", () => {
+test("the 13th edition GOVERNS where the two disagree", () => {
   const r = ask(db(), "3D 眼镜");
   assert.equal(r.status, "ok");
   assert.deepEqual(r.codes, ["0911"],
@@ -89,7 +89,7 @@ test("#1391 the 13th edition GOVERNS where the two disagree", () => {
   assert.match(r.source, /13th edition governs/);
 });
 
-test("#1391 CNIPA's own wording still FINDS the good — the 区分表 is the matcher, not the decider", () => {
+test("CNIPA's own wording still FINDS the good — the 区分表 is the matcher, not the decider", () => {
   // The reason cn_goods is consulted at all: the two offices name the same basic number differently
   // three times in four, and a Chinese client writes CNIPA's wording. If the concordance became the
   // matcher too, this term would resolve to nothing.
@@ -99,7 +99,7 @@ test("#1391 CNIPA's own wording still FINDS the good — the 区分表 is the ma
   assert.equal(r.matched[0].printed_page, 86, "the printed page rides on the row, so a lawyer can still open it");
 });
 
-test("#1391 a good the 13th has never heard of is answered by the 12th, and the answer says why", () => {
+test("a good the 13th has never heard of is answered by the 12th, and the answer says why", () => {
   // 1,858 of them on the committed data, 1,757 being the ※C-goods. "Loses authority where they disagree"
   // is not "is deleted": there is nothing here for the 13th to disagree WITH.
   const r = ask(db(), "中国专用商品");
@@ -111,7 +111,7 @@ test("#1391 a good the 13th has never heard of is answered by the 12th, and the 
     "the answer does not say the 13th simply has no row here — a reader would read a 12th-edition code as a ruled one");
 });
 
-test("#1391 where the editions AGREE the answer is unchanged, and it is still the 13th that ruled", () => {
+test("where the editions AGREE the answer is unchanged, and it is still the 13th that ruled", () => {
   const r = ask(db(), "计算机");
   assert.deepEqual(r.codes, ["0901"]);
   assert.equal(r.matched[0].code_edition, 13,

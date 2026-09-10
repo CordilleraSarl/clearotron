@@ -32,7 +32,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePortalService, PORTAL_JOB_FIELDS } from "../portal-service.mjs";
 
-const GRANTS = { tenants: { celta: { accounts: ["generic"], users: {} } } };
+// Generic is exempt from the daily cap, so ordering it stays with a person who has access to everything —
+// which this principal holds by its own entry.
+// `aurora` is here for the one arm that needs a COMPANY run: `tenant` is stamped only on a Generic one.
+const GRANTS = { tenants: { celta: { accounts: ["generic", "aurora"], users: {} } },
+  people: { "staff@example-firm.com": { run: true, manage: true, everything: true } } };
 const PRINCIPAL = { email: "staff@example-firm.com" };
 
 /**
@@ -45,7 +49,6 @@ async function storedJob(body) {
   const svc = makePortalService({
     secret: "s".repeat(32),
     grants: GRANTS,
-    staffDomains: ["example-firm.com"],
     trigger: async (job) => { sent = job; return { ok: true, id: job.id }; },
     audit: () => {},
   });
@@ -55,11 +58,11 @@ async function storedJob(body) {
   };
   const req = { ...base, ...body };
   const plan = await svc.route("POST", "/portal/api/run/plan", PRINCIPAL, req);
-  if (plan.status !== 200) return { sent: null, refused: plan.json?.errors ?? plan.json };
+  if (plan.status !== 200) return { sent: null, refused: plan.json?.errors ?? plan.json, status: plan.status };
   const run = await svc.route("POST", "/portal/api/run", PRINCIPAL,
     { ...req, confirmationToken: plan.json.confirmationToken });
-  if (run.status !== 200) return { sent: null, refused: run.json?.errors ?? run.json };
-  return { sent, refused: null };
+  if (run.status !== 200) return { sent: null, refused: run.json?.errors ?? run.json, status: run.status };
+  return { sent, refused: null, status: run.status };
 }
 
 /**
@@ -115,12 +118,12 @@ const CARRIES = [...PORTAL_JOB_FIELDS.carries];
 const STAMPED = [...PORTAL_JOB_FIELDS.stamped];
 const REQUESTER_FIELDS = CARRIES.filter((f) => !STAMPED.includes(f));
 
-test("#497 `stamped` is a subset of `carries` — a field cannot be door-stamped and not carried", () => {
+test("`stamped` is a subset of `carries` — a field cannot be door-stamped and not carried", () => {
   const strays = STAMPED.filter((f) => !CARRIES.includes(f));
   assert.deepEqual(strays, [], `stamped names ${strays.join(", ")}, which carries does not`);
 });
 
-test("#497 every carried field has a probe — the set under test is DERIVED, so it cannot go stale", () => {
+test("every carried field has a probe — the set under test is DERIVED, so it cannot go stale", () => {
   // This is the assertion that makes the rest of the file self-maintaining. Without it, the next field
   // added to `carries` is simply not measured, and the guard becomes the thing it replaced.
   assert.deepEqual(
@@ -131,7 +134,7 @@ test("#497 every carried field has a probe — the set under test is DERIVED, so
   );
 });
 
-test("#497 EVERY REQUESTER FIELD THE PORTAL DECLARES CARRIED ARRIVES ON THE STORED JOB", async () => {
+test("EVERY REQUESTER FIELD THE PORTAL DECLARES CARRIED ARRIVES ON THE STORED JOB", async () => {
   const missing = [];
   for (const field of REQUESTER_FIELDS) {
     const probe = PROBES[field];
@@ -160,30 +163,51 @@ test("#497 EVERY REQUESTER FIELD THE PORTAL DECLARES CARRIED ARRIVES ON THE STOR
     + missing.join("\n  "));
 });
 
-test("#497 a stamped field takes the DOOR's value and ignores the body's — the tenancy wall", async () => {
-  // The other half of what `carries` means. These five arrive, and they arrive as the door's answer:
-  // a body that could set them would let a caller file against another brand owner, or decline its own
-  // allowance cap.
+test("a stamped field takes the DOOR's value and ignores the body's — the tenancy wall", async () => {
+  // The other half of what `carries` means. These six arrive, and they arrive as the door's answer:
+  // a body that could set them would let a caller file against another brand owner or another
+  // organisation, or decline its own allowance cap.
   const lies = {
     id: "attacker-chosen-id", profileKey: "zephyr", forwarder: "email",
-    forwarderEmail: "boss@elsewhere.example", clientPrincipal: false,
+    forwarderEmail: "boss@elsewhere.example", clientPrincipal: false, tenant: "elsewhere-org",
   };
   assert.deepEqual(Object.keys(lies).sort(), [...STAMPED].sort(),
     "every stamped field needs a lie to be driven with — otherwise it is declared and unmeasured");
 
-  const { sent, refused } = await storedJob(lies);
-  assert.ok(sent, `the request was refused, so nothing was measured — ${JSON.stringify(refused)}`);
-  assert.equal(sent.profileKey, "generic", "the account comes from the verified principal, never the body");
-  assert.equal(sent.forwarder, "portal", "the door names itself");
-  assert.equal(sent.forwarderEmail, PRINCIPAL.email, "from the verified identity");
-  assert.notEqual(sent.id, "attacker-chosen-id", "the id is minted by the door");
-  assert.ok(sent.id, "…and it is there");
-  // clientPrincipal is stamped ONLY for a client role, positive-only. A staff principal carries none,
-  // which is the correct answer here and is asserted so the polarity cannot silently invert.
-  assert.equal(sent.clientPrincipal, undefined, "a staff principal buys no client allowance stamp");
+  const doorWon = (sent, account) => {
+    assert.equal(sent.profileKey, account, "the account comes from the verified principal, never the body");
+    assert.equal(sent.forwarder, "portal", "the door names itself");
+    assert.equal(sent.forwarderEmail, PRINCIPAL.email, "from the verified identity");
+    assert.notEqual(sent.id, "attacker-chosen-id", "the id is minted by the door");
+    assert.ok(sent.id, "…and it is there");
+    // clientPrincipal is stamped for everyone but a person with access to everything, positive-only. This
+    // principal has that access and carries none, which is the correct answer here and is asserted so the
+    // polarity cannot silently invert.
+    assert.equal(sent.clientPrincipal, undefined, "a person with access to everything buys no client allowance stamp");
+  };
+
+  // A COMPANY run, with all six lies at once. `tenant` says which organisation's Generic a run is filed
+  // under, so on a company run the door's value is ABSENT — and the body's must not take its place.
+  const company = await storedJob({ ...lies, account: "aurora" });
+  assert.ok(company.sent, `the request was refused, so nothing was measured — ${JSON.stringify(company.refused)}`);
+  doorWon(company.sent, "aurora");
+  assert.ok(!("tenant" in company.sent), `a body tenant reached a company run's job as ${JSON.stringify(company.sent.tenant)}`);
+
+  // A GENERIC run: the stored job carries the organisation resolved from the principal — celta, the one
+  // organisation it sees — while the other five lies lose as they do above.
+  const generic = await storedJob(Object.fromEntries(Object.entries(lies).filter(([k]) => k !== "tenant")));
+  assert.ok(generic.sent, `the request was refused, so nothing was measured — ${JSON.stringify(generic.refused)}`);
+  doorWon(generic.sent, "generic");
+  assert.equal(generic.sent.tenant, "celta", "a Generic run is filed under the principal's organisation");
+
+  // …and on a Generic run a body naming an organisation the person does not see does not lose quietly:
+  // it is a 404, and nothing is queued.
+  const foreign = await storedJob({ tenant: "elsewhere-org" });
+  assert.equal(foreign.status, 404, `an organisation outside the person's access: ${JSON.stringify(foreign.refused)}`);
+  assert.equal(foreign.sent, null, "and nothing reached the queue");
 });
 
-test("#497 msgId and conversationId do not reach the job, whatever the body says", async () => {
+test("msgId and conversationId do not reach the job, whatever the body says", async () => {
   // They are the email door's fields and this door has no message. The old code wrote them as null and
   // stripped them again; the test that should have caught it was a completeness check, and a
   // declared-and-nulled field is complete.

@@ -46,7 +46,7 @@ const LEGIT = new Map([
 
 const read = (f) => { try { return readFileSync(join(ROOT, f), "utf8"); } catch { return null; } };
 
-test("273 no run codename drawn from the generator's vocabulary reaches a tracked file", (ctx) => {
+test("no run codename drawn from the generator's vocabulary reaches a tracked file", (ctx) => {
   const corpus = trackedFiles(GUARD, { root: ROOT });
   if (!corpus) return ctx.skip(skipReason(GUARD));
 
@@ -73,7 +73,7 @@ test("273 no run codename drawn from the generator's vocabulary reaches a tracke
     + `ship — the association is what leaves with them, not the words.\n  ` + hits.slice(0, 25).join("\n  "));
 });
 
-test("273 the sweep fires on a planted codename — it is not reporting clean on a pattern that matches nothing", () => {
+test("the sweep fires on a planted codename — it is not reporting clean on a pattern that matches nothing", () => {
   // Runs the SAME matcher over a synthetic corpus rather than the tree, so what this proves is that the
   // matcher fires. A guard whose only evidence is a clean tree cannot tell working from blind.
   const { adj, noun, rx } = codenameRegex(ROOT);
@@ -85,7 +85,7 @@ test("273 the sweep fires on a planted codename — it is not reporting clean on
     "the matcher reports a hit on text carrying no codename, so its zero above proves nothing");
 });
 
-test("273 every exemption still names something that exists, and says why", (ctx) => {
+test("every exemption still names something that exists, and says why", (ctx) => {
   // An exemption for a deleted file is an exemption nobody notices is doing nothing — and the next file
   // to take that path inherits a hole with a plausible reason attached to it.
   const corpus = trackedFiles(GUARD, { root: ROOT });
@@ -107,7 +107,7 @@ test("273 every exemption still names something that exists, and says why", (ctx
 // Both are clean on this tree today, so these arms cost nothing now. That is the point of adding them
 // now rather than the day one is not: a guard written in response to a leak is a guard written late.
 
-test("273 no real matter number reaches a tracked file", (ctx) => {
+test("no real matter number reaches a tracked file", (ctx) => {
   const corpus = trackedFiles(GUARD, { root: ROOT });
   if (!corpus) return ctx.skip(skipReason(GUARD));
   const hits = [];
@@ -122,7 +122,7 @@ test("273 no real matter number reaches a tracked file", (ctx) => {
     + `these are not.\n  ` + hits.slice(0, 25).join("\n  "));
 });
 
-test("273 no real noref run id reaches a tracked file", (ctx) => {
+test("no real noref run id reaches a tracked file", (ctx) => {
   const corpus = trackedFiles(GUARD, { root: ROOT });
   if (!corpus) return ctx.skip(skipReason(GUARD));
   const hits = [];
@@ -137,7 +137,7 @@ test("273 no real noref run id reaches a tracked file", (ctx) => {
     + `allowed.\n  ` + hits.slice(0, 25).join("\n  "));
 });
 
-test("273 both of those sweeps fire on a plant — a clean tree is not evidence they work", () => {
+test("both of those sweeps fire on a plant — a clean tree is not evidence they work", () => {
   // These two pass on today's tree, so without a plant they are indistinguishable from two sweeps that
   // match nothing at all. That is the state the codename detector was in for weeks.
   assert.deepEqual(matterHits("a line naming tmp3456 in the clear"), ["tmp3456"],

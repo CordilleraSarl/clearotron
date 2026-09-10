@@ -67,7 +67,7 @@ export function jqStringsLosingABackslash(files, read) {
   return out;
 }
 
-test("#1889 no jq program in a JS string loses its backslash — the corpus", (ctx) => {
+test("no jq program in a JS string loses its backslash — the corpus", (ctx) => {
   const files = sources();
   if (files === null) return ctx.skip(`${GUARD}: not a git checkout — the corpus cannot be read`);
   assert.ok(!files.includes(SELF), "the self-exclusion must actually apply, or the arm below is testing "
@@ -83,7 +83,7 @@ test("#1889 no jq program in a JS string loses its backslash — the corpus", (c
     + "result — never reaches a log.");
 });
 
-test("#1889 the detector fires on the exact line that shipped, and spares the correct one", () => {
+test("the detector fires on the exact line that shipped, and spares the correct one", () => {
   // Driven against both spellings, because a detector that cannot tell them apart is worse than none.
   const BROKEN = String.raw`      '[.[]|select(.draft==false)|"\(.number) \(.head.sha)"]|join("|")').split("|")`;
   const FIXED = String.raw`      '[.[]|select(.draft==false)|"\\(.number) \\(.head.sha)"]|join("|")').split("|")`;

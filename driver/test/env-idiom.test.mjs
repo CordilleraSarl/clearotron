@@ -103,7 +103,7 @@ test("retired env vars WARN rather than vanish, and name the file to edit", () =
 // warned about, and not looked for", because a box reaches this code through the install and the two
 // boxes that predated the rename are rebuilt. There is no population holding those lines. What is left
 // to check is the thing that can still rot: the two lists agreeing, in the one spelling there is.
-test("#1014 every retired variable is live in BOTH lists, in the one spelling there is", () => {
+test("every retired variable is live in BOTH lists, in the one spelling there is", () => {
   nonEmpty(Object.keys(RETIRED_NEW_SPELLINGS), "no retired variable was checked — the loop would pass over an empty list");
   for (const [now, why] of Object.entries(RETIRED_NEW_SPELLINGS)) {
     assert.ok(retiredEnvWarnings({ [now]: "x" }).length === 1,

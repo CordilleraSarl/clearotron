@@ -27,7 +27,7 @@ const CLEARANCE = readFileSync(join(SKILLS, "prelim-search/report-prose.md"), "u
 const KNOCKOUT = readFileSync(join(SKILLS, "knockout-assess/SKILL.md"), "utf8");
 const BOTH = [["the clearance prose standard", CLEARANCE], ["the knockout doctrine", KNOCKOUT]];
 
-test("333 both products state the rule, and neither is the only one that does", () => {
+test("both products state the rule, and neither is the only one that does", () => {
   for (const [what, text] of BOTH) {
     assert.match(text, /two-register rule|Two registers/i, `${what} does not state the rule`);
     assert.match(text, new RegExp(`${SENTENCE_WORD_LIMIT} words`),
@@ -35,7 +35,7 @@ test("333 both products state the rule, and neither is the only one that does", 
   }
 });
 
-test("333 every worked swap appears in BOTH copies, in the same words", () => {
+test("every worked swap appears in BOTH copies, in the same words", () => {
   // The copies exist because the two seats read different files. They drift the moment one is edited
   // alone, and a seat taught half a rule writes half a report.
   for (const [term, plain] of PLAIN_FORMS) {
@@ -49,7 +49,7 @@ test("333 every worked swap appears in BOTH copies, in the same words", () => {
   }
 });
 
-test("333 the code the reviewer uses and the doctrine the seat reads name the same terms", () => {
+test("the code the reviewer uses and the doctrine the seat reads name the same terms", () => {
   // The third copy is `plain-register.mjs`, and it is the one that would drift silently: a term added
   // to the module and not to the doctrine flags a seat for a rule it was never given.
   for (const [term] of PLAIN_FORMS) {
@@ -59,7 +59,7 @@ test("333 the code the reviewer uses and the doctrine the seat reads name the sa
   }
 });
 
-test("333 both copies refuse the cheap wrong fix in the same words", () => {
+test("both copies refuse the cheap wrong fix in the same words", () => {
   // "Reject: shortening by dropping the reasons." A seat told only to shorten will drop the why, which
   // is the one thing the reader needed, and the result passes every length check.
   for (const [what, text] of BOTH) {
@@ -68,7 +68,7 @@ test("333 both copies refuse the cheap wrong fix in the same words", () => {
   }
 });
 
-test("333 neither copy claims a gate fails on this", () => {
+test("neither copy claims a gate fails on this", () => {
   // It is presentation. A doctrine that reads as a delivery gate makes a seat write to pass rather than
   // to be read, which is the defect the prose standard's own header warns against.
   for (const [what, text] of BOTH) {

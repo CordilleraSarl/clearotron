@@ -52,13 +52,13 @@ async function refusalFrom(fn) {
   assert.fail("expected a Refusal, nothing was thrown");
 }
 
-test("1911 the refusal helper fails when nothing throws — its own guard rail, driven", async () => {
+test("the refusal helper fails when nothing throws — its own guard rail, driven", async () => {
   await assert.rejects(() => refusalFrom(async () => {}), /nothing was thrown/);
 });
 
 // ── THE TREE REFUSES BEFORE ANYTHING REACHES DISK ─────────────────────────────────────────────────
 
-test("1911 A PROJECT UNDER AN UNKNOWN BRAND OWNER IS REFUSED, and says it would stop the whole tree", async () => {
+test("A PROJECT UNDER AN UNKNOWN BRAND OWNER IS REFUSED, and says it would stop the whole tree", async () => {
   const dir = store();
   const e = await refusalFrom(() => run(dir, ["nosuchowner", "japan-launch", "--platforms", "amazon.co.jp"]));
   assert.match(e.message, /no brand owner "nosuchowner"/, "names the owner that is missing");
@@ -67,7 +67,7 @@ test("1911 A PROJECT UNDER AN UNKNOWN BRAND OWNER IS REFUSED, and says it would 
   assert.equal(existsSync(join(dir, "projects", "nosuchowner")), false, "and nothing was created on the way");
 });
 
-test("1911 an overlay the loader would reject is refused, in the loader's own words", async () => {
+test("an overlay the loader would reject is refused, in the loader's own words", async () => {
   const dir = store();
   // `defaultProduct` is a project field, and a value outside the offering hard-fails at load. Borrowed
   // rather than restated: whatever the tree refuses must be refused here, in the same words.
@@ -77,7 +77,7 @@ test("1911 an overlay the loader would reject is refused, in the loader's own wo
   assert.equal(existsSync(join(dir, "projects", "northwind", "japan-launch.json")), false);
 });
 
-test("1911 a project that already exists is refused — this command creates, it never overwrites", async () => {
+test("a project that already exists is refused — this command creates, it never overwrites", async () => {
   const dir = store();
   await run(dir, ["northwind", "japan-launch", "--platforms", "amazon.co.jp"]);
   const e = await refusalFrom(() => run(dir, ["northwind", "japan-launch", "--platforms", "amazon.com"]));
@@ -89,7 +89,7 @@ test("1911 a project that already exists is refused — this command creates, it
 
 // ── THE FIELD SET IS THE CONTRACT ─────────────────────────────────────────────────────────────────
 
-test("1911 a CUSTOMER-ONLY key is refused BY NAME, not as a typo", async () => {
+test("a CUSTOMER-ONLY key is refused BY NAME, not as a typo", async () => {
   // The generic deny-unknown message would send the reader hunting for a misspelling in a key they
   // spelled correctly. These keys are not misspelled; they are not overlayable, and that is a different
   // sentence.
@@ -100,17 +100,17 @@ test("1911 a CUSTOMER-ONLY key is refused BY NAME, not as a typo", async () => {
   for (const k of PROJECT_KEYS) assert.ok(e.message.includes(k), `the refusal lists what IS settable (${k})`);
 });
 
-test("1911 a key that is neither project nor customer is refused as the typo it is", async () => {
+test("a key that is neither project nor customer is refused as the typo it is", async () => {
   const e = await refusalFrom(async () => assertOverlayable({ platfroms: ["amazon.com"] }));
   assert.match(e.message, /not a project field/);
   assert.doesNotMatch(e.message, /belongs to the brand owner/, "a typo is not a governance refusal");
 });
 
-test("1911 projectName is META and passes the field gate — the loader lifts it out before the field set", () => {
+test("projectName is META and passes the field gate — the loader lifts it out before the field set", () => {
   assert.doesNotThrow(() => assertOverlayable({ projectName: "Japan launch", platforms: ["amazon.co.jp"] }));
 });
 
-test("1911 a project that sets NOTHING is refused — it would change nothing about how the engagement searches", async () => {
+test("a project that sets NOTHING is refused — it would change nothing about how the engagement searches", async () => {
   const dir = store();
   const e = await refusalFrom(() => run(dir, ["northwind", "empty-project"]));
   assert.match(e.message, /sets nothing/);
@@ -119,7 +119,7 @@ test("1911 a project that sets NOTHING is refused — it would change nothing ab
 
 // ── WHAT IT WRITES, AND WHAT IT TELLS THE OPERATOR ────────────────────────────────────────────────
 
-test("1911 a real add writes a SPARSE overlay and names what the project inherits", async () => {
+test("a real add writes a SPARSE overlay and names what the project inherits", async () => {
   const dir = store();
   const said = [];
   const r = await run(dir, ["northwind", "japan-launch", "--platforms", "amazon.co.jp", "--jurisdictions", "jp,kr"], said);
@@ -133,7 +133,7 @@ test("1911 a real add writes a SPARSE overlay and names what the project inherit
     "and how to confirm it, which doctor can now actually answer");
 });
 
-test("1911 --dry-run writes nothing and still answers the question the operator has", async () => {
+test("--dry-run writes nothing and still answers the question the operator has", async () => {
   const dir = store();
   const said = [];
   const r = await run(dir, ["northwind", "japan-launch", "--platforms", "amazon.co.jp", "--dry-run"], said);
@@ -143,7 +143,7 @@ test("1911 --dry-run writes nothing and still answers the question the operator 
   assert.ok(said.some((l) => /inherits from northwind/.test(l)), "the inheritance line is the point of a dry run");
 });
 
-test("1911 the project the command wrote is one the loader accepts", async () => {
+test("the project the command wrote is one the loader accepts", async () => {
   // THE ROUND TRIP, and the only arm that proves the write and the reader agree. Everything above
   // asserts against the validator; this reads the tree back through the loader the deployment uses.
   const dir = store();
@@ -159,13 +159,13 @@ test("1911 the project the command wrote is one the loader accepts", async () =>
 
 // ── THE PARSER ────────────────────────────────────────────────────────────────────────────────────
 
-test("1911 an unknown option is refused rather than ignored", async () => {
+test("an unknown option is refused rather than ignored", async () => {
   const e = await refusalFrom(async () => parseArgs(["northwind", "japan-launch", "--platfroms", "amazon.com"]));
   assert.match(e.message, /--platfroms/, "names what was typed");
   assert.match(e.message, /--platforms/, "and what exists");
 });
 
-test("1911 lists are split and normalised the way the validators expect them", () => {
+test("lists are split and normalised the way the validators expect them", () => {
   const a = parseArgs(["c", "p", "--platforms", " Amazon.COM , gnc.com ", "--jurisdictions", "jp, kr"]);
   assert.deepEqual(a.platforms, ["amazon.com", "gnc.com"], "platforms are hostnames — lower-cased");
   assert.deepEqual(a.jurisdictions, ["JP", "KR"], "jurisdictions are codes — upper-cased");

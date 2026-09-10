@@ -394,7 +394,7 @@ test("WITH NO LEDGER the artifact says so — an absence is not a zero", async (
 //   · `refusalReasons`        — every refusal and drop the LEDGER recorded. Fails on the old code.
 //   · `unruledRefusalReasons` — the reasons met by rows STILL UNRULED. Empty here, and correctly so;
 //                               this is the old field's exact population under a name that says it.
-test("#1171 — a discharged run still records what the seat MET, and the two populations are named apart", async () => {
+test("a discharged run still records what the seat MET, and the two populations are named apart", async () => {
   const { recordConnotationAudit } = await import("../pipeline.mjs");
   const rd = mkdtempSync(join(tmpdir(), "ct-1171-audit-"));
   mkdirSync(driverDir(rd), { recursive: true });
@@ -470,7 +470,7 @@ test("#1171 — a discharged run still records what the seat MET, and the two po
     "while the ledger it was folded from holds three reason types the whole time");
 });
 
-test("#1171 — the ledger helpers report an absence as an absence", () => {
+test("the ledger helpers report an absence as an absence", () => {
   assert.deepEqual(ledgerReasonHistogram(null), {}, "no ledger is an empty histogram, never a throw");
   assert.deepEqual(ledgerReasonHistogram({ calls: 0, byRow: {} }), {});
   assert.deepEqual(ledgerRows(null), []);

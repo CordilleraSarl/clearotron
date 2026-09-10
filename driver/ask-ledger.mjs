@@ -118,7 +118,7 @@ export function returnedPhrase(info) {
 }
 
 /**
- * — MAY AN EXECUTED RECALL PROBE DISCHARGE ON ITS OWN EXECUTION? Owner ruling 2026-08-19: "no".
+ * — MAY AN EXECUTED RECALL PROBE DISCHARGE ON ITS OWN EXECUTION? Ruling 2026-08-19: "no".
  *
  * A recall ask discharges only when what came back is DEALT WITH. `kind:executed` alone discharges
  * nothing — and the failure it hid is the one this issue was filed on: a HIGH-graded live US
@@ -597,7 +597,7 @@ export function deliveredMarks(findingsJsonText) {
 const normMark = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
 /**
- * Owner ruling 2026-09-07, Option A, worded ABOUT THE MARK: a recall ask may close
+ * Ruling 2026-09-07, Option A, worded ABOUT THE MARK: a recall ask may close
  * as immaterial only when the mark it went looking for is in the client's findings. Otherwise the mark
  * is owed a finding and the ask stays open.
  *

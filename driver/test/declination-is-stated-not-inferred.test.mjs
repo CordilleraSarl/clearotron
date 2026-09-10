@@ -217,7 +217,7 @@ test("the two reason_source values this build turns on mean opposite things", ()
 
 // ── the guarantee, asserted on the seam's own decision ─────────────────────────────────────────
 
-test("#703: a stated decision is recorded AS STATED — step-stated, carrying the seat's own grounds", () => {
+test("a stated decision is recorded AS STATED — step-stated, carrying the seat's own grounds", () => {
   const declined = { present: true, byUri: new Map([["/mark/us/a3", {
     uri: "/mark/us/a3", mark: "THISTLEDOWN BAKERY", reason: "unrelated-goods", grounds: "Class 30 bakery goods against a class 9/42 matter.",
   }]]) };
@@ -227,7 +227,7 @@ test("#703: a stated decision is recorded AS STATED — step-stated, carrying th
   assert.match(r.detail, /Class 30 bakery goods/, "the seat's own grounds must ride into the trace — the reason token alone is what step-silent already was");
 });
 
-test("#703: an UNSTATED decision is recorded as `absent`, which is the whole fix", () => {
+test("an UNSTATED decision is recorded as `absent`, which is the whole fix", () => {
   // This is the assertion exists for. Before it, this row read `step-silent`, which REASON_SOURCES
   // defines as "NOT a defect" — so `unreasoned` never counted it, the predelivery lint never named it,
   // and no doubt was ever minted for it. 102 records in one round, one of them a gold mark.
@@ -237,7 +237,7 @@ test("#703: an UNSTATED decision is recorded as `absent`, which is the whole fix
   assert.notEqual(r.reason_source, "step-silent");
 });
 
-test("#703: 'synthesis recorded nothing at all' and 'synthesis skipped this one' are different facts", () => {
+test("'synthesis recorded nothing at all' and 'synthesis skipped this one' are different facts", () => {
   // An absence is a finding, so the two nothings must not read alike: one is a stage that never called
   // the tool, the other is a stage that called it and passed this record over.
   const noLedger = seamReasonFor({ present: false, byUri: new Map() }, "/mark/gt/a1");
@@ -292,7 +292,7 @@ test("the dictation names the tool's ACTUAL refusal, and no other — the drift 
 
 // ── ECONOMY IS NOT A REASON ABOUT A LIVE IN-CLASS MARK ───────────────────────────────────────────────
 //
-// Owner ruling 2026-09-07. `not-worth-the-line` says the report had no room; it says nothing about the
+// Ruling 2026-09-07. `not-worth-the-line` says the report had no room; it says nothing about the
 // record. On a live registration inside one of the matter's own instructed classes that is the one thing
 // the seat may not say — the reader is paying for a judgment about that mark.
 //

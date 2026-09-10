@@ -72,7 +72,7 @@ import { variantForms, VARIANT_CAP } from "./register-variants.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";           // — provider-derived, never CLEAROTRON_DATABASE
 
 /** Records per MARK, across every listed term. A bound on cost, on artifact size and on what a reader
- *  can usefully hold — and it is stated wherever the list renders, per the owner ruling. */
+ *  can usefully hold — and it is stated wherever the list renders, per the ruling. */
 export const RECORD_CAP = 100;
 
 /** The floor on a single term's share of the cap. Without it a name generating twelve forms would give

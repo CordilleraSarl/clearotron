@@ -24,7 +24,7 @@ test("auth toggle: subscription (default) strips ANTHROPIC_API_KEY; api-key mode
   assert.equal(spawnEnv({ ANTHROPIC_API_KEY: "sk-x", CLEAROTRON_AI_BILLING: "api-key" }).ANTHROPIC_API_KEY, "sk-x", "api-key fallback keeps it");
 });
 
-test("2070: CLAUDE_CODE_OAUTH_TOKEN RIDES THROUGH under subscription — the headless sign-in's whole mechanism", () => {
+test("CLAUDE_CODE_OAUTH_TOKEN RIDES THROUGH under subscription — the headless sign-in's whole mechanism", () => {
   // The setup-token route only works because spawnEnv is a spread that strips exactly one thing: the
   // token INSTALL.md's headless sign-in produces has to reach the claude subprocess from the env file,
   // and until this arm nothing declared that. A future spawnEnv that allowlists, or strips OAuth vars
@@ -120,7 +120,7 @@ test("thinking → effort remap", () => {
 // This is the drift test that keeps them one table: the same duplicate-plus-pin discipline
 // engine.common.test.mjs uses for WRITE_DISCIPLINE, because anthropic-agent.mjs deliberately imports
 // nothing but node built-ins and cannot share a leaf module.
-test("#238: `off` means ONE thing across both engines, and the tables may differ only at `max`", () => {
+test("`off` means ONE thing across both engines, and the tables may differ only at `max`", () => {
   for (const tier of CROSS_ENGINE_EFFORT_TIERS)
     assert.equal(EFFORT_TABLE[tier], CODEX_EFFORT_TABLE[tier],
       `tier "${tier}" must map to the same effort on both engines — it is the same instruction`);
@@ -450,7 +450,7 @@ test("NO-PROGRESS watchdog: byte-alive junk chatter is killed on the no-progress
 // that, and the two arms below drive the site in BOTH directions — the one it must no longer kill, and
 // the one it still must.
 
-test("#1624 THE SITE: a mostly-TOOL-WAIT turn outlives a ceiling its ELAPSED time passed", timed(async () => {
+test("THE SITE: a mostly-TOOL-WAIT turn outlives a ceiling its ELAPSED time passed", timed(async () => {
   // The turn this change exists for. Elapsed ~1.3s against a 500ms ceiling; active time ~0.1s. On the
   // reverted line this is killed at 500ms — which is a healthy turn dying because a register lookup was
   // slow. The other two clocks are pinned wide so THIS ceiling is the only one that could fire.
@@ -464,7 +464,7 @@ test("#1624 THE SITE: a mostly-TOOL-WAIT turn outlives a ceiling its ELAPSED tim
   assert.ok(r.wall * 1000 > 500, "elapsed never passed the ceiling, so nothing was being asked of the site");
 }));
 
-test("#1624 THE SITE, THE OTHER WAY: a GENERATING turn still hits the ceiling", timed(async () => {
+test("THE SITE, THE OTHER WAY: a GENERATING turn still hits the ceiling", timed(async () => {
   // Not a ceiling removal, asserted where it is enforced rather than on the helper. A turn with no tool
   // wait has active time equal to its wall, so it must die exactly as before.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
@@ -476,7 +476,7 @@ test("#1624 THE SITE, THE OTHER WAY: a GENERATING turn still hits the ceiling", 
     "killed by the no-progress clock, not the hard ceiling — so this arm is not testing the site at all");
 }));
 
-test("#1624 CLEAROTRON_HARD_MS is a pin, never a way to switch the wall off", timed(async () => {
+test("CLEAROTRON_HARD_MS is a pin, never a way to switch the wall off", timed(async () => {
   // The fail-safe direction on the override itself. A non-positive or unparseable value must fall through
   // to the computed wall; reading it as "no ceiling" would let a bad env line disable the last backstop
   // on every turn, silently, which is a worse failure than the one this whole change addresses.
@@ -491,7 +491,7 @@ test("#1624 CLEAROTRON_HARD_MS is a pin, never a way to switch the wall off", ti
   assert.equal(r.killed, false, "a zero pin was read as a ceiling of zero and killed the turn");
 }));
 
-test("#1624 the ceiling site CALLS activeElapsedMs — a pure function nothing drives is not a change", () => {
+test("the ceiling site CALLS activeElapsedMs — a pure function nothing drives is not a change", () => {
   // THE ZERO-REFERENCE STATE, CAUGHT DIRECTLY. This is what the revert produced: the helper exported,
   // fully unit-tested, and called by nothing that ships. Counted against production sources only, so a
   // test file importing it can never satisfy this.
@@ -541,7 +541,7 @@ test("NO-PROGRESS watchdog: a turn whose TOOL CALL NEVER RETURNS is still killed
 // spawn looks like from the parent's side. These arms therefore reproduce the flake with the box idle, and
 // they are the reason the fix cannot silently come undone.
 
-test("#1692 a STARVED SPAWN does not read as a no-progress stall — the kill lands after the child speaks", timed(async () => {
+test("a STARVED SPAWN does not read as a no-progress stall — the kill lands after the child speaks", timed(async () => {
   // Arm-449's own configuration plus 900ms of startup. Before the fix the no-progress clock fired at 400ms,
   // DURING the boot: killed=true and signals.noProgress=true both still held, so the arm failed only on its
   // anti-vacuity check — the turn died with zero tool calls, having never been given a chance to progress.
@@ -570,7 +570,7 @@ test("#1692 a STARVED SPAWN does not read as a no-progress stall — the kill la
     + "#1692 defect" + specimen(r));
 }));
 
-test("2021 the arm above still DISCRIMINATES — with the grace cut, the defect's timing reds it", timed(async () => {
+test("the arm above still DISCRIMINATES — with the grace cut, the defect's timing reds it", timed(async () => {
   // ✕ THE CONTROL FOR THE FIX ABOVE. Pinning the grace high stops a loaded box reddening that arm; this
   // proves it did not stop the ARM working. The engine's rule is
   // `progIdle >= (started ? NOPROG : max(NOPROG, GRACE))`, so cutting GRACE below NOPROG reproduces the
@@ -590,7 +590,7 @@ test("2021 the arm above still DISCRIMINATES — with the grace cut, the defect'
     + "kill-during-boot — which is the defect it exists to catch" + specimen(r));
 }));
 
-test("#1692 a STARVED SPAWN is not ACTIVE time — the hard ceiling measures from the first byte", timed(async () => {
+test("a STARVED SPAWN is not ACTIVE time — the hard ceiling measures from the first byte", timed(async () => {
   // Arm-395's configuration plus 900ms of startup. Before the fix: killed=true, signals.hardWall, wall 1.0s,
   // toolWaitMs 0, toolCalls 0 — a 500ms ceiling spent entirely on process boot, with nothing to show for it.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
@@ -604,7 +604,7 @@ test("#1692 a STARVED SPAWN is not ACTIVE time — the hard ceiling measures fro
     "no tool call was ever opened, so the turn was killed during boot" + specimen(r));
 }));
 
-test("#1692 THE FAIL-SAFE: a child that never speaks AT ALL is still killed, by the byte-stall", timed(async () => {
+test("THE FAIL-SAFE: a child that never speaks AT ALL is still killed, by the byte-stall", timed(async () => {
   // The direction that matters. Excusing startup must not become "startup is unbounded": a spawn that
   // produces nothing has to die on the stall clock at max(STALL, GRACE), not wait out its boot. Pinned
   // tight so the arm proves the bound rather than the mock's own patience.
@@ -617,7 +617,7 @@ test("#1692 THE FAIL-SAFE: a child that never speaks AT ALL is still killed, by 
   assert.ok(Date.now() - t0 < 4000, `waited ${Date.now() - t0}ms for a 9s boot: the stall clock is not bounding startup`);
 }));
 
-test("#1692 the grace does NOT survive first contact — a tight ceiling still bites once the child has spoken", timed(async () => {
+test("the grace does NOT survive first contact — a tight ceiling still bites once the child has spoken", timed(async () => {
   // The vacuity check on the fix itself. If the grace widened the ceiling for the whole turn rather than
   // only until the first byte, these arms would pass by never enforcing anything. A 5s grace against a
   // 400ms no-progress pin: the kill must still land on the 400ms clock, far inside the grace.
@@ -630,7 +630,7 @@ test("#1692 the grace does NOT survive first contact — a tight ceiling still b
     `the turn lived ${Date.now() - t0}ms against a 400ms ceiling — the grace is being applied after the child spoke`);
 }));
 
-test("#1780 STARTUP DEBT is not charged to the progress clock — the first byte STARTS it, not just releases it", timed(async () => {
+test("STARTUP DEBT is not charged to the progress clock — the first byte STARTS it, not just releases it", timed(async () => {
   // The cause of the startup debt, and of the red on run 32680317129 (an arm above, on a diff that cannot
   // reach this engine). The pre-first-byte DEADLINE was widened and the clock's ORIGIN never moved, so
   // the startup interval stayed on the meter: at the instant the grace stopped protecting the turn,
@@ -664,7 +664,7 @@ test("#1780 STARTUP DEBT is not charged to the progress clock — the first byte
     + "already expired the moment the grace let go of it" + specimen(r));
 }));
 
-test("#1813 an early STDERR byte does not end the grace — the protocol is on stdout, and that is what starting means", timed(async () => {
+test("an early STDERR byte does not end the grace — the protocol is on stdout, and that is what starting means", timed(async () => {
   // Found while reading the grace-origin fix, filed rather than folded into it, and this is the arm it wanted.
   //
   // The child writes ONE line to stderr and then does its real startup on stdout. A node warning or a CLI
@@ -689,7 +689,7 @@ test("#1813 an early STDERR byte does not end the grace — the protocol is on s
     "the no-progress clock fired against a turn that had not yet produced any protocol output" + specimen(r));
 }));
 
-test("#1813 THE FAIL-SAFE: a child that writes ONLY stderr is still bounded, by the byte-stall", timed(async () => {
+test("THE FAIL-SAFE: a child that writes ONLY stderr is still bounded, by the byte-stall", timed(async () => {
   // The direction that matters, and the reason the change above is safe. "stderr is not the protocol"
   // must not become "a chattering child runs forever": with no stdout at all the turn has still never
   // started, so the byte-stall bounds it at max(STALL, GRACE) exactly as a silent spawn is bounded.
@@ -704,7 +704,7 @@ test("#1813 THE FAIL-SAFE: a child that writes ONLY stderr is still bounded, by 
     `waited ${Date.now() - t0}ms against a 500ms grace: stderr is keeping the startup window open`);
 }));
 
-test("#1692 the grace has ONE source: this engine derives it from common.mjs, never a second literal", () => {
+test("the grace has ONE source: this engine derives it from common.mjs, never a second literal", () => {
   // Why this issue existed. The grace was set in common.mjs and stopped there; openai-agent reaches that
   // watchdog through runStreamingChild, anthropic-agent spawns directly and did not. A second copy of the
   // number here would let the two engines drift apart again, silently, exactly as they already did once.
@@ -893,7 +893,7 @@ test("AUDIT #172/3 — a truthy NON-ITERABLE message.content cannot throw out of
 // the instrument itself: if it cannot tell a child that spoke from one that never did, it cannot
 // diagnose the failure it was added for.
 
-test("#1780 a child that SPEAKS records when it first spoke", timed(async () => {
+test("a child that SPEAKS records when it first spoke", timed(async () => {
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_JUNK_STREAM: "40", MOCK_CLAUDE_TOOL_HANG: "1",
       CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "400" });
@@ -903,7 +903,7 @@ test("#1780 a child that SPEAKS records when it first spoke", timed(async () => 
   assert.ok(r.firstByteMs >= 0, `firstByteMs was ${r.firstByteMs}`);
 }));
 
-test("#1780 a child that NEVER speaks records null, and the stderr says so in words", timed(async () => {
+test("a child that NEVER speaks records null, and the stderr says so in words", timed(async () => {
   // A 9s boot against a 300ms stall clock and a 500ms grace: killed by the byte-stall having emitted
   // nothing. This is the state that, if it were happening on CI, would explain the anti-vacuity red.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
@@ -915,7 +915,7 @@ test("#1780 a child that NEVER speaks records null, and the stderr says so in wo
     + "'never spoke', and the specimen it exists to provide would be read the wrong way round.");
 }));
 
-test("#1780 the no-progress diagnostic carries the specimen, so a CI artifact needs no re-run", timed(async () => {
+test("the no-progress diagnostic carries the specimen, so a CI artifact needs no re-run", timed(async () => {
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_JUNK_STREAM: "40", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "400" });
   assert.equal(r.signals?.noProgress, true, "this fixture no longer produces a no-progress kill");
@@ -928,7 +928,7 @@ test("#1780 the no-progress diagnostic carries the specimen, so a CI artifact ne
     + "the grace was exceeded");
 }));
 
-test("#1780 a STARVED SPAWN's specimen says NEVER — the branch that routes the diagnosis", timed(async () => {
+test("a STARVED SPAWN's specimen says NEVER — the branch that routes the diagnosis", timed(async () => {
   // FOUND BY A PLANT, not by me: the specimen arm above uses a fixture that SPEAKS, so the `NEVER`
   // branch was never executed by any arm. Deleting it left 53/53 green (verified with
   // docs/instruments/mutate.mjs, sha e5236c189d3a → 87fbabb2efb2), and a future starved-spawn specimen
@@ -952,7 +952,7 @@ test("#1780 a STARVED SPAWN's specimen says NEVER — the branch that routes the
     "a starved spawn must report zero tool calls beside the NEVER, or the pair does not tell a whole story");
 }));
 
-test("#1780 every arm that budgets in milliseconds carries the specimen in its message", () => {
+test("every arm that budgets in milliseconds carries the specimen in its message", () => {
   // THE CLASS, NOT THE TWO SITES. The bit was wired into arm 449 and a real failure landed in its
   // siblings, which carried none of it. Widening those two by hand would repeat the same mistake one
   // arm further out, so this decides the population mechanically: any arm whose fixture pins a clock is

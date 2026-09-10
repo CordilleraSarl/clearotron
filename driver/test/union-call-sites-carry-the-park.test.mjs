@@ -54,7 +54,7 @@ const CALL_SITES = [
 
 // ── ARM 1 · the census ───────────────────────────────────────────────────────────────────────────────
 
-test("#1277 every call site of the union is declared, with the route its park travels by", (ctx) => {
+test("every call site of the union is declared, with the route its park travels by", (ctx) => {
   const ROOT = fileURLToPath(new URL("../", import.meta.url));
   const tracked = trackedFiles(GUARD, { root: ROOT, pathspec: ["*.mjs"] });
   if (tracked === null) return ctx.skip(skipReason(GUARD));
@@ -104,12 +104,12 @@ const PARKED = {
 };
 const parkOf = (form) => (form?.rows ?? []).find((r) => String(r.row_id) === ID);
 
-test("#1277 MODE `parkedIds` — the park the ledger decided reaches the form", () => {
+test("MODE `parkedIds` — the park the ledger decided reaches the form", () => {
   const u = unionDispositionForm({ rows: [] }, { rows: [] }, OB, { half: "m", parkedIds: [ID] });
   assert.equal(parkOf(u.form)?.parked, true, "the option route stopped carrying the park");
 });
 
-test("#1277 MODE `prior-rows`, prior-only — a park already on the prior survives with no submission", () => {
+test("MODE `prior-rows`, prior-only — a park already on the prior survives with no submission", () => {
   // gateway.mjs's mode, and pipeline.mjs's after. `{ rows: null }` submitted is the whole point:
   // there is nothing to merge in, so anything lost here was lost by the union rather than overwritten.
   const u = unionDispositionForm({ rows: [PARKED] }, { rows: null }, OB, { generatedFrom: "common-law-grid.json" });
@@ -120,7 +120,7 @@ test("#1277 MODE `prior-rows`, prior-only — a park already on the prior surviv
   assert.match(String(r?.parked_reason), /bound 30/, "the sentence a reader acts on did not survive");
 });
 
-test("#1277 THE MODE THAT WAS WRONG — halves passed as SUBMITTED lose their park", () => {
+test("THE MODE THAT WAS WRONG — halves passed as SUBMITTED lose their park", () => {
   // The defect, kept executable. This is what pipeline.mjs did: the halves went in as the submitted
   // argument, which is not a trusted prior, and all four park fields came out cleared. If this ever
   // starts preserving the park, the union's trust model changed and the fix above needs re-reading —

@@ -88,7 +88,7 @@ const withEnv = async (vars, fn) => {
 // on disk in the sandbox. If a prompt could still name a path the manifest does not carry, this fails
 // and the residual gap is a finding rather than a silent thinner context.
 
-test("#238 corruption 1 (closed by #236): every run-dir path the SHADOW PROMPT names is on disk in the sandbox", async () => {
+test("corruption 1 (closed by #236): every run-dir path the SHADOW PROMPT names is on disk in the sandbox", async () => {
   const { job, runDir, codename } = await canonicalRun();
   // Two stages with fat, path-dense prompts and different context shapes: a register funnel that reads
   // driver-computed blocks, and a grid half whose spec sidecar is derived rather than declared.
@@ -113,7 +113,7 @@ test("#238 corruption 1 (closed by #236): every run-dir path the SHADOW PROMPT n
 
 // ═════ CORRUPTION 2 — the shadow prompt is composed by the same code as the run's ════════════════════
 
-test("#238 corruption 2: narrative-refutation's driver-computed blocks are REGISTERED, so the arm carries them", async () => {
+test("corruption 2: narrative-refutation's driver-computed blocks are REGISTERED, so the arm carries them", async () => {
   const { job, codename, runDir } = await canonicalRun();
   const ctx = PL.reconstructCtx(job, { codename });
   const P = ST.paths(runDir);
@@ -150,7 +150,7 @@ test("#238 corruption 2: narrative-refutation's driver-computed blocks are REGIS
   assert.ok(built.text.includes("PLAN-EXECUTION CHECK"), "…and its text is the block the reviewer is required to answer");
 });
 
-test("#238 corruption 2: an --experiment narrative-refutation arm dispatches WITH the plan-audit block", async () => {
+test("corruption 2: an --experiment narrative-refutation arm dispatches WITH the plan-audit block", async () => {
   const { job, runDir, codename } = await canonicalRun();
   const log = join(ROOT, "refute-arm-calls.jsonl");
   rmSync(log, { force: true });
@@ -173,7 +173,7 @@ test("#238 corruption 2: an --experiment narrative-refutation arm dispatches WIT
   assert.ok(receipt.extras.some((x) => x.id === "plan-audit" && x.chars > 0), `the receipt names the plan-audit block and its size: ${JSON.stringify(receipt.extras)}`);
 });
 
-test("#238 corruption 2 drift guard: no production dispatch may pass an `extra` for an UNDECLARED stage", () => {
+test("corruption 2 drift guard: no production dispatch may pass an `extra` for an UNDECLARED stage", () => {
   // The import-time guard in pipeline.mjs walks declared → buildable. That direction structurally cannot
   // catch this corruption, which is the other one: a dispatch site that composes a block the registry
   // never heard of. Walking the source is how the codebase already guards verify.mjs's sidecars
@@ -209,7 +209,7 @@ test("#238 corruption 2 drift guard: no production dispatch may pass an `extra` 
 
 // ═════ CORRUPTION 3 — the run must match the log about WHICH MODEL RAN ═══════════════════════════════
 
-test("#238 corruption 3: modelFamily is three-valued — an unknown id is UNKNOWN, never a guess", () => {
+test("corruption 3: modelFamily is three-valued — an unknown id is UNKNOWN, never a guess", () => {
   assert.equal(CFG.modelFamily("haiku"), "haiku");
   assert.equal(CFG.modelFamily("claude-haiku-4-5-20251001"), "haiku", "a dated wire id is the same family as the alias that asked for it");
   assert.equal(CFG.modelFamily("anthropic/claude-sonnet-4-6"), "sonnet");
@@ -253,7 +253,7 @@ async function oneTurn({ model, wire, env = {} } = {}) {
   return { r, rows, runDir };
 }
 
-test("#238 corruption 3: a turn that runs a DIFFERENT model than it was told to FAILS — no substitution", async () => {
+test("corruption 3: a turn that runs a DIFFERENT model than it was told to FAILS — no substitution", async () => {
   // THE REPRODUCTION. The mock reports sonnet on the wire while the driver asked for haiku — the exact
   // shape `--model gemini` had (claudeModel mapped it to sonnet, the row logged the gemini catalog id,
   // and the turn succeeded). Before this change the run finished and every number it produced was
@@ -271,7 +271,7 @@ test("#238 corruption 3: a turn that runs a DIFFERENT model than it was told to 
   assert.equal(rows.length, 1, `a mismatch must break the ladder on the first attempt, not retry it (${rows.length} attempts)`);
 });
 
-test("#238 corruption 3, THE HEADLINE: `--experiment --model gemini` refuses instead of running sonnet", async () => {
+test("corruption 3, THE HEADLINE: `--experiment --model gemini` refuses instead of running sonnet", async () => {
   // The sentence the issue is named after. `claudeModel` mapped gemini → sonnet and the telemetry
   // stamped `resolveModel("gemini")` = google/gemini-3.1-pro-preview, so the arm ran, produced numbers,
   // and every one of them named a model that had not served a single token. Driven through
@@ -286,7 +286,7 @@ test("#238 corruption 3, THE HEADLINE: `--experiment --model gemini` refuses ins
   }
 });
 
-test("#238 corruption 3: an honoured request records modelBasis 'actual' and is NOT failed", async () => {
+test("corruption 3: an honoured request records modelBasis 'actual' and is NOT failed", async () => {
   const { r, rows } = await oneTurn({ model: "haiku" });   // the mock echoes what --model asked for
   assert.equal(r.ok, true, `a matching turn must pass: ${r.fail}`);
   const row = rows[rows.length - 1];
@@ -295,7 +295,7 @@ test("#238 corruption 3: an honoured request records modelBasis 'actual' and is 
   assert.equal(row.modelMismatch, false, "false, not absent: 'checked and agreed' is a different fact from 'not checked'");
 });
 
-test("#238 corruption 3 zero semantics: a wire that reports NO model records `unknown`, never the alias", async () => {
+test("corruption 3 zero semantics: a wire that reports NO model records `unknown`, never the alias", async () => {
   // An engine that does not emit a model (codex) and a turn killed before any event both land here. The
   // record must say unknown. It must NOT quietly restate the requested alias and call it actual — that
   // is the absence-read-as-a-pass shape, and it would make `modelBasis: "actual"` meaningless.
@@ -318,7 +318,7 @@ test("#238 corruption 3 zero semantics: a wire that reports NO model records `un
   assert.equal(row.modelUsed, "anthropic/claude-haiku-4-5", "the requested resolution is still recorded, honestly labelled");
 });
 
-test("#238 corruption 3: the refusal is a default-ON gate; disarming it silences the REFUSAL, never the record", async () => {
+test("corruption 3: the refusal is a default-ON gate; disarming it silences the REFUSAL, never the record", async () => {
   // envGateOn, not `!== "0"`: `CLEAROTRON_MODEL_WIRE_CHECK=off` must DISARM the check, not arm it.
   for (const off of ["0", "off", "false", "no"]) {
     const { r, rows } = await oneTurn({ model: "haiku", wire: "claude-sonnet-5", env: { CLEAROTRON_MODEL_WIRE_CHECK: off } });
@@ -329,7 +329,7 @@ test("#238 corruption 3: the refusal is a default-ON gate; disarming it silences
   }
 });
 
-test("#238 corruption 3: the run.jsonl spine and the per-stage log agree about what ran", async () => {
+test("corruption 3: the run.jsonl spine and the per-stage log agree about what ran", async () => {
   const { runDir } = await oneTurn({ model: "haiku" });
   const spine = readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n")
     .map((l) => JSON.parse(l)).filter((e) => e.event === "attempt");
@@ -344,7 +344,7 @@ test("#238 corruption 3: the run.jsonl spine and the per-stage log agree about w
 //
 // (The cross-engine `off` table is pinned in engine.anthropic.test.mjs, beside the tables themselves.)
 
-test("#238 corruption 4b: assertTierSanity SEES a runtime thinking override — it used to read the static table", async () => {
+test("corruption 4b: assertTierSanity SEES a runtime thinking override — it used to read the static table", async () => {
   // The pairing the guard was written for: Haiku 4.5 rejects adaptive thinking and BOUNCES TO SONNET, so
   // an effort arm on a haiku-tier stage silently measures sonnet. `saturation-probe` is haiku/off.
   assert.deepEqual(ST.axisTier("saturation-probe"), { model: "haiku", thinking: "off" });
@@ -358,7 +358,7 @@ test("#238 corruption 4b: assertTierSanity SEES a runtime thinking override — 
   assert.equal(ST.assertTierSanity(), true, "…and the guard is clean again once the override is gone");
 });
 
-test("#238 corruption 4b: the guard also fires at DISPATCH, where a --model override assembles the pairing", () => {
+test("corruption 4b: the guard also fires at DISPATCH, where a --model override assembles the pairing", () => {
   // The second way in, which no start-of-run scan can see: the operator supplies the model and the
   // thinking tier still comes from the axis. `--experiment register-unit --axis primary-sweep --model
   // haiku` is haiku + adaptive, assembled at the dispatch site out of two sources that are each fine.
@@ -374,7 +374,7 @@ test("#238 corruption 4b: the guard also fires at DISPATCH, where a --model over
   assert.equal(ST.assertEffectiveTier("synthesis", { model: "opus", thinking: "high" }), true);
 });
 
-test("#238 corruption 4b end-to-end: --experiment --model haiku over an adaptive axis REFUSES", async () => {
+test("corruption 4b end-to-end: --experiment --model haiku over an adaptive axis REFUSES", async () => {
   const { job, codename } = await canonicalRun();
   await assert.rejects(
     () => PL.runExperiment(job, { codename, experiment: "register-unit", axis: "primary-sweep", model: "haiku", label: "bounce" }),
@@ -382,7 +382,7 @@ test("#238 corruption 4b end-to-end: --experiment --model haiku over an adaptive
     "the arm that would have measured a sonnet bounce and labelled it haiku must not dispatch at all");
 });
 
-test("#238 corruption 4a: `off` reaches the CLI as one effort on the live engine", async () => {
+test("corruption 4a: `off` reaches the CLI as one effort on the live engine", async () => {
   // Behaviour, not the table: the argv `claude` is actually invoked with. `off` and `low` are the same
   // rung on this engine, which is the fact the codex table now matches.
   const { buildClaudeArgs } = await import("../engine/anthropic-agent.mjs");

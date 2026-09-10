@@ -65,7 +65,7 @@ test("RF-15 v3 — the register estimate is required only where the run fetched 
 // coerced in the renderer for the reason the issue rules: the renderer inferring a band would be a rating
 // nobody performed. Two properties, and the optional one is the one that protects delivery — a run whose
 // rater sends no band must publish exactly as it always did.
-test("274 — registerReads[].band: optional, and refused when it is not a ladder word", () => {
+test("registerReads[].band: optional, and refused when it is not a ladder word", () => {
   const FW = { framework_key: "triage", bands: [{ label: "High" }, { label: "Medium" }, { label: "Low" }] };
   const RECORD_ID = "R-LUMENREED";
   const d = mkdtempSync(join(tmpdir(), "ko-readband-"));

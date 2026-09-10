@@ -51,7 +51,7 @@ function renderedSurfaces() {
   return [...nav.matchAll(/<a href="[^"]*\.html"[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]);
 }
 
-test("#1450 premise: the renderer is the source of truth, and it still renders a real list", () => {
+test("premise: the renderer is the source of truth, and it still renders a real list", () => {
   const live = renderedSurfaces();
   // Non-vacuity for every arm below. If this parse ever returns [] — a markup change, a renamed class —
   // the set comparisons would trivially "pass" against prose that named nothing.
@@ -63,7 +63,7 @@ test("#1450 premise: the renderer is the source of truth, and it still renders a
   }
 });
 
-test("#1450 anon-overlay's header names the surfaces that render, and no others", () => {
+test("anon-overlay's header names the surfaces that render, and no others", () => {
   const src = read("shared/anon-overlay.mjs");
   // The parenthesised list in the module header — the sentence that said "Archive · Run status ·
   // Quality · Feedback · Profiles" while two of the five had not rendered for months.
@@ -78,7 +78,7 @@ test("#1450 anon-overlay's header names the surfaces that render, and no others"
     + "A comment that lists surfaces is a claim about what exists; make it name exactly what renders.");
 });
 
-test("#1450 no prose in these two files presents a RETIRED surface as a current one", () => {
+test("no prose in these two files presents a RETIRED surface as a current one", () => {
   // Both files may still NAME Quality and Feedback — the correction explains what went and why, and a
   // record of a retirement is worth more than silence. What they may not do is list them among what the
   // product has. Each mention must sit in the same sentence as its retirement.
@@ -93,7 +93,7 @@ test("#1450 no prose in these two files presents a RETIRED surface as a current 
   }
 });
 
-test("#1450 pool-admin's regen message names only what that command writes", () => {
+test("pool-admin's regen message names only what that command writes", () => {
   const src = read("driver/publish/pool-admin.mjs");
   const m = src.match(/console\.log\(`re-rendered index\.html[^`]*`\)/);
   assert.ok(m, "the regen confirmation must still be a single template literal — re-point this arm if it moved");

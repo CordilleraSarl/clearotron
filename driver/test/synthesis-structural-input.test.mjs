@@ -97,7 +97,7 @@ function fixtureRun() {
 // EXACT SET, not membership. "the declaration includes the ledger and the receipt" stays green while
 // somebody deletes three other inputs, and the list is both the staleness graph and what `--experiment`
 // copies — a phantom entry parks runs, a dropped one lets a stage rule over material that has moved.
-test("#447: synthesis declares EXACTLY its inputs, and the plan-execution receipt + coverage ledger are two of them", () => {
+test("synthesis declares EXACTLY its inputs, and the plan-execution receipt + coverage ledger are two of them", () => {
   const P = paths("/RUN");
   const sorted = (a) => [...new Set(a)].sort();
   const COMMON = [P.registerFindings, P.placement, P.placementModel, P.registerNamedBand, P.matterContext,
@@ -133,7 +133,7 @@ test("#447: synthesis declares EXACTLY its inputs, and the plan-execution receip
 // Through the SAME composer the production dispatch uses. The declaration and the binding are checked by
 // the import-time guard in pipeline.mjs; what that guard cannot see is whether the built text actually
 // carries the facts, so this drives the real builders over a real-derived receipt.
-test("#447: the synthesis dispatch composes both structural blocks, carrying the missing qid and the ledger rows", () => {
+test("the synthesis dispatch composes both structural blocks, carrying the missing qid and the ledger rows", () => {
   const { ctx } = fixtureRun();
   const { text, ids } = composeDispatchExtra("synthesis", ctx);
 
@@ -165,7 +165,7 @@ test("#447: the synthesis dispatch composes both structural blocks, carrying the
 // condition on one seat and the unwriteable condition on the other, and it is the same fact about the
 // same receipt. Two copies of it, one per seat, is the shape: they drift, and the drift is silent
 // because each copy reads correct on its own.
-test("#447: the graded classes are ONE literal — the author's block, the reviewer's, and the repair turn", async () => {
+test("the graded classes are ONE literal — the author's block, the reviewer's, and the repair turn", async () => {
   const { ctx } = fixtureRun();
   const synth = composeDispatchExtra("synthesis", ctx).text;
   const refute = composeDispatchExtra("narrative-refutation", ctx).text;
@@ -209,7 +209,7 @@ const BOTH = { synthesis: { built: ["synthesis-plan-audit", "synthesis-coverage-
 const synthMsg = (P, job, { dispatchBlocks, registerOnly = false } = {}) =>
   STAGES.synthesis.message({ paths: P, job, axes: REGISTER_AXES, registerOnly, dispatchBlocks, agent: "clawdi", run: { slug: "s", codename: "c" } });
 
-test("#447: the synthesis prompt names both machine artifacts and carries assert-or-defer", () => {
+test("the synthesis prompt names both machine artifacts and carries assert-or-defer", () => {
   const P = paths("/RUN");
   const job = { marks: [{ name: "VENZY", classes: [5] }], markName: "VENZY", name: "PROJECT K", classes: [5], ref: "TMP447", customer: "ACME", goods: "supplements", forwarder: "jordan", msgId: "<m>" };
   const msg = synthMsg(P, job, { dispatchBlocks: BOTH });
@@ -266,7 +266,7 @@ test("#447: the synthesis prompt names both machine artifacts and carries assert
 // resume), a receipt that exists and will not parse, and neither artifact on disk. On every one of
 // them the seat that signs the run was told a driver-computed record was tabulated below and handed
 // nothing — an absence dressed as a pass, which is the inference exists to stop.
-test("#447 review: the promise of a tabulated record tracks the blocks that actually built", () => {
+test("review: the promise of a tabulated record tracks the blocks that actually built", () => {
   const P = paths("/RUN");
   const job = { marks: [{ name: "VENZY", classes: [5] }], markName: "VENZY", name: "PROJECT K", classes: [5], ref: "TMP447", customer: "ACME", goods: "supplements", forwarder: "jordan", msgId: "<m>" };
 
@@ -310,7 +310,7 @@ test("#447 review: the promise of a tabulated record tracks the blocks that actu
 // A declared dispatch extra whose reads are not in the manifest is an `--experiment` arm running a
 // thinner prompt than the run it is compared against — corruption 2, which is why DISPATCH_EXTRAS
 // exists at all. Two new entries, two new read sets.
-test("#447: synthesis's sandbox manifest carries the receipt, the frozen plan and the machine ledger", () => {
+test("synthesis's sandbox manifest carries the receipt, the frozen plan and the machine ledger", () => {
   const P = paths("/RUN");
   const manifest = sandboxManifest("synthesis", P, { axes: REGISTER_AXES });
   const held = new Set(manifest.map((e) => e.path));
@@ -332,7 +332,7 @@ test("#447: synthesis's sandbox manifest carries the receipt, the frozen plan an
 // above green while the model receives nothing. So this one drives a real (mocked, offline) pipeline to
 // the synthesis dispatch and reads `_driver/synthesis.attempt1.dispatch.txt` — the verbatim record of
 // what the stage was TOLD, which added for exactly this question.
-test("#447: a real dispatch carries both blocks — read out of the recorded synthesis prompt, not the composer", async () => {
+test("a real dispatch carries both blocks — read out of the recorded synthesis prompt, not the composer", async () => {
   process.env.MOCK_VERDICT = "CLEAR";
   process.env.MOCK_SKEPTIC = "no flags surfaced";
   process.env.MOCK_FAIL_STAGE = "joint synthesis narrative";   // park AT synthesis: the dispatch happens, the stage fails
@@ -373,7 +373,7 @@ test("#447: a real dispatch carries both blocks — read out of the recorded syn
 // likely to be rewriting a coverage claim ruled with the receipt and the ledger withheld, on a prompt
 // that told it both were tabulated below. It also SUCCEEDED: the refutation's equivalent gap fails
 // closed on verify.mjs's `plan_audit_missing`, and synthesis has no such validator.
-test("#447 review: the stale-repair re-dispatch of synthesis carries the structural blocks", async () => {
+test("review: the stale-repair re-dispatch of synthesis carries the structural blocks", async () => {
   process.env.MOCK_VERDICT = "CLEAR";
   process.env.MOCK_SKEPTIC = "no flags surfaced";
   process.env.MOCK_FAIL_STAGE = "delivery-contract";   // fail LATE so the run stays live and repairable

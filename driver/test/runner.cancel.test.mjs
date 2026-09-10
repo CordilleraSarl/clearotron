@@ -284,7 +284,7 @@ test("the run-dir self-resume watcher also refuses a cancelled run", async () =>
 // paths are in different files and neither knew what the other owed, which is how they diverged — so
 // this asserts the SET of run-dir surfaces rather than any one of them, and it is deliberately written
 // against the retire function directly so it stays cheap enough to keep.
-test("#1379 the park-cancel retire writes the same run-dir surfaces the running-path cancel does", async () => {
+test("the park-cancel retire writes the same run-dir surfaces the running-path cancel does", async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-1379-parity-"));
   try {
     const Q = join(root, "queue");
@@ -317,7 +317,7 @@ test("#1379 the park-cancel retire writes the same run-dir surfaces the running-
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1379 a park with no recorded run dir still retires the queue side, and says so", async () => {
+test("a park with no recorded run dir still retires the queue side, and says so", async () => {
   // Fail-open, and the reason it must not throw: this runs inside the drain loop, and an exception here
   // would abandon every other due park in the same pass.
   const root = mkdtempSync(join(tmpdir(), "clearotron-1379-norundir-"));

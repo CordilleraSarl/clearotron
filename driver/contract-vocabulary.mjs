@@ -82,7 +82,7 @@ export const VOCABULARY = [
   { token: "half_path_unrecognized", stages: ["common-law-half"], site: "driver/verify.mjs:395" },
   { token: "no_coverage_status_row", stages: [...CL, "register-digest"], site: "driver/verify.mjs:452, 1416" },
   // B — `connotation_form_unparseable` and `connotation_form_untouched` are GONE: they
-  // were states only a hand-authored document could be in, and the form path is deleted (owner ruling
+  // were states only a hand-authored document could be in, and the form path is deleted (ruling
   // 2026-08-17). Their subject matter is carried by the call tokens under the D1 family row below.
   { token: "connotation_form_damaged", stages: CL, site: "driver/verify.mjs:889" },
   { token: "connotation_", stages: CL, site: "driver/verify.mjs:898", family: "driver/connotation-search.mjs:894 (CONNOTATION_FORM_REASONS, exported at :819)", dynamic: "D1" },

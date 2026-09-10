@@ -107,7 +107,7 @@ test("A4: consecutive DIFFERENT validator strings keep the ladder alive; the fir
   assert.equal(r.attemptFails[1], r.attemptFails[2], "the byte-identical repeat is what stopped it");
 });
 
-test("#460 A4 scope guard, the other direction: a COLD identical repeat still breaks at the first repeat", async () => {
+test("A4 scope guard, the other direction: a COLD identical repeat still breaks at the first repeat", async () => {
   // The carve-out is keyed on `warm`, not on "attempt > 1". `declared_unavailable` is deliberately NOT in
   // WARM_ELIGIBLE_RE (warm-retry.test.mjs pins that), so attempt 2 here is cold, nothing is escalated, and
   // A4 must behave exactly as it did before build 2. Key the carve-out on the attempt number instead
@@ -142,7 +142,7 @@ test("A4 scope guard: repeated identical TRANSPORT failures keep the full existi
 // that produced something, which is where it converged 9 of 9.
 const INVALID_EVERY_TURN = { validate: () => ({ ok: false, reason: "findings_unusable" }) };
 
-test("#460 the escalated attempt names itself in the stage log, the spine and the dispatch record", async () => {
+test("the escalated attempt names itself in the stage log, the spine and the dispatch record", async () => {
   process.env.MOCK_WARM_MODE = "draft";
   const r = await stage({ maxRetries: 2, ...INVALID_EVERY_TURN });
   assert.equal(r.attempts, 3);
@@ -163,7 +163,7 @@ test("#460 the escalated attempt names itself in the stage log, the spine and th
   assert.equal(spine[0].warmEscalated, undefined);
 });
 
-test("#460 the mark names ONE dispatch, not every dispatch after it", async () => {
+test("the mark names ONE dispatch, not every dispatch after it", async () => {
   // The journalling trap. `warmEscalatedAt > 0` and `attempt === warmEscalatedAt` agree whenever the
   // escalated attempt is the LAST one, which is the shape of every other test here — so neither can catch
   // a cumulative flag. This ladder deliberately continues past the escalation: attempts 1 and 2 repeat
@@ -184,7 +184,7 @@ test("#460 the mark names ONE dispatch, not every dispatch after it", async () =
     "and still exactly one warm resume in a four-deep ladder");
 });
 
-test("#460 an escalated attempt that SUCCEEDS still says it was escalated", async () => {
+test("an escalated attempt that SUCCEEDS still says it was escalated", async () => {
   // Without the flag on the success return, a run that converged only because the session was discarded
   // is indistinguishable from one where the warm patch happened to work — and the round has nothing to
   // evidence the change with. This is the arm that fails if the field is dropped from the ok:true return.
@@ -204,7 +204,7 @@ test("#460 an escalated attempt that SUCCEEDS still says it was escalated", asyn
 // itself. Measured, that holds for a seat whose output was WRONG (fresh attempt 3 converged 9 of 9) and
 // not for a seat that wrote nothing at all (0 of 6, ~3.4 min and ~19k output tokens each time). These two
 // arms are the line between them, and they must fail in opposite directions or the rule is not a rule.
-test("#1062 a warm repeat that produced NOTHING breaks instead of buying a fresh attempt", async () => {
+test("a warm repeat that produced NOTHING breaks instead of buying a fresh attempt", async () => {
   process.env.MOCK_WARM_MODE = "stubborn";           // ok every turn, never writes the file
   const r = await stage({ maxRetries: 2 });
   assert.equal(r.ok, false);
@@ -216,7 +216,7 @@ test("#1062 a warm repeat that produced NOTHING breaks instead of buying a fresh
   assert.match(r.fail, /^missing_file:/, "the fixture stopped producing the shape this arm is about");
 });
 
-test("#1062 the cut is RECORDED by name — a decision that prevents an attempt must leave a trace", async () => {
+test("the cut is RECORDED by name — a decision that prevents an attempt must leave a trace", async () => {
   process.env.MOCK_WARM_MODE = "stubborn";           // the produced-nothing repeat: the cut fires
   await stage({ maxRetries: 2 });
   // `note` is stderr only and reaches no artifact. Because the cut RETURNS, the attempt it prevents never
@@ -240,7 +240,7 @@ test("#1062 the cut is RECORDED by name — a decision that prevents an attempt 
 // The cut requires `warm`, that run's attempt rows carried no `warm` field at all, and with warm falsy the
 // run fell through to the pre-existing identical-signature break — which stopped attempt 3 exactly as the
 // cut would have, and left no durable trace. The three arms below are the cold path the fix missed.
-test("#1062 the COLD break records too — the same decision, reached by the other branch", async () => {
+test("the COLD break records too — the same decision, reached by the other branch", async () => {
   // The measured shape: repeated missing_file with nothing warm. Before this, the run record held no
   // trace of a decision that prevented an attempt — which is the exact pathology the cut's own comment names.
   // `missing_file` IS warm-eligible, so the warm lane has to be OFF for this shape to reach the cold
@@ -276,7 +276,7 @@ test("#1062 the COLD break records too — the same decision, reached by the oth
     "a decision row leaked into the seat attempt ledger");
 });
 
-test("#1062 a cold break that PRODUCED something records the same way, and says so", async () => {
+test("a cold break that PRODUCED something records the same way, and says so", async () => {
   // The other half of the cold path. `declared_unavailable` is not warm-eligible, so attempt 2 is cold and
   // the seat wrote a file every turn — the case my 0-of-6 measurement says nothing about. The record has to
   // distinguish it, or a later ruling on whether this break is right cannot separate the populations.
@@ -291,7 +291,7 @@ test("#1062 a cold break that PRODUCED something records the same way, and says 
   assert.equal(rows[0].warm, false);
 });
 
-test("#1062 wouldHaveBeenAttempt is NULL, and PRESENT, when the ladder was genuinely spent", async () => {
+test("wouldHaveBeenAttempt is NULL, and PRESENT, when the ladder was genuinely spent", async () => {
   // The difference between a choice and an ending. With maxRetries 1 the repeat lands on the last allowed
   // attempt, so no attempt was prevented — and printing `attempt + 1` there would claim one that never
   // existed. Null, never absent: an omitted key cannot be told from a row written before this field.
@@ -303,7 +303,7 @@ test("#1062 wouldHaveBeenAttempt is NULL, and PRESENT, when the ladder was genui
   assert.ok("wouldHaveBeenAttempt" in rows[0], "and the key must be PRESENT, or a spent ladder reads as a record predating the field");
 });
 
-test("#1062 a warm repeat that produced SOMETHING still escalates — #460's lane is not traded away", async () => {
+test("a warm repeat that produced SOMETHING still escalates — #460's lane is not traded away", async () => {
   process.env.MOCK_WARM_MODE = "draft";              // writes a file every turn; the validator rejects it
   const r = await stage({ maxRetries: 2, ...INVALID_EVERY_TURN });
   assert.equal(r.attempts, 3,

@@ -81,7 +81,7 @@ function post(target, key) {
 
 // ── the arm that matters ─────────────────────────────────────────────────────────────────────────────
 
-test("174: a REAL access key presented on the network door is refused", async () => {
+test("a REAL access key presented on the network door is refused", async () => {
   const key = REAL_KEY();
   assert.ok(key && key.length > 20, "premise: this is a real minted key, not a placeholder");
 
@@ -92,7 +92,7 @@ test("174: a REAL access key presented on the network door is refused", async ()
     "and it must be refused for arriving at this door — not for being a bad key, which would mean this arm never tested the transport rule");
 });
 
-test("174: the SAME real key is accepted on the socket", async () => {
+test("the SAME real key is accepted on the socket", async () => {
   const key = REAL_KEY();
   const r = await post(sockPath, key);
   assert.notEqual(r.status, 401, `the key door refused a valid key: ${r.body.slice(0, 300)}`);
@@ -101,7 +101,7 @@ test("174: the SAME real key is accepted on the socket", async () => {
 
 // REFUSAL BY CONSTRUCTION, not by a branch. This is what makes the arm above durable — there is no code
 // path on the network handler that reads a key, and the handler refuses to be built with both rules.
-test("174: a handler cannot be built that honours both a proxy identity and a key", () => {
+test("a handler cannot be built that honours both a proxy identity and a key", () => {
   assert.throws(() => makeHttpHandler({ ...deps(), verify: async () => ({ email: "x@y" }), tokenOnly: true }),
     /mutually exclusive|tokenOnly is for a door with no auth proxy/,
     "the two rules cannot be combined, so 'a key on the network door is refused' is not a deletable check");
@@ -109,7 +109,7 @@ test("174: a handler cannot be built that honours both a proxy identity and a ke
 
 // ── the socket as a filesystem object ────────────────────────────────────────────────────────────────
 
-test("174: the socket's mode says which local accounts may present a key", () => {
+test("the socket's mode says which local accounts may present a key", () => {
   assert.ok(existsSync(sockPath), "the socket exists as a file, which is what makes this checkable");
   const mode = statSync(sockPath).mode & 0o777;
   assert.equal(mode, KEY_SOCKET_MODE, `expected ${KEY_SOCKET_MODE.toString(8)}, got ${mode.toString(8)}`);
@@ -119,7 +119,7 @@ test("174: the socket's mode says which local accounts may present a key", () =>
 
 // A tunnel forwards to a PORT. There is no address it can forward to that reaches this file — that is the
 // property, and it is a fact about the transport rather than a check anything performs.
-test("174: the key door has no network address at all", () => {
+test("the key door has no network address at all", () => {
   const addr = keyDoor.server.address();
   assert.equal(typeof addr, "string", "a unix socket's address is its path, not a host and port");
   assert.equal(addr, sockPath);
@@ -128,7 +128,7 @@ test("174: the key door has no network address at all", () => {
 
 // ── the refusals that bind whatever the transport ────────────────────────────────────────────────────
 
-test("174: the key door refuses to open without a grants file, or beside the auth bypass", () => {
+test("the key door refuses to open without a grants file, or beside the auth bypass", () => {
   assert.match(keyDoorRefusal({ authDisabled: true, accessFile: "/tmp/grants.json" }), /authenticates nobody/,
     "a mandatory key and a bypass are contradictory");
   assert.match(keyDoorRefusal({ authDisabled: false, accessFile: "" }), /CLEAROTRON_ACCESS_FILE is unset/,
@@ -138,12 +138,12 @@ test("174: the key door refuses to open without a grants file, or beside the aut
 
 // ── a socket is a file, so a stale one is a real state ───────────────────────────────────────────────
 
-test("174: a live socket is not mistaken for a leftover, and a leftover is not mistaken for a live one", async () => {
+test("a live socket is not mistaken for a leftover, and a leftover is not mistaken for a live one", async () => {
   assert.equal(await probeSocket(sockPath), "live", "the door opened above is answering");
   assert.equal(await probeSocket(join(dir, "never-existed.sock")), "absent", "a path with no file");
 });
 
-test("174: opening onto a LIVE socket refuses rather than stealing the path", async () => {
+test("opening onto a LIVE socket refuses rather than stealing the path", async () => {
   await assert.rejects(
     openKeyDoor({ handler: (_q, s) => s.end(), path: sockPath, log: () => {} }),
     /already serving the key socket/,
@@ -176,7 +176,7 @@ function bootUntil(env, re, timeoutMs = 30000) {
   });
 }
 
-test("174: the real server opens the key door, and its posture line names the socket and mode", async () => {
+test("the real server opens the key door, and its posture line names the socket and mode", async () => {
   const d = mkdtempSync(join(tmpdir(), "keydoor-boot-"));
   const p = join(d, "engine.sock");
   // THE PROXY MODE, which is the shape this door exists for: a network door taking an identity, and a
@@ -207,7 +207,7 @@ test("174: the real server opens the key door, and its posture line names the so
   }
 });
 
-test("174: a deployment that sets no socket is told it has no key path, rather than left guessing", async () => {
+test("a deployment that sets no socket is told it has no key path, rather than left guessing", async () => {
   const r = await bootUntil({
     TRADEMARK_MCP_AUTH_MODE: "token",
     TRADEMARK_MCP_AUTH_DISABLED: "", TRADEMARK_MCP_DEV: "",
@@ -235,7 +235,7 @@ test("174: a deployment that sets no socket is told it has no key path, rather t
 // `tokenOnly: TRADEMARK_MCP_AUTH_MODE === "token"`, so token mode plus a socket yields TWO key doors —
 // and the TCP one is reachable through the tunnel, which is the whole thing this issue prevents. It is
 // also production's current configuration, so it is the upgrade path rather than a contrived case.
-test("174: token mode PLUS a socket is refused — otherwise both doors take a key", () => {
+test("token mode PLUS a socket is refused — otherwise both doors take a key", () => {
   const r = keyDoorRefusal({ authDisabled: false, accessFile: "/tmp/grants.json", authMode: "token" });
   assert.match(r, /makes the NETWORK door take a key/, "the refusal names what would actually be wrong");
   assert.match(r, /unset the mode|unset the socket/, "and tells the operator the two ways out");
@@ -248,7 +248,7 @@ test("174: token mode PLUS a socket is refused — otherwise both doors take a k
 // 0660 says who may CONNECT. Who may REPLACE is the containing directory's write bit — a different
 // permission entirely, and the one that lets a local account stand up an impostor the portal then hands
 // its key to.
-test("174: a world-writable directory without the sticky bit is refused", async () => {
+test("a world-writable directory without the sticky bit is refused", async () => {
   const open = mkdtempSync(join(tmpdir(), "keydoor-open-"));
   chmodSync(open, 0o777);   // world-writable, NOT sticky
   await assert.rejects(
@@ -279,7 +279,7 @@ test("174: a world-writable directory without the sticky bit is refused", async 
 // The probe returns four states and only two were acted on. A socket owned by another account answers
 // EACCES — neither ENOENT nor ECONNREFUSED — and fell through to `listen`, surfacing as a bare
 // EADDRINUSE with no sentence. That is the case the probe exists for.
-test("174: a path this process cannot inspect is named, not left to fail as a bare address-in-use", async () => {
+test("a path this process cannot inspect is named, not left to fail as a bare address-in-use", async () => {
   await assert.rejects(
     openKeyDoor({ handler: (_q, s) => s.end(), path: join(dir, "opaque.sock"), log: () => {}, probe: async () => "unknown" }),
     /cannot determine what/,

@@ -35,7 +35,7 @@ const ENUM = (n) => ({ state: "enumerated", query: "q", total_hits: n, records: 
 
 // ── 1. THE STAGE KEEPS ITS WRITER, WHICH IS THE WHOLE REASON FOR THE CATEGORY CHOICE ────────────────
 
-test("#1893 the register-unit grant gains the record tool and KEEPS Write/Edit", () => {
+test("the register-unit grant gains the record tool and KEEPS Write/Edit", () => {
   const groups = toolGroupsForStage("register-unit:primary-sweep");
   assert.deepEqual(groups, ["register", "unit-note"], "the funnel's key is untouched beside the transport's");
   const granted = allowedToolsFor(groups).split(/\s+/).filter(Boolean);
@@ -52,7 +52,7 @@ test("#1893 the register-unit grant gains the record tool and KEEPS Write/Edit",
   assert.deepEqual(own, ["mcp__unit-note__record_unit_note"], "the unit-note key widened a retrieval surface");
 });
 
-test("#1893 the driver binds the axis, and the binding reaches the transport's OWN server", () => {
+test("the driver binds the axis, and the binding reaches the transport's OWN server", () => {
   // The mock reads this value from ANY server in the wiring, deliberately — one value, one setter. That
   // makes "did it reach the RIGHT server" a question the harness cannot answer, so it is asked here.
   const bound = recordAxisFor("register-unit:incumbent-class");
@@ -73,7 +73,7 @@ test("#1893 the driver binds the axis, and the binding reaches the transport's O
 
 // ── 2. THE DIRECTORY ROW, ASSERTED ON THE SIBLINGS AND NOT ONLY ON THE MEMBER ───────────────────────
 
-test("#1893 the register-units row claims the note and NEITHER register tool's artifact", () => {
+test("the register-units row claims the note and NEITHER register tool's artifact", () => {
   const row = TOOL_WRITTEN_DIRS.get("register-units");
   assert.ok(row, "the directory row is gone — a note repair would be handed to the write-mode tails");
   assert.equal(row.tool, "record_unit_note");
@@ -91,7 +91,7 @@ test("#1893 the register-units row claims the note and NEITHER register tool's a
 
 // ── 3. THE COUNTS ARE DERIVED, AND AN ABSENT BAND IS A REFUSAL RATHER THAN A ZERO ──────────────────
 
-test("#1893 a note over a band that does not exist is REFUSED, never filled with zeros", () => {
+test("a note over a band that does not exist is REFUSED, never filled with zeros", () => {
   const dir = runDir();
   const r = recordUnitNote(dir, { axis: "primary-sweep", note: "A short observation about this axis, long enough to clear the floor the validator applies." });
   assert.match(String(r.refused ?? ""), /unit_band_unreadable/,
@@ -106,7 +106,7 @@ test("#1893 a note over a band that does not exist is REFUSED, never filled with
     "and it is NOT in another axis's — six units append in parallel; a shared journal cannot be attributed");
 });
 
-test("#1893 the counts come from the band, and a null-result claim over records is refused", () => {
+test("the counts come from the band, and a null-result claim over records is refused", () => {
   const dir = runDir();
   band(dir, "primary-sweep", [ENUM(2), { state: "incomplete", query: "crowd", total_hits: 9000, fetched: 50 }, ENUM(1)]);
   // The derivation itself, on the same blocks — so the arm below is checking a join and not a constant.
@@ -128,7 +128,7 @@ test("#1893 the counts come from the band, and a null-result claim over records 
   assert.ok(existsSync(unitPaths(dir, "primary-sweep").note));
 });
 
-test("#1893 the call payload is captured before the decision, refused calls included", () => {
+test("the call payload is captured before the decision, refused calls included", () => {
   // The evidence half. A refusal that leaves no trace of WHAT was sent turns a seat-side defect into an
   // unanswerable question three days later.
   const dir = runDir();

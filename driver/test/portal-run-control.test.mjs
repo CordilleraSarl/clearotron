@@ -19,9 +19,11 @@ import { join } from "node:path";
 const { makePortalService } = await import("../portal-service.mjs");
 const { reorderQueue, orderedQueueFiles, readQueueOrder } = await import("../queue-order.mjs");
 
-const STAFF_DOMAINS = ["example-firm.com"];
-const STAFF = { email: "staff@example-firm.com" };
-const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"] } } } };
+// The client holds aurora and Run clearances. Stopping, cancelling and reordering are Run's, so without the
+// switch every route below would 404 on the permission before reaching the ownership check each test is
+// about — and the foreign-run refusals would pass for the wrong reason.
+const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"] } } },
+  people: { "cli@celta.example": { run: true } } };
 const CLIENT = { email: "cli@celta.example" };
 
 function world(jobs, { live = [], pool = [], order = null } = {}) {
@@ -61,7 +63,7 @@ function world(jobs, { live = [], pool = [], order = null } = {}) {
 
 const serviceFor = (w, stops) => makePortalService({
   poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "rc-rec-")),
-  secret: "test-secret", staffDomains: STAFF_DOMAINS, grants: GRANTS,
+  secret: "test-secret", grants: GRANTS,
   trigger: async () => ({ ok: true }),
   stopRun: async (args) => { stops.push(args); return args.id ? { ok: true, action: "dequeued" } : { ok: true, action: "cancel-requested" }; },
   audit: () => {},
@@ -144,7 +146,7 @@ test("cancel: losing the race to the runner is a race, not a failure", async () 
   const w = world([{ id: "q-a", account: "aurora" }]);
   const svc = makePortalService({
     poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "rc-rec-")),
-    secret: "test-secret", staffDomains: STAFF_DOMAINS, grants: GRANTS,
+    secret: "test-secret", grants: GRANTS,
     trigger: async () => ({ ok: true }),
     stopRun: async () => ({ ok: false, action: "already-claimed", note: "Already claimed by the runner" }),
     audit: () => {},
@@ -252,7 +254,7 @@ test("listing: parked-for-human maps to paused + pausedKind operator on the wire
 
 // ── — THE CHOICE AT THE PRESS, AND WHAT COMES BACK ──────────────────────────
 //
-// Owner ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should be a
+// Ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should be a
 // 'stop immediately or at next boundary to preserve data' kind of question when you press it." The
 // driver half landed the mode (`stop_run`'s `immediate`); this is the lane that carries a reader's
 // answer to it, and the answer that comes back.
@@ -264,14 +266,14 @@ test("listing: parked-for-human maps to paused + pausedKind operator on the wire
 //   · no pid reaches a browser                       → break: forward the tool result, arm 4 red
 const stopRunReturning = (w, stops, reply) => makePortalService({
   poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "rc-rec-")),
-  secret: "test-secret", staffDomains: STAFF_DOMAINS, grants: GRANTS,
+  secret: "test-secret", grants: GRANTS,
   trigger: async () => ({ ok: true }),
   stopRun: async (args) => { stops.push(args); return reply(args); },
   audit: () => {},
 });
 const running = () => world([], { live: [{ id: "r-aurora", slug: "tmp-a", account: "aurora", state: "running" }] });
 
-test("2076 arm 1 — the reader's choice reaches the engine, and the answer says which stop happened", async () => {
+test("arm 1 — the reader's choice reaches the engine, and the answer says which stop happened", async () => {
   const w = running();
   const stops = [];
   const svc = stopRunReturning(w, stops, () => ({
@@ -286,7 +288,7 @@ test("2076 arm 1 — the reader's choice reaches the engine, and the answer says
   assert.match(res.json.stop.note, /Stopping now/, "the driver's own sentence is not carried, so the screen must invent one");
 });
 
-test("2076 arm 2 — anything but an explicit true is the stop that PRESERVES the step", async () => {
+test("arm 2 — anything but an explicit true is the stop that PRESERVES the step", async () => {
   // This control ends a run mid-turn. A truthy string arriving from a hand-rolled POST must not read as
   // consent to lose the step in flight, and an older client that sends no body must get what it always
   // got. The safe path is the one an unrecognised body reaches.
@@ -299,7 +301,7 @@ test("2076 arm 2 — anything but an explicit true is the stop that PRESERVES th
   }
 });
 
-test("2076 arm 3 — an immediate stop that could not act is reported as the boundary stop it BECAME", async () => {
+test("arm 3 — an immediate stop that could not act is reported as the boundary stop it BECAME", async () => {
   // The driver's own rule, and the reason this issue exists: presenting a fallback as the immediate stop
   // the button offered would be the second silent thing in a row on this control.
   const w = running();
@@ -324,7 +326,7 @@ test("2076 arm 3 — an immediate stop that could not act is reported as the bou
   assert.equal(res2.json.stop.mode, "boundary", "a signal that was refused is being reported as an immediate stop");
 });
 
-test("2076 arm 4 — no process id reaches the browser, and the raw tool result stops travelling", async () => {
+test("arm 4 — no process id reaches the browser, and the raw tool result stops travelling", async () => {
   // This route returned `upstream: r` wholesale, which was harmless while the tool answered in states
   // and sentences. `stop_run`'s immediate mode carries `immediate.pid` — a process id on the box — and
   // this response goes to a client's browser. Nothing in the client has ever read `upstream`.

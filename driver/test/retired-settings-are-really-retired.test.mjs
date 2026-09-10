@@ -30,7 +30,7 @@ function retiredNames() {
   return [...section.matchAll(/^\|\s*`([A-Z][A-Z0-9_]+)`\s*\|/gm)].map((m) => m[1]);
 }
 
-test("#1745 every setting documented as retired is really gone from the product", () => {
+test("every setting documented as retired is really gone from the product", () => {
   const names = retiredNames();
   // A table nobody reads asserts nothing, and an empty one would make every assertion below vacuous.
   assert.ok(names.length >= 5, `only ${names.length} retired settings parsed out of ${REF} — the table `

@@ -187,7 +187,7 @@ export function clearanceReportData({
     // filing-routine "(ordinary mechanics are not an ask) — same rule as the code-built only-you
     // section", and that cross-reference was accurate: the only-you section dropped it too, through
     // ADVISORY_TAG rather than a named filter. then wrote a watch group for "monitoring and
-    // filing-routine" and neither copy was told. Owner ruling 2026-08-19: the kind renders.
+    // filing-routine" and neither copy was told. Ruling 2026-08-19: the kind renders.
     //
     // This surface is the one that matters most for it. Legacy runs are served as baked bytes, but NEW
     // runs render component-native from report-data.json — so a fix that reached only the markdown

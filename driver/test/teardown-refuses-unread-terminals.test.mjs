@@ -42,21 +42,21 @@ const workAt = (...dirs) => (d) => dirs.includes(d);
 const allWork = () => true;
 const noWork = () => false;
 
-test("#922 an UNSETTLED round with work on disk blocks the teardown", () => {
+test("an UNSETTLED round with work on disk blocks the teardown", () => {
   const g = unreadTerminalsInTeardown([round()], { searched: true, hasWork: allWork });
   assert.equal(g.blocked.length, 1, "this is the whole point: it can still be read, so it is not destroyed yet");
   assert.deepEqual(g.blocked[0], { token: "aaaa1111", runDir: "/w/one", startedAt: "2026-08-11T00:00:00.000Z" },
     "the row carries the token, the run dir and the start time — a refusal an operator cannot act on is a refusal that gets forced past");
 });
 
-test("#922 a SETTLED round is done and never blocks — teardown has to stay usable", () => {
+test("a SETTLED round is done and never blocks — teardown has to stay usable", () => {
   const g = unreadTerminalsInTeardown([round({ reportedState: "settled", reportedAt: "2026-08-12T00:00:00.000Z" })],
     { searched: true, hasWork: allWork });
   assert.deepEqual(g.blocked, [], "a settled round has been read; keeping it would make teardown impossible");
   assert.deepEqual(g.unrecoverable, [], "…and it is not a loss either — it is the success case");
 });
 
-test("#922 READ IS NOT SETTLED — a round stamped `reportedAt` that came back `unknown` still blocks", () => {
+test("READ IS NOT SETTLED — a round stamped `reportedAt` that came back `unknown` still blocks", () => {
   // The correction, and the one that decides whether this gate sees 21 rounds or 30. `unknown` is
   // the honest outcome for a round with nothing in it, and it leaves the round exactly as unclosed as it
   // was — re-reading it can never change that, which is what the waive is for.
@@ -67,7 +67,7 @@ test("#922 READ IS NOT SETTLED — a round stamped `reportedAt` that came back `
     "keying on `reportedAt` would drop this round while it stays unclosed — that hid 9 of 30 on the live receipts");
 });
 
-test("#922 a round with NOTHING LEFT TO READ does not block, but is counted and named", () => {
+test("a round with NOTHING LEFT TO READ does not block, but is counted and named", () => {
   // A loss that already happened cannot be prevented here, and blocking on it would brick teardown of
   // an already-emptied scenario forever. Reported rather than dropped: an absence nobody writes down
   // reads as though it never occurred, which is how these went missing.
@@ -77,13 +77,13 @@ test("#922 a round with NOTHING LEFT TO READ does not block, but is counted and 
   assert.equal(g.unrecoverable[0].runDir, "/w/one");
 });
 
-test("#922 an unsettled round with NO run dir at all is an already-permanent loss, named not dropped", () => {
+test("an unsettled round with NO run dir at all is an already-permanent loss, named not dropped", () => {
   const g = unreadTerminalsInTeardown([round({ runs: [] })], { searched: true, hasWork: allWork });
   assert.deepEqual(g.blocked, [], "there is no evidence left for this teardown to destroy");
   assert.deepEqual(g.unrecoverable, [{ token: "aaaa1111", runDir: null, startedAt: "2026-08-11T00:00:00.000Z" }]);
 });
 
-test("#922 NOT SEARCHED IS NOT CLEAN — the fail-silent case gets its own answer", () => {
+test("NOT SEARCHED IS NOT CLEAN — the fail-silent case gets its own answer", () => {
   // A workspace nobody walked yields no run dirs. Reading that as "nothing is unread" is the same shape
   // as the defect this whole check exists to close, so it can never be reported as an empty blocked set
   // and nothing else.
@@ -93,7 +93,7 @@ test("#922 NOT SEARCHED IS NOT CLEAN — the fail-silent case gets its own answe
   assert.deepEqual(g.unrecoverable, [], "and it makes no claim about losses either — it did not look");
 });
 
-test("#922 every run of a multi-run round is judged on its own", () => {
+test("every run of a multi-run round is judged on its own", () => {
   const r = round({ runs: [{ runDir: "/w/a" }, { runDir: "/w/b" }] });
   const g = unreadTerminalsInTeardown([r], { searched: true, hasWork: workAt("/w/b") });
   assert.deepEqual(g.blocked.map((b) => b.runDir), ["/w/b"], "the readable one blocks");
@@ -107,7 +107,7 @@ test("#922 every run of a multi-run round is judged on its own", () => {
 // which is the failure this issue is about, wearing a green suite. The measured shape of the defect is
 // exactly this: the run dir level is load-bearing, `hasAttemptRows` reads `<dir>/_driver` with NO
 // fallback, and handing it the matter directory one level up finds no `_driver` at all.
-test("#922 the DEFAULT probe is the seat-attempt rule, and it reads <runDir>/_driver", () => {
+test("the DEFAULT probe is the seat-attempt rule, and it reads <runDir>/_driver", () => {
   const base = mkdtempSync(join(tmpdir(), "teardown-922-"));
 
   const live = join(base, "2026-08-11-invented-run");
@@ -148,7 +148,7 @@ const at = (needle) => {
   return i;
 };
 
-test("#922 the gate runs BEFORE anything is destroyed", () => {
+test("the gate runs BEFORE anything is destroyed", () => {
   assert.notEqual(TEARDOWN, -1);
   const gate = at("unreadTerminalsInTeardown(");
   assert.ok(gate < at("const pres = preserveRunDir(runDir, id)"),
@@ -159,7 +159,7 @@ test("#922 the gate runs BEFORE anything is destroyed", () => {
     "…and precede the `clearedAt` stamp, which is what retires the unreported-terminal warning for good");
 });
 
-test("#922 the refusal is a NON-ZERO exit, distinct from a usage error", () => {
+test("the refusal is a NON-ZERO exit, distinct from a usage error", () => {
   const fn = SRC.slice(TEARDOWN, at("const cleared = new Date().toISOString();"));
   assert.match(fn, /const REFUSED = 3;/,
     "2 is die()'s usage default and 4 is run's stale refusal, so a script can tell this refusal apart without parsing prose");
@@ -167,14 +167,14 @@ test("#922 the refusal is a NON-ZERO exit, distinct from a usage error", () => {
     "all three arms refuse the same way: unreadable receipt, unsearched workspace, and unread work on disk");
 });
 
-test("#922 the waive is EXPLICIT — never a default, never inferred", () => {
+test("the waive is EXPLICIT — never a default, never inferred", () => {
   const fn = SRC.slice(TEARDOWN, at("const cleared = new Date().toISOString();"));
   assert.match(fn, /const waived = process\.argv\.includes\("--waive-unread"\);/,
     "read straight off argv like --stale, so the arg parser needs no change and the flag cannot acquire a default");
   assert.match(fn, /if \(!waived && gate\.blocked\.length\)/, "and the block is conditional on it being absent");
 });
 
-test("#922 the refusal NAMES the rounds and the exact waive flag", () => {
+test("the refusal NAMES the rounds and the exact waive flag", () => {
   // An operator who is told only that something is wrong reaches for --force. The message has to carry
   // the round, where its evidence is, the command that reads it, and the flag that overrides — or this
   // gate teaches people to route around it.
@@ -189,7 +189,7 @@ test("#922 the refusal NAMES the rounds and the exact waive flag", () => {
     "and it does not promise that reading closes the round — an in-flight or `unknown` round stays unsettled");
 });
 
-test("#922 a waived teardown NAMES what it is destroying", () => {
+test("a waived teardown NAMES what it is destroying", () => {
   const fn = SRC.slice(TEARDOWN, at("const cleared = new Date().toISOString();"));
   assert.match(fn, /WAIVED \(--waive-unread\)/, "the waive is on the transcript, not silent");
   assert.match(fn, /for \(const c of covered\) console\.log/, "…and lists every finding it covers");
@@ -197,7 +197,7 @@ test("#922 a waived teardown NAMES what it is destroying", () => {
   assert.match(fn, /the workspace was NOT searched/, "…so a waive past a blind teardown is visible too");
 });
 
-test("#922 losses that already happened are named even when nothing blocks", () => {
+test("losses that already happened are named even when nothing blocks", () => {
   // A teardown whose unsettled rounds are ALL unrecoverable is not refused — nothing here can bring them
   // back. If it also said nothing about them it would be the absence-nobody-writes-down shape the issue
   // is about, so the narration sits outside the refusal arm rather than inside its message.
@@ -211,13 +211,13 @@ test("#922 losses that already happened are named even when nothing blocks", () 
     "…and a round with no run dir is distinguished from one whose dir survived empty — different events");
 });
 
-test("#922 the unread test is IMPORTED, never restated", () => {
+test("the unread test is IMPORTED, never restated", () => {
   assert.match(SRC, /import \{ hasAttemptRows \} from "\.\/e2e-unread-terminals\.mjs";/,
     "two definitions of 'there is something here to read' is how one tool licenses a purge the other would refuse");
   assert.ok(!/function hasAttemptRows/.test(SRC), "…so this file must not carry a second copy");
 });
 
-test("#922 the flag is in the usage the operator is shown", () => {
+test("the flag is in the usage the operator is shown", () => {
   // A refusal naming a flag that the usage line never mentions is a flag nobody finds before they need it.
   assert.match(SRC, /node scripts\/e2e\.mjs teardown <ID> \[--waive-unread\]/, "the header block");
   assert.equal((SRC.match(/teardown <ID> \[--waive-unread\]/g) ?? []).length, 4,

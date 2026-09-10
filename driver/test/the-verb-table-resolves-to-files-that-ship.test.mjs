@@ -22,7 +22,7 @@ import { VERBS, SUMMARY, NOT_VERBS, ROOT } from "../../bin/clearotron.mjs";
 
 const manifest = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 
-test("#1725 every verb resolves to a file that is actually on disk", () => {
+test("every verb resolves to a file that is actually on disk", () => {
   const verbs = Object.keys(VERBS);
   assert.ok(verbs.length >= 8, `the verb table collapsed to ${verbs.length} — an empty table passes every other arm here`);
   const missing = verbs.filter((v) => !existsSync(join(ROOT, VERBS[v][0])));
@@ -31,14 +31,14 @@ test("#1725 every verb resolves to a file that is actually on disk", () => {
     + "  A renamed file is the whole failure mode: nothing breaks until a stranger types the verb.");
 });
 
-test("#1725 every verb has a one-line summary, and every summary has a verb", () => {
+test("every verb has a one-line summary, and every summary has a verb", () => {
   // --help is derived from these two objects. A verb with no summary prints a blank line next to its
   // name; a summary with no verb advertises something that cannot be run.
   assert.deepEqual(Object.keys(VERBS).filter((v) => !SUMMARY[v]), [], "verb with no summary");
   assert.deepEqual(Object.keys(SUMMARY).filter((v) => !VERBS[v]), [], "summary with no verb");
 });
 
-test("#1725 every verb's file is inside the package's `files` allowlist", () => {
+test("every verb's file is inside the package's `files` allowlist", () => {
   // THE FAILURE THIS CATCHES is the one the runtime check cannot: the file exists in the repo, the
   // suite is green, and `files` simply does not carry its directory — so the verb works for everyone
   // with a checkout and for nobody who installed the package.
@@ -56,7 +56,7 @@ test("#1725 every verb's file is inside the package's `files` allowlist", () => 
     + "  Add the directory to `files` in package.json, or the verb is a promise only a checkout can keep.");
 });
 
-test("#1725 the package declares the dispatcher as its command", () => {
+test("the package declares the dispatcher as its command", () => {
   assert.equal(manifest.bin?.clearotron, "bin/clearotron.mjs",
     "the `bin` field is what makes `clearotron` and `npx clearotron` resolve at all");
   assert.ok(existsSync(join(ROOT, manifest.bin.clearotron)), "the declared bin does not exist");
@@ -68,7 +68,7 @@ test("#1725 the package declares the dispatcher as its command", () => {
 // cannot be derived — nobody writes a line of prose by walking a directory — so what is derived is the
 // COMPLETENESS: every runnable entry point in bin/ must be reachable through the one command, or be
 // named as deliberately unreachable with a reason. That closes the gap the requirement is about.
-test("#1719 every runnable entry point in bin/ is a verb, or is declared as deliberately not one", () => {
+test("every runnable entry point in bin/ is a verb, or is declared as deliberately not one", () => {
   const onDisk = readdirSync(join(ROOT, "bin")).filter((f) => f.endsWith(".mjs"));
   assert.ok(onDisk.length >= 6, `bin/ produced ${onDisk.length} entry points — too few for this to be scanning anything`);
 
@@ -84,7 +84,7 @@ test("#1719 every runnable entry point in bin/ is a verb, or is declared as deli
     + "  A runnable file nobody can name is the gap #1719 exists to close.");
 });
 
-test("#1719 a NOT_VERBS entry that no longer matches a file is deleted, not carried", () => {
+test("a NOT_VERBS entry that no longer matches a file is deleted, not carried", () => {
   // The dead-names discipline. An exemption list that outlives its subjects grows until it exempts
   // something real by accident, and nothing fails while it happens.
   const onDisk = new Set(readdirSync(join(ROOT, "bin")).filter((f) => f.endsWith(".mjs")));

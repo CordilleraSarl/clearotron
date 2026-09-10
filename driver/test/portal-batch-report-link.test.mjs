@@ -44,7 +44,7 @@ const BATCH = {
 const LEGACY_BATCH = { ...BATCH, reports: BATCH.reports.map(({ slug, ...r }) => r) };
 const SINGLE = { runId: "run-2", kind: "clearance", markName: "BREEZEBERRY" };
 
-test("#583 every per-mark report resolves to its own file, and to a DIFFERENT one", () => {
+test("every per-mark report resolves to its own file, and to a DIFFERENT one", () => {
   const rows = reportsOf(BATCH);
   assert.deepEqual(rows.map((r) => r.slug), ["coral-freeze", "cinder-lantern"]);
   assert.equal(resolveReportFile(BATCH, "coral-freeze"), "report-coral-freeze.html");
@@ -53,7 +53,7 @@ test("#583 every per-mark report resolves to its own file, and to a DIFFERENT on
     "two names, two documents — a batch that served one for both would be #472's defect returning");
 });
 
-test("#583 a batch ALREADY in the pool heals off its own filename — no republish needed", () => {
+test("a batch ALREADY in the pool heals off its own filename — no republish needed", () => {
   // A republish is not something the reader of a delivered report can ask for, so every batch published
   // before the slug rode has to link correctly as it stands. `report-<slug>.html` has always been the
   // publisher's name for a per-mark document, so this recovers the slug exactly rather than guessing.
@@ -61,7 +61,7 @@ test("#583 a batch ALREADY in the pool heals off its own filename — no republi
   assert.equal(resolveReportFile(LEGACY_BATCH, "coral-freeze"), "report-coral-freeze.html");
 });
 
-test("#583 a batch still has NO run-level document, and asking for one still resolves to nothing", () => {
+test("a batch still has NO run-level document, and asking for one still resolves to nothing", () => {
   // The fix must not smuggle in the behaviour removed. A slug-less request for a batch resolves to
   // NOTHING — never to its first mark.
   assert.equal(resolveReportFile(BATCH, null), null);
@@ -71,20 +71,20 @@ test("#583 a batch still has NO run-level document, and asking for one still res
   assert.equal(resolveReportFile(SINGLE, null), "report.html");
 });
 
-test("#583 the publisher writes the slug it computed — it was being thrown away one line from its use", () => {
+test("the publisher writes the slug it computed — it was being thrown away one line from its use", () => {
   const t = src("driver/publish/knockout.mjs");
   assert.match(t, /reports: reports\.map\(\(\{ mark, slug, file, dataFile, band \}\) => \(\{ mark, slug, file, dataFile, band \}\)\)/,
     "meta.json's reports[] carries the slug; without it every consumer downstream is guessing");
 });
 
-test("#583 the clearances row opens a run that has reports, however many", () => {
+test("the clearances row opens a run that has reports, however many", () => {
   const t = src("portal-ui/src/screens/Clearances.tsx");
   assert.match(t, /const openable = Boolean\(read\.report\) \|\| read\.reports\.length > 0/,
     "`read.report` is the RUN-LEVEL link and is null for a batch by design — gating the row on it alone "
     + "made every batch unopenable");
 });
 
-test("#583 the SERVED BUNDLE carries the fix — portal-ui/dist is what the browser gets", (ctx) => {
+test("the SERVED BUNDLE carries the fix — portal-ui/dist is what the browser gets", (ctx) => {
   // The source is not the surface. `portal-ui/dist` is committed on purpose (portal-static.mjs: a missing
   // bundle must be a loud 503, never a blank page) and portal-static serves it verbatim, so a source-only
   // fix would leave the customer reading the old sentence out of a stale chunk while every test passed.
@@ -105,7 +105,7 @@ test("#583 the SERVED BUNDLE carries the fix — portal-ui/dist is what the brow
     "and the honest line is the one actually shipped");
 });
 
-test("#583 no customer-facing surface claims a review step that does not exist", () => {
+test("no customer-facing surface claims a review step that does not exist", () => {
   // Comment lines are stripped first: the block above the fix QUOTES the old sentence so the next reader
   // knows what was wrong with it, and a test that could not tell a quotation from a claim would force the
   // record to be deleted along with the defect.

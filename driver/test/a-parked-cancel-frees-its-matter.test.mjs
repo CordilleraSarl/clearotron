@@ -49,13 +49,13 @@ const blocked = (q, msgId = "msg-2") =>
 
 // ── the semantics, pinned in both directions ───────────────────────────────────────────────────────
 
-test("2137 a LIVE row blocks a re-submission — that is the dedup doing its job", () => {
+test("a LIVE row blocks a re-submission — that is the dedup doing its job", () => {
   const q = qdir();
   enqueue(q, "msg-1");
   assert.equal(blocked(q), true, "an un-failed row inside the window means the matter is still live");
 });
 
-test("2137 a FAILED row never blocks — the semantics the skip site now states", () => {
+test("a FAILED row never blocks — the semantics the skip site now states", () => {
   const q = qdir();
   enqueue(q, "msg-1");
   dropMatter(q, "msg-1");
@@ -65,7 +65,7 @@ test("2137 a FAILED row never blocks — the semantics the skip site now states"
 
 // ── the asymmetry this closes ──────────────────────────────────────────────────────────────────────
 
-test("2137 THE DEFECT: a cancel taken while PARKED frees the matter", () => {
+test("THE DEFECT: a cancel taken while PARKED frees the matter", () => {
   // retireCancelledPark was the one terminal writer that left the ledger alone. Everything else that
   // ends a run frees the matter, so an operator who stopped a parked run then found their re-submission
   // silently parked as a duplicate — with no run, and nothing anywhere saying why.
@@ -81,7 +81,7 @@ test("2137 THE DEFECT: a cancel taken while PARKED frees the matter", () => {
   assert.equal(readMatterLedger(q)[0].failed, true, "and the row is MARKED, so the spend still counts");
 });
 
-test("2137 the terminals it already wrote are unchanged, and the matter is freed AFTER them", () => {
+test("the terminals it already wrote are unchanged, and the matter is freed AFTER them", () => {
   // Ordering matters for the same reason the function's own note gives: the record a reader consults
   // must never be freed before the record that says why it was stopped.
   const q = qdir();
@@ -94,7 +94,7 @@ test("2137 the terminals it already wrote are unchanged, and the matter is freed
   assert.equal(did.matterFreed, true);
 });
 
-test("2137 a park written before the msgId field simply does not free — no worse than before, never a throw", () => {
+test("a park written before the msgId field simply does not free — no worse than before, never a throw", () => {
   // Same backward-compat story as `runDir` on that meta: an older park has no msgId, so its cancel
   // leaves the row exactly as it did before and the window closes it. What must NOT happen is a throw
   // in a terminal writer — that would trade a dedup nuisance for a run that cannot be ended.
@@ -111,7 +111,7 @@ test("2137 a park written before the msgId field simply does not free — no wor
 
 // ── the wiring: the field has to be written, or every arm above is about a fixture ──────────────────
 
-test("2137 the park meta CARRIES the msgId — an arm over a hand-built meta proves nothing otherwise", () => {
+test("the park meta CARRIES the msgId — an arm over a hand-built meta proves nothing otherwise", () => {
   // The arms above hand retireCancelledPark a meta. If the park writer never puts msgId in one, they
   // all pass while no real cancel frees anything. This is the half only the source can answer.
   const src = readFileSync(new URL("../runner.mjs", import.meta.url), "utf8");

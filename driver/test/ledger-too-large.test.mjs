@@ -47,7 +47,7 @@ const withLedger = (fn, { lines = 5, pad = 0 } = {}) => {
   try { return fn(p, dir); } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
-test("#582 the walk never materialises the file as one string — that is the whole defect", () => {
+test("the walk never materialises the file as one string — that is the whole defect", () => {
   // The guard is structural rather than a 600 MB fixture: a test that had to build one would be skipped
   // on any box that could not afford it, which is exactly the box the defect appears on.
   const src = readFileSync(new URL("../registry-fidelity.mjs", import.meta.url), "utf8");
@@ -58,7 +58,7 @@ test("#582 the walk never materialises the file as one string — that is the wh
   assert.match(src, /const LEDGER_CHUNK = /, "it is walked in chunks");
 });
 
-test("#582 a line split ACROSS chunk boundaries survives — the carry is the whole trick", () => {
+test("a line split ACROSS chunk boundaries survives — the carry is the whole trick", () => {
   // The failure this prevents: a row torn in half by the chunk edge parses as two invalid fragments and
   // is dropped. Silently, and only for records whose row happens to straddle an 8 MB boundary.
   const dir = mkdtempSync(join(tmpdir(), "ledger-carry-"));
@@ -73,7 +73,7 @@ test("#582 a line split ACROSS chunk boundaries survives — the carry is the wh
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#582 all three readers walk the same way and agree on the same ledger", () => {
+test("all three readers walk the same way and agree on the same ledger", () => {
   withLedger((p) => {
     assert.equal(collectRecordBodies(p, PREFIX).size, 5);
     assert.equal(collectRecordReceipts(p, PREFIX).size, 5);
@@ -84,7 +84,7 @@ test("#582 all three readers walk the same way and agree on the same ledger", ()
   });
 });
 
-test("#582 a MISSING ledger is not an error — a run before any fetch has none, and that is ordinary", () => {
+test("a MISSING ledger is not an error — a run before any fetch has none, and that is ordinary", () => {
   const r = forEachLedgerLine(join(tmpdir(), "no-such-ledger-582.jsonl"), () => {
     assert.fail("nothing to walk");
   });
@@ -92,7 +92,7 @@ test("#582 a MISSING ledger is not an error — a run before any fetch has none,
   assert.equal(r.error, null, "absence is the ordinary state here, and must not read as a fault");
 });
 
-test("#582 a ledger that EXISTS and cannot be read is a reported fault, never an empty map", () => {
+test("a ledger that EXISTS and cannot be read is a reported fault, never an empty map", () => {
   // The distinction the old `catch { return map }` erased. A directory where a file should be is the
   // portable stand-in for the real case (EISDIR rather than ERR_STRING_TOO_LONG) — what matters is that
   // a read which fails on a path that IS there produces a reason, not a silent zero.
@@ -107,7 +107,7 @@ test("#582 a ledger that EXISTS and cannot be read is a reported fault, never an
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#582 assembleRunRecords reports the ledger's verdict, so a caller cannot mistake one zero for the other", () => {
+test("assembleRunRecords reports the ledger's verdict, so a caller cannot mistake one zero for the other", () => {
   const runDir = mkdtempSync(join(tmpdir(), "assemble-"));
   mkdirSync(driverDir(runDir), { recursive: true });
   const bad = join(runDir, "as-a-dir.jsonl");

@@ -38,7 +38,7 @@ const SRC = (f) => readFileSync(join(HERE, "..", f), "utf8");
 // a 60-character slice lands two short of the end and the cut is invisible.
 const REQUIRED = "coverage_ledger_empty: at least one row per active axis is required";
 
-test("#494 arm 1 — the headline cut is marked, so `is r` cannot be read as a word", () => {
+test("arm 1 — the headline cut is marked, so `is r` cannot be read as a word", () => {
   const cut = abbrev(REQUIRED, 60);
   assert.ok(cut.length <= 60, "the bound is still respected — this is not a widening");
   assert.ok(cut.endsWith("…"), "THE DEFECT: a cut that does not say it is a cut");
@@ -47,7 +47,7 @@ test("#494 arm 1 — the headline cut is marked, so `is r` cannot be read as a w
   assert.equal(abbrev("short enough", 60), "short enough");
 });
 
-test("#494 arm 2 — every site the issue names marks its cut", () => {
+test("arm 2 — every site the issue names marks its cut", () => {
   // Source-anchored, because the property is about a code shape and there is no other way to reach the
   // sites that fire only on a corrupt artifact. Comment lines are stripped first: this file's own
   // subject is the string `slice(0, 60)`, and a prose mention of it must not read as a live site.
@@ -72,7 +72,7 @@ test("#494 arm 2 — every site the issue names marks its cut", () => {
     "the coverage machine-ledger note is sliced again — this is the exact string from the report");
 });
 
-test("#494 arm 3 — a value that FITS is returned whole, marker and all", () => {
+test("arm 3 — a value that FITS is returned whole, marker and all", () => {
   // The other half of "marks the cut": a marker on a complete value would teach the reader to distrust
   // every message, which is the same failure pointing the other way.
   for (const [v, n] of [["exactly ten", 11], ["short", 60], ["", 60]])
@@ -84,7 +84,7 @@ test("#494 arm 3 — a value that FITS is returned whole, marker and all", () =>
   assert.match(error, /^unparseable json \(/, "the error must still name its class before its detail");
 });
 
-test("#494 arm 4 — the composed operator reason carries the whole requirement", () => {
+test("arm 4 — the composed operator reason carries the whole requirement", () => {
   // The outer message truncates the inner note a second time. The report's `the pr` is that cut. Both
   // bounds have to admit the sentence or the fix only moves the wall.
   const inner = `coverage machine-ledger unavailable (${abbrev(REQUIRED, 60)}) — gates ran on the prose table`;

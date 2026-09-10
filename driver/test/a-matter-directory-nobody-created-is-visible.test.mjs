@@ -25,7 +25,7 @@ const OWN = "tmp0000-fixture-alpha";
 const TYPO = "tmp0000-fixture-alph";       // one DELETION — the shape that bit
 const OTHER = "tmp0000-unrelated-matter";
 
-test("2151 a matter directory one edit from this run's own is reported AND flagged", () => {
+test("a matter directory one edit from this run's own is reported AND flagged", () => {
   const before = matterSiblings("/studio", dirs(OWN, OTHER));
   const after = matterSiblings("/studio", dirs(OWN, OTHER, TYPO));
   const stray = findStrayMatterSiblings(before, after, { own: OWN });
@@ -35,7 +35,7 @@ test("2151 a matter directory one edit from this run's own is reported AND flagg
     "a one-letter sibling is the hazardous class — a reader cannot tell it from the real matter by eye");
 });
 
-test("2151 a stray that is NOT a near-miss is still reported, not judged uninteresting", () => {
+test("a stray that is NOT a near-miss is still reported, not judged uninteresting", () => {
   // Flagging rather than filtering. A rule that only reported near-misses would silently drop every
   // other way a directory can appear where none should.
   const before = matterSiblings("/studio", dirs(OWN));
@@ -45,18 +45,18 @@ test("2151 a stray that is NOT a near-miss is still reported, not judged uninter
   assert.equal(stray[0].nearMiss, false, "…and it is reported as what it is");
 });
 
-test("2151 an empty snapshot reports NOTHING — `we never looked` is not `everything is stray`", () => {
+test("an empty snapshot reports NOTHING — `we never looked` is not `everything is stray`", () => {
   const after = matterSiblings("/studio", dirs(OWN, TYPO, OTHER));
   assert.deepEqual(findStrayMatterSiblings(new Set(), after, { own: OWN }), [],
     "reporting every matter on the box as a stray would make the first real one invisible");
 });
 
-test("2151 an unreadable studio root yields an empty snapshot rather than throwing", () => {
+test("an unreadable studio root yields an empty snapshot rather than throwing", () => {
   const boom = () => { throw new Error("EACCES"); };
   assert.equal(matterSiblings("/studio", boom).size, 0, "a hygiene sweep must never be able to cost a run");
 });
 
-test("2151 the near-miss test, INCLUDING what it deliberately does not catch", () => {
+test("the near-miss test, INCLUDING what it deliberately does not catch", () => {
   assert.equal(withinOneEdit("berrycake", "berycake"), true, "one deletion — the shape that was observed");
   assert.equal(withinOneEdit("alpha", "alphx"), true, "one substitution");
   assert.equal(withinOneEdit("alpha", "alphax"), true, "one insertion");

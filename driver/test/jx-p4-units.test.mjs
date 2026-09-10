@@ -188,7 +188,7 @@ test("serp grid: coverage floor — a mostly-gapped grid DEGRADES (retryable), t
 // gaps with that cause, the coverage floor trips, and degradeUnit writes the same record. What is
 // claimed here is that the RECORDING PATH is correct and red-provable — not that the engine was
 // observed degrading on a live outage.
-test("#525 a dead SERP credential records degraded=true AND names the credential as the cause", async () => {
+test("a dead SERP credential records degraded=true AND names the credential as the cause", async () => {
   await withEnv({ CLEAROTRON_JX_LANES: "1", CLEAROTRON_JX_SERP_GRID: "1" }, async () => {
     const ctx = mkCtx();
     const deadCredential = async () => ({ ok: false, cause: "SERPAPI_API_KEY absent from driver env" });
@@ -207,7 +207,7 @@ test("#525 a dead SERP credential records degraded=true AND names the credential
   });
 });
 
-test("#525 a provider cause carrying an api_key is REDACTED before it enters the receipt", async () => {
+test("a provider cause carrying an api_key is REDACTED before it enters the receipt", async () => {
   await withEnv({ CLEAROTRON_JX_LANES: "1", CLEAROTRON_JX_SERP_GRID: "1" }, async () => {
     // NEW exposure, created by this change: before no SERP cause reached units.json at all.
     // callSearchAPI builds `SerpAPI <status>: <errorText>` from a response body that can echo the
@@ -223,7 +223,7 @@ test("#525 a provider cause carrying an api_key is REDACTED before it enters the
   });
 });
 
-test("#525 redaction lives in degradeUnit, so EVERY unit's cause is scrubbed — not just the grid's", async () => {
+test("redaction lives in degradeUnit, so EVERY unit's cause is scrubbed — not just the grid's", async () => {
   await withEnv({ CLEAROTRON_JX_LANES: "1", CLEAROTRON_JX_NATIVEREAD: "1" }, async () => {
     // The grid path happens to scrub its causes while tallying them, which would leave degradeUnit's
     // own redaction untested and free to be deleted. Three of its five call sites hand it a RAW
@@ -241,7 +241,7 @@ test("#525 redaction lives in degradeUnit, so EVERY unit's cause is scrubbed —
   });
 });
 
-test("#525 a key long enough to eat the truncation budget is redacted BEFORE the slice, so the diagnostic survives", async () => {
+test("a key long enough to eat the truncation budget is redacted BEFORE the slice, so the diagnostic survives", async () => {
   await withEnv({ CLEAROTRON_JX_LANES: "1", CLEAROTRON_JX_NATIVEREAD: "1" }, async () => {
     // Both orders are leak-safe — `api_key=[^&\s]*` matches to end-of-string, so a key the slice cuts
     // through is still wholly replaced. What truncating FIRST loses is the rest of the message: a
@@ -259,7 +259,7 @@ test("#525 a key long enough to eat the truncation budget is redacted BEFORE the
   });
 });
 
-test("#525 a unit that COMPLETED states degraded=false — done and healthy are separate facts, both recorded", async () => {
+test("a unit that COMPLETED states degraded=false — done and healthy are separate facts, both recorded", async () => {
   await withEnv({ CLEAROTRON_JX_LANES: "1", CLEAROTRON_JX_SERP_GRID: "1", CLEAROTRON_JX_NATIVEREAD: "1" }, async () => {
     const ctx = mkCtx();
     await units.runJxSerpGrid(ctx, ctx.job, { serpExecutor: happySerp(), jxJudge: happyJudge() }, {});
@@ -293,7 +293,7 @@ test("serp grid: gates — lane killed / no lane decision each skip with zero ar
   assert.ok(!existsSync(jxp(ctx, "units.json")), "no artifacts on any skip path");
 });
 
-test("#1149 item 8 — an EMPTY environment no longer skips the grid: the arm is gone, not defaulted off", () => {
+test("item 8 — an EMPTY environment no longer skips the grid: the arm is gone, not defaulted off", () => {
   // The counterfactual for the arm above. Before item 8 an unset environment produced
   // "CLEAROTRON_JX_SERP_GRID off"; a run that reached this unit with nothing set was silently dark. The
   // grid now refuses only on a disclosed condition, so the cause CANNOT name a deleted switch.

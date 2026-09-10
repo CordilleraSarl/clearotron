@@ -169,7 +169,7 @@ test("a RETIRED switch is not in the snapshot at all — the allowlist is the re
   }
 });
 
-test("#1149 item 8 — the product declares NO flag, and the snapshot says so in a number", () => {
+test("item 8 — the product declares NO flag, and the snapshot says so in a number", () => {
   // The three tests this replaces asserted the flag machinery on its four members: every flag carries a
   // silent-output-change effect, `set` separates explicitly-off from never-configured, and a default-ON
   // flag reads ON when unset. All four members are deleted, so those arms had nothing left to run on —
@@ -183,7 +183,7 @@ test("#1149 item 8 — the product declares NO flag, and the snapshot says so in
   assert.ok("flagsDeclared" in snap, "present even at zero: absent and zero are different facts");
 });
 
-test("#1149 item 8 — a retired switch is not a live one: the deleted names get no row, however they are set", () => {
+test("item 8 — a retired switch is not a live one: the deleted names get no row, however they are set", () => {
   // The counterfactual that makes the arm above mean something. ENGINE_ENV sets all three jx arms to "1".
   // If the allowlist ever grew one back by accident, this reddens.
   const snap = buildFlagSnapshot(ENGINE_ENV, { capturedAt: POSTURE_AT });
@@ -216,7 +216,7 @@ const POSTURE_AT = "2026-08-05T00:00:00.000Z";
 const prodEnv = { CLEAROTRON_JX_SERP_GRID: "1", CLEAROTRON_JX_NATIVEREAD: "1", CLEAROTRON_JX_CONSUME: "1",
   EUIPO_ENVIRONMENT: "production", EUIPO_CLIENT_ID: "x", EUIPO_CLIENT_SECRET: "y" };
 
-test("#1149 item 8 — an EMPTY flag comparison is reported as vacuous, never as agreement", () => {
+test("item 8 — an EMPTY flag comparison is reported as vacuous, never as agreement", () => {
   // This is the arm the retirement turns on. With no flag declared on either side the comparison loop
   // runs zero times, and the old assertion here — deepEqual(d, []) — would have gone green while
   // checking nothing, telling a reader this box matches production when nothing was compared.
@@ -280,7 +280,7 @@ test("the production posture names where it was read from", () => {
 
 // ──: what this instance searches with, and the third state that is not "none" ─────────────────
 
-test("#1439 — a snapshot written before the engine recorded this OMITS the keys, and reads as UNKNOWN", () => {
+test("a snapshot written before the engine recorded this OMITS the keys, and reads as UNKNOWN", () => {
   // The direction that ships the lie if it is collapsed, and the one every deployment is in until its
   // driver next drains. `engine: {}` / `providers: []` would say "an engine with no name" and "no
   // provider is configured" — the second of which is the exact inverse of the fact.
@@ -291,7 +291,7 @@ test("#1439 — a snapshot written before the engine recorded this OMITS the key
   assert.equal(providersFor(snap), null);
 });
 
-test("#1439 — the writer's values survive the round trip", () => {
+test("the writer's values survive the round trip", () => {
   const engine = { id: "openai-agent", vendor: "OpenAI", known: true, binaryPresent: true,
     billing: { mode: "api-key", apiBilled: true, missing: [] } };
   const providers = [{ key: "web", label: "Open-web search", provider: "serpapi",
@@ -301,7 +301,7 @@ test("#1439 — the writer's values survive the round trip", () => {
   assert.deepEqual(providersFor(snap), providers);
 });
 
-test("#1439 — an instance with NOTHING configured is an ARRAY of rows, which is not the unknown state", () => {
+test("an instance with NOTHING configured is an ARRAY of rows, which is not the unknown state", () => {
   // The distinction the two tests above exist for, asserted together: null and [] must never be reached
   // by the same input. A reader that treats them alike tells a staff member the opposite of the truth in
   // one direction or the other.
@@ -313,7 +313,7 @@ test("#1439 — an instance with NOTHING configured is an ARRAY of rows, which i
   assert.equal(providersFor(absent), null, "an absent key is the unknown state");
 });
 
-test("#1439 — a malformed block reads as UNKNOWN rather than being rendered", () => {
+test("a malformed block reads as UNKNOWN rather than being rendered", () => {
   // The snapshot is a file on disk that a web service parses. Every malformed shape gets the same answer
   // as a missing one, because the page's response to both is identical: say it cannot tell.
   assert.equal(engineFor({ engine: [] }), null, "an array is not an engine");
@@ -328,7 +328,7 @@ test("#1439 — a malformed block reads as UNKNOWN rather than being rendered", 
 // It used to exist only inside this module's own `isMain` block, so the one thing that could produce a
 // snapshot was running the file directly. `bin/start.mjs` is the first-run entry that has the engine
 // environment the portal lacks, and it could not call this at all.
-test("#1720 writeFlagSnapshot writes a snapshot the reader can read, carrying the engine block", async (t) => {
+test("writeFlagSnapshot writes a snapshot the reader can read, carrying the engine block", async (t) => {
   const { mkdtempSync, existsSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");

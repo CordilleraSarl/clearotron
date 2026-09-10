@@ -69,7 +69,7 @@ Recurring confusion, settled: "we configure the MCP servers at the edge" is true
 fills the same three roles, and the product requires none of them by name.
 
 1. **Edge auth (T5, dashboard):** the tunnel routes each public hostname to a loopback port, and a
-   CF Access app decides *who* may reach it (staff domain gate; client per-email policy; dev app).
+   CF Access app decides *who* may reach it (your own domain; outside people per email; dev app).
 2. **Local verification (T4, unit files):** every service *independently re-verifies* the CF Access
    JWT. For that it needs the team + the app's AUD tag — so `CF_ACCESS_TEAM`/`CLEAROTRON_OIDC_AUDIENCE`/
    `MCP_ALLOWED_EMAIL_DOMAINS` appear in unit files as **mirrors of the dashboard**, not a second
@@ -105,12 +105,12 @@ by name in §5 below and in the upgrade table in INSTALL.md.
 who has not read the code. Vendor credentials keep the vendor’s name (`SIGNA_API_KEY`,
 `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`) — that already says who you bought them from.
 
-**THERE IS ONE SPELLING.** The compatibility window that read both closed on 2026-08-26 by owner ruling:
+**THERE IS ONE SPELLING.** The compatibility window that read both closed on 2026-08-26 by ruling:
 no migration, no legacy support. A deployment is REBUILT from the install rather than carried across,
 which is also the only thing that proves the install works for a new reader — a migrated box tests a path
 no new user ever walks.
 
-**A retired spelling is not checked for either** — owner ruling, same day, asked directly. The premise
+**A retired spelling is not checked for either** — ruling, same day, asked directly. The premise
 is what makes the absence correct rather than careless: a machine reaches this code through the install,
 the install writes the names in force, and the boxes that predate the rename are rebuilt rather than
 deployed onto. There is no population left holding the old lines.
@@ -294,7 +294,7 @@ it. Set-but-unreadable, malformed, or below the size floor **throws**: a truncat
 smaller blocklist, and a smaller blocklist reads as a cleaner repo. **Whether the real table is required
 is the CALLER's declaration, never the environment's**: `publication-scan.mjs` asks for it in its own
 source and refuses by name before it runs a single check if it cannot reach it. There is no switch —
-`CLEAROTRON_REQUIRE_BLOCKLIST` was deleted by owner ruling, because a variable that decides whether a scrub
+`CLEAROTRON_REQUIRE_BLOCKLIST` was deleted by ruling, because a variable that decides whether a scrub
 guard looks for anything real has a silent OFF position, and silent-off is the one state this module
 exists to make impossible: without the table, "matched nothing" and "had nothing to match on" are the
 same green.
@@ -328,7 +328,7 @@ which collided with a co-hosted warm-MCP block, so keep any unit override that n
 `CLIENT_MCP_SESSION_TTL_MS`, `CLIENT_MCP_SESSION_MAX`, `CLIENT_MCP_RATE_PER_MIN`, `CLIENT_MCP_URL`,
 `CLIENT_MCP_TOKEN_ONLY`, `CLIENT_MCP_AUTH_DISABLED` / `CLIENT_MCP_DEV` (dev seams — never set in prod). CF mirrors (T5): `CF_ACCESS_TEAM`, `CLEAROTRON_OIDC_AUDIENCE`,
 `CLEAROTRON_CLIENT_OIDC_AUDIENCE`, `MCP_ALLOWED_EMAIL_DOMAINS`, `MCP_ALLOWED_EMAILS`. Admin services:
-`PORTAL_SERVICE_PORT` (18802) / `PORTAL_SERVICE_HOST`, `PORTAL_STAFF_DOMAINS`, `PORTAL_MCP_URL`,
+`PORTAL_SERVICE_PORT` (18802) / `PORTAL_SERVICE_HOST`, `PORTAL_MCP_URL`,
 `PORTAL_RATE_PER_MIN`, `PORTAL_LOCAL_WORKER` (set only by `bin/start.mjs` when it supervises a worker,
 and what licenses the portal to say a queued job is waiting for one — a deployed instance drains via
 systemd, writes no heartbeat, and must keep saying "waiting to start" rather than invent an alarm),
@@ -391,7 +391,7 @@ the test box and production both bind 127.0.0.1 behind a tunnel.
 
 Local mode adds two values and no third: `PORTAL_LOCAL_USER` is the one email address that signs in
 (mandatory in that mode — the service refuses to start without it, and the address must ALSO be enrolled
-in `CLEAROTRON_ACCESS_FILE` or on a staff domain, because signing in is not being enrolled), and
+in `CLEAROTRON_ACCESS_FILE`, because signing in is not being enrolled), and
 `PORTAL_LOCAL_CREDENTIAL` optionally relocates the credential file, which otherwise lives at
 `~/.cordillera/portal-local-credential.json` (mode 0600, never in the repository and never inside the
 pool or the archive). `PORTAL_SECRET` is required in BOTH modes and signs both token families — the

@@ -46,7 +46,7 @@ async function childPidFrom(marker) {
   return null;
 }
 
-test("#1717 killing the PROCESS leaves the child running — the control, and the bug", async () => {
+test("killing the PROCESS leaves the child running — the control, and the bug", async () => {
   const dir = mkdtempSync(join(tmpdir(), "grp-control-"));
   const { proc, marker } = parentWithChild(dir);
   const child = await childPidFrom(marker);
@@ -65,7 +65,7 @@ test("#1717 killing the PROCESS leaves the child running — the control, and th
   try { process.kill(-proc.pid, "SIGKILL"); } catch { /* group already gone */ }
 });
 
-test("#1717 killing the GROUP takes the child with it", async () => {
+test("killing the GROUP takes the child with it", async () => {
   const dir = mkdtempSync(join(tmpdir(), "grp-cure-"));
   const { proc, marker } = parentWithChild(dir);
   const child = await childPidFrom(marker);

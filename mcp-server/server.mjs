@@ -30,7 +30,7 @@ import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
-import { enumerateRuns, resolveRun, runAccountKey } from "./lib/runs.mjs";
+import { enumerateRuns, resolveRun, runAccountKey, runOrganisation } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
 import { PRODUCTS } from "../driver/products.mjs";
 
@@ -48,7 +48,7 @@ import { readEvents, projectTimeline } from "./lib/events.mjs";
 import { tokenize, scoreLine } from "./lib/lexsearch.mjs";
 import { artifactToStage, listArtifactVersions, assertDiffRefsSafe } from "./lib/artifacts.mjs";
 import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayReadArtifact, assertAccountAccess, accountVisible, TOOL_SCOPES, readOnlyFor } from "./lib/scope.mjs";
-// The AUDIT-CHAIN projections (owner ruling 2026-08-27). Imported eagerly: it pulls only scrub.mjs, which
+// The AUDIT-CHAIN projections (ruling 2026-08-27). Imported eagerly: it pulls only scrub.mjs, which
 // this file already loads, so there is nothing here for a lazy import to save.
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
@@ -214,9 +214,25 @@ const tools = {
     // Each customer carries its PROJECTS (engagements) so intake can resolve a projectKey too. A bad
     // project file must never blank the whole roster, so the project read is best-effort (its own loud failure
     // surfaces at run time via loadProjects in the driver).
+    //
+    // READ FRESH ON EVERY CALL. `loadProfiles()` and `loadProjects()` answer from module caches with no
+    // expiry, filled by this process's first read — the boot line's — so a company or project created in
+    // the portal after the door started was missing here until the door restarted, while start_run, which
+    // re-reads on a miss (driver/enqueue-schema.mjs), already accepted it. This is the list an assistant
+    // resolves a customer against: a company it cannot see is a company it cannot pick. One read of the
+    // roster, handed to the project walk, so the two cannot come from different moments.
+    //
+    // A COMPANY FILE THAT CANNOT BE READ must not take every other company off this list. Re-reading made
+    // that possible: a bad file added after the door started used to go unread, because the door answered
+    // from its boot read, and now it would fail every call until fixed. So a failed re-read keeps the
+    // roster this process last read, and the reply says so. With no earlier read there is nothing to keep,
+    // and the call fails as it always did.
+    let roster, storeError = null;
+    try { roster = loadProfiles({ force: true }); }
+    catch (e) { storeError = String(e?.message ?? e); roster = loadProfiles(); }
     let byCustomer = new Map();
     try {
-      for (const [fq, ov] of loadProjects()) {
+      for (const [fq, ov] of loadProjects({ profiles: roster, force: true })) {
         // An ARCHIVED project is not offered for new work: this list is what the intake AI resolves a
         // projectKey against, so a name it cannot see is a name it cannot pick. Already-queued and
         // finished runs are untouched — a run freezes its effective profile at admission.
@@ -226,7 +242,7 @@ const tools = {
         byCustomer.set(ov.customerKey, list);
       }
     } catch { byCustomer = new Map(); }
-    const clients = [...loadProfiles().values()]
+    const clients = [...roster.values()]
       .filter((p) => p.key !== "generic")
       .map((p) => ({ key: p.key, name: p.name, industry: p.industry ?? null,
         projects: (byCustomer.get(p.key) ?? []).sort((a, b) => a.key.localeCompare(b.key)) }))
@@ -235,6 +251,9 @@ const tools = {
       _note: "Customer roster for intake resolution. Resolve by JUDGMENT — an explicit name, a misspelling of one of the keys below, or an implicit reference (\"our functional-beverage client\") all map to a key. Set the job's profileKey to the chosen customer key; OMIT it for a new/unknown customer (⇒ the neutral generic profile). If the request names a specific PROJECT/engagement under that customer (listed in `projects[]`), also set projectKey to that project's key; OMIT projectKey when no project is meant (⇒ the customer profile). CLARIFY if you cannot tell either. Never pick a profile from the sender's email domain.",
       clients,
       genericFallback: "generic",
+      // Staff-only tool (TOOL_SCOPES), so the reason may name the file: no client door sees this reply.
+      ...(storeError ? { storeUnreadable: `The company store could not be re-read (${storeError}). This is the list as `
+        + "last read, so a company added or changed since may be missing until that file is fixed." } : {}),
     };
   },
   async describe_options(args, extra) {
@@ -757,7 +776,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     if (Array.isArray(scope?.accounts) && authedArgs?.runId != null) {
       try {
         const run = resolveRun(String(authedArgs.runId));
-        if (run) assertAccountAccess(scope, runAccountKey(run), `run "${authedArgs.runId}"`);
+        if (run) assertAccountAccess(scope, runAccountKey(run), `run "${authedArgs.runId}"`, runOrganisation(run));
       } catch (e) {
         log(`account deny ${name} [${scope.sub ?? scope.kind}]: ${e.message}`);
         return { isError: true, content: [{ type: "text", text: `FORBIDDEN (${name}): ${e.message}` }] };
@@ -789,13 +808,13 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     const runs = scope.kind === "user"
       ? (() => { const r = scope.runId && resolveRun(scope.runId); return r ? [r] : []; })()
       : enumerateRuns()
-          .filter((r) => !Array.isArray(scope?.accounts) || accountVisible(scope, runAccountKey(r)))
+          .filter((r) => !Array.isArray(scope?.accounts) || accountVisible(scope, runAccountKey(r), runOrganisation(r)))
           .slice(0, 8).map((r) => ({ ...r, P: paths(r.runDir) }));
     // A user (report-link) token sees ONLY the report (one report — never a second version by another
     // name), never the internal KEY_ARTIFACTS (narrative/audit/run.jsonl/…) — the same gate authorize()
     // puts on read_artifact.
     //
-    // AND THE TWO CLIENT KINDS NO LONGER AGREE (owner ruling 2026-08-27). They did while both read only
+    // AND THE TWO CLIENT KINDS NO LONGER AGREE (ruling 2026-08-27). They did while both read only
     // the report; the account layer now reads the audit chain and the report link still does not. This
     // is keyed on the KIND rather than on CLIENT_KINDS for exactly that reason — leaving it collapsed
     // would have made the tool surface serve an account the audit chain while this door went on sealing
@@ -830,7 +849,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
       throw new Error("forbidden: a client may only read the report");
     const run = resolveRun(reqRunId);
     if (!run) throw new Error(`run not found: ${m[1]}`);
-    if (Array.isArray(scope?.accounts)) assertAccountAccess(scope, runAccountKey(run), `run "${reqRunId}"`);
+    if (Array.isArray(scope?.accounts)) assertAccountAccess(scope, runAccountKey(run), `run "${reqRunId}"`, runOrganisation(run));
     const path = artifactPath(run, reqArtifact);
     if (!path || !existsSync(path)) throw new Error(`artifact not found: ${m[2]}`);
     // CLIENT VIEW ( R1): the Resources surface is a second door to the same bytes — it applies the
@@ -875,7 +894,7 @@ export function presentForPrincipal(scope, name, result) {
   const declared = TOOL_SCOPES[name]?.present ?? null;
   if (declared === null) throw new UndeclaredPresentation(name);
 
-  // `project` — THE AUDIT CHAIN (owner ruling 2026-08-27). lib/audit-view.mjs holds the allowlist over
+  // `project` — THE AUDIT CHAIN (ruling 2026-08-27). lib/audit-view.mjs holds the allowlist over
   // each result's structure and the prose transform; nothing about what travels is decided here.
   //
   // The four tools are accountSafe and NOT clientSafe, so a `user` (report-link) token never reaches this
@@ -949,32 +968,27 @@ export function filterByAccounts(scope, name, result) {
   // one status-scan per call builds runId → account for the array filters
   const accountOf = () => {
     const map = new Map();
-    for (const r of enumerateRuns()) map.set(r.runId, runAccountKey(r));
+    for (const r of enumerateRuns()) map.set(r.runId, { account: runAccountKey(r), organisation: runOrganisation(r) });
     return map;
   };
+  const seen = (map, id) => { const o = id != null ? map.get(id) : null; return o != null && accountVisible(scope, o.account, o.organisation); };
   if (name === "list_profiles" && result && Array.isArray(result.clients))
     return { ...result, clients: result.clients.filter((c) => scope.accounts.includes(c.key)) };
   if ((name === "list_runs" || name === "search_runs") && Array.isArray(result)) {
     const map = accountOf();
-    return result.filter((r) => {
-      const id = r.runId ?? r.id ?? null;
-      return id != null && accountVisible(scope, map.get(id) ?? null);
-    });
+    return result.filter((r) => seen(map, r.runId ?? r.id ?? null));
   }
   // search_runs answers an OBJECT ({query, mode, scope, runsScanned, hits, truncated}) — the array
   // guard above never matched it, so scoped sessions saw EVERY hit — a real cross-account content
   // leak. Filter the hits by their run's account like the array shapes.
   if (name === "search_runs" && result && Array.isArray(result.hits)) {
     const map = accountOf();
-    const hits = result.hits.filter((h) => {
-      const id = h.runId ?? h.id ?? null;
-      return id != null && accountVisible(scope, map.get(id) ?? null);
-    });
+    const hits = result.hits.filter((h) => seen(map, h.runId ?? h.id ?? null));
     return { ...result, hits, ...(typeof result.count === "number" ? { count: hits.length } : {}) };
   }
   if (name === "list_outbox_events" && result && Array.isArray(result.events)) {
     const map = accountOf();
-    const events = result.events.filter((ev) => ev.runId != null && accountVisible(scope, map.get(ev.runId) ?? null));
+    const events = result.events.filter((ev) => seen(map, ev.runId ?? null));
     return { ...result, events, count: events.length };
   }
   return result;

@@ -27,7 +27,7 @@ import { provenanceLines } from "../../scripts/e2e.mjs";
 
 const AT = new Date("2026-08-18T00:00:00Z");
 
-test("#1091 measured:true with NO provenance is named, not passed over", () => {
+test("measured:true with NO provenance is named, not passed over", () => {
   const [line] = provenanceLines({ measured: true, wallMinutes: 122 }, AT);
   assert.match(line, /NOTHING says where the figure came from/,
     "this is the exact shape #1091 filed — a confident number with nothing behind it — and silence here "
@@ -35,7 +35,7 @@ test("#1091 measured:true with NO provenance is named, not passed over", () => {
   assert.match(line, /#1091/);
 });
 
-test("#1091 an UNMEASURED scenario says nothing — the flag is what makes silence a defect", () => {
+test("an UNMEASURED scenario says nothing — the flag is what makes silence a defect", () => {
   assert.deepEqual(provenanceLines({ measured: false, wallMinutes: 183 }, AT), [],
     "a scenario that declares itself unmeasured is already honest; warning about it would train the "
     + "reader to scroll past the line that matters");
@@ -43,7 +43,7 @@ test("#1091 an UNMEASURED scenario says nothing — the flag is what makes silen
   assert.deepEqual(provenanceLines(null, AT), []);
 });
 
-test("#1091 STALENESS is computed at read time, so it cannot itself go stale", () => {
+test("STALENESS is computed at read time, so it cannot itself go stale", () => {
   const p = { at: "2026-06-01", source: "s", deliveredRuns: 1, walls: { min: 1, max: 1 } };
   assert.match(provenanceLines({ measured: true, measuredFrom: p }, AT)[0], /78 days ago/);
   assert.match(provenanceLines({ measured: true, measuredFrom: { ...p, at: "2026-08-18" } }, AT)[0], /\(today\)/);
@@ -52,7 +52,7 @@ test("#1091 STALENESS is computed at read time, so it cannot itself go stale", (
   assert.match(provenanceLines({ measured: true, measuredFrom: { ...p, at: "last Tuesday" } }, AT)[0], /date unreadable/);
 });
 
-test("#1091 A TWO-PROVIDER POPULATION IS WARNED ABOUT — one number cannot describe it", () => {
+test("A TWO-PROVIDER POPULATION IS WARNED ABOUT — one number cannot describe it", () => {
   const lines = provenanceLines({ measured: true, measuredFrom: {
     at: "2026-08-18", source: "s", deliveredRuns: 8, failedRuns: 1,
     walls: { min: 139.8, max: 217.1 }, medianMinutes: 150.7, providers: { clarivate: 7, signa: 1 },
@@ -67,7 +67,7 @@ test("#1091 A TWO-PROVIDER POPULATION IS WARNED ABOUT — one number cannot desc
   } }, AT).some((l) => /TWO PROVIDER ERAS/.test(l)));
 });
 
-test("#1091 an EXCLUDED wall prints with its reason — a dropped figure and an unmeasured one differ", () => {
+test("an EXCLUDED wall prints with its reason — a dropped figure and an unmeasured one differ", () => {
   const lines = provenanceLines({ measured: true, measuredFrom: {
     at: "2026-08-18", source: "s", deliveredRuns: 8, walls: { min: 1, max: 217 },
     excluded: [{ minutes: 217, reason: "includes a recovery park" }],
@@ -81,7 +81,7 @@ test("#1091 an EXCLUDED wall prints with its reason — a dropped figure and an 
   assert.ok(bare.some((l) => /no reason recorded, which is itself the defect/.test(l)));
 });
 
-test("#1091 the counts and the range travel with the number", () => {
+test("the counts and the range travel with the number", () => {
   const [head] = provenanceLines({ measured: true, measuredFrom: {
     at: "2026-08-18", source: "s", deliveredRuns: 4, failedRuns: 2,
     walls: { min: 108.9, max: 144.9 }, medianMinutes: 138.1, providers: { clarivate: 4 },

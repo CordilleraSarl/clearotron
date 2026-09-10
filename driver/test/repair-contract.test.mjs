@@ -44,7 +44,7 @@ test("failingTarget picks the member the invalid_file token names", () => {
 // `.slice(0, 80)`. The model copied what it was shown — exactly 80 characters — and `lineCitesResult`
 // needs the WHOLE url as a substring, so the citation could never bind. The token re-rendered the same
 // cut string and the model wrote the same line again: a byte-identical stall with no exit.
-test("#434: abbrev marks a cut value, leaves a fitting one byte-identical, and never exceeds its bound", () => {
+test("abbrev marks a cut value, leaves a fitting one byte-identical, and never exceeds its bound", () => {
   const url = "https://www.venture-leaders.ch/Bioveltrin-Therapeutics-The-Venture-Leader-Biotech-developing-targeted-cancer-drugs";
   assert.equal(url.length, 114);
   const cut = abbrev(url, 80);
@@ -61,7 +61,7 @@ test("#434: abbrev marks a cut value, leaves a fitting one byte-identical, and n
   assert.equal(abbrev("abc", 0), "…", "a zero bound still marks rather than lying");
 });
 
-test("#434: the marker has a stated meaning wherever it appears", () => {
+test("the marker has a stated meaning wherever it appears", () => {
   assert.match(ABBREVIATED_VALUE_NOTE, /…/, "the note names the character it explains");
   assert.match(ABBREVIATED_VALUE_NOTE, /ledger/i, "and says where the full value is");
   assert.match(ABBREVIATED_VALUE_NOTE, /NOT what you must write/i);

@@ -36,7 +36,7 @@ const run = (files) => {
   return dir;
 };
 
-test("#1503 CONTROL — a flag whose entity is nowhere counts as NOT consumed", () => {
+test("CONTROL — a flag whose entity is nowhere counts as NOT consumed", () => {
   const dir = run({
     "skeptic-flags.md": FLAGS,
     "findings.json": { findings: [finding({ mark: "MORNDALE", owner: { name: "Brightwater SA" } })] },
@@ -46,7 +46,7 @@ test("#1503 CONTROL — a flag whose entity is nowhere counts as NOT consumed", 
     "an entity absent from the register still scored as consumed — the metric reports uptake it cannot see");
 });
 
-test("#1503 CONTROL — a flag whose entity is in the register counts as consumed", () => {
+test("CONTROL — a flag whose entity is in the register counts as consumed", () => {
   const dir = run({
     "skeptic-flags.md": FLAGS,
     "findings.json": { findings: [finding()] },
@@ -55,7 +55,7 @@ test("#1503 CONTROL — a flag whose entity is in the register counts as consume
   assert.deepEqual(skepticConsumed(dir), { total: 1, consumed: 1, surface: "findings.json" });
 });
 
-test("#1503 THE GRADED CASE — typed fields, no prose, and the flag still counts as consumed", () => {
+test("THE GRADED CASE — typed fields, no prose, and the flag still counts as consumed", () => {
   const dir = run({
     "skeptic-flags.md": FLAGS,
     "findings.json": { findings: [finding()] },
@@ -69,7 +69,7 @@ test("#1503 THE GRADED CASE — typed fields, no prose, and the flag still count
     + "as a regression in skeptic uptake.");
 });
 
-test("#1503 a SCHEMA WORD never counts as consumption — keys are excluded from the searched text", () => {
+test("a SCHEMA WORD never counts as consumption — keys are excluded from the searched text", () => {
   const dir = run({
     "skeptic-flags.md": "# Skeptic flags\n\n- The Disposition of the sweep was never settled.\n",
     "findings.json": { findings: [finding({ mark: "MORNDALE", owner: { name: "Brightwater SA" } })] },
@@ -79,7 +79,7 @@ test("#1503 a SCHEMA WORD never counts as consumption — keys are excluded from
     + "consumed because the file has the shape it always has — every run would score near 100%.");
 });
 
-test("#1503 a run with NO register reads as UNREADABLE, not as zero uptake", () => {
+test("a run with NO register reads as UNREADABLE, not as zero uptake", () => {
   const dir = run({ "skeptic-flags.md": FLAGS, "narrative.md": "# Narrative\n" });
   assert.equal(skepticConsumed(dir), null,
     "a run with no findings.json returned a score. An absent register is a run this metric cannot read; "

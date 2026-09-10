@@ -169,7 +169,7 @@ test("anon overlay: a privacy-dead link carries a plain-English title, dropped a
 // of the old term as well as the presence of the new one is the point: a partial sweep that renamed the
 // heading and left the read-only explanation underneath is exactly the state this catches, and it reads
 // as done from a screenshot.
-test("1990: the staff page calls the default rating authority by the owner's term, everywhere", () => {
+test("the staff page calls the default rating authority by the owner's term, everywhere", () => {
   const src = readFileSync(TEMPLATE, "utf8");
   assert.doesNotMatch(src, /house[\s-]default/i, "no surface still says the retired term");
   assert.doesNotMatch(src, /house framework/i, "including the explanation under the heading");

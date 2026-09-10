@@ -30,7 +30,7 @@ const SHOT = join(REPO, "scripts", "report-screenshot.mjs");
 
 // ── THE PURE HALF ───────────────────────────────────────────────────────────────────────────────────
 
-test("227 chrome's own error page is refused, however good its content looks", () => {
+test("chrome's own error page is refused, however good its content looks", () => {
   const v = pageVerdict({ href: `${CHROME_ERROR_SCHEME}//chromewebdata/`, expected: "file:///r.html", marker: true });
   assert.equal(v.ok, false);
   assert.equal(v.kind, "chrome-error");
@@ -39,11 +39,11 @@ test("227 chrome's own error page is refused, however good its content looks", (
   assert.match(v.why, /ITS OWN error page/);
 });
 
-test("227 a page that reports no address certifies nothing", () => {
+test("a page that reports no address certifies nothing", () => {
   assert.equal(pageVerdict({ href: "", expected: "file:///r.html", marker: true }).kind, "silent");
 });
 
-test("227 a different document is caught even when it is a real one", () => {
+test("a different document is caught even when it is a real one", () => {
   const v = pageVerdict({ href: "file:///other.html", expected: "file:///r.html", marker: true });
   assert.equal(v.kind, "wrong-document");
 });
@@ -53,7 +53,7 @@ test("227 a different document is caught even when it is a real one", () => {
 // redirect, a stale tab or a second page target" sent a reader looking for a page that never existed.
 // Under a loaded box that is the message the arms produced, which is how a slow browser and a real defect
 // became indistinguishable.
-test("273 the browser's start page is a could-not-look, not a wrong document", () => {
+test("the browser's start page is a could-not-look, not a wrong document", () => {
   const v = pageVerdict({ href: START_PAGE, expected: "file:///r.html", marker: true });
   assert.equal(v.kind, "not-navigated",
     "the start page is still classified as a document, so a browser that never moved reads as a page that "
@@ -68,27 +68,27 @@ test("273 the browser's start page is a could-not-look, not a wrong document", (
     "the message still offers the wrong-document explanations, which is what sent readers hunting");
 });
 
-test("227 the right address with the wrong content is its own answer", () => {
+test("the right address with the wrong content is its own answer", () => {
   const v = pageVerdict({ href: "file:///r.html", expected: "file:///r.html", marker: false, markerName: "a run id" });
   assert.equal(v.kind, "not-the-artefact");
   assert.match(v.why, /a run id is not in it/,
     "the message does not name what was looked for, so a reader cannot tell which half failed");
 });
 
-test("227 asking for no marker at all is a could-not-look, not a pass", () => {
+test("asking for no marker at all is a could-not-look, not a pass", () => {
   // An address proves a file opened. It cannot tell an artefact from any other readable file, and a
   // verdict of `ok` there would be the original defect with a new spelling.
   assert.equal(pageVerdict({ href: "file:///r.html", expected: "file:///r.html", marker: null }).kind, "unmarked");
   assert.equal(pageVerdict({ href: "file:///r.html", expected: "file:///r.html", marker: null }).ok, false);
 });
 
-test("227 a path with a space is the same document, not a different one", () => {
+test("a path with a space is the same document, not a different one", () => {
   // Chrome resolves and percent-encodes the URL it was given, so a raw string comparison reports "the
   // wrong document" about the right one — a refusal that would send a reader looking for a redirect.
   assert.equal(pageVerdict({ href: "file:///a%20b.html", expected: "file:///a b.html", marker: true }).ok, true);
 });
 
-test("227 a navigation chrome refused throws, rather than returning something to ignore", async () => {
+test("a navigation chrome refused throws, rather than returning something to ignore", async () => {
   // `Page.navigate` returns `{ errorText }` and every caller in this repository dropped it. A boolean
   // somebody forgets to read is the shape being fixed, so this throws.
   await assert.rejects(
@@ -98,7 +98,7 @@ test("227 a navigation chrome refused throws, rather than returning something to
   assert.deepEqual(ok, { result: { frameId: "F" } }, "a clean navigation no longer returns the response its caller needs");
 });
 
-test("227 the dumped-DOM detector knows chrome's furniture from a report that says 'error'", () => {
+test("the dumped-DOM detector knows chrome's furniture from a report that says 'error'", () => {
   assert.equal(chromeErrorPage('<body id="neterror"><div id="main-frame-error">ERR_ACCESS_DENIED</div>'), true);
   // NARROW ON PURPOSE. A clearance report about a refused search says "error" and "denied" in prose, and
   // a detector that fired on those would refuse real reports — which is how a guard gets deleted.
@@ -107,7 +107,7 @@ test("227 the dumped-DOM detector knows chrome's furniture from a report that sa
 
 // ── AND THE SCRIPTS ACTUALLY ASK ────────────────────────────────────────────────────────────────────
 
-test("227 every script that navigates reads the answer it gets back", () => {
+test("every script that navigates reads the answer it gets back", () => {
   for (const f of ["ai-page-render-check", "clearances-render-check", "home-render-check", "revisit-render-check"]) {
     const src = readFileSync(join(REPO, "scripts", `${f}.mjs`), "utf8");
     const bare = [...src.matchAll(/cmd\(['"]Page\.navigate['"], \{ url: (.+?) \}\)/g)].map((m) => m[1]);
@@ -119,7 +119,7 @@ test("227 every script that navigates reads the answer it gets back", () => {
   }
 });
 
-test("227 the screenshot's proof of being a report is not a tag every page has", () => {
+test("the screenshot's proof of being a report is not a tag every page has", () => {
   const src = readFileSync(SHOT, "utf8");
   assert.match(src, /assertPageLoaded/, "the screenshot no longer asks whether it opened the report");
   assert.match(src, /const MARKER =[^\n]*data-run-id/,
@@ -134,7 +134,7 @@ test("227 the screenshot's proof of being a report is not a tag every page has",
 
 const chromeHere = spawnSync("google-chrome", ["--version"], { encoding: "utf8" }).status === 0;
 
-test("227 THE DRIVE — an unreadable report exits non-zero and says the page is not one", (ctx) => {
+test("THE DRIVE — an unreadable report exits non-zero and says the page is not one", (ctx) => {
   if (!chromeHere) return ctx.skip("google-chrome is not on this box, so the door cannot be driven here");
   const dir = mkdtempSync(join(tmpdir(), "shot-227-"));
   try {
@@ -151,7 +151,7 @@ test("227 THE DRIVE — an unreadable report exits non-zero and says the page is
   } finally { try { chmodSync(join(dir, "report.html"), 0o600); } catch {} rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("227 THE CONTROL — a readable report still succeeds, and the log names the run it certified", (ctx) => {
+test("THE CONTROL — a readable report still succeeds, and the log names the run it certified", (ctx) => {
   if (!chromeHere) return ctx.skip("google-chrome is not on this box, so the door cannot be driven here");
   const dir = mkdtempSync(join(tmpdir(), "shot-227-ok-"));
   try {
@@ -179,14 +179,14 @@ test("227 THE CONTROL — a readable report still succeeds, and the log names th
 // comment says "the failure is a screenshot in the wrong typeface that nobody notices until it is in the
 // README". That solved the TYPEFACE half and left the WRITING-SYSTEM half, in the same script.
 
-test("227 the characters that need a CJK font are counted, and Latin text is not", () => {
+test("the characters that need a CJK font are counted, and Latin text is not", () => {
   assert.equal(cjkCharsIn("A live Japanese class 9 registration reading ベンクリ covers"), 4);
   assert.equal(cjkCharsIn("VENQORI covers measuring and testing instruments"), 0);
   assert.ok(cjkCharsIn("商標") > 0, "Han characters are not counted, so a Chinese-script report reads as Latin");
   assert.ok(cjkCharsIn("상표") > 0, "Hangul is not counted");
 });
 
-test("227 CJK text with no font that can draw it is refused, and the message names the glyphs", () => {
+test("CJK text with no font that can draw it is refused, and the message names the glyphs", () => {
   const v = cjkVerdict({ cjkChars: 42, covering: 0, sample: "ベンクリ" });
   assert.equal(v.ok, false);
   assert.equal(v.kind, "tofu");
@@ -194,7 +194,7 @@ test("227 CJK text with no font that can draw it is refused, and the message nam
   assert.match(v.why, /fonts-noto-cjk|XDG_DATA_HOME/, "the refusal names no way out");
 });
 
-test("227 BOTH DIRECTIONS — the same text with a font that covers it is silent", () => {
+test("BOTH DIRECTIONS — the same text with a font that covers it is silent", () => {
   // A one-armed fix here is indistinguishable from deleting the check, which is this issue's own words.
   assert.equal(cjkVerdict({ cjkChars: 42, covering: 3 }).ok, true);
   assert.equal(cjkVerdict({ cjkChars: 42, covering: 3 }).kind, "covered");
@@ -202,7 +202,7 @@ test("227 BOTH DIRECTIONS — the same text with a font that covers it is silent
   assert.equal(cjkVerdict({ cjkChars: 0, covering: 0 }).kind, "no-cjk");
 });
 
-test("227 a box that could not be ASKED is not a box known to be missing fonts", () => {
+test("a box that could not be ASKED is not a box known to be missing fonts", () => {
   // `fc-list` absent is a could-not-look. Collapsing it into 0 would refuse a machine that may be fine —
   // and this script writes an image a human then puts in the README, so a false refusal is expensive.
   const v = cjkVerdict({ cjkChars: 42, covering: null });
@@ -213,7 +213,7 @@ test("227 a box that could not be ASKED is not a box known to be missing fonts",
     "a fontconfig that cannot be run answers 0, which reads as a finding");
 });
 
-test("227 THE DRIVE — a CJK report on a box with no CJK font refuses and writes nothing", (ctx) => {
+test("THE DRIVE — a CJK report on a box with no CJK font refuses and writes nothing", (ctx) => {
   if (!chromeHere) return ctx.skip("google-chrome is not on this box, so the door cannot be driven here");
   const covering = fontsCovering("ja");
   if (covering !== 0) return ctx.skip(`this box reports ${covering} font(s) with Japanese coverage, so the `
@@ -249,7 +249,7 @@ function evaluateAfter(blankReads, href) {
   };
 }
 
-test("273 a browser that arrives late is waited for, not failed", async () => {
+test("a browser that arrives late is waited for, not failed", async () => {
   let slept = 0;
   const v = await assertPageLoaded(evaluateAfter(3, "file:///r.html"), {
     expected: "file:///r.html", marker: "true", markerName: "a run id",
@@ -259,7 +259,7 @@ test("273 a browser that arrives late is waited for, not failed", async () => {
   assert.ok(slept > 0, "nothing waited, so this arm proves nothing about the wait");
 });
 
-test("273 the wait is bounded, and running out is a could-not-look", async () => {
+test("the wait is bounded, and running out is a could-not-look", async () => {
   let slept = 0;
   const v = await assertPageLoaded(async (expr) => (expr === "location.href" ? START_PAGE : true), {
     expected: "file:///r.html", marker: "true", graceMs: 1000, pollMs: 100,
@@ -271,7 +271,7 @@ test("273 the wait is bounded, and running out is a could-not-look", async () =>
     `the wait did not respect its own bound — it slept ${slept}ms against a 1000ms grace`);
 });
 
-test("273 a page that IS wrong still fails at once, without spending the grace", async () => {
+test("a page that IS wrong still fails at once, without spending the grace", async () => {
   // The wait is for the browser to become ready, never for the page to become correct. A wrong document
   // that waited would turn every real defect into a slow one.
   let slept = 0;

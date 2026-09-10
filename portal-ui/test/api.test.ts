@@ -268,18 +268,18 @@ test('adminObserved decodes an UNAVAILABLE feed without throwing — it is a nor
 })
 
 test('adminAccess decodes grantsFile, and refuses a half-known one', async () => {
-  const known = await withFetch(200, { people: [], staffDomains: [], unknownAccounts: [], note: '',
+  const known = await withFetch(200, { people: [], unknownAccounts: [], note: '',
     grantsFile: { name: 'grants.json', modifiedAt: '2026-07-18T00:00:00.000Z' } }, () => api.adminAccess())
   assert.equal(known.kind, 'ok')
   if (known.kind === 'ok') assert.equal(known.value.grantsFile?.name, 'grants.json')
 
   // A filename with no date would render as "last changed <nothing>". Both halves or null.
-  const partial = await withFetch(200, { people: [], staffDomains: [], unknownAccounts: [], note: '',
+  const partial = await withFetch(200, { people: [], unknownAccounts: [], note: '',
     grantsFile: { name: 'grants.json' } }, () => api.adminAccess())
   assert.equal(partial.kind, 'ok')
   if (partial.kind === 'ok') assert.equal(partial.value.grantsFile, null, 'half-known is not known')
 
-  const absent = await withFetch(200, { people: [], staffDomains: [], unknownAccounts: [], note: '' },
+  const absent = await withFetch(200, { people: [], unknownAccounts: [], note: '' },
     () => api.adminAccess())
   assert.equal(absent.kind, 'ok')
   if (absent.kind === 'ok') assert.equal(absent.value.grantsFile, null)
@@ -287,7 +287,7 @@ test('adminAccess decodes grantsFile, and refuses a half-known one', async () =>
 
 // ──: the config hop, where a field that is not decoded is a field that never reaches the page ──
 
-test('#1439 — an older snapshot decodes engine and providers as null, NOT as empty', async () => {
+test('an older snapshot decodes engine and providers as null, NOT as empty', async () => {
   // The decisive one. `asArray` and `asRecord` both collapse a missing value to an empty one, and empty
   // is the answer this pair must never give: `providers: []` renders as "no provider is configured",
   // which is the inverse of the fact that the snapshot simply predates provider reporting. Every
@@ -302,7 +302,7 @@ test('#1439 — an older snapshot decodes engine and providers as null, NOT as e
   assert.equal(r.value.providers, null, 'and must NOT become []')
 })
 
-test('#1439 — engine and provider rows survive the hop with the fields the page renders', async () => {
+test('engine and provider rows survive the hop with the fields the page renders', async () => {
   // The counterfactual for the test above: without this, decoding everything to null would also pass.
   const r = await withFetch(200, {
     available: true, note: null, capturedAt: '2026-08-20T00:00:00Z', stale: false,
@@ -385,7 +385,7 @@ test('engineProgramDisputed decodes to three values, and the third is not false'
   }
 })
 
-test('#1720 engineMode decodes to demo or unproven, and EVERYTHING else is null', async () => {
+test('engineMode decodes to demo or unproven, and EVERYTHING else is null', async () => {
   // The two values a caller may act on survive; anything else lands as null, which every caller treats
   // as "leave the button alone". The direction that matters is the one that takes a working install's
   // button away: an unrecognised value must never read as demo.
@@ -441,14 +441,14 @@ test('setupRoute decodes to one of the two routes, and EVERYTHING else is null',
 // "Projects are not available to you" to the owner of the account while the real cause — the deployment
 // not pointed at its own store — existed only in a boot log. These arms pin the three-way distinction.
 
-test('#1989 the surface refusing to construct decodes apart from "not yours"', async () => {
+test('the surface refusing to construct decodes apart from "not yours"', async () => {
   const unbuilt = await withFetch(404, { error: 'config_surface_unavailable' }, () => api.profile('aurora'))
   assert.equal(unbuilt.kind, 'surfaceUnavailable')
   assert.notEqual(unbuilt.kind, 'notFound', 'a deployment fault must never wear the words of a denial')
   assert.notEqual(unbuilt.kind, 'noAccess')
 })
 
-test('#1989 every OTHER 404 stays deliberately indistinguishable', async () => {
+test('every OTHER 404 stays deliberately indistinguishable', async () => {
   // THE CONTROL, and it is the load-bearing one. Without it the arm above passes just as well against a
   // rule that made EVERY 404 self-describing — which is precisely the existence oracle the
   // 404-never-403 rule exists to prevent. A foreign resource must still say nothing about itself.
@@ -457,7 +457,7 @@ test('#1989 every OTHER 404 stays deliberately indistinguishable', async () => {
   assert.equal('message' in foreign, false, 'a tenancy answer must carry nothing a component could print')
 })
 
-test('#1989 the sentence names the deployment, never the reader', () => {
+test('the sentence names the deployment, never the reader', () => {
   const text = saveFailureText({ kind: 'surfaceUnavailable' })
   assert.match(text, /not your access/i, 'it must say plainly that this is not about their permissions')
   assert.match(text, /administrator/i, 'and name who can fix it, since the reader cannot')
@@ -465,7 +465,7 @@ test('#1989 the sentence names the deployment, never the reader', () => {
   assert.doesNotMatch(text, /not available to you|you (do not|don't) have/i)
 })
 
-test('#1989 both settings screens answer three ways, not two', () => {
+test('both settings screens answer three ways, not two', () => {
   // These screens have no DOM harness, so the assertion is on the source: each must branch on the new
   // state BEFORE falling through to the not-available sentence. Planted — reverting either screen to the
   // two-way ternary reds this arm.
@@ -479,11 +479,11 @@ test('#1989 both settings screens answer three ways, not two', () => {
 
 // ── — A STAFF-LESS IDENTITY IS TOLD WHY, ON THE PAGE ──────────────────────────────
 //
-// Someone on no staff domain and in no grants row signs in successfully and can do nothing. Both screens
+// Someone who has not been given access signs in successfully and can do nothing. Both screens
 // collapsed `notFound` and `noAccess` into one answer — "Check the company selected at the top left"
 // — which sends that person to the one thing that is not wrong. The cause was stated only in a boot log.
 
-test('#1920 the two refusals decode apart, and 403 is the door refusing the identity itself', async () => {
+test('the two refusals decode apart, and 403 is the door refusing the identity itself', async () => {
   const forbidden = await withFetch(403, { error: 'no access' }, () => api.profile('aurora'))
   const missing = await withFetch(404, { error: 'not_found' }, () => api.profile('aurora'))
   assert.equal(forbidden.kind, 'noAccess')
@@ -491,21 +491,30 @@ test('#1920 the two refusals decode apart, and 403 is the door refusing the iden
   assert.notEqual(forbidden.kind, missing.kind, 'if these decoded the same, no screen could tell them apart')
 })
 
-test('#1920 both screens answer them DIFFERENTLY, and only one mentions the selector', () => {
+// THE CAUSE IN THE DOOR'S OWN WORDS, read from the door rather than restated here. The page the door serves
+// an address with no access opens "You reached <operator>, but <cause>." and the screens must name the same
+// cause, so what is pinned is the agreement between the two: a change on either side reds here.
+const DOOR_CAUSE = readFileSync(new URL('../../driver/portal-service.mjs', import.meta.url), 'utf8')
+  .match(/You reached \$\{[^}]+\}, but ([^.]+)\./)?.[1] ?? ''
+
+test('both screens answer them DIFFERENTLY, and only one mentions the selector', () => {
+  assert.ok(DOOR_CAUSE.length > 20, `the door states a cause for an address with no access (read: "${DOOR_CAUSE}")`)
   // Source-level: these screens have no DOM harness, so what is pinned is that the branch exists and
   // what each branch says. The decode above is what makes the branch reachable.
   for (const f of ['Profile.tsx', 'NewClearance.tsx']) {
     const src = readFileSync(new URL(`../src/screens/${f}`, import.meta.url), 'utf8')
     assert.doesNotMatch(src, /case 'notFound':\s*\n\s*case 'noAccess':/,
       `${f} still answers both refusals with one sentence — that is the defect`)
-    assert.match(src, /no staff domain and in no grants row/,
-      `${f} must name the actual cause, in the words portal-service already logs at boot`)
+    const at = src.indexOf("case 'noAccess':")
+    assert.notEqual(at, -1, `${f} must handle noAccess`)
+    const branch = src.slice(at, src.indexOf("case '", at + 1))
+    assert.ok(branch.includes(DOOR_CAUSE), `${f} must name the actual cause in the door's own words: "${DOOR_CAUSE}"`)
     assert.match(src, /Selecting a different company cannot change that/,
       `${f} must say plainly that the selector is not the fix, since that is where it used to send them`)
   }
 })
 
-test('#1920 THE CONTROL — notFound KEEPS the selector advice, which is right for it', () => {
+test('THE CONTROL — notFound KEEPS the selector advice, which is right for it', () => {
   // Without this, the fix passes just as well if the advice were deleted from both branches. A wrong
   // company really is the likely cause of a not-found, and that sentence is the useful one there.
   for (const f of ['Profile.tsx', 'NewClearance.tsx']) {
@@ -522,7 +531,7 @@ test('#1920 THE CONTROL — notFound KEEPS the selector advice, which is right f
   }
 })
 
-test('#1920 the shared sentence for noAccess never sends anyone to the selector either', () => {
+test('the shared sentence for noAccess never sends anyone to the selector either', () => {
   const text = saveFailureText({ kind: 'noAccess' })
   assert.doesNotMatch(text, /company|top left|selector/i,
     'the one-line form must not contradict the screens it sits beside')
@@ -538,7 +547,7 @@ test('#1920 the shared sentence for noAccess never sends anyone to the selector 
 // never reached the store's git rendered as a clean success. The owner created a project, saw it
 // succeed, and it was not durable.
 
-test('#2005 a save that did not commit is reported, and a clean one says nothing', () => {
+test('a save that did not commit is reported, and a clean one says nothing', () => {
   const dirty = { kind: 'ok', value: { written: true, commitError: 'fatal: detected dubious ownership' } } as const
   const clean = { kind: 'ok', value: { written: true } } as const
   assert.ok(notCommitted(dirty), 'the field finally has a reader')
@@ -547,7 +556,7 @@ test('#2005 a save that did not commit is reported, and a clean one says nothing
   assert.equal(notCommitted({ kind: 'ok', value: { commitError: '   ' } } as never), null, 'and a blank detail is not a failure')
 })
 
-test('#2005 the sentence says the change is LIVE — the opposite lie would be as bad', () => {
+test('the sentence says the change is LIVE — the opposite lie would be as bad', () => {
   const text = notCommitted({ kind: 'ok', value: { commitError: 'x' } } as never)!
   assert.match(text, /live/i, 'the change IS on disk and the engine will read it')
   assert.match(text, /can be lost/i, 'what it is not is durable, and that is the whole point')
@@ -556,7 +565,7 @@ test('#2005 the sentence says the change is LIVE — the opposite lie would be a
     'telling someone their change was lost when it is live is a different lie in the other direction')
 })
 
-test('#2005 EVERY screen that saves reads it — the population is derived, not listed', () => {
+test('EVERY screen that saves reads it — the population is derived, not listed', () => {
   // The list of save sites is not written here on purpose. Seven of them across four screens is exactly
   // where a hand-kept list goes stale, and a screen added next month would inherit the original defect
   // silently. So the screens are DISCOVERED by their mutating call, and each must reference the helper.
@@ -582,7 +591,7 @@ test('#2005 EVERY screen that saves reads it — the population is derived, not 
 // "You are signed in, but this address has not been enrolled" — told to a reader whose session had just
 // gone, on the first screen they meet. The owner met exactly that on a fresh install.
 
-test('2074 a 401 decodes to signedOut, on every route, and not to upstream', async () => {
+test('a 401 decodes to signedOut, on every route, and not to upstream', async () => {
   // THE CLASS, not one route. A kind that only some calls produce is a kind screens cannot rely on.
   for (const [name, call] of [
     ['me', () => api.me()],
@@ -598,7 +607,7 @@ test('2074 a 401 decodes to signedOut, on every route, and not to upstream', asy
   assert.equal(bare.kind, 'signedOut', 'a 401 with no body decoded as something else')
 })
 
-test('2074 signedOut says the session ended, and never that the change failed', () => {
+test('signedOut says the session ended, and never that the change failed', () => {
   const text = saveFailureText({ kind: 'signedOut' })
   assert.match(text, /session/i, 'the sentence does not name what actually happened')
   assert.match(text, /sign in/i, 'the sentence does not name the one thing that fixes it')
@@ -611,7 +620,7 @@ test('2074 signedOut says the session ended, and never that the change failed', 
     'the gone-session sentence borrowed the enrolment sentence — the false message this arm exists for')
 })
 
-test('2074 a 401 is NOT confused with the tenancy answers it sits beside', async () => {
+test('a 401 is NOT confused with the tenancy answers it sits beside', async () => {
   // The funnel that produced the false message is right for these and wrong for a 401, so the three
   // must stay distinguishable at the contract. 403 and 404 keep their own arm above; this one pins that
   // none of them collapsed into the new kind.
@@ -629,7 +638,7 @@ test('2074 a 401 is NOT confused with the tenancy answers it sits beside', async
 //
 // The announcement is in `call`, not in `useLoad`, because `useLoad` is not the only caller: the arms
 // below drive a save and a load and assert one answer for both.
-test('2113 any 401, from any request, announces that the session has gone', async () => {
+test('any 401, from any request, announces that the session has gone', async () => {
   const seen: string[] = []
   const stop = onSessionEnded(() => seen.push('ended'))
   try {
@@ -659,7 +668,7 @@ test('2113 any 401, from any request, announces that the session has gone', asyn
   assert.equal(seen.length, 2, 'the unsubscribe did not take, so a dead subscriber is still being called')
 })
 
-test('2113 a response that is NOT a 401 announces nothing', async () => {
+test('a response that is NOT a 401 announces nothing', async () => {
   const seen: number[] = []
   const stop = onSessionEnded(() => seen.push(1))
   try {
@@ -672,4 +681,143 @@ test('2113 a response that is NOT a 401 announces nothing', async () => {
   } finally {
     stop()
   }
+})
+
+// ── Access points on the wire ─────────────────────────────────────────────────────────────────────────
+// Each point arrives tagged with its kind and carrying its own name; the decoder turns it into the
+// named points People and Your preferences print. Driven for every kind, and for the shapes it must
+// REFUSE, because a chip that claims more than a person was given is the one failure here a reader
+// would act on.
+
+test('decodeAccess: each kind becomes the point it names', async () => {
+  const { decodeAccess } = await import('../src/contract/api.ts')
+  const got = decodeAccess({
+    access: [
+      { kind: 'everything' },
+      { kind: 'organisation', key: 'birch', name: 'Birch & Co' },
+      { kind: 'company', key: 'harbour', name: 'Harbour Ltd', org: 'alder' },
+    ],
+  })
+  assert.deepEqual(got, [
+    { kind: 'everything', key: '*', name: 'Everything' },
+    { kind: 'organisation', key: 'birch', name: 'Birch & Co' },
+    { kind: 'company', key: 'harbour', name: 'Harbour Ltd' },
+  ])
+  // The root is named by the product, never by whatever the wire put beside it.
+  assert.deepEqual(decodeAccess({ access: [{ kind: 'everything', name: 'All of it' }] }),
+    [{ kind: 'everything', key: '*', name: 'Everything' }])
+  // A name the wire left out falls back to the key — never to a blank chip.
+  assert.deepEqual(decodeAccess({ access: [{ kind: 'organisation', key: 'nameless' }] }),
+    [{ kind: 'organisation', key: 'nameless', name: 'nameless' }])
+})
+
+test('decodeAccess: a shape it cannot read is DROPPED, never drawn under a guess', async () => {
+  const { decodeAccess } = await import('../src/contract/api.ts')
+  for (const bad of [{ kind: 'region', key: 'x' }, { kind: 'company' }, { kind: 'organisation', key: '' },
+    { key: 'birch', name: 'Birch & Co' }, 'birch', null]) {
+    assert.deepEqual(decodeAccess({ access: [bad] }), [], `refused: ${JSON.stringify(bad)}`)
+  }
+  // No field at all is no access: fail closed.
+  assert.deepEqual(decodeAccess({}), [])
+})
+
+test('the switches fail closed: only a literal true grants one', async () => {
+  // Driven through the real decoder, on the one route that carries them.
+  const cases: readonly (readonly [unknown, boolean])[] = [[true, true], [false, false], [undefined, false], ['true', false], [1, false], [{}, false]]
+  for (const [wire, want] of cases) {
+    const restore = globalThis.fetch
+    globalThis.fetch = (async () => new Response(JSON.stringify({ permissions: { run: wire, manage: wire }, email: 'a@b.test' }),
+      { status: 200, headers: { 'content-type': 'application/json' } })) as typeof fetch
+    try {
+      const r = await api.me()
+      assert.ok(isOk(r), 'the payload decoded')
+      assert.deepEqual(r.value.permissions, { run: want, manage: want }, `run/manage = ${JSON.stringify(wire)}`)
+    } finally {
+      globalThis.fetch = restore
+    }
+  }
+  // A missing `permissions` object is the same answer as two switches off.
+  const restore = globalThis.fetch
+  globalThis.fetch = (async () => new Response(JSON.stringify({ email: 'a@b.test' }),
+    { status: 200, headers: { 'content-type': 'application/json' } })) as typeof fetch
+  try {
+    const r = await api.me()
+    assert.ok(isOk(r))
+    assert.deepEqual(r.value.permissions, { run: false, manage: false })
+    assert.deepEqual(r.value.genericOrgs, [], 'and no Generic is offered to someone the server did not describe')
+  } finally {
+    globalThis.fetch = restore
+  }
+})
+
+test("one organisation's Generic goes out as the pair, and a company goes out alone", async () => {
+  // The portal holds one key per row; the door takes `account=generic` beside `tenant=<organisation>`.
+  // Driven through the real request builders, for a query and for a body, because a split done in one
+  // and forgotten in the other is a request the door has to guess the organisation for.
+  const seen: { url: string; body: unknown }[] = []
+  const restore = globalThis.fetch
+  globalThis.fetch = (async (url: string | URL | Request, init?: RequestInit) => {
+    seen.push({ url: String(url), body: init?.body ? JSON.parse(String(init.body)) : null })
+    return new Response(JSON.stringify({ runs: [] }), { status: 200, headers: { 'content-type': 'application/json' } })
+  }) as typeof fetch
+  try {
+    await api.runs('generic:alder')
+    await api.runs('coastline')
+    await api.plan('generic:alder', { mark: 'X' })
+    await api.plan('coastline', { mark: 'X' })
+  } finally {
+    globalThis.fetch = restore
+  }
+  assert.equal(seen.length, 4, 'every call reached the network')
+  assert.match(seen[0]!.url, /\/portal\/api\/runs\?account=generic&tenant=alder$/)
+  assert.match(seen[1]!.url, /\/portal\/api\/runs\?account=coastline$/, 'a company carries no organisation')
+  assert.deepEqual(seen[2]!.body, { mark: 'X', account: 'generic', tenant: 'alder' })
+  assert.deepEqual(seen[3]!.body, { mark: 'X', account: 'coastline' })
+})
+
+test('adminAccess decodes each person by the rules `me` uses, and fails closed where it cannot read', async () => {
+  const r = await withFetch(200, {
+    note: '', unknownAccounts: [], canAdd: true, localSignIn: false,
+    people: [{ email: 'a@b.test', permissions: { run: true, manage: 'yes' },
+      access: [{ kind: 'organisation', key: 'birch', name: 'Birch & Co' }, { kind: 'mystery', key: 'x' }], dangling: ['ghost'] }],
+  }, () => api.adminAccess())
+  assert.ok(isOk(r))
+  const p = r.value.people[0]
+  assert.ok(p, 'the person decoded')
+  assert.deepEqual(p.permissions, { run: true, manage: false }, "'yes' is not a literal true")
+  assert.deepEqual(p.access, [{ kind: 'organisation', key: 'birch', name: 'Birch & Co' }], 'a kind this build does not know is dropped')
+  assert.deepEqual(p.dangling, ['ghost'])
+  assert.equal(r.value.canAdd, true)
+
+  // Absent is off: a control the server did not say it can serve is not offered.
+  const bare = await withFetch(200, { people: [] }, () => api.adminAccess())
+  assert.ok(isOk(bare))
+  assert.equal(bare.value.canAdd, false)
+  assert.equal(bare.value.localSignIn, false)
+})
+
+test('addPerson posts the address, the switches and the points, and reads the person back', async () => {
+  let sent: { url: string; body: unknown } | null = null
+  const restore = globalThis.fetch
+  globalThis.fetch = (async (url: string | URL | Request, init?: RequestInit) => {
+    sent = { url: String(url), body: JSON.parse(String(init?.body)) }
+    // The answer carries the switches AS THEY NOW STAND, which is not always what was sent.
+    return new Response(JSON.stringify({ person: { email: 'dana@birch.example', permissions: { run: true, manage: true },
+      access: [{ kind: 'organisation', key: 'birch', name: 'Birch & Co' }], dangling: [] }, switchesApplied: false }),
+      { status: 201, headers: { 'content-type': 'application/json' } })
+  }) as typeof fetch
+  let r
+  try {
+    r = await api.addPerson({ email: 'dana@birch.example', permissions: { run: true, manage: false },
+      access: [{ kind: 'organisation', key: 'birch' }, { kind: 'company', key: 'harbour' }] })
+  } finally {
+    globalThis.fetch = restore
+  }
+  assert.ok(sent, 'the request was made')
+  assert.match((sent as { url: string }).url, /\/portal\/admin\/people$/)
+  assert.deepEqual((sent as { body: unknown }).body, { email: 'dana@birch.example', permissions: { run: true, manage: false },
+    access: [{ kind: 'organisation', key: 'birch' }, { kind: 'company', key: 'harbour' }] })
+  assert.ok(isOk(r))
+  assert.deepEqual(r.value.person.permissions, { run: true, manage: true }, 'the switches are read back, not assumed')
+  assert.equal(r.value.switchesApplied, false, 'and the screen is told the ones it sent were not applied')
 })

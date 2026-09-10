@@ -228,7 +228,7 @@ test("the module imports no write capability — read-only is a property of the 
     "the module reaches for a process or the network — this surface reads the run's own files and does nothing else");
 });
 
-test("#1245 the pin CATCHES both evasion shapes — planted, not assumed", () => {
+test("the pin CATCHES both evasion shapes — planted, not assumed", () => {
   // A guard whose evasions are never exercised is a guard nobody has measured. These are the two the
   // braced-only pattern used to walk past, and each is asserted to be SEEN now.
   const asDefault = fsImportsIn(`import fs from "node:fs";\n`);
@@ -245,7 +245,7 @@ test("#1245 the pin CATCHES both evasion shapes — planted, not assumed", () =>
 });
 // ── items 1 and 2 — TWO WAYS THIS SURFACE USED TO MANUFACTURE A FALSE ANSWER ──────────────────
 
-test("#1245 an UNREADABLE artifact is not an absence — the DECISION, checked where the fault cannot be injected", () => {
+test("an UNREADABLE artifact is not an absence — the DECISION, checked where the fault cannot be injected", () => {
   // Item 1, the severity leader. Every realpathSync failure answered `search_file_not_found`, whose own
   // text tells the seat "An absence is a finding: say so in your flags if you expected it". So a file
   // the seat could not READ was reported as one that does not EXIST, and the tool then instructed the
@@ -262,7 +262,7 @@ test("#1245 an UNREADABLE artifact is not an absence — the DECISION, checked w
       `${String(code)} means there is nothing at that path — reporting it as unreadable would hide a real absence`);
 });
 
-test("#1245 …and the unreadable refusal tells the seat what NOT to conclude", () => {
+test("…and the unreadable refusal tells the seat what NOT to conclude", () => {
   // The wording is the fix. A token that merely renames the failure would leave the seat's standing
   // instruction ("an absence is a finding") pointing at a question nobody answered.
   const src = readFileSync(new URL("../skeptic-search.mjs", import.meta.url), "utf8");
@@ -275,7 +275,7 @@ test("#1245 …and the unreadable refusal tells the seat what NOT to conclude", 
     "the unreadable refusal carries the ABSENCE instruction — the defect wearing the new token");
 });
 
-test("#1245 the unreadable path is reachable end-to-end where the fault CAN be injected", (ctx) => {
+test("the unreadable path is reachable end-to-end where the fault CAN be injected", (ctx) => {
   // The integration half. It is honest about its own limit rather than passing silently: under root the
   // fault cannot be injected, so this SKIPS with a stated reason and shows up in the suite log as a skip
   // rather than as a pass. The decision above is what carries the property everywhere else.
@@ -291,7 +291,7 @@ test("#1245 the unreadable path is reachable end-to-end where the fault CAN be i
       `an unreadable artifact answered ${String(r.refused).slice(0, 60)}`);
   } finally { chmodSync(locked, 0o755); }
 });
-test("#1245 a NESTED _driver is refused too — the exclusion is not first-segment-only", () => {
+test("a NESTED _driver is refused too — the exclusion is not first-segment-only", () => {
   // Item 2. The check read `split(sep)[0]`, so `_driver/` was excluded only at the top. None exists
   // deeper in the tree today, which is exactly why it would never announce itself if one appeared —
   // so one is planted rather than trusted not to exist.
@@ -304,7 +304,7 @@ test("#1245 a NESTED _driver is refused too — the exclusion is not first-segme
     "a nested _driver/ was searchable — the driver's own bookkeeping is the driver's wherever it sits");
 });
 
-test("#1245 …and an ordinary path containing the word driver is still searchable", () => {
+test("…and an ordinary path containing the word driver is still searchable", () => {
   // The control for the widening. `includes("_driver")` is over SEGMENTS, not over the string, so a
   // directory merely named `my_driver_notes` must not be caught — a widened guard that over-refuses
   // costs the seat evidence it is entitled to, silently.

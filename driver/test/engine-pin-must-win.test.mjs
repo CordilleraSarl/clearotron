@@ -59,7 +59,7 @@ const offenders = (files, read) => {
 
 const read = (f) => { try { return readFileSync(join(ROOT, f), "utf8"); } catch { return null; } };
 
-test("#900 no test file lets an inherited engine binary beat its own mock pin", (ctx) => {
+test("no test file lets an inherited engine binary beat its own mock pin", (ctx) => {
   const files = corpus();
   if (files === null) return ctx.skip(skipReason(GUARD));
   assert.deepEqual(offenders(files, read), [],
@@ -70,7 +70,7 @@ test("#900 no test file lets an inherited engine binary beat its own mock pin", 
     + `suite's banner promises it is not.`);
 });
 
-test("#900 the guard FIRES on a planted default, in BOTH shapes, and passes the assigning forms", () => {
+test("the guard FIRES on a planted default, in BOTH shapes, and passes the assigning forms", () => {
   // Without this the test above is indistinguishable from a regex that matches nothing.
   //
   // ASSEMBLED, never written out. This file is a tracked `*.test.mjs`, so the scan above reads it: a
@@ -93,7 +93,7 @@ test("#900 the guard FIRES on a planted default, in BOTH shapes, and passes the 
   assert.match(hits[1], /^planted\/keyed\.test\.mjs:2 {2}/);
 });
 
-test("#900 the corpus has a floor — a sweep that reads nothing is broken, not clean", (ctx) => {
+test("the corpus has a floor — a sweep that reads nothing is broken, not clean", (ctx) => {
   const files = corpus();
   if (files === null) return ctx.skip(skipReason(GUARD));
   // An absence is a finding. If the pathspec ever stops matching, this says so rather than reporting a
@@ -106,7 +106,7 @@ test("#900 the corpus has a floor — a sweep that reads nothing is broken, not 
   }
 });
 
-test("#900 the wrapper's promise names the variable this guard protects", () => {
+test("the wrapper's promise names the variable this guard protects", () => {
   // The guard and the banner have to stay joined. If somebody rewords the promise away from
   // CLEAROTRON_CLAUDE_PATH, or drops it, the thing this file enforces stops being a thing anyone claimed.
   const wrapper = read("scripts/test-run.mjs");

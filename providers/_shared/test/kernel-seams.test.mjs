@@ -581,7 +581,7 @@ test("count descriptor: a capability-gap refusal is DEFERRED — no repair rung 
 // The pre-existing "screening that REJECTS never drops an enumerated band" test above is DELIBERATE and
 // still passes: a screen call that fails outright on a content-carrying provider is best-effort and the
 // band survives. These cases are different — the call SUCCEEDS and the lift still does nothing.
-test("#729 a screen answering under the WRONG LIST NAME is reported on the band, not skipped in silence", async () => {
+test("a screen answering under the WRONG LIST NAME is reported on the band, not skipped in silence", async () => {
   const { enumerate } = makeEnumerate({
     search: async () => ok({ total_hits: 2, results: rows(2, "s"), has_more: false }),
     // 200, well-formed JSON, plausible content — under `brands` instead of `rows`.
@@ -596,7 +596,7 @@ test("#729 a screen answering under the WRONG LIST NAME is reported on the band,
   assert.match(out.screen_lift.reason, /no `rows` array/);
 });
 
-test("#729 a join key that lines up with NOTHING is content loss on a screen-sourced provider", async () => {
+test("a join key that lines up with NOTHING is content loss on a screen-sourced provider", async () => {
   // The rows are well-formed and under the right name; they simply identify themselves with the OTHER
   // declared spelling (`record_id` where this provider's screenJoinKey reads `uri`). byUri then collapses
   // to a single entry keyed `undefined` and every get() misses. The old contentFromScreen gate inspected
@@ -612,7 +612,7 @@ test("#729 a join key that lines up with NOTHING is content loss on a screen-sou
   assert.match(out.reason, /NOT ONE joined/);
 });
 
-test("#729 a SHORT join is still legitimate and must not become a false incomplete", async () => {
+test("a SHORT join is still legitimate and must not become a false incomplete", async () => {
   // A record-content endpoint may answer for fewer ids than it was asked about — a guid that is not a
   // trademark record yields no content, and that is a provider FACT. Keying the new check on row
   // shortfall rather than on a zero join would turn every such band into a false refusal.
@@ -627,7 +627,7 @@ test("#729 a SHORT join is still legitimate and must not become a false incomple
   assert.equal(out.screen_lift, undefined, "and a band whose lift APPLIED carries no complaint");
 });
 
-test("#729 a clean full join stays byte-identical — no new field on the happy path", async () => {
+test("a clean full join stays byte-identical — no new field on the happy path", async () => {
   const { enumerate } = makeEnumerate({
     search: async () => ok({ total_hits: 2, results: rows(2, "s"), has_more: false }),
     screen: async () => ok({ rows: [{ uri: "/mark/ch/s-0", mark_text: "ACME" }, { uri: "/mark/ch/s-1", mark_text: "BETA" }] }),

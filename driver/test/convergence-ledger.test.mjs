@@ -43,7 +43,7 @@ const REASON = (n) => `invalid_file:x/common-law-findings.half-b.md:${undisposed
 
 // ── part 1: the extractor ────────────────────────────────────────────────────────────────────────
 
-test("#246 the count survives as a number: listed names + the overflow, from the untruncated reason", () => {
+test("the count survives as a number: listed names + the overflow, from the untruncated reason", () => {
   assert.deepEqual(progressQuantity(REASON(29)), { token: "connotation_undisposed", value: 29 });
   assert.deepEqual(progressQuantity(REASON(2)), { token: "connotation_undisposed", value: 2 });
   assert.deepEqual(progressQuantity(REASON(1)), { token: "connotation_undisposed", value: 1 });
@@ -60,7 +60,7 @@ test("#246 the count survives as a number: listed names + the overflow, from the
 // hand and a test" — applies to the new shape too. These strings are the throw site's template verbatim
 // (verify.mjs connotationDispositionFail). A wrong count here reads a converging run as plateaued and ends
 // its ladder early, which is silent: the run simply stops, having looked like it repeated itself.
-test("#347 the cause census is the exact quantity — summed across causes, immune to a comma inside a query", () => {
+test("the cause census is the exact quantity — summed across causes, immune to a comma inside a query", () => {
   const tok = (payload) => `invalid_file:x/common-law-findings.half-b.md:connotation_undisposed:${payload}`;
   // both causes present: the total is the sum, whatever the named lists were budgeted down to
   assert.deepEqual(
@@ -79,7 +79,7 @@ test("#347 the cause census is the exact quantity — summed across causes, immu
 });
 
 // ── — the newest token counts, or a converging quote ladder reads as stuck ───────────────────────
-test("#518 connotation_quote_unbound carries a census, so its residual is visible to the ledger", () => {
+test("connotation_quote_unbound carries a census, so its residual is visible to the ledger", () => {
   const tok = (payload) => `invalid_file:x/common-law-findings.half-b.md:connotation_quote_unbound:${payload}`;
   assert.deepEqual(progressQuantity(tok("quote_unbound=3;Q-1F4YWF87 [x] split R-5T9SYVN3")),
     { token: "connotation_quote_unbound", value: 3 });
@@ -91,7 +91,7 @@ test("#518 connotation_quote_unbound carries a census, so its residual is visibl
   assert.equal(progressQuantity(tok("quote_unbound=0;")), null, "a zero census is malformed — ABSENT, not converged");
 });
 
-test("#246 ZERO SEMANTICS: a failure with no quantity records ABSENT (null), never 0", () => {
+test("ZERO SEMANTICS: a failure with no quantity records ABSENT (null), never 0", () => {
   // most failures carry no count at all. None of these may return a number — a 0 here would read as
   // "nothing left undisposed", which is what SUCCESS looks like.
   for (const r of ["timeout", "nonzero_exit_1", "unparseable_json", "lane_wedge", "status_overloaded",
@@ -109,7 +109,7 @@ test("#246 ZERO SEMANTICS: a failure with no quantity records ABSENT (null), nev
   assert.notEqual(failureSignature("common-law-half:b", "timeout").quantity, 0);
 });
 
-test("#246 the signature is UNCHANGED — the quantity is the sole new discriminator", () => {
+test("the signature is UNCHANGED — the quantity is the sole new discriminator", () => {
   // Pinned to the pre-change literals. These are what the machinery signs; a diff that moves them moves
   // which runs go repeat-signature terminal, which is the decision and not this issue's.
   const sigs = [6, 9, 11, 25, 29].map((n) => failureSignature("common-law-half:b", REASON(n)).sig);
@@ -149,7 +149,7 @@ const replay = async (name, steps, { stamp = true, maxRetries = 3 } = {}) => {
   });
 };
 
-test("#246 ladder 29 → 11 → pass (converging) is distinguishable from 25 → 9 → 9 (repeating)", async () => {
+test("ladder 29 → 11 → pass (converging) is distinguishable from 25 → 9 → 9 (repeating)", async () => {
   const converging = await replay("converging", [29, 11, null]);
   assert.equal(converging.ok, true, "attempt 3 passed, exactly as the 08-01 run did");
   assert.deepEqual(counts("converging"), [29, 11, null], "the passing attempt records ABSENT, never 0");
@@ -168,7 +168,7 @@ test("#246 ladder 29 → 11 → pass (converging) is distinguishable from 25 →
   assert.notDeepEqual(changes("converging"), changes("repeating"));
 });
 
-test("#246 ladder 12 → 11 → 11 (the terminate case) records the stall as no-change", async () => {
+test("ladder 12 → 11 → 11 (the terminate case) records the stall as no-change", async () => {
   const r = await replay("stalled", [12, 11, 11]);
   assert.equal(r.ok, false);
   assert.deepEqual(counts("stalled"), [12, 11, 11]);
@@ -181,7 +181,7 @@ test("#246 ladder 12 → 11 → 11 (the terminate case) records the stall as no-
   assert.equal(r.identicalSignature, true);
 });
 
-test("#246 ladder 7 → 6 → 5, park, 6 → 3 → pass: the count crosses the park, re-roll and all", async () => {
+test("ladder 7 → 6 → 5, park, 6 → 3 → pass: the count crosses the park, re-roll and all", async () => {
   const before = await replay("parked", [7, 6, 5], { maxRetries: 2 });
   assert.equal(before.ok, false);
   assert.deepEqual(counts("parked"), [7, 6, 5], "three different counts — nothing repeated, so nothing is no-change");
@@ -201,7 +201,7 @@ test("#246 ladder 7 → 6 → 5, park, 6 → 3 → pass: the count crosses the p
   assert.deepEqual(d.progress, { quantity: 6, priorQuantity: 5, delta: 1, kind: "diverging" });
 });
 
-test("#246 a quantity-less ladder records ABSENT on every row — an absence is not a converged zero", async () => {
+test("a quantity-less ladder records ABSENT on every row — an absence is not a converged zero", async () => {
   process.env.MOCK_FAIL_STAGE = "BASE TASK";              // every turn: exit(1) → nonzero_exit_1
   const r = await runStage("transport", { agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-transport",
     timeoutSec: 30, expectFile: join(dir, "t.md"), maxRetries: 2, runDir: dir });
@@ -217,7 +217,7 @@ test("#246 a quantity-less ladder records ABSENT on every row — an absence is 
 
 // ── part 3: the break/park comparison sees the magnitude and decides exactly as before ───────────
 
-test("#246 decideRecovery REPORTS the convergence and DECIDES identically — no policy moved", () => {
+test("decideRecovery REPORTS the convergence and DECIDES identically — no policy moved", () => {
   const sig = failureSignature("common-law-half:b", REASON(9)).sig;
   const park = (quantity, prior) => decideRecovery({
     failClass: "unknown", sig, reason: REASON(quantity ?? 9), recoveryMax: 3, priorAttempts: 1, quantity,

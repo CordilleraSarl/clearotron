@@ -72,7 +72,7 @@ async function withResearchKey(value, fn) {
   }
 }
 
-test("#1149-6 a clearance with no research credential is refused at the door — nothing is built", async () => {
+test("a clearance with no research credential is refused at the door — nothing is built", async () => {
   await withResearchKey(null, async () => {
     const { root, run } = harness();
     await assert.rejects(run, (e) => {
@@ -91,7 +91,7 @@ test("#1149-6 a clearance with no research credential is refused at the door —
 
 // THE CONTROL. Same job, same env, one variable different — so the refusal above is attributable to this
 // door and not to one of the four ahead of it.
-test("#1149-6 CONTROL — the same job WITH the credential gets past this door", async () => {
+test("CONTROL — the same job WITH the credential gets past this door", async () => {
   await withResearchKey("pplx-NOT-A-REAL-KEY-8b3f1d6a2c9e4407", async () => {
     const { root, run } = harness();
     const res = await run();

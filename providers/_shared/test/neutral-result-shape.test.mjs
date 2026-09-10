@@ -107,7 +107,7 @@ function conforms(result, label, { minRows = 1 } = {}) {
 
 // ══ the declaration cannot drift from the implementation ════════════════════════════════════════
 
-test("#688 the declared verdict set is exactly what screenVerdict() can produce", () => {
+test("the declared verdict set is exactly what screenVerdict() can produce", () => {
   // Every branch of the classifier, driven — not a copy of the constant. If a sixth verdict is added
   // and this file is not updated, the row check below would accept it silently.
   const produced = new Set([
@@ -124,7 +124,7 @@ test("#688 the declared verdict set is exactly what screenVerdict() can produce"
     "SCREEN_VERDICTS must be the closed set the implementation actually emits");
 });
 
-test("#688 the checker fails the shapes it exists to fail", () => {
+test("the checker fails the shapes it exists to fail", () => {
   const good = { rows: [{ uri: "/mark/eu/1", screen_verdict: "surface:in-scope-live" }] };
   assert.deepEqual(batchScreenViolations(good), []);
 
@@ -155,7 +155,7 @@ test("#688 the checker fails the shapes it exists to fail", () => {
 
 // ══ corsearch — bulk-endpoint, transport stubbed ════════════════════════════════════════════════
 
-test("#688 corsearch conforms, driven through its real brand-json path", async () => {
+test("corsearch conforms, driven through its real brand-json path", async () => {
   const URIS = ["/mark/us/1001", "/mark/us/1002", "/mark/us/1003"];
   const BODIES = {
     "/mark/us/1001": { status: "Valid", classes: [9], name: "ARBORA", batchId: "b1", sourceId: "s1" },
@@ -179,7 +179,7 @@ test("#688 corsearch conforms, driven through its real brand-json path", async (
 
 // ══ clarivate — billed-record-fetch, transport stubbed ══════════════════════════════════════════
 
-test("#688 clarivate conforms, driven through its real /text path", async () => {
+test("clarivate conforms, driven through its real /text path", async () => {
   const RECS = [
     { id: "g1", markVerbalElementText: "ARBORA", niceClasses: [9], markCurrentStatusCode: "Registered",
       registrationOfficeCode: "US" },
@@ -199,7 +199,7 @@ test("#688 clarivate conforms, driven through its real /text path", async () => 
 
 // ══ euipo — transport stubbed, and the `screened` count is the declared trap ═════════════════════
 
-test("#688 euipo conforms, and its `screened` stays a COUNT while `rows` carries the screen", async () => {
+test("euipo conforms, and its `screened` stays a COUNT while `rows` carries the screen", async () => {
   const TMS = [
     { applicationNumber: "018000001", markBasis: "EU", wordMarkSpecification: { verbalElement: "ARBORA" },
       niceClasses: [9], status: "REGISTERED" },
@@ -244,7 +244,7 @@ function usptoFixture() {
   return { dbPath, cleanup: () => { try { rmSync(dir, { recursive: true, force: true }); } catch { /* best effort */ } } };
 }
 
-test("#688 uspto-local conforms, driven against a real index", async () => {
+test("uspto-local conforms, driven against a real index", async () => {
   const { dbPath, cleanup } = usptoFixture();
   try {
     const out = await usptoLocal.doBatchScreen({ dbPath },
@@ -258,7 +258,7 @@ test("#688 uspto-local conforms, driven against a real index", async () => {
 
 // ══ free-tier — the composite, over its two REAL member cores ═══════════════════════════════════
 
-test("#688 the free tier conforms, composed over both real members", async () => {
+test("the free tier conforms, composed over both real members", async () => {
   const { dbPath, cleanup } = usptoFixture();
   freeTier._resetMemberCores();   // real cores, not the merge-arithmetic stubs
   const TMS = [{ applicationNumber: "018000001", markBasis: "EU",
@@ -288,7 +288,7 @@ test("#688 the free tier conforms, composed over both real members", async () =>
 
 const DRIVEN = ["corsearch", "clarivate", "euipo", "uspto-local", "free-tier"];
 
-test("#688 every provider exposing register_batch_screen is driven above — no silent skips", () => {
+test("every provider exposing register_batch_screen is driven above — no silent skips", () => {
   const dir = join(ROOT, "driver", "engine", "mcp");
   const exposing = readdirSync(dir)
     .filter((f) => f.endsWith("-server.mjs"))
@@ -300,7 +300,7 @@ test("#688 every provider exposing register_batch_screen is driven above — no 
     + "vocabulary, which is the whole of #688. Drive it, or stop exposing the tool.");
 });
 
-test("#688 a provider with no batch-screen tool declares the absence rather than being skipped", async () => {
+test("a provider with no batch-screen tool declares the absence rather than being skipped", async () => {
   // signa exposes no `register_batch_screen` and exports no `doBatchScreen`. That is legitimate — but
   // an absence is a finding, so it is asserted on both halves rather than left to the sweep above to
   // pass over. The two must agree: a server exposing the tool over a core that lacks it would throw at
@@ -327,7 +327,7 @@ test("#688 a provider with no batch-screen tool declares the absence rather than
 // join key edited to match a sibling — the join silently returns undefined for every row and the
 // band ships `state:"enumerated"` with null mark text. This is the test that fails first.
 
-test("#688 each provider's declared join key is the identity its own rows carry", () => {
+test("each provider's declared join key is the identity its own rows carry", () => {
   const CONFIGURED = {
     corsearch: null,
     clarivate: /screenJoinKey: \(row\) => row\?\.uri/,
@@ -350,7 +350,7 @@ test("#688 each provider's declared join key is the identity its own rows carry"
     "the kernel default is what the providers passing nothing inherit");
 });
 
-test("#688 the two spellings are BOTH live — this is a split, not a legacy alias", () => {
+test("the two spellings are BOTH live — this is a split, not a legacy alias", () => {
   // Stated as an assertion so nobody 'tidies' one spelling away believing the other is unused. The
   // free tier merges its members' rows verbatim into one list, so a mixed-spelling member pair would
   // produce a list where a single reader can join only half the rows.
@@ -373,7 +373,7 @@ test("#688 the two spellings are BOTH live — this is a split, not a legacy ali
 //   register_enumerate — a split WITHIN the tool, not across providers: the list's name follows
 //                        `state` (`records[]` when enumerated, `sample[]` when incomplete).
 
-test("#688 audit: register_search has no split — every provider answers `results`", async () => {
+test("audit: register_search has no split — every provider answers `results`", async () => {
   const spec = NEUTRAL_TOOL_RESULT_SHAPE.register_search;
   assert.equal(spec.list, "results");
   // corsearch and clarivate both build their search result through normalizeSearchResponse, so the
@@ -398,7 +398,7 @@ test("#688 audit: register_search has no split — every provider answers `resul
     "driver.config.mjs reads `results` — if the providers ever renamed it this is where the zero appears");
 });
 
-test("#688 audit: register_enumerate's list name follows `state` — the split is inside the tool", async () => {
+test("audit: register_enumerate's list name follows `state` — the split is inside the tool", async () => {
   const spec = NEUTRAL_TOOL_RESULT_SHAPE.register_enumerate;
   assert.deepEqual(spec.listByState, { enumerated: "records", incomplete: "sample" });
   const src = readFileSync(join(ROOT, "providers", "_shared", "enumerate.mjs"), "utf8");
@@ -418,7 +418,7 @@ test("#688 audit: register_enumerate's list name follows `state` — the split i
 
 // ══ THE LIVE CONSUMER THIS PROTECTS ═════════════════════════════════════════════════════════════
 
-test("#688 the enumerate kernel joins the band on the screen row's `rows`/`uri` — the pair asserted above", () => {
+test("the enumerate kernel joins the band on the screen row's `rows`/`uri` — the pair asserted above", () => {
   // Not a hypothetical consumer: providers/_shared/enumerate.mjs reads `sj.rows` to lift mark text,
   // classes, status and owner onto records that a guid-only provider's search leaves null, and joins
   // them on `row.uri` (`screenJoinKey`'s default). The asymmetry is worth stating where someone will

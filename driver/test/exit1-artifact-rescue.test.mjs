@@ -168,7 +168,7 @@ test("synthesis budget: timeoutSec 2500 with the 900s stall/no-progress ceiling 
 // 2026-08-09 R1: attempt 1 walled at 1860s against 1800 and attempt 2 finished in 1844s against the
 // 2700 the ladder's own 1.5x extension had granted it. The first budget is now the one the retry would
 // get, so the run stops paying 31 minutes to discover it. stallSec is deliberately NOT raised with it.
-test("#526 placement budget: timeoutSec 2700 with the 600s stall ceiling left where it was", async () => {
+test("placement budget: timeoutSec 2700 with the 600s stall ceiling left where it was", async () => {
   const { STAGES } = await import("../stages.mjs");
   const p = STAGES["placement-inquiry"];
   assert.equal(p.timeoutSec, 2700, "1800 → 2700 — the value runStage's hard-wall retry already grants");
@@ -291,7 +291,7 @@ test("with NO kill in the ladder a LATER attempt still rescues its own fresh, va
 // had been untouched for 974 seconds when that kill landed, and a torn write is untouched for none.
 const quiesce = (path, seconds) => { const t = Date.now() / 1000 - seconds; utimesSync(path, t, t); };
 
-test("#394: a hard-wall kill whose artifact was written by this attempt, validates, and had gone QUIET is accepted as stage truth", async () => {
+test("a hard-wall kill whose artifact was written by this attempt, validates, and had gone QUIET is accepted as stage truth", async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-rescue-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -318,7 +318,7 @@ test("#394: a hard-wall kill whose artifact was written by this attempt, validat
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#394: a hard-wall kill whose artifact was still being written is REFUSED — and the refusal is recorded, not silent", async () => {
+test("a hard-wall kill whose artifact was still being written is REFUSED — and the refusal is recorded, not silent", async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-torn-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -356,7 +356,7 @@ test("#394: a hard-wall kill whose artifact was still being written is REFUSED �
 // never reached the journal. Reconstructing it took an mtime comparison against a preserved run dir.
 //
 // On the row, this case and the one above were both `rescued: null`. They are now distinguishable.
-test("#526: a quiescent, WRITTEN artifact refused by its VALIDATOR names that cause — the R1 discard", async () => {
+test("a quiescent, WRITTEN artifact refused by its VALIDATOR names that cause — the R1 discard", async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-invalid-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -380,7 +380,7 @@ test("#526: a quiescent, WRITTEN artifact refused by its VALIDATOR names that ca
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#394: a stage with NO validator is untouched by the wall rescue — there is nothing to judge the artifact with", async () => {
+test("a stage with NO validator is untouched by the wall rescue — there is nothing to judge the artifact with", async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-noval-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -402,7 +402,7 @@ test("#394: a stage with NO validator is untouched by the wall rescue — there 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#394: CLEAROTRON_WALL_RESCUE=0 disarms it — the stage fails as timeout exactly as before", async () => {
+test("CLEAROTRON_WALL_RESCUE=0 disarms it — the stage fails as timeout exactly as before", async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-disarm-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -427,7 +427,7 @@ test("#394: CLEAROTRON_WALL_RESCUE=0 disarms it — the stage fails as timeout e
 });
 
 // ── — the dispatch record, through runStage ──────────────────────────────────────────────────
-test("#380: every attempt leaves the verbatim message it was dispatched with, and the row points at it", async () => {
+test("every attempt leaves the verbatim message it was dispatched with, and the row points at it", async () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-gw-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -476,7 +476,7 @@ test("#380: every attempt leaves the verbatim message it was dispatched with, an
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#380: CLEAROTRON_DISPATCH_RECORD=0 disarms it — the row says null rather than claiming a record that is not there", async () => {
+test("CLEAROTRON_DISPATCH_RECORD=0 disarms it — the row says null rather than claiming a record that is not there", async () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-off-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -513,7 +513,7 @@ test("#380: CLEAROTRON_DISPATCH_RECORD=0 disarms it — the row says null rather
 // renders it from the accumulator — so the validator does not ask for it, and a quiescent prose-only
 // attempt is exactly the state the rescue exists to accept. This is the assertion that the CURE holds,
 // as opposed to merely that the arm was deleted.
-test("#562: the wall rescue ACCEPTS a quiescent prose-only placement attempt — the R1 discard cannot recur", async () => {
+test("the wall rescue ACCEPTS a quiescent prose-only placement attempt — the R1 discard cannot recur", async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-placement-"));
   const out = join(dir, "placement-recommendations.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -550,7 +550,7 @@ test("#562: the wall rescue ACCEPTS a quiescent prose-only placement attempt —
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#562: with the era stamped, an ABSENT placements.json is not the seat's defect", () => {
+test("with the era stamped, an ABSENT placements.json is not the seat's defect", () => {
   // The validator arm in isolation, because in a live run the driver's render usually satisfies the old
   // floor anyway — which would let the deletion of this branch pass unnoticed. The case it governs is the
   // one that matters: the render did NOT land (a parse-then-land refusal, a full disk) and the seat's
@@ -573,7 +573,7 @@ test("#562: with the era stamped, an ABSENT placements.json is not the seat's de
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#562: an ARCHIVED run keeps the old floor — deleting the arm must not re-judge what already shipped", async () => {
+test("an ARCHIVED run keeps the old floor — deleting the arm must not re-judge what already shipped", async () => {
   // The era stamp is the whole guard. A run minted before carries `structuredPlacements` alone, and
   // for it the absent sibling is still a defect: that run's seat WAS asked for the file. Replay verdicts
   // over the archive must not flip, which is the rule every contract marker in this driver is written to.

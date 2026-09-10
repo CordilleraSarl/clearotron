@@ -11,7 +11,7 @@
 // and the second half is prose. On those runs 39 of the 45 missing marks ARE discussed in the
 // recommendations and 0 of the 45 record ids are named — so a prose matcher cannot tell "discussed" from
 // "reasoned away", and two of my own prose matchers on this exact data were wrong before I caught them
-// (a line-wrap split "Unity\nTechnologies"; a prefix list omitted `phonetic`). The owner ruling of
+// (a line-wrap split "Unity\nTechnologies"; a prefix list omitted `phonetic`). The ruling of
 // 2026-08-20 narrowed the duty to a ROW ON A FORM, which is why nothing here reads prose.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -31,7 +31,7 @@ const placed = (uris, over = {}) => ({
   tier: "sheet-2", reason: "same field, real overlap", ...over,
 });
 
-test("#1117 a floor named on the form with a ground is ACCOUNTED", () => {
+test("a floor named on the form with a ground is ACCOUNTED", () => {
   const a = reconcileFloorDuty({ floors: [floor("/mark/cn/A")], placements: [placed(["/mark/cn/A"])] });
   assert.equal(a.totals.floors, 1);
   assert.equal(a.totals.accounted, 1);
@@ -40,7 +40,7 @@ test("#1117 a floor named on the form with a ground is ACCOUNTED", () => {
   assert.equal(a.rows[0].tier, "sheet-2");
 });
 
-test("#1117 a floor no placement names is UNANSWERED — the defect this exists to see", () => {
+test("a floor no placement names is UNANSWERED — the defect this exists to see", () => {
   const a = reconcileFloorDuty({ floors: [floor("/mark/cn/A")], placements: [placed(["/mark/cn/OTHER"])] });
   assert.equal(a.totals.unanswered, 1);
   assert.equal(a.totals.accounted, 0);
@@ -52,7 +52,7 @@ test("#1117 a floor no placement names is UNANSWERED — the defect this exists 
 
 // THE RULING'S OWN CASE: ruling a floor OUT discharges the duty exactly as placing it does. If this ever
 // fails, the check is demanding placement rather than an answer, which is not what was ruled.
-test("#1117 out-of-scope-filtered with a ground DISCHARGES the duty, exactly like any other tier", () => {
+test("out-of-scope-filtered with a ground DISCHARGES the duty, exactly like any other tier", () => {
   const a = reconcileFloorDuty({
     floors: [floor("/mark/cn/A")],
     placements: [placed(["/mark/cn/A"], { tier: "out-of-scope-filtered", reason: "toys; no overlap with class 9" })],
@@ -65,7 +65,7 @@ test("#1117 out-of-scope-filtered with a ground DISCHARGES the duty, exactly lik
 // The tier is NOT the test. A tier this build has never heard of still discharges the duty — the seat
 // answered for the row. Pinned so nobody "tightens" it into a tier allowlist, which would couple this
 // module to a vocabulary it deliberately does not import.
-test("#1117 an UNKNOWN tier still discharges the duty — the answer is the test, not the label", () => {
+test("an UNKNOWN tier still discharges the duty — the answer is the test, not the label", () => {
   const a = reconcileFloorDuty({
     floors: [floor("/mark/cn/A")],
     placements: [placed(["/mark/cn/A"], { tier: "some-tier-from-2027" })],
@@ -74,7 +74,7 @@ test("#1117 an UNKNOWN tier still discharges the duty — the answer is the test
   assert.equal(a.by_tier["some-tier-from-2027"], 1);
 });
 
-test("#1117 a floor named with NO ground is its own disposition, never accounted", () => {
+test("a floor named with NO ground is its own disposition, never accounted", () => {
   for (const reason of ["", "   ", null, undefined]) {
     const a = reconcileFloorDuty({ floors: [floor("/mark/cn/A")], placements: [placed(["/mark/cn/A"], { reason })] });
     assert.equal(a.totals.named_without_ground, 1, `reason ${JSON.stringify(reason)} is not a ground`);
@@ -86,13 +86,13 @@ test("#1117 a floor named with NO ground is its own disposition, never accounted
 // A floor the BAND could not identify is not a floor the SEAT failed to answer. Counted as undischarged
 // either way — the duty is not met — but distinguished on the row so nobody chases the seat for a row it
 // was never given.
-test("#1117 a floor row with no record id is UNANSWERABLE and says so", () => {
+test("a floor row with no record id is UNANSWERABLE and says so", () => {
   const a = reconcileFloorDuty({ floors: [floor("")], placements: [] });
   assert.equal(a.rows[0].disposition, "no-record-id");
   assert.equal(a.totals.unanswered, 1, "still undischarged — it is not quietly forgiven");
 });
 
-test("#1117 record ids match case-insensitively, the way placement uris are normalised", () => {
+test("record ids match case-insensitively, the way placement uris are normalised", () => {
   const a = reconcileFloorDuty({
     floors: [floor("/MARK/CN/AbC")], placements: [placed(["/mark/cn/abc"])],
   });
@@ -101,7 +101,7 @@ test("#1117 record ids match case-insensitively, the way placement uris are norm
     + "so this side must too or every comparison is a false miss");
 });
 
-test("#1117 one uri named by two placements is one duty, discharged once", () => {
+test("one uri named by two placements is one duty, discharged once", () => {
   const a = reconcileFloorDuty({
     floors: [floor("/mark/cn/A")],
     placements: [placed(["/mark/cn/A"]), placed(["/mark/cn/A"], { tier: "headline-candidate" })],
@@ -115,7 +115,7 @@ test("#1117 one uri named by two placements is one duty, discharged once", () =>
 // in-class identical record reconciles at 0/0 and is a clean pass. The ABSENT case never gets here: it is
 // the caller's `computable:false`, and because `deriveFloorDuty` is internal to pipeline.mjs the guards
 // are pinned by shape at the bottom of this file rather than by calling it.
-test("#1117 an EMPTY floors slice reconciles at zero and is a real answer", () => {
+test("an EMPTY floors slice reconciles at zero and is a real answer", () => {
   const a = reconcileFloorDuty({ floors: [], placements: [placed(["/mark/cn/X"])] });
   // `unanswerable` joined this shape when the duty became a delivery floor. The
   // assertion stays a whole-object deepEqual rather than relaxing to a subset: this pin is what says a
@@ -126,7 +126,7 @@ test("#1117 an EMPTY floors slice reconciles at zero and is a real answer", () =
   assert.equal(a.computable, true, "nothing was missing — the band answered, and its answer was none");
 });
 
-test("#1117 every floor lands in exactly one disposition and the counts reconcile", () => {
+test("every floor lands in exactly one disposition and the counts reconcile", () => {
   const a = reconcileFloorDuty({
     floors: [floor("/mark/cn/A"), floor("/mark/cn/B"), floor("/mark/cn/C"), floor("")],
     placements: [placed(["/mark/cn/A"]), placed(["/mark/cn/B"], { reason: "  " })],
@@ -141,7 +141,7 @@ test("#1117 every floor lands in exactly one disposition and the counts reconcil
 
 // The event is what a run-log reader sees. A `computable:false` row carrying zeros would read as "every
 // floor accounted for", which is the exact inversion an absence must never be allowed to make.
-test("#1117 the run-log row for a NON-computable derivation carries no counts", () => {
+test("the run-log row for a NON-computable derivation carries no counts", () => {
   const e = floorDutyEvent({ trigger: "t", reason: "no band-shape.json" });
   assert.equal(e.computable, false);
   assert.equal(e.reason, "no band-shape.json");
@@ -149,7 +149,7 @@ test("#1117 the run-log row for a NON-computable derivation carries no counts", 
     assert.equal(e[k], undefined, `${k} must be ABSENT, not 0 — a zero here reads as a clean floor`);
 });
 
-test("#1117 the run-log row for a computed derivation carries the counts and the reconciliation", () => {
+test("the run-log row for a computed derivation carries the counts and the reconciliation", () => {
   const a = reconcileFloorDuty({ floors: [floor("/mark/cn/A")], placements: [] });
   const e = floorDutyEvent({ trigger: "t", artifact: a });
   assert.equal(e.computable, true);
@@ -158,13 +158,13 @@ test("#1117 the run-log row for a computed derivation carries the counts and the
   assert.equal(e.reconciles, true);
 });
 
-test("#1117 the schema version is stated on the artifact", () => {
+test("the schema version is stated on the artifact", () => {
   assert.equal(reconcileFloorDuty({ floors: [], placements: [] }).schema_version, FLOOR_DUTY_SCHEMA_VERSION);
 });
 
 // Defensive: this reads two artifacts written by other code, and a malformed one must not throw inside a
 // disclosure-only derivation.
-test("#1117 malformed inputs do not throw", () => {
+test("malformed inputs do not throw", () => {
   for (const args of [{}, { floors: null, placements: null }, { floors: [null], placements: [null] },
                       { floors: [{}], placements: [{ records: null }] }]) {
     const a = reconcileFloorDuty(args);
@@ -183,14 +183,14 @@ const PIPELINE = readFileSync(join(dirname(fileURLToPath(import.meta.url)), ".."
 const DERIVE = PIPELINE.slice(PIPELINE.indexOf("function deriveFloorDuty"),
   PIPELINE.indexOf("function derivePlacementCarry"));
 
-test("#1117 the derivation is READ and it is the right function — the control for the arms below", () => {
+test("the derivation is READ and it is the right function — the control for the arms below", () => {
   assert.ok(DERIVE.length > 400 && DERIVE.length < 6000,
     `deriveFloorDuty not isolated from pipeline.mjs (got ${DERIVE.length} chars) — every arm below would `
     + "pass or fail on the wrong text");
   assert.match(DERIVE, /reconcileFloorDuty\(/, "and it is the function that calls the reconciler");
 });
 
-test("#1117 a MISSING input routes to notComputable, never to a reconcile over nothing", () => {
+test("a MISSING input routes to notComputable, never to a reconcile over nothing", () => {
   for (const [what, guard] of [["band-shape.json", /!existsSync\(P\.bandShape\)[\s\S]{0,120}?notComputable/],
                                ["placements.json", /!existsSync\(P\.placementModel\)[\s\S]{0,140}?notComputable/]]) {
     assert.match(DERIVE, guard,
@@ -207,7 +207,7 @@ test("#1117 a MISSING input routes to notComputable, never to a reconcile over n
     "an EMPTY floors slice is a real answer and must reconcile at 0/0, not refuse");
 });
 
-test("#1117 the derivation is disclosure-only — it cannot gate, re-tier or send a followup", () => {
+test("the derivation is disclosure-only — it cannot gate, re-tier or send a followup", () => {
   for (const forbidden of [/\bmust\(/, /repairFollowup\(/, /\bthrow\b/]) {
     assert.doesNotMatch(DERIVE, forbidden,
       `deriveFloorDuty must not ${forbidden.source} — it annotates and never re-decides, the same posture `
@@ -221,7 +221,7 @@ test("#1117 the derivation is disclosure-only — it cannot gate, re-tier or sen
 // send a followup. That was NOT loosened. Enforcement lives at the pre-verdict floor, where a throw
 // costs no artifact — a derivation that throws loses the very account the floor reads.
 
-test("#1955 the era stamp is written, read back, and says nothing about counts", () => {
+test("the era stamp is written, read back, and says nothing about counts", () => {
   const runDir = mkdtempSync(join(tmpdir(), "clearotron-floorstamp-"));
   assert.equal(floorDutyArmed(runDir), false, "an unstamped run is NOT armed — the archived and knockout case");
   assert.equal(armFloorDuty(runDir), true);
@@ -236,7 +236,7 @@ test("#1955 the era stamp is written, read back, and says nothing about counts",
   rmSync(runDir, { recursive: true, force: true });
 });
 
-test("#1955 UNANSWERABLE rows are counted apart and excluded from the seat's share", () => {
+test("UNANSWERABLE rows are counted apart and excluded from the seat's share", () => {
   // The distinction a disclosure could keep on the row and a floor cannot. A floor row with no record id
   // is undischarged and unanswerable: blocking a run on it fails the seat for a band defect, and the
   // repair it implies can be performed by nobody.
@@ -251,7 +251,7 @@ test("#1955 UNANSWERABLE rows are counted apart and excluded from the seat's sha
   assert.equal(a.reconciles, true, "the four-way sum still reconciles — the new field is additive");
 });
 
-test("#1955 named-without-ground IS the seat's share — the half no real run has ever exercised", () => {
+test("named-without-ground IS the seat's share — the half no real run has ever exercised", () => {
   // DRIVEN SYNTHETICALLY ON PURPOSE. Across every run directory measured, `named_without_ground` is 0 on
   // all of them: every undischarged floor in the wild is `unanswered`. So this arm of the refusal ships
   // with no real data behind it, and without this it would ship unproven in both directions.
@@ -272,7 +272,7 @@ test("#1955 named-without-ground IS the seat's share — the half no real run ha
   assert.equal(ok.totals.accounted, 1);
 });
 
-test("#1955 a fully discharged floor leaves the seat's share at zero", () => {
+test("a fully discharged floor leaves the seat's share at zero", () => {
   const r = reconcileFloorDuty({
     floors: [{ record_id: "/mark/eu/1" }, { record_id: "/mark/eu/2" }],
     placements: [{ records: ["/mark/eu/1", "/mark/eu/2"], reason: "Both weighed and placed on the form.", tier: "sheet-2" }],
@@ -292,7 +292,7 @@ const DIRTY = () => reconcileFloorDuty({
   placements: [{ records: ["/mark/eu/1"], reason: "Weighed and placed.", tier: "sheet-2" }],
 });
 
-test("#1955 an ARMED run with an undischarged floor blocks, and names the rows", () => {
+test("an ARMED run with an undischarged floor blocks, and names the rows", () => {
   const b = floorDutyBlock(DIRTY(), { armed: true });
   assert.ok(b, "this is the state the floor exists for");
   assert.equal(b.undischarged, 1);
@@ -300,20 +300,20 @@ test("#1955 an ARMED run with an undischarged floor blocks, and names the rows",
   assert.match(b.sample, /BETA \(\/mark\/eu\/2\)/, "the message names the row, not just a count");
 });
 
-test("#1955 an UNARMED run never blocks, whatever its floor says", () => {
+test("an UNARMED run never blocks, whatever its floor says", () => {
   // 19 of 24 run directories on the box compute nothing, and absence there means a knockout run more
   // often than an old one — so absence can be read as neither clean nor dirty.
   assert.equal(floorDutyBlock(DIRTY(), { armed: false }), null);
   assert.equal(floorDutyBlock(DIRTY(), {}), null, "and the default is NOT armed");
 });
 
-test("#1955 a could-not-look never blocks — it is not a clean floor and not a dirty one", () => {
+test("a could-not-look never blocks — it is not a clean floor and not a dirty one", () => {
   assert.equal(floorDutyBlock({ computable: false, reason: "no band-shape.json" }, { armed: true }), null);
   assert.equal(floorDutyBlock(null, { armed: true }), null);
   assert.equal(floorDutyBlock(undefined, { armed: true }), null);
 });
 
-test("#1955 a floor undischarged ONLY by unanswerable rows does not block", () => {
+test("a floor undischarged ONLY by unanswerable rows does not block", () => {
   // The band gave the seat nothing to name, so no seat behaviour could have closed it and the repair it
   // implies can be performed by nobody. It is disclosed in the message and excluded from the count.
   const a = reconcileFloorDuty({ floors: [{ mark_text: "NO ID" }], placements: [] });
@@ -321,7 +321,7 @@ test("#1955 a floor undischarged ONLY by unanswerable rows does not block", () =
   assert.equal(floorDutyBlock(a, { armed: true }), null, "…and still not the seat's to answer");
 });
 
-test("#1955 a clean floor on an armed run does not block", () => {
+test("a clean floor on an armed run does not block", () => {
   const clean = reconcileFloorDuty({
     floors: [{ record_id: "/mark/eu/1" }],
     placements: [{ records: ["/mark/eu/1"], reason: "Weighed and placed.", tier: "sheet-2" }],
@@ -389,7 +389,7 @@ const UNDISCHARGED = { computable: true, undischarged_by_seat: 1,
   rows: [{ disposition: "unanswered", mark: "PROBEMARK", record_id: "/mark/em/PROBE" }] };
 const DISCHARGED = { computable: true, undischarged_by_seat: 0, totals: { floors: 45 }, rows: [] };
 
-test("2004: an armed run with an undischarged duty must NOT skip its placement pass", () => {
+test("an armed run with an undischarged duty must NOT skip its placement pass", () => {
   const dir = dutyRun(UNDISCHARGED);
   assert.equal(floorDutyBlocksSkip(dir, FLOOR_DUTY_STAGE), true,
     "the pass whose duty is undischarged was reusable as 'present and valid' — that is the gap a parked "
@@ -397,7 +397,7 @@ test("2004: an armed run with an undischarged duty must NOT skip its placement p
   rmSync(dir, { recursive: true, force: true });
 });
 
-test("2004: it fails OPEN on every unknown — unarmed, absent, unreadable, not-computable, discharged", () => {
+test("it fails OPEN on every unknown — unarmed, absent, unreadable, not-computable, discharged", () => {
   // The safety argument, driven rather than asserted. This may only ever COST a stage re-run; a resume
   // that cannot proceed because a duty artifact was unreadable would be a worse defect than the one
   // being fixed.
@@ -414,7 +414,7 @@ test("2004: it fails OPEN on every unknown — unarmed, absent, unreadable, not-
   }
 });
 
-test("2004: it speaks for ONE stage — the duty is placement's, and no other stage is re-run by it", () => {
+test("it speaks for ONE stage — the duty is placement's, and no other stage is re-run by it", () => {
   // Without this the predicate could block every stage on a run with an outstanding floor, turning a
   // one-stage re-run into a whole-pipeline one.
   const dir = dutyRun(UNDISCHARGED);
@@ -424,7 +424,7 @@ test("2004: it speaks for ONE stage — the duty is placement's, and no other st
   rmSync(dir, { recursive: true, force: true });
 });
 
-test("2004: the SKIP CONDITION ITSELF consults the duty — calling the predicate is not enough", () => {
+test("the SKIP CONDITION ITSELF consults the duty — calling the predicate is not enough", () => {
   // ✕ THIS ARM WAS WEAKER AND A PLANT CAUGHT IT. It asserted only that pipeline.mjs CALLS
   // `floorDutyBlocksSkip`. Deleting the term from the skip condition while leaving the call in place —
   // the exact defect, restored — left all four arms green: the predicate was computed, logged, and then

@@ -531,7 +531,7 @@ test("routeHalfTermScopes: a dead half's terms RE-ROUTE to a usable sibling — 
 // queries, so a result surfacing on 2 of half a's queries and 2 of half b's owes nothing at either half
 // (2 < 4) and owes a citation at the merge (4 >= 4). No reader anywhere could have seen the pattern from
 // the receipts it held, which is why no amount of retrying a half fixes it.
-test("#345: the dictated meaning queries all go to ONE half — the sibling is asked to dispose nothing", () => {
+test("the dictated meaning queries all go to ONE half — the sibling is asked to dispose nothing", () => {
   const halves = splitGridSpec(FULL_SPEC, {});
   const other = GRID_HALVES.find((h) => h !== MEANING_SEAT);
   assert.deepEqual(halves[MEANING_SEAT].connotation.queries, FULL_SPEC.connotation.queries,
@@ -547,7 +547,7 @@ test("#345: the dictated meaning queries all go to ONE half — the sibling is a
   for (const h of GRID_HALVES) assert.equal(stamped[h].connotation.disposition_required, true);
 });
 
-test("#345: a result recurring across the sweep is now an obligation the OWNING half can see — under the old parity split neither half could", async () => {
+test("a result recurring across the sweep is now an obligation the OWNING half can see — under the old parity split neither half could", async () => {
   const { connotationObligations: ob, obligationRows: rowsOf } = await import("../connotation-search.mjs");
   // Four dictated queries; one recorded result surfaces on all four. That is the recurrence floor.
   const queries = ["VENZY wikipedia", "VENZY meaning slang", "Вензи offensive meaning", "Κίνζι meaning in english"];
@@ -605,13 +605,13 @@ const flat = [
   "### Something else", "", "| Other | Table |", "|---|---|", "| x | y |", "",
 ].join("\n");
 
-test("#978: variants under `####` sub-groups are REACHED — the regression, in the real manifest's shape", () => {
+test("variants under `####` sub-groups are REACHED — the regression, in the real manifest's shape", () => {
   const v = parseManifestVariants(nested());
   assert.equal(v.length, 14, `7 groups x 2 rows; got ${v.length} — a sub-heading is closing the section`);
   assert.ok(v.includes("term-0-0") && v.includes("term-6-1"), "first group and last group both reached");
 });
 
-test("#978: a heading at the SAME level or shallower still ends the section", () => {
+test("a heading at the SAME level or shallower still ends the section", () => {
   // The `### Variant applicability` table in the fixture must NOT be collected, and neither must a
   // sibling section's rows. Depth-awareness must not turn into never-closing.
   const v = parseManifestVariants(nested());
@@ -619,13 +619,13 @@ test("#978: a heading at the SAME level or shallower still ends the section", ()
   assert.deepEqual(parseManifestVariants(flat), ["alpha", "beta"], "a `###` sibling closes it, as before");
 });
 
-test("#978: `applicability` still excludes at ANY depth, including deeper than the arming heading", () => {
+test("`applicability` still excludes at ANY depth, including deeper than the arming heading", () => {
   const md = ["### Variants", "", "| Category | Value |", "|---|---|", "| core | kept |", "",
     "#### Variant applicability", "", "| Category | Value |", "|---|---|", "| core | dropped |", ""].join("\n");
   assert.deepEqual(parseManifestVariants(md), ["kept"]);
 });
 
-test("#978: the audit separates NO VARIANTS WRITTEN from COULD NOT REACH THEM", () => {
+test("the audit separates NO VARIANTS WRITTEN from COULD NOT REACH THEM", () => {
   const broken = variantsManifestAudit(nested());
   assert.ok(broken.headings > 0 && broken.rowsAfterFirstHeading > 0);
 
@@ -637,7 +637,7 @@ test("#978: the audit separates NO VARIANTS WRITTEN from COULD NOT REACH THEM", 
     "no arming heading ⇒ nothing was promised ⇒ not a failure");
 });
 
-test("#978: rows after an arming heading with nothing taken IS a parse failure, and says so", () => {
+test("rows after an arming heading with nothing taken IS a parse failure, and says so", () => {
   // The exact shape the bug produced: a Variants heading, rows plainly present, zero parsed. Simulated
   // by a term column no header resolves and every value filtered — the point is the CALLER's predicate,
   // not this particular way of reaching zero.
@@ -651,7 +651,7 @@ test("#978: rows after an arming heading with nothing taken IS a parse failure, 
   assert.match(why, /legacy spec-less path/, "and it names the consequence, not just the symptom");
 });
 
-test("#978: a Variants section with NO rows is not a failure — the narrow condition holds", () => {
+test("a Variants section with NO rows is not a failure — the narrow condition holds", () => {
   // Error direction: a false parse-failure kills a run that had nothing to sweep. This must stay null.
   assert.equal(variantsParseFailure(["### Variants", "", "None generated for this matter.", ""].join("\n")), null);
 });

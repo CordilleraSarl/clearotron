@@ -59,7 +59,7 @@ const filesInHead = (root) => git(root, "show", "--name-only", "--format=", "HEA
 
 // ── PROFILES: THE LANE THE INCIDENT HAPPENED IN ──────────────────────────────────────────────────────
 
-test("#1454 a save with PROFILE_AUDIT UNSET leaves the tree clean, and the row is IN the commit", async () => {
+test("a save with PROFILE_AUDIT UNSET leaves the tree clean, and the row is IN the commit", async () => {
   // The default, and what the live store runs. Before this change the audit append landed inside the
   // store and nothing staged it: `git status` reported one dirty path and the next sync refused on it.
   const { root, profileDir } = mkStore();
@@ -91,7 +91,7 @@ test("#1454 a save with PROFILE_AUDIT UNSET leaves the tree clean, and the row i
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1454 a SECOND save converges — the tree is clean again, not dirty by one accumulating line", async () => {
+test("a SECOND save converges — the tree is clean again, not dirty by one accumulating line", async () => {
   // Staging the audit file as it stood BEFORE the append would commit the previous save's rows and leave
   // this one's behind: clean once, then permanently one line dirty. Only the reorder converges, so the
   // arm above passes for a fix that does not actually work. Two saves is what separates them.
@@ -109,7 +109,7 @@ test("#1454 a SECOND save converges — the tree is clean again, not dirty by on
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1454 PROFILE_AUDIT pointed OUTSIDE the repo is not staged — a wrong `git add` would be an outage", async () => {
+test("PROFILE_AUDIT pointed OUTSIDE the repo is not staged — a wrong `git add` would be an outage", async () => {
   // The other arm of the differential. A path outside the repository must NOT be handed to `git add`:
   // git refuses the whole commit, so a deployment choice that is merely unusual would break every save.
   // This file's own rule — a false refusal is an outage, a false pass is the status quo.
@@ -128,7 +128,7 @@ test("#1454 PROFILE_AUDIT pointed OUTSIDE the repo is not staged — a wrong `gi
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(outside, { recursive: true, force: true }); }
 });
 
-test("#1454 the PROJECT save carries the same cure — one of three sites fixed is the recurring failure", async () => {
+test("the PROJECT save carries the same cure — one of three sites fixed is the recurring failure", async () => {
   // profile-service has TWO save paths and recipe-service a third, all with the same four lines. This
   // codebase's most expensive shape is a control that is correct and a second place that had to carry it
   // and did not — which is what shared/store-in-repo.mjs was extracted for in the first place.
@@ -146,7 +146,7 @@ test("#1454 the PROJECT save carries the same cure — one of three sites fixed 
 
 // ── SAVED SEARCHES: THE THIRD SITE ───────────────────────────────────────────────────────────────────
 
-test("#1454 the RECIPE save carries it too", async () => {
+test("the RECIPE save carries it too", async () => {
   const { root, profileDir, recipesDir } = mkStore();
   try {
     const service = makeRecipeService({ recipesDir, profileDir, gitCommit: realCommit(root),
@@ -161,7 +161,7 @@ test("#1454 the RECIPE save carries it too", async () => {
 
 // ── THE FAILURE DIRECTION, WHICH IS WHERE THE 2026-07-18 FIX LIVES ───────────────────────────────────
 
-test("#1454 a git failure still writes the row, and the response still names the error", async () => {
+test("a git failure still writes the row, and the response still names the error", async () => {
   // The reorder must not undo the earlier cure: a live mutation with no record of who made it is worse
   // than an uncommitted one. The row can no longer CARRY the error — it is written before the commit is
   // attempted — so the response is the channel, and this asserts that it still is.
@@ -186,7 +186,7 @@ test("#1454 a git failure still writes the row, and the response still names the
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1454 an appender that CANNOT write hands back nothing — `git add` never sees a file that is not there", async () => {
+test("an appender that CANNOT write hands back nothing — `git add` never sees a file that is not there", async () => {
   // Best-effort, unchanged: a save is not failed over its journal line. But the null must reach the
   // committer, or a failed append becomes a failed COMMIT and the whole save dies over telemetry.
   const audit = makeCommittableAudit({ auditPath: "/proc/definitely/not/writable/_audit.log", repoRoot: "/proc" });
@@ -200,7 +200,7 @@ test("#1454 an appender that CANNOT write hands back nothing — `git add` never
   assert.equal(out.commitError, null);
 });
 
-test("#1454/#1573 a commit that fails AFTER `git add` leaves the tree STAGED — recoverable, and now recovered", () => {
+test("a commit that fails AFTER `git add` leaves the tree STAGED — recoverable, and now recovered", () => {
   // Recorded rather than claimed. `gitCommit` is `git add` then `git commit`; when the second fails —
   // index.lock, a hook, a full disk — the first has already run, so the save leaves staged, uncommitted
   // paths. A store sync refuses on that exactly as it refuses on an untracked file.
@@ -253,7 +253,7 @@ test("#1454/#1573 a commit that fails AFTER `git add` leaves the tree STAGED —
 // completes the commit it finds. That turns the blocker into a resumable checkpoint and it is why
 // criterion 3 — a concurrently-staged path the save did not touch survives — is satisfied by
 // construction rather than by a careful reset.
-test("#1573 a save that meets a STAGED store completes the commit it found, and keeps that work", async () => {
+test("a save that meets a STAGED store completes the commit it found, and keeps that work", async () => {
   const { root, profileDir } = mkStore();
   try {
     // An earlier save that failed after `git add`: real staged state, nothing untracked.
@@ -281,7 +281,7 @@ test("#1573 a save that meets a STAGED store completes the commit it found, and 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1573 a concurrently-staged path the save did not touch survives a failed commit", async () => {
+test("a concurrently-staged path the save did not touch survives a failed commit", async () => {
   // The criterion that decides the approach. A naive reset passes the other two and fails this one.
   const { root, profileDir } = mkStore();
   try {
@@ -307,7 +307,7 @@ test("#1573 a concurrently-staged path the save did not touch survives a failed 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1573 the add+commit sequence exists in ONE place — four hand-maintained copies is how they drift", () => {
+test("the add+commit sequence exists in ONE place — four hand-maintained copies is how they drift", () => {
   // Three services plus this file's own `realCommit` were four copies of the same three commands, and the
   // recipe-service copy had no failure logging at all — an omission nobody saw because each copy reads
   // fine on its own. Discovered by scanning the services, not from a list typed here.

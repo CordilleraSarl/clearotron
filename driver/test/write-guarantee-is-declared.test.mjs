@@ -29,14 +29,14 @@ import { openaiAgentEngine } from "../engine/openai-agent.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (rel) => readFileSync(join(ROOT, rel), "utf8");
 
-test("#954 both shipped engines declare a write guarantee, and they differ", () => {
+test("both shipped engines declare a write guarantee, and they differ", () => {
   assert.equal(writeBoundaryOf(anthropicAgentEngine), "enforced");
   assert.equal(writeBoundaryOf(openaiAgentEngine), "none");
   assert.notEqual(writeBoundaryOf(anthropicAgentEngine), writeBoundaryOf(openaiAgentEngine),
     "if these ever agree, either the gap closed or a declaration is lying — both need a human");
 });
 
-test("#954 an engine that declares NOTHING reports 'undeclared', it does not vanish", () => {
+test("an engine that declares NOTHING reports 'undeclared', it does not vanish", () => {
   // The whole defect was silence. A field that disappears when unset reads as "not applicable" to every
   // later reader, so a new adapter must announce its own silence rather than inherit invisibility.
   assert.equal(writeBoundaryOf({ name: "third-party" }), "undeclared");
@@ -47,7 +47,7 @@ test("#954 an engine that declares NOTHING reports 'undeclared', it does not van
   assert.equal(writeBoundaryOf(null), "undeclared");
 });
 
-test("#954 the declaration reaches the RECORD, at every site that stamps the engine", () => {
+test("the declaration reaches the RECORD, at every site that stamps the engine", () => {
   // Asserted textually because the value is only useful if it is written down. Every row that names the
   // engine must also name the guarantee — a row carrying one without the other is the silence again, in
   // a smaller place.
@@ -60,7 +60,7 @@ test("#954 the declaration reaches the RECORD, at every site that stamps the eng
   }
 });
 
-test("#954 the anthropic declaration is not a claim about nothing — the hook is still wired", () => {
+test("the anthropic declaration is not a claim about nothing — the hook is still wired", () => {
   // "enforced" is only true while the hook is actually attached. If someone unwires it, this declaration
   // becomes a lie in the record, which is worse than the silence it replaced.
   const src = read("driver/engine/anthropic-agent.mjs");
@@ -68,7 +68,7 @@ test("#954 the anthropic declaration is not a claim about nothing — the hook i
     "anthropic-agent declares its boundary ENFORCED but no longer references the deny hook");
 });
 
-test("#954 the codex declaration is not a claim about nothing either — the hook is still absent", () => {
+test("the codex declaration is not a claim about nothing either — the hook is still absent", () => {
   // The mirror image, and the one that would rot silently: if codex ever gains a boundary, "none" becomes
   // a lie that understates the product's safety and nobody would go looking for it.
   const src = read("driver/engine/openai-agent.mjs");

@@ -34,7 +34,7 @@ import { planVsExecutedChannels } from "../commonlaw-carry.mjs";
 
 const SRC = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
 
-test("#1066 the check is called where the merged grid is written, not only at publish", () => {
+test("the check is called where the merged grid is written, not only at publish", () => {
   const at = SRC.indexOf("atomicWrite(P.commonLawGrid,");
   assert.ok(at > 0, "the canonical grid write moved — find it before trusting this test");
   const after = SRC.slice(at, at + 700);
@@ -43,7 +43,7 @@ test("#1066 the check is called where the merged grid is written, not only at pu
     + "reporting two hours late, which is exactly what #1066 part 2 is");
 });
 
-test("#1066 ONE derivation of the ordered channel list, shared by both seams", () => {
+test("ONE derivation of the ordered channel list, shared by both seams", () => {
   const calls = SRC.match(/plannedChannelsFor\(P\)/g) ?? [];
   assert.ok(calls.length >= 2, `only ${calls.length} caller(s) of plannedChannelsFor — the publish site and `
     + "the stage-exit site must share it, or one of them will drift back to ctx.profile.platforms");
@@ -54,7 +54,7 @@ test("#1066 ONE derivation of the ordered channel list, shared by both seams", (
     + "exactly the regulated matters the fallback exists to serve");
 });
 
-test("#1066 the stage-exit reporter never fails the run it is describing", () => {
+test("the stage-exit reporter never fails the run it is describing", () => {
   const fn = SRC.slice(SRC.indexOf("function noteChannelCoverageAtStageExit"));
   const body = fn.slice(0, fn.indexOf("\n}\n") + 3);
   assert.match(body, /try \{/, "the reporter must be wrapped — a coverage NOTE that kills a paid run is worse than the gap");
@@ -64,7 +64,7 @@ test("#1066 the stage-exit reporter never fails the run it is describing", () =>
 
 // ── THE STATE MACHINE ITSELF, at the inputs this seam actually sees ────────────────────────────────
 
-test("#1066 no plan means UNKNOWN — never a clean sweep", () => {
+test("no plan means UNKNOWN — never a clean sweep", () => {
   const r = planVsExecutedChannels({ planned: null, cells: [{ platform: "etsy" }], gaps: [] });
   assert.equal(r.state, "unknown");
   assert.equal(r.rate, null, "a rate that was never computed must not be reported as a rate");
@@ -72,13 +72,13 @@ test("#1066 no plan means UNKNOWN — never a clean sweep", () => {
   assert.match(r.why, /not recorded/, "the reason travels with the state — an unknown with no why is a shrug");
 });
 
-test("#1066 a planned channel that produced nothing at all is NEVER-SEARCHED", () => {
+test("a planned channel that produced nothing at all is NEVER-SEARCHED", () => {
   const r = planVsExecutedChannels({ planned: ["etsy", "ebay"], cells: [{ platform: "etsy" }], gaps: [] });
   assert.equal(r.state, "incomplete");
   assert.ok(r.never_searched.includes("ebay"));
 });
 
-test("#1066 a GAP is searched — an outage is not a coverage hole", () => {
+test("a GAP is searched — an outage is not a coverage hole", () => {
   // The distinction that sends a reader to the right repair: a cell that RAN and produced nothing was
   // searched; only a channel with no cell and no gap was never looked at.
   //
@@ -96,7 +96,7 @@ test("#1066 a GAP is searched — an outage is not a coverage hole", () => {
   }
 });
 
-test("#1066 the driver-ordered general-web channel rides the plan, but only when a sweep was ordered", () => {
+test("the driver-ordered general-web channel rides the plan, but only when a sweep was ordered", () => {
   // A finding from part 1, pinned here because the stage-exit seam now reports it too: `web` executes
   // on every run and almost no profile names it, so a naive comparison would report an unplanned
   // channel on EVERY run forever — an alarm that fires on correct behaviour is an alarm nobody reads.

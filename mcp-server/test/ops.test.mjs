@@ -291,7 +291,7 @@ test("stop_run by runId: files a .cancel sentinel on a running run", () => {
   assert.notEqual(st.state, "cancelled", "…while the state stays truthful: the run is still running");
 });
 
-test("2076: a SECOND press is answered as already-stopping — the first request's timestamp is the one that counts", () => {
+test("a SECOND press is answered as already-stopping — the first request's timestamp is the one that counts", () => {
   // The owner pressed Stop, saw no change, and pressed again; each press implied a fresh act. The
   // marker was always idempotent; the ANSWER now is too, so the caller can say when the standing
   // request was filed instead of re-promising.

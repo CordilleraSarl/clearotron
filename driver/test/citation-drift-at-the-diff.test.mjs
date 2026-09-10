@@ -57,7 +57,7 @@ const fakeGit = (at, add, del = 0, { mergeBase = "BASE" } = {}) => (args) => {
 /** The hunk map alone, for the arms that do not care which base was resolved. */
 const hunksFor = (...a) => changedFileHunks("BASE..HEAD", { git: fakeGit(...a) }).hunks;
 
-test("1950: an insertion ABOVE a citation moves it, and the report says where it went", () => {
+test("an insertion ABOVE a citation moves it, and the report says where it went", () => {
   const changed = hunksFor(10, 4);
   assert.equal(changed.size, 1, "the walk must have a changed file to work over");
 
@@ -73,7 +73,7 @@ test("1950: an insertion ABOVE a citation moves it, and the report says where it
   assert.equal(rows[0].from, CITER);
 });
 
-test("1950: an insertion BELOW every citation reports NOTHING — and the walk had citations to not report", () => {
+test("an insertion BELOW every citation reports NOTHING — and the walk had citations to not report", () => {
   // THE REAL NEGATIVE. An empty walk produces this same zero, which is exactly how the first cut
   // passed: it is only a result when the population is shown to be non-empty and the classification
   // is what emptied it.
@@ -94,7 +94,7 @@ test("1950: an insertion BELOW every citation reports NOTHING — and the walk h
   assert.equal(movers.length, 3, "the same three citations move when the insertion is above them");
 });
 
-test("1950: a citation whose target line is INSIDE the change is its own kind, not a mover", () => {
+test("a citation whose target line is INSIDE the change is its own kind, not a mover", () => {
   // A citation whose target was EDITED is a different conversation from one that merely slid, and
   // guessing a new line for it would be inventing an answer the diff cannot give.
   const changed = hunksFor(30, 6, 6);
@@ -105,7 +105,7 @@ test("1950: a citation whose target line is INSIDE the change is its own kind, n
   assert.equal(rows[0].to, null, "where it went is not knowable from the diff, so it is not stated");
 });
 
-test("1950: an always-true `exists` is not a harmless stub — it is how the first cut printed a clean tick", () => {
+test("an always-true `exists` is not a harmless stub — it is how the first cut printed a clean tick", () => {
   // `resolveCited` short-circuits on `exists`, so a stub that says yes to everything returns the raw
   // cited STRING as the path. A bare basename then resolves to something that is not a file, matches
   // nothing in the changed map, and the report finds zero over a range full of movers.
@@ -121,13 +121,13 @@ test("1950: an always-true `exists` is not a harmless stub — it is how the fir
     "the always-true stub resolves it to the bare string, which is in no changed map — a silent zero");
 });
 
-test("1950: the remedy is the SYMBOL and never a new number, and it says why", () => {
+test("the remedy is the SYMBOL and never a new number, and it says why", () => {
   assert.match(REMEDY, /Drop the number and keep the symbol/);
   assert.match(REMEDY, /Do NOT\s+renumber/, "the wrong repair is named, not merely omitted");
   assert.match(REMEDY, /turns it green/, "…and why: a bumped wrong number is a wrong citation made green");
 });
 
-test("1950: it REPORTS and does not refuse — a range with movers still exits 0", () => {
+test("it REPORTS and does not refuse — a range with movers still exits 0", () => {
   // The load-bearing decision. Most drift makes wrong citations wronger rather than breaking correct
   // ones, and a refusal would stop the queue over a corpus nobody has migrated.
   const run = (args) => {
@@ -161,7 +161,7 @@ test("1950: it REPORTS and does not refuse — a range with movers still exits 0
   assert.match(bad.out, /unrecognised flag/);
 });
 
-test("1950: hunk parsing reads the single-line form, where the count is omitted rather than 1", () => {
+test("hunk parsing reads the single-line form, where the count is omitted rather than 1", () => {
   // `@@ -12 +12,3 @@` means one old line, not zero. Reading the absent count as 0 makes every
   // single-line hunk look like a pure insertion and shifts every citation below it by one.
   const [h] = hunksOf("@@ -12 +12,3 @@ some context\n");
@@ -171,7 +171,7 @@ test("1950: hunk parsing reads the single-line form, where the count is omitted 
   assert.deepEqual(whereItWent([h], 12), { inside: true });
 });
 
-test("1950: the base is the MERGE BASE, so a stale branch is not shown main's work as its own", () => {
+test("the base is the MERGE BASE, so a stale branch is not shown main's work as its own", () => {
   // MEASURED, and it is why this arm exists. `git diff A..B` is an ENDPOINT comparison: run on a branch
   // four commits behind main, the first cut listed 24 modified files and 49 affected citations where
   // the branch itself touched four. Every extra row was main's work presented as the author's, with a
@@ -191,7 +191,7 @@ test("1950: the base is the MERGE BASE, so a stale branch is not shown main's wo
   assert.deepEqual([...both[0].hunks.keys()], [...both[1].hunks.keys()]);
 });
 
-test("1950: unrelated histories leave the endpoint as the base rather than crashing the report", () => {
+test("unrelated histories leave the endpoint as the base rather than crashing the report", () => {
   // `git merge-base` exits non-zero when there is nothing in common. A report is not a gate and must
   // still produce its answer; the endpoint is the only base there is.
   const git = (args) => {

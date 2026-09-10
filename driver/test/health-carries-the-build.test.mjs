@@ -62,7 +62,7 @@ const get = (port, path) => new Promise((resolve, reject) => {
   r.end();
 });
 
-test("#1136 /portal/health carries the engineCommit — and it is the SAME function pool meta records", async () => {
+test("/portal/health carries the engineCommit — and it is the SAME function pool meta records", async () => {
   await withPortal(async (port) => {
     const res = await get(port, "/portal/health");
     assert.equal(res.status, 200);
@@ -73,7 +73,7 @@ test("#1136 /portal/health carries the engineCommit — and it is the SAME funct
   });
 });
 
-test("#1136 the endpoint and the publisher import the same stamp, so they cannot drift apart", () => {
+test("the endpoint and the publisher import the same stamp, so they cannot drift apart", () => {
   // The join the acceptance criterion is really about, asserted at the source rather than by comparing
   // two runtime values that happen to agree today. A shape test would pass on a re-derived sha.
   const publisher = readFileSync(join(ROOT, "driver/publish/index.mjs"), "utf8");
@@ -92,7 +92,7 @@ test("#1136 the endpoint and the publisher import the same stamp, so they cannot
   assert.match(publisher, /engineCommit: engineCommit\(\)/, "and the publisher still stamps it into meta.json");
 });
 
-test("#1136 health answers BEFORE identity — any account can confirm a deploy with no grant", async () => {
+test("health answers BEFORE identity — any account can confirm a deploy with no grant", async () => {
   await withPortal(async (port) => {
     // The whole reason half 2 (a filesystem grant for the dev account) stops being urgent. If this
     // route ever moves behind the identity gate, the endpoint still returns 200 to a staff browser and
@@ -107,7 +107,7 @@ test("#1136 health answers BEFORE identity — any account can confirm a deploy 
   });
 });
 
-test("#1136 the existing fields are untouched — a monitor reading ok/ui must not break", async () => {
+test("the existing fields are untouched — a monitor reading ok/ui must not break", async () => {
   await withPortal(async (port) => {
     const body = JSON.parse((await get(port, "/portal/health")).body);
     assert.equal(body.ok, true);
@@ -115,7 +115,7 @@ test("#1136 the existing fields are untouched — a monitor reading ok/ui must n
   });
 });
 
-test("#1136 the doctrine store is REPORTED, and it is re-read rather than frozen at boot", async () => {
+test("the doctrine store is REPORTED, and it is re-read rather than frozen at boot", async () => {
   await withPortal(async (port) => {
     const body = JSON.parse((await get(port, "/portal/health")).body);
     assert.ok(body.store && typeof body.store === "object", "the store answer is an object, not a bare sha");
@@ -130,7 +130,7 @@ test("#1136 the doctrine store is REPORTED, and it is re-read rather than frozen
   });
 });
 
-test("#1136 the store answer has a bounded staleness — the engine's cache rule does not apply to it", async () => {
+test("the store answer has a bounded staleness — the engine's cache rule does not apply to it", async () => {
   // engine-build.mjs caches for the life of the process and says why: code cannot change under a
   // running process. Doctrine CAN — a config deploy re-renders the overlay in place while the portal
   // keeps running — so a store sha cached the same way would answer with what was there at boot.

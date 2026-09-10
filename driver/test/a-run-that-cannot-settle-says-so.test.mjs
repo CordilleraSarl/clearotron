@@ -31,7 +31,7 @@ import { fileURLToPath } from "node:url";
 
 const SRC = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs"), "utf8");
 
-test("#1858 the CLI entry does not run from a top-level await", () => {
+test("the CLI entry does not run from a top-level await", () => {
   const entry = /^if \(isEntrypoint\(import\.meta\.url\)\)\s*(\S+)/m.exec(SRC);
   assert.ok(entry, "the entry guard moved — find it before assuming this is still held");
   assert.notEqual(entry[1], "{",
@@ -42,14 +42,14 @@ test("#1858 the CLI entry does not run from a top-level await", () => {
     "the entry is detached with `void (async () => {`, so module evaluation completes before the run starts");
 });
 
-test("#1858 the detached entry still reports a throw the way the inner catch does", () => {
+test("the detached entry still reports a throw the way the inner catch does", () => {
   // Without this, a throw BEFORE the try block — argument parsing, a retired-flag refusal — would exit
   // through Node's default unhandled-rejection path with a different code than every other failure here.
   assert.match(SRC, /\}\)\(\)\.catch\(\(e\) => \{[^\n]*process\.exit\(2\)/,
     "the detached entry has no .catch, so a throw outside its try block exits by a different door");
 });
 
-test("#1858 a run that never settles writes a terminal status and releases its slot", () => {
+test("a run that never settles writes a terminal status and releases its slot", () => {
   const net = SRC.slice(SRC.indexOf('process.on("beforeExit"'));
   assert.ok(net.length > 0, "the unsettled-run net is gone — nothing speaks for a run that deadlocks");
   assert.match(net, /if \(settled\) return;/,
@@ -62,7 +62,7 @@ test("#1858 a run that never settles writes a terminal status and releases its s
   assert.match(net, /process\.exitCode = 1/, "an unsettled run must not exit 0");
 });
 
-test("#1858 the live slot is exposed for the net, and cleared on the normal path", () => {
+test("the live slot is exposed for the net, and cleared on the normal path", () => {
   assert.match(SRC, /export let liveRunSlot = null;/);
   assert.match(SRC, /liveRunSlot = slot;/, "acquire must record it, or the net has nothing to release");
   assert.match(SRC, /releaseSlot\(slot\);\s*\n\s*liveRunSlot = null;/,

@@ -36,7 +36,7 @@ const FINDINGS = { findings: [
 ] };
 const RULES = { bandOrder: MANIFEST.bands, maxBandRank: 3 };
 
-test("#1503 the fixture parses into three write-ups and leaves the other sections alone", () => {
+test("the fixture parses into three write-ups and leaves the other sections alone", () => {
   // Without this the arms below could hold over an empty list, which is the vacuous shape they exist to
   // catch elsewhere in this file family.
   const ws = narrativeWriteUps(NARRATIVE);
@@ -45,7 +45,7 @@ test("#1503 the fixture parses into three write-ups and leaves the other section
   assert.equal(wordCount("  a  b   c "), 3, "the count is whitespace tokens, stated so it is one number");
 });
 
-test("#1503 with NO parameters the check is inert — no verdict, not a passing one", () => {
+test("with NO parameters the check is inert — no verdict, not a passing one", () => {
   // Today, and permanently on the ungraded product. A passing row would be a claim nobody measured.
   assert.deepEqual(writeUpViolations({ narrativeMd: NARRATIVE, findings: FINDINGS }).violations, []);
   assert.deepEqual(narrativeWriteUpChecks({ narrativeMd: NARRATIVE, findings: FINDINGS, depth: {}, manifest: MANIFEST }), []);
@@ -54,7 +54,7 @@ test("#1503 with NO parameters the check is inert — no verdict, not a passing 
   assert.deepEqual(writeUpViolations({ narrativeMd: NARRATIVE, findings: FINDINGS, maxBandRank: 3 }).violations, []);
 });
 
-test("#1503 MEMBERSHIP — a write-up on a disposition outside the kept set is a violation", () => {
+test("MEMBERSHIP — a write-up on a disposition outside the kept set is a violation", () => {
   const r = writeUpViolations({ narrativeMd: NARRATIVE, findings: FINDINGS, ...RULES });
   assert.deepEqual(r.violations.map((v) => v.ordinal), [3]);
   assert.equal(r.violations[0].kind, "not-kept");
@@ -67,7 +67,7 @@ test("#1503 MEMBERSHIP — a write-up on a disposition outside the kept set is a
   assert.equal(r.unjoined, 0);
 });
 
-test("#1503 THE CAP — a write-up over the word cap is a violation, and needs no join at all", () => {
+test("THE CAP — a write-up over the word cap is a violation, and needs no join at all", () => {
   const r = writeUpViolations({ narrativeMd: NARRATIVE, findings: null, maxWords: 270 });
   assert.deepEqual(r.violations.map((v) => v.ordinal), [2]);
   assert.equal(r.violations[0].kind, "over-cap");
@@ -76,7 +76,7 @@ test("#1503 THE CAP — a write-up over the word cap is a violation, and needs n
   assert.equal(r.examined, 0);
 });
 
-test("#1503 AN UNJOINED BLOCK is counted and NOT flagged for membership — but is still capped", () => {
+test("AN UNJOINED BLOCK is counted and NOT flagged for membership — but is still capped", () => {
   // The safe direction. A block whose disposition cannot be read might be perfectly correct, and a redo
   // demand against correct prose is the expensive error. But its LENGTH is still readable.
   const md = NARRATIVE + "\n## Finding 9 — UNKNOWN\n\n**Composite:** 3\n\n" + words(400) + "\n";
@@ -90,7 +90,7 @@ test("#1503 AN UNJOINED BLOCK is counted and NOT flagged for membership — but 
     "the cap needs no join and must still have applied");
 });
 
-test("#1503 THE COVERAGE COUNT RIDES THE PASSING ROW TOO", () => {
+test("THE COVERAGE COUNT RIDES THE PASSING ROW TOO", () => {
   // A membership rule that examined three of eleven write-ups reads exactly like one that found nothing
   // wrong. This issue has paid three times for a check that could not state its own coverage.
   const clean = ["# N", "", "## Finding 1 — VENARI", "", "**Composite:** 4", "", words(10), ""].join("\n");
@@ -107,7 +107,7 @@ test("#1503 THE COVERAGE COUNT RIDES THE PASSING ROW TOO", () => {
   assert.match(prow.detail, /1 could not be/);
 });
 
-test("#1503 a failure lands on the NARRATIVE surface, or it never reaches the redo", () => {
+test("a failure lands on the NARRATIVE surface, or it never reaches the redo", () => {
   const rows = narrativeWriteUpChecks({ narrativeMd: NARRATIVE, findings: FINDINGS, manifest: MANIFEST,
     depth: { narrativeKeptBandRank: 3, narrativeWriteUpWords: 270 } }).filter((c) => !c.pass);
   assert.equal(rows.length, 2, "expected the below-cut write-up and the over-cap one");
@@ -119,7 +119,7 @@ test("#1503 a failure lands on the NARRATIVE surface, or it never reaches the re
   assert.match(rows.find((r) => r.id.includes("over-cap")).detail, /never which findings are written about/);
 });
 
-test("#1503 THE REDO ROUTE EXISTS — a check with nowhere to route only flags", () => {
+test("THE REDO ROUTE EXISTS — a check with nowhere to route only flags", () => {
   // The call site, read out of the source. Before this, `bySurface("narrative")` had no consumer at all:
   // every narrative check could only ship as a note on a run that broke the rules.
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
@@ -129,7 +129,7 @@ test("#1503 THE REDO ROUTE EXISTS — a check with nowhere to route only flags",
     + "shipping the defect with a note attached");
 });
 
-test("#1503 the rank is ORDINAL against the run's own manifest — a five-band framework selects correctly", () => {
+test("the rank is ORDINAL against the run's own manifest — a five-band framework selects correctly", () => {
   // The reason the key is a rank and not a list of band names. Frameworks carry different vocabularies
   // AND different lengths: one ships five bands, the house default four. A hard-coded name set would
   // select NOTHING on a framework that spells them differently — a cut that silently keeps everything,
@@ -165,7 +165,7 @@ const GRADED = { narrativeKeptBandRank: 3, narrativeWriteUpWords: 270 };
 const HEADLESS = "## Overview\n\nThe field is crowded but the applicant's position is defensible.\n\n"
   + "## Commentary\n\nSeveral owners hold adjacent rights; none is presently enforcing.\n";
 
-test("#1503 a GRADED run whose narrative has no keyable write-up says so — it never returns silence", () => {
+test("a GRADED run whose narrative has no keyable write-up says so — it never returns silence", () => {
   // THE DEFECT. Both the ungraded product and the unreadable graded run reported `total: 0`, and the
   // caller could not tell them apart, so 6 of 22 graded runs shipped reading as compliant.
   const rows = narrativeWriteUpChecks({ narrativeMd: HEADLESS, findings: FINDINGS, depth: GRADED, manifest: MANIFEST });
@@ -175,7 +175,7 @@ test("#1503 a GRADED run whose narrative has no keyable write-up says so — it 
   assert.match(rows[0].id, /could-not-read/);
 });
 
-test("#1503 the row states the DENOMINATOR it expected and that it recognised nothing", () => {
+test("the row states the DENOMINATOR it expected and that it recognised nothing", () => {
   // A coverage row that says only "could not read" leaves the reader unable to tell a narrative with
   // no findings to write up from one with eleven the check never saw.
   const [row] = narrativeWriteUpChecks({ narrativeMd: HEADLESS, findings: FINDINGS, depth: GRADED, manifest: MANIFEST });
@@ -185,7 +185,7 @@ test("#1503 the row states the DENOMINATOR it expected and that it recognised no
   assert.match(row.detail, /unenforced/, "and it must say what the consequence is, not merely what it saw");
 });
 
-test("#1503 the row is STRUCTURAL — it reports, and never sends a seat to fix an uninstructed rule", () => {
+test("the row is STRUCTURAL — it reports, and never sends a seat to fix an uninstructed rule", () => {
   // THE CALL AT THE MECHANISM, and it rests on reading the directive rather than on taste.
   // `proseRungDirective` tells the seat WHICH findings get a prose write-up and HOW LONG it may be. It
   // never asks for the `Finding N — <mark>` heading this check keys on. So a narrative without one
@@ -200,20 +200,20 @@ test("#1503 the row is STRUCTURAL — it reports, and never sends a seat to fix 
     "the row is routed to the warm redo, which would ask the seat to satisfy a rule it was never given");
 });
 
-test("#1503 an UNGRADED product still returns silence — the fix must not make product 4 noisy", () => {
+test("an UNGRADED product still returns silence — the fix must not make product 4 noisy", () => {
   // The direction this must not break. Product 4 authors every card by design; a row there would be a
   // false finding on every one-country run, which is the expensive way to be wrong about this.
   assert.deepEqual(narrativeWriteUpChecks({ narrativeMd: HEADLESS, findings: FINDINGS, depth: {}, manifest: MANIFEST }), [],
     "an ungraded product now emits a coverage row for a rule it does not have");
 });
 
-test("#1503 a graded run with NO findings passes — nothing to write up is not a coverage hole", () => {
+test("a graded run with NO findings passes — nothing to write up is not a coverage hole", () => {
   const rows = narrativeWriteUpChecks({ narrativeMd: HEADLESS, findings: { findings: [] }, depth: GRADED, manifest: MANIFEST });
   assert.equal(rows.length, 1);
   assert.equal(rows[0].pass, true, "a run with no findings was reported as an unreadable narrative");
 });
 
-test("#1503 `graded` distinguishes the two zeroes at the source, not by guessing downstream", () => {
+test("`graded` distinguishes the two zeroes at the source, not by guessing downstream", () => {
   // The caller can only tell the states apart because writeUpViolations now says which it is. Asserted
   // here so the field cannot be dropped as unused: its whole job is to carry a distinction that the
   // count it rides beside destroys.
@@ -240,7 +240,7 @@ test("#1503 `graded` distinguishes the two zeroes at the source, not by guessing
 // one of those two was this signal.
 import { deliveryFlagLines as deliveryLines, deliveryVocabViolations as vocabViolations } from "../predelivery-lint.mjs";
 
-test("267: the could-not-read failure gets its own delivery line, stating the consequence", () => {
+test("the could-not-read failure gets its own delivery line, stating the consequence", () => {
   const [line] = deliveryLines([{ id: "narrative-write-ups:could-not-read", family: "narrative-depth" }]);
   assert.match(line, /applied to nothing on this run/, "the consequence, in the receipt's own terms");
   assert.match(line, /depth rules/);
@@ -250,7 +250,7 @@ test("267: the could-not-read failure gets its own delivery line, stating the co
 
 // The distinction is the whole point: a rule BROKEN and a rule ENFORCED ON NOTHING are different facts,
 // and before this they were the same sentence.
-test("267: an ordinary depth violation and a could-not-read do NOT collapse into one line", () => {
+test("an ordinary depth violation and a could-not-read do NOT collapse into one line", () => {
   const lines = deliveryLines([
     { id: "narrative-write-ups:could-not-read", family: "narrative-depth" },
     { id: "narrative-write-ups:too-long:3", family: "narrative-depth" },
@@ -263,7 +263,7 @@ test("267: an ordinary depth violation and a could-not-read do NOT collapse into
 
 // THE CHANGE MUST ADD NO LINE TO A RUN THAT PRODUCED NONE. Every other check still groups by base, so a
 // receipt with no could-not-read row is projected exactly as it was before.
-test("267: nothing else moves — base grouping is unchanged for every other check", () => {
+test("nothing else moves — base grouping is unchanged for every other check", () => {
   const before = deliveryLines([
     { id: "reference-integrity", family: "reference" },
     { id: "reference-integrity:email", family: "reference" },
@@ -275,7 +275,7 @@ test("267: nothing else moves — base grouping is unchanged for every other che
 
 // Acceptance 4: whatever else changed, the row must keep being WRITTEN and keep being distinguishable
 // from the ungraded zero. That distinction is the only reason this was ever findable.
-test("267: the row is still written, and an ungraded product still emits nothing at all", () => {
+test("the row is still written, and an ungraded product still emits nothing at all", () => {
   const graded = narrativeWriteUpChecks({
     narrativeMd: "# Report\n\nProse with no recognisable write-up block.\n",
     findings: { findings: [{ ordinal: 1, mark: "X", band: "High" }] },

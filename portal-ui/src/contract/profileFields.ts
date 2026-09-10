@@ -35,15 +35,16 @@ export const PATH_FIELDS: ReadonlySet<string> = new Set(['frameworkPath', 'worke
 /**
  * Which read-only rows this reader may see.
  *
- * A client loses nothing: the framework's human title is rendered from the manifest either way, and it
+ * Nobody else loses anything: the framework's human title is rendered from the manifest either way, and it
  * is the thing they were actually asking about. The path only ever answered "where does Cordillera keep
- * that file". Staff keep the paths, because they are the ones who go and open the file.
+ * that file". A person with access to everything keeps the paths: they are the ones
+ * who go and open the file.
  */
 export function visibleReadOnlyFields(
   readOnly: Readonly<Record<string, unknown>>,
-  staff: boolean,
+  everything: boolean,
 ): readonly string[] {
-  return CODE_OWNED.filter((k) => readOnly[k] !== undefined && (staff || !PATH_FIELDS.has(k)))
+  return CODE_OWNED.filter((k) => readOnly[k] !== undefined && (everything || !PATH_FIELDS.has(k)))
 }
 
 /**
@@ -168,7 +169,7 @@ export type FieldSpec = {
    * What the CLEARED option in this field's dropdown is called, when "no value" is a named thing rather
    * than the absence of one.
    *
-   * PER FIELD, and the reason is a collision between two owner rulings that a single shared label cannot
+   * PER FIELD, and the reason is a collision between two rulings that a single shared label cannot
    * satisfy. Every picker renders one cleared option, and its words are the generic default's — now
    * "Generic default". For `delivery.privileged` that is wrong and quietly
    * dangerous: the cleared state there is not an absence a user should read as "unset", it is the report
@@ -265,7 +266,7 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
       + 'Commas, spaces or new lines all work.' },
   { key: 'defaultJurisdictions', label: 'Default jurisdictions', kind: 'lines', group: 'defaults', commaSeparated: true,
     picker: 'territories',
-    // STRICT, BY OWNER RULING. This was assistive — it flagged and stored — on the reasoning that the
+    // STRICT, BY RULING. This was assistive — it flagged and stored — on the reasoning that the
     // engine deliberately carries a territory it does not recognise. That reasoning confused two paths.
     // A REQUEST may still name anything, and that tolerance is untouched. A STORED DEFAULT is the
     // opposite case: it is set once by somebody who then stops watching, the engine drops it before the
@@ -310,7 +311,7 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // COMPANY wants risk communicated" was describing the wrong thing entirely. And the two clauses
     // that survive the cut are the two the server enforces — plain prose, and never a rating input.
     hint: 'How risk is put to this company: what to lead with, how cautious to be. Example: "Lead with the biggest risk. Flag anything that could be a problem, even if unlikely." Changes how the report reads, never what is rated.' },
-  // MARKETPLACE LISTING SIZE HAS NO CONTROL, ON ANY SURFACE. Owner ruling, 2026-08-29:
+  // MARKETPLACE LISTING SIZE HAS NO CONTROL, ON ANY SURFACE. Ruling, 2026-08-29:
   // "if it doesn't actually affect search why is it there — get rid of it completely. there is no such
   // thing as staff only." It was removed from this page AND from the staff editor in the same change.
   //

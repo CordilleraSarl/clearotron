@@ -126,7 +126,7 @@ test("report-data.json is not a back door for the internal material the report n
 // claims about the owner: "adversarial" tells a client that this proprietor is hostile, which is not what
 // the engine decided. D5 took it off the report's risk chip and off list_findings; this file was
 // the third door. `group` carries the same fact in the client report's own section-heading words.
-test("#831: the placement key is not served — `group` says the same thing in the client report's words", () => {
+test("the placement key is not served — `group` says the same thing in the client report's words", () => {
   const d = clearanceReportData(ARGS);
   const f = d.findings[0];
   assert.equal(FINDINGS[0].disposition, "adversarial", "premise: the input finding carries the word");

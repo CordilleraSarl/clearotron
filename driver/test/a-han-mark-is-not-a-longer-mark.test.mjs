@@ -28,32 +28,32 @@ const OTHER = "色度花间";          // the run's mark, class 41, a DIFFERENT 
 const GOLD_OWNER = "Hangzhou Chromatic Instruments Co., Ltd.";
 const OTHER_OWNER = "Shanghai Blossom Interiors Co., Ltd.";
 
-test("#1411 the fixture is the defect's own shape — void control", () => {
+test("the fixture is the defect's own shape — void control", () => {
   assert.notEqual(GOLD, OTHER, "two different marks, or the arms below prove nothing");
   assert.ok(OTHER.includes(GOLD), "and one really does contain the other — that is what used to fire");
   assert.equal(GOLD.replace(/[a-z0-9]/gi, ""), GOLD, "…and neither side carries a Latin element to match on");
 });
 
-test("#1411 a different proprietor's longer Han mark is NOT the reference's mark", () => {
+test("a different proprietor's longer Han mark is NOT the reference's mark", () => {
   assert.equal(matchesReference(GOLD, OTHER), null, "this is the live miss: 色度 scored off 色度花间");
   assert.equal(matchesReference(OTHER, GOLD), null, "both directions — the rule was symmetric");
   assert.equal(matchesReference(GOLD, OTHER, { sameOwner: false }), null, "explicit false, same answer");
 });
 
-test("#1411 the mark still matches itself", () => {
+test("the mark still matches itself", () => {
   assert.equal(matchesReference(GOLD, GOLD), "script", "the known-positive the fix must not cost");
   assert.equal(matchesReference("星光", "星光"), "script", "and the pre-existing one");
   assert.equal(matchesReference("星光", "星火"), null, "a near-miss glyph is still a different mark");
 });
 
-test("#1411 NFKC folds a compatibility rendering, so one mark typed two ways is one mark", () => {
+test("NFKC folds a compatibility rendering, so one mark typed two ways is one mark", () => {
   // ＡＢＣ (full-width) and ABC are the same characters; a reference typed on a CJK IME must not read as
   // a different mark from the same string typed on a Latin one. Both sides fold before comparison.
   assert.equal(matchesReference("色度／ＡＢＣ", "色度/ABC"), "script");
   assert.equal("色度／ＡＢＣ".normalize("NFKC"), "色度/ABC", "…and this is why — the fold, stated");
 });
 
-test("#1411 one proprietor rendering one record long and short still joins — under the owner, as everywhere else", () => {
+test("one proprietor rendering one record long and short still joins — under the owner, as everywhere else", () => {
   assert.equal(matchesReference(GOLD, OTHER, { sameOwner: true }), "script-contained",
     "rule 4's escape, on rule 4's condition — the caller establishes the owner, this never guesses it");
   assert.equal(matchesReference(OTHER, GOLD, { sameOwner: true }), "script-contained", "both directions");
@@ -61,7 +61,7 @@ test("#1411 one proprietor rendering one record long and short still joins — u
   assert.notEqual(matchesReference(GOLD, GOLD), matchesReference(GOLD, OTHER, { sameOwner: true }));
 });
 
-test("#1411 end to end: the gold entry lands in lost, not found, when only the other owner's mark was surfaced", () => {
+test("end to end: the gold entry lands in lost, not found, when only the other owner's mark was surfaced", () => {
   const b = scoreRecall({
     reference: [{ mark: GOLD, owner: GOLD_OWNER, classes: [9], territories: ["CN"] }],
     findings: [{ mark: OTHER, owner: OTHER_OWNER, band: "monitor" }],
@@ -74,7 +74,7 @@ test("#1411 end to end: the gold entry lands in lost, not found, when only the o
   assert.equal(b.noise.length, 1, "and the other proprietor's mark is a finding the reference does not answer");
 });
 
-test("#1411 the script-lane report still DISCLOSES the neighbour it no longer scores", () => {
+test("the script-lane report still DISCLOSES the neighbour it no longer scores", () => {
   // The two surfaces part company here, and the parting is the point. A recall verdict must not count a
   // different proprietor's longer mark; a script-lane target report must still show that the lane came
   // back with a neighbour rather than with nothing — that is the difference between a lane that never
@@ -91,7 +91,7 @@ test("#1411 the script-lane report still DISCLOSES the neighbour it no longer sc
   assert.equal(t.ownerState, "differs", "the report's own verdict: records came back, none this proprietor's");
 });
 
-test("#1411 the script branch returns a match only on equality, or under an established owner", () => {
+test("the script branch returns a match only on equality, or under an established owner", () => {
   // The sweep the issue asks for, kept as a guard rather than a paragraph. Measured across driver/ and
   // scripts/ on 2026-08-20: reference-score.mjs was the ONLY module whose matcher branches on an empty
   // alias list — band-shape.mjs's `aliases.length > 1` asks a different question and its Han path is

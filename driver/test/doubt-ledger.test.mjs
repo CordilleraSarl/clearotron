@@ -315,7 +315,7 @@ const FINDINGS_JSON = JSON.stringify({
   }],
 }, null, 2);
 
-test("#1050 applyClosure verifies a quote from a JSON citable in EITHER rendering — the logical value and the escaped bytes", () => {
+test("applyClosure verifies a quote from a JSON citable in EITHER rendering — the logical value and the escaped bytes", () => {
   // premise, asserted rather than assumed: the file really does carry the backslashes on disk.
   assert.ok(FINDINGS_JSON.includes('\\"VENTURI\\"'), "premise: the JSON rendering escapes the inner quotes");
 
@@ -338,7 +338,7 @@ test("#1050 applyClosure verifies a quote from a JSON citable in EITHER renderin
   assert.deepEqual(escaped.unverified, []);
 });
 
-test("#1050 the escape step widens NOTHING else — a paraphrase of a JSON value still ships OPEN", () => {
+test("the escape step widens NOTHING else — a paraphrase of a JSON value still ships OPEN", () => {
   const [d] = openDoubtFixture();
   const r = applyClosure([d],
     parseClosureLines(`SETTLED ${d.id}: findings.json: "The mark "VENTURI" was cancelled in CH" — paraphrase, not a quote`),
@@ -348,7 +348,7 @@ test("#1050 the escape step widens NOTHING else — a paraphrase of a JSON value
   assert.equal(r.unverified.length, 1);
 });
 
-test("#1050 squash is the SAME predicate contract-audit already verifies evidence with — one question, one answer", async () => {
+test("squash is the SAME predicate contract-audit already verifies evidence with — one question, one answer", async () => {
   // The ledgers held the narrower of two answers to one question ("does this quote appear verbatim in
   // that text"). They are bound here rather than merged, because the two call sites are scoped by
   // different contracts — but a divergence must be a red test, not a quietly-missed settlement.

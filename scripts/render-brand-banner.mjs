@@ -14,7 +14,7 @@
 // retired it from every surface this product renders. Fronting the README with it would put a Swiss
 // firm's logo on an open-source product — the exact thing that retirement was about.
 //
-// The wordmark renders LOWERCASE (owner ruling 2026-08-21) while the name in prose does not, and it
+// The wordmark renders LOWERCASE (ruling 2026-08-21) while the name in prose does not, and it
 // renders as SVG <text> in a GENERIC monospace stack: GitHub serves a README image sandboxed, so a
 // webfont would not load and a named family the reader lacks would fall back to something unrelated.
 

@@ -19,7 +19,7 @@ const finding = (owner, source, quality) => ({
   meters: { use: { token: "confirmed", basis: "verified-from-record", source } },
 });
 
-test("2097 the five real rows: four move to owner-site, the independent one stays independent", () => {
+test("the five real rows: four move to owner-site, the independent one stays independent", () => {
   const rows = [
     ["ARTONE HOLDINGS II LTD", "https://www.musicweek.com/labels/read/artone-and-drew-hill-acquire-proper-music", "independent", "independent"],
     ["Proper Hospitality, LLC", "https://www.properhotel.com/santa-monica/proper-hundred/", "owner-site", "owner-site"],
@@ -36,7 +36,7 @@ test("2097 the five real rows: four move to owner-site, the independent one stay
   }
 });
 
-test("2097 the register-mirror precedence is NOT inverted: an attested owner-site on a host-detected mirror stays a mirror", () => {
+test("the register-mirror precedence is NOT inverted: an attested owner-site on a host-detected mirror stays a mirror", () => {
   // The issue's own falsification arm: if this passes as owner-site, the precedence has been inverted.
   const f = finding("MERIDIAN Sports", "https://trademarks.justia.com/854/03/matchday.html", "owner-site");
   assert.equal(classifyUseSource(f.use_check.source, f.owner.name), "register-mirror",
@@ -47,14 +47,14 @@ test("2097 the register-mirror precedence is NOT inverted: an attested owner-sit
   assert.equal(f.meters.use._status, "not-checked", "a mirror is never evidence of use — the demotion survives");
 });
 
-test("2097 an attested register-mirror still demotes a host the list misses — the old rule's one good half survives", () => {
+test("an attested register-mirror still demotes a host the list misses — the old rule's one good half survives", () => {
   const f = finding("SOMEONE", "https://obscure-national-register.example/entry/1", "register-mirror");
   joinEvidenceStatus([f], new Map());
   assert.equal(f.meters.use._useSourceClass, "register-mirror");
   assert.equal(f.meters.use._status, "not-checked");
 });
 
-test("2097 no attestation → the heuristic is the fallback, in both of its directions", () => {
+test("no attestation → the heuristic is the fallback, in both of its directions", () => {
   const ownerSite = finding("MERIDIAN Sports LLC", "https://www.meridiansports.example/products/matchday", null);
   joinEvidenceStatus([ownerSite], new Map());
   assert.equal(ownerSite.meters.use._useSourceClass, "owner-site", "the heuristic still classifies when the seat said nothing");
@@ -63,7 +63,7 @@ test("2097 no attestation → the heuristic is the fallback, in both of its dire
   assert.equal(indep.meters.use._useSourceClass, "independent");
 });
 
-test("2097 an attested value outside the vocabulary is ignored, not written through", () => {
+test("an attested value outside the vocabulary is ignored, not written through", () => {
   const f = finding("PROPPERDOCS, INC.", "https://somereview.example/article", "definitely-legit");
   joinEvidenceStatus([f], new Map());
   assert.equal(f.meters.use._useSourceClass, "independent",

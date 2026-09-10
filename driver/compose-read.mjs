@@ -336,7 +336,7 @@ export function makeComposeReader({ turn, now = () => new Date() } = {}) {
         message: `That is ${text.length.toLocaleString("en-GB")} characters — paste up to ${MAX_BRIEF.toLocaleString("en-GB")}, or set the search up below.`,
       };
     }
-    // NO `thinking` BLOCK, DELIBERATELY. Owner ruling 2026-07-22: sonnet, thinking off. This is
+    // NO `thinking` BLOCK, DELIBERATELY. Ruling 2026-07-22: sonnet, thinking off. This is
     // extraction, not judgment — the brief already contains every fact the answer needs, and the
     // reasoning that matters (is this mark clear?) happens later, in the run, where it is paid for.
     // Off also keeps the button feeling like a button.

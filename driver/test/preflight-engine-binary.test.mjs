@@ -144,7 +144,7 @@ test("the binary→variable map still matches what the engines actually read", (
 // could disagree in silence. The wizard's menu, the turn probe and this preflight all read this one map,
 // which only helps while the map agrees with the adapter registry it is describing.
 
-test("#772 the registry and the driver's adapter registry name the SAME engines", async () => {
+test("the registry and the driver's adapter registry name the SAME engines", async () => {
   // Two lists that can disagree, and the disagreement is silent until a reader picks the row that does
   // not exist — the `uspto-local` shape from the register-provider side, one layer up.
   const registered = [...registeredEngines()].sort();
@@ -153,7 +153,7 @@ test("#772 the registry and the driver's adapter registry name the SAME engines"
   assert.equal(DEFAULT_ENGINE_ID, DEFAULT_ENGINE, "one production default, not two");
 });
 
-test("#772 each registry row names an adapter module that loads and answers to its own id", async () => {
+test("each registry row names an adapter module that loads and answers to its own id", async () => {
   // `module`/`adapter` are STRINGS so driver.config still imports no engine (see the note above). A
   // string is not checked by the module system, so it is checked here: a typo would otherwise surface as
   // a probe that cannot load an engine the preflight had just approved.
@@ -166,7 +166,7 @@ test("#772 each registry row names an adapter module that loads and answers to i
   assert.equal(engineAdapterSpecifier("silent-engine"), null, "and an id the driver does not ship resolves to nothing");
 });
 
-test("#772 the filesystem preflight still SPAWNS NOTHING — the turn probe is a separate door", () => {
+test("the filesystem preflight still SPAWNS NOTHING — the turn probe is a separate door", () => {
   // driver.config.mjs's header refuses to spawn at the run door and gives its reasons (a process at every
   // run start, a credential store touched on any invocation, a preflight that can hang). added a
   // probe that DOES spawn, and it went in engine/probe.mjs precisely so this contract survives. If a
@@ -244,7 +244,7 @@ test("CLEAROTRON_CLAUDE_PATH=/nope refuses BEFORE any run dir exists", async () 
 // `platform` is injectable precisely because the population this protects cannot run this suite to find
 // out: asserting it on win32 only would mean asserting it nowhere.
 
-test("#1149 item 3: native Windows refuses by name, and never blames PATH", () => {
+test("item 3: native Windows refuses by name, and never blames PATH", () => {
   assert.throws(() => preflightEngineBinary({}, { platform: "win32" }),
     /does not run on native Windows/,
     "a native-Windows run still falls through to the PATH resolver INSTALL.md says it does not reach");
@@ -257,7 +257,7 @@ test("#1149 item 3: native Windows refuses by name, and never blames PATH", () =
   assert.match(msg, /WSL2|devcontainer/, "the refusal must name the route that does work, or it is a dead end");
 });
 
-test("#1149 item 3: every other platform is unchanged — the guard is a refusal, not a new default", () => {
+test("item 3: every other platform is unchanged — the guard is a refusal, not a new default", () => {
   // The property is NOT "linux never throws" — with an unresolvable binary it throws for good reasons,
   // and asserting otherwise was wrong in the first draft of this test. The property is that no platform
   // other than win32 can ever reach the PLATFORM refusal, i.e. the guard did not become a second engine
@@ -287,7 +287,7 @@ test("#1149 item 3: every other platform is unchanged — the guard is a refusal
 //
 // SO THIS ARM DRIVES THE SCREEN, not the sites. A ledger can be wrong; a screen with a retired name on
 // it cannot be.
-test("#1673 no entry point names a retired spelling on its own screen", async () => {
+test("no entry point names a retired spelling on its own screen", async () => {
   const { execFileSync } = await import("node:child_process");
   const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
   // NAMED, NOT DERIVED, and that is right rather than lazy now: deleted the retirement map, so

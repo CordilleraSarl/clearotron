@@ -44,7 +44,7 @@ const SERVICES = [
   ["mcp-server/http-server-client.mjs", "CLIENT_MCP_HTTP_PORT"],
 ];
 
-test("#1194 the SOURCE travels with the number", () => {
+test("the SOURCE travels with the number", () => {
   assert.deepEqual(resolvePort({ value: "18823", name: "CLIENT_MCP_HTTP_PORT", fallback: 18811, env: {} }),
     { port: 18823, source: "env", portVar: "CLIENT_MCP_HTTP_PORT", requireExplicit: false });
   const d = resolvePort({ value: undefined, name: "CLIENT_MCP_HTTP_PORT", fallback: 18811, env: {} });
@@ -55,7 +55,7 @@ test("#1194 the SOURCE travels with the number", () => {
   for (const v of ["", "   ", null]) assert.equal(resolvePort({ value: v, fallback: 1, env: {} }).source, "default");
 });
 
-test("#1194 a value that is not a port REFUSES rather than falling back to the default", () => {
+test("a value that is not a port REFUSES rather than falling back to the default", () => {
   // Silently substituting the default for a typo is the same silent substitution one level down: the
   // operator typed an address, got a different one, and nothing said so.
   for (const bad of ["eighteen", "0", "-1", "65536", "18823x"]) {
@@ -65,7 +65,7 @@ test("#1194 a value that is not a port REFUSES rather than falling back to the d
   }
 });
 
-test("#1194 a default-port bind announces itself, and prints the EFFECTIVE port", async () => {
+test("a default-port bind announces itself, and prints the EFFECTIVE port", async () => {
   const said = [];
   const server = createServer(() => {});
   await new Promise((resolve) => {
@@ -89,7 +89,7 @@ test("#1194 a default-port bind announces itself, and prints the EFFECTIVE port"
   assert.match(out, new RegExp(REQUIRE_EXPLICIT_PORTS), "and the way to turn the warning into a refusal");
 });
 
-test("#1194 a CONFIGURED port says nothing — the announcement is about the guess, not the bind", async () => {
+test("a CONFIGURED port says nothing — the announcement is about the guess, not the bind", async () => {
   const said = [];
   const server = createServer(() => {});
   await new Promise((resolve) => {
@@ -102,7 +102,7 @@ test("#1194 a CONFIGURED port says nothing — the announcement is about the gue
   assert.equal(said.length, 0, `a deliberately-addressed service was warned at: ${said.join(" | ")}`);
 });
 
-test("#1194 REQUIRE_EXPLICIT_PORTS makes a default-port bind fatal, BEFORE the socket", () => {
+test("REQUIRE_EXPLICIT_PORTS makes a default-port bind fatal, BEFORE the socket", () => {
   const said = [];
   let exited = null;
   let listened = false;
@@ -120,7 +120,7 @@ test("#1194 REQUIRE_EXPLICIT_PORTS makes a default-port bind fatal, BEFORE the s
   assert.match(said.join("\n"), /CLIENT_MCP_HTTP_PORT/);
 });
 
-test("#1194 the flag does NOT touch a configured port", () => {
+test("the flag does NOT touch a configured port", () => {
   let exited = null;
   let listened = false;
   const fake = { once() { return this; }, listen(p, h, cb) { listened = true; if (cb) cb(); return this; }, address: () => ({ port: 18823 }) };
@@ -132,7 +132,7 @@ test("#1194 the flag does NOT touch a configured port", () => {
   assert.equal(listened, true);
 });
 
-test("#1194 a caller that has not been taught the question behaves exactly as before", () => {
+test("a caller that has not been taught the question behaves exactly as before", () => {
   // `portSource` absent = the pre-change contract. providers/oauth-mcp-bridge/warm-server.mjs takes its
   // port as `--port` and reads no environment variable, so it can never take a silent default and is
   // deliberately not changed.
@@ -149,7 +149,7 @@ test("#1194 a caller that has not been taught the question behaves exactly as be
   assert.equal(said.length, 0);
 });
 
-test("#1194 EADDRINUSE on a DEFAULT port says the port was never chosen", () => {
+test("EADDRINUSE on a DEFAULT port says the port was never chosen", () => {
   const msg = listenErrorMessage({ code: "EADDRINUSE" }, {
     what: "the client MCP surface", host: "127.0.0.1", port: 18811,
     portVar: "CLIENT_MCP_HTTP_PORT", portSource: "default",
@@ -163,7 +163,7 @@ test("#1194 EADDRINUSE on a DEFAULT port says the port was never chosen", () => 
   assert.match(msg, /ss -ltnp/, "the instruction that actually works stays");
 });
 
-test("#1194 EADDRINUSE on a CONFIGURED port keeps #773's original sentence and adds nothing", () => {
+test("EADDRINUSE on a CONFIGURED port keeps #773's original sentence and adds nothing", () => {
   const msg = listenErrorMessage({ code: "EADDRINUSE" }, {
     what: "the portal service", host: "127.0.0.1", port: 18802,
     portVar: "PORTAL_SERVICE_PORT", portSource: "env",
@@ -173,7 +173,7 @@ test("#1194 EADDRINUSE on a CONFIGURED port keeps #773's original sentence and a
   assert.match(msg, /already in use/);
 });
 
-test("#1194 EVERY service that can take a default port reports its source", () => {
+test("EVERY service that can take a default port reports its source", () => {
   const missing = [];
   for (const [file, portVar] of SERVICES) {
     const src = code(file);
@@ -187,7 +187,7 @@ test("#1194 EVERY service that can take a default port reports its source", () =
     + `about four bind handlers drifting.`);
 });
 
-test("#1194 the raw default-port idiom is gone from those services", () => {
+test("the raw default-port idiom is gone from those services", () => {
   const offenders = [];
   for (const [file, portVar] of SERVICES) {
     if (new RegExp(`process\\.env\\.${portVar}\\s*\\|\\|`).test(code(file))) offenders.push(file);
@@ -205,7 +205,7 @@ test("#1194 the raw default-port idiom is gone from those services", () => {
 // service, an operator reads it out of a journal, a health check scrapes it. It reported success and
 // handed over an address nothing could reach — worse than a failed bind, which gets investigated.
 
-test("1961 onReady is handed the BOUND port, not the requested one", async () => {
+test("onReady is handed the BOUND port, not the requested one", async () => {
   const server = createServer((_q, r) => r.end());
   const seen = await new Promise((resolve) => {
     listenOrDie(server, {
@@ -225,7 +225,7 @@ test("1961 onReady is handed the BOUND port, not the requested one", async () =>
   assert.ok(Number.isInteger(seen.port) && seen.port > 0);
 });
 
-test("1961 a REQUEST to the announced port is answered", async () => {
+test("a REQUEST to the announced port is answered", async () => {
   // ✕ THE HALF THE FIRST ARM DID NOT COVER, and the issue named it: "announcing a plausible number
   // nothing serves would be the same defect with a better disguise." Asserting the number is real and
   // non-zero proves it came from somewhere; it does not prove it came from THIS listener. A stale
@@ -266,7 +266,7 @@ test("1961 a REQUEST to the announced port is answered", async () => {
   }
 });
 
-test("1961 an explicit port is still reported as itself", async () => {
+test("an explicit port is still reported as itself", async () => {
   // The control. A fix that always reported something OTHER than the request would pass the arm above
   // while breaking every ordinary boot.
   const server = createServer((_q, r) => r.end());
@@ -283,7 +283,7 @@ test("1961 an explicit port is still reported as itself", async () => {
   assert.equal(seen.port, free, "an explicitly requested port must be announced as itself");
 });
 
-test("1961 no service composes its address line from the port it REQUESTED", () => {
+test("no service composes its address line from the port it REQUESTED", () => {
   // The corpus half. The seam above is fixed once; this is what stops the sixth site being written
   // wrong again, and it covers the bridge, which is not an env-port service and so is not in SERVICES.
   const ANNOUNCERS = [...SERVICES.map(([f]) => f), "providers/oauth-mcp-bridge/warm-server.mjs"];

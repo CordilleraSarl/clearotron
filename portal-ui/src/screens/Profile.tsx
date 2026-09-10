@@ -64,6 +64,9 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   // unrendered round-trip until now: loaded, posted straight back, never shown.
   const [pack, setPack] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  // Profile writes need Manage. Read once, here, so the fieldset, the framework block and the action bar
+  // cannot disagree about whether this person may change anything.
+  const mayChange = canManage(ctx.me)
   const [problem, setProblem] = useState<{ readonly title: string; readonly lines: readonly string[] } | null>(null)
   // THE RAW TEXT OF EVERY TOUCHED FIELD, and it is not a duplicate of `draft`.
   // Deriving a box's value from the parsed draft made every keystroke a parse-then-format round trip,
@@ -203,8 +206,13 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           </p>
         </div>
 
-        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} staff={ctx.me.role === 'staff'} />
+        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} everything={ctx.me.allAccounts} />
 
+        {/* ONE WRAPPER DECIDES WHETHER ANY OF THIS CAN BE CHANGED. Profile writes need Manage, and a
+            disabled fieldset disables every control inside it natively — the fields, the pickers and the
+            background editor — so a person without Manage reads the settings and can type into none of
+            them. A per-field flag would be one more thing a new field could forget. */}
+        <fieldset disabled={!mayChange} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
         {/* Grouped by iteration over FIELD_GROUPS rather than as two hardcoded blocks, so a new field
             joins a group by declaring one, and a new group needs no markup here at all. */}
         {FIELD_GROUPS.map((group) => {
@@ -236,6 +244,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           title="Background &amp; standing concerns"
           hint="Useful background about this company — competitors to watch, recurring concerns, lessons from past matters. Every clearance reads it before it writes. Facts and concerns, not rules: it shapes what a report emphasises, never what a finding is rated."
         />
+        </fieldset>
 
         {problem ? (
           <div className="notice" style={{ borderColor: 'var(--tone-high)', marginTop: 18 }}>
@@ -255,6 +264,11 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           </div>
         ) : null}
 
+        {!mayChange ? (
+          <p style={{ marginTop: 22, fontSize: 13, color: 'var(--text-muted)' }}>
+            You can read these settings. Changing them needs the Manage permission.
+          </p>
+        ) : (
         <div style={{ marginTop: 22, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <button
             type="button"
@@ -308,6 +322,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
                 : 'Press Check before saving. A profile the engine cannot read stops this account searching.'}
           </span>
         </div>
+        )}
       </div>
     </div>
   )
@@ -410,20 +425,20 @@ function BandPill({ label, tone }: { readonly label: string; readonly tone: unkn
  * someone to try, and implies the page could write it if only it were enabled. It cannot: a framework is
  * selected in code under review, and the server strips these fields from every write.
  *
- * Role only decides the PATHS now (`skills/prelim-search/risk-framework-<customer>.md`), and it decides them
- * upstream in portal-upstream.frameworkView — by the time this renders, a client's payload no longer
- * carries them. visibleReadOnlyFields stays as the second wall, not the only one.
+ * Access to everything decides the PATHS (`skills/prelim-search/risk-framework-<customer>.md`), and it
+ * decides them upstream in portal-upstream's getProfile — by the time this renders, anyone else's payload
+ * no longer carries them. visibleReadOnlyFields stays as the second wall, on the same rule, not the only one.
  */
 function FrameworkBlock({
   readOnly,
   framework,
-  staff,
+  everything,
 }: {
   readonly readOnly: Record<string, unknown>
   readonly framework: Record<string, unknown> | null
-  readonly staff: boolean
+  readonly everything: boolean
 }) {
-  const entries = visibleReadOnlyFields(readOnly, staff)
+  const entries = visibleReadOnlyFields(readOnly, everything)
   const fw = framework ?? {}
   const manifest = rec(fw['manifest'])
   const title = str(manifest?.['title'])
@@ -662,13 +677,13 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
     // one thing that is not wrong. Someone who signs in successfully and can do nothing should be told
     // why on the page, not in a boot log nobody reads.
     //
-    // The words are the ones portal-service already logs at boot: on no staff domain, in no grants row.
+    // The words are the door's own: the page it serves an address with no access says the same thing.
     // Nothing here is tenant-scoped, so it leaks nothing the 404-never-403 rule protects — it is a fact
     // about the caller's own identity, and it is the only fact that helps them.
     case 'noAccess':
       return {
         title: 'This address has no access yet',
-        lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different company cannot change that — an administrator needs to add it to one.'],
+        lines: ['You are signed in, but this address has not been given access to the portal, so every page refuses it. Selecting a different company cannot change that — someone who can add people here needs to add it.'],
       }
     case 'surfaceUnavailable':
       return {

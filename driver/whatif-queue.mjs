@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // whatif-queue.mjs — the RUN-LOCAL queue a client's what-if waits in.
 //
-// Owner ruling 2026-08-27 opened what-if to clients. The remote surfaces cannot run it directly and that
+// Ruling 2026-08-27 opened what-if to clients. The remote surfaces cannot run it directly and that
 // is a configuration fact rather than a policy: http-server.mjs states in its own header that they "NEVER
 // shell", and lib/whatif.mjs imports driver/pipeline.mjs LAZILY so the read-only face never loads the
 // engine at all. The only thing that runs the engine remotely is the queue, through the worker. So a
@@ -130,7 +130,7 @@ export function enqueueWhatIf(runDir, { op, requestedBy = null, account = null, 
   // a stage — "a memo re-runs no stage, so a token carrying one was not planned as a memo" — and this
   // line refused one that did not. So every memo minted by whatIfPlan was admitted by whatIfEnqueue's
   // kind-aware refusal and then thrown out by the very next call, on the one non-test path there is
-  // (mcp-server/lib/whatif.mjs:202, reached from the live tool handler at server.mjs:443).
+  // (`whatIfEnqueue()` in `mcp-server/lib/whatif.mjs`, reached from the live `what_if_run` handler in `mcp-server/server.mjs`).
   //
   // WHY IT SURVIVED A FIX THAT WAS ABOUT EXACTLY THIS. The earlier repair opened whatIfRun's memo
   // branch and was proved by arms that INJECT the composer — routing coverage. A routing arm cannot

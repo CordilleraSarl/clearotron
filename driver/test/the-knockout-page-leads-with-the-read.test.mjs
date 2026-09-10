@@ -92,7 +92,7 @@ const SCOPE = {
   goods: "hand tools and kitchen implements",
 };
 
-test("331 A.1: what was asked comes from the run's OWN instructed scope, not from model prose", () => {
+test("A.1: what was asked comes from the run's OWN instructed scope, not from model prose", () => {
   const html = RENDER([MARK()], { instructedScope: SCOPE });
   assert.match(html, /class="ko-req"/, "the request block renders");
   assert.match(html, /About this request/);
@@ -100,7 +100,7 @@ test("331 A.1: what was asked comes from the run's OWN instructed scope, not fro
   assert.match(html, /Searched in the European Union and the United States\./, "territories in words");
 });
 
-test("331 A.1: a note about the REQUEST is lifted to the top and does not also print under the cards", () => {
+test("A.1: a note about the REQUEST is lifted to the top and does not also print under the cards", () => {
   const flag = "The dispatch states a beverages industry, which does not match the instructed Class 8 goods.";
   const own = "Check for firm-specific history on this name before advising.";
   const html = RENDER([MARK({ purpleNotes: [own, flag] })], { instructedScope: SCOPE });
@@ -112,7 +112,7 @@ test("331 A.1: a note about the REQUEST is lifted to the top and does not also p
   assert.ok(!req.includes(own), "and is not lifted");
 });
 
-test("331 A.1: the rater's own split WINS over the fallback, which is then never consulted", () => {
+test("A.1: the rater's own split WINS over the fallback, which is then never consulted", () => {
   // The word the fallback keys on, on a note the rater has typed as being about the NAME. If the
   // fallback ran at all — even additively — this note would be lifted. It must not be.
   const typed = { about: "name", text: "The dispatch is irrelevant here; this is about the mark itself." };
@@ -122,7 +122,7 @@ test("331 A.1: the rater's own split WINS over the fallback, which is then never
   assert.ok(html.slice(html.indexOf("On-field conflicts")).includes("irrelevant here"), "it renders under the cards");
 });
 
-test("331 A.1 clause F: no instructed scope and no request flag renders NO block, never an empty one", () => {
+test("A.1 clause F: no instructed scope and no request flag renders NO block, never an empty one", () => {
   const html = body(RENDER([MARK()]));
   assert.doesNotMatch(html, /class="ko-req"/, "an archived run with no sidecar grows no empty heading");
   assert.doesNotMatch(html, /About this request/);
@@ -130,7 +130,7 @@ test("331 A.1 clause F: no instructed scope and no request flag renders NO block
 
 // ── A.2 — the read, its labels and the assessment fold ───────────────────────────────────────────────
 
-test("331 A.2: the assessment is ON the page, folded, with its own headings intact", () => {
+test("A.2: the assessment is ON the page, folded, with its own headings intact", () => {
   const html = RENDER([MARK()]);
   assert.match(html, /<summary>Read the full assessment<\/summary>/);
   assert.match(html, /What the name is/, "the assessment's own headings survive the fold");
@@ -138,7 +138,7 @@ test("331 A.2: the assessment is ON the page, folded, with its own headings inta
   assert.doesNotMatch(html, /Full narrative/, "the bullets fold is retired where an assessment exists");
 });
 
-test("331 A.2: retiring the fold does not drop the bullets from the record", () => {
+test("A.2: retiring the fold does not drop the bullets from the record", () => {
   const data = knockoutReportData({ marks: [MARK()], batch: {} }, FW, { runId: "r", overall: "Medium" });
   // report-data has always carried this field under its reader-facing name, `points`. Asserting
   // `bullets` here would fail for the wrong reason and would say nothing about whether the fold's
@@ -148,7 +148,7 @@ test("331 A.2: retiring the fold does not drop the bullets from the record", () 
   assert.equal(data.marks[0].assessment, MARK().assessment, "and the assessment beside it");
 });
 
-test("331 A.2 clause F: an archived run with bullets and NO assessment keeps the fold it was delivered", () => {
+test("A.2 clause F: an archived run with bullets and NO assessment keeps the fold it was delivered", () => {
   const legacy = MARK();
   delete legacy.assessment;
   const html = RENDER([legacy]);
@@ -158,7 +158,7 @@ test("331 A.2 clause F: an archived run with bullets and NO assessment keeps the
 
 // ── A.3 — the card fold, and which register filings become cards ─────────────────────────────────────
 
-test("331 A.3: a card shows its one sentence and folds the paragraph that argues the band", () => {
+test("A.3: a card shows its one sentence and folds the paragraph that argues the band", () => {
   const html = RENDER([MARK({ findings: [FINDING()] })]);
   assert.match(html, /class="ko-findnet">A storefront trading under the same name/, "the net stays visible");
   const fold = html.slice(html.indexOf("Why this band"));
@@ -168,14 +168,14 @@ test("331 A.3: a card shows its one sentence and folds the paragraph that argues
   assert.match(html, /<details class="ko-full ko-why">/, "the fold opens for print like every other");
 });
 
-test("331 A.3: a finding with no basis renders no fold rather than an empty one", () => {
+test("A.3: a finding with no basis renders no fold rather than an empty one", () => {
   const bare = FINDING();
   delete bare.basis;
   const html = RENDER([MARK({ findings: [bare] })]);
   assert.doesNotMatch(html, /Why this band/);
 });
 
-test("331 A.3: only an EXPLICIT lowest-rung band takes a filing off the page", () => {
+test("A.3: only an EXPLICIT lowest-rung band takes a filing off the page", () => {
   const records = [REC({ recordId: "R-1" }), REC({ recordId: "R-2", owner: "Second Owner Ltd" })];
   const lowest = FW.bands[FW.bands.length - 1].label;
   const html = RENDER(
@@ -188,7 +188,7 @@ test("331 A.3: only an EXPLICIT lowest-rung band takes a filing off the page", (
   assert.equal(cards.length, 1, `exactly one card is drawn, not both (lowest rung = ${lowest})`);
 });
 
-test("331 A.3: the suppressed filings are still in the RECORD and still counted as held back", () => {
+test("A.3: the suppressed filings are still in the RECORD and still counted as held back", () => {
   const records = [REC({ recordId: "R-1" }), REC({ recordId: "R-2", owner: "Second Owner Ltd" })];
   const opts = { runId: "r", overall: "Medium", registerRecords: RECORDS(records), registerCounts: COUNTS() };
   const mark = MARK({ registerReads: [{ recordId: "R-1", band: "Low", read: "x" }, { recordId: "R-2", band: "Low", read: "y" }] });
@@ -212,7 +212,7 @@ test("331 A.3: the suppressed filings are still in the RECORD and still counted 
 // gives when it is working AND when it is over-reaching, and only the input tells the two apart.
 const cardCount = (html) => (html.match(/<span class="fnum">[^<]*REG #\d[^<]*<\/span>/g) ?? []).length;
 
-test("331 A.3: an absent band keeps a filing's card — it says less than an unrankable one, not more", () => {
+test("A.3: an absent band keeps a filing's card — it says less than an unrankable one, not more", () => {
   const records = [REC({ recordId: "R-1" }), REC({ recordId: "R-2", owner: "Second Owner Ltd" }),
     REC({ recordId: "R-3", owner: "Third Owner Ltd" })];
   const opts = { registerRecords: RECORDS(records), registerCounts: COUNTS() };
@@ -235,7 +235,7 @@ test("331 A.3: an absent band keeps a filing's card — it says less than an unr
     { recordId: "R-3", read: "z", band: lowest }]), 0, "the case 331 exists to fix");
 });
 
-test("331 A.3: a band this build cannot place on the ladder keeps its card", () => {
+test("A.3: a band this build cannot place on the ladder keeps its card", () => {
   const records = [REC({ recordId: "R-1" })];
   const html = RENDER([MARK({ registerReads: [{ recordId: "R-1", read: "x", band: "Catastrophic" }] })],
     { registerRecords: RECORDS(records), registerCounts: COUNTS() });
@@ -245,7 +245,7 @@ test("331 A.3: a band this build cannot place on the ladder keeps its card", () 
 
 // ── A.4 / A.5 — the reviewer's notes, and their absence from the export ──────────────────────────────
 
-test("331 A.4/A.5: the notes say who they are for, and the export strips them", () => {
+test("A.4/A.5: the notes say who they are for, and the export strips them", () => {
   const html = RENDER([MARK({ purpleNotes: ["Pull the full goods list before advising."] })]);
   assert.match(html, /For the reviewing lawyer/, "the label names the reader");
   assert.match(html, /Purple notes are for the reviewing lawyer\. Remove them before this goes to the client\./);
@@ -256,7 +256,7 @@ test("331 A.4/A.5: the notes say who they are for, and the export strips them", 
 
 // ── A.6 — the one-name page has no index ─────────────────────────────────────────────────────────────
 
-test("331 A.6: one name renders no at-a-glance row; two names still do", () => {
+test("A.6: one name renders no at-a-glance row; two names still do", () => {
   const one = RENDER([MARK()], { registerCounts: COUNTS() });
   assert.doesNotMatch(one, /class="ko-legend"/, "nothing to index, so no index");
   const two = RENDER([MARK(), MARK({ name: "COPPERWHISK" })], { registerCounts: COUNTS() });
@@ -265,7 +265,7 @@ test("331 A.6: one name renders no at-a-glance row; two names still do", () => {
 
 // ── B — the counts table says what it counted ────────────────────────────────────────────────────────
 
-test("331 B: the column headers carry the definition and the basis paragraph leaves the page", () => {
+test("B: the column headers carry the definition and the basis paragraph leaves the page", () => {
   const html = RENDER([MARK()], { registerCounts: COUNTS() });
   assert.match(html, /<th>Exactly IRONWHISK<\/th>/);
   assert.match(html, /<th>Contains IRONWHISK<\/th>/);
@@ -274,7 +274,7 @@ test("331 B: the column headers carry the definition and the basis paragraph lea
   assert.doesNotMatch(html, /counted by name only/, "the 70-word basis sentence is off the page");
 });
 
-test("331 B: several names share one table, so no header may name one of them", () => {
+test("B: several names share one table, so no header may name one of them", () => {
   const counts = COUNTS();
   counts.marks.push({ ...counts.marks[0], name: "COPPERWHISK" });
   const html = RENDER([MARK(), MARK({ name: "COPPERWHISK" })], { registerCounts: counts });
@@ -282,7 +282,7 @@ test("331 B: several names share one table, so no header may name one of them", 
   assert.doesNotMatch(html, /Exactly IRONWHISK/, "a header naming one mark would be wrong for the other row");
 });
 
-test("331 B: the basis sentence stays in report-data, which is where the issue puts it", () => {
+test("B: the basis sentence stays in report-data, which is where the issue puts it", () => {
   const data = knockoutReportData({ marks: [MARK()], batch: {} }, FW, { runId: "r", registerCounts: COUNTS() });
   assert.match(String(data.registerCountBasis), /counted by name only/);
 });
@@ -291,13 +291,13 @@ test("331 B: the basis sentence stays in report-data, which is where the issue p
 
 const territories = (html) => (html.match(/Counted [^<]*/) ?? [])[0] ?? "";
 
-test("331 C: a bounded scope names its registers in full and prints no code", () => {
+test("C: a bounded scope names its registers in full and prints no code", () => {
   const html = RENDER([MARK()], { registerCounts: COUNTS() });
   assert.equal(territories(html),
     "Counted in the European Union, the United States and the WIPO register, on Clarivate Compumark.");
 });
 
-test("331 C: the provider's internal groupings are dropped, never printed", () => {
+test("C: the provider's internal groupings are dropped, never printed", () => {
   const counts = COUNTS();
   counts.scope.regions = ["US", "XA", "XG", "ZZ"];
   const line = territories(RENDER([MARK()], { registerCounts: counts }));
@@ -305,14 +305,14 @@ test("331 C: the provider's internal groupings are dropped, never printed", () =
   for (const code of ["XA", "XG", "ZZ"]) assert.ok(!line.includes(code), `${code} is not a register a reader can look up`);
 });
 
-test("331 C: more than six registers gives a count and says where the list is", () => {
+test("C: more than six registers gives a count and says where the list is", () => {
   const counts = COUNTS();
   counts.scope.regions = ["US", "EM", "WO", "CH", "GB", "FR", "DE"];
   assert.match(territories(RENDER([MARK()], { registerCounts: counts })),
     /^Counted on 7 registers, listed on the workbook's Register Counts sheet/);
 });
 
-test("331 C: a worldwide run states the count, never two hundred codes", () => {
+test("C: a worldwide run states the count, never two hundred codes", () => {
   const counts = COUNTS();
   counts.scope = { ...counts.scope, worldwide: true, regions: new Array(190).fill("XX") };
   const line = territories(RENDER([MARK()], { registerCounts: counts }));
@@ -321,7 +321,7 @@ test("331 C: a worldwide run states the count, never two hundred codes", () => {
 
 // ── D — the card names the office, not the search vendor ─────────────────────────────────────────────
 
-test("331 D: a register card states the office and the kind of right, and never the vendor", () => {
+test("D: a register card states the office and the kind of right, and never the vendor", () => {
   const html = RENDER(
     [MARK({ registerReads: [{ recordId: "R-1", band: "Medium", read: "It bears on the rating." }] })],
     { registerRecords: RECORDS(), registerCounts: COUNTS() },
@@ -332,7 +332,7 @@ test("331 D: a register card states the office and the kind of right, and never 
   assert.ok(!/Clarivate|Compumark/.test(sentence), "the search vendor is not a register");
 });
 
-test("331 D: a registration does not say 'registration (registered)'", () => {
+test("D: a registration does not say 'registration (registered)'", () => {
   const html = RENDER(
     [MARK({ registerReads: [{ recordId: "R-1", band: "Medium", read: "x" }] })],
     { registerRecords: RECORDS([REC({ status: "REGISTERED" })]), registerCounts: COUNTS() },
@@ -343,7 +343,7 @@ test("331 D: a registration does not say 'registration (registered)'", () => {
 
 // ── E — the scope block ──────────────────────────────────────────────────────────────────────────────
 
-test("331 E: the scope block says what the screen is and is not, with 'clearance' at most twice", () => {
+test("E: the scope block says what the screen is and is not, with 'clearance' at most twice", () => {
   const html = RENDER([MARK()], { registerCounts: COUNTS() });
   const scope = html.slice(html.indexOf("Scope &amp; what we didn't search"));
   assert.match(scope, /<b>What this is\.<\/b> A fast screen for obvious blockers/);
@@ -359,7 +359,7 @@ test("331 E: the scope block says what the screen is and is not, with 'clearance
     "the code-owned block states it twice; five restatements were the complaint");
 });
 
-test("331 E: 'every conflict above links to what we found' is not said when a conflict cites nothing", () => {
+test("E: 'every conflict above links to what we found' is not said when a conflict cites nothing", () => {
   const cited = RENDER([MARK({ findings: [FINDING()] })], { registerCounts: COUNTS() });
   assert.match(cited, /Every conflict above links to the material we found\./);
   const uncited = RENDER([MARK({ findings: [FINDING(), FINDING({ ordinal: 2, evidence: [] })] })], { registerCounts: COUNTS() });
@@ -367,7 +367,7 @@ test("331 E: 'every conflict above links to what we found' is not said when a co
     "said over a finding that cites nothing it is an absence claim wider than what was examined");
 });
 
-test("331 E: a caveat making a NEW claim survives; one that only restates the block does not", () => {
+test("E: a caveat making a NEW claim survives; one that only restates the block does not", () => {
   const restates = "This is not a clearance search and it gives no filing advice.";
   const adds = "Ratings reflect worst-case exposure at triage and fuller work can move them either way.";
   const html = renderKnockoutHtml(
@@ -436,7 +436,7 @@ function visibleWords(html, { foldsOpen = false } = {}) {
   return out.join("").trim().split(/\s+/).filter(Boolean).length;
 }
 
-test("331: the one-name page stays inside its word budget, folds closed", () => {
+test("the one-name page stays inside its word budget, folds closed", () => {
   const at = (p) => fileURLToPath(new URL(`../../demo/knockout-search/run/${p}`, import.meta.url));
   const j = (p) => JSON.parse(readFileSync(at(p), "utf8"));
   const findings = j("knockout-findings.json");

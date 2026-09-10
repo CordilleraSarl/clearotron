@@ -1,6 +1,6 @@
 # GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific value lives here.
 #
-# ── INSTALLED WITH THE PRODUCT (owner ruling 2026-09-03, settled point 2) ───────────────────────────
+# ── INSTALLED WITH THE PRODUCT (ruling 2026-09-03, settled point 2) ───────────────────────────
 #
 # This is the CLIENT door: the only surface that accepts a key acting for a brand owner's account. It is
 # a SEPARATE PROCESS from the engine door (clearotron-mcp-face.service), which refuses an account key

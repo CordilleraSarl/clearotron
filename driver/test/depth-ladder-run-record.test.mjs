@@ -14,7 +14,7 @@ import { PRODUCT_POLICIES, depthFor } from "../search-policy.mjs";
 const ev = (product) => depthLadderEvent({ searchPolicy: { product }, depth: depthFor({ product }) });
 const ROW_FIELDS = Object.keys(PRODUCT_POLICIES["full-country-search"].depth);
 
-test("#1503 every graded product's event carries the WHOLE row — a missing field reads as unset", () => {
+test("every graded product's event carries the WHOLE row — a missing field reads as unset", () => {
   assert.ok(ROW_FIELDS.length > 0, "the one-country row is empty — nothing below discriminates");
   for (const product of Object.keys(PRODUCT_POLICIES)) {
     const e = ev(product);
@@ -26,7 +26,7 @@ test("#1503 every graded product's event carries the WHOLE row — a missing fie
   }
 });
 
-test("#1503 the event is DERIVED from the table, never a copy of it", () => {
+test("the event is DERIVED from the table, never a copy of it", () => {
   for (const [product, policy] of Object.entries(PRODUCT_POLICIES)) {
     if (!policy?.depth) continue;
     const e = ev(product);
@@ -38,7 +38,7 @@ test("#1503 the event is DERIVED from the table, never a copy of it", () => {
   }
 });
 
-test("#1503 a product this build does not grade is recorded as default-ungraded, not as a choice", () => {
+test("a product this build does not grade is recorded as default-ungraded, not as a choice", () => {
   const e = ev("some-product-shipped-after-this-build");
   assert.equal(e.source, "default-ungraded",
     "an unknown product recorded a graded source. A fallback that reads as a deliberate setting is one "
@@ -49,7 +49,7 @@ test("#1503 a product this build does not grade is recorded as default-ungraded,
   }
 });
 
-test("#1503 a run with NO depth still writes the event — the record never loses the row entirely", () => {
+test("a run with NO depth still writes the event — the record never loses the row entirely", () => {
   const e = depthLadderEvent({});
   assert.equal(e.event, "depth-ladder", "the event vanished when depth was absent");
   assert.equal(e.source, null, "an absent depth must record as null, which is a readable answer");

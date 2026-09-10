@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The E2E scenario store: CLEAROTRON_E2E_DIR is the ONLY suite (owner ruling 2026-08-07).
+// The E2E scenario store: CLEAROTRON_E2E_DIR is the ONLY suite (ruling 2026-08-07).
 //
 // WHY THIS EXISTS. The scenarios that can be scored against a lawyer's answer name live client
 // matters — they cannot enter this repo, which is de-identified by design. There used to be a bundled
@@ -142,7 +142,7 @@ test("set to a directory that is not there: refuses loudly", () => {
 // mechanism works and that `list`/`run` actually invoke it. The real store is swept on the box on
 // every invocation.
 
-test("#490: a store whose jobs match their declared outcomes sweeps clean", () => {
+test("a store whose jobs match their declared outcomes sweeps clean", () => {
   const clarify = {
     ...GOOD, id: "R0",
     cases: [{
@@ -155,7 +155,7 @@ test("#490: a store whose jobs match their declared outcomes sweeps clean", () =
   assert.deepEqual(validateStoreJobs([GOOD, clarify]), []);
 });
 
-test("#490: a scenario expecting `delivered` that the doors refuse is caught, named, and blocks the CLI", () => {
+test("a scenario expecting `delivered` that the doors refuse is caught, named, and blocks the CLI", () => {
   const bad = structuredClone(GOOD);
   bad.id = "R2";
   bad.job.ref = "E2E-R2";
@@ -174,7 +174,7 @@ test("#490: a scenario expecting `delivered` that the doors refuse is caught, na
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#490: a refusal case the doors would ADMIT is the same defect from the other side — it would spend", () => {
+test("a refusal case the doors would ADMIT is the same defect from the other side — it would spend", () => {
   const spendy = {
     ...GOOD, id: "R0",
     cases: [{
@@ -190,7 +190,7 @@ test("#490: a refusal case the doors would ADMIT is the same defect from the oth
   assert.match(wrong[0], /wants REFUSED/);
 });
 
-test("#490: and the underlying refusal is real — the retired vocabulary is refused by the schema itself", () => {
+test("and the underlying refusal is real — the retired vocabulary is refused by the schema itself", () => {
   // Guards the guard: if validateJob ever stops refusing searchLevel/caseLaw, the sweep above passes
   // for the wrong reason. Proved by construction rather than asserted.
   const retired = validateJob({ id: "e2e-probe", ...GOOD.job, searchLevel: "prelim-jx", caseLaw: true });

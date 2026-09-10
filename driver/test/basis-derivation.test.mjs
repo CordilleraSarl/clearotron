@@ -38,7 +38,7 @@ const DOC = {
   ],
 };
 
-test("#563 a record the run NEVER FETCHED cannot support a verified stamp — the hole the old gate had", () => {
+test("a record the run NEVER FETCHED cannot support a verified stamp — the hole the old gate had", () => {
   // This is that R6's shape: everything stamped, nothing on disk. The pass it replaces counted
   // these as `off_disk` and reported violations: 0.
   const rows = unprovableRecordBases({ findings: DOC.findings, hasRecord: () => false, wasRead: () => false });
@@ -52,14 +52,14 @@ test("#563 a record the run NEVER FETCHED cannot support a verified stamp — th
   assert.equal(old.violations.length, 0, "and reported no violation — the run shipped on it");
 });
 
-test("#563 a record on disk that was never read is demoted too — the old violation, now an outcome", () => {
+test("a record on disk that was never read is demoted too — the old violation, now an outcome", () => {
   const rows = unprovableRecordBases({ findings: DOC.findings, hasRecord: () => true, wasRead: () => false });
   assert.equal(rows.length, 3);
   assert.ok(rows.every((r) => r.why === "record-on-disk-never-read"),
     "the two causes are distinguished — one is a missing fetch, the other a missing read, and the repairs differ");
 });
 
-test("#563 a PROVEN read is left alone — the derivation only ever moves a claim down to its evidence", () => {
+test("a PROVEN read is left alone — the derivation only ever moves a claim down to its evidence", () => {
   const rows = unprovableRecordBases({ findings: DOC.findings, hasRecord: () => true, wasRead: () => true });
   assert.deepEqual(rows, [], "nothing to demote when the log backs every claim");
   const { doc, applied } = applyDerivedBases(DOC, rows);
@@ -67,7 +67,7 @@ test("#563 a PROVEN read is left alone — the derivation only ever moves a clai
   assert.deepEqual(doc.findings, DOC.findings, "and the findings are returned unchanged");
 });
 
-test("#563 a partially-proven run demotes exactly the unproven meters, and nothing else", () => {
+test("a partially-proven run demotes exactly the unproven meters, and nothing else", () => {
   const readA = (uri) => uri === URI_A.toLowerCase();
   const rows = unprovableRecordBases({ findings: DOC.findings, hasRecord: () => true, wasRead: readA });
   assert.deepEqual(rows.map((r) => `${r.ordinal}/${r.meter}`), ["2/mark_similarity", "2/goods_proximity"]);
@@ -82,14 +82,14 @@ test("#563 a partially-proven run demotes exactly the unproven meters, and nothi
   assert.equal(DOC.findings[1].meters.mark_similarity.basis, "verified-from-record", "the input doc is not mutated");
 });
 
-test("#563 a meter citing a WEBSITE is out of scope — the reading log does not cover the open web", () => {
+test("a meter citing a WEBSITE is out of scope — the reading log does not cover the open web", () => {
   // Demoting on evidence nothing collects would be a guess wearing a machine's authority. The scope is
   // register records, exactly as the join it is built on always was.
   const web = { findings: [finding(1, "GAMMA", { use: { token: "confirmed", basis: "verified-from-record", source: "https://example.com/products" } })] };
   assert.deepEqual(unprovableRecordBases({ findings: web.findings, hasRecord: () => false, wasRead: () => false }), []);
 });
 
-test("#563 a WITHDRAWN finding is not judged — it is not in the deliverable to be wrong in", () => {
+test("a WITHDRAWN finding is not judged — it is not in the deliverable to be wrong in", () => {
   const withdrawn = { findings: [{ ...DOC.findings[0], disposition: "withdrawn" }] };
   assert.deepEqual(unprovableRecordBases({ findings: withdrawn.findings, hasRecord: () => true, wasRead: () => false }), []);
 });
@@ -100,7 +100,7 @@ test("#563 a WITHDRAWN finding is not judged — it is not in the deliverable to
 // proved against {stamped:35,read:35}, {28,28}, {37,37}. Those three agree — and agreement alone proves
 // nothing, because a derivation that returned "read" unconditionally would reproduce all three exactly.
 // So the fixture carries BOTH: the agreeing shape AND the disagreeing one from the same round.
-test("#563 differential: the three all-read runs re-derive to zero demotions, and R6's shape demotes 19", () => {
+test("differential: the three all-read runs re-derive to zero demotions, and R6's shape demotes 19", () => {
   const nRun = (n, allRead) => ({
     findings: Array.from({ length: n }, (_, i) =>
       finding(i + 1, `M${i}`, { mark_similarity: { token: "high", basis: "verified-from-record", source: `/mark/us/U${i}` } })),
@@ -126,7 +126,7 @@ test("#563 differential: the three all-read runs re-derive to zero demotions, an
   assert.equal(applied, 19);
 });
 
-test("#563 a meter already inferred is NOT counted as applied — `applied` is what the shortfall check reads", () => {
+test("a meter already inferred is NOT counted as applied — `applied` is what the shortfall check reads", () => {
   // The caller compares `applied` against its own demotion list to decide whether an unprovable claim is
   // still standing. A no-op that inflated the count would hide exactly that. This is the assertion that
   // makes the `basis !== "verified-from-record"` guard behaviour rather than decoration.
@@ -138,7 +138,7 @@ test("#563 a meter already inferred is NOT counted as applied — `applied` is w
   assert.equal(applied, 1, "one real demotion, not two");
 });
 
-test("#563 a finding with NO ordinal cannot be matched — and the shortfall is visible, not silent", () => {
+test("a finding with NO ordinal cannot be matched — and the shortfall is visible, not silent", () => {
   // The demotions are computed against the LENIENT parse and applied to the STRICT one. If the raw file
   // carries no ordinal on a finding, the match finds nothing — and `applied < demotions.length` is the
   // only signal that an unprovable claim is still standing. It must be derivable by the caller.

@@ -21,9 +21,11 @@
 //
 // Three rules follow, and each is enforced here rather than trusted to a caller:
 //
-//   1. THE ACCOUNT COMES FROM THE PRINCIPAL, NEVER FROM THE PATH OR THE BODY. A client cannot name an
-//      account at all — theirs is substituted. Staff must name one, and it is checked against the
-//      roster. There is no code path where a body field or a URL segment picks the tenant.
+//   1. THE ACCOUNT COMES FROM THE PRINCIPAL, NEVER FROM THE PATH OR THE BODY. A named account must be
+//      inside the person's access, and a person with one company has it substituted. A person who sees
+//      everything must name one, and whether it EXISTS is answered downstream: the profile service 404s
+//      an unknown key and this wall passes that 404 through unchanged. There is no code path where a
+//      body field or a URL segment picks the tenant.
 //
 //   2. A FOREIGN ACCOUNT IS 404, byte-identical to a nonexistent one. Never 403. A 403 confirms the
 //      account exists, which is exactly the fact a competitor would be probing for.
@@ -40,7 +42,7 @@
 //      the archived ones. Tenancy is untouched: it lives in resolveAccount and rule 2, as it always did.
 
 import { KNOWN_PROFILE_KEYS, PROJECT_KEYS } from "./profiles.mjs";
-import { assertPrincipal, PortalDeny } from "./portal-access.mjs";
+import { assertPrincipal, PortalDeny, seesEverything, mayManage } from "./portal-access.mjs";
 
 /**
  * The five fields the UI must never write.
@@ -172,11 +174,15 @@ export function frameworkView(framework, { staff = false } = {}) {
  * account — the same shape portal-service already turns into a 404 body — so a caller cannot forget to
  * check a return value and proceed with an unresolved account.
  */
-export function resolveAccount(principal, requested) {
-  // assertPrincipal is the existing chokepoint: it forces a client to their own grant and 404s a
-  // foreign one. Reusing it means tenancy has ONE implementation, not two that must agree.
-  const account = assertPrincipal(principal, { account: requested ?? null });
-  if (!account) throw new PortalDeny(400, "name an account — staff must pick who they act for");
+export function resolveAccount(principal, requested, gates = {}) {
+  // assertPrincipal is the existing chokepoint: it holds a person to their own access and 404s a
+  // foreign account. Reusing it means tenancy has ONE implementation, not two that must agree. `gates`
+  // carries the permission a write needs — `manage` for settings, `run` for saved searches.
+  const account = assertPrincipal(principal, { account: requested ?? null, ...gates });
+  if (!account) throw new PortalDeny(400, "name an account (?account=)");
+  // Generic's settings are one file for the whole install, whichever organisation's Generic is open, so
+  // changing them is a change at the top of the tree.
+  if (account === "generic" && gates.manage && !seesEverything(principal)) throw new PortalDeny(404, "not found");
   return account;
 }
 
@@ -193,7 +199,7 @@ export function resolveAccount(principal, requested) {
  * there, and this is the channel that respects it. What must never happen is the reverse: a body field
  * that looks like an author and is quietly trusted by some future reader.
  */
-export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = null, roster = async () => [] }) {
+export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = null, roster = async () => [], fileCompany = null }) {
   const call = async (method, path, body, identity) => {
     const r = await callUpstream(method, path, body, identity);
     // Upstream 404s (unknown profile) and ours (not yours) are deliberately the same answer.
@@ -209,15 +215,14 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
     // state the portal had already diagnosed at boot. The code names it and the detail carries the
     // diagnosis, so the surface can say what must change instead of advising a retry that cannot work.
     //
-    // THE DETAIL IS STAFF-ONLY, exactly as the stop control's reason is. It names environment variables
-    // and filesystem paths on the server, and this screen is company-scoped — a client can reach it. The
-    // CODE travels to everyone, because "this installation does not have saved searches" is true and
-    // useful for them and gives away nothing; only the sentence saying which variable to change is held
-    // back.
+    // THE DETAIL IS FOR A PERSON WITH ACCESS TO EVERYTHING, as a company's file paths are. It names
+    // environment variables and filesystem paths on the server, and this screen is company-scoped — a
+    // person holding one company can reach it. The CODE travels to everyone, because "this installation
+    // does not have saved searches" is true and useful for them and gives away nothing; only the
+    // sentence saying which variable to change is held back.
     if (!callRecipes) {
-      const staff = identity?.role === "staff";
       return { status: 404, json: { error: recipesOff?.code ?? "not_found",
-        ...(staff && recipesOff?.detail ? { detail: recipesOff.detail } : {}) } };
+        ...(seesEverything(identity) && recipesOff?.detail ? { detail: recipesOff.detail } : {}) } };
     }
     const r = await callRecipes(method, path, body, identity);
     if (r.status === 404) return { status: 404, json: { error: "not_found" } };
@@ -237,7 +242,7 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
       const r = await call("GET", `/profiles/${encodeURIComponent(account)}`, undefined, principal);
       if (r.status !== 200) return r;
       const p = r.json?.profile ?? r.json ?? {};
-      const staff = principal?.role === "staff";
+      const staff = seesEverything(principal);
       return { status: 200, json: {
         account,
         profile: serializeProfile(p),
@@ -256,7 +261,8 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
      */
     async writeProfile(principal, requested, action, body) {
       if (action !== "validate" && action !== "save") return { status: 404, json: { error: "not_found" } };
-      const account = resolveAccount(principal, requested);
+      // A company's settings are Manage's to change.
+      const account = resolveAccount(principal, requested, { manage: true });
       const profile = stripCodeOwned(body?.profile);
       if (!profile || typeof profile !== "object" || Array.isArray(profile))
         return { status: 400, json: { error: "a profile object is required" } };
@@ -298,7 +304,8 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
 
     async writeProject(principal, requested, project, action, body) {
       if (action !== "validate" && action !== "save") return { status: 404, json: { error: "not_found" } };
-      const account = resolveAccount(principal, requested);
+      // A project sits in the tree under its company, so adding or changing one is Manage's.
+      const account = resolveAccount(principal, requested, { manage: true });
       if (!isSlug(project)) return { status: 404, json: { error: "not_found" } };
       // A project overlay may only carry PROJECT_KEYS. Customer-only keys are rejected upstream with a
       // real 400, but the same stripping discipline applies one level down: identity and rating
@@ -349,7 +356,8 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
      */
     async writeSearch(principal, requested, slug, action, body) {
       if (action !== "validate" && action !== "save") return { status: 404, json: { error: "not_found" } };
-      const account = resolveAccount(principal, requested);
+      // A saved search is how a clearance is ordered again, so it is Run's.
+      const account = resolveAccount(principal, requested, { run: true });
       if (!isSlug(slug)) return { status: 404, json: { error: "not_found" } };
       const recipe = body?.recipe;
       if (!recipe || typeof recipe !== "object" || Array.isArray(recipe))
@@ -360,9 +368,9 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
       }, principal);
     },
 
-    /** Staff-only: the customer roster, for the account picker. Clients never reach this. */
+    /** Every company on the install, for the switcher of a person who sees everything. Nobody else reaches this. */
     async listRoster(principal) {
-      if (principal?.role !== "staff") return { status: 404, json: { error: "not_found" } };
+      if (!seesEverything(principal)) return { status: 404, json: { error: "not_found" } };
       return { status: 200, json: { customers: await roster() } };
     },
 
@@ -392,12 +400,33 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
      * out here is what makes that true by construction rather than by the screen's good manners.
      */
     async createCompany(principal, body) {
-      if (principal?.role !== "staff") return { status: 404, json: { error: "not_found" } };
+      if (!mayManage(principal)) return { status: 404, json: { error: "not_found" } };
       if (!body || typeof body !== "object" || Array.isArray(body))
         return { status: 400, json: { error: "a company is required" } };
+      // WHICH ORGANISATION IT BELONGS TO. A company belongs to exactly one, and the person creating it
+      // must hold that organisation whole: Manage on one company cannot add a sibling beside it. Named by
+      // `tenant`, or implied when the person holds exactly one organisation. A person who sees everything
+      // on an install with no organisation yet creates it under none, and sees it because they see
+      // everything.
+      const orgs = principal.genericOrgs ?? [];
+      const named = typeof body.tenant === "string" && body.tenant.trim() ? body.tenant.trim() : null;
+      let org = null;
+      if (named != null) {
+        if (!orgs.includes(named)) return { status: 404, json: { error: "not_found" } };
+        org = named;
+      } else if (orgs.length === 1) org = orgs[0];
+      else if (orgs.length > 1) return { status: 400, json: { error: "name the organisation this company belongs to (tenant)" } };
+      else if (!seesEverything(principal)) return { status: 404, json: { error: "not_found" } };
       const draft = {};
       for (const k of CREATABLE_FIELDS) if (body[k] !== undefined) draft[k] = body[k];
-      return call("POST", "/profiles", draft, principal);
+      const r = await call("POST", "/profiles", draft, principal);
+      if (r.status !== 201 || org == null || !fileCompany) return r;
+      const key = r.json?.key ?? r.json?.profile?.key ?? draft.key;
+      try { await fileCompany({ tenant: org, account: key }); }
+      catch (e) {
+        return { status: 500, json: { error: `The company was created, but it could not be filed under its organisation (${String(e?.message ?? e).slice(0, 200)}). A person with access to everything can see it and file it.`, key } };
+      }
+      return { ...r, json: { ...r.json, tenant: org } };
     },
   };
 }

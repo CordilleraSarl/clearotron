@@ -97,7 +97,7 @@ test('a run with no markName falls back to its title rather than rendering blank
 
 // ──: the Name column holds a MARK, on every row shape ──────────────────────────────────────────
 
-test('#274: a batch already delivered derives its name from marks[], not from its run-type title', () => {
+test('a batch already delivered derives its name from marks[], not from its run-type title', () => {
   // THE ROW THIS FIXES ON SCREEN TODAY. A knockout batch published before wrote no `markName` at
   // all, and its meta.json is frozen — so without deriving here, every existing batch would keep reading
   // "Knockout review — 1 marks" until it was re-run. Measured on the test instance 2026-08-04: all four
@@ -106,7 +106,7 @@ test('#274: a batch already delivered derives its name from marks[], not from it
   assert.equal(displayName(batch), 'E2E FALLBACK PROBE')
 })
 
-test('#274: several marks are the first plus a count — one rule, not a special case for group rows', () => {
+test('several marks are the first plus a count — one rule, not a special case for group rows', () => {
   const many = {
     markName: null,
     title: 'Knockout review — 3 marks',
@@ -115,12 +115,12 @@ test('#274: several marks are the first plus a count — one rule, not a special
   assert.equal(displayName(many), 'VENZY +2 more')
 })
 
-test('#274: markName WINS over marks[] — the publisher\'s own answer beats a derivation', () => {
+test('markName WINS over marks[] — the publisher\'s own answer beats a derivation', () => {
   const both = { markName: 'VENZY', title: 'Knockout review — 2 marks', marks: [{ name: 'SOMETHING ELSE', band: null, tone: null }] }
   assert.equal(displayName(both), 'VENZY')
 })
 
-test('#274: NO Name cell contains a run type where a mark is available anywhere', () => {
+test('NO Name cell contains a run type where a mark is available anywhere', () => {
   // The acceptance criterion, stated as the property. Every shape the wire can produce, checked against
   // the one string the column must never hold.
   const shapes = [
@@ -131,7 +131,7 @@ test('#274: NO Name cell contains a run type where a mark is available anywhere'
   for (const r of shapes) assert.doesNotMatch(displayName(r), /Knockout review|marks$/, JSON.stringify(r))
 })
 
-test('#274: a record carrying NO mark anywhere gets its title — never an invented placeholder', () => {
+test('a record carrying NO mark anywhere gets its title — never an invented placeholder', () => {
   // The issue rules this explicitly: a genuinely nameless clearance is a data question, and a
   // placeholder is how a data question stops being visible.
   assert.equal(displayName({ markName: null, title: 'Knockout review — 0 marks', marks: [] }), 'Knockout review — 0 marks')
@@ -149,7 +149,7 @@ test('reads thread on the MARK, so a run whose headline differs still joins its 
 
 // ── the pill names the PRODUCT, and reads it off the row ─────────────────────────────────────────────
 
-test('#463: a read pill names the product from the wire, and a rung on the same row never wins', () => {
+test('a read pill names the product from the wire, and a rung on the same row never wins', () => {
   // THE DEFECT THIS PINS. readLabel used to join `run.product` against the COMPOSER'S MENU, which holds
   // orderable products only, so every archived run missed and fell through to `stageLabel` — a Depth
   // number, rendered at a client on Clearances and on the Result screen's reads strip, for the same run
@@ -181,7 +181,7 @@ test('a run older than the level registry falls back to its date, never an inven
   assert.equal(readLabel(undated), 'runid-abcdef', 'the id prefix, which at least distinguishes two undated reads')
 })
 
-test('#275: readsFor and marksOf order on the SAME key — two surfaces must not disagree about "current"', () => {
+test('readsFor and marksOf order on the SAME key — two surfaces must not disagree about "current"', () => {
   // There were two comparators, both on `date`, in two modules. Fixing one would have left the
   // Clearances list and the Result screen's reads strip disagreeing about which read is current — the
   // defect removes, relocated rather than fixed. There is one now, and this pins that.
@@ -203,7 +203,7 @@ test('#275: readsFor and marksOf order on the SAME key — two surfaces must not
 // the question mark landed after a paragraph and the sentence explaining what retiring does — that the
 // report links keep working and "Show retired" brings it back — was unreadable at the moment he was
 // being asked to confirm.
-test('2077 a long name is bounded before it goes into a confirm, and a real mark is untouched', () => {
+test('a long name is bounded before it goes into a confirm, and a real mark is untouched', () => {
   const paragraph = 'I have a new product for bouncy bricks made of a composite from recycled material. '
     + 'It makes bricks that can be used to build a house that its bouncy so that it can flex in the wind.'
 

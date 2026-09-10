@@ -22,7 +22,7 @@ import { classify, report } from "../../scripts/main-health.mjs";
 const step = (conclusion) => ({ conclusion });
 const run = (conclusion, jobs) => ({ conclusion, jobs });
 
-test("#1874 a job that failed having executed ZERO steps is could-not-look, and does not block", () => {
+test("a job that failed having executed ZERO steps is could-not-look, and does not block", () => {
   const c = classify(run("failure", [
     { name: "macOS — the offline suite, the provider cores, and the demo", conclusion: "failure", steps: [] },
     { name: "test", conclusion: "skipped", steps: [] },
@@ -35,13 +35,13 @@ test("#1874 a job that failed having executed ZERO steps is could-not-look, and 
     "could-not-look was reported as if it were a green — the run proved nothing and must say so");
 });
 
-test("#1874 a job that failed having executed steps is RED and blocks", () => {
+test("a job that failed having executed steps is RED and blocks", () => {
   const c = classify(run("failure", [{ name: "test", conclusion: "failure", steps: [step("success"), step("failure")] }]));
   assert.equal(c.state, "red");
   assert.equal(report(c, {}).block, true);
 });
 
-test("#1874 THE ASYMMETRY: a real failure beside an allocation failure is RED, not could-not-look", () => {
+test("THE ASYMMETRY: a real failure beside an allocation failure is RED, not could-not-look", () => {
   // The expensive mistake. A run can carry both, and treating the pair as "could not look" because one
   // of them never started would wave a broken main straight through.
   const c = classify(run("failure", [
@@ -52,7 +52,7 @@ test("#1874 THE ASYMMETRY: a real failure beside an allocation failure is RED, n
   assert.equal(report(c, {}).block, true, "a genuine regression was waved through because another job never started");
 });
 
-test("#1874 an UNREADABLE step list is red, never could-not-look", () => {
+test("an UNREADABLE step list is red, never could-not-look", () => {
   // `executedSteps` answers null when there is no list to count, and null is not zero. Rendering it as
   // "never started" would invent an infrastructure diagnosis out of a permissions error or a payload
   // change — the same lie in the other direction, and the safe way to be wrong is to block.
@@ -61,7 +61,7 @@ test("#1874 an UNREADABLE step list is red, never could-not-look", () => {
   assert.equal(report(c, {}).block, true);
 });
 
-test("#1874 a green run is green, and the classifier does not invent failures", () => {
+test("a green run is green, and the classifier does not invent failures", () => {
   const c = classify(run("success", [{ name: "test", conclusion: "success", steps: [step("success")] }]));
   assert.equal(c.state, "green");
   assert.equal(report(c, {}).block, false);

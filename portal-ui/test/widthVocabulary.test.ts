@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 
 const dir = (rel: string) => fileURLToPath(new URL(rel, import.meta.url))
 
-test('2086: NO screen states a width literal of its own — the module is the one author', () => {
+test('NO screen states a width literal of its own — the module is the one author', () => {
   const screens = readdirSync(dir('../src/screens')).filter((f) => f.endsWith('.tsx'))
   assert.ok(screens.length >= 10, `only ${screens.length} screens found — the walker broke, not the tree`)
   const offenders: string[] = []
@@ -29,7 +29,7 @@ test('2086: NO screen states a width literal of its own — the module is the on
     'a screen re-grew its own width literal — width is a zone decision; add or reuse a class in base.css')
 })
 
-test('2086: the vocabulary the screens compose actually exists in the module', () => {
+test('the vocabulary the screens compose actually exists in the module', () => {
   // Anti-vacuity: the arm above would also pass on a tree where the classes were deleted and every
   // screen simply lost its cap — full-width prose everywhere, silently.
   const css = readFileSync(dir('../src/base.css'), 'utf8')

@@ -184,12 +184,20 @@ function accountKeyFor(args, scope) {
 function accountFor(key, { scope, now }) {
   if (!key) return null;
   let profile = null;
-  try { profile = loadProfiles().get(key) ?? null; } catch { return null; }   // unreadable roster ⇒ say nothing
+  // ON A MISS THE ROSTER IS READ AGAIN, the way start_run's check does it (driver/enqueue-schema.mjs).
+  // The cache behind `loadProfiles()` is filled once per process, so a company created in the portal
+  // after the door started was answered with no account at all. A hit costs nothing extra; a miss reads
+  // the store, and the new company's projects are then walked against that same fresh roster.
+  let fresh = null;
+  try {
+    profile = loadProfiles().get(key) ?? null;
+    if (!profile) { fresh = loadProfiles({ force: true }); profile = fresh.get(key) ?? null; }
+  } catch { return null; }   // unreadable roster ⇒ say nothing
   if (!profile || profile.key === "generic") return null;
 
   let projects = [];
   try {
-    for (const [, ov] of loadProjects()) {
+    for (const [, ov] of loadProjects(fresh ? { profiles: fresh, force: true } : {})) {
       if (ov.archived || ov.customerKey !== key) continue;
       projects.push({ key: ov.projectKey, name: ov.projectName });
     }
@@ -268,7 +276,9 @@ function allowanceFor(profile, { scope, now }) {
   // The queue dirs the runner drains — the ledger sits beside each of them (usage-ledger.mjs).
   try { usage = accountUsage({ queueDirs: config.queueDirs, account: profile.key, now }); } catch { usage = null; }
   const shared = {
-    capped: scope?.kind === "account",
+    // Capped means the daily allowance binds this session: an account session, except a person with
+    // access to everything, whose jobs are never stamped for the cap (shared/scope.mjs authorize).
+    capped: scope?.kind === "account" && scope?.everything !== true,
     dailyRuns,
     monthlyRuns: caps?.monthlyRuns ?? null,
     maxQueued: caps?.maxQueued ?? null,
@@ -311,7 +321,8 @@ export function describeOptions(args = {}, { scope, now = Date.now() } = {}) {
   const accountsGranted = !account && Array.isArray(granted) && granted.length
     ? granted.map((k) => {
       let name = null;
-      try { name = loadProfiles().get(k)?.name ?? null; } catch { /* roster unreadable ⇒ the key alone */ }
+      // a miss re-reads the store, as accountFor does — a company granted since the door started has a name
+      try { name = (loadProfiles().get(k) ?? loadProfiles({ force: true }).get(k))?.name ?? null; } catch { /* roster unreadable ⇒ the key alone */ }
       return { profileKey: k, name };
     })
     : null;

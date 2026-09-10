@@ -14,7 +14,7 @@
 // values; what changes is that it arrives through the call instead of being authored as a file, which
 // is what lets the joins below run at write time.
 //
-// ── WHAT THIS DOES *NOT* CONVERT, AND IT IS AN OWNER RULING, NOT AN OVERSIGHT ──────────────────────
+// ── WHAT THIS DOES *NOT* CONVERT, AND IT IS A RULING, NOT AN OVERSIGHT ──────────────────────
 //
 // The per-finding write-ups are NOT rendered from `findings.json`. `stages.mjs`' contract element for
 // them classes the second authoring `mechanical:code-rendered` and its `why` records ruling D3 on
@@ -465,7 +465,7 @@ export function driverReadsFor(runDir) {
  * THE STATE THAT ENUMERATION MISSED is the corrective pass. `prepareDeclinationSpec` runs AGAIN before
  * it, and the surface can have grown in between, so the corrective pass is ordered against a LARGER owed
  * set than the main pass answered. If that call is refused, `rollbackCorrectivePass` restores the
- * pre-corrective `findings.json` and — by T3b's owner ruling, deliberately — THE RUN DELIVERS. The
+ * pre-corrective `findings.json` and — by T3b's ruling, deliberately — THE RUN DELIVERS. The
  * document that ships satisfied the OLD owed set; the records added since are unaccounted, and no
  * acceptance boundary ever saw a call about them, because the only call that was ordered against them
  * was the one that got refused.

@@ -54,7 +54,7 @@ const sources = () => {
   return all === null ? null : all.filter((f) => f.endsWith(".mjs") && !f.includes("/test/"));
 };
 
-test("#911 no `output:` field is built from the forgiving fileMeta", (t) => {
+test("no `output:` field is built from the forgiving fileMeta", (t) => {
   const files = sources();
   if (files === null) return t.skip(skipReason(GUARD));
   const offenders = [];
@@ -71,7 +71,7 @@ test("#911 no `output:` field is built from the forgiving fileMeta", (t) => {
     + offenders.join("\n  "));
 });
 
-test("#911 the guard can actually see the tree it claims to check", (t) => {
+test("the guard can actually see the tree it claims to check", (t) => {
   // The assertion above passes just as well over an empty file list, which is the failure this round
   // kept finding: a check that stopped looking reads identically to one that found nothing.
   const files = sources();
@@ -81,7 +81,7 @@ test("#911 the guard can actually see the tree it claims to check", (t) => {
   assert.ok(files.some((f) => f.startsWith("mcp-server/")), "the mcp-server writers are in scope too");
 });
 
-test("#911 the pattern it bans is the pattern that was actually there", () => {
+test("the pattern it bans is the pattern that was actually there", () => {
   // Pinned to the literal offending line from pipeline.mjs before the fix, so the regex answers to a
   // real defect rather than to my idea of one. Loosen the pattern later and this fails.
   assert.match("    output: ok ? fileMeta(out) : undefined,", BANNED,

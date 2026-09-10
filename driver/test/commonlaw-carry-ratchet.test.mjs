@@ -36,7 +36,7 @@ const R1 = (over = {}) => ({
   totals: { retrieved: 2116, unreasoned: 1609, cells_with_candidates: 292, cells_with_reasoned_row: 39, ...over },
 });
 
-test("#703 each rate ships the arithmetic behind it, never a bare percentage", () => {
+test("each rate ships the arithmetic behind it, never a bare percentage", () => {
   const r = reconciliationRates(R1());
   assert.equal(r.candidates.reconciled, 507);
   assert.equal(r.candidates.retrieved, 2116);
@@ -47,7 +47,7 @@ test("#703 each rate ships the arithmetic behind it, never a bare percentage", (
     "a floor over a rate whose numerator and denominator are not reported is a floor nobody can audit");
 });
 
-test("#703 an undefined rate is null, never 0 — a run with nothing to reconcile has not failed", () => {
+test("an undefined rate is null, never 0 — a run with nothing to reconcile has not failed", () => {
   const r = reconciliationRates({ computable: true, totals: { retrieved: 0, unreasoned: 0, cells_with_candidates: 0, cells_with_reasoned_row: 0 } });
   assert.equal(r.candidates.rate, null);
   assert.equal(r.cells.rate, null);
@@ -56,14 +56,14 @@ test("#703 an undefined rate is null, never 0 — a run with nothing to reconcil
   assert.deepEqual(v.trips, []);
 });
 
-test("#703 THE RULING'S POINT: today's measured run sits AT the floor and does not trip", () => {
+test("THE RULING'S POINT: today's measured run sits AT the floor and does not trip", () => {
   // If this went red the gate would be the always-fires mode the ruling refused. The floor IS today's
   // number, so today's number passes — and only a regression from here trips.
   const v = reconciliationVerdict(R1(), FLOOR);
   assert.equal(v.state, "at-or-above-floor", `seeded floor must not fire on the run it was seeded from: ${JSON.stringify(v.trips)}`);
 });
 
-test("#703 …and it DOES bite: one candidate less reconciled trips the candidates arm", () => {
+test("…and it DOES bite: one candidate less reconciled trips the candidates arm", () => {
   // The other degenerate mode. A ratchet that cannot go red is decoration.
   const v = reconciliationVerdict(R1({ unreasoned: 1610 }), FLOOR);
   assert.equal(v.state, "below-floor");
@@ -73,19 +73,19 @@ test("#703 …and it DOES bite: one candidate less reconciled trips the candidat
   assert.match(v.trips[0].label, /share of retrieved candidates reconciled/);
 });
 
-test("#703 one cell less rowed trips the cells arm, independently", () => {
+test("one cell less rowed trips the cells arm, independently", () => {
   const v = reconciliationVerdict(R1({ cells_with_reasoned_row: 38 }), FLOOR);
   assert.equal(v.state, "below-floor");
   assert.deepEqual(v.trips.map((t) => t.metric), ["cells"],
     "the two arms are separate: a cells regression must not hide behind a healthy candidates rate");
 });
 
-test("#703 IMPROVEMENT never trips — the ratchet only looks downward", () => {
+test("IMPROVEMENT never trips — the ratchet only looks downward", () => {
   const v = reconciliationVerdict(R1({ unreasoned: 800, cells_with_reasoned_row: 250 }), FLOOR);
   assert.equal(v.state, "at-or-above-floor");
 });
 
-test("#703 an UNCOMPUTABLE trace is unmeasured, never below-floor", () => {
+test("an UNCOMPUTABLE trace is unmeasured, never below-floor", () => {
   // The absence-as-value shape this round spent the day removing: a run whose grid never parsed has no
   // measurement, and reporting "worse than floor" for a missing number invents a regression.
   const v = reconciliationVerdict({ computable: false, reason: "no common-law-grid.json on this run" }, FLOOR);
@@ -94,13 +94,13 @@ test("#703 an UNCOMPUTABLE trace is unmeasured, never below-floor", () => {
   assert.deepEqual(v.trips, []);
 });
 
-test("#703 a missing floor is 'no-floor', not a silent pass", () => {
+test("a missing floor is 'no-floor', not a silent pass", () => {
   const v = reconciliationVerdict(R1(), null);
   assert.equal(v.state, "no-floor");
   assert.deepEqual(v.trips, [], "and it does not invent trips it cannot compute");
 });
 
-test("#703 the committed floor states its provenance — a floor from nowhere ratchets against nothing", () => {
+test("the committed floor states its provenance — a floor from nowhere ratchets against nothing", () => {
   assert.match(FLOOR.seeded.date, /^\d{4}-\d{2}-\d{2}$/, "dated");
   assert.ok(FLOOR.seeded.round, "names the round it was measured on");
   for (const k of ["candidates", "cells"]) {
@@ -111,7 +111,7 @@ test("#703 the committed floor states its provenance — a floor from nowhere ra
   }
 });
 
-test("#703 a floor may never sit ABOVE the counts it was seeded from", () => {
+test("a floor may never sit ABOVE the counts it was seeded from", () => {
   // How the always-fires mode nearly arrived: the cells floor was rounded to nearest and landed at
   // 0.133562 over a measured 39/292 = 0.1335616…, so the seeded floor tripped on its own seed. Rates
   // are truncated DOWNWARD. This assertion is the one that catches it, and it caught it.
@@ -122,7 +122,7 @@ test("#703 a floor may never sit ABOVE the counts it was seeded from", () => {
   }
 });
 
-test("#703 the floor's stated counts REPRODUCE its stated rate", () => {
+test("the floor's stated counts REPRODUCE its stated rate", () => {
   // The floor file is two numbers plus the arithmetic behind them. If they disagree, one is a typo and
   // the ratchet is calibrated to a number nobody measured.
   const c = FLOOR.candidates, k = FLOOR.cells;

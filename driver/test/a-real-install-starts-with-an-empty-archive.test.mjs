@@ -85,7 +85,7 @@ const publishInto = async ({ runId, pool }) => {
 };
 const freshPool = () => mkdtempSync(join(tmpdir(), "seed-pool-arm-"));
 
-test("277 a pool seeded before the other demos shipped is brought up to the package's set", async () => {
+test("a pool seeded before the other demos shipped is brought up to the package's set", async () => {
   const pool = freshPool();
   // EXACTLY THE SHAPE THAT WAS FOUND: one run, published when `demo/` held one child, under a runId this
   // package no longer ships.
@@ -104,7 +104,7 @@ test("277 a pool seeded before the other demos shipped is brought up to the pack
     "the run that was already published was removed — an upgrade must add, never delete");
 });
 
-test("277 an upgrade that has nothing to add says so, rather than reporting a bare zero", async () => {
+test("an upgrade that has nothing to add says so, rather than reporting a bare zero", async () => {
   const pool = freshPool();
   await seedPool({ pool, examplesDir: DEMO_DIR, republish: publishInto });
   const again = await seedPool({ pool, examplesDir: DEMO_DIR, republish: publishInto });
@@ -114,7 +114,7 @@ test("277 an upgrade that has nothing to add says so, rather than reporting a ba
     `"seeded 0" was returned with no sentence saying why — the number is true and reads as a failure`);
 });
 
-test("277 every product the package ships gets an example, not just the first", async () => {
+test("every product the package ships gets an example, not just the first", async () => {
   // The count is derived from the container rather than written down: a fifth demo landing must not need
   // this arm edited, and must not pass it by accident either.
   const { frozenSamples } = await import("../publish/seed-pool.mjs");

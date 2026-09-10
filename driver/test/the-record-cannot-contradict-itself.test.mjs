@@ -55,7 +55,7 @@ const withRun = async (prefix, fn) => {
 
 // ── ───────────────────────────────────────────────────────────────────────────────────────────
 
-test("#1061 THE INCIDENT: the seat says success and writes nothing — the row's verdict is the DRIVER's", async () => {
+test("THE INCIDENT: the seat says success and writes nothing — the row's verdict is the DRIVER's", async () => {
   // 2026-08-16 15:08–15:25, knockout-assess: three attempts, status=ok, summary="success", wrote:false,
   // fail=missing_file. The honest half of the row was always there. The headline was not.
   await withRun("rec1061-a-", async (dir) => {
@@ -84,7 +84,7 @@ test("#1061 THE INCIDENT: the seat says success and writes nothing — the row's
   });
 });
 
-test("#1061 THE 60-RECORD SUB-SHAPE: it wrote the file, the file was rejected, and the row still says failed", async () => {
+test("THE 60-RECORD SUB-SHAPE: it wrote the file, the file was rejected, and the row still says failed", async () => {
   // Round 892dd88e: 30 cards × 2 attempts, ALL sixty carrying status:"ok", summary:"success", code:0,
   // wrote:true, output.present:true beside a populated `fail`. A check keyed on `wrote` sees none of them.
   await withRun("rec1061-b-", async (dir) => {
@@ -105,7 +105,7 @@ test("#1061 THE 60-RECORD SUB-SHAPE: it wrote the file, the file was rejected, a
   });
 });
 
-test("#1061 CONTROL: an honestly-reported failure is not a contradiction", async () => {
+test("CONTROL: an honestly-reported failure is not a contradiction", async () => {
   // The discriminating control. `selfReportContradicted` must mean "the engine claimed success", not
   // "this attempt failed" — a flag that fires on every failure carries no information at all.
   await withRun("rec1061-c-", async (dir) => {
@@ -124,7 +124,7 @@ test("#1061 CONTROL: an honestly-reported failure is not a contradiction", async
   });
 });
 
-test("#1061 CONTROL: a clean success says ok and claims no contradiction", async () => {
+test("CONTROL: a clean success says ok and claims no contradiction", async () => {
   await withRun("rec1061-d-", async (dir) => {
     const out = join(dir, "o.md");
     const r = await withEngine("fake-clean", async () => { writeFileSync(out, "x"); return claimsSuccess(); },
@@ -150,7 +150,7 @@ const BLOCKING_REVIEW = [
   "- every planned channel was swept",
 ].join("\n");
 
-test("#1065 the grounds a BLOCKING sidecar lacked were already parsed by a function the pipeline imports", () => {
+test("the grounds a BLOCKING sidecar lacked were already parsed by a function the pipeline imports", () => {
   // The whole of this fix. `parseCorrections` is imported at pipeline.mjs:33 and is what the corrective
   // pass is handed; it walks the same lines `countCitedDefects` counts. Nothing needed extracting — the
   // two halves were simply never joined, which is this family's mechanism stated in one sentence.
@@ -161,7 +161,7 @@ test("#1065 the grounds a BLOCKING sidecar lacked were already parsed by a funct
     "the count and the list must come from one walk — a second copy of that walk is how the two drift apart");
 });
 
-test("#1065 populating a BLOCKING sidecar's reasons moves NO client-visible text", () => {
+test("populating a BLOCKING sidecar's reasons moves NO client-visible text", () => {
   // The safety claim this change rests on, pinned so it cannot quietly stop being true. Both client
   // sentences are fixed strings on BLOCKING and neither reads `reasons`. If someone later makes BLOCKING
   // render its reasons, this arm reds — and that is the signal that the sidecar change now reaches a
@@ -176,7 +176,7 @@ test("#1065 populating a BLOCKING sidecar's reasons moves NO client-visible text
   assert.deepEqual(derived.conditions, grounds, "…and the grounds DO reach the record, which is the point");
 });
 
-test("#1065 the sidecar writer carries the grounds and refuses an empty BLOCKING", () => {
+test("the sidecar writer carries the grounds and refuses an empty BLOCKING", () => {
   // Source-anchored, because `writeVerdictSidecar` is a closure inside the delivery function and cannot be
   // called from here. The two claims asserted are the ones a later edit would break silently: that the
   // BLOCKING arm reads the review at all, and that the invariant is stated over the value WRITTEN rather
@@ -211,7 +211,7 @@ test("#1065 the sidecar writer carries the grounds and refuses an empty BLOCKING
 const finding = (ordinal, mark, extra = {}) => ({ ordinal, mark, owner: { name: `${mark} Holdings` }, disposition: "live", band: "HIGH", ...extra });
 const flag = (n, text, ordinals = null) => ({ n, kind: "fact", typed: true, text, ordinals });
 
-test("#1067 THE DEFECT: a flagged finding that is GONE is reported as removed, by name", () => {
+test("THE DEFECT: a flagged finding that is GONE is reported as removed, by name", () => {
   // The incident: a corrective pass, given a flagged fact (a named-owner use), DELETED the fact rather
   // than correcting it. The flag went away and the report did not become true.
   const pre = { findings: [finding(4, "DELPHI"), finding(9, "VENZY")] };
@@ -224,7 +224,7 @@ test("#1067 THE DEFECT: a flagged finding that is GONE is reported as removed, b
     "…and it names WHICH fact left the report, because a reader cannot act on the bare fact that one did");
 });
 
-test("#1067 CONTROL: a finding that was actually CORRECTED still reads findings-changed", () => {
+test("CONTROL: a finding that was actually CORRECTED still reads findings-changed", () => {
   // Without this arm the fix could be "call everything a removal", which protects nobody and buries the
   // real ones under noise.
   const pre = { findings: [finding(4, "DELPHI", { disposition: "live" })] };
@@ -234,7 +234,7 @@ test("#1067 CONTROL: a finding that was actually CORRECTED still reads findings-
   assert.deepEqual(row.removed, [], "nothing was removed, and the field says so rather than being absent");
 });
 
-test("#1067 a removal WINS over a change on the same flag", () => {
+test("a removal WINS over a change on the same flag", () => {
   // The precedence that decides whether this is visible in practice: a flag naming several findings where
   // one vanished and the others moved is a removal. Reporting the majority outcome buries it exactly where
   // it was buried before.
@@ -245,7 +245,7 @@ test("#1067 a removal WINS over a change on the same flag", () => {
   assert.deepEqual(row.removed, ["DELPHI"], "only the one that actually left, not every finding the flag named");
 });
 
-test("#1067 the recheck's table names the deletion and says it is a failure until ruled otherwise", () => {
+test("the recheck's table names the deletion and says it is a failure until ruled otherwise", () => {
   const pre = { findings: [finding(4, "DELPHI")] };
   const post = { findings: [] };
   const applied = buildCorrectionsApplied([flag(1, "Finding 4 — DELPHI's owner use is unsupported", [4])], pre, post);
@@ -258,7 +258,7 @@ test("#1067 the recheck's table names the deletion and says it is a failure unti
     "…including the legitimate move, or the note reads as 'never remove anything' and gets ignored");
 });
 
-test("#1067 the corrective pass is TOLD that deletion is not an available move", () => {
+test("the corrective pass is TOLD that deletion is not an available move", () => {
   // The constraint belongs where the moves are chosen. The recheck is the second net, not the first.
   const worklist = correctionsWorklist([flag(1, "Finding 4 — DELPHI's owner use is unsupported", [4])]);
   assert.match(worklist, /REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS FLAG/);

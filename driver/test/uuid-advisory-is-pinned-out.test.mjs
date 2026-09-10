@@ -39,14 +39,14 @@ const atLeast = (v, min) => {
   return true;
 };
 
-test("#1722 the override is declared, and it names a range the advisory does not reach", () => {
+test("the override is declared, and it names a range the advisory does not reach", () => {
   const pkg = readJSON(join(ROOT, "package.json"));
   const pin = pkg.overrides?.uuid;
   assert.ok(pin, "the `uuid` override is gone — `exceljs` resolves uuid@8 again and the advisory is back");
   assert.ok(atLeast(pin, FIXED_AT), `overrides.uuid is "${pin}", which still admits a version the advisory covers (<11.1.1)`);
 });
 
-test("#1722 the LOCKFILE — what CI installs from — resolves uuid forward, and the entry is PRESENT", () => {
+test("the LOCKFILE — what CI installs from — resolves uuid forward, and the entry is PRESENT", () => {
   const lock = readJSON(join(ROOT, "package-lock.json"));
   const entry = lock.packages?.["node_modules/uuid"];
 
@@ -59,7 +59,7 @@ test("#1722 the LOCKFILE — what CI installs from — resolves uuid forward, an
     `the lockfile resolves uuid@${entry.version}; the advisory covers everything below 11.1.1`);
 });
 
-test("#1722 the pin did not cost the workbook writer — exceljs is unchanged at 4.x", () => {
+test("the pin did not cost the workbook writer — exceljs is unchanged at 4.x", () => {
   const lock = readJSON(join(ROOT, "package-lock.json"));
   const ex = lock.packages?.["node_modules/exceljs"];
   assert.ok(ex, "exceljs left the tree — the pin was supposed to leave it alone");
@@ -72,7 +72,7 @@ test("#1722 the pin did not cost the workbook writer — exceljs is unchanged at
 // pin stops being needed; a note goes stale in silence, so this asserts the condition instead. When
 // `exceljs` ships a release that takes `uuid >= 11.1.1` on its own, this arm fails and its message says
 // to delete the override — which is the only moment anyone needs to know.
-test("#1722 the pin is still LOAD-BEARING — exceljs has not moved to a safe uuid on its own", () => {
+test("the pin is still LOAD-BEARING — exceljs has not moved to a safe uuid on its own", () => {
   const ex = readJSON(join(ROOT, "node_modules", "exceljs", "package.json"));
   const declared = ex.dependencies?.uuid;
   assert.ok(declared, "exceljs no longer depends on uuid at all — DELETE the `uuid` override from "

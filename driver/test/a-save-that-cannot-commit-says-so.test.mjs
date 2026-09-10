@@ -43,7 +43,7 @@ function workingStore() {
   return root;
 }
 
-test("2005 the refusal reaches the log AS the refusal, not as a fallback-mode parse error", () => {
+test("the refusal reaches the log AS the refusal, not as a fallback-mode parse error", () => {
   const lines = [];
   const commit = makeStoreCommit({ repoRoot: unusableStore(), log: (l) => lines.push(l), what: "profile" });
   assert.throws(() => commit({ files: ["x.json"], message: "m", author: "a@b.test" }),
@@ -57,7 +57,7 @@ test("2005 the refusal reaches the log AS the refusal, not as a fallback-mode pa
   assert.doesNotMatch(said, /usage: git diff/, "and twenty lines of diff usage is not either");
 });
 
-test("2005 the audit trail records the gap — a create that did not persist does not read like one that did", () => {
+test("the audit trail records the gap — a create that did not persist does not read like one that did", () => {
   const rows = [];
   const r = commitWithAuditRow({
     audit: (row) => { rows.push(row); return null; },
@@ -79,7 +79,7 @@ test("2005 the audit trail records the gap — a create that did not persist doe
     "a reader asking what really happened must be able to tell a save from a half-save");
 });
 
-test("2005 THE CONTROL — a working store still commits, and writes NO failure row", () => {
+test("THE CONTROL — a working store still commits, and writes NO failure row", () => {
   // Three arms above assert a failure. A preflight that refused every store would satisfy all of them
   // while breaking every save on every box, which is a far worse outcome than the bug.
   const root = workingStore();
@@ -99,7 +99,7 @@ test("2005 THE CONTROL — a working store still commits, and writes NO failure 
   assert.equal(porcelain, "", "a committed save leaves no residue — the residue is what blocked sync-skills");
 });
 
-test("2005 the preflight runs BEFORE anything composes a diff", () => {
+test("the preflight runs BEFORE anything composes a diff", () => {
   // Ordering is the whole of defect 1: `git diff --cached` first meant the reader got git's fallback-mode
   // complaint instead of the refusal underneath. Asserted on the source because the ordering is what
   // must not drift back, and a passing run cannot show which command went first.

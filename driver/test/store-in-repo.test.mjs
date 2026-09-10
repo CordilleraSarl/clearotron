@@ -29,7 +29,7 @@ import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, commitWithA
 
 const DRIVER = dirname(fileURLToPath(import.meta.url)).replace(/\/test$/, "");
 
-test("#1454 a store inside its repo is reachable; a sibling is not", () => {
+test("a store inside its repo is reachable; a sibling is not", () => {
   assert.equal(storeInRepo("/srv/store/profiles", "/srv/store").ok, true);
   assert.equal(storeInRepo("/srv/store", "/srv/store").ok, true, "the store may BE the repo root");
   assert.equal(storeInRepo("/srv/store/a/b/c", "/srv/store").ok, true, "any depth below it");
@@ -37,7 +37,7 @@ test("#1454 a store inside its repo is reachable; a sibling is not", () => {
   assert.equal(storeInRepo("/srv", "/srv/store").ok, false, "the PARENT is outside — git adds downward only");
 });
 
-test("#1454 a shared PREFIX is not containment — /srv/storeX is outside /srv/store", () => {
+test("a shared PREFIX is not containment — /srv/storeX is outside /srv/store", () => {
   // The `startsWith(root)` bug, which is what the launcher's lexical test was one character away from.
   // `/srv/store-backup` shares every byte of `/srv/store` and is a different tree; reading it as contained
   // would pass exactly the deployment that is one careless copy away from committing into the wrong repo.
@@ -46,7 +46,7 @@ test("#1454 a shared PREFIX is not containment — /srv/storeX is outside /srv/s
   assert.equal(storeInRepo("/srv/store/profiles", "/srv/store/").ok, true, "a trailing slash on the root is the same root");
 });
 
-test("#1454 a SYMLINKED store that really is inside is reachable — the refusal must not fire on a lexical miss", () => {
+test("a SYMLINKED store that really is inside is reachable — the refusal must not fire on a lexical miss", () => {
   // These stores are deployed behind symlinked paths (/opt/cordillera/...). `resolve()` is lexical, so a
   // store genuinely inside the repository resolves to a string that does not look like it — and a false
   // refusal here is an OUTAGE. The predicate asks the filesystem before it refuses.
@@ -62,7 +62,7 @@ test("#1454 a SYMLINKED store that really is inside is reachable — the refusal
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(dirname(link), { recursive: true, force: true }); }
 });
 
-test("#1454 a symlink pointing OUT of the repo is still refused — the tolerance is not a hole", () => {
+test("a symlink pointing OUT of the repo is still refused — the tolerance is not a hole", () => {
   // The other direction, or the arm above only proves the predicate got weaker. A path INSIDE the repo
   // that resolves outside it is the exact shape a lenient check would wave through.
   const root = mkdtempSync(join(tmpdir(), "sir-root2-"));
@@ -79,7 +79,7 @@ test("#1454 a symlink pointing OUT of the repo is still refused — the toleranc
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(elsewhere, { recursive: true, force: true }); }
 });
 
-test("#1454 a path that does not exist YET is judged lexically — absence is not permission", () => {
+test("a path that does not exist YET is judged lexically — absence is not permission", () => {
   // The tempting rule is "cannot determine ⇒ contained", and it is wrong. A store directory that has not
   // been created is still misconfigured if it names another tree: the service creates it on first save and
   // then fails every commit into it, which is the entire defect. So the filesystem can only OVERTURN a
@@ -92,7 +92,7 @@ test("#1454 a path that does not exist YET is judged lexically — absence is no
   assert.equal(storeInRepo(join(tmpdir(), "sir-nope-9c1", "profiles"), join(tmpdir(), "sir-nope-9c1")).ok, true);
 });
 
-test("#1454 the message names the KNOB to point, not just the fault", () => {
+test("the message names the KNOB to point, not just the fault", () => {
   const m = storeOutsideRepoMessage({ storeVar: "CLEAROTRON_CUSTOMERS_DIR", storeDir: "/a", repoVar: "PROFILE_REPO_ROOT", repoRoot: "/b" });
   assert.match(m, /CLEAROTRON_CUSTOMERS_DIR \(\/a\)/);
   assert.match(m, /PROFILE_REPO_ROOT \(\/b\)/);
@@ -113,7 +113,7 @@ function bootWithSplitStore(script, env) {
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(store, { recursive: true, force: true }); }
 }
 
-test("#1454 profile-service REFUSES TO START on a store it could never commit — the gap that caused the incident", () => {
+test("profile-service REFUSES TO START on a store it could never commit — the gap that caused the incident", () => {
   // Before this, PROFILE_REPO_ROOT unset resolved to the PRODUCT checkout while the store pointed at the
   // config store. Every save wrote, every `git add` failed with "outside repository", and the orphans
   // blocked the store sync until a human removed them.
@@ -129,7 +129,7 @@ test("#1454 profile-service REFUSES TO START on a store it could never commit �
   assert.match(r.stderr, /PROFILE_REPO_ROOT/, "and it must name the knob to point");
 });
 
-test("#1454 recipe-service still refuses too — the control that was already right is not traded away", () => {
+test("recipe-service still refuses too — the control that was already right is not traded away", () => {
   const { r } = bootWithSplitStore("recipe-service.mjs", (store, root) => ({
     RECIPE_AUTH_DISABLED: "1", RECIPE_DEV: "1",
     CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
@@ -141,7 +141,7 @@ test("#1454 recipe-service still refuses too — the control that was already ri
   assert.match(r.stderr, /RECIPE_REPO_ROOT/);
 });
 
-test("#1454 a service with a CONTAINED store does not refuse — the guard can pass, or it proves nothing", () => {
+test("a service with a CONTAINED store does not refuse — the guard can pass, or it proves nothing", () => {
   // The positive control. A guard that has only ever been seen refusing is indistinguishable from one that
   // refuses everything, and that version would take the config surface down on every correct deployment.
   const root = mkdtempSync(join(tmpdir(), "sir-ok-"));
@@ -168,7 +168,7 @@ function portalEnv(extra) {
     PORTAL_AUTH_MODE: "local", PORTAL_LOCAL_USER: "dev@local",
     PORTAL_LOCAL_CREDENTIAL: join(mkdtempSync(join(tmpdir(), "sir-cred-")), "credential.json"),
     CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
-    PORTAL_SECRET: "sir-test-secret", PORTAL_STAFF_DOMAINS: "example-firm.com",
+    PORTAL_SECRET: "sir-test-secret",
     CLEAROTRON_ACCESS_FILE: grants,
     CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "sir-pool-")),
     CLEAROTRON_WORK_DIR: mkdtempSync(join(tmpdir(), "sir-ws-")),
@@ -177,7 +177,7 @@ function portalEnv(extra) {
   };
 }
 
-test("#1454 the PORTAL keeps serving and takes the CONFIG SURFACE down — this file's own ruling, not a fatal", () => {
+test("the PORTAL keeps serving and takes the CONFIG SURFACE down — this file's own ruling, not a fatal", () => {
   // The portal process is what actually orphaned the file on the test box. It must not exit: "a settings
   // surface that cannot start must not take the whole portal down — clearances and reports are the
   // load-bearing product." So the profile bootstrap throws, the existing catch logs the reason once, and
@@ -197,7 +197,7 @@ test("#1454 the PORTAL keeps serving and takes the CONFIG SURFACE down — this 
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(store, { recursive: true, force: true }); }
 });
 
-test("#1454 an unreachable RECIPE store turns saved searches off WITHOUT taking profiles down", () => {
+test("an unreachable RECIPE store turns saved searches off WITHOUT taking profiles down", () => {
   // The two stores are configured independently and `recipeRepoRoot` falls back to the profile repo root,
   // so a correct profile setup can carry an incorrect recipe one. Throwing for the recipe half would land
   // in the same catch and 404 the profile surface too — one misconfiguration, two dead surfaces.
@@ -225,7 +225,7 @@ test("#1454 an unreachable RECIPE store turns saved searches off WITHOUT taking 
 // contract that fixes it. The behaviour they imply is proved by execution against a real git repository
 // in the-audit-row-rides-in-the-commit.test.mjs — this is the unit statement of the rule.
 
-test("#1454 the appender hands back a path to STAGE only when a commit could reach it", () => {
+test("the appender hands back a path to STAGE only when a commit could reach it", () => {
   const repo = mkdtempSync(join(tmpdir(), "audit-repo-"));
   const outside = mkdtempSync(join(tmpdir(), "audit-outside-"));
   try {
@@ -242,7 +242,7 @@ test("#1454 the appender hands back a path to STAGE only when a commit could rea
   } finally { rmSync(repo, { recursive: true, force: true }); rmSync(outside, { recursive: true, force: true }); }
 });
 
-test("#1454 the row is written BEFORE the commit, and the commit carries it", () => {
+test("the row is written BEFORE the commit, and the commit carries it", () => {
   // The order IS the fix, so it is asserted directly rather than inferred from a clean tree: a tree is
   // also clean when the row was never written.
   const seen = [];
@@ -256,7 +256,7 @@ test("#1454 the row is written BEFORE the commit, and the commit carries it", ()
   assert.deepEqual(out, { commit: "sha1", commitError: null });
 });
 
-test("#1454 a commit failure is REPORTED, and the row survives it — the 2026-07-18 fix is not traded away", () => {
+test("a commit failure is REPORTED, and the row survives it — the 2026-07-18 fix is not traded away", () => {
   const rows = [];
   const out = commitWithAuditRow({
     audit: (row) => { rows.push(row); return "/store/_audit.log"; },
@@ -273,7 +273,7 @@ test("#1454 a commit failure is REPORTED, and the row survives it — the 2026-0
   assert.match(out.commitError, /index\.lock exists/);
 });
 
-test("#1454 a SYMLINKED store still stages its row — the file does not exist yet, the directory does", () => {
+test("a SYMLINKED store still stages its row — the file does not exist yet, the directory does", () => {
   // THE ARM THAT WOULD HAVE CAUGHT A SILENT NO-OP IN PRODUCTION. Every `/opt/cordillera/...` store is
   // reached through a symlink. Asking `storeInRepo` about the audit FILE (which does not exist at wiring
   // time, so it cannot resolve) instead of its DIRECTORY (which does) returns false there: the boot guard
@@ -306,7 +306,7 @@ test("#1454 a SYMLINKED store still stages its row — the file does not exist y
 // The divergent fallback is also the dangerous one: the product checkout is the hourly `--ff-only`
 // deploy target, so a resolution that lands there does not fail — it commits saved searches into the
 // deploy branch and blocks the next deploy.
-test("#1566 the repo root is resolved in one stated order, and says which name answered", () => {
+test("the repo root is resolved in one stated order, and says which name answered", () => {
   const env = { RECIPE_REPO_ROOT: "/named/outright", PROFILE_REPO_ROOT: "/config/store" };
   const first = resolveStoreRepoRoot({ names: ["RECIPE_REPO_ROOT", "PROFILE_REPO_ROOT"], fallback: "/product/checkout", env });
   assert.equal(first.root, "/named/outright", "the operator naming the tree wins");
@@ -327,7 +327,7 @@ test("#1566 the repo root is resolved in one stated order, and says which name a
   assert.deepEqual(third.tried, ["RECIPE_REPO_ROOT", "PROFILE_REPO_ROOT"], "the order it looked in, for the refusal message");
 });
 
-test("#1566 an empty or whitespace value is not an answer", () => {
+test("an empty or whitespace value is not an answer", () => {
   // A variable set to "" is how a half-written env file reads, and treating it as an answer would route
   // saves at the empty string — which resolves to the process cwd, an arbitrary tree.
   for (const bad of ["", "   ", "\t"]) {
@@ -337,13 +337,13 @@ test("#1566 an empty or whitespace value is not an answer", () => {
   }
 });
 
-test("#1566 with no fallback and nothing set, it refuses by NAME rather than guessing", () => {
+test("with no fallback and nothing set, it refuses by NAME rather than guessing", () => {
   const r = resolveStoreRepoRoot({ names: ["RECIPE_REPO_ROOT", "PROFILE_REPO_ROOT"], env: {} });
   assert.equal(r.root, null, "no root is not the empty string and not the cwd");
   assert.deepEqual(r.tried, ["RECIPE_REPO_ROOT", "PROFILE_REPO_ROOT"]);
 });
 
-test("#1566 both doors read the same order — asserted against the source, not against my memory of it", () => {
+test("both doors read the same order — asserted against the source, not against my memory of it", () => {
   // The two call sites are what actually diverged, so the arm has to be about them. A shared function
   // both files import proves nothing if one of them passes a different list.
   const here = dirname(fileURLToPath(import.meta.url));
@@ -368,14 +368,14 @@ test("#1566 both doors read the same order — asserted against the source, not 
 //
 // The path module is injected for exactly that reason: a guard that can only be exercised on Windows is
 // one nobody here will ever see fail, so it would have gone in green and stayed green.
-test("278 a Windows store inside its repository root is inside it", () => {
+test("a Windows store inside its repository root is inside it", () => {
   const W = { relative: win32.relative, isAbsolute: win32.isAbsolute };
   assert.equal(within("C:\\Users\\k\\config\\recipes", "C:\\Users\\k\\config", W), true,
     "the reported case: a child folder read as outside its own parent");
   assert.equal(within("C:\\Users\\k\\config", "C:\\Users\\k\\config", W), true, "a root contains itself");
 });
 
-test("278 …and the three it must still refuse, so the fix is not merely permissive", () => {
+test("…and the three it must still refuse, so the fix is not merely permissive", () => {
   // Without these the arm above is satisfied by a predicate that answers true to everything, which would
   // turn a containment guard into a decoration while reading as a fix.
   const W = { relative: win32.relative, isAbsolute: win32.isAbsolute };
@@ -385,14 +385,14 @@ test("278 …and the three it must still refuse, so the fix is not merely permis
   assert.equal(within("C:\\Users", "C:\\Users\\k\\config", W), false, "a parent is not inside its child");
 });
 
-test("278 Windows path comparison is case-insensitive, which a prefix test could not have been", () => {
+test("Windows path comparison is case-insensitive, which a prefix test could not have been", () => {
   // Not a bonus: an installer who typed a drive letter in the other case would have been refused by the
   // old test even after the separator was fixed.
   const W = { relative: win32.relative, isAbsolute: win32.isAbsolute };
   assert.equal(within("c:\\users\\k\\config\\recipes", "C:\\Users\\k\\config", W), true);
 });
 
-test("278 the posix behaviour this replaced is unchanged", () => {
+test("the posix behaviour this replaced is unchanged", () => {
   const P = { relative: posix.relative, isAbsolute: posix.isAbsolute };
   assert.equal(within("/srv/cfg/recipes", "/srv/cfg", P), true);
   assert.equal(within("/srv/cfg", "/srv/cfg", P), true);

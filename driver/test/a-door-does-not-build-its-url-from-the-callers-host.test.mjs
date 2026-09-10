@@ -45,7 +45,7 @@ export function doorsBuildingUrlFromTheCaller(files, read) {
   return out;
 }
 
-test("#1928 no door builds its request URL from the caller's Host — the corpus", (ctx) => {
+test("no door builds its request URL from the caller's Host — the corpus", (ctx) => {
   const all = trackedFiles(GUARD, { root: ROOT, pathspec: ["*.mjs"] });
   if (all === null) return ctx.skip(`${GUARD}: not a git checkout — the corpus cannot be read`);
   const files = all.filter((f) => f !== SELF);
@@ -57,7 +57,7 @@ test("#1928 no door builds its request URL from the caller's Host — the corpus
     + "behaviour at all. Use `\"http://localhost\"`, which the portal has always used.");
 });
 
-test("#1928 the detector fires on the shipped shape and spares the configured one", () => {
+test("the detector fires on the shipped shape and spares the configured one", () => {
   const shipped = 'const url = new URL(req.url, `http://${req.headers.host ?? "localhost"}`);';
   const configured = 'const url = new URL(req.url, `http://${host}`);';
   const fixed = 'const url = new URL(req.url, "http://localhost");';

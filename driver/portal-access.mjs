@@ -1,55 +1,97 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// portal-access.mjs — identity → principal for the unified portal. The INNER
-// authorization boundary: CF Access (the edge) proves WHO; this module decides WHAT THEY SEE. Pure
-// decisions over injected inputs (grants object + staff domains) — fail-closed at every edge:
-// an unmapped identity gets NO principal (403 at the door), a cross-account request resolves to 404
-// semantics (never 403 — existence must not leak), and the grants substrate is the SAME file shape
-// the MCP faces read (`CLEAROTRON_ACCESS_FILE`, shared/scope.mjs loadGrants), so portal enrolment and MCP
-// grants stay one roster. Shape and semantics: INSTALL.md §8; examples/grants.example.json.
-import { accountsForEmail } from "../shared/scope.mjs";
-
-// LAST-@ semantics, matching the CF edge verifier (cf-access.mjs) and isFirmDomain (shared/scope.mjs)
-// — the privilege parse must never disagree with the edge parse (review 2026-07-18: a first-@ split
-// classified "x@firm.ch@evil.com" as staff while the edge saw evil.com).
-const domainOf = (email) => { const e = String(email ?? "").toLowerCase(); const i = e.lastIndexOf("@"); return i < 0 ? "" : e.slice(i + 1); };
+// portal-access.mjs — identity → principal for the unified portal. The INNER authorization boundary:
+// the sign-in door proves WHO; this module decides WHAT THEY SEE AND MAY DO. Pure decisions over the
+// grants object — fail-closed at every edge: an unmapped identity gets NO principal (403 at the door), a
+// request outside the person's access resolves to 404 semantics (never 403 — existence must not leak),
+// and the grants substrate is the SAME file the connector reads (`CLEAROTRON_ACCESS_FILE`), resolved by
+// the SAME function (`resolvePerson`, shared/scope.mjs), so the two doors cannot disagree about a person.
+// Shape and semantics: INSTALL.md §8; examples/grants.example.json.
+import { resolvePerson } from "../shared/scope.mjs";
 
 /**
- * makePrincipal({ email, grants, staffDomains }) →
- *   { role: "staff",  email, accounts: "*" }            — firm identity: everything, acting-for allowed
- * | { role: "client", email, accounts: ["foxglade", …] }  — enrolled client: exactly the granted accounts
- * | null                                                — unknown identity: no portal (the door 403s)
- * Staff wins over an (accidental) grants row; a client row with a tenant-wide "*" grant is honored
- * but the role stays client (no staff surfaces).
+ * makePrincipal({ email, grants }) → the person, or null when the address has no access anywhere.
+ *
+ *   { email, everything, permissions: { run, manage }, access, accounts, organisations, genericOrgs, accountOrgs }
+ *
+ * There is no role. What a person may SEE is their access; what they may DO is two switches, asked by
+ * name through `seesEverything`, `mayRun` and `mayManage` below and never through a role word. Nothing
+ * about the part of an address after its `@` admits anyone: the staff-by-domain branch is deleted, and an
+ * address is admitted by its own entry in the grants file.
+ *
+ * `generic` is never in `accounts`. It is not a company: each organisation has its own, it is addressed as
+ * the pair (`account=generic`, `tenant=<organisation>`), and `genericOrgOf` decides it.
  */
-export function makePrincipal({ email, grants = null, staffDomains = [] }) {
-  const e = String(email ?? "").trim().toLowerCase();
-  if (!e || !e.includes("@")) return null;
-  if (e.indexOf("@") !== e.lastIndexOf("@")) return null;   // multi-@ identities are refused outright — no parse to disagree about
-  if (staffDomains.map((d) => String(d).toLowerCase()).includes(domainOf(e)))
-    return { role: "staff", email: e, accounts: "*" };
-  const accounts = accountsForEmail(e, grants);
-  if (accounts === "*") return { role: "client", email: e, accounts };
-  if (Array.isArray(accounts) && accounts.length) {
-    // `generic` is STAFF-ONLY and every route already enforces that (portal-service: the runs listing,
-    // the report route and the LEAK-#9 rule all 404 it for a client). What no route did was stop it
-    // being OFFERED: a tenant-wide grant expands to the full roster, `generic` is in the roster, and it
-    // sorts first — so the brand-owner picker showed it at the top, the sidebar named it as the
-    // client's own account, and choosing it produced "The list could not be loaded" every time.
-    //
-    // Found by resolving the real production grants for the one enrolled client rather than by reading
-    // the route code, which looked correct in isolation. The routes WERE correct; the roster handed to
-    // the picker was not, and a menu whose first item always fails is a defect wherever the refusal is
-    // implemented.
-    //
-    // Filtered here, at the point the identity is decided, so the picker, the sidebar and every route
-    // are working from one list. An explicit grant of `generic` is dropped too: it is not a thing a
-    // client may hold, so honouring it in the menu would only defer the same 404.
-    const visible = accounts.filter((a) => a !== "generic");
-    if (visible.length) return { role: "client", email: e, accounts: visible };
-    return null;   // a client granted nothing BUT generic holds no visible account at all
-  }
-  return null;
+export function makePrincipal({ email, grants = null }) {
+  return resolvePerson(email, grants);
+}
+
+/** Access to the top of the tree: every organisation, every company, every person. */
+export const seesEverything = (p) => p?.everything === true;
+/** Run clearances: start and stop them, inside the person's access. */
+export const mayRun = (p) => p?.permissions?.run === true;
+/** Manage: add people, add companies, change settings, inside the person's access. */
+export const mayManage = (p) => p?.permissions?.manage === true;
+
+/** An organisation's display name: its `name` in the grants file, else its key. */
+export function organisationName(grants, key) {
+  const n = grants?.tenants?.[key]?.name;
+  return typeof n === "string" && n.trim() ? n.trim() : key;
+}
+
+/** An access point as the portal shows it: names attached, keys kept. `everything` carries no key. */
+export function namedPoint(p, grants, companyNames = {}) {
+  if (p.kind === "everything") return { kind: "everything" };
+  if (p.kind === "organisation") return { kind: "organisation", key: p.key, name: organisationName(grants, p.key) };
+  return { kind: "company", key: p.key, name: companyNames[p.key] ?? p.key, org: p.org };
+}
+
+/**
+ * What `/portal/api/me` says about a person's reach and switches — the fields the screens read, so no
+ * screen derives a visibility rule of its own. `organisations` is every organisation the person sees
+ * anything in (a company's heading needs its organisation's name); `genericOrgs` is the ones whose
+ * Generic they see.
+ */
+export function principalView(principal, grants, companyNames = {}) {
+  return {
+    permissions: { run: mayRun(principal), manage: mayManage(principal) },
+    access: (principal.access ?? []).map((p) => namedPoint(p, grants, companyNames)),
+    organisations: (principal.organisations ?? []).map((key) => ({ key, name: organisationName(grants, key) })),
+    accountOrgs: { ...(principal.accountOrgs ?? {}) },
+    genericOrgs: [...(principal.genericOrgs ?? [])],
+  };
+}
+
+/**
+ * May this person read a run, given who it belongs to? The ONE answer for every run-scoped route: the
+ * listing, the report, the summary, the feedback form. `owner` is the run's company key (`generic` when it
+ * had none); `organisation` is the organisation a Generic run was filed under, null for one filed before
+ * organisations existed.
+ *
+ * A company's run: the company must be inside the person's access. A Generic run: the person must see
+ * that organisation's Generic — and an unfiled one is visible only to a person who sees everything, which
+ * is exactly who could read it before.
+ */
+export function mayReadRun(principal, { owner, organisation = null }) {
+  if (!principal) return false;
+  if (owner !== "generic") return principal.accounts === "*" || (Array.isArray(principal.accounts) && principal.accounts.includes(owner));
+  if (seesEverything(principal)) return true;
+  return organisation != null && Array.isArray(principal.genericOrgs) && principal.genericOrgs.includes(organisation);
+}
+
+/**
+ * Does everything `other` holds sit inside `viewer`'s reach? Switches belong to the person, not to an
+ * access point, so a manager may set someone's switches only when that person's whole access is inside
+ * the manager's own — otherwise changing them would change what the person may do somewhere the manager
+ * cannot see.
+ */
+export function reachCovers(viewer, other) {
+  if (seesEverything(viewer)) return true;
+  if (!other || seesEverything(other)) return false;
+  const orgs = viewer?.genericOrgs ?? [];
+  const companies = Array.isArray(viewer?.accounts) ? viewer.accounts : [];
+  return (other.access ?? []).every((p) => p.kind === "organisation" ? orgs.includes(p.key)
+    : p.kind === "company" ? orgs.includes(p.org) || companies.includes(p.key) : false);
 }
 
 export class PortalDeny extends Error {
@@ -57,43 +99,68 @@ export class PortalDeny extends Error {
 }
 
 /**
- * The ONE chokepoint every account-scoped route passes. Resolves the EFFECTIVE account for a request:
- *   - staff: any account (the acting-for picker) — but an account must still be NAMED for
- *     account-scoped routes (no accidental firm-wide writes);
- *   - client: the named account must be inside the grant — a foreign account is a 404 (not 403:
- *     existence never leaks), an unnamed account defaults to their only account (convenience) or
- *     404s when ambiguous.
- * staffOnly routes 404 for clients (the surface does not exist for them).
+ * Which organisation's Generic a request means — the organisation key, or null.
+ *
+ *   named       it must be one whose Generic this person sees (`genericOrgs`), else 404;
+ *   unnamed     the one organisation whose Generic they see, when there is exactly one;
+ *   unnamed, for a person who sees everything and several organisations (or none): null — Generic filed
+ *               under no organisation, which is how every Generic run was filed before organisations
+ *               existed, and only a person who sees everything sees those runs;
+ *   otherwise   404 when they see no Generic at all, 400 naming the field when they see several.
  */
-export function assertPrincipal(principal, { staffOnly = false, account = null, door = false } = {}) {
+export function genericOrgOf(principal, tenant = null) {
+  const t = tenant == null || String(tenant).trim() === "" ? null : String(tenant).trim();
+  const orgs = Array.isArray(principal?.genericOrgs) ? principal.genericOrgs : [];
+  if (t != null) {
+    if (orgs.includes(t)) return t;
+    throw new PortalDeny(404, "not found");
+  }
+  if (orgs.length === 1) return orgs[0];
+  if (seesEverything(principal)) return null;
+  if (!orgs.length) throw new PortalDeny(404, "not found");
+  throw new PortalDeny(400, "name an organisation (?tenant=) — Generic belongs to an organisation, and this login sees several");
+}
+
+/**
+ * The ONE chokepoint every account-scoped route passes. Resolves the EFFECTIVE account for a request:
+ *   - a person who sees everything: any account — but an account-scoped route must still NAME one (no
+ *     accidental install-wide writes); unnamed resolves to null and the caller decides (list-all views);
+ *   - anyone else: the named account must be inside their access — a foreign account is a 404, never a
+ *     403, because existence never leaks; unnamed defaults to their only company, or is a 400 when there
+ *     are several or none;
+ *   - `generic` is the pair, and `genericOrgOf` decides it here rather than per route.
+ *
+ * The gates — `everything` for install-wide surfaces, `manage`, `run` — each refuse with 404: the surface
+ * does not exist for this person, and a refusal that told "you may not" apart from "there is nothing
+ * here" would tell a stranger which endpoints exist.
+ *
+ * ORDERING GENERIC follows the rule for seeing it: a person who holds the organisation whole, and holds
+ * Run. Spending against it is bounded as a company's is — every organisation's Generic lane carries the
+ * daily cap (ruling 2026-09-10), counted by the runner in the lane of the organisation the job is
+ * filed under, which `genericOrgOf` has just decided.
+ */
+export function assertPrincipal(principal, { account = null, tenant = null, door = false,
+  everything = false, manage = false, run = false, ...rest } = {}) {
+  if ("staffOnly" in rest) throw new TypeError("assertPrincipal: `staffOnly` is gone — gate on `everything`, `manage` or `run`");
   if (!principal) throw new PortalDeny(403, "no portal access for this identity");
-  if (staffOnly && principal.role !== "staff") throw new PortalDeny(404, "not found");
+  if (everything && !seesEverything(principal)) throw new PortalDeny(404, "not found");
+  if (manage && !mayManage(principal)) throw new PortalDeny(404, "not found");
+  if (run && !mayRun(principal)) throw new PortalDeny(404, "not found");
   // door mode: the caller only needs "may this identity enter" — NEVER resolve an account (a
-  // multi-account client must not 404 off the front door; review 2026-07-18)
+  // multi-account person must not 404 off the front door; review 2026-07-18)
   if (door) return null;
   if (account == null) {
-    if (principal.role === "staff") return null;   // staff without acting-for: caller decides (list-all views)
-    if (Array.isArray(principal.accounts) && principal.accounts.length === 1) return principal.accounts[0];
     if (principal.accounts === "*") return null;
-    throw new PortalDeny(400, "name an account (?account=) — this login covers several");   // multi-account client must name one — an actionable 400, never a lockout
+    if (Array.isArray(principal.accounts) && principal.accounts.length === 1) return principal.accounts[0];
+    throw new PortalDeny(400, principal.accounts?.length
+      ? "name an account (?account=) — this login covers several"
+      : "name an account (?account=) — this login holds no company of its own, only its organisation's Generic");
   }
   const a = String(account).trim().toLowerCase();
-  if (principal.role === "staff") return a;
-  // `generic` IS THE HOUSE ACCOUNT, AND IT IS REFUSED HERE RATHER THAN PER ROUTE.
-  //
-  // makePrincipal strips `generic` from a client's grant — but only on the ARRAY branch. A grant that
-  // resolves to the literal "*" returns above it, untouched, and the wildcard test below then admits
-  // `generic` like any other account. Three routes (the runs listing and the two report routes) carried
-  // their own `role !== "staff"` check and closed the hole for themselves; POST /portal/api/run and
-  // /run/plan never did. So the one path that spends money was the one path with no guard — against the
-  // one account that is EXEMPT from the daily run cap (runner.mjs: `generic` is the neutral no-customer
-  // profile and stays uncapped). Uncapped spend, reachable by a grant shape, is the worst combination
-  // in this file.
-  //
-  // Refusing at the chokepoint fixes every account-scoped route at once, including the ones nobody has
-  // written yet, which is the property the per-route checks could never have. Those three stay as they
-  // are: they are cheap, and defence in depth on a spend boundary is not duplication.
-  if (a === "generic") throw new PortalDeny(404, "not found");
+  if (a === "generic") {
+    genericOrgOf(principal, tenant);
+    return a;
+  }
   if (principal.accounts === "*" || (Array.isArray(principal.accounts) && principal.accounts.includes(a))) return a;
   throw new PortalDeny(404, "not found");
 }

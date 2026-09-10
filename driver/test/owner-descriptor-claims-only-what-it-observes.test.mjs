@@ -35,7 +35,7 @@ const build = mod.ownerPortfolioDescriptorReason ?? ((coveredBy) => {
 });
 const WITH = build(["incumbent-class:owner:verrit-instruments-ltd+watch", "b:2"]);
 
-test("#1424 the descriptor no longer asserts the owner IS answered", () => {
+test("the descriptor no longer asserts the owner IS answered", () => {
   // The exact claim, and it must be gone from the PRODUCT's string rather than from a fixture's.
   assert.equal(/is answered record-by-record/.test(WITH), false,
     `the producer still asserts coverage it cannot observe:\n  ${WITH}`);
@@ -45,7 +45,7 @@ test("#1424 the descriptor no longer asserts the owner IS answered", () => {
   }
 });
 
-test("#1424 it still points at the slices — the useful half survives", () => {
+test("it still points at the slices — the useful half survives", () => {
   // Dropping the pointer would be the opposite failure: a reader told the number is not coverage and
   // not told where coverage would be has nowhere to go, and "portfolio too large, noted" grows back.
   assert.match(WITH, /incumbent-class:owner:verrit-instruments-ltd\+watch/);
@@ -54,7 +54,7 @@ test("#1424 it still points at the slices — the useful half survives", () => {
   assert.match(WITH, /"Portfolio too large, noted" is not a finding/);
 });
 
-test("#1424 and it says whose job it is to check they landed", () => {
+test("and it says whose job it is to check they landed", () => {
   // The replacement claim has to be actionable, not merely weaker. A reader must know that the slice's
   // own state is the thing to read, and that a dictated slice can itself fail.
   assert.match(WITH, /SOUGHT/);
@@ -63,14 +63,14 @@ test("#1424 and it says whose job it is to check they landed", () => {
     "the reader must be told the pointed-at slice can itself come back unusable");
 });
 
-test("#1424 the bare descriptor — no covered_by — is unchanged", () => {
+test("the bare descriptor — no covered_by — is unchanged", () => {
   // THE CONTROL. Most count-only slices carry no owner pointer at all, and their sentence must not
   // have moved: this change is scoped to the class that made the unbacked claim.
   assert.equal(build(null), "count-only crowd descriptor (plan-dictated)");
   assert.equal(build([]), "count-only crowd descriptor (plan-dictated)");
 });
 
-test("#1424 ONE string — the producer builds it here and nowhere else", () => {
+test("ONE string — the producer builds it here and nowhere else", () => {
   // The arm that closes the failure mode this file exists for. A second inline copy is how the last one
   // drifted from its test, so the literal must appear only inside the exported builder.
   const inlined = PRODUCER.split("\n")

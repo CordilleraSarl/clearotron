@@ -42,34 +42,54 @@ const { listFlags } = await import("../feedback-store.mjs");
 // — the door the searches payload's budget is promising to describe.
 const { validateJob } = await import("../enqueue-schema.mjs");
 
-const GRANTS = { tenants: {
-  celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"], "boss@celta.example": "*" } },
-} };
-const STAFF_DOMAINS = ["example-firm.com"];
+// One organisation holding two companies. CLIENT holds one company and may run clearances in it; BOSS
+// holds the whole organisation and may only view; STAFF has access to everything by their own entry
+// under `people` — never by the part of the address after the `@`.
 const STAFF = { email: "staff@example-firm.com" };
 const CLIENT = { email: "cli@celta.example" };
 const STRANGER = { email: "who@nowhere.example" };
+const GRANTS = {
+  tenants: {
+    celta: { accounts: ["aurora", "zephyr"], users: { [CLIENT.email]: ["aurora"], "boss@celta.example": "*" } },
+  },
+  people: {
+    [STAFF.email]: { run: true, manage: true, everything: true },
+    [CLIENT.email]: { run: true },
+  },
+};
+// The same world with CLIENT also holding Manage — saving a company's profile or a project is Manage's.
+// A separate fixture rather than the default, because the default CLIENT is also the person the Manage-gated
+// surfaces must refuse.
+const GRANTS_CLIENT_MANAGES = { ...GRANTS, people: { ...GRANTS.people, [CLIENT.email]: { run: true, manage: true } } };
 
 // ── principal + chokepoint ─────────────────────────────────────────────────────────────────────────
-test("makePrincipal: staff by domain (*), client by grants, stranger = null (403 at the door)", () => {
-  assert.deepEqual(makePrincipal({ email: STAFF.email, grants: GRANTS, staffDomains: STAFF_DOMAINS }),
-    { role: "staff", email: STAFF.email, accounts: "*" });
-  assert.deepEqual(makePrincipal({ email: CLIENT.email, grants: GRANTS, staffDomains: STAFF_DOMAINS }),
-    { role: "client", email: CLIENT.email, accounts: ["aurora"] });
-  assert.equal(makePrincipal({ email: STRANGER.email, grants: GRANTS, staffDomains: STAFF_DOMAINS }), null);
-  assert.equal(makePrincipal({ email: "", grants: GRANTS, staffDomains: STAFF_DOMAINS }), null);
+test("makePrincipal: everything by the person's own entry, a company by grants, stranger = null (403 at the door)", () => {
+  assert.deepEqual(makePrincipal({ email: STAFF.email, grants: GRANTS }),
+    { email: STAFF.email, everything: true, permissions: { run: true, manage: true }, access: [{ kind: "everything" }],
+      accounts: "*", organisations: ["celta"], genericOrgs: ["celta"], accountOrgs: { aurora: "celta", zephyr: "celta" } });
+  assert.deepEqual(makePrincipal({ email: CLIENT.email, grants: GRANTS }),
+    { email: CLIENT.email, everything: false, permissions: { run: true, manage: false },
+      access: [{ kind: "company", key: "aurora", org: "celta" }],
+      accounts: ["aurora"], organisations: ["celta"], genericOrgs: [], accountOrgs: { aurora: "celta" } });
+  // What used to admit staff was the domain. A colleague on STAFF's domain, with no entry of their own, gets
+  // no principal at all.
+  assert.equal(makePrincipal({ email: "colleague@example-firm.com", grants: GRANTS }), null,
+    "an address is admitted by its own entry, never by its domain");
+  assert.equal(makePrincipal({ email: STRANGER.email, grants: GRANTS }), null);
+  assert.equal(makePrincipal({ email: "", grants: GRANTS }), null);
 });
 
 test("assertPrincipal: clients FORCED to their grant (foreign = 404); staff act for anyone; door mode never resolves; multi-account = actionable 400", () => {
-  const client = makePrincipal({ email: CLIENT.email, grants: GRANTS, staffDomains: STAFF_DOMAINS });
-  const staff = makePrincipal({ email: STAFF.email, grants: GRANTS, staffDomains: STAFF_DOMAINS });
-  const boss = makePrincipal({ email: "boss@celta.example", grants: GRANTS, staffDomains: STAFF_DOMAINS });
+  const client = makePrincipal({ email: CLIENT.email, grants: GRANTS });
+  const staff = makePrincipal({ email: STAFF.email, grants: GRANTS });
+  const boss = makePrincipal({ email: "boss@celta.example", grants: GRANTS });
   assert.equal(assertPrincipal(client, { account: "aurora" }), "aurora");
   assert.equal(assertPrincipal(client), "aurora", "single-account client defaults to it");
   assert.throws(() => assertPrincipal(client, { account: "zephyr" }), (e) => e instanceof PortalDeny && e.status === 404,
     "a foreign account is a 404 — existence never leaks");
   assert.equal(assertPrincipal(staff, { account: "zephyr" }), "zephyr");
-  assert.throws(() => assertPrincipal(client, { staffOnly: true }), (e) => e.status === 404);
+  // The install-wide gate: a person without access to everything meets a 404, not a 403.
+  assert.throws(() => assertPrincipal(client, { everything: true }), (e) => e instanceof PortalDeny && e.status === 404);
   assert.throws(() => assertPrincipal(null), (e) => e.status === 403);
   // review 2026-07-18: a 2-account client was LOCKED OUT (404) at every bare door
   assert.deepEqual(boss.accounts, ["aurora", "zephyr"], "user-level * expands to the tenant's accounts");
@@ -77,8 +97,9 @@ test("assertPrincipal: clients FORCED to their grant (foreign = 404); staff act 
   assert.throws(() => assertPrincipal(boss), (e) => e.status === 400 && /name an account/.test(e.message),
     "unresolved multi-account = actionable 400, never a lockout");
   assert.equal(assertPrincipal(boss, { account: "zephyr" }), "zephyr");
-  // review 2026-07-18: last-@ semantics + multi-@ refusal (the staff bit must agree with the edge parse)
-  assert.equal(makePrincipal({ email: "x@example-firm.com@evil.com", grants: GRANTS, staffDomains: STAFF_DOMAINS }), null,
+  // review 2026-07-18: last-@ semantics + multi-@ refusal. The everything person's own address with a
+  // second `@` appended must not match their entry — the resolver must agree with the edge parse.
+  assert.equal(makePrincipal({ email: `${STAFF.email}@evil.com`, grants: GRANTS }), null,
     "multi-@ identities are refused outright");
 });
 
@@ -176,7 +197,7 @@ function world(opts = {}) {
   writeFileSync(join(recipesDir, "aurora", "screen.json"), JSON.stringify({ version: 1, label: "Quarterly screen", base: "knockout-search" }));
   const triggers = [], audits = [];
   const service = makePortalService({ poolRoot, workspaceRoot, recipesDir, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS,
+    grants: GRANTS,
     // The queues the runner drains, injected the way serve() injects config.queueDirs. Omitted by
     // default so the allowance counter reports `complete:false` — a world with no queue wiring must
     // read as "could not count", never as "no runs today".
@@ -198,7 +219,7 @@ function world(opts = {}) {
   return { service, poolRoot, workspaceRoot, recipesDir, triggers, audits };
 }
 
-test("#1000 /portal/api/about answers the §13 source offer, and answers it to a STRANGER", async () => {
+test("/portal/api/about answers the §13 source offer, and answers it to a STRANGER", async () => {
   const { service } = world();
   // THE STRANGER IS THE ASSERTION. Every other route in this file refuses one; this route must not.
   // AGPL §13 owes the source offer to the users interacting with the service, and an offer you have to
@@ -556,7 +577,7 @@ test("upstream trigger refusal: audited ok:false and surfaced as an honest 502, 
   const workspaceRoot = tempDir("portal-refuse-ws-");
   const audits2 = [];
   const refusing = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS,
+    grants: GRANTS,
     trigger: async () => { throw new Error("FORBIDDEN (start_run): grant mismatch"); },
     audit: (r) => audits2.push(r) });
   const body = { markName: "SOLO", classes: [9], goods: "software" };
@@ -612,8 +633,13 @@ test("runs + reports: account-filtered listing; foreign/missing reports are 404,
   assert.equal((await service.route("GET", "/portal/report/ghost/", CLIENT)).status, 404);
   assert.equal((await service.route("GET", "/portal/report/..%2Fescape/", CLIENT)).status, 404, "traversal-shaped runId = 404");
   assert.equal((await service.route("GET", "/portal/report/tmp3-zephyr-run/", STAFF)).status, 200, "staff read any");
+  // Generic belongs to an organisation and is seen only with organisation-level access or everything.
+  // CLIENT holds one of celta's companies; BOSS holds celta whole — the pair makes the 404 about the level
+  // of access, not about Generic being unreachable.
   assert.equal((await service.route("GET", "/portal/api/runs", CLIENT, {}, { account: "generic" })).status, 404,
-    "generic is STAFF-only on every client surface (LEAK-#9 alignment)");
+    "a company-level grant never reaches its organisation's Generic");
+  assert.equal((await service.route("GET", "/portal/api/runs", { email: "boss@celta.example" }, {}, { account: "generic" })).status, 200,
+    "an organisation-level grant does");
 });
 
 // ── report feedback — RETIRED, and still tested ───────────────────────────────────────
@@ -686,7 +712,7 @@ const KO_DATA = {
   ],
 };
 
-test("#487 feedback: a flag on the SECOND mark's finding 1 resolves to that mark, not the first mark's finding 1", async () => {
+test("feedback: a flag on the SECOND mark's finding 1 resolves to that mark, not the first mark's finding 1", async () => {
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify(KO_DATA));
   const fbDir = tempDir("portal-fb-ko-");
@@ -712,7 +738,7 @@ test("#487 feedback: a flag on the SECOND mark's finding 1 resolves to that mark
   }
 });
 
-test("#487 feedback: a knockout flag with NO markIndex resolves nothing rather than guessing at mark 0", async () => {
+test("feedback: a knockout flag with NO markIndex resolves nothing rather than guessing at mark 0", async () => {
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify(KO_DATA));
   const fbDir = tempDir("portal-fb-ko2-");
@@ -737,7 +763,7 @@ test("#487 feedback: a knockout flag with NO markIndex resolves nothing rather t
   }
 });
 
-test("#487 feedback: the clearance lane is untouched — a top-level findings[] still resolves on the ordinal alone", async () => {
+test("feedback: the clearance lane is untouched — a top-level findings[] still resolves on the ordinal alone", async () => {
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify({
     schema: "report-data/1", runId: "tmp1-aurora-run",
@@ -780,7 +806,7 @@ const withFeedbackDir = async (name, fn) => {
   }
 };
 
-test("#831 feedback: a clearance run with NO findings.json still saves the flag, with an honest null posture", async () => {
+test("feedback: a clearance run with NO findings.json still saves the flag, with an honest null posture", async () => {
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify({
     schema: "report-data/1", runId: "tmp1-aurora-run",
@@ -799,7 +825,7 @@ test("#831 feedback: a clearance run with NO findings.json still saves the flag,
   });
 });
 
-test("#831 feedback: findings.json disagreeing about the mark resolves NO posture rather than the wrong one", async () => {
+test("feedback: findings.json disagreeing about the mark resolves NO posture rather than the wrong one", async () => {
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify({
     schema: "report-data/1", runId: "tmp1-aurora-run",
@@ -821,7 +847,7 @@ test("#831 feedback: findings.json disagreeing about the mark resolves NO postur
   });
 });
 
-test("#831 feedback: the knockout lane is untouched — no findings.json is consulted and the posture stays null", async () => {
+test("feedback: the knockout lane is untouched — no findings.json is consulted and the posture stays null", async () => {
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify(KO_DATA));
   // A clearance-shaped findings.json sitting in the same dir must not be mined for a batch lane whose
@@ -916,7 +942,7 @@ test("admin surfaces: staff-only, clients get 404 (the surface does not exist fo
   assert.ok(Array.isArray(r.json.customers));
 });
 
-test("#275/#283: issuedAt crosses the wire at full precision — the ordering key `date` cannot provide", async () => {
+test("issuedAt crosses the wire at full precision — the ordering key `date` cannot provide", async () => {
   const { service, poolRoot } = world();
   // Two reads of one mark, same DAY, 2m08s apart. This is the House-default row measured on the test
   // instance on 2026-08-04: two different runs, through two different doors, that the page rendered
@@ -938,7 +964,7 @@ test("#275/#283: issuedAt crosses the wire at full precision — the ordering ke
     "the two reads are now distinguishable on the wire, which they were not");
 });
 
-test("#275: a run published before issuedAt existed reads as null, never as a fabricated instant", async () => {
+test("a run published before issuedAt existed reads as null, never as a fabricated instant", async () => {
   const { service, poolRoot } = world();
   mkdirSync(join(poolRoot, "tmp8-aurora-old"), { recursive: true });
   writeFileSync(join(poolRoot, "tmp8-aurora-old", "meta.json"), JSON.stringify({
@@ -1224,8 +1250,8 @@ test('runs?account=*: staff see every account tagged; a client sees a 404, not a
   assert.deepEqual([...new Set(one.json.runs.map((r) => r.account))], ["aurora"]);
 });
 
-// The wildcard branch read `principal.role` directly. `principal` is null for any identity that is
-// neither staff nor granted anything — which is exactly the caller the "every customer" route most needs
+// The wildcard branch once read the principal's role directly (a field the access model has since
+// removed). `principal` is null for any identity granted nothing anywhere — which is exactly the caller the "every customer" route most needs
 // to refuse — so the read threw a TypeError, which is not a PortalDeny and so escaped route()'s catch
 // and became a 500. The route that lists every account answered a server error to an unenrolled prober
 // while every other surface refused them cleanly.
@@ -1261,7 +1287,7 @@ test("the config surface checks the DOOR before the method — and a wrong shape
   const upstream = makeUpstream({ callUpstream: async (m, p) => { seen.push(p); return { status: 200, json: { profile: {} } }; } });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: () => {} });   // the save below is Manage's
 
   // Every method reads identically to an unadmitted identity, and identically to the front door.
   const atTheDoor = await svc.route("GET", "/portal/api/me", STRANGER);
@@ -1303,7 +1329,7 @@ test('a failure reason reaches staff verbatim and never reaches a client', async
   writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora" }));
 
   const service = makePortalService({ poolRoot, workspaceRoot, secret: "s",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS });
+    grants: GRANTS });
 
   const asStaff = await service.route("GET", "/portal/api/runs", STAFF, {}, { account: "aurora" });
   assert.equal(asStaff.json.runs[0].reason, TRACE, "staff get the engine's own words");
@@ -1534,7 +1560,7 @@ test("THE SPEND DOOR: /plan refuses an unavailable level and mints NO token", as
   assert.equal(res.json.confirmationToken, undefined, "no token — a token is a licence to spend");
   // The registry's NAME, never the internal key and no longer the bare stage number: "Depth 1 is
   // unavailable" names our pricing ladder at a client, "Knockout search is unavailable" names the thing
-  // they asked for (owner ruling 2026-07-20 — the interface leads with the name).
+  // they asked for (ruling 2026-07-20 — the interface leads with the name).
   assert.match(res.json.errors[0], /Knockout search is unavailable/);
   assert.doesNotMatch(res.json.errors[0], /^Depth /);
   assert.ok(!audits.some((a) => a.event === "plan"), "a refused plan is not a plan");
@@ -1688,7 +1714,7 @@ test("a saved search's own territories are honoured at the gate — and the deep
 test("a trigger failure tells a CLIENT the facts and an OPERATOR the cause — never a variable name", async () => {
   const { poolRoot, workspaceRoot } = world();
   const mk = (msg) => makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     trigger: async () => { throw new Error(msg) } });
 
   const body = { markName: "SOLO", classes: [9], goods: "software" };
@@ -1734,7 +1760,7 @@ test("BREACH: a client cannot reach another customer's config through the ROUTER
   const upstream = makeUpstream({ callUpstream: async (m, p, b, id) => { seen.push({ p, id }); return { status: 200, json: { profile: {} } }; } });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS, upstream, audit: () => {} });
 
   for (const path of ["/portal/api/config/profile", "/portal/api/config/projects"]) {
     const r = await svc.route("GET", path, CLIENT, {}, { account: "zephyr" });
@@ -1755,7 +1781,7 @@ test("BREACH: the code-owned fields cannot be written through the ROUTER either"
   const upstream = makeUpstream({ callUpstream: async (m, p, b) => { sent = b; return { status: 200, json: { ok: true } }; } });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: () => {} });   // a profile save is Manage's
 
   const r = await svc.route("POST", "/portal/api/config/profile/save", CLIENT,
     { profile: { name: "Aurora", frameworkPath: "evil.md", runCaps: { perMonth: 99999 } } }, {});
@@ -1778,7 +1804,7 @@ test("a save is AUDITED with the human who did it", async () => {
   const { poolRoot, workspaceRoot } = world();
   const audits = [];
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: (r) => audits.push(r) });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: (r) => audits.push(r) });   // a profile save is Manage's
 
   await svc.route("POST", "/portal/api/config/profile/save", CLIENT, { profile: { name: "Aurora" } }, {});
   assert.ok(audits.some((a) => a.event === "profile-save" && a.by === "cli@celta.example"));
@@ -1795,6 +1821,14 @@ test("the staff config and access surfaces are STAFF-ONLY, and a client gets a p
     assert.deepEqual(asClient.json, { error: "not_found" },
       "byte-identical to a path that does not exist — a distinct body would confirm the surface is there");
     assert.equal((await service.route("GET", p, STAFF, {}, { account: "aurora" })).status, 200, `${p} for staff`);
+  }
+  // The split the access model draws: the access page is Manage's, the install-wide pages need access to
+  // everything. A manager who does not see everything reaches the first and neither of the others.
+  const { poolRoot, workspaceRoot } = world();
+  const managed = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret", grants: GRANTS_CLIENT_MANAGES, audit: () => {} });
+  assert.equal((await managed.route("GET", "/portal/admin/access", CLIENT, {}, {})).status, 200, "Manage opens the access page");
+  for (const p of ["/portal/admin/config", "/portal/admin/observed"]) {
+    assert.equal((await managed.route("GET", p, CLIENT, {}, {})).status, 404, `${p} needs access to everything, not Manage`);
   }
 });
 
@@ -1823,7 +1857,7 @@ test("the config surface never reports 'all off' from an absence, and names whic
   // WHAT THIS ARM IS FOR, UNCHANGED: reporting "everything off" from a thing nobody could read would
   // send a staff member to go switch on what is already running.
   //
-  // WHAT MOVED (owner ruling 2026-09-05): `available` used to mean "a snapshot
+  // WHAT MOVED (ruling 2026-09-05): `available` used to mean "a snapshot
   // exists", and this arm used it as the precondition for "the fixture pool has no snapshot". The page
   // now answers LIVE, always, so it can be available with no capture at all — the absence of a capture
   // is reported by `lastRun`, and `source` says which reading the answer is. Asserting `available:
@@ -1853,7 +1887,7 @@ test("the config surface never reports 'all off' from an absence, and names whic
 // and that it attaches it from THIS process's environment. A correct view function behind a route that
 // never mounted it is a wall in a field.
 
-test("#1439 — the config route carries the auth row, read from THIS process's environment", async () => {
+test("the config route carries the auth row, read from THIS process's environment", async () => {
   const { service } = world();
   const before = process.env.PORTAL_AUTH_MODE;
   const beforeTeam = process.env.CF_ACCESS_TEAM;
@@ -1870,7 +1904,7 @@ test("#1439 — the config route carries the auth row, read from THIS process's 
   }
 });
 
-test("#1439 — the auth row survives a MISSING snapshot, because it does not come from one", async () => {
+test("the auth row survives a MISSING snapshot, because it does not come from one", async () => {
   // The decisive arm. The fixture pool has no snapshot, so every snapshot-derived field is unavailable —
   // and the auth row must still answer, because it never depended on the engine having drained. If this
   // ever goes null alongside the others, the row has been quietly routed back through the writer, which
@@ -1879,7 +1913,7 @@ test("#1439 — the auth row survives a MISSING snapshot, because it does not co
   const r = await service.route("GET", "/portal/admin/config", STAFF, {}, {});
   // The precondition is that there is no CAPTURE — which is what this arm always meant. It used to be
   // spelled `available === false`, and that spelling stopped meaning it when the page began answering
-  // live (owner ruling 2026-09-05): a box with no capture is now perfectly available.
+  // live (ruling 2026-09-05): a box with no capture is now perfectly available.
   assert.equal(r.json.lastRun, null, "precondition: this fixture genuinely has no capture");
   assert.ok(r.json.auth, "the portal's own door is answerable with no snapshot at all");
   assert.equal(typeof r.json.auth.mode, "string");
@@ -1924,11 +1958,14 @@ test("creating a company is mounted, reaches the wall, and takes no account from
   // The route hands the wall the principal and the body, and nothing else. An account argument here
   // would be the second implementation of tenancy this block's own header refuses to have.
   assert.equal(calls[0].args.length, 2, "principal and body — no account argument");
-  // The RESOLVED principal, not the raw identity: the wall's permission test reads `role`, which only
-  // exists after makePrincipal has run. Asserting the fixture object here would pass on a route that
-  // forwarded an unresolved identity, and the wall would then refuse every create.
+  // The RESOLVED principal, not the raw identity: the wall's permission test reads `permissions.manage`,
+  // and where the company is filed reads the person's organisations — both exist only after makePrincipal
+  // has run. Asserting the fixture object here would pass on a route that forwarded an unresolved
+  // identity, and the wall would then refuse every create.
   assert.equal(calls[0].args[0].email, STAFF.email);
-  assert.equal(calls[0].args[0].role, "staff", "the wall is handed something it can make a decision from");
+  assert.deepEqual(calls[0].args[0].permissions, { run: true, manage: true },
+    "the wall is handed something it can make a decision from");
+  assert.deepEqual(calls[0].args[0].access, [{ kind: "everything" }]);
   assert.equal(calls[0].args[1].name, "Aurora Holdings");
 });
 
@@ -2129,7 +2166,7 @@ test("mcp-access: STAFF with no acting-for account still gets the connector deta
   } finally { delete process.env.CLEAROTRON_CLIENT_MCP_URL; }
 });
 
-test("1959 mcp-access: STAFF are handed the local connect route; a CLIENT never is", async () => {
+test("mcp-access: STAFF are handed the local connect route; a CLIENT never is", async () => {
   // The route needs no address, so it is the answer on a local install — where the reader IS the
   // operator. It is a true fact about this install's own disk and useless to a hosted client, who has no
   // checkout to spawn a server from; offering it there would be a false instruction on a client's page.
@@ -2224,7 +2261,7 @@ test("/portal/api/me names the accounts it grants, and never more than it grants
   ]);
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     loadProfilesImpl: async () => profiles });
 
   const single = await svc.route("GET", "/portal/api/me", CLIENT);
@@ -2260,7 +2297,7 @@ test("the company facts ride both routes, in one shape, and /me still names only
   ]);
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     loadProfilesImpl: async () => profiles });
 
   const multi = await svc.route("GET", "/portal/api/me", { email: "boss@celta.example" });
@@ -2336,7 +2373,7 @@ const meWith = async (engine, livePresent) => {
   const { poolRoot, workspaceRoot } = world();
   if (engine) captureWith(poolRoot, engine);
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {}, loadProfilesImpl: async () => new Map() });
+    grants: GRANTS, audit: () => {}, loadProfilesImpl: async () => new Map() });
   return withLiveProgram(livePresent, async () => (await svc.route("GET", "/portal/api/me", STAFF)).json);
 };
 
@@ -2380,7 +2417,7 @@ test("/portal/api/me: the program on the box and absent from the engine's readin
 test("an unreadable profile store costs a name, never the door", async () => {
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {},
+    grants: GRANTS, audit: () => {},
     loadProfilesImpl: async () => { throw new Error("profiles/generic.json is REQUIRED"); } });
   const me = await svc.route("GET", "/portal/api/me", CLIENT);
   assert.equal(me.status, 200, "a cosmetic lookup must not decide whether someone can sign in");
@@ -2419,7 +2456,7 @@ test("a client creates a project for their OWN account, end to end, and cannot c
   });
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, upstream, audit: () => {} });
+    grants: GRANTS_CLIENT_MANAGES, upstream, audit: () => {} });   // adding a project is Manage's
 
   const body = { profile: { projectName: "EU launch 2027" }, contextPack: "" };
   const path = "/portal/api/config/projects/eu-launch-2027";
@@ -2471,7 +2508,7 @@ test("a client creates a project for their OWN account, end to end, and cannot c
 // without this the route would 404 every batch outright; and the tempting repair — serve `reports[0]` —
 // is the defect the fan-out removed, wearing a URL. These pin BOTH directions: a batch's per-name
 // documents are reachable, and its run-level URL resolves to nothing rather than to one name in two.
-test("#472: a batch serves each name's own report, and has no run-level report to serve", async () => {
+test("a batch serves each name's own report, and has no run-level report to serve", async () => {
   const { service } = world();
   const one = await service.route("GET", "/portal/report/tmp4-aurora-batch/ironwhisk/", CLIENT);
   assert.equal(one.status, 200, "the name's own document is served");
@@ -2496,7 +2533,7 @@ test("#472: a batch serves each name's own report, and has no run-level report t
   assert.equal((await service.route("GET", "/portal/report/tmp1-aurora-run/", CLIENT)).status, 200);
 });
 
-test("#472: the run row carries one link per name, and no run-level link for a batch", async () => {
+test("the run row carries one link per name, and no run-level link for a batch", async () => {
   const { service } = world();
   const res = await service.route("GET", "/portal/api/runs", CLIENT, {}, {});
   assert.equal(res.status, 200);
@@ -2539,7 +2576,7 @@ test("#472: the run row carries one link per name, and no run-level link for a b
 // per-mark HTMLs only, so the portal's report route resolves nothing for it; the pool path is not one
 // the edge serves either. Composed on every multi-mark run, delivered on none.
 
-test("#1921: a grouped run serves its cross-mark paragraph, and nothing else out of that file", async () => {
+test("a grouped run serves its cross-mark paragraph, and nothing else out of that file", async () => {
   const { service } = world();
   const res = await service.route("GET", "/portal/api/run/tmp4-aurora-batch/summary", CLIENT, {}, {});
   assert.equal(res.status, 200);
@@ -2562,7 +2599,7 @@ test("#1921: a grouped run serves its cross-mark paragraph, and nothing else out
   assert.equal(res.html, undefined, "served as JSON — this route never renders a document");
 });
 
-test("#1921: the summary route serves the SUMMARY, never the rest of report.md", async () => {
+test("the summary route serves the SUMMARY, never the rest of report.md", async () => {
   const { service } = world();
   const whole = (await service.route("GET", "/portal/api/run/tmp4-aurora-batch/summary", CLIENT, {}, {}))
     .json.summary.join("\n");
@@ -2583,7 +2620,7 @@ test("#1921: the summary route serves the SUMMARY, never the rest of report.md",
   assert.doesNotMatch(whole, /# Summary/, "the heading is the marker, not the content");
 });
 
-test("#1921: every absence answers 404, and the run you may not read is one of them", async () => {
+test("every absence answers 404, and the run you may not read is one of them", async () => {
   const { service } = world();
   // The multi-account client from the grants fixture — holds aurora AND zephyr. Declared here rather
   // than shared, the way every other test in this file declares it.
@@ -2620,7 +2657,7 @@ test("#1921: every absence answers 404, and the run you may not read is one of t
 // its reason; the pre-route half (an unauthenticated POST, refused before route() is reached) cannot be
 // driven from here because it is decided in makeHttpHandler — it is in portal-local-login.test.mjs.
 
-test("#723 a REFUSED admin write is journalled, with the status and the reason", async () => {
+test("a REFUSED admin write is journalled, with the status and the reason", async () => {
   const { service, audits } = world();
   // A client on a staff-only surface: 404 by construction (the surface does not exist for them).
   const refused = await service.route("POST", "/portal/admin/retired", CLIENT, { action: "retire", runIds: ["tmp1-aurora-run"] });
@@ -2634,7 +2671,7 @@ test("#723 a REFUSED admin write is journalled, with the status and the reason",
   assert.equal(row.by, CLIENT.email, "and who was turned away");
 });
 
-test("#723 the row carries the refusal's own reason, not a generic one", async () => {
+test("the row carries the refusal's own reason, not a generic one", async () => {
   const { service, audits } = world();
   // Staff, so past the door — refused deeper in, on the run id. A different status and a different
   // reason from the case above, which is what proves the row reports the refusal rather than the route.
@@ -2659,7 +2696,7 @@ test("#723 the row carries the refusal's own reason, not a generic one", async (
 // These two pin the half nobody had a test for — the SUCCESS row — because a fix that adds a signpost
 // to a record is worthless the moment the record stops being written.
 
-test("#1254 a SUCCESSFUL retire files its own row, so 'did the write arrive' is answerable", async () => {
+test("a SUCCESSFUL retire files its own row, so 'did the write arrive' is answerable", async () => {
   const { service, audits } = world();
   const ok = await service.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["tmp1-aurora-run"] });
   assert.equal(ok.status, 200, "the retire itself is unchanged");
@@ -2675,7 +2712,7 @@ test("#1254 a SUCCESSFUL retire files its own row, so 'did the write arrive' is 
     "a 200 filed a refusal row");
 });
 
-test("#1254 restore files its own row too — the inverse is as auditable as the act", async () => {
+test("restore files its own row too — the inverse is as auditable as the act", async () => {
   const { service, audits } = world();
   await service.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["tmp1-aurora-run"] });
   await service.route("POST", "/portal/admin/retired", STAFF, { action: "restore", runIds: ["tmp1-aurora-run"] });
@@ -2684,7 +2721,7 @@ test("#1254 restore files its own row too — the inverse is as auditable as the
   assert.equal(back.runs, 1);
 });
 
-test("#1254 the startup banner NAMES the audit log, in the place an operator actually reads", async () => {
+test("the startup banner NAMES the audit log, in the place an operator actually reads", async () => {
   // The journal is what somebody tails when a client reports a failed save. It carried auth mode, the
   // ops-token posture, the saved-search store and the listen line — and no mention of the file holding
   // every admin write. Two investigations then spent themselves on an absence that was never a signal.
@@ -2698,7 +2735,7 @@ test("#1254 the startup banner NAMES the audit log, in the place an operator act
   assert.ok(!/log\(`(POST|request) /.test(src), "a per-request journal line appeared — it duplicates the audit row");
 });
 
-test("#723 the outcome row never carries the body, the query or a credential", async () => {
+test("the outcome row never carries the body, the query or a credential", async () => {
   const { service, audits } = world();
   // A body with something that must never be journalled, and a query string beside it. The row is built
   // from the method, the PATHNAME and the status — never from anything the caller wrote.
@@ -2714,7 +2751,7 @@ test("#723 the outcome row never carries the body, the query or a credential", a
   assert.ok(!row.path.includes("?"), "the PATH is a pathname — a logged query string is a logged secret");
 });
 
-test("#723 a SUCCESSFUL write still audits exactly as before — one row, the specific one", async () => {
+test("a SUCCESSFUL write still audits exactly as before — one row, the specific one", async () => {
   const { service, audits } = world();
   // The regression this shape exists to avoid. The success rows are richer than a generic row could be
   // (the account resolved from the run, the actor, the run count), so a generic row on top of them would
@@ -2747,7 +2784,7 @@ test("#723 a SUCCESSFUL write still audits exactly as before — one row, the sp
 // added later — and `POST /portal/api/run` has moved from the second loop to the first, deliberately.
 //
 // Still refusals only. A success row is still filed by the route that can say more than a generic one.
-test("#723/2077 isAdminWrite admits the state-changing writes and nothing else", () => {
+test("isAdminWrite admits the state-changing writes and nothing else", () => {
   for (const [method, path] of [
     ["POST", "/portal/admin/retired"],
     ["POST", "/portal/admin/families"],
@@ -2776,7 +2813,7 @@ test("#723/2077 isAdminWrite admits the state-changing writes and nothing else",
   ]) assert.equal(isAdminWrite(method, path), false, `${method} ${path} must not be journalled`);
 });
 
-test("#723 a refused NON-admin-write files nothing — the log is not a request log", async () => {
+test("a refused NON-admin-write files nothing — the log is not a request log", async () => {
   const { service, audits } = world();
   // A client asking for a run that is not theirs. A real refusal, on a real route, that this issue
   // deliberately does not cover: it happens on every mistyped URL and would drown the panel that reads
@@ -2787,7 +2824,7 @@ test("#723 a refused NON-admin-write files nothing — the log is not a request 
     "and it leaves no outcome row — per-request access logging is out of scope by ruling");
 });
 
-test("#723 a refused READ of a staff surface files nothing, but the WRITE beside it does", async () => {
+test("a refused READ of a staff surface files nothing, but the WRITE beside it does", async () => {
   const { service, audits } = world();
   await service.route("GET", "/portal/admin/retired", CLIENT, {}, {});
   assert.deepEqual(audits.filter((a) => a.event === "request-refused"), [],
@@ -2800,7 +2837,7 @@ test("#723 a refused READ of a staff surface files nothing, but the WRITE beside
 
 // ══ 1986: a control the deployment cannot serve says so on /me ════════════════════════════════════
 
-test("1986: /me carries the stop control's verdict — unavailable with a staff-only reason, default available", async () => {
+test("/me carries the stop control's verdict — unavailable with a staff-only reason, default available", async () => {
   // The boot log said for days that the token cannot stop_run; every press failed identically. The
   // bootstrap reads the live token's posture and passes the verdict through this seam; the button
   // disables itself with the reason instead of failing forever.
@@ -2833,7 +2870,7 @@ test("1986: /me carries the stop control's verdict — unavailable with a staff-
 // THE FIRST ASSERTION OF EACH IS THE BEHAVIOUR AS IT SHIPPED, so this is a measured reversal rather than
 // a test rewritten to match whatever the code does now.
 
-test("2015 in a demo every product is listed and ORDERABLE — the form is the thing a visitor came for", async () => {
+test("in a demo every product is listed and ORDERABLE — the form is the thing a visitor came for", async () => {
   const { service } = world({ demo: true });
   const res = await service.route("GET", "/portal/api/searches", CLIENT, {}, {});
   assert.equal(res.status, 200);
@@ -2852,7 +2889,7 @@ test("2015 in a demo every product is listed and ORDERABLE — the form is the t
     "the demo refusal sentence is being rendered again");
 });
 
-test("2015 the demo PLANS a clearance, because the plan is most of what a visitor came to see", async () => {
+test("the demo PLANS a clearance, because the plan is most of what a visitor came to see", async () => {
   // This arm asserted a 422 with the credentials sentence. Under the standing ruling the flow is real up
   // to the confirmation — "the brand owner, the names, the classes, the four searches, the price and the
   // turnaround, the confirmation" — and only the dispatch is not.
@@ -2865,7 +2902,7 @@ test("2015 the demo PLANS a clearance, because the plan is most of what a visito
   assert.doesNotMatch(JSON.stringify(plan.json), /credentials/i, "the retired refusal is back on the plan path");
 });
 
-test("2015 a demo ORDER lands on a finished run and NEVER dispatches", async () => {
+test("a demo ORDER lands on a finished run and NEVER dispatches", async () => {
   // THE CLAIM A 200 CANNOT CARRY. "Nothing was started" is not readable from a status code, so this
   // counts calls to the trigger seam — the one function in this service that spends anything — and
   // asserts it was never reached. The ruling's own words: "no engine turn, no register call, no queue
@@ -2905,7 +2942,7 @@ test("2015 a demo ORDER lands on a finished run and NEVER dispatches", async () 
   assert.equal(landedRow.landedOn, "demo-multi");
 });
 
-test("2015 a demo REFUSES a product it has no finished run for, rather than landing on the wrong one", async () => {
+test("a demo REFUSES a product it has no finished run for, rather than landing on the wrong one", async () => {
   // "Picking the fourth product and receiving the first one's report would teach the wrong thing about
   // all four." Today the demo pool holds one product's report; three of the four are not captured yet,
   // and this is the honest state of that — a named refusal rather than an approximate landing.
@@ -2935,7 +2972,7 @@ test("2015 a demo REFUSES a product it has no finished run for, rather than land
   assert.doesNotMatch(said, /credentials/i, "the demo refusal is back to explaining credentials");
 });
 
-test("2015 a service that was NOT told it is a demo carries the demo sentence nowhere", async () => {
+test("a service that was NOT told it is a demo carries the demo sentence nowhere", async () => {
   // The direction that catches a flag stuck ON. Without this arm, `demo: true` hardcoded in the factory
   // would pass every arm above and quietly grey out a real deployment.
   const { service } = world();
@@ -2958,7 +2995,7 @@ test("2015 a service that was NOT told it is a demo carries the demo sentence no
 // So this drives the JOIN rather than asserting the constant twice: take the budget off the wire, build
 // a name of exactly that length and one character longer, and put both through the door the payload is
 // promising to describe.
-test("2078 the searches payload carries the mark-name budget, and it is the budget the door enforces", async () => {
+test("the searches payload carries the mark-name budget, and it is the budget the door enforces", async () => {
   const { service } = world();
   const searches = await service.route("GET", "/portal/api/searches", CLIENT, {}, {});
   assert.equal(searches.status, 200);
@@ -2977,7 +3014,7 @@ test("2078 the searches payload carries the mark-name budget, and it is the budg
     "a name one over the length the screen states is accepted by the door — the two have drifted apart");
 });
 
-test("2015 a demo may only land on a run this principal could open anyway", async () => {
+test("a demo may only land on a run this principal could open anyway", async () => {
   // The tenancy rule, asserted as its own arm rather than left implied by a fixture's account. A demo
   // resolves through the SAME ownership scan every other surface uses — there is no demo-only read path
   // — so a report belonging to an account the reader has no grant for is not a demo affordance, it is a
@@ -3012,7 +3049,7 @@ test("2015 a demo may only land on a run this principal could open anyway", asyn
 test("/portal/api/me says which route this install arrived by, as a WORD", async () => {
   const { poolRoot, workspaceRoot } = world();
   const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
-    staffDomains: STAFF_DOMAINS, grants: GRANTS, audit: () => {} });
+    grants: GRANTS, audit: () => {} });
   const me = await svc.route("GET", "/portal/api/me", CLIENT);
   assert.equal(me.status, 200);
   assert.ok(["packaged", "checkout"].includes(me.json.setupRoute),

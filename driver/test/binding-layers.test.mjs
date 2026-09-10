@@ -218,7 +218,7 @@ test("the layer vocabulary is closed", () => {
 // fired for a test and never for a run. A guard that guards nothing is the failure mode this whole
 // track is about, and it is worth its own assertion rather than a second reading of the same code.
 
-test("#1028 the frozen plan records the territories the matter ORDERED, not just the offices", () => {
+test("the frozen plan records the territories the matter ORDERED, not just the offices", () => {
   const plan = compileRegisterPlan({
     manifest: parseVariantManifestModel(MINIMAL_MANIFEST),
     job: { classes: ["9"], jurisdictions: ["France"] },
@@ -229,7 +229,7 @@ test("#1028 the frozen plan records the territories the matter ORDERED, not just
   assert.ok(Array.isArray(plan.regions), "and the translated offices are still there, unchanged");
 });
 
-test("#1028 coverageFormInput hands the row builder what it needs, off the FROZEN plan", async () => {
+test("coverageFormInput hands the row builder what it needs, off the FROZEN plan", async () => {
   const { mkdtempSync, mkdirSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
@@ -256,7 +256,7 @@ test("#1028 coverageFormInput hands the row builder what it needs, off the FROZE
   assert.match(layerRow.open_because, /Not a complete clearance for FR/);
 });
 
-test("#1028 a plan frozen BEFORE this change degrades to no rows, never to wrong ones", async () => {
+test("a plan frozen BEFORE this change degrades to no rows, never to wrong ones", async () => {
   const { mkdtempSync, mkdirSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");

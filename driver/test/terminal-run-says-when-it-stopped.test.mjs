@@ -31,7 +31,7 @@ import { writeRunStatus } from "../progress.mjs";
 const run = () => mkdtempSync(join(tmpdir(), "endedat-"));
 const status = (d) => JSON.parse(readFileSync(join(d, "status.json"), "utf8"));
 
-test("#1090 every clean terminal stamps endedAt — cancelled, delivered and failed alike", () => {
+test("every clean terminal stamps endedAt — cancelled, delivered and failed alike", () => {
   for (const state of ["cancelled", "delivered", "failed"]) {
     const d = run();
     writeRunStatus(null, { state: "running" }, d);
@@ -44,7 +44,7 @@ test("#1090 every clean terminal stamps endedAt — cancelled, delivered and fai
   }
 });
 
-test("#1090 a run still RUNNING is not stamped — the field means stopped, not touched", () => {
+test("a run still RUNNING is not stamped — the field means stopped, not touched", () => {
   const d = run();
   writeRunStatus(null, { state: "running", stepIndex: 1 }, d);
   writeRunStatus(null, { state: "running", stepIndex: 2 }, d);
@@ -59,7 +59,7 @@ test("#1090 a run still RUNNING is not stamped — the field means stopped, not 
   }
 });
 
-test("#1090 the RECONCILER's own endedAt wins — a corpse says when the process died", () => {
+test("the RECONCILER's own endedAt wins — a corpse says when the process died", () => {
   // The reconciler passes an explicit endedAt for the moment it judges the process gone. That is a
   // different fact from "when the record was repaired", and the patch spread must keep it: stamping over
   // it would silently relabel every reconciled corpse with its repair time.
@@ -71,7 +71,7 @@ test("#1090 the RECONCILER's own endedAt wins — a corpse says when the process
     "the stamp overwrote the reconciler's value — a corpse would now claim it died when it was repaired");
 });
 
-test("#1090 endedAt is APPEND-ONLY — a re-entrant terminal write cannot move it", () => {
+test("endedAt is APPEND-ONLY — a re-entrant terminal write cannot move it", () => {
   // Same rule as startedAt, for the same reason. `judgeArtifacts` is invoked more than once per attempt
   // and the wall rescues call terminal paths again; a patch-wins field is what destroyed `reportedAt`.
   const d = run();

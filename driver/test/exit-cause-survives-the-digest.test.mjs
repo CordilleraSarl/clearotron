@@ -31,7 +31,7 @@ const CRASH = [
   "exiting 1",
 ].join("\n");
 
-test("#789 the CAUSE survives, where slice(-3) kept only the standing warning", () => {
+test("the CAUSE survives, where slice(-3) kept only the standing warning", () => {
   const old = CRASH.split("\n").filter(Boolean).slice(-3).join(" ⏎ ");
   assert.doesNotMatch(old, /cannot resolve helper path/,
     "the fixture does not reproduce the defect — the old tail already carried the cause, so this file proves nothing");
@@ -41,7 +41,7 @@ test("#789 the CAUSE survives, where slice(-3) kept only the standing warning", 
   assert.match(now, /cannot resolve helper path/, "the exit cause is still unrecoverable from the record");
 });
 
-test("#789 NOT FILTERED — the known noise survives too", () => {
+test("NOT FILTERED — the known noise survives too", () => {
   // The obvious alternative was to drop the PATH-alias line and keep three real ones. Refused: a filter
   // that removes what it has decided is noise is how a real cause disappears the first time it arrives in
   // an unexpected shape. Widening keeps both; filtering bets on today's understanding of the noise.
@@ -49,7 +49,7 @@ test("#789 NOT FILTERED — the known noise survives too", () => {
     "the digest is filtering — it now decides what is worth keeping, and it will be wrong eventually");
 });
 
-test("#789 an elided middle SAYS it was elided, with a count", () => {
+test("an elided middle SAYS it was elided, with a count", () => {
   const long = Array.from({ length: 40 }, (_, i) => `line ${i + 1}`).join("\n");
   const d = streamDigest(long);
   assert.match(d, /line 1 ⏎/, "the head is gone — the crash cause lives there");
@@ -59,7 +59,7 @@ test("#789 an elided middle SAYS it was elided, with a count", () => {
   assert.equal(STREAM_DIGEST_KEEP * 2 + 32, 40, "the arithmetic in this assertion drifted from the constant");
 });
 
-test("#789 a short stream is passed through whole — no phantom elision", () => {
+test("a short stream is passed through whole — no phantom elision", () => {
   const short = "only\ntwo";
   assert.equal(streamDigest(short), "only ⏎ two");
   assert.doesNotMatch(streamDigest(short), /elided/, "a complete stream is announcing an elision that did not happen");
@@ -68,7 +68,7 @@ test("#789 a short stream is passed through whole — no phantom elision", () =>
   assert.doesNotMatch(streamDigest(exact), /elided/, "an off-by-one at the boundary is inventing an elision");
 });
 
-test("#789 SHAPE FUZZ: the digest never throws and never invents content", () => {
+test("SHAPE FUZZ: the digest never throws and never invents content", () => {
   for (const bad of [null, undefined, "", "   ", "\n\n\n", 0, {}, []]) {
     let out;
     assert.doesNotThrow(() => { out = streamDigest(bad); }, `threw on ${JSON.stringify(bad)}`);

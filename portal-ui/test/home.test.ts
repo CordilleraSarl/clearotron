@@ -33,7 +33,7 @@ test('the in-flight band keeps failures and puts them first', () => {
   assert.ok(!rows.some((r) => r.state === 'delivered'), 'delivered is not in flight')
 })
 
-test('#613 an acknowledged run leaves the band, and `acknowledged` is the exact complement', () => {
+test('an acknowledged run leaves the band, and `acknowledged` is the exact complement', () => {
   // The band filled with dead runs and stopped showing live work, which is the one thing it is for. The
   // two functions must partition the not-delivered rows between them: anything that vanishes from one
   // has to appear in the other, or "acknowledged" is just "forgotten" with a nicer word on it.
@@ -55,7 +55,7 @@ test('#613 an acknowledged run leaves the band, and `acknowledged` is the exact 
   assert.ok(!acknowledged(rows).some((r) => r.state === 'delivered'))
 })
 
-test('#613 a cancelled run reaches a CARD, which is where the acknowledge lives', () => {
+test('a cancelled run reaches a CARD, which is where the acknowledge lives', () => {
   // THE CONTROL THAT CANNOT BE REACHED. The issue names two states, `failed` and `cancelled`, and the
   // card renders the button for both — but the button is only on rows `active()` returns, and `RANK`
   // above lists four states without `cancelled`. If `active()` were an allowlist rather than "not
@@ -485,7 +485,7 @@ test('the slot note counts in English — "Two runs", never "Two run"', () => {
 // The defect only exists between two runs that share a day, so an arm that never builds that pair
 // cannot see it — which is how it shipped, and why these are written the way they are.
 
-test('#1919 two reads of one name on the SAME DAY: the newer leads', () => {
+test('two reads of one name on the SAME DAY: the newer leads', () => {
   // THIS ARM DOES NOT DISCRIMINATE ON THE FIX, and it is kept anyway. Planted: reverting
   // `recentlyFinished` to the day comparator leaves it GREEN, because a mark's reads are already sorted
   // by `newestFirst` inside grouping.ts and `current` was therefore always the right read. The defect
@@ -503,7 +503,7 @@ test('#1919 two reads of one name on the SAME DAY: the newer leads', () => {
     'the row must speak for the 11:38 read, not the 11:00 one')
 })
 
-test('#1919 two NAMES delivered the same day sort newest-first, not arbitrarily', () => {
+test('two NAMES delivered the same day sort newest-first, not arbitrarily', () => {
   // The card itself: limit 1, so the wrong order here is the whole defect the owner saw.
   const rows = recentlyFinished([
     run({ runId: 'a', markName: 'AQUAPLUS', state: 'delivered', date: '2026-08-26', issuedAt: '2026-08-26T09:15:00.000Z' }),
@@ -519,7 +519,7 @@ test('#1919 two NAMES delivered the same day sort newest-first, not arbitrarily'
   assert.deepEqual(flipped.map((r) => r.name), ['BORAMEL', 'AQUAPLUS'], 'same answer whichever order they arrive in')
 })
 
-test('#1919 a FAMILY carries the precise time of its newest mark', () => {
+test('a FAMILY carries the precise time of its newest mark', () => {
   // FamilyGroup had `date` and no `issuedAt`, so two families last worked on the same day tied even
   // after the mark-level fix. The family's stamp is the max over its marks, computed beside `date`
   // rather than derived from it.
@@ -535,7 +535,7 @@ test('#1919 a FAMILY carries the precise time of its newest mark', () => {
   assert.equal(rows[0]!.issuedAt, '2026-08-26T19:30:00.000Z', 'the family reports its LATEST mark to the second')
 })
 
-test('#1919 a run with no issuedAt sorts LAST, never first', () => {
+test('a run with no issuedAt sorts LAST, never first', () => {
   // The fallback direction. An unknown time treated as newest would put every pre-change run at the top of
   // the card permanently — a worse failure than the one being fixed, and the one a naive `??` produces.
   const rows = recentlyFinished([
@@ -545,7 +545,7 @@ test('#1919 a run with no issuedAt sorts LAST, never first', () => {
   assert.deepEqual(rows.map((r) => r.name), ['NEWMARK', 'OLDMARK'])
 })
 
-test('#1919 the Clearances date column orders by the same comparator, both directions', () => {
+test('the Clearances date column orders by the same comparator, both directions', () => {
   // The second screen. Its comparator is inline in the screen and has no DOM harness, so what is asserted
   // here is that the screen imports and uses `newestFirst` rather than a second copy of the expression —
   // which is the property that keeps the two screens agreeing. The comparator's own behaviour is proven
@@ -561,7 +561,7 @@ test('#1919 the Clearances date column orders by the same comparator, both direc
 // Owner, on his second encounter with the same wait: "a stop is a stop — maybe it should be a 'stop
 // immediately or at next boundary to preserve data' kind of question when you press it." Stop was a
 // `window.confirm` that stated the boundary stop as a fact, because that was the only stop there was.
-test('2076 Stop asks the question rather than stating the answer, and names what each costs', () => {
+test('Stop asks the question rather than stating the answer, and names what each costs', () => {
   const css = readFileSync(new URL('../src/base.css', import.meta.url), 'utf8')
 
   // NOT a confirm. It has two outcomes and this has three, and the third — leaving the run alone —

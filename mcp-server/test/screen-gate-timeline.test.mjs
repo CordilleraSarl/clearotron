@@ -28,7 +28,7 @@ const project = (e) => {
   return row;
 };
 
-test("#1228 the owner's client-visible wording is carried VERBATIM, to the byte", () => {
+test("the owner's client-visible wording is carried VERBATIM, to the byte", () => {
   assert.equal(events.CLIENT_INCOMPLETE, "Screening: incomplete — flagged for review");
   // The dash is EM DASH (U+2014). Asserted by codepoint because an en dash and a hyphen are visually
   // near-identical in a diff and this text reaches a client.
@@ -36,7 +36,7 @@ test("#1228 the owner's client-visible wording is carried VERBATIM, to the byte"
     "the dash in the client string is no longer an em dash — this wording is owner-approved verbatim");
 });
 
-test("#1228 a gate that COULD NOT INSPECT is not reported as a pass", () => {
+test("a gate that COULD NOT INSPECT is not reported as a pass", () => {
   for (const cause of ["findings-absent", "findings-empty"]) {
     const row = project({ event: "screen-gate-clean", cause });
     assert.equal(row.decision, "screen-gate-incomplete", `${cause} still renders as a pass`);
@@ -46,7 +46,7 @@ test("#1228 a gate that COULD NOT INSPECT is not reported as a pass", () => {
   }
 });
 
-test("#1228 a gate that genuinely ran and found nothing keeps clear wording", () => {
+test("a gate that genuinely ran and found nothing keeps clear wording", () => {
   for (const cause of ["no-drop-rows", "all-fetched"]) {
     const row = project({ event: "screen-gate-clean", cause });
     assert.equal(row.decision, "screen-gate-passed", `${cause} is a genuinely clean gate and must read as one`);
@@ -55,7 +55,7 @@ test("#1228 a gate that genuinely ran and found nothing keeps clear wording", ()
   }
 });
 
-test("#1228 the DEFAULT mode reads clear but says WHICH clear — it inspected, and it did not count", () => {
+test("the DEFAULT mode reads clear but says WHICH clear — it inspected, and it did not count", () => {
   // `unnamed-drops-unarmed` is the commonest path: the digest dropped rows on goods, every one names no
   // record, and this configuration does not count them. The gate DID inspect, so by the ruling's own
   // trigger it is not the "could not inspect anything" state. But screen-gate.mjs warns that folding it
@@ -68,7 +68,7 @@ test("#1228 the DEFAULT mode reads clear but says WHICH clear — it inspected, 
     "the default path is back to being indistinguishable from 'nothing was dropped'");
 });
 
-test("#1228 a HEALED gate is distinguishable from one that never had a violation", () => {
+test("a HEALED gate is distinguishable from one that never had a violation", () => {
   // pipeline.mjs's two `recovered: true` writers: violations existed and a repair healed them. Neither
   // carries a cause. They are not defects and not virgin-clean, and the timeline said the same word for
   // both.
@@ -81,7 +81,7 @@ test("#1228 a HEALED gate is distinguishable from one that never had a violation
   assert.equal(virgin.recovered, false);
 });
 
-test("#1228 a pre-#1215 event carries no cause and is NOT retro-labelled incomplete", () => {
+test("a pre-#1215 event carries no cause and is NOT retro-labelled incomplete", () => {
   // Runs recorded before the cause field existed must not be re-reported as defects on the strength of a
   // field their engine never wrote. Absence of evidence is not the incomplete state.
   const row = project({ event: "screen-gate-clean" });

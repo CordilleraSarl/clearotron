@@ -72,7 +72,7 @@ read the point of should not go out.
 
 ---
 
-# Release notes contract — owner ruling 2026-09-05 ("SUPER CLEAR AND SIMPLE", enshrined in the repo, not in memory)
+# Release notes contract — ruling 2026-09-05 ("SUPER CLEAR AND SIMPLE", enshrined in the repo, not in memory)
 
 ## Who reads a release note
 Someone who installs and runs Clearotron: a trademark lawyer, or the IT person helping them. They have never

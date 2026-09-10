@@ -84,7 +84,7 @@ async function doorAnswering401() {
     close: () => new Promise((r) => { child.once("exit", r); child.kill(); }) };
 }
 
-test("112 the trigger lane is a surface of its own, and an unset origin FAILS it", { timeout: 300_000 }, () => {
+test("the trigger lane is a surface of its own, and an unset origin FAILS it", { timeout: 300_000 }, () => {
   // The 2026-09-02 box exactly: an ops token present, `PORTAL_MCP_URL` never set. Every other surface
   // on that box was green.
   const { lane } = surfaces({ url: "", token: "v1.payload.sig" });
@@ -94,7 +94,7 @@ test("112 the trigger lane is a surface of its own, and an unset origin FAILS it
     "reachability is not reported at all, so 'wired' and 'reachable' are not separable");
 });
 
-test("112 an unset origin is NOT-PROBED for reachability, never passed and never failed", { timeout: 300_000 }, () => {
+test("an unset origin is NOT-PROBED for reachability, never passed and never failed", { timeout: 300_000 }, () => {
   // Probing a default would report on some other instance's door — the fault the URL derivation at the
   // top of that script exists to stop. And a skip is not a pass: the script counts them apart.
   const { lane } = surfaces({ url: "", token: "v1.payload.sig" });
@@ -102,7 +102,7 @@ test("112 an unset origin is NOT-PROBED for reachability, never passed and never
     "with no origin configured, reachability was decided rather than reported as not probed");
 });
 
-test("112 a door answering 401 proves the lane reachable — it starts no run", { timeout: 300_000 }, async () => {
+test("a door answering 401 proves the lane reachable — it starts no run", { timeout: 300_000 }, async () => {
   // `start_run` bills a real clearance, so proving the lane must never use it. A 401 rather than a
   // connection error already proves origin, path and listener, which is the issue's own criterion —
   // and treating 401 as a failure would red every correctly-secured deployment.
@@ -115,7 +115,7 @@ test("112 a door answering 401 proves the lane reachable — it starts no run", 
   } finally { await door.close(); }
 });
 
-test("112 WIRED and REACHABLE are different answers: configured, and nothing behind it", { timeout: 300_000 }, async () => {
+test("WIRED and REACHABLE are different answers: configured, and nothing behind it", { timeout: 300_000 }, async () => {
   // Criterion 4. On the outage box both failed together, and that is how one hides behind the other:
   // an unset variable is a value somebody has to write, a dead door is a service to bring up.
   const door = await doorAnswering401();

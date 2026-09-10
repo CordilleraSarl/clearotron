@@ -209,13 +209,13 @@ test("a lead-in carrying a newline is refused, exactly as the bullet text is", (
 // report, so a card that cites nothing has nothing to harvest and the run goes green BECAUSE the evidence
 // is missing. The artifact cannot carry the distinction, so it is made before a card is written.
 
-test("#1237: a bound ordinal findings.json does not carry is REFUSED by name, not rendered", () => {
+test("a bound ordinal findings.json does not carry is REFUSED by name, not rendered", () => {
   const v = acceptReportCard(CALL(9), { boundOrdinal: "9", finding: null, findingsReadable: true });
   assert.equal(v.ok, false, "the card rendered for an ordinal the run does not hold");
   assert.match(v.reason, /^reportcard_ordinal_unknown:9/, "refused, but not by a name a corrective ladder can key on");
 });
 
-test("#1237: a finding with an empty resolved_link still RENDERS — the record-less run stays a legitimate green", () => {
+test("a finding with an empty resolved_link still RENDERS — the record-less run stays a legitimate green", () => {
   // The state the refusal must never touch. This is what a genuine record-less finding looks like, and
   // the absent Source bullet is the correct, honest output for it.
   const recordless = { ...FINDING(2), source: { source_type: "register-euipo", resolved_link: "" } };
@@ -224,7 +224,7 @@ test("#1237: a finding with an empty resolved_link still RENDERS — the record-
   assert.doesNotMatch(v.content, /- Source:/, "a card with no record link composed a Source bullet anyway");
 });
 
-test("#1237 THE DISCRIMINATION — the two states produce different outcomes, which is the whole issue", () => {
+test("THE DISCRIMINATION — the two states produce different outcomes, which is the whole issue", () => {
   // Before this, both of these rendered and the artifacts were byte-identical. Asserted as a PAIR: either
   // half alone can pass while the states remain indistinguishable.
   const recordless = { ...FINDING(2), source: { source_type: "register-euipo", resolved_link: "" } };
@@ -235,7 +235,7 @@ test("#1237 THE DISCRIMINATION — the two states produce different outcomes, wh
   assert.notEqual(legit.content, bug.content, "the two states still produce the same artifact");
 });
 
-test("#1237: an UNREADABLE findings.json does not refuse — that is the pipeline-breaking downside", () => {
+test("an UNREADABLE findings.json does not refuse — that is the pipeline-breaking downside", () => {
   // `finding == null` is true for three different causes and only one is this issue's bug. Refusing on the
   // bare null would fail every card on a run that is merely early, which is why the check is a conjunction
   // and why `findingsReadable` is measured rather than assumed.
@@ -245,7 +245,7 @@ test("#1237: an UNREADABLE findings.json does not refuse — that is the pipelin
   assert.equal(acceptReportCard(CALL(), { boundOrdinal: "2", finding: null }).ok, true);
 });
 
-test("#1237: findingsDocFor keeps the CAUSE that findingForOrdinal collapses", () => {
+test("findingsDocFor keeps the CAUSE that findingForOrdinal collapses", () => {
   const dir = runWith([FINDING(2)]);
   assert.deepEqual(findingsDocFor(dir, "2").readable, true);
   assert.equal(findingsDocFor(dir, "2").finding?.ordinal, 2);
@@ -262,7 +262,7 @@ test("#1237: findingsDocFor keeps the CAUSE that findingForOrdinal collapses", (
   for (const d of [dir, empty, broken]) assert.equal(findingForOrdinal(d, "9"), null);
 });
 
-test("#1237 END TO END — recordReportCard writes no card file for an ordinal the run does not carry", () => {
+test("END TO END — recordReportCard writes no card file for an ordinal the run does not carry", () => {
   // Through the real transport, because the refusal has to happen before a file lands on disk: a card
   // written and then judged is a card the assembler can pick up.
   const dir = runWith([FINDING(2)]);

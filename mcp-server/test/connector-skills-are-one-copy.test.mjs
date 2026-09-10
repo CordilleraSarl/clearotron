@@ -24,7 +24,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SKILLS = join(ROOT, "skills");
 const DIRS = ["clearotron-client", "clearotron-account", "clearotron-ops"];
 
-test("#766 each connector skill is discoverable: frontmatter, a name that matches its directory, a description", () => {
+test("each connector skill is discoverable: frontmatter, a name that matches its directory, a description", () => {
   for (const d of DIRS) {
     const p = join(SKILLS, d, "SKILL.md");
     assert.ok(existsSync(p), `${d}/SKILL.md is missing — the plugin installs nothing for that audience`);
@@ -40,7 +40,7 @@ test("#766 each connector skill is discoverable: frontmatter, a name that matche
   }
 });
 
-test("#766 the plugin manifest exists and is the thing that makes them install as one unit", () => {
+test("the plugin manifest exists and is the thing that makes them install as one unit", () => {
   const p = join(ROOT, ".claude-plugin", "plugin.json");
   assert.ok(existsSync(p), ".claude-plugin/plugin.json is gone — the three packs go back to being copied by hand");
   const j = JSON.parse(readFileSync(p, "utf8"));
@@ -51,7 +51,7 @@ test("#766 the plugin manifest exists and is the thing that makes them install a
   assert.ok(readdirSync(SKILLS).length >= DIRS.length, "skills/ lost a member the plugin was shipping");
 });
 
-test("#766 the server briefs from the SAME file, and each audience gets its OWN pack", () => {
+test("the server briefs from the SAME file, and each audience gets its OWN pack", () => {
   const client = instructionsFor({ kind: "user" });
   const account = instructionsFor({ kind: "account" });
   assert.ok(client && account, "a connecting principal is no longer briefed at all");
@@ -60,7 +60,7 @@ test("#766 the server briefs from the SAME file, and each audience gets its OWN 
   assert.equal(account, onDisk("clearotron-account"), "the account briefing is not the file in skills/");
   assert.notEqual(client, account, "both audiences got the same pack — the account one would be told "
     + "that commissioning a search is out of scope, which is the tool it holds");
-  // OPS NOW GETS ITS OWN PACK (owner ruling 7), which is this arm's own principle
+  // OPS NOW GETS ITS OWN PACK (ruling 7), which is this arm's own principle
   // rather than an exception to it: on a self-hosted install the customer IS ops, connects over this
   // connector, and was briefed with nothing while skills/clearotron-ops/SKILL.md shipped and SKILL_DIR
   // mapped it. Asserted the same way as the other two — against the files on disk, so "briefed" and
@@ -103,7 +103,7 @@ test("#766 the server briefs from the SAME file, and each audience gets its OWN 
     + "is in no file in skills/clearotron-ops/ — a second copy of doctrine by another name");
 });
 
-test("#766 the frontmatter is STRIPPED before briefing — packaging must not reach a client's assistant", () => {
+test("the frontmatter is STRIPPED before briefing — packaging must not reach a client's assistant", () => {
   for (const kind of ["user", "account"]) {
     const text = instructionsFor({ kind });
     assert.doesNotMatch(text, /^---/, `${kind}'s briefing opens with frontmatter`);
@@ -117,7 +117,7 @@ test("#766 the frontmatter is STRIPPED before briefing — packaging must not re
   assert.equal(stripFrontmatter("---\nunterminated\n"), "---\nunterminated\n", "an unterminated block is not frontmatter");
 });
 
-test("#766 no second copy came back — packs/ holds no SKILL.md to drift against", () => {
+test("no second copy came back — packs/ holds no SKILL.md to drift against", () => {
   // The whole reason the text moved instead of being copied. A SKILL.md reappearing under packs/ is a
   // second source of doctrine that nothing compares, which is the state this replaced.
   const packs = join(ROOT, "mcp-server", "packs");

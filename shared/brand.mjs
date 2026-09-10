@@ -628,7 +628,7 @@ export const logoLockup = ({ mark = 30, tag = BRAND.tagline, cls = "" } = {}) =>
 // inherit the SAME staff-auto / client-explicit gating as every other token. `isolation:isolate` + z-index:-1
 // keeps the wash/mark behind content without having to raise every child.
 //
-// THE WORDMARK RENDERS LOWERCASE, AND THE NAME IN PROSE DOES NOT. Owner ruling 2026-08-21, and it is
+// THE WORDMARK RENDERS LOWERCASE, AND THE NAME IN PROSE DOES NOT. Ruling 2026-08-21, and it is
 // the THIRD casing ruling on this name — read the distinction before changing either half:
 //
 //   `.lk-word` (here)   the BRAND MARK. Lowercase — "in the UI, clearotron is lowercase as a brand".

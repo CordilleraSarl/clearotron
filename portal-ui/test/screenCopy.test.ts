@@ -210,7 +210,7 @@ test('an unavailable search is not silently greyed — the reason rides IN the r
   assert.doesNotMatch(offBlock, /opacity/, 'the row is dimmed by opacity, which dims the reason with it')
 })
 
-test('2075 a product the register cannot fully reach is ORDERABLE, with the limit at the control', () => {
+test('a product the register cannot fully reach is ORDERABLE, with the limit at the control', () => {
   // The owner's ruling: coverage is disclosed, never refused. "A user could still run global and just
   // be aware of the limitations — I prefer that than switch it off." So the row carries a second kind of
   // sentence, and the two are never both set: one explains a dead control, the other qualifies a live
@@ -371,35 +371,29 @@ test('the DescribeIt comment no longer claims the brief travels with the request
   assert.match(NEW_CLEARANCE, /owner decision, and it is\s*\*?\s*deliberately not taken/, 'and the comment says whose decision that is')
 })
 
-// ── People & access · what the screen claims about roles ─────────────────────────────────────────
+// ── People · what the screen claims about who a person is ────────────────────────────────────────
 
-test('the access screen names both real roles, from the brand seam', () => {
-  // WHAT THIS NO LONGER REQUIRES, and it is a real loss rather than a tidy-up.
-  // The page used to disown "operator" and "reader" by name — vestigial roles designed as per-user
-  // roles inside a tenant and never built, which no code path reads. The owner's copy pass removed that
-  // footnote, so a staff member who has heard the pair named is no longer told on the screen which of
-  // the two is true. Flagged on the issue; his wording is the acceptance and it ships.
-  //
-  // What still holds is the half that is about the roles that DO exist, and it is asserted below.
+test('People prints what a person may do, never a role noun', () => {
+  // The page used to name two roles, one of them from the operator's brand. There are no roles: each
+  // person has two permissions and access to points on the tree, and both columns print exactly that,
+  // in the words the shared helpers own.
   const prose = body(PEOPLE_ACCESS)
-  // TWO ASSERTIONS, because the positive one is weak on its own: this file reads SOURCE TEXT, so
-  // matching the helper call passes as long as the call exists anywhere. The property actually
-  // buys is the ABSENCE of the hardcoded operator name, so that is asserted directly beside it.
-  assert.match(prose, /staffLabel\(/, 'the staff role is named FROM THE BRAND SEAM')
-  assert.doesNotMatch(prose, /Cordillera/,
-    'and never as a literal — a fork must not tell its users they are staff of a firm they have never heard of')
-  assert.match(prose, /Client/, 'the client role is named')
+  assert.match(prose, /permissionsPhrase\(person\.permissions\)/, 'the Permissions column is the shared phrase')
+  assert.match(prose, /accessChips\(person\.access\)/, 'the Access column is the shared chips')
+  assert.doesNotMatch(prose, /staffLabel\(|'Client'|>Clients<|Staff/, 'no role word survives on the page')
+  assert.doesNotMatch(prose, /\.tenant\b|all of this tenant/, 'and "tenant" is a file word, never a screen word')
 })
 
-test('the screen does not claim anyone can change access from the browser', () => {
-  // The page is read-only by a deliberate decision, not an unfinished one. Copy that implied a control
-  // exists would send a reader hunting for it.
+test('an install that signs in one person says so, disables Add, and names the way out', () => {
+  // Local sign-in holds one address and one passphrase and cannot hold a second person. A control that
+  // only fails is worse than none, and a vanished control sends a reader looking — so Add stays, visibly
+  // off, beside the sentence saying why and a link to how.
   const prose = body(PEOPLE_ACCESS)
-  // — the owner's wording, which says this more plainly than "a production change"
-  // did. The property is unchanged and still asserted: the page must not imply a control it does not
-  // have. It also NAMES the command now, so a reader sent to a CLI is not sent to an unnamed one.
-  assert.match(prose, /not currently configurable via the UI/, 'the page says the control is not here')
-  assert.match(prose, /clearotron grant/, 'and names the command that does it, rather than "use the CLI"')
+  assert.match(prose, /disabled=\{!v\.canAdd\}/, 'Add is disabled exactly when the server says it cannot add')
+  assert.match(prose, /v\.localSignIn \?/, 'the notice keys on local sign-in')
+  assert.match(prose, /This Clearotron signs in one person: you\./)
+  assert.match(prose, /href=\{loginInFrontDoc\(repo\)\}/, 'and it links to where a login system in front is explained')
+  assert.doesNotMatch(prose, /not currently configurable via the UI/, 'the old read-only sentence is gone with the read-only page')
 })
 
 test('the activity panel says absence is not evidence of missing access', () => {
@@ -703,7 +697,7 @@ test('the matrix header leads with the product’s NAME', () => {
   assert.match(fn, /\{c\.name\}/, 'the column head is the name — the same string the report prints')
 })
 
-test('#761 the result screen says WHICH PRODUCT is open, and never hardcodes one', () => {
+test('the result screen says WHICH PRODUCT is open, and never hardcodes one', () => {
   // A reader holding two finished reads had nothing on this screen telling them apart: the header line
   // was mark · owner · date · band, and the frame's accessible name was a hardcoded product word applied
   // to every run, so a knockout announced itself as a clearance.
@@ -774,7 +768,7 @@ test('extra marketplaces are counted into the effort input, not just sent on the
 
 // ── the two ways in: which pills are the offering and which are the account's own ────────────────
 
-test("#1435 a saved search on the entry fork sits under its OWN heading, not under the products'", () => {
+test("a saved search on the entry fork sits under its OWN heading, not under the products'", () => {
   // THE DEFECT. The four products and the account's saved searches rendered as one flat row of pills
   // under one heading — "Or start from one of the four searches" — so the heading's own count was wrong
   // for every account that had saved anything, and a customer could not tell which pills were the
@@ -812,10 +806,10 @@ test("#1435 a saved search on the entry fork sits under its OWN heading, not und
 
 // ── — A DEMO ORDER LANDS ON A REPORT, and the SERVER says so ────────────────
 //
-// Owner ruling 2026-08-31, revising his own ruling of an hour earlier: pressing New clearance in a demo
+// Ruling 2026-08-31, revising his own ruling of an hour earlier: pressing New clearance in a demo
 // walks the real flow "and then lands on one of the four preloaded finished runs". The greyed control
 // that shipped implemented the ruling he replaced.
-test('2015 the demo landing is decided by the server, and never claims a run started', () => {
+test('the demo landing is decided by the server, and never claims a run started', () => {
   const src = body(NEW_CLEARANCE)
 
   // THE SERVER'S ANSWER, not the client's idea of whether it is in a demo. A browser that inferred it
@@ -861,24 +855,23 @@ test('…and the screen now does the picking itself rather than pointing at a co
   const facts = (k: string) =>
     k === 'acme' ? { industry: 'animal health', platformCount: 6, territories: ['US', 'EU'] } : undefined
 
-  const staff = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'staff')
-  assert.equal(staff[0]?.key, GENERIC_KEY, 'the entry you can always run under is read first')
-  assert.equal(staff[0]?.generic, true, 'and it is marked, so the wash is not a colour somebody chose per screen')
-  assert.deepEqual(staff.slice(1).map((r) => r.name), ['Acme Ltd', 'Zephyr Beverages'],
+  const inOne = () => 'alder'
+  const orgs = [{ key: 'alder', name: 'Alder Group' }]
+  const rows = pickerRows(['zephyr', GENERIC_KEY, 'acme'], inOne, orgs, name, facts)
+  assert.equal(rows[0]?.key, GENERIC_KEY, 'the entry you can always run under is read first')
+  assert.equal(rows[0]?.generic, true, 'and it is marked, so the wash is not a colour somebody chose per screen')
+  assert.deepEqual(rows.slice(1).map((r) => r.name), ['Acme Ltd', 'Zephyr Beverages'],
     'the rest sort by what is READ, the same rule the rail switcher uses')
-  assert.equal(staff.find((r) => r.key === 'acme')?.line, 'Animal health · 6 marketplaces · US, EU')
+  assert.equal(rows.find((r) => r.key === 'acme')?.line, 'Animal health · 6 marketplaces · US, EU')
 
   // A company we hold no facts for still offers: a name and no line under it is the fresh-install case
   // and every newly created company, not an error state.
-  assert.equal(staff.find((r) => r.key === 'zephyr')?.line, '')
+  assert.equal(rows.find((r) => r.key === 'zephyr')?.line, '')
 
-  // THE ENGINE BOUNDARY, not a preference. `generic` answers 404 to a non-staff principal on the runs
-  // list and on every report route, so offering it here would seat a client on a company whose every
-  // page then refuses them.
-  const client = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'client')
-  assert.equal(client.some((r) => r.key === GENERIC_KEY), false,
-    'a client surface never lists the house account')
-  assert.deepEqual(client.map((r) => r.key), ['acme', 'zephyr'], 'and loses nothing else')
+  // GENERIC BELONGS TO ITS ORGANISATION. It used to be withheld from every non-staff reader here; there
+  // is no role left to withhold it by, and whether a person is offered it is decided by whether the
+  // server put it in their list — the one source both this panel and the engine read.
+  assert.equal(rows.filter((r) => r.key === GENERIC_KEY).length, 1, 'offered once, inside the organisation it belongs to')
 })
 
 test('the disabled Save names its blocking condition LOUDER than its harmless ones', () => {

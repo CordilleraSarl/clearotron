@@ -39,7 +39,7 @@ const stageTrace = () => ({
   note: "What the assess stage produced.",
 });
 
-test("275 client path: a VERDICT trace keeps the verdict and every mark's band", () => {
+test("client path: a VERDICT trace keeps the verdict and every mark's band", () => {
   const out = accountTrace(verdictTrace());
   assert.equal(out.verdict, "High", "the batch verdict did not survive the client door");
   assert.equal(out.marks?.length, 1, "the per-mark list was dropped — the note promises it");
@@ -47,7 +47,7 @@ test("275 client path: a VERDICT trace keeps the verdict and every mark's band",
   assert.equal(out.marks[0].basis, "an identical mark in the same class", "and its one-sentence ground");
 });
 
-test("275 client path: a MARK trace keeps the band, the basis and everything it rests on", () => {
+test("client path: a MARK trace keeps the band, the basis and everything it rests on", () => {
   const out = accountTrace(markTrace());
   assert.equal(out.band, "High", "THE band — the single field the client asked for");
   assert.equal(out.basis, "an identical mark in the same class");
@@ -58,14 +58,14 @@ test("275 client path: a MARK trace keeps the band, the basis and everything it 
   assert.equal(out.registerReads?.[0]?.recordId, "EUIPO 0181", "the register filings the rater read");
 });
 
-test("275 client path: a STAGE trace keeps the stage, its events and what it produced", () => {
+test("client path: a STAGE trace keeps the stage, its events and what it produced", () => {
   const out = accountTrace(stageTrace());
   assert.equal(out.stage, "assess");
   assert.equal(out.events?.length, 1, "the events were dropped");
   assert.equal(out.produced?.[0]?.name, "findings", "what the stage wrote, by presence");
 });
 
-test("275 client path: an ERROR trace is unchanged — the one branch that already worked", () => {
+test("client path: an ERROR trace is unchanged — the one branch that already worked", () => {
   const out = accountTrace({ runId: "r1", target: "nope", error: "Could not resolve target" });
   assert.deepEqual(out, { runId: "r1", target: "nope", error: "Could not resolve target" },
     "the resolver's own guidance carries no run content and must pass through whole");
@@ -73,7 +73,7 @@ test("275 client path: an ERROR trace is unchanged — the one branch that alrea
 
 // ── THE DEFECT, NAMED AS A PROPERTY RATHER THAN AS THREE FIELD CHECKS ────────────────────────────────
 
-test("275 client path: the note is never the only thing left — a promise the payload does not keep", () => {
+test("client path: the note is never the only thing left — a promise the payload does not keep", () => {
   // This is the shape of the defect, not an example of it. A note survived describing fields that were
   // gone, which is worse than an empty answer: the client is told the band is here and it is not.
   for (const [name, make] of [["verdict", verdictTrace], ["mark", markTrace], ["stage", stageTrace]]) {
@@ -95,7 +95,7 @@ test("275 client path: the note is never the only thing left — a promise the p
 
 // ── WHAT A CLIENT MUST STILL NOT SEE ─────────────────────────────────────────────────────────────────
 
-test("275 client path: raw driver events are PROJECTED, never forwarded whole", () => {
+test("client path: raw driver events are PROJECTED, never forwarded whole", () => {
   const t = stageTrace();
   t.events = [{ stage: "assess", ok: true, modelUsed: "opus", usage: { in: 900, out: 120 }, wall: 41 }];
   const ev = accountTrace(t).events[0];
@@ -106,7 +106,7 @@ test("275 client path: raw driver events are PROJECTED, never forwarded whole", 
       + "and this projection is the only thing between them and a client");
 });
 
-test("275 client path: model-authored prose goes through the same scrub the clearance side uses", () => {
+test("client path: model-authored prose goes through the same scrub the clearance side uses", () => {
   const t = markTrace();
   t.basis = "per the skeptic pass this is fine";
   t.findings = [{ ordinal: 1, name: "per the skeptic pass this is fine", band: "High", evidence: [] }];
@@ -115,7 +115,7 @@ test("275 client path: model-authored prose goes through the same scrub the clea
   assert.equal(out.findings[0].name, "", "and the same on a finding's name");
 });
 
-test("275 client path: a CLEARANCE trace is never routed into the knockout projection", () => {
+test("client path: a CLEARANCE trace is never routed into the knockout projection", () => {
   // The discriminator requires BOTH no `resolvedAs` and a knockout `kind`. A clearance trace that later
   // grew a top-level `kind` would otherwise start losing its own fields, silently and client-side.
   const clearance = {

@@ -32,7 +32,7 @@ import { composerFor } from "../repair-composers.mjs";
 const CORRECTIVE = composerFor("synthesis:corrective");
 const shapes = () => CORRECTIVE.samples.map((s) => ({ name: s.name, text: CORRECTIVE.compose(s.args) }));
 
-test("1889: the two declared shapes really are different dispatches — the control for every arm below", () => {
+test("the two declared shapes really are different dispatches — the control for every arm below", () => {
   const [a, b] = shapes();
   assert.equal(shapes().length, 2, "the composer declares two shapes; an arm that walks one walks half");
   assert.notEqual(a.text, b.text,
@@ -42,7 +42,7 @@ test("1889: the two declared shapes really are different dispatches — the cont
   assert.doesNotMatch(a.text, /SCOPE — THE REVIEWER DECLARED/);
 });
 
-test("1889: a repair may narrow and never broaden — in BOTH shapes, not only the scoped one", () => {
+test("a repair may narrow and never broaden — in BOTH shapes, not only the scoped one", () => {
   for (const { name, text } of shapes()) {
     assert.match(text, /MAY NARROW A CLAIM AND MAY NEVER BROADEN ONE/,
       `${name}: a rule that reaches only the scoped dispatch is absent from most of them`);
@@ -50,7 +50,7 @@ test("1889: a repair may narrow and never broaden — in BOTH shapes, not only t
   }
 });
 
-test("1889: the coverage account may not be reopened, and the rule names the file it governs", () => {
+test("the coverage account may not be reopened, and the rule names the file it governs", () => {
   for (const { name, args } of CORRECTIVE.samples.map((s) => ({ name: s.name, args: s.args }))) {
     const text = CORRECTIVE.compose(args);
     assert.match(text, /THE COVERAGE ACCOUNT IS NOT YOURS TO REOPEN HERE/, name);
@@ -62,7 +62,7 @@ test("1889: the coverage account may not be reopened, and the rule names the fil
   }
 });
 
-test("1889: 'narrowing is not hedging' ships WITH the never-soften rule, or the two contradict", () => {
+test("'narrowing is not hedging' ships WITH the never-soften rule, or the two contradict", () => {
   // This is the arm most at risk of being tidied away as redundant. It is not redundant: the pass is
   // told never to soften a statement AND to state less when it claims too much. Handed both without
   // the distinction a model picks one, and the one it picks is the one that reads as more permissive.
@@ -74,7 +74,7 @@ test("1889: 'narrowing is not hedging' ships WITH the never-soften rule, or the 
   }
 });
 
-test("1889: removing the support for a claim removes the claim", () => {
+test("removing the support for a claim removes the claim", () => {
   for (const { name, text } of shapes()) {
     assert.match(text, /IF YOU REMOVE THE SUPPORT FOR A CLAIM, THE CLAIM GOES WITH IT/, name);
   }

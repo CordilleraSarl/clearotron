@@ -53,7 +53,7 @@ function recordSites() {
 
 // ── CRITERION 1: EVERY SITE NAMES THE CEILING IT ENFORCES ────────────────────────────────────────────
 
-test("#1495 every repair record() site in the pipeline names a ceiling", () => {
+test("every repair record() site in the pipeline names a ceiling", () => {
   // This is the whole defect. Seven sites, zero ceilings, and every unit test green.
   const sites = recordSites();
   assert.ok(sites.length >= 7,
@@ -65,7 +65,7 @@ test("#1495 every repair record() site in the pipeline names a ceiling", () => {
     + "five-way answer reaches no reader");
 });
 
-test("#1495 no site restates its ceiling as a literal — the two ends read ONE name", () => {
+test("no site restates its ceiling as a literal — the two ends read ONE name", () => {
   // `canAttempt` enforces the budget and `record` reports against it. A literal at the record site is a
   // second statement of the same rule, and the whole class is two ends of one contract measuring
   // different things with nothing asserting they agree. Passing the same identifier both ends makes the
@@ -77,7 +77,7 @@ test("#1495 no site restates its ceiling as a literal — the two ends read ONE 
     "these sites hard-code a ceiling at the record call instead of reading the one canAttempt enforces");
 });
 
-test("#1495 each repair's two ends read the SAME ceiling expression", () => {
+test("each repair's two ends read the SAME ceiling expression", () => {
   // Pairs them by repair id rather than trusting that a nearby `max` is the right one. The sites with a
   // literal id are checkable this way; the one whose id is a variable (`dispatchPlanQids`) takes the
   // ceiling from its own parameter, so both ends already read one name by construction.
@@ -104,13 +104,13 @@ function emitted(fn) {
   return events.filter((e) => e.event === "repair-attempted");
 }
 
-test("#1495 a repair that closes something logs `repaired`", () => {
+test("a repair that closes something logs `repaired`", () => {
   const [row] = emitted((l) => l.record("r", "t", "ok", { effect: { asked: 2, closed: 1 }, max: 1 }));
   assert.equal(row.verdict, "repaired");
   assert.ok(REPAIR_VERDICTS.includes(row.verdict));
 });
 
-test("#1495 budget spent, every attempt measured, nothing closed — logs `cannot-repair`", () => {
+test("budget spent, every attempt measured, nothing closed — logs `cannot-repair`", () => {
   const rows = emitted((l) => {
     l.record("r", "t", "ok", { effect: { asked: 2, closed: 0 }, max: 2 });
     l.record("r", "t", "ok", { effect: { asked: 2, closed: 0 }, max: 2 });
@@ -119,7 +119,7 @@ test("#1495 budget spent, every attempt measured, nothing closed — logs `canno
   assert.equal(rows[1].verdict, "cannot-repair");
 });
 
-test("#1495 an UNMEASURED attempt logs `exhausted-unmeasured` and NEVER `cannot-repair`", () => {
+test("an UNMEASURED attempt logs `exhausted-unmeasured` and NEVER `cannot-repair`", () => {
   // THE LOAD-BEARING ARM. An unmeasured attempt is not a failed one, and laundering silence into the
   // accusatory verdict is the disease exists to catch — now on the surface a reader actually sees.
   const [row] = emitted((l) => l.record("r", "t", "ok", { max: 1 }));   // no effect = nothing measured
@@ -129,7 +129,7 @@ test("#1495 an UNMEASURED attempt logs `exhausted-unmeasured` and NEVER `cannot-
   assert.equal(row.effect, "unmeasured", "and the row must say so in the field a reader joins on");
 });
 
-test("#1495 `in-budget` is emitted — the ONE value that can tell a live emission from a dead one", () => {
+test("`in-budget` is emitted — the ONE value that can tell a live emission from a dead one", () => {
   // e2e's trap, as an arm. `repaired` already appears on the box under `outcome` and `repairOutcome`, so
   // a grep for it after this change reads as success whether or not the verdict ever emitted. Four of the
   // five values are unambiguous; this is the one a healthy run produces.
@@ -139,7 +139,7 @@ test("#1495 `in-budget` is emitted — the ONE value that can tell a live emissi
     "`outcome` moved or changed meaning — every archived run.jsonl joins on it and criterion 4 keeps it");
 });
 
-test("#1495 the verdict is ADDED, never substituted — old readers keep their fields", () => {
+test("the verdict is ADDED, never substituted — old readers keep their fields", () => {
   // Criterion 4. A reader joining archived rows to new ones must not have to know which side it is on.
   const [row] = emitted((l) => l.record("r", "t", "failed: x", { effect: { asked: 1, closed: 0 }, max: 1 }));
   for (const k of ["event", "repair", "target", "dispatch", "attempts", "effect", "measuredAttempts", "closedTotal", "outcome"])
@@ -148,7 +148,7 @@ test("#1495 the verdict is ADDED, never substituted — old readers keep their f
   assert.equal(row.outcome, "failed: x");
 });
 
-test("#1495 a caller that names NO ceiling still emits no verdict — the guess stays forbidden", () => {
+test("a caller that names NO ceiling still emits no verdict — the guess stays forbidden", () => {
   // The direction this must not fix. Wiring the call sites is the cure; making the ledger assume a
   // budget would manufacture `cannot-repair` for every caller that legitimately has no ceiling.
   const [row] = emitted((l) => l.record("r", "t", "ok", { effect: { asked: 1, closed: 0 } }));
@@ -157,7 +157,7 @@ test("#1495 a caller that names NO ceiling still emits no verdict — the guess 
 
 // ── THE PIPELINE IS THE FILE THIS IS ABOUT, SO IT IS NAMED RATHER THAN ASSUMED ───────────────────────
 
-test("#1495 pipeline.mjs is in the tracked corpus, or the scans above read a file nobody ships", (ctx) => {
+test("pipeline.mjs is in the tracked corpus, or the scans above read a file nobody ships", (ctx) => {
   const tracked = trackedFiles("the-repair-verdict-reaches-the-log", { root: ROOT, pathspec: ["*.mjs"] });
   // A DECLARED skip, not a bare return: off a checkout this cannot be measured, and node:test
   // counts a bare `return;` as a pass — reporting the corpus reconciled having reconciled nothing.

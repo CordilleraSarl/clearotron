@@ -27,13 +27,13 @@ const GOOD = JSON.stringify({
   citations: [c("91250001"), c("91250002", "listed-not-read")],
 });
 
-test("#263 a well-formed ledger parses and yields no blocking violation", () => {
+test("a well-formed ledger parses and yields no blocking violation", () => {
   const { ledger, error } = parseCaseLawLedger(GOOD);
   assert.equal(error, null);
   assert.equal(caseLawLedgerFail(findCaseLawLedgerViolations(ledger)), "");
 });
 
-test("#263 the census counts what was swept and what was OPENED — a hit list is not a read", () => {
+test("the census counts what was swept and what was OPENED — a hit list is not a read", () => {
   const { ledger } = parseCaseLawLedger(GOOD);
   const cen = caseLawRetrievalCensus(ledger);
   assert.equal(cen.queries, 2);
@@ -48,21 +48,21 @@ test("#263 the census counts what was swept and what was OPENED — a hit list i
 
 // ── the two sign-off conditions this artifact exists to make checkable ────────────────────────────
 
-test("#263 NO FALSE ALL-CLEAR: a ledger with no queries cannot show the sweep ran, and blocks", () => {
+test("NO FALSE ALL-CLEAR: a ledger with no queries cannot show the sweep ran, and blocks", () => {
   const { ledger } = parseCaseLawLedger(JSON.stringify({ queries: [], citations: [] }));
   const v = findCaseLawLedgerViolations(ledger);
   assert.ok(v.some((x) => x.reason === "no_queries"));
   assert.match(caseLawLedgerFail(v), /^caselaw_ledger:no_queries=1/);
 });
 
-test("#263 the HONEST NEGATIVE is advisory — queries ran, nothing on point, and the run continues", () => {
+test("the HONEST NEGATIVE is advisory — queries ran, nothing on point, and the run continues", () => {
   const { ledger } = parseCaseLawLedger(JSON.stringify({ queries: [q("VELTRA opposition", "US", 0)], citations: [] }));
   const v = findCaseLawLedgerViolations(ledger);
   assert.deepEqual(v.map((x) => x.reason), ["no_citations"]);
   assert.equal(caseLawLedgerFail(v), "", "a sweep that ran and found nothing must never withhold — that manufactures citations");
 });
 
-test("#263 RAN THIN: proceedings found and not one opened blocks, and is distinct from finding nothing", () => {
+test("RAN THIN: proceedings found and not one opened blocks, and is distinct from finding nothing", () => {
   const thin = JSON.stringify({
     queries: [q("VELTRA opposition", "US")],
     citations: [c("91250001", "listed-not-read"), c("91250002", "listed-not-read")],
@@ -81,7 +81,7 @@ test("#263 RAN THIN: proceedings found and not one opened blocks, and is distinc
 
 // ── structural: a row that cannot be re-opened is not a receipt ───────────────────────────────────
 
-test("#263 a citation with no url, no proceeding, or an off-enum read state is refused by name", () => {
+test("a citation with no url, no proceeding, or an off-enum read state is refused by name", () => {
   const bad = JSON.stringify({
     queries: [q("VELTRA opposition", "US")],
     citations: [
@@ -95,7 +95,7 @@ test("#263 a citation with no url, no proceeding, or an off-enum read state is r
     assert.ok(v.some((x) => x.reason === r), `missing ${r}`);
 });
 
-test("#263 a query with no territory cannot answer 'was THIS territory swept'", () => {
+test("a query with no territory cannot answer 'was THIS territory swept'", () => {
   const v = findCaseLawLedgerViolations(parseCaseLawLedger(JSON.stringify({
     queries: [q("VELTRA opposition", ""), q("", "US")], citations: [c("91250001")],
   })).ledger);
@@ -105,7 +105,7 @@ test("#263 a query with no territory cannot answer 'was THIS territory swept'", 
 
 // ── absence and malformation are FINDINGS, never empty passes ─────────────────────────────────────
 
-test("#263 a malformed ledger fails with a name — it never degrades to 'no violations'", () => {
+test("a malformed ledger fails with a name — it never degrades to 'no violations'", () => {
   assert.match(parseCaseLawLedger("{").error, /unparseable json/);
   assert.match(parseCaseLawLedger("[]").error, /top level must be an object/);
   assert.match(parseCaseLawLedger(JSON.stringify({ citations: [] })).error, /no queries\[\] array/);
@@ -115,7 +115,7 @@ test("#263 a malformed ledger fails with a name — it never degrades to 'no vio
   assert.deepEqual(findCaseLawLedgerViolations(null), []);
 });
 
-test("#263 the reason vocabulary is closed, exported, and every reason is reachable", () => {
+test("the reason vocabulary is closed, exported, and every reason is reachable", () => {
   // The property, applied here at birth rather than after a probe has gone stale on it.
   const advisory = [...CASE_LAW_ADVISORY_REASONS];
   for (const r of advisory) assert.ok(CASE_LAW_LEDGER_REASONS.includes(r), `advisory reason not in the vocabulary: ${r}`);
@@ -127,7 +127,7 @@ test("#263 the reason vocabulary is closed, exported, and every reason is reacha
   assert.deepEqual(CASE_LAW_READ_STATES, ["read", "listed-not-read", "unreachable"]);
 });
 
-test("#263 the failure token carries the count PER CAUSE before the detail", () => {
+test("the failure token carries the count PER CAUSE before the detail", () => {
   const v = findCaseLawLedgerViolations(parseCaseLawLedger(JSON.stringify({
     queries: [q("", "US"), q("", "US")], citations: [c("91250001", "listed-not-read")],
   })).ledger);

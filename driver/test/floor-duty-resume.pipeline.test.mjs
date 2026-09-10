@@ -65,7 +65,7 @@ async function runMockPipeline(env, opts = {}, reuse = null) {
   return { res, events, root };
 }
 
-test("2004: a run parked AFTER placement re-runs it on resume when its floor duty is undischarged", async () => {
+test("a run parked AFTER placement re-runs it on resume when its floor duty is undischarged", async () => {
   // ── pass 1: placement runs, then the run parks downstream of it ──────────────────────────────────
   const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "joint synthesis narrative" }, {});
   assert.equal(p1.res.ok, false, "pass 1 must park");
@@ -102,7 +102,7 @@ test("2004: a run parked AFTER placement re-runs it on resume when its floor dut
     "placement was not dispatched again — being un-skipped is only half of it; the seat has to actually run");
 });
 
-test("2004 CONTROL: a resume whose duty is DISCHARGED still skips placement, as it always did", async () => {
+test("CONTROL: a resume whose duty is DISCHARGED still skips placement, as it always did", async () => {
   // Without this the arm above is satisfied by a change that simply stopped skipping placement ever —
   // which would re-run the pipeline's largest stage on every resume for no reason. The fix must cost
   // nothing on a healthy run.

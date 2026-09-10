@@ -23,7 +23,7 @@ const OTHER = "/mark/us/ac1100e2-8bce-4731-81dd-7694769f829c";
 const recon = (rows) => ({ computable: true, top_slice: rows, residual: [] });
 const endedFinding = (uri, mark) => ({ ending: "finding", mark_text: mark, position_records: [uri] });
 
-test("1955 a digest FINDING dropped with no stated reason is reported", () => {
+test("a digest FINDING dropped with no stated reason is reported", () => {
   const r = silentlyLostFindings({
     reconciliation: recon([endedFinding(URI, "DELPHIC HSE")]),
     carryRows: [{ uri: URI.toLowerCase(), mark: "DELPHIC HSE", reach: "screened",
@@ -35,7 +35,7 @@ test("1955 a digest FINDING dropped with no stated reason is reported", () => {
   assert.equal(r.lost[0].stopped_at, "placement");
 });
 
-test("1955 the DISCRIMINATOR — the same divergence with a STATED reason is left alone", () => {
+test("the DISCRIMINATOR — the same divergence with a STATED reason is left alone", () => {
   // Nine of these across six runs, all legitimate: a later step reconsidered and said why. A rule that
   // fired on divergence rather than on SILENCE would have flagged every one of them.
   const r = silentlyLostFindings({
@@ -47,7 +47,7 @@ test("1955 the DISCRIMINATOR — the same divergence with a STATED reason is lef
   assert.equal(r.checked, 1, "…and it was actually examined, not skipped");
 });
 
-test("1955 a step-silent drop that the digest never ended as a finding is NOT flagged", () => {
+test("a step-silent drop that the digest never ended as a finding is NOT flagged", () => {
   // step-silent is the MAJORITY disposition on real runs. Flagging it alone would flag the whole run.
   const r = silentlyLostFindings({
     reconciliation: recon([endedFinding(URI, "DELPHIC HSE")]),
@@ -60,7 +60,7 @@ test("1955 a step-silent drop that the digest never ended as a finding is NOT fl
   assert.deepEqual(r.lost, [], "only silence AFTER a digest finding-ending is the defect");
 });
 
-test("1955 arrival counts as arrival — reach `finding` and `findings-surface` both clear", () => {
+test("arrival counts as arrival — reach `finding` and `findings-surface` both clear", () => {
   for (const reach of ["finding", "findings-surface"]) {
     const r = silentlyLostFindings({
       reconciliation: recon([endedFinding(URI, "M")]),
@@ -74,7 +74,7 @@ test("1955 arrival counts as arrival — reach `finding` and `findings-surface` 
 // The two artifacts disagree on URI case — digest side upper, carry side lower. A case-sensitive join
 // matches ZERO rows on every run, and zero matches is indistinguishable from zero silent divergences:
 // a check that can never fire while reporting clean, on an issue about losses that report clean.
-test("1955 the join NORMALISES URI case, and a matched count proves it looked", () => {
+test("the join NORMALISES URI case, and a matched count proves it looked", () => {
   const r = silentlyLostFindings({
     reconciliation: recon([endedFinding(URI.toUpperCase(), "DELPHIC HSE")]),
     carryRows: [{ uri: URI.toLowerCase(), reach: "screened", stopped_at: "placement",
@@ -85,14 +85,14 @@ test("1955 the join NORMALISES URI case, and a matched count proves it looked", 
   assert.equal(r.lost.length, 1, "and the loss must survive the normalisation, not just the match");
 });
 
-test("1955 NOT COMPUTABLE is never a pass — the knockout lane writes no record-carry", () => {
+test("NOT COMPUTABLE is never a pass — the knockout lane writes no record-carry", () => {
   const r = silentlyLostFindings({ reconciliation: recon([endedFinding(URI, "M")]), carryRows: null });
   assert.equal(r.computable, false, "an absent artifact must not answer `no losses`");
   assert.match(r.reason, /knockout/i, "and the exclusion is NAMED, so a reader knows what went unchecked");
   assert.deepEqual(r.lost, []);
 });
 
-test("1955 an EMPTY population is its own state, not a clean answer", () => {
+test("an EMPTY population is its own state, not a clean answer", () => {
   // Measured: two of seven runs carry `computable: true` with zero candidates while an independent walk
   // of their typed digest calls names finding-shaped records. There, this join looks at nothing.
   const r = silentlyLostFindings({ reconciliation: recon([]), carryRows: [] });
@@ -109,7 +109,7 @@ test("1955 an EMPTY population is its own state, not a clean answer", () => {
 const DIGEST_A = "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f";
 const DIGEST_B = "/mark/jp/310027f2-0562-46fe-abea-385f068a8150";
 
-test("2141 populations that share NOTHING are not computable — the answer cannot be trusted", () => {
+test("populations that share NOTHING are not computable — the answer cannot be trusted", () => {
   const r = silentlyLostFindings({
     reconciliation: recon([endedFinding(URI, "VENTORI")]),
     carryRows: [{ uri: URI.toLowerCase(), reach: "finding", stopped_at: null, reason_source: null }],
@@ -120,7 +120,7 @@ test("2141 populations that share NOTHING are not computable — the answer cann
   assert.deepEqual(r.lost, []);
 });
 
-test("2141 a SHORTFALL alone must NOT trip it — that naive rule breaks the detection", () => {
+test("a SHORTFALL alone must NOT trip it — that naive rule breaks the detection", () => {
   // The reconciliation's population is POSITIONS over the screened dominant-element set, so it is
   // NARROWER than the digest's finding rows by construction. Measured on two healthy delivered runs:
   // 5 against 9, and 5 against 8, both sharing 3. Refusing on a shortfall would refuse on the very run
@@ -135,7 +135,7 @@ test("2141 a SHORTFALL alone must NOT trip it — that naive rule breaks the det
   assert.equal(r.lost.length, 1, "…and the loss must still be found — this is the detection the guard protects");
 });
 
-test("2141 nothing to compare is DISTINGUISHABLE from compared-and-clean", () => {
+test("nothing to compare is DISTINGUISHABLE from compared-and-clean", () => {
   // The criterion this arm replaces asserted only that the join still answers, which it did — and the
   // two returns were byte-identical, so "could not look" read exactly like "looked and found nothing".
   // The real test is that they DIFFER, so it is written as a comparison rather than as two assertions.
@@ -156,7 +156,7 @@ test("2141 nothing to compare is DISTINGUISHABLE from compared-and-clean", () =>
   assert.match(notCompared.reason, /no cross-check was possible/i, "…with a reason, like the other two states");
 });
 
-test("2141 a missing cross-check population still lets the join answer on what it has", () => {
+test("a missing cross-check population still lets the join answer on what it has", () => {
   // Two of the eight archived runs recorded no typed finding rows at all. A caller with no cross-check
   // population passes null, and the guard must stay silent rather than invent a verdict.
   for (const digestFindingUris of [null, []]) {

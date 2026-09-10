@@ -104,7 +104,7 @@ const RULED = new Set([
   "coverage-form-io.mjs",   // the report for the one disagreement, authored by this change
 ]);
 
-test("#1100 every site in the snapshot sub-shape has been ruled on", () => {
+test("every site in the snapshot sub-shape has been ruled on", () => {
   const found = population();
   assert.ok(found.length >= 10,
     `the scan found ${found.length} sites — it is measuring less than it did when this was classified, `
@@ -120,7 +120,7 @@ test("#1100 every site in the snapshot sub-shape has been ruled on", () => {
     + "either the pair went (delete the ruling) or the comment was reworded and the scan is now blind.");
 });
 
-test("#1100 the AGREE sites still state their mechanism, not merely their intent", () => {
+test("the AGREE sites still state their mechanism, not merely their intent", () => {
   // A site that claims one snapshot without naming what makes it one has stopped being evidence.
   assert.match(flat("gateway.mjs"), /same builder, same predicate, same arguments as the tool's own fold/,
     "gateway's union no longer claims to BE the regeneration — the judgement-time bytes and the tool's "
@@ -137,7 +137,7 @@ test("#1100 the AGREE sites still state their mechanism, not merely their intent
 
 // ── THE ONE DISAGREEMENT ────────────────────────────────────────────────────────────────────────────
 
-test("#1100 an axis minted from a stray unit file is REPORTED, and the driver names itself", () => {
+test("an axis minted from a stray unit file is REPORTED, and the driver names itself", () => {
   const io = src("coverage-form-io.mjs");
   assert.match(io, /const unknownAxisUnits = /,
     "the unrecognised-unit report is gone — the stray-file case is silent again and dead-ends on a row "
@@ -151,7 +151,7 @@ test("#1100 an axis minted from a stray unit file is REPORTED, and the driver na
     "the note no longer names the DRIVER as the faulty party — which is the ask verify.mjs recorded");
 });
 
-test("#1100 the axis set is NOT filtered — a form that quietly covers less is the worse artifact", () => {
+test("the axis set is NOT filtered — a form that quietly covers less is the worse artifact", () => {
   const io = src("coverage-form-io.mjs");
   assert.ok(!/activeAxes\s*=\s*[^;]*\.filter\([^;]*REGISTER_AXES/.test(io),
     "activeAxes is being filtered against the axis set. That silently shrinks the coverage form, which is "

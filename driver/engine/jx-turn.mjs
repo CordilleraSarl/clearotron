@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // engine/jx-turn.mjs — the native-language lanes reach a model the same way every other stage does.
 //
-// ── why ( /, owner ruling 2026-08-20) ─────────────────────────────────────────────────────
+// ── why ( /, ruling 2026-08-20) ─────────────────────────────────────────────────────
 //
 // Verbatim: "one LLM provider only ever, API or auth, no mix". The jx lanes did not obey it and could
 // not: they POSTed to the Anthropic Messages API on `ANTHROPIC_API_KEY` at a hardcoded haiku tier,

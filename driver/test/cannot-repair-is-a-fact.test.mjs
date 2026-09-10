@@ -28,7 +28,7 @@ import { createRepairLedger, repairVerdict, REPAIR_VERDICTS } from "../repairs.m
 const dir = () => mkdtempSync(join(tmpdir(), "repairs-1063-"));
 const rowOf = (runDir, key) => JSON.parse(readFileSync(driverDir(runDir, "repairs.json"), "utf8"))[key];
 
-test("#1063 THE DEFECT: budget spent, nothing ever closed, and every attempt measured — cannot-repair", () => {
+test("THE DEFECT: budget spent, nothing ever closed, and every attempt measured — cannot-repair", () => {
   const runDir = dir();
   const ledger = createRepairLedger(runDir);
   for (let i = 0; i < 3; i++) {
@@ -45,7 +45,7 @@ test("#1063 THE DEFECT: budget spent, nothing ever closed, and every attempt mea
   assert.equal(rowOf(runDir, "recall-reconcile:unended:1").lastOutcome, "ok");
 });
 
-test("#1063 an UNMEASURED attempt is never laundered into cannot-repair", () => {
+test("an UNMEASURED attempt is never laundered into cannot-repair", () => {
   // The whole hazard of a derived verdict: silence reading as the stronger answer. An attempt that never
   // measured whether it closed anything is honest ignorance, and the remedy for ignorance is to measure.
   const runDir = dir();
@@ -60,7 +60,7 @@ test("#1063 an UNMEASURED attempt is never laundered into cannot-repair", () => 
   assert.equal(v.attempts, 2);
 });
 
-test("#1063 a row written before this change reads as unmeasured, never as cannot-repair", () => {
+test("a row written before this change reads as unmeasured, never as cannot-repair", () => {
   // Backwards honesty. Old rows carry attempts and lastOutcome and no counters; they genuinely cannot
   // say, and a migration that read their silence as "closed nothing" would manufacture the finding.
   const legacy = { attempts: 3, lastOutcome: "failed: nothing", ts: "2026-08-15T00:00:00.000Z" };
@@ -68,7 +68,7 @@ test("#1063 a row written before this change reads as unmeasured, never as canno
   assert.equal(repairVerdict(legacy, { max: 3 }).measured, 0);
 });
 
-test("#1063 anything that closed is repaired — partial counts, because the repair HAS a move", () => {
+test("anything that closed is repaired — partial counts, because the repair HAS a move", () => {
   const runDir = dir();
   const ledger = createRepairLedger(runDir);
   ledger.record("finding-corrective-reemit", "f:7", "ok", { effect: { asked: 5, closed: 0 } });
@@ -78,7 +78,7 @@ test("#1063 anything that closed is repaired — partial counts, because the rep
   assert.equal(v.closed, 2);
 });
 
-test("#1063 in-budget and untried stay distinct from both exhausted answers", () => {
+test("in-budget and untried stay distinct from both exhausted answers", () => {
   const runDir = dir();
   const ledger = createRepairLedger(runDir);
   assert.equal(ledger.verdict("x", "y", { max: 3 }).verdict, "untried", "no row is not a spent budget");
@@ -89,7 +89,7 @@ test("#1063 in-budget and untried stay distinct from both exhausted answers", ()
     + "budget belongs to the caller");
 });
 
-test("#1063 the counters survive a park/resume, which is the only reason the file exists", () => {
+test("the counters survive a park/resume, which is the only reason the file exists", () => {
   const runDir = dir();
   createRepairLedger(runDir).record("r", "t", "ok", { effect: { asked: 3, closed: 0 } });
   createRepairLedger(runDir).record("r", "t", "ok", { effect: { asked: 3, closed: 0 } });
@@ -99,7 +99,7 @@ test("#1063 the counters survive a park/resume, which is the only reason the fil
   assert.equal(v.measured, 2, "the measured count did not survive the reopen — the durable row is the point");
 });
 
-test("#1063 a new epoch re-arms the verdict as well as the budget", () => {
+test("a new epoch re-arms the verdict as well as the budget", () => {
   // The input legitimately changed, so the old row answers a different question. canAttempt already
   // treated it that way; a verdict that kept reporting cannot-repair across an epoch change would hold a
   // repair guilty of failing at something it was never asked.
@@ -111,7 +111,7 @@ test("#1063 a new epoch re-arms the verdict as well as the budget", () => {
   assert.equal(ledger.canAttempt("r", "t", { max: 1, epoch: 2 }), true, "and the two agree");
 });
 
-test("#1063 the log line carries the totals always, and the verdict only when a ceiling was named", () => {
+test("the log line carries the totals always, and the verdict only when a ceiling was named", () => {
   const events = [];
   const runDir = dir();
   const ledger = createRepairLedger(runDir, { log: (o) => events.push(o) });
@@ -126,7 +126,7 @@ test("#1063 the log line carries the totals always, and the verdict only when a 
   assert.ok(REPAIR_VERDICTS.includes(events[1].verdict));
 });
 
-test("#1063 record() still returns the attempt count and still survives a dead logger", () => {
+test("record() still returns the attempt count and still survives a dead logger", () => {
   const runDir = dir();
   const ledger = createRepairLedger(runDir, { log: () => { throw new Error("logger down"); } });
   assert.equal(ledger.record("a", "b", "ok", { effect: { asked: 1, closed: 1 } }), 1);

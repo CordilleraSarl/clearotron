@@ -64,7 +64,7 @@ export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_
  *
  * NOT AN AUTHENTICATOR. This parses without verifying, which is safe for exactly one job: reading the
  * revocation handle out of our own `mintToken` output so `clearotron connect` can write it down
- * (owner ruling: record key IDs, never secrets). Anything answering "is this token
+ * (ruling: record key IDs, never secrets). Anything answering "is this token
  * good" goes through `verifyToken`; a caller handing this function a token from the WIRE is the defect.
  *
  * Returns null rather than throwing on a malformed string — the caller is recording, and a record of
@@ -212,7 +212,7 @@ export const TOOL_SCOPES = {
   // an account session is answered from ITS OWN grant, never from the customer list.
   // `passthrough`, flagged with plan_run — same posture, same open question.
   describe_options: { crossRun: true, accountSafe: true, present: "passthrough" },
-  // ---- WHAT-IF, OPENED TO A CLIENT ACCOUNT (owner ruling 2026-08-27) -------------------------------
+  // ---- WHAT-IF, OPENED TO A CLIENT ACCOUNT (ruling 2026-08-27) -------------------------------
   //
   // `write: true` stays on BOTH, and on what_if_plan that is deliberate rather than inherited. The flag's
   // stated meaning is "mutates state or spends", and a plan does neither — but the ONLY thing that reads
@@ -286,7 +286,7 @@ export function readOnlyFor(toolName) {
 
 export const USER_ARTIFACTS = new Set(["report"]);
 
-// ---- THE AUDIT CHAIN, OPENED TO A CLIENT ACCOUNT (owner ruling 2026-08-27) -----------------------
+// ---- THE AUDIT CHAIN, OPENED TO A CLIENT ACCOUNT (ruling 2026-08-27) -----------------------
 //
 // "I don't see why we don't open it or just give it to clients. Ignore the call spend." That ruling
 // widens the line the TOOL_SCOPES header draws above — the one that read "every engineering read stays
@@ -401,19 +401,46 @@ export function loadGrants({ grantsPath = envFrom(process.env, "CLEAROTRON_ACCES
 // can still fix it, not on the next client's request. The message names the path INTO the file, what was
 // found, and what the shape is — a reader has to be able to go straight to the line.
 //
-// Note the two legal shapes and that "*" is one of them: `accounts` is "*" or an array of keys, and a
-// user maps to "*" (the tenant's whole grant) or an array. Anything else is refused rather than coerced,
-// for the reason the file's own header gives — a configured guest list must never fail open.
+// THE TREE. A tenant is an organisation, and it lists the companies (account keys) it holds. A company
+// belongs to exactly one organisation, so a key listed under two tenants is refused: two organisations
+// are invisible to each other because they are sibling branches, and a company under both branches has
+// no single place in the tree. Access to the whole install is a property of a PERSON, not of a tenant,
+// so a tenant's `accounts` is an array and never "*".
+//
+// A user maps to "*" (the whole organisation) or an array of the keys that organisation holds. Anything
+// else is refused rather than coerced, for the reason the file's own header gives — a configured guest
+// list must never fail open.
+//
+// THE PEOPLE. A top-level `people` section, keyed by address, holds each person's two switches — `run`
+// (start and stop clearances) and `manage` (add people, add companies, change settings) — and
+// `everything`, access to the top of the tree. A sibling of `tenants` for the reason `connectKeys` is
+// one: every editor that checks only `tenants` passes it through. A person with no entry holds both
+// switches off, which is the view-only person; nothing is granted by leaving a line out.
+const PERSON_FIELDS = ["run", "manage", "everything"];
 export function assertGrantsShape(g, where) {
   const at = (...parts) => `${where}: tenants.${parts.join(".")}`;
   const keys = (v) => Array.isArray(v) && v.every((k) => typeof k === "string");
+  const holder = new Map();
   for (const [tenant, t] of Object.entries(g.tenants ?? {})) {
     if (!t || typeof t !== "object" || Array.isArray(t)) {
       throw new Error(`${at(tenant)} is ${describe(t)} — each tenant must be an object with "accounts" and "users".`);
     }
-    if (t.accounts !== undefined && t.accounts !== "*" && !keys(t.accounts)) {
-      throw new Error(`${at(tenant, "accounts")} is ${describe(t.accounts)} — it must be "*" or an array of account keys, `
+    if (t.name !== undefined && (typeof t.name !== "string" || !t.name.trim())) {
+      throw new Error(`${at(tenant, "name")} is ${describe(t.name)} — it must be the organisation's name, as text.`);
+    }
+    if (t.accounts === "*") throw new Error(wildcardTenant(`${where}: tenants.${tenant}.accounts`));
+    if (t.accounts !== undefined && !keys(t.accounts)) {
+      throw new Error(`${at(tenant, "accounts")} is ${describe(t.accounts)} — it must be an array of account keys, `
         + `for example ["${tenant}"].`);
+    }
+    for (const a of t.accounts ?? []) {
+      if (a === "generic") continue;   // the house default, not a company — every organisation has its own
+      if (holder.has(a)) {
+        throw new Error(`${where}: account "${a}" is listed under both tenants.${holder.get(a)} and tenants.${tenant} — `
+          + `a company belongs to exactly one organisation. Keep it under one, and give the people of the other `
+          + `access to it there.`);
+      }
+      holder.set(a, tenant);
     }
     if (t.users !== undefined && (!t.users || typeof t.users !== "object" || Array.isArray(t.users))) {
       throw new Error(`${at(tenant, "users")} is ${describe(t.users)} — it must be an object mapping each email `
@@ -426,6 +453,37 @@ export function assertGrantsShape(g, where) {
       }
     }
   }
+  if (g.people === undefined) return;
+  if (!g.people || typeof g.people !== "object" || Array.isArray(g.people)) {
+    throw new Error(`${where}: people is ${describe(g.people)} — it must be an object mapping each email to that `
+      + `person's switches, for example {"you@example.com": {"run": true, "manage": true}}.`);
+  }
+  for (const [who, entry] of Object.entries(g.people)) {
+    const here = `${where}: people.${JSON.stringify(who)}`;
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new Error(`${here} is ${describe(entry)} — it must be an object holding "run", "manage" and "everything", `
+        + `each true or false.`);
+    }
+    for (const [k, v] of Object.entries(entry)) {
+      if (!PERSON_FIELDS.includes(k)) {
+        throw new Error(`${here}.${k} is not a field of a person — a person holds ${PERSON_FIELDS.map((f) => `"${f}"`).join(", ")}, `
+          + `each true or false. A misspelt switch would read as off, so it is refused rather than ignored.`);
+      }
+      if (typeof v !== "boolean") throw new Error(`${here}.${k} is ${describe(v)} — it must be true or false.`);
+    }
+    if (String(who).startsWith("*@") && (entry.manage || entry.everything)) {
+      throw new Error(`${here} gives a whole email domain ${entry.everything ? "access to everything" : "Manage"} — `
+        + `that is the staff-by-domain rule this product removed. Name each person who should hold it.`);
+    }
+  }
+}
+
+// THE EDIT FIRST. An organisation left on "*" is what a guest list written before organisations carries
+// when the upgrade was not followed, so the refusal says what to change before it says why.
+function wildcardTenant(path) {
+  return `${path} is "*". Replace "*" with the list of companies this organisation holds, for example `
+    + `["acme-main", "acme-eu"]; a company belongs to exactly one organisation. For a person who should see `
+    + `every company, set "everything": true on their entry under "people".`;
 }
 
 // What a reader sees, in the words of the file they wrote — "an object", not "[object Object]". The
@@ -438,46 +496,108 @@ function describe(v) {
   return `${typeof v} ${JSON.stringify(v)}`;
 }
 
-// Resolve an authenticated email's granted accounts: "*" (everything), [keys], or [] (authenticated but
-// granted nothing). A user entry of "*" means "the tenant's whole grant"; a `*@domain` key matches every
-// email on that domain; an email in several tenants gets the union.
-export function accountsForEmail(email, grants) {
-  if (!grants) return "*";
-  const e = String(email ?? "").toLowerCase();
-  const domain = e.includes("@") ? e.split("@")[1] : "";
-  let all = false;
-  const set = new Set();
-  for (const t of Object.values(grants.tenants ?? {})) {
-    for (const [pat, acc] of Object.entries(t.users ?? {})) {
-      const p = String(pat).toLowerCase();
-      if (p !== e && !(p.startsWith("*@") && domain && p.slice(2) === domain)) continue;
-      const eff = acc === "*" ? t.accounts : acc;
-      if (eff === "*") { all = true; continue; }
-      // — refuse by name, never by TypeError. `loadGrants` checks this shape at
-      // the read, which is where an operator can still fix it, but grants also arrive here from callers
-      // that never went through it (an injected fixture, a store read elsewhere), so the resolver states
-      // the same fault rather than iterating whatever it was handed.
-      if (eff !== undefined && eff !== null && !Array.isArray(eff)) {
-        throw new Error(`grants are malformed: the entry for "${pat}" resolves to ${describe(eff)} — it must be "*" `
+/**
+ * Resolve an authenticated email to the PERSON: where on the tree they have access, and their two
+ * switches. The ONE resolver both doors read — the portal's `makePrincipal` and the connector's
+ * `resolveScope` — so the two cannot disagree about who someone is.
+ *
+ *   null — no access point anywhere: no portal, and no connector reach
+ *   { email, everything, permissions: { run, manage }, access, accounts, organisations, genericOrgs, accountOrgs }
+ *
+ * `access` is the points the person was given, collapsed: everything subsumes the rest, and an
+ * organisation subsumes the companies under it. `accounts` is every company they see, "*" for
+ * everything, and never `generic`, which is not a company. `organisations` is every organisation they see
+ * anything in; `genericOrgs` is the ones whose Generic they see — an organisation-level point or
+ * everything, never a company-level point. `accountOrgs` maps each visible company to its organisation.
+ *
+ * A user entry of "*" is the whole organisation; a `*@domain` key matches every email on that domain; an
+ * email in several tenants gets the union. A company point counts only under the tenant that HOLDS the
+ * company: a row naming a key its own tenant does not hold has no place in the tree and grants nothing,
+ * which is what the People page's "dangling" has always said it does.
+ */
+export function resolvePerson(email, grants) {
+  if (!grants) return null;
+  const e = String(email ?? "").trim().toLowerCase();
+  const at = e.lastIndexOf("@");
+  if (at <= 0 || e.indexOf("@") !== at) return null;   // multi-@ is refused outright — no parse to disagree about
+  const domain = e.slice(at + 1);
+  const matches = (pat) => { const p = String(pat).toLowerCase(); return p === e || (p.startsWith("*@") && p.slice(2) === domain); };
+  const tenants = grants.tenants ?? {};
+  const holder = new Map();
+  for (const [t, v] of Object.entries(tenants)) {
+    // Stated here as well as at the read: grants also arrive from callers that never went through
+    // `loadGrants` (an injected fixture, a store read elsewhere), and a wildcard tenant would otherwise
+    // be read as "holds nothing" — quietly narrower, and silent about why.
+    if (v?.accounts === "*") throw new Error(`grants are malformed: ${wildcardTenant(`tenants.${t}.accounts`)}`);
+    for (const a of Array.isArray(v?.accounts) ? v.accounts : []) if (a !== "generic" && !holder.has(a)) holder.set(a, t);
+  }
+  // The switches. An exact address wins over a `*@domain` entry, and no entry at all is both off. A domain
+  // never holds Manage or everything, re-stated here for grants that never passed `assertGrantsShape`.
+  const people = grants.people && typeof grants.people === "object" ? grants.people : {};
+  const exact = Object.keys(people).find((k) => k.toLowerCase() === e);
+  const pattern = exact === undefined ? Object.keys(people).find((k) => k.toLowerCase() === `*@${domain}`) : undefined;
+  const key = exact ?? pattern;
+  const entry = key === undefined ? {} : (people[key] ?? {});
+  const everything = entry.everything === true && exact !== undefined;
+  const permissions = { run: entry.run === true, manage: entry.manage === true && exact !== undefined };
+
+  const orgs = [];
+  const companies = [];
+  for (const [t, v] of Object.entries(tenants)) {
+    for (const [pat, acc] of Object.entries(v?.users ?? {})) {
+      if (!matches(pat)) continue;
+      if (acc === "*") { if (!orgs.includes(t)) orgs.push(t); continue; }
+      // — refuse by name, never by TypeError, for the same reason as the wildcard above.
+      if (acc !== undefined && acc !== null && !Array.isArray(acc)) {
+        throw new Error(`grants are malformed: the entry for "${pat}" resolves to ${describe(acc)} — it must be "*" `
           + `or an array of account keys. Fix the grants file (CLEAROTRON_ACCESS_FILE) and try again.`);
       }
-      for (const a of eff ?? []) set.add(a);
+      for (const k of acc ?? []) if (holder.get(k) === t && !companies.includes(k)) companies.push(k);
     }
   }
-  return all ? "*" : [...set];
+  if (!everything && !orgs.length && !companies.length) return null;
+
+  const all = Object.keys(tenants);
+  if (everything) {
+    return { email: e, everything, permissions, access: [{ kind: "everything" }], accounts: "*",
+      organisations: all, genericOrgs: all, accountOrgs: Object.fromEntries(holder) };
+  }
+  const loose = companies.filter((k) => !orgs.includes(holder.get(k)));
+  const accounts = [];
+  for (const t of orgs) for (const a of tenants[t].accounts ?? []) if (holder.get(a) === t && !accounts.includes(a)) accounts.push(a);
+  for (const k of loose) if (!accounts.includes(k)) accounts.push(k);
+  const organisations = [...orgs];
+  for (const k of loose) if (!organisations.includes(holder.get(k))) organisations.push(holder.get(k));
+  return { email: e, everything, permissions,
+    access: [...orgs.map((k) => ({ kind: "organisation", key: k })), ...loose.map((k) => ({ kind: "company", key: k, org: holder.get(k) }))],
+    accounts, organisations, genericOrgs: [...orgs],
+    accountOrgs: Object.fromEntries(accounts.map((a) => [a, holder.get(a)])) };
+}
+
+// The flat view of the same answer, for the callers that only ask which companies: "*" (everything),
+// [keys], or [] (authenticated but granted nothing). No grants file at all still answers "*" — every
+// caller that must not read that as "every customer" refuses it by name (personScope, the boot gates).
+export function accountsForEmail(email, grants) {
+  if (!grants) return "*";
+  return resolvePerson(email, grants)?.accounts ?? [];
 }
 
 // The account gate. scope.accounts: null|"*" ⇒ full visibility (enforcement off / full grant); [keys] ⇒
 // only those accounts. A run with NO account tag (pre-grants history) is visible only to full grants.
-export function assertAccountAccess(scope, accountKey, what = "this run") {
+// A Generic run is its organisation's: visible to a session that sees that organisation's Generic
+// (`genericOrgs`), and one filed under no organisation only to a full-grant session. The portal asks the
+// same question in `mayReadRun` (driver/portal-access.mjs).
+export function assertAccountAccess(scope, accountKey, what = "this run", organisation = null) {
   const acc = scope?.accounts;
   if (acc == null || acc === "*") return;
   if (!Array.isArray(acc)) throw new Error("malformed scope.accounts");
   if (accountKey == null) throw new Error(`${what} carries no account tag — visible only to full-grant sessions`);
+  if (accountKey === "generic" && organisation != null && Array.isArray(scope?.genericOrgs)
+    && scope.genericOrgs.includes(organisation)) return;
   if (!acc.includes(accountKey)) throw new Error(`your grant does not include account "${accountKey}"`);
 }
-export function accountVisible(scope, accountKey) {
-  try { assertAccountAccess(scope, accountKey); return true; } catch { return false; }
+export function accountVisible(scope, accountKey, organisation = null) {
+  try { assertAccountAccess(scope, accountKey, "this run", organisation); return true; } catch { return false; }
 }
 
 // Ops-token issuance (INSTALL.md §8): `sub` names the PRINCIPAL the token was minted
@@ -562,17 +682,41 @@ export function verifyToken(token, { now = Date.now() } = {}) {
 // (403, not an empty read-all); and `cap` — an account token's optional accounts[] — can only NARROW the
 // grant, so a key whose cap no longer intersects its identity's grant resolves to nothing and is refused
 // rather than silently widening back to the full grant.
-function grantedAccounts(identity, cap = null) {
-  const granted = accountsForEmail(identity, loadGrants());
-  if (!Array.isArray(granted))
+//
+// THE KEY PROVES WHO; THE PERSON'S ENTRY DECIDES WHAT, AT THE MOMENT OF THE CALL. The scope carries the
+// person's reach and switches from `resolvePerson` — the resolver the portal reads — so a key held by a
+// person with access to everything reaches everything, a view-only person's key reads and never writes,
+// and the two doors cannot disagree about one address.
+function personScope(identity, cap = null) {
+  const grants = loadGrants();
+  if (!grants)
     throw new Error("forbidden: client account access requires a configured grants file (refusing an unscoped wildcard)");
-  if (granted.length === 0)
+  const person = resolvePerson(identity, grants);
+  if (!person)
     throw new Error("forbidden: this identity is not granted any account");
-  if (!Array.isArray(cap) || !cap.length) return granted;
-  const narrowed = granted.filter((a) => cap.includes(a));
+  const whole = { accounts: person.accounts, everything: person.everything, permissions: person.permissions,
+    genericOrgs: person.genericOrgs };
+  if (!Array.isArray(cap) || !cap.length) return whole;
+  // A cap names companies, so it narrows to companies: Generic is not one, and a capped key reaches none.
+  const narrowed = person.accounts === "*" ? [...cap] : person.accounts.filter((a) => cap.includes(a));
   if (!narrowed.length)
     throw new Error("forbidden: this key is capped to accounts its identity is no longer granted");
-  return narrowed;
+  return { ...whole, accounts: narrowed, everything: false, genericOrgs: [] };
+}
+
+// Which organisation's Generic a connector job means, on a Generic run only: the one named, which the
+// person must see, or the one organisation they see. Neither is a job filed under none, which only a
+// person who sees everything can order.
+function tenantStamp(scope, asked) {
+  const orgs = Array.isArray(scope?.genericOrgs) ? scope.genericOrgs : [];
+  const t = typeof asked === "string" && asked.trim() ? asked.trim() : null;
+  if (t != null) {
+    if (!orgs.includes(t)) throw new Error(`your access does not include organisation "${t}"`);
+    return { tenant: t };
+  }
+  if (orgs.length === 1) return { tenant: orgs[0] };
+  if (scope?.everything === true) return {};
+  throw new Error(`name the organisation whose Generic this is (tenant) — your access covers ${orgs.length}`);
 }
 
 // True iff `email`'s domain (the part after the final '@') is one of firmDomains. PURE (no jose), so the HTTP
@@ -619,7 +763,7 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
     if (!innerToken) {
       if (!accountAccess)
         throw new Error("forbidden: the client surface requires a run-scoped token (no read-all/internal access)");
-      return { kind: "account", runId: null, sub: email ?? null, verbs: null, accounts: grantedAccounts(email) };
+      return { kind: "account", runId: null, sub: email ?? null, verbs: null, ...personScope(email) };
     }
     const t = verifyToken(innerToken, { now });
     // An ACCOUNT token — the API key. Same principal as the CF-signed-in client above, reached with a
@@ -629,7 +773,7 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
     if (t.scope === "account") {
       if (!accountAccess)
         throw new Error("forbidden: client account access is not enabled on this door");
-      return { kind: "account", runId: null, sub: t.sub, verbs: null, accounts: grantedAccounts(t.sub, t.accounts) };
+      return { kind: "account", runId: null, sub: t.sub, verbs: null, ...personScope(t.sub, t.accounts) };
     }
     if (t.scope !== "user") throw new Error("forbidden: the client surface accepts only a run-scoped user token or an account key");
     return { kind: "user", runId: t.runId, sub: t.sub, verbs: null, accounts: null }; // run-bound — accounts moot
@@ -648,7 +792,19 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
   // `sub` carries the VERIFIED identity for every other principal (attribution, the audit log, the
   // forwarder stamp) and was the one arm that dropped it — a CF-authed staff member's email was known
   // here and thrown away, which is why a staff plan_run had no identity to stamp a forwarder from.
-  if (firmStaff) return { kind: "internal", runId: null, sub: email ?? null, verbs: null, accounts: accountsForEmail(email, loadGrants()) };
+  //
+  // THE STAFF FACE READS THE SAME PERSON THE PORTAL DOES. `firmStaff` is the sign-in allowlist in front
+  // of this face; the reach behind it is the person's entry in the grants file, resolved as the portal
+  // resolves it. An allowed address with no entry reaches nothing, and no grants file at all is the
+  // enforcement-off posture it always was.
+  if (firmStaff) {
+    const grants = loadGrants();
+    const person = grants ? resolvePerson(email, grants) : null;
+    return { kind: "internal", runId: null, sub: email ?? null, verbs: null,
+      accounts: !grants ? "*" : person ? person.accounts : [],
+      everything: !grants || person?.everything === true, genericOrgs: person?.genericOrgs ?? [],
+      permissions: person?.permissions ?? { run: false, manage: false } };
+  }
   throw new Error("forbidden: no run-scoped token and not a firm-staff identity — refusing (internal read-all requires proven firm staff)");
 }
 
@@ -776,7 +932,7 @@ export function authorize(scope, toolName, args = {}) {
   if (kind === "account") {
     if (!rule.accountSafe)
       throw new Error(`tool "${toolName}" is not available to a client account session`);
-    // THE AUDIT CHAIN (owner ruling 2026-08-27) — the account layer reads it, the report-link token below
+    // THE AUDIT CHAIN (ruling 2026-08-27) — the account layer reads it, the report-link token below
     // does not. Both gates were one line on USER_ARTIFACTS; they are two sets now, for the reason stated
     // at ACCOUNT_ARTIFACTS. The Resources surface in server.mjs gates on the SAME pair — two surfaces
     // disagreeing about one grant is the defect this file cites twice.
@@ -791,7 +947,7 @@ export function authorize(scope, toolName, args = {}) {
         throw new Error(`a client may only list findings by curated group (on-field | off-field | out-of-scope) — pass \`kind\` for the raw audit trail`);
       return { runId: args.runId, group: args.group };   // cards path: drop the raw-view args
     }
-    // WHAT-IF (owner ruling 2026-08-27). Two rules, and each closes something the ruling did not open.
+    // WHAT-IF (ruling 2026-08-27). Two rules, and each closes something the ruling did not open.
     //
     // A CLIENT DOES NOT PICK THE MODEL. `model` is both cost and method — the tier that runs a stage is
     // the firm's cost structure, sealed with get_telemetry above — and offering it on the one tool that
@@ -807,13 +963,21 @@ export function authorize(scope, toolName, args = {}) {
     // the name, so neither half can be satisfied alone.
     if (toolName === "what_if_run" && !args?.runId)
       throw new Error(`what_if_run: pass the runId of the run you planned against — a client session must name the run it is changing.`);
+    // RUN CLEARANCES IS A SWITCH ON THE PERSON. Every write this layer reaches — start, stop, what-if —
+    // spends or ends a clearance, and the preview is the first step of one, so a view-only person's key
+    // reads and never writes. The portal gates the same routes on the same switch.
+    if ((rule.write || toolName === "plan_run") && scope.permissions?.run !== true)
+      throw new Error(`tool "${toolName}" needs Run clearances, which this person does not hold`);
     if (toolName === "start_run" || toolName === "plan_run") {
-      // The grant bounds which account a client may spend against. `generic` is the neutral profile a job
-      // with no profileKey runs under, so it has to be granted explicitly like any other key — otherwise
-      // omitting the field would be a way out of the grant.
+      // The access bounds which company a person may spend against. `generic` is the neutral profile a
+      // job with no profileKey runs under, and it is not a company: it is an organisation's own lane,
+      // ordered by a person who holds that organisation whole (or everything) and capped per organisation
+      // like any company (ruling 2026-09-10). So omitting the field is still no way out of the access.
       const key = args?.profileKey ?? "generic";
-      if (!scope.accounts.includes(key))
-        throw new Error(`your grant [${scope.accounts.join(", ")}] does not include account "${key}" — ${toolName} refused`);
+      const reach = scope.accounts === "*" ? "everything" : (Array.isArray(scope.accounts) ? scope.accounts.join(", ") : "");
+      if (key === "generic" ? !(scope.everything === true || (Array.isArray(scope.genericOrgs) && scope.genericOrgs.length))
+        : !(scope.accounts === "*" || (Array.isArray(scope.accounts) && scope.accounts.includes(key))))
+        throw new Error(`your grant [${reach}] does not include account "${key}" — ${toolName} refused`);
     }
     if (toolName === "start_run" || toolName === "plan_run") {
       // WHO IS ASKING is server-stamped from the CF-verified identity, never caller-supplied. Both the
@@ -822,8 +986,10 @@ export function authorize(scope, toolName, args = {}) {
       // rides the delivery packet (docs/DELIVERY.md)". A client's assistant cannot act on that — it names
       // an internal doc and a concept the client has no reason to know — and it broke the FREE preview,
       // the one call a client is most likely to make first.
-      const stamped = { ...args, forwarder: args.forwarder || scope.sub || "client-mcp",
-        forwarderEmail: scope.sub ?? args.forwarderEmail };
+      const { tenant: askedTenant, ...rest } = args ?? {};
+      const stamped = { ...rest, forwarder: args.forwarder || scope.sub || "client-mcp",
+        forwarderEmail: scope.sub ?? args.forwarderEmail,
+        ...((args?.profileKey ?? "generic") === "generic" ? tenantStamp(scope, askedTenant) : {}) };
       // THE DAILY ALLOWANCE, and the reason this branch exists at all. runCaps.dailyRuns is enforced in
       // the runner ONLY for jobs stamped clientPrincipal:true, and that stamp is deliberately POSITIVE-ONLY
       // — absence means UNCAPPED (see checkRunCaps for why every inferred alternative fails dangerously).
@@ -833,7 +999,8 @@ export function authorize(scope, toolName, args = {}) {
       // plan_run does NOT carry it: it spends nothing, so stamping it would let a free preview burn a
       // day's allowance (the runner counts ledger rows, and a previewed job that never runs must not sit
       // in that count).
-      return toolName === "start_run" ? { ...stamped, clientPrincipal: true } : stamped;
+      // Everyone but a person who sees everything is capped — the same line the portal draws.
+      return toolName === "start_run" && scope.everything !== true ? { ...stamped, clientPrincipal: true } : stamped;
     }
     return args;
   }

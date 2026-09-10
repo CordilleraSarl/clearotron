@@ -22,21 +22,21 @@ const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const RENDER = join(ROOT, "driver", "systemd", "render-units.mjs");
 const missingNames = (env) => authGaps(env).gaps.flatMap((g) => [...g.missingAll, ...(g.oneOfUnmet ? g.oneOf : [])]);
 
-test("133 an UNSET auth mode is the fail-closed one, on both faces", () => {
+test("an UNSET auth mode is the fail-closed one, on both faces", () => {
   // THE INVERSION THAT WOULD MAKE THIS WHOLE MODULE USELESS. Reading unset as "local" would report a
   // clean install on precisely the box the issue was filed about — a hosted operator who set no mode.
   assert.equal(portalAuthMode({}), "auth-proxy");
   assert.equal(faceAuthMode({}), "auth-proxy");
 });
 
-test("133 the documented hosted install is told every value its two dead units need", () => {
+test("the documented hosted install is told every value its two dead units need", () => {
   const named = missingNames({});
   for (const k of ["CLEAROTRON_OIDC_AUDIENCE", "CF_ACCESS_TEAM", "PORTAL_OIDC_ISSUER", "TRADEMARK_MCP_OIDC_ISSUER"]) {
     assert.ok(named.includes(k), `${k} is not named, and a unit refuses to start without it`);
   }
 });
 
-test("133 one of two alternatives satisfied is not a gap", () => {
+test("one of two alternatives satisfied is not a gap", () => {
   // A flat required-list gets this wrong and reports PORTAL_OIDC_ISSUER missing on a correctly
   // configured Cloudflare install — advice to set a variable that would do nothing.
   const cf = { CLEAROTRON_OIDC_AUDIENCE: "aud", CF_ACCESS_TEAM: "firm", MCP_ALLOWED_EMAIL_DOMAINS: "x.com",
@@ -47,7 +47,7 @@ test("133 one of two alternatives satisfied is not a gap", () => {
   assert.deepEqual(authGaps(issuer).gaps, [], "the issuer route is a supported alternative and was reported as a gap");
 });
 
-test("133 the local/token route — the first-install shape — is reported clean", () => {
+test("the local/token route — the first-install shape — is reported clean", () => {
   const local = { PORTAL_AUTH_MODE: "local", PORTAL_LOCAL_USER: "ops@example-firm.com",
     TRADEMARK_MCP_AUTH_MODE: "token", TRADEMARK_MCP_ALLOWED_HOSTS: "127.0.0.1:18790",
     CLEAROTRON_ACCESS_FILE: "/g.json" };
@@ -56,7 +56,7 @@ test("133 the local/token route — the first-install shape — is reported clea
   assert.deepEqual(authGaps(local).gaps, [], `told to set: ${missingNames(local).join(", ")}`);
 });
 
-test("133 the two faces have INDEPENDENT modes, and the gaps are attributed per unit", () => {
+test("the two faces have INDEPENDENT modes, and the gaps are attributed per unit", () => {
   // Found by this arm failing: setting the portal to local does NOT move the ops face, which keeps its
   // own default of auth-proxy and still needs a Cloudflare team or an issuer. The first version of this
   // arm flattened the gaps across units and read that correct answer as a defect — an operator sees the
@@ -70,13 +70,13 @@ test("133 the two faces have INDEPENDENT modes, and the gaps are attributed per 
     "the ops face still runs auth-proxy here, and was not told what it needs");
 });
 
-test("133 an empty value is not a set value", () => {
+test("an empty value is not a set value", () => {
   // `.env.deployment.example` ships rows EMPTY. A presence check that reads `CF_ACCESS_TEAM=` as
   // configured would clear the gap on the very file the finding came from.
   assert.ok(missingNames({ CLEAROTRON_OIDC_AUDIENCE: "", CF_ACCESS_TEAM: "   " }).includes("CLEAROTRON_OIDC_AUDIENCE"));
 });
 
-test("133 THE LADDER HERE STILL MATCHES THE MODULES IT IS COPIED FROM", () => {
+test("THE LADDER HERE STILL MATCHES THE MODULES IT IS COPIED FROM", () => {
   // A copy of a rule drifts from it. `valuesRefusedOver` reads the real refusal lines out of each
   // module, so a ladder that changes without this file reds here rather than in a reader's install.
   const refusedBy = (rel) => new Set(valuesRefusedOver(readFileSync(join(ROOT, rel), "utf8")));
@@ -91,7 +91,7 @@ test("133 THE LADDER HERE STILL MATCHES THE MODULES IT IS COPIED FROM", () => {
   }
 });
 
-test("133 --apply names the auth gaps, driven through the real CLI", () => {
+test("--apply names the auth gaps, driven through the real CLI", () => {
   const dir = mkdtempSync(join(tmpdir(), "ct133-"));
   try {
     const env = join(dir, "env");
@@ -109,7 +109,7 @@ test("133 --apply names the auth gaps, driven through the real CLI", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("133 INSTALL.md's isolation boundary names the ports", () => {
+test("INSTALL.md's isolation boundary names the ports", () => {
   // §8 claimed "the environment is the whole isolation boundary — four variables draw it" and the
   // PORTS were not on the list. A second instance with all four set still crash-loops on the shared
   // door port, and the symptom is a unit failing at boot rather than a port already in use.

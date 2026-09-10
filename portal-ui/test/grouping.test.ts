@@ -263,7 +263,7 @@ test('grouping an empty list is empty, not a phantom row', () => {
 
 // ──: the parent row is ONE read, and it can be ordered ─────────────────────────────────────────
 
-test('#275/#283: two reads on the same DAY are ordered by their completion timestamp, not by arrival', () => {
+test('two reads on the same DAY are ordered by their completion timestamp, not by arrival', () => {
   // The measured case. On the test instance, House default carried two runs that differed by 2m08s in
   // issuedAt and in nothing else the page rendered — different runIds, different codenames, different
   // doors (cli/enqueue vs mcp/start_run), even different report bytes. `date` is day precision, so they
@@ -278,7 +278,7 @@ test('#275/#283: two reads on the same DAY are ordered by their completion times
   assert.equal(marks[0]!.band, 'Manageable', "and the row shows THAT read's band")
 })
 
-test('#275: a read with NO timestamp falls back to the date, and never sorts as the newest', () => {
+test('a read with NO timestamp falls back to the date, and never sorts as the newest', () => {
   // A run published before issuedAt crossed the wire. Unknown must not read as "most recent".
   const old = run({ runId: 'old', date: '2026-08-01', issuedAt: null, band: 'Very high' })
   const recent = run({ runId: 'new', date: '2026-08-04', issuedAt: '2026-08-04T09:00:00Z', band: 'Manageable' })
@@ -290,7 +290,7 @@ test('#275: a read with NO timestamp falls back to the date, and never sorts as 
   assert.equal(marksOf([a, b])[0]!.current.runId, 'b')
 })
 
-test('#275: the Risk cell REPORTS the bands present, worst first — never a synthesised value', () => {
+test('the Risk cell REPORTS the bands present, worst first — never a synthesised value', () => {
   // The aim: a reader could reconstruct the row's contents from the cell. A computed "worst" cannot pass
   // that, whatever it is called — and it is what needed the word "worst:" beside it to explain itself.
   const single = marksOf([run({ runId: 'a', band: 'Medium', issuedAt: '2026-08-04T09:00:00Z' })])
@@ -308,7 +308,7 @@ test('#275: the Risk cell REPORTS the bands present, worst first — never a syn
     'the bands actually there, worst first, each said once — not the word Manageable twice, and not one word standing for three')
 })
 
-test('#275: the parent row shows ONE read per column — no cell joins two values', () => {
+test('the parent row shows ONE read per column — no cell joins two values', () => {
   const marks = marksOf([
     run({ runId: 'a', date: '2026-08-01', issuedAt: '2026-08-01T09:00:00Z', stageLabel: 'Depth 1', band: 'Medium' }),
     run({ runId: 'b', date: '2026-08-04', issuedAt: '2026-08-04T09:00:00Z', stageLabel: 'Depth 4', band: 'Manageable' }),
@@ -320,7 +320,7 @@ test('#275: the parent row shows ONE read per column — no cell joins two value
   assert.equal(m.reads.length, 2, 'the count survives — the row still says there are two')
 })
 
-test('#275: an earlier read that was WORSE leaves a marker; one that was better or equal leaves none', () => {
+test('an earlier read that was WORSE leaves a marker; one that was better or equal leaves none', () => {
   // The one thing a latest-read rule would otherwise hide. It must be rare enough to notice, so the
   // negative cases matter more than the positive one.
   const improved = marksOf([
@@ -345,7 +345,7 @@ test('#275: an earlier read that was WORSE leaves a marker; one that was better 
     'a single read has nothing to have improved from')
 })
 
-test('#275: a band the ladder does not know sorts LAST rather than first — an unknown is not a worst case', () => {
+test('a band the ladder does not know sorts LAST rather than first — an unknown is not a worst case', () => {
   // Found while writing the test above, and worth pinning: bandRank returns MAX_SAFE_INTEGER for a label
   // the customer's ladder does not carry, so it sinks. That is the right direction — a word nobody can
   // rank must not be presented as the most severe thing on the row.

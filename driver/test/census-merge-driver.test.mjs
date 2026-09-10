@@ -34,7 +34,7 @@ function run(ours, base, theirs) {
   return { code: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}`, merged };
 }
 
-test("#1827 two branches adding different files UNION — the conflict that cost five merges", () => {
+test("two branches adding different files UNION — the conflict that cost five merges", () => {
   const base = census({ "a.test.mjs": entry(1, 2) });
   const ours = census({ "a.test.mjs": entry(1, 2), "b.test.mjs": entry(3, 9) });
   const theirs = census({ "a.test.mjs": entry(1, 2), "c.test.mjs": entry(5, 11) });
@@ -44,7 +44,7 @@ test("#1827 two branches adding different files UNION — the conflict that cost
     ["a.test.mjs", "b.test.mjs", "c.test.mjs"], "the union must carry both sides' additions");
 });
 
-test("#1827 BOTH sides changing one entry differently REFUSES — that is a disagreement, not a merge", () => {
+test("BOTH sides changing one entry differently REFUSES — that is a disagreement, not a merge", () => {
   const base = census({ "a.test.mjs": entry(1, 2) });
   const ours = census({ "a.test.mjs": entry(7, 7) });
   const theirs = census({ "a.test.mjs": entry(99, 99) });
@@ -54,7 +54,7 @@ test("#1827 BOTH sides changing one entry differently REFUSES — that is a disa
   assert.match(r.out, /a\.test\.mjs/, "it names the entry, so a human knows what to look at");
 });
 
-test("#1827 a DELETION survives the union — absent-because-removed is not absent-because-new", () => {
+test("a DELETION survives the union — absent-because-removed is not absent-because-new", () => {
   // The whole reason the census is committed: a deleted test file vanishes from git, the glob and the
   // TAP output at once. A union that re-added it from the other side would restore the expectation for
   // a file that no longer exists, and the guard would then be green over a test nobody runs.
@@ -68,7 +68,7 @@ test("#1827 a DELETION survives the union — absent-because-removed is not abse
   assert.deepEqual(keys, ["y.test.mjs", "z.test.mjs"]);
 });
 
-test("#1827 an unreadable side REFUSES rather than treating it as empty", () => {
+test("an unreadable side REFUSES rather than treating it as empty", () => {
   const d = mkdtempSync(join(tmpdir(), "census-merge-"));
   const p = { o: join(d, "o.json"), b: join(d, "b.json"), t: join(d, "t.json") };
   writeFileSync(p.o, JSON.stringify(census({ "a.test.mjs": entry(1, 2) })));
@@ -91,7 +91,7 @@ test("#1827 an unreadable side REFUSES rather than treating it as empty", () => 
 // union that describes the merged tree exactly, and its diff summary says "no file added, removed,
 // grown or shrunk" — because nothing was. The only way through is a re-mint, which is precisely the
 // reflex that makes a real census failure get waved past.
-test("#1827 the union emits keys in the minter's order, so --check does not fail on a correct merge", () => {
+test("the union emits keys in the minter's order, so --check does not fail on a correct merge", () => {
   // Ours carries the LATE half of the alphabet, theirs the EARLY half: a naive ours-then-theirs walk
   // produces exactly the wrong order, and one that happens to look right for any other input would not.
   const base = census({ "m.test.mjs": entry(1, 2) });

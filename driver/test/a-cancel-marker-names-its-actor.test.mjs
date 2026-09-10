@@ -116,7 +116,7 @@ test("the marker still carries ts and via, and is still readable back", () => {
 // The portal does hold a verified human: every audit line on that path already writes principal.email.
 // It simply never forwarded it.
 
-test("#1378 a delegated identity is recorded BESIDE the verified one, never instead of it", () => {
+test("a delegated identity is recorded BESIDE the verified one, never instead of it", () => {
   assert.equal(attributionOf({ kind: "ops", sub: "portal" }, "alice@example.test"), "portal:alice@example.test");
   // THE POINT. An asserted name returned alone would be indistinguishable from a proved one, in a file
   // that travels into an archived matter record — and any holder of that ops token could then write any
@@ -125,7 +125,7 @@ test("#1378 a delegated identity is recorded BESIDE the verified one, never inst
     "the delegate stands alone — an asserted identity is now indistinguishable from a verified one");
 });
 
-test("#1378 a delegate that is not a bare identifier is DROPPED, and the verified half stands alone", () => {
+test("a delegate that is not a bare identifier is DROPPED, and the verified half stands alone", () => {
   // Counts and identifiers, not prose — the issue's own scope note, and this file is a matter record.
   // A colon would forge the compound form; whitespace or a newline would spill a sentence into the
   // archive. Refusing is the safe direction: the record loses a name it could not trust, not its shape.
@@ -133,20 +133,20 @@ test("#1378 a delegate that is not a bare identifier is DROPPED, and the verifie
     assert.equal(attributionOf({ kind: "ops", sub: "portal" }, bad), "portal", `delegate: ${JSON.stringify(bad)}`);
 });
 
-test("#1378 with no delegate, every existing caller gets exactly what it got before", () => {
+test("with no delegate, every existing caller gets exactly what it got before", () => {
   assert.equal(attributionOf({ kind: "ops", sub: "portal" }), "portal");
   assert.equal(attributionOf({ kind: "ops", sub: null }), `${UNIDENTIFIED}:ops`);
   assert.equal(attributionOf(undefined), UNIDENTIFIED);
 });
 
-test("#1378 an unidentified session that names a human still says the session could not be named", () => {
+test("an unidentified session that names a human still says the session could not be named", () => {
   // Both sentinels survive the compound. That whole point was that "nobody was identified" and
   // "nothing was passed" are different words; adding a delegate must not quietly answer the first.
   assert.equal(attributionOf({ kind: "ops", sub: null }, "alice@example.test"),
     `${UNIDENTIFIED}:ops:alice@example.test`);
 });
 
-test("#1378 WIRING — the engine reads the delegate and the portal actually sends it", () => {
+test("WIRING — the engine reads the delegate and the portal actually sends it", () => {
   // A forwarded field that nobody forwards is the silent half of this defect class, and it is exactly
   // how survived: `requestCancel` took `by` all along and the caller passed nothing.
   const ops = readSrc(join(ROOT, "mcp-server", "lib", "ops.mjs"), "utf8");

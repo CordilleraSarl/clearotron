@@ -73,7 +73,7 @@ function findingsTopKeys() {
   return [...names];
 }
 
-test("#1955 the schema can EXPRESS the call the repair prompts order", () => {
+test("the schema can EXPRESS the call the repair prompts order", () => {
   const block = synthesisToolBlock();
 
   // 1. THE FIELD EXISTS. Ordering a field the tool cannot carry is an instruction with no mechanism.
@@ -93,7 +93,7 @@ test("#1955 the schema can EXPRESS the call the repair prompts order", () => {
   }
 });
 
-test("#1955 every record_synthesis field the repair composers ORDER is a field the tool declares", () => {
+test("every record_synthesis field the repair composers ORDER is a field the tool declares", () => {
   // THE GENERAL DIRECTION, narrowly derived. Only backticked snake_case identifiers inside a composer
   // string that also names `record_synthesis` — not every backticked token in the file, which would sweep
   // up file names, tokens and prose and produce the false-positive pile a prose gate always produces.
@@ -137,7 +137,7 @@ test("#1955 every record_synthesis field the repair composers ORDER is a field t
 // "five green arms" as five things this commit fixed. What they pin is the behaviour the schema change
 // makes reachable: if a future edit breaks the merge, the repair path silently returns to resending whole
 // documents, which is the shape that lost fifteen findings.
-test("#1955 a patch merges by ordinal and carries every key it does not name", () => {
+test("a patch merges by ordinal and carries every key it does not name", () => {
   // THE PROMISE THE PROMPT MAKES, asserted rather than trusted: "what you do not name comes back
   // byte-identical". This is what was unreachable.
   const stored = {
@@ -166,7 +166,7 @@ test("#1955 a patch merges by ordinal and carries every key it does not name", (
     "the merge must consume `findings_patch`, or the rendered document carries a key the parser refuses");
 });
 
-test("#1955 a FIRST call still cannot patch, and it is refused by name", () => {
+test("a FIRST call still cannot patch, and it is refused by name", () => {
   // Relaxing `required` does not open a door: a patch with nothing to patch is refused against the run's
   // own accepted-call record, which is older than this change and is why the schema could be relaxed.
   const r = mergeSynthesisPatch(null, { findings_patch: [{ ordinal: 1, mark: "ALPHA" }] });
@@ -174,7 +174,7 @@ test("#1955 a FIRST call still cannot patch, and it is refused by name", () => {
   assert.match(r.reason, /synthesis_patch_without_base/);
 });
 
-test("#1955 a patch cannot express a deletion at all", () => {
+test("a patch cannot express a deletion at all", () => {
   // WHY THE SCHEMA FIX IS THE PRIMARY AND THE GUARDS ARE THE BACKSTOP. An ordinal names a finding to
   // REPLACE. There is no shape here that removes one, so once the correction is expressible this run's
   // loss is structurally impossible rather than merely detected.
@@ -211,7 +211,7 @@ test("#1955 a patch cannot express a deletion at all", () => {
 // and `recordSynthesis` never enforced it, so this arm can reach the patch path on either tree. It is not
 // a regression arm for this commit. It is the answer to "and does the document that comes out the far end
 // actually validate" — measured, yes, with every finding intact.
-test("#1955 a patch call survives recordSynthesis end to end and lands every finding on disk", () => {
+test("a patch call survives recordSynthesis end to end and lands every finding on disk", () => {
   const runDir = mkdtempSync(join(tmpdir(), "synthesis-patch-"));
   const { dir, accepted } = synthesisCallPaths(runDir);
   mkdirSync(dir, { recursive: true });

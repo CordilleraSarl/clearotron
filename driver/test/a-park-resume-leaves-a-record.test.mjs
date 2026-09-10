@@ -43,7 +43,7 @@ const spine = (runDir) => {
   return readFileSync(p, "utf8").trim().split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
 };
 
-test("#1488 a queue-marker resume appends park-resumed, carrying which wake it was", async () => {
+test("a queue-marker resume appends park-resumed, carrying which wake it was", async () => {
   const { claimDuePostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
   const { q, runDir } = parkedQueue();
 
@@ -61,7 +61,7 @@ test("#1488 a queue-marker resume appends park-resumed, carrying which wake it w
 
 // THE POINT OF THE WHOLE CRITERION, stated as an assertion rather than left to a reader: the two states
 // this issue says are indistinguishable must now differ in the record.
-test("#1488 a park that never woke and a park that woke are distinguishable in run.jsonl", async () => {
+test("a park that never woke and a park that woke are distinguishable in run.jsonl", async () => {
   const { claimDuePostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
 
   // (a) parked and never resumed — the window has not elapsed
@@ -78,7 +78,7 @@ test("#1488 a park that never woke and a park that woke are distinguishable in r
     "and a park that woke says so — these are the two states #1488 calls indistinguishable");
 });
 
-test("#1488 a pre-fix sentinel with no probeAttempt still records the wake", async () => {
+test("a pre-fix sentinel with no probeAttempt still records the wake", async () => {
   const { claimDuePostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
   const { q, runDir } = parkedQueue({ probeAttempt: undefined, kind: undefined });
   assert.equal(claimDuePostponed(q).length, 1);
@@ -109,7 +109,7 @@ const orphanPark = (extra = {}) => {
   return { runDir, sentPath };
 };
 
-test("#1732 a run-dir-sentinel resume appends park-resumed too, and says which door wrote it", async () => {
+test("a run-dir-sentinel resume appends park-resumed too, and says which door wrote it", async () => {
   const { resumeRunDirOrphans } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
   const { runDir, sentPath } = orphanPark();
 
@@ -131,7 +131,7 @@ test("#1732 a run-dir-sentinel resume appends park-resumed too, and says which d
   assert.equal(typeof rows[0].parkedAt, "string");
 });
 
-test("#1732 a pre-fix run-dir sentinel with no probeAttempt still records the wake", async () => {
+test("a pre-fix run-dir sentinel with no probeAttempt still records the wake", async () => {
   // Sentinels written before are on disk on test right now. The read-back is best-effort by
   // design, so the arm pins that an unparseable one still leaves a record rather than losing the wake.
   const { resumeRunDirOrphans } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);

@@ -981,7 +981,7 @@ function world({ cutAfter = 0, version = "0.1.7" } = {}) {
   };
 }
 
-test("208 a merge already taken costs no wait at all — the common case, not the exception", async () => {
+test("a merge already taken costs no wait at all — the common case, not the exception", async () => {
   const w = world({ cutAfter: 0 });
   const r = await awaitCut(w);
   assert.equal(r.cut, true, "main carried an untagged version and the loop did not say so");
@@ -990,7 +990,7 @@ test("208 a merge already taken costs no wait at all — the common case, not th
   assert.equal(w.passes(), 1, "it re-read main more than once for an answer it already had");
 });
 
-test("208 it gives up rather than hanging a runner, and giving up is not a cut", async () => {
+test("it gives up rather than hanging a runner, and giving up is not a cut", async () => {
   // Every version branch CI run fires this, INCLUDING the ones whose pull request never merges — checks
   // failed, a merge dismissed, a re-cut mid-flight. An unbounded wait would hold a runner on each.
   const w = world({ cutAfter: Infinity });
@@ -1004,7 +1004,7 @@ test("208 it gives up rather than hanging a runner, and giving up is not a cut",
     `the loop gave up at ${r.waitedMs}ms with a whole step of budget left — it is quitting early, not bounding`);
 });
 
-test("208 a merge taken mid-wait is caught, and costs only the steps it took", async () => {
+test("a merge taken mid-wait is caught, and costs only the steps it took", async () => {
   // The arm that separates a real wait from a loop that answers once and returns.
   const w = world({ cutAfter: 3 });
   const r = await awaitCut(w);
@@ -1014,7 +1014,7 @@ test("208 a merge taken mid-wait is caught, and costs only the steps it took", a
   assert.equal(r.waitedMs, 3 * STEP_MS, `it waited ${r.waitedMs}ms for a merge that landed after three steps`);
 });
 
-test("208 the wait rides the run a PERSON started, and the dead trigger is gone", () => {
+test("the wait rides the run a PERSON started, and the dead trigger is gone", () => {
   // FIRST ATTEMPT, MEASURED DEAD. The wait hung off `workflow_run` on the version branch's CI, on the
   // reasoning that the completion auto-merge waits for fires regardless of who pushed. It does not:
   // 2026-09-06, trigger live on main, version pull request 58 self-merged at 16:12:48Z as "Release
@@ -1043,7 +1043,7 @@ test("208 the wait rides the run a PERSON started, and the dead trigger is gone"
     "the wait is back inside the version job, where it cannot arm on a push that also publishes a stranded version");
 });
 
-test("208 the job's budget can contain its own longest step", () => {
+test("the job's budget can contain its own longest step", () => {
   // A `timeout-minutes` below the wait cancels the job at the moment it was about to publish, and a
   // cancelled run reads as neither success nor failure to anybody scanning the list — the release goes
   // missing with nothing red. The two numbers live in different files, so nothing else couples them.
@@ -1069,7 +1069,7 @@ test("208 the job's budget can contain its own longest step", () => {
     + "around it. The job is cancelled while waiting for the merge it set in motion");
 });
 
-test("208 both deciders answer the same question, and a skipped one cannot answer for the other", () => {
+test("both deciders answer the same question, and a skipped one cannot answer for the other", () => {
   // The `version` job now has two steps and exactly one answers: `cut` on the push that IS the merge,
   // `awaited` on the push that cut the pull request and waited. An unset output from a skipped step is
   // the empty string; reading only one would report "not this path" on the event that did answer.
@@ -1098,7 +1098,7 @@ test("208 both deciders answer the same question, and a skipped one cannot answe
     "the waiting path's default tag reader is no longer the one authority");
 });
 
-test("208 the stranded-cut detector does not sit downstream of the gate that strands a cut", () => {
+test("the stranded-cut detector does not sit downstream of the gate that strands a cut", () => {
   // MEASURED ON A REAL STRANDING, 2026-09-06, by the lane holding the next pull request. 0.1.7 merged
   // itself onto main and was not published: the release run on that push failed at "The checks it waits
   // for actually started", and BOTH downstream jobs were skipped — including the one whose entire job is
@@ -1136,13 +1136,13 @@ test("208 the stranded-cut detector does not sit downstream of the gate that str
 // So a state that resolves in minutes, on its own, by a person clicking approve, stranded a second
 // version behind the first. Three strandings by then, and not one of them self-reported.
 
-test("208 a parked run is recorded and the release proceeds — it clears itself", () => {
+test("a parked run is recorded and the release proceeds — it clears itself", () => {
   assert.equal(exitCodeFor(WAITING_FOR_A_PERSON), 0,
     "a version branch waiting for an approval fails the job again. Auto-merge is still waiting when the "
     + "approval arrives, and a cut already sitting on main goes unpublished in the meantime");
 });
 
-test("208 THE PLANT — checks that will never arrive still fail, because nothing clears that", () => {
+test("THE PLANT — checks that will never arrive still fail, because nothing clears that", () => {
   // The distinction is the fix. A parked run has somebody to approve it; no check runs at all means the
   // trigger will never fire, and waiting does not repair it.
   const nothing = checksVerdict({ checkRuns: [], workflowRuns: [] });
@@ -1151,7 +1151,7 @@ test("208 THE PLANT — checks that will never arrive still fail, because nothin
     "a commit with no checks at all stopped being a failure — that one does not clear on its own");
 });
 
-test("208 a parked run is still SEEN, or the fix is a mute", () => {
+test("a parked run is still SEEN, or the fix is a mute", () => {
   // Not failing is not the same as not noticing. The verdict must still name what is parked and how to
   // clear it, because somebody has to act on it even though the release does not stop for them.
   const v = checksVerdict({ workflowRuns: [{ name: "CI", status: "action_required" }], repo: "o/r" });
@@ -1160,7 +1160,7 @@ test("208 a parked run is still SEEN, or the fix is a mute", () => {
   assert.deepEqual(v.blocked, ["CI"], "the parked run is not named, so a reader cannot act on it");
 });
 
-test("229 the stranded-cut detector does not depend on the job that strands cuts", () => {
+test("the stranded-cut detector does not depend on the job that strands cuts", () => {
   // Every stranding so far was invisible for the same reason: the detector was downstream of the gate.
   // `needs:` is what made it skippable, so its absence is the property.
   const job = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  stranded:"), RELEASE_YML.indexOf("\n  pending:"));
@@ -1174,7 +1174,7 @@ test("229 the stranded-cut detector does not depend on the job that strands cuts
     "the detector asks for more than read — it reports a stranding, it does not publish one");
 });
 
-test("229 the detector SAYS SO — reachable is not the same as heard", () => {
+test("the detector SAYS SO — reachable is not the same as heard", () => {
   // `release-cut-decision.mjs` prints its answer and exits 0. That is right for its other callers, which
   // read the output and decide; here it would mean a green, silent job in exactly the state this one
   // exists to surface — the log would carry "v0.1.8 has no tag" and nothing would carry it anywhere a
@@ -1188,7 +1188,7 @@ test("229 the detector SAYS SO — reachable is not the same as heard", () => {
     "the finding lives only in a log somebody has to open on purpose");
 });
 
-test("229 the cut decision is recorded BEFORE the gate that can fail", () => {
+test("the cut decision is recorded BEFORE the gate that can fail", () => {
   // Order is the fix. The decision that notices a stranded cut used to run after the checks gate, so a
   // gate failure meant it was never even asked.
   // ORDER IS A CLAIM ABOUT STEPS, so it is read off the executable text. On the
@@ -1213,7 +1213,7 @@ test("229 the cut decision is recorded BEFORE the gate that can fail", () => {
 
 const RELEASES_DOC = join(REPO, "docs", "RELEASES.md");
 
-test("230 the release doc states both install commands and what each channel promises", () => {
+test("the release doc states both install commands and what each channel promises", () => {
   assert.ok(existsSync(RELEASES_DOC), "docs/RELEASES.md is gone — the doc every other surface points at");
   const doc = readFileSync(RELEASES_DOC, "utf8");
   assert.match(doc, /npm install -g clearotron\b(?!@)/, "the stable install command is not in the doc");
@@ -1225,7 +1225,7 @@ test("230 the release doc states both install commands and what each channel pro
   assert.match(doc, /provenance/i, "the doc drops that both channels publish with provenance");
 });
 
-test("230 the two places a reader starts both point at it", () => {
+test("the two places a reader starts both point at it", () => {
   // README is where a stranger lands; INSTALL.md is where somebody deploying lands. A channel section in
   // one and not the other sends half the readers to the wrong default.
   for (const [name, file] of [["README.md", join(REPO, "README.md")], ["INSTALL.md", join(REPO, "INSTALL.md")]]) {
@@ -1235,7 +1235,7 @@ test("230 the two places a reader starts both point at it", () => {
   }
 });
 
-test("230 the notes contract tells a note's author which reader it is written for", () => {
+test("the notes contract tells a note's author which reader it is written for", () => {
   // A note ships to beta readers in minutes and to stable readers when the next stable is cut — so it is
   // read alongside a fortnight of other notes by somebody deciding whether to upgrade. That is a fact
   // about who to write for, and it belongs where notes are written.
@@ -1264,7 +1264,7 @@ function jobText(id) {
 // was what armed auto-merge. The cadence change made a requested cut the only thing that merges the
 // version pull request, so keying the wait off a push left it waiting for an event that cannot occur.
 // Rewritten rather than deleted: the next reader needs to see that the trigger moved on purpose.
-test("208 the wait is its own job, and it arms on the cut that can actually merge", () => {
+test("the wait is its own job, and it arms on the cut that can actually merge", () => {
   const job = jobText("awaited");
   assert.ok(job.length > 200, "the waiting job is gone — this arm could not look");
   assert.match(job, /github\.event_name == 'workflow_dispatch'/,
@@ -1279,7 +1279,7 @@ test("208 the wait is its own job, and it arms on the cut that can actually merg
     "the version job still runs the wait, so a push has two of them and they can disagree");
 });
 
-test("208 the wait runs AFTER the first publish, or it answers about the wrong version", () => {
+test("the wait runs AFTER the first publish, or it answers about the wrong version", () => {
   // `release-await-cut.mjs` asks whether main carries a version with no tag. Run beside the first
   // publish it would find the STRANDED version still untagged and answer about that one — and the job
   // behind it would publish the same version twice.
@@ -1288,7 +1288,7 @@ test("208 the wait runs AFTER the first publish, or it answers about the wrong v
     "the wait does not run behind the first publish, so it can read the version that publish is still tagging");
 });
 
-test("208 the second publish proves its OWN bytes — it does not reuse the first artefact", () => {
+test("the second publish proves its OWN bytes — it does not reuse the first artefact", () => {
   // A stated requirement, and the reason this is a duplicated job rather than a promotion step: a
   // second publish that reused the first tarball would ship the previous version's bytes under a new
   // number, and every check that passed did so on the wrong content.
@@ -1304,7 +1304,7 @@ test("208 the second publish proves its OWN bytes — it does not reuse the firs
   ]) assert.match(second, pattern, `the second publish no longer ${what}`);
 });
 
-test("208 the second publish takes the NEW main, and tags the commit it actually published", () => {
+test("the second publish takes the NEW main, and tags the commit it actually published", () => {
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
   // NOT `ref: main` ANY MORE. The branch name was right about the first half of the
   // problem — it does pick up a version that landed after the run began — and wrong about the second:
@@ -1329,7 +1329,7 @@ test("208 the second publish takes the NEW main, and tags the commit it actually
     "the tag the pre-release path writes does not name the commit this job resolved");
 });
 
-test("208 the two publish jobs carry the same steps, so they cannot drift apart", () => {
+test("the two publish jobs carry the same steps, so they cannot drift apart", () => {
   // DUPLICATED ON PURPOSE — the registry's trusted publisher is bound to this workflow FILE, and
   // extracting the sequence into a reusable workflow would publish from a different one. Trusted
   // Publishing cannot be exercised from a test, so converting a just-proven publish path into an
@@ -1371,7 +1371,7 @@ test("208 the two publish jobs carry the same steps, so they cannot drift apart"
     + "is stale — say which in the arm rather than widening it");
 });
 
-test("208 the rehearsal exercises both publishes, and waits for nothing while doing it", () => {
+test("the rehearsal exercises both publishes, and waits for nothing while doing it", () => {
   const job = jobText("awaited");
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
   assert.match(job, /workflow_dispatch/, "a rehearsal never reaches the wait, so its wiring is unrehearsed");
@@ -1380,7 +1380,7 @@ test("208 the rehearsal exercises both publishes, and waits for nothing while do
     "a rehearsal would hold a runner for the full wait to establish that nothing is coming");
 });
 
-test("298 the workflow does not restate the wait's duration, it names the constant", () => {
+test("the workflow does not restate the wait's duration, it names the constant", () => {
   // WHY THIS EXISTS. `WAIT_MS` was raised from fifteen to twenty-five and four sentences in the workflow
   // carried the figure. Two were repaired when the constant moved and two were not, so the file gave a
   // reader both numbers and no way to tell which was current — and the second pair was found only after
@@ -1406,7 +1406,7 @@ test("298 the workflow does not restate the wait's duration, it names the consta
     + offenders.join("\n"));
 });
 
-test("208 the waiting job's budget contains the wait", () => {
+test("the waiting job's budget contains the wait", () => {
   const job = jobText("awaited");
   const budget = Number(/timeout-minutes:\s*(\d+)/.exec(job)?.[1]);
   assert.ok(Number.isFinite(budget), "the waiting job declares no timeout — this arm could not look");
@@ -1419,7 +1419,7 @@ test("208 the waiting job's budget contains the wait", () => {
     + "moment it was about to answer, and a cancelled job reads as neither a pass nor a failure");
 });
 
-test("208 an unreadable wait budget refuses rather than guessing in either direction", () => {
+test("an unreadable wait budget refuses rather than guessing in either direction", () => {
   assert.equal(waitBudget({}), WAIT_MS, "the default bound is no longer the file's own");
   assert.equal(waitBudget({ CLEAROTRON_RELEASE_WAIT_MS: "0" }), 0, "the rehearsal cannot ask for a single pass");
   for (const bad of ["soon", "-1", "1.5", "15m"])
@@ -1427,7 +1427,7 @@ test("208 an unreadable wait budget refuses rather than guessing in either direc
       `"${bad}" was accepted — a real run would take it as 0 and give up without waiting at all`);
 });
 
-test("208 no job output is read through a hyphenated name", () => {
+test("no job output is read through a hyphenated name", () => {
   // `needs.await-the-cut.outputs.cut` does not read an output: the expression parser takes the hyphens
   // as subtraction, the condition never equals 'true', and the job it guards silently never runs.
   const executable = executableText(RELEASE_YML);
@@ -1446,7 +1446,7 @@ test("208 no job output is read through a hyphenated name", () => {
 // `cut != 'true'` — never armed, and why `publish` ran with nothing stranded and failed on
 // `cannot publish over the previously published versions: 0.1.10`.
 
-test("208 the version job asks its cut decision about the commit that was pushed", () => {
+test("the version job asks its cut decision about the commit that was pushed", () => {
   const version = jobText("version");
   assert.match(version, /CLEAROTRON_CUT_REF: \$\{\{ github\.sha \}\}/,
     "the cut decision is asked of whatever HEAD has become after the changesets action committed the "
@@ -1458,7 +1458,7 @@ test("208 the version job asks its cut decision about the commit that was pushed
     "CLEAROTRON_CUT_REF is set somewhere other than the step that runs the cut decision");
 });
 
-test("208 an unnamed ref still means HEAD, which is right for the cron and a hand run", () => {
+test("an unnamed ref still means HEAD, which is right for the cron and a hand run", () => {
   // The cron checks out main and nothing has moved under it, so HEAD is the question there. This must
   // not become a variable every caller has to remember.
   assert.equal(cutRef({}), "HEAD");
@@ -1466,7 +1466,7 @@ test("208 an unnamed ref still means HEAD, which is right for the cron and a han
   assert.equal(cutRef({ CLEAROTRON_CUT_REF: "d534f531" }), "d534f531");
 });
 
-test("208 a wait that could not LOOK is not a wait that found nothing", () => {
+test("a wait that could not LOOK is not a wait that found nothing", () => {
   // Giving up quietly is the ordinary outcome and stays exit 0 — red checks, a dismissed pull request,
   // a re-cut mid-flight. A fetch that failed is a different thing, and reporting it as "nothing to
   // publish" hands the job below a verdict this never reached.
@@ -1477,7 +1477,7 @@ test("208 a wait that could not LOOK is not a wait that found nothing", () => {
   assert.match(src, /looked=true/, "a successful look does not say it looked, so `looked` proves nothing");
 });
 
-test("208 the loop propagates a read failure rather than answering with it", async () => {
+test("the loop propagates a read failure rather than answering with it", async () => {
   // Driven: the catch that turns this into exit 2 lives in main(), and it can only do that if the loop
   // itself refuses to invent an answer.
   await assert.rejects(
@@ -1486,7 +1486,7 @@ test("208 the loop propagates a read failure rather than answering with it", asy
     /fetch died/, "a refresh that threw was swallowed into a 'nothing merged' verdict");
 });
 
-test("208 the second publish refuses a tip that is not the one it awaited", () => {
+test("the second publish refuses a tip that is not the one it awaited", () => {
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
   assert.match(second, /needs\.awaited\.outputs\.version/,
     "the second publish never compares what it checked out against what it awaited, so a merge landing "
@@ -1600,7 +1600,7 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null }) {
 
 const PUBLISHING = publishingJobs(RELEASE_YML);
 
-test("230 every job that publishes carries the tag/release step, and there is more than one", () => {
+test("every job that publishes carries the tag/release step, and there is more than one", () => {
   assert.ok(PUBLISHING.length >= 2,
     `the workflow has ${PUBLISHING.length} publishing job(s); this suite drives the step in each of them, `
     + "and finding fewer than two means the splitter stopped seeing one — an arm that could not look");
@@ -1612,7 +1612,7 @@ test("230 every job that publishes carries the tag/release step, and there is mo
 // entry". Left as it was, it would hold the code to a rule that no longer stands — which is why it is
 // rewritten here rather than deleted: the next reader needs to see that the behaviour flipped
 // deliberately, not that a test quietly went missing.
-test("264 a pre-release is tagged AND gets an entry marked Pre-release", () => {
+test("a pre-release is tagged AND gets an entry marked Pre-release", () => {
   for (const [name, body] of PUBLISHING) {
     const run = driveTagStep({ script: tagStepScript(body, name), version: "9.9.9-beta.3", prerelease: "true" });
     assert.match(run.log, /api repos\/CordilleraSarl\/clearotron\/git\/refs .*refs\/tags\/v9\.9\.9-beta\.3/,
@@ -1629,7 +1629,7 @@ test("264 a pre-release is tagged AND gets an entry marked Pre-release", () => {
   }
 });
 
-test("230 a stable keeps its release entry, and the entry carries the changelog", () => {
+test("a stable keeps its release entry, and the entry carries the changelog", () => {
   for (const [name, body] of PUBLISHING) {
     const run = driveTagStep({ script: tagStepScript(body, name), version: "9.9.9", prerelease: "false" });
     assert.match(run.log, /release create v9\.9\.9 .*--notes-file release-notes\.md/,
@@ -1641,7 +1641,7 @@ test("230 a stable keeps its release entry, and the entry carries the changelog"
   }
 });
 
-test("230 an existing beta tag does not stop the stable that follows it from being tagged", () => {
+test("an existing beta tag does not stop the stable that follows it from being tagged", () => {
   // `git/refs/tags/v0.2.0` — plural — answers with `v0.2.0-beta.1`. A step that treats any answer as
   // "already tagged" skips the tag for exactly the promotion this ruling exists to serve.
   for (const [name, body] of PUBLISHING) {
@@ -1660,7 +1660,7 @@ test("230 an existing beta tag does not stop the stable that follows it from bei
 // THE TAG AND THE ENTRY ARE TWO QUESTIONS NOW, and this test is why the step asks them separately.
 // Every beta cut before 2026-09-07 has a tag and no entry, so a step that exited on seeing the tag would
 // leave those betas permanently unlisted. The no-double-tag half is unchanged.
-test("264 an already-tagged pre-release is not tagged again, and still gets its entry", () => {
+test("an already-tagged pre-release is not tagged again, and still gets its entry", () => {
   for (const [name, body] of PUBLISHING) {
     const run = driveTagStep({
       script: tagStepScript(body, name),
@@ -1682,7 +1682,7 @@ test("264 an already-tagged pre-release is not tagged again, and still gets its 
 // THE PLANTS. Each mutates ONE job and drives it: a mutation applied to the whole file is how a
 // weakening hid here before, when a `.replace` without `/g` left the second publishing job untouched
 // and the arm passed on the one it had already broken.
-test("230 planted: a job that ignores the pre-release flag is caught, in each job separately", () => {
+test("planted: a job that ignores the pre-release flag is caught, in each job separately", () => {
   for (const [name, body] of PUBLISHING) {
     const script = tagStepScript(body, name);
     const broken = script.replace('if [ "$PRERELEASE_FLAG" = "true" ]; then', "if false; then");
@@ -1694,7 +1694,7 @@ test("230 planted: a job that ignores the pre-release flag is caught, in each jo
   }
 });
 
-test("230 planted: a job that compares the tag read by prefix is caught, in each job separately", () => {
+test("planted: a job that compares the tag read by prefix is caught, in each job separately", () => {
   for (const [name, body] of PUBLISHING) {
     const script = tagStepScript(body, name);
     const broken = script.replace('if [ "$EXISTING" = "refs/tags/v$VERSION" ]; then', 'if [ -n "$EXISTING" ]; then');
@@ -1715,7 +1715,7 @@ test("230 planted: a job that compares the tag read by prefix is caught, in each
 // published under a number whose changelog never described it, and nothing could see it: the tip check
 // compares VERSIONS, and the version had not moved.
 
-test("238 the wait reports the commit that MOVED the version, not the tip that still carries it", () => {
+test("the wait reports the commit that MOVED the version, not the tip that still carries it", () => {
   // Newest first, as `git rev-list` prints them. c2 is the version pull request's merge; c4 and c3
   // landed after it and change no version — an instrument fix with no note is the ordinary case, and
   // publishing either of them ships bytes the changelog for 0.2.1 never described.
@@ -1730,13 +1730,13 @@ test("238 the wait reports the commit that MOVED the version, not the tip that s
     + "check downstream compares VERSIONS, so it passes on exactly this mistake");
 });
 
-test("238 when the bump IS the tip — the ordinary case — the tip is what is reported", () => {
+test("when the bump IS the tip — the ordinary case — the tip is what is reported", () => {
   const versions = { c2: "0.2.1", c1: "0.2.0" };
   assert.equal(versionBumpCommit({ version: "0.2.1", run: () => "c2\nc1\n", versionAt: ({ ref }) => versions[ref] }),
     "c2", "the common case, where nothing landed after the merge, no longer publishes the merge");
 });
 
-test("238 a version whose bump cannot be found in the walk answers nothing, and is not guessed at", () => {
+test("a version whose bump cannot be found in the walk answers nothing, and is not guessed at", () => {
   const got = versionBumpCommit({
     version: "0.2.1",
     run: () => "c3\nc2\nc1\n",
@@ -1767,7 +1767,7 @@ const readingMain = ({ tip = "a".repeat(40), cut, version, history = [], version
   return { r, calls };
 };
 
-test("238 the wait reports the tip it read, and reads it from the same ref as the version", () => {
+test("the wait reports the tip it read, and reads it from the same ref as the version", () => {
   const tip = "a".repeat(40);
   const { r, calls } = readingMain({ tip, cut: false, version: "0.2.0" });
   assert.equal(calls[0], "rev-parse origin/main",
@@ -1780,7 +1780,7 @@ test("238 the wait reports the tip it read, and reads it from the same ref as th
   assert.equal(r.sha, tip, "with nothing cut, the wait reported something other than the tip it read");
 });
 
-test("238 with something to publish, the wait reports the bump and NOT the tip", () => {
+test("with something to publish, the wait reports the bump and NOT the tip", () => {
   const tip = "c".repeat(40);
   const bump = "b".repeat(40);
   const { r } = readingMain({
@@ -1794,7 +1794,7 @@ test("238 with something to publish, the wait reports the bump and NOT the tip",
   assert.equal(r.tip, tip, "the tip it looked at is no longer recorded alongside");
 });
 
-test("238 a cut whose bump cannot be found refuses rather than falling back to the tip", () => {
+test("a cut whose bump cannot be found refuses rather than falling back to the tip", () => {
   assert.throws(() => readingMain({
     tip: "c".repeat(40), cut: true, version: "0.2.1",
     history: ["c".repeat(40), "b".repeat(40)],
@@ -1804,7 +1804,7 @@ test("238 a cut whose bump cannot be found refuses rather than falling back to t
     + "changelog does not describe");
 });
 
-test("238 a name the wait cannot resolve refuses rather than being handed on", () => {
+test("a name the wait cannot resolve refuses rather than being handed on", () => {
   // `git rev-parse` PRINTS THE NAME BACK when it cannot resolve it, so this failure arrives looking
   // like a value. A checkout would then take it as a ref and land somewhere.
   for (const answer of ["origin/main\n", "\n", "abc123\n", `${"a".repeat(39)}\n`, `${"a".repeat(41)}\n`, "A".repeat(40)]) {
@@ -1813,7 +1813,7 @@ test("238 a name the wait cannot resolve refuses rather than being handed on", (
   }
 });
 
-test("238 the commit reported is the one from the pass that found the cut, not an earlier or later read", async () => {
+test("the commit reported is the one from the pass that found the cut, not an earlier or later read", async () => {
   const seen = [];
   let n = 0;
   const read = () => {
@@ -1831,7 +1831,7 @@ test("238 the commit reported is the one from the pass that found the cut, not a
     + "check out a tree the verdict was not about");
 });
 
-test("238 the second publish checks out the commit the wait named, and the wait publishes it", () => {
+test("the second publish checks out the commit the wait named, and the wait publishes it", () => {
   const awaited = jobText("awaited");
   assert.match(awaited, /sha: \$\{\{ steps\.awaited\.outputs\.sha \}\}/,
     "the wait no longer publishes the commit it decided about, so the job below has nothing to check out");
@@ -1846,7 +1846,7 @@ test("238 the second publish checks out the commit the wait named, and the wait 
     + "the default branch by the time anything asks");
 });
 
-test("238 the refusal is driven, not read: an absent or partial commit stops the publish", () => {
+test("the refusal is driven, not read: an absent or partial commit stops the publish", () => {
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
   const script = namedStepScript(second, "The wait named a commit to publish", "publish-awaited");
   const drive = (sha) => {
@@ -1871,7 +1871,7 @@ test("238 the refusal is driven, not read: an absent or partial commit stops the
   assert.match(good.out, new RegExp("b".repeat(40)), "the step does not say which commit it is publishing");
 });
 
-test("238 planted: a refusal that only checks for emptiness is caught", () => {
+test("planted: a refusal that only checks for emptiness is caught", () => {
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
   const script = namedStepScript(second, "The wait named a commit to publish", "publish-awaited");
   // The shape somebody writes when they think "empty" is the only bad answer. `main` is the exact value
@@ -1904,7 +1904,7 @@ test("238 planted: a refusal that only checks for emptiness is caught", () => {
 //
 // THE DISTINCTION THESE ARMS PIN is the one the issue draws: the tree a job QUESTIONS and the code it
 // RUNS are two statements, not one accident.
-test("245 no job checks out a moving branch name and then runs scripts from it", () => {
+test("no job checks out a moving branch name and then runs scripts from it", () => {
   const yml = RELEASE_YML;
   const lines = executableText(yml).split("\n");
   const moving = lines.filter((l) => /^\s+ref:\s*main\s*$/.test(l));
@@ -1913,7 +1913,7 @@ test("245 no job checks out a moving branch name and then runs scripts from it",
     + "`github.sha` and name main as the subject instead.");
 });
 
-test("245 every checkout that runs release scripts pins to the ref the run started on", () => {
+test("every checkout that runs release scripts pins to the ref the run started on", () => {
   const yml = RELEASE_YML;
   // Count the pinned checkouts rather than asserting a total: a new job that runs these scripts must
   // make the same statement, and a job added with a moving ref is caught by the arm above.
@@ -1922,7 +1922,7 @@ test("245 every checkout that runs release scripts pins to the ref the run start
     `expected the three deciding jobs to pin to github.sha; found ${pinned}`);
 });
 
-test("245 a pinned checkout FETCHES origin/main, because the scripts refuse without it", () => {
+test("a pinned checkout FETCHES origin/main, because the scripts refuse without it", () => {
   const yml = RELEASE_YML;
   const fetches = (yml.match(/refs\/remotes\/origin\/main/g) ?? []).length;
   assert.ok(fetches >= 3,
@@ -1930,7 +1930,7 @@ test("245 a pinned checkout FETCHES origin/main, because the scripts refuse with
     + `absent — so each pinned job must fetch it. Found ${fetches} fetch(es).`);
 });
 
-test("245 the jobs that ASK about main name main as the subject, so the pin did not move the question", () => {
+test("the jobs that ASK about main name main as the subject, so the pin did not move the question", () => {
   const yml = RELEASE_YML;
   // `cutRef()` defaults to HEAD. With the checkout pinned, HEAD is the run's own ref — so a job that is
   // supposed to decide about main must say so, or the pin silently changes what it decides.
@@ -1967,7 +1967,7 @@ function triggers() {
   return RELEASE_YML.slice(RELEASE_YML.indexOf("\non:"), RELEASE_YML.indexOf("\nconcurrency:"));
 }
 
-test("264 the dispatch offers two modes and defaults to the one that cannot publish", () => {
+test("the dispatch offers two modes and defaults to the one that cannot publish", () => {
   const on = triggers();
   assert.match(on, /workflow_dispatch:\s*\n\s+inputs:\s*\n\s+cut:/,
     "the release can no longer be started on demand: the dispatch carries no `cut` input");
@@ -1979,7 +1979,7 @@ test("264 the dispatch offers two modes and defaults to the one that cannot publ
   }
 });
 
-test("264 a merge to main publishes nothing, because auto-merge is turned on only by a dispatched cut", () => {
+test("a merge to main publishes nothing, because auto-merge is turned on only by a dispatched cut", () => {
   const version = jobBlock("version");
   const step = version.slice(version.indexOf("- name: Let it merge itself once its checks pass"));
   const condition = step.slice(step.indexOf("if:"), step.indexOf("\n        env:"));
@@ -1991,7 +1991,7 @@ test("264 a merge to main publishes nothing, because auto-merge is turned on onl
     `the merge step does not require a dispatch, so a push could still reach it\n${condition}`);
 });
 
-test("264 the version commit answers the signature check, on every push and never for a fork", () => {
+test("the version commit answers the signature check, on every push and never for a fork", () => {
   // WHY THIS EXISTS. `cla` is a required check on `main`. `cla.yml` runs only on fork pull requests, and
   // this branch is pushed with the built-in token, which starts no workflow — so nothing reported on the
   // version pull request, not even a skip, and it could never merge. Measured 2026-09-07: a stable cut
@@ -2051,7 +2051,7 @@ test("264 the version commit answers the signature check, on every push and neve
     "the version job cannot post a status — the step 403s and the pull request stays blocked");
 });
 
-test("264 mutated: a merge step that lost its dispatch condition is caught", () => {
+test("mutated: a merge step that lost its dispatch condition is caught", () => {
   // The mutation is the exact regression this replaced: the condition the file carried before.
   const before = "if: steps.changesets.outputs.pr-number != ''";
   const passes = (text) => /inputs\.cut != 'rehearse'/.test(text);
@@ -2059,7 +2059,7 @@ test("264 mutated: a merge step that lost its dispatch condition is caught", () 
     "the check above would pass on the pre-2026-09-07 condition, so it cannot see the regression it exists for");
 });
 
-test("264 a dispatched cut with nothing to cut refuses, and the message says what to do", () => {
+test("a dispatched cut with nothing to cut refuses, and the message says what to do", () => {
   const version = jobBlock("version");
   assert.match(version, /- name: A cut needs something to cut/,
     "a dispatched cut with no accumulated release notes would exit 0 having published nothing, which "
@@ -2073,7 +2073,7 @@ test("264 a dispatched cut with nothing to cut refuses, and the message says wha
   assert.match(step, /exit 1/, "the refusal reports and then exits 0, so the run reads as a success");
 });
 
-test("264 a rehearsal still cannot publish, and a requested cut can — in each publishing job", () => {
+test("a rehearsal still cannot publish, and a requested cut can — in each publishing job", () => {
   for (const [name, body] of PUBLISHING) {
     assert.match(body, /if \[ "\$\{\{ github\.event_name \}\}" = "workflow_dispatch" \] && \[ "\$\{\{ inputs\.cut \}\}" = "rehearse" \]; then/,
       `${name}: the dry-run branch does not distinguish a rehearsal from a requested cut, so either every `
@@ -2089,7 +2089,7 @@ test("264 a rehearsal still cannot publish, and a requested cut can — in each 
     + "count below two means the splitter stopped seeing one");
 });
 
-test("264 the wait is real on a requested cut and instant on a rehearsal", () => {
+test("the wait is real on a requested cut and instant on a rehearsal", () => {
   const awaited = jobBlock("awaited");
   const line = awaited.split("\n").find((l) => l.includes("CLEAROTRON_RELEASE_WAIT_MS"));
   assert.ok(line, "the wait job sets no budget, so a rehearsal would hold a runner for the full wait");
@@ -2098,7 +2098,7 @@ test("264 the wait is real on a requested cut and instant on a rehearsal", () =>
     + `before the version pull request could merge, and publish nothing\n${line}`);
 });
 
-test("264 the cron is still there, because removing it is how every release stops", () => {
+test("the cron is still there, because removing it is how every release stops", () => {
   // The cadence ruling says no scheduled beta, and the schedule cuts nothing: it asks main whether a
   // version is sitting there untagged. Deleting it was a plausible way to read that ruling, and it
   // would strand every release whose wait gave up.
@@ -2109,7 +2109,7 @@ test("264 the cron is still there, because removing it is how every release stop
     "the job the cron drives no longer answers to it");
 });
 
-test("264 pushing a tag cannot publish, because tags are also how this pipeline remembers", () => {
+test("pushing a tag cannot publish, because tags are also how this pipeline remembers", () => {
   // Deleting a tag is silent. RECREATING one used to start a real release run for the version at it —
   // and recreating a tag is exactly what you do to repair the pipeline's memory of what was released.
   // Restoring a fact attempted a release. Three of them did, on 2026-09-07, and only the registry
@@ -2128,7 +2128,7 @@ test("264 pushing a tag cannot publish, because tags are also how this pipeline 
     "the tag-versus-manifest check is still here, and no run can arrive on a tag ref to exercise it");
 });
 
-test("271 a merge to main starts no wait job — the wait belongs to a requested cut", () => {
+test("a merge to main starts no wait job — the wait belongs to a requested cut", () => {
   // This job waits for the standing version pull request to merge itself. Only a requested cut arms
   // auto-merge, so on a push the wait can only run its budget out — twenty five minutes of a runner per
   // merge, for an event that cannot happen. It does not go red either: expiry here is a deliberate quiet
@@ -2153,7 +2153,7 @@ test("271 a merge to main starts no wait job — the wait belongs to a requested
 // "exit". In that state a `cut: beta` dispatch would have computed a stable version and published it to
 // `latest` — a stable release out of a button marked beta, with nothing in the run saying so.
 
-test("279 the cut input offers a stable, and still defaults to the mode that cannot publish", () => {
+test("the cut input offers a stable, and still defaults to the mode that cannot publish", () => {
   const on = triggers();
   for (const option of ["rehearse", "beta", "stable"]) {
     assert.match(on, new RegExp(`^\\s+- ${option}$`, "m"), `the cut input offers no \`${option}\``);
@@ -2163,7 +2163,7 @@ test("279 the cut input offers a stable, and still defaults to the mode that can
     + "would publish");
 });
 
-test("279 no condition keys on a CHANNEL where it means 'is this a real cut'", () => {
+test("no condition keys on a CHANNEL where it means 'is this a real cut'", () => {
   // THE REGRESSION THIS EXISTS FOR. Every one of these read `inputs.cut != 'beta'` when `beta` was the
   // only real cut, so adding `stable` silently made a stable dispatch behave as a rehearsal — a publish
   // path that quietly does nothing, which is the failure that looks most like success.
@@ -2176,7 +2176,7 @@ test("279 no condition keys on a CHANNEL where it means 'is this a real cut'", (
     + "real cut, the test is `!= 'rehearse'`; naming a channel there breaks the moment another is added.");
 });
 
-test("279 the tree is put in the mode the chosen channel needs, before the version is computed", () => {
+test("the tree is put in the mode the chosen channel needs, before the version is computed", () => {
   const version = jobBlock("version");
   const at = version.indexOf("- name: Put the tree in the mode this cut needs");
   assert.ok(at >= 0, "nothing puts the tree in pre-release mode, so the input cannot decide the channel");
@@ -2190,7 +2190,7 @@ test("279 the tree is put in the mode the chosen channel needs, before the versi
   assert.match(step, /not in pre-release mode/, "exiting when already out of pre mode is not handled");
 });
 
-test("279 the refusal asks the VERSION, not the arrangement that produced it", () => {
+test("the refusal asks the VERSION, not the arrangement that produced it", () => {
   const version = jobBlock("version");
   const at = version.indexOf("- name: The version this cut computed is the channel that was asked for");
   assert.ok(at >= 0, "nothing checks that the computed version matches the channel that was asked for");

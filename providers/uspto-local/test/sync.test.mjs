@@ -437,7 +437,7 @@ test("onFile is AWAITED — a promise left unawaited ingests a path that is not 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#840 onPhase fires after the ingest loop and again after the FTS rebuild, in that order", async () => {
+test("onPhase fires after the ingest loop and again after the FTS rebuild, in that order", async () => {
   // The rebuild happens INSIDE syncIndex and blocks the caller's thread throughout, so a caller
   // watching disk from outside can see the total but not which phase set it. These two hooks are the
   // only place the log can attribute it. Ordering is asserted against the INDEX's own state rather than
@@ -463,7 +463,7 @@ test("#840 onPhase fires after the ingest loop and again after the FTS rebuild, 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#840 syncIndex works with no onPhase hook at all", async () => {
+test("syncIndex works with no onPhase hook at all", async () => {
   const dir = mkdtempSync(join(tmpdir(), "uspto-sync-nophase-"));
   try {
     const r = await syncIndex({

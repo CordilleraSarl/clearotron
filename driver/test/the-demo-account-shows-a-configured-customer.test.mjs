@@ -29,7 +29,7 @@ import { loadFrameworkManifest } from "../framework.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const KEY = "demo-brand-owner";
 
-test("2014 the demo account is a CONFIGURED customer, and it is marked as demo data", () => {
+test("the demo account is a CONFIGURED customer, and it is marked as demo data", () => {
   const p = loadProfiles({ force: true }).get(KEY);
   assert.ok(p, "the demo account is on the roster");
 
@@ -51,7 +51,7 @@ test("2014 the demo account is a CONFIGURED customer, and it is marked as demo d
   assert.ok(p.riskAppetite?.trim(), "and carries a risk posture, because a blank one shows nothing");
 });
 
-test("2014 the project overlay LAYERS — a visitor sees it do something", () => {
+test("the project overlay LAYERS — a visitor sees it do something", () => {
   // A project that repeated the account's configuration would prove nothing. Each assertion below is a
   // field where account and project genuinely disagree, which is what makes the two screens worth
   // clicking between.
@@ -70,7 +70,7 @@ test("2014 the project overlay LAYERS — a visitor sees it do something", () =>
   assert.ok(proj.platforms.some((s) => !acct.platforms.includes(s)), "and the project adds its own");
 });
 
-test("2014 the framework is its own, and its provenance note is clean", () => {
+test("the framework is its own, and its provenance note is clean", () => {
   // ROOT-relative, not the bare string "driver": the suite wrapper runs with the CWD set to driver/,
   // where a relative root resolves to driver/driver and the manifest "goes missing". Passed alone it
   // works, which is exactly how that assumption survives to CI.
@@ -81,7 +81,7 @@ test("2014 the framework is its own, and its provenance note is clean", () => {
   assert.equal(m.structure.kind, "matrix", "matrix-shaped, so it exercises the two-input path");
   assert.equal(m.bands.length, 5, "five bands, matching the one band vocabulary the report chrome states");
 
-  // OWNER RULING: the provenance note must not describe this framework as copied, transposed, invented
+  // RULING: the provenance note must not describe this framework as copied, transposed, invented
   // or synthetic. `frameworkView()` strips source_deck for non-staff readers, but STAFF surfaces are the
   // ones that get screenshotted in a demo — which is the whole reason the wording matters here.
   assert.doesNotMatch(m.source_deck, /synthetic|transpos|invented|copied|fictitious/i,
@@ -90,15 +90,13 @@ test("2014 the framework is its own, and its provenance note is clean", () => {
   assert.doesNotMatch(md.split("\n")[0], /synthetic|demo customer/i, "and neither does its title line");
 });
 
-test("2014 the tenant grants exactly the demo account, and nothing else", () => {
+test("the demo organisation holds exactly the demo account, and no other organisation holds it", () => {
   const g = JSON.parse(readFileSync(join(ROOT, "examples", "grants.example.json"), "utf8"));
   const t = g.tenants["demo-org"];
-  assert.ok(t, "Demo Org exists as a tenant");
-  assert.deepEqual(t.accounts, [KEY], "it reaches the demo account and no other");
-  assert.deepEqual(Object.keys(t.users), ["*@demo-org.example"], "one domain wildcard, as the shape allows");
-
-  // The existing fixtures are untouched: adding a tenant must not re-scope anybody else's access, and
-  // several portal arms assert those exact account lists.
-  assert.deepEqual(g.tenants["brand-owner-direct"].accounts, [KEY]);
-  assert.deepEqual(g.tenants["evaluation"].accounts, [KEY]);
+  assert.ok(t, "Demo Org exists as an organisation");
+  assert.deepEqual(t.accounts, [KEY], "it holds the demo account and no other");
+  assert.equal(t.users["*@demo-org.example"], "*", "one domain wildcard, as the shape allows");
+  // A company belongs to exactly one organisation, so no other organisation may list it.
+  for (const [name, other] of Object.entries(g.tenants))
+    if (name !== "demo-org") assert.ok(!(other.accounts ?? []).includes(KEY), `${name} also lists the demo account`);
 });

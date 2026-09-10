@@ -63,7 +63,7 @@ const sources = () => partyFactSources({ grid: GRID, records: RECORDS });
 const para = (text, heading = "Finding 1") => [{ heading, text }];
 const flag = (text) => partyFactViolations({ paragraphs: para(text), partyNames: [PARTY], sources: sources() });
 
-test("#1564 the fixture is real — the two corpora are populated and DISJOINT where it matters", () => {
+test("the fixture is real — the two corpora are populated and DISJOINT where it matters", () => {
   // Without this every arm below could pass over empty sets, which is the vacuous shape these checks
   // exist to catch elsewhere.
   const s = sources();
@@ -75,7 +75,7 @@ test("#1564 the fixture is real — the two corpora are populated and DISJOINT w
   assert.equal(s.registrationScope.has("epfl"), false, "a non-goods record field leaked into the scope corpus");
 });
 
-test("#1564 SHAPE 1 — an assertion that resolves to no source at all is flagged as invented", () => {
+test("SHAPE 1 — an assertion that resolves to no source at all is flagged as invented", () => {
   const v = flag(`${PARTY} has a preclinical pipeline in lung adenocarcinoma.`);
   const inv = v.find((x) => x.shape === "invented");
   assert.ok(inv, `nothing was flagged as invented (got ${JSON.stringify(v)})`);
@@ -86,7 +86,7 @@ test("#1564 SHAPE 1 — an assertion that resolves to no source at all is flagge
   assert.match(partyFactMessage(inv), /"adenocarcinoma"/, "the message must name the term that failed");
 });
 
-test("#1564 SHAPE 3 — a term the run holds ONLY in goods wording is a CATEGORY error, not a sourcing one", () => {
+test("SHAPE 3 — a term the run holds ONLY in goods wording is a CATEGORY error, not a sourcing one", () => {
   // The sharpest of the three, and the reason this module partitions before it tests.
   const v = flag(`${PARTY} has a preclinical pipeline in osteoporosis.`);
   const cat = v.find((x) => x.term === "osteoporosis");
@@ -95,7 +95,7 @@ test("#1564 SHAPE 3 — a term the run holds ONLY in goods wording is a CATEGORY
   assert.match(partyFactMessage(cat), /what a mark is registered FOR/);
 });
 
-test("#1564 A TOKEN-PRESENCE RULE PASSES THE CATEGORY CASE — this is why presence is not the rule", () => {
+test("A TOKEN-PRESENCE RULE PASSES THE CATEGORY CASE — this is why presence is not the rule", () => {
   // THE DISCRIMINATING ARM FOR THE WHOLE ISSUE. Build the naive check the obvious way — does the term
   // appear in any source the run holds — and watch it wave osteoporosis through. If this arm ever fails,
   // the fixture has stopped separating the two corpora and the category arm above is measuring nothing.
@@ -112,7 +112,7 @@ test("#1564 A TOKEN-PRESENCE RULE PASSES THE CATEGORY CASE — this is why prese
   assert.equal(naivePresence("adenocarcinoma"), false);
 });
 
-test("#1564 SHAPE 2 — a relationship kind the source contradicts is flagged as contradicted, not invented", () => {
+test("SHAPE 2 — a relationship kind the source contradicts is flagged as contradicted, not invented", () => {
   const v = flag(`${PARTY} announced a strategic manufacturing agreement in 2026.`);
   const c = v.find((x) => x.shape === "contradicted");
   assert.ok(c, `no contradiction flagged (got ${JSON.stringify(v)})`);
@@ -120,19 +120,19 @@ test("#1564 SHAPE 2 — a relationship kind the source contradicts is flagged as
   assert.match(partyFactMessage(c), /investment/, "the message must name what the source actually says");
 });
 
-test("#1564 a SOURCED assertion is not flagged — the check can pass, or it proves nothing", () => {
+test("a SOURCED assertion is not flagged — the check can pass, or it proves nothing", () => {
   // The expensive direction to be wrong in: a rule that flagged every party fact would be switched off
   // in a week, and the seat would be back to writing whatever it liked.
   assert.deepEqual(flag(`${PARTY} develops protease inhibitors for autoimmune and bone disease.`), []);
   assert.deepEqual(flag(`${PARTY} is an EPFL spin-off developing protease inhibitors.`), []);
 });
 
-test("#1564 a paragraph naming NO party is not examined", () => {
+test("a paragraph naming NO party is not examined", () => {
   assert.deepEqual(partyFactViolations({ paragraphs: para("The mark has a pipeline in lung adenocarcinoma."),
     partyNames: [PARTY], sources: sources() }), []);
 });
 
-test("#1564 a run with NO descriptive corpus never claims invention — absence is not a negative", () => {
+test("a run with NO descriptive corpus never claims invention — absence is not a negative", () => {
   // With no grid and no matter context there is nothing to be absent FROM. Reading that as "invented"
   // would put a fabrication accusation on every party fact in every run missing one artifact.
   const s = partyFactSources({ grid: null, records: RECORDS });
@@ -144,7 +144,7 @@ test("#1564 a run with NO descriptive corpus never claims invention — absence 
     partyNames: [PARTY], sources: s }).some((x) => x.shape === "category"), true);
 });
 
-test("#1564 a run holding NEITHER corpus returns no verdict at all, rather than a clean one", () => {
+test("a run holding NEITHER corpus returns no verdict at all, rather than a clean one", () => {
   const s = partyFactSources({});
   assert.equal(canJudgePartyFacts(s), false);
   assert.deepEqual(partyFactViolations({ paragraphs: para(`${PARTY} has a pipeline in lung adenocarcinoma.`),
@@ -170,7 +170,7 @@ function synthesisPrompt() {
   }) ?? "");
 }
 
-test("#1564 the synthesis seat is told a party fact must resolve to a source the run holds", () => {
+test("the synthesis seat is told a party fact must resolve to a source the run holds", () => {
   const prompt = synthesisPrompt();
   assert.ok(prompt.length > 2000, `the dispatch built to ${prompt.length} chars — a fixture that stopped `
     + "building a real prompt would pass every arm here by having nothing to search");
@@ -179,7 +179,7 @@ test("#1564 the synthesis seat is told a party fact must resolve to a source the
     "the rule must name the CLIENT's own company — that is the party the shipped defect described");
 });
 
-test("#1564 the seat is told goods wording is not evidence about a party, which is the category rule", () => {
+test("the seat is told goods wording is not evidence about a party, which is the category rule", () => {
   // That prohibition and a generic "source your claims" line both leave this open: the seat WILL
   // source a class-5 indication, correctly, to a document it really read, and still be wrong.
   const prompt = synthesisPrompt();
@@ -206,7 +206,7 @@ test("#1564 #1556's fetch-lane prohibition is still there — this is an additio
 
 const NARRATIVE = `## Finding 1\n\n${PARTY} has a preclinical pipeline in lung adenocarcinoma and osteoporosis.\n`;
 
-test("#1564 the check runs at the lint seam and names both shapes it found", () => {
+test("the check runs at the lint seam and names both shapes it found", () => {
   const out = partyFactChecks({ text: NARRATIVE, clientPartyName: PARTY, grid: GRID, records: RECORDS });
   const failed = out.filter((c) => !c.pass);
   assert.equal(failed.length, 2, `expected the invented and category shapes (got ${JSON.stringify(out)})`);
@@ -215,7 +215,7 @@ test("#1564 the check runs at the lint seam and names both shapes it found", () 
   for (const c of failed) assert.equal(c.surface, "report", "a failure off the report surface never reaches the redo");
 });
 
-test("#1564 runLint carries it, so the failure rides the delivery surface a human reads", () => {
+test("runLint carries it, so the failure rides the delivery surface a human reads", () => {
   const lint = runLint({ reportMd: NARRATIVE, clientPartyName: PARTY, commonLawGrid: GRID, recordsByUri: RECORDS,
     searchedNames: ["AURORA"], headerName: "AURORA", ratedNames: ["AURORA"] });
   const ids = lint.failures.map((f) => f.id);
@@ -225,14 +225,14 @@ test("#1564 runLint carries it, so the failure rides the delivery surface a huma
     "the failure has no family of its own, so the client gate cannot name it");
 });
 
-test("#1564 a run with no corpora emits NO row — silence, never a passing one", () => {
+test("a run with no corpora emits NO row — silence, never a passing one", () => {
   // A passing check here would record a verdict nobody measured, and every archived run would read as
   // party-fact-clean. Emptiness is the honest answer; the caller must not read it as coverage.
   assert.deepEqual(partyFactChecks({ text: NARRATIVE, clientPartyName: PARTY }), []);
   assert.deepEqual(partyFactChecks({ text: "", clientPartyName: PARTY, grid: GRID, records: RECORDS }), []);
 });
 
-test("#1564 a clean narrative emits a PASSING row — the check must be able to pass", () => {
+test("a clean narrative emits a PASSING row — the check must be able to pass", () => {
   const out = partyFactChecks({ text: `## Finding 1\n\n${PARTY} develops protease inhibitors for autoimmune disease.\n`,
     clientPartyName: PARTY, grid: GRID, records: RECORDS });
   assert.equal(out.length, 1);
@@ -241,7 +241,7 @@ test("#1564 a clean narrative emits a PASSING row — the check must be able to 
 
 // ── THE READER: A PATH INTO A DOCUMENT IS AN INSTRUMENT, AND THIS ONE WAS WRONG EVERYWHERE ───────────
 
-test("#1564 the goods corpus is extracted from EVERY provider shape this box holds", () => {
+test("the goods corpus is extracted from EVERY provider shape this box holds", () => {
   // Three shapes, three providers, no normalisation at assembly. A reader keyed to one path reports the
   // other two as "this run has no goods", which is indistinguishable from a run that really has none.
   for (const [label, recs] of [["assembled Clarivate", RECORDS], ["EUIPO sample", RECORDS_EUIPO]]) {
@@ -252,7 +252,7 @@ test("#1564 the goods corpus is extracted from EVERY provider shape this box hol
   }
 });
 
-test("#1564 THE POSITIVE CONTROL — a non-empty record set that yields NO goods text says so", () => {
+test("THE POSITIVE CONTROL — a non-empty record set that yields NO goods text says so", () => {
   // The arm that would have caught the original defect on day one. `haveScope` used to be
   // `bodies.length > 0`, so a corpus that extracted nothing still reported itself judgeable and every
   // goods-supported fact came out as INVENTED — the opposite of what the category shape exists to say,
@@ -264,7 +264,7 @@ test("#1564 THE POSITIVE CONTROL — a non-empty record set that yields NO goods
   assert.equal(s.haveScope, false, "an empty corpus reported itself judgeable");
 });
 
-test("#1564 a goods term is CATEGORY, not invented, on a real record shape", () => {
+test("a goods term is CATEGORY, not invented, on a real record shape", () => {
   // The whole point, on the shape runs actually hold. Before this it was reported `invented` — a
   // fabrication accusation against a term the run had read out of a registration.
   const v = partyFactViolations({ paragraphs: para(`${PARTY} has a preclinical pipeline in osteoporosis.`),
@@ -274,7 +274,7 @@ test("#1564 a goods term is CATEGORY, not invented, on a real record shape", () 
   assert.equal(hit.shape, "category", "flagged as the wrong shape — the repair and the accusation differ");
 });
 
-test("#1564 A HYPHENATED COMPOUND resolves to its parts — a CLEAN report must not route itself to a redo", () => {
+test("A HYPHENATED COMPOUND resolves to its parts — a CLEAN report must not route itself to a redo", () => {
   // The second real-artifact defect. The grid says "protease inhibitors"; a corrected narrative wrote
   // "protease-inhibitor", and keeping the hyphen inside the token made the compound resolve to nothing.
   // Any clean report hyphenating a compound tripped this, and a lint failure routes the surface to the
@@ -297,7 +297,7 @@ test("#1564 A HYPHENATED COMPOUND resolves to its parts — a CLEAN report must 
 
 // ── COVERAGE: AN EMPTINESS GUARD NEVER FIRES ON A HALF-FILLED TABLE ──────────────────────────────────
 
-test("#1564 EVERY record is read, not the first seven — the arity trap, and why the fixture hid it", () => {
+test("EVERY record is read, not the first seven — the arity trap, and why the fixture hid it", () => {
   // `goodsTextOf` took `(body, depth = 0)` and was called as `bodies.flatMap(goodsTextOf)`. flatMap
   // passes (element, INDEX, array), so the array index arrived as the recursion depth: every record past
   // the seventh returned [] at once, and the first six were walked from the wrong starting depth.
@@ -318,7 +318,7 @@ test("#1564 EVERY record is read, not the first seven — the arity trap, and wh
     + "one position where a per-record truncation is invisible.");
 });
 
-test("#1564 NEITHER emptiness guard can see a PARTIAL corpus — that is why coverage is reported", () => {
+test("NEITHER emptiness guard can see a PARTIAL corpus — that is why coverage is reported", () => {
   // The guards added with the first fix were `haveScope` (size > 0) and `scopeEmpty` (held but nothing
   // extracted). On the truncating reader both were quiet and correct: the corpus was not empty, it was
   // half-filled. Recorded as an arm because "we added a guard" is exactly what made this feel covered.
@@ -333,7 +333,7 @@ test("#1564 NEITHER emptiness guard can see a PARTIAL corpus — that is why cov
     + "genuinely carry none, and the caller is entitled to tell the difference");
 });
 
-test("#1598 a `description` OUTSIDE the goods subtree contributes nothing — the laundering half", () => {
+test("a `description` OUTSIDE the goods subtree contributes nothing — the laundering half", () => {
   // The trap's second effect, and the one that made the broken corpus look healthy. Entering at depth >= 1
   // skipped the `depth === 0` goods-subtree gate, so six of the seven records that were read at all pulled
   // `description`/`terms`/`text` from ANYWHERE in the body — an owner's address, a status note, a
@@ -387,7 +387,7 @@ const LATE_GOODS = new Map([
     goodsServices: [{ classNumber: "5", description: GOODS }] }],
 ]);
 
-test("#1598 THE FIXTURE CONTROL — the specimen term is carried by ONE record, and it is the last", () => {
+test("THE FIXTURE CONTROL — the specimen term is carried by ONE record, and it is the last", () => {
   // Both arms below rest on this. Move the specimen forward, or let a second record carry the term, and
   // they stop proving that the last record was read at all.
   const bodies = [...LATE_GOODS.values()];
@@ -397,7 +397,7 @@ test("#1598 THE FIXTURE CONTROL — the specimen term is carried by ONE record, 
   assert.ok(bodies.length >= 8, `n = ${bodies.length}; a truncation past index 6 needs at least 8 records to show`);
 });
 
-test("#1598 the corpus is a function of the SET of records, never of their ORDER", () => {
+test("the corpus is a function of the SET of records, never of their ORDER", () => {
   // The invariant that survives any implementation of the walk. It needs no model of which records ought
   // to carry goods, so it cannot false-trip on an honest run, and a per-record truncation reds it because
   // WHICH records get read is then decided by position.
@@ -411,7 +411,7 @@ test("#1598 the corpus is a function of the SET of records, never of their ORDER
   assert.ok(reversed.registrationScope.has("osteoporosis"));
 });
 
-test("#1598 AT THE CALL SITE — a goods term from the last record is CATEGORY, not invented", () => {
+test("AT THE CALL SITE — a goods term from the last record is CATEGORY, not invented", () => {
   // Criterion 4 at the delivery seam. The corpus arms above prove what was read; this proves the verdict
   // a run actually emits, which is where the cost was.
   const out = partyFactChecks({ text: `## Finding 1\n\n${PARTY} has a preclinical pipeline in osteoporosis.\n`,
@@ -425,7 +425,7 @@ test("#1598 AT THE CALL SITE — a goods term from the last record is CATEGORY, 
 
 // ── CRITERION 3: THE CONTRADICTION TEST IS ABOUT *THIS PARTY* ──────────────────────────────────
 
-test("#1564 an unrelated mention of the same word does NOT silence a contradiction", () => {
+test("an unrelated mention of the same word does NOT silence a contradiction", () => {
   // MEASURED ON THE REAL GRID BEFORE THIS FIX: the shape existed and never fired. `descriptive` pools
   // every candidate title in the run, so on a 245-cell grid every relationship word appears somewhere
   // about somebody — and the check read that as "this relationship is sourced". One candidate titled
@@ -445,7 +445,7 @@ test("#1564 an unrelated mention of the same word does NOT silence a contradicti
   assert.match(partyFactMessage(c), /investment/, "and the message must still name what the source says");
 });
 
-test("#1564 a mention ABOUT THE PARTY is a source, and correctly stops the flag", () => {
+test("a mention ABOUT THE PARTY is a source, and correctly stops the flag", () => {
   // The other direction, and the arm that keeps the fix from being 'flag everything'. If the run's own
   // material says this party HAS a manufacturing agreement, saying so is sourced, not contradicted.
   const supported = { cells: [{ term: "aurora", platform: "web", status: "searched", candidates: [
@@ -459,7 +459,7 @@ test("#1564 a mention ABOUT THE PARTY is a source, and correctly stops the flag"
     "a relationship the run's own material attributes to this party was reported as a contradiction");
 });
 
-test("#1564 an entry under a SHORTER name form is still about this party", () => {
+test("an entry under a SHORTER name form is still about this party", () => {
   // THE FIRST CUT OF THE SCOPING FAILED THIS, and it is the direction that costs a client. Parties reach
   // this check from the register, carrying legal forms ("Aurora Therapeutics SA"); grid candidates are web
   // titles carrying whatever the web uses ("Aurora Therapeutics"). Matching on the full string admitted the
@@ -477,7 +477,7 @@ test("#1564 an entry under a SHORTER name form is still about this party", () =>
     "the message cites one sourced kind, so entries about this party are being admitted by name form");
 });
 
-test("#1564 the INVENTED test stays pooled — 'does this run hold it at all' is a different question", () => {
+test("the INVENTED test stays pooled — 'does this run hold it at all' is a different question", () => {
   // The scoping applies to contradiction only. A term absent from the whole run is invented whoever it
   // was written about, and scoping that test to the party would call every unmentioned party's facts
   // invented — which is most of them.

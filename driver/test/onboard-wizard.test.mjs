@@ -463,7 +463,7 @@ test("resolveEngineBin finds a binary on PATH and flags a relative one", () => {
 // adapter the whole time, so a reader who runs codex had no supported path through setup. And neither
 // layer checked the engine could complete a TURN — the wizard said so in prose and left it there.
 
-test("#772 the engine menu is built from the driver's registry, plus one row that is not an engine", () => {
+test("the engine menu is built from the driver's registry, plus one row that is not an engine", () => {
   const opts = engineOptions();
   assert.deepEqual(opts.filter((o) => o.id).map((o) => o.id), Object.keys(ENGINE_BINARIES),
     "every engine the driver ships is offered, and setup offers none it does not");
@@ -476,14 +476,14 @@ test("#772 the engine menu is built from the driver's registry, plus one row tha
   }
 });
 
-test("#772 setup no longer assigns an engine behind the reader's back", () => {
+test("setup no longer assigns an engine behind the reader's back", () => {
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
   assert.ok(!/^\s*candidate\.CLEAROTRON_AI\s*=\s*"/m.test(src),
     "a hardcoded engine assignment is back — the choice must come from the menu");
   assert.match(src, /probeEngineTurn/, "and the engine is written only after a turn has proved it");
 });
 
-test("#772 --check reports the configured engine and checks THAT engine's binary variable", () => {
+test("--check reports the configured engine and checks THAT engine's binary variable", () => {
   // The old block read CLEAROTRON_CLAUDE_PATH unconditionally under the heading "Engine binary". On a codex
   // box it therefore reported the wrong variable and could pass for the wrong reason.
   const codex = run(["--check"], { CLEAROTRON_AI: "openai-agent" });
@@ -501,7 +501,7 @@ test("#772 --check reports the configured engine and checks THAT engine's binary
     `a codex box must not be told to fix the claude variable\n${irrelevant.out}`);
 });
 
-test("#772 --check names an engine id the driver does not ship, and does not invent a second refusal", () => {
+test("--check names an engine id the driver does not ship, and does not invent a second refusal", () => {
   const r = run(["--check"], { CLEAROTRON_AI: "silent-engine" });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /not an engine this driver ships/, r.out);
@@ -514,7 +514,7 @@ test("#772 --check names an engine id the driver does not ship, and does not inv
 // mock's own call log rather than from a live CLI.
 const MOCK_CLAUDE = join(REPO, "driver", "test", "mock-claude.mjs");
 
-test("#772 --check does NOT spend a turn unless it is asked to", () => {
+test("--check does NOT spend a turn unless it is asked to", () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-probe-"));
   const log = join(dir, "calls.jsonl");
   try {
@@ -525,7 +525,7 @@ test("#772 --check does NOT spend a turn unless it is asked to", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#772 --check --probe-engine proves the engine with one turn, and still writes nothing", () => {
+test("--check --probe-engine proves the engine with one turn, and still writes nothing", () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-probe-"));
   const log = join(dir, "calls.jsonl");
   const before = treeStamp(join(REPO, "bin"));
@@ -543,7 +543,7 @@ test("#772 --check --probe-engine proves the engine with one turn, and still wri
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#772 the probe reports a signed-out engine as signed out, not as 'cannot run'", () => {
+test("the probe reports a signed-out engine as signed out, not as 'cannot run'", () => {
   // A binary that runs, says nothing and exits nonzero — the startup-class shape. It passes every
   // filesystem check preflightEngineBinary makes, which is the entire reason this probe exists.
   const dir = mkdtempSync(join(tmpdir(), "onboard-mute-"));
@@ -570,7 +570,7 @@ test("#772 the probe reports a signed-out engine as signed out, not as 'cannot r
 // the offer only appears when there is genuinely something to build; the question names the size; and
 // only an explicit "yes" is consent — never the default, never Enter, never "y".
 
-test("#690 the build is offered only when there is actually an index missing", () => {
+test("the build is offered only when there is actually an index missing", () => {
   assert.equal(usptoSyncPlan({ dbPath: "/tmp/us.db", exists: true, freeBytes: 9e11 }).offer, false,
     "an index that exists is not rebuilt behind the reader's back");
   assert.equal(usptoSyncPlan({ dbPath: "", exists: false, freeBytes: 9e11 }).offer, false,
@@ -578,7 +578,7 @@ test("#690 the build is offered only when there is actually an index missing", (
   assert.equal(usptoSyncPlan({ dbPath: "/tmp/us.db", exists: false, freeBytes: 9e11 }).offer, true);
 });
 
-test("#690 the consent question NAMES the download size and the hours", () => {
+test("the consent question NAMES the download size and the hours", () => {
   const plan = usptoSyncPlan({ dbPath: "/tmp/us.db", exists: false, freeBytes: 9e11 });
   const q = usptoConsentPrompt(plan);
   assert.match(q, new RegExp(`${USPTO_ARCHIVE_GB} ?GB`),
@@ -594,7 +594,7 @@ test("#690 the consent question NAMES the download size and the hours", () => {
     "the hours are the archive size over the measured throughput, never a remembered figure");
 });
 
-test("#690 only an explicit yes starts it — Enter is not an answer, and neither is y", () => {
+test("only an explicit yes starts it — Enter is not an answer, and neither is y", () => {
   assert.equal(isExplicitYes("yes"), true);
   assert.equal(isExplicitYes("YES"), true);
   assert.equal(isExplicitYes(" yes "), true);
@@ -604,7 +604,7 @@ test("#690 only an explicit yes starts it — Enter is not an answer, and neithe
   }
 });
 
-test("#690 an unmeasurable disk is reported, never read as room", () => {
+test("an unmeasurable disk is reported, never read as room", () => {
   const unknown = usptoSyncPlan({ dbPath: "/tmp/us.db", exists: false, freeBytes: null });
   assert.equal(unknown.freeGB, null);
   assert.match(unknown.roomWarning, /could not be measured/);
@@ -615,7 +615,7 @@ test("#690 an unmeasurable disk is reported, never read as room", () => {
   assert.equal(usptoSyncPlan({ dbPath: "/tmp/us.db", exists: false, freeBytes: 9e11 }).roomWarning, null);
 });
 
-test("#690 the background build is detached, logged, and not waited on", () => {
+test("the background build is detached, logged, and not waited on", () => {
   const spec = backgroundSyncSpec({ repo: "/srv/dev-instance/repo", dbPath: "/data/us.db", logFd: 7 });
   assert.equal(spec.command, process.execPath);
   assert.deepEqual(spec.args, ["/srv/dev-instance/repo/bin/uspto-sync.mjs", "--db", "/data/us.db"],
@@ -625,7 +625,7 @@ test("#690 the background build is detached, logged, and not waited on", () => {
     "stdout and stderr both go to the log; a six-hour build writing into a closed terminal is lost progress");
 });
 
-test("#690 the wizard still points at the same script the docs do", () => {
+test("the wizard still points at the same script the docs do", () => {
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
   const spec = backgroundSyncSpec({ repo: "/r", dbPath: "/d.db", logFd: 1 });
   assert.ok(spec.args[0].endsWith("bin/uspto-sync.mjs"));
@@ -651,7 +651,7 @@ const fakeSpawn = (calls) => (command, args, options) => {
 };
 const ROOMY = async () => ({ bavail: 9e11, bsize: 1 });
 
-test("#690 pressing Enter at the offer starts NOTHING", async () => {
+test("pressing Enter at the offer starts NOTHING", async () => {
   const r = recorder();
   const calls = [];
   const out = await offerUsptoSync("/tmp/definitely-not-here/us.db",
@@ -666,7 +666,7 @@ test("#690 pressing Enter at the offer starts NOTHING", async () => {
   assert.match(r.text(), /clearotron sync --db/, "…and the reader still leaves with the command");
 });
 
-test("#690 'y' does not start it either — the affirmative is the whole gate", async () => {
+test("'y' does not start it either — the affirmative is the whole gate", async () => {
   for (const answer of ["y", "Y", "sure", "ok", "\n"]) {
     const calls = [];
     const out = await offerUsptoSync("/tmp/definitely-not-here/us.db",
@@ -676,7 +676,7 @@ test("#690 'y' does not start it either — the affirmative is the whole gate", 
   }
 });
 
-test("#690 an explicit yes spawns the build detached, and says where to watch it", async () => {
+test("an explicit yes spawns the build detached, and says where to watch it", async () => {
   const r = recorder();
   const calls = [];
   const dir = mkdtempSync(join(tmpdir(), "onboard-sync-"));
@@ -696,7 +696,7 @@ test("#690 an explicit yes spawns the build detached, and says where to watch it
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#690 a spawn that fails is reported, not swallowed into a false 'building…'", async () => {
+test("a spawn that fails is reported, not swallowed into a false 'building…'", async () => {
   const r = recorder();
   const dir = mkdtempSync(join(tmpdir(), "onboard-sync-"));
   try {
@@ -709,7 +709,7 @@ test("#690 a spawn that fails is reported, not swallowed into a false 'building�
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#690 an index that already exists is never rebuilt behind the reader's back", async () => {
+test("an index that already exists is never rebuilt behind the reader's back", async () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-sync-"));
   try {
     const db = join(dir, "us.db");
@@ -722,7 +722,7 @@ test("#690 an index that already exists is never rebuilt behind the reader's bac
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#690 a disk that cannot be measured still offers, and says the measurement failed", async () => {
+test("a disk that cannot be measured still offers, and says the measurement failed", async () => {
   const r = recorder();
   await offerUsptoSync("/tmp/definitely-not-here/us.db",
     { ...r.io, ask: async (q) => { r.lines.push(`? ${q}`); return ""; } },
@@ -757,7 +757,7 @@ function withEnv(vars, fn) {
   }
 }
 
-test("#827 --check prints the pool refusal and the workspace default the CONFIG produces, not a copy", (t) => {
+test("--check prints the pool refusal and the workspace default the CONFIG produces, not a copy", (t) => {
   // `effective()` reads the repo .env as well as the environment, so a developer who has really
   // configured this checkout would take the "is set" branch and never reach the text under test.
   if (existsSync(join(REPO, ".env"))) { t.skip(`a real ${join(REPO, ".env")} is present — it would mask the unset branch`); return; }
@@ -794,7 +794,7 @@ test("#827 --check prints the pool refusal and the workspace default the CONFIG 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("#827 bin/onboard.mjs asserts no data-plane default of its own", () => {
+test("bin/onboard.mjs asserts no data-plane default of its own", () => {
   // The CLAIM, not the string. The refusal legitimately NAMES /srv/trademark-archive as the danger the
   // removed default carried, and bin/example.mjs's guard list must keep naming it too — forbidding the
   // literal would fail against the correct implementation and invite the next reader to "fix" it by
@@ -816,7 +816,7 @@ test("#827 bin/onboard.mjs asserts no data-plane default of its own", () => {
     "the derivation helper is gone — the printed text is quoting something again");
 });
 
-test("#1149 item 1: the hermetic PATH cannot resolve an ambient engine — the property, not the intent", () => {
+test("item 1: the hermetic PATH cannot resolve an ambient engine — the property, not the intent", () => {
   // The helper's PATH is hermetic so a developer's own signed-in engine cannot make this suite pass, and
   // "--check separates an ABSENCE from a MISCONFIGURATION" depends on it absolutely: it asserts what the
   // wizard says when there is NO engine on PATH. That test cannot detect its own premise being false —
@@ -847,7 +847,7 @@ test("#1149 item 1: the hermetic PATH cannot resolve an ambient engine — the p
 //
 // These arms hold the half a machine can hold offline: that the wizard and the resolver agree about
 // WHICH TWO VARIABLES a billing lane is made of. Driving a real turn is the issue's evidence, not CI's.
-test("#1149-5 every engine declares the two variables its billing lane is made of", () => {
+test("every engine declares the two variables its billing lane is made of", () => {
   for (const [id, spec] of Object.entries(ENGINE_BINARIES)) {
     assert.ok(spec.authEnv, `${id} declares no authEnv — the wizard cannot ask a question it has no variable for`);
     assert.ok(spec.apiKeyEnv, `${id} declares no apiKeyEnv`);
@@ -855,7 +855,7 @@ test("#1149-5 every engine declares the two variables its billing lane is made o
   }
 });
 
-test("#1149-5 the engine table's key name is the one auth.mjs actually refuses on — driven, not compared", async () => {
+test("the engine table's key name is the one auth.mjs actually refuses on — driven, not compared", async () => {
   // THE TRAP THIS EXISTS FOR, and it is live: openai's key is CODEX_API_KEY, while `openai-agent.mjs`
   // deliberately strips OPENAI_API_KEY for a clean subscription bill. A wizard that adopted the obvious
   // name would write a .env whose api-key mode `auth.mjs` refuses — the same defect item 5 removes,
@@ -884,7 +884,7 @@ test("#1149-5 the engine table's key name is the one auth.mjs actually refuses o
   assert.ok(checked >= 2, `only ${checked} engine(s) exercised — both adapters declare auth modes, so this arm has gone blind`);
 });
 
-test("#1149-5 the wizard's register ladder and the preflight refusal print the SAME order", () => {
+test("the wizard's register ladder and the preflight refusal print the SAME order", () => {
   // Item 11 point 5. KNOWN_REGISTER_PROVIDERS is what the run-door refusal lists, so a reader who hits
   // it is shown an order; if that disagrees with the menu they just used, one of the two is a second
   // opinion about which register to buy, and neither says which.
@@ -903,7 +903,7 @@ test("#1149-5 the wizard's register ladder and the preflight refusal print the S
 // directory, because on a devcontainer or an npm-global prefix that directory also holds `claude` and
 // this arm would find an engine on the population INSTALL.md is written for.
 
-test("#1720 --check names the MODE on a machine with no engine, and does not send the reader to probe nothing", () => {
+test("--check names the MODE on a machine with no engine, and does not send the reader to probe nothing", () => {
   const home = mkdtempSync(join(tmpdir(), "onboard-mode-"));
   const r = run(["--check"], { HOME: home });
   assert.equal(r.code, 0, r.out);
@@ -986,7 +986,7 @@ const advertised = (block) =>
 const commandsOffered = (block) =>
   advertised(block).filter((l) => /^(clearotron|npm|node)\s/.test(l));
 
-test("#1770 the wizard's closing screen leads with the PRODUCT's own start verb", () => {
+test("the wizard's closing screen leads with the PRODUCT's own start verb", () => {
   const lines = nonEmpty(advertised(closingScreen()), "say() literals in the wizard's closing screen");
   assert.ok(Object.hasOwn(VERBS, "start"),
     "the dispatcher's `start` verb was renamed or removed, so this arm asserts a command nobody can "
@@ -1000,7 +1000,7 @@ test("#1770 the wizard's closing screen leads with the PRODUCT's own start verb"
     + `${JSON.stringify(lines.slice(0, 4))}`);
 });
 
-test("#1770 the pre-#1719 advice cannot come back as the closing screen's first command", () => {
+test("the pre-#1719 advice cannot come back as the closing screen's first command", () => {
   // The plant this is written against: reverting the closing screen's FIRST advertised command — the
   // `say("    clearotron start")` under bin/onboard.mjs's  comment — to `npm run example` must red.
   //
@@ -1028,7 +1028,7 @@ test("#1770 the pre-#1719 advice cannot come back as the closing screen's first 
 // that table is what the wizard and the run-door preflight both read, and an engine described in two
 // places drifts into two answers. These arms assert the table's shape and the wizard's use of it; the
 // interactive flow itself is not driven here — it needs a TTY, and the file refuses without one.
-test("#1720 every engine in the table carries an install command, and it is one a reader can read", () => {
+test("every engine in the table carries an install command, and it is one a reader can read", () => {
   const ids = Object.keys(ENGINE_BINARIES);
   assert.ok(ids.length >= 2, "fixture precondition: this repo ships two adapters, and both are offered");
   for (const id of ids) {
@@ -1050,7 +1050,7 @@ test("#1720 every engine in the table carries an install command, and it is one 
   }
 });
 
-test("#1720 the wizard offers the install, and does NOT take the installer's exit code as proof", () => {
+test("the wizard offers the install, and does NOT take the installer's exit code as proof", () => {
   // A SOURCE-SHAPE ARM over the interactive branch, and it says so: the flow needs a TTY, so what can
   // be asserted here is that the wiring exists and that the two rules the issue is explicit about are
   // in it — the command comes from the table, and success is decided by resolution and then a turn.
@@ -1117,7 +1117,7 @@ test("--help prints every command the header documents", async () => {
 // merge queue was. That is only safe if the declaration has to be ASKED FOR and the check still fails a
 // real deployment without it. Both halves are here, because the half that matters is the second: a fix
 // that bought green by blinding the check would delete the guard was raised for.
-test("#1912 a deployment behind its upstream still FAILS — the pinned answer must be asked for", () => {
+test("a deployment behind its upstream still FAILS — the pinned answer must be asked for", () => {
   const behind = deploymentCurrency({ run: (args) => {
     const a = args.join(" ");
     if (a.startsWith("rev-parse --is-inside-work-tree")) return { status: 0, stdout: "true\n", stderr: "" };
@@ -1150,7 +1150,7 @@ test("#1912 a deployment behind its upstream still FAILS — the pinned answer m
 //
 // So: ONE fake git, three commits behind — the precise state a queued job reaches when main moves under
 // it — and TWO outcomes separated only by the declaration.
-test("#1912 the overtaken checkout stops redding, and ONLY the declaration changes the answer", () => {
+test("the overtaken checkout stops redding, and ONLY the declaration changes the answer", () => {
   // Three behind, the way `actions/checkout` leaves a workspace that queued while main moved.
   const overtaken = (args) => {
     const a = args.join(" ");
@@ -1180,7 +1180,7 @@ test("#1912 the overtaken checkout stops redding, and ONLY the declaration chang
   assert.equal(asked, 0, "the pinned branch consulted git — it is below the behind computation, not above it");
 });
 
-test("#1912 the pinned answer is SAID in the output, not applied silently", () => {
+test("the pinned answer is SAID in the output, not applied silently", () => {
   const r = run(["--check"]);
   assert.match(r.out, /pinned checkout \(CLEAROTRON_DOCTOR_ASSUME_PINNED\)/,
     "a doctor that quietly answers a question it was handed is the shape this surface exists to refuse — "
@@ -1195,7 +1195,7 @@ test("#1912 the pinned answer is SAID in the output, not applied silently", () =
 // consistent install guidance and MUCH SIMPLER prose for what each means and defaults. Same text
 // wrapping issues throughout — I can't tell if I should be reading something somewhere or not."
 
-test("2175-F17 explanatory prose wraps INSIDE its width, at every width a terminal might be", () => {
+test("explanatory prose wraps INSIDE its width, at every width a terminal might be", () => {
   const text = "When a run finishes, whoever ordered it gets a notification. This is the web address "
     + "the link in it points to. No default — it is your public hostname, and only you know it.";
   // A CLASS, NOT ONE MEMBER. The defect was that prose was broken at ONE width and handed to terminals
@@ -1212,13 +1212,13 @@ test("2175-F17 explanatory prose wraps INSIDE its width, at every width a termin
   }
 });
 
-test("2175-F17 the width is clamped, so neither a huge window nor a tiny one breaks the measure", () => {
+test("the width is clamped, so neither a huge window nor a tiny one breaks the measure", () => {
   assert.ok(proseWidth(400) <= 96, "a very wide window must not produce an unreadable measure");
   assert.ok(proseWidth(20) >= 38, "a very narrow one must degrade rather than break every word");
   assert.equal(proseWidth(undefined), proseWidth(80), "an unknown column count falls back to 80");
 });
 
-test("2175-F16 every credential the wizard asks for names a URL a reader can open", () => {
+test("every credential the wizard asks for names a URL a reader can open", () => {
   const URL_RE = /https?:\/\/[^\s)]+/;
   // THE REGISTERS, through their signup arrays. Signa is the one the product RECOMMENDS and it said
   // "the vendor's site" without naming it, which is the finding.
@@ -1241,14 +1241,14 @@ test("2175-F16 every credential the wizard asks for names a URL a reader can ope
   }
 });
 
-test("2175-F20 no prompt offers to add something 'later', because nothing chases it", () => {
+test("no prompt offers to add something 'later', because nothing chases it", () => {
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
   assert.doesNotMatch(src, /Enter to add it later/,
     "'later' reads as a deferral the product will chase; nothing does. The bracket says [Enter to skip] "
     + "and the consequence is stated where the reader is standing");
 });
 
-test("2175-F20 every prompt in the setup sequence states what Enter does", () => {
+test("every prompt in the setup sequence states what Enter does", () => {
   // THE FINDING WAS THE CLASS, NOT ANY ONE PROMPT. Four consecutive prompts, each defensible alone,
   // taught the reader that the amount of prose bears no relation to how much the answer matters — so
   // the rational move was to stop reading, which is what happened. An arm pinned to the one prompt he
@@ -1278,7 +1278,7 @@ test("2175-F20 every prompt in the setup sequence states what Enter does", () =>
   }
 });
 
-test("2175-F21 setup says it finished, and says what state it left the box in", () => {
+test("setup says it finished, and says what state it left the box in", () => {
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
   assert.match(src, /Setup finished\./,
     "the wizard handed the reader a next command and never said it had finished — a reader who has "
@@ -1296,7 +1296,7 @@ test("2175-F21 setup says it finished, and says what state it left the box in", 
   }
 });
 
-test("2175-F12 setup keeps the keys it does not manage, so start's secrets survive an install", () => {
+test("setup keeps the keys it does not manage, so start's secrets survive an install", () => {
   // THE SEQUENCE THAT BROKE IT: start writes its secrets, then install runs. The wizard composed the
   // file from its own answers and renamed over the target, so start's three values were gone; the next
   // start re-minted PORTAL_SECRET to a different value and signed every logged-in user out with no
@@ -1324,7 +1324,7 @@ test("2175-F12 setup keeps the keys it does not manage, so start's secrets survi
   assert.equal(parsed.SIGNA_API_KEY, "k", "a key setup collected is written");
 });
 
-test("2175-F12 a first install writes no carry section and needs no existing file", () => {
+test("a first install writes no carry section and needs no existing file", () => {
   const body = composeEnvBody({ CLEAROTRON_DATABASE: "free-tier" }, {});
   assert.doesNotMatch(body, /Kept from the existing file/,
     "a fresh box has nothing to carry, and a header explaining a section that is not there is noise");
@@ -1342,7 +1342,7 @@ test("2175-F12 a first install writes no carry section and needs no existing fil
 // would decide, and a second copy of that rule here could agree with itself while disagreeing with the
 // door.
 
-test("2191-F25 the shape setup used to write is genuinely blocked — the hazard is real, not assumed", () => {
+test("the shape setup used to write is genuinely blocked — the hazard is real, not assumed", () => {
   const dir = mkdtempSync(join(tmpdir(), "f25-arm-"));
   execFileSync("git", ["init", "-q", "-b", "main", dir]);
   writeFileSync(join(dir, "README.md"), "x\n");
@@ -1358,7 +1358,7 @@ test("2191-F25 the shape setup used to write is genuinely blocked — the hazard
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("2191-F25 unset is the supported mode and it passes, which is why setup no longer writes it", () => {
+test("unset is the supported mode and it passes, which is why setup no longer writes it", () => {
   assert.equal(preflightSkillsStore({}).result.outcome, "pass",
     "leaving it unset must be a pass, or removing it from the wizard trades one blocked run for another");
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// — F26. Owner ruling, restated several times in session: START BOTH.
+// — F26. Ruling, restated several times in session: START BOTH.
 //
 // The ruling already held on the systemd path — the client door is in SERVER_INSTALL_SET on the 2148
 // ruling that the door auto-starts and the per-account key is the gate — and did not hold on the
@@ -25,16 +25,16 @@ const BASE = {
   ports: resolvePorts({}),
   paths: { base: "/i", pool: "/i/pool", workspace: "/i/w", queue: "/i/q", outbox: "/i/o",
     locks: "/i/l", grants: "/i/grants.json", audit: "/i/audit", recipes: "/i/r", configStore: "/i/c" },
-  user: "op@localhost", staffDomains: "localhost", portalSecret: "s", tokenSecret: "t", opsToken: "o",
+  user: "op@localhost", portalSecret: "s", tokenSecret: "t", opsToken: "o",
 };
 
-test("2176-F26 the foreground path composes an environment for the client door at all", () => {
+test("the foreground path composes an environment for the client door at all", () => {
   const envs = childEnv(BASE);
   assert.ok(envs.client, "there was no client-door environment, so the foreground path cannot start one");
   assert.equal(envs.client.CLIENT_MCP_HTTP_PORT, String(clientDoorPort({})));
 });
 
-test("2176-F26 the door is SPAWNED on the foreground path, not merely configured for", () => {
+test("the door is SPAWNED on the foreground path, not merely configured for", () => {
   // Composing an env a spawn never uses is the shape this finding already had once: the ruling held in
   // one place and not the other, and nothing said so.
   assert.match(START_SRC, /start\("the client door", "mcp-server\/http-server-client\.mjs", envs\.client/,
@@ -45,7 +45,7 @@ test("2176-F26 the door is SPAWNED on the foreground path, not merely configured
     "a door that cannot bind must not take the portal down with it");
 });
 
-test("2176-F26 PARITY — the door's foreground environment carries what the units give it", () => {
+test("PARITY — the door's foreground environment carries what the units give it", () => {
   // The ruling is about parity, so this compares against what the door needs rather than a list typed
   // out here: the access file and the token secret reach it exactly as they reach the units, because
   // they come from the same shared block.
@@ -61,7 +61,7 @@ test("2176-F26 PARITY — the door's foreground environment carries what the uni
     `127.0.0.1:${envs.client.CLIENT_MCP_HTTP_PORT},localhost:${envs.client.CLIENT_MCP_HTTP_PORT}`);
 });
 
-test("2176-F26 the fence defaults to the units' value and an operator's OWN decision survives", () => {
+test("the fence defaults to the units' value and an operator's OWN decision survives", () => {
   // NOT A NEW EXPOSURE. "1" is what enablePlan writes into the unit env file, so both paths agree; a
   // door reachable with no key issued refuses everything, which is the protection the ruling relies on.
   assert.equal(childEnv(BASE).CLIENT_MCP_ACCOUNT_ACCESS, undefined,
@@ -72,7 +72,7 @@ test("2176-F26 the fence defaults to the units' value and an operator's OWN deci
     "an operator who turned account access off must not have it turned back on by starting the product");
 });
 
-test("2176-F26 the summary names BOTH doors, their ports, and who each is for", () => {
+test("the summary names BOTH doors, their ports, and who each is for", () => {
   // The ambiguity is what cost the leg: "MCP is running" says nothing on a box with two of them.
   assert.match(START_SRC, /Engine door.*Staff\./s, "the staff door must be named as a door, and as staff's");
   assert.match(START_SRC, /Client door/, "the client door must be named as a door");
@@ -105,7 +105,7 @@ async function freePort() {
   return port;
 }
 
-test("2176-F26 THE DOOR ACTUALLY BOOTS on the composed environment — shape is not the same as starting", async () => {
+test("THE DOOR ACTUALLY BOOTS on the composed environment — shape is not the same as starting", async () => {
   // THIS ARM EXISTS BECAUSE THE OTHERS PASSED WHILE THE DOOR DIED AT BIRTH. Every assertion above was
   // green on an environment that made the door exit 1 on its first line:
   //
@@ -162,7 +162,7 @@ test("2176-F26 THE DOOR ACTUALLY BOOTS on the composed environment — shape is 
   } finally { try { process.kill(pid); } catch { /* already gone */ } }
 });
 
-test("2176-F26 a door that CANNOT bind is reported as not running — driven, not read", async () => {
+test("a door that CANNOT bind is reported as not running — driven, not read", async () => {
   // Grogu's review point, as an arm rather than an expression taken on trust: occupy the port first,
   // then require the door to fail and the summary's NOT RUNNING branch to be the reachable one. The
   // defect this refuses is F26's own, relocated into its failure path — a dead door announced as one a
@@ -206,7 +206,7 @@ test("2176-F26 a door that CANNOT bind is reported as not running — driven, no
   }
 });
 
-test("2176-F26 the client door is in the background set, which is the parity this is measured against", () => {
+test("the client door is in the background set, which is the parity this is measured against", () => {
   // If the door ever left SERVER_INSTALL_SET, the arms above would be enforcing parity with nothing.
   assert.ok(BACKGROUND_UNITS.includes("clearotron-client-mcp.service"),
     "the door left the install set, so 'the same set as --background' no longer means what these arms assume");
@@ -222,7 +222,7 @@ test("2176-F26 the client door is in the background set, which is the parity thi
 
 const START_SRC = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
 
-test("2191-F15 the background health check covers every unit the flag installs", () => {
+test("the background health check covers every unit the flag installs", () => {
   // DERIVED, NOT LISTED. The defect was a list kept beside the set it was supposed to cover; an arm that
   // names the four units here would be the same mistake one layer out, green until a fifth is added.
   assert.ok(BACKGROUND_UNITS.length >= 3, `only ${BACKGROUND_UNITS.length} unit(s) — this arm would be free`);
@@ -239,7 +239,7 @@ test("2191-F15 the background health check covers every unit the flag installs",
   assert.match(loop, /sickUnits\.join/, "the refusal must name which units did not come up");
 });
 
-test("2191-F15 a oneshot is judged by being enabled, not by still running", () => {
+test("a oneshot is judged by being enabled, not by still running", () => {
   // The old comment justified the gap with "the oneshot worker ... judged by being enabled". That was
   // stale — clearotron-worker.service is `runner.mjs --watch`, Type=simple — but the DISTINCTION is real
   // and must survive, or adding a genuine oneshot later would report it broken for exiting.
@@ -256,7 +256,7 @@ test("2191-F15 a oneshot is judged by being enabled, not by still running", () =
   }
 });
 
-test("2191-F11 the foreground port pre-check covers ALL THREE doors, before anything binds", () => {
+test("the foreground port pre-check covers ALL THREE doors, before anything binds", () => {
   const probeLoop = START_SRC.slice(START_SRC.indexOf("for (const [what, port, portVar, doorUnit"));
   assert.ok(probeLoop.length > 400, "the probe loop was not found at all — this arm could not look, which is not a pass");
   const head = probeLoop.slice(0, 400);
@@ -284,7 +284,7 @@ test("2191-F11 the foreground port pre-check covers ALL THREE doors, before anyt
 // this made it worse: a more confident report over an unchanged restart. Measured by an operator on the
 // test box — `enable --now` left MainPID unchanged.
 
-test("2191 a refresh restarts every long-running unit in the install set", () => {
+test("a refresh restarts every long-running unit in the install set", () => {
   // DRIVEN, not source-matched: the decision is a pure function precisely so it can be, and a grep for
   // the loop would go green on one that iterates the right list and restarts nothing.
   const all = unitsToRestartOnRefresh(BACKGROUND_UNITS, () => "simple");
@@ -293,7 +293,7 @@ test("2191 a refresh restarts every long-running unit in the install set", () =>
     + "left the worker and the client door running old code");
 });
 
-test("2191 a oneshot is still excluded, which is what the old comment was right about", () => {
+test("a oneshot is still excluded, which is what the old comment was right about", () => {
   // The justification was stale, not wrong in principle: restarting a oneshot re-runs it, and it picks
   // up new files on its next activation anyway. Keeping the distinction means adding one later does not
   // silently start getting restarted.
@@ -302,7 +302,7 @@ test("2191 a oneshot is still excluded, which is what the old comment was right 
   assert.equal(withOneshot.length, BACKGROUND_UNITS.length - 1, "and nothing else is dropped with it");
 });
 
-test("2191 the restart loop uses that decision rather than a list of its own", () => {
+test("the restart loop uses that decision rather than a list of its own", () => {
   const at = START_SRC.indexOf("if (backgroundRefresh) for (const u of");
   assert.notEqual(at, -1, "anchor missing: the refresh restart loop moved — re-aim this arm");
   assert.match(START_SRC.slice(at, at + 200), /unitsToRestartOnRefresh\(BACKGROUND_UNITS/,
@@ -323,7 +323,7 @@ test("2191 the restart loop uses that decision rather than a list of its own", (
 // The condition predates the F15 change; that change extended it from two units to four and so doubled
 // what it could block. It would have shipped in the publish.
 
-test("2191 a RECOVERED unit is healthy — a lifetime restart count is history, not a fault", () => {
+test("a RECOVERED unit is healthy — a lifetime restart count is history, not a fault", () => {
   const v = unitHealthVerdict({ activeState: "active", subState: "running", nRestarts: "15" });
   assert.equal(v.ok, true,
     "active/running IS up. Requiring a zero lifetime counter fails a box that recovered, permanently, "
@@ -331,7 +331,7 @@ test("2191 a RECOVERED unit is healthy — a lifetime restart count is history, 
   assert.equal(v.restarts, 15, "the count still travels, because a unit that has restarted is worth an eye");
 });
 
-test("2191 and a unit actually looping is still caught, without the counter", () => {
+test("and a unit actually looping is still caught, without the counter", () => {
   // The counter was never what caught a real loop: a looping unit reads activating/auto-restart and
   // never active/running. Without this arm the fix above could be satisfied by a verdict that passes
   // everything.
@@ -340,7 +340,7 @@ test("2191 and a unit actually looping is still caught, without the counter", ()
     "and a unit that never started is not up either, whatever its counter says");
 });
 
-test("2191 a oneshot is judged by being enabled, and its counter is irrelevant there too", () => {
+test("a oneshot is judged by being enabled, and its counter is irrelevant there too", () => {
   assert.equal(unitHealthVerdict({ type: "oneshot", unitFileState: "enabled", nRestarts: "9" }).ok, true);
   assert.equal(unitHealthVerdict({ type: "oneshot", unitFileState: "disabled", activeState: "active", subState: "running" }).ok, false,
     "a oneshot that happens to be running is not the question — being enabled is");
@@ -352,10 +352,10 @@ test("2191 a oneshot is judged by being enabled, and its counter is irrelevant t
 // operator's TRADEMARK_MCP_TOKEN_DENYLIST. So where an operator had placed the list themselves, the
 // staff door honoured it and the client door did not — and account keys live at the client door.
 
-test("2191 both doors get the operator's denylist when one is set", () => {
+test("both doors get the operator's denylist when one is set", () => {
   const base = { ports: { portal: 1, mcp: 2, client: 3 },
     paths: { base: "/b", pool: "/b/pool", grants: "/b/g.json", configStore: "/b/c", audit: "/b/a", recipes: "/b/r" },
-    user: "a@b", staffDomains: "b", portalSecret: "s", tokenSecret: "t", opsToken: "o" };
+    user: "a@b", portalSecret: "s", tokenSecret: "t", opsToken: "o" };
   const e = childEnv({ ...base, env: { TRADEMARK_MCP_TOKEN_DENYLIST: "/srv/operator-chosen" } });
   assert.equal(e.client.TRADEMARK_MCP_TOKEN_DENYLIST, "/srv/operator-chosen",
     "the client door ignored the operator's variable entirely, so revoking by the documented route "
@@ -384,23 +384,23 @@ test("2191 both doors get the operator's denylist when one is set", () => {
 // `installedUnits()`, which filters `SERVER_UNITS` — the DETECTOR, which deliberately does not name the
 // client door because a lone door does not make a box a server. So after a stop the box reads as bare.
 
-test("228 our own door on its own port is adopted, not refused", () => {
+test("our own door on its own port is adopted, not refused", () => {
   assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: true, unitPort: 18862, port: 18862 }), "ours");
 });
 
-test("228 a STRANGER on the port is still refused — the fix must not be a silencer", () => {
+test("a STRANGER on the port is still refused — the fix must not be a silencer", () => {
   // The 2026-08-31 incident: 18811 held by another user's client face, the unit installed and
   // crash-looping, while a listening socket made it look like the door was up.
   assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: false, unitPort: 18862, port: 18862 }), "stranger");
 });
 
-test("228 our door on a DIFFERENT port is a stranger on this one", () => {
+test("our door on a DIFFERENT port is a stranger on this one", () => {
   // Reading a port as proof of your own process is the mistake the incident above taught. Our door
   // being up says nothing about whether it is up HERE.
   assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: true, unitPort: 18811, port: 18862 }), "stranger");
 });
 
-test("228 a read that FAILED refuses, which is the opposite of what connect does — deliberately", () => {
+test("a read that FAILED refuses, which is the opposite of what connect does — deliberately", () => {
   // `connect`'s portOwnerOf treats unknown as "do not decide", because its baseline was a permanent
   // refusal on every correct box. This probe's baseline is the reverse: it refuses on any held port
   // today and this change only ever relaxes that, so adoption takes positive evidence and nothing else
@@ -409,7 +409,7 @@ test("228 a read that FAILED refuses, which is the opposite of what connect does
   assert.equal(clientDoorOwner({ probeCode: "EADDRINUSE", unitActive: true, unitPort: null, port: 18862 }), "unknown");
 });
 
-test("228 a port nothing holds is free, and a refusal that is not EADDRINUSE is never adopted", () => {
+test("a port nothing holds is free, and a refusal that is not EADDRINUSE is never adopted", () => {
   assert.equal(clientDoorOwner({ probeCode: null, port: 18862 }), "free");
   // EACCES on a privileged port is not a listener to adopt, and listenErrorMessage says the right
   // thing about it already.
@@ -417,7 +417,7 @@ test("228 a port nothing holds is free, and a refusal that is not EADDRINUSE is 
   assert.equal(clientDoorOwner({ probeCode: "EADDRNOTAVAIL", unitActive: true, unitPort: 18862, port: 18862 }), "stranger");
 });
 
-test("228 the probe loop CONSULTS that decision, and only 'ours' escapes the refusal", () => {
+test("the probe loop CONSULTS that decision, and only 'ours' escapes the refusal", () => {
   // Source-coupled, and said out loud rather than dressed up: the probe lives inside the main() that
   // installs units and starts services, so the suite cannot run it. The decision was extracted to be
   // driven — the arms above do that — and this one pins the wiring, which is the half a pure function
@@ -442,7 +442,7 @@ test("228 the probe loop CONSULTS that decision, and only 'ours' escapes the ref
     "the adoption must be reached before the refusal, or it can never fire");
 });
 
-test("228 a door this run ADOPTED is restarted, or it keeps serving the tree it was born on", () => {
+test("a door this run ADOPTED is restarted, or it keeps serving the tree it was born on", () => {
   // `enable --now` is a no-op on an active unit — the 2191 finding. A door adopted rather than started
   // would run the old checkout and the old environment while the other three come up on the new one,
   // and the health check would report all four up. That is 2191's defect reintroduced through the
@@ -451,7 +451,7 @@ test("228 a door this run ADOPTED is restarted, or it keeps serving the tree it 
     "an adopted door is never restarted, so it keeps executing whatever it was started with");
 });
 
-test("228 an adopted door is reported as RUNNING, not as the failure whose output does not exist", () => {
+test("an adopted door is reported as RUNNING, not as the failure whose output does not exist", () => {
   // The banner reads `clientDoor?.child?.exitCode === null`, and an adopted door spawns no child. Left
   // alone it printed "NOT RUNNING … its output above says why" about a door that is up and serving,
   // and pointed the reader at output that was never written.

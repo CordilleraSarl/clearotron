@@ -19,7 +19,10 @@ import { writeFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
-const GRANTS = { tenants: { acme: { accounts: ["acme", "acme-eu"], users: { "lawyer@acme.example": "*" } } } };
+// The lawyer holds Run: start_run, plan_run and the what-if verbs are gated on that switch.
+// The clerk holds one company and Run: the person for whom omitting profileKey must still be refused.
+const GRANTS = { tenants: { acme: { accounts: ["acme", "acme-eu"], users: { "lawyer@acme.example": "*", "clerk@acme.example": ["acme"] } } },
+  people: { "lawyer@acme.example": { run: true }, "clerk@acme.example": { run: true } } };
 const dir = mkdtempSync(join(tmpdir(), "acct-grants-"));
 const grantsPath = join(dir, "grants.json");
 writeFileSync(grantsPath, JSON.stringify(GRANTS));
@@ -74,9 +77,14 @@ test("start_run/plan_run are bounded by the grant — including the implicit gen
   for (const tool of ["start_run", "plan_run"]) {
     assert.throws(() => authorize(scope, tool, { profileKey: "someone-else", markName: "Z", forwarder: "x" }),
       /grant .* does not include/, `${tool} crossed into another customer's account`);
-    // omitting profileKey means the neutral "generic" profile — that too must be granted explicitly,
-    // else omission is a way OUT of the grant
-    assert.throws(() => authorize(scope, tool, { markName: "Z", forwarder: "x" }),
+    // Omitting profileKey means the neutral "generic" profile: the organisation's own Generic lane. A
+    // person who holds the organisation whole orders it, filed under that organisation and capped like a
+    // company (ruling 2026-09-10); a person who holds only a company does not — so omission is
+    // still no way OUT of the grant.
+    const own = authorize(scope, tool, { markName: "Z", forwarder: "x" });
+    assert.equal(own.tenant, "acme", `${tool}: a Generic job is filed under the organisation it was ordered in`);
+    if (tool === "start_run") assert.equal(own.clientPrincipal, true, "and it carries the daily cap");
+    assert.throws(() => authorize(clientScope("clerk@acme.example"), tool, { markName: "Z", forwarder: "x" }),
       /grant .* does not include account "generic"/, `${tool}: omitting profileKey escaped the grant`);
   }
 });
@@ -91,7 +99,7 @@ test("the account tool set is the client layer + evidence + the AUDIT CHAIN + ow
   // account layer has to be argued for in a diff rather than arriving quietly — which is what this
   // comment is.
   //
-  // OWNER RULING 2026-08-27 ("I don't see why we don't open it or just give it to clients. Ignore the
+  // RULING 2026-08-27 ("I don't see why we don't open it or just give it to clients. Ignore the
   // call spend.") adds the four AUDIT-CHAIN reads: decision_timeline, get_finding, get_run, trace. The
   // reasoning is in shared/scope.mjs at ACCOUNT_ARTIFACTS; what it comes to here is that the decision
   // chain is the client's and the firm keeps model identity, billed counts and its own quality

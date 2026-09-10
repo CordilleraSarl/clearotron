@@ -183,7 +183,7 @@ const scratch = async (fn) => {
   try { return await fn(dir); } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
-test("#1847 SIGTERM does not reap these fixtures — which is why the owner must escalate", async () => {
+test("SIGTERM does not reap these fixtures — which is why the owner must escalate", async () => {
   await scratch(async () => {
     const c = immuneChild();
     // READY, NOT MERELY ALIVE. `alive` was here and it is the wrong question: it says the pid exists,
@@ -210,7 +210,7 @@ test("#1847 SIGTERM does not reap these fixtures — which is why the owner must
   });
 });
 
-test("#1847 the readiness flag is written AFTER the handler — the order IS the guarantee", () => {
+test("the readiness flag is written AFTER the handler — the order IS the guarantee", () => {
   // The flag means "this child ignores SIGTERM". It means that only because the handler is installed
   // first. Reverse the two and readiness becomes a second `alive` — true before the property it claims
   // to certify is true — and the arm above goes back to reporting load as a premise failure, silently,
@@ -228,7 +228,7 @@ test("#1847 the readiness flag is written AFTER the handler — the order IS the
     + "premise arm would be back to timing the box: " + line.trim().slice(0, 120));
 });
 
-test("#1847 a BARE-PID pidfile is reaped — the shape mock-claude-spew-immune writes", async () => {
+test("a BARE-PID pidfile is reaped — the shape mock-claude-spew-immune writes", async () => {
   await scratch(async (dir) => {
     const c = immuneChild();
     const f = join(dir, "spew.pid");
@@ -245,7 +245,7 @@ test("#1847 a BARE-PID pidfile is reaped — the shape mock-claude-spew-immune w
   });
 });
 
-test("#1847 a JSON pidfile is reaped WHOLE — the tree and its grandchild, the shape mock-hang-tree writes", async () => {
+test("a JSON pidfile is reaped WHOLE — the tree and its grandchild, the shape mock-hang-tree writes", async () => {
   await scratch(async (dir) => {
     const parent = immuneChild(), grand = immuneChild();
     const f = join(dir, "tree.json");
@@ -260,14 +260,14 @@ test("#1847 a JSON pidfile is reaped WHOLE — the tree and its grandchild, the 
   });
 });
 
-test("#1847 a pidfile the fixture never wrote is not an error — it means nothing was spawned", async () => {
+test("a pidfile the fixture never wrote is not an error — it means nothing was spawned", async () => {
   await scratch(async (dir) => {
     reapPidfile(join(dir, "never-written.pid"));
     assert.deepEqual(reapNow(), [], "an unspawned fixture must reap silently, never throw at teardown");
   });
 });
 
-test("#1847 registration happens BEFORE the fixture can start, in both owning tests", () => {
+test("registration happens BEFORE the fixture can start, in both owning tests", () => {
   // The defect was not a missing reap; it was a reap that opened too late. `engine-overflow-cap` reaped
   // in a `finally` whose try begins AFTER the awaited turn and AFTER the pidfile read, so a rejected
   // turn skipped it. `engine.anthropic`'s hang-tree arm reaped nothing at all.
@@ -293,7 +293,7 @@ test("#1847 registration happens BEFORE the fixture can start, in both owning te
   }
 });
 
-test("#1847 the ARM'S OWN fixtures are reaped, including on the path that leaked while writing this", async () => {
+test("the ARM'S OWN fixtures are reaped, including on the path that leaked while writing this", async () => {
   // WRITTEN AFTER LEAKING THREE OF THEM. Driving this module by hand stranded three SIGTERM-immune
   // processes on the shared box in twenty minutes — and the `pgrep` I checked with reported CLEAN,
   // because its pattern was mis-escaped and matched nothing. A leak check that cannot match its own
@@ -314,7 +314,7 @@ test("#1847 the ARM'S OWN fixtures are reaped, including on the path that leaked
   });
 });
 
-test("#1847 the net is installed at import, so a test that forgets to call reapNow is still covered", () => {
+test("the net is installed at import, so a test that forgets to call reapNow is still covered", () => {
   const src = readFileSync(join(HERE, "reap-fixture.mjs"), "utf8");
   assert.match(src, /process\.on\("exit", reapNow\)/,
     "the exit handler is what covers a failed assertion, a --test-timeout and an uncaught throw");
@@ -339,7 +339,7 @@ test("#1847 the net is installed at import, so a test that forgets to call reapN
 // handler — a net that exists and is wired to nothing passes it. That is a guard that must be remembered,
 // which is not a guard. The second runs this file as a CHILD PROCESS with the premise arm forced red and
 // counts what survives, which is the only arm that can see the wiring.
-test("#1900 a child is registered at birth, so an arm that throws before its cleanup strands nothing", async () => {
+test("a child is registered at birth, so an arm that throws before its cleanup strands nothing", async () => {
   const c = immuneChild();
   assert.ok(await ready(c), "the fixture never became ready — a setup failure, nothing below proves anything");
   assert.ok(alive(c.pid), "the fixture must be running, or the reap below proves nothing");
@@ -355,7 +355,7 @@ test("#1900 a child is registered at birth, so an arm that throws before its cle
   await assertGone(c.pid, "a child registered at birth was not reaped by the net");
 });
 
-test("#1900 a RED arm strands nothing — driven as a child run, because the wiring is invisible from inside", async () => {
+test("a RED arm strands nothing — driven as a child run, because the wiring is invisible from inside", async () => {
   // The child sets this too, and must not recurse: it would spawn a run that spawns a run.
   if (process.env.REAP_1847_FORCE_PREMISE_RED) return;
 

@@ -63,7 +63,7 @@ const NOT_LANE_SWITCHES = [];
 const EVER_EXCLUDED = ["CLEAROTRON_NATIVE_LANGUAGE_WEDGE_CHAIN_RETRIES", "CLEAROTRON_NATIVE_LANGUAGE_WEDGE_BACKOFF_MS"];
 const isTunable = (line) => NOT_LANE_SWITCHES.some((n) => line.includes(n));
 
-test("#552 nothing outside driver.config.mjs reads CLEAROTRON_NATIVE_LANGUAGE_* directly", (t) => {
+test("nothing outside driver.config.mjs reads CLEAROTRON_NATIVE_LANGUAGE_* directly", (t) => {
   const all = trackedCorpus(GUARD, { root: ROOT, pathspec: ["driver", "shared", "mcp-server"] });
   if (all === null) return t.skip(skipReason(GUARD));
   const files = all.filter((f) => f.endsWith(".mjs") && !f.includes("/test/") && f !== "driver/driver.config.mjs");
@@ -81,7 +81,7 @@ test("#552 nothing outside driver.config.mjs reads CLEAROTRON_NATIVE_LANGUAGE_* 
     + "from driver.config.mjs:\n  " + offenders.join("\n  "));
 });
 
-test("#552 the tunable exclusions still exist — an allowlist may not outlive what it excuses", (t) => {
+test("the tunable exclusions still exist — an allowlist may not outlive what it excuses", (t) => {
   const all = trackedCorpus(GUARD, { root: ROOT, pathspec: ["driver", "shared", "mcp-server"] });
   if (all === null) return t.skip(skipReason(GUARD));
   // TEST FILES ARE NOT THE TREE THIS EXEMPTION IS ABOUT. The corpus used to include driver/test/, so an
@@ -112,7 +112,7 @@ test("#552 the tunable exclusions still exist — an allowlist may not outlive w
     + "is a tunable and belongs in NOT_LANE_SWITCHES with a reason. It may not be neither.");
 });
 
-test("#552 the pattern catches a read and spares a message", () => {
+test("the pattern catches a read and spares a message", () => {
   assert.match('if (String(env[`CLEAROTRON_NATIVE_LANGUAGE_${lane.toUpperCase()}`] ?? "1").trim() === "0") return false;', READS);
   assert.match('const on = process.env.CLEAROTRON_NATIVE_LANGUAGE_ZH;', READS);
   // the `cause` and `why` strings NAME the switch and must not be flagged — the operator needs it
@@ -120,7 +120,7 @@ test("#552 the pattern catches a read and spares a message", () => {
   assert.doesNotMatch('why: `${s.arm} (or CLEAROTRON_NATIVE_LANGUAGE_${x}) off in this run\'s own environment` };', READS);
 });
 
-test("#552 laneArmed is fail-OPEN: unset arms, only an explicit off silences", () => {
+test("laneArmed is fail-OPEN: unset arms, only an explicit off silences", () => {
   assert.equal(laneArmed("zh", {}), true, "unset ⇒ armed. This is the doctrine, not a default nobody chose");
   assert.equal(laneArmed("zh", { CLEAROTRON_NATIVE_LANGUAGE_ZH: "" }), true, "empty is not 'off'");
   assert.equal(laneArmed("zh", { CLEAROTRON_NATIVE_LANGUAGE_ZH: "1" }), true);
@@ -128,7 +128,7 @@ test("#552 laneArmed is fail-OPEN: unset arms, only an explicit off silences", (
   assert.equal(laneArmed("zh", { CLEAROTRON_NATIVE_LANGUAGE_ZH: "off" }), false);
 });
 
-test("#552 a slice whose UNIT RECORD exists is never reported not-armed", () => {
+test("a slice whose UNIT RECORD exists is never reported not-armed", () => {
   // The contradiction, asserted without deciding which artefact is right: a lane that never armed
   // cannot have left a unit record. This is the shape of the delivered run — arm on, CLEAROTRON_NATIVE_LANGUAGE_ZH
   // unset, and a units.json carrying the degraded serp-grid with its provider cause.

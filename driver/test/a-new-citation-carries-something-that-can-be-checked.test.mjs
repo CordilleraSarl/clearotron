@@ -21,14 +21,14 @@ import { newBareCitations, addedLinesSince } from "../../scripts/citation-line-c
 
 const line = (text) => [{ file: "x.mjs", line: 1, text }];
 
-test("125 a NEW citation with a line number and no symbol is refused", () => {
+test("a NEW citation with a line number and no symbol is refused", () => {
   const hits = newBareCitations(line("// a note pointing at driver/pipeline.mjs:875 with nothing beside it"));
   assert.equal(hits.length, 1, "the one shape that cannot be checked must be the one that is refused");
   assert.equal(hits[0].cited, "driver/pipeline.mjs");
   assert.equal(hits[0].start, 875);
 });
 
-test("125 the forms that CAN be checked are allowed — a refusal of everything guards nothing", () => {
+test("the forms that CAN be checked are allowed — a refusal of everything guards nothing", () => {
   // Without this the one above is satisfied by a rule that refuses every citation, which would pass
   // it while making the ratchet unusable and getting itself removed within a week.
   for (const ok of [
@@ -39,20 +39,20 @@ test("125 the forms that CAN be checked are allowed — a refusal of everything 
   ]) assert.equal(newBareCitations(line(ok)).length, 0, `refused a checkable form: ${ok}`);
 });
 
-test("125 a lowercase word beside a number is not a symbol, and does not buy an exemption", () => {
+test("a lowercase word beside a number is not a symbol, and does not buy an exemption", () => {
   // `SYMBOLIC` requires a capital or an underscore. Ordinary prose after a citation — "875 already
   // covers it" — would otherwise read as a named symbol and exempt exactly the citations this exists for.
   assert.equal(newBareCitations(line("// see driver/pipeline.mjs:875 already covers it")).length, 1);
 });
 
-test("125 a captured V8 stack frame in a fixture is not a citation", () => {
+test("a captured V8 stack frame in a fixture is not a citation", () => {
   // Its numbers describe the tree that threw and nobody maintains them. The discriminator is the column,
   // the same one the corpus scan uses; a ratchet that refused these would make every fixture holding a
   // trace unmergeable.
   assert.equal(newBareCitations(line('  at planRegisterSweeps (file:///x/driver/pipeline.mjs:2102:19)')).length, 0);
 });
 
-test("125 the range is read from the diff's ADDED lines, with their real line numbers", () => {
+test("the range is read from the diff's ADDED lines, with their real line numbers", () => {
   const diff = [
     "+++ b/a.mjs",
     "@@ -0,0 +12,2 @@",
@@ -67,7 +67,7 @@ test("125 the range is read from the diff's ADDED lines, with their real line nu
   assert.equal(newBareCitations(r.lines).length, 1);
 });
 
-test("125 an added line beginning with ++ is judged, and the lines after it keep their numbers", () => {
+test("an added line beginning with ++ is judged, and the lines after it keep their numbers", () => {
   // `git diff` glues its one "+" onto the line's own text, so an added line starting with "++" is
   // indistinguishable from a file header BY PREFIX. It is not indistinguishable in full: the header
   // carries a path, or is the bare deletion string, both matched exactly here. Dropping such a line
@@ -104,7 +104,7 @@ test("125 an added line beginning with ++ is judged, and the lines after it keep
   assert.equal(newBareCitations(r.lines).length, 1, "the citation on the ++ line is judged, not skipped");
 });
 
-test("125 a range that cannot be read is reported as unread, never as an empty range", () => {
+test("a range that cannot be read is reported as unread, never as an empty range", () => {
   // The two are the same value — no lines — and only one of them is a clean answer. Reported as an error
   // the caller must handle, so the CLI can exit 2 rather than announcing a range it never read as clean.
   const r = addedLinesSince("nope", () => { throw new Error("fatal: bad revision 'nope'"); });

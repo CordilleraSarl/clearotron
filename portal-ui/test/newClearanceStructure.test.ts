@@ -28,7 +28,7 @@ const code = (s: string) => s.replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ').replace(/\/\
   .split('\n').map((l) => l.replace(/(^|[^:])\/\/.*$/, '$1')).join('\n')
 const flat = (s: string) => s.replace(/\s+/g, ' ')
 
-test('2144 the selector carries no depth icons, and the tick/cross list still answers in or out', () => {
+test('the selector carries no depth icons, and the tick/cross list still answers in or out', () => {
   const src = code(SRC)
   // ── THE DELETION IS THE REQUIREMENT (owner, 2026-09-03) ──────────────────────────────────────────
   // These four assertions ran the other way until this issue: they REQUIRED the little bars beside each
@@ -72,7 +72,7 @@ test('2144 the selector carries no depth icons, and the tick/cross list still an
   assert.match(CSS, /\.carries-out \.carries-mark/, 'the two states are indistinguishable in the stylesheet')
 })
 
-test('1937 §B the context field is out of the collapsible, above it, and shows an example', () => {
+test('§B the context field is out of the collapsible, above it, and shows an example', () => {
   const src = code(SRC)
   const goods = src.indexOf('Goods or services description (optional)')
   const context = src.indexOf('Any context that might be relevant (optional).')
@@ -106,7 +106,7 @@ test('1937 §B the context field is out of the collapsible, above it, and shows 
     'the collapsible holds something other than the reference and the date its summary names')
 })
 
-test('1937 §B the comparison table takes the screen measure, without widening the form', () => {
+test('§B the comparison table takes the screen measure, without widening the form', () => {
   const src = code(SRC)
   // ── WHAT THIS ARM CAN AND CANNOT KNOW ─────────────────────────────────
   // It used to open by matching the exact markup of the opt-out, and it passed for the whole time that

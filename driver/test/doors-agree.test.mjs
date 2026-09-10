@@ -181,7 +181,12 @@ const stampFor = (req) => ({
 // STAFF acting for a named account. `generic` carries no default territories and no default product, so
 // a case that names it measures the REQUEST alone; `aurora` (seven default territories) and `zephyr`
 // (a default product and a one-name budget) are what reach the account-default arm.
-const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr", "generic"], users: { "cli@celta.example": ["aurora"] } } } };
+// The portal's requester holds Run (plan and run are gated on it) and access to everything, because a
+// case that names no account orders Generic, and ordering Generic stays with a person who sees everything.
+const GRANTS = {
+  tenants: { celta: { accounts: ["aurora", "zephyr", "generic"], users: { "cli@celta.example": ["aurora"] } } },
+  people: { "staff@example-firm.com": { run: true, manage: true, everything: true } },
+};
 const PRINCIPAL = { email: "staff@example-firm.com" };
 const accountOf = (req) => req.profileKey ?? "generic";
 
@@ -197,7 +202,6 @@ async function portalDoor(req) {
   const svc = makePortalService({
     secret: "s".repeat(32),
     grants: GRANTS,
-    staffDomains: ["example-firm.com"],
     trigger: async (job) => { sent = job; return { ok: true, id: job.id }; },
     audit: () => {},
   });
@@ -863,6 +867,8 @@ const PROBE = Object.freeze({
   forwarderDomain: "example.com", provider: "probe-provider", ref: "PROBE-REF", classes: [9],
   product: "prelim-search", recipeKey: "probe-recipe", deliveryRoute: "email", parentRunId: "probe-parent",
   customer: "Probe Customer", profileKey: "generic", projectKey: "probe-project",
+  // which organisation's Generic — the profile above is `generic`, so the field means something here
+  tenant: "probe-org",
   jurisdictions: ["US"], platforms: ["probe-platform"], goods: "probe goods",
   upfrontInstructions: "probe instructions", brief: "probe brief", rawRequest: "probe raw",
   deliverableSpec: "probe spec", commercialFlexibility: "probe flex", priorUse: "probe use",
@@ -881,7 +887,7 @@ const PROBE = Object.freeze({
   enqueuedBy: { __doorStamped: true }, enqueuedVia: { __doorStamped: true },
 });
 
-test("2049: every field start_run DECLARES it carries is a field buildJob actually READS", () => {
+test("every field start_run DECLARES it carries is a field buildJob actually READS", () => {
   const carried = [...START_RUN_JOB_FIELDS.carries].sort();
   const unprobed = carried.filter((f) => !(f in PROBE));
   assert.deepEqual(unprobed, [],
@@ -905,7 +911,7 @@ test("2049: every field start_run DECLARES it carries is a field buildJob actual
     + `advertises a field it silently cannot deliver — which is exactly what demoRun did.`);
 });
 
-test("2049: demoRun reaches the job on `true` alone — absent stays absent, truthy stays absent", () => {
+test("demoRun reaches the job on `true` alone — absent stays absent, truthy stays absent", () => {
   const base = { markName: "PROBEMARK", forwarder: "probe-forwarder" };
   const build = (extra) => buildJob({ ...base, ...extra }, { scope: { kind: "ops", sub: "probe" } });
 
@@ -949,7 +955,7 @@ test("DECLARED_JOB_FIELDS covers the job shape the schema documents and the MCP 
 
 // ── 224 · THE QUEUE THIS FILE WRITES INTO IS ITS OWN ────────────────────────────────────────────────
 
-test("224 the fixture queue is private to this file, not the run's shared one", () => {
+test("the fixture queue is private to this file, not the run's shared one", () => {
   // The failure this pins is a RED CAUSED BY LOAD wearing a product failure's clothes: a job file
   // missing at a door, because another file's cleanup removed it between this file's write and its
   // read. The path was the only tell.

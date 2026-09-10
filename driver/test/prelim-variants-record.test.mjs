@@ -278,7 +278,7 @@ test("conversion 3 — the prose reader and the model reader agree about an incu
 // cover the designation half: what the transport accepts, and that the artifact keeps "no floor" and
 // "a floor" apart. The breach arithmetic is in envelope.test.mjs.
 
-test("#1273: the floor is designated as AXES, closed against the shipped enum", () => {
+test("the floor is designated as AXES, closed against the shipped enum", () => {
   assert.deepEqual(accepted({ search_floor: ["primary-sweep", "incumbent-class"] }).model.search_floor,
     ["primary-sweep", "incumbent-class"]);
   // Normalised and deduped by the parser, so a downstream join never has to.
@@ -292,7 +292,7 @@ test("#1273: the floor is designated as AXES, closed against the shipped enum", 
     `${axis} is a real register axis and the designation refused it`);
 });
 
-test("#1273: OMITTING the field is a real answer, and it is the default", () => {
+test("OMITTING the field is a real answer, and it is the default", () => {
   // The ordinary case. A floor that arrived by default would hold every run open for nothing, so absence
   // has to mean absence here rather than "unset, treat as all".
   assert.deepEqual(accepted().model.search_floor, [], "an omitted floor did not read as none");
@@ -302,7 +302,7 @@ test("#1273: OMITTING the field is a real answer, and it is the default", () => 
   assert.match(bad.reason, /^variantmodel_search_floor_invalid/);
 });
 
-test("#1273: the two states are DISTINGUISHABLE in the delivered artifact", () => {
+test("the two states are DISTINGUISHABLE in the delivered artifact", () => {
   // That lesson applied before it can bite: two different states must not render identically. A reader
   // auditing the run has to be able to see that no floor was designated, rather than infer it from the
   // absence of something they would have to know to look for.

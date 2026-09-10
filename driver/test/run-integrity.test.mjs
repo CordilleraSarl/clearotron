@@ -40,7 +40,7 @@ test.after?.(() => { for (const d of dirs) { try { rmSync(d, { recursive: true, 
 
 // ── property 1: the loud case ────────────────────────────────────────────────────────────────────────
 
-test("#954: a frozen record rewritten while the seat ran is CAUGHT, and the row names it", () => {
+test("a frozen record rewritten while the seat ran is CAUGHT, and the row names it", () => {
   const dir = run();
   put(dir, "register-plan.json", '{"plan_version":7,"entries":[]}');
   put(dir, "plan-execution.json", '{"missing":[]}');
@@ -57,7 +57,7 @@ test("#954: a frozen record rewritten while the seat ran is CAUGHT, and the row 
   assert.equal(drift.armed, false, "LOG-ONLY: a would-fault verdict is not a fault that happened");
 });
 
-test("#954: a DELETED frozen record is caught too — erasure is not a quiet path", () => {
+test("a DELETED frozen record is caught too — erasure is not a quiet path", () => {
   const dir = run();
   put(dir, "register-plan.json", "{}");
   const before = frozenSnapshot(dir);
@@ -69,7 +69,7 @@ test("#954: a DELETED frozen record is caught too — erasure is not a quiet pat
 
 // ── property 2: the excluded journals — the false-positive machine this must not become ─────────────
 
-test("#954: appends to run.jsonl / <stage>.jsonl / reading-log.jsonl do NOT fault", () => {
+test("appends to run.jsonl / <stage>.jsonl / reading-log.jsonl do NOT fault", () => {
   // These are written by the driver and the band server WHILE a turn is in flight, because stages run
   // concurrently. A check that fires on them fires on every turn and gets switched off in a week.
   const dir = run();
@@ -87,7 +87,7 @@ test("#954: appends to run.jsonl / <stage>.jsonl / reading-log.jsonl do NOT faul
     "three journals grew and the check said nothing — that is the requirement, not a leniency");
 });
 
-test("#1365: the .jsonl PATTERN is the deciding mechanism, and this arm reds if it is removed", () => {
+test("the .jsonl PATTERN is the deciding mechanism, and this arm reds if it is removed", () => {
   // THIS ARM REPLACES ONE THAT COULD NOT FAIL. It read `for (const n of FROZEN_JOURNALS) assert.equal(
   // isFrozenEntry(n), false)` — asserting the LIST's effect while measuring the PATTERN's. Deleting the
   // list changed nothing and the assertion still passed, so the list was free to rot to empty or to
@@ -104,7 +104,7 @@ test("#1365: the .jsonl PATTERN is the deciding mechanism, and this arm reds if 
   assert.equal(isFrozenEntry("plan-execution.json.tmp"), false, "a half-written temp is not the record");
 });
 
-test("#1365: the judged-by material is still IN — the pattern excluded journals, not the record", () => {
+test("the judged-by material is still IN — the pattern excluded journals, not the record", () => {
   // The other direction, and the one that matters if somebody ever widens the pattern. An integrity
   // check that excludes everything passes every test about what it excludes.
   for (const n of ["register-plan.json", "grid-spec.half-m.json", "band-shape.json",
@@ -112,7 +112,7 @@ test("#1365: the judged-by material is still IN — the pattern excluded journal
     assert.equal(isFrozenEntry(n), true, n);
 });
 
-test("#1365: the doc no longer promises the safe direction while shipping the unsafe one", () => {
+test("the doc no longer promises the safe direction while shipping the unsafe one", () => {
   // The defect was half prose. The docblock said journals were excluded "BY NAME rather than by pattern,
   // so a new .jsonl sink is included by default and has to be excluded deliberately" — the reverse of
   // what shipped, on the module that is the tamper check for the whole of _driver/. A reader who
@@ -125,7 +125,7 @@ test("#1365: the doc no longer promises the safe direction while shipping the un
   assert.match(src, /appended|APPENDED/, "the doc must still say WHY journals are out, or the pattern looks arbitrary");
 });
 
-test("#1365: the blind spot's SCALE is measured, so it cannot grow unnoticed as a number nobody has", (ctx) => {
+test("the blind spot's SCALE is measured, so it cannot grow unnoticed as a number nobody has", (ctx) => {
   // Option 1 of the issue was taken: the pattern is right, the doc was stale, and new journals are
   // unwatched BY DEFAULT. That is a defensible design and it is now written down — but "unwatched by
   // default" with no number attached is how a two-file exception becomes a twenty-file one.
@@ -164,7 +164,7 @@ test("#1365: the blind spot's SCALE is measured, so it cannot grow unnoticed as 
 
 // ── property 3: the quiet turn stays quiet ──────────────────────────────────────────────────────────
 
-test("#954: a turn that touches nothing produces NO ROW", () => {
+test("a turn that touches nothing produces NO ROW", () => {
   const dir = run();
   put(dir, "register-plan.json", "{}");
   const before = frozenSnapshot(dir);
@@ -172,7 +172,7 @@ test("#954: a turn that touches nothing produces NO ROW", () => {
     "a row per turn saying nothing happened would bury the rows that matter");
 });
 
-test("#954: a concurrent stage's NEW dispatch record is reported but reads QUIET, not would-fault", () => {
+test("a concurrent stage's NEW dispatch record is reported but reads QUIET, not would-fault", () => {
   // Three common-law halves run at once; each writes its own dispatch record before its turn, which lands
   // inside a sibling's window. Additions are counted rather than filtered — a seat forging a new _driver/
   // file lands here too — but they do not read as a fault, and which of the two this field actually
@@ -190,7 +190,7 @@ test("#954: a concurrent stage's NEW dispatch record is reported but reads QUIET
 
 // ── the check must never be able to fail a run by failing itself ────────────────────────────────────
 
-test("#954: a missing run dir, a missing _driver, and a null runDir all degrade silently", () => {
+test("a missing run dir, a missing _driver, and a null runDir all degrade silently", () => {
   assert.equal(frozenSnapshot(null).size, 0);
   assert.equal(frozenSnapshot("/nonexistent/path/nowhere").size, 0);
   const dir = mkdtempSync(join(tmpdir(), "run-integrity-bare-"));
@@ -199,7 +199,7 @@ test("#954: a missing run dir, a missing _driver, and a null runDir all degrade 
   assert.equal(describeDrift("intake", frozenSnapshot(dir), frozenSnapshot(dir)), null);
 });
 
-test("#954: frozenDiff is pure and accepts plain objects as well as Maps", () => {
+test("frozenDiff is pure and accepts plain objects as well as Maps", () => {
   const d = frozenDiff({ a: "1", b: "2", c: "3" }, { a: "1", b: "CHANGED", d: "4" });
   assert.deepEqual(d, { changed: ["b"], deleted: ["c"], added: ["d"] });
 });
@@ -214,7 +214,7 @@ test("#954: frozenDiff is pure and accepts plain objects as well as Maps", () =>
 // gets wrong is a fact about the shapes, not about the classification, and the classification is what
 // these assert.
 
-test("#1266 the delivered run's shape produces ZERO faults — the by-design mutators are allowed", () => {
+test("the delivered run's shape produces ZERO faults — the by-design mutators are allowed", () => {
   const dir = run();
   // The frozen set as a stage's turn opens: the witness, the two form sidecars, and a real record.
   put(dir, WITNESS_FILE, '{"reads":["doctrine-a"]}');
@@ -239,7 +239,7 @@ test("#1266 the delivered run's shape produces ZERO faults — the by-design mut
     [WITNESS_FILE, "placement-form.form.json", "register-coverage-form.form.json"].sort());
 });
 
-test("#1266 report-card:2's eleven sibling dispatches stop being additions", () => {
+test("report-card:2's eleven sibling dispatches stop being additions", () => {
   const dir = run();
   put(dir, "register-findings.json", "{}");
   const before = frozenSnapshot(dir);
@@ -253,7 +253,7 @@ test("#1266 report-card:2's eleven sibling dispatches stop being additions", () 
     + "then eleven-of-eleven explained noise, and cannot");
 });
 
-test("#1266 a genuine violation still faults LOUDLY, and names the file", () => {
+test("a genuine violation still faults LOUDLY, and names the file", () => {
   // Acceptance 3's other half. The allowlist must not have widened into "anything that moved is fine".
   const dir = run();
   put(dir, WITNESS_FILE, "{}");
@@ -267,7 +267,7 @@ test("#1266 a genuine violation still faults LOUDLY, and names the file", () => 
   assert.equal(drift.byDesignCount, 1, "…while the allowed change is still reported beside it");
 });
 
-test("#1266 a seat forging a NON-dispatch file during a sibling's turn is still an addition", () => {
+test("a seat forging a NON-dispatch file during a sibling's turn is still an addition", () => {
   const dir = run();
   put(dir, "register-findings.json", "{}");
   const before = frozenSnapshot(dir);
@@ -278,7 +278,7 @@ test("#1266 a seat forging a NON-dispatch file during a sibling's turn is still 
   assert.equal(drift.siblingAddCount, 1);
 });
 
-test("#1266 a dispatch record from ANOTHER stage block is not a sibling", () => {
+test("a dispatch record from ANOTHER stage block is not a sibling", () => {
   assert.equal(isSiblingDispatch(dispatchFileName("common-law-half:a", 1), "report-card:2"), false);
   assert.equal(isSiblingDispatch(dispatchFileName("report-card:9", 1), "report-card:2"), true);
   // An unnumbered stage is its own block and still matches its own dispatches.
@@ -287,7 +287,7 @@ test("#1266 a dispatch record from ANOTHER stage block is not a sibling", () => 
   assert.equal(stageBlock("synthesis"), "synthesis");
 });
 
-test("#1266 a DELETION is never allowlisted — every entry is a file its writer rewrites, not removes", () => {
+test("a DELETION is never allowlisted — every entry is a file its writer rewrites, not removes", () => {
   const dir = run();
   put(dir, WITNESS_FILE, "{}");
   const before = frozenSnapshot(dir);
@@ -297,7 +297,7 @@ test("#1266 a DELETION is never allowlisted — every entry is a file its writer
   assert.deepEqual(drift.deleted, [WITNESS_FILE]);
 });
 
-test("#1266 every allowlist entry carries a REASON, and the names come from their writers", () => {
+test("every allowlist entry carries a REASON, and the names come from their writers", () => {
   // Acceptance 1: never a bare path list. A list of allowed paths is indistinguishable from a list of
   // paths somebody got tired of seeing, and the next reader cannot tell which entries are load-bearing.
   assert.ok(BY_DESIGN_MUTATORS.length > 0);
@@ -312,7 +312,7 @@ test("#1266 every allowlist entry carries a REASON, and the names come from thei
   assert.equal(byDesignMutator("run.jsonl"), null, "a journal is excluded by the frozen set, not allowlisted");
 });
 
-test("#1266 the check is STILL DISARMED — arming is its own explicit act", () => {
+test("the check is STILL DISARMED — arming is its own explicit act", () => {
   // Acceptance 4. These three fixes make arming *possible*; they are not arming. The evidence for that
   // decision is a replay against a real delivered run, which is not this lane's to run.
   const dir = run();

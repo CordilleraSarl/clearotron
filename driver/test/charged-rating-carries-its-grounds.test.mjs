@@ -80,18 +80,18 @@ const merged = (rows) => (P) => {
 
 // ── the wiring — the assertion this file exists for ──────────────────────────────────────────────────
 
-test("#919 THE CHECK RUNS: a describing note on a DECLINED row reaches the artifact as `description`", async () => {
+test("THE CHECK RUNS: a describing note on a DECLINED row reaches the artifact as `description`", async () => {
   const a = await audit(merged([row("Q-ONE", DECLINED_RULING, DESCRIBES)]), "ct-919-wired-");
   assert.deepEqual(a.chargedNotes, { declined: 1, grounds: 0, description: 1, unclear: 0 },
     "the grounds grammar is not being invoked by the audit — the module is correct and unreachable");
 });
 
-test("#919 a note that STATES what could not be established reads as grounds", async () => {
+test("a note that STATES what could not be established reads as grounds", async () => {
   const a = await audit(merged([row("Q-ONE", DECLINED_RULING, STATES_GROUNDS)]), "ct-919-grounds-");
   assert.deepEqual(a.chargedNotes, { declined: 1, grounds: 1, description: 0, unclear: 0 });
 });
 
-test("#919 the corpus's real notes, carried on DECLINED rows: zero grounds", async () => {
+test("the corpus's real notes, carried on DECLINED rows: zero grounds", async () => {
   // What e2e measured by reading every note in three runs. If this ever comes out non-zero on these
   // inputs the classifier moved, not the seat — and the premise needs re-reading before anyone
   // celebrates.
@@ -111,7 +111,7 @@ test("#919 the corpus's real notes, carried on DECLINED rows: zero grounds", asy
 
 // ── scope: only charged rows, only once each ─────────────────────────────────────────────────────────
 
-test("#919 a benign row is not classified — the instruction is about declined ratings", async () => {
+test("a benign row is not classified — the instruction is about declined ratings", async () => {
   const a = await audit(merged([row("Q-ONE", "benign", "Dictionary sense, nothing adverse"),
     row("Q-TWO", "off-topic", "A different industry entirely")]), "ct-919-benign-");
   assert.deepEqual(a.chargedNotes, { declined: 0, grounds: 0, description: 0, unclear: 0 });
@@ -119,7 +119,7 @@ test("#919 a benign row is not classified — the instruction is about declined 
 
 // ── THE SPLIT: `loaded` and the declination were one token, and the number graded both ───────────────
 
-test("#919 A CONFIDENT `loaded` ROW IS NOT CLASSIFIED — its note answers a different contract", async () => {
+test("A CONFIDENT `loaded` ROW IS NOT CLASSIFIED — its note answers a different contract", async () => {
   // THE DEFECT, DIRECTLY. `classifyGroundsNote` asks "does this note say what could not be established".
   // A confident charged ruling's note is supposed to say what the material IS — so every compliant one
   // scored `description`, and the count that was meant to measure declination notes was measuring the
@@ -132,14 +132,14 @@ test("#919 A CONFIDENT `loaded` ROW IS NOT CLASSIFIED — its note answers a dif
     "a confident charged ruling is still being graded against the declination note contract");
 });
 
-test("#919 the two live side by side and only the declination is counted", async () => {
+test("the two live side by side and only the declination is counted", async () => {
   const a = await audit(merged([row("Q-ONE", "loaded", DESCRIBES),
     row("Q-TWO", DECLINED_RULING, STATES_GROUNDS)]), "ct-919-both-");
   assert.deepEqual(a.chargedNotes, { declined: 1, grounds: 1, description: 0, unclear: 0 },
     "the mixed population is what made the old number unreadable");
 });
 
-test("#919 the declination ruling is a MEMBER of the closed set, so a seat can actually record it", async () => {
+test("the declination ruling is a MEMBER of the closed set, so a seat can actually record it", async () => {
   // A code-side population no dictated vocabulary teaches is a population that stays empty forever.
   // `isRuled` accepts only RULINGS members, so this is what stands between the split and a dead arm.
   const { RULINGS } = await import("../connotation-search.mjs");
@@ -147,7 +147,7 @@ test("#919 the declination ruling is a MEMBER of the closed set, so a seat can a
     `the recorder filters on ${DECLINED_RULING}, which the validator would refuse on every row`);
 });
 
-test("#919 a run with no charged rating says so, rather than saying nothing", async () => {
+test("a run with no charged rating says so, rather than saying nothing", async () => {
   const a = await audit(merged([row("Q-ONE", "benign", "nothing adverse")]), "ct-919-zero-");
   assert.ok(Object.hasOwn(a, "chargedNotes"),
     "omitting the key makes 'no declined rating this run' unreadable from 'nobody looked' — #919's own history");
@@ -157,7 +157,7 @@ test("#919 a run with no charged rating says so, rather than saying nothing", as
   assert.equal(a.chargedNotes.declined, 0);
 });
 
-test("#919 THE SAME ROW IN TWO FORMS IS ONE ROW", async () => {
+test("THE SAME ROW IN TWO FORMS IS ONE ROW", async () => {
   // Every meaning row appears in the merged form AND in half-m's. e2e had to dedupe by (run, row_id) to
   // measure the corpus at all — "a raw count double-reports" — and an audit that double-counts would
   // report two charged rulings for one, which is the shape one field over.
@@ -174,7 +174,7 @@ test("#919 THE SAME ROW IN TWO FORMS IS ONE ROW", async () => {
     "one row carried by three forms was counted once per form");
 });
 
-test("#919 two charged rows that name no id are two rows, not one", async () => {
+test("two charged rows that name no id are two rows, not one", async () => {
   // Deduping on a blank key would collapse them into one bucket and under-report the population. Both
   // are skipped instead — an unnameable row cannot be deduped against anything, and guessing is worse
   // than the gap it leaves.
@@ -185,7 +185,7 @@ test("#919 two charged rows that name no id are two rows, not one", async () => 
 
 // ── it observes; it must not refuse ──────────────────────────────────────────────────────────────────
 
-test("#919 a describing note does NOT become a defect, a refusal, or an unruled row", async () => {
+test("a describing note does NOT become a defect, a refusal, or an unruled row", async () => {
   // The sequencing decision, pinned. The `grounds` arm has no real example behind it yet, so enforcing
   // on it would refuse the first seat that complies and park the row forever. Recording it makes
   // the next real round the evidence, at no risk to the run that produces it.

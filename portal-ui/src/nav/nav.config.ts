@@ -6,10 +6,19 @@
 // land as entries in this array plus screens, with no edit to the sidebar, the drawer, the breadcrumb,
 // the active-state logic or the mobile layout.
 //
-// A sidebar written as JSX with `{role === 'staff' && <NavItem …/>}` cannot do that: every new surface
-// touches the shell, and role logic ends up smeared across markup. Here, role gating is one field.
+// A sidebar written as JSX with `{permissions.manage && <NavItem …/>}` cannot do that: every new
+// surface touches the shell, and the gate ends up smeared across markup. Here, gating is one field.
 
-import type { Role } from '../contract/api.ts'
+import type { Permissions } from '../contract/api.ts'
+
+/**
+ * The narrowest shape every function here takes: what the reader may DO.
+ *
+ * It replaces a `Role` argument, and the difference is not cosmetic. A role was one word standing for a
+ * bundle of unrelated allowances, so a screen gated on it inherited every other thing that word implied;
+ * a permission is the single allowance the entry actually needs, named.
+ */
+export type Viewer = { readonly permissions: Permissions }
 
 /**
  * Screen ids, and why the dots are where they are.
@@ -35,14 +44,17 @@ export type ScreenId =
   | 'result'
   | 'preferences'
   | 'about'
+  // People — the top group, beside Home. It is not about one company, so it sits above the switcher.
+  | 'people'
+  // …and the form it opens. A dot-child, so People stays lit while the form is open.
+  | 'people.add'
   // company screens — no `brand` parent exists, on purpose (see above)
   | 'brand.profile'
   | 'brand.projects'
   | 'brand.searches'
   | 'brand.new'
-  // staff administration — dot-scoped under a real parent that SHOULD highlight for them
+  // administration — dot-scoped under a real parent that SHOULD highlight for them
   | 'admin'
-  | 'admin.access'
   | 'admin.config'
 
 export type NavEntry = {
@@ -52,17 +64,23 @@ export type NavEntry = {
   readonly path: string
   /** Lucide icon name. Resolved by the shell — this file stays free of imports it does not need. */
   readonly icon: string
-  /** Omitted ⇒ visible to everyone. Present ⇒ only these roles see it, and only these roles route to it. */
-  readonly roles?: readonly Role[]
+  /**
+   * Omitted ⇒ visible to everyone who can sign in, which is what ACCESS already means. Present ⇒ only a
+   * person holding that permission sees the entry, and only they route to it.
+   *
+   * One permission, not a list. Nothing here needs both, and a list would invite an entry that reads
+   * "either of these will do" — which is a rank wearing a permission's clothes.
+   */
+  readonly needs?: keyof Permissions
   /** Sub-entries revealed when the parent is active. */
   readonly children?: readonly NavEntry[]
   /**
- * A heading above a group of children — the staff-only divider.
+ * A heading above a group of children.
  *
  * It read as the operator's own name until. NAV is static module data and the brand seam is a
  * runtime value off /portal/api/me, so the choice was to thread runtime state into a constant or to
- * drop the name. Dropped: the divider sits above staff-only screens and is read by staff, so the
- * operator's name on it was decoration, and decoration is a poor reason to make static data dynamic.
+ * drop the name. Dropped: the divider sits above screens only a manager reaches, so the operator's name
+ * on it was decoration, and decoration is a poor reason to make static data dynamic.
  */
   readonly groupLabel?: string
   /** Routable, but not listed in the sidebar. For screens reached from a row or a link. */
@@ -106,11 +124,23 @@ export const NAV: readonly NavEntry[] = [
   // The engine being model-agnostic and reachable over MCP is a selling point, not a settings detail —
   // and the connector is issued per identity, not per company, so it belongs above the line.
   { id: 'ai', label: 'Use your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
+  // PEOPLE, above the line and in the rail rather than in the avatar menu. It is not about one company
+  // — it is about who reaches this installation at all — so the switcher does not govern it and it sits
+  // beside Home. It was `admin.access`, a hidden child of a staff-gated parent reached from the avatar
+  // menu; both halves of that were the old model talking. `needs: 'manage'` is the whole gate, and the
+  // page itself lists only people whose access falls inside the viewer's own.
+  { id: 'people', label: 'People', path: '/portal/people', icon: 'users', needs: 'manage', scope: 'account' },
+  // Give someone access — reached from `+ Add a person` on People and from nowhere else, hence `hidden`.
+  // The same permission as the page that opens it.
+  { id: 'people.add', label: 'Give someone access', path: '/portal/people/add', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
 
   // ── below the switcher: one company at a time ─────────────────────────────────────────────────
   // New clearance leads the group because it is the one ACTION here, and it is company-specific by
   // nature: a run is started for exactly one company, under that company's framework and defaults.
-  { id: 'new', label: 'New clearance', path: '/portal/new', icon: 'plus-circle', scope: 'owner' },
+  // `needs: 'run'` — and the entry is ABSENT for a person without it, never present and refusing. A
+  // control that only ever says no is worse than no control; someone who cannot start a clearance still
+  // reaches every report for every company they can see, which is what access already means.
+  { id: 'new', label: 'New clearance', path: '/portal/new', icon: 'plus-circle', needs: 'run', scope: 'owner' },
   // CLEARANCES MOVED DOWN HERE, and it is a correction rather than a preference: the screen has always
   // filtered its rows by the switcher's value while sitting in the group whose whole definition is that
   // the switcher does not reach it. It obeyed a control the layout said did not apply to it, and nothing
@@ -142,25 +172,27 @@ export const NAV: readonly NavEntry[] = [
   // page for making a different one is the conflation this whole family exists to remove. Scope-less
   // reads as 'account', which is right: the page belongs to the installation, not to a company.
   //
-  // `roles` rather than a check in the markup, per this file's opening rule. It is the same set as the
-  // control that opens it — the people who may manage — and the access model converts this FIELD along
-  // with every other role test, not this entry.
-  { id: 'brand.new', label: 'New company', path: '/portal/brand/new', icon: 'plus-circle', roles: ['staff'], hidden: true },
+  // `needs` rather than a check in the markup, per this file's opening rule. It is the same permission
+  // as the control that opens it — the people who may manage.
+  { id: 'brand.new', label: 'New company', path: '/portal/brand/new', icon: 'plus-circle', needs: 'manage', hidden: true },
 
-  // Staff administration, now reached from the AVATAR MENU rather than the sidebar — it is rare, it is
-  // not part of the work lane, and it belongs to the person rather than to either scope. `hidden`, not
-  // deleted: routing is DERIVED from this array, so removing the entries would not tidy the sidebar, it
-  // would turn the avatar menu's links into dead ones. The staff role gate stays exactly as it was.
+  // Administration, reached from the AVATAR MENU rather than the sidebar — it is rare, it is not part of
+  // the work lane, and it belongs to the person rather than to either scope. `hidden`, not deleted:
+  // routing is DERIVED from this array, so removing the entries would not tidy the sidebar, it would
+  // turn the avatar menu's links into dead ones.
+  //
+  // People LEFT this group. It is the one screen here a manager of a single organisation uses in the
+  // ordinary course, and it is now a rail entry above the line; what remains is the installation's own
+  // settings, which is genuinely rare and genuinely global.
   {
     id: 'admin',
     label: 'Admin settings',
     path: '/portal/admin',
     icon: 'settings',
-    roles: ['staff'],
+    needs: 'manage',
     hidden: true,
     children: [
-      { id: 'admin.access', label: 'People & access', path: '/portal/admin/access', icon: 'users', roles: ['staff'], groupLabel: 'Staff' },
-      { id: 'admin.config', label: 'Global config', path: '/portal/admin/config', icon: 'server', roles: ['staff'] },
+      { id: 'admin.config', label: 'Global config', path: '/portal/admin/config', icon: 'server', needs: 'manage' },
     ],
   },
 
@@ -171,10 +203,10 @@ export const NAV: readonly NavEntry[] = [
   { id: 'preferences', label: 'Your preferences', path: '/portal/preferences', icon: 'sliders', hidden: true },
 ]
 
-const visible = (e: NavEntry, role: Role): boolean => !e.roles || e.roles.includes(role)
+const visible = (e: NavEntry, who: Viewer): boolean => !e.needs || who.permissions[e.needs]
 
 /**
- * The nav tree as one role sees it. Hidden entries are absent, not disabled.
+ * The nav tree as one person sees it. Hidden entries are absent, not disabled.
  *
  * `hidden` applies at BOTH levels. It used to be filtered on top-level entries only, so a hidden child
  * would have been listed in the sidebar anyway — a latent bug that had never fired because no child was
@@ -184,26 +216,26 @@ const visible = (e: NavEntry, role: Role): boolean => !e.roles || e.roles.includ
  * the real array asserts `undefined !== true` and passes just as happily with the child filter deleted —
  * which is exactly what it did before this parameter existed. Production callers pass one argument.
  */
-export function navFor(role: Role, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
-  return entries.filter((e) => visible(e, role) && !e.hidden).map((e) =>
-    e.children ? { ...e, children: e.children.filter((c) => visible(c, role) && !c.hidden) } : e,
+export function navFor(who: Viewer, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
+  return entries.filter((e) => visible(e, who) && !e.hidden).map((e) =>
+    e.children ? { ...e, children: e.children.filter((c) => visible(c, who) && !c.hidden) } : e,
   )
 }
 
 /**
  * The sidebar in two groups, with the company switcher belonging between them.
  *
- * The split is read off `scope`, never off role and never off a hardcoded id list — so adding a screen
+ * The split is read off `scope`, never off a permission and never off a hardcoded id list — so adding a screen
  * puts it on the correct side of the switcher by declaring one field, and cannot put it on the wrong
  * side by being inserted at the wrong index. An entry with no `scope` sorts into `account`: the safe
  * default is "the switcher does not reach this", because a screen wrongly claimed by the switcher
  * silently narrows what someone sees, while one wrongly left out merely ignores it.
  */
-export function navGroupsFor(role: Role, entries: readonly NavEntry[] = NAV): {
+export function navGroupsFor(who: Viewer, entries: readonly NavEntry[] = NAV): {
   readonly account: readonly NavEntry[]
   readonly owner: readonly NavEntry[]
 } {
-  const visibleEntries = navFor(role, entries)
+  const visibleEntries = navFor(who, entries)
   return {
     account: visibleEntries.filter((e) => (e.scope ?? 'account') === 'account'),
     owner: visibleEntries.filter((e) => e.scope === 'owner'),
@@ -226,13 +258,13 @@ export function scopeOf(id: string | null, entries: readonly NavEntry[] = NAV): 
 /**
  * Everything routable for a role, including entries the sidebar does not list.
  *
- * Role-filtered but NOT hidden-filtered, and the asymmetry with navFor is the entire point: `hidden`
- * answers "does this appear in a menu", `roles` answers "may this person reach it at all". Only the
- * second is a boundary.
+ * Permission-filtered but NOT hidden-filtered, and the asymmetry with navFor is the entire point:
+ * `hidden` answers "does this appear in a menu", `needs` answers "may this person reach it at all".
+ * Only the second is a boundary.
  */
-function routableFor(role: Role, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
-  return entries.filter((e) => visible(e, role)).map((e) =>
-    e.children ? { ...e, children: e.children.filter((c) => visible(c, role)) } : e,
+function routableFor(who: Viewer, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
+  return entries.filter((e) => visible(e, who)).map((e) =>
+    e.children ? { ...e, children: e.children.filter((c) => visible(c, who)) } : e,
   )
 }
 
@@ -242,17 +274,17 @@ const flatten = (entries: readonly NavEntry[]): NavEntry[] =>
 /**
  * What the avatar menu offers: the things that belong to the PERSON rather than to either scope.
  *
- * Derived from NAV and role-filtered HERE, in the data, for the reason this file opens with: a menu
- * written as `{role === 'staff' && <button …/>}` puts role logic back into markup, and the source scan
- * that checks every navigation target resolves cannot see a JSX guard — it would read a staff-only path
- * as a dead link for clients and be right to. Mapping over a filtered list means a client's menu simply
- * has fewer entries, with no literal in the shell to mislead anyone.
+ * Derived from NAV and permission-filtered HERE, in the data, for the reason this file opens with: a
+ * menu written as `{permissions.manage && <button …/>}` puts the gate back into markup, and the source
+ * scan that checks every navigation target resolves cannot see a JSX guard — it would read a
+ * manage-only path as a dead link and be right to. Mapping over a filtered list means a person without
+ * Manage simply has fewer entries, with no literal in the shell to mislead anyone.
  *
  * Preferences and the admin screens are both `hidden` in NAV: unlisted in the sidebar, still routable,
- * and reached from here.
+ * and reached from here. People is NOT here any more — it is a rail entry.
  */
-export function avatarMenuFor(role: Role, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
-  const all = flatten(routableFor(role, entries))
+export function avatarMenuFor(who: Viewer, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
+  const all = flatten(routableFor(who, entries))
   const pick = (id: string) => all.find((e) => e.id === id)
   // About is LAST and is visible to every role, unlike the three above it. It is the AGPL §13 source
   // offer, which is owed to whoever is using the service — so it is the one entry here that is
@@ -260,23 +292,23 @@ export function avatarMenuFor(role: Role, entries: readonly NavEntry[] = NAV): r
   // file's rule holds: it renders on every screen already, it is mapped from data, and adding the entry
   // costs the shell nothing. A sidebar item would have ranked a licence notice above "New clearance"
   // in the work lane, which is not what it is for.
-  return [pick('preferences'), pick('admin.access'), pick('admin.config'), pick('about')]
+  return [pick('preferences'), pick('admin.config'), pick('about')]
     .filter((e): e is NavEntry => !!e)
 }
 
 /**
- * Resolve a URL path to a screen, respecting role.
+ * Resolve a URL path to a screen, respecting what the person may do.
  *
- * A client who types /portal/admin/config gets `null` — the same as a path that does not exist. The
- * server is the real boundary (that endpoint answers 404 for a client), but the UI must not present a
+ * Someone without Manage who types /portal/admin/config gets `null` — the same as a path that does not
+ * exist. The server is the real boundary (that endpoint refuses them), but the UI must not present a
  * screen it cannot fill, and it must not distinguish "not for you" from "not a thing".
  */
-export function screenForPath(path: string, role: Role, entries: readonly NavEntry[] = NAV): NavEntry | null {
+export function screenForPath(path: string, who: Viewer, entries: readonly NavEntry[] = NAV): NavEntry | null {
   // Query and hash never pick the screen — the path does. Stripping them HERE (not just in the
   // router state) means a target like /portal/new?search=x resolves wherever it is asked about,
   // including from tests that scan the raw navigation literals out of the source.
   const clean = path.replace(/[?#].*$/, '').replace(/\/+$/, '') || '/portal'
-  const all = flatten(routableFor(role, entries))
+  const all = flatten(routableFor(who, entries))
   // Longest match wins, so /portal/admin/config does not resolve to /portal/admin.
   const hits = all.filter((e) => clean === e.path || clean.startsWith(e.path + '/'))
   if (!hits.length) return null
@@ -357,3 +389,10 @@ function decode(segment: string): string {
     return segment
   }
 }
+
+/**
+ * The People page and the form it opens, named once so neither screen writes the other's path out.
+ * Looked up by id for the reason HOME is.
+ */
+export const PEOPLE: NavEntry = NAV.find((e) => e.id === 'people') as NavEntry
+export const ADD_PERSON: NavEntry = NAV.find((e) => e.id === 'people.add') as NavEntry

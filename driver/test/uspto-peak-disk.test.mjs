@@ -37,7 +37,7 @@ const until = async (fn, ms) => {
   return false;
 };
 
-test("#840 the sampler records a peak that happens while the event loop is blocked; a timer records none", async () => {
+test("the sampler records a peak that happens while the event loop is blocked; a timer records none", async () => {
   const dir = scratch();
   const db = join(dir, "idx.sqlite");
   writeFileSync(db, Buffer.alloc(1e6));
@@ -86,7 +86,7 @@ test("#840 the sampler records a peak that happens while the event loop is block
   }
 });
 
-test("#840 the footprint is the index AND its sidecars, and a missing one is zero rather than an error", () => {
+test("the footprint is the index AND its sidecars, and a missing one is zero rather than an error", () => {
   const dir = scratch();
   const db = join(dir, "idx.sqlite");
 
@@ -106,7 +106,7 @@ test("#840 the footprint is the index AND its sidecars, and a missing one is zer
   assert.deepEqual(indexFootprintPaths(db), [db, ...INDEX_SIDECARS.map((s) => `${db}${s}`)]);
 });
 
-test("#840 a sampler that saw nothing refuses to report a peak, rather than reporting zero", () => {
+test("a sampler that saw nothing refuses to report a peak, rather than reporting zero", () => {
   const dbPath = "/nowhere/idx.sqlite";
 
   // Thousands of samples, every one of them zero bytes: the sampler was aimed at a path this build does
@@ -129,7 +129,7 @@ test("#840 a sampler that saw nothing refuses to report a peak, rather than repo
   assert.match(broken[0], /failed \(worker died\).*NO high-water mark/);
 });
 
-test("#840 a sampler that saw something states the peak, its parts, and what one archive adds", () => {
+test("a sampler that saw something states the peak, its parts, and what one archive adds", () => {
   const lines = peakSummaryLines(
     { peak: 12.4e9, db: 10.1e9, wal: 2.3e9, samples: 32_000, sightings: 31_990, intervalMs: 1000 },
     { dbPath: "/mnt/x/idx.sqlite", largestPartBytes: 0.29e9 },
@@ -146,7 +146,7 @@ test("#840 a sampler that saw something states the peak, its parts, and what one
   assert.match(lines, /not a guaranteed one/);
 });
 
-test("#840 the phase lines attribute the peak to ingest or to the FTS rebuild, and say nothing when blind", () => {
+test("the phase lines attribute the peak to ingest or to the FTS rebuild, and say nothing when blind", () => {
   const seen = { peak: 12.4e9, db: 10.1e9, wal: 2.3e9, samples: 100, sightings: 100, intervalMs: 1000 };
   assert.match(peakAtPhaseLine("ingest", seen), /before the FTS rebuild/);
   assert.match(peakAtPhaseLine("fts", seen), /FTS indexes rebuilt/);
@@ -157,7 +157,7 @@ test("#840 the phase lines attribute the peak to ingest or to the FTS rebuild, a
   assert.equal(peakAtPhaseLine("ingest", null), null);
 });
 
-test("#840 a small build reads in its own units — never '0.00 GB', which is what a blind sampler looks like", () => {
+test("a small build reads in its own units — never '0.00 GB', which is what a blind sampler looks like", () => {
   // The same code runs a 41 GB build and a 33 MB nightly top-up. Fixed GB units print a real
   // measurement in the exact shape of a sampler that saw nothing, and the two must never look alike.
   const small = peakSummaryLines(
@@ -168,7 +168,7 @@ test("#840 a small build reads in its own units — never '0.00 GB', which is wh
   assert.doesNotMatch(small, /0\.00 GB/);
 });
 
-test("#840 what the reader is told to provision covers the PEAK, not just the finished index", () => {
+test("what the reader is told to provision covers the PEAK, not just the finished index", () => {
   // The three quantities are the download, the peak and the steady state, and until the middle one
   // was inferred. It is the one the provisioning advice has to clear: a box sized for the 10.1 GB index
   // that fills during the FTS rebuild leaves the partial index the whole preflight exists to prevent.
@@ -183,7 +183,7 @@ test("#840 what the reader is told to provision covers the PEAK, not just the fi
     "the peak is the index plus its WAL, derived from both so it cannot drift from either");
 });
 
-test("#840 the line written when the mark moves carries the figure a later reader needs", () => {
+test("the line written when the mark moves carries the figure a later reader needs", () => {
   const line = peakMovedLine({ total: 12.4e9, db: 10.1e9, wal: 2.3e9, samples: 900 });
   assert.match(line, /^disk: index high-water 12\.40 GB \(10\.10 GB index \+ 2\.30 GB wal\)/);
   assert.match(line, /\d{4}-\d{2}-\d{2}T/, "the timestamp is what places the peak inside the build");

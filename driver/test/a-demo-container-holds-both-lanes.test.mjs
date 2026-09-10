@@ -59,7 +59,7 @@ function plantContainer() {
   return root;
 }
 
-test("2193 both lanes list: the container rule accepts a knockout child with no report.md", () => {
+test("both lanes list: the container rule accepts a knockout child with no report.md", () => {
   const root = plantContainer();
   try {
     // THE PLANT IS ASSERTED BEFORE IT IS TRUSTED. A knockout child that accidentally carried a report.md
@@ -78,7 +78,7 @@ test("2193 both lanes list: the container rule accepts a knockout child with no 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("2193 the player uses the shared rule — the roster it prints is demoChildren's, not a second copy", () => {
+test("the player uses the shared rule — the roster it prints is demoChildren's, not a second copy", () => {
   // The defect was one predicate existing in more than one place. An arm that only tested the module
   // would have been green through it, so this one pins the player to the module by its OUTPUT: the
   // refusal path prints the roster, and it must be exactly what the module says the container holds.
@@ -101,7 +101,7 @@ test("2193 the player uses the shared rule — the roster it prints is demoChild
     "the printed roster must be the shared rule's answer over the shipped container");
 });
 
-test("2193 both lanes render: every child the container lists replays to a report", () => {
+test("both lanes render: every child the container lists replays to a report", () => {
   const children = demoChildren(DEMO);
   assert.ok(children.includes("knockout-search"),
     "the shipped container must list the knockout demo — it is one of the four the owner ruled");
@@ -138,7 +138,7 @@ test("2193 both lanes render: every child the container lists replays to a repor
   } finally { rmSync(work, { recursive: true, force: true }); }
 });
 
-test("2193 the entry-file table is the disjunction the pack gate restates", () => {
+test("the entry-file table is the disjunction the pack gate restates", () => {
   // cut/ does not travel, so it cannot import this module and this test cannot import cut/. The two are
   // held together by their shared content instead: if a lane is added here, the gate's copy is the next
   // thing to change, and this assertion is where that is written down.

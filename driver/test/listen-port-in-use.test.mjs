@@ -81,7 +81,7 @@ const STACK_FRAME = /^\s+at\s.+:\d+:\d+\)?$/m;
 
 // ── the helper's own contract ──────────────────────────────────────────────────────────────────────
 
-test("#773 the EADDRINUSE sentence names the port, the likely cause, the way to look, and the way to move it", () => {
+test("the EADDRINUSE sentence names the port, the likely cause, the way to look, and the way to move it", () => {
   const m = listenErrorMessage({ code: "EADDRINUSE" }, { what: "profile-service", host: "127.0.0.1", port: 18794, portVar: "PROFILE_PORT" });
   assert.match(m, /18794/, "the port");
   assert.match(m, /127\.0\.0\.1:18794/, "the full address, not just the number");
@@ -92,7 +92,7 @@ test("#773 the EADDRINUSE sentence names the port, the likely cause, the way to 
   assert.doesNotMatch(m, STACK_FRAME);
 });
 
-test("#773 it says it will NOT move to another port, because something in front of it is addressed here", () => {
+test("it says it will NOT move to another port, because something in front of it is addressed here", () => {
   // The tempting fix is a retry loop like bin/example.mjs's. For a SERVICE that is the wrong answer: a
   // portal that quietly moved off PORTAL_SERVICE_PORT leaves the tunnel pointing at the old address,
   // the health check passing against whatever answers there, and the operator debugging a proxy.
@@ -100,14 +100,14 @@ test("#773 it says it will NOT move to another port, because something in front 
   assert.match(m, /NOT quietly move/i);
 });
 
-test("#773 EACCES on a privileged port is its own answer, not the in-use one", () => {
+test("EACCES on a privileged port is its own answer, not the in-use one", () => {
   const m = listenErrorMessage({ code: "EACCES" }, { what: "the portal service", host: "0.0.0.0", port: 443, portVar: "PORTAL_SERVICE_PORT" });
   assert.match(m, /privileged/i);
   assert.match(m, /443/);
   assert.doesNotMatch(m, /already in use/i, "a permission failure reported as a collision sends the reader to kill the wrong thing");
 });
 
-test("#773 an address this host does not have is named as that, and an unknown code still gets a sentence", () => {
+test("an address this host does not have is named as that, and an unknown code still gets a sentence", () => {
   const notThere = listenErrorMessage({ code: "EADDRNOTAVAIL" }, { what: "x", host: "10.9.9.9", port: 1234, portVar: "X_PORT" });
   assert.match(notThere, /not an address on this machine/i);
   // The default arm matters most: an unrecognised bind failure must not fall through to a stack trace.
@@ -117,7 +117,7 @@ test("#773 an address this host does not have is named as that, and an unknown c
   assert.match(unknown, /Refusing to start/i);
 });
 
-test("#773 listenOrDie exits non-zero on a taken port and never calls onReady", async () => {
+test("listenOrDie exits non-zero on a taken port and never calls onReady", async () => {
   const held = await holdPort();
   try {
     const codes = [];
@@ -135,7 +135,7 @@ test("#773 listenOrDie exits non-zero on a taken port and never calls onReady", 
   } finally { await held.release(); }
 });
 
-test("#773 listenOrDie on a FREE port is an ordinary listen — the success half is the helper's too", async () => {
+test("listenOrDie on a FREE port is an ordinary listen — the success half is the helper's too", async () => {
   const codes = [];
   const server = createServer(() => {});
   const ready = new Promise((r) => {
@@ -162,7 +162,6 @@ function portalEnv(port) {
     PORTAL_LOCAL_CREDENTIAL: join(mkdtempSync(join(tmpdir(), "listen-cred-")), "credential.json"),
     CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     PORTAL_SECRET: "listen-test-secret",
-    PORTAL_STAFF_DOMAINS: "example-firm.com",
     CLEAROTRON_ACCESS_FILE: grants,
     CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "listen-pool-")),
     CLEAROTRON_WORK_DIR: mkdtempSync(join(tmpdir(), "listen-ws-")),
@@ -294,7 +293,7 @@ for (const site of MCP_SITES) {
 // So this asserts the wiring instead, and says so rather than leaving a gap that looks like coverage.
 // It is genuinely weaker — it proves the call site routes through the helper, not that the process
 // behaves — and the difference is the reason this comment is longer than the test.
-test("#808 the OAuth bridge routes its bind through the helper, and names its FLAG rather than a variable", () => {
+test("the OAuth bridge routes its bind through the helper, and names its FLAG rather than a variable", () => {
   const src = readFileSync(join(DRIVER, "..", "providers", "oauth-mcp-bridge", "warm-server.mjs"), "utf8");
   const code = src.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
   assert.match(code, /listenOrDie\(httpServer/, "the bind must go through the helper, not httpServer.listen");
@@ -310,7 +309,7 @@ test("#808 the OAuth bridge routes its bind through the helper, and names its FL
   assert.doesNotMatch(m, /set .*=<free port>/, "and does not invent a variable");
 });
 
-test("#808 every listener in the tree is accounted for — a new one is not silently unguarded", () => {
+test("every listener in the tree is accounted for — a new one is not silently unguarded", () => {
   // The census, so an eighth service cannot arrive with the old behaviour and no test. `.listen(` is
   // searched for directly: the helper is the only place it is allowed to appear outside a test.
   const roots = [join(DRIVER, "portal-service.mjs"), join(DRIVER, "profile-service.mjs"),
@@ -338,7 +337,7 @@ test("#808 every listener in the tree is accounted for — a new one is not sile
 
 // ── the contract bin/example.mjs depends on ───────────────────────────────────────────────────────────
 
-test("#773 startPortal still REJECTS with code EADDRINUSE — bin/example.mjs's port scan reads that code", async () => {
+test("startPortal still REJECTS with code EADDRINUSE — bin/example.mjs's port scan reads that code", async () => {
   // example.mjs:140-143 tries twenty ports and only continues when `e.code === "EADDRINUSE"`. If the fix
   // had been put inside startPortal — retrying, or exiting — that loop would be dead code and
   // `npm run example` would change behaviour silently. The handling lives in the CLI gate instead, and

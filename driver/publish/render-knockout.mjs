@@ -24,7 +24,7 @@
 // ONE report. There is no client variant and no internal variant, and that is
 // still the rule — it is what removes the whole class of "the wrong link got sent".
 //
-// WHAT CHANGED, 2026-09-07 (owner ruling): the one report now CARRIES the reviewer's
+// WHAT CHANGED, 2026-09-07 (ruling): the one report now CARRIES the reviewer's
 // notes rather than routing them to the audit workbook alone. The earlier reading of "one report" was
 // that internal working material is simply not part of it; the ruling is that there is one report and the
 // person who ran Clearotron reads it, so holding material back "just adds confusion for where data is
@@ -89,7 +89,7 @@ export function inlineMd(s) {
 }
 // BLOCKS, NOT ONLY PARAGRAPHS.
 //
-// The writer emits sub-headers and bullets inside the summary now (owner ruling 2026-08-31: "keep the
+// The writer emits sub-headers and bullets inside the summary now (ruling 2026-08-31: "keep the
 // length, add the structure"). This function read exactly two shapes — a blank line as a paragraph
 // break, a single newline as a wrap — so a `## CORAL FREEZE` line reached the client as those literal
 // characters, and a `- point` list as one run of text with hyphens in it. The structure the ruling asks
@@ -1017,7 +1017,7 @@ function registerCardViews(mark, framework, registerRecords) {
 /**
  * ONE promoted filing, in findingBlock's own anatomy — the SAME anatomy, now, not a parallel one.
  *
- * OWNER RULING: one combined card, the same head as every other conflict, tagged by
+ * RULING: one combined card, the same head as every other conflict, tagged by
  * SOURCE. "Weighed" and "not weighed" are not terms we use with a client, so the band slot's neutral word
  * is gone; what tells the two apart on the page is where the finding came from, which is the vocabulary
  * the clearance reports already use for exactly this.
@@ -1059,7 +1059,7 @@ function sourceChips(v) {
 
 // ── THE REVIEWER'S NOTES, ON THE REPORT ─────────────────────────────────────────────────
 //
-// OWNER RULING, 2026-09-07: there is one report and the person who ran Clearotron reads it — keeping
+// RULING, 2026-09-07: there is one report and the person who ran Clearotron reads it — keeping
 // this material off the page "just adds confusion for where data is lost". This replaces the earlier
 // split under which the notes went to the audit workbook alone (the header of this file and
 // publish/knockout.mjs carried that rule; both now say what replaced it). The workbook keeps them too:

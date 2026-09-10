@@ -25,7 +25,7 @@ import { planVsExecutedChannels, traceCommonLawCarry, reconciliationRates, recon
 // have assumed the answer to the question the carve-out below exists to settle.
 const PLANNED = ["taobao.com", "jd.com", "1688.com", "amazon.com"];
 
-test("#1066 THE DEFECT: a planned channel that produced nothing is named, not averaged away", () => {
+test("THE DEFECT: a planned channel that produced nothing is named, not averaged away", () => {
   const r = planVsExecutedChannels({
     planned: PLANNED,
     cells: [{ term: "delphi", platform: "amazon.com" }, { term: "delphi", platform: "web" }],
@@ -37,7 +37,7 @@ test("#1066 THE DEFECT: a planned channel that produced nothing is named, not av
   assert.equal(r.rate, 2 / 5);
 });
 
-test("#1066 a GAP is searched — it ran and produced nothing, which is the opposite of never searched", () => {
+test("a GAP is searched — it ran and produced nothing, which is the opposite of never searched", () => {
   // The distinction the grid already draws and no metric consumed. Both gap shapes ship: the grid program
   // appends strings, the reconciler and the driver's merge append objects. Reading one traces half a run.
   const r = planVsExecutedChannels({
@@ -51,7 +51,7 @@ test("#1066 a GAP is searched — it ran and produced nothing, which is the oppo
   assert.equal(r.state, "incomplete");
 });
 
-test("#1066 complete is complete, and platform names normalise the way cell keys do", () => {
+test("complete is complete, and platform names normalise the way cell keys do", () => {
   const r = planVsExecutedChannels({
     planned: ["Taobao.com", " JD.com ", "web"],
     cells: [{ platform: "taobao.com" }, { platform: "jd.com" }, { platform: "WEB" }],
@@ -61,7 +61,7 @@ test("#1066 complete is complete, and platform names normalise the way cell keys
   assert.equal(r.rate, 1);
 });
 
-test("#1066 THE DRIVER-ORDERED WEB CHANNEL IS PLANNED, whatever the profile lists", () => {
+test("THE DRIVER-ORDERED WEB CHANNEL IS PLANNED, whatever the profile lists", () => {
   // The dictation appends "ONE unrestricted general-web search per variant (platform name \"web\")" to
   // every profile's platform list. So `web` is executed on every run and named by almost no profile. A
   // comparison that read it off the profile alone would report an unplanned channel on EVERY run — an
@@ -75,7 +75,7 @@ test("#1066 THE DRIVER-ORDERED WEB CHANNEL IS PLANNED, whatever the profile list
   assert.ok(r.planned.includes("web"), "and it belongs on the PLANNED side — the driver ordered it");
 });
 
-test("#1066 and the useful direction still works: a grid that never ran web says so", () => {
+test("and the useful direction still works: a grid that never ran web says so", () => {
   // The carve-out must not become a blanket exemption. The driver ordered the general-web search, so a
   // run that never produced a web cell has a real coverage hole, and it is the one the profile can never
   // name for itself.
@@ -84,7 +84,7 @@ test("#1066 and the useful direction still works: a grid that never ran web says
   assert.equal(r.state, "incomplete");
 });
 
-test("#1066 NO PLAN IS AN EXPLICIT UNKNOWN, never a clean 1", () => {
+test("NO PLAN IS AN EXPLICIT UNKNOWN, never a clean 1", () => {
   // The failure this whole issue is about, arriving one level up: a coverage question that was never
   // asked must not answer itself in the affirmative.
   const r = planVsExecutedChannels({ cells: [{ platform: "amazon.com" }] });
@@ -95,14 +95,14 @@ test("#1066 NO PLAN IS AN EXPLICIT UNKNOWN, never a clean 1", () => {
   assert.deepEqual(r.executed, ["amazon.com"], "what DID run is still reported — the unknown is the plan");
 });
 
-test("#1066 a swept channel nobody planned is reported, not swallowed", () => {
+test("a swept channel nobody planned is reported, not swallowed", () => {
   const r = planVsExecutedChannels({ planned: ["amazon.com"], cells: [{ platform: "amazon.com" }, { platform: "web" }, { platform: "etsy.com" }] });
   assert.deepEqual(r.unplanned, ["etsy.com"],
     "a widened sweep and a mis-keyed plan look identical from the never-searched list alone");
   assert.equal(r.state, "complete", "and an extra channel is not a coverage hole");
 });
 
-test("#1066 the trace carries the block, and the rate can read below 1", () => {
+test("the trace carries the block, and the rate can read below 1", () => {
   const grid = JSON.stringify({ cells: [
     { term: "delphi", platform: "amazon.com", status: "ok", candidates: [{ title: "DELPHI", url: "https://a/1" }] },
   ], gaps: [] });
@@ -116,7 +116,7 @@ test("#1066 the trace carries the block, and the rate can read below 1", () => {
   assert.equal(rates.candidates.retrieved, 1);
 });
 
-test("#1066 a trace with no plan reports channels unknown rather than omitting the question", () => {
+test("a trace with no plan reports channels unknown rather than omitting the question", () => {
   const grid = JSON.stringify({ cells: [{ term: "d", platform: "web", status: "ok", candidates: [] }], gaps: [] });
   const rates = reconciliationRates(traceCommonLawCarry({ gridRaw: grid, findingsText: "" }));
   assert.equal(rates.channels.state, "unknown");
@@ -124,7 +124,7 @@ test("#1066 a trace with no plan reports channels unknown rather than omitting t
   assert.match(rates.channels.why, /not recorded/i);
 });
 
-test("#1066 the channel rate is NOT a floor yet — deliberately, and the verdict must not trip on it", () => {
+test("the channel rate is NOT a floor yet — deliberately, and the verdict must not trip on it", () => {
   // Annotate first, ratchet after a measured round. A profile legitimately lists platforms a given grid
   // skips, so a hard gate on arrival reds every run on day one — the shape, a grammar killing paid
   // work. This test exists so that turning it into a gate is a decision somebody makes, not a drift.
@@ -137,7 +137,7 @@ test("#1066 the channel rate is NOT a floor yet — deliberately, and the verdic
     "the channel rate joined the floor comparison without anyone deciding it should");
 });
 
-test("#1066 nothing here throws on a shape that is not a plan", () => {
+test("nothing here throws on a shape that is not a plan", () => {
   for (const bad of [null, undefined, {}, { planned: "taobao.com" }, { planned: [null, "", "  "] }, { cells: "x", gaps: 7 }]) {
     const r = planVsExecutedChannels(bad);
     assert.ok(["unknown", "complete", "incomplete"].includes(r.state), `${JSON.stringify(bad)} produced ${r.state}`);

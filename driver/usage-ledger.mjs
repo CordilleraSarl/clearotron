@@ -98,7 +98,9 @@ export function matterLedgerPath(qdir) { return join(dirname(qdir), ".matter-led
  * No paths in the return value: it is spread into client-facing JSON by both the portal and the MCP
  * preview, and server paths are not a client's business.
  */
-export function accountUsage({ queueDirs, account, now = Date.now() }) {
+export function accountUsage({ queueDirs, account, organisation = null, now = Date.now() }) {
+  // A Generic run counts in the lane of the organisation it was filed under, as checkRunCaps counts it.
+  const inLane = (key, org) => (key ?? null) === account && (account !== "generic" || (org ?? null) === organisation);
   const dayKey = new Date(now).toISOString().slice(0, 10);
   const monthKey = new Date(now).toISOString().slice(0, 7);
   let today = 0, thisMonth = 0, queued = 0;
@@ -113,7 +115,7 @@ export function accountUsage({ queueDirs, account, now = Date.now() }) {
       read = true;
       for (const line of rows) {
         let e; try { e = JSON.parse(line); } catch { continue; }
-        if (e.profileKey !== account || typeof e.ts !== "number") continue;
+        if (!inLane(e.profileKey, e.organisation) || typeof e.ts !== "number") continue;
         const stamp = new Date(e.ts).toISOString();
         if (stamp.slice(0, 7) === monthKey) thisMonth++;
         // `today` must count exactly what the WALL counts, or the screen lies. checkRunCaps skips failed
@@ -132,7 +134,7 @@ export function accountUsage({ queueDirs, account, now = Date.now() }) {
     // which the old inline regex here missed (isLiveQueueMarker is the one definition;).
     try {
       for (const f of readdirSync(qdir).filter(isLiveQueueMarker)) {
-        try { if ((JSON.parse(readFileSync(join(qdir, f), "utf8")).profileKey ?? null) === account) queued++; }
+        try { const j = JSON.parse(readFileSync(join(qdir, f), "utf8")); if (inLane(j.profileKey, j.tenant)) queued++; }
         catch { /* mid-rename — skip */ }
       }
     } catch { /* no queue dir */ }

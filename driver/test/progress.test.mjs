@@ -370,7 +370,7 @@ test("rollupStatus: a run with .sent beside its status.json never shows SEND PEN
 //   · missing from STAGE_TO_STEP    ⇒ stepForStage() === null ⇒ the client's stepper shows an unlabelled
 //                                     gap, i.e. a working run that looks stalled.
 // Every stage must now be consciously placed in each projection, or consciously excluded WITH A REASON.
-test("#249: every STAGES key is in STAGE_ORDER or declared excluded from it — no stage falls out of --from silently", () => {
+test("every STAGES key is in STAGE_ORDER or declared excluded from it — no stage falls out of --from silently", () => {
   const stages = Object.keys(STAGES);
   assert.ok(stages.length > 10, `only ${stages.length} stages — this guard is sweeping nothing`);
   const unplaced = stages.filter((s) => !STAGE_ORDER.includes(s) && !(s in STAGE_ORDER_EXCLUDED));
@@ -385,7 +385,7 @@ test("#249: every STAGES key is in STAGE_ORDER or declared excluded from it — 
     assert.ok(typeof why === "string" && why.length > 20, `STAGE_ORDER_EXCLUDED["${s}"] must state WHY, not just opt out`);
 });
 
-test("#249: every STAGES key has a display step or is declared step-less — no stage renders as an unlabelled gap", () => {
+test("every STAGES key has a display step or is declared step-less — no stage renders as an unlabelled gap", () => {
   const stages = Object.keys(STAGES);
   const unplaced = stages.filter((s) => !(s in STAGE_TO_STEP) && !(s in STAGE_NO_STEP));
   assert.deepEqual(unplaced, [],
@@ -414,7 +414,7 @@ test("#249: every STAGES key has a display step or is declared step-less — no 
 // It earns the line because of what it timestamps: when a matter was DELIVERED, which is outward-facing.
 // A latent trap on an inward metric can wait; one on a delivery timestamp should not, at this price.
 
-test("#948 deliveredAt is first-write-wins — a second delivery write cannot move it", () => {
+test("deliveredAt is first-write-wins — a second delivery write cannot move it", () => {
   const dir = mkdtempSync(join(tmpdir(), "delivered-"));
   try {
     writeRunStatus(null, { state: "delivered", deliveredAt: "2026-08-14T10:00:00.000Z" }, dir);
@@ -424,7 +424,7 @@ test("#948 deliveredAt is first-write-wins — a second delivery write cannot mo
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#948 …and the first write still lands, so hardening never becomes silence", () => {
+test("…and the first write still lands, so hardening never becomes silence", () => {
   const dir = mkdtempSync(join(tmpdir(), "delivered-first-"));
   try {
     writeRunStatus(null, { state: "delivered", deliveredAt: "2026-08-14T10:00:00.000Z" }, dir);
