@@ -52,6 +52,21 @@
 // for two changes is no evidence they are the right two — and it would push people to write filler to
 // reach a number, which is the failure this repository has already paid for once. The remaining half is
 // a person reading the diff and asking what a lawyer would want told.
+//
+// ── A DECLINATION ANSWERS FOR ITS OWN COMMIT, NOT FOR THE RANGE ──────────────────────────────────────
+//
+// This read one `Release-note: none` anywhere in the range as the answer for all of it, so a pack of
+// fifteen commits, fourteen internal and each honestly declining, carried the fifteenth, the one a client
+// would notice, through with no note. Measured on three packs merged 2026-09-09 and 2026-09-10: twelve
+// client-visible changes reached main that way. So the question is asked per COMMIT. A commit that ships
+// code is answered by a note the range adds, or by its own `Release-note: none` with its own reason. A
+// declination written by one commit says nothing about another.
+//
+// A `Release-note:` LINE WITH A SENTENCE IN IT IS REFUSED, unless the same commit adds a note. Every one of
+// the twelve was written by somebody who believed they had written a release note, and none of them had:
+// the releases page is built from `.changeset/*.md`, and a line in a commit message reaches no reader. A
+// line may instead NAME the note that answers for it, `Release-note: .changeset/<name>.md`, and that is read
+// as an answer, provided the range adds that note.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -108,6 +123,53 @@ function matches(path, glob) {
 /** Paths that ship as code but say nothing to a reader on their own. */
 export const NEVER_A_NOTE = [/(^|\/)CHANGELOG\.md$/, /(^|\/)package(-lock)?\.json$/, /^\.changeset\//];
 
+/** Every `Release-note:` line in a message, as its value. */
+const NOTE_LINE = /^\s*Release-note:[ \t]*(?<value>.*?)[ \t]*$/gim;
+/** A note named in a `Release-note:` line: `.changeset/<name>.md`, or the bare `<name>.md`. */
+const NAMED_NOTE = /^(?:\.changeset\/)?(?<name>[\w.-]+\.md)$/;
+
+const isNotePath = (p) => p.startsWith(".changeset/") && p.endsWith(".md") && !p.endsWith("README.md");
+const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) => re.test(p)) && shipsCode(p, files));
+
+/**
+ * PURE. What each commit in a range owes, decided per commit (see the header).
+ *
+ * @param {object} o
+ * @param {Array<{sha:string, subject:string, message:string, paths:string[]}>} o.commits  non-merge, oldest first
+ * @param {string[]} o.files  the package's own `files` list
+ * @returns {{visible:string[], notes:string[], declined:Array<{sha:string, subject:string, reason:string}>,
+ *   owed:Array<{sha:string, subject:string, why:"no-note"|"prose"|"bare-none"|"names-a-missing-note", paths?:string[], text?:string}>}}
+ */
+export function commitVerdicts({ commits = [], files = [] } = {}) {
+  const notes = [...new Set(commits.flatMap((c) => c.paths.filter(isNotePath)))];
+  const noteNames = new Set(notes.map((p) => p.split("/").pop()));
+  const visible = [...new Set(commits.flatMap((c) => shipped(c.paths, files)))];
+  const declined = [], owed = [];
+  for (const c of commits) {
+    const ships = shipped(c.paths, files);
+    if (!ships.length) continue;                              // nothing a reader could see in this commit
+    const addsNote = c.paths.some(isNotePath);
+    const values = [...String(c.message ?? "").matchAll(NOTE_LINE)].map((m) => m.groups.value);
+    const named = values.map((v) => NAMED_NOTE.exec(v)?.groups.name).filter(Boolean);
+    const prose = values.filter((v) => !/^none\b/i.test(v) && !NAMED_NOTE.test(v));
+    const at = { sha: c.sha, subject: c.subject };
+    if (prose.length && !addsNote) { owed.push({ ...at, why: "prose", text: prose[0] }); continue; }
+    const none = NO_NOTE.exec(String(c.message ?? ""));
+    if (none) {
+      const reason = none.groups?.reason;
+      if (reason) declined.push({ ...at, reason }); else owed.push({ ...at, why: "bare-none" });
+      continue;
+    }
+    if (addsNote) continue;                                   // it carries its own note
+    const missing = named.filter((n) => !noteNames.has(n));
+    if (missing.length) { owed.push({ ...at, why: "names-a-missing-note", text: missing[0] }); continue; }
+    if (named.length) continue;                               // it names a note the range adds
+    if (notes.length) continue;                               // a note in the range answers for it
+    owed.push({ ...at, why: "no-note", paths: ships });
+  }
+  return { visible, notes, declined, owed };
+}
+
 const argAfter = (flag) => {
   const i = process.argv.indexOf(flag);
   return i === -1 ? null : process.argv[i + 1];
@@ -124,10 +186,24 @@ function main() {
   // have failed, and would have reported the acceptance met for the life of the branch.
   const head = argAfter("--head") || "HEAD";
   const git = (...a) => execFileSync("git", a, { encoding: "utf8", maxBuffer: 1 << 28 });
-  let changed, log;
+  let changed, commits;
   try {
     changed = git("diff", "--name-only", `${base}...${head}`).split("\n").filter(Boolean);
-    log = git("log", "--format=%B", `${base}..${head}`);
+    // THE BRANCH'S OWN COMMITS. On a pull request the range can reach commits main already carries, from
+    // main merged into the branch; each of those was asked when it merged, so it is not asked again here.
+    // Only when `--head` is not given: a named range is a replay, and asks about exactly what it names.
+    let exclude = [];
+    if (head === "HEAD") {
+      try { git("rev-parse", "--verify", "-q", "origin/main^{commit}"); exclude = ["--not", "origin/main"]; }
+      catch { /* no origin/main in this clone: the range as given */ }
+    }
+    const shas = git("rev-list", "--no-merges", "--reverse", `${base}..${head}`, ...exclude).split("\n").filter(Boolean);
+    commits = shas.map((sha) => ({
+      sha,
+      subject: git("log", "-1", "--format=%s", sha).trim(),
+      message: git("log", "-1", "--format=%B", sha),
+      paths: git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha).split("\n").filter(Boolean),
+    }));
   } catch (e) {
     // COULD NOT LOOK, never a pass — an unresolvable base is the shape this repository cares about.
     console.error(`release-note-required: cannot read the range against ${base}: ${e.message.split("\n")[0]}`);
@@ -139,33 +215,33 @@ function main() {
   catch (e) { console.error(`release-note-required: cannot read the shipped file list: ${e.message}`); process.exit(2); }
   if (!files.length) { console.error("release-note-required: package.json names no shipped files, so this cannot look"); process.exit(2); }
 
-  const visible = changed.filter((p) => !NEVER_A_NOTE.some((re) => re.test(p)) && shipsCode(p, files));
-  const notes = changed.filter((p) => p.startsWith(".changeset/") && p.endsWith(".md") && !p.endsWith("README.md"));
-  const declined = NO_NOTE.exec(log);
-
+  const { visible, notes, declined, owed } = commitVerdicts({ commits, files });
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
-    + `${visible.length} ship as code; ${notes.length} release note(s) in the range`);
+    + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`);
+  for (const d of declined) console.log(`  no note, declared on purpose by ${d.sha.slice(0, 7)}: ${d.reason}`);
+  if (!owed.length) return;
 
-  if (!visible.length) return;                              // nothing a reader could see
-  if (notes.length) return;                                 // asked and answered
-  if (declined) {
-    const reason = declined.groups?.reason;
-    if (!reason) {
-      console.error("\nA commit says `Release-note: none` and gives no reason. The reason is the whole "
-        + "point of the line — it is what a later reader uses to tell a considered decision from a\nskipped step. Write it on the same line.");
-      process.exit(1);
+  console.error(`\n${owed.length} commit(s) that ship as code owe a release note:\n`);
+  for (const o of owed) {
+    console.error(`  ${o.sha.slice(0, 7)} ${o.subject}`);
+    if (o.why === "no-note") {
+      for (const p of o.paths.slice(0, 6)) console.error(`      ${p}`);
+      if (o.paths.length > 6) console.error(`      … and ${o.paths.length - 6} more`);
+      console.error("      ships as code, this range adds no release note, and this commit does not decline one.");
+    } else if (o.why === "prose") {
+      console.error(`      says "Release-note: ${o.text.slice(0, 100)}". A sentence in a commit message reaches no`
+        + "\n      reader: the releases page is written from .changeset/*.md. Put it in a note, or decline here.");
+    } else if (o.why === "bare-none") {
+      console.error("      says `Release-note: none` and gives no reason. The reason is the whole point of the"
+        + "\n      line — it is what a later reader uses to tell a considered decision from a skipped step.");
+    } else {
+      console.error(`      names ${o.text} as its note, and this range adds no note by that name.`);
     }
-    console.log(`  no note, declared on purpose: ${reason}`);
-    return;
   }
-
-  console.error(`\n${visible.length} file(s) that ship as code changed, and this range adds no release note:\n`);
-  for (const p of visible.slice(0, 12)) console.error(`  ${p}`);
-  if (visible.length > 12) console.error(`  … and ${visible.length - 12} more`);
   console.error("\nSomebody installing Clearotron reads the releases page to decide whether to upgrade. Add a"
-    + "\nnote — `npx changeset`, one plain sentence about what is different for them — or, if this change"
-    + "\ngenuinely has nothing to tell them, say so in a commit message:"
+    + "\nnote — `npx changeset`, one plain sentence about what is different for them — or, if a commit"
+    + "\ngenuinely has nothing to tell them, say so in THAT commit's message:"
     + "\n\n    Release-note: none — <why a reader would see no difference>"
     + "\n\nThe contract and its examples are in .changeset/README.md.");
   process.exit(1);
