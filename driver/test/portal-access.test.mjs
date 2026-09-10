@@ -89,7 +89,7 @@ test("a row naming a company its own organisation does not hold grants nothing",
 });
 
 test("Generic is never offered as a company, and is ordered by whoever holds its organisation whole with Run", () => {
-  // Owner ruling 2026-09-10: Generic is capped like any company, per organisation, so ordering it follows
+  // Ruling 2026-09-10: Generic is capped like any company, per organisation, so ordering it follows
   // the rule for seeing it. The cap itself is the runner's (each-organisations-generic-carries-the-daily-cap).
   const pat = who("pat@southbank.example");
   assert.ok(!pat.accounts.includes("generic"));

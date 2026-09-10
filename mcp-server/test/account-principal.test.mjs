@@ -79,7 +79,7 @@ test("start_run/plan_run are bounded by the grant — including the implicit gen
       /grant .* does not include/, `${tool} crossed into another customer's account`);
     // Omitting profileKey means the neutral "generic" profile: the organisation's own Generic lane. A
     // person who holds the organisation whole orders it, filed under that organisation and capped like a
-    // company (owner ruling 2026-09-10); a person who holds only a company does not — so omission is
+    // company (ruling 2026-09-10); a person who holds only a company does not — so omission is
     // still no way OUT of the grant.
     const own = authorize(scope, tool, { markName: "Z", forwarder: "x" });
     assert.equal(own.tenant, "acme", `${tool}: a Generic job is filed under the organisation it was ordered in`);

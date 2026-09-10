@@ -136,7 +136,7 @@ export function genericOrgOf(principal, tenant = null) {
  *
  * ORDERING GENERIC follows the rule for seeing it: a person who holds the organisation whole, and holds
  * Run. Spending against it is bounded as a company's is — every organisation's Generic lane carries the
- * daily cap (owner ruling 2026-09-10), counted by the runner in the lane of the organisation the job is
+ * daily cap (ruling 2026-09-10), counted by the runner in the lane of the organisation the job is
  * filed under, which `genericOrgOf` has just decided.
  */
 export function assertPrincipal(principal, { account = null, tenant = null, door = false,

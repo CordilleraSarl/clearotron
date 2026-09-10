@@ -118,12 +118,12 @@ const CARRIES = [...PORTAL_JOB_FIELDS.carries];
 const STAMPED = [...PORTAL_JOB_FIELDS.stamped];
 const REQUESTER_FIELDS = CARRIES.filter((f) => !STAMPED.includes(f));
 
-test("#497 `stamped` is a subset of `carries` — a field cannot be door-stamped and not carried", () => {
+test("`stamped` is a subset of `carries` — a field cannot be door-stamped and not carried", () => {
   const strays = STAMPED.filter((f) => !CARRIES.includes(f));
   assert.deepEqual(strays, [], `stamped names ${strays.join(", ")}, which carries does not`);
 });
 
-test("#497 every carried field has a probe — the set under test is DERIVED, so it cannot go stale", () => {
+test("every carried field has a probe — the set under test is DERIVED, so it cannot go stale", () => {
   // This is the assertion that makes the rest of the file self-maintaining. Without it, the next field
   // added to `carries` is simply not measured, and the guard becomes the thing it replaced.
   assert.deepEqual(
@@ -134,7 +134,7 @@ test("#497 every carried field has a probe — the set under test is DERIVED, so
   );
 });
 
-test("#497 EVERY REQUESTER FIELD THE PORTAL DECLARES CARRIED ARRIVES ON THE STORED JOB", async () => {
+test("EVERY REQUESTER FIELD THE PORTAL DECLARES CARRIED ARRIVES ON THE STORED JOB", async () => {
   const missing = [];
   for (const field of REQUESTER_FIELDS) {
     const probe = PROBES[field];
@@ -163,7 +163,7 @@ test("#497 EVERY REQUESTER FIELD THE PORTAL DECLARES CARRIED ARRIVES ON THE STOR
     + missing.join("\n  "));
 });
 
-test("#497 a stamped field takes the DOOR's value and ignores the body's — the tenancy wall", async () => {
+test("a stamped field takes the DOOR's value and ignores the body's — the tenancy wall", async () => {
   // The other half of what `carries` means. These six arrive, and they arrive as the door's answer:
   // a body that could set them would let a caller file against another brand owner or another
   // organisation, or decline its own allowance cap.
@@ -207,7 +207,7 @@ test("#497 a stamped field takes the DOOR's value and ignores the body's — the
   assert.equal(foreign.sent, null, "and nothing reached the queue");
 });
 
-test("#497 msgId and conversationId do not reach the job, whatever the body says", async () => {
+test("msgId and conversationId do not reach the job, whatever the body says", async () => {
   // They are the email door's fields and this door has no message. The old code wrote them as null and
   // stripped them again; the test that should have caught it was a completeness check, and a
   // declared-and-nulled field is complete.

@@ -287,7 +287,7 @@ test('adminAccess decodes grantsFile, and refuses a half-known one', async () =>
 
 // ──: the config hop, where a field that is not decoded is a field that never reaches the page ──
 
-test('#1439 — an older snapshot decodes engine and providers as null, NOT as empty', async () => {
+test('an older snapshot decodes engine and providers as null, NOT as empty', async () => {
   // The decisive one. `asArray` and `asRecord` both collapse a missing value to an empty one, and empty
   // is the answer this pair must never give: `providers: []` renders as "no provider is configured",
   // which is the inverse of the fact that the snapshot simply predates provider reporting. Every
@@ -302,7 +302,7 @@ test('#1439 — an older snapshot decodes engine and providers as null, NOT as e
   assert.equal(r.value.providers, null, 'and must NOT become []')
 })
 
-test('#1439 — engine and provider rows survive the hop with the fields the page renders', async () => {
+test('engine and provider rows survive the hop with the fields the page renders', async () => {
   // The counterfactual for the test above: without this, decoding everything to null would also pass.
   const r = await withFetch(200, {
     available: true, note: null, capturedAt: '2026-08-20T00:00:00Z', stale: false,
@@ -385,7 +385,7 @@ test('engineProgramDisputed decodes to three values, and the third is not false'
   }
 })
 
-test('#1720 engineMode decodes to demo or unproven, and EVERYTHING else is null', async () => {
+test('engineMode decodes to demo or unproven, and EVERYTHING else is null', async () => {
   // The two values a caller may act on survive; anything else lands as null, which every caller treats
   // as "leave the button alone". The direction that matters is the one that takes a working install's
   // button away: an unrecognised value must never read as demo.
@@ -441,14 +441,14 @@ test('setupRoute decodes to one of the two routes, and EVERYTHING else is null',
 // "Projects are not available to you" to the owner of the account while the real cause — the deployment
 // not pointed at its own store — existed only in a boot log. These arms pin the three-way distinction.
 
-test('#1989 the surface refusing to construct decodes apart from "not yours"', async () => {
+test('the surface refusing to construct decodes apart from "not yours"', async () => {
   const unbuilt = await withFetch(404, { error: 'config_surface_unavailable' }, () => api.profile('aurora'))
   assert.equal(unbuilt.kind, 'surfaceUnavailable')
   assert.notEqual(unbuilt.kind, 'notFound', 'a deployment fault must never wear the words of a denial')
   assert.notEqual(unbuilt.kind, 'noAccess')
 })
 
-test('#1989 every OTHER 404 stays deliberately indistinguishable', async () => {
+test('every OTHER 404 stays deliberately indistinguishable', async () => {
   // THE CONTROL, and it is the load-bearing one. Without it the arm above passes just as well against a
   // rule that made EVERY 404 self-describing — which is precisely the existence oracle the
   // 404-never-403 rule exists to prevent. A foreign resource must still say nothing about itself.
@@ -457,7 +457,7 @@ test('#1989 every OTHER 404 stays deliberately indistinguishable', async () => {
   assert.equal('message' in foreign, false, 'a tenancy answer must carry nothing a component could print')
 })
 
-test('#1989 the sentence names the deployment, never the reader', () => {
+test('the sentence names the deployment, never the reader', () => {
   const text = saveFailureText({ kind: 'surfaceUnavailable' })
   assert.match(text, /not your access/i, 'it must say plainly that this is not about their permissions')
   assert.match(text, /administrator/i, 'and name who can fix it, since the reader cannot')
@@ -465,7 +465,7 @@ test('#1989 the sentence names the deployment, never the reader', () => {
   assert.doesNotMatch(text, /not available to you|you (do not|don't) have/i)
 })
 
-test('#1989 both settings screens answer three ways, not two', () => {
+test('both settings screens answer three ways, not two', () => {
   // These screens have no DOM harness, so the assertion is on the source: each must branch on the new
   // state BEFORE falling through to the not-available sentence. Planted — reverting either screen to the
   // two-way ternary reds this arm.
@@ -483,7 +483,7 @@ test('#1989 both settings screens answer three ways, not two', () => {
 // collapsed `notFound` and `noAccess` into one answer — "Check the company selected at the top left"
 // — which sends that person to the one thing that is not wrong. The cause was stated only in a boot log.
 
-test('#1920 the two refusals decode apart, and 403 is the door refusing the identity itself', async () => {
+test('the two refusals decode apart, and 403 is the door refusing the identity itself', async () => {
   const forbidden = await withFetch(403, { error: 'no access' }, () => api.profile('aurora'))
   const missing = await withFetch(404, { error: 'not_found' }, () => api.profile('aurora'))
   assert.equal(forbidden.kind, 'noAccess')
@@ -497,7 +497,7 @@ test('#1920 the two refusals decode apart, and 403 is the door refusing the iden
 const DOOR_CAUSE = readFileSync(new URL('../../driver/portal-service.mjs', import.meta.url), 'utf8')
   .match(/You reached \$\{[^}]+\}, but ([^.]+)\./)?.[1] ?? ''
 
-test('#1920 both screens answer them DIFFERENTLY, and only one mentions the selector', () => {
+test('both screens answer them DIFFERENTLY, and only one mentions the selector', () => {
   assert.ok(DOOR_CAUSE.length > 20, `the door states a cause for an address with no access (read: "${DOOR_CAUSE}")`)
   // Source-level: these screens have no DOM harness, so what is pinned is that the branch exists and
   // what each branch says. The decode above is what makes the branch reachable.
@@ -514,7 +514,7 @@ test('#1920 both screens answer them DIFFERENTLY, and only one mentions the sele
   }
 })
 
-test('#1920 THE CONTROL — notFound KEEPS the selector advice, which is right for it', () => {
+test('THE CONTROL — notFound KEEPS the selector advice, which is right for it', () => {
   // Without this, the fix passes just as well if the advice were deleted from both branches. A wrong
   // company really is the likely cause of a not-found, and that sentence is the useful one there.
   for (const f of ['Profile.tsx', 'NewClearance.tsx']) {
@@ -531,7 +531,7 @@ test('#1920 THE CONTROL — notFound KEEPS the selector advice, which is right f
   }
 })
 
-test('#1920 the shared sentence for noAccess never sends anyone to the selector either', () => {
+test('the shared sentence for noAccess never sends anyone to the selector either', () => {
   const text = saveFailureText({ kind: 'noAccess' })
   assert.doesNotMatch(text, /company|top left|selector/i,
     'the one-line form must not contradict the screens it sits beside')
@@ -547,7 +547,7 @@ test('#1920 the shared sentence for noAccess never sends anyone to the selector 
 // never reached the store's git rendered as a clean success. The owner created a project, saw it
 // succeed, and it was not durable.
 
-test('#2005 a save that did not commit is reported, and a clean one says nothing', () => {
+test('a save that did not commit is reported, and a clean one says nothing', () => {
   const dirty = { kind: 'ok', value: { written: true, commitError: 'fatal: detected dubious ownership' } } as const
   const clean = { kind: 'ok', value: { written: true } } as const
   assert.ok(notCommitted(dirty), 'the field finally has a reader')
@@ -556,7 +556,7 @@ test('#2005 a save that did not commit is reported, and a clean one says nothing
   assert.equal(notCommitted({ kind: 'ok', value: { commitError: '   ' } } as never), null, 'and a blank detail is not a failure')
 })
 
-test('#2005 the sentence says the change is LIVE — the opposite lie would be as bad', () => {
+test('the sentence says the change is LIVE — the opposite lie would be as bad', () => {
   const text = notCommitted({ kind: 'ok', value: { commitError: 'x' } } as never)!
   assert.match(text, /live/i, 'the change IS on disk and the engine will read it')
   assert.match(text, /can be lost/i, 'what it is not is durable, and that is the whole point')
@@ -565,7 +565,7 @@ test('#2005 the sentence says the change is LIVE — the opposite lie would be a
     'telling someone their change was lost when it is live is a different lie in the other direction')
 })
 
-test('#2005 EVERY screen that saves reads it — the population is derived, not listed', () => {
+test('EVERY screen that saves reads it — the population is derived, not listed', () => {
   // The list of save sites is not written here on purpose. Seven of them across four screens is exactly
   // where a hand-kept list goes stale, and a screen added next month would inherit the original defect
   // silently. So the screens are DISCOVERED by their mutating call, and each must reference the helper.
@@ -591,7 +591,7 @@ test('#2005 EVERY screen that saves reads it — the population is derived, not 
 // "You are signed in, but this address has not been enrolled" — told to a reader whose session had just
 // gone, on the first screen they meet. The owner met exactly that on a fresh install.
 
-test('2074 a 401 decodes to signedOut, on every route, and not to upstream', async () => {
+test('a 401 decodes to signedOut, on every route, and not to upstream', async () => {
   // THE CLASS, not one route. A kind that only some calls produce is a kind screens cannot rely on.
   for (const [name, call] of [
     ['me', () => api.me()],
@@ -607,7 +607,7 @@ test('2074 a 401 decodes to signedOut, on every route, and not to upstream', asy
   assert.equal(bare.kind, 'signedOut', 'a 401 with no body decoded as something else')
 })
 
-test('2074 signedOut says the session ended, and never that the change failed', () => {
+test('signedOut says the session ended, and never that the change failed', () => {
   const text = saveFailureText({ kind: 'signedOut' })
   assert.match(text, /session/i, 'the sentence does not name what actually happened')
   assert.match(text, /sign in/i, 'the sentence does not name the one thing that fixes it')
@@ -620,7 +620,7 @@ test('2074 signedOut says the session ended, and never that the change failed', 
     'the gone-session sentence borrowed the enrolment sentence — the false message this arm exists for')
 })
 
-test('2074 a 401 is NOT confused with the tenancy answers it sits beside', async () => {
+test('a 401 is NOT confused with the tenancy answers it sits beside', async () => {
   // The funnel that produced the false message is right for these and wrong for a 401, so the three
   // must stay distinguishable at the contract. 403 and 404 keep their own arm above; this one pins that
   // none of them collapsed into the new kind.
@@ -638,7 +638,7 @@ test('2074 a 401 is NOT confused with the tenancy answers it sits beside', async
 //
 // The announcement is in `call`, not in `useLoad`, because `useLoad` is not the only caller: the arms
 // below drive a save and a load and assert one answer for both.
-test('2113 any 401, from any request, announces that the session has gone', async () => {
+test('any 401, from any request, announces that the session has gone', async () => {
   const seen: string[] = []
   const stop = onSessionEnded(() => seen.push('ended'))
   try {
@@ -668,7 +668,7 @@ test('2113 any 401, from any request, announces that the session has gone', asyn
   assert.equal(seen.length, 2, 'the unsubscribe did not take, so a dead subscriber is still being called')
 })
 
-test('2113 a response that is NOT a 401 announces nothing', async () => {
+test('a response that is NOT a 401 announces nothing', async () => {
   const seen: number[] = []
   const stop = onSessionEnded(() => seen.push(1))
   try {

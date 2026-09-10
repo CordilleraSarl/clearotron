@@ -238,7 +238,7 @@ function recordMatter(qdir, entry) {
 export const DEFAULT_CLIENT_DAILY_RUNS = 20;
 
 export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null }) {
-  // GENERIC IS CAPPED LIKE ANY COMPANY, one lane per organisation (owner ruling 2026-09-10: "every
+  // GENERIC IS CAPPED LIKE ANY COMPANY, one lane per organisation (ruling 2026-09-10: "every
   // organisation's Generic lane carries the daily cap; the exemption goes"). A Generic run counts in the
   // lane of the organisation it was filed under and nowhere else, so one organisation's day cannot use up
   // another's. What stays uncapped is what was never client-attributed — a job with no `clientRun` stamp:

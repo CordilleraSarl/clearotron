@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Every organisation's Generic carries the daily cap, and one organisation's day never spends another's.
 //
-// Owner ruling, 2026-09-10: "Generic is capped like any company, at the default of 20. Every
+// Ruling, 2026-09-10: "Generic is capped like any company, at the default of 20. Every
 // organisation's Generic lane carries the daily cap; the exemption goes." Before it, Generic was the one
 // account the runner never capped, and once an organisation's own people could order their Generic, that
 // exemption was uncapped spend per organisation.
