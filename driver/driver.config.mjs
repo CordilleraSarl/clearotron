@@ -219,7 +219,7 @@ export const config = {
       // file to the repo — swapping a customer's own risk framework for the Generic default with nothing
       // in the log to say so. A configured-but-unreadable overlay is a deploy defect, not a fallback.
       if (!existsSync(overlay))
-        throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR is set but the process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
+        throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
       const p = join(dirname(overlay), rel);
       if (existsSync(p)) return p;
     }
@@ -255,7 +255,7 @@ export const config = {
     const overlay = this.skillsOverlayDir;
     if (!overlay) return { path: basePath, rel, layer: existsSync(basePath) ? "base-only" : "missing", overlayPath: null, basePath };
     if (!existsSync(overlay))
-      throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR is set but the process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
+      throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
     const overlayPath = join(dirname(overlay), rel);
     if (existsSync(overlayPath)) return { path: overlayPath, rel, layer: "overlay", overlayPath, basePath };
     return { path: basePath, rel, layer: existsSync(basePath) ? "base" : "missing", overlayPath, basePath };
@@ -1193,21 +1193,50 @@ export const PROVIDERS = {
           approximate: p.total_approximate === true, present: p.present === true, note: p.note };
       } catch (e) { return { ok: false, cause: `countHits threw: ${e.message}` }; }
     },
+    // `reason`, not `cause`, on every refusal: the listing reads `reason` (register-records.mjs), so a
+    // Signa search that failed reached the workbook as "the search did not run", its cause dropped.
     async listRecords({ name, matchMode, classes, regions, limit }, { agentId, sessionKey, recordLog = null }) {
-      if (!process.env.SIGNA_API_KEY) return { ok: false, cause: "SIGNA_API_KEY absent from driver env" };
+      if (!process.env.SIGNA_API_KEY) return { ok: false, records: null, reason: "SIGNA_API_KEY absent from driver env" };
       let core;
       try { core = await import("../providers/signa/src/core.js"); }
-      catch (e) { return { ok: false, cause: `plugin core unavailable: ${e.message}` }; }
+      catch (e) { return { ok: false, records: null, reason: `plugin core unavailable: ${e.message}` }; }
       const base = process.env.SIGNA_BASE_URL || core.DEFAULT_BASE;
       try {
         const r = await core.doSearch(process.env.SIGNA_API_KEY, base,
           { ...core.toSignaParams({ name, match_mode: matchMode || "exact", nice_classes: classes, regions }), limit },
           { kind: "search", agentId, sessionKey, sessionId: null, recordLog });
         const text = typeof r?.text === "string" ? r.text : "";
-        if (text.startsWith("ERROR")) return { ok: false, cause: text.slice(0, 200) };
+        if (text.startsWith("ERROR")) return { ok: false, records: null, reason: text.slice(0, 200) };
         const p = JSON.parse(text);
-        return { ok: true, records: Array.isArray(p.results) ? p.results : [] };
-      } catch (e) { return { ok: false, cause: `listRecords threw: ${e.message}` }; }
+        // THE SEARCH ROW IS NOT THE LISTING'S RECORD. The row names the owner `owner`, the classes
+        // `nice_classes` and the filing date `filing_date`; the listing reads `owner_name`, `classes` and
+        // `application_date`. Handed over unmapped, every Signa filing reached the knockout with no owner,
+        // no classes and no filing date. Mapped here, as clarivate's adapter above maps its screen row.
+        //
+        // The office's own numbers come off the full record Signa returns on search, through the
+        // provider's own normaliser, so publish can address the office's page for each filing
+        // (publish/office-record-links.mjs) instead of showing the handle.
+        return { ok: true, records: (Array.isArray(p.results) ? p.results : []).map((row) => {
+          const rec = row?.raw && typeof row.raw === "object" ? core.normalizeRecord(row.raw, row.office || null) : null;
+          return {
+            record_id: row?.record_id ?? null,
+            mark_text: row?.mark_text ?? null,
+            owner_name: rec?.owner ?? row?.owner ?? null,
+            owner_country: rec?.ownerCountry ?? null,
+            status: row?.status ?? null,
+            classes: Array.isArray(row?.nice_classes) ? row.nice_classes : null,
+            office: row?.office || null,
+            application_date: row?.filing_date ?? null,
+            registration_date: row?.registration_date ?? null,
+            application_number: rec?.applicationNumber ?? null,
+            registration_number: rec?.registrationNumber ?? null,
+            ir_number: rec?.irNumber ?? null,
+            filing_route: rec?.filingRoute ?? null,
+            // No page per record at Signa (hasPublicRecordUrl: false above), and none is made up here.
+            record_url: null,
+          };
+        }) };
+      } catch (e) { return { ok: false, records: null, reason: `listRecords threw: ${e.message}` }; }
     },
     async executePlan({ planPath, axis, outputPath, qids }, { agentId, sessionKey, recordLog = null }) {
       if (!process.env.SIGNA_API_KEY) return { ok: false, cause: "SIGNA_API_KEY absent from driver env" };
