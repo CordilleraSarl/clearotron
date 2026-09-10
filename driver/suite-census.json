@@ -106,8 +106,8 @@
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 16,
-          "asserts": 36,
+          "tests": 19,
+          "asserts": 45,
           "skips": 1,
           "todos": 0
         },
@@ -736,8 +736,8 @@
           "todos": 0
         },
         "a-store-in-a-pushed-checkout-is-told-its-saves-will-be-published.test.mjs": {
-          "tests": 7,
-          "asserts": 24,
+          "tests": 8,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

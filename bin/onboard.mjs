@@ -1779,7 +1779,10 @@ export async function runCheck() {
         const w = whereSavesGo(storeDir);
         if (w.state === "publishes") {
           const waiting = w.ahead > 0 ? `, and ${w.ahead} commit(s) made there have not been pushed yet` : "";
-          warn(`saves to ${storeDir} are committed in ${w.root}, whose branch ${w.branch} tracks ${w.upstream} — `
+          const how = w.via && w.via !== "tracking"
+            ? `whose branch ${w.branch} tracks no remote branch, but a bare \`git push\` there sends it to ${w.upstream} (${w.via})`
+            : `whose branch ${w.branch} tracks ${w.upstream}`;
+          warn(`saves to ${storeDir} are committed in ${w.root}, ${how} — `
             + `whoever next syncs or pushes that checkout publishes them${waiting}. Fine if you publish this store `
             + "on purpose; if other work happens in that checkout, give the store a repository of its own with no remote");
         } else if (w.state === "stays-here") {

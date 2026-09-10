@@ -39,7 +39,7 @@ test("the registry's answer: its version is yes, E404 is no, and any other failu
   assert.deepEqual(asked, ["view", "clearotron@0.3.0-beta.2", "version"], "it asks for the exact version, not a range");
 });
 
-test("the version step asks before it writes anything, and a failure to look is a refusal", () => {
+test("the version step asks before the root version is stamped, and a failure to look is a refusal", () => {
   const src = readFileSync(join(ROOT, "scripts", "release-version.mjs"), "utf8");
   const main = src.slice(src.indexOf("function main()"));
   const computed = main.indexOf("const version = groupVersion();");
