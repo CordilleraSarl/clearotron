@@ -370,8 +370,8 @@
           "todos": 0
         },
         "a-knockout-filing-links-to-its-office.test.mjs": {
-          "tests": 11,
-          "asserts": 46,
+          "tests": 12,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -414,6 +414,12 @@
         "a-missing-bus-is-not-a-closed-door.test.mjs": {
           "tests": 10,
           "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-name-the-wizard-returns-is-a-setup-name.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -4157,7 +4163,7 @@
         },
         "start-command.test.mjs": {
           "tests": 27,
-          "asserts": 119,
+          "asserts": 120,
           "skips": 0,
           "todos": 0
         },
