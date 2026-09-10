@@ -4672,8 +4672,8 @@
           "todos": 0
         },
         "the-run-records-a-stored-territory-it-cannot-search.test.mjs": {
-          "tests": 2,
-          "asserts": 13,
+          "tests": 3,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

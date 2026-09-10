@@ -17,12 +17,16 @@
 // The arms are a pair on purpose. A profile with a mistyped entry must NAME it; a profile with none must
 // still write the file with an empty list. A record that appears only when there is something to say
 // cannot be told apart from a record nobody wrote.
+//
+// And the file and the log event are two records of one fact, kept so that one survives when the other
+// does not — so the third arm makes the file's write fail and requires the event anyway.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync, writeFileSync, cpSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire, syncBuiltinESMExports } from "node:module";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
 
@@ -106,4 +110,29 @@ test("a run with nothing to report writes the record anyway, as an asserted zero
   assert.deepEqual(rec.searchable, ["US", "CH"]);
   assert.deepEqual(events.filter((e) => e.event === "default-territory-unrecognized"), [],
     "and nothing is logged when there is nothing to say");
+});
+
+// A FAULT IN ONE RECORD MUST NOT TAKE THE OTHER. The write is made to fail for this one path only, and the
+// event has to be in the run log anyway. node:fs's named exports are live bindings to the builtin, and
+// syncBuiltinESMExports() is what carries the patch through to the pipeline's own import of writeFileSync.
+test("a write that fails still leaves the run-log event — the two records do not share a fault", async () => {
+  const fs = createRequire(import.meta.url)("node:fs");
+  const real = fs.writeFileSync;
+  fs.writeFileSync = (p, ...rest) => {
+    if (String(p).endsWith("default-territories.json")) throw Object.assign(new Error("EIO: a planted write fault"), { code: "EIO" });
+    return real.call(fs, p, ...rest);
+  };
+  syncBuiltinESMExports();
+  try {
+    const { res, events } = await runPipeline({ profileKey: "mistyped-default" });
+    assert.equal(res.ok, true, JSON.stringify(res));
+    assert.equal(existsSync(driverDir(res.runDir, "default-territories.json")), false,
+      "the planted fault must have reached the write, or this arm proves nothing");
+    const named = events.filter((e) => e.event === "default-territory-unrecognized");
+    assert.equal(named.length, 1, `the event survives the file's write fault: ${JSON.stringify(named)}`);
+    assert.deepEqual(named[0].entries, ["Sitzerland"]);
+  } finally {
+    fs.writeFileSync = real;
+    syncBuiltinESMExports();
+  }
 });

@@ -8621,13 +8621,13 @@ async function pipelineInner(job, opts = {}) {
   // only ever sees this file on the runs that had a bad entry cannot tell it from a run nothing checked.
   try {
     const dts = defaultTerritoryState(ctx.profile);
+    // two records of one fact, so each has its own try: a fault in one must not take the other
+    try { if (dts.unrecognized.length) runLog(run.runDir, { event: "default-territory-unrecognized", count: dts.unrecognized.length, entries: dts.unrecognized }); } catch (e) { note(`default-territory-unrecognized log failed (non-fatal): ${e.message}`); }
     writeFileSync(P.defaultTerritories, JSON.stringify({
       profileKey: ctx.profile?.profileKey ?? null,
       searchable: dts.kept,
       unrecognized: dts.unrecognized,
     }, null, 2) + "\n");
-    if (dts.unrecognized.length)
-      runLog(run.runDir, { event: "default-territory-unrecognized", count: dts.unrecognized.length, entries: dts.unrecognized });
   } catch (e) { note(`default-territories write failed (non-fatal): ${e.message}`); }
   // Change B5 — unknown-customer state + the late-bind consumer. The intake gate sets
   // job.customerUnknown when the applicant is neither stated nor forwarder-implied; the forwarding agent

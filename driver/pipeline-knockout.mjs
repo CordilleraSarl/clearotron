@@ -583,13 +583,13 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // knockout reads the same account profile and dropped the same entries in the same silence.
     try {
       const dts = defaultTerritoryState(ctx.profile);
+      // two records of one fact, so each has its own try: a fault in one must not take the other
+      try { if (dts.unrecognized.length) runLog(run.runDir, { event: "default-territory-unrecognized", count: dts.unrecognized.length, entries: dts.unrecognized, lane: "knockout" }); } catch (e) { note(`default-territory-unrecognized log failed (non-fatal): ${e.message}`); }
       writeFileSync(K.defaultTerritories, JSON.stringify({
         profileKey: ctx.profile?.profileKey ?? null,
         searchable: dts.kept,
         unrecognized: dts.unrecognized,
       }, null, 2) + "\n");
-      if (dts.unrecognized.length)
-        runLog(run.runDir, { event: "default-territory-unrecognized", count: dts.unrecognized.length, entries: dts.unrecognized, lane: "knockout" });
     } catch (e) { note(`default-territories write failed (non-fatal): ${e.message}`); }
 
     // status seed — knockout's OWN step flow (never seedRunStatus's clearance stepper). Depth 2
