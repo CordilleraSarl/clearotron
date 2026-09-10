@@ -2263,3 +2263,44 @@ input.filter {
 .ai-help-body p { margin: 0 0 10px; }
 
 .ai-help-doc { font-size: 13px; }
+
+/* ── Give someone access: the points on the tree a new person can be given ─────────────────────────────
+   One row per point. A BUTTON, because choosing a point is an action and a keyboard has to reach it; the
+   resets below are what make a button read as a row. `.sub` indents a company under the organisation
+   it sits in. A row covered by a wider choice above it — everything, or its whole organisation — is
+   disabled and drawn on, never unticked on its own. */
+.attach-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: inherit;
+  font: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.attach-row.on {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+.attach-row.sub {
+  width: auto;
+  margin-left: 26px;
+}
+
+.attach-row:disabled {
+  cursor: default;
+}
+
+.attach-row .sub-t {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: 12px;
+}

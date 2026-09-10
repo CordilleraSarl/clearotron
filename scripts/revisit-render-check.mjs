@@ -146,7 +146,7 @@ const server = createServer((req, res) => {
     hits.push({ epoch, route: routeKey(p, u.searchParams) })
   }
 
-  if (p === '/portal/api/me') return json(res, { email: 'staff@example-firm.com', role: 'staff', accounts: '*', accountNames: {}, allowance: null })
+  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null })
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }] })
   if (p === '/portal/admin/families') return json(res, { of: {}, names: {} })
   if (p === '/portal/api/runs') return json(res, { runs: RUNS() })

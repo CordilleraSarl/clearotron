@@ -109,13 +109,16 @@ function storeInRepo(customer) {
 
 function bootEnv(extra) {
   const grants = join(mkdtempSync(join(tmpdir(), "cs1923-grants-")), "grants.json");
-  writeFileSync(grants, JSON.stringify({ tenants: {} }));
+  // The signed-in local user reads and saves settings, so it holds access to everything and Manage by its
+  // own entry.
+  writeFileSync(grants, JSON.stringify({ tenants: {},
+    people: { "dev@example-firm.com": { run: true, manage: true, everything: true } } }));
   return {
     ...process.env,
     PORTAL_AUTH_MODE: "local", PORTAL_LOCAL_USER: "dev@example-firm.com",
     PORTAL_LOCAL_CREDENTIAL: join(mkdtempSync(join(tmpdir(), "cs1923-cred-")), "credential.json"),
     CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
-    PORTAL_SECRET: "cs1923-secret", PORTAL_STAFF_DOMAINS: "example-firm.com",
+    PORTAL_SECRET: "cs1923-secret",
     CLEAROTRON_ACCESS_FILE: grants,
     CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "cs1923-pool-")),
     CLEAROTRON_WORK_DIR: mkdtempSync(join(tmpdir(), "cs1923-ws-")),

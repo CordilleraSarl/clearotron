@@ -12,7 +12,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 import {
-  loadGrants, accountsForEmail, assertAccountAccess, accountVisible,
+  loadGrants, accountsForEmail, resolvePerson, assertAccountAccess, accountVisible,
   mintToken, verifyToken, resolveScope, authorize,
 } from "../lib/scope.mjs";
 
@@ -20,13 +20,14 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "test-secret-grants";
 
 const GRANTS = {
   tenants: {
-    firm: { accounts: "*", users: { "senior@firm.example": "*", "junior@firm.example": ["celta"] } },
+    firm: { accounts: ["celta"], users: { "junior@firm.example": ["celta"] } },
     trial: { accounts: ["aurora", "zephyr", "petcary"], users: { "*@vendor.example": "*", "one@other.example": ["aurora"] } },
   },
+  people: { "senior@firm.example": { run: true, manage: true, everything: true } },
 };
 
 test("accountsForEmail: exact, domain-wildcard, tenant-grant expansion, union, and the misses", () => {
-  assert.equal(accountsForEmail("senior@firm.example", GRANTS), "*", "user '*' on an accounts:'*' tenant = everything");
+  assert.equal(accountsForEmail("senior@firm.example", GRANTS), "*", "a person with access to everything = everything");
   assert.deepEqual(accountsForEmail("junior@firm.example", GRANTS), ["celta"]);
   assert.deepEqual(accountsForEmail("anyone@vendor.example", GRANTS).sort(), ["aurora", "petcary", "zephyr"], "*@domain expands to the tenant grant");
   assert.deepEqual(accountsForEmail("one@other.example", GRANTS), ["aurora"]);
@@ -45,7 +46,30 @@ test("loadGrants: unset = null (off); set-but-broken THROWS (a configured guest 
     writeFileSync(join(dir, "bad.json"), "{\"nope\":1}");
     assert.throws(() => loadGrants({ grantsPath: join(dir, "bad.json") }), /malformed/);
     writeFileSync(join(dir, "ok.json"), JSON.stringify(GRANTS));
-    assert.equal(loadGrants({ grantsPath: join(dir, "ok.json") }).tenants.firm.accounts, "*");
+    assert.deepEqual(loadGrants({ grantsPath: join(dir, "ok.json") }).tenants.firm.accounts, ["celta"]);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// THE TREE AND THE PEOPLE ARE CHECKED AT THE READ, driven through the real loader on a real file: a
+// refusal observed once rather than assumed. The first case is the one a single-organisation install can
+// never exercise — two organisations listing one company — so it is planted here instead of waited for.
+test("loadGrants refuses a company in two organisations, a wildcard organisation, and a malformed person", () => {
+  const dir = mkdtempSync(join(tmpdir(), "grants-tree-"));
+  const refuses = (g, re) => {
+    writeFileSync(join(dir, "g.json"), JSON.stringify(g));
+    assert.throws(() => loadGrants({ grantsPath: join(dir, "g.json") }), re);
+  };
+  try {
+    refuses({ tenants: { a: { accounts: ["aurora"] }, b: { accounts: ["zephyr", "aurora"] } } },
+      /account "aurora" is listed under both tenants\.a and tenants\.b/);
+    refuses({ tenants: { a: { accounts: "*" } } }, /tenants\.a\.accounts is "\*".*"everything": true/);
+    refuses({ tenants: {}, people: { "x@y.example": { mange: true } } }, /people\."x@y\.example"\.mange is not a field/);
+    refuses({ tenants: {}, people: { "x@y.example": { run: "yes" } } }, /must be true or false/);
+    refuses({ tenants: {}, people: { "*@y.example": { manage: true } } }, /staff-by-domain rule this product removed/);
+    refuses({ tenants: { a: { name: "", accounts: [] } } }, /tenants\.a\.name/);
+    // `generic` is not a company, so two organisations may each carry it without colliding.
+    writeFileSync(join(dir, "g.json"), JSON.stringify({ tenants: { a: { accounts: ["generic"] }, b: { accounts: ["generic"] } } }));
+    assert.doesNotThrow(() => loadGrants({ grantsPath: join(dir, "g.json") }));
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -207,14 +231,24 @@ test("examples/grants.example.json loads through loadGrants and grants what it l
   const path = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "examples", "grants.example.json");
   const g = loadGrants({ grantsPath: path });
   assert.ok(g && typeof g.tenants === "object", "the shipped example is a well-formed grants file");
-  assert.ok(Object.keys(g.tenants).length >= 2, "it shows more than one tenant, which is the point of the file");
+  assert.ok(Object.keys(g.tenants).length >= 2, "it shows more than one organisation, which is the point of the file");
 
-  // Each documented resolution path is exercised by a row: a tenant-wide "*", a narrower per-user
-  // list, and a *@domain wildcard. An example that only ever produced "*" would teach nothing.
-  assert.equal(accountsForEmail("principal@firm.example", g), "*", "a user of '*' on an accounts:'*' tenant sees everything");
-  assert.deepEqual(accountsForEmail("associate@firm.example", g), ["demo-brand-owner"], "a per-user list narrows inside the tenant");
-  assert.deepEqual(accountsForEmail("anyone@brand-owner.example", g), ["demo-brand-owner"], "*@domain expands to the tenant's grant");
-  assert.deepEqual(accountsForEmail("stranger@nowhere.example", g), [], "an address in no tenant is granted nothing");
+  // Each kind of person the model has is exercised by a row: access to everything, a whole organisation
+  // by domain, one company from outside its organisation, an organisation's manager, and the view-only
+  // person. An example that only ever produced "*" would teach nothing.
+  const you = resolvePerson("you@install.example", g);
+  assert.equal(you.accounts, "*", "the person who installed sees everything");
+  assert.deepEqual(you.permissions, { run: true, manage: true });
+  assert.deepEqual(accountsForEmail("anyone@demo-org.example", g), ["demo-brand-owner"], "*@domain expands to the organisation");
+  const consultant = resolvePerson("consultant@outside.example", g);
+  assert.deepEqual(consultant.accounts, ["demo-brand-owner"], "one company, from outside its organisation");
+  assert.deepEqual(consultant.genericOrgs, [], "and never that organisation's Generic");
+  const reviewer = resolvePerson("reviewer@partner.example", g);
+  assert.deepEqual(reviewer.genericOrgs, ["evaluation"], "an organisation with no company yet still has its Generic");
+  assert.ok(reviewer.permissions.manage, "and a manager");
+  assert.deepEqual(resolvePerson("observer@partner.example", g).permissions, { run: false, manage: false },
+    "no entry under people: the view-only person");
+  assert.deepEqual(accountsForEmail("stranger@nowhere.example", g), [], "an address in no organisation is granted nothing");
 
   // `generic` is the house account and portal-access.mjs strips it from every client grant, so a
   // client tenant granted only `generic` resolves to no principal at all. An example that named it

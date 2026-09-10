@@ -162,7 +162,6 @@ function portalEnv(port) {
     PORTAL_LOCAL_CREDENTIAL: join(mkdtempSync(join(tmpdir(), "listen-cred-")), "credential.json"),
     CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     PORTAL_SECRET: "listen-test-secret",
-    PORTAL_STAFF_DOMAINS: "example-firm.com",
     CLEAROTRON_ACCESS_FILE: grants,
     CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "listen-pool-")),
     CLEAROTRON_WORK_DIR: mkdtempSync(join(tmpdir(), "listen-ws-")),

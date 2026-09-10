@@ -69,7 +69,7 @@ Recurring confusion, settled: "we configure the MCP servers at the edge" is true
 fills the same three roles, and the product requires none of them by name.
 
 1. **Edge auth (T5, dashboard):** the tunnel routes each public hostname to a loopback port, and a
-   CF Access app decides *who* may reach it (staff domain gate; client per-email policy; dev app).
+   CF Access app decides *who* may reach it (your own domain; outside people per email; dev app).
 2. **Local verification (T4, unit files):** every service *independently re-verifies* the CF Access
    JWT. For that it needs the team + the app's AUD tag — so `CF_ACCESS_TEAM`/`CLEAROTRON_OIDC_AUDIENCE`/
    `MCP_ALLOWED_EMAIL_DOMAINS` appear in unit files as **mirrors of the dashboard**, not a second
@@ -328,7 +328,7 @@ which collided with a co-hosted warm-MCP block, so keep any unit override that n
 `CLIENT_MCP_SESSION_TTL_MS`, `CLIENT_MCP_SESSION_MAX`, `CLIENT_MCP_RATE_PER_MIN`, `CLIENT_MCP_URL`,
 `CLIENT_MCP_TOKEN_ONLY`, `CLIENT_MCP_AUTH_DISABLED` / `CLIENT_MCP_DEV` (dev seams — never set in prod). CF mirrors (T5): `CF_ACCESS_TEAM`, `CLEAROTRON_OIDC_AUDIENCE`,
 `CLEAROTRON_CLIENT_OIDC_AUDIENCE`, `MCP_ALLOWED_EMAIL_DOMAINS`, `MCP_ALLOWED_EMAILS`. Admin services:
-`PORTAL_SERVICE_PORT` (18802) / `PORTAL_SERVICE_HOST`, `PORTAL_STAFF_DOMAINS`, `PORTAL_MCP_URL`,
+`PORTAL_SERVICE_PORT` (18802) / `PORTAL_SERVICE_HOST`, `PORTAL_MCP_URL`,
 `PORTAL_RATE_PER_MIN`, `PORTAL_LOCAL_WORKER` (set only by `bin/start.mjs` when it supervises a worker,
 and what licenses the portal to say a queued job is waiting for one — a deployed instance drains via
 systemd, writes no heartbeat, and must keep saying "waiting to start" rather than invent an alarm),
@@ -391,7 +391,7 @@ the test box and production both bind 127.0.0.1 behind a tunnel.
 
 Local mode adds two values and no third: `PORTAL_LOCAL_USER` is the one email address that signs in
 (mandatory in that mode — the service refuses to start without it, and the address must ALSO be enrolled
-in `CLEAROTRON_ACCESS_FILE` or on a staff domain, because signing in is not being enrolled), and
+in `CLEAROTRON_ACCESS_FILE`, because signing in is not being enrolled), and
 `PORTAL_LOCAL_CREDENTIAL` optionally relocates the credential file, which otherwise lives at
 `~/.cordillera/portal-local-credential.json` (mode 0600, never in the repository and never inside the
 pool or the archive). `PORTAL_SECRET` is required in BOTH modes and signs both token families — the

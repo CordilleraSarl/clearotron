@@ -276,7 +276,9 @@ function allowanceFor(profile, { scope, now }) {
   // The queue dirs the runner drains — the ledger sits beside each of them (usage-ledger.mjs).
   try { usage = accountUsage({ queueDirs: config.queueDirs, account: profile.key, now }); } catch { usage = null; }
   const shared = {
-    capped: scope?.kind === "account",
+    // Capped means the daily allowance binds this session: an account session, except a person with
+    // access to everything, whose jobs are never stamped for the cap (shared/scope.mjs authorize).
+    capped: scope?.kind === "account" && scope?.everything !== true,
     dailyRuns,
     monthlyRuns: caps?.monthlyRuns ?? null,
     maxQueued: caps?.maxQueued ?? null,

@@ -44,14 +44,48 @@ test("`sub` COMES FROM THE PRINCIPAL AND NEVER FROM THE REQUEST", () => {
   }
 });
 
-test("an unenrolled identity is refused BEFORE anything is minted", () => {
+test("an unenrolled identity is refused BEFORE anything is minted", async () => {
   // Same reason `clearotron connect` refuses: a key issued to an identity the guest list never heard of
   // authenticates and is then refused on every request — a credential that opens nothing, handed to a
   // reader who then believes they are finished.
-  assert.match(ROUTE, /accountsForEmail\(identity, loadGrants\(\)\)/, "enrolment is not checked");
-  assert.match(ROUTE, /not_enrolled/, "an unenrolled caller is not refused by name");
-  const refusal = ROUTE.indexOf("not_enrolled");
-  assert.ok(refusal < ROUTE.indexOf("mintToken"), "the key is minted before enrolment is checked");
+  //
+  // Enrolled means a principal exists, and the DOOR decides it: an address with no access anywhere gets no
+  // principal and is refused there, before the route reads anything else. Driven through the route rather
+  // than read off its source, because the expression that used to do this job is gone.
+  const { makePortalService } = await import("../portal-service.mjs");
+  const grants = { tenants: {
+    celta: { accounts: ["aurora"], users: { "cli@celta.example": ["aurora"] } },
+    // An organisation that holds no company yet: its person reaches only its Generic.
+    evaluation: { accounts: [], users: { "org@evaluation.example": "*" } },
+  } };
+  const lines = [];
+  const svc = makePortalService({ poolRoot: "/nonexistent", workspaceRoot: "/nonexistent", secret: "s", grants,
+    auditLog: (line) => lines.push(String(line)) });
+  const issued = () => lines.filter((l) => l.startsWith("connect-key issued"));
+  // BOTH SET, so the route CAN mint: without the address it stops at 409 no_connector, and without the
+  // secret mintToken throws to a 503 — and the refusal below would then pass on either, not on the door.
+  const saved = { url: process.env.CLEAROTRON_CLIENT_MCP_URL, secret: process.env.TRADEMARK_MCP_TOKEN_SECRET };
+  process.env.CLEAROTRON_CLIENT_MCP_URL = "https://connector.example/mcp";
+  process.env.TRADEMARK_MCP_TOKEN_SECRET = "connect-key-test-secret";
+  try {
+    const stranger = await svc.route("POST", "/portal/api/connect-key", { email: "who@nowhere.example" }, {});
+    assert.equal(stranger.status, 403, `an address with no access anywhere is refused at the door: ${JSON.stringify(stranger.json)}`);
+    assert.equal(stranger.json?.key, undefined, "and is handed no key");
+    assert.deepEqual(issued(), [], "nothing was minted for it — no issuance was recorded");
+
+    // THE CONTROL: the same route mints for an enrolled caller, so the refusal above is the door and not a
+    // route that mints for nobody. The organisation-level person holds no company of their own, which is
+    // exactly the reach a company-list check read as not enrolled.
+    for (const email of ["cli@celta.example", "org@evaluation.example"]) {
+      const r = await svc.route("POST", "/portal/api/connect-key", { email }, {});
+      assert.equal(r.status, 200, `${email}: ${JSON.stringify(r.json)}`);
+      assert.ok(typeof r.json.key === "string" && r.json.key.startsWith("v1."), `${email} was minted a key`);
+    }
+    assert.deepEqual(issued(), ["connect-key issued for=cli@celta.example", "connect-key issued for=org@evaluation.example"]);
+  } finally {
+    if (saved.url === undefined) delete process.env.CLEAROTRON_CLIENT_MCP_URL; else process.env.CLEAROTRON_CLIENT_MCP_URL = saved.url;
+    if (saved.secret === undefined) delete process.env.TRADEMARK_MCP_TOKEN_SECRET; else process.env.TRADEMARK_MCP_TOKEN_SECRET = saved.secret;
+  }
 });
 
 test("the response is NEVER CACHED, and the audit line records who — never what", () => {

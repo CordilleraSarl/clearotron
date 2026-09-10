@@ -36,11 +36,12 @@ test('THE ORGANISATION SURVIVES, LABELLED, in the identity corner', () => {
   const corner = body.slice(body.indexOf('marginLeft:'))
   assert.match(corner, /className="eyebrow">Organisation</)
   assert.doesNotMatch(corner, /className="eyebrow">Account</, 'the account noun is retired from the bar')
-  // — a staff identity is labelled with the OPERATOR, read from the brand seam. It used to be the
-  // string literal 'Cordillera', so every fork of this portal labelled its own staff with a Swiss firm's
-  // name. Pinned as a source assertion because the failure it guards is silent: a literal put back here
-  // renders correctly on the deployment that wrote it and wrongly on every other one.
-  assert.match(body, /const accountName = me\.brand \|\| null/)
+  // The label reads the ORGANISATION the server resolved — never the brand setting, and never a literal.
+  // It used to be the string 'Cordillera', so every fork of this portal labelled its people with a Swiss
+  // firm's name; then the brand seam, which is one name for the whole install and would print the
+  // operator's name over a customer's screens on a hosted install. Pinned as a source assertion because
+  // the failure it guards is silent: it renders correctly on the deployment that wrote it.
+  assert.match(body, /const accountName = organisations\.length === 1 \?/)
   assert.doesNotMatch(body, /role === 'staff' \? '[A-Z]/,
     'the operator label is the brand seam, never a hardcoded operator name')
 })
@@ -50,7 +51,7 @@ test('THE IDENTITY CORNER IS RENDERED ONLY WHERE THERE IS A TRUE ANSWER', () => 
   // three, where it picked one of their CLIENTS at random and labelled it their identity. That whole
   // branch is gone; the slot now carries the organisation and nothing else. What survives is the rule
   // that produced it: an answer we do not have is not rendered.
-  assert.match(body, /const accountName = me\.brand \|\| null/)
+  assert.match(body, /const accountName = organisations\.length === 1 \?/)
   assert.match(body, /!mobile && accountName \?/, 'no answer ⇒ no block, never a placeholder dash')
   assert.doesNotMatch(body, /: '—'/, 'and never a placeholder dash where a name belongs')
 })
@@ -71,7 +72,12 @@ test('ONE SLOT, ONE NOUN: the identity corner can never name a company', () => {
   assert.ok(derivation, 'the identity corner resolves its name in one place')
   assert.doesNotMatch(derivation, /ownerName|accounts\[/,
     'the identity corner names the organisation and can reach no company name')
-  assert.match(body, /const accountName = me\.brand/, 'and it reads the organisation from the brand seam')
+  assert.match(derivation, /organisations/, 'and it reads the organisations the server resolved')
+  assert.doesNotMatch(derivation, /me\.brand/, 'never the brand setting, which is one name for the whole install')
+  // THE SECOND CASE. A person who can see several organisations is inside none of them in particular,
+  // so the slot is EMPTY for them — and the derivation's only non-null branch is the exactly-one case.
+  assert.match(derivation, /organisations\.length === 1 \?/, 'a name only for exactly one organisation')
+  assert.match(derivation, /: null$/, 'and nothing otherwise — several organisations name none of them')
 })
 
 test('THE SWITCHER LABELS THE GROUP IT GOVERNS', () => {
@@ -82,18 +88,18 @@ test('THE SWITCHER LABELS THE GROUP IT GOVERNS', () => {
   // The split is read off each entry's `scope`, never off role and never off a hardcoded id list — so a
   // new screen lands on the correct side by declaring one field, and cannot land on the wrong side by
   // being inserted at the wrong index.
-  assert.match(body, /navGroupsFor\(role\)/)
+  assert.match(body, /navGroupsFor\(me\)/)
   assert.match(body, /entries=\{groups\.account\}/)
   assert.match(body, /entries=\{groups\.owner\}/)
-  assert.doesNotMatch(body, /navFor\(role\)/, 'the sidebar is drawn from the two groups, never as one flat list')
+  assert.doesNotMatch(body, /navFor\(me\)/, 'the sidebar is drawn from the two groups, never as one flat list')
 })
 
-test('the avatar menu is MAPPED FROM DATA — no role guard around a staff path in the markup', () => {
+test('the avatar menu is MAPPED FROM DATA — no permission guard around a gated path in the markup', () => {
   // nav.config's own opening rule: role gating is one field there, never `{role === 'staff' && …}` in
   // the shell. It is also load-bearing for the test that scans every navigation literal and checks it
   // resolves for BOTH roles — that scan cannot see a JSX guard, so a staff-only literal in the markup
   // reads as a dead link for clients, and it would be right to.
-  assert.match(body, /avatarMenuFor\(role\)\.map/)
+  assert.match(body, /avatarMenuFor\(me\)\.map/)
   assert.doesNotMatch(body, /go\('\/portal\/admin/, 'no admin path is written out in the shell')
 })
 

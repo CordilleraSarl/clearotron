@@ -35,15 +35,16 @@ export const PATH_FIELDS: ReadonlySet<string> = new Set(['frameworkPath', 'worke
 /**
  * Which read-only rows this reader may see.
  *
- * A client loses nothing: the framework's human title is rendered from the manifest either way, and it
+ * Nobody else loses anything: the framework's human title is rendered from the manifest either way, and it
  * is the thing they were actually asking about. The path only ever answered "where does Cordillera keep
- * that file". Staff keep the paths, because they are the ones who go and open the file.
+ * that file". A person with access to everything keeps the paths: they are the ones
+ * who go and open the file.
  */
 export function visibleReadOnlyFields(
   readOnly: Readonly<Record<string, unknown>>,
-  staff: boolean,
+  everything: boolean,
 ): readonly string[] {
-  return CODE_OWNED.filter((k) => readOnly[k] !== undefined && (staff || !PATH_FIELDS.has(k)))
+  return CODE_OWNED.filter((k) => readOnly[k] !== undefined && (everything || !PATH_FIELDS.has(k)))
 }
 
 /**

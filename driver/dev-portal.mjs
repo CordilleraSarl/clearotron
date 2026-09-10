@@ -87,6 +87,8 @@ export const DEV_COCKPIT_JOB_FIELDS = Object.freeze({
     projectKey: "spec-62 engagements are a customer-configuration surface; this form has no project picker "
       + "and inventing one here would let a dev job claim an overlay nobody chose.",
     parentRunId: "escalation lineage. Nothing on this form can name a parent run.",
+    tenant: "which organisation's Generic a run is filed under. The portal and the connector stamp it from a "
+      + "verified person; this dev form has no person to resolve it from, so a dev Generic run is filed under none.",
     customerUnknown: "arms candidate-self classification. A dev form cannot honestly say the applicant was "
       + "neither stated nor implied — the Customer box above states it or leaves it blank.",
     brief: "the intake confirmation brief, written by the email door's own gate. There is no such gate here.",

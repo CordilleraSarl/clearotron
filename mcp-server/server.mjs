@@ -30,7 +30,7 @@ import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
-import { enumerateRuns, resolveRun, runAccountKey } from "./lib/runs.mjs";
+import { enumerateRuns, resolveRun, runAccountKey, runOrganisation } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
 import { PRODUCTS } from "../driver/products.mjs";
 
@@ -765,7 +765,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     if (Array.isArray(scope?.accounts) && authedArgs?.runId != null) {
       try {
         const run = resolveRun(String(authedArgs.runId));
-        if (run) assertAccountAccess(scope, runAccountKey(run), `run "${authedArgs.runId}"`);
+        if (run) assertAccountAccess(scope, runAccountKey(run), `run "${authedArgs.runId}"`, runOrganisation(run));
       } catch (e) {
         log(`account deny ${name} [${scope.sub ?? scope.kind}]: ${e.message}`);
         return { isError: true, content: [{ type: "text", text: `FORBIDDEN (${name}): ${e.message}` }] };
@@ -797,7 +797,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     const runs = scope.kind === "user"
       ? (() => { const r = scope.runId && resolveRun(scope.runId); return r ? [r] : []; })()
       : enumerateRuns()
-          .filter((r) => !Array.isArray(scope?.accounts) || accountVisible(scope, runAccountKey(r)))
+          .filter((r) => !Array.isArray(scope?.accounts) || accountVisible(scope, runAccountKey(r), runOrganisation(r)))
           .slice(0, 8).map((r) => ({ ...r, P: paths(r.runDir) }));
     // A user (report-link) token sees ONLY the report (one report — never a second version by another
     // name), never the internal KEY_ARTIFACTS (narrative/audit/run.jsonl/…) — the same gate authorize()
@@ -838,7 +838,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
       throw new Error("forbidden: a client may only read the report");
     const run = resolveRun(reqRunId);
     if (!run) throw new Error(`run not found: ${m[1]}`);
-    if (Array.isArray(scope?.accounts)) assertAccountAccess(scope, runAccountKey(run), `run "${reqRunId}"`);
+    if (Array.isArray(scope?.accounts)) assertAccountAccess(scope, runAccountKey(run), `run "${reqRunId}"`, runOrganisation(run));
     const path = artifactPath(run, reqArtifact);
     if (!path || !existsSync(path)) throw new Error(`artifact not found: ${m[2]}`);
     // CLIENT VIEW ( R1): the Resources surface is a second door to the same bytes — it applies the
@@ -957,32 +957,27 @@ export function filterByAccounts(scope, name, result) {
   // one status-scan per call builds runId → account for the array filters
   const accountOf = () => {
     const map = new Map();
-    for (const r of enumerateRuns()) map.set(r.runId, runAccountKey(r));
+    for (const r of enumerateRuns()) map.set(r.runId, { account: runAccountKey(r), organisation: runOrganisation(r) });
     return map;
   };
+  const seen = (map, id) => { const o = id != null ? map.get(id) : null; return o != null && accountVisible(scope, o.account, o.organisation); };
   if (name === "list_profiles" && result && Array.isArray(result.clients))
     return { ...result, clients: result.clients.filter((c) => scope.accounts.includes(c.key)) };
   if ((name === "list_runs" || name === "search_runs") && Array.isArray(result)) {
     const map = accountOf();
-    return result.filter((r) => {
-      const id = r.runId ?? r.id ?? null;
-      return id != null && accountVisible(scope, map.get(id) ?? null);
-    });
+    return result.filter((r) => seen(map, r.runId ?? r.id ?? null));
   }
   // search_runs answers an OBJECT ({query, mode, scope, runsScanned, hits, truncated}) — the array
   // guard above never matched it, so scoped sessions saw EVERY hit — a real cross-account content
   // leak. Filter the hits by their run's account like the array shapes.
   if (name === "search_runs" && result && Array.isArray(result.hits)) {
     const map = accountOf();
-    const hits = result.hits.filter((h) => {
-      const id = h.runId ?? h.id ?? null;
-      return id != null && accountVisible(scope, map.get(id) ?? null);
-    });
+    const hits = result.hits.filter((h) => seen(map, h.runId ?? h.id ?? null));
     return { ...result, hits, ...(typeof result.count === "number" ? { count: hits.length } : {}) };
   }
   if (name === "list_outbox_events" && result && Array.isArray(result.events)) {
     const map = accountOf();
-    const events = result.events.filter((ev) => ev.runId != null && accountVisible(scope, map.get(ev.runId) ?? null));
+    const events = result.events.filter((ev) => seen(map, ev.runId ?? null));
     return { ...result, events, count: events.length };
   }
   return result;

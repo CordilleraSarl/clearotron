@@ -234,23 +234,33 @@ test("a real confirmation token cannot be replayed as a session, and a real sess
 test("a local sign-in reaches makePrincipal with the SAME { email } shape the CF path produces", () => {
   // The claim this file makes about itself: it produces an identity, not an authorization. The address
   // out of verifySession goes into makePrincipal untouched and is judged by the roster exactly as a
-  // Cloudflare-verified address is — staff by domain, client by grant, and a stranger gets nothing.
-  const grants = { tenants: { celta: { accounts: ["aurora"], users: { [USER]: ["aurora"] } } } };
-  const staffDomains = ["example-firm.com"];
+  // Cloudflare-verified address is — by that address's own entry in the grants file, and a stranger gets
+  // nothing.
+  const grants = { tenants: { celta: { accounts: ["aurora"], users: { [USER]: ["aurora"] } } },
+    people: { "lawyer@example-firm.com": { run: true, manage: true, everything: true } } };
 
   const client = verifySession({ token: mintSession({ email: USER, secret: SECRET }), secret: SECRET });
   assert.deepEqual(Object.keys(client), ["email"], "an identity is an email and nothing else — no role, no accounts, no claims");
-  assert.deepEqual(makePrincipal({ email: client.email, grants, staffDomains }),
-    { role: "client", email: USER, accounts: ["aurora"] });
+  assert.deepEqual(makePrincipal({ email: client.email, grants }),
+    { email: USER, everything: false, permissions: { run: false, manage: false },
+      access: [{ kind: "company", key: "aurora", org: "celta" }], accounts: ["aurora"],
+      organisations: ["celta"], genericOrgs: [], accountOrgs: { aurora: "celta" } },
+    "a granted address resolves to its company, and no entry under people holds both switches off");
 
   const staff = verifySession({ token: mintSession({ email: "lawyer@example-firm.com", secret: SECRET }), secret: SECRET });
-  assert.deepEqual(makePrincipal({ email: staff.email, grants, staffDomains }),
-    { role: "staff", email: "lawyer@example-firm.com", accounts: "*" });
+  assert.deepEqual(makePrincipal({ email: staff.email, grants }),
+    { email: "lawyer@example-firm.com", everything: true, permissions: { run: true, manage: true },
+      access: [{ kind: "everything" }], accounts: "*",
+      organisations: ["celta"], genericOrgs: ["celta"], accountOrgs: { aurora: "celta" } },
+    "an address whose own entry holds everything resolves to everything");
+  // …and it is that address's entry, not its domain: a colleague on the same domain holds nothing.
+  const colleague = verifySession({ token: mintSession({ email: "colleague@example-firm.com", secret: SECRET }), secret: SECRET });
+  assert.equal(makePrincipal({ email: colleague.email, grants }), null);
 
   // SIGNING IN IS NOT BEING ENROLLED. A perfectly valid session for an address the roster does not know
   // gets no principal, which is a 403 at the door — the same answer the edge path gives.
   const stranger = verifySession({ token: mintSession({ email: "who@nowhere.example", secret: SECRET }), secret: SECRET });
-  assert.equal(makePrincipal({ email: stranger.email, grants, staffDomains }), null);
+  assert.equal(makePrincipal({ email: stranger.email, grants }), null);
 });
 
 // ── the attempt limiter ────────────────────────────────────────────────────────────────────────────

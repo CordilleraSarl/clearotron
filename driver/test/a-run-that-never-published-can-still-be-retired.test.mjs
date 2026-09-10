@@ -45,8 +45,9 @@ function world(runs) {
   }
   const audits = [];
   const service = makePortalService({ poolRoot, workspaceRoot, secret: "s",
-    staffDomains: ["staff.example"],
-    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: {} } } }),
+    // STAFF is a person with access to everything — the /portal/admin gate the retire route sits behind.
+    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: {} } },
+      people: { "k@staff.example": { run: true, manage: true, everything: true } } }),
     audit: (row) => audits.push(row) });
   return { poolRoot, workspaceRoot, service, audits };
 }

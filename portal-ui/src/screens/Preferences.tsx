@@ -54,7 +54,8 @@ import type { CSSProperties } from 'react'
 import { useState } from 'react'
 import { Icon } from '../components/Icon.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { staffLabel, operatorName } from '../contract/api.ts'
+import { operatorName } from '../contract/api.ts'
+import { permissionsPhrase, accessChips } from '../shell/accessWords.ts'
 
 type Theme = 'light' | 'dark'
 
@@ -77,8 +78,6 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
     setThemeState(next)
   }
 
-  const role = ctx.me.role === 'staff' ? staffLabel(ctx.me.brand) : 'Client'
-
   return (
     <div className="screen">
       <div className="eyebrow">Settings</div>
@@ -94,20 +93,19 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
             <dd style={{ margin: 0, color: 'var(--text-strong)', wordBreak: 'break-all' }} data-anon="mark">
               {ctx.me.email || '—'}
             </dd>
-            <dt style={{ color: 'var(--text-muted)' }}>Role</dt>
-            <dd style={{ margin: 0, color: 'var(--text-strong)' }}>{role}</dd>
+            {/* What this person may DO, in the words People prints. No role noun: there is none. */}
+            <dt style={{ color: 'var(--text-muted)' }}>Permissions</dt>
+            <dd style={{ margin: 0, color: 'var(--text-strong)' }}>{permissionsPhrase(ctx.me.permissions)}</dd>
             {/*
-              Companies are listed only when the server actually sent a list. A staff identity is
-              granted everything, which arrives as a wildcard rather than as names — the roster is its
-              own endpoint — so rendering a count or a list for staff here would mean inventing one.
-              Saying what is true and stopping is the whole rule.
+              The points on the tree this person was given, named — the same chips People draws. A
+              person given the whole install holds one point, "Everything", which is a stated fact
+              rather than a list invented from a wildcard. Empty means the server recorded nothing,
+              and it says that rather than rendering a blank.
             */}
-            <dt style={{ color: 'var(--text-muted)' }}>Companies</dt>
+            <dt style={{ color: 'var(--text-muted)' }}>Access to</dt>
             <dd style={{ margin: 0, color: 'var(--text-strong)' }}>
-              {ctx.me.allAccounts ? (
-                `Every company ${operatorName(ctx.me.brand)} holds`
-              ) : ctx.me.accounts.length ? (
-                <span data-anon="mark">{ctx.me.accounts.join(', ')}</span>
+              {ctx.me.access.length ? (
+                <span data-anon="mark">{accessChips(ctx.me.access).map((c) => c.label).join(', ')}</span>
               ) : (
                 <span style={{ color: 'var(--text-muted)' }}>None recorded against this address.</span>
               )}

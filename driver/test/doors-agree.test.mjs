@@ -181,7 +181,12 @@ const stampFor = (req) => ({
 // STAFF acting for a named account. `generic` carries no default territories and no default product, so
 // a case that names it measures the REQUEST alone; `aurora` (seven default territories) and `zephyr`
 // (a default product and a one-name budget) are what reach the account-default arm.
-const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr", "generic"], users: { "cli@celta.example": ["aurora"] } } } };
+// The portal's requester holds Run (plan and run are gated on it) and access to everything, because a
+// case that names no account orders Generic, and ordering Generic stays with a person who sees everything.
+const GRANTS = {
+  tenants: { celta: { accounts: ["aurora", "zephyr", "generic"], users: { "cli@celta.example": ["aurora"] } } },
+  people: { "staff@example-firm.com": { run: true, manage: true, everything: true } },
+};
 const PRINCIPAL = { email: "staff@example-firm.com" };
 const accountOf = (req) => req.profileKey ?? "generic";
 
@@ -197,7 +202,6 @@ async function portalDoor(req) {
   const svc = makePortalService({
     secret: "s".repeat(32),
     grants: GRANTS,
-    staffDomains: ["example-firm.com"],
     trigger: async (job) => { sent = job; return { ok: true, id: job.id }; },
     audit: () => {},
   });
@@ -863,6 +867,8 @@ const PROBE = Object.freeze({
   forwarderDomain: "example.com", provider: "probe-provider", ref: "PROBE-REF", classes: [9],
   product: "prelim-search", recipeKey: "probe-recipe", deliveryRoute: "email", parentRunId: "probe-parent",
   customer: "Probe Customer", profileKey: "generic", projectKey: "probe-project",
+  // which organisation's Generic — the profile above is `generic`, so the field means something here
+  tenant: "probe-org",
   jurisdictions: ["US"], platforms: ["probe-platform"], goods: "probe goods",
   upfrontInstructions: "probe instructions", brief: "probe brief", rawRequest: "probe raw",
   deliverableSpec: "probe spec", commercialFlexibility: "probe flex", priorUse: "probe use",

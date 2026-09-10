@@ -190,3 +190,13 @@ export function runAccountKey(run) {
     return p.profileKey ?? p.key ?? null;
   } catch { return null; }
 }
+
+// A Generic run's organisation, from the same frozen sidecar. Null for a company's run, for one filed
+// before organisations existed, and for an unreadable sidecar — each of which the account gate treats as
+// visible only to a full-grant session.
+export function runOrganisation(run) {
+  try {
+    const p = JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"));
+    return typeof p.organisation === "string" && p.organisation ? p.organisation : null;
+  } catch { return null; }
+}
