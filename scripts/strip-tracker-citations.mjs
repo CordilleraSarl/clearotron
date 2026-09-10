@@ -58,7 +58,7 @@
 // wants a guard against reintroduction rather than a backlog. Different residue, different repair.
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { publishedOf } from "../shared/reference-guard-classes.mjs";
+import { publishedOf, wrapsInto } from "../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -69,9 +69,81 @@ const APPLY = process.argv.includes("--apply");
 // survives the replacement.
 export const OPENER = /((?:^|["'`(\[]|\/\/|\/\*|#|\*|·|──)\s*)(?:refs\s+)?tracker issues?\s+\d+\s*[—:–-]\s+/i;
 
+// ── THE SECOND MECHANICAL CASE: A CITATION STANDING BESIDE A SENTENCE, IN PARENTHESES ──────────────
+//
+// Measured before it was written, because "the sweep is nearly done" was false: two openers were left
+// and seven hundred and fifty citations were not openers at all. Of those, three hundred and twenty-one
+// sit in parentheses that hold the citation AND NOTHING ELSE, which makes them a label beside a
+// sentence rather than part of it — the same shape as an opener, wearing brackets.
+//
+// ONLY WHEN THE BRACKETS HOLD NOTHING ELSE, and that is the whole of the narrowing. Sixty-eight of them
+// read "(tracker issue NNN, owner's ruling 2026-09-07)" or "(tracker issue NNN / tracker issue NNN)",
+// where the brackets carry a ruling, a date or a second citation. Removing those brackets deletes
+// content, so they are not mechanical and they go to the reader with the rest. A pattern wide enough to
+// take them would be a pattern that deletes rulings.
+//
+// AND THE DRAWN RULE IS KEPT THE LENGTH IT WAS. A hundred and six of them sit in a box heading —
+// `// ── WHAT THIS DOES (tracker issue NNN) ─────────` — where removing twenty characters leaves the
+// rule twenty short and the heading ragged against every other heading in the file. Every one measured
+// uses U+2500 and sits in a .mjs or .yml comment, so there is no markdown `---` to mistake for a rule.
+// The replacement re-pads by exactly what it removed, which keeps the line the length it was and makes
+// the diff say "the citation left" rather than "this heading was reflowed".
+export const PARENTHETICAL = /[ \t]*\(\s*(?:refs\s+)?tracker issues?\s+\d+\s*\)/i;
+
+/**
+ * Remove a bracketed citation, keeping a trailing drawn rule as long as it was. PURE.
+ *
+ * Returns the line unchanged when the brackets hold anything besides the citation, which is the case
+ * the pattern above already declines to match.
+ */
+export function stripParenthetical(line) {
+  if (!PARENTHETICAL.test(line)) return line;
+  const was = line.length;
+  const out = line.replace(PARENTHETICAL, "");
+  const rule = /─+$/.exec(out);
+  if (!rule) return out;
+  return out.slice(0, rule.index) + "─".repeat(rule[0].length + (was - out.length));
+}
+
 // Any remaining citation, mechanical or not. The difference between this count and the opener count is
 // the hand-off: a citation inside a sentence cannot be removed without rewriting the sentence around it.
 export const ANY_CITATION = /\btracker issues?\s+\d+/i;
+
+// ── A LINE CARRYING ANOTHER CITATION IS NOT REWRITTEN, IT IS HANDED OFF ─────────────────────────────
+//
+// REWRITING A LINE RE-AGES EVERY CITATION ON IT. A diff has no notion of a partial edit: touching one
+// character puts the whole line on the added side, so a by-line citation that has sat there for months
+// becomes newly-added and fails the check that refuses new ones. Two lines in this tree are in that
+// state — the citation guard's own exemption table, which quotes synthetic fixture citations as DATA —
+// and rewriting them turned a strip into three new bare citations.
+//
+// MEASURED ON THE WRONG POPULATION FIRST, which is why this is written down rather than just fixed. I
+// checked the lines the sweep LEAVES and found none carrying a by-line citation, and reported the
+// hazard as absent. The hazard is on the lines the sweep REWRITES, and I had not looked at those at
+// all. An answer about the wrong set is not a smaller answer, it is a different question.
+// A DOT-EXTENSION, NOT A LIST OF THEM. Naming six extensions made this blind to the rest: the tree
+// carries three by-line citations outside that list — one into a stylesheet and two into a run log —
+// and any of them sitting on a sweepable line would have been rewritten and re-aged silently. It is the
+// `:<line>` that makes a citation, not which language the target happens to be written in. Widening it
+// changes nothing on today's tree, which is the point: the same answer from a rule that cannot go blind
+// the day somebody cites a seventh kind of file.
+// ── A CITATION THAT WRAPPED IS IN NEITHER PILE ─────────────────────────────────────────────────────
+//
+// Every rule here reads one line, so a citation broken across a line break is invisible to all of them:
+// `tracker issue` at the end of one line and its number at the start of the next matches no pattern,
+// counts in no total, and appears on no hand-off list. Thirty-six of them are in the tree. That is the
+// same shape as a line stripped before it is classified — not a smaller number, an absent one.
+//
+// FOUND AND HANDED OFF, NOT JOINED. Joining rewrites BOTH lines, which re-ages every citation on either
+// and re-flows the prose around them; and the removal itself is a sentence repair across a break, which
+// is precisely the work the hand-off exists for. So this makes them visible and stops there.
+// IT LIVES IN shared/ NOW, because the census needs the same answer. The residue census walked one line
+// at a time and was blind to exactly this class while this file could see it — two instruments over one
+// tree, disagreeing about what a citation is. Re-exported here rather than moved out of sight: this file
+// is where the rule is explained, and its arms import it from here.
+export { WRAPPED_HEAD, WRAPPED_TAIL, wrapsInto } from "../shared/reference-guard-classes.mjs";
+
+export const CARRIES_ANOTHER_CITATION = /[A-Za-z0-9_.\-/]+\.[A-Za-z0-9]+:\d+/;
 
 export const EXCLUDED = [
   // Citations used as literal test DATA — the corpus the citation guard is checked against.
@@ -87,12 +159,41 @@ export const EXCLUDED = [
   // only reason it surfaced: before that, these lines were counted and never listed.
   "scripts/strip-tracker-citations.mjs",
   "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs",
+  // The RELEASE-NOTE linter's own corpus. Its arm asserts that "Fixed: The demo works again — tracker
+  // issue 97." is refused, and the citation IS the specimen: sweep it and the arm asserts that a clean
+  // sentence is clean, which passes over a linter that has stopped looking. Same argument as the two
+  // files above, found by the sweep listing a line it should never take.
+  "driver/test/a-release-note-is-written-for-its-reader.test.mjs",
   // Pinned at a content hash; a prose repair is not worth spending a freeze on.
   "driver/publish/render.mjs",
+  // The residue FLOOR's own specimens. Seven citations here, every one a synthetic number (1234, 1235)
+  // inside a string this file writes to a temp tree or hands to the counter, so the guard can be checked
+  // against a known population. Sweeping them edits the corpus the floor is measured on, and the floor
+  // would then hold against something it had stopped counting — the same trap the two files above name,
+  // in the module that counts rather than the one that strips.
+  "driver/test/the-public-residue-is-a-floor.test.mjs",
 ];
 
+/**
+ * WHICH FILES THE SWEEP CAN SEE — and it could not see enough.
+ *
+ * This named six extensions and reported ZERO openers left, over a population that omitted every
+ * stylesheet, every unit file, the shell script, the HTML template, the React components and the
+ * dotfiles. Sixty-four citations sat in those, most of them the plainest mechanical case there is — a
+ * `/* tracker issue NNN — ` opening a comment — and the sweep's own report said the mechanical pass was
+ * finished. A filter that names file types cannot see the ones it omits, and the number it prints is
+ * true about its population and silent about the gap.
+ *
+ * The population is now the residue floor's: every tracked text file the public tree publishes. The two
+ * instruments disagreed about which files exist, which is a worse disagreement than the one their
+ * headers already explain.
+ */
+const SCANNABLE_EXT = /\.(mjs|md|yml|yaml|ts|tsx|js|jsx|json|css|html|sh|service|timer|toml)$/;
+const SCANNABLE_NAME = /^(?:.*\/)?\.(gitattributes|gitignore)$/;
+
 export const isScannable = (f) =>
-  /\.(mjs|md|yml|ts|js|json)$/.test(f) && !f.startsWith("portal-ui/dist/") && !EXCLUDED.includes(f);
+  (SCANNABLE_EXT.test(f) || SCANNABLE_NAME.test(f))
+  && !f.startsWith("portal-ui/dist/") && !EXCLUDED.includes(f);
 
 /** Per-file classification. PURE, and `read` is injected so an arm can drive it over a synthetic tree. */
 export function surveyOf(files, read) {
@@ -110,13 +211,29 @@ export function surveyOf(files, read) {
     // opener AND a second citation further along was stripped once, counted as done, and never reached
     // the hand-off list a person is told to read — its survivor was invisible in the one place it should
     // have been named. Test the RESULT: a line can be both stripped and still owed to a reader.
-    const out = text.split("\n").map((line, i) => {
-      const after = OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;
+    const lines = text.split("\n");
+    // The wrapped form, before the per-line rules: it belongs to a PAIR, so no single-line pass can see
+    // it. Reported at the line the citation starts on, which is the one a reader has to open.
+    lines.forEach((line, i) => {
+      if (wrapsInto(line, lines[i + 1])) handoff.push({ file: f, line: i + 1, text: `${line.trim()} ⏎ ${String(lines[i + 1]).trim()}`.slice(0, 200) });
+    });
+    const out = lines.map((line, i) => {
+      // Refused before either rule runs, so a line is never half-swept: it goes to the reader whole.
+      const holdBack = CARRIES_ANOTHER_CITATION.test(line);
+      const opened = !holdBack && OPENER.test(line) ? (n++, line.replace(OPENER, "$1")) : line;
+      const after = !holdBack && PARENTHETICAL.test(opened) ? (n++, stripParenthetical(opened)) : opened;
       if (ANY_CITATION.test(after)) handoff.push({ file: f, line: i + 1, text: after.trim() });
       return after;
     });
     if (n) { stripped[f] = n; strippedTotal += n; }
-    remainingTotal += out.filter((l) => ANY_CITATION.test(l)).length;
+    // COUNTED THE WAY THE HAND-OFF LIST IS BUILT, and the two used to disagree by exactly the wrapped
+    // ones. This was `out.filter(ANY_CITATION)` — one line at a time — and a wrapped citation matches on
+    // NEITHER of its lines alone, which is the whole reason it needed a pair-aware detector three lines
+    // up. So the list said 305 and this said 285, and the closing line is the number a reader quotes.
+    // A total that cannot see a class the same function already detects is worse than no total: it is
+    // low by a fixed amount, in the direction that flatters, and nothing about it looks wrong.
+    remainingTotal += out.filter((l) => ANY_CITATION.test(l)).length
+      + out.filter((l, i) => !ANY_CITATION.test(l) && wrapsInto(l, out[i + 1])).length;
     if (APPLY && n) writeFileSync(join(ROOT, f), out.join("\n"));
   }
   return { strippedTotal, remainingTotal, stripped, handoff, unreadable };

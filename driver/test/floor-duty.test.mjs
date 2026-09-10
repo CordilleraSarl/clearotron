@@ -117,7 +117,7 @@ test("#1117 one uri named by two placements is one duty, discharged once", () =>
 // are pinned by shape at the bottom of this file rather than by calling it.
 test("#1117 an EMPTY floors slice reconciles at zero and is a real answer", () => {
   const a = reconcileFloorDuty({ floors: [], placements: [placed(["/mark/cn/X"])] });
-  // `unanswerable` joined this shape when the duty became a delivery floor (tracker issue 1955). The
+  // `unanswerable` joined this shape when the duty became a delivery floor. The
   // assertion stays a whole-object deepEqual rather than relaxing to a subset: this pin is what says a
   // reader knows every field, and a subset match would let the next field arrive unnoticed.
   assert.deepEqual(a.totals, { floors: 0, accounted: 0, named_without_ground: 0, unanswered: 0, unanswerable: 0 });

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// — what the assess stage wrote, and what the published run actually carries (tracker issue 274).
+// — what the assess stage wrote, and what the published run actually carries.
 //
 // THE DEFECT WAS A WHITELIST, NOT A RULE. `knockoutReportData` projects an explicit list of keys, and
 // seven the assess stage writes into knockout-findings.json were simply not on it. Nothing had decided

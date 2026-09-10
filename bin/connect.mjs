@@ -54,7 +54,7 @@ import { atomicWrite } from "../driver/progress.mjs";
 // — F40. SERVER_INSTALL_SET is what `bin/start.mjs` re-exports as
 // BACKGROUND_UNITS; taken from shared/ so this verb does not reach into another bin/ entry point.
 import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mjs";
-import { checkoutMove, movePosture, describeMove, describeConflict } from "../shared/checkout-move.mjs";   // tracker issue 193
+import { checkoutMove, movePosture, describeMove, describeConflict } from "../shared/checkout-move.mjs";
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
@@ -62,13 +62,13 @@ import { looksLikeBusFailure, systemdSaid, userBusEnv, CAPTURE_STDERR,
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // `userBusEnv` and `busRemedy` MOVED TO shared/systemd-failure.mjs, unchanged, because
-// `start --background` needs the same answers and had none (tracker issue 203). Their reasoning went
+// `start --background` needs the same answers and had none. Their reasoning went
 // with them; this file imports them and passes `userBusEnv()` at every `systemctl` call it makes,
 // `showUnit` included — which is the property that makes deriving the bus safe here and is why `start`
 // does not do it at two of its five.
 
 /**
- * What a half-finished connect has ALREADY written by the time `step` failed — tracker issue 121.
+ * What a half-finished connect has ALREADY written by the time `step` failed.
  *
  * The reader's problem is not only that a step failed; it is not knowing whether to run `connect` again,
  * run `disconnect` first, or leave it alone. A message that names a command and stops leaves a
@@ -95,7 +95,7 @@ function alreadyApplied(step) {
 /**
  * A systemd failure, said in the reader's terms — the REASON first, then the remedy that fits it.
  *
- * TWO DEFECTS, ONE SITE (tracker issue 121). The calls ran with `stdio: "ignore"`, so systemd's own
+ * TWO DEFECTS, ONE SITE. The calls ran with `stdio: "ignore"`, so systemd's own
  * explanation was thrown away before anyone could read it and the whole output was `connect: Command
  * failed: systemctl --user daemon-reload`. And the bus remedy was appended to EVERY failure, so a unit
  * that would not start — a bound port, a bad ExecStart — told the reader to export XDG_RUNTIME_DIR: a
@@ -108,7 +108,7 @@ function alreadyApplied(step) {
 /**
  * Does this failure say the SESSION BUS is missing, rather than anything about the unit?
  *
- * ONE AUTHORITY, because two readers now ask it (tracker issue 130, criterion 3). The failure text
+ * ONE AUTHORITY, because two readers now ask it (criterion 3). The failure text
  * below offers the bus remedy on a yes, and the health reader refuses to translate a yes into "the door
  * is not open" — that mistranslation is the defect, and a second copy of this test is how the two would
  * come to disagree about which failures are bus failures.
@@ -172,7 +172,7 @@ function runningEnv() {
 }
 
 /**
- * Which tree each installed unit's LIVE process is executing (tracker issue 193).
+ * Which tree each installed unit's LIVE process is executing.
  *
  * NOT the units' env file, which is the file this verb is about to write — after the write the two
  * agree and the drift is invisible. The running processes are the only witnesses, and they are
@@ -282,11 +282,11 @@ function portOwnerOf(port, bound) {
 /**
  * Read properties off a user unit — the ONE place this file asks systemd anything read-only.
  *
- * ── WHY IT EXISTS (tracker issue 130, criterion 3) ───────────────────────────────────────────────────
+ * ── WHY IT EXISTS (criterion 3) ──────────────────────────────────────────────────────────────────────
  *
  * Two readers here called `systemctl --user show` directly and neither did what the WRITERS in this
- * same file already do: neither passed `userBusEnv()`, so both failed in exactly the shell tracker issue
- * 121 was filed about, and neither captured stderr, so systemd's own "Failed to connect to bus" went
+ * same file already do: neither passed `userBusEnv()`, so both failed in exactly the shell the
+ * refusal report was filed about, and neither captured stderr, so systemd's own "Failed to connect to bus" went
  * straight past the reader with no remedy beside it.
  *
  * The writers were fixed and these were missed, which made the product WORSE on this path rather than
@@ -370,7 +370,7 @@ export function unitIsHealthy(name, { show = showUnit, pause = settle } = {}) {
   pause(3000);
   const { fields: f, error } = show(name, ["ActiveState", "SubState", "NRestarts"]);
   if (error) {
-    // ── A BUS THAT COULD NOT BE REACHED IS NOT A DOOR THAT IS DOWN (tracker issue 130) ────────────
+    // ── A BUS THAT COULD NOT BE REACHED IS NOT A DOOR THAT IS DOWN ────────────────────────────────
     //
     // Returning false here is what made the operator worse off than before that fix.
     // The caller renders false as "the door is not open, so no key was issued" — a confident, wrong,
@@ -400,7 +400,7 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
   try { granted = accountsForEmail(identity, loadGrants()); } catch { granted = undefined; }
   // The env file the UNIT reads, not this shell — found by the drive: a shell-exported secret passed
   // every plan check while the door died at birth reading an env file that lacked it.
-  // ── THE PLAN CHECKED THE FILE AND THE MINT READ THE SHELL (tracker issue 130) ─────────────────────
+  // ── THE PLAN CHECKED THE FILE AND THE MINT READ THE SHELL ─────────────────────────────────────────
   //
   // `unitEnvHasSecret` below asks the UNIT'S ENV FILE, which is the right question for the DOOR: a
   // process reads its environment at start, so a secret that is only in this shell is one the door
@@ -425,7 +425,7 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
     portOwner: (p) => (p === have.port ? (portOwner ?? (portFree ? "free" : "stranger")) : "stranger") });
   if (!plan.possible) return { ok: false, blockers: plan.blockers, fix: plan.fix };
 
-  // ── A MACHINE-WIDE SETTING IS NOT THIS VERB'S TO MOVE IN SILENCE (tracker issue 193) ───────────────
+  // ── A MACHINE-WIDE SETTING IS NOT THIS VERB'S TO MOVE IN SILENCE ───────────────────────────────────
   //
   // `plan.settings` carries CLEAROTRON_CHECKOUT_DIR set to THIS checkout, and `setEnvValue` replaces
   // rather than preserves — so running this from a worktree repoints every unit's ExecStart and the
@@ -500,7 +500,7 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
     recordNote = "This key's id could not be read, so it was NOT recorded — `clearotron disconnect` cannot revoke it; it dies only at its own expiry.";
   } else {
     try {
-      // ── THE TRUE CAUSE, NOT WHATEVER THREW (tracker issue 130) ─────────────────────────────────
+      // ── THE TRUE CAUSE, NOT WHATEVER THREW ─────────────────────────────────────────────────────
       //
       // With no grants file configured this reached `atomicWrite(undefined, …)` and the reader got a
       // raw Node type error inside a client-facing sentence — a live key, outside `disconnect`'s
@@ -586,7 +586,7 @@ async function render(offer, have, { dryRun, running, allowMove = false }) {
     const bound = await portIsFree(have.port);
     const r = enableTheDoor({ have, identity, client: offer.client.id, dryRun, env: running.env,
       envKnown: running.known, portFree: bound, portOwner: portOwnerOf(have.port, bound), allowMove });
-    // SAID BEFORE THE OUTCOME, whichever way it goes (tracker issue 193): a reader who is about to be
+    // SAID BEFORE THE OUTCOME, whichever way it goes: a reader who is about to be
     // told the door is open needs to have already read that the deployment moved trees to open it.
     for (const line of r.moveSays ?? []) say(line);
     if (!r.ok) {
@@ -708,12 +708,12 @@ async function main() {
   return await render(whatItNeeds(chosen, have), have, { dryRun, running, allowMove: argv.includes("--allow-checkout-move") });
 }
 
-// THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND (tracker issue 121). Without the guard, importing
+// THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND. Without the guard, importing
 // this module to drive one of its message helpers RUNS THE WHOLE VERB — the arm for the half-applied
 // failure path opened an interactive prompt and hung the suite. `bin/clearotron.mjs` carries the same
 // guard for the same reason, written up there: "importing it to read the verb table would DISPATCH".
 //
-// Ten other files under bin/ still lack it. That is a class, filed as tracker issue 183 rather than
+// Ten other files under bin/ still lack it. That is a class, filed separately rather than
 // swept in here — each one needs verifying that it still runs as a command.
 if (isEntrypoint(import.meta.url)) {
   main().then((code) => process.exit(code ?? 0), (e) => { console.error(`connect: ${e.message}`); process.exit(2); });

@@ -74,7 +74,7 @@ test("whatIfRun refuses without a confirmation", async () => {
   await assert.rejects(() => whatif.whatIfRun({}), /confirmationToken/);
 });
 
-// ── THE MEMO DOOR (tracker issue 132) ────────────────────────────────────────────────────────────
+// ── THE MEMO DOOR ────────────────────────────────────────────────────────────────────────────────
 //
 // The capability was composed and unreachable: whatIfPlan minted a memo token, decodeOp validated it,
 // whatIfEnqueue answered the client `queued: true` — and whatIfRun, which the worker calls to execute
@@ -151,7 +151,7 @@ test("a memo over a CANCELLED run is still refused, and says why a memo in parti
   );
 });
 
-test("the memo door hands askArchivedRun a RESOLVER, not just a runId — tracker issue 132", async () => {
+test("the memo door hands askArchivedRun a RESOLVER, not just a runId", async () => {
   // The defect this pins. `askArchivedRun` reads `resolveRun` out of its second argument and has no
   // default for it: `reason` was given one and the resolver was not. Called bare, every memo on every
   // run came back `memo_run_unresolved` — while the resolver in this function had already resolved that

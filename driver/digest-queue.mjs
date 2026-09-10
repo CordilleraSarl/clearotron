@@ -108,7 +108,7 @@ export function markFlushed(queue, ids, flushedAt) {
 // fired its own pass. An invariant with an undeclared violation is worse than a narrower invariant
 // stated honestly, because the next reader trusts the wrong one — so the exemption is DECLARED here,
 // with the reason, and an arm censuses every dispatch site against this list. Silence between an
-// invariant and a violation is the defect (tracker issue 116).
+// invariant and a violation is the defect.
 //
 // WHY RECALL-RECONCILE CANNOT MINT — measured on the tree, not reasoned from the design:
 //

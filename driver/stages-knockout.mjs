@@ -21,7 +21,7 @@ const lines = (...xs) => xs.filter(Boolean).join("\n");
 const reads = (skillReads) => `First, read and follow exactly: ${skillReads.join(", ")}.`;
 
 /**
- * One line per owner the driver looked up, for the assess dispatch (tracker issue 276).
+ * One line per owner the driver looked up, for the assess dispatch.
  *
  * BOTH OUTCOMES ARE NAMED, and that is the point. A row whose search answered gets its payload path; a
  * row whose search did NOT answer says so in the dispatch itself. Listing only the answered ones would
@@ -67,8 +67,7 @@ export function koPaths(runDir) {
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
     registerRecords: driverDir(runDir, "register-records.json"),
-    // The scoped owner lookups this run owes its promoted filings, and their receipts (tracker issue
-    // 276). Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
+    // The scoped owner lookups this run owes its promoted filings, and their receipts. Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
     // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
     ownerChecks: driverDir(runDir, "owner-checks.json"),
     ownerCheckLedger: driverDir(runDir, "owner-check.jsonl"),
@@ -322,7 +321,7 @@ export const KO_STAGES = {
       existsSync(K.registerRecords)
         ? `THE REGISTER FILINGS THIS RUN ALREADY FETCHED — ${K.registerRecords}. Real records, retrieved before you started: owner, jurisdiction, status, classes, dates. Read them and WEIGH them for the marks you are rating. A registration on this list is evidence about the name it names — treat its owner, its scope and its vulnerability the way the firm-wide reasoning tells you to (revocability above the lowest band; an enforcer's portfolio profile; a crowd as a mitigant under its gating precondition). What you may NOT do is describe the lane that fetched them — see the coverage rule below.`
         : "",
-      // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED (tracker issue 276) ────────────────────────
+      // ── WHAT THE OWNER ACTUALLY SELLS, ALREADY SEARCHED ────────────────────────────────────────────
       //
       // The defect this closes is not that the seat lacked an instruction — it is that the seat had no
       // way to know. It was handed an owner's NAME and its class numbers and nothing else, so a read
@@ -401,7 +400,7 @@ export const KO_STAGES = {
       // ADDITIONAL TO `chunkSummary`, NOT A REPLACEMENT. The cross-mark paragraph still exists and still
       // owns the grouped page — the two are different documents for different readers, and collapsing
       // them is what produced the blank.
-      // ── STRUCTURE, AND A SCALE THAT HOLDS (tracker issues 1934 and 2056) ──────────────────────────
+      // ── STRUCTURE, AND A SCALE THAT HOLDS ─────────────────────────────────────────────────────────
       //
       // Owner, 2026-08-31, reading a delivered run: the per-mark opening was "now HUGE and formatted
       // even worse — no newlines, borderline not a summary". Measured on that run: 2,875 characters,

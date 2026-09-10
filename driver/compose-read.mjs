@@ -266,7 +266,7 @@ export function makeReadBudget({ perHour = 20 } = {}) {
  *
  * It used to say the client was built from `@anthropic-ai/sdk`, in the present tense, long after the
  * change recorded below moved this route through the engine door. The SDK has now been removed from
- * the manifests entirely (tracker issue 99) — nothing in the tree imports it.
+ * the manifests entirely — nothing in the tree imports it.
  */
 /**
  * Every way a parsed payload can fail to be a read, named.

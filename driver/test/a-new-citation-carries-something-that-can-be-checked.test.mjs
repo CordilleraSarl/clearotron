@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A NEW citation must carry something that can be checked — tracker issue 125.
+// A NEW citation must carry something that can be checked.
 //
 // The guard beside this one says out loud what it cannot see: a citation pointing at the WRONG LIVE LINE,
 // while that line is real code, reads as correct to every test it has. Of the line citations in this tree

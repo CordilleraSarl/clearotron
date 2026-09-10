@@ -81,7 +81,7 @@ test("1911 AN EMPTY STORE SAYS SO, and says what else it could mean", () => {
   // `generic` is the fallback the loader requires by name, not a brand owner anybody onboarded.
   // Counting it would tell an operator with an empty store that they have one.
   const out = doctorOver(store());
-  // The wording moved with tracker issue 342: the line now LEADS with the account an install rates
+  // The wording moved: the line now LEADS with the account an install rates
   // under, because a fresh install reported a brand owner it had and never named the one its runs
   // resolve to. What this arm pins is unchanged — that an empty store is named as such, and named
   // apart from a store pointed somewhere wrong.

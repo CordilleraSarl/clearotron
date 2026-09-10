@@ -83,7 +83,7 @@ const OVERLAY_BODY = `(function(){
   // Case-insensitive client lookup, and the reason it is not redundant: surfaces tag rows by profile
   // KEY ("coastline") and by display NAME ("Coastline"), so lowercasing both makes a single-token name
   // resolve to its key's alias. The two surfaces that tagged by NAME were Quality and Feedback, both
-  // retired (tracker issue 265) — the fold stays because it is what makes the lookup total over either spelling,
+  // retired — the fold stays because it is what makes the lookup total over either spelling,
   // not because those pages are coming back.
   var CL = {}; for(var ck in (C.clients||{})){ if(Object.prototype.hasOwnProperty.call(C.clients,ck)) CL[String(ck).toLowerCase()] = C.clients[ck]; }
   var KEYS = (DA.clientKeys||[]).map(function(x){return String(x).toLowerCase();});

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Crowds ride the hit list as a sibling array (Option A, ruled on tracker issue 95).
+// Crowds ride the hit list as a sibling array (Option A, ruled).
 //
 // WHY THIS EXISTS AT ALL. The locked design's acceptance 4 is that no stage reads the fat band or an
 // unpicked record — `band_lookup` answers from the list instead. A crowd is a zone that could NOT be

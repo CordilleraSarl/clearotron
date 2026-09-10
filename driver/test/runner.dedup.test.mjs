@@ -257,7 +257,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   for (const f of dupPackets) {
     const pk = JSON.parse(readFileSync(join(outbox, f), "utf8"));
     assert.equal(pk.kind, "duplicate-skipped");
-    // tracker issue 136 reworded this: it named no prior run, so a submitter could not tell a refusal
+    // This was reworded: it named no prior run, so a submitter could not tell a refusal
     // from a lost job. Asserted on the property rather than on the old phrase.
     assert.match(pk.text, /matches a matter already in progress|NOT run/i,
       `the park reads as silence rather than as a refusal: ${pk.text}`);

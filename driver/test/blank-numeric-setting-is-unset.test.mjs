@@ -94,8 +94,8 @@ test("#1340 a REAL value still works, including one that is legitimately zero-is
   withEnv({ CLEAROTRON_MAX_CLAIM_AGE_MS: "0" }, () => assert.equal(config.maxClaimAgeMs, 0,
     "an explicit 0 is a CHOICE and must survive — only a blank falls back"));
   withEnv({ CLEAROTRON_MAX_RETRIES: "0" }, () => assert.equal(config.maxRetries, 0));
-  // A non-numeric value keeps cardConcurrency's documented fallback rather than becoming NaN. Tracker
-  // issue 1875 made that fallback the ONE declared exemption from a named refusal and moved its own arm
+  // A non-numeric value keeps cardConcurrency's documented fallback rather than becoming NaN. A later
+  // change made that fallback the ONE declared exemption from a named refusal and moved its own arm
   // to numeric-setting-refuses.test.mjs, where the exemption is stated. Kept here because this file's
   // subject is the blank/zero boundary and a non-numeric value sits just outside it.
   withEnv({ CLEAROTRON_CARD_CONCURRENCY: "banana" }, () => assert.equal(config.cardConcurrency, 8));

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The digest-trigger funnel's invariant, enforced over the POPULATION of dispatch sites (tracker issue 116).
+// The digest-trigger funnel's invariant, enforced over the POPULATION of dispatch sites.
 //
 // WHY THIS ARM EXISTS. pipeline.mjs's funnel header said the queue is "the ONLY path to a non-fresh
 // re-digest" while `enforceRecallReconciliation` had always fired its own pass. Prose cannot hold an

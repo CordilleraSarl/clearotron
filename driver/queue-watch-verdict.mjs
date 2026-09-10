@@ -77,7 +77,7 @@ export function queueWatchVerdict({ queueDirs, watched, unitPath, unitError = nu
   // permission error still skips — a privilege-limited read that answers "fine" is the exact failure
   // this family of checks exists to refuse, and letting a worker unit talk it into a pass would put
   // that failure back one door along.
-  // ONE RULE, NOT A SECOND COPY OF IT (tracker issue 206). This predicate used to be spelled out here
+  // ONE RULE, NOT A SECOND COPY OF IT. This predicate used to be spelled out here
   // and nowhere else, and the drainer arm — deciding the same question about the same box — did not
   // read the units at all and applied the timer-era rule instead. Both arms now consult
   // drain-posture.mjs, so a box cannot be continuous for one of them and timer-shaped for the other.

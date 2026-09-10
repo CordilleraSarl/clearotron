@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The delivered narrative's coverage claims against what the run actually searched (tracker issue 134).
+// The delivered narrative's coverage claims against what the run actually searched.
 //
 // WHAT THIS IS ABOUT. `coverage_line:` is code-stamped from scope-facts.json; the narrative is prose a
 // model writes. Nothing bound them. On one recorded run the masthead read `registers: JP, WO` while the

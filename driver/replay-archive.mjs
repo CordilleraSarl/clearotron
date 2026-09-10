@@ -218,7 +218,7 @@ export function diffSnapshots(prev, curr) {
 function main() {
   const args = new Set(process.argv.slice(2));
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable already has this file, so
-  // renaming the default points the reader at one that does not exist. Owner ruling, tracker issue 308.
+  // renaming the default points the reader at one that does not exist. Owner ruling.
   const snapshotPath = process.env.CLEAROTRON_REPLAY_SNAPSHOT || join(homedir(), ".prelim-replay-snapshot.json");
   const roots = process.env.CLEAROTRON_REPLAY_ROOTS
     ? process.env.CLEAROTRON_REPLAY_ROOTS.split(":").filter(Boolean)

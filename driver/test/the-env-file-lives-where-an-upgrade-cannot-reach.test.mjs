@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 159, ruled on tracker issue 140 — `.env` moves to `~/.config/clearotron/`.
+// Ruled by the owner — `.env` moves to `~/.config/clearotron/`.
 //
 // WHAT THE MOVE FIXES, AND WHAT IT WOULD BREAK IF ONLY HALF OF IT LANDED. The wizard used to write the
 // operator's configuration — credentials included — into the package root, which on a global install is
@@ -39,7 +39,7 @@ const write = (p, text) => { mkdirSync(dirname(p), { recursive: true }); writeFi
 
 test("159 the file in force is the one an upgrade cannot reach", () => {
   assert.equal(ENV_LOCAL_LOCATION, "xdg-config",
-    "the ruling on tracker issue 140 put .env under ~/.config/clearotron/");
+    "the ruling put .env under ~/.config/clearotron/");
   const { repoRoot, home } = box();
   const p = envLocalPath({ repoRoot, home });
   assert.equal(p, join(home, ".config", "clearotron", ".env"));

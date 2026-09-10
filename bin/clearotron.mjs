@@ -204,7 +204,7 @@ const [verb, ...rest] = process.argv.slice(2);
     process.exit(code ?? 0);
   });
 
-  // ── A SIGNAL MUST REACH THE CHILD, BECAUSE THIS IS THE ONLY PID A READER CAN SEE (tracker issue 176) ─
+  // ── A SIGNAL MUST REACH THE CHILD, BECAUSE THIS IS THE ONLY PID A READER CAN SEE ─────────────────────
   //
   // The header above says this file "spawns and forwards, and does not look at what it is forwarding".
   // That was written about ARGUMENTS and read as though it covered signals, which it did not.

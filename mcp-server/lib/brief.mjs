@@ -135,8 +135,8 @@ export function buildBrief(run) {
         lines.push(`- **${m.name}** — ${band}.${d.url ? ` Report: ${d.url}` : ""}`);
         for (const f of (m.findings ?? [])) {
           const who = [f.name, f.owner].filter(Boolean).join(" — ");
-          // A PROMOTED REGISTER FILING SHOWS THE RATING AND THE READ THE SEARCH ACTUALLY MADE (tracker
-          // issue 274). This line used to print `net` alone, and for a register card `net` carried the
+          // A PROMOTED REGISTER FILING SHOWS THE RATING AND THE READ THE SEARCH ACTUALLY MADE. This
+          // line used to print `net` alone, and for a register card `net` carried the
           // stated "no rating of its own" — so the one hard legal right on a page was described here as
           // unrated even on runs where the assessment had written a full read of that exact filing and
           // the report was already printing it. The page and this briefing disagreed.

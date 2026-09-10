@@ -133,7 +133,7 @@ const mask = (key: string): string => (key.length > 3 ? `${key.slice(0, 3)}•�
  * decks, not by reading them — both instruments here ask whether the right row rendered and neither
  * asks whether the sentence reads.
  *
- * Owner's ruling 2026-09-06, tracker issue 147, option B: the generic row gets its own line and the
+ * Owner's ruling 2026-09-06, option B: the generic row gets its own line and the
  * approved sentence is left untouched for the three named ones. Option A — renaming the row to "your
  * assistant" — was the alternative, and it was rejected because it edits a line the owner approved in
  * order to repair a line he did not.

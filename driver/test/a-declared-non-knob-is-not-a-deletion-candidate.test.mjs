@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A name its own documentation calls "not a knob" is not a deletion candidate — tracker issue 350.
+// A name its own documentation calls "not a knob" is not a deletion candidate.
 //
 // THE CLASSIFIER KEYS ON THE NAME, and `tuning` is its residual — what a name falls to when no shape
 // matches. The deletion walk starts from `tuning` with no recorded set-site. So a name whose catalogue

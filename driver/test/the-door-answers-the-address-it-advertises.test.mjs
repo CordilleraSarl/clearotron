@@ -204,7 +204,7 @@ test("192 PLANTED AGAINST THE PORT, not the value — and an operator's own host
   await writeInstallEnv(envFile);
   assert.ok(valueOf(envFile, "TRADEMARK_MCP_ALLOWED_HOSTS").includes("127.0.0.1:29790"), "the first apply did not derive");
 
-  // The operator moves the port by hand and adds a host of their own — the two edits tracker issue 197
+  // The operator moves the port by hand and adds a host of their own — the two edits the report
   // was filed for, on the door that had no writer at all until now.
   let body = readFileSync(envFile, "utf8")
     .replace(/^TRADEMARK_MCP_HTTP_PORT=.*$/m, "TRADEMARK_MCP_HTTP_PORT=29795")

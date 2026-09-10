@@ -7,7 +7,7 @@
 // Two readers, one file (the knockout doctrine, as it stood): the assistant drafts client-facing mail
 // from it, and the portal's native-render path reads it instead of iframing baked HTML.
 //
-// THE TWO LANES DIVERGED ON 2026-09-07 AND THIS FILE DID NOT MOVE. The owner ruled (tracker issue 274)
+// THE TWO LANES DIVERGED ON 2026-09-07 AND THIS FILE DID NOT MOVE. The owner ruled
 // that the KNOCKOUT report carries the reviewer's notes, on the ground that one report is read by the
 // person who ran Clearotron and holding material back confuses where data went; render-knockout.mjs
 // projects them under `reviewerNotes`. That ruling was about those notes on that lane. It did not touch

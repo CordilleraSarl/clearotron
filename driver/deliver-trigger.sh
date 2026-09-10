@@ -21,7 +21,7 @@
 # the prelim-outbox.timer rescan owns the delivery at a sane cadence).
 set -u
 
-# tracker issue 774 — this fallback chain MIRRORS driver.config.mjs (`outboxDir` = CLEAROTRON_OUTBOX_DIR, else
+# this fallback chain MIRRORS driver.config.mjs (`outboxDir` = CLEAROTRON_OUTBOX_DIR, else
 # <workspaceRoot>/prelim-outbox; `workspaceRoot` = CLEAROTRON_WORK_DIR, else $HOME/trademark/workspace).
 # It is a second derivation of the same answer in a language that cannot import the first, so it moves
 # whenever that one does. If they disagree, the driver writes markers where this script never looks and
@@ -37,7 +37,7 @@ DRAIN_WAIT="${CLEAROTRON_OUTBOX_DRAIN_WAIT:-180}"
 WAKE_MODEL="${CLEAROTRON_OUTBOX_WAKE_MODEL-anthropic/claude-haiku-4-5}"
 MSG="The trademark engine's outbox has pending events. Run the clearotron-deliver skill now: list_outbox_events, route each event (delivered → get_delivery_packet + send VERBATIM + mark_sent; every other kind → relay its text + ack_event)."
 
-# THE WALL, RESOLVED ONCE AND NAMED WHEN IT IS ABSENT (tracker issue 820).
+# THE WALL, RESOLVED ONCE AND NAMED WHEN IT IS ABSENT.
 #
 # Every wake below runs under timeout(1) — GNU coreutils, not POSIX and not in a stock macOS or a
 # slim container. Without it `timeout …` is simply a command that is not there: bash answers 127, and
@@ -165,7 +165,7 @@ done
 # Bounded drain-wait after a successful wake: exit early once the courier consumed everything
 # (mark_sent/ack_event), else fall through to the pacing sleep / path-unit re-fire. NEVER delete here.
 #
-# POLL FIRST, THEN WAIT (tracker issue 830). `remaining` used to be assigned ONLY inside the loop body, so
+# POLL FIRST, THEN WAIT. `remaining` used to be assigned ONLY inside the loop body, so
 # CLEAROTRON_OUTBOX_DRAIN_WAIT=0 — the value an operator sets to make delivery synchronous, which is to
 # say the value they set while already chasing a late delivery — ran the body zero times and left the
 # post-loop `${#remaining[@]}` reading an unset array. Under `set -u` that is an error: the echo never

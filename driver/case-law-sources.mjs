@@ -21,7 +21,7 @@
 // A FIX THAT MAKES THE GAP QUIETER WOULD BE WORSE THAN THE DEFECT. The report never claimed there was no
 // adverse case law; every surface disclosed the gap. That discipline is untouched here — this changes
 // the REASON attached to an honest gap, never whether the gap is stated.
-// ── AND A SOURCE NOBODY COULD CHECK IS NOT A SOURCE WE DO NOT HAVE (tracker issue 173) ──────────────
+// ── AND A SOURCE NOBODY COULD CHECK IS NOT A SOURCE WE DO NOT HAVE ──────────────────────────────────
 //
 // The credential reader has four states — absent, usable, unusable, unreadable — and the caller used to
 // flatten them into one boolean before this composer saw them. Three of those states then shared one
@@ -46,7 +46,7 @@
  *
  * `pipeline.mjs` built this shape inline and an arm rebuilt it by hand to drive the composer. Two copies
  * of one mapping, and the arm's copy could not fail when the real one changed: adding `checked` here for
- * tracker issue 173 left the arm still composing the old three-field row and still passing. A test that
+ * The repair left the arm still composing the old three-field row and still passing. A test that
  * restates the code it is checking agrees with itself.
  *
  * It is exported for that reason and not as a convenience: the arm and the pipeline must read the same

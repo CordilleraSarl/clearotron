@@ -563,7 +563,7 @@ test("a patch that names one key leaves EVERY other section byte-identical", () 
 
 // ── THE NEGATIVE TABLE MUST NOT NAME A MARK WHERE IT MEANS ONE RECORD ────────────────────────────────
 //
-// tracker issue 246. A `duplicate-of-surfaced` row says "this registration is already reported under
+// A `duplicate-of-surfaced` row says "this registration is already reported under
 // another record". Rendered with the bare mark under a column headed "Mark", the sheet said both
 // "DELFITY — keep, here is the reasoning" (incumbent table) and "DELFITY — No separate row" (negative
 // table), ninety lines apart, about two different records. Nine readers scan this document and one of

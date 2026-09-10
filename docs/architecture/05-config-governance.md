@@ -363,7 +363,7 @@ catch, so it has to be deliberate. The client door also passes `authHeader` into
 it did not before, so its seam would have been settable and inert.
 
 **Named in full rather than as a prefix**, because a row that abbreviates a family documents nothing an
-operator can search for — and `tracker issue 692`'s own second arm fails exactly that, which is how this table came
+operator can search for — and the rule's own second arm fails exactly that, which is how this table came
 to be written out.
 
 | service | issuer | JWKS | identity claim | token header |

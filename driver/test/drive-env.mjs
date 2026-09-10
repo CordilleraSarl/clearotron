@@ -4,7 +4,7 @@
 // drive-env.mjs — the environment a drive standing in for a HAND-RUN command must present.
 //
 // A test that writes a `.env` and then drives a real command is asking that command to read the file.
-// Two things stop it, and a drive has to defeat both (tracker issue 204):
+// Two things stop it, and a drive has to defeat both:
 //
 //   · `scripts/test-run.mjs` sets `CLEAROTRON_NO_ENV_FILE=1` for every child of the suite, so that no
 //     test is configured by a file on the developer's box. Right on its own terms, and fatal to a test

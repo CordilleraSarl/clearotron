@@ -89,7 +89,7 @@ export function refusals({ workflow, rootPkg }) {
   if (!/id-token:\s*write/.test(live)) add("the release workflow cannot request an OIDC token (`id-token: write` is gone)");
   if (!/environment:\s*npm\b/.test(live)) add("the release workflow no longer runs in the `npm` environment the publisher is registered under");
 
-  // ── AND EVERY PUBLISHING JOB CARRIES BOTH, not merely the file somewhere (tracker issue 208) ────────
+  // ── AND EVERY PUBLISHING JOB CARRIES BOTH, not merely the file somewhere ────────────────────────────
   //
   // The two checks above ask whether the strings appear ANYWHERE. That was sufficient while one job
   // published. It stopped being sufficient the moment a second publishing job was added: a workflow

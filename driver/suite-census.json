@@ -4288,9 +4288,9 @@
           "todos": 0
         },
         "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
-          "tests": 8,
-          "asserts": 28,
-          "skips": 0,
+          "tests": 18,
+          "asserts": 51,
+          "skips": 2,
           "todos": 0
         },
         "the-classifier-names-what-the-validator-named.test.mjs": {
@@ -4505,7 +4505,7 @@
         },
         "the-minters-read-the-published-tree.test.mjs": {
           "tests": 2,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -4582,8 +4582,8 @@
           "todos": 0
         },
         "the-public-residue-is-a-floor.test.mjs": {
-          "tests": 13,
-          "asserts": 51,
+          "tests": 15,
+          "asserts": 58,
           "skips": 5,
           "todos": 0
         },

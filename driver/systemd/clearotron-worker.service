@@ -5,7 +5,7 @@
 # queue and credential comes from EnvironmentFile=%h/.env, which is where a SERVER's configuration lives
 # (INSTALL.md §3; render-units.mjs defaults --env to the same file).
 #
-# ── WHY THIS UNIT EXISTS (tracker issue 1863) ────────────────────────────────────────────────────────
+# ── WHY THIS UNIT EXISTS ─────────────────────────────────────────────────────────────────────────────
 #
 # It did not, and its absence was the one that cost a report rather than a restart. `bin/start.mjs`
 # supervises THREE children — the portal, the engine door, and this worker (`:904`). Units shipped for
@@ -28,7 +28,7 @@
 #
 # ── ONE DRAINER, AND THE LOCK IS WHAT ENFORCES IT ────────────────────────────────────────────────────
 #
-# A second claimant on one queue is this lane's recurring defect (tracker issue 1883). This unit takes no
+# A second claimant on one queue is this lane's recurring defect. This unit takes no
 # special precaution against it because none would work: the guarantee is CLEAROTRON_RUN_LOCK_DIR, which
 # this worker and a hand-started `node driver/runner.mjs` already share, so the cap holds across both.
 # What this unit must not do is run beside a FOREGROUND `clearotron start`, which supervises its own
@@ -48,7 +48,7 @@ EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
-# ── REFRESH THE CAPABILITY PAGE'S CAPTURE AT EVERY START (tracker issue 170) ─────────────────────────
+# ── REFRESH THE CAPABILITY PAGE'S CAPTURE AT EVERY START ─────────────────────────────────────────────
 # The capability page renders `pool/_state/prelim-flag-snapshot.json`, and until this line its only
 # writers were a RUN and the `clearotron start` launcher. A hosted box runs neither: these units are the
 # entrypoint, and a deployment being CONFIGURED runs nothing by definition. So the page reported the old

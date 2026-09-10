@@ -16,7 +16,7 @@ export {
 
 // The KNOCKOUT lane's own run-dir table. `paths` above is the CLEARANCE table and has no entry for any
 // file this lane writes, which is why every audit projection read a delivered knockout as a run with
-// nothing on disk (tracker issue 275). Re-exported rather than re-derived for the reason this whole file
+// nothing on disk. Re-exported rather than re-derived for the reason this whole file
 // exists: a second copy of a path table drifts, and the drift shows up as an artifact reported missing.
 export { koPaths } from "../../driver/stages-knockout.mjs";
 

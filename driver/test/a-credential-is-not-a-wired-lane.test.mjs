@@ -65,7 +65,7 @@ test("2126 an origin carrying a path is refused — the client appends /mcp itse
 });
 
 test("2126 a configured lane whose door does not answer names the reason, whichever way it failed", () => {
-  // SPLIT BY WHAT THE PROBE SAW (tracker issue 222). This arm used to assert that a refused connection
+  // SPLIT BY WHAT THE PROBE SAW. This arm used to assert that a refused connection
   // is a `fail` carrying "a clearance ordered from the portal returns 502". That claim was measured
   // false: on a simultaneous restart the portal binds before the engine door, and the submit path
   // re-probes per request without ever consulting this verdict. So a refused CONNECTION is now

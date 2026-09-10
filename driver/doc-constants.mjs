@@ -279,7 +279,7 @@ export const DOC_CONSTANTS = [
     doc: "INSTALL.md",
     pattern: /# TRADEMARK_MCP_HTTP_PORT=(\d+)/,
   },
-  // ── TWO BINDINGS REMOVED: THEIR DOCUMENTS ARE NOT ON THIS TREE (tracker issue 83) ────────────────
+  // ── TWO BINDINGS REMOVED: THEIR DOCUMENTS ARE NOT ON THIS TREE ───────────────────────────────────
   //
   // `.env.deployment.example` and `.env.prod.example` each carried a `TRADEMARK_MCP_HTTP_PORT default`
   // binding. Both files are withheld from the public tree by the cut, so on this tree the bindings

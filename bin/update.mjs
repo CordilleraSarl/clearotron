@@ -314,7 +314,7 @@ export async function update(argv = process.argv.slice(2)) {
     return installed;
   }
 
-  // ── THE BUNDLE THE PULL COULD NOT UPDATE (tracker issue 160) ─────────────────────────────────────
+  // ── THE BUNDLE THE PULL COULD NOT UPDATE ─────────────────────────────────────────────────────────
   //
   // `portal-ui/dist` is untracked on the public tree, so `git pull` above can never bring it forward.
   // A pull that changed `portal-ui/src` therefore leaves the built bundle behind, and every surface

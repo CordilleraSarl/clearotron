@@ -3,7 +3,7 @@
 //
 // TWO ARMS OF ONE REPORT DISAGREEING ABOUT ONE BOX.
 //
-// Measured on `c6e183d` while closing tracker issue 109: `live-surface-check` printed, in the same run,
+// Measured on `c6e183d`: `live-surface-check` printed, in the same run,
 // that `clearotron-worker.service` is enabled and drains continuously so the .path/timer posture is
 // retired here — and that an absent drainer is a fault under the timer-era rule. One arm had read the
 // units; the other had not looked at all and applied the rule anyway.
@@ -44,7 +44,7 @@ const off = (unit) => ({ unit, present: true, enabled: false, error: null });
 const absent = (unit) => ({ unit, present: false, enabled: false, error: null });
 const unreadable = (unit, error = "EACCES") => ({ unit, present: null, enabled: null, error });
 
-/** A stamped drainer whose process is gone — the exact shape tracker issue 206 was measured on. */
+/** A stamped drainer whose process is gone — the exact shape this was measured on. */
 const goneDrainer = (posture, { processes = [] } = {}) => drainerVerdict({
   stamp: { pid: 4242, engineCommit: "abcdef1234567890", pidStarttime: "9999" },
   headCommit: "abcdef1234567890",
@@ -194,7 +194,7 @@ test("the rule exists in ONE copy, and neither consumer keeps a private one", ()
     const text = src(f);
     assert.match(text, /from "\.\/drain-posture\.mjs"/, `${f} decides the drain posture without consulting the shared rule`);
     const own = text.match(/worker[?.\]]*\.?\s*(?:\.|\[["']?)?enabled["'\]]?\s*===\s*true/g) ?? [];
-    assert.deepEqual(own, [], `${f} spells the posture test itself (${own.join(", ")}) — that is the second copy tracker issue 206 is about`);
+    assert.deepEqual(own, [], `${f} spells the posture test itself (${own.join(", ")}) — that is the second copy this rule is about`);
   }
   // And the rule's own module is the only place the predicate is written.
   assert.match(src("drain-posture.mjs"), /worker\?\.enabled === true/);
@@ -203,7 +203,7 @@ test("the rule exists in ONE copy, and neither consumer keeps a private one", ()
 /**
  * Drive the REAL deploy check against a fixture box, and hand back the drainer line it printed.
  *
- * NOT A HELPER STANDING IN FOR THE SCRIPT. The finding in tracker issue 206 is that the check did not
+ * NOT A HELPER STANDING IN FOR THE SCRIPT. The finding was that the check did not
  * read the units — an arm against the pure verdict would hold a rule nobody feeds, which is the shape
  * this repository keeps finding and repairing. `probeWorker`/`probeTimer` resolve their unit paths from
  * HOME, and `enable` is recorded as a symlink into `*.target.wants/`, so a fixture HOME is a real

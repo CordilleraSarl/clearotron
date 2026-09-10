@@ -561,8 +561,8 @@ export function Result({
             drives the framed document and can only offer what that document defines; this drives the
             reader's own assistant and needs nothing of the report. */}
         <AskAiMenu runId={run.runId} mark={run.markName} ctx={ctx} />
-        {/* THE COMMAND ROWS ARE GATED ON WHAT THE DOCUMENT SAYS IT HAS, not on the run's kind (tracker
-            issue 1922) — and the AUDIT DOWNLOAD is gated on neither, because it is a run-level file the
+        {/* THE COMMAND ROWS ARE GATED ON WHAT THE DOCUMENT SAYS IT HAS, not on the run's kind —
+            and the AUDIT DOWNLOAD is gated on neither, because it is a run-level file the
             renderer never had anything to do with. Null controls means the frame has not announced yet
             and an empty list means it announced nothing; both draw no command rows, and both still draw
             the workbook, which ExportMenu renders as a plain button rather than a one-item menu. Hiding

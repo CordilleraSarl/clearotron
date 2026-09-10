@@ -5,7 +5,7 @@
 //
 // THREE COPIES OF THIS EXISTED AND ONE OF THEM SHIPPED A BLOCKER. The wizard, the launcher and the
 // launcher again each composed the same tmp-write, chmod, rename dance beside their own path. When
-// `.env` moved to `~/.config/clearotron/.env` (tracker issue 159) the directory had to be created before
+// `.env` moved to `~/.config/clearotron/.env` the directory had to be created before
 // the write, the wizard's copy learned it, and the launcher's did not — so a fresh install could not
 // start at all:
 //

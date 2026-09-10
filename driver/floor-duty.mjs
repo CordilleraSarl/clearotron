@@ -65,7 +65,7 @@ export function armFloorDuty(runDir, { now = () => new Date().toISOString() } = 
     ensureDriverDir(String(runDir ?? ""));
     writeFileSync(driverDir(String(runDir ?? ""), FLOOR_DUTY_STAMP), JSON.stringify({
       _provenance: "the placement pass on this run ran under code that orders the floors by record id "
-        + "(#1117), so its floor account may be held to that order (tracker issue 1955)",
+        + "(#1117), so its floor account may be held to that order",
       ts: now(),
     }, null, 2) + "\n");
     return true;

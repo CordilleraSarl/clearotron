@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // THE SUMMARY IS STRUCTURED AT THE WRITER AND STAYS STRUCTURED AT EVERY READER.
 //
-// Tracker issues 1934 and 2056. Owner ruling 2026-08-31: "keep the length, add the structure, so long as
+// Owner ruling 2026-08-31: "keep the length, add the structure, so long as
 // length is consistent more or less."
 //
 // The measurement that opened those issues found the render byte-faithful and the seat emitting zero

@@ -172,8 +172,8 @@ export type FieldSpec = {
    * satisfy. Every picker renders one cleared option, and its words are the generic default's — now
    * "Generic default". For `delivery.privileged` that is wrong and quietly
    * dangerous: the cleared state there is not an absence a user should read as "unset", it is the report
-   * carrying its confidentiality marking, and the owner named it "Privileged & Confidential" (tracker
-   * issue 1983). A sweep that renamed the shared label would have silently overwritten that ruling with
+   * carrying its confidentiality marking, and the owner named it "Privileged & Confidential".
+   * A sweep that renamed the shared label would have silently overwritten that ruling with
    * the generic one.
    *
    * So the pair a user reads is "Privileged & Confidential" / "No marking", which stands on its own —

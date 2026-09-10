@@ -597,7 +597,7 @@ export function deliveredMarks(findingsJsonText) {
 const normMark = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
 /**
- * Owner ruling 2026-09-07 (tracker issue 246), Option A, worded ABOUT THE MARK: a recall ask may close
+ * Owner ruling 2026-09-07, Option A, worded ABOUT THE MARK: a recall ask may close
  * as immaterial only when the mark it went looking for is in the client's findings. Otherwise the mark
  * is owed a finding and the ask stays open.
  *

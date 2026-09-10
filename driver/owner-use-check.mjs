@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // owner-use-check.mjs — the scoped owner lookup a Knockout search owes a promoted register filing
-// (tracker issue 276).
+//.
 //
 // THE DEFECT. When the register pass named the owner of an identical live registration, nothing ever
 // searched that owner. The assessment inferred what the owner sells from the owner's NAME and its class

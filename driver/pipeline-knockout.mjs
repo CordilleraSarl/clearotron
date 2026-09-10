@@ -67,7 +67,7 @@ import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
 import { stopReason } from "../shared/stop-reason.mjs";   //
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
-// The scoped owner lookup a promoted register filing is owed (tracker issue 276). Bounded, deduplicated
+// The scoped owner lookup a promoted register filing is owed. Bounded, deduplicated
 // per owner, and structurally unable to withhold a report.
 import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
 
@@ -535,8 +535,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
       //
       // `failClass: "deterministic"` says the same thing to the OTHER reader: repairs.mjs's ladder. It
       // was stamped when this lane had no ladder for it to reach — "so the fact travels with the throw
-      // rather than being re-guessed from prose by whichever catch the throw ends up in." As of tracker
-      // issue 1889 that catch is this lane's own, the stamp is LIVE, and it is what buys this refusal
+      // rather than being re-guessed from prose by whichever catch the throw ends up in." That catch is
+      // now this lane's own, the stamp is LIVE, and it is what buys this refusal
       // zero parks without the ladder having to read a word of the prose.
       if (refusal) throw new StageFailure("knockout-register-count", refusal, null,
         { refusal: true, failClass: "deterministic" });
@@ -715,7 +715,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: recExec.source,
             marks: recDoc.marks.length, listed: listedMarks(recDoc), records: recDoc.marks.reduce((n, m) => n + m.records.length, 0) });
 
-          // ── THE OWNER LOOKUP, HERE BECAUSE HERE IS WHERE THE OWNER BECOMES KNOWN (tracker issue 276) ──
+          // ── THE OWNER LOOKUP, HERE BECAUSE HERE IS WHERE THE OWNER BECOMES KNOWN ──────────────────────
           //
           // On the run that produced the issue, the owner's name was on disk 48 seconds before the sweep
           // started and no pass ever searched it: every sweep keys on the TERM, and nothing re-swept on an
@@ -1007,7 +1007,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       conversationId: job.conversationId ?? null,
       subject: `Knockout trademark review — ${job.ref ?? markNames[0] ?? "batch"} (${nMarks} mark${nMarks === 1 ? "" : "s"})`,
       emailBodyHtml: emailHtml,
-      // THE SAME ROUTING AS THE CLEARANCE PACKET (tracker issue 289 part b). This read
+      // THE SAME ROUTING AS THE CLEARANCE PACKET (part b). This read
       // `AGENT_WHATSAPP[agent]`, and every user of a deployment shares one agent id, so every knockout
       // completion paged the operator and told the person who ordered it nothing. The clearance packet
       // was moved off that and this one was not, which is the half that shipped: one call site fixed,

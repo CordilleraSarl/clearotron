@@ -70,7 +70,7 @@ test("#766 the server briefs from the SAME file, and each audience gets its OWN 
   assert.notEqual(ops, client, "ops got the report-link pack — a surface it is not on");
   assert.notEqual(ops, account, "ops got the account pack — it holds engineering verbs, not a client's");
 
-  // ── AN OPS PACK IS MORE THAN ONE FILE (tracker issue 148) ──────────────────────────────────────
+  // ── AN OPS PACK IS MORE THAN ONE FILE ──────────────────────────────────────────────────────────
   //
   // Held to COMPOSITION rather than to equality with SKILL.md. This is the same claim it always was —
   // the briefing is the files in skills/, and carries no text of its own — but the ops SKILL.md tells

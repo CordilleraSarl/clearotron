@@ -8,7 +8,7 @@ node_modules
 *.log
 .DS_Store
 
-# portal-ui/dist IS IGNORED, and the note that used to sit here said the opposite (tracker issue 160).
+# portal-ui/dist IS IGNORED, and the note that used to sit here said the opposite.
 # It read "COMMITTED on purpose … Do not add it", describing a deploy that pulls and restarts and never
 # builds. That is not this tree: `git ls-files portal-ui/dist` is empty, and has been since the public
 # cut. The bundle now reaches a deployment two ways, neither of them a commit — a packaged install
@@ -20,7 +20,7 @@ node_modules
 # what makes "the bundle is not tracked" a property of the repository rather than of everyone's care.
 portal-ui/dist/
 
-# The local US register (tracker issue 547) and the bulk archives it is built from. A full build reads 41.5 GB
+# The local US register and the bulk archives it is built from. A full build reads 41.5 GB
 # across two products — the 1884→ annual backfile and the dailies since 2025 — and takes hours, not
 # minutes; the archives are dropped as they are ingested, so what stays on disk is the index. It is
 # stale the day after it is written, and an incremental sync brings it current.
@@ -43,5 +43,5 @@ docs/layout*.json
 
 # Generated at pack time by scripts/write-build-info.mjs — the commit a tarball was packed from.
 # Never committed: in a checkout the commit is read from git, and a stale committed copy would name
-# the wrong code with total confidence (tracker issue 1929).
+# the wrong code with total confidence.
 build-info.json

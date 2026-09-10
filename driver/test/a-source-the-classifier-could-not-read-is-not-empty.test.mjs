@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A source the classifier could not read is not a source that is empty — tracker issue 313.
+// A source the classifier could not read is not a source that is empty.
 //
 // `scripts/env-classify.mjs` decides which variables nobody sets, and that list is what a configuration
 // cleanup removes from. Every one of its sources is a file read, and every file read has two ways to

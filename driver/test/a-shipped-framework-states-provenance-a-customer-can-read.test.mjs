@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A bundled framework's provenance note, read by a stranger (tracker issue 343).
+// A bundled framework's provenance note, read by a stranger.
 //
 // The field says where a risk framework came from, and it ships: it is in the package and frozen into
 // the demo run artefacts. It read

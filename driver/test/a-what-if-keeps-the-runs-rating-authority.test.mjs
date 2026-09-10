@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A what-if is diffed against its canonical run, so it must rate under the same authority (tracker issue 135).
+// A what-if is diffed against its canonical run, so it must rate under the same authority.
 //
 // THE DEFECT. whatIfRun reconstructs a minimal job from status.json — six fields — and resolveProfile
 // keys on NONE of them. It reads `job.profileKey` first, then falls back to `job.forwarderDomain`; the

@@ -166,7 +166,7 @@ function needs(content, markers, label, names = []) {
   }
   return ok();
 }
-// ── THE STRUCTURAL SECTION CONTRACT (tracker issue 129) ────────────────────────────────────────────
+// ── THE STRUCTURAL SECTION CONTRACT ────────────────────────────────────────────────────────────────
 //
 // THE CLASS. Every gate below keys on prose the MODEL composes, so each is one phrasing drift away
 // from killing a run that produced the section perfectly. Measured across three runs and two engines:
@@ -1867,7 +1867,7 @@ export const validators = {
   // artifact passing, and a fresh dispatch under this code is held to the new floor. A sibling that
   // EXISTS is parsed strictly regardless of vintage (present-and-malformed is always a defect).
   placement: (p, c) => {
-    // THE LAST PROSE-KEYED GATE ON A SEAT-WRITTEN ARTIFACT (tracker issue 129).
+    // THE LAST PROSE-KEYED GATE ON A SEAT-WRITTEN ARTIFACT.
     //
     // 129 named three sites and all three had stopped being members before it was filed: conversions 5
     // and 11 moved report-cards/<ord>.md and register-findings.md to driver renders, and audit.md was

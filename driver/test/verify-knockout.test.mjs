@@ -58,7 +58,7 @@ test("RF-15 v3 — the register estimate is required only where the run fetched 
     "…and an estimate that arrives anyway is not forbidden, only no longer required");
 });
 
-// ── the band on a register read is optional, and closed when present (tracker issue 274) ─────────────
+// ── the band on a register read is optional, and closed when present ─────────────────────────────────
 //
 // The read half of `registerReads` shipped without a band, so a promoted register card was the only card
 // on the page that could carry no rating. The band closes that, and it is validated HERE rather than

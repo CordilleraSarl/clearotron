@@ -249,6 +249,44 @@ export const CLASSES = [
 // a floored line quietly gain a second one. The permissive half of a gate is the dangerous half.
 const EVERY_MATCH = new Map(CLASSES.filter((c) => c.pattern).map((c) => [c.id, new RegExp(c.pattern.source, c.pattern.flags + "g")]));
 
+/**
+ * ── A CITATION THAT WRAPPED IS IN NEITHER LINE ─────────────────────────────────────────────────────
+ *
+ * Every class above reads ONE line, and prose in this tree wraps at a fixed width, so a citation whose
+ * words end one line and whose number begins the next matches nothing. Measured on a real branch: four
+ * citations went in, the census counted four and refused; three came out and the count returned to its
+ * floor with the fourth still in the tree, because that one had wrapped.
+ *
+ * WORSE THAN A MISCOUNT, BECAUSE THE CENSUS IS A RATCHET. The floor only falls, and the check passing is
+ * the statement that the tree grew nothing new — so a wrapped citation is not merely uncounted, it joins
+ * the floor's silence, and nobody looks again because the number did not move.
+ *
+ * A WRAP IS A WRAP ONLY WHEN NEITHER LINE CARRIES ONE ALONE. Joining line N to N+1 also matches when the
+ * whole citation sits on N+1, which would report every ordinary hit a second time as a wrap on the line
+ * above it. `WRAPPED_HEAD` requires line N to END mid-citation, and that is what makes the pair disjoint
+ * from the per-line count rather than overlapping it.
+ *
+ * THE TWO HEAD FORMS ARE COMPLETED BY DIFFERENT THINGS, and collapsing them is the false positive that
+ * matters: a line ending in the bare word `tracker` needs the word `issue` on the next one, while a line
+ * ending in `tracker issue` needs only a number — and without the split, any line ending in `tracker`
+ * followed by a numbered list item reads as a citation.
+ *
+ * ONE DEFINITION. The sweep that removes these reads these same exports; a second detector agreeing today
+ * is two detectors disagreeing later, and while the sweep could see this class and the census could not,
+ * neither could report the disagreement.
+ */
+export const WRAPPED_HEAD = /\btracker\s*$|\btracker issues?\s*$/i;
+export const WRAPPED_TAIL = /^\s*(?:\/\/|#|\*|--)?\s*(?:issues?\s+)?\d+/i;
+
+/** True when `a` ends a citation that `b` completes. PURE. */
+export const wrapsInto = (a, b) => {
+  if (!WRAPPED_HEAD.test(a) || b === undefined) return false;
+  return /\btracker\s*$/i.test(a) ? /^\s*(?:\/\/|#|\*|--)?\s*issues?\s+\d+/i.test(b) : /^\s*(?:\/\/|#|\*|--)?\s*\d+/.test(b);
+};
+
+/** The class a wrapped citation belongs to — the spelled one, because that is what it spells. */
+export const WRAPPED_CLASS = "spelled-citation";
+
 export function offendingClasses(path, line) {
   if (!isScannable(path) || !isProse(path, line)) return [];
   const text = withoutColourValues(withoutLinkTargets(line));
@@ -311,8 +349,12 @@ export function censusOf(files, read) {
     try { text = read(path); } catch { continue; }
     if (text.includes("\0")) continue;                       // a binary blob is not prose
     const counts = CLASSES.map(() => 0);
-    for (const line of text.split("\n")) {
-      for (const { id } of offendingClasses(path, line)) counts[COLUMN.get(id)]++;
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+      for (const { id } of offendingClasses(path, lines[i])) counts[COLUMN.get(id)]++;
+      // AND THE PAIR, which no per-line rule can see. Counted on the HEAD line and once: the head ends
+      // mid-citation, so this can never be the same hit the loop above just counted.
+      if (isProse(path, lines[i]) && wrapsInto(lines[i], lines[i + 1])) counts[COLUMN.get(WRAPPED_CLASS)]++;
     }
     const sum = counts.reduce((a, b) => a + b, 0);
     if (sum) { out.files[path] = counts; out.total += sum; }

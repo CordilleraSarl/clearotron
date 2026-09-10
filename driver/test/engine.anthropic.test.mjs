@@ -49,14 +49,14 @@ async function run(opts, env = {}) {
   for (const k of Object.keys(all)) { saved[k] = process.env[k]; pinEnv(process.env, k, all[k]); }
   // the last turn is remembered so `timedTest` can attach the specimen to ANY failure in a
   // timing arm. Sound because node:test runs the subtests of one file sequentially (verified, not
-  // assumed: `--test-concurrency=1` was dropped at the FILE level in tracker issue 179, not within a file).
+  // assumed: `--test-concurrency=1` was dropped at the FILE level, not within a file).
   try { return (lastRun = await anthropicAgentEngine.runTurn(opts)); }
   finally { for (const k of Object.keys(all)) { if (saved[k] === undefined) delete process.env[k]; else pinEnv(process.env, k, saved[k]); } }
 }
 
 // ── THE SPECIMEN GOES IN EVERY TIMING ARM'S MESSAGE, NOT ONE OF THEM ───────────────────────
 //
-// tracker issue 1782 put `firstByteMs` in the engine's no-progress stderr and in arm 449's assertion message. Then a
+// An earlier fix put `firstByteMs` in the engine's no-progress stderr and in arm 449's assertion message. Then a
 // real failure landed on main (34d160ec, run 32672060149) in arm 449's SIBLINGS — and carried none of
 // it, because each arm writes its own message. A fix at one site missing the sibling that keeps its own
 // copy is a shape this repo has been bitten by before, and the instrument built for this very failure
@@ -115,7 +115,7 @@ test("thinking → effort remap", () => {
   assert.equal(effortFor(undefined), "medium");
 });
 
-// tracker issue 238 corruption 4a — `off` mapped to `low` here and `minimal` on codex, so at the bottom of the ladder
+// A corruption found in review — `off` mapped to `low` here and `minimal` on codex, so at the bottom of the ladder
 // the two engines were a whole rung apart and a cross-engine effort comparison at `off` was off by one.
 // This is the drift test that keeps them one table: the same duplicate-plus-pin discipline
 // engine.common.test.mjs uses for WRITE_DISCIPLINE, because anthropic-agent.mjs deliberately imports
@@ -505,7 +505,7 @@ test("#1624 the ceiling site CALLS activeElapsedMs — a pure function nothing d
 });
 
 test("NO-PROGRESS watchdog: a turn whose TOOL CALL NEVER RETURNS is still killed (#1624)", timed(async () => {
-  // THE CLAIM THAT MAKES tracker issue 1624 SAFE, AS AN ARM. That change moved the hard ceiling off ELAPSED and onto
+  // THE CLAIM THAT MAKES THE CEILING CHANGE SAFE, AS AN ARM. It moved the hard ceiling off ELAPSED and onto
   // ACTIVE time, so a turn waiting on a slow register call no longer dies for waiting. The reason that
   // is not a ceiling REMOVAL is this watchdog: only a COMPLETED tool result resets the progress clock
   // (`progress()` fires on the `user` event, never on an outstanding ask), so a call that never returns
@@ -534,7 +534,7 @@ test("NO-PROGRESS watchdog: a turn whose TOOL CALL NEVER RETURNS is still killed
 // ── A STARVED SPAWN IS NOT A FINDING ABOUT THE TURN ────────────────────────────────────────
 // The two arms above failed under full-suite load and passed alone, three times in one day on diffs that
 // could not reach a watchdog. The cause was not the arms: every clock in this engine started at SPAWN, so
-// on a loaded box they timed process startup and killed before the child had emitted a byte. tracker issue 1703 fixed
+// on a loaded box they timed process startup and killed before the child had emitted a byte. An earlier fix took
 // exactly this for the byte-stall in common.mjs, which this engine does not use — it spawns its own child.
 //
 // MOCK_CLAUDE_BOOT_MS makes that deterministic: the mock blocks before ANY output, which is what a starved
@@ -632,7 +632,7 @@ test("#1692 the grace does NOT survive first contact — a tight ceiling still b
 
 test("#1780 STARTUP DEBT is not charged to the progress clock — the first byte STARTS it, not just releases it", timed(async () => {
   // The cause of the startup debt, and of the red on run 32680317129 (an arm above, on a diff that cannot
-  // reach this engine). tracker issue 1692 widened the pre-first-byte DEADLINE but never moved the clock's ORIGIN, so
+  // reach this engine). The pre-first-byte DEADLINE was widened and the clock's ORIGIN never moved, so
   // the startup interval stayed on the meter: at the instant the grace stopped protecting the turn,
   // progIdle already WAS the whole boot, and any NOPROG shorter than startup was expired before the child
   // had been observed at all. The kill then landed on the very next tick — before the ask reached
@@ -665,11 +665,11 @@ test("#1780 STARTUP DEBT is not charged to the progress clock — the first byte
 }));
 
 test("#1813 an early STDERR byte does not end the grace — the protocol is on stdout, and that is what starting means", timed(async () => {
-  // Found while reading the tracker issue 1780 fix, filed rather than folded into it, and this is the arm it wanted.
+  // Found while reading the grace-origin fix, filed rather than folded into it, and this is the arm it wanted.
   //
   // The child writes ONE line to stderr and then does its real startup on stdout. A node warning or a CLI
   // deprecation notice is exactly that shape. Before this fix the stderr byte set the first-output clock,
-  // which ends the grace AND (since tracker issue 1780) becomes the progress clock's origin — so a turn that had said
+  // which ends the grace AND now becomes the progress clock's origin — so a turn that had said
   // nothing in its protocol was measured as having started, and the no-progress ceiling then expired in
   // the middle of its boot.
   //
@@ -705,7 +705,7 @@ test("#1813 THE FAIL-SAFE: a child that writes ONLY stderr is still bounded, by 
 }));
 
 test("#1692 the grace has ONE source: this engine derives it from common.mjs, never a second literal", () => {
-  // Why this issue existed. tracker issue 1703 set the grace in common.mjs and stopped there; openai-agent reaches that
+  // Why this issue existed. The grace was set in common.mjs and stopped there; openai-agent reaches that
   // watchdog through runStreamingChild, anthropic-agent spawns directly and did not. A second copy of the
   // number here would let the two engines drift apart again, silently, exactly as they already did once.
   const src = readFileSync(join(HERE, "../engine/anthropic-agent.mjs"), "utf8");
@@ -741,7 +741,7 @@ test("NO-PROGRESS watchdog: an artifact write on the stage's own expected output
 // THE STALL WINDOW WAS RACING THE MOCK IT WAS MEASURING.
 //
 // This ran at CLEAROTRON_STALL_MS: 300 and failed intermittently: `r.usage` null, the kill landing before
-// the usage event it exists to assert had been reconstructed. tracker issue 616 filed it as load-sensitive and asked
+// the usage event it exists to assert had been reconstructed. It was filed as load-sensitive, which asked
 // the right question — a real race in the kill path's usage capture, or a tolerance too tight for a
 // loaded box. Measured, running this test ALONE on an idle worktree:
 //
@@ -853,7 +853,7 @@ test("reads gauge: a turn with no Read calls records [] — present, never omitt
   assert.equal(r.readsTruncated, false, "…and the list is complete — 'complete', not 'not recorded'");
 });
 
-// ── post-merge audit of tracker issue 172 ──────────────────────────────────────────────────────────────────────────
+// ── post-merge audit ───────────────────────────────────────────────────────────────────────────────────────────────
 // The gauge is capped at 500 distinct paths so a pathological turn cannot bloat telemetry. Capping is fine;
 // capping SILENTLY is the same defect the package retires everywhere else — a truncated list reads exactly
 // like a complete one, and every consumer that derives "this file was not opened" from it derives a lie.
@@ -953,12 +953,12 @@ test("#1780 a STARVED SPAWN's specimen says NEVER — the branch that routes the
 }));
 
 test("#1780 every arm that budgets in milliseconds carries the specimen in its message", () => {
-  // THE CLASS, NOT THE TWO SITES. tracker issue 1782 wired the bit into arm 449 and a real failure landed in its
+  // THE CLASS, NOT THE TWO SITES. The bit was wired into arm 449 and a real failure landed in its
   // siblings, which carried none of it. Widening those two by hand would repeat the same mistake one
   // arm further out, so this decides the population mechanically: any arm whose fixture pins a clock is
   // an arm that can fail for timing reasons, and every one of them must say what it saw.
   //
-  // COMMENTS ARE STRIPPED FIRST. tracker issue 1795 was an assertion satisfied by the prose explaining it; a guard
+  // COMMENTS ARE STRIPPED FIRST. One assertion was satisfied by the prose explaining it; a guard
   // that reads its own subject's source has to remove the prose or it can be argued into passing.
   const src = readFileSync(new URL("engine.anthropic.test.mjs", import.meta.url), "utf8")
     .split("\n").filter((l) => !/^\s*\/\//.test(l)).join("\n");
