@@ -12,7 +12,7 @@ the rest — with the file that owns each.
 
 ## What you can run, with nothing but a clone
 
-**Node 22 is a hard floor.** `package.json` declares it, `.nvmrc` pins it, and the free US register
+**Node 22.13 is a hard floor.** `package.json` declares it, `.nvmrc` pins it, and the free US register
 runs on `node:sqlite`. Node 20 will fail in ways that look like your change.
 
 ```bash

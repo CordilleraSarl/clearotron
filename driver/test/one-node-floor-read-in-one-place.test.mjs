@@ -79,3 +79,23 @@ test("the install gate names the version, the requirement and the one command", 
   assert.match(String(v.current), /20\.19\.0/, "what they are running");
   assert.ok(v.required, "what is needed");
 });
+
+test("every workspace states the root's floor, in its own manifest and in the lockfile", () => {
+  // The arms above read the root manifest only, so a workspace's floor could drift without a red.
+  // Measured 2026-09-10: portal-ui, mcp-server and the OAuth bridge still said `>=22` after the root moved
+  // to 22.13.0, and the lockfile recorded the same. One floor, so every place that states it states the
+  // same one, and a workspace that states none has drifted too.
+  const read = (rel) => JSON.parse(readFileSync(new URL(`../../${rel}`, import.meta.url), "utf8"));
+  const root = read("package.json");
+  const lock = read("package-lock.json").packages ?? {};
+  assert.ok(root.workspaces.length >= 4, `a floor on the workspace list, which read ${root.workspaces.length}`);
+  const drift = [];
+  if (lock[""]?.engines?.node !== root.engines.node) drift.push(`package-lock.json records the root at ${lock[""]?.engines?.node ?? "nothing"}`);
+  for (const w of root.workspaces) {
+    const own = read(`${w}/package.json`).engines?.node;
+    if (own !== root.engines.node) drift.push(`${w}/package.json states ${own ?? "nothing"}`);
+    const locked = lock[w]?.engines?.node;
+    if (locked !== root.engines.node) drift.push(`package-lock.json records ${w} at ${locked ?? "nothing"}`);
+  }
+  assert.deepEqual(drift, [], `every workspace states the root's ${root.engines.node}`);
+});

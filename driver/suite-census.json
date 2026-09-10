@@ -2722,8 +2722,8 @@
           "todos": 0
         },
         "one-node-floor-read-in-one-place.test.mjs": {
-          "tests": 7,
-          "asserts": 24,
+          "tests": 8,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -4643,7 +4643,7 @@
         },
         "the-public-residue-is-a-floor.test.mjs": {
           "tests": 15,
-          "asserts": 58,
+          "asserts": 59,
           "skips": 5,
           "todos": 0
         },
