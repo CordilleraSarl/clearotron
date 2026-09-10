@@ -6034,13 +6034,20 @@ function refuteRegistryCheckExtra(ctx) {
  * the one report where it matters most — the same defect one level in that turned "AXIS Bank filed in
  * class 36" into "group Bank filed in class 36" on a report clearing AXIS.
  *
- * WHY THE FIELDS ARE THE RECORD'S OWN KEYS AND NOT `DEFAULT_VISIBLE_FIELDS.clearance`. That list's
- * clearance half names five fields nothing in this tree reads — `oneLiner`, `freedomToOperate`,
- * `thirdPartyRights`, `ownRights` and `batchOpener`, in either casing. Iterating it would open nothing
- * and report a clean result over text it never read, which is the absence-as-pass this block exists to
- * avoid. The keys below are the ones the record actually carries, and they are the surfaces the
- * READER-OWNED NOUNS directive already names as reaching the client. Reconciling that list is its own
- * change because it is shared with the knockout half, which IS real.
+ * WHY THE FIELDS ARE THE RECORD'S OWN KEYS, AND WHAT THAT USED TO SAY. This block could not use
+ * `DEFAULT_VISIBLE_FIELDS.clearance`, because that list named fields no record carried — iterating it
+ * would have opened nothing and reported a clean result over text it never read, which is the
+ * absence-as-pass this block exists to avoid.
+ *
+ * That list is repaired now: every entry is a path that resolves against a delivered record, and an arm
+ * resolves each one. The keys below are still written out rather than read from it, because this block
+ * needs the `where` label it puts in front of each hit and the list carries paths and not labels. The
+ * two agree on the surfaces, and the arm that resolves the list is what keeps that true.
+ *
+ * The old wording here also stated the defect slightly wrong, and said so about the field it was most
+ * likely to mislead on: `thirdPartyRights` was called dead "in either casing" when the record carries
+ * `four_answers.third_party_rights`, in fourteen files. Checking a name in one casing and reporting it
+ * absent in both is the same error one level down from the one this paragraph is about.
  *
  * An absent or malformed findings.json yields no block, and the composer records the id as not built —
  * so "nothing to say" and "could not look" are told apart on the dispatch receipt rather than inferred.

@@ -58,9 +58,20 @@ export function triggerCapGap({ accounts = null, roster = [] } = {}) {
  * The wording is the portal boot check's, kept deliberately: it was measured to be the thing that would
  * have saved the owner an afternoon, and rewording it per surface is how the good half of a defect gets
  * lost while the fix ships.
+ *
+ * IT SAID THE RUNS WOULD BE REFUSED, AND THAT STOPPED BEING TRUE. The portal now re-takes its engine
+ * credential against the roster as it stands at the start of every call, so a stale cap no longer
+ * refuses anything on the ordinary path. The gap is still worth saying — the portal falls back to this
+ * token when it cannot re-mint, and then the refusal is real — but the sentence has to describe the
+ * fallback rather than the normal case, or it sends an operator to re-mint a credential for a failure
+ * that will not happen. Changed HERE rather than at the three call sites, which is the whole reason
+ * this function exists.
  */
 export function triggerCapWarning({ uncovered, union }) {
-  return `the roster contains account(s) the trigger token cannot start: ${uncovered.join(", ")}. `
-    + `Runs for them will be refused at the engine door. Re-mint with --accounts ${union.join(",")} `
+  return `the roster contains account(s) this token cannot start: ${uncovered.join(", ")}. `
+    + `The portal re-takes its engine credential at the start of every call, so runs for them are not `
+    + `normally refused; they are refused when it CANNOT re-mint — an unreadable signing secret, or a `
+    + `store it cannot list — because it then falls back to this token rather than widening the cap. `
+    + `Re-mint with --accounts ${union.join(",")} `
     + `(union of the current cap and the roster — check it before using it).`;
 }

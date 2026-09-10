@@ -59,6 +59,7 @@ import { assertProfileKey, profileStoreResolution, CONTEXT_PACK_FILE, validatePr
 import { DEFAULT_FRAMEWORK, loadFrameworkManifest } from "../driver/framework.mjs";
 import { defaultWriteProfile } from "../driver/profile-service.mjs";
 import { config } from "../driver/driver.config.mjs";
+import { preflightFramework, formatPreflight } from "../driver/framework-preflight.mjs";
 import { makeCommittableAudit, commitWithAuditRow, makeStoreCommit, resolveStoreRepoRoot } from "../shared/store-in-repo.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 // Shared with `project add`, which asks an identical question of the same variable — see the
@@ -179,6 +180,13 @@ export async function add(argv, {
     if (contextPack) out(`would create ${join(store, CONTEXT_PACK_FILE(args.key))}`);
     out(frameworkLine);
     out(platformsLine);
+    // THE SAME REPORT `clearotron framework` PRINTS, from the same module. A dry run already proved the
+    // framework LOADS; that is a smaller question than the one the operator has, because a deck whose
+    // manifest parses can still name bands the deck never defines, and the profile screen answers that by
+    // quietly omitting the box. Two checks of one property drift; this is one check with two doors.
+    out("");
+    out(formatPreflight(preflightFramework(framework.path)));
+    out("");
     out(`nothing was written (--dry-run)`);
     return { written: false, store, profile, framework };
   }
@@ -248,7 +256,7 @@ export async function add(argv, {
       if (gap.uncovered.length) {
         out("");
         out(`  ⚠ NOT YET STARTABLE — ${triggerCapWarning(gap)}`);
-        out(`    The portal will offer a clearance for ${args.key} and the engine door will refuse it until the trigger token is re-minted.`);
+        out(`    The portal will still start a clearance for ${args.key}: it re-takes its credential on each call. This matters when it cannot — then it uses the token above and the door refuses.`);
       }
     }
   } catch (e) {
