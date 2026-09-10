@@ -399,30 +399,6 @@ function Card({
               onCancel={() => setAsking(false)}
             />
           ) : null}
-          {stopping ? (
-            /* The wait, named: what is finishing and why it is allowed to — the
-               answer to "why is this taking so long", which the reader cannot otherwise know. The
-               button is GONE, not disabled-and-grey: there is nothing further to press for. */
-            <div className="home2-stopping">
-              {/* ── — IT SAYS WHICH STOP IS IN PROGRESS ────────────────────
-                  Read off the server's answer to this session's press, and the server's own sentence
-                  is rendered as-is: it names the step, what was kept and what was lost, and a second
-                  author for one fact is how the two drift.
-
-                  THE FALLBACK IS NOT A GAP. `took` is per-card state and does not survive a reload —
-                  but a run still stopping when a reader comes back IS the boundary stop, by
-                  construction: an immediate stop that ended its turn goes terminal in seconds, and one
-                  that could not find a turn to end was reported as a boundary stop at the press. So
-                  the wording without an answer in hand is the true one. */}
-              {took?.note
-                ? took.note
-                : (<>
-                    Stopping — {run.step ? `letting “${run.step}” finish` : 'letting the step in flight finish'}.
-                    A reasoning step can take tens of minutes and has no deadline. Nothing further will
-                    start, and nothing will be delivered.
-                  </>)}
-            </div>
-          ) : null}
           {/* — THE WAY OUT. "Home — what is in flight, what is waiting, and the way out of both."
               A failed run is neither, and it had no way out, so the band filled with dead runs and
               stopped showing the live ones.
@@ -440,6 +416,33 @@ function Card({
             </button>
           ) : null}
         </div>
+        {/* ── THE STOP NOTICE GETS ITS OWN ROW, and that is a defect fix rather than a preference.
+            It used to be a flex item inside `home2-card-foot`, beside the elapsed line — so a
+            sentence of this length squeezed "1 min so far" into a column two characters wide and the
+            card read as garbled. Found by the owner on a real run. The foot is a row of short things;
+            this is a paragraph, and it belongs under them at full width. */}
+        {stopping ? (
+          /* The wait, named: what is happening and why the reader is still waiting — the answer to
+             "why is this taking so long", which they cannot otherwise know. The button is GONE, not
+             disabled-and-grey: there is nothing further to press for. */
+          <div className="home2-stop-note">
+            {/* IT SAYS WHICH STOP IS IN PROGRESS, read off the server's answer to this session's
+                press, and the server's own sentence is rendered as-is — it names the step, what was
+                kept and what was lost, and a second author for one fact is how the two drift.
+
+                THE FALLBACK IS THE BOUNDARY STOP'S WORDING, and it is the safe one to show without an
+                answer in hand. `took` is per-card state and does not survive a reload; a run still
+                stopping when a reader comes back has not gone terminal in seconds, whichever mode was
+                pressed. */}
+            {took?.note
+              ? took.note
+              : (<>
+                  Stopping — {run.step ? `letting “${run.step}” finish` : 'letting the step in flight finish'}.
+                  A reasoning step can take tens of minutes and has no deadline. Nothing further will
+                  start, and nothing will be delivered.
+                </>)}
+          </div>
+        ) : null}
       </div>
     </div>
   )
@@ -540,8 +543,9 @@ function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }
           <button type="button" className="stop-choice-opt stop-choice-now" onClick={onImmediate}>
             <b>Stop now</b>
             <span>
-              Ends {step ? <>“{step}”</> : <>the step in flight</>} rather than waiting for it. The run
-              is over in seconds. That step&rsquo;s work is lost; everything recorded before it is kept.
+              Sends a stop to {step ? <>“{step}”</> : <>the step in flight</>} rather than waiting for
+              it. If it takes the stop the run is over in seconds; if it will not, the run stops at the
+              next step instead. That step&rsquo;s work is lost; everything recorded before it is kept.
             </span>
           </button>
         </div>
