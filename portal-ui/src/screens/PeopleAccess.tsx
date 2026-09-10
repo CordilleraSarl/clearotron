@@ -1,25 +1,33 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// People & access — who can sign in, and what they reach. Staff only, read-only.
+// People — who can use this install, what each person may do, and what they can see.
 //
-// The reason this page exists is a specific recurring support case: somebody cannot get in, or gets in
-// and sees nothing, and finding out why means reading a JSON file on the box.
+// The page's job has not changed: somebody cannot get in, or gets in and sees nothing, and finding out why
+// should not mean reading a JSON file on the box. What changed is what a person IS. There are no role
+// words: each person has two permissions, Run clearances and Manage, and access to points on the tree —
+// the whole install, an organisation, or a company — and sees everything below them.
 //
-// Enrolment is TWO-SIDED. An email must be admitted by Cloudflare Access at the edge AND granted an
-// account here. Either half alone fails in a way that looks like a bug rather than a missing step:
-// admitted but ungranted lands on "no clearances are available to you"; granted but not admitted never
-// reaches the portal at all. This page can only see the second half, and it says so — a page that
-// implied it held the whole picture would send people looking in the wrong place.
+// The list holds the people whose access falls inside the VIEWER's own, and only those points of theirs.
+// The server narrows it; this page draws what it is given. Someone managing one organisation sees that
+// organisation's people and nothing of what they hold elsewhere.
 //
-// Read-only. Granting access from a browser is a production change; it belongs in the grants file where
-// it is reviewed and recorded.
+// Adding a person is entering their address and choosing what they may see and do. Clearotron issues no
+// passwords: the login system in front of the install proves the address. So a person also has to be
+// admitted THERE — this page sees only the half that lives here, and says so rather than implying it
+// holds the whole picture.
 
 import type { CSSProperties } from 'react'
-import { api, staffLabel } from '../contract/api.ts'
-import type { AccessView, ObservedView, Person } from '../contract/api.ts'
+import { api } from '../contract/api.ts'
+import type { ObservedView, Person } from '../contract/api.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { permissionsPhrase, accessChips } from '../shell/accessWords.ts'
+import { ADD_PERSON } from '../nav/nav.config.ts'
+
+/** Where putting a login system in front is explained — the way out of an install that signs in one person. */
+export const LOGIN_IN_FRONT_DOC =
+  'https://github.com/CordilleraSarl/clearotron/blob/main/docs/PORTAL.md#putting-your-own-login-provider-in-front'
 
 export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
   const { result } = useLoad(() => api.adminAccess(), [])
@@ -39,22 +47,49 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
     )
   }
   if (!result) return <div className="screen" />
-  const v: AccessView = result.value
+  const v = result.value
 
-  // Problems first. A page that lists forty healthy grants and buries the one typo has answered the
+  // Problems first. A page that lists forty healthy people and buries the one typo has answered the
   // question nobody asked.
   const broken = v.people.filter((p) => p.dangling.length > 0)
 
+  // "at <organisation>" for a person who can see exactly one — the same rule the top bar keys on — and
+  // "here" otherwise, because a person who sees several organisations is not inside any one of them.
+  const where = ctx.organisations.length === 1 ? `at ${ctx.organisations[0]?.name ?? ''}` : 'here'
+
   return (
     <div className="screen">
-      <div className="measure" style={{ '--screen-measure': '780px' } as CSSProperties}>
-        <div className="notice quiet" style={{ marginBottom: 18 }}>
-          <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>{v.note}</p>
+      <div className="eyebrow">People</div>
+      <div className="measure" style={{ '--screen-measure': '900px' } as CSSProperties}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, margin: '4px 0 16px' }}>
+          <div style={{ flex: 1 }}>
+            <h1 style={{ fontSize: 27, margin: '0 0 4px', color: 'var(--text-strong)' }}>People</h1>
+            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 14.5 }}>
+              Who can use Clearotron <span data-anon="mark">{where}</span>, what they can do, and which
+              companies they can see.
+            </p>
+          </div>
+          {/* DISABLED, NOT HIDDEN, where the install cannot hold a second person — and the notice below
+              says why. A button that vanished would leave a reader looking for it; one that is visibly
+              off, beside the sentence explaining it, answers the question before it is asked. */}
+          <button type="button" className="btn-primary" style={{ flex: 'none' }} disabled={!v.canAdd} onClick={() => ctx.go(ADD_PERSON.path)}>
+            + Add a person
+          </button>
         </div>
 
+        {v.localSignIn ? (
+          <div className="notice quiet" style={{ marginBottom: 14 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
+              <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> To add
+              people, put it behind a login system such as your company single sign-on.{' '}
+              <a href={LOGIN_IN_FRONT_DOC} target="_blank" rel="noreferrer">How to set that up</a>
+            </p>
+          </div>
+        ) : null}
+
         {broken.length ? (
-          <div className="notice" style={{ borderColor: 'var(--tone-high)', marginBottom: 18 }}>
-            <b>{broken.length === 1 ? 'One grant names an account that does not exist' : `${broken.length} grants name accounts that do not exist`}</b>
+          <div className="notice" style={{ borderColor: 'var(--tone-high)', marginBottom: 14 }}>
+            <b>{broken.length === 1 ? "One person's access names a company that does not exist" : `${broken.length} people's access names companies that do not exist`}</b>
             <p style={{ margin: '6px 0 8px', color: 'var(--text-muted)', fontSize: 13 }}>
               Usually a spelling mistake. It fails silently: the person signs in and simply cannot see
               that company, with nothing to explain why.
@@ -62,7 +97,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
             <ul style={{ margin: 0, paddingLeft: 18, color: 'var(--text-muted)', fontSize: 13 }}>
               {broken.map((p) => (
                 <li key={p.email} style={{ marginBottom: 3 }}>
-                  <span data-anon="mark">{p.email}</span> → <b>{p.dangling.join(', ')}</b>
+                  <span data-anon="mark">{p.email}</span> → <b data-anon="mark">{p.dangling.join(', ')}</b>
                 </li>
               ))}
             </ul>
@@ -70,134 +105,46 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
         ) : null}
 
         {v.unknownAccounts.length ? (
-          <div className="notice" style={{ borderColor: 'var(--tone-medium)', marginBottom: 18 }}>
-            <b>Accounts with no company configured</b>
+          <div className="notice" style={{ borderColor: 'var(--tone-medium)', marginBottom: 14 }}>
+            <b>Companies named in access with nothing set up</b>
             <p style={{ margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>
-              Named in the access list but with no profile: <b>{v.unknownAccounts.join(', ')}</b>. Anyone
-              granted one of these will sign in and find nothing there.
+              <b data-anon="mark">{v.unknownAccounts.join(', ')}</b>. Anyone given one of these will sign in
+              and find nothing there.
             </p>
           </div>
         ) : null}
 
-        <Roles brand={ctx.me.brand} />
-
-        <div style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 15, marginBottom: 8 }}>
-          Who can sign in
+        <div className="table-wrap">
+          <table className="data">
+            <thead>
+              <tr>
+                <th>Person</th>
+                <th>Permissions</th>
+                <th>Access to</th>
+              </tr>
+            </thead>
+            <tbody>
+              {v.people.length === 0 ? (
+                <tr>
+                  <td colSpan={3} style={{ color: 'var(--text-muted)' }}>Nobody has been given access yet.</td>
+                </tr>
+              ) : (
+                v.people.map((p) => <Row key={p.email} person={p} />)
+              )}
+            </tbody>
+          </table>
         </div>
-
-        {/* GROUPED BY ROLE. The staff rule and the enrolled people were one flat
-            list, and the rule sat in it as a row — which answered "why is nobody from my firm here?" but
-            left a reader working out which entries were which kind. The headings do that now, and the
-            rule keeps its own rank under its own heading rather than being demoted to a footnote. */}
-        {v.staffDomains.length ? (
-          <>
-            <div style={{ fontWeight: 600, color: 'var(--text-muted)', fontSize: 12.5, margin: '10px 0 6px' }}>
-              Staff <span style={{ color: 'var(--text-faint)' }}>— a config rule, not a person</span>
-            </div>
-            <div style={{ display: 'grid', gap: 6 }}>
-              <StaffRuleRow domains={v.staffDomains} rule={v.staffRule} />
-            </div>
-          </>
-        ) : null}
-
-        <div style={{ fontWeight: 600, color: 'var(--text-muted)', fontSize: 12.5, margin: '14px 0 6px' }}>
-          Clients
-        </div>
-        {v.people.length === 0 ? (
-          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: 0 }}>
-            No client is enrolled on this instance yet.
-          </p>
-        ) : (
-          <div style={{ display: 'grid', gap: 6 }}>
-            {v.people.map((p) => <Row key={p.email} person={p} />)}
-          </div>
-        )}
 
         {v.grantsFile ? (
           <p style={{ color: 'var(--text-muted)', fontSize: 12.5, marginTop: 14 }}>
-            Access is not currently configurable via the UI. Use the provided CLI —{' '}
-            <b className="mono">clearotron grant</b> — which is a back end change. Last changed{' '}
+            Recorded in <b className="mono">{v.grantsFile.name}</b>, which{' '}
+            <b className="mono">clearotron grant</b> edits too. Last changed{' '}
             {new Date(v.grantsFile.modifiedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}.
           </p>
         ) : null}
 
         <Observed result={observed} />
       </div>
-    </div>
-  )
-}
-
-/**
- * What the two roles actually mean.
- *
- * Every clause here is traceable to portal-access.mjs rather than to an intention. In particular it
- * does NOT claim staff can configure anything: nothing about access is editable from any screen, by
- * anyone, and a page that implied otherwise would send someone looking for a control that is not there.
- */
-function Roles({ brand }: { readonly brand: string }) {
-  const Role = ({ name, children }: { readonly name: string; readonly children: React.ReactNode }) => (
-    <div style={{ marginTop: 8 }}>
-      <span style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 13.5 }}>{name}</span>
-      <span style={{ color: 'var(--text-muted)', fontSize: 13 }}> — {children}</span>
-    </div>
-  )
-  return (
-    <div className="notice quiet" style={{ marginBottom: 18 }}>
-      <div className="eyebrow">Two roles currently exist</div>
-      <Role name={staffLabel(brand)}>capable to see every company.</Role>
-      {/* THE NEAREST TRUE FORM. The owner's line read "the companies and its
-          projects named in their grants", and a grant names ACCOUNTS only — `grant add <email> --tenant
-          <name> --accounts <key,key|*>`. A project belongs to a company's configuration, so a client
-          reaches one by INHERITANCE and never by being named. Saying otherwise would send someone
-          looking for a per-project grant that cannot be written. Flagged on the issue. */}
-      <Role name="Clients">
-        reaches only the companies named in their grants, and those companies&rsquo; projects, and
-        nothing else. A company it is not granted is not visible.
-      </Role>
-    </div>
-  )
-}
-
-/**
- * The staff domain rule, rendered as an entry rather than as a footnote about the entries.
- *
- * ── AND IT SAYS WHERE THE RULE IS WRITTEN ───────────────────────────────────────────────────────────
- *
- * This row used to state the rule and stop. An outside reader who did not recognise the domain
- * therefore learned that everyone at it can see every company on their instance, and had no next
- * step: the value is a setting, in one of two files depending on how the instance runs, and neither
- * this row nor anything else on the screen named either. They reported it as a back door, twice.
- * Naming the setting and the file is what turns the row from an alarm into something a reader can act
- * on — and the sentence is deliberately about UNDOING it, because that is the question being asked.
- *
- * `rule` is null when the service could not tell which file configured it. The row then states the
- * rule alone, as before, rather than naming a file the reader would edit to no effect.
- */
-function StaffRuleRow({ domains, rule }: {
-  readonly domains: readonly string[]
-  readonly rule: AccessView['staffRule']
-}) {
-  return (
-    <div
-      style={{
-        padding: '10px 13px',
-        borderRadius: 9,
-        border: '1px solid var(--border-hairline)',
-        background: 'var(--surface-raised)',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-        <span style={{ fontWeight: 600, color: 'var(--text-strong)', fontSize: 13.5 }}>
-          Anyone at <span data-anon="mark">{domains.join(', ')}</span>
-        </span>
-        <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }}>a rule, not a person</span>
-      </div>
-      {rule ? (
-        <p style={{ margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 12.5 }}>
-          Granted by <b className="mono">{rule.name}</b>, {rule.where}. Change or remove that setting and
-          restart this instance to undo the rule. Nothing outside this machine created it.
-        </p>
-      ) : null}
     </div>
   )
 }
@@ -265,34 +212,29 @@ function Observed({ result }: { readonly result: ReturnType<typeof useLoad<Obser
 }
 
 function Row({ person }: { readonly person: Person }) {
-  const bad = person.dangling.length > 0
+  const chips = accessChips(person.access)
+  const viewOnly = !person.permissions.run && !person.permissions.manage
   return (
-    <div
-      style={{
-        padding: '10px 13px',
-        borderRadius: 9,
-        border: `1px solid ${bad ? 'var(--tone-high)' : 'var(--border-hairline)'}`,
-        background: 'var(--surface-raised)',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-        <span style={{ fontWeight: 600, color: 'var(--text-strong)', fontSize: 13.5 }} data-anon="mark">
+    <tr>
+      <td>
+        <span style={{ fontWeight: 700, color: 'var(--text-strong)', wordBreak: 'break-all' }} data-anon="mark">
           {person.email}
         </span>
-        <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }} data-anon="mark">{person.tenant}</span>
-        {person.wildcard ? (
-          // Worth surfacing: this grant follows the tenant. Adding a company to that tenant silently
-          // widens what this person can see, which is right but should not be a surprise.
-          <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px' }}>all of this tenant</span>
-        ) : null}
-      </div>
-      <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginTop: 4 }}>
-        {person.accounts.length ? (
-          <>Reaches: <span style={{ color: 'var(--text-strong)' }} data-anon="mark">{person.accounts.join(', ')}</span></>
+      </td>
+      <td style={{ color: viewOnly ? 'var(--text-muted)' : 'var(--text-strong)' }}>{permissionsPhrase(person.permissions)}</td>
+      <td>
+        {chips.length ? (
+          <span style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+            {chips.map((c) => (
+              <span key={c.key} className={c.top ? 'chip chip-own' : 'chip'} data-anon={c.top ? undefined : 'mark'}>
+                {c.label}
+              </span>
+            ))}
+          </span>
         ) : (
-          'Reaches nothing — signed in, but granted no company.'
+          <span style={{ color: 'var(--text-muted)' }}>Nothing yet — signed in, and given no access.</span>
         )}
-      </div>
-    </div>
+      </td>
+    </tr>
   )
 }

@@ -6,7 +6,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { canManage, canRun } from '../src/shell/permissions.ts'
-import { permissionsPhrase, accessChips } from '../src/shell/accessWords.ts'
+import { permissionsPhrase, accessChips, accessSentence } from '../src/shell/accessWords.ts'
 import type { Permissions } from '../src/contract/api.ts'
 
 // EVERY combination of the two switches, written out. A permission test that exercises one person is a
@@ -80,4 +80,41 @@ test('THE CREATE CONTROL ASKS THE PERMISSION, never a role word', () => {
   assert.ok(controlLine, 'the control has a wiring line')
   assert.match(controlLine, /canManage\(/, 'the control is gated on the permission')
   assert.doesNotMatch(controlLine, /\brole\b|staff/, 'and on nothing that re-derives it from a role word')
+})
+
+test('THE SENTENCE says what the new person will and will not see, before anything is saved', () => {
+  const run = { run: true, manage: false }
+  // One organisation whole and one company in another: the case a reader most often gets wrong, because
+  // the company's organisation is only PARTLY given.
+  assert.equal(
+    accessSentence({ who: 'dana@birch.example', permissions: run, everything: false, organisations: ['Birch & Co'],
+      companies: [{ name: 'Harbour Ltd', organisation: 'Alder Group' }] }),
+    'dana@birch.example will see everything under Birch & Co and under Harbour Ltd, and can run clearances there. '
+      + 'They will not see any other Alder Group clearances, and cannot add companies or people.')
+  assert.equal(
+    accessSentence({ who: 'a@b.test', permissions: { run: true, manage: true }, everything: true, organisations: [], companies: [] }),
+    'a@b.test will see everything on this Clearotron, including organisations added later, and can run clearances and add companies and people there.',
+    'everything, both switches: nothing to warn about')
+  assert.equal(
+    accessSentence({ who: 'a@b.test', permissions: { run: false, manage: false }, everything: false, organisations: ['Birch & Co'], companies: [] }),
+    'a@b.test will see everything under Birch & Co, and can read every report there. They cannot start clearances or add companies or people.',
+    'the view-only person is told what they CAN do first')
+  assert.equal(
+    accessSentence({ who: ' ', permissions: run, everything: false, organisations: [], companies: [] }),
+    'Choose what this person can see.',
+    'nothing chosen and no address yet: an instruction, not a claim')
+  assert.match(accessSentence({ who: '', permissions: run, everything: true, organisations: [], companies: [] }),
+    /^This person will see everything/, 'the stand-in subject is capitalised where it opens the sentence')
+  // A company picked inside an organisation that is ALSO picked whole is not a partial organisation.
+  assert.doesNotMatch(
+    accessSentence({ who: 'a@b.test', permissions: run, everything: false, organisations: ['Alder Group'],
+      companies: [{ name: 'Harbour Ltd', organisation: 'Alder Group' }] }),
+    /any other/)
+  // Never a pronoun guessed from a name: only "they".
+  for (const who of ['dana@birch.example', 'tom@harbour.example', '']) {
+    for (const permissions of [run, { run: false, manage: false }]) {
+      const s = accessSentence({ who, permissions, everything: false, organisations: [], companies: [{ name: 'Harbour Ltd', organisation: 'Alder Group' }] })
+      assert.doesNotMatch(s, /\b(she|he|her|his|him|hers)\b/i, s)
+    }
+  }
 })

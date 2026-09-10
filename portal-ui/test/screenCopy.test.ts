@@ -371,35 +371,29 @@ test('the DescribeIt comment no longer claims the brief travels with the request
   assert.match(NEW_CLEARANCE, /owner decision, and it is\s*\*?\s*deliberately not taken/, 'and the comment says whose decision that is')
 })
 
-// ── People & access · what the screen claims about roles ─────────────────────────────────────────
+// ── People · what the screen claims about who a person is ────────────────────────────────────────
 
-test('the access screen names both real roles, from the brand seam', () => {
-  // WHAT THIS NO LONGER REQUIRES, and it is a real loss rather than a tidy-up.
-  // The page used to disown "operator" and "reader" by name — vestigial roles designed as per-user
-  // roles inside a tenant and never built, which no code path reads. The owner's copy pass removed that
-  // footnote, so a staff member who has heard the pair named is no longer told on the screen which of
-  // the two is true. Flagged on the issue; his wording is the acceptance and it ships.
-  //
-  // What still holds is the half that is about the roles that DO exist, and it is asserted below.
+test('People prints what a person may do, never a role noun', () => {
+  // The page used to name two roles, one of them from the operator's brand. There are no roles: each
+  // person has two permissions and access to points on the tree, and both columns print exactly that,
+  // in the words the shared helpers own.
   const prose = body(PEOPLE_ACCESS)
-  // TWO ASSERTIONS, because the positive one is weak on its own: this file reads SOURCE TEXT, so
-  // matching the helper call passes as long as the call exists anywhere. The property actually
-  // buys is the ABSENCE of the hardcoded operator name, so that is asserted directly beside it.
-  assert.match(prose, /staffLabel\(/, 'the staff role is named FROM THE BRAND SEAM')
-  assert.doesNotMatch(prose, /Cordillera/,
-    'and never as a literal — a fork must not tell its users they are staff of a firm they have never heard of')
-  assert.match(prose, /Client/, 'the client role is named')
+  assert.match(prose, /permissionsPhrase\(person\.permissions\)/, 'the Permissions column is the shared phrase')
+  assert.match(prose, /accessChips\(person\.access\)/, 'the Access column is the shared chips')
+  assert.doesNotMatch(prose, /staffLabel\(|'Client'|>Clients<|Staff/, 'no role word survives on the page')
+  assert.doesNotMatch(prose, /\.tenant\b|all of this tenant/, 'and "tenant" is a file word, never a screen word')
 })
 
-test('the screen does not claim anyone can change access from the browser', () => {
-  // The page is read-only by a deliberate decision, not an unfinished one. Copy that implied a control
-  // exists would send a reader hunting for it.
+test('an install that signs in one person says so, disables Add, and names the way out', () => {
+  // Local sign-in holds one address and one passphrase and cannot hold a second person. A control that
+  // only fails is worse than none, and a vanished control sends a reader looking — so Add stays, visibly
+  // off, beside the sentence saying why and a link to how.
   const prose = body(PEOPLE_ACCESS)
-  // — the owner's wording, which says this more plainly than "a production change"
-  // did. The property is unchanged and still asserted: the page must not imply a control it does not
-  // have. It also NAMES the command now, so a reader sent to a CLI is not sent to an unnamed one.
-  assert.match(prose, /not currently configurable via the UI/, 'the page says the control is not here')
-  assert.match(prose, /clearotron grant/, 'and names the command that does it, rather than "use the CLI"')
+  assert.match(prose, /disabled=\{!v\.canAdd\}/, 'Add is disabled exactly when the server says it cannot add')
+  assert.match(prose, /v\.localSignIn \?/, 'the notice keys on local sign-in')
+  assert.match(prose, /This Clearotron signs in one person: you\./)
+  assert.match(prose, /href=\{LOGIN_IN_FRONT_DOC\}/, 'and it links to where a login system in front is explained')
+  assert.doesNotMatch(prose, /not currently configurable via the UI/, 'the old read-only sentence is gone with the read-only page')
 })
 
 test('the activity panel says absence is not evidence of missing access', () => {

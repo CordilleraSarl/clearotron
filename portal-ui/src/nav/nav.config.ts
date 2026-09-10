@@ -46,6 +46,8 @@ export type ScreenId =
   | 'about'
   // People — the top group, beside Home. It is not about one company, so it sits above the switcher.
   | 'people'
+  // …and the form it opens. A dot-child, so People stays lit while the form is open.
+  | 'people.add'
   // company screens — no `brand` parent exists, on purpose (see above)
   | 'brand.profile'
   | 'brand.projects'
@@ -126,6 +128,9 @@ export const NAV: readonly NavEntry[] = [
   // menu; both halves of that were the old model talking. `needs: 'manage'` is the whole gate, and the
   // page itself lists only people whose access falls inside the viewer's own.
   { id: 'people', label: 'People', path: '/portal/people', icon: 'users', needs: 'manage', scope: 'account' },
+  // Give someone access — reached from `+ Add a person` on People and from nowhere else, hence `hidden`.
+  // The same permission as the page that opens it.
+  { id: 'people.add', label: 'Give someone access', path: '/portal/people/add', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
 
   // ── below the switcher: one company at a time ─────────────────────────────────────────────────
   // New clearance leads the group because it is the one ACTION here, and it is company-specific by
@@ -382,3 +387,10 @@ function decode(segment: string): string {
     return segment
   }
 }
+
+/**
+ * The People page and the form it opens, named once so neither screen writes the other's path out.
+ * Looked up by id for the reason HOME is.
+ */
+export const PEOPLE: NavEntry = NAV.find((e) => e.id === 'people') as NavEntry
+export const ADD_PERSON: NavEntry = NAV.find((e) => e.id === 'people.add') as NavEntry

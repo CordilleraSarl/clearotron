@@ -1057,30 +1057,35 @@ export type FlagView = {
   readonly auth: AuthState | null
 }
 
+/**
+ * One person on the People page, as the VIEWER may see them.
+ *
+ * `access` is narrowed by the server to the points inside the viewer's own: someone managing one
+ * organisation sees a colleague's access there and never learns what that colleague holds elsewhere. The
+ * narrowing is the server's alone — a filter here would be a visibility rule written in markup.
+ */
 export type Person = {
   readonly email: string
-  readonly tenant: string
-  readonly accounts: readonly string[]
-  /** Accounts granted that this person's own tenant does not hold. A typo; fails as a silent 404. */
+  readonly permissions: Permissions
+  readonly access: readonly AccessPoint[]
+  /** Companies this person's access names that do not exist. Usually a typo; it fails as a silent 404. */
   readonly dangling: readonly string[]
-  readonly wildcard: boolean
 }
 
 export type AccessView = {
   readonly note: string
-  readonly staffDomains: readonly string[]
   readonly unknownAccounts: readonly string[]
   readonly people: readonly Person[]
-  /** Where access is actually changed. Null when the file could not be stat'd — never a guess. */
+  /** Where access is recorded. Null when the file could not be stat'd — never a guess. */
   readonly grantsFile: { readonly name: string; readonly modifiedAt: string } | null
   /**
-   * Which setting created the staff rule, and where that setting is written.
-   *
-   * Null when there is no staff rule, or when the service could not tell which file configured it —
-   * a sentence naming the wrong file is worse than no sentence, because the reader edits it and
-   * nothing changes.
+   * Whether this install can take another person at all. False on local sign-in, which holds one address
+   * and one passphrase and cannot hold a second person. Absent reads as false: a control the server did
+   * not say it can serve is not offered.
    */
-  readonly staffRule: { readonly name: string; readonly where: string } | null
+  readonly canAdd: boolean
+  /** True when the portal signs one person in locally. The page then names the way out. */
+  readonly localSignIn: boolean
 }
 
 /** One identity seen in the activity log. NOT an access record — see ObservedView. */
@@ -1628,6 +1633,19 @@ export function decodeAccess(b: Record<string, unknown>): readonly AccessPoint[]
     if (!key) return []
     return [{ kind, key, name: asString(r['name']) || key }]
   })
+}
+
+/** One person as the server sends them — the switches and the points decoded by the rules `me` uses. */
+function decodePerson(r: Record<string, unknown>): Person {
+  return {
+    email: asString(r['email']) ?? '',
+    permissions: {
+      run: asRecord(r['permissions'])['run'] === true,
+      manage: asRecord(r['permissions'])['manage'] === true,
+    },
+    access: decodeAccess(r),
+    dangling: asArray(r['dangling']).filter((s): s is string => typeof s === 'string'),
+  }
 }
 
 export const api = {
@@ -2306,22 +2324,12 @@ export const api = {
         : null,
     })),
 
-  /** Staff-only: who is granted what, and where an enrolment is half done. */
+  /** Manage only: who can use this install, what they may do, and where an enrolment is half done. */
   adminAccess: (): Promise<Result<AccessView>> =>
     call('/portal/admin/access', (b) => ({
       note: asString(b['note']) ?? '',
-      staffDomains: asArray(b['staffDomains']).filter((s): s is string => typeof s === 'string'),
       unknownAccounts: asArray(b['unknownAccounts']).filter((s): s is string => typeof s === 'string'),
-      people: asArray(b['people']).map((p) => {
-        const r = p as Record<string, unknown>
-        return {
-          email: asString(r['email']) ?? '',
-          tenant: asString(r['tenant']) ?? '',
-          accounts: asArray(r['accounts']).filter((s): s is string => typeof s === 'string'),
-          dangling: asArray(r['dangling']).filter((s): s is string => typeof s === 'string'),
-          wildcard: r['wildcard'] === true,
-        }
-      }),
+      people: asArray(b['people']).map((p) => decodePerson(asRecord(p))),
       grantsFile: (() => {
         const g = b['grantsFile'] as Record<string, unknown> | null | undefined
         const name = asString(g?.['name'])
@@ -2330,15 +2338,25 @@ export const api = {
         // which is worse on this screen than not claiming to know.
         return name && modifiedAt ? { name, modifiedAt } : null
       })(),
-      staffRule: (() => {
-        const s = b['staffRule'] as Record<string, unknown> | null | undefined
-        const name = asString(s?.['name'])
-        const where = asString(s?.['where'])
-        // Both halves or nothing, for the reason `grantsFile` takes the same shape: half of this
-        // sentence sends a reader to look for a setting without saying where it lives.
-        return name && where ? { name, where } : null
-      })(),
+      canAdd: b['canAdd'] === true,
+      localSignIn: b['localSignIn'] === true,
     })),
+
+  /**
+   * Give someone access. Manage only; it writes the same grants file the command line writes.
+   *
+   * `access` names points inside the adder's own — a point outside it answers 404, the same as one that
+   * does not exist. The switches belong to the PERSON: when the address already holds access somewhere
+   * the adder cannot see, the points are added and the switches stay as they were, and the answer carries
+   * them as they now stand. So the screen reads the switches back from the answer rather than assuming
+   * the ones it sent were applied.
+   */
+  addPerson: (body: {
+    readonly email: string
+    readonly permissions: Permissions
+    readonly access: readonly ({ readonly kind: 'everything' } | { readonly kind: 'organisation' | 'company'; readonly key: string })[]
+  }): Promise<Result<Person>> =>
+    call('/portal/admin/people', (b) => decodePerson(b), { method: 'POST', body: JSON.stringify(body) }),
 
   /**
    * Staff-only, best-effort. ALWAYS 200 — `available:false` is the shape for "the log could not be

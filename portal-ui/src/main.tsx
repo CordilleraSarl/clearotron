@@ -17,6 +17,7 @@ import { Profile } from './screens/Profile.tsx'
 import { Projects } from './screens/Projects.tsx'
 import { GlobalConfig } from './screens/GlobalConfig.tsx'
 import { PeopleAccess } from './screens/PeopleAccess.tsx'
+import { GiveAccess } from './screens/GiveAccess.tsx'
 import { About } from './screens/About.tsx'
 import { resultRoute } from './nav/nav.config.ts'
 import type { ScreenId } from './nav/nav.config.ts'
@@ -138,6 +139,10 @@ function screen(id: ScreenId, ctx: ShellContext) {
       return <About />
     case 'people':
       return <PeopleAccess ctx={ctx} />
+    // NOT keyed on the company in view: who can use the install is not a company's question, and a
+    // half-filled form must survive somebody touching the switcher beside it.
+    case 'people.add':
+      return <GiveAccess ctx={ctx} />
     // Admin settings has no screen of its own; landing on the parent shows its only child. People used
     // to be that first child and moved to the rail, so the parent now falls through to Global config.
     case 'admin':

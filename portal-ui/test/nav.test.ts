@@ -77,6 +77,10 @@ test('without Manage there is no admin surface and no People; with it, People is
   assert.equal(screenForPath('/portal/people', MANAGER)?.id, 'people')
   assert.equal(navFor(MANAGER).some((e) => e.id === 'people'), true, 'People is a rail entry, not a menu item')
   assert.equal(navFor(RUNNER).some((e) => e.id === 'people'), false)
+  // The form People opens: routable for a manager, lit under People by the dot rule, never in the rail.
+  assert.equal(screenForPath('/portal/people/add', MANAGER)?.id, 'people.add')
+  assert.equal(screenForPath('/portal/people/add', RUNNER), null)
+  assert.equal(navFor(MANAGER).some((e) => e.id === 'people.add'), false, 'reached from + Add a person only')
   assert.equal(screenForPath('/portal/admin', RUNNER), null)
   assert.equal(navFor(RUNNER).some((e) => e.id.startsWith('admin')), false)
 
