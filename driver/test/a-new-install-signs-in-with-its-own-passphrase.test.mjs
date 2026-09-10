@@ -197,6 +197,20 @@ test("the recovery line runs as printed, directory change and all, and resets th
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
+/** `n` distinct ports free right now: each bound on port 0 and read back, all held until every one is chosen, then released. */
+async function freePorts(n) {
+  const { createServer } = await import("node:net");
+  const servers = [];
+  for (let i = 0; i < n; i++) {
+    const server = createServer();
+    await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
+    servers.push(server);
+  }
+  const ports = servers.map((server) => String(server.address().port));
+  await Promise.all(servers.map((server) => new Promise((resolve) => server.close(resolve))));
+  return ports;
+}
+
 // ── THE REPORTED CASE, AT ITS OWN DOOR: A REAL FIRST START ──────────────────────────────────────────
 //
 // A machine where another install left the shared credential, and a new install that has never started.
@@ -208,10 +222,13 @@ test("a real first start, where another install left the shared credential, mint
   const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
   establishCredential({ path: shared, email: "op@localhost", passphrase: "an earlier install's" });
   const sharedBefore = readFileSync(shared, "utf8");
-  // Its own ports, and nothing inherited: the store, the pool and the credential all land under `home`.
+  // Ports free at the moment it starts, and nothing inherited: the store, the pool and the credential all
+  // land under `home`. Not fixed ports: a port something else holds would red this test for a reason that
+  // has nothing to do with its name. `start` refuses port 0 itself, so the ports are picked here.
+  const [portal, mcp, client] = await freePorts(3);
   const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
     env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
-      PORTAL_SERVICE_PORT: "18981", TRADEMARK_MCP_HTTP_PORT: "18982", CLIENT_MCP_HTTP_PORT: "18983" },
+      PORTAL_SERVICE_PORT: portal, TRADEMARK_MCP_HTTP_PORT: mcp, CLIENT_MCP_HTTP_PORT: client },
     stdio: ["ignore", "pipe", "pipe"],
   });
   let said = "";
