@@ -52,7 +52,7 @@ const ROWS = Array.from({ length: 8 }, (_, i) => ({
 
 const kindOf = (qid) => (String(qid).startsWith("recall-owner-") ? "owner" : "mark");
 
-test("#917: the recall cap is two budgets — every mark probe dispatches, the owner lane stops at five", async () => {
+test("the recall cap is two budgets — every mark probe dispatches, the owner lane stops at five", async () => {
   mkdirSync(SLUG_DIR, { recursive: true });
   writeFileSync(join(SLUG_DIR, "_known-conflicts.json"),
     JSON.stringify({ schema_version: 1, marks: { "project novapulse": ROWS } }, null, 2));

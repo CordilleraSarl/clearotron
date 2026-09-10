@@ -8,7 +8,7 @@ import { managerGroupsVerdict } from "../manager-groups-verdict.mjs";
 
 const V = (o) => managerGroupsVerdict({ user: "svc-runner", uid: 1005, ...o });
 
-test("#693 the fault as it happened: the user is in a group the manager is not", () => {
+test("the fault as it happened: the user is in a group the manager is not", () => {
   // the run account 1005 plus a second group 1006; the manager started before 1006 was added.
   const r = V({ idGroups: [1005, 1006], managerGroups: [1005] });
   assert.equal(r.state, "fail");
@@ -25,13 +25,13 @@ test("#693 the fault as it happened: the user is in a group the manager is not",
   assert.match(r.message, /restarting the individual units does NOT refresh this/i);
 });
 
-test("#693 the healthy case passes, and says what it compared", () => {
+test("the healthy case passes, and says what it compared", () => {
   const r = V({ idGroups: [1005, 1006], managerGroups: [1006, 1005] });
   assert.equal(r.state, "pass", "order must not matter — these are sets");
   assert.match(r.message, /1005/);
 });
 
-test("#693 the OTHER direction: a manager holding a group the user has lost", () => {
+test("the OTHER direction: a manager holding a group the user has lost", () => {
   const r = V({ idGroups: [1005], managerGroups: [1005, 1006] });
   assert.equal(r.state, "fail");
   assert.match(r.message, /no longer in/);
@@ -42,14 +42,14 @@ test("#693 the OTHER direction: a manager holding a group the user has lost", ()
 // Both are legitimate shapes and neither is a pass. Production runs its services from SYSTEM units, so
 // there is no user manager to compare against — that must skip, not fail, or this check would redden
 // every prod deploy. And a check that could not read the user's groups established nothing at all.
-test("#693 no user manager → skip, never pass and never fail", () => {
+test("no user manager → skip, never pass and never fail", () => {
   const r = V({ idGroups: [1005, 1006], managerGroups: null, why: "no systemd --user process for uid 1005" });
   assert.equal(r.state, "skip", "a system-unit deployment is not a fault");
   assert.match(r.message, /Nothing to compare/);
   assert.match(r.message, /no systemd --user process/);
 });
 
-test("#693 unreadable user groups → skip, and it says it was not checked", () => {
+test("unreadable user groups → skip, and it says it was not checked", () => {
   for (const idGroups of [null, [], undefined]) {
     const r = V({ idGroups, managerGroups: [1005] });
     assert.equal(r.state, "skip");

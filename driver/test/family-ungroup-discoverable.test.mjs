@@ -37,7 +37,7 @@ const src = (rel) => readFileSync(join(HERE, "..", "..", rel), "utf8");
 // claim would force the record to be deleted along with the defect (the lesson, same file).
 const live = (rel) => src(rel).split("\n").filter((l) => !l.trim().startsWith("//") && !l.trim().startsWith("*") && !l.trim().startsWith("/*")).join("\n");
 
-test("#612 arm 1 — the family header offers Ungroup, where the family visibly is", () => {
+test("arm 1 — the family header offers Ungroup, where the family visibly is", () => {
   const t = live("portal-ui/src/screens/Clearances.tsx");
   assert.match(t, /onUngroup\?\s*:/, "the header row takes an ungroup handler");
   assert.match(t, /onUngroup\(family\)/, "…and calls it with the family the row is about");
@@ -61,7 +61,7 @@ test("#612 arm 1 — the family header offers Ungroup, where the family visibly 
     "the new control is in the multi-select bar again — that is the surface nobody could find");
 });
 
-test("#612 arm 2 — it calls the SAME audited capability, over every run in the family", () => {
+test("arm 2 — it calls the SAME audited capability, over every run in the family", () => {
   const t = live("portal-ui/src/screens/Clearances.tsx");
   assert.match(t, /api\.setFamily\(\{ action: 'ungroup', runIds \}\)/,
     "one capability, one audit trail — a second path to the same effect is a second thing to keep honest");
@@ -70,7 +70,7 @@ test("#612 arm 2 — it calls the SAME audited capability, over every run in the
     "ungrouping by mark id would leave the other reads of that name still in the family");
 });
 
-test("#612 arm 3 — one click cannot dissolve a grouping somebody made deliberately", () => {
+test("arm 3 — one click cannot dissolve a grouping somebody made deliberately", () => {
   const t = live("portal-ui/src/screens/Clearances.tsx");
   const at = t.indexOf("const ungroupFamily");
   assert.ok(at > 0, "the handler exists");
@@ -81,7 +81,7 @@ test("#612 arm 3 — one click cannot dissolve a grouping somebody made delibera
     "and the confirm says what is NOT lost — the names stay, which is the thing a user fears");
 });
 
-test("#612 arm 4 — the enforcement is untouched: the old button still gates on the selection", () => {
+test("arm 4 — the enforcement is untouched: the old button still gates on the selection", () => {
   const t = live("portal-ui/src/screens/Clearances.tsx");
   assert.match(t, /\[\.\.\.picked\]\.some\(\(id\) =>[\s\S]{0,200}?\?\.familyId\) \?/,
     "THE PRINCIPLE STANDS: a control that cannot act is still not on screen. #612 added an invitation, "
@@ -89,7 +89,7 @@ test("#612 arm 4 — the enforcement is untouched: the old button still gates on
   assert.match(t, />\s*Remove from family\s*</, "…and the per-name route is still there");
 });
 
-test("#612 arm 5 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser gets", (ctx) => {
+test("arm 5 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser gets", (ctx) => {
   // The source is not the surface. `portal-ui/dist` is committed on purpose and portal-static serves it
   // verbatim, so a source-only fix leaves the user on the old screen while every other test passes.
   const dir = join(HERE, "..", "..", "portal-ui", "dist", "assets");

@@ -145,7 +145,7 @@ const PROBE_PROVIDERS = has("--probe-providers");
 const PROBE_CONNECTOR = has("--probe-connector");
 
 // ── output ───────────────────────────────────────────────────────────────────────────────────────────
-// WEIGHT WHERE THE MEANING IS (owner ruling 2026-08-31). Every line here used to
+// WEIGHT WHERE THE MEANING IS (ruling 2026-08-31). Every line here used to
 // be the same weight, which is why the passphrase and the coverage reason both disappeared into their
 // surroundings — two defects on that issue that are formatting defects wearing other clothes.
 //
@@ -1679,7 +1679,7 @@ export async function runCheck() {
         // The reader is told they have a customer and not told what they are running on. Both halves
         // wrong from one list.
         //
-        // SINCE 2026-09-08 A FRESH INSTALL RESOLVES `generic` ALONE (owner ruling): nobody should have to
+        // SINCE 2026-09-08 A FRESH INSTALL RESOLVES `generic` ALONE (ruling): nobody should have to
         // clean demo material out of an environment they just created. So the demo branch below no longer
         // fires on a plain install — it fires inside the demo, which asks for its own account. It is kept
         // rather than deleted because it is still reachable, and a reader who meets the demo account
@@ -2662,7 +2662,7 @@ export async function runCheck() {
         // unreachable; repeating it as a second failure teaches the reader that this section
         // double-counts. It still states what was NOT established, which is the whole job.
         else if (v.kind === "could-not-look") info(v.message);
-        // NO ACCESS IN FRONT OF THE CLIENT DOOR IS A POSTURE, NOT A FAULT (owner ruling 2026-09-08).
+        // NO ACCESS IN FRONT OF THE CLIENT DOOR IS A POSTURE, NOT A FAULT (ruling 2026-09-08).
         //
         // This is the CLIENT connector's address, and how a client reaches it is the client's decision:
         // "client access sitting behind OAuth is totally up to a client — plenty might just run it token
@@ -2884,7 +2884,7 @@ try {
   // is DERIVED: the engines from ENGINE_BINARIES, the search vendors from the same adapter tables the
   // prompts loop over, each wearing its own table row's where-to-get line. A hand-kept copy here would
   // be the SERPAPI defect again, one screen earlier. Everything is skippable; the list says so.
-  // THE BANNER — once, on entry, named (owner ruling 2026-08-31). Not on every
+  // THE BANNER — once, on entry, named (ruling 2026-08-31). Not on every
   // command: a banner every verb prints is how a product becomes tiresome to use twice. It sits here
   // rather than at the top of main() so that `--check`, which writes nothing and is run repeatedly,
   // does not wear it either.
@@ -3247,7 +3247,7 @@ try {
     for (const l of spec.signup) say(`    ${l}`);
     say("");
   }
-  // ── — INSTALL MAY FINISH WITH NO REGISTER. Owner ruling, 2026-08-26 ──────────────────────
+  // ── — INSTALL MAY FINISH WITH NO REGISTER. Ruling, 2026-08-26 ──────────────────────
   //
   // Every row of PROVIDERS declares required credentials, and this prompt had no way out, so a reader
   // with no vendor account could not reach the closing screen at all — the menu offers no "none" row,
@@ -3456,7 +3456,7 @@ try {
     ok(`CLEAROTRON_REPORTS_URL=${trimmed}`);
   }
 
-  // 7a-bis ── THE ADDRESS CLIENTS REACH THE CONNECTOR AT (owner ruling 2026-09-03, Q2)
+  // 7a-bis ── THE ADDRESS CLIENTS REACH THE CONNECTOR AT (ruling 2026-09-03, Q2)
   //
   // *"The installer asks once, at install, on the box. It is a deployment setting, never a per-person
   // one. Changing it later is editing that one setting and restarting."*
@@ -3659,7 +3659,7 @@ try {
   //
   // The owner was given a command, typed it from his home directory, and got npm's error rather than
   // ours: `npx` resolves a local package by walking UP from the current directory, so every command
-  // this product prints worked only where the reader happened to be standing. Owner ruling 2026-08-26:
+  // this product prints worked only where the reader happened to be standing. Ruling 2026-08-26:
   // put the verb on PATH, as a per-user shim — `npm link` wants write access to `/usr` and refuses
   // without root, which is why stopped at teaching the product to print `npx`.
   //

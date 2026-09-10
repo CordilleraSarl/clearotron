@@ -39,14 +39,14 @@ function fixture() {
 }
 const build = (P, ordinals, opts) => { assembleReportMd(P, FINDINGS, ordinals, opts); return readFileSync(P.report, "utf8"); };
 
-test("#1503 ONE COUNTRY: every finding is a full card, so the ladder selects the same set", () => {
+test("ONE COUNTRY: every finding is a full card, so the ladder selects the same set", () => {
   const one = depthFor({ product: "full-country-search" });
   const forms = FINDINGS.map((f) => writeUpForm(one, f));
   assert.deepEqual(forms, ["full", "full", "full", "full"],
     "a one-country finding was graded to an entry — the card set moved, and product 4's report with it");
 });
 
-test("#1503 the assembled bytes are IDENTICAL to the pre-ladder call on one country", () => {
+test("the assembled bytes are IDENTICAL to the pre-ladder call on one country", () => {
   const ords = FINDINGS.map((f) => f.ordinal);
   const before = build(fixture(), ords);                                   // the 3-argument call, as it was
   const after = build(fixture(), ords, { grouped: [], byRight: false });   // one country: nothing graded
@@ -58,7 +58,7 @@ test("#1503 the assembled bytes are IDENTICAL to the pre-ladder call on one coun
     + "not present-and-empty");
 });
 
-test("#1503 THE GUARD CAN FAIL — force the graded path and the same bytes move", () => {
+test("THE GUARD CAN FAIL — force the graded path and the same bytes move", () => {
   const ords = [FINDINGS[0].ordinal];
   const baseline = build(fixture(), ords);
   const graded = build(fixture(), ords, { grouped: FINDINGS.slice(1), byRight: false });

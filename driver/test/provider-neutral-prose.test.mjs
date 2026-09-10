@@ -102,7 +102,7 @@ test("no vendor tool tokens outside the provider glue and provider vocabulary do
 // A blockquote is the one exception, and deliberately a narrow one: `status-rules.md` explains this
 // exact defect by naming the host it used to carry. Prose ABOUT a host reads differently from an
 // instruction to compose one, and `>` is the mark the document already uses for the difference.
-test("#798 no provider-agnostic skill file states a record base host", () => {
+test("no provider-agnostic skill file states a record base host", () => {
   const SKILLS = join(DRIVER, "skills");
   const PROVIDER_DOCS = join("skills", "prelim-register", "providers");
 

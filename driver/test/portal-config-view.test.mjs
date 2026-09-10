@@ -32,7 +32,7 @@ function pool(env = ENGINE_ENV, capturedAt = AT) {
   return root;
 }
 
-test("#1149 item 8 — the staff screen renders NO flag, and says so rather than showing an empty list", () => {
+test("item 8 — the staff screen renders NO flag, and says so rather than showing an empty list", () => {
   // The three tests this replaces asserted the screen's whole reason for existing: the driver's true
   // values render from a process with none of them set, explicitly-off is distinguished from
   // never-configured, and every rendered flag is labelled silent and not an admission gate. All four
@@ -47,7 +47,7 @@ test("#1149 item 8 — the staff screen renders NO flag, and says so rather than
   assert.deepEqual(v.flags, [], "and it declares no flag, because #1149 item 8 deleted all four");
 });
 
-test("#1149 item 8 — a deleted switch cannot reappear on the staff screen by being set", () => {
+test("item 8 — a deleted switch cannot reappear on the staff screen by being set", () => {
   // The counterfactual. `pool()` builds its snapshot from an environment with all three jx arms set, so
   // if the allowlist ever grew one back this reddens rather than quietly rendering a dead toggle to
   // staff as though it governed something.
@@ -68,8 +68,8 @@ test("a missing snapshot is UNAVAILABLE, never 'everything off'", () => {
 });
 
 test("an OLD capture is still readable, and its age is no longer a verdict on it", () => {
-  // THIS ARM USED TO ASSERT `v.stale === true`, and the age banner it belonged to is retired — owner
-  // ruling 2026-09-05: "the global configuration page shows LIVE configuration,
+  // THIS ARM USED TO ASSERT `v.stale === true`, and the age banner it belonged to is retired — ruling
+  // 2026-09-05: "the global configuration page shows LIVE configuration,
   // always. No run-time snapshot as the source of truth."
   //
   // What the arm was FOR survives and is what it checks now: old is not the same as unreadable, and the
@@ -89,7 +89,7 @@ test("an OLD capture is still readable, and its age is no longer a verdict on it
 
 // ──: the engine and provider rows, and the hop that must not collapse them ────────────────────
 
-test("#1439 — an OLDER snapshot reports engine and providers as UNKNOWN, never as none", () => {
+test("an OLDER snapshot reports engine and providers as UNKNOWN, never as none", () => {
   // `pool` builds its snapshot without the blocks, which is exactly what every deployment's
   // snapshot looks like until its driver next drains. The view must carry that through as null: an
   // empty list here would tell staff the instance has no providers wired up, which is a different
@@ -100,7 +100,7 @@ test("#1439 — an OLDER snapshot reports engine and providers as UNKNOWN, never
   assert.equal(v.providers, null);
 });
 
-test("#1439 — a missing snapshot states the same two fields rather than omitting them", () => {
+test("a missing snapshot states the same two fields rather than omitting them", () => {
   // Both branches of flagView must produce the same SHAPE, or a reader can tell "no snapshot" from
   // "older snapshot" by a key that happens to be absent — and would then render one of them wrongly.
   const v = flagView(mkdtempSync(join(tmpdir(), "empty-")), { now: NOW });
@@ -111,7 +111,7 @@ test("#1439 — a missing snapshot states the same two fields rather than omitti
   assert.equal(v.providers, null);
 });
 
-test("#1439 — an instance with nothing wired up sends ROWS saying so, and they reach the view", () => {
+test("an instance with nothing wired up sends ROWS saying so, and they reach the view", () => {
   // The counterfactual, and the property the page depends on: a provider that is not configured must
   // arrive as a row marked missing. If the view dropped unconfigured rows, this is where it shows.
   const engine = { id: "anthropic-agent", vendor: "Anthropic", known: true, binaryPresent: false,
@@ -324,7 +324,7 @@ test("accessView carries the grants file through, and tolerates not knowing it",
 // this one's own door — and let it go stale, which is the failure the stale notice on this page warns
 // about. The tests below pin the exception AND the three things it must never leak.
 
-test("#1439 — an UNSET mode reports the service's default, not 'unconfigured'", () => {
+test("an UNSET mode reports the service's default, not 'unconfigured'", () => {
   // portal-service.mjs is explicit that unset means the fronted default ("unset means cf-access, exactly
   // as before"), and it refuses to start in any other. A page reporting a running instance as having no
   // sign-in method would be the most believed wrong answer on the most believed page.
@@ -336,7 +336,7 @@ test("#1439 — an UNSET mode reports the service's default, not 'unconfigured'"
   assert.equal(a.declared, null, "declared records what was CONFIGURED, which is a different fact");
 });
 
-test("#1439 — `cf-access` is NORMALISED, because the service normalises it at the read", () => {
+test("`cf-access` is NORMALISED, because the service normalises it at the read", () => {
   // item 1 landed in 880cf43e and it is NOT an alias row:
   //     const AUTH_MODE = AUTH_MODE_SET === "cf-access" ? "auth-proxy" : AUTH_MODE_SET;
   // So a box configured `cf-access` is RUNNING `auth-proxy`. Reporting the typed spelling as the mode
@@ -348,7 +348,7 @@ test("#1439 — `cf-access` is NORMALISED, because the service normalises it at 
   assert.equal(a.shape, "fronted");
 });
 
-test("#1439 — the generic issuer wins over the Cloudflare one, and an Entra box is not described by a team it lacks", () => {
+test("the generic issuer wins over the Cloudflare one, and an Entra box is not described by a team it lacks", () => {
   // gave the portal PORTAL_OIDC_ISSUER — the same value the staff MCP face already read. Naming
   // only CF_ACCESS_TEAM would describe every deployment through one vendor's variable, which is the
   // framing exists to remove.
@@ -363,7 +363,7 @@ test("#1439 — the generic issuer wins over the Cloudflare one, and an Entra bo
   assert.equal(cfOnly.issuer, "acme", "and a Cloudflare-fronted box, which configures nothing else, still answers");
 });
 
-test("#1439 — the mode is resolved by the SERVICE's own expression, whitespace and case included", () => {
+test("the mode is resolved by the SERVICE's own expression, whitespace and case included", () => {
   // portal-service.mjs does `(process.env.PORTAL_AUTH_MODE || "").trim().toLowerCase()`. A view that
   // matched the raw string would report " Local " as unrecognised while the service ran happily in local
   // mode — the page disagreeing with the door it describes.
@@ -371,7 +371,7 @@ test("#1439 — the mode is resolved by the SERVICE's own expression, whitespace
   assert.equal(authView({ mode: "CF-ACCESS", team: "t" }).shape, "fronted");
 });
 
-test("#1439 — a missing issuer is a STATE that names its variable, never an omitted row", () => {
+test("a missing issuer is a STATE that names its variable, never an omitted row", () => {
   // The same discipline the provider rows take: a row that quietly drops the issuer is indistinguishable
   // from one that never needed it.
   const a = authView({ mode: "cf-access", team: "" });
@@ -381,13 +381,13 @@ test("#1439 — a missing issuer is a STATE that names its variable, never an om
   assert.deepEqual(a.missing, ["PORTAL_OIDC_ISSUER", "CF_ACCESS_TEAM"], "names BOTH ways to satisfy it");
 });
 
-test("#1439 — local mode has no issuer and claims none", () => {
+test("local mode has no issuer and claims none", () => {
   const a = authView({ mode: "local" });
   assert.equal(a.issuer, null, "there is no third party issuing anything");
   assert.deepEqual(a.missing, [], "and nothing is missing — an empty string here would render as a blank");
 });
 
-test("#1439 — an unrecognised mode is reported as such rather than guessed into a shape", () => {
+test("an unrecognised mode is reported as such rather than guessed into a shape", () => {
   // portal-service.mjs exits on a mode it does not have, so this is unreachable from a running portal.
   // It is still a state rather than a silent fall-through to the default: a typo must never be able to
   // select an identity source nobody chose, on the page as much as at the door.
@@ -396,7 +396,7 @@ test("#1439 — an unrecognised mode is reported as such rather than guessed int
   assert.equal(a.issuer, null, "and it certainly does not get an issuer");
 });
 
-test("#1439 — THE LEAK TEST: no audience, no secret, no local address, whatever is passed in", () => {
+test("THE LEAK TEST: no audience, no secret, no local address, whatever is passed in", () => {
   // The ruling is "the mode, and the issuer, and nothing else". This asserts over the SERIALISED view
   // rather than field by field, so a field added later is covered by this arm on the day it is added
   // rather than on the day someone remembers to extend the list.
@@ -409,7 +409,7 @@ test("#1439 — THE LEAK TEST: no audience, no secret, no local address, whateve
   assert.ok(serialised.includes("acme"), "the issuer IS shown — an empty view would pass every check above");
 });
 
-test("#1439 — authView reads NOTHING from process.env, so the route is visibly the reader", () => {
+test("authView reads NOTHING from process.env, so the route is visibly the reader", () => {
   // If this function read the environment itself, the seam would be invisible and the test would need to
   // mutate process.env to exercise it. Planting a value it would pick up proves it does not.
   const before = process.env.PORTAL_AUTH_MODE;
@@ -441,7 +441,7 @@ const poolWithEngine = (engine) => {
   return root;
 };
 
-test("#1720 no binary is DEMO, a binary is ENGINE-UNPROVEN, and neither is ever engine-ready", () => {
+test("no binary is DEMO, a binary is ENGINE-UNPROVEN, and neither is ever engine-ready", () => {
   const demo = flagView(poolWithEngine({ id: "anthropic-agent", known: true, binaryPresent: false }), { now: NOW });
   assert.equal(demo.engineMode, "demo",
     "an install with nothing to spawn is in demo mode, and the surface that decides whether a Start "
@@ -486,7 +486,7 @@ test("an engine this build does not ship names no program and no command", () =>
   assert.equal(v.engine.install, null, "a command was named for an engine that does not exist here");
 });
 
-test("#1720 no snapshot answers NULL, never demo — an absent file is not an absent engine", () => {
+test("no snapshot answers NULL, never demo — an absent file is not an absent engine", () => {
   const v = flagView(mkdtempSync(join(tmpdir(), "empty-mode-")), { now: NOW });
   assert.equal(v.available, false);
   assert.equal(v.engineMode, null,
@@ -494,7 +494,7 @@ test("#1720 no snapshot answers NULL, never demo — an absent file is not an ab
     + "what happened is that nobody wrote a snapshot yet — the same defect one level down");
 });
 
-test("#1720 a snapshot that predates engine reporting answers NULL rather than guessing", () => {
+test("a snapshot that predates engine reporting answers NULL rather than guessing", () => {
   // `buildFlagSnapshot` with no engine block is every snapshot written before the writer. The view
   // already renders `engine: null` there and says it cannot tell; the mode must not be braver than the
   // field it is derived from.

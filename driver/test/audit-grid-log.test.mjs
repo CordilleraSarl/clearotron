@@ -90,7 +90,7 @@ test("item 33 — buildAuditMd uses the grid instead of the common-law tables wh
 // three driver files that carried the chain. The MCP surfaces (mcp-server/) are deliberately NOT read:
 // they parse `failover` events out of ARCHIVED runs' run.jsonl and degrade to null, and retiring that
 // response shape is a separate decision.
-test("#235 — no driver source can write or render a failover note", () => {
+test("no driver source can write or render a failover note", () => {
   for (const f of ["../pipeline.mjs", "../stages.mjs", "../publish/index.mjs"]) {
     const src = readFileSync(new URL(f, import.meta.url), "utf8");
     // strip comments: the deletion is recorded in prose in all three files, and that prose must be
@@ -105,7 +105,7 @@ test("#235 — no driver source can write or render a failover note", () => {
 });
 
 // …and the resolver it collapsed to returns exactly one model per stage, never a chain.
-test("#235 — chainEntries resolves ONE model for every stage, on any engine", () => {
+test("chainEntries resolves ONE model for every stage, on any engine", () => {
   for (const engine of ["anthropic-agent", "openai-agent", ""]) {
     const prior = process.env.CLEAROTRON_AI;
     process.env.CLEAROTRON_AI = engine;
@@ -131,7 +131,7 @@ test("#235 — chainEntries resolves ONE model for every stage, on any engine", 
 const rowsFor = (grid) => searchRows({ negatives: gridNegativeRows(grid) }, {});
 const termRow = (grid) => rowsFor(grid).find((r) => !r._section && /VENZY/.test(r["Search term / variant"] ?? ""));
 
-test("#312: gridNegativeRows types WHETHER the query ran, instead of only phrasing it", () => {
+test("gridNegativeRows types WHETHER the query ran, instead of only phrasing it", () => {
   const rows = gridNegativeRows(GRID);
   const gap = rows.find((r) => r.platform === "reddit.com");
   assert.equal(gap.not_searched, "yes", "the gaps[] arm was already known here — it was thrown away into prose");
@@ -140,7 +140,7 @@ test("#312: gridNegativeRows types WHETHER the query ran, instead of only phrasi
   }
 });
 
-test("#312: the marker survives the markdown round-trip, which a boolean could not", () => {
+test("the marker survives the markdown round-trip, which a boolean could not", () => {
   // The serialiser writes a key only `if (v)` and parse.mjs reads every value back as a string, so
   // `searched: false` would never be written and `searched: true` would return as "true". A truthy
   // marker is the one shape that comes back unchanged — and the workbook reads audit.md, not the grid.
@@ -149,7 +149,7 @@ test("#312: the marker survives the markdown round-trip, which a boolean could n
   assert.equal((md.match(/- not_searched: yes/g) ?? []).length, 1, "exactly the one gapped row carries it");
 });
 
-test("#312: an OBJECT-shaped gap produces a row — it used to produce none at all", () => {
+test("an OBJECT-shaped gap produces a row — it used to produce none at all", () => {
   // Two writers, two shapes: jx-units.mjs writes the pipe string, common-law-receipts.mjs writes the
   // object. The object stringified to "[object Object]", split to one part, and hit the length guard —
   // so an unrunnable query VANISHED rather than rendering wrong, which is the same failure one step back.
@@ -160,7 +160,7 @@ test("#312: an OBJECT-shaped gap produces a row — it used to produce none at a
   assert.match(rows[0].notes, /503/, "and it keeps the reason it could not run");
 });
 
-test("#312: a term whose only surface errored is NOT rendered as clean", () => {
+test("a term whose only surface errored is NOT rendered as clean", () => {
   const row = termRow([{ cells: [], gaps: ["VENZY | etsy.com | provider 503 on both attempts"] }]);
   assert.ok(row, "the term is listed");
   assert.doesNotMatch(row.Result, /clean/i, "never '0 — clean' for a search that did not run");
@@ -168,7 +168,7 @@ test("#312: a term whose only surface errored is NOT rendered as clean", () => {
   assert.match(row.Outcome, /not searched/i);
 });
 
-test("#312: a partly-gapped term says both halves — the clean surfaces AND the ones that never ran", () => {
+test("a partly-gapped term says both halves — the clean surfaces AND the ones that never ran", () => {
   // The dedup unions results across platforms, so one gapped surface among many used to disappear.
   const row = termRow([{
     cells: [
@@ -182,13 +182,13 @@ test("#312: a partly-gapped term says both halves — the clean surfaces AND the
   assert.match(row.Note, /etsy\.com/, "…and which");
 });
 
-test("#312: a fully clean term is unchanged — annotating every clean row teaches the reader to skip it", () => {
+test("a fully clean term is unchanged — annotating every clean row teaches the reader to skip it", () => {
   const row = termRow([{ cells: [{ term: "VENZY", platform: "amazon.com", status: "no_hit", candidates: [] }], gaps: [] }]);
   assert.equal(row.Result, "0 — clean");
   assert.equal(row.Outcome, "No conflict");
 });
 
-test("#312: outcomeFor has no reassuring fall-through — an unrecognised Result is not a closure claim", () => {
+test("outcomeFor has no reassuring fall-through — an unrecognised Result is not a closure claim", () => {
   const reg = (result) => searchRows({ negatives: [{ source_layer: "Register", search_term: "VENZY", platform: "vendor", result, notes: "" }] }, {})
     .find((r) => !r._section).Outcome;
   // The four not-searched phrasings the register spine actually emits — an open vocabulary, which is why

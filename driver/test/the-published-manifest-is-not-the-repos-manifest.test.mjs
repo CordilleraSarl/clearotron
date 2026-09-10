@@ -437,7 +437,7 @@ test("an install this gave up waiting for is a could-not-look too", () => {
 //   · the refusal is could-not-look, not failure                  → break: exit 1, arm 1 red
 //   · it names what is missing and what stays unproven            → break: a bare message, arm 1 red
 //   · the strip invariant asks only about keys actually stripped  → break: read STRIP_KEYS, arm 2 red
-test("196 verify-publishable REFUSES on a tree it cannot pack, and says so as a could-not-look", (ctx) => {
+test("verify-publishable REFUSES on a tree it cannot pack, and says so as a could-not-look", (ctx) => {
   const script = join(REPO, "scripts", "verify-publishable.mjs");
   assert.ok(existsSync(script), "the instrument this arm is about is gone");
   const r = spawnSync(process.execPath, [script], { encoding: "utf8", timeout: 120_000 });
@@ -467,7 +467,7 @@ test("196 verify-publishable REFUSES on a tree it cannot pack, and says so as a 
   assert.match(said, /verb|substitution/, `the refusal does not say what is left unproven:\n${said}`);
 });
 
-test("196 the strip invariant asks about keys it actually stripped, not about a policy list", () => {
+test("the strip invariant asks about keys it actually stripped, not about a policy list", () => {
   // `STRIP_KEYS` is the POLICY — what to remove from the published manifest IF PRESENT — and it still
   // carries `private` so that a tree reintroducing that flag produces a publishable tarball. The
   // invariant underneath it read the same list as a list of keys the REPOSITORY must HOLD, and `private`

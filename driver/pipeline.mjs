@@ -2637,7 +2637,7 @@ const safeReadText = (p) => { try { return readFileSync(p, "utf8"); } catch { re
 // a named reason, never a silent skip.
 // ── — THE FLOOR DUTY, checked ────────────────────────────────────────────────────────────────
 //
-// The floors are placement-inquiry's one uncapped obligation and nothing verified them. The owner ruling
+// The floors are placement-inquiry's one uncapped obligation and nothing verified them. The ruling
 // of 2026-08-20 made the duty machine-checkable — placed, or named by record id with a one-line ground —
 // and this is the check that ruling ordered. The dictation that tells the seat to name the ids ships in
 // the same commit, so a run predating it reports its WHOLE floor unmet, correctly.
@@ -5889,7 +5889,7 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   }
 }
 
-// (T3a, owner ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
+// (T3a, ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
 // review goes." That REVERSES T3, which had retired "delivered-with-open-questions" and deleted
 // the extra this comment used to be a tombstone for. Both decisions are the owner's; this is the standing
 // one. The open points are no longer a dispatch extra a seat writes up: `buildReviewerOpenPointsSection`
@@ -7055,7 +7055,7 @@ export function injectZhScopeCoverage(P, runDir, note, opts = {}) {   // @intern
  *  returns nothing the moment `laneRan` is true, so a `full`-configured lane that ran candidates only
  *  fell through every disclosure this pipeline had.
  *
- *  OWNER RULING (2026-08-17), and it decides the shape rather than just authorising the work: "if we
+ *  RULING (2026-08-17), and it decides the shape rather than just authorising the work: "if we
  *  can't run deep dive on serpAPI we need to flag it" — FLAG, NOT GATE. So nothing here changes what a
  *  run executes or what it retrieves; it changes what the delivered document admits. `coverage-limited`
  *  is the state for exactly that: a disclosed limit, never a verdict clamp.
@@ -7241,7 +7241,7 @@ export function fullProseOrdinals(findings) {
 // ADVISORY_KINDS member could never reach a client document at all. The 2026-07-16 comment described the
 // behaviour it shipped with and became stale prose sitting next to code that contradicted it.
 //
-// Owner ruling 2026-08-19 (relayed), on a renewal-deadline example: it renders. That intent is the
+// Ruling 2026-08-19 (relayed), on a renewal-deadline example: it renders. That intent is the
 // ruled behaviour. The tag is REQUIRED, not decoration — `advisoryLine` interpolates ADVISORY_TAG[a.kind]
 // directly, so a kind that passes the filter without an entry here renders "- **undefined** …" into a
 // client document. Whoever adds a fifth kind adds it in both places, and render.mjs needs the matching
@@ -7338,8 +7338,8 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
   // Terminal punctuation on the ask BEFORE the subject join. This was written to work around a cut —
   // actYouConditions ended its bound line at the first '.' or ':' before whitespace, and the subject's
   // own "(re:" qualified, so a period-less ask (the synthesis prompt demands one sentence but nothing
-  // enforces terminal punctuation) delivered as a mangled "…terms (re". THAT CUT IS GONE (owner
-  // ruling 2026-08-10): the conditions box now renders the ask and its subject whole. The punctuation
+  // enforces terminal punctuation) delivered as a mangled "…terms (re". THAT CUT IS GONE (ruling
+  // 2026-08-10): the conditions box now renders the ask and its subject whole. The punctuation
   // stays because it was always the right output — "Instruct counsel on the joined-script forms (re: X)"
   // reads as one run-on sentence, and the period is what separates the ask from the driver's own note.
   // Asks with no subject are untouched.
@@ -7430,7 +7430,7 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 
 // ── T3a — THE REVIEWER'S OPEN POINTS, CODE-BUILT FROM THE REVIEW ────────────────────────────────────
 //
-// Owner ruling 2026-08-26, verbatim: "Deliver always, with open points printed. The refusal on a
+// Ruling 2026-08-26, verbatim: "Deliver always, with open points printed. The refusal on a
 // blocking review goes." That REVERSES T3, which retired "delivered-with-open-questions" and
 // is itself recorded as an owner-approved decision — both are his, and this is the standing one.
 //
@@ -12502,7 +12502,7 @@ async function pipelineInner(job, opts = {}) {
 
     // ── — THE TERMINAL GUARDS DELIVER AND CLAMP; THEY DO NOT WITHHOLD ───────────
     //
-    // Owner ruling, 2026-08-27, verbatim intent: **reports always ship**. When a terminal guard finds
+    // Ruling, 2026-08-27, verbatim intent: **reports always ship**. When a terminal guard finds
     // the report incomplete at delivery, the engine sends it with the gap patched conservatively and
     // the defect named in the run record. It never withholds.
     //
@@ -12573,7 +12573,7 @@ async function pipelineInner(job, opts = {}) {
     // not an oversight: if the unanswerable count is ever the large one, it wants its own issue against
     // the band rather than a wider floor here.
     //
-    // NO REPAIR RUNG, deliberately and on a measurement (owner ruling relayed 2026-08-27). Every
+    // NO REPAIR RUNG, deliberately and on a measurement (ruling relayed 2026-08-27). Every
     // registered repair composer belongs to another stage; placement has none, and building one is a
     // larger piece of work than this floor. The blast radius said it could wait: on the day this was
     // written today's run discharged all 60 of its floors, and the only two runs with undischarged rows
@@ -12586,7 +12586,7 @@ async function pipelineInner(job, opts = {}) {
     // argument was that nothing could then reach delivery unaccounted. The corrective pass is the state
     // that enumeration missed: `prepareDeclinationSpec` runs again before it over a surface that can
     // have grown, so it is ordered against a LARGER owed set; if that call is refused,
-    // `rollbackCorrectivePass` restores the pre-corrective findings and — by T3b's owner ruling,
+    // `rollbackCorrectivePass` restores the pre-corrective findings and — by T3b's ruling,
     // deliberately — the run DELIVERS. What ships then satisfied the OLD owed set, and no acceptance
     // boundary ever saw a call about the records added since, because the only call ordered against them
     // was the one that was refused.
@@ -12940,7 +12940,7 @@ async function pipelineInner(job, opts = {}) {
     try { writeVerdictSidecar(); }
     catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
 
-    // T3a, owner ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
+    // T3a, ruling 2026-08-26 — "Deliver always, with open points printed. The refusal on a blocking
     // review goes." This REVERSES T3 (H3/H5), whose flip to fail-on-BLOCKING is itself recorded
     // itself an owner-approved decision. Both are his; this is the standing one, and the
     // history is kept here rather than deleted because a reader who finds only one of them will conclude
@@ -13009,7 +13009,7 @@ async function pipelineInner(job, opts = {}) {
         }
       }
       if (verdict === "BLOCKING") {
-        // ── T3a — THE RUN DELIVERS. Owner ruling 2026-08-26, verbatim: "Deliver always, with open
+        // ── T3a — THE RUN DELIVERS. Ruling 2026-08-26, verbatim: "Deliver always, with open
         // points printed. The refusal on a blocking review goes." ──────────────────────────────────
         //
         // What stood here threw, and its reasoning was T3: "a report the reviewer will not

@@ -63,7 +63,7 @@ function seatPrompts() {
   return out;
 }
 
-test("#1511 the seat fixture builds real prompts — an empty set would pass every arm below", () => {
+test("the seat fixture builds real prompts — an empty set would pass every arm below", () => {
   const seats = seatPrompts();
   const names = Object.keys(seats);
   assert.ok(names.length >= 2, `only built ${names.length} seat prompt(s): ${names.join(", ")}. The `
@@ -76,7 +76,7 @@ test("#1511 the seat fixture builds real prompts — an empty set would pass eve
   }
 });
 
-test("#1511 a seat told to stay OFF the registers is also told not to describe them", () => {
+test("a seat told to stay OFF the registers is also told not to describe them", () => {
   const seats = seatPrompts();
   const scoped = Object.entries(seats).filter(([, t]) => SCOPES_OFF_REGISTERS.test(t));
   assert.ok(scoped.length >= 1,
@@ -91,7 +91,7 @@ test("#1511 a seat told to stay OFF the registers is also told not to describe t
   }
 });
 
-test("#1511 the assess seat's cure is still there — #706 part 2 is not traded for #1511", () => {
+test("the assess seat's cure is still there — #706 part 2 is not traded for #1511", () => {
   const assess = seatPrompts()["knockout-assess"];
   assert.ok(assess, "the assess seat no longer builds, so its cure is unverified");
   assert.match(assess, CARRIES_SILENCE, "the cure #706 part 2 put on the assess seat is gone");

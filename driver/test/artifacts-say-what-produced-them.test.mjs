@@ -31,7 +31,7 @@ const ctxFor = (runDir) => ({
 });
 
 // ── 1. the run dir names the engine that served it ────────────────────────────────────────────────
-test("#1846 the SEED stamps the engine commit — readable before a run has delivered anything", () => {
+test("the SEED stamps the engine commit — readable before a run has delivered anything", () => {
   scratch((root) => {
     const runDir = join(root, "run"); mkdirSync(runDir, { recursive: true });
     seedRunStatus(ctxFor(runDir));
@@ -45,7 +45,7 @@ test("#1846 the SEED stamps the engine commit — readable before a run has deli
   });
 });
 
-test("#1846 a RESUME does not rewrite it — this names the engine the run STARTED on", () => {
+test("a RESUME does not rewrite it — this names the engine the run STARTED on", () => {
   scratch((root) => {
     const runDir = join(root, "run"); mkdirSync(runDir, { recursive: true });
     seedRunStatus(ctxFor(runDir));
@@ -59,7 +59,7 @@ test("#1846 a RESUME does not rewrite it — this names the engine the run START
   });
 });
 
-test("#1846 a checkout that cannot name itself records null, not a wrong sha and not a throw", () => {
+test("a checkout that cannot name itself records null, not a wrong sha and not a throw", () => {
   // `engineCommit()` catches and returns null. That matters HERE because this is the identity seed: a
   // throw would cost the run its record, which is the failure `status-write-failed` exists to surface.
   // A null says "this run's code cannot be named" — a different and honest answer from a wrong sha.
@@ -68,7 +68,7 @@ test("#1846 a checkout that cannot name itself records null, not a wrong sha and
 });
 
 // ── 2. the grid names the provider that served it ─────────────────────────────────────────────────
-test("#1846 the grid provenance names PERPLEXITY — the lane SerpAPI does not serve", () => {
+test("the grid provenance names PERPLEXITY — the lane SerpAPI does not serve", () => {
   const rec = gridProvenanceRecord({ ran: true, present: 210, requested: 210, model: null });
   assert.equal(rec.provider, "perplexity",
     "the R2 round read a flat SerpAPI counter across this lane and called it quota-starved; the grid "
@@ -83,7 +83,7 @@ test("#1846 the grid provenance names PERPLEXITY — the lane SerpAPI does not s
   assert.match(rec._cells, /NOT A COST/, "and the count must say what it is not");
 });
 
-test("#1846 an ALREADY-RECORDED grid says nothing was bought — a stamp is not a receipt for a purchase", () => {
+test("an ALREADY-RECORDED grid says nothing was bought — a stamp is not a receipt for a purchase", () => {
   const rec = gridProvenanceRecord({ ran: false, present: 210, requested: 210 });
   assert.equal(rec.ran, false);
   assert.match(rec._ran, /nothing was bought/,
@@ -91,7 +91,7 @@ test("#1846 an ALREADY-RECORDED grid says nothing was bought — a stamp is not 
     + "make a re-read look like a second sweep");
 });
 
-test("#1846 the sidecar sits beside the ledger, derived from the ledger's own path", () => {
+test("the sidecar sits beside the ledger, derived from the ledger's own path", () => {
   assert.equal(gridProvenancePath("/x/studio/prelim-search/r/common-law-grid.json"),
     "/x/studio/prelim-search/r/common-law-grid.provenance.json");
   scratch((root) => {
@@ -103,7 +103,7 @@ test("#1846 the sidecar sits beside the ledger, derived from the ledger's own pa
   });
 });
 
-test("#1846 a sidecar that cannot be written never costs a completed grid", () => {
+test("a sidecar that cannot be written never costs a completed grid", () => {
   // The ledger is already on disk and cost real money by the time this runs. Best-effort, like every
   // other sidecar on this path.
   assert.doesNotThrow(() => writeGridProvenance({ output_path: "/nonexistent/dir/common-law-grid.json" },
@@ -111,7 +111,7 @@ test("#1846 a sidecar that cannot be written never costs a completed grid", () =
 });
 
 // ── 3. the score names the scorer that produced it ────────────────────────────────────────────────
-test("#1846 the HUMAN score output names the scorer version and the run's engine", () => {
+test("the HUMAN score output names the scorer version and the run's engine", () => {
   const src = readFileSync(join(dirname(dirname(dirname(new URL(import.meta.url).pathname))), "scripts", "score.mjs"), "utf8");
   // `--json` has carried `scorer_version` since this file shipped. The gap was the HUMAN path, which is
   // the one whose numbers get pasted into an issue: the body states 6/9 for a run that re-scores

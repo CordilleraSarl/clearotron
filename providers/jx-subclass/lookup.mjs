@@ -41,7 +41,7 @@ export function subclassesFor(db, { country, term, niceClass }) {
   //
   // ── — THE 13TH EDITION GOVERNS THE CODE. CNIPA'S OWN WORDING STILL FINDS THE GOOD. ──────────
   //
-  // Owner ruling, 2026-08-20: "13th edition. done." — option 2, accepting that the 12th's assignments
+  // Ruling, 2026-08-20: "13th edition. done." — option 2, accepting that the 12th's assignments
   // lose authority WHEREVER THE EDITIONS DISAGREE. That last clause is the whole design: disagreement is
   // the case being decided, and it is not the same case as "the 13th has never heard of this good".
   //

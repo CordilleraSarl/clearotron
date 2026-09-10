@@ -48,13 +48,13 @@ function literalRegex(src, anchor, label) {
   return new RegExp(m[1], m[2]);
 }
 
-test("#469 gate token — the throw in findings-model.mjs is the one this file pins", () => {
+test("gate token — the throw in findings-model.mjs is the one this file pins", () => {
   const model = readFileSync(new URL("../findings-model.mjs", import.meta.url), "utf8");
   assert.match(model, new RegExp(`throw new Error\\(\`${TOKEN}:\\$\\{ord\\}`),
     "the token leads its throw message, so gateway.mjs's correctionHint / WARM_ELIGIBLE_RE can key on it");
 });
 
-test("#469 gate token — property 1: WARM_ELIGIBLE_RE admits it, so the repair stays on the model's own session", () => {
+test("gate token — property 1: WARM_ELIGIBLE_RE admits it, so the repair stays on the model's own session", () => {
   assert.equal(warmEligible(WIRE, { status: "ok" }), true, "admitted — the corrective turn warm-resumes the synthesis session");
   // …and the three spellings that would silently go cold instead. Each is a real way to write this name.
   for (const bad of [
@@ -64,7 +64,7 @@ test("#469 gate token — property 1: WARM_ELIGIBLE_RE admits it, so the repair 
   ]) assert.equal(warmEligible(bad, { status: "ok" }), false, `${bad} would go COLD — a lost session, reported as nothing`);
 });
 
-test("#469 gate token — property 2: the repair turn is aimed at findings.json, not the coverage ledger", () => {
+test("gate token — property 2: the repair turn is aimed at findings.json, not the coverage ledger", () => {
   assert.equal(repairTarget(WIRE, "/run/narrative.md"), "/run/findings.json",
     "the `/findings?_/` branch is a bare family-prefix test — it routes with no gateway edit");
   // The collision this name exists to avoid: `coverage_*` is tested FIRST in the same ternary, so a
@@ -78,7 +78,7 @@ test("#469 gate token — property 2: the repair turn is aimed at findings.json,
   assert.equal(coverageFirst.test(TOKEN), false, "…checked against the shipped regex itself, not the list above");
 });
 
-test("#469 gate token — property 3: PLURAL, so the A3 per-finding salvage lane never claims it", () => {
+test("gate token — property 3: PLURAL, so the A3 per-finding salvage lane never claims it", () => {
   const a3 = PIPELINE_SRC.slice(PIPELINE_SRC.indexOf("const eligible = /^invalid_file:/"));
   assert.ok(a3.startsWith("const eligible ="), "the A3 predicate is gone from pipeline.mjs — this guard needs updating with it");
   const eligible = (fail) => /^invalid_file:/.test(fail) && /:finding_[a-z]/.test(fail) && !/:findings_/.test(fail);
@@ -92,7 +92,7 @@ test("#469 gate token — property 3: PLURAL, so the A3 per-finding salvage lane
     "…which is why finding_net_missing keeps its singular name: the lenient path drops those objects, so there is something to salvage");
 });
 
-test("#469 gate token — the repair message is the GENERIC findings.json recital, and that is accepted", () => {
+test("gate token — the repair message is the GENERIC findings.json recital, and that is accepted", () => {
   // Honest correction to "zero gateway edits": ROUTING is free, a token-specific hint is not. The
   // `/findings?_/` branch fires first and unconditionally; with no matching `extra` arm the token falls
   // through to the base text, which recites the findings.json key contract and appends the failed check.

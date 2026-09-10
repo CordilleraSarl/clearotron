@@ -49,7 +49,7 @@ const open = () => new DatabaseSync(DB, { readOnly: true });
 
 // ── acceptance 11 — an absent or empty database refuses BY NAME ─────────────────────────────────────
 
-test("#1227-11 an UNCONFIGURED database refuses by name and never answers zero", () => {
+test("an UNCONFIGURED database refuses by name and never answers zero", () => {
   assert.throws(() => M.openSubclass({ path: null }), (e) => {
     assert.equal(e.reason, "unconfigured");
     assert.match(e.message, /CLEAROTRON_JX_SUBCLASS_DB/, "the refusal must name what to set");
@@ -57,7 +57,7 @@ test("#1227-11 an UNCONFIGURED database refuses by name and never answers zero",
   });
 });
 
-test("#1227-11 a MISSING file refuses, and the open does not create one", () => {
+test("a MISSING file refuses, and the open does not create one", () => {
   const dir = mkdtempSync(join(tmpdir(), "jxsub-missing-"));
   const path = join(dir, "not-built.db");
   assert.throws(() => M.openSubclass({ path }), (e) => (assert.equal(e.reason, "missing"), true));
@@ -67,7 +67,7 @@ test("#1227-11 a MISSING file refuses, and the open does not create one", () => 
     "the refusal created the database it was refusing — the next call would read it as an empty table");
 });
 
-test("#1227-11 an EMPTY database refuses too — schema present, no rows, is the dangerous case", () => {
+test("an EMPTY database refuses too — schema present, no rows, is the dangerous case", () => {
   const dir = mkdtempSync(join(tmpdir(), "jxsub-empty-"));
   const path = join(dir, "empty.db");
   const db = new DatabaseSync(path);
@@ -78,7 +78,7 @@ test("#1227-11 an EMPTY database refuses too — schema present, no rows, is the
 
 // ── acceptance 6, 7, 8, 9 — over the real table ─────────────────────────────────────────────────────
 
-test("#1227-6 a good and a country answer with codes AND a citation", () => {
+test("a good and a country answer with codes AND a citation", () => {
   const db = open();
   try {
     const r = M.subclassesForGood(db, { country: "CN", term: "香皂", niceClass: 3 });
@@ -89,7 +89,7 @@ test("#1227-6 a good and a country answer with codes AND a citation", () => {
   } finally { db.close(); }
 });
 
-test("#1227-6 every way of finding NOTHING is a different answer, never a bare empty list", () => {
+test("every way of finding NOTHING is a different answer, never a bare empty list", () => {
   const db = open();
   try {
     // The whole point of the slice. A caller receiving [] cannot tell these apart and they are not the
@@ -102,7 +102,7 @@ test("#1227-6 every way of finding NOTHING is a different answer, never a bare e
   } finally { db.close(); }
 });
 
-test("#1227-7 a class span UNIONS exam_standard with derived_from_goods — either alone is a false clear", () => {
+test("a class span UNIONS exam_standard with derived_from_goods — either alone is a false clear", () => {
   const db = open();
   try {
     // Measured on the committed JP data: 24 (group, class) pairs are in exam_standard and not in
@@ -119,7 +119,7 @@ test("#1227-7 a class span UNIONS exam_standard with derived_from_goods — eith
   } finally { db.close(); }
 });
 
-test("#1227-8 similar, cross_search and the exclusions are NEVER merged", () => {
+test("similar, cross_search and the exclusions are NEVER merged", () => {
   const db = open();
   try {
     // 类似 means treated as similar; 交叉检索 means the search must ALSO cover that group; the exclusions
@@ -136,7 +136,7 @@ test("#1227-8 similar, cross_search and the exclusions are NEVER merged", () => 
   } finally { db.close(); }
 });
 
-test("#1227-9 an edition_qualifier is SURFACED and never applied silently", () => {
+test("an edition_qualifier is SURFACED and never applied silently", () => {
   const db = open();
   try {
     const q = db.prepare("SELECT source_group FROM cross_reference WHERE office='CN' AND edition_qualifier IS NOT NULL AND edition_qualifier <> '' LIMIT 1").get();
@@ -152,7 +152,7 @@ test("#1227-9 an edition_qualifier is SURFACED and never applied silently", () =
 
 // ── acceptance 10 and 12 — the country list is DATA ──────────────────────────────────────────────────
 
-test("#1227-12 the enabled list is the ONLY gate — the JP data is present and the query is identical", () => {
+test("the enabled list is the ONLY gate — the JP data is present and the query is identical", () => {
   const db = open();
   try {
     // A flip test that cannot mutate a frozen export still has to prove the claim. It does it from both
@@ -168,7 +168,7 @@ test("#1227-12 the enabled list is the ONLY gate — the JP data is present and 
   } finally { db.close(); }
 });
 
-test("#1227-10/12 no per-country branch decides the ANSWER — enabling one is a list edit", () => {
+test("no per-country branch decides the ANSWER — enabling one is a list edit", () => {
   // Read at the source, because a runtime check over a one-country list cannot see a branch for the
   // other three. Acceptance 10 rides on this: a JP or KR lookup must not be scoped by Nice class (43%
   // of JP codes and 39% of KR codes span classes deliberately), and the way that stays true is that no

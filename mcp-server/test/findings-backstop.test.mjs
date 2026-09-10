@@ -59,7 +59,7 @@ function runDir({ findingsDoc = null } = {}) {
   return dir;
 }
 
-describe("#1187 the rebuilt-from-spine backstop", () => {
+describe("the rebuilt-from-spine backstop", () => {
   test("takes the backstop at all — the premise every assertion below rests on", () => {
     const dir = runDir();
     try {
@@ -68,7 +68,7 @@ describe("#1187 the rebuilt-from-spine backstop", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 
-  test("#1187 STAMPS THE WITHDRAWAL from the run's own findings.json", () => {
+  test("STAMPS THE WITHDRAWAL from the run's own findings.json", () => {
     const dir = runDir({ findingsDoc: WITHDRAWN_DOC });
     try {
       const { findings } = loadFindings(driver.paths(dir));
@@ -81,7 +81,7 @@ describe("#1187 the rebuilt-from-spine backstop", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 
-  test("#1187 and the client filter then has something to act on — end to end on this path", () => {
+  test("and the client filter then has something to act on — end to end on this path", () => {
     // The point of the pair. On the audit.md path this was already true; this is the same claim on the
     // path that had no stamps to read.
     const dir = runDir({ findingsDoc: WITHDRAWN_DOC });
@@ -97,7 +97,7 @@ describe("#1187 the rebuilt-from-spine backstop", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 
-  test("#1187 a run with NO findings.json behaves exactly as it did before — best-effort, never a throw", () => {
+  test("a run with NO findings.json behaves exactly as it did before — best-effort, never a throw", () => {
     // The added read must not turn a legitimately findings-less run (replay, a legacy archive, a run
     // that failed before synthesis) into an error. It degrades to the old no-op.
     const dir = runDir();
@@ -109,7 +109,7 @@ describe("#1187 the rebuilt-from-spine backstop", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 
-  test("#1187 a TORN findings.json is not an error either", () => {
+  test("a TORN findings.json is not an error either", () => {
     const dir = runDir();
     try {
       writeFileSync(join(dir, "findings.json"), "{ this is not json");
@@ -119,7 +119,7 @@ describe("#1187 the rebuilt-from-spine backstop", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 
-  test("#1187 the bare-array form is read too, not only the wrapper", () => {
+  test("the bare-array form is read too, not only the wrapper", () => {
     // findings.json ships as an object with a `findings` key; the array form exists on older runs. Both
     // are on disk, so both are accepted rather than one being silently ignored.
     const dir = runDir({ findingsDoc: WITHDRAWN_DOC.findings });

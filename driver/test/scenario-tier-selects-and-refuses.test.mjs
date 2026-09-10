@@ -24,7 +24,7 @@ import { lintScenarios } from "../../scripts/e2e.mjs";
 
 const sc = (id, extra = {}) => ({ id, __file: `${id}.json`, cost: { wallMinutes: 12 }, ...extra });
 
-test("#1914 — an absent tier is `standing`, and that is a real default rather than a shrug", () => {
+test("an absent tier is `standing`, and that is a real default rather than a shrug", () => {
   assert.equal(tierOf({}), "standing");
   assert.equal(tierOf({ tier: undefined }), "standing");
   assert.equal(tierOf({ tier: null }), "standing");
@@ -34,12 +34,12 @@ test("#1914 — an absent tier is `standing`, and that is a real default rather 
   assert.equal(tierOf({ id: "R0" }), DEFAULT_TIER);
 });
 
-test("#1914 — both tiers read back, and the vocabulary is closed", () => {
+test("both tiers read back, and the vocabulary is closed", () => {
   for (const t of SCENARIO_TIERS) assert.equal(tierOf({ tier: t }), t);
   assert.deepEqual([...SCENARIO_TIERS], ["standing", "hardening"]);
 });
 
-test("#1914 — an unrecognised tier THROWS and names the value, never picking a tier for you", () => {
+test("an unrecognised tier THROWS and names the value, never picking a tier for you", () => {
   // `standng` is the exact failure this exists for: one keystroke, and a hardening scenario joins the
   // standing set — or a standing one silently leaves it.
   assert.throws(() => tierOf({ tier: "standng" }), /tier "standng" is not one of: standing, hardening/);
@@ -51,7 +51,7 @@ test("#1914 — an unrecognised tier THROWS and names the value, never picking a
   assert.throws(() => tierOf({ tier: { name: "hardening" } }), /tier must be a string, not object/);
 });
 
-test("#1914 — a bad tier becomes ONE labelled store finding, so #659's scoping applies to it unchanged", () => {
+test("a bad tier becomes ONE labelled store finding, so #659's scoping applies to it unchanged", () => {
   // This is the whole of the scope design and the reason the check sits in the lint rather than at a
   // selection site. `sweepStoreOrDie()` bare (cmdList) refuses on any scenario's finding;
   // `sweepStoreOrDie(id)` (cmdRun) matches findings by the scenario's id LABEL and refuses only on its
@@ -66,7 +66,7 @@ test("#1914 — a bad tier becomes ONE labelled store finding, so #659's scoping
   assert.equal(wrong.filter((w) => /^R7: /.test(w)).length, 0);
 });
 
-test("#1914 — a store where every tier is readable produces no tier finding at all", () => {
+test("a store where every tier is readable produces no tier finding at all", () => {
   // The control. Without it, an arm that always found one finding would pass this file's other arm and
   // still be measuring nothing.
   const { wrong } = lintScenarios([sc("R0"), sc("R7", { tier: "standing" }), sc("R150", { tier: "hardening" })]);

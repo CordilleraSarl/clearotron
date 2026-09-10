@@ -290,7 +290,7 @@ test("zhScopeDepthNotes: absent with no zh scope, on a worldwide run, or where t
 // NO END-TO-END ja/ko EVIDENCE EXISTS BELOW THIS LINE. No scheduled E2E scenario instructs JP or KR,
 // so none of this is proof the lanes ran on a real matter — it is proof the writer is lane-general.
 
-test("#248 scriptScopeDisclosure: the zh vocabulary is DERIVED, and reproduces the frozen constants byte-for-byte", () => {
+test("scriptScopeDisclosure: the zh vocabulary is DERIVED, and reproduces the frozen constants byte-for-byte", () => {
   const zh = scriptScopeDisclosure("zh");
   assert.equal(zh.area, ZH_SCOPE_COVERAGE_AREA, "derived from LANGUAGE_LANES.label + JURISDICTION_ADAPTERS");
   assert.equal(zh.note, ZH_SCOPE_COVERAGE_NOTE);
@@ -298,7 +298,7 @@ test("#248 scriptScopeDisclosure: the zh vocabulary is DERIVED, and reproduces t
   assert.equal(scriptScopeDisclosure("nope"), null, "a lane with no spec has no disclosure");
 });
 
-test("#248 scriptScopeDisclosure: EVERY lane in LANGUAGE_LANES gets a distinct area, note and territory list", () => {
+test("scriptScopeDisclosure: EVERY lane in LANGUAGE_LANES gets a distinct area, note and territory list", () => {
   const lanes = Object.keys(LANGUAGE_LANES);
   assert.deepEqual(lanes.sort(), ["ja", "ko", "zh"], "the three candidate lanes");
   const seen = new Set();
@@ -314,7 +314,7 @@ test("#248 scriptScopeDisclosure: EVERY lane in LANGUAGE_LANES gets a distinct a
   assert.match(scriptScopeDisclosure("ko").area, /Korean-script register equivalents \(KR\)/);
 });
 
-test("#248 decideScriptScopeHonesty: each lane fires on ITS OWN territories and on nobody else's", () => {
+test("decideScriptScopeHonesty: each lane fires on ITS OWN territories and on nobody else's", () => {
   const cases = [["zh", "CN"], ["ja", "JP"], ["ko", "KR"]];
   for (const [lane, terr] of cases) {
     assert.ok(decideScriptScopeHonesty({ lane, scope: [terr] }), `${lane} fires on ${terr}`);
@@ -330,7 +330,7 @@ test("#248 decideScriptScopeHonesty: each lane fires on ITS OWN territories and 
   }
 });
 
-test("#248 scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD accepted candidates", () => {
+test("scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD accepted candidates", () => {
   const JAKO = { schema: 1, lanes: { ja: { depth: "candidates" }, ko: { depth: "candidates" } },
     fold: { lanes: { ja: { accepted: [{ term: "ノヴァ" }] }, ko: { accepted: [] } } } };
   const dir = mkRun({ laneSidecar: JAKO });
@@ -355,7 +355,7 @@ test("#248 scriptLaneRanOnRun: zh keeps its unit legs; ja/ko run when the FOLD a
   assert.equal(zhLaneRanOnRun(zhRan, { searchPolicy: POLICY_JX, env: {} }), true, "the zh-bound alias still answers identically");
 });
 
-test("#248 injectScriptScopeCoverage: a JP+KR plain-clearotron run gets the ja AND ko rows — and neither eats the other", () => {
+test("injectScriptScopeCoverage: a JP+KR plain-clearotron run gets the ja AND ko rows — and neither eats the other", () => {
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify(FINDINGS_DOC, null, 2));
@@ -373,7 +373,7 @@ test("#248 injectScriptScopeCoverage: a JP+KR plain-clearotron run gets the ja A
   assert.equal(twice.length, cov.length, "a second pass duplicates nothing");
 });
 
-test("#248 the row-eater: a CN+JP scope must not lose the ja row to the zh row's own remedy clause", () => {
+test("the row-eater: a CN+JP scope must not lose the ja row to the zh row's own remedy clause", () => {
   // The old suppression treated ANY coverage row carrying the recommendation vocabulary as covering the
   // disclosure. Harmless with one lane; with two, the zh row lands first and carries that vocabulary in
   // its own remedy clause — which is still true now the clause reads "the native-language investigation"
@@ -389,7 +389,7 @@ test("#248 the row-eater: a CN+JP scope must not lose the ja row to the zh row's
   assert.equal(areas.includes(scriptScopeDisclosure("ko").area), false, "KR is not in scope — no Korean row");
 });
 
-test("#248 a synthesis-authored Stage-1.5 row still defers — but only for ITS OWN lane", () => {
+test("a synthesis-authored Stage-1.5 row still defers — but only for ITS OWN lane", () => {
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, JSON.stringify({ schema_version: 2, findings: [], coverage: [
@@ -401,7 +401,7 @@ test("#248 a synthesis-authored Stage-1.5 row still defers — but only for ITS 
   assert.ok(areas.includes(scriptScopeDisclosure("ko").area), "but the ko lane is still owed its own row");
 });
 
-test("#248 the RETIRED vocabulary still defers, because a resumed run's synthesis wrote it", () => {
+test("the RETIRED vocabulary still defers, because a resumed run's synthesis wrote it", () => {
   // Deliberately kept, and this is the leg that says why: a run resumed from before carries a
   // synthesis row phrased "available at Depth 5 (prelim-jx)". Dropping the old token would put a second,
   // duplicate disclosure into a report that already makes the same one — a regression visible only on the
@@ -417,7 +417,7 @@ test("#248 the RETIRED vocabulary still defers, because a resumed run's synthesi
     "the pre-#467 wording no longer defers — a resumed run would carry the disclosure twice");
 });
 
-test("#248 never-kill survives the generalisation — a corrupt findings.json is left byte-identical", () => {
+test("never-kill survives the generalisation — a corrupt findings.json is left byte-identical", () => {
   const dir = mkRun();
   const P = { findings: join(dir, "findings.json") };
   writeFileSync(P.findings, "{ not json");

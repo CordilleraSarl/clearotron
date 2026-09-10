@@ -11,7 +11,7 @@
 // was the RELATION between them at run time. portal-ui carries no DOM, so this is where the question
 // "does a press leave a reader looking at anything" can be asked at all.
 //
-// WHAT THIS FILE ASSERTS SINCE THE RUTHLESS CUT (owner ruling, 2026-08-31). The page renders what
+// WHAT THIS FILE ASSERTS SINCE THE RUTHLESS CUT (ruling, 2026-08-31). The page renders what
 // `/portal/api/mcp-access` hands it and derives nothing, so the browser questions are relational:
 //
 //   · a button renders EXACTLY for each assistant this deployment serves — no silent drop, no button

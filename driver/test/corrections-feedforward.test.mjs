@@ -48,7 +48,7 @@ const finding = (mark, owner, extra = {}) => ({ mark, owner: { name: owner }, ba
   meters: { mark_similarity: { token: "high" } }, legal_position: "x", practical_position: "y", ...extra });
 const PRE = { findings: [finding("ACME SA", "Acme SA"), finding("BREEZEBERRY", "Beta KK")] };
 
-test("#526 the flags parse into typed rows, and the histogram is DERIVED from them", () => {
+test("the flags parse into typed rows, and the histogram is DERIVED from them", () => {
   const rows = parseCorrections(REVIEW);
   assert.equal(rows.length, 5, "five correction lines — the plan-audit line is not one of them");
   assert.deepEqual(rows.map((r) => r.kind), ["fact", "rating", "narrative", "fact", "fact"]);
@@ -68,7 +68,7 @@ test("#526 the flags parse into typed rows, and the histogram is DERIVED from th
   for (const k of CORRECTION_KINDS) assert.equal(typeof ck.counts[k], "number", `${k} is always present, even at zero`);
 });
 
-test("#526 the worklist groups by kind, because four kinds want four different moves", () => {
+test("the worklist groups by kind, because four kinds want four different moves", () => {
   const w = correctionsWorklist(parseCorrections(REVIEW));
   assert.match(w, /fact \(3\):/);
   assert.match(w, /rating \(1\):/);
@@ -77,7 +77,7 @@ test("#526 the worklist groups by kind, because four kinds want four different m
   assert.equal(correctionsWorklist([]), "", "a review with no flagged lines adds nothing to the prompt");
 });
 
-test("#526 the driver observes what MOVED, per flag — not what the author says it did", () => {
+test("the driver observes what MOVED, per flag — not what the author says it did", () => {
   // The corrective pass withdrew the ACME finding and left BREEZEBERRY untouched.
   const POST = { findings: [
     { ...PRE.findings[0], disposition: "withdrawn", withdrawn_reason: "no record supports the attribution" },
@@ -91,7 +91,7 @@ test("#526 the driver observes what MOVED, per flag — not what the author says
   assert.deepEqual(applied[2].targets, [], "a prose flag names no finding, and that is a different fact from naming one and moving nothing");
 });
 
-test("#526 `findings-unchanged` is a place to look, never a verdict — and the table says so", () => {
+test("`findings-unchanged` is a place to look, never a verdict — and the table says so", () => {
   const POST = { findings: PRE.findings };            // the pass changed nothing at all
   const applied = buildCorrectionsApplied(parseCorrections(REVIEW), PRE, POST);
   const table = correctionsAppliedTable(applied);
@@ -102,13 +102,13 @@ test("#526 `findings-unchanged` is a place to look, never a verdict — and the 
   assert.match(table, /\| 1 \| fact \|/, "one row per flag, numbered as the reviewer numbered them");
 });
 
-test("#526 with NO pre-corrective snapshot nothing is claimed — the absence is its own outcome", () => {
+test("with NO pre-corrective snapshot nothing is claimed — the absence is its own outcome", () => {
   const applied = buildCorrectionsApplied(parseCorrections(REVIEW), null, { findings: PRE.findings });
   assert.ok(applied.every((r) => r.outcome === "not-checkable"),
     "an absent snapshot must not read as 'nothing moved' — that is an absence reported as a finding");
 });
 
-test("#526/#1067 a finding that APPEARED is a change; one that VANISHED is a REMOVAL", () => {
+test("a finding that APPEARED is a change; one that VANISHED is a REMOVAL", () => {
   // merged both into `findings-changed`, and its fixture only ever exercised the vanished half — so
   // the name claimed a population of two over a population of one. measured what the merge cost: a
   // corrective pass answered a flag by DELETING the fact it named, and this table, the driver's own
@@ -125,21 +125,21 @@ test("#526/#1067 a finding that APPEARED is a change; one that VANISHED is a REM
   assert.deepEqual(grew[0].removed, [], "…with nothing removed, said as a value rather than left absent");
 });
 
-test("#526 targetsOf matches on the finding's OWN names, so an unrelated flag claims nothing", () => {
+test("targetsOf matches on the finding's OWN names, so an unrelated flag claims nothing", () => {
   const known = new Map([["acme sa", "ACME SA"], ["breezeberry", "BREEZEBERRY"]]);
   assert.deepEqual(targetsOf("the ACME SA attribution is unsupported", known), ["ACME SA"]);
   assert.deepEqual(targetsOf("the second paragraph is overstated", known), []);
   assert.deepEqual(targetsOf("both ACME SA and BREEZEBERRY need a look", known).sort(), ["ACME SA", "BREEZEBERRY"]);
 });
 
-test("#526 an empty review produces no worklist and no table — the prompts are byte-identical to today", () => {
+test("an empty review produces no worklist and no table — the prompts are byte-identical to today", () => {
   assert.deepEqual(parseCorrections(""), []);
   assert.equal(correctionsWorklist(parseCorrections("")), "");
   assert.equal(correctionsAppliedTable([]), "");
   assert.equal(correctionsAppliedTable(null), "");
 });
 
-test("#526 the RECHECK dispatch carries the observed table — asserted on the COMPOSED text (#1183)", () => {
+test("the RECHECK dispatch carries the observed table — asserted on the COMPOSED text (#1183)", () => {
   // RE-POINTED FROM A SOURCE WINDOW TO THE COMPOSED TEXT. This used to slice 6000 characters of
   // pipeline.mjs after `trigger: "verdict-recheck"`, and its own comment recorded the cost — "WINDOW
   // WIDENED, not the assertion weakened" — a window that must be re-tuned every time the dispatch
@@ -176,7 +176,7 @@ const NAMELESS_PRE = { findings: [
 ]};
 const flag = (n, ordinals, text) => ({ n, kind: "fact", typed: true, text, ordinals });
 
-test("#1946 a declared ordinal joins even when the finding it names has no name", () => {
+test("a declared ordinal joins even when the finding it names has no name", () => {
   const post = { findings: [{ ...NAMELESS_PRE.findings[0], band: "SERIOUS", composite: 5 }, NAMELESS_PRE.findings[1]] };
   const [row] = buildCorrectionsApplied([flag(1, [7], "the band on this finding is not supported.")], NAMELESS_PRE, post);
   assert.notEqual(row.outcome, "not-entity-scoped",
@@ -189,7 +189,7 @@ test("#1946 a declared ordinal joins even when the finding it names has no name"
     + "out of the join in the first place");
 });
 
-test("#1946 …and an unmoved nameless finding is `findings-unchanged`, not `not-entity-scoped`", () => {
+test("…and an unmoved nameless finding is `findings-unchanged`, not `not-entity-scoped`", () => {
   // The half that matters for the client's report: these two outcomes print DIFFERENT sentences. One
   // says the run checked and nothing moved; the other says the run could not check. Before this, a
   // nameless finding got the second when the first was true.
@@ -198,7 +198,7 @@ test("#1946 …and an unmoved nameless finding is `findings-unchanged`, not `not
   assert.equal(row.outcome, "findings-unchanged");
 });
 
-test("#1946 an ordinal the run does not have falls back to prose, and is not a phantom join", () => {
+test("an ordinal the run does not have falls back to prose, and is not a phantom join", () => {
   const [row] = buildCorrectionsApplied([flag(1, [99], "CEDARLINE is rated against the wrong goods.")],
     NAMELESS_PRE, { findings: [...NAMELESS_PRE.findings] });
   assert.deepEqual(row.ordinals, [99], "the declaration is recorded even when it resolves to nothing");
@@ -207,7 +207,7 @@ test("#1946 an ordinal the run does not have falls back to prose, and is not a p
     + "there is — a declared-but-unbound ordinal must not short-circuit the fallback");
 });
 
-test("#1946 the saved row carries `ordinals`, which the artifact could not answer for", () => {
+test("the saved row carries `ordinals`, which the artifact could not answer for", () => {
   const rows = buildCorrectionsApplied(
     [flag(1, [8], "a declared flag."), { n: 2, kind: "narrative", typed: true, text: "an undeclared flag.", ordinals: null }],
     NAMELESS_PRE, { findings: [...NAMELESS_PRE.findings] });

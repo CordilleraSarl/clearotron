@@ -37,7 +37,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const code = (f) => readFileSync(join(ROOT, f), "utf8")
   .split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
 
-test("#1176 a RECOVERY park no longer claims a provider refused anything", () => {
+test("a RECOVERY park no longer claims a provider refused anything", () => {
   const c = parkCause({ postponed: true, recovery: true, resetsAt: "2026-08-17T15:58:35.018Z" });
   assert.equal(c.parkKind, "recovery");
   assert.ok(!/rate limit|cap/i.test(c.waitingOn),
@@ -46,7 +46,7 @@ test("#1176 a RECOVERY park no longer claims a provider refused anything", () =>
   assert.match(c.waitingOn, /this run's own recovery backoff/);
 });
 
-test("#1176 and it says the stored time is OUR clock, not a provider's reset", () => {
+test("and it says the stored time is OUR clock, not a provider's reset", () => {
   // The marker's field is called `resetsAt` and carries `recoveryResumesAt` on this branch. Renaming the
   // field is a wider change; saying what the value MEANS is what stops the reader being misled by it.
   const c = parkCause({ postponed: true, recovery: true });
@@ -55,7 +55,7 @@ test("#1176 and it says the stored time is OUR clock, not a provider's reset", (
     + "tell a wait we chose from a refusal we were given, which is the whole of #1176");
 });
 
-test("#1176 a genuine rate-limit park is UNCHANGED — the sentence #443 wrote is still its sentence", () => {
+test("a genuine rate-limit park is UNCHANGED — the sentence #443 wrote is still its sentence", () => {
   const c = parkCause({ postponed: true, resetsAt: "2026-08-17T15:58:35.018Z" });
   assert.equal(c.parkKind, "rate-limit");
   assert.equal(c.waitingOn, "provider rate limit (the cap that refused the last dispatch)");
@@ -64,7 +64,7 @@ test("#1176 a genuine rate-limit park is UNCHANGED — the sentence #443 wrote i
   assert.equal(parkCause({}).parkKind, "rate-limit");
 });
 
-test("#1176 both parks still say how the wait ENDS — #443's other half, on either branch", () => {
+test("both parks still say how the wait ENDS — #443's other half, on either branch", () => {
   for (const res of [{ recovery: true }, {}]) {
     const c = parkCause(res);
     assert.match(c.resolvedBy, /a live retry/,
@@ -75,7 +75,7 @@ test("#1176 both parks still say how the wait ENDS — #443's other half, on eit
   }
 });
 
-test("#1176 the marker is written FROM the park, not asserted over it", () => {
+test("the marker is written FROM the park, not asserted over it", () => {
   // The literal is gone from the call site. A future edit that spells the sentence inline again puts the
   // constant straight back, and the whole defect with it.
   const runner = code("driver/runner.mjs");
@@ -102,7 +102,7 @@ test("#1176 the marker is written FROM the park, not asserted over it", () => {
 // silence whenever it could not resolve a run directory. So "the flip never happened" and "the flip
 // happened and was overwritten" produced identical evidence — nothing. This does not fix; it
 // makes the next occurrence diagnosable, which is what the issue's own reasoning asks for.
-test("#1159 a lost STATE write is reported — 'it never happened' stops looking like 'it was overwritten'", () => {
+test("a lost STATE write is reported — 'it never happened' stops looking like 'it was overwritten'", () => {
   const seen = [];
   const real = process.stderr.write.bind(process.stderr);
   process.stderr.write = (chunk) => { seen.push(String(chunk)); return true; };
@@ -115,7 +115,7 @@ test("#1159 a lost STATE write is reported — 'it never happened' stops looking
   assert.match(out, /#1159/);
 });
 
-test("#1159 a ROUTINE write is still silent — the existing argument for silence is untouched", () => {
+test("a ROUTINE write is still silent — the existing argument for silence is untouched", () => {
   // progress.mjs's own reasoning: routine writes "are re-written seconds later by the next step", so a
   // line per lost step write would bury the one that matters. That holds; it just never covered a state
   // change, which nothing re-writes.
@@ -130,7 +130,7 @@ test("#1159 a ROUTINE write is still silent — the existing argument for silenc
     "a lost step write now logs — that is the noise the silence argument exists to prevent");
 });
 
-test("#1159 it RECORDS and returns; it never throws", () => {
+test("it RECORDS and returns; it never throws", () => {
   // Fail-open is the house rule on this path: a run that cannot record its state must still deliver.
   const real = process.stderr.write.bind(process.stderr);
   process.stderr.write = () => true;

@@ -101,7 +101,7 @@ function derive() {
 
 const keyOf = (r) => `${r.file}|${r.noun}`;
 
-test("#1529 every result-noun field in the tree is classified, with its counts", (ctx) => {
+test("every result-noun field in the tree is classified, with its counts", (ctx) => {
   const derived = derive();
   if (!derived) return ctx.skip(NO_CORPUS);
   assert.ok(derived.size > 0, "the derivation found no result-noun fields at all — it is not measuring the tree");
@@ -123,7 +123,7 @@ test("#1529 every result-noun field in the tree is classified, with its counts",
     + `"out-of-scope"; a count that moved means a new site in a file already listed.`);
 });
 
-test("#1529 nothing in the tree currently reports an INVOCATION under a result name", () => {
+test("nothing in the tree currently reports an INVOCATION under a result name", () => {
   // Criterion 3: every member classified `invocation` is renamed or given a sibling carrying the result.
   // After this sweep there are none, so the assertion is a ratchet rather than a description — a new one
   // has to be fixed or deliberately declared, and either way somebody looked.
@@ -133,7 +133,7 @@ test("#1529 nothing in the tree currently reports an INVOCATION under a result n
     + `carries the result — the remedy repairs.mjs:724 uses, keeping the old key for existing readers.`);
 });
 
-test("#1529 every row carries a verdict from the closed set, and every in-scope row says WHY", () => {
+test("every row carries a verdict from the closed set, and every in-scope row says WHY", () => {
   const bad = [], mute = [];
   for (const r of RESULT_NOUN_FIELDS) {
     if (!VERDICTS.includes(r.verdict)) bad.push(`${keyOf(r)} → ${JSON.stringify(r.verdict)}`);
@@ -145,7 +145,7 @@ test("#1529 every row carries a verdict from the closed set, and every in-scope 
   assert.deepEqual(mute, [], `in-scope row(s) classified with no stated reason:\n  ${mute.join("\n  ")}`);
 });
 
-test("#1529 the out-of-scope half is REPORTED, not filtered — and it is not empty", () => {
+test("the out-of-scope half is REPORTED, not filtered — and it is not empty", () => {
   // The half a lint would have dropped. If this ever reads zero, the derivation stopped seeing the sites
   // it classifies as out of scope, which is a change in the instrument and not in the tree.
   const out = RESULT_NOUN_FIELDS.filter((r) => r.verdict === "out-of-scope");

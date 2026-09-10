@@ -515,7 +515,7 @@ function seedRefusedRun() {
   return runDir;
 }
 
-test("#1424 band_lookup ships a refused slice as a refusal, never as a count of zero", async () => {
+test("band_lookup ships a refused slice as a refusal, never as a count of zero", async () => {
   const runDir = seedRefusedRun();
   const r = await mcpSession([INIT, call(2, "band_lookup", { text: "ZEPHYR" })], ENV(runDir));
   const body = JSON.parse(textOf(r, 2));
@@ -546,7 +546,7 @@ test("#1424 band_lookup ships a refused slice as a refusal, never as a count of 
 });
 
 // ── — and an UNKNOWN size is not a refusal and not a zero ──────────────────────────────────────
-test("#1615 band_lookup ships an unsized slice as unknown, never as a count", async () => {
+test("band_lookup ships an unsized slice as unknown, never as a count", async () => {
   const runDir = mkdtempSync(join(tmpdir(), "band-server-unsized-"));
   mkdirSync(driverDir(runDir), { recursive: true });
   mkdirSync(join(runDir, "_records"), { recursive: true });

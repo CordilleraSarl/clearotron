@@ -35,7 +35,7 @@ const CODE_ROW_UNSTAMPED = { attempt: 1, model: "code", usage: null };
 // Genuinely unattributed: a real dispatch that spent tokens and carries no engine stamp at all.
 const UNSTAMPED_ROW = { attempt: 1, model: "opus", usage: { input: 10, output: 2000 } };
 
-test("#1226 a code-side dispatch is filed as what it says it is, NOT as unknown", () => {
+test("a code-side dispatch is filed as what it says it is, NOT as unknown", () => {
   const runDir = mkRun({ "execute-plan": [CODE_ROW] });
   try {
     const r = rollupTokens(runDir);
@@ -46,7 +46,7 @@ test("#1226 a code-side dispatch is filed as what it says it is, NOT as unknown"
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("#1226 a row predating the modelUsed stamp is code-side too — `model: \"code\"` alone is enough", () => {
+test("a row predating the modelUsed stamp is code-side too — `model: \"code\"` alone is enough", () => {
   // demo's frozen status.json keys this row as byModel `code`, not `code:execute-plan`,
   // so this shape is not hypothetical: it is what the shipped example actually contains.
   const runDir = mkRun({ "execute-plan": [CODE_ROW_UNSTAMPED] });
@@ -57,7 +57,7 @@ test("#1226 a row predating the modelUsed stamp is code-side too — `model: \"c
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("#1226 THE BUCKET KEEPS ITS MEANING: a genuinely unstamped row is still VISIBLY unknown", () => {
+test("THE BUCKET KEEPS ITS MEANING: a genuinely unstamped row is still VISIBLY unknown", () => {
   // The forbidden outcome. Emptying `unknown` would 'fix' this issue by deleting the signal it exists to
   // carry — and tokens.test.mjs already pins that an unstamped row buckets visibly and is never dropped.
   const runDir = mkRun({ "register-digest": [UNSTAMPED_ROW], "execute-plan": [CODE_ROW] });
@@ -70,7 +70,7 @@ test("#1226 THE BUCKET KEEPS ITS MEANING: a genuinely unstamped row is still VIS
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("#1226 every axis still sums to total — the fix must re-key, never drop", () => {
+test("every axis still sums to total — the fix must re-key, never drop", () => {
   const runDir = mkRun({
     "register-digest": [UNSTAMPED_ROW, { attempt: 1, model: "haiku", engine: "openai-agent", authMode: "api-key", usage: { input: 5, output: 7 } }],
     "execute-plan": [CODE_ROW],
@@ -87,7 +87,7 @@ test("#1226 every axis still sums to total — the fix must re-key, never drop",
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("#1226 byModel was already right and is UNCHANGED — only the two broken axes move", () => {
+test("byModel was already right and is UNCHANGED — only the two broken axes move", () => {
   const runDir = mkRun({ "execute-plan": [CODE_ROW] });
   try {
     const r = rollupTokens(runDir);
@@ -96,7 +96,7 @@ test("#1226 byModel was already right and is UNCHANGED — only the two broken a
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("#1226 the two rollups now AGREE about the same dispatch — that disagreement was the report", () => {
+test("the two rollups now AGREE about the same dispatch — that disagreement was the report", () => {
   const runDir = mkRun({ "execute-plan": [CODE_ROW] });
   try {
     const r = rollupTokens(runDir);
@@ -108,7 +108,7 @@ test("#1226 the two rollups now AGREE about the same dispatch — that disagreem
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("#1226 ONE definition of code-side, not two — the copy is what let them drift apart", () => {
+test("ONE definition of code-side, not two — the copy is what let them drift apart", () => {
   // A second copy in tokens.mjs would pass every test above on the day it was written and diverge the
   // first time the marker changes, re-opening exactly this issue. Pin the import, and pin its absence.
   const src = readFileSync(new URL("../tokens.mjs", import.meta.url), "utf8");

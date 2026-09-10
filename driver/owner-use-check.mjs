@@ -31,7 +31,7 @@
 // `**Use-check source:**` label and the honest `perplexity_research — no result`. What differs is where
 // the proof lives, and it differs because this lane has a receipt the other one does not.
 //
-// ── OWNER RULING, 2026-09-07: THE ABSENCE OF A CITE NEVER REFUSES DELIVERY ──────────────────────────
+// ── RULING, 2026-09-07: THE ABSENCE OF A CITE NEVER REFUSES DELIVERY ──────────────────────────
 //
 // Option A. The report delivers with an honest "no result" on any row the lookup could not answer; the
 // cite is enforced in that it is always PRESENT and always the driver's, never in the sense that a

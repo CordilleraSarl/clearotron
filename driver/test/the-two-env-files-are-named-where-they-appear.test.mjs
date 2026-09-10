@@ -28,7 +28,7 @@ const envBlock = (() => {
   return SRC.slice(at, at + 1400);
 })();
 
-test("2176-F33 the moment the second env file appears, BOTH are named and distinguished", () => {
+test("the moment the second env file appears, BOTH are named and distinguished", () => {
   assert.match(envBlock, /TWO environment files/,
     "the reader must be told there are two, at the point the second one appears");
   assert.match(envBlock, /the UNITS load this one/,
@@ -37,19 +37,19 @@ test("2176-F33 the moment the second env file appears, BOTH are named and distin
     "and which one a typed command reads is the other half");
 });
 
-test("2176-F33 it says editing one does not change the other, which is the actual surprise", () => {
+test("it says editing one does not change the other, which is the actual surprise", () => {
   // Naming two paths without saying they are independent just moves the confusion one step later.
   assert.match(envBlock, /Editing one does not change the other/, envBlock);
   assert.match(envBlock, /restart the units/,
     "and the remedy — a value the running product has already loaded needs a restart to take");
 });
 
-test("2176-F33 the notice is conditional, so a box with one file is not told it has two", () => {
+test("the notice is conditional, so a box with one file is not told it has two", () => {
   assert.match(envBlock, /if \(ENV_PATH !== HOME_ENV\)/,
     "on an install where the two paths coincide there is no second file and no surprise to warn about");
 });
 
-test("2176-F31 the foreground path says the printed commands need another terminal", () => {
+test("the foreground path says the printed commands need another terminal", () => {
   const at = SRC.indexOf("This terminal is now the product");
   assert.ok(at > 0, "the closing block must say what this terminal now is");
   const closing = SRC.slice(at, at + 700);
@@ -59,7 +59,7 @@ test("2176-F31 the foreground path says the printed commands need another termin
     "and the alternative that gives the prompt back must be named as the ANSWER, not as a property");
 });
 
-test("2176-F31 the answer is given where the commands are, not two paragraphs later", () => {
+test("the answer is given where the commands are, not two paragraphs later", () => {
   // The finding was not that --background went unmentioned. It was mentioned, in the wrong role and in
   // the wrong place, so the ordering is the fix and the ordering is what this asserts.
   const connectAt = SRC.indexOf("Connect your assistant to this install");

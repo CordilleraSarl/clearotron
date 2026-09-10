@@ -69,7 +69,7 @@ function settledRetirements(): string[] {
 
 const RETIRED = settledRetirements()
 
-test('#1441 the map has settled rows, and the guard actually read them', () => {
+test('the map has settled rows, and the guard actually read them', () => {
   // An empty parse would make every arm below assert nothing while reporting green — the vacuous pass
   // this repo has a whole census about. The parse is checked before it is trusted.
   assert.ok(RETIRED.length > 0,
@@ -79,7 +79,7 @@ test('#1441 the map has settled rows, and the guard actually read them', () => {
     `the Custom search row is the one settled ruling; parsed instead: ${JSON.stringify(RETIRED)}`)
 })
 
-test('#1441 every retired spelling carries a space, which is what makes the wide corpus safe', () => {
+test('every retired spelling carries a space, which is what makes the wide corpus safe', () => {
   // The guard scans SOURCE, not just prose. That is only safe while no retired term can collide with an
   // identifier — and identifiers have no spaces. A future single-word retirement must not be added to
   // the table without changing the corpus, so this fails rather than silently flagging `savedSearch`.
@@ -90,7 +90,7 @@ test('#1441 every retired spelling carries a space, which is what makes the wide
   }
 })
 
-test('#1441 no retired term appears in a user-visible string', () => {
+test('no retired term appears in a user-visible string', () => {
   const offences: string[] = []
   for (const f of [...FILES, ...OUTSIDE_SRC]) {
     const src = stripComments(readSrc(f))
@@ -119,7 +119,7 @@ test('#1441 no retired term appears in a user-visible string', () => {
     + 'is genuinely a different concept — change the map, which is what this guard reads.')
 })
 
-test('#1441 a canonical term that nothing uses is dead weight, and the map must not carry one', () => {
+test('a canonical term that nothing uses is dead weight, and the map must not carry one', () => {
   // The mirror of the arm above. A row retiring a word nobody says, in favour of a word nobody says,
   // passes forever and teaches the next reader that the vocabulary is settled when it is not.
   const corpus = FILES.flatMap((f) => uiStrings(f)).join('\n')

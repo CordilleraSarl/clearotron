@@ -104,7 +104,7 @@ const nonEmpty = (v) =>
 
 // ── the tripwire ────────────────────────────────────────────────────────────────────────────────────
 
-test("#1216 every path-class accessor in driver.config.mjs is classified — a new one must be ruled on", () => {
+test("every path-class accessor in driver.config.mjs is classified — a new one must be ruled on", () => {
   const inSource = pathAccessorsInSource();
   const declared = Object.keys(CLASS).sort();
 
@@ -133,7 +133,7 @@ test("#1216 every path-class accessor in driver.config.mjs is classified — a n
     `only ${inSource.length} path-class accessors found — the sweep has lost sight of the surface`);
 });
 
-test("#1216 a no-default path accessor REFUSES on unset and on blank, and names its variable", () => {
+test("a no-default path accessor REFUSES on unset and on blank, and names its variable", () => {
   const refusing = Object.entries(CLASS).filter(([, k]) => k === "REFUSES").map(([n]) => n);
   assert.ok(refusing.length > 0, "no accessor is classified REFUSES — the rule has no live member left");
 
@@ -157,13 +157,13 @@ test("#1216 a no-default path accessor REFUSES on unset and on blank, and names 
   }
 });
 
-test("#1216 each other class behaves as its classification says, with every path variable cleared", () => {
+test("each other class behaves as its classification says, with every path variable cleared", () => {
   const cleared = Object.fromEntries(PATH_VARS.map((v) => [v, undefined]));
   const home = join(tmpdir(), "n1216-home");
 
   for (const [name, kind] of Object.entries(CLASS)) {
     if (kind === "REFUSES") continue;
-    // — WHITESPACE IS UNSET, by owner ruling 2026-08-19. This arm previously probed only
+    // — WHITESPACE IS UNSET, by ruling 2026-08-19. This arm previously probed only
     // `undefined` and `""`, because "   " is TRUTHY in JavaScript and so `process.env.X || default`
     // returned the spaces AS THE PATH rather than falling through. Eight of sixteen accessors behaved
     // that way; poolRoot alone trimmed. Asserting either side then would have frozen a decision that

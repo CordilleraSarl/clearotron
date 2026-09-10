@@ -40,7 +40,7 @@ const FINDINGS = (over = {}) => ({ batch: { executiveSummary: "One name screened
 
 // ── the flag ─────────────────────────────────────────────────────────────────────────────────────────
 
-test("333: a lawyer's word in a finding's ONE sentence is flagged, and the field is named", () => {
+test("a lawyer's word in a finding's ONE sentence is flagged, and the field is named", () => {
   const c = flagged(FINDINGS({
     findings: [{ ordinal: 1, net: "The proprietor holds a subsisting right and would prevail." }],
   }), VOCAB);
@@ -50,7 +50,7 @@ test("333: a lawyer's word in a finding's ONE sentence is flagged, and the field
   assert.match(c.detail, /conflict 1/, "the flag names the line to rewrite, not a score");
 });
 
-test("333: the same word inside a FOLD is not flagged — that is rule 2, not an oversight", () => {
+test("the same word inside a FOLD is not flagged — that is rule 2, not an oversight", () => {
   // A finding's `basis` is behind "Why this band" and the long `assessment` is behind its own fold.
   // Precision is wanted there; a check that flagged it would trade precision for vagueness.
   const c = flagged(FINDINGS({
@@ -61,20 +61,20 @@ test("333: the same word inside a FOLD is not flagged — that is rule 2, not an
   assert.equal(c.pass, true, "folded reasoning keeps the lawyer's vocabulary");
 });
 
-test("333: 'chunk' is an engine word and is caught wherever a reader meets it", () => {
+test("'chunk' is an engine word and is caught wherever a reader meets it", () => {
   const f = FINDINGS();
   f.batch.executiveSummary = "This chunk covers a single mark.";
   assert.match(flagged(f, VOCAB).detail, /chunk/);
 });
 
-test("333: the summary the owner asked for passes the same check", () => {
+test("the summary the owner asked for passes the same check", () => {
   const f = FINDINGS();
   f.batch.executiveSummary = "One name screened: IRONWHISK, rated Medium.";
   assert.equal(flagged(f, VOCAB).pass, true);
   assert.equal(flagged(f, LENGTH).pass, true);
 });
 
-test("333: a default-visible sentence over 25 words is flagged with its length", () => {
+test("a default-visible sentence over 25 words is flagged with its length", () => {
   const long = "IRONWHISK is a suggestive and already widely adopted term in the kitchen tools field, and "
     + "identically named cookware sits in the client's own retail channel alongside an established "
     + "business of the same name, so a prior owner is likely to win.";
@@ -87,7 +87,7 @@ test("333: a default-visible sentence over 25 words is flagged with its length",
   assert.equal(flagged(FINDINGS({ basis: plain }), LENGTH).pass, true);
 });
 
-test("333: every default-visible field is read, and the folded ones are not", () => {
+test("every default-visible field is read, and the folded ones are not", () => {
   const seeded = "A subsisting proprietor.";
   for (const field of ["basis", "mitigation"]) {
     assert.equal(flagged(FINDINGS({ [field]: seeded }), VOCAB).pass, false, `${field} is read`);
@@ -108,7 +108,7 @@ test("333: every default-visible field is read, and the folded ones are not", ()
 // the asking which never says "the request" prints at the bottom instead — the exact defect the move
 // exists to fix, and invisible, because nothing about the page looks wrong.
 
-test("333/331: a note about the asking that never names the request is flagged for its writer", () => {
+test("a note about the asking that never names the request is flagged for its writer", () => {
   const c = flagged(FINDINGS({ purpleNotes: [
     "Confirm the intended goods with the client before any filing step.",
     "Ask whether the client already has prior use of IRONWHISK in these goods.",
@@ -118,7 +118,7 @@ test("333/331: a note about the asking that never names the request is flagged f
     "the flag says what will happen, not that a rule was broken");
 });
 
-test("333/331: naming the request clears it, and a note about the NAME never trips it", () => {
+test("naming the request clears it, and a note about the NAME never trips it", () => {
   assert.equal(flagged(FINDINGS({ purpleNotes: [
     "Check the request. We were asked to screen Class 9 software, and the client is described as a beverages business.",
   ] }), "reviewer-note-subject").pass, true, "it names the request, so it prints at the top");
@@ -127,7 +127,7 @@ test("333/331: naming the request clears it, and a note about the NAME never tri
   ] }), "reviewer-note-subject").pass, true, "a note about the name is not about the asking");
 });
 
-test("333/331: the rater's own `about` ends the question — nothing is inferred over it", () => {
+test("the rater's own `about` ends the question — nothing is inferred over it", () => {
   const c = flagged(FINDINGS({ purpleNotes: [
     { about: "name", text: "Confirm the intended goods with the client before any filing step." },
   ] }), "reviewer-note-subject");
@@ -136,7 +136,7 @@ test("333/331: the rater's own `about` ends the question — nothing is inferred
 
 // ── how the flag travels ─────────────────────────────────────────────────────────────────────────────
 
-test("333: a hit is a rewrite, never a disclosure — the flags never reach a delivery surface", () => {
+test("a hit is a rewrite, never a disclosure — the flags never reach a delivery surface", () => {
   const lint = runKnockoutLint({
     findings: FINDINGS({ findings: [{ ordinal: 1, net: "The proprietor would prevail." }] }),
   });
@@ -154,7 +154,7 @@ test("333: a hit is a rewrite, never a disclosure — the flags never reach a de
 // construction instead, from both ends — the surface cannot be ASKED for, and it cannot be RELABELLED
 // afterwards, which is the same edit one step later and looks like every line around it.
 
-test("150: the internal three cannot be ASKED for on a projectable surface", () => {
+test("the internal three cannot be ASKED for on a projectable surface", () => {
   // The parameter is gone. Passing one is not a thing a caller can do, so this asserts the shape rather
   // than a value: whatever a caller sends, the surface is the one this module pins.
   const checks = plainLanguageChecks({ findings: FINDINGS({ basis: "The proprietor would prevail." }), surface: "report" });
@@ -165,7 +165,7 @@ test("150: the internal three cannot be ASKED for on a projectable surface", () 
   }
 });
 
-test("150: and they cannot be RELABELLED onto the delivery surface by the lane that pushes them", () => {
+test("and they cannot be RELABELLED onto the delivery surface by the lane that pushes them", () => {
   // Driven through the real lint rather than by calling the relabeller, because the relabeller is the
   // thing under test and reaching past it would prove nothing about the path that runs.
   const lint = runKnockoutLint({
@@ -182,7 +182,7 @@ test("150: and they cannot be RELABELLED onto the delivery surface by the lane t
   }
 });
 
-test("150: the set names every internal check the lane actually produces, not a subset of them", () => {
+test("the set names every internal check the lane actually produces, not a subset of them", () => {
   // A set that has drifted from the checks it governs is the same defect wearing the fix's clothes: the
   // arm above would pass over an id nobody added, and that id would project. `reviewer-note-subject` is
   // the live example — it is internal for the same reason as the other two and the arm that predates
@@ -195,7 +195,7 @@ test("150: the set names every internal check the lane actually produces, not a 
   }
 });
 
-test("333: the reviewer decides nothing — a flagged run still returns a receipt, not a refusal", () => {
+test("the reviewer decides nothing — a flagged run still returns a receipt, not a refusal", () => {
   const lint = runKnockoutLint({ findings: FINDINGS({ basis: "The proprietor would prevail." }) });
   assert.ok(Array.isArray(lint.checks) && lint.checks.length > 0);
   assert.ok(Array.isArray(lint.notApplicable), "the receipt still says what it did not run");
@@ -239,7 +239,7 @@ const seenWithoutClicking = (html) => {
 const readByTheReviewer = (findings) =>
   plainLanguageChecks({ findings }).some((c) => c.id === VOCAB && !c.pass);
 
-test("333: every field a reader meets without clicking is a field the reviewer reads", () => {
+test("every field a reader meets without clicking is a field the reviewer reads", () => {
   // Both halves of the partition, so the arm fails in either direction rather than only one.
   const fields = [
     ["basis",            (m) => { m.basis = `The proprietor ${MARKER}.`; }],
@@ -288,7 +288,7 @@ test("333: every field a reader meets without clicking is a field the reviewer r
 
 // ── the doctrine that teaches it ─────────────────────────────────────────────────────────────────────
 
-test("333: the skill carries the two-register rule, and its worked examples obey it", () => {
+test("the skill carries the two-register rule, and its worked examples obey it", () => {
   const skill = readFileSync(SKILL, "utf8");
   assert.match(skill, /## Plain language — the two-register rule/);
   assert.match(skill, /no sentence over 25 words/);
@@ -300,7 +300,7 @@ test("333: the skill carries the two-register rule, and its worked examples obey
   assert.match(skill, /A note about the request NAMES the request/);
 });
 
-test("333: the skill's own worked notes sort the way the skill says they do", () => {
+test("the skill's own worked notes sort the way the skill says they do", () => {
   const skill = readFileSync(SKILL, "utf8");
   const section = skill.slice(skill.indexOf("A note is verb-first"), skill.indexOf("## The per-mark opening read"));
   const quotes = [...section.matchAll(/^> "(.+?)"$/gms)].map((m) => m[1].replace(/\s*>\s*/g, " "));
@@ -319,7 +319,7 @@ test("333: the skill's own worked notes sort the way the skill says they do", ()
 // and a test pins those three to each other, because a seat taught half a rule writes half a report.
 // The copy that actually RAN on every delivery was a fourth, in the pre-delivery lint, importing
 // nothing and outside that pinning. It had drifted in both directions at once.
-test("395: the terms the live check flags are exactly the pinned ones", () => {
+test("the terms the live check flags are exactly the pinned ones", () => {
   const flaggedTerms = (basis) => {
     const c = plainLanguageChecks({ findings: FINDINGS({ basis }) }).find((x) => x.id === VOCAB);
     return c && !c.pass ? c.detail : "";
@@ -343,7 +343,7 @@ test("395: the terms the live check flags are exactly the pinned ones", () => {
   }
 });
 
-test("395: consolidating on the pinned source did not narrow what is caught", () => {
+test("consolidating on the pinned source did not narrow what is caught", () => {
   // THE REGRESSION THIS COULD HAVE BEEN. The fourth copy's patterns handled inflections and the pinned
   // source's did not — it built `\bproprietor\b` and matched neither plural. Reading terms from the
   // weaker matcher would have quietly narrowed the live check while looking like a tidy-up, so the

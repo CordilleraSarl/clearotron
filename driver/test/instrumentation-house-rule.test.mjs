@@ -88,7 +88,7 @@ test("attempt events land on run.jsonl per dispatch — cause on the failed row,
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1456 the BILLING stamp is written even when false — a subscription run states its mode, it does not omit it", async () => {
+test("the BILLING stamp is written even when false — a subscription run states its mode, it does not omit it", async () => {
   // The house rule at the top of this file, in the wild. `apiBilled` read `auth.apiBilled || undefined`,
   // which elides exactly the value a subscription run has — and every run this repo has archived is a
   // subscription run. A sweep of every August run looking for the stamp found it nowhere, and the CONTROL
@@ -430,7 +430,7 @@ test("a stage with NO expected files journals wrote:null — 'nothing to emit' i
 // killed turn has a null usage envelope, and reporting 0 tok/s for it would say "generated nothing"
 // about exactly the 485-second-opus-killed class that has to stay visible as UNMEASURED.
 
-test("#1111 a measured dispatch records its rate on the stage row AND on the run.jsonl spine", async () => {
+test("a measured dispatch records its rate on the stage row AND on the run.jsonl spine", async () => {
   const dir = mkdtempSync(join(tmpdir(), "ihr-rate-"));
   const out = join(dir, "out.md");
   mkdirSync(driverDir(dir), { recursive: true });
@@ -452,7 +452,7 @@ test("#1111 a measured dispatch records its rate on the stage row AND on the run
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1111 an UNMEASURED dispatch records null, never 0 — 'we could not measure' is not 'it generated nothing'", async () => {
+test("an UNMEASURED dispatch records null, never 0 — 'we could not measure' is not 'it generated nothing'", async () => {
   const dir = mkdtempSync(join(tmpdir(), "ihr-rate-null-"));
   mkdirSync(driverDir(dir), { recursive: true });
   try {
@@ -472,7 +472,7 @@ test("#1111 an UNMEASURED dispatch records null, never 0 — 'we could not measu
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1111 tokensPerSec — an honest zero survives, and every unmeasurable operand returns null", () => {
+test("tokensPerSec — an honest zero survives, and every unmeasurable operand returns null", () => {
   const u = (output) => ({ input: 1, output, cacheRead: 0, cacheWrite: 0, total: 1 });
   assert.equal(tokensPerSec(u(18374), 408.585), 44.97, "#1111's baseline run — its table says 44.9");
   assert.equal(tokensPerSec(u(15493), 1468.828), 10.55, "#1111's subject run — its table says 10.5");
@@ -484,7 +484,7 @@ test("#1111 tokensPerSec — an honest zero survives, and every unmeasurable ope
   assert.equal(tokensPerSec(u(-1), 12), null, "a negative count is not a rate");
 });
 
-test("#1111 an engine that CANNOT REPORT tool time records null, never 0 — silence is not 'called no tools'", async () => {
+test("an engine that CANNOT REPORT tool time records null, never 0 — silence is not 'called no tools'", async () => {
   // `openai-agent` carries no tool references at all, so every codex attempt is unmeasured. A 0 there
   // would read as "this turn called no tools", and a cross-engine comparison would conclude tool wait is
   // an Anthropic-only phenomenon — from an instrument that had simply gone quiet. Same rule, same reason
@@ -516,7 +516,7 @@ test("#1111 an engine that CANNOT REPORT tool time records null, never 0 — sil
 const NO_GAUGE = { toolCalls: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null,
   toolWaitUnmeasurable: null };
 
-test("#1111 toolGauge — an honest zero survives, and every unmeasurable operand returns null", () => {
+test("toolGauge — an honest zero survives, and every unmeasurable operand returns null", () => {
   assert.deepEqual(toolGauge({ toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 } }),
     { toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 },
       toolWaitUnmeasurable: null });

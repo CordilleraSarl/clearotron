@@ -249,7 +249,7 @@ test("compileRegisterPlan stays DETERMINISTIC with the floor block in play", () 
 
 // ── · the seed set the floor is actually built from ─────────────────────────────────────────────
 
-test("#320: job.marks is an ARRAY OF OBJECTS, and the floor is seeded from the names in it", () => {
+test("job.marks is an ARRAY OF OBJECTS, and the floor is seeded from the names in it", () => {
   // THE DEFECT, executed against the shape the pipeline really passes. deriveFormNeighbourhood hands
   // markSeedTokens `ctx.job.marks`, which enqueue.mjs and ops.mjs build as {name, classes, ref} objects.
   // `String(m)` over that array is the literal "[object Object]", which tokenised to ["object"] — so the
@@ -270,7 +270,7 @@ test("#320: job.marks is an ARRAY OF OBJECTS, and the floor is seeded from the n
   assert.match(seededFrom, /^job mark/);
 });
 
-test("#320: a non-Latin mark has no derivable floor, and the run says which mark and why", () => {
+test("a non-Latin mark has no derivable floor, and the run says which mark and why", () => {
   // Both arms fail together: normalizeElement keeps only [a-z0-9], so a Han dominant_element from the
   // manifest is dropped before the guard runs AND the mark fallback tokenises to nothing. The fallback
   // cannot rescue the case it exists for.
@@ -285,7 +285,7 @@ test("#320: a non-Latin mark has no derivable floor, and the run says which mark
     /form_neighbourhood_no_element:.*no Latin-script token/);
 });
 
-test("#320: a one-character mark is refused for its own reason, not silently blamed on a missing mark", () => {
+test("a one-character mark is refused for its own reason, not silently blamed on a missing mark", () => {
   // The length-2 floor is right — an edit-1 neighbourhood of one character is the whole alphabet. What
   // was wrong is that it read as "the job states no mark", sending a reader to check the wrong thing.
   assert.throws(() => renderFormNeighbourhoodJson("", { model: null, mark: [{ name: "K" }] }),
@@ -294,7 +294,7 @@ test("#320: a one-character mark is refused for its own reason, not silently bla
     /the job states no mark/, "and the genuinely mark-less case still says so");
 });
 
-test("#320: the rejected seeds ride the artifact, so an empty floor is legible after the fact", () => {
+test("the rejected seeds ride the artifact, so an empty floor is legible after the fact", () => {
   const model = { dominant_element: "VELTRIS", elements: [{ value: "a genuinely long swallowed sentence about the mark", kind: "distinctive" }], variants: [] };
   const doc = JSON.parse(renderFormNeighbourhoodJson("", { model, mark: [{ name: "VELTRIS" }] }));
   assert.ok(doc.variant_floor.rejected_seeds?.length, "a refused seed is recorded where a reader can see what was not enumerated");

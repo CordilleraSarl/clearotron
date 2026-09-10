@@ -37,7 +37,7 @@ const write = (p, text) => { mkdirSync(dirname(p), { recursive: true }); writeFi
 // `~/.config/clearotron/.env` — green or red by the box rather than by the code. The first draft of
 // this file did exactly that, and two of its arms passed for that reason.
 
-test("159 the file in force is the one an upgrade cannot reach", () => {
+test("the file in force is the one an upgrade cannot reach", () => {
   assert.equal(ENV_LOCAL_LOCATION, "xdg-config",
     "the ruling put .env under ~/.config/clearotron/");
   const { repoRoot, home } = box();
@@ -47,7 +47,7 @@ test("159 the file in force is the one an upgrade cannot reach", () => {
   assert.ok(!p.startsWith(repoRoot), "the resolved path is still inside the tree npm replaces");
 });
 
-test("159 an install configured before the move keeps working, and is told where to put the file", () => {
+test("an install configured before the move keeps working, and is told where to put the file", () => {
   const { repoRoot, home } = box();
   write(envLocalPath({ repoRoot, home, location: LEGACY_ENV_LOCAL_LOCATION }), "PERPLEXITY_API_KEY=from-the-old-place\n");
   const notes = [];
@@ -66,7 +66,7 @@ test("159 an install configured before the move keeps working, and is told where
   assert.ok(!said.includes("from-the-old-place"), "a value from .env reached a log line");
 });
 
-test("159 once the file is in its new home the old one is left alone", () => {
+test("once the file is in its new home the old one is left alone", () => {
   const { repoRoot, home } = box();
   write(envLocalPath({ repoRoot, home, location: LEGACY_ENV_LOCAL_LOCATION }), "SERPAPI_API_KEY=stale\n");
   write(envLocalPath({ repoRoot, home }), "SERPAPI_API_KEY=current\n");
@@ -80,7 +80,7 @@ test("159 once the file is in its new home the old one is left alone", () => {
     "the move note fired on an install that has already moved — it would never stop");
 });
 
-test("159 a machine with neither file is an absence, not a migration", () => {
+test("a machine with neither file is an absence, not a migration", () => {
   const { repoRoot, home } = box();
   const notes = [];
   const res = loadEnvLocal({ env: {}, repoRoot, home, note: (l) => notes.push(l), location: ENV_LOCAL_LOCATION });

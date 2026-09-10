@@ -31,7 +31,7 @@ function homeWatching(dirs) {
 
 // ── the verdict, at the end of the job's life the tick check cannot see ─────────────────────────────
 
-test("#1292 a queue no unit globs is a FAIL, and the message names both paths", () => {
+test("a queue no unit globs is a FAIL, and the message names both paths", () => {
   const home = homeWatching(["/srv/watched-queue"]);
   const v = probeQueueWatch({ queueDirs: ["/srv/somewhere-else"], home });
   assert.equal(v.state, "fail");
@@ -42,14 +42,14 @@ test("#1292 a queue no unit globs is a FAIL, and the message names both paths", 
   assert.match(v.message, /prelim-driver\.path/);
 });
 
-test("#1292 a queue the unit DOES glob is silent — no warning on a correctly wired box", () => {
+test("a queue the unit DOES glob is silent — no warning on a correctly wired box", () => {
   const home = homeWatching(["/srv/watched-queue", "/srv/second"]);
   assert.equal(probeQueueWatch({ queueDirs: ["/srv/second"], home }).state, "pass");
   // Trailing slashes are a spelling, not a disagreement.
   assert.equal(probeQueueWatch({ queueDirs: ["/srv/second/"], home }).state, "pass");
 });
 
-test("#1292 `%h` in the unit resolves against the SAME home the probe was asked about", () => {
+test("`%h` in the unit resolves against the SAME home the probe was asked about", () => {
   const home = mkdtempSync(join(tmpdir(), "qw-home-"));
   const unit = pathUnitFor(home);
   mkdirSync(dirname(unit), { recursive: true });
@@ -60,14 +60,14 @@ test("#1292 `%h` in the unit resolves against the SAME home the probe was asked 
 
 // ── the fresh-box and privilege rules -d2 settled, carried here verbatim ───────────────────────
 
-test("#1292 NO unit at all is SKIP, not fail — a dev box, a checkout and CI all enqueue constantly", () => {
+test("NO unit at all is SKIP, not fail — a dev box, a checkout and CI all enqueue constantly", () => {
   const home = mkdtempSync(join(tmpdir(), "qw-home-"));   // nothing under .config/systemd
   const v = probeQueueWatch({ queueDirs: ["/srv/anything"], home });
   assert.equal(v.state, "skip", "a box with no systemd unit would be warned on every single enqueue");
   assert.match(v.message, /could not be read/);
 });
 
-test("#1292 an UNREADABLE unit is SKIP and never a pass — prod's units belong to another account", () => {
+test("an UNREADABLE unit is SKIP and never a pass — prod's units belong to another account", () => {
   // Root defeats mode 000, so the permission error is injected rather than arranged on disk: the
   // assertion is about what the verdict does with EACCES, and a test that cannot produce EACCES on the
   // box it runs on would assert nothing here. ( is the same lesson, learned the expensive way.)
@@ -93,7 +93,7 @@ function enqueue(qdir, home, id) {
   return { code: r.status, out, stdout: r.stdout, stderr: r.stderr };
 }
 
-test("#1292 THE INCIDENT SHAPE: a job enqueued into an unwatched queue is accepted AND says so", () => {
+test("THE INCIDENT SHAPE: a job enqueued into an unwatched queue is accepted AND says so", () => {
   const root = mkdtempSync(join(tmpdir(), "qw-enq-"));
   const qdir = join(root, "unwatched-queue");
   const home = homeWatching([join(root, "some-other-queue")]);
@@ -110,7 +110,7 @@ test("#1292 THE INCIDENT SHAPE: a job enqueued into an unwatched queue is accept
   assert.match(r.stderr, /unwatched-queue/, "the warning does not name the directory nobody is watching");
 });
 
-test("#1292 the same enqueue into a WATCHED queue is silent — no new noise on a correct box", () => {
+test("the same enqueue into a WATCHED queue is silent — no new noise on a correct box", () => {
   const root = mkdtempSync(join(tmpdir(), "qw-enq-"));
   const qdir = join(root, "watched-queue");
   const r = enqueue(qdir, homeWatching([qdir]), "qw-watched-1");
@@ -120,7 +120,7 @@ test("#1292 the same enqueue into a WATCHED queue is silent — no new noise on 
   assert.ok(!/queue-watch/.test(r.stderr), `a correctly wired box was warned anyway:\n${r.stderr}`);
 });
 
-test("#1292 a box with no unit enqueues in silence, which is the common case", () => {
+test("a box with no unit enqueues in silence, which is the common case", () => {
   const root = mkdtempSync(join(tmpdir(), "qw-enq-"));
   const qdir = join(root, "q");
   const r = enqueue(qdir, mkdtempSync(join(tmpdir(), "qw-home-")), "qw-nounit-1");
@@ -131,7 +131,7 @@ test("#1292 a box with no unit enqueues in silence, which is the common case", (
 
 // ── the OTHER door: no stderr a requester ever sees, so the warning rides the acceptance ────────────
 
-test("#1292 the MCP door carries the warning in `warnings`, where its caller already looks", () => {
+test("the MCP door carries the warning in `warnings`, where its caller already looks", () => {
   const src = readFileSync(join(REPO, "mcp-server", "lib", "ops.mjs"), "utf8");
   // start_run's return value is the only thing that reaches a connector: its stderr goes to a server
   // log the requester never reads. Asserted on the wiring rather than the string, so the message can be
@@ -142,7 +142,7 @@ test("#1292 the MCP door carries the warning in `warnings`, where its caller alr
     "the warning no longer rides `warnings` — a field nothing surfaces is a signal nobody gets");
 });
 
-test("#1292 the deploy tick and the doors read ONE unit path, so they cannot disagree about a box", () => {
+test("the deploy tick and the doors read ONE unit path, so they cannot disagree about a box", () => {
   const tick = readFileSync(join(REPO, "scripts", "live-surface-check.mjs"), "utf8");
   assert.match(tick, /probeQueueWatch\(\{ queueDirs, resolveError \}\)/,
     "the tick check re-implemented the unit read instead of sharing it");
@@ -173,7 +173,7 @@ function homeWithDropIns(dirs, dropIns) {
   return home;
 }
 
-test("#1308 a drop-in that RESETS the list wins: its dirs are watched and the fragment's are not", () => {
+test("a drop-in that RESETS the list wins: its dirs are watched and the fragment's are not", () => {
   // The test box's own shape, quoting its `queue.conf` verbatim — including the comment that says what
   // the empty assignment is for. This is the case that reddened the deploy every hour.
   const home = homeWithDropIns(["/srv/watched-a", "/srv/watched-b"], {
@@ -189,7 +189,7 @@ test("#1308 a drop-in that RESETS the list wins: its dirs are watched and the fr
   assert.match(v.message, /watched-a/);
 });
 
-test("#1308 a drop-in that ADDS to the list keeps both halves", () => {
+test("a drop-in that ADDS to the list keeps both halves", () => {
   const home = homeWithDropIns(["/srv/fragment-queue"], {
     "extra.conf": "[Path]\nPathExistsGlob=/srv/dropin-queue/*.json\n",
   });
@@ -197,7 +197,7 @@ test("#1308 a drop-in that ADDS to the list keeps both halves", () => {
   assert.equal(probeQueueWatch({ queueDirs: ["/srv/dropin-queue"], home }).state, "pass", "the drop-in's glob was never read");
 });
 
-test("#1308 drop-ins apply in LEXICAL order, so a later reset beats an earlier assignment", () => {
+test("drop-ins apply in LEXICAL order, so a later reset beats an earlier assignment", () => {
   // Order is the entire mechanism — the reset only means anything relative to what came before it. Two
   // drop-ins whose names sort the other way round would give the opposite answer, and systemd sorts.
   const home = homeWithDropIns(["/srv/fragment-queue"], {
@@ -209,7 +209,7 @@ test("#1308 drop-ins apply in LEXICAL order, so a later reset beats an earlier a
   assert.equal(probeQueueWatch({ queueDirs: ["/srv/fragment-queue"], home }).state, "fail", "the reset did not clear the fragment");
 });
 
-test("#1308 no drop-in directory at all is the NORMAL case, and changes nothing", () => {
+test("no drop-in directory at all is the NORMAL case, and changes nothing", () => {
   // Most boxes have none. This is the regression arm for the read itself: an ENOENT on the drop-in dir
   // must not become an unreadable-unit skip, or every fragment-only box goes silent at once.
   const home = homeWatching(["/srv/only-fragment"]);
@@ -217,7 +217,7 @@ test("#1308 no drop-in directory at all is the NORMAL case, and changes nothing"
   assert.equal(probeQueueWatch({ queueDirs: ["/srv/elsewhere"], home }).state, "fail");
 });
 
-test("#1308 an UNREADABLE drop-in is SKIP and never a pass — the same rule as an unreadable fragment", () => {
+test("an UNREADABLE drop-in is SKIP and never a pass — the same rule as an unreadable fragment", () => {
   // Half a unit read is not a unit read. A drop-in we cannot open may be the one that resets the list,
   // so answering "watched" from the fragment alone is precisely the privilege-limited "fine" this
   // module refuses one level up. Injected, because root defeats mode 000.

@@ -109,7 +109,7 @@ test("A-4 — the skeptic declares what it consumes, and has an arm to be repair
 // the skeptic escalation and the envelope close rewrite those after it. On a resume where placement
 // skips as legitimately fresh it joins deliveryPathStages, and with no entry the run parked with no
 // in-pass remedy. Ruled to option 1: pay one placement dispatch on affected resumes.
-test("#323 — placement-inquiry declares the band material, and has a stale-repair arm; its stamp is never blessed", () => {
+test("placement-inquiry declares the band material, and has a stale-repair arm; its stamp is never blessed", () => {
   const inputs = stageInputs("placement-inquiry", P).map((f) => f.split("/").pop());
   assert.ok(inputs.includes("register-named-band.json"),
     "the declaration is why it can go stale — narrowing it instead would be the gate lying");
@@ -141,7 +141,7 @@ test("#323 — placement-inquiry declares the band material, and has a stale-rep
 // THE POPULATION IS DISCOVERED FROM `DISPATCH_EXTRAS`, NEVER TYPED HERE. A hand-written subject list
 // would contain exactly the entries I had already read, which is the same blind spot with a test around
 // it — so this arm fails on a stage declared later that nobody wired into the repair path.
-test("#1676 every stale-repair arm carries the driver-computed blocks its stage declares", () => {
+test("every stale-repair arm carries the driver-computed blocks its stage declares", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.ok(map.length > 100, "the map was not located — this arm must fail loudly rather than vacuously pass");
@@ -172,7 +172,7 @@ test("#1676 every stale-repair arm carries the driver-computed blocks its stage 
   assert.ok(checked >= 3, `expected to check at least three arms, checked ${checked}`);
 });
 
-test("#1676 the shared repair dispatcher forces, and composes through the SAME composer as the fresh path", () => {
+test("the shared repair dispatcher forces, and composes through the SAME composer as the fresh path", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   const helper = /const repairStage = [\s\S]{0,400}?\n\};?/.exec(src)?.[0] ?? "";
   assert.ok(helper, "there is one dispatcher for every stale-repair arm, so a new arm cannot omit the blocks");

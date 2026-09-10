@@ -40,7 +40,7 @@ const LOCAL = { localAuth: { email: "clearotron@localhost", secret: "s".repeat(3
 class AuthError extends Error { constructor(status, message) { super(message); this.name = "AuthError"; this.status = status; } }
 const CLOUDFLARE = { verify: async () => { throw new AuthError(401, "not signed in"); } };
 
-test("2113 a browser with no session gets a door it can use, on either identity source", async () => {
+test("a browser with no session gets a door it can use, on either identity source", async () => {
   const local = await drive(LOCAL, "/portal", BROWSER);
   assert.equal(local.status, 302, "the local door answered a browser navigation with something other than a redirect");
   assert.equal(local.location, "/portal/login", "the redirect does not land on the sign-in form");
@@ -59,7 +59,7 @@ test("2113 a browser with no session gets a door it can use, on either identity 
   assert.match(cf.body, /href="\/portal\/sign-out"/, "the door page offers no way to sign in as someone else");
 });
 
-test("2179-F47 the sign-out route the door page offers is DRIVEN, in both modes", async () => {
+test("the sign-out route the door page offers is DRIVEN, in both modes", async () => {
   // THE ARM ABOVE PROVES THE LINK IS OFFERED AND NOTHING ABOUT WHERE IT GOES. That gap shipped a 500:
   // the fronted branch called a `redirect` helper declared inside the local-auth block, so the route
   // threw ReferenceError and answered {"error":"internal"} — worse than the dead link it replaced,
@@ -79,7 +79,7 @@ test("2179-F47 the sign-out route the door page offers is DRIVEN, in both modes"
     "on local sign-in the session is the portal's own and signing out must land on its form");
 });
 
-test("2113 a caller that asked for JSON still gets JSON, so the SPA's own fetches are untouched", async () => {
+test("a caller that asked for JSON still gets JSON, so the SPA's own fetches are untouched", async () => {
   for (const [name, opts] of [["local", LOCAL], ["cloudflare", CLOUDFLARE]]) {
     const spa = await drive(opts, "/portal/api/me", "application/json");
     assert.equal(spa.status, 401, `${name}: the SPA's fetch stopped getting a 401 it can decode`);
@@ -89,7 +89,7 @@ test("2113 a caller that asked for JSON still gets JSON, so the SPA's own fetche
   }
 });
 
-test("2113 the top-level route is negotiated too, not only the API under it", async () => {
+test("the top-level route is negotiated too, not only the API under it", async () => {
   // /portal is the address a person TYPES, and it is the one the issue names. A rule applied to the API
   // routes and not to the document route is the state the issue describes.
   const typed = await drive(LOCAL, "/portal", BROWSER);

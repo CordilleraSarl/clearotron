@@ -44,7 +44,7 @@ const UNSCOPED = { id: "msg-1", msgId: "<msg-1@x>", forwarder: "staff-a", ref: "
 let validateJob;
 before(async () => { ({ validateJob } = await import("../enqueue-schema.mjs")); });
 
-test("#707 the store really is unreadable — otherwise both tests below prove nothing", () => {
+test("the store really is unreadable — otherwise both tests below prove nothing", () => {
   // A guard on the FIXTURE, not on the code. If loadProfiles ever stops throwing on this shape, the two
   // assertions after it would pass for the wrong reason and quietly stop testing the claim path.
   const v = validateJob({ ...UNSCOPED, profileKey: "anyone", projectKey: "anything" });
@@ -52,7 +52,7 @@ test("#707 the store really is unreadable — otherwise both tests below prove n
     "the fixture no longer makes loadProfiles throw, so this file is asserting nothing about an unreadable store");
 });
 
-test("#707 AT INTAKE: an unreadable store refuses — it cannot prove the subject is scopable", () => {
+test("AT INTAKE: an unreadable store refuses — it cannot prove the subject is scopable", () => {
   const v = validateJob({ ...UNSCOPED, profileKey: "anyone", projectKey: "anything" });
   assert.equal(v.ok, false);
   assert.equal(v.classify, "clarify", "the fix is a question back to the requester, not a rejection");
@@ -62,7 +62,7 @@ test("#707 AT INTAKE: an unreadable store refuses — it cannot prove the subjec
     "and it must not claim the profile HAS no classes — it was never read");
 });
 
-test("#707 AT CLAIM: an already-admitted job is NOT parked because the store went unreadable under it", () => {
+test("AT CLAIM: an already-admitted job is NOT parked because the store went unreadable under it", () => {
   const v = validateJob({ ...UNSCOPED, profileKey: "anyone", projectKey: "anything" }, { atClaim: true });
   assert.equal(v.ok, true, "an error here reaches failAtIntake and destroys legitimately accepted work");
   assert.equal(v.classify, "run");

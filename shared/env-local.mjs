@@ -534,6 +534,6 @@ export function envFileRead(l = loaded) {
 //
 // IT WARNS AND RETURNS. There is nothing here that can refuse: the only names it knows are settings
 // whose BEHAVIOUR was deleted, so there is no value to apply wrongly. The renamed install-surface names
-// are not checked for at all — owner ruling, 2026-08-26 — because a machine reaches this code through
+// are not checked for at all — ruling, 2026-08-26 — because a machine reaches this code through
 // the install and the two boxes that predate the rename are rebuilt rather than deployed onto.
 export const aliased = warnRetiredEnv();

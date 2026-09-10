@@ -267,10 +267,10 @@ test.after(() => { try { rmSync(ROOT, { recursive: true, force: true }); } catch
 // skipped because nobody set their flag rather than because this sweep had a rule about them. Measured:
 // 25 of 25 delivered runs carry it, 0 of 29 failed/parked/cancelled.
 //
-// Owner ruling, 2026-08-22: "clean up the failed runs. they owe the client nothing." → a `delivered`
+// Ruling, 2026-08-22: "clean up the failed runs. they owe the client nothing." → a `delivered`
 // filter here, and the failure packets already in the outbox disposed of on the box.
 //
-// Owner ruling, 2026-08-24: failed runs' notification packets get the same re-drop cover as delivered
+// Ruling, 2026-08-24: failed runs' notification packets get the same re-drop cover as delivered
 // ones. → this arm, inverted.
 //
 // THE SECOND DID NOT OVERTURN THE FIRST, and an arm reading as a straight reversal would teach the next
@@ -278,7 +278,7 @@ test.after(() => { try { rmSync(ROOT, { recursive: true, force: true }); } catch
 // still scoped by terminal state and is untouched here. It owes the REQUESTER the news that it failed,
 // and the product writes that packet on purpose (`driver/runner.mjs` sets `sendPending` on the pre-run
 // and self-resume failure paths). Different recipients; one question that only looked singular.
-test("#1561 a failed, parked or cancelled run IS owed its notification, on the same cover as a delivered one", () => {
+test("a failed, parked or cancelled run IS owed its notification, on the same cover as a delivered one", () => {
   const outbox = process.env.CLEAROTRON_OUTBOX_DIR;
   for (const f of readdirSync(outbox)) if (f.endsWith(".pending")) rmSync(join(outbox, f));
   makeRun({ slug: "owed", leaf: "2026-07-11-alpha", sendPending: true });
@@ -296,7 +296,7 @@ test("#1561 a failed, parked or cancelled run IS owed its notification, on the s
       + "#1561 measured: 220 failure packets in the outbox against 110 ordinary ones, none of them covered");
 });
 
-test("#1561 a run that has NOT finished is not owed anything yet", () => {
+test("a run that has NOT finished is not owed anything yet", () => {
   // Neither earlier version of this predicate excluded a non-terminal state: the first admitted anything
   // carrying the flag, the second admitted only `delivered`. A marker for a run still in flight is
   // premature, and a run mid-flight is the state a careless write is most likely to leave the flag on.
@@ -313,7 +313,7 @@ test("#1561 a run that has NOT finished is not owed anything yet", () => {
   assert.equal(owedANotification(null), false, "a status that could not be read owes nothing, and does not throw");
 });
 
-test("#1561 a status with NO state is still swept — absence is not evidence a run failed", () => {
+test("a status with NO state is still swept — absence is not evidence a run failed", () => {
   // This sweep exists to catch markers that were LOST. A missing state must not become a silent
   // exemption, or the belt-and-braces stops covering exactly the runs it was built for.
   const outbox = process.env.CLEAROTRON_OUTBOX_DIR;

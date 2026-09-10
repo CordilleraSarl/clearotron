@@ -26,7 +26,7 @@ test("the shipped sandbox is read from the file that ships it, not transcribed h
   assert.ok(tokens.length >= 3, `expected a real token list, got ${JSON.stringify(tokens)}`);
 });
 
-test("#705 the frame allows what an evidence link needs", () => {
+test("the frame allows what an evidence link needs", () => {
   const tokens = shippedSandbox(SRC);
   for (const t of REQUIRED) assert.ok(tokens.includes(t), `${t} is what makes an evidence link clickable`);
 });

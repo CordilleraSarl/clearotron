@@ -23,7 +23,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 const GUARD = "capture-allocates-a-sequence";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-test("1964 every recording transport allocates a capture sequence — none writes a fixed path", (ctx) => {
+test("every recording transport allocates a capture sequence — none writes a fixed path", (ctx) => {
   const files = trackedFiles(GUARD, { root: ROOT, pathspec: ["driver/*-record.mjs"] });
   // A VISIBLE, COUNTABLE SKIP — never a bare return. node:test counts `return;` as a PASS, so a
   // guard that bails that way reports its whole subject clean having measured none of it.
@@ -50,7 +50,7 @@ test("1964 every recording transport allocates a capture sequence — none write
   console.log(`${GUARD_OK_MARKER} — ${GUARD}: ${capturing.length} capturing transport(s), all allocating`);
 });
 
-test("1964 the guard can FAIL — a fixed-path transport is caught", () => {
+test("the guard can FAIL — a fixed-path transport is caught", () => {
   // The live table is all-clean, which is exactly when a census stops proving anything. This drives the
   // detecting branch with a planted member the real population does not contain.
   const planted = [

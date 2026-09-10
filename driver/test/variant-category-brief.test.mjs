@@ -47,7 +47,7 @@ function enumInSource() {
 const P = { matterContext: "/m/matter-context.md", variantManifest: "/m/v.md", variantManifestModel: "/m/v.json" };
 const JOB = { jobKey: "t", marks: [{ name: "VELTRA" }], classes: ["5"], jurisdictions: ["CH"] };
 
-test("#445 every category the dispatch enumerates carries a definition — an undefined one is the whole defect", () => {
+test("every category the dispatch enumerates carries a definition — an undefined one is the whole defect", () => {
   const cats = enumInSource();
   assert.ok(cats.length >= 7, `expected the full enum, got ${cats.length}`);
   for (const c of cats) {
@@ -56,13 +56,13 @@ test("#445 every category the dispatch enumerates carries a definition — an un
   }
 });
 
-test("#445 the brief defines nothing that is not in the enum — a definition for a dead token teaches a wrong family", () => {
+test("the brief defines nothing that is not in the enum — a definition for a dead token teaches a wrong family", () => {
   const cats = new Set(enumInSource());
   for (const m of VARIANT_CATEGORY_BRIEF.matchAll(/^- "([a-z]+)":/gm))
     assert.ok(cats.has(m[1]), `the brief defines "${m[1]}", which the model may not emit — the enum would refuse it`);
 });
 
-test("#445 each definition says what the category is DRAWN FROM, and carries a worked example", () => {
+test("each definition says what the category is DRAWN FROM, and carries a worked example", () => {
   for (const c of enumInSource()) {
     const body = new RegExp(`- "${c}":([\\s\\S]*?)(?=\\n- "|\\nCOVER EVERY)`).exec(VARIANT_CATEGORY_BRIEF)?.[1] ?? "";
     assert.ok(body.length > 80, `"${c}" has a stub, not a definition (${body.length} chars)`);
@@ -72,7 +72,7 @@ test("#445 each definition says what the category is DRAWN FROM, and carries a w
   }
 });
 
-test("#445 every category carries a worked example — except the one that documents why it cannot", () => {
+test("every category carries a worked example — except the one that documents why it cannot", () => {
   for (const c of enumInSource()) {
     const body = new RegExp(`- "${c}":([\\s\\S]*?)(?=\\n- "|\\nCOVER EVERY)`).exec(VARIANT_CATEGORY_BRIEF)?.[1] ?? "";
     if (c === "other") {
@@ -88,7 +88,7 @@ test("#445 every category carries a worked example — except the one that docum
   }
 });
 
-test("#445 composite is briefed AWAY from the client's own sector — the ruled definition, not a paraphrase", () => {
+test("composite is briefed AWAY from the client's own sector — the ruled definition, not a paraphrase", () => {
   const body = /- "composite":([\s\S]*?)(?=\n- ")/.exec(VARIANT_CATEGORY_BRIEF)[1];
   // The ruling's own words: paired with a word that could plausibly follow it ON THE GOODS IN SCOPE,
   // NOT with the words the client's own sector uses. Both halves, because the second is the corrective
@@ -98,7 +98,7 @@ test("#445 composite is briefed AWAY from the client's own sector — the ruled 
     "the corrective half is missing — this is the sentence the lost stem-plus-descriptor mark turns on");
 });
 
-test("#445 phonetic reaches an elided or shortened middle — read narrowly it is a search nobody runs", () => {
+test("phonetic reaches an elided or shortened middle — read narrowly it is a search nobody runs", () => {
   const body = /- "phonetic":([\s\S]*?)(?=\n- ")/.exec(VARIANT_CATEGORY_BRIEF)[1];
   assert.match(body, /ELIDED MIDDLE SYLLABLE IS INSIDE THIS CATEGORY/,
     "nothing tells the stage how far phonetic reaches, which is how a fuzzy neighbour goes unsearched");
@@ -106,7 +106,7 @@ test("#445 phonetic reaches an elided or shortened middle — read narrowly it i
     "phonetic must be drawn from the sound; read as a spelling rule it collapses into `visual`");
 });
 
-test("#445 the brief is DISPATCHED, not merely exported — an unwired constant briefs nobody", () => {
+test("the brief is DISPATCHED, not merely exported — an unwired constant briefs nobody", () => {
   const msg = STAGES["prelim-variants"].message({ paths: P, job: JOB, profile: {} });
   assert.ok(msg.includes(VARIANT_CATEGORY_BRIEF), "prelim-variants does not carry the category brief");
   // It must land AFTER the enum it defines: a definition the model reads before the field it applies to
@@ -115,7 +115,7 @@ test("#445 the brief is DISPATCHED, not merely exported — an unwired constant 
     "the brief must follow the enum it defines, not precede it");
 });
 
-test("#445 the funnel got a brief, not a filter — no term list, no stem rule, no mark enumeration", () => {
+test("the funnel got a brief, not a filter — no term list, no stem rule, no mark enumeration", () => {
   // The ruling rejects "a decomposition pass, a prefix list, a stem-expansion rule" by name. The check
   // that this stays a BRIEF is that code still mints no search term: every example is parenthesised and
   // attached to a coined illustration mark, and none of them is derived from the job.

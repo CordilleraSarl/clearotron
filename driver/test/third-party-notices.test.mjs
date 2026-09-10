@@ -29,7 +29,7 @@ const tree = npmTree(ROOT);
 let collected = null;
 const rows = () => (collected ??= collect(ROOT, tree));
 
-test("#854 THIRD-PARTY-NOTICES.md is exactly what the installed production tree generates", () => {
+test("THIRD-PARTY-NOTICES.md is exactly what the installed production tree generates", () => {
   assert.ok(existsSync(OUTPUT), "THIRD-PARTY-NOTICES.md is gone — the licence obligations it carried "
     + "are unmet and nothing else records them");
   assert.equal(readFileSync(OUTPUT, "utf8"), render(rows()),
@@ -37,7 +37,7 @@ test("#854 THIRD-PARTY-NOTICES.md is exactly what the installed production tree 
     + "`node scripts/third-party-notices.mjs`");
 });
 
-test("#854 no production dependency ships without a licence — the state #854 was filed about", () => {
+test("no production dependency ships without a licence — the state #854 was filed about", () => {
   // `buffers@0.1.1` was exactly this: no `license` field, no LICENSE file, all rights reserved by
   // default, four levels down a chain nobody reads. It is ours now, and this is what stops the next one
   // arriving unnoticed.
@@ -47,7 +47,7 @@ test("#854 no production dependency ships without a licence — the state #854 w
     + "reserved by default, against a repository that ships AGPL-3.0-only");
 });
 
-test("#854 our own workspaces are not credited to us as third parties", () => {
+test("our own workspaces are not credited to us as third parties", () => {
   // The first run of the generator listed two of them, because their names were guessed rather than
   // read: it looked for `trademark-mcp-server` and `oauth-mcp-bridge`, and the real names are
   // `trademark-artifacts-mcp` and `trademark-oauth-mcp-bridge`. Nothing failed; the file was just wrong.
@@ -60,7 +60,7 @@ test("#854 our own workspaces are not credited to us as third parties", () => {
   assert.ok(ours.size >= 5, `only ${ours.size} names resolved as ours — the workspace list did not read`);
 });
 
-test("#854 a package with no licence TEXT is recorded, not skipped", () => {
+test("a package with no licence TEXT is recorded, not skipped", () => {
   // The interesting half of this file is what it admits. A generator that quietly omitted the packages
   // it could not fully attribute would read as complete coverage.
   const noText = rows().filter((r) => r.installed && r.licence && !r.text);
@@ -92,7 +92,7 @@ test("#854 a package with no licence TEXT is recorded, not skipped", () => {
 // attributions file down with it. The licence obligation does not depend on every range being
 // satisfiable. `npmTree` is imported at the head of this file with the rest of the module's exports.
 
-test("#854 a non-zero `npm ls` that still emitted the tree is READ, not treated as failure", () => {
+test("a non-zero `npm ls` that still emitted the tree is READ, not treated as failure", () => {
   const TREE = JSON.stringify({ name: "root", dependencies: { exceljs: { version: "4.4.0" } } });
   const elsproblems = () => {
     const e = new Error("Command failed: npm ls --omit=dev --all --json");
@@ -102,7 +102,7 @@ test("#854 a non-zero `npm ls` that still emitted the tree is READ, not treated 
   assert.deepEqual(npmTree("/nonexistent", elsproblems).dependencies, { exceljs: { version: "4.4.0" } });
 });
 
-test("#854 it does NOT swallow a real npm failure — three ways, all rethrown", () => {
+test("it does NOT swallow a real npm failure — three ways, all rethrown", () => {
   // THE BUG THE OBVIOUS FIX WOULD HAVE INTRODUCED. A bare try/catch returning `{}` turns npm falling
   // over into an EMPTY production tree, and an empty tree generates an attributions file naming nobody
   // — which reads as a clean bill of health and satisfies no licence at all.
@@ -128,7 +128,7 @@ test("#854 it does NOT swallow a real npm failure — three ways, all rethrown",
 // not a test of either.
 const FIXTURE_DECLARED = [{ match: /^invalid: uuid@/, reason: "fixture" }];
 
-test("#1764 a problem nothing declares is a failure, not a tolerated line", () => {
+test("a problem nothing declares is a failure, not a tolerated line", () => {
   const planted = ["invalid: uuid@11.1.1 /x/node_modules/uuid", "missing: left-pad@1.3.0, required by x"];
   assert.deepEqual(undeclaredProblems(planted, FIXTURE_DECLARED), ["missing: left-pad@1.3.0, required by x"],
     "the declared problem must pass and the undeclared one must not — a filter returning both or neither "
@@ -138,7 +138,7 @@ test("#1764 a problem nothing declares is a failure, not a tolerated line", () =
     "npm omits `problems` entirely on a clean tree; absent must read as none, not throw");
 });
 
-test("#1764 a declaration that matches nothing npm reports is stale and says so", () => {
+test("a declaration that matches nothing npm reports is stale and says so", () => {
   assert.deepEqual(staleDeclarations(["invalid: uuid@11.1.1 /x"], FIXTURE_DECLARED), [],
     "the declaration matches, so nothing is stale");
   assert.deepEqual(staleDeclarations([], FIXTURE_DECLARED), ["^invalid: uuid@"],
@@ -147,12 +147,12 @@ test("#1764 a declaration that matches nothing npm reports is stale and says so"
     "npm reporting a DIFFERENT problem leaves this declaration matching nothing — still stale");
 });
 
-test("#1764 the shipped table is not empty — the live arms below need something to check", () => {
+test("the shipped table is not empty — the live arms below need something to check", () => {
   assert.ok(DECLARED_LS_PROBLEMS.length > 0,
     "DECLARED_LS_PROBLEMS is empty, so the live arms below assert over no declarations at all");
 });
 
-test("#1764 every declaration still describes THIS tree — the excuse cannot outlive its condition", () => {
+test("every declaration still describes THIS tree — the excuse cannot outlive its condition", () => {
   assert.deepEqual(staleDeclarations(tree.problems), [],
     "a declared npm-ls problem no longer occurs. That is good news, and it must not be found by someone "
     + "reading this file in a year: delete the declaration in scripts/third-party-notices.mjs.");
@@ -160,7 +160,7 @@ test("#1764 every declaration still describes THIS tree — the excuse cannot ou
     "npm reports a problem with the production tree that nothing declares");
 });
 
-test("#1764 the row set is never empty — an attributions file over nothing is not compliance", () => {
+test("the row set is never empty — an attributions file over nothing is not compliance", () => {
   assert.ok(rows().length > 0,
     "collect() returned no rows, so the licence arms above assert over an empty set and pass");
 });
@@ -180,7 +180,7 @@ test("#1764 the row set is never empty — an attributions file over nothing is 
 // typed; the next declaration is added without one and nothing says so. The guard walks the table, so an
 // entry with no `nearMiss` fails by name.
 
-test("#1764 every declaration carries a near-miss, and does not match it", () => {
+test("every declaration carries a near-miss, and does not match it", () => {
   const table = nonEmpty(DECLARED_LS_PROBLEMS, "DECLARED_LS_PROBLEMS");
   for (const d of table)
     assert.equal(typeof d.nearMiss, "string",
@@ -190,7 +190,7 @@ test("#1764 every declaration carries a near-miss, and does not match it", () =>
     "a declaration matches its own near-miss, so it now accepts more than it was written for");
 });
 
-test("#1764 the near-miss is what a WIDENED matcher trips on", () => {
+test("the near-miss is what a WIDENED matcher trips on", () => {
   // The plant, run in-process so it needs no edit to the shipped table: the exact widening measured on
   // this file. Both existing directions still pass on it, which is the point.
   const widened = [{ match: /^invalid:/, nearMiss: "invalid: other@1.2.3", reason: "widened, for this arm" }];
@@ -205,7 +205,7 @@ test("#1764 the near-miss is what a WIDENED matcher trips on", () => {
     "the near-miss check is the only one of the three that catches a widening, and it did not");
 });
 
-test("#1764 a problem one step broader than the declaration is still UNDECLARED", () => {
+test("a problem one step broader than the declaration is still UNDECLARED", () => {
   // The shipped table, unmodified. `invalid: other@x.y.z` is a real shape npm emits and this repo has
   // declared nothing about it — a failed install or a workspace that stopped resolving looks like this.
   assert.deepEqual(undeclaredProblems(["invalid: other@1.2.3"]), ["invalid: other@1.2.3"],

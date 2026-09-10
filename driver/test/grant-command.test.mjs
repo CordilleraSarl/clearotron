@@ -31,7 +31,7 @@ const run = (file, args) => {
 const read = (p) => JSON.parse(readFileSync(p, "utf8"));
 const ACME = () => ({ tenants: { acme: { accounts: ["acme-main", "acme-eu"], users: {} } } });
 
-test("#1440-2 a valid grant is written, and the file stays hand-readable", () => {
+test("a valid grant is written, and the file stays hand-readable", () => {
   const f = withFile(ACME());
   const r = run(f, ["add", "lawyer@acme.test", "--tenant", "acme", "--accounts", "acme-main"]);
   assert.equal(r.code, 0, r.err);
@@ -39,7 +39,7 @@ test("#1440-2 a valid grant is written, and the file stays hand-readable", () =>
   assert.match(r.out, /no restart/, "the operator must be told the change is already live");
 });
 
-test("#1440-2 REFUSES a dangling account — and names what the tenant actually holds", () => {
+test("REFUSES a dangling account — and names what the tenant actually holds", () => {
   // The whole value of the command. Written, this grant resolves to nothing and fails as a silent 404
   // for that person with nothing in any log to explain it.
   const f = withFile(ACME());
@@ -50,7 +50,7 @@ test("#1440-2 REFUSES a dangling account — and names what the tenant actually 
   assert.deepEqual(read(f).tenants.acme.users, {}, "NOTHING may be written on a refusal");
 });
 
-test("#1440-2 REFUSES an unknown tenant, and lists the ones that exist", () => {
+test("REFUSES an unknown tenant, and lists the ones that exist", () => {
   const f = withFile(ACME());
   const r = run(f, ["add", "x@acme.test", "--tenant", "ghost", "--accounts", "acme-main"]);
   assert.notEqual(r.code, 0);
@@ -58,7 +58,7 @@ test("#1440-2 REFUSES an unknown tenant, and lists the ones that exist", () => {
   assert.match(r.err, /Tenants: acme/);
 });
 
-test("#1440-2 REFUSES a multi-@ identity — the rule is makePrincipal's, not a second one", () => {
+test("REFUSES a multi-@ identity — the rule is makePrincipal's, not a second one", () => {
   // portal-access refuses these outright so the grant could never match. A first-@ split once
   // classified "x@firm.ch@evil.com" as staff while the edge saw evil.com.
   const f = withFile(ACME());
@@ -68,7 +68,7 @@ test("#1440-2 REFUSES a multi-@ identity — the rule is makePrincipal's, not a 
   assert.deepEqual(read(f).tenants.acme.users, {});
 });
 
-test("#1440-2 a pre-existing mess does NOT block adding a colleague", () => {
+test("a pre-existing mess does NOT block adding a colleague", () => {
   // Faults are attributed to THIS change. A guest list already carrying someone else's dangling grant
   // is not this operator's to fix first — refusing on it would make the command unusable on exactly the
   // file it exists to tidy.
@@ -81,7 +81,7 @@ test("#1440-2 a pre-existing mess does NOT block adding a colleague", () => {
   assert.deepEqual(read(f).tenants.acme.users["old@acme.test"], ["gone-account"], "and it must not be silently repaired");
 });
 
-test("#1440-2 removing the last person leaves the TENANT, and it round-trips", () => {
+test("removing the last person leaves the TENANT, and it round-trips", () => {
   // An empty `users` map is not a deleted tenant. Deleting it here would destroy configuration nobody
   // asked to remove; `remove-tenant` is the explicit verb for that.
   const g = ACME();
@@ -94,7 +94,7 @@ test("#1440-2 removing the last person leaves the TENANT, and it round-trips", (
   assert.deepEqual(after.tenants.acme.accounts, ["acme-main", "acme-eu"], "and keep its accounts");
 });
 
-test("#1440-2 remove-tenant deletes it, and says how many grants went with it", () => {
+test("remove-tenant deletes it, and says how many grants went with it", () => {
   const g = ACME();
   g.tenants.acme.users["a@acme.test"] = "*";
   g.tenants.acme.users["b@acme.test"] = ["acme-eu"];
@@ -105,7 +105,7 @@ test("#1440-2 remove-tenant deletes it, and says how many grants went with it", 
   assert.deepEqual(read(f).tenants, {});
 });
 
-test("#1440-2 removing somebody who is not there writes NOTHING and says so", () => {
+test("removing somebody who is not there writes NOTHING and says so", () => {
   const f = withFile(ACME());
   const before = readFileSync(f, "utf8");
   const r = run(f, ["remove", "nobody@acme.test"]);
@@ -114,7 +114,7 @@ test("#1440-2 removing somebody who is not there writes NOTHING and says so", ()
   assert.equal(readFileSync(f, "utf8"), before, "a no-op must not rewrite the file at all");
 });
 
-test("#1440-2 a malformed guest list is REFUSED, never rewritten", () => {
+test("a malformed guest list is REFUSED, never rewritten", () => {
   // loadGrants throws on malformed JSON, so the portal is already 500ing. Rewriting the file from a
   // parse this command invented would destroy whatever the operator was halfway through fixing.
   const p = join(mkdtempSync(join(tmpdir(), "grant-cmd-bad-")), "grants.json");
@@ -125,7 +125,7 @@ test("#1440-2 a malformed guest list is REFUSED, never rewritten", () => {
   assert.equal(readFileSync(p, "utf8"), '{"tenants": {"acme": ', "the broken file must be left exactly as found");
 });
 
-test("#1440-2 `list` reports the wildcard as what it actually reaches", () => {
+test("`list` reports the wildcard as what it actually reaches", () => {
   const g = ACME();
   g.tenants.acme.users["boss@acme.test"] = "*";
   const f = withFile(g);
@@ -144,7 +144,7 @@ test("#1440-2 `list` reports the wildcard as what it actually reaches", () => {
 //
 // The fixture is the owner's own wrong guess from the issue, kept verbatim: an OBJECT where the code
 // wants an array of account keys. It is the natural guess, which is why it is the one worth pinning.
-test("2079 a valid-JSON guest list with the wrong shape is refused by name, not by TypeError", () => {
+test("a valid-JSON guest list with the wrong shape is refused by name, not by TypeError", () => {
   const p = withFile({ tenants: { acme: { users: { "a@b.c": "*" }, accounts: { acme: { name: "Acme" } } } } });
   const r = run(p, ["list"]);
   assert.notEqual(r.code, 0, "a malformed guest list was accepted");
@@ -156,7 +156,7 @@ test("2079 a valid-JSON guest list with the wrong shape is refused by name, not 
   assert.match(r.err, /tenants\.acme\.accounts/, "the refusal does not name the path into the file");
 });
 
-test("2079 the resolver states the same fault when grants never came through the file reader", () => {
+test("the resolver states the same fault when grants never came through the file reader", () => {
   // Grants also reach `accountsForEmail` from callers that never opened a file — an injected fixture, a
   // store read elsewhere — so the check at the read is necessary and not sufficient.
   assert.throws(
@@ -179,7 +179,7 @@ test("2079 the resolver states the same fault when grants never came through the
 // never persists it, so the door found the roster and every sibling CLI in the operator's own shell did
 // not. Enrolling a client had no working path at all.
 
-test("2191-F13 the grants path resolves with no variable set, and agrees with installPaths", async () => {
+test("the grants path resolves with no variable set, and agrees with installPaths", async () => {
   const { defaultGrantsPath, installPaths } = await import("../../bin/start.mjs");
 
   // THE DEFAULT, and it must be the SAME path installPaths states — not a second opinion that drifts the
@@ -199,7 +199,7 @@ test("2191-F13 the grants path resolves with no variable set, and agrees with in
   assert.equal(defaultGrantsPath({ env: { CLEAROTRON_REPORTS_DIR: "/opt/ct/pool" } }), join("/opt/ct", "grants.json"));
 });
 
-test("2191-F13 with nothing set, grant names the real file and a command that writes it", () => {
+test("with nothing set, grant names the real file and a command that writes it", () => {
   const home = mkdtempSync(join(tmpdir(), "f13-nofile-"));
   const r = spawnSync(process.execPath, [join(HERE, "..", "..", "bin", "grant.mjs"), "list"],
     { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" } });

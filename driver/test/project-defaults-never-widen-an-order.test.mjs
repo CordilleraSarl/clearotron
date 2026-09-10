@@ -39,13 +39,13 @@ const frame = ({ jurisdictions, defaults }) => STAGES["matter-frame"].message({
 
 // ── THE DEFECT: A STATED SCOPE SUPPRESSES THE DEFAULTS ────────────────────────────────────────────
 
-test("2160 an order that names a territory gets NO default-jurisdictions line", () => {
+test("an order that names a territory gets NO default-jurisdictions line", () => {
   const msg = frame({ jurisdictions: ["JP"], defaults: ["JP", "KR"] });
   assert.doesNotMatch(msg, DEFAULT_LINE,
     "the order named JP — a project default must not also be announced as materially mattering");
 });
 
-test("2160 THE POINT: no territory the order did not name appears ANYWHERE in the prompt", () => {
+test("THE POINT: no territory the order did not name appears ANYWHERE in the prompt", () => {
   // The stronger form, and the one that matches the harm. Suppressing the LINE is not the requirement;
   // the requirement is that the model is never shown KR at all, because the stage that follows is told
   // to UNION the coverage ledger against whatever it was shown.
@@ -54,7 +54,7 @@ test("2160 THE POINT: no territory the order did not name appears ANYWHERE in th
   assert.match(msg, /Instructed territories[^\n]*JP/, "and the authoritative scope is still stated");
 });
 
-test("2160 the control run's shape is covered too — disjoint defaults were never safe, only lucky", () => {
+test("the control run's shape is covered too — disjoint defaults were never safe, only lucky", () => {
   // The control run measured beside the defective one: ordered China, project defaults US/EU/UK.
   // It did NOT widen — but its prompt carried
   // the same contradiction, and the archived dispatch proves it. It is a run that happened not to bite,
@@ -64,7 +64,7 @@ test("2160 the control run's shape is covered too — disjoint defaults were nev
   for (const t of ["US", "EU", "UK"]) assert.ok(!new RegExp(`\\b${t}\\b`).test(msg), `${t} reached the prompt`);
 });
 
-test("2160 the shape rule is the SHARED one — a bare string is a stated scope too", () => {
+test("the shape rule is the SHARED one — a bare string is a stated scope too", () => {
   // effective-scope.mjs's jobJurisdictions exists because THIS FILE once accepted a bare string where
   // jx-lanes.mjs tested Array.isArray and fell through to the account's defaults. Re-deriving "did the
   // request name any" here by hand is how that disagreement started, so the arm pins the shared answer.
@@ -74,7 +74,7 @@ test("2160 the shape rule is the SHARED one — a bare string is a stated scope 
 
 // ── THE NEGATIVE CONTROL: FILLING AN ABSENT SCOPE IS LEGITIMATE AND MUST SURVIVE ──────────────────
 
-test("2160 CONTROL: an order naming NO territory still gets the defaults", () => {
+test("CONTROL: an order naming NO territory still gets the defaults", () => {
   const msg = frame({ defaults: ["JP", "KR"] });
   assert.match(msg, DEFAULT_LINE, "defaults fill an absent scope — that is what they are for");
   assert.match(msg, /JP, KR/);
@@ -84,18 +84,18 @@ test("2160 CONTROL: an order naming NO territory still gets the defaults", () =>
 
 // ── ITEM 2: A STAFF FREE-TEXT FIELD MUST NOT REACH A PROMPT UNCHECKED ─────────────────────────────
 
-test("2160 garbage in a staff profile never reaches the prompt", () => {
+test("garbage in a staff profile never reaches the prompt", () => {
   const msg = frame({ defaults: ["JP", "QQ", "NOWHERE"] });
   assert.match(msg, /JP/);
   for (const junk of ["QQ", "NOWHERE"]) assert.ok(!new RegExp(junk).test(msg), `${junk} reached the prompt`);
 });
 
-test("2160 defaults that are ENTIRELY garbage omit the line rather than announcing an empty list", () => {
+test("defaults that are ENTIRELY garbage omit the line rather than announcing an empty list", () => {
   assert.doesNotMatch(frame({ defaults: ["QQ", "NOWHERE"] }), DEFAULT_LINE,
     "an empty 'these materially matter:' is a sentence with nothing in it");
 });
 
-test("2160 recognizedTerritories reports what it dropped — an absence is a finding", () => {
+test("recognizedTerritories reports what it dropped — an absence is a finding", () => {
   const { kept, dropped } = recognizedTerritories(["JP", "QQ", "EU"]);
   assert.deepEqual(kept, ["JP", "EU"], "regions are places too — only the unrecognized go");
   assert.deepEqual(dropped, ["QQ"], "a silent drop is how nobody finds out the staff form has a typo");
@@ -104,7 +104,7 @@ test("2160 recognizedTerritories reports what it dropped — an absence is a fin
 
 // ── 1945, REPRODUCED AND FIXED — SAME FAMILY: A VALIDATED CHANNEL AND AN UNVALIDATED ONE ──────────
 
-test("1945 ZZ names nowhere and is no longer a country", () => {
+test("ZZ names nowhere and is no longer a country", () => {
   // ZZ is WIPO ST.3's code for UNSPECIFIED and sat in KNOWN_JURISDICTION_CODES' register-world extras.
   // territoryTier tiered any known non-region code as "country", so the code meaning "nowhere" satisfied
   // the one-country rule — exactly the failure territory-tiers.mjs was written to prevent ("QQ would
@@ -113,13 +113,13 @@ test("1945 ZZ names nowhere and is no longer a country", () => {
   assert.equal(territoryTier("zz"), "unrecognized", "the fold is applied before the tier, in both directions");
 });
 
-test("1945 a Full country search over ZZ is refused", () => {
+test("a Full country search over ZZ is refused", () => {
   const v = checkProductScope({ product: "full-country-search", territories: ["ZZ"] });
   assert.equal(v.ok, false, "a search naming nowhere is a search with a hole in it, not a narrower one");
   assert.match(v.message, /names no country or region/);
 });
 
-test("1945 the vocabulary rule runs even when NO product is named", () => {
+test("the vocabulary rule runs even when NO product is named", () => {
   // The second half, and independent of ZZ: `if (!spec) return OK` sat BEFORE the unrecognized check, so
   // "every product refuses it" was true of every NAMED product and of nothing else. A request omitting
   // `product` took any string at all, and the doors that resolve the product later never re-asked.
@@ -129,7 +129,7 @@ test("1945 the vocabulary rule runs even when NO product is named", () => {
   }
 });
 
-test("1945 REGRESSION FLOOR: real places still resolve, and an unnamed product still says nothing else", () => {
+test("REGRESSION FLOOR: real places still resolve, and an unnamed product still says nothing else", () => {
   for (const t of ["JP", "Japan", "US", "ZA", "ZW", "XK"]) assert.equal(territoryTier(t), "country", `${t}`);
   assert.equal(territoryTier("EU"), "region");
   assert.equal(territoryTier("WO"), "region");

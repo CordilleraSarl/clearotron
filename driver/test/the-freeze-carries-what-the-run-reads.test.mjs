@@ -49,7 +49,7 @@ const NOT_FROZEN = {
   runCaps: "runner.mjs",
 };
 
-test("#2132 every declared profile key is FROZEN or explicitly exempt — a new one cannot be silently dropped", () => {
+test("every declared profile key is FROZEN or explicitly exempt — a new one cannot be silently dropped", () => {
   // Build a profile carrying every declared key, so the question put to freezeProfile is "what did you
   // keep", not "what did the fixture happen to contain".
   const arrayish = new Set(["platforms", "defaultClasses", "defaultJurisdictions", "selfExclusionOwners",
@@ -86,7 +86,7 @@ test("#2132 every declared profile key is FROZEN or explicitly exempt — a new 
     `declared not-frozen but present in the sidecar — delete the exemption: ${staleExempt.join(", ")}`);
 });
 
-test("#2132 each exemption still names the consumer that justifies it", () => {
+test("each exemption still names the consumer that justifies it", () => {
   // An exemption is only as good as its reason, and the reason lives in FIELD_CONSUMERS. If a field's
   // consumer moves — say runCaps starts being read from the frozen profile — the exemption becomes a
   // licence rather than a fact, and nothing else would notice.
@@ -99,7 +99,7 @@ test("#2132 each exemption still names the consumer that justifies it", () => {
   }
 });
 
-test("#2132 the demo flag survives the freeze, and only when it is literally true", () => {
+test("the demo flag survives the freeze, and only when it is literally true", () => {
   // The field this issue is about, driven rather than asserted through the walk above.
   assert.equal(freezeProfile({ key: "k", demoData: true }).demoData, true);
   // `=== true` and nothing looser, matching demoRunShape and buildJob: a truthy string must not be able
@@ -121,7 +121,7 @@ test("#2132 the demo flag survives the freeze, and only when it is literally tru
 // The roster is made to throw rather than return empty on purpose. `resolveDemoData` catches an
 // unreadable roster and lets "absent stay absent"; that catch IS the failure path, so an arm that
 // hands it a working roster is testing the branch that was never in doubt.
-test("#2132 a re-render with the roster UNREACHABLE still marks a demo run — the sidecar answers alone", () => {
+test("a re-render with the roster UNREACHABLE still marks a demo run — the sidecar answers alone", () => {
   const frozen = freezeProfile({ key: "demo-brand-owner", demoData: true });
   const rosterGone = () => { throw new Error("roster unavailable — no CLEAROTRON_CUSTOMERS_DIR"); };
   const resolve = (sidecar) => resolveDemoData({

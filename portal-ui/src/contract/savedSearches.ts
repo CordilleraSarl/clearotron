@@ -48,7 +48,7 @@ export type SavedSearchStatus =
  * Resolve a saved search's base level against the registry the server just sent.
  *
  * The returned label is always the level's own, off the registry — and NEVER the `base` key. `name` is
- * what the row leads with and `stage` rides beside it (owner ruling 2026-07-20); `stageLabel` stays for
+ * what the row leads with and `stage` rides beside it (ruling 2026-07-20); `stageLabel` stays for
  * an older server that sends no name. That is the same report-identity rule the engine enforces on its own side: the stage label
  * is the only name for this thing a client has ever been shown, and a key like the one stored in config
  * is an internal selector that happens to be a readable word. The tempting one-liner here is

@@ -526,7 +526,7 @@ export function isStale(snapshot, { now, maxAgeMs = 24 * 60 * 60 * 1000 }) {
  * the class of defect the snapshot exists to remove rather than to add to.
  *
  * Callable from the portal because the portal HAS the engine environment: one configuration per server
- * box, owner ruling 2026-08-26, `EnvironmentFile=%h/.env` on every unit. Its result is for COMPARISON
+ * box, ruling 2026-08-26, `EnvironmentFile=%h/.env` on every unit. Its result is for COMPARISON
  * only — see portal-config-view.mjs on why the page still renders the capture and never this.
  */
 export async function livePosture({ env = process.env } = {}) {

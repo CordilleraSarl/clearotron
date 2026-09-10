@@ -349,7 +349,7 @@ export function stopRun(args = {}, { scope } = {}) {
 
     // ── — IMMEDIATE MODE: SENTINEL FIRST, THEN THE SIGNAL ─────────────────────
     //
-    // Owner ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should be
+    // Ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should be
     // a 'stop immediately or at next boundary to preserve data' kind of question when you press it."
     // The boundary stop is unchanged and stays the default; this is the other half of the choice.
     //

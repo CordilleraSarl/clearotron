@@ -45,7 +45,7 @@ function synthesisPrompt() {
   }) ?? "");
 }
 
-test("#1556 the synthesis seat is told to say nothing about whether documents were obtained", () => {
+test("the synthesis seat is told to say nothing about whether documents were obtained", () => {
   // Criterion 1, and criterion 3's failing half: on the code this replaces, the seat's dispatch and its
   // five skills files carried ZERO lines of this prohibition, so this arm reds there.
   const prompt = synthesisPrompt();
@@ -56,7 +56,7 @@ test("#1556 the synthesis seat is told to say nothing about whether documents we
     + "so anything it writes about registry documents is assumption — and it has shipped one to a client.");
 });
 
-test("#1556 the prohibition names the SHAPE of the claim, not one sentence to avoid", () => {
+test("the prohibition names the SHAPE of the claim, not one sentence to avoid", () => {
   // The ruling is that the seat emits NO such claim. A prohibition keyed to the exact refused sentence
   // would be satisfied by rewording it, which is how a cure survives review and fails in production.
   const prompt = synthesisPrompt();
@@ -68,7 +68,7 @@ test("#1556 the prohibition names the SHAPE of the claim, not one sentence to av
 
 // ── THE RENDERER: THE HALF THAT KEEPS THE SENTENCE HONEST RATHER THAN ABSENT ─────────────────────────
 
-test("#1556 a run that DID retrieve documents is described as one that did", () => {
+test("a run that DID retrieve documents is described as one that did", () => {
   // The refusal, inverted: this is the state the seat got wrong.
   const s = documentCoverage({
     records: new Map([["/mark/ch/1", { mark_text: "VOLTARA", goods: "class 9 apparatus" }],
@@ -84,7 +84,7 @@ test("#1556 a run that DID retrieve documents is described as one that did", () 
   assert.match(md, /1 of the 2 findings/, "and the finding count rides it, since that is what a reader weighs");
 });
 
-test("#1556 a run that retrieved NOTHING still gets the limitation — silence would read as coverage", () => {
+test("a run that retrieved NOTHING still gets the limitation — silence would read as coverage", () => {
   // Deleting the seat's claim without rendering anything would be worse than the defect here: a report
   // that says nothing about document coverage reads as one where the wording was read.
   const md = renderDocumentCoverageSection(documentCoverage({ records: new Map(), findings: { findings: [] } }));
@@ -93,7 +93,7 @@ test("#1556 a run that retrieved NOTHING still gets the limitation — silence w
     "the limitation must say what it costs the reader, not merely that it exists");
 });
 
-test("#1556 a record with NO body is a fetch receipt, not a document", () => {
+test("a record with NO body is a fetch receipt, not a document", () => {
   // 855 "fetched records" means nothing if a record can be its own address. This is the arm that stops the
   // renderer from making the opposite false claim to the one it was built to prevent.
   const s = documentCoverage({ records: new Map([["/mark/ch/1", { _uri: "/mark/ch/1", _fetchedAt: "2026-08-22" }]]) });
@@ -102,7 +102,7 @@ test("#1556 a record with NO body is a fetch receipt, not a document", () => {
   assert.match(renderDocumentCoverageSection(s), /No registry document was retrieved/);
 });
 
-test("#1556 a MISSING artifact says so, and never renders as 'nothing was fetched'", () => {
+test("a MISSING artifact says so, and never renders as 'nothing was fetched'", () => {
   // The house rule, in the one place where getting it wrong puts a false limitation in front of a client:
   // null is "this run holds no such artifact", which is not zero.
   const s = documentCoverage({});
@@ -114,7 +114,7 @@ test("#1556 a MISSING artifact says so, and never renders as 'nothing was fetche
     "an absent artifact was rendered as a measured zero — the defect, re-created by the cure");
 });
 
-test("#1556 the section NEVER renders empty, in any state", () => {
+test("the section NEVER renders empty, in any state", () => {
   // A heading with nothing under it asserts an absence it cannot explain, and a reader cannot tell it from
   // a run that retrieved everything. That lesson, one lane over.
   for (const input of [undefined, {}, { records: new Map() }, { findings: { findings: [] } },
@@ -125,7 +125,7 @@ test("#1556 the section NEVER renders empty, in any state", () => {
   }
 });
 
-test("#1556 re-rendering REPLACES the section — two of them is the defect, manufactured by the cure", () => {
+test("re-rendering REPLACES the section — two of them is the defect, manufactured by the cure", () => {
   // This renders on more than one pass. An appending splice would leave the report carrying two
   // document-coverage statements written from different states of the same run.
   const one = renderDocumentCoverageSection(documentCoverage({ records: new Map() }));

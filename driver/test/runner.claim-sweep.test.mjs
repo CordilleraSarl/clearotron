@@ -66,7 +66,7 @@ function capturingStderr(fn) {
   finally { process.stderr.write = real; }
 }
 
-test("#785 a retire lost inside a sibling's takeover window deletes nothing — the claim's bookkeeping survives", () => {
+test("a retire lost inside a sibling's takeover window deletes nothing — the claim's bookkeeping survives", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-lost-"));
   const mine = claimToken();
   const proc = claimHeldBy(dir, "job-race", mine);
@@ -110,7 +110,7 @@ test("#785 a retire lost inside a sibling's takeover window deletes nothing — 
     "and the operator line says the sweep was skipped, in the same breath as the lost rename");
 });
 
-test("#785 the uncontended retire still hands the orphan back and sweeps the claim it held", () => {
+test("the uncontended retire still hands the orphan back and sweeps the claim it held", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-plain-"));
   const proc = claimHeldBy(dir, "job-plain", claimToken());
   const queued = join(dir, "job-plain.json");
@@ -124,7 +124,7 @@ test("#785 the uncontended retire still hands the orphan back and sweeps the cla
   assert.deepEqual(lockResidue(dir), [], "the lock path is not left behind");
 });
 
-test("#785 a legacy claim with no liveness token at all is still returned to the queue", () => {
+test("a legacy claim with no liveness token at all is still returned to the queue", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-legacy-"));
   const proc = join(dir, "job-legacy.processing");
   const queued = join(dir, "job-legacy.json");
@@ -143,7 +143,7 @@ test("#785 a legacy claim with no liveness token at all is still returned to the
 // reachable interleaving there. It is asserted because the primitive is exported and the next caller may
 // sit somewhere it IS reachable — and because "we hold the lock" and "we hold the claim" are different
 // facts.
-test("#785 a marker covered by another runner's token is neither retired nor swept", () => {
+test("a marker covered by another runner's token is neither retired nor swept", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-foreign-"));
   const live = claimToken();                    // the OTHER runner's claim — live, because it is ours
   const proc = claimHeldBy(dir, "job-theirs", live);
@@ -202,7 +202,7 @@ function queueWithClaim(base, token, { meta = META } = {}) {
   return { qdir, proc };
 }
 
-test("#785 the ALREADY-DELIVERED terminal, lost inside a sibling's takeover window, ends nothing and deletes nothing", () => {
+test("the ALREADY-DELIVERED terminal, lost inside a sibling's takeover window, ends nothing and deletes nothing", () => {
   const mine = claimToken();
   const { qdir, proc } = queueWithClaim("job-delivered", mine);
 
@@ -238,7 +238,7 @@ test("#785 the ALREADY-DELIVERED terminal, lost inside a sibling's takeover wind
   assert.match(log, /left exactly as they are/, "the operator line says which side effects were skipped");
 });
 
-test("#785 the RECLAIM-EXHAUSTED terminal, lost the same way, spends no reclaim and re-opens no dedup gate", () => {
+test("the RECLAIM-EXHAUSTED terminal, lost the same way, spends no reclaim and re-opens no dedup gate", () => {
   const mine = claimToken();
   const { qdir, proc } = queueWithClaim("job-spent", mine, { meta: SPENT });
   writeFileSync(matterLedgerPath(qdir), JSON.stringify(LEDGER_ROW) + "\n");
@@ -281,7 +281,7 @@ test("#785 the RECLAIM-EXHAUSTED terminal, lost the same way, spends no reclaim 
 // The control, and it is not optional: every assertion above passes for a `finishReclaimedClaim` that
 // simply never does anything. This is the arm that says the guard gates the side effects rather than
 // removing them.
-test("#785 the UNCONTENDED reclaim terminal still ends the job, sweeps the prose, records the result and frees the matter", () => {
+test("the UNCONTENDED reclaim terminal still ends the job, sweeps the prose, records the result and frees the matter", () => {
   const { qdir, proc } = queueWithClaim("job-uncontended", claimToken(), { meta: SPENT });
   writeFileSync(matterLedgerPath(qdir), JSON.stringify(LEDGER_ROW) + "\n");
   const result = { ok: false, failedStage: "queue-reclaim", terminalKind: "reclaim-exhausted", codename: "PROJECT-KESTREL" };

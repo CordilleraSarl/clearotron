@@ -43,7 +43,7 @@ function emittedKinds() {
   return [...kinds].sort();
 }
 
-test("#561 every emitted disposition row kind is named in the seat's doctrine", (t) => {
+test("every emitted disposition row kind is named in the seat's doctrine", (t) => {
   const all = trackedCorpus(GUARD, { root: ROOT, pathspec: ["driver/skills"] });
   if (all === null) return t.skip(skipReason(GUARD));
   assert.ok(all.includes(DOCTRINE), `${DOCTRINE} is tracked and in scope`);
@@ -66,7 +66,7 @@ test("#561 every emitted disposition row kind is named in the seat's doctrine", 
 // line break, and the next person learns to override it.
 const says = (text, ...words) => new RegExp(words.join("\\s+"), "i").test(text.replace(/\n\s*/g, " "));
 
-test("#561 the doctrine carries the three things that make a recurrence row different", () => {
+test("the doctrine carries the three things that make a recurrence row different", () => {
   const d = readFileSync(join(ROOT, DOCTRINE), "utf8");
   // Naming the kind is not describing it. These are the properties a seat cannot infer from a query row.
   assert.ok(says(d, "`queries`", "is", "a", "LIST"), "the LIST field — where a query row has one string");
@@ -74,7 +74,7 @@ test("#561 the doctrine carries the three things that make a recurrence row diff
   assert.ok(says(d, "four", "or", "more", "distinct", "quer"), "what promotes a result to a recurrence row at all");
 });
 
-test("#561 the doctrine carries the HONEST-DECLINATION path", () => {
+test("the doctrine carries the HONEST-DECLINATION path", () => {
   // The half that R2 proved is missing: a seat facing material it cannot responsibly rule needs a move
   // that is not improvisation and not silence. Without it, correct caution reads to the gate exactly
   // like a failure — which is what happened.

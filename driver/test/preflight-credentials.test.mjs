@@ -25,7 +25,7 @@ import { preflightCredentials, activeProvider, providerIdFrom, missingCredential
 // credentials — the setup-wizard shape.
 const euipoEnv = { CLEAROTRON_DATABASE: "euipo", EUIPO_CLIENT_ID: "id", EUIPO_CLIENT_SECRET: "secret" };
 
-test("#634 a candidate env's PROVIDER decides which credentials are checked", () => {
+test("a candidate env's PROVIDER decides which credentials are checked", () => {
   const r = preflightCredentials(euipoEnv);
   assert.equal(r.provider, "euipo",
     "THE DEFECT: this used to answer with the ambient provider, so a candidate env was never checked at all");
@@ -33,7 +33,7 @@ test("#634 a candidate env's PROVIDER decides which credentials are checked", ()
     "and it checks THAT provider's variables — euipo needs both halves of its OAuth pair");
 });
 
-test("#634 …so a candidate env holding the WRONG provider's key is refused, not passed", () => {
+test("…so a candidate env holding the WRONG provider's key is refused, not passed", () => {
   // The exact shape the issue names: the ambient shell's corsearch key sitting in a euipo candidate.
   assert.throws(() => preflightCredentials({ CLEAROTRON_DATABASE: "euipo", CORSEARCH_SESSION_KEY: "live" }),
     /missing EUIPO_CLIENT_ID \+ EUIPO_CLIENT_SECRET for register provider "euipo"/,
@@ -43,7 +43,7 @@ test("#634 …so a candidate env holding the WRONG provider's key is refused, no
     /missing EUIPO_CLIENT_SECRET/);
 });
 
-test("#634 it is right EVERY time, not once per process", () => {
+test("it is right EVERY time, not once per process", () => {
   // The frozen const answered identically forever. Two different candidate environments in a row must
   // give two different answers — that is the property, and it cannot be shown by calling once.
   assert.equal(preflightCredentials(euipoEnv).provider, "euipo");
@@ -51,7 +51,7 @@ test("#634 it is right EVERY time, not once per process", () => {
   assert.equal(preflightCredentials(euipoEnv).provider, "euipo", "and back again — nothing is cached");
 });
 
-test("#634 PROD-NEUTRAL: no argument still takes the module const's path, refusal included", () => {
+test("PROD-NEUTRAL: no argument still takes the module const's path, refusal included", () => {
   // Every production call site passes nothing. That path is unchanged: it reads REGISTER_PROVIDER and
   // refuses when it is unset, rather than defaulting to a vendor the deployment did not choose.
   // ── TAIL — THIS ARM READ ONE SPELLING, TWICE, AND WAS WRONG BOTH TIMES ────────────────────
@@ -78,7 +78,7 @@ test("#634 PROD-NEUTRAL: no argument still takes the module const's path, refusa
   }
 });
 
-test("#634 an env that names NO provider says nothing about it — the ambient one still answers", () => {
+test("an env that names NO provider says nothing about it — the ambient one still answers", () => {
   // THE LINE THAT KEEPS THIS PROD-NEUTRAL, and CI is what found it. My first cut REFUSED an env with no
   // provider in it, and two existing call sites pass exactly that: `{[credEnv]: "key"}`, asking about
   // the VARIABLES and saying nothing about the provider. Refusing them would have broken working
@@ -93,7 +93,7 @@ test("#634 an env that names NO provider says nothing about it — the ambient o
     "a variables-only candidate env is answered by the ambient provider, exactly as before");
 });
 
-test("#634 missingCredentials answers about the provider it was given", () => {
+test("missingCredentials answers about the provider it was given", () => {
   // Its default is unchanged; what matters is that the pair travels together — a provider from one env
   // and variables from another is the defect one function over.
   assert.deepEqual(missingCredentials(PROVIDERS.euipo, { EUIPO_CLIENT_ID: "id" }), ["EUIPO_CLIENT_SECRET"]);
@@ -108,7 +108,7 @@ test("#634 missingCredentials answers about the provider it was given", () => {
 //
 // This is pinned as an assertion because a silent substitution is invisible in the output: the run
 // completes, the report reads normally, and the only trace is a provider attribution nobody checks.
-test("#548 a paid provider id resolves to itself alone — no free-tier composition", () => {
+test("a paid provider id resolves to itself alone — no free-tier composition", () => {
   for (const paid of ["corsearch", "clarivate", "signa"]) {
     const p = PROVIDERS[paid];
     assert.equal(p.id, paid, `${paid} resolves to itself`);
@@ -131,7 +131,7 @@ test("#548 a paid provider id resolves to itself alone — no free-tier composit
 // and the run falls to the agent lane, which reports coverage it never searched. Asserted here as a
 // REFUSAL, because the state it prevents is one where every downstream signal reads as success.
 
-test("#1027/#1029 every registered provider can execute a plan — the door has nothing left to refuse", () => {
+test("every registered provider can execute a plan — the door has nothing left to refuse", () => {
   // THIS TEST CHANGED SUBJECT WHEN LANDED, and the change is the point. It used to assert that
   // signa was REFUSED: it held a key and had no executor, so a run would fall to the model lane and
   // report coverage it never searched. Signa now has one, so the refusal has no subject left in the
@@ -148,7 +148,7 @@ test("#1027/#1029 every registered provider can execute a plan — the door has 
     "an empty or shrunk registry would make the line above vacuously true");
 });
 
-test("#1027 every provider that declares an executor still passes — including the free-tier composite", () => {
+test("every provider that declares an executor still passes — including the free-tier composite", () => {
   // The composite is the one at risk from a naive `p.executePlan` check: it assembles its adapters
   // rather than declaring them literally, and it is the provider an open-source install actually uses.
   const capable = Object.values(PROVIDERS).filter((p) => typeof p.executePlan === "function");
@@ -166,7 +166,7 @@ test("#1027 every provider that declares an executor still passes — including 
   }
 });
 
-test("#1027 the refusal happens for the provider the ENV names, not the ambient one", () => {
+test("the refusal happens for the provider the ENV names, not the ambient one", () => {
   // That lesson, re-asserted for the new check: a wizard validating a candidate must be told about
   // the candidate. If this resolved the ambient provider the refusal would fire on the wrong id, and
   // a caller would "fix" a provider that was never the problem.

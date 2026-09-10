@@ -157,7 +157,7 @@ const CANNOT_RUN_IN_CI = [
 // exemption that nobody can retire is one nobody re-reads, so the arm below asserts every remaining
 // entry still names a check that exists, and the day the last one goes this list goes with it.
 
-test("#968 every browser check in scripts/ is either run by CI or declared as one that cannot be", (ctx) => {
+test("every browser check in scripts/ is either run by CI or declared as one that cannot be", (ctx) => {
   const scripts = checkScripts();
   if (scripts === null) return ctx.skip(skipReason(GUARD));
   const ci = invoked();
@@ -168,7 +168,7 @@ test("#968 every browser check in scripts/ is either run by CI or declared as on
     + `Add the invocation to ${CI_PATH}, or declare it in CANNOT_RUN_IN_CI with the reason it cannot run.`);
 });
 
-test("#1489 render-check is INVOKED by CI, and the exemption that kept it out is gone", (ctx) => {
+test("render-check is INVOKED by CI, and the exemption that kept it out is gone", (ctx) => {
   const scripts = checkScripts();
   if (scripts === null) return ctx.skip(skipReason(GUARD));
   assert.ok(scripts.includes("scripts/render-check.mjs"), "the script this issue is about must still exist");
@@ -185,7 +185,7 @@ test("#1489 render-check is INVOKED by CI, and the exemption that kept it out is
     + "reads as coverage from either end");
 });
 
-test("#968 no declared exemption has gone stale", (ctx) => {
+test("no declared exemption has gone stale", (ctx) => {
   const scripts = checkScripts();
   if (scripts === null) return ctx.skip(skipReason(GUARD));
   const ci = invoked();
@@ -197,7 +197,7 @@ test("#968 no declared exemption has gone stale", (ctx) => {
   }
 });
 
-test("#968 the enumeration and the invocation parse both have floors — a broken glob names itself", (ctx) => {
+test("the enumeration and the invocation parse both have floors — a broken glob names itself", (ctx) => {
   const scripts = checkScripts();
   if (scripts === null) return ctx.skip(skipReason(GUARD));
   // An absence is a finding. Zero matched scripts, or zero parsed invocations, is the shape in which

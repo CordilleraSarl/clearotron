@@ -62,7 +62,7 @@ const wiringVia = (label, opts) => {
 
 // ══ the label is ONE construction, shared ═══════════════════════════════════════════════════════
 
-test("#700 the sandbox dispatches on the same label production does — one construction site", () => {
+test("the sandbox dispatches on the same label production does — one construction site", () => {
   const src = readFileSync(join(ROOT, "driver", "pipeline.mjs"), "utf8");
   const sites = [...src.matchAll(/const label = name \+ \(ctx\.axis \? `:\$\{ctx\.axis\}` : ""\);/g)];
   assert.ok(sites.length >= 1, "stageOnce still builds the dispatch label from name + ctx.axis");
@@ -79,7 +79,7 @@ test("#700 the sandbox dispatches on the same label production does — one cons
 
 // ══ every stage: arm wiring == production wiring ═════════════════════════════════════════════════
 
-test("#700 for EVERY stage, an arm's tool wiring equals the production dispatch's", () => {
+test("for EVERY stage, an arm's tool wiring equals the production dispatch's", () => {
   const opts = { sessionKey: "clearotron-x-y-z", agent: "clearotron-agent-1", runDir: "/srv/x/studio/prelim-search/j/c" };
   const armOpts = { ...opts, sessionKey: "prelim-exp-x-y-z", runDir: `${opts.runDir}/_experiments/2026-01-01-x` };
   let tooled = 0;
@@ -101,7 +101,7 @@ test("#700 for EVERY stage, an arm's tool wiring equals the production dispatch'
 
 // ══ the one this issue is about, named ══════════════════════════════════════════════════════════
 
-test("#700 a common-law-half arm DOES hold the research tool — the issue's premise, tested", () => {
+test("a common-law-half arm DOES hold the research tool — the issue's premise, tested", () => {
   const arm = experimentWiring("common-law-half", "m",
     { sessionKey: "prelim-exp-a", agent: "clearotron-agent-1", runDir: "/srv/x/studio/prelim-search/j/c/_experiments/e" });
   // — TWO groups and two servers. The disposition transport left the shared `perplexity` entry
@@ -121,7 +121,7 @@ test("#700 a common-law-half arm DOES hold the research tool — the issue's pre
   assert.deepEqual(experimentWiring("common-law-half", "b", {}).groups, ["perplexity", "dispositions"]);
 });
 
-test("#700 the tool this sweep needs is reachable, but its ABSENCE would not be visible to the driver", () => {
+test("the tool this sweep needs is reachable, but its ABSENCE would not be visible to the driver", () => {
   // The gap that remains after the wiring is ruled out. Stated as an assertion over the server's own
   // source because it is the reason a fix here would have been aimed at the wrong thing.
   const src = readFileSync(join(ROOT, "driver", "engine", "mcp", "perplexity-server.mjs"), "utf8");
@@ -134,7 +134,7 @@ test("#700 the tool this sweep needs is reachable, but its ABSENCE would not be 
 
 // ══ tool-free stages stay tool-free in the sandbox too ══════════════════════════════════════════
 
-test("#700 a tool-free stage gets no servers in an arm either — an arm is not a wider grant", () => {
+test("a tool-free stage gets no servers in an arm either — an arm is not a wider grant", () => {
   for (const name of Object.keys(TOOL_FREE_STAGES)) {
     const axis = name === "report-card" ? "1" : null;
     const arm = experimentWiring(name, axis, { sessionKey: "k", agent: "a", runDir: "/r" });
@@ -147,7 +147,7 @@ test("#700 a tool-free stage gets no servers in an arm either — an arm is not 
 
 // ══ the receipt must not become a credential store ══════════════════════════════════════════════
 
-test("#700 the wiring record carries NAMES, never the servers' env", () => {
+test("the wiring record carries NAMES, never the servers' env", () => {
   const arm = experimentWiring("synthesis", null, { sessionKey: "k", agent: "a", runDir: "/r" });
   // — synthesis gained the `declination` server (record_declination). Still NAMES only, which is
   // what this test is about: the new entry carries an env block like every other, and the assertion
@@ -165,7 +165,7 @@ test("#700 the wiring record carries NAMES, never the servers' env", () => {
   assert.ok(!/command|args/.test(json), "…and the node path and argv are not context either");
 });
 
-test("#700 a wiring that cannot be built is recorded as a REFUSAL, never as an empty grant", () => {
+test("a wiring that cannot be built is recorded as a REFUSAL, never as an empty grant", () => {
   // The register group resolves the active provider and throws when none is configured. An arm run in
   // that environment held no register tools — but so does a stage that legitimately has none, and
   // {groups: []} for both is the absence-read-as-pass this repo keeps paying for.

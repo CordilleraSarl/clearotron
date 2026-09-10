@@ -70,7 +70,7 @@ export const knockoutStatement = (framework, marks) =>
 // renders through publish/render-knockout.mjs in the product's own design language, off the same shared
 // stylesheet and brand tokens as the clearance report.
 //
-// THE REVIEWER'S NOTES ARE ON THE REPORT SINCE 2026-09-07 (owner ruling). This
+// THE REVIEWER'S NOTES ARE ON THE REPORT SINCE 2026-09-07 (ruling). This
 // paragraph used to end "internal working material (the purple staff notes, the model's registerEstimate)
 // is not IN the report; it lives in the audit workbook". That is now true of `registerEstimate` only: the
 // notes render on the page, labelled, and the workbook keeps its copy. See render-knockout.mjs's header
@@ -526,7 +526,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       // paragraph names every mark in the batch, and a reader who ordered one name must not be handed a
       // summary about other clients' marks. What it left behind was a page opening with nothing.
       //
-      // The assess stage writes a model-authored paragraph per mark now (owner ruling, full length), so
+      // The assess stage writes a model-authored paragraph per mark now (ruling, full length), so
       // the blank has a replacement rather than being merely correct. Substituting it HERE, into the
       // per-mark COPY, is what makes one line serve both surfaces: the rendered `<div class="sub">` and
       // `report-data-<slug>.json`'s `.summary` both read `batch.executiveSummary`, so neither the

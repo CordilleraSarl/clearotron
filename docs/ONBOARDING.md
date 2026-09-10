@@ -41,7 +41,7 @@ store, and writes nothing — so the first real run is one you have already read
 
 ## The framework is always set, and the output says which one
 
-Owner ruling, 2026-08-29: the risk framework is mandatory at onboarding, with a default backup so
+Ruling, 2026-08-29: the risk framework is mandatory at onboarding, with a default backup so
 onboarding is never blocked. The command therefore sets a framework on every bundle it writes, and
 prints which one it used.
 

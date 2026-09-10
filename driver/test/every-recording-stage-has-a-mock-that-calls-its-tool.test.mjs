@@ -43,7 +43,7 @@ function recordToolFor(stage) {
   return rec[0] ?? null;
 }
 
-test("#1893 every recording stage has a mock branch that drives its record tool", () => {
+test("every recording stage has a mock branch that drives its record tool", () => {
   const stages = Object.keys(RECORDING_STAGES);
   // FLOOR. A walk over an empty category reports clean, which is how this arm would go quiet on the day
   // somebody re-keyed the table.
@@ -78,7 +78,7 @@ test("#1893 every recording stage has a mock branch that drives its record tool"
     + "branch to applyStageWrites that drives the production receiver:\n  " + missing.join("\n  "));
 });
 
-test("#1893 …and no recording stage still has a hand-written fixture body for its artifact", () => {
+test("…and no recording stage still has a hand-written fixture body for its artifact", () => {
   // The other half of the same agreement. A surviving fixture body is the mock taking the path the
   // conversion deleted — it would keep every test green while the tool call never happened, which is the
   // shape that makes a conversion look done when only its grant landed.

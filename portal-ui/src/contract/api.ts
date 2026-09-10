@@ -825,7 +825,7 @@ export type ConnectOffer = {
    *
    * The page composes `Paste it into {name}`, which works for every proper noun — Claude, ChatGPT,
    * Perplexity — and not for a row whose name is a description: "Paste it into Another agent" is not
-   * English (owner ruling 2026-09-06, option B). Absent on every row where the
+   * English (ruling 2026-09-06, option B). Absent on every row where the
    * composed sentence reads, and absent means compose it — never an empty string.
    *
    * ON THE ROW RATHER THAN IN THE SCREEN because no surface may branch on a client's identity; a branch
@@ -1040,7 +1040,7 @@ export type FlagView = {
   readonly note: string | null
   /**
    * WHICH READING THIS PAGE IS SHOWING. `live` is the deployment's own configuration, read at request
-   * time, and is the answer (owner ruling 2026-09-05). `capture` means the service could not derive a
+   * time, and is the answer (ruling 2026-09-05). `capture` means the service could not derive a
    * live posture and this is what the last run recorded — said out loud, because presenting an old
    * reading as current fact without naming it is the defect that ruling was made about.
    */
@@ -1774,7 +1774,7 @@ export const api = {
    *
    * A knockout over several names has no combined document, so the one piece of prose that reads the
    * names against each other is written to the run's `report.md` and, until this route existed, reached
-   * nobody: the published list names the per-mark documents only. Owner ruling 2026-08-26: the grouped
+   * nobody: the published list names the per-mark documents only. Ruling 2026-08-26: the grouped
    * page carries it.
    *
    * ITS OWN CALL RATHER THAN A FIELD ON THE RUN, because the run row is what every screen that lists
@@ -2233,7 +2233,7 @@ export const api = {
     })),
 
   /**
-   * Mint THIS caller's own access, for the clipboard (; owner ruling 2026-08-31).
+   * Mint THIS caller's own access, for the clipboard (; ruling 2026-08-31).
    *
    * The returned key is handed to the clipboard and MUST NOT reach React state, a prop, or the DOM.
    * *"A rendered key outlives the moment. It's in the DOM, in the screenshot someone takes, in the

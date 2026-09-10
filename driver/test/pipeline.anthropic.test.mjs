@@ -209,7 +209,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   // THE NOTICE IS ADDRESSED TO WHOEVER ASKED. This arm asserted
   // `whatsappTo === "+10000000001"` — the AGENT's number from the demo roster — which is precisely the
   // defect: every user of a deployment shares one agent id, so the operator was paged for work somebody
-  // else ordered and the requester was never told. Owner ruling 2026-09-07 routed it to the requester
+  // else ordered and the requester was never told. Ruling 2026-09-07 routed it to the requester
   // with the operator keeping a switchable copy.
   //
   // This fixture holds no number for its requester, so the honest packet has no recipient and SAYS SO —

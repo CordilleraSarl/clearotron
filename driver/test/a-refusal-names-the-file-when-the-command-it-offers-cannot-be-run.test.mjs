@@ -92,7 +92,7 @@ function reachedTheRefusal(d) {
     `this drive met a PORT collision and never reached the missing-values refusal these arms are about — `
     + `nothing below could be measured:\n${d.said.slice(0, 900)}`);
   // THE SUBJECT MOVED FROM A REFUSAL TO AN ANNOUNCEMENT, on the same screen. An
-  // install now comes up without these values (owner ruling 2026-09-06) and every run is refused at order
+  // install now comes up without these values (ruling 2026-09-06) and every run is refused at order
   // time instead, so what proves this drive reached its subject is the announcement naming them.
   //
   // STILL A POSITIVE CHECK, and that is the whole job of this function: without it every assertion below
@@ -172,13 +172,13 @@ test.before(async () => {
 });
 test.after(() => { READ?.clean(); UNREAD?.clean(); });
 
-test("202 the refusal names the file this command actually read, and that file is the one it reported reading", () => {
+test("the refusal names the file this command actually read, and that file is the one it reported reading", () => {
   const block = remedy(reachedTheRefusal(READ));
   const file = readItsEnvFile(READ);
   assert.ok(block.includes(file), `the refusal named no path this command read. It said:\n${block}`);
 });
 
-test("202 it names the units' file too, because at THIS site a value set there also reaches the check", () => {
+test("it names the units' file too, because at THIS site a value set there also reaches the check", () => {
   const said = reachedTheRefusal(READ);
   // Not the issue's proposed sentence, and this arm is why. That text — "`~/.env` is loaded by the
   // units and is not read here" — is true at the port refusals and FALSE here: `start --background`
@@ -191,14 +191,14 @@ test("202 it names the units' file too, because at THIS site a value set there a
     "the two files resolved to the same path, so 'both are named' proves nothing about either");
 });
 
-test("202 the sentence that named no file is gone", () => {
+test("the sentence that named no file is gone", () => {
   const said = reachedTheRefusal(READ);
   assert.ok(!/Set these where this command can see them/.test(said),
     `the refusal still tells the reader to set them "where this command can see them" — the one thing `
     + `they cannot work out, and the reason this issue exists:\n${said.slice(0, 900)}`);
 });
 
-test("202 `install` is still offered, and is described as the terminal-only route it is", () => {
+test("`install` is still offered, and is described as the terminal-only route it is", () => {
   const block = remedy(reachedTheRefusal(READ));
   assert.ok(/clearotron install/.test(block),
     "the wizard is the right primary remedy for an operator at a terminal and must not have been dropped");
@@ -207,7 +207,7 @@ test("202 `install` is still offered, and is described as the terminal-only rout
     + `route it has:\n${block}`);
 });
 
-test("202 a command that read no env file of its own names none — it does not compose one", () => {
+test("a command that read no env file of its own names none — it does not compose one", () => {
   // THE PLANT FOR THE OTHER BRANCH. `envFileRead()` exists so a systemd-started service, configured by
   // its EnvironmentFile, names nothing rather than naming the CLI's file. CLEAROTRON_NO_ENV_FILE=1 is
   // the same state reached the other way, and it is the state this suite's own runner puts children in.
@@ -219,7 +219,7 @@ test("202 a command that read no env file of its own names none — it does not 
     `it named no file at all. The units' file is still an honest address here and must be given:\n${block}`);
 });
 
-test("202 the pool-root refusal on the same screen names the file too — the class is not one site", () => {
+test("the pool-root refusal on the same screen names the file too — the class is not one site", () => {
   // THE DIFFERENT MEMBER. This message comes from `driver.config.mjs`, not from `start`, and reaches
   // this screen as a warning two lines above the refusal the issue names. It offered `install` and
   // nothing else, so its reader had the identical dead end.
@@ -228,13 +228,13 @@ test("202 the pool-root refusal on the same screen names the file too — the cl
     `the pool-root refusal still offers only the wizard, which its reader here cannot run:\n${warn}`);
 });
 
-test("202 and it names none of its own when the process read no file", () => {
+test("and it names none of its own when the process read no file", () => {
   const warn = poolWarning(reachedTheRefusal(UNREAD));
   assert.ok(!warn.includes(UNREAD.envFile),
     `it named a file this process never read:\n${warn}`);
 });
 
-test("202 the load-bearing premise, driven: `clearotron install` refuses when stdin is not a terminal", () => {
+test("the load-bearing premise, driven: `clearotron install` refuses when stdin is not a terminal", () => {
   // Everything above rests on this. If the wizard ran headless, "set it by hand" would be a convenience
   // rather than the only route, and the issue would be a wording preference. Driven, not quoted — the
   // sentence naming the wizard's limitation is now shipped product text and must not be able to go

@@ -15,7 +15,7 @@ import type { Result } from '../src/contract/api.ts'
 
 const CLEARANCES = new URL('../src/screens/Clearances.tsx', import.meta.url)
 
-test('#1254 the server\'s own words survive to the alert', () => {
+test('the server\'s own words survive to the alert', () => {
   assert.equal(saveFailureText({ kind: 'reject', errors: ['run not in the pool', 'and it is not yours'] }),
     'run not in the pool\nand it is not yours')
   assert.equal(saveFailureText({ kind: 'gate', message: 'confirm this first' }), 'confirm this first')
@@ -26,7 +26,7 @@ test('#1254 the server\'s own words survive to the alert', () => {
   assert.equal(saveFailureText({ kind: 'clarify', questions: ['which account?'] }), 'which account?')
 })
 
-test('#1254 EVERY non-ok branch says something, and none of them says the old sentence', () => {
+test('EVERY non-ok branch says something, and none of them says the old sentence', () => {
   // The union has eleven members. A `default` would swallow the next one added, and the defect being
   // replaced was precisely a message that told the reader nothing — so each branch is named and each
   // is required to produce text a person can act on.
@@ -45,7 +45,7 @@ test('#1254 EVERY non-ok branch says something, and none of them says the old se
   assert.equal(saveFailureText({ kind: 'upstream', message: '' }, 'custom'), 'custom')
 })
 
-test('#1254 a 404 does not guess which of the two things it means', () => {
+test('a 404 does not guess which of the two things it means', () => {
   // The contract says a 404 covers "does not exist" AND "not yours", deliberately indistinguishable.
   // A message picking one would be the screen inventing a fact the server refused to state.
   const t = saveFailureText({ kind: 'notFound' })
@@ -53,7 +53,7 @@ test('#1254 a 404 does not guess which of the two things it means', () => {
   assert.ok(!/permission|not yours|deleted/i.test(t), `the 404 message guessed a cause: ${t}`)
 })
 
-test('#1254 the Clearances screen no longer throws the reason away', () => {
+test('the Clearances screen no longer throws the reason away', () => {
   const src = readFileSync(CLEARANCES, 'utf8')
   // The exact shape the owner met, three times over. Read from source because the defect is a shape:
   // `r` in scope and discarded reads perfectly well, which is how it survived a closure.
@@ -76,7 +76,7 @@ test('#1254 the Clearances screen no longer throws the reason away', () => {
 // So the arm is over every screen rather than over the one that was reported. It reads source because
 // the defect is a SHAPE: a result in scope and discarded compiles and reads perfectly well, which is how
 // it survived one closure already.
-test('2077 no screen composes its own answer where the server sent one', () => {
+test('no screen composes its own answer where the server sent one', () => {
   const dir = new URL('../src/screens/', import.meta.url)
   const screens = readdirSync(dir).filter((f) => f.endsWith('.tsx'))
   assert.ok(screens.length >= 9, `only ${screens.length} screens found — the scan has broken, not the tree`)

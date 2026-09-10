@@ -51,7 +51,7 @@ function repo() {
 const LONG_A = "the sanitizer peels an outer pair only when both ends carry the same quote character";
 const LONG_B = "a run directory lives two levels down, under the executing agent's own workspace root";
 
-test("#902 COMPLETENESS: a commit pushed after the merge is MOVED-AFTER-MERGE — the #895 shape", () => {
+test("COMPLETENESS: a commit pushed after the merge is MOVED-AFTER-MERGE — the #895 shape", () => {
   const r = repo();
   try {
     r.commit("base.txt", "base\n", "base");
@@ -88,7 +88,7 @@ test("#902 COMPLETENESS: a commit pushed after the merge is MOVED-AFTER-MERGE �
   } finally { r.cleanup(); }
 });
 
-test("#902 COMPLETENESS: the same commit carried by a LATER merge is RE-LANDED, not a drop — the #890 shape", () => {
+test("COMPLETENESS: the same commit carried by a LATER merge is RE-LANDED, not a drop — the #890 shape", () => {
   const r = repo();
   try {
     r.commit("base.txt", "base\n", "base");
@@ -125,7 +125,7 @@ test("#902 COMPLETENESS: the same commit carried by a LATER merge is RE-LANDED, 
   } finally { r.cleanup(); }
 });
 
-test("#902 COMPLETENESS: a deleted branch is UNVERIFIABLE — never a pass", () => {
+test("COMPLETENESS: a deleted branch is UNVERIFIABLE — never a pass", () => {
   const r = repo();
   try {
     r.commit("base.txt", "base\n", "base");
@@ -140,7 +140,7 @@ test("#902 COMPLETENESS: a deleted branch is UNVERIFIABLE — never a pass", () 
   } finally { r.cleanup(); }
 });
 
-test("#902 PRESENCE: content still in the tree is PRESENT, and it is proved by CONTENT not ancestry", () => {
+test("PRESENCE: content still in the tree is PRESENT, and it is proved by CONTENT not ancestry", () => {
   const r = repo();
   try {
     r.commit("base.txt", "base\n", "base");
@@ -152,7 +152,7 @@ test("#902 PRESENCE: content still in the tree is PRESENT, and it is proved by C
   } finally { r.cleanup(); }
 });
 
-test("#902 PRESENCE: content a LATER commit removed is SUPERSEDED and names the commit that did it", () => {
+test("PRESENCE: content a LATER commit removed is SUPERSEDED and names the commit that did it", () => {
   const r = repo();
   try {
     r.commit("base.txt", "base\n", "base");
@@ -171,7 +171,7 @@ test("#902 PRESENCE: content a LATER commit removed is SUPERSEDED and names the 
   } finally { r.cleanup(); }
 });
 
-test("#902 PRESENCE: content that vanished with nothing having touched the file is MISSING", () => {
+test("PRESENCE: content that vanished with nothing having touched the file is MISSING", () => {
   const r = repo();
   try {
     r.commit("base.txt", "base\n", "base");

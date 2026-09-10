@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // — EVERY DOOR THAT VERIFIES A JWT LETS THE DEPLOYMENT NAME ITS OWN PROVIDER.
 //
-// OWNER RULING, 2026-08-23: "we can't launch with an identity vendor, they bring their own — we can't
+// RULING, 2026-08-23: "we can't launch with an identity vendor, they bring their own — we can't
 // force people to use any auth, they pick their own." Before this, five programs verified an access
 // token and only two of them could be pointed at a provider the operator chose. The other three read
 // `CF_ACCESS_TEAM` and refused to start without it, so a deployment fronted by Entra, Okta, Auth0 or
@@ -120,7 +120,7 @@ function callsMissingKey(files, callee, key) {
   return { callers, bare };
 }
 
-test("#1672 every shipping call names its issuer, and every handler is told its token header", (ctx) => {
+test("every shipping call names its issuer, and every handler is told its token header", (ctx) => {
   const files = corpus();
   if (!files) return ctx.skip(skipReason(GUARD));
 
@@ -152,7 +152,7 @@ test("#1672 every shipping call names its issuer, and every handler is told its 
     + "callers that have no such setting, not as somewhere to leave one.");
 });
 
-test("#1672 no door refuses to start for want of a vendor team it does not need", (ctx) => {
+test("no door refuses to start for want of a vendor team it does not need", (ctx) => {
   const files = corpus();
   if (!files) return ctx.skip(skipReason(GUARD));
   const offenders = files
@@ -167,7 +167,7 @@ test("#1672 no door refuses to start for want of a vendor team it does not need"
     + "team or an issuer: `(!TEAM && !OIDC_ISSUER) || !AUD`.");
 });
 
-test("#1672 both scans FIRE on planted source, and neither fires on the corrected shape", () => {
+test("both scans FIRE on planted source, and neither fires on the corrected shape", () => {
   // Driven over strings, because the tree is clean once this lands and a tree-driven canary certifies
   // nothing the day after it passes.
   assert.deepEqual(verifierCalls("verify = makeAccessVerifier({ team: TEAM, aud: AUD });"),

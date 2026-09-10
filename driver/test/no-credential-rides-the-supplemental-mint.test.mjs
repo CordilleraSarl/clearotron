@@ -42,7 +42,7 @@ function mintCalls() {
   return out;
 }
 
-test("#1644 the population is discovered and non-empty — an empty scan would pass every arm below", () => {
+test("the population is discovered and non-empty — an empty scan would pass every arm below", () => {
   // The control. Every assertion in this file is of the form "no call does X", and a scan that found
   // no calls satisfies all of them while proving nothing.
   const all = servers();
@@ -53,7 +53,7 @@ test("#1644 the population is discovered and non-empty — an empty scan would p
     + "regex has stopped matching, so the offender list below would be empty for the wrong reason");
 });
 
-test("#1644 no server passes anything but the TOOL ARGS as the mint's first argument", () => {
+test("no server passes anything but the TOOL ARGS as the mint's first argument", () => {
   // THE ARM. Keyed on the mechanism — what the first argument IS — rather than on a denylist of
   // secret-looking names. A denylist passes the day someone assigns the key to a variable called
   // `ctx`, and the whole defect here was a credential wearing the name `sessionKey`.
@@ -63,7 +63,7 @@ test("#1644 no server passes anything but the TOOL ARGS as the mint's first argu
     + "That slot used to carry a credential into the shared kernel; it takes the mint's params now.");
 });
 
-test("#1644 NO caller anywhere still passes a first argument — servers were too narrow a population", () => {
+test("NO caller anywhere still passes a first argument — servers were too narrow a population", () => {
   // The server scan above answers the security question: does a credential ride the mint. It does not
   // answer the wider one, and I found that out by hand rather than from this file — a clarivate PROVIDER
   // test was still calling `proposeSupplemental("s-key", …)` and went on failing while every driver test
@@ -115,7 +115,7 @@ test("#1644 NO caller anywhere still passes a first argument — servers were to
     + "a test it is a fixture pinning the removed parameter back.");
 });
 
-test("#1644 the kernel does not ACCEPT a credential — the parameter is gone, not renamed", () => {
+test("the kernel does not ACCEPT a credential — the parameter is gone, not renamed", () => {
   // Renaming it to `auth` would document the hazard and keep it: the seventh provider still gets a
   // slot to put a secret in. The signature is the thing that makes that impossible.
   const src = readFileSync(join(MCP, "supplemental.mjs"), "utf8");
@@ -129,7 +129,7 @@ test("#1644 the kernel does not ACCEPT a credential — the parameter is gone, n
     "the kernel passes a bare identifier ahead of the plan params again — the threading is back");
 });
 
-test("#1644 every executePlan dep binds (params, t) — a leading auth slot would silently misalign", () => {
+test("every executePlan dep binds (params, t) — a leading auth slot would silently misalign", () => {
   // The other half of the same contract, and the half corsearch would have failed. A dep declared
   // `(_auth, params, t)` now receives `params` in the `_auth` slot and `tctx` in the `params` slot.
   // Nothing throws: it reads a plan path off the wrong object and fails later, somewhere else.
@@ -150,7 +150,7 @@ test("#1644 every executePlan dep binds (params, t) — a leading auth slot woul
     "an executePlan dep does not take the mint's params first, so its arguments are shifted by one");
 });
 
-test("#1644 the ONE provider the filing missed is covered by the discovered population", () => {
+test("the ONE provider the filing missed is covered by the discovered population", () => {
   // Named explicitly, because this is the case that refuted the issue's own premise and a future
   // reader deserves to find it by name rather than by re-deriving it. Not a hardcoded subject list —
   // the arms above scan the directory; this asserts the directory really does contain it.

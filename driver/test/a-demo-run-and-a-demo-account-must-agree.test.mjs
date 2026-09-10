@@ -18,7 +18,7 @@ import { PORTAL_JOB_FIELDS } from "../portal-service.mjs";
 import { DEV_COCKPIT_JOB_FIELDS } from "../dev-portal.mjs";
 import { CLI_JOB_FIELDS } from "../enqueue.mjs";
 
-test("2049 the four combinations, and only one of them runs", () => {
+test("the four combinations, and only one of them runs", () => {
   const at = (demoRun, demoData) => demoRunAgreement({ demoRun, demoData, who: "acme" });
   assert.deepEqual(at(true, true), { ok: true, demo: true }, "a demo run on a demo account is the honest one");
   assert.deepEqual(at(false, false), { ok: true, demo: false }, "an ordinary run on a real account is untouched");
@@ -35,7 +35,7 @@ test("2049 the four combinations, and only one of them runs", () => {
     "both mismatches print the same sentence — a reader cannot tell which way the disagreement runs");
 });
 
-test("2049 the field CONSENTS and can never change what the profile means", () => {
+test("the field CONSENTS and can never change what the profile means", () => {
   // The property that keeps a client's request out of the truth of their own report: for a fixed profile,
   // no value of demoRun makes a demo account real or a real account demo. It can only agree or refuse.
   for (const demoData of [true, false]) {
@@ -47,7 +47,7 @@ test("2049 the field CONSENTS and can never change what the profile means", () =
   }
 });
 
-test("2049 a malformed demoRun is REFUSED at the door, not warned and unset", () => {
+test("a malformed demoRun is REFUSED at the door, not warned and unset", () => {
   // Unlike its boolean neighbours, this one decides whether a report says it is fiction. A truthy string
   // would otherwise mean `true` on a value nobody typed.
   const base = { id: "j1", markName: "X", classes: [9] };
@@ -65,7 +65,7 @@ test("2049 a malformed demoRun is REFUSED at the door, not warned and unset", ()
   assert.deepEqual(demoRunShape(undefined), { ok: true, value: false });
 });
 
-test("2049 declared, and every door has ruled on it — the client door says NO", () => {
+test("declared, and every door has ruled on it — the client door says NO", () => {
   assert.ok(DECLARED_JOB_FIELDS.includes("demoRun"),
     "undeclared means SILENTLY STRIPPED with a 200 — not refused, gone, and the requester never told");
 

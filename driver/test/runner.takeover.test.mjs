@@ -143,7 +143,7 @@ test("sweepAbandonedTakeovers: a dead takeover-er's .claimed- marker is restored
 // decided it.
 //
 // No sleeps, no spawns, no load: `isAlive` is called by B while B holds the lock, so it IS the window.
-test("#491: a terminal rename inside a sibling's takeover window strands nobody — the queue stays recoverable", async () => {
+test("a terminal rename inside a sibling's takeover window strands nobody — the queue stays recoverable", async () => {
   const dir = mkdtempSync(join(tmpdir(), "takeover-standdown-"));
   const proc = join(dir, "job-race.processing");
   const queued = join(dir, "job-race.json");
@@ -267,7 +267,7 @@ test("two concurrent runners over one dead claim → exactly one dispatch, one r
 // which is the shape that actually failed: `claimAndPrep` renamed `.json` → `.processing` and only then
 // stamped `.pid`, so between two syscalls a live claimed job sat on disk with no liveness token. Both
 // takeover guards read the absent sidecar as `rec = null` and neither can tell that from "no claimer".
-test("#377: two runners racing one FRESH job → one dispatch, and no .processing is ever left uncovered", async () => {
+test("two runners racing one FRESH job → one dispatch, and no .processing is ever left uncovered", async () => {
   const root = mkdtempSync(join(tmpdir(), "claim-race-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
@@ -293,7 +293,7 @@ test("#377: two runners racing one FRESH job → one dispatch, and no .processin
   assert.deepEqual(residue, [], `no claim residue: ${readdirSync(Q).join(", ")}\n${a.log}\n${b.log}`);
 });
 
-test("#377: a claim abandoned mid-publish is recovered by the SAME sweep takeovers use — one recovery path, not two", async () => {
+test("a claim abandoned mid-publish is recovered by the SAME sweep takeovers use — one recovery path, not two", async () => {
   const { sweepAbandonedTakeovers, claimToken } = await import("../runner.mjs");
   const q = mkdtempSync(join(tmpdir(), "claim-lock-"));
   // A runner that died between the claim rename and the publish rename leaves the marker under its token
@@ -319,7 +319,7 @@ test("#377: a claim abandoned mid-publish is recovered by the SAME sweep takeove
 // evidence is the branch the fixture takes. This drives `claimerIsAlive` over the two sidecar shapes
 // with a pid that IS alive — which is what a recycled pid looks like — and shows that only one of them
 // can answer.
-test("#665 a recycled pid defeats a bare-pid claim and cannot defeat a pid+starttime one", PROC_GATE, async () => {
+test("a recycled pid defeats a bare-pid claim and cannot defeat a pid+starttime one", PROC_GATE, async () => {
   const { claimerIsAlive } = await import("../runner.mjs");
   const alive = process.pid;                       // stands in for "the OS handed this pid to someone else"
 
@@ -351,7 +351,7 @@ test("#665 a recycled pid defeats a bare-pid claim and cannot defeat a pid+start
 //
 // Driven directly rather than through the race, because the race is the and is out of scope here:
 // the branch is reached whenever the source marker is absent, for any reason.
-test("#745 a lost retire says the rename did NOT happen, and never names a file it did not create", () => {
+test("a lost retire says the rename did NOT happen, and never names a file it did not create", () => {
   const dir = mkdtempSync(join(tmpdir(), "retire-honesty-"));
   const proc = join(dir, "job-gone.processing");
   const dest = join(dir, "job-gone.json");

@@ -95,7 +95,7 @@ test("NOT ARMED: no era stamp ⇒ the PRE-#476 floor applies, unchanged and unde
   } finally { cleanup(dir); }
 });
 
-test("#850 M6 — THE DISPATCH HAS NO SECOND ARM, and the driver arms before it dispatches", () => {
+test("M6 — THE DISPATCH HAS NO SECOND ARM, and the driver arms before it dispatches", () => {
   // WHAT THIS REPLACED, AND WHY THE REPLACEMENT IS NOT WEAKER. Until M6 this asserted the opposite of
   // its own second half: an UNARMED run's dispatch told the seat "the ## Coverage ledger table in your
   // findings is yours to write", because the validator's unstamped arm demanded that table. One stamp,

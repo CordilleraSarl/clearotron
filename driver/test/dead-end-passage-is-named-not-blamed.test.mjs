@@ -54,7 +54,7 @@ const ROW = () => obligationRows(connotationObligations(RECORDED))[0];
 const call = (over) => validateDispositionCall([{ row_index: 1, ruling: "benign", note: "n",
   receipt_index: 1, ...over }], RECORDED);
 
-test("#1236 THE FIXTURE IS THE LIVE RECEIPT: 12 passages, 5 dead, 7 live", () => {
+test("THE FIXTURE IS THE LIVE RECEIPT: 12 passages, 5 dead, 7 live", () => {
   const segs = snippetSegments(SNIP);
   assert.equal(segs.length, 12, "the splitter no longer produces the shape this file is about");
   assert.deepEqual(DEAD.map((i) => segs[i - 1]), Array(5).fill("..."),
@@ -62,7 +62,7 @@ test("#1236 THE FIXTURE IS THE LIVE RECEIPT: 12 passages, 5 dead, 7 live", () =>
   assert.deepEqual(livePassages(SNIP), LIVE, "the live set is not the seven the deployed replay found binding");
 });
 
-test("#1236 the five dead ends are NAMED, instantly, and not blamed on the seat's fragment", () => {
+test("the five dead ends are NAMED, instantly, and not blamed on the seat's fragment", () => {
   for (const i of DEAD) {
     const b = segmentBinding({ segment_index: i, fragment: "..." }, CAND);
     assert.equal(b.state, "segment_dead_end",
@@ -70,7 +70,7 @@ test("#1236 the five dead ends are NAMED, instantly, and not blamed on the seat'
   }
 });
 
-test("#1236 the seven live ones bind exactly as the deployed replay showed", () => {
+test("the seven live ones bind exactly as the deployed replay showed", () => {
   for (const i of LIVE) {
     const seg = snippetSegments(SNIP)[i - 1];
     const b = segmentBinding({ segment_index: i, fragment: seg.slice(0, 12) }, CAND);
@@ -78,7 +78,7 @@ test("#1236 the seven live ones bind exactly as the deployed replay showed", () 
   }
 });
 
-test("#1236 UNIFORMITY: the bar is quoteWeight, so a five-character CJK passage still binds", () => {
+test("UNIFORMITY: the bar is quoteWeight, so a five-character CJK passage still binds", () => {
   // The measurement that makes a `.length` implementation provably wrong. If this ever fails, the fix has
   // acquired a per-script partition and the defect is back inside its own cure.
   assert.equal(segmentBinding({ segment_index: 1, fragment: "意味アザミ" }, { snippet: "意味アザミ" }).state, "bound",
@@ -90,7 +90,7 @@ test("#1236 UNIFORMITY: the bar is quoteWeight, so a five-character CJK passage 
   assert.deepEqual(livePassages("abcde"), []);
 });
 
-test("#1236 the refusal names the passages that DO carry text — an act the seat can perform", () => {
+test("the refusal names the passages that DO carry text — an act the seat can perform", () => {
   const r = call({ segment_index: 2, fragment: "..." });
   assert.equal(r.refused[0]?.reason, "segment_dead_end");
   assert.match(r.refused[0].detail, /ELISION MARKER or stub/);
@@ -101,7 +101,7 @@ test("#1236 the refusal names the passages that DO carry text — an act the sea
   assert.ok(CALL_REFUSALS.includes("segment_dead_end"), "the token is emitted but not declared");
 });
 
-test("#1236 a receipt with NO live passage routes to the obstacle, not to another re-point", () => {
+test("a receipt with NO live passage routes to the obstacle, not to another re-point", () => {
   // The row-level corollary, and the boundary: when every passage is a dead end, "point
   // somewhere else" is itself an impossible instruction, so this is the ONE case that belongs to the
   // honest exit rather than to a re-point.
@@ -125,7 +125,7 @@ test("#1236 a receipt with NO live passage routes to the obstacle, not to anothe
     "it is offering live passages on a receipt that has none");
 });
 
-test("#1236 an ALL-ELISION receipt is safe for a different reason, and that reason must hold", () => {
+test("an ALL-ELISION receipt is safe for a different reason, and that reason must hold", () => {
   // Recorded because it is the fixture I reached for first: it is safe because `usableSnippet` refuses it
   // upstream, NOT because of anything this issue adds. If that ever changes, the branch above becomes the
   // only thing standing between such a receipt and a live-lock, so the property is pinned here rather
@@ -137,7 +137,7 @@ test("#1236 an ALL-ELISION receipt is safe for a different reason, and that reas
     "an all-elision receipt now DEMANDS proof of reading it cannot supply — the dead-end branch is now load-bearing for it");
 });
 
-test("#1236 the live-passage arithmetic has ONE home", () => {
+test("the live-passage arithmetic has ONE home", () => {
   // A second copy with its own threshold is how the gate and its advice drift apart, and drift here means
   // telling a seat to point at a passage the validator will refuse.
   const src = readFileSync(fileURLToPath(new URL("../disposition-call.mjs", import.meta.url)), "utf8");

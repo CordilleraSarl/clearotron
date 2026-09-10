@@ -22,7 +22,7 @@ const CONNECT_SRC = readFileSync(join(HERE, "..", "..", "bin", "connect.mjs"), "
 
 const PUBLISHED = { stdioRoutes: {}, publicAddress: "https://x.example/mcp", operator: "op@localhost" };
 
-test("2176-F35 the offer a served client gets actually carries steps to print", () => {
+test("the offer a served client gets actually carries steps to print", () => {
   // If this is ever empty the fix below prints nothing and passes in silence, so the data comes first.
   // `cowork` merged into `claude` (owner: it is one app). Same population member —
   // an http client reaching the web door — so this arm keeps its subject under the surviving id.
@@ -35,7 +35,7 @@ test("2176-F35 the offer a served client gets actually carries steps to print", 
     `the steps must name the address this install serves, got ${JSON.stringify(steps)}`);
 });
 
-test("2176-F35 connect prints them, and does not author a second set", () => {
+test("connect prints them, and does not author a second set", () => {
   assert.match(CONNECT_SRC, /offer\.steps\?\.length/,
     "the verb must print the steps the offer carries");
   assert.match(CONNECT_SRC, /offer\.steps\.forEach/, "and print them in order, numbered");
@@ -45,7 +45,7 @@ test("2176-F35 connect prints them, and does not author a second set", () => {
     "the CLI must not restate a client's instructions — that is what connect-clients-are-data forbids");
 });
 
-test("2176-F35 every client that is served can be told where to put what it was given", () => {
+test("every client that is served can be told where to put what it was given", () => {
   // The class. Printing steps for Cowork and nothing for the next client is the shape this finding
   // already had once — a fact the product held and one surface did not use.
   const missing = [];

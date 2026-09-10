@@ -112,7 +112,7 @@ function classify(e, st, rat) {
     // was never written, or was blank — were indistinguishable on a lawyer's timeline from a genuinely
     // clean gate.
     //
-    // OWNER RULING (2026-08-18): when the screening safety-net could not actually inspect anything, the
+    // RULING (2026-08-18): when the screening safety-net could not actually inspect anything, the
     // client's progress view shows "Screening: incomplete — flagged for review". Clear wording appears
     // ONLY when the gate genuinely ran and found nothing. `CLIENT_INCOMPLETE` below is that string
     // VERBATIM and is not to be re-worded here — it is owner-approved client-visible text.

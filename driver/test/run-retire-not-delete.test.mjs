@@ -67,7 +67,7 @@ const STAFF = { email: "k@staff.example" };
 const CLIENT = { email: "c@aurora.example" };
 const idsIn = (res) => res.json.runs.map((r) => r.runId).sort();
 
-test("#611 arm 1 — retiring a run takes it off the listing, and the tag is what did it", async () => {
+test("arm 1 — retiring a run takes it off the listing, and the tag is what did it", async () => {
   const root = poolWith({ plus: "aurora", max: "aurora" });
   const svc = svcOn(root);
   assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "aurora" })), ["max", "plus"]);
@@ -79,7 +79,7 @@ test("#611 arm 1 — retiring a run takes it off the listing, and the tag is wha
     "…and the listing honours it for staff too — retiring is not a per-reader preference");
 });
 
-test("#611 arm 2 — ONE file is written; the run directory is not touched", async () => {
+test("arm 2 — ONE file is written; the run directory is not touched", async () => {
   // "Retiring must not touch the run directory, the pool artifacts, or the matter ledger." The pool IS
   // real client matter, so this is the assertion the issue actually turns on.
   const root = poolWith({ plus: "aurora" });
@@ -93,7 +93,7 @@ test("#611 arm 2 — ONE file is written; the run directory is not touched", asy
     "exactly one file appeared at the pool root, and it is the visibility tag");
 });
 
-test("#611 arm 3 — restore is the exact inverse, and does not need a readable run to work", async () => {
+test("arm 3 — restore is the exact inverse, and does not need a readable run to work", async () => {
   const root = poolWith({ plus: "aurora" });
   const svc = svcOn(root);
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
@@ -116,7 +116,7 @@ test("#611 arm 3 — restore is the exact inverse, and does not need a readable 
   assert.equal(bogus.status, 400);
 });
 
-test("#611 arm 4 — the audit names the actor, the verb and the account", async () => {
+test("arm 4 — the audit names the actor, the verb and the account", async () => {
   audits.length = 0;
   const root = poolWith({ plus: "aurora" });
   const svc = svcOn(root);
@@ -128,7 +128,7 @@ test("#611 arm 4 — the audit names the actor, the verb and the account", async
   assert.ok(audits.every((a) => a.account === "aurora"), "and the owner, resolved from the run rather than the body");
 });
 
-test("#611 arm 5 — a client cannot see or set this, and is told 404 rather than 403", async () => {
+test("arm 5 — a client cannot see or set this, and is told 404 rather than 403", async () => {
   // 404-never-403, the house rule for anything tenant-scoped. The sanity check matters as much as the
   // assertion: a client whose every request 404'd would pass this test for the wrong reason.
   const root = poolWith({ plus: "aurora" });
@@ -144,7 +144,7 @@ test("#611 arm 5 — a client cannot see or set this, and is told 404 rather tha
   assert.deepEqual([...readArchivedSet(root)], [], "and the refused write wrote nothing");
 });
 
-test("#611 arm 6 — the retired view is the FOLD: only retired runs, never a second copy of the page", async () => {
+test("arm 6 — the retired view is the FOLD: only retired runs, never a second copy of the page", async () => {
   const root = poolWith({ plus: "aurora", max: "aurora" });
   const svc = svcOn(root);
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
@@ -154,7 +154,7 @@ test("#611 arm 6 — the retired view is the FOLD: only retired runs, never a se
     "and the retired one is not in the listing: the two views partition the pool");
 });
 
-test("#611 arm 7 — the writer does its own read, so a concurrent retire is not erased", () => {
+test("arm 7 — the writer does its own read, so a concurrent retire is not erased", () => {
   // THE LOST UPDATE, reproduced. pool-admin and the portal both write this file, as different users.
   // The old shape was read → mutate → write-whole-file, with the read at the CALL SITE: anything the
   // other writer added between the two is gone.
@@ -182,7 +182,7 @@ test("#611 arm 7 — the writer does its own read, so a concurrent retire is not
   assert.match(pa, /updateArchived\(POOL, \(set\) =>/, "…and the CLI goes through it");
 });
 
-test("#611 arm 8 — retiring a run does NOT revoke its report link", async () => {
+test("arm 8 — retiring a run does NOT revoke its report link", async () => {
   // Retirement is about what the pool ADVERTISES, not about who may read what. The link is in mail we
   // have already sent, and 404ing it from a curation command is not what "retire" means to the person
   // clicking it.
@@ -193,7 +193,7 @@ test("#611 arm 8 — retiring a run does NOT revoke its report link", async () =
   assert.equal((await svc.route("GET", "/portal/report/plus/", CLIENT)).status, 200, "and the client whose run it is");
 });
 
-test("#611 arm 9 — nothing on this path deletes anything, and the screen never offers to", () => {
+test("arm 9 — nothing on this path deletes anything, and the screen never offers to", () => {
   const svc = live("driver/portal-service.mjs");
   const at = svc.indexOf('parts[2] === "retired"');
   assert.ok(at > 0, "the route is where this test thinks it is");
@@ -212,7 +212,7 @@ test("#611 arm 9 — nothing on this path deletes anything, and the screen never
     "a row is a name and the tag is per run — retiring one read of a retired name is a half-done act");
 });
 
-test("#611 arm 10 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser gets", (ctx) => {
+test("arm 10 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser gets", (ctx) => {
   // The source is not the surface. `portal-ui/dist` is committed on purpose and portal-static serves it
   // verbatim, so a source-only fix leaves the user on the old screen while every other test passes.
   const dir = join(HERE, "..", "..", "portal-ui", "dist", "assets");

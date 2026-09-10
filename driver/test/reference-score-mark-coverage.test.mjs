@@ -393,7 +393,7 @@ test("CLI: the OLD gold shape still folds per mark, and says its coverage is not
   } finally { rmSync(store, { recursive: true, force: true }); rmSync(run, { recursive: true, force: true }); }
 });
 
-test("#814 CLI: a knockout against a similar-marks sheet ALONE is refused, and the sheet is not scored beside a counts block", () => {
+test("CLI: a knockout against a similar-marks sheet ALONE is refused, and the sheet is not scored beside a counts block", () => {
   // The half of the back-compat guarantee that deliberately revoked. A gold set with no `counts`
   // used to score this knockout run and print `found 0` over marks the lane cannot retrieve; it now
   // refuses, names the scenario, and says what to add.

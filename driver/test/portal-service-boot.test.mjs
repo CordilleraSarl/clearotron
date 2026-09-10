@@ -167,7 +167,7 @@ test("an EMPTY roster is a legitimate answer — the guard demands a file, not a
   // breakage in the bootstrap that would make any spawn exit 1.
 });
 
-test("#769 LOCAL MODE DOES NOT GET TO SKIP THE ROSTER — a roster of one is still a roster", async () => {
+test("LOCAL MODE DOES NOT GET TO SKIP THE ROSTER — a roster of one is still a roster", async () => {
   // The temptation with a single-user install is to say "there is only one person, so the grants file is
   // ceremony". It is not: accountsForEmail returns "*" for every identity when CLEAROTRON_ACCESS_FILE is
   // unset, so skipping it would make the one local user a read-all over every customer on the box. The
@@ -189,7 +189,7 @@ test("#769 LOCAL MODE DOES NOT GET TO SKIP THE ROSTER — a roster of one is sti
 //   3. Nothing can select a mode by ACCIDENT: an unset variable, a typo, or a missing CF value must
 //      never be able to choose an identity source, because that is the failure that would look healthy.
 
-test("#769 CF-ACCESS MODE STILL BOOTS — the hosted deployment's path, unchanged", async () => {
+test("CF-ACCESS MODE STILL BOOTS — the hosted deployment's path, unchanged", async () => {
   // PORTAL_AUTH_MODE unset. This is the shape a hosted deployment's environment file and service unit
   // carry, and the one thing is not allowed to have moved.
   const r = await boot(cfEnv({ CLEAROTRON_ACCESS_FILE: grantsFile() }));
@@ -201,7 +201,7 @@ test("#769 CF-ACCESS MODE STILL BOOTS — the hosted deployment's path, unchange
   assert.match(r.stderr, /auth ON \(CF Access\)/, "and the listening line says which door is open");
 });
 
-test("#769 cf-access mode's fail-closed exits ALL still fire", async () => {
+test("cf-access mode's fail-closed exits ALL still fire", async () => {
   // Each of these refused to start before and must refuse identically after it. The mode branch is
   // the one place a new `if` could have swallowed them.
   const missingAud = await boot(cfEnv({ CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_ACCESS_FILE: grantsFile() }));
@@ -224,7 +224,7 @@ test("#769 cf-access mode's fail-closed exits ALL still fire", async () => {
   assert.match(explicit.stderr, /auth ON — issuer=CF Access/);   // — the banner leads with issuer=, MCP-face shape
 });
 
-test("#769 A MISSING CF VALUE CANNOT SELECT LOCAL MODE — it is still a refusal", async () => {
+test("A MISSING CF VALUE CANNOT SELECT LOCAL MODE — it is still a refusal", async () => {
   // THE REASON local mode must be asked for by name. Under an inferred rule ("no CF variables and a
   // loopback host ⇒ local"), a deployment that lost CLEAROTRON_OIDC_AUDIENCE would start a portal reachable through
   // its tunnel with a passphrase nobody has ever seen printed — and look healthy. Loopback does not
@@ -236,7 +236,7 @@ test("#769 A MISSING CF VALUE CANNOT SELECT LOCAL MODE — it is still a refusal
   assert.ok(!/local sign-in/.test(r.stderr), "…and certainly not by silently starting the local one");
 });
 
-test("#769 LOCAL MODE BOOTS, and says which door it opened", async () => {
+test("LOCAL MODE BOOTS, and says which door it opened", async () => {
   const r = await boot(bootEnv({ CLEAROTRON_ACCESS_FILE: grantsFile({ t1: { accounts: ["aurora"], users: { "dev@local": "*" } } }) }));
   assert.equal(r.listened, true, `local mode must reach a listening socket; code=${r.code}\n${r.stderr}`);
   assert.match(r.stderr, /auth ON — local sign-in, one user \(dev@local\), loopback only/);
@@ -244,7 +244,7 @@ test("#769 LOCAL MODE BOOTS, and says which door it opened", async () => {
   assert.ok(!/AUTH OFF/.test(r.stderr), "there is no third state where nothing is proven");
 });
 
-test("#769 / 1960 FIRST RUN mints a credential; off a terminal the passphrase is not printed at all", async () => {
+test("/ 1960 FIRST RUN mints a credential; off a terminal the passphrase is not printed at all", async () => {
   // ✕ THIS ARM ASSERTED THE OPPOSITE until, and was right to: printing once WAS the
   // handoff. What changed is who is reading. `boot()` spawns with a pipe, so this is the non-terminal
   // shape — the same one a systemd unit, a CI job and this harness all have, and the one where a
@@ -282,7 +282,7 @@ test("#769 / 1960 FIRST RUN mints a credential; off a terminal the passphrase is
   assert.match(second.stderr, /credential for dev@local read from/, "it reports reading the existing one instead");
 });
 
-test("#769 A CORRUPT CREDENTIAL IS FATAL — it must never read as 'no user configured'", async () => {
+test("A CORRUPT CREDENTIAL IS FATAL — it must never read as 'no user configured'", async () => {
   // The worst silent failure available here. "No credential" is answered by MINTING ONE, so a file that
   // cannot be parsed, read as an absence, would replace a working credential with a fresh passphrase
   // printed to a terminal nobody is watching — and lock out whoever holds the old one.
@@ -296,7 +296,7 @@ test("#769 A CORRUPT CREDENTIAL IS FATAL — it must never read as 'no user conf
   assert.equal(readFileSync(credential, "utf8"), "}{ this was edited by hand", "the file is left exactly as it was found");
 });
 
-test("#769 local mode's own fail-closed exits: no user, a non-address, a non-loopback host, an unknown mode", async () => {
+test("local mode's own fail-closed exits: no user, a non-address, a non-loopback host, an unknown mode", async () => {
   const grants = grantsFile({ t1: { accounts: ["aurora"], users: { "dev@local": "*" } } });
 
   const noUser = await boot(bootEnv({ PORTAL_LOCAL_USER: undefined, CLEAROTRON_ACCESS_FILE: grants }));
@@ -329,7 +329,7 @@ test("#769 local mode's own fail-closed exits: no user, a non-address, a non-loo
   assert.equal(shouty.listened, true, `" Local " is local; ${shouty.stderr}`);
 });
 
-test("#769 PORTAL_SECRET IS REQUIRED IN BOTH MODES — the shipped default secret is deleted", async () => {
+test("PORTAL_SECRET IS REQUIRED IN BOTH MODES — the shipped default secret is deleted", async () => {
   // `PORTAL_SECRET || (DEV ? "dev-secret-not-for-prod" : "")` shipped a signing key in the source tree
   // and the only thing between it and production was one variable being read correctly. It signs the
   // confirmation tokens and, now, the session cookie; there is no default for either.
@@ -349,7 +349,7 @@ test("#769 PORTAL_SECRET IS REQUIRED IN BOTH MODES — the shipped default secre
     "the default secret is still reachable from code");
 });
 
-test("#769 THE DELETED SWITCHES ARE UNREACHABLE — not merely unused", async () => {
+test("THE DELETED SWITCHES ARE UNREACHABLE — not merely unused", async () => {
   // Setting all three of the old names must change nothing: local mode is still selected by name, the
   // credential is still required, and no synthetic identity appears. A leftover read would show up here
   // as a boot that behaves differently for an environment nobody supports any more.
@@ -601,7 +601,7 @@ test("serve() hands the counter the queues the RUNNER drains — the allowance i
   assert.equal(r.json.today, 1, "the ledger beside the configured queue was not the one it read");
 });
 
-test("#769 the same request WITHOUT the cookie is refused by the booted service", async () => {
+test("the same request WITHOUT the cookie is refused by the booted service", async () => {
   // The control for the test above: its 200 is bought by the session, not by a door that lets anything
   // through. Same process, same route, same account — no cookie.
   const port = await freePort();
@@ -633,7 +633,7 @@ const proxyEnv = (extra = {}) => cfEnv({
   ...extra,
 });
 
-test("#1440-1 an ISSUER with no Cloudflare team STARTS — the deployment that could not start at all", async () => {
+test("an ISSUER with no Cloudflare team STARTS — the deployment that could not start at all", async () => {
   // The whole point of the item. Before this, the boot guard demanded CF_ACCESS_TEAM *and*
   // CLEAROTRON_OIDC_AUDIENCE, so somebody self-hosting behind Entra could wire the API face and not the portal —
   // the half their users actually open.
@@ -641,7 +641,7 @@ test("#1440-1 an ISSUER with no Cloudflare team STARTS — the deployment that c
   assert.equal(r.listened, true, `an issuer without a CF team must start; stderr:\n${r.stderr.slice(0, 700)}`);
 });
 
-test("#1440-1 …and missing BOTH a team and an issuer is still FATAL — the half that must not soften", async () => {
+test("…and missing BOTH a team and an issuer is still FATAL — the half that must not soften", async () => {
   const r = await boot(proxyEnv());
   assert.equal(r.listened, false, "auth with no identity source at all must refuse to start");
   assert.match(r.stderr, /FATAL/);
@@ -649,7 +649,7 @@ test("#1440-1 …and missing BOTH a team and an issuer is still FATAL — the ha
     "the refusal must name BOTH ways to satisfy it, or an operator cannot act on it");
 });
 
-test("#1440-1 the banner names the issuer, the claim and the HEADER actually in use", async () => {
+test("the banner names the issuer, the claim and the HEADER actually in use", async () => {
   // A mis-set header is otherwise indistinguishable from a blanket 401 with a valid token in hand.
   const r = await boot(proxyEnv({ PORTAL_OIDC_ISSUER: "https://login.example.test/v2.0",
     PORTAL_EMAIL_CLAIM: "preferred_username", PORTAL_AUTH_HEADER: "X-Id-Token" }));
@@ -661,12 +661,12 @@ test("#1440-1 the banner names the issuer, the claim and the HEADER actually in 
   assert.doesNotMatch(r.stderr, /header=X-Id-Token/);
 });
 
-test("#1440-1 `cf-access` still boots and means the same thing — no deployment has to be edited", async () => {
+test("`cf-access` still boots and means the same thing — no deployment has to be edited", async () => {
   const r = await boot(proxyEnv({ PORTAL_AUTH_MODE: "cf-access", CF_ACCESS_TEAM: "someteam" }));
   assert.equal(r.listened, true, `the old mode word must keep working forever; stderr:\n${r.stderr.slice(0, 700)}`);
 });
 
-test("#1440-1 `auth-proxy` is the mode's name now, and an unknown word is still FATAL", async () => {
+test("`auth-proxy` is the mode's name now, and an unknown word is still FATAL", async () => {
   const ok = await boot(proxyEnv({ PORTAL_AUTH_MODE: "auth-proxy", CF_ACCESS_TEAM: "someteam" }));
   assert.equal(ok.listened, true, `auth-proxy must boot; stderr:\n${ok.stderr.slice(0, 700)}`);
 
@@ -676,7 +676,7 @@ test("#1440-1 `auth-proxy` is the mode's name now, and an unknown word is still 
   assert.match(bad.stderr, /PORTAL_AUTH_MODE="cf-acess"/);
 });
 
-test("#1440-1 the UNION identity mode survives the refactor — it is load-bearing, not incidental", () => {
+test("the UNION identity mode survives the refactor — it is load-bearing, not incidental", () => {
   // This population is a staff DOMAIN plus individually named CLIENT addresses. The verifier's default
   // combines the two lists with AND, which locked out every identity in production — staff failing the
   // email list while clients failed the domain list. A source assertion because the failure it prevents

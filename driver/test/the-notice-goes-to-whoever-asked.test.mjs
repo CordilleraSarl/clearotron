@@ -7,7 +7,7 @@
 // the person who ordered it was told nothing. Observed on a delivered run: started by one account, and
 // the attestation reads "WhatsApp notification delivered to" the account owner.
 //
-// OWNER RULING, 2026-09-07: route to the requester where a number is held for them, and keep the
+// RULING, 2026-09-07: route to the requester where a number is held for them, and keep the
 // operator's number as a copy the operator can switch off. Both halves, independently.
 //
 // ENV IS SET BEFORE THE FIRST IMPORT, deliberately. Both rosters are read once at module load — the same
@@ -32,14 +32,14 @@ const job = (over = {}) => ({ forwarder: "somebody", forwarderEmail: "lisa@tenan
 
 // ── the requester is the recipient ───────────────────────────────────────────────────────────────────
 
-test("289b: the notice is addressed to the requester, not to whoever runs the agent", () => {
+test("the notice is addressed to the requester, not to whoever runs the agent", () => {
   const r = whatsappRouting(job(), "clawdi");
   assert.equal(r.whatsappTo, REQUESTER, "the person who asked");
   assert.notEqual(r.whatsappTo, OPERATOR, "and specifically NOT the operator, which is what shipped");
   assert.equal(r.whatsappToReason, null, "no reason is stated when there is a recipient");
 });
 
-test("289b: the requester resolves by email, and by handle when no email is held", () => {
+test("the requester resolves by email, and by handle when no email is held", () => {
   assert.equal(whatsappRouting(job(), "clawdi").whatsappTo, REQUESTER, "email wins where both could match");
   assert.equal(whatsappRouting(job({ forwarderEmail: null, forwarder: "jordan" }), "clawdi").whatsappTo,
     "+41000000222", "a job with only a handle still reaches its requester");
@@ -52,7 +52,7 @@ test("289b: the requester resolves by email, and by handle when no email is held
 // This is the arm that matters most. Silently falling back to the operator is precisely the behaviour
 // being replaced, and it is invisible: the notice arrives, somebody reads it, and nothing anywhere says
 // it went to the wrong person.
-test("289b: with no number held, the packet SAYS SO and does not quietly use the operator", () => {
+test("with no number held, the packet SAYS SO and does not quietly use the operator", () => {
   const r = whatsappRouting(job({ forwarderEmail: "nobody@tenant.example", forwarder: "nobody" }), "clawdi");
   assert.equal(r.whatsappTo, null, "no recipient is invented");
   assert.notEqual(r.whatsappTo, OPERATOR, "and the operator is NOT substituted in — the old behaviour");
@@ -62,14 +62,14 @@ test("289b: with no number held, the packet SAYS SO and does not quietly use the
 
 // ── acceptance 5: the operator's copy is separate and switchable ─────────────────────────────────────
 
-test("289b: the operator keeps a copy, and it is a DIFFERENT field from the requester's", () => {
+test("the operator keeps a copy, and it is a DIFFERENT field from the requester's", () => {
   const r = whatsappRouting(job(), "clawdi");
   assert.equal(r.whatsappCcOperator, OPERATOR, "the operator still gets their copy by default");
   assert.equal(r.whatsappTo, REQUESTER);
   assert.notEqual(r.whatsappCcOperator, r.whatsappTo, "two recipients, two fields — not one field fought over");
 });
 
-test("289b: the operator can drop their copy WITHOUT dropping the requester's notice", async () => {
+test("the operator can drop their copy WITHOUT dropping the requester's notice", async () => {
   process.env.CLEAROTRON_WHATSAPP_OPERATOR_COPY = "0";
   const fresh = await import(`../stages.mjs?operator-copy-off=${Date.now()}`);
   const r = fresh.whatsappRouting(job(), "clawdi");
@@ -81,7 +81,7 @@ test("289b: the operator can drop their copy WITHOUT dropping the requester's no
 // A deployment that configured nothing must not route a client's notice at an invented number. The agent
 // roster carries a demo fallback for offline tests; doing the same for REQUESTERS would mean a real
 // completion notice addressed to a fixture.
-test("289b: an unconfigured requester roster is EMPTY, never a demo one", async () => {
+test("an unconfigured requester roster is EMPTY, never a demo one", async () => {
   const saved = process.env.CLEAROTRON_REQUESTER_WHATSAPP;
   delete process.env.CLEAROTRON_REQUESTER_WHATSAPP;
   const fresh = await import(`../stages.mjs?no-roster=${Date.now()}`);
@@ -141,7 +141,7 @@ function packetFiles() {
   return files.filter((f) => /emailBodyHtml/.test(readFileSync(join(ROOT, f), "utf8")));
 }
 
-test("321: every file that builds a send packet has been ruled on", (ctx) => {
+test("every file that builds a send packet has been ruled on", (ctx) => {
   const listed = packetFiles();
   if (listed === null) return ctx.skip(skipReason(GUARD));
   const found = listed.sort();
@@ -155,7 +155,7 @@ test("321: every file that builds a send packet has been ruled on", (ctx) => {
     + "operational notice it keeps the operator. Say which, here.");
 });
 
-test("321: both completion packets route through whatsappRouting, and neither picks the agent directly", () => {
+test("both completion packets route through whatsappRouting, and neither picks the agent directly", () => {
   for (const f of ["driver/pipeline.mjs", "driver/pipeline-knockout.mjs"]) {
     const src = readFileSync(join(ROOT, f), "utf8");
     assert.match(src, /\.\.\.whatsappRouting\(job, agent\)/,

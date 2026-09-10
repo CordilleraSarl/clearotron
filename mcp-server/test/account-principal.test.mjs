@@ -99,7 +99,7 @@ test("the account tool set is the client layer + evidence + the AUDIT CHAIN + ow
   // account layer has to be argued for in a diff rather than arriving quietly — which is what this
   // comment is.
   //
-  // OWNER RULING 2026-08-27 ("I don't see why we don't open it or just give it to clients. Ignore the
+  // RULING 2026-08-27 ("I don't see why we don't open it or just give it to clients. Ignore the
   // call spend.") adds the four AUDIT-CHAIN reads: decision_timeline, get_finding, get_run, trace. The
   // reasoning is in shared/scope.mjs at ACCOUNT_ARTIFACTS; what it comes to here is that the decision
   // chain is the client's and the firm keeps model identity, billed counts and its own quality

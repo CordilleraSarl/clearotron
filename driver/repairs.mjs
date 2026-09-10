@@ -26,7 +26,7 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 // ── the terminal kind that is not a failure ───────────────────────────────────────────────
 //
 // A REFUSAL THE PRODUCT IS DESIGNED TO MAKE. The engine did not break: an order arrived that this
-// deployment does not serve, a preflight said so before any spend, and the run stopped. Owner ruling
+// deployment does not serve, a preflight said so before any spend, and the run stopped. Ruling
 // 2026-08-13 — such a refusal must be distinguishable from a failure IN EVERY SINK IT REACHES, must
 // never feed failure statistics, and must never trigger recovery machinery.
 //
@@ -216,7 +216,7 @@ export function classifyFailureReason(reason) {
 // and a second derivation is a second answer waiting to disagree with the first.
 // ── BUILD A — WHERE THE CLASSIFICATION CAME FROM ────────────────────────────────────────────
 //
-// Owner ruling 2026-08-19: `classSource` becomes `validator-token` for a token the validator already
+// Ruling 2026-08-19: `classSource` becomes `validator-token` for a token the validator already
 // named. Budgets identical, no new class value, no lane change — `decideRecovery` takes no
 // `classSource` argument at all, so this cannot reach a budget branch even by mistake.
 //

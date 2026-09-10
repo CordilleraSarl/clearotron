@@ -55,7 +55,7 @@ function typeThroughTheOldRoundTrip(spec: FieldSpec, text: string): string {
   return shown
 }
 
-test('1996: the defect, reproduced — the old round trip eats the space as it is typed', () => {
+test('the defect, reproduced — the old round trip eats the space as it is typed', () => {
   assert.equal(typeThroughTheOldRoundTrip(spec('defaultJurisdictions'), 'US France'), 'USFrance',
     "the owner's screen: a trimmed re-render drops the space, so the next character lands against the last word")
   assert.equal(typeThroughTheOldRoundTrip(spec('platforms'), 'amazon.com\nwalmart.com'), 'amazon.comwalmart.com',
@@ -66,7 +66,7 @@ test('1996: the defect, reproduced — the old round trip eats the space as it i
     'Becautious.Leadwithrisk.', 'prose is trimmed too, so it cannot hold a space the user just typed')
 })
 
-test('1996: a space survives being typed, on every list field', () => {
+test('a space survives being typed, on every list field', () => {
   for (const key of ['defaultJurisdictions', 'platforms', 'selfExclusionOwners', 'matchDomains']) {
     const s = type(spec(key), 'US France')
     assert.equal(boxValue(s, spec(key)), 'US France', `${key}: the box shows what was typed`)
@@ -76,32 +76,32 @@ test('1996: a space survives being typed, on every list field', () => {
     'and it parses as ONE entry — a space is not a separator, which is the picker\'s job to fix, not the box\'s')
 })
 
-test('1996: a newline survives, and separates — the hint stops being a false promise', () => {
+test('a newline survives, and separates — the hint stops being a false promise', () => {
   const s = type(spec('platforms'), 'amazon.com\nwalmart.com')
   assert.equal(boxValue(s, spec('platforms')), 'amazon.com\nwalmart.com', 'the box holds both lines')
   assert.deepEqual(s.draft.platforms, ['amazon.com', 'walmart.com'], 'and stores two marketplaces')
 })
 
-test('1996: prose keeps a trailing space, so a sentence can be typed', () => {
+test('prose keeps a trailing space, so a sentence can be typed', () => {
   const s = type(spec('riskAppetite'), 'Be cautious. Lead with risk.')
   assert.equal(boxValue(s, spec('riskAppetite')), 'Be cautious. Lead with risk.')
   assert.equal(s.draft.riskAppetite, 'Be cautious. Lead with risk.')
 })
 
-test('1996: a comma inside one entry is not a separator on a field that did not opt in', () => {
+test('a comma inside one entry is not a separator on a field that did not opt in', () => {
   const s = type(spec('selfExclusionOwners'), 'Smith, Jones & Co')
   assert.equal(boxValue(s, spec('selfExclusionOwners')), 'Smith, Jones & Co')
   assert.deepEqual(s.draft.selfExclusionOwners, ['Smith, Jones & Co'],
     'one trading name, not two — the case FieldSpec.commaSeparated exists for')
 })
 
-test('1996: paste — one change carrying the whole string, not a keystroke', () => {
+test('paste — one change carrying the whole string, not a keystroke', () => {
   const s = typeField(EMPTY, spec('defaultJurisdictions'), 'US, France, Germany')
   assert.equal(boxValue(s, spec('defaultJurisdictions')), 'US, France, Germany', 'the pasted text stays as pasted')
   assert.deepEqual(s.draft.defaultJurisdictions, ['US', 'France', 'Germany'])
 })
 
-test('1996: the notices see the RAW text again, which is what makes Check able to say anything', () => {
+test('the notices see the RAW text again, which is what makes Check able to say anything', () => {
   // fieldNotices' own header says it reports on the raw text "because the whole question is what the gap
   // between them was". Fed a re-derived value there is no gap by construction — the reason a garbage
   // entry still reported OK.
@@ -122,7 +122,7 @@ test('1996: the notices see the RAW text again, which is what makes Check able t
     'and a reshape is reported against what was actually typed')
 })
 
-test('1996: an untouched field renders from the draft, and a reseed drops what was typed', () => {
+test('an untouched field renders from the draft, and a reseed drops what was typed', () => {
   const loaded: FormEdit = { draft: { platforms: ['amazon.com'] }, edits: {} }
   assert.equal(boxValue(loaded, spec('platforms')), 'amazon.com', 'untouched fields show the stored value')
 
@@ -142,7 +142,7 @@ test('1996: an untouched field renders from the draft, and a reseed drops what w
 const screen = (name: string) =>
   readFileSync(fileURLToPath(new URL(`../src/screens/${name}`, import.meta.url)), 'utf8')
 
-test('1996: both forms render the editable box from what was typed, and reseed on load', () => {
+test('both forms render the editable box from what was typed, and reseed on load', () => {
   for (const name of ['Profile.tsx', 'Projects.tsx']) {
     const src = screen(name)
     assert.match(src, /value=\{boxValue\(\{ draft, edits \}, spec\)\}/,

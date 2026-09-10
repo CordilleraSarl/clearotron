@@ -282,7 +282,7 @@ function normalizeDefaultProduct(incoming, existing) {
   }
   return incoming;
 }
-// marketplaceDensity has NO CONTROL ON ANY SURFACE since the owner ruling of 2026-08-29 ("get rid of it
+// marketplaceDensity has NO CONTROL ON ANY SURFACE since the ruling of 2026-08-29 ("get rid of it
 // completely. there is no such thing as staff only"), and it is NOT code-owned — so without this it would
 // be stripped on the next save of any profile that has one.
 //
@@ -298,7 +298,7 @@ function normalizeDefaultProduct(incoming, existing) {
 // NO CONTROL ON ANY SURFACE, and profile-page.html reconstructs its payload from the inputs it has — so
 // each one would be stripped on the next staff save of any profile carrying it.
 //
-//   marketplaceDensity  the control was removed by owner ruling; the value sizes
+//   marketplaceDensity  the control was removed by ruling; the value sizes
 //                       the grid batch and losing it re-arms a measured truncation crash.
 //   demoData            never had a control; losing it turns a demo account into
 //                       one indistinguishable from a client, which is the exact failure the marker
@@ -580,7 +580,7 @@ export function makeProfileService({
       if (overlayBody.defaultProduct === undefined && priorOverlay?.defaultProduct !== undefined)
         overlayBody.defaultProduct = priorOverlay.defaultProduct;
       // marketplaceDensity: same rule, and now permanent rather than "yet" — the control was removed from
-      // both surfaces by owner ruling, so an overlay's value can only ever come from the file it is in.
+      // both surfaces by ruling, so an overlay's value can only ever come from the file it is in.
       preserveUncontrolled(overlayBody, priorOverlay);
       // ARCHIVE STATE IS STICKY AGAINST OMISSION — recipe-service.mjs's discipline verbatim: un-archiving
       // takes an EXPLICIT archived:false, never a body that simply lacks the key. This is not theoretical:
@@ -798,7 +798,7 @@ const PORT = PORT_CHOICE.port;
   //
   // `makeAccessVerifier` has ALWAYS accepted issuer/jwksUrl/emailClaim — this service simply never
   // passed them, which is how one product shipped a provider-agnostic API face and three single-vendor
-  // services beside it. Owner ruling 2026-08-23: "we can't launch with an identity vendor, they bring
+  // services beside it. Ruling 2026-08-23: "we can't launch with an identity vendor, they bring
   // their own… they pick their own."
   const OIDC_ISSUER = process.env.PROFILE_OIDC_ISSUER || "";
   const JWKS_URL = process.env.PROFILE_JWKS_URL || "";

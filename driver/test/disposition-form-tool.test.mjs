@@ -5,7 +5,7 @@
 //
 // The -era defect this file was built for: `tellObligations` wrote an all-null form over the
 // seat-facing copy on every grid-tool call, and a cold retry's seat re-earned 61 rulings. The form path
-// is now DELETED (owner ruling 2026-08-17): rulings ride `record_dispositions`, the `_driver/`
+// is now DELETED (ruling 2026-08-17): rulings ride `record_dispositions`, the `_driver/`
 // accumulator is the one copy, and the seat-facing file has no writer at all. So the property this file
 // pins moved with the machinery:
 //

@@ -30,7 +30,7 @@ before(async () => {
 
 // ── 1. get_run ───────────────────────────────────────────────────────────────────────────────────────
 
-test("275: get_run lists the artifacts this lane writes, with their real presence", () => {
+test("get_run lists the artifacts this lane writes, with their real presence", () => {
   const out = tools.get_run({ runId: RUN_ID_KO });
   const byName = Object.fromEntries(out.artifacts.map((a) => [a.name, a]));
 
@@ -62,7 +62,7 @@ test("275: get_run lists the artifacts this lane writes, with their real presenc
   assert.deepEqual(missing, [], `this fixture is a complete delivered run: ${missing.join(", ")}`);
 });
 
-test("275: get_run states that no coverage ledger EXISTS, rather than reporting one missing", () => {
+test("get_run states that no coverage ledger EXISTS, rather than reporting one missing", () => {
   const out = tools.get_run({ runId: RUN_ID_KO });
   assert.equal(out.coverageSummary.coverageLedgerPresent, false);
   assert.match(out.coverageSummary.coverageLedgerNote, /keeps no coverage ledger/,
@@ -73,7 +73,7 @@ test("275: get_run states that no coverage ledger EXISTS, rather than reporting 
 
 // ── 2. list_findings ─────────────────────────────────────────────────────────────────────────────────
 
-test("275: list_findings returns the run's findings with their bands", () => {
+test("list_findings returns the run's findings with their bands", () => {
   const out = tools.list_findings({ runId: RUN_ID_KO });
   assert.ok(out.items.length > 0, "the run's findings, not an empty list");
   const halcyon = out.items.find((f) => f.name === "HALCYON");
@@ -87,7 +87,7 @@ test("275: list_findings returns the run's findings with their bands", () => {
   assert.equal(read.band, "LOW", "carrying the rater's band for it");
 });
 
-test("275: list_findings kind=negatives returns the proof-of-search rows", () => {
+test("list_findings kind=negatives returns the proof-of-search rows", () => {
   const out = tools.list_findings({ runId: RUN_ID_KO, kind: "negatives" });
   assert.equal(out.items.length, 3);
   assert.ok(out.items.some((n) => n.term === "project halcyon app store"));
@@ -95,7 +95,7 @@ test("275: list_findings kind=negatives returns the proof-of-search rows", () =>
 
 // THE RULE THAT MATTERS MOST IN THIS ISSUE. A projection with no knockout equivalent must SAY so. An empty
 // array here reads as "the audit trail is empty", which is the false statement this whole issue is about.
-test("275: a projection with no knockout equivalent states it, and never returns a bare empty list", () => {
+test("a projection with no knockout equivalent states it, and never returns a bare empty list", () => {
   const audit = tools.list_findings({ runId: RUN_ID_KO, kind: "audit" });
   assert.equal(audit.available, false, "the answer is flagged as a non-answer");
   assert.match(audit.note, /does not produce/, "…in words");
@@ -109,7 +109,7 @@ test("275: a projection with no knockout equivalent states it, and never returns
 
 // ── 3–5. evidence, searches, coverage ────────────────────────────────────────────────────────────────
 
-test("275: list_evidence returns the register records and the located common-law uses", () => {
+test("list_evidence returns the register records and the located common-law uses", () => {
   const out = tools.list_evidence({ runId: RUN_ID_KO });
   assert.notEqual(out.source, "none", "the source names the stores it read");
   const reg = out.records.filter((r) => r.layer === "register");
@@ -121,7 +121,7 @@ test("275: list_evidence returns the register records and the located common-law
     "the layer filter still applies");
 });
 
-test("275: list_searches answers the defensibility question — where we looked and found nothing", () => {
+test("list_searches answers the defensibility question — where we looked and found nothing", () => {
   const out = tools.list_searches({ runId: RUN_ID_KO });
   assert.ok(out.count > 0, "this returned 0 on every knockout we sell");
   const noHits = out.searches.filter((s) => s.outcome === "no-hit");
@@ -135,7 +135,7 @@ test("275: list_searches answers the defensibility question — where we looked 
   assert.match(unanswered.note, /did not answer/);
 });
 
-test("275: get_search_coverage reports real coverage instead of 'no ledger'", () => {
+test("get_search_coverage reports real coverage instead of 'no ledger'", () => {
   const out = tools.get_search_coverage({ runId: RUN_ID_KO });
   assert.ok(out.areas.length > 0, "this returned [] with 'this run records no coverage ledger'");
   assert.ok(out.areas.some((a) => a.area.includes("PROJECT HALCYON")));
@@ -149,14 +149,14 @@ test("275: get_search_coverage reports real coverage instead of 'no ledger'", ()
 
 // ── 6. read_artifact ─────────────────────────────────────────────────────────────────────────────────
 
-test("275: read_artifact 'report' returns the delivered report from the pool", () => {
+test("read_artifact 'report' returns the delivered report from the pool", () => {
   const out = tools.read_artifact({ runId: RUN_ID_KO, name: "report" });
   assert.notEqual(out.exists, false, "it answered exists:false about a file on disk");
   assert.match(out.text, /KNOCKOUT TRADEMARK REVIEW REPORT/, "the delivered document itself");
   assert.equal(out.file, "report.md");
 });
 
-test("275: the knockout's own working documents are readable by name", () => {
+test("the knockout's own working documents are readable by name", () => {
   assert.match(tools.read_artifact({ runId: RUN_ID_KO, name: "assessment" }).text, /PROJECT HALCYON meets a live registration/);
   assert.match(tools.read_artifact({ runId: RUN_ID_KO, name: "research:project-halcyon" }).text, /Sweep payload/);
   // And an unknown name is refused with THIS lane's artifacts named, not eleven documents it never writes.
@@ -170,7 +170,7 @@ test("275: the knockout's own working documents are readable by name", () => {
 
 // ── 7. trace ─────────────────────────────────────────────────────────────────────────────────────────
 
-test("275: trace resolves this lane's stages and the run's verdict", () => {
+test("trace resolves this lane's stages and the run's verdict", () => {
   const v = tools.trace({ runId: RUN_ID_KO, target: "verdict" });
   assert.equal(v.verdict, "HIGH", "the verdict resolves — it did not, on any knockout");
   assert.ok(v.marks.some((m) => m.mark === "PROJECT HALCYON" && m.band === "HIGH"));
@@ -187,7 +187,7 @@ test("275: trace resolves this lane's stages and the run's verdict", () => {
   assert.equal(mark.band, "LOW");
 });
 
-test("275: an unresolvable trace target names the KNOCKOUT stages, not the clearance ones", () => {
+test("an unresolvable trace target names the KNOCKOUT stages, not the clearance ones", () => {
   const out = tools.trace({ runId: RUN_ID_KO, target: "no-such-thing" });
   assert.match(out.error, /knockout-frame/, "the suggestion is this lane's stage list");
   assert.ok(!/matter-frame|prelim-variants|blind-frame/.test(out.error),
@@ -196,7 +196,7 @@ test("275: an unresolvable trace target names the KNOCKOUT stages, not the clear
 
 // ── 8. the tools that already worked must not move ───────────────────────────────────────────────────
 
-test("275: brief and decision_timeline still answer exactly as they did", () => {
+test("brief and decision_timeline still answer exactly as they did", () => {
   const b = tools.brief({ runId: RUN_ID_KO });
   assert.ok(b, "brief still answers on a knockout");
   assert.ok(JSON.stringify(b).includes("PROJECT HALCYON"), "with the run's own content");
@@ -206,7 +206,7 @@ test("275: brief and decision_timeline still answer exactly as they did", () => 
 
 // THE CONTROL. Every branch added for this issue is gated on the lane, so the clearance run must be
 // untouched — including the eleven-artifact list, which is CORRECT on a product that writes them.
-test("275: a clearance run is unaffected by any of it", () => {
+test("a clearance run is unaffected by any of it", () => {
   const out = tools.get_run({ runId: RUN_ID });
   assert.equal(out.product, undefined, "no knockout branch was taken");
   assert.ok(out.artifacts.some((a) => a.name.startsWith("registerUnit:")),
@@ -220,7 +220,7 @@ test("275: a clearance run is unaffected by any of it", () => {
 // This card used to be described here as carrying no rating of its own, on runs where the search had
 // written a full read of that exact filing and the report was already printing it. The report and the
 // briefing disagreed about what the search found, and the briefing is what a person is read.
-test("274: brief shows a read register filing's rating and read, not the no-rating line", () => {
+test("brief shows a read register filing's rating and read, not the no-rating line", () => {
   const text = JSON.stringify(tools.brief({ runId: RUN_ID_KO }));
   assert.match(text, /Halcyon Holdings/, "the promoted filing is named");
   assert.match(text, /Low risk/, "with the rating the search gave THAT filing");
@@ -229,7 +229,7 @@ test("274: brief shows a read register filing's rating and read, not the no-rati
 });
 
 // The scoping is the safety property: everything that is not a register card is left exactly as it was.
-test("274: a typed conflict's briefing line is untouched", () => {
+test("a typed conflict's briefing line is untouched", () => {
   const text = JSON.stringify(tools.brief({ runId: RUN_ID_KO }));
   assert.match(text, /HALCYON — Halcyon Systems GmbH: Live EU registration in class 9\./,
     "the typed line keeps its original 'name — owner: net' shape");

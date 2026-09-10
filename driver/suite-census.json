@@ -4767,6 +4767,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-title-and-attribution-sweep-takes-the-label.test.mjs": {
+          "tests": 30,
+          "asserts": 99,
+          "skips": 2,
+          "todos": 0
+        },
         "the-trigger-key-has-a-deadline-somebody-is-counting.test.mjs": {
           "tests": 5,
           "asserts": 23,

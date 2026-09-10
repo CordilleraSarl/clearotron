@@ -57,7 +57,7 @@ const listed = async (service, query = {}) =>
 const retiredView = async (service) =>
   (await service.route("GET", "/portal/admin/retired", STAFF, {}, {})).json.runs.map((r) => r.runId).sort();
 
-test("2077 arm 1 — a run that was stopped resolves, so Retire answers instead of refusing", async () => {
+test("arm 1 — a run that was stopped resolves, so Retire answers instead of refusing", async () => {
   const { poolRoot, workspaceRoot, service } = world({ stopped: "cancelled", died: "failed", alive: "running" });
   // The premise the defect turned on: the LIST can see it and the pool cannot.
   assert.deepEqual(await listed(service), ["alive", "died", "stopped"]);
@@ -69,7 +69,7 @@ test("2077 arm 1 — a run that was stopped resolves, so Retire answers instead 
   assert.equal(r.json.retired, true);
 });
 
-test("2077 arm 2 — and retiring it actually takes it off the list, both ways", async () => {
+test("arm 2 — and retiring it actually takes it off the list, both ways", async () => {
   const { service } = world({ stopped: "cancelled", alive: "running" });
   await service.route("POST", "/portal/admin/retired", STAFF, { runIds: ["stopped"] }, {});
 
@@ -80,7 +80,7 @@ test("2077 arm 2 — and retiring it actually takes it off the list, both ways",
   assert.deepEqual(await retiredView(service), ["stopped"], "the retired view cannot find what was retired");
 });
 
-test("2077 arm 3 — restore is the way back for a run that never published either", async () => {
+test("arm 3 — restore is the way back for a run that never published either", async () => {
   const { service } = world({ stopped: "cancelled" });
   await service.route("POST", "/portal/admin/retired", STAFF, { runIds: ["stopped"] }, {});
   assert.deepEqual(await listed(service), [], "premise: it is hidden");
@@ -90,7 +90,7 @@ test("2077 arm 3 — restore is the way back for a run that never published eith
   assert.deepEqual(await listed(service), ["stopped"], "a retired unpublished run cannot be brought back — a one-way door");
 });
 
-test("2077 arm 4 — an id no surface lists is still refused, and the tenancy rule is untouched", async () => {
+test("arm 4 — an id no surface lists is still refused, and the tenancy rule is untouched", async () => {
   const { poolRoot, workspaceRoot, service } = world({ stopped: "cancelled" });
   assert.equal(resolveRunAccount({ poolRoot, workspaceRoot, runId: "never-existed" }), null);
   const r = await service.route("POST", "/portal/admin/retired", STAFF, { runIds: ["never-existed"] }, {});
@@ -101,7 +101,7 @@ test("2077 arm 4 — an id no surface lists is still refused, and the tenancy ru
   assert.equal(resolveRunAccount({ poolRoot, workspaceRoot, runId: "stopped" })?.account, "aurora");
 });
 
-test("2077 arm 5 — a refusal on a state-changing route leaves a line, with the server's own reason", async () => {
+test("arm 5 — a refusal on a state-changing route leaves a line, with the server's own reason", async () => {
   const { service, audits } = world({ alive: "running" });
 
   // THE ROUTE THE ISSUE FOUND SILENT. `/portal/api/ack` filed nothing in either direction, and it is the

@@ -20,7 +20,7 @@ const KNOCKOUT_NET = "The proprietor of the subsisting registration would prevai
 const CLEARANCE_ONE_LINER = "Obstructed — on the record as it stands the mark is obstructed in all three territories by an "
   + "identical prior position, and each remaining class carries citable prior rights of its own besides.";
 
-test("333 a seeded lawyer-vocabulary sentence in a knockout net is flagged", () => {
+test("a seeded lawyer-vocabulary sentence in a knockout net is flagged", () => {
   const flags = plainRegisterFlags(KNOCKOUT_NET);
   const terms = flags.filter((f) => f.kind === "vocabulary").map((f) => f.term);
   assert.ok(terms.includes("proprietor"), `not flagged: ${JSON.stringify(terms)}`);
@@ -28,13 +28,13 @@ test("333 a seeded lawyer-vocabulary sentence in a knockout net is flagged", () 
   assert.ok(terms.includes("prevail"));
 });
 
-test("333 …and in a clearance one-liner", () => {
+test("…and in a clearance one-liner", () => {
   const terms = plainRegisterFlags(CLEARANCE_ONE_LINER).filter((f) => f.kind === "vocabulary").map((f) => f.term);
   assert.ok(terms.includes("citable"), `not flagged: ${JSON.stringify(terms)}`);
   assert.ok(terms.includes("on the record as it stands"));
 });
 
-test("333 the flag carries the REWRITE, not the word — a seat has to produce a sentence", () => {
+test("the flag carries the REWRITE, not the word — a seat has to produce a sentence", () => {
   // "Reject: a list of forbidden words as the mechanism." A flag that names a word and stops is that
   // list wearing a different hat: it tells a seat what to delete and nothing about what to write.
   const flag = plainRegisterFlags(KNOCKOUT_NET).find((f) => f.term === "proprietor");
@@ -42,7 +42,7 @@ test("333 the flag carries the REWRITE, not the word — a seat has to produce a
   assert.match(flag.say, /Rewrite the sentence/, "and the instruction is to rewrite, not to swap");
 });
 
-test("333 THE CONTROL THAT DECIDES WHETHER THIS CAN SHIP: the mark under clearance is never flagged", () => {
+test("THE CONTROL THAT DECIDES WHETHER THIS CAN SHIP: the mark under clearance is never flagged", () => {
   // Half of these words are ordinary English and several are plausible marks. The sibling defect is on
   // the record one level in: a refusal that could not tell a mark from engine vocabulary blocked a
   // clearance on the mark SLICE, and a render-time substitution rewrote "AXIS Bank" as "group Bank" on a
@@ -55,12 +55,12 @@ test("333 THE CONTROL THAT DECIDES WHETHER THIS CAN SHIP: the mark under clearan
   }
 });
 
-test("333 …and an owner named in the run is not flagged either", () => {
+test("…and an owner named in the run is not flagged either", () => {
   const line = "Prevail Holdings owns the earlier mark and has used it since 2019.";
   assert.deepEqual(plainRegisterFlags(line, { owners: ["Prevail Holdings"] }), []);
 });
 
-test("333 …but the same word IS flagged when it is not what the run is about", () => {
+test("…but the same word IS flagged when it is not what the run is about", () => {
   // Without this the control above is satisfied by a check that never fires, which would pass every
   // arm here while doing nothing on the page.
   const line = "The earlier owner would prevail on the comparison.";
@@ -68,7 +68,7 @@ test("333 …but the same word IS flagged when it is not what the run is about",
   assert.ok(terms.includes("prevail"), "excluding the run's own terms must not disarm the check");
 });
 
-test("333 a visible sentence over the limit is flagged, with its length and the remedy", () => {
+test("a visible sentence over the limit is flagged, with its length and the remedy", () => {
   const long = "ORBIT is a suggestive and already widely adopted term in the satellite and sky observation field, "
     + "and identically named tracking software sits in the client's own app store channel beside an established "
     + "communications business of the same name, so an earlier owner is likely to win a dispute over this name.";
@@ -79,7 +79,7 @@ test("333 a visible sentence over the limit is flagged, with its length and the 
     "the cheapest wrong fix must be foreclosed where the seat reads the instruction");
 });
 
-test("333 a line already written for the reader is left alone", () => {
+test("a line already written for the reader is left alone", () => {
   // The issue's own worked rewrite. If this flags, the rule is refusing the standard it sets.
   const good = "One company already owns this exact name for these goods in all three territories. "
     + "Everything else is a family of similar names, none decisive on its own.";
@@ -97,7 +97,7 @@ test("333 a line already written for the reader is left alone", () => {
 // A PATH RESOLVES OR IT DOES NOT, which is the whole repair. Each entry is walked against the delivered
 // runs under `demo/` — the shapes a real run writes, not a fixture of mine, which would only prove the
 // fixture matches the reader.
-test("395 every default-visible path resolves to prose in a delivered record", () => {
+test("every default-visible path resolves to prose in a delivered record", () => {
   const records = {
     knockout: ["knockout-search/run/knockout-findings.json"],
     clearance: [
@@ -121,7 +121,7 @@ test("395 every default-visible path resolves to prose in a delivered record", (
   }
 });
 
-test("395 the resolver can fail — a path that names nothing returns nothing", () => {
+test("the resolver can fail — a path that names nothing returns nothing", () => {
   // Every assertion above is that something was found. If the resolver returned a non-empty answer for
   // anything at all, the arm would pass over a list of invented names, so the failing direction is
   // driven here. Both shapes of wrong: a key that does not exist, and a real key walked as the wrong
@@ -134,7 +134,7 @@ test("395 the resolver can fail — a path that names nothing returns nothing", 
   assert.ok(resolveVisiblePath(doc, "four_answers.*.read").length > 0, "…and the correct path does resolve");
 });
 
-test("333 every worked form offers a plain alternative, or says the word simply goes", () => {
+test("every worked form offers a plain alternative, or says the word simply goes", () => {
   for (const [term, plain] of PLAIN_FORMS) {
     assert.equal(typeof term, "string");
     assert.ok(term.length > 0);

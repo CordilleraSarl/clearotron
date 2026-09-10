@@ -121,7 +121,7 @@ export function importsLoader(src) {
 export const readsEnv = (src) =>
   /\bprocess\.env\b/.test(String(src ?? "").replace(/\.\.\.\s*process\.env\b/g, ""));
 
-test("#1222 a pass-through spread is not a read — a guard must not manufacture a no-op import", () => {
+test("a pass-through spread is not a read — a guard must not manufacture a no-op import", () => {
   assert.equal(readsEnv('spawn(cmd, { env: { ...process.env, X: "1" } })'), false,
     "spreading the environment into a child hands every name on untouched — the rename cannot reach it");
   assert.equal(readsEnv('const root = process.env.CLEAROTRON_WORK_DIR;'), true, "a property read is in scope");
@@ -130,7 +130,7 @@ test("#1222 a pass-through spread is not a read — a guard must not manufacture
     "aliasing the whole object is still a read — only the SPREAD form is stripped");
 });
 
-test("#1222 the loader counts as loaded however the import is spelled", () => {
+test("the loader counts as loaded however the import is spelled", () => {
   const bare = 'import "../shared/env-local.mjs";\nconst x = process.env.A;';
   const named = 'import { envFileRead } from "../shared/env-local.mjs";\nconst x = process.env.A;';
   const dflt = 'import loader from "./shared/env-local.mjs";\nconst x = process.env.A;';
@@ -145,7 +145,7 @@ test("#1222 the loader counts as loaded however the import is spelled", () => {
     "the path in a string is not an import");
 });
 
-test("#1222 every unit-run entry point loads shared/env-local.mjs", (ctx) => {
+test("every unit-run entry point loads shared/env-local.mjs", (ctx) => {
   const tracked = trackedFiles("unit-entries-load-env-local", { root: ROOT });
   if (!tracked) return ctx.skip(NO_CORPUS);
   const entries = unitEntries(tracked.filter((f) => f.endsWith(".service")), read);
@@ -167,7 +167,7 @@ test("#1222 every unit-run entry point loads shared/env-local.mjs", (ctx) => {
     + `file), or import shared/env-local.mjs if the process is also meant to read <repo>/.env.`);
 });
 
-test("#1222/#1532 the portal refuses, refuses EARLY, and still does NOT read a dotfile", () => {
+test("the portal refuses, refuses EARLY, and still does NOT read a dotfile", () => {
   // Three halves now, and the middle one is the whole. The CLI_ENTRIES exclusion is still right
   // — "every value arrives named" — and was right that the portal translated nothing. What
   // got wrong is that a body `warnRetiredEnv()` call cannot translate in time: the body runs after every
@@ -189,7 +189,7 @@ test("#1222/#1532 the portal refuses, refuses EARLY, and still does NOT read a d
     "the portal imports the loader but is declared in neither list — that is the state nobody can audit");
 });
 
-test("#1222 the scan can FAIL, and tells the refusal apart from a dotfile read", () => {
+test("the scan can FAIL, and tells the refusal apart from a dotfile read", () => {
   // Constructed, because the tree is clean once this lands and a tree-driven arm would certify nothing.
   const units = { "u.service": "ExecStart=/usr/bin/node %h/clearotron/driver/x.mjs" };
   const found = unitEntries(Object.keys(units), (f) => units[f]);

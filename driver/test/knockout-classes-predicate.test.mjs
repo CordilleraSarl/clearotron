@@ -42,7 +42,7 @@ const PER_MARK = Object.freeze({
   marks: [{ name: "ZEPHYRA", classes: [25] }],
 });
 
-test("#868 THE DEFECT: a request naming classes PER MARK named classes", () => {
+test("THE DEFECT: a request naming classes PER MARK named classes", () => {
   assert.equal(requestNamesClasses(PER_MARK), true,
     "this is the shape a knockout is built out of — a batch keyed on job.marks — and the predicate that "
     + "missed it told the framing model the request named none");
@@ -51,7 +51,7 @@ test("#868 THE DEFECT: a request naming classes PER MARK named classes", () => {
   assert.equal(requestNamesClasses({ classes: [9], marks: [{ name: "X" }] }), true);
 });
 
-test("#868 a request that truly names none still says so", () => {
+test("a request that truly names none still says so", () => {
   // The defaults line exists for exactly this case and must keep firing for it.
   for (const job of [
     {}, { classes: [] }, { marks: [] }, { marks: [{ name: "X" }] }, { marks: [{ name: "X", classes: [] }] },
@@ -61,7 +61,7 @@ test("#868 a request that truly names none still says so", () => {
   for (const x of [null, undefined, "s", 7, []]) assert.equal(requestNamesClasses(x), false);
 });
 
-test("#868 the knockout builder reads the predicate rather than re-deriving it", () => {
+test("the knockout builder reads the predicate rather than re-deriving it", () => {
   const ko = code("driver/stages-knockout.mjs");
   assert.match(ko, /!requestNamesClasses\(job\)/,
     "the knockout frame no longer asks the intake's question with the intake's answer");
@@ -71,7 +71,7 @@ test("#868 the knockout builder reads the predicate rather than re-deriving it",
   assert.match(ko, /from "\.\/enqueue-schema\.mjs"/, "and it takes it from the door, which owns the vocabulary");
 });
 
-test("#868 ALL THREE COPIES AGREE, including the one this lane does not own", () => {
+test("ALL THREE COPIES AGREE, including the one this lane does not own", () => {
   // stages.mjs carries its own correct copy and belongs to another lane's active work. Rather than leave
   // it unchecked, it is executed here as source-derived truth: the shapes below are the ones that
   // separated the three implementations, and any drift in any of them fails.
@@ -92,7 +92,7 @@ test("#868 ALL THREE COPIES AGREE, including the one this lane does not own", ()
     + "issue happens again");
 });
 
-test("#868 the DOOR admits the shape without comment, which is why nothing upstream caught it", () => {
+test("the DOOR admits the shape without comment, which is why nothing upstream caught it", () => {
   // §B2's whole job is scopability, and per-mark classes satisfies it. So the door was right, the
   // framing was wrong, and the request sailed through with no warning naming either. That asymmetry is
   // the reason this needed a shared predicate rather than a fix at the door.

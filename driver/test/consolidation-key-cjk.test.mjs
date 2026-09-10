@@ -25,13 +25,13 @@ const f = (owner, mark, ordinal) => ({
   mark, ordinal, composite: 1,
 });
 
-test("#383 TWO DIFFERENT CJK MARKS UNDER ONE OWNER STAY TWO FINDINGS", () => {
+test("TWO DIFFERENT CJK MARKS UNDER ONE OWNER STAY TWO FINDINGS", () => {
   const out = consolidateFindings([f("Shanghai Xiangjin", "色度", 1), f("Shanghai Xiangjin", "色彩", 2)]);
   assert.equal(out.findings.length, 2, "different marks are different conflicts");
   assert.deepEqual(out.merges, [], "and nothing was merged away");
 });
 
-test("#383 A CJK OWNER WITH A CJK MARK DOES NOT KEY TO THE EMPTY STRING", () => {
+test("A CJK OWNER WITH A CJK MARK DOES NOT KEY TO THE EMPTY STRING", () => {
   // The severe case: before the fix every such finding, across unrelated owners, shared one key.
   const out = consolidateFindings([
     f("上海翔金", "色度", 1), f("北京华方", "商标", 2), f("株式会社デルフィ", "デルフィ", 3),
@@ -40,24 +40,24 @@ test("#383 A CJK OWNER WITH A CJK MARK DOES NOT KEY TO THE EMPTY STRING", () => 
   assert.deepEqual(out.merges, []);
 });
 
-test("#383 A GENUINE DUPLICATE STILL CONSOLIDATES — the fix must not stop the function working", () => {
+test("A GENUINE DUPLICATE STILL CONSOLIDATES — the fix must not stop the function working", () => {
   const out = consolidateFindings([f("BePharBel", "VELTRI", 1), f("BePharBel", "VELTRI", 2)]);
   assert.equal(out.findings.length, 1);
   assert.deepEqual(out.merges.map((m) => m.dropped), [[2]]);
   assert.equal(out.findings[0].owner.registrations.length, 2, "and the union carries both registrations");
 });
 
-test("#383 A CJK DUPLICATE CONSOLIDATES TOO — the fix is a key, not an exemption", () => {
+test("A CJK DUPLICATE CONSOLIDATES TOO — the fix is a key, not an exemption", () => {
   const out = consolidateFindings([f("上海翔金", "色度", 1), f("上海翔金", "色度", 2)]);
   assert.equal(out.findings.length, 1, "the same mark and the same owner is still one conflict");
 });
 
-test("#383 full-width and half-width forms of one name key ALIKE (NFKC)", () => {
+test("full-width and half-width forms of one name key ALIKE (NFKC)", () => {
   const out = consolidateFindings([f("ＤＥＬＦＩ", "デルフィ", 1), f("ＤＥＬＦＩ", "ﾃﾞﾙﾌｨ", 2)]);
   assert.equal(out.findings.length, 1, "compatibility forms of the same characters are the same mark");
 });
 
-test("#383 LATIN KEYS ARE UNCHANGED — an archived finding must not re-merge differently", () => {
+test("LATIN KEYS ARE UNCHANGED — an archived finding must not re-merge differently", () => {
   // The risk this fix carries: a consolidation key that moved would regroup every archived run's
   // findings on republish. Latin values take the same path they always did.
   const out = consolidateFindings([

@@ -361,7 +361,7 @@ test("every recording stage's union is real — it names the stage's own record 
 
 // ── the three directions, over the real corpus ───────────────────────────────────────────────────────
 
-test("#865 — a recording stage's grant and its orders AGREE, in all three directions", () => {
+test("a recording stage's grant and its orders AGREE, in all three directions", () => {
   const findings = [];
   for (const stage of Object.keys(RECORDING_STAGES)) findings.push(...agreementFindings(subjectFor(stage)));
   assert.deepEqual(findings.map((f) => `${f.direction} · ${f.stage} · ${f.tool ?? f.surface}`), [],
@@ -723,7 +723,7 @@ test("PLANT: a tool named as a SUBSTRING is not a tool named", () => {
 
 // ──: THE UNION REACHES THE BESPOKE COMPOSERS ──────────────────────────────────────────────────
 
-test("#1183: the union carries the registry's composers, and it is NOT vacuous", () => {
+test("the union carries the registry's composers, and it is NOT vacuous", () => {
   // NON-VACUITY BY NAMING WHAT MUST BE THERE, never by a length check — this file's own cure, applied to
   // its newest arm. A registry walk that silently returned nothing would add no surfaces and every
   // direction would go on reporting clean, which is the shape exists to end.
@@ -740,7 +740,7 @@ test("#1183: the union carries the registry's composers, and it is NOT vacuous",
   }
 });
 
-test("#1183 (planted): a bespoke composer that orders a hand-write of a TOOL-WRITTEN artifact is reported", () => {
+test("(planted): a bespoke composer that orders a hand-write of a TOOL-WRITTEN artifact is reported", () => {
   // The demonstration the issue asks for, on the `deriveIntakeAsks` shape that was the confirmed defect:
   // a followup closed by the shared edit tail, on a stage whose grant carries no write tool for that
   // artifact. Before the union derived from the registry, this text was invisible and the stage read
@@ -771,7 +771,7 @@ test("#1183 (planted): a bespoke composer that orders a hand-write of a TOOL-WRI
 // defect, was named it, and could not restate reported as a stage that never tried. gateway's judge now
 // reads the transport's refusal journal on the missing-file branch — and the LOOKUP is what goes quiet
 // if a row loses its function, so it is asserted here rather than only end-to-end.
-test("#1893 the tool-written rows carry a refusal reader, and it reads a real journal", () => {
+test("the tool-written rows carry a refusal reader, and it reads a real journal", () => {
   const runDir = mkdtempSync(join(tmpdir(), "refusal-row-"));
   for (const f of [NARRATIVE_FILE, FINDINGS_FILE]) {
     const row = toolWrittenArtifact(join(runDir, f));
@@ -1122,19 +1122,19 @@ const findingsFor = (text, providerUnavailable) => agreementFindings({
   backlog: [], providerUnavailable: new Set(providerUnavailable),
 }).filter((f) => f.direction === "ordered-but-not-granted").map((f) => f.tool).sort();
 
-test("2019: an order that CARRIES the carve-out, for a tool the provider cannot serve, is not a finding", () => {
+test("an order that CARRIES the carve-out, for a tool the provider cannot serve, is not a finding", () => {
   assert.deepEqual(findingsFor(CONDITIONAL_ORDER, ["register_expand_phoneme"]), [],
     "the false alarm: the provider deliberately withholds the tool and the order says to skip it where "
     + "that is so — three layers agreeing, reported as a behavioural defect");
 });
 
-test("2019: the SAME tool, ordered WITHOUT a carve-out, is still a finding", () => {
+test("the SAME tool, ordered WITHOUT a carve-out, is still a finding", () => {
   assert.deepEqual(findingsFor("Run `register_expand_phoneme` on the dominant token.", ["register_expand_phoneme"]), ["register_expand_phoneme"],
     "an unconditional order for a tool the provider cannot serve is exactly what direction (c) is for — "
     + "the rule must excuse the ORDER, never the tool");
 });
 
-test("2019: a capability ASSERTION about an unavailable tool is still a finding — the signa case", () => {
+test("a capability ASSERTION about an unavailable tool is still a finding — the signa case", () => {
   // `unit.md:59` says the seat's key carries these. On signa that is false, and it is the true finding a
   // wholesale excuse would have silenced.
   assert.deepEqual(findingsFor(CAPABILITY_ASSERTION, ["register_image_fetch"]), ["register_image_fetch"],
@@ -1142,7 +1142,7 @@ test("2019: a capability ASSERTION about an unavailable tool is still a finding 
     + "a tool it does not hold is the defect this direction exists to catch");
 });
 
-test("2019: the carve-out must be in THIS order's own block, not three sections away", () => {
+test("the carve-out must be in THIS order's own block, not three sections away", () => {
   const far = "Run `register_expand_phoneme` on the dominant token.\n\n"
     + "Unrelated section about something else entirely.\n\n"
     + "**`register_batch_screen` is not offered by every provider** — skip it where unavailable.";
@@ -1151,13 +1151,13 @@ test("2019: the carve-out must be in THIS order's own block, not three sections 
     + "excuse anything once one carve-out exists anywhere");
 });
 
-test("2019: the rule does NOT reach a tool the provider serves — only the ones it withholds", () => {
+test("the rule does NOT reach a tool the provider serves — only the ones it withholds", () => {
   assert.deepEqual(findingsFor(CONDITIONAL_ORDER, []), ["register_expand_phoneme"],
     "with an empty unavailable set the carve-out must NOT excuse anything: a tool the provider serves and "
     + "the grant lacks is an ordinary disagreement, and the carve-out phrasing is not a licence");
 });
 
-test("2019 ANTI-ROT: every marker still matches the live dispatch it was written for", () => {
+test("ANTI-ROT: every marker still matches the live dispatch it was written for", () => {
   // The same arm WRITE_ORDER_MARKERS carries, for the same reason: these match declared PROSE, and prose
   // is edited. A marker that stops matching anything is a rule that silently stopped applying.
   const unit = readFileSync(join(DRIVER, "skills/prelim-register/unit.md"), "utf8");

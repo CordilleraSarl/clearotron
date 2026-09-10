@@ -104,7 +104,7 @@ test("null is UNRESTRICTED and undefined is UNKNOWN — both offer everything, a
 
 // ── the causes are two, and they say different things ───────────────────────────────────────────────
 
-test("2075 D6 — the two coverage causes stay APART, and NEITHER refuses", () => {
+test("D6 — the two coverage causes stay APART, and NEITHER refuses", () => {
   // kept two causes because "worldwide" and "not enough places" are different facts and a client
   // asking why would get the wrong answer from the other sentence. Both halves of that survive the
   // 2026-08-31 ruling; what changed is which of them is a REFUSAL.
@@ -127,7 +127,7 @@ test("2075 D6 — the two coverage causes stay APART, and NEITHER refuses", () =
   assert.ok(disclosed && disclosed.note && disclosed.note !== UNAVAILABLE_NOTE["register-coverage"],
     "the worldwide coverage limit is neither refused nor disclosed, so it is simply gone");
 
-  // ── D6 (owner ruling, 2026-09-02): "disclosure yes, in line with the picker" ──────────────────────
+  // ── D6 (ruling, 2026-09-02): "disclosure yes, in line with the picker" ──────────────────────
   //
   // The too-narrow cause was the last place a coverage fact could refuse a product, which is the
   // disagreement between the two controls this issue's ruling forbids — the picker offers a territory

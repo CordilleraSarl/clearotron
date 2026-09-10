@@ -57,7 +57,7 @@
 //
 // ── AND WHEN EACH ONE IS ASKED FOR, WHICH IS A SECOND AXIS AND NOT THE SAME ONE ─────────────────────
 //
-// Owner ruling 2026-09-06, in session: "someone can install and select key later so it should still
+// Ruling 2026-09-06, in session: "someone can install and select key later so it should still
 // start." So a hosted install comes up with no register configured — the doors answer, the portal
 // answers, and the box is a working install waiting for one value.
 //

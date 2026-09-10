@@ -57,7 +57,7 @@ const BANDS_SILENT = {
 
 const spent = (qids) => new Set(qids);
 
-test("#577 the FIRST fan-in still throws — a hard-errored slice is missing until the ladder is spent", () => {
+test("the FIRST fan-in still throws — a hard-errored slice is missing until the ladder is spent", () => {
   const join = joinPlanToBands(PLAN, BANDS_HARD_ERROR);
   assert.equal(join.missing.length, 2, "both hard-errored slices join as missing, exactly as before");
   // No prior receipt ⇒ nothing is exhausted ⇒ nothing converts.
@@ -66,7 +66,7 @@ test("#577 the FIRST fan-in still throws — a hard-errored slice is missing unt
   assert.equal(after, join, "an unconverted join is returned by identity — a run with no hard error is byte-identical to today");
 });
 
-test("#577 the SECOND fan-in defers them, with the provider's own error as the stated reason", () => {
+test("the SECOND fan-in defers them, with the provider's own error as the stated reason", () => {
   const join = joinPlanToBands(PLAN, BANDS_HARD_ERROR);
   const prior = { plan_version: 3, missing: join.missing, deferred: [] };   // what the first fan-in wrote
   const { join: after, converted } = deferExhaustedProviderErrors(join, BANDS_HARD_ERROR, ladderExhaustedQids(prior));
@@ -81,7 +81,7 @@ test("#577 the SECOND fan-in defers them, with the provider's own error as the s
   }
 });
 
-test("#577 a slice NOTHING answered on still kills the run — #440's condition is untouched", () => {
+test("a slice NOTHING answered on still kills the run — #440's condition is untouched", () => {
   const join = joinPlanToBands(PLAN, BANDS_SILENT);
   const silent = "incumbent-class:default:thistle+owner-esri";
   assert.ok(join.missing.includes(silent), "no block at all ⇒ missing");
@@ -94,7 +94,7 @@ test("#577 a slice NOTHING answered on still kills the run — #440's condition 
     "only the slice the provider actually answered on converts");
 });
 
-test("#577 a deferred slice must be NAMED in the deliverable — the disclosure gate holds the line", () => {
+test("a deferred slice must be NAMED in the deliverable — the disclosure gate holds the line", () => {
   // Deferring is not a way to make a slice go quiet. That gate demands that every deferred qid appear
   // verbatim in a non-clean row on its own axis; the run does not ship until it does. That is what makes
   // "disclosed deferral" a contract rather than a label — and it applies to these rows exactly as it
@@ -122,7 +122,7 @@ test("#577 a deferred slice must be NAMED in the deliverable — the disclosure 
   assert.deepEqual(disclosed, [], "naming them on a non-clean row on their own axis discharges the gate");
 });
 
-test("#577 the clean-claim gate for a NEVER-ANSWERED slice is unchanged — the axis is `unexecuted`, not `deferred`", () => {
+test("the clean-claim gate for a NEVER-ANSWERED slice is unchanged — the axis is `unexecuted`, not `deferred`", () => {
   const join = joinPlanToBands(PLAN, BANDS_SILENT);
   const prior = { plan_version: 3, missing: join.missing, deferred: [] };
   const { join: after } = deferExhaustedProviderErrors(join, BANDS_SILENT, ladderExhaustedQids(prior));
@@ -134,7 +134,7 @@ test("#577 the clean-claim gate for a NEVER-ANSWERED slice is unchanged — the 
   assert.equal(violations[0].token, "coverage_clean_unexecuted:incumbent-class");
 });
 
-test("#577 the reason is NOT a capability gap, so the envelope spends one bounded attempt on it", () => {
+test("the reason is NOT a capability gap, so the envelope spends one bounded attempt on it", () => {
   // The distinction has teeth: a capability gap is `accepted` (never retried, it cannot succeed), while
   // a provider outage is `suspect` and earns ONE code-executor attempt. If the index has recovered by
   // then the slice closes and no gap is disclosed at all — which is the outcome worth paying for.
@@ -149,7 +149,7 @@ test("#577 the reason is NOT a capability gap, so the envelope spends one bounde
   assert.deepEqual(suspect.map((s) => s.qid), ["primary-sweep:exact:thistle"], "filed as worth one attempt");
 });
 
-test("#577 ladderExhaustedQids carries a prior deferral forward — the conversion cannot be undone by a re-join", () => {
+test("ladderExhaustedQids carries a prior deferral forward — the conversion cannot be undone by a re-join", () => {
   // The trap this closes: the envelope's own re-join (and refreshSupplementalExecution) run a PLAIN
   // joinPlanToBands, which puts a still-erroring slice straight back into `missing`. Without the prior
   // receipt's deferrals in the exhausted set, settleReceipt would then see it absent from `deferred` and
@@ -191,12 +191,12 @@ const BANDS_PERMANENT = {
   "primary-sweep": [{ qid: "primary-sweep:exact:thistle", state: "enumerated", records: [{}] }],
 };
 
-test("#577r2 the fixture is the real classification — 400 is not transient, 500 is", () => {
+test("the fixture is the real classification — 400 is not transient, 500 is", () => {
   assert.equal(retryCannotHelp(HARD_400), true, "a malformed-query rejection is what the fan-in calls deterministic");
   assert.equal(retryCannotHelp(HARD_500), false, "a 5xx is transient and must keep its ladder");
 });
 
-test("#577r2 a permanent provider error defers on the FIRST fan-in — the ladder it would wait for never runs", () => {
+test("a permanent provider error defers on the FIRST fan-in — the ladder it would wait for never runs", () => {
   const join = joinPlanToBands(PLAN, BANDS_PERMANENT);
   assert.ok(join.missing.includes("incumbent-class:owner:esri+watch"), "it joins as missing, as before");
   // No prior receipt: this is the first fan-in, exactly where R1 died.
@@ -211,7 +211,7 @@ test("#577r2 a permanent provider error defers on the FIRST fan-in — the ladde
     "the disclosure rides in the reason, same as the ladder-spent path");
 });
 
-test("#577r2 BREAK: a TRANSIENT error must still wait for its ladder even with the predicate wired", () => {
+test("BREAK: a TRANSIENT error must still wait for its ladder even with the predicate wired", () => {
   // The whole value of condition 2 is that a provider having a bad minute gets every retry the ladder
   // buys it. If this goes green with an empty `converted`, that promise is intact.
   const join = joinPlanToBands(PLAN, BANDS_HARD_ERROR);
@@ -220,7 +220,7 @@ test("#577r2 BREAK: a TRANSIENT error must still wait for its ladder even with t
   assert.equal(after, join, "returned by identity — byte-identical to the pre-change run");
 });
 
-test("#577r2 BREAK: condition 1 is still absolute — a silent slice never defers, permanent path or not", () => {
+test("BREAK: condition 1 is still absolute — a silent slice never defers, permanent path or not", () => {
   // The strongest form of the break: the slice that answered carries a PERMANENT error, so the permanent
   // path is live on this very join, and the silent one must still kill the run.
   const bands = {
@@ -237,7 +237,7 @@ test("#577r2 BREAK: condition 1 is still absolute — a silent slice never defer
     "and the silent slice keeps the axis unexecuted, so no clean can be claimed over it");
 });
 
-test("#577r2 BREAK: dropping the predicate restores the regression — the default converts nothing", () => {
+test("BREAK: dropping the predicate restores the regression — the default converts nothing", () => {
   // Byte-for-byte proof that the 4th argument is the entire behaviour change: same inputs, no predicate.
   const join = joinPlanToBands(PLAN, BANDS_PERMANENT);
   const { join: after, converted } = deferExhaustedProviderErrors(join, BANDS_PERMANENT, ladderExhaustedQids(null));
@@ -245,7 +245,7 @@ test("#577r2 BREAK: dropping the predicate restores the regression — the defau
   assert.equal(after, join);
 });
 
-test("#577r2 a permanent deferral is carried forward — a re-join cannot quietly close it", () => {
+test("a permanent deferral is carried forward — a re-join cannot quietly close it", () => {
   // Break 3 from round 1, re-run against the new prefix. ladderExhaustedQids must recognise BOTH stems or
   // the envelope's re-join puts the slice back in `missing` and settleReceipt records it "closed: ok".
   const first = { plan_version: 3, missing: [], deferred: [{ qid: "incumbent-class:owner:esri+watch", reason: PROVIDER_PERMANENT_ERROR_PREFIX + HARD_400 }] };
@@ -263,7 +263,7 @@ test("#577r2 a permanent deferral is carried forward — a re-join cannot quietl
     "carried forward it reads as spent, because by then it has been through a fan-in — the wording stays true");
 });
 
-test("#577r2 the permanent reason is still not a capability gap — one bounded attempt, then disclosed", () => {
+test("the permanent reason is still not a capability gap — one bounded attempt, then disclosed", () => {
   // `retryCannotHelp` is a NEGATIVE classification ("not recognised as transient"), not positive
   // knowledge that the far end will never serve it. So the envelope's single code-executor attempt is
   // kept as the cheapest hedge against having classified it wrong, and `close_failed` records the try.
@@ -278,7 +278,7 @@ test("#577r2 the permanent reason is still not a capability gap — one bounded 
   assert.deepEqual(suspect.map((s) => s.qid), ["primary-sweep:exact:thistle"], "filed as worth exactly one attempt");
 });
 
-test("#577r2 the deliverable must still NAME a permanently-deferred slice — #476's gate is unchanged", () => {
+test("the deliverable must still NAME a permanently-deferred slice — #476's gate is unchanged", () => {
   const join = joinPlanToBands(PLAN, BANDS_PERMANENT);
   const { join: after } = deferExhaustedProviderErrors(join, BANDS_PERMANENT, ladderExhaustedQids(null), retryCannotHelp);
   const skeleton = deriveCoverageSkeleton(PLAN, after);
@@ -290,7 +290,7 @@ test("#577r2 the deliverable must still NAME a permanently-deferred slice — #4
   assert.equal(silent[0].token, "coverage_deferred_unaccounted:incumbent-class");
 });
 
-test("#577r2 the receipt rows carry no reporting fields — `cause` and `path` never reach the file", () => {
+test("the receipt rows carry no reporting fields — `cause` and `path` never reach the file", () => {
   // `converted` grew two fields for the log line. The rows written into the receipt must not: the
   // plan-execution receipt is read by every downstream gate and its shape is a contract.
   const join = joinPlanToBands(PLAN, BANDS_PERMANENT);

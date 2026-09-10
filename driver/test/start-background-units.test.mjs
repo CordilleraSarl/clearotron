@@ -21,7 +21,7 @@ const SYSTEMD = join(dirname(fileURLToPath(import.meta.url)), "..", "systemd");
 /** — read as source, because systemd cannot be observed from a unit test. */
 const START = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bin", "start.mjs");
 
-test("2148: the client door IS in the background enable set, and its settings are written before it", () => {
+test("the client door IS in the background enable set, and its settings are written before it", () => {
   // ── SUPERSEDED 2026-09-03, AND REWRITTEN RATHER THAN DELETED ──────────────────────────────────
   //
   // This arm used to assert the exact opposite, and it was right under the ruling it cited:
@@ -61,7 +61,7 @@ test("2148: the client door IS in the background enable set, and its settings ar
     + "of a signed-in identity");
 });
 
-test("2083: every shipped unit file is PINNED or EXCLUDED WITH A REASON — a new unit is a decision, not a default", () => {
+test("every shipped unit file is PINNED or EXCLUDED WITH A REASON — a new unit is a decision, not a default", () => {
   const shipped = readdirSync(SYSTEMD).filter((f) => /\.(service|timer|path)$/.test(f));
   // FLOOR LOWERED 10 -> 6 BECAUSE THE TREE LOST SIX FILES, not because the walker got weaker. The
   // retired path-watcher and timer units were deleted by ruling, taking twelve shipped files to six.
@@ -78,7 +78,7 @@ test("2083: every shipped unit file is PINNED or EXCLUDED WITH A REASON — a ne
   }
 });
 
-test("2083: `stop` on a box running nothing says so plainly and changes nothing", async () => {
+test("`stop` on a box running nothing says so plainly and changes nothing", async () => {
   // Same acceptance shape as disconnect's closed-door line. Spawned with a scratch HOME so the real
   // box's units (if any) are invisible; fate before text (the 2064 discipline).
   const { spawnSync } = await import("node:child_process");
@@ -98,7 +98,7 @@ test("2083: `stop` on a box running nothing says so plainly and changes nothing"
 
 // ── the retirement's upgrade path ──────────────────────────────────────────────
 
-test("1863 a retired unit is still MANAGED, or the flag refuses on every box it previously worked on", () => {
+test("a retired unit is still MANAGED, or the flag refuses on every box it previously worked on", () => {
   // THE REGRESSION THIS CATCHES, found by being asked whether the timer and the worker can coexist.
   // Removing the three prelim-driver units from BACKGROUND_UNITS makes them FOREIGN to the carve in
   // `start`, which reads any foreign installed unit as proof the box is a real server and refuses.
@@ -112,7 +112,7 @@ test("1863 a retired unit is still MANAGED, or the flag refuses on every box it 
   }
 });
 
-test("1863 every retired unit is a unit this repo actually ships", () => {
+test("every retired unit is a unit this repo actually ships", () => {
   // A retirement naming a file that does not exist disarms nothing and reads as done. Same shape as an
   // inventory entry claiming a tracked file the tree does not have.
   const shipped = new Set(readdirSync(SYSTEMD).filter((f) => /\.(service|timer|path)$/.test(f)));
@@ -121,7 +121,7 @@ test("1863 every retired unit is a unit this repo actually ships", () => {
   }
 });
 
-test("1863 the disarm runs BEFORE the enable, so the box never holds both drainers at once", () => {
+test("the disarm runs BEFORE the enable, so the box never holds both drainers at once", () => {
   // Ordering is the whole safety property here and it is invisible to any arm that only reads the
   // tables. Read from the source, because there is no way to observe systemd from a unit test.
   const src = readFileSync(START, "utf8");
@@ -179,7 +179,7 @@ function stopWithNoBus(units) {
   }
 }
 
-test("270 a stop that could not reach systemd leaves the unit files in place", () => {
+test("a stop that could not reach systemd leaves the unit files in place", () => {
   const units = ["clearotron-portal.service", "clearotron-worker.service"];
   const r = stopWithNoBus(units);
   const left = readdir270(r.dir);
@@ -188,7 +188,7 @@ test("270 a stop that could not reach systemd leaves the unit files in place", (
     + `running service with no unit file cannot be stopped by any ordinary means.\n${r.out}`);
 });
 
-test("270 it says it could not, rather than that it did", () => {
+test("it says it could not, rather than that it did", () => {
   const r = stopWithNoBus(["clearotron-portal.service"]);
   assert.ok(!/stopped and removed/.test(r.out),
     `it reported "stopped and removed" for a unit it did not stop\n${r.out}`);
@@ -199,7 +199,7 @@ test("270 it says it could not, rather than that it did", () => {
   assert.match(r.out, /XDG_RUNTIME_DIR/, `the refusal does not say how to reach systemd\n${r.out}`);
 });
 
-test("270 and it exits non-zero — the printed refusal is not enough on its own", () => {
+test("and it exits non-zero — the printed refusal is not enough on its own", () => {
   // The refusal was printed AND the command exited 0 in the first cut of this fix, because a bare
   // `process.exit(0)` on the last line discarded the code set above it. A script calling this would have
   // read success while the text said otherwise.

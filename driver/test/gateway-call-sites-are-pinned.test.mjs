@@ -90,7 +90,7 @@ test("the stderr digest is applied AT THE RECORD, not merely available as a help
 // substitution cannot reach another test.
 const CODEX = "openai-agent";
 
-test("#713 — every dispatch in one ladder receives the SAME codexHome, and it is not empty", async () => {
+test("every dispatch in one ladder receives the SAME codexHome, and it is not empty", async () => {
   // The property is not "a home was passed" but "one home per LADDER". A per-turn home is exactly what
   // removed, and a fresh directory on each attempt would satisfy a mere presence check while
   // failing every warm resume — the defect wearing the fix's clothes.
@@ -180,7 +180,7 @@ async function runWithFormRepair(tag, onTurn) {
   return { runDir, seen, rows: rows(runDir, "frame-diff") };
 }
 
-test("#789 the FORM-REPAIR dispatch receives the ladder's codexHome too", async () => {
+test("the FORM-REPAIR dispatch receives the ladder's codexHome too", async () => {
   const { seen, rows: r } = await runWithFormRepair("repairhome");
 
   // The premise first: without it the assertion below is about a path that never ran, which is exactly
@@ -200,7 +200,7 @@ test("#789 the FORM-REPAIR dispatch receives the ladder's codexHome too", async 
     + `${seen.homes.length} dispatches). One home per LADDER is the invariant, and the repair turn is inside it`);
 });
 
-test("#789 the FORM-REPAIR record digests its stderr too", async () => {
+test("the FORM-REPAIR record digests its stderr too", async () => {
   const { rows: r } = await runWithFormRepair("repairtail");
   const repairRows = r.filter((x) => Number(x.repair) > 0);
   assert.ok(repairRows.length >= 1, "the form-repair path never ran — nothing to assert about its record");

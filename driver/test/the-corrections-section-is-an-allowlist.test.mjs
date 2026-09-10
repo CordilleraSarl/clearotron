@@ -55,7 +55,7 @@ ${flags(n, bold)}
 - one profile per adversarial finding
 `;
 
-test("#1570 only the corrections section is read — both correction formats, both counts", () => {
+test("only the corrections section is read — both correction formats, both counts", () => {
   for (const [label, bold, n] of [["format A (**1.)", true, 14], ["format B (1. **)", false, 11]]) {
     const k = parseCorrectionKinds(review(n, bold));
     assert.equal(k.total, n, `${label}: expected ${n} rows, got ${k.total}`);
@@ -64,7 +64,7 @@ test("#1570 only the corrections section is read — both correction formats, bo
   }
 });
 
-test("#1570 the already-resolved items are in NO row — this is the defect", () => {
+test("the already-resolved items are in NO row — this is the defect", () => {
   // Six bullets recording work the reviewer had finished. Under the denylist all six became `fact`
   // corrections and would have been cited as the grounds a BLOCKING verdict rested on.
   for (const bold of [true, false]) {
@@ -76,7 +76,7 @@ test("#1570 the already-resolved items are in NO row — this is the defect", ()
   }
 });
 
-test("#1570 a section nobody anticipated contributes NOTHING — the allowlist fails closed", () => {
+test("a section nobody anticipated contributes NOTHING — the allowlist fails closed", () => {
   // The whole point. Under a denylist this section is corrections because nobody listed it; under an
   // allowlist it is not corrections because nobody allowed it. Same unknown heading, opposite outcome.
   const md = `# BLOCKING
@@ -95,7 +95,7 @@ test("#1570 a section nobody anticipated contributes NOTHING — the allowlist f
   assert.equal(rows[0].kind, "rating");
 });
 
-test("#1570 the allowlist keys on the WORD, because reviews write the heading five ways", () => {
+test("the allowlist keys on the WORD, because reviews write the heading five ways", () => {
   // Measured across the preserved reviews on the test instance rather than guessed. A literal
   // `Flagged corrections` would have dropped three of these.
   for (const h of ["Flagged corrections", "Residual corrections", "Flagged correction still standing",
@@ -106,7 +106,7 @@ test("#1570 the allowlist keys on the WORD, because reviews write the heading fi
     assert.ok(!CORRECTIONS_SECTION_RE.test(h), `"${h}" is not a corrections heading`);
 });
 
-test("#1570 a document that names NO corrections section still yields its corrections", () => {
+test("a document that names NO corrections section still yields its corrections", () => {
   // That fixture is exactly this, and the writes them under `## Corrections`. The allowlist must not
   // turn a headless review into a silent zero — the fallback applies only where there is no section
   // structure to get wrong, so it cannot reopen the defect above.
@@ -118,7 +118,7 @@ test("#1570 a document that names NO corrections section still yields its correc
   assert.equal(correctionsSection(headless).named, false);
 });
 
-test("#1570 the parse states which section it read — zero rows is two different facts", () => {
+test("the parse states which section it read — zero rows is two different facts", () => {
   const withSection = review(11, true);
   assert.equal(parseCorrectionKinds(withSection).section, "Flagged corrections");
   assert.equal(correctionsSection(withSection).named, true);

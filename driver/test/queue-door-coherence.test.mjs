@@ -24,7 +24,7 @@ const RUNNABLE = Object.freeze({
 
 // ── — the field whose job is to say the door says the door ────────────────────────────────────
 
-test("#1086 a portal-minted key stamps the PORTAL door, not the MCP door", () => {
+test("a portal-minted key stamps the PORTAL door, not the MCP door", () => {
   const job = buildJob({ ...RUNNABLE }, { scope: { sub: PORTAL_TOKEN_SUB } });
   assert.equal(job.enqueuedVia, "portal/start_run",
     "portal traffic recorded itself as MCP-door traffic — the two production portal-* jobs carry exactly that");
@@ -33,7 +33,7 @@ test("#1086 a portal-minted key stamps the PORTAL door, not the MCP door", () =>
   assert.equal(job.enqueuedBy, PORTAL_TOKEN_SUB);
 });
 
-test("#1086 every other verified principal still stamps the MCP door", () => {
+test("every other verified principal still stamps the MCP door", () => {
   for (const sub of ["clawdi", "aurora-connector", "staff-key", ""]) {
     const job = buildJob({ ...RUNNABLE }, { scope: { sub } });
     assert.equal(job.enqueuedVia, "mcp/start_run", `sub ${JSON.stringify(sub)} changed the door`);
@@ -43,7 +43,7 @@ test("#1086 every other verified principal still stamps the MCP door", () => {
   assert.equal(buildJob({ ...RUNNABLE }, {}).enqueuedVia, "mcp/start_run");
 });
 
-test("#1086 the door is derived from the VERIFIED sub — a caller cannot name its own door", () => {
+test("the door is derived from the VERIFIED sub — a caller cannot name its own door", () => {
   // The trust boundary is unchanged, and that is the argument for deriving it here: `enqueuedBy` already
   // reads this same server-verified claim, at this same moment. A body that names a door is ignored,
   // exactly as portal-service.mjs's own field note says it must be ("a door that let a body name another
@@ -55,7 +55,7 @@ test("#1086 the door is derived from the VERIFIED sub — a caller cannot name i
   assert.equal(enqueuedViaFor({ sub: "some-connector" }), "mcp/start_run");
 });
 
-test("#1086 enqueuedVia stays a bounded token — pipeline.mjs clamps it and a slash-free word is not one", () => {
+test("enqueuedVia stays a bounded token — pipeline.mjs clamps it and a slash-free word is not one", () => {
   // pipeline.mjs's `enqueuedVia` clamp holds this to /^[a-z0-9][a-z0-9/_.-]{0,63}$/i before it reaches
   // meta.json, and a value that fails the clamp is recorded as null — a door name that silently becomes
   // "no door". Cited by SYMBOL, not by line: the line number this comment used to carry was already
@@ -69,7 +69,7 @@ test("#1086 enqueuedVia stays a bounded token — pipeline.mjs clamps it and a s
 
 // ── — what a job carries that nobody declared ─────────────────────────────────────────────────
 
-test("#1085 an undeclared field is NAMED, where it was silently dropped before", () => {
+test("an undeclared field is NAMED, where it was silently dropped before", () => {
   // THE EXAMPLE CHANGED AND THE MECHANISM DID NOT. `promptParts` was this check's specimen — the field
   // on production manifests that appeared in this repo only as a fixture nothing consumed — and it is
   // now DECLARED, because it turned out to mean something: it is the requester saying the prose rides as
@@ -86,7 +86,7 @@ test("#1085 an undeclared field is NAMED, where it was silently dropped before",
   assert.match(w, /Declare them|stop writing/i, "and both remedies, because which one is right is not decided here");
 });
 
-test("#1085 it WARNS and never refuses — the writer is live and unidentified", () => {
+test("it WARNS and never refuses — the writer is live and unidentified", () => {
   const v = validateJob({ ...RUNNABLE, mysteryField: true });
   assert.equal(v.ok, true, "a hard refusal would start breaking an unknown live writer, loudly, in production");
   assert.equal(v.classify, "run");
@@ -95,7 +95,7 @@ test("#1085 it WARNS and never refuses — the writer is live and unidentified",
   // error, that decision wants to be visible here rather than inferred from a red suite.
 });
 
-test("#1085 every declared field passes clean, and the list is what decides", () => {
+test("every declared field passes clean, and the list is what decides", () => {
   const everything = Object.fromEntries(DECLARED_JOB_FIELDS.map((k) => [k, "x"]));
   assert.deepEqual(undeclaredJobFields(everything), [],
     "a DECLARED field was flagged — this check and DECLARED_JOB_FIELDS have drifted apart");
@@ -104,11 +104,11 @@ test("#1085 every declared field passes clean, and the list is what decides", ()
   assert.deepEqual(undeclaredJobFields({ ...RUNNABLE, _internalNote: "x" }), []);
 });
 
-test("#1085 the check never throws on a shape that is not a job", () => {
+test("the check never throws on a shape that is not a job", () => {
   for (const x of [null, undefined, "a string", 42, []]) assert.deepEqual(undeclaredJobFields(x), []);
 });
 
-test("#1085 THE ROUTE THAT MATTERS: a hand-written queue file reaches the wall carrying it", () => {
+test("THE ROUTE THAT MATTERS: a hand-written queue file reaches the wall carrying it", () => {
   // The MCP door assembles from a named allow-list, so nothing undeclared can survive it — that door is
   // the one that genuinely strips. The routes where an undeclared field DOES survive are the CLI's
   // `--job <file>` overlay and a hand-written `<id>.json` (a documented intake route, INTAKE.md), and
@@ -137,7 +137,7 @@ test("#1085 THE ROUTE THAT MATTERS: a hand-written queue file reaches the wall c
 // inline `brief` prose once made JSON.parse throw at intake and parked a job with nothing searched.
 // Declaring the field is what lets a door ask whether the thing it declared actually arrived.
 
-test("#1085 THE DEFECT: a manifest declaring sidecars that carries no prose says so, naming the files", () => {
+test("THE DEFECT: a manifest declaring sidecars that carries no prose says so, naming the files", () => {
   // Today this is accepted in silence and surfaces three steps later as "missing mark name(s)" — the
   // symptom, naming neither the declaration nor the files. The forwarding agent's observed failure is
   // exactly this shape: a manifest mis-named `<id>.manifest.json` leaves the bare-base sidecars unmatched.
@@ -155,7 +155,7 @@ test("#1085 THE DEFECT: a manifest declaring sidecars that carries no prose says
   assert.match(err, /SIDECAR files and none arrived/, "…and the refusal now says WHY the name is missing");
 });
 
-test("#1085 CONTROL: a manifest whose sidecars DID arrive is silent", () => {
+test("CONTROL: a manifest whose sidecars DID arrive is silent", () => {
   // The discriminating control. If this ever reds, the check has degraded into "warn whenever
   // promptParts is set", which fires on every correct hand-emitted job and teaches readers to skip it.
   const v = validateJob({ ...RUNNABLE, promptParts: true });
@@ -164,7 +164,7 @@ test("#1085 CONTROL: a manifest whose sidecars DID arrive is silent", () => {
     "a job carrying its prose was warned about anyway — an alarm that fires on correct behaviour buries the real ones");
 });
 
-test("#1085 CONTROL: a job that never declared sidecars keeps its plain refusal", () => {
+test("CONTROL: a job that never declared sidecars keeps its plain refusal", () => {
   // The other direction: the cause clause must not attach itself to every missing name.
   const v = validateJob({ id: "j1", msgId: "<j1@x>", forwarder: "ops", classes: [9] });
   const err = v.errors.find((e) => /missing mark name/.test(e));
@@ -172,7 +172,7 @@ test("#1085 CONTROL: a job that never declared sidecars keeps its plain refusal"
   assert.equal(v.warnings.filter((x) => /SIDECAR/.test(x)).length, 0);
 });
 
-test("#1085 the sidecar list comes from PROSE_PARTS, never a copy", () => {
+test("the sidecar list comes from PROSE_PARTS, never a copy", () => {
   // Two lists that must agree, and the message is where they would drift: a tenth prose field added to
   // PROSE_PARTS must appear in this warning the day it lands, not the day someone remembers to retype it.
   const v = validateJob({ id: "j1", msgId: "<j1@x>", forwarder: "ops", classes: [9], promptParts: true });
@@ -185,13 +185,13 @@ test("#1085 the sidecar list comes from PROSE_PARTS, never a copy", () => {
 
 // ── — the harness prints every job it enqueues ─────────────────────────────────────────────────
 
-test("#1088 the enqueued job id is read from the door's own answer", () => {
+test("the enqueued job id is read from the door's own answer", () => {
   // Both doors answer with JSON carrying `id`. The CLI adds `queued`/`queuePath`; start_run adds a note.
   assert.equal(idFromDoorAnswer('{"ok":true,"id":"e2e-r0a-cli","queued":true,"queuePath":"/q/e2e-r0a-cli.json"}'), "e2e-r0a-cli");
   assert.equal(idFromDoorAnswer('  {"ok":true,"id":"j-2"}  \n'), "j-2", "the CLI's stdout carries whitespace");
 });
 
-test("#1088 an unreadable answer yields null — never an invented id", () => {
+test("an unreadable answer yields null — never an invented id", () => {
   // A harness that guessed would send a watcher to a queue file that does not exist, which is worse than
   // admitting it does not know. The caller prints the admission rather than skipping the line.
   for (const bad of ["", "not json", "{}", '{"ok":true}', '{"ok":true,"id":""}', '{"ok":true,"id":7}', null, undefined]) {

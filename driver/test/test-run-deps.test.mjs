@@ -37,7 +37,7 @@ function worktreeWithout(deps) {
 
 const runIn = (cwd, args) => spawnSync(process.execPath, [RUNNER, ...args], { cwd, encoding: "utf8" });
 
-test("#535 a workspace whose dependencies cannot resolve is REFUSED, not run blind", () => {
+test("a workspace whose dependencies cannot resolve is REFUSED, not run blind", () => {
   const { root, ws } = worktreeWithout({ undici: "^6.0.0", exceljs: "^4.4.0" });
   try {
     const r = runIn(ws, ["node", "-e", "console.log('THE COMMAND RAN')"]);
@@ -59,7 +59,7 @@ test("#535 a workspace whose dependencies cannot resolve is REFUSED, not run bli
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#535 the refusal is about RESOLUTION, not about the name being declared — an installed dep runs", () => {
+test("the refusal is about RESOLUTION, not about the name being declared — an installed dep runs", () => {
   // The counterpart, and it is what keeps the guard from being a blanket refusal: a workspace whose
   // declared dependency IS resolvable runs its suite normally. Without this, "refuses on a fresh
   // worktree" and "refuses always" look identical from the failing side.
@@ -74,7 +74,7 @@ test("#535 the refusal is about RESOLUTION, not about the name being declared �
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#535 a dependency resolved from the WORKSPACE ROOT counts — npm hoists, and a hoisted package is installed", () => {
+test("a dependency resolved from the WORKSPACE ROOT counts — npm hoists, and a hoisted package is installed", () => {
   // The resolution walk has to climb, because npm hoists shared dependencies to the root node_modules.
   // A check that only looked beside the workspace's own package.json would refuse a correctly installed
   // tree, which is a false refusal — worse than the defect, because it blocks a suite that would pass.
@@ -88,7 +88,7 @@ test("#535 a dependency resolved from the WORKSPACE ROOT counts — npm hoists, 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#535 a workspace ROOT with no node_modules is refused too — 'declares no dependencies' is not 'installed'", () => {
+test("a workspace ROOT with no node_modules is refused too — 'declares no dependencies' is not 'installed'", () => {
   // `npm run test:providers` runs from the repo root, whose package.json declares workspaces and no
   // dependencies of its own. Reading that as "nothing to check" would let the root-cwd invocations run
   // blind on exactly the tree this issue is about.
@@ -106,7 +106,7 @@ test("#535 a workspace ROOT with no node_modules is refused too — 'declares no
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#535 the runner does not INSTALL anything — a test wrapper must not be able to fetch packages", () => {
+test("the runner does not INSTALL anything — a test wrapper must not be able to fetch packages", () => {
   // scripts/publication-scan.mjs runs the suite through this wrapper, and CI does too. A wrapper that can
   // start a network install is a wrapper that can turn a publication gate into a package fetch. `npm ci`
   // already runs ahead of both, so the refusal is the whole remedy.

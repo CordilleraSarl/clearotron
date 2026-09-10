@@ -697,7 +697,7 @@ serve({
   }, {
     // ── CONVERSION 5 — ONE FINDING CARD, AND THE FIRST FAN-OUT TRANSPORT ──────────────────────────
     //
-    // The schema carries the seat's JUDGMENT and nothing else. Owner ruling S2 keeps the prose the
+    // The schema carries the seat's JUDGMENT and nothing else. Ruling S2 keeps the prose the
     // model's pending a side-by-side reading, so `text` is the seat's sentence — what the driver takes
     // over is every SHAPE around it: the bullet, the bold lead-in, the `::p::` position, and the final
     // `- Source:` line, which is composed from the finding's own record rather than typed from a host

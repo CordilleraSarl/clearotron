@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // `/portal/api/connect-key` — the portal became an issuance path, and what that is allowed to mean.
 //
-// Owner ruling 2026-08-31: *"The page never shows a key, in any state."* The key still reaches the
+// Ruling 2026-08-31: *"The page never shows a key, in any state."* The key still reaches the
 // browser, because a clipboard write needs it, and never becomes text.
 //
 // ── THE PROPERTY THAT ACTUALLY MATTERS ───────────────────────────────────────────────────────────

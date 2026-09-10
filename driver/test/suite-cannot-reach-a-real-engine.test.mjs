@@ -243,7 +243,7 @@ test("the stub refuses: non-zero, and it names itself so the cause is not a myst
     "the refusal has to carry a token no engine would ever emit, or it reads as a model reply");
 });
 
-test("#1673 THE STUB'S OWN ADVICE MUST RUN — the array form silently sets variables named \"0\" and \"1\"", () => {
+test("THE STUB'S OWN ADVICE MUST RUN — the array form silently sets variables named \"0\" and \"1\"", () => {
   // Advice living in a string is the one kind nothing executes, so it rots without a single test going red.
   // This one shipped wrong: `pinEnvAll` takes an OBJECT (`Object.entries(pairs)`), and the advice showed an
   // array of pairs. Following it produced `{"0":"CLEAROTRON_AI,anthropic-agent","1":"..."}` — two variables

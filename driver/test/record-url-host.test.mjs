@@ -32,13 +32,13 @@ const parse = (f, origins) => parseFindingsJson(doc(f), origins === undefined ? 
 
 // ── the allow-list ──────────────────────────────────────────────────────────────────────────────────
 
-test("#495 recordOriginsFor: a single-office provider declares its own host", () => {
+test("recordOriginsFor: a single-office provider declares its own host", () => {
   assert.deepEqual(recordOriginsFor("corsearch"), ["https://tm.corsearch.com"]);
   assert.deepEqual(recordOriginsFor("euipo"), ["https://euipo.europa.eu"]);
   assert.deepEqual(recordOriginsFor("uspto-local"), ["https://tsdr.uspto.gov"]);
 });
 
-test("#495 recordOriginsFor: A COMPOSITE RESOLVES THROUGH ITS MEMBERS — free-tier allows both offices", () => {
+test("recordOriginsFor: A COMPOSITE RESOLVES THROUGH ITS MEMBERS — free-tier allows both offices", () => {
   // The failure this pins is the one that would have hurt most. free-tier is EUIPO + the USPTO local
   // index and its own publicRecordOrigin is null ON PURPOSE (two offices, two hosts). A gate that read
   // that null as the allow-list would produce an EMPTY set and refuse EVERY free-tier delivery — every
@@ -51,7 +51,7 @@ test("#495 recordOriginsFor: A COMPOSITE RESOLVES THROUGH ITS MEMBERS — free-t
   assert.equal(origins.length, 2, "and nothing else");
 });
 
-test("#495 recordOriginsFor: a provider with NO public record page declares an empty set, which is an answer", () => {
+test("recordOriginsFor: a provider with NO public record page declares an empty set, which is an answer", () => {
   // clarivate and signa: hasPublicRecordUrl false — cite the office register instead. Empty is not "no
   // opinion"; it means no absolute record URL is legitimate on this provider, which is what the gate acts on.
   // — TAKEN FROM THE TABLE, not from a hand-written pair: a seventh provider that publishes no record
@@ -61,14 +61,14 @@ test("#495 recordOriginsFor: a provider with NO public record page declares an e
   for (const id of noPublicPage) assert.deepEqual(recordOriginsFor(id), [], `${id} publishes no per-record page`);
 });
 
-test("#495 recordOriginsFor: an unknown provider is empty, and a cycle cannot hang the resolver", () => {
+test("recordOriginsFor: an unknown provider is empty, and a cycle cannot hang the resolver", () => {
   assert.deepEqual(recordOriginsFor("nope"), []);
   assert.deepEqual(recordOriginsFor(null), []);
 });
 
 // ── the gate ────────────────────────────────────────────────────────────────────────────────────────
 
-test("#495 a register link on a host the provider does not declare is REFUSED, and the reason names both", () => {
+test("a register link on a host the provider does not declare is REFUSED, and the reason names both", () => {
   const f = finding({ source: { source_type: "register-vendor", resolved_link: "https://tm.corsearch.com/mark/us/86264144" } });
   assert.throws(() => parse(f, recordOriginsFor("euipo")), (e) => {
     assert.match(e.message, /finding_record_url_foreign_host:1/, "a token-first reason the corrective ladder can key on");
@@ -78,12 +78,12 @@ test("#495 a register link on a host the provider does not declare is REFUSED, a
   });
 });
 
-test("#495 the same link on the provider that DOES publish it passes", () => {
+test("the same link on the provider that DOES publish it passes", () => {
   const f = finding({ source: { source_type: "register-vendor", resolved_link: "https://tm.corsearch.com/mark/us/86264144" } });
   assert.equal(parse(f, recordOriginsFor("corsearch")).findings.length, 1);
 });
 
-test("#495 a free-tier run accepts BOTH of its offices' hosts and refuses a third", () => {
+test("a free-tier run accepts BOTH of its offices' hosts and refuses a third", () => {
   const origins = recordOriginsFor("free-tier");
   for (const link of ["https://euipo.europa.eu/mark/eu/018553557", "https://tsdr.uspto.gov/mark/us/86264144"]) {
     const f = finding({ source: { source_type: "register-vendor", resolved_link: link } });
@@ -93,7 +93,7 @@ test("#495 a free-tier run accepts BOTH of its offices' hosts and refuses a thir
   assert.throws(() => parse(foreign, origins), /finding_record_url_foreign_host/);
 });
 
-test("#495 a provider that publishes NO record page refuses an absolute link and says to cite the register", () => {
+test("a provider that publishes NO record page refuses an absolute link and says to cite the register", () => {
   const f = finding({ source: { source_type: "register-vendor", resolved_link: "https://tm.corsearch.com/mark/us/86264144" } });
   assert.throws(() => parse(f, recordOriginsFor("clarivate")), (e) => {
     assert.match(e.message, /finding_record_url_foreign_host/);
@@ -102,7 +102,7 @@ test("#495 a provider that publishes NO record page refuses an absolute link and
   });
 });
 
-test("#495 registration.uri is gated too — the URL COLUMN is the surface the issue is about", () => {
+test("registration.uri is gated too — the URL COLUMN is the surface the issue is about", () => {
   const f = finding({
     owner: { name: "Kurena SA", country: "CH", registrations: [{ uri: "https://tm.corsearch.com/mark/eu/018553557" }] },
   });
@@ -112,7 +112,7 @@ test("#495 registration.uri is gated too — the URL COLUMN is the surface the i
 
 // ── what the gate must NOT do ───────────────────────────────────────────────────────────────────────
 
-test("#495 A RELATIVE uri PASSES — the path fragment IS the canonical record identity", () => {
+test("A RELATIVE uri PASSES — the path fragment IS the canonical record identity", () => {
   // `/mark/<cc>/<number>` is what this system stores and what the composition rule starts from. Only a
   // value that parses as an absolute http(s) URL is making a host claim worth checking. Refusing the
   // path would break every provider at once, including the ones with no public page at all.
@@ -124,14 +124,14 @@ test("#495 A RELATIVE uri PASSES — the path fragment IS the canonical record i
     assert.equal(parse(f, recordOriginsFor(id)).findings.length, 1, `a bare uri path is fine on ${id}`);
 });
 
-test("#495 a COMMON-LAW finding's link is not a record URL and is never judged as one", () => {
+test("a COMMON-LAW finding's link is not a record URL and is never judged as one", () => {
   // A marketplace or a company site is what that source type means. Refusing those would be the gate
   // misreading its own subject, and it would fire on every common-law finding in every run.
   const f = finding({ source: { source_type: "common-law-marketplace", resolved_link: "https://www.walmart.com/ip/12345" } });
   assert.equal(parse(f, recordOriginsFor("euipo")).findings.length, 1);
 });
 
-test("#495 WITH NO PROVIDER NAMED THE GATE IS INACTIVE — replay and offline unit paths still parse", () => {
+test("WITH NO PROVIDER NAMED THE GATE IS INACTIVE — replay and offline unit paths still parse", () => {
   // An archived run parsed with no provider in hand must not fail on a fact about today's deployment.
   // null and absent are the same answer; an empty ARRAY is a different one and is tested above.
   const f = finding({ source: { source_type: "register-vendor", resolved_link: "https://anything.example/mark/x" } });
@@ -139,7 +139,7 @@ test("#495 WITH NO PROVIDER NAMED THE GATE IS INACTIVE — replay and offline un
   assert.equal(parse(f, null).findings.length, 1, "option null");
 });
 
-test("#495 an unparseable or non-http value is not a host claim and is left to the shape rules", () => {
+test("an unparseable or non-http value is not a host claim and is left to the shape rules", () => {
   for (const link of ["", "not a url", "mailto:someone@example.test"]) {
     const f = finding({ source: { source_type: "register-vendor", resolved_link: link } });
     assert.equal(parse(f, recordOriginsFor("euipo")).findings.length, 1, `${JSON.stringify(link)} claims no host`);
@@ -165,7 +165,7 @@ test("#495 an unparseable or non-http value is not a host claim and is left to t
 // rather than a paragraph someone happened to write, and it is DERIVED FROM THE TABLE — a seventh
 // provider that declares `hasPublicRecordUrl:false` inherits the requirement on the day it is added,
 // without anyone remembering to come here. That is the same rule the `recordOriginsFor` arm above runs on.
-test("#1843 every doc the seat reads names the FIELD and the VALUE, not just \"compose nothing\"", () => {
+test("every doc the seat reads names the FIELD and the VALUE, not just \"compose nothing\"", () => {
   const SKILLS = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills", "prelim-register");
   const noPublicPage = Object.keys(PROVIDERS).filter((id) => PROVIDERS[id].hasPublicRecordUrl === false);
   nonEmpty(noPublicPage, "no provider declares hasPublicRecordUrl:false — this arm asserted nothing");
@@ -201,7 +201,7 @@ test("#1843 every doc the seat reads names the FIELD and the VALUE, not just \"c
 // THE ARM THAT WOULD HAVE CAUGHT IT, and the standard it sets: a prose fix is not landed because the
 // words are right. It is landed when the STAGE THAT FAILS reads a file that carries them. That is
 // derivable — `STAGES.<stage>.skillReads` declares it — so it is checked rather than assumed.
-test("#1843 the record-URL rule is in a file the SYNTHESIS stage actually reads", async () => {
+test("the record-URL rule is in a file the SYNTHESIS stage actually reads", async () => {
   const { STAGES } = await import("../stages.mjs");
   const reads = STAGES.synthesis?.skillReads;
   nonEmpty(reads ?? [], "the synthesis stage declares no skillReads — this arm cannot see what it opens");
@@ -218,7 +218,7 @@ test("#1843 the record-URL rule is in a file the SYNTHESIS stage actually reads"
     + "in the tree — prose lands where the failing seat looks, or it has not landed.");
 });
 
-test("#1843 and the register seat keeps it too — this was an addition, not a move", () => {
+test("and the register seat keeps it too — this was an addition, not a move", () => {
   const SKILLS = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills");
   for (const rel of ["prelim-register/status-rules.md", "prelim-register/digest.md"]) {
     assert.match(readFileSync(join(SKILLS, rel), "utf8"), /`source\.resolved_link` is `""`/,
@@ -230,7 +230,7 @@ test("#1843 and the register seat keeps it too — this was an addition, not a m
 // The refusal a seat actually meets must carry the same remedy the docs now carry. If they drift apart,
 // the doc is teaching one thing and the gate is demanding another — which is this issue with the sides
 // swapped.
-test("#1843 the validator's refusal states the same remedy the docs do", () => {
+test("the validator's refusal states the same remedy the docs do", () => {
   // Through this file's own `parse` helper, so the document wrapper and the origins argument are the
   // shapes every other arm here uses — a hand-built call is how the first cut of this arm asserted a
   // key-shape error instead of the refusal it was written for.

@@ -556,7 +556,7 @@ test("a saved search must be an object — a string or array is refused before t
 
 // ──: provenance reaches NO role, for EVERY deck — the class, held both ways ─────
 
-test("2085: a planted source_deck survives NEITHER branch of frameworkView", () => {
+test("a planted source_deck survives NEITHER branch of frameworkView", () => {
   // The leak shipped through the branch the strip did not cover: client was cleaned, staff passed the
   // manifest whole, and the owner met the Privileged & Confidential line on his own page. The plant
   // drives BOTH branches with the same poisoned manifest, so a future one-branch regression cannot
@@ -570,7 +570,7 @@ test("2085: a planted source_deck survives NEITHER branch of frameworkView", () 
   }
 });
 
-test("2085: EVERY bundled deck's REAL manifest is clean through the view — not just the one the owner saw", () => {
+test("EVERY bundled deck's REAL manifest is clean through the view — not just the one the owner saw", () => {
   // The acceptance names the sweep: generic, aurora, zephyr, demo, triage — a uniform fix that misses
   // one member carries the defect. Driven over the real files on disk, not fixtures, because the real
   // strings are what ships. The house manifests no longer carry a confidentiality marking — that is

@@ -58,19 +58,19 @@ const declaredRow = () => validateDispositionCall([{ row_index: AT, ruling: "loa
 // including ones that must fail — `recorded` is the pr_risk DATA, not a count, so a number censused an
 // empty set and returned early. A census that cannot produce a pass AND a fail proves nothing about the
 // case in between, so both are asserted before any parked row is looked at.
-test("#1230 CONTROL: a properly ruled row passes the census", () => {
+test("CONTROL: a properly ruled row passes the census", () => {
   const u = union(ruledRow());
   assert.equal(u.ruled, 1, "the fixture's ruled row was not accepted — every assertion below is measuring the wrong thing");
   assert.deepEqual(census(u).map((v) => v.reason), [], "a complete row is being reported as a violation");
 });
 
-test("#1230 CONTROL: an unsubmitted row still fails the census", () => {
+test("CONTROL: an unsubmitted row still fails the census", () => {
   const v = census(union([]));
   assert.ok(v.length > 0, "the census stopped reporting an obligation nobody answered — the guard is inert");
   assert.equal(owed(v), 1, "an unanswered obligation must still be OWED");
 });
 
-test("#1230 a row parked BY THE COUNTER is no longer owed — the stage stops failing on it", () => {
+test("a row parked BY THE COUNTER is no longer owed — the stage stops failing on it", () => {
   const u = union([], { parkedIds: [ID] });
   assert.equal(u.parked, 1);
   assert.equal(u.outstanding, 0, "the tool's own count already excluded it — that half was never the defect");
@@ -78,7 +78,7 @@ test("#1230 a row parked BY THE COUNTER is no longer owed — the stage stops fa
     "the census still OWES a row the seat has been told to stop sending — the ladder retries and the seat cannot fix it");
 });
 
-test("#1230 …and it is SURFACED, because that is the condition of accepting it", () => {
+test("…and it is SURFACED, because that is the condition of accepting it", () => {
   const p = census(union([], { parkedIds: [ID] })).find((v) => v.reason === "parked");
   assert.ok(p, "the parked row vanished from the census — the stage now completes over an obligation nobody decided, "
     + "which is the lying receipt this pair of issues is about");
@@ -87,7 +87,7 @@ test("#1230 …and it is SURFACED, because that is the condition of accepting it
   assert.match(p.detail, /no count may report it as one/, "nothing in the row warns a summarising seam off counting it");
 });
 
-test("#1230 a row parked BY SEAT DECLARATION carries its own kind and its own sentence", () => {
+test("a row parked BY SEAT DECLARATION carries its own kind and its own sentence", () => {
   const v = census(union(declaredRow()));
   assert.equal(owed(v), 0);
   const p = v.find((x) => x.reason === "parked");
@@ -98,7 +98,7 @@ test("#1230 a row parked BY SEAT DECLARATION carries its own kind and its own se
     "a row that was never refused is telling the lawyer it was refused past a bound");
 });
 
-test("#1230 `parked` is DECLARED and is NOT an unruled reason — both halves matter", () => {
+test("`parked` is DECLARED and is NOT an unruled reason — both halves matter", () => {
   // Declared: pins the reason vocabulary to what this module can emit, so an undeclared reason is a
   // reader that cannot resolve what it is looking at.
   assert.ok(CONNOTATION_REASONS.includes("parked"), "the census emits a reason the vocabulary does not declare");
@@ -108,7 +108,7 @@ test("#1230 `parked` is DECLARED and is NOT an unruled reason — both halves ma
     "a parked row counts as outstanding — the stage fails forever on a row nobody may re-send");
 });
 
-test("#1230 THE PAIRING IS THE PROPERTY: nothing is un-owed without being reported", () => {
+test("THE PAIRING IS THE PROPERTY: nothing is un-owed without being reported", () => {
   // The one shape that must never exist — dropped from the owed count AND absent from the census — is the
   // delivered lie. Asserted as a property over both park kinds rather than trusting the two tests above.
   for (const [label, u] of [["counter", union([], { parkedIds: [ID] })], ["declared", union(declaredRow())]]) {
@@ -125,7 +125,7 @@ test("#1230 THE PAIRING IS THE PROPERTY: nothing is un-owed without being report
 // planted park: a merged mega-checker would have hidden which one was broken.
 import { connotationAuditCounts, renderDispositionTable } from "../connotation-search.mjs";
 
-test("#1230 CLERK 3 — the DELIVERED table carries the undecided row instead of dropping it", () => {
+test("CLERK 3 — the DELIVERED table carries the undecided row instead of dropping it", () => {
   // The worst of the four. `usable` filtered to rows with a ruling, which was right while an unruled row
   // meant the stage FAILED and nothing shipped. A parked row ships — so the filter silently removed the
   // one obligation nobody could decide, and the reader got a complete-looking table with no gap in it.
@@ -149,7 +149,7 @@ test("#1230 CLERK 3 — the DELIVERED table carries the undecided row instead of
   assert.match(bare, /no reason was recorded/, "an undecided row with no sentence renders an empty cell");
 });
 
-test("#1230 CLERK 3 — a park does not hide inside the RULING column", () => {
+test("CLERK 3 — a park does not hide inside the RULING column", () => {
   // Rendered as its own block on purpose: an undecided row sitting under a heading that says "Ruling" is
   // read as a ruling whatever the cell contains.
   const mixed = unionDispositionForm({ rows: [] }, { rows: ruledRow() }, OB, { half: "b" });
@@ -158,7 +158,7 @@ test("#1230 CLERK 3 — a park does not hide inside the RULING column", () => {
   assert.doesNotMatch(out, /UNDECIDED/, "a run with nothing parked is advertising an undecided section");
 });
 
-test("#1230 CLERK 2 — the audit's numbers count the parks, split by kind", () => {
+test("CLERK 2 — the audit's numbers count the parks, split by kind", () => {
   const c = (u) => connotationAuditCounts(census(u));
   const byCounter = c(union([], { parkedIds: [ID] }));
   assert.equal(byCounter.parked, 1, "the audit reports zero problems over an obligation nobody decided");
@@ -174,7 +174,7 @@ test("#1230 CLERK 2 — the audit's numbers count the parks, split by kind", () 
 });
 
 const GUARD = "disposition row-state readers";
-test("#1230 THE READER TRIPWIRE — a new module that reads row state must be taught the park", (ctx) => {
+test("THE READER TRIPWIRE — a new module that reads row state must be taught the park", (ctx) => {
   // That assurance is a COUNT, so it has to be enforced as one. A fifteenth module arriving silently
   // is exactly how the fourteenth went unnoticed.
   //
@@ -248,7 +248,7 @@ test("#1230 THE READER TRIPWIRE — a new module that reads row state must be ta
     + "and every other reader may have gone quiet with it");
 });
 
-test("#1233 A PARK IS RELEASABLE, and releasing clears it at every reader", () => {
+test("A PARK IS RELEASABLE, and releasing clears it at every reader", () => {
   // Observed on a live client matter: the park fired at the bound on two rows, then RELEASED when both
   // were ruled on the next call during the recovery retry — final form 73/73 ruled, 0 parked standing.
   // "The park instructs, it does not destroy" is therefore a live property, not a design intention, and
@@ -271,7 +271,7 @@ test("#1233 A PARK IS RELEASABLE, and releasing clears it at every reader", () =
     "the document census still reports a row that was released — the stage fails on work that landed");
 });
 
-test("#1233 the EXHAUSTED sentence is left for the writer that knows the numbers", () => {
+test("the EXHAUSTED sentence is left for the writer that knows the numbers", () => {
   // The defect this pins: this module used to invent a generic sentence for the exhausted kind, which
   // made disposition-tool.mjs's informative writer — guarded on emptiness — unreachable on EVERY real
   // park. Live parks read "refused the per-row bound without binding" while the tool stood ready to say
@@ -292,7 +292,7 @@ test("#1233 the EXHAUSTED sentence is left for the writer that knows the numbers
     "a sentence already written was re-invented — a re-union is overwriting the record");
 });
 
-test("#1233 a DECLARED park still carries the seat's own sentence from this module", () => {
+test("a DECLARED park still carries the seat's own sentence from this module", () => {
   // The declared kind IS this module's to write: the seat's obstacle arrives on the submission and there
   // is no later writer that knows it. Asserted so the fix above cannot be over-applied to both kinds.
   const row = union(declaredRow()).form.rows.find((r) => r.row_id === ID);

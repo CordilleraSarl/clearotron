@@ -49,13 +49,13 @@ chmodSync(CLAUDE, 0o755);
 
 // ── the decision, with no filesystem in it ─────────────────────────────────────────────────────────
 
-test("#773 room to spare is a pass and carries no reason", () => {
+test("room to spare is a pass and carries no reason", () => {
   const p = freeSpacePlan({ freeBytes: 40e9, needBytes: 500e6, path: "/somewhere" });
   assert.equal(p.ok, true);
   assert.equal(p.reason, null);
 });
 
-test("#773 short of room refuses WITH BOTH NUMBERS and names the path measured", () => {
+test("short of room refuses WITH BOTH NUMBERS and names the path measured", () => {
   const p = freeSpacePlan({ freeBytes: 120e6, needBytes: 500e6, path: "/mnt/tiny/studio" });
   assert.equal(p.ok, false);
   // The issue's own requirement: refuse with a number — what is free, what is needed.
@@ -68,14 +68,14 @@ test("#773 short of room refuses WITH BOTH NUMBERS and names the path measured",
   assert.match(p.reason, /CLEAROTRON_MIN_FREE_DISK_MB/, "and the escape, named");
 });
 
-test("#773 exactly at the threshold is a pass — the refusal is strictly below", () => {
+test("exactly at the threshold is a pass — the refusal is strictly below", () => {
   assert.equal(freeSpacePlan({ freeBytes: 500e6, needBytes: 500e6, path: "/x" }).ok, true);
   assert.equal(freeSpacePlan({ freeBytes: 500e6 - 1, needBytes: 500e6, path: "/x" }).ok, false);
 });
 
 // ── the measurement ────────────────────────────────────────────────────────────────────────────────
 
-test("#773 the default floor passes on an ordinary filesystem — a check that refuses a roomy box is worse than no check", () => {
+test("the default floor passes on an ordinary filesystem — a check that refuses a roomy box is worse than no check", () => {
   const dir = tmp("freespace-ok-");
   const r = preflightFreeSpace({}, dir);
   assert.equal(r.checked, true);
@@ -97,7 +97,7 @@ test("#773 the default floor passes on an ordinary filesystem — a check that r
 //
 // preflightFreeSpace already takes `statfs` as its third parameter, so the seam to test the arithmetic
 // deterministically was there the whole time and nothing in the module needed changing.
-test("#773 freeBytes is bavail × bsize — asserted against a known statfs, never against the world", () => {
+test("freeBytes is bavail × bsize — asserted against a known statfs, never against the world", () => {
   const dir = tmp("freespace-arith-");
   const stub = () => ({ bavail: 1_234_567, bsize: 4096 });
   const r = preflightFreeSpace({}, dir, stub);
@@ -108,7 +108,7 @@ test("#773 freeBytes is bavail × bsize — asserted against a known statfs, nev
   assert.equal(r2.freeBytes, 1_234_567 * 512, "bsize is read, not assumed to be 4096");
 });
 
-test("#773 a run directory that does not exist yet is measured on its nearest existing ancestor", () => {
+test("a run directory that does not exist yet is measured on its nearest existing ancestor", () => {
   // The first run on a fresh box has no …/workspace-<agent>/studio/prelim-search. Measuring the leaf
   // would throw ENOENT and land in the unmeasurable branch, which would silently disable this check on
   // exactly the installs it was written for.
@@ -120,7 +120,7 @@ test("#773 a run directory that does not exist yet is measured on its nearest ex
   assert.equal(r.path, root, "…and it measured the nearest ancestor that exists");
 });
 
-test("#773 a floor nothing can satisfy REFUSES, and the throw carries the numbers", () => {
+test("a floor nothing can satisfy REFUSES, and the throw carries the numbers", () => {
   const dir = tmp("freespace-tight-");
   assert.throws(
     () => preflightFreeSpace({ CLEAROTRON_MIN_FREE_DISK_MB: "100000000" }, dir),   // 100 TB
@@ -134,13 +134,13 @@ test("#773 a floor nothing can satisfy REFUSES, and the throw carries the number
   );
 });
 
-test("#773 CLEAROTRON_MIN_FREE_DISK_MB=0 disables the check, and says it did rather than claiming a pass", () => {
+test("CLEAROTRON_MIN_FREE_DISK_MB=0 disables the check, and says it did rather than claiming a pass", () => {
   const r = preflightFreeSpace({ CLEAROTRON_MIN_FREE_DISK_MB: "0" }, "/nonexistent-on-purpose");
   assert.equal(r.disabled, true);
   assert.equal(r.checked, false, "a disabled check must never report itself as having checked");
 });
 
-test("#773 a typo'd threshold THROWS — it must not silently disable the guard", () => {
+test("a typo'd threshold THROWS — it must not silently disable the guard", () => {
   // The failure mode of a guard whose own configuration fails open. `CLEAROTRON_MIN_FREE_DISK_MB=500MB` is
   // the obvious thing to type and would otherwise parse to NaN, and every comparison against NaN is
   // false, so the check would pass on a full disk.
@@ -150,7 +150,7 @@ test("#773 a typo'd threshold THROWS — it must not silently disable the guard"
   }
 });
 
-test("#773 an UNMEASURABLE disk is reported and never read as room", () => {
+test("an UNMEASURABLE disk is reported and never read as room", () => {
   // bin/uspto-sync.mjs's precedent, and its words: "an unread guard reported as silence is how the rule
   // it enforces stops existing." It does not refuse — statfs failing is a fact about the checker, not
   // about the disk — but it must not return a pass either.
@@ -184,7 +184,7 @@ const runToExit = (env) => {
   return new Promise((r) => c.on("exit", (code) => r({ code, log: c.log })));
 };
 
-test("#773 a disk that cannot hold the run refuses BEFORE any run dir exists", async () => {
+test("a disk that cannot hold the run refuses BEFORE any run dir exists", async () => {
   const root = tmp("freespace-nodir-");
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

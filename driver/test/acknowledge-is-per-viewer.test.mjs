@@ -70,7 +70,7 @@ const OTHER_STAFF = { email: "j@staff.example" };
 const rowsFor = async (svc, who) => (await svc.route("GET", "/portal/api/runs", who, {}, { scope: "mine" })).json.runs;
 const ackedIds = (rows) => rows.filter((r) => r.acked).map((r) => r.runId).sort();
 
-test("#613 arm 1 — acknowledging a failed run marks it for this viewer, and only that", async () => {
+test("arm 1 — acknowledging a failed run marks it for this viewer, and only that", async () => {
   const pool = poolWith({ dead: ["aurora", "failed"], alive: ["aurora", "running"] });
   const svc = svcOn(pool);
   assert.deepEqual((await rowsFor(svc, STAFF)).map((r) => r.runId).sort(), ["alive", "dead"], "premise: both are on the wire");
@@ -83,7 +83,7 @@ test("#613 arm 1 — acknowledging a failed run marks it for this viewer, and on
   assert.equal(rows.find((x) => x.runId === "alive").acked, undefined, "the running run is untouched");
 });
 
-test("#613 arm 2 — one person clearing their dashboard does not clear a colleague's", async () => {
+test("arm 2 — one person clearing their dashboard does not clear a colleague's", async () => {
   // The requirement, and the reason the store is per viewer rather than pool-wide.
   const pool = poolWith({ dead: ["aurora", "failed"] });
   const svc = svcOn(pool);
@@ -96,7 +96,7 @@ test("#613 arm 2 — one person clearing their dashboard does not clear a collea
   assert.equal(readdirSync(join(pool.root, ACKS_DIR)).length, 2, "a second viewer writes a SECOND file");
 });
 
-test("#613 arm 3 — the run is unchanged: not its state, not its record, not #611's tag", async () => {
+test("arm 3 — the run is unchanged: not its state, not its record, not #611's tag", async () => {
   // "A dismissed run is still in Clearances with its status intact. Nothing about the record changes."
   const pool = poolWith({ dead: ["aurora", "failed"] });
   const svc = svcOn(pool);
@@ -109,7 +109,7 @@ test("#613 arm 3 — the run is unchanged: not its state, not its record, not #6
   assert.deepEqual(readdirSync(pool.root).sort(), [ACKS_DIR], "one directory appeared, and it is the per-viewer one");
 });
 
-test("#613 arm 4 — a paused or recovering run offers no acknowledge, and cannot be forced into one", async () => {
+test("arm 4 — a paused or recovering run offers no acknowledge, and cannot be forced into one", async () => {
   // "A run that is paused or recovering must not be dismissible; that is a run someone still needs to see."
   const pool = poolWith({ waiting: ["aurora", "postponed"] });
   const svc = svcOn(pool);
@@ -125,7 +125,7 @@ test("#613 arm 4 — a paused or recovering run offers no acknowledge, and canno
   assert.match(home, /const canAck = run\.state === 'failed' \|\| run\.state === 'cancelled'/);
 });
 
-test("#613 arm 5 — the key carries the STATE, so a run that moves on comes back", async () => {
+test("arm 5 — the key carries the STATE, so a run that moves on comes back", async () => {
   // THE TRAP. Keyed on runId alone, a run dismissed while it briefly read `failed` stays hidden for
   // ever — including after a resume. The dismissal is of a FACT, not of a name.
   const pool = poolWith({ dead: ["aurora", "failed"] });
@@ -140,7 +140,7 @@ test("#613 arm 5 — the key carries the STATE, so a run that moves on comes bac
   assert.equal(rows[0].acked, undefined, "the ack does not survive the state it was made in");
 });
 
-test("#613 arm 6 — the count is reachable and one click undoes it", async () => {
+test("arm 6 — the count is reachable and one click undoes it", async () => {
   const pool = poolWith({ dead: ["aurora", "failed"] });
   const svc = svcOn(pool);
   await svc.route("POST", "/portal/api/ack", STAFF, { runId: "dead", state: "failed", acknowledged: true });
@@ -158,7 +158,7 @@ test("#613 arm 6 — the count is reachable and one click undoes it", async () =
   assert.match(contract, /r\.state !== 'delivered' && r\.acked/, "…and `acknowledged` is its exact complement");
 });
 
-test("#613 arm 7 — the file is named by hash; an address is never a path component", async () => {
+test("arm 7 — the file is named by hash; an address is never a path component", async () => {
   const pool = poolWith({ dead: ["aurora", "failed"] });
   setAck(pool.root, "Owner+test@Staff.EXAMPLE", { runId: "dead", state: "failed" });
   const [name] = readdirSync(join(pool.root, ACKS_DIR));
@@ -169,7 +169,7 @@ test("#613 arm 7 — the file is named by hash; an address is never a path compo
   assert.equal(readdirSync(join(pool.root, ACKS_DIR)).length, 1);
 });
 
-test("#613 arm 9 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser gets", (ctx) => {
+test("arm 9 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser gets", (ctx) => {
   // The source is not the surface. `portal-ui/dist` is committed on purpose and portal-static serves it
   // verbatim, so a source-only fix leaves the user on the old dashboard while every other test passes.
   const dir = join(HERE, "..", "..", "portal-ui", "dist", "assets");
@@ -188,7 +188,7 @@ test("#613 arm 9 — the SERVED BUNDLE carries it; portal-ui/dist is what the br
   assert.ok(anyHas("/portal/api/ack"), "…nor the route it calls");
 });
 
-test("#613 arm 8 — the door is the only gate, and a junk id cannot become a path", async () => {
+test("arm 8 — the door is the only gate, and a junk id cannot become a path", async () => {
   const pool = poolWith({ dead: ["aurora", "failed"] });
   const svc = svcOn(pool);
   for (const runId of ["../../etc/passwd", "a/b", "", ".."]) {

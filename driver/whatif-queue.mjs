@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // whatif-queue.mjs — the RUN-LOCAL queue a client's what-if waits in.
 //
-// Owner ruling 2026-08-27 opened what-if to clients. The remote surfaces cannot run it directly and that
+// Ruling 2026-08-27 opened what-if to clients. The remote surfaces cannot run it directly and that
 // is a configuration fact rather than a policy: http-server.mjs states in its own header that they "NEVER
 // shell", and lib/whatif.mjs imports driver/pipeline.mjs LAZILY so the read-only face never loads the
 // engine at all. The only thing that runs the engine remotely is the queue, through the worker. So a

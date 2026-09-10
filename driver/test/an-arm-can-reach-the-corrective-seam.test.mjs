@@ -18,7 +18,7 @@ import assert from "node:assert/strict";
 import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "../corrective-arm.mjs";
 import { DISPATCH_TRIGGERS } from "../pipeline.mjs";
 
-test("1971 `corrective` is in the vocabulary, so the pass can be asked for at all", () => {
+test("`corrective` is in the vocabulary, so the pass can be asked for at all", () => {
   assert.ok(DISPATCH_TRIGGERS.includes("corrective"),
     "the one pass the losses happen in is still the one no arm can dispatch");
   // The others are untouched — this widens the vocabulary, it does not redefine it.
@@ -27,7 +27,7 @@ test("1971 `corrective` is in the vocabulary, so the pass can be asked for at al
   }
 });
 
-test("1971 THREE states, and an arm never earns production's word", () => {
+test("THREE states, and an arm never earns production's word", () => {
   assert.equal(correctivePassState({ trigger: "corrective", ready: true }), "dispatched-cold");
   assert.equal(correctivePassState({ trigger: "corrective", ready: false }), "refused-no-corrective-state");
   // A non-corrective arm says NOTHING here rather than claiming a pass it did not reproduce.
@@ -42,7 +42,7 @@ test("1971 THREE states, and an arm never earns production's word", () => {
   }
 });
 
-test("1971 a run with no corrective pass is REFUSED BY NAME, never given a fresh one in its clothes", () => {
+test("a run with no corrective pass is REFUSED BY NAME, never given a fresh one in its clothes", () => {
   const none = correctiveReadiness({});
   assert.equal(none.ready, false);
   assert.equal(none.missing.length, 2, "both absences are named, not just the first");
@@ -55,7 +55,7 @@ test("1971 a run with no corrective pass is REFUSED BY NAME, never given a fresh
     "it says WHY composing one anyway would be wrong — the same reason a typo is refused");
 });
 
-test("1971 either half missing is still a refusal — a corrective pass needs both", () => {
+test("either half missing is still a refusal — a corrective pass needs both", () => {
   assert.equal(correctiveReadiness({ preCorrective: true, reviewerVerdict: false }).ready, false);
   assert.equal(correctiveReadiness({ preCorrective: false, reviewerVerdict: true }).ready, false);
   assert.equal(correctiveReadiness({ preCorrective: true, reviewerVerdict: true }).ready, true);
@@ -65,7 +65,7 @@ test("1971 either half missing is still a refusal — a corrective pass needs bo
   assert.match(half.missing[0], /reviewer/);
 });
 
-test("1971 the refusal and the dispatch are distinguishable WITHOUT inferring from wall time", () => {
+test("the refusal and the dispatch are distinguishable WITHOUT inferring from wall time", () => {
   // Acceptance's third item. A reader must be able to tell which happened from the receipt alone.
   const dispatched = correctivePassState({ trigger: "corrective", ready: true });
   const refused = correctivePassState({ trigger: "corrective", ready: false });

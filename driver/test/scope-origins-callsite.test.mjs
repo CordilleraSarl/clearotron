@@ -49,7 +49,7 @@ function world() {
 const JOB = { profileKey: "aurora", projectKey: "console" };
 const POLICY = { pipeline: "clearotron", components: {} };
 
-test("#734 a project-supplied value says 'this project' when the profile comes from the real resolver", () => {
+test("a project-supplied value says 'this project' when the profile comes from the real resolver", () => {
   const { profiles, projects } = world();
   const { profile } = resolveEffectiveProfile(JOB, { profiles, projects });
 
@@ -66,7 +66,7 @@ test("#734 a project-supplied value says 'this project' when the profile comes f
     "…and specifically not 'the account's default classes', which is where a reader would go to change it");
 });
 
-test("#734 the sibling field still says the ACCOUNT — the fix must not relabel everything 'this project'", () => {
+test("the sibling field still says the ACCOUNT — the fix must not relabel everything 'this project'", () => {
   // The failure mode of an over-broad fix. This project sets no territories, so they are genuinely the
   // account's, and a blanket "came from the project" would be the same lie pointing the other way.
   const { profiles, projects } = world();
@@ -79,7 +79,7 @@ test("#734 the sibling field still says the ACCOUNT — the fix must not relabel
     `territories came from the account and must say so — got ${terr}`);
 });
 
-test("#734 a run under NO project is unchanged — origins is null and every value is the account's", () => {
+test("a run under NO project is unchanged — origins is null and every value is the account's", () => {
   const { profiles, projects } = world();
   const { profile, origins } = resolveEffectiveProfile({ profileKey: "aurora" }, { profiles, projects });
   assert.equal(origins, null, "no project, no overlay, no origin map");
@@ -88,7 +88,7 @@ test("#734 a run under NO project is unchanged — origins is null and every val
   assert.doesNotMatch(JSON.stringify(eff), /this project/i, "a plain customer run never claims a project");
 });
 
-test("#734 the whole point, stated as the defect: the account-default reading is now unreachable for a project field", () => {
+test("the whole point, stated as the defect: the account-default reading is now unreachable for a project field", () => {
   // Before the fix this is the assertion that failed, because `profile.origins` was undefined at every
   // real call site and the FROM.project branch could not be reached from one.
   const { profiles, projects } = world();

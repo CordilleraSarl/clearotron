@@ -1353,7 +1353,7 @@ function evalAssertion(a, runDir) {
     // carries no runId, and this assertion is reading that exact status.json.
     // ── — THIS IS A DELIVERY CONTRACT, AND A RUN THAT DID NOT DELIVER NEVER ENTERED IT ────────
     //
-    // Owner ruling, 2026-08-22, verbatim: "clean up the failed runs. they owe the client nothing."
+    // Ruling, 2026-08-22, verbatim: "clean up the failed runs. they owe the client nothing."
     // (Recorded here because the rule this line encodes is a product
     // decision, not a harness preference.)
     //
@@ -1373,7 +1373,7 @@ function evalAssertion(a, runDir) {
     //
     // ── 2026-08-24, AND THIS SCOPE SURVIVED IT ────────────────────────────────────────────────────
     //
-    // A second owner ruling that day ordered failed runs' notification packets onto the same re-drop
+    // A second ruling that day ordered failed runs' notification packets onto the same re-drop
     // cover as delivered ones, and `driver/outbox-backoff.mjs`'s `owedANotification` now says so. That
     // is NOT a reversal of the line below and the two must not be read as one rule: what a failed run
     // owes the CLIENT is still nothing, which is this assertion's subject; what it owes the REQUESTER

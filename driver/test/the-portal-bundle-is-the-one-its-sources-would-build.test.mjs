@@ -45,20 +45,20 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 /** A bundle whose sources are an hour newer than it — the shape a pull leaves behind. */
 const STALE_TIMES = { distMtime: 1_000, newestSrcMtime: 4_600_000 };
 
-test("2206 an untracked bundle older than its sources, in a checkout, is STALE", () => {
+test("an untracked bundle older than its sources, in a checkout, is STALE", () => {
   assert.equal(bundleFreshness({
     srcPresent: true, distPresent: true, isGitCheckout: true, distTracked: false, ...STALE_TIMES,
   }), "stale");
 });
 
-test("2206 the same bundle built AFTER the pull is current", () => {
+test("the same bundle built AFTER the pull is current", () => {
   assert.equal(bundleFreshness({
     srcPresent: true, distPresent: true, isGitCheckout: true, distTracked: false,
     distMtime: 4_600_000, newestSrcMtime: 1_000,
   }), "current");
 });
 
-test("2206 every state that must NOT be judged on a timestamp is decided before one is read", () => {
+test("every state that must NOT be judged on a timestamp is decided before one is read", () => {
   // Each of these is handed the stale timestamp pair. Each must answer something other than "stale",
   // and the reason is different in every row — which is why they are a table and not one assertion.
   const rows = [
@@ -79,7 +79,7 @@ test("2206 every state that must NOT be judged on a timestamp is decided before 
   }
 });
 
-test("2206 a COMMITTED bundle with no gate behind it is not a guaranteed one", () => {
+test("a COMMITTED bundle with no gate behind it is not a guaranteed one", () => {
   // ✕ THE FALSE REASSURANCE THIS CELL ALMOST SHIPPED. An earlier cut read "tracked" as "guaranteed".
   // Measured on the exported tree: .gitignore does not ignore dist, the cut withholds dist itself, and
   // there is no .github/workflows at all — so a public reader who builds the bundle and runs `git add -A`
@@ -95,7 +95,7 @@ test("2206 a COMMITTED bundle with no gate behind it is not a guaranteed one", (
   }), "guarded", "and the tree that DOES carry the gate still gets the guarantee — this is not a widening");
 });
 
-test("2206 a workflow that is not the gate does not confer the gate's guarantee", () => {
+test("a workflow that is not the gate does not confer the gate's guarantee", () => {
   // THE ARM THAT MAKES THE PREVIOUS ONE MEAN SOMETHING. Detecting the gate by the FILE NAME `ci.yml`
   // passes every other arm in this file — driven and confirmed — because every fixture that has a
   // workflow has the real one. The public repo carries its own CI, committed there directly and not from
@@ -112,7 +112,7 @@ test("2206 a workflow that is not the gate does not confer the gate's guarantee"
     "a workflow named ci.yml that never mentions the bundle was read as the bundle's gate");
 });
 
-test("2206 NOTHING TO SERVE is reported before any route is decided", () => {
+test("NOTHING TO SERVE is reported before any route is decided", () => {
   // The case every route row silently assumed away: they all describe a bundle that EXISTS. Asking the
   // route first meant a tree with neither bundle nor sources answered "no sources, so the bundle ships
   // with them" — a tick over an empty directory, and the absent-bundle finding lost. Caught by the arm
@@ -124,7 +124,7 @@ test("2206 NOTHING TO SERVE is reported before any route is decided", () => {
   }
 });
 
-test("2206 a timestamp that could not be read is REPORTED, not ticked and not called stale", () => {
+test("a timestamp that could not be read is REPORTED, not ticked and not called stale", () => {
   // An absence is a finding. Both trees are there and one read back nothing, so neither answer this cell
   // exists to give is available: ticking would be absence-as-pass on the only branch that matters, and
   // calling it stale would send an operator to rebuild a bundle nobody has shown to be old.
@@ -186,7 +186,7 @@ function publicSourceClone({ distOlder, commitDist = false, withGate = false, wo
   return root;
 }
 
-test("2206 doctor names the stale bundle and the rebuild, at rc 1, on a tree shaped like a public clone", () => {
+test("doctor names the stale bundle and the rebuild, at rc 1, on a tree shaped like a public clone", () => {
   const root = publicSourceClone({ distOlder: true });
   const r = doctor(root);
   assert.equal(r.code, 1, r.out);
@@ -196,7 +196,7 @@ test("2206 doctor names the stale bundle and the rebuild, at rc 1, on a tree sha
     "the reason an operator has not noticed is the half they most need told");
 });
 
-test("2206 the same tree with the bundle built AFTER the sources passes, at rc 0", () => {
+test("the same tree with the bundle built AFTER the sources passes, at rc 0", () => {
   // The other side of the discriminator. Without this the arm above would pass on a check that simply
   // always fires.
   const root = publicSourceClone({ distOlder: false });
@@ -205,7 +205,7 @@ test("2206 the same tree with the bundle built AFTER the sources passes, at rc 0
   assert.ok(!r.out.includes("is OLDER than the sources"), r.out);
 });
 
-test("2206 a tree whose bundle is COMMITTED is judged by that guarantee, not by its checkout timestamps", () => {
+test("a tree whose bundle is COMMITTED is judged by that guarantee, not by its checkout timestamps", () => {
   // A committed-and-gated tree's shape, BUILT rather than borrowed. An earlier draft drove the real
   // checkout and asserted its bundle was present — which is the defect class measured across the
   // exported tree on 2026-09-05: an arm that reaches for the tree's own `portal-ui/dist` passes only
@@ -223,7 +223,7 @@ test("2206 a tree whose bundle is COMMITTED is judged by that guarantee, not by 
   assert.equal(r.code, 0, r.out);
 });
 
-test("2206 no arm here reaches for a bundle this tree may not have built", () => {
+test("no arm here reaches for a bundle this tree may not have built", () => {
   // THE CLASS, PINNED. `portal-ui/dist` is untracked here and the offline-suites job does not build it,
   // so any arm in this file that read the real tree's bundle would pass on a machine where somebody had
   // run a build and refuse on every other. Every fixture above builds its own.

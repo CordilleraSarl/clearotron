@@ -70,7 +70,7 @@ test("THE SPAWNER AND THE THING THAT CALLS IT AGREE BY CONSTRUCTION, not by a sh
   }
 });
 
-test("#964: the spawner's default engine-door port and the face's own default are ONE number", async () => {
+test("the spawner's default engine-door port and the face's own default are ONE number", async () => {
   // The test above proves the ports agree WITHIN bin/start.mjs. This proves they agree ACROSS the
   // process boundary, which is the half was about: `mcp-server/http-server.mjs` held its own
   // literal 18790 for the same variable, and if either copy had moved the face would have listened
@@ -196,7 +196,7 @@ test("the launcher never starts the standalone profile or recipe service", () =>
   }
 });
 
-test("#859 the launcher SEEDS THE POOL, and does it through the same publisher the demo uses", () => {
+test("the launcher SEEDS THE POOL, and does it through the same publisher the demo uses", () => {
   // seed-pool.mjs is unit-tested against an injected publisher, which proves the guard and proves
   // nothing about whether the product calls it. This is that half: a seeding module nobody invokes and
   // an install that comes up empty are the same thing from the browser.
@@ -244,7 +244,7 @@ test("#859 the launcher SEEDS THE POOL, and does it through the same publisher t
 const bodyOf = (f) => readFileSync(join(REPO, f), "utf8")
   .split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
 
-test("#1721 the worker gets the install's paths — including the run-lock dir, which is what bounds concurrency", () => {
+test("the worker gets the install's paths — including the run-lock dir, which is what bounds concurrency", () => {
   const envs = plan({ mcp: 18801, portal: 18802 });
   assert.ok(envs.worker, "childEnv returns no worker env — the launcher would spawn a runner pointed at the DEFAULT install");
   // THE LOAD-BEARING ONE. Every run acquires a filesystem slot in CLEAROTRON_RUN_LOCK_DIR (pipeline.acquireRunSlot),
@@ -266,7 +266,7 @@ test("#1721 the worker gets the install's paths — including the run-lock dir, 
   assert.equal(envs.worker.CLEAROTRON_NO_ENV_FILE, "1", "the worker would read <repo>/.env and could disagree with its supervisor");
 });
 
-test("#1721 the worker is handed NO door configuration — it talks to the queue, not to either listener", () => {
+test("the worker is handed NO door configuration — it talks to the queue, not to either listener", () => {
   const envs = plan({ mcp: 18801, portal: 18802 });
   for (const k of Object.keys(envs.worker)) {
     assert.ok(!/^PORTAL_|^TRADEMARK_MCP_(HTTP|AUTH|ALLOWED|DEV)/.test(k),
@@ -274,7 +274,7 @@ test("#1721 the worker is handed NO door configuration — it talks to the queue
   }
 });
 
-test("#1721 the worker is NON-FATAL — an install with no worker is a supported state, so its death must not take the portal", () => {
+test("the worker is NON-FATAL — an install with no worker is a supported state, so its death must not take the portal", () => {
   const src = bodyOf("bin/start.mjs");
   assert.match(src, /start\("the worker", "driver\/runner\.mjs", envs\.worker, \{ args: \["--watch"\], fatal: false \}\)/,
     "the worker is not started with fatal:false — a worker that dies would call shutdown(1) and take the portal down with it");
@@ -285,7 +285,7 @@ test("#1721 the worker is NON-FATAL — an install with no worker is a supported
   assert.ok(!/fatal = false/.test(src), "the default child is no longer fatal — a dead engine door would go unreported");
 });
 
-test("#1721 --no-worker is honoured, and the old two-terminal instruction survives ONLY for that posture", () => {
+test("--no-worker is honoured, and the old two-terminal instruction survives ONLY for that posture", () => {
   const src = bodyOf("bin/start.mjs");
   assert.match(src, /const wantWorker = !argv\.includes\("--no-worker"\)/, "there is no way to decline the worker");
   assert.match(src, /wantWorker\s*\n?\s*\? start\("the worker"/, "the worker is started unconditionally — --no-worker does nothing");
@@ -294,7 +294,7 @@ test("#1721 --no-worker is honoured, and the old two-terminal instruction surviv
   assert.match(src, /node driver\/runner\.mjs --watch/, "the --no-worker posture no longer says how to drain by hand");
 });
 
-test("#1721 the portal is told about a worker ONLY when this launcher supervises one", () => {
+test("the portal is told about a worker ONLY when this launcher supervises one", () => {
   const ports = { mcp: 18801, portal: 18802 };
   const base = { paths: installPaths("/install-root/trademark"), user: "tester@localhost",
     portalSecret: "portal-secret", tokenSecret: "token-secret", opsToken: "v1.body.sig" };
@@ -310,7 +310,7 @@ test("#1721 the portal is told about a worker ONLY when this launcher supervises
     "the DEFAULT claims a supervised worker — a caller that omits the flag must not opt production in");
 });
 
-test("#1721 the portal only relabels a queued row on an EXPLICIT no — never on 'not known'", () => {
+test("the portal only relabels a queued row on an EXPLICIT no — never on 'not known'", () => {
   const src = bodyOf("driver/portal-service.mjs");
   // `draining` is tri-state on purpose: true (a worker beat recently), false (we are supervising one and it
   // is gone), null (nobody told us — every deployment that is not a local install). Only false may relabel.
@@ -340,7 +340,7 @@ test("#1721 the portal only relabels a queued row on an EXPLICIT no — never on
 // Both halves are needed. The writer being correct while nobody invokes it is precisely the state
 // measured: no runtime caller outside its own module and the tests, on the one install where the
 // portal's only channel had nothing to say.
-test("#1720 bin/start.mjs writes the configuration snapshot, before it spawns a child", () => {
+test("bin/start.mjs writes the configuration snapshot, before it spawns a child", () => {
   const src = readFileSync(join(REPO, "bin/start.mjs"), "utf8");
 
   // BOTH THE BINDING AND THE CALL. A source-shape arm cannot tell a working call from one whose import
@@ -402,7 +402,7 @@ test("Refs tracker issue 2015 the demo hands the snapshot writer its own pool an
 
 // ══ 2071: a start that will not start must not write first ════════════════════════════════════════
 
-test("2071: refused on a held port, `start` has written NOTHING — no env file, no data plane, no grants, no seed", async () => {
+test("refused on a held port, `start` has written NOTHING — no env file, no data plane, no grants, no seed", async () => {
   // The owner's box, reproduced: another copy holds the portal port. The old order printed five
   // state-changing lines and then refused; the acceptance is the refusal with an untouched box.
   // Spawned against the real entry (2064 discipline: status/error before stdout means anything).
@@ -453,7 +453,7 @@ test("2071: refused on a held port, `start` has written NOTHING — no env file,
 
 // ══ 1986: the mint and the portal's calls cannot drift apart silently ═════════════════════════════
 
-test("1986: the ops token start mints carries EVERY write verb the portal actually calls", () => {
+test("the ops token start mints carries EVERY write verb the portal actually calls", () => {
   // The deployed defect: a token minted before Stop existed could start runs and not stop them, and
   // the only witness was one boot-log line nobody read. The mint's verb list and the portal's tool
   // calls are two spellings of one contract; this arm joins them at the source so the next verb the
@@ -477,7 +477,7 @@ test("1986: the ops token start mints carries EVERY write verb the portal actual
 // reaches NOTHING else — a demo that quietly relaxed the doors would pass an arm that only checked the
 // flag was set.
 
-test("2015 the demo posture reaches the portal and changes nothing about either door", () => {
+test("the demo posture reaches the portal and changes nothing about either door", () => {
   const paths = installPaths("/srv/demo-base");
   const common = { ports: { portal: 18802, mcp: 18790 }, paths, user: "demo@localhost",
     portalSecret: "p", tokenSecret: "t", opsToken: "o" };
@@ -534,7 +534,7 @@ test("2015 the demo posture reaches the portal and changes nothing about either 
   assert.equal(demo.url, live.url, "a demo is served at the same address by the same service");
 });
 
-test("2015 the demo's data directory is its own, so trying the demo costs a real install nothing", () => {
+test("the demo's data directory is its own, so trying the demo costs a real install nothing", () => {
   const demo = installPaths("/srv/home/trademark-demo");
   const live = installPaths("/srv/home/trademark");
   // Every path a run touches, not just the base: a demo sharing ANY of these is a demo that leaves

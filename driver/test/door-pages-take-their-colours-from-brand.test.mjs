@@ -44,7 +44,7 @@ const DOORS = [
   ["denialPage", () => denialPage(403, "no policy matched this address")],
 ];
 
-test("#1892 — every colour both doors emit is a brand value", () => {
+test("every colour both doors emit is a brand value", () => {
   assert.equal(DOORS.length, 2, "both doors are scanned — an arm that scans nothing passes");
   let scanned = 0;
   for (const [name, render] of DOORS) {
@@ -59,7 +59,7 @@ test("#1892 — every colour both doors emit is a brand value", () => {
   assert.equal(scanned, 2);
 });
 
-test("#1892 — both doors take the SAME two blocks, so neither can drift from the other", () => {
+test("both doors take the SAME two blocks, so neither can drift from the other", () => {
   for (const [name, render] of DOORS) {
     const html = render();
     assert.ok(html.includes(DOOR_ROOT), `${name} no longer carries DOOR_ROOT — it has a palette of its own again`);
@@ -72,14 +72,14 @@ test("#1892 — both doors take the SAME two blocks, so neither can drift from t
   }
 });
 
-test("#1892 — the dark scheme is tokens only: it cannot restyle a selector the light block never named", () => {
+test("the dark scheme is tokens only: it cannot restyle a selector the light block never named", () => {
   // DOOR_ROOT_DARK is ONE selector block and nothing else. If a scoped rule ever gets added to it, the
   // doors are back to overriding selectors in dark, which is the shape that let the two copies diverge.
   assert.match(DOOR_ROOT_DARK, /^:root\[data-theme="dark"\]\{[^{}]*\}$/,
     "DOOR_ROOT_DARK carries something other than a single :root token block");
 });
 
-test("#1892 — the dark ground and text are the brand pack's, not the doors' guesses", () => {
+test("the dark ground and text are the brand pack's, not the doors' guesses", () => {
   // brand pack §01: Dark BG #0f0e0c near-black, Parchment #f0e8d8 dark text/mark. The doors had
   // guessed #17150f/#ece5d8 independently, twice. Pinned so a future edit has to argue with the pack.
   assert.equal(PALETTE_DARK.ground, "#0f0e0c");
@@ -88,7 +88,7 @@ test("#1892 — the dark ground and text are the brand pack's, not the doors' gu
     assert.ok(!BRAND_COLOURS.has(guess), `${guess} is one of the retired hand-picked door values`);
 });
 
-test("#1892 — the error state has named colours in both schemes", () => {
+test("the error state has named colours in both schemes", () => {
   // The other half of the issue: `.err` had three light values and three dark ones, none of which had
   // any home. The light ink is crimsonDeep and is deliberately not a fourth entry.
   for (const k of ["errBg", "errLine"]) {
@@ -111,7 +111,7 @@ test("#1892 — the error state has named colours in both schemes", () => {
 // doors permanently light for everyone — nothing else on the page reads the shared theme key — which is
 // a worse outcome than the defect. That is why the second arm exists.
 
-test("#1903 — neither door follows the OS colour preference", () => {
+test("neither door follows the OS colour preference", () => {
   for (const [name, render] of DOORS) {
     const html = render();
     // The literal feature name, not a parsed media query: the SPA's own guard is a dumb string search
@@ -122,7 +122,7 @@ test("#1903 — neither door follows the OS colour preference", () => {
   }
 });
 
-test("#1903 — and each door can still REACH dark, or the doctrine leaves it permanently light", () => {
+test("and each door can still REACH dark, or the doctrine leaves it permanently light", () => {
   for (const [name, render] of DOORS) {
     const html = render();
     assert.ok(html.includes(DOOR_THEME_INIT),
@@ -135,7 +135,7 @@ test("#1903 — and each door can still REACH dark, or the doctrine leaves it pe
   }
 });
 
-test("#1903 — the door init applies a saved choice and does nothing else", () => {
+test("the door init applies a saved choice and does nothing else", () => {
   // It is deliberately NOT brand's THEME_INIT: that one also installs a delegated click handler for
   // `.theme-toggle`, and these pages have no buttons. Both share one copy of the apply half, so the
   // storage key and the attribute name cannot drift between them.

@@ -11,7 +11,7 @@
 //       each, from a closed enum, plus the validator tokens that speak about that element.
 //   E2  declarations ∪ validator vocabulary is a closed partition, in two arms of different strength:
 //         arm 1  a token no element accounts for      → hard red, now
-//         arm 2  an element no token speaks about     → a per-stage RATCHET (owner ruling 2026-08-13)
+//         arm 2  an element no token speaks about     → a per-stage RATCHET (ruling 2026-08-13)
 //   E3  structure is returned, never emitted as text — with a named, shrinking backlog for the sites
 //       that exist today, because a lint that greenlights every existing hole certifies the problem.
 

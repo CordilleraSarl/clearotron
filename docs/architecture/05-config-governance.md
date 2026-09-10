@@ -105,12 +105,12 @@ by name in §5 below and in the upgrade table in INSTALL.md.
 who has not read the code. Vendor credentials keep the vendor’s name (`SIGNA_API_KEY`,
 `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`) — that already says who you bought them from.
 
-**THERE IS ONE SPELLING.** The compatibility window that read both closed on 2026-08-26 by owner ruling:
+**THERE IS ONE SPELLING.** The compatibility window that read both closed on 2026-08-26 by ruling:
 no migration, no legacy support. A deployment is REBUILT from the install rather than carried across,
 which is also the only thing that proves the install works for a new reader — a migrated box tests a path
 no new user ever walks.
 
-**A retired spelling is not checked for either** — owner ruling, same day, asked directly. The premise
+**A retired spelling is not checked for either** — ruling, same day, asked directly. The premise
 is what makes the absence correct rather than careless: a machine reaches this code through the install,
 the install writes the names in force, and the boxes that predate the rename are rebuilt rather than
 deployed onto. There is no population left holding the old lines.
@@ -294,7 +294,7 @@ it. Set-but-unreadable, malformed, or below the size floor **throws**: a truncat
 smaller blocklist, and a smaller blocklist reads as a cleaner repo. **Whether the real table is required
 is the CALLER's declaration, never the environment's**: `publication-scan.mjs` asks for it in its own
 source and refuses by name before it runs a single check if it cannot reach it. There is no switch —
-`CLEAROTRON_REQUIRE_BLOCKLIST` was deleted by owner ruling, because a variable that decides whether a scrub
+`CLEAROTRON_REQUIRE_BLOCKLIST` was deleted by ruling, because a variable that decides whether a scrub
 guard looks for anything real has a silent OFF position, and silent-off is the one state this module
 exists to make impossible: without the table, "matched nothing" and "had nothing to match on" are the
 same green.

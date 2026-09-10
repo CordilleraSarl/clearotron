@@ -30,7 +30,7 @@ function poolCopy({ stamp = null } = {}) {
 /** The record scripts/score.mjs builds for a pool copy: no status.json, so no state and no deliveredAt. */
 const asScored = (dir) => ({ hasStatus: false, deliveryState: null, deliveredAt: null, poolMeta: JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")), settle: readSettleStamp(dir) });
 
-test("2153 an archived run's terminal state is readable WITHOUT the workspace copy", () => {
+test("an archived run's terminal state is readable WITHOUT the workspace copy", () => {
   const dir = poolCopy();
   // THE DEFECT, FIRST — and asserted as the failing shape, so this arm cannot pass on a fixture that
   // never reproduced it. Before the stamp, the pool copy could only decline.
@@ -47,7 +47,7 @@ test("2153 an archived run's terminal state is readable WITHOUT the workspace co
   rmSync(dir, { recursive: true, force: true });
 });
 
-test("2153 a run that PUBLISHED and then FAILED never reads as delivered", () => {
+test("a run that PUBLISHED and then FAILED never reads as delivered", () => {
   // The stamp records a state; it is not a token whose presence means delivery. A failed terminal state
   // stamped into the pool reads as the failure — the opposite direction of the original defect.
   const dir = poolCopy({ stamp: { schema_version: 1, state: "failed", verdict: null, deliveredAt: null, runId: "tmpx1-acme-2026-09-01-jade-anvil", lane: "clearance" } });
@@ -58,7 +58,7 @@ test("2153 a run that PUBLISHED and then FAILED never reads as delivered", () =>
   rmSync(dir, { recursive: true, force: true });
 });
 
-test("2153 an ABSENT or unreadable stamp means unknown — never 'not delivered'", () => {
+test("an ABSENT or unreadable stamp means unknown — never 'not delivered'", () => {
   // Every one of these is a pool copy whose stamp cannot be believed. None of them may become a verdict:
   // a run archived before the stamp shipped is the common case and it is not a refusal.
   const cases = [
@@ -80,7 +80,7 @@ test("2153 an ABSENT or unreadable stamp means unknown — never 'not delivered'
   }
 });
 
-test("2153 meta.json alone is still not delivery — the original defect stays fixed", () => {
+test("meta.json alone is still not delivery — the original defect stays fixed", () => {
   // Pinned in a-pool-copy-is-not-a-refusal.test.mjs too, and re-asserted here because this change adds
   // the first file the pool has ever carried that DOES answer the question. The two must not blur.
   const dir = poolCopy();
@@ -89,7 +89,7 @@ test("2153 meta.json alone is still not delivery — the original defect stays f
   rmSync(dir, { recursive: true, force: true });
 });
 
-test("2153 the stamp can never cost a delivery", () => {
+test("the stamp can never cost a delivery", () => {
   // This runs on the delivery path after the client's report is already published. Every failure mode
   // returns a reason for the caller to log; none of them throws, because a run that delivers and fails
   // to stamp is strictly better than one that stamps and fails to deliver.
@@ -115,7 +115,7 @@ test("2153 the stamp can never cost a delivery", () => {
   rmSync(notADir, { force: true });
 });
 
-test("2153 the stamp round-trips, and carries what a reader needs to name the run", () => {
+test("the stamp round-trips, and carries what a reader needs to name the run", () => {
   const dir = poolCopy();
   writeSettleStamp(dir, { state: "delivered", verdict: "CLEAR", deliveredAt: "2026-09-01T09:04:11Z", runId: "tmpx1-acme-2026-09-01-jade-anvil", lane: "knockout" });
   const s = readSettleStamp(dir);
@@ -137,7 +137,7 @@ function workspaceRun(status) {
   return dir;
 }
 
-test("2153 a BACKFILL records the delivery time, not the time it was stamped", () => {
+test("a BACKFILL records the delivery time, not the time it was stamped", () => {
   // THE DEFECT THIS ARM EXISTS FOR, found by the test lane on a real backfill: composing `deliveredAt`
   // by hand reaches for the clock, which is the STAMPING time. On a live settle the two coincide and
   // the error is invisible; on a backfill they differ by the whole lag — and the stamp is exactly the
@@ -159,7 +159,7 @@ test("2153 a BACKFILL records the delivery time, not the time it was stamped", (
   rmSync(pool, { recursive: true, force: true });
 });
 
-test("2153 a backfill with nothing to read REFUSES rather than composing a time", () => {
+test("a backfill with nothing to read REFUSES rather than composing a time", () => {
   // The refusals are the point: every one of them is a case where the hand-rolled version would have
   // reached for the clock. A missing stamp reads as unknown, which is honest; a stamp carrying a made-up
   // delivery date is not.

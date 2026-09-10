@@ -430,7 +430,7 @@ test("runEconomics: the record carries no currency — not a value, not a key", 
 // So the property is not "the buckets sum" (they always did) — it is that the RECORD SAYS SO, and that
 // a bucket added later cannot silently reopen the same gap.
 
-test("#756 a code-side dispatch is counted, and the census reconciles with it in", () => {
+test("a code-side dispatch is counted, and the census reconciles with it in", () => {
   const dir = mkRun({
     "register-unit:primary-sweep": [
       agentRow({ usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } }),          // measured
@@ -449,7 +449,7 @@ test("#756 a code-side dispatch is counted, and the census reconciles with it in
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#756 the printed line names every bucket, so a reader can check the sum from the line alone", () => {
+test("the printed line names every bucket, so a reader can check the sum from the line alone", () => {
   const dir = mkRun({
     "register-unit:primary-sweep": [
       agentRow({ usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } }),
@@ -472,7 +472,7 @@ test("#756 the printed line names every bucket, so a reader can check the sum fr
   assert.doesNotMatch(line, /DEFECT/, "and no reconciliation defect on a healthy census");
 });
 
-test("#756 a census that does NOT reconcile says so, instead of printing a short sentence", () => {
+test("a census that does NOT reconcile says so, instead of printing a short sentence", () => {
   // The regression guard for the fix itself: add a bucket, forget to print it, and this fires. Driven by
   // fabricating the mismatch directly, because the code has no way to produce one today — which is
   // exactly why the old line could drift without any test noticing.
@@ -490,7 +490,7 @@ test("#756 a census that does NOT reconcile says so, instead of printing a short
   } finally { process.stderr.write = realWrite; rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#756 the structured record carries the reconciliation, not only the prose line", () => {
+test("the structured record carries the reconciliation, not only the prose line", () => {
   const dir = mkRun({
     "register-unit:primary-sweep": [agentRow({ model: "code", modelUsed: "code:execute-plan", usage: null })],
   });

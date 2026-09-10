@@ -269,7 +269,7 @@ test("preflightEngineTurn REFUSES a failing engine and returns a passing one", a
 
 // ── weather or configuration: what a RUN DOOR is allowed to refuse on ─────────────────────────
 
-test("#819 the door refuses a fault this box owns, and lets the weather through", () => {
+test("the door refuses a fault this box owns, and lets the weather through", () => {
   const lane = (over) => probeVerdictLane(classifyProbe({ engine: "anthropic-agent", ...over }));
 
   // CONFIGURATION — an operator set something, or did not, and it will be just as wrong in ninety minutes.
@@ -295,7 +295,7 @@ test("#819 the door refuses a fault this box owns, and lets the weather through"
   assert.equal(probeVerdictLane(mute), "weather", "but a refusal is not made on an inference from silence");
 });
 
-test("#819 the default is OPEN — a mode this partition has never heard of is weather", () => {
+test("the default is OPEN — a mode this partition has never heard of is weather", () => {
   // The asymmetry that sets the default: refusing wrongly kills a run that would have worked; proceeding
   // wrongly costs the stages before a failure the engine was going to produce anyway.
   assert.equal(probeVerdictLane({ ok: false, mode: "something-invented-next-quarter", basis: "config" }), "weather");
@@ -303,7 +303,7 @@ test("#819 the default is OPEN — a mode this partition has never heard of is w
   assert.equal(probeVerdictLane({ ok: true, mode: "ok", basis: "completed-turn" }), "ok");
 });
 
-test("#819 preflightEngineTurn WARNS instead of throwing on the weather lane, and the warning says what it let past", async () => {
+test("preflightEngineTurn WARNS instead of throwing on the weather lane, and the warning says what it let past", async () => {
   const v = await preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
     runTurn: async () => tupleOf({ signals: { rateLimited: true, resetsAt: "2026-08-12T17:00:00.000Z" } }) });
   assert.equal(v.ok, false, "it does NOT pretend the engine worked");
@@ -312,7 +312,7 @@ test("#819 preflightEngineTurn WARNS instead of throwing on the weather lane, an
   assert.match(v.warning, /2026-08-12T17:00:00.000Z/, "carrying the actionable part of the verdict it let past");
 });
 
-test("#819 a broken probe is a driver bug, never a client-facing refusal", async () => {
+test("a broken probe is a driver bug, never a client-facing refusal", async () => {
   // `probeEngineTurn` promises a verdict for every CONFIGURATION fault, not for every fault: its adapter
   // load sits outside its own try, so a bad import or a missing runTurn export escapes as a raw throw. At
   // the run door that must not become a terminal refusal — the door owns the catch.

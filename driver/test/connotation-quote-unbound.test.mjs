@@ -56,13 +56,13 @@ const FABRICATED = "surface of the body, skin, colour of the skin";
 
 const CANDS = [{ receipt_id: "R-5T9SYVN3", title: "t", url: "https://example.invalid/a", snippet: ENUMERATED }];
 
-test("#518 arm 1 — a contiguous quote binds, and names the receipt it bound against", () => {
+test("arm 1 — a contiguous quote binds, and names the receipt it bound against", () => {
   const b = quoteBinding(CONTIGUOUS_QUOTE, CANDS);
   assert.equal(b.state, "bound");
   assert.equal(b.receipt_id, "R-5T9SYVN3");
 });
 
-test("#518 arm 2 — R6's quote is SPLIT: both edges in one snippet, the whole of it in none", () => {
+test("arm 2 — R6's quote is SPLIT: both edges in one snippet, the whole of it in none", () => {
   // The exact mechanism that killed the run. Verify the premise before the verdict, so a future change
   // to normText cannot make this arm pass for the wrong reason.
   assert.ok(!ENUMERATED.includes(SPLIT_QUOTE), "premise: the concatenation is not contiguous in the snippet");
@@ -73,14 +73,14 @@ test("#518 arm 2 — R6's quote is SPLIT: both edges in one snippet, the whole o
   assert.equal(b.receipt_id, "R-5T9SYVN3", "the hint has to be able to say WHICH receipt it is in two pieces of");
 });
 
-test("#518 arm 3 — a fabricated quote is ABSENT, and names no receipt", () => {
+test("arm 3 — a fabricated quote is ABSENT, and names no receipt", () => {
   const b = quoteBinding(FABRICATED, CANDS);
   assert.equal(b.state, "absent");
   assert.equal(b.receipt_id, null,
     "naming a nearest receipt here would send the seat to a receipt its text was never in");
 });
 
-test("#518 arm 4 — too_short and missing are their own states, not 'absent'", () => {
+test("arm 4 — too_short and missing are their own states, not 'absent'", () => {
   assert.equal(quoteBinding("結凍", CANDS).state, "too_short");
   assert.equal(quoteBinding("", CANDS).state, "missing");
   assert.equal(quoteBinding(null, CANDS).state, "missing");
@@ -90,7 +90,7 @@ test("#518 arm 4 — too_short and missing are their own states, not 'absent'", 
   assert.equal(quoteBinding(SPLIT_QUOTE, reversed).state, "absent");
 });
 
-test("#518 arm 5 — quoteJoins' ANSWER IS UNCHANGED. Nothing that did not bind before binds now", () => {
+test("arm 5 — quoteJoins' ANSWER IS UNCHANGED. Nothing that did not bind before binds now", () => {
   // The loosening option was withdrawn on the issue and this is the arm that keeps it withdrawn. The
   // strict join caught a fabricated quote on a real run and the retry loop then corrected it; softening
   // it would trade a working guard for a message bug.
@@ -120,7 +120,7 @@ function gate(patch) {
   return findConnotationViolations(SECTION, RECORDED.length, { recorded: RECORDED, form: filled });
 }
 
-test("#518 arm 6 — a RULED row whose quote splits reports quote_unbound, and names the nearest miss", () => {
+test("arm 6 — a RULED row whose quote splits reports quote_unbound, and names the nearest miss", () => {
   const v = gate({ ruling: "benign", note: "a straightforward product-category term, no loaded reading", quote: SPLIT_QUOTE });
   assert.equal(v.length, 1);
   assert.equal(v[0].reason, "quote_unbound",
@@ -135,7 +135,7 @@ test("#518 arm 6 — a RULED row whose quote splits reports quote_unbound, and n
   assert.ok(CONNOTATION_REASONS.includes(v[0].reason));
 });
 
-test("#518 arm 6b — a ruled row whose quote is absent reports quote_unbound with the OTHER remedy", () => {
+test("arm 6b — a ruled row whose quote is absent reports quote_unbound with the OTHER remedy", () => {
   const v = gate({ ruling: "loaded", note: "reads as a slur in this market", quote: FABRICATED });
   assert.equal(v[0].reason, "quote_unbound");
   assert.equal(v[0].quote_state, "absent");
@@ -143,7 +143,7 @@ test("#518 arm 6b — a ruled row whose quote is absent reports quote_unbound wi
     "'quote one continuous passage' would be wrong here — zero characters of it are present");
 });
 
-test("#518 arm 7 — a genuinely unruled row is STILL unruled. The split is strictly narrower", () => {
+test("arm 7 — a genuinely unruled row is STILL unruled. The split is strictly narrower", () => {
   // The load-bearing property. connotation-search.mjs's own warning: the gate must never destroy a
   // completed clearance by conflating "did not do the work" with "wrote the answer in a shape that did
   // not bind". quote_unbound is reachable ONLY on a row that already passes ruling, note and receipt_id,
@@ -158,11 +158,11 @@ test("#518 arm 7 — a genuinely unruled row is STILL unruled. The split is stri
     "an empty note is missing work, whatever the quote does — and it is the residual, which is why the residual is kept");
 });
 
-test("#518 arm 8 — a row that is ruled AND quotes continuously is clean, as it was before", () => {
+test("arm 8 — a row that is ruled AND quotes continuously is clean, as it was before", () => {
   assert.deepEqual(gate({ ruling: "benign", note: "product category term", quote: CONTIGUOUS_QUOTE }), []);
 });
 
-test("#518 arm 9 — the GATE still refuses the split row. Only the message changed", () => {
+test("arm 9 — the GATE still refuses the split row. Only the message changed", () => {
   const rows = obligationRows(connotationObligations(RECORDED));
   const c = rows[0];
   const seat = { ...c, receipt_id: c.candidates[0].receipt_id, ruling: "benign", note: "n", quote: SPLIT_QUOTE };
@@ -170,7 +170,7 @@ test("#518 arm 9 — the GATE still refuses the split row. Only the message chan
     "if this ever returns true the fix became the loosening that was withdrawn, and a fabricated quote ships");
 });
 
-test("#518 arm 10 — the residual stays visible to the convergence ledger", () => {
+test("arm 10 — the residual stays visible to the convergence ledger", () => {
   // Without an entry in repairs.mjs PROGRESS_TOKENS the quantity is null, progress.kind becomes
   // "unknown", and a run converging 3 → 1 → 0 reads as stuck. Silent, and on the one token added since
   // that table was written.
@@ -178,7 +178,7 @@ test("#518 arm 10 — the residual stays visible to the convergence ledger", () 
   assert.deepEqual(q, { token: "connotation_quote_unbound", value: 3 });
 });
 
-test("#518 arm 11 — verify.mjs emits the token this test pins, read off its own source", () => {
+test("arm 11 — verify.mjs emits the token this test pins, read off its own source", () => {
   // The vocabulary test's pattern: a literal retyped in a test is a literal that can go stale in silence.
   const src = readFileSync(join(HERE, "..", "verify.mjs"), "utf8");
   assert.match(src, /connotation_quote_unbound:quote_unbound=\$\{/,

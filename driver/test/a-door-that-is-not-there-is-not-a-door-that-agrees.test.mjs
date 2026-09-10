@@ -54,7 +54,7 @@ const loginUrl = ({ kid = AUD, meta = metaToken(), team = "cordillera" } = {}) =
   return u.toString();
 };
 
-test("241 the audience is read from the redirect an unauthenticated caller is handed", () => {
+test("the audience is read from the redirect an unauthenticated caller is handed", () => {
   const r = readAudience({ status: 302, location: loginUrl() });
   assert.equal(r.kind, "read", `the audience was not read out of a well-formed Access challenge: ${r.why}`);
   assert.equal(r.aud, AUD, "the audience read is not the one the token carries");
@@ -62,7 +62,7 @@ test("241 the audience is read from the redirect an unauthenticated caller is ha
   assert.equal(r.hostname, "mcp.cordillera.ch", "the hostname the edge named was dropped");
 });
 
-test("241 the two sources are cross-checked, and a disagreement is reported rather than resolved", () => {
+test("the two sources are cross-checked, and a disagreement is reported rather than resolved", () => {
   const r = readAudience({ status: 302, location: loginUrl({ kid: OTHER }) });
   assert.equal(r.kind, "disagree",
     "the `kid` and the token's `aud` named different audiences and one of them was silently believed — "
@@ -76,7 +76,7 @@ test("241 the two sources are cross-checked, and a disagreement is reported rath
 });
 
 // ── THE ONE THAT MATTERS MOST ────────────────────────────────────────────────────────────────────
-test("241 a hostname that is not Access-fronted is its own verdict, and never a pass", () => {
+test("a hostname that is not Access-fronted is its own verdict, and never a pass", () => {
   for (const [what, probe] of [
     ["a plain 200 with no redirect", { status: 200, location: "" }],
     ["a redirect somewhere else entirely", { status: 302, location: "https://example.test/sign-in?kid=" + AUD }],
@@ -91,7 +91,7 @@ test("241 a hostname that is not Access-fronted is its own verdict, and never a 
   }
 });
 
-test("241 an edge that could not be asked is a could-not-look, never agreement", () => {
+test("an edge that could not be asked is a could-not-look, never agreement", () => {
   const r = readAudience({ error: new Error("no answer within 5000ms") });
   assert.equal(r.kind, "unreachable");
   const v = audienceVerdict({ configured: AUD, read: r });
@@ -101,7 +101,7 @@ test("241 an edge that could not be asked is a could-not-look, never agreement",
     "the message does not say which of the two happened, which is the whole distinction");
 });
 
-test("241 a challenge whose audience cannot be read is a could-not-look, not a pass", () => {
+test("a challenge whose audience cannot be read is a could-not-look, not a pass", () => {
   for (const [what, location] of [
     ["no meta token at all", loginUrl({ meta: "" })],
     ["a meta that is not a JWT", loginUrl({ meta: "not-a-jwt" })],
@@ -119,7 +119,7 @@ test("241 a challenge whose audience cannot be read is a could-not-look, not a p
   }
 });
 
-test("241 a mismatch names BOTH values, because a reader told only that two things differ has to go and find them", () => {
+test("a mismatch names BOTH values, because a reader told only that two things differ has to go and find them", () => {
   const r = readAudience({ status: 302, location: loginUrl() });
   const v = audienceVerdict({ configured: OTHER, read: r });
   assert.equal(v.kind, "mismatch");
@@ -130,7 +130,7 @@ test("241 a mismatch names BOTH values, because a reader told only that two thin
   assert.ok(!/audience mismatch\.?$/i.test(v.message), "the verdict is the bare phrase this arm exists to forbid");
 });
 
-test("241 a deployment configured with SEVERAL audiences is not a mismatch when the edge issues one of them", () => {
+test("a deployment configured with SEVERAL audiences is not a mismatch when the edge issues one of them", () => {
   // THE F54 LESSON, WHICH THIS FILE'S OWN MODULE ALREADY LEARNED ONCE. A deployment runs one Access
   // application per audience — portal, staff door, client door — and `CLEAROTRON_OIDC_AUDIENCE` may
   // name all of them. The edge issues ONE for the hostname being asked. Equality against the list
@@ -148,7 +148,7 @@ test("241 a deployment configured with SEVERAL audiences is not a mismatch when 
   assert.match(none.message, new RegExp(OTHER), "the audiences this install expects are not named");
 });
 
-test("241 an unset audience against a real edge is a finding, not a pass", () => {
+test("an unset audience against a real edge is a finding, not a pass", () => {
   const r = readAudience({ status: 302, location: loginUrl() });
   const v = audienceVerdict({ configured: "  ", read: r });
   assert.equal(v.kind, "not-configured");
@@ -156,7 +156,7 @@ test("241 an unset audience against a real edge is a finding, not a pass", () =>
   assert.match(v.message, new RegExp(AUD), "the audience the edge issues is not named, so nobody can set it");
 });
 
-test("241 agreement is the ONLY verdict that reads as ok", () => {
+test("agreement is the ONLY verdict that reads as ok", () => {
   const ok = audienceVerdict({ configured: AUD, read: readAudience({ status: 302, location: loginUrl() }) });
   assert.equal(ok.kind, "agree");
   assert.equal(ok.ok, true, "a matching audience was not reported as matching");
@@ -168,7 +168,7 @@ test("241 agreement is the ONLY verdict that reads as ok", () => {
   }
 });
 
-test("241 the probe asks once, does not follow the redirect, and hands back failure rather than throwing", async () => {
+test("the probe asks once, does not follow the redirect, and hands back failure rather than throwing", async () => {
   const seen = [];
   const res = await probeAudience({
     url: "https://mcp.cordillera.ch/mcp",
@@ -189,7 +189,7 @@ test("241 the probe asks once, does not follow the redirect, and hands back fail
   assert.equal(audienceVerdict({ configured: AUD, read: readAudience(nowhere) }).ok, false);
 });
 
-test("241 the probe is bounded, and the bound is the caller's to set", async () => {
+test("the probe is bounded, and the bound is the caller's to set", async () => {
   const started = Date.now();
   const res = await probeAudience({
     url: "https://mcp.cordillera.ch/mcp",
@@ -251,7 +251,7 @@ async function runDoctor(home) {
   } catch (e) { return `${e.stdout ?? ""}${e.stderr ?? ""}`; }
 }
 
-test("241 doctor reports a stale audience to the reader, naming both values", async () => {
+test("doctor reports a stale audience to the reader, naming both values", async () => {
   const edge = await edgeServing(loginUrl());
   try {
     const out = await runDoctor(homeWith(
@@ -266,7 +266,7 @@ test("241 doctor reports a stale audience to the reader, naming both values", as
   } finally { edge.close(); }
 });
 
-test("241 doctor does not call a stale audience healthy when the two agree", async () => {
+test("doctor does not call a stale audience healthy when the two agree", async () => {
   const edge = await edgeServing(loginUrl());
   try {
     const out = await runDoctor(homeWith(
@@ -299,7 +299,7 @@ const REAL = {
   bare: { status: 200, location: "", wwwAuthenticate: "", viaEdge: false },
 };
 
-test("251 an Access-fronted API path is FRONTED, not `not-fronted`", () => {
+test("an Access-fronted API path is FRONTED, not `not-fronted`", () => {
   const r = readAudience(REAL.api);
   assert.equal(r.kind, "fronted-api",
     "a 401 naming a cloudflare-access-protected-resource document is a door that is present and answering "
@@ -310,7 +310,7 @@ test("251 an Access-fronted API path is FRONTED, not `not-fronted`", () => {
   assert.match(v.message, /could-not-look about the audience and not a finding about the door/);
 });
 
-test("251 a 5xx through the edge is the ORIGIN failing, not an absent door", () => {
+test("a 5xx through the edge is the ORIGIN failing, not an absent door", () => {
   const r = readAudience(REAL.originDown);
   assert.equal(r.kind, "origin-failed");
   const v = audienceVerdict({ configured: "aaa", read: r });
@@ -320,13 +320,13 @@ test("251 a 5xx through the edge is the ORIGIN failing, not an absent door", () 
     "and it must not be read as anything about the audience");
 });
 
-test("251 a hostname genuinely behind nothing keeps the old wording and the old verdict", () => {
+test("a hostname genuinely behind nothing keeps the old wording and the old verdict", () => {
   const r = readAudience(REAL.bare);
   assert.equal(r.kind, "not-fronted", "narrowing the label must not empty it");
   assert.equal(audienceVerdict({ configured: "aaa", read: r }).ok, false);
 });
 
-test("251 the marker is Cloudflare's, not any OAuth resource's", () => {
+test("the marker is Cloudflare's, not any OAuth resource's", () => {
   // `Bearer` alone is sent by every OAuth-protected resource on the internet. Keying on it would file
   // any 401 as an Access door.
   const genericOAuth = { status: 401, location: "", viaEdge: false,
@@ -335,7 +335,7 @@ test("251 the marker is Cloudflare's, not any OAuth resource's", () => {
     "a generic Bearer challenge is not evidence of Cloudflare Access");
 });
 
-test("251 the browser path is untouched — the case that WORKS must not move", () => {
+test("the browser path is untouched — the case that WORKS must not move", () => {
   const r = readAudience(REAL.browser);
   assert.notEqual(r.kind, "fronted-api");
   assert.notEqual(r.kind, "origin-failed");
@@ -343,7 +343,7 @@ test("251 the browser path is untouched — the case that WORKS must not move", 
     `a redirect must still be read as a challenge, got ${r.kind}`);
 });
 
-test("251 probeAudience CARRIES the two headers, or the reader can never see the difference", () => {
+test("probeAudience CARRIES the two headers, or the reader can never see the difference", () => {
   // The distinction is made from headers already on the response. A probe that drops them makes the
   // reader's three outcomes unreachable — the fully-composed-and-unreachable shape.
   const src = readFileSync(join(HERE, "..", "..", "shared", "access-audience.mjs"), "utf8");

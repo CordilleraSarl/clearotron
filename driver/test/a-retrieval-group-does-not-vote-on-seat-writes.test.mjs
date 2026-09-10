@@ -41,7 +41,7 @@ const someRecordingKey = () => {
   return key;
 };
 
-test("#1893 a retrieval group beside a recording group does not restore Write/Edit", () => {
+test("a retrieval group beside a recording group does not restore Write/Edit", () => {
   const rec = someRecordingKey();
   // THE DEFECT, DRIVEN. Each of these returned `true` before the fix — one retrieval group was enough.
   for (const groups of [[ "perplexity", rec ], [ "band", rec ], [ "perplexity", "band", rec ]]) {
@@ -57,7 +57,7 @@ test("#1893 a retrieval group beside a recording group does not restore Write/Ed
   }
 });
 
-test("#1893 …and the rule still lets an ordinary authoring stage write", () => {
+test("…and the rule still lets an ordinary authoring stage write", () => {
   // THE OTHER DIRECTION, which is what stops the fix being "delete the pair for everyone". A stage with no
   // recording group authors its own file and must keep the tools; the empty list is the same case.
   assert.equal(seatWritesForGroups(["perplexity", "band"]), true,
@@ -72,7 +72,7 @@ test("#1893 …and the rule still lets an ordinary authoring stage write", () =>
     + "vote' into 'retrieval votes write-free', which would break every unconverted gather stage");
 });
 
-test("#1893 every declared seat-write-free stage actually resolves to a grant without the pair", () => {
+test("every declared seat-write-free stage actually resolves to a grant without the pair", () => {
   // The end-to-end claim, over the real population. It is the arm that would have gone quiet on nine of
   // nine, so it is deliberately NOT the only one — see the header.
   assert.ok(SEAT_WRITE_FREE_STAGES.length >= 8,
@@ -93,7 +93,7 @@ test("#1893 every declared seat-write-free stage actually resolves to a grant wi
 // gains `perplexity` and `band`, so `placement-inquiry` — which holds only `band` — stopped counting as
 // tooled and fell out of every category. The guard failed naming `placement-inquiry`, a stage nothing had
 // touched: it named the victim rather than the cause, which is the expensive kind of red.
-test("#1893 the recording key set is the KEYS, so a mixed stage cannot re-categorise its neighbours", () => {
+test("the recording key set is the KEYS, so a mixed stage cannot re-categorise its neighbours", () => {
   const leaked = [...RECORDING_KEYS].filter((k) => !Object.keys(RECORDING_STAGES).some((s) => k === `recording-${s}`));
   assert.deepEqual(leaked, [],
     "a key that is not `recording-<stage>` is in the recording key set. Whatever put it there is a "
@@ -111,7 +111,7 @@ test("#1893 the recording key set is the KEYS, so a mixed stage cannot re-catego
   }
 });
 
-test("#1893 the mixed state is declared, and the declaration cannot outlive its reason", () => {
+test("the mixed state is declared, and the declaration cannot outlive its reason", () => {
   // Both directions, because a one-way check here is how an exemption keeps itself alive.
   for (const stage of RECORDING_STAGES_KEEPING_RETRIEVAL) {
     assert.ok(stage in RECORDING_STAGES, `${stage} declares keepsRetrieval and is not a recording stage`);

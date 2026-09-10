@@ -350,7 +350,7 @@ const RECORDING = Object.freeze({
   // reads are already the seeded `Read` grant's. No `search_run_artifacts`: this stage reads NOTHING from
   // the run — its finding arrives INLINE in the dispatch, which is the isolation the stage exists for.
   //
-  // WHAT DOES NOT MOVE: the card's PROSE. Owner ruling S2 (2026-08-13) re-scoped — the mechanical
+  // WHAT DOES NOT MOVE: the card's PROSE. Ruling S2 (2026-08-13) re-scoped — the mechanical
   // fields move now, the prose half waits on a side-by-side reading of one matter built both ways. The
   // transport carries the seat's bullets; it does not write them.
   "report-card": {
@@ -389,7 +389,7 @@ const RECORDING = Object.freeze({
   // and must take it whole. That is a context cost, not a capability loss, and it is the honest price.
   // NINTH — narrative-refutation, and the first conversion whose seat KEEPS its retrieval surface.
   //
-  // The reviewer is the report's only check. Its output converts; its REACH does not. Owner ruling
+  // The reviewer is the report's only check. Its output converts; its REACH does not. Ruling
   // (relayed 2026-08-26): it keeps the perplexity and band groups, because a reviewer that can only
   // compare the report against itself is a proofreader, and a prose-consistency read is the shape that
   // let the false coverage claim through. So this row states plainly what every sibling could take for

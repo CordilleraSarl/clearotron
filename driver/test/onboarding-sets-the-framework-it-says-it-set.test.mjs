@@ -59,7 +59,7 @@ function refusalFrom(fn) {
   assert.fail("expected a Refusal, nothing was thrown");
 }
 
-test("1945 the refusal helper fails when nothing throws — its own guard rail, driven", () => {
+test("the refusal helper fails when nothing throws — its own guard rail, driven", () => {
   // THE `assert.fail` INSIDE refusalFrom ONLY RUNS HERE. By construction it is unreachable while the
   // command is correct, and the coverage census is right that an assert site which never runs is
   // indistinguishable from an arm that stopped asserting. Baselining it would park a dead line in the
@@ -69,14 +69,14 @@ test("1945 the refusal helper fails when nothing throws — its own guard rail, 
 
 // ── THE STORE AXIS ─────────────────────────────────────────────────────────────────────────────────
 
-test("1945 a configured store is where an add writes", () => {
+test("a configured store is where an add writes", () => {
   // A REAL DIRECTORY, because storeForAdd now checks the store is actually there. The first version of
   // this arm named a path that does not exist on any box, and it passed only while nothing looked.
   const store = tmp();
   assert.equal(storeForAdd({ situation: "overlay", inForce: store, store }), store);
 });
 
-test("1945 WITH NO STORE CONFIGURED, an add would write a real client into the shipped demo roster — refused by name", () => {
+test("WITH NO STORE CONFIGURED, an add would write a real client into the shipped demo roster — refused by name", () => {
   const bundled = "/repo/driver/profiles";
   const e = refusalFrom(() => storeForAdd({ situation: "bundled-fallback", inForce: null, configured: null, store: bundled }));
   // Three things, because an operator who gets only one of them has to guess the other two: which
@@ -87,7 +87,7 @@ test("1945 WITH NO STORE CONFIGURED, an add would write a real client into the s
   assert.match(e.message, /Set CLEAROTRON_CUSTOMERS_DIR/, "and what to do about it");
 });
 
-test("1945 a store set AFTER the process started is refused too — and for a different reason", () => {
+test("a store set AFTER the process started is refused too — and for a different reason", () => {
   const e = refusalFrom(() => storeForAdd({ situation: "env-arrived-late", inForce: null, configured: "/srv/customers", store: "/repo/driver/profiles" }));
   assert.match(e.message, /\/srv\/customers/, "names the store the operator can see in their shell");
   assert.match(e.message, /NOT the store in force/i);
@@ -99,13 +99,13 @@ test("1945 a store set AFTER the process started is refused too — and for a di
 
 // ── THE FRAMEWORK AXIS: three branches, three arms ─────────────────────────────────────────────────
 
-test("1945 ABSENT framework — the house default is applied and NAMED, never silently", () => {
+test("ABSENT framework — the house default is applied and NAMED, never silently", () => {
   const r = resolveFramework(undefined, { resolveSkill });
   assert.equal(r.path, DEFAULT_FRAMEWORK);
   assert.equal(r.source, "default", "the caller can tell a default from a choice — the output sentence depends on it");
 });
 
-test("1945 SUPPLIED framework — used as given, and reported as the client's own", () => {
+test("SUPPLIED framework — used as given, and reported as the client's own", () => {
   // The house deck is the one framework certain to exist in every checkout, so this asserts the
   // SUPPLIED path without a fixture deck that a later sweep could delete.
   const r = resolveFramework(DEFAULT_FRAMEWORK, { resolveSkill });
@@ -114,14 +114,14 @@ test("1945 SUPPLIED framework — used as given, and reported as the client's ow
     "explicitly choosing a framework is a CHOICE even when it names the same document as the default");
 });
 
-test("1945 BROKEN framework — refused BY NAME, and never quietly rated under the default", () => {
+test("BROKEN framework — refused BY NAME, and never quietly rated under the default", () => {
   const e = refusalFrom(() => resolveFramework("skills/prelim-search/no-such-framework.md", { resolveSkill }));
   assert.match(e.message, /no-such-framework\.md/, "names the document that is missing");
   assert.match(e.message, /Refusing rather than/, "and says why it is not falling back");
   assert.match(e.message, /mistake, not an absence/, "the ruling's own distinction, in the message");
 });
 
-test("1945 a framework whose manifest will not load is BROKEN, not absent", () => {
+test("a framework whose manifest will not load is BROKEN, not absent", () => {
   // Injected, because the state asserted is "the deck is there and the sidecar is unusable" — one no
   // tracked fixture should be created to hold.
   const e = refusalFrom(() => resolveFramework(DEFAULT_FRAMEWORK, {
@@ -132,7 +132,7 @@ test("1945 a framework whose manifest will not load is BROKEN, not absent", () =
   assert.match(e.message, /mistake, not an absence/);
 });
 
-test("1945 a path outside the shipped skills directory is refused before anything is read", () => {
+test("a path outside the shipped skills directory is refused before anything is read", () => {
   for (const bad of ["/etc/passwd", "skills/prelim-search/../../secrets.md", "framework.md", "skills/other/x.md"]) {
     const e = refusalFrom(() => resolveFramework(bad, { resolveSkill }));
     assert.match(e.message, /skills\/prelim-search/, `${bad} should be refused against the stated shape`);
@@ -141,7 +141,7 @@ test("1945 a path outside the shipped skills directory is refused before anythin
 
 // ── THE FIELD THE SAVE PATH WOULD HAVE DELETED ─────────────────────────────────────────────────────
 
-test("1945 the bundle carries frameworkPath in BOTH branches — the field a create through the service deletes", () => {
+test("the bundle carries frameworkPath in BOTH branches — the field a create through the service deletes", () => {
   for (const supplied of [undefined, DEFAULT_FRAMEWORK]) {
     const framework = resolveFramework(supplied, { resolveSkill });
     const profile = buildProfile({ key: "northwind", name: "Northwind Trading SA", domains: ["northwind.test"], platforms: HOUSE.platforms, framework });
@@ -150,7 +150,7 @@ test("1945 the bundle carries frameworkPath in BOTH branches — the field a cre
   }
 });
 
-test("1945 the written file still has the framework after a real round-trip", () => {
+test("the written file still has the framework after a real round-trip", () => {
   // preserveCodeOwned deletes frameworkPath whenever no profile exists on disk, which is every create.
   // This drives the writer the command actually uses and reads the bytes back, so a later refactor that
   // routes the verb through the service door reds here rather than in production.
@@ -165,13 +165,13 @@ test("1945 the written file still has the framework after a real round-trip", ()
 
 // ── A BAD ADD MUST FAIL ONE CUSTOMER, NEVER THE DEPLOYMENT ────────────────────────────────────────
 
-test("1945 an EMPTY configured store accepts the first brand owner", () => {
+test("an EMPTY configured store accepts the first brand owner", () => {
   const framework = resolveFramework(undefined, { resolveSkill });
   const profile = buildProfile({ key: "acme", name: "Acme SA", domains: ["acme.test"], platforms: HOUSE.platforms, framework });
   assert.doesNotThrow(() => assertRosterAccepts({ store: "/srv/customers", key: "acme", profile, loadProfiles: rosterOf({}) }));
 });
 
-test("1945 a key that already exists is refused — this command creates, it never overwrites", () => {
+test("a key that already exists is refused — this command creates, it never overwrites", () => {
   const framework = resolveFramework(undefined, { resolveSkill });
   const profile = buildProfile({ key: "acme", name: "Acme SA", domains: [], platforms: HOUSE.platforms, framework });
   const e = refusalFrom(() => assertRosterAccepts({
@@ -181,7 +181,7 @@ test("1945 a key that already exists is refused — this command creates, it nev
   assert.match(e.message, /already exists/);
 });
 
-test("1945 A COLLIDING DOMAIN IS REFUSED BEFORE THE WRITE — it stops the WHOLE roster loading, not just this one", () => {
+test("A COLLIDING DOMAIN IS REFUSED BEFORE THE WRITE — it stops the WHOLE roster loading, not just this one", () => {
   const framework = resolveFramework(undefined, { resolveSkill });
   const profile = buildProfile({ key: "acme", name: "Acme SA", domains: ["Shared.test"], platforms: HOUSE.platforms, framework });
   const e = refusalFrom(() => assertRosterAccepts({
@@ -194,7 +194,7 @@ test("1945 A COLLIDING DOMAIN IS REFUSED BEFORE THE WRITE — it stops the WHOLE
   assert.match(e.message, /nothing has been written/);
 });
 
-test("1945 the collision check is case-insensitive on the roster's side too", () => {
+test("the collision check is case-insensitive on the roster's side too", () => {
   const framework = resolveFramework(undefined, { resolveSkill });
   const profile = buildProfile({ key: "acme", name: "Acme SA", domains: ["shared.test"], platforms: HOUSE.platforms, framework });
   refusalFrom(() => assertRosterAccepts({
@@ -205,7 +205,7 @@ test("1945 the collision check is case-insensitive on the roster's side too", ()
 
 // ── THE PARSER, WHICH IS PART OF THE SAFETY ────────────────────────────────────────────────────────
 
-test("1945 an unknown option is REFUSED rather than ignored", () => {
+test("an unknown option is REFUSED rather than ignored", () => {
   // `--fraemwork skills/…` under a permissive parser onboards the client under the house default while
   // the operator believes they set theirs — a silent wrong answer on the one field this verb exists for.
   const e = refusalFrom(() => parseArgs(["acme", "--fraemwork", "skills/prelim-search/x.md"]));
@@ -213,11 +213,11 @@ test("1945 an unknown option is REFUSED rather than ignored", () => {
   assert.match(e.message, /--framework/, "and what exists");
 });
 
-test("1945 an option with no value is refused rather than swallowing the next flag", () => {
+test("an option with no value is refused rather than swallowing the next flag", () => {
   refusalFrom(() => parseArgs(["acme", "--name", "--domains", "a.test"]));
 });
 
-test("1945 domains are split, trimmed and lower-cased", () => {
+test("domains are split, trimmed and lower-cased", () => {
   const a = parseArgs(["acme", "--domains", " Acme.test , ACME.CO ,"]);
   assert.deepEqual(a.domains, ["acme.test", "acme.co"]);
 });
@@ -247,7 +247,7 @@ function serviceOver(profiles) {
   return makeProfileService({ profileDir: dir, writeProfile: () => ({ files: [] }) });
 }
 
-test("1945 a brand owner with NO framework of their own is not called custom", async () => {
+test("a brand owner with NO framework of their own is not called custom", async () => {
   const service = serviceOver({ acme: { name: "Acme", platforms: ["amazon.com"] } });
   const r = await service.route("GET", "/profiles/acme", STAFF_IDENTITY);
   assert.equal(r.status, 200);
@@ -255,7 +255,7 @@ test("1945 a brand owner with NO framework of their own is not called custom", a
   assert.equal(r.json.framework.custom, false);
 });
 
-test("1945 A BRAND OWNER ONBOARDED ONTO THE HOUSE DEFAULT IS NOT CALLED CUSTOM EITHER — the arm this ruling needed", async () => {
+test("A BRAND OWNER ONBOARDED ONTO THE HOUSE DEFAULT IS NOT CALLED CUSTOM EITHER — the arm this ruling needed", async () => {
   // Exactly what the verb writes when no framework is supplied: the default, explicitly. Under the old
   // reading this said custom:true and the page called the house deck "their own framework, in its own
   // words". Nothing existed to catch that.
@@ -267,7 +267,7 @@ test("1945 A BRAND OWNER ONBOARDED ONTO THE HOUSE DEFAULT IS NOT CALLED CUSTOM E
     "an explicit house default is still the house default — the page must not call it this client's own");
 });
 
-test("1945 a brand owner with a framework of their own IS custom", async () => {
+test("a brand owner with a framework of their own IS custom", async () => {
   // The capability has to survive the fix: this is the client whose page must say their matters are
   // NOT rated under the generic default.
   const own = "skills/prelim-search/risk-framework-aurora.md";
@@ -291,7 +291,7 @@ import { existsSync } from "node:fs";
 
 const overlayOn = (dir) => ({ situation: "overlay", inForce: dir, store: dir, configured: dir });
 
-test("1945 --dry-run writes nothing AND still says which framework would apply", async () => {
+test("--dry-run writes nothing AND still says which framework would apply", async () => {
   const dir = tmp();
   const said = [];
   // THE FLAG IS THE SUBJECT. The first version of this arm was named for --dry-run and did not pass it,
@@ -309,7 +309,7 @@ test("1945 --dry-run writes nothing AND still says which framework would apply",
     `the framework line must name the default and say it IS the default — said: ${JSON.stringify(said)}`);
 });
 
-test("1945 a real add writes the bundle, names the framework, and reports where doctor will find it", async () => {
+test("a real add writes the bundle, names the framework, and reports where doctor will find it", async () => {
   const dir = tmp();
   const said = [];
   const r = await add(["acme", "--name", "Acme SA", "--domains", "acme.test"],
@@ -324,7 +324,7 @@ test("1945 a real add writes the bundle, names the framework, and reports where 
     "and the operator is told how to see it — the issue asked for what doctor would say");
 });
 
-test("1945 a supplied framework is reported as the client's own, not as the default", async () => {
+test("a supplied framework is reported as the client's own, not as the default", async () => {
   const dir = tmp();
   const said = [];
   await add(["acme", "--name", "Acme SA", "--framework", DEFAULT_FRAMEWORK],
@@ -334,7 +334,7 @@ test("1945 a supplied framework is reported as the client's own, not as the defa
   assert.doesNotMatch(line, /GENERIC DEFAULT/, "and never described as the fallback the operator did not take");
 });
 
-test("1945 a BROKEN framework refuses BEFORE the bundle is written", async () => {
+test("a BROKEN framework refuses BEFORE the bundle is written", async () => {
   // ORDER MATTERS, and only a whole-command arm can see it. If the write happened first, a refused
   // framework would leave a half-onboarded brand owner on disk rated under nothing anyone chose.
   const dir = tmp();
@@ -347,7 +347,7 @@ test("1945 a BROKEN framework refuses BEFORE the bundle is written", async () =>
   assert.equal(existsSync(join(dir, "acme.json")), false, "nothing on disk after a refused framework");
 });
 
-test("1945 a store that does not exist is refused by name, not as a stack trace", async () => {
+test("a store that does not exist is refused by name, not as a stack trace", async () => {
   // Measured before the check existed: this surfaced as `ENOENT: no such file or directory, scandir
   // '<path>'` — the raw error from the roster read, naming a path and nothing else. An operator with a
   // typo in the switch got a stack trace where a sentence belongs.
@@ -367,7 +367,7 @@ test("1945 a store that does not exist is refused by name, not as a stack trace"
 // trace naming a line in driver/profiles.mjs is exactly what "refuses malformed input BY NAME" rules
 // out. Only a real invocation can tell those two apart, so this one runs the command.
 
-test("1945 a malformed key is a named refusal on stderr, not a stack trace", async () => {
+test("a malformed key is a named refusal on stderr, not a stack trace", async () => {
   const { spawnSync } = await import("node:child_process");
   const { fileURLToPath } = await import("node:url");
   const { dirname, join: j } = await import("node:path");

@@ -40,7 +40,7 @@ function resolve(product) {
   return { cold, warm };
 }
 
-test("#1503 every product resolves to ITS OWN row through the real attach path", () => {
+test("every product resolves to ITS OWN row through the real attach path", () => {
   for (const product of Object.keys(PRODUCT_POLICIES)) {
     const { cold } = resolve(product);
     assert.ok(cold.depth, `${product} attached no depth at all`);
@@ -50,7 +50,7 @@ test("#1503 every product resolves to ITS OWN row through the real attach path",
   }
 });
 
-test("#1503 the graded products really are graded AFTER resolution — not just in the table", () => {
+test("the graded products really are graded AFTER resolution — not just in the table", () => {
   const oneCountry = resolve("full-country-search").cold.depth;
   for (const product of ["global-preliminary-search", "multi-country-focus-search"]) {
     const graded = resolve(product).cold.depth;
@@ -62,7 +62,7 @@ test("#1503 the graded products really are graded AFTER resolution — not just 
   }
 });
 
-test("#1503 a REPAIR or --experiment dispatch resolves identically to the cold pass", () => {
+test("a REPAIR or --experiment dispatch resolves identically to the cold pass", () => {
   for (const product of Object.keys(PRODUCT_POLICIES)) {
     const { cold, warm } = resolve(product);
     assert.deepEqual({ ...warm.depth }, { ...cold.depth },
@@ -71,7 +71,7 @@ test("#1503 a REPAIR or --experiment dispatch resolves identically to the cold p
   }
 });
 
-test("#1503 THE PROMPT a resolved ctx builds carries the rung — end to end, no hand-built depth", () => {
+test("THE PROMPT a resolved ctx builds carries the rung — end to end, no hand-built depth", () => {
   const paths = new Proxy({}, { get: (_t, k) => (typeof k === "string" ? `<${k}>` : undefined) });
   const message = (product) => {
     const { cold } = resolve(product);
@@ -90,7 +90,7 @@ test("#1503 THE PROMPT a resolved ctx builds carries the rung — end to end, no
     "an ungraded product's prompt moved — the fallback must be one-country's, byte for byte");
 });
 
-test("#1503 the frozen policy's field name is PINNED — this is the fact the bug turned on", () => {
+test("the frozen policy's field name is PINNED — this is the fact the bug turned on", () => {
   const { cold } = resolve("global-preliminary-search");
   assert.equal(cold.searchPolicy.level, "global-preliminary-search",
     "the frozen policy stopped carrying the product key in `level`");

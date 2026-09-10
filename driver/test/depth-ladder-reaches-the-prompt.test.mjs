@@ -46,7 +46,7 @@ const build = (stageKey, product) => STAGES[stageKey].message(
 const ONE_COUNTRY = "full-country-search";
 const GRADED = ["multi-country-focus-search", "global-preliminary-search"];
 
-test("#1503 every rung's stage is named here — an unmapped rung is a rung nothing checks reaches", () => {
+test("every rung's stage is named here — an unmapped rung is a rung nothing checks reaches", () => {
   assert.ok(RUNG_NAMES.length > 0, "no rungs discovered — the instrument is broken, not the ladder");
   for (const name of RUNG_NAMES) {
     assert.ok(STAGE_OF[name], `${name} ships with no stage mapped in this file, so nothing asserts it `
@@ -55,7 +55,7 @@ test("#1503 every rung's stage is named here — an unmapped rung is a rung noth
   }
 });
 
-test("#1503 PRODUCT 4 IS UNTOUCHED — the one-country message is byte-identical to no ladder at all", () => {
+test("PRODUCT 4 IS UNTOUCHED — the one-country message is byte-identical to no ladder at all", () => {
   for (const name of RUNG_NAMES) {
     const stageKey = STAGE_OF[name];
     const withOneCountry = build(stageKey, ONE_COUNTRY);
@@ -67,7 +67,7 @@ test("#1503 PRODUCT 4 IS UNTOUCHED — the one-country message is byte-identical
   }
 });
 
-test("#1503 the rung REACHES the prompt on a graded product — a no-op here is a ladder that does nothing", () => {
+test("the rung REACHES the prompt on a graded product — a no-op here is a ladder that does nothing", () => {
   for (const name of RUNG_NAMES) {
     const stageKey = STAGE_OF[name];
     const baseline = build(stageKey, ONE_COUNTRY);
@@ -87,7 +87,7 @@ test("#1503 the rung REACHES the prompt on a graded product — a no-op here is 
   }
 });
 
-test("#1503 the two graded products differ from each other — one bar, not two names for it", () => {
+test("the two graded products differ from each other — one bar, not two names for it", () => {
   for (const name of RUNG_NAMES) {
     const stageKey = STAGE_OF[name];
     assert.notEqual(build(stageKey, GRADED[0]), build(stageKey, GRADED[1]),
@@ -96,7 +96,7 @@ test("#1503 the two graded products differ from each other — one bar, not two 
   }
 });
 
-test("#1503 the DRIVER'S PROFILE LIST reaches the refutation prompt, and one-country's does not", () => {
+test("the DRIVER'S PROFILE LIST reaches the refutation prompt, and one-country's does not", () => {
   // The converted lever's half of the reach guarantee. A selection computed and never rendered is the
   // same defect as a directive defined and never called — the product runs ungraded and the only
   // symptom is work nobody asked about still being done.

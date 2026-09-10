@@ -27,7 +27,7 @@ const reachableActive = (args) => args.includes("is-enabled")
   ? { ok: true, out: "enabled", err: "", status: 0 }
   : { ok: true, out: "active", err: "", status: 0 };
 
-test("#1864 an unreachable bus answers UNKNOWN, never not-found", () => {
+test("an unreachable bus answers UNKNOWN, never not-found", () => {
   const u = unitState("prelim-driver.timer", busUnreachable);
   assert.equal(u.enabled, "unknown", "an unreadable manager reported a unit state it never read");
   assert.equal(u.active, "unknown");
@@ -35,7 +35,7 @@ test("#1864 an unreachable bus answers UNKNOWN, never not-found", () => {
   assert.match(u.why ?? "", /bus/i, "the reason systemctl gave is dropped, so the operator cannot act on it");
 });
 
-test("#1864 a REACHABLE manager that finds nothing still answers not-found — the fix must not blanket-unknown", () => {
+test("a REACHABLE manager that finds nothing still answers not-found — the fix must not blanket-unknown", () => {
   // THE CONTROL. Turning every negative into "unknown" would silence the true finding this tool exists
   // to make: a box where the units genuinely are not installed must still be told so.
   const u = unitState("prelim-driver.timer", reachableAbsent);
@@ -43,7 +43,7 @@ test("#1864 a REACHABLE manager that finds nothing still answers not-found — t
   assert.notEqual(u.unreadable, true, "a clean read was reported as unreadable — the tool now never says anything");
 });
 
-test("#1864 a reachable manager that finds the unit reports it, and is not marked unreadable", () => {
+test("a reachable manager that finds the unit reports it, and is not marked unreadable", () => {
   const u = unitState("prelim-driver.timer", reachableActive);
   assert.equal(u.active, "active");
   assert.equal(u.scope, "user");

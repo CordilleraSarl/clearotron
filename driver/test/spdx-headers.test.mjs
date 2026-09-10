@@ -38,7 +38,7 @@ function repo() {
   return { root, add, cleanup: () => rmSync(root, { recursive: true, force: true }) };
 }
 
-test("#854 a planted headerless source file is CAUGHT", () => {
+test("a planted headerless source file is CAUGHT", () => {
   const r = repo();
   try {
     r.add("src/headed.mjs", `${SPDX}\n${COPYRIGHT}\nexport const a = 1;\n`);
@@ -53,7 +53,7 @@ test("#854 a planted headerless source file is CAUGHT", () => {
   } finally { r.cleanup(); }
 });
 
-test("#854 …and passes once the header is added — the same file, the same check", () => {
+test("…and passes once the header is added — the same file, the same check", () => {
   const r = repo();
   try {
     const p = r.add("src/bare.mjs", "export const b = 2;\n");
@@ -62,7 +62,7 @@ test("#854 …and passes once the header is added — the same file, the same ch
   } finally { r.cleanup(); }
 });
 
-test("#854 the header goes AFTER a shebang, never above it", () => {
+test("the header goes AFTER a shebang, never above it", () => {
   // A comment above `#!/usr/bin/env node` stops the kernel finding the interpreter. 70 files in this
   // repository start with one, so getting this backwards would break every executable script at once
   // — and it would break them at RUN time, not at test time.
@@ -78,19 +78,19 @@ test("#854 the header goes AFTER a shebang, never above it", () => {
   assert.ok(lines[2].includes(TERMS_TEXT), "and it carries the additional-terms notice");
 });
 
-test("#854 it is idempotent — running the sweep twice does not stack headers", () => {
+test("it is idempotent — running the sweep twice does not stack headers", () => {
   const once = withHeader("export const a = 1;\n");
   assert.equal(withHeader(once), null, "already headed ⇒ no second write");
   assert.equal((once.match(/SPDX-License-Identifier/g) ?? []).length, 1);
 });
 
-test("#854 the header is recognised by its SPDX line alone, so the copyright YEAR can move", () => {
+test("the header is recognised by its SPDX line alone, so the copyright YEAR can move", () => {
   // Deliberate: the licence does not require the copyright line to be any particular text, and a check
   // keyed on "2026" starts failing every January over a line nobody needs to have changed.
   assert.ok(hasHeader(`${SPDX}\n// Copyright 2031 Cordillera Sàrl\nexport const a = 1;\n`));
 });
 
-test("#854 the generated bundle is excluded, and the exclusion is NARROW", () => {
+test("the generated bundle is excluded, and the exclusion is NARROW", () => {
   // portal-ui/dist is committed on purpose but nobody wrote it, and vite rewrites it wholesale on every
   // build — any header added there is gone at the next `npm run build`.
   assert.ok(isExcluded("portal-ui/dist/assets/index-P_3D0Lp1.js"));
@@ -107,7 +107,7 @@ test("#854 the generated bundle is excluded, and the exclusion is NARROW", () =>
 // sweep does not claim. Restore this arm the day something regenerates a tracked source file again.
 
 
-test("#854 the guard sees the whole tree, not one directory", () => {
+test("the guard sees the whole tree, not one directory", () => {
   // That lesson, one seam along: a repo-wide walk found four tracked units living outside
   // driver/systemd/, and any conclusion drawn from listing one directory was wrong by construction.
   // The same trap applies here — the authored source is spread across driver, providers, portal-ui,

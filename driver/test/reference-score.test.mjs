@@ -460,7 +460,7 @@ test("the knockout lane is read from its own artifact, not reported as an empty 
 // to pose: genuine find, or false positive? A bucket whose most decision-relevant column is unreadable
 // quietly teaches the reader to skip it, and NOISE is the one the tool says not to skip.
 
-test("#346: ownerName reads the typed object, the legacy string, and refuses to invent one", () => {
+test("ownerName reads the typed object, the legacy string, and refuses to invent one", () => {
   assert.equal(ownerName({ name: "E2E Field Holdings", country: "CH", registrations: [] }), "E2E Field Holdings");
   assert.equal(ownerName("E2E Field Holdings"), "E2E Field Holdings", "a preserved run older than the typed shape still reads");
   assert.equal(ownerName("  padded  "), "padded");
@@ -469,7 +469,7 @@ test("#346: ownerName reads the typed object, the legacy string, and refuses to 
   }
 });
 
-test("#346: a NOISE row prints its owner's NAME — end to end through the real CLI", () => {
+test("a NOISE row prints its owner's NAME — end to end through the real CLI", () => {
   const store = makeReference(mkdtempSync(join(tmpdir(), "score-store-")));
   const run = mkdtempSync(join(tmpdir(), "score-run-"));
   // The owner shape a real clearance run writes: the object, not a string.
@@ -500,7 +500,7 @@ test("#346: a NOISE row prints its owner's NAME — end to end through the real 
 // pair is what a delivered knockout-register run writes (status.verdict = the worst band, marks[] each
 // with rating + ratingQualifier). Mark names are the suite's synthetic probes per this file's header.
 
-test("#324: the knockout lane's verdict is read from the artifacts that lane actually writes", () => {
+test("the knockout lane's verdict is read from the artifacts that lane actually writes", () => {
   const v = readVerdict({
     verdictDoc: null,
     status: { verdict: "Medium", state: "delivered" },
@@ -513,7 +513,7 @@ test("#324: the knockout lane's verdict is read from the artifacts that lane act
   assert.equal(v.why, null);
 });
 
-test("#324: the clearance lane is unchanged — verdict.json still wins and still decides clean", () => {
+test("the clearance lane is unchanged — verdict.json still wins and still decides clean", () => {
   const clean = readVerdict({ verdictDoc: { tier: "l3", verdict: "CONDITIONAL", statement: "no material conflict identified" } });
   assert.equal(clean.clean, true, "the existing vocabulary still decides");
   assert.equal(clean.source, "_driver/verdict.json");
@@ -527,7 +527,7 @@ test("#324: the clearance lane is unchanged — verdict.json still wins and stil
   assert.equal(both.source, "_driver/verdict.json");
 });
 
-test("#324: an unreadable verdict stays THREE-valued and carries the reason, never a bare blank", () => {
+test("an unreadable verdict stays THREE-valued and carries the reason, never a bare blank", () => {
   const none = readVerdict({});
   assert.equal(none.clean, null, "null is 'could not be read', which is not 'not clean'");
   assert.equal(none.text, null);
@@ -541,7 +541,7 @@ test("#324: an unreadable verdict stays THREE-valued and carries the reason, nev
   assert.equal(readVerdict({ knockoutFindings: { marks: [] } }).clean, null);
 });
 
-test("#324: a knockout run scored through the real CLI prints its verdict instead of (unreadable)", () => {
+test("a knockout run scored through the real CLI prints its verdict instead of (unreadable)", () => {
   const store = makeReference(mkdtempSync(join(tmpdir(), "score-store-")));
   const run = mkdtempSync(join(tmpdir(), "score-run-"));
   writeFileSync(join(run, "knockout-findings.json"), JSON.stringify({
@@ -563,7 +563,7 @@ test("#324: a knockout run scored through the real CLI prints its verdict instea
   } finally { rmSync(store, { recursive: true, force: true }); rmSync(run, { recursive: true, force: true }); }
 });
 
-test("#324: a run with NO verdict artifact on either lane prints the reason, not a blank", () => {
+test("a run with NO verdict artifact on either lane prints the reason, not a blank", () => {
   const store = makeReference(mkdtempSync(join(tmpdir(), "score-store-")));
   // withDriver:false is the pool-dir shape — no `_driver/verdict.json`, and no knockout findings either,
   // so neither lane can answer. That is exactly when the old code printed an empty parenthesis.
@@ -584,7 +584,7 @@ test("#324: a run with NO verdict artifact on either lane prints the reason, not
 // A registered trademark is not satisfied by a retail identity or a discussion thread that shares its
 // spelling. The string rules are correct and untouched; what was missing is the second question.
 
-test("#406: evidenceClassOf folds the typed source vocabulary, and anything it does not recognise is UNKNOWN, never a class", () => {
+test("evidenceClassOf folds the typed source vocabulary, and anything it does not recognise is UNKNOWN, never a class", () => {
   assert.equal(evidenceClassOf("register-vendor"), "register");
   assert.equal(evidenceClassOf("register-euipo"), "register");
   assert.equal(evidenceClassOf("common-law-marketplace"), "common-law");
@@ -597,7 +597,7 @@ test("#406: evidenceClassOf folds the typed source vocabulary, and anything it d
   assert.equal(evidenceClassOf({ source_type: "register-vendor" }), "unknown", "an object is not a source_type");
 });
 
-test("#406: a register entry is satisfied by a register record and REFUSED by common-law material — the string rule is unchanged either way", () => {
+test("a register entry is satisfied by a register record and REFUSED by common-law material — the string rule is unchanged either way", () => {
   const entry = { mark: "ZORVYS", classes: ["9"], jurisdictions: ["US"] };
   const fromRegister = { mark: "ZORVYS", evidence: "register" };
   const fromScreen = { mark: "ZORVYS", evidence: "common-law" };
@@ -621,7 +621,7 @@ test("#406: a register entry is satisfied by a register record and REFUSED by co
     { rule: null, evidence: null, ok: false });
 });
 
-test("#406: an UNKNOWN evidence class never blocks — a preserved run older than the typed shape keeps its genuine finds", () => {
+test("an UNKNOWN evidence class never blocks — a preserved run older than the typed shape keeps its genuine finds", () => {
   const entry = { mark: "ZORVYS" };
   // this is the back-compat invariant, and it is why the change does not silently rewrite history:
   // score.mjs reads preserved runs, and turning their finds into misses would be a second defect
@@ -631,7 +631,7 @@ test("#406: an UNKNOWN evidence class never blocks — a preserved run older tha
   assert.equal(satisfiesReference(entry, "ZORVYS").ok, true, "a bare string candidate is the legacy call shape");
 });
 
-test("#406: scoreRecall moves a name-only match from FOUND to LOST — and the lost row NAMES what nearly satisfied it", () => {
+test("scoreRecall moves a name-only match from FOUND to LOST — and the lost row NAMES what nearly satisfied it", () => {
   const reference = [{ mark: "ZORVYS", classes: ["9"], jurisdictions: ["US"] }];
   const scope = { scopeClasses: ["9"], scopeTerritories: ["US"] };
 
@@ -664,7 +664,7 @@ test("#406: scoreRecall moves a name-only match from FOUND to LOST — and the l
 // findings whose marks are the gold label or start with it, that string does not say WHICH of them
 // earned the credit. The number is not claimed wrong — it is unauditable, which for a scoring instrument
 // is the same problem one step removed.
-test("#917 a found entry names WHICH finding earned it, among namesakes", () => {
+test("a found entry names WHICH finding earned it, among namesakes", () => {
   // The case that makes `matched` alone unauditable: several findings whose marks are the gold label or
   // start with it. The string cannot say which one earned the credit; the ordinal can.
   const findings = [
@@ -681,7 +681,7 @@ test("#917 a found entry names WHICH finding earned it, among namesakes", () => 
     "and WHICH finding earned it, which is the half a reader could not re-derive from the artifact");
 });
 
-test("#917 the ordinal is null when the finding carries none — never an index", () => {
+test("the ordinal is null when the finding carries none — never an index", () => {
   // `scorable` is a FILTERED list, so a position in it is not the finding's ordinal. Deriving one would
   // put a plausible wrong number in a scoring artifact, which is worse than a stated absence.
   const src = readFileSync(new URL("../reference-score.mjs", import.meta.url), "utf8");
@@ -692,7 +692,7 @@ test("#917 the ordinal is null when the finding carries none — never an index"
   assert.doesNotMatch(line, /indexOf|\bi\s*\+\s*1\b/, "never derived from a position in a filtered list");
 });
 
-test("#917 the scorer stamps its own version, and the JSON output carries it", () => {
+test("the scorer stamps its own version, and the JSON output carries it", () => {
   // An instrument fix invalidates its back-catalogue. `REFERENCE_SCHEMA_VERSION` versions the INPUT;
   // nothing versioned the instrument, so every archived score read as comparable to every other.
   assert.ok(Number.isInteger(SCORER_VERSION) && SCORER_VERSION >= 2,
@@ -715,7 +715,7 @@ const BUCKETS = {
   additional: [{ mark: "GAMMA" }],
 };
 
-test("#1575 every declared statement is reported — an omitted one reads as a passing one", () => {
+test("every declared statement is reported — an omitted one reads as a passing one", () => {
   const rows = scoreStatements({
     assertions: ["The register was searched to full depth.", "ALPHAGEN surfaces — it is register-invisible."],
     controls: ["Pre-fix control: BETAWORKS missed and the dead GAMMA delivered."],
@@ -725,7 +725,7 @@ test("#1575 every declared statement is reported — an omitted one reads as a p
   assert.deepEqual(rows.map((r) => r.kind), ["assertion", "assertion", "control"]);
 });
 
-test("#1575 a statement naming a mark carries that mark's own state", () => {
+test("a statement naming a mark carries that mark's own state", () => {
   const [, invisible] = scoreStatements({
     assertions: ["The register was searched to full depth.", "ALPHAGEN surfaces — it is register-invisible."],
     buckets: BUCKETS,
@@ -735,7 +735,7 @@ test("#1575 a statement naming a mark carries that mark's own state", () => {
     "the assertion turns on a mark this run lost, which is the fact the buckets already held and never showed");
 });
 
-test("#1575 a conjunctive control is SPLIT — a half that stops firing must not be absorbed", () => {
+test("a conjunctive control is SPLIT — a half that stops firing must not be absorbed", () => {
   // The R2 control read "<A> missed AND dead <B> delivered". Across eight runs A was missed in seven
   // while B reached findings in ONCE, so as a conjunction it fired once while the condition it exists to
   // catch was live seven times. Each named mark is its own half now.
@@ -750,7 +750,7 @@ test("#1575 a conjunctive control is SPLIT — a half that stops firing must not
     "and the other half reports independently — one can hold while the other does not");
 });
 
-test("#1575 an undecidable statement is UNEVALUATED and says why — never absent, never `pass`", () => {
+test("an undecidable statement is UNEVALUATED and says why — never absent, never `pass`", () => {
   const [plain] = scoreStatements({ assertions: ["US rated High-Medium, or the divergence reported."], buckets: BUCKETS });
   assert.equal(plain.verdict, "unevaluated");
   assert.match(plain.why, /names no mark/, "a reader must be able to tell 'cannot decide' from 'forgot'");
@@ -762,14 +762,14 @@ test("#1575 an undecidable statement is UNEVALUATED and says why — never absen
     "the outcomes are `evidence` and `unevaluated` — the reader supplies the judgement");
 });
 
-test("#1575 a named mark this run never classified says so, rather than reading as absent", () => {
+test("a named mark this run never classified says so, rather than reading as absent", () => {
   const [r] = scoreStatements({ assertions: ["DELTAFORM must surface."], buckets: BUCKETS });
   assert.equal(r.verdict, "unevaluated");
   assert.deepEqual(r.halves, [{ mark: "DELTAFORM", state: "not-in-this-run" }]);
   assert.match(r.why, /none of which this run classified/);
 });
 
-test("#1575 emphasis capitals are not marks, and the list that does that is a floor", () => {
+test("emphasis capitals are not marks, and the list that does that is a floor", () => {
   // Lawyers write in capitals. An unrecognised token joins no bucket and reports `not-in-this-run`,
   // which is true and costs a line — so this list keeps the output readable, it does not make the
   // extraction sound, and nothing downstream may depend on it being complete.
@@ -778,7 +778,7 @@ test("#1575 emphasis capitals are not marks, and the list that does that is a fl
   assert.equal(marksNamedIn("ALPHA and BETAWORKS, but NOT GAMMA").sort().join(","), "ALPHA,BETAWORKS,GAMMA");
 });
 
-test("#1575 the scorer is versioned again, and the CLI prints the statements", () => {
+test("the scorer is versioned again, and the CLI prints the statements", () => {
   assert.ok(SCORER_VERSION >= 3, "reading the assertions changes what the output means");
   const cli = readFileSync(new URL("../../scripts/score.mjs", import.meta.url), "utf8");
   assert.match(cli, /statements:\s*scoreStatements\(/, "the JSON output carries them");
@@ -808,7 +808,7 @@ const OWNER_BAND = [
   { mark: "ORPHIC", record_id: "/mark/em/NOOWNERREC" },
 ];
 
-test("1981: a SKELETON collision does not decide the citation — the entry's own proprietor does", () => {
+test("a SKELETON collision does not decide the citation — the entry's own proprietor does", () => {
   const reference = [{ mark: "VELTHYS", owner: "Calder Pharma S.r.l.", classes: [5] }];
   const b = scoreRecall({ reference, findings: [], retrieved: OWNER_BAND, scopeClasses: ["5"] });
   const row = b.withheld.find((r) => r.mark === "VELTHYS");
@@ -819,7 +819,7 @@ test("1981: a SKELETON collision does not decide the citation — the entry's ow
   assert.equal(row.rule, "alias", "…and the cited record is an identity match, not the near-form");
 });
 
-test("1981: an ALIAS match on a DIFFERENT proprietor does not decide it either", () => {
+test("an ALIAS match on a DIFFERENT proprietor does not decide it either", () => {
   // The half the issue's title does not cover, and two of the three real wrong citations came this way:
   // identical characters, different company, first in band order.
   const reference = [{ mark: "VELTHIC", owner: "Marchmont Dental Limited", classes: [5] }];
@@ -833,7 +833,7 @@ test("1981: an ALIAS match on a DIFFERENT proprietor does not decide it either",
     + "of theirs is still a wrong citation");
 });
 
-test("1981: where no record can be attributed to the owner, the row SAYS SO and cites nothing", () => {
+test("where no record can be attributed to the owner, the row SAYS SO and cites nothing", () => {
   // Naming the blindness rather than inventing the verdict. Falling back to first-in-band is exactly
   // what produced the wrong citations, so the fallback is the thing being removed.
   const reference = [{ mark: "VELTHYS", owner: "Someone Else Entirely GmbH", classes: [5] }];
@@ -846,7 +846,7 @@ test("1981: where no record can be attributed to the owner, the row SAYS SO and 
   assert.match(row.why, /VELTHOS|VELTHYS/, "…naming what it did match, so the reader can judge it");
 });
 
-test("1981: an entry the gold gives NO owner keeps the old first-match behaviour", () => {
+test("an entry the gold gives NO owner keeps the old first-match behaviour", () => {
   // ANTI-OVERREACH. `ownersMatch` is fail-closed, so an ownerless entry would disclose on every row and
   // a scorer that cited a correct record would start citing none. 3 of R2's 41 register entries carry no
   // owner. There is nothing to disambiguate WITH and no ambiguity to disclose.
@@ -857,7 +857,7 @@ test("1981: an entry the gold gives NO owner keeps the old first-match behaviour
   assert.equal(row.ownerUnidentified, undefined, "…and does not disclose an ambiguity it cannot have");
 });
 
-test("1981 NEGATIVE CONTROL: the preference changes the CITATION and never the BUCKET", () => {
+test("NEGATIVE CONTROL: the preference changes the CITATION and never the BUCKET", () => {
   // The whole safety argument for this change, driven rather than asserted: R2's baseline is read from
   // these buckets, and a fix that moved membership would move the number the re-run is compared against.
   const reference = [
@@ -891,7 +891,7 @@ const CORPUS_TAILS = Object.freeze([
   "Limited", "Ltd.",
 ]);
 
-test("2029: every legal form the register corpus actually carries matches", () => {
+test("every legal form the register corpus actually carries matches", () => {
   // Derived from 436 distinct owner strings in a real R2 band — the coverage half of the criterion.
   const base = "Acme Widgets";
   const broken = CORPUS_TAILS.filter((t) => !ownersMatch(base, `${base}, ${t}`));
@@ -901,7 +901,7 @@ test("2029: every legal form the register corpus actually carries matches", () =
     + "the scorer cannot identify on a real run");
 });
 
-test("2029: the specimen that started it, and the two siblings that already worked", () => {
+test("the specimen that started it, and the two siblings that already worked", () => {
   assert.equal(ownersMatch("BePharBel Manufacturing", "BePharBel Manufacturing, Société anonyme"), true,
     "the gold's owner and the band's owner are the same company written to different lengths");
   assert.equal(ownersMatch("Lo.Li. Pharma S.r.l.", "LO.LI. Pharma S.R.L."), true, "case and punctuation, unchanged");
@@ -911,7 +911,7 @@ test("2029: the specimen that started it, and the two siblings that already work
     "#450's trailing jurisdiction annotation, unchanged");
 });
 
-test("2029: STRICTNESS — a form list that ate a real word would be the worse defect", () => {
+test("STRICTNESS — a form list that ate a real word would be the worse defect", () => {
   // The whole risk of this change, driven. `philadelphia`, `mind` and `solutions` recur across distinct
   // owners exactly as the real forms do; stripping them would match different companies.
   for (const w of ["Zoo", "MIND", "Philadelphia", "Solutions", "Group"])
@@ -923,7 +923,7 @@ test("2029: STRICTNESS — a form list that ate a real word would be the worse d
     "one distinctive word apart, same form — must stay two companies");
 });
 
-test("2029: the join is TRAILING only — a regression this fix introduced and then closed", () => {
+test("the join is TRAILING only — a regression this fix introduced and then closed", () => {
   // Making separator-split forms join (`A/S` → `as`, `S.à r.l.` → `sarl`) also joined LEADING initials:
   // `A B Widgets` became `ab` (Aktiebolag), dropped it, and matched a company called `Widgets`. A
   // strictness regression introduced by the fix for a strictness gap. A legal form sits at the END.
@@ -933,7 +933,7 @@ test("2029: the join is TRAILING only — a regression this fix introduced and t
     "…while a trailing separator-split form still joins and drops");
 });
 
-test("2029: `S.à r.l.` is a STATED limit, measured rather than assumed away", () => {
+test("`S.à r.l.` is a STATED limit, measured rather than assumed away", () => {
   // It does not match, and that is recorded rather than hidden. `S.à` normalises away at tokenising, so
   // the trailing run is one token and cannot join. Not fixed with more regex because the shape appears
   // ZERO times in 436 corpus owner strings — the coverage arm above is what will catch it if a register

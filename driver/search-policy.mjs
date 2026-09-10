@@ -263,8 +263,8 @@ export const PRODUCT_POLICIES = {
       // not run is a search that did not happen, and this row was the shortest of the three.
       //
       // WORLDWIDE (global-preliminary-search) IS DELIBERATELY LEFT AT 1 and that is now an inversion: the
-      // broader product gets the weaker recall follow-up. The ruling named this product, and widening an
-      // owner ruling to the most expensive product is not mine to do. Raised as a question rather than
+      // broader product gets the weaker recall follow-up. The ruling named this product, and widening a
+      // ruling to the most expensive product is not mine to do. Raised as a question rather than
       // assumed —.
       recallFollowupMax: 2,
       envelopeRounds: "as-today",
@@ -584,7 +584,7 @@ export function gateResolvedPolicy(resolved, { built = BUILT, registerTerritorie
  */
 export function productAvailability(policy, { built = BUILT, registerCanCount = null, registerTerritories = undefined, geography = null, demo = false } = {}) {
   if (!policy) return "unbuilt";
-  // ── — A DEMO NO LONGER REFUSES A PRODUCT (owner ruling, 2026-08-31) ──────
+  // ── — A DEMO NO LONGER REFUSES A PRODUCT (ruling, 2026-08-31) ──────
   //
   // `demo` used to return FIRST, before every other cause, and greyed all four products with a sentence
   // about credentials. That implemented the ruling of 14:44 that day, which the owner superseded at
@@ -615,7 +615,7 @@ export function productAvailability(policy, { built = BUILT, registerCanCount = 
   // or unrestricted coverage returns null there — this arm cannot fire on a snapshot that says nothing.
   if (geography) {
     const cause = registerCoverageCause(geography, registerTerritories);
-    // ── — COVERAGE IS DISCLOSED, NEVER REFUSED (owner ruling, 2026-08-31) ──
+    // ── — COVERAGE IS DISCLOSED, NEVER REFUSED (ruling, 2026-08-31) ──
     //
     // "A user could still run global and just be aware of the limitations — I prefer that than switch
     // it off." The gate removed the product instead, and it was the ONE place in this system that
@@ -632,7 +632,7 @@ export function productAvailability(policy, { built = BUILT, registerCanCount = 
     //
     // `register-cannot-count` is ruled explicitly out of scope on that issue: a register that cannot
     // return counts cannot produce the search's core output, which is a capability gap.
-    // ── D6 (owner ruling, 2026-09-02) — AND THE OTHER COVERAGE CAUSE TOO ────
+    // ── D6 (ruling, 2026-09-02) — AND THE OTHER COVERAGE CAUSE TOO ────
     //
     // "Disclosure yes, in line with the picker." The picker offers a territory the register cannot
     // reach and says so at the control; a product refused for the same fact was the last place the two
@@ -678,7 +678,7 @@ export function productAvailability(policy, { built = BUILT, registerCanCount = 
  */
 export const UNAVAILABLE_NOTE = {
   unbuilt: "Not part of the current release.",
-  // `demo` IS DELETED FROM THIS MAP (owner ruling 2026-08-31 14:47), and
+  // `demo` IS DELETED FROM THIS MAP (ruling 2026-08-31 14:47), and
   // deleting it is what makes the reversal structural rather than a filter somebody can undo by
   // accident. Every client-facing surface renders a product's refusal as `UNAVAILABLE_NOTE[cause]`;
   // while a sentence sat here for a demo, the greyed control was one `return "demo"` away from coming
@@ -692,7 +692,7 @@ export const UNAVAILABLE_NOTE = {
   // a baked-in provider name, no CLEAROTRON_* string in scope here, and it says the one thing a reader can
   // act on — this is a coverage limit, so a newer version will not fix it.
   //
-  // `register-not-worldwide` IS DELETED FROM THIS MAP (owner ruling
+  // `register-not-worldwide` IS DELETED FROM THIS MAP (ruling
   // 2026-08-31), and deleting it is what makes the ruling structural rather than a filter somebody can
   // reverse by accident. Every client-facing surface renders a product's refusal as
   // `UNAVAILABLE_NOTE[cause]`; while a sentence sat here for that cause, the ruling held only as long as
@@ -701,7 +701,7 @@ export const UNAVAILABLE_NOTE = {
   // visible edit to a map with this paragraph above it. The cause itself still exists and is still
   // computed: `coverageDisclosure` below keys on it, and says what the register DOES reach.
   //
-  // `register-coverage` IS DELETED TOO (owner ruling D6, 2026-09-02: "disclosure yes, in line with the
+  // `register-coverage` IS DELETED TOO (ruling D6, 2026-09-02: "disclosure yes, in line with the
   // picker"). It was the last place a coverage fact could still refuse a product, which is the
   // disagreement between the two controls that the ruling on this issue forbids. Same structural move
   // as its sibling and for the same reason: with no sentence here there is nothing for a door to

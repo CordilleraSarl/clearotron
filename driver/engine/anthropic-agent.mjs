@@ -802,7 +802,7 @@ export const anthropicAgentEngine = {
         else if (progIdle >= (started ? NOPROG : Math.max(NOPROG, GRACE))) { stallKill = true; noProgressKill = true; killed = true; killTree(); }
         // ── THE CEILING MEASURES ACTIVE TIME, NOT ELAPSED ────────────────────────────────────
         //
-        // Owner ruling: "there isnt such thing as a hung model. it always delivers something or fails."
+        // Ruling: "there isnt such thing as a hung model. it always delivers something or fails."
         // So this ceiling exists for the harness's own failure modes, not to budget the model, and a turn
         // still doing work must not die because a tool it was waiting on took a while to answer.
         //

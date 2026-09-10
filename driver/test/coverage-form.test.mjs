@@ -390,7 +390,7 @@ test("the dispatch brief names the TOOL and the two fields, and recites no qid",
 // on the report that was clearing AXIS. The ban list and the trademark register overlap.
 //
 // A refusal has neither failure mode, because it goes to the thing that can rewrite the sentence.
-test("#669 the seat's reason may not carry an engine identifier — refused per row, with the token named", () => {
+test("the seat's reason may not carry an engine identifier — refused per row, with the token named", () => {
   const row = (reason) => ({ row_id: "CS-1", axis: "primary-sweep", kind: "seat",
     unit: "primary-sweep / EU", open: false, status: "confirmed-clean", reason });
   const v = findCoverageFormViolations([row("all fifteen primary-sweep queries enumerated to zero")]);
@@ -408,7 +408,7 @@ test("#669 the seat's reason may not carry an engine identifier — refused per 
   assert.deepEqual(findCoverageFormViolations([row("the EU leg enumerated completely and returned no live marks")]), []);
 });
 
-test("#669 the ban list is HYPHENATED COMPOUNDS ONLY — a one-word mark is never refused", () => {
+test("the ban list is HYPHENATED COMPOUNDS ONLY — a one-word mark is never refused", () => {
   // The selection rule, asserted rather than described. A refusal that cannot tell engine vocabulary
   // from a mark would block a clearance on the mark SLICE, which is one level in. Every banned
   // token must be a compound; the bare nouns are taught in the dictation and NOT enforced.

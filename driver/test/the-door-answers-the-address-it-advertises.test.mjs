@@ -25,7 +25,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const list = (...a) => allowedHosts(...a).split(",");
 
-test("2163 the public hostname reaches the allow-list, bare and with :443", () => {
+test("the public hostname reaches the allow-list, bare and with :443", () => {
   // THE DEFECT, REPRODUCED: loopback only is what the plan used to write, and it is what a tunnel's
   // Host header never matches.
   const without = list(8848);
@@ -39,7 +39,7 @@ test("2163 the public hostname reaches the allow-list, bare and with :443", () =
     "the public name with :443 is not allowed — some clients send the port and both arrive here");
 });
 
-test("2163 an explicit port is honoured as itself, not rewritten to 443", () => {
+test("an explicit port is honoured as itself, not rewritten to 443", () => {
   // Somebody publishing on :8443 sends :8443. Hard-coding 443 would fix the common case and leave the
   // uncommon one with exactly the defect this issue is about.
   const l = list(8848, { CLEAROTRON_CLIENT_MCP_URL: "https://clearotron.example.com:8443/mcp" });
@@ -47,7 +47,7 @@ test("2163 an explicit port is honoured as itself, not rewritten to 443", () => 
   assert.ok(!l.includes("clearotron.example.com:443"), "a port nobody published was allowed instead");
 });
 
-test("2163 loopback is never dropped for the public name", () => {
+test("loopback is never dropped for the public name", () => {
   // A local install has no public name at all, and the portal and health probes reach the door on
   // 127.0.0.1. A plan that swapped loopback for the public host would fix a tunnel by breaking the
   // machine the door runs on.
@@ -62,7 +62,7 @@ test("2163 loopback is never dropped for the public name", () => {
   }
 });
 
-test("2163 a malformed or absent URL leaves a working local door", () => {
+test("a malformed or absent URL leaves a working local door", () => {
   // This runs on the install path. An unparseable value in one variable must not take `connect` down —
   // a door that runs and turns one address away is recoverable; a connect that dies on a typo is not.
   for (const bad of ["not a url", "://", "", "   ", undefined]) {
@@ -72,7 +72,7 @@ test("2163 a malformed or absent URL leaves a working local door", () => {
   assert.deepEqual(list(8848, {}), ["127.0.0.1:8848", "localhost:8848"]);
 });
 
-test("2163 no duplicate entries, whatever the URL says", () => {
+test("no duplicate entries, whatever the URL says", () => {
   // A public name that IS loopback is a real local-tunnel shape, and a repeated host in the list is a
   // config a reader has to squint at to trust.
   const l = list(8848, { CLEAROTRON_CLIENT_MCP_URL: "http://localhost:8848/mcp" });
@@ -81,7 +81,7 @@ test("2163 no duplicate entries, whatever the URL says", () => {
 
 // ---- the JOIN, which is where tonight's other seam lived --------------------------------------
 
-test("2163 the PLAN writes what the derivation produces — driven, not assumed", () => {
+test("the PLAN writes what the derivation produces — driven, not assumed", () => {
   // A helper that is right and a plan that ignores it is the shape this repo met twice in one night:
   // two halves each internally consistent, and the defect living only in the join. So this drives
   // enablePlan itself rather than asserting that it calls the function.
@@ -168,7 +168,7 @@ const valueOf = (envFile, name) => {
   return m ? m[1].trim() : null;
 };
 
-test("192 the engine door's allow-list is WRITTEN by the install, from its own port and its own address", async () => {
+test("the engine door's allow-list is WRITTEN by the install, from its own port and its own address", async () => {
   const { envFile } = scratchInstall();
   // The defect, reproduced first: nothing on disk for the engine door before the installer runs.
   assert.equal(valueOf(envFile, "TRADEMARK_MCP_ALLOWED_HOSTS"), null,
@@ -196,7 +196,7 @@ test("192 the engine door's allow-list is WRITTEN by the install, from its own p
   assert.ok(client.split(",").includes("client.example.org"), `the client door's list lost its own address: ${client}`);
 });
 
-test("192 PLANTED AGAINST THE PORT, not the value — and an operator's own host survives it", async () => {
+test("PLANTED AGAINST THE PORT, not the value — and an operator's own host survives it", async () => {
   // This issue's own instruction, and the reason for it: an arm that pins the composed string passes a
   // re-implementation that ignores the operator's port. So the plant MOVES the port and asserts the list
   // follows, which no hard-coded literal can satisfy.
@@ -221,7 +221,7 @@ test("192 PLANTED AGAINST THE PORT, not the value — and an operator's own host
     `the operator's own host was deleted by a repair about a port: ${after.join(",")}`);
 });
 
-test("192 ONE AUTHOR composes both doors — the pair is data, and the address's name is a parameter", () => {
+test("ONE AUTHOR composes both doors — the pair is data, and the address's name is a parameter", () => {
   // The asymmetry existed because two places composed `host:port` independently. A fix that only wrote
   // the missing value would have left the shape that produced it, so the arm is about the shape.
   const doors = DOOR_ALLOW_LISTS.map((d) => d.door);

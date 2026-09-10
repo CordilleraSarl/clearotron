@@ -37,13 +37,13 @@ function run({ pile }) {
   return d;
 }
 
-test("2039 THE DEFECT: an ABSENT pile is no surface, not a run that fetched nothing", () => {
+test("THE DEFECT: an ABSENT pile is no surface, not a run that fetched nothing", () => {
   // `pile: null` — the directory does not exist at all, which is what a converted run looks like.
   assert.equal(scoredFetched(run({ pile: null })), null,
     "an absent pile reported a fetch failure — indistinguishable from the alert this metric raises");
 });
 
-test("2039 a PRESENT pile still measures, and a missing record is still the alert", () => {
+test("a PRESENT pile still measures, and a missing record is still the alert", () => {
   // The fix must not buy its honesty by going quiet. A cited record that is missing WHILE the pile
   // exists is exactly the fetch failure worth alerting on, and the seam contract keeps it that way:
   // "a picked line with no record is the fetch failure worth alerting on".
@@ -54,7 +54,7 @@ test("2039 a PRESENT pile still measures, and a missing record is still the aler
     "a pile that exists and holds nothing is a run that fetched nothing — a real reading, not an absence");
 });
 
-test("2039 the AGGREGATE stops taking a denominator from runs with nothing to measure", () => {
+test("the AGGREGATE stops taking a denominator from runs with nothing to measure", () => {
   // This is the cost the single-run reading hides. `runMetrics` accumulates `if (sf)`, so a null
   // contributes NOTHING — while the old `{total: 2, fetched: 0}` contributed 2 to the denominator.
   const absent = scoredFetched(run({ pile: null }));

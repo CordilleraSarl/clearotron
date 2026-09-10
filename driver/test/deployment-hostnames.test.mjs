@@ -123,7 +123,7 @@ test("no source file falls back to a hardcoded /home/<user> path when an env var
 // executable code is the same fact one syntax over: it names one operator's account, and it is wrong
 // under every other service account and in every public clone. Three lived in `test/` and one in
 // `scripts/`, where nothing was looking.
-test("#644 no executable line names a specific account's home directory", () => {
+test("no executable line names a specific account's home directory", () => {
   // TWO patterns, because the same leak has two spellings and the quoted one cannot see the other.
   // In source a real path is a string literal, so the quote is what distinguishes it from a regex
   // literal like /\/home\/(azureuser|devuser)\b/ -- which is how the scrubbers NAME the thing they
@@ -159,7 +159,7 @@ test("#644 no executable line names a specific account's home directory", () => 
       `${a.file} no longer contains "${a.contains}" — the exemption has outlived its reason`);
 });
 
-test("#644 the walker really reaches scripts/ and test files, and the comments still pass", () => {
+test("the walker really reaches scripts/ and test files, and the comments still pass", () => {
   // A guard that reports green about directories it never opened is the defect this arm exists to stop
   // recurring. Both facts are asserted by VALUE, because "the walker was widened" is not observable.
   const files = guardedFiles().map(rel);
@@ -177,7 +177,7 @@ test("#644 the walker really reaches scripts/ and test files, and the comments s
     `explanatory comments naming a home path: ${commentsNamingHomes.length} — they document the 2026-07-19 incident and must survive`);
 });
 
-test("#2018 an empty directory under a walked root is not a lost corpus", () => {
+test("an empty directory under a walked root is not a lost corpus", () => {
   // THE CASE THAT PRODUCED THE ISSUE, driven. `driver/profiles/` is a tracked source tree AND a runtime
   // write target, so a deployed box grows an empty `driver/profiles/projects/<key>/` the first time a
   // run resolves a profile with no project files. Every arm above threw there — before reading a file.
@@ -273,7 +273,7 @@ test("the email access note is omitted when no identity domain is configured", (
   assert.match(accessNoteHtml("font:x", "acme.test"), /<b>acme\.test<\/b>/);
 });
 
-test("#1014 the SECOND widening is pinned by value, on the trees it actually added", () => {
+test("the SECOND widening is pinned by value, on the trees it actually added", () => {
   // asserts scripts/, driver/test/ and bin/, and backstops with `files.length > 200`. Neither
   // reaches the four trees the widening added — driver/ alone is ~825 files, so it clears that
   // backstop on its own and every one of mcp-server/, providers/, portal-ui/ and shared/ could fall
@@ -289,7 +289,7 @@ test("#1014 the SECOND widening is pinned by value, on the trees it actually add
     "no shipped-config file is swept — the operator path that survived until ef475931 was in one");
 });
 
-test("#1381 the #644 walker reaches shell scripts, which it did not until a shell script mattered", () => {
+test("the #644 walker reaches shell scripts, which it did not until a shell script mattered", () => {
   // A guard's blind spots are invisible until something moves into one. This repo tracked a single .sh,
   // it named no home, and so the walker's silence about shell looked like coverage for months.
   // then proposed tracking a 160-line deploy script carrying /home/<account> in four places.
@@ -302,7 +302,7 @@ test("#1381 the #644 walker reaches shell scripts, which it did not until a shel
     + "re-deriving) or .sh has fallen out of the walker and the #644 arms silently stopped covering it");
 });
 
-test("#1381 no tracked shell script names an account's home on an executable line", () => {
+test("no tracked shell script names an account's home on an executable line", () => {
   // WALKS EVERY TRACKED `.sh` RATHER THAN NAMING ONE. This named `scripts/deploy-test.sh`, which was
   // retired — so the arm pinned a file nothing executed while the property it guards applies to whatever
   // shell scripts the tree actually carries. A named file is a subject that can be deleted out from under

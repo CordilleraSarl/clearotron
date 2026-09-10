@@ -44,7 +44,7 @@ const WRITE_CALLS = [
 // modes are a write, so only those are matched.
 const OPEN_FOR_WRITING = /openSync\s*\([^)]*,\s*["'`][^"'`]*[wa+]/;
 
-test("#1784 update has NO code path that writes outside the checkout — it holds no write call at all", () => {
+test("update has NO code path that writes outside the checkout — it holds no write call at all", () => {
   const src = readFileSync(UPDATE, "utf8");
   // Comments describe the promise in the same words the code keeps, so they would mask a real call.
   const code = src.replace(/^\s*\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
@@ -56,7 +56,7 @@ test("#1784 update has NO code path that writes outside the checkout — it hold
     + "and a convenience added here is exactly how that promise gets broken quietly.");
 });
 
-test("#1784 every command update runs is run IN the checkout — a bare spawn would inherit the caller's cwd", () => {
+test("every command update runs is run IN the checkout — a bare spawn would inherit the caller's cwd", () => {
   const src = readFileSync(UPDATE, "utf8");
   const code = src.replace(/^\s*\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
   const spawns = [...code.matchAll(/spawnSync?\s*\(/g)];
@@ -101,7 +101,7 @@ function runUpdate({ config = {}, path, argv = [] }) {
   return { code: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
 }
 
-test("#1784 configuration INSIDE the checkout is refused, and nothing is run", (t) => {
+test("configuration INSIDE the checkout is refused, and nothing is run", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-refuse-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);
@@ -126,7 +126,7 @@ test("#1784 configuration INSIDE the checkout is refused, and nothing is run", (
     + "must come before anything is touched, or the damage is done by the time it is described.");
 });
 
-test("#1784 THE CONTROL: with configuration outside the checkout the stubs DO record — so the empty log above means something", (t) => {
+test("THE CONTROL: with configuration outside the checkout the stubs DO record — so the empty log above means something", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-ok-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);
@@ -155,7 +155,7 @@ test("#1784 THE CONTROL: with configuration outside the checkout the stubs DO re
 //
 // The control above is what makes an empty stub log mean something here: it proves both stubs record
 // on this same path when the verb is allowed to act.
-test("#1861 --help prints and performs NOTHING, on the path where the verb would otherwise act", (t) => {
+test("--help prints and performs NOTHING, on the path where the verb would otherwise act", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-help-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);
@@ -173,7 +173,7 @@ test("#1861 --help prints and performs NOTHING, on the path where the verb would
   }
 });
 
-test("#1861 an unrecognised argument is REFUSED, not swallowed — fixing only --help would leave the class", (t) => {
+test("an unrecognised argument is REFUSED, not swallowed — fixing only --help would leave the class", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-unknown-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);
@@ -190,7 +190,7 @@ test("#1861 an unrecognised argument is REFUSED, not swallowed — fixing only -
     `an unknown flag RAN something: ${existsSync(log) ? readFileSync(log, "utf8") : ""}`);
 });
 
-test("#1784 a sibling named after the checkout is NOT inside it — the separator is the whole rule", (t) => {
+test("a sibling named after the checkout is NOT inside it — the separator is the whole rule", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-sib-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);
@@ -204,7 +204,7 @@ test("#1784 a sibling named after the checkout is NOT inside it — the separato
   assert.equal(existsSync(log), true, "the run stopped before doing anything, for some other reason");
 });
 
-test("#1784 an ABSENT directory inside the checkout is still refused — it is the same defect one mkdir later", (t) => {
+test("an ABSENT directory inside the checkout is still refused — it is the same defect one mkdir later", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-absent-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);

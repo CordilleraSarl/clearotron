@@ -40,7 +40,7 @@ function run() {
   const dispositionsPath = join(dir, "common-law-dispositions.json");
   writeFileSync(driverDir(dir, "grid-spec.json"), JSON.stringify({
     terms: ["DAVENA"], platforms: ["web"], output_path: "/studio/prelim-search/x/y/common-law-grid.json",
-    // B — no arming flag: the typed call is the ONLY transport (delete-not-gate, owner ruling
+    // B — no arming flag: the typed call is the ONLY transport (delete-not-gate, ruling
     // 2026-08-17), so the audit runs wherever rows are owed. What keeps archived form-era runs safe is
     // not a flag but arithmetic: a DELIVERED run owes nothing, so the audit never runs on it.
     connotation: { queries: ["DAVENA gang"], disposition_required: true, dispositions_path: dispositionsPath },

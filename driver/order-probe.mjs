@@ -10,7 +10,7 @@
 // problem; two runs that disagree because the list was sorted differently are a different problem with a
 // different fix, and today we cannot tell them apart.
 //
-// THE CONSTRAINT, and it is the whole design (owner ruling, 2026-08-01): the seam must be PROVABLY INERT
+// THE CONSTRAINT, and it is the whole design (ruling, 2026-08-01): the seam must be PROVABLY INERT
 // by default. Production ordering is byte-identical unless someone sets an explicit environment variable
 // to a positive integer, and a test pins that. An order probe that could fire by accident during the
 // round it exists to make readable would be worse than not having one.

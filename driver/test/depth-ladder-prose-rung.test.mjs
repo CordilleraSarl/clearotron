@@ -34,13 +34,13 @@ const WORLDWIDE = "global-preliminary-search", MULTI = "multi-country-focus-sear
 const BANDS = [{ label: "Very High" }, { label: "High" }, { label: "Moderate" }, { label: "Manageable" }];
 const directive = (product) => proseRungDirective(depthFor({ product }), BANDS);
 
-test("#1503 the one-country product gets NO directive, so its dispatch is byte-identical by construction", () => {
+test("the one-country product gets NO directive, so its dispatch is byte-identical by construction", () => {
   assert.equal(directive(ONE), "",
     "the one-country product emits directive text. `lines()` drops only falsy entries, so anything here "
     + "lands in its dispatch and the byte-identical guarantee is gone.");
 });
 
-test("#1503 an incomplete or missing row is UNGRADED — the failure direction is depth", () => {
+test("an incomplete or missing row is UNGRADED — the failure direction is depth", () => {
   // Both parameters are required. Half a rule is the dangerous state: a cap with no kept set would
   // shorten every write-up including the ones that must be full, and a kept set with no cap is a rule
   // the check cannot enforce.
@@ -51,7 +51,7 @@ test("#1503 an incomplete or missing row is UNGRADED — the failure direction i
       + "wrong toward depth costs time, being wrong toward brevity silently shortens a report somebody paid for.");
 });
 
-test("#1503 the directive is the five ruled rules, in order, verbatim", () => {
+test("the directive is the five ruled rules, in order, verbatim", () => {
   const d = directive(WORLDWIDE);
   assert.match(d, /^DEPTH OF WRITING — rules for prose write-ups in narrative\.md on this run\.$/m);
   assert.match(d, /^1\. Every finding gets its complete typed record in findings\.json\. No exceptions\./m);
@@ -62,7 +62,7 @@ test("#1503 the directive is the five ruled rules, in order, verbatim", () => {
   assert.equal(d.split("\n").length, 6, "the directive grew a sixth line — the template is five rules and a heading");
 });
 
-test("#1503 RULE 1 COMES FIRST — the typed register is promised before less prose is asked for", () => {
+test("RULE 1 COMES FIRST — the typed register is promised before less prose is asked for", () => {
   // A seat that reads "write less" as "record less" is a filter wearing a ladder's clothes. Order is
   // part of the instruction, not presentation.
   const d = directive(WORLDWIDE);
@@ -70,14 +70,14 @@ test("#1503 RULE 1 COMES FIRST — the typed register is promised before less pr
     "the directive asks for less prose before it promises the complete typed record");
 });
 
-test("#1503 rule 2 names the run's OWN band labels — the seat is told values it holds", () => {
+test("rule 2 names the run's OWN band labels — the seat is told values it holds", () => {
   const d = directive(WORLDWIDE);
   assert.match(d, /`Very High`, `High`, `Moderate`/,
     "rule 2 does not name this run's band labels, so the seat has to map a rank onto its framework itself");
   assert.doesNotMatch(d, /`Manageable`/, "a band below the cut was named as kept");
 });
 
-test("#1503 with NO manifest the rank is stated in words, never dropped or guessed", () => {
+test("with NO manifest the rank is stated in words, never dropped or guessed", () => {
   // A dispatch that could not resolve the manifest must still carry a usable rule. Silently emitting
   // nothing would ungrade the product; naming bands it has not read would be an invention.
   const d = proseRungDirective(depthFor({ product: WORLDWIDE }), null);
@@ -85,7 +85,7 @@ test("#1503 with NO manifest the rank is stated in words, never dropped or guess
   assert.match(d, /the top 3 bands of this run's risk framework/);
 });
 
-test("#1503 the two graded products share the kept rule and differ ONLY in the cap", () => {
+test("the two graded products share the kept rule and differ ONLY in the cap", () => {
   const ww = directive(WORLDWIDE), mc = directive(MULTI);
   assert.match(ww, /at most 270 words/);
   assert.match(mc, /at most 330 words/);
@@ -94,7 +94,7 @@ test("#1503 the two graded products share the kept rule and differ ONLY in the c
     + "on both, and a second difference would be an unruled one");
 });
 
-test("#1503 NO COUNT SELECTS A MARK — the reversed rule's reasoning still holds where it applies", () => {
+test("NO COUNT SELECTS A MARK — the reversed rule's reasoning still holds where it applies", () => {
   // The number bounds PROSE LENGTH. Nothing in the directive counts findings, ranks by arithmetic, or
   // caps how many marks are written about — that cut is the band rank, which is a judgment the seat
   // already made. Rule 5 is what keeps the two apart, so it is asserted here and not only above.
@@ -109,7 +109,7 @@ test("#1503 NO COUNT SELECTS A MARK — the reversed rule's reasoning still hold
 
 // ── THE DIRECTIVE AND THE CHECK, AGAINST THE REAL PER-PRODUCT ROWS ───────────────────────────────────
 
-test("#1503 the check ACTIVATES on the real rows the directive is built from — one rule, two ends", () => {
+test("the check ACTIVATES on the real rows the directive is built from — one rule, two ends", () => {
   // Neither half makes this claim alone: the directive arms read what the seat is TOLD, the check arms
   // read a fixture's parameters. This reads the shipped rows through both, so a row that instructs and
   // does not check — or checks and does not instruct — is visible.

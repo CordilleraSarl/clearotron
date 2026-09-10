@@ -63,7 +63,7 @@ const declaredInstallScripts = (manifest) => {
   return INSTALL_SCRIPTS.filter((s) => Object.hasOwn(scripts, s));
 };
 
-test("#2007 the lockfile agrees with every local package.json about whether it has an install script", () => {
+test("the lockfile agrees with every local package.json about whether it has an install script", () => {
   const lock = readJSON(join(ROOT, "package-lock.json"));
   const drift = [];
 
@@ -89,7 +89,7 @@ test("#2007 the lockfile agrees with every local package.json about whether it h
     + "by hand and never with --no-save.\n  " + drift.join("\n  "));
 });
 
-test("#2007 the comparison can actually SEE a declared install script — CONTROL", () => {
+test("the comparison can actually SEE a declared install script — CONTROL", () => {
   // Both halves of the reader are driven, because the arm above is an absence check and an absence
   // check whose reader is broken reports a clean tree. If `scripts` stopped resolving, every package
   // would read as declaring nothing, the lock's `absent` would agree with it everywhere, and the drift

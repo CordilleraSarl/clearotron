@@ -275,7 +275,7 @@ test("an error block still joins MISSING, and a count-kind entry is still sancti
 // Not latent, and not hypothetical: reproduced directly before the fix, on the shape the fallback creates.
 // Found from the sibling splice written for, which copied this scan and was caught by its own
 // re-render arm.
-test("#850 a second ledger render leaves the rest of the document standing", () => {
+test("a second ledger render leaves the rest of the document standing", () => {
   const sec = renderCoverageLedgerSection([{ unit: "u1", status: "confirmed-clean", reason: "r", qid: "q1" }]);
   assert.ok(sec.length, "the fixture rendered an EMPTY section — the arm below would pass over nothing. "
     + "`status` must be one of COVERAGE_STATUSES or renderCoverageLedgerSection returns \"\".");
@@ -289,7 +289,7 @@ test("#850 a second ledger render leaves the rest of the document standing", () 
   assert.equal((twice.match(/## Coverage ledger/g) ?? []).length, 1, "and it must still be idempotent");
 });
 
-test("#850 a deeper heading is a boundary, but the section still replaces its own body", () => {
+test("a deeper heading is a boundary, but the section still replaces its own body", () => {
   // The other direction: stopping at ANY heading must not stop the splice from doing its job. A version
   // that never replaced would be idempotent by accident and would leave a stale table in place.
   const a = renderCoverageLedgerSection([{ unit: "u1", status: "confirmed-clean", reason: "first", qid: "q1" }]);

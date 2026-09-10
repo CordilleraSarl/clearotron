@@ -46,7 +46,7 @@ function manifest(dir) {
   return out;
 }
 
-test("2171 the manifest walk handles an empty tree rather than passing over it", () => {
+test("the manifest walk handles an empty tree rather than passing over it", () => {
   // — `walk` recurses over a DISCOVERED set, so an empty directory must be a
   // measured result rather than a loop that quietly does nothing. Driven, not argued: an empty run dir
   // manifests to an empty map, and an empty SUBDIRECTORY does not stop the files beside it being seen.
@@ -73,7 +73,7 @@ function canonicalRun() {
 
 const ARTIFACTS = ["report.md", "narrative.md", "findings.json", "register-findings.md"];
 
-test("2171 the artifacts are untouched, and the run's log DOES change — measured, not asserted from prose", () => {
+test("the artifacts are untouched, and the run's log DOES change — measured, not asserted from prose", () => {
   const dir = canonicalRun();
   const before = manifest(dir);
   // The AGGREGATE is guarded here; the recursion step inside `walk` legitimately meets empty leaves, and
@@ -100,7 +100,7 @@ test("2171 the artifacts are untouched, and the run's log DOES change — measur
     "the run no longer records that an experiment was taken against it — the provenance this note promises is gone");
 });
 
-test("2171 the SHIPPED note claims only what a manifest can support", () => {
+test("the SHIPPED note claims only what a manifest can support", () => {
   // Asserted against the exported constant, never a copy: a stub carrying its own transcript of the old
   // sentence is how the corrected claim survived in the tree, and that stub is now pointed here too.
   assert.doesNotMatch(WHAT_IF_NOTE, /byte-for-byte unchanged/i,
@@ -114,7 +114,7 @@ test("2171 the SHIPPED note claims only what a manifest can support", () => {
   assert.match(WHAT_IF_NOTE, /_experiments\//, "the note no longer says where the output lives");
 });
 
-test("2171 an artifact that DID change fails the claim — the arm is not green by construction", () => {
+test("an artifact that DID change fails the claim — the arm is not green by construction", () => {
   // The plant. Without it, arm 1 passes on a manifest that never had a chance to disagree.
   const dir = canonicalRun();
   const before = manifest(dir);

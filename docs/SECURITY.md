@@ -10,7 +10,7 @@ here corresponds to shipped behavior; when hardening changes, change this file i
 | Surface | Trust | Guard |
 |---|---|---|
 | stdio MCP (`mcp-server/server.mjs`) | local/full ("ops") | OS user boundary — run it AS the operator account; it is the only surface on which `what_if_run` EXECUTES (`visibleTools` keeps what-if out of the HTTP listing for ops, but the CallTool chokepoint gates on `authorize()` alone, which admits it for any ops token not `--verbs`-scoped) |
-| Client MCP (`mcp-server/http-server-client.mjs`) | signed-in client / account key | a client account's `what_if_run` ENQUEUES rather than executes (owner ruling 2026-08-27) — it never imports the engine, and `driver/whatif-worker.mjs` spawns the sandbox from an OS service process. A confirmation token is unsigned, so the call must ALSO name its `runId`: the account gate keys on it, and `whatIfEnqueue` refuses a token naming a different run. The `model` argument is refused to a client. |
+| Client MCP (`mcp-server/http-server-client.mjs`) | signed-in client / account key | a client account's `what_if_run` ENQUEUES rather than executes (ruling 2026-08-27) — it never imports the engine, and `driver/whatif-worker.mjs` spawns the sandbox from an OS service process. A confirmation token is unsigned, so the call must ALSO name its `runId`: the account gate keys on it, and `whatIfEnqueue` refuses a token naming a different run. The `model` argument is refused to a client. |
 | HTTP MCP (`mcp-server/http-server.mjs`) | authenticated remote | auth-BEFORE-data; fail-closed construction; inner scoped tokens |
 | Report "Ask your AI" links | external report recipients | run-bound `user` tokens minted at publish; client layer only |
 | Dev portal (`driver/dev-portal.mjs`) | dev only | loopback-only (throws on any other host); never production serving |
@@ -80,7 +80,7 @@ with access to everything.
 - Four principal kinds: **ops** (write verbs; automation/operator), **user** (read-only, pinned to
   exactly ONE run — report recipients), **account** (a signed-in client across the accounts their
   identity is granted: the client layer, the evidence layer — `list_evidence` / `list_searches` /
-  `get_search_coverage` — the AUDIT CHAIN (owner ruling 2026-08-27: `read_artifact` over the chain
+  `get_search_coverage` — the AUDIT CHAIN (ruling 2026-08-27: `read_artifact` over the chain
   artifacts named in `ACCOUNT_ARTIFACTS`, `list_findings` on the raw `kind` path, `get_finding`,
   `get_run`, `trace`, `decision_timeline`), WHAT-IF as a queued sandbox job (`what_if_plan`,
   `what_if_run`, `what_if_result`), and the run lifecycle on their own runs, and nothing else. All of it accountSafe and deliberately NOT clientSafe, because a report link is forwardable

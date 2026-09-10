@@ -55,26 +55,26 @@ const UNSCREENED = {
 const floors = (records) => buildBandShape({ enumerated: records, crowds: [] },
   { targets: ["ZEPHYR"], inScopeClasses: ["9"] }).shape.floors.in_class_identical_or_near;
 
-test("#1472 a verdict inside `screen` reaches the floor row", () => {
+test("a verdict inside `screen` reaches the floor row", () => {
   const rows = floors([IN_SCREEN]);
   assert.equal(rows.length, 1, "premise: an in-class identical record is a floor row");
   assert.equal(rows[0].screen_verdict, "surface:in-scope-live",
     "the verdict is on the record and did not reach the row the lawyer reads");
 });
 
-test("#1472 the other documented location still works", () => {
+test("the other documented location still works", () => {
   const rows = floors([TOP_LEVEL]);
   assert.equal(rows.length, 1, "premise: the fixture is a live in-class record, so it IS a floor row");
   assert.equal(rows[0].screen_verdict, "surface:all-class");
 });
 
-test("#1472 THE CONTROL — a screened record with no verdict still reads null", () => {
+test("THE CONTROL — a screened record with no verdict still reads null", () => {
   // Absence must stay absence. If this flips, the fix has invented a verdict, which is the failure
   // mode strictly worse than the one it repairs.
   assert.equal(floors([NO_VERDICT])[0].screen_verdict, null);
 });
 
-test("#1472 the field's TWO readers agree — the pin", () => {
+test("the field's TWO readers agree — the pin", () => {
   // `band-shape.mjs` reads this field in two places: the crowd/record projection and the floor row.
   // They disagreed about where it lives, and the floor row lost. Both are asserted here against the
   // SAME record, so the next change to either has to keep them in step.

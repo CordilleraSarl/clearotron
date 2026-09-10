@@ -20,7 +20,7 @@ import { deadClaimToken, PROC_GATE } from "./claim-fixtures.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-test("#1808 the forced condition: a bare-pid sidecar cannot tell a dead claimer from whoever holds that pid now", PROC_GATE, () => {
+test("the forced condition: a bare-pid sidecar cannot tell a dead claimer from whoever holds that pid now", PROC_GATE, () => {
   // process.pid stands in for the pid AFTER it was reissued — by a wrap of pid_max, or by another
   // user's process on a shared runner (kill raises EPERM there, which counts as ALIVE by design).
   const reissued = process.pid;
@@ -39,14 +39,14 @@ test("#1808 the forced condition: a bare-pid sidecar cannot tell a dead claimer 
     "a genuinely live claimer must still read ALIVE");
 });
 
-test("#1808 deadClaimToken stamps a birth stamp, and the claim it writes reads dead", PROC_GATE, async () => {
+test("deadClaimToken stamps a birth stamp, and the claim it writes reads dead", PROC_GATE, async () => {
   const tok = await deadClaimToken();
   assert.match(tok, /^\d+:\S+$/, "the fixture stamps pid+starttime, not a bare pid");
   assert.equal(claimerIsAlive(parseClaimSidecar(tok)), false,
     "a claimer that has died reads dead — whoever holds its pid number now");
 });
 
-test("#1808 no test builds a dead-claimer sidecar from a bare pid", () => {
+test("no test builds a dead-claimer sidecar from a bare pid", () => {
   // The scan is what fails closed. The behavioural arms above prove the helper is right TODAY; only a
   // scan stops the next fixture from reintroducing the shape, and that is how this defect arrived —
   // cured it in one file and three others kept their own copy for two months.
@@ -64,7 +64,7 @@ test("#1808 no test builds a dead-claimer sidecar from a bare pid", () => {
   assert.deepEqual(offenders, [], `bare-pid dead-claimer sidecars: ${offenders.join(", ")}`);
 });
 
-test("#1808 the dead-claimer fixture has exactly one definition", () => {
+test("the dead-claimer fixture has exactly one definition", () => {
   const defs = readdirSync(HERE)
     .filter((n) => n.endsWith(".mjs"))
     .filter((n) => /(^|\n)\s*(export )?async function deadClaimToken\b/.test(readFileSync(join(HERE, n), "utf8")));

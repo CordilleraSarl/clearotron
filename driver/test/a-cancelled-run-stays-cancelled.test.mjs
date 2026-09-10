@@ -62,7 +62,7 @@ const codenamesDue = () => scanDueRunDirOrphans().map((o) => o.codename).sort();
 // Everything below asserts a run is NOT resumed, and an arm set like that passes completely if the
 // watcher simply stopped working. This is the arm that says it still does.
 
-test("2155 CONTROL: a genuine rate-limit park with an elapsed window still resumes", () => {
+test("CONTROL: a genuine rate-limit park with an elapsed window still resumes", () => {
   const d = mkRun("mark-control", "2026-09-03-control-one");
   writeFileSync(join(d, ".postponed"), duePark("control-one"));
   statusFile(d, "postponed");   // exactly what the park writer leaves — a LIVE state, not a terminal
@@ -75,7 +75,7 @@ test("2155 CONTROL: a genuine rate-limit park with an elapsed window still resum
 // is indistinguishable from the control above, and was resumed.
 
 for (const state of ["cancelled"]) {
-  test(`2155 a terminal status.json ALONE stops the resume — state: ${state}`, () => {
+  test(`a terminal status.json ALONE stops the resume — state: ${state}`, () => {
     const d = mkRun(`mark-status-${state}`, `2026-09-03-status-${state}`);
     writeFileSync(join(d, ".postponed"), duePark(`status-${state}`));
     statusFile(d, state, { reason: "stopped by the operator", failedStage: "parked" });
@@ -84,7 +84,7 @@ for (const state of ["cancelled"]) {
   });
 }
 
-test("2155 ONLY `cancelled` stops a resume — `failed` is the runner's own word and stays resumable", () => {
+test("ONLY `cancelled` stops a resume — `failed` is the runner's own word and stays resumable", () => {
   // THE ARM THAT CAME FROM BEING WRONG. The first cut refused every TERMINAL_STATE, and CI refused
   // sixty-odd resume arms for it — rightly: `failed` is a terminal the RUNNER writes about itself, and
   // a failed run coming back is the recovery this whole path exists to perform. The runner's
@@ -105,7 +105,7 @@ test("2155 ONLY `cancelled` stops a resume — `failed` is the runner's own word
 // The other half. The run dir is untouched and its status.json is absent, so the ONLY thing saying
 // this run is over sits in the queue — which is the surface the watcher never consulted.
 
-test("2155 a terminal QUEUE marker ALONE stops the resume", () => {
+test("a terminal QUEUE marker ALONE stops the resume", () => {
   const q = mkQueue();
   const d = mkRun("mark-queue", "2026-09-03-queue-one");
   writeFileSync(join(d, ".postponed"), duePark("queue-one"));
@@ -114,7 +114,7 @@ test("2155 a terminal QUEUE marker ALONE stops the resume", () => {
     "the operator retired the queue marker — the run-dir watcher must not undo that decision");
 });
 
-test("2155 every terminal queue suffix counts, not just .cancelled", async () => {
+test("every terminal queue suffix counts, not just .cancelled", async () => {
   // The queue's terminal vocabulary is `done`, `failed`, `cancelled`, `duplicate` and it is OWNED by
   // queue-markers.mjs. Asking the module rather than retyping the list is the point: a fifth terminal
   // added there must not silently become a resumable state here.
@@ -128,7 +128,7 @@ test("2155 every terminal queue suffix counts, not just .cancelled", async () =>
   }
 });
 
-test("2155 a LIVE queue marker is not a stop — the ownership check keeps its own meaning", () => {
+test("a LIVE queue marker is not a stop — the ownership check keeps its own meaning", () => {
   // queueOwnedCodenames and queueTerminalCodenames answer different questions ("another lane will
   // drive this" vs "nobody will"), and collapsing them would be a lie that happens to behave. A live
   // `.postponed.meta` must still read as OWNED — skipped, but for the double-fire reason.
@@ -142,7 +142,7 @@ test("2155 a LIVE queue marker is not a stop — the ownership check keeps its o
 // ── EXPRESSION 3: THE RUN-DIR MARKER, ALONE — THE REGRESSION FLOOR ────────────────────────────────
 // This one already passed before the fix. It is here so that it keeps passing.
 
-test("2155 REGRESSION FLOOR: a run-dir .cancel ALONE still stops the resume", () => {
+test("REGRESSION FLOOR: a run-dir .cancel ALONE still stops the resume", () => {
   const d = mkRun("mark-marker", "2026-09-03-marker-one");
   writeFileSync(join(d, ".postponed"), duePark("marker-one"));
   writeFileSync(join(d, ".cancel"), JSON.stringify({ ts: past, via: "cli/cancel", by: "ops:someone" }));
@@ -156,7 +156,7 @@ test("2155 REGRESSION FLOOR: a run-dir .cancel ALONE still stops the resume", ()
 // Scanning once proves the first refusal. Scanning AGAIN, and checking the evidence is still on disk
 // to refuse with, is the arm that would have caught the clearing.
 
-test("2155 THE PLANT: a settled run stays settled across repeated worker starts, evidence intact", () => {
+test("THE PLANT: a settled run stays settled across repeated worker starts, evidence intact", () => {
   const q = mkQueue();
   const d = mkRun("mark-plant", "2026-09-03-plant-one");
   writeFileSync(join(d, ".postponed"), duePark("plant-one"));
@@ -180,7 +180,7 @@ test("2155 THE PLANT: a settled run stays settled across repeated worker starts,
 // The watcher is one of three paths into a resume (the queue lane and a hand-typed `--resume` are the
 // others), so the door the pipeline opens has to refuse independently rather than trusting its callers.
 
-test("2155 the resume door refuses a .cancel REQUEST and a terminal SETTLEMENT alike", () => {
+test("the resume door refuses a .cancel REQUEST and a terminal SETTLEMENT alike", () => {
   const req = mkRun("mark-door", "2026-09-03-door-req");
   writeFileSync(join(req, ".cancel"), JSON.stringify({ ts: past, via: "mcp/stop_run", by: "someone@example.test" }));
   assert.match(resumeStopRefusal(req), /operator asked it to stop/,
@@ -199,7 +199,7 @@ test("2155 the resume door refuses a .cancel REQUEST and a terminal SETTLEMENT a
   }
 });
 
-test("2155 the door lets a resumable run through — including one whose record cannot be read", () => {
+test("the door lets a resumable run through — including one whose record cannot be read", () => {
   const live = mkRun("mark-door-live", "2026-09-03-door-live");
   statusFile(live, "postponed");
   assert.equal(resumeStopRefusal(live), null, "a rate-limit park is resumable and must stay resumable");
@@ -216,7 +216,7 @@ test("2155 the door lets a resumable run through — including one whose record 
 
 // ── THE ORDER, WHICH IS THE ACTUAL FIX ────────────────────────────────────────────────────────────
 
-test("2155 WIRING: the door refuses BEFORE it clears any marker", async () => {
+test("WIRING: the door refuses BEFORE it clears any marker", async () => {
   // Stated as what it is: an ORDER assertion over the source, because the two behaviours it separates
   // are a throw and three rmSync calls in one function, and no return value distinguishes them. The
   // order is the entire fix — the refusal is worth nothing if it runs after the evidence is gone.
@@ -234,7 +234,7 @@ test("2155 WIRING: the door refuses BEFORE it clears any marker", async () => {
 
 // ── THE OPERATOR'S WAY IN ─────────────────────────────────────────────────────────────────────────
 
-test("2155 an operator can stop ONE run from the box, and it is a real verb", async () => {
+test("an operator can stop ONE run from the box, and it is a real verb", async () => {
   // Item 3 of the issue: there was no documented way to stop a run without stopping the worker.
   // `.cancel` had exactly one caller — the MCP's stop_run — so a person at a shell could not write the
   // one surface every resume path honours, and reached for the two that nothing read.
@@ -261,7 +261,7 @@ test("2155 an operator can stop ONE run from the box, and it is a real verb", as
 // exactly to `total` — a clean codex run — with none of the anthropic work the two resumes did. The
 // issue predicted byEngine "will show both". It does not. Nothing re-stamped it.
 
-test("2155 item 4: a resume re-states the engines the run has used, so a two-engine run is visible", async () => {
+test("item 4: a resume re-states the engines the run has used, so a two-engine run is visible", async () => {
   const { stampTokenRollup } = await import("../tokens.mjs");
   const d = mkRun("mark-engine", "2026-09-03-engine-one");
   mkdirSync(join(d, "_driver"), { recursive: true });
@@ -281,7 +281,7 @@ test("2155 item 4: a resume re-states the engines the run has used, so a two-eng
   assert.equal(st.tokens.total.input, 40, "byEngine must still sum to total, or the split is decoration");
 });
 
-test("2155 item 4 WIRING: the resume path re-stamps, and does so AFTER the stop refusal", async () => {
+test("item 4 WIRING: the resume path re-stamps, and does so AFTER the stop refusal", async () => {
   // Order matters here too, for a different reason than arm 13: stamping a run we are about to refuse
   // would write to the record of a run nobody is resuming.
   const { readFileSync: rd } = await import("node:fs");

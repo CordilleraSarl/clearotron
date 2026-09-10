@@ -24,14 +24,14 @@ import { TRACE_SCOPE, traceScopeFor } from "../record-carry.mjs";
 
 const paths = (scope) => scope.uninstrumented.map((u) => u.path);
 
-test("#402 no sibling ran ⇒ the static table, byte-identical — a run that traced nothing claims nothing", () => {
+test("no sibling ran ⇒ the static table, byte-identical — a run that traced nothing claims nothing", () => {
   assert.deepEqual(traceScopeFor([]), TRACE_SCOPE);
   assert.deepEqual(traceScopeFor(), TRACE_SCOPE);
   assert.deepEqual(traceScopeFor(null), TRACE_SCOPE);
   assert.ok(paths(TRACE_SCOPE).includes("common-law"));
 });
 
-test("#402 a computable common-law sibling moves that path to instrumented, and names the join", () => {
+test("a computable common-law sibling moves that path to instrumented, and names the join", () => {
   const scope = traceScopeFor([{ slice: "common-law", computable: true }]);
   assert.ok(!paths(scope).includes("common-law"), "the path it traced is no longer declared untraced");
   assert.equal(scope.instrumented.length, 2);
@@ -40,7 +40,7 @@ test("#402 a computable common-law sibling moves that path to instrumented, and 
   assert.deepEqual(paths(scope).sort(), ["case-law", "crowd remainder", "serp/nativeread"]);
 });
 
-test("#402 the zh slice promotes serp/nativeread, and the two promote independently", () => {
+test("the zh slice promotes serp/nativeread, and the two promote independently", () => {
   assert.ok(!paths(traceScopeFor([{ slice: "jx-zh", computable: true }])).includes("serp/nativeread"));
   assert.ok(paths(traceScopeFor([{ slice: "jx-zh", computable: true }])).includes("common-law"),
     "tracing the zh slice says nothing about the common-law slice");
@@ -48,7 +48,7 @@ test("#402 the zh slice promotes serp/nativeread, and the two promote independen
   assert.deepEqual(paths(both).sort(), ["case-law", "crowd remainder"]);
 });
 
-test("#402 promotion needs POSITIVE evidence — every other state stays uninstrumented", () => {
+test("promotion needs POSITIVE evidence — every other state stays uninstrumented", () => {
   // Fail-closed, the same direction the rest of the module uses. A trace that could not be computed is
   // not a trace, and declaring it as one would re-create the defect pointing the other way.
   for (const sib of [
@@ -61,7 +61,7 @@ test("#402 promotion needs POSITIVE evidence — every other state stays uninstr
   ]) assert.ok(paths(traceScopeFor([sib])).includes("common-law"), `promoted on ${JSON.stringify(sib)}`);
 });
 
-test("#402 case-law is still declared uninstrumented, because it still is", () => {
+test("case-law is still declared uninstrumented, because it still is", () => {
   const scope = traceScopeFor([{ slice: "common-law", computable: true }, { slice: "jx-zh", computable: true }]);
   const cl = scope.uninstrumented.find((u) => u.path === "case-law");
   assert.ok(cl, "case-law findings are not traced to a record at all, and the artifact must keep saying so");

@@ -63,7 +63,7 @@ const grep = (t, args) => {
   return parse(hits);
 };
 
-test("#1336 — the accessors are actually in use, so every arm below has something to be about", (t) => {
+test("the accessors are actually in use, so every arm below has something to be about", (t) => {
   const all = grep(t, ["-nF", "driverDir(", "--", "*.mjs", "*.js"]);
   if (!all) return;
   const lines = all.filter((h) => !isComment(h.text)).length;
@@ -73,7 +73,7 @@ test("#1336 — the accessors are actually in use, so every arm below has someth
     + `to find. This arm is asserted first for that reason.`);
 });
 
-test("#1336 — no product code names `_driver`", (t) => {
+test("no product code names `_driver`", (t) => {
   const hits = grep(t, ["-nE", `["']_driver["']`, "--", "*.mjs", "*.js"]);
   if (!hits) return;
   const offenders = hits.filter((h) => !isFixture(h.file) && !isComment(h.text) && h.file !== DEFINES_IT);
@@ -86,7 +86,7 @@ test("#1336 — no product code names `_driver`", (t) => {
     + `rather than a sweep of 1138 sites.`);
 });
 
-test("#1336 — product code creates the directory only through ensureDriverDir", (t) => {
+test("product code creates the directory only through ensureDriverDir", (t) => {
   const hits = grep(t, ["-nE", String.raw`mkdir[A-Za-z]*\(\s*driverDir\(`, "--", "*.mjs", "*.js"]);
   if (!hits) return;
   const offenders = hits.filter((h) => !isFixture(h.file) && !isComment(h.text));
@@ -104,7 +104,7 @@ test("#1336 — product code creates the directory only through ensureDriverDir"
     + `creation went back to being hand-built somewhere the pattern above no longer sees.`);
 });
 
-test("#1336 — the run-relative form has adopters too", (t) => {
+test("the run-relative form has adopters too", (t) => {
   const hits = grep(t, ["-nF", "driverRel(", "--", "*.mjs", "*.js"]);
   if (!hits) return;
   const callers = hits.filter((h) => !isComment(h.text) && h.file !== DEFINES_IT);
@@ -113,7 +113,7 @@ test("#1336 — the run-relative form has adopters too", (t) => {
     + `exists for the path registry; if its callers vanish the registry has gone back to a literal.`);
 });
 
-test("#1336 — nothing shadows the accessors with a local of the same name", (t) => {
+test("nothing shadows the accessors with a local of the same name", (t) => {
   const hits = grep(t, ["-nE", String.raw`(const|let|var)\s+(driverDir|driverRel|ensureDriverDir|DRIVER_DIR)\s*=`,
     "--", "*.mjs", "*.js"]);
   if (!hits) return;
@@ -141,7 +141,7 @@ test("#1336 — nothing shadows the accessors with a local of the same name", (t
     + `that in five files and cost 42 tests. Name the local something else.`);
 });
 
-test("#1336 — the accessors answer where `_driver/` is", () => {
+test("the accessors answer where `_driver/` is", () => {
   assert.equal(DRIVER_DIR, "_driver");
   assert.equal(driverDir("/runs/r1"), join("/runs/r1", "_driver"));
   assert.equal(driverDir("/runs/r1", "stage-inputs"), join("/runs/r1", "_driver", "stage-inputs"));
@@ -152,7 +152,7 @@ test("#1336 — the accessors answer where `_driver/` is", () => {
   assert.equal(driverRel(), "_driver");
 });
 
-test("#1336 — creation is recursive, nested-capable and idempotent", () => {
+test("creation is recursive, nested-capable and idempotent", () => {
   const base = mkdtempSync(join(tmpdir(), "driver-dir-"));
   try {
     // Every on-disk assertion names the directory LITERALLY rather than asking driverDir() where it put

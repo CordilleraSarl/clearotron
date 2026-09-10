@@ -49,14 +49,14 @@ const entriesByTerm = () => {
   return { plan, map };
 };
 
-test("2043 all four universal tags PARSE — the doctrine is literally obeyable", () => {
+test("all four universal tags PARSE — the doctrine is literally obeyable", () => {
   for (const tag of ["exact-phrase", "exact-element", "plural-root", "formative-family"])
     assert.ok(VARIANT_CATEGORIES.includes(tag), `the doctrine dictates "${tag}" and the schema still refuses it`);
   const m = parseVariantManifestModel(JSON.stringify(MODEL));
   assert.equal(m.variants.length, 6, "a manifest tagged exactly as the doctrine dictates must parse whole");
 });
 
-test("2043 EVERY family row compiles to a contains sweep — read off the plan, not the source", () => {
+test("EVERY family row compiles to a contains sweep — read off the plan, not the source", () => {
   const { map } = entriesByTerm();
   for (const [term, why] of [
     ["DIAGNOSTICS", "exact-element (the doctrine's own table says default)"],
@@ -71,7 +71,7 @@ test("2043 EVERY family row compiles to a contains sweep — read off the plan, 
   }
 });
 
-test("2043 exact-phrase stays EXACT, and the 2047 strip rule is untouched — the widening has edges", () => {
+test("exact-phrase stays EXACT, and the 2047 strip rule is untouched — the widening has edges", () => {
   const { map } = entriesByTerm();
   assert.equal(map.get("VELTRI DIAGNOSTICS|primary-sweep")?.predicate, "exact",
     "the doctrine sends exact-phrase exact; widening it too would make every row contains and the tag meaningless");
@@ -79,7 +79,7 @@ test("2043 exact-phrase stays EXACT, and the 2047 strip rule is untouched — th
     "the phonetic strip rule (tracker 2047) regressed — it is a different mechanism and must not move");
 });
 
-test("2043 an anchored-wildcard family value still takes the wildcard lane — decided before the category", () => {
+test("an anchored-wildcard family value still takes the wildcard lane — decided before the category", () => {
   const m = { ...MODEL, variants: [...MODEL.variants, { value: "VELTRI*", category: "formative-family", rationale: "prefix family" }] };
   const plan = parseRegisterPlan(JSON.stringify(compileRegisterPlan({
     manifest: parseVariantManifestModel(JSON.stringify(m)), job: JOB, form: null, skillVersion: "prelim-register@spec48",

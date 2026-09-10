@@ -28,7 +28,7 @@
 //     store-wide veto's GRANULARITY (refuse the scenario that does not fit, not every scenario beside
 //     it) and the door not narrowing declared coverage. Whether a matter whose ENTIRE ordered scope is
 //     unreachable on this box should start is a separate question and  did not answer it. The
-//     owner ruling of 2026-08-12 does: partial coverage discloses, empty coverage refuses by name
+//     ruling of 2026-08-12 does: partial coverage discloses, empty coverage refuses by name
 //     before spend (reachableRegions below, and the two Depth 2 preflights that read it).
 //   · resolveRegions would then classify the US as "outside the provider's coverage", which is a false
 //     sentence about the product. The free tier covers the US. This install is not configured for it.

@@ -53,7 +53,7 @@ const valuesFor = (field) => [
   ...new Set(Object.values(PRODUCT_POLICIES).map((p) => p.depth?.[field]).filter(Boolean)),
 ];
 
-test("#1503 every rung is CALLED by a stage — a defined-but-unwired rung grades nothing, silently", () => {
+test("every rung is CALLED by a stage — a defined-but-unwired rung grades nothing, silently", () => {
   // THE DECLARATIONS COME OUT FIRST. Scanning the raw source counted `export function xRungDirective(depth)`
   // as a call, so every rung "passed" on its own definition and the arm could not go red at all — caught by
   // unwiring a live rung and watching this stay green.
@@ -71,7 +71,7 @@ test("#1503 every rung is CALLED by a stage — a defined-but-unwired rung grade
   }
 });
 
-test("#1503 the rung family is DISCOVERABLE and non-empty — a zero here is a broken instrument", () => {
+test("the rung family is DISCOVERABLE and non-empty — a zero here is a broken instrument", () => {
   assert.ok(RUNGS.length >= 5,
     `found ${RUNGS.length} rung directive(s) in stages.mjs. Five rungs ship today; a collapse means `
     + "the naming convention moved and every rung below is now unguarded, not that the ladder got simpler.");
@@ -82,7 +82,7 @@ test("#1503 the rung family is DISCOVERABLE and non-empty — a zero here is a b
   }
 });
 
-test("#1503 every rung emits NOTHING for the one-country row — the byte-identical guard, per rung", () => {
+test("every rung emits NOTHING for the one-country row — the byte-identical guard, per rung", () => {
   for (const { name, fn } of RUNGS) {
     const oneCountry = PRODUCT_POLICIES["full-country-search"].depth;
     assert.equal(fn(oneCountry), "",
@@ -91,7 +91,7 @@ test("#1503 every rung emits NOTHING for the one-country row — the byte-identi
   }
 });
 
-test("#1503 every rung treats an UNRECOGNISED value as ungraded — the failure direction is depth", () => {
+test("every rung treats an UNRECOGNISED value as ungraded — the failure direction is depth", () => {
   for (const { name, fn } of RUNGS) {
     const field = FIELD_OF[name];
     for (const bad of [undefined, null, {}, { [field]: "typo-not-in-vocab" }, { [field]: "" }]) {
@@ -103,7 +103,7 @@ test("#1503 every rung treats an UNRECOGNISED value as ungraded — the failure 
   }
 });
 
-test("#1503 NO COUNT REACHES ANY GRADED INSTRUCTION — a number turns judgment back into a rule", () => {
+test("NO COUNT REACHES ANY GRADED INSTRUCTION — a number turns judgment back into a rule", () => {
   let graded = 0;
   for (const { name, fn } of RUNGS) {
     const field = FIELD_OF[name];
@@ -122,7 +122,7 @@ test("#1503 NO COUNT REACHES ANY GRADED INSTRUCTION — a number turns judgment 
   assert.ok(graded >= 5, `only ${graded} graded instruction(s) were examined — the vocabularies moved`);
 });
 
-test("#1503 every graded instruction promises what does NOT change, BEFORE it asks for less", () => {
+test("every graded instruction promises what does NOT change, BEFORE it asks for less", () => {
   for (const { name, fn } of RUNGS) {
     const field = FIELD_OF[name];
     for (const value of valuesFor(field)) {
@@ -144,7 +144,7 @@ const RETIRED = "For the rest — near-duplicate Latin spellings that no registe
   + "entry stands for the family.";
 const STAND_IN = /\bone entry (?:stands?|represents?)\b|\bstands? for the\b/i;
 
-test("#1503 no rung tells a seat to keep a STAND-IN entry — grading is by omission", () => {
+test("no rung tells a seat to keep a STAND-IN entry — grading is by omission", () => {
   assert.match(RETIRED, STAND_IN,
     "the detector does not match the sentence that caused the incident, so its silence below means nothing");
   let checked = 0;
@@ -163,7 +163,7 @@ test("#1503 no rung tells a seat to keep a STAND-IN entry — grading is by omis
   assert.ok(checked >= 5, `only ${checked} graded instruction(s) examined — the vocabularies moved`);
 });
 
-test("#1503 a CONVERTED rung's replacement IS wired — 'uncalled' and 'converted' look the same to a grep", () => {
+test("a CONVERTED rung's replacement IS wired — 'uncalled' and 'converted' look the same to a grep", () => {
   // The other half of the skip above. Skipping a converted rung there is only safe if something asserts
   // its replacement actually reached a dispatch — otherwise "we converted it" is a comment, and the
   // product runs ungraded with a tidy explanation for why nothing calls the old function.

@@ -36,13 +36,13 @@ const merged = (detail) => new StageFailure("common-law", "merged half-grids fai
 
 // ── the channel can see the token ───────────────────────────────────────────────────────────────────
 
-test("#1279 the remedy token is found in `detail`, which is the only place a merge failure puts it", () => {
+test("the remedy token is found in `detail`, which is the only place a merge failure puts it", () => {
   assert.equal(connotationRemedyToken(merged(R1_DETAIL)), R1_DETAIL,
     "the remedy channel cannot see a call_partial — the repair that recovers it never opens");
   assert.match(connotationRemedyToken(merged(R2_DETAIL)) ?? "", /^connotation_quote_unbound/);
 });
 
-test("#1279 VOID CONTROL — a merge failure's MESSAGE carries no token, which is why this was dead", () => {
+test("VOID CONTROL — a merge failure's MESSAGE carries no token, which is why this was dead", () => {
   // If this ever stops being true the outage's mechanism has changed, and the test above stops
   // distinguishing the fix from the bug it replaced.
   const e = merged(R1_DETAIL);
@@ -51,11 +51,11 @@ test("#1279 VOID CONTROL — a merge failure's MESSAGE carries no token, which i
     "the message now carries a token — the pre-#614 shape is back and this guard is measuring nothing");
 });
 
-test("#1279 the message is still read, so an archived or re-thrown failure keeps opening the channel", () => {
+test("the message is still read, so an archived or re-thrown failure keeps opening the channel", () => {
   assert.match(connotationRemedyToken({ message: `common-law: ${R1_DETAIL}` }) ?? "", /^connotation_call_partial/);
 });
 
-test("#1279 a failure with no connotation token opens nothing", () => {
+test("a failure with no connotation token opens nothing", () => {
   assert.equal(connotationRemedyToken(new StageFailure("fan-in", "band artifact malformed")), null);
   assert.equal(connotationRemedyToken(undefined), null);
   assert.equal(connotationRemedyToken({ detail: "quote_unbound" }), null,
@@ -64,7 +64,7 @@ test("#1279 a failure with no connotation token opens nothing", () => {
 
 // ── the class comes from what the validator said ────────────────────────────────────────────────────
 
-test("#1279 a recoverable token does NOT classify as deterministic", () => {
+test("a recoverable token does NOT classify as deterministic", () => {
   // deterministic is parkBudget 0 — "never parked at all". That is the value that turned a recoverable
   // half-level complaint into a terminal merge death, and the one thing this must never produce for a
   // complaint the engine has a lane for.
@@ -76,7 +76,7 @@ test("#1279 a recoverable token does NOT classify as deterministic", () => {
   }
 });
 
-test("#1279 the merge derives its class from the validator's reason, and only after the validator runs", () => {
+test("the merge derives its class from the validator's reason, and only after the validator runs", () => {
   // The behaviour tests above pass against the broken pipeline: they call the helper and the router
   // directly. Only this reads the call site, and the ORDER is half the defect — the class was computed
   // two lines before the validator spoke. Anchored to code, because the comment beside the fix quotes
@@ -96,7 +96,7 @@ test("#1279 the merge derives its class from the validator's reason, and only af
     "quarantine stopped being an input — a quarantined half is re-run fresh and must stay transient");
 });
 
-test("#1279 the remedy call site uses the exported reader, not a private message match", () => {
+test("the remedy call site uses the exported reader, not a private message match", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8")
     .replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
   assert.match(src, /const tok = connotationRemedyToken\(e\);/,

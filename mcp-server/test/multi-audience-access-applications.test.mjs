@@ -82,7 +82,7 @@ const accepted = async (verify, token) => {
 
 // ── the parser, including every shape that must stay FALSY ──────────────────────────────────────────
 
-test("2180-F54 0 and 1 audiences stay a STRING, so the `!AUD` guards stay fail-closed", () => {
+test("0 and 1 audiences stay a STRING, so the `!AUD` guards stay fail-closed", () => {
   // THE TRAP, asserted as the falsiness the call sites actually test rather than as a type. An arm that
   // checked `Array.isArray` would pass on `[]` — which is the bug.
   for (const raw of [undefined, null, "", "   ", ",", " , , "])
@@ -93,14 +93,14 @@ test("2180-F54 0 and 1 audiences stay a STRING, so the `!AUD` guards stay fail-c
   assert.equal(accessAudience("  portal  "), "portal", "envFrom trims, and this must not depend on that");
 });
 
-test("2180-F54 2 or more become an ARRAY, which is what jose accepts a list as", () => {
+test("2 or more become an ARRAY, which is what jose accepts a list as", () => {
   assert.deepEqual(accessAudience("portal,ops"), ["portal", "ops"]);
   assert.deepEqual(accessAudience(" portal , ops , clients "), ["portal", "ops", "clients"]);
   // A trailing comma is an operator's typo, not a fourth empty audience.
   assert.deepEqual(accessAudience("portal,ops,"), ["portal", "ops"]);
 });
 
-test("2180-F54 the verifier itself refuses an EMPTY LIST — the guard the parser must never need", () => {
+test("the verifier itself refuses an EMPTY LIST — the guard the parser must never need", () => {
   // Belt and braces at the one place all five call sites funnel through — and the arm below this one
   // measures WHY, rather than restating the reason I first wrote here, which was wrong.
   assert.throws(() => makeAccessVerifier({ team: TEAM, aud: [], allowedDomains: ["x.com"], jwks }),
@@ -108,7 +108,7 @@ test("2180-F54 the verifier itself refuses an EMPTY LIST — the guard the parse
   assert.throws(() => makeAccessVerifier({ team: TEAM, aud: "", allowedDomains: ["x.com"], jwks }), /fail-closed/);
 });
 
-test("2180-F54 what an empty audience ACTUALLY does to jose — the reason above, measured not assumed", async () => {
+test("what an empty audience ACTUALLY does to jose — the reason above, measured not assumed", async () => {
   // The guard exists whichever way this goes, so this arm is not what makes it correct. It is here
   // because the reason a guard states is the thing the next reader trusts instead of re-deriving, and
   // this one was stated wrong first time: I wrote that jose reads `[]` as "no audience constraint" and
@@ -135,20 +135,20 @@ test("2180-F54 what an empty audience ACTUALLY does to jose — the reason above
 
 // ── the decisions, made by jose against real tokens ─────────────────────────────────────────────────
 
-test("2180-F54 ONE audience accepts its own application and refuses another", async () => {
+test("ONE audience accepts its own application and refuses another", async () => {
   const verify = verifierFor(PORTAL);
   assert.equal(await accepted(verify, await mint(PORTAL)), true, "its own application must be accepted");
   assert.equal(await accepted(verify, await mint(OPS)), false,
     "THE DEFECT: a single-audience configuration refuses a valid token from any other application");
 });
 
-test("2180-F54 TWO audiences accept both applications", async () => {
+test("TWO audiences accept both applications", async () => {
   const verify = verifierFor(`${PORTAL},${OPS}`);
   assert.equal(await accepted(verify, await mint(PORTAL)), true);
   assert.equal(await accepted(verify, await mint(OPS)), true, "the second application must be accepted too");
 });
 
-test("2180-F54 THREE accept all three, and a token from an UNLISTED application is still refused", async () => {
+test("THREE accept all three, and a token from an UNLISTED application is still refused", async () => {
   // The half that makes the widening safe: adding applications must not stop it being a whitelist.
   const verify = verifierFor(`${PORTAL},${OPS},${CLIENTS}`);
   for (const aud of [PORTAL, OPS, CLIENTS])
@@ -159,7 +159,7 @@ test("2180-F54 THREE accept all three, and a token from an UNLISTED application 
 
 // ── the client/staff line ────────────────────────────────────────────────────────────────────────────
 
-test("2180-F54 membership, not equality — the rule the list would otherwise break", () => {
+test("membership, not equality — the rule the list would otherwise break", () => {
   assert.equal(audienceIncludes([PORTAL, OPS], OPS), true, "a list containing it must be a match");
   assert.equal(audienceIncludes(PORTAL, PORTAL), true, "the single-value case still works");
   assert.equal(audienceIncludes([PORTAL, OPS], CLIENTS), false);
@@ -169,7 +169,7 @@ test("2180-F54 membership, not equality — the rule the list would otherwise br
   assert.notEqual(`${[PORTAL, OPS]}`, OPS, "`===` against a list is false, which is how the door would have started");
 });
 
-test("2180-F54 THE DOOR REFUSES TO START when its audience is one of the staff list — driven", async () => {
+test("THE DOOR REFUSES TO START when its audience is one of the staff list — driven", async () => {
   // Not a source scan. The guard chain reaches this only when the door is neither token-only nor
   // auth-disabled and has a team and an audience, so the environment below is the one that gets there.
   const run = (staff) => new Promise((resolve) => {
@@ -201,7 +201,7 @@ test("2180-F54 THE DOOR REFUSES TO START when its audience is one of the staff l
 
 // ── the class, not the four instances ────────────────────────────────────────────────────────────────
 
-test("2180-F54 EVERY reader of the staff audience goes through the parser — a fifth site cannot regress silently", (t) => {
+test("EVERY reader of the staff audience goes through the parser — a fifth site cannot regress silently", (t) => {
   // The finding named two call sites and there were four. Nothing above would notice a fifth appearing,
   // or one of the four being edited back to a raw string: the arms test the parser and the verifier, and
   // a call site that stops calling the parser still passes all of them while refusing every application
@@ -228,7 +228,7 @@ test("2180-F54 EVERY reader of the staff audience goes through the parser — a 
     + `application is refused everywhere but the first — the whole of F54:\n${offenders.join("\n")}`);
 });
 
-test("2180-F54 the four known readers are still there, so the arm above is not passing on an empty walk", (t) => {
+test("the four known readers are still there, so the arm above is not passing on an empty walk", (t) => {
   // — a discovered set that found nothing looks identical to a clean one. These four are the
   // population F54 was measured against; if one disappears, re-check this arm rather than deleting it.
   const files = sources({ tests: true });
@@ -242,7 +242,7 @@ test("2180-F54 the four known readers are still there, so the arm above is not p
 
 // ── the defect THIS CHANGE introduced, and the guard against its return ──────────────────────────────
 
-test("2180-F54 the boot log truncates EACH audience — `slice` on a list takes elements, not characters", () => {
+test("the boot log truncates EACH audience — `slice` on a list takes elements, not characters", () => {
   // Found by asking what every existing use of AUD does with it, rather than only what the verifier
   // does. All four call sites logged `aud=${AUD.slice(0, 8)}…`, which is right for a string and quietly
   // wrong for a list: Array.prototype.slice takes ELEMENTS, so a two-audience deployment printed both
@@ -257,7 +257,7 @@ test("2180-F54 the boot log truncates EACH audience — `slice` on a list takes 
     "the old expression and the new one agree, so this arm is not testing the difference");
 });
 
-test("2180-F54 no call site slices the audience itself — the string-only operation that broke", (t) => {
+test("no call site slices the audience itself — the string-only operation that broke", (t) => {
   // The class, not the four instances. Any string method on a value that is now sometimes an array is
   // the same defect in a different spelling, and `slice` is the one that was actually there.
   const offenders = [];

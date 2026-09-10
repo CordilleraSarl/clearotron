@@ -33,7 +33,7 @@ const RULES = readFileSync(join(HERE, "..", "skills", "prelim-search", "synthesi
 // ~100-column hard wrap means a sentence is split across lines in the source; the seat reads it as one.
 const FLAT = RULES.replace(/\s+/g, " ");
 
-test("#601b arm 1 — the rule is where the seat writing the coverage prose reads it", () => {
+test("arm 1 — the rule is where the seat writing the coverage prose reads it", () => {
   assert.match(FLAT, /The same rule covers the FACT, not only the number/,
     "the coverage-prose rule stopped at numbers, and the fact walked through the gap");
   // …and it sits with the number rule it extends, not in a paragraph of its own somewhere else.
@@ -43,21 +43,21 @@ test("#601b arm 1 — the rule is where the seat writing the coverage prose read
     "the extension must sit with the rule it extends, or it reads as an unrelated instruction");
 });
 
-test("#601b arm 2 — it names the sentence that shipped, and the vocabulary that made it engine-speak", () => {
+test("arm 2 — it names the sentence that shipped, and the vocabulary that made it engine-speak", () => {
   assert.match(FLAT, /could not be put to the register provider/,
     "a rule that does not name the failure is a rule nobody can check themselves against");
   assert.match(FLAT, /Never name the provider, the dispatch or the run in a coverage aside/,
     "the ban must name the vocabulary, not gesture at 'engine words'");
 });
 
-test("#601b arm 3 — the ACTION survives; only the aside is cut", () => {
+test("arm 3 — the ACTION survives; only the aside is cut", () => {
   assert.match(FLAT, /keep the action, cut the aside/i,
     "THE TRADE: the reader still needs to be told to instruct counsel — that is the useful half");
   assert.ok(!/drop the action|remove the action/i.test(FLAT),
     "a rule that cuts the action removes the only thing the reader can act on");
 });
 
-test("#601b arm 4 — the driver's own wording for the same gap is unchanged and still plain", () => {
+test("arm 4 — the driver's own wording for the same gap is unchanged and still plain", () => {
   // The aside was redundant against THIS, so if this stopped saying it the rule would be cutting the
   // only statement of the gap.
   const f = deriveScopeFacts({

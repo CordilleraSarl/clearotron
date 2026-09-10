@@ -30,13 +30,13 @@ import assert from "node:assert/strict";
 import { COMMON_LAW_SEAT_TIER, axisTier, chainEntries, assertTierSanity, STAGES } from "../stages.mjs";
 import { GRID_SEATS, MEANING_SEAT } from "../common-law-receipts.mjs";
 
-test("#561 the map covers exactly the seats that exist — no seat without a tier, no tier without a seat", () => {
+test("the map covers exactly the seats that exist — no seat without a tier, no tier without a seat", () => {
   assert.deepEqual(Object.keys(COMMON_LAW_SEAT_TIER).sort(), [...GRID_SEATS].sort(),
     "a seat missing from the map falls through to axisTier's SONNET default — the exact misread the old "
     + "`def.model wins over axisTier` comment was avoiding, and it would be silent");
 });
 
-// — the question opened is SETTLED and the seat is back on haiku (owner ruling, 2026-08-12).
+// — the question opened is SETTLED and the seat is back on haiku (ruling, 2026-08-12).
 // Measured on 857db4a: haiku converges in 2 attempts / 422.9s against sonnet's 1 attempt / 1674.2s for
 // the same delivered outcome. The sonnet flip had been measured against PRE- haiku and was credited
 // with a convergence actually bought.
@@ -45,7 +45,7 @@ test("#561 the map covers exactly the seats that exist — no seat without a tie
 // test now has to prove, because "every seat has the same value" is exactly when a lookup table looks
 // deletable. Delete it and `axisTier` hands a seat id its SONNET/ADAPTIVE default, silently, which is
 // the misread the map was built to make impossible.
-test("#754 every seat is haiku/low — and the map is still what makes that true, not axisTier", () => {
+test("every seat is haiku/low — and the map is still what makes that true, not axisTier", () => {
   // chainEntries is what stageWithChain actually calls, so this exercises def → axisTier → thinkingFor
   // rather than reading the constant back.
   assert.deepEqual(chainEntries("common-law-half", MEANING_SEAT), [{ model: "haiku", thinking: "low" }],
@@ -59,7 +59,7 @@ test("#754 every seat is haiku/low — and the map is still what makes that true
       + "term × platform sweep and nothing about that job changed");
 });
 
-test("#561 ONE VARIABLE moved — the thinking budget is identical across all three seats", () => {
+test("ONE VARIABLE moved — the thinking budget is identical across all three seats", () => {
   // The attribution property. If a round improves and `thinking` also moved, the round has measured two
   // changes and can attribute neither. sonnet/adaptive — axisTier's own default for every non-seat axis,
   // and the value the A/B's illustration used — is exactly that mistake, which is why it is not shipped.
@@ -68,7 +68,7 @@ test("#561 ONE VARIABLE moved — the thinking budget is identical across all th
     `every seat must still think at the same budget (got ${JSON.stringify(thinking)})`);
 });
 
-test("#561 the static tier is GONE from the stage def, or the map is dead", () => {
+test("the static tier is GONE from the stage def, or the map is dead", () => {
   // A static def.model wins over axisTier in stageOnce (`opts.model ?? def.model ?? tier.model`), so a
   // leftover pair here would leave the map looking authoritative and doing nothing — the failure mode
   // where the next round flips a value and measures no change.
@@ -81,7 +81,7 @@ test("#561 the static tier is GONE from the stage def, or the map is dead", () =
   assert.equal(STAGES["common-law-half"].stallSec, 1100);
 });
 
-test("#754 the move is REVERSIBLE by the same one-line edit, and still moves only that seat", () => {
+test("the move is REVERSIBLE by the same one-line edit, and still moves only that seat", () => {
   // The rollback, proven rather than assumed. inverts the DIRECTION — the seat is haiku now, so the
   // rollback is back to sonnet — and the property is unchanged: the blast radius is one seat either way.
   // This is what makes the tier a value and not a feature gate.
@@ -97,7 +97,7 @@ test("#754 the move is REVERSIBLE by the same one-line edit, and still moves onl
   assert.deepEqual(chainEntries("common-law-half", MEANING_SEAT), [{ model: "haiku", thinking: "low" }]);
 });
 
-test("#561 the haiku+adaptive sanity check reaches the seats — it could not before", () => {
+test("the haiku+adaptive sanity check reaches the seats — it could not before", () => {
   assert.equal(assertTierSanity(), true, "the shipped table is sane");
   // assertTierSanity's STAGES loop keys on `s.model`, which common-law-half no longer has, so without a
   // seat loop the forbidden pairing would go UNCHECKED on exactly the seats whose tier is now movable.
@@ -110,7 +110,7 @@ test("#561 the haiku+adaptive sanity check reaches the seats — it could not be
   assert.equal(assertTierSanity(), true);
 });
 
-test("#561 a non-seat axis is untouched — the register tiers still resolve as they did", () => {
+test("a non-seat axis is untouched — the register tiers still resolve as they did", () => {
   assert.deepEqual(axisTier("saturation-probe"), { model: "haiku", thinking: "off" });
   assert.deepEqual(axisTier("primary-sweep"), { model: "sonnet", thinking: "adaptive" });
   assert.deepEqual(axisTier("incumbent-class"), { model: "sonnet", thinking: "adaptive" });
@@ -127,7 +127,7 @@ test("#561 a non-seat axis is untouched — the register tiers still resolve as 
 // the tier bought convergence, not wall. And `:a` (431.1s) and `:b` (452.9s) passed first time on the
 // same haiku tier `:m` failed on, which is the strongest evidence available that the defect is
 // bookkeeping rather than judgment.
-test("#561 CLEAROTRON_MEANING_SEAT_MODEL moves the meaning seat, and nothing else", async () => {
+test("CLEAROTRON_MEANING_SEAT_MODEL moves the meaning seat, and nothing else", async () => {
   const saved = process.env.CLEAROTRON_MEANING_SEAT_MODEL;
   try {
     // — the override is now exercised with SONNET. Setting it to haiku would set the value the
@@ -147,7 +147,7 @@ test("#561 CLEAROTRON_MEANING_SEAT_MODEL moves the meaning seat, and nothing els
   }
 });
 
-test("#561 UNSET is the shipped default — an A/B knob that changes the default is not one", () => {
+test("UNSET is the shipped default — an A/B knob that changes the default is not one", () => {
   const saved = process.env.CLEAROTRON_MEANING_SEAT_MODEL;
   try {
     delete process.env.CLEAROTRON_MEANING_SEAT_MODEL;
@@ -156,7 +156,7 @@ test("#561 UNSET is the shipped default — an A/B knob that changes the default
   } finally { if (saved !== undefined) process.env.CLEAROTRON_MEANING_SEAT_MODEL = saved; }
 });
 
-test("#561 `thinking` is NOT overridable — two movable variables is the trap", () => {
+test("`thinking` is NOT overridable — two movable variables is the trap", () => {
   // The whole entry exists so a round can attribute a change to one thing. An env knob on the thinking
   // budget beside the model one would re-create the confound the sonnet/adaptive pair was rejected for.
   const src = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");

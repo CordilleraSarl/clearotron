@@ -35,7 +35,7 @@ const base = (over = {}) => ({ row_index: 1, ruling: "benign", note: "a dictiona
   receipt_index: 1, segment_index: 1, ...over });
 const refusalFor = (row) => (validateDispositionCall([row], RECORDED).refused ?? [])[0] ?? null;
 
-test("#1234 THE FIXTURE IS HONEST: the value really does bind when sent as `fragment`", () => {
+test("THE FIXTURE IS HONEST: the value really does bind when sent as `fragment`", () => {
   // Everything below is worthless if this fragment would not have bound anyway.
   const cand = rows()[0].candidates[0];
   assert.equal(segmentBinding({ segment_index: 1, fragment: FRAGMENT }, cand).state, "bound");
@@ -43,7 +43,7 @@ test("#1234 THE FIXTURE IS HONEST: the value really does bind when sent as `frag
     "the correct shape is being refused — this test file is measuring the wrong thing");
 });
 
-test("#1234 DISSOLVED by #1172 — the seq-112 shape binds outright, so there is no refusal to word", () => {
+test("DISSOLVED by #1172 — the seq-112 shape binds outright, so there is no refusal to word", () => {
   // That cure was to word a refusal well: the seat had sent the right characters under the retired
   // name `anchor`, and the message told it it had copied nothing. removes the duty that produced
   // the refusal at all, which is the stronger fix — a row that names a live passage now BINDS whatever
@@ -56,7 +56,7 @@ test("#1234 DISSOLVED by #1172 — the seq-112 shape binds outright, so there is
     "the seq-112 shape was refused — the pointer must bind regardless of which envelope a fragment used");
 });
 
-test("#1172 a NON-BINDING fragment is recorded, never charged — the seat is not sent hunting", () => {
+test("a NON-BINDING fragment is recorded, never charged — the seat is not sent hunting", () => {
   // The dangerous inverse guarded: never tell a seat a wrong value is correct. Under the
   // question does not arise, because no verdict is issued on the fragment at all. What must not happen
   // is the old outcome — a refusal that costs a call for text the ruling never depended on.
@@ -70,7 +70,7 @@ test("#1172 a NON-BINDING fragment is recorded, never charged — the seat is no
   assert.equal(segmentBinding({ segment_index: 1 }, cand).fragmentState, "absent");
 });
 
-test("#1234 the four-way envelope matrix, replayed against the deployed binder", () => {
+test("the four-way envelope matrix, replayed against the deployed binder", () => {
   // Recorded because this is what the production forensics turned on, and because `fragment_missing`
   // (binder) surfaces as `fragment_absent` (ledger) — two names for one state that cost real diagnosis.
   const cand = rows()[0].candidates[0];
@@ -85,7 +85,7 @@ test("#1234 the four-way envelope matrix, replayed against the deployed binder",
   assert.equal(st({ fragment: FRAGMENT }), "segment_missing");
 });
 
-test("#1234 THE SCHEMA declares what the validator requires, and no longer declares what it refuses", () => {
+test("THE SCHEMA declares what the validator requires, and no longer declares what it refuses", () => {
   // Source-level on purpose: importing the server module starts a server. The schema is the half the
   // seat's tool-calling binds to, so a description that says one thing while the schema declares another
   // is the defect — not a cosmetic mismatch.
@@ -101,7 +101,7 @@ test("#1234 THE SCHEMA declares what the validator requires, and no longer decla
   assert.doesNotMatch(block, /\banchor: \{/, "the schema still declares the retired `anchor` — a declared field the driver refuses is a trap");
 });
 
-test("#1234 AGREEMENT GUARD: the schema's evidence fields ARE the validator's, derived from both ends", () => {
+test("AGREEMENT GUARD: the schema's evidence fields ARE the validator's, derived from both ends", () => {
   // Acceptance 2 — one contract, two ends. Hardcoding "segment_index and fragment" in this test would
   // drift the moment the validator requires a third field: the test would still pass while the served
   // schema stopped declaring what the seat must send, which is EXACTLY the defect being fixed, one level
@@ -128,13 +128,13 @@ test("#1234 AGREEMENT GUARD: the schema's evidence fields ARE the validator's, d
     assert.ok(!new RegExp(`\\b${f}: \\{ type:`).test(block), `the schema still declares the retired \`${f}\``);
 });
 
-test("#1234 SHAPE FUZZ: the recognition never throws on a malformed retired value", () => {
+test("SHAPE FUZZ: the recognition never throws on a malformed retired value", () => {
   // This runs inside live validation. A throw here turns a refusable row into a dead call.
   for (const bad of [null, undefined, 0, "", "   ", {}, []])
     assert.doesNotThrow(() => refusalFor(base({ anchor: bad })), `threw on anchor=${JSON.stringify(bad)}`);
 });
 
-test("#1172 the accepted row CARRIES the fragment verdict, so the signal outlives the duty", () => {
+test("the accepted row CARRIES the fragment verdict, so the signal outlives the duty", () => {
   // The half that makes dropping the duty defensible. `fragmentState` is recorded on the accepted row
   // whatever it says, so "how often does a seat reproduce non-Latin characters correctly" stays a
   // measurable question. A change that removed the enforcement AND the observation would leave the next

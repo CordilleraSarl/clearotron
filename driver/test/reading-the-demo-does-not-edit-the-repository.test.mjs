@@ -30,7 +30,7 @@ const GUARD = "reading-the-demo";
 const DEMO = join(REPO, "demo");
 const RECEIPT = "run/_driver/predelivery-lint.json";
 
-test("157 reading the demo leaves the repository exactly as it found it", { timeout: 300_000 }, (ctx) => {
+test("reading the demo leaves the repository exactly as it found it", { timeout: 300_000 }, (ctx) => {
   const children = demoChildren(DEMO);
   nonEmpty(children, "the demo products in this tree");
   // The knockout lane is the one that was measured writing back; drive that one when it is here, and
@@ -73,7 +73,7 @@ test("157 reading the demo leaves the repository exactly as it found it", { time
 });
 
 
-test("157 both publishers of the shipped demos read the same rule", () => {
+test("both publishers of the shipped demos read the same rule", () => {
   // FIXING THE PLAYER LEFT THE LAUNCHER, and the launcher is the path a reader takes: `clearotron demo`
   // hands over to `start --demo`, which SEEDS the pool from the whole container on every start. The
   // player's arm above passed the whole time that second publisher went on rewriting the tracked

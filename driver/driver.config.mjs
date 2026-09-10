@@ -117,7 +117,7 @@ export const config = {
   // two different things depending on which accessor you asked, and `queueDirs` resolved a RELATIVE
   // queue directory under the process cwd, which is its own incident shape.
   //
-  // Owner ruling 2026-08-19: a whitespace-only value counts as UNSET, everywhere. `X=` already meant
+  // Ruling 2026-08-19: a whitespace-only value counts as UNSET, everywhere. `X=` already meant
   // "not configured" and this is that rule finishing its sentence — not a reversal of it, which
   // is why the 13 sites relying on empty-means-unset are untouched: they get the same answer they
   // always did, and only the spaces-shaped near-miss changes.
@@ -536,7 +536,7 @@ export const config = {
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are run-slot locks, so a live run's slot goes unseen and the global cap is
-  // silently exceeded rather than enforced. Owner ruling.
+  // silently exceeded rather than enforced. Ruling.
   get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || join(this.workspaceRoot, "prelim-run-locks"); },
 
   // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
@@ -548,7 +548,7 @@ export const config = {
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are requester-facing events — delivered, run-failed, intake-rejected — so the
-  // visible failure is a requester never told their run finished. Owner ruling.
+  // visible failure is a requester never told their run finished. Ruling.
   get outboxDir() { return this.envValue("CLEAROTRON_OUTBOX_DIR") || join(this.workspaceRoot, "prelim-outbox"); },
 
   // ── Delivery/comms (Phase 2, standalone product) ─────────────────────────────────────────────────
@@ -1005,7 +1005,7 @@ export const PROVIDERS = {
     credEnv: "CLARIVATE_API_KEY",
     skillDoc: "skills/prelim-register/providers/clarivate.md",
     hasPublicRecordUrl: false, // Compumark Content has no public record URL — cite the office register
-    //, owner ruling 2026-08-20 — WHAT A CARD SHOWS WHERE A LINK CANNOT GO. A UI exists for this
+    //, ruling 2026-08-20 — WHAT A CARD SHOWS WHERE A LINK CANNOT GO. A UI exists for this
     // provider and we do not know its per-record URL, so the card says so and says it is unfinished.
     // "placeholder" is the reader-facing admission; anything else would read as a citation.
     recordCitation: "placeholder",
@@ -1142,7 +1142,7 @@ export const PROVIDERS = {
     credEnv: "SIGNA_API_KEY",
     skillDoc: "skills/prelim-register/providers/signa.md",
     hasPublicRecordUrl: false, // Signa exposes no per-record public URL — cite the office register
-    //, owner ruling 2026-08-20 — no register UI exists to link to at all, so the card points at
+    //, ruling 2026-08-20 — no register UI exists to link to at all, so the card points at
     // the artifact that DOES carry the record: the audit workbook. Naming it is the whole of this
     // branch; constructing a per-record URL for a provider that publishes none would be a fabricated
     // citation on a legal deliverable, and the ruling forbids it in those words.
@@ -1594,7 +1594,7 @@ export const RESEARCH_PROVIDERS = {
 //
 // ── / — THE NATIVE-LANGUAGE LANES RUN ON THE PROGRAM THE CUSTOMER CHOSE ────────────────
 //
-// Owner ruling 2026-08-20, verbatim: "one LLM provider only ever, API or auth, no mix." These three
+// Ruling 2026-08-20, verbatim: "one LLM provider only ever, API or auth, no mix." These three
 // lanes were the mix. They POSTed to the Anthropic Messages API on `ANTHROPIC_API_KEY` at a hardcoded
 // haiku tier no matter which engine the run was configured for — so round 21f9b0ad's receipt carried
 // engine `openai-agent` / SUBSCRIPTION on its agentic stages and `anthropic-direct` / API-KEY on all

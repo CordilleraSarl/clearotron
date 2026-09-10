@@ -22,7 +22,7 @@ const MISCONFIGURED = { ok: false, engine: "openai-agent", mode: "auth-misconfig
   headline: "openai-agent cannot start: the billing mode this box declares has no key",
   fix: "CLEAROTRON_AI_BILLING=api-key but CODEX_API_KEY is not set.", detail: null };
 
-test("#1456 a failing verdict exits non-zero — a probe nobody can gate on is a probe nobody runs twice", () => {
+test("a failing verdict exits non-zero — a probe nobody can gate on is a probe nobody runs twice", () => {
   assert.equal(exitCodeFor(OK), 0);
   assert.equal(exitCodeFor(MISCONFIGURED), 1);
   // `ok` is asked for EXPLICITLY: a verdict object is always truthy, so a caller testing the object
@@ -32,7 +32,7 @@ test("#1456 a failing verdict exits non-zero — a probe nobody can gate on is a
   assert.equal(exitCodeFor({}), 1, "a verdict missing its own ok field is not a green one");
 });
 
-test("#1456 the verdict names the MODE and the basis, and relays the owner's fix verbatim", () => {
+test("the verdict names the MODE and the basis, and relays the owner's fix verbatim", () => {
   const bad = render(MISCONFIGURED);
   assert.match(bad, /^auth-misconfigured — openai-agent cannot start/, "the mode leads, so a scan reads the class first");
   assert.match(bad, /basis: config/, "the basis says what decided it — config, a throw, a watchdog");
@@ -44,11 +44,11 @@ test("#1456 the verdict names the MODE and the basis, and relays the owner's fix
   assert.ok(!/basis: config/.test(good) && /basis: completed-turn/.test(good));
 });
 
-test("#1456 --json emits the verdict itself, so a caller reads fields rather than parsing prose", () => {
+test("--json emits the verdict itself, so a caller reads fields rather than parsing prose", () => {
   assert.deepEqual(JSON.parse(render(MISCONFIGURED, { json: true })), MISCONFIGURED);
 });
 
-test("#1456 the entry point SAYS it spends money, before it spends any", () => {
+test("the entry point SAYS it spends money, before it spends any", () => {
   // A probe that quietly bills a credential is the thing an operator most wants warned about, and the
   // warning has to precede the turn rather than explain it afterwards.
   const src = readFileSync(join(ROOT, "scripts", "engine-probe.mjs"), "utf8");

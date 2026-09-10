@@ -40,7 +40,7 @@ const CROWD = { qid: "c:1", state: "incomplete", total_hits: 4821, fetched: 600,
 const band = (blocks) => parseNamedBand(JSON.stringify(blocks));
 const crowdBy = (blocks, qid) => band(blocks).crowds.find((c) => c.qid === qid);
 
-test("#1615 every real count survives; nothing else becomes one", () => {
+test("every real count survives; nothing else becomes one", () => {
   // Driven through parseNamedBand rather than importing the helper directly: the file then still
   // LOADS against the pre-fix tree, so each arm below reports its own verdict instead of the whole
   // suite dying on a missing export — and this is the path the collapse actually happened on.
@@ -64,13 +64,13 @@ test("#1615 every real count survives; nothing else becomes one", () => {
   assert.equal(totalFor({}), null);
 });
 
-test("#1615 an unknown total survives the crowd projection; a counted zero survives as zero", () => {
+test("an unknown total survives the crowd projection; a counted zero survives as zero", () => {
   assert.equal(crowdBy([UNKNOWN, ZERO, CROWD], "u:1").total_hits, null, "the register's UNKNOWN became a number");
   assert.equal(crowdBy([UNKNOWN, ZERO, CROWD], "z:1").total_hits, 0, "a real counted zero was turned into UNKNOWN");
   assert.equal(crowdBy([UNKNOWN, ZERO, CROWD], "c:1").total_hits, 4821);
 });
 
-test("#1615 the quarantine path does not invent a count for a block it already distrusts", () => {
+test("the quarantine path does not invent a count for a block it already distrusts", () => {
   // This path is model-authored blocks ONLY: a qid-stamped block with an unknown state throws above it
   // ("machine states are code-owned"), which is asserted here so the arm cannot silently drift onto
   // the wrong branch.
@@ -83,7 +83,7 @@ test("#1615 the quarantine path does not invent a count for a block it already d
   assert.equal(quarantineUnknownStates(JSON.stringify([{ ...zeroNoQid, state: "checked" }])).blocks[0].total_hits, 0);
 });
 
-test("#1615 an uncountable slice is a blind spot, and could never have been the unenumerated one", () => {
+test("an uncountable slice is a blind spot, and could never have been the unenumerated one", () => {
   const shape = buildBandShape(band([UNKNOWN, ZERO, CROWD]), { targets: ["ZEPHYR"] }).shape;
   const kinds = Object.fromEntries(shape.blind_spots.map((b) => [b.kind, b]));
 
@@ -104,7 +104,7 @@ test("#1615 an uncountable slice is a blind spot, and could never have been the 
   assert.equal(shape.crowds.find((c) => c.query === UNKNOWN.query).total_hits, null);
 });
 
-test("#1615 record-carry says the remainder is unmeasured, not zero", () => {
+test("record-carry says the remainder is unmeasured, not zero", () => {
   const rows = untraceableSlices({ crowds: band([UNKNOWN, ZERO, CROWD]).crowds });
   const u = rows.find((r) => r.qid === "u:1");
   const z = rows.find((r) => r.qid === "z:1");
@@ -125,7 +125,7 @@ test("#1615 record-carry says the remainder is unmeasured, not zero", () => {
   assert.equal(rows[0].qid, "u:1", "the unmeasurable slice sorted below rows that are fully accounted for");
 });
 
-test("#1615 the hit total states its own incompleteness", () => {
+test("the hit total states its own incompleteness", () => {
   const t = traceRecordCarry({ crowds: band([UNKNOWN, ZERO, CROWD]).crowds }).totals;
   // 4821 - 600 = 4221 from the real crowd; 0 from the counted zero; the unknown adds NOTHING and
   // says so, rather than contributing a silent 0 that makes the sum look complete.
@@ -134,7 +134,7 @@ test("#1615 the hit total states its own incompleteness", () => {
   assert.equal(t.untraceable_slices, 3);
 });
 
-test("#1615 the prose does not print a count the register never gave", () => {
+test("the prose does not print a count the register never gave", () => {
   const { md } = buildBandShape(band([UNKNOWN, ZERO, CROWD]), { targets: ["ZEPHYR"] });
   const lines = md.split("\n").filter((l) => l.includes(UNKNOWN.query));
   assert.ok(lines.length, "the uncountable slice is absent from the mirror entirely");

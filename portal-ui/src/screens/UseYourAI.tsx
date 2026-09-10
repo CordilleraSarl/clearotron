@@ -44,7 +44,7 @@
 //
 // ── AN UNSERVED ROW DOES NOT RENDER FOR A CLIENT AT ALL ──────────────────────────────────────────
 //
-// Owner ruling: not as a button, not as a sentence. That is what retires defect 1 — the operator-shaped
+// Ruling: not as a button, not as a sentence. That is what retires defect 1 — the operator-shaped
 // wording stays correct for an operator, and a client never reaches it because a client never sees the
 // row. The one honest deployment-level absence survives: when nothing at all is served, the page says so
 // once, in words, and offers no control. An absence that names nobody reads as breakage.
@@ -296,7 +296,7 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
         <ul>
           {WHAT_YOU_CAN_DO.map((line) => <li key={line}>{line}</li>)}
         </ul>
-        {/* THE BOUNDARY PARAGRAPH IS CUT (owner ruling — of the three paragraphs he would not read, it
+        {/* THE BOUNDARY PARAGRAPH IS CUT (ruling — of the three paragraphs he would not read, it
             was the one he had never approved). Its job, saying what this reaches, survives as the bolded
             half of one sentence. */}
         <p className="ai-can-foot">

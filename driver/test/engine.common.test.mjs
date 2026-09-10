@@ -167,7 +167,7 @@ test("WRITE_DISCIPLINE carries the repair exception, and the two engine copies n
 // that emits nothing at all — a startup wedge, exactly this case — would then never stall-kill and would
 // run to the hard wall instead. On a stage with stallSec 1100 / timeoutSec 2250 that doubles the burn on
 // a real wedge to save a rare test red. The second arm below is that guarantee, kept.
-test("#1692 a child slow to produce its FIRST byte is not killed as a stall", async () => {
+test("a child slow to produce its FIRST byte is not killed as a stall", async () => {
   // First output at ~700ms against a 0.3s stall window. On the pre-fix clock the deadline ran from spawn,
   // so this died at 300ms having never had the chance to speak.
   const r = await runNode(`setTimeout(()=>{process.stdout.write('{"type":"done"}');process.exit(0)},700)`, { stallSec: 0.3 });
@@ -177,7 +177,7 @@ test("#1692 a child slow to produce its FIRST byte is not killed as a stall", as
   assert.deepEqual(r.lines, ['{"type":"done"}']);
 });
 
-test("#1692 a child that NEVER speaks still stall-kills — the grace bounds startup, it does not remove the kill", async () => {
+test("a child that NEVER speaks still stall-kills — the grace bounds startup, it does not remove the kill", async () => {
   // The guarantee that makes the grace safe. No output on either stream, ever.
   const r = await runNode(`setInterval(()=>{},1000)`, { stallSec: 0.3 });
   assert.equal(r.killed, true, "a child that emitted nothing at all was allowed to run — the wedge kill is gone");
@@ -185,7 +185,7 @@ test("#1692 a child that NEVER speaks still stall-kills — the grace bounds sta
   assert.equal(r.hardWall, false);
 });
 
-test("#1692 the grace ends on the first byte of EITHER stream, not on liveness-counting output", async () => {
+test("the grace ends on the first byte of EITHER stream, not on liveness-counting output", async () => {
   // A stderr-only child with stdout-only liveness must still stall-kill inside its own lifetime. If the
   // grace waited for a LIVENESS byte it would not, because stderr never resets this child's clock — and
   // the claude-parity arm above would start passing for the wrong reason.
@@ -219,7 +219,7 @@ const lateSpeaker = (quietMs, endMs) =>
   `setTimeout(()=>{const i=setInterval(()=>process.stdout.write('{"t":"tick"}\\n'),200);`
   + `setTimeout(()=>{clearInterval(i);process.stdout.write('{"type":"done"}');process.exit(0)},${endMs - quietMs})},${quietMs})`;
 
-test("#1752 a slow spawn is not charged to the hard wall", async () => {
+test("a slow spawn is not charged to the hard wall", async () => {
   // Quiet until 1000ms, then alive until 2500ms. Measured from spawn, the ceiling expires at 2000ms with
   // the child mid-heartbeat and the run dies having been given 1000ms of actual turn. Measured from the
   // first byte, it survives to its own exit.
@@ -254,7 +254,7 @@ test("#1752 a slow spawn is not charged to the hard wall", async () => {
   assert.deepEqual(r.lines.at(-1), '{"type":"done"}', "the child did not reach its own ending");
 });
 
-test("#1752 the hard wall still fires, and it is recorded as a hard wall rather than a stall", async () => {
+test("the hard wall still fires, and it is recorded as a hard wall rather than a stall", async () => {
   // The guarantee that keeps the arm above honest. A child speaking from the first moment and never
   // stopping must die at the ceiling — moving the t0 relocates the wall, it does not remove it.
   const r = await withHardPin("700", () => runNode(
@@ -265,7 +265,7 @@ test("#1752 the hard wall still fires, and it is recorded as a hard wall rather 
   assert.equal(r.hardWall, true);
 });
 
-test("#1752 CLEAROTRON_HARD_MS is a pin, never a way to switch the wall off", async () => {
+test("CLEAROTRON_HARD_MS is a pin, never a way to switch the wall off", async () => {
   // The fail-safe direction on the override itself, in both unusable shapes. A non-positive or
   // unparseable value falls through to the derivation; reading either as "a ceiling of zero" would kill
   // every turn at the first watchdog tick, and reading it as "no ceiling" would remove the last backstop

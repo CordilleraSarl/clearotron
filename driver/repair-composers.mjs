@@ -165,7 +165,7 @@ export const REPAIR_COMPOSERS = [
         `If applying a flag genuinely REQUIRES changing a finding outside that list — a knock-on the reviewer did not see — make the change and say which one and why in the "corrections" note. A silent edit outside the scope is the one thing this instruction forbids; a reasoned one is not.`,
       ) : "";
       return lines(
-        // — OWNER RULING 2026-08-09: "add caveat" is DELETED, not softened. A repair has exactly
+        // — RULING 2026-08-09: "add caveat" is DELETED, not softened. A repair has exactly
         // four moves and there is no fifth. The standing outward-language rule governs the REPAIR path
         // exactly as it governs a first draft, and this instruction was the one place the engine invited
         // a hedge into a deliverable. It fired on 4 of 4 delivered clearances in the 2026-08-09 round.

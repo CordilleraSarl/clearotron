@@ -87,7 +87,7 @@ function completeHalfRun(t, half = "a") {
 
 // ── The defect itself ──────────────────────────────────────────────────────────────────────────────
 
-test("#554 R5's shape: a canonical findings file with a COMPLETE grid is not vetoed by boundary prose", (t) => {
+test("R5's shape: a canonical findings file with a COMPLETE grid is not vetoed by boundary prose", (t) => {
   const { path } = completeCanonicalRun(t);
   const doc = findingsDoc(R5_BOUNDARY_PROSE);
   const v = validators.commonLaw(path, doc);
@@ -95,14 +95,14 @@ test("#554 R5's shape: a canonical findings file with a COMPLETE grid is not vet
     "the grid ran and the ledger proves it — a sentence about coverage BOUNDARIES cannot unmake that");
 });
 
-test("#554 R5's actual seat: the same file as a grid HALF passes too — this is where R5 died", (t) => {
+test("R5's actual seat: the same file as a grid HALF passes too — this is where R5 died", (t) => {
   const { path } = completeHalfRun(t, "a");
   const v = validators.commonLawHalf(path, findingsDoc(R5_BOUNDARY_PROSE));
   assert.deepEqual(v, { ok: true, reason: "machine-receipts" },
     "half:a is the seat that failed on R5 — with complete receipts its boundary prose must pass");
 });
 
-test("#554 the meaning seat is covered by the same gate", (t) => {
+test("the meaning seat is covered by the same gate", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "veto-554-m-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   mkdirSync(driverDir(dir), { recursive: true });
@@ -123,7 +123,7 @@ test("#554 the meaning seat is covered by the same gate", (t) => {
 
 // ── What must not regress ──────────────────────────────────────────────────────────────────────────
 
-test("#554 the 2026-05-23 hollow-report loophole stays closed — no ledger, so the veto still fires", (t) => {
+test("the 2026-05-23 hollow-report loophole stays closed — no ledger, so the veto still fires", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "veto-554-hollow-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const path = join(dir, "common-law-findings.md");
@@ -135,7 +135,7 @@ test("#554 the 2026-05-23 hollow-report loophole stays closed — no ledger, so 
     + "so the ladder hint and the repeats classifier are unchanged");
 });
 
-test("#554 receipts INCOMPLETE + give-up wording still reports declared_unavailable, not the grid token", (t) => {
+test("receipts INCOMPLETE + give-up wording still reports declared_unavailable, not the grid token", (t) => {
   const { dir, path } = completeCanonicalRun(t);
   writeFileSync(join(dir, "common-law-grid.json"), ledger([TERMS[0]]));   // second term vanished
   const v = validators.commonLaw(path, findingsDoc(GIVE_UP_PROSE));
@@ -145,7 +145,7 @@ test("#554 receipts INCOMPLETE + give-up wording still reports declared_unavaila
     + "diagnosis — the ladder's remedy for it is write-NO-file, which grid_join_missing would not reach");
 });
 
-test("#554 an incomplete grid WITHOUT the phrase keeps its own precise failure name", (t) => {
+test("an incomplete grid WITHOUT the phrase keeps its own precise failure name", (t) => {
   const { dir, path } = completeCanonicalRun(t);
   writeFileSync(join(dir, "common-law-grid.json"), ledger([TERMS[0]]));
   const v = validators.commonLaw(path, findingsDoc("Nothing adverse surfaced."));
@@ -154,7 +154,7 @@ test("#554 an incomplete grid WITHOUT the phrase keeps its own precise failure n
     "the gate must not mask a real evidence failure behind the veto's token");
 });
 
-test("#554 a structurally broken half with the phrase still fails, and a complete one never sees it", (t) => {
+test("a structurally broken half with the phrase still fails, and a complete one never sees it", (t) => {
   const { path } = completeHalfRun(t, "b");
   // Structure gone (no negative-results / coverage-ledger / audit-trail sections) + the phrase.
   const broken = "# Common-law findings\n\n## Findings\n" + GIVE_UP_PROSE + "\n" + "x".repeat(200);
@@ -178,7 +178,7 @@ const gappedLedger = () => JSON.stringify({
   gaps: PLATFORMS.map((pl) => `${TERMS[1]} | ${pl} | HTTPError: 503 upstream`),
 });
 
-test("#554 a GAPPED grid does not earn the demotion — the ledger corroborates the file, so it fails", (t) => {
+test("a GAPPED grid does not earn the demotion — the ledger corroborates the file, so it fails", (t) => {
   const { dir, path } = completeCanonicalRun(t);
   writeFileSync(join(dir, "common-law-grid.json"), gappedLedger());
   // The join is satisfied — cells ∪ gaps covers every dictated cell — so the evidence chain returns
@@ -190,7 +190,7 @@ test("#554 a GAPPED grid does not earn the demotion — the ledger corroborates 
     + "ledger agrees, and a corroborated declaration must fail — this is the hollow-report class");
 });
 
-test("#554 the same gapped ledger without the phrase is unchanged — no new failure is invented", (t) => {
+test("the same gapped ledger without the phrase is unchanged — no new failure is invented", (t) => {
   const { dir, path } = completeCanonicalRun(t);
   writeFileSync(join(dir, "common-law-grid.json"), gappedLedger());
   assert.deepEqual(validators.commonLaw(path, findingsDoc("Nothing adverse surfaced.")),
@@ -198,7 +198,7 @@ test("#554 the same gapped ledger without the phrase is unchanged — no new fai
     "the gap gate governs the VETO only — it must not become a second, silent coverage floor");
 });
 
-test("#554 zero gaps is the line, and R5's real ledger is on the passing side of it", (t) => {
+test("zero gaps is the line, and R5's real ledger is on the passing side of it", (t) => {
   const { dir, path } = completeCanonicalRun(t);
   // R5's half:a carried 217 cells and 0 gaps. One gap flips the verdict; that is the intended edge.
   writeFileSync(join(dir, "common-law-grid.json"),
@@ -209,7 +209,7 @@ test("#554 zero gaps is the line, and R5's real ledger is on the passing side of
   assert.equal(validators.commonLaw(path, findingsDoc(R5_BOUNDARY_PROSE)).reason, "declared_unavailable");
 });
 
-test("#554 a batched (array) ledger is read for gaps too, not just a single object", (t) => {
+test("a batched (array) ledger is read for gaps too, not just a single object", (t) => {
   const { dir, path } = completeCanonicalRun(t);
   writeFileSync(join(dir, "common-law-grid.json"), JSON.stringify([
     { cells: cells(TERMS[0]), extras: {}, gaps: [] },
@@ -219,7 +219,7 @@ test("#554 a batched (array) ledger is read for gaps too, not just a single obje
     "a gap in the SECOND batch must count — the ledger is a JSON array when the grid is batched");
 });
 
-test("#554 an unparseable ledger never reaches the gate at all — the evidence chain fails first", (t) => {
+test("an unparseable ledger never reaches the gate at all — the evidence chain fails first", (t) => {
   const { dir, path } = completeCanonicalRun(t);
   writeFileSync(join(dir, "common-law-grid.json"), "truncated {");
   const v = validators.commonLaw(path, findingsDoc(GIVE_UP_PROSE));
@@ -239,7 +239,7 @@ test("#554 an unparseable ledger never reaches the gate at all — the evidence 
 
 // ── Driver-bug tokens are never masked ─────────────────────────────────────────────────────────────
 
-test("#554 half_path_unrecognized survives the gate — a driver bug is not a write-NO-file remedy", (t) => {
+test("half_path_unrecognized survives the gate — a driver bug is not a write-NO-file remedy", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "veto-554-path-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   // A path commonLawHalf does not own, plus the give-up phrase. Pre- the path guard returned first.
@@ -250,7 +250,7 @@ test("#554 half_path_unrecognized survives the gate — a driver bug is not a wr
 
 // ── The discriminator is `machine-receipts`, not `ok` ──────────────────────────────────────────────
 
-test("#554 the legacy prose path does NOT license the veto's demotion", (t) => {
+test("the legacy prose path does NOT license the veto's demotion", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "veto-554-legacy-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const path = join(dir, "common-law-findings.md");

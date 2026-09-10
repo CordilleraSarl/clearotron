@@ -64,7 +64,7 @@ import { topLevelBails, discoveredLoops } from "../../shared/vacuous-pass.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-test("#1010 ONE RULE for what an assert site is — the two censuses cannot disagree about what they count", () => {
+test("ONE RULE for what an assert site is — the two censuses cannot disagree about what they count", () => {
   // If these two ever answer differently, the coverage census is asking about lines the text census
   // never counted, and a growth in one would be invisible to the other.
   const src = "assert.ok(1);\nassert.equal(2, 3); assert.ok(4);\n// assert.ok(5)\n  * assert.ok(6)\n";
@@ -74,7 +74,7 @@ test("#1010 ONE RULE for what an assert site is — the two censuses cannot disa
   assert.equal(assertSiteLines("// assert.ok(1)\n").length, 0, "a comment is not an assert site");
 });
 
-test("#1010 END TO END — a GATED arm is caught, and its ungated neighbour is not", { timeout: 120_000 }, () => {
+test("END TO END — a GATED arm is caught, and its ungated neighbour is not", { timeout: 120_000 }, () => {
   const dir = mkdtempSync(join(tmpdir(), "unexec-"));
   try {
     // Both arms pass. Both carry the same assert. Only one of them ever runs one.
@@ -116,7 +116,7 @@ test("#1010 END TO END — a GATED arm is caught, and its ungated neighbour is n
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1010 THE SHAPE NO TEXTUAL GUARD CATCHES — an assert inside a loop that never turns", { timeout: 120_000 }, () => {
+test("THE SHAPE NO TEXTUAL GUARD CATCHES — an assert inside a loop that never turns", { timeout: 120_000 }, () => {
   // The argument for this instrument existing beside the two that already read the text. If either of
   // those ever grows to catch this shape, this arm fails on its first two assertions and says so — which
   // is the right outcome, because then the cheap guard covers it and this one is defence in depth.
@@ -167,7 +167,7 @@ test("#1010 THE SHAPE NO TEXTUAL GUARD CATCHES — an assert inside a loop that 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1010 an lcov from ANOTHER TREE is unknown, never a finding and never a pass", () => {
+test("an lcov from ANOTHER TREE is unknown, never a finding and never a pass", () => {
   const dir = mkdtempSync(join(tmpdir(), "unexec-stale-"));
   try {
     const file = join(dir, "moved.test.mjs");
@@ -182,7 +182,7 @@ test("#1010 an lcov from ANOTHER TREE is unknown, never a finding and never a pa
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1010 the committed baseline is real, and it is a ceiling rather than a defect list", () => {
+test("the committed baseline is real, and it is a ceiling rather than a defect list", () => {
   const path = join(ROOT, "driver", "unexecuted-asserts.json");
   assert.ok(existsSync(path), "the baseline is gone — `--check` has nothing to compare against and passes vacuously");
   const census = JSON.parse(readFileSync(path, "utf8"));

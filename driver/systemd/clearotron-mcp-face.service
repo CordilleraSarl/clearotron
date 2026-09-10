@@ -1,6 +1,6 @@
 # GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific value lives here. See
 # clearotron-portal.service for why this unit exists and why it takes an EnvironmentFile rather than
-# explicit Environment= lines (owner ruling 2026-08-26).
+# explicit Environment= lines (ruling 2026-08-26).
 #
 # This is the engine door the portal's Start button calls over real MCP. It is the OTHER of the two
 # children bin/start.mjs supervises, and the other one that had no unit.

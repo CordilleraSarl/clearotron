@@ -40,7 +40,7 @@ const DIFFERENT_OWNERS = [
 
 // ── 1. THE PAIRING ───────────────────────────────────────────────────────────────────────────────────
 
-test("#450 the lawyer's trailing jurisdiction annotation is not part of the proprietor's name", () => {
+test("the lawyer's trailing jurisdiction annotation is not part of the proprietor's name", () => {
   assert.equal(ownerKey("Veltrin Genetics S.A. (BX)"), ownerKey({ name: "Veltrin Genetics S.A." }));
   assert.equal(ownersMatch(GOLD.owner, SURFACED.owner), true);
   // Three of R2's nine entries carry the annotation and six do not — which is what makes it a
@@ -49,25 +49,25 @@ test("#450 the lawyer's trailing jurisdiction annotation is not part of the prop
   assert.equal(ownersMatch("Veltrin Scientific, LLC (US)", { name: "Veltrin Scientific, LLC" }), true);
 });
 
-test("#450 the fold is ONE trailing group — it is not a general parenthesis strip", () => {
+test("the fold is ONE trailing group — it is not a general parenthesis strip", () => {
   // A parenthetical INSIDE a name is part of the name and stays.
   assert.notEqual(ownerKey("Acme (Holdings) International"), ownerKey("Acme International"));
   // And the false-owner-match this module's own doc block is written against is untouched.
   assert.equal(ownersMatch("Shanghai Redwood Network Technology", "Shanghai Bluestone Network Technology"), false);
 });
 
-test("#450 owner identity forces the comparison — the reference mark CONTAINED in the surfaced one", () => {
+test("owner identity forces the comparison — the reference mark CONTAINED in the surfaced one", () => {
   assert.equal(matchesReference(GOLD.mark, SURFACED.mark, { sameOwner: true }), "contained");
   // Both directions: under one proprietor the direction carries no information.
   assert.equal(matchesReference(SURFACED.mark, GOLD.mark, { sameOwner: true }), "contained");
 });
 
-test("#450 WITHOUT the owner, containment does not fire — the owner IS the gate", () => {
+test("WITHOUT the owner, containment does not fire — the owner IS the gate", () => {
   assert.equal(matchesReference(GOLD.mark, SURFACED.mark), null);
   assert.equal(matchesReference(GOLD.mark, SURFACED.mark, { sameOwner: false }), null);
 });
 
-test("#450 containment is over WHOLE WORDS — VELTRIN never reaches inside VELTRINSOFT", () => {
+test("containment is over WHOLE WORDS — VELTRIN never reaches inside VELTRINSOFT", () => {
   // Even if an owner match were somehow established, a character-substring rule would be wrong here.
   assert.equal(matchesReference("VELTRIN", "veltrinsoft", { sameOwner: true }), null);
   assert.equal(matchesReference("VELTRIN", "VELTRIN GENETICS", { sameOwner: true }), "contained");
@@ -75,7 +75,7 @@ test("#450 containment is over WHOLE WORDS — VELTRIN never reaches inside VELT
   assert.equal(matchesReference("星光", "VELTRIN GENETICS", { sameOwner: true }), null);
 });
 
-test("#450 the run scores 7 of 9, and the five same-token different-owner marks stay noise", () => {
+test("the run scores 7 of 9, and the five same-token different-owner marks stay noise", () => {
   const reference = [GOLD,
     { mark: "VELTRIN SCIENTIFIC", owner: "Veltrin Scientific, LLC (US)", classes: [5, 42, 44], jurisdictions: ["US"] },
     { mark: "DELFITY", owner: "Novartis", classes: [5], jurisdictions: ["EU"] }];
@@ -94,7 +94,7 @@ test("#450 the run scores 7 of 9, and the five same-token different-owner marks 
   assert.deepEqual(b.collisions, [], "and nothing contradicts anything");
 });
 
-test("#450 axis B can see the finding axis A matched — one record, one answer", () => {
+test("axis B can see the finding axis A matched — one record, one answer", () => {
   const rows = scoreField({ reference: [GOLD], findings: [SURFACED] });
   assert.equal(rows.length, 1);
   assert.notEqual(rows[0].state, "not-surfaced",
@@ -103,7 +103,7 @@ test("#450 axis B can see the finding axis A matched — one record, one answer"
 
 // ── 2. THE CLASS — the assertion over the scorer's own output ────────────────────────────────────────
 
-test("#450 a surfaced record sharing an owner with an unfound entry is REPORTED, never silently split", () => {
+test("a surfaced record sharing an owner with an unfound entry is REPORTED, never silently split", () => {
   // The pre-fix state, reconstructed: same owner, and a mark pairing the matcher cannot join. This is
   // the shape that must never again reach a reader as two independent facts.
   //
@@ -134,7 +134,7 @@ test("#450 a surfaced record sharing an owner with an unfound entry is REPORTED,
   assert.match(b.ownerEchoes[0].why, /not a contradiction/);
 });
 
-test("#450 a collision now requires the MATCHER to have failed, and that is worth stating", () => {
+test("a collision now requires the MATCHER to have failed, and that is worth stating", () => {
   // Measured, not assumed: `matchesReference("VELTRIN GENETICS", "DG VELTRIN GENETICS", {sameOwner:true})`
   // returns "contained", so the finding is scored `found` and never reaches the noise bucket. The
   // contained pair — the incident's own shape — CANNOT be built through scoreRecall any more.
@@ -151,7 +151,7 @@ test("#450 a collision now requires the MATCHER to have failed, and that is wort
   assert.deepEqual(b.ownerEchoes, [], "nor an advisory — the record was claimed, not split");
 });
 
-test("#450 the collision report is a RECORD, not a verdict — it never promotes anything itself", () => {
+test("the collision report is a RECORD, not a verdict — it never promotes anything itself", () => {
   const reference = [{ ...GOLD, mark: "ZORVIL GENETICS" }];
   const b = scoreRecall({ reference, findings: [SURFACED],
     scopeClasses: ["5", "42", "44"], scopeTerritories: ["CH", "EU", "US"] });

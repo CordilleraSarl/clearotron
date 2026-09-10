@@ -75,7 +75,7 @@ function links() {
   return out;
 }
 
-test("#1457 every sibling a read SKILL.md points at is measured, or named as not-load", () => {
+test("every sibling a read SKILL.md points at is measured, or named as not-load", () => {
   const known = declared();
   const gaps = links().filter((r) => !r.cross && !known.has(r.path) && !NOT_INSTRUCTION_LOAD[`${r.skill}/${r.link}`]);
   assert.deepEqual(gaps.map((r) => `${r.skill}/${r.link} (${r.bytes} B)`), [],
@@ -86,7 +86,7 @@ test("#1457 every sibling a read SKILL.md points at is measured, or named as not
     + "is how 101,077 B went unmeasured until #1457.");
 });
 
-test("#1457 a CROSS-SKILL link is excluded because the other stage measures it — checked, not assumed", () => {
+test("a CROSS-SKILL link is excluded because the other stage measures it — checked, not assumed", () => {
   const known = declared();
   const cross = links().filter((r) => r.cross);
   assert.ok(cross.length > 0, "no cross-skill link left — this arm is measuring nothing, so re-read the exclusion");
@@ -97,7 +97,7 @@ test("#1457 a CROSS-SKILL link is excluded because the other stage measures it �
       + "either the owning stage should declare it, or this one should.");
 });
 
-test("#1457 the companion list names real files, and no companion is also a declared read", () => {
+test("the companion list names real files, and no companion is also a declared read", () => {
   for (const [skill, companions] of Object.entries(SKILL_COMPANIONS)) {
     assert.ok(existsSync(join(SKILLS, skill, "SKILL.md")), `SKILL_COMPANIONS names ${skill}, which ships no SKILL.md`);
     for (const c of companions)
@@ -114,7 +114,7 @@ test("#1457 the companion list names real files, and no companion is also a decl
   }
 });
 
-test("#1457 THE COMPANIONS REACH NO PROMPT — they are measured and never emitted", () => {
+test("THE COMPANIONS REACH NO PROMPT — they are measured and never emitted", () => {
   // The whole reason for a second list. `reads()` composes "First, read and follow exactly: …" from
   // skillReads and `composeFollowup` composes "this stage is held to …" from resolveSkillReads; a
   // companion appearing in either would be the doctrine change this design exists to avoid.

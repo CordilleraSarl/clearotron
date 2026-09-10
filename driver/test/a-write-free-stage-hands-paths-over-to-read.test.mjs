@@ -50,7 +50,7 @@ const render = (name) => {
   return Array.isArray(msg) ? msg.join("\n") : String(msg ?? "");
 };
 
-test("2084 EVERY write-free stage's rendered dispatch is silent — reads are not disagreements", () => {
+test("EVERY write-free stage's rendered dispatch is silent — reads are not disagreements", () => {
   assert.ok(SEAT_WRITE_FREE_STAGES.length >= 10, "the write-free census shrank below plausibility — is the derivation broken?");
   for (const name of SEAT_WRITE_FREE_STAGES) {
     const text = render(name);
@@ -62,14 +62,14 @@ test("2084 EVERY write-free stage's rendered dispatch is silent — reads are no
   }
 });
 
-test("2084 the loud direction is REAL: a write order under seatWrites:false still fires", () => {
+test("the loud direction is REAL: a write order under seatWrites:false still fires", () => {
   const g = runDirGrant({ runDir: RUN, dispatch: `Save your findings as JSON to ${RUN}/findings.json when done.`, seatWrites: false });
   assert.ok(g.note, "the detector went silent on a literal write order — the census above now proves nothing");
   assert.match(g.note, /ORDERED to write/);
   assert.ok(g.grant, "the grant must survive the disagreement — dispatch wins, fail-safe");
 });
 
-test("2084 the detector's edges: read hand-over silent, negated order silent, verb-after-path loud", () => {
+test("the detector's edges: read hand-over silent, negated order silent, verb-after-path loud", () => {
   assert.equal(dispatchOrdersRunDirWrite(`See ${RUN}/findings.json for context.`, RUN), false,
     "a path handed over to READ tripped the write detector — the seven-false-alarms shape is back");
   assert.equal(dispatchOrdersRunDirWrite(`Do NOT save ${RUN}/common-law-grid.json yourself — the tool writes it.`, RUN), false,
@@ -80,7 +80,7 @@ test("2084 the detector's edges: read hand-over silent, negated order silent, ve
     "a write verb with NO run-dir path fired — the detector must key on both");
 });
 
-test("2084 synthesis speaks ONE transport: the typed order stands, the file order is gone", () => {
+test("synthesis speaks ONE transport: the typed order stands, the file order is gone", () => {
   const text = render("synthesis");
   assert.match(text, /record_synthesis/, "the typed order left the dispatch — that is a different regression");
   assert.match(text, /NAMES NO FILE FOR YOU TO WRITE/, "the no-file sentence is gone — the contract lost its statement");

@@ -42,7 +42,7 @@ function fixture() {
   return { root, doors, runs, writeDoor, makeRun, cleanup: () => rmSync(root, { recursive: true, force: true }) };
 }
 
-test("#922 only rounds that are NOT SETTLED are listed — a SETTLED round is done", () => {
+test("only rounds that are NOT SETTLED are listed — a SETTLED round is done", () => {
   // AMENDED 2026-08-14. This asserted "a READ round is done" and used `reportedState: "PASS"` as the
   // closed sentinel — neither is the rule. The harness closes a round on `reportedState === "settled"`
   // (previousRoundNotice in e2e.mjs:2256) and "PASS" is not that word, so under the corrected rule
@@ -57,7 +57,7 @@ test("#922 only rounds that are NOT SETTLED are listed — a SETTLED round is do
   } finally { f.cleanup(); }
 });
 
-test("#922 ARCHIVED RUNS ARE FOUND — calling one purged would license deleting it", () => {
+test("ARCHIVED RUNS ARE FOUND — calling one purged would license deleting it", () => {
   // The error that would matter most. Finished runs move two directory levels deeper; a fixed-depth
   // walk reports them as purged, and this script's whole purpose is to say which rounds are still
   // recoverable BEFORE a purge decision.
@@ -72,7 +72,7 @@ test("#922 ARCHIVED RUNS ARE FOUND — calling one purged would license deleting
   } finally { f.cleanup(); }
 });
 
-test("#922 a purged round is reported as UNRECOVERABLE, never dropped", () => {
+test("a purged round is reported as UNRECOVERABLE, never dropped", () => {
   // An absence that is never named reads as though it never happened, which is exactly how these went
   // missing in the first place.
   const f = fixture();
@@ -85,7 +85,7 @@ test("#922 a purged round is reported as UNRECOVERABLE, never dropped", () => {
   } finally { f.cleanup(); }
 });
 
-test("#922 a round with no token is UNLOCATABLE — a third state, not a purge", () => {
+test("a round with no token is UNLOCATABLE — a third state, not a purge", () => {
   const f = fixture();
   try {
     f.writeDoor("R4", [round(null), round("")]);
@@ -95,7 +95,7 @@ test("#922 a round with no token is UNLOCATABLE — a third state, not a purge",
   } finally { f.cleanup(); }
 });
 
-test("#922 the token locates a run wherever the prefix convention puts it", () => {
+test("the token locates a run wherever the prefix convention puts it", () => {
   const names = new Map([["tmpe2er52a41a22c-meridian-thistle", "/runs/tmpe2er52a41a22c-meridian-thistle"]]);
   assert.ok(locateRun("2a41a22c", names));
   assert.equal(locateRun("deadbeef", names), null);
@@ -103,13 +103,13 @@ test("#922 the token locates a run wherever the prefix convention puts it", () =
   assert.equal(locateRun("", names), null, "an empty token must not match every directory");
 });
 
-test("#922 age is measured, and an unmeasurable age is null rather than zero", () => {
+test("age is measured, and an unmeasurable age is null rather than zero", () => {
   assert.equal(Math.round(ageHours("2026-08-13T12:00:00.000Z", NOW)), 24);
   assert.equal(ageHours(null, NOW), null, "no stamp is not age zero — zero would read as brand new");
   assert.equal(ageHours("not a date", NOW), null);
 });
 
-test("#922 an unmeasurable age counts as STALE — the safe direction for a purge gate", () => {
+test("an unmeasurable age counts as STALE — the safe direction for a purge gate", () => {
   // A round whose age cannot be established must not slip under the staleness bar: this number gates a
   // deletion, so the unknown case has to fall on the side that keeps the evidence.
   const f = fixture();
@@ -122,7 +122,7 @@ test("#922 an unmeasurable age counts as STALE — the safe direction for a purg
   } finally { f.cleanup(); }
 });
 
-test("#922 the summary counts each state once and they add up", () => {
+test("the summary counts each state once and they add up", () => {
   const f = fixture();
   try {
     f.writeDoor("R6", [round("1111aaaa"), round("2222bbbb"), round(null)]);
@@ -138,7 +138,7 @@ test("#922 the summary counts each state once and they add up", () => {
   } finally { f.cleanup(); }
 });
 
-test("#922 a damaged receipt is skipped, never fatal — the others still report", () => {
+test("a damaged receipt is skipped, never fatal — the others still report", () => {
   const f = fixture();
   try {
     writeFileSync(join(f.doors, "_e2e-doors-BAD.json"), "{not json");
@@ -148,7 +148,7 @@ test("#922 a damaged receipt is skipped, never fatal — the others still report
   } finally { f.cleanup(); }
 });
 
-test("#922 AN ABSENCE IS A FINDING on both sides", () => {
+test("AN ABSENCE IS A FINDING on both sides", () => {
   const f = fixture();
   try {
     assert.deepEqual(readDoors(join(f.root, "nope")), [], "no receipts ⇒ nothing, and the caller exits 2");
@@ -169,7 +169,7 @@ test("#922 AN ABSENCE IS A FINDING on both sides", () => {
 // would have yielded 12, and reported completed losses as recoverable — the one direction this script
 // must never err in, because "recoverable" is what licenses waiting instead of acting.
 
-test("#922 A SHELL IS NOT READABLE — the defect, stated as a property", () => {
+test("A SHELL IS NOT READABLE — the defect, stated as a property", () => {
   const doors = [{ scenario: "R2", rounds: [
     { token: "aaaa1111", startedAt: "2026-08-13T00:00:00Z" },
     { token: "bbbb2222", startedAt: "2026-08-13T00:00:00Z" },
@@ -179,7 +179,7 @@ test("#922 A SHELL IS NOT READABLE — the defect, stated as a property", () => 
   assert.deepEqual(rows.map((r) => r.state), ["readable", "shell"]);
 });
 
-test("#922 SHELL AND PURGED STAY DISTINCT — they are different events", () => {
+test("SHELL AND PURGED STAY DISTINCT — they are different events", () => {
   // A purge removed a run; something else removed a run's CONTENTS and left its name behind. Folding
   // them would lose the evidence that the second thing happens at all.
   const doors = [{ scenario: "R2", rounds: [
@@ -194,7 +194,7 @@ test("#922 SHELL AND PURGED STAY DISTINCT — they are different events", () => 
   assert.deepEqual(sum, { unread: 3, readable: 0, stillborn: 0, shell: 1, purged: 1, unlocatable: 1, stale: 0 });
 });
 
-test("#922 STALE COUNTS ONLY WHAT CAN STILL BE READ", () => {
+test("STALE COUNTS ONLY WHAT CAN STILL BE READ", () => {
   // Counting a shell as stale keeps budgeting a read that cannot happen — the defect one level up from
   // the one this fixes.
   const doors = [{ scenario: "R2", rounds: [{ token: "bbbb2222", startedAt: "2020-01-01T00:00:00Z" }] }];
@@ -202,7 +202,7 @@ test("#922 STALE COUNTS ONLY WHAT CAN STILL BE READ", () => {
   assert.equal(summarise(rows, 24).stale, 0, "ancient, and still not something anyone can read");
 });
 
-test("#922 the probe answers the question the name promises", () => {
+test("the probe answers the question the name promises", () => {
   // runStateProbe is the filesystem half. `status.json` is what `e2e.mjs report` reads, and that tool
   // has always disagreed with this script correctly — this is that agreement, made structural.
   const dir = mkdtempSync(join(tmpdir(), "shell-"));
@@ -228,7 +228,7 @@ test("#922 the probe answers the question the name promises", () => {
 // launch, which is exactly why the readability test had to become the attempt-row rule: the same
 // definition that already governs attempt counting, reused rather than reinvented.
 
-test("#922 STILLBORN is its own state — a driver finding, not a retention one", () => {
+test("STILLBORN is its own state — a driver finding, not a retention one", () => {
   const dir = mkdtempSync(join(tmpdir(), "stillborn-"));
   try {
     mkdirSync(driverDir(dir), { recursive: true });
@@ -239,7 +239,7 @@ test("#922 STILLBORN is its own state — a driver finding, not a retention one"
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#922 run.jsonl IS EXCLUDED — it is the only file the stillborn run has", () => {
+test("run.jsonl IS EXCLUDED — it is the only file the stillborn run has", () => {
   // Counting it would call the one run that never dispatched readable, which is the whole defect.
   const dir = mkdtempSync(join(tmpdir(), "runjsonl-"));
   try {
@@ -253,7 +253,7 @@ test("#922 run.jsonl IS EXCLUDED — it is the only file the stillborn run has",
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#922 a run WITH work is readable, and an empty directory is still a shell", () => {
+test("a run WITH work is readable, and an empty directory is still a shell", () => {
   const dir = mkdtempSync(join(tmpdir(), "readable-"));
   try {
     mkdirSync(driverDir(dir), { recursive: true });
@@ -266,7 +266,7 @@ test("#922 a run WITH work is readable, and an empty directory is still a shell"
   try { assert.equal(runStateProbe(empty), "shell"); } finally { rmSync(empty, { recursive: true, force: true }); }
 });
 
-test("#922 the five states still partition the population", () => {
+test("the five states still partition the population", () => {
   const doors = [{ scenario: "R2", rounds: [
     { token: "aaaa1111" }, { token: "bbbb2222" }, { token: "cccc3333" }, { token: "dddd4444" }, { token: null },
   ] }];
@@ -286,7 +286,7 @@ test("#922 the five states still partition the population", () => {
 // `reportedState === "settled"`, NEVER on `reportedAt != null`. This lister was the last reader
 // keying on the weaker field.
 
-test("#922 a round READ but NOT SETTLED is still listed", () => {
+test("a round READ but NOT SETTLED is still listed", () => {
   const doors = [{ scenario: "R2", rounds: [
     round("aaaa1111", { reportedAt: "2026-08-13T00:00:00Z", reportedState: "unknown" }),
     round("bbbb2222", { reportedAt: "2026-08-13T00:00:00Z", reportedState: "settled" }),
@@ -298,7 +298,7 @@ test("#922 a round READ but NOT SETTLED is still listed", () => {
     "the settled one drops off; the read-but-unknown one does not");
 });
 
-test("#922 reading a round does not close it — only settling does", () => {
+test("reading a round does not close it — only settling does", () => {
   // The property, stated as the inverse: a stamp alone must never remove a round from the list.
   const stamped = round("aaaa1111", { reportedAt: "2026-08-13T00:00:00Z", reportedState: "in-flight" });
   const rows = classify([{ scenario: "R2", rounds: [stamped] }],
@@ -336,7 +336,7 @@ function plantRealRun(root, matter, dated, { seat = "synthesis", rows = true } =
   return runDir;
 }
 
-test("#1128 THE PROBE IS GIVEN THE MATTER DIR AND MUST STILL FIND THE WORK", () => {
+test("THE PROBE IS GIVEN THE MATTER DIR AND MUST STILL FIND THE WORK", () => {
   // `locateRun` can only ever return the matter directory — the round token appears nowhere else in
   // the tree. So the probe being unable to answer at that level was not an edge case, it was every
   // case: nothing ever classified as readable and `readable: 0` was structural.
@@ -353,7 +353,7 @@ test("#1128 THE PROBE IS GIVEN THE MATTER DIR AND MUST STILL FIND THE WORK", () 
   } finally { f.cleanup(); }
 });
 
-test("#1128 a matter whose run really has NO work is still stillborn, not rescued by the descent", () => {
+test("a matter whose run really has NO work is still stillborn, not rescued by the descent", () => {
   // The other direction, and the one that would matter if this fix over-reached: descending must not
   // turn the 2ms claim-failure specimen into evidence. `run.jsonl` is excluded at both levels.
   const f = fixture();
@@ -365,7 +365,7 @@ test("#1128 a matter whose run really has NO work is still stillborn, not rescue
   } finally { f.cleanup(); }
 });
 
-test("#1128 a matter holding TWO dated runs is readable if EITHER carries work", () => {
+test("a matter holding TWO dated runs is readable if EITHER carries work", () => {
   // A matter can hold a re-run. Stopping at the first child would under-report in exactly the
   // direction the original defect did.
   const f = fixture();
@@ -377,7 +377,7 @@ test("#1128 a matter holding TWO dated runs is readable if EITHER carries work",
   } finally { f.cleanup(); }
 });
 
-test("#1128 END TO END on the REAL probe: readable evidence makes the exit code non-zero", () => {
+test("END TO END on the REAL probe: readable evidence makes the exit code non-zero", () => {
   // The claim in the module's own header is that a purge path can be gated on the exit code. This is
   // that claim, tested through the whole chain — doors → directoryNames → locateRun → runStateProbe →
   // summarise → exit code — with NO injected probe anywhere. It is the test the module never had, and
@@ -396,7 +396,7 @@ test("#1128 END TO END on the REAL probe: readable evidence makes the exit code 
   } finally { f.cleanup(); }
 });
 
-test("#1128 the archived two-level round classifies readable WITHOUT an injected probe", () => {
+test("the archived two-level round classifies readable WITHOUT an injected probe", () => {
   // The blindfold removed from " ARCHIVED RUNS ARE FOUND". Same tree, real probe.
   const f = fixture();
   try {
@@ -409,7 +409,7 @@ test("#1128 the archived two-level round classifies readable WITHOUT an injected
   } finally { f.cleanup(); }
 });
 
-test("#1128 evidenceDirs is one level, never a walk", () => {
+test("evidenceDirs is one level, never a walk", () => {
   // A walk would eventually reach an archive of unrelated runs and report them as this round's
   // evidence — a false POSITIVE, which on a purge gate is the same class of error pointed the other
   // way. Asserted directly so the bound is a decision rather than an accident of the layout.

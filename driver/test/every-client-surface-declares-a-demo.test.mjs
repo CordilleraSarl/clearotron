@@ -36,7 +36,7 @@ const { publishKnockout } = await import("../publish/knockout.mjs");
 // The rendered client surfaces. Anything a reader opens.
 const RENDERED = /\.(html|md)$/i;
 
-// ── THE MACHINE SURFACES ARE EXEMPT BY OWNER RULING, NOT BY OVERSIGHT ────────────────────────────
+// ── THE MACHINE SURFACES ARE EXEMPT BY RULING, NOT BY OVERSIGHT ────────────────────────────
 //
 // asked for a machine-readable demo flag on report-data.json and was CLOSED on the
 // owner's D1 ruling of 2026-09-02, in session: "clearotron demo is demo only, no one will be tricked."
@@ -92,7 +92,7 @@ const CASES = [
 ];
 
 for (const c of CASES) {
-  test(`2134 every RENDERED client surface of a demo ${c.tag} run declares itself`, async () => {
+  test(`every RENDERED client surface of a demo ${c.tag} run declares itself`, async () => {
     const files = await surfacesOf(`demo-${c.tag}`, { demo: true, product: c.product, marks: c.marks });
     const rendered = files.filter((f) => f.rendered);
     // FLOOR. A walk that finds nothing reports clean, and "the publisher wrote no surfaces" must never
@@ -107,7 +107,7 @@ for (const c of CASES) {
   });
 }
 
-test("2134 the CONTROL — a real run gains no banner on any surface, so the arms above can fail", async () => {
+test("the CONTROL — a real run gains no banner on any surface, so the arms above can fail", async () => {
   const files = await surfacesOf("real-clearance", { demo: false, product: "clearance" });
   const rendered = files.filter((f) => f.rendered);
   assert.ok(rendered.length >= 2, "void control — no surfaces to be unmarked");
@@ -117,7 +117,7 @@ test("2134 the CONTROL — a real run gains no banner on any surface, so the arm
     + "real matter is the opposite failure and is worse than the one this issue was raised on.");
 });
 
-test("2134 the machine-surface exemption still names files the publisher actually writes", async () => {
+test("the machine-surface exemption still names files the publisher actually writes", async () => {
   const files = await surfacesOf("exempt-check", { demo: true, product: "clearance" });
   const names = new Set(files.map((f) => f.name));
   const stale = MACHINE_EXEMPT.filter((n) => !names.has(n));

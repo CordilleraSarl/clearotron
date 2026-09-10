@@ -887,7 +887,7 @@ const PROBE = Object.freeze({
   enqueuedBy: { __doorStamped: true }, enqueuedVia: { __doorStamped: true },
 });
 
-test("2049: every field start_run DECLARES it carries is a field buildJob actually READS", () => {
+test("every field start_run DECLARES it carries is a field buildJob actually READS", () => {
   const carried = [...START_RUN_JOB_FIELDS.carries].sort();
   const unprobed = carried.filter((f) => !(f in PROBE));
   assert.deepEqual(unprobed, [],
@@ -911,7 +911,7 @@ test("2049: every field start_run DECLARES it carries is a field buildJob actual
     + `advertises a field it silently cannot deliver — which is exactly what demoRun did.`);
 });
 
-test("2049: demoRun reaches the job on `true` alone — absent stays absent, truthy stays absent", () => {
+test("demoRun reaches the job on `true` alone — absent stays absent, truthy stays absent", () => {
   const base = { markName: "PROBEMARK", forwarder: "probe-forwarder" };
   const build = (extra) => buildJob({ ...base, ...extra }, { scope: { kind: "ops", sub: "probe" } });
 
@@ -955,7 +955,7 @@ test("DECLARED_JOB_FIELDS covers the job shape the schema documents and the MCP 
 
 // ── 224 · THE QUEUE THIS FILE WRITES INTO IS ITS OWN ────────────────────────────────────────────────
 
-test("224 the fixture queue is private to this file, not the run's shared one", () => {
+test("the fixture queue is private to this file, not the run's shared one", () => {
   // The failure this pins is a RED CAUSED BY LOAD wearing a product failure's clothes: a job file
   // missing at a door, because another file's cleanup removed it between this file's write and its
   // read. The path was the only tell.

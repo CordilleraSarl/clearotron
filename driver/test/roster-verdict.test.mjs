@@ -22,14 +22,14 @@ const v = (o) => rosterVerdict({ bundledDemos: DEMOS, ...o });
 
 // ── the regression this issue exists for ─────────────────────────────────────────────────────────────
 
-test("#327: a four-bundle store on a test box PASSES — it must not read as leaked client config", () => {
+test("a four-bundle store on a test box PASSES — it must not read as leaked client config", () => {
   // The store holds aurora/generic/petcary/zephyr; list_profiles reports the three clients.
   const r = v({ keys: ["aurora", "petcary", "zephyr"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });
   assert.equal(r.state, "pass", `a correctly configured test store must not fail: ${r.message}`);
   assert.match(r.message, /matching the configured store/);
 });
 
-test("#327: the pre-fix behaviour is what would have failed — expectDemos must not blanket-refuse a configured store", () => {
+test("the pre-fix behaviour is what would have failed — expectDemos must not blanket-refuse a configured store", () => {
   // Exactly the state the test instance is in once CLEAROTRON_CUSTOMERS_DIR is set. Before the fix this
   // reported "real client config has reached an instance that must not have it", which was untrue.
   const r = v({ keys: ["aurora", "petcary", "zephyr"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });

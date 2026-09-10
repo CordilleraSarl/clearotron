@@ -585,7 +585,7 @@ export function selectEngine() {
 //      name: an enrolled-token veto is an enumerated check, and a fifth token forgetting to enrol is the
 //      move-blindness this repo has counted seven instances of.
 //
-// What died here with the form path (2026-08-17 owner ruling, delete-not-gate): reading the seat's file
+// What died here with the form path (2026-08-17 ruling, delete-not-gate): reading the seat's file
 // as a SUBMISSION, preserving it, refereeing whose bytes it held (the isDriverOwnBytes machinery) and
 // rewriting the seat-facing copy. The seat writes no file, so there is no submission to read, no bytes
 // to referee, and no seat-facing copy to keep in step. The capture duty moved to the receiver

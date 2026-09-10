@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // lib/audit-view.mjs — the AUDIT CHAIN a client account may interrogate, projected.
 //
-// Owner ruling, 2026-08-27: "I don't see why we don't open it or just give it to clients. Ignore the call
+// Ruling, 2026-08-27: "I don't see why we don't open it or just give it to clients. Ignore the call
 // spend." shared/scope.mjs holds the line that ruling drew and which artifacts it opened; this file is the
 // half that decides what the four STRUCTURED reads hand over — get_run, trace, decision_timeline,
 // get_finding, and list_findings' raw block lists.
@@ -311,7 +311,7 @@ export function accountTimeline(result, { brandName = "The firm" } = {}) {
   };
 }
 
-// ---- WHAT-IF (owner ruling 2026-08-27) --------------------------------------------------------------
+// ---- WHAT-IF (ruling 2026-08-27) --------------------------------------------------------------
 //
 // The counterfactual is the second half of the same ruling, and it meets the same two seals. The PLAN
 // prints what the change would cost, drawn from the prior run's telemetry — which is precisely the model

@@ -400,7 +400,7 @@ export function recordDispositions(spec, received, { now = () => new Date().toIS
   try {
     mkdirSync(dirname(accum), { recursive: true });
     // The accumulator in `_driver/` is the ONLY copy. The seat-facing mirror at `dispositions_path`
-    // died with the form path (owner ruling 2026-08-17, delete-not-gate): the seat never reads or
+    // died with the form path (ruling 2026-08-17, delete-not-gate): the seat never reads or
     // writes it, the validator reads the accumulator, and a mirror nothing reads is a second writer
     // waiting to drift. The path itself survives in the spec as the accumulator's name anchor.
     writeFileSync(accum, json);

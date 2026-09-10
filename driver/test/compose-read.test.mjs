@@ -107,7 +107,7 @@ test("READ_SCHEMA: uses ONLY the keywords structured output accepts", () => {
   walk(READ_SCHEMA, "schema");
 });
 
-test("1917 the reader no longer chooses a model, or builds a client — it is handed a turn", async () => {
+test("the reader no longer chooses a model, or builds a client — it is handed a turn", async () => {
   // It used to construct an @anthropic-ai/sdk client from a raw ANTHROPIC_API_KEY and pick the model
   // itself. Both are gone: the model and the billing mode are the ENGINE DOOR's, resolved once where the
   // portal boots, so the button runs on whatever the box is already authenticated as.
@@ -129,7 +129,7 @@ test("1917 the reader no longer chooses a model, or builds a client — it is ha
   assert.match(prompt, /quick check on AQUAPLUS/, "and the brief itself");
 });
 
-test("1917 an engine failure is a NAMED refusal, and the route still answers 502", async () => {
+test("an engine failure is a NAMED refusal, and the route still answers 502", async () => {
   // It used to throw, and portal-service's catch turned that into a 502. The engine door is total — it
   // returns { ok: false, cause } rather than throwing — so the refusal has to carry enough for the route
   // to keep saying 502 rather than 422. 422 would tell the user their brief was unprocessable when the
@@ -203,7 +203,7 @@ test("PROMPT_TERRITORIES mirrors the composer's Where field — pinned by NAME, 
 });
 
 // ── the reader ─────────────────────────────────────────────────────────────────────────────────────
-test("1917 an empty or over-long brief is refused before the engine is touched", async () => {
+test("an empty or over-long brief is refused before the engine is touched", async () => {
   let calls = 0;
   const read = makeComposeReader({ turn: async () => { calls += 1; return { ok: true, text: "{}" }; } });
   assert.equal((await read("   ")).error, "empty");
@@ -211,7 +211,7 @@ test("1917 an empty or over-long brief is refused before the engine is touched",
   assert.equal(calls, 0, "neither spends a token");
 });
 
-test("1917 an unparseable answer is a refusal, not a throw", async () => {
+test("an unparseable answer is a refusal, not a throw", async () => {
   const read = makeComposeReader({ turn: async () => ({ ok: true, text: "{oh no" }) });
   const out = await read("anything");
   assert.equal(out.ok, false);
@@ -229,7 +229,7 @@ test("1917 an unparseable answer is a refusal, not a throw", async () => {
 //
 // A malformed-JSON test alone would never see this. That one was always green.
 
-test("1917 a payload that PARSES but is missing keys fails loudly, and never becomes an empty read", async () => {
+test("a payload that PARSES but is missing keys fails loudly, and never becomes an empty read", async () => {
   const read = makeComposeReader({ turn: async () => ({ ok: true, text: JSON.stringify({ names: ["AQUAPLUS"] }) }) });
   const out = await read("quick check on AQUAPLUS");
   assert.equal(out.ok, false, "it must NOT arrive as a successful read");
@@ -241,7 +241,7 @@ test("1917 a payload that PARSES but is missing keys fails loudly, and never bec
   assert.equal(out.read, undefined, "and no read is handed on at all");
 });
 
-test("1917 a payload with a WRONG-TYPED key is caught too, not coerced", async () => {
+test("a payload with a WRONG-TYPED key is caught too, not coerced", async () => {
   const bad = { ...FULL, classes: "9, 12" };   // a string where the schema says array
   const read = makeComposeReader({ turn: async () => ({ ok: true, text: JSON.stringify(bad) }) });
   const out = await read("x");
@@ -249,7 +249,7 @@ test("1917 a payload with a WRONG-TYPED key is caught too, not coerced", async (
   assert.match(out.cause, /"classes" should be array, got string/);
 });
 
-test("1917 THE CONTROL — a conforming payload still passes, and the check is not just refusing everything", () => {
+test("THE CONTROL — a conforming payload still passes, and the check is not just refusing everything", () => {
   // Three arms above assert a refusal. A validator that rejected every payload would satisfy all three
   // and break the feature completely, which is a worse outcome than the bug being fixed.
   assert.deepEqual(readShapeErrors(FULL), [], "the fixture the happy-path arm uses must be accepted");
@@ -257,14 +257,14 @@ test("1917 THE CONTROL — a conforming payload still passes, and the check is n
     "additionalProperties:false is part of the schema, so a key nobody asked for is a shape error");
 });
 
-test("1917 the JSON survives a chatty turn — a fence or a sentence around it", () => {
+test("the JSON survives a chatty turn — a fence or a sentence around it", () => {
   assert.deepEqual(jsonFromTurnText('```json\n{"a":1}\n```'), { a: 1 });
   assert.deepEqual(jsonFromTurnText('Here is the object:\n{"a":1}\nHope that helps.'), { a: 1 });
   assert.equal(jsonFromTurnText("no object here"), null, "and nothing at all is null, not a throw");
   assert.equal(jsonFromTurnText(""), null);
 });
 
-test("1917 the portal asks the door for SONNET WITH THINKING OFF, never the jx lanes' haiku/low", () => {
+test("the portal asks the door for SONNET WITH THINKING OFF, never the jx lanes' haiku/low", () => {
   // The shared runner defaults to the jx lanes' own tier and thinking, and inheriting them here would
   // break the owner's ruling AND walk into a measured 400: compose-read.mjs records that Haiku 4.5
   // refuses a thinking block outright, so the jx constants would have been a failure on every press.
@@ -285,7 +285,7 @@ test("1917 the portal asks the door for SONNET WITH THINKING OFF, never the jx l
   assert.doesNotMatch(src, /process\.env\.ANTHROPIC_API_KEY/, "and the portal reads no model credential of its own");
 });
 
-test("1917 the disabled sentence stopped promising a switch nobody flipped", () => {
+test("the disabled sentence stopped promising a switch nobody flipped", () => {
   const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
   // ANCHORED ON THE CONSTANT, not on the file. A whole-file scan for the old wording redded on the
   // COMMENT that quotes it while explaining why it went — the same shape as a guard that reads a skip

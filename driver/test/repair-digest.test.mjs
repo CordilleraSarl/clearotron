@@ -225,7 +225,7 @@ const gapRun = (rows) => ({
 const PARK = (extra) => ({ sig: "common-law-half:m|80aa500874e6", stage: "common-law-half:m",
   class: "unknown", lane: "defect", attempt: 1, quantity: 1, ts: IN_WINDOW, ...extra });
 
-test("#849 a park the classifier could not name is COUNTED and NAMED in the digest", () => {
+test("a park the classifier could not name is COUNTED and NAMED in the digest", () => {
   const agg = aggregateFailureRecurrence({
     enumerate: () => [gapRun([PARK({ classSource: "reason-text", quantityToken: "connotation_quote_unbound" })])],
     now: NOW, days: 7,
@@ -241,7 +241,7 @@ test("#849 a park the classifier could not name is COUNTED and NAMED in the dige
   assert.match(text, /budget is unchanged/i, "the line must not imply the ladder behaves differently");
 });
 
-test("#849 a measured park with no gap, and a park predating the fields, are DIFFERENT answers", () => {
+test("a measured park with no gap, and a park predating the fields, are DIFFERENT answers", () => {
   // measured and clean: the throw site stamped the class, so the classifier never guessed
   const clean = aggregateFailureRecurrence({
     enumerate: () => [gapRun([PARK({ classSource: "throw-site", quantityToken: "connotation_quote_unbound" })])],
@@ -260,7 +260,7 @@ test("#849 a measured park with no gap, and a park predating the fields, are DIF
   assert.match(renderFailureRecurrence(old), /Not measured: 1 park in this window/);
 });
 
-test("#849 WIRING (source) — the park row pipeline.mjs WRITES carries the keys this module READS", () => {
+test("WIRING (source) — the park row pipeline.mjs WRITES carries the keys this module READS", () => {
   // A SOURCE ASSERTION, named as one, and it exists because this link fails SILENTLY. The two ends of
   // the fix each have a behavioural test; the middle — pipeline.mjs actually putting these two fields on
   // the recoveryHistory row — has none, because the run-level catch only reaches this line on a real

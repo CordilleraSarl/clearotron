@@ -64,7 +64,7 @@ const open = async (service, url, who) => {
 
 // ── the link we send ─────────────────────────────────────────────────────────────────────────────────
 
-test("289: the delivered report link OPENS for the run's owner", async () => {
+test("the delivered report link OPENS for the run's owner", async () => {
   const { service } = world();
   const url = reportRouteFor(ORIGIN, RUN);
   assert.ok(url, "a link is composed at all");
@@ -76,7 +76,7 @@ test("289: the delivered report link OPENS for the run's owner", async () => {
 
 // THE CONTROL. Without this, an arm showing the new link works cannot tell a fix from a no-op: if the
 // router served both shapes, changing the link would achieve nothing and this file would still be green.
-test("289 control: the RETIRED shape 404s at the application, which is why it had to change", async () => {
+test("control: the RETIRED shape 404s at the application, which is why it had to change", async () => {
   const { service } = world();
   const legacy = `${ORIGIN}/${RUN}/report.html`;
   const r = await open(service, legacy, OWNER);
@@ -86,7 +86,7 @@ test("289 control: the RETIRED shape 404s at the application, which is why it ha
 
 // Ownership is orthogonal to the shape and must stay enforced: fixing a link must not open a run to
 // somebody who does not own it. This is the other half of why the reported 404 was ambiguous.
-test("289: the new shape is still ownership-checked — a foreign account gets nothing", async () => {
+test("the new shape is still ownership-checked — a foreign account gets nothing", async () => {
   const { service } = world();
   const r = await open(service, reportRouteFor(ORIGIN, RUN), FOREIGN);
   // FOREIGN is a real, entitled user of ANOTHER account — not a stranger. A stranger is refused at the
@@ -98,7 +98,7 @@ test("289: the new shape is still ownership-checked — a foreign account gets n
 
 // ── the composer, and the parser that reads it back ──────────────────────────────────────────────────
 
-test("289: no origin configured ⇒ no link at all, on either product", () => {
+test("no origin configured ⇒ no link at all, on either product", () => {
   assert.equal(reportRouteFor(null, RUN), null, "an unset origin yields no link rather than a broken one");
   assert.equal(reportRouteFor("", RUN), null);
   assert.equal(reportRouteFor(ORIGIN, ""), null, "and a run id that is not a clean path segment yields none");
@@ -109,7 +109,7 @@ test("289: no origin configured ⇒ no link at all, on either product", () => {
 // URL is DERIVED from the report URL by parsing the run id out of it. Change the report shape and forget
 // the parser, and the workbook link silently becomes null on every delivery — the exact class of defect
 // this issue is an instance of, reintroduced one field along.
-test("289: the audit link still derives — from the new shape AND from an archived legacy one", () => {
+test("the audit link still derives — from the new shape AND from an archived legacy one", () => {
   const fromNew = auditUrlFor(reportRouteFor(ORIGIN, RUN), `${RUN}-audit.xlsx`);
   assert.equal(fromNew, auditRouteFor(ORIGIN, RUN), "the workbook link survives the new report shape");
   assert.match(fromNew, /\/portal\/report\/.+\/audit\.xlsx$/);
@@ -124,7 +124,7 @@ test("289: the audit link still derives — from the new shape AND from an archi
 
 // The multi-name product already composed a portal route; this pins that it was not disturbed, since it
 // is the reference for what a correct link looks like.
-test("289: the per-name link was already correct and is unchanged", () => {
+test("the per-name link was already correct and is unchanged", () => {
   // Shape only, deliberately. Opening this one needs a multi-document run in the pool, which is a
   // different fixture and a different product's publish path; what this pins is that the composer the
   // multi-name product already used — the reference for a correct link — was not disturbed by the change

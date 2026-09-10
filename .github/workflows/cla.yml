@@ -1,7 +1,7 @@
 # Contributor Licence Agreement — records that a contributor accepted the terms, and blocks the merge
 # until it has.
 #
-# WHY A BOT AND NOT A REGISTER. Owner ruling 2026-09-02: whatever costs him least. A register somebody
+# WHY A BOT AND NOT A REGISTER. Ruling 2026-09-02: whatever costs him least. A register somebody
 # has to remember to update is not a gate — the failure is silent, a change merges with no agreement,
 # and nobody finds out until it matters. The alternative that was considered and rejected is recorded
 # on the issue: a Developer Certificate of Origin is lighter, but it grants no right to distribute a

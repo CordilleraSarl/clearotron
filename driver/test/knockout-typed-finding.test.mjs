@@ -34,7 +34,7 @@ const OK = {
 };
 const f = (over) => validateKnockoutFinding({ ...OK, ...over }, 0, new Set(), { manifest: MANIFEST });
 
-test("#471 — the typed record carries everything the card and the rank need", () => {
+test("the typed record carries everything the card and the rank need", () => {
   const out = f({});
   for (const k of ["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis"]) assert.ok(out[k], `${k} survives`);
   assert.equal(out.band, "High");
@@ -45,7 +45,7 @@ test("#471 — the typed record carries everything the card and the rank need", 
     assert.throws(() => f(dead), /knockout_finding_key_unknown/, `${Object.keys(dead)[0]} must be refused, not tolerated`);
 });
 
-test("#471 — the band is the framework's own word, checked against the run's frozen ladder", () => {
+test("the band is the framework's own word, checked against the run's frozen ladder", () => {
   assert.equal(f({ band: "medium" }).band, "Medium", "normalised to the deck's casing, exactly as a clearance band is");
   assert.throws(() => f({ band: "Blocking" }), /knockout_finding_band_invalid/,
     "a word from a vocabulary this run does not rate in — the dedicated-pair answer, refused by construction");
@@ -56,7 +56,7 @@ test("#471 — the band is the framework's own word, checked against the run's f
   assert.throws(() => validateKnockoutFinding({ ...OK, band: "Level 3" }, 0), /knockout_finding_band_invalid/);
 });
 
-test("#471 — the finding sentence is #469's contract, on the other product", () => {
+test("the finding sentence is #469's contract, on the other product", () => {
   // One rule and one gate across both products: the same lawyer reads a knockout card and a clearance
   // card in the same week, and a sentence contract that held in one place only would be no contract.
   assert.throws(() => f({ net: "VELTRA PHARMA in DE; listed since 2019 → likely to block." }), /knockout_finding_net_chained/);
@@ -67,14 +67,14 @@ test("#471 — the finding sentence is #469's contract, on the other product", (
     "an em-dash is not a chain marker: the gate reads two punctuation marks, never a style");
 });
 
-test("#471 — a card that cannot be opened is the untyped bullet with a shape around it", () => {
+test("a card that cannot be opened is the untyped bullet with a shape around it", () => {
   assert.throws(() => f({ evidence: [] }), /knockout_finding_evidence_missing/);
   assert.throws(() => f({ evidence: "https://example.invalid/x" }), /knockout_finding_evidence_missing/, "a list, not a single url");
   assert.throws(() => f({ evidence: ["  "] }), /knockout_finding_evidence_invalid/);
   assert.equal(f({ evidence: ["https://example.invalid/a", "https://example.invalid/b"] }).evidence.length, 2);
 });
 
-test("#471 — owner is required, and its honest negative is a VALUE, never a guess", () => {
+test("owner is required, and its honest negative is a VALUE, never a guess", () => {
   // A required field that cannot be left out is a field a model will invent, and "never confabulate the
   // owner/seller" is doctrine. So the requirement is that the author say SOMETHING; the stated absence
   // is an accepted answer, the same idiom use_check.source uses.
@@ -82,7 +82,7 @@ test("#471 — owner is required, and its honest negative is a VALUE, never a gu
   assert.ok(f({ owner: "not established on the searched material" }).owner);
 });
 
-test("#471 — the rank comes from the stage's typed band, and an unknown word never leads", () => {
+test("the rank comes from the stage's typed band, and an unknown word never leads", () => {
   const set = [
     { ...OK, ordinal: 1, band: "Manageable" },
     { ...OK, ordinal: 2, band: "Very High" },
@@ -98,7 +98,7 @@ test("#471 — the rank comes from the stage's typed band, and an unknown word n
   assert.deepEqual([...set].sort((a, b) => compareKnockoutBlockingPower(a, b)).map((x) => x.ordinal), [1, 2, 3, 4]);
 });
 
-test("#471 — the list: ordinals unique per mark, a clean mark is [] and never prose", () => {
+test("the list: ordinals unique per mark, a clean mark is [] and never prose", () => {
   assert.deepEqual(validateKnockoutFindings([], { manifest: MANIFEST }), []);
   assert.deepEqual(validateKnockoutFindings(null, { manifest: MANIFEST }), [], "absent ⇒ clean, the same as empty");
   assert.throws(() => validateKnockoutFindings("no conflicts found", { manifest: MANIFEST }), /knockout_findings_invalid/);
@@ -107,14 +107,14 @@ test("#471 — the list: ordinals unique per mark, a clean mark is [] and never 
   assert.throws(() => validateKnockoutFindings([{ ...OK, ordinal: 0 }], { manifest: MANIFEST }), /knockout_finding_ordinal_invalid/);
 });
 
-test("#471 — type stays as the taxonomy it is, and is not a second rating", () => {
+test("type stays as the taxonomy it is, and is not a second rating", () => {
   for (const t of KNOCKOUT_FINDING_TYPES) assert.ok(f({ type: t }).type);
   assert.throws(() => f({ type: "Blocking" }), /knockout_finding_type_invalid/);
   assert.ok(!KNOCKOUT_FINDING_TYPES.some((t) => MANIFEST.bands.some((b) => b.label === t)),
     "the two vocabularies are disjoint by construction — type says what a finding IS, band says how bad");
 });
 
-test("#471 — the throw family is knockout_, NOT findings_, or the repair aims at the wrong file", () => {
+test("the throw family is knockout_, NOT findings_, or the repair aims at the wrong file", () => {
   // gateway.mjs repairSiblingName routes every `/findings?_/` token to findings.json — the CLEARANCE
   // artifact, which a knockout run never writes. A knockout token borrowing that family would order the
   // model to repair a file the stage does not have.
@@ -130,7 +130,7 @@ test("#471 — the throw family is knockout_, NOT findings_, or the repair aims 
 // it exists is the defect the build closed: three surfaces each did their own read of a finding, one of
 // them filtered on a field the typed record does not have, and a mark with conflicts rendered to the
 // client as a clean mark. One projection, and nothing in either shape falls out of it.
-test("#471 — the view projects the typed record whole, and ranks by band", () => {
+test("the view projects the typed record whole, and ranks by band", () => {
   const mark = { name: "IRONWHISK", findings: [
     { ...OK, ordinal: 1, name: "Low rival", band: "Manageable" },
     { ...OK, ordinal: 2, name: "High rival", band: "Very High" },
@@ -148,7 +148,7 @@ test("#471 — the view projects the typed record whole, and ranks by band", () 
 
 // KNOCKOUT PROSE ARM 2026-08-06 — an archived run republishes through the same surfaces, so the view
 // reads the delivered prose row too. Delete this arm with the others, and not before.
-test("#471 — the view reads the ARCHIVED prose row, and records what that shape never carried", () => {
+test("the view reads the ARCHIVED prose row, and records what that shape never carried", () => {
   const mark = { name: "IRONWHISK", findings: [
     { name: "Rival Ltd", type: "Active Business", url: "https://example.invalid/a", description: "A marketplace seller.", impact: "HIGH" },
     { name: "Second", type: "Domain", url: "https://example.invalid/b", description: "A parked domain.", impact: "LOW" },
@@ -165,7 +165,7 @@ test("#471 — the view reads the ARCHIVED prose row, and records what that shap
   assert.deepEqual(knockoutFindingViews(mark).map((v) => v.ordinal), [1, 2]);
 });
 
-test("#471 — the mark's whole finding block has one reference too, and an empty mark has none", () => {
+test("the mark's whole finding block has one reference too, and an empty mark has none", () => {
   assert.equal(knockoutFindingRange({ name: "IRONWHISK", findings: [{ ...OK, ordinal: 1 }] }), "IRONWHISK #1");
   assert.equal(knockoutFindingRange({ name: "IRONWHISK", findings: [{ ...OK, ordinal: 1 }, { ...OK, ordinal: 4 }] }), "IRONWHISK #1–#4");
   assert.equal(knockoutFindingRange({ name: "IRONWHISK", findings: [] }), "", "no findings ⇒ no reference, never a wrong one");

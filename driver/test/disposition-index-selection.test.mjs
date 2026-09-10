@@ -38,14 +38,14 @@ const ruled = (extra) => ({ ruling: "benign", note: "a line of reasoning", ...ex
 
 // ── resolveCandidate ────────────────────────────────────────────────────────────────────────────────
 
-test("#850 M1 a 1-based index resolves to that candidate's id", () => {
+test("M1 a 1-based index resolves to that candidate's id", () => {
   const c = row("Q1", [cand("R-AAA"), cand("R-BBB"), cand("R-CCC")]);
   assert.deepEqual(resolveCandidate({ receipt_index: 2 }, c), { id: "R-BBB", from: "index", state: "bound" });
   assert.equal(resolveCandidate({ receipt_index: "1" }, c).id, "R-AAA", "a digit STRING is an ordinal too");
   assert.equal(resolveCandidate({ receipt_index: 3 }, c).id, "R-CCC");
 });
 
-test("#850 M1 the index is 1-BASED — 0 is not the first candidate, it is out of range", () => {
+test("M1 the index is 1-BASED — 0 is not the first candidate, it is out of range", () => {
   // Off-by-one here would silently mean "the seat ruled on the wrong receipt", which no downstream check
   // can see: every id involved is a real id on a real row.
   const c = row("Q1", [cand("R-AAA"), cand("R-BBB")]);
@@ -53,7 +53,7 @@ test("#850 M1 the index is 1-BASED — 0 is not the first candidate, it is out o
   assert.equal(resolveCandidate({ receipt_index: 3 }, c).state, "out_of_range");
 });
 
-test("#850 M1 a non-integer is not an ordinal — it does not become one", () => {
+test("M1 a non-integer is not an ordinal — it does not become one", () => {
   const c = row("Q1", [cand("R-AAA"), cand("R-BBB")]);
   for (const junk of ["2.5", "2px", " ", "two", "-1", "1e0"]) {
     assert.equal(resolveCandidate({ receipt_index: junk }, c).id, "",
@@ -61,7 +61,7 @@ test("#850 M1 a non-integer is not an ordinal — it does not become one", () =>
   }
 });
 
-test("#850 M1 REPLAY: an archived form carries ids and no indices, and still binds", () => {
+test("M1 REPLAY: an archived form carries ids and no indices, and still binds", () => {
   // Every form written before this change names ids. A resolution that took only indices would re-open
   // every discharged row on every historical run — the whole archive, silently, as "outstanding".
   const c = row("Q1", [cand("R-AAA"), cand("R-BBB")]);
@@ -69,12 +69,12 @@ test("#850 M1 REPLAY: an archived form carries ids and no indices, and still bin
   assert.ok(isRuled(ruled({ receipt_id: "R-BBB" }), c), "and the archived row is still RULED");
 });
 
-test("#850 M1 a bad ordinal does not destroy a good id sitting beside it", () => {
+test("M1 a bad ordinal does not destroy a good id sitting beside it", () => {
   const c = row("Q1", [cand("R-AAA"), cand("R-BBB")]);
   assert.equal(resolveCandidate({ receipt_index: 9, receipt_id: "R-AAA" }, c).from, "id");
 });
 
-test("#850 M1 an id that is not on THIS row's candidate list does not bind", () => {
+test("M1 an id that is not on THIS row's candidate list does not bind", () => {
   // The failure and were both about: a ruling citing a receipt from another row.
   const c = row("Q1", [cand("R-AAA")]);
   const other = row("Q2", [cand("R-ZZZ"), cand("R-YYY")]);
@@ -84,7 +84,7 @@ test("#850 M1 an id that is not on THIS row's candidate list does not bind", () 
     "a foreign id does not bind just because this row happens to hold one candidate");
 });
 
-test("#850 M1 THE PRE-BIND DOES NOT LIVE HERE — an id-less answer binds to nothing, one candidate or ten", () => {
+test("M1 THE PRE-BIND DOES NOT LIVE HERE — an id-less answer binds to nothing, one candidate or ten", () => {
   // The regression the EXISTING suite caught, and the reason this function has no sole-candidate clause.
   // isRuled is what formRowFinder's BOUND search calls, so a sole-candidate fallback lets ONE submitted
   // ruling discharge BOTH of two twins — distinct obligations sharing a folded key, answered once. The
@@ -97,7 +97,7 @@ test("#850 M1 THE PRE-BIND DOES NOT LIVE HERE — an id-less answer binds to not
   assert.ok(!isRuled(ruled({}), two));
 });
 
-test("#850 M1 the pre-bind still WORKS end to end — the seat never selects on a one-candidate row", () => {
+test("M1 the pre-bind still WORKS end to end — the seat never selects on a one-candidate row", () => {
   // The property M1 asked for, proved where it lives rather than where it was convenient: the driver
   // writes the receipt, the union re-asserts it, and a seat sending only ruling+note is ruled.
   const ob = obWith([1]);
@@ -107,12 +107,12 @@ test("#850 M1 the pre-bind still WORKS end to end — the seat never selects on 
   assert.equal(form.rows[0].receipt_id, "R-Q0C0");
 });
 
-test("#850 M1 no candidates at all is its own state, not an absence read as a pass", () => {
+test("M1 no candidates at all is its own state, not an absence read as a pass", () => {
   assert.deepEqual(resolveCandidate({ receipt_index: 1 }, row("Q1", [])),
     { id: "", from: null, state: "no_candidates" });
 });
 
-test("#850 M1 the failure states are DISTINCT — a reader must tell them apart", () => {
+test("M1 the failure states are DISTINCT — a reader must tell them apart", () => {
   const two = row("Q1", [cand("R-AAA"), cand("R-BBB")]);
   const states = new Set([
     resolveCandidate({ receipt_index: 9 }, two).state,
@@ -134,7 +134,7 @@ const obWith = (resultsPerQuery) => ({
   recurrent: [],
 });
 
-test("#850 M1 site 1 — obligationRows pre-fills a one-candidate row and LEAVES a two-candidate row null", () => {
+test("M1 site 1 — obligationRows pre-fills a one-candidate row and LEAVES a two-candidate row null", () => {
   const rows = obligationRows(obWith([1, 2, 3]));
   assert.equal(rows.length, 3);
   assert.equal(rows[0].receipt_id, "R-Q0C0", "one candidate ⇒ pre-filled");
@@ -142,7 +142,7 @@ test("#850 M1 site 1 — obligationRows pre-fills a one-candidate row and LEAVES
   assert.equal(rows[2].receipt_id, null, "three ⇒ likewise");
 });
 
-test("#850 M1 site 1 — a recurrence row is still pre-filled: the general rule subsumes the special case", () => {
+test("M1 site 1 — a recurrence row is still pre-filled: the general rule subsumes the special case", () => {
   const rows = obligationRows({
     floor: 4, queries: [],
     recurrent: [{ id: "R-REC", result: { title: "t", url: "https://example.invalid/r", snippet: "" },
@@ -156,7 +156,7 @@ test("#850 M1 site 1 — a recurrence row is still pre-filled: the general rule 
 
 // ── site 2: seatTouched must not read the driver's own pre-fill as a seat edit ──────────────────────
 
-test("#850 M1 site 2 — the driver's own pre-fill is NOT the seat's work (every pre-filled row still owes its ruling)", async () => {
+test("M1 site 2 — the driver's own pre-fill is NOT the seat's work (every pre-filled row still owes its ruling)", async () => {
   // B retired the whole-file collapse (`form_untouched`) with the form path, but the hazard this arm
   // guards survives it: the driver pre-fills `receipt_id` on every one-candidate row, and a census that
   // read the pre-fill as the seat's work would silently discount rows nobody ruled. Every pre-filled
@@ -191,7 +191,7 @@ test("#850 M1 site 2 — the driver's own pre-fill is NOT the seat's work (every
 
 // ── site 3: the union carries the RESOLVED id, never the ordinal ────────────────────────────────────
 
-test("#850 M1 site 3 — the union writes the resolved ID into the accumulator, never the ordinal", () => {
+test("M1 site 3 — the union writes the resolved ID into the accumulator, never the ordinal", () => {
   const ob = obWith([3]);
   const submitted = [{ row_id: obligationRows(ob)[0].row_id, receipt_index: 2, ruling: "loaded", note: "n" }];
   const { form, ruled: n } = unionDispositionForm(null, submitted, ob);
@@ -201,7 +201,7 @@ test("#850 M1 site 3 — the union writes the resolved ID into the accumulator, 
     "no ordinal survives into a carried row — it means a different receipt on the next regeneration");
 });
 
-test("#850 M1 site 3 — a two-candidate row with no selection is carried UNRULED, not pre-bound", () => {
+test("M1 site 3 — a two-candidate row with no selection is carried UNRULED, not pre-bound", () => {
   const ob = obWith([2]);
   const submitted = [{ row_id: obligationRows(ob)[0].row_id, ruling: "benign", note: "n" }];
   const { form, ruled: n, outstanding } = unionDispositionForm(null, submitted, ob);
@@ -210,14 +210,14 @@ test("#850 M1 site 3 — a two-candidate row with no selection is carried UNRULE
   assert.equal(form.rows[0].receipt_id, null, "and NOTHING was invented into the receipt field");
 });
 
-test("#850 M1 site 3 — a one-candidate row's receipt stays the driver's even if the seat overwrites it", () => {
+test("M1 site 3 — a one-candidate row's receipt stays the driver's even if the seat overwrites it", () => {
   const ob = obWith([1]);
   const submitted = [{ row_id: obligationRows(ob)[0].row_id, receipt_id: "R-INVENTED", ruling: "benign", note: "n" }];
   const { form } = unionDispositionForm(null, submitted, ob);
   assert.equal(form.rows[0].receipt_id, "R-Q0C0", "the driver's receipt, not the seat's invention");
 });
 
-test("#850 M1 site 3 — rulings still ACCUMULATE across attempts under the new resolution", () => {
+test("M1 site 3 — rulings still ACCUMULATE across attempts under the new resolution", () => {
   // The property bought and the one most easily lost by a change to what "ruled" means.
   const ob = obWith([2, 2]);
   const rows = obligationRows(ob);
@@ -233,7 +233,7 @@ test("#850 M1 site 3 — rulings still ACCUMULATE across attempts under the new 
 
 // ── the instruction is emitted ONCE ─────────────────────────────────────────────────────────────────
 
-test("#850 M1 the meaning-sweep instruction asks for the POSITION and says the id is not needed", () => {
+test("M1 the meaning-sweep instruction asks for the POSITION and says the id is not needed", () => {
   const s = meaningSweepReceiptsInstruction();
   assert.match(s, /receipt_index/);
   assert.match(s, /POSITION/);
@@ -242,7 +242,7 @@ test("#850 M1 the meaning-sweep instruction asks for the POSITION and says the i
   assert.ok(!/set `receipt_id` to the id of the candidate/.test(s), "the old dictate is gone");
 });
 
-test("#850 M1 the half-lane and whole-run forms differ ONLY where the lanes differ", () => {
+test("M1 the half-lane and whole-run forms differ ONLY where the lanes differ", () => {
   // THIS TEST PINNED THE DEFECT. It asserted the may-own-nothing sentence goes to every half-lane seat,
   // which is what the code did and NOT what the contract wanted — so the wrong condition passed CI every
   // day and read as protected. A test that pins current behaviour rather than intent turns a wrong
@@ -283,7 +283,7 @@ test("`half` is no longer an option — the proxy cannot come back by name", () 
   assert.equal(stale.includes("may own zero meaning queries"), false, stale.slice(0, 160));
 });
 
-test("#850 M1 NO SECOND AUTHORING of the instruction survives anywhere in the tree", (t) => {
+test("M1 NO SECOND AUTHORING of the instruction survives anywhere in the tree", (t) => {
   // This is the guard that matters in a year. The sentence was hand-written four times; a fifth copy
   // added later would tell a seat to type the id while the driver reads a position, and NOTHING would
   // fail — the seat would simply keep missing, exactly as it has since 10 Aug.
@@ -326,7 +326,7 @@ test("#850 M1 NO SECOND AUTHORING of the instruction survives anywhere in the tr
     `the instruction is composed by meaningSweepReceiptsInstruction; these author their own copy: ${guilty.join(", ")}`);
 });
 
-test("#850 M1 NO SEAT-FACING TEXT DISPLAYS A RECEIPT-ID SHAPE — a shape shown is a shape produced", (t) => {
+test("M1 NO SEAT-FACING TEXT DISPLAYS A RECEIPT-ID SHAPE — a shape shown is a shape produced", (t) => {
   // The `R-RECEIPT` mechanism, closed at the source rather than at the refusal. A model shown
   // `R-XXXXXXXX` and asked for an id writes something of that shape; one production seat wrote the
   // literal placeholder into 27 rows. Nothing the seat reads may display the token shape any more —
@@ -364,7 +364,7 @@ test("#850 M1 NO SEAT-FACING TEXT DISPLAYS A RECEIPT-ID SHAPE — a shape shown 
     `these display a receipt-id shape to the seat: ${showing.join(", ")}`);
 });
 
-test("#850 M1 / #915 the dispatch names BOTH row kinds — the recurrence rows are not a surprise", () => {
+test("M1 / #915 the dispatch names BOTH row kinds — the recurrence rows are not a surprise", () => {
   // e2e's hypothesis (b), confirmed on origin/main and fixed here: taught the doctrine what a
   // recurrence row is and the DISPATCH text was never brought along. It said "one row per recorded
   // meaning query … carrying that query", singular, so a seat opening the form met rows with a `queries`
@@ -377,7 +377,7 @@ test("#850 M1 / #915 the dispatch names BOTH row kinds — the recurrence rows a
     "the query-only description is what made the recurrence rows invisible");
 });
 
-test("#850 M1 a placeholder receipt is NAMED as one, so the seat learns what it did", async () => {
+test("M1 a placeholder receipt is NAMED as one, so the seat learns what it did", async () => {
   // The refusal already existed: any id that is not on the row's candidate list fails `form_damaged`,
   // and a placeholder never is. What was missing is that the message could not tell the seat apart from
   // one that simply picked the wrong receipt — and a seat that cannot tell those apart repeats the

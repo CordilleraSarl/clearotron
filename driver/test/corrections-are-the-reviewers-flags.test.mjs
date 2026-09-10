@@ -67,7 +67,7 @@ The strongest objection is introduced after two paragraphs of context.
 **Fix:** qualify each.
 `;
 
-test("#1558 the reviewer's bold-numbered flags are the corrections, and all of them are typed", () => {
+test("the reviewer's bold-numbered flags are the corrections, and all of them are typed", () => {
   const rows = parseCorrections(REVIEW);
   assert.equal(rows.length, 5, "five flags in the fixture — the bold-numbered ones");
   assert.equal(rows.filter((r) => r.typed).length, 5, "and every one of them carries its declared kind");
@@ -76,7 +76,7 @@ test("#1558 the reviewer's bold-numbered flags are the corrections, and all of t
     "the histogram is the reviewer's own declaration, not the fail-safe");
 });
 
-test("#1558 the self-check questions are NOT corrections", () => {
+test("the self-check questions are NOT corrections", () => {
   // Fixing the numerator without the denominator leaves the verdict grounds wrong: these lines are what
   // got published as the stated grounds of a BLOCKING verdict, and every one of them reads as passing.
   const rows = parseCorrections(REVIEW);
@@ -84,13 +84,13 @@ test("#1558 the self-check questions are NOT corrections", () => {
     assert.ok(!rows.some((r) => r.text.includes(q)), `${q} was selected as a correction`);
 });
 
-test("#1558 a quoted excerpt nested in a flag's body is body, not a sixth flag", () => {
+test("a quoted excerpt nested in a flag's body is body, not a sixth flag", () => {
   const rows = parseCorrections(REVIEW);
   assert.ok(!rows.some((r) => /^\*"/.test(r.text)), "a bullet inside a correction's body is not a correction");
   assert.ok(!rows.some((r) => /the position is settled/.test(r.text)));
 });
 
-test("#1558 the PLAN-EXECUTION CHECK section stays excluded", () => {
+test("the PLAN-EXECUTION CHECK section stays excluded", () => {
   const rows = parseCorrections(REVIEW);
   assert.ok(!rows.some((r) => /planned slice|deferred rows, each named/.test(r.text)));
 });
@@ -104,7 +104,7 @@ test("#1558 #655's scope channel obtains — every flag declares which finding i
   assert.deepEqual(rows[3].ordinals, [], "`[on: -]` is an explicit no-finding, and is not null");
 });
 
-test("#1558 untyped === total is reported as a parse failure, not as a histogram", () => {
+test("untyped === total is reported as a parse failure, not as a histogram", () => {
   // A fail-safe that fires on every line is indistinguishable from a fail-safe that never fired. The
   // all-zero histogram catches is legible as an anomaly; `fact: 10` on a BLOCKING run is not.
   const untypedOnly = "# BLOCKING\n\n## Flagged corrections\n\n1. the narrative is wrong about the date\n2. the band is too high\n";
@@ -120,14 +120,14 @@ test("#1558 untyped === total is reported as a parse failure, not as a histogram
   assert.equal(parseCorrectionKinds("# CLEAR\n\nnothing here\n").ok, true, "an empty parse is not a failure");
 });
 
-test("#1558 countCitedDefects keeps its permissive walk — the two guards instruct opposite actions", () => {
+test("countCitedDefects keeps its permissive walk — the two guards instruct opposite actions", () => {
   // It decides whether to REFUSE a BLOCKING verdict as degenerate. Being wrong there discards a real
   // review, so permissive evidence is correct — and it must NOT inherit this file's precision.
   assert.ok(countCitedDefects(REVIEW) > parseCorrections(REVIEW).length,
     "the degenerate check still counts every list line, including the ones that are not flags");
 });
 
-test("#1558 the flag predicate, on the shapes it has to tell apart", () => {
+test("the flag predicate, on the shapes it has to tell apart", () => {
   // Two functions, because they answer two questions. `correctionFlagContent` asks "is this a list
   // item, and what does it say" — deliberately permissive, and the fix to the bug that started this:
   // it can now see a BOLD-numbered item, which the old selector could not.
@@ -147,7 +147,7 @@ test("#1558 the flag predicate, on the shapes it has to tell apart", () => {
     "OPENS with, not contains — a token buried mid-sentence is prose, and the skill says the flag opens with it");
 });
 
-test("#1558 a review that types NOTHING keeps #571's fail-safe, and says the channel is empty", () => {
+test("a review that types NOTHING keeps #571's fail-safe, and says the channel is empty", () => {
   // The rule is the skill's own: \"Either every flag has one or none of them do any work.\" With nothing
   // declared, every list item is a candidate flag routed to `fact` — a flag must never vanish for
   // lacking a token. What changes is that the counts no longer stand alone as if they meant something.
@@ -159,7 +159,7 @@ test("#1558 a review that types NOTHING keeps #571's fail-safe, and says the cha
   assert.equal(k.ok, false, "but the parse now says the kind channel yielded nothing");
 });
 
-test("#1558 an untyped flag sitting AMONG typed ones still counts — #526's contract", () => {
+test("an untyped flag sitting AMONG typed ones still counts — #526's contract", () => {
   // The rule that would have been cleaner — "if anything is typed, only typed lines are flags" — breaks
   // exactly here, and fixed this on purpose. Kept as an arm so nobody re-derives it.
   const mixed = "BLOCKING\n\n## Corrections\n"
@@ -173,7 +173,7 @@ test("#1558 an untyped flag sitting AMONG typed ones still counts — #526's con
   assert.equal(parseCorrectionKinds(mixed).ok, true, "a partially typed review is not a parse failure");
 });
 
-test("#1558 a bulleted review never trips the body rule — every bullet stays a flag", () => {
+test("a bulleted review never trips the body rule — every bullet stays a flag", () => {
   // The body rule keys on having seen an ENUMERATED flag — numbered or, since, lettered. A review
   // that writes its flags as bullets throughout has neither, so nothing is ever reclassified as body.
   // That is what keeps and intact.
@@ -181,7 +181,7 @@ test("#1558 a bulleted review never trips the body rule — every bullet stays a
   assert.equal(parseCorrections(bulleted).length, 3);
 });
 
-test("#1558 the excluded-section list is pinned to the skill's own headings", () => {
+test("the excluded-section list is pinned to the skill's own headings", () => {
   // "A guard's subject list is as complete as whoever typed it." The exclusion in verify.mjs names the
   // reviewer's SELF-audit sections; if the skill grows another one and nobody updates that regex, its
   // bullets silently start feeding the corrective worklist and the verdict's grounds. So the skill is
@@ -209,7 +209,7 @@ test("#1558 the excluded-section list is pinned to the skill's own headings", ()
 // A SOURCE SCAN, AND ITS LIMIT IS WORTH STATING: it proves the key is written at both arms of the call
 // site, not that a real run emits it. Nothing in this suite drives that pipeline branch — which is how
 // the hardcoded `ok: true` survived in the first place. A run-level assertion belongs to the test lane.
-test("#1558 the kind-channel tell is recorded at the call site, on BOTH arms", () => {
+test("the kind-channel tell is recorded at the call site, on BOTH arms", () => {
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   const rows = src.split("\n").filter((l) => /runLog\(.*event:\s*"correction-kinds"/.test(l));
   assert.equal(rows.length, 2, `expected the success and failure arms, found ${rows.length}`);
@@ -251,7 +251,7 @@ const LETTERED = `# CONDITIONAL
 **C. [kind: narrative] [on: -]** — One engine-only noun survives on a client-facing line.
 `;
 
-test("#1674 a LETTERED flag is a flag — the enumeration style is the reviewer's, not the contract's", () => {
+test("a LETTERED flag is a flag — the enumeration style is the reviewer's, not the contract's", () => {
   const rows = parseCorrections(LETTERED);
   assert.equal(rows.length, 3, `the three open defects, not the self-audit bullet; got ${JSON.stringify(rows.map((r) => r.text.slice(0, 40)))}`);
   assert.equal(rows.filter((r) => r.typed).length, 3, "every one declares its kind — none reaches the untyped fail-safe");
@@ -261,7 +261,7 @@ test("#1674 a LETTERED flag is a flag — the enumeration style is the reviewer'
   assert.ok(!rows.some((r) => /Risk shape/.test(r.text)), "the self-audit section stays excluded");
 });
 
-test("#1674 the body rule widened WITH the selector — excerpts under a lettered flag are body", () => {
+test("the body rule widened WITH the selector — excerpts under a lettered flag are body", () => {
   // THE POINT OF THE ARM: widening the selector alone makes this worse, not better. If `**A.` becomes a
   // flag but does not arm the body rule, the two quoted record lines under it become flags of their own
   // and a lettered review inflates the published grounds exactly the way the numbered form did before
@@ -271,7 +271,7 @@ test("#1674 the body rule widened WITH the selector — excerpts under a lettere
     `a quoted record under a lettered flag is that flag's body, not a fourth correction; got ${JSON.stringify(rows.map((r) => r.text.slice(0, 50)))}`);
 });
 
-test("#1674 the numbered and bulleted contracts are byte-unchanged — the widening is additive", () => {
+test("the numbered and bulleted contracts are byte-unchanged — the widening is additive", () => {
   // The regression pin. That untyped-among-typed rule, the fail-safe and the body rule all key
   // on shapes this change touches, so they are re-asserted against the SAME fixtures here.
   // 5 at HEAD and 5 patched, measured by importing both copies of the module against this same
@@ -281,7 +281,7 @@ test("#1674 the numbered and bulleted contracts are byte-unchanged — the widen
   assert.equal(parseCorrections("BLOCKING\n\n- the owner is wrong\n- the tier is wrong\n").length, 2, "#571's fail-safe");
 });
 
-test("#1674 correctionFlagContent, on the lettered shapes it now has to tell apart", () => {
+test("correctionFlagContent, on the lettered shapes it now has to tell apart", () => {
   assert.equal(correctionFlagContent("**A. [kind: fact] [on: 2] wrong date**"), "[kind: fact] [on: 2] wrong date**");
   assert.equal(correctionFlagContent("A. [kind: fact] wrong date"), "[kind: fact] wrong date");
   assert.equal(correctionFlagContent("b) [kind: rating] the band is averaged"), "[kind: rating] the band is averaged");
@@ -304,7 +304,7 @@ test("#1674 correctionFlagContent, on the lettered shapes it now has to tell apa
 // It has not fired in the wild only because real reviews carry other list lines — self-check bullets,
 // quoted excerpts — any one of which makes the count non-zero for reasons unrelated to whether a defect
 // was cited. The TIDY review is the one that loses its verdict.
-test("#1681 a BLOCKING review whose flags are all bold-enumerated is not refused as degenerate", () => {
+test("a BLOCKING review whose flags are all bold-enumerated is not refused as degenerate", () => {
   const only = (flags) => `# BLOCKING\n\n## Flagged corrections\n\n${flags}`;
   const shapes = {
     "bold-numbered": only("**1. [kind: fact] [on: 1]** the registration date contradicts the record\n\n**2. [kind: rating] [on: 2]** the band is averaged\n"),
@@ -318,7 +318,7 @@ test("#1681 a BLOCKING review whose flags are all bold-enumerated is not refused
   }
 });
 
-test("#1681 the two walks still differ where they are meant to — by SECTION, not by line shape", () => {
+test("the two walks still differ where they are meant to — by SECTION, not by line shape", () => {
   // They must not converge into one selector; is explicit that one selector for both directions IS
   // the bug. What separates them is the corrections-section allowlist and the body rule, which are
   // POLICY. Whether a line is a list item is not policy, and the two had disagreed about that.
@@ -326,7 +326,7 @@ test("#1681 the two walks still differ where they are meant to — by SECTION, n
     "the permissive walk still counts list lines outside the corrections section; the precise one does not");
 });
 
-test("#1681 three reviews identical but for enumeration style count EQUAL — the plant against a partial widening", () => {
+test("three reviews identical but for enumeration style count EQUAL — the plant against a partial widening", () => {
   // The stronger form of the arm above, and the one that catches a HALF-done widening. Teaching one walk
   // a new line shape and not the other leaves a state worse than before: the flags parse, the cited count
   // is zero, and the degenerate check re-rolls a reasoned BLOCKING. Equality is what makes that

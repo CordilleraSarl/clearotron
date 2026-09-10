@@ -46,14 +46,14 @@ const machine = ({ files = [], path = [] }) => ({
 
 // ── the derivation ──────────────────────────────────────────────────────────────────────────────────
 
-test("2205 the global executable is DERIVED from this install's own path, never looked up by name", () => {
+test("the global executable is DERIVED from this install's own path, never looked up by name", () => {
   // The whole point of the fix. `shared/invocation.mjs` carries an explicit prohibition against
   // answering this with `which`/`command -v`, because a PATH lookup finds SOME clearotron and the
   // question is whether the name reaches THIS one. So the derivation is pure and takes no PATH at all.
   assert.equal(globalBinDirFrom(GLOBAL_INSTALL), `${PREFIX}/bin`);
 });
 
-test("2205 a LOCAL install derives no global executable — npm never put one on a PATH", () => {
+test("a LOCAL install derives no global executable — npm never put one on a PATH", () => {
   // <project>/node_modules/clearotron has no `lib` segment. npm links those into
   // <project>/node_modules/.bin, which is on nobody's PATH, and `standFrom` already answers that case.
   const local = "/srv/example/project/node_modules/clearotron";
@@ -61,7 +61,7 @@ test("2205 a LOCAL install derives no global executable — npm never put one on
   assert.equal(standFrom(local), "/srv/example/project", "and the case it DOES answer still answers");
 });
 
-test("2205 the derivation refuses layouts that are not ours, so it cannot name a stranger's executable", () => {
+test("the derivation refuses layouts that are not ours, so it cannot name a stranger's executable", () => {
   // Each of these is one edit away from the real layout, and each must answer null. The basename check
   // is the identity half: without it this function would happily name a bin directory for any package
   // sitting in a global root.
@@ -79,7 +79,7 @@ test("2205 the derivation refuses layouts that are not ours, so it cannot name a
 
 // ── what doctor is told ─────────────────────────────────────────────────────────────────────────────
 
-test("2205 a global install on PATH is the BARE form, and the shim is npm's executable", () => {
+test("a global install on PATH is the BARE form, and the shim is npm's executable", () => {
   const m = machine({ files: [GLOBAL_EXE], path: [`${PREFIX}/bin`, "/usr/bin"] });
   const form = invocationForm(m.env, m, GLOBAL_INSTALL);
   assert.equal(form.form, "bare", JSON.stringify(form));
@@ -88,7 +88,7 @@ test("2205 a global install on PATH is the BARE form, and the shim is npm's exec
   assert.equal(form.via, "global", "and it says which mechanism answered, so the next reader is not left inferring it");
 });
 
-test("2205 invocationPrefix and invocationForm AGREE about a global install", () => {
+test("invocationPrefix and invocationForm AGREE about a global install", () => {
   // THE DISCRIMINATING ARM. Both surfaces were already self-consistent; they disagreed with each other.
   // invocationPrefix returns bare for a global install off its basename branch — it always did — while
   // invocationForm reported no clearotron on PATH, so `doctor` printed a bare command in one paragraph
@@ -101,7 +101,7 @@ test("2205 invocationPrefix and invocationForm AGREE about a global install", ()
     "and the form derived from the install must say the same thing");
 });
 
-test("2205 a global install NOT on PATH names its executable in full — never `cd <prefix>/lib && npx`", () => {
+test("a global install NOT on PATH names its executable in full — never `cd <prefix>/lib && npx`", () => {
   // The half that was actively wrong rather than merely silent. Falling through to `in-place` handed
   // back `cd ${standFrom(installDir)} && npx clearotron`, and for this layout standFrom names
   // <prefix>/lib — a directory with no package.json, where npx reports "could not determine executable
@@ -115,7 +115,7 @@ test("2205 a global install NOT on PATH names its executable in full — never `
   assert.ok(!form.prefix.includes(`${sep}lib`), `advice named <prefix>/lib: ${form.prefix}`);
 });
 
-test("2205 a clearotron earlier on PATH DEMOTES the global form rather than confirming it", () => {
+test("a clearotron earlier on PATH DEMOTES the global form rather than confirming it", () => {
   // Availability would say yes here. Identity says: something else answers that name first, so name
   // ours in full. The prohibition at the top of shared/invocation.mjs is exactly about this case.
   const m = machine({ files: [GLOBAL_EXE, "/usr/local/bin/clearotron"], path: ["/usr/local/bin", `${PREFIX}/bin`] });
@@ -124,7 +124,7 @@ test("2205 a clearotron earlier on PATH DEMOTES the global form rather than conf
   assert.equal(form.shadowedBy, "/usr/local/bin/clearotron");
 });
 
-test("2205 OUR OWN shim still wins — the global branch is asked second, and only second", () => {
+test("OUR OWN shim still wins — the global branch is asked second, and only second", () => {
   // ~/.local/bin is where this product writes its shim, and a shim that names this install is stronger
   // evidence than a layout derivation. The new branch must not have quietly taken precedence over it.
   const shim = "/srv/example/home/.local/bin/clearotron";
@@ -149,7 +149,7 @@ const HOME_WITH_DATA = (dirs) => {
   return home;
 };
 
-test("2205 a packaged install whose .env is gone and whose data directories stand is a LOST CONFIGURATION", () => {
+test("a packaged install whose .env is gone and whose data directories stand is a LOST CONFIGURATION", () => {
   const home = HOME_WITH_DATA(Object.values(DATA_DIRS));
   try {
     const lost = configurationLostToUpgrade({
@@ -162,7 +162,7 @@ test("2205 a packaged install whose .env is gone and whose data directories stan
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2205 a SOURCE CHECKOUT is never accused of this, whatever is in the developer's home", () => {
+test("a SOURCE CHECKOUT is never accused of this, whatever is in the developer's home", () => {
   // The false positive that would have shipped. This very box has ~/trademark/{pool,workspace,queue,
   // outbox,locks} and no .env in the checkout, so a discriminator resting on the data directories alone
   // would have turned every developer's `doctor` red — and reddened the arms that drive it.
@@ -175,7 +175,7 @@ test("2205 a SOURCE CHECKOUT is never accused of this, whatever is in the develo
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2205 an environment that still carries the configuration is not a lost one", () => {
+test("an environment that still carries the configuration is not a lost one", () => {
   // A shell or a service file supplying these is a configured install with no .env — a supported shape,
   // and silent about upgrades. Only when nothing else supplies them is the missing file why it is down.
   const home = HOME_WITH_DATA(Object.values(DATA_DIRS));
@@ -187,7 +187,7 @@ test("2205 an environment that still carries the configuration is not a lost one
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2205 the signature is ALL FIVE directories — any one of them alone is somebody's unrelated folder", () => {
+test("the signature is ALL FIVE directories — any one of them alone is somebody's unrelated folder", () => {
   const subs = Object.values(DATA_DIRS);
   assert.ok(nonEmpty(subs, "the wizard's data directories"));
   for (const missing of subs) {
@@ -203,7 +203,7 @@ test("2205 the signature is ALL FIVE directories — any one of them alone is so
 
 // ── where the file lives: wired, not chosen ─────────────────────────────────────────────────────────
 
-test("2177 every candidate location RESOLVES, including the ones nobody has chosen", () => {
+test("every candidate location RESOLVES, including the ones nobody has chosen", () => {
   // Wiring whose unchosen branches never execute is wiring that asserts itself. The owner's ruling has
   // to be a one-line flip, and this is what makes that claim testable before the ruling exists.
   const repoRoot = "/p/node_modules/clearotron";
@@ -220,7 +220,7 @@ test("2177 every candidate location RESOLVES, including the ones nobody has chos
     "on a PACKAGED install the three candidates are three different files — which is the whole subject of 2177");
 });
 
-test("2177 the location in force is the one the owner ruled", () => {
+test("the location in force is the one the owner ruled", () => {
   // THE FLIP LANDED (2026-09-05). This arm used to assert `package-root` and to say
   // that a failure here means the flip is landing — it did, and the two things it told the next reader
   // to check were done with it: the ruling is on the thread, and doctor's door-divergence pair follows
@@ -229,7 +229,7 @@ test("2177 the location in force is the one the owner ruled", () => {
     "the location is the owner's ruling, not a dev call — moving it again is a ruling, not a refactor");
 });
 
-test("2177 the WRITER and the READER resolve to the same file under a candidate that is not in force", () => {
+test("the WRITER and the READER resolve to the same file under a candidate that is not in force", () => {
   // THE FAILURE THIS PREVENTS IS SILENT. Nine sites used to compute this path themselves; a flip that
   // moved the writer and left the reader would lose an operator's configuration while every command
   // still exited 0. Driven against `project-root` precisely BECAUSE it is not the one in force.
@@ -247,7 +247,7 @@ test("2177 the WRITER and the READER resolve to the same file under a candidate 
     "and it is genuinely a different file from today's — otherwise this arm proves nothing");
 });
 
-test("2177 an unknown location REFUSES rather than falling back to today's", () => {
+test("an unknown location REFUSES rather than falling back to today's", () => {
   // A typo in the flip must not read as "the ruling landed and nothing moved".
   assert.throws(() => envLocalPath({ location: "wherever" }), /names no candidate/);
 });
@@ -267,7 +267,7 @@ function doctor(root, home) {
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
 }
 
-test("2205 doctor REPORTS the upgrade as the cause, at rc 1, on a real packaged tree", () => {
+test("doctor REPORTS the upgrade as the cause, at rc 1, on a real packaged tree", () => {
   const { root } = hermeticInstallRoot(null, { packaged: true });
   const home = HOME_WITH_DATA(Object.values(DATA_DIRS));
   try {
@@ -283,7 +283,7 @@ test("2205 doctor REPORTS the upgrade as the cause, at rc 1, on a real packaged 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("2205 and a FRESH machine is still an absence at rc 0 — the exit contract is unchanged", () => {
+test("and a FRESH machine is still an absence at rc 0 — the exit contract is unchanged", () => {
   // The contract this could most easily have broken: `--check` separates an ABSENCE from a
   // MISCONFIGURATION, and making every missing .env rc 1 would fail a new machine for being new.
   const { root } = hermeticInstallRoot(null, { packaged: true });

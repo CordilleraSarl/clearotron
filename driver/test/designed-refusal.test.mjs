@@ -8,7 +8,7 @@
 // same answer given one layer earlier is `clarify` at the door: no run dir, no failure marker. Correct
 // product behaviour was landing in the failure channel, so failure counts stopped meaning anything.
 //
-// The owner ruling (2026-08-13): such a refusal must be distinguishable from a failure IN EVERY SINK IT
+// The ruling (2026-08-13): such a refusal must be distinguishable from a failure IN EVERY SINK IT
 // REACHES, must never feed failure statistics, and must never trigger recovery machinery.
 //
 // This file drives the REAL knockout terminal — the throw, the catch, the four run-dir records and the
@@ -76,7 +76,7 @@ const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 
 // ── 1 · the record, in every sink the run dir has ───────────────────────────────────────────────────
 
-test("#848 a designed refusal is recorded as a refusal in status.json, the .failed sentinel, run.jsonl and failure.json", async () => {
+test("a designed refusal is recorded as a refusal in status.json, the .failed sentinel, run.jsonl and failure.json", async () => {
   const { res, runDir } = await refusedRun();
   assert.equal(res.ok, false);
   assert.equal(res.failedStage, "knockout-register-count", "the refusal is still terminal — it did not run");
@@ -102,7 +102,7 @@ test("#848 a designed refusal is recorded as a refusal in status.json, the .fail
 // returned object into `<base>.failed.result`, and that sidecar is what scripts/e2e.mjs reads when it
 // cannot resolve the run dir (`st?.terminalKind ?? result?.terminalKind`). The evidence on is a
 // marker line — `marker: cli-….failed` — so this is the record the round actually read.
-test("#848 the returned result carries the kind, so the queue marker's own record names the refusal", async () => {
+test("the returned result carries the kind, so the queue marker's own record names the refusal", async () => {
   const { res } = await refusedRun({ id: "cli-refusal-return" });
   assert.equal(res.terminalKind, REFUSAL_TERMINAL_KIND);
   // and it survives the trip through the runner's writer, which is a plain JSON.stringify of `res`
@@ -114,7 +114,7 @@ test("#848 the returned result carries the kind, so the queue marker's own recor
 // fixed this on the clearance terminal and its own issue records that the fix "does not reach the
 // pre-spend refusal path". This is that path. The refusal's LAST sentence is the remedy, and the bare
 // 200-char slice deleted all of it.
-test("#848 · E11 the refusal's remedy reaches status.json — the 200-char cut is stated and the tail kept", async () => {
+test("· E11 the refusal's remedy reaches status.json — the 200-char cut is stated and the tail kept", async () => {
   const { runDir } = await refusedRun({ id: "cli-refusal-e11" });
   const status = readJson(join(runDir, "status.json"));
 
@@ -138,7 +138,7 @@ test("#848 · E11 the refusal's remedy reaches status.json — the 200-char cut 
 // the four do, and each of those three puts its remedy in the half that a bare slice(0,200) deletes. The
 // fourth is 125 characters and survives whole: the fix must not report a cut on it (that is the reading
 // was filed for, inverted), which is what the control at the bottom of this file pins.
-test("#848 · E11 three of countPreflight's four refusals outrun the 200-char cap, and each loses its remedy", () => {
+test("· E11 three of countPreflight's four refusals outrun the 200-char cap, and each loses its remedy", () => {
   const caps = capabilitiesFor("free-tier");
   const NO_US = [{ office: "US", memberId: "uspto-local", missing: ["USPTO_LOCAL_DB"] }];
   const cut = (s) => s.slice(0, 200);
@@ -166,7 +166,7 @@ test("#848 · E11 three of countPreflight's four refusals outrun the 200-char ca
 
 // ── 3 · the notice an operator reads ────────────────────────────────────────────────────────────────
 
-test("#848 the failure packet's copy says REFUSED, not FAILED, and never calls it a technical failure", () => {
+test("the failure packet's copy says REFUSED, not FAILED, and never calls it a technical failure", () => {
   const base = { runId: "wanderer-2026-08-13-teal-gantry", agent: "clawdi", job: { markName: "WANDERER" },
     failedStage: "knockout-register-count", shortReason: "this run names one territory (JP), which free-tier does not cover",
     reasonVerbatim: "this run names one territory (JP), which free-tier does not cover, so there is no scope left to count in." };
@@ -199,7 +199,7 @@ test("#848 the failure packet's copy says REFUSED, not FAILED, and never calls i
 
 const runRow = (runId, status) => ({ runId, state: status.state, status, runDir: null });
 
-test("#848 the ops recurrence digest counts a designed refusal OUT of the defect groups — and says so", () => {
+test("the ops recurrence digest counts a designed refusal OUT of the defect groups — and says so", () => {
   const ts = "2026-08-13T10:00:00.000Z";
   const refusal = runRow("wanderer-2026-08-13-teal-gantry", {
     state: "failed", updatedAt: ts, failedStage: "knockout-register-count", terminalKind: REFUSAL_TERMINAL_KIND,
@@ -241,7 +241,7 @@ test("#848 the ops recurrence digest counts a designed refusal OUT of the defect
 // A REFUSAL MUST NOT BE INFERRED FROM A FILE THAT MIGHT NOT BE THERE. The `.failed` sentinel carries the
 // kind too, and reading it here would mean an unreadable sentinel silently re-admits a refusal to the
 // statistics — the zero taking the failure path.
-test("#848 the digest reads the kind off status.json, so an unreadable sentinel cannot re-admit a refusal", () => {
+test("the digest reads the kind off status.json, so an unreadable sentinel cannot re-admit a refusal", () => {
   const row = runRow("wanderer-2026-08-13-teal-gantry", {
     state: "failed", updatedAt: "2026-08-13T10:00:00.000Z", failedStage: "knockout-register-count",
     terminalKind: REFUSAL_TERMINAL_KIND, reason: "JP is not covered",
@@ -256,7 +256,7 @@ test("#848 the digest reads the kind off status.json, so an unreadable sentinel 
 // The knockout lane has no recovery ladder at all (module header: "no auto-recovery ladder — a knockout
 // re-run is ~$2"). That is the ruling's second half satisfied by construction rather than by a branch,
 // and this pins it as an observed fact about the refusal rather than a claim about the code.
-test("#848 a designed refusal parks nothing — no .postponed, no recovery history, no resume clock", async () => {
+test("a designed refusal parks nothing — no .postponed, no recovery history, no resume clock", async () => {
   const { runDir } = await refusedRun({ id: "cli-refusal-park" });
   assert.equal(existsSync(join(runDir, ".postponed")), false, "a refusal is terminal on sight");
   const status = readJson(join(runDir, "status.json"));
@@ -270,7 +270,7 @@ test("#848 a designed refusal parks nothing — no .postponed, no recovery histo
 
 // Everything above would also be satisfied by stamping every knockout terminal as a refusal. This is the
 // assertion that says the discriminator discriminates.
-test("#848 an ordinary knockout failure carries terminalKind null and reads exactly as it did", async () => {
+test("an ordinary knockout failure carries terminalKind null and reads exactly as it did", async () => {
   const studioRoot = join(ROOT, "studio", "cli-plain-failure");
   const runDir = join(studioRoot, "prelim-search", "runs", "wanderer", "2026-08-13-copper-bastion");
   mkdirSync(driverDir(runDir), { recursive: true });
@@ -301,7 +301,7 @@ test("#848 an ordinary knockout failure carries terminalKind null and reads exac
 // Nothing above may have written outside the sandbox. `config.outboxDir` is derived from
 // CLEAROTRON_WORK_DIR at import; if the ordering at the top of this file ever breaks, the packets land
 // somewhere real and every assertion above still passes.
-test("#848 the harness stayed inside its sandbox — the outbox packets are under the temp root", () => {
+test("the harness stayed inside its sandbox — the outbox packets are under the temp root", () => {
   const outbox = join(ROOT, "prelim-outbox");
   assert.ok(existsSync(outbox), "the refusals' notices went somewhere, and it was here");
   const packets = readdirSync(outbox).filter((n) => n.endsWith(".pending"));

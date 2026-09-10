@@ -93,7 +93,7 @@ async function granted(provider) {
   return JSON.parse(stdout.trim().split("\n").pop());
 }
 
-test("#1144 — every register provider GRANTS what its server ADVERTISES, or the gap is a written choice", async (t) => {
+test("every register provider GRANTS what its server ADVERTISES, or the gap is a written choice", async (t) => {
   const providers = Object.keys(REGISTER_SERVERS);
   assert.ok(providers.length >= 6,
     `only ${providers.length} providers in REGISTER_SERVERS — the census is sweeping a table that shrank, not passing`);
@@ -179,7 +179,7 @@ function unservedOrders(named, servers, allowlist) {
   return out;
 }
 
-test("#1144 — every register tool the driver's own prose ORDERS is served by every provider", async () => {
+test("every register tool the driver's own prose ORDERS is served by every provider", async () => {
   const { stringLiterals } = await import("../contract-dictation.mjs");
   const { readFileSync } = await import("node:fs");
   // DERIVED as the union over the table, not exported from the module and not recited here: the union IS

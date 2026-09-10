@@ -38,14 +38,14 @@ const FINDINGS = [
 ];
 const act = (over = {}) => ({ id: 1, kind: "consent", ordinals: [1], text: "Do the thing before launch", ...over });
 
-test("#1096 the index splits what a reader can look up from what the run merely knew", () => {
+test("the index splits what a reader can look up from what the run merely knew", () => {
   const ix = cardedParties(FINDINGS);
   assert.ok(ix.live.has("party-a") && ix.live.has("party a ltd"), "a live card's mark and owner are both addressable");
   assert.ok(ix.withdrawn.has("gonemark"), "a withdrawn card's party is known and NOT lookupable");
   assert.ok(!ix.live.has("gonemark"), "a withdrawn party must not read as live — that is the whole distinction");
 });
 
-test("#1096 a party in both a live and a withdrawn card counts as LIVE", () => {
+test("a party in both a live and a withdrawn card counts as LIVE", () => {
   // Two findings, one owner, one of them withdrawn. The reader CAN look the owner up, so naming it in
   // an ask is not an orphan. Getting this backwards would flag correct asks on any multi-finding owner.
   const ix = cardedParties([...FINDINGS, F(4, "OTHERMARK", "Gone Ltd")]);
@@ -53,26 +53,26 @@ test("#1096 a party in both a live and a withdrawn card counts as LIVE", () => {
   assert.ok(!ix.withdrawn.has("gone ltd"));
 });
 
-test("#1096 short names are not in the index — a two-letter 'party' matches inside ordinary words", () => {
+test("short names are not in the index — a two-letter 'party' matches inside ordinary words", () => {
   const ix = cardedParties([F(1, "AB", "Q")]);
   assert.equal(ix.live.size, 0, "a name that would match inside prose turns every ask into a false positive");
 });
 
-test("#1096 the reference report names the carded parties an ask asserts", () => {
+test("the reference report names the carded parties an ask asserts", () => {
   const ix = cardedParties(FINDINGS);
   const r = actionPartyReferences(act({ text: "Obtain consent from Meridian Holdings SA before launch" }), ix);
   assert.deepEqual(r.names, ["MERIDIAN"], "the run's own spelling, not the text's");
   assert.deepEqual(r.withdrawnNames, []);
 });
 
-test("#1096 an ask naming a WITHDRAWN party is reported — it points at a card that renders nowhere", () => {
+test("an ask naming a WITHDRAWN party is reported — it points at a card that renders nowhere", () => {
   const ix = cardedParties(FINDINGS);
   const r = actionPartyReferences(act({ text: "Clear the GONEMARK overlap with counsel" }), ix);
   assert.deepEqual(r.withdrawnNames, ["GONEMARK"],
     "previously silent: the ordinal missed the store, the loop hit `continue`, and no subject rendered");
 });
 
-test("#1096 an action whose ordinals ALL fail to resolve is flagged, not silently unsubjected", () => {
+test("an action whose ordinals ALL fail to resolve is flagged, not silently unsubjected", () => {
   const ix = cardedParties(FINDINGS);
   assert.equal(actionPartyReferences(act({ ordinals: [3] }), ix).boundLost, true, "bound only to a withdrawn card");
   assert.equal(actionPartyReferences(act({ ordinals: [99] }), ix).boundLost, true, "bound to nothing at all");
@@ -85,7 +85,7 @@ test("#1096 an action whose ordinals ALL fail to resolve is flagged, not silentl
 
 const onlyYou = (actions) => buildOnlyYouSection(actions, FINDINGS);
 
-test("#1096 THE DEFECT ITSELF: a bound ask naming another carded party gets NO manufactured subject", () => {
+test("THE DEFECT ITSELF: a bound ask naming another carded party gets NO manufactured subject", () => {
   const md = onlyYou([act({ ordinals: [1], text: "Obtain consent from Meridian Holdings SA before launch" })]);
   assert.match(md, /Obtain consent from Meridian Holdings SA before launch/, "the ask still renders, whole");
   assert.ok(!/\(re: PARTY-A/.test(md),
@@ -94,7 +94,7 @@ test("#1096 THE DEFECT ITSELF: a bound ask naming another carded party gets NO m
     + "could not happen");
 });
 
-test("#1096 …and the honest join still happens when the ask names nobody", () => {
+test("…and the honest join still happens when the ask names nobody", () => {
   // The positive control. A guard that suppressed every subject would pass the test above and silently
   // remove a join the reader needs to know which finding an ask closes.
   const md = onlyYou([act({ ordinals: [1], text: "Instruct counsel on the joined-script forms" })]);
@@ -102,12 +102,12 @@ test("#1096 …and the honest join still happens when the ask names nobody", () 
     "an ask that names no party must still be told which finding it closes");
 });
 
-test("#1096 an ask that names its OWN bound party is not given a redundant subject", () => {
+test("an ask that names its OWN bound party is not given a redundant subject", () => {
   const md = onlyYou([act({ ordinals: [1], text: "Obtain consent from Party A Ltd before launch" })]);
   assert.ok(!/\(re:/.test(md), "the ask already says who it is about");
 });
 
-test("#1096 THE LIMIT, asserted so it is not mistaken for a guarantee again", () => {
+test("THE LIMIT, asserted so it is not mistaken for a guarantee again", () => {
   // A party the run never saw is outside every index built from findings. This is NOT caught, and
   // saying so here is the point: the previous comment claimed a property this code cannot have, and a
   // reader who trusts a second such claim is the failure being prevented.

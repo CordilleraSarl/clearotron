@@ -28,7 +28,7 @@ const FAN_IN_REASON =
   + "HTTP 400: APPLICANT_NAME - The system did not recognize the syntax of the request "
   + "(a clean can never ship over a slice the plan dictated and nothing ran)";
 
-test("#755 the provider's cause survives to status.json, not only to the journal", () => {
+test("the provider's cause survives to status.json, not only to the journal", () => {
   const f = terminalReasonFields(FAN_IN_REASON);
   assert.ok(FAN_IN_REASON.length > 200, "fixture must actually exceed the cap, or this proves nothing");
   assert.equal(f.reason.length, 200, "the ping-sized field is unchanged — it is load-bearing at 200");
@@ -40,7 +40,7 @@ test("#755 the provider's cause survives to status.json, not only to the journal
   assert.match(f.reasonFull, /did not recognize the syntax/, "verbatim, not a paraphrase");
 });
 
-test("#755 an untruncated reason says so — an absence must not read as an empty cause", () => {
+test("an untruncated reason says so — an absence must not read as an empty cause", () => {
   // The half that stops this fix from creating the defect it fixes. If `reasonFull` were simply omitted
   // when short, a reader could not tell "nothing was cut" from "the tail is missing", which is exactly
   // the ambiguity that produced F5's wrong finding.
@@ -50,7 +50,7 @@ test("#755 an untruncated reason says so — an absence must not read as an empt
   assert.equal(f.reasonFull, null, "null because nothing was cut — and reasonTruncated is what says so");
 });
 
-test("#755 an empty cause is empty, and is still not silence", () => {
+test("an empty cause is empty, and is still not silence", () => {
   for (const empty of [null, undefined, "", "   "]) {
     const f = terminalReasonFields(empty);
     assert.equal(f.reason, "", `an absent reason stays absent (${JSON.stringify(empty)})`);
@@ -59,7 +59,7 @@ test("#755 an empty cause is empty, and is still not silence", () => {
   }
 });
 
-test("#755 whitespace is collapsed identically in both fields — they cannot disagree", () => {
+test("whitespace is collapsed identically in both fields — they cannot disagree", () => {
   // reason and reasonFull are derived from ONE normalisation. Two normalisations is how a short field and
   // a long field come to describe the same failure differently.
   const messy = `line one\n\n   line two\ttabbed   ${"x".repeat(300)}`;
@@ -74,7 +74,7 @@ test("#755 whitespace is collapsed identically in both fields — they cannot di
   assert.doesNotMatch(f.reasonFull, /\n|\t|  /, "collapsed once, for both");
 });
 
-test("#755 the tail is BOUNDED — a runaway reason cannot make status.json unreadable", () => {
+test("the tail is BOUNDED — a runaway reason cannot make status.json unreadable", () => {
   const huge = "A".repeat(50_000);
   const f = terminalReasonFields(huge);
   assert.ok(f.reasonFull.length <= 4000, `bounded (got ${f.reasonFull.length})`);
