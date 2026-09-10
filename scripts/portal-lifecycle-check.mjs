@@ -54,6 +54,9 @@ const NAME = 'Vantor Labs'
 // A code-owned path the profile stub serves to everyone, as a server that forgot to strip it would. Only a
 // person with access to everything may read it on Profile; see PROFILE_PATHS_SCRIPT.
 const PLANTED_PATH = 'skills/prelim-search/risk-framework-planted.md'
+// The source repository the about stub states, and deliberately not the firm's: the local sign-in notice
+// builds its link from whatever the server states, so a fork's notice points at the fork.
+const STUB_SOURCE_REPO = 'https://git.example.test/a-fork/clearotron'
 
 const KEY2 = 'foxglade'
 const NAME2 = 'Foxglade Interactive'
@@ -251,6 +254,7 @@ const server = createServer((req, res) => {
   }
   if (p === '/portal/admin/observed') return json(res, { available: false, truncated: false, people: [], note: 'No activity log is kept here.' })
   if (p === '/portal/api/mcp-access') return json(res, { url: null, keyUrl: null, email: null, enabled: false })
+  if (p === '/portal/api/about') return json(res, { name: 'Clearotron', version: null, commit: null, sourceRepo: STUB_SOURCE_REPO, sourceUrl: STUB_SOURCE_REPO, license: null, copyright: '' })
 
   const base = p.split('?')[0]
   const file = base === '/' || (base.startsWith('/portal') && !base.includes('.')) ? '/index.html' : base.replace(/^\/portal/, '')
@@ -434,7 +438,9 @@ ${HELPERS}
     await mustSettle(() => /signs in one person/.test(txt()), 8000, 'the local sign-in notice never appeared');
     out.addDisabled = findByText('button', /Add a person/).disabled;
     out.rows = document.querySelectorAll('table.data tbody tr').length;
-    out.linksOut = Boolean(document.querySelector('a[href*="putting-your-own-login-provider-in-front"]'));
+    const linkSel = 'a[href*="putting-your-own-login-provider-in-front"]';
+    const linked = await settle(() => document.querySelector(linkSel), 8000);
+    out.linkHref = linked ? document.querySelector(linkSel).href : null;
   } catch (e) { out.fatal = String((e && e.message) || e); }
   return out;
 })()
@@ -783,7 +789,8 @@ if (!peopleLocal || peopleLocal.fatal) {
 } else {
   ok(peopleLocal.addDisabled === true, 'Add is offered on an install that signs one person in locally')
   ok(peopleLocal.rows === 1, `local sign-in should list its one person — it drew ${peopleLocal.rows} rows`)
-  ok(peopleLocal.linksOut, 'the local sign-in notice does not link to how to put a login system in front')
+  ok(peopleLocal.linkHref === `${STUB_SOURCE_REPO}/blob/main/docs/PORTAL.md#putting-your-own-login-provider-in-front`,
+    `the local sign-in notice must link to the stated source repository's guide to a login system in front — it links to ${JSON.stringify(peopleLocal.linkHref)}`)
 }
 if (!asReader || asReader.fatal) {
   fail.push(`view-only person: ${asReader?.fatal ?? 'the driver returned nothing'}`)

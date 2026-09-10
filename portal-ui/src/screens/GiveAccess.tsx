@@ -23,7 +23,7 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { accessSentence, permissionsPhrase } from '../shell/accessWords.ts'
 import { isGenericKey } from '../contract/genericKey.ts'
 import { PEOPLE } from '../nav/nav.config.ts'
-import { LOGIN_IN_FRONT_DOC } from './PeopleAccess.tsx'
+import { loginInFrontDoc, useSourceRepo } from './PeopleAccess.tsx'
 
 type Chosen = { readonly everything: boolean; readonly orgs: ReadonlySet<string>; readonly companies: ReadonlySet<string> }
 const NOTHING: Chosen = { everything: false, orgs: new Set(), companies: new Set() }
@@ -42,6 +42,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
   const [chosen, setChosen] = useState<Chosen>(NOTHING)
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<Result<{ readonly person: Person; readonly switchesApplied: boolean }> | null>(null)
+  const repo = useSourceRepo()
 
   const saved = result !== null && isOk(result)
   const dirty = email.trim() !== '' || chosen.everything || chosen.orgs.size > 0 || chosen.companies.size > 0
@@ -68,7 +69,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
               <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> To add
               people, put it behind a login system such as your company single sign-on.{' '}
-              <a href={LOGIN_IN_FRONT_DOC} target="_blank" rel="noreferrer">How to set that up</a>
+              {repo ? <a href={loginInFrontDoc(repo)} target="_blank" rel="noreferrer">How to set that up</a> : null}
             </p>
           </div>
         </div>

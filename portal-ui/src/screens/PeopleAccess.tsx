@@ -17,7 +17,7 @@
 // holds the whole picture.
 
 import type { CSSProperties } from 'react'
-import { api } from '../contract/api.ts'
+import { api, isOk } from '../contract/api.ts'
 import type { ObservedView, Person } from '../contract/api.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
@@ -25,12 +25,25 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { permissionsPhrase, accessChips } from '../shell/accessWords.ts'
 import { ADD_PERSON } from '../nav/nav.config.ts'
 
-/** Where putting a login system in front is explained — the way out of an install that signs in one person. */
-export const LOGIN_IN_FRONT_DOC =
-  'https://github.com/CordilleraSarl/clearotron/blob/main/docs/PORTAL.md#putting-your-own-login-provider-in-front'
+/**
+ * Where putting a login system in front is explained — the way out of an install that signs in one person.
+ *
+ * Built from the source repository the server states, as About's and the company form's links are, and
+ * never written into the bundle: the bundle names the firm only in its declared places, the source offer
+ * and the trademark notice, and a fork's People page would otherwise point at someone else's repository.
+ */
+export const loginInFrontDoc = (sourceRepo: string): string =>
+  `${sourceRepo}/blob/main/docs/PORTAL.md#putting-your-own-login-provider-in-front`
+
+/** The server's stated source repository, or null while it loads or when the server states none. */
+export function useSourceRepo(): string | null {
+  const { result } = useLoad(() => api.about(), [])
+  return result && isOk(result) && result.value.sourceRepo ? result.value.sourceRepo : null
+}
 
 export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
   const { result } = useLoad(() => api.adminAccess(), [])
+  const repo = useSourceRepo()
   // A SECOND, INDEPENDENT load. Deliberately not folded into the gate below: the activity feed is an
   // extra, and a page whose job is explaining access must not go blank because an optional log could
   // not be read.
@@ -82,7 +95,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
               <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> To add
               people, put it behind a login system such as your company single sign-on.{' '}
-              <a href={LOGIN_IN_FRONT_DOC} target="_blank" rel="noreferrer">How to set that up</a>
+              {repo ? <a href={loginInFrontDoc(repo)} target="_blank" rel="noreferrer">How to set that up</a> : null}
             </p>
           </div>
         ) : null}
