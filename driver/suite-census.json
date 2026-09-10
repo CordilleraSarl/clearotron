@@ -5509,6 +5509,12 @@
           "skips": 0,
           "todos": 0
         },
+        "homeChipsFilterTheRows.test.ts": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "icons.test.ts": {
           "tests": 2,
           "asserts": 4,

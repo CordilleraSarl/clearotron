@@ -73,6 +73,34 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   if (!result) return <div className="screen" />
   if (result.kind === 'pickAccount') return <PickCompany ctx={ctx} />
 
+  // A PERMANENT STATE IS NOT A TRANSIENT ONE, and this screen used to say the same sentence about both.
+  // Saved searches can be switched off by configuration — the deployment answers 404 deliberately, and
+  // its boot log already carries the exact reason. "Try again shortly" is advice that can never work,
+  // and it left the reader with no way to learn that a setting is wrong.
+  if (result.kind === 'featureOff') {
+    return (
+      <div className="screen">
+        <Heading />
+        <div className="notice">
+          <b>Custom searches are switched off on this installation</b>
+          <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
+            Nothing has been changed or lost, and nothing you do here will turn them on — this is a
+            setting on the server rather than a fault.
+          </p>
+          {/* STAFF ONLY, and it arrives null for anyone else because the server withholds it: it names
+              environment variables and paths on the server, and a client can reach this screen. */}
+          {result.detail ? (
+            <p style={{ margin: '10px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>{result.detail}</p>
+          ) : (
+            <p style={{ margin: '10px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>
+              Ask whoever runs this installation to enable them.
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   if (result.kind !== 'ok') {
     return (
       <div className="screen">

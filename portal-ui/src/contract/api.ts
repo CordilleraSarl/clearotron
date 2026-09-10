@@ -55,6 +55,18 @@ export type Result<T> =
   | { kind: 'noAccess' }
   /** 404. Covers "does not exist" AND "not yours" — deliberately indistinguishable. */
   | { kind: 'notFound' }
+  /**
+   * A feature this deployment has switched OFF by configuration, not a page that is missing.
+   *
+   * Same 404 on the wire and the same answer for every admitted identity, so naming it separates no
+   * account from any other and the 404-never-403 rule is untouched — the argument
+   * `config_surface_unavailable` already makes one branch above.
+   *
+   * `detail` is the operator sentence saying WHICH setting to change, and it is null for anyone who is
+   * not staff: the server withholds it, because it names environment variables and server paths and
+   * this screen is reachable by a client.
+   */
+  | { kind: 'featureOff'; detail: string | null }
   | { kind: 'rateLimited' }
   | { kind: 'tooLarge' }
   /**
@@ -1314,6 +1326,11 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       // from any other and the 404-never-403 rule is untouched. Everything else here stays deliberately
       // indistinguishable.
       if (asString(body['error']) === 'config_surface_unavailable') return { kind: 'surfaceUnavailable' }
+      // A CONFIGURED-OFF FEATURE, for the same reason and by the same rule. It is permanent and already
+      // diagnosed by the deployment, and a screen that renders it as a transient fault tells the reader
+      // to retry something that can never succeed.
+      if (['not_configured', 'store_outside_repo'].includes(asString(body['error']) ?? ''))
+        return { kind: 'featureOff', detail: asString(body['detail']) }
       return { kind: 'notFound' }
     case 409: {
       // ── READ BOTH SPELLINGS (tracker issue 94, finding F14) ────────────────────────────────────────

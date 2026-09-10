@@ -193,7 +193,7 @@ export function resolveAccount(principal, requested) {
  * there, and this is the channel that respects it. What must never happen is the reverse: a body field
  * that looks like an author and is quietly trusted by some future reader.
  */
-export function makeUpstream({ callUpstream, callRecipes = null, roster = async () => [] }) {
+export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = null, roster = async () => [] }) {
   const call = async (method, path, body, identity) => {
     const r = await callUpstream(method, path, body, identity);
     // Upstream 404s (unknown profile) and ours (not yours) are deliberately the same answer.
@@ -204,7 +204,21 @@ export function makeUpstream({ callUpstream, callRecipes = null, roster = async 
   // owns a different store and a different validator. Absent ⇒ every saved-search route answers 404,
   // which is what a deployment with no recipe store configured should say: the feature is not here.
   const callRec = async (method, path, body, identity) => {
-    if (!callRecipes) return { status: 404, json: { error: "not_found" } };
+    // A CONFIGURED-OFF FEATURE IS NOT A MISSING PAGE. Both answer 404 — the route genuinely is not
+    // there — but a bare `not_found` is what let the screen say "try again shortly" about a permanent
+    // state the portal had already diagnosed at boot. The code names it and the detail carries the
+    // diagnosis, so the surface can say what must change instead of advising a retry that cannot work.
+    //
+    // THE DETAIL IS STAFF-ONLY, exactly as the stop control's reason is. It names environment variables
+    // and filesystem paths on the server, and this screen is company-scoped — a client can reach it. The
+    // CODE travels to everyone, because "this installation does not have saved searches" is true and
+    // useful for them and gives away nothing; only the sentence saying which variable to change is held
+    // back.
+    if (!callRecipes) {
+      const staff = identity?.role === "staff";
+      return { status: 404, json: { error: recipesOff?.code ?? "not_found",
+        ...(staff && recipesOff?.detail ? { detail: recipesOff.detail } : {}) } };
+    }
     const r = await callRecipes(method, path, body, identity);
     if (r.status === 404) return { status: 404, json: { error: "not_found" } };
     return r;
