@@ -135,6 +135,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-company-can-be-given-a-framework-after-it-exists.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-created-after-boot-can-still-search.test.mjs": {
           "tests": 3,
           "asserts": 10,
