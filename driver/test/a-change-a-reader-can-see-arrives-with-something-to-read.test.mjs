@@ -16,7 +16,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { shipsCode } from "../../scripts/release-note-required.mjs";
+import { shipsCode, NO_NOTE } from "../../scripts/release-note-required.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const CHECK = join(ROOT, "scripts", "release-note-required.mjs");
@@ -50,6 +50,7 @@ function repoWithCommits(list) {
   const shas = [];
   for (const { changes, message } of list) {
     for (const [path, body] of Object.entries(changes)) {
+      if (body === null) { rmSync(join(dir, path)); continue; }   // null deletes the file
       mkdirSync(join(dir, dirname(path)), { recursive: true });
       writeFileSync(join(dir, path), body);
     }
@@ -271,4 +272,61 @@ test("a Release-note line may name the note that answers for it, and naming one 
     assert.equal(r.code, 1, `a commit naming a note the range does not add was accepted:\n${r.said}`);
     assert.match(r.said, /nowhere\.md/);
   } finally { good.clean(); bad.clean(); }
+});
+
+const NOTE_BODY = (says) => `---\n"clearotron-driver": patch\n---\n\nFixed: ${says}\n`;
+
+test("a note the range only DELETES, or only edits, answers for no commit in it", () => {
+  // `diff-tree` lists deletions and edits beside additions. Read as notes, a range whose only note was one it
+  // removed answered for every code commit in it, and editing another change's note counted as carrying
+  // one. Neither reaches a reader of this range. Found in review, 2026-09-10.
+  const OLD = ".changeset/an-older-change.md";
+  const deleted = repoWithCommits([
+    { changes: { [OLD]: NOTE_BODY("an older change.") }, message: "An older change's note" },
+    { changes: { [OLD]: null }, message: "Remove a note" },
+    { changes: { "bin/thing.mjs": "export const a = 1;\n" }, message: "A change a reader sees" },
+  ]);
+  try {
+    const r = run(deleted, deleted.shas[0]);
+    assert.equal(r.code, 1, `a note the range deletes answered for it:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${deleted.shas[2]} A change a reader sees`));
+  } finally { deleted.clean(); }
+  const edited = repoWithCommits([
+    { changes: { [OLD]: NOTE_BODY("an older change.") }, message: "An older change's note" },
+    { changes: { [OLD]: NOTE_BODY("an older change, said better."), "bin/thing.mjs": "export const a = 1;\n" },
+      message: "A change a reader sees, and a touch to another change's note" },
+  ]);
+  try {
+    const r = run(edited, edited.shas[0]);
+    assert.equal(r.code, 1, `editing another change's note counted as carrying one:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${edited.shas[1]} A change a reader sees`));
+  } finally { edited.clean(); }
+});
+
+test("a note the range adds and then removes answers for nothing; one it adds and keeps still answers", () => {
+  const NOTE = ".changeset/this-change.md";
+  const gone = repoWithCommits([
+    { changes: { [NOTE]: NOTE_BODY("this change."), "bin/thing.mjs": "export const a = 1;\n" }, message: "A change a reader sees" },
+    { changes: { [NOTE]: null }, message: "Remove the note again" },
+  ]);
+  try {
+    const r = run(gone);
+    assert.equal(r.code, 1, `a note the head no longer carries answered:\n${r.said}`);
+  } finally { gone.clean(); }
+  // THE CONTROL: the same range with the note kept, and edited afterwards, passes. Without it the two arms
+  // above would pass on a check that refused every range.
+  const kept = repoWithCommits([
+    { changes: { [NOTE]: NOTE_BODY("this change."), "bin/thing.mjs": "export const a = 1;\n" }, message: "A change a reader sees" },
+    { changes: { [NOTE]: NOTE_BODY("this change, said better.") }, message: "Say it better" },
+  ]);
+  try {
+    const r = run(kept);
+    assert.equal(r.code, 0, `a note the range adds and the head keeps must answer:\n${r.said}`);
+  } finally { kept.clean(); }
+});
+
+test("`none.` is followed by its reason, not by the full stop", () => {
+  assert.equal(NO_NOTE.exec("Release-note: none. The docs only.")?.groups.reason, "The docs only.");
+  assert.equal(NO_NOTE.exec("Release-note: none — the docs only.")?.groups.reason, "the docs only.");
+  assert.equal(NO_NOTE.exec("Release-note: none.")?.groups.reason, undefined, "a full stop alone is still a bare none");
 });

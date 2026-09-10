@@ -77,7 +77,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 /** The declaration a commit makes when the change genuinely has nothing to tell a reader. */
 // Horizontal space only. `\s` crosses a line break, so a bare `none` with any line after it, a trailer or
 // another paragraph, read that line as its reason and passed as a declared decision.
-export const NO_NOTE = /^[ \t]*Release-note:[ \t]*none\b[ \t]*[—:-]?[ \t]*(?<reason>.*\S)?[ \t]*$/im;
+export const NO_NOTE = /^[ \t]*Release-note:[ \t]*none\b[ \t]*[—:.-]?[ \t]*(?<reason>.*\S)?[ \t]*$/im;
 
 /**
  * Does this path ship, per the package's own `files` list?
@@ -133,24 +133,36 @@ const NAMED_NOTE = /^(?:\.changeset\/)?(?<name>[\w.-]+\.md)$/;
 const isNotePath = (p) => p.startsWith(".changeset/") && p.endsWith(".md") && !p.endsWith("README.md");
 const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) => re.test(p)) && shipsCode(p, files));
 
+// A NOTE COUNTS WHEN ITS COMMIT ADDS IT AND THE HEAD STILL HAS IT. A commit's paths come from `diff-tree`,
+// which lists what it deletes and edits beside what it adds. Read as notes, a range whose only note was
+// one it DELETED answered for every code commit in it, and a commit that edited another change's note was
+// taken as carrying its own. Neither reaches a reader of this range: the release assembles the notes the
+// head carries, and an edited note still describes the change that wrote it. Found in review, 2026-09-10,
+// by driving both shapes; the range-wide rule this replaced had the same gap.
 /**
  * PURE. What each commit in a range owes, decided per commit (see the header).
  *
  * @param {object} o
- * @param {Array<{sha:string, subject:string, message:string, paths:string[]}>} o.commits  non-merge, oldest first
+ * @param {Array<{sha:string, subject:string, message:string, paths:string[], added?:string[]}>} o.commits  non-merge,
+ *   oldest first; `added` is the paths the commit adds, when the caller read them
  * @param {string[]} o.files  the package's own `files` list
+ * @param {string[]|null} [o.atHead]  every path the head carries under `.changeset/`, when the caller read it
  * @returns {{visible:string[], notes:string[], declined:Array<{sha:string, subject:string, reason:string}>,
  *   owed:Array<{sha:string, subject:string, why:"no-note"|"prose"|"bare-none"|"names-a-missing-note", paths?:string[], text?:string}>}}
  */
-export function commitVerdicts({ commits = [], files = [] } = {}) {
-  const notes = [...new Set(commits.flatMap((c) => c.paths.filter(isNotePath)))];
+export function commitVerdicts({ commits = [], files = [], atHead = null } = {}) {
+  // `added` and `atHead` are what the command reads from git; a caller that passes neither keeps the older
+  // reading of every changed path, which is what a pure table of paths means.
+  const present = atHead ? new Set(atHead) : null;
+  const notesOf = (c) => (c.added ?? c.paths).filter((p) => isNotePath(p) && (!present || present.has(p)));
+  const notes = [...new Set(commits.flatMap(notesOf))];
   const noteNames = new Set(notes.map((p) => p.split("/").pop()));
   const visible = [...new Set(commits.flatMap((c) => shipped(c.paths, files)))];
   const declined = [], owed = [];
   for (const c of commits) {
     const ships = shipped(c.paths, files);
     if (!ships.length) continue;                              // nothing a reader could see in this commit
-    const addsNote = c.paths.some(isNotePath);
+    const addsNote = notesOf(c).length > 0;
     const values = [...String(c.message ?? "").matchAll(NOTE_LINE)].map((m) => m.groups.value);
     const named = values.map((v) => NAMED_NOTE.exec(v)?.groups.name).filter(Boolean);
     const prose = values.filter((v) => !/^none\b/i.test(v) && !NAMED_NOTE.test(v));
@@ -188,7 +200,7 @@ function main() {
   // have failed, and would have reported the acceptance met for the life of the branch.
   const head = argAfter("--head") || "HEAD";
   const git = (...a) => execFileSync("git", a, { encoding: "utf8", maxBuffer: 1 << 28 });
-  let changed, commits;
+  let changed, commits, atHead;
   try {
     changed = git("diff", "--name-only", `${base}...${head}`).split("\n").filter(Boolean);
     // THE BRANCH'S OWN COMMITS. On a pull request the range can reach commits main already carries, from
@@ -205,7 +217,9 @@ function main() {
       subject: git("log", "-1", "--format=%s", sha).trim(),
       message: git("log", "-1", "--format=%B", sha),
       paths: git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha).split("\n").filter(Boolean),
+      added: git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", "--diff-filter=A", sha).split("\n").filter(Boolean),
     }));
+    atHead = git("ls-tree", "-r", "--name-only", head, "--", ".changeset/").split("\n").filter(Boolean);
   } catch (e) {
     // COULD NOT LOOK, never a pass — an unresolvable base is the shape this repository cares about.
     console.error(`release-note-required: cannot read the range against ${base}: ${e.message.split("\n")[0]}`);
@@ -217,7 +231,7 @@ function main() {
   catch (e) { console.error(`release-note-required: cannot read the shipped file list: ${e.message}`); process.exit(2); }
   if (!files.length) { console.error("release-note-required: package.json names no shipped files, so this cannot look"); process.exit(2); }
 
-  const { visible, notes, declined, owed } = commitVerdicts({ commits, files });
+  const { visible, notes, declined, owed } = commitVerdicts({ commits, files, atHead });
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
     + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`);
