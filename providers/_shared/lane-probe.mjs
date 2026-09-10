@@ -42,6 +42,9 @@
 // call — so it gets no arm in CI, and ships with a green that means nothing. Which is precisely the
 // class of instrument this issue exists to complain about.
 
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+
 // The marks are DATA, overridable, and each says why it was chosen. A control that stops returning hits
 // turns this probe into a permanent false alarm, so the reason has to survive for whoever re-picks it.
 export const DEFAULT_CONTROLS = Object.freeze({
@@ -79,7 +82,10 @@ export function probeSpend(capabilities) {
 export async function loadProviderCapabilities(repoRoot, providerId, importer = (u) => import(u)) {
   if (!providerId) return null;
   try {
-    const m = await importer(new URL(`file://${repoRoot}/providers/${providerId}/src/capabilities.js`).href);
+    // pathToFileURL, not a hand-built `file://${repoRoot}/…`: a URL reads everything after a # as a
+    // fragment and decodes a literal %xx, so under such a folder this read the wrong file and the lane's
+    // cost came back UNKNOWN. On Windows the hand-built form held only by the URL parser's leniency.
+    const m = await importer(pathToFileURL(join(repoRoot, "providers", providerId, "src", "capabilities.js")).href);
     return m?.CAPABILITIES ?? m?.default ?? null;
   } catch { return null; }
 }

@@ -28,7 +28,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, cpSync, existsSync } from "node:
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
@@ -49,7 +49,7 @@ function packagedTree({ withBuildInfo = true } = {}) {
 }
 
 /** Import the copied module fresh, so its module-level cache is this tree's and not another's. */
-const identityIn = (root) => import(`${join(root, "shared", "product-identity.mjs")}?t=${Math.random()}`);
+const identityIn = (root) => import(`${pathToFileURL(join(root, "shared", "product-identity.mjs")).href}?t=${Math.random()}`);
 
 test("on a packaged install with no git, the source offer names the commit build-info carries", async () => {
   const root = packagedTree();

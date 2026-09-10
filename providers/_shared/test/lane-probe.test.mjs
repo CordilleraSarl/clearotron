@@ -7,6 +7,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makeLaneProbe, probeSpend, DEFAULT_CONTROLS, loadProviderCapabilities } from "../lane-probe.mjs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const CHEAP = { countProbe: "cheap" };
 const probe = (countHits, capabilities = CHEAP) => makeLaneProbe({ countHits, capabilities });
@@ -115,6 +117,19 @@ test("the capability is read from the PROVIDER'S declaration, not from the adapt
   assert.equal(cap.countProbe, "endpoint");
   assert.match(seen[0], /providers\/someprovider\/src\/capabilities\.js$/,
     "the loader must read the provider's own declaration file");
+});
+
+test("a repository under a folder with # or % in its name still reads the provider's own declaration", async () => {
+  // The specifier was once built by hand as `file://${repoRoot}/…`. A URL reads everything after a # as a
+  // fragment and decodes a literal %xx, so under such a folder the loader was handed the wrong file, the
+  // read failed, and the lane's cost came back UNKNOWN — silently, on any system.
+  for (const root of ["/srv/my#repo", "/srv/100%25real"]) {
+    const seen = [];
+    const cap = await loadProviderCapabilities(root, "someprovider", (u) => { seen.push(u); return Promise.resolve({ CAPABILITIES: { countProbe: "endpoint" } }); });
+    assert.equal(cap.countProbe, "endpoint");
+    assert.equal(fileURLToPath(seen[0]), join(root, "providers", "someprovider", "src", "capabilities.js"),
+      `under ${root} the loader was handed ${seen[0]}, which names a different file`);
+  }
 });
 
 test("an UNREADABLE capability is cost-UNKNOWN, never cost-cheap", async () => {

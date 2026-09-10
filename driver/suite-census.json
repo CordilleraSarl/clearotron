@@ -268,8 +268,8 @@
           "todos": 0
         },
         "a-dynamic-import-of-a-path-is-a-file-url.test.mjs": {
-          "tests": 3,
-          "asserts": 6,
+          "tests": 8,
+          "asserts": 17,
           "skips": 1,
           "todos": 0
         },
@@ -5808,8 +5808,8 @@
           "todos": 0
         },
         "providers/_shared/test/lane-probe.test.mjs": {
-          "tests": 12,
-          "asserts": 29,
+          "tests": 13,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
