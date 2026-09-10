@@ -5105,7 +5105,7 @@
         },
         "what-was-searched-is-written-in-the-readers-words.test.mjs": {
           "tests": 6,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },

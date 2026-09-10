@@ -647,10 +647,10 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
 // now a name, or a word this table is missing.
 //
 // Lower case only. In these cells a capitalised or upper-case word is a name — a mark, an owner, a
-// platform — and a rewritten name misstates what was searched, so names stay as written. Two rules are
-// case-blind because neither is ever a name: a web address loses its scheme and keeps its host and path,
-// and a standalone HTTP is dropped, so "provider-rejected (HTTP 429)" reads "provider-rejected (429)".
-// has_more is plainNote's.
+// platform — and a rewritten name misstates what was searched, so names stay as written. HTTP keeps to
+// that rule with one exception, which is never a name: before a status code it goes in any case, so
+// "provider-rejected (HTTP 429)" reads "provider-rejected (429)" while a mark called HTTP HOUSE keeps its
+// name. A web address loses its scheme in any case and keeps its host and path. has_more is plainNote's.
 //
 // Kept down here, below every line the rest of the tree cites in this file by number.
 export const READER_WORDS = Object.freeze({
@@ -665,7 +665,8 @@ const READER_WORD = new RegExp(`\\b(?:${Object.keys(READER_WORDS).join('|')})\\b
 function readerWords(s) {
   return String(s ?? '')
     .replace(/\bhttps?:\/\//gi, '')
-    .replace(/\bhttps?\b\s*/gi, '')
+    .replace(/\bhttps?\s+(?=\d{3}\b)/gi, '')
+    .replace(/\bhttps?\b\s*/g, '')
     .replace(READER_WORD, (w) => (w === w.toLowerCase() ? READER_WORDS[w] : w))
     .replace(/\s+/g, ' ')
     .trim();

@@ -91,10 +91,11 @@ test("a query the engine recorded as never run still reads as not searched once 
 });
 
 test("a name that carries one of the words is left as written", () => {
-  const [r] = searchRows({ negatives: [REG("NORTHWIND (owner)", "0 hits", "closest: COMPOSITE (cl. 9), owner Meter Group AG; no receipt on file")] }, { registerOnly: true })
+  const [r] = searchRows({ negatives: [REG("NORTHWIND (owner)", "0 hits", "closest: COMPOSITE (cl. 9), owner Meter Group AG; also HTTP HOUSE (cl. 42); no receipt on file")] }, { registerOnly: true })
     .filter((x) => !x._section);
   assert.match(r.Note, /^closest: COMPOSITE \(cl\. 9\), owner Meter Group AG;/,
     "a mark and an owner are what the search found, and a rewritten one misstates it");
+  assert.match(r.Note, /; also HTTP HOUSE \(cl\. 42\);/, "HTTP in a name is not before a status code, so the name keeps it");
   assert.match(r.Note, /no record on file$/, "while the engine's own word in the same cell is still put right");
 });
 
