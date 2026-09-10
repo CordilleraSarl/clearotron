@@ -5,7 +5,7 @@ The two input files you copy. Nothing here needs a credential and nothing here c
 | Path | What it is |
 |---|---|
 | `job.euipo.json` | the whole input contract for one clearance — 14 fields, ready to copy and edit |
-| `grants.example.json` | who may read which account's runs: three tenants, three grant shapes |
+| `grants.example.json` | who may see and do what: two organisations, and one of each kind of person |
 
 ## The finished runs moved to `demo/`
 
