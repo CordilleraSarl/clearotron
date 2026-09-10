@@ -491,13 +491,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
       // one thing that is not wrong. Someone who signs in successfully and can do nothing should be told
       // why on the page, not in a boot log nobody reads.
       //
-      // The words are the ones portal-service already logs at boot: on no staff domain, in no grants row.
+      // The words are the door's own: the page it serves an address with no access says the same thing.
       // Nothing here is tenant-scoped, so it leaks nothing the 404-never-403 rule protects — it is a fact
       // about the caller's own identity, and it is the only fact that helps them.
       case 'noAccess':
         return {
           title: 'This address has no access yet',
-          lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different company cannot change that — an administrator needs to add it to one.'],
+          lines: ['You are signed in, but this address has not been given access to the portal, so every page refuses it. Selecting a different company cannot change that — someone who can add people here needs to add it.'],
         }
       case 'tooLarge':
         return { title: 'That is too much to send at once', lines: ['Shorten the goods description, or split the names across two searches.'] }
@@ -2286,8 +2286,8 @@ const Muted = ({ children }: { readonly children: React.ReactNode }) => (
 /**
  * The daily allowance, stated quietly.
  *
- * Only for principals it BINDS. Staff are uncapped, and telling a staff member "2 of 3 used" would be
- * both wrong and alarming. A null cap means the server could not tell us the limit — that renders as
+ * Only for principals it BINDS. A person with access to everything is uncapped, and telling them "2 of 3
+ * used" would be both wrong and alarming. A null cap means the server could not tell us the limit — that renders as
  * nothing at all rather than as zero or as unlimited, because inventing either would be a claim about
  * someone's contract.
  */

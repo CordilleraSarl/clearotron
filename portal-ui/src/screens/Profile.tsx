@@ -181,7 +181,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           </p>
         </div>
 
-        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} staff={mayChange} />
+        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} everything={ctx.me.allAccounts} />
 
         {/* ONE WRAPPER DECIDES WHETHER ANY OF THIS CAN BE CHANGED. Profile writes need Manage, and a
             disabled fieldset disables every control inside it natively — the fields, the pickers and the
@@ -400,20 +400,20 @@ function BandPill({ label, tone }: { readonly label: string; readonly tone: unkn
  * someone to try, and implies the page could write it if only it were enabled. It cannot: a framework is
  * selected in code under review, and the server strips these fields from every write.
  *
- * Role only decides the PATHS now (`skills/prelim-search/risk-framework-<customer>.md`), and it decides them
- * upstream in portal-upstream.frameworkView — by the time this renders, a client's payload no longer
- * carries them. visibleReadOnlyFields stays as the second wall, not the only one.
+ * Access to everything decides the PATHS (`skills/prelim-search/risk-framework-<customer>.md`), and it
+ * decides them upstream in portal-upstream's getProfile — by the time this renders, anyone else's payload
+ * no longer carries them. visibleReadOnlyFields stays as the second wall, on the same rule, not the only one.
  */
 function FrameworkBlock({
   readOnly,
   framework,
-  staff,
+  everything,
 }: {
   readonly readOnly: Record<string, unknown>
   readonly framework: Record<string, unknown> | null
-  readonly staff: boolean
+  readonly everything: boolean
 }) {
-  const entries = visibleReadOnlyFields(readOnly, staff)
+  const entries = visibleReadOnlyFields(readOnly, everything)
   const fw = framework ?? {}
   const manifest = rec(fw['manifest'])
   const title = str(manifest?.['title'])
@@ -646,13 +646,13 @@ function explain(r: { kind: string; errors?: readonly string[]; questions?: read
     // one thing that is not wrong. Someone who signs in successfully and can do nothing should be told
     // why on the page, not in a boot log nobody reads.
     //
-    // The words are the ones portal-service already logs at boot: on no staff domain, in no grants row.
+    // The words are the door's own: the page it serves an address with no access says the same thing.
     // Nothing here is tenant-scoped, so it leaks nothing the 404-never-403 rule protects — it is a fact
     // about the caller's own identity, and it is the only fact that helps them.
     case 'noAccess':
       return {
         title: 'This address has no access yet',
-        lines: ['You are signed in, but this address is on no staff domain and in no grants row, so every page refuses it. Selecting a different company cannot change that — an administrator needs to add it to one.'],
+        lines: ['You are signed in, but this address has not been given access to the portal, so every page refuses it. Selecting a different company cannot change that — someone who can add people here needs to add it.'],
       }
     case 'surfaceUnavailable':
       return {

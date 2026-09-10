@@ -51,6 +51,9 @@ if (!existsSync(join(DIST, 'index.html'))) {
 
 const KEY = 'vantor'
 const NAME = 'Vantor Labs'
+// A code-owned path the profile stub serves to everyone, as a server that forgot to strip it would. Only a
+// person with access to everything may read it on Profile; see PROFILE_PATHS_SCRIPT.
+const PLANTED_PATH = 'skills/prelim-search/risk-framework-planted.md'
 
 const KEY2 = 'foxglade'
 const NAME2 = 'Foxglade Interactive'
@@ -220,7 +223,7 @@ const server = createServer((req, res) => {
   }
   if (p === '/portal/api/config/profile') {
     return json(res, { account: KEY, profile: { platforms: ['gnc.com'], defaultClasses: [9], marketplaceDensity: 'Low' },
-      readOnly: {}, contextPack: '', framework: null, derived: null })
+      readOnly: { frameworkPath: PLANTED_PATH }, contextPack: '', framework: null, derived: null })
   }
   if (p === '/portal/api/usage') {
     return json(res, { account: KEY, today: 0, thisMonth: 0, queued: 0, dailyRuns: 3, monthlyRuns: null, maxQueued: null, capped: role !== 'staff' })
@@ -465,6 +468,27 @@ ${HELPERS}
 })()
 `
 
+/**
+ * Profile's code-owned path rows, read under two identities against a payload that carries one. The
+ * server strips it for anyone without access to everything, so the plant stands for a server that did
+ * not: whoever holds everything reads it, and nobody else does, Manage or no Manage.
+ */
+const PROFILE_PATHS_SCRIPT = `
+(async () => {
+${HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/brand/profile');
+    const drawn = () => /These settings scope every clearance/.test(txt());
+    const card = () => [...document.querySelectorAll('button.entry-card')].find((b) => b.innerText.includes(${JSON.stringify(NAME)}));
+    await mustSettle(() => drawn() || card(), 8000, 'Profile drew neither the profile nor the company panel');
+    if (!drawn()) { card().click(); await mustSettle(drawn, 8000, 'picking the company did not open its profile'); }
+    out.shown = txt().includes('risk-framework-planted');
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
 /** Pass two (client only): the two lifecycles that had no controls. */
 const LIFECYCLE_SCRIPT = `
 (async () => {
@@ -644,6 +668,8 @@ localMode = true
 await reload()
 const peopleLocal = await value(PEOPLE_LOCAL_SCRIPT)
 localMode = false
+await reload()
+const pathsStaff = await value(PROFILE_PATHS_SCRIPT)
 
 role = 'multi'
 await reload()
@@ -654,6 +680,8 @@ await reload()
 const asReader = await value(READER_SCRIPT)
 
 role = 'owner'
+await reload()
+const pathsOwner = await value(PROFILE_PATHS_SCRIPT)
 await reload()
 const life = await value(LIFECYCLE_SCRIPT)
 
@@ -769,6 +797,12 @@ if (!asReader || asReader.fatal) {
   ok(asReader.newProjectOffered === false, 'Projects offers New project to a person without Manage')
   ok(asReader.archiveOffered === false, 'Projects offers Archive or Bring back to a person without Manage')
 }
+// PROFILE'S PATH ROWS, the portal's own wall, driven. Staff is the control: it proves the plant reaches the
+// page, without which "the owner does not see it" would pass on a Profile that renders no path for anyone.
+for (const [who, out, shown] of [['staff', pathsStaff, true], ['owner', pathsOwner, false]]) {
+  if (!out || out.fatal) { fail.push(`profile paths (${who}): ${out?.fatal ?? 'the driver returned nothing'}`); continue }
+  ok(out.shown === shown, `${who}: Profile ${out.shown ? 'shows' : 'hides'} the framework's path, and should ${shown ? 'show' : 'hide'} it`)
+}
 
 if (!life || life.fatal) {
   fail.push(`lifecycle: ${life?.fatal ?? 'the driver returned nothing'}`)
@@ -830,7 +864,7 @@ ok(created != null, 'the new project never reached the server')
 ok(created == null || created.body.profile?.name === undefined,
   'a project must NEVER carry `name` — that is the customer identity the self-exclusion check anchors on')
 
-console.log(JSON.stringify({ asClient, asStaff, asMulti, asReader, people, peopleLocal, life, posted: posted.map((p) => p.path) }, null, 2))
+console.log(JSON.stringify({ asClient, asStaff, asMulti, asReader, people, peopleLocal, pathsStaff, pathsOwner, life, posted: posted.map((p) => p.path) }, null, 2))
 if (fail.length) {
   console.error(`\n${fail.length} problem(s):`)
   for (const f of fail) console.error(` ✗ ${f}`)

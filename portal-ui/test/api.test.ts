@@ -479,7 +479,7 @@ test('#1989 both settings screens answer three ways, not two', () => {
 
 // ── — A STAFF-LESS IDENTITY IS TOLD WHY, ON THE PAGE ──────────────────────────────
 //
-// Someone on no staff domain and in no grants row signs in successfully and can do nothing. Both screens
+// Someone who has not been given access signs in successfully and can do nothing. Both screens
 // collapsed `notFound` and `noAccess` into one answer — "Check the company selected at the top left"
 // — which sends that person to the one thing that is not wrong. The cause was stated only in a boot log.
 
@@ -491,15 +491,24 @@ test('#1920 the two refusals decode apart, and 403 is the door refusing the iden
   assert.notEqual(forbidden.kind, missing.kind, 'if these decoded the same, no screen could tell them apart')
 })
 
+// THE CAUSE IN THE DOOR'S OWN WORDS, read from the door rather than restated here. The page the door serves
+// an address with no access opens "You reached <operator>, but <cause>." and the screens must name the same
+// cause, so what is pinned is the agreement between the two: a change on either side reds here.
+const DOOR_CAUSE = readFileSync(new URL('../../driver/portal-service.mjs', import.meta.url), 'utf8')
+  .match(/You reached \$\{[^}]+\}, but ([^.]+)\./)?.[1] ?? ''
+
 test('#1920 both screens answer them DIFFERENTLY, and only one mentions the selector', () => {
+  assert.ok(DOOR_CAUSE.length > 20, `the door states a cause for an address with no access (read: "${DOOR_CAUSE}")`)
   // Source-level: these screens have no DOM harness, so what is pinned is that the branch exists and
   // what each branch says. The decode above is what makes the branch reachable.
   for (const f of ['Profile.tsx', 'NewClearance.tsx']) {
     const src = readFileSync(new URL(`../src/screens/${f}`, import.meta.url), 'utf8')
     assert.doesNotMatch(src, /case 'notFound':\s*\n\s*case 'noAccess':/,
       `${f} still answers both refusals with one sentence — that is the defect`)
-    assert.match(src, /no staff domain and in no grants row/,
-      `${f} must name the actual cause, in the words portal-service already logs at boot`)
+    const at = src.indexOf("case 'noAccess':")
+    assert.notEqual(at, -1, `${f} must handle noAccess`)
+    const branch = src.slice(at, src.indexOf("case '", at + 1))
+    assert.ok(branch.includes(DOOR_CAUSE), `${f} must name the actual cause in the door's own words: "${DOOR_CAUSE}"`)
     assert.match(src, /Selecting a different company cannot change that/,
       `${f} must say plainly that the selector is not the fix, since that is where it used to send them`)
   }

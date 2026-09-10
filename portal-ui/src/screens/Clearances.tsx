@@ -547,8 +547,8 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         />
       </div>
 
-      {/* THE FAMILY BAR. Present only for staff, and only once something is ticked — a control that does
-          nothing until you have made a selection is better introduced BY the selection.
+      {/* THE FAMILY BAR. Present only for a person with Manage, and only once something is ticked — a control
+          that does nothing until you have made a selection is better introduced BY the selection.
           — IT OVERLAYS RATHER THAN INSERTS. It used to be a `.notice` in normal flow, above the
           table header, so ticking a box pushed the entire table down and the page jumped under the
           cursor. It is now pinned to the bottom of the viewport: selecting or clearing a row moves
@@ -1404,8 +1404,8 @@ function FirstRun({ onNew }: { readonly onNew: (() => void) | null }) {
 /**
  * The account's daily allowance, as a quiet trailing sentence.
  *
- * Rendered only for principals it actually BINDS. Staff are uncapped, and telling a staff member "2 of 3
- * used" would be both wrong and alarming; a null cap means the server could not tell us the limit, which
+ * Rendered only for principals it actually BINDS. A person with access to everything is uncapped, and
+ * telling them "2 of 3 used" would be both wrong and alarming; a null cap means the server could not tell us the limit, which
  * renders as nothing rather than as zero or as unlimited — inventing either would be a claim about
  * someone's commercial terms.
  *
