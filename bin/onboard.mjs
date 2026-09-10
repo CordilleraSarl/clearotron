@@ -76,6 +76,7 @@ import { join, dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
 import { Writable } from "node:stream";
+import { looksLikeAKey, yesNoEchoOf } from "../shared/yes-no-echo.mjs";   // a yes/no question echoes only a yes/no answer
 
 import { envLocalPath, activeEnvPath, loadEnvLocal, LEGACY_ENV_LOCAL_LOCATION } from "../shared/env-local.mjs";
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials
@@ -2776,6 +2777,12 @@ export async function runCheck() {
 // ── CLI gate ─────────────────────────────────────────────────────────────────────────────────────────
 // Everything above is importable: the helpers are what the tests exercise directly, and importing this
 // file must not start a wizard. Same gate driver/dev-portal.mjs uses.
+// SETUP'S ONE READLINE KEEPS NO HISTORY. Readline remembers recent answers for the up-arrow, and a key
+// typed at a masked prompt, or pasted at a yes/no one, is an answer like any other: an up-arrow at the
+// next question brought it back in full, showed it and submitted it. Setup never needs an earlier answer
+// back. Exported so the test drives the options this file uses; above the call below, which reads it.
+export const SETUP_READLINE = Object.freeze({ terminal: true, historySize: 0 });
+
 if (!isEntrypoint(import.meta.url)) {
   // imported, not run — do nothing else
 } else {
@@ -2805,26 +2812,50 @@ if (!input.isTTY) {
 // in whatever the reader pastes into a bug report. So the echo is muted while a secret is being typed:
 // the output stream readline writes through drops everything while `muted` is set.
 let muted = false;
+// AND WHILE A YES/NO QUESTION IS OPEN, only what can still become its answer is echoed
+// (shared/yes-no-echo.mjs), so a key pasted there is never shown. `rl` is read only while one is open.
+let yesNo = false;
 const maskedOutput = new Writable({
-  write(chunk, enc, cb) { if (!muted) output.write(chunk, enc); cb(); },
+  write(chunk, enc, cb) {
+    if (!muted) {
+      const out = yesNo ? yesNoEchoOf(String(chunk), { line: rl.line, prompt: rl.getPrompt() }) : chunk;
+      if (out.length) output.write(out, yesNo ? undefined : enc);
+    }
+    cb();
+  },
 });
-const rl = createInterface({ input, output: maskedOutput, terminal: true });
+const rl = createInterface({ input, output: maskedOutput, ...SETUP_READLINE });
 const askRaw = async (q) => (await rl.question(q)).trim();
 const askSecretRaw = async (q) => {
   output.write(q);
   muted = true;
   try { return (await rl.question("")).trim(); } finally { muted = false; output.write("\n"); }
 };
-/** Yes/no with an explicit default. Enter takes the default; nothing else is guessed at. */
-const confirm = async (q, def = true) => {
+// A YES/NO READ: the echo is filtered for exactly as long as the question is open (see maskedOutput).
+const askYesNo = async (q) => { yesNo = true; try { return (await rl.question(q)).trim(); } finally { yesNo = false; } };
+/**
+ * Yes/no with an explicit default. Enter takes the default; nothing else is guessed at, except a key.
+ *
+ * A question that offers to take a key (`key: true`) accepts one pasted as the answer. The echo has
+ * already kept it off the screen, and asking for it a second time would only invite a second paste.
+ * Every other yes/no question still says "Please answer y or n." to anything that is not one.
+ */
+const confirmOrKey = async (q, def = true, { key = true, what = "key" } = {}) => {
   for (;;) {
-    const a = (await askRaw(`  ${q} ${def ? "[Y/n]" : "[y/N]"} `)).toLowerCase();
-    if (a === "") return def;
-    if (["y", "yes"].includes(a)) return true;
-    if (["n", "no"].includes(a)) return false;
+    const raw = await askYesNo(`  ${q} ${def ? "[Y/n]" : "[y/N]"} `);
+    const a = raw.toLowerCase();
+    if (a === "") return { yes: def, value: null };
+    if (["y", "yes"].includes(a)) return { yes: true, value: null };
+    if (["n", "no"].includes(a)) return { yes: false, value: null };
+    if (key && looksLikeAKey(raw)) {
+      info(`that looks like the ${what} itself, so it is taken as the answer. It was not shown.`);
+      info(`received — ${raw.length} characters, ending …${raw.slice(-4)}`);
+      return { yes: true, value: raw };
+    }
     say("  Please answer y or n.");
   }
 };
+const confirm = async (q, def = true) => (await confirmOrKey(q, def, { key: false })).yes;
 /**
  * — `skippable` IS THE WHOLE ANSWER TO "WHICH PROMPTS MAY BE LEFT EMPTY", DECIDED ONCE.
  *
@@ -3207,8 +3238,11 @@ try {
       // named, and the re-probe is the proof either way.
       if (eng.headless) {
         info(`on a box with no browser: run \`${eng.headless.cmd}\`${eng.headless.tokenEnv ? " (from any machine you can sign in on)" : " here"}.`);
-        if (eng.headless.tokenEnv && await confirm(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false)) {
-          const tok = await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." });
+        if (eng.headless.tokenEnv) {
+          // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
+          const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });
+          const tok = answer.value ?? (answer.yes
+            ? await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." }) : null);
           if (tok !== null) {
             candidate[eng.headless.tokenEnv] = tok;
             authEnv[eng.headless.tokenEnv] = tok;   // the re-probe below must prove the lane WITH it
@@ -3302,7 +3336,10 @@ try {
     if (present(candidate[k])) { ok(`${k} already adopted from your environment`); continue; }
     info(`${k} is optional. Without it, the offices it serves are DISCLOSED as deferred coverage rather`);
     info("  than searched — the run still works and still tells the truth about what it did not reach.");
-    if (await confirm(`Set ${k} now?`, false)) candidate[k] = await askValue(`${k}:`, { secret: true });
+    // A VALUE PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey), as at every question that leads to a secret.
+    const answer = await confirmOrKey(`Set ${k} now?`, false);
+    if (answer.value) candidate[k] = answer.value;
+    else if (answer.yes) candidate[k] = await askValue(`${k}:`, { secret: true });
     else info(`Skipped. Build the index later with: ${invocationPrefix()}clearotron sync`);
   }
   if (registerSelected) {
@@ -3373,7 +3410,10 @@ try {
       if (adapter.obtain) say(`  Where to get one: ${adapter.obtain}.`);
       if (!present(candidate[name])) {
         const skippedLine = `Skipped. You can add ${name} later; until then: ${adapter.absentMeans ?? "the lane stays off"}.`;
-        if (await confirm(`Enter a ${adapter.label} API key now?`, true)) {
+        // A KEY PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
+        const answer = await confirmOrKey(`Enter a ${adapter.label} API key now?`, true);
+        if (answer.value) candidate[name] = answer.value;
+        else if (answer.yes) {
           const v = await askValue(`${adapter.label} key:`, { secret: true, skippable: true, skipped: skippedLine });
           if (v !== null) candidate[name] = v;
         } else info(skippedLine);

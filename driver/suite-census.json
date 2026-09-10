@@ -351,6 +351,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-key-pasted-at-a-yes-no-prompt-is-taken-and-not-shown.test.mjs": {
+          "tests": 6,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
         "a-killed-browser-takes-its-children.test.mjs": {
           "tests": 2,
           "asserts": 4,
@@ -5146,8 +5152,8 @@
           "todos": 0
         },
         "what-doctor-passes-a-search-accepts.test.mjs": {
-          "tests": 11,
-          "asserts": 38,
+          "tests": 12,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
