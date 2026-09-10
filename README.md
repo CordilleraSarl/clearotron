@@ -36,8 +36,9 @@ npm install -g clearotron
 ```
 
 Node 22.13 or newer, on macOS or Linux. That puts `clearotron` on your `PATH`; every command below
-works in that short form. **On Windows the demo above runs natively; a real clearance needs WSL2** —
-the engine resolves the reasoning CLI the POSIX way and refuses at preflight otherwise.
+works in that short form. **On Windows the demo above runs natively; a real clearance needs WSL2.**
+Native Windows clearances are planned for a later release. Until then the engine does not run on native
+Windows: it resolves the reasoning CLI the POSIX way, and a clearance started there refuses at preflight.
 
 That command gives you the **stable** release — the one that has run a real clearance end to end before it
 was published. If you want the newest code instead, a beta is published whenever there is something worth

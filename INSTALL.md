@@ -48,7 +48,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 - **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
   demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine resolves
   the reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI
-  on `PATH`. On Windows, `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
+  on `PATH`. Native Windows clearances are planned for a later release. Until then, on Windows,
+  `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
   from **inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no
   curl and no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node at all, and
   apt's package is below the floor above, so `npx` answers "not found" before anything of ours runs.
