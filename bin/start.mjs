@@ -490,7 +490,7 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   "profile-service.service": "the portal constructs the profile service IN-PROCESS (driver/portal-service.mjs); the standalone unit is the separate-editor deployment shape and running both double-serves the store",
 });
 
-export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null, env = process.env }) {
+export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null, credential = null, env = process.env }) {
   // ONE AUTHOR FOR THIS EXPRESSION. The hosted install path composes the same
   // origin, and the near-miss is specific: this is an ORIGIN, the portal's client appends `/mcp`
   // itself, and a second author writing the endpoint form produces a doubled path — a 404 at submit
@@ -628,6 +628,13 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
         // sign-in screen they cannot pass. Measured by driving it. It is also
         // what makes "removing the demo is one directory" true rather than nearly true.
         PORTAL_LOCAL_CREDENTIAL: paths.credential,
+      } : credential ? {
+        // A LIVE INSTALL IS HANDED THE CREDENTIAL START CHOSE FOR IT when that is not the shared default:
+        // its own file, on its first start or once it has one, or the operator's own setting. Unset, it
+        // signs in with the shared default, which an install that has been using it keeps
+        // (installCredential says why). Never `paths.credential` unconditionally, as the demo has it: that
+        // would move a live install's credential and lock out whoever holds its passphrase.
+        PORTAL_LOCAL_CREDENTIAL: credential,
       } : {}),
       // — ONLY set when this launcher is supervising a worker. It is what licenses the portal to say
       // "waiting for a worker": a deployed instance drains via systemd and writes no heartbeat, so without
@@ -774,6 +781,14 @@ if (isMain) {
     ["recipes", "CLEAROTRON_RECIPES_DIR"]]) if (process.env[name]) paths[k] = process.env[name];
   if (process.env.RECIPE_REPO_ROOT) paths.configStore = process.env.RECIPE_REPO_ROOT;
   if (process.env.PORTAL_AUDIT) paths.audit = process.env.PORTAL_AUDIT;
+  // ── THIS INSTALL'S FIRST START, read before this start writes either file that answers it ────────────
+  //
+  // The grants file and the config store's repository are both written further down, on every start
+  // since the first public release, so both absent means nothing has ever started this install. It
+  // decides one thing: whether this install mints a sign-in credential of its own, or keeps the shared
+  // one an earlier start of it has been using (installCredential says why). Asked here, before anything
+  // is written, so no later line can make the answer "no" on the run that is the first.
+  const firstStartOfThisInstall = !existsSync(paths.grants) && !existsSync(join(paths.configStore, ".git"));
   // recipe-service SAVES by committing, so the store has to live inside the repository it commits to.
   // Said at boot rather than discovered on the first Save, where the message is about `git add`.
   // — the shared statement, so the launcher, the two services and the portal cannot describe the
@@ -1261,8 +1276,13 @@ if (isMain) {
   // process's resolved environment, which is where `<repo>/.env` has already been applied, so a
   // decision recorded in that file survives a start rather than being silently overwritten with "1".
   const declaredFence = String(process.env.CLIENT_MCP_ACCOUNT_ACCESS ?? "").trim();
+  // WHICH SIGN-IN CREDENTIAL THIS INSTALL USES, decided by the function `clearotron passphrase` asks too, so
+  // the file the verb resets is the file the portal reads. A demo keeps its own, by layout (childEnv).
+  const { installCredential } = await import("../driver/portal-local-auth.mjs");
+  const signIn = DEMO ? null : installCredential({ base: paths.base, env: process.env, firstStart: firstStartOfThisInstall });
   const envs = childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken,
-    localWorker: wantWorker, demo: DEMO, clientFence: declaredFence || null });
+    localWorker: wantWorker, demo: DEMO, clientFence: declaredFence || null,
+    credential: signIn && signIn.source !== "shared" ? signIn.path : null });
 
   // ── 3b. the configuration snapshot, so the portal can name this install's MODE ────────────────────
   //
@@ -1849,7 +1869,7 @@ if (isMain) {
   // Captured HERE, immediately before the spawn, rather than beside the sentence that reads it: the
   // check has to sit on the other side of the thing that mints, and the only way to keep that true is
   // for it to be adjacent to the spawn where a reader can see why.
-  const { credentialPathFor: credentialPathBeforeStart, newPassphrase, passphraseResetCommand } = await import("../driver/portal-local-auth.mjs");
+  const { credentialPathFor: credentialPathBeforeStart, newPassphrase, passphraseResetCommand, demoCredentialToReplace, laterStartLines, readLocalCredential } = await import("../driver/portal-local-auth.mjs");
   // ASKED ABOUT THE FILE THE PORTAL WILL ACTUALLY USE, not the shared default. `credentialPathFor`
   // reads `PORTAL_LOCAL_CREDENTIAL`, and a demo sets it to a file inside its own base — but this call
   // was made against THIS process's environment, which never carries it. So on any box that already had
@@ -1858,6 +1878,13 @@ if (isMain) {
   // reprinted" over a credential file that was empty. The visitor got a sign-in screen they could not
   // pass — which is the exact failure the demo's own credential path was introduced to prevent, left
   // half-wired because the mint decision was reading a different file from the mint.
+  // A DEMO ALWAYS HAS A WAY IN (demoCredentialToReplace says why): its own credential is replaced on every
+  // start, so this start mints and the frame below prints a passphrase that works. Before the capture,
+  // because the capture is what decides whether to mint.
+  if (DEMO) {
+    const stale = demoCredentialToReplace({ path: credentialPathBeforeStart(envs.portal), ownPath: paths.credential, user });
+    if (stale) unlinkSync(stale);
+  }
   const credentialExisted = existsSync(credentialPathBeforeStart(envs.portal));
 
   // ── MINT HERE SO THE SUMMARY CAN PRINT IT ( — F10) ────────────────────────
@@ -1999,9 +2026,12 @@ if (isMain) {
     say(`  │  Lost it? ${reset}`);
     say(`  └${rule}┘`);
   } else {
-    say(`  Sign in as ${user}.`);
-    say("  The passphrase was minted on an earlier start and is NOT reprinted — it is stored only as a");
-    say(`  digest. Lost it? Run  ${reset}  to mint a new one.`);
+    // THE WAY BACK IN FIRST, then which credential, when and for whom: laterStartLines says why. Read for
+    // its date and address only; a file that cannot be read is named by the portal's own boot.
+    const credentialNow = credentialPathBeforeStart(envs.portal);
+    let record = null;
+    try { record = readLocalCredential(credentialNow); } catch { /* the portal's own boot names what is wrong with it */ }
+    for (const line of laterStartLines({ user, reset, credentialPath: credentialNow, source: signIn?.source ?? "install", record })) say(line);
   }
   say("");
   if (worker) {

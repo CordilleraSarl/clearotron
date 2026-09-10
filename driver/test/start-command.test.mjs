@@ -530,6 +530,12 @@ test("the demo posture reaches the portal and changes nothing about either door"
     "the demo's sign-in credential is outside its own base, so removing the demo leaves it behind");
   assert.equal(live.portal.PORTAL_LOCAL_CREDENTIAL, undefined,
     "a live install had its credential path rewritten — that is not this flag's business");
+  // AND A LIVE INSTALL IS HANDED ONLY THE CREDENTIAL START CHOSE FOR IT. `installCredential` decides, in
+  // start's own run; this composer carries the answer and adds nothing of its own, in either direction.
+  assert.equal(childEnv({ ...common, credential: paths.credential }).portal.PORTAL_LOCAL_CREDENTIAL, paths.credential,
+    "a live install that start gave its own credential was not handed it, so its portal would sign in with the shared file");
+  assert.equal(childEnv({ ...common, demo: true, credential: "/elsewhere/cred.json" }).portal.PORTAL_LOCAL_CREDENTIAL, paths.credential,
+    "a demo keeps its own credential whatever it is handed");
   assert.equal(demo.portal.PORTAL_AUTH_MODE, "local", "sign-in is out of scope and must be untouched");
   assert.equal(demo.url, live.url, "a demo is served at the same address by the same service");
 });

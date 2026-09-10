@@ -732,9 +732,10 @@ Use the demo to see what this system produces. Use `npx clearotron start` to run
 - Creates `~/trademark/` — `pool/`, `workspace/`, `queue/`, `outbox/`, `locks/`, an empty grants file,
   and a small git repository for saved searches. Same base directory `npx clearotron install` uses, so whichever
   of the two you ran first, the other finds the same install. Move it with `npx clearotron start --base <dir>`.
-- Mints your sign-in passphrase and **prints it once**. Write it down. It is stored as a scrypt digest,
-  nothing can read it back, and no later start reprints it. To get a new one, delete
-  `~/.cordillera/portal-local-credential.json` and start again.
+- Mints your sign-in passphrase and **prints it once**. Write it down. It is stored as a scrypt digest in
+  `~/trademark/portal-local-credential.json`, nothing can read it back, and no later start reprints it. To
+  get a new one, run `clearotron passphrase --reset`. An install that has been signing in with
+  `~/.cordillera/portal-local-credential.json`, which earlier versions shared between installs, keeps it.
 
 ### Who you are
 

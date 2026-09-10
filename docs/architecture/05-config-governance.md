@@ -394,7 +394,8 @@ Local mode adds two values and no third: `PORTAL_LOCAL_USER` is the one email ad
 in `CLEAROTRON_ACCESS_FILE`, because signing in is not being enrolled), and
 `PORTAL_LOCAL_CREDENTIAL` optionally relocates the credential file, which otherwise lives at
 `~/.cordillera/portal-local-credential.json` (mode 0600, never in the repository and never inside the
-pool or the archive). `PORTAL_SECRET` is required in BOTH modes and signs both token families — the
+pool or the archive). `clearotron start` gives a new install its own file in its base directory instead,
+and an install that has been signing in with the shared file keeps it. `PORTAL_SECRET` is required in BOTH modes and signs both token families — the
 confirmation tokens unprefixed, the session cookie prefixed with a domain separator so neither can be
 replayed as the other. First start in local mode mints a passphrase and prints it once.
 

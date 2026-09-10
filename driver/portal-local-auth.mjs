@@ -44,7 +44,7 @@
 // running portal; prefixing it would invalidate every in-flight confirmation on deploy, and it does not
 // need the prefix — one side of a pair is enough to separate the pair.
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from "node:crypto";
-import { readFileSync, writeFileSync, mkdirSync, chmodSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
 import { envPrefix } from "../shared/os-advice.mjs";
@@ -169,6 +169,85 @@ export function passphraseResetCommand({ prefix = "", credentialPath = null, env
   // statement there — so this line told a Windows reader their variable name was not a cmdlet, naming
   // the wrong half of the command as the fault. Reported from a real run.
   return `${envPrefix("PORTAL_LOCAL_CREDENTIAL", path)}${base}`;
+}
+
+/**
+ * The name an install's own credential has inside the install's directory: the shared default's name,
+ * so the two are one kind of file in two places.
+ */
+export const INSTALL_CREDENTIAL_FILE = "portal-local-credential.json";
+
+/** The directory `clearotron start` and setup use when none is given: `~/trademark`, or the demo's own. */
+export function defaultInstallBase({ demo = false, home = null } = {}) {
+  return join(home ?? homedir(), demo ? "trademark-demo" : "trademark");
+}
+
+/**
+ * WHICH CREDENTIAL AN INSTALL SIGNS IN WITH, decided here once, so the file `clearotron passphrase` resets
+ * is the file the portal reads.
+ *
+ * A NEW INSTALL GETS ITS OWN, as the demo already does. Every install used to sign in with the one shared
+ * file under the operator's home, so an install made on a machine that had held another adopted that
+ * install's digest. Its first start said the passphrase "was minted on an earlier start and is NOT
+ * reprinted", and the person who had just installed had no passphrase and no way to learn one. Reported
+ * from a real install, 2026-09-10.
+ *
+ * AN INSTALL THAT HAS BEEN USING THE SHARED FILE KEEPS IT. Moving it would stop the passphrase its operator
+ * holds from working, and under a service unit the new one would reach only the journal.
+ *
+ * In order: the operator's own setting; the install's own file when it exists; the install's own file on
+ * the install's first start, or when there is no shared file to keep; otherwise the shared file. `source`
+ * says which of "configured", "install" and "shared" answered.
+ */
+export function installCredential({ base, env = process.env, home = null, firstStart = false, exists = existsSync } = {}) {
+  const configured = String(env.PORTAL_LOCAL_CREDENTIAL ?? "").trim();
+  if (configured) return { path: configured, source: "configured" };
+  const own = join(base, INSTALL_CREDENTIAL_FILE);
+  if (exists(own) || firstStart) return { path: own, source: "install" };
+  const shared = credentialPathFor({}, home);
+  return exists(shared) ? { path: shared, source: "shared" } : { path: own, source: "install" };
+}
+
+/**
+ * What a start that minted nothing says about signing in, composed so a test can read the TEXT.
+ *
+ * THE WAY BACK IN COMES FIRST. The reader holds, at best, a passphrase from a start they may not remember,
+ * and at worst none: an install signing in with a file another install wrote. The recovery command used
+ * to be the last words of the paragraph. It is the first line now.
+ *
+ * AND IT SAYS WHICH FILE, WHEN IT WAS WRITTEN AND FOR WHOM, which is all that can be known about a reused
+ * credential. Nothing records which install wrote a shared file, so a shared file is called shared rather
+ * than attributed to anyone.
+ */
+export function laterStartLines({ user, reset, credentialPath, source = "install", record = null }) {
+  const made = record?.createdAt ? `created ${String(record.createdAt).slice(0, 10)}` : "no creation date recorded";
+  const lines = [`  Sign in as ${user}. No passphrase for it? Run  ${reset}  to mint a new one; it is printed once.`];
+  if (source === "shared") {
+    lines.push(`  This install signs in with the shared credential ${credentialPath} (${made}${record?.email ? `, for ${record.email}` : ""}).`);
+    lines.push("  It is not inside this install's directory, so an earlier install on this machine may have written it.");
+  } else {
+    lines.push(`  Its credential is ${credentialPath} (${made}).`);
+  }
+  lines.push("  The passphrase was minted on an earlier start and is NOT reprinted: the file holds only a digest of it.");
+  return lines;
+}
+
+/**
+ * The demo credential a demo start should replace, or null.
+ *
+ * A DEMO ALWAYS HAS A WAY IN. A demo run on a machine where an earlier demo had left its credential reused
+ * it, minted nothing, and told the visitor the passphrase "was minted on an earlier start": a sign-in they
+ * could not pass, reported from a real machine, 2026-09-10. A demo's credential guards invented data in a
+ * directory that is removed as one, so every demo start replaces it and prints the new passphrase.
+ *
+ * ONLY ITS OWN FILE, AND ONLY FOR THE DEMO'S ADDRESS. A credential anywhere else, for another address, or
+ * one that cannot be read is left exactly where it is, and the portal's own boot says what is wrong with it.
+ */
+export function demoCredentialToReplace({ path, ownPath, user, read = readLocalCredential }) {
+  if (!path || path !== ownPath) return null;
+  let rec;
+  try { rec = read(path); } catch { return null; }
+  return rec && rec.email === String(user ?? "").trim().toLowerCase() ? path : null;
 }
 
 /**
