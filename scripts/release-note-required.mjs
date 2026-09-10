@@ -235,7 +235,9 @@ function main() {
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
     + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`);
-  for (const d of declined) console.log(`  no note, declared on purpose by ${d.sha.slice(0, 7)}: ${d.reason}`);
+  // PER COMMIT, SAID AS PER COMMIT. "no note, declared on purpose" read as a verdict on the range, and beside
+  // a range that carries a note it told a reader skimming the output that none went out. Found in review.
+  for (const d of declined) console.log(`  ${d.sha.slice(0, 7)} declines a note of its own, on purpose: ${d.reason}`);
   if (!owed.length) return;
 
   console.error(`\n${owed.length} commit(s) that ship as code owe a release note:\n`);
