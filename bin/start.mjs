@@ -574,9 +574,11 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
     "CLEAROTRON_RUN_LOCK_DIR": paths.locks,
     "CLEAROTRON_ACCESS_FILE": paths.grants,
 
-    // THE DEMO'S OWN STORE, and every name that chooses a store pinned to it. Inherited, a
-    // CLEAROTRON_CUSTOMERS_DIR, CLEAROTRON_INSTRUCTIONS_DIR or PROFILE_REPO_ROOT hands the demo's
-    // children the reader's real config store, and a company created in the demo is written into it.
+    // THE DEMO'S OWN STORE, and every name that chooses a store pinned to it, for every child and not
+    // only the portal. Inherited, a CLEAROTRON_CUSTOMERS_DIR, CLEAROTRON_INSTRUCTIONS_DIR or
+    // PROFILE_REPO_ROOT hands the demo's children the reader's real config store, and a company created
+    // in the demo is written into it. An inherited CLEAROTRON_RECIPES_DIR has the MCP door list that
+    // install's saved searches, and plan runs against them, while the portal shows the demo's own.
     // Empty is unset to every reader. The demo overrides no instruction, so the product's own are read
     // (the portal derives no overlay in a demo), and the two audit logs and the feedback directory fall
     // back to their places inside the demo's own directories.
@@ -584,6 +586,8 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       "CLEAROTRON_CUSTOMERS_DIR": paths.profiles,
       "CLEAROTRON_INSTRUCTIONS_DIR": "",
       "PROFILE_REPO_ROOT": paths.configStore,
+      "CLEAROTRON_RECIPES_DIR": paths.recipes,
+      "RECIPE_REPO_ROOT": paths.configStore,
       "PROFILE_AUDIT": "",
       "RECIPE_AUDIT": "",
       "CLEAROTRON_FEEDBACK_DIR": "",

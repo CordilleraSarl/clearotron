@@ -507,12 +507,17 @@ test("the demo posture reaches the portal and changes nothing about either door"
   // inherited store serves the reader's real install inside the demo — 0.3.0-beta.1's defect.
   const DEMO_STORE = {
     CLEAROTRON_CUSTOMERS_DIR: paths.profiles, CLEAROTRON_INSTRUCTIONS_DIR: "",
-    PROFILE_REPO_ROOT: paths.configStore, PROFILE_AUDIT: "", RECIPE_AUDIT: "", CLEAROTRON_FEEDBACK_DIR: "",
+    PROFILE_REPO_ROOT: paths.configStore, CLEAROTRON_RECIPES_DIR: paths.recipes, RECIPE_REPO_ROOT: paths.configStore,
+    PROFILE_AUDIT: "", RECIPE_AUDIT: "", CLEAROTRON_FEEDBACK_DIR: "",
   };
+  // The portal is handed the saved-searches store on every install, a live one included. What the demo's
+  // rule must not do is hand a live install's OTHER doors anything.
+  const LIVE_PORTAL = { CLEAROTRON_RECIPES_DIR: paths.recipes, RECIPE_REPO_ROOT: paths.configStore };
   for (const door of ["mcp", "worker", "portal", "client"]) {
     for (const [k, v] of Object.entries(DEMO_STORE)) {
       assert.equal(demo[door][k], v, `${door}/${k}: the demo's door is not pinned to the demo's own store`);
-      assert.equal(live[door][k], undefined, `${door}/${k}: a live install's store was pinned by the demo's rule`);
+      assert.equal(live[door][k], door === "portal" ? LIVE_PORTAL[k] : undefined,
+        `${door}/${k}: a live install's store was pinned by the demo's rule`);
     }
   }
   for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "PROFILE_REPO_ROOT"])
@@ -548,6 +553,31 @@ test("the demo posture reaches the portal and changes nothing about either door"
     "a live install had its credential path rewritten — that is not this flag's business");
   assert.equal(demo.portal.PORTAL_AUTH_MODE, "local", "sign-in is out of scope and must be untouched");
   assert.equal(demo.url, live.url, "a demo is served at the same address by the same service");
+});
+
+// EVERY STORE THE PORTAL IS HANDED, EVERY CHILD IS HANDED. A child is spawned with
+// `{ ...process.env, ...its own block }`, so a location the portal's block pins and a child's block does
+// not reaches that child from the shell. That is how the saved-searches store reached the demo's MCP door
+// while its portal showed the demo's own. The population is derived from what the portal is handed, so
+// the next such name is caught without anyone adding it here.
+test("in a demo, every location the portal is handed inside the demo's base is handed to every child", () => {
+  const paths = installPaths("/srv/demo-base");
+  const demo = childEnv({ ports: { portal: 18802, mcp: 18790, client: 18811 }, paths, user: "demo@localhost",
+    portalSecret: "p", tokenSecret: "t", opsToken: "o", demo: true });
+  // The portal's own files. Each is read by the portal alone, so no other child is handed it.
+  const PORTAL_OWN = {
+    PORTAL_AUDIT: "the portal's audit log, which only the portal writes or reads",
+    PORTAL_LOCAL_CREDENTIAL: "the sign-in credential, which only the portal checks a passphrase against",
+  };
+  const inside = Object.keys(demo.portal).filter((k) => String(demo.portal[k]).startsWith(`${paths.base}/`));
+  assert.ok(inside.length >= 10, `only ${inside.length} name(s) point inside the demo's base, so this arm would check almost nothing`);
+  for (const k of Object.keys(PORTAL_OWN))
+    assert.ok(inside.includes(k), `${k} is declared as the portal's own, and the portal no longer holds it inside the base`);
+  for (const door of ["mcp", "worker", "client"]) {
+    for (const k of inside.filter((n) => !(n in PORTAL_OWN)))
+      assert.equal(demo[door][k], demo.portal[k], `${door}/${k}: the portal is handed the demo's own, and this child takes the shell's`);
+  }
+  assert.equal(demo.mcp.CLEAROTRON_RECIPES_DIR, paths.recipes, "the MCP door lists saved searches from outside the demo's own store");
 });
 
 test("the demo's data directory is its own, so trying the demo costs a real install nothing", () => {
