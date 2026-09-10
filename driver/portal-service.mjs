@@ -3309,7 +3309,7 @@ export function skillsOverlayAtBoot({ explicit = null, profileRepoRoot = null, r
   if (!profileRepoRoot) return { pin: null, line: posture || `WARNING: skills overlay unset — ${synthetic}` };
   const dir = join(profileRepoRoot, "skills");
   const nothing = (how) => posture || (`skills overlay: ${dir} ${how}, so this install overrides nothing and the product's own `
-    + "instruction files are used. To override one, put the file there, commit it, and set CLEAROTRON_INSTRUCTIONS_DIR to that folder.");
+    + "instruction files are used. To override one, put the file there, commit it, set CLEAROTRON_INSTRUCTIONS_DIR to that folder, and restart.");
   let entries;
   try { entries = readdir(dir); }
   catch (e) {
