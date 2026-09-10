@@ -38,7 +38,7 @@ const composer = (() => {
     (s) => String(s).replace(/api_key=[^&\s]*/gi, "api_key=[redacted]"));
 })();
 
-test("#525/#848 the note carries the provider's verbatim cause, not just the ratio", () => {
+test("the note carries the provider's verbatim cause, not just the ratio", () => {
   const line = composer("jx serp grid", "degraded",
     '42/42 cells gapped: SerpAPI 429: {"error": "Your account has run out of searches."}', "attempt 1/3");
   assert.match(line, /42\/42 cells gapped/, "the loss");
@@ -46,7 +46,7 @@ test("#525/#848 the note carries the provider's verbatim cause, not just the rat
     "and WHY — the field had this the whole time and the sentence dropped it");
 });
 
-test("#848 'unaffected' cannot describe a degraded capability, in any of the four notices", () => {
+test("'unaffected' cannot describe a degraded capability, in any of the four notices", () => {
   // Ruled 2026-08-13: the word may describe the pipeline's continuation and nothing else. Asserted
   // against the SOURCE rather than one composed string, because the defect was one literal out of
   // four drifting — checking the composer alone would pass while a fifth literal reintroduced it.
@@ -60,7 +60,7 @@ test("#848 'unaffected' cannot describe a degraded capability, in any of the fou
   assert.ok(emitted.length >= 4, `expected every notice site to be checked, saw ${emitted.length}`);
 });
 
-test("#525 the cause is redacted on the way into the sentence, as it is into the record", () => {
+test("the cause is redacted on the way into the sentence, as it is into the record", () => {
   const line = composer("jx serp grid", "degraded",
     "SerpAPI 401: https://serpapi.com/search?q=x&api_key=SECRETVALUE123", "attempt 2/3");
   assert.ok(!line.includes("SECRETVALUE123"),

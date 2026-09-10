@@ -15,7 +15,7 @@
 //
 // ── WHAT MOVES, AND THE LINE THIS CONVERSION MUST NOT CROSS ────────────────────────────────────────
 //
-// OWNER RULING S2 (2026-08-13) re-scoped rather than adopting it: "the mechanical card fields
+// RULING S2 (2026-08-13) re-scoped rather than adopting it: "the mechanical card fields
 // (headings, ids, links, driver-stamped values) move to code NOW — uncontested. The prose half is
 // decided by EVIDENCE: after config #40 lands, build one matter both ways and the owner reads the two
 // cards side by side. If the rendered card reads worse, the model pass stays, on typed inputs."

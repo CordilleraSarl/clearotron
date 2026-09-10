@@ -31,7 +31,7 @@ import { demoBannerHtml } from "../publish/render.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-test("2013 a demo-marked run declares itself, and says BOTH halves", () => {
+test("a demo-marked run declares itself, and says BOTH halves", () => {
   const html = demoBannerHtml(true);
   assert.ok(html, "a demo run must be marked on the report's own face");
   // Each half alone misleads in a different direction: "invented" alone reads as a toy and throws away
@@ -41,7 +41,7 @@ test("2013 a demo-marked run declares itself, and says BOTH halves", () => {
   assert.match(html, /real/i, "and the register records behind it are real, which is what keeps it useful");
 });
 
-test("2013 a normal report gains NOTHING — no banner, no class, no attribute", () => {
+test("a normal report gains NOTHING — no banner, no class, no attribute", () => {
   // The negative is the one that protects clients. Asserted on the exact falsey shapes a caller can
   // produce, because `opts.demoData` is absent on every legacy call site in the tree.
   for (const v of [false, undefined, null, 0, ""]) {
@@ -49,7 +49,7 @@ test("2013 a normal report gains NOTHING — no banner, no class, no attribute",
   }
 });
 
-test("2013 the banner is INLINE-STYLED, so it survives a frozen stylesheet", () => {
+test("the banner is INLINE-STYLED, so it survives a frozen stylesheet", () => {
   // THE LOAD-BEARING ARM. A class-styled banner passes every other assertion in this file and is
   // invisible on exactly the reports that matter: the ones already published, whose CSS was frozen
   // before this marking existed. `homeButton` in the same file is inline for the same reason and says so.
@@ -64,7 +64,7 @@ test("2013 the banner is INLINE-STYLED, so it survives a frozen stylesheet", () 
     + "would render on fresh reports and vanish on re-rendered ones — landed-looking and inert.");
 });
 
-test("2013 the marking is NOT `no-print` — the console and the topbar are not surfaces", () => {
+test("the marking is NOT `no-print` — the console and the topbar are not surfaces", () => {
   // The old disclaimer was a console line. The topbar is `no-print` and absent from every exported PDF.
   // A report is forwarded and printed, so the marking has to be in the document body.
   assert.doesNotMatch(demoBannerHtml(true), /no-print/,
@@ -74,7 +74,7 @@ test("2013 the marking is NOT `no-print` — the console and the topbar are not 
   assert.match(hero, /demoBannerHtml/, "it renders inside the hero, which is the first thing on screen and on paper");
 });
 
-test("2013 the publisher resolves it from the roster, so a REPUBLISH picks it up", () => {
+test("the publisher resolves it from the roster, so a REPUBLISH picks it up", () => {
   // Criterion 5, and the reason it departs from the frozen-sidecar rule beside it: every report already
   // in a pool has a sidecar with no marker, because the marker did not exist when it was written. A
   // sidecar-only read would mark nothing that already exists — which is every demo report in the world

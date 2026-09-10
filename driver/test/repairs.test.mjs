@@ -504,7 +504,7 @@ const AXIS_FAILED = "failed: nonzero_exit_1";
 const SLICE_414 = "provider error: corsearch_search HTTP 414 <URI Too Long>";
 const SLICE_500 = "provider error on the count probe: HTTP 500 Count Failed - IL - Near/Adj";
 
-test("#958: a slice with no error of its own does NOT borrow the axis's repair outcome", () => {
+test("a slice with no error of its own does NOT borrow the axis's repair outcome", () => {
   // The regression. The axis LANDED blocks — the executor demonstrably ran and wrote — so these two
   // qids are an identity/coverage hole. Before the fix both inherited "socket hang up" and the park
   // was stamped transient, spending the weather budget on a plan-execution defect.
@@ -521,7 +521,7 @@ test("#958: a slice with no error of its own does NOT borrow the axis's repair o
     "…but the quote is kept: a reader must still be told a repair was tried and what it hit");
 });
 
-test("#958: the honest transient path survives — an axis that landed NOTHING speaks for its slices", () => {
+test("the honest transient path survives — an axis that landed NOTHING speaks for its slices", () => {
   // That weather lane exists for exactly this: the executor never wrote, so its transport failure IS
   // this slice's story. Narrowing the fallback to nothing would have broken the dead-provider case.
   const { rows, failClass } = fanInMissingEvidence(["primary-sweep:exact:alpha"], {
@@ -535,7 +535,7 @@ test("#958: the honest transient path survives — an axis that landed NOTHING s
   assert.equal(recoveryLaneOf("transient", rows[0].classifiedOn), "weather", "…and its remedy is still TIME");
 });
 
-test("#958: a slice's OWN provider error always wins, and classifies on its own merits", () => {
+test("a slice's OWN provider error always wins, and classifies on its own merits", () => {
   const transientOwn = fanInMissingEvidence(["a"], {
     ownError: new Map([["a", SLICE_500]]),
     axisOutcome: new Map([["x", AXIS_FAILED]]), landedByAxis: new Map([["x", 9]]), axisOf: () => "x",
@@ -552,7 +552,7 @@ test("#958: a slice's OWN provider error always wins, and classifies on its own 
   assert.equal(deterministicOwn.failClass, "deterministic", "a URI-too-long is a request-shape verdict; retry is futile");
 });
 
-test("#958: ONE deterministic slice makes the whole park deterministic", () => {
+test("ONE deterministic slice makes the whole park deterministic", () => {
   // `every` — the park is transient only if re-sampling could fix ALL of it. A mixed set that keeps
   // buying the backoff ladder is the Open Country pathology TRANSIENT_RE's comment names.
   const { failClass } = fanInMissingEvidence(["a", "b"], {
@@ -562,13 +562,13 @@ test("#958: ONE deterministic slice makes the whole park deterministic", () => {
   assert.equal(failClass, "deterministic");
 });
 
-test("#958: an empty missing set is NOT vacuously transient", () => {
+test("an empty missing set is NOT vacuously transient", () => {
   // `[].every(...)` is true. A vacuous transient here would hand a clean fan-in the full backoff ladder.
   assert.equal(fanInMissingEvidence([], {}).failClass, "deterministic");
   assert.equal(fanInMissingEvidence(undefined, {}).failClass, "deterministic");
 });
 
-test("#958: no outcome at all reads as nothing-ran, never as no-objection", () => {
+test("no outcome at all reads as nothing-ran, never as no-objection", () => {
   const { rows, failClass } = fanInMissingEvidence(["a"], {
     ownError: new Map(), axisOutcome: new Map(), landedByAxis: new Map(), axisOf: () => "x",
   });
@@ -578,7 +578,7 @@ test("#958: no outcome at all reads as nothing-ran, never as no-objection", () =
   assert.equal(rows[0].classifiedOn, "");
 });
 
-test("#958: a quoted transient axis outcome does NOT reach the lane through the text path", () => {
+test("a quoted transient axis outcome does NOT reach the lane through the text path", () => {
   // The property that replaces an over-tight first cut of this test. That cut asserted the reason
   // carried no transient token at all — which withheld the provider's verbatim error from the terminal
   // diagnosis and was caught by the repair-first arm that holds a 414-shaped dispatch failure terminal.
@@ -601,7 +601,7 @@ test("#958: a quoted transient axis outcome does NOT reach the lane through the 
     "the TEXT guess is transient — which is exactly why the explicit stamp must win, and repairs.mjs says it does");
 });
 
-test("#958: DETERMINISTIC_RE already matched this throw's own words — the stamp was overriding a correct guess", () => {
+test("DETERMINISTIC_RE already matched this throw's own words — the stamp was overriding a correct guess", () => {
   // Not a behaviour assertion on the fix: it pins WHY the defect was invisible. The text classifier had
   // it right and repairs.mjs's own note says an explicit stamp always wins over it.
   assert.match(WILDERNESS_REASON, DETERMINISTIC_RE);
@@ -615,7 +615,7 @@ test("#958: DETERMINISTIC_RE already matched this throw's own words — the stam
 const NEAR_ADJ_REFUSAL = "provider error (after one in-tool retry): provider error on the count probe before enumeration: HTTP 500: INTERNAL_SERVER_ERROR - Count Failed - IL - Near/Adj queries with sub queries that can return a huge amount of results are not allowed";
 const REAL_500 = "provider error on the count probe: HTTP 500 upstream index unavailable";
 
-test("#960: a 5xx that STATES a request-shape verdict is permanent, not weather", () => {
+test("a 5xx that STATES a request-shape verdict is permanent, not weather", () => {
   // The regression. TRANSIENT_RE matches `\bhttp\s?5\d\d\b`, so the old predicate
   // `(reason) => !TRANSIENT_RE.test(reason)` read this as retryable and filed it ladder-spent.
   assert.equal(TRANSIENT_RE.test(NEAR_ADJ_REFUSAL), true, "it still LOOKS transient by status code — that is the trap");
@@ -623,20 +623,20 @@ test("#960: a 5xx that STATES a request-shape verdict is permanent, not weather"
   assert.equal(retryCannotHelpWith(NEAR_ADJ_REFUSAL), true, "so the ladder has nothing to offer it");
 });
 
-test("#960: an ordinary 5xx keeps its ladder — the fix must not make every provider error permanent", () => {
+test("an ordinary 5xx keeps its ladder — the fix must not make every provider error permanent", () => {
   assert.equal(STRUCTURAL_REFUSAL_RE.test(REAL_500), false);
   assert.equal(retryCannotHelpWith(REAL_500), false, "a genuinely transient 500 still rides the ladder");
   for (const t of ["socket hang up", "ETIMEDOUT", "status_overloaded", "rate_limited"])
     assert.equal(retryCannotHelpWith(t), false, t);
 });
 
-test("#960: a non-transient error stays permanent exactly as before", () => {
+test("a non-transient error stays permanent exactly as before", () => {
   // The prior rule is kept whole; STRUCTURAL_REFUSAL_RE only ADDS cases.
   for (const t of ["HTTP 414 URI Too Long", "HTTP 400 bad request", "plan-defect: wildcard-shaped term"])
     assert.equal(retryCannotHelpWith(t), true, t);
 });
 
-test("#960: the structural pattern does not fire on authorization or pressure", () => {
+test("the structural pattern does not fire on authorization or pressure", () => {
   // "not permitted" is an auth verdict (403 — already deterministic by its code) and 429 is pressure.
   // A wrong `structural` STOPS a retry that would have worked, so the error direction is the one that
   // matters and the pattern is kept narrow deliberately.
@@ -644,7 +644,7 @@ test("#960: the structural pattern does not fire on authorization or pressure", 
   assert.equal(STRUCTURAL_REFUSAL_RE.test("HTTP 429 rate_limited — too many requests"), false);
 });
 
-test("#960: the repair ledger records the EFFECT, and says 'unmeasured' rather than nothing", () => {
+test("the repair ledger records the EFFECT, and says 'unmeasured' rather than nothing", () => {
   const dir = mkdtempSync(join(tmpdir(), "repair-effect-"));
   const rows = [];
   const ledger = createRepairLedger(dir, { log: (o) => rows.push(o) });
@@ -674,7 +674,7 @@ test("#960: the repair ledger records the EFFECT, and says 'unmeasured' rather t
 // The shape connotation-quote-unbound.test.mjs:177 already carries, at the count R5 actually parked on.
 const R5_REASON = "invalid_file:common-law-findings.half-b.md:connotation_quote_unbound:quote_unbound=1;Q-1F4YWF87 [x] split R-5T9SYVN3";
 
-test("#849 the classifier NAMES the token the validator named, and the budget does not move", () => {
+test("the classifier NAMES the token the validator named, and the budget does not move", () => {
   const sig = failureSignature("common-law-half:m", R5_REASON);
   assert.equal(sig.quantityToken, "connotation_quote_unbound",
     "the name was already computed here and thrown away — that is the whole defect");
@@ -690,7 +690,7 @@ test("#849 the classifier NAMES the token the validator named, and the budget do
   assert.equal(d.recoverable, true, "R5 and R6 both recovered on exactly this park — nothing here may take it away");
 });
 
-test("#849 a reason the classifier legitimately cannot name is not a classifier gap", () => {
+test("a reason the classifier legitimately cannot name is not a classifier gap", () => {
   // No structured token: the classifier had nothing to work from, so `unknown` is the honest answer and
   // not a gap. Reporting it would bury the real ones, which is the mistake in the other direction.
   const bare = failureSignature("gather", "the stage produced no output and said nothing about why");
@@ -703,7 +703,7 @@ test("#849 a reason the classifier legitimately cannot name is not a classifier 
   assert.equal(unnamedStructuredFailure(), false, "no argument at all is not a gap");
 });
 
-test("#849 the token rides BOTH failureSignature returns — the coded one and the prose one", () => {
+test("the token rides BOTH failureSignature returns — the coded one and the prose one", () => {
   // pipeline.mjs takes the token from failSig regardless of which source won the VALUE, and the run this
   // issue was filed on logged quantitySource:"throw-site". A token carried on only one of these two
   // returns would be null on exactly the failure that motivated the fix.
@@ -724,7 +724,7 @@ test("#849 the token rides BOTH failureSignature returns — the coded one and t
 // Measured on the preserved runs: of four `class:"unknown"` classifications, two carry a quantity and
 // two do not, and the two that do not are the `<kind>:<path>` ones on `common-law-half:a` and `:b`.
 // Neither was reported anywhere.
-test("#849 a <kind>:<path> failure is nameable, and it was not before", () => {
+test("a <kind>:<path> failure is nameable, and it was not before", () => {
   for (const reason of [
     "invalid_file:prelim-search/x/common-law-findings.half-a.md",
     "missing_file:prelim-search/x/common-law-findings.half-m.md",
@@ -740,14 +740,14 @@ test("#849 a <kind>:<path> failure is nameable, and it was not before", () => {
   }
 });
 
-test("#849 the quantity shape this reporter already caught still reports", () => {
+test("the quantity shape this reporter already caught still reports", () => {
   const f = failureSignature("common-law-half:m", "connotation_form_damaged: form_damaged = 27");
   assert.ok(f.quantityToken, "the original case is unchanged");
   assert.equal(unnamedStructuredFailure({ failClass: "unknown", classSource: "reason-text",
     token: f.quantityToken, kind: f.kindToken }), true);
 });
 
-test("#849 a bare word is NOT a kind — the colon is what separates a token from prose", () => {
+test("a bare word is NOT a kind — the colon is what separates a token from prose", () => {
   // `timeout` and `nonzero_exit_1` are real reasons and they stay unnamed. Naming a leading bare word
   // would fire on almost any sentence, which turns the gap report into noise and hides the shape it
   // exists to surface. They are 5 of 76; the shape that is 71 of 76 is covered.
@@ -759,7 +759,7 @@ test("#849 a bare word is NOT a kind — the colon is what separates a token fro
   }
 });
 
-test("#849 naming the failure moves NO budget — the class is untouched", () => {
+test("naming the failure moves NO budget — the class is untouched", () => {
   // The issue's own trend rule was WITHDRAWN on evidence (R6: a flat count on a stage about to succeed),
   // and `decideRecovery` sends any class outside transient/stale/unknown to ZERO parks — so minting a
   // class for these would be a silent terminal wearing the costume of a fix. This arm pins that naming
@@ -778,7 +778,7 @@ test("#849 naming the failure moves NO budget — the class is untouched", () =>
 // attempt recorded `rate_limited` or `timeout`, and the run was classified `unknown` / `defect`, so a
 // run starved by an upstream subscription spent the small budget reserved for its OWN mistakes. That is
 // the precise inversion the lane split exists to prevent.
-test("#2100 a provider condition reaches the lane split, and the ladder's own summary does not", () => {
+test("a provider condition reaches the lane split, and the ladder's own summary does not", () => {
   const laneOf = (reason) => recoveryLaneOf(classifyFailureReason(reason), reason);
 
   // THE DEFECT, kept as a live control. If this ever stops reading defect the arm below proves nothing,
@@ -805,7 +805,7 @@ test("#2100 a provider condition reaches the lane split, and the ladder's own su
     "… and the LANE does not change, because timeout is not an outage token");
 });
 
-test("#2100 the wiring: the ladder carries its condition out, and the throw site leads with it", () => {
+test("the wiring: the ladder carries its condition out, and the throw site leads with it", () => {
   // The arm above drives the classifier. This holds the WIRING — that the condition is actually
   // PASSED — because a classifier that reads a reason nobody gives it is the whole defect, and the
   // lesson from the same day is that an arm proving the machinery obeys proves

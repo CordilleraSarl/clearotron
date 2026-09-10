@@ -22,14 +22,14 @@ import { nodeFloorVerdict, nodeFloorRefusal, declaredRange, floorOf, meetsFloor 
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-test("278 the floor is READ from package.json, not restated anywhere", () => {
+test("the floor is READ from package.json, not restated anywhere", () => {
   const declared = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).engines.node;
   assert.equal(declaredRange(ROOT), declared, "the reader must return the field npm itself reads");
   // The whole point: one source. If a second spelling appears, this is where it is caught.
   assert.deepEqual(floorOf(declared), floorOf(declaredRange(ROOT)));
 });
 
-test("278 a version below the floor by its MINOR is refused — the defect this replaces", () => {
+test("a version below the floor by its MINOR is refused — the defect this replaces", () => {
   // DERIVED FROM THE DECLARED FLOOR, not written out. A check that restates the number is the defect it
   // is testing for: when the floor moves this must move with it, and a literal would either break or,
   // worse, keep passing while asserting about a floor nobody declares any more.
@@ -45,7 +45,7 @@ test("278 a version below the floor by its MINOR is refused — the defect this 
   assert.equal(meetsFloor("22.18.9", [22, 19, 0]), false);
 });
 
-test("278 the floor itself and everything above it runs", () => {
+test("the floor itself and everything above it runs", () => {
   // Without this the arm above is satisfied by a check that refuses every version, which would stop the
   // product working entirely while passing a test named for correctness.
   const [maj, min, pat] = floorOf(declaredRange(ROOT));
@@ -54,14 +54,14 @@ test("278 the floor itself and everything above it runs", () => {
   }
 });
 
-test("278 a major below the floor is refused whatever its minor", () => {
+test("a major below the floor is refused whatever its minor", () => {
   const [maj] = floorOf(declaredRange(ROOT));
   for (const v of [`${maj - 1}.19.4`, `${maj - 1}.99.99`, `${maj - 2}.20.0`]) {
     assert.equal(nodeFloorVerdict({ current: v, root: ROOT }).ok, false, `${v} must be refused`);
   }
 });
 
-test("278 the refusal names both versions, because a reader must know what to install", () => {
+test("the refusal names both versions, because a reader must know what to install", () => {
   const required = floorOf(declaredRange(ROOT)).join(".");
   const v = nodeFloorVerdict({ current: "1.2.3", root: ROOT });
   const said = nodeFloorRefusal(v);
@@ -70,7 +70,7 @@ test("278 the refusal names both versions, because a reader must know what to in
   assert.doesNotMatch(said, /\bNODE_FLOOR\b|process\.versions/, "a person is not told the name of a variable");
 });
 
-test("278 an unreadable or absent declaration THROWS rather than passing everything", () => {
+test("an unreadable or absent declaration THROWS rather than passing everything", () => {
   // A floor that cannot be read is a could-not-look. Defaulting to "fine" would make a packaging fault
   // silently disable every check built on it, which is how this class of guard usually dies.
   // `>=22` and `>=22.19` ARE understood — absent parts are zero, which is what they mean. The floor is
@@ -84,14 +84,14 @@ test("278 an unreadable or absent declaration THROWS rather than passing everyth
   assert.throws(() => declaredRange("/nonexistent-root-for-this-check"), /ENOENT|no such file/i);
 });
 
-test("278 the comparison reads all three parts, in order", () => {
+test("the comparison reads all three parts, in order", () => {
   assert.equal(meetsFloor("22.19.0", [22, 19, 0]), true, "equal meets the floor");
   assert.equal(meetsFloor("22.20.0", [22, 19, 5]), true, "a higher minor wins whatever the patch");
   assert.equal(meetsFloor("22.19.4", [22, 19, 5]), false, "a lower patch loses when major and minor tie");
   assert.equal(meetsFloor("23.0.0", [22, 19, 5]), true, "a higher major wins whatever follows");
 });
 
-test("278 AN UNREADABLE RUNNING VERSION PASSES — a parser gap must not become an outage", () => {
+test("AN UNREADABLE RUNNING VERSION PASSES — a parser gap must not become an outage", () => {
   // Found in review, 2026-09-08, by driving it rather than reading it. `partsOf`
   // used to answer [0, 0, 0] for a string it could not read, which compares below every floor — so this
   // file would have refused an install over its own gap, on a runtime that was probably fine.
@@ -104,7 +104,7 @@ test("278 AN UNREADABLE RUNNING VERSION PASSES — a parser gap must not become 
   assert.equal(nodeFloorVerdict({ current: `${maj}.${min}.${pat}-nightly20260101`, root: ROOT }).ok, true);
 });
 
-test("278 …while the DECLARED range still throws, because that one is ours to fix", () => {
+test("…while the DECLARED range still throws, because that one is ours to fix", () => {
   // The asymmetry, asserted so it cannot be flattened later by someone making both sides "safe": a
   // manifest this reader cannot parse is a packaging fault we own and must be loud. A runtime version
   // it cannot parse is not.
@@ -112,7 +112,7 @@ test("278 …while the DECLARED range still throws, because that one is ours to 
   assert.equal(nodeFloorVerdict({ current: "whatever", root: ROOT }).ok, true);
 });
 
-test("278 the `v` prefix is read, because both spellings are in reach", () => {
+test("the `v` prefix is read, because both spellings are in reach", () => {
   // `process.versions.node` has no prefix; `process.version` does. Without the optional `v` a caller
   // handed the prefixed form got null, and null PASSES — so an out-of-date runtime would have been waved
   // through by the guard written to stop it. The permissive direction, which is the one that fails

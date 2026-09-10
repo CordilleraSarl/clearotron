@@ -3870,7 +3870,7 @@ export const STAGES = {
       reads(reportCardSkillReads({ profile })),
       // ── CONVERSION 5. THE FIRST FAN-OUT TRANSPORT ────────────────────────────────────
       //
-      // What moves is the SHAPE, not the analysis. Owner ruling S2 (2026-08-13) keeps the prose the
+      // What moves is the SHAPE, not the analysis. Ruling S2 (2026-08-13) keeps the prose the
       // model's pending a side-by-side reading of one matter built both ways — so this dispatch still
       // asks for the seat's judgment, bullet by bullet, and stops asking it to hit line templates a
       // parser then re-reads.
@@ -4565,7 +4565,7 @@ export function assertTierSanity() {
 //
 // It went to whoever runs the agent, never to whoever asked. `AGENT_WHATSAPP` is keyed by AGENT ID, and
 // every user of this deployment shares the one agent, so on every run the operator was paged for work
-// somebody else ordered and the person who ordered it was told nothing. Owner ruling, 2026-09-07: route
+// somebody else ordered and the person who ordered it was told nothing. Ruling, 2026-09-07: route
 // to the requester where a number is held for them, and keep the operator's number as a copy the
 // operator can switch off.
 //

@@ -37,13 +37,13 @@ const src = (f) => readFileSync(join(ROOT, "driver", f), "utf8");
 
 // ── THE DERIVATION ────────────────────────────────────────────────────────────────────────────────
 
-test("#849 a validator-named token is classified as `validator-token`, not as a text guess", () => {
+test("a validator-named token is classified as `validator-token`, not as a text guess", () => {
   assert.equal(classificationSource({ quantityToken: "connotation_form_damaged" }), "validator-token");
   assert.equal(classificationSource({ quantityToken: null }), "reason-text");
   assert.equal(classificationSource({}), "reason-text", "no argument at all must not invent a name");
 });
 
-test("#849 the throw site OUTRANKS the token — it counted the things", () => {
+test("the throw site OUTRANKS the token — it counted the things", () => {
   // A stage that stamped its own class knows more than any read of its prose. If this inverted, a
   // throw-site stamp would start reporting as a text-derived name and the digest's `measured` split
   // would quietly change meaning for every stamped failure.
@@ -51,7 +51,7 @@ test("#849 the throw site OUTRANKS the token — it counted the things", () => {
   assert.equal(classificationSource({ stamped: true }), "throw-site");
 });
 
-test("#849 a `kindToken` is NOT a validator name — the prefix regex must not launder into one", () => {
+test("a `kindToken` is NOT a validator name — the prefix regex must not launder into one", () => {
   // THE LOAD-BEARING SCOPE DECISION. `kindToken` is any leading `word:` prefix, not a vocabulary:
   // `invalid_file:<path>` is 71 of 76 recorded stage failures and no validator named it. Routing it to
   // `validator-token` would silence the gap detector on exactly the shape it was widened to catch —
@@ -73,7 +73,7 @@ test("#849 a `kindToken` is NOT a validator name — the prefix regex must not l
   assert.equal(classificationSource({ quantityToken: named.quantityToken }), "validator-token");
 });
 
-test("#849 the gap detector goes quiet for a NAMED token, and only for that reason", () => {
+test("the gap detector goes quiet for a NAMED token, and only for that reason", () => {
   const named = classificationSource({ quantityToken: "connotation_quote_unbound" });
   assert.equal(unnamedStructuredFailure({ failClass: "unknown", classSource: named, token: "connotation_quote_unbound" }), false,
     "the validator named it and the classifier now says so — reporting a gap here would be reporting nothing");
@@ -84,7 +84,7 @@ test("#849 the gap detector goes quiet for a NAMED token, and only for that reas
 
 // ── THE CALL SITE, WHICH IS WHERE THE LAST ONE OF THESE WENT WRONG ───────────────────────────────
 
-test("#849 the pipeline DERIVES classSource from the helper — one rule, not two copies", () => {
+test("the pipeline DERIVES classSource from the helper — one rule, not two copies", () => {
   const p = src("pipeline.mjs");
   assert.match(p, /classSource = classificationSource\(/,
     "the pipeline no longer derives classSource from the shared helper, so the precedence rule now has "
@@ -97,7 +97,7 @@ test("#849 the pipeline DERIVES classSource from the helper — one rule, not tw
     "the call site restates the rule it just delegated");
 });
 
-test("#849 the strike relabel STILL outranks everything — the caller's deliberate override survives", () => {
+test("the strike relabel STILL outranks everything — the caller's deliberate override survives", () => {
   // `invalid-artifact-loop` is a terminal diagnosis reached from the run's own spine, and it is applied
   // after this. If build A had been written to win there, three consecutive invalid artifacts would
   // start reporting as a validator-named failure and the terminal would lose its name.
@@ -109,7 +109,7 @@ test("#849 the strike relabel STILL outranks everything — the caller's deliber
     "the strike relabel no longer runs after the derivation, so it can no longer override it");
 });
 
-test("#849 the park row carries the KIND token too, or the digest half of the detector is blind", () => {
+test("the park row carries the KIND token too, or the digest half of the detector is blind", () => {
   // The digest never opens run.jsonl; the recoveryHistory park row is its only carrier. Before this it
   // carried `quantityToken` alone, so the digest could only ever ask half the question — harmless while
   // every structured reason was `reason-text`, and fatal once a token implies NOT-a-gap.
@@ -121,7 +121,7 @@ test("#849 the park row carries the KIND token too, or the digest half of the de
 
 // ── THE BUDGET DID NOT MOVE, AND THAT IS ASSERTED RATHER THAN ASSUMED ────────────────────────────
 
-test("#849 `decideRecovery` cannot see classSource at all — the budget is unreachable from this change", () => {
+test("`decideRecovery` cannot see classSource at all — the budget is unreachable from this change", () => {
   // Structural, not behavioural, on purpose: a behavioural arm proves the budget did not move for the
   // inputs it happened to try. This proves there is no branch to move.
   const sig = /export function decideRecovery\(\{([^}]*)\}/.exec(src("repairs.mjs"));
@@ -131,7 +131,7 @@ test("#849 `decideRecovery` cannot see classSource at all — the budget is unre
     + "2026-08-13 correction refuted");
 });
 
-test("#849 an `unknown` park still gets exactly ONE park, before and after naming it", () => {
+test("an `unknown` park still gets exactly ONE park, before and after naming it", () => {
   // The number the issue's rescue-by-luck depended on. Both runs in the evidence recovered on exactly
   // this park, which is why the ruling left it alone.
   const d = decideRecovery({ failClass: "unknown", sig: "s|1", reason: "connotation_form_damaged = 27", history: [], priorAttempts: 0, recoveryMax: 3 });
@@ -139,7 +139,7 @@ test("#849 an `unknown` park still gets exactly ONE park, before and after namin
   assert.equal(d.recoverable, true);
 });
 
-test("#849 the failure this was filed on still signs and counts identically — `sig` is untouched", () => {
+test("the failure this was filed on still signs and counts identically — `sig` is untouched", () => {
   // The signature keys the per-signature ladder. If naming the source had perturbed it, every archived
   // park row would stop joining to its live successor and the ladder would silently re-arm.
   // The census shape the validator actually emits: `<token>: <field>=<n>;`. Written out rather than
@@ -164,7 +164,7 @@ const run = (rows) => ({ runId: "venzy-2026-08-12-linen-spindle", state: "delive
 const PARK = (extra) => ({ sig: "common-law-half:m|80aa500874e6", stage: "common-law-half:m",
   class: "unknown", lane: "defect", attempt: 1, quantity: 1, ts: IN_WINDOW, ...extra });
 
-test("#849 a KIND-ONLY park is still counted and NAMED by the digest after build A", () => {
+test("a KIND-ONLY park is still counted and NAMED by the digest after build A", () => {
   // The arm that proves the digest's gap line can still fire. Post-A this is the shape that reaches it:
   // no validator token, a kind prefix, classSource still `reason-text`.
   const agg = aggregateFailureRecurrence({
@@ -178,7 +178,7 @@ test("#849 a KIND-ONLY park is still counted and NAMED by the digest after build
   assert.match(renderFailureRecurrence(agg), /invalid_file/);
 });
 
-test("#849 a park the validator NAMED is measured and clean — not a gap, not unmeasured", () => {
+test("a park the validator NAMED is measured and clean — not a gap, not unmeasured", () => {
   const agg = aggregateFailureRecurrence({
     enumerate: () => [run([PARK({ classSource: "validator-token", quantityToken: "connotation_quote_unbound" })])],
     now: NOW, days: 7,
@@ -188,7 +188,7 @@ test("#849 a park the validator NAMED is measured and clean — not a gap, not u
   assert.doesNotMatch(renderFailureRecurrence(agg), /classifier gap/);
 });
 
-test("#849 ARCHIVED rows keep their old verdict — a pre-A park is read as the gap it was", () => {
+test("ARCHIVED rows keep their old verdict — a pre-A park is read as the gap it was", () => {
   // Rows written before build A carry `reason-text` WITH a quantity token, a combination the pipeline
   // can no longer produce. They must still report as gaps: that is what they were, and re-reading
   // history through the new rule would erase the evidence this issue was filed on.

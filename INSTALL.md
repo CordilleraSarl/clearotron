@@ -893,8 +893,8 @@ is **part of the product** rather than something a deployment invents. A reader 
 Use-your-AI page and finds Connect buttons that do nothing has been failed by the install, not by
 their own integration work.
 
-**Two shapes, and the line between them is what your assistant can do — not where it runs.** Owner
-ruling 2026-09-03, on the vendor's own documented behaviour:
+**Two shapes, and the line between them is what your assistant can do — not where it runs.** Ruling
+2026-09-03, on the vendor's own documented behaviour:
 
 1. **An assistant that can launch a local process** — Claude Code, Claude Desktop's local config,
    Codex CLI, an agent that runs commands. It spawns the server over stdio. No address, no key, no

@@ -12,7 +12,7 @@
 // another. Measured on the test box: the same command answered differently depending on which shell it
 // was run from.
 //
-// Owner ruling: refuse outright. Reading the units' file instead would have made it correct and still
+// Ruling: refuse outright. Reading the units' file instead would have made it correct and still
 // wrong-shaped — two portals on one box is not a configuration anybody wants, whichever file chose it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -24,7 +24,7 @@ import { doorDivergence } from "../../bin/onboard.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-test("#1925 a box carrying any shipped unit is a server, and each one is enough", () => {
+test("a box carrying any shipped unit is a server, and each one is enough", () => {
   // THE POSITIVE CONTROL FIRST: a box with none of them is not a server. Without this, a predicate that
   // answered "installed" to everything would satisfy every case below and look correct.
   assert.deepEqual(installedUnits("/nowhere", () => false), [],
@@ -38,7 +38,7 @@ test("#1925 a box carrying any shipped unit is a server, and each one is enough"
   assert.equal(installedUnits("/units", () => true).length, SERVER_UNITS.length, "all of them, named");
 });
 
-test("#1925 the check reads FILES, not systemd — a stopped service is still a server", () => {
+test("the check reads FILES, not systemd — a stopped service is still a server", () => {
   // Asking `systemctl` would make this command's answer depend on whether a service happened to be
   // RUNNING. A unit that is installed but stopped still means this box's configuration lives in an
   // EnvironmentFile, and an answer that moves with a service's state is the shape that caused the
@@ -50,7 +50,7 @@ test("#1925 the check reads FILES, not systemd — a stopped service is still a 
     + "in a command that is about to spawn two");
 });
 
-test("#1925 start CONSULTS it before it decides anything, and names what it found", () => {
+test("start CONSULTS it before it decides anything, and names what it found", () => {
   // The arms above drive the predicate; this holds the WIRING, because a helper nothing calls is the
   // failure this repository keeps finding. The refusal must also come BEFORE the PORTAL_AUTH_MODE check
   // — that one reads the hand-run environment, which is exactly the reading this issue is about.
@@ -78,7 +78,7 @@ test("#1925 start CONSULTS it before it decides anything, and names what it foun
 // server's, they are disjoint BY DESIGN, and reporting their existence would flag every correctly set
 // up machine. Reworded after reading INSTALL.md and `render-units.mjs`: the finding is that the two
 // files name a DIFFERENT DOOR.
-test("#1925 a door value that differs between the two files is reported, by name and by both values", () => {
+test("a door value that differs between the two files is reported, by name and by both values", () => {
   const repo = 'PORTAL_AUTH_MODE=local\nCLEAROTRON_REPORTS_DIR=/home/dev/pool\n';
   const home = 'PORTAL_AUTH_MODE=auth-proxy\nCLEAROTRON_REPORTS_DIR=/srv/archive\n';
   const d = doorDivergence({ repoText: repo, homeText: home });
@@ -87,7 +87,7 @@ test("#1925 a door value that differs between the two files is reported, by name
     + "those two files are supposed to disagree about paths");
 });
 
-test("#1925 absence is not divergence, and one file alone says nothing", () => {
+test("absence is not divergence, and one file alone says nothing", () => {
   // A key set in one file and absent from the other is not a disagreement: absence means "this file
   // does not decide that", and systemd's EnvironmentFile only overrides keys it actually sets.
   // Reporting those would flag every correctly-split pair on every box — noise that gets the whole
@@ -100,7 +100,7 @@ test("#1925 absence is not divergence, and one file alone says nothing", () => {
   assert.deepEqual(doorDivergence({ repoText: "CF_ACCESS_TEAM=x\n", homeText: "CF_ACCESS_TEAM=x\n" }), []);
 });
 
-test("#1925 doctor CONSULTS it, and the reader is told which file the services actually use", () => {
+test("doctor CONSULTS it, and the reader is told which file the services actually use", () => {
   const src = readFileSync(join(ROOT, "bin", "onboard.mjs"), "utf8");
   assert.match(src, /doorDivergence\(\{/, "doctor must call it — a predicate nothing calls is this "
     + "repository's most-found defect");

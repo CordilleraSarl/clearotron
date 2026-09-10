@@ -210,7 +210,7 @@ test('an unavailable search is not silently greyed — the reason rides IN the r
   assert.doesNotMatch(offBlock, /opacity/, 'the row is dimmed by opacity, which dims the reason with it')
 })
 
-test('2075 a product the register cannot fully reach is ORDERABLE, with the limit at the control', () => {
+test('a product the register cannot fully reach is ORDERABLE, with the limit at the control', () => {
   // The owner's ruling: coverage is disclosed, never refused. "A user could still run global and just
   // be aware of the limitations — I prefer that than switch it off." So the row carries a second kind of
   // sentence, and the two are never both set: one explains a dead control, the other qualifies a live
@@ -703,7 +703,7 @@ test('the matrix header leads with the product’s NAME', () => {
   assert.match(fn, /\{c\.name\}/, 'the column head is the name — the same string the report prints')
 })
 
-test('#761 the result screen says WHICH PRODUCT is open, and never hardcodes one', () => {
+test('the result screen says WHICH PRODUCT is open, and never hardcodes one', () => {
   // A reader holding two finished reads had nothing on this screen telling them apart: the header line
   // was mark · owner · date · band, and the frame's accessible name was a hardcoded product word applied
   // to every run, so a knockout announced itself as a clearance.
@@ -774,7 +774,7 @@ test('extra marketplaces are counted into the effort input, not just sent on the
 
 // ── the two ways in: which pills are the offering and which are the account's own ────────────────
 
-test("#1435 a saved search on the entry fork sits under its OWN heading, not under the products'", () => {
+test("a saved search on the entry fork sits under its OWN heading, not under the products'", () => {
   // THE DEFECT. The four products and the account's saved searches rendered as one flat row of pills
   // under one heading — "Or start from one of the four searches" — so the heading's own count was wrong
   // for every account that had saved anything, and a customer could not tell which pills were the
@@ -812,10 +812,10 @@ test("#1435 a saved search on the entry fork sits under its OWN heading, not und
 
 // ── — A DEMO ORDER LANDS ON A REPORT, and the SERVER says so ────────────────
 //
-// Owner ruling 2026-08-31, revising his own ruling of an hour earlier: pressing New clearance in a demo
+// Ruling 2026-08-31, revising his own ruling of an hour earlier: pressing New clearance in a demo
 // walks the real flow "and then lands on one of the four preloaded finished runs". The greyed control
 // that shipped implemented the ruling he replaced.
-test('2015 the demo landing is decided by the server, and never claims a run started', () => {
+test('the demo landing is decided by the server, and never claims a run started', () => {
   const src = body(NEW_CLEARANCE)
 
   // THE SERVER'S ANSWER, not the client's idea of whether it is in a demo. A browser that inferred it

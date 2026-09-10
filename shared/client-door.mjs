@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // client-door.mjs — the client connector's settings, its key, and the revocation of one person's key.
 //
-// ── THE DOOR NOW COMES UP WITH THE PRODUCT (owner ruling 2026-09-03,) ─────────
+// ── THE DOOR NOW COMES UP WITH THE PRODUCT (ruling 2026-09-03,) ─────────
 //
 // There are TWO MCP doors. The ENGINE door (`mcp-server/http-server.mjs`) is what `clearotron start`
 // runs and what the portal's Start button calls; it refuses an account-scoped key outright. The CLIENT
@@ -586,7 +586,7 @@ export function enablePlan({ env = {}, address, identity, accessFile = null, por
 /**
  * The change in words, in the tense of the moment the caller is in. ONE author for both.
  *
- * There is no consent prompt — owner ruling 2026-08-31, *"One press does all of it, invisibly… No
+ * There is no consent prompt — ruling 2026-08-31, *"One press does all of it, invisibly… No
  * second step"* — so these sentences are reported AFTER the door is open, or ahead of it under
  * `--dry-run`. What they must never be is two separately written sets that disagree about what was
  * turned on; a stale future-tense sentence printed after the fact is a product describing a change it
@@ -739,7 +739,7 @@ export function applyEnablePlan(plan, io) {
 
 // ══ THE LEDGER: what connect issued, as IDs and never as secrets ═════════════
 //
-// Owner ruling, 2026-08-31, verbatim shape: "Say yes. Recording key IDs, never secrets. … Store the
+// Ruling, 2026-08-31, verbatim shape: "Say yes. Recording key IDs, never secrets. … Store the
 // jti beside it and disconnect is: remove the row, add the id to the denylist. No new bookkeeping."
 //
 // The record rides IN THE GRANTS FILE, beside the rows that give the key its reach — one file to read
@@ -799,7 +799,7 @@ export function connectKeyReport(grants, { now = Date.now(), revoked = () => fal
   return { rows, valid: rows.filter((r) => r.state === "valid").length };
 }
 
-// ══ REVOCATION: disconnect is a PERSON, not a service (owner ruling 2026-09-03, Q3) ═══════════════
+// ══ REVOCATION: disconnect is a PERSON, not a service (ruling 2026-09-03, Q3) ═══════════════
 //
 // SUPERSEDED, AND THE OLD SHAPE IS WORTH KNOWING BECAUSE IT WAS COHERENT. Under the 2026-08-31 ruling
 // the door existed only because a reader had asked for it, so its mirror was a teardown: revoke the

@@ -31,14 +31,14 @@ const doubtsFor = (placements) =>
 
 // ── 1. the producers stamp the key they were already holding ────────────────────────────────────────
 
-test("#1503 CONTROL — the placement mint actually mints, or every arm below is vacuous", () => {
+test("CONTROL — the placement mint actually mints, or every arm below is vacuous", () => {
   const d = doubtsFor([placement("VOLTMAX", "headline-candidate")]);
   assert.ok(d.length > 0, "reconcilePlacementCarry + mintPlacementCarryDoubts produced NO doubts on a "
     + "placement no findings text mentions — the fixture stopped reaching the uncarried class, and every "
     + "assertion below would pass over an empty list");
 });
 
-test("#1503 placement-carry writes the tier as a FIELD, not only into the prose", () => {
+test("placement-carry writes the tier as a FIELD, not only into the prose", () => {
   for (const tier of PLACEMENT_TIERS) {
     const [d] = doubtsFor([placement("VOLTMAX", tier)]);
     assert.equal(d.subject.placementTier, tier,
@@ -47,14 +47,14 @@ test("#1503 placement-carry writes the tier as a FIELD, not only into the prose"
   }
 });
 
-test("#1503 an entry that declared NO tier carries the producer's own sentinel, not a second name for it", () => {
+test("an entry that declared NO tier carries the producer's own sentinel, not a second name for it", () => {
   const [d] = doubtsFor([{ ...placement("VOLTMAX", undefined), tier: undefined }]);
   assert.equal(d.subject.placementTier, "(untiered)",
     "reconcilePlacementCarry already writes `(untiered)` for an entry with no tier. Folding it to null "
     + "here would give one absence two names, and two readers a way to disagree about it");
 });
 
-test("#1503 record-carry stamps the tier through the seat, and NULL where the record never reached placement", () => {
+test("record-carry stamps the tier through the seat, and NULL where the record never reached placement", () => {
   const withSeat = mintRecordCarryDoubts({ unreasoned: [
     { uri: "/mark/ch/voltmax", mark: "VOLTMAX", owner: "VOLTMAX Holdings SA", reach: "placed",
       stopped_at: "digest", detail: "silent drop", placement: { tier: "sheet-2", mark: "VOLTMAX", owner: "", carry: "uncarried" } },
@@ -74,7 +74,7 @@ test("#1503 record-carry stamps the tier through the seat, and NULL where the re
 
 const openDoubt = (id, placementTier) => ({ id, status: "open", subject: { placementTier } });
 
-test("#1503 no cut, an unknown cut and `every-doubt` all select EVERY doubt", () => {
+test("no cut, an unknown cut and `every-doubt` all select EVERY doubt", () => {
   const doubts = [openDoubt("a", "headline-candidate"), openDoubt("b", "watchlist-annex")];
   for (const cut of [null, undefined, "every-doubt", "bands 1+2", "HEADLINE-CANDIDATE typo'd"]) {
     const sel = doubtsForClosure({ doubts, doubtClosure: cut });
@@ -85,7 +85,7 @@ test("#1503 no cut, an unknown cut and `every-doubt` all select EVERY doubt", ()
   }
 });
 
-test("#1503 a live cut keeps its tiers, drops the rest, and DISPATCHES the keyless", () => {
+test("a live cut keeps its tiers, drops the rest, and DISPATCHES the keyless", () => {
   const doubts = [
     openDoubt("head", "headline-candidate"),
     openDoubt("sheet", "sheet-2"),
@@ -103,7 +103,7 @@ test("#1503 a live cut keeps its tiers, drops the rest, and DISPATCHES the keyle
   assert.equal(sel.total, 6);
 });
 
-test("#1503 case is folded at the comparison, so a tier written in another case still joins", () => {
+test("case is folded at the comparison, so a tier written in another case still joins", () => {
   const sel = doubtsForClosure({ doubts: [openDoubt("a", "  Headline-Candidate  "), openDoubt("b", "SHEET-2")],
     doubtClosure: "headline-candidate+sheet-2" });
   assert.equal(sel.ids, null, "both are kept, so the selection collapses to 'every doubt'");
@@ -112,7 +112,7 @@ test("#1503 case is folded at the comparison, so a tier written in another case 
   assert.deepEqual(dropped.ids, [], "an upper-case tier OUTSIDE the cut is still dropped");
 });
 
-test("#1503 a cut that keeps everything is BYTE-IDENTICAL to no selection", () => {
+test("a cut that keeps everything is BYTE-IDENTICAL to no selection", () => {
   const doubts = [openDoubt("a", "headline-candidate"), openDoubt("b", "headline-candidate")];
   const sel = doubtsForClosure({ doubts, doubtClosure: "headline-candidate" });
   assert.equal(sel.ids, null, "selecting every doubt must report NO selection, so the dispatch and the "
@@ -120,7 +120,7 @@ test("#1503 a cut that keeps everything is BYTE-IDENTICAL to no selection", () =
   assert.equal(doubtSelectionNote(sel), "", "and it records no note, because nothing was selected");
 });
 
-test("#1503 the note states what was dropped and what was asked for want of a key", () => {
+test("the note states what was dropped and what was asked for want of a key", () => {
   const sel = doubtsForClosure({
     doubts: [openDoubt("a", "headline-candidate"), openDoubt("b", "watchlist-annex"), openDoubt("c", null)],
     doubtClosure: "headline-candidate" });
@@ -143,14 +143,14 @@ test("#1503 the note states what was dropped and what was asked for want of a ke
 // KEY. That is an inference, not a transcription, and it is the reason this arm names its source rather
 // than just its values: the owner's one-word answer settles the KEY, and whoever merges this is also
 // assenting to the CUTS. Products: the body names product 3 as multi-country; product 4 is
-// full-country-search, pinned byte-identical by owner ruling ("its already great") and therefore absent
+// full-country-search, pinned byte-identical by ruling ("its already great") and therefore absent
 // from this set — its row stays `every-doubt`.
 const RULED_CUTS = Object.freeze([
   "global-preliminary-search=headline-candidate",          // P2
   "multi-country-focus-search=headline-candidate+sheet-2", // P3
 ]);
 
-test("#1503 exactly the ruled products resolve to a live doubt-closure cut, and no others", async () => {
+test("exactly the ruled products resolve to a live doubt-closure cut, and no others", async () => {
   // WAS "no product resolves to a live cut" — the inertness claim, true while the ruling was open. The
   // mechanism shipped inert deliberately and that argument had been enforced for ONE product of three:
   // depth-ladder-table's ONE_COUNTRY_TODAY restates product 4's row value-by-value, and the two GRADED
@@ -198,7 +198,7 @@ test("#1503 exactly the ruled products resolve to a live doubt-closure cut, and 
 
 // ── 4. the two tables that must not drift apart ─────────────────────────────────────────────────────
 
-test("#1503 every cut word the depth table allows is one the selection can act on", async () => {
+test("every cut word the depth table allows is one the selection can act on", async () => {
   const { readFileSync } = await import("node:fs");
   const table = readFileSync(new URL("./depth-ladder-table.test.mjs", import.meta.url), "utf8");
   const m = table.match(/doubtClosure:\s*\[([^\]]*)\]/);
@@ -219,7 +219,7 @@ test("#1503 every cut word the depth table allows is one the selection can act o
 
 // ── 5. the lint row — a disclosure that must not read as a defect ───────────────────────────────────
 
-test("#1503 the zero-URI disclosure fires on presence, names the count, and NEVER blocks", () => {
+test("the zero-URI disclosure fires on presence, names the count, and NEVER blocks", () => {
   const rows = [placement("VOLTMAX", "headline-candidate"), { ...placement("NOVA", "sheet-2"), records: [] }];
   const c = placementsChecks({ placements: rows }).find((x) => x.id === "placement-rows-without-uri");
   assert.ok(c, "no placement-rows-without-uri row was produced for a placements set that contains one");
@@ -230,7 +230,7 @@ test("#1503 the zero-URI disclosure fires on presence, names the count, and NEVE
   assert.match(c.detail, /NOT a defect/);
 });
 
-test("#1503 the disclosure is SILENT when every row names a record — it is not an always-on banner", () => {
+test("the disclosure is SILENT when every row names a record — it is not an always-on banner", () => {
   const c = placementsChecks({ placements: [placement("VOLTMAX", "headline-candidate")] })
     .find((x) => x.id === "placement-rows-without-uri");
   assert.equal(c, undefined, "a set where every row carries a URI has no boundary to disclose");
@@ -238,7 +238,7 @@ test("#1503 the disclosure is SILENT when every row names a record — it is not
 
 // ── 6. the CALL SITE, which the arms above do not reach ─────────────────────────────────────────────
 
-test("#1503 the pipeline reads the cut, and the SIDECAR lists exactly what the DISPATCH carries", async () => {
+test("the pipeline reads the cut, and the SIDECAR lists exactly what the DISPATCH carries", async () => {
   // A TEXT GUARD, said plainly: it cannot see a runtime gate, and it is not trying to. What it catches
   // is the drift it is aimed at — the spec sidecar listing ids the dispatch does not carry, which tells
   // the seat it may speak about doubts it was never shown.
@@ -267,7 +267,7 @@ test("#1503 the pipeline reads the cut, and the SIDECAR lists exactly what the D
 
 // ── the counts are the MEASUREMENT, and they were protected by nothing ──────────────────────────────
 
-test("#1503 the tier counts are REAL under `every-doubt` — the only cut that ships", () => {
+test("the tier counts are REAL under `every-doubt` — the only cut that ships", () => {
   // THE DEFECT THIS PINS. `doubtsForClosure` returned `{keyed: 0, keyless: 0}` before the loop whenever
   // no cut was live, and `TIER_CUTS["every-doubt"] === null`, so every shipped product recorded hard
   // zeros. R2 on 44654e02: `{of: 31, selected: 31, keyed: 0, keyless: 0}`. Found in review on
@@ -293,7 +293,7 @@ test("#1503 the tier counts are REAL under `every-doubt` — the only cut that s
   assert.equal(live.dropped, 1, "and only the LIVE cut drops anything — `sheet-2` is below this cut");
 });
 
-test("#1503 no cut still reports null ids when a doubt carries no id at all", () => {
+test("no cut still reports null ids when a doubt carries no id at all", () => {
   // The edge the `ids.length === list.length` test alone gets wrong: a doubt with no id is skipped by
   // the loop, so `ids` is SHORTER than the list through no selection having been made. Without the
   // `!keepSet` short-circuit that reads as a selection, and the dispatch stops being byte-identical on
@@ -305,7 +305,7 @@ test("#1503 no cut still reports null ids when a doubt carries no id at all", ()
   assert.equal(sel.keyed, 1, "only the entry with an id reaches the counter");
 });
 
-test("#1503 the event names WHICH silence it resolved — a typo does not read like the shipped cut", () => {
+test("the event names WHICH silence it resolved — a typo does not read like the shipped cut", () => {
   // `keptTiersFor` returns null for `every-doubt` and for a word it does not know, deliberately: a typo
   // must not silently drop every keyed doubt. The cost is that both record identically, so a misspelt
   // row looks graded while the dispatch is not. That arm catches a bad word on the ROW; this is the

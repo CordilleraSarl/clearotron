@@ -42,7 +42,7 @@ const SHIPPED_MANIFESTS = ["risk-framework.manifest.json", "risk-framework-demo.
 const manifestDir = join(ROOT, "driver/skills/prelim-search");
 const readDeck = (p) => String(JSON.parse(readFileSync(p, "utf8")).source_deck ?? "");
 
-test("343: a shipped framework's provenance carries nothing a stranger would misread", () => {
+test("a shipped framework's provenance carries nothing a stranger would misread", () => {
   for (const f of SHIPPED_MANIFESTS) {
     const p = join(manifestDir, f);
     assert.ok(existsSync(p), `${f} is missing — this sweep would pass by looking at nothing`);
@@ -54,7 +54,7 @@ test("343: a shipped framework's provenance carries nothing a stranger would mis
   }
 });
 
-test("343: the frozen demo artefacts say the same as the manifest they came from", () => {
+test("the frozen demo artefacts say the same as the manifest they came from", () => {
   // Joined on framework_key, so this cannot be satisfied by two files that merely both look tidy.
   const byKey = new Map();
   // THE SET THIS WALK DISCOVERS IS ASSERTED BEFORE IT IS WALKED. Named rather than numbered, because a

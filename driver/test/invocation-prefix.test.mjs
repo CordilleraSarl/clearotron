@@ -42,7 +42,7 @@ const NOTHING_ON_DISK = Object.freeze({
 });
 const IN_PLACE = `cd ${INSTALL_DIR} && npx `;
 
-test("#1851 the four routes a reader can arrive by, and npx is two of them", () => {
+test("the four routes a reader can arrive by, and npx is two of them", () => {
   // ✕ EACH DRIVE ISOLATES ONE SIGNAL, AND THE FIRST CUT DID NOT. It paired an `_npx` path WITH
   // `npm_command=exec`, and gave the env-free case a `.mjs` basename — so removing EITHER check left
   // this arm green: the shim case was still caught by the path, and the cache-path case fell through to
@@ -67,14 +67,14 @@ test("#1851 the four routes a reader can arrive by, and npx is two of them", () 
   }
 });
 
-test("#1851 `npm run` is not npx, so a bare install driven from a script keeps the bare form", () => {
+test("`npm run` is not npx, so a bare install driven from a script keeps the bare form", () => {
   // The discriminator keys on `exec` specifically. `npm run` sets `run-script`; widening this to "any
   // npm_command" would put `npx ` in front of a global install's advice for no reason.
   assert.equal(invocationPrefix("/usr/local/bin/clearotron", { ...NO_SHIM, npm_command: "run-script" }, NOTHING_ON_DISK), "");
   assert.equal(invocationPrefix("/usr/local/bin/clearotron", { ...NO_SHIM, npm_lifecycle_event: "test" }, NOTHING_ON_DISK), "");
 });
 
-test("#1851 the dispatcher's own argv still wins for the verbs it spawns", () => {
+test("the dispatcher's own argv still wins for the verbs it spawns", () => {
   // A spawned verb's argv[1] is `bin/onboard.mjs` however the reader started it, so reading argv alone
   // would tell every verb to print `npx` even for someone who typed a bare `clearotron`.
   assert.equal(invocationPrefix("/opt/checkout/bin/onboard.mjs", { ...NO_SHIM, CLEAROTRON_INVOKED_AS: "/usr/local/bin/clearotron" }, NOTHING_ON_DISK), "",
@@ -86,7 +86,7 @@ test("#1851 the dispatcher's own argv still wins for the verbs it spawns", () =>
     IN_PLACE);
 });
 
-test("#1851 invoke() composes the whole line, not just the prefix", () => {
+test("invoke() composes the whole line, not just the prefix", () => {
   assert.equal(invoke("install", "/usr/local/bin/clearotron", NO_SHIM, NOTHING_ON_DISK), "clearotron install");
   assert.equal(invoke("install", "/opt/checkout/bin/clearotron.mjs", NO_SHIM, NOTHING_ON_DISK),
     `cd ${INSTALL_DIR} && npx clearotron install`);
@@ -98,7 +98,7 @@ test("#1851 invoke() composes the whole line, not just the prefix", () => {
 // helper-derived, and bare. A reader hitting the hardcoded one on a global install is told to type
 // `npx` for no reason; a reader hitting the bare one through npx gets rc 127. The helper is only worth
 // having if it is the ONLY way a command reaches a reader.
-test("#1851 no printed command in bin/ hardcodes its own prefix", () => {
+test("no printed command in bin/ hardcodes its own prefix", () => {
   const files = readdirSync(BIN).filter((f) => f.endsWith(".mjs"));
   // FLOOR. A walk that finds no files reports clean, which is how a corpus guard goes quiet.
   assert.ok(files.length >= 8, `only ${files.length} verb file(s) found — the walk is broken, not the tree`);
@@ -123,7 +123,7 @@ test("#1851 no printed command in bin/ hardcodes its own prefix", () => {
 // conventional `progname: message` form, not an instruction to type anything. Prefixing those with
 // `npx ` would make an error label read as a command — the opposite of this issue's purpose. They are
 // deliberately outside the guard above, which keys on printed COMMAND lines.
-test("#1851 a `progname: message` diagnostic is not a command and keeps the bare name", () => {
+test("a `progname: message` diagnostic is not a command and keeps the bare name", () => {
   const src = readFileSync(join(BIN, "passphrase.mjs"), "utf8");
   assert.match(src, /console\.error\(\x60clearotron passphrase: unrecognised argument/,
     "the diagnostic prefix stays bare — if this is ever 'fixed' to `npx clearotron passphrase:` the error "
@@ -141,18 +141,18 @@ test("#1851 a `progname: message` diagnostic is not a command and keeps the bare
 // npm puts the executable in `<project>/node_modules/.bin` and npx resolves it from the PROJECT ROOT —
 // driven on a real packaged tree in review, 2026-08: `npx clearotron doctor` from the root exits 0.
 
-test("2175-F7 a packaged install sends the reader to the project, not into node_modules", () => {
+test("a packaged install sends the reader to the project, not into node_modules", () => {
   assert.equal(standFrom("/srv/example/app/node_modules/clearotron"), "/srv/example/app");
 });
 
-test("2175-F7 a git checkout is unchanged — there is no node_modules segment to step out of", () => {
+test("a git checkout is unchanged — there is no node_modules segment to step out of", () => {
   assert.equal(standFrom("/srv/example/clearotron-checkout"), "/srv/example/clearotron-checkout");
   // And the live value: whatever this checkout is, the form must not name a node_modules directory.
   assert.doesNotMatch(`${standFrom(INSTALL_DIR)}/`, /\/node_modules\//,
     "the place a reader is told to stand must never be inside node_modules");
 });
 
-test("2175-F7 the NEAREST project root wins, and a lookalike directory is not one", () => {
+test("the NEAREST project root wins, and a lookalike directory is not one", () => {
   // A project may itself sit under someone else's node_modules; the root we want is the one directly
   // above this copy, not the outermost in the string.
   assert.equal(standFrom("/a/node_modules/@s/x/node_modules/clearotron"), "/a/node_modules/@s/x");

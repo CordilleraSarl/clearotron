@@ -789,7 +789,7 @@ export function loadProfiles({ dir, force = false, includeTestFixtures, includeD
     : String(process.env.CLEAROTRON_TEST_FIXTURE_PROFILES ?? "").trim() === "1";
   if (!asked) for (const [k, p] of [...profiles]) if (p?.testFixture === true) profiles.delete(k);
 
-  // THE DEMO ACCOUNT IS NOT PART OF A FRESH INSTALL EITHER — owner ruling, 2026-09-08: a clean install
+  // THE DEMO ACCOUNT IS NOT PART OF A FRESH INSTALL EITHER — ruling, 2026-09-08: a clean install
   // resolves `generic` and nothing else, and the demo brings its own account when somebody runs it.
   // Nobody should have to clean demo material out of an environment they just created.
   //

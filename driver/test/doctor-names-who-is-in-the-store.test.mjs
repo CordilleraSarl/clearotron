@@ -56,7 +56,7 @@ function doctorOver(dir) {
   return `${r.stdout ?? ""}${r.stderr ?? ""}`;
 }
 
-test("1911 doctor names the brand owners that actually resolved", () => {
+test("doctor names the brand owners that actually resolved", () => {
   const dir = store({
     northwind: { name: "Northwind Trading SA", platforms: ["amazon.com"] },
     calder: { name: "Calder Instruments", platforms: ["amazon.com"] },
@@ -67,7 +67,7 @@ test("1911 doctor names the brand owners that actually resolved", () => {
   assert.match(out, /calder/);
 });
 
-test("1911 doctor names the projects too, under their brand owner", () => {
+test("doctor names the projects too, under their brand owner", () => {
   const dir = store(
     { northwind: { name: "Northwind Trading SA", platforms: ["amazon.com"] } },
     { northwind: { "japan-launch": { platforms: ["amazon.co.jp"] } } });
@@ -77,7 +77,7 @@ test("1911 doctor names the projects too, under their brand owner", () => {
   assert.doesNotMatch(out, /undefined/, "the project's key comes from the loader's own field, never a dead fallback");
 });
 
-test("1911 AN EMPTY STORE SAYS SO, and says what else it could mean", () => {
+test("AN EMPTY STORE SAYS SO, and says what else it could mean", () => {
   // `generic` is the fallback the loader requires by name, not a brand owner anybody onboarded.
   // Counting it would tell an operator with an empty store that they have one.
   const out = doctorOver(store());
@@ -93,7 +93,7 @@ test("1911 AN EMPTY STORE SAYS SO, and says what else it could mean", () => {
     "an empty store and a store pointed somewhere wrong look identical — the operator is told that");
 });
 
-test("1911 a DEMO account is marked, because a real clearance under one is refused", () => {
+test("a DEMO account is marked, because a real clearance under one is refused", () => {
   const dir = store({ pretend: { name: "Pretend Co", platforms: ["amazon.com"], demoData: true } });
   const out = doctorOver(dir);
   assert.match(out, /marked DEMO DATA: pretend/,
@@ -104,7 +104,7 @@ test("1911 a DEMO account is marked, because a real clearance under one is refus
     "a demo account is present, not onboarded: counting it tells a reader they have a customer");
 });
 
-test("1911 A ROSTER THAT WILL NOT LOAD IS A FINDING, NEVER AN EMPTY LIST", () => {
+test("A ROSTER THAT WILL NOT LOAD IS A FINDING, NEVER AN EMPTY LIST", () => {
   // Two brand owners claiming one domain. The loader throws for the WHOLE roster, so every customer
   // resolution on this deployment is failing — and the naive report of that state is "no brand owners",
   // which reads as a working install with nothing in it.

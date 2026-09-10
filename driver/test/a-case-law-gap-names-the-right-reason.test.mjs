@@ -63,7 +63,7 @@ const lineAbout = (text, label) => text.split("\n").find((l) => l.includes(label
 
 const OUTAGE_WORDS = /unreachable|went down|connection layer|infrastructure|failed to connect|outage/i;
 
-test("2142 a source this deployment never enrolled is NOT reported as an outage", () => {
+test("a source this deployment never enrolled is NOT reported as an outage", () => {
   const sources = sourcesFor(noCreds());
   const oauth = sources.filter((r) => r.enrolment === "oauth");
   assert.ok(oauth.length >= 2, "the fixture no longer reproduces an unenrolled deployment");
@@ -80,7 +80,7 @@ test("2142 a source this deployment never enrolled is NOT reported as an outage"
     "the dictation does not forbid the outage framing for an un-enrolled source");
 });
 
-test("2142 the mirror: an ENROLLED source that fails is still reported as an outage", () => {
+test("the mirror: an ENROLLED source that fails is still reported as an outage", () => {
   // An un-enrolled run that reads as an outage is the defect; an outage that reads as un-enrolled is the
   // same defect mirrored, and it is the one a fix keyed on "is it available" would introduce.
   const sources = sourcesFor(withCreds(CASELAW_BRIDGES));
@@ -98,7 +98,7 @@ test("2142 the mirror: an ENROLLED source that fails is still reported as an out
     "the dictation dropped the instruction that a real outage is still an outage");
 });
 
-test("2142 the two disclosures are DISTINGUISHABLE in one dictation", () => {
+test("the two disclosures are DISTINGUISHABLE in one dictation", () => {
   // The state a real deployment lands in mid-enrolment, and the one that proves the split is per-source
   // rather than a single flag over the whole lane.
   const sources = sourcesFor(withCreds([CASELAW_BRIDGES[0]]));
@@ -111,7 +111,7 @@ test("2142 the two disclosures are DISTINGUISHABLE in one dictation", () => {
   assert.notEqual(lineAbout(text, on.label), lineAbout(text, off.label));
 });
 
-test("2142 the seat is told the connection error cannot answer this, and the list can", () => {
+test("the seat is told the connection error cannot answer this, and the list can", () => {
   // THE CRUX. Without this the seat holds two conflicting instructions: a list saying "not set up" and a
   // tool result saying "configured server, connection closed". It followed the tool result last time,
   // correctly, because nothing told it otherwise.
@@ -121,7 +121,7 @@ test("2142 the seat is told the connection error cannot answer this, and the lis
   assert.match(text, /the list above is right/i, "nothing tells the seat which source to believe");
 });
 
-test("2142 the gap is still disclosed — the fix changes the reason, never the disclosure", () => {
+test("the gap is still disclosed — the fix changes the reason, never the disclosure", () => {
   // The discipline that did NOT break in the original defect, and the one a careless fix would break:
   // making the gap quieter is worse than attaching the wrong reason to it.
   for (const env of [noCreds(), withCreds(CASELAW_BRIDGES)]) {
@@ -131,7 +131,7 @@ test("2142 the gap is still disclosed — the fix changes the reason, never the 
   }
 });
 
-test("2142 the sources come from the product's own inventory, not a list typed here", () => {
+test("the sources come from the product's own inventory, not a list typed here", () => {
   // The 2087 ruling, which this inherits: derived from the set of capabilities the product declares it
   // needs, never from a hand-kept list of the two we remembered.
   const sources = sourcesFor(noCreds());
@@ -146,7 +146,7 @@ test("2142 the sources come from the product's own inventory, not a list typed h
   assert.ok(sources.some((r) => r.enrolment === "built-in" && r.available), "the built-in lane vanished from the list");
 });
 
-test("2142 no inventory means no claim — absence is not a readiness verdict", () => {
+test("no inventory means no claim — absence is not a readiness verdict", () => {
   // A deployment whose inventory cannot be read must produce a dictation that says nothing about
   // sources, rather than one asserting a readiness nobody measured.
   for (const empty of [[], null, undefined]) {
@@ -157,7 +157,7 @@ test("2142 no inventory means no claim — absence is not a readiness verdict", 
   }
 });
 
-test("2142 the retrieval record's filename never travels to a reader", () => {
+test("the retrieval record's filename never travels to a reader", () => {
   // The same delivered paragraph carried `case-law-citations.json` to the client as body prose. The path
   // must be named to the seat — it writes the file — so the rule is that it stops there.
   const text = dictation(sourcesFor(noCreds()));

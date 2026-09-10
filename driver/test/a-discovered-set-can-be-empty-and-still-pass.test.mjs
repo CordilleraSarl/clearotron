@@ -44,7 +44,7 @@ export const EMPTY_IS_THE_PASS = [
   },
   {
     file: "driver/test/preflight-free-space.test.mjs",
-    symbol: "#773 a disk that cannot hold the run refuses BEFORE any run dir exists \u203a walk",
+    symbol: "a disk that cannot hold the run refuses BEFORE any run dir exists \u203a walk",
     expr: "readdirSync(dir, { withFileTypes: true })",
     why: "the same recursive walk for the same criterion (#773): a run dir left by a run that never "
        + "started is a resumable-looking husk, and the preflight's whole promise is that it produces none. "
@@ -89,7 +89,7 @@ export const GUARDED_AT_THE_WALK = [
     file: "driver/test/you-can-sign-out-of-the-mode-you-signed-in-to.test.mjs",
     symbol: "walk",
     expr: "readdirSync(dir, { withFileTypes: true })",
-    provedBy: "2179-F47 the population this walks is real, so an empty result means something",
+    provedBy: "the population this walks is real, so an empty result means something",
     why: "the recursion step of the portal-and-driver source walk behind F47's class arm. That arm "
        + "asserts an ABSENCE — no surface links straight at Cloudflare's endpoint — and an absence found "
        + "in an empty population is the exact false pass 1010 exists for. An empty directory part-way "
@@ -101,7 +101,7 @@ export const GUARDED_AT_THE_WALK = [
     file: "driver/test/a-what-if-claims-only-what-the-manifest-shows.test.mjs",
     symbol: "walk",
     expr: "readdirSync(d, { withFileTypes: true })",
-    provedBy: "2171 the manifest walk handles an empty tree rather than passing over it",
+    provedBy: "the manifest walk handles an empty tree rather than passing over it",
     why: "the recursion step of the sha manifest this issue's arms compare a canonical run against. The "
        + "aggregate is guarded — arm 1 refuses a fixture too thin to tell an untouched artifact from an "
        + "absent one — and the empty-walk direction is DRIVEN by the arm named above: an empty tree "
@@ -153,7 +153,7 @@ export const GUARDED_AT_THE_WALK = [
   },
   {
     file: "driver/test/register-ledger-rename.test.mjs",
-    symbol: "#1390 a config with NO register server still builds without a run — the refusal is scoped \u203a productModules",
+    symbol: "a config with NO register server still builds without a run — the refusal is scoped \u203a productModules",
     expr: "readdirSync(dir, { withFileTypes: true })",
     provedBy: "tracker 2018 the ledger walk refuses an empty tree and names the root it failed on",
     why: "the recursion step of the four-root product-module sweep, and the site this class was WORST "
@@ -178,7 +178,7 @@ export const GUARDED_AT_THE_WALK = [
     file: "driver/test/a-failed-run-tells-the-client-what-to-do.test.mjs",
     symbol: "walk",
     expr: "readdirSync(dir, { withFileTypes: true })",
-    provedBy: "2179 the source walk refuses an empty corpus, and an empty leaf is not one",
+    provedBy: "the source walk refuses an empty corpus, and an empty leaf is not one",
     why: "the recursion step of the five-root client-facing source walk behind the owner's failed-run "
        + "ruling. The class arm it feeds asserts an ABSENCE — no shipping line says a retired claim — "
        + "and an absence found in an empty population is the false pass 1010 exists for. An empty leaf "
@@ -226,7 +226,7 @@ function survey() {
   return { files, rows };
 }
 
-test("#1010 a loop over a DISCOVERED set asserts that set is not empty, or says why empty is correct", () => {
+test("a loop over a DISCOVERED set asserts that set is not empty, or says why empty is correct", () => {
   const { rows } = survey();
   const open = rows.filter((r) => !r.guarded && !declared(r) && !walkGuarded(r));
   assert.deepEqual(open.map((r) => `${r.file}:${r.line}  ${r.expr}`), [],
@@ -238,7 +238,7 @@ test("#1010 a loop over a DISCOVERED set asserts that set is not empty, or says 
     + "guarded, add it to GUARDED_AT_THE_WALK with the arm that drives the empty-walk direction.");
 });
 
-test("#1010 the detector can still SEE a vacuous loop — a zero here is a broken instrument", () => {
+test("the detector can still SEE a vacuous loop — a zero here is a broken instrument", () => {
   // A green above means nothing if the detector stopped matching. Two directions, both required.
   const { rows } = survey();
   assert.ok(rows.length >= 20,
@@ -262,7 +262,7 @@ test("#1010 the detector can still SEE a vacuous loop — a zero here is a broke
   assert.deepEqual(cured.map((p) => p.guarded), [true], "the detector no longer credits a real non-emptiness assertion");
 });
 
-test("#1010 every EMPTY_IS_THE_PASS entry is REACHED, exactly once, and carries its reason", () => {
+test("every EMPTY_IS_THE_PASS entry is REACHED, exactly once, and carries its reason", () => {
   // The aggregate that hid a half-dead exemption on is not repeated: per entry, and REACHED
   // rather than well-formed.
   const { rows } = survey();
@@ -281,7 +281,7 @@ test("#1010 every EMPTY_IS_THE_PASS entry is REACHED, exactly once, and carries 
   }
 });
 
-test("#2018 every GUARDED_AT_THE_WALK entry is REACHED exactly once, names its proof, and has not taken the guard back", () => {
+test("every GUARDED_AT_THE_WALK entry is REACHED exactly once, names its proof, and has not taken the guard back", () => {
   const { rows } = survey();
   // THE TABLE ITSELF IS A POPULATION, and a loop over an emptied one passes while checking nothing —
   // which is the exact shape this whole file exists to catch, one level up. Empty the table and this
@@ -312,7 +312,7 @@ test("#2018 every GUARDED_AT_THE_WALK entry is REACHED exactly once, names its p
   }
 });
 
-test("#1862 the anchor survives a move, and still dies with its site", () => {
+test("the anchor survives a move, and still dies with its site", () => {
   // Driven against the real file, not a hand-built row — the whole defect was that the declaration and
   // the thing it described could drift apart, so a fixture that cannot drift proves nothing.
   const d = EMPTY_IS_THE_PASS[0];
@@ -334,7 +334,7 @@ test("#1862 the anchor survives a move, and still dies with its site", () => {
     "the entry still resolves after its site was deleted");
 });
 
-test("#1010 the comment-blanking keeps line numbers true", () => {
+test("the comment-blanking keeps line numbers true", () => {
   // Dropping comment lines instead of blanking them would shift every reported line, and the report is
   // how a reader finds the site. Same inversion suite-census.mjs calls out for its own counter.
   const rows = discoveredLoops("// a comment\n// another\nfor (const f of readdirSync(d)) { assert.ok(f); }\n");

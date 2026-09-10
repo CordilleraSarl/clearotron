@@ -36,7 +36,7 @@ const doubt = (n) => ({
 });
 const CAPPED = Array.from({ length: 25 }, (_, i) => doubt(i + 1));
 
-test("#1348 a truncated ledger says so IN the audit, with the omitted COUNT", () => {
+test("a truncated ledger says so IN the audit, with the omitted COUNT", () => {
   const { md, counts } = buildAuditMd(REGISTER_MD, "", {
     doubts: CAPPED,
     doubtTruncations: [{ source: "record-carry", minted: 25, omitted: 12 }],
@@ -54,7 +54,7 @@ test("#1348 a truncated ledger says so IN the audit, with the omitted COUNT", ()
     "the delivered audit points the reader at a path that is purged with the run dir");
 });
 
-test("#1348 a run that truncated NOTHING renders not one extra byte", () => {
+test("a run that truncated NOTHING renders not one extra byte", () => {
   // The common path, and the reason this cannot become a line every reader learns to skip.
   const clean = buildAuditMd(REGISTER_MD, "", { doubts: CAPPED });
   const emptyList = buildAuditMd(REGISTER_MD, "", { doubts: CAPPED, doubtTruncations: [] });
@@ -66,7 +66,7 @@ test("#1348 a run that truncated NOTHING renders not one extra byte", () => {
   assert.equal(clean.counts.doubtsOmitted, 0);
 });
 
-test("#1348 REPLAY: a ledger AT the cap is now distinguishable from a complete one of the same size", () => {
+test("REPLAY: a ledger AT the cap is now distinguishable from a complete one of the same size", () => {
   // The issue's own acceptance, and the thing that was impossible before: both of these deliver 25
   // rows. Byte-identical previously; they must differ now, and differ in a way a reader can act on.
   const truncated = buildAuditMd(REGISTER_MD, "", {
@@ -81,7 +81,7 @@ test("#1348 REPLAY: a ledger AT the cap is now distinguishable from a complete o
   for (const d of CAPPED) assert.ok(truncated.includes(d.birth.quote), `the disclosure dropped a doubt row: ${d.id}`);
 });
 
-test("#1348 EVERY slice is named — two truncations are not one", () => {
+test("EVERY slice is named — two truncations are not one", () => {
   // `mintCommonLawCarryDoubts` runs per slice. A reader told "12 omitted" twice with no slice cannot
   // tell two truncations from one repeated line.
   const { md, counts } = buildAuditMd(REGISTER_MD, "", {
@@ -97,7 +97,7 @@ test("#1348 EVERY slice is named — two truncations are not one", () => {
   assert.equal(counts.doubtsOmitted, 12, "the total must be the SUM across mints, not the last one");
 });
 
-test("#1348 the mint's own report is what the disclosure is built from — the number is real", () => {
+test("the mint's own report is what the disclosure is built from — the number is real", () => {
   // Everything above feeds buildAuditMd a literal. This drives the shipped mint, so a change to what
   // it reports is caught rather than the two sides moving independently.
   const unreasoned = Array.from({ length: 37 }, (_, i) => ({
@@ -116,7 +116,7 @@ test("#1348 the mint's own report is what the disclosure is built from — the n
   assert.match(md, /25 of 37 minted/, "the rendered total disagrees with the mint's own arithmetic");
 });
 
-test("#1348 a ledger-less run cannot acquire a truncation line", () => {
+test("a ledger-less run cannot acquire a truncation line", () => {
   // `doubts: null` is the legacy/replay caller — no Doubt Ledger section at all. A truncation row
   // arriving without a ledger must not mint a section that nothing else in the artifact supports.
   const { md } = buildAuditMd(REGISTER_MD, "", {

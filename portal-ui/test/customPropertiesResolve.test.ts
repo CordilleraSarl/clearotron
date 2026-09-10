@@ -52,7 +52,7 @@ for (const f of FILES) {
   for (const m of readFileSync(f, 'utf8').matchAll(DEFINE)) defined.add(m[1])
 }
 
-test('#1459 every custom property the UI reads is defined somewhere in src/', () => {
+test('every custom property the UI reads is defined somewhere in src/', () => {
   const missing: string[] = []
   for (const f of FILES) {
     const text = readFileSync(f, 'utf8')
@@ -67,7 +67,7 @@ test('#1459 every custom property the UI reads is defined somewhere in src/', ()
     `these render with no value at all — an undefined custom property is dropped silently:\n  ${missing.join('\n  ')}`)
 })
 
-test('#1459 the guard can see a missing property — it is not vacuously green', () => {
+test('the guard can see a missing property — it is not vacuously green', () => {
   // A ZERO IS EVIDENCE ONLY IF THE INSTRUMENT CAN SHOW NON-ZERO. Both halves are exercised on the same
   // synthetic input, so a future edit that breaks the reader (a changed regex, a narrowed walk) fails
   // here rather than turning the arm above into a green that means nothing.
@@ -80,7 +80,7 @@ test('#1459 the guard can see a missing property — it is not vacuously green',
   assert.deepEqual(reads.filter((v) => !defs.has(v)), ['--ghost'], 'the guard cannot see an undefined property')
 })
 
-test('#1459 the run-time-assembled names RESOLVE — the hole is closed, not counted', () => {
+test('the run-time-assembled names RESOLVE — the hole is closed, not counted', () => {
   // `var(--tone-${tone})` cannot be read statically, and a guard that merely skips it leaves the whole
   // tone palette outside its reach — which is most of the colour in this UI. But the names are not
   // arbitrary: `TONES` is a five-entry const tuple and `toneChip` widens only the three in CHIP_TONES.
@@ -110,7 +110,7 @@ test('#1459 the run-time-assembled names RESOLVE — the hole is closed, not cou
   }
 })
 
-test('#1459 the tone scale is exactly the five the brand defines, in both themes', () => {
+test('the tone scale is exactly the five the brand defines, in both themes', () => {
   // The pin that stops the original mistake recurring: the names that broke were brand names for tones
   // whose CSS names differ. If the scale gains or renames a step, this fails and whoever does it has to
   // look at the brand-vs-token mapping rather than discover it from a colourless notice.

@@ -47,7 +47,7 @@ function doctorWithHomeEnv(body) {
   }
 }
 
-test("161 a start re-mints the stored trigger key, and leaves everything a person typed alone", () => {
+test("a start re-mints the stored trigger key, and leaves everything a person typed alone", () => {
   const before = "# their own file\nPERPLEXITY_API_KEY=typed-by-the-operator\nPORTAL_OPS_TOKEN=v1.first.start\nPORTAL_SECRET=also-theirs\n";
   // Driven through the launcher's OWN function, not through the merge with a hand-supplied policy: an
   // arm that passes `refresh` itself proves the merge works and says nothing about what the launcher
@@ -72,7 +72,7 @@ test("161 a start re-mints the stored trigger key, and leaves everything a perso
   assert.match(r.text, /# their own file/, "the file lost a comment it had");
 });
 
-test("161 the posture the counter reads is the one the key carries", () => {
+test("the posture the counter reads is the one the key carries", () => {
   const fresh = opsTokenPosture(keyExpiringIn(30));
   assert.equal(fresh.readable, true);
   assert.equal(fresh.expired, false);
@@ -81,14 +81,14 @@ test("161 the posture the counter reads is the one the key carries", () => {
   assert.equal(gone.expired, true, "a lapsed key did not read as expired");
 });
 
-test("161 doctor names the trigger key's remaining life", { timeout: 120_000 }, () => {
+test("doctor names the trigger key's remaining life", { timeout: 120_000 }, () => {
   const { status, out } = doctorWithHomeEnv(`PORTAL_OPS_TOKEN=${keyExpiringIn(25)}\n`);
   assert.match(out, /Portal trigger key/, "doctor printed no trigger-key section at all");
   assert.match(out, /good for 2[0-9] more day\(s\)/, "doctor did not say how long the key has");
   assert.notEqual(status, null, "doctor did not run");
 });
 
-test("161 doctor refuses on a key that has lapsed, and on one about to", () => {
+test("doctor refuses on a key that has lapsed, and on one about to", () => {
   const lapsed = doctorWithHomeEnv(`PORTAL_OPS_TOKEN=${keyExpiringIn(-1)}\n`);
   assert.match(lapsed.out, /expired/, "doctor said nothing about a key that has already lapsed");
   assert.equal(lapsed.status, 1, "doctor exited 0 over an expired trigger key — every Start is refused");
@@ -101,7 +101,7 @@ test("161 doctor refuses on a key that has lapsed, and on one about to", () => {
   assert.equal(soon.status, 1, "a key days from expiry read as nothing to act on");
 });
 
-test("161 a malformed key is a refusal, and a foreground install is not", () => {
+test("a malformed key is a refusal, and a foreground install is not", () => {
   const bad = doctorWithHomeEnv("PORTAL_OPS_TOKEN=an-opaque-32-byte-value\n");
   assert.match(bad.out, /cannot be read as one/, "a key of the wrong KIND read as a key");
   assert.equal(bad.status, 1, "doctor exited 0 over a key the portal will refuse every Start with");

@@ -40,7 +40,7 @@ const park = (data) => {
 
 const CLOCK = "2026-08-17T15:58:35.018Z";
 
-test("#1159 a RECOVERY park's marker names its own clock, and carries no provider reset", () => {
+test("a RECOVERY park's marker names its own clock, and carries no provider reset", () => {
   const meta = park({ ...parkCause({ recovery: true }), recoveryResumesAt: CLOCK, resetsAt: null });
   assert.equal(meta.recoveryResumesAt, CLOCK, "the recovery clock is not under its own name");
   assert.equal(meta.resetsAt, null,
@@ -49,14 +49,14 @@ test("#1159 a RECOVERY park's marker names its own clock, and carries no provide
   assert.equal(meta.parkKind, "recovery");
 });
 
-test("#1159 a RATE-LIMIT park is unchanged — it really is a provider reset", () => {
+test("a RATE-LIMIT park is unchanged — it really is a provider reset", () => {
   const meta = park({ ...parkCause({}), resetsAt: CLOCK });
   assert.equal(meta.resetsAt, CLOCK);
   assert.equal(meta.recoveryResumesAt, undefined, "a rate-limit park grew a recovery clock it does not have");
   assert.equal(meta.parkKind, "rate-limit");
 });
 
-test("#1159 THE BEHAVIOUR: a recovery park keeps its exact clock and is no longer probed early", () => {
+test("THE BEHAVIOUR: a recovery park keeps its exact clock and is no longer probed early", () => {
   // A long clock against a short probe schedule. Under `resetsAt` the reader clamps to the probe; under
   // `recoveryResumesAt` it keeps the stated time. This is the assertion that fails if the writer regresses
   // to stamping every park as a reset, and it fails on WAKE TIME rather than on a string.
@@ -77,7 +77,7 @@ test("#1159 THE BEHAVIOUR: a recovery park keeps its exact clock and is no longe
   assert.ok(rateLimit < recovery, "the two clocks are being treated identically again");
 });
 
-test("#1159 the end-to-end shape: what the writer stamps is what the reader honours", () => {
+test("the end-to-end shape: what the writer stamps is what the reader honours", () => {
   // The two halves are in different functions and nothing compared them, which is how the writer could
   // stamp a name the reader treats specially without anyone noticing.
   const meta = park({ ...parkCause({ recovery: true }), recoveryResumesAt: CLOCK, resetsAt: null });
@@ -87,7 +87,7 @@ test("#1159 the end-to-end shape: what the writer stamps is what the reader hono
     + "clamped reading returns almost immediately, so this is the clamp, caught end to end");
 });
 
-test("#1159 the WRITE SITE branches on the park kind — pinned, because behaviour cannot reach it here", () => {
+test("the WRITE SITE branches on the park kind — pinned, because behaviour cannot reach it here", () => {
   // The three tests above drive `parkPostponed` with data they construct, so they prove the marker
   // format and the reader agree. They do NOT prove that `runPrepared` hands over the right shape, and
   // that is the line the defect actually lived on: reaching it needs a full pipeline dispatch.

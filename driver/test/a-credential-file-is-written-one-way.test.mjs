@@ -26,7 +26,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
-test("159 a credential file is written into a directory that does not exist yet", () => {
+test("a credential file is written into a directory that does not exist yet", () => {
   const root = mkdtempSync(join(tmpdir(), "secret-write-"));
   try {
     // The shape of a machine that has never run this product: a home with no config directory in it.
@@ -47,7 +47,7 @@ test("159 a credential file is written into a directory that does not exist yet"
   }
 });
 
-test("159 a failed write leaves no half-file and no copy of the secret", () => {
+test("a failed write leaves no half-file and no copy of the secret", () => {
   const root = mkdtempSync(join(tmpdir(), "secret-write-fail-"));
   try {
     // A path whose parent cannot be created: an ordinary FILE stands where the directory would go.
@@ -61,7 +61,7 @@ test("159 a failed write leaves no half-file and no copy of the secret", () => {
   }
 });
 
-test("159 nothing composes its own atomic write for a file holding credentials", () => {
+test("nothing composes its own atomic write for a file holding credentials", () => {
   // THE ARM FOR THE CLASS, not the instance. Three copies of this existed and the one that shipped a
   // blocker was the copy that did not learn what the others had. A fourth would fail the same way, and
   // the failure only shows on a machine that has never run this product.
@@ -77,7 +77,7 @@ test("159 nothing composes its own atomic write for a file holding credentials",
   }
 });
 
-test("159 the printed recovery command runs as printed", () => {
+test("the printed recovery command runs as printed", () => {
   // The demo keeps its credential inside its own base. `clearotron passphrase --reset`, run exactly as
   // the demo printed it, resolved the SHARED default, found nothing and exited 1 saying no credential
   // exists — while the credential sat in the demo's directory being read by the portal. Measured by the

@@ -28,7 +28,7 @@ const LIVE = {
   "code|not-provider-billed|code:execute-plan": bucket("code", "not-provider-billed", "code:execute-plan", 1),
 };
 
-test("#1209 THE CASE THAT RAISED IT: the mixed run says it cannot name one of either", () => {
+test("THE CASE THAT RAISED IT: the mixed run says it cannot name one of either", () => {
   const c = billingComposition(LIVE);
   // REMAINDER — VENDORS, NOT ENGINES. This run really is two vendors; what changed is that the
   // field now says who was billed. `engines` keeps what was stamped, so nothing the old assertion
@@ -45,7 +45,7 @@ test("#1209 THE CASE THAT RAISED IT: the mixed run says it cannot name one of ei
   assert.match(c.statement, /openai-agent/);
 });
 
-test("#1209 CODE-SIDE IS NOT A VENDOR — or every run in the product reads as mixed", () => {
+test("CODE-SIDE IS NOT A VENDOR — or every run in the product reads as mixed", () => {
   // `code:execute-plan` rides nearly every run. Counting it would make multi-vendor the universal answer
   // and the field worthless — the `web`-channel defect exactly: a member the driver always adds,
   // making every run look anomalous.
@@ -56,14 +56,14 @@ test("#1209 CODE-SIDE IS NOT A VENDOR — or every run in the product reads as m
   assert.equal(c.notProviderBilledDispatches, 1);
 });
 
-test("#1209 a code-side-ONLY run names no vendor, and does not name 'code' as one", () => {
+test("a code-side-ONLY run names no vendor, and does not name 'code' as one", () => {
   const c = billingComposition({ "code|not-provider-billed|code:execute-plan": bucket("code", "not-provider-billed", "code:execute-plan", 3) });
   assert.deepEqual(c.vendors, []);
   assert.match(c.statement, /cannot name a vendor or a billing mode/);
   assert.ok(!/one vendor \(code\)/.test(c.statement), "code-side was promoted to the run's vendor");
 });
 
-test("#1209 ONE VENDOR still gets the sentence — an absent field must never read as purity", () => {
+test("ONE VENDOR still gets the sentence — an absent field must never read as purity", () => {
   // If this only appeared when mixed, a reader could not tell "single vendor" from "never computed".
   // That is the exact failure mode this issue is about, reintroduced one level up.
   const c = billingComposition({ "openai-agent|subscription|gpt-5.6-sol": bucket("openai-agent", "subscription", "gpt-5.6-sol", 40) });
@@ -75,7 +75,7 @@ test("#1209 ONE VENDOR still gets the sentence — an absent field must never re
   assert.ok(c.statement.length > 0, "a single-vendor run said nothing at all");
 });
 
-test("#1209 ONE VENDOR, TWO METERS — the case the issue calls out by name", () => {
+test("ONE VENDOR, TWO METERS — the case the issue calls out by name", () => {
   // "Anthropic rounds STILL mix billing modes (subscription CLI + API key are the same vendor, different
   // meters)". A vendor-only check would call this run clean, which is the whole point of splitting the
   // two questions.
@@ -88,7 +88,7 @@ test("#1209 ONE VENDOR, TWO METERS — the case the issue calls out by name", ()
   assert.match(c.statement, /CANNOT state a single vendor or billing mode/);
 });
 
-test("#1209 NO TELEMETRY is unknown, never 'one vendor'", () => {
+test("NO TELEMETRY is unknown, never 'one vendor'", () => {
   const c = billingComposition({}, { telemetryPresent: false });
   assert.equal(c.basis, "unknown");
   assert.equal(c.mixedVendors, null, "a missing measurement answered the question as `false`");
@@ -97,14 +97,14 @@ test("#1209 NO TELEMETRY is unknown, never 'one vendor'", () => {
   assert.match(c.statement, /no dispatch telemetry/);
 });
 
-test("#1209 an EMPTY rollup is unknown too — zero buckets is not a pure run", () => {
+test("an EMPTY rollup is unknown too — zero buckets is not a pure run", () => {
   const c = billingComposition({});
   assert.equal(c.basis, "unknown");
   assert.equal(c.mixedVendors, null);
   assert.match(c.statement, /journalled no dispatches/);
 });
 
-test("#1209 UNSTAMPED rows are counted apart and never listed as a vendor named 'unknown'", () => {
+test("UNSTAMPED rows are counted apart and never listed as a vendor named 'unknown'", () => {
   const c = billingComposition({
     "openai-agent|subscription|gpt-5.6-sol": bucket("openai-agent", "subscription", "gpt-5.6-sol", 20),
     "unknown|unknown|legacy-alias": bucket("unknown", "unknown", "legacy-alias", 4),
@@ -120,12 +120,12 @@ test("#1209 UNSTAMPED rows are counted apart and never listed as a vendor named 
   assert.match(c.statement, /INCOMPLETE/);
 });
 
-test("#1209 a fully attributed run says so — `complete` is not decoration", () => {
+test("a fully attributed run says so — `complete` is not decoration", () => {
   assert.equal(billingComposition(LIVE).complete, true);
   assert.equal(billingComposition(LIVE).unattributedDispatches, 0);
 });
 
-test("#1209 SHAPE FUZZ: null and undefined do not throw", () => {
+test("SHAPE FUZZ: null and undefined do not throw", () => {
   // `= {}` defaults on undefined and NOT on null. Same finding as the planVsExecutedChannels, which
   // threw on a null it was documented to accept.
   for (const [a, b] of [[null, null], [undefined, undefined], [null, undefined], [{}, null]]) {
@@ -134,7 +134,7 @@ test("#1209 SHAPE FUZZ: null and undefined do not throw", () => {
   }
 });
 
-test("#1209 the statement is DERIVED — every name in it comes from the buckets it describes", () => {
+test("the statement is DERIVED — every name in it comes from the buckets it describes", () => {
   // The sentence has no second source, so it cannot drift from the table. Proven by construction rather
   // than asserted in a comment: every vendor and mode named must appear in the input.
   const c = billingComposition(LIVE);
@@ -150,7 +150,7 @@ test("#1209 the statement is DERIVED — every name in it comes from the buckets
   for (const v of c.vendors) assert.match(c.statement, new RegExp(v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
-test("#1209 it reaches the LEAN SUMMARY, which is the surface a reader polls", () => {
+test("it reaches the LEAN SUMMARY, which is the surface a reader polls", () => {
   // The acceptance says "at the summary level". _driver/economics.json carrying it is not enough: the
   // summary on status.json is what polled surfaces read, and it is deliberately small, so a field can be
   // correct in the full record and absent where it is looked for.
@@ -164,7 +164,7 @@ test("#1209 it reaches the LEAN SUMMARY, which is the surface a reader polls", (
 
 // ── REMAINDER — ONE VENDOR, TWO ENGINES ────────────────────────────────────────────────────────
 
-test("#1209 an ALL-ANTHROPIC run states ONE vendor, however many engines it stamped", () => {
+test("an ALL-ANTHROPIC run states ONE vendor, however many engines it stamped", () => {
   // THE REMAINDER, DIRECTLY. Once the API-key split was fixed, the first jx-bearing run stamped
   // `anthropic-agent` on agentic stages and `anthropic-direct` on the jx lanes — one vendor, two engines
   // — and the receipt counted the LABELS and declared it could not name a vendor. On origin/main this
@@ -182,7 +182,7 @@ test("#1209 an ALL-ANTHROPIC run states ONE vendor, however many engines it stam
   assert.match(c.statement, /2 engines \(anthropic-agent, anthropic-direct\)/);
 });
 
-test("#1209 the two meters still separate under one vendor — mixedBillingModes is untouched", () => {
+test("the two meters still separate under one vendor — mixedBillingModes is untouched", () => {
   // The issue's own words: "subscription CLI + API key are the same vendor, different meters". Making
   // the vendor claim true must not make the billing claim false, and this is the arm that would catch a
   // fix that quietened both.
@@ -196,7 +196,7 @@ test("#1209 the two meters still separate under one vendor — mixedBillingModes
   assert.match(c.statement, /CANNOT state a single vendor or billing mode/);
 });
 
-test("#1209 an engine the table cannot place is NAMED and blocks the single-vendor claim", () => {
+test("an engine the table cannot place is NAMED and blocks the single-vendor claim", () => {
   // The safe direction. A future engine that nobody adds a row for must not be quietly folded into
   // whichever vendor it superficially resembles, and must not be silently dropped either — a vendor
   // claim covering two thirds of the spend is worse than no claim.
@@ -211,7 +211,7 @@ test("#1209 an engine the table cannot place is NAMED and blocks the single-vend
   assert.match(c.statement, /NOT the whole run/);
 });
 
-test("#1209 every engine the tree stamps has a vendor row", () => {
+test("every engine the tree stamps has a vendor row", () => {
   // The table is closed, so its completeness is the thing that decides whether `unmappedEngines` is a
   // real signal or a permanent nag. Checked against the engines the code actually writes.
   for (const e of ["anthropic-agent", "anthropic-direct", "anthropic-completions", "openai-agent"])

@@ -35,7 +35,7 @@ const finding = (mark, over = {}) => ({
 });
 
 // ── ARM A — evidence fell, the band did not ──────────────────────────────────────────────────────────
-test("#1557 A: evidence removed while the band holds is a violation, however the prose moved", () => {
+test("A: evidence removed while the band holds is a violation, however the prose moved", () => {
   const before = [finding("ALPHA")];
   // the byte-identical shape: no text diff can see this one
   const identical = [finding("ALPHA", { meters: { use: { token: "unknown", basis: "inferred-from-signal", source: "" },
@@ -58,7 +58,7 @@ test("#1557 A: evidence removed while the band holds is a violation, however the
   assert.ok(v2[0].claimGrewBy > 0, "the claim gained text as its support was removed");
 });
 
-test("#1557 A: a band that MOVES discharges the invariant — this is not a deletion ban", () => {
+test("A: a band that MOVES discharges the invariant — this is not a deletion ban", () => {
   // The requirement is that a claim may not outlive its evidence, not that evidence may never be
   // removed. A pass that removes support and lowers the band has done the honest thing.
   const before = [finding("ALPHA")];
@@ -68,14 +68,14 @@ test("#1557 A: a band that MOVES discharges the invariant — this is not a dele
   assert.deepEqual(evidenceFellClaimHeld(before, after), []);
 });
 
-test("#1557 A: an unchanged finding is not a violation", () => {
+test("A: an unchanged finding is not a violation", () => {
   const rows = [finding("ALPHA"), finding("BETA")];
   assert.deepEqual(evidenceFellClaimHeld(rows, structuredClone(rows)), [],
     "THE NEGATIVE CONTROL: a pass that changed nothing must produce nothing");
 });
 
 // ── ARM B — a demoted stamp is re-asserted ───────────────────────────────────────────────────────────
-test("#1557 B: a stamp the driver demoted as unprovable may not read verified-from-record again", () => {
+test("B: a stamp the driver demoted as unprovable may not read verified-from-record again", () => {
   const after = [finding("ALPHA")];       // goods_proximity is verified-from-record
   const demotions = [{ ordinal: 1, mark: "ALPHA", meter: "goods_proximity",
     uri: "/mark/ch/x1", why: "record-on-disk-never-read" }];
@@ -86,7 +86,7 @@ test("#1557 B: a stamp the driver demoted as unprovable may not read verified-fr
     "the reason travels — 'the driver disagreed' is weaker than 'the driver recorded why it could not back this'");
 });
 
-test("#1557 B: a demoted stamp that STAYED demoted is not a violation", () => {
+test("B: a demoted stamp that STAYED demoted is not a violation", () => {
   const after = [finding("ALPHA", { meters: { use: meter("verified-from-record"),
     goods_proximity: { token: "unknown", basis: "inferred-from-signal", source: "" } } })];
   const demotions = [{ mark: "ALPHA", meter: "goods_proximity", why: "record-on-disk-never-read" }];
@@ -94,13 +94,13 @@ test("#1557 B: a demoted stamp that STAYED demoted is not a violation", () => {
     "THE NEGATIVE CONTROL: the demotion held, which is the system working");
 });
 
-test("#1557 B: a verified stamp the driver never demoted is left alone", () => {
+test("B: a verified stamp the driver never demoted is left alone", () => {
   assert.deepEqual(demotedStampReasserted([finding("ALPHA")], [{ mark: "BETA", meter: "use", why: "x" }]), [],
     "this arm judges only stamps the driver actually ruled on");
 });
 
 // ── the shape of the whole answer ────────────────────────────────────────────────────────────────────
-test("#1557 both arms report together, arm B first, and absence is stated not implied", () => {
+test("both arms report together, arm B first, and absence is stated not implied", () => {
   const before = [finding("ALPHA")];
   const after = [finding("ALPHA", { meters: { use: { token: "unknown", basis: "inferred-from-signal", source: "" },
     goods_proximity: meter("verified-from-record") } })];
@@ -117,14 +117,14 @@ test("#1557 both arms report together, arm B first, and absence is stated not im
     "nulls, not zeros: 'no findings' and 'no snapshot' are different facts");
 });
 
-test("#1557 malformed input reports nothing and throws nothing", () => {
+test("malformed input reports nothing and throws nothing", () => {
   for (const bad of [null, undefined, "x", [null], [{}], [{ meters: null }], [{ meters: { use: null } }]]) {
     assert.deepEqual(evidenceClaimViolations({ before: bad, after: bad, demotions: bad }).violations, [],
       `threw or reported on ${JSON.stringify(bad)}`);
   }
 });
 
-test("#1557 the ladder is the run's own, and ordered", () => {
+test("the ladder is the run's own, and ordered", () => {
   assert.ok(BASIS_RANK["verified-from-record"] > BASIS_RANK.assumed);
   assert.ok(BASIS_RANK.assumed > BASIS_RANK["inferred-from-signal"]);
   assert.ok(BASIS_RANK["inferred-from-signal"] > BASIS_RANK["not-checked"]);
@@ -150,7 +150,7 @@ test("#1557 the ladder is the run's own, and ordered", () => {
 // runs the check. taught that the expensive way: a tell computed and recorded nowhere. A source
 // scan cannot prove a real run emits the event — nothing here drives that pipeline branch — but it does
 // prove the call, the artifact and the run.jsonl row are all still present.
-test("#1557 the invariant is CALLED at the corrective seam, and its result is recorded", () => {
+test("the invariant is CALLED at the corrective seam, and its result is recorded", () => {
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   assert.match(src, /import \{[^}]*evidenceClaimViolations[^}]*\} from "\.\/evidence-claim-invariant\.mjs"/,
     "imported");
@@ -175,7 +175,7 @@ test("#1557 the invariant is CALLED at the corrective seam, and its result is re
 // mentions it, and the `note()` beside the write is stderr. **An escalation that reaches no reader is a
 // log line**, and this is the third time in one session that a computed signal turned out to be recorded
 // nowhere — so this arm drives the real composer rather than scanning for the call.
-test("#1557 the violations ride the recheck dispatch, as data the seat can read", async () => {
+test("the violations ride the recheck dispatch, as data the seat can read", async () => {
   const { repairFollowup } = await import("../repair-composers.mjs");
   const violations = [
     { arm: "demoted-stamp-reasserted", finding: "ALPHA|ALPHA Holdings", meter: "goods_proximity",
@@ -196,7 +196,7 @@ test("#1557 the violations ride the recheck dispatch, as data the seat can read"
   assert.match(text, /not a judgement/i, "as DATA — the seat decides whether the change was wrong");
 });
 
-test("#1557 the PIPELINE passes it — the composer working proves nothing about the call site", () => {
+test("the PIPELINE passes it — the composer working proves nothing about the call site", () => {
   // The arm above drives the composer directly, so it stays green over a build where the pipeline never
   // passes `evidenceTable` at all. That is exactly the hole this whole issue is about — a signal computed
   // correctly and handed to nobody — and removing the argument from the call site reds nothing without
@@ -209,14 +209,14 @@ test("#1557 the PIPELINE passes it — the composer working proves nothing about
     "and the recheck dispatch carries it, beside the corrections table it sits with");
 });
 
-test("#1557 a clean pass leaves the recheck dispatch byte-identical", () => {
+test("a clean pass leaves the recheck dispatch byte-identical", () => {
   // The dispatch is the expensive artifact on this seam. No violations must cost it nothing at all.
   assert.equal(evidenceClaimTable([]), "");
   assert.equal(evidenceClaimTable(null), "");
   assert.equal(evidenceClaimTable(undefined), "");
 });
 
-test("#1557 the table names both arms distinctly — a reader must not have to infer which is which", () => {
+test("the table names both arms distinctly — a reader must not have to infer which is which", () => {
   const t = evidenceClaimTable([
     { arm: "demoted-stamp-reasserted", finding: "A|A", meter: "use", demotedWhy: "record-on-disk-never-read" },
     { arm: "evidence-fell-claim-held", finding: "B|B", meter: "use",

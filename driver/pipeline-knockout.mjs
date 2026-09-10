@@ -737,7 +737,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           //
           // Bounded to promoted filings and deduplicated per owner — on the issue's own run that is ONE
           // extra query. Never throws: a failure produces rows saying the lookup did not answer, and the
-          // run publishes (owner ruling A, 2026-09-07).
+          // run publishes (ruling A, 2026-09-07).
           try {
             const owed = ownersOwedACheck(recDoc);
             if (owed.length) {

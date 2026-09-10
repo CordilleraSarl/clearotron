@@ -21,7 +21,7 @@ import { deliveryLine, engineCommitOf, SCORER_VERSION } from "../reference-score
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const run = (o) => ({ deliveryState: null, deliveredAt: null, hasStatus: false, poolMeta: null, ...o });
 
-test("2025 a delivered run still says so, and a refusal still leads — both unchanged", () => {
+test("a delivered run still says so, and a refusal still leads — both unchanged", () => {
   const yes = deliveryLine(run({ hasStatus: true, deliveryState: "delivered", deliveredAt: "2026-08-28T10:00:00Z" }));
   assert.match(yes, /^delivered: YES — 2026-08-28T10:00:00Z$/);
 
@@ -33,7 +33,7 @@ test("2025 a delivered run still says so, and a refusal still leads — both unc
   assert.match(no, /never signed off/);
 });
 
-test("2025 A POOL COPY IS NOT A REFUSAL — the defect, in one arm", () => {
+test("A POOL COPY IS NOT A REFUSAL — the defect, in one arm", () => {
   const line = deliveryLine(run({
     poolMeta: { issuedAt: "2026-08-28T09:12:00Z", verdict: "BLOCKING", engineCommit: "fee3b60a" },
   }));
@@ -49,7 +49,7 @@ test("2025 A POOL COPY IS NOT A REFUSAL — the defect, in one arm", () => {
     + "pool dir proves publication and never delivery");
 });
 
-test("2025 the unpreserved line still hands over what IS durable", () => {
+test("the unpreserved line still hands over what IS durable", () => {
   const line = deliveryLine(run({ poolMeta: { issuedAt: "2026-08-28T09:12:00Z", verdict: "BLOCKING" } }));
   assert.match(line, /published 2026-08-28T09:12:00Z/);
   assert.match(line, /verdict BLOCKING/);
@@ -61,7 +61,7 @@ test("2025 the unpreserved line still hands over what IS durable", () => {
   assert.equal(/THE ORDER WAS REFUSED/.test(thin), false);
 });
 
-test("2025 a status.json with no state is NOT the same absence as no status.json", () => {
+test("a status.json with no state is NOT the same absence as no status.json", () => {
   // Two different absences. Collapsing them is how the original defect read a missing file as a state.
   const noField = deliveryLine(run({ hasStatus: true, deliveryState: null }));
   assert.match(noField, /THE ORDER WAS REFUSED/, "a run that HAS a status.json and no state is a refusal");
@@ -73,13 +73,13 @@ test("2025 a status.json with no state is NOT the same absence as no status.json
   assert.notEqual(noField, noFile, "the two absences printed the same sentence");
 });
 
-test("2025 neither file present says so about BOTH, and infers nothing", () => {
+test("neither file present says so about BOTH, and infers nothing", () => {
   const line = deliveryLine(run({}));
   assert.match(line, /no status\.json and no meta\.json/);
   assert.match(line, /No verdict is inferred/);
 });
 
-test("2025 the engine commit comes from meta.json when the pool dir has no status.json", () => {
+test("the engine commit comes from meta.json when the pool dir has no status.json", () => {
   // Same absence, same output block: reading only status.json made this line say the run "predates the
   // stamp" for every pool dir, which is a WRONG claim rather than a missing one.
   assert.deepEqual(engineCommitOf({ status: { engineCommit: "abc123" }, meta: { engineCommit: "zzz999" } }),
@@ -89,7 +89,7 @@ test("2025 the engine commit comes from meta.json when the pool dir has no statu
   assert.deepEqual(engineCommitOf({}), { commit: null, from: null });
 });
 
-test("2025 the fixture's premise is PINNED to the publisher, so it cannot drift from a real pool dir", () => {
+test("the fixture's premise is PINNED to the publisher, so it cannot drift from a real pool dir", () => {
   // No real pool directory is readable from this account (the pool's home is readable only by the account that owns it),
   // so these arms drive a shape rather than a delivered artifact. The shape is only trustworthy while
   // this stays true: publish writes meta.json into the POOL run dir and nowhere else, which is what
@@ -101,7 +101,7 @@ test("2025 the fixture's premise is PINNED to the publisher, so it cannot drift 
     "meta.json is no longer written through writeRO — it may no longer be pool-only");
 });
 
-test("2025 the scorer version moved, because the delivery line's meaning changed", () => {
+test("the scorer version moved, because the delivery line's meaning changed", () => {
   // A number a reader carries away must carry its instrument. A v6 delivery verdict on a pool dir said
   // REFUSED; a v7 one declines. They are not comparable.
   assert.ok(SCORER_VERSION >= 7, `SCORER_VERSION is ${SCORER_VERSION} — it must move when this line's meaning does`);

@@ -47,7 +47,7 @@ const call = (row) => validateDispositionCall([row], RECORDED);
 // — the address is the row's POSITION in the driver's obligation list, not an id the seat types.
 const base = (over = {}) => ({ row_index: owingAt, ruling: "loaded", note: "contested sources; a human should look", receipt_index: 1, ...over });
 
-test("#1233 THE PRODUCTION SHAPE: a ruling with no provable fragment is PARKED, not refused again", () => {
+test("THE PRODUCTION SHAPE: a ruling with no provable fragment is PARKED, not refused again", () => {
   // This is the row that died. It had a ruling and a note and could not produce a binding fragment, and
   // the driver told it to try again 217 times.
   const withoutObstacle = call(base());
@@ -61,14 +61,14 @@ test("#1233 THE PRODUCTION SHAPE: a ruling with no provable fragment is PARKED, 
   assert.equal(r.accepted[0].parked_kind, "declared");
 });
 
-test("#1233 THE RULING IS CARRIED, NOT DISCARDED — the lawyer keeps the read", () => {
+test("THE RULING IS CARRIED, NOT DISCARDED — the lawyer keeps the read", () => {
   const a = call(base({ obstacle: "nothing quotable in the snippet" })).accepted[0];
   assert.equal(a.ruling, "loaded", "the seat's judgment was thrown away to take the exit — a gap replaced a usable read");
   assert.equal(a.note, "contested sources; a human should look");
   assert.equal(a.obstacle, "nothing quotable in the snippet");
 });
 
-test("#1233 an obstacle DOES NOT excuse a judgment fault", () => {
+test("an obstacle DOES NOT excuse a judgment fault", () => {
   // The failure mode this scoping exists to prevent: `obstacle` becoming the easy road past a hard row.
   const noRuling = call({ row_index: owingAt, receipt_index: 1, note: "n", obstacle: "cannot quote" });
   assert.equal(noRuling.accepted.length, 0, "a row with no ruling took the exit — obstacle is not a substitute for judging");
@@ -82,7 +82,7 @@ test("#1233 an obstacle DOES NOT excuse a judgment fault", () => {
   assert.equal(badRow.refused[0].reason, "row_position_invalid", "an obstacle laundered an address that names no obligation");
 });
 
-test("#1233 an EMPTY obstacle is refused by name, never treated as absent", () => {
+test("an EMPTY obstacle is refused by name, never treated as absent", () => {
   for (const empty of ["", "   "]) {
     const r = call(base({ obstacle: empty }));
     assert.equal(r.refused[0]?.reason, "obstacle_absent", `obstacle=${JSON.stringify(empty)} was silently ignored`);
@@ -90,7 +90,7 @@ test("#1233 an EMPTY obstacle is refused by name, never treated as absent", () =
   assert.ok(CALL_REFUSALS.includes("obstacle_absent"), "the token is emitted but not declared — a reader of the ledger cannot resolve it");
 });
 
-test("#1233 THE TWO KINDS STAY APART, and the declared one never inherits the exhausted sentence", () => {
+test("THE TWO KINDS STAY APART, and the declared one never inherits the exhausted sentence", () => {
   const OBSTACLE = "the passage is an elision marker";
   const declared = union({ rows: [] }, { rows: [{ row_id: owing.row_id, ruling: "loaded", note: "n", obstacle: OBSTACLE, parked_kind: "declared" }] });
   const dRow = declared.form.rows.find((r) => r.row_id === owing.row_id);
@@ -115,7 +115,7 @@ test("#1233 THE TWO KINDS STAY APART, and the declared one never inherits the ex
   assert.equal(dRow.parked_reason, OBSTACLE);
 });
 
-test("#1233 the PRIOR kind wins — a later declaration cannot rewrite what the run actually spent", () => {
+test("the PRIOR kind wins — a later declaration cannot rewrite what the run actually spent", () => {
   const prior = { rows: [{ row_id: owing.row_id, parked: true, parked_kind: "exhausted", parked_reason: "refused the per-row bound without binding", parked_refusals: 30 }] };
   const u = union(prior, { rows: [{ row_id: owing.row_id, ruling: "loaded", note: "n", obstacle: "late declaration", parked_kind: "declared" }] });
   const row = u.form.rows.find((r) => r.row_id === owing.row_id);
@@ -123,7 +123,7 @@ test("#1233 the PRIOR kind wins — a later declaration cannot rewrite what the 
   assert.equal(row.parked_refusals, 30);
 });
 
-test("#1233 A DECLARED PARK IS NOT A RULING — it never raises `ruled`", () => {
+test("A DECLARED PARK IS NOT A RULING — it never raises `ruled`", () => {
   const u = union({ rows: [] }, { rows: [{ row_id: owing.row_id, ruling: "loaded", note: "n", obstacle: "cannot quote", parked_kind: "declared" }] });
   assert.equal(u.parked, 1);
   const row = u.form.rows.find((r) => r.row_id === owing.row_id);
@@ -133,7 +133,7 @@ test("#1233 A DECLARED PARK IS NOT A RULING — it never raises `ruled`", () => 
   assert.equal(u.ruled + u.parked + u.outstanding, u.total, "the three axes stopped partitioning the rows");
 });
 
-test("#1233 `parked_kind` SURVIVES THE ROUND TRIP — the parser rebuilds rows from a fixed key list", () => {
+test("`parked_kind` SURVIVES THE ROUND TRIP — the parser rebuilds rows from a fixed key list", () => {
   // parseDispositionForm whitelists fields, so one not named there is dropped on the next read. Losing
   // `parked_kind` fails quietly: the row stays parked and simply forgets which kind it was, which is the
   // one comparison the declared exit is measured by.
@@ -144,7 +144,7 @@ test("#1233 `parked_kind` SURVIVES THE ROUND TRIP — the parser rebuilds rows f
   assert.equal(row.parked_kind, "declared", "the kind did not survive a read — the declared:exhausted ratio cannot be measured");
 });
 
-test("#1233 THE WAIVER'S BOUNDARY IS DERIVED, not retyped — it covers every evidence arm and no judgment one", () => {
+test("THE WAIVER'S BOUNDARY IS DERIVED, not retyped — it covers every evidence arm and no judgment one", () => {
   // If a future evidence arm is added and this set is a hand-list, the seat gets told to retry the exact
   // thing it has just said it cannot do — the live-lock, back for one token.
   const evidence = CALL_REFUSALS.filter((r) => r.startsWith("segment_") || r.startsWith("fragment_"));

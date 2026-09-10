@@ -40,7 +40,7 @@ async function probeOf(status, headers) {
   } finally { srv.close(); }
 }
 
-test("2180-F57 a real 302 + Cloudflare-Access is NAMED, not reported as an answering door", async () => {
+test("a real 302 + Cloudflare-Access is NAMED, not reported as an answering door", async () => {
   const { url, probe } = await probeOf(302, { location: "https://team.cloudflareaccess.com/",
     "www-authenticate": 'Cloudflare-Access realm="team"' });
   // First: the old question still says what it always said, so this arm is measuring the NEW one.
@@ -53,7 +53,7 @@ test("2180-F57 a real 302 + Cloudflare-Access is NAMED, not reported as an answe
   assert.match(v.message, /302/, "the status a reader would see is missing from the message");
 });
 
-test("2180-F57 the STAFF submit lane is the other MCP hostname and gets the same answer", async () => {
+test("the STAFF submit lane is the other MCP hostname and gets the same answer", async () => {
   // F57 names the client connector. Its own measurement covers BOTH hostnames, and two hand-rolled
   // rules for one question is how the second one stays green after the first is fixed.
   // PORTAL_MCP_URL is an ORIGIN — the portal's client appends /mcp itself, and the lane refuses a path
@@ -67,7 +67,7 @@ test("2180-F57 the STAFF submit lane is the other MCP hostname and gets the same
   assert.equal(lane.message, door.message, "the two probes describe the same fault differently");
 });
 
-test("2180-F57 THE CONTROLS — a door that answers correctly is still green", async () => {
+test("THE CONTROLS — a door that answers correctly is still green", async () => {
   // Without these the arm above passes on a check that reds everything, which is a worse defect than
   // the one it fixes: it would red every direct install on the documented path.
   const plain = await probeOf(401, {});                       // our own door sends no challenge at all
@@ -83,7 +83,7 @@ test("2180-F57 THE CONTROLS — a door that answers correctly is still green", a
   assert.equal(clientDoorReachability(speaking).state, "pass", "a 405 from a live MCP door is a door answering");
 });
 
-test("2180-F57 a realm that MENTIONS the scheme is not the scheme", async () => {
+test("a realm that MENTIONS the scheme is not the scheme", async () => {
   // The header is structured: a scheme token, then parameters. Grepping the raw string finds the name
   // inside somebody's realm and reds a working door — the same error as matching prose about a defect
   // rather than the defect. This is the plant for that.
@@ -93,7 +93,7 @@ test("2180-F57 a realm that MENTIONS the scheme is not the scheme", async () => 
     "a Bearer door whose realm names Cloudflare-Access was refused");
 });
 
-test("2180-F57 a Cloudflare challenge WITHOUT a redirect is reported and not judged", async () => {
+test("a Cloudflare challenge WITHOUT a redirect is reported and not judged", async () => {
   // 302 + Cloudflare-Access is what was measured. A 401 carrying that scheme is a shape nobody has
   // driven, and a check that failed it would be claiming more than the finding established.
   const { url, probe } = await probeOf(401, { "www-authenticate": "Cloudflare-Access" });
@@ -102,7 +102,7 @@ test("2180-F57 a Cloudflare challenge WITHOUT a redirect is reported and not jud
   assert.match(v.message, /read this first/, "it passed silently, telling a stuck reader nothing");
 });
 
-test("2180-F57 a probe that never read the header does not claim the form was checked", () => {
+test("a probe that never read the header does not claim the form was checked", () => {
   // THREE-VALUED. `headers.get` returns null for absent — a looked-and-none answer. A probe object
   // without the field at all never looked, and the two must not collapse: the second is the older shape
   // and any future caller that forgets the field.
@@ -114,7 +114,7 @@ test("2180-F57 a probe that never read the header does not claim the form was ch
     "it named a challenge form on a probe that never read one");
 });
 
-test("2180-F57 EVERY MCP-route probe captures the header — a third one cannot be born blind", (t) => {
+test("EVERY MCP-route probe captures the header — a third one cannot be born blind", (t) => {
   // The class, not the two instances. This defect existed twice for the same reason: each probe built
   // its own result object, and neither had a reason to think about a header. A third added tomorrow
   // would be blind in exactly the same way and every arm above would still pass.
@@ -140,7 +140,7 @@ test("2180-F57 EVERY MCP-route probe captures the header — a third one cannot 
     + `redirect reads as an answering door:\n${offenders.join("\n")}`);
 });
 
-test("2180-F57 the document section the refusal sends a reader to still exists", () => {
+test("the document section the refusal sends a reader to still exists", () => {
   // A refusal that names a heading points at nothing the moment somebody retitles it, and the message
   // still reads perfectly. The failure is silent on both sides: the doc renames cleanly, the sentence
   // keeps its shape, and only the reader who followed it finds out.

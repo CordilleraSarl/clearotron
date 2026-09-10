@@ -1387,7 +1387,7 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
     // section "already renders every open floor in plain language" — it was never built, and the pointer
     // had been promising it since.
     //
-    // OWNER RULING 2026-08-19 (relayed): drop the claim; no Coverage section is being designed. So the
+    // RULING 2026-08-19 (relayed): drop the claim; no Coverage section is being designed. So the
     // sentence states the fact and stops. It is deliberately not replaced with a different pointer — the
     // failure mode here was a pointer written before its target, and one true sentence beats two where
     // the second is a promise. When a surface exists that renders open floors in client language, this is

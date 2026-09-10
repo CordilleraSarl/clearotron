@@ -290,7 +290,7 @@ test("WS1b (review fix, adapted): corrective re-synthesis on resume RESUMES the 
   // BLOCKING → a corrective re-synthesis fires. It must resume on the RECORDED winning model, not the
   // configured primary (the clobber bug the upstream review fix closed: resuming the base key on the primary
   // would cold-cache + model-mismatch the session that actually wrote narrative.md).
-  // T3a (owner ruling 2026-08-26, reversing T3): a persistent BLOCKING now DELIVERS with the
+  // T3a (ruling 2026-08-26, reversing T3): a persistent BLOCKING now DELIVERS with the
   // reviewer's open points printed, instead of failing after the corrective ladder. The subject of THIS
   // test — that the corrective re-synthesis resumes the WINNING attempt rather than cold-caching the
   // configured primary — is unchanged by that and is still what the assertions below are about.
@@ -343,7 +343,7 @@ test("retired flags: the CLI refuses --rerun with a non-zero exit and names both
 // Driven through the real CLI for the same reason as the test above — the parser IS the surface.
 const cli = (...args) => spawnSync(process.execPath, [join(HERE, "..", "pipeline.mjs"), ...args], { encoding: "utf8" });
 
-test("#289: a misspelt flag is refused by name, not silently dropped into a different operation", () => {
+test("a misspelt flag is refused by name, not silently dropped into a different operation", () => {
   const r = cli("--job", join(ROOT, "no-such-job.json"), "--resume", "somecodename", "--experiement", "placement-inquiry");
   assert.equal(r.status, 2, `expected exit 2, got ${r.status} — stderr: ${r.stderr}`);
   assert.match(r.stderr, /unknown flag --experiement/, "the refusal names the offending token");
@@ -351,26 +351,26 @@ test("#289: a misspelt flag is refused by name, not silently dropped into a diff
   assert.ok(!/ENOENT|no such file/i.test(r.stderr), "refused before reading the job file");
 });
 
-test("#289: a bare positional is refused too — every flag takes a value, so a stray token is a typo", () => {
+test("a bare positional is refused too — every flag takes a value, so a stray token is a typo", () => {
   const r = cli("--job", join(ROOT, "no-such-job.json"), "extra-token");
   assert.equal(r.status, 2, `expected exit 2, got ${r.status} — stderr: ${r.stderr}`);
   assert.match(r.stderr, /unexpected argument "extra-token"/);
 });
 
-test("#289: a flag given no value is refused, rather than binding undefined", () => {
+test("a flag given no value is refused, rather than binding undefined", () => {
   const r = cli("--job", join(ROOT, "no-such-job.json"), "--resume", "somecodename", "--from");
   assert.equal(r.status, 2, `expected exit 2, got ${r.status} — stderr: ${r.stderr}`);
   assert.match(r.stderr, /--from needs a value/);
 });
 
-test("#289: RETIRED_FLAGS still wins — a deleted flag keeps its own message instead of a generic refusal", () => {
+test("RETIRED_FLAGS still wins — a deleted flag keeps its own message instead of a generic refusal", () => {
   const r = cli("--job", join(ROOT, "no-such-job.json"), "--resume", "somecodename", "--rerun", "synthesis");
   assert.equal(r.status, 2);
   assert.match(r.stderr, /--rerun was deleted/, "the specific message, not 'unknown flag --rerun'");
   assert.ok(!/unknown flag/.test(r.stderr), "the generic refusal must not fire ahead of the specific one");
 });
 
-test("#289: every documented flag still parses — the refusal did not narrow the CLI", () => {
+test("every documented flag still parses — the refusal did not narrow the CLI", () => {
   // Reaches the composition guards, which is proof the flags themselves were accepted: the run only stops
   // because --model/--instructions need --experiment, a check that sits AFTER parsing.
   const r = cli("--job", join(ROOT, "no-such-job.json"), "--agent", "a", "--resume", "c", "--from", "s",
@@ -599,7 +599,7 @@ test("WS-T compare: diffStageOutputs + telemetryDelta render; compareCmd diffs c
 // Driven through the real CLI, for the same reason as the two above: the parser IS the surface that
 // breaks. The programmatic callers (the diff_artifact MCP tool, whatif.mjs, the test above) pass an
 // object to compareCmd and never enter it.
-test("#378: compare.mjs refuses an unknown flag and a flag with no value, and prints its usage", () => {
+test("compare.mjs refuses an unknown flag and a flag with no value, and prints its usage", () => {
   const run = (...args) => spawnSync(process.execPath, [join(HERE, "..", "compare.mjs"), ...args], { encoding: "utf8" });
 
   const typo = run("--run-dir", "/x", "--stage", "skeptic", "--axsi", "primary-sweep");
@@ -735,7 +735,7 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
 // `report-card` legitimately declares findings.json + case-law-findings.md and reads NEITHER — its
 // finding arrives inline as `ctx.finding` (B1) and the declaration is there for STALENESS, not reading.
 // "declared-only" is not the same as "dead"; it is only a defect where the PROMPT also claims the read.
-test("#252: report-overview declares EXACTLY the two files it reads, and its prompt cites exactly those two", async () => {
+test("report-overview declares EXACTLY the two files it reads, and its prompt cites exactly those two", async () => {
   const ST = await import("../stages.mjs");
   const P = ST.paths("/RUN");
   const axes = ST.REGISTER_AXES;
@@ -769,7 +769,7 @@ test("#252: report-overview declares EXACTLY the two files it reads, and its pro
 // opened — and which could not have answered anyway: matter-frame is never handed `job.ref`. So the
 // facts now ride inline, and the block must survive a run that knows none of them without emitting a
 // header the model would fill by invention.
-test("#252: frontMatterIdentity hands the shell the intake facts, names no file, and stays silent when it knows nothing", async () => {
+test("frontMatterIdentity hands the shell the intake facts, names no file, and stays silent when it knows nothing", async () => {
   const ST = await import("../stages.mjs");
   const full = ST.frontMatterIdentity({ job: { ref: "TMP-2201", name: "PROJECT NOVAPULSE", customer: "ACME Interactive", goods: "video games" } });
   for (const v of ["TMP-2201", "PROJECT NOVAPULSE", "ACME Interactive", "video games"]) assert.match(full, new RegExp(v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
@@ -805,7 +805,7 @@ test("A4: blind-frame stageInputs is STARVED — only the raw inbound request, n
 // fails; point it at nothing (`out: undefined`) and `files` is empty, so a turn that wrote NO model
 // reports ok — the absence-reads-as-a-pass shape this codebase has shipped seven times. The validator
 // test in verify.test.mjs proves the content check; this proves the file check exists to reach it.
-test("#254: blind-frame's out() IS blind-frame-model.json, and blind-frame.md is gone from the paths, prompts and inputs", async () => {
+test("blind-frame's out() IS blind-frame-model.json, and blind-frame.md is gone from the paths, prompts and inputs", async () => {
   const ST = await import("../stages.mjs");
   const P = ST.paths("/RUN");
   assert.equal(ST.STAGES["blind-frame"].out(P), P.blindFrameModel,
@@ -856,7 +856,7 @@ test("#254: blind-frame's out() IS blind-frame-model.json, and blind-frame.md is
 // The seat no longer writes that file at all. The driver renders it from a form regenerated against the
 // current fold on every pass, so a stale-tier file is UNREACHABLE rather than deleted — and a pass that
 // hands back nothing loses nothing, because the accumulator still holds every tier already placed.
-test("#562: a forced placement re-run cannot present a prior pass's tiers, and a silent pass loses none", async () => {
+test("a forced placement re-run cannot present a prior pass's tiers, and a silent pass loses none", async () => {
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
   const job = jobFor("TMPSIB1");
   const r1 = await PL.pipeline(job);

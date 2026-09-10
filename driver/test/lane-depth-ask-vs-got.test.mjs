@@ -15,7 +15,7 @@
 // stopped folding the run-level statement into the per-lane slot; deleted the frozen `executes`.
 // Each time a mint-time declaration was being read as an execution record.
 //
-// OWNER RULING (2026-08-17): "if we can't run deep dive on serpAPI we need to flag it" — FLAG, NOT GATE.
+// RULING (2026-08-17): "if we can't run deep dive on serpAPI we need to flag it" — FLAG, NOT GATE.
 // Gating would change what a run executes and therefore what it bills; the flag changes only what the
 // record admits. So `depth` keeps its name and value, the run derives what the lane ACTUALLY got from
 // the same durable record `executes` comes from, and the shortfall is stated loudly in three places: the
@@ -45,7 +45,7 @@ const slicesWhere = ({ candidates = "ran", serp = "not-armed", native = "not-arm
   nativeread: { slice: 3, lane: "zh", state: native, why: `native ${native}` },
 });
 
-test("#893 asked full and the deep slices RAN — no shortfall, and `ran` says full", () => {
+test("asked full and the deep slices RAN — no shortfall, and `ran` says full", () => {
   const v = deriveLaneDepthVerdicts({
     sidecar: sidecarWith({ zh: laneAsking("full") }),
     slices: slicesWhere({ serp: "ran", native: "ran" }),
@@ -56,7 +56,7 @@ test("#893 asked full and the deep slices RAN — no shortfall, and `ran` says f
   assert.equal(v.zh.cause, null);
 });
 
-test("#893 asked full, the arms were off, candidates ran — REQUESTED-FULL-RAN-CANDIDATES", () => {
+test("asked full, the arms were off, candidates ran — REQUESTED-FULL-RAN-CANDIDATES", () => {
   const v = deriveLaneDepthVerdicts({
     sidecar: sidecarWith({ zh: laneAsking("full") }),
     slices: slicesWhere({ serp: "not-armed", native: "not-armed" }),
@@ -73,7 +73,7 @@ test("#893 asked full, the arms were off, candidates ran — REQUESTED-FULL-RAN-
     "the cause must distinguish a deployment that did not arm the slice from a run that failed it");
 });
 
-test("#893 ONE deep slice running is enough to have delivered full — the arms are independent", () => {
+test("ONE deep slice running is enough to have delivered full — the arms are independent", () => {
   // jx-units gates the two units separately and either one searching in-script IS the deep lane
   // running (scriptLaneRanOnRun says so in as many words). A verdict requiring BOTH would flag a lane
   // that did the deeper work.
@@ -85,7 +85,7 @@ test("#893 ONE deep slice running is enough to have delivered full — the arms 
   assert.equal(v.zh.shortfall, false);
 });
 
-test("#893 asked full on a lane THIS BUILD has no deep slice for — a different cause, not the same flag", () => {
+test("asked full on a lane THIS BUILD has no deep slice for — a different cause, not the same flag", () => {
   // The deep slices are zh-only: JX_SLICES pins `lane: "zh"` on slices 2 and 3, and SERP_LANES has one
   // row. `laneDepth.ja = "full"` therefore asks for something no environment can arm. Same printed
   // shortfall as an unarmed zh lane, OPPOSITE remedy — build the slice vs turn the switch on — so
@@ -100,7 +100,7 @@ test("#893 asked full on a lane THIS BUILD has no deep slice for — a different
   assert.match(v.ja.why, /zh-only/);
 });
 
-test("#893 asked full and NOTHING is established — the flag fires and `ran` is null, never candidates", () => {
+test("asked full and NOTHING is established — the flag fires and `ran` is null, never candidates", () => {
   // Zero is not a pass, and it is not a downgrade either. "Could not establish that full ran" is not
   // "candidates ran", and reporting the second from the first is the original defect wearing a new
   // field name.
@@ -114,7 +114,7 @@ test("#893 asked full and NOTHING is established — the flag fires and `ran` is
   assert.match(v.zh.why, /CANNOT be established/);
 });
 
-test("#893 asked candidates and got candidates — no flag, whatever the arms did", () => {
+test("asked candidates and got candidates — no flag, whatever the arms did", () => {
   const off = deriveLaneDepthVerdicts({
     sidecar: sidecarWith({ zh: laneAsking("candidates") }),
     slices: slicesWhere({ serp: "not-armed", native: "not-armed" }),
@@ -131,7 +131,7 @@ test("#893 asked candidates and got candidates — no flag, whatever the arms di
   assert.equal(on.zh.ran, "full", "what ran is still reported truthfully even when it exceeds the ask");
 });
 
-test("#893 the verdict rides the REAL slice statement, not a hand-written one", () => {
+test("the verdict rides the REAL slice statement, not a hand-written one", () => {
   // Everything above feeds `deriveLaneDepthVerdicts` a literal. This drives it from the shipped
   // producer, so a change to deriveJxSliceStatement's output that the literals do not follow is caught.
   const sidecar = { lanes: { zh: laneAsking("full") }, fold: { lanes: { zh: { degraded: false } } } };
@@ -144,7 +144,7 @@ test("#893 the verdict rides the REAL slice statement, not a hand-written one", 
 
 // ── the reader half ─────────────────────────────────────────────────────────────────────────────────
 
-test("#893 readJxLanes carries the run's own verdict, and an artifact that never stated one SAYS SO", () => {
+test("readJxLanes carries the run's own verdict, and an artifact that never stated one SAYS SO", () => {
   const stated = readJxLanes({
     lanes: { zh: laneAsking("full") },
     fold: { lanes: { zh: { degraded: false, accepted: [] } },
@@ -181,7 +181,7 @@ function runWith(foldDepth) {
   return { d, P };
 }
 
-test("#893 a shortfall becomes a reader-visible coverage row — coverage-limited, never a clamp, idempotent", () => {
+test("a shortfall becomes a reader-visible coverage row — coverage-limited, never a clamp, idempotent", () => {
   const { d, P } = runWith({ zh: { asked: "full", ran: "candidates", shortfall: true,
     cause: "requested-full-ran-candidates", why: "asked for full and ran candidates only — serp-grid not-armed, nativeread not-armed" } });
 
@@ -201,7 +201,7 @@ test("#893 a shortfall becomes a reader-visible coverage row — coverage-limite
     "idempotent on resume — a second delivery pass must not duplicate the disclosure");
 });
 
-test("#893 no shortfall ⇒ no row, and an UNSTATED verdict ⇒ no row either", () => {
+test("no shortfall ⇒ no row, and an UNSTATED verdict ⇒ no row either", () => {
   const met = runWith({ zh: { asked: "full", ran: "full", shortfall: false, cause: null, why: null } });
   injectLaneDepthCoverage(met.P, met.d, () => {});
   assert.equal(JSON.parse(readFileSync(met.P.findings, "utf8")).coverage.some((c) => c.area === AREA), false,
@@ -216,7 +216,7 @@ test("#893 no shortfall ⇒ no row, and an UNSTATED verdict ⇒ no row either", 
     "an absent verdict must not invent a coverage row about a run that never answered");
 });
 
-test("#893 never-kill: a corrupt findings.json is left byte-identical", () => {
+test("never-kill: a corrupt findings.json is left byte-identical", () => {
   const { d, P } = runWith({ zh: { asked: "full", ran: "candidates", shortfall: true, cause: "requested-full-ran-candidates", why: "x" } });
   writeFileSync(P.findings, "{ not json");
   injectLaneDepthCoverage(P, d, () => {});
@@ -225,7 +225,7 @@ test("#893 never-kill: a corrupt findings.json is left byte-identical", () => {
 
 // ── the printed row, which is where the issue was actually READ ─────────────────────────────────────
 
-test("#893 the scorer's lane row no longer prints the ask as a bare `depth=` execution cell", () => {
+test("the scorer's lane row no longer prints the ask as a bare `depth=` execution cell", () => {
   // A SOURCE-TEXT assertion, and it is the only kind available here: `scripts/` is not an npm workspace,
   // so neither `npm test` nor `npm run test:full` executes one line of score.mjs (scripts/README.md says
   // so in as many words). The row this issue quotes therefore had NO test of any kind on it, and a fix

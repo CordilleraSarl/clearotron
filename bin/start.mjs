@@ -495,7 +495,7 @@ export const BACKGROUND_RETIRED = Object.freeze([]);
 export const BACKGROUND_EXCLUDED = Object.freeze({
   // ── `clearotron-client-mcp.service` LEFT THIS TABLE ON 2026-09-03, AND SAYING SO IS THE POINT ────
   //
-  // It was the rebuild-seam gate of record (owner rulings): starting the unit
+  // It was the rebuild-seam gate of record (rulings): starting the unit
   // WAS the on-demand consent, because starting it turned on client-account access, so an enable list
   // that included it would have made that consent meaningless. That reasoning was right under that
   // ruling and the exclusion was not an oversight.
@@ -577,7 +577,7 @@ export function childEnv({ ports, paths, user, staffDomains, portalSecret, token
     worker: { ...shared },
     // ── THE CLIENT DOOR, ON BOTH PATHS ( — F26) ──────────────────────────────
     //
-    // Owner ruling, restated several times in session: START BOTH. It already held on the systemd path
+    // Ruling, restated several times in session: START BOTH. It already held on the systemd path
     // — the door is in SERVER_INSTALL_SET on the 2148 ruling that the door auto-starts and the
     // PER-ACCOUNT KEY is the gate — and it did not hold on the foreground path, with nothing saying
     // which of the two you were on. The owner spent the leg believing MCP had not started at all; it
@@ -637,7 +637,7 @@ export function childEnv({ ports, paths, user, staffDomains, portalSecret, token
       PORTAL_OPS_TOKEN: opsToken,
       // — the demo runs THIS portal, not a second one. What that difference IS
       // has changed: the products are orderable and the confirmation resolves to a report that already
-      // exists (owner ruling 2026-08-31 14:47, superseding the greyed-control ruling of 14:44).
+      // exists (ruling 2026-08-31 14:47, superseding the greyed-control ruling of 14:44).
       //
       // The FLAG moved to `shared` and is `CLEAROTRON_DEMO`, because the
       // portal is no longer the only process that has to know: the MCP door prints a boot warning aimed
@@ -749,7 +749,7 @@ if (isMain) {
   // be the same silent downgrade refused to build.
   // ── A BOX WITH THE SERVICES INSTALLED HAS ONE CONFIGURATION, AND IT IS NOT THIS ONE ───────────────
   //
-  // Owner ruling,: "whatever is cleanest, simplest and industry-standard expected" —
+  // Ruling,: "whatever is cleanest, simplest and industry-standard expected" —
   // and yes to refusing outright. A box carrying the shipped units is a SERVER: its configuration is the
   // units' `EnvironmentFile` (`%h/.env`), and this command's is `<repo>/.env`, the hand-run laptop file.
   //
@@ -826,7 +826,7 @@ if (isMain) {
   //                        product's own, and the confirmation resolves to a finished report that
   //                        already exists — no engine turn, no register call, no queue entry, no run
   //                        directory. A product the demo carries no report for refuses and names which.
-  //                        (Owner ruling 2026-08-31 14:47, superseding the greyed-control ruling of
+  //                        (Ruling 2026-08-31 14:47, superseding the greyed-control ruling of
   //                        14:44 the same day: "a demo that shows four finished reports and a dead
   //                        button demonstrates the output and hides the thing a buyer is deciding
   //                        about". The greyed control was "a viewer creeping back in".)
@@ -838,8 +838,8 @@ if (isMain) {
   // bound anywhere else in any mode. Sign-in is untouched — the demo signs in like any first start, and
   // the portal mints and prints its passphrase exactly as it does for a real one.
   const DEMO = argv.includes("--demo");
-  // THE DEMO BRINGS ITS OWN ACCOUNT. A fresh install resolves `generic` and nothing else (owner
-  // ruling, 2026-09-08), so the demo account is refused from the roster unless somebody asked for it.
+  // THE DEMO BRINGS ITS OWN ACCOUNT. A fresh install resolves `generic` and nothing else (ruling,
+  // 2026-09-08), so the demo account is refused from the roster unless somebody asked for it.
   // Asked here, once and visibly, rather than at each site that happens to read a roster.
   if (DEMO) process.env.CLEAROTRON_DEMO_PROFILES ??= "1";
   // ── `--port` MOVES EVERY DOOR IT OPENS ───────────────────────────────────────────────────────────
@@ -1006,7 +1006,7 @@ if (isMain) {
     // on a privileged port and from an address this host does not have, and names the way out of each;
     // the launcher having its own shorter sentence for one of the three would mean a user meets two
     // different answers to the same question depending on which door refused first.
-    // ── A PORT NOBODY CHOSE IS MOVED RATHER THAN REFUSED (owner ruling, 2026-09-09) ─────────────
+    // ── A PORT NOBODY CHOSE IS MOVED RATHER THAN REFUSED (ruling, 2026-09-09) ─────────────
     //
     // Three conditions, and each is a different reason:
     //   · the address is genuinely taken — anything else is not this case;
@@ -1165,7 +1165,7 @@ if (isMain) {
   // ONE sample ships today (a multi-country focus search). Three of the four products have no finished
   // run anywhere to freeze — see — so this seeds what exists and picks the rest up unchanged when
   // they are captured.
-  // ── F23 — A REAL INSTALL STARTS EMPTY (OWNER RULING, 2026-09-04) ────────
+  // ── F23 — A REAL INSTALL STARTS EMPTY (RULING, 2026-09-04) ────────
   //
   // Owner, in session, on his first real start: "critical, it started and I still see a demo report in
   // the actual product. Should not be there — should ONLY be in demo. Proper product should have no
@@ -1404,7 +1404,7 @@ if (isMain) {
       const miss = missingRequirements(willRead, RUN_TABLES);
       // ── — WHICH HALF OF `blocking` MAY REFUSE A START ─────────────────────────
       //
-      // Owner ruling 2026-09-06, in session: "someone can install and select key later so it should
+      // Ruling 2026-09-06, in session: "someone can install and select key later so it should
       // still start." So the register, its credential, the engine and the engine's binary NO LONGER
       // refuse here. They refuse AT ORDER TIME — `driver/runner.mjs`'s intake wall, before a stage
       // dispatches and before anything is spent — and `doctor` and the portal report the box as

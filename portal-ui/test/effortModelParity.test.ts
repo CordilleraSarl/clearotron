@@ -129,7 +129,7 @@ test('effort model: quoteEffort carries the version, the absolute raw, and the r
 // rather than beside one implementation: a constant restored on one side only is exactly the silent
 // divergence this file exists to prevent, and the matrix above would catch the NUMBER while saying
 // nothing about the second copy of the cap that produced it.
-test('#1894 neither the browser nor the server carries a copy of the run-slot cap', () => {
+test('neither the browser nor the server carries a copy of the run-slot cap', () => {
   const both: ReadonlyArray<readonly [string, Record<string, unknown>]> = [
     ['browser (composerProduct.ts)', ui as unknown as Record<string, unknown>],
     ['server (effort-model.mjs)', srv as unknown as Record<string, unknown>],
@@ -146,7 +146,7 @@ test('#1894 neither the browser nor the server carries a copy of the run-slot ca
 
 // The property the ruling decided, asserted on the browser half too — the driver has the same arm, and
 // this screen is where a client reads the number, so the guard belongs on both sides of the parity.
-test('#1894 the name count moves neither half of the quote', () => {
+test('the name count moves neither half of the quote', () => {
   const clearance = LEVER_SETS[4][1]
   const seen = new Set<string>()
   for (const names of [1, 2, 3, 5, 8, 20, 100]) {
@@ -161,7 +161,7 @@ test('#1894 the name count moves neither half of the quote', () => {
 // `runsNote` is the one client-facing STRING the cap reached, and took the clause out of it.
 // Unreachable today (every clearance is one name), kept for the family-search track, so the guard is
 // what stops the queue's shape being told to a client again when that track lands.
-test('#1894 the runs note states the searches and not the queue behind them', () => {
+test('the runs note states the searches and not the queue behind them', () => {
   const three = { levers: LEVER_SETS[4][1], names: 3, classes: 3, platforms: 7, density: null }
   const note = ui.runsNote(three)
   assert.equal(note, 'Runs as 3 separate searches — 3× the work.')

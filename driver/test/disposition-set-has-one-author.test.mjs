@@ -45,7 +45,7 @@ import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const gateway = readFileSync(join(DRIVER, "gateway.mjs"), "utf8");
 
-test("#1011 the v6 dictation derives its set from the constant, and does not retype it", () => {
+test("the v6 dictation derives its set from the constant, and does not retype it", () => {
   assert.match(gateway, /POSITION_REQUIRED_DISPOSITIONS\.join\(", "\)/,
     "the v6 sentence stopped deriving the set — it is a second author of a closed set again");
   assert.match(gateway, /DISPOSITIONS\.filter\(\(d\) => !POSITION_REQUIRED_DISPOSITIONS\.includes\(d\)\)/,
@@ -57,7 +57,7 @@ test("#1011 the v6 dictation derives its set from the constant, and does not ret
     "the hand-typed list is back in gateway.mjs");
 });
 
-test("#1011 the derived sentence is BYTE-IDENTICAL to the literal it replaced", () => {
+test("the derived sentence is BYTE-IDENTICAL to the literal it replaced", () => {
   // Dispatch wording is not free to tidy in passing: measured a field phrased outside its own
   // imperative written 0 of 9 times, against 74 of 74 when it was inside one. So the join restores the
   // conjunction rather than settling for the comma `Array.join` produces, and this is the proof.
@@ -70,7 +70,7 @@ test("#1011 the derived sentence is BYTE-IDENTICAL to the literal it replaced", 
     + "told something new, which is a change to make deliberately or not at all");
 });
 
-test("#1011 the complement is exactly one token, which is the premise the sentence is built on", () => {
+test("the complement is exactly one token, which is the premise the sentence is built on", () => {
   // "only a review-killed X" is singular by construction. If a second non-position disposition is ever
   // added, the derivation still renders (`"a" / "b"`) but the surrounding sentence reads wrong — so the
   // premise is asserted here rather than discovered in a delivered dispatch.
@@ -80,7 +80,7 @@ test("#1011 the complement is exactly one token, which is the premise the senten
     + "sentence says 'only a review-killed …', which is singular — re-read it before adding a token here.");
 });
 
-test("#1011 the derived site in stages.mjs is left alone, and the reason is recorded", () => {
+test("the derived site in stages.mjs is left alone, and the reason is recorded", () => {
   // The false positive. It is correct code, and a sweep that "fixed" it would be rewriting a derivation
   // into… a derivation, on the say-so of a checker that cannot see interpolation.
   const stages = readFileSync(join(DRIVER, "stages.mjs"), "utf8");

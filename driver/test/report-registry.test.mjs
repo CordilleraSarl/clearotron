@@ -155,7 +155,7 @@ test("productCoverageNote: a frozen sidecar's own components decide; no policy â
 // call beside it read the same `prof` and dropped it. With the confidentiality marking now decided by the
 // profile, that gap means a republished privileged knockout loses "Attorney Work Product" and NOTHING
 // raises an error â€” an absence, which this repo counts as a finding, not a pass.
-test("#761 republishRun hands the frozen delivery overlay to the knockout publisher, not only the clearance", async () => {
+test("republishRun hands the frozen delivery overlay to the knockout publisher, not only the clearance", async () => {
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../publish/report-registry.mjs", import.meta.url), "utf8");
   // Both publish calls, each carrying the overlay off the SAME frozen sidecar.

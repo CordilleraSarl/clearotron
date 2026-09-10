@@ -60,7 +60,7 @@ function declaredRowProperties() {
   return names;
 }
 
-test("#1172 the tool advertises exactly the row shape the validator accepts", () => {
+test("the tool advertises exactly the row shape the validator accepts", () => {
   const declared = declaredRowProperties();
   const accepted = [...CALL_ROW_FIELDS];
 
@@ -75,7 +75,7 @@ test("#1172 the tool advertises exactly the row shape the validator accepts", ()
     + "a seat that fills an advertised field and is refused anyway has been told to do the wrong thing");
 });
 
-test("#1172 the retired pointer-era field is not advertised", () => {
+test("the retired pointer-era field is not advertised", () => {
   // `anchor` was split into segment_index + fragment. Its refusal tokens are declared in
   // disposition-call.mjs with the note "No live path emits these" — advertising it invites exactly the
   // shape that gets refused, which is what this test exists to stop coming back.
@@ -85,7 +85,7 @@ test("#1172 the retired pointer-era field is not advertised", () => {
     + "replaced. Read the token block in disposition-call.mjs before re-adding it.");
 });
 
-test("#1172 the advertisement and the refusal use the same words for the same duty", () => {
+test("the advertisement and the refusal use the same words for the same duty", () => {
   // The schema text and the refusal text are two descriptions of one obligation, written in two files.
   // When they drift, the seat is corrected toward wording it was never given — so the shared nouns are
   // pinned rather than left to chance.

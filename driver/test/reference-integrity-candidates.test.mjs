@@ -58,7 +58,7 @@ const candidates = (s) => properNameCandidates(s, null, { actionBullets: true, t
 const NOT_PARTIES = ["Instruct Japanese", "European Union", "United Kingdom", "United Arab Emirates"];
 const REAL = ["ACME HOLDINGS", "RTVE"];
 
-test("#600.3 arm 1 — a territory is never a candidate, and the list is the render surfaces' own", () => {
+test("arm 1 — a territory is never a candidate, and the list is the render surfaces' own", () => {
   const got = candidates(ACTIONS);
   for (const t of ["European Union", "United Kingdom", "United Arab Emirates"])
     assert.ok(!got.includes(t), `"${t}" is a territory, not a party`);
@@ -70,7 +70,7 @@ test("#600.3 arm 1 — a territory is never a candidate, and the list is the ren
   }
 });
 
-test("#600.3 arm 2 — a mark is never an orphan; its OWNER still is", () => {
+test("arm 2 — a mark is never an orphan; its OWNER still is", () => {
   const withMark = referenceChecks({
     actionsText: ACTIONS, fullSurface: ACTIONS, searchedNames: ["MOONBERRY"],
     markNames: ["MOONBERRY", "MINCRAFT"],
@@ -84,7 +84,7 @@ test("#600.3 arm 2 — a mark is never an orphan; its OWNER still is", () => {
   assert.ok(noVocab.detail.includes("MINCRAFT"));
 });
 
-test("#600.3 arm 3 — a bullet's opening word is not a name", () => {
+test("arm 3 — a bullet's opening word is not a name", () => {
   assert.ok(!candidates(ACTIONS).includes("Instruct Japanese"),
     "THE DEFECT: an imperative plus the next word, read as a company");
   // Every bullet marker the report uses, and a tagged bullet ("**[Open question]** Confirm …").
@@ -96,7 +96,7 @@ test("#600.3 arm 3 — a bullet's opening word is not a name", () => {
     "the narrowing must not delete the shape everywhere it appears");
 });
 
-test("#600.3 arm 4 — over the delivered shape, exactly the real parties survive", () => {
+test("arm 4 — over the delivered shape, exactly the real parties survive", () => {
   // The extractor's own three exclusions are territory + bullet-opener; the mark exclusion lives one
   // level up in referenceChecks, because "is this a mark" is a fact about the RUN and not about the
   // text. So the extractor still offers MINCRAFT and the check is what drops it — asserted both ways,
@@ -116,7 +116,7 @@ test("#600.3 arm 4 — over the delivered shape, exactly the real parties surviv
     assert.ok(!flagged.detail.includes(n), `${n} still reaches the flag — six candidates, four of them wrong`);
 });
 
-test("#600.3 arm 5 — the bullet rule is Title-Case ONLY; an ALL-CAPS opener is still a candidate", () => {
+test("arm 5 — the bullet rule is Title-Case ONLY; an ALL-CAPS opener is still a candidate", () => {
   // RTVE is the failure this check was built for, and a bullet may legitimately open with it. No false
   // positive on record came from the ALL-CAPS pattern, so it keeps its anchor.
   assert.deepEqual(candidates("- RTVE has not been approached about the pending application."),
@@ -142,7 +142,7 @@ test("#600.3 arm 5 — the bullet rule is Title-Case ONLY; an ALL-CAPS opener is
 // So on a run whose actions are code-built this is STRUCTURAL, in the meaning this codebase already
 // uses for registry-record-coverage and permission-prose: no drafting surface can repair it, the redo
 // is not attempted, and it ships as a visible flag on the internal surfaces.
-test("#600.2 — a code-built action register makes this structural; an authored one keeps its redo", () => {
+test("a code-built action register makes this structural; an authored one keeps its redo", () => {
   const actions = "## Only you can close these\n- Decide how RTVE should be approached before filing.\n";
   const args = { actionsText: actions, fullSurface: actions, searchedNames: ["MOONBERRY"] };
 
@@ -164,7 +164,7 @@ test("#600.2 — a code-built action register makes this structural; an authored
   assert.equal(clean.structural, undefined);
 });
 
-test("#600.3 arm 6 — the narrowings are OPT-IN, so the extractor's other two consumers are untouched", () => {
+test("arm 6 — the narrowings are OPT-IN, so the extractor's other two consumers are untouched", () => {
   // countingChecks takes the LAST candidate as the owner of a count claim and drops the claim on null;
   // correctionNamedSet gates the corrections-staleness demand on the set being non-empty. Both call the
   // extractor with no options, and both fail SILENTLY when it returns less — a dropped count claim

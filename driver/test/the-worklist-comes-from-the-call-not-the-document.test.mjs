@@ -39,7 +39,7 @@ const withRun = (fn) => {
   try { return fn(dir, stagePaths(dir)); } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
-test("#1889 T3b: the worklist reads the CALL — a tampered document does not change it", () => {
+test("T3b: the worklist reads the CALL — a tampered document does not change it", () => {
   withRun((dir, P) => {
     const r = recordRefutation(dir, { verdict: "CONDITIONAL", flags: FLAGS });
     assert.equal(r.refused, null, `the fixture call was refused: ${r.refused}`);
@@ -68,7 +68,7 @@ test("#1889 T3b: the worklist reads the CALL — a tampered document does not ch
   });
 });
 
-test("#1889 T3b: with no accepted call the parse is still the source — the fallback is real", () => {
+test("T3b: with no accepted call the parse is still the source — the fallback is real", () => {
   withRun((dir, P) => {
     // No tool call at all: an archived run, or one resumed across the conversion. The document is the only
     // evidence there is, and the old parse reads it correctly. Deleting that path would break resume.
@@ -84,7 +84,7 @@ test("#1889 T3b: with no accepted call the parse is still the source — the fal
   });
 });
 
-test("#1889 T3b: a REFUSED call falls back rather than repairing against a rejected review", () => {
+test("T3b: a REFUSED call falls back rather than repairing against a rejected review", () => {
   withRun((dir, P) => {
     // The dangerous case. A BLOCKING citing nothing is refused where it is typed, and the payload is
     // still written — complete, well-formed, and indistinguishable from an accepted one but for the

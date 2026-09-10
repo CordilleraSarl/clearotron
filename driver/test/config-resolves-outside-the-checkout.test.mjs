@@ -60,7 +60,7 @@ function loadWith(dir) {
   try { return JSON.parse(line); } catch { return { error: `unparseable: ${line} ${r.stderr ?? ""}` }; }
 }
 
-test("#1723 an EMPTY configuration store is a working install, not a refusal", () => {
+test("an EMPTY configuration store is a working install, not a refusal", () => {
   const dir = mkdtempSync(join(tmpdir(), "cfg-empty-"));
   try {
     const got = loadWith(dir);
@@ -74,7 +74,7 @@ test("#1723 an EMPTY configuration store is a working install, not a refusal", (
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1723 the overlay wins PER KEY, and bundled CUSTOMERS never join a configured roster", () => {
+test("the overlay wins PER KEY, and bundled CUSTOMERS never join a configured roster", () => {
   const dir = mkdtempSync(join(tmpdir(), "cfg-overlay-"));
   try {
     const bundled = JSON.parse(readFileSync(join(BUNDLED, "aurora.json"), "utf8"));
@@ -90,7 +90,7 @@ test("#1723 the overlay wins PER KEY, and bundled CUSTOMERS never join a configu
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1723 profilesStoreDir names the WRITABLE store, so the write boundary protects the right one", () => {
+test("profilesStoreDir names the WRITABLE store, so the write boundary protects the right one", () => {
   const dir = mkdtempSync(join(tmpdir(), "cfg-store-"));
   try {
     assert.equal(loadWith(dir).store, dir, "with an overlay configured, writes belong in the overlay");
@@ -98,13 +98,13 @@ test("#1723 profilesStoreDir names the WRITABLE store, so the write boundary pro
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1723 a configured-but-UNREADABLE store throws rather than falling back", () => {
+test("a configured-but-UNREADABLE store throws rather than falling back", () => {
   const got = loadWith(join(tmpdir(), "cfg-definitely-absent-1723"));
   assert.match(got.error ?? "", /profiles_overlay_unreadable/,
     "existsSync cannot tell missing from unreadable, so a permissions fault must never resolve every customer to the demo roster");
 });
 
-test("#1723 a NAMED customer missing from BOTH layers still refuses — unchanged by the overlay", () => {
+test("a NAMED customer missing from BOTH layers still refuses — unchanged by the overlay", () => {
   const dir = mkdtempSync(join(tmpdir(), "cfg-named-"));
   try {
     const src = 'import("../../driver/profiles.mjs").then(m=>{'
@@ -118,7 +118,7 @@ test("#1723 a NAMED customer missing from BOTH layers still refuses — unchange
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1723 the doctor NAMES where configuration resolves from, in all three states", () => {
+test("the doctor NAMES where configuration resolves from, in all three states", () => {
   const doctor = (env) => {
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"],
       { cwd: ROOT, env: { ...process.env, ...env }, encoding: "utf8" });
@@ -149,7 +149,7 @@ test("#1723 the doctor NAMES where configuration resolves from, in all three sta
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1723 setup REFUSES a configuration directory inside the checkout", () => {
+test("setup REFUSES a configuration directory inside the checkout", () => {
   // The refusal is in bin/onboard.mjs's step 7b. Asserted on the SOURCE rather than by driving the
   // wizard: it is interactive and validates a live engine binary before it ever reaches this step, so a
   // spawn here would test the engine's availability, not the refusal. Named so the next reader knows
@@ -192,7 +192,7 @@ function loadExplicitWithEnvOverlay(explicitDir, envDir) {
   try { return JSON.parse(line); } catch { return { error: `unparseable: ${line} ${r.stderr ?? ""}` }; }
 }
 
-test("#1777 an EXPLICIT dir ignores the env overlay entirely — the boundary, in the state where it acts", () => {
+test("an EXPLICIT dir ignores the env overlay entirely — the boundary, in the state where it acts", () => {
   const explicitDir = mkdtempSync(join(tmpdir(), "cfg-explicit-"));
   const envDir = mkdtempSync(join(tmpdir(), "cfg-env-"));
   try {
@@ -219,7 +219,7 @@ test("#1777 an EXPLICIT dir ignores the env overlay entirely — the boundary, i
   }
 });
 
-test("#1777 the inside-the-checkout rule is a PATH prefix, not a string prefix", async () => {
+test("the inside-the-checkout rule is a PATH prefix, not a string prefix", async () => {
   const { isInsideCheckout } = await import("../../shared/inside-checkout.mjs");
   const repo = "/srv/product";
 

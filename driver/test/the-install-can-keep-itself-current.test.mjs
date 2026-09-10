@@ -24,7 +24,7 @@ const ROOT = join(dirname(dirname(dirname(fileURLToPath(import.meta.url)))), "")
 const UNIT = join(ROOT, "driver/systemd/clearotron-deploy.service");
 const TIMER = join(ROOT, "driver/systemd/clearotron-deploy.timer");
 
-test("#1883 the three currency answers are three answers, and none of them is silence", () => {
+test("the three currency answers are three answers, and none of them is silence", () => {
   // "Up to date", "N behind" and "I could not look" are different FACTS. A check that prints the first
   // for the third is the failure this whole issue is one instance of, so each is driven separately.
   const git = (map) => (args) => map(args);
@@ -51,7 +51,7 @@ test("#1883 the three currency answers are three answers, and none of them is si
     "unknown", "a git that failed to count is UNKNOWN, never zero");
 });
 
-test("#1883 update REFUSES over a queued run — driven through the real entry, not the function", () => {
+test("update REFUSES over a queued run — driven through the real entry, not the function", () => {
   // The property is load-bearing: `npm ci` rebuilds node_modules under whatever is running, and a
   // clearance assembled from halves of two builds does not fail, it answers wrongly and says nothing.
   // Driven as a subprocess with a real queued job on disk, because the refusal has to hold for the
@@ -77,7 +77,7 @@ test("#1883 update REFUSES over a queued run — driven through the real entry, 
   assert.doesNotMatch(out, /git pull/, "nothing may be pulled before the refusal");
 });
 
-test("#1883 the shipped deploy unit runs the guarded command and treats its two exits differently", () => {
+test("the shipped deploy unit runs the guarded command and treats its two exits differently", () => {
   assert.ok(existsSync(UNIT) && existsSync(TIMER), "the unit and timer this install documents must exist");
   const unit = readFileSync(UNIT, "utf8");
 
@@ -103,7 +103,7 @@ test("#1883 the shipped deploy unit runs the guarded command and treats its two 
   assert.match(timer, /Persistent=true/, "a box asleep through several firings does ONE catch-up, not a queue");
 });
 
-test("#1883 the install document promises exactly what the tree ships", () => {
+test("the install document promises exactly what the tree ships", () => {
   // The failure that produced this issue was a document asserting a mechanism nobody had placed. So the
   // document's own commands are read back against the files they name.
   const doc = readFileSync(join(ROOT, "INSTALL.md"), "utf8");
@@ -120,7 +120,7 @@ test("#1883 the install document promises exactly what the tree ships", () => {
   }
 });
 
-test("#1883 a current checkout is not a current deployment — the older-tree state is its own answer", () => {
+test("a current checkout is not a current deployment — the older-tree state is its own answer", () => {
   // `git pull` moves the FILES. A long-lived service keeps executing the tree it started with, so a box
   // can be honestly up to date and still answer from code that no longer exists on disk. That is this
   // issue's invisibility in a third form, and it needs its own word rather than being folded into
@@ -145,7 +145,7 @@ test("#1883 a current checkout is not a current deployment — the older-tree st
     "an empty process table is a real answer and must not read as unknown");
 });
 
-test("#1883 the detector can SEE a real process from this checkout — a zero here is a broken instrument", async () => {
+test("the detector can SEE a real process from this checkout — a zero here is a broken instrument", async () => {
   // The arm above proves the predicate. This proves the SCAN: a silent report is worthless if the reason
   // for the silence is that nothing can be observed. Driven with a real child, reaped in a finally.
   const child = spawn(process.execPath, ["-e", "setTimeout(() => {}, 60000)"], { cwd: ROOT, stdio: "ignore" });
@@ -162,7 +162,7 @@ test("#1883 the detector can SEE a real process from this checkout — a zero he
   }
 });
 
-test("2099 the deployment scan sees a program on this checkout where there is no /proc", async () => {
+test("the deployment scan sees a program on this checkout where there is no /proc", async () => {
   // That scan read `/proc` directly, so on macOS it returned null and doctor told every reader on
   // that platform "the process table could not be read" — permanently. The listing now comes from
   // shared/process-table.mjs, and this arm drives the branch macOS takes, on a box that has /proc.
@@ -182,7 +182,7 @@ test("2099 the deployment scan sees a program on this checkout where there is no
   }
 });
 
-test("2099 a process table that could not be read is still null, not an empty box", () => {
+test("a process table that could not be read is still null, not an empty box", () => {
   // The one line this whole reader exists to keep true, and it was unfalsifiable while the function was
   // private: `programsOnAnOlderTree`'s injection replaces the reader wholesale and never enters it.
   assert.equal(readOwnProcesses(ROOT, { table: null }), null,

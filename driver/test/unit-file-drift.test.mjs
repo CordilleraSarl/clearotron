@@ -20,7 +20,7 @@ import { findUnitFiles, unitFilePath } from "../unit-files.mjs";
 const UNIT = "[Unit]\nDescription=x\n\n[Service]\nEnvironment=CLEAROTRON_NO_ENV_FILE=1\nExecStart=/bin/true\n";
 const OLD = "[Unit]\nDescription=x\n\n[Service]\nExecStart=/bin/true\n";
 
-test("#646 a live unit that differs from the deployed commit is a FAILURE, and names the unit", () => {
+test("a live unit that differs from the deployed commit is a FAILURE, and names the unit", () => {
   const v = unitFileDriftVerdict({ units: [
     { unit: "prelim-driver.service", live: OLD, tracked: UNIT, dropIns: [] },
     { unit: "profile-service.service", live: UNIT, tracked: UNIT, dropIns: [] },   // deleted portal-service.service
@@ -31,7 +31,7 @@ test("#646 a live unit that differs from the deployed commit is a FAILURE, and n
   assert.match(v.message, /daemon-reload/, "…and the message says what to DO, because nothing else will");
 });
 
-test("#646 comments and blank lines are not drift", () => {
+test("comments and blank lines are not drift", () => {
   // A unit is compared on what systemd acts on. A comment edit that failed this check would teach
   // whoever hit it to stop believing the check.
   const commented = "# a note added on the box\n\n[Unit]\nDescription=x\n\n; another\n[Service]\nEnvironment=CLEAROTRON_NO_ENV_FILE=1\nExecStart=/bin/true\n";
@@ -39,7 +39,7 @@ test("#646 comments and blank lines are not drift", () => {
   assert.equal(unitFileDriftVerdict({ units: [{ unit: "u.service", live: commented, tracked: UNIT, dropIns: [] }] }).state, "pass");
 });
 
-test("#646 a DROP-IN is not drift — it is the sanctioned way a box carries what a repo must not", () => {
+test("a DROP-IN is not drift — it is the sanctioned way a box carries what a repo must not", () => {
   // Secrets and per-host paths belong in `<unit>.d/*.conf`, and this deployment uses them for exactly
   // that. Failing on their presence would make the check unusable on the box it exists to protect.
   const v = unitFileDriftVerdict({ units: [
@@ -50,7 +50,7 @@ test("#646 a DROP-IN is not drift — it is the sanctioned way a box carries wha
     "…but a reader is told the effective unit is not the tracked file alone");
 });
 
-test("#646 COULD NOT LOOK is never a pass — the #395 rule, one layer down", () => {
+test("COULD NOT LOOK is never a pass — the #395 rule, one layer down", () => {
   const v = unitFileDriftVerdict({ units: [], probe: { ok: false, why: "no XDG_RUNTIME_DIR" } });
   assert.equal(v.state, "skip");
   assert.match(v.message, /no unit file was COMPARED/);
@@ -65,7 +65,7 @@ test("#646 COULD NOT LOOK is never a pass — the #395 rule, one layer down", ()
     "…and what could not be compared is stated, rather than absorbed into the pass");
 });
 
-test("#646 nothing comparable is a SKIP, and says how many of each kind it saw", () => {
+test("nothing comparable is a SKIP, and says how many of each kind it saw", () => {
   const v = unitFileDriftVerdict({ units: [
     { unit: "a.service", live: null, tracked: UNIT, dropIns: [] },
     { unit: "b.service", live: UNIT, tracked: null, dropIns: [] },
@@ -74,7 +74,7 @@ test("#646 nothing comparable is a SKIP, and says how many of each kind it saw",
   assert.match(v.message, /2 unit\(s\) seen, 1 with no readable fragment, 1 with no tracked unit file anywhere in the tree/);
 });
 
-test("#646 every unit this repo ships, ANYWHERE, is a real file the check can compare against", () => {
+test("every unit this repo ships, ANYWHERE, is a real file the check can compare against", () => {
   // The check is worth nothing if the tracked side is a path nobody maintains. Read from disk, so a
   // unit added or renamed without its file lands here.: over the whole tree — this used to read
   // driver/systemd/ alone, which is how four tracked unit files went uncompared.
@@ -98,7 +98,7 @@ const TEMPLATE = "# ── TEMPLATE UNIT ─────────────
   + "# The example.com values below are PLACEHOLDERS a new deployment must replace.\n" + UNIT;
 const TEMPLATE_LIVE = TEMPLATE.replace("Description=x", "Description=x real");
 
-test("#685 a TEMPLATE unit whose live copy differs is reported, and never counted as drift", () => {
+test("a TEMPLATE unit whose live copy differs is reported, and never counted as drift", () => {
   // Giving client-mcp and client-mcp-apikey the tracked files they always had ARMS this comparison. Both
   // are banner-marked templates: the live copies carry real CF Access values, the tracked copies carry
   // placeholders, so a byte comparison is red by construction. An instrument that is red on day one is
@@ -115,7 +115,7 @@ test("#685 a TEMPLATE unit whose live copy differs is reported, and never counte
     "a reader must not take this pass as 'the client door's live values were checked'");
 });
 
-test("#685 a GENERIC unit that differs is still a FAIL, template or not sitting beside it", () => {
+test("a GENERIC unit that differs is still a FAIL, template or not sitting beside it", () => {
   const v = unitFileDriftVerdict({ units: [
     { unit: "client-mcp.service", live: TEMPLATE_LIVE, tracked: TEMPLATE, dropIns: [] },
     { unit: "prelim-driver.service", live: OLD, tracked: UNIT, dropIns: [] },
@@ -125,7 +125,7 @@ test("#685 a GENERIC unit that differs is still a FAIL, template or not sitting 
   assert.deepEqual(v.templated, ["client-mcp.service"]);
 });
 
-test("#685 the banner IN THE FILE is the discriminator, not a second list beside it", () => {
+test("the banner IN THE FILE is the discriminator, not a second list beside it", () => {
   assert.equal(isTemplateUnit(TEMPLATE), true);
   assert.equal(isTemplateUnit(UNIT), false, "a unit with no banner is generic and is compared");
   assert.equal(isTemplateUnit(null), false);

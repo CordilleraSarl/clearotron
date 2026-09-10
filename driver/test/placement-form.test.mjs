@@ -40,7 +40,7 @@ const INPUT = {
 const SEAT_ROW = { kind: "seat", mark: "Novapulse Labs", owner: "Novapulse Labs LLC", jurisdiction: "US",
   records: [], tier: "watchlist-annex", reason: "unregistered marketplace use, no register leg" };
 
-test("#562 the form the seat opens has NO pre-written rows — a row exists because it was selected", () => {
+test("the form the seat opens has NO pre-written rows — a row exists because it was selected", () => {
   const form = buildPlacementForm(INPUT);
   assert.deepEqual(form.rows, [],
     "3,489 driver rows for 82 placements is not a form — and with nothing pre-written there is no such "
@@ -49,7 +49,7 @@ test("#562 the form the seat opens has NO pre-written rows — a row exists beca
   assert.equal(form.generated_from.selectable_records, 4, "US/EU/CH from the position + the uncovered JP floor");
 });
 
-test("#562 selecting ONE record of a family selects the family, and the driver fills every field", () => {
+test("selecting ONE record of a family selects the family, and the driver fills every field", () => {
   const u = unionPlacementForm(null, [{ select: "/mark/eu/E1", tier: "headline-candidate", reason: "identical mark, same class" }], INPUT);
   assert.equal(u.total, 1, "three records, one candidate — the unit a tier decision is actually about");
   const row = u.form.rows[0];
@@ -60,7 +60,7 @@ test("#562 selecting ONE record of a family selects the family, and the driver f
   assert.equal(u.settled, 1);
 });
 
-test("#562 a selected row's driver fields are MACHINE-COPIED — what the seat types in them is ignored", () => {
+test("a selected row's driver fields are MACHINE-COPIED — what the seat types in them is ignored", () => {
   // The point of selection-by-reference. A transcription slip on a mark or an owner cannot reach a client
   // deliverable, because the seat's copy of those fields is never read.
   const u = unionPlacementForm(null, [{ select: "/mark/eu/E1", mark: "NOVAPULZE", owner: "Acme Limited",
@@ -71,7 +71,7 @@ test("#562 a selected row's driver fields are MACHINE-COPIED — what the seat t
   assert.ok(!row.records.includes("/mark/xx/INVENTED"), "and it cannot widen what the row binds");
 });
 
-test("#562 THE CURE: a tier placed by an attempt that is then killed survives the next attempt's silence", () => {
+test("THE CURE: a tier placed by an attempt that is then killed survives the next attempt's silence", () => {
   // This is the R1 incident, in miniature. Attempt 1 tiers one candidate and selects a second; the wall
   // kills it. Attempt 2 is a cold re-dispatch that submits NOTHING.
   const att1 = [{ select: "/mark/eu/E1", tier: "headline-candidate", reason: "identical mark, same class" },
@@ -87,7 +87,7 @@ test("#562 THE CURE: a tier placed by an attempt that is then killed survives th
   assert.equal(renderPlacementsJson(u2.form).placements.length, 2, "the deliverable already holds them");
 });
 
-test("#562 a selection is STICKY — silence cannot un-place a candidate, but a later pass can re-tier it", () => {
+test("a selection is STICKY — silence cannot un-place a candidate, but a later pass can re-tier it", () => {
   const u1 = unionPlacementForm(null, [{ select: "/mark/eu/E1", tier: "headline-candidate", reason: "identical mark" }, SEAT_ROW], INPUT);
   // A corrective pass that mentions ONE row and says nothing about the others.
   const u2 = unionPlacementForm(u1.form, [{ select: "/mark/eu/E1", tier: "watchlist-annex", reason: "re-tiered on the fetched record" }], INPUT);
@@ -98,7 +98,7 @@ test("#562 a selection is STICKY — silence cannot un-place a candidate, but a 
     + "would delete a run's 5-11 common-law candidates without a word");
 });
 
-test("#562 removal is EXPLICIT, and it is the only way a row leaves the form", () => {
+test("removal is EXPLICIT, and it is the only way a row leaves the form", () => {
   const u1 = unionPlacementForm(null, [{ select: "/mark/eu/E1", tier: "headline-candidate", reason: "identical mark" }, SEAT_ROW], INPUT);
   const seatId = u1.form.rows.find((r) => r.kind === "seat").row_id;
   const u2 = unionPlacementForm(u1.form, [{ retract: seatId }], INPUT);
@@ -109,14 +109,14 @@ test("#562 removal is EXPLICIT, and it is the only way a row leaves the form", (
   assert.equal(u3.total, 0, "a selection is retractable by the id it was selected with");
 });
 
-test("#562 a selection the fold does not hold is REPORTED BY ID, never silently dropped", () => {
+test("a selection the fold does not hold is REPORTED BY ID, never silently dropped", () => {
   const u = unionPlacementForm(null, [{ select: "/mark/xx/NOPE", tier: "watchlist-annex", reason: "typo" }], INPUT);
   assert.equal(u.unresolved, 1);
   assert.deepEqual(u.form.unresolved, [{ select: "/mark/xx/NOPE", tier: "watchlist-annex" }]);
   assert.equal(u.total, 0, "and it mints no row — an id that resolves to nothing has no candidate behind it");
 });
 
-test("#562 an untiered selected row is COUNTED, not merely omitted", () => {
+test("an untiered selected row is COUNTED, not merely omitted", () => {
   // `renderPlacementsJson` drops unsettled rows, which alone is the silent-vanish the issue named. The
   // count is the other half — and it is deliberately NOT a key on placements.json, whose shape is a
   // contract four consumers read (397 archived entries carry exactly the same seven keys).
@@ -128,7 +128,7 @@ test("#562 an untiered selected row is COUNTED, not merely omitted", () => {
   assert.deepEqual(omitted[0].missing, ["tier", "reason"], "and it says WHAT is missing, not just that something is");
 });
 
-test("#562 the rendered file is byte-shaped exactly like the seat-written ones it replaces", () => {
+test("the rendered file is byte-shaped exactly like the seat-written ones it replaces", () => {
   // The parity that protects the deliverable. Across 397 entries in the archived runs the keys are
   // {mark, owner, jurisdiction, records, tier, reason} + optional borderline, in a {schema_version,
   // placements} document. A render that dropped or added one would change what reaches the digest,
@@ -145,7 +145,7 @@ test("#562 the rendered file is byte-shaped exactly like the seat-written ones i
   assert.deepEqual(doc.placements[1].records, [], "a common-law candidate carries an empty list, and that is correct");
 });
 
-test("#562 a torn or unreadable submission says NOTHING — it can neither add a judgment nor destroy one", () => {
+test("a torn or unreadable submission says NOTHING — it can neither add a judgment nor destroy one", () => {
   const u1 = unionPlacementForm(null, [{ select: "/mark/eu/E1", tier: "headline-candidate", reason: "identical mark" }, SEAT_ROW], INPUT);
   for (const torn of [null, undefined, { rows: null }]) {
     const u2 = unionPlacementForm(u1.form, torn, INPUT);
@@ -154,7 +154,7 @@ test("#562 a torn or unreadable submission says NOTHING — it can neither add a
   }
 });
 
-test("#562 a candidate whose records CHANGE is a different row — no invalidation logic, no trigger-sniffing", () => {
+test("a candidate whose records CHANGE is a different row — no invalidation logic, no trigger-sniffing", () => {
   // A row's identity is its record set. After a re-enumeration splits the family, the selection resolves
   // to a smaller position, which is a new key, so it arrives unsettled with no carry — automatically.
   const u1 = unionPlacementForm(null, [{ select: "/mark/eu/E1", tier: "headline-candidate", reason: "identical mark" }], INPUT);
@@ -165,7 +165,7 @@ test("#562 a candidate whose records CHANGE is a different row — no invalidati
   assert.ok(!rowIsSettled(u2.form.rows[0], u2.form.rows[0]));
 });
 
-test("#562 selectionOf falls back to a named record, so a seat row naming a fold record FOLDS rather than duplicating", () => {
+test("selectionOf falls back to a named record, so a seat row naming a fold record FOLDS rather than duplicating", () => {
   assert.equal(selectionOf({ select: " /mark/us/U1 " }), "/mark/us/U1");
   assert.equal(selectionOf({ records: ["/mark/us/U1"] }), "/mark/us/U1");
   assert.equal(selectionOf({ mark: "X" }), null);
@@ -178,7 +178,7 @@ test("#562 selectionOf falls back to a named record, so a seat row naming a fold
   assert.equal(u.form.rows[0].tier, "sheet-2", "and its judgment survived the fold");
 });
 
-test("#562 a projection that could not be read is RECORDED, never read as an empty band", () => {
+test("a projection that could not be read is RECORDED, never read as an empty band", () => {
   const blind = buildSelectionIndex({ floors: null, positions: null });
   assert.equal(blind.derived_from.floors_unreadable, true);
   assert.equal(blind.derived_from.positions_unreadable, true);

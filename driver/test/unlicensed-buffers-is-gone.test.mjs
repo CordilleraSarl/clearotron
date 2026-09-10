@@ -25,7 +25,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const require = createRequire(import.meta.url);
 const readJSON = (p) => JSON.parse(readFileSync(p, "utf8"));
 
-test("#854 both halves of the substitution are declared — either one alone silently restores the registry copy", () => {
+test("both halves of the substitution are declared — either one alone silently restores the registry copy", () => {
   const pkg = readJSON(join(ROOT, "package.json"));
   assert.equal(pkg.dependencies?.buffers, "file:vendor/buffers",
     "the root no longer depends on the local copy, so `$buffers` in overrides points at nothing");
@@ -35,7 +35,7 @@ test("#854 both halves of the substitution are declared — either one alone sil
   assert.equal(vendored.license, "AGPL-3.0-only", "the replacement must state its licence; that was the whole defect");
 });
 
-test("#854 the LOCKFILE — the file CI actually installs from — resolves buffers locally, with no tarball", () => {
+test("the LOCKFILE — the file CI actually installs from — resolves buffers locally, with no tarball", () => {
   const lock = readJSON(join(ROOT, "package-lock.json"));
   const entry = lock.packages?.["node_modules/buffers"];
   assert.ok(entry, "there is no buffers entry at all — this arm can no longer tell which copy CI installs");
@@ -47,7 +47,7 @@ test("#854 the LOCKFILE — the file CI actually installs from — resolves buff
   assert.ok(lock.packages?.["vendor/buffers"], "the local package is not in the lock, so `npm ci` cannot link it");
 });
 
-test("#854 `buffers` resolves to our file, and that file says who owns it", () => {
+test("`buffers` resolves to our file, and that file says who owns it", () => {
   const resolved = require.resolve("buffers");
   assert.ok(resolved.includes(join("vendor", "buffers")),
     `buffers resolved to ${resolved} — the replacement is not the copy in play`);
@@ -57,7 +57,7 @@ test("#854 `buffers` resolves to our file, and that file says who owns it", () =
 
 // ── the contract, from the five members binary/index.js uses ────────────────────────────────────────
 
-test("#854 length, push and slice behave as the concatenated byte range", () => {
+test("length, push and slice behave as the concatenated byte range", () => {
   const Buffers = require("buffers");
   const b = Buffers();
   assert.equal(b.length, 0);
@@ -74,7 +74,7 @@ test("#854 length, push and slice behave as the concatenated byte range", () => 
   assert.equal(b.slice(0, 3).toString(), "abc", "slice returned a view — mutating it corrupted the list");
 });
 
-test("#854 splice returns a BUFFERS, not a Buffer — binary calls .slice() on the result", () => {
+test("splice returns a BUFFERS, not a Buffer — binary calls .slice() on the result", () => {
   // binary/index.js:59-61 does `buf = buffers.splice(0, bytes); buf = buf.slice();`. A splice that
   // returns a plain Buffer still answers `.slice()`, but with Buffer semantics — the bug survives a
   // smoke test and shows up as a short read on real data.
@@ -100,7 +100,7 @@ test("#854 splice returns a BUFFERS, not a Buffer — binary calls .slice() on t
   assert.equal(b.length, 0);
 });
 
-test("#854 indexOf finds a needle that STRADDLES two buffers, which is why it cannot delegate per-buffer", () => {
+test("indexOf finds a needle that STRADDLES two buffers, which is why it cannot delegate per-buffer", () => {
   const Buffers = require("buffers");
   const b = Buffers();
   b.push(Buffer.from("hello wo"), Buffer.from("rld and more"));
@@ -116,7 +116,7 @@ test("#854 indexOf finds a needle that STRADDLES two buffers, which is why it ca
   assert.equal(c.indexOf(Buffer.from("bcde")), 1);
 });
 
-test("#854 the consumer still works: an xlsx written and read back through unzipper -> binary -> buffers", async () => {
+test("the consumer still works: an xlsx written and read back through unzipper -> binary -> buffers", async () => {
   // The read path is the only consumer of this package in the product. A contract test that passes
   // while exceljs cannot open a workbook would prove nothing worth having.
   const { default: ExcelJS } = await import("exceljs");

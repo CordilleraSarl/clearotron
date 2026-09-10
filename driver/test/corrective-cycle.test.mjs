@@ -302,7 +302,7 @@ test("T3a/#1674: a review that flips to BLOCKING during the delivery stale-repai
   assert.match(readFileSync(join(res.runDir, "senior-eye-review.md"), "utf8"), /^BLOCKING/,
     "the review the repair wrote is a BLOCKING one");
 
-  // ── THE CLAIM, INVERTED BY T3a — owner ruling 2026-08-26 ────────────────────────────────────────
+  // ── THE CLAIM, INVERTED BY T3a — ruling 2026-08-26 ────────────────────────────────────────
   //
   // "Deliver always, with open points printed. The refusal on a blocking review goes." What
   // established stands and is untouched: a reviewer who refuses at delivery time must be HEARD. What

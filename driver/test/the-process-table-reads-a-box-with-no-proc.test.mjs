@@ -30,7 +30,7 @@ const psStamp = (pid) => procStarttime(pid, undefined, { platform: "darwin" });
 // one this issue added, and the one every non-Linux box depends on.
 const HAS_PROC = existsSync("/proc/self/stat");
 
-test("2099 both readers list this very process — the instrument is proved, not assumed", () => {
+test("both readers list this very process — the instrument is proved, not assumed", () => {
   // ONE SITE, BOTH DIRECTIONS, EXECUTED ON EVERY BOX. Written as an if/else this was an `else` no
   // Linux run can take, and the coverage census refused it by name — correctly: a branch no
   // population reaches is a guess wearing an assertion. Stated as an equality it asserts the same
@@ -51,7 +51,7 @@ test("2099 both readers list this very process — the instrument is proved, not
   }
 });
 
-test("2099 the ps reader dates a process to a moment, and it is this process's own", () => {
+test("the ps reader dates a process to a moment, and it is this process's own", () => {
   const self = processTable({ platform: "darwin" }).find((p) => p.pid === process.pid);
   assert.ok(Number.isFinite(self.startedAt), `no start time on the ps branch: ${self.startedAt}`);
   // Bounded on both sides: after this suite's own process could possibly have begun, and not in the
@@ -61,7 +61,7 @@ test("2099 the ps reader dates a process to a moment, and it is this process's o
     `this process started ${Math.round(age / 1000)}s ago by the ps reader, which is not a plausible age`);
 });
 
-test("2099 a ps that could not look is null, and null is never an empty box", () => {
+test("a ps that could not look is null, and null is never an empty box", () => {
   assert.equal(processTable({ platform: "darwin", runPs: () => ({ status: 1, stdout: "" }) }), null,
     "a ps that exited non-zero read as a machine with nothing running on it");
   assert.equal(processTable({ platform: "darwin", runPs: () => ({ status: 0, stdout: "" }) }), null,
@@ -73,7 +73,7 @@ test("2099 a ps that could not look is null, and null is never an empty box", ()
     "a ps that could not be spawned at all read as something other than could-not-look");
 });
 
-test("2099 a command line beginning with a number is not mistaken for a pid", () => {
+test("a command line beginning with a number is not mistaken for a pid", () => {
   // The parse anchors on `lstart`, and this is the case that says so: the pid column and a command that
   // starts with digits are told apart by the date between them, not by position alone.
   // TWO leading numbers now — pid and the owning user — and the command still begins with digits. The
@@ -88,7 +88,7 @@ test("2099 a command line beginning with a number is not mistaken for a pid", ()
   assert.equal(row.startedAt, Date.parse("Mon Sep  1 08:21:53 2026"));
 });
 
-test("2099 the birth stamp survives where there is no /proc, and still refuses a dead pid", () => {
+test("the birth stamp survives where there is no /proc, and still refuses a dead pid", () => {
   const st = psStamp(process.pid);
   assert.ok(st, "the ps branch produced no birth stamp for this process");
   assert.doesNotMatch(String(st), /:/,
@@ -97,7 +97,7 @@ test("2099 the birth stamp survives where there is no /proc, and still refuses a
     "a pid that cannot exist produced a birth stamp — the reader is inventing one");
 });
 
-test("2099 a worker's own beat reads as alive on a box with no /proc", () => {
+test("a worker's own beat reads as alive on a box with no /proc", () => {
   // THE PRODUCT DEFECT, driven end to end: `workerAlive` answered false here for a beat written a
   // millisecond earlier, so a macOS reader was told nothing was draining their queue while it drained.
   const dir = mkdtempSync(join(tmpdir(), "ct-hb-noproc-"));
@@ -115,7 +115,7 @@ test("2099 a worker's own beat reads as alive on a box with no /proc", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("2099 the real ps invocation is the one the parser was written for", () => {
+test("the real ps invocation is the one the parser was written for", () => {
   // The seam above means every arm could pass over a `ps` nobody ever runs. This one runs the real
   // default, so the flags and the parse are proved together.
   const parsed = processTable({ platform: "darwin", runPs: defaultRunPs });

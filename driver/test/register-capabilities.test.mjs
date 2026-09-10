@@ -183,7 +183,7 @@ test("the probed provider facts are encoded, not the stale core's warts", () => 
 // the exact shape exists to punish, one level out from where it punished it.
 const SIGNA_SRC = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "providers", "signa", "src");
 
-test("#1161 signa's core still carries NO figurative data — the absence reason in gather-config holds", () => {
+test("signa's core still carries NO figurative data — the absence reason in gather-config holds", () => {
   const files = readdirSync(SIGNA_SRC).filter((f) => f.endsWith(".js") || f.endsWith(".mjs"));
   const corpus = files.map((f) => readFileSync(join(SIGNA_SRC, f), "utf8")).join("\n");
 
@@ -203,7 +203,7 @@ test("#1161 signa's core still carries NO figurative data — the absence reason
     "signa now declares a per-record public URL — half the register_image_fetch reason just went false");
 });
 
-test("#1645 signa's core does not document a count endpoint it HAS — the doc and the value agree", () => {
+test("signa's core does not document a count endpoint it HAS — the doc and the value agree", () => {
   // A doc comment that contradicts the value it cites, five lines above the block that records the
   // change correctly. moved `countProbe` from "none" to "cheap" (the total was always there,
   // behind an opt-in flag nobody had set) and this header went on asserting "THIS PROVIDER HAS NO
@@ -219,7 +219,7 @@ test("#1645 signa's core does not document a count endpoint it HAS — the doc a
     + "\"cheap\" — the drift #1645 fixed has come back");
 });
 
-test("#1656 no INLINE comment in signa's core reasons from the retired `countProbe: \"none\"`", () => {
+test("no INLINE comment in signa's core reasons from the retired `countProbe: \"none\"`", () => {
   const core = readFileSync(join(SIGNA_SRC, "core.js"), "utf8");
 
   // THE CLAIM, NOT THE TOKEN. Two of the four sites this arm was built for said "exposes no corpus
@@ -357,7 +357,7 @@ test("resolveRegions expands an ordered territory to the registers that BIND it"
   assert.deepEqual(resolveRegions(once, capabilitiesFor("clarivate")).regions, once);
 });
 
-test("#1028: the coverage form stops disclosing a layer the plan now searches", async () => {
+test("the coverage form stops disclosing a layer the plan now searches", async () => {
   const { territoryLayerReport } = await import("../binding-layers.mjs");
   // EVERY territory, not just the handful a contract happens to name individually. Clarivate covers
   // 186 office codes and wrote eight of them down, so before the `"*"` entry this loop passed on FR
@@ -537,7 +537,7 @@ test("an unsupported predicate compiles to a DEFERRED slice, never a weaker quer
   assert.deepEqual(validatePlanFeasibility(plan, { capabilities: thin }), []);
 });
 
-test("#1030 signa's plan now compiles with NO deferred predicate at all — the thin provider is not thin", () => {
+test("signa's plan now compiles with NO deferred predicate at all — the thin provider is not thin", () => {
   // The other half of the test above, and the one that will fail if a declaration is ever quietly
   // reverted to null: the same job that used to defer its owner slices, its contains sweeps and its
   // suffix fringe now compiles fully executable. A provider's reach is a property worth pinning in
@@ -1086,7 +1086,7 @@ test("the ARCHIVED-RUN reader still normalises a bolded `**deferred**` status", 
 // describe what they would pass it. When signa is wired, this test fails and names itself as
 // the thing to update — which is the point. A limit nobody has to notice is a limit nobody maintains.
 
-test("#1027 the kernel seam is DECLARED by every provider and EXERCISED by a named subset", async () => {
+test("the kernel seam is DECLARED by every provider and EXERCISED by a named subset", async () => {
   const { readFileSync } = await import("node:fs");
   const { fileURLToPath } = await import("node:url");
   const { join, dirname } = await import("node:path");

@@ -170,7 +170,7 @@ test("a tenant granted \"*\" contributes no keys, so it cannot manufacture a fal
   assert.equal(/ABSENT from this roster/.test(r.stderr), false);
 });
 
-test("2021 a SLOW boot makes this file slower, never red — driven past the old 2.5s kill", async () => {
+test("a SLOW boot makes this file slower, never red — driven past the old 2.5s kill", async () => {
   // THE PROOF THE FIX IS THE FIX. The old helper killed the child at a fixed 2500 ms and asserted on
   // whatever had arrived; a boot slower than that produced an EMPTY capture and a red that said nothing
   // about the door. Raising the number would have been the same defect at a different threshold.

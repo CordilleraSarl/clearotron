@@ -39,7 +39,7 @@ const codexBin = () => envFrom(process.env, "CLEAROTRON_CODEX_PATH") || "codex";
 // on both engines. `sol` remains what codex itself reports as its own default (live-probed 2026-07-27:
 // `model: gpt-5.6-sol, provider: openai`), which is why the judgment tier keeps it.
 //
-// ── THE THREE TIERS MAP ONTO THE CODEX LADDER (owner ruling 2026-09-02,) ──────────────────────────
+// ── THE THREE TIERS MAP ONTO THE CODEX LADDER (ruling 2026-09-02,) ──────────────────────────
 //
 // Every stage declares a tier — opus / sonnet / haiku — engine-independently. The anthropic engine
 // resolves those three declarations onto three models. Until this ruling codex resolved ALL THREE onto

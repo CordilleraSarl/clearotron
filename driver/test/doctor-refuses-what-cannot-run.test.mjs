@@ -193,7 +193,7 @@ test("no raw systemd error reaches the report — the command speaks for itself"
 // that is up, listening and refusing everything is the worst of the three states to debug, and nothing
 // surfaced the mismatch. Found by an operator pass, not by any check.
 
-test("2191 a port the allow-list does not name is reported, with what it would cost", () => {
+test("a port the allow-list does not name is reported, with what it would cost", () => {
   // NO REGISTER NAMED, deliberately: `free-tier` brings real credential problems of its own, and the
   // exit assertion below would then be measuring those instead of this. An earlier draft did exactly
   // that and failed on a tree that satisfies the criterion.
@@ -207,7 +207,7 @@ test("2191 a port the allow-list does not name is reported, with what it would c
   assert.equal(status, 0, "it is an absence to fix, not a misconfiguration that fails the exit contract");
 });
 
-test("2191 and an allow-list that DOES name the port says nothing at all", () => {
+test("and an allow-list that DOES name the port says nothing at all", () => {
   // Without this the arm above is satisfied by a doctor that warns unconditionally, which would train
   // every reader to ignore the line.
   const { out } = doctor({ env: {

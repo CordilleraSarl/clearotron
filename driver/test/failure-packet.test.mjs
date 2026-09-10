@@ -104,7 +104,7 @@ test("weather-exhausted: the notice says the PROVIDER stayed down, not that the 
 
 // ---- (read side): a failed BATCH names every name that failed with it -----------------------------
 
-test("#472 a multi-name knockout failure names all its names, in the run's own spelling", () => {
+test("a multi-name knockout failure names all its names, in the run's own spelling", () => {
   // A 3-name knockout is ONE job, one run and one price. When it died, the only artifact the requester
   // received named one of the three and said NOTHING was delivered. Both honest readings cost money:
   // "IRONWHISK failed, so the other two came through" (they did not — nothing was published), or
@@ -129,7 +129,7 @@ test("#472 a multi-name knockout failure names all its names, in the run's own s
   assert.match(client.emailBodyHtml, /for <b>IRONWHISK \+2 more<\/b> stopped before it finished/);
 });
 
-test("#472 a single-name job still says the name the requester TYPED, never a derived one", () => {
+test("a single-name job still says the name the requester TYPED, never a derived one", () => {
   // The composer's fallback rule, and the reason it is a fallback: `marks[]` carries the parsed name and
   // `markName` carries the typed one. A clearance admits one name (refused at the run door above one),
   // so this path must read byte-identically to what it did before.
@@ -153,7 +153,7 @@ test("#472 a single-name job still says the name the requester TYPED, never a de
 
 const DROP_DETAIL = 'never executed, and a count-based connotation gate cannot see it (Project Sable" video game controversy)';
 
-test("#862 the packet carries reasonDetail + reasonQuantity, and the staff email names the query", () => {
+test("the packet carries reasonDetail + reasonQuantity, and the staff email names the query", () => {
   const p = buildFailurePacket({ ...BASE, failedStage: "common-law", failClass: "deterministic",
     terminalKind: "deterministic", shortReason: "merged half-grids dropped 1 dictated connotation query",
     reasonVerbatim: "merged half-grids dropped 1 dictated connotation query",
@@ -168,7 +168,7 @@ test("#862 the packet carries reasonDetail + reasonQuantity, and the staff email
   assert.equal(p.reason, "merged half-grids dropped 1 dictated connotation query", "the sentence is unchanged");
 });
 
-test("#862 a clientPrincipal run gets the payload on the FIELDS only — never in the client's email", () => {
+test("a clientPrincipal run gets the payload on the FIELDS only — never in the client's email", () => {
   const p = buildFailurePacket({ ...BASE, job: { ...BASE.job, clientPrincipal: true },
     failedStage: "common-law", terminalKind: "deterministic", reasonDetail: DROP_DETAIL, reasonQuantity: 1 });
   assert.equal(p.reasonDetail, DROP_DETAIL, "staff surfaces keep the full truth");
@@ -176,7 +176,7 @@ test("#862 a clientPrincipal run gets the payload on the FIELDS only — never i
     "the client redaction is the same one that already hides the verbatim reason");
 });
 
-test("#862 ABSENT IS NOT ZERO: a failure carrying no payload writes both keys as null, never omits them", () => {
+test("ABSENT IS NOT ZERO: a failure carrying no payload writes both keys as null, never omits them", () => {
   const p = buildFailurePacket({ ...BASE, terminalKind: "deterministic" });
   assert.ok("reasonDetail" in p && "reasonQuantity" in p,
     "a missing key and 'this failure carries no payload' must be distinguishable — the reasonTruncated discipline");
@@ -193,7 +193,7 @@ test("#862 ABSENT IS NOT ZERO: a failure carrying no payload writes both keys as
 // it would come back silently — the packet still builds, the fields still exist, they are just null on
 // every run. Both notice lanes (handoff primary + sendPending backstop) and the terminal status write
 // must each pass the payload.
-test("#862 both notice lanes and the terminal status write pass the payload — the E11 wiring", () => {
+test("both notice lanes and the terminal status write pass the payload — the E11 wiring", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   const passes = src.match(/reasonDetail: reasonDetailField, reasonQuantity: quantity/g) ?? [];
   assert.equal(passes.length, 3,
@@ -214,7 +214,7 @@ test("#862 both notice lanes and the terminal status write pass the payload — 
 // introduced exactly that at the verdict ratchet, by copying a sibling call and losing its
 // `undefined,`. Dropping one argument from a four-argument call is not a mistake a reader catches, which
 // is why this is an arm and not a comment: every site is counted FROM THE SOURCE, never from a list here.
-test("#1708 no StageFailure site passes its options bag one position early", (t) => {
+test("no StageFailure site passes its options bag one position early", (t) => {
   const root = new URL("../../", import.meta.url).pathname;
   // The corpus comes from the shared helper, never from a `git ls-files` of this guard's own: outside a
   // checkout that call exits 128 and the guard fails as a wall of noise instead of saying it could not

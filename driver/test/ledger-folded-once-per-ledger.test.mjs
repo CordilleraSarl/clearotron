@@ -75,7 +75,7 @@ async function audit(setUp, prefix) {
 
 // ── the case the defect hid on ───────────────────────────────────────────────────────────────────────
 
-test("#1241 a SINGLE-seat run reconciles — and this is the run that proved nothing", async () => {
+test("a SINGLE-seat run reconciles — and this is the run that proved nothing", async () => {
   const { artifact, calls } = await audit((P) => {
     writeFileSync(P.commonLaw, "merged\n");
     writeFileSync(P.commonLawGrid, GRID);
@@ -88,7 +88,7 @@ test("#1241 a SINGLE-seat run reconciles — and this is the run that proved not
 
 // ── the case that could not hide ─────────────────────────────────────────────────────────────────────
 
-test("#1241 a THREE-half run counts each ledger entry ONCE", async () => {
+test("a THREE-half run counts each ledger entry ONCE", async () => {
   const { artifact, calls, P } = await audit((P) => {
     // No merged pair on disk, so connotationAuditSeats takes the per-half branch and returns three.
     for (const h of ["a", "b", "m"]) {
@@ -110,7 +110,7 @@ test("#1241 a THREE-half run counts each ledger entry ONCE", async () => {
   assert.equal(artifact.callRows.find((r) => r.row === "Q-ONE").calls, 2, "the per-row call count multiplied too");
 });
 
-test("#1241 the invariant, stated once: histogram total == the ledger's own line count", async () => {
+test("the invariant, stated once: histogram total == the ledger's own line count", async () => {
   // The issue's acceptance in one assertion, on the shape that can fail it.
   const { artifact, P } = await audit((P) => {
     for (const h of ["a", "b", "m"]) { writeFileSync(P.commonLawGridHalf(h), GRID); writeFileSync(P.commonLawHalf(h), `half ${h}\n`); }
@@ -121,7 +121,7 @@ test("#1241 the invariant, stated once: histogram total == the ledger's own line
 
 // ── attribution: the ledger has no seat, so it must not be given one it cannot support ───────────────
 
-test("#1241 a ledger several seats share is attributed to none of them", async () => {
+test("a ledger several seats share is attributed to none of them", async () => {
   // The ledger's records are {at, seq, accepted, refused, dropped, overflow} and ledgerRows keys on row
   // id: there is no seat in it. Stamping one seat's name on rows drawn from a file three seats share is
   // attribution the artifact cannot back, and it read as "half-a refused these" for a whole round.
@@ -133,7 +133,7 @@ test("#1241 a ledger several seats share is attributed to none of them", async (
     assert.equal(r.seat, "shared", "a shared ledger's rows are stamped with one seat's name");
 });
 
-test("#1241 a ledger exactly ONE seat owns keeps that seat's name", async () => {
+test("a ledger exactly ONE seat owns keeps that seat's name", async () => {
   // The merged run is most runs, and there the seat IS the answer — the existing audit test asserts
   // `rulingDrift[0].seat === "merged"`. Widening "shared" to every case would trade one wrong
   // attribution for another.

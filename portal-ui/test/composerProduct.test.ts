@@ -333,7 +333,7 @@ test('nothing here is a reason to refuse a SAVE', () => {
 // The staff editor tells an operator to type "US, EU, UK". The portal checked those against display
 // names and flagged all three as unknown. The engine validates nothing and normalises whatever arrives.
 // A user who followed one editor's instruction was told by the other that they were wrong, and asked.
-test('158: the jurisdictions field accepts what BOTH editors tell a reader to type', () => {
+test('the jurisdictions field accepts what BOTH editors tell a reader to type', () => {
   for (const named of ['European Union', 'United States', '  united states ']) {
     assert.ok(isTerritoryEntry(named), `${JSON.stringify(named)} is a territory this build names`)
   }
@@ -342,7 +342,7 @@ test('158: the jurisdictions field accepts what BOTH editors tell a reader to ty
   }
 })
 
-test('158: a code is a SHAPE, not a licence for anything short', () => {
+test('a code is a SHAPE, not a licence for anything short', () => {
   // The check stays assistive — it flags and stores rather than refusing — so accepting a two-letter
   // shape it cannot resolve matches what the engine does with one. What it must not do is stop
   // flagging entries that are neither: the owner's own example, typed into the live page, produced no
@@ -352,7 +352,7 @@ test('158: a code is a SHAPE, not a licence for anything short', () => {
   }
 })
 
-test('158: the picker and the composer keep the name vocabulary they had', () => {
+test('the picker and the composer keep the name vocabulary they had', () => {
   // NOT A VOCABULARY CHANGE where a client chooses countries. A picker offering names beside a box that
   // accepted only codes would be two controls disagreeing under one label — this defect pointed the
   // other way. Codes are accepted in ADDITION, on the one field whose other editor documents them.

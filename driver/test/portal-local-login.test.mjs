@@ -101,7 +101,7 @@ const cookieHeader = (setCookie) => setCookie[0].split(";")[0];
 
 // ── the form ───────────────────────────────────────────────────────────────────────────────────────
 
-test("#769 GET /portal/login renders a form that shows the address and asks only for a passphrase", async () => {
+test("GET /portal/login renders a form that shows the address and asks only for a passphrase", async () => {
   await withLocalPortal(async ({ port }) => {
     const r = await req(port, "/portal/login", { headers: { accept: "text/html" } });
     assert.equal(r.status, 200);
@@ -114,7 +114,7 @@ test("#769 GET /portal/login renders a form that shows the address and asks only
   });
 });
 
-test("#769 THE LOGIN PAGE NAMES NO INTERNAL VARIABLE — the same rule CI greps the built bundle for", async () => {
+test("THE LOGIN PAGE NAMES NO INTERNAL VARIABLE — the same rule CI greps the built bundle for", async () => {
   // CI fails the build if `(CLEAROTRON|PORTAL|CF_ACCESS|MCP)_[A-Z_]+` appears in portal-ui/dist. That gate
   // reads the bundle and cannot see this page, which is server-rendered — so the rule is asserted here
   // instead, on the exact same pattern. It is also WHY this page is server-rendered: a login screen
@@ -133,7 +133,7 @@ test("#769 THE LOGIN PAGE NAMES NO INTERNAL VARIABLE — the same rule CI greps 
 
 // ── signing in ─────────────────────────────────────────────────────────────────────────────────────
 
-test("#769 the right passphrase sets a session cookie and sends the browser to the portal", async () => {
+test("the right passphrase sets a session cookie and sends the browser to the portal", async () => {
   await withLocalPortal(async ({ port, passphrase }) => {
     const r = await postForm(port, "/portal/login", { passphrase });
     assert.equal(r.status, 302);
@@ -148,7 +148,7 @@ test("#769 the right passphrase sets a session cookie and sends the browser to t
   });
 });
 
-test("#769 a wrong passphrase is a 401 and one generic sentence, with no cookie and no hint", async () => {
+test("a wrong passphrase is a 401 and one generic sentence, with no cookie and no hint", async () => {
   await withLocalPortal(async ({ port }) => {
     const r = await postForm(port, "/portal/login", { passphrase: "not the passphrase" });
     assert.equal(r.status, 401);
@@ -170,7 +170,7 @@ test("#769 a wrong passphrase is a 401 and one generic sentence, with no cookie 
   });
 });
 
-test("#769 Secure is set ONLY when the request arrived over TLS", async () => {
+test("Secure is set ONLY when the request arrived over TLS", async () => {
   // The failure this exists for is total and silent: a laptop user on http://127.0.0.1 handed a Secure
   // cookie gets a browser that stores it and never sends it back — every sign-in "succeeds" and every
   // page is anonymous, with no error anywhere.
@@ -188,7 +188,7 @@ test("#769 Secure is set ONLY when the request arrived over TLS", async () => {
 
 // ── what a session does and does not buy ───────────────────────────────────────────────────────────
 
-test("#769 signed in, the scoped route answers; the SAME request signed out is refused exactly as today", async () => {
+test("signed in, the scoped route answers; the SAME request signed out is refused exactly as today", async () => {
   await withLocalPortal(async ({ port, passphrase }) => {
     const login = await postForm(port, "/portal/login", { passphrase });
     const cookie = cookieHeader(login.cookies);
@@ -211,7 +211,7 @@ test("#769 signed in, the scoped route answers; the SAME request signed out is r
   });
 });
 
-test("#769 a signed-out BROWSER is sent to the form rather than to a page about the form", async () => {
+test("a signed-out BROWSER is sent to the form rather than to a page about the form", async () => {
   await withLocalPortal(async ({ port }) => {
     for (const path of ["/portal", "/portal/clearances", "/portal/report/tmp1-something/"]) {
       const r = await req(port, path, { headers: { accept: "text/html,application/xhtml+xml" } });
@@ -222,7 +222,7 @@ test("#769 a signed-out BROWSER is sent to the form rather than to a page about 
   });
 });
 
-test("#769 A CROSS-ACCOUNT PROBE STILL READS AS 404, NOT 403 — existence must not leak", async () => {
+test("A CROSS-ACCOUNT PROBE STILL READS AS 404, NOT 403 — existence must not leak", async () => {
   // The property the whole issue is judged against: a third identity source must not have weakened the
   // authorization boundary. `zephyr` exists, this user is not granted it, and the answer must be
   // indistinguishable from an account that does not exist at all — the assertPrincipal rule
@@ -240,7 +240,7 @@ test("#769 A CROSS-ACCOUNT PROBE STILL READS AS 404, NOT 403 — existence must 
   });
 });
 
-test("#769 a session for another address, a tampered cookie and an expired one all fail closed", async () => {
+test("a session for another address, a tampered cookie and an expired one all fail closed", async () => {
   await withLocalPortal(async ({ port }) => {
     const ask = (cookie) => req(port, "/portal/api/runs?account=aurora", { headers: { cookie, accept: "application/json" } });
 
@@ -261,7 +261,7 @@ test("#769 a session for another address, a tampered cookie and an expired one a
   });
 });
 
-test("#769 a malformed cookie header is a refusal, never a 500", async () => {
+test("a malformed cookie header is a refusal, never a 500", async () => {
   // The cookie header is attacker-controlled on every request, and `decodeURIComponent` throws on a
   // malformed escape. A 500 here would be a way to drive the portal's error rate from an
   // unauthenticated socket.
@@ -281,7 +281,7 @@ test("#769 a malformed cookie header is a refusal, never a 500", async () => {
 
 // ── signing out ────────────────────────────────────────────────────────────────────────────────────
 
-test("#769 POST /portal/logout clears the cookie and returns to the form", async () => {
+test("POST /portal/logout clears the cookie and returns to the form", async () => {
   await withLocalPortal(async ({ port, passphrase }) => {
     const cookie = cookieHeader((await postForm(port, "/portal/login", { passphrase })).cookies);
     const out = await req(port, "/portal/logout", { method: "POST", headers: { cookie } });
@@ -293,7 +293,7 @@ test("#769 POST /portal/logout clears the cookie and returns to the form", async
   });
 });
 
-test("#769 the form offers a way OUT when the caller is already signed in", async () => {
+test("the form offers a way OUT when the caller is already signed in", async () => {
   // Otherwise POST /portal/logout is reachable only from a shell — the SPA has no sign-out control and
   // does not touch portal-ui.
   await withLocalPortal(async ({ port, passphrase }) => {
@@ -307,7 +307,7 @@ test("#769 the form offers a way OUT when the caller is already signed in", asyn
 
 // ── rate limiting ──────────────────────────────────────────────────────────────────────────────────
 
-test("#769 login attempts are rate-limited on their own counter, not on the API budget", async () => {
+test("login attempts are rate-limited on their own counter, not on the API budget", async () => {
   // The injected `limiter` is a 120/minute token bucket sized for status polling; 120 passphrase
   // guesses a minute is not a rate limit on a passphrase. This portal is built with limiter:null, so a
   // 429 here can only have come from the login route's own fixed window.
@@ -326,7 +326,7 @@ test("#769 login attempts are rate-limited on their own counter, not on the API 
 
 // ── the door on the other methods ──────────────────────────────────────────────────────────────────
 
-test("#769 the sign-in paths answer only the methods they own", async () => {
+test("the sign-in paths answer only the methods they own", async () => {
   await withLocalPortal(async ({ port }) => {
     // GET /portal/logout and POST-less variants are not the SPA's to render: `login` and `logout` are
     // in SERVER_ROUTE_HEADS, so the static handler declines them and they stay server-owned.
@@ -339,7 +339,7 @@ test("#769 the sign-in paths answer only the methods they own", async () => {
 
 // ── the constructor ────────────────────────────────────────────────────────────────────────────────
 
-test("#769 makeHttpHandler REFUSES TO BUILD without an identity source", async () => {
+test("makeHttpHandler REFUSES TO BUILD without an identity source", async () => {
   // It used to fall back to { email: "dev@local" } and admit every caller under one synthetic address.
   // A construction mistake must fail at construction, not at the first request that reads a customer's
   // runs.
@@ -359,7 +359,7 @@ test("#769 makeHttpHandler REFUSES TO BUILD without an identity source", async (
     assert.equal(typeof makeHttpHandler({ limiter: null, service, ...src }), "function");
 });
 
-test("#769 an injected devIdentity still reaches the roster — the in-process seam the issue asks for", async () => {
+test("an injected devIdentity still reaches the roster — the in-process seam the issue asks for", async () => {
   const service = makePortalService({
     poolRoot: mkdtempSync(join(tmpdir(), "portal-login-pool-")),
     workspaceRoot: mkdtempSync(join(tmpdir(), "portal-login-ws-")),
@@ -386,7 +386,7 @@ test("#769 an injected devIdentity still reaches the roster — the in-process s
 // there, BEFORE service.route() runs, so wrapping route() closes every in-route 400/403/404 and leaves
 // this one silent. It passes only if makePortalService also hands its sink out with its router.
 
-test("#723 an UNAUTHENTICATED admin write is journalled — the 401 the issue measured", async () => {
+test("an UNAUTHENTICATED admin write is journalled — the 401 the issue measured", async () => {
   await withLocalPortal(async ({ port, audits }) => {
     assert.equal(audits.length, 0, "the journal starts empty, so the count below is this request's");
 
@@ -411,7 +411,7 @@ test("#723 an UNAUTHENTICATED admin write is journalled — the 401 the issue me
   });
 });
 
-test("#723 the BROWSER form of the same refusal is journalled too, not just the API one", async () => {
+test("the BROWSER form of the same refusal is journalled too, not just the API one", async () => {
   // A browser is bounced to the form with a 302 and never raises the AuthError the JSON client gets.
   // Same refusal, different rendering — and it would otherwise be the shape that still left no line.
   await withLocalPortal(async ({ port, audits }) => {
@@ -423,7 +423,7 @@ test("#723 the BROWSER form of the same refusal is journalled too, not just the 
   });
 });
 
-test("#723 the refusal row never carries the session cookie or the passphrase", async () => {
+test("the refusal row never carries the session cookie or the passphrase", async () => {
   await withLocalPortal(async ({ port, passphrase, audits }) => {
     // A request carrying a bad session cookie AND a passphrase-shaped body, refused. Neither may appear.
     await req(port, "/portal/admin/retired?token=query-secret", {
@@ -440,7 +440,7 @@ test("#723 the refusal row never carries the session cookie or the passphrase", 
   });
 });
 
-test("#723 a SIGNED-IN caller's refusal is journalled WITH the address", async () => {
+test("a SIGNED-IN caller's refusal is journalled WITH the address", async () => {
   // The counterpart to the anonymous case: past the door, refused inside route(), and the row names who.
   await withLocalPortal(async ({ port, passphrase, audits }) => {
     const login = await postForm(port, "/portal/login", { passphrase });
@@ -464,7 +464,7 @@ test("#723 a SIGNED-IN caller's refusal is journalled WITH the address", async (
 // no row, because the path is not an admin write. The first cut of this change journalled here
 // unconditionally, so every unauthenticated poll and every bounce to the login form filed a line: an
 // access log for the whole portal, arriving through the entrance rather than the router.
-test("#723 an unauthenticated NON-write is refused and journalled nowhere", async () => {
+test("an unauthenticated NON-write is refused and journalled nowhere", async () => {
   await withLocalPortal(async ({ port, audits }) => {
     const r = await req(port, "/portal/api/runs", { method: "GET", headers: { accept: "application/json" } });
     assert.equal(r.status, 401, "the refusal is unchanged");
@@ -472,7 +472,7 @@ test("#723 an unauthenticated NON-write is refused and journalled nowhere", asyn
   });
 });
 
-test("#723 a browser bounced to the login form on a READ files no row either", async () => {
+test("a browser bounced to the login form on a READ files no row either", async () => {
   await withLocalPortal(async ({ port, audits }) => {
     const r = await req(port, "/portal/api/runs", { method: "GET", headers: { accept: "text/html" } });
     assert.equal(r.status, 302, "still bounced to the form");

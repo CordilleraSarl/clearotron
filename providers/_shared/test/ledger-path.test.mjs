@@ -59,7 +59,7 @@ test("the neutral env var wins outright", () => {
 //
 // Measured before removing it: ZERO of the four env files on the test and production boxes set either
 // name, and no systemd unit does. It was never load-bearing.
-test("#605 a legacy env name resolves NOTHING — the alias is gone, not softened", () => {
+test("a legacy env name resolves NOTHING — the alias is gone, not softened", () => {
   home({});
   const r = resolveLedger("record", { CORSEARCH_RECORD_LOG: "/tmp/old.jsonl" });
   assert.notEqual(r.path, "/tmp/old.jsonl", "the deprecated name must not steer the ledger any more");

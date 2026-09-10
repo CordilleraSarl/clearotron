@@ -9,7 +9,7 @@
 # configures had no service to attach to, a hosted deployment kept them alive with a hand launcher, and
 # `clearotron start`'s refusal had nothing to point at.
 #
-# ── ONE CONFIGURATION PER SERVER BOX (owner ruling, 2026-08-26) ───────────────────────────────────────
+# ── ONE CONFIGURATION PER SERVER BOX (ruling, 2026-08-26) ───────────────────────────────────────
 #
 # `EnvironmentFile=%h/.env`, like prelim-driver.service, and the CF Access audience lives there. The
 # alternative — explicit `Environment=` lines carrying the audience, as profile-service.service used to —

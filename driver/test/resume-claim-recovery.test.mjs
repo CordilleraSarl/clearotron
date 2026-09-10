@@ -63,26 +63,26 @@ function claim({ sidecar = null, ageMs = 0 } = {}) {
 
 // ── the sidecar arm ──────────────────────────────────────────────────────────────────────────────────
 
-test("#806 a claim held by a DEAD pid is abandoned, and the run becomes due again", () => {
+test("a claim held by a DEAD pid is abandoned, and the run becomes due again", () => {
   // A pid that cannot exist. This is the case the issue is about: the watcher is gone and the marker
   // it left is the only thing standing between the run and every future scan.
   assert.equal(resumeClaimIsAbandoned(claim({ sidecar: "2147483646:99" })), true);
 });
 
-test("#806 a claim held by a LIVE process is NOT abandoned — this is where double-running would start", PROC_GATE, () => {
+test("a claim held by a LIVE process is NOT abandoned — this is where double-running would start", PROC_GATE, () => {
   // This process, with its real starttime. Recovering it would re-run a billable search and deliver a
   // second report for the same matter.
   assert.equal(resumeClaimIsAbandoned(claim({ sidecar: claimToken() })), false);
 });
 
-test("#806 an unreadable starttime on a live pid counts as ALIVE — the fail-safe direction is preserved", () => {
+test("an unreadable starttime on a live pid counts as ALIVE — the fail-safe direction is preserved", () => {
   // claimerIsAlive's polarity, reused rather than restated. A claim whose liveness cannot be PROVED
   // dead stays claimed; the age arm below is the honest escape hatch for a wedge that creates.
   const p = claim({ sidecar: `${process.pid}:99999999` });
   assert.equal(resumeClaimIsAbandoned(p, Date.now(), { isAlive: () => true }), false);
 });
 
-test("#806 a recycled pid — alive, but provably a different process — IS abandoned", PROC_GATE, () => {
+test("a recycled pid — alive, but provably a different process — IS abandoned", PROC_GATE, () => {
   const p = claim({ sidecar: `${process.pid}:1` });   // real pid, starttime that is not this boot's
   assert.equal(resumeClaimIsAbandoned(p), true,
     "a live pid with the wrong starttime is pid reuse, not the original claimer");
@@ -90,24 +90,24 @@ test("#806 a recycled pid — alive, but provably a different process — IS aba
 
 // ── the age arm, for claims written before the sidecar existed ───────────────────────────────────────
 
-test("#806 a sidecar-less claim older than the claim-age ceiling is recovered", () => {
+test("a sidecar-less claim older than the claim-age ceiling is recovered", () => {
   // These are the runs already stuck invisible on a box today. A fix that refuses to touch them
   // recovers nothing that is actually broken.
   const p = claim({ ageMs: 72 * 3600000 });
   assert.equal(resumeClaimIsAbandoned(p, Date.now(), { maxClaimAgeMs: 48 * 3600000 }), true);
 });
 
-test("#806 a FRESH sidecar-less claim is left alone — on a box mid-upgrade it may be live", () => {
+test("a FRESH sidecar-less claim is left alone — on a box mid-upgrade it may be live", () => {
   const p = claim({ ageMs: 60000 });
   assert.equal(resumeClaimIsAbandoned(p, Date.now(), { maxClaimAgeMs: 48 * 3600000 }), false);
 });
 
-test("#806 the age arm is disabled by maxClaimAgeMs 0, the same reading takeoverClaim gives that knob", () => {
+test("the age arm is disabled by maxClaimAgeMs 0, the same reading takeoverClaim gives that knob", () => {
   const p = claim({ ageMs: 10 * 24 * 3600000 });
   assert.equal(resumeClaimIsAbandoned(p, Date.now(), { maxClaimAgeMs: 0 }), false);
 });
 
-test("#806 the SIDECAR wins over age — a live claimer is never recovered however old the claim", PROC_GATE, () => {
+test("the SIDECAR wins over age — a live claimer is never recovered however old the claim", PROC_GATE, () => {
   // The ordering that matters. An old claim held by a process that is still working is exactly the case
   // the queue's max-claim-age ceiling was observed to get wrong: a run postponed across a weekend read
   // over-age on Monday while its claimer was healthy.
@@ -115,13 +115,13 @@ test("#806 the SIDECAR wins over age — a live claimer is never recovered howev
   assert.equal(resumeClaimIsAbandoned(p, Date.now(), { maxClaimAgeMs: 48 * 3600000 }), false);
 });
 
-test("#806 a missing claim file is not abandoned — an absence is not a recovery", () => {
+test("a missing claim file is not abandoned — an absence is not a recovery", () => {
   assert.equal(resumeClaimIsAbandoned(join(mkdtempSync(join(tmpdir(), "resume-none-")), ".resuming")), false);
 });
 
 // ── the scan, end to end over a real studio tree ─────────────────────────────────────────────────────
 
-test("#806 a run holding ONLY a dead .resuming is seen by a fresh scan; a live one is not", () => {
+test("a run holding ONLY a dead .resuming is seen by a fresh scan; a live one is not", () => {
   // The real tree shape agentStudioRoots() walks: <workspaceRoot>/workspace-<agent>/studio/prelim-search.
   const studio = join(WS, "workspace-acme", "studio", "prelim-search");
 
@@ -154,7 +154,7 @@ test("#806 a run holding ONLY a dead .resuming is seen by a fresh scan; a live o
 
 // ── THE CLAIM, which is where recovery is most dangerous ─────────────────────────────────────────────
 
-test("#806 two watchers recovering the SAME abandoned claim run the pipeline ONCE", async () => {
+test("two watchers recovering the SAME abandoned claim run the pipeline ONCE", async () => {
   // The hole this closes, and it was in the first draft of the fix. Atomicity on the ordinary path is
   // rename(2): both watchers call it, one wins, the loser gets ENOENT and drops out. On the recovery
   // path the sentinel IS `.resuming`, so renaming it to ITSELF is a no-op that succeeds for BOTH —
@@ -180,7 +180,7 @@ test("#806 two watchers recovering the SAME abandoned claim run the pipeline ONC
   assert.equal(ran, 1, `the pipeline ran ${ran}× for one run — a double-run of a billable search`);
 });
 
-test("#806 the dead claimer's sidecar does not outlive its claim", async () => {
+test("the dead claimer's sidecar does not outlive its claim", async () => {
   // A stale `.pid` beside a LIVE claim makes the next scan ask about the wrong process, and the answer
   // it gets is "dead" — which would re-recover a run that is currently working.
   const dir = join(WS, "workspace-sidecar", "studio", "prelim-search", "amber", "2026-08-12-stale");

@@ -84,7 +84,7 @@ async function audit(setUp, prefix) {
 
 // ── the defect, at the unit ──────────────────────────────────────────────────────────────────────────
 
-test("#1241 the histogram totals the LEDGER, not only the rows it could name", () => {
+test("the histogram totals the LEDGER, not only the rows it could name", () => {
   const ledger = foldCallVerdicts(REFUSALS.map((r) => ({ refused: [r] })));
   assert.equal(total(ledgerReasonHistogram(ledger)), REFUSALS.length,
     "one refusal named no row and vanished from the count — the by-one #1241 criterion 2 failed on");
@@ -92,7 +92,7 @@ test("#1241 the histogram totals the LEDGER, not only the rows it could name", (
     "the token's own bucket is where the drop shows: two unknown_row refusals, one of them id-less");
 });
 
-test("#1241 BOTH id-less forms take the same path — an empty string and no key at all", () => {
+test("BOTH id-less forms take the same path — an empty string and no key at all", () => {
   // The production artifact carried the empty-string form. The absent-key form is untested in the wild
   // and reaches `at()` identically, so it is pinned here rather than assumed.
   for (const [label, entry] of [["empty string", { row_id: "", reason: "unknown_row" }],
@@ -105,12 +105,12 @@ test("#1241 BOTH id-less forms take the same path — an empty string and no key
   }
 });
 
-test("#1241 a DROP that names no row counts too, and says which it was", () => {
+test("a DROP that names no row counts too, and says which it was", () => {
   const l = foldCallVerdicts([{ dropped: [{ reason: "duplicate_row" }], refused: [{ reason: "unknown_row" }] }]);
   assert.deepEqual(ledgerUnattributed(l), { refused: 1, dropped: 1, reasons: { unknown_row: 1, duplicate_row: 1 } });
 });
 
-test("#1241 an ACCEPTANCE with no row id is NOT counted — it never reached the form", () => {
+test("an ACCEPTANCE with no row id is NOT counted — it never reached the form", () => {
   // Deliberate asymmetry. The union keys on row id, so an acceptance naming no row lands nowhere; giving
   // it a tally would assert work banked that did not. A refusal happened whatever it names.
   const l = foldCallVerdicts([{ accepted: [{ row_id: "", ruling: "benign" }] }]);
@@ -118,13 +118,13 @@ test("#1241 an ACCEPTANCE with no row id is NOT counted — it never reached the
   assert.equal(l.calls, 1, "the CALL still happened and is still counted");
 });
 
-test("#1241 a ledger where every entry named a row says so, rather than saying nothing", () => {
+test("a ledger where every entry named a row says so, rather than saying nothing", () => {
   const l = foldCallVerdicts([{ refused: [{ row_id: "Q-ONE", reason: "fragment_unbound" }] }]);
   assert.deepEqual(ledgerUnattributed(l), { refused: 0, dropped: 0, reasons: {} },
     "an absent bucket and a bucket of zeros are different facts — the reader needs the second");
 });
 
-test("#1241 a fold from before the bucket existed still reads, and reads as zero", () => {
+test("a fold from before the bucket existed still reads, and reads as zero", () => {
   // Archived runs and any caller holding an old fold. `{}` here is a fact about a ledger with no
   // unattributed entries, which is what those runs' folds are.
   assert.deepEqual(ledgerUnattributed({ calls: 3, byRow: {} }), { refused: 0, dropped: 0, reasons: {} });
@@ -133,7 +133,7 @@ test("#1241 a fold from before the bucket existed still reads, and reads as zero
 
 // ── what must NOT have moved ─────────────────────────────────────────────────────────────────────────
 
-test("#1241 the row-scoped readers see exactly the rows they saw before", () => {
+test("the row-scoped readers see exactly the rows they saw before", () => {
   const ledger = foldCallVerdicts(REFUSALS.map((r) => ({ refused: [r] })));
   assert.deepEqual(Object.keys(ledger.byRow).sort(), ["Q-ONE", "Q-TWO"],
     "the id-less refusal was given a row of its own — inventing the row the seat could not name");
@@ -147,7 +147,7 @@ test("#1241 the row-scoped readers see exactly the rows they saw before", () => 
   assert.equal(split.neverAddressed, 0);
 });
 
-test("#1241 THE PARK BOUND CANNOT SEE THIS CHANGE — it does not read the fold at all", () => {
+test("THE PARK BOUND CANNOT SEE THIS CHANGE — it does not read the fold at all", () => {
   // The load-bearing safety claim. `parkedRowIds` and `refusalCounts` walk the raw verdict records with
   // their own `if (id)` guard; neither calls `foldCallVerdicts`. So counting an id-less refusal in the
   // histogram cannot move a park decision, and the cap is untouched by construction rather than by
@@ -170,7 +170,7 @@ test("#1241 THE PARK BOUND CANNOT SEE THIS CHANGE — it does not read the fold 
 
 // ── the artifact ─────────────────────────────────────────────────────────────────────────────────────
 
-test("#1241 SINGLE-half: the receipt reconciles against its own ledger", async () => {
+test("SINGLE-half: the receipt reconciles against its own ledger", async () => {
   const { artifact, entries } = await audit((P) => {
     writeFileSync(P.commonLaw, "merged\n");
     writeFileSync(P.commonLawGrid, GRID);
@@ -182,7 +182,7 @@ test("#1241 SINGLE-half: the receipt reconciles against its own ledger", async (
   assert.deepEqual(artifact.unattributedRefusals, { refused: 1, dropped: 0, reasons: { unknown_row: 1 } });
 });
 
-test("#1241 THREE-half: criterion 2, on the shape the issue specifies", async () => {
+test("THREE-half: criterion 2, on the shape the issue specifies", async () => {
   // A single-half run multiplies by one and proves nothing about the fold's scope — the issue says so in
   // as many words — so the exactness criterion is asserted where BOTH defects can show.
   const { artifact, entries, P } = await audit((P) => {
@@ -200,7 +200,7 @@ test("#1241 THREE-half: criterion 2, on the shape the issue specifies", async ()
   assert.deepEqual(artifact.unattributedRefusals, { refused: 1, dropped: 0, reasons: { unknown_row: 1 } });
 });
 
-test("#1241 the receipt's two totals reconcile ON THE PAGE, by subtraction", async () => {
+test("the receipt's two totals reconcile ON THE PAGE, by subtraction", async () => {
   // The point of the field. was filed because a reader met a scalar beside a map that disagreed
   // with it and had nothing to explain the difference. `refusalReasons` totals the ledger, `callRows`
   // totals the rows, and the gap between them is now a named number rather than a discrepancy.
@@ -215,7 +215,7 @@ test("#1241 the receipt's two totals reconcile ON THE PAGE, by subtraction", asy
     "the difference between the ledger's total and the rows' total is not what the artifact says it is");
 });
 
-test("#1241 the field is written on a clean run too, as zeros", async () => {
+test("the field is written on a clean run too, as zeros", async () => {
   const { artifact } = await audit((P) => {
     writeFileSync(P.commonLaw, "merged\n");
     writeFileSync(P.commonLawGrid, GRID);

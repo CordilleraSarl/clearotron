@@ -120,7 +120,7 @@ test("CLEAROTRON_WARM_RETRY=0 kill-switch → today's fresh behavior exactly", a
 // produced something, which is where it converged 9 of 9.
 const INVALID_EVERY_TURN = { validate: () => ({ ok: false, reason: "use_check_missing:F1" }) };
 
-test("#460 a warm patch that reproduces its own failure ESCALATES to a fresh attempt, not to a park", async () => {
+test("a warm patch that reproduces its own failure ESCALATES to a fresh attempt, not to a park", async () => {
   process.env.MOCK_WARM_MODE = "draft";                    // writes every turn; the validator rejects it every turn
   const r = await stage(INVALID_EVERY_TURN);
   assert.equal(r.ok, false);
@@ -139,7 +139,7 @@ test("#460 a warm patch that reproduces its own failure ESCALATES to a fresh att
   assert.equal(existsSync(process.env.MOCK_OUT_FILE), true);
 });
 
-test("#460 THE BOUND — exactly one --resume per ladder, however deep the ladder is", async () => {
+test("THE BOUND — exactly one --resume per ladder, however deep the ladder is", async () => {
   // The unbounded-loop guarantee as an assertion. `warm` requires !warmUsed, and `warm` is the
   // escalation's trigger, so the escalation is structurally capped at one per stage run. Break it by
   // resetting warmUsed on escalation, or by keying the escalation on `attempt > 1` instead of `warm`,
@@ -150,7 +150,7 @@ test("#460 THE BOUND — exactly one --resume per ladder, however deep the ladde
   assert.equal(r.attempts, 3, "attempt 3 is fresh, reproduces the signature, and A4 breaks normally");
 });
 
-test("#460 NO BUDGET LEFT → the terminal signal survives; nothing is swallowed", async () => {
+test("NO BUDGET LEFT → the terminal signal survives; nothing is swallowed", async () => {
   // Without the `attempt < maxRetries + 1` guard the escalation branch eats the break on the last
   // attempt, the loop exits through the exhausted return, and `identicalSignature` is lost. That would
   // convert an honest terminal into an unlabelled exhaustion — silently.
@@ -422,7 +422,7 @@ test("…and WITHOUT the exclusion the same failure keeps the legacy enumerate r
 });
 
 // ──: the register coverage FORM warms; the never-searched class stays cold ─────────────────────
-test("#476 warm eligibility: the coverage-form tokens warm, and the never-searched class does NOT", () => {
+test("warm eligibility: the coverage-form tokens warm, and the never-searched class does NOT", () => {
   const okJson = { status: "ok" };
   const F = (r) => `invalid_file:prelim-search/x/register-findings.md:${r}`;
   // THE ECONOMIC CASE FOR THE ISSUE. Before this the whole coverage-judgment family was cold-only: not one
@@ -452,7 +452,7 @@ test("#476 warm eligibility: the coverage-form tokens warm, and the never-search
   assert.equal(warmEligible(F("coverage_no_status:no_status=1;CB-X"), { status: "timeout" }), false);
 });
 
-test("#476 warm routing, typed transport: the patch orders the record_coverage CALL, and no file at all", () => {
+test("warm routing, typed transport: the patch orders the record_coverage CALL, and no file at all", () => {
   // B's rule, one lane over: the seat writes no coverage file, so a warm patch that ordered any file
   // edit would aim the seat at an artifact it cannot affect — the two halves of one message
   // disagreeing about where the work lands.

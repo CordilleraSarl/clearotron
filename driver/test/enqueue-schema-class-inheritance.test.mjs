@@ -61,7 +61,7 @@ let validateJob;
 before(async () => { ({ validateJob } = await import("../enqueue-schema.mjs")); });
 
 // ── the premise: classes really do inherit downstream ─────────────────────────────────────────────────
-test("#707 the premise — the run itself inherits classes, so the door refusing them was wrong", () => {
+test("the premise — the run itself inherits classes, so the door refusing them was wrong", () => {
   // Read rather than restated. If either of these stops being true, the gate below is admitting jobs the
   // engine will run unscoped, and this test is where that gets caught.
   const stages = readFileSync(join(HERE, "..", "stages.mjs"), "utf8");
@@ -73,14 +73,14 @@ test("#707 the premise — the run itself inherits classes, so the door refusing
 });
 
 // ── the gate, admitting what the run can scope ────────────────────────────────────────────────────────
-test("#707 a knockout under a project that carries the classes is ADMITTED", () => {
+test("a knockout under a project that carries the classes is ADMITTED", () => {
   const v = validateJob({ ...UNSCOPED, profileKey: "bare", projectKey: "wearables" });
   assert.equal(v.ok, true, `the issue's exact request must run; errors were: ${JSON.stringify(v.errors)}`);
   assert.equal(v.classify, "run");
   assert.ok(!v.errors.some((e) => /missing classes AND goods/.test(e)), "the §B2 refusal must be gone");
 });
 
-test("#707 admitting it is not the same as doing it quietly — the run says which layer scoped it", () => {
+test("admitting it is not the same as doing it quietly — the run says which layer scoped it", () => {
   // D4.1: never silently run a different search than the one that was asked for. The requester typed no
   // classes, so the fact that some other layer supplied them is a thing they are entitled to see. A gate
   // that just stopped refusing would trade a visible wrong answer for an invisible one.
@@ -91,7 +91,7 @@ test("#707 admitting it is not the same as doing it quietly — the run says whi
   assert.match(w, /this project/, "…and the LAYER they came from, the way geography records its origin");
 });
 
-test("#707 the customer profile is a rung too, and it names itself as the account's", () => {
+test("the customer profile is a rung too, and it names itself as the account's", () => {
   const v = validateJob({ ...UNSCOPED, profileKey: "classy" });
   assert.equal(v.ok, true, `a customer default is as good a scope as a project's; errors: ${JSON.stringify(v.errors)}`);
   const w = v.warnings.join(" | ");
@@ -99,7 +99,7 @@ test("#707 the customer profile is a rung too, and it names itself as the accoun
   assert.match(w, /the account's default classes/, "an account default must not claim to be a project's");
 });
 
-test("#707 the project WINS over its customer — the warning must name the layer that decides the search", () => {
+test("the project WINS over its customer — the warning must name the layer that decides the search", () => {
   // classes REPLACE across the overlay (profiles.mjs: only platforms union). A warning that reported the
   // customer's 9, 42 here would be telling the requester the run searches classes it will not search.
   const v = validateJob({ ...UNSCOPED, profileKey: "classy", projectKey: "narrowed" });
@@ -111,7 +111,7 @@ test("#707 the project WINS over its customer — the warning must name the laye
 });
 
 // ── the gate, still refusing what nothing can scope ───────────────────────────────────────────────────
-test("#707 a genuinely unscopable request is still refused — and now says what it consulted", () => {
+test("a genuinely unscopable request is still refused — and now says what it consulted", () => {
   const v = validateJob({ ...UNSCOPED, profileKey: "bare", projectKey: "no-classes" });
   assert.equal(v.ok, false, "no classes anywhere, no goods: the subject cannot be scoped");
   assert.equal(v.classify, "clarify", "the fix is a question back to the requester, not a rejection");
@@ -121,32 +121,32 @@ test("#707 a genuinely unscopable request is still refused — and now says what
   assert.match(e, /"no-classes"/, "…and the project, so the requester knows where to put them");
 });
 
-test("#707 a customer with no defaults at all is refused, naming the profile", () => {
+test("a customer with no defaults at all is refused, naming the profile", () => {
   const v = validateJob({ ...UNSCOPED, profileKey: "bare" });
   assert.equal(v.ok, false);
   assert.match(v.errors.join(" | "), /consulted the customer profile "bare"/);
 });
 
 // ── the paths that must not have changed ──────────────────────────────────────────────────────────────
-test("#707 a request that states its own classes is untouched — no profile is even loaded", () => {
+test("a request that states its own classes is untouched — no profile is even loaded", () => {
   const v = validateJob({ ...UNSCOPED, classes: [30] });
   assert.equal(v.ok, true);
   assert.ok(!v.warnings.some((x) => /no classes or goods in the request/.test(x)),
     "a request that named its own classes must not be told they came from somewhere else");
 });
 
-test("#707 goods still suffice on their own, with no classes anywhere", () => {
+test("goods still suffice on their own, with no classes anywhere", () => {
   const v = validateJob({ ...UNSCOPED, profileKey: "bare", projectKey: "no-classes", goods: "handheld diagnostic instruments" });
   assert.equal(v.ok, true, "§B2 is classes OR goods, and that is unchanged");
 });
 
-test("#707 marks[].classes still count as the request's own", () => {
+test("marks[].classes still count as the request's own", () => {
   const v = validateJob({ ...UNSCOPED, marks: [{ name: "QUEUE PROBE", classes: [9] }] });
   assert.equal(v.ok, true);
   assert.ok(!v.warnings.some((x) => /no classes or goods in the request/.test(x)));
 });
 
-test("#707 the gate holds at CLAIM as well as at intake — same ladder both times", () => {
+test("the gate holds at CLAIM as well as at intake — same ladder both times", () => {
   // validateJob runs twice (runner.mjs re-validates on pickup). A gate that inherited at intake and not at
   // claim would park an admitted job as .failed on the runner's own second look.
   const v = validateJob({ ...UNSCOPED, profileKey: "bare", projectKey: "wearables" }, { atClaim: true });

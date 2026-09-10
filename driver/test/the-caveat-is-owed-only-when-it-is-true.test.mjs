@@ -38,7 +38,7 @@ const merged = (caveats) => ({
 });
 const caveatFailure = (r) => (r.failures ?? []).find((x) => /standing caveat/.test(x));
 
-test("1926 THE DEFECT: a rater's own caveats no longer fail the merge", () => {
+test("THE DEFECT: a rater's own caveats no longer fail the merge", () => {
   // The R13 shape — three sensible matter-specific caveats, none of them the standing sentence.
   const dir = runWith([]);
   const f = validateMergedFindings(dir, merged([
@@ -49,7 +49,7 @@ test("1926 THE DEFECT: a rater's own caveats no longer fail the merge", () => {
     + "a run with all four marks rated");
 });
 
-test("1926 the caveat is still OWED when the rater supplied none and the register surfaced nothing", () => {
+test("the caveat is still OWED when the rater supplied none and the register surfaced nothing", () => {
   // The case the caveat is true for, and it must keep failing.
   for (const records of [[], undefined, { records: [] }]) {
     const dir = runWith(records);
@@ -60,7 +60,7 @@ test("1926 the caveat is still OWED when the rater supplied none and the registe
   }
 });
 
-test("1926 a register that surfaced filings does not owe the caveat — it would be FALSE", () => {
+test("a register that surfaced filings does not owe the caveat — it would be FALSE", () => {
   const dir = runWith({ records: [{ mark: "FROZEN" }] });
   const f = validateMergedFindings(dir, merged(undefined), { marks: [] });
   assert.equal(caveatFailure(f), undefined,
@@ -68,14 +68,14 @@ test("1926 a register that surfaced filings does not owe the caveat — it would
     + "happened — requiring it is requiring an untruth");
 });
 
-test("1926 whitespace caveats are NOT supplied caveats", () => {
+test("whitespace caveats are NOT supplied caveats", () => {
   // An array of blanks would otherwise waive the requirement while saying nothing to a reader.
   const dir = runWith([]);
   const f = validateMergedFindings(dir, merged(["", "   "]), { marks: [] });
   assert.ok(caveatFailure(f), "blank entries counted as the rater having supplied caveats");
 });
 
-test("1926 ONE derivation: the predicate answers the same for producer and verifier", () => {
+test("ONE derivation: the predicate answers the same for producer and verifier", () => {
   // The two disagreed because each had its own copy. This is the shared one, and both sides import it.
   assert.equal(registerSurfacedFilings(join(runWith({ records: [{ a: 1 }] }), "_driver", "register-records.json")), true);
   assert.equal(registerSurfacedFilings(join(runWith([]), "_driver", "register-records.json")), false);
@@ -84,7 +84,7 @@ test("1926 ONE derivation: the predicate answers the same for producer and verif
   assert.equal(registerSurfacedFilings(join(runWith([{ x: 1 }]), "_driver", "register-records.json")), true);
 });
 
-test("1926 the producer imports the shared predicate rather than keeping its own", () => {
+test("the producer imports the shared predicate rather than keeping its own", () => {
   const src = readFileSync(new URL("../pipeline-knockout.mjs", import.meta.url), "utf8");
   assert.match(src, /registerSurfacedFilings.*from "\.\/verify-knockout\.mjs"/,
     "the producer no longer imports the shared predicate");
@@ -104,7 +104,7 @@ test("1926 the producer imports the shared predicate rather than keeping its own
 
 const SURVIVOR = survivorBoundaryNote({ level: "knockout-search" });
 
-test("2042 THE DEFECT: a pipeline-shaped document with NO standing caveat used to pass", () => {
+test("THE DEFECT: a pipeline-shaped document with NO standing caveat used to pass", () => {
   // Gimli's row 3. The standing caveat is entirely absent, the register surfaced nothing, and the run
   // owes it — but the survivor sentence made `supplied` non-empty, so the lint said nothing at all.
   const dir = runWith([]);
@@ -114,12 +114,12 @@ test("2042 THE DEFECT: a pipeline-shaped document with NO standing caveat used t
     + "standing caveat must still be caught once it is appended");
 });
 
-test("2042 blanks plus the survivor sentence are still nobody's caveats", () => {
+test("blanks plus the survivor sentence are still nobody's caveats", () => {
   const dir = runWith([]);
   assert.ok(caveatFailure(validateMergedFindings(dir, merged(["", "   ", SURVIVOR]), { marks: [] })));
 });
 
-test("2042 the capability-skipped note is the engine's words too", () => {
+test("the capability-skipped note is the engine's words too", () => {
   const skipped = CAPABILITY_SKIPPED_NOTE["common-law-no-credential"];
   assert.ok(isEngineAppendedCaveat(skipped), "the engine states it, the rater does not");
   const dir = runWith([]);
@@ -127,7 +127,7 @@ test("2042 the capability-skipped note is the engine's words too", () => {
     "two engine sentences and nothing from the rater is still a run that owes the standing caveat");
 });
 
-test("2042 THE CONTROL — the pipeline's HAPPY shape stays silent", () => {
+test("THE CONTROL — the pipeline's HAPPY shape stays silent", () => {
   // Three arms above assert a failure. A lint that failed every pipeline-shaped document would satisfy
   // all three and refuse every real run, which is the false-defect class 1926 was raised to kill.
   const dir = runWith([]);
@@ -141,7 +141,7 @@ test("2042 THE CONTROL — the pipeline's HAPPY shape stays silent", () => {
     "a register that surfaced filings does not owe a caveat that would be false");
 });
 
-test("2042 raterCaveats is the ONE derivation, and both sides call it", () => {
+test("raterCaveats is the ONE derivation, and both sides call it", () => {
   assert.deepEqual(raterCaveats([SURVIVOR]), [], "the engine's sentence is not the rater's");
   assert.deepEqual(raterCaveats(["", "  "]), [], "and blanks never were");
   assert.deepEqual(raterCaveats(["Triage, not clearance.", SURVIVOR]), ["Triage, not clearance."]);
@@ -153,7 +153,7 @@ test("2042 raterCaveats is the ONE derivation, and both sides call it", () => {
     "and must not go back to counting the array, blanks included");
 });
 
-test("2042 the requester's email never opens on a blank line", () => {
+test("the requester's email never opens on a blank line", () => {
   const publish = readFileSync(new URL("../publish/knockout.mjs", import.meta.url), "utf8");
   assert.match(publish, /\.find\(Boolean\)/,
     "the email takes the first NON-BLANK caveat: `?? fallback` catches null and undefined, never \"\", "

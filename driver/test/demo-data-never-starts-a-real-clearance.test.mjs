@@ -39,7 +39,7 @@ import { KNOWN_PROFILE_KEYS, PROJECT_KEYS, CUSTOMER_ONLY_KEYS, FIELD_CONSUMERS,
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const BASE = { name: "Spine Co", platforms: ["example.com"] };
 
-test("2012 a profile can declare itself demo data, and only in one spelling", () => {
+test("a profile can declare itself demo data, and only in one spelling", () => {
   assert.ok(KNOWN_PROFILE_KEYS.includes("demoData"), "the closed key set admits the marker");
   assert.ok(FIELD_CONSUMERS.demoData, "and the manifest names who reads it");
 
@@ -52,7 +52,7 @@ test("2012 a profile can declare itself demo data, and only in one spelling", ()
   }
 });
 
-test("2012 the marker is CUSTOMER-ONLY — a project can neither apply nor remove it", () => {
+test("the marker is CUSTOMER-ONLY — a project can neither apply nor remove it", () => {
   // The dangerous direction is the second one: an overlay that un-marks a demo customer would put
   // fiction through the wall, and it would look like an ordinary project override doing it.
   assert.ok(CUSTOMER_ONLY_KEYS.includes("demoData"));
@@ -61,7 +61,7 @@ test("2012 the marker is CUSTOMER-ONLY — a project can neither apply nor remov
   assert.equal(v.ok, false, "an overlay carrying the marker is refused outright");
 });
 
-test("2012 the shipped invented companies say so, and `generic` does not", () => {
+test("the shipped invented companies say so, and `generic` does not", () => {
   const ps = loadProfiles({ force: true });
   for (const k of ["aurora", "petcary", "zephyr"]) {
     assert.ok(ps.has(k), `${k} is in the bundled roster`);
@@ -72,7 +72,7 @@ test("2012 the shipped invented companies say so, and `generic` does not", () =>
     + "marking it would refuse every legitimate no-customer run");
 });
 
-test("2012 the store receipt distinguishes a bundled fallback that is HOLDING demo data", () => {
+test("the store receipt distinguishes a bundled fallback that is HOLDING demo data", () => {
   // Criterion 5. "The fallback is in force" and "the fallback is in force and it is fiction" are
   // different sentences, and only the second one explains a wrong deliverable.
   const r = profileStoreResolution({});
@@ -84,7 +84,7 @@ test("2012 the store receipt distinguishes a bundled fallback that is HOLDING de
   }
 });
 
-test("2012 the WALL refuses, and it refuses as a REJECT rather than a clarify", () => {
+test("the WALL refuses, and it refuses as a REJECT rather than a clarify", () => {
   // The refusal lives at the runner's admission chokepoint, not at a door: the doors are fail-open by
   // their own doctrine, so a check placed only there reports a pass on exactly the resolution failure
   // it exists to catch. Asserted on the source because standing up a queue and a claim here would test
@@ -104,7 +104,7 @@ test("2012 the WALL refuses, and it refuses as a REJECT rather than a clarify", 
   assert.match(agreement, /Nothing has been searched, and nothing has been spent/, "and says nothing was spent");
 });
 
-test("2012 resolving a profile is NOT starting a clearance — the demo path keeps working", () => {
+test("resolving a profile is NOT starting a clearance — the demo path keeps working", () => {
   // Criterion 4, and the line that would have broken it: putting the refusal in resolveEffectiveProfile
   // is one line and catches every door — including seeding, replay and republishing, none of which
   // start a run. Publishing a frozen report under a demo account must stay ordinary.

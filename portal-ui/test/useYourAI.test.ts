@@ -161,7 +161,7 @@ test('THE COPIED LABEL COSTS ZERO LAYOUT — both labels occupy one reserved cel
     'a label is being removed from the layout rather than hidden, which resizes the cell')
 })
 
-test('#1938 every allowance sentence is still off the page', () => {
+test('every allowance sentence is still off the page', () => {
   // Carried forward from the deleted assistants.test.ts: "get rid of any other text — limits, caps etc.,
   // all gone". The sweep that closed it found TWO allowance sentences where the issue named one.
   for (const word of ['allowance', 'cap ', 'caps', 'limit', 'quota', 'per month']) {
@@ -198,7 +198,7 @@ test('PARITY: the recipes the delivered report carries are the ones the hand-set
 })
 
 test('THE KEY NEVER REACHES STATE, A PROP OR THE DOM — except the one degraded path', () => {
-  // Owner ruling 2026-08-31: "The page never shows a key, in any state", and the reason that shapes the
+  // Ruling 2026-08-31: "The page never shows a key, in any state", and the reason that shapes the
   // code — "a rendered key outlives the moment. It's in the DOM, in the screenshot someone takes, in the
   // browser cache, on a screen left open." So the minted value lives in one async function and is
   // dropped when it returns.

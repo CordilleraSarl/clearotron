@@ -117,7 +117,7 @@ const appendixOwners = (html) => {
 
 // ── half 2: the run's own weighing reaches the order ─────────────────────────────────────────────────
 
-test("2121 THE DEFECT: a filing the rater WEIGHED leads the table, though it loses every mechanical key", () => {
+test("THE DEFECT: a filing the rater WEIGHED leads the table, though it loses every mechanical key", () => {
   const html = render(RECORDS, { registerReads: [{ recordId: "R-THE-WEIGHED-ONE", read: "It bears on the rating." }] });
   const owners = appendixOwners(html);
   assert.equal(owners.length, APPENDIX_CAP, `the cap should still bite: ${owners.join(", ")}`);
@@ -125,7 +125,7 @@ test("2121 THE DEFECT: a filing the rater WEIGHED leads the table, though it los
     `the filing this run weighed must lead a table captioned "most material first", got: ${owners.join(", ")}`);
 });
 
-test("2121 a finding's weighedFilings promotes too — a reader does not care which field carried it", () => {
+test("a finding's weighedFilings promotes too — a reader does not care which field carried it", () => {
   const html = render(RECORDS, {
     findings: [{ ordinal: 1, name: "SOMEONE", weighedFilings: ["R-THE-WEIGHED-ONE"] }],
   });
@@ -133,7 +133,7 @@ test("2121 a finding's weighedFilings promotes too — a reader does not care wh
     "a filing a FINDING's reasoning rests on is weighed just as much as one carrying a standalone read");
 });
 
-test("2121 THE CONTROL: with nothing weighed, the mechanical order is exactly what it was", () => {
+test("THE CONTROL: with nothing weighed, the mechanical order is exactly what it was", () => {
   // The arm that says this fix did not scramble every existing report. Without a weighing, the worst
   // row on every key must still sort last, as it always did.
   const owners = appendixOwners(render(RECORDS));
@@ -142,7 +142,7 @@ test("2121 THE CONTROL: with nothing weighed, the mechanical order is exactly wh
     "dead, out-of-class and a close variation — with no weighing it belongs below the fold, and did");
 });
 
-test("2121 PROMOTED, NEVER FILTERED — the count the table evidences is unchanged", () => {
+test("PROMOTED, NEVER FILTERED — the count the table evidences is unchanged", () => {
   // settled that this appendix ranks and does not filter: it is the evidence behind a count, and
   // a reader must be able to reconcile the two. A fix that dropped rows would break the rule it rides on.
   const ranked = rankByMateriality(RECORDS, { classes: [9, 41] },
@@ -152,7 +152,7 @@ test("2121 PROMOTED, NEVER FILTERED — the count the table evidences is unchang
     "the same set, reordered — nothing added, nothing dropped");
 });
 
-test("2121 THE CAPTION STATES THE SORT THAT ACTUALLY RAN", () => {
+test("THE CAPTION STATES THE SORT THAT ACTUALLY RAN", () => {
   // The defect one layer up: a caption describing a different order from the one the code performs is
   // how a reader concludes the missing filing was judged immaterial rather than never ranked for it.
   const html = render(RECORDS, { registerReads: [{ recordId: "R-THE-WEIGHED-ONE", read: "x" }] });
@@ -162,7 +162,7 @@ test("2121 THE CAPTION STATES THE SORT THAT ACTUALLY RAN", () => {
     "and it must still name the mechanical keys, which decide every row the assessment did not weigh");
 });
 
-test("2121 a weighed id the run does not hold changes nothing, and never throws", () => {
+test("a weighed id the run does not hold changes nothing, and never throws", () => {
   // The ids are joined against the run's own store elsewhere; this arm is about THIS function not
   // trusting them. An unknown id must be inert, not a crash in the middle of publishing a report.
   const owners = appendixOwners(render(RECORDS, {
@@ -176,7 +176,7 @@ test("2121 a weighed id the run does not hold changes nothing, and never throws"
 
 // ── half 1: the field the rater is told to send must exist in the schema it is given ────────────────
 
-test("2121 registerReads and weighedFilings are DECLARED in the tool schema", async () => {
+test("registerReads and weighedFilings are DECLARED in the tool schema", async () => {
   // A field described in prose and absent from the schema is folklore, and this repo already says so in
   // as many words (a-cancel-marker-names-its-actor.test.mjs). The mark object is
   // `additionalProperties: false`, so the seat was being told to send a key its own schema forbids.
@@ -188,7 +188,7 @@ test("2121 registerReads and weighedFilings are DECLARED in the tool schema", as
     "weighedFilings left the tool schema — the finding's source labelling derives from it");
 });
 
-test("2121 the schema and the recorder's allowlist agree about these two keys", () => {
+test("the schema and the recorder's allowlist agree about these two keys", () => {
   // Two closed sets over one payload. They disagreed: DECLARED has carried both fields since an
   // earlier change while the schema forbade them, and only the recorder's set was enforced — which is
   // exactly why sending them WORKED for a seat that ignored the schema.
@@ -197,7 +197,7 @@ test("2121 the schema and the recorder's allowlist agree about these two keys", 
   assert.match(rec8, /"weighedFilings"/);
 });
 
-test("2121 the findings key count in the schema's own description matches its properties", () => {
+test("the findings key count in the schema's own description matches its properties", () => {
   // The description says "CLOSED KEYS, all N, no others". It said EIGHT while the recorder enforced
   // nine, so the sentence a reader trusts was a closed set that was not the closed set in force.
   const src = readFileSync(join(HERE, "..", "engine", "mcp", "recording-server.mjs"), "utf8");

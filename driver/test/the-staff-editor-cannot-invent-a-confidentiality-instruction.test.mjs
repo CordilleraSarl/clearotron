@@ -99,7 +99,7 @@ async function saveRenameOnly(service, loaded, privChoice) {
   return r;
 }
 
-test("1991: a customer who gave NO instruction keeps the marking when staff save an unrelated field", async () => {
+test("a customer who gave NO instruction keeps the marking when staff save an unrelated field", async () => {
   const loaded = { email: "summary" };                       // no `privileged` key — no instruction
   assert.equal(confPosture(loaded), CONF_DEFAULT, "precondition: this customer's report is marked");
 
@@ -116,7 +116,7 @@ test("1991: a customer who gave NO instruction keeps the marking when staff save
   assert.equal(written().delivery.email, "summary", "the rest of delivery survives the save");
 });
 
-test("1991: the half that must NOT break — a customer who DID ask for no marking still gets none (#761)", async () => {
+test("the half that must NOT break — a customer who DID ask for no marking still gets none (#761)", async () => {
   const loaded = { email: "summary", privileged: false };    // a real instruction
   assert.equal(confPosture(loaded), "", "precondition: this customer asked for the line to be stripped");
   assert.equal(selectedOption("f_priv", loaded).value, "no", "and the page shows that instruction back");
@@ -128,7 +128,7 @@ test("1991: the half that must NOT break — a customer who DID ask for no marki
   assert.equal(confPosture(written().delivery), "", "and the marking stays off");
 });
 
-test("1991: the instruction is UNDOABLE — picking the marked option clears a stored `false`", async () => {
+test("the instruction is UNDOABLE — picking the marked option clears a stored `false`", async () => {
   const loaded = { email: "summary", privileged: false };
   const { service, written } = svc(loaded);
   await saveRenameOnly(service, loaded, "");                 // staff pick "Privileged & Confidential"
@@ -137,7 +137,7 @@ test("1991: the instruction is UNDOABLE — picking the marked option clears a s
   assert.equal(confPosture(written().delivery), CONF_DEFAULT, "and the report is marked again");
 });
 
-test("1991: the retired `true` reads as the marked default and never becomes `false`", async () => {
+test("the retired `true` reads as the marked default and never becomes `false`", async () => {
   // NOT HYPOTHETICAL: driver/profiles/aurora.json ships `"privileged": true`.
   const loaded = { email: "summary", privileged: true };
   assert.equal(confPosture(loaded), CONF_DEFAULT, "true and absent render identically (shared/brand.mjs)");
@@ -150,7 +150,7 @@ test("1991: the retired `true` reads as the marked default and never becomes `fa
   assert.equal(confPosture(written().delivery), CONF_DEFAULT, "the customer's report stays marked");
 });
 
-test("1991: a project overlay does not invent the instruction either", async () => {
+test("a project overlay does not invent the instruction either", async () => {
   assert.equal("privileged" in composeProjectDelivery("", "summary"), false,
     "an overlay that sets a format and gives no marking instruction stores none");
   assert.equal(confPosture(composeProjectDelivery("", "summary")), CONF_DEFAULT,
@@ -162,7 +162,7 @@ test("1991: a project overlay does not invent the instruction either", async () 
   assert.equal(selectedOption("p_priv", { email: "summary", privileged: false }).value, "no", "and `false` shows back");
 });
 
-test("1991: neither marking control is a checkbox — the shape that cannot hold three states", () => {
+test("neither marking control is a checkbox — the shape that cannot hold three states", () => {
   for (const id of ["f_priv", "p_priv"]) {
     assert.doesNotMatch(src, new RegExp(`<input type="checkbox" id="${id}"`),
       `${id} is a checkbox again: two states cannot express absent, \`false\` and the retired \`true\``);

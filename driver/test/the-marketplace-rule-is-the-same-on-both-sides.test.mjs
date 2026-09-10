@@ -35,7 +35,7 @@ function uiPlatformPattern() {
   return new RegExp(m[0].slice(1, -1));
 }
 
-test("1996 the settings page and the server agree, entry by entry, on what a marketplace is", () => {
+test("the settings page and the server agree, entry by entry, on what a marketplace is", () => {
   const pattern = uiPlatformPattern();
   const uiRejects = (e) => {
     const d = String(e).trim().toLowerCase();
@@ -59,7 +59,7 @@ test("1996 the settings page and the server agree, entry by entry, on what a mar
     + "that gap is the complaint, and the copy is only allowed to exist because this arm holds");
 });
 
-test("1996 the corpus actually exercises BOTH verdicts, so agreement is not vacuous", () => {
+test("the corpus actually exercises BOTH verdicts, so agreement is not vacuous", () => {
   // Two lists that agree on nothing but "reject everything" would pass the arm above. This is the control.
   const accepted = ["amazon.com", "etsy.com"].filter((e) => platformEntryErrors([e]).length === 0);
   const refused = ["Amazon", "web", "big retail site"].filter((e) => platformEntryErrors([e]).length > 0);

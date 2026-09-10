@@ -52,7 +52,7 @@ const settled = (runDir, row) => appendFileSync(toolCallsPath(runDir), JSON.stri
 
 // ── the log reader ──────────────────────────────────────────────────────────────────────────────────
 
-test("#793 a started call with no settle is unsettled; a settled one is not", () => {
+test("a started call with no settle is unsettled; a settled one is not", () => {
   const { runDir } = runWithPlan();
   started(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis: "primary-sweep" });
   settled(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis: "primary-sweep", ok: true });
@@ -70,7 +70,7 @@ test("#793 a started call with no settle is unsettled; a settled one is not", ()
 // and a register server is spawned per stage, so two stages both produce a seq 1. Keyed on seq alone,
 // the second stage's settle would close the first stage's start — a killed call silently marked
 // returned, which is the exact failure this module exists to prevent, re-created inside the fix.
-test("#793 pairing is per SERVER — one stage's settle cannot close another stage's call", () => {
+test("pairing is per SERVER — one stage's settle cannot close another stage's call", () => {
   const { runDir } = runWithPlan();
   started(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis: "incumbent-class" });
   settled(runDir, { seq: 1, server: "clarivate", tool: "register_execute_plan", axis: "primary-sweep", ok: true });
@@ -78,7 +78,7 @@ test("#793 pairing is per SERVER — one stage's settle cannot close another sta
   assert.ok(registerPlanCallKilled(runDir, "incumbent-class"));
 });
 
-test("#793 a THROWN tool error settles — it returned an answer the model could act on", () => {
+test("a THROWN tool error settles — it returned an answer the model could act on", () => {
   const { runDir } = runWithPlan();
   started(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis: "incumbent-class" });
   settled(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis: "incumbent-class", ok: false });
@@ -88,13 +88,13 @@ test("#793 a THROWN tool error settles — it returned an answer the model could
 // THE HOUSE RULE, POINTED THE OTHER WAY. An absence is a finding — but a MISSING log is an absence of
 // EVIDENCE, not evidence of absence, and collapsing the two would let any run without the file claim a
 // timeout it never had.
-test("#793 no log is null, not an empty answer — absence of evidence is not evidence", () => {
+test("no log is null, not an empty answer — absence of evidence is not evidence", () => {
   const { runDir } = runWithPlan();
   assert.equal(unsettledToolCalls(runDir), null, "null and [] are different facts and must stay different");
   assert.equal(registerPlanCallKilled(runDir, "incumbent-class"), null);
 });
 
-test("#793 a torn last line costs its own row and nothing else", () => {
+test("a torn last line costs its own row and nothing else", () => {
   const { runDir } = runWithPlan();
   started(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis: "incumbent-class" });
   appendFileSync(toolCallsPath(runDir), '{"event":"settled","seq":1,"server":"eui');   // killed mid-write
@@ -103,7 +103,7 @@ test("#793 a torn last line costs its own row and nothing else", () => {
 
 // ── the verdict ─────────────────────────────────────────────────────────────────────────────────────
 
-test("#793 the killed call is attributed as tool_timeout, not named_band_missing", () => {
+test("the killed call is attributed as tool_timeout, not named_band_missing", () => {
   const { runDir, md, axis } = runWithPlan();
   started(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis });
   const v = validators.registerUnit(md, "attempted the plan; the call did not return; nothing hand-authored");
@@ -112,7 +112,7 @@ test("#793 the killed call is attributed as tool_timeout, not named_band_missing
   assert.doesNotMatch(v.reason, /named_band_missing/, "the producer is not the defect here");
 });
 
-test("#793 with no tool log the verdict is unchanged — this fix flips nothing on its own", () => {
+test("with no tool log the verdict is unchanged — this fix flips nothing on its own", () => {
   const { runDir, md } = runWithPlan();
   assert.equal(existsSync(toolCallsPath(runDir)), false, "no log at all — the archived/replay shape");
   const v = validators.registerUnit(md, "narrates coverage it never obtained");
@@ -120,7 +120,7 @@ test("#793 with no tool log the verdict is unchanged — this fix flips nothing 
   assert.match(v.reason, /named_band_missing/, "the fabrication verdict stays the default");
 });
 
-test("#793 a unit whose call RETURNED still fails as named_band_missing", () => {
+test("a unit whose call RETURNED still fails as named_band_missing", () => {
   const { runDir, md, axis } = runWithPlan();
   started(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis });
   settled(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis, ok: true });
@@ -131,7 +131,7 @@ test("#793 a unit whose call RETURNED still fails as named_band_missing", () => 
 
 // ── the corrective ──────────────────────────────────────────────────────────────────────────────────
 
-test("#793 the repair aims at the same band file and the warm lane still applies", () => {
+test("the repair aims at the same band file and the warm lane still applies", () => {
   const md = "/run/register-units/incumbent-class.md";
   const fail = "invalid_file:incumbent-class.md:tool_timeout:register_execute_plan:incumbent-class";
   assert.equal(repairTarget(fail, md), "/run/register-units/incumbent-class-band.json",
@@ -142,7 +142,7 @@ test("#793 the repair aims at the same band file and the warm lane still applies
 
 // THE SENTENCE THAT MATTERS. A model told it never produced an artifact has one obvious way to comply,
 // and on this stage that way is the forbidden one. R5 took the accusing hint four times.
-test("#793 the corrective does not accuse the model, and forbids the hand-authored escape", () => {
+test("the corrective does not accuse the model, and forbids the hand-authored escape", () => {
   const md = "/run/register-units/incumbent-class.md";
   const msg = warmPatchMessage("invalid_file:incumbent-class.md:tool_timeout:register_execute_plan:incumbent-class", md);
   assert.match(msg, /WAS MADE and never returned/, "it says what happened");
@@ -153,7 +153,7 @@ test("#793 the corrective does not accuse the model, and forbids the hand-author
     "never the named_band_missing wording, which reads as 'you did not do it'");
 });
 
-test("#793 named_band_missing keeps its own corrective untouched", () => {
+test("named_band_missing keeps its own corrective untouched", () => {
   const md = "/run/register-units/incumbent-class.md";
   const msg = warmPatchMessage("invalid_file:incumbent-class.md:named_band_missing", md);
   assert.match(msg, /NEVER WRITTEN/, "the fabrication branch is unchanged");
@@ -169,7 +169,7 @@ test("#793 named_band_missing keeps its own corrective untouched", () => {
 //
 // That is the failure the free-tier `unconfigured-member` tests document in their own header: a stub
 // that behaves as the author believed rather than as the product does. This test asks the product.
-test("#793 a register stage's server really is given the run dir the log hangs off", async () => {
+test("a register stage's server really is given the run dir the log hangs off", async () => {
   const prior = process.env.CLEAROTRON_DATABASE;
   pinEnv(process.env, "CLEAROTRON_DATABASE", "euipo");
   try {

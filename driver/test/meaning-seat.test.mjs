@@ -44,14 +44,14 @@ const SPEC = {
   connotation: { queries: ["novapulse gang", "novapulse offensive", "转码 meaning"], disposition_required: true },
 };
 
-test("#517 the seat set is the two grid halves PLUS one, and the meaning seat is never a grid half", () => {
+test("the seat set is the two grid halves PLUS one, and the meaning seat is never a grid half", () => {
   assert.deepEqual(GRID_HALVES, ["a", "b"], "the grid partition is untouched — that is the point");
   assert.deepEqual(GRID_SEATS, ["a", "b", MEANING_SEAT]);
   assert.ok(!GRID_HALVES.includes(MEANING_SEAT),
     "halfOfTerm, splitGridTerms and the closure cell balancer are all TERM-keyed, and this seat owns no terms — including it in GRID_HALVES would hand it cells the moment any of them iterates");
 });
 
-test("#517 the sweep is undivided and it is nowhere near a grid half — the 49/0 imbalance becomes 0/0", () => {
+test("the sweep is undivided and it is nowhere near a grid half — the 49/0 imbalance becomes 0/0", () => {
   const seats = splitGridSpec(SPEC, {});
   assert.deepEqual(seats[MEANING_SEAT].connotation.queries, SPEC.connotation.queries,
     "#345 stands: the recurrence floor is a property of the WHOLE sweep, so the sweep stays whole");
@@ -64,7 +64,7 @@ test("#517 the sweep is undivided and it is nowhere near a grid half — the 49/
     "exactly one seat owns meaning work — an obligation observable at the merge and nowhere else is the VENZY terminal");
 });
 
-test("#517 the grid split is untouched: even parity, full platform list, and the meaning seat sweeps nothing", () => {
+test("the grid split is untouched: even parity, full platform list, and the meaning seat sweeps nothing", () => {
   const seats = splitGridSpec(SPEC, {});
   const parity = splitGridTerms(SPEC.terms);
   assert.deepEqual(seats.a.terms, parity.a, "the parity partition is byte-identical to what it always was");
@@ -76,14 +76,14 @@ test("#517 the grid split is untouched: even parity, full platform list, and the
   for (const t of SPEC.terms) assert.ok(GRID_HALVES.includes(halfOfTerm(parity, t)), `${t} is owned by a grid half`);
 });
 
-test("#517 the disposition_required stamp still rides every seat", () => {
+test("the disposition_required stamp still rides every seat", () => {
   // Unchanged from the reasoning: it is the receipt-PRESENCE arm, so a stray pr_risk block in a seat
   // that owes nothing must still be judged rather than waved through because it "should not be there".
   const seats = splitGridSpec(SPEC, {});
   for (const h of GRID_SEATS) assert.equal(seats[h].connotation.disposition_required, true);
 });
 
-test("#517 each seat's dispositions path is DICTATED — inheriting one would have two seats overwrite each other", () => {
+test("each seat's dispositions path is DICTATED — inheriting one would have two seats overwrite each other", () => {
   const paths = Object.fromEntries(GRID_SEATS.map((h) => [h, `/run/common-law-dispositions.half-${h}.json`]));
   const seats = splitGridSpec(SPEC, { dispositionsPaths: paths });
   for (const h of GRID_SEATS) assert.equal(seats[h].connotation.dispositions_path, paths[h]);
@@ -92,7 +92,7 @@ test("#517 each seat's dispositions path is DICTATED — inheriting one would ha
   for (const h of GRID_SEATS) assert.ok(!("dispositions_path" in bare[h].connotation), `seat ${h} inherits no sibling's form path`);
 });
 
-test("#517 the merged ledger is the three seats folded, and the meaning seat contributes receipts but no cells", () => {
+test("the merged ledger is the three seats folded, and the meaning seat contributes receipts but no cells", () => {
   // The driver chains mergeGrids rather than widening its signature — the return shape is the input
   // shape, and the guards are written against the two-argument form.
   const parity = splitGridTerms(SPEC.terms);
@@ -107,7 +107,7 @@ test("#517 the merged ledger is the three seats folded, and the meaning seat con
     "the merged meaning receipt set IS the meaning seat's, because both grid halves record none");
 });
 
-test("#517 a meaning seat that never ran leaves its queries UNRECORDED — the merge can see the hole", () => {
+test("a meaning seat that never ran leaves its queries UNRECORDED — the merge can see the hole", () => {
   // The false-clean this guards: the canonical connotation gate is COUNT-based and the merged document
   // still concatenates two complete grid halves, so nothing else in the pipeline can notice. Dropping
   // the seat's ledger must leave the receipt set EMPTY rather than plausibly full.
@@ -120,7 +120,7 @@ test("#517 a meaning seat that never ran leaves its queries UNRECORDED — the m
   assert.equal(merged.cells.length, SPEC.terms.length * SPEC.platforms.length, "…and the grid is still complete, which is exactly why the hole is invisible without a per-query join");
 });
 
-test("#517 the grid tool accepts a cell-less meaning spec and dictates no grid in it", () => {
+test("the grid tool accepts a cell-less meaning spec and dictates no grid in it", () => {
   const seats = splitGridSpec(SPEC, { outputPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, `/run/common-law-grid.half-${h}.json`])) });
   const task = buildGridProgramTask(seats[MEANING_SEAT]);
   assert.doesNotThrow(() => validateGridSpec(seats[MEANING_SEAT]),
@@ -135,7 +135,7 @@ test("#517 the grid tool accepts a cell-less meaning spec and dictates no grid i
   assert.match(gridTask, /marketplace clearance search grid/);
 });
 
-test("#517 a spec that dictates NOTHING is still malformed", () => {
+test("a spec that dictates NOTHING is still malformed", () => {
   // The relaxed guard must not become no guard: an empty terms[] with an empty sweep is a driver bug,
   // and letting it through would spawn a seat with nothing to do and no way to say so.
   const OUT = { output_path: "/run/common-law-grid.half-m.json" };
@@ -144,7 +144,7 @@ test("#517 a spec that dictates NOTHING is still malformed", () => {
   assert.throws(() => validateGridSpec({ ...SPEC, ...OUT, terms: undefined }), /missing or empty/);
 });
 
-test("#517 the gather cap is the MEMBER COUNT, and the seat moved it from 6 to 7", async () => {
+test("the gather cap is the MEMBER COUNT, and the seat moved it from 6 to 7", async () => {
   // The cap's own doc block sets the rule: "the cap is the member count... at 3 that is two serial waves
   // for a set of independent provider-bound sweeps". A third common-law seat makes the count 7, and left
   // at 6 the seventh member waits for a slot — one serial wave, inside the gather, produced by a change
@@ -169,7 +169,7 @@ test("#517 the gather cap is the MEMBER COUNT, and the seat moved it from 6 to 7
 // spec — but inside the validator for that seat's report, and a missing ledger is what stops the report
 // existing. Unreachable exactly when needed.
 
-test("2020: a refusal for a spec that REQUIRED a ledger names the spec, not the seat's report", () => {
+test("a refusal for a spec that REQUIRED a ledger names the spec, not the seat's report", () => {
   const spec = { ledger_required: true, output_path: "/run/common-law-grid.half-m.json" };
   const out = requiredLedgerRefusal("ERROR: grid run failed — connotation/meaning sweep incomplete.",
     { spec, gridSpecPath: "/run/_driver/grid-spec.half-m.json" });
@@ -185,7 +185,7 @@ test("2020: a refusal for a spec that REQUIRED a ledger names the spec, not the 
   assert.match(out, /ERROR: grid run failed/, "the original reason survives — this augments, never replaces");
 });
 
-test("2020: a spec that never promised a ledger is handed the reason UNCHANGED", () => {
+test("a spec that never promised a ledger is handed the reason UNCHANGED", () => {
   // Without this the function could satisfy the arm above by decorating every refusal, and a spec with no
   // ledger_required would be told it broke a promise it never made.
   const why = "ERROR: grid run failed — something else.";
@@ -194,7 +194,7 @@ test("2020: a spec that never promised a ledger is handed the reason UNCHANGED",
   assert.equal(requiredLedgerRefusal(why, {}), why, "…and a missing spec is not an excuse to throw");
 });
 
-test("2020: EVERY grid refusal the server returns after the spec is read goes through the wrapper", () => {
+test("EVERY grid refusal the server returns after the spec is read goes through the wrapper", () => {
   // THE ANTI-DRIFT HALF. The two arms above prove the composer; they cannot see a NEW refusal path added
   // beside it that returns a bare string. That is how this defect class returns: one more `return
   // \`ERROR: ...\`` inside the grid branch, correct-looking, and silent about the unwritten ledger.

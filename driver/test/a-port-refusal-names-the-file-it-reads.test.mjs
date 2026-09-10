@@ -81,7 +81,7 @@ function refusedOurPort(d) {
     + `${d.said.slice(0, 900)}`);
 }
 
-test("200 the port refusal names the file this command reads, and it is the file it said it read",
+test("the port refusal names the file this command reads, and it is the file it said it read",
   { timeout: 300_000 }, async () => {
     const held = await heldPort();
     const d = driveStart(held.port);
@@ -98,7 +98,7 @@ test("200 the port refusal names the file this command reads, and it is the file
     } finally { d.clean(); }
   });
 
-test("200 the refusal says the units' file is NOT the one it reads, so the reader stops writing there",
+test("the refusal says the units' file is NOT the one it reads, so the reader stops writing there",
   { timeout: 300_000 }, async () => {
     const held = await heldPort();
     const d = driveStart(held.port);
@@ -112,7 +112,7 @@ test("200 the refusal says the units' file is NOT the one it reads, so the reade
     } finally { d.clean(); }
   });
 
-test("200 a refused run writes nothing — the probe is before the first state change",
+test("a refused run writes nothing — the probe is before the first state change",
   { timeout: 300_000 }, async () => {
     const held = await heldPort();
     const d = driveStart(held.port);
@@ -135,7 +135,7 @@ test("200 a refused run writes nothing — the probe is before the first state c
 // take their configuration from `%h/.env`. Naming the CLI's file there would replace one wrong address
 // with another, so the caller passes nothing and the text must stay exactly as it was.
 
-test("200 a caller that read no env file names none, and its refusal is unchanged", () => {
+test("a caller that read no env file names none, and its refusal is unchanged", () => {
   const withFile = listenErrorMessage({ code: "EADDRINUSE" },
     { what: "portal", host: "127.0.0.1", port: 18802, portVar: "PORTAL_SERVICE_PORT", portFile: "/somewhere/.env" });
   const without = listenErrorMessage({ code: "EADDRINUSE" },
@@ -147,7 +147,7 @@ test("200 a caller that read no env file names none, and its refusal is unchange
   assert.match(without, /set PORTAL_SERVICE_PORT=<free port>/);
 });
 
-test("200 a service-managed process names no file, because it did not read one", { timeout: 300_000 },
+test("a service-managed process names no file, because it did not read one", { timeout: 300_000 },
   async () => {
     // CLEAROTRON_NO_ENV_FILE=1 is what the units set. env-local then reports `service-managed` and
     // applies nothing, so there is no file to send the reader to and the refusal must not invent one.
@@ -161,7 +161,7 @@ test("200 a service-managed process names no file, because it did not read one",
     } finally { d.clean(); }
   });
 
-test("200 the file rides with EACCES too, which has the same remedy and the same two files", () => {
+test("the file rides with EACCES too, which has the same remedy and the same two files", () => {
   const m = listenErrorMessage({ code: "EACCES" },
     { what: "portal", host: "127.0.0.1", port: 80, portVar: "PORTAL_SERVICE_PORT", portFile: "/somewhere/.env" });
   assert.match(m, /in \/somewhere\/\.env/);
@@ -180,7 +180,7 @@ test("200 the file rides with EACCES too, which has the same remedy and the same
 // the entries that refuse on a port, and all three pass it; portal-service, profile-service,
 // recipe-service and http-server-client are unit-booted and pass nothing. A new door on either side of
 // that line fails here rather than shipping half a remedy.
-test("200 every port refusal that read an env file names it, and every one that did not names none",
+test("every port refusal that read an env file names it, and every one that did not names none",
   async () => {
     const { CLI_ENTRIES } = await import("../../shared/env-local.mjs");
     const entries = new Set(CLI_ENTRIES);

@@ -38,7 +38,7 @@ const openDoubt = (id, artifact, mark) => ({
 const stitch = (doubts) => stitchDoubts(doubts, { findings: FINDINGS, coverageRows: [], registerFindingsText: "" });
 
 // ── CONTROLS: the join instrument must be able to return BOTH answers ─────────────────────────────
-test("#1503 CONTROL — the disposition join binds on a real finding and misses on a stranger", () => {
+test("CONTROL — the disposition join binds on a real finding and misses on a stranger", () => {
   const hit = findingJoinFor(subjectFor("VOLTMAX ENERGYCORE"), FINDINGS);
   assert.ok(hit, "the join returned NULL on a finding that is present — the instrument is dead and every "
     + "zero below would be meaningless");
@@ -48,7 +48,7 @@ test("#1503 CONTROL — the disposition join binds on a real finding and misses 
 });
 
 // ── the real birth artifacts, discovered from the minters rather than asserted ────────────────────
-test("#1503 no mint site births a doubt in findings.json — so `citesOwnSource` never fires for it", () => {
+test("no mint site births a doubt in findings.json — so `citesOwnSource` never fires for it", () => {
   const minted = [
     ...mintCrossCheckDoubts("CROSS-CHECK REQUIRED: VOLTMAX ENERGYCORE — owner unclear", "common-law-findings.md"),
     ...mintCrossCheckDoubts("CROSS-CHECK REQUIRED: VOLTMAX ENERGYCORE — scope unclear", "register-units/us-32.md"),
@@ -68,7 +68,7 @@ test("#1503 no mint site births a doubt in findings.json — so `citesOwnSource`
   }
 });
 
-test("#1503 a doubt that joins a finding is SETTLED by the stitch — it never reaches doubt-closure", () => {
+test("a doubt that joins a finding is SETTLED by the stitch — it never reaches doubt-closure", () => {
   for (const artifact of ["common-law-findings.md", "register-units/us-32.md", "audit.md"]) {
     const [out] = stitch([openDoubt(`d:${artifact}`, artifact, "VOLTMAX ENERGYCORE")]);
     assert.equal(out.status, "checked-and-settled",
@@ -78,7 +78,7 @@ test("#1503 a doubt that joins a finding is SETTLED by the stitch — it never r
   }
 });
 
-test("#1503 THE INVARIANT — no doubt still OPEN after the stitch carries a disposition", () => {
+test("THE INVARIANT — no doubt still OPEN after the stitch carries a disposition", () => {
   const out = stitch([
     openDoubt("d1", "common-law-findings.md", "VOLTMAX ENERGYCORE"),   // joins → settles
     openDoubt("d2", "register-units/us-32.md", "QQPLTHXVEL"),          // no join → open
@@ -93,7 +93,7 @@ test("#1503 THE INVARIANT — no doubt still OPEN after the stitch carries a dis
   }
 });
 
-test("#1503 the zero above is a consequence of BIRTH, not a dead join — the escape does produce one", () => {
+test("the zero above is a consequence of BIRTH, not a dead join — the escape does produce one", () => {
   const [out] = stitch([openDoubt("d:own", "findings.json", "VOLTMAX ENERGYCORE")]);
   assert.equal(out.status, "open", "a doubt born in findings.json was settled from findings.json — it "
     + "cited its own source, which citesOwnSource exists to prevent");

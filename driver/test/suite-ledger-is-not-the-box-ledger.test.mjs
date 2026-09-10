@@ -23,7 +23,7 @@ import { resolveLedger, ledgerPath, SUITE_TELEMETRY_DIR_ENV, LEDGERS, ledgerDepr
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SUITE = "/tmp/a-suite-run-root/telemetry";
 
-test("#1269 with a suite dir in force, BOTH ledgers resolve under it and never under the home dir", () => {
+test("with a suite dir in force, BOTH ledgers resolve under it and never under the home dir", () => {
   for (const which of Object.keys(LEDGERS)) {
     const r = resolveLedger(which, { [SUITE_TELEMETRY_DIR_ENV]: SUITE });
     assert.equal(r.path, join(SUITE, LEDGERS[which].file));
@@ -35,7 +35,7 @@ test("#1269 with a suite dir in force, BOTH ledgers resolve under it and never u
     dirname(ledgerPath("record", { [SUITE_TELEMETRY_DIR_ENV]: SUITE })));
 });
 
-test("#1269 a test that names its OWN ledger file still wins — the redirect sits below the explicit var", () => {
+test("a test that names its OWN ledger file still wins — the redirect sits below the explicit var", () => {
   // That test is being deliberate about a path it then asserts on. The redirect exists for the runs
   // that name nothing, which are exactly the ones that used to land on the box.
   const r = resolveLedger("call", { [SUITE_TELEMETRY_DIR_ENV]: SUITE, CLEAROTRON_REGISTER_CALL_LOG: "/tmp/mine.jsonl" });
@@ -43,7 +43,7 @@ test("#1269 a test that names its OWN ledger file still wins — the redirect si
   assert.equal(r.source, "env");
 });
 
-test("#1269 the existence ladder is UNTOUCHED when no suite dir is set — production resolves as before", () => {
+test("the existence ladder is UNTOUCHED when no suite dir is set — production resolves as before", () => {
   // Read from the passed env, so every ladder test that drives this with `{}` is unaffected by
   // construction. If this ever reads process.env instead, the ladder tests start answering about the
   // box that happens to be running them.
@@ -53,7 +53,7 @@ test("#1269 the existence ladder is UNTOUCHED when no suite dir is set — produ
   assert.ok(r.path.startsWith(homedir()), "the box ladder stopped resolving under the home directory");
 });
 
-test("#1269 a suite run gets NO legacy notice — it is not writing to the machine those notices describe", () => {
+test("a suite run gets NO legacy notice — it is not writing to the machine those notices describe", () => {
   // `legacy` is null by construction because the ladder is never consulted. A notice about the box's
   // unread files, printed by a run that is writing somewhere else entirely, sends a reader to a file
   // that has nothing to do with what just happened.
@@ -63,7 +63,7 @@ test("#1269 a suite run gets NO legacy notice — it is not writing to the machi
   assert.equal(ledgerDeprecationNotice("call", env), null);
 });
 
-test("#1269 an empty or whitespace suite dir is NOT a redirect — it falls through to the ladder", () => {
+test("an empty or whitespace suite dir is NOT a redirect — it falls through to the ladder", () => {
   // `X=` in an EnvironmentFile means "not configured". An empty string reaching a join() would send
   // every ledger to a relative "register-calls.jsonl" in whatever the cwd happens to be, which is the
   // The defect shape: a value that looks set and resolves to somewhere nobody chose.
@@ -76,7 +76,7 @@ test("#1269 an empty or whitespace suite dir is NOT a redirect — it falls thro
 
 // ── the half that would otherwise rot: is the harness actually exporting it? ────────────────────────
 
-test("#1269 the test wrapper exports the suite dir, UNCONDITIONALLY and inside its own run root", () => {
+test("the test wrapper exports the suite dir, UNCONDITIONALLY and inside its own run root", () => {
   const src = readFileSync(join(ROOT, "scripts", "test-run.mjs"), "utf8");
   assert.match(src, new RegExp(`process\\.env\\.${SUITE_TELEMETRY_DIR_ENV}\\s*=\\s*join\\(root, "telemetry"\\)`),
     "the wrapper stopped exporting the suite telemetry dir — the suite writes to the box again");

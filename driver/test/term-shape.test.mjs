@@ -100,7 +100,7 @@ test("entryTermIssues: the entry-level walk — owner predicate exempt, term_lit
 
 // ══ — markup and enumeration, at any word count and through the escape hatch ═══════════════════
 
-test("#516 termMarkupIssue fires on the two incident strings, and on the shapes that would be quieter", () => {
+test("termMarkupIssue fires on the two incident strings, and on the shapes that would be quieter", () => {
   for (const t of INCIDENT) {
     const issue = termMarkupIssue(t);
     assert.ok(issue, `the string that killed the run must be refused: ${t}`);
@@ -123,7 +123,7 @@ test("#516 termMarkupIssue fires on the two incident strings, and on the shapes 
   assert.match(termMarkupIssue("### Formative root") ?? "", /heading marker/);
 });
 
-test("#516 the message says WHAT TO SEARCH — the stage that wrote the string is the one that must restate it", () => {
+test("the message says WHAT TO SEARCH — the stage that wrote the string is the one that must restate it", () => {
   // The issue's second acceptance criterion, and it is not decorative: "invalid term" is a refusal the
   // composing stage cannot act on. This mirrors the frame-diff guard's remedy shape.
   const issue = termMarkupIssue(INCIDENT[0]);
@@ -133,7 +133,7 @@ test("#516 the message says WHAT TO SEARCH — the stage that wrote the string i
   assert.match(issue, /Say WHAT to search, not what the group is called/);
 });
 
-test("#516 the discriminators are markup and the enumeration — NEVER the bracket", () => {
+test("the discriminators are markup and the enumeration — NEVER the bracket", () => {
   // The issue's binding trap. `predicate=owner` rows legitimately carry parenthesised company names,
   // and the cross-check lane — the one this fix screens — is exactly where they are minted. A bracket
   // rule breaks owner search on the lane the fix exists to protect.
@@ -155,7 +155,7 @@ test("#516 the discriminators are markup and the enumeration — NEVER the brack
   assert.equal(termMarkupIssue(null), null);
 });
 
-test("#516 the pre-existing ≤2-word invariants are untouched — this arm adds, it does not tighten", () => {
+test("the pre-existing ≤2-word invariants are untouched — this arm adds, it does not tighten", () => {
   // The regression guard for the binding trap, at the shared detector: termShapeIssue now delegates to
   // the markup arm first, and if that arm were implemented as a bare `(` test these would go red.
   assert.equal(termShapeIssue("(TIKI)"), null);
@@ -166,14 +166,14 @@ test("#516 the pre-existing ≤2-word invariants are untouched — this arm adds
   assert.match(termShapeIssue("**BIOVELTRIN**") ?? "", /markdown emphasis/);
 });
 
-test("#516 the owner predicate stays fully exempt — screening the cross-check lane depends on it", () => {
+test("the owner predicate stays fully exempt — screening the cross-check lane depends on it", () => {
   assert.deepEqual(entryTermIssues({ predicate: "owner", term: "Delphi Technologies (BorgWarner Inc.)" }), []);
   assert.deepEqual(entryTermIssues({ predicate: "owner", term: "**Delphi Technologies (BorgWarner Inc.)**" }), [],
     "exempt means exempt — a markup owner name is a separate, unevidenced question, and firing here would break owner search on the lane this fix protects");
   assert.deepEqual(entryTermIssues({ predicate: "owner", terms: ["ACME, ETC. LTD", "# NORTH CO"] }), []);
 });
 
-test("#516 term_literal shields the SHAPE arms and never the markup arm", () => {
+test("term_literal shields the SHAPE arms and never the markup arm", () => {
   // The hatch means "this string IS the mark, verbatim". A slogan mark can say that truthfully.
   assert.deepEqual(entryTermIssues({ predicate: "exact", term: "I CAN'T BELIEVE IT'S NOT BUTTER", term_literal: true }), []);
   // A `**`-wrapped string cannot, and the flag is a field the MODEL fills in on a supplemental

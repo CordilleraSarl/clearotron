@@ -31,7 +31,7 @@ const open = (id, ok, extra = {}) => ({ tool: "band_record", args: { record_id: 
 const SPINE = "## Findings\n\n| # | Mark | Owner | Band |\n|---|---|---|---|\n| 1 | ZEPHYR | Verrit Instruments Ltd | High |\n";
 const build = (readingLog) => buildAuditMd(SPINE, "", { readingLog });
 
-test("#1498 a record asked for and never delivered is named and counted", () => {
+test("a record asked for and never delivered is named and counted", () => {
   const log = [open("/mark/ch/AAA", false, { reason: "not-fetched" }), open("/mark/ch/AAA", false, { reason: "not-fetched" })];
   const rows = recordsNeverDelivered(log);
   assert.equal(rows.length, 1);
@@ -48,7 +48,7 @@ test("#1498 a record asked for and never delivered is named and counted", () => 
   assert.match(md, /rested on the band row alone, not on the document/);
 });
 
-test("#1498 THE OTHER DIRECTION — a record that recovered in the same run is NOT listed", () => {
+test("THE OTHER DIRECTION — a record that recovered in the same run is NOT listed", () => {
   // Criterion 3's second half, and the arm that keeps the number honest. Two thirds of real misses
   // recover on a later open; listing them would report 125 where the truth is 42.
   const log = [open("/mark/ch/AAA", false, { reason: "not-fetched" }), open("/mark/ch/AAA", true, { bytes: 7849 })];
@@ -61,21 +61,21 @@ test("#1498 THE OTHER DIRECTION — a record that recovered in the same run is N
   assert.match(md, /MISS \(not-fetched\)/);
 });
 
-test("#1498 order does not matter — a success BEFORE the miss also clears it", () => {
+test("order does not matter — a success BEFORE the miss also clears it", () => {
   // The real shape from the artifacts is miss-then-success, but nothing guarantees ordering, and a rule
   // that only looked backwards would count a record the run demonstrably holds.
   const log = [open("/mark/ch/AAA", true, { bytes: 10 }), open("/mark/ch/AAA", false, { reason: "not-fetched" })];
   assert.deepEqual(recordsNeverDelivered(log), []);
 });
 
-test("#1498 the zero is PRINTED when every record was delivered", () => {
+test("the zero is PRINTED when every record was delivered", () => {
   // An absent section reads as "nobody checked". This is the only form in which the zero means anything.
   const { md, counts } = build([open("/mark/ch/AAA", true, { bytes: 10 })]);
   assert.equal(counts.recordsNeverDelivered, 0);
   assert.match(md, /every record a judgment stage asked for was delivered at least once this run/);
 });
 
-test("#1498 only band_record opens count, and a malformed row cannot invent one", () => {
+test("only band_record opens count, and a malformed row cannot invent one", () => {
   // `band_lookup` and `band_shape` rows carry no record id and are a different question; a row with no
   // id at all must not become a phantom entry, which is how a disclosure starts overstating itself.
   const log = [
@@ -89,7 +89,7 @@ test("#1498 only band_record opens count, and a malformed row cannot invent one"
   assert.equal(rows[0].record_id, "/mark/ch/AAA");
 });
 
-test("#1498 no reading log at all leaves the audit byte-identical", () => {
+test("no reading log at all leaves the audit byte-identical", () => {
   // Legacy and replay callers pass nothing. They must gain no section and no count — a disclosure that
   // appears on runs which recorded nothing is a disclosure about nothing.
   const { md, counts } = buildAuditMd(SPINE, "", {});

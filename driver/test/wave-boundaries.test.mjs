@@ -21,7 +21,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { stageWallFields } from "../pipeline.mjs";
 
-test("#527 the three fields come from ONE computation, so they cannot drift", () => {
+test("the three fields come from ONE computation, so they cannot drift", () => {
   // Exact, not approximate: the pair and the derived number are written by the same helper precisely so a
   // reader never subtracts ISO strings by hand and never finds the two disagreeing.
   assert.deepEqual(stageWallFields(1000, 4500), {
@@ -38,7 +38,7 @@ test("#527 the three fields come from ONE computation, so they cannot drift", ()
   assert.equal(stageWallFields(5000, 5000).wallSec, 0);
 });
 
-test("#527 the boundaries are wall-clock instants, so sibling intervals can be compared at all", () => {
+test("the boundaries are wall-clock instants, so sibling intervals can be compared at all", () => {
   // Not a monotonic clock. `process.hrtime` yields a duration with no instant, so an interval cannot be
   // placed on the run's timeline and overlap between siblings becomes uncomputable — which is the entire
   // deliverable. This asserts the pair is parseable as absolute time and ordered.
@@ -50,7 +50,7 @@ test("#527 the boundaries are wall-clock instants, so sibling intervals can be c
   assert.equal(f.wallSec, (Date.parse(f.settledAt) - Date.parse(f.dispatchedAt)) / 1000);
 });
 
-test("#527 two members dispatched as a wave produce OVERLAPPING intervals — the property the round needed", () => {
+test("two members dispatched as a wave produce OVERLAPPING intervals — the property the round needed", () => {
   // The wave's shape, in the small: two members start together and settle at different times. Read off
   // completion rows alone, member A's row is preceded by member B's and vice versa, so neither can use
   // its neighbour as a start. With boundaries on each row the overlap is arithmetic.

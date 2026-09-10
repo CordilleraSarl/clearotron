@@ -99,7 +99,7 @@ const bigSpec = (n, output_path = "/studio/prelim-search/run/g.json") => ({
 });
 const returned = (n) => prRisk(Array.from({ length: n }, (_, i) => `meaning probe ${i}`));
 
-test("2020: R14's shape — 59 of 61 queries DELIVERS, receipts intact and the two recorded as gaps", () => {
+test("R14's shape — 59 of 61 queries DELIVERS, receipts intact and the two recorded as gaps", () => {
   const spec = bigSpec(61);
   const out = captureGridFromResponse(sandbox(JSON.stringify({
     cells: [], gaps: [], extras: { pr_risk: returned(59) },
@@ -117,7 +117,7 @@ test("2020: R14's shape — 59 of 61 queries DELIVERS, receipts intact and the t
   assert.ok(connGaps.every((g) => /reconciled gap/.test(g.error)), "…and they say how they got there");
 });
 
-test("2020: the gap rows END THE RE-BUY — the ledger reads as accounted on a retry", () => {
+test("the gap rows END THE RE-BUY — the ledger reads as accounted on a retry", () => {
   // The persistence half, and it falls out of the reconciliation rather than being bolted on: a retry
   // re-runs a spec whose queries carry neither a receipt nor a gap row. R14 paid for the same sweep four
   // times because the refusal path wrote nothing at all.
@@ -131,7 +131,7 @@ test("2020: the gap rows END THE RE-BUY — the ledger reads as accounted on a r
     + "buying the sweep again");
 });
 
-test("2020: the refusal is PROPORTIONATE, not deleted — a mostly-failed sweep still refuses", () => {
+test("the refusal is PROPORTIONATE, not deleted — a mostly-failed sweep still refuses", () => {
   // Without this the change reads as "stop refusing", which would ship a meaning sweep that barely ran.
   // The floor is the same mechanism the marketplace grid uses, at a bound derived for this population.
   const spec = bigSpec(61);
@@ -144,7 +144,7 @@ test("2020: the refusal is PROPORTIONATE, not deleted — a mostly-failed sweep 
   assert.match(out.error, /floor 90%/, "…and the bound it was judged against");
 });
 
-test("2020: ZERO recorded keeps its own message — a sweep that never ran is not a sweep with gaps", () => {
+test("ZERO recorded keeps its own message — a sweep that never ran is not a sweep with gaps", () => {
   const out = captureGridFromResponse(sandbox(JSON.stringify({
     cells: [], gaps: [], extras: { pr_risk: [] },
   })), bigSpec(61));
@@ -153,7 +153,7 @@ test("2020: ZERO recorded keeps its own message — a sweep that never ran is no
   assert.match(out.error, /dictionary gloss is never a clearance/, "…and its reason");
 });
 
-test("2020: the MARKETPLACE side is untouched — this deletes a contradiction, it does not widen a hole", () => {
+test("the MARKETPLACE side is untouched — this deletes a contradiction, it does not widen a hole", () => {
   // The change must not have relaxed the grid's own floor while aligning the sweep to it. Same function,
   // same run, the other collection.
   const spec = { terms: ["A", "B", "C", "D"], platforms: ["amazon.com"], output_path: "/studio/prelim-search/run/g.json" };

@@ -38,14 +38,14 @@ const poolWith = (n) => {
   return pool;
 };
 
-test("2106 arm 1 — outside a demo there is no line, so the warning stands unchanged", () => {
+test("arm 1 — outside a demo there is no line, so the warning stands unchanged", () => {
   assert.equal(demoPostureLine({}), null);
   assert.equal(demoPostureLine({ CLEAROTRON_REPORTS_DIR: poolWith(4) }), null,
     "a real deployment with reports in its pool is being told it is a demo");
   assert.equal(isDemo({}), false);
 });
 
-test("2106 arm 2 — the literal 1, and nothing else, is a demo", () => {
+test("arm 2 — the literal 1, and nothing else, is a demo", () => {
   // A real deployment greeting its operator with the demo sentence would suppress the one warning that
   // says a page may show synthetic data as a customer's own. The safe answer is the one everything but
   // the literal reaches.
@@ -54,7 +54,7 @@ test("2106 arm 2 — the literal 1, and nothing else, is a demo", () => {
     assert.equal(isDemo({ CLEAROTRON_DEMO: v }), false, `${JSON.stringify(v)} was read as a demo`);
 });
 
-test("2106 arm 3 — the report count is READ, and an unreadable pool is not zero", () => {
+test("arm 3 — the report count is READ, and an unreadable pool is not zero", () => {
   for (const n of [1, 2, 4, 7]) {
     assert.equal(demoReportCount({ CLEAROTRON_REPORTS_DIR: poolWith(n) }), n);
   }
@@ -86,7 +86,7 @@ test("2106 arm 3 — the report count is READ, and an unreadable pool is not zer
     "the demo line names our plumbing at a first-time visitor");
 });
 
-test("2106 arm 4 — both processes answer from ONE composer, in different processes", () => {
+test("arm 4 — both processes answer from ONE composer, in different processes", () => {
   // The catch that made this a module rather than a boolean: the roster warning is the MCP door's and
   // the overlay warning is the portal service's. "Decide once, where the message is composed" needed the
   // fact plumbed into a second process before either sentence could be written.

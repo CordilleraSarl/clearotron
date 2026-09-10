@@ -4,7 +4,7 @@
 //
 // ── WHY THE PRODUCT DOES THIS RATHER THAN TELLING THE READER TO ─────────────────────────────────────
 //
-// Owner ruling, 2026-09-05: "this is not a question a user should ever face." A packaged install ships
+// Ruling, 2026-09-05: "this is not a question a user should ever face." A packaged install ships
 // the built UI, so an npm install or upgrade replaces the bundle and the sources together and none of
 // this can arise. Only a SOURCE checkout updated by a plain `git pull` can be stale — `portal-ui/dist`
 // is untracked on the public tree, so a pull can never update it — and that reader ran the documented

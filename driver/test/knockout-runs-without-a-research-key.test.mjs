@@ -68,7 +68,7 @@ const withoutKey = async (fn) => {
 
 // ── 1 · the resolver: which of the four states a deployment lands in ────────────────────────────────
 
-test("#1223 with no research credential the sweep resolves to a SKIP, and holds no executor to call", async () => {
+test("with no research credential the sweep resolves to a SKIP, and holds no executor to call", async () => {
   await withoutKey(() => {
     const s = resolveSweepExecutor({});
     assert.equal(s.skipped, "common-law-no-credential");
@@ -79,7 +79,7 @@ test("#1223 with no research credential the sweep resolves to a SKIP, and holds 
   });
 });
 
-test("#1223 a credential, a fixtures dir, or an injected executor each beat the skip", async () => {
+test("a credential, a fixtures dir, or an injected executor each beat the skip", async () => {
   await withoutKey(() => {
     process.env.PERPLEXITY_API_KEY = "test-key";
     const live = resolveSweepExecutor({});
@@ -101,13 +101,13 @@ test("#1223 a credential, a fixtures dir, or an injected executor each beat the 
 
 // ── 2 · the disclosure, and the rules it inherits from its sibling ──────────────────────────────────
 
-test("#1223 every skip cause has a client sentence and an internal cause, and they cannot drift apart", () => {
+test("every skip cause has a client sentence and an internal cause, and they cannot drift apart", () => {
   assert.deepEqual(Object.keys(CAPABILITY_SKIPPED_NOTE).sort(), Object.keys(CAPABILITY_SKIPPED_CAUSE).sort(),
     "a cause with no sentence discloses nothing to a client; a sentence with no cause can never fire");
   assert.ok(Object.keys(CAPABILITY_SKIPPED_NOTE).length > 0, "an empty map discloses nothing at all");
 });
 
-test("#1223 the client sentence names no vendor and carries no environment-variable name", () => {
+test("the client sentence names no vendor and carries no environment-variable name", () => {
   // The same two rules UNAVAILABLE_NOTE states for itself, checked rather than trusted. CI greps the
   // built portal bundle and the MCP response for `CLEAROTRON_`; this catches it one layer earlier, at the
   // only place these words are written.
@@ -119,7 +119,7 @@ test("#1223 the client sentence names no vendor and carries no environment-varia
   }
 });
 
-test("#1223 the sentence says what IS still true, not only what is missing", () => {
+test("the sentence says what IS still true, not only what is missing", () => {
   // A screen that reports "something did not run" and stops there reads as a broken run. The reader is
   // holding half a product and needs to know which half.
   const s = CAPABILITY_SKIPPED_NOTE["common-law-no-credential"];
@@ -129,7 +129,7 @@ test("#1223 the sentence says what IS still true, not only what is missing", () 
 
 // ── 3 · the run: it launches, and the skip is on the record ─────────────────────────────────────────
 
-test("#1223 a keyless screen LAUNCHES — it passes the preflight that used to kill it, and records the skip", async () => {
+test("a keyless screen LAUNCHES — it passes the preflight that used to kill it, and records the skip", async () => {
   await withoutKey(async () => {
     const id = "cli-no-research-key";
     const studioRoot = join(ROOT, "studio", id);

@@ -54,19 +54,19 @@ The grid program ran once, and every call it made is recorded above with its own
 const SPACED = { neg: "Negative results matrix", cov: "Coverage ledger", aud: "Audit trail" };
 const HYPHENATED = { neg: "Negative-results matrix", cov: "Coverage-ledger", aud: "Audit-trail" };
 
-test("2152 the SPACED headings still pass — the regression guard on the form that already worked", () => {
+test("the SPACED headings still pass — the regression guard on the form that already worked", () => {
   const r = validators.commonLaw(P, doc(SPACED));
   assert.equal(r.ok, true, `the spaced form must keep passing; got ${JSON.stringify(r)}`);
 });
 
-test("2152 the HYPHENATED headings pass — the compound the skill's own checklist uses", () => {
+test("the HYPHENATED headings pass — the compound the skill's own checklist uses", () => {
   const r = validators.commonLaw(P, doc(HYPHENATED));
   assert.equal(r.ok, true,
     "a document carrying '## Negative-results matrix' has the section; rejecting it cost a clearance "
     + `that had already spent an hour. Got ${JSON.stringify(r)}`);
 });
 
-test("2152 a section that is GENUINELY ABSENT still fails, with its reason unchanged", () => {
+test("a section that is GENUINELY ABSENT still fails, with its reason unchanged", () => {
   // Every other section present; only the negative-results one removed. This is the arm that fails if
   // the fix were "widen until nothing is rejected".
   const body = doc(SPACED).replace(/## Negative results matrix[\s\S]*?(?=## Coverage ledger)/, "");
@@ -77,7 +77,7 @@ test("2152 a section that is GENUINELY ABSENT still fails, with its reason uncha
     "and the reason must still name it, so the message does not change meaning");
 });
 
-test("2152 the sibling tokens are widened too — the class, not the instance", () => {
+test("the sibling tokens are widened too — the class, not the instance", () => {
   // coverage ledger and audit trail carry the identical ambiguity in the skill and happened not to bite.
   for (const key of ["cov", "aud"]) {
     const mixed = { ...SPACED, [key]: HYPHENATED[key] };

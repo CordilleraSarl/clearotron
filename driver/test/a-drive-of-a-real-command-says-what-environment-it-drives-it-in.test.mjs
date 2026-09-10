@@ -24,7 +24,7 @@ import { firstArg, writesAnEnvLocalFile, spawnsAnEntryPoint, decides, scan, BOTH
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
-test("204 the helper clears both mechanisms, and lets an arm set either back", () => {
+test("the helper clears both mechanisms, and lets an arm set either back", () => {
   const base = { KEEP: "1", CLEAROTRON_NO_ENV_FILE: "1", INVOCATION_ID: "from-the-unit-above" };
   const e = handRunEnv({}, base);
   assert.equal(e.KEEP, "1", "it threw away the rest of the environment");
@@ -37,7 +37,7 @@ test("204 the helper clears both mechanisms, and lets an arm set either back", (
   assert.ok(!("KEEP" in handRunEnv({ KEEP: undefined }, base)));
 });
 
-test("204 the ordering assertion says COULD NOT LOOK, in those words, before anything downstream", () => {
+test("the ordering assertion says COULD NOT LOOK, in those words, before anything downstream", () => {
   // Ordering is most of the value. When CI ignored the file, the first thing to fail was a port
   // assertion reporting "the refusal named a port this arm did not hold" — true, and a symptom three
   // steps downstream of a drive that never got its configuration.
@@ -54,7 +54,7 @@ test("204 the ordering assertion says COULD NOT LOOK, in those words, before any
     /not this drive's/);
 });
 
-test("204 the detector reads a nested call's first argument, not up to the first comma", () => {
+test("the detector reads a nested call's first argument, not up to the first comma", () => {
   // THE BUG THAT SHRANK THE CLASS IN SILENCE. Every drive in this class writes the path as
   // `join(home, ".config", "clearotron", ".env")`, and a comma split reads that as `join(home`.
   const src = 'writeFileSync(join(home, ".config", "clearotron", ".env"), "A=1\\n");';
@@ -66,7 +66,7 @@ test("204 the detector reads a nested call's first argument, not up to the first
   assert.equal(firstArg(str, str.indexOf("(")), '"a,b.env"');
 });
 
-test("204 the detector wants a WRITE to the file the command would read — not a mention of it", () => {
+test("the detector wants a WRITE to the file the command would read — not a mention of it", () => {
   assert.equal(writesAnEnvLocalFile('writeFileSync(join(home, ".config", "clearotron", ".env"), "A=1");'), true);
   assert.equal(writesAnEnvLocalFile('const envPath = join(REPO, ".env");\nwriteFileSync(envPath, "A=1");'), true);
   // THE PRECISION THAT KEEPS THIS FROM MANUFACTURING WORK. `start-command` names `join(REPO, ".env")`
@@ -78,7 +78,7 @@ test("204 the detector wants a WRITE to the file the command would read — not 
   assert.equal(writesAnEnvLocalFile('writeFileSync(join(home, ".env"), "A=1");'), false);
 });
 
-test("204 a file is in the class only when it does BOTH, because either alone is not the hazard", () => {
+test("a file is in the class only when it does BOTH, because either alone is not the hazard", () => {
   const writes = 'writeFileSync(join(home, ".config", "clearotron", ".env"), "A=1");';
   const spawns = 'spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs")], {});';
   assert.equal(spawnsAnEntryPoint(spawns), true);
@@ -88,7 +88,7 @@ test("204 a file is in the class only when it does BOTH, because either alone is
   assert.equal(writesAnEnvLocalFile(spawns), false);
 });
 
-test("204 a file decides by naming both, or by taking the helper that does", () => {
+test("a file decides by naming both, or by taking the helper that does", () => {
   assert.equal(decides("const env = handRunEnv({ HOME: home });"), true);
   assert.equal(decides("delete env.CLEAROTRON_NO_ENV_FILE;\ndelete env.INVOCATION_ID;"), true);
   assert.equal(decides("delete env.CLEAROTRON_NO_ENV_FILE;"), false,
@@ -96,7 +96,7 @@ test("204 a file decides by naming both, or by taking the helper that does", () 
   assert.equal(decides("// nothing about either"), false);
 });
 
-test("204 the real tree has a non-empty class, and every member of it has decided", () => {
+test("the real tree has a non-empty class, and every member of it has decided", () => {
   // AN EMPTY CLASS IS A FINDING ABOUT THE DETECTOR, not a clean bill: this suite contains drives of
   // this shape, so a run that matches none has stopped seeing its subject. The script exits 2 on that,
   // and this arm is the same statement one layer up.
@@ -111,7 +111,7 @@ test("204 the real tree has a non-empty class, and every member of it has decide
     + `in, so either mechanism would hand them built-in defaults with no error: ${undecided.join(", ")}`);
 });
 
-test("204 a scan that cannot see anything says so rather than passing", () => {
+test("a scan that cannot see anything says so rather than passing", () => {
   const empty = scan(join(ROOT, "driver", "test"), () => "", () => []);
   assert.equal(empty.scanned, 0, "an empty directory read as files");
   assert.deepEqual(empty.inClass, [],

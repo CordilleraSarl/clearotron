@@ -42,7 +42,7 @@ const foldOf = (runDir) => JSON.parse(readFileSync(driverDir(runDir, "jx-lanes.j
 const run = async (ctx, jxExecutor) =>
   runJxCandidateFold(ctx, ctx.job, { jxExecutor }, { inScopeClasses: ["9"] });
 
-test("#1210 the model that served the lane is named in the fold, beside the executor", async () => {
+test("the model that served the lane is named in the fold, beside the executor", async () => {
   process.env.CLEAROTRON_JX_LANES = "1";
   const { ctx, runDir } = mkCtx();
   await run(ctx, async () => ({ ok: true, candidates: CANDS, tookMs: 5, model: "claude-haiku-4-5-20251001" }));
@@ -53,7 +53,7 @@ test("#1210 the model that served the lane is named in the fold, beside the exec
   assert.ok(fold.executor, "the executor must still be there — this adds a field, it does not replace one");
 });
 
-test("#1210 an executor that runs NO model fabricates none — absence is recorded as absence", async () => {
+test("an executor that runs NO model fabricates none — absence is recorded as absence", async () => {
   process.env.CLEAROTRON_JX_LANES = "1";
   const { ctx, runDir } = mkCtx();
   await run(ctx, async () => ({ ok: true, candidates: CANDS, tookMs: 5 }));   // fixtures/injected: no turn
@@ -63,7 +63,7 @@ test("#1210 an executor that runs NO model fabricates none — absence is record
   assert.ok(!fold.models?.length, `models is ${JSON.stringify(fold.models)} for a run with no model turn`);
 });
 
-test("#1210 lanes that DISAGREE are not resolved by picking one — the summary says null and lists both", async () => {
+test("lanes that DISAGREE are not resolved by picking one — the summary says null and lists both", async () => {
   process.env.CLEAROTRON_JX_LANES = "1";
   const { ctx, runDir } = mkCtx(["CN", "JP"]);
   const byLane = { zh: "model-a", ja: "model-b" };
@@ -77,7 +77,7 @@ test("#1210 lanes that DISAGREE are not resolved by picking one — the summary 
     + "one of two is a receipt that lies about who did the work.");
 });
 
-test("#1210 a DEGRADED lane still names its model — the turn ran, and it is part of who did the work", async () => {
+test("a DEGRADED lane still names its model — the turn ran, and it is part of who did the work", async () => {
   process.env.CLEAROTRON_JX_LANES = "1";
   const { ctx, runDir } = mkCtx();
   await run(ctx, async () => ({ ok: false, cause: "upstream 500", model: "claude-haiku-4-5-20251001" }));
@@ -87,7 +87,7 @@ test("#1210 a DEGRADED lane still names its model — the turn ran, and it is pa
     + "is precisely the run whose attribution someone will want to read");
 });
 
-test("#1210 a RESUME merges rather than replaces — #552's carry-forward, applied to this field", async () => {
+test("a RESUME merges rather than replaces — #552's carry-forward, applied to this field", async () => {
   process.env.CLEAROTRON_JX_LANES = "1";
   const { ctx, runDir } = mkCtx();
   // a prior pass observed one model and settled no lane; this pass observes a different one

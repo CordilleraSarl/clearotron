@@ -53,7 +53,7 @@ function realisticRunDir() {
 // shipping source with the run-dir path substituted in. Returns detail: null when the throw carries
 // none, which is the state that put an absolute path in the prose in the first place.
 
-test("#1406 a cut reason says so IN THE STRING, not only in a sibling key", () => {
+test("a cut reason says so IN THE STRING, not only in a sibling key", () => {
   const long = `${"x".repeat(300)} (reviewer flags: /a/path/that/gets/severed.md)`;
   assert.ok(long.length > 200, "void control — a fixture inside the cap proves nothing here");
   const f = terminalReasonFields(long);
@@ -62,7 +62,7 @@ test("#1406 a cut reason says so IN THE STRING, not only in a sibling key", () =
   assert.equal(f.reasonTruncated, true, "and the sibling key still states it, for a reader who checks");
 });
 
-test("#1406 the marker rides INSIDE the bound — `reason` is still the 200 the ping is built on", () => {
+test("the marker rides INSIDE the bound — `reason` is still the 200 the ping is built on", () => {
   const f = terminalReasonFields("y".repeat(400));
   assert.equal(f.reason.length, 200,
     "#755's header calls this cap load-bearing; making the cut visible must not widen it by one byte");
@@ -73,7 +73,7 @@ test("#1406 the marker rides INSIDE the bound — `reason` is still the 200 the 
 
 // ── T3a RETIRED THE CARRIER THESE TWO ARMS WERE BUILT ON ──────────────────────────────────────────
 //
-// Owner ruling 2026-08-26: "Deliver always, with open points printed. The refusal on a blocking review
+// Ruling 2026-08-26: "Deliver always, with open points printed. The refusal on a blocking review
 // goes." Both arms that stood here read the verdict terminal out of pipeline.mjs — one composing
 // its `reason`/`detail` to prove the flags pointer resolved on disk, one pinning the pointer to `detail`
 // rather than to the message. **That throw no longer exists**, so neither had a subject left.
@@ -90,7 +90,7 @@ test("#1406 the marker rides INSIDE the bound — `reason` is still the 200 the 
 //     path interpolated into `reason`, where the 200-char cap severs it and a reader who stats the result
 //     gets ENOENT. That was a property of EVERY throw; it was pinned on the one site that happened to
 //     have it. Pinned across the corpus below, it outlives any single site.
-test("#1406 no StageFailure interpolates an artifact path into `reason` — the cap severs it there", () => {
+test("no StageFailure interpolates an artifact path into `reason` — the cap severs it there", () => {
   const pl = source("driver/pipeline.mjs");
   const sites = [...pl.matchAll(/throw new StageFailure\(/g)].map((m) => pl.slice(m.index, m.index + 500));
   // FLOOR. A walk that finds nothing reports clean, and this file exists because a clean report over an
@@ -122,7 +122,7 @@ test("#1406 no StageFailure interpolates an artifact path into `reason` — the 
     + `client view. Undeclared site(s):\n  ${undeclared.join("\n  ")}`);
 });
 
-test("#1406 no runner notice re-cuts a reason the status write beside it already marked", () => {
+test("no runner notice re-cuts a reason the status write beside it already marked", () => {
   // The sibling-writer half of the finding (/ rule, and criterion 4). routed the runner's
   // three TERMINAL STATUS writes through terminalReasonFields and left the failure PACKET built from the
   // same string still cutting it with a bare slice — including queue-reclaim, whose own comment two lines

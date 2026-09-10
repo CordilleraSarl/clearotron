@@ -28,7 +28,7 @@ const ATTRIBUTIONS = "THIRD-PARTY-NOTICES.md";
 
 // ── row 1: no shipped document names the wrong licence ──────────────────────────────────────────────
 
-test("#854 no shipped markdown claims Apache — the issue's own external check", () => {
+test("no shipped markdown claims Apache — the issue's own external check", () => {
   // "Checkable from outside once done: `git grep -in apache -- '*.md'` returns nothing."
   //
   // THIS ARM WAS A FALSE GREEN WHEN FIRST WRITTEN, and the way it failed is the reason it is worth
@@ -52,7 +52,7 @@ test("#854 no shipped markdown claims Apache — the issue's own external check"
   assert.deepEqual(hits, [], `these documents still name Apache:\n  ${hits.join("\n  ")}`);
 });
 
-test("#854 the attributions file may REPRODUCE Apache, and may not CLAIM it", () => {
+test("the attributions file may REPRODUCE Apache, and may not CLAIM it", () => {
   // The distinction a path exclusion would have thrown away. A dependency's licence text is quoted
   // material and belongs in a fenced block; a sentence outside one that mentions Apache is this
   // product describing itself, which is the thing exists to stop. So every occurrence has to sit
@@ -76,7 +76,7 @@ test("#854 the attributions file may REPRODUCE Apache, and may not CLAIM it", ()
 });
 
 
-test("#854 INSTALL states the licence the repository actually carries, and what §13 adds", () => {
+test("INSTALL states the licence the repository actually carries, and what §13 adds", () => {
   const install = read("INSTALL.md");
   assert.match(install, /GNU Affero General Public License v3\.0/);
   assert.doesNotMatch(install, /Apache License 2\.0/);
@@ -87,7 +87,7 @@ test("#854 INSTALL states the licence the repository actually carries, and what 
 
 // ── row 5: the CLI ───────────────────────────────────────────────────────────────────────────────────
 
-test("#854 `--license` answers with the licence AND the running commit", () => {
+test("`--license` answers with the licence AND the running commit", () => {
   // RUN, not read. The flag is the surface; asserting on the source would pass just as well if the flag
   // were unreachable behind an earlier exit.
   const out = execFileSync("node", [join(ROOT, "bin", "start.mjs"), "--license"], { encoding: "utf8", timeout: 20000 });
@@ -103,7 +103,7 @@ test("#854 `--license` answers with the licence AND the running commit", () => {
   assert.equal(alt, out);
 });
 
-test("#854 a null commit is stated as unknown, never papered over with a bare repo link", () => {
+test("a null commit is stated as unknown, never papered over with a bare repo link", () => {
   // The pair is the point: a surface that renders the repository URL while implying it is the running
   // source is the failure the module was built to prevent, and it can only avoid it if the missing sha
   // is visible. Asserted on the source because a checkout always HAS a commit — the branch is otherwise
@@ -115,7 +115,7 @@ test("#854 a null commit is stated as unknown, never papered over with a bare re
 
 // ── row 4: the MCP server ────────────────────────────────────────────────────────────────────────────
 
-test("#854 server_info is reachable by EVERY session kind — an offer a client cannot call is not one", () => {
+test("server_info is reachable by EVERY session kind — an offer a client cannot call is not one", () => {
   const rule = TOOL_SCOPES.server_info;
   assert.ok(rule, "server_info left TOOL_SCOPES — it is then denied to every client and account session");
   assert.equal(rule.clientSafe, true, "a report-link recipient is exactly who §13 is written for");
@@ -124,7 +124,7 @@ test("#854 server_info is reachable by EVERY session kind — an offer a client 
   assert.notEqual(rule.write, true, "it writes nothing; marking it write would demand an ops token");
 });
 
-test("#854 authorize() actually lets each kind through, rather than the flags merely looking right", () => {
+test("authorize() actually lets each kind through, rather than the flags merely looking right", () => {
   // The flags are an input to authorize(), not the decision. Asserting the flags alone would pass if the
   // function stopped reading them.
   assert.doesNotThrow(() => authorize({ kind: "ops", sub: "portal" }, "server_info", {}));
@@ -134,7 +134,7 @@ test("#854 authorize() actually lets each kind through, rather than the flags me
     "the run-scoped report link is the session most likely to be a stranger, and the one §13 names");
 });
 
-test("#854 the MCP server exposes it as a tool AND as a resource, and both read the one module", () => {
+test("the MCP server exposes it as a tool AND as a resource, and both read the one module", () => {
   const src = read("mcp-server", "server.mjs");
   assert.match(src, /import \{ productIdentity \} from "\.\.\/shared\/product-identity\.mjs"/,
     "the server derives the identity itself again — three surfaces, three chances to disagree");
@@ -146,7 +146,7 @@ test("#854 the MCP server exposes it as a tool AND as a resource, and both read 
   assert.match(src, /req\.params\.uri === ABOUT_URI/, "the resource is listed but not READABLE");
 });
 
-test("#854 the about resource answers ABOVE the run gate — it is about the server, not a run", () => {
+test("the about resource answers ABOVE the run gate — it is about the server, not a run", () => {
   const src = read("mcp-server", "server.mjs");
   const readerAt = src.indexOf("req.params.uri === ABOUT_URI");
   const runUriAt = src.indexOf("^trademark:\\/\\/run\\/");
@@ -158,7 +158,7 @@ test("#854 the about resource answers ABOVE the run gate — it is about the ser
 
 // ── the property all three share ─────────────────────────────────────────────────────────────────────
 
-test("#854 all three network faces read one module, so they cannot report different builds", () => {
+test("all three network faces read one module, so they cannot report different builds", () => {
   const faces = [
     ["the portal", ["driver", "portal-service.mjs"]],
     ["the MCP server", ["mcp-server", "server.mjs"]],

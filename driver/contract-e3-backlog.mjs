@@ -195,7 +195,7 @@ export const E3_BACKLOG = [
     //   quote      — M2 LANDED. The live field is `anchor` (prelim-common-law/SKILL.md:197).
     // Neither was reworded. Both were removed, and this row is discharged of them.
     //
-    // ── (b) THE NEW, NARROWER CLAIM — RE-EVIDENCED for B (the form path is DELETED, owner ruling
+    // ── (b) THE NEW, NARROWER CLAIM — RE-EVIDENCED for B (the form path is DELETED, ruling
     // 2026-08-17). The seat is no longer told to open any file: the surviving position-dictation now
     // orders a `record_dispositions` CALL carrying `row_index` / `receipt_index` / `ruling` / `note` per
     // row, and the receiver resolves BOTH positions — made the row an ordinal too, on the finding

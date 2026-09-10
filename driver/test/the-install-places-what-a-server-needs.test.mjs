@@ -49,7 +49,7 @@ function apply(envBody = STARTED_ENV) {
   return { dir, dest, env, out, placed: readdirSync(dest).sort() };
 }
 
-test("1863 the documented install places the units a server needs", () => {
+test("the documented install places the units a server needs", () => {
   const { dir, placed } = apply();
   try {
     assert.deepEqual(placed, [...SERVER_INSTALL_SET].sort(),
@@ -60,7 +60,7 @@ test("1863 the documented install places the units a server needs", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("1863 it places NEITHER the retired watcher NOR the bridge that was installed instead", () => {
+test("it places NEITHER the retired watcher NOR the bridge that was installed instead", () => {
   // The two units the old path actually wrote. This is the arm that would have caught the defect, and
   // it is stated as a negative because the positive was never wrong — two files really were written.
   const { dir, placed } = apply();
@@ -73,7 +73,7 @@ test("1863 it places NEITHER the retired watcher NOR the bridge that was install
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("2148 the client door IS placed now, and the superseded ruling is named", () => {
+test("the client door IS placed now, and the superseded ruling is named", () => {
   // SUPERSEDED 2026-09-03, and this arm is rewritten rather than deleted so the change is legible.
   //
   // Until today this asserted the opposite, citing the owner's 2026-08-31 "On demand is fine": starting
@@ -95,7 +95,7 @@ test("2148 the client door IS placed now, and the superseded ruling is named", (
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("1863 a unit with no placeholder is COPIED, byte for byte, not skipped", () => {
+test("a unit with no placeholder is COPIED, byte for byte, not skipped", () => {
   // The whole cause in one property: the generic units need no rendering, and needing no rendering used
   // to mean not being installed.
   const { dir, dest } = apply();
@@ -106,7 +106,7 @@ test("1863 a unit with no placeholder is COPIED, byte for byte, not skipped", ()
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("1863 the install list names only units this tree ships", () => {
+test("the install list names only units this tree ships", () => {
   // A list naming a missing file installs nothing and reads as done — the absence-as-a-pass shape the
   // inventory's own ratchets refuse. The CLI refuses too; this catches it before anyone runs it.
   const shipped = new Set(trackedUnits().map((u) => u.name));
@@ -115,7 +115,7 @@ test("1863 the install list names only units this tree ships", () => {
   }
 });
 
-test("1863 the DETECTOR and the INSTALLER are separate lists, and must stay separate", () => {
+test("the DETECTOR and the INSTALLER are separate lists, and must stay separate", () => {
   // They are one word apart and answer opposite questions. `SERVER_UNITS` recognises what IS on a box —
   // so it deliberately still names a retired unit, because a box carrying the old posture is just as
   // much a server. `SERVER_INSTALL_SET` places what SHOULD be. Merging them makes one answer wrong, and
@@ -129,14 +129,14 @@ test("1863 the DETECTOR and the INSTALLER are separate lists, and must stay sepa
     "the two lists are identical, which means one of the two questions is now being answered wrongly");
 });
 
-test("1863 --background and the documented install place the SAME set", () => {
+test("--background and the documented install place the SAME set", () => {
   // One authority, two callers. A list kept in two places is how the documented install came to place
   // two units while `--background` placed three.
   assert.deepEqual([...BACKGROUND_UNITS].sort(), [...SERVER_INSTALL_SET].sort(),
     "the two install paths disagree about what a server runs");
 });
 
-test("1863 every unit named for install is declared in the inventory", () => {
+test("every unit named for install is declared in the inventory", () => {
   // The inventory is what a reader consults to learn what a unit is for. An installed unit it does not
   // declare is exactly the condition unit-inventory.mjs was written to make impossible.
   const declared = new Set(UNIT_INVENTORY.flatMap((u) => u.tracked ?? []));
@@ -164,14 +164,14 @@ function applyWithEnv(startingBody) {
   return after;
 }
 
-test("2128 the install SETS the submit lane, so the portal it just placed has an engine to call", () => {
+test("the install SETS the submit lane, so the portal it just placed has an engine to call", () => {
   const after = applyWithEnv("CLEAROTRON_CHECKOUT_DIR=/opt/c\n");
   assert.match(after, /^PORTAL_MCP_URL=http:\/\/127\.0\.0\.1:\d+$/m,
     "the installer placed the portal and left it with no engine-door address — which is the box the "
     + "owner met: a 502 on submit, a dead Stop control, and every health surface green");
 });
 
-test("2128 an EMPTY row is filled, because that is what the deployment example ships", () => {
+test("an EMPTY row is filled, because that is what the deployment example ships", () => {
   // THE CASE THAT MATTERS MOST, not an edge. An operator copying the deployment env example has exactly
   // this line. My first version treated it as present, left it blank, and reported "already carries
   // the address" — the original defect, with a reassuring sentence over it.
@@ -181,13 +181,13 @@ test("2128 an EMPTY row is filled, because that is what the deployment example s
     "a second assignment was appended under the first — last-wins, silently");
 });
 
-test("2128 a value the OPERATOR set is never overwritten", () => {
+test("a value the OPERATOR set is never overwritten", () => {
   const after = applyWithEnv("PORTAL_MCP_URL=http://operator-chose:9999\n");
   assert.match(after, /^PORTAL_MCP_URL=http:\/\/operator-chose:9999$/m, "an operator's own address was replaced");
   assert.equal(after.match(/^PORTAL_MCP_URL=/gm).length, 1, "a second assignment was added beside theirs");
 });
 
-test("2128 the origin carries no path — the portal's client appends /mcp itself", () => {
+test("the origin carries no path — the portal's client appends /mcp itself", () => {
   // A doubled path is a 404 at submit time and nothing wrong anywhere else. This is why the expression
   // has one author rather than being written at each call site.
   const origin = mcpOriginFor({ port: 18821 });
@@ -196,13 +196,13 @@ test("2128 the origin carries no path — the portal's client appends /mcp itsel
   assert.equal(laneValuesFor({ ports: { mcp: 18821 } }).PORTAL_MCP_URL, origin, "the two disagree about the same value");
 });
 
-test("2128 a nonsense port is refused rather than composed into an address", () => {
+test("a nonsense port is refused rather than composed into an address", () => {
   for (const bad of [0, 70000, "18821", null, undefined, 1.5]) {
     assert.throws(() => mcpOriginFor({ port: bad }), /port must be/, `port ${JSON.stringify(bad)} was accepted`);
   }
 });
 
-test("2128 mergeEnvFile still never writes an empty value, and still names its writer", () => {
+test("mergeEnvFile still never writes an empty value, and still names its writer", () => {
   // The move to shared/ must not have changed the contract every existing caller relies on.
   const { text, added } = mergeEnvFile("A=1\n", { B: "", C: null, D: "d" }, { by: "`a test`" });
   assert.deepEqual(added, ["D"], "an empty or nullish value was written as a blank assignment");
@@ -232,7 +232,7 @@ function appliedEnv(envBody = STARTED_ENV) {
     .map((m) => [m[1], m[2].trim()])) };
 }
 
-test("2148 the install writes every setting the client door refuses to start without", () => {
+test("the install writes every setting the client door refuses to start without", () => {
   const { values } = appliedEnv();
   // NOT A LIST RESTATED HERE. The expectation comes from `enablePlan`, which is the same authority
   // `clearotron connect` calls — a second list in this file would go stale against the door the day
@@ -253,7 +253,7 @@ test("2148 the install writes every setting the client door refuses to start wit
     "token-only requires the account principal; with the fence off the door refuses to start");
 });
 
-test("2148 the installer and `connect` derive the SAME settings from the same port", () => {
+test("the installer and `connect` derive the SAME settings from the same port", () => {
   // The compliance this arm proves is "do not re-derive the six names". Both paths call one function,
   // so the only way they can disagree is if one of them started writing its own — and this is what
   // catches that, because a hand-written copy passes every other arm in this file.
@@ -270,7 +270,7 @@ test("2148 the installer and `connect` derive the SAME settings from the same po
   assert.ok(connect.steps.some((s) => s.id === "key"), "connect's plan no longer orders the key it exists to issue");
 });
 
-test("2148 the allow-list follows the operator's port, not the default", () => {
+test("the allow-list follows the operator's port, not the default", () => {
   // A DIFFERENT MEMBER OF THE SET than the arm above pins by value, deliberately: CLIENT_MCP_ALLOWED_HOSTS
   // is the one that fails silently. It arms DNS-rebinding protection and names host:port, so a port
   // written in one place and an allow-list in another produce a door that starts and turns every request
@@ -281,7 +281,7 @@ test("2148 the allow-list follows the operator's port, not the default", () => {
     "the allow-list names a different port than the door listens on — every request would be refused");
 });
 
-test("2148 a box with NO guest list is refused, and not one unit is placed", () => {
+test("a box with NO guest list is refused, and not one unit is placed", () => {
   // The install must not be completable on a box where the door cannot come up. Refusing before any
   // write is what the units-missing branch already does, and this is the same rule for the same reason:
   // a half-installed box reports itself installed.
@@ -311,7 +311,7 @@ test("2148 a box with NO guest list is refused, and not one unit is placed", () 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("2148 the signing secret is generated, announced, and never printed", () => {
+test("the signing secret is generated, announced, and never printed", () => {
   // Q4, owner-confirmed 2026-09-03 ("on q4 yes"). Generate-if-absent, and the act says so in the output
   // — an installer that begins minting cryptographic material announces it rather than leaving it to be
   // discovered in a file. What must NOT be in the output is the value.
@@ -364,7 +364,7 @@ test("a live portal secret is never replaced, and TWO things stop it", () => {
     "the mint returned nothing for an ABSENT secret, so a fresh install writes no portal secret at all");
 });
 
-test("2148 a live secret is never replaced — every key already issued is signed with it", () => {
+test("a live secret is never replaced — every key already issued is signed with it", () => {
   const mine = "a".repeat(64);
   const { values } = appliedEnv(`${STARTED_ENV}TRADEMARK_MCP_TOKEN_SECRET=${mine}\n`);
   assert.equal(values.TRADEMARK_MCP_TOKEN_SECRET, mine,

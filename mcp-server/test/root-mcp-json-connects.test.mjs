@@ -26,7 +26,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CONFIG = join(ROOT, ".mcp.json");
 const KEY = "trademark-artifacts";
 
-test("#766 the repository root carries a .mcp.json naming this server", () => {
+test("the repository root carries a .mcp.json naming this server", () => {
   assert.ok(existsSync(CONFIG), ".mcp.json is gone — opening the folder no longer offers the server, "
     + "and a visitor is back to reading CONNECT.md and editing a config by hand");
   const cfg = JSON.parse(readFileSync(CONFIG, "utf8"));
@@ -36,7 +36,7 @@ test("#766 the repository root carries a .mcp.json naming this server", () => {
   assert.deepEqual(s.args, ["mcp-server/server.mjs"]);
 });
 
-test("#766 it asks the visitor for NOTHING — no env block, and a path that is not somebody's machine", () => {
+test("it asks the visitor for NOTHING — no env block, and a path that is not somebody's machine", () => {
   const s = JSON.parse(readFileSync(CONFIG, "utf8")).mcpServers[KEY];
   // An env block here is a placeholder the visitor must replace, which is the step this file removes.
   assert.equal(Object.keys(s.env ?? {}).length, 0,
@@ -50,7 +50,7 @@ test("#766 it asks the visitor for NOTHING — no env block, and a path that is 
     "#644 — a config that names an account's home is wrong under every other account");
 });
 
-test("#766 a server spawned exactly as the config says ANSWERS, with the environment stripped", async () => {
+test("a server spawned exactly as the config says ANSWERS, with the environment stripped", async () => {
   // The arms above are shape. This one is the claim: clone, open, accept, ask — no token, no edit.
   const s = JSON.parse(readFileSync(CONFIG, "utf8")).mcpServers[KEY];
   const env = { PATH: process.env.PATH, HOME: process.env.HOME };   // deliberately not process.env

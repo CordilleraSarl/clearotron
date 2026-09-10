@@ -50,7 +50,7 @@ export const EMPTY_PHRASES = ["now correctly", "as expected", "properly"];
  * A path whose first segment is one of these is a SOURCE-TREE path — `driver/test/…`, `scripts/…` — and
  * means nothing to somebody who has never opened this repository. A path that starts at the reader's own
  * home does not: `~/.config/clearotron/` is where THEIR settings are, and telling them is the note's job.
- * Owner ruling 2026-09-05, narrowing the contract's flat ban on "file paths": what a reader types or
+ * Ruling 2026-09-05, narrowing the contract's flat ban on "file paths": what a reader types or
  * opens is allowed; our tree is not.
  *
  * Derived from the tree rather than typed, so a directory added next month is covered without anybody

@@ -40,7 +40,7 @@ const rows = (runDir) => {
   return readFileSync(p, "utf8").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
 };
 
-test("#947B A CRITICAL WRITE THAT FAILS LEAVES A ROW — the invisibility is what is being closed", () => {
+test("A CRITICAL WRITE THAT FAILS LEAVES A ROW — the invisibility is what is being closed", () => {
   const d = runDirWith();
   try {
     withUnwritableStatus(d, () => {
@@ -53,7 +53,7 @@ test("#947B A CRITICAL WRITE THAT FAILS LEAVES A ROW — the invisibility is wha
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#947B THE ROW NAMES THE FIELDS WHOSE ABSENCE ORPHANS THE ROUND", () => {
+test("THE ROW NAMES THE FIELDS WHOSE ABSENCE ORPHANS THE ROUND", () => {
   // A row saying only "a write failed" leaves the reader where the bug did. With these, a run can be
   // bound to its round by hand.
   const d = runDirWith();
@@ -68,7 +68,7 @@ test("#947B THE ROW NAMES THE FIELDS WHOSE ABSENCE ORPHANS THE ROUND", () => {
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#947B ROUTINE WRITES STAY SILENT — a row per failed step write would bury the one that matters", () => {
+test("ROUTINE WRITES STAY SILENT — a row per failed step write would bury the one that matters", () => {
   const d = runDirWith();
   try {
     withUnwritableStatus(d, () => {
@@ -79,7 +79,7 @@ test("#947B ROUTINE WRITES STAY SILENT — a row per failed step write would bur
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#947B RECORD, DO NOT KILL — the failure never throws into the pipeline", () => {
+test("RECORD, DO NOT KILL — the failure never throws into the pipeline", () => {
   // A run that cannot record its identity must still deliver. Same rule as the delivery gate never
   // dropping a deliverable; kill switches are retired house-wide.
   const d = runDirWith();
@@ -90,7 +90,7 @@ test("#947B RECORD, DO NOT KILL — the failure never throws into the pipeline",
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#947B a SUCCESSFUL critical write records nothing", () => {
+test("a SUCCESSFUL critical write records nothing", () => {
   const d = runDirWith();
   try {
     writeRunStatus(null, { id: "J1", ref: "r" }, d, { critical: true });

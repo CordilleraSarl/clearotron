@@ -287,7 +287,7 @@ const withDenylist = (fn) => {
   }
 };
 
-test("2082: a key is REFUSED ON SIGHT once its id is denylisted — mint, verify, revoke, refused", () => withSecret(() => withDenylist((path) => {
+test("a key is REFUSED ON SIGHT once its id is denylisted — mint, verify, revoke, refused", () => withSecret(() => withDenylist((path) => {
   // The issue's acceptance arm, end to end through the verifier itself: the key does not wait out its
   // ninety days. Verified GOOD first, so the later refusal is proven to be the denylist's doing and not
   // a broken token — a refusal asserted without the passing read would also pass on a mangled mint.
@@ -299,7 +299,7 @@ test("2082: a key is REFUSED ON SIGHT once its id is denylisted — mint, verify
   assert.throws(() => verifyToken(tok), /revoked/, "the denylisted id must be refused, not honoured to expiry");
 })));
 
-test("2082: tokenId reads OUR OWN mint's recordable facts, and only those", () => withSecret(() => {
+test("tokenId reads OUR OWN mint's recordable facts, and only those", () => withSecret(() => {
   const tok = mintToken({ scope: "account", sub: "lawyer@acme.example", ttlSec: 3600 });
   const id = tokenId(tok);
   // The same facts the verifier reads — one token, one parse contract, two readers that must agree.
@@ -323,7 +323,7 @@ test("2082: tokenId reads OUR OWN mint's recordable facts, and only those", () =
 // the owner with the reversal path: fail CLOSED at request time. The cost is a visible outage that
 // names its cause, instead of an invisible hole.
 
-test("2191-F14 an unreadable denylist REFUSES the token instead of assuming it is good", () => {
+test("an unreadable denylist REFUSES the token instead of assuming it is good", () => {
   const dir = mkdtempSync(join(tmpdir(), "denylist-missing-"));
   const missing = join(dir, "token-denylist");   // named, never created — the default install's state
   try {
@@ -339,7 +339,7 @@ test("2191-F14 an unreadable denylist REFUSES the token instead of assuming it i
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("2191-F14 an UNSET denylist is still not a refusal — that path is the documented single-tenant trust", () => {
+test("an UNSET denylist is still not a refusal — that path is the documented single-tenant trust", () => {
   // The two absences are different and must stay different. No denylist configured is a deployment that
   // never asked for one; a denylist configured and unreadable is one that asked and cannot look. Making
   // both refuse would break every install that has never touched the variable.
@@ -347,7 +347,7 @@ test("2191-F14 an UNSET denylist is still not a refusal — that path is the doc
   assert.equal(isRevoked("some-jti", { denylistPath: "" }), false);
 });
 
-test("2191-F14 a readable denylist still answers both ways — the refusal is not unconditional", () => withDenylist((path) => {
+test("a readable denylist still answers both ways — the refusal is not unconditional", () => withDenylist((path) => {
   assert.equal(isRevoked("not-listed", { denylistPath: path }), false, "an id that is not on the list is not revoked");
   writeFileSync(path, "# armed by the arm\nlisted-jti\n");
   assert.equal(isRevoked("listed-jti", { denylistPath: path }), true, "and one that is, is");

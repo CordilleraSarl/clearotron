@@ -73,7 +73,7 @@ function runDirWith({ blind, manifest } = {}) {
   return dir;
 }
 
-test("#1169 — a planted WRONG dominant element in the call cannot retarget the spine test", () => {
+test("a planted WRONG dominant element in the call cannot retarget the spine test", () => {
   const dir = runDirWith({ blind: blindModel(SPINE) });
 
   // The seat sends the echo it is no longer asked for, and gets it wrong.
@@ -97,7 +97,7 @@ test("#1169 — a planted WRONG dominant element in the call cannot retarget the
     + "seat is still sending one, which is the signal a stale skill doc is in play");
 });
 
-test("#1169 NEGATIVE CONTROL — the same plant under the OLD precedence DOES move the verdict", () => {
+test("NEGATIVE CONTROL — the same plant under the OLD precedence DOES move the verdict", () => {
   // Exactly the fixture arm 1 uses, decided the way the code used to decide it: the document's own field
   // first. If this does not flip, arm 1 is passing on a plant too weak to prove anything.
   const seatEchoFirst = TYPO;
@@ -115,7 +115,7 @@ test("#1169 NEGATIVE CONTROL — the same plant under the OLD precedence DOES mo
     "and the correct spine must force it TRUE, so the two answers are genuinely different");
 });
 
-test("#1169 — the bind reads the driver's own artifacts in the stated order", () => {
+test("the bind reads the driver's own artifacts in the stated order", () => {
   const both = runDirWith({ blind: blindModel(SPINE), manifest: "Dominant element: KROMA\n" });
   assert.deepEqual(boundDominantElement(both), { value: SPINE, source: "blind-frame-model.json" },
     "the blind model wins: it is the document the diff IS a diff of");
@@ -141,7 +141,7 @@ test("#1169 — the bind reads the driver's own artifacts in the stated order", 
     "both entry points are one body; if these ever differ, the driver and its own tool disagree about the spine");
 });
 
-test("#1169 — no artifact answers is a STATE, not an empty field", () => {
+test("no artifact answers is a STATE, not an empty field", () => {
   const dir = runDirWith({});
   assert.deepEqual(boundDominantElement(dir), { value: "", source: null });
 
@@ -160,7 +160,7 @@ test("#1169 — no artifact answers is a STATE, not an empty field", () => {
     "and the null SOURCE is the fact a reader needs: no artifact answered, rather than one that said nothing");
 });
 
-test("#1169 — no text a frame-diff seat is served asks it to send dominant_element", () => {
+test("no text a frame-diff seat is served asks it to send dominant_element", () => {
   const P = stagePaths("/tmp/framediff-served-probe");
   const CTX = Object.freeze({
     paths: P, profile: {}, intakeAsks: [], framework: null, axes: ["primary-sweep"], axis: null,
@@ -195,7 +195,7 @@ test("#1169 — no text a frame-diff seat is served asks it to send dominant_ele
     "and must not catch the field that IS the seat's");
 });
 
-test("#1169 — the tool's input schema has no dominant_element property", async () => {
+test("the tool's input schema has no dominant_element property", async () => {
   // Read the served schema, not a copy of it: the property's absence is the structural half of the fix,
   // and asserting it against the shipped server is what makes the other arms more than prose.
   const src = readFileSync(join(DRIVER, "engine", "mcp", "recording-server.mjs"), "utf8");

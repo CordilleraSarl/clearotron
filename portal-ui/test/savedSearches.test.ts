@@ -128,7 +128,7 @@ test('sorting copies rather than reordering the caller’s array in place', () =
 
 
 test('a status leads with the level NAME and carries its stage beside it', () => {
-  // Owner ruling 2026-07-20: the interface leads with the NAME of a search and carries the stage
+  // Ruling 2026-07-20: the interface leads with the NAME of a search and carries the stage
   // beside it. This row is a comparison of the products a client has configured, so it keeps both.
   const ready = statusFor(saved({ base: 'clearotron' }), [lvl('clearotron')])
   assert.equal(ready.kind, 'ready')

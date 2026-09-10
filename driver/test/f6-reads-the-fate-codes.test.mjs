@@ -35,14 +35,14 @@ function run({ lines = null, records = null } = {}) {
   return d;
 }
 
-test("2039 F6 reads the fate codes, and the JOIN survives the case the real data carries", () => {
+test("F6 reads the fate codes, and the JOIN survives the case the real data carries", () => {
   const r = scoredFetched(run({ lines: [
     { id: A, fate: FATES.OPENED_DISMISSED }, { id: B, fate: FATES.REPORTED }] }));
   assert.deepEqual(r, { total: 2, fetched: 2 },
     "both lines were opened; a zero here is the un-normalised join, which misses ALL of them, not some");
 });
 
-test("2039 AN UNPICKED LINE LEAVES THE DENOMINATOR — the seam contract, measured", () => {
+test("AN UNPICKED LINE LEAVES THE DENOMINATOR — the seam contract, measured", () => {
   // A record the run deliberately never opened is not a fetch that failed. Counting it as one would
   // make this metric fall as the conversion works BETTER, which is the reading the contract forbids.
   assert.deepEqual(scoredFetched(run({ lines: [
@@ -55,21 +55,21 @@ test("2039 AN UNPICKED LINE LEAVES THE DENOMINATOR — the seam contract, measur
   null, "a run with nothing to measure reported a score");
 });
 
-test("2039 a citation the list does not know STAYS in the denominator", () => {
+test("a citation the list does not know STAYS in the denominator", () => {
   // This is the alert half. A scored finding resting on a registration the hit list never enumerated is
   // a claim this metric cannot vouch for, and going quiet about it would be the silence F6 exists to break.
   assert.deepEqual(scoredFetched(run({ lines: [{ id: A, fate: FATES.REPORTED }] })),
     { total: 2, fetched: 1 }, "an unknown citation was dropped instead of counted as unvouched");
 });
 
-test("2039 the FALLBACK holds: no hit list falls back to _records/, neither surface is null", () => {
+test("the FALLBACK holds: no hit list falls back to _records/, neither surface is null", () => {
   // Now the long-term shape rather than a transition: the pile keeps existing until retention is ruled.
   assert.deepEqual(scoredFetched(run({ records: [A] })), { total: 2, fetched: 1 },
     "a pre-conversion run stopped measuring");
   assert.equal(scoredFetched(run({})), null, "neither surface must be no-surface, not a false zero");
 });
 
-test("2039 the picked fates are ENUMERATED, so a new fate is not opened by arithmetic", () => {
+test("the picked fates are ENUMERATED, so a new fate is not opened by arithmetic", () => {
   // `fate >= 1` would read any future fate as opened. A fate this file does not know must fall OUT of
   // the numerator — that shrinks the score and raises this metric's own alarm, where counting it in
   // would inflate the score and say nothing. Loud beats plausible.

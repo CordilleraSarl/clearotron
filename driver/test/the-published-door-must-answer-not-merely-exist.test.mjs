@@ -15,7 +15,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { clientDoorReachability } from "../../shared/client-door.mjs";
 
-test("1959 SET IS NOT REACHABLE — an unprobed address is reported as unprobed, never as green", () => {
+test("SET IS NOT REACHABLE — an unprobed address is reported as unprobed, never as green", () => {
   // The branch the criterion forbids. If this ever returns "pass", the check has become decoration.
   const v = clientDoorReachability({ url: "https://mcp.example.com/mcp" });
   assert.equal(v.state, "unprobed");
@@ -23,7 +23,7 @@ test("1959 SET IS NOT REACHABLE — an unprobed address is reported as unprobed,
   assert.match(v.message, /NOBODY ASKED/, "and it says which half did not run");
 });
 
-test("1959 a configured address that does not answer is a FAULT that names the reason", () => {
+test("a configured address that does not answer is a FAULT that names the reason", () => {
   const refused = clientDoorReachability({ url: "https://mcp.example.com/mcp", probe: { ok: false, error: "ENOTFOUND" } });
   assert.equal(refused.state, "fail");
   assert.match(refused.message, /ENOTFOUND/, "the reason travels — a reader must know what to fix");
@@ -35,7 +35,7 @@ test("1959 a configured address that does not answer is a FAULT that names the r
   assert.match(bad.message, /502/);
 });
 
-test("1959 an UNSET address is the ordinary state of a local install, not a problem", () => {
+test("an UNSET address is the ordinary state of a local install, not a problem", () => {
   // The disk route needs no address at all, so most installs never publish one. Reporting that as a
   // fault would redden every laptop and train a reader to skim the arm that catches a broken deployment.
   const v = clientDoorReachability({ url: null });
@@ -45,7 +45,7 @@ test("1959 an UNSET address is the ordinary state of a local install, not a prob
   }
 });
 
-test("1959 a published address over plain http is refused before anything is probed", () => {
+test("a published address over plain http is refused before anything is probed", () => {
   // A key travels over this. An assistant will refuse the address anyway, so probing first would spend
   // a round trip to arrive at a worse message.
   const v = clientDoorReachability({ url: "http://mcp.example.com/mcp", probe: { ok: true, status: 200 } });
@@ -60,7 +60,7 @@ test("1959 a published address over plain http is refused before anything is pro
   }
 });
 
-test("1959 a malformed address is named as malformed rather than probed", () => {
+test("a malformed address is named as malformed rather than probed", () => {
   const v = clientDoorReachability({ url: "not a url", probe: { ok: true, status: 200 } });
   assert.equal(v.state, "fail");
   assert.match(v.message, /not a URL/);

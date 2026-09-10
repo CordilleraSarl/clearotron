@@ -55,7 +55,7 @@ const ob = () => connotationObligations(RECORDED);
 const rows = () => obligationRows(ob());
 const block = () => renderConnotationObligations(ob(), { dispositionsPath: "/run/_driver/d.json" });
 
-test("#1173 every obligation on the page carries a NUMBER, and it is its position in the driver's row list", () => {
+test("every obligation on the page carries a NUMBER, and it is its position in the driver's row list", () => {
   const text = block();
   const canonical = rows();
   assert.ok(canonical.length >= 2, "premise held: the fixture owes more than one row, or this measures nothing");
@@ -70,7 +70,7 @@ test("#1173 every obligation on the page carries a NUMBER, and it is its positio
   }
 });
 
-test("#1173 the page shows the seat NO row id — not in the list, and not in the instructions", () => {
+test("the page shows the seat NO row id — not in the list, and not in the instructions", () => {
   const text = block();
   for (const r of rows())
     assert.ok(!text.includes(r.row_id),
@@ -81,7 +81,7 @@ test("#1173 the page shows the seat NO row id — not in the list, and not in th
     + "page is refused for obeying it — which is the whole of #1173.");
 });
 
-test("#1173 the receipt ordinals on the page index the SAME list the driver resolves against", () => {
+test("the receipt ordinals on the page index the SAME list the driver resolves against", () => {
   // `receipt_index` resolves against the row's `candidates`, which drops any result the driver could mint
   // no id for; the page used to number `e.results`, which keeps them. One such result and every ordinal
   // below it in that row pointed one candidate off — the seat naming receipt 3 and the driver binding
@@ -96,7 +96,7 @@ test("#1173 the receipt ordinals on the page index the SAME list the driver reso
   }
 });
 
-test("#1173 the accepted shape takes a position and the tool advertises exactly that", () => {
+test("the accepted shape takes a position and the tool advertises exactly that", () => {
   assert.ok(CALL_ROW_FIELDS.includes("row_index"), "the address is a position");
   assert.ok(!CALL_ROW_FIELDS.includes("row_id"), "the id is not in the accepted shape at all");
   // — the ADVERTISEMENT half moved to `dispositions-server.mjs`; the sidecar arm further down
@@ -111,7 +111,7 @@ test("#1173 the accepted shape takes a position and the tool advertises exactly 
     "the schema advertises `row_id` again — a seat reading it would send the one field the validator refuses");
 });
 
-test("#1173 a query string sent as an address is answered with the NUMBER that query is", () => {
+test("a query string sent as an address is answered with the NUMBER that query is", () => {
   // The literal observed payload. The old answer said only that the value was not a row id, which the
   // seat could not act on: nothing it had read carried one.
   const r = validateDispositionCall(
@@ -121,13 +121,13 @@ test("#1173 a query string sent as an address is answered with the NUMBER that q
     "a refusal that cannot name the remedy costs a round trip and teaches nothing");
 });
 
-test("#1173 the tool's ANSWER names outstanding rows by number, not by a token nobody was shown", () => {
+test("the tool's ANSWER names outstanding rows by number, not by a token nobody was shown", () => {
   const left = outstandingWithAnchors(rows(), []);
   assert.equal(left.length, rows().length, "premise held: nothing is ruled, so everything is outstanding");
   assert.deepEqual(left.map((r) => r.row_index), rows().map((_, i) => i + 1));
 });
 
-test("#1173 the addressing list is the order the driver RECORDED, so a mid-turn re-derivation cannot renumber", () => {
+test("the addressing list is the order the driver RECORDED, so a mid-turn re-derivation cannot renumber", () => {
   const canonical = rows();
   const told = ["Q-GONEFROMTHISRUN", ...canonical.map((r) => r.row_id)];
   const addressable = addressableRows(canonical, told);
@@ -142,7 +142,7 @@ test("#1173 the addressing list is the order the driver RECORDED, so a mid-turn 
   assert.equal(r.accepted[0].receipt_id, canonical[0].candidates[0].receipt_id);
 });
 
-test("#1173 a row that appears only in the fresh derivation is APPENDED, never inserted", () => {
+test("a row that appears only in the fresh derivation is APPENDED, never inserted", () => {
   // A ledger top-up is the case: it adds obligations, and inserting one ahead of a row the seat is
   // holding would re-point that seat's number at a different obligation. Accepted, not refused. Silent.
   const canonical = rows();
@@ -152,7 +152,7 @@ test("#1173 a row that appears only in the fresh derivation is APPENDED, never i
   assert.equal(addressable[1], canonical[0], "the row it was never shown lands after it");
 });
 
-test("#1173 the driver records the order at the moment it renders the page", () => {
+test("the driver records the order at the moment it renders the page", () => {
   // The sidecar is written by perplexity-server.mjs and read by disposition-tool.mjs. Both ends must
   // spell its path the same way, which is why there is one function for it (/) — and the reader
   // fails OPEN, so a drift here would silently fall back to renumbering rather than erroring.

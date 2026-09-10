@@ -48,7 +48,7 @@ const runRecords = (terms) => ({
 
 // ── the refusal ──────────────────────────────────────────────────────────────────────────────────────
 
-test("#814 a knockout against a similar-marks sheet is REFUSED, and the refusal says why", () => {
+test("a knockout against a similar-marks sheet is REFUSED, and the refusal says why", () => {
   const why = referenceLaneMismatch({ lane: "knockout", ref: SIMILAR_MARKS_SHEET });
   assert.ok(why, "the pairing that produced 0/8 twice in one day must not score at all");
   assert.match(why, /KNOCKOUT lane/);
@@ -57,18 +57,18 @@ test("#814 a knockout against a similar-marks sheet is REFUSED, and the refusal 
   assert.match(why, /R3/, "and which scenario, so a batch run says which one stopped");
 });
 
-test("#814 a knockout WITH a counts block scores normally", () => {
+test("a knockout WITH a counts block scores normally", () => {
   assert.equal(referenceLaneMismatch({ lane: "knockout", ref: COUNT_SHEET }), null);
 });
 
-test("#814 the clearance lane is untouched — a similar-marks sheet is the RIGHT reference there", () => {
+test("the clearance lane is untouched — a similar-marks sheet is the RIGHT reference there", () => {
   // The other half of the issue: the lawyer sheets stay the gold sets where the product promises
   // retrieval of similar marks. A refusal that fired on R2/R6 would delete the programme's main measure.
   for (const lane of ["clearance", "register", "clearotron"])
     assert.equal(referenceLaneMismatch({ lane, ref: SIMILAR_MARKS_SHEET }), null, `${lane} must still score`);
 });
 
-test("#814 an empty counts array does not satisfy the refusal", () => {
+test("an empty counts array does not satisfy the refusal", () => {
   // `counts: []` is a gold set someone started and did not finish. Reading it as "count-shaped" would
   // score the knockout against nothing at all and print a clean sheet.
   assert.ok(referenceLaneMismatch({ lane: "knockout", ref: { ...SIMILAR_MARKS_SHEET, counts: [] } }));
@@ -76,7 +76,7 @@ test("#814 an empty counts array does not satisfy the refusal", () => {
 
 // ── the count axis ───────────────────────────────────────────────────────────────────────────────────
 
-test("#814 a count inside the lawyer's range is in-range; outside it says which side", () => {
+test("a count inside the lawyer's range is in-range; outside it says which side", () => {
   const at = (total) => scoreCounts({ counts: COUNT_SHEET.counts, registerCounts: runCounts(total),
     registerRecords: runRecords(["CORALFREEZE", "CORAL-FREEZE"]) }).rows[0];
   assert.equal(at(2).state, "in-range");
@@ -86,7 +86,7 @@ test("#814 a count inside the lawyer's range is in-range; outside it says which 
   assert.equal(at(2).counted, 2, "the figure itself is reported, never only the verdict");
 });
 
-test("#814 a count BELOW the floor is the recall regression this axis exists to catch", () => {
+test("a count BELOW the floor is the recall regression this axis exists to catch", () => {
   const row = scoreCounts({
     counts: [{ mark: "CORAL FREEZE", identical: { min: 3, max: 9 } }],
     registerCounts: runCounts(1),
@@ -94,7 +94,7 @@ test("#814 a count BELOW the floor is the recall regression this axis exists to 
   assert.equal(row.state, "below-range");
 });
 
-test("#814 the close variations are graded on whether the run PUT THEM to the register", () => {
+test("the close variations are graded on whether the run PUT THEM to the register", () => {
   // Asked-and-answered-zero is a fact about the register. Never asked is a fact about the engine, and it
   // is the one "CORALFREEZE no longer caught" produces. They must not read the same.
   const { rows } = scoreCounts({ counts: COUNT_SHEET.counts, registerCounts: runCounts(2),
@@ -105,7 +105,7 @@ test("#814 the close variations are graded on whether the run PUT THEM to the re
   ]);
 });
 
-test("#814 variation matching is case- and whitespace-insensitive, not a literal compare", () => {
+test("variation matching is case- and whitespace-insensitive, not a literal compare", () => {
   const { rows } = scoreCounts({ counts: COUNT_SHEET.counts, registerCounts: runCounts(2),
     registerRecords: runRecords([" coralfreeze ", "coral-freeze"]) });
   assert.ok(rows[0].variations.every((v) => v.counted),
@@ -114,13 +114,13 @@ test("#814 variation matching is case- and whitespace-insensitive, not a literal
 
 // ── the absences, which must never read as passes ────────────────────────────────────────────────────
 
-test("#814 no counts sidecar is a FINDING, not a row of in-range zeros", () => {
+test("no counts sidecar is a FINDING, not a row of in-range zeros", () => {
   const out = scoreCounts({ counts: COUNT_SHEET.counts, registerCounts: null });
   assert.match(out.missingArtifact ?? "", /register-counts\.json is absent/);
   assert.deepEqual(out.rows, [], "no rows at all — an ungraded run must not print a graded one");
 });
 
-test("#814 a mark the run never counted is named, not skipped", () => {
+test("a mark the run never counted is named, not skipped", () => {
   const row = scoreCounts({
     counts: COUNT_SHEET.counts,
     registerCounts: { schema: 1, marks: [{ name: "SOMETHING ELSE", counts: { identical: { total: 3 } } }] },
@@ -130,21 +130,21 @@ test("#814 a mark the run never counted is named, not skipped", () => {
   assert.match(row.why, /holds no entry for this mark/);
 });
 
-test("#814 a records sidecar that is absent is reported, not rendered as every form uncounted", () => {
+test("a records sidecar that is absent is reported, not rendered as every form uncounted", () => {
   const out = scoreCounts({ counts: COUNT_SHEET.counts, registerCounts: runCounts(2), registerRecords: null });
   assert.match(out.missingArtifact ?? "", /register-records\.json is absent/);
 });
 
 // ── the schema, and the migration ────────────────────────────────────────────────────────────────────
 
-test("#814 every gold set in the config store keeps validating — counts is optional", () => {
+test("every gold set in the config store keeps validating — counts is optional", () => {
   assert.deepEqual(validateReference(SIMILAR_MARKS_SHEET), []);
   assert.equal(REFERENCE_SCHEMA_VERSION, 1,
     "the version must NOT move: validateReference refuses any other value, so a bump stops every "
     + "existing gold set scoring at once");
 });
 
-test("#814 a well-formed counts block validates, and a malformed one is an ERROR not an ignore", () => {
+test("a well-formed counts block validates, and a malformed one is an ERROR not an ignore", () => {
   assert.deepEqual(validateReference(COUNT_SHEET), []);
   const bad = (counts) => validateReference({ ...SIMILAR_MARKS_SHEET, counts });
   assert.match(bad([{ identical: { min: 1 } }]).join(" "), /counts\[0\] has no `mark`/);

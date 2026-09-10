@@ -46,7 +46,7 @@ const withCreds = (enrolled) => {
   return { OAUTH_BRIDGE_CREDS_DIR: dir };
 };
 
-test("2087 arm 1 — the sources are the ones the engine actually spawns, not a list typed here", () => {
+test("arm 1 — the sources are the ones the engine actually spawns, not a list typed here", () => {
   const rows = caseLawInventory(withCreds([]));
   const enrollable = rows.filter((r) => r.enrolment === "oauth").map((r) => r.provider);
   assert.deepEqual([...enrollable].sort(), [...CASELAW_BRIDGES].sort(),
@@ -59,7 +59,7 @@ test("2087 arm 1 — the sources are the ones the engine actually spawns, not a 
   }
 });
 
-test("2087 arm 2 — readiness is enrolment, read off the filesystem, and says it is not reachability", () => {
+test("arm 2 — readiness is enrolment, read off the filesystem, and says it is not reachability", () => {
   const none = caseLawInventory(withCreds([]));
   assert.deepEqual(none.filter((r) => r.enrolment === "oauth").map((r) => r.configured), [false, false]);
 
@@ -85,7 +85,7 @@ test("2087 arm 2 — readiness is enrolment, read off the filesystem, and says i
   assert.doesNotMatch(body, /\bfetch\(|https?:\/\/[a-z]/i, "the inventory reaches the network");
 });
 
-test("2087 arm 3 — a lane that is part of the build is not evidence an enrolled one is set up", () => {
+test("arm 3 — a lane that is part of the build is not evidence an enrolled one is set up", () => {
   // EUR-Lex reads through the engine's own fetch tool, so it is always `configured: true`. Reading
   // "any configured case-law row" would report EVERY deployment as ready and the composer's warning
   // would never fire — on the exact box it was written for.
@@ -103,7 +103,7 @@ test("2087 arm 3 — a lane that is part of the build is not evidence an enrolle
   assert.equal(caseLawReadyFor(null), null);
 });
 
-test("2087 arm 4 — the composer warns off the PRODUCT'S declaration, and only on a measured absence", () => {
+test("arm 4 — the composer warns off the PRODUCT'S declaration, and only on a measured absence", () => {
   // The product that needs case law is whichever one says so. A warning keyed on an id would go stale
   // the day the offering changes, silently, on the screen that spends money.
   const needs = PRODUCTS.filter((p) => p.caseLaw);
@@ -123,7 +123,7 @@ test("2087 arm 4 — the composer warns off the PRODUCT'S declaration, and only 
   assert.match(note, /report states the gap/, "it does not say what the reader gets instead");
 });
 
-test("2087 arm 5 — the other three gaps from the same report get the same treatment", () => {
+test("arm 5 — the other three gaps from the same report get the same treatment", () => {
   // "WebSearch unavailable this session", "no EUIPO Boards-of-Appeal source", "no lead to fetch on
   // EUR-Lex" were the rest of that coverage-gaps line. Each is a capability the deployment either has
   // or does not, and each was first mentioned in the output.
@@ -142,7 +142,7 @@ test("2087 arm 5 — the other three gaps from the same report get the same trea
   assert.match(web.remedy, /unavailable for a single session/, "the row promises a lane it cannot promise");
 });
 
-test("2087 arm 6 — doctor and install both name it, and install still collects nothing", () => {
+test("arm 6 — doctor and install both name it, and install still collects nothing", () => {
   const onboard = readFileSync(fileURLToPath(new URL("../../bin/onboard.mjs", import.meta.url)), "utf8");
   assert.match(onboard, /say\("\\n {2}Case law and other capabilities"\)/, "doctor has no case-law section");
   assert.match(onboard, /say\("\\n {2}Case law"\)/, "install never names the lane");

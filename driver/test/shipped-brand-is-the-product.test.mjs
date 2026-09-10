@@ -43,7 +43,7 @@ const read = (p) => readFileSync(join(REPO, p), "utf8");
 // really asking the same question: can an installer who sets nothing still publish these?
 const FIRM = /Cordillera|IP Law/;
 
-test("#1376 arm A — the shipped defaults name the PRODUCT, and the tagline defaults to nothing", () => {
+test("arm A — the shipped defaults name the PRODUCT, and the tagline defaults to nothing", () => {
   // Read the source rather than the imported value: BRAND is env-read at import, so a test that only
   // looked at BRAND.name would go green on any box that happens to export CLEAROTRON_BRAND_NAME — which is
   // every deployment, and is precisely the reader who cannot see this defect.
@@ -65,7 +65,7 @@ test("#1376 arm A — the shipped defaults name the PRODUCT, and the tagline def
     "a default behind the brand seam names a firm again — an installer who sets nothing would publish it");
 });
 
-test("#1376 arm B — an unset tagline renders as ABSENT, not as an empty element or a stray separator", () => {
+test("arm B — an unset tagline renders as ABSENT, not as an empty element or a stray separator", () => {
   // The distinction is the whole requirement. An empty <span class="lk-tag"></span> still occupies the
   // lockup's flex column and still draws its 5px top margin, so a "blank" strapline is a visible gap
   // under the wordmark rather than no strapline — and it reads as a rendering fault, which is worse than
@@ -84,7 +84,7 @@ test("#1376 arm B — an unset tagline renders as ABSENT, not as an empty elemen
   assert.match(read("shared/brand.mjs"), /logoLockup = \(\{ mark = 30, tag = BRAND\.tagline/);
 });
 
-test("#1376 arm B2 — the lockup carries no national flag, on THIS renderer as well as the portal's", () => {
+test("arm B2 — the lockup carries no national flag, on THIS renderer as well as the portal's", () => {
   // NOT A NEW RULING. removed the flag from the portal's lockup when the product was renamed, and
   // portal-ui/test/lockup.test.ts pins its absence with the reason: "the flag is gone — this is not a
   // Swiss firm's internal tool". There are TWO lockups — Logo.tsx for the portal shell, logoLockup here
@@ -103,7 +103,7 @@ test("#1376 arm B2 — the lockup carries no national flag, on THIS renderer as 
   assert.match(logo, /class="lk-mark"/, "the ridge mark still renders — the flag made the claim, not the shape");
 });
 
-test("#1376 arm C — neither report renderer passes a hardcoded strapline", () => {
+test("arm C — neither report renderer passes a hardcoded strapline", () => {
   // driver/publish/render.mjs is hash-frozen, so this arm is not redundant with the freeze: the freeze
   // says "these bytes changed", this says WHICH way they may not change back. render-knockout.mjs is not
   // frozen at all and had the identical literal, which is how the pair drifts.
@@ -149,7 +149,7 @@ const EMITTERS = [
 
 const GUARD = "#1376 shipped-brand emitters";
 
-test("#1376 arm D — no module that emits client-visible copy carries the firm name in a literal", (t) => {
+test("arm D — no module that emits client-visible copy carries the firm name in a literal", (t) => {
   // The corpus comes from shared/tracked-files.mjs, not a raw `git ls-files`: a tree with no checkout
   // must SKIP loudly rather than produce a wall of failures that say nothing about branding.
   const files = trackedFiles(GUARD, { root: REPO });
@@ -174,7 +174,7 @@ test("#1376 arm D — no module that emits client-visible copy carries the firm 
     + offenders.join("\n"));
 });
 
-test("#1376 arm E — the CHROME the pages actually carry names no firm, encoded or plain", () => {
+test("arm E — the CHROME the pages actually carry names no firm, encoded or plain", () => {
   // Arm D reads source; this reads what the modules EMIT, and the two are not the same question. The
   // defect that proved it: `WATERMARK_URI` URL-encoded the ridge asset whole, aria-label included, so
   // every page's <style> carried `aria-label%3D%22Cordillera%22` — invisible to a source grep for the
@@ -217,7 +217,7 @@ const DECLARED_IN_BUNDLE = [
     re: /trade marks of Cordillera S/ },
 ];
 
-test("#1376 arm F — the built portal bundle carries only the DECLARED firm references", (ctx) => {
+test("arm F — the built portal bundle carries only the DECLARED firm references", (ctx) => {
   const dir = join(REPO, "portal-ui", "dist", "assets");
   // BUILD OUTPUT, NOT SOURCE. `portal-ui/dist` is withheld from the public cut, so this arm has nothing
   // to read there. A STATED skip, never a silent pass — and note the arm below already refuses an EMPTY

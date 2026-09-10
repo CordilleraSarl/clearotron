@@ -44,13 +44,13 @@ function dispatchesOf(stageName) {
   return out;
 }
 
-test("#1503 the fixture finds the dispatches at all — a zero here is an instrument fault, not a clean repo", () => {
+test("the fixture finds the dispatches at all — a zero here is an instrument fault, not a clean repo", () => {
   assert.ok(dispatchesOf("synthesis").length >= 4,
     `found ${dispatchesOf("synthesis").length} synthesis dispatches; the arms below would pass over an empty list`);
   assert.ok(dispatchesOf("placement-inquiry").length >= 1, "found no placement-inquiry dispatch");
 });
 
-test("#1503 every WARM synthesis dispatch carries the charter", () => {
+test("every WARM synthesis dispatch carries the charter", () => {
   // Warm = resumes a session, so it sends only its followup. Fresh dispatches rebuild the message and
   // get the directive from the builder; they are not required to say so twice.
   const missing = dispatchesOf("synthesis")
@@ -62,7 +62,7 @@ test("#1503 every WARM synthesis dispatch carries the charter", () => {
     + "reached a client.");
 });
 
-test("#1503 every warm PLACEMENT-INQUIRY dispatch carries it too — the family rule has no exceptions list", () => {
+test("every warm PLACEMENT-INQUIRY dispatch carries it too — the family rule has no exceptions list", () => {
   // Today the inquiry family has no warm dispatch, so this passes vacuously — and it is written anyway,
   // because the next one added would otherwise inherit the exact defect this issue is about. An
   // exceptions list is where the next one comes from.
@@ -72,13 +72,13 @@ test("#1503 every warm PLACEMENT-INQUIRY dispatch carries it too — the family 
   assert.deepEqual(missing.map((d) => d.opts.slice(0, 90)), []);
 });
 
-test("#1503 the charter IS the fresh dispatch's directive — one string, not two that agree today", () => {
+test("the charter IS the fresh dispatch's directive — one string, not two that agree today", () => {
   assert.equal(stageCharter("synthesis", depth(WORLDWIDE)).trim(), proseRungDirective(depth(WORLDWIDE)).trim());
   assert.equal(stageCharter("placement-inquiry", depth(WORLDWIDE)).trim(), inquiryRungDirective(depth(WORLDWIDE)).trim());
   assert.ok(stageCharter("synthesis", depth(WORLDWIDE)).length > 100, "the fixture composed nothing to compare");
 });
 
-test("#1503 the UNGRADED product adds nothing, and an unknown stage adds nothing", () => {
+test("the UNGRADED product adds nothing, and an unknown stage adds nothing", () => {
   // Byte-identical by construction on P4: the charter is empty, so a warm dispatch there sends exactly
   // what it sent before this landed.
   assert.equal(stageCharter("synthesis", depth(ONE)), "");
@@ -140,7 +140,7 @@ const chartered = (o) => /stageCharter\(|correctionsExtra\(/.test(o);
 const bitesHere = (s) => hasProp(s.opts, "sessionKey") && hasProp(s.opts, "followup")
   && (!s.name.startsWith('"') || GRADED_LITERAL.test(s.name));
 
-test("#1603 every warm dispatch that could carry a charter does — counted, not merely non-empty", () => {
+test("every warm dispatch that could carry a charter does — counted, not merely non-empty", () => {
   const sites = dispatchSites(SRC);
   // CONTROL 1 — the scanner found dispatches at all. A balanced-brace walk that matched nothing would
   // agree with every assertion below over an empty list.
@@ -160,7 +160,7 @@ test("#1603 every warm dispatch that could carry a charter does — counted, not
     + "re-emits under the DEFAULT contract while the fresh pass ran under the graded one");
 });
 
-test("#1603 the charter is safe at a site whose stage is only known at run time", () => {
+test("the charter is safe at a site whose stage is only known at run time", () => {
   // Why appending it unconditionally at the variable-name sites is correct rather than merely convenient:
   // stageCharter returns "" for every stage it does not serve, so a re-emit of common-law or
   // register-unit is byte-identical to before.

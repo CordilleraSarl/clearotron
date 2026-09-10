@@ -43,7 +43,7 @@ const fold = (lines) => {
   return mcpToolGauge(ev);
 };
 
-test("1968 a refused call and a turn that called nothing are different records", () => {
+test("a refused call and a turn that called nothing are different records", () => {
   const refused = fold(REFUSED);
   const nothing = fold([`{"type":"turn.completed"}`]);
 
@@ -57,7 +57,7 @@ test("1968 a refused call and a turn that called nothing are different records",
   assert.equal(nothing.mcpToolCallsRefused, 0);
 });
 
-test("1968 the refusal carries WHY, taken from the stream and never pattern-matched", () => {
+test("the refusal carries WHY, taken from the stream and never pattern-matched", () => {
   const { mcpToolCallRefusals } = fold(REFUSED);
   assert.deepEqual(mcpToolCallRefusals, [{
     server: "probe", tool: "ping",
@@ -74,7 +74,7 @@ test("1968 the refusal carries WHY, taken from the stream and never pattern-matc
     "…and its own reason survives, rather than being reported as the approval-policy one");
 });
 
-test("1968 a tool that RAN and errored is not a refusal", () => {
+test("a tool that RAN and errored is not a refusal", () => {
   // ✕ THE DISTINCTION THE WHOLE ISSUE IS ABOUT, and the first cut of this gauge could not draw it.
   // Measured against our own band server: a call refused by the approval policy carries
   // `error.message`; a call that reached the server and whose tool errored carries `error: null` and
@@ -91,7 +91,7 @@ test("1968 a tool that RAN and errored is not a refusal", () => {
   assert.equal(fold(REFUSED).mcpToolCallsRefused, 1);
 });
 
-test("1968 a completed call is counted once, not twice", () => {
+test("a completed call is counted once, not twice", () => {
   // Items arrive TWICE with the same id — `in_progress` on item.started, then a terminal status on
   // item.completed. Counting lines instead of keying by id doubles every call, and the inflated number
   // would have looked like the fix working harder.
@@ -101,7 +101,7 @@ test("1968 a completed call is counted once, not twice", () => {
   assert.deepEqual(g.mcpToolCallRefusals, []);
 });
 
-test("1968 an in-flight call is neither completed nor refused", () => {
+test("an in-flight call is neither completed nor refused", () => {
   // The turn was killed mid-call. `in_progress` is not a refusal: reporting it as one would invent
   // failures on every hard-wall kill, and this gauge is what a reader would use to blame the engine.
   const g = fold([REFUSED[0]]);
@@ -109,7 +109,7 @@ test("1968 an in-flight call is neither completed nor refused", () => {
   assert.equal(g.mcpToolCallsRefused, 0, "an unfinished call is unknown, not refused");
 });
 
-test("1968 the refusal list is bounded, and the count still says how many there were", () => {
+test("the refusal list is bounded, and the count still says how many there were", () => {
   const many = [];
   for (let i = 1; i <= 9; i++) {
     many.push(`{"type":"item.completed","item":{"id":"item_${i}","type":"mcp_tool_call","server":"band","tool":"band_shape","result":null,"error":{"message":"MCP tool call requires approval, but approval policy is never"},"status":"failed"}}`);
@@ -119,7 +119,7 @@ test("1968 the refusal list is bounded, and the count still says how many there 
   assert.equal(g.mcpToolCallRefusals.length, 5, "the list is capped: a row is not a log");
 });
 
-test("1968 the gauge is unconditional, so an absence cannot be told from a record that predates it", () => {
+test("the gauge is unconditional, so an absence cannot be told from a record that predates it", () => {
   // The house rule for every gauge on this row. An engine that made no MCP calls writes zeros; it does
   // not omit the fields, because an omitted field and an old record are the same bytes.
   const g = fold([`{"type":"turn.completed"}`]);

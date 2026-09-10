@@ -39,13 +39,13 @@ const boundaryCovers = (a, root) => boundaryTrees(a).some((t) => String(t.path).
 
 // ── PROOF 1 — red-before-green, in both directions ──────────────────────────────────────────────────
 
-test("#1022 a dispatch that NAMES a path under the run dir KEEPS the grant", () => {
+test("a dispatch that NAMES a path under the run dir KEEPS the grant", () => {
   const { args: a } = args({ message: `Write your output to ${driverDir(RUN, "report-card-3.json")}.`, seatWrites: true });
   assert.ok(granted(a), "a stage told where to write lost the root it writes into");
   assert.ok(boundaryCovers(a, RUN), "the deny-hook boundary stopped covering a root that WAS granted");
 });
 
-test("#1022 a dispatch that names NONE drops it — and the boundary drops with it", () => {
+test("a dispatch that names NONE drops it — and the boundary drops with it", () => {
   const { args: a } = args({ message: "Render this one card from the record inlined below. Write nothing.", seatWrites: false });
   assert.ok(!granted(a), "the run-dir root is still granted to a seat that names no path and writes nothing");
   // THE HALF THAT MATTERS MOST. The comment at the grant says the boundary is "derived HERE from the same
@@ -56,7 +56,7 @@ test("#1022 a dispatch that names NONE drops it — and the boundary drops with 
     + "which is precisely what the one-site rule at the grant exists to prevent");
 });
 
-test("#1022 the skills roots are untouched in both directions — only the run dir is at stake", () => {
+test("the skills roots are untouched in both directions — only the run dir is at stake", () => {
   for (const m of [`out: ${join(RUN, "x.json")}`, "no paths here"]) {
     const { args: a } = args({ message: m, seatWrites: false });
     const i = a.indexOf(SKILLS);
@@ -66,7 +66,7 @@ test("#1022 the skills roots are untouched in both directions — only the run d
 
 // ── PROOF 2 — the cross-check must be SEEN firing ───────────────────────────────────────────────────
 
-test("#1022/2084 DECLARED write-free and the dispatch ORDERS a write — the loud row fires, grant kept", () => {
+test("DECLARED write-free and the dispatch ORDERS a write — the loud row fires, grant kept", () => {
   // The ruling's third plant, RE-AIMED by: the old fixture here was a READ hand-over
   // ("See <path> for context.") asserted loud — and measured across the write-free stages that exact
   // shape fired SEVEN times on every healthy run, because handing a path over to read is what the
@@ -88,20 +88,20 @@ test("#1022/2084 DECLARED write-free and the dispatch ORDERS a write — the lou
   assert.ok(granted(read.args), "the read hand-over lost the grant it exists to earn");
 });
 
-test("#1022 DECLARED to author a file but the dispatch names nowhere — also loud, also kept", () => {
+test("DECLARED to author a file but the dispatch names nowhere — also loud, also kept", () => {
   const { args: a, grantNote } = args({ message: "Write your findings. (no path)", seatWrites: true });
   assert.ok(grantNote, "a writing stage with no output path in its dispatch passed in silence");
   assert.match(grantNote, /names NO path/);
   assert.ok(granted(a), "a stage declared to author a file lost the root it authors into");
 });
 
-test("#1022 agreement is SILENT — the row is a disagreement signal, not a per-turn log line", () => {
+test("agreement is SILENT — the row is a disagreement signal, not a per-turn log line", () => {
   for (const [message, seatWrites] of [[`out ${join(RUN, "a.json")}`, true], ["nothing", false]]) {
     assert.equal(args({ message, seatWrites }).grantNote, null, `agreement produced a row: ${message}`);
   }
 });
 
-test("#1022 an UNKNOWN declaration keeps the grant — this can only narrow stages we established", () => {
+test("an UNKNOWN declaration keeps the grant — this can only narrow stages we established", () => {
   // A stage with no recording row declares nothing, and the gateway passes null. Unknown must behave
   // exactly as today, or the change reaches stages nobody measured.
   const { args: a, grantNote } = args({ message: "no paths at all", seatWrites: null });
@@ -109,14 +109,14 @@ test("#1022 an UNKNOWN declaration keeps the grant — this can only narrow stag
   assert.equal(grantNote, null);
 });
 
-test("#1022 no run dir at all is not a grant and not a disagreement", () => {
+test("no run dir at all is not a grant and not a disagreement", () => {
   const r = runDirGrant({ runDir: null, dispatch: "anything", seatWrites: false });
   assert.deepEqual(r, { grant: false, names: false, note: null });
 });
 
 // ── PROOF 3 — the population, derived so nobody re-derives ten ──────────────────────────────────────
 
-test("#1022 the seat-write-free population is FOURTEEN, read from the frozen table", () => {
+test("the seat-write-free population is FOURTEEN, read from the frozen table", () => {
   // A naive grep for `seatWrites: false` returns more hits than the population: some are comment text,
   // one in blind-frame's FIRST OCCUPANT note and one in allowedToolsFor's own paragraph. A fix
   // sized from the grep widens itself by stages that were never in the set — which is why this is
@@ -160,7 +160,7 @@ test("#1022 the seat-write-free population is FOURTEEN, read from the frozen tab
   ]);
 });
 
-test("#1022 the declaration the adapter cross-checks is the SAME derivation allowedToolsFor uses", () => {
+test("the declaration the adapter cross-checks is the SAME derivation allowedToolsFor uses", () => {
   // Two readers of "does this seat write" that can disagree is the shape of defect this repo keeps
   // finding, so the predicate is exported and shared rather than copied into the adapter's caller.
   assert.equal(seatWritesForGroups([]), true, "no recording group ⇒ an ordinary authoring stage");

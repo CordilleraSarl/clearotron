@@ -59,7 +59,7 @@ const mkRepo = () => {
  */
 const provenanceIn = async (dir) => (await import("../engine-build.mjs")).classifyEngineCheckout(dir);
 
-test("#1423 a CLEAN checkout reports its sha, its branch, and no dirt", async () => {
+test("a CLEAN checkout reports its sha, its branch, and no dirt", async () => {
   const r = mkRepo();
   try {
     const p = await provenanceIn(r.dir);
@@ -72,7 +72,7 @@ test("#1423 a CLEAN checkout reports its sha, its branch, and no dirt", async ()
   } finally { rmSync(r.dir, { recursive: true, force: true }); }
 });
 
-test("#1423 A DIRTY TREE IS SAID TO BE DIRTY — the sha alone would name code the run did not execute", async () => {
+test("A DIRTY TREE IS SAID TO BE DIRTY — the sha alone would name code the run did not execute", async () => {
   const r = mkRepo();
   try {
     writeFileSync(join(r.dir, "a.txt"), "one\ntwo\n");   // tracked, modified
@@ -86,7 +86,7 @@ test("#1423 A DIRTY TREE IS SAID TO BE DIRTY — the sha alone would name code t
   } finally { rmSync(r.dir, { recursive: true, force: true }); }
 });
 
-test("#1423 AN UNTRACKED FILE IS DIRT — `--untracked-files=no` hides exactly the hand-dropped file", async () => {
+test("AN UNTRACKED FILE IS DIRT — `--untracked-files=no` hides exactly the hand-dropped file", async () => {
   // The doctrine store's classifier learned this the expensive way (driver/stray-artifacts.mjs exists
   // because files appeared in a tree no commit knew about). Same rule, same reason, one repo over.
   const r = mkRepo();
@@ -98,7 +98,7 @@ test("#1423 AN UNTRACKED FILE IS DIRT — `--untracked-files=no` hides exactly t
   } finally { rmSync(r.dir, { recursive: true, force: true }); }
 });
 
-test("#1423 A DETACHED HEAD reports the commit it is ON, with branch null — a pinned box is the normal case", async () => {
+test("A DETACHED HEAD reports the commit it is ON, with branch null — a pinned box is the normal case", async () => {
   const r = mkRepo();
   try {
     writeFileSync(join(r.dir, "a.txt"), "one\ntwo\n");
@@ -111,7 +111,7 @@ test("#1423 A DETACHED HEAD reports the commit it is ON, with branch null — a 
   } finally { rmSync(r.dir, { recursive: true, force: true }); }
 });
 
-test("#1423 NOT A CHECKOUT is BLOCKED, which is not clean — could-not-determine is its own answer", async () => {
+test("NOT A CHECKOUT is BLOCKED, which is not clean — could-not-determine is its own answer", async () => {
   const d = mkdtempSync(join(tmpdir(), "eng-prov-nogit-"));
   try {
     const p = await provenanceIn(d);
@@ -126,7 +126,7 @@ test("#1423 NOT A CHECKOUT is BLOCKED, which is not clean — could-not-determin
 
 // ── the wiring: the stamp is at run START, in the run's own directory ──────────────────────────────
 
-test("#1423 the stamp is written where a FAILED run keeps it — the run dir, not the pool copy", () => {
+test("the stamp is written where a FAILED run keeps it — the run dir, not the pool copy", () => {
   const src = read("driver/pipeline.mjs");
   const at = src.indexOf('event: "engine-build"');
   assert.ok(at > 0, "pipeline.mjs no longer logs the engine-build event");
@@ -143,7 +143,7 @@ test("#1423 the stamp is written where a FAILED run keeps it — the run dir, no
   assert.match(src.slice(at - 200, at + 60), /runLog\(run\.runDir, \{ event: "engine-build"/);
 });
 
-test("#1423 THE KEY NAMES ITS REPOSITORY — `run.jsonl` already carries a different repo's `head`", () => {
+test("THE KEY NAMES ITS REPOSITORY — `run.jsonl` already carries a different repo's `head`", () => {
   const src = read("driver/pipeline.mjs");
   // The doctrine store's row is the one that was mistaken for the engine's. Both must exist, and the
   // engine's must not use the bare key.
@@ -155,7 +155,7 @@ test("#1423 THE KEY NAMES ITS REPOSITORY — `run.jsonl` already carries a diffe
     + "carrying two repositories' commits under one name is the confusion this issue was filed about");
 });
 
-test("#1423 engineCommit()'s CONTRACT IS UNTOUCHED — four consumers read a bare string", async () => {
+test("engineCommit()'s CONTRACT IS UNTOUCHED — four consumers read a bare string", async () => {
   // pins the import line and the literal call in the publisher; report-data.json, both meta.json
   // writers and /portal/health read a string. The new answer is a SIBLING, and this is what says so.
   const m = await import("../engine-build.mjs");
@@ -170,7 +170,7 @@ test("#1423 engineCommit()'s CONTRACT IS UNTOUCHED — four consumers read a bar
   if (v && p.engineHead) assert.equal(p.engineHead, v, "the sibling and engineCommit() disagree about HEAD");
 });
 
-test("#1423 the e2e report READS it and prints an absence as an absence", () => {
+test("the e2e report READS it and prints an absence as an absence", () => {
   const src = read("scripts/e2e.mjs");
   assert.match(src, /export function engineBuildOf\(runDir\)/, "the reader is exported for its own test");
   assert.match(src, /engine build: NOT RECORDED/,
@@ -179,7 +179,7 @@ test("#1423 the e2e report READS it and prints an absence as an absence", () => 
   assert.match(src, /engineBuildOf\(run\.runDir\)/, "and the report actually calls it per run");
 });
 
-test("#1423 engineBuildOf: the LAST segment wins, and a mid-run engine change is visible", async () => {
+test("engineBuildOf: the LAST segment wins, and a mid-run engine change is visible", async () => {
   const { engineBuildOf } = await import("../../scripts/e2e.mjs");
   const d = mkdtempSync(join(tmpdir(), "eb-read-"));
   try {
@@ -208,7 +208,7 @@ test("#1423 engineBuildOf: the LAST segment wins, and a mid-run engine change is
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1423 the freeze does NOT carry the stamp into a public worked example", () => {
+test("the freeze does NOT carry the stamp into a public worked example", () => {
   // Non-obvious interaction, checked rather than assumed: freezes a real run into a shippable
   // example, and a public example carrying an internal commit would be a leak. `run.jsonl` is on
   // freeze-example-run.mjs's DELIBERATELY DROPPED list, so the stamp cannot reach one.

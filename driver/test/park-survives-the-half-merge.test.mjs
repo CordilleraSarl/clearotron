@@ -65,7 +65,7 @@ const parkedRow = (u) => u.form.rows.find((r) => r.row_id === ID);
 
 // ── the two park kinds, each across the boundary ─────────────────────────────────────────────────────
 
-test("#1277 a DECLARED park survives the merge with its kind, its sentence and its count", () => {
+test("a DECLARED park survives the merge with its kind, its sentence and its count", () => {
   const h = half(declaredRow());
   assert.equal(h.parked, 1, "the fixture did not park in the half — the merge below would prove nothing");
   const m = mergeOf(h, { refusals: 2 });
@@ -77,7 +77,7 @@ test("#1277 a DECLARED park survives the merge with its kind, its sentence and i
   assert.equal(row.parked_refusals, 2, "the cost the run really spent was reset to zero");
 });
 
-test("#1277 an EXHAUSTED park survives the merge too — this is not specific to the declared exit", () => {
+test("an EXHAUSTED park survives the merge too — this is not specific to the declared exit", () => {
   // `wasParked` reads only the prior, so ANY park erased at the merge. An exhausted park at the bound
   // vanished identically from the day the park shipped; the declared exit only made it reachable in one
   // call instead of thirty refusals.
@@ -90,7 +90,7 @@ test("#1277 an EXHAUSTED park survives the merge too — this is not specific to
   assert.equal(row.parked_refusals, 30);
 });
 
-test("#1277 the merged census reports the row as PARKED, not as a ruled row owing a quote", () => {
+test("the merged census reports the row as PARKED, not as a ruled row owing a quote", () => {
   // The failure the run actually died of: `connotation_quote_unbound`. The row must be surfaced as
   // undecided — un-owing it silently is the lying receipt and the opposite defect.
   const m = mergeOf(half(declaredRow()), { refusals: 2 });
@@ -103,7 +103,7 @@ test("#1277 the merged census reports the row as PARKED, not as a ruled row owin
 
 // ── the void control: this is what the outage looked like ───────────────────────────────────────────
 
-test("#1277 VOID CONTROL — the old argument order still loses the park, so these tests can fail", () => {
+test("VOID CONTROL — the old argument order still loses the park, so these tests can fail", () => {
   // Halves on the SEAT side with an empty prior: `s.obstacle` is absent (a form never carries it) and
   // `p.parked` has nothing to read. Both miss and all four fields clear. If this ever stops losing the
   // park, the assertions above have stopped distinguishing anything and this file is decorative.
@@ -118,7 +118,7 @@ test("#1277 VOID CONTROL — the old argument order still loses the park, so the
 
 // ── the property that forbids the easy fix ──────────────────────────────────────────────────────────
 
-test("#1277 a SUBMISSION cannot park a row by claiming it — the seat may not widen its own state", () => {
+test("a SUBMISSION cannot park a row by claiming it — the seat may not widen its own state", () => {
   // The one-line fix — read `s.parked` — would let a model park any row it found inconvenient by typing
   // the field. The whole module is built on the seat being unable to widen what it has done, so the
   // trusted carry is the CALL SITE's job and this pins that it stayed that way.
@@ -131,7 +131,7 @@ test("#1277 a SUBMISSION cannot park a row by claiming it — the seat may not w
 
 // ── the call site, because the union was never the thing that was wrong ──────────────────────────────
 
-test("#1277 pipeline's merge passes the halves through the PRIOR channel", () => {
+test("pipeline's merge passes the halves through the PRIOR channel", () => {
   // The behaviour tests above all pass against a pipeline.mjs still calling the broken way — they union
   // by hand. Only this reads the caller, which is where the defect lived. Anchored to code: the comment
   // beside the fix necessarily quotes the old shape, and an unanchored grep would fail on the

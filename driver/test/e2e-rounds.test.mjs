@@ -384,7 +384,7 @@ test("stampRound refuses a TORN receipt outright — a stamp is not worth the ri
 // degrades to a CREDIBLE WRONG NUMBER: a round noticed 34 hours late reads as noticed a week late, and
 // nothing separates the artefact from the real thing.
 
-test("#922 reportedAt is FIRST-WRITE-WINS, and lastReadAt carries the latest", () => {
+test("reportedAt is FIRST-WRITE-WINS, and lastReadAt carries the latest", () => {
   const first = firstWriteWins({}, { reportedAt: "2026-08-13T00:00:00Z", reportedState: "unknown" });
   assert.equal(first.reportedAt, "2026-08-13T00:00:00Z");
   assert.equal(first.lastReadAt, "2026-08-13T00:00:00Z", "a first read is also the latest read");
@@ -395,7 +395,7 @@ test("#922 reportedAt is FIRST-WRITE-WINS, and lastReadAt carries the latest", (
   assert.equal(again.lastReadAt, "2026-08-14T12:00:00Z", "and the re-check is recorded, not lost");
 });
 
-test("#922 THE SETTLEMENT WORD IS STILL OVERWRITTEN — the warning gate must not change", () => {
+test("THE SETTLEMENT WORD IS STILL OVERWRITTEN — the warning gate must not change", () => {
   // The stale-terminal warning keys on `reportedState`, never on `reportedAt != null`, precisely so a
   // thirty-second-early read cannot permanently silence it. That design is why this bug hid — one
   // field doing two jobs, and only the timestamp job was damaged — and it must survive the fix.
@@ -404,7 +404,7 @@ test("#922 THE SETTLEMENT WORD IS STILL OVERWRITTEN — the warning gate must no
   assert.equal(r.reportedState, "settled", "the newest settlement word always wins");
 });
 
-test("#922 a patch that carries no read stamp is untouched", () => {
+test("a patch that carries no read stamp is untouched", () => {
   // `clearedAt` stamps and any future patch must not acquire a lastReadAt they never asked for.
   assert.deepEqual(firstWriteWins({ reportedAt: "T1" }, { clearedAt: "C" }), { clearedAt: "C" });
 });

@@ -27,7 +27,7 @@ import assert from "node:assert/strict";
 import { variantTermIssue } from "../register-plan.mjs";
 import { variantTermShapeGaps } from "../variant-manifest-model.mjs";
 
-test("#1520 a two-word annotated variant is refused instead of dispatched", () => {
+test("a two-word annotated variant is refused instead of dispatched", () => {
   for (const t of ["ORVELLA (root)", "FOO (bar)", "ZEPHYR (root)"]) {
     const v = variantTermIssue(t);
     assert.ok(v, `${JSON.stringify(t)} still compiles bare — it would dispatch verbatim as a nil search`);
@@ -40,7 +40,7 @@ test("#1520 a two-word annotated variant is refused instead of dispatched", () =
   assert.match(variantTermIssue("ALPHA / BETA"), /space-flanked slash/);
 });
 
-test("#1520 THE CONTROL — an ordinary short mark still compiles", () => {
+test("THE CONTROL — an ordinary short mark still compiles", () => {
   // If any of these flip, the arm has started refusing real marks, which is strictly worse than the
   // defect it fixes: a nil search is one slice, a refused manifest is the whole matter.
   for (const t of ["DOLPHIN DEVICE", "NOVA PULSE", "ZEPHYR", "E*TRADE", "COCA COLA", "ZORVIL 9"]) {
@@ -54,7 +54,7 @@ test("#1520 THE CONTROL — an ordinary short mark still compiles", () => {
   assert.equal(variantTermIssue("DOLPHIN DEVICE"), null);
 });
 
-test("#1520 nothing already refused changes the reason it gives", () => {
+test("nothing already refused changes the reason it gives", () => {
   // The length arm keeps its precedence, so a long annotated value still reports its word count. If
   // the annotation arm had gone first, every archived >4-word parenthetical would silently start
   // reporting a different reason — a disclosed row changing its text for no reason a reader can see.
@@ -63,7 +63,7 @@ test("#1520 nothing already refused changes the reason it gives", () => {
   assert.match(variantTermIssue("PLAY * WAY"), /infix-star/, "markup and infix-star still outrank everything");
 });
 
-test("#1520 one predicate, and the division of labour it serves is unchanged", () => {
+test("one predicate, and the division of labour it serves is unchanged", () => {
   // The two copies had drifted: the gate's caught a lone `)` and the compiler's did not. Asserted as
   // the OBSERVABLE property — both callers reach the same verdict on the character that differed —
   // rather than by importing the shared function, so this file still LOADS against the pre-fix tree
@@ -82,7 +82,7 @@ test("#1520 one predicate, and the division of labour it serves is unchanged", (
   assert.deepEqual(variantTermShapeGaps({ variants: [{ value: "ZEPHYR (root)", category: "root" }] }), []);
 });
 
-test("#1520 the ruling's premise is restored, not overturned", () => {
+test("the ruling's premise is restored, not overturned", () => {
   // The MARKUP ARM ONLY ruling holds `variants` to markup only BECAUSE "a prose-shaped VARIANT becomes
   // a disclosed deferred row and costs nothing" — the compiler discloses it, so the gate need not
   // refuse it. For a variant short enough to sit under the two-word floor that premise was FALSE:
@@ -98,7 +98,7 @@ test("#1520 the ruling's premise is restored, not overturned", () => {
   }
 });
 
-test("#1520 the floor still exists — length alone refuses nothing under three words", () => {
+test("the floor still exists — length alone refuses nothing under three words", () => {
   // The premise the whole change rests on: this is an ANNOTATION test above the floor, not the floor
   // being removed. A two-word term with no annotation must still pass on length grounds alone.
   assert.equal(variantTermIssue("TWO WORDS"), null);

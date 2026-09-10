@@ -742,7 +742,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // parked/failed-at-intake, or the claim was lost.
 // ── THE ORDER-TIME REFUSAL, AND WHY IT IS HERE ──────────────────────────────────
 //
-// A hosted install now STARTS with no register configured (owner ruling 2026-09-06: "someone can install
+// A hosted install now STARTS with no register configured (ruling 2026-09-06: "someone can install
 // and select key later so it should still start"). The protection that used to live in
 // `clearotron start --background` moves here — it does not go away.
 //

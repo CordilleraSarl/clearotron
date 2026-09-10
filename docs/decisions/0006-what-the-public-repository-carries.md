@@ -19,7 +19,7 @@ clearance, and change the code. Nothing else.** In particular it carries no prod
 material, no worked internal mechanics for a lane, and no historical narrative.
 
 Four of the five documents above are withheld. They stay in this repository, which is the archive; they do
-not cross at the cut. **`CHANGELOG.md` left this list on 2026-08-31 (owner ruling:
+not cross at the cut. **`CHANGELOG.md` left this list on 2026-08-31 (ruling:
 the landed release-pipeline decision is master).** The 803-word hand-written file this record reviewed was
 already absent; what carries the name now is the release pipeline's machine-compiled, plain-language,
 public-facing changelog — release history a reader of the public repository is meant to have, which the
@@ -38,7 +38,7 @@ neither is on disk, and neither was ever added or deleted in either repository's
 record that names enforcement which was never written is worse than one that names none, because a
 reader stops looking. What follows is what actually holds the line.
 
-**The drop list itself does not ship.** It stays with the archive by owner ruling, 2026-08-31, so the
+**The drop list itself does not ship.** It stays with the archive by ruling, 2026-08-31, so the
 published tree carries no copy — and neither, today, does any other tree. `CUT_RECORD_PRESENT` is false
 everywhere the code runs.
 

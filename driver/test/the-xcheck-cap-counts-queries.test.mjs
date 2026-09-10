@@ -52,7 +52,7 @@ const DUPES = ["VIBRANTE", "VIBRANT", "FRIZBERRY", "FREEEZEBERRY"];
 const FRESH = ["VIBRANTE WELLNESS", "VIBRANTE DRINKS", "VIBRANTE VITA", "VIBRANTE LABS", "FREEZE",
   "FREEZEBERR", "VIBRANTE GO", "VIBRANTE ZERO", "VIBRANTE KIDS", "VIBRANTE PLUS", "BERRYFREEZE", "VIBR"];
 
-test("2159 THE DEFECT: a duplicate at the front of the list no longer spends a slot", () => {
+test("THE DEFECT: a duplicate at the front of the list no longer spends a slot", () => {
   // Duplicates FIRST, which is the real ordering — the common-law pass surfaces the mark and its
   // nearest forms before anything else, so this is the expected case and not a contrived one.
   const plan = planWith(DUPES);
@@ -68,7 +68,7 @@ test("2159 THE DEFECT: a duplicate at the front of the list no longer spends a s
   assert.equal(got.refused.length, DUPES.length, "and the duplicates are still recorded as refused");
 });
 
-test("2159 the OLD behaviour, driven, so the arm above is not asserting into thin air", () => {
+test("the OLD behaviour, driven, so the arm above is not asserting into thin air", () => {
   // Cap first, screen second — what the code did. Four of the ten slots produce no query, which is the
   // measured 10-cap/6-kept shape exactly.
   const plan = planWith(DUPES);
@@ -80,7 +80,7 @@ test("2159 the OLD behaviour, driven, so the arm above is not asserting into thi
   assert.equal(candidates.length - CAP, 6, "and six real terms sat over the cap behind them");
 });
 
-test("2159 CONTROL: with no duplicates the selection is exactly what it always was", () => {
+test("CONTROL: with no duplicates the selection is exactly what it always was", () => {
   // The arm that says this did not change the ordinary case. First CAP candidates, in order, and the
   // rest over-cap — byte for byte the old behaviour when nothing is refused.
   const got = screenThenCap(planWith([]), FRESH.map((t) => ent(t)), CAP);
@@ -89,7 +89,7 @@ test("2159 CONTROL: with no duplicates the selection is exactly what it always w
   assert.equal(got.refused.length, 0);
 });
 
-test("2159 a QUIET re-proposal spends no slot either — refusals are not the only way to mint nothing", () => {
+test("a QUIET re-proposal spends no slot either — refusals are not the only way to mint nothing", () => {
   // The fold produces no query by two routes: an explicit refusal, and a silent `continue` for a row
   // whose qid the plan already holds ("a re-proposal, expected and quiet"). Only the first reaches
   // `refused`, so a screen keyed on refusals alone would still burn a slot on the quiet one. This is
@@ -102,7 +102,7 @@ test("2159 a QUIET re-proposal spends no slot either — refusals are not the on
   assert.equal(got.refused.length, 0, "it is not a refusal — the fold stays quiet about it, correctly");
 });
 
-test("2159 nothing is invented: entries+overflow is exactly the set that would have been queried", () => {
+test("nothing is invented: entries+overflow is exactly the set that would have been queried", () => {
   const plan = planWith(DUPES);
   const candidates = [...DUPES, ...FRESH].map((t) => ent(t));
   const got = screenThenCap(plan, candidates, CAP);
@@ -114,7 +114,7 @@ test("2159 nothing is invented: entries+overflow is exactly the set that would h
     "every candidate is accounted for — dispatched, over-cap, or refused, and nowhere else");
 });
 
-test("2159 a cap larger than the candidate list leaves no overflow, and an empty list is not a throw", () => {
+test("a cap larger than the candidate list leaves no overflow, and an empty list is not a throw", () => {
   const got = screenThenCap(planWith([]), FRESH.slice(0, 3).map((t) => ent(t)), CAP);
   assert.equal(got.entries.length, 3);
   assert.deepEqual(got.overflow, []);
@@ -125,7 +125,7 @@ test("2159 a cap larger than the candidate list leaves no overflow, and an empty
 
 // ── the CLASS: both supplemental lanes, not just the measured one ───────────────────────────────────
 
-test("2159 BOTH lanes screen before they count — the recall lane has the identical shape", () => {
+test("BOTH lanes screen before they count — the recall lane has the identical shape", () => {
   // The issue measured the cross-check lane. The recall lane mints supplemental rows the same way,
   // caps them the same way, and folded them afterwards the same way — so fixing one would have left
   // the class half-done and the next reader looking at two patterns.
@@ -136,7 +136,7 @@ test("2159 BOTH lanes screen before they count — the recall lane has the ident
   assert.equal(calls.length, 2, `both supplemental lanes must screen through one helper, found ${calls.length}`);
 });
 
-test("2159 neither lane caps inside its mint loop any more", () => {
+test("neither lane caps inside its mint loop any more", () => {
   // THE ORDER IS THE FIX, and these two conditions are what it removed. A cap tested while candidates
   // are still being built is the defect by definition, whichever lane regrows it.
   assert.ok(!/entries\.length >= XCHECK_CAP/.test(PIPELINE),
@@ -145,7 +145,7 @@ test("2159 neither lane caps inside its mint loop any more", () => {
     "the recall lane is counting candidates into its budgets again");
 });
 
-test("2159 the recall lane screens BEFORE it spends either budget", () => {
+test("the recall lane screens BEFORE it spends either budget", () => {
   // Order assertion, stated as one: the two behaviours it separates are a helper call and a budget
   // loop in the same function, and no return value distinguishes them.
   const lane = PIPELINE.slice(PIPELINE.indexOf("const RECALL_CAP_MARK"));

@@ -93,7 +93,7 @@ const html = (over = {}, records = [rec("LUMENREED")]) =>
 
 // ── the seven keys ───────────────────────────────────────────────────────────────────────────────────
 
-test("274: every key the assess stage wrote reaches report-data.json", () => {
+test("every key the assess stage wrote reaches report-data.json", () => {
   const m = data().marks[0];
   assert.equal(m.assessment, findingsDoc().marks[0].assessment, "the mark's own opening read");
   assert.deepEqual(m.counterFactors, ["No registered right and no dominant trader was found."]);
@@ -107,7 +107,7 @@ test("274: every key the assess stage wrote reaches report-data.json", () => {
 // The single-mark run is the one publish drops, and it is the common knockout. `publishKnockout`
 // substitutes `assessment` into `batch.executiveSummary` only when the batch has MORE than one mark, so
 // on a one-mark run the paragraph was written, validated and then carried by neither surface.
-test("274: on a SINGLE-mark run the assessment still travels — the case publish drops", () => {
+test("on a SINGLE-mark run the assessment still travels — the case publish drops", () => {
   const d = data();
   assert.equal(d.marks.length, 1, "premise: this is the single-mark shape");
   assert.equal(d.summary, "The batch's cross-mark read.", "the batch summary is untouched");
@@ -116,7 +116,7 @@ test("274: on a SINGLE-mark run the assessment still travels — the case publis
 
 // `false` and "the rater said nothing" are different facts. A crowded field is a mitigant the reasoning
 // turns on, so an unstated one collapsing to `false` would hand a reader a stated "no" nobody wrote.
-test("274: an unstated crowdedField is null, not false", () => {
+test("an unstated crowdedField is null, not false", () => {
   assert.equal(data({ crowdedField: undefined }).marks[0].crowdedField, null, "unstated stays unstated");
   assert.equal(data({ crowdedField: false }).marks[0].crowdedField, false, "a stated no is carried as one");
   assert.equal(data({ crowdedField: true }).marks[0].crowdedField, true);
@@ -124,7 +124,7 @@ test("274: an unstated crowdedField is null, not false", () => {
 
 // ── the register card: the join, driven BOTH ways ────────────────────────────────────────────────────
 
-test("274: a filing the rater read and banded carries both onto the card", () => {
+test("a filing the rater read and banded carries both onto the card", () => {
   const d = data({ registerReads: [{ recordId: "R-LUMENREED", band: "Manageable",
     read: "The owner's filings sit in optical goods; the two uses do not meet in the market." }] });
   const card = d.marks[0].findings.find((f) => f.shape === "register");
@@ -137,7 +137,7 @@ test("274: a filing the rater read and banded carries both onto the card", () =>
 
 // THE DIRECTION A HAPPY-PATH JOIN TEST CANNOT SEE. Acceptance 4 of the issue: the neutral line stays
 // where the rater weighed nothing. A join that dropped it unconditionally passes every arm above.
-test("274 acceptance 4: a filing with NO read keeps the neutral line and claims no rating", () => {
+test("acceptance 4: a filing with NO read keeps the neutral line and claims no rating", () => {
   const card = data().marks[0].findings.find((f) => f.shape === "register");
   assert.equal(card.band, null, "no band is claimed for a filing nobody rated");
   assert.equal(card.basis, NOT_WEIGHED_LINE, "the neutral line stands");
@@ -146,7 +146,7 @@ test("274 acceptance 4: a filing with NO read keeps the neutral line and claims 
 
 // The join is by recordId, so a read citing a DIFFERENT filing must not land on this card. Without this,
 // a one-record fixture cannot tell a real join from "take the first read in the array".
-test("274: the join is by recordId — a read for another filing does not colour this card", () => {
+test("the join is by recordId — a read for another filing does not colour this card", () => {
   const d = data(
     { registerReads: [{ recordId: "R-SOMEONE-ELSE", band: "Blocking", read: "A different filing entirely." }] },
     [rec("LUMENREED"), rec("SOMEONE-ELSE")],
@@ -161,7 +161,7 @@ test("274: the join is by recordId — a read for another filing does not colour
 
 // ── the page ─────────────────────────────────────────────────────────────────────────────────────────
 
-test("274: the band chip is drawn on a banded filing and on no other", () => {
+test("the band chip is drawn on a banded filing and on no other", () => {
   const banded = html({ registerReads: [{ recordId: "R-LUMENREED", band: "Medium", read: "It bears on the rating." }] });
   assert.match(banded, /class="ko-findband"[^>]*>Medium</, "the chip states the rater's band for the filing");
   assert.match(banded, /It bears on the rating\./, "and the read prints beside it");
@@ -179,7 +179,7 @@ test("274: the band chip is drawn on a banded filing and on no other", () => {
 
 // The ruling that put these on the page is also the way this change could produce a WORSE report: notes
 // merged into the client-voiced body would read as findings about the mark. The label is the guard.
-test("274: the reviewer's notes render LABELLED, never merged into the findings body", () => {
+test("the reviewer's notes render LABELLED, never merged into the findings body", () => {
   const out = html();
   assert.match(out, /Confirm firm history on IRONWHISK/, "the note reaches the report");
   assert.match(out, /class="internal"/, "in the established purple internal convention");
@@ -193,7 +193,7 @@ test("274: the reviewer's notes render LABELLED, never merged into the findings 
 
 // The legend describes a colour. A report with no notes must not carry a sentence explaining a
 // convention it never used.
-test("274: no notes, no legend", () => {
+test("no notes, no legend", () => {
   assert.doesNotMatch(html({ purpleNotes: [] }), /class="ko-refnote"/, "an empty list draws no legend");
   assert.doesNotMatch(html({ purpleNotes: ["   "] }), /class="ko-refnote"/, "nor does a blank one");
   assert.doesNotMatch(html({ purpleNotes: [] }), /class="internal"/, "and no empty labelled block is drawn");
@@ -202,7 +202,7 @@ test("274: no notes, no legend", () => {
 // The model's estimate of what the registers hold is NOT covered by the ruling that put the notes on the
 // page: it is a guess about a thing the same run measured, and it stays off. Stated as an arm because
 // the two used to be one rule, and a later reader would otherwise have only the comment.
-test("274: the ruling moved the reviewer's notes and NOT the register estimate", () => {
+test("the ruling moved the reviewer's notes and NOT the register estimate", () => {
   const out = html({ registerEstimate: "moderate filings expected" });
   assert.match(out, /Confirm firm history/, "the notes are on the page");
   assert.doesNotMatch(out, /moderate filings expected/, "the estimate is not");

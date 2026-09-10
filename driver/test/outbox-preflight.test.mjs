@@ -77,7 +77,7 @@ const fakeIo = (files, mtimes) => ({
 });
 const NOW = 1_700_000_000_000;
 
-test("#1561 an unreadable outbox is NULL, and null is not zero", () => {
+test("an unreadable outbox is NULL, and null is not zero", () => {
   const blind = { readdirSync: () => { throw new Error("EACCES"); }, statSync: () => { throw new Error("EACCES"); } };
   assert.equal(outboxBacklog("/x", NOW, blind), null,
     "an outbox that cannot be read must not report a count — that is the "
@@ -87,7 +87,7 @@ test("#1561 an unreadable outbox is NULL, and null is not zero", () => {
     "a readable EMPTY outbox is a real answer and must be distinguishable from an unreadable one");
 });
 
-test("#1561 it counts packets and finds the oldest, ignoring what is not a packet", () => {
+test("it counts packets and finds the oldest, ignoring what is not a packet", () => {
   const files = ["a.pending", "b.pending", "notes.txt", "backoff"];
   const b = outboxBacklog("/x", NOW, fakeIo(files, {
     "a.pending": NOW - 5_000, "b.pending": NOW - 90_000_000, "notes.txt": NOW, "backoff": NOW,
@@ -97,7 +97,7 @@ test("#1561 it counts packets and finds the oldest, ignoring what is not a packe
   assert.equal(b.oldestAgeSec, 90_000, "the age is the OLDEST packet's, not the newest or the mean");
 });
 
-test("#1561 a packet older than every retry path earns a finding; a fresh one does not", () => {
+test("a packet older than every retry path earns a finding; a fresh one does not", () => {
   const fresh = { pending: 40, oldestAgeSec: 600, oldestFile: "x.pending" };
   assert.equal(backlogFinding(fresh, "/x"), null,
     "forty packets ten minutes old is a busy lane, not a stuck one — depth alone must not fire");
@@ -112,7 +112,7 @@ test("#1561 a packet older than every retry path earns a finding; a fresh one do
     "an empty outbox is the passing state");
 });
 
-test("#1561 an unreadable outbox REPORTS, rather than passing quietly", () => {
+test("an unreadable outbox REPORTS, rather than passing quietly", () => {
   const said = backlogFinding(null, "/srv/outbox");
   assert.match(said, /UNKNOWN/, "it must say the depth is unknown");
   assert.match(said, /SKIP, not a pass/,
@@ -120,13 +120,13 @@ test("#1561 an unreadable outbox REPORTS, rather than passing quietly", () => {
   assert.match(said, /\/srv\/outbox/, "and name the directory it could not read");
 });
 
-test("#1561 the threshold is the argument, so a caller can show where it turns", () => {
+test("the threshold is the argument, so a caller can show where it turns", () => {
   const b = { pending: 1, oldestAgeSec: 3600, oldestFile: "x.pending" };
   assert.equal(backlogFinding(b, "/x", 7200), null, "under the given bound, nothing is said");
   assert.ok(backlogFinding(b, "/x", 1800), "over it, something is");
 });
 
-test("#1561 ageLabel never renders a number without its unit, including unknown", () => {
+test("ageLabel never renders a number without its unit, including unknown", () => {
   assert.equal(ageLabel(null), "unknown", "a missing age is not `0s` — that would read as brand new");
   assert.equal(ageLabel(30), "30s");
   assert.equal(ageLabel(600), "10m");
@@ -134,7 +134,7 @@ test("#1561 ageLabel never renders a number without its unit, including unknown"
   assert.equal(ageLabel(12 * 24 * 3600), "12d");
 });
 
-test("#1561 the verdict actually CONSULTS the backlog — the helpers are wired, not merely exported", () => {
+test("the verdict actually CONSULTS the backlog — the helpers are wired, not merely exported", () => {
   // A SOURCE-SHAPE ARM, deliberately, and its weakness is stated rather than hidden. The arms above
   // prove the helpers behave; none of them can see the two lines in `preflight()` that call them, so
   // deleting the wiring leaves every arm above green and the check silently gone. That is the exact

@@ -1571,7 +1571,7 @@ export const validators = {
     //
     // The frame is rendered by the driver now, from a typed `record_matter_frame` call. Two of the checks
     // below would become the driver comparing its own render against its own input — a guard that CANNOT
-    // FAIL, which reads as coverage and is worse than no guard (owner ruling, 2026-08-17). So each one is
+    // FAIL, which reads as coverage and is worse than no guard (ruling, 2026-08-17). So each one is
     // stated here, by token, with what happened to it:
     //
     //   `meaning_angles_missing`  — DELETED on the recorded path. `acceptMatterFrame` refuses a call that

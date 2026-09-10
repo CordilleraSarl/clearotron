@@ -79,7 +79,7 @@ function scoreKnockout() {
   }
 }
 
-test("#1599 a knockout finding in `noise` names which finding it was", () => {
+test("a knockout finding in `noise` names which finding it was", () => {
   const out = scoreKnockout();
   const noise = out.buckets.noise ?? [];
   assert.ok(noise.length, `nothing reached noise — the fixture is not exercising the lane:\n${JSON.stringify(out.buckets)}`);
@@ -89,7 +89,7 @@ test("#1599 a knockout finding in `noise` names which finding it was", () => {
     "a scored knockout finding carries no ordinal, so nothing ties this row back to the finding it came from");
 });
 
-test("#1599 a pre-accepted knockout finding in `additional` names it too", () => {
+test("a pre-accepted knockout finding in `additional` names it too", () => {
   const out = scoreKnockout();
   const additional = out.buckets.additional ?? [];
   const kelbrook = additional.find((a) => a.mark === "KELBROOK");
@@ -99,7 +99,7 @@ test("#1599 a pre-accepted knockout finding in `additional` names it too", () =>
   assert.match(String(kelbrook.why ?? ""), /coexist|pre-accepted/i);
 });
 
-test("#1599 THE CONTROL — a finding with no ordinal scores null, never a position", () => {
+test("THE CONTROL — a finding with no ordinal scores null, never a position", () => {
   // `findings` is a filtered list by the time the scorer sees it, so an index is a plausible WRONG
   // number and worse than a stated absence. This arm is what fails if the fix ever derives the value.
   const out = scoreKnockout();
@@ -108,7 +108,7 @@ test("#1599 THE CONTROL — a finding with no ordinal scores null, never a posit
   assert.equal(nimbus.ordinal, null);
 });
 
-test("#1599 the stamp moved, because what these buckets RECORD changed", () => {
+test("the stamp moved, because what these buckets RECORD changed", () => {
   // At 5 and below, an absent ordinal cannot be told from a scorer that never looked — the same
   // distinction the v3→v4 note draws for `matched_ordinal`, one bucket set over. A reader comparing a
   // 5 and a 6 is comparing two instruments, and only the version says so.

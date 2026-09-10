@@ -170,7 +170,7 @@ test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two 
   assert.match(html, /Classes 8/, "…with the classes beside it");
 });
 
-test("331: at the TOP rung there is no higher band to name, so the label stops being comparative", () => {
+test("at the TOP rung there is no higher band to name, so the label stops being comparative", () => {
   const html = RENDER([markRow({ rating: "Blocking" })]);
   assert.match(html, /Why Blocking/, "the factors still carry the mark's own band");
   assert.match(html, /What keeps it here/, "and the counter-factors ask the same question without a rung to name");

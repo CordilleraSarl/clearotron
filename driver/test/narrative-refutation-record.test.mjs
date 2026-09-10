@@ -28,7 +28,7 @@ const FLAGS = [
   { kind: "rating", on: [6, 12], text: "both marks are rated MANAGEABLE against an identical-goods overlap." },
 ];
 
-test("#1893: the rendered review round-trips through every parser the pipeline runs against it", () => {
+test("the rendered review round-trips through every parser the pipeline runs against it", () => {
   const r = acceptRefutation({ verdict: "BLOCKING", flags: FLAGS, plan_audit: ["| axis | executed |"] },
     { receiptPresent: true });
   assert.ok(r.ok, `refused: ${r.reason}`);
@@ -52,7 +52,7 @@ test("#1893: the rendered review round-trips through every parser the pipeline r
 // comment says so deliberately, because it decides whether to DISCARD a review and permissive evidence
 // is the safe side there. So a `- Fix: …` sub-bullet under a flag counts as a SECOND cited defect. The
 // fix therefore renders as an indented continuation with no marker.
-test("#1893: the fix line is carried but is NOT counted as a second cited defect", () => {
+test("the fix line is carried but is NOT counted as a second cited defect", () => {
   const withFixes = acceptRefutation({ verdict: "BLOCKING", flags: FLAGS }, { receiptPresent: false });
   assert.ok(withFixes.ok, `refused: ${withFixes.reason}`);
   assert.equal(countCitedDefects(withFixes.content), FLAGS.length,
@@ -70,7 +70,7 @@ test("#1893: the fix line is carried but is NOT counted as a second cited defect
     "the plant must actually change the count — if it does not, this arm is not measuring what it claims");
 });
 
-test("#1893: the corrective worklist gets clean text, with no markup left by the token strip", () => {
+test("the corrective worklist gets clean text, with no markup left by the token strip", () => {
   const r = acceptRefutation({ verdict: "CONDITIONAL", flags: FLAGS }, { receiptPresent: false });
   assert.ok(r.ok, `refused: ${r.reason}`);
   const corrections = parseCorrections(r.content);
@@ -86,7 +86,7 @@ test("#1893: the corrective worklist gets clean text, with no markup left by the
   }
 });
 
-test("#1893: a well-formed typed review raises no coherence flag", () => {
+test("a well-formed typed review raises no coherence flag", () => {
   const r = acceptRefutation({ verdict: "BLOCKING", flags: FLAGS }, { receiptPresent: false });
   assert.ok(r.ok);
   assert.deepEqual(findReviewerCoherenceFlags(r.content), [],
@@ -94,7 +94,7 @@ test("#1893: a well-formed typed review raises no coherence flag", () => {
     + "review is the one input it must never annotate, or the signal stops being believed");
 });
 
-test("#1893: the shipped validator accepts the rendered review, receipt or no receipt", () => {
+test("the shipped validator accepts the rendered review, receipt or no receipt", () => {
   const dir = mkdtempSync(join(tmpdir(), "ct-refutation-"));
   try {
     const withoutReceipt = acceptRefutation({ verdict: "CLEAR", flags: [] }, { receiptPresent: false });
@@ -117,7 +117,7 @@ test("#1893: the shipped validator accepts the rendered review, receipt or no re
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1893: the audit section is owed on the DRIVER's read of the receipt, not the seat's word", () => {
+test("the audit section is owed on the DRIVER's read of the receipt, not the seat's word", () => {
   const r = acceptRefutation({ verdict: "CONDITIONAL", flags: FLAGS }, { receiptPresent: true });
   assert.equal(r.ok, false, "a run with a receipt owes the audit; a call that omits it must be refused");
   assert.match(r.reason, /^refutation_plan_audit_missing/);
@@ -131,7 +131,7 @@ test("#1893: the audit section is owed on the DRIVER's read of the receipt, not 
     + "away could waive its own audit");
 });
 
-test("#1893: a BLOCKING that names nothing is refused where it is typed, not at the gate", () => {
+test("a BLOCKING that names nothing is refused where it is typed, not at the gate", () => {
   const r = acceptRefutation({ verdict: "BLOCKING", flags: [] }, { receiptPresent: false });
   assert.equal(r.ok, false);
   assert.match(r.reason, /^refutation_blocking_without_flags/);
@@ -143,7 +143,7 @@ test("#1893: a BLOCKING that names nothing is refused where it is typed, not at 
     + "not be swept up by the refusal above");
 });
 
-test("#1893: the closed vocabularies are enforced, so an unrepresentable value cannot be rendered", () => {
+test("the closed vocabularies are enforced, so an unrepresentable value cannot be rendered", () => {
   for (const [label, params, token] of [
     ["a verdict outside the enum", { verdict: "MOSTLY FINE", flags: [] }, /^refutation_verdict_invalid/],
     ["a kind outside CORRECTION_KINDS", { verdict: "CONDITIONAL", flags: [{ kind: "vibes", text: "x" }] }, /^refutation_kind_invalid/],
@@ -158,7 +158,7 @@ test("#1893: the closed vocabularies are enforced, so an unrepresentable value c
   }
 });
 
-test("#1893: the call is captured before it is judged, and a refusal still records what arrived", () => {
+test("the call is captured before it is judged, and a refusal still records what arrived", () => {
   const dir = mkdtempSync(join(tmpdir(), "ct-refutation-"));
   try {
     const bad = recordRefutation(dir, { verdict: "BLOCKING", flags: [] });
@@ -176,7 +176,7 @@ test("#1893: the call is captured before it is judged, and a refusal still recor
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1893: the seat does not number its own flags — the render does", () => {
+test("the seat does not number its own flags — the render does", () => {
   // A seat-supplied number is a value that can disagree with the list it labels, and nothing downstream
   // would notice. The schema has no field for it; this pins that a number sent anyway is ignored rather
   // than honoured, so the two can never disagree.
@@ -188,7 +188,7 @@ test("#1893: the seat does not number its own flags — the render does", () => 
     "render order is the numbering; two flags both claiming 7 must still come back 1 and 2");
 });
 
-test("#1893: renderRefutation is pure and puts the verdict where both readers look", () => {
+test("renderRefutation is pure and puts the verdict where both readers look", () => {
   const a = renderRefutation("BLOCKING", FLAGS, ["| x |"]);
   const b = renderRefutation("BLOCKING", FLAGS, ["| x |"]);
   assert.equal(a, b, "same values, same bytes");
@@ -209,7 +209,7 @@ test("#1893: renderRefutation is pure and puts the verdict where both readers lo
 // at that heading and unlatches at the NEXT heading, so a flag rendered after the plan audit is excluded
 // from the count only while nothing follows to reset the latch. That makes the order decide a NUMBER the
 // corrective ladder acts on, so it is asserted by driving the parser, not by matching a string.
-test("#1893: the plan audit renders last, and the cited-defect count is what depends on it", () => {
+test("the plan audit renders last, and the cited-defect count is what depends on it", () => {
   const md = renderRefutation("BLOCKING", FLAGS, ["| plan entry 3 | executed |"]);
   const flagsAt = md.indexOf("## Flags");
   const auditAt = md.indexOf("## PLAN-EXECUTION CHECK");
@@ -240,7 +240,7 @@ test("#1893: the plan audit renders last, and the cited-defect count is what dep
 // is the parse the conversion removed the need for. `readAcceptedFlags` is what replaces it — and the
 // whole risk is that the stored payload is written BEFORE validation, so a refused call leaves a
 // complete, well-formed record of a review the driver never rendered.
-test("#1889 T3b: the accepted flags come back as typed values, not re-parsed prose", () => {
+test("T3b: the accepted flags come back as typed values, not re-parsed prose", () => {
   const dir = mkdtempSync(join(tmpdir(), "t3b-accepted-"));
   try {
     const r = recordRefutation(dir, { verdict: "CONDITIONAL", flags: FLAGS });
@@ -257,7 +257,7 @@ test("#1889 T3b: the accepted flags come back as typed values, not re-parsed pro
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1889 T3b: a REFUSED call hands back nothing, though its payload looks authoritative", () => {
+test("T3b: a REFUSED call hands back nothing, though its payload looks authoritative", () => {
   const dir = mkdtempSync(join(tmpdir(), "t3b-refused-"));
   try {
     // A BLOCKING citing nothing is refused where it is typed. The payload is still written — that is
@@ -278,7 +278,7 @@ test("#1889 T3b: a REFUSED call hands back nothing, though its payload looks aut
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1889 T3b: no payload and an unreadable payload are the same answer — nothing to act on", () => {
+test("T3b: no payload and an unreadable payload are the same answer — nothing to act on", () => {
   const dir = mkdtempSync(join(tmpdir(), "t3b-absent-"));
   try {
     assert.equal(readAcceptedFlags(dir), null, "a run whose stage never called the tool has no flags");

@@ -37,20 +37,20 @@ const DELIVERED = [
   "skeptic-flags.md", "status.json", "variant-manifest.json", "variant-manifest.md",
 ];
 
-test("#444 the real delivered run dir yields EXACTLY the one stray it actually carried", () => {
+test("the real delivered run dir yields EXACTLY the one stray it actually carried", () => {
   const stray = findStrayArtifacts(DELIVERED, DICT, { runDir: RUN });
   assert.deepEqual(stray.map((s) => s.name), ["COMMON-LAW-FINDINGS.half-a.md"]);
   assert.match(stray[0].why, /never validated/);
 });
 
-test("#444 the check is CASE-SENSITIVE — a tolerant compare waves through the only real example", () => {
+test("the check is CASE-SENSITIVE — a tolerant compare waves through the only real example", () => {
   // COMMON-LAW-FINDINGS.half-a.md differs from the dictated name in case alone. That is the whole
   // observed defect, so case tolerance here would make this module useless on the one file it is for.
   assert.equal(findStrayArtifacts(["common-law-findings.half-a.md"], DICT, { runDir: RUN }).length, 0);
   assert.equal(findStrayArtifacts(["Common-Law-Findings.half-a.md"], DICT, { runDir: RUN }).length, 1);
 });
 
-test("#444 driver-written root files are named, and their names are DERIVED, never wildcarded", () => {
+test("driver-written root files are named, and their names are DERIVED, never wildcarded", () => {
   // status.json and the obligations receipts are written by the driver at computed paths and are
   // not strays. Each is admitted by its exact name — so a model that invents a similar-looking one is
   // still caught, which a `connotation-obligations.*.json` wildcard would not do.
@@ -60,7 +60,7 @@ test("#444 driver-written root files are named, and their names are DERIVED, nev
     ["connotation-obligations.MY-OWN-NOTES.json", "status-report.json"]);
 });
 
-test("#524 the judged set covers every DELIVERABLE shape — the biggest stray ever seen was a .csv", () => {
+test("the judged set covers every DELIVERABLE shape — the biggest stray ever seen was a .csv", () => {
   // The four documents a clearance left outside its run dir. The largest was
   // `<MARK>_Search_Results.csv`: a 39-platform x 12-variant grid, the biggest single body of evidence the
   // sweep produced and the material behind a negative finding. Under the old `/\.(md|json)$/` it was
@@ -75,7 +75,7 @@ test("#524 the judged set covers every DELIVERABLE shape — the biggest stray e
     assert.equal(findStrayArtifacts([n], DICT, { runDir: RUN }).length, 1, `${n} is a document somebody could mistake for product`);
 });
 
-test("#444 only documents are judged, and the driver's own suffix conventions are not strays", () => {
+test("only documents are judged, and the driver's own suffix conventions are not strays", () => {
   assert.equal(findStrayArtifacts(["all_candidates.txt", "scratch.log", "notes"], DICT, { runDir: RUN }).length, 0,
     "a stray .txt is noise; a stray REPORT is the defect — widening to every extension makes a detector nobody reads");
   assert.equal(findStrayArtifacts(["report.md.prev-9be3b63f9751", "findings.json.tmp"], DICT, { runDir: RUN }).length, 0,
@@ -84,14 +84,14 @@ test("#444 only documents are judged, and the driver's own suffix conventions ar
     ["invented.md.prev-9be3b63f9751"], "but the suffix must not launder an undictated base name");
 });
 
-test("#444 a dictated sidecar under _driver/ cannot lend its name to a root file", () => {
+test("a dictated sidecar under _driver/ cannot lend its name to a root file", () => {
   // record-carry.json is dictated at _driver/record-carry.json. A root-level file of that name is not
   // that artifact, and matching on basename alone would admit it.
   assert.deepEqual(findStrayArtifacts(["record-carry.json"], DICT, { runDir: RUN }).map((s) => s.name),
     ["record-carry.json"]);
 });
 
-test("#444 dictatedPaths reads the paths() factory itself, so it cannot drift from what stages write", () => {
+test("dictatedPaths reads the paths() factory itself, so it cannot drift from what stages write", () => {
   // The count scales with how many register axes are fed in (each axis factory contributes several
   // paths), so this is a floor on the AXIS-INDEPENDENT vocabulary rather than a pinned total — a pinned
   // one would fail on every legitimate new artifact and teach the next reader to bump it without looking.
@@ -102,7 +102,7 @@ test("#444 dictatedPaths reads the paths() factory itself, so it cannot drift fr
   assert.ok(!DICT.has(RUN), "the run dir is the thing being judged, never an artifact in it");
 });
 
-test("#517 the MEANING SEAT's four artifacts are dictated — a detector wrong four times a run is one nobody reads", () => {
+test("the MEANING SEAT's four artifacts are dictated — a detector wrong four times a run is one nobody reads", () => {
   // Every one of these is written on a split clearance run: the seat's findings, the ledger the grid
   // tool writes for it, the disposition form it fills in, and the obligations sidecar the tool writes
   // beside that ledger. All four are .md/.json at the run root, so all four are JUDGED — and with
@@ -138,7 +138,7 @@ test("#517 the MEANING SEAT's four artifacts are dictated — a detector wrong f
 // `buildClaudeArgs` passes `--add-dir <skillsDir>` and an --add-dir root is a WRITE root.
 //
 // The run-dir sweep could never see this: it reads the run dir, and this is one directory over.
-test("#595 a file that appears in the doctrine tree during a run is a stray", () => {
+test("a file that appears in the doctrine tree during a run is a stray", () => {
   const before = new Set(["prelim-search/SKILL.md", "prelim-register/digest.md"]);
   const after = new Set([...before, "merge.sh", "update_dispositions.py"]);
   assert.deepEqual(findStrayInTree(before, after), ["merge.sh", "update_dispositions.py"],
@@ -146,7 +146,7 @@ test("#595 a file that appears in the doctrine tree during a run is a stray", ()
   assert.deepEqual(findStrayInTree(before, before), [], "an untouched tree is silent");
 });
 
-test("#595 a MISSING snapshot reports nothing — 'we never looked' is not 'everything is a stray'", () => {
+test("a MISSING snapshot reports nothing — 'we never looked' is not 'everything is a stray'", () => {
   // The failure mode that would make this useless: report the whole tree once and the first real write
   // is invisible in the noise. An absence is a finding elsewhere; here it is an absence of evidence.
   assert.deepEqual(findStrayInTree(new Set(), new Set(["a.md"])), []);
@@ -154,7 +154,7 @@ test("#595 a MISSING snapshot reports nothing — 'we never looked' is not 'ever
   assert.deepEqual(findStrayInTree(new Set(["a.md"]), null), []);
 });
 
-test("#595 the snapshot walks nested directories, and an unreadable one is not a throw", () => {
+test("the snapshot walks nested directories, and an unreadable one is not a throw", () => {
   const tree = {
     "/t": [{ name: "SKILL.md", isDirectory: () => false }, { name: "sub", isDirectory: () => true }],
     "/t/sub": [{ name: "digest.md", isDirectory: () => false }, { name: "locked", isDirectory: () => true }],
@@ -166,7 +166,7 @@ test("#595 the snapshot walks nested directories, and an unreadable one is not a
   assert.equal(treeSnapshot("/nope", () => { throw new Error("ENOENT"); }).size, 0);
 });
 
-test("#595 the sweep is wired, reports LOUDLY, and can never cost a run", () => {
+test("the sweep is wired, reports LOUDLY, and can never cost a run", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   assert.match(src, /function sweepStrayArtifacts\(ctx, stageName\) \{\n  sweepDoctrineTree\(ctx, stageName\)/,
     "it runs on the same seam as the run-dir sweep — after every stage");
@@ -180,7 +180,7 @@ test("#595 the sweep is wired, reports LOUDLY, and can never cost a run", () => 
     "the first sweep only SNAPSHOTS — otherwise the whole tree reads as new");
 });
 
-test("2084 the #1846 provenance sidecar is DECLARED — and only beside the ledgers the tool serves", () => {
+test("the #1846 provenance sidecar is DECLARED — and only beside the ledgers the tool serves", () => {
   // The owner's 2026-08-31 run warned `[stray-artifact] common-law-grid.half-m.provenance.json — no
   // stage dictates this path`. The writer is grid-provenance.mjs (which provider served the grid,
   // written beside the verbatim ledger because the ledger cannot carry it), and its reader is the

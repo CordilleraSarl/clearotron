@@ -136,7 +136,7 @@ export const CONNECT_CLIENTS = Object.freeze([
 
   // ── Speaks HTTP. Connects from the vendor's own servers. ────────────────────────────────────────
   //
-  // ONE ROW, BECAUSE IT IS ONE APP (owner ruling in session: "you know its just ONE
+  // ONE ROW, BECAUSE IT IS ONE APP (ruling in session: "you know its just ONE
   // APP on a laptop which has cowork and code in it and claude is what its called"). `cowork` was a
   // separate row here and is merged in; the sub-label carries where it is met, which is a fact about the
   // reader's screen rather than about our software.

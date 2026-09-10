@@ -72,7 +72,7 @@ export function opsTokenFor({ bootToken, roster, mint }) {
   }
 }
 
-// — the portal became an ISSUANCE PATH here, deliberately and by owner ruling.
+// — the portal became an ISSUANCE PATH here, deliberately and by ruling.
 // A comment further down this file said "the portal cannot mint from here … this process deliberately
 // holds no engine/MCP secrets — issuance is one path on purpose". MEASURED 2026-08-31: that wall is not
 // built. `bin/start.mjs` generates TRADEMARK_MCP_TOKEN_SECRET into `~/.env`, the portal unit loads
@@ -1200,7 +1200,7 @@ export function makePortalService({
         //
         // The owner, on his own install with a partial register: "i cannot press the button for Global
         // clearotron search. Why. it doesnt appear disabled, no message etc — but i cant select it." The
-        // product is orderable now (owner ruling on that issue), and what the register does not reach
+        // product is orderable now (ruling on that issue), and what the register does not reach
         // is a SENTENCE on a live row rather than the reason a dead one cannot be pressed.
         //
         // A SEPARATE FIELD, because the two say opposite things to the screen: `unavailableNote`
@@ -1794,7 +1794,7 @@ export function makePortalService({
         const selector = selectorOf(body);
         // ── — A DEMO WALKS THE REAL FLOW AND LANDS ON A FINISHED RUN ─────────
         //
-        // Owner ruling, 2026-08-31, revising his own ruling of an hour earlier: "i think its OK for
+        // Ruling, 2026-08-31, revising his own ruling of an hour earlier: "i think its OK for
         // someone to be able to press New Clearance in demo mode and see it work and get the static
         // results, right?" — so the form is real, the plan is real, the confirmation is real, and the
         // only thing that is not real is the dispatch.
@@ -1927,7 +1927,7 @@ export function makePortalService({
           return { status: 409, json: { ok: false, error: "This run has already finished.", state: mine.state } };
         // ── — WHICH STOP THE READER ASKED FOR ────────────────────────────────
         //
-        // Owner ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should
+        // Ruling, on his second encounter with the same wait: "a stop is a stop — maybe it should
         // be a 'stop immediately or at next boundary to preserve data' kind of question when you press
         // it." The driver half landed the mode; this carries the reader's answer to it.
         //
@@ -1980,7 +1980,7 @@ export function makePortalService({
       // A knockout over several names has no combined document, so its assessment — the one piece of
       // prose that reads the names against each other — is written to `report.md` and, until this route,
       // reached nobody: `meta.reports` lists the per-mark HTMLs only, and the pool path is not one the
-      // edge serves. Owner ruling 2026-08-26: the grouped page carries it.
+      // edge serves. Ruling 2026-08-26: the grouped page carries it.
       //
       // ITS OWN ROUTE RATHER THAN A FIELD ON THE RUN ROW. The row is what /portal/api/runs returns for
       // every run the caller owns, and it is fetched by every screen that lists runs — where this prose
@@ -3057,7 +3057,7 @@ export function makePortalService({
  * "a comment asserting a wall that is not built is worse than no comment: it is the reason nobody goes
  * to look". Nobody went to look, for the same reason.
  *
- * The portal is now an issuance path ON PURPOSE — `/portal/api/connect-key`, owner ruling 2026-08-31 —
+ * The portal is now an issuance path ON PURPOSE — `/portal/api/connect-key`, ruling 2026-08-31 —
  * minting an account key for the CALLER and for nobody else. What it still cannot do is mint for another
  * identity: `sub` comes from the authenticated principal and never from the request. What it CAN also do
  * is read the credential it was

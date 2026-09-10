@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// a-recall-probe-does-not-close-on-having-run.test.mjs — loop 3, owner ruling 2026-08-19: "no".
+// a-recall-probe-does-not-close-on-having-run.test.mjs — loop 3, ruling 2026-08-19: "no".
 //
 // THE TRAIL THIS REPRODUCES. In the R2 scenario, DELPHI GENETICS — a HIGH-graded LIVE US registration —
 // produced no doubt of any kind. Both of its recall asks ended `kind:executed` / `handoff:null` via the

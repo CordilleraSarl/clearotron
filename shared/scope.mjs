@@ -64,7 +64,7 @@ export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_
  *
  * NOT AN AUTHENTICATOR. This parses without verifying, which is safe for exactly one job: reading the
  * revocation handle out of our own `mintToken` output so `clearotron connect` can write it down
- * (owner ruling: record key IDs, never secrets). Anything answering "is this token
+ * (ruling: record key IDs, never secrets). Anything answering "is this token
  * good" goes through `verifyToken`; a caller handing this function a token from the WIRE is the defect.
  *
  * Returns null rather than throwing on a malformed string — the caller is recording, and a record of
@@ -212,7 +212,7 @@ export const TOOL_SCOPES = {
   // an account session is answered from ITS OWN grant, never from the customer list.
   // `passthrough`, flagged with plan_run — same posture, same open question.
   describe_options: { crossRun: true, accountSafe: true, present: "passthrough" },
-  // ---- WHAT-IF, OPENED TO A CLIENT ACCOUNT (owner ruling 2026-08-27) -------------------------------
+  // ---- WHAT-IF, OPENED TO A CLIENT ACCOUNT (ruling 2026-08-27) -------------------------------
   //
   // `write: true` stays on BOTH, and on what_if_plan that is deliberate rather than inherited. The flag's
   // stated meaning is "mutates state or spends", and a plan does neither — but the ONLY thing that reads
@@ -286,7 +286,7 @@ export function readOnlyFor(toolName) {
 
 export const USER_ARTIFACTS = new Set(["report"]);
 
-// ---- THE AUDIT CHAIN, OPENED TO A CLIENT ACCOUNT (owner ruling 2026-08-27) -----------------------
+// ---- THE AUDIT CHAIN, OPENED TO A CLIENT ACCOUNT (ruling 2026-08-27) -----------------------
 //
 // "I don't see why we don't open it or just give it to clients. Ignore the call spend." That ruling
 // widens the line the TOOL_SCOPES header draws above — the one that read "every engineering read stays
@@ -776,7 +776,7 @@ export function authorize(scope, toolName, args = {}) {
   if (kind === "account") {
     if (!rule.accountSafe)
       throw new Error(`tool "${toolName}" is not available to a client account session`);
-    // THE AUDIT CHAIN (owner ruling 2026-08-27) — the account layer reads it, the report-link token below
+    // THE AUDIT CHAIN (ruling 2026-08-27) — the account layer reads it, the report-link token below
     // does not. Both gates were one line on USER_ARTIFACTS; they are two sets now, for the reason stated
     // at ACCOUNT_ARTIFACTS. The Resources surface in server.mjs gates on the SAME pair — two surfaces
     // disagreeing about one grant is the defect this file cites twice.
@@ -791,7 +791,7 @@ export function authorize(scope, toolName, args = {}) {
         throw new Error(`a client may only list findings by curated group (on-field | off-field | out-of-scope) — pass \`kind\` for the raw audit trail`);
       return { runId: args.runId, group: args.group };   // cards path: drop the raw-view args
     }
-    // WHAT-IF (owner ruling 2026-08-27). Two rules, and each closes something the ruling did not open.
+    // WHAT-IF (ruling 2026-08-27). Two rules, and each closes something the ruling did not open.
     //
     // A CLIENT DOES NOT PICK THE MODEL. `model` is both cost and method — the tier that runs a stage is
     // the firm's cost structure, sealed with get_telemetry above — and offering it on the one tool that

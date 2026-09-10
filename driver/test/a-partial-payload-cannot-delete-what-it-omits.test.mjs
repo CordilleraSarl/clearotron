@@ -461,7 +461,7 @@ test("a merging transport PRESERVES what a second call omits — written twice, 
 // transports pass, so the lookup threw into a catch and returned null — "nothing stored yet". Every
 // repair merged onto an empty base and was refused for a field the seat had already sent. The tool's own
 // description invites exactly this call: "A repair turn may send only what it is correcting."
-test("1997C: a knockout-frame repair turn correcting ONE mark keeps the note, the batch and the other mark", () => {
+test("a knockout-frame repair turn correcting ONE mark keeps the note, the batch and the other mark", () => {
   const full = PLANTED.record_knockout_frame.full;
   const runDir = mkdtempSync(join(tmpdir(), "frame-repair-"));
 
@@ -613,7 +613,7 @@ const rowsThatNoLongerHold = (served, exempt) =>
     return [];
   });
 
-test("2027 every served return-path transport declares a required field, or states why it declares none", async () => {
+test("every served return-path transport declares a required field, or states why it declares none", async () => {
   const served = await servedTransports();
   assert.ok(served.size > 0, "no return-path transports were served — a census over nothing is not a pass");
   const bare = undeclaredWithoutAReason(served, DECLARES_NONE_BY_DESIGN);
@@ -624,7 +624,7 @@ test("2027 every served return-path transport declares a required field, or stat
     + "reads as a transport with nothing to promise.");
 });
 
-test("2027 a NEW transport declaring nothing reds — the plant, because the real population is all-clean", async () => {
+test("a NEW transport declaring nothing reds — the plant, because the real population is all-clean", async () => {
   // Every real transport passes the arm above, which is exactly the condition under which a census
   // stops proving anything. This drives the detecting branch with a member that does not exist yet.
   const served = await servedTransports();
@@ -637,7 +637,7 @@ test("2027 a NEW transport declaring nothing reds — the plant, because the rea
     "declaring a required field did not clear the red, so the guard names a fix that does not work");
 });
 
-test("2027 a stated row that stops being true is itself a red — the table cannot become a hiding place", async () => {
+test("a stated row that stops being true is itself a red — the table cannot become a hiding place", async () => {
   const served = await servedTransports();
   assert.deepEqual(rowsThatNoLongerHold(served, DECLARES_NONE_BY_DESIGN), [],
     "a row in DECLARES_NONE_BY_DESIGN no longer describes what is served");
@@ -650,7 +650,7 @@ test("2027 a stated row that stops being true is itself a red — the table cann
     ["record_synthesis — now declares findings, so this row is stale"]);
 });
 
-test("2027 the three stated rows are the WHOLE of the undeclared population — no fourth hides behind them", async () => {
+test("the three stated rows are the WHOLE of the undeclared population — no fourth hides behind them", async () => {
   const served = await servedTransports();
   const bare = [...served].filter(([, s]) => requiredFields(s).length === 0).map(([n]) => n).sort();
   assert.deepEqual(bare, Object.keys(DECLARES_NONE_BY_DESIGN).sort(),

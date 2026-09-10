@@ -322,7 +322,7 @@ test('clearing a prose field removes the key rather than storing an empty string
 })
 
 test('the marketplace listing-size control is gone from every form, and the data is not this page\'s to delete', () => {
-  // OWNER RULING 2026-08-29: "if it doesn't actually affect search why is it there — get rid of it
+  // RULING 2026-08-29: "if it doesn't actually affect search why is it there — get rid of it
   // completely. there is no such thing as staff only." Removed here AND from the staff editor.
   //
   // The two tests that stood here pinned the control's shape and its hint's wording. They are not
@@ -358,7 +358,7 @@ test('the project overlay form offers risk appetite, so the prose control has to
 // a comma or new line". The server's whole check was "an array when present", so a nearly-right value
 // was accepted and quietly lost — `[99]` saved and held nothing.
 
-test('1943: an out-of-range class is NAMED, not silently dropped', () => {
+test('an out-of-range class is NAMED, not silently dropped', () => {
   const f = spec('defaultClasses')
   // The stored value is unchanged — this is about what the user is TOLD, not a new parse.
   assert.deepEqual(parseNumbers('9, 99, 0, 45'), [9, 45])
@@ -372,7 +372,7 @@ test('1943: an out-of-range class is NAMED, not silently dropped', () => {
   assert.deepEqual(fieldNotices(f, '9, 45'), [], 'and a clean input says nothing at all')
 })
 
-test('1943: the comma rule is PER FIELD, and the two sides are driven separately', () => {
+test('the comma rule is PER FIELD, and the two sides are driven separately', () => {
   // A CLASS ASSERTED ON ONE MEMBER IS UNTESTED. Both sides of the split matter and they differ: a
   // comma in a domain is a separator, a comma in a trading name is part of the name.
   const domains = spec('matchDomains')
@@ -389,7 +389,7 @@ test('1943: the comma rule is PER FIELD, and the two sides are driven separately
   assert.deepEqual(applyField({}, names, 'Smith, Jones & Co')['selfExclusionOwners'], ['Smith, Jones & Co'])
 })
 
-test('1943: a reshaped list says so, and a suspect entry says it was still saved', () => {
+test('a reshaped list says so, and a suspect entry says it was still saved', () => {
   const domains = spec('matchDomains')
   const reshaped = fieldNotices(domains, 'a.com, b.com')
   assert.equal(reshaped[0]!.tone, 'reshaped')
@@ -404,7 +404,7 @@ test('1943: a reshaped list says so, and a suspect entry says it was still saved
     ['example.com', 'not a domain'], 'proving the notice tells the truth about what was stored')
 })
 
-test('1943: the dead Report email control is gone, and the stored key still rides along', () => {
+test('the dead Report email control is gone, and the stored key still rides along', () => {
   // driver/profiles.mjs refuses any delivery.email but "summary" and normalizeDelivery folds the
   // retired "table" back to it, so both dropdown options composed the same cover note.
   assert.equal(PROFILE_FIELDS.some((f) => f.key === 'delivery.email'), false,
@@ -417,7 +417,7 @@ test('1943: the dead Report email control is gone, and the stored key still ride
 
 // ── PR 2 — THE TWO PICKERS ARE NOT THE SAME CONTROL ───────────────────────────────
 
-test('1943b: the picker edits the RAW text, so there is one write path and the notices stay true', () => {
+test('the picker edits the RAW text, so there is one write path and the notices stay true', () => {
   const classes = spec('defaultClasses')
   // A picker with its own write path would be a second way to set the field, and the notices would be
   // reporting on text nobody had typed.
@@ -429,7 +429,7 @@ test('1943b: the picker edits the RAW text, so there is one write path and the n
   assert.deepEqual(parseNumbers(toggleEntry(classes, '9', '12')), [9, 12])
 })
 
-test('1943b: chosen state is READ FROM THE BOX, so typing and clicking cannot disagree', () => {
+test('chosen state is READ FROM THE BOX, so typing and clicking cannot disagree', () => {
   const jx = spec('defaultJurisdictions')
   assert.deepEqual(chosenEntries(jx, 'France\nSpain'), ['France', 'Spain'])
   // comma-separated too, because this field accepts both and the chips must reflect either
@@ -438,7 +438,7 @@ test('1943b: chosen state is READ FROM THE BOX, so typing and clicking cannot di
     'the chips show what will be STORED, not what was typed — 99 is not stored and must not light up')
 })
 
-test('1943b: removal is case-insensitive, so a typed spelling and a picked one are one entry', () => {
+test('removal is case-insensitive, so a typed spelling and a picked one are one entry', () => {
   const jx = spec('defaultJurisdictions')
   // Someone types it, then clicks the chip for it. That means OFF, not "now I have two".
   assert.equal(toggleEntry(jx, 'united states', 'United States'), '',
@@ -446,7 +446,7 @@ test('1943b: removal is case-insensitive, so a typed spelling and a picked one a
   assert.equal(toggleEntry(jx, 'France', 'Spain'), 'France\nSpain')
 })
 
-test('1943b: the JURISDICTIONS picker is assistive — an unknown territory survives it', () => {
+test('the JURISDICTIONS picker is assistive — an unknown territory survives it', () => {
   // THE CLIENT-OUTCOME RULE, pinned. The engine deliberately carries a name it does not recognise:
   // scope-rules.mjs keeps an unknown name's uppercased original and products.mjs clamps rather than
   // refusing. An exclusive picker here would narrow what a client can express on the setting that
@@ -461,7 +461,7 @@ test('1943b: the JURISDICTIONS picker is assistive — an unknown territory surv
     'and it reaches the draft — the box is still free text')
 })
 
-test('1943b: the CLASSES picker is exclusive, and that asymmetry is declared not accidental', () => {
+test('the CLASSES picker is exclusive, and that asymmetry is declared not accidental', () => {
   const classes = spec('defaultClasses')
   assert.equal(classes.picker, 'classes')
   // Nothing outside 1–45 can be stored, so an exclusive picker removes nothing that existed.
@@ -471,7 +471,7 @@ test('1943b: the CLASSES picker is exclusive, and that asymmetry is declared not
 
 // ── (interim) — A CONTROL MUST NOT OFFER A VALUE THE ENGINE DELETES ──────────────
 
-test('1983: the dead "Yes" option is gone, and the field is still THREE-STATE on the wire', () => {
+test('the dead "Yes" option is gone, and the field is still THREE-STATE on the wire', () => {
   const f = spec('delivery.privileged')
   assert.equal(f.choices?.some((c) => c.value === 'yes'), false,
     'true is retired — normalizeDelivery deletes it, so the option claimed a distinction the report cannot carry')
@@ -483,7 +483,7 @@ test('1983: the dead "Yes" option is gone, and the field is still THREE-STATE on
   assert.equal('delivery' in applyField({}, f, ''), false, 'and the cleared state still means absent')
 })
 
-test('1983: a profile that ALREADY holds the retired value renders as the house default', () => {
+test('a profile that ALREADY holds the retired value renders as the house default', () => {
   // NOT HYPOTHETICAL: driver/profiles/aurora.json ships `"privileged": true`. Removing the option
   // without this fold would leave that page holding a value matching no option in its own dropdown.
   const f = spec('delivery.privileged')
@@ -506,7 +506,7 @@ test('1983: a profile that ALREADY holds the retired value renders as the house 
 // marking. `clearedLabel` is what lets both rulings be true at once, and this is the arm that would fail
 // if a future sweep collapsed them again.
 
-test('1983: the confidentiality options are the ruled PAIR, and neither leans on the other', () => {
+test('the confidentiality options are the ruled PAIR, and neither leans on the other', () => {
   const f = spec('delivery.privileged')
   assert.equal(f.clearedLabel, 'Privileged & Confidential', 'the cleared option names the marking')
   assert.deepEqual(f.choices?.map((c) => c.label), ['No marking'], 'and its removal is named on its own terms')
@@ -517,7 +517,7 @@ test('1983: the confidentiality options are the ruled PAIR, and neither leans on
   assert.equal('delivery' in applyField({}, f, ''), false, 'cleared still means absent, and absent means marked')
 })
 
-test('1990: the shared cleared label is the owner\'s generic term, and does NOT reach the marking', () => {
+test('the shared cleared label is the owner\'s generic term, and does NOT reach the marking', () => {
   assert.equal(CLEARED_LABEL, 'Generic default')
   assert.notEqual(spec('delivery.privileged').clearedLabel, CLEARED_LABEL,
     'a legal marking must never inherit the generic wording — this is the collision the ruling pair exists past')
@@ -582,7 +582,7 @@ test('marketplaces stay ASSISTIVE, because the two fields are not the same quest
   assert.match(notice!.message, /Saved, but check/, 'and kept')
 })
 
-test('1996: a marketplace that the SERVER would refuse is called out here first', () => {
+test('a marketplace that the SERVER would refuse is called out here first', () => {
   const plat = spec('platforms')
   const named = fieldNotices(plat, 'Amazon').find((x) => x.tone === 'check')
   assert.ok(named, '"Amazon" is not a bare domain and driver/profiles.mjs refuses it outright')
@@ -593,7 +593,7 @@ test('1996: a marketplace that the SERVER would refuse is called out here first'
   assert.equal(fieldNotices(plat, 'amazon.com\netsy.com').length, 0, 'two real domains say nothing')
 })
 
-test('1996: THE CONTROL — a clean input on every armed field stays silent', () => {
+test('THE CONTROL — a clean input on every armed field stays silent', () => {
   // Without this, all three arms above pass just as well against a field that shouted at everything,
   // which is a worse page than the silent one: a notice on every entry is a notice nobody reads.
   for (const [key, clean] of [['defaultJurisdictions', 'European Union'], ['platforms', 'amazon.com'],

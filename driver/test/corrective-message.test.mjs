@@ -214,7 +214,7 @@ test("A6: the BARE max_tokens_no_output fault (transport-shaped turn) still gets
 });
 
 // ──: THE DEFERRED SLICES ARE FORM ROWS, NOT A PROSE BLOCK TO RETYPE ───────────────────────────
-test("#476: the dispatch brief names the form; the corrective arm names the rows — neither recites a qid", async () => {
+test("the dispatch brief names the form; the corrective arm names the rows — neither recites a qid", async () => {
   const { coverageFormBrief, coverageFormRows } = await import("../coverage-form.mjs");
   // What the block did, and why it had to: it printed EVERY deferred qid with its own receipt reason
   // because the accounting join was on the qid verbatim, so a qid the stage was never shown could never
@@ -253,7 +253,7 @@ test("#476: the dispatch brief names the form; the corrective arm names the rows
   assert.doesNotMatch(corrective, /yet your findings claim/i);
 });
 
-test("#476: the coverage hint LEADS WITH THE CAUSE — one token, three defects, three openings", () => {
+test("the coverage hint LEADS WITH THE CAUSE — one token, three defects, three openings", () => {
   // THE 2026-08-05 LESSON, ONE LEVEL IN. `coverage_no_status` fires for a blank status, an off-enum
   // status, AND an enum-VALID confirmed-clean on a row the driver marked `open` — and the last is the
   // common one, because it is what a digest does when it believes a slice is fine and the machine knows
@@ -280,7 +280,7 @@ test("#476: the coverage hint LEADS WITH THE CAUSE — one token, three defects,
   }
 });
 
-test("#476: coverage_form_empty is a DRIVER defect, and never reads to the seat as rows it forgot", () => {
+test("coverage_form_empty is a DRIVER defect, and never reads to the seat as rows it forgot", () => {
   const m = correctiveMessage(BASE, 2, "invalid_file:run/register-findings.md:coverage_form_empty:_driver/x absent", FILE);
   assert.match(m, /present but carries no rows/);
   assert.match(m, /DRIVER defect, not something your turn can repair/);
@@ -304,7 +304,7 @@ test("#476: coverage_form_empty is a DRIVER defect, and never reads to the seat 
 // ZERO searches recorded. At 60 of 61 that condition is false. A hint gated behind the wrong condition
 // is guidance that is absent exactly when it is wanted, and a retry with no guidance can only repeat
 // itself. That is why the failure was deterministic rather than merely wrong.
-test("#2127 the 60-of-61 state gets a hint at all — the state that produced four identical failures", () => {
+test("the 60-of-61 state gets a hint at all — the state that produced four identical failures", () => {
   const fail = "invalid_file:run/common-law-findings.half-m.md:connotation_query_unrecorded:文科里 offensive meaning";
   const m = correctiveMessage(BASE, 2, fail, FILE);
 
@@ -326,7 +326,7 @@ test("#2127 the 60-of-61 state gets a hint at all — the state that produced fo
     "…and protect the 60 that are already right");
 });
 
-test("#2127 the zero-result state is not confused with the never-ran state", () => {
+test("the zero-result state is not confused with the never-ran state", () => {
   // The validator CANNOT tell "ran, found nothing" from "never ran", and it is not being asked to —
   // fail-closed stays. What changed is that the seat is now told how to say the first one. So the
   // sibling token keeps its own, different hint: that one orders a sweep to be RUN, this one orders a

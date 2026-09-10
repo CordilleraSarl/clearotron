@@ -27,7 +27,7 @@ const dead = () => false;
 
 // ── the exact test: a recorded pid ──────────────────────────────────────────────────────────────────
 
-test("#1090 a running run whose pid is ALIVE is left alone", () => {
+test("a running run whose pid is ALIVE is left alone", () => {
   const r = classifyRun({ state: "running", pid: 4242, pidStarttime: "99", updatedAt: ago(99 * HOUR) },
     { now: NOW, isAlive: alive });
   assert.equal(r.verdict, "live");
@@ -36,7 +36,7 @@ test("#1090 a running run whose pid is ALIVE is left alone", () => {
   assert.match(r.why, /pid 4242 is alive/);
 });
 
-test("#1090 a running run whose pid is GONE is reconciled, and the reason says which test fired", () => {
+test("a running run whose pid is GONE is reconciled, and the reason says which test fired", () => {
   const r = classifyRun({ state: "running", pid: 4242, pidStarttime: "99", updatedAt: ago(1000) },
     { now: NOW, isAlive: dead });
   assert.equal(r.verdict, "dead");
@@ -44,7 +44,7 @@ test("#1090 a running run whose pid is GONE is reconciled, and the reason says w
   assert.match(r.why, /recycled/, "and it must name pid reuse as the other thing a starttime mismatch means");
 });
 
-test("#1090 the liveness check is the QUEUE's, not a second copy — same rec shape, same polarity", () => {
+test("the liveness check is the QUEUE's, not a second copy — same rec shape, same polarity", () => {
   // The record handed to isAlive has to be exactly what claim-liveness.mjs's claimerIsAlive takes, or
   // this file has quietly grown its own liveness opinion. That is the defect class.
   let seen = null;
@@ -58,21 +58,21 @@ test("#1090 the liveness check is the QUEUE's, not a second copy — same rec sh
 
 // ── the weaker test: no pid, which is every run that predates this change ───────────────────────────
 
-test("#1090 a pid-less run that is quiet PAST the window is reconciled — the stuck run this was filed for", () => {
+test("a pid-less run that is quiet PAST the window is reconciled — the stuck run this was filed for", () => {
   const r = classifyRun({ state: "running", updatedAt: ago(9 * HOUR) }, { now: NOW });
   assert.equal(r.verdict, "quiet");
   assert.match(r.why, /no pid recorded/, "the reason must say the weaker test was the one used");
   assert.match(r.why, /9h/);
 });
 
-test("#1090 a pid-less run INSIDE the window is UNKNOWN — never reconciled, and never called live either", () => {
+test("a pid-less run INSIDE the window is UNKNOWN — never reconciled, and never called live either", () => {
   const r = classifyRun({ state: "running", updatedAt: ago(2 * HOUR) }, { now: NOW });
   assert.equal(r.verdict, "unknown");
   assert.match(r.why, /cannot say/,
     "the third answer exists so 'we protected a live run' and 'we could not look' stay distinguishable");
 });
 
-test("#1090 the quiet window is a parameter, and the boundary does not fire", () => {
+test("the quiet window is a parameter, and the boundary does not fire", () => {
   const at = { state: "running", updatedAt: ago(DEFAULT_QUIET_MS) };
   assert.equal(classifyRun(at, { now: NOW }).verdict, "unknown", "exactly at the window is INSIDE it");
   assert.equal(classifyRun({ state: "running", updatedAt: ago(DEFAULT_QUIET_MS + 1) }, { now: NOW }).verdict, "quiet");
@@ -82,7 +82,7 @@ test("#1090 the quiet window is a parameter, and the boundary does not fire", ()
 
 // ── the refusals ────────────────────────────────────────────────────────────────────────────────────
 
-test("#1090 A PARKED RUN IS NEVER TOUCHED — the worst thing this file could do", () => {
+test("A PARKED RUN IS NEVER TOUCHED — the worst thing this file could do", () => {
   // postponed (rate-limit, auto-resuming) and recovering (defect backoff) are parked WITH A CLOCK and no
   // process is meant to be alive while they wait. Reconciling one terminalises a run that is working
   // exactly as designed, and the monotonic guard makes that permanent.
@@ -95,7 +95,7 @@ test("#1090 A PARKED RUN IS NEVER TOUCHED — the worst thing this file could do
     "if a state is added here, re-read the paragraph above before adding it");
 });
 
-test("#1090 an already-terminal run is reported as terminal, not re-terminalised", () => {
+test("an already-terminal run is reported as terminal, not re-terminalised", () => {
   for (const state of ENDED_STATES) {
     const r = classifyRun({ state, updatedAt: ago(72 * HOUR) }, { now: NOW }, { now: NOW });
     assert.equal(r.verdict, "ended");
@@ -104,7 +104,7 @@ test("#1090 an already-terminal run is reported as terminal, not re-terminalised
     "these mirror progress.mjs's TERMINAL_STATES — if that set moves, this one has to move with it");
 });
 
-test("#1090 a run with neither a pid nor a readable updatedAt is UNKNOWN, and says so", () => {
+test("a run with neither a pid nor a readable updatedAt is UNKNOWN, and says so", () => {
   for (const s of [{ state: "running" }, { state: "running", updatedAt: "not a date" }, { state: "running", updatedAt: null }]) {
     const r = classifyRun(s, { now: NOW });
     assert.equal(r.verdict, "unknown");
@@ -115,7 +115,7 @@ test("#1090 a run with neither a pid nor a readable updatedAt is UNKNOWN, and sa
   assert.equal(classifyRun(null, { now: NOW }).verdict, "unknown");
 });
 
-test("#1090 every verdict is one of the five, and every one carries a why a reader can act on", () => {
+test("every verdict is one of the five, and every one carries a why a reader can act on", () => {
   const samples = [
     { state: "running", pid: 1, pidStarttime: "1" }, { state: "running", updatedAt: ago(99 * HOUR) },
     { state: "running", updatedAt: ago(1) }, { state: "delivered" }, { state: "postponed" }, {},
@@ -129,7 +129,7 @@ test("#1090 every verdict is one of the five, and every one carries a why a read
 
 // ── the patch ───────────────────────────────────────────────────────────────────────────────────────
 
-test("#1090 the terminal is `failed` + terminalKind — NOT a fourth state word", () => {
+test("the terminal is `failed` + terminalKind — NOT a fourth state word", () => {
   const p = terminalPatch({ verdict: "dead", why: "pid 5 is gone", now: NOW });
   assert.equal(p.state, "failed",
     "every consumer in the tree switches on delivered/failed/cancelled — portal-service, status-snapshot, "
@@ -144,7 +144,7 @@ test("#1090 the terminal is `failed` + terminalKind — NOT a fourth state word"
     "progress.mjs renders reason straight into the rollup line, so it is written for a person");
 });
 
-test("#1090 planReconcile plans the actionable ones and skips the rest, keeping both", () => {
+test("planReconcile plans the actionable ones and skips the rest, keeping both", () => {
   const runs = [
     { runId: "a", state: "running", pid: 1, pidStarttime: "1" },
     { runId: "b", state: "running", updatedAt: ago(9 * HOUR) },
@@ -172,7 +172,7 @@ const workspace = () => {
   return { root, mk };
 };
 
-test("#1090 DRY RUN IS THE DEFAULT — it reports the same decision it would apply, and writes nothing", () => {
+test("DRY RUN IS THE DEFAULT — it reports the same decision it would apply, and writes nothing", () => {
   const { root, mk } = workspace();
   try {
     const dir = mk("clawdi", "novapulse", "r1", { runId: "novapulse-r1", state: "running", updatedAt: ago(9 * HOUR) });
@@ -194,7 +194,7 @@ test("#1090 DRY RUN IS THE DEFAULT — it reports the same decision it would app
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1090 a live run on disk is not written to, even with --apply", () => {
+test("a live run on disk is not written to, even with --apply", () => {
   const { root, mk } = workspace();
   try {
     // A REAL pid: this process. No injection — the live path has to work against the actual check.
@@ -209,7 +209,7 @@ test("#1090 a live run on disk is not written to, even with --apply", () => {
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1090 a torn or missing status.json is reported, never thrown and never written", () => {
+test("a torn or missing status.json is reported, never thrown and never written", () => {
   const { root, mk } = workspace();
   try {
     const dir = mk("clawdi", "novapulse", "r3", { state: "running", updatedAt: ago(9 * HOUR) });
@@ -220,7 +220,7 @@ test("#1090 a torn or missing status.json is reported, never thrown and never wr
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1090 the walk finds live and archived runs and skips the queue and the driver sidecar", () => {
+test("the walk finds live and archived runs and skips the queue and the driver sidecar", () => {
   const { root, mk } = workspace();
   try {
     mk("clawdi", "novapulse", "r1", { state: "running" });
@@ -236,7 +236,7 @@ test("#1090 the walk finds live and archived runs and skips the queue and the dr
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#1090 the seed records the pid, so a run started from today is judged by the exact test", async () => {
+test("the seed records the pid, so a run started from today is judged by the exact test", async () => {
   // The other half. A reconciler with a perfect classifier and no pid on disk falls back to the weaker
   // test forever — this is what makes the exact one reachable, and it is a claim about progress.mjs.
   const src = readFileSync(new URL("../progress.mjs", import.meta.url), "utf8")

@@ -60,7 +60,7 @@ function drive(root, script, arg = root, extra = {}) {
 
 // ── THE WIRING: the runner itself, driven end to end ────────────────────────────────────────────────
 
-test("198 a run that creates a file inside the checkout FAILS, and the file is named", () => {
+test("a run that creates a file inside the checkout FAILS, and the file is named", () => {
   const root = fakeCheckout();
   try {
     const r = drive(root, `require("fs").writeFileSync(process.argv[1] + "/scratch.json", "{}")`);
@@ -70,7 +70,7 @@ test("198 a run that creates a file inside the checkout FAILS, and the file is n
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a run that changes a file already in the checkout FAILS, and the file is named", () => {
+test("a run that changes a file already in the checkout FAILS, and the file is named", () => {
   const root = fakeCheckout();
   try {
     writeFileSync(join(root, "kept.txt"), "before");
@@ -80,7 +80,7 @@ test("198 a run that changes a file already in the checkout FAILS, and the file 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a run that REMOVES a file from the checkout fails too — a deletion is a write", () => {
+test("a run that REMOVES a file from the checkout fails too — a deletion is a write", () => {
   const root = fakeCheckout();
   try {
     writeFileSync(join(root, "doomed.txt"), "here");
@@ -90,7 +90,7 @@ test("198 a run that REMOVES a file from the checkout fails too — a deletion i
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a run that touches nothing passes, and says nothing about writes", () => {
+test("a run that touches nothing passes, and says nothing about writes", () => {
   const root = fakeCheckout();
   try {
     const r = drive(root, `void 0`);
@@ -99,7 +99,7 @@ test("198 a run that touches nothing passes, and says nothing about writes", () 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a run that ALREADY FAILED keeps its own exit code, even though it also wrote", () => {
+test("a run that ALREADY FAILED keeps its own exit code, even though it also wrote", () => {
   // THE DIRECTION THAT MATTERS. This guard may turn a green run red; it must never turn a red run
   // green, because what the tests found matters more than what they wrote while finding it. An
   // implementation that returned 1 for "wrote" would silently rewrite every other failure's code.
@@ -111,7 +111,7 @@ test("198 a run that ALREADY FAILED keeps its own exit code, even though it also
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 the run's own temp root is not mistaken for a write — TMPDIR is where tests are told to go", () => {
+test("the run's own temp root is not mistaken for a write — TMPDIR is where tests are told to go", () => {
   const root = fakeCheckout();
   try {
     // mkdtemp under TMPDIR is the sanctioned move, and the guard must be silent about it or the advice
@@ -121,7 +121,7 @@ test("198 the run's own temp root is not mistaken for a write — TMPDIR is wher
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 the portal's audit log lands in the run's temp root, not in the checkout", () => {
+test("the portal's audit log lands in the run's temp root, not in the checkout", () => {
   // The repair that came with the guard, EXERCISED rather than read: `portal-service.mjs` defaults
   // PORTAL_AUDIT to `join(HERE, "..", "portal-audit.log")` — the checkout root — and one full suite run
   // appended a row there. The runner now names a path inside the run root instead.
@@ -135,7 +135,7 @@ test("198 the portal's audit log lands in the run's temp root, not in the checko
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a caller that names its own PORTAL_AUDIT keeps it", () => {
+test("a caller that names its own PORTAL_AUDIT keeps it", () => {
   // Same ladder as TRADEMARK_MCP_AUDIT_LOG beside it: the runner fills what is UNSET, and never
   // overrides a value a test set deliberately in order to assert on the file afterwards.
   const root = fakeCheckout();
@@ -150,7 +150,7 @@ test("198 a caller that names its own PORTAL_AUDIT keeps it", () => {
 
 // ── THE READERS, driven directly ────────────────────────────────────────────────────────────────────
 
-test("198 repoWrites separates created, changed and removed, and is silent on an untouched tree", () => {
+test("repoWrites separates created, changed and removed, and is silent on an untouched tree", () => {
   const root = mkdtempSync(join(tmpdir(), "ct198-pure-"));
   try {
     writeFileSync(join(root, "kept.txt"), "same");
@@ -171,7 +171,7 @@ test("198 repoWrites separates created, changed and removed, and is silent on an
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a rewrite that keeps the mtime is still caught, because the size is in the stamp", () => {
+test("a rewrite that keeps the mtime is still caught, because the size is in the stamp", () => {
   // A same-millisecond rewrite is not hypothetical on a fast filesystem, and a plant that restores the
   // mtime afterwards — which is precisely what 198's planter did — would otherwise be invisible.
   const root = mkdtempSync(join(tmpdir(), "ct198-mtime-"));
@@ -191,7 +191,7 @@ test("198 a rewrite that keeps the mtime is still caught, because the size is in
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 the plant that started this: a future mtime, with the file's SIZE untouched", () => {
+test("the plant that started this: a future mtime, with the file's SIZE untouched", () => {
   // 198's ACTUAL defect, reproduced. `health-tells-the-truth-about-the-bundle` ran
   // `utimesSync(victim, future, future)` against a real file in `portal-ui/src` — the bytes never
   // changed, only the clock. A stamp built from size alone is blind to exactly that, and a plant
@@ -210,7 +210,7 @@ test("198 the plant that started this: a future mtime, with the file's SIZE unto
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a directory created by a run is named, even with nothing in it", () => {
+test("a directory created by a run is named, even with nothing in it", () => {
   const root = mkdtempSync(join(tmpdir(), "ct198-dir-"));
   try {
     const before = snapshotRepo(root);
@@ -219,7 +219,7 @@ test("198 a directory created by a run is named, even with nothing in it", () =>
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 node_modules and .git are not walked, and nothing else is skipped by name", () => {
+test("node_modules and .git are not walked, and nothing else is skipped by name", () => {
   const root = mkdtempSync(join(tmpdir(), "ct198-skip-"));
   try {
     for (const d of ["node_modules", ".git", "driver"]) mkdirSync(join(root, d), { recursive: true });
@@ -233,7 +233,7 @@ test("198 node_modules and .git are not walked, and nothing else is skipped by n
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 a symlink is recorded by its OWN identity, never by what it points at", () => {
+test("a symlink is recorded by its OWN identity, never by what it points at", () => {
   // Following a link can leave the checkout entirely — the farm `test-run.mjs` builds is made of them,
   // and a `stat` here would have walked into whatever a fixture happened to point at.
   const root = mkdtempSync(join(tmpdir(), "ct198-link-"));
@@ -253,7 +253,7 @@ test("198 a symlink is recorded by its OWN identity, never by what it points at"
   } finally { for (const d of [root, outside]) rmSync(d, { recursive: true, force: true }); }
 });
 
-test("198 a directory that cannot be read is recorded, never quietly skipped", () => {
+test("a directory that cannot be read is recorded, never quietly skipped", () => {
   // An absence is a finding. A run that removed read permission from a directory must not look
   // identical to a run that did nothing.
   const root = mkdtempSync(join(tmpdir(), "ct198-perm-"));
@@ -276,7 +276,7 @@ test("198 a directory that cannot be read is recorded, never quietly skipped", (
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("198 the build-output allow-list is empty, and an entry needs a measurement", () => {
+test("the build-output allow-list is empty, and an entry needs a measurement", () => {
   // A RATCHET, not a formality. The list was expected to carry build outputs; a full green suite moved
   // exactly two paths and both were defects, so it carries nothing. The cheap repair for the next
   // offender is to add its path here, which would retire the guard one line at a time.

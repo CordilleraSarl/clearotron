@@ -43,7 +43,7 @@ const rows = (n, tag) => Array.from({ length: n }, (_, i) => ({ record_id: `/mar
 
 // ── 1. THE POPULATION, DISCOVERED ───────────────────────────────────────────────────────────────────
 
-test("#1104: exactly ONE provider declares a shape ceiling, and the list is discovered not recited", () => {
+test("exactly ONE provider declares a shape ceiling, and the list is discovered not recited", () => {
   // Read off the cores rather than naming them: a tenth provider that quietly starts passing
   // `ceilingFor` has changed the parity claim this file makes, and it must fail here on the commit that
   // does it rather than at some later round. The same reason the sweep greps the servers.
@@ -99,7 +99,7 @@ const run = async (ceilingFor) => {
   return { out, calls: h.calls };
 };
 
-test("#1104: NO ceilingFor and a ceilingFor that DECLINES this shape are byte-identical", async () => {
+test("NO ceilingFor and a ceilingFor that DECLINES this shape are byte-identical", async () => {
   const none = await run(null);              // every provider but signa
   const declines = await run(() => null);    // signa on every shape but the owner-scoped one
 
@@ -111,7 +111,7 @@ test("#1104: NO ceilingFor and a ceilingFor that DECLINES this shape are byte-id
     + "or narrower page is a behaviour change no descriptor comparison would show.");
 });
 
-test("#1104 NEGATIVE CONTROL: a ceilingFor that FIRES is not identical — the seam is real", async () => {
+test("NEGATIVE CONTROL: a ceilingFor that FIRES is not identical — the seam is real", async () => {
   // Without this, both arms above would pass just as happily against a build where `ceilingFor` had been
   // deleted from the kernel and the parameter silently ignored — the vacuous-guard shape.
   const none = await run(null);
@@ -128,7 +128,7 @@ test("#1104 NEGATIVE CONTROL: a ceilingFor that FIRES is not identical — the s
 
 // ── 3. SIGNA'S OWN DECLARATION, TESTED DIRECTLY ─────────────────────────────────────────────────────
 
-test("#1104: ownerWindowCeiling returns the window for owner-scoped shapes and NULL for every other", () => {
+test("ownerWindowCeiling returns the window for owner-scoped shapes and NULL for every other", () => {
   // Its doc block says it is exported so the declaration can be tested directly instead of inferred from
   // a band. Taking that at its word: the `null` half is the load-bearing one, because returning 400
   // across the board would turn every tractable band over 400 into a sanctioned crowd — an UNDER-SEARCH
@@ -142,7 +142,7 @@ test("#1104: ownerWindowCeiling returns the window for owner-scoped shapes and N
       `a non-owner-scoped shape must decline the window: ${JSON.stringify(shape)}`);
 });
 
-test("#1104: the window is a MINIMUM against the tuned ceiling, never a maximum", async () => {
+test("the window is a MINIMUM against the tuned ceiling, never a maximum", async () => {
   // `Math.min`, asserted through the kernel rather than read off the source. A shape window is a vendor
   // limit: a band that pages past it does not return more records, it returns an HTTP 400. If this ever
   // became a max, a tuned-down ceiling would be silently widened by a vendor constraint.

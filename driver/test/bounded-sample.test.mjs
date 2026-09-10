@@ -24,7 +24,7 @@ const THREE = [
   "conn-row-a81f6b03-5e77-4c90-b2de-98aa [thistle connotation in Greek] missing",
 ];
 
-test("#1126 THE REPORTED CASE: three rows that fit are all three named", () => {
+test("THE REPORTED CASE: three rows that fit are all three named", () => {
   const out = boundedSample(THREE);
   assert.ok(out.length <= SAMPLE_BUDGET, `it fits: ${out.length} <= ${SAMPLE_BUDGET}`);
   assert.equal(out.includes("more)"), false, "nothing was elided, so nothing announces an elision");
@@ -32,7 +32,7 @@ test("#1126 THE REPORTED CASE: three rows that fit are all three named", () => {
   assert.equal(out.split(",").length, 3, "and the count of names equals the count of rows");
 });
 
-test("#1126 THE PREDECESSOR, MEASURED — its break test was right and its budget was too small", () => {
+test("THE PREDECESSOR, MEASURED — its break test was right and its budget was too small", () => {
   // Reproduced exactly, because the obvious reading of this issue is wrong and the commit says so.
   // `len + e.length > 150` is, precisely, "the joined list would exceed 150": `len` after k entries is
   // sum+k, and the joined length after k+1 is sum+k too. It never dropped an entry that fit.
@@ -59,7 +59,7 @@ test("#1126 THE PREDECESSOR, MEASURED — its break test was right and its budge
   assert.ok(boundedSample(wide, 150).length <= 150, "the marker is inside the budget now");
 });
 
-test("#1126 when the list genuinely does not fit, the marker is COUNTED", () => {
+test("when the list genuinely does not fit, the marker is COUNTED", () => {
   const many = Array.from({ length: 12 }, (_, i) => `conn-row-${String(i).padStart(4, "0")}-aaaa-bbbb-cccc missing`);
   const out = boundedSample(many);
   assert.ok(out.length <= SAMPLE_BUDGET, `the budget is a real bound: ${out.length}`);
@@ -69,7 +69,7 @@ test("#1126 when the list genuinely does not fit, the marker is COUNTED", () => 
     "named + omitted must equal the population — the count and the names cannot disagree");
 });
 
-test("#1126 at least one entry is always named, however long the entries are", () => {
+test("at least one entry is always named, however long the entries are", () => {
   // A token that named nothing would push the whole diagnosis into a count: the purest form of the
   // defect this file is about.
   const huge = [ "x".repeat(400), "y".repeat(400), "z".repeat(400) ];
@@ -78,7 +78,7 @@ test("#1126 at least one entry is always named, however long the entries are", (
   assert.equal(out, `${"x".repeat(400)} (+2 more)`, "and the rest are counted rather than silently gone");
 });
 
-test("#1126 the boundary is exact — a list that fits by one character is not elided", () => {
+test("the boundary is exact — a list that fits by one character is not elided", () => {
   const budget = 20;
   assert.equal(boundedSample(["abcd", "efghijklmnopq"], budget), "abcd,efghijklmnopq", "18 chars, fits");
   const over = boundedSample(["abcd", "efghijklmnopqrstuv"], budget);
@@ -86,7 +86,7 @@ test("#1126 the boundary is exact — a list that fits by one character is not e
   assert.equal(over, "abcd (+1 more)");
 });
 
-test("#1126 an empty population is an empty string, not a marker for nothing", () => {
+test("an empty population is an empty string, not a marker for nothing", () => {
   assert.equal(boundedSample([]), "");
   assert.equal(boundedSample(["only"]), "only");
 });

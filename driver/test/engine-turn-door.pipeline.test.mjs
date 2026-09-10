@@ -69,7 +69,7 @@ function stubEngine(root, name, stderr) {
 const runEvents = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8")
   .trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
 
-test("#819 a SIGNED-OUT engine is refused at the door — before a run directory exists", async () => {
+test("a SIGNED-OUT engine is refused at the door — before a run directory exists", async () => {
   const bootstrap = mkdtempSync(join(tmpdir(), "clearotron-door-bin-"));
   const { root, run } = harness({
     // The Claude CLI's own signed-out line on a `-p` run. It exits 1 having spent nothing, and every
@@ -94,7 +94,7 @@ test("#819 a SIGNED-OUT engine is refused at the door — before a run directory
     "no agent workspace, no run directory, no frozen profile, no status sidecar — the refusal costs one cheap turn and nothing else");
 });
 
-test("#819 an UPSTREAM OVERLOAD does NOT refuse — the door fails open and says so on the run record", async () => {
+test("an UPSTREAM OVERLOAD does NOT refuse — the door fails open and says so on the run record", async () => {
   // MOCK_CLAUDE_OVERLOADED is the real Anthropic 529 shape, and it answers the probe turn as well as the
   // stage turns: a door that refused here would turn every provider wobble into a terminal refusal at the
   // production run door, and would strand the park lane that exists to absorb exactly this.
@@ -116,7 +116,7 @@ test("#819 an UPSTREAM OVERLOAD does NOT refuse — the door fails open and says
   assert.equal(probeRow.engine, "anthropic-agent");
 });
 
-test("#819 a clean engine leaves a passing verdict on the record, so 'the door ran' is checkable", async () => {
+test("a clean engine leaves a passing verdict on the record, so 'the door ran' is checkable", async () => {
   const { run } = harness();
   const res = await run();
   assert.equal(res.ok, true, JSON.stringify(res));
@@ -126,7 +126,7 @@ test("#819 a clean engine leaves a passing verdict on the record, so 'the door r
   assert.equal(probeRow.basis, "completed-turn", "the pass is a COMPLETED TURN, never an inference from silence");
 });
 
-test("#819 the lanes that do not pay for the door do not get the row either", async () => {
+test("the lanes that do not pay for the door do not get the row either", async () => {
   // The gate is `!recordFetcher && !koSelector` (the ruling, mirroring preflightCredentials). An
   // injected fetcher is the test/alternate-fetcher lane; it skips the turn, and the ABSENCE of the row is
   // how a reader tells "skipped" from "passed" — which is why the row carries the verdict and not a bare

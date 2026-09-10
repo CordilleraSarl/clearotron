@@ -34,7 +34,7 @@ const SERVICES = ["trademark-portal", "trademark-ops-mcp", "client-mcp", "client
 
 // ── the regression this issue exists for ─────────────────────────────────────────────────────────────
 
-test("#425: a oneshot caught mid-fire PASSES — the state observed on the test box, not a supposed one", () => {
+test("a oneshot caught mid-fire PASSES — the state observed on the test box, not a supposed one", () => {
   // Sampled at 0.2s on the test box, 1233 samples over 4m38s spanning three timer fires. Every fire
   // showed the same two-sample transit and nothing else was ever non-`inactive`:
   //   20:26:14.71 ActiveState=activating SubState=start        20:26:14.93 ... SubState=start-post
@@ -49,13 +49,13 @@ test("#425: a oneshot caught mid-fire PASSES — the state observed on the test 
   assert.match(r.message, /not a fault/);
 });
 
-test("#425: `deactivating` has the identical shape and gets the identical answer", () => {
+test("`deactivating` has the identical shape and gets the identical answer", () => {
   const r = v([...SERVICES, { unit: "prelim-driver", active: "deactivating", type: "oneshot" }]);
   assert.equal(r.state, "pass", r.message);
   assert.match(r.message, /prelim-driver=deactivating/);
 });
 
-test("#425: `reloading` is a running unit re-reading its config, not a fault", () => {
+test("`reloading` is a running unit re-reading its config, not a fault", () => {
   const r = v([...SERVICES.slice(1), { unit: "trademark-portal", active: "reloading", type: "notify" }]);
   assert.equal(r.state, "pass", r.message);
 });
@@ -135,7 +135,7 @@ test("a broken unit outranks an unrecognised one — fail is not downgraded to w
 // The three cases below are the exact inputs that proved it. They are pinned as tests because the
 // argument for widening the count is genuinely tempting, and it will be made again.
 
-test("#395 GUARD: {5 services activating, 3 inactive} is a SKIP — nothing is running on that box", () => {
+test("GUARD: {5 services activating, 3 inactive} is a SKIP — nothing is running on that box", () => {
   // The hourly deploy restarts the long-running services immediately before running this check, so this
   // is the ORDINARY shape of the instance mid-deploy, not a corner. Counting the 5 as up returned `pass` with a
   // message beginning "0 active" — the deploy's final gate going green having confirmed zero services up.
@@ -149,14 +149,14 @@ test("#395 GUARD: {5 services activating, 3 inactive} is a SKIP — nothing is r
   assert.match(r.message, /5 starting or stopping/);   // still NAMED, just never counted as up
 });
 
-test("#395 GUARD: {7 services inactive, oneshot activating} is a SKIP, not a pass", () => {
+test("GUARD: {7 services inactive, oneshot activating} is a SKIP, not a pass", () => {
   const r = v([...SERVICES.map((u) => ({ ...u, active: "inactive" })),
     { unit: "prelim-driver", active: "activating", type: "oneshot" }]);
   assert.equal(r.state, "skip", r.message);
   assert.match(r.message, /0 active units/);
 });
 
-test("#395 GUARD: every unit on the box deactivating is a SKIP — a shutdown is not a healthy deploy", () => {
+test("GUARD: every unit on the box deactivating is a SKIP — a shutdown is not a healthy deploy", () => {
   // profile-service and recipe-service are probed by no other arm, so if this one goes green on a box
   // that is shutting down, nothing else catches it.
   const r = v(SERVICES.map((u) => ({ ...u, active: "deactivating" })));
@@ -190,13 +190,13 @@ test("a reachable bus that enumerated no units at all is a skip, not a crash", (
   assert.equal(v([]).state, "skip");
 });
 
-test("#395 survives: a failure to LOOK is a skip naming the error, never a finding about the box", () => {
+test("survives: a failure to LOOK is a skip naming the error, never a finding about the box", () => {
   const r = v(SERVICES, { ok: false, why: "Failed to connect to bus: No such file or directory" });
   assert.equal(r.state, "skip");
   assert.match(r.message, /Failed to connect to bus/);
 });
 
-test("#395 survives: nothing running is a SKIP, not a green tick", () => {
+test("survives: nothing running is a SKIP, not a green tick", () => {
   const r = v(SERVICES.map((u) => ({ ...u, active: "inactive" })));
   assert.equal(r.state, "skip");
   assert.match(r.message, /0 active units/);              // origin/main's wording, unchanged

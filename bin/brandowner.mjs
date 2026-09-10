@@ -12,7 +12,7 @@
 //
 // ── THE FRAMEWORK IS SET HERE, AND THAT NEEDED A NEW DOOR ─────────────────────────────────────────
 //
-// Owner ruling, 2026-08-29: the risk framework stays MANDATORY at onboarding, with a DEFAULT BACKUP so
+// Ruling, 2026-08-29: the risk framework stays MANDATORY at onboarding, with a DEFAULT BACKUP so
 // onboarding is never blocked. This sets `frameworkPath` ALWAYS — the client's own when supplied, the
 // Generic default otherwise — and says out loud which one it used.
 //

@@ -31,7 +31,7 @@ const tuple = (over = {}) => ({
   ...over,
 });
 
-test("#1209 a clean turn yields the answer text, the SERVED model, and who paid for it", () => {
+test("a clean turn yields the answer text, the SERVED model, and who paid for it", () => {
   const r = readJxTuple(tuple(), WHO);
   assert.equal(r.ok, true);
   assert.equal(r.text, '{"candidates":[]}', "the payload text, not stdout — that is where an adapter puts it");
@@ -42,13 +42,13 @@ test("#1209 a clean turn yields the answer text, the SERVED model, and who paid 
   assert.equal(r.authMode, "subscription");
 });
 
-test("#1209 canonical Usage survives whole — dropping cache tokens under-counts the lanes we just metered", () => {
+test("canonical Usage survives whole — dropping cache tokens under-counts the lanes we just metered", () => {
   const r = readJxTuple(tuple(), WHO);
   assert.deepEqual(r.usage, { input: 120, output: 40, cacheRead: 900, cacheWrite: 0, total: 1060 },
     "engine/CONTRACT.md §2 is five fields; the old Messages-API rows carried two because that is all the API returned");
 });
 
-test("#1209 `usage: null` stays null — it means no tokens were accounted, not zero tokens", () => {
+test("`usage: null` stays null — it means no tokens were accounted, not zero tokens", () => {
   // CONTRACT.md §1 says so in place. A zeroed object here would be a measurement nobody took, and
   // isLaneWedge reads a four-field zero as a WEDGE — inventing one would be worse than reporting none.
   const r = readJxTuple(tuple({ usage: null, killed: true, signals: { stalled: true } }), WHO);
@@ -56,7 +56,7 @@ test("#1209 `usage: null` stays null — it means no tokens were accounted, not 
   assert.equal(r.usage, null);
 });
 
-test("#1209 a killed, wedged or unclean turn is never an answer", () => {
+test("a killed, wedged or unclean turn is never an answer", () => {
   for (const [over, why] of [
     [{ killed: true, signals: { stalled: true } }, /killed before it answered/],
     [{ signals: { rateLimited: true } }, /rate-limited/],
@@ -71,14 +71,14 @@ test("#1209 a killed, wedged or unclean turn is never an answer", () => {
   }
 });
 
-test("#1209 truncation is observable on anthropic and is a DEGRADE", () => {
+test("truncation is observable on anthropic and is a DEGRADE", () => {
   const r = readJxTuple(tuple({ json: { ...tuple().json, stopReason: "max_tokens" } }), WHO);
   assert.equal(r.ok, true, "the turn itself completed — truncation is the LANE's degrade, not the tuple's");
   assert.equal(r.truncated, true);
   assert.equal(r.truncationObservable, true);
 });
 
-test("#1210 on codex truncation is NOT observable, and the flag says so rather than saying false", () => {
+test("on codex truncation is NOT observable, and the flag says so rather than saying false", () => {
   // The residue, stated. `openai-agent` carries no stopReason at all, so a codex turn that hit its
   // ceiling after emitting a complete-but-short object reads as short. The only truncation evidence
   // there is that a cut-off JSON object fails to parse, which the lane's envelope check already
@@ -90,7 +90,7 @@ test("#1210 on codex truncation is NOT observable, and the flag says so rather t
   assert.equal(r.model, "gpt-5-codex", "and the receipt still names who did the native-language work");
 });
 
-test("#1209 the observability flag is keyed on the ADAPTER, not on a key the adapter always writes", () => {
+test("the observability flag is keyed on the ADAPTER, not on a key the adapter always writes", () => {
   // anthropic-agent writes `stopReason: r?.stop_reason` unconditionally, so `"stopReason" in json` is
   // true on every one of its turns whether or not the wire said anything. A guard built on key presence
   // would report observability the turn never had — this asserts the discriminator is the engine.
@@ -100,7 +100,7 @@ test("#1209 the observability flag is keyed on the ADAPTER, not on a key the ada
   assert.equal(r.truncated, false, "…so a stopReason arriving on a codex tuple is not trusted");
 });
 
-test("#1209 turnText falls back to stdout rather than inventing an empty answer", () => {
+test("turnText falls back to stdout rather than inventing an empty answer", () => {
   assert.equal(turnText({ json: null, stdout: "raw" }), "raw");
   assert.equal(turnText({}), "", "and an absent everything is the empty string, which the lane reads as unreadable");
 });

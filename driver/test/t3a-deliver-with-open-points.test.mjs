@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
 // T3a — "Deliver always, with open points printed. The refusal on a blocking review goes."
-// Owner ruling 2026-08-26, verbatim. It REVERSES T3, whose flip to fail-on-BLOCKING is itself
+// Ruling 2026-08-26, verbatim. It REVERSES T3, whose flip to fail-on-BLOCKING is itself
 // itself an owner-approved decision. Both are his; this is the standing one.
 //
 // The end-to-end arm lives in pipeline.mock.test.mjs, where a BLOCKING run is driven to delivery and the

@@ -48,7 +48,7 @@ import { readEvents, projectTimeline } from "./lib/events.mjs";
 import { tokenize, scoreLine } from "./lib/lexsearch.mjs";
 import { artifactToStage, listArtifactVersions, assertDiffRefsSafe } from "./lib/artifacts.mjs";
 import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayReadArtifact, assertAccountAccess, accountVisible, TOOL_SCOPES, readOnlyFor } from "./lib/scope.mjs";
-// The AUDIT-CHAIN projections (owner ruling 2026-08-27). Imported eagerly: it pulls only scrub.mjs, which
+// The AUDIT-CHAIN projections (ruling 2026-08-27). Imported eagerly: it pulls only scrub.mjs, which
 // this file already loads, so there is nothing here for a lazy import to save.
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
@@ -795,7 +795,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     // name), never the internal KEY_ARTIFACTS (narrative/audit/run.jsonl/…) — the same gate authorize()
     // puts on read_artifact.
     //
-    // AND THE TWO CLIENT KINDS NO LONGER AGREE (owner ruling 2026-08-27). They did while both read only
+    // AND THE TWO CLIENT KINDS NO LONGER AGREE (ruling 2026-08-27). They did while both read only
     // the report; the account layer now reads the audit chain and the report link still does not. This
     // is keyed on the KIND rather than on CLIENT_KINDS for exactly that reason — leaving it collapsed
     // would have made the tool surface serve an account the audit chain while this door went on sealing
@@ -875,7 +875,7 @@ export function presentForPrincipal(scope, name, result) {
   const declared = TOOL_SCOPES[name]?.present ?? null;
   if (declared === null) throw new UndeclaredPresentation(name);
 
-  // `project` — THE AUDIT CHAIN (owner ruling 2026-08-27). lib/audit-view.mjs holds the allowlist over
+  // `project` — THE AUDIT CHAIN (ruling 2026-08-27). lib/audit-view.mjs holds the allowlist over
   // each result's structure and the prose transform; nothing about what travels is decided here.
   //
   // The four tools are accountSafe and NOT clientSafe, so a `user` (report-link) token never reaches this

@@ -27,7 +27,7 @@ const with_ = (pairs, fn) => {
   finally { for (const [k, v] of saved) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } }
 };
 
-test("2030 with the precondition present it returns quietly — the control", () => {
+test("with the precondition present it returns quietly — the control", () => {
   // This arm SUPPLIES the environment rather than assuming the wrapper did. Assuming it is how this
   // file failed bare with `the refusal fired on an invocation that DID supply its environment` — a
   // false accusation standing in for an absent precondition, which is the exact defect 2030 exists to
@@ -39,7 +39,7 @@ test("2030 with the precondition present it returns quietly — the control", ()
   });
 });
 
-test("2030 each missing variable is refused BY NAME, and the message says the command", () => {
+test("each missing variable is refused BY NAME, and the message says the command", () => {
   for (const key of ["CLEAROTRON_DATABASE", "CLEAROTRON_NO_ENV_FILE"]) {
     const err = without([key], () => {
       try { requiresTheSuiteRunner("a subject"); return null; } catch (e) { return e; }
@@ -53,7 +53,7 @@ test("2030 each missing variable is refused BY NAME, and the message says the co
   }
 });
 
-test("2030 the refusal does not read as a product failure — the whole point", () => {
+test("the refusal does not read as a product failure — the whole point", () => {
   const err = without(["CLEAROTRON_DATABASE", "CLEAROTRON_NO_ENV_FILE"], () => {
     try { requiresTheSuiteRunner("a subject"); return null; } catch (e) { return e; }
   });
@@ -65,7 +65,7 @@ test("2030 the refusal does not read as a product failure — the whole point", 
     "the refusal is carrying the product-shaped wording it exists to replace");
 });
 
-test("2030 the environment is restored — a guard arm that leaks its own fixture breaks its neighbours", () => {
+test("the environment is restored — a guard arm that leaks its own fixture breaks its neighbours", () => {
   const before = { db: process.env.CLEAROTRON_DATABASE, noEnv: process.env.CLEAROTRON_NO_ENV_FILE };
   without(["CLEAROTRON_DATABASE"], () => { try { requiresTheSuiteRunner("x"); } catch { /* expected */ } });
   assert.equal(process.env.CLEAROTRON_DATABASE, before.db, "CLEAROTRON_DATABASE was not restored");
@@ -95,7 +95,7 @@ const outboxWith = (packets) => {
 };
 const thrown = (fn) => { try { fn(); return null; } catch (e) { return e; } };
 
-test("2030 a pre-run-failed packet refuses, carrying the RUNNER'S OWN reason", () => {
+test("a pre-run-failed packet refuses, carrying the RUNNER'S OWN reason", () => {
   const dir = outboxWith({
     "intake-vel-orig.prerun-failed.pending": { kind: "pre-run-failed", base: "vel-orig", reason: REAL_REASON },
   });
@@ -108,7 +108,7 @@ test("2030 a pre-run-failed packet refuses, carrying the RUNNER'S OWN reason", (
   assert.match(err.message, /a subject/);
 });
 
-test("2030 it DISCRIMINATES — a clean outbox and a missing one both pass quietly", () => {
+test("it DISCRIMINATES — a clean outbox and a missing one both pass quietly", () => {
   assert.doesNotThrow(() => refuseOnPreRunFailure(outboxWith({}), "empty outbox"),
     "an empty outbox is the normal case and must not refuse");
   assert.doesNotThrow(() => refuseOnPreRunFailure(join(tmpdir(), "no-such-outbox-2030"), "absent outbox"),
@@ -122,7 +122,7 @@ test("2030 it DISCRIMINATES — a clean outbox and a missing one both pass quiet
     "an ordinary intake failure is a RESULT these suites assert on — refusing on it would break them");
 });
 
-test("2030 the dotted form MISSES these packets — the near-miss this mechanism exists around", () => {
+test("the dotted form MISSES these packets — the near-miss this mechanism exists around", () => {
   // runner.dedup.test.mjs already asserts `.endsWith(".failed.pending")` is zero, and stayed green with
   // six prerun-failed packets on disk. This pins WHY, so nobody 'tidies' the matcher back to the dot.
   const name = "intake-vel-orig.prerun-failed.pending";
@@ -132,14 +132,14 @@ test("2030 the dotted form MISSES these packets — the near-miss this mechanism
   assert.equal(name.endsWith("prerun-failed.pending"), true, "the form this mechanism matches on");
 });
 
-test("2030 a packet with NO reason still refuses, and says the reason is missing", () => {
+test("a packet with NO reason still refuses, and says the reason is missing", () => {
   const dir = outboxWith({ "intake-x.prerun-failed.pending": { kind: "pre-run-failed", base: "x" } });
   const err = thrown(() => refuseOnPreRunFailure(dir, "a subject"));
   assert.ok(err, "a reasonless packet is still a pre-run failure and must not pass");
   assert.match(err.message, /carry no reason/, "an absent reason is a finding, not a blank line");
 });
 
-test("2030 a WHITESPACE value counts as missing — present-but-blank is how a guard gets fooled", () => {
+test("a WHITESPACE value counts as missing — present-but-blank is how a guard gets fooled", () => {
   const saved = process.env.CLEAROTRON_DATABASE;
   process.env.CLEAROTRON_DATABASE = "   ";
   try {

@@ -291,7 +291,7 @@ const cardProject = (label, path) => {
   } catch { return null; }
 };
 
-test("#393: editing ONE finding stales only that finding's card — the other cards stay fresh", () => {
+test("editing ONE finding stales only that finding's card — the other cards stay fresh", () => {
   const dir = runDir();
   const fp = join(dir, "findings.json");
   writeFileSync(fp, findingsDoc([{ ordinal: 1, mark: "ALPHA" }, { ordinal: 2, mark: "BETA" }, { ordinal: 3, mark: "GAMMA" }]));
@@ -306,7 +306,7 @@ test("#393: editing ONE finding stales only that finding's card — the other ca
   assert.equal(naive.length, 3, "the whole-file compare stales every consumer — this is the 26-card re-run");
 });
 
-test("#393: a null projection FALLS BACK to the whole file and stays stale — two absent projections never compare equal", () => {
+test("a null projection FALLS BACK to the whole file and stays stale — two absent projections never compare equal", () => {
   const dir = runDir();
   const fp = join(dir, "findings.json");
   writeFileSync(fp, findingsDoc([{ ordinal: 1, mark: "ALPHA" }, { ordinal: 9, mark: "OMEGA" }]));
@@ -321,7 +321,7 @@ test("#393: a null projection FALLS BACK to the whole file and stays stale — t
   assert.equal(staleOnPath(dir, ["card:9"], () => [fp], { project: cardProject }).length, 1);
 });
 
-test("#393: a stage with no projector writes and compares exactly as before — byte-identical stamps", () => {
+test("a stage with no projector writes and compares exactly as before — byte-identical stamps", () => {
   const dir = runDir(), dir2 = runDir();
   const fp = join(dir, "a.md"), fp2 = join(dir2, "a.md");
   writeFileSync(fp, "x"); writeFileSync(fp2, "x");
@@ -332,7 +332,7 @@ test("#393: a stage with no projector writes and compares exactly as before — 
   assert.ok(!JSON.stringify(readStamp(dir2, "synthesis")).includes("proj"));
 });
 
-test("#393: a post-stage mutator accounts for the projection too, not only the whole-file sha", () => {
+test("a post-stage mutator accounts for the projection too, not only the whole-file sha", () => {
   const dir = runDir();
   const fp = join(dir, "findings.json");
   writeFileSync(fp, findingsDoc([{ ordinal: 1, mark: "ALPHA" }]));

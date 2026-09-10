@@ -29,7 +29,7 @@ const REPO = join(HERE, "..", "..");
 
 const PLAN = { possible: true, address: "http://127.0.0.1:18812", identity: "lawyer@acme.example" };
 
-test("2176-F36 with a public address configured, the door is NOT described as unreachable", () => {
+test("with a public address configured, the door is NOT described as unreachable", () => {
   // Measured on the owner's box: "on this machine only … nothing outside this machine can reach it",
   // printed two sentences above a public https address the door was already answering on, reached from
   // off-box before the key had been pasted anywhere.
@@ -40,12 +40,12 @@ test("2176-F36 with a public address configured, the door is NOT described as un
   assert.match(said, /agent-mcp\.example\.ch/, "the address it is reachable AT is the actionable half");
 });
 
-test("2176-F36 with no public address, the private claim is still made — the fix must not mute a true sentence", () => {
+test("with no public address, the private claim is still made — the fix must not mute a true sentence", () => {
   const said = describeChange(PLAN, { applied: true, publicAddress: null }).join("\n");
   assert.match(said, /nothing outside this machine can reach it/i, said);
 });
 
-test("2176-F36 when reachability could not be determined, NEITHER claim is made", () => {
+test("when reachability could not be determined, NEITHER claim is made", () => {
   // A wrong answer in this direction is the dangerous one, so silence is the safe failure. An operator
   // told their door is loopback-only stops thinking about who else can reach it.
   const said = describeChange(PLAN, { applied: true, publicAddress: null, reachabilityKnown: false }).join("\n");
@@ -54,7 +54,7 @@ test("2176-F36 when reachability could not be determined, NEITHER claim is made"
   assert.match(said, /could not be determined/, said);
 });
 
-test("2176-F36 the dry-run tense says the same thing as the applied one", () => {
+test("the dry-run tense says the same thing as the applied one", () => {
   // One author for both, or a stale future-tense sentence describes a change in the way it was not made.
   const would = describeChange(PLAN, { applied: false, publicAddress: "https://x.example/mcp" }).join("\n");
   assert.match(would, /IS reachable from outside this machine/,
@@ -63,7 +63,7 @@ test("2176-F36 the dry-run tense says the same thing as the applied one", () => 
 
 // ── F30 · the remedy addressed to somebody who is not reading it ───────────────────────────────────
 
-test("2176-F30 the not-on-the-internet refusal names what to set and where it is documented", () => {
+test("the not-on-the-internet refusal names what to set and where it is documented", () => {
   // `whatItNeeds(client, have)` — positional. With no public address, Cowork is the row that refuses.
   // `cowork` merged into `claude` (owner: it is one app). Same population member —
   // an http client reaching the web door — so this arm keeps its subject under the surviving id.
@@ -86,7 +86,7 @@ test("2176-F30 the not-on-the-internet refusal names what to set and where it is
 
 // ── F38 · the dead end reached by following instructions ──────────────────────────────────────────
 
-test("2176-F38 / 2191-F13 `grant add` CREATES the first tenant instead of refusing", () => {
+test("/ 2191-F13 `grant add` CREATES the first tenant instead of refusing", () => {
   // WHAT THIS ARM USED TO ASSERT, and why it changed. F38 found the dead end — connect → "run grant" →
   // grant → "a tenant must already exist" → nothing — and its fix printed the JSON shape into the
   // refusal. That was better than a bare stop and still asked a person to hand-edit the file the product
@@ -134,7 +134,7 @@ test("2176-F38 / 2191-F13 `grant add` CREATES the first tenant instead of refusi
 
 // ── F32 · one problem, two independent causes, and it named neither remedy ────────────────────────
 
-test("2176-F32 the --background refusal names lingering AND the bus, and says they are independent", () => {
+test("the --background refusal names lingering AND the bus, and says they are independent", () => {
   const src = execFileSync("git", ["-C", REPO, "show", "HEAD:bin/start.mjs"], { encoding: "utf8", maxBuffer: 64e6 });
   const now = execFileSync("cat", [join(REPO, "bin", "start.mjs")], { encoding: "utf8", maxBuffer: 64e6 });
   assert.match(now, /loginctl enable-linger/,

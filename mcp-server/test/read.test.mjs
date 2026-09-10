@@ -63,7 +63,7 @@ test("loadCards surfaces the curated groups", () => {
   assert.match(c.cards[0].one, /Live US registration by Beta Inc/);
 });
 
-test("#243 — loadCards reads the STAMPED `- net:` line, so a fresh run's cards do not go quiet", async () => {
+test("loadCards reads the STAMPED `- net:` line, so a fresh run's cards do not go quiet", async () => {
   // From the driver stamps `- net:` onto each card from the typed findings.json field and the
   // authored `- one:` line is retired. A projection reading `one` alone would return null for every card
   // on every run from that commit forward — a delivered MCP surface going silent with no error.
@@ -166,7 +166,7 @@ test("providerUsage notes honestly when there is no cached value", () => {
 // clarivate/signa/euipo/uspto run it found nothing and reported "no cached value stored" — an absence
 // that reads as benign while the drift detector is switched off. The register tier stopped being
 // single-vendor at //; this read had not.
-test("#594 the drift detector reads the tally the run actually wrote, whatever the provider is", () => {
+test("the drift detector reads the tally the run actually wrote, whatever the provider is", () => {
   const run = runs.resolveRun(RUN_ID);
   const cached = run.status.providerUsage.corsearch;
   for (const provider of ["clarivate", "signa", "euipo", "uspto-local"]) {
@@ -188,7 +188,7 @@ test("#594 the drift detector reads the tally the run actually wrote, whatever t
 // upstream was never run here, `check()` was never called for it, and `coverage().complete` still
 // answered TRUE — a completeness surface saying "yes" about a file it does not know exists. The mirror is
 // now a partition of `validators` enforced when the module loads.
-test("#249: the coverage artifact table is CLOSED against the driver's validators, in both directions", async () => {
+test("the coverage artifact table is CLOSED against the driver's validators, in both directions", async () => {
   const { validators } = await import("../lib/driver.mjs");
   const { REPORTED_ARTIFACTS, NOT_REPORTED } = await import("../lib/coverage.mjs");
   const known = Object.keys(validators);
@@ -205,7 +205,7 @@ test("#249: the coverage artifact table is CLOSED against the driver's validator
   assert.ok("findings" in REPORTED_ARTIFACTS, "findings.json must be reported — the run's most-consumed artifact was invisible here");
 });
 
-test("#249: an unknown validator key hard-fails the coverage table at load", async () => {
+test("an unknown validator key hard-fails the coverage table at load", async () => {
   // The load-time gate, exercised directly: a validator with no declaration is rejected, not skipped.
   const mod = await import("../lib/coverage.mjs");
   const { REPORTED_ARTIFACTS, NOT_REPORTED, assertValidatorCoverage } = mod;
@@ -222,7 +222,7 @@ test("#249: an unknown validator key hard-fails the coverage table at load", asy
 
 // OPEN: the live-vs-cached comparison keyed on 3 of the 17 counters provider-usage writes, so a run whose
 // whole disagreement sat in `enumerate` or `unclassified` reported drift:false.
-test("#249: providerUsage drift compares EVERY counter and names the ones that moved", () => {
+test("providerUsage drift compares EVERY counter and names the ones that moved", () => {
   const run = runs.resolveRun(RUN_ID);
   const live = usage.providerUsage(run).live;
   // A cached tally that agrees on the three old keys and disagrees on a fourth — invisible before.

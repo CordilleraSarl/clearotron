@@ -14,7 +14,7 @@
 // WHY THIS READS THE FORM AND NOT THE PROSE. The obligation used to read "placed or explicitly reasoned
 // away", and *reasoned away* is prose — unfalsifiable by machine. On the first of those runs 39 of the 45
 // missing marks ARE discussed somewhere in the recommendations and 0 of the 45 record ids are named, so
-// "discussed" and "reasoned away" cannot be told apart from the text. The owner ruling of 2026-08-20
+// "discussed" and "reasoned away" cannot be told apart from the text. The ruling of 2026-08-20
 // settled it: the duty survives, narrowed to the must-check list, discharged by NAMING THE RECORD ID
 // with a one-line ground. That is a row on a form, and a row is checkable.
 //

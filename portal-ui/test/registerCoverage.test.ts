@@ -77,7 +77,7 @@ test('no product picked ⇒ nothing to point anywhere, whatever the register cov
 // THE FIRST ARM OF EACH IS THE BEHAVIOUR AS IT SHIPPED, planted so this is a measured reversal rather
 // than a test rewritten to match whatever the code now does.
 
-test('2075 suggestions OFFER a territory the register cannot reach, and say so', () => {
+test('suggestions OFFER a territory the register cannot reach, and say so', () => {
   // As it shipped: 'Germany' matches, is in the product's vocabulary, and coverage removed it.
   const asItShipped = (covered: readonly string[] | null | undefined) =>
     [...territoryMatches('germ', [], MULTI, 8)].filter((n) => !Array.isArray(covered) || covered.includes(n))
@@ -95,7 +95,7 @@ test('2075 suggestions OFFER a territory the register cannot reach, and say so',
     'a region is being offered on a search that reads one country')
 })
 
-test('2075 addTerritory ACCEPTS one outside coverage, and still refuses one the product cannot take', () => {
+test('addTerritory ACCEPTS one outside coverage, and still refuses one the product cannot take', () => {
   const d = EMPTY_DRAFT
   assert.deepEqual(addTerritory(d, 'Germany', MULTI, ['European Union']).territories, ['Germany'],
     'the add path still drops a territory the reader deliberately chose')
@@ -107,7 +107,7 @@ test('2075 addTerritory ACCEPTS one outside coverage, and still refuses one the 
     'a region reached a search that reads exactly one country')
 })
 
-test('2075 the mark and the vocabulary are ONE rule, so they cannot disagree', () => {
+test('the mark and the vocabulary are ONE rule, so they cannot disagree', () => {
   // `vocabularyFor` is what the register REACHES inside a product's vocabulary; `reachesTerritory` is
   // the same question about one name. Two copies of the three-state rule would be one edit away from a
   // picker that marks a territory it also offers as unreachable, or the reverse.
@@ -121,7 +121,7 @@ test('2075 the mark and the vocabulary are ONE rule, so they cannot disagree', (
   assert.equal(vocabularyFor(FULL, null).some((n) => REGIONS.includes(n)), false)
 })
 
-test('2075 the mark is derived from the SAME three states the vocabulary is', () => {
+test('the mark is derived from the SAME three states the vocabulary is', () => {
   // An unknown coverage must never mark a territory as unreachable: `undefined` is a server that did
   // not say and `null` is a register that declares no restriction, and putting a caveat on every
   // country of a production deployment is the failure mode its own header is about.

@@ -18,7 +18,7 @@
 # box reports healthy while no client ever receives a report. That is the failure the retired `.path`
 # unit's own header warned about, arriving through the other door.
 #
-# ── WHY ExecStart IS THE ENTRYPOINT AND NOT `clearotron start` (owner ruling, 2026-08-31) ────────────
+# ── WHY ExecStart IS THE ENTRYPOINT AND NOT `clearotron start` (ruling, 2026-08-31) ────────────
 #
 # "The simple shape wins, implemented the standard way." Per standard service practice the unit invokes
 # the server entrypoint directly under its own EnvironmentFile; it does not shell through the
@@ -57,7 +57,7 @@ ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
 # every service restarted, and the page still said Signa.
 #
 # This unit can write it because it carries `EnvironmentFile=%h/.env` — one configuration per server box,
-# owner ruling 2026-08-26, which removed the second source of truth rather than defending against it.
+# ruling 2026-08-26, which removed the second source of truth rather than defending against it.
 # `-` prefix: a snapshot is a diagnostic surface, and failing to write one must never fail the service.
 ExecStartPost=-/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/flag-snapshot.mjs
 #

@@ -27,7 +27,7 @@ const noKey = {};
 
 const grid = (p) => policyFor(p)?.components?.commonLawGrid === true;
 
-test("#1149-6 every orderable product carrying commonLawGrid refuses without the credential", () => {
+test("every orderable product carrying commonLawGrid refuses without the credential", () => {
   const carriers = ORDERABLE_PRODUCTS.filter(grid);
   assert.ok(carriers.length >= 3,
     `expected the three clearance searches to carry commonLawGrid, found ${carriers.length}: ${carriers.join(", ")}`);
@@ -38,7 +38,7 @@ test("#1149-6 every orderable product carrying commonLawGrid refuses without the
   }
 });
 
-test("#1149-6 a knockout is NOT refused — #1223 acceptance 6 ruled that lane skips and discloses", () => {
+test("a knockout is NOT refused — #1223 acceptance 6 ruled that lane skips and discloses", () => {
   for (const product of ORDERABLE_PRODUCTS.filter((p) => policyFor(p)?.pipeline === "knockout")) {
     const r = preflightResearchCredential(policyFor(product), noKey);
     assert.equal(r.checked, false, `${product} must not be refused for a credential its lane never reads`);
@@ -47,7 +47,7 @@ test("#1149-6 a knockout is NOT refused — #1223 acceptance 6 ruled that lane s
 
 // THE EXPENSIVE-DIRECTION CASE. A register-only clearance is a clearance, so the obvious predicate
 // (`pipeline === "clearance"`) refuses it — for a credential it never reads, on a lane that works today.
-test("#1149-6 a register-only clearance is NOT refused, though its pipeline is clearance", () => {
+test("a register-only clearance is NOT refused, though its pipeline is clearance", () => {
   const policy = policyFor("prelim-register-only");
   assert.equal(policy?.pipeline, "clearance", "fixture check: this row is a clearance");
   assert.equal(policy?.components?.commonLawGrid, false, "fixture check: and it carries no grid");
@@ -57,7 +57,7 @@ test("#1149-6 a register-only clearance is NOT refused, though its pipeline is c
 
 // THE RESUME CASE. `policyFor` answers from RETIRED_POLICIES too, so an archived Depth 4 / Depth 5
 // re-entering the pipeline is caught here rather than falling through to the old late failure.
-test("#1149-6 a RETIRED product carrying the grid is still refused — resumes reach this door", () => {
+test("a RETIRED product carrying the grid is still refused — resumes reach this door", () => {
   for (const product of ["prelim", "prelim-jx"]) {
     const policy = policyFor(product);
     assert.ok(policy, `fixture check: ${product} is still answerable as a retired row`);
@@ -67,7 +67,7 @@ test("#1149-6 a RETIRED product carrying the grid is still refused — resumes r
   }
 });
 
-test("#1149-6 the credential present ⇒ no refusal, and the door says it checked", () => {
+test("the credential present ⇒ no refusal, and the door says it checked", () => {
   const r = preflightResearchCredential(policyFor("full-country-search"), withKey);
   assert.equal(r.checked, true);
   assert.deepEqual(r.missing, []);
@@ -75,13 +75,13 @@ test("#1149-6 the credential present ⇒ no refusal, and the door says it checke
 
 // AN UNKNOWN PRODUCT IS AN UNKNOWN, NOT A CLEARANCE. This door may only ever move a failure earlier;
 // inventing one for a product this build cannot name would be a new failure.
-test("#1149-6 an unresolvable or absent policy does not fire the door", () => {
+test("an unresolvable or absent policy does not fire the door", () => {
   for (const policy of [null, undefined, {}, { components: {} }, policyFor("no-such-product")])
     assert.equal(preflightResearchCredential(policy, noKey).checked, false);
 });
 
 // A `false` here would read as "checked and passed". The door states that it did not apply.
-test("#1149-6 not-applicable is STATED, and names the component it keyed on", () => {
+test("not-applicable is STATED, and names the component it keyed on", () => {
   const r = preflightResearchCredential(policyFor("knockout-search"), noKey);
   assert.equal(r.checked, false);
   assert.equal(r.component, "commonLawGrid");
@@ -90,12 +90,12 @@ test("#1149-6 not-applicable is STATED, and names the component it keyed on", ()
 
 // The literal is what makes a check a HALF check the day a second variable arrives (). The
 // door must read the adapter's own credEnv.
-test("#1149-6 the variable comes from the adapter, not a literal in the door", () => {
+test("the variable comes from the adapter, not a literal in the door", () => {
   const r = preflightResearchCredential(policyFor("full-country-search"), withKey);
   assert.equal(r.credEnv, RESEARCH_PROVIDERS.perplexity.credEnv);
 });
 
-test("#1149-6 the refusal names the variable and never prints its value", () => {
+test("the refusal names the variable and never prints its value", () => {
   const msg = (() => {
     try { preflightResearchCredential(policyFor("global-preliminary-search"), noKey); return ""; }
     catch (e) { return String(e.message); }
@@ -108,7 +108,7 @@ test("#1149-6 the refusal names the variable and never prints its value", () => 
 
 // The env it was HANDED, never the ambient one — preflightCredentials' own lesson, applied here
 // before this door can repeat it.
-test("#1149-6 the door reads the env it was handed, not process.env", () => {
+test("the door reads the env it was handed, not process.env", () => {
   const had = process.env.PERPLEXITY_API_KEY;
   process.env.PERPLEXITY_API_KEY = SECRET;
   try {
@@ -120,7 +120,7 @@ test("#1149-6 the door reads the env it was handed, not process.env", () => {
 });
 
 // Whitespace is not a credential. `missingCredentials` trims, and this door inherits that by using it.
-test("#1149-6 a whitespace-only credential is missing", () => {
+test("a whitespace-only credential is missing", () => {
   assert.throws(() => preflightResearchCredential(policyFor("full-country-search"), { PERPLEXITY_API_KEY: "   " }),
     /PERPLEXITY_API_KEY/);
 });

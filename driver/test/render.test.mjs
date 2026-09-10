@@ -208,7 +208,7 @@ test("spec-49 T4 (H1): the reasoning-integrity caveat renders NOWHERE — receip
   }
 });
 
-test("#761 delivery.privileged is TWO-STATE: off, and a default for everything else", () => {
+test("delivery.privileged is TWO-STATE: off, and a default for everything else", () => {
   // The rule is shared/brand.mjs `confPosture`, and render-knockout.mjs calls the same function — one
   // firm-wide marking, one definition. It was once two-state the WRONG way, coercing absent into false,
   // which is how a House-default clearance shipped carrying no confidentiality line at all. made it
@@ -897,7 +897,7 @@ test("spec-48 A4: meter captions carry the joined four-tuple; without _status th
   // nothing on the page said the separator meant "and we know that because".
   assert.match(html, /<div class="mv">Medium<\/div><div class="mev">Evidence: verified<\/div>/, "a receipt-joined verified meter says so");
   assert.match(html, /<div class="mv">High<\/div><div class="mev">Evidence: not yet verified<\/div>/, "an unjoined verified meter is presented as not-yet-verified");
-  // — the use meter prints NO verification word (owner ruling): its receipt join is
+  // — the use meter prints NO verification word (ruling): its receipt join is
   // unreachable for an http source, so verified/not-yet-verified carried no information there and
   // read as doubt about the fact. The register meters above keep the full vocabulary.
   assert.match(html, /<div class="mv">Confirmed<\/div><\/div>/, "the use meter closes after its fact — no verification word on the use surface");
@@ -914,7 +914,7 @@ test("spec-48 A4: meter captions carry the joined four-tuple; without _status th
     "the legacy enforcer basis is stated as evidence, under the appetite it qualifies");
 });
 
-test("#762 D4: a meter with NO evidence to state emits no evidence slot at all", () => {
+test("D4: a meter with NO evidence to state emits no evidence slot at all", () => {
   // The zero-residue direction. `basis` is required on a real record, so this shape is synthetic — but
   // it is what makes the '' return a fact rather than an assumption: an absent evidence word costs zero
   // bytes, it does not render an empty <div>.
@@ -1161,7 +1161,7 @@ test("spec 49 (E4): the common-law section lists what the marketplace layer adde
   assert.match(html, /What the marketplace layer added to register findings/);
   // D4 — same three facts, three positions, none of them fused: what was found, where it was
   // checked, and how well it is evidenced. The line used to spend ' · ' on two different jobs.
-  // — no verification word on the use surface (owner ruling); the source class alone.
+  // — no verification word on the use surface (ruling); the source class alone.
   assert.match(html, /use Confirmed — store\.example <i class="evstat">\(evidence: from the owner's own site\)<\/i>/,
     "attributed, with the source class (the use line prints no verification word)");
 });
@@ -1466,7 +1466,7 @@ test("doc-54: composite-tier sidecar on a framework run maps tone-nearest, never
 // the framework in force, and the ONLY place naming it was the footer, several screens down a document
 // that routinely runs six thousand pixels. The footer line stays (it is the printed page's provenance);
 // what this adds is the name where the ladder is actually read.
-test("#761 the gauge names the framework whose ladder it is printing, right above the ticks", () => {
+test("the gauge names the framework whose ladder it is printing, right above the ticks", () => {
   const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, runId: "r" });
   const label = html.match(/<div class="label">Overall risk[\s\S]*?<\/div>/)[0];
   assert.match(label, /<span class="gauge-fw">Aurora Interactive ACP risk framework<\/span>/,
@@ -1484,7 +1484,7 @@ test("#761 the gauge names the framework whose ladder it is printing, right abov
     "named once — the gauge; the footer no longer restates it");
 });
 
-test("#761 the legacy gauge names nothing — an archived run with no manifest is byte-identical", () => {
+test("the legacy gauge names nothing — an archived run with no manifest is byte-identical", () => {
   // The legacy branch has no framework object to name, which is what makes it the legacy branch. This
   // is the guard on the freeze table's zero rows: if the name ever leaks into this shape, a sidecar-less
   // archived clearance starts re-rendering differently and the SIXTEENTH BREAK's measurement is a lie.
@@ -2102,7 +2102,7 @@ test("P5 internal-note safety: doc-52 plainify runs on the new fields (engine id
 // was anchored to where the blocks used to sit. Both are re-expressed against the post- layout, and
 // the property they now prove is stronger than the one they replaced: the above-fold region of a card is
 // byte-identical WHETHER OR NOT the finding carries a content model, on both card shapes.
-test("#470: the above-fold card is byte-identical with and without the content model — the reasoning is all below", () => {
+test("the above-fold card is byte-identical with and without the content model — the reasoning is all below", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
   // report.css (correctly NOT frozen) carries the .lp-split/.fourans/.fa-row rules — the page BODY is
   // what must be residue-free, so the inlined stylesheet is dropped before the assertion.
@@ -2145,7 +2145,7 @@ test("#470: the above-fold card is byte-identical with and without the content m
 // dropped the opposition deadline and read as though the sentence had simply ended.
 const LONG_NET = "Matchday, Inc. is more likely than not to prevail against THIS IS MY MATCHDAY across the United States and the European Union on the class-41 services as filed. "
   + "The holder has opposed twice in the last three years and the opposition window closes in March.";
-test("#470: the one-clause net renders VERBATIM — no cap, no ellipsis, on every card shape", () => {
+test("the one-clause net renders VERBATIM — no cap, no ellipsis, on every card shape", () => {
   assert.ok(LONG_NET.length > 240, `the fixture must exceed the retired 240-char budget (it is ${LONG_NET.length})`);
   const findings = [{ ...P5_BANDED[0], net: LONG_NET }, { ...P5_BANDED[1], net: LONG_NET }];
   const html = renderHtml(parsedOf(REPORT), findings, COVERAGE, { runId: "noref-demo" });
@@ -2164,7 +2164,7 @@ test("#470: the one-clause net renders VERBATIM — no cap, no ellipsis, on ever
 // makes the `net || card.meta.one || oneFallback` chain fall through on an archived run, whose findings
 // carry no net at all — and on the file that carries the key with nothing in it, which is the case a
 // naive `f.net ||` would get wrong.
-test("#470: a blank or whitespace-only net falls through the fallback chain exactly as an absent one does", () => {
+test("a blank or whitespace-only net falls through the fallback chain exactly as an absent one does", () => {
   const authored = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
   for (const net of [undefined, "", "   ", "\n\t "]) {
     const html = renderHtml(parsedOf(REPORT), FINDINGS.map((f) => ({ ...f, net })), COVERAGE, { runId: "noref-demo" });
@@ -2176,7 +2176,7 @@ test("#470: a blank or whitespace-only net falls through the fallback chain exac
 // — the completeness half of the ruling: below the fold, nothing is ever cut. A reader who opens a
 // card gets every word the pre-change layout showed above it, plus the structured facts that were always
 // down here, in that order — the argument first, the evidence under it.
-test("#470: the positions render below the fold, complete, and lead the drawer", () => {
+test("the positions render below the fold, complete, and lead the drawer", () => {
   const html = renderHtml(parsedOf(REPORT), P5_BANDED, COVERAGE, { runId: "noref-demo" });
   const drawer = html.slice(html.indexOf('<summary>Full detail &amp; provenance</summary>'));
   assert.match(drawer, /<div class="drillbody"><div class="lp-split"><p class="lp"><b>Legal risk\.<\/b> Near-identical mark over identical class-41 services — a high legal read\.<\/p>/,
@@ -2207,7 +2207,7 @@ const V6_NEGATIVES = [
     quadrant: { x: 0.8, y: 0.1 }, source: { source_type: "register-vendor", resolved_link: "https://tm.example/gb/9001" } },
 ];
 
-test("#242: on a v6 record the reasoned negatives group by their shared ground, one line per member", () => {
+test("on a v6 record the reasoned negatives group by their shared ground, one line per member", () => {
   const html = renderHtml(parsedOf(REPORT), V6_NEGATIVES, COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
   // the shared ground, stated ONCE per group in the heading parenthetical
   assert.match(html, /<b>Argued apart on the mark<\/b> \(distinguished on the mark itself\) — 1 mark\./);
@@ -2221,7 +2221,7 @@ test("#242: on a v6 record the reasoned negatives group by their shared ground, 
   assert.ok(!/rn-mark">MATCHDAY</.test(html.split("Notable but manageable")[1] ?? ""), "band-1 conflicts never enter the negatives section");
 });
 
-test("#242: zero reasoned negatives SAYS so — an empty heading with nothing under it never renders", () => {
+test("zero reasoned negatives SAYS so — an empty heading with nothing under it never renders", () => {
   const html = renderHtml(parsedOf(REPORT), [P5_BANDED[0]], COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
   assert.match(html, /<b>No reasoned negatives\.<\/b> Every retrieved close match on this run is an on-field conflict/);
   assert.ok(!/class="rn-mark"/.test(html), "no member rows under a zero grouping");
@@ -2230,7 +2230,7 @@ test("#242: zero reasoned negatives SAYS so — an empty heading with nothing un
   assert.ok(!/No reasoned negatives/.test(legacy), "'grouped and found none' must not be confusable with 'never grouped'");
 });
 
-test("#242: the version gate is fail-CLOSED — an absent, stale or unparseable version renders the old section", () => {
+test("the version gate is fail-CLOSED — an absent, stale or unparseable version renders the old section", () => {
   const grouped = renderHtml(parsedOf(REPORT), V6_NEGATIVES, COVERAGE, { runId: "noref-demo", findingsSchemaVersion: 6 });
   for (const opt of [{}, { findingsSchemaVersion: 5 }, { findingsSchemaVersion: null }, { findingsSchemaVersion: "six" }]) {
     const html = renderHtml(parsedOf(REPORT), V6_NEGATIVES, COVERAGE, { runId: "noref-demo", ...opt });
@@ -2240,7 +2240,7 @@ test("#242: the version gate is fail-CLOSED — an absent, stale or unparseable 
   assert.notEqual(grouped, renderHtml(parsedOf(REPORT), V6_NEGATIVES, COVERAGE, { runId: "noref-demo" }));
 });
 
-test("#242: an archived (pre-v6) run renders byte-identically to its pre-change output", () => {
+test("an archived (pre-v6) run renders byte-identically to its pre-change output", () => {
   // The freeze checklist asks whether a change is reachable from a REPUBLISH. It is — so the claim is
   // measured, not asserted: the whole page for a legacy-shape and a P5-shape run must carry not one byte
   // of the rendering, including in the stylesheet-stripped body seams.
@@ -2260,7 +2260,7 @@ const heroOf = (html) => html.slice(html.indexOf('<h1 class="mark"'), html.index
 const capsOf = (html) => (heroOf(html).match(/<p class="sub[^"]*">([\s\S]*?)<\/p>/g) ?? [])
   .map((p) => p.replace(/<[^>]+>/g, ""));
 
-test("#470 the hero caption folds to its first sentence, and the remainder is complete behind it", () => {
+test("the hero caption folds to its first sentence, and the remainder is complete behind it", () => {
   const render = (caption) => renderHtml(
     { fm: { title: "AquaPlus", matter: "TMP1", overall_label: "MEDIUM", overall_caption: caption }, secs: {} },
     [], [], { runId: "r", productName: "Full country search" });
@@ -2289,7 +2289,7 @@ test("#470 the hero caption folds to its first sentence, and the remainder is co
   assert.deepEqual(capsOf(render("")), []);
 });
 
-test("#470 the fold point is a sentence end, not a full stop — initialisms and corporate suffixes hold", () => {
+test("the fold point is a sentence end, not a full stop — initialisms and corporate suffixes hold", () => {
   const first = (caption) => capsOf(renderHtml(
     { fm: { title: "A", matter: "M", overall_label: "MEDIUM", overall_caption: caption }, secs: {} },
     [], [], { runId: "r" }))[0];
@@ -2321,7 +2321,7 @@ test("#470 the fold point is a sentence end, not a full stop — initialisms and
 // mapped to client words at this boundary, exactly as EVIDENCE_LABEL has mapped `_status` since,
 // or a field deleted from a surface.
 
-test("#762 D5: the client risk chip is the BAND WORD — the placement key never rides on it", () => {
+test("D5: the client risk chip is the BAND WORD — the placement key never rides on it", () => {
   const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, runId: "r" });
   assert.match(html, /<span class="tier[^"]*">Manageable<\/span>/, "the chip is the framework's own band word");
   assert.match(html, /<span class="tier[^"]*">Low<\/span>/);
@@ -2337,14 +2337,14 @@ test("#762 D5: the client risk chip is the BAND WORD — the placement key never
   assert.match(html, /<h2>Notable but manageable<\/h2>/);
 });
 
-test("#762 D5: an UNRATED awareness finding drops the suffix too, and keeps its own words", () => {
+test("D5: an UNRATED awareness finding drops the suffix too, and keeps its own words", () => {
   const unrated = [{ ...BAND_FINDINGS[0], band: null, disposition: "off-field" }];
   const html = renderHtml(parsedOf(REPORT), unrated, [], { framework: AURORA_MANIFEST, runId: "r" });
   assert.match(html, /<span class="tier[^"]*">Not rated — awareness<\/span>/);
   assert.doesNotMatch(html, /Not rated — awareness · /);
 });
 
-test("#762 D5: the INTERNAL legacy Level/Composite chip is untouched — this is the client branch only", () => {
+test("D5: the INTERNAL legacy Level/Composite chip is untouched — this is the client branch only", () => {
   // The band-mode branch is the one a client reads. The composite branch below it is the reviewer
   // shorthand and keeps its own separator; narrowing the fix to the client chip is deliberate, and a
   // change here would be a different decision on a different surface.
@@ -2362,7 +2362,7 @@ test("#762 D5: the INTERNAL legacy Level/Composite chip is untouched — this is
 // spellings of one enum member, over a complaint that is only ever about the page.
 const NO_RESULT = "perplexity_research — no result";
 
-test("#762 D7: the sentinel renders as client words on the finding card, and the tool name is nowhere", () => {
+test("D7: the sentinel renders as client words on the finding card, and the tool name is nowhere", () => {
   const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   assert.match(html, /<b>Use checked\.<\/b> Nothing found in the marketplaces searched\./);
@@ -2374,7 +2374,7 @@ test("#762 D7: the sentinel renders as client words on the finding card, and the
   assert.doesNotMatch(html, /perplexity/i, "…in any casing");
 });
 
-test("#762 D7: the common-law contribution list maps it too — where `new URL` used to throw", () => {
+test("D7: the common-law contribution list maps it too — where `new URL` used to throw", () => {
   // THE MECHANISM. The sentinel is not a URL, so `new URL(...)` threw and the catch printed
   // `host.slice(0, 40)`. The sentinel is 31 characters, so what a client read was the tool name WHOLE.
   assert.equal(NO_RESULT.length, 31, "premise: the slice truncated nothing — the leak was the full name");
@@ -2385,7 +2385,7 @@ test("#762 D7: the common-law contribution list maps it too — where `new URL` 
   assert.doesNotMatch(html, /perplexity_research/);
 });
 
-test("2097 the sentinel matches on NORMALISED punctuation — the seat's hyphen renders as client words", () => {
+test("the sentinel matches on NORMALISED punctuation — the seat's hyphen renders as client words", () => {
   // The seat emitted a HYPHEN where the doctrine writes an em dash; exact equality against one spelling
   // let the raw tool name through to a delivered report, twice on one page. The constant itself does
   // not move (archived runs carry it forever) — the MATCH folds the dash class and whitespace.
@@ -2401,7 +2401,7 @@ test("2097 the sentinel matches on NORMALISED punctuation — the seat's hyphen 
   assert.doesNotMatch(html, /Marketplace search run/, "a URL that merely contains similar words was substituted");
 });
 
-test("#762 D7: a real source URL is NOT touched — the map is one equality, never a rule over strings", () => {
+test("D7: a real source URL is NOT touched — the map is one equality, never a rule over strings", () => {
   const f = [{ ...FINDINGS[0], use_check: { source: "https://shop.example.com/matchday-gear" } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, {});
   assert.match(html, /href="https:\/\/shop\.example\.com\/matchday-gear"/, "the cite still links the real source");
@@ -2409,7 +2409,7 @@ test("#762 D7: a real source URL is NOT touched — the map is one equality, nev
   assert.doesNotMatch(html, /no result found/, "nothing was substituted into a source that had one");
 });
 
-test("#762 D4/D7: the use-source class has ONE definition, and it reads as a source phrase", () => {
+test("D4/D7: the use-source class has ONE definition, and it reads as a source phrase", () => {
   // It was declared twice with two different strings for the same closed member: fullDetail said
   // "register mirror — not evidence of use", the contribution list said "register mirror — not use
   // evidence". One vocabulary, two spellings, one page.
@@ -2438,7 +2438,7 @@ test("#762 D4/D7: the use-source class has ONE definition, and it reads as a sou
 // was dropped. Dropping a telemetry lead-in only made the wreckage visible — the first surviving bullet
 // became the paragraph and the rest printed their dashes as text. It calls parse.mjs's stripTelemetry
 // now, which splits per LINE first, so the two rules are one rule.
-test("#832: a telemetry lead-in is dropped and the bullets it led each stand as their own item", () => {
+test("a telemetry lead-in is dropped and the bullets it led each stand as their own item", () => {
   const meth = "Scope: 146 of 147 searches completed.\n- Japan was not searched.\n- Korea was not searched.";
   const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
   const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
@@ -2449,7 +2449,7 @@ test("#832: a telemetry lead-in is dropped and the bullets it led each stand as 
     "…and no dash is left printing as text inside another item");
 });
 
-test("#832: the weld never needed telemetry — a multi-line note with none keeps its lead-in AND its bullets", () => {
+test("the weld never needed telemetry — a multi-line note with none keeps its lead-in AND its bullets", () => {
   const meth = "Scope note.\n- Japan was not searched.\n- Korea was not searched.";
   const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
   const note = html.match(/<div class="methnote"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
@@ -2457,7 +2457,7 @@ test("#832: the weld never needed telemetry — a multi-line note with none keep
     "the lead-in is a paragraph and each bullet is an item — before #832 all three welded into one <p>");
 });
 
-test("#832: an ALL-telemetry note still reduces to nothing — no empty methodology block", () => {
+test("an ALL-telemetry note still reduces to nothing — no empty methodology block", () => {
   const meth = "Scope: 146 of 147 searches completed.\n- 12 batches ran against the mirror.";
   const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
   assert.equal(html.match(/<div class="methnote"/), null,
@@ -2465,7 +2465,7 @@ test("#832: an ALL-telemetry note still reduces to nothing — no empty methodol
   assert.doesNotMatch(html, /How this search was run/, "…and neither is its heading");
 });
 
-test("#832: the ONE-PARAGRAPH archived shape is byte-identical — this is the row every old run sits on", () => {
+test("the ONE-PARAGRAPH archived shape is byte-identical — this is the row every old run sits on", () => {
   const meth = "Register layer covered worldwide exact VENZY. Common-law layer covered 25 search terms. "
     + "146 of 147 searches completed.";
   const html = renderHtml(parsedOf(`${REPORT}\n\n# Methodology\n${meth}\n`), FINDINGS, COVERAGE, {});
@@ -2477,7 +2477,7 @@ test("#832: the ONE-PARAGRAPH archived shape is byte-identical — this is the r
 // The divergence names as the actual defect: a fix that leaves the two rules disagreeing has only
 // moved it. They agree because there is now ONE rule — this arm is what would notice a second copy
 // growing back in the renderer.
-test("#832: plainScopeNote and stripTelemetry answer the same input the same way", async () => {
+test("plainScopeNote and stripTelemetry answer the same input the same way", async () => {
   const { stripTelemetry } = await import("../publish/parse.mjs");
   for (const meth of [
     "Scope: 146 of 147 searches completed.\n- Japan was not searched.\n- Korea was not searched.",
@@ -2515,7 +2515,7 @@ const externalAnchorsWithoutTarget = (html) =>
   [...String(html).matchAll(/<a\s[^>]*>/gi)].map((m) => m[0])
     .filter((a) => /href="https?:\/\//i.test(a) && !/target="_blank"/i.test(a));
 
-test("#705 every EXTERNAL anchor in a rendered report opens in a new tab", () => {
+test("every EXTERNAL anchor in a rendered report opens in a new tab", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "link-invariant" });
   const external = [...html.matchAll(/<a\s[^>]*>/gi)].map((m) => m[0]).filter((a) => /href="https?:\/\//i.test(a));
   assert.ok(external.length >= 3,
@@ -2526,7 +2526,7 @@ test("#705 every EXTERNAL anchor in a rendered report opens in a new tab", () =>
     assert.match(a, /rel="noopener/, "and every one of them fences window.opener");
 });
 
-test("#705 IN-PAGE ordinal anchors stay targetless — the other direction", () => {
+test("IN-PAGE ordinal anchors stay targetless — the other direction", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "link-invariant" });
   const inPage = [...html.matchAll(/<a\s[^>]*href="#[^"]*"[^>]*>/gi)].map((m) => m[0]);
   for (const a of inPage)
@@ -2534,7 +2534,7 @@ test("#705 IN-PAGE ordinal anchors stay targetless — the other direction", () 
       `an in-page anchor with _blank opens a second copy of the report instead of scrolling: ${a.slice(0, 90)}`);
 });
 
-test("#705 the chrome home link leaves the FRAME, not just the report", () => {
+test("the chrome home link leaves the FRAME, not just the report", () => {
   // Targetless it navigated the iframe, where a portal-relative href cannot resolve — counsel's
   // symptom 1. The sandbox carries allow-popups and NOT allow-top-navigation, so a new tab is the
   // option that works without widening the boundary the report is held behind.
@@ -2569,7 +2569,7 @@ const citeCards = (body) => [
 ].join("\n");
 const citeHtml = (body) => renderHtml(parsedOf(`${FM}\n${citeCards(body)}`), FINDINGS, COVERAGE, { runId: "noref-cite" });
 
-test("#875 a citation label in the destination slot renders as TEXT, never as a link destination", () => {
+test("a citation label in the destination slot renders as TEXT, never as a link destination", () => {
   const html = citeHtml(`Confirmed in active market use ${CITE_AS_DEST}.`);
   // The claim, stated as the thing a client would actually be handed: no anchor anywhere in the
   // report points at the citation label. Asserting on `href="perplexity_research` rather than on the
@@ -2582,7 +2582,7 @@ test("#875 a citation label in the destination slot renders as TEXT, never as a 
     "the citation is still THERE — refusing to link it must not delete it, or the report loses the source");
 });
 
-test("#875 a real URL on the same surface still becomes a link — the check is not vacuous", () => {
+test("a real URL on the same surface still becomes a link — the check is not vacuous", () => {
   // Without this, the assertion above would pass on a renderer that had stopped emitting anchors at
   // all, which is the failure mode a negative-only test cannot see.
   const html = citeHtml(`Listed on the register ${CITE_AS_URL}.`);
@@ -2590,7 +2590,7 @@ test("#875 a real URL on the same surface still becomes a link — the check is 
     "a source that IS a page is linked, and the anchor carries the real http(s) destination");
 });
 
-test("#875 no destination that is not http(s), mailto: or a fragment ever reaches an href", () => {
+test("no destination that is not http(s), mailto: or a fragment ever reaches an href", () => {
   // The rule generalised. Each of these is a destination slot holding something that is not a URL —
   // the citation-label case is the first row, and the rest are the neighbours it shares a bug with.
   const NOT_URLS = [
@@ -2618,7 +2618,7 @@ test("#875 no destination that is not http(s), mailto: or a fragment ever reache
 // PINNED IN BOTH DIRECTIONS. The populated branch must stay byte-for-byte what it was — 28 of the pool's
 // 29 clearance reports go down it, and `doRepublish()` re-renders archived runs — so an arm that only
 // checked the empty state would let a careless edit rewrite documents already delivered.
-test("#1132 zero coverage rows render the heading and an explicit statement, never silence", () => {
+test("zero coverage rows render the heading and an explicit statement, never silence", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, [], { runId: "cov-none" });
   assert.match(html, /What we covered — and what's open/,
     "the section vanished on a zero-row run: a reader cannot tell a run that measured nothing from one "
@@ -2628,7 +2628,7 @@ test("#1132 zero coverage rows render the heading and an explicit statement, nev
     "the empty state must not read as an all-clear — that is the one way it could be worse than silence");
 });
 
-test("#1132 the populated branch is untouched — a republish of a normal run rewrites nothing", () => {
+test("the populated branch is untouched — a republish of a normal run rewrites nothing", () => {
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "cov-rows" });
   assert.match(html, /What we covered — and what's open/);
   assert.doesNotMatch(html, /No coverage record was produced/,
@@ -2647,7 +2647,7 @@ test("#1132 the populated branch is untouched — a republish of a normal run re
 //
 // BOTH DIRECTIONS, because a dedupe that has only ever been shown NOT to fire is not a dedupe. The
 // suppression errs toward keeping: a surplus row is today's behaviour, a wrongly-dropped one hides a gap.
-test("332: the driver's follow-up row goes when the model already named that search, and stays when it did not", () => {
+test("the driver's follow-up row goes when the model already named that search, and stays when it did not", () => {
   const modelRow = { area: "the English word DOLPHIN as a dedicated exact search", state: "open",
     note: "planned and not reached" };
   const driverRow = { area: "Follow-up / dolphin", state: "open",
@@ -2685,7 +2685,7 @@ test("332: the driver's follow-up row goes when the model already named that sea
 // When the rule narrowed to matching the AREA, that fixture stopped exercising the containment path at
 // all and passed for the wrong reason — a fixture built for one failing state cannot reach the one
 // beside it. These three drive the states, not a variation of one.
-test("332: a completed search does not suppress the row disclosing an uncompleted one", () => {
+test("a completed search does not suppress the row disclosing an uncompleted one", () => {
   const composedRow = { area: "Follow-up / dolphin", state: "open",
     note: "dolphin — not completed this run — the exact-word search was planned and never reached the register" };
 

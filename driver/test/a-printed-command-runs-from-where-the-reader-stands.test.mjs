@@ -156,7 +156,7 @@ function runPrintedCommand(cmd, { cwd, env }) {
   }
 }
 
-test("1916 the form is decided by the shim and the PATH, never by the working directory", () => {
+test("the form is decided by the shim and the PATH, never by the working directory", () => {
   const { home, dir, path } = homeWithShim();
   const none = () => false;
 
@@ -197,7 +197,7 @@ test("1916 the form is decided by the shim and the PATH, never by the working di
   assert.equal(inspectShim(path).kind, "absent-or-unreadable", "the fixture cleaned up after itself");
 });
 
-test("1916 the reader who arrived by npx is told the bare verb once their own shim is on PATH", () => {
+test("the reader who arrived by npx is told the bare verb once their own shim is on PATH", () => {
   // THE PAYOFF, stated as the one thing that must be different from before. That arms
   // pin that this reader is never told the bare name; that was right when the bare name reached
   // nothing. The install now makes it reach this checkout, and the whole point of putting the verb on
@@ -218,7 +218,7 @@ test("1916 the reader who arrived by npx is told the bare verb once their own sh
   rmSync(home, { recursive: true, force: true });
 });
 
-test("1916 arriving BY the bare name needs no filesystem at all", () => {
+test("arriving BY the bare name needs no filesystem at all", () => {
   // The strongest evidence there is about a reader's PATH is that they typed the bare name and it
   // reached this code — from wherever they were standing. That branch must not be reachable by a
   // missing HOME or an unreadable shim, so it is driven with a probe that throws if consulted.
@@ -229,7 +229,7 @@ test("1916 arriving BY the bare name needs no filesystem at all", () => {
 });
 
 // ── THE SHIM ITSELF ────────────────────────────────────────────────────────────────────────────────
-test("1916 the shim the install writes is executable and reaches THIS install", () => {
+test("the shim the install writes is executable and reaches THIS install", () => {
   const { home, path } = homeWithShim();
   const elsewhere = tmp("cwd");
 
@@ -251,7 +251,7 @@ test("1916 the shim the install writes is executable and reaches THIS install", 
   rmSync(elsewhere, { recursive: true, force: true });
 });
 
-test("1916 a `clearotron` we did not write is reported, never overwritten", () => {
+test("a `clearotron` we did not write is reported, never overwritten", () => {
   // Somebody else's `clearotron` on this operator's PATH is a fact about their machine. Replacing it
   // silently would hijack a name we do not own — and would do it during an install they ran for an
   // unrelated reason.
@@ -271,7 +271,7 @@ test("1916 a `clearotron` we did not write is reported, never overwritten", () =
   rmSync(home, { recursive: true, force: true });
 });
 
-test("1916 a shim that cannot be written is a warning the install carries, not a failure it dies of", () => {
+test("a shim that cannot be written is a warning the install carries, not a failure it dies of", () => {
   // The install's deliverable is a working install. The verb on PATH is a convenience, and refusing a
   // finished configuration over a convenience turns a working install into no install at all.
   const home = tmp("home");
@@ -355,7 +355,7 @@ function doctorAdvice(env) {
   return { out, commands: commandsIn(out) };
 }
 
-test("1916 every command `doctor` prints RUNS from a directory that is not the install", () => {
+test("every command `doctor` prints RUNS from a directory that is not the install", () => {
   requireToolchain();
   const { home, dir } = homeWithShim();
   const elsewhere = tmp("cwd");
@@ -401,7 +401,7 @@ test("1916 every command `doctor` prints RUNS from a directory that is not the i
   rmSync(elsewhere, { recursive: true, force: true });
 });
 
-test("1916 with no shim, the advice names the directory — and that line runs too", () => {
+test("with no shim, the advice names the directory — and that line runs too", () => {
   // The fallback, and the half of the issue's requirement that says "either states the directory, or is
   // a command that works from anywhere". A reader with no shim must still get something runnable.
   requireToolchain();
@@ -444,7 +444,7 @@ test("1916 with no shim, the advice names the directory — and that line runs t
 // command the owner actually typed when he found this.
 //
 // This arm reads the RENDERED output instead of the source, so no exemption reaches it.
-test("1916 no verb's --help advertises a command form the reader cannot run", () => {
+test("no verb's --help advertises a command form the reader cannot run", () => {
   const { home, dir } = homeWithShim();
   const onPath = [dir, NODE_DIR, "/usr/bin", "/bin"].join(delimiter);
   const verbs = ["install", "start", "demo", "doctor", "passphrase", "update"];
@@ -474,7 +474,7 @@ test("1916 no verb's --help advertises a command form the reader cannot run", ()
   rmSync(home, { recursive: true, force: true });
 });
 
-test("1916 the portal's sign-in page names a passphrase reset the reader can run", () => {
+test("the portal's sign-in page names a passphrase reset the reader can run", () => {
   // THE COMMAND THE OWNER TYPED. The sign-in page is where a reader who has lost their passphrase is
   // told what to do, and it carried a hardcoded `npx clearotron passphrase --reset` — unrunnable from
   // anywhere but the install directory, which is not where somebody reading a browser page is standing.
@@ -497,7 +497,7 @@ test("1916 the portal's sign-in page names a passphrase reset the reader can run
     + "be handed this machine's filesystem layout to learn how to reset a passphrase");
 });
 
-test("1916 a shim whose interpreter is gone is reported, not ticked", () => {
+test("a shim whose interpreter is gone is reported, not ticked", () => {
   // THE FAILURE THIS ISSUE'S OWN FIX COULD HAVE INTRODUCED. The shim records the interpreter it was
   // written with, so an nvm upgrade — and `.nvmrc` ships in this package — removes that path while
   // leaving the shim, its marker and its install line untouched. It then dies in /bin/sh with
@@ -534,7 +534,7 @@ test("1916 a shim whose interpreter is gone is reported, not ticked", () => {
   rmSync(live.home, { recursive: true, force: true });
 });
 
-test("1916 the shim's body is the one this install recognises", () => {
+test("the shim's body is the one this install recognises", () => {
   // The writer and the reader are one file on purpose. This is the arm that reds if only one of them
   // is changed — a marker edited in shimBody() and not in inspectShim() would leave every install
   // silently unable to recognise the shim it had just written.
@@ -549,7 +549,7 @@ test("1916 the shim's body is the one this install recognises", () => {
 });
 
 
-test("2036 the extractor is proved against a LITERAL, not against what this box is missing", () => {
+test("the extractor is proved against a LITERAL, not against what this box is missing", () => {
   // THE CONTROL THAT REPLACES THE AMBIENT ONE. Doctor prints commands three ways and the extractor has
   // to find all three; whether any PARTICULAR advice line prints is a property of the machine, which is
   // exactly what made the old control unpassable on a configured install.
@@ -573,7 +573,7 @@ test("2036 the extractor is proved against a LITERAL, not against what this box 
   assert.deepEqual(commandsIn("nothing here mentions the product"), [], "and no text means no commands");
 });
 
-test("2036 the extractor control FAILS when the extractor is broken — both directions", () => {
+test("the extractor control FAILS when the extractor is broken — both directions", () => {
   // The old control could not distinguish "the extractor broke" from "this box has nothing to complain
   // about". This one can, because the input is fixed: the only variable left is the extractor.
   const sample = "run: npx clearotron doctor";

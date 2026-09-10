@@ -39,7 +39,7 @@ const ZEPHYR = "risk-framework-zephyr.md";
 const AURORA = "risk-framework-aurora.md";
 const DEMO = "risk-framework-demo.md";
 
-test("2061 a bands deck reaches the screen with EVERY rung it states, in the deck's own order", () => {
+test("a bands deck reaches the screen with EVERY rung it states, in the deck's own order", () => {
   for (const deck of [HOUSE, ZEPHYR]) {
     const rows = rowsFor(deck);
     assert.ok(Array.isArray(rows) && rows.length, `${deck}: no band meanings at all`);
@@ -60,7 +60,7 @@ test("2061 a bands deck reaches the screen with EVERY rung it states, in the dec
   }
 });
 
-test("2061 a deck that RENAMES a rung still renders — the old lift hard-coded one English phrase", () => {
+test("a deck that RENAMES a rung still renders — the old lift hard-coded one English phrase", () => {
   // Part 2's own rename, applied to the shipped deck. Before this change the box vanished entirely.
   const renamed = deckOf(HOUSE).replaceAll("**Potential outcomes.**", "**Potential consequences.**");
   const rows = extractBandMeanings(renamed, manifestOf(HOUSE));
@@ -70,14 +70,14 @@ test("2061 a deck that RENAMES a rung still renders — the old lift hard-coded 
     "the deck's own word for the rung did not survive; something here still privileges one phrase");
 });
 
-test("2061 a band that states NO rungs is still a garbled deck, and still blanks the box", () => {
+test("a band that states NO rungs is still a garbled deck, and still blanks the box", () => {
   // The protection that was worth keeping, aimed at the case it actually describes. A half-shown
   // framework misleads worse than an absent one; a merely renamed rung is not a half-shown framework.
   const noRungs = deckOf(HOUSE).replace(/^- \*\*(Legal|Practical|Potential)[^\n]*$/gm, "prose, no rungs");
   assert.equal(extractBandMeanings(noRungs, manifestOf(HOUSE)), null);
 });
 
-test("2061 MATRIX decks are untouched — they carry their own summary and no rungs", () => {
+test("MATRIX decks are untouched — they carry their own summary and no rungs", () => {
   const aurora = rowsFor(AURORA);
   assert.ok(Array.isArray(aurora) && aurora.length === 5, "aurora stopped rendering");
   for (const r of aurora) {
@@ -86,7 +86,7 @@ test("2061 MATRIX decks are untouched — they carry their own summary and no ru
   }
 });
 
-test("2061 `meaning` is KEPT, because a second surface reads it", () => {
+test("`meaning` is KEPT, because a second surface reads it", () => {
   // driver/profile-page.html renders these rows too and reads `r.meaning` directly. Dropping the field
   // would have blanked a page nobody asked me to change — the reader population of a shape change is
   // never just the caller you set out to fix.
@@ -99,7 +99,7 @@ test("2061 `meaning` is KEPT, because a second surface reads it", () => {
   }
 });
 
-test("2061 the demo deck's box is absent BEFORE and AFTER — stated, not discovered later", () => {
+test("the demo deck's box is absent BEFORE and AFTER — stated, not discovered later", () => {
   // Not a regression and not something this change introduces: the demo deck is matrix-shaped and
   // carries no "Band meanings" table for matrixBandMeanings to read, so its box has always been absent.
   // The issue asks that demo "render exactly as today", and today it renders nothing. Recorded here so
@@ -111,7 +111,7 @@ test("2061 the demo deck's box is absent BEFORE and AFTER — stated, not discov
 
 // ── PART 2 AND PART 3 ────────────────────────────────────────────────────────────────────────────
 
-test("2061 the house deck is the completed version, including the figure that replaces a refusal", () => {
+test("the house deck is the completed version, including the figure that replaces a refusal", () => {
   const deck = deckOf(HOUSE);
   // The $1m default is the half a careful reviewer would revert: the file used to argue against ANY
   // absolute figure in its own words, and that note is gone on the owner's ruling of 2026-08-31 — "her
@@ -128,7 +128,7 @@ test("2061 the house deck is the completed version, including the figure that re
     "Manageable no longer reads 'likely to lose' — the completed ladder was not adopted whole");
 });
 
-test("2061 the shared reasoning file carries NO ONE CLIENT's ladder", () => {
+test("the shared reasoning file carries NO ONE CLIENT's ladder", () => {
   // `synthesis-rules.md` applies under EVERY framework and has no per-client override, so house phrasing
   // there was already wrong for the matrix decks and for zephyr. Swapping one client's ladder for
   // another's would have fixed today and left the defect, so the line points at the framework in force.
@@ -141,7 +141,7 @@ test("2061 the shared reasoning file carries NO ONE CLIENT's ladder", () => {
   assert.match(shared, /THE FRAMEWORK IN FORCE/, "the neutral instruction that replaced it is gone too");
 });
 
-test("2061 no file cites risk-framework.md for doctrine that is not in it", () => {
+test("no file cites risk-framework.md for doctrine that is not in it", () => {
   // Seven citations named rules, stages and sections that moved out when the deck was slimmed to four
   // band definitions. Five were repointed at firm-wide-reasoning.md; two named things in NO file and
   // lost the pointer while keeping the rule. Every line is loaded into a model's context on every run:

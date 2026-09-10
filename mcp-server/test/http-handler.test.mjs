@@ -75,7 +75,7 @@ const MALFORMED_HOSTS = [
   ["127.0.0.1:18821:22", "two ports"],
 ];
 
-test("#1928 a malformed Host is refused BY NAME — never a 500, and never before auth", async () => {
+test("a malformed Host is refused BY NAME — never a 500, and never before auth", async () => {
   for (const [host, why] of MALFORMED_HOSTS) {
     const res = mockRes();
     await mk({ verify: mkVerify() })(mockReq("POST", "/mcp", { host }), res);
@@ -89,7 +89,7 @@ test("#1928 a malformed Host is refused BY NAME — never a 500, and never befor
   }
 });
 
-test("#1928 the door does not read the authority at all, so it must not be built from one", () => {
+test("the door does not read the authority at all, so it must not be built from one", () => {
   // Criterion 3: say at the call site what the Host is used for. It is used for NOTHING — only
   // `pathname` and `searchParams` are read — so the base exists purely to make `req.url` parse.
   const src = readFileSync(new URL("../lib/http-handler.mjs", import.meta.url), "utf8");

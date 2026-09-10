@@ -232,7 +232,7 @@ export function decidableHits(citations, lineCountOf, ships = sourceCrossesTheCu
 }
 
 /**
- * A FLOOR UNDER THE POPULATION, RELATIVE TO THIS TREE — owner ruling 2026-09-02, his words: "keep the
+ * A FLOOR UNDER THE POPULATION, RELATIVE TO THIS TREE — ruling 2026-09-02, his words: "keep the
  * verifier, kill the magic."
  *
  * The reason for a floor is unchanged and it is a good one: if the extractor breaks, every count goes to

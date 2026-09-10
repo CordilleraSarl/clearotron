@@ -133,7 +133,7 @@ const anchorsOf = (html) => [...html.matchAll(/<a\b[^>]*\shref="([^"]*)"[^>]*>/g
 const covered = [];
 
 for (const id of Object.keys(PROVIDERS)) {
-  test(`#810 a knockout on ${id} links records only to hosts ${id} publishes — and leaves evidence alone`, async () => {
+  test(`a knockout on ${id} links records only to hosts ${id} publishes — and leaves evidence alone`, async () => {
     const origins = recordOriginsFor(id);
     const html = await publishAs(id);
     covered.push(id);
@@ -191,13 +191,13 @@ for (const id of Object.keys(PROVIDERS)) {
   });
 }
 
-test("#810 the loop above ran over the whole provider table", () => {
+test("the loop above ran over the whole provider table", () => {
   assert.deepEqual([...covered].sort(), Object.keys(PROVIDERS).sort(),
     "a provider in the table with no case here is a provider whose knockout links nothing checks");
 });
 
 // ── THE UNIT, where the two shapes that are NOT a foreign host are pinned ────────────────────────────
-test("#810 a sidecar with no provider is a NO-OP, not an empty allow-list", async () => {
+test("a sidecar with no provider is a NO-OP, not an empty allow-list", async () => {
   const { normalizeRegisterRecordLinks } = await import("../register-records.mjs");
   // A legacy/archived sidecar that never recorded its register cannot be judged against one. Reading the
   // missing field as "no origins allowed" would strip every link off every archived knockout on
@@ -210,7 +210,7 @@ test("#810 a sidecar with no provider is a NO-OP, not an empty allow-list", asyn
   assert.equal(normalizeRegisterRecordLinks(null).length, 0, "and no sidecar at all is not a crash");
 });
 
-test("#810 a foreign url is cleared to null, so the workbook's ?? fallback still reaches recordId", async () => {
+test("a foreign url is cleared to null, so the workbook's ?? fallback still reaches recordId", async () => {
   const { normalizeRegisterRecordLinks } = await import("../register-records.mjs");
   const doc = recordsDoc("euipo");
   const dropped = normalizeRegisterRecordLinks(doc);
@@ -225,7 +225,7 @@ test("#810 a foreign url is cleared to null, so the workbook's ?? fallback still
   assert.equal(doc.marks[0].records[0].recordId, RECORD_ID, "the identity is untouched");
 });
 
-test("#810 a relative url is not a host claim and is left exactly as written", async () => {
+test("a relative url is not a host claim and is left exactly as written", async () => {
   const { normalizeRegisterRecordLinks } = await import("../register-records.mjs");
   const doc = recordsDoc("euipo");
   doc.marks[0].records[0].url = RECORD_ID;

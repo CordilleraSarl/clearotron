@@ -52,7 +52,7 @@ function listTools(file) {
   });
 }
 
-test("1968 every tool a client is offered declares what it does", async () => {
+test("every tool a client is offered declares what it does", async () => {
   const servers = serverFiles();
   // FLOOR. A walk that finds no servers reports clean, which is how a corpus guard goes quiet.
   assert.ok(servers.length >= 14, `only ${servers.length} server(s) found — the walk is broken, not the tree`);
@@ -85,7 +85,7 @@ test("1968 every tool a client is offered declares what it does", async () => {
     + `a tool that writes a ledger is a lie told to a sandbox:\n  ${missing.join("\n  ")}`);
 });
 
-test("1968 no tool that writes claims to be read-only", async () => {
+test("no tool that writes claims to be read-only", async () => {
   // ✕ THE FAILURE THIS SWEEP COULD HAVE INTRODUCED, and the reason it is worth an arm of its own.
   // `readOnlyHint: true` is the annotation that most reliably gets a call admitted, so it is the one a
   // future sweep reaches for when a tool is being refused. Every `record_*` tool writes a row into the
@@ -109,7 +109,7 @@ test("1968 no tool that writes claims to be read-only", async () => {
     `these tools write a row into the run ledger and declare readOnlyHint: true:\n  ${liars.join("\n  ")}`);
 });
 
-test("1968 no tool that reaches a vendor claims to stay in the closed world", async () => {
+test("no tool that reaches a vendor claims to stay in the closed world", async () => {
   // ✕ THE MIRROR OF THE ARM ABOVE, and the same class of false statement. `openWorldHint: false` says a
   // tool touches nothing beyond this box. On a register lane or a fetcher that is untrue about what the
   // product does with a client's matter — it sends it to a third party — and it is exactly the

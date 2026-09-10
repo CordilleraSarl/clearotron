@@ -40,7 +40,7 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const { runStage } = await import("../gateway.mjs");
 
-test("#524 resolveSpawnCwd prefers an explicit cwd, then the run dir, and only then a neutral tmpdir", () => {
+test("resolveSpawnCwd prefers an explicit cwd, then the run dir, and only then a neutral tmpdir", () => {
   assert.equal(resolveSpawnCwd({ cwd: "/explicit", runDir: "/run" }), "/explicit");
   assert.equal(resolveSpawnCwd({ runDir: "/run" }), "/run",
     "a dispatch that has a run writes INTO that run — this is the whole fix");
@@ -51,7 +51,7 @@ test("#524 resolveSpawnCwd prefers an explicit cwd, then the run dir, and only t
   assert.equal(resolveSpawnCwd(), tmpdir());
 });
 
-test("#524 CLEAROTRON_ENGINE_CWD is deleted — an env var cannot relocate a model's write root", () => {
+test("CLEAROTRON_ENGINE_CWD is deleted — an env var cannot relocate a model's write root", () => {
   // Not defaulted, not deprecated: a flag that can re-open the exact hole being closed is not a fix, and
   // the house rule is that the old mechanism goes in the same change that replaces it.
   const saved = process.env.CLEAROTRON_ENGINE_CWD;
@@ -64,7 +64,7 @@ test("#524 CLEAROTRON_ENGINE_CWD is deleted — an env var cannot relocate a mod
   }
 });
 
-test("#524 a model that invents a relative filename writes INSIDE the run, not into a shared tmpdir", async () => {
+test("a model that invents a relative filename writes INSIDE the run, not into a shared tmpdir", async () => {
   // The end-to-end property, and the arm that goes red if any engine stops resolving cwd to the run dir.
   const runDir = mkdtempSync(join(tmpdir(), "stagecwd-run-"));
   mkdirSync(driverDir(runDir), { recursive: true });
@@ -89,7 +89,7 @@ test("#524 a model that invents a relative filename writes INSIDE the run, not i
   }
 });
 
-test("#524 a dispatch with NO run still spawns neutrally rather than in the driver's own checkout", async () => {
+test("a dispatch with NO run still spawns neutrally rather than in the driver's own checkout", async () => {
   // The fallback has to keep working, and it has to keep being neutral: inheriting the driver's cwd would
   // load the dev-assistant CLAUDE.md into every stage. This asserts the write goes SOMEWHERE outside the
   // repo — the property the original tmpdir choice existed for, which this change must not lose.

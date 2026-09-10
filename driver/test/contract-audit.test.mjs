@@ -178,7 +178,7 @@ test("⭐ #1202 E2 soundness: the census READS the acceptance boundary, and this
 // grows as CONTRIBUTING.md's opportunistic migration reaches these rows; what matters is that the check
 // is already in place when it does, rather than arriving after the next rot.
 
-test("#1272: every symbol anchor names something that is really in the file it names", () => {
+test("every symbol anchor names something that is really in the file it names", () => {
   const missing = [];
   for (const [table, rows] of Object.entries(CENSUS_TABLES)) {
     for (const row of rows) {
@@ -197,7 +197,7 @@ test("#1272: every symbol anchor names something that is really in the file it n
     + "anchor now points at nothing. Re-point it; that is the whole reason it is a symbol and not a line");
 });
 
-test("#1272: an anchor is not vacuous — it names at least one symbol, and the arm can fail", () => {
+test("an anchor is not vacuous — it names at least one symbol, and the arm can fail", () => {
   const anchored = Object.values(CENSUS_TABLES).flat().filter((r) => r.symbol);
   assert.ok(anchored.length >= 2, `no census row carries a symbol anchor, so the arm above walks nothing (${anchored.length})`);
   for (const row of anchored) {
@@ -216,7 +216,7 @@ test("#1272: an anchor is not vacuous — it names at least one symbol, and the 
   assert.ok(!probe.includes("noSuchSymbolAnywhere_1272"), "the control name unexpectedly exists — the arm proves nothing");
 });
 
-test("#1272: CENSUS_TABLES names every table whose rows carry a citation", () => {
+test("CENSUS_TABLES names every table whose rows carry a citation", () => {
   // The arm is only as complete as this map. A fifth table added later and not registered here would be
   // unchecked while the two arms above stayed green — the vacuity these tables exist to prevent, in the
   // instrument written to prevent it.
@@ -240,7 +240,7 @@ test("#1272: CENSUS_TABLES names every table whose rows carry a citation", () =>
   }
 });
 
-test("#1211: the 21 are decided BY NAME, and every decision carries a mint and a reason", () => {
+test("the 21 are decided BY NAME, and every decision carries a mint and a reason", () => {
   // By name, never by count. A count arm stays green while the set underneath it changes — the failure
   // this file has now been bitten by twice.
   const MEASURED = [
@@ -265,7 +265,7 @@ test("#1211: the 21 are decided BY NAME, and every decision carries a mint and a
   }
 });
 
-test("#1211: an inner code is excused by its composite, and ONLY while that composite is covered", () => {
+test("an inner code is excused by its composite, and ONLY while that composite is covered", () => {
   // The property that makes this a table of assertions rather than a list of exemptions. Tested on a
   // synthetic row so it does not depend on deleting a live vocabulary row, and in BOTH directions.
   for (const row of INNER_CODES) {
@@ -282,7 +282,7 @@ test("#1211: an inner code is excused by its composite, and ONLY while that comp
   assert.equal(innerCodeCovered({ code: "p", mints: [], rollsUpTo: [], why: "" }), false);
 });
 
-test("#1211: no ruling is a phantom — every ruled code is still minted", () => {
+test("no ruling is a phantom — every ruled code is still minted", () => {
   // The direction the tripwire structurally cannot notice: it only ever walks tokens that ARE there. A
   // stale row excuses a name, so a name re-introduced later for a different purpose arrives pre-excused.
   const ex = extractStaticTokens(DRIVER);
@@ -295,7 +295,7 @@ test("#1211: no ruling is a phantom — every ruled code is still minted", () =>
   }
 });
 
-test("#1211: no bare inner code is a failure-token head ANYWHERE in the driver", () => {
+test("no bare inner code is a failure-token head ANYWHERE in the driver", () => {
   // The rulings all rest on one claim — the bare form reaches no stage — so that claim is checked rather
   // than asserted, and over every driver module rather than the covered subset: a `fail("no_ruling")` in
   // an unscanned module would make nineteen rulings wrong at once and no other arm here would see it.
@@ -318,7 +318,7 @@ test("#1211: no bare inner code is a failure-token head ANYWHERE in the driver",
   assert.equal(HEAD_RE.exec('return fail("no_ruling:x");')?.[1], "no_ruling");
 });
 
-test("#1211: an exact out-of-scope rule excuses its own name and no neighbour", () => {
+test("an exact out-of-scope rule excuses its own name and no neighbour", () => {
   // `prefix` excuses a family; `token` excuses one name. If the exact form were matched as a prefix,
   // a future `no_citations_stale` would arrive pre-excused with nobody having ruled on it.
   assert.ok(outOfScopeRuleFor("no_citations"), "the exact rule does not match its own token");
@@ -332,7 +332,7 @@ test("#1211: an exact out-of-scope rule excuses its own name and no neighbour", 
   }
 });
 
-test("#1211: a cited site is a MINT, never a sentence about the code", () => {
+test("a cited site is a MINT, never a sentence about the code", () => {
   // Every ruling cites its mint, and the census's own citation could not be used for one of them:
   // `no_status` was reported at coverage-form.mjs:802, the JSDoc `@returns` annotation seventeen lines
   // above the line that writes it. Asserted as the general invariant rather than that one case.
@@ -361,7 +361,7 @@ test("#1211: a cited site is a MINT, never a sentence about the code", () => {
   assert.ok(ex.size >= 307, `the extraction shrank to ${ex.size} — a token lost its coverage obligation silently`);
 });
 
-test("#1211: every citation lands on the line that MINTS the code, not near it", () => {
+test("every citation lands on the line that MINTS the code, not near it", () => {
   // THIS ARM EXISTS BECAUSE IT ALREADY FIRED. A change landed in connotation-search.mjs while this was being
   // built and moved every mint in that file down 31 lines; all eleven citations into it then pointed at
   // comments and unrelated code, and nothing would have said so. A line number in prose is a claim that
@@ -402,7 +402,7 @@ test("#1211: every citation lands on the line that MINTS the code, not near it",
   assert.ok(!line.includes('"no_queries"'), "the control line unexpectedly mints — this arm proves nothing");
 });
 
-test("#1211: every ruling cites a file the extractor actually opens", () => {
+test("every ruling cites a file the extractor actually opens", () => {
   // The shape of this check asked whether an acceptance source was also a covered source. There is
   // one list now, so that question has no subject — but the vacuity it guarded against moved rather than
   // died: a ruling whose mint sits in a file COVERED_SOURCES lacks looks like a decision and delivers
@@ -450,7 +450,7 @@ test("E2: the stage-unreachable validators are recorded, so the partition's scop
 
 // ── E2 arm 2 — an element no token speaks about: A RATCHET ───────────────────────────────────────────
 //
-// Owner ruling (2026-08-13): arm 2 ships as a ratchet, not a red check and not dropped. 138 of 284
+// Ruling (2026-08-13): arm 2 ships as a ratchet, not a red check and not dropped. 138 of 284
 // elements have no token today. A check that can never go green is disabled within a week and a
 // permanently red gate teaches everyone that red carries no information (/); dropping the arm is
 // absence-reads-as-a-pass. So: green-or-red on arm 1, ratchet on arm 2.
@@ -475,7 +475,7 @@ test("E2 arm 2: no PHANTOM row — a recorded element the stage no longer declar
   // left standing here. Any of the four could have come back green.
   //
   // THE RATCHET IS UNTOUCHED. This asserts MEMBERSHIP, not direction: arm2Regressions still owns "a stage
-  // gained an unpoliced element", and the owner ruling that arm 2 must not be a permanently-red gate holds
+  // gained an unpoliced element", and the ruling that arm 2 must not be a permanently-red gate holds
   // — this goes green the moment the baseline is regenerated, and regenerating is the act that records it:
   //
   //     node driver/test/contract-arm2-baseline.mjs --write
@@ -719,7 +719,7 @@ test("E3: an unreadable file is a FINDING, and a short anchor is not judged", ()
 // which is the half a reader actually uses. Measured 2026-08-23: 25 of 36 decidable rows pointed at the
 // wrong line, all into stages.mjs, drifting +909 to +1737 — and every one of them passed
 // backlogEvidenceMisses on the same run.
-test("#1567 no backlog row's LINE NUMBER points away from the dictation it describes", () => {
+test("no backlog row's LINE NUMBER points away from the dictation it describes", () => {
   const { misses, notChecked } = backlogLineMisses(E3_BACKLOG, (f) => {
     try { return readFileSync(join(DRIVER, "..", f), "utf8"); } catch { return null; }
   });
@@ -733,7 +733,7 @@ test("#1567 no backlog row's LINE NUMBER points away from the dictation it descr
     "  Do NOT edit the evidence to match the line — the evidence is the answer key, the number is the claim.");
 });
 
-test("#1567 an undecidable row is reported as NOT-CHECKED, never absorbed into the pass", () => {
+test("an undecidable row is reported as NOT-CHECKED, never absorbed into the pass", () => {
   // THE FAILURE THIS PINS: a guard whose undecidable slice reads green is the false-clean the
   // family exists to remove. The count is pinned so the slice cannot quietly grow to cover a defect.
   const { misses, notChecked } = backlogLineMisses(E3_BACKLOG, (f) => {
@@ -763,7 +763,7 @@ test("#1567 an undecidable row is reported as NOT-CHECKED, never absorbed into t
     "a row was counted twice — the buckets are not disjoint");
 });
 
-test("#1567 the CALL SITE catches a planted wrong line, and clears the right one", () => {
+test("the CALL SITE catches a planted wrong line, and clears the right one", () => {
   // A GREEN ARM ON THE HELPER IS NOT A GUARDED CALL SITE. Both real defects this guard found were at
   // the call site, and a helper test would have passed with backlogLineMisses never wired in. So the
   // plant goes through the exported entry point, on a fixture whose answer is known by construction.
@@ -787,7 +787,7 @@ test("#1567 the CALL SITE catches a planted wrong line, and clears the right one
   assert.deepEqual(gone.notChecked.map((n) => n.reason), ["unreadable"]);
 });
 
-test("#1731 a citation carrying a note after it is DECIDED, not exempted for having prose", () => {
+test("a citation carrying a note after it is DECIDED, not exempted for having prose", () => {
   // THE EXEMPTION CORRELATED WITH THE DEFECT. `where` carries a parenthetical precisely when it names
   // several sites or a restatement — the rows most likely to drift — so declining them was not a
   // neutral loss of coverage. Two of the eleven declined were wrong by exactly +1395.
@@ -817,7 +817,7 @@ test("#1731 a citation carrying a note after it is DECIDED, not exempted for hav
   assert.deepEqual(prose.notChecked.map((n) => n.reason), ["not-a-plain-citation"]);
 });
 
-test("#1567 anchorWindows returns the FIRST line of a dictation, not its last", () => {
+test("anchorWindows returns the FIRST line of a dictation, not its last", () => {
   // THE BUG THIS PINS cost a whole measurement. Growing the START forward returns (end - cap) every
   // time: any start before the real one still contains the anchor once the end reaches it, so the
   // smallest start wins and it is always the cap away. It reported span 40 on every row and would have

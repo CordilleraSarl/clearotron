@@ -52,7 +52,7 @@ export function readActivity(ledgerPath, { limit = 50, now = Date.now(), staleAf
     if (!Number.isFinite(tsMs) || nowMs - tsMs <= staleAfterMs) return r;     // fresh (or undatable) → leave as-is
     return { ...r, state: "failed", stale: true, note: r.note || "no terminal record — presumed interrupted (stale)" };
   };
-  // Presentation retire (2026-07-06 owner steer — same reversible pattern as run rows /): the
+  // Presentation retire (2026-07-06 steer — same reversible pattern as run rows /): the
   // ledger stays append-only — APPEND a record with the same id carrying `retired: true` to hide the
   // row from every activity surface; append another without it to resurface. Forensics untouched.
   return [...byId.values()].filter((r) => r.retired !== true).map(reap).sort((a, b) => String(b.ts || "").localeCompare(String(a.ts || ""))).slice(0, limit);

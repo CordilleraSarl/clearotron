@@ -172,7 +172,7 @@ test("ONE PARSER, TWO READERS: the count the call reads is the count delivery cr
   assert.equal(parseCrowdRulings([ok.accepted[0]])[0].declared, 12);
 });
 
-test("#1018 a countless crowd row already in the accumulator: a re-send is refused, the retract works", () => {
+test("a countless crowd row already in the accumulator: a re-send is refused, the retract works", () => {
   // The ergonomic path the refusal detail's remedy is written for, and the reason it says RETRACT rather
   // than "fix the unit". A row recorded before this arm existed is never re-validated on its own — the
   // run keeps its delivery block until somebody acts. But a seat re-sending a status BY EXISTING ROW_ID
@@ -338,7 +338,7 @@ test("recordCoverage: an unstamped run and a stamped-but-inputless run answer pl
 //
 // NOTE ON THE WORD: this park is per-ROW and about refusals. `coverage-form-taint-park.test.mjs`'s park
 // is a different mechanism — renaming a kill-touched accumulator on resume. They do not interact.
-test("#1239 coverage: a row refused past the bound parks, the loop ends, and no count claims it was ruled", () => {
+test("coverage: a row refused past the bound parks, the loop ends, and no count claims it was ruled", () => {
   const dir = runDir();
   const rows = unionCoverageForm(null, null, INPUT).form.rows;
   const open = rows.find((x) => x.open === true);
@@ -381,7 +381,7 @@ test("#1239 coverage: a row refused past the bound parks, the loop ends, and no 
   assert.equal(last.accepted, 0);
 });
 
-test("#1239 coverage: the bound does not fire one refusal short", () => {
+test("coverage: the bound does not fire one refusal short", () => {
   const dir = runDir();
   const rows = unionCoverageForm(null, null, INPUT).form.rows;
   const open = rows.find((x) => x.open === true);
@@ -391,7 +391,7 @@ test("#1239 coverage: the bound does not fire one refusal short", () => {
   assert.deepEqual(last.parked, [], "one short is still owed");
 });
 
-test("#1239 coverage: verdicts live in a sibling ledger, and the index row still carries none", () => {
+test("coverage: verdicts live in a sibling ledger, and the index row still carries none", () => {
   const dir = runDir();
   const rows = unionCoverageForm(null, null, INPUT).form.rows;
   const open = rows.find((x) => x.open === true), ok = rows.find((x) => x.kind === "axis");
@@ -411,7 +411,7 @@ test("#1239 coverage: verdicts live in a sibling ledger, and the index row still
   assert.ok(!/refused|accepted/.test(idx), "the index row carries no verdict");
 });
 
-test("#1239/#1233 the park PERSISTS in the accumulator and the counts are three-way", () => {
+test("the park PERSISTS in the accumulator and the counts are three-way", () => {
   // Computed only in the answer, the park evaporated: the next call regenerated the form, the row read
   // as merely unsettled again, and every consumer downstream counted it as work still owed. 's
   // acceptance 2 is that the TRUE counts reach the seams a reader sees — "72 of 73; 1 unresolved" — so
@@ -455,7 +455,7 @@ test("#1239/#1233 the park PERSISTS in the accumulator and the counts are three-
     "and it is nameable, so a reader can be told which row was given up on");
 });
 
-test("#1239 a run with nothing parked reports parked: 0 and is otherwise unchanged", () => {
+test("a run with nothing parked reports parked: 0 and is otherwise unchanged", () => {
   // THE NEGATIVE CONTROL. `parked` must be a count that can be zero, not a field that only appears when
   // something is wrong — an absent key makes its absence a claim.
   const u = unionCoverageForm(null, null, INPUT);

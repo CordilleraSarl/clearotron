@@ -33,7 +33,7 @@ import { recordDispatch, dispatchGrantState, dispatchFileName } from "../dispatc
 const run = () => mkdtempSync(join(tmpdir(), "grant-rec-"));
 const TOOLS = "mcp__register__register_search mcp__register__register_fetch";
 
-test("#1139 the grant is recorded beside the sha, in the same object", () => {
+test("the grant is recorded beside the sha, in the same object", () => {
   const dir = run();
   try {
     const rec = recordDispatch(dir, "register-unit", { attempt: 1, message: "hello", grant: TOOLS });
@@ -47,7 +47,7 @@ test("#1139 the grant is recorded beside the sha, in the same object", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1139 a tool-free stage records an explicit [] — omission cannot carry 'offered nothing'", () => {
+test("a tool-free stage records an explicit [] — omission cannot carry 'offered nothing'", () => {
   const dir = run();
   try {
     // `undefined` is what gateway.mjs passes for a judgment stage: `gatherAllowedTools` is never assigned.
@@ -57,7 +57,7 @@ test("#1139 a tool-free stage records an explicit [] — omission cannot carry '
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1139 a failed write still records the grant — a disk fault is not 'offered nothing'", () => {
+test("a failed write still records the grant — a disk fault is not 'offered nothing'", () => {
   // runDir points INSIDE A FILE, so `mkdir _driver` fails ENOTDIR immediately. The record's own contract
   // is that an absence is a record: `{present:false, error}`. The grant is a fact about the DISPATCH,
   // still true here, and dropping it would make a disk fault indistinguishable from a judgment stage.
@@ -72,7 +72,7 @@ test("#1139 a failed write still records the grant — a disk fault is not 'offe
   assert.deepEqual(rec.grant, ["mcp__register__register_search", "mcp__register__register_fetch"]);
 });
 
-test("#1139 the grant list accepts the string the engine is actually handed", () => {
+test("the grant list accepts the string the engine is actually handed", () => {
   const dir = run();
   try {
     // gateway.mjs joins with spaces and filters with split(" ") — the record takes that shape as-is
@@ -86,7 +86,7 @@ test("#1139 the grant list accepts the string the engine is actually handed", ()
 
 // ── THE THREE-STATE READ THE ISSUE ASKS FOR ─────────────────────────────────────────────────────────
 
-test("#1139 declined and never-offered stop being the same silence", () => {
+test("declined and never-offered stop being the same silence", () => {
   assert.equal(dispatchGrantState({ grant: ["mcp__x__y"] }, false), "declined",
     "granted and called nothing — a judgment the SEAT made");
   assert.equal(dispatchGrantState({ grant: [] }, false), "never-offered",
@@ -98,7 +98,7 @@ test("#1139 declined and never-offered stop being the same silence", () => {
     + "defect worth seeing, not something to resolve in favour of the record");
 });
 
-test("#1139 a row that predates the field reads as UNRECORDED, never as never-offered", () => {
+test("a row that predates the field reads as UNRECORDED, never as never-offered", () => {
   // Every archived run today. Reading them as "never offered" would answer a question nobody measured —
   // the exact failure this issue exists to end, arriving through the reader instead of the writer.
   assert.equal(dispatchGrantState({ file: "_driver/x.attempt1.dispatch.txt", sha: "abc" }, false), "unrecorded");

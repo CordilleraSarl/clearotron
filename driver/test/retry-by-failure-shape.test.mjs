@@ -69,7 +69,7 @@ const stage = (over = {}) => runStage("test-stage", {
   timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 2, ...over,
 });
 
-test("#589 arm 1 — the veto keys on the DIRECT STATE, and a missing count reads as ZERO", () => {
+test("arm 1 — the veto keys on the DIRECT STATE, and a missing count reads as ZERO", () => {
   // That hold is why this arm exists: the first cut keyed the veto on TOTAL_DEFECT_TOKENS, a closed
   // two-member list of form-path token names — and when the typed transport armed, the failure token
   // moved out of the list and the veto silently stood down with every assertion still green. The veto
@@ -92,7 +92,7 @@ test("#589 arm 1 — the veto keys on the DIRECT STATE, and a missing count read
   assert.equal(vetoResumeRuledNone(2, { countable: true, ruled: NaN }), true, "an unparseable count reads as zero, not as some");
 });
 
-test("#589 arm 2 — a form-era TOTAL token is COLD by ineligibility: the retry does not resume", async () => {
+test("arm 2 — a form-era TOTAL token is COLD by ineligibility: the retry does not resume", async () => {
   process.env.MOCK_WARM_MODE = "draft";
   // `connotation_form_untouched` died with the form path and left the warm allowlist with it — so a
   // parked pre-upgrade run resumed on this engine, whose recorded lastFail still carries it, dispatches
@@ -112,7 +112,7 @@ test("#589 arm 2 — a form-era TOTAL token is COLD by ineligibility: the retry 
   assert.match(c[1].prompt ?? "", /BASE TASK/, "a fresh dispatch must carry the whole task");
 });
 
-test("#589 arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 seconds this way", async () => {
+test("arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 seconds this way", async () => {
   process.env.MOCK_WARM_MODE = "draft";
   const validate = (_p, c) => (/PATCHED|FRESH/.test(c) ? { ok: true } : { ok: false, reason: REASON("quote_unbound", 3) });
   const r = await stage({ validate });
@@ -124,7 +124,7 @@ test("#589 arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 second
   assert.match(c[1].prompt ?? "", /RESUMING your own session/);
 });
 
-test("#589 arm 4 — the skip does NOT spend the warm attempt", async () => {
+test("arm 4 — the skip does NOT spend the warm attempt", async () => {
   // R6's real shape, one step further: total on attempt 1, and a seat that has now worked on the form
   // on attempt 2. Attempt 3 is the case warm is good at and must still get it.
   process.env.MOCK_WARM_MODE = "draft";
@@ -142,7 +142,7 @@ test("#589 arm 4 — the skip does NOT spend the warm attempt", async () => {
     "the warm lane was consumed by a skip that never used it — a partial defect later in the ladder lost its cheap retry");
 });
 
-test("#589 arm 5 — the LIVE family stays WARM-ELIGIBLE, because that allowlist routes the repair", async () => {
+test("arm 5 — the LIVE family stays WARM-ELIGIBLE, because that allowlist routes the repair", async () => {
   // The veto lives at the warm decision, NOT in WARM_ELIGIBLE_RE. That allowlist also decides whether a
   // rejected draft survives a park (draftCarryEligible); dropping a live token from it to skip one warm
   // attempt would change what a park may carry — the coupling. `call_never_made` is eligible AND

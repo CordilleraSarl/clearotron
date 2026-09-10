@@ -12,7 +12,7 @@
 // severs inheritance on purpose — so only what the supervisor WRITES arrives. It wrote the paths and the
 // door secrets and not the register, its credential, the research key, the engine or the engine path.
 //
-// ── WHERE THE REFUSAL LIVES NOW — owner ruling 2026-09-06 ──────────────────────────────────────────
+// ── WHERE THE REFUSAL LIVES NOW — ruling 2026-09-06 ──────────────────────────────────────────
 //
 // "someone can install and select key later so it should still start." So the register, its credential,
 // the engine and the engine's binary NO LONGER refuse a `--background` start. They refuse AT ORDER TIME,
@@ -104,7 +104,7 @@ test("the environment F41 found refuses AT ORDER TIME, naming what a clearance c
       `${n} still refuses a --background start — the owner ruled an install comes up without it`);
 });
 
-test("216 only what START ITSELF WRITES may refuse a start, and the pool is the whole of that", () => {
+test("only what START ITSELF WRITES may refuse a start, and the pool is the whole of that", () => {
   // The split is a decision, so it is pinned rather than left to whoever edits the table next. A value
   // start writes is one whose absence is OUR bug and gives the reader nothing to go and set; a value an
   // operator supplies is one the install can legitimately come up without.
@@ -119,7 +119,7 @@ test("216 only what START ITSELF WRITES may refuse a start, and the pool is the 
     "a blocking row is missing from both halves — it can stop nothing");
 });
 
-test("216 the order-time refusal speaks two vocabularies, and only one of them may reach a browser", () => {
+test("the order-time refusal speaks two vocabularies, and only one of them may reach a browser", () => {
   const r = orderTimeRefusal(AS_FOUND, T, { envFile: "/srv/example/.env" });
   assert.ok(r, "an unconfigured box produced no refusal at all");
   // THE OPERATOR'S: names, reasons, and the file to edit — they can act on all three.

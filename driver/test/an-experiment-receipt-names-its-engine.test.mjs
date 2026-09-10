@@ -21,7 +21,7 @@ import { resolveModel } from "../driver.config.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-test("1967 resolveModel is engine-blind — the defect, stated as a measurement not a memory", () => {
+test("resolveModel is engine-blind — the defect, stated as a measurement not a memory", () => {
   // This is the behaviour the receipt used to trust. It is CORRECT for what it is for (one alias table,
   // one namespace) and wrong as an answer to "which engine ran": it never consults one.
   assert.equal(resolveModel("claude-opus-5"), "anthropic/claude-opus-5");
@@ -31,7 +31,7 @@ test("1967 resolveModel is engine-blind — the defect, stated as a measurement 
     "resolveModel stopped mapping into the Anthropic namespace — if that changed, this issue's premise did too");
 });
 
-test("1967 the receipt records the ENGINE and the TIER, and synthesises no vendor id", () => {
+test("the receipt records the ENGINE and the TIER, and synthesises no vendor id", () => {
   const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
   const receipt = src.slice(src.indexOf("// ── 5. THE CONTEXT RECEIPT"), src.indexOf("experiment-context.json"));
   assert.ok(receipt.length > 0, "the context receipt block moved — this guard is reading nothing");
@@ -44,7 +44,7 @@ test("1967 the receipt records the ENGINE and the TIER, and synthesises no vendo
     + "resolver — this is the defect");
 });
 
-test("1967 compare refuses two records that are INDISTINGUISHABLE, and compares ones that are not", () => {
+test("compare refuses two records that are INDISTINGUISHABLE, and compares ones that are not", () => {
   const a = { engine: "anthropic-agent", modelUsed: "claude-opus-5" };
   const b = { engine: "openai-agent", modelUsed: "gpt-5.6-sol" };
 
@@ -63,7 +63,7 @@ test("1967 compare refuses two records that are INDISTINGUISHABLE, and compares 
     "it printed the table underneath the refusal — a refusal that still shows the answer is not one");
 });
 
-test("1967 the refusal is NARROW — an incomplete record is not an indistinguishable one", () => {
+test("the refusal is NARROW — an incomplete record is not an indistinguishable one", () => {
   // A first version refused whenever either side lacked an engine. That is too wide: comparing two
   // attempts of one stage in one run is legitimate, the engine is constant there, and older records carry
   // no such field. An existing suite arm caught it, which is why the rule is what it is.
@@ -78,7 +78,7 @@ test("1967 the refusal is NARROW — an incomplete record is not an indistinguis
   assert.equal(refuseToCompare({}, { engine: "openai-agent" }), null);
 });
 
-test("1967 an engine is NAMED, never inferred — blank and whitespace are absent", () => {
+test("an engine is NAMED, never inferred — blank and whitespace are absent", () => {
   assert.equal(engineOf({ engine: "openai-agent" }), "openai-agent");
   for (const bad of [undefined, null, "", "   "]) {
     assert.equal(engineOf({ engine: bad }), null, `${JSON.stringify(bad)} was taken for an engine name`);
@@ -88,7 +88,7 @@ test("1967 an engine is NAMED, never inferred — blank and whitespace are absen
     "a whitespace engine passed as named on both sides");
 });
 
-test("1967 a non-default-engine arm is distinguishable from a default one by the receipt ALONE", () => {
+test("a non-default-engine arm is distinguishable from a default one by the receipt ALONE", () => {
   // Acceptance's third item, and the one the old receipt failed: with no cross-reference to the attempt
   // record, two arms on different engines must not read identically.
   const def = { engine: "anthropic-agent", modelTier: "opus" };
@@ -111,7 +111,7 @@ test("1967 a non-default-engine arm is distinguishable from a default one by the
 // FROZEN sidecar. What they cannot prove is the value on a real arm's disk — that needs a drive, and it
 // is the acceptance criterion on the issue.
 
-test("268 the receipt records the rating authority the arm ran under, from the FROZEN sidecar", () => {
+test("the receipt records the rating authority the arm ran under, from the FROZEN sidecar", () => {
   const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
   const receipt = src.slice(src.indexOf("// ── 5. THE CONTEXT RECEIPT"), src.indexOf("experiment-context.json"));
   assert.ok(receipt.length > 0, "the context receipt block moved — this guard is reading nothing");
@@ -123,7 +123,7 @@ test("268 the receipt records the rating authority the arm ran under, from the F
     "the receipt must read the frozen sidecar, not re-resolve the profile");
 });
 
-test("268 the MATCHING profile is recorded, so no-mismatch stops standing in for a positive fact", () => {
+test("the MATCHING profile is recorded, so no-mismatch stops standing in for a positive fact", () => {
   // `profile-mismatch` existed and its counterpart did not, so "the profile was right" was carried by
   // the ABSENCE of a row — and an absence cannot tell "it matched" from "the probe never ran" from
   // "this run predates the probe". Three facts, one empty grep.
