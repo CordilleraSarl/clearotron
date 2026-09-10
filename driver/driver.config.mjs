@@ -219,7 +219,7 @@ export const config = {
       // file to the repo — swapping a customer's own risk framework for the Generic default with nothing
       // in the log to say so. A configured-but-unreadable overlay is a deploy defect, not a fallback.
       if (!existsSync(overlay))
-        throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR is set but the process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
+        throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
       const p = join(dirname(overlay), rel);
       if (existsSync(p)) return p;
     }
@@ -255,7 +255,7 @@ export const config = {
     const overlay = this.skillsOverlayDir;
     if (!overlay) return { path: basePath, rel, layer: existsSync(basePath) ? "base-only" : "missing", overlayPath: null, basePath };
     if (!existsSync(overlay))
-      throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR is set but the process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
+      throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR names it, set by the operator or derived by the portal from PROFILE_REPO_ROOT, but this process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
     const overlayPath = join(dirname(overlay), rel);
     if (existsSync(overlayPath)) return { path: overlayPath, rel, layer: "overlay", overlayPath, basePath };
     return { path: basePath, rel, layer: existsSync(basePath) ? "base" : "missing", overlayPath, basePath };

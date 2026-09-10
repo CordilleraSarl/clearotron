@@ -3282,6 +3282,45 @@ export function opsTokenPosture(token, { now = Date.now() } = {}) {
 // Best-effort, always. A health probe that 500s because git is slow has turned a diagnostic into an
 // outage — the whole point is that it answers from any account, at any time, without a grant.
 const STORE_TTL_MS = 30_000;
+/**
+ * The skills overlay this portal resolves frameworks through, decided once at boot, and the one line
+ * that says what was decided.
+ *
+ * DERIVED MEANS "IF THERE IS ONE". When the operator set nothing, PROFILE_REPO_ROOT names the config
+ * store and the store's layout puts instruction overrides in its `skills` folder. A folder that is
+ * absent or empty overrides nothing, which is the state setup leaves on purpose: it keeps
+ * CLEAROTRON_INSTRUCTIONS_DIR unset so the product's own instructions are used. Pinning the folder anyway
+ * made every framework read throw `skills_overlay_unreadable`, so the company profile answered 500 on
+ * a store with no `skills` folder, and the boot told a fresh install its frameworks might be synthetic.
+ * Pinned to an EMPTY folder inside the store's repository, the doctrine-store verdict read "blocked",
+ * because the checkout tracks no file under it. Unset reads "pass". Both measured, 2026-09-10.
+ *
+ * A folder that EXISTS AND CANNOT BE READ is still pinned, so every read of it keeps refusing by name
+ * rather than falling back, and a WARNING says why. An overlay the OPERATOR set is theirs: nothing here
+ * changes it, and the warning for one this process cannot see is unchanged.
+ *
+ * `posture` is the demo's own sentence. In a demo it stands wherever this would otherwise say more.
+ */
+export function skillsOverlayAtBoot({ explicit = null, profileRepoRoot = null, readdir = readdirSync, exists = existsSync, posture = null } = {}) {
+  const synthetic = "customer risk frameworks will resolve to this repo's demo fixtures and the Brand profile page will "
+    + "show either \"could not be read\" or a SYNTHETIC framework as though it were the customer's own. "
+    + "Set CLEAROTRON_INSTRUCTIONS_DIR (or PROFILE_REPO_ROOT) to the config store.";
+  if (explicit) return { pin: null, line: exists(explicit) ? null : (posture || `WARNING: skills overlay unreadable (${explicit}) — ${synthetic}`) };
+  if (!profileRepoRoot) return { pin: null, line: posture || `WARNING: skills overlay unset — ${synthetic}` };
+  const dir = join(profileRepoRoot, "skills");
+  const nothing = (how) => posture || (`skills overlay: ${dir} ${how}, so this install overrides nothing and the product's own `
+    + "instruction files are used. To override one, put the file there, commit it, and set CLEAROTRON_INSTRUCTIONS_DIR to that folder.");
+  let entries;
+  try { entries = readdir(dir); }
+  catch (e) {
+    if (e?.code === "ENOENT") return { pin: null, line: nothing("does not exist") };
+    return { pin: dir, line: posture || (`WARNING: skills overlay ${dir} exists and cannot be read (${e?.code ?? String(e?.message ?? e)}) — `
+      + "every instruction read will refuse by name rather than fall back. Make the folder readable by this process, or remove it if this install overrides nothing.") };
+  }
+  if (!entries.length) return { pin: null, line: nothing("is empty") };
+  return { pin: dir, line: `skills overlay derived from PROFILE_REPO_ROOT: ${dir}` };
+}
+
 let storeCache = { at: 0, value: null };
 function doctrineStore(now = Date.now) {
   const t = now();
@@ -4467,34 +4506,26 @@ const PORT = PORT_CHOICE.port;
       // profile-service's own unit sets the instructions dir correctly — neither should learn a fallback
       // from the portal's mistake. Setting the env var (rather than threading a value) is what the
       // getter reads, and this process never runs the engine.
-      if (!envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR") && process.env.PROFILE_REPO_ROOT) {
-        // `pinEnv`, not a bare assignment. This write lands at RUNTIME, long after `applyEnvAliases`
-        // back-filled the spellings at load, so assigning one name reaches only the readers already
-        // converted. `pinEnv` writes every spelling, which is what keeps a half-converted tree honest.
-        pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", join(repoRoot, "skills"));
-        log(`skills overlay derived from PROFILE_REPO_ROOT: ${envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR")}`);
-      }
-      // FAIL LOUD, NEVER FALL BACK. A missing overlay does not error — it resolves every framework to the
-      // repo's demo fixtures, which is exactly the silence this guard exists to break. Mirrors the
-      // roster-vs-ops-token boot check below: one directory read, once, at boot.
-      const overlay = envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR");
-      if (!overlay || !existsSync(overlay)) {
-        // — SAME FACT, DIFFERENT READER. In a demo there is no customer whose
-        // framework could be shown wrongly: Demo Brand Owner rates under the generic default, which is
-        // the real house rubric rather than a fixture. Naming two environment variables and a config
-        // store at a first-time visitor tells them the thing they just started is broken — and this
-        // output is what gets captured for the website.
-        //
-        // OUTSIDE A DEMO IT IS UNCHANGED AND STILL A WARNING. It is load-bearing on a real deployment:
-        // it says a page may show synthetic data as though it were a customer's own, which is exactly
-        // the class of thing that must stay loud. The defect was the audience, not the content.
-        const posture = demoPostureLine(process.env);
-        if (posture) log(posture);
-        else log(`WARNING: skills overlay ${overlay ? `unreadable (${overlay})` : "unset"} — customer risk `
-          + `frameworks will resolve to this repo's demo fixtures and the Brand profile page will show `
-          + `either "could not be read" or a SYNTHETIC framework as though it were the customer's own. `
-          + `Set CLEAROTRON_INSTRUCTIONS_DIR (or PROFILE_REPO_ROOT) to the config store.`);
-      }
+      //
+      // DERIVED ONLY WHEN THE STORE HOLDS AN OVERRIDE, and said in one line either way: the rule and its
+      // measurements are at `skillsOverlayAtBoot`. One directory read, once, at boot, mirroring the
+      // roster-vs-ops-token boot check below.
+      //
+      // — SAME FACT, DIFFERENT READER. In a demo there is no customer whose framework could be shown
+      // wrongly: Demo Brand Owner rates under the generic default, which is the real house rubric rather
+      // than a fixture. Naming two environment variables and a config store at a first-time visitor tells
+      // them the thing they just started is broken, and this output is what gets captured for the website.
+      // So the demo's posture line stands wherever a warning would.
+      const overlayAtBoot = skillsOverlayAtBoot({
+        explicit: envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR"),
+        profileRepoRoot: process.env.PROFILE_REPO_ROOT || null,
+        posture: demoPostureLine(process.env),
+      });
+      // `pinEnv`, not a bare assignment. This write lands at RUNTIME, long after `applyEnvAliases`
+      // back-filled the spellings at load, so assigning one name reaches only the readers already
+      // converted. `pinEnv` writes every spelling, which is what keeps a half-converted tree honest.
+      if (overlayAtBoot.pin) pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", overlayAtBoot.pin);
+      if (overlayAtBoot.line) log(overlayAtBoot.line);
       // — SAY IT WHEN IT HAPPENS. The core catches this and reports `commitError` on the response and
       // in the audit row, both read by whoever made the save and nobody else. A failed commit leaves a
       // permanent sync blocker, so the service journal needs it too: the boot check above removes the
