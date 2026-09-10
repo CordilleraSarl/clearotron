@@ -98,7 +98,8 @@ import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";
 import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
-import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC } from "../driver/engine/probe.mjs";
+import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
+import { runRequiredNames, missingRequirements, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 // one synopsis reader for every verb that prints one.
@@ -1460,7 +1461,13 @@ export async function runCheck() {
       // The auth variables ride this list for the same reason CLEAROTRON_AI does: without them the
       // probe bills the way the AMBIENT environment says rather than the way this .env says, and
       // "proven" would name a lane no run takes.
-      for (const k of ["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES).flatMap((s) => [s.env, s.authEnv])]) {
+      //
+      // THE CREDENTIALS RIDE IT TOO, and did not. This was a second copy of the list `applyEngineEnv`
+      // applies, and it had dropped the API key and the headless token — so a token kept only in this
+      // install's .env never reached the probe, which then reported the engine signed out while the same
+      // token exported into the shell proved it. `engineEnvKeys` is the probe's own list: the copy that is
+      // filled is now the copy that is applied.
+      for (const k of engineEnvKeys()) {
         const e = effective(k);
         if (e) probeEnv[k] = e.v;
       }
@@ -1869,6 +1876,32 @@ export async function runCheck() {
   // doctor that hangs on a box with no route — so this reports ENROLMENT, and says plainly that a
   // source which is enrolled can still fail at run time. The owner's own report says `CONNECTION_CLOSED`
   // on exactly that case.
+  // ── WILL A SEARCH RUN? — THE ORDER-TIME GATE'S OWN QUESTION, OF THE ENVIRONMENT A RUN WILL HAVE ──
+  //
+  // Every section above reads one requirement from YOUR shell and this command's .env. A search is
+  // refused by a different reader: `orderTimeRefusal`, at order time, against the runner's environment —
+  // a background unit's, on a box that has them. So this command could pass an install the run then
+  // refused: it found `claude` on this shell's PATH while the unit, which has no such PATH, was refused
+  // for an engine path it had never been given. Asking the gate's own authority of the units' environment
+  // is what makes an install this command passes one that can run. `blocking`, not `problem`: an install
+  // that is not configured yet is unfinished rather than broken, and the exit status keeps that contract.
+  say("\n  Will a search run?");
+  if (!serviceKnown) {
+    info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
+  } else {
+    const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
+    // Two passes: which credentials a run needs depends on the register and the engine it names.
+    const view = {};
+    const fill = (names) => { for (const n of names) { const e = effectiveForService(n); if (e) view[n] = e.v; } };
+    fill([REGISTER_ENV, ENGINE_ENV]);
+    fill(runRequiredNames(view, tables));
+    const { atOrder } = missingRequirements(view, tables);
+    if (atOrder.length) {
+      blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);
+      for (const r of atOrder) info(`  ${r.name} — ${r.why}`);
+    } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
+  }
+
   say("\n  Case law and other capabilities");
   {
     const { caseLawInventory } = await import("../driver/config-inventory.mjs");
