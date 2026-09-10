@@ -160,6 +160,16 @@ test("#1223 a keyless screen LAUNCHES — it passes the preflight that used to k
 
     const log = join(driverDir(RES.runDir), "run.jsonl");
     assert.ok(existsSync(log), `the run left no log at ${log}`);
+
+    // THE KNOCKOUT LANE'S OWN RECORD OF THE STORED DEFAULTS IT CANNOT SEARCH. Asserted here because this
+    // is the one place a REAL knockoutInner runs to completion, so it is the only door at which the
+    // knockout half of that write is exercised rather than assumed to mirror the clearance lane's. This
+    // run's profile carries no defaults, so the lists are empty — the claim is that the file is WRITTEN,
+    // which is what a lane that never called the producer could not do.
+    const dt = join(driverDir(RES.runDir), "default-territories.json");
+    assert.ok(existsSync(dt), `the knockout lane wrote no stored-default record at ${dt}`);
+    assert.deepEqual(JSON.parse(readFileSync(dt, "utf8")), { profileKey: null, searchable: [], unrecognized: [] },
+      "an empty profile yields two empty lists and no profile key — an asserted zero, not a missing file");
     const events = readFileSync(log, "utf8").trim().split("\n").map((l) => JSON.parse(l));
     const skip = events.find((e) => e.event === "knockout-sweep-skipped");
     assert.ok(skip, "no knockout-sweep-skipped event — the lane either refused, or attempted a sweep it "
