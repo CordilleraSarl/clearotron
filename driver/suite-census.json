@@ -5461,6 +5461,12 @@
           "skips": 0,
           "todos": 0
         },
+        "clearancesKeepsItsControls.test.ts": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "companyCreated.test.ts": {
           "tests": 5,
           "asserts": 16,
