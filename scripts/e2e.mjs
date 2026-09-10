@@ -2393,6 +2393,8 @@ export function doorRefusal(receipt, ref, expect = null) {
 const secs = (n) => (n == null ? "?" : n >= 3600 ? `${Math.floor(n / 3600)}h${String(Math.floor((n % 3600) / 60)).padStart(2, "0")}m`
   : n >= 60 ? `${Math.floor(n / 60)}m${String(Math.round(n % 60)).padStart(2, "0")}s` : `${Math.round(n)}s`);
 
+const DEPTH_UNREAD = "narrative-write-ups:could-not-read";
+
 function runLedger(runDir) {
   const st = readJson(join(runDir, "status.json")) ?? {};
   const dd = driverDir(runDir);
@@ -2437,7 +2439,15 @@ function runLedger(runDir) {
     if (row?.degraded) degraded.push(`unit ${key}: ${row.degradedCause ?? "cause not recorded"} (attempt ${row.attempts ?? "not recorded"})`);
   }
 
-  return { st, attempts, wall, degraded, stageLogs: files.length };
+  // A GRADED RUN WHOSE NARRATIVE THE DEPTH CHECK COULD NOT READ delivered with the depth rules applied to
+  // nothing. The receipt says so in a check of its own, and nothing a test lane reads carried it: the
+  // client's mail holds no machine-check lines, and the workbook's Machine Checks sheet is for the reviewing
+  // lawyer. Read from either shape a receipt carries, the check object or the stored list of failing ids.
+  const lint = readJson(join(dd, "predelivery-lint.json"));
+  const depthCheck = (Array.isArray(lint?.checks) ? lint.checks : []).find((c) => c?.id === DEPTH_UNREAD) ?? null;
+  const depthUnread = depthCheck ? depthCheck.pass === false : (Array.isArray(lint?.failures) && lint.failures.includes(DEPTH_UNREAD));
+
+  return { st, attempts, wall, degraded, depthUnread, stageLogs: files.length };
 }
 
 // Everything worth a human's attention, in one list. Each entry is a thing to INVESTIGATE — never a
@@ -2453,7 +2463,7 @@ function brief(s, max = 150) {
   return `${t.slice(0, head)} … ${t.slice(-(max - head - 3))}`;
 }
 
-function investigate({ st, attempts, degraded }) {
+function investigate({ st, attempts, degraded, depthUnread = false }) {
   const out = [];
   if (!attempts.length) out.push(`no model-attempt records found — the ledger cannot describe this run; do not read that as clean`);
 
@@ -2489,6 +2499,7 @@ function investigate({ st, attempts, degraded }) {
   // the row names its own kind ("lane zh: …" / "unit serp-grid:zh: …") — units degrade for different
   // reasons than lanes do, and a hardcoded "lane" here would mislabel every one of them
   for (const d of degraded) out.push(`degraded — ${d}`);
+  if (depthUnread) out.push(`depth rules applied to nothing — ${DEPTH_UNREAD}: the narrative carries no write-up block this check can read, so neither the band-rank cut nor the word cap was verified on this run`);
   if (st.state && st.state !== "delivered") out.push(`terminal state is "${st.state}"${st.failedStage ? ` at ${st.failedStage}` : ""}${st.reason ? ` — ${brief(st.reason, 120)}` : ""}`);
   return out;
 }

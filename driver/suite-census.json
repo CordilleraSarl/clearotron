@@ -207,6 +207,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-depth-check-that-read-nothing-is-on-the-investigate-list.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-detached-group-dies-with-its-script.test.mjs": {
           "tests": 14,
           "asserts": 24,
