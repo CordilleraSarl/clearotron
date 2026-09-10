@@ -270,19 +270,19 @@ test("pure-MCP integrator loop: list_outbox_events -> get_delivery_packet -> ack
   }
 });
 
-test("stop_run by id: dequeues a not-yet-claimed job (real cancel, no spend)", () => {
+test("stop_run by id: dequeues a not-yet-claimed job (real cancel, no spend)", async () => {
   const r = startRun({ markName: "TODEQUEUE", forwarder: "requester", classes: [9] });
   assert.ok(existsSync(r.queuePath));
-  const s = stopRun({ id: r.id });
+  const s = await stopRun({ id: r.id });
   assert.equal(s.action, "dequeued");
   assert.ok(!existsSync(r.queuePath), "queue file removed");
   // second stop = not-found (idempotent, honest)
-  assert.equal(stopRun({ id: r.id }).action, "not-found");
+  assert.equal((await stopRun({ id: r.id })).action, "not-found");
 });
 
-test("stop_run by runId: files a .cancel sentinel on a running run", () => {
+test("stop_run by runId: files a .cancel sentinel on a running run", async () => {
   const { runDir, runId } = makeRun({ slug: "tmpc-cancel", codename: "2026-06-16-cancel-x" });
-  const s = stopRun({ runId });
+  const s = await stopRun({ runId });
   assert.equal(s.action, "cancel-requested");
   assert.ok(existsSync(join(runDir, ".cancel")), ".cancel sentinel written");
   // — the request becomes a state the run CARRIES: stopRequestedAt rides
@@ -293,22 +293,22 @@ test("stop_run by runId: files a .cancel sentinel on a running run", () => {
   assert.notEqual(st.state, "cancelled", "…while the state stays truthful: the run is still running");
 });
 
-test("a SECOND press is answered as already-stopping — the first request's timestamp is the one that counts", () => {
+test("a SECOND press is answered as already-stopping — the first request's timestamp is the one that counts", async () => {
   // The owner pressed Stop, saw no change, and pressed again; each press implied a fresh act. The
   // marker was always idempotent; the ANSWER now is too, so the caller can say when the standing
   // request was filed instead of re-promising.
   const { runId } = makeRun({ slug: "tmpc-twice", codename: "2026-06-16-twice-x" });
-  const first = stopRun({ runId });
+  const first = await stopRun({ runId });
   assert.equal(first.action, "cancel-requested");
-  const second = stopRun({ runId });
+  const second = await stopRun({ runId });
   assert.equal(second.action, "already-stopping");
   assert.equal(second.requestedAt, first.requestedAt, "the standing request's own timestamp, not a new one");
   assert.match(second.note, /Pressing again changes nothing/);
 });
 
-test("stop_run by runId: noop on an already-terminal run", () => {
+test("stop_run by runId: noop on an already-terminal run", async () => {
   const { runId } = makeRun({ slug: "tmpd-done", codename: "2026-06-16-done-x", state: "delivered" });
-  assert.equal(stopRun({ runId }).action, "noop");
+  assert.equal((await stopRun({ runId })).action, "noop");
 });
 
 test("feed_context: writes the late-bind customer-bind.json + instructions sidecar", () => {
@@ -365,10 +365,10 @@ test("start_run: marks[] batch form — one job carries every mark; markName def
   assert.equal(JSON.parse(readFileSync(blank.queuePath, "utf8")).markName, "DELTA", "an empty markName never enqueues");
 });
 
-test("start_run/stop_run: a path-shaped id is refused (the queue-filename hardening)", () => {
+test("start_run/stop_run: a path-shaped id is refused (the queue-filename hardening)", async () => {
   for (const id of ["../evil", "a/b", "..", ".hidden"]) {
     assert.throws(() => startRun({ markName: "SPINE-H", forwarder: "requester", classes: [9], id }), /bare filename slug/, `id ${id}`);
-    assert.throws(() => stopRun({ id }), /bare filename slug/, `stop id ${id}`);
+    await assert.rejects(() => stopRun({ id }), /bare filename slug/, `stop id ${id}`);
   }
   const ok = startRun({ markName: "SPINE-H2", forwarder: "requester", classes: [9], id: "mcp-spine.h2@test-1" });
   assert.equal(ok.ok, true, "the legacy id charset (dots/@/dashes) still passes");
@@ -401,16 +401,16 @@ test("start_run stamps the VERIFIED principal (scope.sub) as enqueuedBy; no scop
   rmSync(r2.queuePath, { force: true });
 });
 
-test("stop_run (queue-id form): scoped sessions get 'not-found' for foreign jobs (existence never leaks); granted dequeues; full-grant unrestricted", () => {
+test("stop_run (queue-id form): scoped sessions get 'not-found' for foreign jobs (existence never leaks); granted dequeues; full-grant unrestricted", async () => {
   const mine = startRun({ markName: "MINE", forwarder: "req", classes: [9], profileKey: "aurora" });
   const foreign = startRun({ markName: "THEIRS", forwarder: "req", classes: [9], profileKey: "zephyr" });
   const scoped = { kind: "ops", sub: "portal-poc", accounts: ["aurora"] };
-  const denied = stopRun({ id: foreign.id }, { scope: scoped });
+  const denied = await stopRun({ id: foreign.id }, { scope: scoped });
   assert.equal(denied.action, "not-found", "a foreign queued job answers EXACTLY like a nonexistent one (review 2026-07-18: the old deny named the owning account)");
   assert.ok(existsSync(foreign.queuePath), "the foreign job survives the probe untouched");
-  const ok = stopRun({ id: mine.id }, { scope: scoped });
+  const ok = await stopRun({ id: mine.id }, { scope: scoped });
   assert.equal(ok.action, "dequeued");
-  const full = stopRun({ id: foreign.id }, { scope: { kind: "ops", sub: "x", accounts: "*" } });
+  const full = await stopRun({ id: foreign.id }, { scope: { kind: "ops", sub: "x", accounts: "*" } });
   assert.equal(full.action, "dequeued", "a full-grant session dequeues anything");
   // scoped start_run must name profileKey explicitly (the forwarderDomain resolution bypass is closed)
   assert.throws(() => startRun({ markName: "X", forwarder: "req", classes: [9] }, { scope: scoped }), /profileKey explicitly/);
@@ -464,32 +464,32 @@ function queueFile(id, profileKey, ext = "json") {
   return p;
 }
 
-test("stop_run by id: a foreign queued job answers exactly like a nonexistent one", () => {
+test("stop_run by id: a foreign queued job answers exactly like a nonexistent one", async () => {
   const p = queueFile("job-theirs", "other-co");
-  const s = stopRun({ id: "job-theirs" }, { scope: ACCT(["acme"]) });
+  const s = await stopRun({ id: "job-theirs" }, { scope: ACCT(["acme"]) });
   assert.equal(s.action, "not-found", "a client cancelled another account's queued job");
   assert.ok(!/other-co/.test(JSON.stringify(s)), "the refusal named the owning account — ownership must not leak");
   assert.ok(existsSync(p), "the foreign job was removed from the queue");
 });
 
-test("stop_run by id: an account CAN cancel its own queued job", () => {
+test("stop_run by id: an account CAN cancel its own queued job", async () => {
   const p = queueFile("job-mine", "acme");
-  const s = stopRun({ id: "job-mine" }, { scope: ACCT(["acme"]) });
+  const s = await stopRun({ id: "job-mine" }, { scope: ACCT(["acme"]) });
   assert.equal(s.action, "dequeued");
   assert.ok(!existsSync(p));
 });
 
-test("stop_run by id: a CLAIMED foreign job is gated too, and an unreadable manifest fails CLOSED", () => {
+test("stop_run by id: a CLAIMED foreign job is gated too, and an unreadable manifest fails CLOSED", async () => {
   queueFile("job-claimed", "other-co", "processing");
-  assert.equal(stopRun({ id: "job-claimed" }, { scope: ACCT(["acme"]) }).action, "not-found");
+  assert.equal((await stopRun({ id: "job-claimed" }, { scope: ACCT(["acme"]) })).action, "not-found");
   // a manifest that cannot be parsed must not read as "no account, therefore allowed"
   writeFileSync(join(QUEUE, "job-claimed.processing"), "{ not json");
-  assert.equal(stopRun({ id: "job-claimed" }, { scope: ACCT(["acme"]) }).action, "not-found");
+  assert.equal((await stopRun({ id: "job-claimed" }, { scope: ACCT(["acme"]) })).action, "not-found");
 });
 
-test("stop_run by id: an untagged (pre-grants) job is NOT cancellable by a scoped client", () => {
+test("stop_run by id: an untagged (pre-grants) job is NOT cancellable by a scoped client", async () => {
   queueFile("job-untagged", undefined);
-  assert.equal(stopRun({ id: "job-untagged" }, { scope: ACCT(["acme"]) }).action, "not-found");
+  assert.equal((await stopRun({ id: "job-untagged" }, { scope: ACCT(["acme"]) })).action, "not-found");
 });
 
 // ── the failure notice settles ───────────────────────────────────────────────────────────────────────
@@ -651,35 +651,46 @@ test("mark_sent: a marker minted under the DERIVED <slug>-<codename> form is cle
   }
 });
 
-test("an immediate stop reports that a stop was SENT, never that the step has ended", () => {
+test("an immediate stop says the step ended only once it has SEEN it end", async () => {
   // — THE OWNER'S RULE, DRIVEN AT THE BRANCH THAT BROKE IT: a control's words say what the
   // mechanism does, never what the reader hopes it did.
   //
-  // The owner pressed "Stop now" on a real knockout on his WSL install of 0.3.0-beta.1. The card said
-  // the step in flight had been ended and the run would be terminal in seconds. It stopped at the next
-  // step. This is that branch, with a real live child to signal.
-  //
-  // `process.kill` returning without throwing means the signal was accepted by the OS FOR DELIVERY. It
-  // is not evidence the child took it, exited, or that the step is over — a process that handles or
-  // ignores SIGTERM leaves this code path looking identical. So the answer may report the send and must
-  // not report the outcome.
+  // The owner pressed "Stop now" on a real knockout on a WSL install of 0.3.0-beta.1. The card said the
+  // step in flight had been ended and the run would be terminal in seconds, read off the signal alone,
+  // and the run stopped at the next step. The answer now waits for the turn and reports what it saw.
+  // This is that branch, with a real live child to stop.
   const { runDir, runId } = makeRun({ slug: "tmpc-sig", codename: "2026-06-16-sig-x" });
 
   // A REAL live child, so the branch is reached rather than argued about. It is this test's own
-  // process to kill, and the signal that goes to it is the one the product would send.
+  // process to stop, and the signal that goes to it is the one the product would send.
   const child = spawn("sleep", ["300"], { stdio: "ignore" });
   after(() => { try { child.kill("SIGKILL"); } catch { /* already gone */ } });
   recordEngineChild(runDir, child.pid);
 
-  const s = stopRun({ runId, immediate: true });
+  const s = await stopRun({ runId, immediate: true });
   assert.equal(s.action, "cancel-requested");
   assert.equal(s.immediate.attempted, true, "the branch under test was not reached — no signal was attempted");
   assert.equal(s.immediate.signalled, "SIGTERM", "the branch under test was not reached — nothing was signalled");
-  assert.equal(s.immediate.ended, null,
-    "the answer claims to know whether the step ended; nothing in this path observes that");
+  assert.equal(s.immediate.ended, true, "the child was stopped and the answer did not see it end");
+  assert.equal(child.signalCode, "SIGTERM", "the answer says the step ended while the child was still running");
+  assert.match(s.note, /The step in flight has ended/);
+});
 
-  assert.doesNotMatch(s.note, /has been ended|has now been ended/,
-    "the answer states the step was ended, which is the promise the mechanism cannot keep");
+test("…and never says the step ended when it was still there after being told to stop", async () => {
+  // SIGKILL cannot be ignored, so no process this test could start would outlast the stop. What the
+  // stop saw is supplied instead: signalled, escalated, and still there.
+  const { runDir, runId } = makeRun({ slug: "tmpc-sig", codename: "2026-06-16-sig-y" });
+  const child = spawn("sleep", ["300"], { stdio: "ignore" });
+  after(() => { try { child.kill("SIGKILL"); } catch { /* already gone */ } });
+  recordEngineChild(runDir, child.pid);
+
+  const s = await stopRun({ runId, immediate: true },
+    { endTurn: async () => ({ signalled: "SIGTERM", escalated: "SIGKILL", group: true, ended: false }) });
+  assert.equal(s.immediate.signalled, "SIGTERM", "premise: the branch under test was not reached");
+  assert.equal(s.immediate.ended, false);
+  assert.doesNotMatch(s.note, /has ended|has now ended|has been ended/,
+    "the answer says the step ended, and nothing saw it end");
+  assert.match(s.note, /could not be made/, "the answer does not say the immediate stop failed");
   assert.match(s.note, /next step boundary/,
     "the answer does not tell the presser what happens when the step will not take the stop");
 });

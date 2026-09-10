@@ -79,7 +79,13 @@ const asList = process.argv.includes("--list");
 //      the catalogue ratchet then demands an operator row for a value the driver overwrites — a row
 //      teaching the operator to configure something they must not touch. `==`/`===` are excluded from
 //      the exclusion, because a comparison is a read.
-const READ_RE = /(?<![.\w$])(?:process\.)?env\.([A-Z][A-Z0-9_]*)(?![A-Z0-9_])(?!\s*=[^=])|(?<![.\w$])(?:process\.)?env\[\s*["']([A-Z][A-Z0-9_]*)["']\s*\](?!\s*=[^=])/g;
+//
+// AND `?.` IS THE SAME READ. `env?.X`, `process.env?.X` and `env?.["X"]` read exactly what `env.X`
+// reads, and the pattern used to stop at the `?`: a name read only that way needed no governance row,
+// no catalogue row and no effect declaration, and every catalogue check stayed green about it. Measured
+// 2026-09-10, three product names were read only through `?.`. An optional chain cannot be assigned
+// through, so the assignment guard has nothing new to exclude.
+const READ_RE = /(?<![.\w$])(?:process\??\.)?env\??\.([A-Z][A-Z0-9_]*)(?![A-Z0-9_])(?!\s*=[^=])|(?<![.\w$])(?:process\??\.)?env(?:\?\.)?\[\s*["']([A-Z][A-Z0-9_]*)["']\s*\](?!\s*=[^=])/g;
 const CODE_RE = /\.(mjs|js|cjs|ts)$/;
 
 // ── AN ACCESSOR CALL IS A READ, AND STEP 4 MADE IT THE COMMON ONE ────────────────────────────────
@@ -193,8 +199,9 @@ export function mergeEnvNameBindings(perFile) {
 }
 
 // The computed read whose subscript is a BARE IDENTIFIER. `env["X"]` is READ_RE's; this is the one that
-// needs the map. Same assignment guard as its siblings — `env[X] = v` is a write.
-const CONST_READ_RE = /(?<![.\w$])(?:process\.)?env\[\s*([A-Z][A-Z0-9_]*)\s*\](?!\s*=[^=])/g;
+// needs the map. Same assignment guard as its siblings — `env[X] = v` is a write. `env?.[X]` is the same
+// read as `env[X]`, for the reason READ_RE gives.
+const CONST_READ_RE = /(?<![.\w$])(?:process\??\.)?env(?:\?\.)?\[\s*([A-Z][A-Z0-9_]*)\s*\](?!\s*=[^=])/g;
 
 export function namesRead(text, bindings = null) {
   const found = new Set();

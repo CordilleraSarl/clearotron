@@ -909,6 +909,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-environment-read-through-optional-chaining-is-a-read.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "an-evidence-demand-that-cannot-be-met.test.mjs": {
           "tests": 9,
           "asserts": 21,
@@ -3023,7 +3029,7 @@
         },
         "portal-run-control.test.mjs": {
           "tests": 16,
-          "asserts": 48,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -4187,7 +4193,7 @@
         },
         "stop-is-a-stop.test.mjs": {
           "tests": 6,
-          "asserts": 27,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -5463,8 +5469,8 @@
           "todos": 0
         },
         "ops.test.mjs": {
-          "tests": 37,
-          "asserts": 156,
+          "tests": 38,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
@@ -5537,6 +5543,12 @@
         "security.test.mjs": {
           "tests": 6,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "stop-now-ends-the-step.test.mjs": {
+          "tests": 10,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },

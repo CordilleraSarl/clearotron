@@ -316,6 +316,14 @@ export const DEPLOYMENT_NAMES = new Set([
   // by nothing else, so moving it to the house prefix dropped it through to `tuning` — the bucket step 3
   // deletes from. The audience did not change; only the spelling did, and this list is what says so.
   "CLEAROTRON_DEMO",
+  // Three names read only through optional chaining, so no catalogue check saw them until the scanner
+  // learned `?.`. Each row declares `deployment`, and no shape matches them (`_PORT$` does not take
+  // `_PORTS`), so unlisted each fell through to `tuning`, the bucket step 3 deletes from. The first is set
+  // by the dispatcher for the verb it runs and never by an operator; the other two are a server install's
+  // port and deploy-health settings.
+  "CLEAROTRON_INVOKED_AS",
+  "CLEAROTRON_REQUIRE_EXPLICIT_PORTS",
+  "CLEAROTRON_UPDATER_STAMP",
   "CLIENT_MCP_ACCOUNT_ACCESS",
   "CLIENT_MCP_ALLOWED_HOSTS",
   "CLIENT_MCP_AUTH_DISABLED",
