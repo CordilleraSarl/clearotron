@@ -10,6 +10,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { pickerGroups, pickerRows, GENERIC_KEY } from '../src/shell/companyRows.ts'
 import type { Organisation, Run } from '../src/contract/api.ts'
 import { genericFor, isGenericKey, orgOfGeneric, wireAccount, runKey } from '../src/contract/genericKey.ts'
@@ -133,4 +134,25 @@ test("HOME COUNTS EACH ORGANISATION'S GENERIC ON ITS OWN, and a bare comparison 
     .map((x) => [x.key, [x.live, x.finished]]))
   assert.deepEqual(byKey, { [genericFor('alder')]: [1, 0], [genericFor('birch')]: [0, 1] },
     'each Generic counts its own organisation\'s runs, and the unplaced one is counted under neither')
+})
+
+test('THE SWITCHER, THE PANEL AND THE CHIPS take their rows from the one grouping', () => {
+  // Agreement is by construction now: pickerGroups groups and orders, and every control that lists
+  // companies calls it, so the rail and the panel cannot offer one install in two orders. What can still
+  // break that is a call site that stops calling it, so the call sites are held here, read as text
+  // because the shell cannot be mounted in this suite (ownerNames.test.ts reads AppShell the same way).
+  const src = (f: string) => readFileSync(new URL(`../src/shell/${f}`, import.meta.url), 'utf8')
+  for (const [file, fn] of [['AppShell.tsx', 'pickerGroups'], ['CompanyPicker.tsx', 'pickerGroups'], ['CompanyChips.tsx', 'pickerRows']]) {
+    assert.equal(src(file).split(`${fn}(`).length - 1, 1, `${file} takes its rows from ${fn}, once`)
+  }
+  // And the chips' flat list is the panel's groups in the panel's order, on one organisation and on two.
+  type In = Parameters<typeof pickerGroups>
+  const same = (keys: In[0], orgOf: In[1], orgs: In[2]) =>
+    assert.deepEqual(
+      pickerRows(keys, orgOf, orgs, name, noFacts).map((r) => r.key),
+      pickerGroups(keys, orgOf, orgs, name, noFacts).groups.flatMap((g) => g.rows).map((r) => r.key),
+      `the chips and the panel list [${keys.join(', ')}] the same way`,
+    )
+  same(['zephyr', 'generic', 'acme'], orgMap({ zephyr: 'alder', generic: 'alder', acme: 'alder' }), [ALDER])
+  same(['harbour', genericFor('alder'), 'acme', genericFor('birch')], orgMap({ harbour: 'alder', acme: 'birch' }), [ALDER, BIRCH])
 })

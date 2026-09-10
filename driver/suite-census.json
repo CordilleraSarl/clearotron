@@ -5450,8 +5450,8 @@
           "todos": 0
         },
         "companyOrder.test.ts": {
-          "tests": 9,
-          "asserts": 32,
+          "tests": 10,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
