@@ -41,7 +41,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
   const [permissions, setPermissions] = useState<Permissions>({ run: true, manage: false })
   const [chosen, setChosen] = useState<Chosen>(NOTHING)
   const [busy, setBusy] = useState(false)
-  const [result, setResult] = useState<Result<Person> | null>(null)
+  const [result, setResult] = useState<Result<{ readonly person: Person; readonly switchesApplied: boolean }> | null>(null)
 
   const saved = result !== null && isOk(result)
   const dirty = email.trim() !== '' || chosen.everything || chosen.orgs.size > 0 || chosen.companies.size > 0
@@ -50,8 +50,7 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
   // THE SWITCHES COME BACK FROM THE ANSWER. They belong to the person, not to a point: when the address
   // already had access somewhere the adder cannot see, the points were added and the switches stayed as
   // they were. Leaving for People would hide that; the page stays and says it instead.
-  const kept = saved && isOk(result)
-    && (result.value.permissions.run !== permissions.run || result.value.permissions.manage !== permissions.manage)
+  const kept = saved && isOk(result) && !result.value.switchesApplied
   // Leaving happens after the render that makes this page clean, for the reason NewCompany gives: the
   // unsaved-changes guard reads its flag through a ref written during render.
   useEffect(() => {
@@ -125,7 +124,11 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
   }
 
   const failure = result && !isOk(result)
-    ? result.kind === 'notFound'
+    ? result.kind === 'conflict'
+      // The one refusal the server names for this route: the install changed to local sign-in since the
+      // page loaded, and it cannot hold a second person.
+      ? 'This Clearotron now signs in one person, so nobody can be added. Nothing was saved.'
+      : result.kind === 'notFound'
       ? 'You can only give access to what you have access to yourself. Nothing was saved.'
       : result.kind === 'reject'
         ? result.errors.join(' ')
@@ -203,8 +206,9 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
         {kept && isOk(result) ? (
           <div className="notice" style={{ borderColor: 'var(--tone-medium)', marginBottom: 14 }}>
             <p style={{ margin: 0, fontSize: 13.5 }}>
-              <b data-anon="mark">{result.value.email}</b> already had access elsewhere, so their permissions
-              stay as they were: {permissionsPhrase(result.value.permissions)}. The access you chose was added.
+              <b data-anon="mark">{result.value.person.email}</b> already had access elsewhere, so their
+              permissions stay as they were: {permissionsPhrase(result.value.person.permissions)}. The access you
+              chose was added.
             </p>
           </div>
         ) : null}

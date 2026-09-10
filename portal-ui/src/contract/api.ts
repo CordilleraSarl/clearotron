@@ -370,6 +370,12 @@ export type Run = {
   /** The company this run belongs to. Always present, so a row never has to infer it. */
   readonly account: string
   /**
+   * The organisation a run with no company set up was filed in — which organisation's Generic it
+   * belongs to. Null for a company's run, whose company names its one organisation, and for a Generic
+   * run filed before organisations were recorded, which belongs to no organisation's Generic.
+   */
+  readonly organisation?: string | null
+  /**
    * The report's own headline — model-authored front matter, NOT the mark.
    *
    * A delivered run carries titles as varied as "ARBORA" and "AquaPlus — US Preliminary Trademark
@@ -1268,6 +1274,7 @@ const decodeRun = (raw: unknown): Run | null => {
   return {
     runId,
     account: asString(r['account']) ?? '',
+    organisation: asString(r['organisation']) ?? null,
     title: asString(r['title']) ?? runId,
     markName: asString(r['markName']),
     projectKey: asString(r['projectKey']),
@@ -2347,16 +2354,21 @@ export const api = {
    *
    * `access` names points inside the adder's own — a point outside it answers 404, the same as one that
    * does not exist. The switches belong to the PERSON: when the address already holds access somewhere
-   * the adder cannot see, the points are added and the switches stay as they were, and the answer carries
-   * them as they now stand. So the screen reads the switches back from the answer rather than assuming
-   * the ones it sent were applied.
+   * the adder cannot see, the points are added and the switches stay as they were — the answer says so in
+   * `switchesApplied`, and its `person` carries the switches as they now stand. So the screen reads both
+   * back rather than assuming the ones it sent were applied.
    */
   addPerson: (body: {
     readonly email: string
     readonly permissions: Permissions
     readonly access: readonly ({ readonly kind: 'everything' } | { readonly kind: 'organisation' | 'company'; readonly key: string })[]
-  }): Promise<Result<Person>> =>
-    call('/portal/admin/people', (b) => decodePerson(b), { method: 'POST', body: JSON.stringify(body) }),
+  }): Promise<Result<{ readonly person: Person; readonly switchesApplied: boolean }>> =>
+    call('/portal/admin/people', (b) => ({
+      person: decodePerson(asRecord(b['person'])),
+      // FALSE unless the server says TRUE: the switches it did not state as applied are the ones the
+      // screen must not claim it set. The answer's `person` carries them as they now stand either way.
+      switchesApplied: b['switchesApplied'] === true,
+    }), { method: 'POST', body: JSON.stringify(body) }),
 
   /**
    * Staff-only, best-effort. ALWAYS 200 — `available:false` is the shape for "the log could not be

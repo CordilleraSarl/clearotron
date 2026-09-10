@@ -300,7 +300,10 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   useEffect(() => attachBeforeUnload(), [])
   const mobile = useIsMobile()
 
-  const { result: meResult, loading } = useLoad(() => api.me(), [])
+  // `me` is RELOADED after somebody creates a company, because a person's own company list arrives on it.
+  // The shell therefore waits for the FIRST answer only: a reload keeps the answer it has on screen until
+  // the new one lands, rather than blanking every screen for the length of a request.
+  const { result: meResult, reload: reloadMe } = useLoad(() => api.me(), [])
 
   // — subscribed for the life of the shell, which is the life of the app. The
   // unsubscribe matters in the test environment and under a remount, where a stale closure holding a
@@ -350,7 +353,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
     setAvatarOpen(false)
   }, [path])
 
-  if (loading) return <div className="screen" />
+  if (!meResult) return <div className="screen" />
 
   // ── — A SESSION THAT HAS GONE IS NOT AN ENROLMENT PROBLEM ────────────────
   //
@@ -400,9 +403,18 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // consulted per-screen. While the roster is still in flight a staff member reads the key for a frame,
   // which is the same fallback a missing name gets — never a blank where a company should be.
   const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value : [])
-  // One organisation's Generic is called what Generic is called; the key only says which one.
-  const ownerName = (key: string | null): string =>
-    ownerNameFrom(names, key !== null && isGenericKey(key) ? GENERIC_ACCOUNT : key)
+  // One organisation's Generic is called what Generic is called; the key only says which one. A person
+  // who can see several organisations has several Generics, so the name carries its organisation — two
+  // rows both reading "Generic default" would be two different things saying the same words. The
+  // switcher and the pick panel head their rows by organisation and name each Generic plainly
+  // (companyRows.ts); everywhere else a Generic is named, it is named here.
+  const ownerName = (key: string | null): string => {
+    if (key === null || !isGenericKey(key)) return ownerNameFrom(names, key)
+    const plain = ownerNameFrom(names, GENERIC_ACCOUNT)
+    const org = orgOfGeneric(key)
+    if (!org || me.organisations.length < 2) return plain
+    return `${plain} · ${me.organisations.find((o) => o.key === org)?.name ?? org}`
+  }
 
   // The same two sources and the same precedence, for the three facts that tell one company from
   // another in the pick panel. Parallel to the name map rather than folded into it: a company with no
@@ -437,6 +449,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   )
   const orgOf = (key: string): string | null => orgOfGeneric(key) ?? me.accountOrgs[key] ?? rosterOrgs[key] ?? null
   const organisations = me.organisations
+  // A company just created reaches a person's list on `me` — their own companies, and which organisation
+  // each sits in — and, for someone who can see the whole install, on the roster. Both are asked again.
+  const refreshCompanies = (): void => {
+    reloadMe()
+    reloadRoster()
+  }
 
   // NOBODY IS ASKED TO CHOOSE BETWEEN ONE THING AND ITSELF.
   //
@@ -454,7 +472,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   const ownerInView = owner ?? sole
 
   const body = entry
-    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, refreshCompanies: reloadRoster,
+    ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, refreshCompanies,
         ownerName, ownerKeys, orgOf, organisations, factsFor, go, visit, sidebarCollapsed: collapsed })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">

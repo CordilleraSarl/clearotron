@@ -70,7 +70,9 @@ export function pickerGroups(
 ): { readonly headings: boolean; readonly groups: readonly CompanyGroup[] } {
   const rowFor = (key: string): CompanyRow =>
     isGenericKey(key)
-      ? { key, name: companyName(key), line: GENERIC_LINE, generic: true }
+      // Named plainly: every list drawn from these rows either heads them by organisation or shows one
+      // organisation only, so the organisation is already on screen beside the name.
+      ? { key, name: companyName(GENERIC_KEY), line: GENERIC_LINE, generic: true }
       : { key, name: companyName(key), line: companyFactsLine(factsFor(key)), generic: false }
 
   // Generic leads its group. There is at most one per group — one organisation, one Generic — held under

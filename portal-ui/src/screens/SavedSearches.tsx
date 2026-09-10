@@ -202,7 +202,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
                 busy={busy === r.slug}
                 confirming={confirming === r.slug}
                 onEdit={canRun(ctx.me) ? () => ctx.go(`/portal/new?search=${encodeURIComponent(r.slug)}`) : null}
-                onRetire={() => (r.archived ? void setRetired(r, false) : setConfirming(r.slug))}
+                onRetire={canRun(ctx.me) ? () => (r.archived ? void setRetired(r, false) : setConfirming(r.slug)) : null}
                 onConfirm={() => void setRetired(r, true)}
                 onCancel={() => setConfirming(null)}
               />
@@ -226,7 +226,8 @@ function SavedRow({
   readonly confirming: boolean
   /** Null for a person who may not start clearances: editing opens the composer, which is not theirs. */
   readonly onEdit: (() => void) | null
-  readonly onRetire: () => void
+  /** Null without Run: retiring and bringing back are writes to the company's searches. */
+  readonly onRetire: (() => void) | null
   readonly onConfirm: () => void
   readonly onCancel: () => void
 }) {
@@ -281,9 +282,11 @@ function SavedRow({
                   Edit
                 </button>
               ) : null}
-              <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }} disabled={busy} onClick={onRetire}>
-                {busy ? 'Working…' : recipe.archived ? 'Bring back' : 'Retire'}
-              </button>
+              {onRetire ? (
+                <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }} disabled={busy} onClick={onRetire}>
+                  {busy ? 'Working…' : recipe.archived ? 'Bring back' : 'Retire'}
+                </button>
+              ) : null}
             </>
           )}
         </div>

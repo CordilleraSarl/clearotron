@@ -57,6 +57,8 @@ const NAME2 = 'Foxglade Interactive'
 
 /** Which identity /portal/api/me answers as. Flipped between passes. */
 let role = 'client'
+/** Whether the install signs one person in locally — the state in which People cannot add anyone. */
+let localMode = false
 
 // Each pass may run clearances, because each one opens New clearance. The `role` variable names the
 // PASS — who is looking, in this check's own terms — and the wire carries the two switches.
@@ -81,10 +83,36 @@ const ME = () => {
       access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }, { kind: 'company', key: KEY2, name: NAME2, org: 'org-a' }],
       organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a', [KEY2]: 'org-a' } }
   }
+  if (role === 'owner') {
+    // ONE COMPANY, BOTH SWITCHES — the person the lifecycle pass is about. Creating and archiving a project
+    // is Manage and a custom search's writes are Run, so the pass that drives both needs both; a person
+    // with Run alone is shown no project controls at all, which the view-only pass asserts.
+    return { permissions: { run: true, manage: true }, email: 'gundy@apmxc.test', accounts: [KEY], accountNames: { [KEY]: NAME },
+      access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }],
+      organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a' } }
+  }
+  if (role === 'reader') {
+    // BOTH SWITCHES OFF: the view-only person. They read every report for the company they were given,
+    // and meet no control that would only refuse them — no New clearance, no People.
+    return { permissions: { run: false, manage: false }, email: 'viewer@example.test', accounts: [KEY], accountNames: { [KEY]: NAME },
+      access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }],
+      organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a' } }
+  }
   return { ...RUN_ONLY, email: 'gundy@apmxc.test', accounts: [KEY], accountNames: { [KEY]: NAME },
     access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }],
     organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a' } }
 }
+
+// PEOPLE, as the access route answers the whole-install pass: three people on a hosted install, and the
+// one person a local sign-in holds. Each person arrives already narrowed to what the viewer may see.
+const HOSTED_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: true, localSignIn: false, people: [
+  { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [] },
+  { email: 'owner@example.test', permissions: { run: true, manage: false }, access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }], dangling: [] },
+  { email: 'viewer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }], dangling: [] },
+] }
+const LOCAL_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: false, localSignIn: true, people: [
+  { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [] },
+] }
 
 // THE ENGINE'S OWN ROW for a level, not a restatement of it. `available`/`unavailableNote` are the
 // only additions — deployment state resolved per request, which productRows knows nothing about. This
@@ -212,6 +240,13 @@ const server = createServer((req, res) => {
       held: false, report: 'report.html', step: null, stepN: null, stepTotal: null, reason: null, failedStage: null }] })
   }
   if (p === '/portal/admin/families') return json(res, { of: {}, names: {} })
+  // Manage only, and answered as such. Without these the catch-all below would hand the page its own
+  // HTML, and People would report itself unavailable — a failure of the fixture wearing the page's name.
+  if (p === '/portal/admin/access') {
+    if (role !== 'staff') { res.writeHead(404); res.end('{}'); return }
+    return json(res, localMode ? LOCAL_PEOPLE : HOSTED_PEOPLE)
+  }
+  if (p === '/portal/admin/observed') return json(res, { available: false, truncated: false, people: [], note: 'No activity log is kept here.' })
   if (p === '/portal/api/mcp-access') return json(res, { url: null, keyUrl: null, email: null, enabled: false })
 
   const base = p.split('?')[0]
@@ -314,6 +349,11 @@ ${HELPERS}
   out.accountCorner = cornerLabel && cornerLabel.nextElementSibling
     ? cornerLabel.nextElementSibling.innerText.trim()
     : null;
+  // The switcher's organisation headings and its Generic entries, and the rail's own entries — read for
+  // every identity, so the verdict can ask each one what its permissions and its organisations decide.
+  out.railGroups = railSelect ? [...railSelect.querySelectorAll('optgroup')].map((g) => g.label) : [];
+  out.genericOptions = railSelect ? [...railSelect.options].filter((o) => /Generic/.test(o.textContent)).length : 0;
+  out.railNav = rail ? [...rail.querySelectorAll('.nav-item')].map((b) => b.innerText.trim()).filter(Boolean) : [];
 
   // Staff open on "All companies", so pick one — the heading below is scoped to whoever is selected.
   if (railSelect) {
@@ -343,6 +383,84 @@ ${HELPERS}
   // because the slug appearing anywhere visible is the failure — it has no business on a client screen.
   out.slugOnScreen = txt().includes('${KEY}');
   out.nameOnScreen = txt().includes('${NAME}');
+  return out;
+})()
+`
+
+/**
+ * People and the form it opens, as the whole-install pass sees them on a hosted install. The form is left
+ * clean — the address cleared and the choice unticked — so the unsaved-changes prompt cannot stall the
+ * navigation that follows.
+ */
+const PEOPLE_SCRIPT = `
+(async () => {
+${HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people');
+    await mustSettle(() => document.querySelector('table.data tbody tr td'), 8000, 'People never drew its list');
+    out.rows = [...document.querySelectorAll('table.data tbody tr')]
+      .map((r) => [...r.querySelectorAll('td')].map((c) => c.innerText.replace(/\\s+/g, ' ').trim()));
+    const add = findByText('button', /Add a person/);
+    out.addDisabled = add.disabled;
+    out.localNotice = /signs in one person/.test(txt());
+    add.click();
+    await mustSettle(() => /Give someone access to Clearotron/.test(txt()), 8000, 'Add a person did not open the form');
+    out.path = location.pathname;
+    const email = document.querySelector('#give-access-email');
+    set(email, 'dana@birch.example');
+    await sleep(150);
+    const org = findByText('button.attach-row', /Apmxc Group/);
+    org.click();
+    await sleep(250);
+    out.sentence = (document.querySelector('.notice.quiet p') || {}).innerText || null;
+    out.saveEnabled = !findByText('button', /^Save$/).disabled;
+    org.click();
+    set(email, '');
+    await sleep(200);
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
+/** People on an install that signs one person in locally: one row, Add off, and the way out named. */
+const PEOPLE_LOCAL_SCRIPT = `
+(async () => {
+${HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people');
+    await mustSettle(() => /signs in one person/.test(txt()), 8000, 'the local sign-in notice never appeared');
+    out.addDisabled = findByText('button', /Add a person/).disabled;
+    out.rows = document.querySelectorAll('table.data tbody tr').length;
+    out.linksOut = Boolean(document.querySelector('a[href*="putting-your-own-login-provider-in-front"]'));
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
+/** The view-only person: what the rail offers, and whether the two gated pages exist for them at all. */
+const READER_SCRIPT = `
+(async () => {
+${HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/clearances');
+    await mustSettle(() => /Clearances/.test(txt()), 8000, 'the shell never painted for a view-only person');
+    const rail = document.querySelector('.sidebar');
+    out.railNav = rail ? [...rail.querySelectorAll('.nav-item')].map((b) => b.innerText.trim()).filter(Boolean) : [];
+    await goto('/portal/new');
+    await sleep(400);
+    out.newIsAPage = !/That page does not exist/.test(txt());
+    await goto('/portal/people');
+    await sleep(400);
+    out.peopleIsAPage = !/That page does not exist/.test(txt());
+    // Projects without Manage: the list is readable, and there is no control that would only refuse.
+    await goto('/portal/brand/projects');
+    await mustSettle(() => /EU launch/.test(txt()), 8000, 'Projects never listed its projects for a view-only person');
+    out.newProjectOffered = Boolean(maybeByText('button', /^New project$/));
+    out.archiveOffered = Boolean(maybeByText('button', /^(Archive|Bring back)$/));
+  } catch (e) { out.fatal = String((e && e.message) || e); }
   return out;
 })()
 `
@@ -521,12 +639,21 @@ const asClient = await value(NAMES_SCRIPT)
 role = 'staff'
 await reload()
 const asStaff = await value(NAMES_SCRIPT)
+const people = await value(PEOPLE_SCRIPT)
+localMode = true
+await reload()
+const peopleLocal = await value(PEOPLE_LOCAL_SCRIPT)
+localMode = false
 
 role = 'multi'
 await reload()
 const asMulti = await value(NAMES_SCRIPT)
 
-role = 'client'
+role = 'reader'
+await reload()
+const asReader = await value(READER_SCRIPT)
+
+role = 'owner'
 await reload()
 const life = await value(LIFECYCLE_SCRIPT)
 
@@ -591,6 +718,58 @@ if (asMulti && !asMulti.fatal) {
   ok(asMulti.railOwner[0] === NAME2, `the switcher is not sorted by name: ${JSON.stringify(asMulti.railOwner)}`)
 }
 
+// ── the access model's screens ──────────────────────────────────────────────────────────────────────
+// Two organisations visible: the switcher heads its rows by organisation, one Generic under each, and the
+// top bar names none of them. One organisation visible: no heading, and the bar names it. People is in
+// the rail for Manage and nowhere else; New clearance for Run and nowhere else.
+if (asStaff && !asStaff.fatal) {
+  ok(JSON.stringify(asStaff.railGroups) === JSON.stringify(['Apmxc Group', 'Foxglade Group']),
+    `two organisations visible, but the switcher's headings read ${JSON.stringify(asStaff.railGroups)}`)
+  ok(asStaff.genericOptions === 2, `each organisation's Generic should be offered once — the switcher offers ${asStaff.genericOptions}`)
+  ok(asStaff.accountCorner === null,
+    `a person who can see two organisations is named one of them in the top bar: ${JSON.stringify(asStaff.accountCorner)}`)
+  ok(asStaff.railNav.includes('People'), `People is not in the rail for a person with Manage: ${JSON.stringify(asStaff.railNav)}`)
+}
+for (const [who, out] of [['client', asClient], ['multi-account client', asMulti]]) {
+  if (!out || out.fatal) continue
+  ok(out.railGroups.length === 0, `${who}: one organisation visible, yet the switcher draws headings ${JSON.stringify(out.railGroups)}`)
+  ok(out.accountCorner === 'Apmxc Group', `${who}: the top bar should name the one organisation — read ${JSON.stringify(out.accountCorner)}`)
+  ok(!out.railNav.includes('People'), `${who}: People is in the rail for a person without Manage`)
+  ok(out.railNav.includes('New clearance'), `${who}: New clearance is missing for a person who may run clearances`)
+}
+if (!people || people.fatal) {
+  fail.push(`people: ${people?.fatal ?? 'the driver returned nothing'}`)
+} else {
+  ok(people.rows.length === 3, `People should list the three people it was sent — it drew ${people.rows.length} rows`)
+  ok(people.rows.some((r) => r[1] === 'Runs clearances · Manages' && /Everything/.test(r[2] ?? '')),
+    `no row reads both permissions with access to everything: ${JSON.stringify(people.rows)}`)
+  ok(people.rows.some((r) => r[1] === 'View reports'), `the view-only person is not described as such: ${JSON.stringify(people.rows)}`)
+  ok(!people.rows.some((r) => /staff|client/i.test(r.join(' '))), `a role word is back on People: ${JSON.stringify(people.rows)}`)
+  ok(people.addDisabled === false && !people.localNotice, 'a hosted install offers Add, with no local sign-in notice')
+  ok(people.path === '/portal/people/add', `Add a person opened ${people.path}`)
+  ok(/will see everything under Apmxc Group, and can run clearances there/.test(people.sentence ?? ''),
+    `the form does not say what the new person will see: ${JSON.stringify(people.sentence)}`)
+  ok(/cannot add companies or people/.test(people.sentence ?? ''), `the form does not say what they cannot do: ${JSON.stringify(people.sentence)}`)
+  ok(people.saveEnabled === true, 'Save is off with an address and a choice made')
+}
+if (!peopleLocal || peopleLocal.fatal) {
+  fail.push(`people (local sign-in): ${peopleLocal?.fatal ?? 'the driver returned nothing'}`)
+} else {
+  ok(peopleLocal.addDisabled === true, 'Add is offered on an install that signs one person in locally')
+  ok(peopleLocal.rows === 1, `local sign-in should list its one person — it drew ${peopleLocal.rows} rows`)
+  ok(peopleLocal.linksOut, 'the local sign-in notice does not link to how to put a login system in front')
+}
+if (!asReader || asReader.fatal) {
+  fail.push(`view-only person: ${asReader?.fatal ?? 'the driver returned nothing'}`)
+} else {
+  ok(!asReader.railNav.includes('New clearance'), `a view-only person is offered New clearance: ${JSON.stringify(asReader.railNav)}`)
+  ok(!asReader.railNav.includes('People'), 'a view-only person is offered People')
+  ok(!asReader.newIsAPage, 'New clearance opens for a person who may not start one')
+  ok(!asReader.peopleIsAPage, 'People opens for a person without Manage')
+  ok(asReader.newProjectOffered === false, 'Projects offers New project to a person without Manage')
+  ok(asReader.archiveOffered === false, 'Projects offers Archive or Bring back to a person without Manage')
+}
+
 if (!life || life.fatal) {
   fail.push(`lifecycle: ${life?.fatal ?? 'the driver returned nothing'}`)
 } else {
@@ -651,7 +830,7 @@ ok(created != null, 'the new project never reached the server')
 ok(created == null || created.body.profile?.name === undefined,
   'a project must NEVER carry `name` — that is the customer identity the self-exclusion check anchors on')
 
-console.log(JSON.stringify({ asClient, asStaff, asMulti, life, posted: posted.map((p) => p.path) }, null, 2))
+console.log(JSON.stringify({ asClient, asStaff, asMulti, asReader, people, peopleLocal, life, posted: posted.map((p) => p.path) }, null, 2))
 if (fail.length) {
   console.error(`\n${fail.length} problem(s):`)
   for (const f of fail) console.error(` ✗ ${f}`)

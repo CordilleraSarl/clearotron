@@ -11,8 +11,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { pickerGroups, pickerRows, GENERIC_KEY } from '../src/shell/companyRows.ts'
-import type { Organisation } from '../src/contract/api.ts'
-import { genericFor, isGenericKey, orgOfGeneric, wireAccount } from '../src/contract/genericKey.ts'
+import type { Organisation, Run } from '../src/contract/api.ts'
+import { genericFor, isGenericKey, orgOfGeneric, wireAccount, runKey } from '../src/contract/genericKey.ts'
+import { ownerSummaries } from '../src/contract/home.ts'
 
 const NAMES: Record<string, string> = {
   generic: 'Generic default',
@@ -112,4 +113,24 @@ test('THE GENERIC KEY names its organisation, and only wireAccount turns it into
   assert.equal(orgOfGeneric('generic'), null)
   assert.equal(orgOfGeneric('coastline'), null)
   assert.equal(orgOfGeneric(genericFor('alder')), 'alder')
+})
+
+test('A RUN IS FILED UNDER THE KEY THE SWITCHER HOLDS — its company, or its organisation\'s Generic', () => {
+  assert.equal(runKey({ account: 'generic', organisation: 'alder' }), genericFor('alder'))
+  assert.equal(runKey({ account: 'harbour', organisation: 'alder' }), 'harbour', 'a company run is its company')
+  // Filed before organisations were recorded: unplaced, under the bare key no organisation's Generic claims.
+  assert.equal(runKey({ account: 'generic', organisation: null }), 'generic')
+  assert.equal(runKey({ account: 'generic' }), 'generic')
+})
+
+test("HOME COUNTS EACH ORGANISATION'S GENERIC ON ITS OWN, and a bare comparison would have counted none", () => {
+  const runs = [
+    { runId: 'a', account: 'generic', organisation: 'alder', state: 'running', date: '2026-09-01' },
+    { runId: 'b', account: 'generic', organisation: 'birch', state: 'delivered', date: '2026-09-02' },
+    { runId: 'c', account: 'generic', organisation: null, state: 'delivered', date: '2026-08-01' },
+  ] as unknown as readonly Run[]
+  const byKey = Object.fromEntries(ownerSummaries([genericFor('alder'), genericFor('birch')], runs, (k) => k)
+    .map((x) => [x.key, [x.live, x.finished]]))
+  assert.deepEqual(byKey, { [genericFor('alder')]: [1, 0], [genericFor('birch')]: [0, 1] },
+    'each Generic counts its own organisation\'s runs, and the unplaced one is counted under neither')
 })

@@ -793,8 +793,8 @@ test('addPerson posts the address, the switches and the points, and reads the pe
   globalThis.fetch = (async (url: string | URL | Request, init?: RequestInit) => {
     sent = { url: String(url), body: JSON.parse(String(init?.body)) }
     // The answer carries the switches AS THEY NOW STAND, which is not always what was sent.
-    return new Response(JSON.stringify({ email: 'dana@birch.example', permissions: { run: true, manage: true },
-      access: [{ kind: 'organisation', key: 'birch', name: 'Birch & Co' }], dangling: [] }),
+    return new Response(JSON.stringify({ person: { email: 'dana@birch.example', permissions: { run: true, manage: true },
+      access: [{ kind: 'organisation', key: 'birch', name: 'Birch & Co' }], dangling: [] }, switchesApplied: false }),
       { status: 201, headers: { 'content-type': 'application/json' } })
   }) as typeof fetch
   let r
@@ -809,5 +809,6 @@ test('addPerson posts the address, the switches and the points, and reads the pe
   assert.deepEqual((sent as { body: unknown }).body, { email: 'dana@birch.example', permissions: { run: true, manage: false },
     access: [{ kind: 'organisation', key: 'birch' }, { kind: 'company', key: 'harbour' }] })
   assert.ok(isOk(r))
-  assert.deepEqual(r.value.permissions, { run: true, manage: true }, 'the switches are read back, not assumed')
+  assert.deepEqual(r.value.person.permissions, { run: true, manage: true }, 'the switches are read back, not assumed')
+  assert.equal(r.value.switchesApplied, false, 'and the screen is told the ones it sent were not applied')
 })

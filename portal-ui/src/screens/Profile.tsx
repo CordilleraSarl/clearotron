@@ -63,6 +63,9 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   // unrendered round-trip until now: loaded, posted straight back, never shown.
   const [pack, setPack] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  // Profile writes need Manage. Read once, here, so the fieldset, the framework block and the action bar
+  // cannot disagree about whether this person may change anything.
+  const mayChange = canManage(ctx.me)
   const [problem, setProblem] = useState<{ readonly title: string; readonly lines: readonly string[] } | null>(null)
   // THE RAW TEXT OF EVERY TOUCHED FIELD, and it is not a duplicate of `draft`.
   // Deriving a box's value from the parsed draft made every keystroke a parse-then-format round trip,
@@ -178,8 +181,13 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           </p>
         </div>
 
-        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} staff={canManage(ctx.me)} />
+        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} staff={mayChange} />
 
+        {/* ONE WRAPPER DECIDES WHETHER ANY OF THIS CAN BE CHANGED. Profile writes need Manage, and a
+            disabled fieldset disables every control inside it natively — the fields, the pickers and the
+            background editor — so a person without Manage reads the settings and can type into none of
+            them. A per-field flag would be one more thing a new field could forget. */}
+        <fieldset disabled={!mayChange} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
         {/* Grouped by iteration over FIELD_GROUPS rather than as two hardcoded blocks, so a new field
             joins a group by declaring one, and a new group needs no markup here at all. */}
         {FIELD_GROUPS.map((group) => {
@@ -211,6 +219,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           title="Background &amp; standing concerns"
           hint="Useful background about this company — competitors to watch, recurring concerns, lessons from past matters. Every clearance reads it before it writes. Facts and concerns, not rules: it shapes what a report emphasises, never what a finding is rated."
         />
+        </fieldset>
 
         {problem ? (
           <div className="notice" style={{ borderColor: 'var(--tone-high)', marginTop: 18 }}>
@@ -230,6 +239,11 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           </div>
         ) : null}
 
+        {!mayChange ? (
+          <p style={{ marginTop: 22, fontSize: 13, color: 'var(--text-muted)' }}>
+            You can read these settings. Changing them needs the Manage permission.
+          </p>
+        ) : (
         <div style={{ marginTop: 22, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <button
             type="button"
@@ -283,6 +297,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
                 : 'Press Check before saving. A profile the engine cannot read stops this account searching.'}
           </span>
         </div>
+        )}
       </div>
     </div>
   )
