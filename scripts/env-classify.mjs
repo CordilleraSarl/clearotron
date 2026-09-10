@@ -386,6 +386,9 @@ export const DEPLOYMENT_NAMES = new Set([
   "TRADEMARK_MCP_AUTH_MODE",
   "TRADEMARK_MCP_DEV",
   "TRADEMARK_MCP_EMAIL_CLAIM",
+  // The key door's socket path. Its row declares `deployment`, and until it was listed the
+  // `TRADEMARK_MCP_` prefix arm was its only route there, which a house-prefix sweep would take away.
+  "TRADEMARK_MCP_KEY_SOCKET",
   "TRADEMARK_MCP_MAX_BYTES",
   "TRADEMARK_MCP_SESSION_MAX",
   "TRADEMARK_MCP_SESSION_TTL_MS",
