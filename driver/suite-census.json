@@ -64,8 +64,8 @@
           "todos": 0
         },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
-          "tests": 13,
-          "asserts": 33,
+          "tests": 12,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -4638,6 +4638,12 @@
         "the-readmes-commands-run-as-written.test.mjs": {
           "tests": 2,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reaper-signals-before-it-removes.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
