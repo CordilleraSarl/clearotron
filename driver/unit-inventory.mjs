@@ -697,6 +697,11 @@ export const ACCOUNTED_FILES = Object.freeze(
  */
 export function unitInventoryVerdict({
   live = [], files = [], collisions = [], filesError = null, box = null, probe = { ok: true },
+  // PASSED IN RATHER THAN IMPORTED, so the allowlist stays in one place. This module deliberately has
+  // no imports — it is the declaration the rest of the tree reads — and pulling one in to spell two
+  // names inside a sentence would put a second copy of that list here to drift from the first. The
+  // caller already resolves the box through `shared/deployment-box.mjs`; it hands over the names too.
+  boxNames = [],
   // INJECTED so the retirement branch can be PLANTED. `retired:` has no members today — the two it
   // carried left with their files — so `absentByRetirement` and the line it feeds are unreachable
   // against the real table, and a branch nothing exercises is a branch that will not fire the next
@@ -775,8 +780,27 @@ export function unitInventoryVerdict({
   const absentByRetirement = box
     ? inventory.filter((u) => declaredHere(u) && u.retired).map((u) => u.unit).sort()
     : [];
+  // ── AN UNNAMED BOX IS A FAULT, NOT A FOOTNOTE ─────────────────────────────────────────────────────
+  //
+  // This sentence used to ride along on a `pass`. It said, correctly, that half the arm did not run and
+  // that this is not the same as passing — and then the arm passed. So the one deployment where nobody
+  // sets the name gets a green tick beside a paragraph explaining that the check did not happen, which
+  // is the state this file argues against everywhere else it appears: a result nobody can act on,
+  // shaped exactly like a result that is fine.
+  //
+  // THE HALF THAT DOES NOT RUN IS THE ONE THAT CATCHES A SERVICE THAT STOPPED AND STAYED STOPPED. The
+  // other half enumerates what is alive, so a unit that is no longer alive is invisible to it by
+  // construction. Suppressing the mirror question is right — guessing the box would report every other
+  // deployment's units missing here — but the suppression must be loud, because while it lasts a
+  // declared service can disappear and nothing anywhere produces a finding.
+  //
+  // Measured 2026-09-10: the test deployment names itself and both halves run, reporting
+  // `client-mcp-apikey` as absent by retirement. Production sets no name, so on the deployment where a
+  // stopped service matters most, this half has never executed.
   const boxLine = box ? "" : " The box could not be named, so 'declared here and not running' was NOT "
-    + "checked — that half did not run, which is not the same as passing.";
+    + "checked — that half did not run, which is not the same as passing. Set CLEAROTRON_BOX to the "
+    + `name this deployment goes by${boxNames.length ? ` (${boxNames.join(" or ")})` : ""}; a deployment that cannot say `
+    + "which one it is cannot be told that a service it declares has gone.";
 
   // The tracked-file half of this arm depends on a walk of the tree, and an incomplete walk returns a
   // SHORT list — which quietly satisfies "no file is unaccounted for" and "no entry is misdeclared" at
@@ -845,6 +869,29 @@ export function unitInventoryVerdict({
   if (faults.length) {
     return { state: "fail", undeclared, orphaned, absent, misdeclared, claimedAbsent, absentByRetirement,
       message: faults.join(" ") + retiredLine + orphanLine + boxLine + filesLine };
+  }
+  // NO FAULT FOUND IS NOT A PASS WHEN HALF THE ARM WAS SUPPRESSED. Reported separately from `faults`
+  // rather than pushed into it, because it is not a finding ABOUT the deployment — it is this check
+  // saying what it could not ask. The message still carries everything the pass carried; only the
+  // verdict changes, so a reader loses no detail and gains the one word that makes them act.
+  if (!box) {
+    return { state: "fail", undeclared, orphaned, absent, misdeclared, claimedAbsent, absentByRetirement,
+      message: `${liveBases.length} live unit(s), all declared, and NOTHING WAS COMPARED THE OTHER WAY.`
+        + `${retiredLine}${orphanLine}${boxLine}${filesLine}` };
+  }
+  // THE FILE HALF, FOR THE SAME REASON. `filesLine` above already says, in the code's own words, that a
+  // short list "quietly satisfies" both file arms and that an empty walk "is not a clean bill of health,
+  // it is a walk pointed somewhere wrong". It said both of those on a `pass`.
+  //
+  // AN EMPTY WALK AND AN INCOMPLETE ONE GET THE SAME VERDICT AND KEEP DIFFERENT SENTENCES. They are not
+  // equally likely — an empty walk is almost certainly a path pointed wrong, an incomplete one may be a
+  // real read error on one directory — but neither is a state in which "no file is unaccounted for"
+  // means anything, and that is what the verdict is being asked. The messages already tell them apart;
+  // the reader needs the difference, the exit code does not.
+  if (filesError || files.length === 0) {
+    return { state: "fail", undeclared, orphaned, absent, misdeclared, claimedAbsent, absentByRetirement,
+      message: `${liveBases.length} live unit(s), all declared, and THE FILE ARMS DID NOT RUN.`
+        + `${retiredLine}${orphanLine}${boxLine}${filesLine}` };
   }
   return {
     state: "pass", undeclared, orphaned, absent, misdeclared, claimedAbsent, absentByRetirement,
