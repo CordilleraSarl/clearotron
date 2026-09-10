@@ -43,6 +43,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SIGNATURES, censusOf, isScannable, RULE_DEFINITIONS } from "../reference-strip-signatures.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
+import { publishedOf } from "../../shared/reference-guard-classes.mjs";   // the same population the mint counts
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const TABLE = JSON.parse(readFileSync(join(ROOT, "driver/test/fixtures/reference-strip-backlog.json"), "utf8"));
@@ -51,10 +52,37 @@ const GUARD = "reference-strip-backlog";
 // Through the helper (tracker issue 235): `null` is a stated skip, not an empty corpus. An empty one
 // here would read as a repaired tree — every count zero, the floor satisfied — which is the precise
 // failure the backlog table exists to make impossible.
-const tracked = () => trackedFiles(GUARD, { root: ROOT });
-const census = () => { const files = tracked(); return files === null ? null : censusOf(ROOT, files, (f) => readFileSync(join(ROOT, f), "utf8")); };
+// THE POPULATION IS THE PUBLISHED ONE, and `publishedOf` says so in its own docstring: "both the floor
+// and the mint read this and not the raw tracked list. Two spellings of 'the population' is one
+// population and one guess." The mint did. This file did not, and the two spellings were the defect.
+//
+// IT IS INVISIBLE ON THE PUBLIC TREE, WHICH IS WHY IT STOOD. There every tracked path is published, so
+// the filter changes nothing and public CI is green either way. Under the overlay the withheld corpus is
+// laid at its pre-cut paths and STAGED rather than committed — in the index, not in HEAD — so the raw
+// tracked list carries files the committed table was never minted over. These two arms read 5 against a
+// recorded 4 on every private control run and were right about the tree and wrong about which tree the
+// table describes.
+//
+// A COULD-NOT-LOOK THROWS RATHER THAN SKIPPING. `publishedOf` returns an error when a tree has no HEAD,
+// and the permissive reading of that — "then nothing is laid here" — is the one that passes while
+// checking nothing. A stated skip (no checkout at all) is a different state and keeps its own path.
+const published = () => {
+  const all = trackedFiles(GUARD, { root: ROOT });
+  if (all === null) return null;
+  const p = publishedOf(all, ROOT);
+  if (p.error) throw new Error(`${GUARD}: ${p.error} — refusing to count a tree that cannot say what it published`);
+  return p.files;
+};
+const census = () => { const files = published(); return files === null ? null : censusOf(ROOT, files, (f) => readFileSync(join(ROOT, f), "utf8")); };
 
 test("185 the reference-strip backlog is a FLOOR — no file may carry more than it is recorded with", (ctx) => {
+  const files = published();
+  if (files === null) return ctx.skip(skipReason(GUARD));
+  // THE FLOOR ON THE POPULATION, not on its contents. The filter above narrows what is counted, and a
+  // narrowing that removed everything would satisfy every assertion below by having nothing to check.
+  assert.ok(files.length > 100,
+    `only ${files.length} published file(s) reached the census — the published filter removed the corpus, `
+    + "and every 'repaired' line below would be a file this arm never opened");
   const now = census();
   if (now === null) return ctx.skip(skipReason(GUARD));
   // An empty corpus reports every absence as a repair. The census in tracker issue 1010 exists for this shape.
