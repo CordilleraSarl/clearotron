@@ -45,7 +45,7 @@
 // need the prefix — one side of a pair is enough to separate the pair.
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from "node:crypto";
 import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { homedir } from "node:os";
 import { envPrefix } from "../shared/os-advice.mjs";
 
@@ -165,10 +165,26 @@ export function passphraseResetCommand({ prefix = "", credentialPath = null, env
   const base = `${prefix}clearotron passphrase --reset`;
   const path = credentialPath ?? env.PORTAL_LOCAL_CREDENTIAL ?? null;
   if (!path || path === credentialPathFor({}, home)) return base;
+  // AN INSTALL'S OWN FILE IS NAMED BY ITS INSTALL, the way `clearotron start` names it: `--base`, which the
+  // verb resolves through installCredential exactly as start does, and nothing at all for the default
+  // install, where the verb looks first. Every new install keeps its credential in its own directory now,
+  // so this is the ordinary line, and it has no environment variable in it to bind to the wrong command.
+  if (basename(path) === INSTALL_CREDENTIAL_FILE) {
+    const dir = dirname(path);
+    if (dir === defaultInstallBase({ home })) return base;
+    return `${base} --base ${/\s/.test(dir) ? `"${dir}"` : dir}`;
+  }
   // `VAR=value cmd` IS POSIX-ONLY. PowerShell has no such juxtaposition — the assignment is its own
   // statement there — so this line told a Windows reader their variable name was not a cmdlet, naming
   // the wrong half of the command as the fault. Reported from a real run.
-  return `${envPrefix("PORTAL_LOCAL_CREDENTIAL", path)}${base}`;
+  //
+  // AND IT BINDS TO THE COMMAND BESIDE IT, which after a `cd … && ` prefix is `cd`. Printed from a
+  // checkout, the line set the variable for the directory change and ran the verb without it, so the
+  // reset went to the shared file. Measured by running the printed line, 2026-09-10. So the assignment
+  // goes after the prefix's directory change, next to the verb it is for.
+  const posix = prefix.lastIndexOf("&& "), ps = prefix.lastIndexOf("; ");
+  const at = Math.max(posix < 0 ? 0 : posix + 3, ps < 0 ? 0 : ps + 2);
+  return `${prefix.slice(0, at)}${envPrefix("PORTAL_LOCAL_CREDENTIAL", path)}${prefix.slice(at)}clearotron passphrase --reset`;
 }
 
 /**

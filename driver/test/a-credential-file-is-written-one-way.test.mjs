@@ -91,7 +91,9 @@ test("the printed recovery command runs as printed", () => {
 
   const inTheDemo = "/srv/somebody/trademark-demo/portal-local-credential.json";
   const qualified = passphraseResetCommand({ prefix: "npx ", credentialPath: inTheDemo, home });
-  assert.match(qualified, /^PORTAL_LOCAL_CREDENTIAL=\/srv\/somebody\/trademark-demo\/portal-local-credential\.json npx clearotron passphrase --reset$/,
+  // An install's own file is named by its install, as `clearotron start --base` names it: the verb resolves
+  // it the same way, and the line then carries no variable to bind to the wrong command.
+  assert.equal(qualified, "npx clearotron passphrase --reset --base /srv/somebody/trademark-demo",
     `a credential outside the default was not named in the recovery line: ${qualified}`);
   assert.notEqual(qualified, "npx clearotron passphrase --reset");
 

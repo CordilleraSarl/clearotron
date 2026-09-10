@@ -22,7 +22,7 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import {
   installCredential, defaultInstallBase, laterStartLines, demoCredentialToReplace,
-  establishCredential, credentialPathFor, INSTALL_CREDENTIAL_FILE,
+  establishCredential, credentialPathFor, passphraseResetCommand, INSTALL_CREDENTIAL_FILE,
 } from "../portal-local-auth.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -162,5 +162,35 @@ test("`clearotron passphrase` reports and resets the credential the install's po
     assert.match(r.out, /--reset --base /, "and the command it offers carries the same --base");
 
     assert.equal(verb(home, "--base").code, 2, "--base with no directory is refused, not read as the default");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── THE PRINTED RECOVERY LINE, RUN AS PRINTED ───────────────────────────────────────────────────────
+//
+// Printed from a checkout the line was `PORTAL_LOCAL_CREDENTIAL=<file> cd <repo> && npx clearotron …`, and
+// a POSIX shell binds that assignment to `cd`: the verb ran without it and reset the shared file instead.
+// So the line is run through a real shell here, with a directory change in front, and the arm reads which
+// file was rewritten. `clearotron` is replaced by this tree's verb only because no package is installed.
+
+test("the recovery line runs as printed, directory change and all, and resets the file it names", { skip: process.platform === "win32" }, () => {
+  const home = mkdtempSync(join(tmpdir(), "reset-line-"));
+  try {
+    const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
+    establishCredential({ path: shared, email: "earlier@localhost", passphrase: "an earlier install's" });
+    const run = (line) => spawnSync("sh", ["-c", line.replace("clearotron passphrase", `${JSON.stringify(process.execPath)} ${JSON.stringify(VERB)}`)],
+      { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home } });
+    const cases = [
+      ["an install's own file, in a directory other than the default", join(home, "elsewhere", INSTALL_CREDENTIAL_FILE)],
+      ["an operator's own file", join(home, "ops", "creds.json")],
+    ];
+    for (const [what, file] of cases) {
+      establishCredential({ path: file, email: "op@localhost", passphrase: "the current one" });
+      const before = readFileSync(file, "utf8"), sharedBefore = readFileSync(shared, "utf8");
+      const line = passphraseResetCommand({ prefix: `cd ${home} && `, credentialPath: file, home });
+      const r = run(line);
+      assert.equal(r.status, 0, `${what}: the printed line did not run (exit ${r.status})`);
+      assert.notEqual(readFileSync(file, "utf8"), before, `${what}: the printed line did not reset the file it names`);
+      assert.equal(readFileSync(shared, "utf8"), sharedBefore, `${what}: the printed line reset the shared file instead`);
+    }
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
