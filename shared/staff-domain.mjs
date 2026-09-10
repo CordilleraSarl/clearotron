@@ -1,40 +1,28 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// staff-domain.mjs — what a staff-domain rule ADMITS, decided before one is written.
+// staff-domain.mjs — the sign-in addresses setup and `clearotron start` refuse, and why.
 //
-// `PORTAL_STAFF_DOMAINS` is a list of email domains, and every address at a listed domain that gets
-// past this instance's sign-in door is staff: it sees every brand owner on the instance
-// (driver/portal-access.mjs). That is a rule about a set of people, not about one person.
+// This module used to decide what a staff-domain rule would admit, because the install built one from
+// everything after the `@` of the address it was given. That rule is deleted: a person is admitted by
+// their own entry in the grants file (shared/scope.mjs `resolvePerson`), and nothing about the part of an
+// address after its `@` admits anyone. The person who installs is the first person, with access to
+// everything (bin/start.mjs `installerGrants`).
 //
-// The install used to build that rule by taking everything after the last `@` of the one address it
-// was given. On a laptop that address is `<account>@localhost` and the rule admits the one identity
-// that can sign in, which is why it was safe and why nobody looked at it again. Given a real address
-// the same line turns a person into their whole employer, or into every customer of a webmail
-// provider, with nothing said to the operator and nothing to undo. A stranger's install granted a
-// documentation domain that way, read its own settings page back, and reported it as a back door.
+// Two refusals about the ADDRESS ITSELF outlive the rule, and this module owns the second:
 //
-// So the derivation is classified before it is used, and there are three answers:
+//   not a single email address   refused where it is typed (bin/onboard.mjs `askSignIn`, bin/start.mjs),
+//                                because the portal refuses a multi-`@` identity outright.
+//   a public or reserved domain  refused here. The address becomes the first person, with access to
+//                                everything, and a personal mailbox at a webmail provider is not an
+//                                address an organisation controls. A domain reserved for documentation
+//                                receives no real mail, so an address there is a placeholder somebody
+//                                typed — which is how an outside install came to be set up in the name of
+//                                nobody.
 //
-//   "narrow"    the domain cannot name a second person on this machine — `localhost`, or any bare
-//               hostname with no dot. Deriving a rule from it is what it always was: safe, silent.
-//   "public"    a webmail or shared provider. Never a staff rule: it would admit strangers, and no
-//               deployment can want it. Refused outright, and the refusal names the domain.
-//   "reserved"  a domain reserved for documentation and testing (RFC 2606). Nobody's real mail lives
-//               there, so a rule built from one is always an address somebody typed as a placeholder.
-//               Refused for the same reason, with a different sentence, because the remedy differs.
-//   "wide"      an ordinary routable domain. It may well be the right rule — it is how a firm admits
-//               its own lawyers — but it admits people the operator has not met, so it is stated in
-//               the words the settings page will use and confirmed before it is written. It is never
-//               derived silently from one address.
-//
-// FAIL-CLOSED, in the direction of a smaller grant. A domain wrongly classified `public` refuses, and
-// the operator sets `PORTAL_STAFF_DOMAINS` themselves in one line — an explicit decision, recorded
-// where the settings page can name it. A domain wrongly classified `wide` asks a question. Neither
-// outcome grants anything, which is why the lists below are allowed to be short and stay short: the
-// `wide` branch is what actually protects an operator, and the lists only decide whether the product
-// asks a question or refuses to ask one.
+// The lists stay short on purpose. An unlisted provider is accepted, and since the domain rule went an
+// accepted address admits that one address and nobody else, so a miss admits no stranger.
 
-/** Last-@ semantics, matching driver/portal-access.mjs and shared/scope.mjs `isFirmDomain`. */
+/** Last-@ semantics, matching shared/scope.mjs `resolvePerson`. */
 export function domainOfEmail(email) {
   const e = String(email ?? "").trim().toLowerCase();
   const at = e.lastIndexOf("@");
@@ -44,10 +32,9 @@ export function domainOfEmail(email) {
 /**
  * Webmail and shared mailbox providers, exactly.
  *
- * Not a census of the internet, and deliberately not growing into one: an unlisted provider still
- * lands in `wide`, where it is stated and confirmed rather than written silently. What this list buys
- * is that the commonest addresses a person types — their own personal mail — are refused with a
- * sentence about why, instead of being offered as a rule somebody might say yes to.
+ * Not a census of the internet, and deliberately not growing into one: an unlisted provider is accepted.
+ * What this list buys is that the commonest addresses a person types — their own personal mail — are
+ * sent back with a sentence about why.
  */
 export const PUBLIC_EMAIL_DOMAINS = Object.freeze(new Set([
   "gmail.com", "googlemail.com", "icloud.com", "me.com", "mac.com",
@@ -81,10 +68,10 @@ export const PUBLIC_EMAIL_FAMILIES = Object.freeze(new Set([
  *
  * `example.com`, `example.net`, `example.org` and everything under them, plus the whole of the
  * `.example`, `.invalid`, `.test` and `.localhost` top-level names. Real mail is never delivered to
- * any of them, so an address at one is a placeholder somebody typed — which is exactly what happened.
+ * any of them, so an address at one is a placeholder somebody typed.
  *
- * `localhost` ITSELF IS NOT HERE. A bare `localhost` is the local-account default and is classified
- * `narrow` below; only `something.localhost` reaches this test.
+ * `localhost` ITSELF IS NOT HERE. A bare `localhost` is the local-account default, `<account>@localhost`,
+ * and every first install takes it; only `something.localhost` reaches this test.
  */
 function isReservedDomain(domain) {
   if (/^example\.(com|net|org)$/.test(domain)) return true;
@@ -93,62 +80,42 @@ function isReservedDomain(domain) {
   return domain.includes(".") && ["example", "invalid", "test", "localhost"].includes(tld);
 }
 
-/** A domain that cannot name a second person on this machine: `localhost`, or any dotless hostname. */
-function isNarrowDomain(domain) {
-  return domain === "localhost" || domain === "localhost.localdomain" || !domain.includes(".");
-}
-
 /**
- * What a staff rule built from this domain would admit.
+ * Whether an address at this domain may be the one that signs in.
  *
- * @param {string} domain a bare domain, already lowercased — `domainOfEmail` produces one.
- * @returns {"narrow"|"public"|"reserved"|"wide"|""}  "" only when there is no domain to classify.
+ * @param {string} domain a bare domain — `domainOfEmail` produces one.
+ * @returns {"public"|"reserved"|"accepted"|""}  "" only when there is no domain to classify.
  */
-export function classifyStaffDomain(domain) {
+export function classifyAddressDomain(domain) {
   const d = String(domain ?? "").trim().toLowerCase();
   if (!d) return "";
-  if (isNarrowDomain(d)) return "narrow";
   if (isReservedDomain(d)) return "reserved";
   if (PUBLIC_EMAIL_DOMAINS.has(d)) return "public";
-  if (PUBLIC_EMAIL_FAMILIES.has(d.slice(0, d.indexOf(".")))) return "public";
-  return "wide";
+  if (d.includes(".") && PUBLIC_EMAIL_FAMILIES.has(d.slice(0, d.indexOf(".")))) return "public";
+  return "accepted";
 }
 
 /**
- * The rule in the words the settings page uses, so the operator recognises what they agreed to.
+ * Why this address cannot be the one that signs in, or null when it can.
  *
- * ONE COMPOSER FOR BOTH SURFACES. The People & access screen renders "Anyone at <domain>" under a
- * heading that calls it a config rule rather than a person, and describes staff as capable of seeing
- * every brand owner. A consent prompt phrased any other way asks about one thing and shows another.
+ * NAMES THE SETTING, because the reader's next act is to change it: the address is `PORTAL_LOCAL_USER`
+ * whether it arrived from setup's question, from `--user` or from the environment file.
  */
-export function staffGrantSentence(domain, { staffLabel = "Staff" } = {}) {
-  return `Anyone at ${domain} — a rule, not a person. ${staffLabel}: capable to see every brand owner `
-    + "on this instance.";
-}
-
-/**
- * Why this domain cannot become a staff rule, and what to do instead.
- *
- * Returns null for a domain that CAN — `narrow` and `wide` are not refusals, and `wide` is answered by
- * the confirmation the caller runs, not by this function.
- */
-export function staffDomainRefusal(domain, { variable = "PORTAL_STAFF_DOMAINS" } = {}) {
-  const d = String(domain ?? "").trim().toLowerCase();
-  const verdict = classifyStaffDomain(d);
+export function addressRefusal(email) {
+  const d = domainOfEmail(email);
+  const verdict = classifyAddressDomain(d);
   if (verdict === "public") {
-    return `${d} is a public email provider, so a staff rule built from it would admit anyone with an `
-      + `address there — not your colleagues. Refusing to write one.\n`
-      + `  Use an address at a domain your organisation controls, or set ${variable} yourself to the `
-      + "domain you mean.\n"
-      + "  If this machine is only yours, the local-account form takes no rule at all: leave the "
-      + "address as <account>@localhost.";
+    return `${d} is a public email provider. The address that signs in here becomes the first person on `
+      + "this install, with access to everything, and a personal mailbox is not an address your "
+      + "organisation controls. Refusing it.\n"
+      + "  Use an address at your organisation's own domain as PORTAL_LOCAL_USER, or, if this machine is "
+      + "only yours, the local-account form <account>@localhost.";
   }
   if (verdict === "reserved") {
-    return `${d} is reserved for documentation and receives no real mail (RFC 2606), so it is an `
-      + "address somebody typed as a placeholder rather than one that signs in. Refusing to build a "
-      + "staff rule from it.\n"
-      + "  Use the address you actually sign in with, or the local-account form <account>@localhost "
-      + "if this machine is only yours.";
+    return `${d} is reserved for documentation and receives no real mail (RFC 2606), so this is an `
+      + "address somebody typed as a placeholder rather than one that signs in. Refusing it.\n"
+      + "  Set PORTAL_LOCAL_USER to the address you actually sign in with, or to the local-account form "
+      + "<account>@localhost if this machine is only yours.";
   }
   return null;
 }

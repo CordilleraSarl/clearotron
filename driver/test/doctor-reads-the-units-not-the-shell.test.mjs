@@ -274,14 +274,18 @@ test("2192-F9 a loginctl that cannot answer is a could-not-look, never an 'it is
 // indicative, about the live box, with a non-zero exit.
 //
 // MEASURED 2026-09-06 on a healthy packaged install: that ✗ printed while `GET /portal/api/me` returned
-// `{"role":"staff"}` for the local user. The units' file carried `PORTAL_STAFF_DOMAINS=localhost` and
-// the identity was `<user>@localhost`, so the running service admitted it as staff on every request.
-// Doctor read the CLI's own `.env`, where that name does not appear.
+// `{"role":"staff"}` for the local user. The units' file carried the setting that then admitted
+// `<user>@localhost` — a staff-domain rule, since deleted — so the running service admitted it on every
+// request. Doctor read the CLI's own `.env`, where that setting did not appear.
+//
+// What admits a person now is their own entry in the grants file, and the units' file is still the only
+// place that names WHICH grants file — so the property is unchanged: the fact that admits the local user
+// is reachable only through the file the units load.
 //
 // BOTH DIRECTIONS ARE DRIVEN HERE, and that pairing is the acceptance rather than a courtesy: a fix
 // that only satisfies the quiet direction is indistinguishable from deleting the check, and the check
-// guards a real incident — 2026-08-26, a leftover PORTAL_STAFF_DOMAINS locked the owner out of his own
-// portal while every surface looked healthy.
+// guards a real incident — 2026-08-26, a leftover setting locked the owner out of his own portal while
+// every surface looked healthy.
 
 const LOCKOUT = /NOBODY can use this portal/;
 
@@ -294,18 +298,19 @@ function homeWithGrants(envLines, grants = { tenants: {} }) {
   return home;
 }
 
-test("226 a local install whose UNITS name a staff domain is not reported as locking everybody out", () => {
-  // The measured shape: local sign-in, one user, no guest-list rows, and the staff domain that admits
-  // them living in the file the units load and nowhere else.
+test("226 a local install whose UNITS name a grants file admitting its user is not reported as locking everybody out", () => {
+  // The measured shape, in today's terms: local sign-in, one user, no tenant rows, and the entry that
+  // admits them in a grants file only the units' environment names.
   const home = homeWithGrants([
     "PORTAL_AUTH_MODE=local",
-    "PORTAL_STAFF_DOMAINS=localhost",
     "PORTAL_LOCAL_USER=op@localhost",
-  ]);
+  ], { tenants: {}, people: { "op@localhost": { run: true, manage: true, everything: true } } });
   try {
     const r = doctor(home);
     assert.doesNotMatch(r.out, LOCKOUT,
-      `doctor claimed nobody can use a portal whose units admit op@localhost as staff:\n${r.out}`);
+      `doctor claimed nobody can use a portal whose grants file gives op@localhost access to everything:\n${r.out}`);
+    assert.match(r.out, /op@localhost is one of them/,
+      `the local user's own entry was not recognised, so the quiet result above measured nothing:\n${r.out}`);
     // AND IT SAYS WHERE IT LOOKED. The old text disclaimed itself in a `·` — "what THIS environment
     // implies, not what the running service serves" — directly above the ✗. A caveat does not repair a
     // false claim standing beside it; naming the file does, because the reader can check it.
@@ -315,7 +320,7 @@ test("226 a local install whose UNITS name a staff domain is not reported as loc
 });
 
 test("226 THE PLANT — a genuine lockout still fires, or the fix is a silencer", () => {
-  // No staff domain, no rows, and a mode that is not local: nothing here admits anybody, and this is
+  // Nobody in the grants file, and a mode that is not local: nothing here admits anybody, and this is
   // the 2026-08-26 incident's shape. If this goes quiet the check has been deleted, not repaired.
   const home = homeWithGrants(["PORTAL_AUTH_MODE=auth-proxy"]);
   try {
@@ -325,7 +330,7 @@ test("226 THE PLANT — a genuine lockout still fires, or the fix is a silencer"
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("226 a local install with NO staff domain and no rows is still reported — the mode is not an exemption", () => {
+test("226 a local install whose grants file admits nobody is still reported — the mode is not an exemption", () => {
   // The fix originally filed was "exempt PORTAL_AUTH_MODE=local". It would have been wrong twice: the
   // variable was absent from the file being read, AND a local install genuinely admitting nobody is a
   // real lockout. `portal-service.mjs:4461-4462` states the rule — a local sign-in produces an email

@@ -81,7 +81,7 @@ import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driv
 // CLIENT REPORT through the script-scope coverage row, which is why it is imported rather than typed:
 // the row used to name "Depth 5 (prelim-jx)" — a retired key on a retired ladder — as its remedy.
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
-import { resolveTerritories } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included)
+import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
 import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
@@ -8614,6 +8614,25 @@ async function pipelineInner(job, opts = {}) {
       geography: job.geography ?? null,
     }, null, 2) + "\n");
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
+  // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
+  //
+  // `defaultTerritoryState` is the ONE producer of this reading (effective-scope.mjs) and it is CALLED
+  // here rather than re-derived: the run's own territory ladder (`resolveTerritories`) passes an
+  // unrecognised account default straight through, so before this the only surfaces that named one were
+  // the plan response and the profile screen — both intake-side. A firm whose stored default is
+  // misspelled got a narrower search than the configuration says, and no run artifact said so.
+  // Written for EVERY run, empty list included: an empty array is the asserted zero, and a reader who
+  // only ever sees this file on the runs that had a bad entry cannot tell it from a run nothing checked.
+  try {
+    const dts = defaultTerritoryState(ctx.profile);
+    // two records of one fact, so each has its own try: a fault in one must not take the other
+    try { if (dts.unrecognized.length) runLog(run.runDir, { event: "default-territory-unrecognized", count: dts.unrecognized.length, entries: dts.unrecognized }); } catch (e) { note(`default-territory-unrecognized log failed (non-fatal): ${e.message}`); }
+    writeFileSync(P.defaultTerritories, JSON.stringify({
+      profileKey: ctx.profile?.profileKey ?? null,
+      searchable: dts.kept,
+      unrecognized: dts.unrecognized,
+    }, null, 2) + "\n");
+  } catch (e) { note(`default-territories write failed (non-fatal): ${e.message}`); }
   // Change B5 — unknown-customer state + the late-bind consumer. The intake gate sets
   // job.customerUnknown when the applicant is neither stated nor forwarder-implied; the forwarding agent
   // may later drop customer-bind.json into this run dir when a thread reply names the applicant (B5b).
@@ -14670,6 +14689,20 @@ async function pipelineInner(job, opts = {}) {
       });
       sentinel(run.runDir, ".published", { runId: published.runId, url: published.url, counts: published.counts,
         clientGate: published.clientGate });   // machine-QC record (observability) — decides nothing
+      // WHAT THE TWO GATES EACH SAID, in the run's own log, under names that say whose they are.
+      // `.published` carries `clientGate.released` beside `counts.gateViolations`, which are the verdicts
+      // of DIFFERENT gates: the first is the client-export refusal (evaluateClientGate), the second is the
+      // audit workbook's own build check (validateAudit), which is advisory by design and decides nothing
+      // about the release. Read as one gate they contradict each other — released, with a list of
+      // violations beside it — and a delivered run shipped looking exactly like that. Named separately
+      // here, with the advisory COUNT and the absences the gate did not close on, so the log a person
+      // reads after a run answers "what did the checks say" without opening the sentinel and knowing
+      // which field belongs to which gate.
+      runLog(run.runDir, { event: "publish-gates",
+        clientExport: published.clientGate?.released === false ? "closed" : "released",
+        clientExportReasons: published.clientGate?.reasons ?? [],
+        releasedDespiteAbsentInputs: (published.clientGate?.notClosing ?? []).map((n) => n.input),
+        auditWorkbookAdvisory: published.counts?.gateViolations?.length ?? 0 });
       note(`published → ${published.url}`);
     }
     // Lifecycle honesty (charter P1 §4): publish is CODE, not a stage() call, so nothing ever advanced the

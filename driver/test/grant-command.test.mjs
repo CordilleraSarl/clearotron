@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { accountsForEmail } from "../../shared/scope.mjs";   // — the resolver half
+import { accountsForEmail, assertGrantsShape, resolvePerson } from "../../shared/scope.mjs";   // — the resolver half
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CMD = join(HERE, "..", "..", "bin", "grant.mjs");
@@ -45,7 +45,7 @@ test("#1440-2 REFUSES a dangling account — and names what the tenant actually 
   const f = withFile(ACME());
   const r = run(f, ["add", "x@acme.test", "--tenant", "acme", "--accounts", "acme-nope"]);
   assert.notEqual(r.code, 0);
-  assert.match(r.err, /does not hold acme-nope/);
+  assert.match(r.err, /does not hold "?acme-nope/);
   assert.match(r.err, /acme-main, acme-eu/, "a refusal that does not name the valid values is half a refusal");
   assert.deepEqual(read(f).tenants.acme.users, {}, "NOTHING may be written on a refusal");
 });
@@ -164,8 +164,12 @@ test("2079 the resolver states the same fault when grants never came through the
     (e) => /must be "\*" or an array of account keys/.test(e.message) && !/is not iterable/.test(e.message),
     "the resolver threw the raw TypeError instead of naming the fault");
   // AND THE LEGAL SHAPES STILL RESOLVE — a refusal that also refuses correct files is the worse defect.
-  assert.deepEqual(accountsForEmail("a@b.c", { tenants: { acme: { users: { "a@b.c": ["acme"] } } } }), ["acme"]);
-  assert.equal(accountsForEmail("a@b.c", { tenants: { acme: { users: { "a@b.c": "*" }, accounts: "*" } } }), "*");
+  // Legal in today's model: a company counts only under the organisation that holds it, an organisation's
+  // list is never "*", and "*" — everything — belongs to a person.
+  assert.deepEqual(accountsForEmail("a@b.c", { tenants: { acme: { accounts: ["acme"], users: { "a@b.c": ["acme"] } } } }), ["acme"]);
+  assert.deepEqual(accountsForEmail("a@b.c", { tenants: { acme: { accounts: ["acme"], users: { "a@b.c": "*" } } } }), ["acme"],
+    "a grant of the whole organisation must resolve to every company it holds");
+  assert.equal(accountsForEmail("a@b.c", { tenants: {}, people: { "a@b.c": { everything: true } } }), "*");
 });
 
 // ── 2191 F13 · THE ROSTER'S PATH HAS ONE OWNER ──────────────────────────────────────────────────────
@@ -204,4 +208,84 @@ test("2191-F13 with nothing set, grant names the real file and a command that wr
     "it must not send the reader to a variable nothing writes — that was the dead end");
   assert.match(out, /grants\.json/, `it must name the file it looked for:\n${out}`);
   assert.match(out, /clearotron start/, `and the command that creates it:\n${out}`);
+});
+
+// ── A PERSON IS ACCESS PLUS TWO PERMISSIONS ─────────────────────────────────────────────────────────
+//
+// `--run` and `--manage` are written through the People page's own editor, and with neither the person is
+// view-only — which the command says, because a grant that silently lets somebody do nothing is the kind
+// of surprise this command exists to prevent.
+
+test("--run and --manage are written under people, and neither is view-only, said in a sentence", () => {
+  const f = withFile(ACME());
+  const viewer = run(f, ["add", "reader@acme.test", "--tenant", "acme", "--accounts", "acme-main"]);
+  assert.equal(viewer.code, 0, viewer.err);
+  assert.equal(read(f).people?.["reader@acme.test"], undefined, "a view-only person needs no entry: absence is both switches off");
+  assert.match(viewer.out, /view what this gives them and do nothing else/, "the view-only outcome must be said, not discovered");
+  assert.match(viewer.out, /--run/, "…and it must name the flag that changes it");
+
+  const lead = run(f, ["add", "lead@acme.test", "--tenant", "acme", "--accounts", "*", "--run", "--manage"]);
+  assert.equal(lead.code, 0, lead.err);
+  assert.deepEqual(read(f).people["lead@acme.test"], { run: true, manage: true });
+  assert.equal(read(f).tenants.acme.users["lead@acme.test"], "*");
+  assert.match(lead.out, /run clearances and manage/);
+  assert.deepEqual(resolvePerson("lead@acme.test", read(f)).permissions, { run: true, manage: true },
+    "the resolver both doors read must see what was written");
+});
+
+test("a grant never takes away access to everything, nor a permission nobody mentioned", () => {
+  const g = ACME();
+  g.people = { "owner@acme.test": { run: true, manage: true, everything: true }, "runner@acme.test": { run: true, manage: false } };
+  const f = withFile(g);
+  // THE INSTALLER GIVEN A COMPANY. `withPerson` replaces the entry it writes, so this is the path on which
+  // access to the whole install would vanish with nothing said.
+  const owner = run(f, ["add", "owner@acme.test", "--tenant", "acme", "--accounts", "acme-eu", "--run"]);
+  assert.equal(owner.code, 0, owner.err);
+  assert.equal(read(f).people["owner@acme.test"].everything, true, "the person who installed lost access to the whole install");
+  // AND A PERSON WHO HOLDS RUN keeps it when a company is added without repeating the flag.
+  const r = run(f, ["add", "runner@acme.test", "--tenant", "acme", "--accounts", "acme-eu"]);
+  assert.equal(r.code, 0, r.err);
+  assert.deepEqual(read(f).people["runner@acme.test"], { run: true, manage: false }, "adding a company silently took Run away");
+  assert.match(r.out, /unchanged/);
+});
+
+test("removing a person from everywhere removes their permissions and their access to everything", () => {
+  const g = ACME();
+  g.tenants.acme.users["owner@acme.test"] = "*";
+  g.people = { "owner@acme.test": { run: true, manage: true, everything: true } };
+  const f = withFile(g);
+  // FROM ONE TENANT the entry stays — they may hold access elsewhere — and the command says what remains.
+  const one = run(f, ["remove", "owner@acme.test", "--tenant", "acme"]);
+  assert.equal(one.code, 0, one.err);
+  assert.equal(read(f).people["owner@acme.test"]?.everything, true);
+  assert.match(one.out, /still has access to everything/, "a removal that leaves the whole install reachable must say so");
+  // FROM EVERYWHERE nothing is left that admits them. A removal that left `everything` behind would report
+  // success and revoke nothing.
+  const all = run(f, ["remove", "owner@acme.test"]);
+  assert.equal(all.code, 0, all.err);
+  assert.equal(read(f).people["owner@acme.test"], undefined);
+  assert.equal(resolvePerson("owner@acme.test", read(f)), null, "the person removed from everywhere can still get in");
+});
+
+test("the first organisation, given whole, is written in a shape the portal loads", () => {
+  // An organisation's `accounts` of "*" is refused by the loader, so the first-tenant path must never write
+  // it: the organisation holds no company yet, and the person holds the whole organisation.
+  const f = withFile({ tenants: {} });
+  const r = run(f, ["add", "lawyer@acme.test", "--tenant", "acme", "--accounts", "*"]);
+  assert.equal(r.code, 0, r.err);
+  const after = read(f);
+  assert.deepEqual(after.tenants.acme.accounts, []);
+  assert.equal(after.tenants.acme.users["lawyer@acme.test"], "*");
+  assert.doesNotThrow(() => assertGrantsShape(after, "grants.json"), "the command wrote a file the portal refuses to load");
+});
+
+test("list names a person with access to everything and no tenant row, and no domain rule", () => {
+  const g = ACME();
+  g.people = { "owner@acme.test": { run: true, manage: true, everything: true } };
+  const f = withFile(g);
+  const r = run(f, ["list"]);
+  assert.equal(r.code, 0, r.err);
+  assert.match(r.out, /owner@acme\.test/);
+  assert.match(r.out, /everything on this install/);
+  assert.doesNotMatch(r.out, /arrive by domain/, "the list still describes the deleted domain rule");
 });

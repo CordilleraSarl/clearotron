@@ -29,7 +29,7 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES } from "./queue-markers.mjs";
 import { matterLedgerPath } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
-import { unitEnvPath } from "../shared/env-local.mjs";   // the file the units read, named by its one author
+import { unitEnvPath, envFileRead } from "../shared/env-local.mjs";   // the file the units read, named by its one author
 import { fileURLToPath } from "node:url";
 import { config, preflightDeploymentUrls } from "./driver.config.mjs";
 import { deriveSlug, todayISO, mintFreshCodename } from "./phase0.mjs";
@@ -856,7 +856,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   }
   // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
   {
-    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath() });
+    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath(), readFile: envFileRead() });
     if (refusal) {
       note(`[runner] ${base} REFUSED at order time — this install is not configured to run a search: ${refusal.names.join(", ")}`);
       await failAtIntake(procPath, qdir, base, agentId, job,
