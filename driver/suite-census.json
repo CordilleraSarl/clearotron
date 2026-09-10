@@ -3387,6 +3387,12 @@
           "skips": 0,
           "todos": 0
         },
+        "register-findings-link-to-the-office-record.test.mjs": {
+          "tests": 15,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
         "register-ledger-rename.test.mjs": {
           "tests": 12,
           "asserts": 32,

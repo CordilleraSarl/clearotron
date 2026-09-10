@@ -1769,7 +1769,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4542b538d2913";
+const FROZEN_BEFORE_SPDX = "8dd38aef74b3e67f0528273cbd135c8321665784d46f6820535016c55d18fc64";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2026,7 +2026,25 @@ const FROZEN_BEFORE_SPDX = "60f771fbf9e2fd4219fe3511608b20996e597e256aac9d7e36b4
 // "placeholder", "framework in force", "one word per finding" and "returne.". One "(internal)" survives
 // and it is NOT one of the seven — it is the configuration-provenance block, which is stripped before a
 // reader sees it, and the strip has a defect of its own that is filed rather than widened into here.
-const FROZEN = "eeea34832ed45afdc7f6e6feeed6daa55c3b5275e6fd210a74086612cedf3f5d";
+// THE OFFICE'S OWN PAGE FOR A REGISTRATION, where the register a run searched publishes no record page
+// of its own. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES. Re-rendering an archived run searched through such a
+//      register now labels each fetched registration with its office and number, links it to that
+//      office's record page where the office publishes one, and adds one sentence per office to Scope
+//      saying why the rest are cited by number. That is a repair of delivered documents: no finding,
+//      band, count, record or date moves. Every other register renders exactly as before, and that is
+//      MEASURED rather than asserted: the three committed clearance demos, replayed through the ordinary
+//      publisher before and after this change, gave identical report.html and meta.json once the issue
+//      stamps were removed.
+//   2. Could it live in report.css or brand.mjs? NO. It decides which links and which words reach the
+//      page, and those files carry neither.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The renderer's own lines are edited in place and its two new helpers sit at the end of the file, so no
+// line the rest of the tree cites by number moved.
+const FROZEN = "9303411196d233dc66e216474335f041b6084e4af4b30f9936c8bb618a72ae77";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
