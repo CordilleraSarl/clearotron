@@ -39,7 +39,7 @@ import { evalAssertion, investigate, runLedger, secs } from "../../scripts/e2e.m
 // From an E2E-R1 run, verbatim: the lane was routed and frozen, then the fold degraded because the
 // driver env carried no API key. Note `accepted: []` — the run still DELIVERS (never-kill), so nothing
 // else in the pipeline reports a problem. This artifact is the only evidence the lane produced nothing.
-// PRE-tracker issue 858, and kept verbatim as such: `lanes.zh.executes` and its origin suffix are no longer minted
+// PRE-DATES THE MINT CHANGE, and kept verbatim as such: `lanes.zh.executes` and its origin suffix are no longer minted
 // (they asserted at freeze time that slices 2–3 do not exist). Nothing in this file asserts on them.
 const JX_DEGRADED = {
   schema: 1,
@@ -113,7 +113,7 @@ test("a DEGRADED zh lane is caught: accepted is empty and degraded carries the c
   });
 });
 
-// RENAMED at tracker issue 525 (was: "a HEALTHY zh lane has no degraded key, so the falsy guard passes"). The old
+// RENAMED (was: "a HEALTHY zh lane has no degraded key, so the falsy guard passes"). The old
 // name described the DEFECT — the lane wrote no key at all — and it stayed green through the fix
 // because `falsy` accepts `false` just as happily as absent. A test whose name states the bug it was
 // meant to catch is worse than no test: it reads as coverage.
@@ -127,7 +127,7 @@ test("a HEALTHY zh lane states degraded:false, and the falsy guard still passes 
 });
 
 test("#525 OPS.falsy CANNOT tell `false` from absent — the assert layer stays blind where the printed line no longer is", () => {
-  // Named so nobody reads a green scenario as proof tracker issue 525 is closed. A scenario asserting `falsy` on
+  // Named so nobody reads a green scenario as proof this is closed. A scenario asserting `falsy` on
   // fold.lanes.zh.degraded passes on a healthy lane AND on a run whose fold never happened. Moving the
   // scenario to `equals: false` is the fix, and those files live in the config repo — a handover item.
   withRun({ "_driver/jx-lanes.json": JX_HEALTHY }, (dir) => {
@@ -314,7 +314,7 @@ test("#324: the knockout lane provably writes no register-plan.json — the prem
   }
 });
 
-// ── tracker issue 324 fix 3: the report asserts nothing it did not examine ─────────────────────────────────────────
+// ── the report asserts nothing it did not examine ──────────────────────────────────────────────────────────────────
 
 test("#324: names-configured-depth passes a surface naming the configured depth and fails one naming another", () => {
   withRun({ "_driver/search-policy.json": POLICY_KNOCKOUT, "status.json": { ...STATUS_HANDOFF, stageLabel: "Knockout search" } }, (dir) => {
@@ -677,7 +677,7 @@ test("a refusal reason keeps the rule it fired on, which is what reasonMatches c
 // flags the admitting door as a defect — a false positive in the one report that has to be trusted.
 import { dedupeAcrossDoors } from "../../scripts/e2e.mjs";
 
-// tracker issue 428 widened the return: `undetermined` and `inFlight` are counted separately, because the old
+// The return was widened: `undetermined` and `inFlight` are counted separately, because the old
 // `admitted = t !== "duplicate" && t !== "clarify"` counted a job still `.processing`, and a terminal that
 // could not be read, as admissions — and two of those under one ref read as "2 doors ADMITTED the same
 // matter", an engine defect that never happened. See e2e-state-not-shape.test.mjs.
@@ -701,9 +701,9 @@ test("a clarify is neither an admission nor a park — a refused door says nothi
   assert.equal(d.ranMoreThanOnce, false);
 });
 
-// ── post-merge audit of tracker issue 172, problem 7: the harness's own rationale must stay TRUE ────────────────────
+// ── post-merge audit, problem 7: the harness's own rationale must stay TRUE ────────────────────────────────────────
 // The `no-stage-retried` deletion note is the only record of why that assertion is gone, and it opened
-// with a mechanical claim — "run.jsonl carries no `attempt` field" — that tracker issue 172 made false in the very file
+// with a mechanical claim — "run.jsonl carries no `attempt` field" — that the same change made false in the very file
 // the PR body promised to keep working. A rationale whose stated premise is provably wrong is an invitation
 // to re-add the assertion "now that the data is there", which is exactly the wrong conclusion: the reason
 // it was deleted is that a retry is a JUDGMENT, not a pass/fail, and that reason did not change.
@@ -711,7 +711,7 @@ test("the deleted-assertion rationale in scripts/e2e.mjs does not carry a claim 
   const src = readFileSync(new URL("../../scripts/e2e.mjs", import.meta.url), "utf8");
   assert.doesNotMatch(src, /run\.jsonl carries no `attempt` field/,
     "run.jsonl HAS carried per-dispatch `attempt` rows since #172 — the note must not say otherwise");
-  // ANCHORED ON THE PROSE. This used to look for the literal "SINCE tracker issue 172", and the note now opens
+  // ANCHORED ON THE PROSE. This used to look for the citation spelled out, and the note now opens
   // "SINCE (AD-4)" — the cut rewrites a bare issue reference in a comment into a token. Matching either
   // spelling would pin the arm to the rewrite table rather than to the sentence, so it matches the claim
   // itself, which is what the arm is actually about.
@@ -884,7 +884,7 @@ test("no-attempt-fail-token: a stage that logged nothing fails, and a real faile
   rmSync(dir, { recursive: true, force: true });
 });
 
-// ── tracker issue 354 · the run's own stamped URL ──────────────────────────────────────────────────────────────────
+// ── the run's own stamped URL ──────────────────────────────────────────────────────────────────────────────────────
 //
 // R4 delivered with `…/tmpe2er4-arbora-…/report.html` in its meta and its handoff packet, and that URL
 // returned 404 on the only instance the suite may run on, while the identical shape worked on prod. The
@@ -1183,7 +1183,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
   //
   // R0, 2026-08-25, rebuilt box. The MCP face is not installed, so every ops-MCP submission answered
   // `no TRADEMARK_MCP_HTTP_PORT in scope`. That is the harness saying it could not reach the door, and
-  // it was recorded as a verdict. tracker issue 757 built the exclusion for a door that died MID-REQUEST; this is the
+  // it was recorded as a verdict. The exclusion was built for a door that died MID-REQUEST; this is the
   // same fact one step earlier, before any request goes out, and it was the one transport failure the
   // rule did not reach.
   //
@@ -1247,7 +1247,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
       "nothing judged this case, so calling it 'refused at the door' would be the original defect at full strength");
   });
 
-  // ── tracker issue 1865, SECOND HALF: THE PORT IS RIGHT AND NOTHING IS LISTENING ─────────────────────────────
+  // ── SECOND HALF: THE PORT IS RIGHT AND NOTHING IS LISTENING ──────────────────────────────────────────────
   //
   // The first half covered a door that was never configured — env unset, first run on a fresh box. The
   // operational case is the other one: the port is correct and the face behind it crashed, or was not
