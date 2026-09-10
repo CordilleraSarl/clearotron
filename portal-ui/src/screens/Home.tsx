@@ -88,7 +88,21 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
     [allowanceOwner],
   )
 
-  const runs: readonly Run[] = result?.kind === 'ok' ? result.value : []
+  // THE CHIPS FILTER THE ROWS, per the ruling on the company-setup spec's item 7: the rail line is
+  // navigation — dashboard versus working on one company — and not a statement about what the filter
+  // reaches. Before this, choosing a company on Home changed nothing at all: the same marks stayed on
+  // screen under every selection, and the chips were a control that looked like one.
+  //
+  // TWO SETS, DELIBERATELY, AND THE POLL KEEPS THE UNFILTERED ONE. `usePoll` is armed from whether any
+  // run is still going, and arming it from the FILTERED set would stop the page refreshing the moment
+  // somebody selected a company that happens to be idle — while another company's run was live and
+  // moving. The screen would sit still and look finished. What is displayed is scoped; what decides
+  // whether to keep looking is not.
+  const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
+  const runs = useMemo(
+    () => (ctx.owner ? allRuns.filter((r) => r.account === ctx.owner) : allRuns),
+    [allRuns, ctx.owner],
+  )
   const rows = useMemo(() => inFlight(runs), [runs])
   // — what this reader has put down. A COUNT, not a silent disappearance: acknowledging must not
   // be the same act as forgetting, so the number is on screen and one click opens the list.
@@ -102,7 +116,9 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   const lastDone = useMemo(() => (done.length ? lastFinishedOf(done[0]!) : null), [done])
 
   usePoll(reload, {
-    active: runs.some((r) => !TERMINAL.has(r.state)),
+    // THE UNFILTERED SET, and the comment above the split says why: a quiet company must not stop the
+    // page watching a busy one.
+    active: allRuns.some((r) => !TERMINAL.has(r.state)),
     rateLimited: result?.kind === 'rateLimited',
   })
 
@@ -119,10 +135,10 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         onAll={() => ctx.go('/portal/clearances')}
       />
 
-      {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because it is
-          the dashboard — the line in the rail separates "your dashboard" from "working on one company",
-          not "everything below here is filtered". The chips are how this screen offers the same choice
-          without claiming to be one of the company screens, and they set the same value the rail sets. */}
+      {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because the
+          line is NAVIGATION — it separates "your dashboard" from "working on one company" — rather than
+          a statement about what the filter reaches. The chips set the same value the rail sets AND
+          filter the rows below them, so the two controls cannot disagree and neither is decorative. */}
       <div style={{ margin: '0 0 18px' }}>
         <CompanyChips ctx={ctx} label="Filter by company" />
       </div>
