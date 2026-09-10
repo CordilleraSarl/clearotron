@@ -764,16 +764,25 @@ if (isMain) {
   let ports;
   try { ports = resolvePorts(process.env); } catch (e) { fatal(String(e.message)); }
 
+  // Decided before any path is, because in a demo every path below is the demo's own. The posture
+  // itself is described at the DEMO block further down.
+  const DEMO = argv.includes("--demo");
   // The same base `npm run setup` writes under, so whichever of the two a reader ran first, the other
   // finds the same install rather than a second one beside it.
-  const paths = installPaths(flag("--base", join(homedir(), argv.includes("--demo") ? "trademark-demo" : "trademark")));
+  const paths = installPaths(flag("--base", join(homedir(), DEMO ? "trademark-demo" : "trademark")));
   // Whatever the environment already says wins over the base-derived default, for every path — a reader
   // who ran `npm run setup` has these in .env already and this must not move their data.
-  for (const [k, name] of [["pool", "CLEAROTRON_REPORTS_DIR"], ["workspace", "CLEAROTRON_WORK_DIR"], ["queue", "CLEAROTRON_QUEUE_DIR"],
-    ["outbox", "CLEAROTRON_OUTBOX_DIR"], ["locks", "CLEAROTRON_RUN_LOCK_DIR"], ["grants", "CLEAROTRON_ACCESS_FILE"],
-    ["recipes", "CLEAROTRON_RECIPES_DIR"]]) if (process.env[name]) paths[k] = process.env[name];
-  if (process.env.RECIPE_REPO_ROOT) paths.configStore = process.env.RECIPE_REPO_ROOT;
-  if (process.env.PORTAL_AUDIT) paths.audit = process.env.PORTAL_AUDIT;
+  //
+  // NOT IN A DEMO. Nothing the environment says about an install is the demo's: with the reader's
+  // settings in force, 0.3.0-beta.1's demo seeded its example reports into their real archive. Not read,
+  // rather than deleted from the environment, so a real start cannot be reached by this branch at all.
+  if (!DEMO) {
+    for (const [k, name] of [["pool", "CLEAROTRON_REPORTS_DIR"], ["workspace", "CLEAROTRON_WORK_DIR"], ["queue", "CLEAROTRON_QUEUE_DIR"],
+      ["outbox", "CLEAROTRON_OUTBOX_DIR"], ["locks", "CLEAROTRON_RUN_LOCK_DIR"], ["grants", "CLEAROTRON_ACCESS_FILE"],
+      ["recipes", "CLEAROTRON_RECIPES_DIR"]]) if (process.env[name]) paths[k] = process.env[name];
+    if (process.env.RECIPE_REPO_ROOT) paths.configStore = process.env.RECIPE_REPO_ROOT;
+    if (process.env.PORTAL_AUDIT) paths.audit = process.env.PORTAL_AUDIT;
+  }
   // recipe-service SAVES by committing, so the store has to live inside the repository it commits to.
   // Said at boot rather than discovered on the first Save, where the message is about `git add`.
   // — the shared statement, so the launcher, the two services and the portal cannot describe the
@@ -812,7 +821,8 @@ if (isMain) {
   // The loopback rule needs no copying: HOST above is a literal, not a default, so neither door can be
   // bound anywhere else in any mode. Sign-in is untouched — the demo signs in like any first start, and
   // the portal mints and prints its passphrase exactly as it does for a real one.
-  const DEMO = argv.includes("--demo");
+  // `DEMO` itself is decided above the paths, which it keeps the demo's own.
+  //
   // THE DEMO BRINGS ITS OWN ACCOUNT. A fresh install resolves `generic` and nothing else (ruling,
   // 2026-09-08), so the demo account is refused from the roster unless somebody asked for it.
   // Asked here, once and visibly, rather than at each site that happens to read a roster.
