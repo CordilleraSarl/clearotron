@@ -27,7 +27,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 
-import { koPaths } from "./driver.mjs";
+import { koPaths, addressListedFilings } from "./driver.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -207,14 +207,26 @@ const knockoutNegatives = (doc) => marksOf(doc).flatMap((m) =>
 export function knockoutEvidence(run) {
   const doc = knockoutDoc(run);
   const recordsDoc = readJson(koPaths(run.runDir).registerRecords);
+  // EACH FILING ADDRESSED AS PUBLISH ADDRESSES IT, keyed on the sidecar's own register. On a register with
+  // no record pages of its own, the listing's link is the engine's handle, `/mark/<office>/<id>`, which a
+  // reader can open nowhere, and the report never shows it for a filing with an office number: it gives the
+  // office's own page, or the office and the number and why that is not a link. This view states the same,
+  // from the same function over the same sidecar, so the connector and the report cannot give one filing
+  // two links. On any other register the call sets nothing, and every row is exactly as it was.
+  if (Array.isArray(recordsDoc?.marks)) addressListedFilings(recordsDoc);
   const out = [];
 
   for (const entry of (Array.isArray(recordsDoc?.marks) ? recordsDoc.marks : [])) {
     for (const r of (Array.isArray(entry.records) ? entry.records : [])) {
+      // report-data.json's own field for the same filing, in its shape.
+      const office = r.officeLink ? { label: r.officeLink.label, href: r.officeLink.href, reason: r.officeLink.reason } : null;
       out.push({
         layer: "register", mark: r.mark ?? entry.name ?? null, owner: r.owner ?? null,
         country: r.territory ?? null, classes: r.classes ?? [], status: r.status ?? null,
-        url: r.url ?? null, recordId: r.recordId ?? null,
+        // The source link: the office's page where the filing has one, none where it is cited by number,
+        // and the listing's own link only for a filing publish did not address.
+        url: office ? office.href : (r.url ?? null), recordId: r.recordId ?? null,
+        ...(office ? { officeRecord: office } : {}),
         matchedForm: r.matchedForm ?? null, matchedBasis: r.matchedBasis ?? null,
         // `retrieved` is what the provider actually returned for this row, and it is a FACT about the
         // fetch rather than about the filing. A reader deciding how much weight to give a row needs it.

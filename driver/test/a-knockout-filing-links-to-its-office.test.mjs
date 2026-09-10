@@ -18,7 +18,8 @@
 //   - the workbook's Record cell carries the same link or number with the reason in Note, report-data.json
 //     carries the same, and meta.json the tally;
 //   - a filing with no office number renders as before, every other register renders byte for byte as
-//     before, and a link already on the sidecar is never what the report shows.
+//     before, and a link already on the sidecar is never what the report shows;
+//   - the connector's evidence view states each filing's link as report-data.json states it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
@@ -42,6 +43,7 @@ const { PROVIDERS } = await import("../driver.config.mjs");
 const { RECORD_BASIS, listRegisterRecords, resolveRecordExecutor } = await import("../register-records.mjs");
 const { officeRecordLink, reasonCellFor } = await import("../publish/office-record-links.mjs");
 const { kebab } = await import("../stages-knockout.mjs");
+const { knockoutEvidence } = await import("../../mcp-server/lib/knockout.mjs");
 
 const MARK = "KURENA";
 
@@ -159,6 +161,7 @@ async function publish(doc, runId = `ko-office-record-${Math.random().toString(3
     data: JSON.parse(readFileSync(join(dir, "report-data.json"), "utf8")),
     meta: JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")),
     filings: filingRows(wb),
+    runDir,
   };
 }
 
@@ -260,4 +263,43 @@ test("an office link already on the sidecar is never what the report shows", asy
     assert.ok(!html.includes("planted.invalid") && !html.includes(planted.label), "a planted link reached the report");
     assert.ok(!filings.some((r) => r.Record.includes("planted.invalid")), "a planted link reached the workbook");
   }
+});
+
+test("the connector's evidence view states each filing's link as report-data.json states it", async () => {
+  // THE TWO READERS COMPARED, not the one function each calls: an assistant reading a filing over the
+  // connector and a reader of the report must meet one link for it. Driven over each listing shape above:
+  // numbers kept, numbers not kept, another register, and a link planted on the sidecar.
+  const planted = { office: "ch", label: "CH 99999/2020", href: "https://planted.invalid/record", reason: null };
+  const plantedOn = (doc) => ({ ...doc, marks: [{ ...doc.marks[0], records: doc.marks[0].records.map((r) => ({ ...r, officeLink: planted })) }] });
+  const shapes = [
+    ["numbers kept", structuredClone(LISTING), 3],
+    ["numbers not kept", withoutNumbers(LISTING), 0],
+    ["another register", { ...structuredClone(LISTING), provider: "clarivate", providerLabel: "Clarivate" }, 0],
+    ["a link planted on the sidecar", plantedOn(structuredClone(LISTING)), 3],
+  ];
+  const seen = {};
+  for (const [shape, doc, addressed] of shapes) {
+    const listed = new Map(doc.marks[0].records.map((r) => [r.recordId, r]));
+    const { data, runDir } = await publish(structuredClone(doc));
+    const reported = new Map(data.marks[0].registerFilings.records.map((r) => [r.recordId, r]));
+    const rows = knockoutEvidence({ runDir }).records.filter((r) => r.layer === "register");
+    seen[shape] = new Map(rows.map((r) => [r.recordId, r]));
+    assert.equal(rows.length, VENDOR_ROWS.length, `${shape}: the connector does not list every filing`);
+    assert.equal(rows.filter((r) => r.officeRecord).length, addressed, `${shape}: the connector addressed the wrong filings`);
+    for (const row of rows) {
+      const said = reported.get(row.recordId);
+      assert.ok(said, `${shape}: ${row.recordId} is in the connector's view and not in report-data.json`);
+      assert.deepEqual(row.officeRecord ?? null, said.officeRecord ?? null,
+        `${shape}: ${row.recordId}: the connector and the report state different records for one filing`);
+      assert.equal(row.url, said.officeRecord ? said.officeRecord.href : (listed.get(row.recordId).url ?? null),
+        `${shape}: ${row.recordId}: the connector's link is not the one the report states`);
+      assert.ok(!JSON.stringify(row).includes("planted.invalid"), `${shape}: a link planted on the sidecar reached the connector`);
+    }
+  }
+  // AND THE VALUES, not only the agreement: two readers broken the same way agree too.
+  const kept = seen["numbers kept"];
+  assert.deepEqual(kept.get(HANDLE.ch).officeRecord, { label: CH.label, href: CH.href, reason: null });
+  assert.deepEqual(kept.get(HANDLE.wo).officeRecord, { label: WO.label, href: WO.href, reason: null });
+  assert.deepEqual([kept.get(HANDLE.sg).officeRecord, kept.get(HANDLE.sg).url], [{ label: SG.label, href: null, reason: "no-page" }, null]);
+  for (const h of [HANDLE.ch, HANDLE.sg, HANDLE.wo]) assert.notEqual(kept.get(h).url, h, `the connector gave the handle ${h} as the link`);
 });
