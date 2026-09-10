@@ -2219,7 +2219,12 @@ export const KNOCKOUT_FINDING_TYPES = [
   "Famous Brand", "Active Business", "Cultural Reference", "Domain", "Descriptive Use",
   "Negative Association", "Competitor Intelligence",
 ];
-const KNOCKOUT_FINDING_KEYS = ["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis"];
+// THE ONE LIST of a knockout finding's keys. The recording transport's allowlist takes it from here
+// (knockout-assess-record.mjs), so the call and the validator cannot come to disagree. They did: the
+// transport allowed `weighedFilings` and this list refused it, so a seat that sent what its doctrine
+// teaches had the whole stage refused, and the retry dropped the key the report's source chip is derived
+// from. `weighedFilings` is optional; verify-knockout.mjs joins every id against the run's own records.
+export const KNOCKOUT_FINDING_KEYS = Object.freeze(["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis", "weighedFilings"]);
 // The throw family is `knockout_`, NOT `findings_`, and that is deliberate: gateway.mjs's
 // repairSiblingName routes every `/findings?_/` token to **findings.json**, which is the clearance
 // artifact and does not exist on a knockout run. A knockout token borrowing that family would aim its

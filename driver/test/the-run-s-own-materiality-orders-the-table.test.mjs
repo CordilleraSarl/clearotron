@@ -188,13 +188,19 @@ test("registerReads and weighedFilings are DECLARED in the tool schema", async (
     "weighedFilings left the tool schema — the finding's source labelling derives from it");
 });
 
-test("the schema and the recorder's allowlist agree about these two keys", () => {
+test("the schema and the recorder's allowlist agree about these two keys", async () => {
   // Two closed sets over one payload. They disagreed: DECLARED has carried both fields since an
   // earlier change while the schema forbade them, and only the recorder's set was enforced — which is
   // exactly why sending them WORKED for a seat that ignored the schema.
-  const rec8 = readFileSync(join(HERE, "..", "knockout-assess-record.mjs"), "utf8");
-  assert.match(rec8, /"registerReads"/, "the recorder must still allow the key the schema now offers");
-  assert.match(rec8, /"weighedFilings"/);
+  //
+  // DRIVEN, NOT MATCHED. The recorder's finding keys are the validator's list now, imported rather than
+  // spelled in its source, so the property is that the recorder accepts both keys, not that it spells them.
+  const { refuseUndeclared } = await import("../knockout-assess-record.mjs");
+  const call = { marks: [{ name: "KOVA", registerReads: [{ recordId: "R-1", read: "live, in class 9" }],
+    findings: [{ ordinal: 1, name: "KOVA LABS", weighedFilings: ["R-1"] }] }] };
+  assert.equal(refuseUndeclared(call), null, "the recorder must still allow the keys the schema now offers");
+  assert.match(String(refuseUndeclared({ marks: [{ name: "KOVA", findings: [{ ordinal: 1, invented: 1 }] }] })),
+    /undeclared_field:.*invented/, "and it still refuses a key it does not declare, so the acceptance above is not vacuous");
 });
 
 test("the findings key count in the schema's own description matches its properties", () => {
