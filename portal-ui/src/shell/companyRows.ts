@@ -10,10 +10,31 @@
 import { sortOwners } from '../contract/ownerNames.ts'
 import { companyFactsLine, type CompanyFacts } from '../contract/companyFacts.ts'
 import type { Organisation } from '../contract/api.ts'
-import { GENERIC_ACCOUNT, isGenericKey } from '../contract/genericKey.ts'
+import { GENERIC_ACCOUNT, genericFor, isGenericKey } from '../contract/genericKey.ts'
 
 /** The house account's bare key. Every test for Generic in this file goes through `isGenericKey`. */
 export const GENERIC_KEY = GENERIC_ACCOUNT
+
+/**
+ * WHICH companies the switcher offers — the one list the shell hands the pick panel, the rail and every
+ * screen.
+ *
+ * The companies this person may act for (every key on the roster, for someone who sees the whole install;
+ * their own grants otherwise), then one Generic per organisation. The roster's own `generic` is dropped:
+ * it names the house account, not any organisation's, and offering it would send a request the door has
+ * to guess the organisation for. The server's `genericOrgs` is the whole answer to which Generics this
+ * person is offered, each held as one key naming its organisation (contract/genericKey.ts).
+ *
+ * Here rather than inline in the shell so it can be DRIVEN against what a real portal serves: the demo's
+ * arm boots the demo and asks this function what its switcher lists.
+ */
+export function switcherKeys(
+  me: { readonly allAccounts: boolean; readonly accounts: readonly string[]; readonly genericOrgs: readonly string[] },
+  roster: readonly { readonly key: string }[] | null,
+): readonly string[] {
+  const companyKeys = me.allAccounts ? (roster ?? []).map((c) => c.key) : me.accounts
+  return [...companyKeys.filter((k) => !isGenericKey(k)), ...me.genericOrgs.map(genericFor)]
+}
 
 /** Generic carries a fixed line, not a facts line: it has no industry and no territories to state. */
 const GENERIC_LINE = 'Run any clearance against the default settings, with no company set up.'
