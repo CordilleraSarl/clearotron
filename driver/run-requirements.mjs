@@ -186,13 +186,26 @@ export function missingRequirements(env = {}, tables = {}) {
  *
  * Returns null when nothing blocks, so a caller cannot mistake "configured" for "could not look".
  */
-export function orderTimeRefusal(env = {}, tables = {}, { envFile = null } = {}) {
+export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFile = null } = {}) {
   const missing = missingRequirements(env, tables).atOrder;
   if (!missing.length) return null;
   const names = missing.map((r) => r.name);
-  const where = envFile
-    ? ` Set them in ${envFile} and restart, or run \`clearotron install\` in a terminal, which writes them for you.`
-    : " Run `clearotron install` in a terminal to configure them, or set them in the file this install's units read.";
+  // EVERY FILE THAT REACHES THIS RUN, EACH NAMED BY WHAT READS IT — the rule `bin/start.mjs` already
+  // follows, for the reason it gives: two copies of this sentence is how one of them comes to name a file
+  // the reader cannot use. This copy named only `envFile`, the file background units read. A runner
+  // started from a terminal on a box with no units reads the install's own file instead, so its operator
+  // was told to create a file nothing on that box reads — and the one actually read went unnamed.
+  // `readFile` is the file THIS process loaded at start; it is null under a unit, where the unit's own
+  // EnvironmentFile is the only configuration and `envFile` alone is the true answer.
+  const cmd = "`clearotron install` in a terminal, which writes them for you";
+  const both = readFile && envFile && readFile !== envFile;
+  const one = readFile || envFile;
+  const where = both
+    ? ` Set them in either of these — both reach a run:\n      ${readFile} — the file this runner read when it started\n`
+      + `      ${envFile} — the file background units read\n  then restart, or run ${cmd}.`
+    : one
+      ? ` Set them in ${one} and restart, or run ${cmd}.`
+      : " Run `clearotron install` in a terminal to configure them, or set them in the file this install's units read.";
   return {
     names,
     operator: `this installation cannot run a search yet — it is installed but not configured:\n`

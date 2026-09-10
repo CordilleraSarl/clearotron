@@ -145,6 +145,24 @@ test("signed out: named as such, with the sign-in command for THAT engine", () =
   assert.match(codex.fix, /codex login/, "the adapter's own instruction, relayed verbatim");
 });
 
+// THE REMEDY FITS THE BOX IT IS READ ON. "Run the CLI once in a terminal" is the one thing a server with no
+// browser cannot do, and it was the only remedy the text-match path offered — to an install that had set
+// up the route built for servers. Each engine's headless route comes off the engine table, in the form
+// that table declares: a TOKEN route names the command and the variable, a DEVICE route names the command
+// and no variable, because there is none to set.
+test("signed out: a headless box is told its own route, in the form the engine declares", () => {
+  const claude = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ stderr: "Invalid API key · Please run /login" }) });
+  assert.equal(claude.mode, "signed-out");
+  assert.match(claude.fix, /run `claude` once/, "the interactive route is still offered first");
+  assert.match(claude.fix, /claude setup-token/, "the token route's command is named");
+  assert.match(claude.fix, /CLAUDE_CODE_OAUTH_TOKEN/, "and the variable the token is carried by");
+
+  const codex = classifyProbe({ engine: "openai-agent", tuple: tupleOf({ stderr: "Invalid API key · Please run /login" }) });
+  assert.equal(codex.mode, "signed-out");
+  assert.match(codex.fix, /codex login --device-auth/, "a device route is named, to be run on this box");
+  assert.doesNotMatch(codex.fix, /set the token it prints/, "and no token variable is invented for an engine that declares none");
+});
+
 test("no quota: the reset TIME is the message, and where it came from is on the record", () => {
   const anthropic = classifyProbe({ engine: "anthropic-agent",
     tuple: tupleOf({ code: 1, signals: { rateLimited: true, resetsAt: "2026-08-12T17:00:00.000Z" } }) });
