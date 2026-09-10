@@ -32,6 +32,7 @@ import { fileURLToPath } from "node:url";
 // file before any arm runs, and every other arm here would then read as red for a reason it never tested.
 import * as probe from "../engine/probe.mjs";
 import { orderTimeRefusal } from "../run-requirements.mjs";
+import { handRunEnv } from "./drive-env.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
 
@@ -47,11 +48,19 @@ function homeWith(lines) {
   return home;
 }
 
-/** The real command, with nothing inherited: HOME and PATH pinned so the arm measures the code, not the box. */
+/** The real command, with NOTHING inherited: `handRunEnv` over an EMPTY base, not this process's.
+ *
+ *  `handRunEnv` clears CLEAROTRON_NO_ENV_FILE and INVOCATION_ID, either of which makes the command ignore
+ *  the file this arm just wrote. Its default base is this process's environment, and that is wrong HERE:
+ *  the suite points CLEAROTRON_CLAUDE_PATH at its mock engine, so the engine-path arm below would pass on a
+ *  variable it never set. The empty base keeps the arm about the file and nothing else.
+ *
+ *  Each drive proves its own file was read by what it asserts — the engine saw the token, or exactly one
+ *  name is missing — because doctor loads the file silently and prints no loader line to check. */
 function doctor(home, ...args) {
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor", ...args],
     { cwd: ROOT, encoding: "utf8", timeout: 120000,
-      env: { PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" } });
+      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
   if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
   return { status: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
 }
