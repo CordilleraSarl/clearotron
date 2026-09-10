@@ -35,6 +35,7 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyChips } from '../shell/CompanyChips.tsx'
+import { canManage, canRun } from '../shell/permissions.ts'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -161,7 +162,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // Which marks are ticked for grouping. Cleared whenever the grouping changes, so the checkboxes never
   // outlive the rows they referred to.
   const [picked, setPicked] = useState<ReadonlySet<string>>(new Set())
-  const canGroup = ctx.me.role === 'staff'
+  // Grouping marks into a family and retiring a run are CURATION — changing what the archive says —
+  // so they ask Manage, the one permission that changes things for other people. Someone without it
+  // reads the same archive and never meets a control that would only refuse them.
+  const canGroup = canManage(ctx.me)
 
   // — THE FOLD, AND THE COUNT THAT SAYS IT HAS ANYTHING IN IT.
   //
@@ -342,7 +346,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // So the empty state is claimed only once the server has actually said so.
   if (!result) return <Loading />
 
-  if (!runs.length) return <FirstRun go={ctx.go} />
+  if (!runs.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
 
   // A family is asserted over RUNS, because a mark is a grouping the browser derives rather than
   // anything the pool stores. Ticking a name therefore files every read of it.
@@ -1351,7 +1355,23 @@ function ReadRow({
   )
 }
 
-function FirstRun({ go }: { readonly go: (p: string) => void }) {
+/**
+ * The empty archive. `onNew` is null for a person who may not start a clearance — they get the plain
+ * fact and no button, because the page a button would open does not exist for them.
+ */
+function FirstRun({ onNew }: { readonly onNew: (() => void) | null }) {
+  if (!onNew) {
+    return (
+      <div className="screen">
+        <div className="empty">
+          <h1 style={{ fontSize: 25, color: 'var(--text-strong)', margin: '0 0 8px' }}>No clearances yet</h1>
+          <p className="prose" style={{ margin: '0 auto' }}>
+            Reports for the companies you can see will appear here once they are delivered.
+          </p>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="screen">
       <div className="empty">
@@ -1364,7 +1384,7 @@ function FirstRun({ go }: { readonly go: (p: string) => void }) {
           type="button"
           className="nav-item active"
           style={{ width: 'auto', margin: '0 auto', justifyContent: 'center' }}
-          onClick={() => go('/portal/new')}
+          onClick={onNew}
         >
           Start your first clearance
         </button>

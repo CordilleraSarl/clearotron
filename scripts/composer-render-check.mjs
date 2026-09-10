@@ -63,7 +63,9 @@ const PLATFORMS = [
 const stubLevels = () => productRows().map((r) => ({ ...r, available: true, unavailableNote: '' }))
 
 const ROUTES = {
-  '/portal/api/me': { role: 'client', email: 'demo@example.test', accounts: ['coastline'], allAccounts: false },
+  '/portal/api/me': { permissions: { run: true, manage: false }, email: 'demo@example.test', accounts: ['coastline'], allAccounts: false,
+    access: [{ kind: 'company', key: 'coastline', name: 'Coastline', org: 'coastline-org' }], organisations: [{ key: 'coastline-org', name: 'Coastline' }],
+    accountOrgs: { coastline: 'coastline-org' } },
   // ── the engine states, driven in phase two ────────────────────────────────────────────────────────
   //
   // The composer above is measured on a working install, which is the state that renders no notice at
@@ -849,19 +851,19 @@ const out = res.result?.result?.value ?? { fatal: 'evaluate returned nothing', r
 // the thing that produced it.
 const NOTICE_STATES = [
   { name: 'no engine program, packaged install, client',
-    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: false, role: 'client' },
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: false, permissions: { run: true, manage: false } },
     says: /install a reasoning CLI/, alsoSays: /npx clearotron install/, andSays: /restart the service/i,
     link: false },
   { name: 'no engine program, source checkout, staff',
-    me: { engineMode: 'demo', setupRoute: 'checkout', engineProgramDisputed: false, role: 'staff' },
+    me: { engineMode: 'demo', setupRoute: 'checkout', engineProgramDisputed: false, permissions: { run: true, manage: true } },
     says: /install a reasoning CLI/, alsoSays: /npm run setup/, andSays: /restart the service/i,
     link: true },
   { name: 'the program is here and the engine cannot see it, client',
-    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, role: 'client' },
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, permissions: { run: true, manage: false } },
     says: /could not find it when it last started/, alsoSays: /Restart the engine service/,
     andSays: /will not change this/, link: false },
   { name: 'the program is here and the engine cannot see it, staff',
-    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, role: 'staff' },
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, permissions: { run: true, manage: true } },
     says: /could not find it when it last started/, alsoSays: /Restart the engine service/,
     andSays: /will not change this/, link: true },
 ]
@@ -1136,7 +1138,8 @@ for (const n of notices) {
   // relay can only ever pass. Raised in review, and the relay is gone.
   //
   // There is ONE gate — the call site passes no handler to a reader who cannot open that page — and this
-  // catches it: removing the role test puts the link in front of a client and both client states go red.
+  // catches it: removing the Manage test puts the link in front of a reader without it and both of those
+  // states go red.
   ok(got.buttons.length === (n.expect.link ? 1 : 0),
     `${n.state}: the link to the configuration page is ${n.expect.link ? 'missing' : 'offered to a reader who cannot open that page'} `
     + `(buttons: ${JSON.stringify(got.buttons)})`)

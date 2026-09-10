@@ -23,6 +23,7 @@ import type { Tone, Band } from './tone.ts'
 import { asTone } from './tone.ts'
 import type { BriefRead } from './composeRead.ts'
 import type { CompanyFacts } from './companyFacts.ts'
+import { wireAccount } from './genericKey.ts'
 
 export type Result<T> =
   | { kind: 'ok'; value: T }
@@ -151,10 +152,86 @@ export function notCommitted(r: Result<Record<string, unknown>>): string | null 
 
 // ── wire shapes ──────────────────────────────────────────────────────────────────────────────────────
 
-export type Role = 'staff' | 'client'
+// ── who a person is, and what they may do ────────────────────────────────────────────────────────────
+//
+// TWO SWITCHES AND A SET OF POINTS ON A TREE, never a role word. The portal used to decide a person by
+// `staff` or `client`, and derived staff from the part of an email address after the `@` — which
+// describes a law firm serving clients and nothing else. It cannot describe one person on a laptop, an
+// in-house team, or an operator hosting several organisations that have nothing to do with each other.
+//
+// The model that replaces it: everything is one tree — organisation, company, project — a person is
+// granted access to points on that tree and sees everything below them, and two switches say what they
+// may DO there. Viewing is not a switch: access IS viewing, and both switches off is the view-only
+// person.
+
+/** What a person may do, inside what they can see. Never a role, never a rank. */
+export type Permissions = {
+  /** Start and stop clearances, on any company they can see and on their organisation's Generic. */
+  readonly run: boolean
+  /** Add people, add companies, change settings. At the top of the tree, add organisations too. */
+  readonly manage: boolean
+}
+
+/**
+ * One point on the tree a person was given, and the whole of the visibility rule: they see everything
+ * below it.
+ *
+ * `kind` rather than three fields, because the three are not interchangeable and a screen that treats
+ * them as one prints "Everything" as though it were a company name. `key` is `'*'` for the root — the
+ * spelling the grants file already uses — so a caller comparing keys never has to special-case null.
+ */
+export type AccessPoint = {
+  readonly kind: 'everything' | 'organisation' | 'company'
+  readonly key: string
+  /** What a reader sees on the chip: "Everything", an organisation's name, a company's name. */
+  readonly name: string
+}
+
+/** An organisation — the top of one branch. The grants file calls it a tenant and still does. */
+export type Organisation = { readonly key: string; readonly name: string }
 
 export type Me = {
-  readonly role: Role
+  /** The two switches. Read them through `shell/permissions.ts`, never by hand. */
+  readonly permissions: Permissions
+  /** The points on the tree this person was given. Everything below each of them is visible. */
+  readonly access: readonly AccessPoint[]
+  /**
+   * Every organisation this person can see ANYTHING in, resolved by the server — not the points they
+   * were given. A single company inside an organisation counts: its heading needs the organisation's name.
+   *
+   * Both are needed and they are different questions. A person given the root holds one access point
+   * and can see every organisation on the install; a person given two companies in one organisation
+   * holds two points and can see one. The screens ask the second question, twice:
+   *
+   *   - the top bar names the organisation for a person who can see exactly one, and shows NOTHING for
+   *     a person who can see several — it is a label, never a control, and never a company;
+   *   - the company switcher groups its rows under organisation headings only when this is above one,
+   *     so a person with access to a single company never meets a heading at all.
+   *
+   * Neither is derivable in the browser: a person with access to everything holds no company list to
+   * count, and `accountOrgs` below is empty for exactly that person.
+   */
+  readonly organisations: readonly Organisation[]
+  /**
+   * Which organisation each granted company belongs to — company key → organisation key.
+   *
+   * A company belongs to exactly ONE organisation; that is the constraint the whole tree rests on, and
+   * it is the server's to enforce. Stated for every company the person can see, a person given the
+   * whole install included.
+   *
+   * A missing entry means "not stated", and the switcher then files that company under no heading
+   * rather than under a guessed one.
+   */
+  readonly accountOrgs: Readonly<Record<string, string>>
+  /**
+   * The organisations whose Generic this person may see — every organisation they were given whole,
+   * or all of them for a person given the whole install. Given one company in an organisation is NOT
+   * enough: Generic belongs to the organisation, and a single company inside it is not the organisation.
+   *
+   * The switcher offers one Generic per entry here, and nothing else decides it. Deriving it in the
+   * browser from `access` would be a visibility rule written twice, once on each side of the wire.
+   */
+  readonly genericOrgs: readonly string[]
   readonly email: string
   /**
    * The accounts this identity is granted, NAMED.
@@ -1404,7 +1481,13 @@ async function call<T>(path: string, decode: (body: Record<string, unknown>) => 
   return { kind: 'ok', value: decode(body) }
 }
 
-const accountQuery = (account: string | null) => (account ? `?account=${encodeURIComponent(account)}` : '')
+// Every account-scoped request goes through `wireAccount`, which is where one organisation's Generic
+// becomes the pair the door expects — `account=generic` beside `tenant=<organisation>`.
+const accountQuery = (account: string | null): string => {
+  if (!account) return ''
+  const w = wireAccount(account)
+  return `?account=${encodeURIComponent(w.account)}${w.tenant ? `&tenant=${encodeURIComponent(w.tenant)}` : ''}`
+}
 
 /**
  * The read capability, defaulting to UNAVAILABLE.
@@ -1472,11 +1555,13 @@ const asCompanyFacts = (v: unknown): CompanyFacts => {
   }
 }
 
-/** A company on the staff roster: how it is keyed, what it is called, and the facts that tell it apart. */
+/** A company on the roster: how it is keyed, what it is called, where it sits, and the facts that tell it apart. */
 export type RosterCompany = {
   readonly key: string
   readonly name: string
   readonly facts: CompanyFacts
+  /** The organisation this company belongs to — exactly one. Null when the server did not say. */
+  readonly org?: string | null
 }
 
 /**
@@ -1520,10 +1605,59 @@ const decodeEffort = (v: unknown): PlanEffort | null => {
   }
 }
 
+/**
+ * The access points on the wire, as the named points the screens draw.
+ *
+ * Each arrives tagged with its `kind` and carrying its own name: `{ kind: 'everything' }` for the whole
+ * install, `{ kind: 'organisation', key, name }`, `{ kind: 'company', key, name, org }`. The root has no
+ * key on the wire; it is given `'*'` here, the spelling the grants file already uses, so a caller
+ * comparing keys never special-cases a missing one — and its name is the product's, "Everything",
+ * whatever the wire put beside it.
+ *
+ * An entry this cannot read is DROPPED rather than drawn under a guess: an unknown kind, or an
+ * organisation or company with no key. Dropping narrows what a chip claims; it never widens it. A name
+ * the wire left out falls back to the key, never to a blank.
+ */
+export function decodeAccess(b: Record<string, unknown>): readonly AccessPoint[] {
+  return asArray(b['access']).flatMap((v): AccessPoint[] => {
+    const r = asRecord(v)
+    const kind = r['kind']
+    if (kind === 'everything') return [{ kind, key: '*', name: 'Everything' }]
+    if (kind !== 'organisation' && kind !== 'company') return []
+    const key = asString(r['key']) ?? ''
+    if (!key) return []
+    return [{ kind, key, name: asString(r['name']) || key }]
+  })
+}
+
 export const api = {
   me: (): Promise<Result<Me>> =>
     call('/portal/api/me', (b) => ({
-      role: b['role'] === 'staff' ? 'staff' : 'client',
+      // FAIL CLOSED ON AN ABSENT FIELD, and that direction is the whole reason this is not a `??` with a
+      // friendlier default. A server that does not state a switch has not granted it: a missing switch
+      // reads as off, and both off is the view-only person — someone who can read what they were given
+      // and start nothing. The other direction would hand Manage to whoever the server forgot to
+      // describe.
+      //
+      // `=== true`, not truthy: a string, a number or an object arriving in that slot is a shape this
+      // does not understand, and "I do not understand it" must resolve the same way as "it was not sent".
+      permissions: {
+        run: asRecord(b['permissions'])['run'] === true,
+        manage: asRecord(b['permissions'])['manage'] === true,
+      },
+      access: decodeAccess(b),
+      organisations: asArray(b['organisations']).flatMap((v) => {
+        const r = asRecord(v)
+        const key = asString(r['key']) ?? ''
+        return key ? [{ key, name: asString(r['name']) || key }] : []
+      }),
+      // Same rule as `accountNames` one field down: only string→string pairs survive, and a dropped
+      // entry means "no organisation stated" — the switcher files that company under no heading, which
+      // is visibly incomplete, rather than under a heading it invented.
+      accountOrgs: Object.fromEntries(
+        Object.entries(asRecord(b['accountOrgs'])).filter(([, v]) => typeof v === 'string' && v),
+      ) as Readonly<Record<string, string>>,
+      genericOrgs: asArray(b['genericOrgs']).filter((o): o is string => typeof o === 'string' && o.length > 0),
       email: asString(b['email']) ?? '',
       accounts: asArray(b['accounts']).filter((a): a is string => typeof a === 'string'),
       allAccounts: b['accounts'] === '*',
@@ -1789,7 +1923,7 @@ export const api = {
         })(),
         effort: decodeEffort(b['effort']),
       }),
-      { method: 'POST', body: JSON.stringify({ ...body, ...(account ? { account } : {}) }) },
+      { method: 'POST', body: JSON.stringify({ ...body, ...(account ? wireAccount(account) : {}) }) },
     ),
 
   /**
@@ -1805,7 +1939,7 @@ export const api = {
     call(
       '/portal/api/run',
       (b) => ({ id: asString(b['id']) ?? '', landedOn: asString(b['landedOn']) }),
-      { method: 'POST', body: JSON.stringify({ ...body, ...(account ? { account } : {}) }) },
+      { method: 'POST', body: JSON.stringify({ ...body, ...(account ? wireAccount(account) : {}) }) },
     ),
 
   /** The company's configuration. The account is resolved server-side from who you signed in as. */
@@ -1833,7 +1967,7 @@ export const api = {
   ): Promise<Result<Record<string, unknown>>> =>
     call(`/portal/api/config/profile/${action}`, (b) => b, {
       method: 'POST',
-      body: JSON.stringify({ ...body, ...(account ? { account } : {}) }),
+      body: JSON.stringify({ ...body, ...(account ? wireAccount(account) : {}) }),
     }),
 
   /**
@@ -1901,7 +2035,7 @@ export const api = {
   ): Promise<Result<Record<string, unknown>>> =>
     call(`/portal/api/config/projects/${encodeURIComponent(project)}/${action}`, (b) => b, {
       method: 'POST',
-      body: JSON.stringify({ ...body, ...(account ? { account } : {}) }),
+      body: JSON.stringify({ ...body, ...(account ? wireAccount(account) : {}) }),
     }),
 
   /**
@@ -1955,7 +2089,7 @@ export const api = {
       body: JSON.stringify({
         recipe: body.recipe,
         ...(body.expectedVersion != null ? { expectedVersion: body.expectedVersion } : {}),
-        ...(account ? { account } : {}),
+        ...(account ? wireAccount(account) : {}),
       }),
     }),
 
@@ -2281,7 +2415,12 @@ export const api = {
     call('/portal/admin/roster', (b) =>
       asArray(b['customers']).map((c) => {
         const r = c as Record<string, unknown>
-        return { key: asString(r['key']) ?? '', name: asString(r['name']) ?? '', facts: asCompanyFacts(r) }
+        return {
+          key: asString(r['key']) ?? '', name: asString(r['name']) ?? '', facts: asCompanyFacts(r),
+          // Absent ⇒ null, "not stated", and the switcher then files the company under no heading. Never
+          // defaulted to the reader's own organisation: that would be a guess presented as a fact.
+          org: asString(r['org']) ?? null,
+        }
       }),
     ),
 }

@@ -861,24 +861,23 @@ test('…and the screen now does the picking itself rather than pointing at a co
   const facts = (k: string) =>
     k === 'acme' ? { industry: 'animal health', platformCount: 6, territories: ['US', 'EU'] } : undefined
 
-  const staff = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'staff')
-  assert.equal(staff[0]?.key, GENERIC_KEY, 'the entry you can always run under is read first')
-  assert.equal(staff[0]?.generic, true, 'and it is marked, so the wash is not a colour somebody chose per screen')
-  assert.deepEqual(staff.slice(1).map((r) => r.name), ['Acme Ltd', 'Zephyr Beverages'],
+  const inOne = () => 'alder'
+  const orgs = [{ key: 'alder', name: 'Alder Group' }]
+  const rows = pickerRows(['zephyr', GENERIC_KEY, 'acme'], inOne, orgs, name, facts)
+  assert.equal(rows[0]?.key, GENERIC_KEY, 'the entry you can always run under is read first')
+  assert.equal(rows[0]?.generic, true, 'and it is marked, so the wash is not a colour somebody chose per screen')
+  assert.deepEqual(rows.slice(1).map((r) => r.name), ['Acme Ltd', 'Zephyr Beverages'],
     'the rest sort by what is READ, the same rule the rail switcher uses')
-  assert.equal(staff.find((r) => r.key === 'acme')?.line, 'Animal health · 6 marketplaces · US, EU')
+  assert.equal(rows.find((r) => r.key === 'acme')?.line, 'Animal health · 6 marketplaces · US, EU')
 
   // A company we hold no facts for still offers: a name and no line under it is the fresh-install case
   // and every newly created company, not an error state.
-  assert.equal(staff.find((r) => r.key === 'zephyr')?.line, '')
+  assert.equal(rows.find((r) => r.key === 'zephyr')?.line, '')
 
-  // THE ENGINE BOUNDARY, not a preference. `generic` answers 404 to a non-staff principal on the runs
-  // list and on every report route, so offering it here would seat a client on a company whose every
-  // page then refuses them.
-  const client = pickerRows(['zephyr', GENERIC_KEY, 'acme'], name, facts, 'client')
-  assert.equal(client.some((r) => r.key === GENERIC_KEY), false,
-    'a client surface never lists the house account')
-  assert.deepEqual(client.map((r) => r.key), ['acme', 'zephyr'], 'and loses nothing else')
+  // GENERIC BELONGS TO ITS ORGANISATION. It used to be withheld from every non-staff reader here; there
+  // is no role left to withhold it by, and whether a person is offered it is decided by whether the
+  // server put it in their list — the one source both this panel and the engine read.
+  assert.equal(rows.filter((r) => r.key === GENERIC_KEY).length, 1, 'offered once, inside the organisation it belongs to')
 })
 
 test('the disabled Save names its blocking condition LOUDER than its harmless ones', () => {

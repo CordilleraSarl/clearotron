@@ -136,11 +136,11 @@ function screen(id: ScreenId, ctx: ShellContext) {
     // no role. Passing one would imply a scope it does not have.
     case 'about':
       return <About />
-    // Admin settings has no screen of its own; landing on the parent shows its first child, the way
-    // /portal/settings used to fall through to Profile.
-    case 'admin':
-    case 'admin.access':
+    case 'people':
       return <PeopleAccess ctx={ctx} />
+    // Admin settings has no screen of its own; landing on the parent shows its only child. People used
+    // to be that first child and moved to the rail, so the parent now falls through to Global config.
+    case 'admin':
     case 'admin.config':
       return <GlobalConfig ctx={ctx} />
     default: {

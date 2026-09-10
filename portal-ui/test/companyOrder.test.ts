@@ -1,75 +1,115 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The rail's switcher and the pick panel offer companies in ONE order.
+// The rail's switcher, the pick panel and the chips offer companies in ONE order, under ONE grouping.
 //
-// THE DEFECT THIS EXISTS FOR. The panel and the chips lift Generic to the front — it is the default, and a
-// default that sorts alphabetically among the companies is a default nobody finds. The switcher sorted
-// every key by display name. On the ordinary early installation — the house account plus one company
-// called "Acme Ltd" — the rail read *All companies, Acme Ltd, Generic default* while the panel beside it
-// read *Generic default, Acme Ltd*. Two controls, one installation, two answers to the same question.
-//
-// Neither implementation was wrong on its own, which is why nothing caught it: each file was correct and
-// the disagreement lived between them. This is the one place both are in scope.
+// THE DEFECT THIS EXISTS FOR. The panel lifted Generic to the front — it is the default, and a default
+// that sorts alphabetically among the companies is a default nobody finds — while the switcher sorted
+// every key by display name, so one install read two ways on adjacent controls. All three now take their
+// rows from `pickerGroups`, so agreement is by construction; what is asserted here is the rule itself,
+// for every shape an installation can be in, including the two-organisation shapes the tree adds.
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { orderedCompanyKeys, pickerRows, GENERIC_KEY } from '../src/shell/companyRows.ts'
+import { pickerGroups, pickerRows, GENERIC_KEY } from '../src/shell/companyRows.ts'
+import type { Organisation } from '../src/contract/api.ts'
+import { genericFor, isGenericKey, orgOfGeneric, wireAccount } from '../src/contract/genericKey.ts'
 
 const NAMES: Record<string, string> = {
   generic: 'Generic default',
   acme: 'Acme Ltd',
   zephyr: 'Zephyr Holdings',
   brightwater: 'Brightwater',
+  harbour: 'Harbour Ltd',
 }
 const name = (k: string | null) => (k === null ? 'All companies' : NAMES[k] ?? k)
 const noFacts = () => undefined
 
-/** What the panel actually offers, in the order it offers it. */
-const panelOrder = (keys: readonly string[], role: 'staff' | 'client') =>
-  pickerRows(keys, name, noFacts, role).map((r) => r.key)
+const ALDER: Organisation = { key: 'alder', name: 'Alder Group' }
+const BIRCH: Organisation = { key: 'birch', name: 'Birch & Co' }
+const orgMap = (m: Record<string, string>) => (k: string) => m[k] ?? null
 
-test('THE SWITCHER AND THE PANEL AGREE, on every shape an installation can be in', () => {
-  // The two-key case is the one that was wrong in the product, and it is the commonest early state. The
-  // others are here so a fix that only special-cased two keys could not pass.
-  const shapes: readonly (readonly string[])[] = [
-    ['generic', 'acme'],
-    ['acme', 'generic'],
-    ['generic'],
-    ['generic', 'zephyr', 'acme', 'brightwater'],
-    ['acme', 'zephyr'],
-  ]
+test('GENERIC LEADS ITS GROUP, and the companies after it stay in name order', () => {
+  const one = [ALDER]
+  const inAlder = orgMap({ generic: 'alder', acme: 'alder', zephyr: 'alder', brightwater: 'alder' })
+  for (const keys of [['acme', 'generic', 'zephyr'], ['generic', 'acme'], ['zephyr', 'brightwater', 'generic', 'acme']]) {
+    const rows = pickerRows(keys, inAlder, one, name, noFacts)
+    assert.equal(rows[0]?.key, GENERIC_KEY, `[${keys.join(', ')}] — the default is the first thing offered`)
+    const rest = rows.slice(1).map((r) => r.name)
+    assert.deepEqual(rest, [...rest].sort((a, b) => a.localeCompare(b)), 'putting Generic first does not scramble the rest')
+  }
+  // The floor: an order with no Generic in it must not invent one.
+  assert.deepEqual(pickerRows(['acme', 'zephyr'], inAlder, one, name, noFacts).map((r) => r.key), ['acme', 'zephyr'])
+})
 
-  for (const keys of shapes) {
-    for (const role of ['staff', 'client'] as const) {
-      assert.deepEqual(
-        orderedCompanyKeys(keys, name, role),
-        panelOrder(keys, role),
-        `${role} on [${keys.join(', ')}] — the rail and the panel offer the same order`,
-      )
-    }
+test('GENERIC IS OFFERED TO WHOEVER CAN SEE ITS ORGANISATION — there is no role left to withhold it by', () => {
+  // It used to be withheld from every non-staff reader. Under the tree it belongs to its organisation,
+  // and the only thing that decides whether a person is offered it is whether the server put it in
+  // their list. So the row is present whenever the key is, and carries the tag that marks it.
+  const rows = pickerRows(['acme', 'generic'], orgMap({ acme: 'alder', generic: 'alder' }), [ALDER], name, noFacts)
+  const generic = rows.find((r) => r.key === GENERIC_KEY)
+  assert.ok(generic, 'offered')
+  assert.equal(generic.generic, true, 'and marked, so the Default tag is drawn from one flag')
+  assert.equal(rows.filter((r) => r.generic).length, 1, 'only Generic is marked')
+})
+
+test('HEADINGS ONLY FOR A PERSON WHO CAN SEE MORE THAN ONE ORGANISATION', () => {
+  // A person who can see two organisations, sent Generic and one company from the first of them.
+  const wideKeys = ['harbour', 'generic']
+  const wide = pickerGroups(wideKeys, orgMap({ harbour: 'alder', generic: 'alder' }), [ALDER, BIRCH], name, noFacts)
+  assert.equal(wide.headings, true, 'two organisations visible — the headings are shown')
+  assert.deepEqual(wide.groups.map((g) => g.org?.name), ['Alder Group'],
+    'an organisation holding no row the person was sent draws no empty heading')
+
+  // A person with access to one company never meets a heading, however their company is filed.
+  const single = pickerGroups(['harbour'], orgMap({ harbour: 'alder' }), [ALDER], name, noFacts)
+  assert.equal(single.headings, false, 'one organisation visible — no heading, ever')
+  assert.deepEqual(single.groups.flatMap((g) => g.rows.map((r) => r.key)), ['harbour'], 'and the row is still there')
+
+  // The switch keys on the organisations VISIBLE, not on how many groups happen to hold rows: a person
+  // who can see two organisations but was sent companies from one still reads which one it is.
+  assert.equal(pickerGroups(['acme'], orgMap({ acme: 'birch' }), [ALDER, BIRCH], name, noFacts).headings, true)
+})
+
+test('GROUPS FOLLOW THE ORDER THE SERVER LISTS ORGANISATIONS IN — never re-sorted by name here', () => {
+  // The server lists the organisation a person was given whole before one where they hold a single company.
+  // Alphabetical order would agree by accident for these two names, so the arm uses both orders.
+  const orgOf = orgMap({ generic: 'birch', harbour: 'alder' })
+  for (const order of [[BIRCH, ALDER], [ALDER, BIRCH]]) {
+    const g = pickerGroups(['harbour', 'generic'], orgOf, order, name, noFacts)
+    assert.deepEqual(g.groups.map((x) => x.org?.key), order.map((o) => o.key), `server order ${order.map((o) => o.key).join(', ')} kept`)
   }
 })
 
-test('GENERIC IS FIRST WHERE IT IS OFFERED AT ALL', () => {
-  // The rule the shared order exists to keep, stated once so the agreement above cannot be satisfied by
-  // both controls being wrong in the same way.
-  const keys = ['acme', 'generic', 'zephyr']
-  assert.equal(orderedCompanyKeys(keys, name, 'staff')[0], GENERIC_KEY,
-    'the default is the first thing offered, not the seventh letter of the alphabet')
-
-  // And the companies after it are still in name order — putting Generic first must not scramble the rest.
-  assert.deepEqual(orderedCompanyKeys(keys, name, 'staff').slice(1), ['acme', 'zephyr'])
+test('A COMPANY THE SERVER PLACED NOWHERE STILL GETS A ROW — under no heading, never under a guess', () => {
+  const g = pickerGroups(['acme', 'zephyr', 'orphan'], orgMap({ acme: 'alder', zephyr: 'nowhere-listed' }),
+    [ALDER, BIRCH], name, noFacts)
+  const last = g.groups[g.groups.length - 1]
+  assert.equal(last?.org, null, 'the unplaced rows sit in a trailing group with no organisation')
+  assert.deepEqual(last?.rows.map((r) => r.key), ['orphan', 'zephyr'],
+    'both the unstated company and the one placed in an organisation nobody listed')
+  // The floor: every key handed in comes out exactly once. Dropping a row makes a company unselectable.
+  const out = g.groups.flatMap((x) => x.rows.map((r) => r.key)).sort()
+  assert.deepEqual(out, ['acme', 'orphan', 'zephyr'])
 })
 
-test('GENERIC IS OFFERED TO NOBODY WHO MAY NOT USE IT', () => {
-  // The other direction, and the one that matters for a customer's own user: the engine refuses the house
-  // account to them at several routes, so offering it would be a menu entry that always fails.
-  const keys = ['acme', 'generic']
-  const forClient = orderedCompanyKeys(keys, name, 'client')
-  assert.ok(!forClient.includes(GENERIC_KEY), 'not offered')
-  assert.deepEqual(forClient, ['acme'], 'and the rest is unaffected')
+test('ONE GENERIC PER ORGANISATION, each leading its own group under the key that names it', () => {
+  const orgOf = (k: string) => orgOfGeneric(k) ?? ({ harbour: 'alder', acme: 'birch' } as Record<string, string>)[k] ?? null
+  const g = pickerGroups(['harbour', genericFor('alder'), 'acme', genericFor('birch')], orgOf, [ALDER, BIRCH], name, noFacts)
+  assert.deepEqual(g.groups.map((x) => x.rows.map((r) => r.key)),
+    [[genericFor('alder'), 'harbour'], [genericFor('birch'), 'acme']])
+  for (const grp of g.groups) assert.equal(grp.rows[0]?.generic, true, `${grp.org?.name}: its own Generic leads, tagged`)
+  // Two rows, not one: neither organisation's Generic stands in for the other's.
+  assert.equal(new Set(g.groups.flatMap((x) => x.rows.filter((r) => r.generic).map((r) => r.key))).size, 2)
+})
 
-  // The floor: an implementation returning nothing at all would satisfy the line above.
-  assert.ok(orderedCompanyKeys(keys, name, 'staff').length > forClient.length,
-    'the staff list really is the longer one — the client list is filtered, not empty')
+test('THE GENERIC KEY names its organisation, and only wireAccount turns it into the pair', () => {
+  assert.deepEqual(wireAccount(genericFor('alder')), { account: 'generic', tenant: 'alder' })
+  assert.deepEqual(wireAccount('generic'), { account: 'generic' }, 'the bare key a run row carries goes out as it is')
+  assert.deepEqual(wireAccount('coastline'), { account: 'coastline' })
+  assert.equal(isGenericKey('generic'), true)
+  assert.equal(isGenericKey(genericFor('alder')), true)
+  assert.equal(isGenericKey('generically'), false, 'a company whose key merely starts with the word is a company')
+  assert.equal(orgOfGeneric('generic'), null)
+  assert.equal(orgOfGeneric('coastline'), null)
+  assert.equal(orgOfGeneric(genericFor('alder')), 'alder')
 })

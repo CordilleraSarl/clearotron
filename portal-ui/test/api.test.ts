@@ -673,3 +673,95 @@ test('2113 a response that is NOT a 401 announces nothing', async () => {
     stop()
   }
 })
+
+// ── Access points on the wire ─────────────────────────────────────────────────────────────────────────
+// Each point arrives tagged with its kind and carrying its own name; the decoder turns it into the
+// named points People and Your preferences print. Driven for every kind, and for the shapes it must
+// REFUSE, because a chip that claims more than a person was given is the one failure here a reader
+// would act on.
+
+test('decodeAccess: each kind becomes the point it names', async () => {
+  const { decodeAccess } = await import('../src/contract/api.ts')
+  const got = decodeAccess({
+    access: [
+      { kind: 'everything' },
+      { kind: 'organisation', key: 'birch', name: 'Birch & Co' },
+      { kind: 'company', key: 'harbour', name: 'Harbour Ltd', org: 'alder' },
+    ],
+  })
+  assert.deepEqual(got, [
+    { kind: 'everything', key: '*', name: 'Everything' },
+    { kind: 'organisation', key: 'birch', name: 'Birch & Co' },
+    { kind: 'company', key: 'harbour', name: 'Harbour Ltd' },
+  ])
+  // The root is named by the product, never by whatever the wire put beside it.
+  assert.deepEqual(decodeAccess({ access: [{ kind: 'everything', name: 'All of it' }] }),
+    [{ kind: 'everything', key: '*', name: 'Everything' }])
+  // A name the wire left out falls back to the key — never to a blank chip.
+  assert.deepEqual(decodeAccess({ access: [{ kind: 'organisation', key: 'nameless' }] }),
+    [{ kind: 'organisation', key: 'nameless', name: 'nameless' }])
+})
+
+test('decodeAccess: a shape it cannot read is DROPPED, never drawn under a guess', async () => {
+  const { decodeAccess } = await import('../src/contract/api.ts')
+  for (const bad of [{ kind: 'region', key: 'x' }, { kind: 'company' }, { kind: 'organisation', key: '' },
+    { key: 'birch', name: 'Birch & Co' }, 'birch', null]) {
+    assert.deepEqual(decodeAccess({ access: [bad] }), [], `refused: ${JSON.stringify(bad)}`)
+  }
+  // No field at all is no access: fail closed.
+  assert.deepEqual(decodeAccess({}), [])
+})
+
+test('the switches fail closed: only a literal true grants one', async () => {
+  // Driven through the real decoder, on the one route that carries them.
+  const cases: readonly (readonly [unknown, boolean])[] = [[true, true], [false, false], [undefined, false], ['true', false], [1, false], [{}, false]]
+  for (const [wire, want] of cases) {
+    const restore = globalThis.fetch
+    globalThis.fetch = (async () => new Response(JSON.stringify({ permissions: { run: wire, manage: wire }, email: 'a@b.test' }),
+      { status: 200, headers: { 'content-type': 'application/json' } })) as typeof fetch
+    try {
+      const r = await api.me()
+      assert.ok(isOk(r), 'the payload decoded')
+      assert.deepEqual(r.value.permissions, { run: want, manage: want }, `run/manage = ${JSON.stringify(wire)}`)
+    } finally {
+      globalThis.fetch = restore
+    }
+  }
+  // A missing `permissions` object is the same answer as two switches off.
+  const restore = globalThis.fetch
+  globalThis.fetch = (async () => new Response(JSON.stringify({ email: 'a@b.test' }),
+    { status: 200, headers: { 'content-type': 'application/json' } })) as typeof fetch
+  try {
+    const r = await api.me()
+    assert.ok(isOk(r))
+    assert.deepEqual(r.value.permissions, { run: false, manage: false })
+    assert.deepEqual(r.value.genericOrgs, [], 'and no Generic is offered to someone the server did not describe')
+  } finally {
+    globalThis.fetch = restore
+  }
+})
+
+test("one organisation's Generic goes out as the pair, and a company goes out alone", async () => {
+  // The portal holds one key per row; the door takes `account=generic` beside `tenant=<organisation>`.
+  // Driven through the real request builders, for a query and for a body, because a split done in one
+  // and forgotten in the other is a request the door has to guess the organisation for.
+  const seen: { url: string; body: unknown }[] = []
+  const restore = globalThis.fetch
+  globalThis.fetch = (async (url: string | URL | Request, init?: RequestInit) => {
+    seen.push({ url: String(url), body: init?.body ? JSON.parse(String(init.body)) : null })
+    return new Response(JSON.stringify({ runs: [] }), { status: 200, headers: { 'content-type': 'application/json' } })
+  }) as typeof fetch
+  try {
+    await api.runs('generic:alder')
+    await api.runs('coastline')
+    await api.plan('generic:alder', { mark: 'X' })
+    await api.plan('coastline', { mark: 'X' })
+  } finally {
+    globalThis.fetch = restore
+  }
+  assert.equal(seen.length, 4, 'every call reached the network')
+  assert.match(seen[0]!.url, /\/portal\/api\/runs\?account=generic&tenant=alder$/)
+  assert.match(seen[1]!.url, /\/portal\/api\/runs\?account=coastline$/, 'a company carries no organisation')
+  assert.deepEqual(seen[2]!.body, { mark: 'X', account: 'generic', tenant: 'alder' })
+  assert.deepEqual(seen[3]!.body, { mark: 'X', account: 'coastline' })
+})

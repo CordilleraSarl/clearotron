@@ -24,6 +24,7 @@ import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { canManage } from '../shell/permissions.ts'
 
 type Saved = { readonly at: number; readonly sha: string | null }
 
@@ -177,7 +178,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
           </p>
         </div>
 
-        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} staff={ctx.me.role === 'staff'} />
+        <FrameworkBlock readOnly={loaded.readOnly} framework={loaded.framework} staff={canManage(ctx.me)} />
 
         {/* Grouped by iteration over FIELD_GROUPS rather than as two hardcoded blocks, so a new field
             joins a group by declaring one, and a new group needs no markup here at all. */}
