@@ -15,8 +15,8 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -116,6 +116,8 @@ test("start reads its first-start signal before it writes either file, and asks 
     ["the config store's git init", src.indexOf(`execFileSync("git", ["-C", paths.configStore, "init"`)]])
     assert.ok(at > signal, `${what} now comes before the signal, so a first start reads as a later one`);
   assert.equal(src.split("installCredential(").length - 1, 1, "one decision, made once");
+  assert.match(src, /installCredential\(\{[^}]*firstStart: firstStartOfThisInstall/,
+    "the first-start signal must reach the decision, or a first start adopts the shared file again");
   assert.match(src, /credential: signIn && signIn\.source !== "shared" \? signIn\.path : null/,
     "the decision must reach the portal's environment, and the shared default must be left to its own default");
   const capture = src.indexOf("const credentialExisted = existsSync(");
@@ -193,4 +195,42 @@ test("the recovery line runs as printed, directory change and all, and resets th
       assert.equal(readFileSync(shared, "utf8"), sharedBefore, `${what}: the printed line reset the shared file instead`);
     }
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── THE REPORTED CASE, AT ITS OWN DOOR: A REAL FIRST START ──────────────────────────────────────────
+//
+// A machine where another install left the shared credential, and a new install that has never started.
+// This runs the real `clearotron start` in a throwaway home, reads what it wrote, and stops it. The
+// passphrase it prints is never put into a message here.
+
+test("a real first start, where another install left the shared credential, mints its own and leaves that one alone", { timeout: 120000 }, async () => {
+  const home = mkdtempSync(join(tmpdir(), "first-start-"));
+  const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
+  establishCredential({ path: shared, email: "op@localhost", passphrase: "an earlier install's" });
+  const sharedBefore = readFileSync(shared, "utf8");
+  // Its own ports, and nothing inherited: the store, the pool and the credential all land under `home`.
+  const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
+    env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
+      PORTAL_SERVICE_PORT: "18981", TRADEMARK_MCP_HTTP_PORT: "18982", CLIENT_MCP_HTTP_PORT: "18983" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  let said = "";
+  child.stdout.on("data", (c) => { said += c; });
+  child.stderr.on("data", (c) => { said += c; });
+  const exited = new Promise((resolve) => child.on("exit", resolve));
+  try {
+    const deadline = Date.now() + 90000;
+    while (!/Sign in as/.test(said) && child.exitCode === null && Date.now() < deadline) await new Promise((r) => setTimeout(r, 250));
+    assert.match(said, /Sign in as/, "start never reached its sign-in summary, so nothing below would be measured");
+    assert.ok(existsSync(join(home, "trademark", INSTALL_CREDENTIAL_FILE)),
+      "THE REPORTED CASE: the first start did not mint the install's own credential, so it adopted the shared one");
+    assert.equal(readFileSync(shared, "utf8"), sharedBefore, "the first start changed the shared credential another install uses");
+    assert.match(said, /│  Passphrase  [A-Za-z0-9_-]{24}\b/, "and the frame must hand the new passphrase over, as a first start does");
+    assert.doesNotMatch(said, /minted on an earlier start/, "a first start must not claim an earlier one");
+  } finally {
+    child.kill("SIGINT");
+    await Promise.race([exited, new Promise((r) => setTimeout(r, 20000))]);
+    if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+    rmSync(home, { recursive: true, force: true });
+  }
 });
