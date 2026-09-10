@@ -399,6 +399,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-new-install-signs-in-with-its-own-passphrase.test.mjs": {
+          "tests": 6,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
         "a-packaged-install-resolves-every-workspace-dependency.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -852,6 +858,12 @@
         "an-arrival-check-exercises-the-trigger-lane.test.mjs": {
           "tests": 4,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-empty-config-store-overrides-nothing.test.mjs": {
+          "tests": 5,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -4103,7 +4115,7 @@
         },
         "start-command.test.mjs": {
           "tests": 26,
-          "asserts": 110,
+          "asserts": 112,
           "skips": 0,
           "todos": 0
         },
@@ -4589,13 +4601,13 @@
         },
         "the-passphrase-is-in-the-block-not-the-log.test.mjs": {
           "tests": 6,
-          "asserts": 17,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
         "the-passphrase-line-tells-the-truth-on-a-first-start.test.mjs": {
           "tests": 2,
-          "asserts": 10,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -5122,8 +5134,8 @@
           "todos": 0
         },
         "what-doctor-passes-a-search-accepts.test.mjs": {
-          "tests": 8,
-          "asserts": 28,
+          "tests": 10,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
