@@ -128,3 +128,12 @@ export function pickerRows(
 ): readonly CompanyRow[] {
   return pickerGroups(keys, orgOf, organisations, companyName, factsFor).groups.flatMap((g) => g.rows)
 }
+
+/**
+ * What the rail switcher prints for one row. That switcher is a native select, whose options hold text
+ * only, so Generic's Default tag is the word after its name there, where the pick panel draws a pill.
+ * Every other row prints its name alone.
+ */
+export function switcherLabel(row: CompanyRow): string {
+  return row.generic ? `${row.name} (Default)` : row.name
+}
