@@ -106,9 +106,9 @@
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 10,
-          "asserts": 20,
-          "skips": 2,
+          "tests": 16,
+          "asserts": 36,
+          "skips": 1,
           "todos": 0
         },
         "a-check-does-not-read-another-accounts-processes.test.mjs": {
@@ -168,6 +168,12 @@
         "a-crowded-zone-is-on-the-list-it-could-not-fill.test.mjs": {
           "tests": 10,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-cut-refuses-a-version-already-out.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -420,6 +426,12 @@
         "a-new-install-signs-in-with-its-own-passphrase.test.mjs": {
           "tests": 8,
           "asserts": 43,
+          "skips": 1,
+          "todos": 0
+        },
+        "a-note-the-release-refuses-is-refused-on-its-own-pull-request.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
           "skips": 1,
           "todos": 0
         },
@@ -709,6 +721,12 @@
           "tests": 3,
           "asserts": 11,
           "skips": 1,
+          "todos": 0
+        },
+        "a-store-in-a-pushed-checkout-is-told-its-saves-will-be-published.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
           "todos": 0
         },
         "a-stored-territory-that-does-nothing-is-named.test.mjs": {
@@ -3005,7 +3023,7 @@
         },
         "portal-run-control.test.mjs": {
           "tests": 16,
-          "asserts": 48,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -4169,7 +4187,7 @@
         },
         "stop-is-a-stop.test.mjs": {
           "tests": 6,
-          "asserts": 27,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -5445,8 +5463,8 @@
           "todos": 0
         },
         "ops.test.mjs": {
-          "tests": 37,
-          "asserts": 156,
+          "tests": 38,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
@@ -5519,6 +5537,12 @@
         "security.test.mjs": {
           "tests": 6,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "stop-now-ends-the-step.test.mjs": {
+          "tests": 10,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
