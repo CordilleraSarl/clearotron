@@ -130,7 +130,7 @@ export function enqueueWhatIf(runDir, { op, requestedBy = null, account = null, 
   // a stage — "a memo re-runs no stage, so a token carrying one was not planned as a memo" — and this
   // line refused one that did not. So every memo minted by whatIfPlan was admitted by whatIfEnqueue's
   // kind-aware refusal and then thrown out by the very next call, on the one non-test path there is
-  // (mcp-server/lib/whatif.mjs:202, reached from the live tool handler at server.mjs:513).
+  // (`whatIfEnqueue()` in `mcp-server/lib/whatif.mjs`, reached from the live `what_if_run` handler in `mcp-server/server.mjs`).
   //
   // WHY IT SURVIVED A FIX THAT WAS ABOUT EXACTLY THIS. The earlier repair opened whatIfRun's memo
   // branch and was proved by arms that INJECT the composer — routing coverage. A routing arm cannot
