@@ -173,7 +173,10 @@ export async function endEngineChild(rec, {
   const target = group ? -rec.pid : rec.pid;
   const send = (sig) => { try { kill(target, sig); return null; } catch (e) { return e?.code ?? String(e?.message ?? e); } };
   // Signal 0 asks only whether the group still has a member. EPERM is a member this user may not
-  // signal, and a member all the same.
+  // signal, and a member all the same. Once the leader has exited, the start-time check no longer covers
+  // this number: `-pid` names the run's group because a group's number is not reused while any member of
+  // it lives. What is left uncovered is a reuse, by a new process that then leads a group of its own,
+  // inside one poll after the run's group has emptied.
   const groupHasMembers = () => {
     if (!group) return false;
     try { kill(-rec.pid, 0); return true; } catch (e) { return e?.code === "EPERM"; }
