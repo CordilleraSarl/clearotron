@@ -183,7 +183,6 @@ test("the reviewer's notes render LABELLED, never merged into the findings body"
   const out = html();
   assert.match(out, /Confirm firm history on IRONWHISK/, "the note reaches the report");
   assert.match(out, /class="internal"/, "in the established purple internal convention");
-  assert.match(out, /class="ko-refnote"/, "under the legend naming that convention");
 
   const block = /<div class="internal">([\s\S]*?)<\/div>/.exec(out);
   assert.ok(block, "the labelled block exists");
@@ -191,9 +190,15 @@ test("the reviewer's notes render LABELLED, never merged into the findings body"
   assert.match(block[1], /quiet rather than cleared/, "every note, not just the first");
 });
 
-// The legend describes a colour. A report with no notes must not carry a sentence explaining a
-// convention it never used.
-test("no notes, no legend", () => {
+// THE LEGEND IS GONE ENTIRELY, by owner ruling, and this arm changed shape with it. It used to say "a
+// report with no notes must not explain a convention it never used" — true, and now vacuous, because no
+// report explains it in any state. A test that cannot fail is worse than no test: it reads as cover.
+//
+// So it asserts the stronger thing: the legend renders in NEITHER state, notes or no notes. The empty
+// labelled block half is untouched and is still the original property.
+test("the legend renders in no state, and an empty note list draws no block", () => {
+  assert.doesNotMatch(html({ purpleNotes: ["Pull the goods list."] }), /class="ko-refnote"/,
+    "the legend is back on a report that HAS notes — the state it used to render in");
   assert.doesNotMatch(html({ purpleNotes: [] }), /class="ko-refnote"/, "an empty list draws no legend");
   assert.doesNotMatch(html({ purpleNotes: ["   "] }), /class="ko-refnote"/, "nor does a blank one");
   assert.doesNotMatch(html({ purpleNotes: [] }), /class="internal"/, "and no empty labelled block is drawn");

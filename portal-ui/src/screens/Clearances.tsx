@@ -347,7 +347,14 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // So the empty state is claimed only once the server has actually said so.
   if (!result) return <Loading />
 
-  if (!runs.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
+  // `allRuns`, NOT `runs`. This tested the FILTERED set, so choosing a company with no clearances
+  // replaced the whole screen — chips and status filters with it — and the chips are the only way to
+  // change company here. The one state where somebody most wants another company was the state that
+  // took the control away, reached by using the feature correctly.
+  //
+  // The full-screen first-run stays for an account that genuinely has nothing: there is no filter to
+  // undo and nothing to keep on screen. An empty FILTER renders inside the list instead, below.
+  if (!allRuns.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
 
   // A family is asserted over RUNS, because a mark is a grouping the browser derives rather than
   // anything the pool stores. Ticking a name therefore files every read of it.
@@ -673,6 +680,16 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             </tr>
           </thead>
           <tbody>
+            {/* THE EMPTY STATE LIVES HERE, in the list, and nowhere else. Everything above it — the
+                company chips and the status filters — stays on screen in every state, so the way out of
+                an empty view is where it was when you arrived at it. */}
+            {!visible.length ? (
+              <tr>
+                <td colSpan={(canGroup ? 6 : 5) + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
+                  No clearances match this view. Pick another company above, or widen the status filter.
+                </td>
+              </tr>
+            ) : null}
             {visible.map((r, i) => {
               // A heading row whenever the owner changes. The rows are already sorted, so this needs no
               // separate grouping pass — and it keeps the user's chosen sort intact WITHIN each group
