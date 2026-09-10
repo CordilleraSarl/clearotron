@@ -76,6 +76,7 @@ import { join, dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
 import { Writable } from "node:stream";
+import { looksLikeAKey, yesNoEchoOf } from "../shared/yes-no-echo.mjs";   // a yes/no question echoes only a yes/no answer
 
 import { envLocalPath, activeEnvPath, loadEnvLocal, LEGACY_ENV_LOCAL_LOCATION } from "../shared/env-local.mjs";
 import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials
@@ -2805,8 +2806,17 @@ if (!input.isTTY) {
 // in whatever the reader pastes into a bug report. So the echo is muted while a secret is being typed:
 // the output stream readline writes through drops everything while `muted` is set.
 let muted = false;
+// AND WHILE A YES/NO QUESTION IS OPEN, only what can still become its answer is echoed
+// (shared/yes-no-echo.mjs), so a key pasted there is never shown. `rl` is read only while one is open.
+let yesNo = false;
 const maskedOutput = new Writable({
-  write(chunk, enc, cb) { if (!muted) output.write(chunk, enc); cb(); },
+  write(chunk, enc, cb) {
+    if (!muted) {
+      const out = yesNo ? yesNoEchoOf(String(chunk), { line: rl.line, prompt: rl.getPrompt() }) : chunk;
+      if (out.length) output.write(out, yesNo ? undefined : enc);
+    }
+    cb();
+  },
 });
 const rl = createInterface({ input, output: maskedOutput, terminal: true });
 const askRaw = async (q) => (await rl.question(q)).trim();
@@ -2815,16 +2825,31 @@ const askSecretRaw = async (q) => {
   muted = true;
   try { return (await rl.question("")).trim(); } finally { muted = false; output.write("\n"); }
 };
-/** Yes/no with an explicit default. Enter takes the default; nothing else is guessed at. */
-const confirm = async (q, def = true) => {
+// A YES/NO READ: the echo is filtered for exactly as long as the question is open (see maskedOutput).
+const askYesNo = async (q) => { yesNo = true; try { return (await rl.question(q)).trim(); } finally { yesNo = false; } };
+/**
+ * Yes/no with an explicit default. Enter takes the default; nothing else is guessed at, except a key.
+ *
+ * A question that offers to take a key (`key: true`) accepts one pasted as the answer. The echo has
+ * already kept it off the screen, and asking for it a second time would only invite a second paste.
+ * Every other yes/no question still says "Please answer y or n." to anything that is not one.
+ */
+const confirmOrKey = async (q, def = true, { key = true } = {}) => {
   for (;;) {
-    const a = (await askRaw(`  ${q} ${def ? "[Y/n]" : "[y/N]"} `)).toLowerCase();
-    if (a === "") return def;
-    if (["y", "yes"].includes(a)) return true;
-    if (["n", "no"].includes(a)) return false;
+    const raw = await askYesNo(`  ${q} ${def ? "[Y/n]" : "[y/N]"} `);
+    const a = raw.toLowerCase();
+    if (a === "") return { yes: def, value: null };
+    if (["y", "yes"].includes(a)) return { yes: true, value: null };
+    if (["n", "no"].includes(a)) return { yes: false, value: null };
+    if (key && looksLikeAKey(raw)) {
+      info("that looks like the key itself, so it is taken as the answer. It was not shown.");
+      info(`received — ${raw.length} characters, ending …${raw.slice(-4)}`);
+      return { yes: true, value: raw };
+    }
     say("  Please answer y or n.");
   }
 };
+const confirm = async (q, def = true) => (await confirmOrKey(q, def, { key: false })).yes;
 /**
  * — `skippable` IS THE WHOLE ANSWER TO "WHICH PROMPTS MAY BE LEFT EMPTY", DECIDED ONCE.
  *
@@ -3373,7 +3398,10 @@ try {
       if (adapter.obtain) say(`  Where to get one: ${adapter.obtain}.`);
       if (!present(candidate[name])) {
         const skippedLine = `Skipped. You can add ${name} later; until then: ${adapter.absentMeans ?? "the lane stays off"}.`;
-        if (await confirm(`Enter a ${adapter.label} API key now?`, true)) {
+        // A KEY PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
+        const answer = await confirmOrKey(`Enter a ${adapter.label} API key now?`, true);
+        if (answer.value) candidate[name] = answer.value;
+        else if (answer.yes) {
           const v = await askValue(`${adapter.label} key:`, { secret: true, skippable: true, skipped: skippedLine });
           if (v !== null) candidate[name] = v;
         } else info(skippedLine);
