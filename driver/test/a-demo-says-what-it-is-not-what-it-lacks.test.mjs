@@ -28,6 +28,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDemo, demoReportCount, demoPostureLine } from "../demo-posture.mjs";
+import { loadProfiles } from "../profiles.mjs";
 
 const poolWith = (n) => {
   const pool = mkdtempSync(join(tmpdir(), "demo-pool-"));
@@ -76,14 +77,58 @@ test("arm 3 — the report count is READ, and an unreadable pool is not zero", (
   // THE RULED SHAPE, in the words the ruling sets: Demo Brand Owner, the generic default framework, its
   // project. The withdrawn line — "five example customers and example risk frameworks" — describes the
   // retired shape and must never appear.
-  const line = demoPostureLine({ CLEAROTRON_DEMO: "1", CLEAROTRON_REPORTS_DIR: poolWith(4) });
-  assert.match(line, /Demo Brand Owner/);
-  assert.match(line, /generic default/);
-  assert.match(line, /demo project/);
+  //
+  // READ OFF THE DEMO'S OWN ROSTER, which is the bundled demo account and Generic — not the suite's,
+  // which carries the test fixtures too. And "generic default" must NOT appear: the demo account rates
+  // under a framework of its own, and the constant this line replaced said it did not.
+  const demoRoster = loadProfiles({ dir: null, force: true, includeDemo: true, includeTestFixtures: false });
+  const line = demoPostureLine({ CLEAROTRON_DEMO: "1", CLEAROTRON_REPORTS_DIR: poolWith(4) }, { roster: demoRoster });
+  assert.match(line, /Demo Brand Owner, rating under its own framework, with 1 project,/);
+  assert.doesNotMatch(line, /generic default/, "the demo account is said to rate under the house framework, which it does not");
   assert.doesNotMatch(line, /example customers|five/i, "the withdrawn wording is back");
   // And it names no variable and no config store at a reader who has never heard of either.
   assert.doesNotMatch(line, /CLEAROTRON_[A-Z_]+|PROFILE_REPO_ROOT|config store/,
     "the demo line names our plumbing at a first-time visitor");
+});
+
+// ── THE LINE IS A READ OF THE ROSTER, NEVER A CONSTANT ────────────────────────────────────────────
+//
+// 0.3.0-beta.1's demo took a real install's settings, served that install's roster, and still announced
+// Demo Brand Owner, because the sentence was a literal. Each arm below plants a DIFFERENT roster and
+// requires the sentence to follow it.
+test("arm 5 — the line names what the roster holds, and nothing it does not", () => {
+  const env = { CLEAROTRON_DEMO: "1", CLEAROTRON_REPORTS_DIR: poolWith(1) };
+  const rosterOf = (...companies) => new Map([{ key: "generic", name: "Generic default" }, ...companies].map((p) => [p.key, p]));
+  const none = new Map();
+
+  const planted = demoPostureLine(env, { roster: rosterOf({ key: "planted-co", name: "Planted Company", demoData: true }), projects: none });
+  assert.match(planted, /it carries Planted Company, rating under the generic default framework, and 1 finished/);
+  assert.doesNotMatch(planted, /Demo Brand Owner/, "the line names a company the roster does not hold");
+
+  // Its framework and its projects are read as well, and another company's projects are not counted.
+  const own = demoPostureLine(env, {
+    roster: rosterOf({ key: "planted-co", name: "Planted Company", frameworkPath: "skills/x.md", demoData: true }),
+    projects: new Map([["planted-co/a", {}], ["planted-co/b", {}], ["someone-else/c", {}]]) });
+  assert.match(own, /Planted Company, rating under its own framework, with 2 projects,/);
+
+  // THE 0.3.0-beta.1 SHAPE: a roster holding no demo company. The line says so rather than naming one.
+  const bare = demoPostureLine(env, { roster: rosterOf(), projects: none });
+  assert.match(bare, /its roster holds no company but the generic default/);
+  assert.doesNotMatch(bare, /Demo Brand Owner|Nothing here is configured/);
+
+  // THE CLOSING SENTENCE IS EARNED: one company not marked demo data, and it is not said.
+  const mixed = demoPostureLine(env, {
+    roster: rosterOf({ key: "planted-co", name: "Planted Company", demoData: true }, { key: "acme", name: "Acme" }), projects: none });
+  assert.match(mixed, /it carries Acme, rating under the generic default framework; and Planted Company,/);
+  assert.doesNotMatch(mixed, /Nothing here is configured against a real customer/,
+    "a company that is not marked demo data was vouched for as not a real customer");
+  const vouched = demoPostureLine(env, { roster: rosterOf({ key: "planted-co", name: "Planted Company", demoData: true }), projects: none });
+  assert.match(vouched, /Nothing here is configured against a real customer/, "anti-vacuity: the sentence exists to be withheld");
+
+  // AN UNREADABLE ROSTER IS NOT AN EMPTY ONE, for the reason an unreadable pool is not zero.
+  const unreadable = demoPostureLine(env, { roster: { values() { throw new Error("EACCES"); } } });
+  assert.match(unreadable, /its roster could not be read/);
+  assert.doesNotMatch(unreadable, /holds no company/, "a roster nobody could read is reported as empty");
 });
 
 test("arm 4 — both processes answer from ONE composer, in different processes", () => {

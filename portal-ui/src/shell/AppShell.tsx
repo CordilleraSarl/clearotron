@@ -23,9 +23,9 @@ import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
-import { pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
+import { switcherKeys, pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
 import { permissionsPhrase } from './accessWords.ts'
-import { GENERIC_ACCOUNT, genericFor, isGenericKey, orgOfGeneric } from '../contract/genericKey.ts'
+import { GENERIC_ACCOUNT, isGenericKey, orgOfGeneric } from '../contract/genericKey.ts'
 import { companyFactsMap, type CompanyFacts } from '../contract/companyFacts.ts'
 import type { RosterCompany } from '../contract/api.ts'
 
@@ -426,20 +426,10 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // the roster's own key list — not from the keys of the name map. An account whose profile carries no
   // name contributes no entry to that map, and deriving the menu from it would make such an account
   // silently unselectable: a customer that exists, has runs, and cannot be picked.
-  const companyKeys: readonly string[] =
-    me.allAccounts
-      ? (rosterResult?.kind === 'ok' ? rosterResult.value.map((c) => c.key) : [])
-      : me.accounts
-
-  // GENERIC, ONE PER ORGANISATION, FROM ONE LIST. The server's `genericOrgs` is the whole answer to which
-  // Generics this person is offered; the roster's own `generic` entry is dropped here, because it names
-  // the house account and not any organisation's, and offering it would send a request the door has to
-  // guess the organisation for. Each is held as one key naming its organisation — contract/genericKey.ts
-  // is where that key is built, read, and split back into the pair the door takes.
-  const ownerKeys: readonly string[] = [
-    ...companyKeys.filter((k) => !isGenericKey(k)),
-    ...me.genericOrgs.map(genericFor),
-  ]
+  //
+  // GENERIC, ONE PER ORGANISATION, FROM ONE LIST — the rule is on `switcherKeys` (shell/companyRows.ts),
+  // where it can be driven rather than read.
+  const ownerKeys: readonly string[] = switcherKeys(me, rosterResult?.kind === 'ok' ? rosterResult.value : null)
 
   // Which organisation each of those companies sits in — the person's own grants first, the roster for
   // someone who can see the whole install. A company neither source places reads null and is grouped

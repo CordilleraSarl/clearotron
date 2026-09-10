@@ -120,7 +120,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
-import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke } from "../shared/invocation.mjs";   // — the banner names the verb
 import { unitEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
@@ -138,7 +138,7 @@ import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // never serve 
 import { addressRefusal } from "../shared/staff-domain.mjs";
 // The grants file's editors, shared with `clearotron grant` and the portal's People page: the installer's
 // entry is written through them, so this command cannot produce a shape of its own.
-import { withPerson, withOrganisation } from "../shared/grants-edit.mjs";
+import { withPerson, withOrganisation, withCompany } from "../shared/grants-edit.mjs";
 import { assertGrantsShape, resolvePerson } from "../shared/scope.mjs";
 import { backgroundManager } from "../shared/os-advice.mjs";
 import { frontingVariablesSet } from "../shared/install-auth.mjs";   // — one owner for what counts as a proxy in front of a door
@@ -375,6 +375,10 @@ export function installPaths(base) {
     credential: join(base, "portal-local-credential.json"),
     configStore: join(base, "config"),
     recipes: join(base, "config", "recipes"),
+    // The customer store, inside the config store's repository so a save commits where it lands. Only a
+    // demo is pointed at it (childEnv): a real install keeps whatever its settings name, and pointing it
+    // here would move a live store.
+    profiles: join(base, "config", "profiles"),
   };
 }
 
@@ -396,13 +400,15 @@ export function installPaths(base) {
  *   the first organisation  created when the file holds no organisation and a name is known. Absent a
  *                           name, none is invented: a person with access to everything resolves without
  *                           any organisation, and Generic then files under none, which is how every
- *                           Generic run was filed before organisations existed.
+ *                           Generic run was filed before organisations existed. `companies`, the
+ *                           accounts an install brings with it (only the demo has any), are filed under
+ *                           that organisation as it is created, and never afterwards.
  *
  * PURE, so the policy can be DRIVEN rather than read — the reason `homeEnvUpdate` is extracted: the start
  * that writes this binds ports and spawns children. `unadmitted` says the address resolves to no access
  * in the result; the caller reports that rather than repairing it.
  */
-export function installerGrants(existing, { user, organisation = null }) {
+export function installerGrants(existing, { user, organisation = null, companies = [] }) {
   let grants = existing ?? { tenants: {} };
   const changed = [];
   if (!Object.keys(grants.people ?? {}).length) {
@@ -411,10 +417,54 @@ export function installerGrants(existing, { user, organisation = null }) {
   }
   const name = String(organisation ?? "").trim();
   if (name && !Object.keys(grants.tenants ?? {}).length) {
-    ({ grants } = withOrganisation(grants, { name }));
+    let key;
+    ({ grants, key } = withOrganisation(grants, { name }));
+    // A company sits in exactly one organisation, so what the install brings is filed under the one it
+    // starts with: the demo's company under the demo's organisation.
+    for (const account of companies) grants = withCompany(grants, { tenant: key, account });
     changed.push("organisation");
   }
   return { grants, changed, unadmitted: resolvePerson(user, grants) === null };
+}
+
+/**
+ * THE DEMO'S ORGANISATION — the one `examples/grants.example.json` already names, holding the demo account.
+ *
+ * A demo whose grants file holds no organisation offers no Generic in its switcher, and a company created
+ * there has nowhere to belong: 0.3.0-beta.1's demo filed none.
+ */
+export const DEMO_ORGANISATION = "Demo Org";
+
+/** The accounts the demo brings: every bundled profile marked demo data, read rather than listed. */
+export function demoAccounts(dir = join(REPO, "driver", "profiles")) {
+  const keys = [];
+  for (const f of readdirSync(dir).filter((n) => n.endsWith(".json")).sort()) {
+    try {
+      const p = JSON.parse(readFileSync(join(dir, f), "utf8"));
+      if (p?.demoData === true && p?.testFixture !== true) keys.push(f.slice(0, -".json".length));
+    } catch { /* an unreadable profile is the loader's to refuse, and it does so by name */ }
+  }
+  return keys;
+}
+
+/**
+ * Copy the demo's accounts into the demo's own store: each profile, its context pack and its projects.
+ *
+ * The demo's children read that store and, of the bundle, only `generic.json`, so an account left in the
+ * bundle is an account the demo does not have. ONLY WHAT THE STORE DOES NOT HOLD is copied: a visitor's
+ * edit survives the next start, and a stale demo is one directory to remove. Returns the keys copied.
+ */
+export function seedDemoStore({ from, to, accounts }) {
+  mkdirSync(to, { recursive: true });
+  const copied = [];
+  for (const key of accounts) {
+    if (existsSync(join(to, `${key}.json`))) continue;
+    cpSync(join(from, `${key}.json`), join(to, `${key}.json`));
+    for (const extra of [`${key}.context.md`, join("projects", key)])
+      if (existsSync(join(from, extra))) cpSync(join(from, extra), join(to, extra), { recursive: true });
+    copied.push(key);
+  }
+  return copied;
 }
 
 /**
@@ -523,6 +573,25 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
     "CLEAROTRON_OUTBOX_DIR": paths.outbox,
     "CLEAROTRON_RUN_LOCK_DIR": paths.locks,
     "CLEAROTRON_ACCESS_FILE": paths.grants,
+
+    // THE DEMO'S OWN STORE, and every name that chooses a store pinned to it, for every child and not
+    // only the portal. Inherited, a CLEAROTRON_CUSTOMERS_DIR, CLEAROTRON_INSTRUCTIONS_DIR or
+    // PROFILE_REPO_ROOT hands the demo's children the reader's real config store, and a company created
+    // in the demo is written into it. An inherited CLEAROTRON_RECIPES_DIR has the MCP door list that
+    // install's saved searches, and plan runs against them, while the portal shows the demo's own.
+    // Empty is unset to every reader. The demo overrides no instruction, so the product's own are read
+    // (the portal derives no overlay in a demo), and the two audit logs and the feedback directory fall
+    // back to their places inside the demo's own directories.
+    ...(demo ? {
+      "CLEAROTRON_CUSTOMERS_DIR": paths.profiles,
+      "CLEAROTRON_INSTRUCTIONS_DIR": "",
+      "PROFILE_REPO_ROOT": paths.configStore,
+      "CLEAROTRON_RECIPES_DIR": paths.recipes,
+      "RECIPE_REPO_ROOT": paths.configStore,
+      "PROFILE_AUDIT": "",
+      "RECIPE_AUDIT": "",
+      "CLEAROTRON_FEEDBACK_DIR": "",
+    } : {}),
   });
   return {
     url: `http://${host}:${ports.portal}/portal`,
@@ -764,16 +833,25 @@ if (isMain) {
   let ports;
   try { ports = resolvePorts(process.env); } catch (e) { fatal(String(e.message)); }
 
+  // Decided before any path is, because in a demo every path below is the demo's own. The posture
+  // itself is described at the DEMO block further down.
+  const DEMO = argv.includes("--demo");
   // The same base `npm run setup` writes under, so whichever of the two a reader ran first, the other
   // finds the same install rather than a second one beside it.
-  const paths = installPaths(flag("--base", join(homedir(), argv.includes("--demo") ? "trademark-demo" : "trademark")));
+  const paths = installPaths(flag("--base", join(homedir(), DEMO ? "trademark-demo" : "trademark")));
   // Whatever the environment already says wins over the base-derived default, for every path — a reader
   // who ran `npm run setup` has these in .env already and this must not move their data.
-  for (const [k, name] of [["pool", "CLEAROTRON_REPORTS_DIR"], ["workspace", "CLEAROTRON_WORK_DIR"], ["queue", "CLEAROTRON_QUEUE_DIR"],
-    ["outbox", "CLEAROTRON_OUTBOX_DIR"], ["locks", "CLEAROTRON_RUN_LOCK_DIR"], ["grants", "CLEAROTRON_ACCESS_FILE"],
-    ["recipes", "CLEAROTRON_RECIPES_DIR"]]) if (process.env[name]) paths[k] = process.env[name];
-  if (process.env.RECIPE_REPO_ROOT) paths.configStore = process.env.RECIPE_REPO_ROOT;
-  if (process.env.PORTAL_AUDIT) paths.audit = process.env.PORTAL_AUDIT;
+  //
+  // NOT IN A DEMO. Nothing the environment says about an install is the demo's: with the reader's
+  // settings in force, 0.3.0-beta.1's demo seeded its example reports into their real archive. Not read,
+  // rather than deleted from the environment, so a real start cannot be reached by this branch at all.
+  if (!DEMO) {
+    for (const [k, name] of [["pool", "CLEAROTRON_REPORTS_DIR"], ["workspace", "CLEAROTRON_WORK_DIR"], ["queue", "CLEAROTRON_QUEUE_DIR"],
+      ["outbox", "CLEAROTRON_OUTBOX_DIR"], ["locks", "CLEAROTRON_RUN_LOCK_DIR"], ["grants", "CLEAROTRON_ACCESS_FILE"],
+      ["recipes", "CLEAROTRON_RECIPES_DIR"]]) if (process.env[name]) paths[k] = process.env[name];
+    if (process.env.RECIPE_REPO_ROOT) paths.configStore = process.env.RECIPE_REPO_ROOT;
+    if (process.env.PORTAL_AUDIT) paths.audit = process.env.PORTAL_AUDIT;
+  }
   // recipe-service SAVES by committing, so the store has to live inside the repository it commits to.
   // Said at boot rather than discovered on the first Save, where the message is about `git add`.
   // — the shared statement, so the launcher, the two services and the portal cannot describe the
@@ -812,7 +890,8 @@ if (isMain) {
   // The loopback rule needs no copying: HOST above is a literal, not a default, so neither door can be
   // bound anywhere else in any mode. Sign-in is untouched — the demo signs in like any first start, and
   // the portal mints and prints its passphrase exactly as it does for a real one.
-  const DEMO = argv.includes("--demo");
+  // `DEMO` itself is decided above the paths, which it keeps the demo's own.
+  //
   // THE DEMO BRINGS ITS OWN ACCOUNT. A fresh install resolves `generic` and nothing else (ruling,
   // 2026-09-08), so the demo account is refused from the roster unless somebody asked for it.
   // Asked here, once and visibly, rather than at each site that happens to read a roster.
@@ -874,12 +953,14 @@ if (isMain) {
   // half-made — has one answer.
   const refusal = addressRefusal(user);
   if (refusal) fatal(`${refusal}\n  This address came from ${flag("--user") ? "--user" : `PORTAL_LOCAL_USER, in the environment or ${ENV_PATH}`}.`);
-  // YOUR ORGANISATION'S NAME, which `clearotron install` asks for directly after the address and writes
-  // as CLEAROTRON_ORGANISATION_NAME. It is read only to file the first organisation into a grants file
+  // YOUR ORGANISATION'S NAME, which `clearotron install` asks for and writes as
+  // CLEAROTRON_ORGANISATION_NAME. It is read only to file the first organisation into a grants file
   // that holds none (`installerGrants`); after that the grants file is where the name lives, and renaming
   // it is an edit there. A DEMO TAKES NONE FROM THE SETTING, for the reason it takes no address from it:
-  // the reader's real install must not decide what the demo shows.
-  const organisation = String(flag("--organisation", DEMO ? "" : (process.env.CLEAROTRON_ORGANISATION_NAME ?? "")) ?? "").trim();
+  // the reader's real install must not decide what the demo shows. It files its own instead
+  // (DEMO_ORGANISATION) holding the demo's company, so the switcher offers that company and its
+  // organisation's Generic, and a company created in the demo has an organisation to belong to.
+  const organisation = String(flag("--organisation", DEMO ? DEMO_ORGANISATION : (process.env.CLEAROTRON_ORGANISATION_NAME ?? "")) ?? "").trim();
 
   say("");
   say(`  ${BRAND.name} ${BRAND.product.toLowerCase()} — local install`);
@@ -1064,9 +1145,10 @@ if (isMain) {
   // here, where the reader can still fix it, rather than as a child that exits after the doors are up.
   //
   // A DEMO WRITES ONLY ITS OWN FILE. The demo visitor is simply the first person on a box holding only
-  // demo data, so it gets the installer's entry — in the demo's base and nowhere else. An environment
-  // pointing CLEAROTRON_ACCESS_FILE elsewhere names a real install's roster, and a demo identity with
-  // access to everything does not belong in it.
+  // demo data, so it gets the installer's entry — in the demo's base and nowhere else. It cannot be
+  // pointed at another: a demo's paths come from its base and never from the environment (above), so a
+  // real install's roster is out of its reach rather than warned about. It files its own organisation,
+  // holding the demo's company.
   {
     let existing = null;
     if (existsSync(paths.grants)) {
@@ -1078,14 +1160,9 @@ if (isMain) {
           + "  The portal refuses to start on it as well. Fix that entry by hand, or set CLEAROTRON_ACCESS_FILE to the file you mean.");
       }
     }
-    if (DEMO && paths.grants !== installPaths(paths.base).grants) {
-      err(`  WARNING: CLEAROTRON_ACCESS_FILE points this demo at ${paths.grants}, outside ${paths.base}. The demo `
-        + `writes nothing there, so ${user} has no access unless that file already gives it some`
-        + `${existing ? "" : " — and it does not exist, so the portal will refuse to start"}. `
-        + "Unset CLEAROTRON_ACCESS_FILE to run the demo on its own file.");
-    } else {
+    {
       let seeded;
-      try { seeded = installerGrants(existing, { user, organisation }); }
+      try { seeded = installerGrants(existing, { user, organisation, companies: DEMO ? demoAccounts() : [] }); }
       catch (e) { fatal(`could not add ${user} to the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
       if (!existing || seeded.changed.length) {
         // ATOMIC, because a --background refresh runs beside units that read this file per request, and a
@@ -1158,6 +1235,33 @@ if (isMain) {
       // Said out loud rather than discovered later: everything else works, and the first Save on a
       // search is what will fail.
       err(`  WARNING: could not initialise the saved-search store at ${paths.configStore} (${String(e?.message ?? e)}). Searches will list and run; SAVING one will fail until this is a git repository.`);
+    }
+  }
+
+  // ── THE DEMO'S OWN STORE, WITH ITS COMPANY IN IT ────────────────────────────────────────────────
+  //
+  // A demo's children are pointed at <base>/config (childEnv), so a company created in the demo is
+  // written there and a later real install never sees it. The demo's company is copied into the store
+  // with its projects (`seedDemoStore`), only when the store does not already hold it. It overrides no
+  // instruction, so it has no instruction overlay: the product's own are read, as on any fresh install.
+  if (DEMO) {
+    try {
+      // The store before anything is copied into it: the children are pointed at it whether or not the
+      // copy below succeeds, and a store that does not exist fails every roster read rather than showing
+      // Generic alone.
+      mkdirSync(paths.profiles, { recursive: true });
+      const copied = seedDemoStore({ from: join(REPO, "driver", "profiles"), to: paths.profiles, accounts: demoAccounts() });
+      if (copied.length) {
+        // Committed, so the store is identifiable like any other. A failure leaves the files readable,
+        // and the first save commits them with its own change.
+        try {
+          execFileSync("git", ["-C", paths.configStore, "add", "-A", "--", "profiles"], { stdio: "ignore" });
+          execFileSync("git", ["-C", paths.configStore, "commit", "-q", "-m", "the demo's company"], { stdio: "ignore" });
+        } catch { /* see above */ }
+        say(`  demo store     ${paths.profiles} — ${copied.join(", ")}`);
+      }
+    } catch (e) {
+      err(`  WARNING: could not set up the demo's store at ${paths.profiles} (${String(e?.message ?? e)}). Its switcher will show no demo company.`);
     }
   }
 
