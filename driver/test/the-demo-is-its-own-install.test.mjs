@@ -328,6 +328,14 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
       assert.equal(roster.find((c) => c.key === DEMO_KEY)?.name, "Demo Brand Owner");
       assert.deepEqual(me.organisations, [{ key: "demo-org", name: DEMO_ORGANISATION }], "the top bar has no organisation to name");
       assert.ok(!roster.some((c) => c.key === "real-client"), "the demo is serving the real install's store");
+      // THE BRAND PROFILE AND THE PROJECT, which 0.3.0-beta.1's demo showed empty: served from the demo's
+      // own store, under the framework its company names rather than the house default.
+      const profile = await get(`/portal/api/config/profile?account=${DEMO_KEY}`);
+      assert.equal(profile.profile?.name, "Demo Brand Owner");
+      assert.equal(profile.framework?.custom, true, "the demo company's own framework did not resolve");
+      const projects = await get(`/portal/api/config/projects?account=${DEMO_KEY}`);
+      assert.ok((projects.projects ?? []).some((p) => p.key === "japan-and-korea-app-launch"),
+        `the demo company's project is not served: ${JSON.stringify(projects).slice(0, 200)}`);
       assert.match(run.said(), /it carries Demo Brand Owner, rating under its own framework, with 1 project/,
         "the boot line does not describe the roster the demo served");
       assert.match(run.said(), /\[env-local\] not reading/);
