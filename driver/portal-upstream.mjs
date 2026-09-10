@@ -215,15 +215,14 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
     // state the portal had already diagnosed at boot. The code names it and the detail carries the
     // diagnosis, so the surface can say what must change instead of advising a retry that cannot work.
     //
-    // THE DETAIL IS STAFF-ONLY, exactly as the stop control's reason is. It names environment variables
-    // and filesystem paths on the server, and this screen is company-scoped — a client can reach it. The
-    // CODE travels to everyone, because "this installation does not have saved searches" is true and
-    // useful for them and gives away nothing; only the sentence saying which variable to change is held
-    // back.
+    // THE DETAIL IS FOR A PERSON WITH ACCESS TO EVERYTHING, as a company's file paths are. It names
+    // environment variables and filesystem paths on the server, and this screen is company-scoped — a
+    // person holding one company can reach it. The CODE travels to everyone, because "this installation
+    // does not have saved searches" is true and useful for them and gives away nothing; only the
+    // sentence saying which variable to change is held back.
     if (!callRecipes) {
-      const staff = identity?.role === "staff";
       return { status: 404, json: { error: recipesOff?.code ?? "not_found",
-        ...(staff && recipesOff?.detail ? { detail: recipesOff.detail } : {}) } };
+        ...(seesEverything(identity) && recipesOff?.detail ? { detail: recipesOff.detail } : {}) } };
     }
     const r = await callRecipes(method, path, body, identity);
     if (r.status === 404) return { status: 404, json: { error: "not_found" } };

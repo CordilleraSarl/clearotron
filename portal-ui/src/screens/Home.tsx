@@ -32,7 +32,7 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote,
+  recentlyFinished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
@@ -101,10 +101,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // moving. The screen would sit still and look finished. What is displayed is scoped; what decides
   // whether to keep looking is not.
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
-  const runs = useMemo(
-    () => (ctx.owner ? allRuns.filter((r) => r.account === ctx.owner) : allRuns),
-    [allRuns, ctx.owner],
-  )
+  const runs = useMemo(() => runsFor(allRuns, ctx.owner), [allRuns, ctx.owner])
   const rows = useMemo(() => inFlight(runs), [runs])
   // — what this reader has put down. A COUNT, not a silent disappearance: acknowledging must not
   // be the same act as forgetting, so the number is on screen and one click opens the list.

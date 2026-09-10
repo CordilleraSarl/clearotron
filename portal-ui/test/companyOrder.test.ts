@@ -14,7 +14,7 @@ import { readFileSync } from 'node:fs'
 import { pickerGroups, pickerRows, GENERIC_KEY } from '../src/shell/companyRows.ts'
 import type { Organisation, Run } from '../src/contract/api.ts'
 import { genericFor, isGenericKey, orgOfGeneric, wireAccount, runKey } from '../src/contract/genericKey.ts'
-import { ownerSummaries } from '../src/contract/home.ts'
+import { ownerSummaries, runsFor } from '../src/contract/home.ts'
 
 const NAMES: Record<string, string> = {
   generic: 'Generic default',
@@ -134,6 +134,20 @@ test("HOME COUNTS EACH ORGANISATION'S GENERIC ON ITS OWN, and a bare comparison 
     .map((x) => [x.key, [x.live, x.finished]]))
   assert.deepEqual(byKey, { [genericFor('alder')]: [1, 0], [genericFor('birch')]: [0, 1] },
     'each Generic counts its own organisation\'s runs, and the unplaced one is counted under neither')
+})
+
+test("THE CHIPS FILTER THROUGH runKey, so picking an organisation's Generic keeps its runs", () => {
+  // Home filters its rows by the picked owner. A bare `run.account === owner` keeps nothing for
+  // genericFor('alder'), because Alder's Generic runs carry the wire account `generic`.
+  const runs = [
+    { runId: 'co', account: 'harbour', organisation: null, state: 'running', date: '2026-09-03' },
+    { runId: 'a', account: 'generic', organisation: 'alder', state: 'running', date: '2026-09-01' },
+    { runId: 'b', account: 'generic', organisation: 'birch', state: 'delivered', date: '2026-09-02' },
+  ] as unknown as readonly Run[]
+  const ids = (owner: string | null) => runsFor(runs, owner).map((r) => r.runId)
+  assert.deepEqual(ids(genericFor('alder')), ['a'], "Alder's Generic keeps its own run and nothing else")
+  assert.deepEqual(ids('harbour'), ['co'], 'a company keeps its own run')
+  assert.deepEqual(ids(null), ['co', 'a', 'b'], 'with nothing picked, every run stays')
 })
 
 test('THE SWITCHER, THE PANEL AND THE CHIPS take their rows from the one grouping', () => {

@@ -189,6 +189,17 @@ export function ownerSummaries(
 }
 
 /**
+ * The runs one company's view shows, or every run when no company is picked.
+ *
+ * THROUGH `runKey`, like every other run-to-owner comparison. An organisation's Generic is the owner key
+ * `generic:<org>` while its runs carry the wire account `generic` and their organisation, so comparing
+ * `run.account` with the owner drops every Generic run the moment somebody picks one.
+ */
+export function runsFor(runs: readonly Run[], owner: string | null): readonly Run[] {
+  return owner ? runs.filter((r) => runKey(r) === owner) : runs
+}
+
+/**
  * What sits beside a project's name on its row.
  *
  * Reads, not names — "three clearances" under a matter is three searches, which is the number someone
