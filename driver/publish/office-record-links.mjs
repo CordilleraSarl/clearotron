@@ -131,7 +131,6 @@ export function recordLinksFor(findings, recordsByUri, provider) {
   if (!VENDORS_WITHOUT_RECORD_PAGES.includes(clean(provider).toLowerCase())) return null;
   const byUri = new Map();
   const tally = { linked: {}, cited: {}, notRetrieved: 0 };
-  const bump = (o, k) => { o[k] = (o[k] ?? 0) + 1; };
   for (const f of Array.isArray(findings) ? findings : []) {
     for (const r of f?.owner?.registrations ?? []) {
       const key = clean(r?.uri).toLowerCase();
@@ -140,17 +139,26 @@ export function recordLinksFor(findings, recordsByUri, provider) {
       if (!rec) { byUri.set(key, null); tally.notRetrieved += 1; continue; }
       const link = officeRecordLink(rec, key);
       byUri.set(key, link);
-      if (link.href) bump(tally.linked, link.office);
-      else bump((tally.cited[link.office] ??= {}), link.reason);
+      tallyLink(tally, link);
     }
   }
+  return { byUri, tally, summary: summaryOf(tally, `record not retrieved ${tally.notRetrieved}`) };
+}
+
+const bump = (o, k) => { o[k] = (o[k] ?? 0) + 1; };
+function tallyLink(tally, link) {
+  if (link.href) bump(tally.linked, link.office);
+  else bump((tally.cited[link.office] ??= {}), link.reason);
+}
+
+/** The log line for a tally: how many were linked and how many cited by number, per office and reason. */
+function summaryOf(tally, tail) {
   const sum = (xs) => xs.reduce((a, b) => a + b, 0);
   const linked = Object.entries(tally.linked).map(([o, n]) => `${o} ${n}`).join(", ");
   const cited = Object.entries(tally.cited).flatMap(([o, rs]) => Object.entries(rs).map(([r, n]) => `${o} ${n} ${r}`)).join(", ");
-  const summary = `linked ${sum(Object.values(tally.linked))}${linked ? ` (${linked})` : ""}`
+  return `linked ${sum(Object.values(tally.linked))}${linked ? ` (${linked})` : ""}`
     + ` · cited by number ${sum(Object.values(tally.cited).flatMap((rs) => Object.values(rs)))}${cited ? ` (${cited})` : ""}`
-    + ` · record not retrieved ${tally.notRetrieved}`;
-  return { byUri, tally, summary };
+    + ` · ${tail}`;
 }
 
 const nameOf = (office) => OFFICE_RECORD_PAGES[office]?.name ?? office.toUpperCase();
@@ -174,6 +182,26 @@ export function officeReasonSentences(byUri) {
   });
 }
 
+/**
+ * What a linked registration number opens, when one is linked, then the reasons per office, as the
+ * knockout says them under its listed filings. They are the sentences the clearance says in Scope; its
+ * renderer is frozen (render-frozen.test.mjs) and keeps its own copy of the first.
+ */
+export function officeLinkSentences(byUri) {
+  if (!(byUri instanceof Map)) return [];
+  const linked = [...byUri.values()].some((l) => l?.href);
+  return [...(linked ? ["A registration number shown as a link opens the office’s own page for that record."] : []),
+    ...officeReasonSentences(byUri)];
+}
+
+/** Why a registration is cited by number rather than linked, in the workbook's words. */
+export function reasonCellFor(link) {
+  const name = nameOf(link.office);
+  if (link.reason === "no-page") return `No page for a single record at this register (${name}); cited by number`;
+  if (link.reason === "unknown-office") return `No page address held for this register (${name}); cited by number`;
+  return `Number not in the form this register's page address takes (${name}); cited by number`;
+}
+
 /** The workbook's Link cell for a finding: its first linked registration, else the first stated reason. */
 export function linkCellFor(registrations, byUri) {
   if (!(byUri instanceof Map)) return "";
@@ -182,8 +210,31 @@ export function linkCellFor(registrations, byUri) {
   if (linked) return linked.href;
   const first = links[0];
   if (!first) return "";
-  const name = nameOf(first.office);
-  if (first.reason === "no-page") return `No page for a single record at this register (${name}); cited by number`;
-  if (first.reason === "unknown-office") return `No page address held for this register (${name}); cited by number`;
-  return `Number not in the form this register's page address takes (${name}); cited by number`;
+  return reasonCellFor(first);
+}
+
+/**
+ * A knockout's listed filings, each addressed at its office's page, for a listing taken on a register
+ * with no record pages of its own. `doc` is register-records.json, and each filing that carries an office
+ * number gains an `officeLink` in place, as normalizeRegisterRecordLinks rewrites links in place, so the
+ * report, the workbook and report-data.json all state the same link. Returns null for any other
+ * register, whose filings render exactly as before.
+ *
+ * A FILING WITH NO OFFICE NUMBER IS LEFT AS IT WAS, and shows as it always did. Every listing taken
+ * before the numbers were kept is that case, so an archived knockout republishes unchanged. An
+ * `officeLink` found already on the sidecar is dropped first: the link is set here, from the numbers, and
+ * nowhere else.
+ */
+export function addressListedFilings(doc) {
+  const records = (doc?.marks ?? []).flatMap((m) => m?.records ?? []).filter((r) => r && typeof r === "object");
+  for (const r of records) delete r.officeLink;
+  if (!VENDORS_WITHOUT_RECORD_PAGES.includes(clean(doc?.provider).toLowerCase())) return null;
+  const tally = { linked: {}, cited: {}, noNumber: 0 };
+  for (const r of records) {
+    const link = officeRecordLink(r, r.recordId);
+    if (!link?.label) { tally.noNumber += 1; continue; }
+    r.officeLink = link;
+    tallyLink(tally, link);
+  }
+  return { tally, summary: summaryOf(tally, `no office number ${tally.noNumber}`) };
 }

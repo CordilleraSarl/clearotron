@@ -143,6 +143,12 @@ function toRecord(row, { term, basis, provider }) {
     territory,
     applicationDate: row?.application_date ?? null,
     registrationDate: row?.registration_date ?? null,
+    // The office's own numbers, where the provider hands them over. On a register with no record pages of
+    // its own, publish addresses the office's page for the filing from these (office-record-links.mjs).
+    applicationNumber: row?.application_number ?? null,
+    registrationNumber: row?.registration_number ?? null,
+    irNumber: row?.ir_number ?? null,
+    filingRoute: row?.filing_route ?? null,
     // WHICH QUESTION FOUND IT. Without this a reader cannot tell a filing on the name from a filing on
     // a generated variant, and the two mean very different things to the person deciding on the name.
     matchedForm: term,
