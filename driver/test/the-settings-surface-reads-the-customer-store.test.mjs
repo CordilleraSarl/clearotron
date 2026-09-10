@@ -88,11 +88,10 @@ function storeInRepo(customer) {
   execFileSync("git", ["-C", root, "config", "user.name", "t"]);
   const store = join(root, "profiles");
   mkdirSync(store);
-  // The skills overlay is DERIVED from PROFILE_REPO_ROOT, so a store whose repo has no `skills/` makes
-  // the Brand profile page resolve a customer's risk framework against nothing. The portal warns about
-  // exactly this at boot; without the directory the profile route answers 500 rather than the customer's
-  // settings, which is a different failure from the one this file is about and would mask it.
-  mkdirSync(join(root, "skills"), { recursive: true });
+  // NO `skills/` FOLDER, on purpose. This fixture used to create one because the portal derived the
+  // overlay from PROFILE_REPO_ROOT whether or not it existed, and without it the profile route answered
+  // 500. A store that overrides nothing now reads as exactly that (an-empty-config-store-overrides-nothing),
+  // so these arms run on the shape a real install is in.
   // BUILT FROM A REAL PROFILE, not invented. Every profile key must have a live consumer — the loader
   // rejects an unknown one by name at 500 — so a hand-written fixture is a different failure waiting to
   // be mistaken for this issue's. The customer's KEY is its filename, never a field inside it.

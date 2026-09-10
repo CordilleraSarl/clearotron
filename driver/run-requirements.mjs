@@ -186,7 +186,7 @@ export function missingRequirements(env = {}, tables = {}) {
  *
  * Returns null when nothing blocks, so a caller cannot mistake "configured" for "could not look".
  */
-export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFile = null } = {}) {
+export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFile = null, startFile = null } = {}) {
   const missing = missingRequirements(env, tables).atOrder;
   if (!missing.length) return null;
   const names = missing.map((r) => r.name);
@@ -197,12 +197,21 @@ export function orderTimeRefusal(env = {}, tables = {}, { envFile = null, readFi
   // was told to create a file nothing on that box reads — and the one actually read went unnamed.
   // `readFile` is the file THIS process loaded at start; it is null under a unit, where the unit's own
   // EnvironmentFile is the only configuration and `envFile` alone is the true answer.
+  //
+  // AND A RUNNER THAT `clearotron start` STARTED READ NO FILE EITHER. The supervisor read the install's own
+  // file and handed its values down with CLEAROTRON_NO_ENV_FILE=1, so `readFile` is null there exactly as
+  // it is under a unit, and this sentence named the units' file: on a box with no units, a file that does
+  // not exist, while the file the values came from went unnamed. Measured on a fresh install, 2026-09-10.
+  // `startFile` is the file that supervisor read. It reaches the runner as a command-line flag that a unit's
+  // fixed ExecStart never carries, so it is set exactly when `clearotron start` is the parent.
   const cmd = "`clearotron install` in a terminal, which writes them for you";
   const both = readFile && envFile && readFile !== envFile;
   const one = readFile || envFile;
   const where = both
     ? ` Set them in either of these — both reach a run:\n      ${readFile} — the file this runner read when it started\n`
       + `      ${envFile} — the file background units read\n  then restart, or run ${cmd}.`
+    : !readFile && startFile
+      ? ` Set them in ${startFile} — the file \`clearotron start\` read when it started this runner — then restart it, or run ${cmd}.`
     : one
       ? ` Set them in ${one} and restart, or run ${cmd}.`
       : " Run `clearotron install` in a terminal to configure them, or set them in the file this install's units read.";

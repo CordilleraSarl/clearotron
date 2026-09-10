@@ -16,6 +16,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { laterStartLines } from "../portal-local-auth.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { newPassphrase } from "../portal-local-auth.mjs";
@@ -113,8 +114,12 @@ test("a LATER start still says the truth, and does not claim to reprint", () => 
   // terminal nobody watched, and a block promising a value would send the reader looking for one that
   // is not there. The branch is chosen by whether THIS run minted, not by whether a file exists now.
   const later = START.slice(START.indexOf("} else {", START.indexOf("if (mintedPassphrase) {")));
-  assert.match(later.slice(0, 600), /minted on an earlier start and is NOT reprinted/,
+  assert.match(later.slice(0, 900), /laterStartLines\(\{ user, reset,/,
+    "the later-start branch must say it through the one composer");
+  const said = laterStartLines({ user: "op@localhost", reset: "RESET", credentialPath: "/x/cred.json" }).join("\n");
+  assert.match(said, /minted on an earlier start and is NOT reprinted/,
     "the later-start branch must still say the value is not being reprinted");
+  assert.doesNotMatch(said, /printed once, above/, "and it must not send the reader back up the log");
   assert.match(START, /const mintedPassphrase = credentialExisted \? null : newPassphrase\(\)/,
     "the branch must turn on what this run did, not on a file check made after the mint");
 });

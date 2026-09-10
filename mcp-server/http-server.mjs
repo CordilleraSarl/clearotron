@@ -259,22 +259,25 @@ if (isMain) {
   // are useful without it, and failing closed here would turn a config slip into an outage.
   try {
     const { loadProfiles } = await import("../driver/profiles.mjs");
-    const roster = [...loadProfiles({ force: true }).keys()].sort();
+    const profiles = loadProfiles({ force: true });
+    const roster = [...profiles.keys()].sort();
     const where = envFrom(process.env, "CLEAROTRON_CUSTOMERS_DIR") || "(unset — BUNDLED demo roster at driver/profiles)";
     log(`roster: ${roster.length} customer(s) from ${where} — [${roster.join(", ")}]`);
-    if (!envFrom(process.env, "CLEAROTRON_CUSTOMERS_DIR")) {
-      // — SAME FACT, DIFFERENT READER. "Every real customer will be refused" is
-      // true and useless to a demo visitor, who has none and wants none; what a first-time reader needs
-      // is what the demo IS. Composed once, in driver/demo-posture.mjs, because the other mis-aimed
-      // warning of this pair lives in the portal process and the two must not answer differently.
-      //
-      // OUTSIDE A DEMO IT IS UNCHANGED AND STILL A WARNING — an operator whose roster is the bundled one
-      // has a real deployment that will refuse every real customer.
-      const posture = demoPostureLine(process.env);
-      if (posture) log(posture);
-      else log(`WARNING: CLEAROTRON_CUSTOMERS_DIR is unset, so start_run is validating against the BUNDLED demo roster.`
+    // — SAME FACT, DIFFERENT READER. "Every real customer will be refused" is
+    // true and useless to a demo visitor, who has none and wants none; what a first-time reader needs
+    // is what the demo IS. Composed once, in driver/demo-posture.mjs, because the other mis-aimed
+    // warning of this pair lives in the portal process and the two must not answer differently.
+    //
+    // ASKED BEFORE THE STORE IS. A demo runs on a store of its own under its base, so an unset store no
+    // longer tells a demo from an operator's install. The line is composed from the roster read above.
+    //
+    // OUTSIDE A DEMO IT IS UNCHANGED AND STILL A WARNING — an operator whose roster is the bundled one
+    // has a real deployment that will refuse every real customer.
+    const posture = demoPostureLine(process.env, { roster: profiles });
+    if (posture) log(posture);
+    else if (!envFrom(process.env, "CLEAROTRON_CUSTOMERS_DIR"))
+      log(`WARNING: CLEAROTRON_CUSTOMERS_DIR is unset, so start_run is validating against the BUNDLED demo roster.`
         + " Every real customer will be refused with \"names no known customer\". Set it to the config store's profiles directory.");
-    }
     const granted = grantedAccounts(envFrom(process.env, "CLEAROTRON_ACCESS_FILE"));
     const missing = granted.filter((a) => !roster.includes(a));
     if (missing.length) {

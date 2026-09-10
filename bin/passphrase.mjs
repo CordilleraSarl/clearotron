@@ -27,7 +27,7 @@
 // facts an operator needs and none of them a secret.
 
 import { existsSync, rmSync } from "node:fs";
-import { credentialPathFor, establishCredential, readLocalCredential } from "../driver/portal-local-auth.mjs";
+import { defaultInstallBase, establishCredential, installCredential, readLocalCredential } from "../driver/portal-local-auth.mjs";
 // — the form a reader can actually type, derived from how THIS process started
 // rather than hardcoded. A hardcoded `npx ` tells a global installer their install is somehow lesser;
 // a hardcoded bare name sends an npx reader to `command not found`.
@@ -39,6 +39,10 @@ const USAGE = `  ${P}clearotron passphrase — report or reset the portal's loca
     ${P}clearotron passphrase           where the credential is, whether it exists, whose it is
     ${P}clearotron passphrase --reset   mint a NEW passphrase and print it once
     ${P}clearotron passphrase --help    this text. Changes nothing.
+    ${P}clearotron passphrase --base <dir>   any of the above, for an install set up somewhere other than ~/trademark
+
+  The credential is the one this install's portal reads: the install's own file in its directory, or
+  the shared ~/.cordillera one that an install which has been signing in with it keeps.
 
   A reset invalidates the current passphrase immediately. Anyone signed in keeps their session until
   it expires; the old passphrase stops working the moment the new one is written.`;
@@ -46,9 +50,23 @@ const USAGE = `  ${P}clearotron passphrase — report or reset the portal's loca
 const args = process.argv.slice(2);
 if (args.includes("--help") || args.includes("-h")) { console.log(`\n${USAGE}\n`); process.exit(0); }
 
-const path = credentialPathFor();
+// THE SAME DECISION THE PORTAL'S SUPERVISOR MAKES (installCredential), so the file this verb reports and
+// resets is the file the portal reads: the install's own when it has one, or the shared default an older
+// install keeps using. `--base` names the install, exactly as it does for `clearotron start`.
+const baseAt = args.indexOf("--base");
+const base = baseAt >= 0 ? args[baseAt + 1] : defaultInstallBase();
+if (baseAt >= 0 && (!base || base.startsWith("-"))) {
+  console.error(`clearotron passphrase: --base needs a directory\n\n${USAGE}\n`);
+  process.exit(2);
+}
+const { path, source } = installCredential({ base, env: process.env });
 const reset = args.includes("--reset");
-const unknown = args.filter((a) => !["--reset", "--help", "-h"].includes(a));
+const unknown = args.filter((a, i) => !["--reset", "--help", "-h", "--base"].includes(a) && !(baseAt >= 0 && i === baseAt + 1));
+const WHICH = {
+  configured: "the file PORTAL_LOCAL_CREDENTIAL names",
+  install: "this install's own",
+  shared: "the shared default: an install with no credential of its own signs in with it",
+};
 if (unknown.length) {
   console.error(`clearotron passphrase: unrecognised argument${unknown.length > 1 ? "s" : ""} ${unknown.join(", ")}\n\n${USAGE}\n`);
   process.exit(2);
@@ -71,11 +89,12 @@ catch (e) {
 
 if (!reset) {
   console.log(`\n  credential: ${path}`);
+  console.log(`  which:      ${WHICH[source]}`);
   console.log(existing
     ? `  exists:     yes — for ${existing.email}, created ${existing.createdAt ?? "(no date recorded)"}`
     : `  exists:     NO — the portal will mint one on its next start and print it to that start's output`);
   console.log(existing
-    ? `\n  The passphrase itself cannot be shown: what is stored is a digest, not the secret.\n  To get a working one, run:  ${P}clearotron passphrase --reset\n`
+    ? `\n  The passphrase itself cannot be shown: what is stored is a digest, not the secret.\n  To get a working one, run:  ${P}clearotron passphrase --reset${baseAt >= 0 ? ` --base ${base}` : ""}\n`
     : `\n  Nothing to reset yet.\n`);
   process.exit(0);
 }

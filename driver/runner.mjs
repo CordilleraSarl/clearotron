@@ -27,7 +27,7 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES } from "./queue-markers.mjs";
-import { matterLedgerPath } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
+import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
 import { unitEnvPath, envFileRead } from "../shared/env-local.mjs";   // the file the units read, named by its one author
 import { fileURLToPath } from "node:url";
@@ -235,7 +235,11 @@ function recordMatter(qdir, entry) {
 // which reads as the product being broken rather than as a fair-use wall. The risk this exists to stop is
 // unbounded spend by an unconfigured account, and 20 stops that just as completely. It is the DEFAULT, so
 // any account that needs a different number says so in its own runCaps block.
-export const DEFAULT_CLIENT_DAILY_RUNS = 20;
+//
+// ONE DECLARATION. The number lives in usage-ledger.mjs, the leaf a request path imports without pulling
+// the runner in, and is re-exported here for the gate and its tests. Two declarations held equal by a
+// test is how the screen comes to advertise one allowance while the gate enforces another.
+export { DEFAULT_CLIENT_DAILY_RUNS };
 
 export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null }) {
   // GENERIC IS CAPPED LIKE ANY COMPANY, one lane per organisation (ruling 2026-09-10: "every
@@ -768,6 +772,14 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // WHAT IT MUST NEVER DO is what F41 did: fail at the first stage and tell the client "Clearotron has
 // been notified" on a box with no outbox. `failAtIntake` writes the honest refusal and the run never
 // starts, so nothing is spent and nothing is promised.
+// THE ENV FILE `clearotron start` READ, when it started this runner: the one file a refusal can honestly
+// name for a runner that read none itself (run-requirements.mjs, `startFile`). A command-line flag rather
+// than a variable, for two reasons. A unit's ExecStart is fixed at `--watch` and never carries it, so a
+// runner holding it was started by that command. And a variable read by product code belongs in the
+// environment catalogue, which describes settings an operator makes, and this is not one.
+const START_ENV_FILE_FLAG = "--start-env-file=";
+const startEnvFile = () => (process.argv.find((t) => t.startsWith(START_ENV_FILE_FLAG)) ?? "").slice(START_ENV_FILE_FLAG.length) || null;
+
 let __runTables = null;
 async function runTables() {
   // AT CALL TIME, never a static import. `driver/run-requirements.mjs`'s header states the reason and it
@@ -856,7 +868,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   }
   // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
   {
-    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath(), readFile: envFileRead() });
+    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath(), readFile: envFileRead(), startFile: startEnvFile() });
     if (refusal) {
       note(`[runner] ${base} REFUSED at order time — this install is not configured to run a search: ${refusal.names.join(", ")}`);
       await failAtIntake(procPath, qdir, base, agentId, job,
@@ -2404,7 +2416,7 @@ if (isEntrypoint(import.meta.url)) {
   // the exact silence this whole change exists to remove. (pipeline.mjs's RETIRED_FLAGS table makes the same
   // argument about a switch that degrades quietly into whatever the remaining arguments mean.)
   const argv = process.argv.slice(2);
-  const unknown = argv.filter((t) => t !== "--watch");
+  const unknown = argv.filter((t) => t !== "--watch" && !t.startsWith(START_ENV_FILE_FLAG));   // the second is start's own, see startEnvFile
   if (unknown.length) {
     console.error(`error: unknown argument ${unknown[0]}\nusage: node runner.mjs [--watch]\n  --watch  keep polling instead of draining once — the substitute for the systemd .path/.timer units\n           on a machine that has none. Without it this drains the queue once and exits, which is what\n           systemd invokes.`);
     process.exit(2);

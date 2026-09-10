@@ -414,7 +414,7 @@ export function activeEnvPath({ repoRoot = REPO_ROOT, home = homedir(), location
  * logged: this file is where the credentials are.
  */
 export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = defaultNote,
-                              home = homedir(), location = ENV_LOCAL_LOCATION, file = null } = {}) {
+                              home = homedir(), location = ENV_LOCAL_LOCATION, file = null, demo = false } = {}) {
   // ── `file` NAMES A FILE OUTRIGHT, AND EXISTS BECAUSE A CALLER COULD NOT ────────────────────────────
   //
   // `readEnvFile(path)` in the wizard means "tell me what THIS file holds". It could only ask by handing
@@ -443,6 +443,12 @@ export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = d
   const path = file ?? activeEnvPath({ repoRoot, home, location });
   const fromLegacy = path !== inForce;
   if (optedOut(env)) return { path, applied: [], skipped: [], reason: "opted-out" };
+  // A DEMO TAKES NOTHING FROM IT (`isDemoEntry`, below). Said only when there is a file being left
+  // alone, so a reader with a real install can see the demo did not take its settings.
+  if (demo) {
+    if (existsSync(path)) note(`[env-local] not reading ${path}: \`clearotron demo\` runs on its own data and settings, never an install's\n`);
+    return { path, applied: [], skipped: [], reason: "demo" };
+  }
   if (serviceManaged(env)) {
     // Loud ONLY when there is a file to ignore. A service with no .env beside it is the normal case on
     // every box and says nothing; a service that HAS one is somebody's surprise waiting to happen, and
@@ -497,10 +503,27 @@ export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = d
 
 function defaultNote(line) { try { process.stderr.write(line); } catch { /* a closed stderr must never fail a run */ } }
 
+/**
+ * Is this process `clearotron demo`'s supervisor, `bin/start.mjs --demo`?
+ *
+ * THE ONE CLI ENTRY THAT MUST NOT READ THE FILE. What `.env` configures is the reader's real install:
+ * its config store, its pool, its grants. 0.3.0-beta.1's demo read it before `--demo` was parsed, so it
+ * served the real store's roster (no demo company, no Generic) and seeded its example reports into the
+ * real archive (measured on a reader's machine, 2026-09-10).
+ *
+ * `bin/clearotron.mjs` and `bin/example.mjs`, the two processes above it, are not CLI entries and read
+ * nothing, so this one is the whole of the gap. Its own children run with CLEAROTRON_NO_ENV_FILE=1.
+ */
+export function isDemoEntry(argv = process.argv, repoRoot = REPO_ROOT) {
+  if (!argv?.[1] || !argv.slice(2).includes("--demo")) return false;
+  const entry = realOrSelf(isAbsolute(argv[1]) ? argv[1] : resolve(process.cwd(), argv[1]));
+  return entry === realOrSelf(join(repoRoot, "bin", "start.mjs"));
+}
+
 // ── the gate ─────────────────────────────────────────────────────────────────────────────────────────
 // ESM caches by resolved URL, so this runs exactly once per process however many entries import it
 // (mcp-server/http-server.mjs imports mcp-server/server.mjs; both are entries).
-export const loaded = isCliEntry(process.argv[1]) ? loadEnvLocal() : null;
+export const loaded = isCliEntry(process.argv[1]) ? loadEnvLocal({ demo: isDemoEntry(process.argv) }) : null;
 
 /**
  * The env file THIS process took its configuration from, or null when it took none.

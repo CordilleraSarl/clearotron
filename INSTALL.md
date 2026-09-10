@@ -48,7 +48,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 - **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
   demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine resolves
   the reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI
-  on `PATH`. On Windows, `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
+  on `PATH`. Native Windows clearances are planned for a later release. Until then, on Windows,
+  `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
   from **inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no
   curl and no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node at all, and
   apt's package is below the floor above, so `npx` answers "not found" before anything of ours runs.
@@ -732,9 +733,10 @@ Use the demo to see what this system produces. Use `npx clearotron start` to run
 - Creates `~/trademark/` — `pool/`, `workspace/`, `queue/`, `outbox/`, `locks/`, an empty grants file,
   and a small git repository for saved searches. Same base directory `npx clearotron install` uses, so whichever
   of the two you ran first, the other finds the same install. Move it with `npx clearotron start --base <dir>`.
-- Mints your sign-in passphrase and **prints it once**. Write it down. It is stored as a scrypt digest,
-  nothing can read it back, and no later start reprints it. To get a new one, delete
-  `~/.cordillera/portal-local-credential.json` and start again.
+- Mints your sign-in passphrase and **prints it once**. Write it down. It is stored as a scrypt digest in
+  `~/trademark/portal-local-credential.json`, nothing can read it back, and no later start reprints it. To
+  get a new one, run `clearotron passphrase --reset`. An install that has been signing in with
+  `~/.cordillera/portal-local-credential.json`, which earlier versions shared between installs, keeps it.
 
 ### Who you are
 
@@ -744,12 +746,12 @@ You sign in as `<your-username>@localhost` unless you say otherwise:
 npx clearotron start --user you@example.com
 ```
 
-The address is written to `.env`, so it is asked for once. It is also the first person on this
-install: the first start writes it into the grants file (`CLEAROTRON_ACCESS_FILE`, §8) with access to
-everything and both permissions, Run clearances and Manage. Setup asks for your organisation's name
-directly after the address, and the same start files it there as your first organisation. The address
-admits nobody else at its domain; enrolling anyone else is that same file, exactly as on a hosted
-instance.
+Setup does not ask for the address: it writes the local-account form to `.env` and shows it once, in
+its summary, as the address that signs in. An address already in `.env` is kept. It is also the first
+person on this install: the first start writes it into the grants file (`CLEAROTRON_ACCESS_FILE`, §8)
+with access to everything and both permissions, Run clearances and Manage. Setup asks for your
+organisation's name, and the same start files it there as your first organisation. The address admits
+nobody else at its domain; enrolling anyone else is that same file, exactly as on a hosted instance.
 
 **No authentication is switched off to make this work, and none can be.** Both doors prove who the
 caller is — the portal by passphrase and a signed session cookie, the engine door by a mandatory
