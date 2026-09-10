@@ -839,6 +839,8 @@ export const PORTAL_JOB_FIELDS = Object.freeze({
   carries: Object.freeze([
     "id", "profileKey", "forwarder", "forwarderEmail",
     "markName", "marks", "classes", "goods", "ref", "projectKey",
+    // which organisation's Generic, resolved by jobFor from the verified principal — see `stamped`
+    "tenant",
     "jurisdictions", "platforms", "geography",
     "product", "recipeKey", "nativeLanguage", "caseLaw", "searchLevel", "deliveryRoute",
     "upfrontInstructions", "commercialFlexibility", "priorUse", "campaignShape", "deadline",
@@ -849,7 +851,7 @@ export const PORTAL_JOB_FIELDS = Object.freeze({
   ]),
   // The subset of `carries` whose value is the DOOR's, not the requester's. A body value for one of
   // these is ignored on purpose, so the guard drives them with a lie and requires the lie to lose.
-  stamped: Object.freeze(["id", "profileKey", "forwarder", "forwarderEmail", "clientPrincipal"]),
+  stamped: Object.freeze(["id", "profileKey", "forwarder", "forwarderEmail", "clientPrincipal", "tenant"]),
   notCarried: Object.freeze({
     // — A CLIENT MAY NEVER DECLARE A RUN A DEMO. The banner it produces says the report
     // is fiction, and a field the requester controls that can mark their own report fiction — or, arriving
