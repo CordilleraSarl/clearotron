@@ -685,7 +685,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                 an empty view is where it was when you arrived at it. */}
             {!visible.length ? (
               <tr>
-                <td colSpan={6} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
+                <td colSpan={(canGroup ? 6 : 5) + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
                   No clearances match this view. Pick another company above, or widen the status filter.
                 </td>
               </tr>

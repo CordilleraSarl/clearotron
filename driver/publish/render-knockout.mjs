@@ -189,7 +189,6 @@ const KO_CSS = `
   /* The reviewer-notes legend. NOT .ko-legend — that name is taken by the framework attribution row
      above, and reusing it would restyle the caption. It names the purple convention report.css already
      draws for .internal, so the colour is stated once and never re-specified. */
-  .ko-refnote{margin:0;padding:11px 24px 0;font-size:12px;color:#6a2b6e;font-style:italic}
   /* The notes sit inside a mark's column, so the shared .internal block's bullets keep the column's
      own list indent and do not fight the paragraph above them. */
   .ko-row .internal .ko-bul{margin:0 0 4px}

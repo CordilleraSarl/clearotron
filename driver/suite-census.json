@@ -136,8 +136,8 @@
           "todos": 0
         },
         "a-company-can-be-given-a-framework-after-it-exists.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
+          "tests": 8,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

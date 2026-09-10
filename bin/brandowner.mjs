@@ -318,7 +318,23 @@ export async function framework(argv, {
     out(`  ${key} already rates under ${resolved.path} — nothing to change.`);
     return { written: false, store, framework: resolved };
   }
-  const { files } = defaultWriteProfile({ profileDir: store, key, profile: { ...profile, frameworkPath: resolved.path } });
+  // THE CONTEXT PACK IS READ AND HANDED BACK, because omitting it is not "leave it alone".
+  // `defaultWriteProfile` reads an absent pack as "this company has none" and REMOVES the sibling file.
+  // `add` never meets that branch: it always passes the pack it was given. This verb is the first caller
+  // that rewrites a company which already exists, so it is the first one that can reach it — and setting
+  // a framework would have deleted the company's context pack, and committed the deletion under a
+  // message about the framework. Found in review, driven before the fix: a store holding acme.json and
+  // acme.context.md kept only acme.json.
+  //
+  // Re-writing the same bytes is deliberate rather than clever. The file lands in the commit's file
+  // list, git sees no change in it, and the commit still carries only the profile. A pack that holds
+  // nothing but whitespace is still removed, which is what every other reader of this store already
+  // means by an empty pack.
+  const packPath = join(store, CONTEXT_PACK_FILE(key));
+  const contextPack = existsSync(packPath) ? readFileSync(packPath, "utf8") : "";
+  const { files } = defaultWriteProfile({
+    profileDir: store, key, profile: { ...profile, frameworkPath: resolved.path }, contextPack,
+  });
 
   const repoRoot = resolveStoreRepoRoot({ names: ["CLEAROTRON_CUSTOMERS_DIR"], fallback: store }).root;
   const audit = makeCommittableAudit({ auditPath: join(store, "audit.jsonl"), repoRoot });

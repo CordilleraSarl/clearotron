@@ -22,9 +22,10 @@ import { join } from "node:path";
 import { framework } from "../../bin/brandowner.mjs";
 import { Refusal } from "../../shared/onboarding-store.mjs";
 
-const store = () => {
+const store = ({ pack = null } = {}) => {
   const d = mkdtempSync(join(tmpdir(), "fw-verb-"));
   writeFileSync(join(d, "acme.json"), JSON.stringify({ name: "Acme", platforms: ["amazon.com"] }, null, 2));
+  if (pack !== null) writeFileSync(join(d, "acme.context.md"), pack);
   return d;
 };
 // The resolution shape the store guard accepts, same as the create verb's own arms use. Anything else
@@ -86,4 +87,35 @@ test("the verb is reachable — it is in the usage and in the dispatch", async (
   assert.match(src, /brandowner framework <key> <path>/, "the usage does not mention the verb");
   assert.match(src, /sub === "framework"/, "nothing dispatches to the verb");
   assert.match(src, /One of: add, framework/, "the no-such-action message still lists only add");
+});
+
+// — THE COMPANY'S CONTEXT PACK SURVIVES.
+//
+// Found in review, not by this file, and the reason this file could not see it is worth keeping: every
+// fixture above writes a store with no `acme.context.md`, so the branch that removes one was never
+// reachable. `defaultWriteProfile` reads an absent `contextPack` as "this company has none" and DELETES
+// the sibling file. `add` always passes the pack it was given, so it never met that branch; this verb is
+// the first caller that rewrites a company which already exists.
+//
+// A company's context pack is prose somebody wrote about that business. Losing it while setting a
+// framework is silent — the verb reports the framework it set, the removal goes into the same commit
+// under a message about the framework, and nothing on any screen says the pack is gone.
+test("setting a framework leaves the company's context pack exactly as it was", async () => {
+  const prose = "Acme sells industrial fasteners.\nIts marks are used on packaging, not on the parts.\n";
+  const dir = store({ pack: prose });
+  const r = await run(dir, ["acme", "skills/prelim-search/risk-framework.md"]);
+  assert.equal(r.written, true);
+  assert.equal(existsSync(join(dir, "acme.context.md")), true,
+    "the context pack was deleted by a command that only sets a framework");
+  assert.equal(readFileSync(join(dir, "acme.context.md"), "utf8"), prose,
+    "the context pack survived but its contents were rewritten");
+});
+
+// The other direction, so the arm above cannot pass by the verb simply never writing. A company that
+// never had a pack must not acquire an empty one.
+test("a company with no context pack is not given one", async () => {
+  const dir = store();
+  await run(dir, ["acme", "skills/prelim-search/risk-framework.md"]);
+  assert.equal(existsSync(join(dir, "acme.context.md")), false,
+    "the verb created a context pack for a company that had none");
 });
