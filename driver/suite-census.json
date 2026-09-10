@@ -5146,8 +5146,8 @@
           "todos": 0
         },
         "what-doctor-passes-a-search-accepts.test.mjs": {
-          "tests": 11,
-          "asserts": 38,
+          "tests": 12,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
