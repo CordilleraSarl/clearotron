@@ -351,6 +351,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-key-pasted-at-a-yes-no-prompt-is-taken-and-not-shown.test.mjs": {
+          "tests": 5,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-killed-browser-takes-its-children.test.mjs": {
           "tests": 2,
           "asserts": 4,
