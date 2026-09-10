@@ -48,6 +48,19 @@ test("the doctrine's example carries a whole finding and a whole register read",
   // A floor on what is driven below, so an example that lost its finding cannot let every test pass.
   assert.ok(Object.keys(TAUGHT).length >= 8, `the doctrine's finding carries ${Object.keys(TAUGHT).length} keys`);
   assert.ok(Object.keys(TAUGHT_READ).length >= 2, `the doctrine's register read carries ${Object.keys(TAUGHT_READ).length} keys`);
+  // AND THE KEY THIS FILE EXISTS FOR, by name. Without it, an example that stopped teaching the key the
+  // report's source label is derived from would pass every test below.
+  assert.ok("weighedFilings" in TAUGHT, "the doctrine's example no longer teaches weighedFilings");
+});
+
+test("the doctrine's closed-key count is the number of keys its own example teaches", () => {
+  // The count line said "all eight" beside an example with nine, and a seat reading "no others" had two
+  // closed sets to choose between. Held to the example, so the sentence cannot fall behind it again.
+  const said = /closed keys, all (\w+), no others/.exec(DOCTRINE)?.[1];
+  assert.ok(said, "the doctrine stopped stating its finding's closed-key count");
+  const WORDS = { seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
+  assert.equal(WORDS[said], Object.keys(TAUGHT).length,
+    `the doctrine says "all ${said}" and its example teaches ${Object.keys(TAUGHT).length}: ${Object.keys(TAUGHT).join(", ")}`);
 });
 
 test("the validator accepts a finding written exactly as the doctrine teaches, and keeps every key", () => {
