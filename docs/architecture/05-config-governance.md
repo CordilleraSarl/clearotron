@@ -152,7 +152,7 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 | `CLEAROTRON_MCP_URL` | fail-closed omit | Staff "Ask your AI" connector base |
 | `CLEAROTRON_CLIENT_MCP_URL` | fail-closed omit | Client connector base |
 | `CLEAROTRON_ACCESS_DOMAIN` | omit note | Identity domain in the delivery email access note |
-| `CLEAROTRON_BOX` | unset ⇒ the expected-but-absent check is suppressed | Which deployment this is (`prod` \| `test`), for `scripts/live-surface-check.mjs`'s unit inventory. Self-declared, never inferred from the account name: an unrecognised value suppresses the arm rather than reporting every production unit missing |
+| `CLEAROTRON_BOX` | none — required (unset or unrecognised ⇒ the unit-inventory line fails and names this variable) | Which deployment this is (`prod` \| `test`), for `scripts/live-surface-check.mjs`'s unit inventory. Self-declared, never inferred from the account name. Without a recognised value, the half that looks for a unit declared here and not running cannot run, because a guess would report every other deployment's units missing; so the line fails instead of passing with that half unrun |
 | `CLEAROTRON_BRAND_NAME` / `CLEAROTRON_BRAND_TAGLINE` / `CLEAROTRON_BRAND_PRODUCT` | reference-tenant literals in `shared/brand.mjs` | Tenant brand seam (single-sourced) |
 
 ### 5.2 Engine & models — T3
