@@ -573,7 +573,7 @@ export function resolvePerson(email, grants) {
 
 // The flat view of the same answer, for the callers that only ask which companies: "*" (everything),
 // [keys], or [] (authenticated but granted nothing). No grants file at all still answers "*" — every
-// caller that must not read that as "every customer" refuses it by name (grantedAccounts, the boot gates).
+// caller that must not read that as "every customer" refuses it by name (personScope, the boot gates).
 export function accountsForEmail(email, grants) {
   if (!grants) return "*";
   return resolvePerson(email, grants)?.accounts ?? [];
@@ -581,15 +581,20 @@ export function accountsForEmail(email, grants) {
 
 // The account gate. scope.accounts: null|"*" ⇒ full visibility (enforcement off / full grant); [keys] ⇒
 // only those accounts. A run with NO account tag (pre-grants history) is visible only to full grants.
-export function assertAccountAccess(scope, accountKey, what = "this run") {
+// A Generic run is its organisation's: visible to a session that sees that organisation's Generic
+// (`genericOrgs`), and one filed under no organisation only to a full-grant session. The portal asks the
+// same question in `mayReadRun` (driver/portal-access.mjs).
+export function assertAccountAccess(scope, accountKey, what = "this run", organisation = null) {
   const acc = scope?.accounts;
   if (acc == null || acc === "*") return;
   if (!Array.isArray(acc)) throw new Error("malformed scope.accounts");
   if (accountKey == null) throw new Error(`${what} carries no account tag — visible only to full-grant sessions`);
+  if (accountKey === "generic" && organisation != null && Array.isArray(scope?.genericOrgs)
+    && scope.genericOrgs.includes(organisation)) return;
   if (!acc.includes(accountKey)) throw new Error(`your grant does not include account "${accountKey}"`);
 }
-export function accountVisible(scope, accountKey) {
-  try { assertAccountAccess(scope, accountKey); return true; } catch { return false; }
+export function accountVisible(scope, accountKey, organisation = null) {
+  try { assertAccountAccess(scope, accountKey, "this run", organisation); return true; } catch { return false; }
 }
 
 // Ops-token issuance (INSTALL.md §8): `sub` names the PRINCIPAL the token was minted
@@ -674,17 +679,39 @@ export function verifyToken(token, { now = Date.now() } = {}) {
 // (403, not an empty read-all); and `cap` — an account token's optional accounts[] — can only NARROW the
 // grant, so a key whose cap no longer intersects its identity's grant resolves to nothing and is refused
 // rather than silently widening back to the full grant.
-function grantedAccounts(identity, cap = null) {
-  const granted = accountsForEmail(identity, loadGrants());
-  if (!Array.isArray(granted))
+//
+// THE KEY PROVES WHO; THE PERSON'S ENTRY DECIDES WHAT, AT THE MOMENT OF THE CALL. The scope carries the
+// person's reach and switches from `resolvePerson` — the resolver the portal reads — so a key held by a
+// person with access to everything reaches everything, a view-only person's key reads and never writes,
+// and the two doors cannot disagree about one address.
+function personScope(identity, cap = null) {
+  const grants = loadGrants();
+  if (!grants)
     throw new Error("forbidden: client account access requires a configured grants file (refusing an unscoped wildcard)");
-  if (granted.length === 0)
+  const person = resolvePerson(identity, grants);
+  if (!person)
     throw new Error("forbidden: this identity is not granted any account");
-  if (!Array.isArray(cap) || !cap.length) return granted;
-  const narrowed = granted.filter((a) => cap.includes(a));
+  const whole = { accounts: person.accounts, everything: person.everything, permissions: person.permissions,
+    genericOrgs: person.genericOrgs };
+  if (!Array.isArray(cap) || !cap.length) return whole;
+  // A cap names companies, so it narrows to companies: Generic is not one, and a capped key reaches none.
+  const narrowed = person.accounts === "*" ? [...cap] : person.accounts.filter((a) => cap.includes(a));
   if (!narrowed.length)
     throw new Error("forbidden: this key is capped to accounts its identity is no longer granted");
-  return narrowed;
+  return { ...whole, accounts: narrowed, everything: false, genericOrgs: [] };
+}
+
+// Which organisation's Generic a connector job means, on a Generic run only: the one named, which the
+// person must see, or the one organisation they see. Neither is a job filed under none, which only a
+// person who sees everything can order.
+function tenantStamp(scope, asked) {
+  const orgs = Array.isArray(scope?.genericOrgs) ? scope.genericOrgs : [];
+  const t = typeof asked === "string" && asked.trim() ? asked.trim() : null;
+  if (t != null) {
+    if (!orgs.includes(t)) throw new Error(`your access does not include organisation "${t}"`);
+    return { tenant: t };
+  }
+  return orgs.length === 1 ? { tenant: orgs[0] } : {};
 }
 
 // True iff `email`'s domain (the part after the final '@') is one of firmDomains. PURE (no jose), so the HTTP
@@ -731,7 +758,7 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
     if (!innerToken) {
       if (!accountAccess)
         throw new Error("forbidden: the client surface requires a run-scoped token (no read-all/internal access)");
-      return { kind: "account", runId: null, sub: email ?? null, verbs: null, accounts: grantedAccounts(email) };
+      return { kind: "account", runId: null, sub: email ?? null, verbs: null, ...personScope(email) };
     }
     const t = verifyToken(innerToken, { now });
     // An ACCOUNT token — the API key. Same principal as the CF-signed-in client above, reached with a
@@ -741,7 +768,7 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
     if (t.scope === "account") {
       if (!accountAccess)
         throw new Error("forbidden: client account access is not enabled on this door");
-      return { kind: "account", runId: null, sub: t.sub, verbs: null, accounts: grantedAccounts(t.sub, t.accounts) };
+      return { kind: "account", runId: null, sub: t.sub, verbs: null, ...personScope(t.sub, t.accounts) };
     }
     if (t.scope !== "user") throw new Error("forbidden: the client surface accepts only a run-scoped user token or an account key");
     return { kind: "user", runId: t.runId, sub: t.sub, verbs: null, accounts: null }; // run-bound — accounts moot
@@ -760,7 +787,19 @@ export function resolveScope({ local = false, innerToken = null, email = null, f
   // `sub` carries the VERIFIED identity for every other principal (attribution, the audit log, the
   // forwarder stamp) and was the one arm that dropped it — a CF-authed staff member's email was known
   // here and thrown away, which is why a staff plan_run had no identity to stamp a forwarder from.
-  if (firmStaff) return { kind: "internal", runId: null, sub: email ?? null, verbs: null, accounts: accountsForEmail(email, loadGrants()) };
+  //
+  // THE STAFF FACE READS THE SAME PERSON THE PORTAL DOES. `firmStaff` is the sign-in allowlist in front
+  // of this face; the reach behind it is the person's entry in the grants file, resolved as the portal
+  // resolves it. An allowed address with no entry reaches nothing, and no grants file at all is the
+  // enforcement-off posture it always was.
+  if (firmStaff) {
+    const grants = loadGrants();
+    const person = grants ? resolvePerson(email, grants) : null;
+    return { kind: "internal", runId: null, sub: email ?? null, verbs: null,
+      accounts: !grants ? "*" : person ? person.accounts : [],
+      everything: !grants || person?.everything === true, genericOrgs: person?.genericOrgs ?? [],
+      permissions: person?.permissions ?? { run: false, manage: false } };
+  }
   throw new Error("forbidden: no run-scoped token and not a firm-staff identity — refusing (internal read-all requires proven firm staff)");
 }
 
@@ -919,13 +958,22 @@ export function authorize(scope, toolName, args = {}) {
     // the name, so neither half can be satisfied alone.
     if (toolName === "what_if_run" && !args?.runId)
       throw new Error(`what_if_run: pass the runId of the run you planned against — a client session must name the run it is changing.`);
+    // RUN CLEARANCES IS A SWITCH ON THE PERSON. Every write this layer reaches — start, stop, what-if —
+    // spends or ends a clearance, and the preview is the first step of one, so a view-only person's key
+    // reads and never writes. The portal gates the same routes on the same switch.
+    if ((rule.write || toolName === "plan_run") && scope.permissions?.run !== true)
+      throw new Error(`tool "${toolName}" needs Run clearances, which this person does not hold`);
     if (toolName === "start_run" || toolName === "plan_run") {
-      // The grant bounds which account a client may spend against. `generic` is the neutral profile a job
-      // with no profileKey runs under, so it has to be granted explicitly like any other key — otherwise
-      // omitting the field would be a way out of the grant.
+      // The access bounds which company a person may spend against. `generic` is the neutral profile a
+      // job with no profileKey runs under, and it is not a company: seeing an organisation's Generic does
+      // not extend to ordering it, because Generic is exempt from the daily cap. Ordering it stays with a
+      // person who sees everything — the portal refuses it at its chokepoint for the same reason — so
+      // omitting the field is still no way out of the access.
       const key = args?.profileKey ?? "generic";
-      if (!scope.accounts.includes(key))
-        throw new Error(`your grant [${scope.accounts.join(", ")}] does not include account "${key}" — ${toolName} refused`);
+      const reach = scope.accounts === "*" ? "everything" : (Array.isArray(scope.accounts) ? scope.accounts.join(", ") : "");
+      if (key === "generic" ? scope.everything !== true
+        : !(scope.accounts === "*" || (Array.isArray(scope.accounts) && scope.accounts.includes(key))))
+        throw new Error(`your grant [${reach}] does not include account "${key}" — ${toolName} refused`);
     }
     if (toolName === "start_run" || toolName === "plan_run") {
       // WHO IS ASKING is server-stamped from the CF-verified identity, never caller-supplied. Both the
@@ -934,8 +982,10 @@ export function authorize(scope, toolName, args = {}) {
       // rides the delivery packet (docs/DELIVERY.md)". A client's assistant cannot act on that — it names
       // an internal doc and a concept the client has no reason to know — and it broke the FREE preview,
       // the one call a client is most likely to make first.
-      const stamped = { ...args, forwarder: args.forwarder || scope.sub || "client-mcp",
-        forwarderEmail: scope.sub ?? args.forwarderEmail };
+      const { tenant: askedTenant, ...rest } = args ?? {};
+      const stamped = { ...rest, forwarder: args.forwarder || scope.sub || "client-mcp",
+        forwarderEmail: scope.sub ?? args.forwarderEmail,
+        ...((args?.profileKey ?? "generic") === "generic" ? tenantStamp(scope, askedTenant) : {}) };
       // THE DAILY ALLOWANCE, and the reason this branch exists at all. runCaps.dailyRuns is enforced in
       // the runner ONLY for jobs stamped clientPrincipal:true, and that stamp is deliberately POSITIVE-ONLY
       // — absence means UNCAPPED (see checkRunCaps for why every inferred alternative fails dangerously).
@@ -945,7 +995,8 @@ export function authorize(scope, toolName, args = {}) {
       // plan_run does NOT carry it: it spends nothing, so stamping it would let a free preview burn a
       // day's allowance (the runner counts ledger rows, and a previewed job that never runs must not sit
       // in that count).
-      return toolName === "start_run" ? { ...stamped, clientPrincipal: true } : stamped;
+      // Everyone but a person who sees everything is capped — the same line the portal draws.
+      return toolName === "start_run" && scope.everything !== true ? { ...stamped, clientPrincipal: true } : stamped;
     }
     return args;
   }

@@ -115,6 +115,8 @@ export const DECLARED_JOB_FIELDS = Object.freeze([
   "deliveryRoute", "parentRunId",
   // whose rulebook rates it
   "profileKey", "projectKey", "customer", "customerUnknown",
+  // which organisation's Generic — set by a door only on a Generic run, from the verified principal
+  "tenant",
   // intake fidelity — posture and prose, verbatim from the request
   "deliverableSpec", "commercialFlexibility", "priorUse", "campaignShape",
   "upfrontInstructions", "brief", "rawRequest", "deadline", "provider",

@@ -1102,9 +1102,11 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // carry neither field and consumers null-guard, exactly as they do for markName — a delivered run does
   // not gain a project retroactively, it gains one on republish or not at all.
   let project = null;
+  let organisation = null;
   try {
     const frozen = runDir ? JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')) : null;
     if (frozen?.projectKey) project = { key: String(frozen.projectKey), name: String(frozen.projectName ?? frozen.projectKey) };
+    if (typeof frozen?.organisation === 'string' && frozen.organisation) organisation = frozen.organisation;
   } catch { /* no frozen profile — pre-WS-B run, or a republish with no workspace */ }
   let tokenRollup;
   try { tokenRollup = runDir ? rollupTokens(runDir) : undefined; } catch { tokenRollup = undefined; }
@@ -1142,6 +1144,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     projectKey: project?.key ?? undefined,
     projectName: project?.name ?? undefined,
     customerKey: customerKey || 'generic',
+    // WHICH ORGANISATION'S GENERIC this run was filed under, read from the frozen sidecar like the
+    // project. Absent on a company's run and on one filed before organisations existed, so such a meta
+    // stays byte-identical to a pre-stamp one.
+    organisation: organisation ?? undefined,
     issuedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
     engineCommit: engineCommit(),

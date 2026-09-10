@@ -42,6 +42,7 @@
 // so rather than implying it has the whole picture.
 
 import { statSync, openSync, readSync, closeSync } from "node:fs";
+import { namedPoint } from "./portal-access.mjs";
 
 import { readFlagSnapshot, engineFor, providersFor, postureDisagreement } from "./flag-snapshot.mjs";
 // `isStale` is deliberately NOT imported any more: the age banner is retired (owner ruling,
@@ -269,87 +270,75 @@ export function authView({ mode = "", oidcIssuer = "", team = "", jwksUrl = "", 
 }
 
 /**
- * Where the staff-domain rule was written, so a reader can go and undo it.
+ * The People page: who has access to what, narrowed to what the viewer may see, and where an enrolment
+ * is half done.
  *
- * ── WHY A PAGE THAT NAMES A RULE MUST ALSO NAME ITS ADDRESS ─────────────────────────────────────────
+ * `grants` is the parsed grants file and `viewer` the signed-in principal. A person is listed when at
+ * least one of their access points sits inside the viewer's own, and only those points are shown — a
+ * manager of one organisation sees a colleague's access to it and never that colleague's access
+ * elsewhere. A person who sees everything sees everyone. The narrowing is here, on the server, because
+ * a filter in the browser is a boundary drawn in markup.
  *
- * The People & access screen renders the rule — "Anyone at <domain> — a rule, not a person" — and said
- * nothing about where it came from. A reader who does not recognise the domain therefore learns that
- * strangers may hold an administrator's view of their instance and has no next step at all: the value
- * is in an environment variable, in one of two files depending on how the instance is run, and neither
- * is named anywhere on the screen. The one outside reader who met this reported it as a back door,
- * twice, which is the correct thing to do with an access rule you cannot trace.
- *
- * PURE, and it answers "could not tell" as itself. `envLoad` is `shared/env-local.mjs`'s own report of
- * what this process read, so the answer describes the process actually serving the page rather than
- * being composed from a path that some other process would have read — the distinction that module
- * exists for. A service started by systemd took its configuration from an EnvironmentFile; a child of
- * `clearotron start` was handed an explicit environment and read no file at all; a hand-run CLI read
- * the CLI's file. Each gets its own sentence, because the remedy is a different file in each.
+ * `companies` maps each company key the profile store holds to its name. `localSignIn` says this install
+ * cannot hold a second person at all, which is what disables Add.
  */
-export function staffRuleSource({ name = "PORTAL_STAFF_DOMAINS", value = "", envLoad = null,
-                                  unitEnvFile = null, cliEnvFile = null } = {}) {
-  if (!String(value ?? "").trim()) return null;
-  const reason = envLoad?.reason ?? null;
-  const applied = Array.isArray(envLoad?.applied) ? envLoad.applied : [];
-  if (reason === "read" && applied.includes(name))
-    return { name, where: `read from ${envLoad.path}` };
-  if (reason === "service-managed")
-    return { name, where: unitEnvFile ? `set in this service's environment file, ${unitEnvFile}` : "set in this service's environment" };
-  if (reason === "opted-out")
-    return { name, where: cliEnvFile
-      ? `handed to this service by the command that started it, which takes it from ${cliEnvFile} or derives it from the sign-in address`
-      : "handed to this service by the command that started it" };
-  return { name, where: cliEnvFile ? `set in this service's environment (the file it would otherwise read is ${cliEnvFile})` : "set in this service's environment" };
-}
-
-/**
- * The enrolment view: who is granted what, and where an enrolment is half done.
- *
- * `grants` is the parsed grants file. `staffDomains` are admitted by domain rather than by grant, so
- * they are reported separately — a staff member absent from the grants file is normal, not a fault,
- * and listing them as "unenrolled" would bury the real problems.
- */
-export function accessView({ grants, staffDomains = [], knownAccounts = [], grantsFile = null, staffRule = null }) {
+export function accessView({ grants, viewer = null, companies = {}, grantsFile = null, localSignIn = false }) {
   const tenants = grants?.tenants ?? {};
-  const known = new Set(knownAccounts);
-  const people = [];
+  const everything = viewer?.everything === true;
+  const viewerOrgs = viewer?.genericOrgs ?? [];
+  const viewerCompanies = Array.isArray(viewer?.accounts) ? viewer.accounts : [];
+  const inside = (p) => everything || (p.kind === "organisation" ? viewerOrgs.includes(p.key)
+    : p.kind === "company" ? viewerOrgs.includes(p.org) || viewerCompanies.includes(p.key) : false);
+  const known = new Set(Object.keys(companies));
   const unknownAccounts = new Set();
+  const rows = new Map();   // address as written → { points, dangling }
+  const row = (email) => { if (!rows.has(email)) rows.set(email, { points: [], dangling: [] }); return rows.get(email); };
 
   for (const [tenant, t] of Object.entries(tenants)) {
     const accounts = Array.isArray(t?.accounts) ? t.accounts : [];
-    for (const a of accounts) if (known.size && !known.has(a)) unknownAccounts.add(a);
-
+    for (const a of accounts) if (known.size && a !== "generic" && !known.has(a)) unknownAccounts.add(a);
     for (const [email, grant] of Object.entries(t?.users ?? {})) {
-      // "*" means every account this TENANT holds — not every account on the system. Expanding it here
-      // is what makes the page show what the person can actually reach, which is the question being
-      // asked; showing a literal "*" would need the reader to know that rule.
-      const resolved = grant === "*" ? accounts : Array.isArray(grant) ? grant : [];
-      const dangling = resolved.filter((a) => !accounts.includes(a));
-      people.push({
-        email,
-        tenant,
-        accounts: resolved,
-        // A grant naming an account its own tenant does not hold. Usually a typo, and it fails as a
-        // silent 404 for that person with nothing in any log to explain it.
-        dangling,
-        wildcard: grant === "*",
-      });
+      const r = row(email);
+      if (grant === "*") { r.points.push({ kind: "organisation", key: tenant }); continue; }
+      for (const a of Array.isArray(grant) ? grant : []) {
+        // A grant naming a company its own organisation does not hold. Usually a typo; it grants
+        // nothing, and the person meets a silent 404 with nothing in any log to explain it.
+        if (accounts.includes(a)) r.points.push({ kind: "company", key: a, org: tenant });
+        else if (everything || viewerOrgs.includes(tenant)) r.dangling.push(a);
+      }
     }
+  }
+  const people = grants?.people && typeof grants.people === "object" ? grants.people : {};
+  for (const email of Object.keys(people)) row(email);
+
+  const list = [];
+  for (const [email, r] of rows) {
+    const key = Object.keys(people).find((k) => k.toLowerCase() === email.toLowerCase());
+    const entry = (key !== undefined ? people[key] : null) ?? {};
+    const pattern = email.startsWith("*@");
+    const all = entry.everything === true && !pattern ? [{ kind: "everything" }]
+      : r.points.filter((p) => p.kind === "organisation" || !r.points.some((q) => q.kind === "organisation" && q.key === p.org));
+    const shown = everything ? all : all.filter(inside);
+    if (!everything && !shown.length) continue;
+    list.push({
+      email,
+      permissions: { run: entry.run === true, manage: entry.manage === true && !pattern },
+      access: shown.map((p) => namedPoint(p, grants, companies)),
+      dangling: r.dangling,
+    });
   }
 
   return {
-    people: people.sort((a, b) => a.email.localeCompare(b.email)),
-    staffDomains: [...staffDomains],
-    // An ADDITIONAL field rather than a reshape of `staffDomains`: that array is parsed by the browser
-    // contract and read by three screens' worth of arms, and a rule nobody can trace is a copy problem,
-    // not a data-shape problem. Null when there is no rule, or when the source could not be told.
-    staffRule,
-    // Accounts named in grants that no profile matches — the other typo direction.
-    unknownAccounts: [...unknownAccounts].sort(),
+    people: list.sort((a, b) => a.email.localeCompare(b.email)),
+    // Add is offered to a manager, and never where local sign-in holds the install to one person.
+    canAdd: viewer?.permissions?.manage === true && !localSignIn,
+    localSignIn,
+    // Companies named in grants that no profile matches — the other typo direction. Install-wide, so it
+    // is shown to a person who sees everything and to nobody else.
+    unknownAccounts: everything ? [...unknownAccounts].sort() : [],
     // Where to go to change any of this — a filename and a date, so "I want to add someone" has a
     // visible next step instead of ending at a page that only reports. Null when it cannot be stat'd.
-    grantsFile,
+    grantsFile: everything ? grantsFile : null,
     // Stated plainly, because this view genuinely cannot see the other half.
     //
     // — IT NO LONGER NAMES ONE VENDOR, and it no longer asserts an edge that may not exist. This

@@ -13,7 +13,7 @@
 //   POST /portal/login                 rather than in the SPA (CI greps the built bundle for internal
 //   POST /portal/logout                variable names, and a login screen has to explain configuration).
 //                                      Absent on a Cloudflare-fronted instance, where the edge is the door.
-//   GET  /portal/api/me              — { role, email, accounts }
+//   GET  /portal/api/me              — { email, permissions, access, organisations, accounts, … }
 //   GET  /portal/api/searches[?account=] — registry levels + the account's saved searches
 //   POST /portal/api/run/plan        — the CONFIRMATION GATE: validate + resolve + honest summary +
 //                                      short-TTL HMAC confirmationToken. Nothing spends yet.
@@ -79,7 +79,8 @@ export function opsTokenFor({ bootToken, roster, mint }) {
 // `EnvironmentFile=%h/.env`, and `childEnv` passes the same value to the portal child — so this process
 // has held the signing secret on both start paths for as long as both have existed. The comment has been
 // corrected in place rather than left to be trusted.
-import { mintToken, accountsForEmail, loadGrants } from "../shared/scope.mjs";
+import { mintToken, loadGrants, resolvePerson } from "../shared/scope.mjs";
+import { withPerson, withCompany } from "../shared/grants-edit.mjs";
 import { resolvePort } from "../shared/listen.mjs";   // — the port SOURCE, decided once
 import { fileURLToPath } from "node:url";
 
@@ -104,7 +105,8 @@ const READ_OFF_NOTE = "Reading a brief is not available on this instance — set
 import { basename, dirname, join, resolve as pathResolve } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { makePrincipal, assertPrincipal, PortalDeny } from "./portal-access.mjs";
+import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, principalView, seesEverything, mayRun,
+  PortalDeny } from "./portal-access.mjs";
 // — the THIRD identity source (after the CF Access edge and, until, the deleted bypass). It
 // decides nothing about access: it turns a passphrase into an email string, which then goes through
 // makePrincipal and assertPrincipal exactly as a Cloudflare-verified address does.
@@ -123,7 +125,7 @@ import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor
 import { isDemo, demoPostureLine } from "./demo-posture.mjs";   
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
-import { flagView, accessView, observedView, authView, staffRuleSource } from "./portal-config-view.mjs";
+import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
 import { livePosture } from "./flag-snapshot.mjs";   // — for the capture-vs-box comparison only, never for a value
 import { familiesView, groupRuns, ungroupRuns } from "./portal-families.mjs";
 import { validateJob } from "./enqueue-schema.mjs";
@@ -252,14 +254,21 @@ const productNameOf = (product) => (typeof product === "string" ? reportIdentity
 // already fetch one key at a time, so it widens no boundary; it just spares the browser one request per
 // brand owner against a 120/min limit. It is NOT a wildcard: an empty array matches nothing, which is
 // the safe direction, and `null` (every account) stays reachable only from scanAllRuns.
-export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, includeRetired = false,
+export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, generic = null, includeRetired = false,
   // — THE QUEUES THE RUNNER ACTUALLY DRAINS, which is not the same set as the
   // directories under `workspaceRoot`. Defaults to [] so a caller that passes none keeps exactly the
   // behaviour it had; the service passes `config.queueDirs`, the same getter the allowance counter reads.
   queueDirs = [] }) {
   const out = [];
   const only = Array.isArray(account) ? new Set(account) : null;
-  const mine = (owner) => (only ? only.has(owner) : account === null || owner === account);
+  // GENERIC IS MATCHED BY ORGANISATION when the caller says which. `generic` is `{ all: true }` or
+  // `{ orgs, unfiled }`: a Generic run matches when it was filed under one of `orgs`, or was filed under
+  // none and `unfiled` asks for those too. Without it, `account` alone decides, exactly as before.
+  const mine = (owner, organisation = null) => {
+    if (owner === "generic" && generic) return generic.all === true
+      || (organisation != null ? (generic.orgs ?? []).includes(organisation) : generic.unfiled === true);
+    return only ? only.has(owner) : account === null || owner === account;
+  };
   // RETIRED RUNS ARE NOT LISTED HERE — unless the caller is the staff retired view, and asks.
   //
   // `pool-admin archive` has always written this sidecar, and until now the ONLY reader was the old
@@ -292,7 +301,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
       try {
         const meta = JSON.parse(readFileSync(metaPath, "utf8"));
         const owner = meta.customerKey || "generic";
-        if (!mine(owner)) continue;
+        if (!mine(owner, meta.organisation ?? null)) continue;
         // Tagged by runId — the same key pool-admin writes, which is the pool DIRECTORY name. Checking
         // both guards the one case where they differ: a meta whose runId was rewritten by a republish.
         const isRetired = retired.has(meta.runId ?? name) || retired.has(name);
@@ -312,7 +321,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
         const hasReport = docs.length > 0;
         const { bands, toneFor } = ladderOf(meta);
         const band = meta.overall ?? meta.verdict ?? null;
-        out.push({ runId: meta.runId ?? name, account: owner,
+        out.push({ runId: meta.runId ?? name, account: owner, ...(owner === "generic" ? { organisation: meta.organisation ?? null } : {}),
           title: meta.title ?? meta.matter ?? name, kind: meta.kind ?? "clearance",
           // THE MARK, separate from the report's headline.
           //
@@ -413,7 +422,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
       const s = JSON.parse(readFileSync(join(dir, "status.json"), "utf8"));
       const p = JSON.parse(readFileSync(driverDir(dir, "profile.json"), "utf8"));
       const owner = p.profileKey ?? p.key ?? "generic";
-      if (!mine(owner)) return;
+      if (!mine(owner, p.organisation ?? null)) return;
       if (s.state === "delivered") return;   // the pool row is the delivered face
       // ── — RETIREMENT REACHES A RUN THAT NEVER PUBLISHED ──────────────────
       //
@@ -450,7 +459,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
       // zombie face this state exists to end. pausedKind "operator" tells the UI which words to use.
       const paused = s.state === "postponed" || s.state === "recovering" || s.state === "parked-for-human";
       out.push({ ...(liveRetired ? { retired: true } : {}),
-        runId: s.runId, account: owner, title: s.markName ?? s.slug, kind: s.lane === "knockout" ? "knockout-batch" : "clearance",
+        runId: s.runId, account: owner, ...(owner === "generic" ? { organisation: p.organisation ?? null } : {}), title: s.markName ?? s.slug, kind: s.lane === "knockout" ? "knockout-batch" : "clearance",
         markName: typeof s.markName === "string" ? s.markName : null,
         // The project, straight off the frozen sidecar this branch already reads as `p`. A LIVE run needs
         // no publish stamp and no back-fill — the sidecar is right there, and freezeProfile has written
@@ -564,12 +573,12 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
       try {
         const j = JSON.parse(readFileSync(join(dir, f), "utf8"));
         const owner = j.profileKey ?? "generic";
-        if (!mine(owner)) continue;
+        if (!mine(owner, j.tenant ?? null)) continue;
         // ALL the names, spelled the way the run's own status.json and its delivered meta.json spell
         // them — this took `marks[0].name` and named ONE mark of N, so a client who had just ordered a
         // three-name knockout screen saw a single name on the row that tells them it went in.
         const mark = batchMarkName(j.marks, typeof j.markName === "string" && j.markName ? j.markName : undefined);
-        queuedRows.push({ lane: dir, laneIdx, row: { runId: j.id ?? f.replace(/\.json$/, ""), account: owner, title: mark ?? (j.id ?? "Queued"),
+        queuedRows.push({ lane: dir, laneIdx, row: { runId: j.id ?? f.replace(/\.json$/, ""), account: owner, ...(owner === "generic" ? { organisation: j.tenant ?? null } : {}), title: mark ?? (j.id ?? "Queued"),
           // THE JOB'S OWN PIPELINE, not the literal "clearance". The row already carried
           // `product: "knockout-search"` and still called itself a clearance, so it was the one row in
           // the listing that contradicted its own product field — and Result.tsx gates the names line on
@@ -696,10 +705,10 @@ export const concurrentRunsCap = () => {
 };
 
 function forRole(runs, principal) {
-  // Staff see failure reasons verbatim; clients get the plain note. That redaction is the ONLY
+  // A person who sees everything reads failure reasons verbatim; everyone else gets the plain note. That redaction is the ONLY
   // role-shaping left: the held-run suppression is retired (one report, spec 2026-07-30 §5 — a run you
   // have rights to is always listed; the machine-QC record lives on the audit workbook).
-  if (principal?.role === "staff") return runs;
+  if (seesEverything(principal)) return runs;
   return runs.map((r) => {
     let out = r;
     // — the redaction must take `reasonDetail` with it. `reason` is replaced by a fixed note for a
@@ -1059,12 +1068,16 @@ function outcomeRow({ event = "request-refused", method, path, email = null, sta
 
 export function makePortalService({
   poolRoot, workspaceRoot, recipesDir = undefined, secret,
-  staffDomains = [], grants = null,
-  // Where the staff-domain rule is written, for the People & access page to name. INJECTED, because
-  // the answer is a fact about the PROCESS — which file, if any, it took its configuration from — and
-  // this constructor is deliberately pure over its inputs. Null means "no rule, or could not tell",
-  // and the page then says nothing rather than guessing at a path.
-  staffRule = null,
+  grants = null,
+  // WHETHER THIS INSTALL SIGNS PEOPLE IN LOCALLY — one address and one passphrase, which cannot hold a
+  // second person. The People page reads it to disable Add and say why. Injected, like every fact about
+  // the process, because this constructor is pure over its inputs.
+  localSignIn = false,
+  // How the People page and company creation write the grants file. INJECTED so the service stays pure
+  // over its inputs and an arm can watch the write; boot hands it an atomic write to
+  // CLEAROTRON_ACCESS_FILE. Null means this service cannot write the file, and the routes that would
+  // need to say so rather than pretend.
+  writeGrants = null,
   // The queue directories the RUNNER drains — the same list it hands checkRunCaps. The allowance counter
   // and the quota pre-check read their ledger beside these, so they count what the wall counts (:
   // they used to reconstruct a workspace-relative path that resolved to nothing once the queue moved out
@@ -1284,7 +1297,7 @@ export function makePortalService({
   // reported back as conflicts. On this door the applicant is already known: the account resolved it,
   // and the profile behind it is staff-curated. Letting a body re-state it would let a client widen or
   // silence their own exclusion, which is a rating-authority change wearing a scope field's clothes.
-  const jobFor = ({ principal, account, body }) => {
+  const jobFor = ({ principal, account, tenant = null, body }) => {
     const marks = Array.isArray(body.marks)
       ? body.marks.map((m) => (typeof m === "string" ? { name: m } : m)).filter((m) => m?.name && String(m.name).trim())
       : undefined;
@@ -1292,6 +1305,11 @@ export function makePortalService({
     const job = {
       id: `portal-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
       profileKey: account,
+      // WHICH ORGANISATION'S GENERIC — the pair's other half, on a Generic run only, and resolved from the
+      // principal rather than read off the body: `genericOrgOf` has already refused an organisation this
+      // person does not see. Absent means filed under none, which only a person who sees everything can
+      // order (portal-access.mjs).
+      ...(account === "generic" && genericOrgOf(principal, tenant) != null ? { tenant: genericOrgOf(principal, tenant) } : {}),
       forwarder: "portal", forwarderEmail: principal.email,
       markName: body.markName != null ? String(body.markName) : marks?.[0]?.name,
       marks, classes: Array.isArray(body.classes) ? body.classes.map(Number).filter(Number.isFinite) : undefined,
@@ -1407,7 +1425,8 @@ export function makePortalService({
   }
 
   async function route(method, path, identity, body = {}, query = {}) {
-    const principal = makePrincipal({ email: identity?.email, grants: grantsNow(), staffDomains });
+    const grantsHere = grantsNow();
+    const principal = makePrincipal({ email: identity?.email, grants: grantsHere });
     const parts = path.replace(/\/+$/, "").split("/").filter(Boolean);   // ["portal", ...]
     if (parts[0] !== "portal") return { status: 404, json: { error: "not_found" } };
     try {
@@ -1476,7 +1495,8 @@ export function makePortalService({
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
-        return { status: 200, json: { role: principal.role, email: principal.email, accounts: principal.accounts, accountNames, accountFacts,
+        return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
+          accounts: principal.accounts, accountNames, accountFacts,
           concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
           // WHETHER THE PROGRAM IS ON THIS BOX WHILE THE ENGINE CANNOT SEE IT — true, false, or null
           // for "this could not be checked". The screen above renders one of three remedies from it,
@@ -1493,7 +1513,7 @@ export function makePortalService({
           // — a button that always fails must not render as available. The reason is
           // operator-shaped and staff-only; a client reads the generic sentence the button carries.
           controls: { stop: { available: stopControl.available !== false,
-            reason: principal.role === "staff" ? (stopControl.reason ?? null) : null } } } };
+            reason: seesEverything(principal) ? (stopControl.reason ?? null) : null } } } };
       }
       // /portal/api/about — the AGPL §13 source offer ()
       //
@@ -1513,7 +1533,7 @@ export function makePortalService({
       // /portal/api/searches
       if (parts[1] === "api" && parts[2] === "searches" && method === "GET") {
         const account = assertPrincipal(principal, { account: query.account ?? null });
-        if (!account) return { status: 400, json: { error: "name an account (?account=) — staff must pick who they act for" } };
+        if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         return { status: 200, json: { account, ...searchesFor(account) } };
       }
       // /portal/api/compose/read — turn a pasted brief into a filled-in composer.
@@ -1658,7 +1678,7 @@ export function makePortalService({
        * later. The two can disagree by a run under concurrency; the wall is the one that decides, and
        * it refuses by CLARIFYING rather than dropping, so nothing is ever lost to the gap.
        *
-       * Staff are never checked: role is decided by the principal, here, where it is authoritative.
+       * A person who sees everything is never checked; the cap binds everyone else, decided here from the principal.
        */
       // WHICH PRODUCT IS THIS, AND WHERE WOULD IT POINT — asked ONCE, and everything the plan says
       // derives from that one answer: the availability gate, the name, the scope shown at review, and the
@@ -1682,7 +1702,7 @@ export function makePortalService({
       };
 
       const quotaRefusal = async (account) => {
-        if (principal.role !== "client" || !upstream) return null;
+        if (seesEverything(principal) || !upstream) return null;
         let caps = null, capsRead = false;
         try {
           const r = await upstream.getProfile(principal, account);
@@ -1722,9 +1742,10 @@ export function makePortalService({
 
       // /portal/api/run/plan — the confirmation gate (no spend)
       if (parts[1] === "api" && parts[2] === "run" && parts[3] === "plan" && method === "POST") {
-        const account = assertPrincipal(principal, { account: body.account ?? query.account ?? null });
-        if (!account) return { status: 400, json: { error: "name an account — staff must pick who they act for" } };
-        const job = jobFor({ principal, account, body });
+        const tenant = body.tenant ?? query.tenant ?? null;
+        const account = assertPrincipal(principal, { account: body.account ?? query.account ?? null, tenant, run: true });
+        if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
+        const job = jobFor({ principal, account, tenant, body });
         const gates = planGates(job);
         if (gates.fail) return gates.fail;
         const overQuota = await quotaRefusal(account);
@@ -1773,9 +1794,9 @@ export function makePortalService({
       }
       // /portal/api/run — verify + trigger (the ONLY spend path)
       if (parts[1] === "api" && parts[2] === "run" && parts.length === 3 && method === "POST") {
-        const account = assertPrincipal(principal, { account: body.account ?? null });
+        const account = assertPrincipal(principal, { account: body.account ?? null, tenant: body.tenant ?? null, run: true });
         if (!account) return { status: 400, json: { error: "name an account" } };
-        const job = jobFor({ principal, account, body });
+        const job = jobFor({ principal, account, tenant: body.tenant ?? null, body });
         const gates = planGates(job);   // re-gated: the token is necessary, never sufficient
         if (gates.fail) return gates.fail;
         // re-checked for the same reason the gates are: a token minted while the account still had
@@ -1870,10 +1891,10 @@ export function makePortalService({
           r = await trigger({
             ...job,
             profileKey: account,
-            // The daily-allowance stamp. Set ONLY here, and only on a genuine client principal —
-            // this is the one place in the system where that role is authoritative. See checkRunCaps
-            // for why the polarity is positive-only and why every inferred alternative fails unsafely.
-            ...(principal.role === "client" ? { clientPrincipal: true } : {}),
+            // The daily-allowance stamp. Set ONLY here, on everyone but a person who sees everything —
+            // this is the one place in the system where that is decided. See checkRunCaps for why the
+            // polarity is positive-only and why every inferred alternative fails unsafely.
+            ...(!seesEverything(principal) ? { clientPrincipal: true } : {}),
             ...(demoRunFlag ? { demoRun: true } : {}),
           });
         } catch (e) {
@@ -1884,7 +1905,7 @@ export function makePortalService({
           // for operators and name infrastructure: the unwired-trigger case reads "PORTAL_MCP_URL /
           // PORTAL_OPS_TOKEN unset", which is an internal variable name rendered in a client's browser.
           // Staff get it verbatim because they are the ones who can act on it; a client gets the fact.
-          const staff = principal.role === "staff";
+          const staff = seesEverything(principal);
           // One cause is worth distinguishing even for staff: an instance with no engine attached is not
           // a failure, it is an instance that was never finished. Saying "could not be queued" invites
           // someone to retry, re-read logs and file a bug against a working system.
@@ -1909,7 +1930,7 @@ export function makePortalService({
       //
       // /portal/api/run/<runId>/stop — end a run that has already started.
       if (parts[1] === "api" && parts[2] === "run" && parts[3] && parts[4] === "stop" && method === "POST") {
-        const account = assertPrincipal(principal, { account: query.account ?? null });
+        const account = assertPrincipal(principal, { account: query.account ?? null, tenant: query.tenant ?? null, run: true });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         const runId = decodeURIComponent(parts[3]);
         // OWNERSHIP FIRST, and off the run list rather than off the request: the engine's own account
@@ -1945,7 +1966,7 @@ export function makePortalService({
           // for operators while telling the user only that it did not happen.
           const unwired = /not wired|verb|scope/i.test(detail);
           return { status: 502, json: { ok: false, unwired,
-            error: principal.role === "staff" ? detail : `The run could not be stopped just now. It is still running, and ${BRAND.name} can see what happened.` } };
+            error: seesEverything(principal) ? detail : `The run could not be stopped just now. It is still running, and ${BRAND.name} can see what happened.` } };
         }
         // ── — WHICH STOP IS ACTUALLY IN PROGRESS, AND NOTHING ELSE ──────────
         //
@@ -1993,8 +2014,7 @@ export function makePortalService({
         const dir = join(poolRoot, runId);
         let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
         const owner = meta.customerKey || "generic";
-        if (owner === "generic" && principal.role !== "staff") return { status: 404, json: { error: "not_found" } };
-        try { assertPrincipal(principal, { account: owner }); } catch { return { status: 404, json: { error: "not_found" } }; }
+        if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
         // ANSWERED FOR EVERY RUN THAT HAS ONE, grouped or not. A gate to grouped runs only stood here
         // and was wrong in the way this file keeps guarding against: a single-document run HAS this
         // prose — `report.md` is written on every run — so 404 would have said "there is none" about
@@ -2017,7 +2037,7 @@ export function makePortalService({
       // /portal/api/queue/<id>/cancel — drop a job that has not started. No spend has happened, so
       // there is nothing to account for and no row is left behind.
       if (parts[1] === "api" && parts[2] === "queue" && parts[3] && parts[4] === "cancel" && method === "POST") {
-        const account = assertPrincipal(principal, { account: query.account ?? null });
+        const account = assertPrincipal(principal, { account: query.account ?? null, tenant: query.tenant ?? null, run: true });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         const id = decodeURIComponent(parts[3]);
         const mine = scanAccountRuns({ poolRoot, workspaceRoot, account, queueDirs: queueDirs() }).find((r) => r.runId === id && r.state === "queued");
@@ -2029,7 +2049,7 @@ export function makePortalService({
           const detail = String(e?.message ?? e);
           audit({ event: "queue-cancel", by: principal.email, account, id, ok: false, error: detail });
           return { status: 502, json: { ok: false, unwired: /not wired|verb|scope/i.test(detail),
-            error: principal.role === "staff" ? detail : "It could not be cancelled just now. Nothing has been charged." } };
+            error: seesEverything(principal) ? detail : "It could not be cancelled just now. Nothing has been charged." } };
         }
         audit({ event: "queue-cancel", by: principal.email, account, id, ok: Boolean(r?.ok), action: r?.action ?? null });
         // ALREADY-CLAIMED IS A RACE, NOT AN ERROR. The runner picked it up between the click and the
@@ -2048,7 +2068,7 @@ export function makePortalService({
       // for no gain. The tenancy wall is the same one every other route uses — the caller's resolved
       // account — applied per id.
       if (parts[1] === "api" && parts[2] === "queue" && parts[3] === "order" && method === "POST") {
-        const account = assertPrincipal(principal, { account: query.account ?? null });
+        const account = assertPrincipal(principal, { account: query.account ?? null, tenant: query.tenant ?? null, run: true });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         const asked = Array.isArray(body?.order) ? body.order.filter((s) => typeof s === "string" && s) : null;
         if (!asked) return { status: 400, json: { error: "send { order: [id, …] }" } };
@@ -2178,7 +2198,7 @@ export function makePortalService({
       // them is never "yours". Cheap enough to fetch beside the composer and the run list.
       if (parts[1] === "api" && parts[2] === "usage" && method === "GET") {
         const account = assertPrincipal(principal, { account: query.account ?? null });
-        if (!account) return { status: 400, json: { error: "name an account (?account=) — staff must pick who they act for" } };
+        if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
         // Caps live on the customer profile and are code-owned (never client-editable). A deployment
         // with no config surface still answers, with counts and no caps — "we cannot tell you your
         // limit" is a better answer than a fabricated one.
@@ -2204,9 +2224,9 @@ export function makePortalService({
           // statement from "your limit is 2", and only one of them is honest when settings are down.
           dailyRuns: Number.isInteger(caps?.dailyRuns) ? caps.dailyRuns : (capsRead ? DEFAULT_CLIENT_DAILY_RUNS : null),
           monthlyRuns: caps?.monthlyRuns ?? null, maxQueued: caps?.maxQueued ?? null,
-          // Staff are not capped, and the UI needs to know that to avoid showing a client's allowance
-          // to someone it does not bind. See checkRunCaps for why role is decided here and nowhere else.
-          capped: principal.role === "client" } };
+          // A person who sees everything is not capped, and the UI needs to know that to avoid showing an
+          // allowance to someone it does not bind. See checkRunCaps for why it is decided here and nowhere else.
+          capped: !seesEverything(principal) } };
       }
 
       // /portal/api/mcp-access — the connection details for driving the engine from your own assistant.
@@ -2256,7 +2276,7 @@ export function makePortalService({
         //
         // COMPOSED IN ONE PLACE and handed over as a string. The browser cannot know this install's
         // path, so the three surfaces stating this route cannot drift apart even if someone tries.
-        const stdio = principal.role === "staff"
+        const stdio = seesEverything(principal)
           ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null })
           : null;
 
@@ -2350,10 +2370,9 @@ export function makePortalService({
         if (!url) return { status: 409, json: { error: "no_connector" } };
         const identity = principal.email ?? null;
         if (!identity) return { status: 403, json: { error: "no_identity" } };
-        const granted = accountsForEmail(identity, loadGrants());
-        if (Array.isArray(granted) && granted.length === 0) {
-          return { status: 403, json: { error: "not_enrolled" } };
-        }
+        // Enrolled means a principal exists: the door check above has already refused an address with no
+        // access anywhere. Asking for a company list here instead read a person whose only reach is their
+        // organisation's Generic as not enrolled.
         let key;
         try { key = mintToken({ scope: "account", sub: identity, ttlSec: 90 * 24 * 3600 }); }
         catch { return { status: 503, json: { error: "cannot_issue" } }; }
@@ -2421,7 +2440,7 @@ export function makePortalService({
           // account (portal-access.mjs), so the staff-only rule below is untouched: a client still gets
           // the plain 404 on the line after this one.
           assertPrincipal(principal, { door: true });
-          if (principal.role !== "staff") return { status: 404, json: { error: "not_found" } };
+          if (!seesEverything(principal)) return { status: 404, json: { error: "not_found" } };
           // One pass over the pool, not one request per account. The alternative — the browser fanning
           // out across the roster — would spend a roster-sized chunk of the 120/min rate limit on every
           // poll, which is exactly what the limiter is there to stop.
@@ -2445,7 +2464,7 @@ export function makePortalService({
         // has to ask who is looking, which is the whole point — there is no staff layout.
         if (parts[1] === "api" && parts[2] === "runs" && method === "GET" && query.scope === "mine") {
           assertPrincipal(principal, { door: true });
-          if (principal.role === "staff") {
+          if (seesEverything(principal)) {
             return { status: 200, json: { account: "*", runs: mine(forRole(scanAllRuns({ poolRoot, workspaceRoot, queueDirs: queueDirs() }), principal)) } };
           }
           // Resolved from `principal.accounts`, NEVER from the query — this is the same set
@@ -2454,17 +2473,25 @@ export function makePortalService({
           // `accounts === "*"` is the grants-file-absent posture (enforcement OFF). That is a
           // SENTINEL, NOT A LIST: expanding it here would turn a missing config file into a
           // cross-tenant read, so it falls through to the same refusal as holding nothing.
-          if (Array.isArray(principal.accounts) && principal.accounts.length) {
-            const own = principal.accounts.filter((a) => a !== "generic");   // the house account is staff-only, everywhere
-            if (own.length) return { status: 200, json: { account: "*", runs: mine(forRole(scanAccountRuns({ poolRoot, workspaceRoot, account: own, queueDirs: queueDirs() }), principal)) } };
+          // Their companies, and the Generic of each organisation they hold whole.
+          if (Array.isArray(principal.accounts) && (principal.accounts.length || principal.genericOrgs?.length)) {
+            return { status: 200, json: { account: "*", runs: mine(forRole(scanAccountRuns({ poolRoot, workspaceRoot, account: principal.accounts,
+              generic: { orgs: principal.genericOrgs ?? [] }, queueDirs: queueDirs() }), principal)) } };
           }
           return { status: 404, json: { error: "not_found" } };
         }
-        const account = assertPrincipal(principal, { account: query.account ?? null });
+        const account = assertPrincipal(principal, { account: query.account ?? null, tenant: query.tenant ?? null });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
-        // untagged/generic runs are STAFF-only, matching the MCP face + the LEAK-#9 rule (a client
-        // surface never lists generic — review 2026-07-18: the two boundaries disagreed)
-        if (account === "generic" && principal.role !== "staff") return { status: 404, json: { error: "not_found" } };
+        // GENERIC IS LISTED PER ORGANISATION. assertPrincipal has already refused an organisation whose
+        // Generic this person does not see. A named or implied organisation lists its own Generic runs,
+        // and a person who sees everything also gets the ones filed under none — on a one-organisation
+        // install those are that organisation's. Unnamed, with several organisations, a person who sees
+        // everything lists every Generic run, which is what they saw before organisations existed.
+        if (account === "generic") {
+          const org = genericOrgOf(principal, query.tenant ?? null);
+          const generic = org == null ? { all: true } : { orgs: [org], unfiled: seesEverything(principal) };
+          return { status: 200, json: { account, tenant: org, runs: mine(forRole(scanAccountRuns({ poolRoot, workspaceRoot, account: [], generic, queueDirs: queueDirs() }), principal)) } };
+        }
         return { status: 200, json: { account, runs: mine(forRole(scanAccountRuns({ poolRoot, workspaceRoot, account, queueDirs: queueDirs() }), principal)) } };
       }
       // ── /portal/api/ack — "I have seen that one" ─────────────────────────────────────────────
@@ -2525,8 +2552,7 @@ export function makePortalService({
         const dir = join(poolRoot, runId);
         let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
         const owner = meta.customerKey || "generic";
-        if (owner === "generic" && principal.role !== "staff") return { status: 404, json: { error: "not_found" } };
-        try { assertPrincipal(principal, { account: owner }); } catch { return { status: 404, json: { error: "not_found" } }; }
+        if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
         // NOT staff-only any more. This route used to 404 a client on role alone — "the workbook is the
         // working paper behind the opinion, not the opinion" — with the note that widening it was a
         // disclosure decision and not one to make in passing. The owner made it on 2026-07-27, in the same
@@ -2562,8 +2588,8 @@ export function makePortalService({
         const dir = join(poolRoot, runId);
         let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
         const owner = meta.customerKey || "generic";
-        if (owner === "generic" && principal.role !== "staff") return { status: 404, json: { error: "not_found" } };   // generic = staff-only (LEAK-#9 alignment)
-        try { assertPrincipal(principal, { account: owner }); } catch { return { status: 404, json: { error: "not_found" } }; }   // foreign = 404, never 403
+        // Foreign is 404, never 403, and a Generic run is its organisation's — the same question the connector asks (LEAK-#9 alignment).
+        if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
         // ONE REPORT PER MARK: `/portal/report/<runId>/` serves a run that has one document, and
         // `/portal/report/<runId>/<slug>/` serves one name's document out of a batch. A batch has no
         // run-level document at all — resolveReportFile returns null and this 404s — because serving mark
@@ -2591,7 +2617,7 @@ export function makePortalService({
         // The injection stays where it is (portal-report.mjs's FEEDBACK_CSS/FEEDBACK_JS, still exercised
         // by portal-report.test.mjs's `feedback: true` arms). The owner ruled disable, not delete, so
         // re-enabling the document half is this argument coming back.
-        return { status: 200, html: readReport(dir, { log: auditLog, staff: principal.role === "staff", poolRoot, file: reportFile }) };
+        return { status: 200, html: readReport(dir, { log: auditLog, staff: seesEverything(principal), poolRoot, file: reportFile }) };
       }
       // POST /portal/api/feedback — a lawyer flags one finding on a delivered report.
       //
@@ -2631,10 +2657,9 @@ export function makePortalService({
         const dir = join(poolRoot, runId);
         let meta; try { meta = JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")); } catch { return { status: 404, json: { error: "not_found" } }; }
         // Ownership, exactly as GET /portal/report/<id> checks it — foreign is 404, never 403, and
-        // `generic` is staff-only. A reader who cannot READ the report cannot flag it either.
+        // a Generic run is its organisation's. A reader who cannot READ the report cannot flag it either.
         const owner = meta.customerKey || "generic";
-        if (owner === "generic" && principal.role !== "staff") return { status: 404, json: { error: "not_found" } };
-        try { assertPrincipal(principal, { account: owner }); } catch { return { status: 404, json: { error: "not_found" } }; }
+        if (!mayReadRun(principal, { owner, organisation: meta.organisation ?? null })) return { status: 404, json: { error: "not_found" } };
 
         const verdict = typeof body?.verdict === "string" ? body.verdict : "";
         if (!VERDICTS.has(verdict))
@@ -2758,9 +2783,11 @@ export function makePortalService({
         });
         return { status: 201, json: { id: rec.id } };
       }
-      // /portal/admin/* — staff-only surfaces (clients get 404: the surface does not exist for them)
+      // /portal/admin/* — the install-wide surfaces, for a person who sees everything, and People, for a
+      // person with Manage. Everyone else gets 404: the surface does not exist for them.
       if (parts[1] === "admin") {
-        assertPrincipal(principal, { staffOnly: true });
+        assertPrincipal(principal, parts[2] === "access" || parts[2] === "people"
+          ? { door: true, manage: true } : { door: true, everything: true });
         if (parts[2] === "roster" && method === "GET") {
           const profiles = await loadProfilesImpl();
           // `generic` IS in the roster — this route is staff-only (asserted above), and untagged runs
@@ -2935,7 +2962,7 @@ export function makePortalService({
         // /portal/admin/access — who is granted what, and where an enrolment is half done.
         if (parts[2] === "access" && method === "GET") {
           const { loadProfiles } = await import("./profiles.mjs");
-          const knownAccounts = [...loadProfiles({ force: true }).keys()];
+          const companies = Object.fromEntries([...loadProfiles({ force: true }).values()].map((p) => [p.key, p.name ?? p.key]));
           // Where to go to change this. The stat is done HERE rather than inside accessView because
           // that function is pure and its tests call it with no filesystem at all; giving it IO would
           // cost that for a filename and a date.
@@ -2948,7 +2975,46 @@ export function makePortalService({
             const p = envFrom(process.env, "CLEAROTRON_ACCESS_FILE");
             if (p) grantsFile = { name: basename(p), modifiedAt: new Date(statSync(p).mtimeMs).toISOString() };
           } catch { /* reported as unknown; a failed stat must not take down the page that explains access */ }
-          return { status: 200, json: accessView({ grants: grantsNow(), staffDomains, knownAccounts, grantsFile, staffRule }) };
+          return { status: 200, json: accessView({ grants: grantsHere, viewer: principal, companies, grantsFile, localSignIn }) };
+        }
+        // /portal/admin/people — give someone access. Manage-gated above; everything else is decided here.
+        //
+        // THE ADDER'S OWN REACH BOUNDS WHAT THEY GIVE. A point outside it is a 404, exactly as asking to
+        // see it would be. Switches belong to the person, not to a point, so they are set only when the
+        // person's whole access sits inside the adder's; otherwise the points are added, the switches stay
+        // as they were, and the answer says which happened. Nobody sets their own switches, and nobody
+        // gives Run without holding it.
+        if (parts[2] === "people" && parts.length === 3 && method === "POST") {
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
+          const email = String(body?.email ?? "").trim().toLowerCase();
+          if (!email || email.indexOf("@") <= 0 || email.indexOf("@") !== email.lastIndexOf("@"))
+            return { status: 400, json: { error: "Enter one email address." } };
+          const points = [];
+          for (const a of Array.isArray(body?.access) ? body.access : []) {
+            const key = typeof a?.key === "string" ? a.key : "";
+            if (a?.kind === "organisation" && (principal.genericOrgs ?? []).includes(key)) points.push({ tenant: key });
+            else if (a?.kind === "company" && principal.accountOrgs?.[key]) points.push({ tenant: principal.accountOrgs[key], account: key });
+            else return { status: 404, json: { error: "not_found" } };
+          }
+          if (!points.length) return { status: 400, json: { error: "Choose at least one organisation or company this person may see." } };
+          const want = { run: body?.permissions?.run === true, manage: body?.permissions?.manage === true };
+          if (want.run && !mayRun(principal)) return { status: 400, json: { error: "You cannot give Run clearances without holding it yourself." } };
+          const existing = resolvePerson(email, grantsHere);
+          const setSwitches = email !== principal.email && (!existing || reachCovers(principal, existing));
+          let next;
+          try { next = withPerson(grantsHere, { email, points, switches: want, setSwitches }); }
+          catch (e) { return { status: 400, json: { error: String(e?.message ?? e).slice(0, 300) } }; }
+          try { await writeGrants(next); }
+          catch (e) {
+            audit({ event: "person-add", by: principal.email, person: email, ok: false, error: String(e?.message ?? e).slice(0, 200) });
+            return { status: 500, json: { error: "The guest list could not be written, so nobody was added." } };
+          }
+          audit({ event: "person-add", by: principal.email, person: email, points: points.length, switchesApplied: setSwitches, ok: true, status: 201 });
+          const { loadProfiles } = await import("./profiles.mjs");
+          const companies = Object.fromEntries([...loadProfiles({ force: true }).values()].map((p) => [p.key, p.name ?? p.key]));
+          const person = accessView({ grants: next, viewer: principal, companies }).people.find((p) => p.email === email) ?? null;
+          return { status: 201, json: { person, switchesApplied: setSwitches } };
         }
         // /portal/admin/observed — who has actually USED this instance lately, from the audit log.
         //
@@ -3936,7 +4002,7 @@ const PORT = PORT_CHOICE.port;
     // guards — a boot that is going to refuse for a missing grants file must not write a passphrase
     // first and tell somebody to keep it.
     if (!LOCAL_USER) {
-      log("FATAL: PORTAL_AUTH_MODE=local names no user — set PORTAL_LOCAL_USER to the one email address that signs in here, and enrol that same address in the grants file (" + "CLEAROTRON_ACCESS_FILE" + ") or on a staff domain (PORTAL_STAFF_DOMAINS). Refusing to start.");
+      log("FATAL: PORTAL_AUTH_MODE=local names no user — set PORTAL_LOCAL_USER to the one email address that signs in here, and give that same address an entry in the grants file (" + "CLEAROTRON_ACCESS_FILE" + "). Refusing to start.");
       process.exit(1);
     }
     if (!LOCAL_USER.includes("@") || LOCAL_USER.indexOf("@") !== LOCAL_USER.lastIndexOf("@")) {
@@ -4017,12 +4083,8 @@ const PORT = PORT_CHOICE.port;
   // "auth is ON" says nothing whatever about whether the caller may see everything. In both modes the
   // grants file is the only thing that decides, so in both modes it is required.
   //
-  // The check further down — `!staffDomains.length && !grants()` — does NOT cover this and never did.
-  // It is satisfied by PORTAL_STAFF_DOMAINS alone, which is set on every real deployment, so it stays
-  // green while the read-all is live. It answers "could anybody sign in?", not "is anybody bounded?".
-  //
-  // An empty roster is a legitimate answer: a file containing only {"tenants":{}} admits staff by domain
-  // and grants no client anything, which is the correct starting state for a fresh instance. What is not
+  // An empty roster is a legitimate answer: a file containing only {"tenants":{}} admits nobody yet, which
+  // is where a fresh instance starts before setup writes its first person. What is not
   // legitimate is having no file, because that is indistinguishable from "not configured yet" and means
   // the opposite of what it looks like.
   if (!envFrom(process.env, "CLEAROTRON_ACCESS_FILE")) {
@@ -4039,16 +4101,12 @@ const PORT = PORT_CHOICE.port;
   // throws when set-but-unreadable), never a silent fallback.
   try { loadGrants({}); } catch (e) { log(`FATAL: grants file unreadable: ${e.message}`); process.exit(1); }
   const grants = () => loadGrants({});
-  const staffDomains = (process.env.PORTAL_STAFF_DOMAINS || "").split(",").map((s) => s.trim()).filter(Boolean);
-  if (!staffDomains.length && !grants()) { log(`FATAL: neither PORTAL_STAFF_DOMAINS nor CLEAROTRON_ACCESS_FILE configured — nobody could ever sign in (fail-closed).`); process.exit(1); }
-  // WHERE THAT RULE IS WRITTEN, resolved once at boot and handed to the service. `loaded` is this
-  // process's own report of which file configured it — never a path composed here, which would answer
-  // for a process that read nothing (see `envFileRead`'s note in shared/env-local.mjs).
-  const { loaded, unitEnvPath, envLocalPath } = await import("../shared/env-local.mjs");
-  const staffRule = staffRuleSource({
-    value: process.env.PORTAL_STAFF_DOMAINS, envLoad: loaded,
-    unitEnvFile: unitEnvPath(), cliEnvFile: envLocalPath(),
-  });
+  // How the People page and company creation write the grants file: atomically, so the per-request
+  // reader sees the old file or the new one and never half of either.
+  const writeGrants = async (g) => {
+    const { atomicWrite } = await import("./progress.mjs");
+    atomicWrite(envFrom(process.env, "CLEAROTRON_ACCESS_FILE"), `${JSON.stringify(g, null, 2)}\n`);
+  };
 
   const { config } = await import("./driver.config.mjs");
   const { appendFileSync: append } = await import("node:fs");
@@ -4461,6 +4519,10 @@ const PORT = PORT_CHOICE.port;
       return makeUpstream({
         callUpstream: (method, path, body, identity) => profiles.route(method, path, { email: identity?.email }, body ?? {}),
         callRecipes,
+        // A company created from the portal is filed under its organisation in the same breath, so the
+        // person who made it can use it: access is decided by the grants file, and the create writes only
+        // the company's own file, which decides nothing about who sees it.
+        fileCompany: async ({ tenant, account }) => writeGrants(withCompany(loadGrants({}), { tenant, account })),
       });
     } catch (e) {
       // A settings surface that cannot start must not take the whole portal down — clearances and
@@ -4525,7 +4587,7 @@ const PORT = PORT_CHOICE.port;
   const service = makePortalService({ poolRoot: config.poolRoot, workspaceRoot: config.workspaceRoot,
     // Re-read per request (a getter that rescans), so a workspace created after boot is counted.
     queueDirs: () => config.queueDirs,
-    secret, staffDomains, staffRule, grants, trigger, stopRun, audit, auditPath, upstream, composeRead, stopControl,
+    secret, grants, localSignIn: LOCAL_MODE, writeGrants, trigger, stopRun, audit, auditPath, upstream, composeRead, stopControl,
     // — the ONLY place the environment is read for this. `bin/start.mjs` is the
     // only thing that sets it, and it sets it explicitly rather than passing the operator's inherited
     // environment through, so a stray `.env` can neither put a live install into demo mode nor take a
@@ -4614,8 +4676,8 @@ const PORT = PORT_CHOICE.port;
     // exactly as it would for a Cloudflare-verified stranger. Warned at boot because the symptom
     // otherwise arrives as "I signed in and got refused", which reads as a broken login.
     try {
-      if (!makePrincipal({ email: LOCAL_USER, grants: grants(), staffDomains }))
-        log(`WARNING: ${LOCAL_USER} can sign in but holds no portal access — it is on no staff domain (PORTAL_STAFF_DOMAINS) and in no grants row (CLEAROTRON_ACCESS_FILE), so every page will refuse it at the door. Add it to one of them.`);
+      if (!makePrincipal({ email: LOCAL_USER, grants: grants() }))
+        log(`WARNING: ${LOCAL_USER} can sign in but holds no portal access — it has no entry in the grants file (CLEAROTRON_ACCESS_FILE), so every page will refuse it at the door. Give it one.`);
     } catch (e) {
       // A WARNING must never be the thing that takes the service down. The grants file was already
       // read successfully by the mandatory guard above; anything that fails here is a race with
