@@ -280,6 +280,12 @@ export function paths(runDir) {
     // which is an execution-FACTS receipt several validators fail-closed on. See envelope-settle.mjs.
     envelopeDecision: p(driverRel("envelope-decision.json")),
     instructedScope: p(driverRel("instructed-scope.json")),
+    // The account defaults the engine cannot search, read off the run's own frozen profile. A SEPARATE
+    // file from instructed-scope.json deliberately: that one is the job's own words and the matter frame
+    // is ordered to quote its values verbatim, so a misspelled stored territory placed there would reach
+    // client-facing prose as though the requester had asked for it — the defect this record exists to
+    // report. Written by the driver at intake, read by no stage.
+    defaultTerritories: p(driverRel("default-territories.json")),
     // compute-don't-author — the per-class scope truth (scope-facts.mjs): instructed × frozen plan ×
     // band states × coverage ledger. The masthead classes/coverage_line are stamped FROM this sidecar.
     scopeFacts: p(driverRel("scope-facts.json")),
@@ -2655,7 +2661,7 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1466; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1472; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
@@ -2886,7 +2892,7 @@ export const STAGES = {
       },
       "findings[].meters.use.token / meters.enforcer.token — the two strengths with no quadrant axis": {
         class: "judgment", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],
-        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (stages.mjs:1733), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry. [citation unverified]",
+        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (stages.mjs:1739), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry. [citation unverified]",
       },
       "findings[].meters.mark_similarity.token / meters.goods_proximity.token — the coarse 3-pip restatement of the quadrant position": {
         class: "mechanical:code-assigned", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],

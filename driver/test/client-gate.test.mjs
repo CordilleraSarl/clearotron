@@ -10,6 +10,7 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { evaluateClientGate, regenIndex } from "../publish/index.mjs";
+import { PUBLISH_INPUTS } from "../publish/publish-inputs.mjs";   // the declared disposition the gate explains an absence BY
 
 // ---- W-3: evaluateClientGate — could-it-change-the-answer signals close; disclosed gaps never do --------
 
@@ -229,6 +230,54 @@ test("#873 evaluateClientGate: the publish-input-absent arm CLOSES when the stor
   assert.equal(evaluateClientGate({ inputsAbsent: ["not-declared.json"] }).released, true);
   // reasons/reasonCodes stay paired 1:1 whatever the input
   assert.equal(g.reasons.length, g.reasonCodes.length);
+});
+
+// A RELEASE WITH AN EMPTY REASON LIST BESIDE A RECORDED ABSENCE WAS A STATE NOBODY COULD ACT ON.
+//
+// A delivered run's receipt read `released: true`, `reasons: []`, and `inputsAbsent` naming a store that
+// was not there. All three were correct — every store is declared optional, so no absence closes — but the
+// reason why was in a table in another file, and a reader holding the receipt could only see a gate that
+// had released while recording something. So the gate now says it where it says everything else: in its
+// own return. `notClosing` explains, and explains ONLY; `released` is still `reasons.length === 0`.
+test("the gate explains its own emptiness: an absence that does not close says why, in its own output", () => {
+  const g = evaluateClientGate({ inputsAbsent: ["_driver/corrections-state.json", "findings.json"] });
+  assert.equal(g.released, true);
+  assert.deepEqual(g.reasons, [], "nothing closed, which is the ruling — and the empty list is no longer unexplained");
+  assert.deepEqual(g.notClosing.map((n) => n.input), ["_driver/corrections-state.json", "findings.json"],
+    "every recorded absence is accounted for, in the order it was recorded");
+  for (const n of g.notClosing) {
+    assert.equal(n.declared, "optional", `${n.input} is declared optional by the publish-input table`);
+    assert.match(n.why, /optional/, "and the sentence states the ruling rather than implying it");
+  }
+});
+
+test("the explanation is of the RECORD, not of the gate's mood: a store the table does not name says so", () => {
+  const g = evaluateClientGate({ inputsAbsent: ["not-declared.json"] });
+  assert.deepEqual(g.notClosing.map((n) => [n.input, n.declared]), [["not-declared.json", "undeclared"]],
+    "an unknown name is reported as undeclared — the gate never invents a ruling for a store the table does not name");
+  // and nothing to explain means nothing is said: an empty explanation must not become a third state.
+  assert.deepEqual(evaluateClientGate({}).notClosing, [], "a clean run carries no explanation");
+  assert.deepEqual(evaluateClientGate({ inputsAbsent: [] }).notClosing, []);
+});
+
+// THE ONE THAT DOES CLOSE MUST NOT BE EXPLAINED AWAY. `notClosing` lists absences that did not hold the
+// release; a REQUIRED store's absence holds it, and must appear in `reasons` and NOT in `notClosing`.
+// Driven through the same predicate the gate uses, because nothing in the shipped table is required — the
+// arm above it would otherwise be a claim about a distinction nothing exercises.
+test("a closing absence is not in the explanation — the two lists cannot both hold one input", () => {
+  const required = Object.entries(PUBLISH_INPUTS).filter(([, rule]) => rule === "required").map(([n]) => n);
+  if (!required.length) {
+    // Nothing is required today. Then the invariant to hold is the partition itself: every recorded
+    // absence lands in exactly one of the two lists, for every input the table names.
+    const all = Object.keys(PUBLISH_INPUTS);
+    const g = evaluateClientGate({ inputsAbsent: all });
+    assert.equal(g.notClosing.length, all.length, "with nothing required, every absence is explained and none closes");
+    assert.ok(!g.reasonCodes.includes("publish-input-absent"), "and the closing arm stays silent");
+    return;
+  }
+  const g = evaluateClientGate({ inputsAbsent: required });
+  assert.equal(g.released, false, "a required store's absence closes the export");
+  assert.deepEqual(g.notClosing, [], "and nothing about it is explained away as non-closing");
 });
 
 // ---- A4 (2026-07-28 postmortem): every gate reason carries a stable machine CODE ------------------------------

@@ -102,6 +102,9 @@ export function koPaths(runDir) {
     // back to this and nothing ever writes it again. Delete once no resumable run predates the move.
     assessChunkLegacy: (n) => driverDir(runDir, `knockout-assess-${n}.json`),
     instructedScope: driverDir(runDir, "instructed-scope.json"),
+    // as on the clearance lane, and apart from instructed-scope.json for the same reason: the frame
+    // quotes that file's values verbatim. Written at intake, read by no stage.
+    defaultTerritories: driverDir(runDir, "default-territories.json"),
     emailBody: join(runDir, "email-body.md"),
   };
 }

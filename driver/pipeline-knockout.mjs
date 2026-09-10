@@ -60,6 +60,7 @@ import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
 import { writeRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
+import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
 import { AGENT_WHATSAPP, whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
@@ -578,6 +579,18 @@ export async function knockoutInner(ctx, job, opts = {}) {
         marksDetailed: markRows.map((m) => ({ name: String(m.name), ...(Array.isArray(m.classes) && m.classes.length ? { classes: m.classes } : {}), ...(m.ref ? { ref: m.ref } : {}) })),
       }, null, 2) + "\n");
     } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
+    // The stored defaults the engine cannot search — the clearance lane's record, on this lane too. A
+    // knockout reads the same account profile and dropped the same entries in the same silence.
+    try {
+      const dts = defaultTerritoryState(ctx.profile);
+      writeFileSync(K.defaultTerritories, JSON.stringify({
+        profileKey: ctx.profile?.profileKey ?? null,
+        searchable: dts.kept,
+        unrecognized: dts.unrecognized,
+      }, null, 2) + "\n");
+      if (dts.unrecognized.length)
+        runLog(run.runDir, { event: "default-territory-unrecognized", count: dts.unrecognized.length, entries: dts.unrecognized, lane: "knockout" });
+    } catch (e) { note(`default-territories write failed (non-fatal): ${e.message}`); }
 
     // status seed — knockout's OWN step flow (never seedRunStatus's clearance stepper). Depth 2
     // walks one more step than a plain knockout, so the list is resolved once and frozen on ctx.

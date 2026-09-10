@@ -55,7 +55,7 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // Every entry cites the read that puts it here. `required` means publish cannot render without it.
 const FROZEN_FILES = [
   // publish/index.mjs — parseReport(reportMd), the one mandatory input
-  { path: "report.md", required: true, why: "publish/index.mjs:649 parseReport" },
+  { path: "report.md", required: true, why: "publish/index.mjs:669 parseReport" },
   { path: "audit.md", why: "publish/index.mjs:835 audit workbook source" },
   { path: "findings.json", why: "publish/index.mjs:555 the per-finding machine contract" },
   { path: "status.json", why: "publish/index.mjs:730,905 machine ledger note + markName" },
@@ -73,7 +73,7 @@ const FROZEN_FILES = [
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:714" },
   { path: "_driver/reasoning-integrity.json", why: "publish/index.mjs:715" },
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:716" },
-  { path: "_driver/search-policy.json", why: "publish/index.mjs:768,806 level + stage label" },
+  { path: "_driver/search-policy.json", why: "publish/index.mjs:788,806 level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs:920 + report-registry.mjs:42 customer key" },
 ];
 
@@ -162,7 +162,7 @@ const SCRUB = [
 // hides the next real difference.
 const VOLATILE = [
   { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs:520 generation stamp, firm locale" },
-  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:665 asOf / :1067 issuedAt" },
+  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:685 asOf / :1090 issuedAt" },
 ];
 
 // ── REWRITES — what is CHANGED on the way out, as opposed to what is refused ───────────────────────

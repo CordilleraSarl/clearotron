@@ -227,7 +227,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:1054 and driver/stages.mjs:1059 (the no-grid-spec legacy branch)",
+    where: "driver/stages.mjs:1054 and driver/stages.mjs:1065 (the no-grid-spec legacy branch)",
     surface: "stage-message",
     evidence: "GRID KEYS (the validator checks EXACTLY these N terms — use each VERBATIM as its Negative-results matrix key…) … MACHINE RECEIPTS (MANDATORY): save the grid call's stdout JSON VERBATIM … the single stdout object, or a JSON ARRAY of the per-batch stdout objects in batch order when batched.",
     reparsedBy: "driver/common-law-receipts.mjs — the receipts gate's exact identity join on the dictated key list; validators.commonLaw grid-completeness arm",
@@ -283,7 +283,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:4177 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4157 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
+    where: "driver/stages.mjs:4183 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4157 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
     surface: "stage-message",
     evidence: "Every block you append MUST carry \"state\":\"enumerated\" (ONLY if paged to has_more:false) or \"state\":\"incomplete\" — EXACTLY those two strings … (re-dispatch builders, which REPLACE def.message)",
     reparsedBy: "driver/named-band.mjs parseNamedBand. Scope warning: these builders replace def.message on every escalation / envelope-close / frame-reopen dispatch, so an E3 lint that walks STAGES[*].message only never sees them",
@@ -858,7 +858,7 @@ export const E3_EVIDENCE_UNRESOLVED = [
   // absorbed. It was the narrative "## Answers to your instructions" row deleted above: its dictation is
   // gone, so there is no un-anchorable quote left to be unresolved. The one that REMAINS is a live row
   // whose quote spans a template line. Measured before deleting, not predicted — two rows shared
-  // `where: "driver/stages.mjs:3045"`, so which one occupied this slot could not be read off the strings.
+  // `where: "driver/stages.mjs:3051"`, so which one occupied this slot could not be read off the strings.
   "synthesis|driver/stages.mjs",
 ];
 

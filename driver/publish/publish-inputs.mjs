@@ -99,7 +99,7 @@ export const NOT_READ_BY_NAME = {
 // absent one is the caller's error and already throws. Declared so the source scan can tell "argument"
 // from "undeclared store" instead of demanding a gating for something that has none.
 export const CALLER_SUPPLIED = {
-  "report.md": "the reportMd ARGUMENT — read unconditionally at index.mjs:653; an unreadable one throws, which is correct (there is no report to publish)",
+  "report.md": "the reportMd ARGUMENT — read unconditionally at index.mjs:673; an unreadable one throws, which is correct (there is no report to publish)",
   "audit.md": "the auditMd ARGUMENT — existence-gated at index.mjs:942-943; a run with no audit markdown legitimately publishes without a workbook",
 };
 

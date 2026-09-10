@@ -14,7 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent } from './publish-inputs.mjs';
+import { readStore, requiredAbsent, PUBLISH_INPUTS } from './publish-inputs.mjs';
 import { clearanceReportData } from './report-data.mjs';
 import { parseFrameworkManifest } from '../framework.mjs';
 import { rollupTokens } from '../tokens.mjs';
@@ -132,7 +132,20 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   const closing = requiredAbsent(inputsAbsent);
   if (closing.length)
     push('publish-input-absent', `a required input to this report was not there (${closing.join(', ')}) — the report was built without it, which is not the same as a search that found nothing`);
-  return { released: reasons.length === 0, reasons, reasonCodes, inputsAbsent: [...(Array.isArray(inputsAbsent) ? inputsAbsent : [])] };
+  // WHY A RELEASE IS A RELEASE. `released: true` beside a non-empty `inputsAbsent` was a state nobody
+  // could act on: the record said a declared input was missing and released anyway, and the reason was
+  // real but lived in a table in another file. So the gate now states it. Every store is declared
+  // `optional` today — on purpose, so re-rendering an archived run cannot rewrite the released status of
+  // delivered client work — and `notClosing` says that about each absence IN THE GATE'S OWN OUTPUT. It
+  // decides nothing; `released` is still `reasons.length === 0` and nothing else.
+  const notClosing = (Array.isArray(inputsAbsent) ? inputsAbsent : [])
+    .filter((n) => PUBLISH_INPUTS[n] !== 'required')
+    .map((n) => ({ input: n, declared: PUBLISH_INPUTS[n] ?? 'undeclared',
+      why: PUBLISH_INPUTS[n] === 'optional'
+        ? 'declared optional: a run that legitimately has no such store, and every archived run, must still publish'
+        : 'not a declared publish input — absence recorded, nothing gates on it' }));
+  return { released: reasons.length === 0, reasons, reasonCodes, notClosing,
+    inputsAbsent: [...(Array.isArray(inputsAbsent) ? inputsAbsent : [])] };
 }
 
 // T3 (H3) — the machine-QC INPUT assembly. Mirrors publishReport's own reads exactly (the
@@ -202,6 +215,8 @@ const INDEX_CSS = `
  .b-mh,.b-l3{background:var(--h-amber)}.b-l4{background:var(--crimson)}.b-l2{background:var(--h-green)}.b-l1{background:var(--h-grey)}
  .stmt{display:block;margin-top:3px;font-size:11.5px;color:var(--muted,#6b5d50);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .hold{display:inline-block;background:var(--crimson);color:#fff;font-weight:700;font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px}
+ /* — a disclosure, not an alarm: the release stands and the reviewer is told what it was built without. */
+ .disc{display:inline-block;border:1px solid var(--line);color:var(--muted);font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px}
  .hpill{display:inline-block;color:#fff;font-weight:700;font-size:11.5px;padding:3px 11px;border-radius:999px;white-space:nowrap}
  .filterbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 12px}
  .filterbar .flbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson-mid);font-weight:700}
@@ -231,6 +246,10 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
     // reviewer at the audit workbook. It no longer decides anything — one report, always listed, always
     // linked (spec 2026-07-30 §5); the delivery-language "⛔ on hold" pill is retired with the split.
     const qcFailed = !client && r.clientGate && r.clientGate.released === false;
+    // — RELEASED IS NOT THE SAME AS NOTHING MISSING. A run that published without a declared input
+    // released correctly (every store is declared optional) and said so only in meta.json, where no
+    // reviewer looks. Staff surfaces only, and never instead of the QC pill: a held run still reads held.
+    const qcDisclosed = !client && !qcFailed && r.clientGate && r.clientGate.inputsAbsent?.length > 0;
     // Demo anonymisation (inert on the client-facing per-customer index — no overlay there): the matter
     // (slug) + project (title) are marks → blur; the report/audit links carry the slug in the runId → the
     // anchors are neutralised; the client column → aliased. Keyed by customerKey + runId so a demo run is
@@ -248,6 +267,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
       <td>${anonMark(r.title, { key: ck, run: r.runId })}</td>
       <td>${anonClient(r.client, ck)}</td>
       <td><span class="b b-${esc(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${
+        qcDisclosed ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
         // spec 64 — the stance clause of THE one risk statement beside the (labelled) band pill, so the
         // index can never show a bare severity word that reads as the whole answer. The tier word leads
         // the statement; the pill already shows it, so the cell carries the clause after the first " — ".
@@ -1030,7 +1050,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName,
+        // — whether the register THIS run searched publishes a per-record page. `null` on a run
+        // with no fetch receipts: it never named its register, so nothing can be concluded about it.
+        registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0 }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1180,7 +1203,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // re-rendered without its meta changing shape. When it IS present it is the durable record that
     // this report was assembled without those stores, which the run previously kept nowhere at all.
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
-      inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined },
+      inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined,
+      // — why an absence did not hold the release, carried to the surfaces that show the stamp.
+      // `undefined` (so JSON drops it) when there is nothing to explain.
+      notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined },
     // PR-9 — present ⇒ report-data.json is beside the report and the portal can render natively (the
     // same stamp the knockout lane writes; the consumer branch had readers before it had a writer).
     // undefined on a producer miss, so the meta never advertises a file that is not there.
