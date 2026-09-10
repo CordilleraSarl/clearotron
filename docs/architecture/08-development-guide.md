@@ -255,6 +255,11 @@ wrong one exits `MODULE_NOT_FOUND` whose last line is the node version: piped th
 almost exactly like a quiet success, and the ritual's own success test — *"and then `git diff` is
 empty"* — is satisfied **precisely when nothing ran**.
 
+**Three of these regen commands live in the test tree, which the published package excludes**, so they
+are runnable from a checkout and not from an install. That is the right boundary — regenerating a
+baseline is a contributor's act — but it is worth saying here rather than leaving a reader to find an
+absent file and diagnose their configuration.
+
 | File | Regen | What it records |
 |---|---|---|
 | `driver/contract-e3-baseline.json` | `node driver/test/contract-e3-baseline.mjs --write` | structure-as-text per stage dispatch and per skill file |
