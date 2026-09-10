@@ -194,9 +194,99 @@ export function setupNames(root = ROOT) {
   // the wizard writes it through a COMPUTED key, `candidate[eng.headless.tokenEnv]`, so the literal
   // candidate-write matchers above cannot see it; the table field is the one derivable spelling).
   for (const m of cfg.matchAll(/(?:env|authEnv|apiKeyEnv|credEnv|tokenEnv):\s*"([A-Z][A-Z0-9_]*)"/g)) seed.add(m[1]);
+  // THE NAMES A HELPER RETURNS AND THE WIZARD MERGES IN. The sign-in step hands back the `.env` keys it
+  // wants written, and the wizard writes them with `Object.assign(candidate, await askSignIn(…))`. None of
+  // the matchers above sees a key inside a returned object, so both names that step writes — the address
+  // that signs in and the organisation's name — fell through every shape, the organisation's name to
+  // `tuning`: the residual bucket, and the one a cleanup deletes from. Read from the MERGE, not from the
+  // object's shape: a rule taking every object literal with upper-case keys would take in every constant
+  // table in the wizard, and grow this population by names nothing writes.
+  for (const n of namesMergedIntoCandidate(onboard)) seed.add(n);
   const out = new Set();
   for (const n of seed) for (const sp of [n]) out.add(sp);
   return out;
+}
+
+/**
+ * Every name the wizard writes through an object a helper RETURNS: each `Object.assign(candidate, NAME(…))`
+ * names a helper, and the top-level keys of the object literals it returns are the names it writes.
+ *
+ * A helper named at a merge and not defined in the wizard REFUSES, and so does one whose returns name no
+ * key. Either way its names are written at install and cannot be read here, and reading them as none puts
+ * them in `tuning` with nothing saying the look failed — the silence `mustRead` exists for.
+ */
+function namesMergedIntoCandidate(src) {
+  const names = new Set();
+  const helpers = new Set([...src.matchAll(/Object\.assign\(\s*candidate\s*,\s*(?:await\s+)?([A-Za-z_$][\w$]*)\s*\(/g)]
+    .map((m) => m[1]));
+  for (const fn of helpers) {
+    const at = src.search(new RegExp(`\\bfunction\\s+${fn.replace(/\$/g, "\\$")}\\s*\\(`));
+    const refuse = (why) => new Error(`env-classify: bin/onboard.mjs writes what ${fn}() returns, and ${why}, so `
+      + "the names it writes cannot be read. Read as none, they would land in `tuning` and on the deletion "
+      + "population; that is this script failing to look, not a finding about the wizard.");
+    if (at < 0) throw refuse(`no function ${fn} is defined there`);
+    // From the declaration on, with comments and the inside of every string blanked, so a brace, a comma or
+    // a `return` in either is not read as code. A parameter default can hold braces, so the body is the
+    // first `{` after the parameter list, not the first `{`.
+    const text = src.slice(at), code = blankNonCode(text);
+    const open = code.indexOf("{", closingOf(code, code.indexOf("(")));
+    const close = closingOf(code, open);
+    let found = 0;
+    for (const r of code.slice(open, close).matchAll(/\breturn\s*\{/g)) {
+      for (const key of topLevelKeys(text, code, open + r.index + r[0].length - 1)) { names.add(key); found++; }
+    }
+    if (!found) throw refuse("none of its returns is an object literal naming a key");
+  }
+  return names;
+}
+
+/** `text` with every comment and the inside of every string turned to spaces. Same length, same lines. */
+function blankNonCode(text) {
+  let out = "", i = 0;
+  const blank = (to) => { out += text.slice(i, to).replace(/[^\n]/g, " "); i = to; };
+  while (i < text.length) {
+    const c = text[i], d = text[i + 1];
+    if (c === "/" && (d === "/" || d === "*")) {
+      const end = d === "/" ? text.indexOf("\n", i) : text.indexOf("*/", i + 2) + 2;
+      blank(end < i + 2 ? text.length : end);
+    } else if (c === '"' || c === "'" || c === "`") {
+      let j = i + 1;
+      while (j < text.length && text[j] !== c && (c === "`" || text[j] !== "\n")) j += text[j] === "\\" ? 2 : 1;
+      out += c; i += 1; blank(Math.min(j, text.length));
+      if (i < text.length) out += text[i++];
+    } else {
+      out += c; i += 1;
+    }
+  }
+  return out;
+}
+
+/** The index of the bracket closing the one at `at`, counting every kind; `code` is already blanked. */
+function closingOf(code, at) {
+  let depth = 0;
+  for (let i = at; i < code.length; i++) {
+    if ("([{".includes(code[i])) depth++;
+    else if (")]}".includes(code[i]) && --depth === 0) return i;
+  }
+  return code.length;
+}
+
+/** The top-level keys of the object literal opening at `open`: a nested object's keys are its own. */
+function topLevelKeys(text, code, open) {
+  const keys = [];
+  const close = closingOf(code, open);
+  let depth = 0, from = open + 1;
+  for (let i = open + 1; i <= close; i++) {
+    const c = code[i];
+    if (i < close && "([{".includes(c)) depth++;
+    else if (i < close && ")]}".includes(c)) depth--;
+    else if (i === close || (c === "," && depth === 0)) {
+      const m = /^\s*(["']?)([A-Z][A-Z0-9_]*)\1\s*:/.exec(text.slice(from, i));
+      if (m) keys.push(m[2]);
+      from = i + 1;
+    }
+  }
+  return keys;
 }
 
 // THE AUDIENCE DECISION FOR NAMES A PREFIX USED TO CARRY — listed, because a rename must not move it.
