@@ -23,7 +23,7 @@ import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
-import { switcherKeys, pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
+import { switcherKeys, switcherLabel, pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
 import { permissionsPhrase } from './accessWords.ts'
 import { GENERIC_ACCOUNT, isGenericKey, orgOfGeneric } from '../contract/genericKey.ts'
 import { companyFactsMap, type CompanyFacts } from '../contract/companyFacts.ts'
@@ -718,8 +718,6 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
     </div>
   )
 }
-
-import { switcherLabel } from './companyRows.ts'
 
 /**
  * Which company's world you are looking at.
