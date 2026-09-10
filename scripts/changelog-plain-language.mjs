@@ -17,48 +17,25 @@
 // to who wrote the line.
 import { readFileSync } from "node:fs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { lineFindings, sourceDirectories, userDocs } from "./plain-language-rules.mjs";
 
-// The four the issue names, plus the two spellings each of the -ise/-ize pair it names once. A word
-// list is checked whole: "implementation" is jargon, "implement" inside "implemented" is the same word,
-// but "complement" is not, which is why this is a boundary match and not a substring one.
-export const BANNED_WORDS = [
-  "refactor", "refactors", "refactored", "refactoring",
-  "implement", "implements", "implemented", "implementing", "implementation", "implementations",
-  "leverage", "leverages", "leveraged", "leveraging",
-  "optimise", "optimises", "optimised", "optimising", "optimisation",
-  "optimize", "optimizes", "optimized", "optimizing", "optimization",
-  "utilise", "utilises", "utilised", "utilising", "utilisation",
-  "utilize", "utilizes", "utilized", "utilizing", "utilization",
-];
+// THE RULES live in plain-language-rules.mjs, shared with the note lint, so a note CI passes cannot turn
+// this gate red after the merge. BANNED_WORDS is re-exported for the callers that read it from here.
+export { BANNED_WORDS } from "./plain-language-rules.mjs";
 
-// A FILE NAME is the thing a reader cannot act on: they do not have the tree open. Matched by
-// extension, because a bare word with a dot in it is how every file name in this repository reads.
-const FILE_NAME_RE = /\b[\w.-]+\.(mjs|js|cjs|ts|tsx|jsx|json|yml|yaml|md|sh|txt)\b/g;
-// A PATH, with or without an extension: two segments joined by a slash.
-const PATH_RE = /\b[\w.-]+\/[\w./-]+/g;
-// A FUNCTION NAME, in the two shapes this tree writes them: a call, and a bare camelCase identifier.
-const FUNCTION_RE = /\b[a-z][A-Za-z0-9_]*\(\)|\b[a-z]+[A-Z][A-Za-z0-9]*\b/g;
-
-const WORD_RE = new RegExp(`\\b(${BANNED_WORDS.join("|")})\\b`, "gi");
 
 /**
  * Every reason this text may not be shown to a reader. Empty means it may.
  *
- * Code spans are exempt: a line that says `` `clearotron --version` `` is telling a reader what to
- * type, which is the opposite of jargon. Everything outside the backticks is still checked.
+ * The line rules are plain-language-rules.mjs's, the same ones the note lint applies on the pull request.
  */
-export function findings(text) {
+export function findings(text, { sourceDirs = sourceDirectories(), docs = userDocs() } = {}) {
   const out = [];
   const lines = text.split("\n");
   for (const [i, raw] of lines.entries()) {
     // A heading is changesets' own furniture ("## 0.2.0", "### Patch Changes"), not authored prose.
     if (/^\s*#{1,6}\s/.test(raw)) continue;
-    const line = raw.replace(/`[^`]*`/g, (m) => " ".repeat(m.length));
-    const at = (what, m) => out.push({ line: i + 1, kind: what, match: m, text: raw.trim() });
-    for (const m of line.matchAll(WORD_RE)) at("jargon word", m[0]);
-    for (const m of line.matchAll(FILE_NAME_RE)) at("file name", m[0]);
-    for (const m of line.matchAll(PATH_RE)) at("path", m[0]);
-    for (const m of line.matchAll(FUNCTION_RE)) at("function name", m[0]);
+    for (const f of lineFindings(raw, { sourceDirs, docs })) out.push({ line: i + 1, kind: f.kind, match: f.match, text: raw.trim() });
   }
   return out;
 }

@@ -24,6 +24,7 @@ import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { findings, sentences } from "./changelog-plain-language.mjs";
+import { tagsHere } from "./release-cut-decision.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -31,6 +32,30 @@ const GROUP = ["driver", "mcp-server", "portal-ui", "providers/oauth-mcp-bridge"
 /** The page's order, user-facing first, from the owner's contract. */
 export const GROUPS = ["New", "Fixed", "For operators"];
 const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
+
+/** PURE. Where `version` is already out: tagged in this checkout, published on the registry, both, or neither. */
+export function alreadyOut({ version, tags = [], published = false }) {
+  const where = [];
+  if (tags.includes(`v${version}`)) where.push(`tagged here as v${version}`);
+  if (published === true) where.push("published on the registry");
+  return where;
+}
+
+/**
+ * Whether the registry already carries `name@version`: true, false, or null when it could not be asked.
+ *
+ * npm answers a version it does not have with exit 1 and `E404`, "No match found for version", so that one
+ * failure is the answer no. Any other failure is a failure to look, and the caller refuses on it.
+ */
+export function registryHas(name, version, {
+  run = (args) => execFileSync("npm", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }),
+} = {}) {
+  try {
+    return String(run(["view", `${name}@${version}`, "version"]) ?? "").trim() === version;
+  } catch (e) {
+    return /\bE404\b|No match found for version/.test(`${e?.stderr ?? ""}${e?.message ?? ""}`) ? false : null;
+  }
+}
 
 /** The one version the fixed group now carries — and a refusal if they disagree. */
 export function groupVersion(root = ROOT) {
@@ -204,6 +229,40 @@ function main() {
 
   run("version", ...args);
   const version = groupVersion();
+
+  // ── A VERSION ALREADY OUT IS REFUSED HERE, BEFORE ANYTHING IS STAMPED ─────────────────────────────
+  //
+  // The pre-release line keeps no record of its last number. `.changeset/pre.json` holds its mode and tag
+  // and nothing else, and a stable release deletes it, so `changeset version` counts again from
+  // package.json. Measured 2026-09-10: entering beta on a tree at 0.2.4 computed 0.3.0-beta.0, which was
+  // already tagged and on the registry. A cut from there would stamp main with it, consume every pending
+  // note, and fail only at publish, leaving both to be unwound by hand. The tags and the registry are the
+  // record, so the number is checked against both, and a failure to read either is a refusal too.
+  const tags = tagsHere();
+  if (!tags.length) {
+    console.error(`release-version: this checkout has no tags, so whether ${version} is already out cannot `
+      + "be read. Refusing rather than stamping a number that may already be published.");
+    process.exitCode = 2;
+    return;
+  }
+  const name = readJson(join(ROOT, "package.json")).name;
+  const published = registryHas(name, version);
+  if (published === null) {
+    console.error(`release-version: the registry could not be asked whether ${name}@${version} exists. `
+      + "Refusing rather than stamping a number that may already be published.");
+    process.exitCode = 2;
+    return;
+  }
+  const out = alreadyOut({ version, tags, published });
+  if (out.length) {
+    console.error(`release-version: this cut computed ${version}, and that version is already out: `
+      + `${out.join(" and ")}. Publishing it would fail after main is stamped and the notes are consumed.\n`
+      + "  The pre-release line keeps no record of its last number: .changeset/pre.json holds only its mode "
+      + "and tag, and a stable release deletes it, so this was counted again from package.json. Put the "
+      + "line back where its last published version left it, then cut again.");
+    process.exitCode = 1;
+    return;
+  }
   const pkgPath = join(ROOT, "package.json");
   const pkg = readJson(pkgPath);
   const was = pkg.version;

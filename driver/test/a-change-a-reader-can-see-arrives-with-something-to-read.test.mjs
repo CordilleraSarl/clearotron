@@ -38,6 +38,27 @@ function repoWith(changes, message = "a change") {
   return { dir, base, clean: () => rmSync(dir, { recursive: true, force: true }) };
 }
 
+/** A repository with one commit on `base`, then one commit per entry, oldest first. */
+function repoWithCommits(list) {
+  const dir = mkdtempSync(join(tmpdir(), "ctnote-"));
+  const git = (...a) => execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", ...a],
+    { cwd: dir, encoding: "utf8" });
+  git("init", "-q", "-b", "main");
+  writeFileSync(join(dir, "seed.txt"), "seed\n");
+  git("add", "-A"); git("commit", "-qm", "base");
+  const base = git("rev-parse", "HEAD").trim();
+  const shas = [];
+  for (const { changes, message } of list) {
+    for (const [path, body] of Object.entries(changes)) {
+      mkdirSync(join(dir, dirname(path)), { recursive: true });
+      writeFileSync(join(dir, path), body);
+    }
+    git("add", "-A"); git("commit", "-qm", message);
+    shas.push(git("rev-parse", "--short=7", "HEAD").trim());
+  }
+  return { dir, base, shas, clean: () => rmSync(dir, { recursive: true, force: true }) };
+}
+
 function run(repo, base = repo.base) {
   const r = spawnSync(process.execPath, [CHECK, "--base", base],
     { cwd: repo.dir, encoding: "utf8", timeout: 60_000 });
@@ -82,6 +103,16 @@ test("a declared `none` with NO reason is refused — the reason is the whole po
     const r = run(repo);
     assert.equal(r.code, 1, `a bare declaration was accepted, which makes it a checkbox:\n${r.said}`);
     assert.match(r.said, /reason/);
+  } finally { repo.clean(); }
+});
+
+test("a bare `none` is bare even when another line follows it: the reason is read from its own line", () => {
+  const repo = repoWith({ "bin/thing.mjs": "export const a = 3;\n" },
+    "a change\n\nRelease-note: none\n\nCo-Authored-By: A Name <a@b.c>\n");
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `the line after a bare \`none\` was read as its reason:\n${r.said}`);
+    assert.match(r.said, /gives no reason/);
   } finally { repo.clean(); }
 });
 
@@ -149,16 +180,95 @@ test("replayed against the bundle that landed with no note, it refuses", (ctx) =
   assert.equal(r.status, 1,
     `the check does not refuse the range it was written for — sixteen files that ship as code and not `
     + `one note between them:\n${said}`);
-  assert.match(said, /that ship as code changed, and this range adds no release note/);
+  assert.match(said, /owe a release note/);
+  assert.match(said, /14e3822 /, `the refusal does not name the commit that owes the note:\n${said}`);
   assert.match(said, /0 release note\(s\) in the range/,
     `the replay found notes in a range that had none, so it is not reading the range it names:\n${said}`);
 });
 
-test("and the same check passes a range whose notes are there", (ctx) => {
-  // The other half, so "it refuses" is not a check that refuses everything. This branch's own range.
-  const r = spawnSync(process.execPath, [CHECK, "--base", "14e3822"],
-    { cwd: ROOT, encoding: "utf8", timeout: 60_000, env: { ...process.env } });
-  const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
-  if (r.status === 2) return ctx.skip(`the check could not read this range: ${said}`);
-  assert.equal(r.status, 0, `the check refuses a range that carries notes:\n${said}`);
+// ── PER COMMIT, NOT PER RANGE ─────────────────────────────────────────────────────────────────────────
+//
+// The arm that stood here passed this branch's own range as the control for the refusal above. Its range
+// ran from 14e3822 to wherever the suite was, so under a per-commit rule it asked every commit since about
+// its own note. The arms below are the control now, each on a range it builds and can name.
+const NOTE = '---\n"clearotron-driver": patch\n---\n\nFixed: Something a reader can see.\n';
+
+test("a declination answers for its own commit: fourteen that decline do not carry a fifteenth that ships a change", () => {
+  const list = Array.from({ length: 14 }, (_, n) => ({
+    changes: { [`bin/internal-${n}.mjs`]: `export const n = ${n};\n` },
+    message: `internal ${n}\n\nRelease-note: none — plumbing ${n} that no reader sees.\n`,
+  }));
+  list.splice(7, 0, { changes: { "bin/visible.mjs": "export const seen = true;\n" }, message: "a change a reader sees" });
+  const repo = repoWithCommits(list);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `fourteen declinations carried a fifteenth commit with no note:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${repo.shas[7]} a change a reader sees`), `the refusal does not name the commit:\n${r.said}`);
+    assert.match(r.said, /bin\/visible\.mjs/);
+    assert.match(r.said, /^1 commit\(s\) that ship as code owe a release note/m, `it refused more than the one commit:\n${r.said}`);
+  } finally { repo.clean(); }
+});
+
+test("a range where every commit that ships code declines with its own reason passes, and prints each reason", () => {
+  const repo = repoWithCommits([1, 2, 3].map((n) => ({
+    changes: { [`bin/internal-${n}.mjs`]: `export const n = ${n};\n` },
+    message: `internal ${n}\n\nRelease-note: none — reason number ${n}.\n`,
+  })));
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a range that declined commit by commit was refused:\n${r.said}`);
+    for (const n of [1, 2, 3]) assert.match(r.said, new RegExp(`reason number ${n}`));
+  } finally { repo.clean(); }
+});
+
+test("a note the range adds answers for a commit that ships code and says nothing", () => {
+  const repo = repoWithCommits([
+    { changes: { "bin/a.mjs": "export const a = 1;\n" }, message: "the change" },
+    { changes: { ".changeset/the-change.md": NOTE }, message: "its note" },
+  ]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a change with its note in the same range was refused:\n${r.said}`);
+  } finally { repo.clean(); }
+});
+
+test("a Release-note line with a sentence in it is refused and named, even when another commit adds a note", () => {
+  // The owner's-walk shape: seven such lines and one note, and the seven reached no reader.
+  const repo = repoWithCommits([
+    { changes: { "bin/stop.mjs": "export const stop = 1;\n" }, message: "stop\n\nRelease-note: The Stop button now stops the run.\n" },
+    { changes: { ".changeset/other.md": NOTE }, message: "a note for something else" },
+  ]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `a release note written only in a commit message was accepted:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${repo.shas[0]} stop`));
+    assert.match(r.said, /reaches no\s+reader/);
+  } finally { repo.clean(); }
+});
+
+test("a commit that adds its own note may say so in a Release-note line too", () => {
+  const repo = repoWithCommits([
+    { changes: { "bin/a.mjs": "export const a = 1;\n", ".changeset/a.md": NOTE }, message: "a\n\nRelease-note: Fixed the thing, see the note.\n" },
+  ]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a commit carrying its own note was refused for describing it:\n${r.said}`);
+  } finally { repo.clean(); }
+});
+
+test("a Release-note line may name the note that answers for it, and naming one the range does not add is refused", () => {
+  const good = repoWithCommits([
+    { changes: { "bin/a.mjs": "export const a = 1;\n" }, message: "a\n\nRelease-note: .changeset/shared.md\n" },
+    { changes: { "bin/b.mjs": "export const b = 1;\n", ".changeset/shared.md": NOTE }, message: "b, and the note both answer to" },
+  ]);
+  const bad = repoWithCommits([
+    { changes: { "bin/a.mjs": "export const a = 1;\n" }, message: "a\n\nRelease-note: .changeset/nowhere.md\n" },
+    { changes: { ".changeset/shared.md": NOTE }, message: "a note by another name" },
+  ]);
+  try {
+    assert.equal(run(good).code, 0, "a commit naming the note the range adds was refused");
+    const r = run(bad);
+    assert.equal(r.code, 1, `a commit naming a note the range does not add was accepted:\n${r.said}`);
+    assert.match(r.said, /nowhere\.md/);
+  } finally { good.clean(); bad.clean(); }
 });
