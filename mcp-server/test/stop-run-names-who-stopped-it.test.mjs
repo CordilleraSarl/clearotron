@@ -39,32 +39,32 @@ function makeRun(state = "running") {
 }
 const marker = (runDir) => JSON.parse(readFileSync(join(runDir, ".cancel"), "utf8"));
 
-test("the stop marker names the verified principal that asked for it", () => {
+test("the stop marker names the verified principal that asked for it", async () => {
   const { runDir, runId } = makeRun();
-  const s = stopRun({ runId }, { scope: { kind: "internal", sub: "staff@example.test", accounts: "*" } });
+  const s = await stopRun({ runId }, { scope: { kind: "internal", sub: "staff@example.test", accounts: "*" } });
   assert.equal(s.action, "cancel-requested");
   assert.equal(marker(runDir).by, "staff@example.test",
     "the field the portal stop left null on a live client matter");
   assert.equal(marker(runDir).via, "mcp/stop_run", "the channel is still recorded — it is just not an actor");
 });
 
-test("a session that cannot name a person records THAT, with its kind — never null", () => {
+test("a session that cannot name a person records THAT, with its kind — never null", async () => {
   const { runDir, runId } = makeRun();
-  stopRun({ runId }, { scope: { kind: "account", sub: null, accounts: [] } });
+  await stopRun({ runId }, { scope: { kind: "account", sub: null, accounts: [] } });
   const by = marker(runDir).by;
   assert.equal(by, `${UNIDENTIFIED}:account`);
   assert.notEqual(by, null, "null cannot say whether nobody was named or nothing was passed");
 });
 
-test("a stop with no session at all is still attributable, and says so", () => {
+test("a stop with no session at all is still attributable, and says so", async () => {
   // The existing ops.test.mjs callers pass no second argument at all. They must keep working, and what
   // they write must still be a statement rather than an absence.
   const { runDir, runId } = makeRun();
-  stopRun({ runId });
+  await stopRun({ runId });
   assert.equal(marker(runDir).by, UNIDENTIFIED);
 });
 
-test("NO STOP PATH WRITES A NULL ACTOR — the regression this exists to prevent", () => {
+test("NO STOP PATH WRITES A NULL ACTOR — the regression this exists to prevent", async () => {
   for (const scope of [
     { kind: "ops", sub: "local", accounts: "*" },
     { kind: "user", sub: "token-sub", accounts: null },
@@ -73,25 +73,25 @@ test("NO STOP PATH WRITES A NULL ACTOR — the regression this exists to prevent
     undefined,
   ]) {
     const { runDir, runId } = makeRun();
-    stopRun({ runId }, scope === undefined ? undefined : { scope });
+    await stopRun({ runId }, scope === undefined ? undefined : { scope });
     const by = marker(runDir).by;
     assert.ok(typeof by === "string" && by.trim(), `null/blank actor for scope ${JSON.stringify(scope)}`);
   }
 });
 
-test("the parked terminal breadcrumb carries the actor too", () => {
+test("the parked terminal breadcrumb carries the actor too", async () => {
   // A parked run has no turn in flight, so ops.mjs writes the terminal itself. That record is the one a
   // reader reaches for on a run that never resumed, and it named the channel and no actor either.
   const { runDir, runId } = makeRun("parked-for-human");
-  const s = stopRun({ runId }, { scope: { kind: "internal", sub: "staff@example.test", accounts: "*" } });
+  const s = await stopRun({ runId }, { scope: { kind: "internal", sub: "staff@example.test", accounts: "*" } });
   assert.equal(s.action, "cancelled");
   assert.ok(existsSync(join(runDir, ".cancelled")), "terminal breadcrumb written");
   assert.equal(JSON.parse(readFileSync(join(runDir, ".cancelled"), "utf8")).by, "staff@example.test");
 });
 
-test("a second stop does not rewrite who stopped it first", () => {
+test("a second stop does not rewrite who stopped it first", async () => {
   const { runDir, runId } = makeRun();
-  stopRun({ runId }, { scope: { kind: "internal", sub: "first@example.test", accounts: "*" } });
-  stopRun({ runId }, { scope: { kind: "internal", sub: "second@example.test", accounts: "*" } });
+  await stopRun({ runId }, { scope: { kind: "internal", sub: "first@example.test", accounts: "*" } });
+  await stopRun({ runId }, { scope: { kind: "internal", sub: "second@example.test", accounts: "*" } });
   assert.equal(marker(runDir).by, "first@example.test", "the marker is idempotent by design");
 });

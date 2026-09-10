@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives the knockout stop path end to end: records an engine child, reads it back, and
-// proves the sentinel-before-signal ordering in the real stop_run source
+// pins where the stop path finds its target (the sentinel-before-signal ordering is driven in
+// mcp-server/test/stop-now-ends-the-step.test.mjs)
 // — a stop is a stop.
 //
 // The owner pressed Stop on his own run and nothing happened: the cooperative stop closes admission and
@@ -76,31 +77,28 @@ test("recording is best effort and never fatal — a dispatch that cannot write 
   assert.equal(recordEngineChild(dir, -1), false);
 });
 
-test("THE ORDERING: the sentinel is written before the signal, never after", () => {
-  // ACCEPTANCE 3, and it is the load-bearing one. The sentinel is what makes the kill clean — the
-  // gateway finds an already-recorded cancel instead of an unexplained dead child, and writes a proper
-  // terminal with attribution rather than the `state:running` orphan. Reversed, this change becomes
-  // the unsafe version of itself while every other arm here still passes.
-  const src = readFileSync(
-    join(dirname(fileURLToPath(import.meta.url)), "..", "..", "mcp-server", "lib", "ops.mjs"), "utf8");
-
-  const sentinel = src.indexOf('requestCancel(run.runDir, { via: "mcp/stop_run"');
-  const kill = src.indexOf('process.kill(child.pid, "SIGTERM")');
-  // SELF-CONTROL. Two indexOf calls that both return -1 satisfy `-1 < -1` being false but would satisfy
-  // a sloppier comparison, and an anchor that moved would make this arm pass over a file it can no
-  // longer see. Both must be FOUND before their order means anything.
-  assert.ok(sentinel > 0, "the cancel sentinel write must still be at this call site");
-  assert.ok(kill > 0, "the immediate-mode signal must still be at this call site");
-  assert.ok(sentinel < kill,
-    "the sentinel must be written BEFORE the signal — reversed, a killed child is an unexplained dead "
-    + "child and the run is left reading as running, which is the #1090 orphan this ordering prevents");
-
-  // And the signal targets the RECORDED child, never a pattern match. The box carries several
-  // deployments under different users; a `claude` process here can belong to another agent's work.
-  assert.match(src, /readEngineChild\(run\.runDir\)/,
+test("THE ORDERING is driven where stop_run runs; here, the target is by record and no signal is sent outside it", () => {
+  // ACCEPTANCE 3, the load-bearing one, is that the sentinel is written before the signal. It is DRIVEN
+  // now, in mcp-server/test/stop-now-ends-the-step.test.mjs: the process being stopped looks for the
+  // cancel marker at the moment its SIGTERM arrives. This arm used to find the two calls by their
+  // spelling in the source, so it went red when the signal moved into endEngineChild whether or not the
+  // order had broken, and spelling the new call here would have kept it green over a reversal.
+  //
+  // What stays here is what the source can answer. The target comes from this run's own record; ops.mjs
+  // sends no signal of its own, so every signal goes through the code the driven arms exercise; and no
+  // process-name search appears anywhere in the stop path.
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+  const ops = readFileSync(join(root, "mcp-server", "lib", "ops.mjs"), "utf8");
+  const rec = readFileSync(join(root, "driver", "engine", "child-record.mjs"), "utf8");
+  assert.match(ops, /readEngineChild\(run\.runDir\)/,
     "the target must come from this run's own record");
-  assert.doesNotMatch(src, /pgrep|ps -u|comm==?"claude"|\bpkill\b/,
-    "no process-name search may appear in the stop path");
+  assert.doesNotMatch(ops, /process\.kill\(/,
+    "stop_run signals a process itself, outside endEngineChild, where no driven arm reaches that signal");
+  // The box carries several deployments under different users; a `claude` process here can belong to
+  // another agent's work.
+  for (const [name, src] of [["ops.mjs", ops], ["child-record.mjs", rec]])
+    assert.doesNotMatch(src, /pgrep|ps -u|comm==?"claude"|\bpkill\b/,
+      `a process-name search appears in the stop path (${name})`);
 });
 
 test("an immediate stop with nothing to end falls back to the boundary AND SAYS SO", () => {
