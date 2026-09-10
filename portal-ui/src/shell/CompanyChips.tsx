@@ -17,15 +17,16 @@
 import { pickerRows } from './companyRows.ts'
 import { ALL_OWNERS } from '../contract/ownerNames.ts'
 import type { CompanyFacts } from '../contract/companyFacts.ts'
-import type { Role } from '../contract/api.ts'
+import type { Organisation } from '../contract/api.ts'
 
 export function CompanyChips({
   ctx,
   label,
 }: {
   readonly ctx: {
-    readonly me: { readonly role: Role }
     readonly ownerKeys: readonly string[]
+    readonly orgOf: (key: string) => string | null
+    readonly organisations: readonly Organisation[]
     readonly ownerName: (key: string | null) => string
     readonly factsFor: (key: string) => CompanyFacts | undefined
     readonly owner: string | null
@@ -33,7 +34,7 @@ export function CompanyChips({
   }
   readonly label: string
 }) {
-  const rows = pickerRows(ctx.ownerKeys, ctx.ownerName, ctx.factsFor, ctx.me.role)
+  const rows = pickerRows(ctx.ownerKeys, ctx.orgOf, ctx.organisations, ctx.ownerName, ctx.factsFor)
 
   // ONE COMPANY IS NOT A FILTER. With a single company on the install there is nothing to choose
   // between, the rail already opens on it, and a row of one chip beside "All companies" would offer a

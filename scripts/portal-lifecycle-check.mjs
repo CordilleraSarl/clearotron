@@ -58,21 +58,32 @@ const NAME2 = 'Foxglade Interactive'
 /** Which identity /portal/api/me answers as. Flipped between passes. */
 let role = 'client'
 
+// Each pass may run clearances, because each one opens New clearance. The `role` variable names the
+// PASS — who is looking, in this check's own terms — and the wire carries the two switches.
+const RUN_ONLY = { permissions: { run: true, manage: false } }
 const ME = () => {
   if (role === 'staff') {
-    // Staff hold "*", which is not a list — they read names from the staff-only roster. `accountNames`
-    // is empty for them by design, and a staff pass that still shows the name proves the roster path.
-    return { role: 'staff', email: 'lawyer@cordillera.test', accounts: '*', accountNames: {} }
+    // Access to the whole install holds "*", which is not a list — names come from the roster.
+    // `accountNames` is empty by design, and a pass that still shows the name proves the roster path. Two
+    // organisations are visible, so the identity corner is EMPTY for this pass: the top bar names an
+    // organisation only for a person who can see exactly one.
+    return { permissions: { run: true, manage: true }, email: 'lawyer@cordillera.test', accounts: '*', accountNames: {},
+      access: [{ kind: 'everything' }],
+      organisations: [{ key: 'org-a', name: 'Apmxc Group' }, { key: 'org-b', name: 'Foxglade Group' }],
+      accountOrgs: { [KEY]: 'org-a', [KEY2]: 'org-b' }, genericOrgs: ['org-a', 'org-b'] }
   }
   if (role === 'multi') {
-    // THE LOGIN THE BUG WAS REPORTED FROM. A client with several grants is the only identity that gets
-    // the switcher WITHOUT the roster behind it — its options come from `me.accounts` and their labels
-    // from `me.accountNames`, a path neither of the other two passes renders at all. Staff exercise the
-    // switcher but read the roster; a single-account client reads the names but has no switcher.
-    return { role: 'client', email: 'owner@example.test', accounts: [KEY, KEY2],
-      accountNames: { [KEY]: NAME, [KEY2]: NAME2 } }
+    // THE LOGIN THE BUG WAS REPORTED FROM. Several grants is the only identity that gets the switcher
+    // WITHOUT the roster behind it — its options come from `me.accounts` and their labels from
+    // `me.accountNames`, a path neither of the other two passes renders at all.
+    return { ...RUN_ONLY, email: 'owner@example.test', accounts: [KEY, KEY2],
+      accountNames: { [KEY]: NAME, [KEY2]: NAME2 },
+      access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }, { kind: 'company', key: KEY2, name: NAME2, org: 'org-a' }],
+      organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a', [KEY2]: 'org-a' } }
   }
-  return { role: 'client', email: 'gundy@apmxc.test', accounts: [KEY], accountNames: { [KEY]: NAME } }
+  return { ...RUN_ONLY, email: 'gundy@apmxc.test', accounts: [KEY], accountNames: { [KEY]: NAME },
+    access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }],
+    organisations: [{ key: 'org-a', name: 'Apmxc Group' }], accountOrgs: { [KEY]: 'org-a' } }
 }
 
 // THE ENGINE'S OWN ROW for a level, not a restatement of it. `available`/`unavailableNote` are the
@@ -142,10 +153,12 @@ const server = createServer((req, res) => {
   }
 
   if (p === '/portal/api/me') return json(res, ME())
-  // Staff-only, and answered as such: a client pass that somehow reached it would be a real finding.
+  // Asked only by the whole-install pass, and answered as such: another pass reaching it would be a real
+  // finding. Each company names its one organisation, so that pass's switcher is drawn in groups.
   if (p === '/portal/admin/roster') {
     if (role !== 'staff') { res.writeHead(404); res.end('{}'); return }
-    return json(res, { customers: [{ key: KEY, name: NAME }, { key: 'foxglade', name: 'Foxglade Interactive' }] })
+    return json(res, { customers: [{ key: 'generic', name: 'Generic default', org: null }, { key: KEY, name: NAME, org: 'org-a' },
+      { key: 'foxglade', name: 'Foxglade Interactive', org: 'org-b' }] })
   }
   if (p === '/portal/api/searches') {
     return json(res, {

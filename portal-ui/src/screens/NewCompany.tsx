@@ -24,6 +24,7 @@ import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { companyKeyFrom } from '../contract/companyKey.ts'
 import { handOff } from '../contract/companyCreated.ts'
+import { canRun } from '../shell/permissions.ts'
 
 /**
  * What a person may state when making a company.
@@ -124,7 +125,11 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
     // the thing that was just made.
     ctx.refreshCompanies()
     ctx.setOwner(result.value.key)
-    ctx.go('/portal/new')
+    // Onward to New clearance — for a person who may start one. Manage and Run are separate switches, and
+    // someone who may add companies but not run clearances would otherwise land on a page that does not
+    // exist for them, straight after doing the one thing they came to do. They land on the new company's
+    // profile instead, which is where its setting-up continues.
+    ctx.go(canRun(ctx.me) ? '/portal/new' : '/portal/brand/profile')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result])
 

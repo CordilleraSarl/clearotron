@@ -173,13 +173,16 @@ const server = createServer((req, res) => {
   const s = STATES[current]
   if (path === '/portal/api/me') {
     const accounts = s.accounts ?? ['coastline']
-    // `brand` IS THE ORGANISATION — the firm running this install, which every install names. The corner
-    // used to render the COMPANY here for a client holding one grant; it renders the organisation for
-    // everyone now, so a fixture that supplies no brand would exercise the empty case on every state
-    // rather than the one it means to.
-    return json({ role: 'client', email: 'counsel@coastline.test', accounts, concurrentRuns: s.cap ?? 2,
+    // THE ORGANISATION the corner names is the one the server resolves — exactly one here, so it is named.
+    // The corner used to render the COMPANY for a client holding one grant, then the brand setting; it
+    // reads `organisations` now, so a fixture that supplied none would exercise the empty case on every
+    // state rather than the one it means to. Every company sits in that one organisation.
+    return json({ permissions: { run: true, manage: false }, email: 'counsel@coastline.test', accounts, concurrentRuns: s.cap ?? 2,
+      access: [{ kind: 'organisation', key: 'tolliver', name: 'Tolliver & Quillon' }], genericOrgs: ['tolliver'],
+      organisations: [{ key: 'tolliver', name: 'Tolliver & Quillon' }],
+      accountOrgs: Object.fromEntries(accounts.map((a) => [a, 'tolliver'])),
       brand: 'Tolliver & Quillon',
-      accountNames: { coastline: 'Coastline Drinks', foxglade: 'Foxglade Interactive', ridgeform: 'Ridgeform' } })
+      accountNames: { coastline: 'Coastline Drinks', foxglade: 'Foxglade Interactive', ridgeform: 'Ridgeform', generic: 'Generic default' } })
   }
   if (path === '/portal/api/runs') {
     // What portal-service actually answers a multi-owner client who has named nobody. The browser

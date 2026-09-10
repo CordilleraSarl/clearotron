@@ -38,6 +38,7 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { readableFailure } from '../contract/failure.ts'
+import { canRun } from '../shell/permissions.ts'
 
 const TERMINAL = new Set<Run['state']>(['delivered', 'failed', 'cancelled'])
 
@@ -115,7 +116,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       <InFlightBand
         count={cards.length + queue.length}
         note={slotNote(null, ctx.me.concurrentRuns)}
-        onNew={() => ctx.go('/portal/new')}
+        onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null}
         onAll={() => ctx.go('/portal/clearances')}
       />
 
@@ -175,7 +176,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       {lastDone ? <LastFinished row={lastDone} ctx={ctx} /> : null}
 
       {answer === 'ok' && !cards.length && !queue.length && !lastDone ? (
-        <FirstRun onNew={() => ctx.go('/portal/new')} />
+        <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
       ) : null}
 
       {usageRes?.kind === 'ok' ? (
@@ -193,7 +194,8 @@ function InFlightBand({
 }: {
   readonly count: number
   readonly note: string | null
-  readonly onNew: () => void
+  /** Null for a person who may not start a clearance: the button is absent, never present and refusing. */
+  readonly onNew: (() => void) | null
   readonly onAll: () => void
 }) {
   // A GRID, not a spacer-and-wrap. The button stays pinned right at every width; a flex-wrap
@@ -212,10 +214,12 @@ function InFlightBand({
         <Icon name="layers" />
         <span>All clearances</span>
       </button>
-      <button type="button" className="home2-new" onClick={onNew}>
-        <Icon name="plus-circle" />
-        New clearance
-      </button>
+      {onNew ? (
+        <button type="button" className="home2-new" onClick={onNew}>
+          <Icon name="plus-circle" />
+          New clearance
+        </button>
+      ) : null}
     </div>
   )
 }
@@ -701,9 +705,20 @@ function LastFinished({
   )
 }
 
-function FirstRun({ onNew }: { readonly onNew: () => void }) {
+function FirstRun({ onNew }: { readonly onNew: (() => void) | null }) {
   // Nothing has run. One sentence and the button — no empty card slots, no zeroes, and no section
   // headings standing over nothing.
+  //
+  // FOR A PERSON WHO MAY NOT START ONE, a different sentence and no button. Both halves of the first
+  // sentence would be false for them — they cannot clear a name, and they cannot stop anything — and a
+  // button that leads to a page that does not exist for them is worse than no button.
+  if (!onNew) {
+    return (
+      <div className="home2-firstrun">
+        <p>Nothing has been run for the companies you can see yet. Reports appear here as they are delivered.</p>
+      </div>
+    )
+  }
   return (
     <div className="home2-firstrun">
       <p>

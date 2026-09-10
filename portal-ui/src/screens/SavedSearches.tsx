@@ -43,6 +43,7 @@ import { draftFromSaved } from '../contract/composerProduct.ts'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { canRun } from '../shell/permissions.ts'
 
 export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // Who this is FOR — resolved exactly as the composer resolves it. A staff member acting for a client
@@ -134,7 +135,12 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // deliberately stopped using.
   const unusable = rows.filter((r) => !r.archived && !isUsable(statusFor(r, levels))).length
 
-  if (!rows.length) return <Empty go={ctx.go} />
+  // Building or editing a custom search happens on New clearance, which exists only for a person who
+  // may start clearances. Without Run the list is still theirs to read — and every control that would
+  // open the composer is absent rather than leading to a page that does not exist for them.
+  const startNew = canRun(ctx.me) ? () => ctx.go('/portal/new') : null
+
+  if (!rows.length) return <Empty onNew={startNew} />
 
   return (
     <div className="screen">
@@ -165,11 +171,13 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
         </div>
       ) : null}
 
-      <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => ctx.go('/portal/new')}>
-          New custom search
-        </button>
-      </div>
+      {startNew ? (
+        <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
+          <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={startNew}>
+            New custom search
+          </button>
+        </div>
+      ) : null}
 
       <div className="table-wrap" style={{ marginTop: 10 }}>
         <table className="data">
@@ -193,7 +201,7 @@ export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
                 status={statusFor(r, levels)}
                 busy={busy === r.slug}
                 confirming={confirming === r.slug}
-                onEdit={() => ctx.go(`/portal/new?search=${encodeURIComponent(r.slug)}`)}
+                onEdit={canRun(ctx.me) ? () => ctx.go(`/portal/new?search=${encodeURIComponent(r.slug)}`) : null}
                 onRetire={() => (r.archived ? void setRetired(r, false) : setConfirming(r.slug))}
                 onConfirm={() => void setRetired(r, true)}
                 onCancel={() => setConfirming(null)}
@@ -216,7 +224,8 @@ function SavedRow({
   readonly status: SavedSearchStatus
   readonly busy: boolean
   readonly confirming: boolean
-  readonly onEdit: () => void
+  /** Null for a person who may not start clearances: editing opens the composer, which is not theirs. */
+  readonly onEdit: (() => void) | null
   readonly onRetire: () => void
   readonly onConfirm: () => void
   readonly onCancel: () => void
@@ -267,7 +276,7 @@ function SavedRow({
             </>
           ) : (
             <>
-              {editable && !recipe.archived ? (
+              {onEdit && editable && !recipe.archived ? (
                 <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }} onClick={onEdit}>
                   Edit
                 </button>
@@ -317,22 +326,31 @@ function BuildsOn({ status }: { readonly status: SavedSearchStatus }) {
   )
 }
 
-function Empty({ go }: { readonly go: (path: string) => void }) {
+function Empty({ onNew }: { readonly onNew: (() => void) | null }) {
   return (
     <div className="screen">
       <Heading />
       <div className="notice">
         <b>No custom searches yet</b>
-        <p className="prose" style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
-          A custom search is a named set-up — how deep to search and where to point it. Build one on New
-          clearance: set the levers, see what it costs, then press <b>Save as search</b>. It becomes a
-          single choice the next time, instead of a form to fill in the same way every time.
-        </p>
-        <div style={{ marginTop: 14 }}>
-          <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => go('/portal/new')}>
-            Build one on New clearance
-          </button>
-        </div>
+        {onNew ? (
+          <>
+            <p className="prose" style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
+              A custom search is a named set-up — how deep to search and where to point it. Build one on New
+              clearance: set the levers, see what it costs, then press <b>Save as search</b>. It becomes a
+              single choice the next time, instead of a form to fill in the same way every time.
+            </p>
+            <div style={{ marginTop: 14 }}>
+              <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={onNew}>
+                Build one on New clearance
+              </button>
+            </div>
+          </>
+        ) : (
+          <p className="prose" style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>
+            A custom search is a named set-up — how deep to search and where to point it. None has been
+            saved for this company.
+          </p>
+        )}
       </div>
     </div>
   )

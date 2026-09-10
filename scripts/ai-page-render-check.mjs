@@ -101,7 +101,9 @@ const server = createServer((req, res) => {
   const json = (o) => { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)) }
   const s = STATES[current]
   if (path === '/portal/api/me') {
-    return json({ role: s.role, email: 'counsel@coastline.test', accounts: s.role === 'staff' ? [] : ['coastline'],
+    // The deck's `role` names who is looking in the resolver's own terms; the wire carries the switches.
+    return json({ permissions: { run: true, manage: s.role === 'staff' },
+      email: 'counsel@coastline.test', accounts: s.role === 'staff' ? [] : ['coastline'],
       allAccounts: s.role === 'staff', accountNames: { coastline: 'Coastline Drinks' } })
   }
   if (path === '/portal/api/mcp-access') return json(accessFor(s))

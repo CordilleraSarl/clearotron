@@ -15,15 +15,17 @@ import { useCallback, useEffect, useState } from 'react'
 // the type is better than reaching for the namespace either way: it says where the type comes from, and
 // it does not depend on a global that a future types major can move again.
 import type { ReactElement } from 'react'
-import type { Me, Role } from '../contract/api.ts'
-import { api, staffLabel, onSessionEnded } from '../contract/api.ts'
+import type { Me, Organisation } from '../contract/api.ts'
+import { api, onSessionEnded } from '../contract/api.ts'
 import { navGroupsFor, avatarMenuFor, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
 import { Icon } from '../components/Icon.tsx'
 import { Logo, WORDMARK } from '../components/Logo.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
-import { orderedCompanyKeys } from './companyRows.ts'
+import { pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
+import { permissionsPhrase } from './accessWords.ts'
+import { GENERIC_ACCOUNT, genericFor, isGenericKey, orgOfGeneric } from '../contract/genericKey.ts'
 import { companyFactsMap, type CompanyFacts } from '../contract/companyFacts.ts'
 import type { RosterCompany } from '../contract/api.ts'
 
@@ -155,7 +157,7 @@ function NavList({
 
 export type ShellContext = {
   readonly me: Me
-  /** The company in view, or null for "All companies". Staff and multi-owner accounts only. */
+  /** The company in view, or null for "All companies". Only a person who can see several companies. */
   readonly owner: string | null
   /**
    * Set the company in view — the same value the sidebar switcher sets.
@@ -204,6 +206,20 @@ export type ShellContext = {
    * a person is most likely to be looking for.
    */
   readonly ownerKeys: readonly string[]
+  /**
+   * Which organisation a company belongs to — its key, or null when the server did not say.
+   *
+   * A company sits in exactly one organisation; that constraint is the server's. Resolved here from the
+   * same two sources as the names — a person's own grants off `me`, the roster for someone who can see
+   * the whole install — so the switcher, the pick panel and the chips group the same company under the
+   * same heading.
+   */
+  readonly orgOf: (key: string) => string | null
+  /**
+   * The organisations this person can SEE, in the server's order. More than one is what turns the
+   * switcher's group headings on and the top bar's organisation label off.
+   */
+  readonly organisations: readonly Organisation[]
   /**
    * The three facts about a company — what it sells, how many marketplaces, which territories.
    *
@@ -314,13 +330,14 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // real browser.
 
   // The roster, fetched HERE rather than inside the switcher, because names are needed by every screen
-  // and not only by the control that picks one. Staff-only by construction: a client gets 404 from this
-  // route, so asking would spend one of their 120/min on a refusal — the guard is what keeps this from
-  // being a request every client makes on every load.
-  const isStaff = meResult?.kind === 'ok' && meResult.value.role === 'staff'
+  // and not only by the control that picks one. Asked only by a person whose grant is the whole install —
+  // the one person who holds no named company list of their own. Everyone else carries their companies,
+  // names and organisations on `me`, and asking would spend one of their 120/min on a request that adds
+  // nothing.
+  const readsRoster = meResult?.kind === 'ok' && meResult.value.allAccounts
   const { result: rosterResult, reload: reloadRoster } = useLoad(
-    () => (isStaff ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly RosterCompany[] })),
-    [isStaff],
+    () => (readsRoster ? api.roster() : Promise.resolve({ kind: 'ok' as const, value: [] as readonly RosterCompany[] })),
+    [readsRoster],
   )
 
   useEffect(() => {
@@ -375,31 +392,51 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   }
 
   const me: Me = meResult.value
-  const role: Role = me.role
-  const groups = navGroupsFor(role)
-  const entry = screenForPath(path, role) ?? (path === '/portal' || path === '/portal/' ? HOME : null)
+  const groups = navGroupsFor(me)
+  const entry = screenForPath(path, me) ?? (path === '/portal' || path === '/portal/' ? HOME : null)
 
   // ONE name map, from both sources, resolved once. A client's own grants carry names on `me`; staff
   // reach every customer and take theirs from the roster. Neither source is per-screen, so neither is
   // consulted per-screen. While the roster is still in flight a staff member reads the key for a frame,
   // which is the same fallback a missing name gets — never a blank where a company should be.
   const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value : [])
-  const ownerName = (key: string | null): string => ownerNameFrom(names, key)
+  // One organisation's Generic is called what Generic is called; the key only says which one.
+  const ownerName = (key: string | null): string =>
+    ownerNameFrom(names, key !== null && isGenericKey(key) ? GENERIC_ACCOUNT : key)
 
   // The same two sources and the same precedence, for the three facts that tell one company from
   // another in the pick panel. Parallel to the name map rather than folded into it: a company with no
   // facts is a company, a company with no name is a broken row.
   const facts = companyFactsMap(me.accountFacts, rosterResult?.kind === 'ok' ? rosterResult.value : [])
-  const factsFor = (key: string): CompanyFacts | undefined => facts[key]
+  const factsFor = (key: string): CompanyFacts | undefined => facts[isGenericKey(key) ? GENERIC_ACCOUNT : key]
 
   // WHICH owners are offered is a separate question from what they are CALLED, and it is answered from
   // the roster's own key list — not from the keys of the name map. An account whose profile carries no
   // name contributes no entry to that map, and deriving the menu from it would make such an account
   // silently unselectable: a customer that exists, has runs, and cannot be picked.
-  const ownerKeys: readonly string[] =
-    role === 'staff'
+  const companyKeys: readonly string[] =
+    me.allAccounts
       ? (rosterResult?.kind === 'ok' ? rosterResult.value.map((c) => c.key) : [])
       : me.accounts
+
+  // GENERIC, ONE PER ORGANISATION, FROM ONE LIST. The server's `genericOrgs` is the whole answer to which
+  // Generics this person is offered; the roster's own `generic` entry is dropped here, because it names
+  // the house account and not any organisation's, and offering it would send a request the door has to
+  // guess the organisation for. Each is held as one key naming its organisation — contract/genericKey.ts
+  // is where that key is built, read, and split back into the pair the door takes.
+  const ownerKeys: readonly string[] = [
+    ...companyKeys.filter((k) => !isGenericKey(k)),
+    ...me.genericOrgs.map(genericFor),
+  ]
+
+  // Which organisation each of those companies sits in — the person's own grants first, the roster for
+  // someone who can see the whole install. A company neither source places reads null and is grouped
+  // under no heading: visibly unplaced, never filed under a guess.
+  const rosterOrgs: Readonly<Record<string, string>> = Object.fromEntries(
+    (rosterResult?.kind === 'ok' ? rosterResult.value : []).flatMap((c) => (c.org ? [[c.key, c.org]] : [])),
+  )
+  const orgOf = (key: string): string | null => orgOfGeneric(key) ?? me.accountOrgs[key] ?? rosterOrgs[key] ?? null
+  const organisations = me.organisations
 
   // NOBODY IS ASKED TO CHOOSE BETWEEN ONE THING AND ITSELF.
   //
@@ -418,7 +455,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 
   const body = entry
     ? render(entry.id, { me, owner: ownerInView, setOwner: setOwnerGuarded, refreshCompanies: reloadRoster,
-        ownerName, ownerKeys, factsFor, go, visit, sidebarCollapsed: collapsed })
+        ownerName, ownerKeys, orgOf, organisations, factsFor, go, visit, sidebarCollapsed: collapsed })
     : // An unknown path and a staff-only path a client typed both land here, indistinguishably.
       <div className="screen">
         <div className="empty">
@@ -447,7 +484,17 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   //
   // Null ⇒ the block is not rendered at all, so an install that was sent no organisation name shows
   // nothing rather than an empty label.
-  const accountName = me.brand || null
+  //
+  // AND ONLY FOR A PERSON WHO CAN SEE EXACTLY ONE. Somebody who can see two organisations is inside
+  // neither of them in particular, and naming one would tell them the screen is scoped to it when it is
+  // not. So the slot has two cases and the second is empty: one organisation, its name; several, nothing.
+  // It never shows a company and it is never a control — there is no organisation switcher.
+  //
+  // Read off `organisations`, which the server resolves, and never off the brand setting. The brand is
+  // one name for the whole install; on a hosted install holding unrelated organisations it would print
+  // the operator's name over a customer's screens.
+  const accountName = organisations.length === 1 ? (organisations[0]?.name || null) : null
+  const grouped = pickerGroups(ownerKeys, orgOf, organisations, ownerName, factsFor)
 
   return (
     <div className="app">
@@ -507,7 +554,7 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                 // between one thing and itself.
                 <div style={{ marginBottom: 10 }}>
                   <div className="eyebrow">Company</div>
-                  <BrandOwnerSwitcher keys={ownerKeys} ownerName={ownerName} value={ownerInView} role={role} onChange={setOwnerGuarded} />
+                  <BrandOwnerSwitcher grouped={grouped} value={ownerInView} onChange={setOwnerGuarded} />
                 </div>
               )}
               <NavList entries={groups.owner} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
@@ -617,11 +664,11 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                   <div style={{ fontSize: 13, wordBreak: 'break-all' }} data-anon="mark">
                     {me.email}
                   </div>
-                  {/* The role moved here with the account. It was a line in the rail; beside an email
-                      address it is more use, because "<operator> staff" answers a question about the
-                      person rather than about the account they hold. */}
+                  {/* What this person may DO, in the words People prints — never a role noun. It sits
+                      beside the address because it answers a question about the person, not about
+                      any company they hold. */}
                   <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
-                    {role === 'staff' ? staffLabel(me.brand) : 'Client'}
+                    {permissionsPhrase(me.permissions)}
                   </div>
                 </div>
                 {/* The only door to Preferences: it is a hidden entry in nav.config, kept routable
@@ -632,12 +679,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                     Admin moved off the sidebar because it belongs to the PERSON rather than to either
                     scope — in the sidebar it would have had to sit on one side of the company
                     switcher, claiming to be account-scoped or owner-scoped when it is neither.
-                    Rendering the list rather than guarding literals with `role === 'staff'` is this
-                    file's own rule (nav.config's header): a JSX guard puts role logic back in markup,
-                    and the source scan that checks every navigation target resolves cannot see one — it
-                    would read a staff-only path as a dead link for clients, and be right to. A client
-                    simply gets a shorter list, with no staff path anywhere in the shell. */}
-                {avatarMenuFor(role).map((e) => (
+                    Rendering the list rather than guarding literals with a permission test is this
+                    file's own rule (nav.config's header): a JSX guard puts the gate back in markup, and
+                    the source scan that checks every navigation target resolves cannot see one — it
+                    would read a manage-only path as a dead link, and be right to. Someone without
+                    Manage simply gets a shorter list, with no such path anywhere in the shell. */}
+                {avatarMenuFor(me).map((e) => (
                   <div key={e.id}>
                     {e.groupLabel ? (
                       <div className="eyebrow nav-group" style={{ padding: '8px 10px 2px' }}>{e.groupLabel}</div>
@@ -667,29 +714,30 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
 /**
  * Which company's world you are looking at.
  *
- * It no longer knows anything about ROLE, and that is the point of this shape. It used to branch —
- * roster names for staff, bare keys for anyone else — which is how one control came to answer the same
- * question two ways depending on who signed in. Now it is handed the keys it may offer and the one
- * resolver every screen uses, so its labels cannot drift from the labels beside it.
+ * It knows nothing about who is signed in, and that is the point of this shape. It is handed the rows
+ * the pick panel draws — grouped, ordered and tagged by ONE function — so its labels, its order and its
+ * headings cannot drift from the panel beside it.
+ *
+ * GROUP HEADINGS ARE `<optgroup>`s, and they appear only for a person who can see more than one
+ * organisation. The control stays a native select: it is the most load-bearing piece of context on the
+ * page, and a native control is the one every keyboard, screen reader and phone already knows how to
+ * open. The Default tag is drawn on the pick panel's card, where there is markup to draw it with; an
+ * option can only hold text, and Generic's name already says "default".
  */
 function BrandOwnerSwitcher({
-  keys,
-  ownerName,
+  grouped,
   value,
-  role,
   onChange,
 }: {
-  readonly keys: readonly string[]
-  readonly ownerName: (key: string | null) => string
-  /** The same test the panel applies, so the one place Generic is withheld is the one place it is ordered. */
-  readonly role: Role
+  readonly grouped: { readonly headings: boolean; readonly groups: readonly CompanyGroup[] }
   readonly value: string | null
   readonly onChange: (v: string | null) => void
 }) {
-  // THE SAME ORDER THE PANEL USES, from the same function. Sorting every key here — Generic included —
-  // put the default in the middle of the alphabet on one control while the panel beside it lifted it to
-  // the front.
-  const options = orderedCompanyKeys(keys, ownerName, role).map((k) => ({ key: k, name: ownerName(k) }))
+  const option = (r: CompanyRow) => (
+    <option key={r.key} value={r.key}>
+      {r.name}
+    </option>
+  )
 
   return (
     <select
@@ -712,11 +760,15 @@ function BrandOwnerSwitcher({
       }}
     >
       <option value="">{ALL_OWNERS}</option>
-      {options.map((o) => (
-        <option key={o.key} value={o.key}>
-          {o.name}
-        </option>
-      ))}
+      {grouped.groups.map((g) =>
+        grouped.headings && g.org ? (
+          <optgroup key={g.org.key} label={g.org.name}>
+            {g.rows.map(option)}
+          </optgroup>
+        ) : (
+          g.rows.map(option)
+        ),
+      )}
     </select>
   )
 }

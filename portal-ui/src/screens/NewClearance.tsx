@@ -73,6 +73,7 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
 import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
+import { canManage } from '../shell/permissions.ts'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -1555,7 +1556,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             // config is staff-only at the door: a client following this link would land on "the
             // configuration cannot be read from here", which is a worse answer than no link at all.
             // Null is the honest shape for "there is nowhere to send this reader", not a dead button.
-            onSettings={ctx.me.role === 'staff' ? () => ctx.go('/portal/admin/config') : null}
+            onSettings={canManage(ctx.me) ? () => ctx.go('/portal/admin/config') : null}
             saveOpen={saveOpen}
             saveName={saveName}
             saveText={saveText}
