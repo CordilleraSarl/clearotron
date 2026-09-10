@@ -629,7 +629,8 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // never a reason to drop the Excel. (A gate that deletes the artifact it was meant to protect is the bug
   // this replaced: a legitimately-sparse run — e.g. no bound Class — must still ship its workbook.)
   await wb.xlsx.writeFile(outPath);
-  const gate = validateAudit(wb, { findings, coverage, coverageJudgment, verdict, registerOnly });
+  const gate = validateAudit(wb, { findings, coverage, coverageJudgment, verdict, registerOnly,
+    registerPublishesRecordPages: contract?.registerPublishesRecordPages ?? null });
   return {
     sheets: wb.worksheets.map(w => w.name),
     findings: findings.length,
@@ -643,7 +644,8 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
  * validateAudit — the build gate. Reads the assembled workbook back and asserts the spec's MUST-BE-TRUE list.
  * Returns { ok, violations[] }. Exported so tests assert the same contract the build enforces.
  */
-export function validateAudit(wb, { findings = [], coverage = [], coverageJudgment = null, verdict = null, registerOnly = false } = {}) {
+export function validateAudit(wb, { findings = [], coverage = [], coverageJudgment = null, verdict = null, registerOnly = false,
+  registerPublishesRecordPages = null } = {}) {
   const v = [];
   const sheets = wb.worksheets.map(w => w.name);
 
@@ -722,6 +724,13 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
       if (!textAt(findWs.getRow(r), cMark0).trim()) ghost++;
     }
     if (ghost) v.push(`Findings has ${ghost} ghost/continuation row(s) with no mark (multi-registration owners must stay on one row)`);
+    // the ordinal joins a row back to its finding's typed source; the record identity is office + number
+    const cOrd = col(findWs, '#'), cReg = col(findWs, 'Registration(s)'), cCountry = col(findWs, 'Country');
+    // ordinal → the finding's OWN typed source_type. Never pattern-matched off the Source cell, which is
+    // display text: `sourceCell` composes it and a register row can read "EUIPO" or a vendor label.
+    const srcTypeByOrdinal = new Map((Array.isArray(findings) ? findings : [])
+      .filter((f) => f?.ordinal != null)
+      .map((f) => [String(f.ordinal), String(f?.source?.source_type ?? '')]));
     const cMark = col(findWs, 'Conflicting mark'), cSrc = col(findWs, 'Source'), cTreat = col(findWs, 'How we treated it'),
       cLink = col(findWs, 'Link'), cRet = col(findWs, 'Record retrieved?'),
       cMs = col(findWs, 'Mark similarity'), cGp = col(findWs, 'Goods proximity'), cUse = col(findWs, 'Use'), cEnf = col(findWs, 'Enforcer'),
@@ -737,9 +746,37 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
       if (!cellText(cBand).trim()) v.push(`Findings "${mark}": no band/treatment marker`);
       // link resolves — but a famous-neighbour context note is knowledge-cited with no fetched record, so it
       // legitimately carries no link (its row is exempt, exactly as it is from the four-driver check below).
+      //
+      // WHAT A READER CAN DO WITH THE CITATION, not whether a URL is present. Some registers publish no
+      // per-record page at all (`hasPublicRecordUrl: false`), and for those the engine's own publish step
+      // EMPTIES any absolute record link a model wrote, because constructing a per-record URL for a
+      // register that publishes none would be a fabricated citation on a legal deliverable. Demanding an
+      // http(s) link of such a row asked for the one thing the engine is forbidden to supply, and reported
+      // the whole register layer of a delivered workbook as defective: every register finding, every run,
+      // scaling with how many register hits the matter had. So on such a run the record's IDENTITY is the
+      // citation — the registration number and the office — and a row carrying it is followable.
+      //
+      // FAIL-CLOSED IN BOTH DIRECTIONS OF DOUBT. The exemption needs a register that positively declares
+      // it has no record pages (`false`, never `null` — a legacy run with no fetch receipts cannot say
+      // what its register publishes), the row's source type to come back `register*` from the findings
+      // themselves, AND the row to actually carry the record identity. If the ordinal join misses, or the
+      // identity columns are absent from this workbook, nothing is exempt and the row is reported exactly
+      // as before.
       const linkVal = cLink ? row.getCell(cLink).value : null;
       const href = linkVal && typeof linkVal === 'object' ? linkVal.hyperlink : linkVal;
-      if (!isCtx && !/^https?:\/\//i.test(String(href ?? ''))) v.push(`Findings "${mark}": link does not resolve to http(s)`);
+      if (!isCtx && !/^https?:\/\//i.test(String(href ?? ''))) {
+        const isRegisterRow = String(srcTypeByOrdinal.get(cellText(cOrd).trim()) ?? '').startsWith('register');
+        // The identity has to be a real one. `Registration(s)` is never blank — findingRows writes the
+        // placeholder `— (common-law)` for a finding with no registrations at all — so a bare non-empty
+        // test would have exempted exactly the register row that cites nothing.
+        const regCell = cellText(cReg).trim();
+        const citesRecord = Boolean(regCell && !regCell.startsWith('—') && cellText(cCountry).trim());
+        if (registerPublishesRecordPages === false && isRegisterRow) {
+          // The register has no record page. The number and the office ARE the citation; without them the
+          // row cites nothing at all, which is a worse defect than a missing link and is named as itself.
+          if (!citesRecord) v.push(`Findings "${mark}": no record link, and no registration number + office either — nothing identifies the record`);
+        } else v.push(`Findings "${mark}": link does not resolve to http(s)`);
+      }
       // fetch-failed visibly unverified
       const ret = cellText(cRet);
       if (/not retrieved/i.test(ret) && !/unverified/i.test(ret) && !/n\/a/i.test(ret) && !/read/i.test(ret)) {

@@ -14,7 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent } from './publish-inputs.mjs';
+import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
 import { parseFrameworkManifest } from '../framework.mjs';
 import { rollupTokens } from '../tokens.mjs';
@@ -132,7 +132,7 @@ export function evaluateClientGate({ coverage = [], lintFailingIds = [], escalat
   const closing = requiredAbsent(inputsAbsent);
   if (closing.length)
     push('publish-input-absent', `a required input to this report was not there (${closing.join(', ')}) — the report was built without it, which is not the same as a search that found nothing`);
-  return { released: reasons.length === 0, reasons, reasonCodes, inputsAbsent: [...(Array.isArray(inputsAbsent) ? inputsAbsent : [])] };
+  return { released: reasons.length === 0, reasons, reasonCodes, inputsAbsent: [...(Array.isArray(inputsAbsent) ? inputsAbsent : [])], notClosing: nonClosingAbsences(inputsAbsent) };   // `notClosing` EXPLAINS a recorded absence that did not hold the release (publish-inputs.mjs nonClosingAbsences) — it decides nothing
 }
 
 // T3 (H3) — the machine-QC INPUT assembly. Mirrors publishReport's own reads exactly (the
@@ -201,7 +201,7 @@ const INDEX_CSS = `
  .b{display:inline-block;color:#fff;font-weight:700;font-size:12px;padding:2px 9px;border-radius:999px}
  .b-mh,.b-l3{background:var(--h-amber)}.b-l4{background:var(--crimson)}.b-l2{background:var(--h-green)}.b-l1{background:var(--h-grey)}
  .stmt{display:block;margin-top:3px;font-size:11.5px;color:var(--muted,#6b5d50);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
- .hold{display:inline-block;background:var(--crimson);color:#fff;font-weight:700;font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px}
+ .hold{display:inline-block;background:var(--crimson);color:#fff;font-weight:700;font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px} .disc{display:inline-block;border:1px solid var(--line);color:var(--muted);font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px}
  .hpill{display:inline-block;color:#fff;font-weight:700;font-size:11.5px;padding:3px 11px;border-radius:999px;white-space:nowrap}
  .filterbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 12px}
  .filterbar .flbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson-mid);font-weight:700}
@@ -247,7 +247,7 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
       <td>${matterCell}</td>
       <td>${anonMark(r.title, { key: ck, run: r.runId })}</td>
       <td>${anonClient(r.client, ck)}</td>
-      <td><span class="b b-${esc(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${
+      <td><span class="b b-${esc(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
         // spec 64 — the stance clause of THE one risk statement beside the (labelled) band pill, so the
         // index can never show a bare severity word that reads as the whole answer. The tier word leads
         // the statement; the pill already shows it, so the cell carries the clause after the first " — ".
@@ -1030,7 +1030,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0 }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1180,7 +1180,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // re-rendered without its meta changing shape. When it IS present it is the durable record that
     // this report was assembled without those stores, which the run previously kept nowhere at all.
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
-      inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined },
+      inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined },
     // PR-9 — present ⇒ report-data.json is beside the report and the portal can render natively (the
     // same stamp the knockout lane writes; the consumer branch had readers before it had a writer).
     // undefined on a producer miss, so the meta never advertises a file that is not there.

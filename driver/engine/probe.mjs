@@ -90,7 +90,20 @@ const tail = (s) => {
   return t.length > DETAIL_CHARS ? `…${t.slice(-DETAIL_CHARS)}` : t;
 };
 
-const signInLine = (engine) => ENGINE_BINARIES[engine]?.signIn ?? "sign the CLI in";
+// THE HEADLESS ROUTE, WHERE THE ENGINE HAS ONE. The interactive sign-in is the one thing a server with no
+// browser cannot do, and it was the only remedy this offered — including to a box that had configured the
+// route built for servers. The engine table already carries that route; this reads it rather than a copy.
+const signInLine = (engine) => {
+  const spec = ENGINE_BINARIES[engine];
+  const base = spec?.signIn ?? "sign the CLI in";
+  const h = spec?.headless;
+  // Both forms the wizard already offers, read off the same table: a TOKEN route is run elsewhere and
+  // carried here by variable; a DEVICE route is run on this box and signs it in directly.
+  if (!h?.cmd) return base;
+  return h.tokenEnv
+    ? `${base} — or, on a box with no browser, run \`${h.cmd}\` on any machine you can sign in on and set the token it prints as ${h.tokenEnv} in this install's environment file`
+    : `${base} — or, on a box with no browser, run \`${h.cmd}\` here`;
+};
 
 /**
  * One verdict from one turn. PURE — no clock, no filesystem, no process.
@@ -273,6 +286,19 @@ export function probeWeatherWarning(verdict) {
  * again; a credential outliving the check that borrowed it would be a worse defect than the one this
  * fixed, and a check drives the restore rather than trusting it.
  */
+/**
+ * EVERY VARIABLE THAT DECIDES WHAT AN ENGINE SPAWN IS — selection, binary, billing mode and the
+ * credentials, the API key and the headless token alike. ONE list: `applyEngineEnv` below applies it,
+ * and a caller building the environment it hands this module fills from it. `doctor` kept a second copy
+ * that had dropped both credentials, so it filled a probe environment without the very token it then
+ * reported missing. Exported so there is nothing left to copy.
+ */
+export function engineEnvKeys() {
+  return [...new Set(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES)
+    .flatMap((s) => [s.env, s.authEnv, s.apiKeyEnv, s.headless?.tokenEnv])
+    .filter(Boolean)])];
+}
+
 function applyEngineEnv(env) {
   if (!env || env === process.env) return () => {};
   // EVERY VARIABLE THAT DECIDES WHAT THE SPAWN IS, not only the ones that decide WHICH BINARY.
@@ -293,9 +319,7 @@ function applyEngineEnv(env) {
   // written, so the restore put that back instead of deleting it, and the mode leaked into the rest of
   // the process. Caught by the arm that exists to prove the restore, which is the only reason widening
   // this list was safe to do at all.
-  const keys = [...new Set(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES)
-    .flatMap((s) => [s.env, s.authEnv, s.apiKeyEnv, s.headless?.tokenEnv])
-    .filter(Boolean)])];
+  const keys = engineEnvKeys();
   const saved = new Map();
   for (const k of keys) {
     saved.set(k, process.env[k]);
