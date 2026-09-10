@@ -363,6 +363,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-filing-links-to-its-office.test.mjs": {
+          "tests": 11,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-finding-carries-every-key-its-doctrine-teaches.test.mjs": {
           "tests": 7,
           "asserts": 17,

@@ -45,6 +45,7 @@ import {
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
+import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
 import { demoBannerHtml } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
@@ -77,6 +78,16 @@ const isHttpUrl = (u) => /^https?:\/\//i.test(String(u ?? '').trim());
 // since the Result screen's first commit (3654a76), so the popup is not what was missing. `rel` stays
 // beside it — noopener severs window.opener, noreferrer withholds the run's URL from the evidence host.
 const linkOrText = (u) => (isHttpUrl(u) ? `<a href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(u)}</a>` : esc(u));
+
+// A listed filing's record as its office publishes it, where the run's register has no page of its own:
+// publish sets `officeLink` from the filing's own numbers (office-record-links.mjs). The label is the
+// office and the number, linked where the office has a page. The handle names the vendor's record, not
+// the office's, and a reader can look it up nowhere. A filing with no number shows `fallback`, as before.
+const officeRecordCell = (r, fallback) => {
+  const l = r?.officeLink;
+  if (!l?.label) return fallback;
+  return l.href ? `<a href="${escAttr(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>` : esc(l.label);
+};
 
 // Minimal inline markdown, escaped FIRST. The old renderer ran esc() and nothing else, so a batch
 // summary reading `BRIMSTONE rates **High (Classes 9, 28, 41)**.` rendered its asterisks verbatim —
@@ -602,7 +613,7 @@ function filingsSection(marks, registerRecords) {
       <td>${esc(r.status ?? '—')}</td>
       <td>${esc((r.classes ?? []).join(', ') || '—')}</td>
       <td>${esc(r.territory ?? '—')}</td>
-      <td class="ko-findev">${r.url ? linkOrText(r.url) : esc(r.recordId ?? '—')}</td>
+      <td class="ko-findev">${officeRecordCell(r, r.url ? linkOrText(r.url) : esc(r.recordId ?? '—'))}</td>
     </tr>`).join('');
     // "First N" WAS TRUE AND IS NOT ANY MORE, and saying it of a ranked table would be worse than the
     // cap: it invites the reader to take the sample for the top of the provider's list. Say the count
@@ -619,7 +630,15 @@ function filingsSection(marks, registerRecords) {
       <p class="ko-basis">${esc(line ?? '')}${esc(more)}</p>
     </div>`;
   }).join('');
-  return `<div class="panel ko-glance">${blocks}<p class="ko-basis">${esc(RECORD_BASIS)}</p></div>`;
+  return `<div class="panel ko-glance">${blocks}<p class="ko-basis">${esc(RECORD_BASIS)}${officeLinkNote(registerRecords)}</p></div>`;
+}
+
+// Once, under the filings: what a linked number opens and, per office, why the rest are cited by number.
+// The clearance's own sentences, said once for the reason it says them once: a note repeated beside every
+// filing reads as a broken report. Empty unless a filing carries an office number.
+function officeLinkNote(registerRecords) {
+  const links = (registerRecords?.marks ?? []).flatMap((m) => m?.records ?? []).map((r) => r?.officeLink).filter(Boolean);
+  return officeLinkSentences(new Map(links.map((l, i) => [i, l]))).map((s) => ` ${esc(s)}`).join('');
 }
 
 // The tier-absence line ( part 2). A knockout whose product bought no register step used to render
@@ -1153,7 +1172,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   const useCheckSource = useCheck?.source ?? null;
   const meta = [r.owner ? esc(r.owner) : 'proprietor not stated', r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
-  const receipt = isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? 'no record address supplied');
+  const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? 'no record address supplied'));
   return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
           <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
@@ -1883,6 +1902,9 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
               mark: r.mark, owner: r.owner, status: r.status, classes: r.classes ?? [],
               territory: r.territory, matchedForm: r.matchedForm, matchedBasis: r.matchedBasis,
               recordId: r.recordId, url: r.url,
+              // The office's page for the filing, or its office and number and why it is not a link: the
+              // report's own cell, as data. Only where the run's register has no record pages of its own.
+              ...(r.officeLink ? { officeRecord: { label: r.officeLink.label, href: r.officeLink.href, reason: r.officeLink.reason } } : {}),
             })),
             // Which searches did NOT answer, by name. A consumer that lists only `records` would report
             // a partial listing as a complete one.

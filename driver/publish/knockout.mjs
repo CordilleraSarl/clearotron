@@ -201,7 +201,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           'Trademark': r.mark ?? '—', 'Owner': r.owner ?? '—', 'Status': r.status ?? '—',
           'Classes': (r.classes ?? []).join(', ') || '—', 'Territory': r.territory ?? '—',
           'Filed': r.applicationDate ?? '—', 'Registered': r.registrationDate ?? '—',
-          'Record': r.url ?? r.recordId ?? '—', 'Note': '',
+          'Record': r.officeLink?.href ?? r.officeLink?.label ?? r.url ?? r.recordId ?? '—', 'Note': r.officeLink && !r.officeLink.href ? reasonCellFor(r.officeLink) : '',
         });
       }
       // Every search that did NOT answer gets its own row. Without them a mark with two dead searches
@@ -398,6 +398,12 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       + `cannot produce reduced to the record number — ${recordLinksDropped.slice(0, 3).map((d) => d.was).join(', ')}`
       + `${recordLinksDropped.length > 3 ? ` and ${recordLinksDropped.length - 3} more` : ''}`);
   }
+  // THE OFFICE'S OWN PAGE FOR EACH LISTED FILING, where the run's register publishes none of its own:
+  // the addressing the clearance gives its register findings (office-record-links.mjs), set on the
+  // sidecar here for the same reason the normalisation above is. Keyed on the run's own provider, and
+  // the tally goes to meta.json, so numbers that never fit show as a count rather than as silence.
+  const officeLinks = addressListedFilings(registerRecords);
+  if (officeLinks) note(`[record-links] ${officeLinks.summary}`);
 
   // ── Predelivery lint — the APPLICABLE subset, FLAGS not FAILS (2026-07-31) ─────────────────────────
   // This lane wrote no lint receipt at all until now (docs/DELIVERY.md decision memo, updated in the
@@ -641,6 +647,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     registerCounts: registerCounts
       ? { provider: registerCounts.provider, takenAt: registerCounts.takenAt, marks: registerCounts.marks?.length ?? 0, counted: countedMarks(registerCounts) }
       : undefined,
+    recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
     recipe: searchPolicy?.recipe ?? undefined,
     enqueuedVia: searchPolicy?.enqueuedVia ?? undefined,
     parentRunId: searchPolicy?.parentRunId ?? undefined,
@@ -742,3 +749,7 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
     ...(auditFile ? [`The receipts are in the audit workbook: \`${auditFile}\`.`] : []),
   ];
 }
+
+// The office's own page for each listed filing (office-record-links.mjs). Kept down here, below every
+// line the rest of the tree cites by number.
+import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
