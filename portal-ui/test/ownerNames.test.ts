@@ -6,6 +6,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom, sortOwners } from '../src/contract/ownerNames.ts'
+import { switcherKeys } from '../src/shell/companyRows.ts'
+import { genericFor } from '../src/contract/genericKey.ts'
 
 test('a client and a staff member read the same company the same way', () => {
   // The client's own grants, named by /portal/api/me…
@@ -71,8 +73,33 @@ test('the switcher is ordered by what is read, not by what is stored', () => {
 test('a nameless account is still offered in the switcher', () => {
   // The menu comes from the roster's KEYS, never from the keys of the name map. Deriving it from the
   // map would make an account whose profile has no name silently unselectable — a customer that
-  // exists, has runs, and cannot be picked. Pinned as text, since AppShell cannot be mounted here.
+  // exists, has runs, and cannot be picked. DRIVEN, now that the rule is `switcherKeys`.
+  const everything = { allAccounts: true, accounts: [], genericOrgs: [] }
+  assert.deepEqual(switcherKeys(everything, [{ key: 'nameless' }, { key: 'vantor', name: 'Vantor Labs' }]), ['nameless', 'vantor'])
+  // AND THE SHELL ASKS IT, with the roster, at its one call site. Only the wiring is pinned as text,
+  // since AppShell cannot be mounted here.
   const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url), 'utf8')
-  assert.match(shell, /rosterResult\?\.kind === 'ok' \? rosterResult\.value\.map\(\(c\) => c\.key\)/)
+  assert.equal(shell.match(/switcherKeys\(/g)?.length, 1, 'the shell must build its list in exactly one place')
+  assert.match(shell, /switcherKeys\(me, rosterResult\?\.kind === 'ok' \? rosterResult\.value : null\)/)
   assert.doesNotMatch(shell, /Object\.keys\(names\)/, 'the menu must not be derived from the name map')
+})
+
+test('the switcher offers one Generic per organisation, and never the roster\'s own', () => {
+  // The roster's `generic` names the house account, not an organisation's: offering it would send a
+  // request the door has to guess the organisation for. Each organisation's Generic comes from the
+  // server's `genericOrgs`, and only from there.
+  const roster = [{ key: 'generic' }, { key: 'demo-brand-owner' }]
+  assert.deepEqual(switcherKeys({ allAccounts: true, accounts: [], genericOrgs: ['demo-org'] }, roster),
+    ['demo-brand-owner', genericFor('demo-org')])
+  assert.deepEqual(switcherKeys({ allAccounts: true, accounts: [], genericOrgs: ['a', 'b'] }, roster),
+    ['demo-brand-owner', genericFor('a'), genericFor('b')])
+  // NO ORGANISATION, NO GENERIC: the 0.3.0-beta.1 demo's shape, whose switcher offered the company alone.
+  assert.deepEqual(switcherKeys({ allAccounts: true, accounts: [], genericOrgs: [] }, roster), ['demo-brand-owner'])
+  // Before the roster arrives, a person who sees everything is offered their Generics and nothing invented.
+  assert.deepEqual(switcherKeys({ allAccounts: true, accounts: [], genericOrgs: ['a'] }, null), [genericFor('a')])
+})
+
+test('a person who does not see everything is offered their own companies, whatever the roster holds', () => {
+  const mine = { allAccounts: false, accounts: ['vantor', 'generic'], genericOrgs: ['acme'] }
+  assert.deepEqual(switcherKeys(mine, [{ key: 'vantor' }, { key: 'someone-else' }]), ['vantor', genericFor('acme')])
 })
