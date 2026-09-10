@@ -236,7 +236,7 @@ export type ShellContext = {
 
 /**
  * What a reader whose session has gone is told — ONE panel, whether the session was already gone when
- * they arrived or ended while they were working (tracker issues 2074, 2113).
+ * they arrived or ended while they were working.
  *
  * It says nothing was lost, because that is the question a reader actually has and the honest answer:
  * a 401 never reached the server's write path.

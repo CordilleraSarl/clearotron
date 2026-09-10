@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// What we declare we depend on, against what we actually ship — tracker issues 99 and 115.
+// What we declare we depend on, against what we actually ship.
 //
 // Two failures of the same shape, both silent, both invisible to every check that existed:
 //
@@ -56,7 +56,7 @@ function manifestDeps(rel) {
 
 /** Non-test source that ships. `.js` and `.ts` are in: providers carry non-test `.js`. */
 function shippedSources() {
-  // Through the helper (tracker issue 235): off a checkout, `execFileSync` THREW, and a source-zip
+  // Through the helper: off a checkout, `execFileSync` THREW, and a source-zip
   // reader met a stack trace about "not a git repository" instead of a suite that says it skipped.
   // `null` here is that stated skip, and every caller must forward it rather than walk an empty list.
   const tracked = trackedFiles(GUARD, { root: REPO, pathspec: ["*.mjs", "*.js", "*.ts", "*.tsx"] });

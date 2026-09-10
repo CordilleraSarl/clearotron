@@ -189,8 +189,8 @@ test("2121 registerReads and weighedFilings are DECLARED in the tool schema", as
 });
 
 test("2121 the schema and the recorder's allowlist agree about these two keys", () => {
-  // Two closed sets over one payload. They disagreed: DECLARED has carried both fields since tracker
-  // issue 2058 while the schema forbade them, and only the recorder's set was enforced — which is
+  // Two closed sets over one payload. They disagreed: DECLARED has carried both fields since an
+  // earlier change while the schema forbade them, and only the recorder's set was enforced — which is
   // exactly why sending them WORKED for a seat that ignored the schema.
   const rec8 = readFileSync(join(HERE, "..", "knockout-assess-record.mjs"), "utf8");
   assert.match(rec8, /"registerReads"/, "the recorder must still allow the key the schema now offers");

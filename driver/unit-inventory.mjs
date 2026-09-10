@@ -104,7 +104,7 @@ export const BOXES = Object.freeze(["prod", "test", "dev"]);
 // disagree ON PURPOSE.
 //
 // THE REBUILD HAPPENED, and the first two entries this field ever carried have gone with their files.
-// Measured on the production install 2026-09-07 (tracker issue 265): seven units, all under the current
+// Measured on the production install 2026-09-07: seven units, all under the current
 // names, none of the retired ones, with a clearance delivered end to end. `prelim-driver.*` and
 // `prelim-outbox.*` left the tree in the same change that removed their entries. Read the paragraph
 // above as the rule and this one as the event that discharged it — without this line a reader concludes
@@ -141,7 +141,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // held deliberately, a check that says so for as long as the hold lasts is the behaviour to want.
   },
   {
-    // ── `tracked` WAS A CLAIM ABOUT A FILE THAT HAS NEVER EXISTED (tracker issue 175) ──────────────
+    // ── `tracked` WAS A CLAIM ABOUT A FILE THAT HAS NEVER EXISTED ──────────────────────────────────
     //
     // This entry named `profile-service.service` as tracked. `git log --all` on that path is empty: it is
     // not in the tree, not in the tarball, and has never been in this repository's history. So
@@ -170,7 +170,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // calls the sanctioned way to say the repo does not carry one.
     //
     // ONE THING THIS DOES NOT SETTLE, left visible rather than decided quietly. The note calls the unit
-    // "generic since tracker issue 1925" — an argument that a placeholder COULD now ship and be compared,
+    // "generic since the placeholder ruling" — an argument that a placeholder COULD now ship and be compared,
     // because the reason its siblings cannot (real CF Access values inline) may no longer hold here. That
     // is a change which ADDS a file, measured against the deployed copy, and it is not this one. Two
     // prose references in driver/systemd/render-units.mjs also describe this file as though it were in
@@ -278,7 +278,7 @@ export const UNIT_INVENTORY = Object.freeze([
       + "directly (owner ruling 2026-08-31). Ships tracked, runs nowhere yet — production takes it at "
       + "its rebuild, which is the same event that lets the retired units' files leave the tree.",
     orphanReason: "AWAITING A BOX, not an orphan by design. It is the hosted posture's drainer, and the "
-      + "hosted posture is an opt-in step no install performs (tracker issue 1888). It must NOT be "
+      + "hosted posture is an opt-in step no install performs. It must NOT be "
       + "started beside `clearotron start`, which supervises its own worker — the two postures are "
       + "alternatives, and running both puts a second claimant on one queue.",
   },

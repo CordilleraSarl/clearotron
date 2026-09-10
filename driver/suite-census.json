@@ -531,6 +531,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-with-no-record-page-is-cited-not-linked.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
           "asserts": 63,
@@ -1180,8 +1186,8 @@
           "todos": 0
         },
         "client-gate.test.mjs": {
-          "tests": 13,
-          "asserts": 69,
+          "tests": 16,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },
@@ -1912,8 +1918,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 21,
-          "asserts": 94,
+          "tests": 22,
+          "asserts": 101,
           "skips": 0,
           "todos": 0
         },
@@ -2435,7 +2441,7 @@
         },
         "knockout-runs-without-a-research-key.test.mjs": {
           "tests": 6,
-          "asserts": 26,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -4300,9 +4306,9 @@
           "todos": 0
         },
         "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
-          "tests": 8,
-          "asserts": 28,
-          "skips": 0,
+          "tests": 18,
+          "asserts": 51,
+          "skips": 2,
           "todos": 0
         },
         "the-classifier-names-what-the-validator-named.test.mjs": {
@@ -4517,7 +4523,7 @@
         },
         "the-minters-read-the-published-tree.test.mjs": {
           "tests": 2,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -4594,8 +4600,8 @@
           "todos": 0
         },
         "the-public-residue-is-a-floor.test.mjs": {
-          "tests": 13,
-          "asserts": 51,
+          "tests": 15,
+          "asserts": 58,
           "skips": 5,
           "todos": 0
         },
@@ -4674,6 +4680,12 @@
         "the-run-key-is-unique-where-it-is-read.test.mjs": {
           "tests": 5,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-run-records-a-stored-territory-it-cannot-search.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -5040,6 +5052,12 @@
         "wave-boundaries.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "what-doctor-passes-a-search-accepts.test.mjs": {
+          "tests": 8,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },

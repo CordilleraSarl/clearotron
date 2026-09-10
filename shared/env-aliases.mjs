@@ -16,7 +16,7 @@
 // install, the install writes the names in force, and the two boxes that predate the rename are
 // REBUILT rather than deployed onto. There is no population left holding the old lines.
 //
-// THAT PREMISE STOPPED BEING TRUE WHEN THE PRODUCT MOVED TO THE REGISTRY (tracker issue 168). A
+// THAT PREMISE STOPPED BEING TRUE WHEN THE PRODUCT MOVED TO THE REGISTRY. A
 // tarball is replaced whole; a published package is UPGRADED, and an upgrade leaves the operator's
 // environment file exactly where it was — so the population the premise says cannot exist is now
 // created by `npm install`. Measured rather than predicted: upgrading the production install across

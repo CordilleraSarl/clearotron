@@ -27,8 +27,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { resolveFramework, buildProfile, assertRosterAccepts, parseArgs } from "../../bin/brandowner.mjs";
-// Refusal and storeForAdd moved to shared/ when `project add` became the second caller (tracker
-// issue 1911). These arms are unchanged, and their staying green IS the proof the move was
+// Refusal and storeForAdd moved to shared/ when `project add` became the second caller.
+// These arms are unchanged, and their staying green IS the proof the move was
 // behaviour-neutral — they already covered storeForAdd's three outcomes and its typo case.
 import { Refusal, storeForAdd } from "../../shared/onboarding-store.mjs";
 import { defaultWriteProfile } from "../profile-service.mjs";

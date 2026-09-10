@@ -224,8 +224,8 @@ test("#859 the launcher SEEDS THE POOL, and does it through the same publisher t
   // CONTAINER of product demos, and a launcher left pointing at examples/ — which no longer holds a
   // frozen run — would seed nothing and serve an empty archive without a word.
   // The container is still `demo/`, and the launcher may WRAP that path — it publishes from a copy now,
-  // because republishing writes a receipt into the directory it reads and `demo/` is tracked (tracker
-  // issue 157). What must not change is which container the samples come from.
+  // because republishing writes a receipt into the directory it reads and `demo/` is tracked.
+  // What must not change is which container the samples come from.
   assert.match(src, /examplesDir:[^,]*join\(REPO, "demo"\)/,
     "the samples must come from the repo's demo/ container, one child per product type");
   assert.match(src, /examplesDir:\s*publishSource\(/,

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// whatif-memo-run.mjs — the door onto the memo composer (tracker issue 132).
+// whatif-memo-run.mjs — the door onto the memo composer.
 //
 // WHY THIS FILE EXISTS. Everything a memo needs was already in the tree and nothing could reach it:
 // whatif-memo.mjs composes one, whatIfRefusal admits `kind: "memo"` on a finished run, decodeOp

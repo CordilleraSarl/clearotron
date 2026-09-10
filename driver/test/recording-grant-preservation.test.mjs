@@ -388,8 +388,8 @@ test("the walk resolves through the SHIPPED map — a broken walk cannot fake th
   // no writer. The second half is the witness that the seeding still works where a seat DOES author a
   // file — without it this assertion would pass on a builder that dropped Write everywhere.
   //
-  // THE WITNESS IS DERIVED NOW, AND THAT IS THE THIRD TIME IT MOVED. It was synthesis; tracker issue
-  // 1893 moved it to register-digest when synthesis converted; conversion 11 converted register-digest.
+  // THE WITNESS IS DERIVED NOW, AND THAT IS THE THIRD TIME IT MOVED. It was synthesis; a later change
+  // moved it to register-digest when synthesis converted; conversion 11 converted register-digest.
   // Naming a stage here means the arm breaks on the conversion AFTER the one that re-points it, and each
   // time it fails as "a stage lost its write tools" — which reads as a regression in the builder rather
   // than as a fixture that has gone stale. Two conversions running, that is a false alarm about the one

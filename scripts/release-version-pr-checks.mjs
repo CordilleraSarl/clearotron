@@ -134,7 +134,7 @@ export function checksVerdict({ checkRuns = [], workflowRuns = [], policy = null
 /**
  * This file's own window: 32 attempts at 15 s, or eight minutes.
  *
- * NAMED SO AN ARM CAN COUPLE THE JOB'S BUDGET TO IT (tracker issue 247). The `version` job's
+ * NAMED SO AN ARM CAN COUPLE THE JOB'S BUDGET TO IT. The `version` job's
  * `timeout-minutes` has to contain THIS wait, and the arm that claimed to check that compared the job
  * against `release-await-cut.mjs`'s constant instead — a different wait, in a different job, which this
  * job never runs. It held by luck and would have failed the moment that unrelated number was raised.
@@ -231,7 +231,7 @@ async function main() {
     console.log(seen.reason);
     return;
   }
-  // ── A PARKED RUN IS THE ORDINARY STATE OF A CUT, NOT A FAULT (tracker issue 208) ─────────────────
+  // ── A PARKED RUN IS THE ORDINARY STATE OF A CUT, NOT A FAULT ─────────────────────────────────────
   //
   // This failed the job, and failing it was worse than the thing it reported. Measured 2026-09-06:
   // a merge cut version pull request 59, its run parked awaiting approval as EVERY version branch's

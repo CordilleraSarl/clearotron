@@ -65,7 +65,7 @@ export function distTag(version, { preMode = false } = {}) {
     throw new Error(`release-dist-tag: "${version}" is not a version this can read, so the channel it `
       + "belongs on cannot be derived. Publishing it would default to `latest`.");
   }
-  // ── THE PRE-MODE OVERRIDE IS GONE, AND `preMode` NO LONGER DECIDES ANYTHING (tracker issue 230) ──
+  // ── THE PRE-MODE OVERRIDE IS GONE, AND `preMode` NO LONGER DECIDES ANYTHING ──────────────────────
   //
   // It read `if (preMode) return STABLE`, putting every pre-release on `latest` under the owner's ruling
   // of 2026-09-05. That was right while nothing installed the package and wrong once things did: nine

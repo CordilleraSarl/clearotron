@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE TWO SIGNATURES THE REFERENCE STRIP LEFT BEHIND (tracker issue 185).
+// THE TWO SIGNATURES THE REFERENCE STRIP LEFT BEHIND.
 //
 // The strip's job was to remove internal references from this repository before it went public, and it
 // did that. Where the reference was the SUBJECT of the sentence, it took the subject with it:

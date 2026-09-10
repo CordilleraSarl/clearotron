@@ -354,7 +354,7 @@ export function describeDoorState(door, {
  * differ in ONE value — which variable carries that public address — so the composition is one function
  * with that name as a parameter rather than two functions that agree until they do not.
  *
- * Written down after tracker issue 192, where the census found the asymmetry: the client door's
+ * Written down after the census found the asymmetry: the client door's
  * allow-list is composed by the installer and the engine door's was composed by nothing at all, so a
  * hosted operator was asked for a value sitting next to an identical one the product works out. Two
  * authors composing `host:port` in two places is what let them diverge in the first place.
@@ -386,7 +386,7 @@ export function allowedHosts(port, env = {}, { urlName = CLIENT_DOOR_URL_ENV } =
 }
 
 /**
- * The allow-list an existing one should become, once the door's port has moved (tracker issue 197).
+ * The allow-list an existing one should become, once the door's port has moved.
  *
  * The loopback entries are THIS INSTALLER'S and are re-derived from the port; every other host in the
  * list belongs to the operator and is kept. That split is the whole point: a repair about a port must
@@ -522,7 +522,7 @@ export function enablePlan({ env = {}, address, identity, accessFile = null, por
   // identity. Its own preconditions are exactly what this plan has already established — the signing
   // secret, account access on, a loopback host, and an allow-list.
   const settings = {
-    // Written, not required — and this REPLACES whatever was there (tracker issue 193).
+    // Written, not required — and this REPLACES whatever was there.
     //
     // The comment here used to say the opposite: "an installer that already set it keeps its value,
     // because setEnvValue replaces only what this plan names". That reads as a preservation guarantee
@@ -611,7 +611,7 @@ export function describeChange(plan, { applied = false, publicAddress = null, re
   // does not go on to think about who else can reach it, so the claim is made only when it is true, and
   // when it cannot be established it is not made at all. Silence is the safe failure here; a reassuring
   // sentence is not.
-  // ── A PUBLISHED ADDRESS IS NOT AUTOMATICALLY A PUBLIC ONE (tracker issue 130) ────────────────────
+  // ── A PUBLISHED ADDRESS IS NOT AUTOMATICALLY A PUBLIC ONE ────────────────────────────────────────
   //
   // `publicAddress` is whatever the operator put in `CLEAROTRON_CLIENT_MCP_URL`, and a loopback value
   // is a thing an operator does set — it is the address that works for them at the keyboard. The

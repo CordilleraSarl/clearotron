@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE RELEASE NOTES ARE WRITTEN FOR THE PERSON WHO READS THEM — tracker issue 97.
+// THE RELEASE NOTES ARE WRITTEN FOR THE PERSON WHO READS THEM.
 //
 // The owner read the first pre-release's notes and rejected them: they named internal things and
 // addressed an undefined "you". The reader is somebody who installs and runs Clearotron — a trademark

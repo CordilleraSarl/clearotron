@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// One Node floor, in one place — tracker issue 364.
+// One Node floor, in one place.
 //
 // The check this replaces compared the MAJOR alone, so it passed every 22.x. The engine imports
 // `node:sqlite`, which is not a built-in module before 22.13.0, so on 22.0 through 22.12 the install

@@ -167,3 +167,29 @@ export function readStore(base, name, { path: override = null } = {}) {
 // the divergence between those two is exactly what was.
 export const requiredAbsent = (names = []) =>
   (Array.isArray(names) ? names : []).filter((n) => PUBLISH_INPUTS[n] === "required");
+
+/**
+ * WHY AN ABSENCE DID NOT HOLD THE RELEASE — the other half of `requiredAbsent`, and the half that was
+ * missing from every receipt.
+ *
+ * A delivered run's record read `released: true`, `reasons: []`, and `inputsAbsent` naming a store that
+ * was not there. All three were correct: every store above is declared `optional`, deliberately, so that
+ * re-rendering an archived run cannot rewrite the released status of delivered client work. But the
+ * reason lived in the table above and nowhere else, so a reader holding the receipt could see only a gate
+ * that had released while recording something. This states it where the gate states everything else.
+ *
+ * It EXPLAINS and decides nothing: `released` is `reasons.length === 0` and stays so. A store the table
+ * does not name reads `undeclared` rather than being given a ruling it never got.
+ *
+ * PURE, and it lives beside the table it reads so the two cannot drift.
+ */
+export const nonClosingAbsences = (names = []) =>
+  (Array.isArray(names) ? names : [])
+    .filter((n) => PUBLISH_INPUTS[n] !== "required")
+    .map((n) => ({
+      input: n,
+      declared: PUBLISH_INPUTS[n] ?? "undeclared",
+      why: PUBLISH_INPUTS[n] === "optional"
+        ? "declared optional: a run that legitimately has no such store, and every archived run, must still publish"
+        : "not a declared publish input — the absence is recorded and nothing gates on it",
+    }));

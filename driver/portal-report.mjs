@@ -525,7 +525,7 @@ const EMBED_JS = `
     queued=true;
     requestAnimationFrame(function(){queued=false;post();});
   }
-  // WHICH CONTROLS THIS DOCUMENT ACTUALLY HAS (tracker issue 1922).
+  // WHICH CONTROLS THIS DOCUMENT ACTUALLY HAS.
   //
   // The command handler below answers "this report has no <verb>" for a verb the document does not
   // define. That reply is honest and it arrives too late: the shell had already drawn a menu item, the

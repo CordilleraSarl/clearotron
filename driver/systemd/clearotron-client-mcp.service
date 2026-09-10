@@ -1,6 +1,6 @@
 # GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific value lives here.
 #
-# ── INSTALLED WITH THE PRODUCT (owner ruling 2026-09-03, tracker issue 2148, settled point 2) ───────
+# ── INSTALLED WITH THE PRODUCT (owner ruling 2026-09-03, settled point 2) ───────────────────────────
 #
 # This is the CLIENT door: the only surface that accepts a key acting for a brand owner's account. It is
 # a SEPARATE PROCESS from the engine door (clearotron-mcp-face.service), which refuses an account key
@@ -45,7 +45,7 @@ Type=simple
 EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
-# ── NO PORT, NO HOST, NO ALLOW-LIST HERE (tracker issue 191) ─────────────────────────────────────────
+# ── NO PORT, NO HOST, NO ALLOW-LIST HERE ─────────────────────────────────────────────────────────────
 #
 # This unit used to carry three Environment= lines pinning the host, the port and the allow-list, and it
 # was the ONLY one of the four that pinned anything a box can legitimately differ on. `Environment=` is
@@ -55,7 +55,7 @@ Environment=CLEAROTRON_NO_ENV_FILE=1
 # It took a running door down on a shared box: two installs, two ports, one baked value, and the
 # reinstall pointed the second install's door at the first's port. Worse, the allow-list travelled with
 # it — pinned to 18811 whatever port the door actually bound — which is the `Invalid Host header`
-# failure of tracker issue 130 one layer down, produced by our own unit rather than by a tunnel.
+# failure of the missing session bus one layer down, produced by our own unit rather than by a tunnel.
 #
 # The values live in %h/.env, which BOTH install paths write through one authority (`enablePlan`), and
 # the code's own defaults are the same 127.0.0.1 and 18811 these lines carried — so a box that has

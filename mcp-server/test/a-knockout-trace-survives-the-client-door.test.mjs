@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A Knockout trace survives the client projection (tracker issue 275, the client path).
+// A Knockout trace survives the client projection — the client path.
 //
 // WHAT WAS WRONG, AND WHY IT READ AS WORKING. `accountTrace` is an allowlist built field by field around
 // the CLEARANCE trace: resolvedAs, emittingStage, judgment, finding, searchTerms, record, auditTrail. A

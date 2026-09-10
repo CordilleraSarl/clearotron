@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The drain check reports the drainer this deployment has — tracker issue 181.
+// The drain check reports the drainer this deployment has.
 //
 // `e2e.mjs run` asked systemd about `prelim-driver.timer` and `prelim-driver.path`, the two RETIRED
 // units, and about nothing else. On a deployment drained by `clearotron-worker.service` it found neither

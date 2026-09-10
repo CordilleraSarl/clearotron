@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 160, the half `doctor` could not cover — `/portal/health` answered `ui: "built",
+// The half `doctor` could not cover — `/portal/health` answered `ui: "built",
 // ok: true` over a bundle `doctor` refuses at rc 1.
 //
 // On the source route `git pull` can never update `portal-ui/dist`: it is not tracked, so a pull that

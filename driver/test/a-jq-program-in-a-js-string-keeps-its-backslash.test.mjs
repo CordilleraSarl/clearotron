@@ -31,7 +31,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 // them. What keeps this file honest instead is its own second arm, which drives the detector against
 // both spellings and a regex, so a detector that stopped working reds there rather than going quiet.
 const SELF = "driver/test/a-jq-program-in-a-js-string-keeps-its-backslash.test.mjs";
-const GUARD = "jq-backslash (tracker issue 1889)";
+const GUARD = "jq-backslash";
 /** Null means NO CHECKOUT — a stated skip, never an empty corpus reading as clean. */
 const sources = () => {
   const all = trackedFiles(GUARD, { root: ROOT, pathspec: ["*.mjs"] });

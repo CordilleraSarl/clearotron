@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The completion notice goes to whoever ASKED (tracker issue 289, part b).
+// The completion notice goes to whoever ASKED (part b).
 //
 // THE DEFECT. `whatsappTo` was `AGENT_WHATSAPP[agentId]` — a map keyed by AGENT ID. Every user of a
 // deployment shares one agent, so on every run the operator was paged for work somebody else ordered and
@@ -92,7 +92,7 @@ test("289b: an unconfigured requester roster is EMPTY, never a demo one", async 
   process.env.CLEAROTRON_REQUESTER_WHATSAPP = saved;
 });
 
-// ── EVERY COMPLETION PACKET, NOT THE ONE I HAPPENED TO EDIT (tracker issue 321) ──────────────────────
+// ── EVERY COMPLETION PACKET, NOT THE ONE I HAPPENED TO EDIT ──────────────────────────────────────────
 //
 // The fix above landed on ONE of the two call sites. `driver/pipeline.mjs` routed through
 // `whatsappRouting` and `driver/pipeline-knockout.mjs` kept `AGENT_WHATSAPP[agent]`, so every knockout

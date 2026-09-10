@@ -829,7 +829,7 @@ export function silentlyLostFindings({ reconciliation = null, carryRows = null, 
 /**
  * Positions the DIGEST ended as findings that did not reach the findings, dropped WITH a stated reason.
  *
- * ── THE SIBLING'S BLIND SPOT, AND IT IS THE ONE THAT REACHED A CLIENT (tracker issue 248) ──────────
+ * ── THE SIBLING'S BLIND SPOT, AND IT IS THE ONE THAT REACHED A CLIENT ──────────────────────────────
  *
  * `silentlyLostFindings` above is correct and must not be widened to cover this. Its population is
  * `step-silent` — a finding-ending followed by silence — and its own header records why that boundary

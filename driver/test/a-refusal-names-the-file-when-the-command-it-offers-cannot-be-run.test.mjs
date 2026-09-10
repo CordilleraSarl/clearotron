@@ -10,7 +10,7 @@
 // The last arm here drives that refusal rather than quoting it, because the whole issue rests on it.
 //
 // THE INVARIANT IS AGREEMENT WITH WHAT THIS PROCESS READ, not the presence of a path — the same
-// invariant tracker issue 200 established for the port refusals, and the reason both sites take the
+// invariant established for the port refusals, and the reason both sites take the
 // path from `envFileRead()` instead of composing one. A service started by systemd reads its
 // EnvironmentFile and no file of its own, and naming the CLI's file there would replace a vague address
 // with a wrong one. That branch is planted, not reasoned about.
@@ -27,7 +27,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";   // tracker issue 204
+import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
@@ -66,7 +66,7 @@ function driveStart(ports, extra = {}) {
   // A hand-run environment from the one definition: `handRunEnv` clears CLEAROTRON_NO_ENV_FILE and
   // INVOCATION_ID, either of which would make this drive read no .env and take built-in defaults with
   // no error, and `extra` lands after it so the arm ABOUT the service-managed path sets one back
-  // deliberately (tracker issue 204). The engine values go with them: a developer's shell or a CI
+  // deliberately. The engine values go with them: a developer's shell or a CI
   // secret carrying one would clear the refusal, and the arms would measure a run that never refused.
   const env = handRunEnv({ HOME: home, PORTAL_SERVICE_PORT: String(ports.portal),
     TRADEMARK_MCP_HTTP_PORT: String(ports.mcp), CLIENT_MCP_HTTP_PORT: String(ports.client),
@@ -113,7 +113,7 @@ function reachedTheRefusal(d) {
  * assertion satisfied by a line that is not the remedy is the false pass this arm exists to catch.
  */
 function remedy(said) {
-  // ── WHERE THIS BLOCK LIVES SINCE tracker issue 216 ────────────────────────────────────────────────
+  // ── WHERE THIS BLOCK LIVES NOW ─────────────────────────────────────────────────────────────────────
   //
   // These values used to REFUSE the start, and this scoper opened at "Nothing has been installed". The
   // owner ruled on 2026-09-06 that an install comes up without them and every run is refused at ORDER

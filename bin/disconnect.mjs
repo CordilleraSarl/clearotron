@@ -257,7 +257,7 @@ async function cutEveryoneOff({ dryRun }) {
   return 0;
 }
 
-// THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND (tracker issue 183). Importing a verb to reach
+// THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND. Importing a verb to reach
 // something inside it must read a module, not start a command — `bin/connect.mjs` opened its interactive
 // prompt and hung a suite when an arm imported it for one message helper.
 //

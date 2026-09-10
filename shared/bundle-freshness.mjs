@@ -3,7 +3,7 @@
 //
 // bundle-freshness.mjs — is the portal bundle the one its sources would build?
 //
-// MOVED HERE FROM `bin/onboard.mjs` BECAUSE A SECOND READER NEEDS IT (tracker issue 160). `doctor` asked
+// MOVED HERE FROM `bin/onboard.mjs` BECAUSE A SECOND READER NEEDS IT. `doctor` asked
 // this question and answered it well; `/portal/health` asked a narrower one — present or absent — and
 // answered `ui: "built", ok: true` over a bundle `doctor` had just called stale. Two surfaces, two
 // answers, one of them wrong, and the operator has no reason to prefer either.

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 94, finding F13 — a stranger's roster is the two accounts meant for them.
+// Finding F13 — a stranger's roster is the two accounts meant for them.
 //
 // `driver/profiles/` holds the customer accounts the engine loads, and three of its files —
 // `aurora`, `zephyr`, `petcary` — are the renamed identities the suite uses as fixtures. They are not

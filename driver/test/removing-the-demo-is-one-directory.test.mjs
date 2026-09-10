@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 94, the demo's own promise — "removing it later is one directory".
+// The demo's own promise — "removing it later is one directory".
 //
 // It was not quite true. The test lane drove the published 0.1.0 tarball on a wiped machine: after
 // `rm -rf` of the demo base the sign-in passphrase was still there, in the shared default under

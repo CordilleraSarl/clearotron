@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The portal asks whether its engine door will take it — tracker issue 174, the half that is buildable now.
+// The portal asks whether its engine door will take it — the half that is buildable now.
 //
 // ── the outage this is made of ──────────────────────────────────────────────────────────────────────
 //
@@ -59,7 +59,7 @@ test("the shared verdict calls the outage's own door shape a PASS", () => {
 
   // And the two it gets unambiguously right, which is why it is still the authority for those.
   assert.equal(verdictFor({ status: 302, ok: true, challenge: "Cloudflare-Access", error: null }).state, "fail");
-  // A REFUSED CONNECTION MOVED TO `unsettled` (tracker issue 222) — see the arms at the foot of this
+  // A REFUSED CONNECTION MOVED TO `unsettled` — see the arms at the foot of this
   // file. It is not a `fail` because at boot it is far more often a startup race than an outage, and
   // the old branch stated the outage in the present tense with a 502 attached.
   assert.equal(verdictFor({ status: null, ok: false, challenge: null, error: "ECONNREFUSED" }).state, "unsettled");

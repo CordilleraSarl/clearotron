@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A connect that stops half-way says what failed and what it already changed — tracker issue 121.
+// A connect that stops half-way says what failed and what it already changed.
 //
 // The whole output of a failed connect was: `connect: Command failed: systemctl --user daemon-reload`.
 // No cause, no remedy, and nothing saying that the settings file, the denylist and BOTH unit files were

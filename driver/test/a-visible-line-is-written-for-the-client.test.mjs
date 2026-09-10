@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE TWO-REGISTER RULE ON THE LINES A READER MEETS FIRST — tracker issue 333.
+// THE TWO-REGISTER RULE ON THE LINES A READER MEETS FIRST.
 //
 // The report goes to a lawyer who layers advice on it, and that lawyer's client reads the same page. The
 // owner's review of two delivered pages found the default-visible lines written in the lawyer's

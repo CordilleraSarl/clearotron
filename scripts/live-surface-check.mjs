@@ -562,7 +562,7 @@ try {
   fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
 }
 
-// ── 3b. THE TRIGGER LANE, AS ITS OWN SURFACE (tracker issue 112) ─────────────────────────────────────
+// ── 3b. THE TRIGGER LANE, AS ITS OWN SURFACE ─────────────────────────────────────────────────────────
 //
 // The lane the portal's Start button calls is `PORTAL_MCP_URL` + `PORTAL_OPS_TOKEN`, and NOTHING on
 // this box exercised it. On 2026-09-02 the owner could not start a run: every surface here was green,

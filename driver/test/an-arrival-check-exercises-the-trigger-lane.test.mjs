@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issue 112, criteria 3 and 4 — nothing on this box exercised the trigger lane.
+// Criteria 3 and 4 — nothing on this box exercised the trigger lane.
 //
 // 2026-09-02, on a live outage: the owner could not start a run. `systemctl is-active` said active,
 // `/portal/health` answered 200 with ok:true, the engine probe completed a turn, `live-surface-check`

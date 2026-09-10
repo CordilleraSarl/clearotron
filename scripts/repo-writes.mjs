@@ -4,7 +4,7 @@
 //
 // ── why this exists ─────────────────────────────────────────────────────────────────────────────────
 //
-// Tracker issue 198. `health-tells-the-truth-about-the-bundle` planted a future mtime on a REAL file in
+// `health-tells-the-truth-about-the-bundle` planted a future mtime on a REAL file in
 // `portal-ui/src` to prove the staleness check fires, restored it afterwards, and went green. But
 // `node --test` runs test FILES concurrently against one shared working tree, so for the seconds that
 // plant was live, any other arm reading that path saw a tree from the future. The suite cannot

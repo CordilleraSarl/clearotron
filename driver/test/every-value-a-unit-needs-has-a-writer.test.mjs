@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Every value a shipped unit refuses to start without has a writer — tracker issue 122, item 2.
+// Every value a shipped unit refuses to start without has a writer.
 //
 // 122 fixed three instances of one family and then asked for the thing that finds the fourth: *"A check
 // enumerates that set, so the next value added is caught by a test rather than by whoever installs

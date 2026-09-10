@@ -163,7 +163,7 @@ export const READ_FIELDS = Object.freeze(["basis", "factors", "counterFactors", 
 export const REGISTER_CLAIM_RE =
   /\b(?:register|registry|registers|trademark office)\s+(?:overlay\s+|search(?:es)?\s+|check(?:s)?\s+|count(?:s)?\s+|data\s+)?(?:has|have|was|were|is|are)\s+(?:not\s+|n't\s+|yet\s+)?(?:been\s+)?(?:run|searched|checked|counted|performed|conducted|reviewed|carried out)\b/i;
 
-// ── THE SUMMARY'S SHAPE (tracker issues 1934, 2056) ──────────────────────────────────────────────────
+// ── THE SUMMARY'S SHAPE ──────────────────────────────────────────────────
 //
 // Owner ruling 2026-08-31: "keep the length, add the structure, so long as length is consistent more or
 // less." Two rules follow, and they are deliberately unlike each other.
@@ -540,8 +540,8 @@ export function registerSurfacedFilings(recordsPath, { read = readFileSync } = {
 /**
  * The survivor sentence's signature, and the engine's own caveats.
  *
- * MOVED HERE FROM pipeline-knockout SO THERE IS ONE DERIVATION, for the identical reason tracker issue
- * 1926 moved `registerSurfacedFilings`: the producer and the verifier were asking different questions of
+ * MOVED HERE FROM pipeline-knockout SO THERE IS ONE DERIVATION, for the identical reason an earlier
+ * change moved `registerSurfacedFilings`: the producer and the verifier were asking different questions of
  * the same array, and two predicates that must agree forever is how they stop agreeing.
  *
  * `pipeline-knockout.mjs` re-exports `SURVIVOR_BOUNDARY_RE` so its existing importers are untouched; the

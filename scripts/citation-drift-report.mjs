@@ -193,7 +193,7 @@ if (isEntrypoint(import.meta.url)) {
   const rows = driftRows(citationsIntoChanged(corpus, byBase, changed, (pth) => trackedSet.has(pth)), changed);
 
   if (argv.includes("--json")) { console.log(JSON.stringify({ range, changed: [...changed.keys()], rows }, null, 2)); process.exit(0); }
-  console.log(`citation-drift-report (tracker issue 1950): ${range}  (base ${base.slice(0, 8)})`);
+  console.log(`citation-drift-report: ${range}  (base ${base.slice(0, 8)})`);
   console.log(`  ${changed.size} modified file(s); ${rows.length} citation(s) affected`);
   if (!rows.length) {
     console.log("  ✓ no citation on the base points below a net insertion in a file this change touches.");

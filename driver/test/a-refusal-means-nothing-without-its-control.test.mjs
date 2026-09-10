@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A registration refusal means nothing without its control — tracker issue 149.
+// A registration refusal means nothing without its control.
 //
 // 149 makes this an acceptance criterion rather than a nicety: *"The check must distinguish 'wrong'
 // from 'could not look.' A registration refusal means nothing without the localhost control passing

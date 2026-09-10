@@ -71,7 +71,7 @@ function main() {
       "--virtual-time-budget=8000", "--dump-dom", `file://${join(work, "verify.html")}`,
     ], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 120000, env: browserEnv(work) });
 
-    // ── IS THIS OUR PAGE, OR CHROME'S ERROR PAGE? (tracker issue 227) ───────────────────────────────
+    // ── IS THIS OUR PAGE, OR CHROME'S ERROR PAGE? ───────────────────────────────────────────────────
     //
     // `--dump-dom` prints whatever chrome ended up showing, and a file it could not read produces the
     // interstitial — which has a `<title>` of its own. This was saved from reporting a pass only by the

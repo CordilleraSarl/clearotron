@@ -55,7 +55,7 @@ import { cutDecision, versionAtHead, tagsHere } from "./release-cut-decision.mjs
  * Default bound: twenty-five minutes at thirty-second steps. Both are arguments so an arm can drive
  * the loop.
  *
- * TWENTY-FIVE, RAISED FROM FIFTEEN (tracker issue 247), because this waits for the version pull
+ * TWENTY-FIVE, RAISED FROM FIFTEEN, because this waits for the version pull
  * request's OWN CI and that is what it must clear. Measured over the first three cuts, the wait held
  * 552 s, 622 s and 686 s against a 900 s budget — rising every time, and the thing it waits on is the
  * offline suite, which grows on purpose every time anybody adds an arm. The margin was one slow queue.
@@ -139,7 +139,7 @@ const git = (args) => execFileSync("git", args, { encoding: "utf8" });
  * One read of `main`: the version it carries, whether that version is tagged, and WHICH COMMIT said so.
  *
  * THE COMMIT IS READ IN THE SAME PASS AS THE VERSION, and that is the whole point of this function
- * existing rather than being three calls at the call site (tracker issue 238). The job below used to
+ * existing rather than being three calls at the call site. The job below used to
  * check out `main` by name after this loop returned, so a commit landing in between — one that moves no
  * version, an instrument fix with no note — was packed and published under a number whose changelog
  * never described it. Nothing downstream could see it: the tip check compares VERSIONS, and the version
@@ -212,7 +212,7 @@ function main() {
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
     now: () => Date.now() - started,
   }).catch((e) => {
-    // ── A FAILURE TO LOOK IS NOT "NOT MERGED YET" (tracker issue 208) ───────────────────────────────
+    // ── A FAILURE TO LOOK IS NOT "NOT MERGED YET" ───────────────────────────────────────────────────
     //
     // Giving up quietly is the ordinary outcome of this loop and stays exit 0: checks that went red, a
     // pull request somebody dismissed, a re-cut mid-flight. None of those is a release gone missing.

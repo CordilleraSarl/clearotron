@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
 // Three defects with one shape: the installer and the portal told a reader something that was true of
-// some other box. tracker issues 107, 194 and 197.
+// some other box.
 //
 //   107  the re-mint command was a CONSTANT — `--sub portal --verbs start_run,stop_run` — so an
 //        operator with a third verb was told to re-mint narrower than what they had, and the verb they

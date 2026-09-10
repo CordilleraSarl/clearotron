@@ -107,7 +107,7 @@ test("#450 a surfaced record sharing an owner with an unfound entry is REPORTED,
   // The pre-fix state, reconstructed: same owner, and a mark pairing the matcher cannot join. This is
   // the shape that must never again reach a reader as two independent facts.
   //
-  // ── THE FIXTURE HAD DRIFTED FROM THE INCIDENT IT CITES (tracker issue 249) ──────────────────────
+  // ── THE FIXTURE HAD DRIFTED FROM THE INCIDENT IT CITES ──────────────────────────────────────────
   //
   // The incident was `DELPHI GENETICS` in LOST beside `DG DELPHI GENETICS` in NOISE — one record split,
   // and the second CONTAINS the first. This fixture substituted names and broke that relation while

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The one-time setup recipe binds a resource, and verifies by refreshing — tracker issue 172.
+// The one-time setup recipe binds a resource, and verifies by refreshing.
 //
 // THE DEFECT WAS A DOCUMENT, AND IT PRODUCED A DEAD CREDENTIAL THAT EVERY CHECK CALLED HEALTHY.
 // `providers/oauth-mcp-bridge/README.md` is the only documented way to enrol a case-law source.

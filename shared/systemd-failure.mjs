@@ -5,7 +5,7 @@
 //
 // ── ONE DEFINITION, BECAUSE THE SECOND CALLER HAD NONE ───────────────────────────────────────────────
 //
-// `connect` learned this the expensive way (tracker issue 121): its `systemctl` calls ran with
+// `connect` learned this the expensive way: its `systemctl` calls ran with
 // `stdio: "ignore"`, so systemd's own explanation was thrown away before anyone could read it and the
 // whole output was `connect: Command failed: systemctl --user daemon-reload`; and the session-bus remedy
 // was appended to EVERY failure, so a unit that would not start for a bound port or a bad ExecStart was
@@ -14,7 +14,7 @@
 //
 // `start --background` never learned it. Its `enable --now` loop ran uncaught, so the same refusal
 // arrived as a raw Node stack trace — `at genericNodeError (node:internal/errors:983:15)`, a status
-// code, and no statement of what had happened to the install (tracker issue 203). That is the failure
+// code, and no statement of what had happened to the install. That is the failure
 // `shared/listen.mjs` was written to end one layer down, and its rule is the rule here: an unrecognised
 // failure still gets a sentence and still exits non-zero; what it must not do is arrive as a stack trace
 // with no statement of consequence.
@@ -31,7 +31,7 @@ import { existsSync } from "node:fs";
 /**
  * Does this failure say the SESSION BUS is missing, rather than anything about the unit?
  *
- * ONE AUTHORITY, because more than one reader asks it (tracker issue 130, criterion 3). The failure text
+ * ONE AUTHORITY, because more than one reader asks it (criterion 3). The failure text
  * below offers the bus remedy on a yes, and connect's health reader refuses to translate a yes into "the
  * door is not open" — that mistranslation is the defect, and a second copy of this test is how the two
  * would come to disagree about which failures are bus failures.

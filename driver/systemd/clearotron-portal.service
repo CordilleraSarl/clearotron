@@ -2,7 +2,7 @@
 # listener and every hostname come from EnvironmentFile=%h/.env, which is where a SERVER's configuration
 # lives (INSTALL.md §3; render-units.mjs defaults --env to the same file).
 #
-# ── WHY THIS UNIT EXISTS (tracker issue 1925) ─────────────────────────────────────────────────────────
+# ── WHY THIS UNIT EXISTS ──────────────────────────────────────────────────────────────────────────────
 #
 # It did not, and that was the gap under the whole issue. `bin/start.mjs` supervises exactly two children
 # — this process and the MCP face — and NOTHING ran either under systemd. So the two processes the door
@@ -21,7 +21,7 @@ Description=Clearotron portal — the UI, the API, the sign-in and the config su
 Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/architecture/02-architecture.md
 After=network-online.target
 Wants=network-online.target
-# ── THE ENGINE DOOR FIRST, WHERE THERE IS ONE (tracker issue 222) ─────────────────────────────────────
+# ── THE ENGINE DOOR FIRST, WHERE THERE IS ONE ─────────────────────────────────────────────────────────
 #
 # The units carried no ordering between them, so a simultaneous restart of the set started this process
 # before the door it calls. Its boot probe then logged an outage — in the present tense, with "a

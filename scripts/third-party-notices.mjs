@@ -268,7 +268,7 @@ export function collect(root = ROOT, tree = npmTree(root), { linkTarget = defaul
   // the occurrences are NOT equivalent — the deduped ones are stubs with no `dependencies` at all,
   // and which one you meet first is an ordering accident.
   //
-  // Measured on this tree (tracker issue 115): `ajv@8.20.0` appears twice under
+  // Measured on this tree: `ajv@8.20.0` appears twice under
   // `@modelcontextprotocol/sdk` — first as a stub with 0 children, then with 4. The stub was met
   // first, so `ajv` got its row and its ENTIRE SUBTREE was never walked. `fast-uri` is one of those
   // four children, which is how a production dependency came to ship with no licence recorded.

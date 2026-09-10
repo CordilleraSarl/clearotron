@@ -7,7 +7,7 @@
 // PARITY TEST (`portal-ui/test/summaryBlocks.test.ts`) that feeds both implementations the same inputs
 // and compares their output. Change the grammar there and that test reds here.
 //
-// Why this exists at all: owner ruling 2026-08-31 (tracker issues 1934, 2056) — the assess seat writes
+// Why this exists at all: owner ruling 2026-08-31 — the assess seat writes
 // sub-headers and bullets inside the summary now. `<Prose>` renders inline spans only, so before this
 // the grouped page showed a reader the literal characters `##` and `-`.
 

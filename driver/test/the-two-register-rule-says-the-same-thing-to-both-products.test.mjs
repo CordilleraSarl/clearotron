@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// ONE RULE, TWO COPIES, PINNED — tracker issue 333.
+// ONE RULE, TWO COPIES, PINNED.
 //
 // The two-register rule is written twice on purpose, and the reason is the reach rather than an oversight.
 // `report-prose.md` is loaded by `synthesis`, `report-overview` and `report-card` — the clearance stages,

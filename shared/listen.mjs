@@ -172,7 +172,7 @@ export function listenErrorMessage(err, { what, host, port, portVar, portFlag = 
   // for the units' file, and `clearotron start` — the command that installs those units, so the command
   // that is resolving the ports they will be born with — does not read it. Measured as a stranger on
   // published 0.1.4: the three ports sat in the units' file, the refusal fired, and the only way to see
-  // why was to compare two lists of variable names in a log line (tracker issue 200).
+  // why was to compare two lists of variable names in a log line.
   //
   // The CALLER passes the file, and passes it only when its own loader actually read one. This module
   // cannot know: the same function serves four services booted by units — where naming the CLI's file
@@ -249,7 +249,7 @@ export function listenOrDie(server, {
   // — the env file this process actually read, from `envFileRead()`. Same contract as
   // `portSource` above: null is a caller that has not been taught the question, and its sentence is
   // exactly what it was. Never composed here; a service booted by systemd read no file and must name
-  // none (tracker issue 200).
+  // none.
   portFile = null,
   // — "env" | "default" | null. Null is a caller that has not been taught the question yet and
   // behaves exactly as before; every service in this repo passes it.

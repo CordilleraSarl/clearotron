@@ -226,7 +226,7 @@ test("#1907 the wizard's own preflight is SKIPPED, not failed, when there is no 
 });
 
 test("#1907 the closing screen does not recommend a command that will refuse", () => {
-  // RE-AIMED, NOT DELETED (tracker issue 2065). The heading was "Three commands from here" until the
+  // RE-AIMED, NOT DELETED. The heading was "Three commands from here" until the
   // owner's point 10 cut the screen to one command with what to expect; the clearance run moved to an
   // "Also" line. What this arm asserts is unchanged, because the property is unchanged — the last
   // screen a stranger reads must not recommend a command that will refuse without saying so.

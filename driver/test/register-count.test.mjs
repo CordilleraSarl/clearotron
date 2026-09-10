@@ -460,7 +460,7 @@ test("the report prints the figures as their own section, and the model's guess 
   assert.match(html, /class="ko-counts/, "the counts table renders");
   assert.match(html, /<td class="num">3<\/td>/);
   assert.match(html, /<td class="num">41<\/td>/);
-  // THREE COLUMNS, AND THE HEADER CARRIES THE DEFINITION (tracker issue 331 B). The headers used to
+  // THREE COLUMNS, AND THE HEADER CARRIES THE DEFINITION. The headers used to
   // read Identical / Containing / Close variations, which said nothing, so a 70-word paragraph under the
   // table had to say what they counted. With one name on the table the header names it outright and the
   // paragraph has nothing left to do.
@@ -482,7 +482,7 @@ test("the report prints the figures as their own section, and the model's guess 
 
   // THE STAFF NOTE IS ON THE PAGE SINCE 2026-09-07, and this arm used to assert the opposite
   // (`doesNotMatch(/Register search pending/)`). The owner ruled that there is one report and the person
-  // who ran Clearotron reads it, so notes written for the reviewer belong on it (tracker issue 274). The
+  // who ran Clearotron reads it, so notes written for the reviewer belong on it. The
   // two halves of the old rule came apart: the ESTIMATE is still off the page — it is a guess sitting
   // beside a measurement of the same thing — and the NOTE is on it.
   //
@@ -511,7 +511,7 @@ test("the report prints the figures as their own section, and the model's guess 
   assert.match(plain, /not included in this product tier/, "absence reads as a tier fact, never as an omission");
   assert.match(plain, /identical · containing · close variations/, "and names what the tier that has them includes");
   assert.doesNotMatch(plain, /moderate filings expected/, "a report with no counts still does not print the guess");
-  // THE SCOPE BLOCK IS CODE-OWNED AND UNCONDITIONAL (tracker issue 331 E). It replaced a composed set
+  // THE SCOPE BLOCK IS CODE-OWNED AND UNCONDITIONAL. It replaced a composed set
   // of lines that said "not a clearance" three times and "proceeds to clearance" twice in 362 words.
   // What it says does not depend on a frozen policy, so an archived run gets the same two paragraphs.
   assert.match(plain, /<b>What this is\.<\/b> A fast screen for obvious blockers/);

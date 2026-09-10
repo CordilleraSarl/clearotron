@@ -13,7 +13,7 @@ import { readdirSync, existsSync, accessSync, statSync, statfsSync, constants as
 import { homedir } from "node:os";
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
-import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none (tracker issue 202)
+import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
 import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs";   // — a number, or a refusal that names the variable; never NaN
 
 const { X_OK } = FS;
@@ -410,7 +410,7 @@ export const config = {
     //
     // "`install` writes one for you" is the whole remedy this carried, and `install` refuses a
     // non-terminal. This message reaches `start --background`'s screen, which is the scripted and hosted
-    // install route, so its reader was being sent to a wizard they cannot open (tracker issue 202).
+    // install route, so its reader was being sent to a wizard they cannot open.
     //
     // `envFileRead()` rather than a path composed here, for the reason its header gives: this is a
     // library reached by CLI entries AND by unit-booted services, and a service read no file of its own.
@@ -536,7 +536,7 @@ export const config = {
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are run-slot locks, so a live run's slot goes unseen and the global cap is
-  // silently exceeded rather than enforced. Owner ruling, tracker issue 308.
+  // silently exceeded rather than enforced. Owner ruling.
   get runLockDir() { return this.envValue("CLEAROTRON_RUN_LOCK_DIR") || join(this.workspaceRoot, "prelim-run-locks"); },
 
   // Delivery outbox (Workstream B). On a handoff-mode finish the driver drops <runId>.pending here (naming
@@ -548,7 +548,7 @@ export const config = {
   // ON-DISK NAME, NOT A PRODUCT NAME: an install that never set the variable is already using this
   // directory, so renaming the default moves the install to an empty one and nothing migrates. Here
   // the orphaned files are requester-facing events — delivered, run-failed, intake-rejected — so the
-  // visible failure is a requester never told their run finished. Owner ruling, tracker issue 308.
+  // visible failure is a requester never told their run finished. Owner ruling.
   get outboxDir() { return this.envValue("CLEAROTRON_OUTBOX_DIR") || join(this.workspaceRoot, "prelim-outbox"); },
 
   // ── Delivery/comms (Phase 2, standalone product) ─────────────────────────────────────────────────
@@ -1539,7 +1539,7 @@ export const RESEARCH_PROVIDERS = {
     // and so the page never renders a title-cased guess at an id.
     label: "Perplexity",
     credEnv: "PERPLEXITY_API_KEY",
-    // READER-TERMS FIELDS (tracker issues 2072/2089): what its absence costs, in the reader's world,
+    // READER-TERMS FIELDS: what its absence costs, in the reader's world,
     // and where a key comes from. Stated beside the credential like `label`, so setup and doctor can
     // DERIVE their prompts from this table instead of keeping a second hand list — the second list is
     // how SERPAPI_API_KEY went unprompted while the code said "required for live grid cells".

@@ -552,7 +552,7 @@ test("2085: EVERY bundled deck's REAL manifest is clean through the view — not
   // The acceptance names the sweep: generic, aurora, zephyr, demo, triage — a uniform fix that misses
   // one member carries the defect. Driven over the real files on disk, not fixtures, because the real
   // strings are what ships. The house manifests no longer carry a confidentiality marking — that is
-  // tracker issue 343 — so this sweep no longer proves anything by naming one; what it proves is that
+  // so this sweep no longer proves anything by naming one; what it proves is that
   // provenance leaves every view whatever the manifests happen to say.
   const dir = fileURLToPath(new URL("../skills/prelim-search/", import.meta.url));
   const manifests = readdirSync(dir).filter((f) => f.endsWith(".manifest.json"));

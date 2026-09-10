@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // install-auth.mjs — which auth values the units will refuse to start without, on THIS install.
 //
-// ── why this exists (tracker issue 133) ─────────────────────────────────────────────────────────────
+// ── why this exists ─────────────────────────────────────────────────────────────────────────────────
 //
 // From the fresh-user documented-install walk: a reader who does everything the document asks gets two
 // of four units dead. With auth enabled the portal refuses without `CLEAROTRON_OIDC_AUDIENCE` plus

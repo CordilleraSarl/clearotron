@@ -7,7 +7,7 @@
 // say so with `ctx.skip(...)` rather than a bare `return;`, because node:test counts a bare return as a
 // PASS. `mint-suite-census.mjs` counted a rising skip count as a LOSS and refused to re-stamp, because
 // an arm that stopped running reads as one that passed. Both sentences are true. Following the first
-// tripped the second, measured on `c6e183d` while landing tracker issue 202.
+// tripped the second, measured on `c6e183d`.
 //
 // Overwatch ruled on 2026-09-06: the bail guard is right, and a reasoned skip is neither a pass nor a
 // loss. It gets its own bucket — printed, never silent, and not a refusal.
@@ -114,7 +114,7 @@ test("BOTH populations read the one rule, and the script keeps no private copy",
   // Nothing skip-shaped may reach the refusal list.
   for (const line of src.split("\n")) {
     if (/lost\.push\(/.test(line) || /^\s*lost\.push/.test(line)) {
-      assert.doesNotMatch(line, /skip/i, `a skip reaching the refusal list is tracker issue 205 returning: ${line.trim()}`);
+      assert.doesNotMatch(line, /skip/i, `a skip reaching the refusal list is the old defect returning: ${line.trim()}`);
     }
   }
   // And the bucket is printed before the mode branches, so no mode can be the one that hides it.

@@ -63,7 +63,7 @@ import { join as __join } from "node:path";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — the default is taken only when NO spelling holds a value
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK_DIR") || __mkdtemp(__join(__tmpdir(), "doors-ws-")));
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_REPORTS_DIR") || __mkdtemp(__join(__tmpdir(), "doors-pool-")));
-// ── A FIXTURE DIRECTORY THIS FILE OWNS IS NEVER TAKEN FROM THE ENVIRONMENT (tracker issue 224) ──────
+// ── A FIXTURE DIRECTORY THIS FILE OWNS IS NEVER TAKEN FROM THE ENVIRONMENT ──────────────────────────
 //
 // `envFrom(...) || mkdtemp(...)` reads an inherited value FIRST. That is right for a variable an
 // operator sets and wrong for a queue this file writes jobs into and then reads back, and the two are

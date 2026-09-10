@@ -15,13 +15,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
+import { publishedOf } from "../../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { OPENER, ANY_CITATION, EXCLUDED, isScannable, surveyOf } from "../../scripts/strip-tracker-citations.mjs";
+import { OPENER, PARENTHETICAL, ANY_CITATION, EXCLUDED, isScannable, surveyOf, stripParenthetical, wrapsInto } from "../../scripts/strip-tracker-citations.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const GUARD = "the citation sweep is a fixed point";
 
 const strip = (line) => (OPENER.test(line) ? line.replace(OPENER, "$1") : line);
 
@@ -145,4 +148,140 @@ test("the excluded files are excluded, and nothing else is", () => {
   }
   assert.equal(isScannable("portal-ui/dist/assets/index.js"), false, "a built artefact is not prose");
   assert.equal(isScannable("driver/profiles/aurora.png"), false, "a binary is not prose");
+});
+
+// ── the bracketed citation, and the two things that make it safe ────────────────────────────────────
+//
+// Measured rather than assumed: the opener sweep had two lines left and seven hundred and fifty
+// citations it could not touch. Three hundred and twenty-nine of those sit in brackets holding the
+// citation and nothing else, which is a label beside a sentence wearing a different punctuation mark.
+
+test("a bracketed citation goes, and the sentence it stood beside is untouched", () => {
+  assert.equal(stripParenthetical("  # nothing (tracker issue 200)."), "  # nothing.");
+  assert.equal(stripParenthetical("// A TAG PUSH IS NOT A PUBLISH PATH (tracker issue 264)."),
+    "// A TAG PUSH IS NOT A PUBLISH PATH.");
+  // The space before the bracket goes with it; leaving it produces a double space mid-sentence.
+  assert.equal(stripParenthetical("// green here (tracker issue 204) and wrong there"),
+    "// green here and wrong there");
+});
+
+test("brackets holding ANYTHING BESIDES the citation are refused — that content is a ruling", () => {
+  // The whole of the narrowing. Sixty-eight lines carry a date, a ruling or a second citation inside
+  // the same brackets, and a rule wide enough to take them is a rule that deletes rulings.
+  for (const line of [
+    "// stable is the owner's word (tracker issue 230, unchanged).",
+    "// WHAT FIRES THE PUBLISH (tracker issue 264, owner's ruling 2026-09-07).",
+    "// ── AND THE GATE COMES AFTER IT (tracker issue 208 / tracker issue 229) ────",
+    "// see tracker issue 238 and the guard in that job.",
+  ]) {
+    assert.equal(PARENTHETICAL.test(line), false, `would have rewritten: ${line}`);
+    assert.equal(stripParenthetical(line), line, "the line was changed");
+  }
+});
+
+test("a drawn heading keeps its rule the length it was", () => {
+  // A hundred and six of these sit in box headings. Removing twenty characters and leaving the rule
+  // twenty short makes every touched heading ragged against every other heading in its file, and turns
+  // a citation removal into a reflow nobody asked to review.
+  const before = "// ── THE INPUT DECIDES THE CHANNEL (tracker issue 279) ──────────────";
+  const after = stripParenthetical(before);
+  assert.equal(after.length, before.length, "the heading changed width");
+  assert.equal(after, "// ── THE INPUT DECIDES THE CHANNEL ──────────────────────────────────");
+  assert.equal(ANY_CITATION.test(after), false, "the citation survived");
+});
+
+test("a line with no trailing rule is not padded", () => {
+  // The padding must key on the line ENDING in a rule, not on containing one. A heading whose rule sits
+  // mid-line would otherwise grow characters at its end.
+  const out = stripParenthetical("// ── A HEADING ── then prose (tracker issue 300) and more prose");
+  assert.equal(out, "// ── A HEADING ── then prose and more prose");
+});
+
+test("the sweep applies both rules and reports the count of each line it rewrote", () => {
+  const tree = {
+    "a.mjs": "// tracker issue 11 — an opener\n// and a bracket (tracker issue 12)\n// a ruling (tracker issue 13, decided 2026-01-01)\n",
+  };
+  const s = surveyOf(Object.keys(tree), (f) => tree[f]);
+  assert.equal(s.strippedTotal, 2, "one opener and one bracket");
+  assert.equal(s.handoff.length, 1, "the ruling line is the only one owed to a reader");
+  assert.match(s.handoff[0].text, /decided 2026-01-01/, "and it is the one carrying content in its brackets");
+});
+
+test("a line carrying another citation is handed off, never rewritten", () => {
+  // REWRITING RE-AGES. A diff has no partial edit: touching one character puts the whole line on the
+  // added side, so a by-line citation that has sat there for months becomes newly-added and fails the
+  // check that refuses new ones. Two lines in this tree are in that state and rewriting them turned a
+  // strip into three new bare citations.
+  const line = '  { target: /^diffcase/, why: "FIXTURE NAMES (tracker issue 1941). diffcase-keep.mjs:4 keepRow is DATA" },';
+  const tree = { "a.mjs": [line, "// a plain one (tracker issue 12)", ""].join("\n") };
+  const s = surveyOf(Object.keys(tree), (f) => tree[f]);
+  assert.equal(s.strippedTotal, 1, "the line carrying diffcase-keep.mjs:4 keepRow was rewritten anyway");
+  assert.equal(s.handoff.length, 1, "and it must reach the reader instead");
+  assert.ok(s.handoff[0].text.includes("diffcase-keep.mjs:4 keepRow"), "the held-back line is the one carrying the by-line citation");
+});
+
+test("the sweep is a fixed point on the tree it has already swept", (ctx) => {
+  // WHAT THIS CATCHES, AND IT IS NOT HYPOTHETICAL. Repairing two re-aged lines by restoring the whole
+  // file put a sweepable citation back with them, and it then sat in NEITHER pile: not stripped,
+  // because the sweep had not been re-run, and not on the hand-off list either, because the survey
+  // strips a line before classifying what remains. A line in neither pile is invisible to every count
+  // this file prints. Found in review.
+  //
+  // Driven over the real tracked tree rather than a fixture: a fixture would prove the property of the
+  // fixture, and the defect was in what the repository actually held.
+  // THROUGH THE HELPER, AND THROUGH `publishedOf`. Enumerating here would be this pack's own rule
+  // broken by its newest check — and it was, until the private control caught it. Two things follow
+  // from the helper: a checkout it cannot read becomes a stated skip rather than a wall of failures,
+  // and the population is what HEAD publishes, so a laid corpus is not counted. Without the second, this
+  // arm reds under the overlay for the correct reason and the wrong subject: laid files carry citations
+  // nobody has swept, and they are not this tree's to sweep.
+  const all = trackedFiles(GUARD, { root: ROOT });
+  if (all === null) { ctx.skip(skipReason(GUARD)); return; }
+  const p = publishedOf(all, ROOT);
+  if (p.error) { ctx.skip(`${GUARD} — ${p.error}`); return; }
+  const tracked = p.files;
+  const s = surveyOf(tracked, (f) => readFileSync(join(ROOT, f), "utf8"));
+  assert.ok(tracked.length > 100, `read ${tracked.length} published path(s) — the population is not the tree`);
+  assert.equal(s.strippedTotal, 0,
+    `the sweep would still rewrite ${s.strippedTotal} line(s) of a tree it has already swept — re-run it and commit the result`);
+});
+
+// ── a citation that wrapped across a line break ─────────────────────────────────────────────────────
+//
+// Every rule in this file reads ONE line, so a citation broken across a break matched nothing, counted
+// in no total and appeared on no hand-off list. Thirty-six were in the tree. That is not a smaller
+// number than the truth, it is an absent one — the same shape as a line stripped before it is
+// classified, which this file already has a check for.
+
+test("a citation broken across a line break is found and handed off", () => {
+  for (const [a, b] of [
+    ["// the rule is stated in tracker", "// issue 264 and nowhere else"],
+    ["// the rule is stated in tracker issue", "// 264 and nowhere else"],
+    ["# a comment ending in tracker", "#   issues 1149 item 2"],
+  ]) {
+    assert.equal(wrapsInto(a, b), true, `missed: ${a} ⏎ ${b}`);
+  }
+});
+
+test("a line ending in the word tracker is not a citation because a number follows it", () => {
+  // THE OVER-MATCH THIS COULD HAVE BEEN. `tracker` is an ordinary word and numbered lists are ordinary
+  // prose, so requiring `issue` after a bare `tracker` is what keeps a sentence about a bug tracker,
+  // followed by a step 3, from reading as a citation and being handed to somebody to rewrite.
+  for (const [a, b] of [
+    ["// we open a ticket in the tracker", "//   3. then the run resumes"],
+    ["// see the tracker", "// for the current state"],
+    ["// nothing to do with a tracker issue at all", "// a following line"],
+  ]) {
+    assert.equal(wrapsInto(a, b), false, `false positive: ${a} ⏎ ${b}`);
+  }
+  assert.equal(wrapsInto("// ends in tracker", undefined), false, "the last line of a file has no successor");
+});
+
+test("the survey reports the wrapped pair at the line the citation starts on", () => {
+  const tree = { "a.mjs": ["// a plain one (tracker issue 12)", "// the rule is in tracker", "// issue 264 and nowhere else", ""].join("\n") };
+  const s = surveyOf(Object.keys(tree), (f) => tree[f]);
+  assert.equal(s.strippedTotal, 1, "the bracketed one on line 1 is still swept");
+  const wrapped = s.handoff.filter((h) => h.text.includes("⏎"));
+  assert.equal(wrapped.length, 1, "the wrapped citation is on no hand-off list");
+  assert.equal(wrapped[0].line, 2, "reported at the line a reader has to open, not the one holding the number");
 });

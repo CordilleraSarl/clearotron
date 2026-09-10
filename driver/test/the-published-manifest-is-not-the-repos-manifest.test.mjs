@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The published manifest is not this repository's manifest — tracker issue 180.
+// The published manifest is not this repository's manifest.
 //
 // ── the outage these arms are made of ───────────────────────────────────────────────────────────────
 //
@@ -99,7 +99,7 @@ test("the strip is one policy, and the repo manifest still carries what it strip
 
   // AND THE REASON THE KEY IS THERE AT ALL. `overrides` pins the clean-room replacement for the
   // unlicensed `buffers@0.1.1` while resolving THIS tree. If it ever leaves package.json this arm
-  // should be the thing that says so, because the fix for tracker issue 180 would then look like
+  // should be the thing that says so, because the fix would then look like
   // deleting the key from the repository — which throws away the licence substitution to fix the
   // packaging, and both problems come back.
   const repo = JSON.parse(readFileSync(join(REPO, "package.json"), "utf8"));
@@ -197,7 +197,7 @@ test("every publishing job seals BEFORE anything measures the artefact", () => {
   // would publish bytes that nothing scanned, which is the invariant the pack step's own comment states
   // — and it is the kind of comment that stays true only because an arm holds it.
   //
-  // ── ASKED OF EVERY PUBLISHING JOB, NOT OF THE FILE (tracker issue 208) ──────────────────────────
+  // ── ASKED OF EVERY PUBLISHING JOB, NOT OF THE FILE ──────────────────────────────────────────────
   //
   // This read the anchors from the whole workflow and required each to be UNIQUE — a sound way to be
   // sure a position belonged to the step it was named for, in a file that is mostly prose. A second
@@ -259,7 +259,7 @@ test("every step handles the one artefact, and the check never runs a rehearsal"
 });
 
 test("the gate is asked on the pull request too, not only at the release", () => {
-  // A CHECK ABSENT FROM EXACTLY THE RUN THAT NEEDED IT (tracker issue 189). Wired into the release
+  // A CHECK ABSENT FROM EXACTLY THE RUN THAT NEEDED IT. Wired into the release
   // workflow alone, this gate would first speak on the release that carries the fault — after the
   // author has moved on, and where the only remedy is another release. CI already packs a tarball for
   // the completeness check one line above, so asking there costs one more install and reaches the

@@ -256,7 +256,7 @@ export const SYSTEM_OWNED = new Set([
   // row would describe a decision this product does not make. Excluded rather than documented, which
   // is what this list is for.
   "WSL_DISTRO_NAME", "WSL_INTEROP",
-  // ── THE GITHUB ACTIONS RUNTIME (tracker issue 213) ──────────────────────────────────────────────
+  // ── THE GITHUB ACTIONS RUNTIME ──────────────────────────────────────────────────────────────────
   //
   // `CI` above is already here for exactly this reason; these two arrived with the release scripts and
   // want the same answer. GitHub sets both INSIDE a workflow run — `GITHUB_OUTPUT` is the step-output

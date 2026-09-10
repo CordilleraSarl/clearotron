@@ -231,7 +231,7 @@ if (isEntrypoint(import.meta.url)) {
   }
   if (APPLY) {
     if (laneNote) console.log(laneNote);
-    // ── AND WHAT THIS INSTALL STILL HAS NOT GOT (tracker issue 133) ─────────────────────────────────
+    // ── AND WHAT THIS INSTALL STILL HAS NOT GOT ─────────────────────────────────────────────────────
     //
     // The nine values above are the ones this command RESOLVES. They are not the values the units
     // refuse to start over, and the gap between those two lists is how a documented install produced a
@@ -301,7 +301,7 @@ export async function writeInstallEnv(envFile) {
   // change, and the reader meets it in the output of the command that does it rather than discovering
   // it in a file.
   const fresh = signingSecretIfAbsent(fileEnv.TRADEMARK_MCP_TOKEN_SECRET ?? process.env.TRADEMARK_MCP_TOKEN_SECRET, { randomBytes });
-  // ── HELD, NOT PRINTED (tracker issue 194) ─────────────────────────────────────────────────────────
+  // ── HELD, NOT PRINTED ─────────────────────────────────────────────────────────────────────────────
   //
   // These lines used to print here, and the refusal below exits before anything reaches disk — so a
   // refused run announced "Written to the env file at mode 600" about two files it never wrote. That
@@ -321,7 +321,7 @@ export async function writeInstallEnv(envFile) {
       "  file at mode 600, and never printed.");
   }
 
-  // ── AND THE PORTAL'S SECRET, WHICH THE SAME ARGUMENT ALWAYS COVERED (tracker issue 122) ───────────
+  // ── AND THE PORTAL'S SECRET, WHICH THE SAME ARGUMENT ALWAYS COVERED ───────────────────────────────
   //
   // The block above was written for the signing secret alone, and `PORTAL_SECRET` is the identical case
   // one door along: 32 random bytes, minted by `bin/start.mjs` and by nothing else, with no value a
@@ -329,7 +329,7 @@ export async function writeInstallEnv(envFile) {
   // strictly from the document got a portal unit that exited at boot, and the only route to a working
   // one was running the local-install command the instructions say a server does not need.
   //
-  // That is the family tracker issue 122 is about: a value whose sole writer is a command outside the
+  // That is the family this is about: a value whose sole writer is a command outside the
   // documented install. Naming the variable in a warning does not help, because there is no action
   // behind the name — the reader cannot invent 32 random bytes that the portal will accept.
   //
@@ -392,10 +392,10 @@ export async function writeInstallEnv(envFile) {
   }
   for (const [k, v] of Object.entries(doorPlan.settings)) want[k] = v;
 
-  // ── THE SECRETS ARE ON DISK'S SIDE OF THE REFUSAL NOW (tracker issue 194) ─────────────────────────
+  // ── THE SECRETS ARE ON DISK'S SIDE OF THE REFUSAL NOW ─────────────────────────────────────────────
   for (const line of announcements) console.log(line);
 
-  // ── A DERIVED VALUE MAY NOT GO STALE (tracker issue 197) ──────────────────────────────────────────
+  // ── A DERIVED VALUE MAY NOT GO STALE ──────────────────────────────────────────────────────────────
   //
   // Driven on a greenfield install: `--apply`, then an operator edits `CLIENT_MCP_HTTP_PORT` by hand
   // and runs `--apply` again. The door binds the new port; the allow-list still names the old one;
@@ -413,13 +413,13 @@ export async function writeInstallEnv(envFile) {
   //
   // `CLEAROTRON_CHECKOUT_DIR` is deliberately not here either, for the same reason one issue over.
   //
-  // ── BOTH DOORS, NOT ONE (tracker issue 192) ───────────────────────────────────────────────────────
+  // ── BOTH DOORS, NOT ONE ───────────────────────────────────────────────────────────────────────────
   //
   // This block used to name the client door alone. The engine door's allow-list is the same derivable
   // `host:port` shape, refuses to start without a value in the same words, and was composed by NOTHING
   // on a hosted install — `bin/start.mjs` injects one into its own children's environment, which no
   // systemd unit inherits. So the documented install asked an operator for a value while writing the
-  // identical one next to it. That asymmetry was found by the census tracker issue 122 asked for, on
+  // identical one next to it. That asymmetry was found by the census that called for it, on
   // its first run, which is what that check is for.
   //
   // The pair is DATA now (`DOOR_ALLOW_LISTS`), and the composition is one function taking the public

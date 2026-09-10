@@ -44,7 +44,7 @@ import { fileURLToPath } from "node:url";
 const SKILLS = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "skills");
 const SKILL_DIR = Object.freeze({ client: "clearotron-client", account: "clearotron-account", ops: "clearotron-ops" });
 
-// ── A PACK MAY BE MORE THAN ONE FILE (tracker issue 148) ──────────────────────────────────────────
+// ── A PACK MAY BE MORE THAN ONE FILE ──────────────────────────────────────────────────────────────
 //
 // The ops SKILL.md tells the assistant twice that delivery "comes back to you as outbox events (see
 // COURIER.md)" — and this reader only ever opened SKILL.md, so from the assistant's side that document

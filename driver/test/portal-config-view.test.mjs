@@ -69,7 +69,7 @@ test("a missing snapshot is UNAVAILABLE, never 'everything off'", () => {
 
 test("an OLD capture is still readable, and its age is no longer a verdict on it", () => {
   // THIS ARM USED TO ASSERT `v.stale === true`, and the age banner it belonged to is retired — owner
-  // ruling 2026-09-05 (tracker issue 170): "the global configuration page shows LIVE configuration,
+  // ruling 2026-09-05: "the global configuration page shows LIVE configuration,
   // always. No run-time snapshot as the source of truth."
   //
   // What the arm was FOR survives and is what it checks now: old is not the same as unreadable, and the

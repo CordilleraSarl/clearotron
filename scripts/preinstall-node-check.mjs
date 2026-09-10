@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// The install refuses an unsupported Node BEFORE anything is written — tracker issue 364.
+// The install refuses an unsupported Node BEFORE anything is written.
 //
 // Three declarations already stated the requirement and none of them bound anyone: `engines.node` is a
 // WARNING unless the person installing has set `engine-strict`, `.nvmrc` is read by nvm and nothing

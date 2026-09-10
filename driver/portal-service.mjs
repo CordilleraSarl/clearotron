@@ -139,7 +139,7 @@ import { engineCommit } from "./engine-build.mjs";                  // — the S
 import { engineCommitDate, engineProvenance } from "./engine-build.mjs";
 import { classifySkillsStore } from "./skills-store-provenance.mjs";
 import { makeStaticHandler, reportCsp, docCsp } from "./portal-static.mjs";
-import { bundleVerdict, healthUi } from "../shared/bundle-freshness.mjs";   // one definition of a usable bundle, shared with `doctor` (tracker issue 160)
+import { bundleVerdict, healthUi } from "../shared/bundle-freshness.mjs";   // one definition of a usable bundle, shared with `doctor`
 import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./portal-report.mjs";
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
@@ -856,7 +856,7 @@ export const PORTAL_JOB_FIELDS = Object.freeze({
     registerFixtures: "a run that reads canned register payloads instead of calling a register. A CLIENT may "
       + "never ask for that: the result would be fiction wearing a real report's clothes, which is the failure "
       + "the demo marker exists to prevent one level up. Refused by omission here, and only ever set by a job "
-      + "file somebody wrote deliberately (tracker issue 2038).",
+      + "file somebody wrote deliberately.",
     promptParts: "the requester's declaration that the prose rides as SIDECAR files (<base>.brief.md, …), "
       + "which exists because the hand-emitting email-loop agent can only `write` files. The portal composer "
       + "sends structured fields and writes no sidecars, so a job it built is never in that shape — carrying "
@@ -2796,7 +2796,7 @@ export function makePortalService({
           // below, so it is the authoritative source. Fed from process.env at the seam rather than
           // inside authView, so the one process entitled to answer is visibly the one reading.
           //
-          // AND THE ENVIRONMENT IS READ ONCE MORE, FOR ONE PURPOSE (tracker issue 170): to say whether
+          // AND THE ENVIRONMENT IS READ ONCE MORE, FOR ONE PURPOSE: to say whether
           // the capture still DESCRIBES this box, never to supply a value. A deployment being
           // configured runs nothing, so its capture cannot age into a warning while its contents drift
           // — the disagreement is the signal the age never was. Degraded rather than fatal: a page that
@@ -3106,7 +3106,7 @@ export function bundleFreshnessCached(present, { now = Date.now(), ttl = BUNDLE_
 /**
  * How to re-mint the trigger token WITH an accounts cap, and without changing anything else about it.
  *
- * ── tracker issue 107 ────────────────────────────────────────────────────────────────────────────
+ * ── THE RE-MINT COMMAND ──────────────────────────────────────────────────────────────────────────
  *
  * This used to be a fixed string in the warning itself: `--sub portal --verbs start_run,stop_run`. An
  * operator whose token carries a third verb, or a different subject, was told to re-mint as something
@@ -3597,7 +3597,7 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
         // Null when unset or unrecognised, which is an absence and reads as one. No inference from the
         // account or the path: a guessed box is worse than an unknown one, because it answers wrongly
         // instead of leaving the question open.
-        // ── IS THE BUNDLE THE ONE ITS SOURCES WOULD BUILD? (tracker issue 160) ──────────────────────
+        // ── IS THE BUNDLE THE ONE ITS SOURCES WOULD BUILD? ──────────────────────────────────────────
         //
         // `ui` had two states, present and absent, and no third for *present and older than the sources
         // it was built from*. On the source route `git pull` can never update `portal-ui/dist` — it is
@@ -4128,7 +4128,7 @@ const PORT = PORT_CHOICE.port;
       + "`clearotron start` derives PORTAL_MCP_URL from its resolved ports; a box that launches this "
       + "service directly must set it to the engine door's own ORIGIN (no /mcp — the client appends it).");
   }
-  // ── AND WHETHER THE DOOR WILL TAKE IT (tracker issue 174) ────────────────────────────────────────
+  // ── AND WHETHER THE DOOR WILL TAKE IT ────────────────────────────────────────────────────────────
   //
   // Every line in this block describes the PORTAL'S HALF — the token, its verbs, its accounts, its
   // expiry — and not one of them asks whether the door it is pointed at will accept a caller shaped
@@ -4173,7 +4173,7 @@ const PORT = PORT_CHOICE.port;
       // than judged — with the mechanism, so a reader knows what to look at. Claiming more than was
       // measured is how a check starts refusing deployments that work.
       if (lane.state === "fail") log(`WARNING: trigger lane — ${lane.message}`);
-      // NOT `WARNING:` (tracker issue 222). A connection nothing answered at boot is a startup race far
+      // NOT `WARNING:`. A connection nothing answered at boot is a startup race far
       // more often than an outage — the units carry no ordering, so the portal routinely binds first —
       // and the old text stated an outage in the present tense with a 502 attached to it. It printed on
       // every reboot, on boxes that were fine. Reserving `WARNING:` for what did answer wrongly is what
@@ -4198,7 +4198,7 @@ const PORT = PORT_CHOICE.port;
     // lane — a journal is skimmed by grepping one phrase, and the phrase people grep is this one.
     log(`trigger lane${laneWired ? "" : " (NOT WIRED — see above)"}: ops token sub=${posture.sub ?? "-"} verbs=${posture.verbs?.join(",") ?? "(full ops)"} accounts=${posture.accounts?.join(",") ?? "UNCAPPED (every account)"}${expiry}${posture.readable ? "" : " — token payload unreadable, posture unknown"}`);
     if (!posture.accountCapped) {
-      // ── THE PRINTED COMMAND IS DERIVED FROM THE TOKEN IN HAND (tracker issue 107) ──────────────────
+      // ── THE PRINTED COMMAND IS DERIVED FROM THE TOKEN IN HAND ──────────────────────────────────────
       //
       // It used to be a fixed string: `--sub portal --verbs start_run,stop_run`. An operator whose
       // token carries a third verb, or a different subject, is told to re-mint as something NARROWER
@@ -4654,7 +4654,7 @@ const PORT = PORT_CHOICE.port;
   // on the route: on a PACKAGED install the bundle ships inside the tarball, so absent means a broken
   // package; on a SOURCE checkout it has simply never been built, which is the ordinary first-run
   // state and why the message names the build command. The freshness verdict twenty lines below
-  // (tracker issue 160) has always had this right.
+  // has always had this right.
   //
   // Not fatal on purpose: the API is independently useful (the MCP face, the connector, a debugging
   // curl), and taking the whole service down over a UI asset would turn a cosmetic failure into an

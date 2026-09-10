@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// lib/knockout.mjs — the KNOCKOUT lane, projected into the audit tools' own shapes (tracker issue 275).
+// lib/knockout.mjs — the KNOCKOUT lane, projected into the audit tools' own shapes.
 //
 // THE DEFECT THIS CLOSES, and it is worth stating plainly because the failure mode was a confident wrong
 // answer rather than an error. Every read-only tool whose job is to show HOW a search reached its answer

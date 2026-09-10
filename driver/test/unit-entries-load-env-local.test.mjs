@@ -83,7 +83,7 @@ export function emitsRetiredWarning(src) {
   // import — `import { envFileRead } from "../shared/env-local.mjs"` — evaluates the same module and so
   // runs the same unconditional translation at the bottom of it, but read as no import at all: adding
   // one to a unit entry reported that entry as translating nothing, which was false and which is how
-  // this was found (tracker issue 200).
+  // this was found.
   return /^\s*import\s+(?:[^"';]*\bfrom\s+)?["']\.{1,2}\/[^"']*env-local\.mjs["']/m.test(t)
     || /\bwarnRetiredEnv\s*\(/.test(t);
 }

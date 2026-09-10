@@ -24,8 +24,8 @@ const START = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bin", "
 test("2148: the client door IS in the background enable set, and its settings are written before it", () => {
   // ── SUPERSEDED 2026-09-03, AND REWRITTEN RATHER THAN DELETED ──────────────────────────────────
   //
-  // This arm used to assert the exact opposite, and it was right under the ruling it cited (tracker
-  // issues 1976/2082): starting the unit WAS the on-demand consent, because starting it turned on
+  // This arm used to assert the exact opposite, and it was right under the ruling it cited:
+  // starting the unit WAS the on-demand consent, because starting it turned on
   // client-account access, so an enable list containing it made that consent meaningless.
   //
   // The owner superseded that knowingly (settled point 2): the door auto-starts
@@ -129,7 +129,7 @@ test("1863 the disarm runs BEFORE the enable, so the box never holds both draine
   // ANCHORED ON THE CALL, NOT ON THE LOOP AROUND IT — and both weaker anchors were tried and failed
   // here, which is worth writing down. It first matched `for (const u of BACKGROUND_UNITS) execFileSync`
   // and lost its subject when that loop grew a body, which it did when the enable step learned to catch
-  // a systemd refusal instead of throwing a stack trace (tracker issue 203). Matching the loop HEADER
+  // a systemd refusal instead of throwing a stack trace. Matching the loop HEADER
   // instead was worse: three loops in that file open with those exact words, `indexOf` found the first
   // — the one that renders the unit files, which is legitimately BEFORE the disarm — and the ordering
   // assertion failed over code that is correctly ordered.

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A timer is asked about as a timer, because its service cannot answer for it — tracker issue 323.
+// A timer is asked about as a timer, because its service cannot answer for it.
 //
 // The health check asks `systemctl show <bare name>`, and systemd resolves a bare name to the `.service`.
 // For a timer-driven unit that is the wrong question in the direction that hides the failure: the service
