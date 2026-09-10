@@ -67,10 +67,19 @@ export const ENV_EXAMPLE_FILES = [".env.example", ".env.deployment.example", ".e
  *
  * AN ABSENT FILE ADDS NOTHING. Three of the four are withheld from the public tree, and a public checkout
  * must still gather; the artifact is minted only where they are laid, because it refuses without the
- * production list that is withheld with them.
+ * production list that is withheld with them. A file that EXISTS and cannot be read refuses instead, for
+ * the reason `mustRead` gives: read as empty, every name it documents would record as undocumented.
  */
 export function exampleNames(root = ROOT) {
-  return ENV_EXAMPLE_FILES.flatMap((f) => catalogueRows(read(join(root, f))).map((r) => r.name));
+  return ENV_EXAMPLE_FILES.flatMap((f) => {
+    const p = join(root, f);
+    let text = "";
+    try { text = readFileSync(p, "utf8"); } catch (e) {
+      if (e.code !== "ENOENT")
+        throw new Error(`env-classify: ${p} exists and could not be read (${e.code}). Read as empty, every name it documents would record as undocumented.`);
+    }
+    return catalogueRows(text).map((r) => r.name);
+  });
 }
 
 /** Assignment NAMES from a shell-shaped env file. Values are matched and discarded, never returned. */

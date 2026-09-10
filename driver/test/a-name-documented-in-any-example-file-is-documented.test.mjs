@@ -60,6 +60,16 @@ test("every example file counts, each one on its own", () => {
   }
 });
 
+test("an example file that exists and cannot be read refuses, rather than documenting nothing", () => {
+  // Absence adds nothing, because three of the four files are not in every tree. A file that is there and
+  // cannot be read is a different fact: read as empty, every name it documents would record as
+  // undocumented. Driven with a directory where the file belongs, as the other source tests are, not a chmod.
+  const root = rootWith({ ".env.example": "CLEAROTRON_EX_SETUP=\n" });
+  mkdirSync(join(root, ".env.deployment.example"));
+  assert.throws(() => gather({ root, prodList: "" }), /\.env\.deployment\.example exists and could not be read \(EISDIR\)/,
+    "an unreadable example file read as empty, so every name it documents would read as undocumented");
+});
+
 test("a row here is a row as the catalogue reads it, indented or commented alike", () => {
   const text = [
     "CLEAROTRON_EX_PLAIN=",
