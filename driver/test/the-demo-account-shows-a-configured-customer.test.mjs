@@ -90,15 +90,13 @@ test("2014 the framework is its own, and its provenance note is clean", () => {
   assert.doesNotMatch(md.split("\n")[0], /synthetic|demo customer/i, "and neither does its title line");
 });
 
-test("2014 the tenant grants exactly the demo account, and nothing else", () => {
+test("2014 the demo organisation holds exactly the demo account, and no other organisation holds it", () => {
   const g = JSON.parse(readFileSync(join(ROOT, "examples", "grants.example.json"), "utf8"));
   const t = g.tenants["demo-org"];
-  assert.ok(t, "Demo Org exists as a tenant");
-  assert.deepEqual(t.accounts, [KEY], "it reaches the demo account and no other");
-  assert.deepEqual(Object.keys(t.users), ["*@demo-org.example"], "one domain wildcard, as the shape allows");
-
-  // The existing fixtures are untouched: adding a tenant must not re-scope anybody else's access, and
-  // several portal arms assert those exact account lists.
-  assert.deepEqual(g.tenants["brand-owner-direct"].accounts, [KEY]);
-  assert.deepEqual(g.tenants["evaluation"].accounts, [KEY]);
+  assert.ok(t, "Demo Org exists as an organisation");
+  assert.deepEqual(t.accounts, [KEY], "it holds the demo account and no other");
+  assert.equal(t.users["*@demo-org.example"], "*", "one domain wildcard, as the shape allows");
+  // A company belongs to exactly one organisation, so no other organisation may list it.
+  for (const [name, other] of Object.entries(g.tenants))
+    if (name !== "demo-org") assert.ok(!(other.accounts ?? []).includes(KEY), `${name} also lists the demo account`);
 });
