@@ -264,10 +264,13 @@ test("on git older than 2.37 the answer follows that git — the lone-remote fal
     assert.equal(at(lone, "git version 2.34.1"), "publishes", "before 2.37 the push is triangular against a missing origin, and simple pushes");
     assert.equal(at(lone, "git version 2.43.0"), "stays-here", "from 2.37 the lone remote is the default, so the push is not triangular");
     assert.equal(at(lone, "git version 2.39.3 (Apple Git-145)"), "stays-here", "a vendor suffix is still read as its version");
+    assert.equal(at(lone, "no version here"), "publishes",
+      "a git that will not state its version is read both ways, and the older reading publishes here");
     s.git(lone, "config", "--unset", "remote.pushDefault");
     s.git(lone, "config", "push.default", "current");
     assert.equal(at(lone, "git version 2.34.1"), "stays-here", "before 2.37 a push with no named destination goes to origin, and there is none");
     assert.equal(at(lone, "git version 2.43.0"), "publishes", "from 2.37 it goes to the lone remote");
+    assert.equal(at(lone, "no version here"), "publishes", "and here the current reading publishes, so either way it does");
 
     const withOrigin = join(s.dir, "with-origin");
     s.git(s.dir, "init", "-q", "-b", "main", "with-origin");
@@ -277,5 +280,8 @@ test("on git older than 2.37 the answer follows that git — the lone-remote fal
     s.git(withOrigin, "config", "push.autoSetupRemote", "true");
     assert.equal(at(withOrigin, "git version 2.34.1"), "stays-here", "push.autoSetupRemote does not exist before 2.37");
     assert.equal(at(withOrigin, "git version 2.43.0"), "publishes");
+    s.git(withOrigin, "config", "--unset", "push.autoSetupRemote");
+    assert.equal(at(withOrigin, "no version here"), "stays-here",
+      "reading both ways is not publishing always: with neither reading pushing, it stays");
   } finally { s.cleanup(); }
 });
