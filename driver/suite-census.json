@@ -2890,8 +2890,8 @@
           "todos": 0
         },
         "portal-access.test.mjs": {
-          "tests": 12,
-          "asserts": 47,
+          "tests": 13,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
