@@ -43,7 +43,7 @@ const EXPECTED = [
   ["no", SIGNA("no", "202012345", "312456"), "NO 202012345", "https://services.patentstyret.no/search-details/trademark/202012345-312456?lang=en"],
   ["se", SIGNA("se", "2020-12345", "578291"), "SE 2020-12345", "https://search.prv.se/#/trademark/2020-12345"],
   ["us", SIGNA("us", "88123456", "5847291"), "US 88123456", "https://tsdr.uspto.gov/#caseNumber=88123456&caseType=SERIAL_NO&searchType=statusSearch"],
-  ["wo", SIGNA("wo", "1543782", "1543782", { filingRoute: "madrid_international" }), "WO 1543782", "https://www3.wipo.int/madrid/monitor/en/showData.jsp?ID=ROM.1543782"],
+  ["wo", SIGNA("wo", "1543782", "1543782", { filingRoute: "madrid_ir" }), "WO 1543782", "https://www3.wipo.int/madrid/monitor/en/showData.jsp?ID=ROM.1543782"],
 ];
 
 test("the table speaks for exactly the offices the vendor lists as live", () => {
@@ -75,10 +75,25 @@ test("a number in any other form gets no link, at every office with a page", () 
     SIGNA("au", "A2145673", null), SIGNA("ca", "TMA1024576", null), SIGNA("ch", "12345-2020", null),
     SIGNA("eu", "EU018165108", null), SIGNA("fr", "20/4123456", null), SIGNA("gb", "3456789", "3456789"),
     SIGNA("no", "12345", null), SIGNA("se", "2020/12345", null), SIGNA("us", "5847291", null),
-    SIGNA("wo", "R123", "R123", { filingRoute: "madrid_international" }),
+    SIGNA("wo", "R123", "R123", { filingRoute: "madrid_ir" }),
   ];
   assert.deepEqual(off.map((r) => r.office), EXPECTED.map(([o]) => o), "one malformed number per office with a page");
   for (const rec of off) assert.deepEqual([rec.office, officeRecordLink(rec).href, officeRecordLink(rec).reason], [rec.office, null, "unaddressable"]);
+});
+
+test("every office's pattern is anchored at both ends: its good number with a letter before or after gets no link", () => {
+  // A malformed number per office reaches only the anchors its own shape happens to test. This drives both
+  // anchors at every office, from the office's own good number: a letter before it and a letter after it.
+  // A letter rather than a digit after it, because an Australian, Canadian or WIPO number varies in length,
+  // so a trailing digit can still spell a real number there, where a letter spells none.
+  const bend = (rec, f) => ({ ...rec, ...Object.fromEntries(["applicationNumber", "registrationNumber", "irNumber"]
+    .filter((k) => rec[k] != null).map((k) => [k, f(String(rec[k]))])) });
+  for (const [office, rec] of EXPECTED) {
+    for (const [how, f] of [["before", (n) => `x${n}`], ["after", (n) => `${n}x`]]) {
+      const l = officeRecordLink(bend(rec, f));
+      assert.deepEqual([office, how, l.href, l.reason], [office, how, null, "unaddressable"]);
+    }
+  }
 });
 
 test("the handle is never an address: a record with no number gets no link, whatever its id looks like", () => {
@@ -134,10 +149,10 @@ test("the run's tally counts linked, cited-by-number and not-retrieved registrat
   assert.equal(out.byUri.get("/mark/ch/s5"), null, "an unfetched registration has no link and no label of its own");
 });
 
-test("the reason is stated once per office, however many of its registrations the report cites", () => {
+test("the reason is stated once per office, with no count the cards could contradict", () => {
   const { byUri } = recordLinksFor(FINDINGS, RECORDS, "signa");
   assert.deepEqual(officeReasonSentences(byUri), [
-    "France: one registration is cited by number, not linked, because its number is not in the form the register's page address takes.",
+    "France: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.",
     "Singapore: the register publishes no page for a single record, so its registrations are cited by number.",
   ]);
 });
@@ -169,10 +184,10 @@ test("the card links the office and number, cites the rest by number, and states
   assert.match(html, /<b>\/mark\/ch\/s5<span class="reg-nolink">[^<]*<\/span><\/b> <i>\(register-index entry\)<\/i>/, "an unfetched registration keeps its handle, its note and its label");
   assert.match(html, /A registration number shown as a link opens the office’s own page for that record\./);
   assert.equal(html.split("Singapore: the register publishes no page for a single record").length - 1, 1, "Singapore's reason, once");
-  assert.equal(html.split("France: one registration is cited by number").length - 1, 1, "France's reason, once");
+  assert.equal(html.split("France: registrations whose numbers are not in the form").length - 1, 1, "France's reason, once");
 });
 
-test("with no office links the card is exactly what it was", () => {
+test("a null office-link map renders exactly as an absent one", () => {
   const before = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, cardOpts());
   const after = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, cardOpts({ recordLinks: null }));
   assert.equal(after, before);
@@ -214,7 +229,7 @@ test("the workbook's Link carries the office's page or the reason, and its link 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("with no office links the workbook's cells are what they were", async () => {
+test("with no office-link map the workbook has no Link column and labels registrations from the handle", async () => {
   const dir = mkdtempSync(join(tmpdir(), "office-links-xlsx-"));
   try {
     const book = join(dir, "book.xlsx");

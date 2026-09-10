@@ -155,22 +155,22 @@ export function recordLinksFor(findings, recordsByUri, provider) {
 
 const nameOf = (office) => OFFICE_RECORD_PAGES[office]?.name ?? office.toUpperCase();
 
-/** The report's once-per-office account of the registrations it cites by number rather than links. */
+/**
+ * The report's once-per-office account of the registrations it cites by number rather than links.
+ *
+ * NO COUNT. The cards list only some findings' registrations (an off-field finding lists none), so a
+ * number here could name more registrations than the reader can find on the page. The workbook lists
+ * them all, each with its reason.
+ */
 export function officeReasonSentences(byUri) {
-  const per = new Map();
-  for (const l of byUri instanceof Map ? byUri.values() : []) {
-    if (!l || l.href) continue;
-    const k = `${l.office} ${l.reason}`;
-    per.set(k, (per.get(k) ?? 0) + 1);
-  }
-  return [...per].sort(([a], [b]) => a.localeCompare(b)).map(([k, n]) => {
+  const keys = new Set();
+  for (const l of byUri instanceof Map ? byUri.values() : []) if (l && !l.href) keys.add(`${l.office} ${l.reason}`);
+  return [...keys].sort().map((k) => {
     const [office, reason] = k.split(" ");
     const name = nameOf(office);
     if (reason === "no-page") return `${name}: the register publishes no page for a single record, so its registrations are cited by number.`;
     if (reason === "unknown-office") return `${name}: we hold no page address for this register, so its registrations are cited by number.`;
-    return n === 1
-      ? `${name}: one registration is cited by number, not linked, because its number is not in the form the register's page address takes.`
-      : `${name}: ${n} registrations are cited by number, not linked, because their numbers are not in the form the register's page address takes.`;
+    return `${name}: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.`;
   });
 }
 
