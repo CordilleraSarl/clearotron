@@ -4353,12 +4353,6 @@
           "skips": 0,
           "todos": 0
         },
-        "the-cut-record-mode-is-announced-once.test.mjs": {
-          "tests": 2,
-          "asserts": 14,
-          "skips": 0,
-          "todos": 0
-        },
         "the-demo-account-shows-a-configured-customer.test.mjs": {
           "tests": 4,
           "asserts": 24,
@@ -4625,7 +4619,7 @@
         },
         "the-public-residue-is-a-floor.test.mjs": {
           "tests": 15,
-          "asserts": 58,
+          "asserts": 59,
           "skips": 5,
           "todos": 0
         },

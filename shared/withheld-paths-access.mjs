@@ -48,9 +48,10 @@
 // present, and cannot see whether it ought to be. So it states the mode and what that means for the
 // three readers, and leaves the judgement to a reader who knows which tree they are looking at.
 //
-// WHAT HOLDS THE ANNOUNCEMENT: `driver/test/the-cut-record-mode-is-announced-once.test.mjs`, in both
-// modes, each in a process of its own. Until 2026-09-10 nothing did, although this block said something
-// did: deleting the line, or swapping the two modes' wording, passed every gate.
+// WHAT HOLDS THE ANNOUNCEMENT: `driver/test/the-public-residue-is-a-floor.test.mjs`, in a throwaway tree
+// in both modes. Each mode says so, the two say different things, the present one counts its entries, the
+// line is said once and returned on every call, and the stricter mode does not call itself an alarm. Those
+// arms hold the property rather than the sentence, so the wording can be corrected without re-pointing them.
 
 let record = null;
 try {

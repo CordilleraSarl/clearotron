@@ -418,6 +418,9 @@ test("with NO cut record every accessor degrades to the strict answer, and says 
   assert.ok(json.lines[0].length > 0, "the mode is stated, not left to be inferred");
   assert.match(err, /repo-guard/, "and it reaches stderr, where a run can see it");
   assert.match(json.lines[0], /nothing counts as withheld/i);
+  // The absent mode is the stricter one, and the module cannot see whether a record ought to be here, so
+  // its line states the mode and does not call itself an alarm.
+  assert.doesNotMatch(json.lines[0], /alarm/i, "the stricter mode is a statement of fact, not a warning");
 });
 
 test("with a record present the accessor answers from it, and the line COUNTS the entries", () => {
