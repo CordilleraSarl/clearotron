@@ -64,6 +64,35 @@ test("the remedy is the UNION of the cap and the roster, never the roster alone"
     "the warning stopped telling the reader the suggestion is a union to check");
 });
 
+test("the shared warning describes a CONDITIONAL refusal, because the portal re-mints", () => {
+  // THE DEFECT THIS CATCHES IS A TRUE SENTENCE GOING FALSE UNDER A CHANGE SOMEWHERE ELSE. The sentence
+  // read "Runs for them will be refused at the engine door", which was correct until the portal began
+  // re-taking its credential at the start of every call. Nothing here went red when that landed: the
+  // arms beside this one pin the union clause and the NOT YET STARTABLE heading, and both survive the
+  // sentence becoming untrue. So the warning went on sending operators to re-mint a credential for a
+  // refusal that no longer happens, on three surfaces at once.
+  //
+  // WHAT THIS CAN AND CANNOT DO, stated because a wording pin invites the wrong repair. It cannot check
+  // that the sentence is TRUE — that is a fact about driver/portal-service.mjs, and the arm that holds
+  // it is `every engine call asks for the refreshed credential`, which asserts both calls take
+  // currentOpsToken(). This one holds the other half: that the sentence does not promise an
+  // unconditional refusal. Together they are the property. Apart, each is satisfiable while the pair is
+  // wrong, which is how this shipped.
+  //
+  // If the portal ever stops re-minting, the honest repair is to change BOTH — not to delete this.
+  const gap = triggerCapGap({ accounts: ["generic"], roster: ["generic", "newco"] });
+  nonEmpty(gap.uncovered, "the arm would prove nothing — this case must have a gap");
+  const warning = triggerCapWarning(gap);
+
+  assert.doesNotMatch(warning, /will be refused/i,
+    "the warning promises an unconditional refusal again — the portal re-takes its credential per call, "
+    + "so this sends an operator to re-mint for a failure that will not happen");
+  assert.match(warning, /re-takes its engine credential/i,
+    "the warning no longer says the credential is re-taken, so a reader cannot tell why the gap is survivable");
+  assert.match(warning, /cannot re-mint/i,
+    "the warning no longer names the case where the refusal IS real — which is the only case it is for");
+});
+
 test("the portal still warns at boot, through the shared answer rather than its own copy", () => {
   const src = readFileSync(join(ROOT, "driver", "portal-service.mjs"), "utf8");
   assert.match(src, /triggerCapGap\(\{ accounts: posture\.accounts, roster \}\)/,

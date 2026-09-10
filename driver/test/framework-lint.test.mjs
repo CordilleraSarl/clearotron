@@ -10,9 +10,27 @@
 //   4. bands-shaped decks carry NO residual Composite/Level rating machinery (that mechanism now lives only
 //      in matrix-shaped frameworks that state it as their own — e.g. Aurora Interactive's);
 //   5. the manifest layer itself rejects rule-shaped content (digit labels, thresholds) — vocabulary only.
+//
+// ── IT USED TO CHECK ONLY THE FOUR DECKS THIS REPOSITORY SHIPS ─────────────────────────────────────────
+//
+// The decks this lint exists to protect are the ones a customer writes, and those live in the config
+// store, not here. Two lines put every one of them out of reach: the population came from a readdir of
+// `ROOT/skills/prelim-search`, and every path resolved by joining the repository root — while the engine
+// resolves the same paths through the config store first and the repository second. So the lint saw the
+// bundled profiles, passed, and said nothing whatever about the files it was written for; and where a
+// customer deck and a shipped one share a filename, the two resolutions read DIFFERENT FILES and neither
+// noticed. It resolves the engine's way now, and the population is every deck either root offers.
+//
+// AND IT AGREED WITH ITSELF RATHER THAN WITH THE PAGE. Checking that a band label appears in a heading is
+// not the question a deck's author is asking; the question is whether the profile screen will show what
+// their bands mean. Those are different tests, and two shipped decks passed this one while failing that:
+// their pages rendered a title and coloured band pills and silently omitted the box. The agreement check
+// is now the pre-flight, which calls the renderer's own walk, so a deck this lint passes is a deck the
+// page can draw.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -20,11 +38,54 @@ import {
   bandIndex, normalizeBand, bandTone, lowestBand, highestBand, aboveLowestBand, worstBand,
 } from "../framework.mjs";
 import { loadProfiles } from "../profiles.mjs";
+import { config } from "../driver.config.mjs";
+import { preflightFramework } from "../framework-preflight.mjs";
+import { nonEmpty } from "../../shared/vacuous-pass.mjs";   // — one corpus floor, shared with the guard that reads for it
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SKILL_DIR = join(ROOT, "skills", "prelim-search");
-const frameworkFiles = readdirSync(SKILL_DIR).filter((f) => /^risk-framework.*\.md$/.test(f));
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Every risk framework THE ENGINE CAN REACH, as skills-relative paths — the config store's decks and the
+ * repository's, deduped, with the store winning a shared filename exactly as resolution does.
+ *
+ * A readdir of one directory answers a different question, and answered it green for months.
+ */
+export function reachableFrameworks(roots = config.skillsGrantRoots) {
+  const seen = new Map();
+  for (const root of roots) {                                   // store first, repository second
+    const dir = join(root, "prelim-search");
+    if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir).filter((x) => /^risk-framework.*\.md$/.test(x)))
+      if (!seen.has(f)) seen.set(f, `skills/prelim-search/${f}`);
+  }
+  // GUARDED HERE, NOT AT EACH ROOT. A configured store with no frameworks of its own is the ordinary
+  // state and an empty read of it means nothing; a run where NEITHER root offered one means this lint
+  // walked a tree it could not see, and every arm below would then assert its rule over nothing and pass.
+  nonEmpty(seen, `risk frameworks under any skills root (${roots.join(", ")})`);
+  return [...seen.entries()].map(([file, rel]) => ({ file, rel })).sort((a, b) => a.file.localeCompare(b.file));
+}
+const frameworks = reachableFrameworks();
+const frameworkFiles = frameworks.map((f) => f.file);
+
+/**
+ * DECKS THIS REPOSITORY SHIPS THAT THE PROFILE SCREEN CANNOT DRAW, each with what the deck does not do.
+ *
+ * A list of exceptions is normally the rule written backwards, so this one is held from both sides: a
+ * deck outside it must agree with the renderer, and a deck INSIDE it must still disagree. Repairing one
+ * therefore reds this arm until the entry comes out, and no entry can quietly outlive its defect.
+ *
+ * The repair for the one below is not mechanical, which is why it is recorded rather than made. The deck
+ * is matrix-shaped and its band table has two columns where the renderer reads three (band, meaning,
+ * response). Four of its five rows carry both halves already and split at a sentence or a colon; the
+ * fifth, `Low`, states "No practical obstacle on the evidence read" and no response at all. Writing that
+ * missing sentence is a change to a rating rubric, which belongs to whoever owns the rubric.
+ */
+const CANNOT_BE_DRAWN = new Map([
+  ["risk-framework-demo.md", "matrix-shaped with a two-column band table; the renderer reads three cells "
+    + "(band, meaning, response), and the Low row states a meaning and no response"],
+]);
 
 const VALID = {
   schema_version: 1, framework_key: "acme", title: "Acme risk framework", source_deck: "Acme deck",
@@ -32,13 +93,13 @@ const VALID = {
   structure: { kind: "bands" },
 };
 
-// ── 1+2: every shipped framework file has a manifest, and the prose deck agrees with it ─────────────────
-test("every shipped risk-framework*.md has a parsing manifest whose bands + entity appear in the prose", () => {
-  assert.ok(frameworkFiles.length >= 3, `expected the three shipped frameworks, found: ${frameworkFiles.join(", ")}`);
-  for (const f of frameworkFiles) {
-    const fwPath = `skills/prelim-search/${f}`;
-    const manifest = loadFrameworkManifest(ROOT, fwPath);   // throws framework_manifest_missing / parse errors
-    const prose = readFileSync(join(SKILL_DIR, f), "utf8");
+// ── 1+2: every framework the engine can reach has a manifest, and the prose deck agrees with it ─────────
+test("every reachable risk-framework*.md has a parsing manifest whose bands + entity appear in the prose", () => {
+  assert.ok(frameworkFiles.length >= 3, `expected at least the shipped frameworks, found: ${frameworkFiles.join(", ")}`);
+  for (const { file: f, rel: fwPath } of frameworks) {
+    // resolved the ENGINE's way — the config store first — so a customer deck is read where it lives
+    const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);
+    const prose = readFileSync(config.resolveSkillPath(fwPath), "utf8");
     for (const b of manifest.bands) {
       // a bands-shaped deck defines each band under its own heading; a matrix-shaped deck defines them in
       // its matrix/meanings table rows — either way the deck must actually speak its manifest's words
@@ -57,8 +118,79 @@ test("every shipped profile's framework selection (and the house default) resolv
   const paths = new Set([DEFAULT_FRAMEWORK]);
   for (const p of profiles.values()) if (p.frameworkPath) paths.add(p.frameworkPath);
   for (const fwPath of paths) {
-    const m = loadFrameworkManifest(ROOT, fwPath);
+    const m = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);
     assert.ok(m.bands.length >= 2, `${fwPath}: manifest loads with bands`);
+  }
+});
+
+// ── the walk that finds them refuses a tree it cannot see ───────────────────────────────────────────────
+test("the framework population refuses to be empty, and a store with no frameworks of its own is not empty", () => {
+  const empty = mkdtempSync(join(tmpdir(), "fw-none-"));
+  try {
+    assert.throws(() => reachableFrameworks([empty]), /VACUOUS: risk frameworks under any skills root/,
+      "neither root offered one: every arm below would assert its rule over nothing");
+    mkdirSync(join(empty, "prelim-search"), { recursive: true });
+    assert.throws(() => reachableFrameworks([empty]), /VACUOUS: risk frameworks under any skills root/,
+      "an existing but frameworkless directory is the same nothing");
+    // a store that carries no framework is ORDINARY — the repository's decks are still reachable
+    assert.ok(reachableFrameworks([empty, join(ROOT, "skills")]).length >= 4,
+      "one empty root does not empty the population");
+  } finally { rmSync(empty, { recursive: true, force: true }); }
+});
+
+// ── 2b: the agreement a DECK'S AUTHOR is asking about — will the page draw their bands ──────────────────
+test("every reachable framework the renderer can draw, and the ones it cannot are exactly the recorded set", () => {
+  assert.ok(frameworks.length >= 4, `a population this small cannot be the frameworks: ${frameworkFiles.join(", ")}`);
+  const cannot = [];
+  for (const { file: f, rel } of frameworks) {
+    const r = preflightFramework(rel);
+    const disagrees = r.refusals.filter((x) => x.code === "bands_disagree" || x.code === "entity_absent");
+    if (!disagrees.length) { assert.ok(!CANNOT_BE_DRAWN.has(f), `${f}: recorded as undrawable and the renderer draws it — remove the entry`); continue; }
+    cannot.push(f);
+    const why = disagrees.map((x) => x.say + (x.bands ?? []).map((b) => `\n      ${b.band}: ${b.miss}`).join("")).join(" ");
+    assert.ok(CANNOT_BE_DRAWN.has(f),
+      `${f}: the profile screen would show this framework's title and band pills and omit what the bands mean.\n    ${why}`);
+  }
+  assert.deepEqual(cannot.sort(), [...CANNOT_BE_DRAWN.keys()].sort(),
+    "the recorded set is the whole of what the renderer cannot draw");
+});
+
+// ── 2c: a deck served from the repository while a store is configured says so ───────────────────────────
+//
+// The silent case is NOT a missing file — that resolves to a base path nothing holds and the read throws
+// by name. It is a deck ABSENT FROM THE STORE and PRESENT IN THE REPOSITORY: readable, valid, and not the
+// customer's. `risk-framework-aurora.md` and `risk-framework-zephyr.md` ship under the names customers use
+// for their own, so this is reachable by deleting one file.
+test("a deck the store does not hold, answered by the repository's file of the same name, is reported", () => {
+  const store = mkdtempSync(join(tmpdir(), "fw-store-"));
+  const before = process.env.CLEAROTRON_INSTRUCTIONS_DIR;
+  try {
+    mkdirSync(join(store, "skills", "prelim-search"), { recursive: true });
+    // the store holds ONE framework and not the other, which is the customer-deck-removed state
+    for (const f of ["risk-framework-zephyr.md", "risk-framework-zephyr.manifest.json"])
+      writeFileSync(join(store, "skills", "prelim-search", f), readFileSync(join(SKILL_DIR, f), "utf8"));
+    process.env.CLEAROTRON_INSTRUCTIONS_DIR = join(store, "skills");
+
+    const held = config.resolveSkillPathReport("skills/prelim-search/risk-framework-zephyr.md");
+    assert.equal(held.layer, "overlay", "the store's own deck is served from the store");
+
+    const swapped = config.resolveSkillPathReport("skills/prelim-search/risk-framework-aurora.md");
+    assert.equal(swapped.layer, "base", "a deck the store does not hold is served by the repository's copy");
+    assert.equal(swapped.path, join(SKILL_DIR, "risk-framework-aurora.md"));
+
+    const absent = config.resolveSkillPathReport("skills/prelim-search/risk-framework-nobody-wrote.md");
+    assert.equal(absent.layer, "missing", "held by neither root — the read that follows reports it");
+
+    // and the pre-flight a person runs says it in a sentence rather than leaving them the layer word
+    const r = preflightFramework("skills/prelim-search/risk-framework-aurora.md");
+    assert.equal(r.substitutions.length, 2, "the deck AND its manifest both came from the repository");
+    assert.match(r.substitutions[0].say, /not the configured store/);
+    assert.equal(preflightFramework("skills/prelim-search/risk-framework-zephyr.md").substitutions.length, 0,
+      "a framework the store holds is not reported — the report is about substitution, not about the repository");
+  } finally {
+    if (before === undefined) delete process.env.CLEAROTRON_INSTRUCTIONS_DIR;
+    else process.env.CLEAROTRON_INSTRUCTIONS_DIR = before;
+    rmSync(store, { recursive: true, force: true });
   }
 });
 

@@ -131,8 +131,8 @@ as bold-led bullets:
 That shape is not decoration. The profile screen extracts what the bands mean from these headings and
 bullets, and **it is all or nothing**: one band without a heading, or one heading with no bold-led
 bullet, and the box explaining your bands silently does not render at all — while the title and the
-coloured pills still do, so the page looks finished. Two of the frameworks in this repository are in
-exactly that state today.
+coloured pills still do, so the page looks finished. Frameworks in this repository have shipped in
+exactly that state, which is why there is now a command that tells you before a client sees it.
 
 **2. Write the manifest**, beside the deck and named after it: `your-framework.md` needs
 `your-framework.manifest.json`. The path is derived, never configured, so the two cannot drift apart.
@@ -169,10 +169,51 @@ Those belong in the deck, where they are read as reasoning rather than applied a
 **3. Put both files in your own store** and point a profile at the deck with `frameworkPath`. Client
 rubrics deliberately do not live inside a checkout of this product.
 
-**4. Check it before it is in force.** Open the profile screen for a company using it. You should see the
-framework's title, your band names in your order, and a box explaining what each band means. **If that
-last box is missing, the deck does not have the shape above** — the title and pills render from the
-manifest alone, so they are not evidence that the deck was read.
+**4. Check it before it is in force**, with the pre-flight. It opens both files exactly as a run would,
+prints what they declare, and where the deck and the manifest disagree it names the band and says what
+the deck did not do. It creates nothing, rates nothing and contacts nobody.
+
+```
+clearotron framework skills/prelim-search/your-framework.md
+```
+
+```
+Framework: skills/prelim-search/your-framework.md
+  deck      /srv/clearotron-config/skills/prelim-search/your-framework.md
+            read from the configured store
+  manifest  /srv/clearotron-config/skills/prelim-search/your-framework.manifest.json
+            read from the configured store
+
+It declares itself "Your firm's clearance risk framework" (your-firm-2026), a bands-shaped
+framework rating the company.
+
+The ladder, highest risk first:
+  1. Very High        severe
+  2. High             high
+  3. Moderate         medium
+  4. Manageable       low
+
+What the deck defines:
+  ✓ Very High        Advise against adoption; the owner is likely to enforce.
+  ✗ High             the section under this band's heading states no rungs — a bands-shaped
+                     deck writes each rung as a top-level `- **Label.** text` bullet
+
+Not ready:
+  1 of 4 bands are named in the manifest and not defined in the deck. The profile screen shows
+  what the bands mean only when EVERY band is defined, so one miss empties the whole box.
+```
+
+It exits 0 when the two agree and 1 when they do not, so it can gate a deployment. `clearotron
+brandowner add --dry-run` prints the same report for the framework it would set.
+
+**It also tells you which file answered.** Resolution looks in your store first and falls back to this
+repository, and the repository ships decks under names a customer may well have chosen too. A deck that
+went missing from your store is therefore replaced by ours rather than reported absent — same band
+words, different rubric, nothing raised anywhere. When that happens the report says so, above the
+verdict, and the profile screen writes a line to the log.
+
+**Then open the profile screen** for a company using it, and confirm you see the framework's title, your
+band names in your order, and the box explaining what each band means.
 
 ### What is checked, and what is not
 
@@ -180,7 +221,8 @@ manifest alone, so they are not evidence that the deck was read.
 |---|---|
 | The deck file exists | checked, and a run refuses without it |
 | The manifest parses, and its keys and band labels are legal | checked, by name |
-| The deck's headings and bullets match the manifest's bands | **not checked** — it fails by rendering nothing |
+| The deck's headings and bullets match the manifest's bands | checked, by `clearotron framework` — and by the test suite, for every framework this installation can reach |
+| Which file answered when your store and this repository both have one | reported by `clearotron framework`, and written to the log at view time |
 | Whether the rubric is any good | **not checked, and cannot be** |
 
 That last row is the one to hold on to. A framework is reasoned with on every search the company ever

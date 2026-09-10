@@ -227,6 +227,39 @@ export const config = {
   },
 
   /**
+   * WHICH LAYER ANSWERED, as a fact rather than a path — `resolveSkillPath` with its reasoning shown.
+   *
+   * THE SILENT CASE IS NOT THE MISSING ONE. A file in neither root resolves to a base path that does not
+   * exist, and the read then throws by name, which is loud already. The case nobody hears is a file
+   * ABSENT FROM THE OVERLAY AND PRESENT IN THE BASE: a real, readable file is returned, and if that file
+   * is a risk framework the matter is rated under somebody else's rubric with nothing in the log. The
+   * shipped tree carries `risk-framework-aurora.md` and `risk-framework-zephyr.md` under the same names
+   * customers use for their own, so removing one from the config store swaps the deck rather than
+   * emptying it.
+   *
+   * `layer` is what happened: "overlay" served from the config store, "base" served from the repo while
+   * an overlay was configured and did not hold it, "base-only" served from the repo with no overlay
+   * configured at all (the ordinary single-tree install — nothing to say about it), and "missing" held by
+   * neither, which the caller's own read reports.
+   *
+   * BEHAVIOUR IS NOT CHANGED HERE and must not be. The overlay-then-base fallback is the migration
+   * design: every generic methodology file legitimately falls back today, and making that throw would
+   * take the whole product down to make one class of file loud. This reports; the caller decides which
+   * layers matter to it.
+   */
+  resolveSkillPathReport(relFromSkillsRoot) {
+    const rel = String(relFromSkillsRoot ?? "").replace(/^\/+/, "");
+    const basePath = join(dirname(this.skillsBaseDir), rel);
+    const overlay = this.skillsOverlayDir;
+    if (!overlay) return { path: basePath, rel, layer: existsSync(basePath) ? "base-only" : "missing", overlayPath: null, basePath };
+    if (!existsSync(overlay))
+      throw new Error(`skills_overlay_unreadable:${overlay} (CLEAROTRON_INSTRUCTIONS_DIR is set but the process cannot see it — customer-specific skills would silently fall back to the repo defaults)`);
+    const overlayPath = join(dirname(overlay), rel);
+    if (existsSync(overlayPath)) return { path: overlayPath, rel, layer: "overlay", overlayPath, basePath };
+    return { path: basePath, rel, layer: existsSync(basePath) ? "base" : "missing", overlayPath, basePath };
+  },
+
+  /**
    * Every skills root handed to the engine's file tools (overlay + base, deduped).
    *
    * NAMED FOR WHAT IT IS, not what we want it to be (2026-08-14): it was `skillsReadRoots`, and the

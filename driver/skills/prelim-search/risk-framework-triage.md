@@ -10,21 +10,24 @@
 ## Band meanings (triage grain)
 
 ### Very High
-Obvious major blocker.
+
+- **Triage read.** Obvious major blocker.
 
 ### High
-Significant conflicts — same format as Medium, more urgent. Reserved for dominant, well-resourced,
-known-to-enforce rights holders.
+
+- **Triage read.** Significant conflicts — same format as Medium, more urgent. Reserved for dominant, well-resourced, known-to-enforce rights holders.
 
 ### Medium
-Material findings that need attention. List adverse parties with dispute context.
+
+- **Triage read.** Material findings that need attention. List adverse parties with dispute context.
 
 ### Manageable
-Minor findings, no strong claims. Flag major competitors/brand owners if relevant. The floor for any
-common English phrase.
+
+- **Triage read.** Minor findings, no strong claims. Flag major competitors/brand owners if relevant. The floor for any common English phrase.
 
 ### Low
-No issues found. Available only for coined/fanciful terms (calibration rule 3).
+
+- **Triage read.** No issues found. Available only for coined/fanciful terms (calibration rule 3).
 
 ## Calibration rules (they override gut instinct — reviewer-derived)
 

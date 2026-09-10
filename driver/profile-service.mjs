@@ -41,7 +41,7 @@ import {
   assertProfileKey, derivedFloor, derivedBatchSize, CONTEXT_PACK_FILE, DEFAULT_DELIVERY_TEMPLATE,
 } from "./profiles.mjs";
 
-import { DEFAULT_FRAMEWORK, DEFAULT_WORKED_EXAMPLES, loadFrameworkManifest } from "./framework.mjs";
+import { DEFAULT_FRAMEWORK, DEFAULT_WORKED_EXAMPLES, loadFrameworkManifest, manifestPathFor } from "./framework.mjs";
 import { config } from "./driver.config.mjs";
 import { productRows } from "./product-rows.mjs";   // the offering, so the editor never hand-types a menu
 import { dirname as pathDirname } from "node:path";
@@ -59,7 +59,34 @@ import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";  
 // at the wrong tree looked, from every log, exactly like a customer who simply has no custom framework.
 // The page said "could not be read" and nothing anywhere said why. Log it once, at the point of loss.
 const DRIVER_DIR = pathDirname(toPath(import.meta.url));
+
+/**
+ * SAY IT ONCE WHEN A FRAMEWORK COMES OUT OF THE SHIPPED TREE INSTEAD OF THE STORE.
+ *
+ * Skill resolution falls back from the config store to the repo, and for a generic methodology file that
+ * fallback is the migration working as designed. A FRAMEWORK is the exception, because the shipped tree
+ * carries decks under the same filenames customers use for their own — take a customer's deck out of the
+ * store and the repo's copy answers. It is readable, it is valid, and it is somebody else's rubric, and
+ * the matter is rated under it with nothing raised anywhere.
+ *
+ * WARNED ONCE PER PATH, DELIBERATELY. These run on every profile view. A line per view on a healthy
+ * install is a log flood, and a log flood is silenced, which would reproduce the silence this exists to
+ * break. The set is per-process and never cleared: the fact does not change while the process runs.
+ */
+const substitutionsSaid = new Set();
+function sayIfSubstituted(rel) {
+  try {
+    const r = config.resolveSkillPathReport(rel);
+    if (r.layer !== "base" || substitutionsSaid.has(r.path)) return;
+    substitutionsSaid.add(r.path);
+    console.error(`[profile-service] framework served from the shipped tree, not the configured store: ${rel} `
+      + `is not in the store, so ${r.path} answered. If a customer's own deck was removed from the store, `
+      + `the shipped file of the same name is now rating their matters.`);
+  } catch { /* an unreadable overlay is reported by the resolution the caller is about to make */ }
+}
+
 function manifestFor(fwPath) {
+  sayIfSubstituted(manifestPathFor(fwPath));
   try { return loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath); }
   catch (e) {
     console.error(`[profile-service] framework manifest unreadable for ${fwPath}: ${String(e?.message ?? e)} `
@@ -80,23 +107,18 @@ const stripMd = (s) => String(s ?? "").replace(/\*+/g, "").trim();
 // matrix-shaped decks: the deck's "Band meanings" table is the only table whose FIRST cell is
 // exactly the band label (the matrix table suffixes its labels with the deck's internal indices, e.g.
 // "**Very High** *(5)*") — take that row's cells as { band, meaning, response }.
-function matrixBandMeanings(deck, manifest) {
+function matrixBandRows(deck, manifest) {
   const tableRows = deck.split("\n").filter((l) => /^\s*\|.*\|\s*$/.test(l));
-  const out = [];
-  for (const b of manifest.bands) {
+  return manifest.bands.map((b) => {
     const want = b.label.trim().toLowerCase();
-    let hit = null;
     for (const line of tableRows) {
       const cells = line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(stripMd);
-      if (cells.length >= 3 && cells[0].toLowerCase() === want && cells[1] && cells[2]) {
-        hit = { band: b.label, meaning: cells[1], response: cells[2] };
-        break;
-      }
+      if (cells.length >= 3 && cells[0].toLowerCase() === want && cells[1] && cells[2])
+        return { band: b.label, meaning: cells[1], response: cells[2] };
     }
-    if (!hit) return null;   // ANY miss ⇒ no partial box
-    out.push(hit);
-  }
-  return out;
+    return { band: b.label, miss: "no table row starts with this band label and then states a meaning and a response — "
+      + "a matrix-shaped deck defines its bands in a three-column table" };
+  });
 }
 
 // bands-shaped decks (the house default among them): each band lives under its own heading ("## VERY HIGH RISK") — find
@@ -122,7 +144,7 @@ function matrixBandMeanings(deck, manifest) {
 // design is the protection it was actually for: a band whose section is missing, or whose section
 // states no rungs at all, is a GARBLED deck and still returns null, because a half-shown framework
 // misleads worse than an absent one. A merely renamed rung is not that case.
-function bandsBandMeanings(deck, manifest) {
+function bandsBandRows(deck, manifest) {
   const re = /^#{1,6}[ \t]*([^\n]+)$/gm;
   const heads = [];
   for (let m; (m = re.exec(deck)); ) heads.push({ text: stripMd(m[1]), start: m.index, end: m.index + m[0].length });
@@ -131,7 +153,7 @@ function bandsBandMeanings(deck, manifest) {
   for (const b of manifest.bands) {
     const want = b.label.trim().toLowerCase();
     const sec = sections.find((s) => s.head === want || (s.head.startsWith(want) && !/[a-z0-9]/i.test(s.head.charAt(want.length))));
-    if (!sec) return null;
+    if (!sec) { out.push({ band: b.label, miss: "no heading whose text is this band label, or begins with it" }); continue; }
     // Every top-level "- **Label.** text" bullet the band states, in the deck's order. The label is the
     // deck's own word for the rung; nothing here decides which rungs exist or what they may be called.
     const rungs = [];
@@ -140,7 +162,11 @@ function bandsBandMeanings(deck, manifest) {
       const text = stripMd(m[2]).trim();
       if (label && text) rungs.push({ label, text });
     }
-    if (!rungs.length) return null;   // a section stating no rungs is a garbled deck — see above
+    if (!rungs.length) {
+      out.push({ band: b.label, miss: "the section under this band's heading states no rungs — a bands-shaped deck "
+        + "writes each rung as a top-level `- **Label.** text` bullet" });
+      continue;   // a section stating no rungs is a garbled deck — see above
+    }
     // `meaning` IS KEPT, and it is not vestigial: `driver/profile-page.html` renders these rows too and
     // reads exactly this field, so dropping it would blank a second surface that nobody asked me to
     // change. It carries the LAST rung — the consequences one in both the shipped deck and the completed
@@ -191,19 +217,38 @@ export function browserRefusal(e) {
   }
 }
 
-/** Pure extraction (exported for the tests): deck text + validated manifest → [{ band, meaning, response? }]
- *  in manifest band order, or null on ANY miss. Never throws. */
-export function extractBandMeanings(deckText, manifest) {
+/**
+ * Every band's row, hit or miss — deck text + validated manifest → one entry per manifest band, in the
+ * manifest's order, each either a rendered row or `{ band, miss }` saying what the deck did not do.
+ *
+ * ONE PREMISE, TWO READERS. `extractBandMeanings` below is the renderer's verdict and collapses to null
+ * on any miss, because a half-shown framework misleads worse than an absent one. The pre-flight needs the
+ * opposite of a verdict: an author staring at an empty box has to be told WHICH band and WHY. Writing
+ * that as a second walk of the same deck would put two matchers on one property, and the day they drift
+ * the pre-flight blesses a deck the renderer drops. So the walk happens once, here, and the null is a
+ * collapse of this result rather than a separate decision.
+ *
+ * Never throws: a deck is a customer's file and may be anything at all.
+ */
+export function bandMeaningRows(deckText, manifest) {
   try {
     if (!deckText || !manifest || !Array.isArray(manifest.bands) || !manifest.bands.length) return null;
     return manifest.structure?.kind === "matrix"
-      ? matrixBandMeanings(String(deckText), manifest)
-      : bandsBandMeanings(String(deckText), manifest);
+      ? matrixBandRows(String(deckText), manifest)
+      : bandsBandRows(String(deckText), manifest);
   } catch { return null; }
+}
+
+/** Pure extraction (exported for the tests): deck text + validated manifest → [{ band, meaning, response? }]
+ *  in manifest band order, or null on ANY miss. Never throws. */
+export function extractBandMeanings(deckText, manifest) {
+  const rows = bandMeaningRows(deckText, manifest);
+  return rows && !rows.some((r) => r.miss) ? rows : null;
 }
 
 function bandMeaningsFor(fwPath, manifest) {
   if (!manifest) return null;
+  sayIfSubstituted(fwPath);
   try { return extractBandMeanings(readFileSync(config.resolveSkillPath(fwPath), "utf8"), manifest); }
   catch (e) {
     // Same reasoning as manifestFor: a silent null here blanks the "What the bands mean" box while the
