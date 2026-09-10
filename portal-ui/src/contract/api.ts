@@ -370,6 +370,12 @@ export type Run = {
   /** The company this run belongs to. Always present, so a row never has to infer it. */
   readonly account: string
   /**
+   * The organisation a run with no company set up was filed in — which organisation's Generic it
+   * belongs to. Null for a company's run, whose company names its one organisation, and for a Generic
+   * run filed before organisations were recorded, which belongs to no organisation's Generic.
+   */
+  readonly organisation?: string | null
+  /**
    * The report's own headline — model-authored front matter, NOT the mark.
    *
    * A delivered run carries titles as varied as "ARBORA" and "AquaPlus — US Preliminary Trademark
@@ -1268,6 +1274,7 @@ const decodeRun = (raw: unknown): Run | null => {
   return {
     runId,
     account: asString(r['account']) ?? '',
+    organisation: asString(r['organisation']) ?? null,
     title: asString(r['title']) ?? runId,
     markName: asString(r['markName']),
     projectKey: asString(r['projectKey']),

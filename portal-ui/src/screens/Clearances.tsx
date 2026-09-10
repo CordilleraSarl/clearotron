@@ -36,6 +36,7 @@ import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyChips } from '../shell/CompanyChips.tsx'
 import { canManage, canRun } from '../shell/permissions.ts'
+import { runKey } from '../contract/genericKey.ts'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -131,7 +132,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // looking at — and leaves exactly one place to change it.
   const ownerFilter = ctx.owner
   const runs: readonly Run[] = useMemo(
-    () => (ownerFilter ? allRuns.filter((r) => r.account === ownerFilter) : allRuns),
+    () => (ownerFilter ? allRuns.filter((r) => runKey(r) === ownerFilter) : allRuns),
     [allRuns, ownerFilter],
   )
 
@@ -197,7 +198,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   //
   // Counted off the runs actually held rather than off a roster: an identity granted six companies
   // with work under one of them needs no headings, and the roster cannot tell us that.
-  const ownersHeld = useMemo(() => new Set(allRuns.map((r) => r.account)).size, [allRuns])
+  const ownersHeld = useMemo(() => new Set(allRuns.map(runKey)).size, [allRuns])
   // GROUPING IS A TOGGLE, on by default.
   //
   // Name, Status, Risk and Updated are all sortable, and grouping was always applied FIRST with nothing
@@ -278,7 +279,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     return [...rowsOf(marks, families)].sort((a, b) => {
       // Owner leads when grouping, or a heading would reappear every time the sort interleaved two
       // owners' rows. Within a group the user's chosen sort is untouched.
-      if (grouped && a.account !== b.account) return a.account.localeCompare(b.account)
+      if (grouped && runKey(a) !== runKey(b)) return runKey(a).localeCompare(runKey(b))
       switch (sort.key) {
         case 'title':
           return dir * a.name.localeCompare(b.name)
@@ -681,7 +682,8 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               // spans a page break, the continuation page must repeat the heading. Otherwise the first
               // rows of page 2 sit under no owner at all, which is precisely the confusion — two brand
               // owners' identically-named marks reading as one — that grouping exists to prevent.
-              const newGroup = grouped && r.account !== visible[i - 1]?.account
+              const before = visible[i - 1]
+              const newGroup = grouped && (!before || runKey(r) !== runKey(before))
               return (
                 <Fragment key={r.id}>
                   {newGroup ? (
@@ -691,10 +693,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                     <tr className="group-head">
                       <td colSpan={(canGroup ? 6 : 5) + (showOwnerColumn ? 1 : 0)}>
                         <span className="owner-name" data-anon="mark">
-                          {ctx.ownerName(r.account)}
+                          {ctx.ownerName(runKey(r))}
                         </span>
                         <span className="owner-count">
-                          {rows.filter((x) => x.account === r.account).length} in this view
+                          {rows.filter((x) => runKey(x) === runKey(r)).length} in this view
                         </span>
                       </td>
                     </tr>
@@ -707,7 +709,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       go={ctx.go}
                       picking={canGroup}
                       showOwner={showOwnerColumn}
-                      ownerLabel={ctx.ownerName(r.account)}
+                      ownerLabel={ctx.ownerName(runKey(r))}
                       isPicked={(id) => picked.has(id)}
                       onPick={pick}
                       onUngroup={canGroup ? ungroupFamily : undefined}
@@ -722,7 +724,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       go={ctx.go}
                       picking={canGroup}
                       showOwner={showOwnerColumn}
-                      ownerLabel={ctx.ownerName(r.account)}
+                      ownerLabel={ctx.ownerName(runKey(r))}
                       picked={picked.has(r.id)}
                       onPick={() => pick(r.id)}
                       onRetire={canGroup ? retireMark : undefined}
@@ -772,7 +774,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       <td>
                         <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>{displayName(run)}</b>
                       </td>
-                      <td data-anon="mark" style={{ color: 'var(--text-muted)' }}>{ctx.ownerName(run.account)}</td>
+                      <td data-anon="mark" style={{ color: 'var(--text-muted)' }}>{ctx.ownerName(runKey(run))}</td>
                       <td className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>{run.date ?? ''}</td>
                       <td>
                         <button

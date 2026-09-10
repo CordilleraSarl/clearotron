@@ -39,3 +39,17 @@ export function wireAccount(key: string): { readonly account: string; readonly t
   const org = orgOfGeneric(key)
   return org ? { account: GENERIC_ACCOUNT, tenant: org } : { account: key }
 }
+
+/**
+ * The key a run belongs under, spelled the way the switcher holds it: a company's own key, or — for a run
+ * with no company set up — the key naming its organisation's Generic.
+ *
+ * Every screen that asks "is this run the company in view" asks it through here. Comparing a run's bare
+ * `account` with the key in view would never match one organisation's Generic, and that organisation's
+ * runs would vanish from its own list without an error. A Generic run filed before organisations were
+ * recorded carries none, stays under the bare key, and so appears under "All companies" and under no
+ * organisation's Generic — unplaced rather than placed by a guess.
+ */
+export function runKey(run: { readonly account: string; readonly organisation?: string | null }): string {
+  return isGenericKey(run.account) && run.organisation ? genericFor(run.organisation) : run.account
+}

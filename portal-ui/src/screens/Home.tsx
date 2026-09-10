@@ -39,6 +39,7 @@ import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { readableFailure } from '../contract/failure.ts'
 import { canRun } from '../shell/permissions.ts'
+import { runKey } from '../contract/genericKey.ts'
 
 const TERMINAL = new Set<Run['state']>(['delivered', 'failed', 'cancelled'])
 
@@ -323,7 +324,7 @@ function Card({
           {displayName(run)}
         </div>
         <div className="home2-card-owner" data-anon="mark">
-          {ctx.ownerName(run.account)}
+          {ctx.ownerName(runKey(run))}
           {run.projectName || run.projectKey ? ` · ${run.projectName ?? run.projectKey}` : ''}
         </div>
 
@@ -625,7 +626,7 @@ function Queue({
                 {displayName(r)}
               </span>
               <span className="home2-qowner" data-anon="mark">
-                {ctx.ownerName(r.account)}
+                {ctx.ownerName(runKey(r))}
               </span>
               <span className="home2-qdepth">{runProductLabel(r.productName, r.marks.length)}</span>
               <CancelButton run={r} onChanged={onChanged} />
@@ -685,7 +686,7 @@ function LastFinished({
         </span>
         {row.band ? <span className="home2-done-verdict">{row.band}</span> : null}
         <span className="home2-done-meta" data-anon="mark">
-          · {ctx.ownerName(row.account)}
+          · {ctx.ownerName(runKey(row))}
           {row.date ? ` · ${row.date}` : ''}
         </span>
         <span className="home2-done-spacer" />

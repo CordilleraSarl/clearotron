@@ -27,6 +27,7 @@
 // flowing, `readsFor` gains a lineage branch and the heuristic becomes a fallback.
 
 import type { Run } from './api.ts'
+import { runKey } from './genericKey.ts'
 
 /**
  * The grouping key for a mark.
@@ -189,7 +190,7 @@ export function showsAssessment(run: Pick<Run, 'report' | 'reports'>, markSlug: 
 export function readsFor(runs: readonly Run[], current: Run): readonly Run[] {
   const key = markKey(displayName(current))
   return runs
-    .filter((r) => r.account === current.account && markKey(displayName(r)) === key)
+    .filter((r) => runKey(r) === runKey(current) && markKey(displayName(r)) === key)
     .sort(newestFirst)
 }
 

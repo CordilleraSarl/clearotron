@@ -14,6 +14,7 @@ import type { Families, Row } from './grouping.ts'
 import { NO_FAMILIES, marksOf, rowsOf } from './grouping.ts'
 import { newestFirst } from './reads.ts'
 import { readableFailure } from './failure.ts'
+import { runKey } from './genericKey.ts'
 
 /** Card order is fixed and is not a sort the user can change. A failure never sinks below live work. */
 const RANK: Record<string, number> = { failed: 0, running: 1, paused: 2, queued: 3 }
@@ -170,7 +171,7 @@ export function ownerSummaries(
 ): readonly OwnerSummary[] {
   return keys
     .map((key) => {
-      const mine = runs.filter((r) => r.account === key)
+      const mine = runs.filter((r) => runKey(r) === key)
       return {
         key,
         name: nameOf(key),

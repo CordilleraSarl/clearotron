@@ -47,8 +47,10 @@ export function CompanyChips({
         {ALL_OWNERS}
       </button>
       {rows.map((r) => (
+        // Named through the shell rather than off the row: chips have no organisation headings, so one
+        // organisation's Generic has to say which organisation it is — which only the shell's name does.
         <button key={r.key} type="button" aria-pressed={ctx.owner === r.key} onClick={() => ctx.setOwner(r.key)}>
-          {r.name}
+          {ctx.ownerName(r.key)}
         </button>
       ))}
     </div>

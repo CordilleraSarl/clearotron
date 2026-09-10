@@ -400,9 +400,18 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // consulted per-screen. While the roster is still in flight a staff member reads the key for a frame,
   // which is the same fallback a missing name gets — never a blank where a company should be.
   const names = ownerNameMap(me.accountNames, rosterResult?.kind === 'ok' ? rosterResult.value : [])
-  // One organisation's Generic is called what Generic is called; the key only says which one.
-  const ownerName = (key: string | null): string =>
-    ownerNameFrom(names, key !== null && isGenericKey(key) ? GENERIC_ACCOUNT : key)
+  // One organisation's Generic is called what Generic is called; the key only says which one. A person
+  // who can see several organisations has several Generics, so the name carries its organisation — two
+  // rows both reading "Generic default" would be two different things saying the same words. The
+  // switcher and the pick panel head their rows by organisation and name each Generic plainly
+  // (companyRows.ts); everywhere else a Generic is named, it is named here.
+  const ownerName = (key: string | null): string => {
+    if (key === null || !isGenericKey(key)) return ownerNameFrom(names, key)
+    const plain = ownerNameFrom(names, GENERIC_ACCOUNT)
+    const org = orgOfGeneric(key)
+    if (!org || me.organisations.length < 2) return plain
+    return `${plain} · ${me.organisations.find((o) => o.key === org)?.name ?? org}`
+  }
 
   // The same two sources and the same precedence, for the three facts that tell one company from
   // another in the pick panel. Parallel to the name map rather than folded into it: a company with no

@@ -37,6 +37,7 @@ import type { Run } from './api.ts'
 import type { Band, Tone } from './tone.ts'
 import { displayName, markKey, newestFirst } from './reads.ts'
 import { worstBand, bandRank } from './tone.ts'
+import { runKey } from './genericKey.ts'
 
 /** One name, with every read of it. */
 export type MarkGroup = {
@@ -44,6 +45,8 @@ export type MarkGroup = {
   /** account + normalised mark — stable across renders, usable as a React key and an open-state id. */
   readonly id: string
   readonly account: string
+  /** For a mark cleared with no company set up, the organisation it was filed in — see `runKey`. */
+  readonly organisation?: string | null
   readonly name: string
   /** Newest first. Never empty: a MarkGroup exists because a read does. */
   readonly reads: readonly Run[]
@@ -83,6 +86,7 @@ export type FamilyGroup = {
   readonly kind: 'family'
   readonly id: string
   readonly account: string
+  readonly organisation?: string | null
   readonly name: string
   readonly marks: readonly MarkGroup[]
   /** The WORST band across its marks — see the note above. */
@@ -138,7 +142,9 @@ export function bandsPresent(bands: readonly Band[], labels: readonly (string | 
 export function marksOf(runs: readonly Run[], families: Families = NO_FAMILIES): readonly MarkGroup[] {
   const byKey = new Map<string, Run[]>()
   for (const run of runs) {
-    const key = `${run.account}\u0000${markKey(displayName(run))}`
+    // Threaded under the key the switcher holds, not the bare account: two organisations' Generic runs
+    // of the same name are two marks, one in each organisation, and never one thread across both.
+    const key = `${runKey(run)}\u0000${markKey(displayName(run))}`
     const bucket = byKey.get(key)
     if (bucket) bucket.push(run)
     else byKey.set(key, [run])
@@ -170,6 +176,7 @@ export function marksOf(runs: readonly Run[], families: Families = NO_FAMILIES):
       kind: 'mark',
       id,
       account: current.account,
+      organisation: current.organisation ?? null,
       name: displayName(current),
       reads,
       current,
@@ -218,6 +225,7 @@ export function rowsOf(marks: readonly MarkGroup[], families: Families = NO_FAMI
         kind: 'family',
         id: fid,
         account: mark.account,
+        organisation: mark.organisation ?? null,
         name: families.names[fid] ?? fid,
         marks: [mark],
         band: null,
