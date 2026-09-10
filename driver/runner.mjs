@@ -856,7 +856,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   }
   // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
   {
-    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath(), readFile: envFileRead() });
+    const refusal = orderTimeRefusal(process.env, await runTables(), { envFile: unitEnvPath(), readFile: envFileRead(), startFile: process.env.CLEAROTRON_START_ENV_FILE || null });
     if (refusal) {
       note(`[runner] ${base} REFUSED at order time — this install is not configured to run a search: ${refusal.names.join(", ")}`);
       await failAtIntake(procPath, qdir, base, agentId, job,

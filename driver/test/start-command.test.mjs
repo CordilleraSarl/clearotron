@@ -276,7 +276,9 @@ test("the worker is handed NO door configuration — it talks to the queue, not 
 
 test("the worker is NON-FATAL — an install with no worker is a supported state, so its death must not take the portal", () => {
   const src = bodyOf("bin/start.mjs");
-  assert.match(src, /start\("the worker", "driver\/runner\.mjs", envs\.worker, \{ args: \["--watch"\], fatal: false \}\)/,
+  // PINNED TO THE PROPERTY, fatal:false on the worker's own call, not to the environment it is handed:
+  // that argument now carries a spawn-time handoff, and this arm must not care what the worker is told.
+  assert.match(src, /start\("the worker", "driver\/runner\.mjs", [^\n]*\{ args: \["--watch"\], fatal: false \}\)/,
     "the worker is not started with fatal:false — a worker that dies would call shutdown(1) and take the portal down with it");
   assert.match(src, /const start = \(name, script, env, \{ args = \[\], fatal = true \} = \{\}\) =>/,
     "start() no longer distinguishes a fatal child from a non-fatal one, so fatal:false above is inert");

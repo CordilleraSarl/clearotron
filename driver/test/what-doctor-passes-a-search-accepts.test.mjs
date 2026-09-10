@@ -178,3 +178,35 @@ test("THE CONTROL: with everything the gate asks for, doctor says so and refuses
     assert.doesNotMatch(r.out, /a search is refused until/);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
+
+// ── A RUNNER THAT `clearotron start` STARTED ─────────────────────────────────────────────────────
+//
+// A foreground `clearotron start` reads the install's own file and hands its values to the runner with
+// CLEAROTRON_NO_ENV_FILE=1, so the runner read nothing and the refusal named only the units' file: on a
+// box with no units, a file that does not exist. Measured on a fresh install, 2026-09-10.
+
+import { childEnv as composeChildEnv, installPaths as layoutOf } from "../../bin/start.mjs";
+
+test("a runner that `clearotron start` started names the file start read, and only that one", () => {
+  const unit = "/srv/op/.env", started = "/srv/op/.config/clearotron/.env";
+  const r = orderTimeRefusal({}, TABLES, { envFile: unit, readFile: null, startFile: started });
+  assert.ok(r.operator.includes(`Set them in ${started} — the file \`clearotron start\` read when it started this runner`),
+    "the refusal must name the file this runner's values came from");
+  assert.ok(!r.operator.includes(unit), "the units' file reaches nothing on this runner, so it must not be offered");
+  // The other two shapes keep their answers: a runner that read its own file names both, a unit's names its own.
+  assert.match(orderTimeRefusal({}, TABLES, { envFile: unit, readFile: started, startFile: started }).operator, /either of these — both reach a run/);
+  assert.ok(orderTimeRefusal({}, TABLES, { envFile: unit }).operator.includes(`Set them in ${unit} and restart`));
+});
+
+test("start hands its file to the worker at the spawn, never into what the units' file is written from", () => {
+  const start = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
+  assert.match(start, /start\("the worker", "driver\/runner\.mjs", \{ \.\.\.envs\.worker, CLEAROTRON_START_ENV_FILE: envFileRead\(\) \?\? undefined \}/,
+    "the worker is no longer told which file its supervisor read");
+  // Driven, not read: the worker's composed environment is what `--background` writes, and it must not carry
+  // the handoff, or a unit's runner would name the supervisor's file instead of its own.
+  const envs = composeChildEnv({ ports: { portal: 18802, mcp: 18790 }, paths: layoutOf("/srv/op/trademark"), user: "op@localhost",
+    portalSecret: "p", tokenSecret: "t", opsToken: "o", localWorker: true });
+  assert.equal(envs.worker.CLEAROTRON_START_ENV_FILE, undefined, "the handoff leaked into the composition the units' file is written from");
+  assert.match(readFileSync(join(ROOT, "driver", "runner.mjs"), "utf8"), /startFile: process\.env\.CLEAROTRON_START_ENV_FILE \|\| null/,
+    "and the runner must pass it to the refusal");
+});
