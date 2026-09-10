@@ -217,6 +217,22 @@ async function freePorts(n) {
 // This runs the real `clearotron start` in a throwaway home, reads what it wrote, and stops it. The
 // passphrase it prints is never put into a message here.
 
+// THE FRAME'S PASSPHRASE LINE: 24 base64url characters, and the line ends where the passphrase does. Not `\b`:
+// a passphrase whose last character is `-` has no word boundary after it, and one in 64 ends that way, so a
+// `\b` here failed this test one run in 64 while the frame had handed the passphrase over (measured on two
+// failing runs, 2026-09-10). The lookahead says what was meant: no further passphrase character follows.
+const FRAME_PASSPHRASE = /│  Passphrase  [A-Za-z0-9_-]{24}(?![A-Za-z0-9_-])/;
+
+test("the frame's passphrase pattern holds for a passphrase ending in any base64url character", () => {
+  const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  assert.equal(new Set(ALPHABET).size, 64, "the alphabet is base64url's own 64 characters");
+  for (const last of ALPHABET) {
+    assert.match(`  │  Passphrase  ${"a".repeat(23)}${last}\n`, FRAME_PASSPHRASE, `a passphrase ending in "${last}" was not recognised`);
+  }
+  assert.doesNotMatch(`  │  Passphrase  ${"a".repeat(25)}\n`, FRAME_PASSPHRASE, "a value longer than a passphrase was taken for one");
+  assert.doesNotMatch(`  │  Passphrase  ${"a".repeat(23)}\n`, FRAME_PASSPHRASE, "a value shorter than a passphrase was taken for one");
+});
+
 test("a real first start, where another install left the shared credential, mints its own and leaves that one alone", { timeout: 120000 }, async () => {
   const home = mkdtempSync(join(tmpdir(), "first-start-"));
   const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
@@ -242,7 +258,7 @@ test("a real first start, where another install left the shared credential, mint
     assert.ok(existsSync(join(home, "trademark", INSTALL_CREDENTIAL_FILE)),
       "THE REPORTED CASE: the first start did not mint the install's own credential, so it adopted the shared one");
     assert.equal(readFileSync(shared, "utf8"), sharedBefore, "the first start changed the shared credential another install uses");
-    assert.match(said, /│  Passphrase  [A-Za-z0-9_-]{24}\b/, "and the frame must hand the new passphrase over, as a first start does");
+    assert.match(said, FRAME_PASSPHRASE, "and the frame must hand the new passphrase over, as a first start does");
     assert.doesNotMatch(said, /minted on an earlier start/, "a first start must not claim an earlier one");
   } finally {
     child.kill("SIGINT");
