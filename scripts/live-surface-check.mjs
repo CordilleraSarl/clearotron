@@ -100,6 +100,7 @@ import { config } from "../driver/driver.config.mjs";                          /
 import { probeQueueWatch, probeWorker, probeTimer } from "../driver/queue-watch-probe.mjs";   // · and, tracker issue 206, the units that say HOW this box drains
 import { doorPostureVerdict } from "../mcp-server/door-posture.mjs";   // — a door whose mode came from another door's variables
 import { readDrainerStamp, drainerVerdict, defaultPpidOf } from "../driver/drainer-identity.mjs";   // — the process that EXECUTES runs
+import { readUpdaterStamp, updaterVerdict, resolveUpdaterStampPath, updaterAbsentHere, UPDATER_STAMP_BASENAME } from "../driver/updater-identity.mjs";   // — the mechanism that PLACES commits
 import { claimerIsAlive } from "../driver/claim-liveness.mjs";                       // the shared liveness test, same polarity as the queue's
 import { processTable } from "../shared/process-table.mjs";                          // — /proc is not the only box
 import { envFrom } from "../shared/env-aliases.mjs";   // — the name a reader is told to set is the one in force
@@ -798,6 +799,77 @@ else {
       posture: { worker: probeWorker(), timer: probeTimer() },
     });
     record("the process that executes runs is on the deployed commit", v.state, v.message);
+  }
+}
+
+// ── 8c. — THE MECHANISM THAT PLACES THE COMMITS, WHICH ARM 8 CANNOT ATTRIBUTE ────────────
+//
+// Arm 8 attributes a unit to a commit two ways: the tree under its WorkingDirectory, and the tree the
+// running process was launched from. Both fail for exactly one unit, and it is the updater — a oneshot
+// running from a home directory with no checkout under it, whose command line is the update script
+// rather than the product entry point. So the unit that places every commit on this box was the one
+// unit reported as "could NOT be read and was NOT compared". An updater running from a stale copy
+// would place a stale tree and this check would pass, which is the straddle pointed at the mechanism
+// that does the deploying.
+//
+// IT IS JUDGED ON A STAMP IT WRITES ABOUT ITSELF, the way the drainer above is, and arm 8 now names it
+// as stamped rather than dropping it into the unreadable pile. The two arms cannot disagree because
+// neither judges the other's population: this one owns the updater, that one owns everything with a
+// tree under it, and the inventory decides which is which.
+//
+// IT FAILS ON COULD-NOT-LOOK, for the reason arm 8b does and one more of its own: the stamp writer
+// shipped IN the updater, so a copy old enough to predate it writes no stamp — and that is not a gap in
+// the reporting, it is the stale updater this arm exists to catch, arriving as an absence.
+{
+  // WHERE THE STAMP IS, WITHOUT SPELLING A LOGIN INTO A PUBLIC FILE. The environment wins, because a
+  // box that redirects its updater must not be told it has no updater; otherwise the directory is the
+  // one the unit itself reports, which is where the updater runs and therefore where it stamps. A
+  // hardcoded home would publish an account name AND red every box that moved it.
+  //
+  // THE ENVIRONMENT IS READ INSIDE THE MODULE, under the name the WRITER already honours, so the two
+  // halves cannot look in different places. A reader-only variable would let a redirected updater stamp
+  // one path while this looked at another and reported "no stamp" — the loud branch — about a
+  // deployment that is working. What is derived here is only the fallback.
+  //
+  // A BOX WITH NO UPDATER IS ASKED FIRST (updaterAbsentHere): skipped with its reason, never failed.
+  const absent = updaterAbsentHere(clones.find((c) => c.unit === "clearotron-deploy"));
+  if (absent) skip("the updater that deploys this box is the current one", absent);
+  else {
+  let deployDir = null, resolveWhy = null;
+  {
+    const row = clones.find((c) => c.unit === "clearotron-deploy");
+    if (!row) resolveWhy = "no updater unit was probed on this box";
+    else {
+      // The unit is a oneshot: between ticks it is inactive and reports its WorkingDirectory anyway,
+      // which is the whole reason this attribution works where the process-based one cannot.
+      let wd = null;
+      try {
+        const shown = execFileSync("systemctl", ["--user", "show", "clearotron-deploy", "-p", "WorkingDirectory"],
+          { encoding: "utf8", env: userBusEnv(), stdio: ["ignore", "pipe", "pipe"] });
+        wd = /^WorkingDirectory=(.*)$/m.exec(shown)?.[1]?.trim() || null;
+      } catch (e) { resolveWhy = `systemctl could not be asked where the updater runs: ${String(e?.message ?? e).slice(0, 100)}`; }
+      if (wd !== null) {
+        const parsed = unitWorkingDirectory(wd);
+        if (!parsed.path) resolveWhy = parsed.why;
+        else deployDir = join(parsed.path, "deploy");
+      } else if (!resolveWhy) resolveWhy = "the updater unit reported no WorkingDirectory, so where it stamps could not be derived";
+    }
+  }
+
+  if (!resolveUpdaterStampPath(deployDir)) {
+    fail("the updater that deploys this box is the current one",
+      `where the updater stamps itself could not be resolved (${resolveWhy ?? "no value"}), so `
+      + `${UPDATER_STAMP_BASENAME} was not looked for. This is a failure to look, never a pass.`);
+  } else {
+    const v = updaterVerdict({
+      stamp: readUpdaterStamp(deployDir),
+      now: Math.floor(Date.now() / 1000),
+      // The same clone arm 8 scoped itself to, so the two arms cannot hold different opinions about
+      // which tree this deploy is. Reading it twice is how they would come to.
+      deployClone,
+    });
+    record("the updater that deploys this box is the current one", v.state, v.message);
+  }
   }
 }
 

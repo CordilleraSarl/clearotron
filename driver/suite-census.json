@@ -369,6 +369,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-finding-carries-every-key-its-doctrine-teaches.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
           "tests": 9,
           "asserts": 37,
@@ -4860,6 +4866,12 @@
         "the-two-register-rule-says-the-same-thing-to-both-products.test.mjs": {
           "tests": 5,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-updater-that-deploys-this-box-says-what-it-is.test.mjs": {
+          "tests": 18,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },

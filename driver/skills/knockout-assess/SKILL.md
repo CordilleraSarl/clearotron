@@ -310,7 +310,7 @@ line, which describes the card and claims nothing about the rating. So:
                "degraded": null } ] }
 ```
 
-**The finding record — closed keys, all eight, no others.** A key this list does not name is refused
+**The finding record — closed keys, all nine, no others.** A key this list does not name is refused
 (the validator is `findings-model.mjs validateKnockoutFinding`, and it runs at the chunk and again on
 the merged artifact):
 

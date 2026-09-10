@@ -67,6 +67,8 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 // THE VALIDATOR'S OWN PREDICATE, imported rather than restated. Two spellings of one closed set is how
 // the call and the stage come to disagree about what is legal, which is the defect this check closes.
 import { normalizeKnockoutQualifier, KNOCKOUT_RATING_QUALIFIERS } from "./verify-knockout.mjs";
+// A FINDING'S KEYS, likewise: the validator's one list, so a key the call records is a key the stage accepts.
+import { KNOCKOUT_FINDING_KEYS } from "./findings-model.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -146,14 +148,15 @@ const DECLARED = Object.freeze({
     // store, so it is a fact and not an echo.
     "registerReads",
   ],
-  // "closed keys, all eight, no others" — the doctrine's own words, and the one place it is stricter
-  // than the template around it.
+  // A finding's closed keys are the VALIDATOR'S OWN LIST, imported rather than restated. This allowlist
+  // and that list were two spellings of one closed set, and they disagreed: this one allowed
+  // `weighedFilings` and the validator refused it, so the call recorded and the stage failed.
   // — `weighedFilings` is the register record ids this finding's reasoning rests on.
   // It exists so the SOURCE of a finding is a driver fact rather than a label: stages.mjs already
   // classifies source_type as `mechanical:code-extracted` for the clearance lane, on the ground that
   // "the lane that produced the record is a driver fact". The chip is derived from this joined list and
   // from the finding's own receipted evidence — never from a word the seat typed about itself.
-  "marks.findings": ["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis", "weighedFilings"],
+  "marks.findings": KNOCKOUT_FINDING_KEYS,
   // `band` is the rater's rating OF THAT FILING, optional, in the framework's own ladder words. It is
   // declared here as well as in the tool schema because this allowlist — not the schema — is what the
   // driver validates against: a key the seat sends and this list omits is refused, so the read would
