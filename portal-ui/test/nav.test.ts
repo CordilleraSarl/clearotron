@@ -45,10 +45,10 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   const g = navGroupsFor(RUNNER)
   assert.deepEqual(g.account.map((e) => e.id), ['home', 'ai'], 'reviewed across everything')
   assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand.profile', 'brand.projects', 'brand.searches'], 'one company at a time')
-  // WHAT DIFFERS BETWEEN PEOPLE IS EXACTLY THE TWO SWITCHES, and each one moves one entry. Manage puts
-  // People in the rail above the line; Run is what puts New clearance below it — absent for a person
-  // without it, never present and refusing. Nothing else about the page changes shape.
-  assert.deepEqual(navGroupsFor(MANAGER).account.map((e) => e.id), ['home', 'ai', 'people'], 'People is in the rail for a manager')
+  // WHAT DIFFERS BETWEEN PEOPLE IN THE RAIL IS ONE SWITCH, and it moves one entry: Run is what puts New
+  // clearance below the line — absent for a person without it, never present and refusing. Manage moves
+  // nothing here, because People and Global config are in the avatar menu. Nothing else changes shape.
+  assert.deepEqual(navGroupsFor(MANAGER).account.map((e) => e.id), g.account.map((e) => e.id), 'a manager has the same rail above the line')
   assert.deepEqual(navGroupsFor(MANAGER).owner.map((e) => e.id), g.owner.map((e) => e.id))
   assert.deepEqual(navGroupsFor(READER).account.map((e) => e.id), ['home', 'ai'])
   assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand.profile', 'brand.projects', 'brand.searches'],
@@ -70,14 +70,14 @@ test('a manage-only path is indistinguishable, to someone without Manage, from a
   assert.equal(screenForPath('/portal/nonsense', RUNNER), null)
 })
 
-test('without Manage there is no admin surface and no People; with it, People is in the rail and admin in the avatar menu', () => {
+test('without Manage there is no admin surface and no People; with it, both are in the avatar menu', () => {
   // The refusal is unchanged and is still the boundary: without Manage nobody can ROUTE to these.
   assert.equal(screenForPath('/portal/people', RUNNER), null)
   assert.equal(screenForPath('/portal/people', READER), null)
   assert.equal(screenForPath('/portal/people', MANAGER)?.id, 'people')
-  assert.equal(navFor(MANAGER).some((e) => e.id === 'people'), true, 'People is a rail entry, not a menu item')
+  assert.equal(navFor(MANAGER).some((e) => e.id === 'people'), false, 'People is a menu item, not a rail entry')
   assert.equal(navFor(RUNNER).some((e) => e.id === 'people'), false)
-  // The form People opens: routable for a manager, lit under People by the dot rule, never in the rail.
+  // The form People opens: routable for a manager, a dot-child of People, never in the rail.
   assert.equal(screenForPath('/portal/people/add', MANAGER)?.id, 'people.add')
   assert.equal(screenForPath('/portal/people/add', RUNNER), null)
   assert.equal(navFor(MANAGER).some((e) => e.id === 'people.add'), false, 'reached from + Add a person only')
@@ -88,8 +88,8 @@ test('without Manage there is no admin surface and no People; with it, People is
   // person rather than to either scope, and in the sidebar it would have had to sit on one side of the
   // company switcher, claiming to be account-scoped or owner-scoped when it is neither.
   assert.equal(navFor(MANAGER).some((e) => e.id.startsWith('admin')), false, 'not in the staff sidebar either')
-  assert.deepEqual(avatarMenuFor(MANAGER).map((e) => e.id), ['preferences', 'admin.config', 'about'],
-    'People left the avatar menu for the rail')
+  assert.deepEqual(avatarMenuFor(MANAGER).map((e) => e.id), ['preferences', 'people', 'admin.config', 'about'],
+    'People is in the avatar menu, directly above Global config')
   // …and the role gate still lives in the DATA, so a client's menu is simply shorter.
   // About rides here for EVERY role — it is the AGPL §13 source offer, owed to whoever is
   // using the service, so it is the one entry in this menu that is not about administering anything.

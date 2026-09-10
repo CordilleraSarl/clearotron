@@ -44,9 +44,9 @@ export type ScreenId =
   | 'result'
   | 'preferences'
   | 'about'
-  // People — the top group, beside Home. It is not about one company, so it sits above the switcher.
+  // People — a setting of the installation, reached from the avatar menu rather than from the rail.
   | 'people'
-  // …and the form it opens. A dot-child, so People stays lit while the form is open.
+  // …and the form it opens. A dot-child of People, and like People it is off the rail.
   | 'people.add'
   // company screens — no `brand` parent exists, on purpose (see above)
   | 'brand.profile'
@@ -124,12 +124,12 @@ export const NAV: readonly NavEntry[] = [
   // The engine being model-agnostic and reachable over MCP is a selling point, not a settings detail —
   // and the connector is issued per identity, not per company, so it belongs above the line.
   { id: 'ai', label: 'Use your AI', path: '/portal/ai', icon: 'sparkles', scope: 'account' },
-  // PEOPLE, above the line and in the rail rather than in the avatar menu. It is not about one company
-  // — it is about who reaches this installation at all — so the switcher does not govern it and it sits
-  // beside Home. It was `admin.access`, a hidden child of a staff-gated parent reached from the avatar
-  // menu; both halves of that were the old model talking. `needs: 'manage'` is the whole gate, and the
-  // page itself lists only people whose access falls inside the viewer's own.
-  { id: 'people', label: 'People', path: '/portal/people', icon: 'users', needs: 'manage', scope: 'account' },
+  // PEOPLE, in the AVATAR MENU above Global config rather than in the rail (2026-09-10). Who reaches this
+  // installation is a setting of the installation, not a place anyone works, so it sits with the other
+  // settings. `hidden` keeps it routable and off the rail, and avatarMenuFor lists it. It is still not
+  // about one company, so its scope stays 'account' and the top bar names the account on it. `needs:
+  // 'manage'` is the whole gate, and the page itself lists only people whose access falls inside the viewer's own.
+  { id: 'people', label: 'People', path: '/portal/people', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
   // Give someone access — reached from `+ Add a person` on People and from nowhere else, hence `hidden`.
   // The same permission as the page that opens it.
   { id: 'people.add', label: 'Give someone access', path: '/portal/people/add', icon: 'users', needs: 'manage', hidden: true, scope: 'account' },
@@ -181,9 +181,9 @@ export const NAV: readonly NavEntry[] = [
   // routing is DERIVED from this array, so removing the entries would not tidy the sidebar, it would
   // turn the avatar menu's links into dead ones.
   //
-  // People LEFT this group. It is the one screen here a manager of a single organisation uses in the
-  // ordinary course, and it is now a rail entry above the line; what remains is the installation's own
-  // settings, which is genuinely rare and genuinely global.
+  // People is not in this group. It needs Manage like Global config, and the avatar menu lists it above
+  // Global config by its own id, so its route and its dot-child stay as they were. What
+  // remains here is the installation's own settings, which is genuinely rare and genuinely global.
   {
     id: 'admin',
     label: 'Admin settings',
@@ -280,8 +280,8 @@ const flatten = (entries: readonly NavEntry[]): NavEntry[] =>
  * manage-only path as a dead link and be right to. Mapping over a filtered list means a person without
  * Manage simply has fewer entries, with no literal in the shell to mislead anyone.
  *
- * Preferences and the admin screens are both `hidden` in NAV: unlisted in the sidebar, still routable,
- * and reached from here. People is NOT here any more — it is a rail entry.
+ * Preferences, People and the admin screens are all `hidden` in NAV: off the sidebar, still routable,
+ * and reached from here. People sits directly above Global config; both are installation settings.
  */
 export function avatarMenuFor(who: Viewer, entries: readonly NavEntry[] = NAV): readonly NavEntry[] {
   const all = flatten(routableFor(who, entries))
@@ -292,7 +292,7 @@ export function avatarMenuFor(who: Viewer, entries: readonly NavEntry[] = NAV): 
   // file's rule holds: it renders on every screen already, it is mapped from data, and adding the entry
   // costs the shell nothing. A sidebar item would have ranked a licence notice above "New clearance"
   // in the work lane, which is not what it is for.
-  return [pick('preferences'), pick('admin.config'), pick('about')]
+  return [pick('preferences'), pick('people'), pick('admin.config'), pick('about')]
     .filter((e): e is NavEntry => !!e)
 }
 
