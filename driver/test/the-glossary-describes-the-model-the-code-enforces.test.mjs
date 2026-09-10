@@ -49,8 +49,12 @@ test("the containment the glossary states is the one the validator enforces", ()
   const asDescribed = { tenants: { acme: { accounts: ["acmelaw"], users: { "lawyer@acme.example": ["acmelaw"] } } } };
   assert.doesNotThrow(() => assertGrantsShape(asDescribed, "glossary"),
     "the shape the glossary tells a reader to write is refused by the product");
-  // And the two legal spellings of a whole-tenant grant, both of which the glossary's wording covers.
-  assert.doesNotThrow(() => assertGrantsShape({ tenants: { acme: { accounts: "*", users: { "*@acme.example": "*" } } } }, "glossary"));
+  // A whole-organisation grant is the user's "*", never the organisation's: an organisation lists the
+  // companies it holds, and a company belongs to exactly one of them.
+  assert.doesNotThrow(() => assertGrantsShape({ tenants: { acme: { accounts: ["acmelaw"], users: { "*@acme.example": "*" } } } }, "glossary"));
+  assert.throws(() => assertGrantsShape({ tenants: { acme: { accounts: "*" } } }, "glossary"), /exactly one organisation/);
+  assert.throws(() => assertGrantsShape({ tenants: { a: { accounts: ["acmelaw"] }, b: { accounts: ["acmelaw"] } } }, "glossary"),
+    /listed under both/);
   // A user mapped to something that is neither "*" nor a list of account keys is refused — which is
   // what makes "reaches a named subset of that tenant's accounts" a real statement rather than a hope.
   assert.throws(() => assertGrantsShape({ tenants: { acme: { users: { "lawyer@acme.example": { all: true } } } } }, "glossary"));

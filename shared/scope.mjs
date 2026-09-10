@@ -401,19 +401,46 @@ export function loadGrants({ grantsPath = envFrom(process.env, "CLEAROTRON_ACCES
 // can still fix it, not on the next client's request. The message names the path INTO the file, what was
 // found, and what the shape is — a reader has to be able to go straight to the line.
 //
-// Note the two legal shapes and that "*" is one of them: `accounts` is "*" or an array of keys, and a
-// user maps to "*" (the tenant's whole grant) or an array. Anything else is refused rather than coerced,
-// for the reason the file's own header gives — a configured guest list must never fail open.
+// THE TREE. A tenant is an organisation, and it lists the companies (account keys) it holds. A company
+// belongs to exactly one organisation, so a key listed under two tenants is refused: two organisations
+// are invisible to each other because they are sibling branches, and a company under both branches has
+// no single place in the tree. Access to the whole install is a property of a PERSON, not of a tenant,
+// so a tenant's `accounts` is an array and never "*".
+//
+// A user maps to "*" (the whole organisation) or an array of the keys that organisation holds. Anything
+// else is refused rather than coerced, for the reason the file's own header gives — a configured guest
+// list must never fail open.
+//
+// THE PEOPLE. A top-level `people` section, keyed by address, holds each person's two switches — `run`
+// (start and stop clearances) and `manage` (add people, add companies, change settings) — and
+// `everything`, access to the top of the tree. A sibling of `tenants` for the reason `connectKeys` is
+// one: every editor that checks only `tenants` passes it through. A person with no entry holds both
+// switches off, which is the view-only person; nothing is granted by leaving a line out.
+const PERSON_FIELDS = ["run", "manage", "everything"];
 export function assertGrantsShape(g, where) {
   const at = (...parts) => `${where}: tenants.${parts.join(".")}`;
   const keys = (v) => Array.isArray(v) && v.every((k) => typeof k === "string");
+  const holder = new Map();
   for (const [tenant, t] of Object.entries(g.tenants ?? {})) {
     if (!t || typeof t !== "object" || Array.isArray(t)) {
       throw new Error(`${at(tenant)} is ${describe(t)} — each tenant must be an object with "accounts" and "users".`);
     }
-    if (t.accounts !== undefined && t.accounts !== "*" && !keys(t.accounts)) {
-      throw new Error(`${at(tenant, "accounts")} is ${describe(t.accounts)} — it must be "*" or an array of account keys, `
+    if (t.name !== undefined && (typeof t.name !== "string" || !t.name.trim())) {
+      throw new Error(`${at(tenant, "name")} is ${describe(t.name)} — it must be the organisation's name, as text.`);
+    }
+    if (t.accounts === "*") throw new Error(wildcardTenant(`${where}: tenants.${tenant}.accounts`));
+    if (t.accounts !== undefined && !keys(t.accounts)) {
+      throw new Error(`${at(tenant, "accounts")} is ${describe(t.accounts)} — it must be an array of account keys, `
         + `for example ["${tenant}"].`);
+    }
+    for (const a of t.accounts ?? []) {
+      if (a === "generic") continue;   // the house default, not a company — every organisation has its own
+      if (holder.has(a)) {
+        throw new Error(`${where}: account "${a}" is listed under both tenants.${holder.get(a)} and tenants.${tenant} — `
+          + `a company belongs to exactly one organisation. Keep it under one, and give the people of the other `
+          + `access to it there.`);
+      }
+      holder.set(a, tenant);
     }
     if (t.users !== undefined && (!t.users || typeof t.users !== "object" || Array.isArray(t.users))) {
       throw new Error(`${at(tenant, "users")} is ${describe(t.users)} — it must be an object mapping each email `
@@ -426,6 +453,34 @@ export function assertGrantsShape(g, where) {
       }
     }
   }
+  if (g.people === undefined) return;
+  if (!g.people || typeof g.people !== "object" || Array.isArray(g.people)) {
+    throw new Error(`${where}: people is ${describe(g.people)} — it must be an object mapping each email to that `
+      + `person's switches, for example {"you@example.com": {"run": true, "manage": true}}.`);
+  }
+  for (const [who, entry] of Object.entries(g.people)) {
+    const here = `${where}: people.${JSON.stringify(who)}`;
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new Error(`${here} is ${describe(entry)} — it must be an object holding "run", "manage" and "everything", `
+        + `each true or false.`);
+    }
+    for (const [k, v] of Object.entries(entry)) {
+      if (!PERSON_FIELDS.includes(k)) {
+        throw new Error(`${here}.${k} is not a field of a person — a person holds ${PERSON_FIELDS.map((f) => `"${f}"`).join(", ")}, `
+          + `each true or false. A misspelt switch would read as off, so it is refused rather than ignored.`);
+      }
+      if (typeof v !== "boolean") throw new Error(`${here}.${k} is ${describe(v)} — it must be true or false.`);
+    }
+    if (String(who).startsWith("*@") && (entry.manage || entry.everything)) {
+      throw new Error(`${here} gives a whole email domain ${entry.everything ? "access to everything" : "Manage"} — `
+        + `that is the staff-by-domain rule this product removed. Name each person who should hold it.`);
+    }
+  }
+}
+
+function wildcardTenant(path) {
+  return `${path} is "*" — an organisation lists the companies it holds, and a company belongs to exactly one `
+    + `organisation. Access to everything belongs to a person: set "everything": true on their entry under "people".`;
 }
 
 // What a reader sees, in the words of the file they wrote — "an object", not "[object Object]". The
@@ -438,33 +493,90 @@ function describe(v) {
   return `${typeof v} ${JSON.stringify(v)}`;
 }
 
-// Resolve an authenticated email's granted accounts: "*" (everything), [keys], or [] (authenticated but
-// granted nothing). A user entry of "*" means "the tenant's whole grant"; a `*@domain` key matches every
-// email on that domain; an email in several tenants gets the union.
-export function accountsForEmail(email, grants) {
-  if (!grants) return "*";
-  const e = String(email ?? "").toLowerCase();
-  const domain = e.includes("@") ? e.split("@")[1] : "";
-  let all = false;
-  const set = new Set();
-  for (const t of Object.values(grants.tenants ?? {})) {
-    for (const [pat, acc] of Object.entries(t.users ?? {})) {
-      const p = String(pat).toLowerCase();
-      if (p !== e && !(p.startsWith("*@") && domain && p.slice(2) === domain)) continue;
-      const eff = acc === "*" ? t.accounts : acc;
-      if (eff === "*") { all = true; continue; }
-      // — refuse by name, never by TypeError. `loadGrants` checks this shape at
-      // the read, which is where an operator can still fix it, but grants also arrive here from callers
-      // that never went through it (an injected fixture, a store read elsewhere), so the resolver states
-      // the same fault rather than iterating whatever it was handed.
-      if (eff !== undefined && eff !== null && !Array.isArray(eff)) {
-        throw new Error(`grants are malformed: the entry for "${pat}" resolves to ${describe(eff)} — it must be "*" `
+/**
+ * Resolve an authenticated email to the PERSON: where on the tree they have access, and their two
+ * switches. The ONE resolver both doors read — the portal's `makePrincipal` and the connector's
+ * `resolveScope` — so the two cannot disagree about who someone is.
+ *
+ *   null — no access point anywhere: no portal, and no connector reach
+ *   { email, everything, permissions: { run, manage }, access, accounts, organisations, genericOrgs, accountOrgs }
+ *
+ * `access` is the points the person was given, collapsed: everything subsumes the rest, and an
+ * organisation subsumes the companies under it. `accounts` is every company they see, "*" for
+ * everything, and never `generic`, which is not a company. `organisations` is every organisation they see
+ * anything in; `genericOrgs` is the ones whose Generic they see — an organisation-level point or
+ * everything, never a company-level point. `accountOrgs` maps each visible company to its organisation.
+ *
+ * A user entry of "*" is the whole organisation; a `*@domain` key matches every email on that domain; an
+ * email in several tenants gets the union. A company point counts only under the tenant that HOLDS the
+ * company: a row naming a key its own tenant does not hold has no place in the tree and grants nothing,
+ * which is what the People page's "dangling" has always said it does.
+ */
+export function resolvePerson(email, grants) {
+  if (!grants) return null;
+  const e = String(email ?? "").trim().toLowerCase();
+  const at = e.lastIndexOf("@");
+  if (at <= 0 || e.indexOf("@") !== at) return null;   // multi-@ is refused outright — no parse to disagree about
+  const domain = e.slice(at + 1);
+  const matches = (pat) => { const p = String(pat).toLowerCase(); return p === e || (p.startsWith("*@") && p.slice(2) === domain); };
+  const tenants = grants.tenants ?? {};
+  const holder = new Map();
+  for (const [t, v] of Object.entries(tenants)) {
+    // Stated here as well as at the read: grants also arrive from callers that never went through
+    // `loadGrants` (an injected fixture, a store read elsewhere), and a wildcard tenant would otherwise
+    // be read as "holds nothing" — quietly narrower, and silent about why.
+    if (v?.accounts === "*") throw new Error(`grants are malformed: ${wildcardTenant(`tenants.${t}.accounts`)}`);
+    for (const a of Array.isArray(v?.accounts) ? v.accounts : []) if (a !== "generic" && !holder.has(a)) holder.set(a, t);
+  }
+  // The switches. An exact address wins over a `*@domain` entry, and no entry at all is both off. A domain
+  // never holds Manage or everything, re-stated here for grants that never passed `assertGrantsShape`.
+  const people = grants.people && typeof grants.people === "object" ? grants.people : {};
+  const exact = Object.keys(people).find((k) => k.toLowerCase() === e);
+  const pattern = exact === undefined ? Object.keys(people).find((k) => k.toLowerCase() === `*@${domain}`) : undefined;
+  const key = exact ?? pattern;
+  const entry = key === undefined ? {} : (people[key] ?? {});
+  const everything = entry.everything === true && exact !== undefined;
+  const permissions = { run: entry.run === true, manage: entry.manage === true && exact !== undefined };
+
+  const orgs = [];
+  const companies = [];
+  for (const [t, v] of Object.entries(tenants)) {
+    for (const [pat, acc] of Object.entries(v?.users ?? {})) {
+      if (!matches(pat)) continue;
+      if (acc === "*") { if (!orgs.includes(t)) orgs.push(t); continue; }
+      // — refuse by name, never by TypeError, for the same reason as the wildcard above.
+      if (acc !== undefined && acc !== null && !Array.isArray(acc)) {
+        throw new Error(`grants are malformed: the entry for "${pat}" resolves to ${describe(acc)} — it must be "*" `
           + `or an array of account keys. Fix the grants file (CLEAROTRON_ACCESS_FILE) and try again.`);
       }
-      for (const a of eff ?? []) set.add(a);
+      for (const k of acc ?? []) if (holder.get(k) === t && !companies.includes(k)) companies.push(k);
     }
   }
-  return all ? "*" : [...set];
+  if (!everything && !orgs.length && !companies.length) return null;
+
+  const all = Object.keys(tenants);
+  if (everything) {
+    return { email: e, everything, permissions, access: [{ kind: "everything" }], accounts: "*",
+      organisations: all, genericOrgs: all, accountOrgs: Object.fromEntries(holder) };
+  }
+  const loose = companies.filter((k) => !orgs.includes(holder.get(k)));
+  const accounts = [];
+  for (const t of orgs) for (const a of tenants[t].accounts ?? []) if (holder.get(a) === t && !accounts.includes(a)) accounts.push(a);
+  for (const k of loose) if (!accounts.includes(k)) accounts.push(k);
+  const organisations = [...orgs];
+  for (const k of loose) if (!organisations.includes(holder.get(k))) organisations.push(holder.get(k));
+  return { email: e, everything, permissions,
+    access: [...orgs.map((k) => ({ kind: "organisation", key: k })), ...loose.map((k) => ({ kind: "company", key: k, org: holder.get(k) }))],
+    accounts, organisations, genericOrgs: [...orgs],
+    accountOrgs: Object.fromEntries(accounts.map((a) => [a, holder.get(a)])) };
+}
+
+// The flat view of the same answer, for the callers that only ask which companies: "*" (everything),
+// [keys], or [] (authenticated but granted nothing). No grants file at all still answers "*" — every
+// caller that must not read that as "every customer" refuses it by name (grantedAccounts, the boot gates).
+export function accountsForEmail(email, grants) {
+  if (!grants) return "*";
+  return resolvePerson(email, grants)?.accounts ?? [];
 }
 
 // The account gate. scope.accounts: null|"*" ⇒ full visibility (enforcement off / full grant); [keys] ⇒
