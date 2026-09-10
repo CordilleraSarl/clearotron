@@ -375,11 +375,10 @@ export function installPaths(base) {
     credential: join(base, "portal-local-credential.json"),
     configStore: join(base, "config"),
     recipes: join(base, "config", "recipes"),
-    // The customer store and the instruction overlay, inside the config store's repository so a save
-    // commits where it lands. Only a demo is pointed at them (childEnv): a real install keeps whatever its
-    // settings name, and pointing it here would move a live store.
+    // The customer store, inside the config store's repository so a save commits where it lands. Only a
+    // demo is pointed at it (childEnv): a real install keeps whatever its settings name, and pointing it
+    // here would move a live store.
     profiles: join(base, "config", "profiles"),
-    skills: join(base, "config", "skills"),
   };
 }
 
@@ -578,11 +577,12 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
     // THE DEMO'S OWN STORE, and every name that chooses a store pinned to it. Inherited, a
     // CLEAROTRON_CUSTOMERS_DIR, CLEAROTRON_INSTRUCTIONS_DIR or PROFILE_REPO_ROOT hands the demo's
     // children the reader's real config store, and a company created in the demo is written into it.
-    // Empty is unset to every reader of the last three, so the two audit logs and the feedback directory
-    // fall back to their places inside the demo's own directories.
+    // Empty is unset to every reader. The demo overrides no instruction, so the product's own are read
+    // (the portal derives no overlay in a demo), and the two audit logs and the feedback directory fall
+    // back to their places inside the demo's own directories.
     ...(demo ? {
       "CLEAROTRON_CUSTOMERS_DIR": paths.profiles,
-      "CLEAROTRON_INSTRUCTIONS_DIR": paths.skills,
+      "CLEAROTRON_INSTRUCTIONS_DIR": "",
       "PROFILE_REPO_ROOT": paths.configStore,
       "PROFILE_AUDIT": "",
       "RECIPE_AUDIT": "",
@@ -1237,15 +1237,15 @@ if (isMain) {
   // ── THE DEMO'S OWN STORE, WITH ITS COMPANY IN IT ────────────────────────────────────────────────
   //
   // A demo's children are pointed at <base>/config (childEnv), so a company created in the demo is
-  // written there and a later real install never sees it. The instruction overlay is created empty, so
-  // the bundled instructions show through it file by file, and the demo's company is copied into the
-  // store with its projects (`seedDemoStore`), only when the store does not already hold it.
+  // written there and a later real install never sees it. The demo's company is copied into the store
+  // with its projects (`seedDemoStore`), only when the store does not already hold it. It overrides no
+  // instruction, so it has no instruction overlay: the product's own are read, as on any fresh install.
   if (DEMO) {
     try {
-      // Both directories before anything is copied: the children are pointed at the store whether or not
-      // the copy below succeeds, and a store that does not exist fails every roster read rather than
-      // showing Generic alone.
-      for (const d of [paths.profiles, paths.skills]) mkdirSync(d, { recursive: true });
+      // The store before anything is copied into it: the children are pointed at it whether or not the
+      // copy below succeeds, and a store that does not exist fails every roster read rather than showing
+      // Generic alone.
+      mkdirSync(paths.profiles, { recursive: true });
       const copied = seedDemoStore({ from: join(REPO, "driver", "profiles"), to: paths.profiles, accounts: demoAccounts() });
       if (copied.length) {
         // Committed, so the store is identifiable like any other. A failure leaves the files readable,

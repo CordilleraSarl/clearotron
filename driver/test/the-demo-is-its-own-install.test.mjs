@@ -336,6 +336,10 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
       const projects = await get(`/portal/api/config/projects?account=${DEMO_KEY}`);
       assert.ok((projects.projects ?? []).some((p) => p.key === "japan-and-korea-app-launch"),
         `the demo company's project is not served: ${JSON.stringify(projects).slice(0, 200)}`);
+      // AND ITS INSTRUCTIONS ARE THE PRODUCT'S OWN: a demo has no instruction overlay, so its doctrine
+      // store reads as any fresh install's does, never as a blocked one.
+      const health = await (await fetch(`http://127.0.0.1:${base}/portal/health`)).json();
+      assert.equal(health.store?.outcome, "pass", `the demo's doctrine store: ${JSON.stringify(health.store).slice(0, 240)}`);
       assert.match(run.said(), /it carries Demo Brand Owner, rating under its own framework, with 1 project/,
         "the boot line does not describe the roster the demo served");
       assert.match(run.said(), /\[env-local\] not reading/);

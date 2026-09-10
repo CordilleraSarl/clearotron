@@ -506,7 +506,7 @@ test("the demo posture reaches the portal and changes nothing about either door"
   // value it must hold. They reach every door because every door reads the roster, and a door left on an
   // inherited store serves the reader's real install inside the demo — 0.3.0-beta.1's defect.
   const DEMO_STORE = {
-    CLEAROTRON_CUSTOMERS_DIR: paths.profiles, CLEAROTRON_INSTRUCTIONS_DIR: paths.skills,
+    CLEAROTRON_CUSTOMERS_DIR: paths.profiles, CLEAROTRON_INSTRUCTIONS_DIR: "",
     PROFILE_REPO_ROOT: paths.configStore, PROFILE_AUDIT: "", RECIPE_AUDIT: "", CLEAROTRON_FEEDBACK_DIR: "",
   };
   for (const door of ["mcp", "worker", "portal", "client"]) {
@@ -515,7 +515,7 @@ test("the demo posture reaches the portal and changes nothing about either door"
       assert.equal(live[door][k], undefined, `${door}/${k}: a live install's store was pinned by the demo's rule`);
     }
   }
-  for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "CLEAROTRON_INSTRUCTIONS_DIR", "PROFILE_REPO_ROOT"])
+  for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "PROFILE_REPO_ROOT"])
     assert.ok(DEMO_STORE[k].startsWith(paths.base), `${k}: the demo's store is outside its own base`);
   for (const door of ["mcp", "worker"]) {
     const added = Object.keys(demo[door]).filter((k) => !(k in live[door]) && !(k in DEMO_STORE));
@@ -555,6 +555,6 @@ test("the demo's data directory is its own, so trying the demo costs a real inst
   const live = installPaths("/srv/home/trademark");
   // Every path a run touches, not just the base: a demo sharing ANY of these is a demo that leaves
   // state behind in a real install.
-  for (const key of ["pool", "workspace", "queue", "outbox", "locks", "grants", "audit", "configStore", "recipes", "credential", "profiles", "skills"])
+  for (const key of ["pool", "workspace", "queue", "outbox", "locks", "grants", "audit", "configStore", "recipes", "credential", "profiles"])
     assert.notEqual(demo[key], live[key], `${key}: the demo and a real install share this path`);
 });

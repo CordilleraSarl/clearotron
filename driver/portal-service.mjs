@@ -4467,7 +4467,9 @@ const PORT = PORT_CHOICE.port;
       // profile-service's own unit sets the instructions dir correctly — neither should learn a fallback
       // from the portal's mistake. Setting the env var (rather than threading a value) is what the
       // getter reads, and this process never runs the engine.
-      if (!envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR") && process.env.PROFILE_REPO_ROOT) {
+      // NOT IN A DEMO, which overrides no instruction: its store's repository holds none, and an empty
+      // folder pinned as the overlay reads as a blocked doctrine store.
+      if (!isDemo(process.env) && !envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR") && process.env.PROFILE_REPO_ROOT) {
         // `pinEnv`, not a bare assignment. This write lands at RUNTIME, long after `applyEnvAliases`
         // back-filled the spellings at load, so assigning one name reaches only the readers already
         // converted. `pinEnv` writes every spelling, which is what keeps a half-converted tree honest.
