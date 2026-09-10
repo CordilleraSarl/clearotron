@@ -21,6 +21,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { lineFindings, sourceDirectories, userDocs } from "./plain-language-rules.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -44,23 +45,17 @@ export const INTERNAL_WORDS = [
 /** Said instead of saying what happens. */
 export const EMPTY_PHRASES = ["now correctly", "as expected", "properly"];
 
-/**
- * The repository's own top-level source directories.
- *
- * A path whose first segment is one of these is a SOURCE-TREE path — `driver/test/…`, `scripts/…` — and
- * means nothing to somebody who has never opened this repository. A path that starts at the reader's own
- * home does not: `~/.config/clearotron/` is where THEIR settings are, and telling them is the note's job.
- * Ruling 2026-09-05, narrowing the contract's flat ban on "file paths": what a reader types or
- * opens is allowed; our tree is not.
- *
- * Derived from the tree rather than typed, so a directory added next month is covered without anybody
- * remembering to add it here.
- */
-export function sourceDirectories(root = ROOT) {
-  return new Set(readdirSync(root, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith(".") && d.name !== "node_modules")
-    .map((d) => d.name));
-}
+// `sourceDirectories` moved to plain-language-rules.mjs with the path rule that reads it, and is
+// re-exported here, as `userDocs` is below, for the callers that import them from this file.
+export { sourceDirectories, userDocs } from "./plain-language-rules.mjs";
+
+/** What each shared line rule says to a note's author (see plain-language-rules.mjs). */
+const LINE_RULE = {
+  "file name": "a file name means nothing to somebody who has never opened this repository",
+  "path": "a file path that is ours rather than the reader's means nothing to somebody who has never opened this repository",
+  "jargon word": "the changelog refuses this word — say what changed for the reader instead",
+  "function name": "a function name means nothing to somebody who has never opened this repository",
+};
 
 /** Every command-line flag a ROOT DOCUMENT shows a user. The contract bans the ones that are not. */
 export function documentedFlags(root = ROOT) {
@@ -69,14 +64,6 @@ export function documentedFlags(root = ROOT) {
     for (const m of readFileSync(join(root, f), "utf8").matchAll(/--[a-z][a-z0-9-]+/g)) out.add(m[0]);
   }
   return out;
-}
-
-/** Everything the user documentation shows a reader, as one blob, for "is this documented" questions. */
-export function userDocs(root = ROOT) {
-  return readdirSync(root)
-    .filter((n) => n.endsWith(".md"))
-    .map((n) => readFileSync(join(root, n), "utf8"))
-    .join("\n");
 }
 
 /**
@@ -185,26 +172,18 @@ export function findings(text, {
 
     if (/#\d+/.test(line)) add(i, "a reader has no issue tracker to look a number up in", /#\d+/.exec(line)[0]);
     if (/\btracker issue\b/i.test(line)) add(i, "a reader has no issue tracker to look a number up in", "tracker issue");
+    // A MODULE NAME OF OURS IS REFUSED EVEN IN A CODE SPAN here, which is stricter than the release: a
+    // note may show a reader a command to type, but never one of our own files to type it on.
+    const ours = new Set();
     for (const m of line.matchAll(/\b[\w.-]+\.(mjs|ts|tsx|json|yml|yaml)\b/g)) {
-      add(i, "a file name means nothing to somebody who has never opened this repository", m[0]);
+      ours.add(m[0]);
+      add(i, LINE_RULE["file name"], m[0]);
     }
-    // A path, judged by WHOSE it is. The reader's own — `~/.config/clearotron/` — is the note's job to
-    // give them. Ours is not, and "ours" is wider than this repository's directory names: an absolute
-    // path into a server's filesystem is our deployment, not their machine.
-    //
-    // WHAT COUNTS AS A PATH AT ALL is deliberately narrow, because `and/or` is not one. A token qualifies
-    // when it opens with `~`, `/`, `./` or `../`, when its first segment is one of our own directories,
-    // or when a segment carries a dot. Ordinary prose with a slash in it does not.
-    for (const m of line.matchAll(/(?:^|[\s`(])((?:~|\.{1,2})?\/?[\w.~-]+(?:\/[\w.~-]+)+\/?)/g)) {
-      const path = m[1];
-      if (/^https?:/.test(path)) continue;
-      const segments = path.replace(/^[~./]+/, "").split("/").filter(Boolean);
-      const looksLikePath = /^[~./]/.test(path) || sourceDirs.has(segments[0]) || segments.some((x) => x.includes("."));
-      if (!looksLikePath) continue;
-      if (path.startsWith("~")) continue;                       // the reader's own home
-      if (docs.includes(path)) continue;                        // the user documentation shows it
-      add(i, "a file path that is ours rather than the reader's means nothing to somebody who has never "
-        + "opened this repository", path);
+    // THE LINE RULES THE RELEASE HOLDS THE CHANGELOG TO, applied to the note that will become it: file
+    // names, paths into our tree, jargon and function names, from one list (plain-language-rules.mjs).
+    for (const f of lineFindings(line, { sourceDirs, docs })) {
+      if (f.kind === "file name" && ours.has(f.match)) continue;   // already refused just above
+      add(i, LINE_RULE[f.kind], f.match);
     }
     for (const m of line.matchAll(/--[a-z][a-z0-9-]+/g)) {
       if (!flags.has(m[0])) add(i, "a flag the user documentation never shows is a flag the reader cannot use", m[0]);
