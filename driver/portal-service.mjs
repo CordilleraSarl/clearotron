@@ -1998,7 +1998,12 @@ export function makePortalService({
         // immediate mode carries `immediate.pid` — a process id on the box — and this response goes to
         // a browser. Nothing in the client has ever read `upstream`; what a reader needs is which stop
         // is happening and the sentence the driver already composed for them.
-        const mode = r?.immediate?.attempted && r?.immediate?.signalled ? "immediate" : "boundary";
+        //
+        // AND "IMMEDIATE" MEANS THE STEP WAS SEEN TO END. `signalled` says only that a signal was accepted
+        // for delivery; `ended` is what the driver saw afterwards. An answer without it, an older driver's
+        // `ended: null` included, is the boundary stop: that is the honest reading of an answer that does
+        // not say.
+        const mode = r?.immediate?.attempted && r?.immediate?.ended === true ? "immediate" : "boundary";
         audit({ event: "stop", by: principal.email, account, runId, ok: Boolean(r?.ok), action: r?.action ?? null,
           // ASKED and TAKEN, both, because they differ exactly when something went wrong — a reader
           // pressed "stop now" and got the boundary stop, which is the row somebody will come looking

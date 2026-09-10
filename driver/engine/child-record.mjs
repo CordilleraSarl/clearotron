@@ -43,6 +43,7 @@
 // reads. A second spelling of "which process is this" is a second thing to keep in step.
 
 import { writeFileSync, readFileSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { procStarttime, parseClaimSidecar } from "../claim-liveness.mjs";
 
@@ -109,4 +110,93 @@ export function engineChildIsLive(rec, { starttimeOf = procStarttime } = {}) {
   if (!rec || !Number.isInteger(rec.pid) || rec.pid <= 0) return false;
   if (!rec.starttime) return false;
   return starttimeOf(rec.pid) === rec.starttime;
+}
+
+/**
+ * The process group `pid` is in, or null when that cannot be read.
+ *
+ * Linux reads it from /proc; everywhere else asks `ps`, as `procStarttime` does for a start time, and an
+ * injected reader outranks the platform for the reason `procStarttime` gives.
+ */
+export function procPgid(pid, readStat = undefined, { platform = process.platform, readPsPgid = defaultReadPsPgid } = {}) {
+  if (!Number.isInteger(pid) || pid <= 0) return null;
+  let v = NaN;
+  try {
+    if (readStat || platform === "linux") {
+      const stat = (readStat ?? ((p) => readFileSync(`/proc/${p}/stat`, "utf8")))(pid);
+      // After the last ')', because comm may hold spaces and parens: state is index 0, ppid 1, pgrp 2.
+      v = Number(stat.slice(stat.lastIndexOf(")") + 2).trim().split(/\s+/)[2]);
+    } else {
+      v = Number(String(readPsPgid(pid)).trim());
+    }
+  } catch { return null; }
+  return Number.isInteger(v) && v > 0 ? v : null;
+}
+
+function defaultReadPsPgid(pid) {
+  const r = spawnSync("ps", ["-o", "pgid=", "-p", String(pid)], { encoding: "utf8" });
+  return r.status === 0 ? r.stdout : "";
+}
+
+/**
+ * End the recorded turn, and report whether it ENDED from what was seen afterwards, never from the
+ * signal having been sent.
+ *
+ * SIGNALLED IS NOT ENDED. `process.kill` returning means the OS accepted the signal for delivery, and a
+ * process that handles or ignores SIGTERM leaves that line looking the same. On the owner's WSL install
+ * of 0.3.0-beta.1 a stop that was reported as having ended the step ran on to the next step boundary. So
+ * this watches the turn after the signal, sends SIGKILL to whatever is left when the grace runs out, and
+ * answers `ended: true` only once it has seen nothing left.
+ *
+ * THE GROUP, WHEN THE TURN LEADS ONE. Both engines spawn the turn `detached: true`, so it leads its own
+ * process group and the MCP servers it starts are members of it. Measured 2026-09-10 on the coding CLI
+ * the engine spawns: a SIGTERM to the turn's pid alone ends the turn and its servers, but a SIGKILL to
+ * the pid alone leaves a server running under pid 1, and a SIGKILL to the group does not. So the
+ * escalation addresses the group, and "ended" means the group is empty as well as the turn gone.
+ *
+ * ONLY A GROUP THIS RECORD LEADS. The watchdogs signal `-child.pid` without asking, because they spawned
+ * the child detached themselves. This reads a pid off disk. If that pid does not lead its own group,
+ * `-pid` names no group of this run's, so the signals go to the pid alone. Nothing at or below pid 1 is
+ * ever signalled: `-1` reaches every process this user may signal.
+ */
+export async function endEngineChild(rec, {
+  graceMs = 5000, settleMs = 2000, pollMs = 50,
+  kill = (target, sig) => process.kill(target, sig),
+  isLive = (r) => engineChildIsLive(r),
+  pgidOf = (pid) => procPgid(pid),
+  sleep = (ms) => new Promise((res) => setTimeout(res, ms)),
+  now = () => Date.now(),
+} = {}) {
+  if (!rec || !Number.isInteger(rec.pid) || rec.pid <= 1)
+    return { signalled: null, escalated: null, group: false, ended: false, error: "no process to signal" };
+  const group = pgidOf(rec.pid) === rec.pid;
+  const target = group ? -rec.pid : rec.pid;
+  const send = (sig) => { try { kill(target, sig); return null; } catch (e) { return e?.code ?? String(e?.message ?? e); } };
+  // Signal 0 asks only whether the group still has a member. EPERM is a member this user may not
+  // signal, and a member all the same.
+  const groupHasMembers = () => {
+    if (!group) return false;
+    try { kill(-rec.pid, 0); return true; } catch (e) { return e?.code === "EPERM"; }
+  };
+  const gone = () => !isLive(rec) && !groupHasMembers();
+  const seenGone = async (ms) => {
+    const until = now() + ms;
+    for (;;) {
+      if (gone()) return true;
+      if (now() >= until) return false;
+      await sleep(pollMs);
+    }
+  };
+
+  // ESRCH: it exited between the caller's liveness read and this signal, a race lost harmlessly. EPERM:
+  // it is not ours to signal, which must not read as success. Either way nothing was sent.
+  const refused = send("SIGTERM");
+  if (refused) return { signalled: null, escalated: null, group, ended: false, error: refused };
+  if (await seenGone(graceMs)) return { signalled: "SIGTERM", escalated: null, group, ended: true };
+
+  // Still there when the grace ran out. SIGKILL cannot be handled or ignored.
+  const killRefused = send("SIGKILL");
+  if (killRefused && killRefused !== "ESRCH")
+    return { signalled: "SIGTERM", escalated: null, group, ended: gone(), error: killRefused };
+  return { signalled: "SIGTERM", escalated: killRefused ? null : "SIGKILL", group, ended: await seenGone(settleMs) };
 }

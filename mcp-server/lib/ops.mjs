@@ -19,7 +19,8 @@ import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { assertAccountAccess, attributionOf } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
-import { readEngineChild, engineChildIsLive } from "../../driver/engine/child-record.mjs";   //
+import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
+import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
@@ -290,9 +291,11 @@ export function startRun(args = {}, { scope } = {}) {
 }
 
 // stop_run — cancel. A not-yet-claimed queue job is removed (a REAL cancel before any spend). A running run
-// gets a .cancel sentinel + honest status (in-flight turns are not force-killed from here). id cancels by
-// queue id; runId cancels a started run.
-export function stopRun(args = {}, { scope } = {}) {
+// gets a .cancel sentinel + honest status; its turn in flight is ended from here only when `immediate` asks
+// for that. id cancels by queue id; runId cancels a started run.
+//
+// `endTurn` is what ends that turn. The dispatch passes `{ scope }` alone, so only a test reaches it.
+export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {}) {
   const agent = args.agent ? String(args.agent) : "";
   if (args.id) {
     const qdir = queueDir(agent);
@@ -384,23 +387,27 @@ export function stopRun(args = {}, { scope } = {}) {
         // kills a stranger. This is acceptance 5's already-exited case.
         immediate = { attempted: false, why: "the recorded engine turn has already exited — the cancel stands", pid: child.pid };
       } else {
-        try {
-          process.kill(child.pid, "SIGTERM");
-          // SIGNALLED IS NOT ENDED, and the sentence below is written from this field. `process.kill`
-          // returning without throwing means the signal was accepted by the OS for delivery — not that
-          // the child took it, not that it exited, and not that the step is over. A process that
-          // handles SIGTERM, or ignores it, leaves this line looking exactly the same.
-          //
-          // Measured on the owner's WSL install of 0.3.0-beta.1: this branch answered "the step in
-          // flight has been ended ... terminal in seconds" and the run stopped at the next step
-          // boundary. `ended` is null because nothing here observes it, and the copy says so rather
-          // than reading an outcome off an attempt.
-          immediate = { attempted: true, signalled: "SIGTERM", pid: child.pid, ended: null };
-        } catch (e) {
+        // SIGNALLED IS NOT ENDED, so the answer waits to see. `endTurn` sends SIGTERM to the turn — to its
+        // whole process group when the record names the group's leader, which both engines' detached
+        // spawns make it — watches until nothing of it is left, and sends SIGKILL to whatever remains
+        // when the grace runs out. `ended` is what it SAW, and the sentences below are written from that
+        // field alone: `process.kill` returning says only that the OS accepted the signal for delivery.
+        //
+        // Measured on the owner's WSL install of 0.3.0-beta.1: this branch answered "the step in flight
+        // has been ended ... terminal in seconds", read off the signal alone, and the run stopped at the
+        // next step boundary.
+        //
+        // The portal waits 30 seconds for this answer, and this waits for the turn before answering: the
+        // grace, then up to two seconds after a SIGKILL. The cap keeps a long grace set for the watchdogs
+        // from outlasting the portal's wait.
+        const took = await endTurn(child, { graceMs: Math.min(killEscalateMs(), 10000) });
+        immediate = took?.signalled
+          ? { attempted: true, signalled: took.signalled, escalated: took.escalated ?? null, group: took.group === true,
+              pid: child.pid, ended: took.ended === true,
+              ...(took.ended === true ? {} : { why: "the step in flight was told to stop and had not ended when it was last checked" }) }
           // ESRCH — it died between the liveness read and the signal, which is a race we lose harmlessly.
           // EPERM — it is not ours to signal, which is a real finding and must not read as success.
-          immediate = { attempted: true, signalled: null, pid: child.pid, error: e?.code ?? String(e?.message ?? e) };
-        }
+          : { attempted: true, signalled: null, pid: child.pid, error: took?.error ?? "no signal was sent" };
       }
     }
 
@@ -452,18 +459,24 @@ export function stopRun(args = {}, { scope } = {}) {
     // distinguish them is the state the owner already told us says nothing. A pressed-immediate that
     // could not find a turn to end is reported as the boundary stop it actually became; presenting it
     // as an immediate stop would be the second silent thing in a row on the same control.
+    //
+    // AND IT SAYS "ENDED" ONLY FROM `ended`, which is what the stop saw. A turn that was told to stop and
+    // was still there afterwards is reported as the boundary stop it became.
+    const fellBack = immediate?.why ?? immediate?.error ?? "the step in flight could not be ended";
     if (alreadyStopping) {
       return { ok: true, action: "already-stopping", runId: run.runId, requestedAt: rec?.ts ?? null, immediate,
-        note: immediate?.attempted
-          ? `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"}, and a stop has been sent to the step in flight. If it takes it the run ends in seconds; if not, it ends at the next step boundary.`
-          : `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"} and the step in flight is being allowed to finish. Pressing again changes nothing.` };
+        note: immediate?.ended === true
+          ? `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"}, and the step in flight has now ended. Nothing will be delivered.`
+          : immediate?.attempted
+            ? `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"}. An immediate stop was asked for and could not be made: ${fellBack}. The run ends at its next step boundary.`
+            : `Already stopping — the request was filed at ${rec?.ts ?? "an earlier press"} and the step in flight is being allowed to finish. Pressing again changes nothing.` };
     }
-    if (immediate?.attempted && immediate.signalled)
+    if (immediate?.ended === true)
       return { ok: true, action: "cancel-requested", runId: run.runId, requestedAt: rec?.ts ?? null, immediate,
-        note: "Stopping now. A stop has been sent to the step in flight: if it takes it, the run ends in seconds; if it does not, the run ends at its next step boundary. What that step has already spent is spent, everything recorded before it is kept, and nothing will be delivered." };
+        note: "Stopping now. The step in flight has ended: what it had already spent is spent, everything recorded before it is kept, and nothing will be delivered." };
     if (args.immediate === true)
       return { ok: true, action: "cancel-requested", runId: run.runId, requestedAt: rec?.ts ?? null, immediate,
-        note: `Stopping at the next step boundary. An immediate stop was asked for and could not be made: ${immediate?.why ?? immediate?.error ?? "the step in flight could not be ended"}. A step already under way finishes first. Nothing will be delivered.` };
+        note: `Stopping at the next step boundary. An immediate stop was asked for and could not be made: ${fellBack}. A step already under way finishes first. Nothing will be delivered.` };
     return { ok: true, action: "cancel-requested", runId: run.runId, requestedAt: rec?.ts ?? null,
       note: "Stopping. The run ends at its next step boundary; a step already under way finishes first, and what it has already spent is spent. Nothing will be delivered." };
   }

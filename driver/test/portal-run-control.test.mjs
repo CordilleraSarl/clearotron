@@ -277,8 +277,8 @@ test("arm 1 — the reader's choice reaches the engine, and the answer says whic
   const w = running();
   const stops = [];
   const svc = stopRunReturning(w, stops, () => ({
-    ok: true, action: "cancel-requested", immediate: { attempted: true, signalled: "SIGTERM", pid: 4242 },
-    note: "Stopping now. The step in flight has been ended rather than allowed to finish.",
+    ok: true, action: "cancel-requested", immediate: { attempted: true, signalled: "SIGTERM", pid: 4242, ended: true },
+    note: "Stopping now. The step in flight has ended.",
   }));
   const res = await svc.route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
 
@@ -324,6 +324,19 @@ test("arm 3 — an immediate stop that could not act is reported as the boundary
     ok: true, action: "cancel-requested", immediate: { attempted: true, signalled: null, pid: 9, error: "EPERM" },
   })).route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
   assert.equal(res2.json.stop.mode, "boundary", "a signal that was refused is being reported as an immediate stop");
+
+  // AND A SIGNAL THAT WAS SENT IS NOT A STOP THAT HAPPENED. `ended` is what the driver saw after the
+  // signal; an answer where it is false, or null as an older driver sends it, is the boundary stop.
+  for (const immediate of [
+    { attempted: true, signalled: "SIGTERM", escalated: "SIGKILL", pid: 9, ended: false,
+      why: "the step in flight was told to stop and had not ended when it was last checked" },
+    { attempted: true, signalled: "SIGTERM", pid: 9, ended: null },
+  ]) {
+    const res3 = await stopRunReturning(running(), [], () => ({ ok: true, action: "cancel-requested", immediate }))
+      .route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
+    assert.equal(res3.json.stop.mode, "boundary",
+      `a stop that was sent and not seen to end is reported as immediate: ${JSON.stringify(immediate)}`);
+  }
 });
 
 test("arm 4 — no process id reaches the browser, and the raw tool result stops travelling", async () => {
@@ -333,7 +346,7 @@ test("arm 4 — no process id reaches the browser, and the raw tool result stops
   const w = running();
   const svc = stopRunReturning(w, [], () => ({
     ok: true, action: "cancel-requested",
-    immediate: { attempted: true, signalled: "SIGTERM", pid: 3292812 },
+    immediate: { attempted: true, signalled: "SIGTERM", pid: 3292812, ended: true },
     note: "Stopping now.",
     // NOT a real operator's home — forbids naming one in any executable line, and a fixture is an
     // executable line. What this stands for is "some internal string the tool returned", and the arm
