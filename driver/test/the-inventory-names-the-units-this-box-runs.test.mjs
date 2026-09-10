@@ -14,7 +14,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CHECKED_UNITS, UNIT_INVENTORY, unitInventoryVerdict } from "../unit-inventory.mjs";
+import { CHECKED_UNITS, UNIT_INVENTORY, unitInventoryVerdict, ACCOUNTED_FILES } from "../unit-inventory.mjs";
 import { unitsActiveVerdict } from "../unit-state-verdict.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -198,4 +198,113 @@ test("the shipped inventory's retired entries are reported as expected in BOTH s
       }
     }
   }
+});
+
+// A COMPLETE WALK, USING A FILE THE SHIPPED TABLE ACTUALLY CLAIMS. `accounted` is built from
+// ACCOUNTED_FILES — the real table — so an injected inventory cannot vouch for an invented path, and a
+// fixture that invents one fails for "no entry claims this file" rather than for the thing under test.
+const A_REAL_TRACKED_FILE = [...ACCOUNTED_FILES][0];
+
+// ── AN UNNAMED BOX IS A FAULT, NOT A FOOTNOTE ───────────────────────────────────────────────────────
+//
+// Half of this arm asks the mirror question — is a unit DECLARED for this deployment
+// and absent from it? — and that half is suppressed when the box cannot name itself. The suppression is
+// right: guessing would report every other deployment's units as missing here. What was wrong is that
+// the arm then returned `pass`, so a deployment where nobody sets the name got a green tick beside a
+// paragraph saying the check had not happened.
+//
+// It matters most where it was live. Measured 2026-09-10: the test deployment names itself and both
+// halves run; production sets no name, so on the deployment where a stopped service is most costly this
+// half has never executed, and nothing anywhere produced a finding.
+
+test("an unnamed box FAILS — a suppressed half is not a pass", () => {
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const v = unitInventoryVerdict({ live: ["planted-live.service"], files: [], box: null, probe: { ok: true }, inventory: planted });
+  assert.equal(v.state, "fail", "an unnamed box still reported a pass while half the arm did not run");
+  assert.match(v.message, /NOTHING WAS COMPARED THE OTHER WAY/);
+  assert.match(v.message, /CLEAROTRON_BOX/, "the message does not name the variable an operator has to set");
+});
+
+test("the same population with a NAME passes — the control, or the arm above proves nothing", () => {
+  // Without this, a verdict that returned "fail" unconditionally would satisfy the arm above.
+  // The walk is COMPLETE and its file is CLAIMED, so this arm isolates the box question and nothing
+  // else: an entry with `tracked: []` beside a file of its own name is a fault in its own right.
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const v = unitInventoryVerdict({ live: ["planted-live.service"], files: [A_REAL_TRACKED_FILE],
+    box: "test", probe: { ok: true }, inventory: planted });
+  assert.equal(v.state, "pass", "a named box with nothing wrong must still pass");
+  assert.doesNotMatch(v.message, /NOTHING WAS COMPARED/);
+});
+
+test("the failure is about the CHECK, not about the deployment, and the message keeps saying so", () => {
+  // The distinction the file draws everywhere else: a failure to look is not a finding about the box.
+  // If this ever starts reading as "your deployment is broken", the sentence has drifted.
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const v = unitInventoryVerdict({ live: ["planted-live.service"], files: [], box: null, probe: { ok: true }, inventory: planted });
+  assert.match(v.message, /was NOT\s+checked|did not run/, "the message no longer says which half was skipped");
+  assert.deepEqual(v.absent, [], "an unnamed box must not populate the drift list — that is the guess this refuses");
+});
+
+test("the allowlist is passed in, not spelled here — and an empty one still names the variable", () => {
+  // The names come from shared/deployment-box.mjs through the caller, so there is one list. A second
+  // copy inside this module is the drift this parameter exists to prevent.
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const withNames = unitInventoryVerdict({ live: [], files: [], box: null, probe: { ok: true }, inventory: planted, boxNames: ["prod", "test"] });
+  assert.match(withNames.message, /\(prod or test\)/, "the caller's allowlist did not reach the message");
+  const without = unitInventoryVerdict({ live: [], files: [], box: null, probe: { ok: true }, inventory: planted });
+  assert.match(without.message, /CLEAROTRON_BOX/, "with no allowlist the message must still name the variable");
+  assert.doesNotMatch(without.message, /\(\)/, "an empty allowlist left empty parentheses in the sentence");
+});
+
+test("a probe that could not look still SKIPS — the unnamed-box fault must not swallow it", () => {
+  // Two different could-not-looks, and only one of them is this issue's. A failure to enumerate systemd
+  // is reported as a skip and must stay that way, or the deploy learns to read every red the same.
+  const v = unitInventoryVerdict({ live: [], files: [], box: null, probe: { ok: false, why: "no bus" } });
+  assert.equal(v.state, "skip");
+  assert.match(v.message, /no bus/);
+});
+
+// ── A WALK THAT DID NOT FINISH IS NOT A CLEAN BILL OF HEALTH ────────────────────────────────────────
+//
+// The sibling of the unnamed-deployment fault, one branch above it. The verdict already said, in its
+// own words, that a short file list "quietly satisfies" both file arms and that an empty walk "is not a
+// clean bill of health, it is a walk pointed somewhere wrong" — and it said both of those while
+// returning `pass`. Two arms that can only report on what the walk found are worthless when the walk
+// found nothing, and worse than worthless when they read as green.
+
+test("an INCOMPLETE file walk fails — the two file arms cannot report on a list they did not finish", () => {
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const v = unitInventoryVerdict({ live: ["planted-live.service"], files: [A_REAL_TRACKED_FILE],
+    filesError: "EACCES on driver/systemd", box: "test", probe: { ok: true }, inventory: planted });
+  assert.equal(v.state, "fail");
+  assert.match(v.message, /THE FILE ARMS DID NOT RUN/);
+  assert.match(v.message, /EACCES on driver\/systemd/, "the reason the walk stopped is no longer carried");
+});
+
+test("an EMPTY file walk fails — no unit file anywhere is a path pointed wrong, not a clean tree", () => {
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const v = unitInventoryVerdict({ live: ["planted-live.service"], files: [], box: "test",
+    probe: { ok: true }, inventory: planted });
+  assert.equal(v.state, "fail");
+  assert.match(v.message, /THE FILE ARMS DID NOT RUN/);
+  assert.match(v.message, /found NO unit file anywhere/, "the empty case lost its own sentence");
+});
+
+test("a COMPLETE walk still passes — the control, without which the two arms above prove nothing", () => {
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const v = unitInventoryVerdict({ live: ["planted-live.service"], files: [A_REAL_TRACKED_FILE],
+    box: "test", probe: { ok: true }, inventory: planted });
+  assert.equal(v.state, "pass");
+  assert.doesNotMatch(v.message, /DID NOT RUN/);
+});
+
+test("the two walk failures keep DIFFERENT sentences, because they are different states", () => {
+  // Same verdict, and a reader still has to be able to tell "I could not read a directory" from
+  // "I read everything and there was nothing there". Collapsing them would lose the more diagnostic one.
+  const planted = [{ unit: "planted-live", runsOn: ["test"], tracked: [] }];
+  const incomplete = unitInventoryVerdict({ live: [], files: [A_REAL_TRACKED_FILE], filesError: "EACCES", box: "test", probe: { ok: true }, inventory: planted });
+  const empty = unitInventoryVerdict({ live: [], files: [], box: "test", probe: { ok: true }, inventory: planted });
+  assert.match(incomplete.message, /INCOMPLETE/);
+  assert.match(empty.message, /found NO unit file anywhere/);
+  assert.notEqual(incomplete.message, empty.message);
 });
