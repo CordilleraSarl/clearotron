@@ -73,7 +73,7 @@ const FROZEN_FILES = [
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:714" },
   { path: "_driver/reasoning-integrity.json", why: "publish/index.mjs:715" },
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:716" },
-  { path: "_driver/search-policy.json", why: "publish/index.mjs:788,806 level + stage label" },
+  { path: "_driver/search-policy.json", why: "publish/index.mjs reportIdentityFor — level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs:920 + report-registry.mjs:42 customer key" },
 ];
 

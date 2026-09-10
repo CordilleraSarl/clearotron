@@ -89,7 +89,7 @@ export const REGISTER_SERVERS = {
   //     mint is shared (mcp/supplemental.mjs); the only per-provider parts are doExecutePlan, which this
   //     server already binds for the dictated plan, and the capability contract, which the mint reads to
   //     decide what defers. Nothing new reaches the wire. While it was unwired the driver's composed prose
-  //     ordered the mint UNCONDITIONALLY — `stages.mjs:2101` and `:2131` — so a signa deploy was told to
+  //     ordered the mint UNCONDITIONALLY — the register-unit stage's own dictation in `stages.mjs` — so a signa deploy was told to
   //     make a call no server offered. Measured on  over a real signa run: the order reached three
   //     register-unit stages, no call was recorded against it, and the run still read `delivered`.
   //

@@ -2892,7 +2892,7 @@ export const STAGES = {
       },
       "findings[].meters.use.token / meters.enforcer.token — the two strengths with no quadrant axis": {
         class: "judgment", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],
-        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (stages.mjs:1739), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry. [citation unverified]",
+        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (the quadrant element in this file's own findings dictation), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry. [citation unverified]",
       },
       "findings[].meters.mark_similarity.token / meters.goods_proximity.token — the coarse 3-pip restatement of the quadrant position": {
         class: "mechanical:code-assigned", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],
