@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A SIGNAL SENT TO THE VISIBLE PID REACHES WHAT THAT PID STARTED — tracker issue 176.
+// A SIGNAL SENT TO THE VISIBLE PID REACHES WHAT THAT PID STARTED.
 //
 // `bin/example.mjs` grew a SIGTERM handler because killing the demo left its three doors bound. Driving
 // that fix found the same defect one level UP, in the process a reader actually sees: `bin/clearotron.mjs`

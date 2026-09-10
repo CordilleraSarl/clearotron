@@ -350,7 +350,7 @@ test("331 E: the scope block says what the screen is and is not, with 'clearance
   assert.match(scope, /<b>What it is not\.<\/b> A clearance search\./);
   // COUNTED ON WHAT A READER SEES. The first pass counted the raw HTML and reached three, the third
   // being the word inside a source comment — so the arm was measuring the file, not the page. The
-  // model's caveats sit behind a border after this block; how often THEY say it is tracker issue 333's
+  // model's caveats sit behind a border after this block; how often THEY say it is the two-register rule's
   // business, not this renderer's.
   const cut = scope.indexOf('style="border-top');
   const fixed = (cut > 0 ? scope.slice(0, cut) : scope)

@@ -3101,7 +3101,7 @@ export function bundleFreshnessCached(present, { now = Date.now(), ttl = BUNDLE_
 /**
  * How to re-mint the trigger token WITH an accounts cap, and without changing anything else about it.
  *
- * ── tracker issue 107 ────────────────────────────────────────────────────────────────────────────
+ * ── THE RE-MINT COMMAND ──────────────────────────────────────────────────────────────────────────
  *
  * This used to be a fixed string in the warning itself: `--sub portal --verbs start_run,stop_run`. An
  * operator whose token carries a third verb, or a different subject, was told to re-mint as something

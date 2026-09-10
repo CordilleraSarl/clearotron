@@ -159,6 +159,11 @@ export const EXCLUDED = [
   // only reason it surfaced: before that, these lines were counted and never listed.
   "scripts/strip-tracker-citations.mjs",
   "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs",
+  // The RELEASE-NOTE linter's own corpus. Its arm asserts that "Fixed: The demo works again — tracker
+  // issue 97." is refused, and the citation IS the specimen: sweep it and the arm asserts that a clean
+  // sentence is clean, which passes over a linter that has stopped looking. Same argument as the two
+  // files above, found by the sweep listing a line it should never take.
+  "driver/test/a-release-note-is-written-for-its-reader.test.mjs",
   // Pinned at a content hash; a prose repair is not worth spending a freeze on.
   "driver/publish/render.mjs",
   // The residue FLOOR's own specimens. Seven citations here, every one a synthetic number (1234, 1235)

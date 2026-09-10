@@ -50,8 +50,8 @@
 // Two tables partitioning the same clients on different axes do not merely risk drifting; they had
 // already drifted before either was finished. The page said Codex needs a key address. This table says
 // Codex needs no key at all. On a local install the page's answer resolved to `null`, so the page named
-// a one-line command in its own instructions and then rendered no command — which is tracker issue
-// 1976's defect, sitting inside the page written to answer it.
+// a one-line command in its own instructions and then rendered no command — which is that very
+// defect, sitting inside the page written to answer it.
 //
 // So the browser no longer derives any of this. It is handed resolved rows and renders them. That is not
 // a preference for server-side logic: the install's own filesystem path is not a browser fact, and any

@@ -108,7 +108,7 @@ const invoked = () => {
 
 // A check that CANNOT run in CI says so here, with the reason, and the reason has to be a property of
 // the check rather than a preference. Anything that could run and simply is not wired up belongs in
-// the workflow instead — that is what tracker issue 968 was about.
+// the workflow instead — that is what the declaration rule was about.
 const CANNOT_RUN_IN_CI = [
   {
     path: "scripts/report-screenshot.mjs",
@@ -173,8 +173,8 @@ test("#1489 render-check is INVOKED by CI, and the exemption that kept it out is
   if (scripts === null) return ctx.skip(skipReason(GUARD));
   assert.ok(scripts.includes("scripts/render-check.mjs"), "the script this issue is about must still exist");
 
-  // This arm REPLACES "tracker issue 968 render-check is DECLARED …", which asserted the opposite and was correct
-  // until tracker issue 1489. It is a replacement rather than a deletion because the property worth guarding never
+  // This arm REPLACES an earlier "render-check is DECLARED …", which asserted the opposite and was correct
+  // until the workflow moved. It is a replacement rather than a deletion because the property worth guarding never
   // changed: the only check that measures a report INSIDE the portal's iframe must not fall out of this
   // file silently. What changed is which side of the ledger it belongs on.
   assert.ok(invoked().has("scripts/render-check.mjs"),

@@ -436,7 +436,7 @@ export function effectiveInScope(hit, scopeJurisdictions = []) {
 // does a SEARCHED token mechanically cover a scoped jurisdiction j? (exact, or an EU search covering EU-scope).
 // A member scoped but only EU searched is NOT covered (national rights need a national search) → stays a gap.
 //
-// EXPORTED for the delivered-narrative coverage check (predelivery-lint.mjs, tracker issue 134), which asks
+// EXPORTED for the delivered-narrative coverage check (predelivery-lint.mjs), which asks
 // the same question of a different claimant: not "did the plan cover the scope" but "does the prose claim
 // coverage of a territory the run did not search". One copy of the EU-reach rule, because two copies drifting
 // apart would be a worse defect than the disagreement this is being exported to catch. Callers pass

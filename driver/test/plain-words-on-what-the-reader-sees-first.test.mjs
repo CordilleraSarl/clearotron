@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Plain language on the knockout's default-visible lines (tracker issue 333, knockout half).
+// Plain language on the knockout's default-visible lines (the knockout half).
 //
 // The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page.
 // The band, the summary, the basis line and the one-liners are the whole product for the second reader,
@@ -9,7 +9,7 @@
 //
 // THE PARTITION IS WHAT THIS FILE IS ABOUT. The rule is not "no legal words on the report" — it is "no
 // legal words where the reader has not chosen to go deeper". Since the page folds each card's argument
-// (tracker issue 331 A.3), the same word is a defect in a finding's `net` and correct in its `basis`.
+// Behind a fold, the same word is a defect in a finding's `net` and correct in its `basis`.
 // Half the arms below exist to hold that line, because a check that flagged both would push the writer
 // toward vaguer reasoning in the one place precision is wanted.
 

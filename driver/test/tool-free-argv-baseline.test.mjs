@@ -104,8 +104,8 @@ const CONVERTED_BEFORE = Object.freeze({
   // is zeros like most of the table, and the zeros mean something different here: every other stage in
   // this table was a clearance-pipeline stage that COULD have been granted tools and was not. This one
   // sits on a separate lane that had no typed return path at all — `toolGroupsForStage` returned [] for
-  // both its stages, and for the chunk label it returned [] even AFTER a row existed, until tracker issue
-  // 2003 taught the resolver the lane's `#` separator.
+  // both its stages, and for the chunk label it returned [] even AFTER a row existed, until the
+  // resolver was taught the lane's `#` separator.
   //
   // MEASURED PRE-CONVERSION, on main at de06260, through the same walk: `knockout-assess` and
   // `knockout-assess#0` both resolved to no groups, no allowedTools, no mcpConfig. Historical fact about

@@ -129,8 +129,8 @@ const sampleDirs = flag("--run-dir")
 // the container itself is what it looks at, which is what it always did when `demo/` was empty.
 const sampleDir = sampleDirs[0] ?? resolve(DEMO_ROOT);
 if (!sampleDirs.length || !isFrozen(sampleDir)) {
-  // AN ABSENCE IS A FINDING, AND IT NAMES WHAT IT LOOKED AT. This exits 1 and always has; tracker issue
-  // 2193 reported it exiting 0, which did not reproduce at v0.1.0 or at main's tip. An arm pins it.
+  // AN ABSENCE IS A FINDING, AND IT NAMES WHAT IT LOOKED AT. This exits 1 and always has; a report of
+  // it exiting 0 did not reproduce at v0.1.0 or at main's tip. An arm pins it.
   die(
     `demo: no frozen demo at ${sampleDir}`,
     "",

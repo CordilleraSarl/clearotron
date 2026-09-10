@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The portal asks whether its engine door will take it — tracker issue 174, the half that is buildable now.
+// The portal asks whether its engine door will take it — the half that is buildable now.
 //
 // ── the outage this is made of ──────────────────────────────────────────────────────────────────────
 //

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE TWO-REGISTER RULE, AS THE REVIEWER READS IT — tracker issue 333.
+// THE TWO-REGISTER RULE, AS THE REVIEWER READS IT.
 //
 // The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page.
 // The band, the summary, the basis line and the one-liners are the whole product for the second reader,

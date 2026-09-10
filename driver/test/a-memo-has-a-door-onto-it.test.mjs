@@ -288,7 +288,7 @@ test("parentRatedUnder reads the FROZEN sidecar, and null means none was frozen"
   // THREE ways there is no key, and they must all read null. A plant that defaulted to "generic" was
   // caught by NONE of these until the middle two existed: an absent FILE hits the catch and returns null
   // whatever the default is, so an arm that only tested a bare directory passes a build that
-  // manufactures the exact substitution tracker issue 135 is about.
+  // manufactures the exact substitution this is about.
   const bare = mkdtempSync(join(tmpdir(), "memo-bare-"));
   assert.equal(parentRatedUnder(bare), null, "no sidecar at all");
 

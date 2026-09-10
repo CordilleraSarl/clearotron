@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// WHAT A FRESH INSTALL OFFERS AS A BRAND OWNER (tracker issue 335, tracker issue 342).
+// WHAT A FRESH INSTALL OFFERS AS A BRAND OWNER.
 //
 // An outside user installed this product with no configuration of ours, and their brand-owner picker
 // offered three of our test accounts beside their own choices. The picker was not wrong — it listed the

@@ -24,7 +24,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync } from "node:f
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { handRunEnv } from "./drive-env.mjs";   // tracker issue 204
+import { handRunEnv } from "./drive-env.mjs";
 import { startStands } from "../../bin/start.mjs";
 import { systemdFailure, CAPTURE_STDERR } from "../../shared/systemd-failure.mjs";
 
@@ -130,7 +130,7 @@ test("203 and the generic trailer still fires where nothing better was said", as
   // out to be always-on would delete the re-running-is-safe line from every other post-write refusal in
   // this command with nothing going red. So it is driven at a DIFFERENT post-write refusal.
   //
-  // WHICH ONE CHANGED WITH tracker issue 216. This used to withhold the engine values and stop at the
+  // WHICH ONE CHANGED WHEN THE GATE MOVED. This used to withhold the engine values and stop at the
   // missing-requirements refusal. The owner ruled on 2026-09-06 that an install comes up without those
   // and every run is refused at ORDER time instead, so that refusal is gone from this command and this
   // arm lost its trigger — not its subject. It drives the CLIENT DOOR'S refusal now: an occupied port

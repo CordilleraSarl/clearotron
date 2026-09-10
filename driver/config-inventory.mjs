@@ -279,7 +279,7 @@ const CASELAW_SITES = Object.freeze({
  * a byte of it.
  */
 /**
- * Is this credential file something the bridge could actually use? — tracker issue 173.
+ * Is this credential file something the bridge could actually use?
  *
  * `existsSync` was the whole test, and a zero-byte file therefore reported as an enrolled case-law
  * source. That is not merely an operator-facing inaccuracy: `driver/case-law-sources.mjs` hands the

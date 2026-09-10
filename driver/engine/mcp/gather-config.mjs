@@ -1111,8 +1111,8 @@ const FANNED_STAGES = Object.freeze({ perAxis: PER_AXIS_STAGES, perChunk: PER_CH
  * The BOUND ORDINAL for a fanned-out recording stage: which member of a per-ordinal artifact this turn
  * is writing. The driver knows, because the driver is what fanned it out.
  *
- * ONE FUNCTION, BOTH SUFFIX FORMS, for the reason `toolGroupsForStage` gives one block to both (tracker
- * issue 2003): a second derivation beside the first is a second place to forget, and forgetting is how
+ * ONE FUNCTION, BOTH SUFFIX FORMS, for the reason `toolGroupsForStage` gives one block to both:
+ * a second derivation beside the first is a second place to forget, and forgetting is how
  * the `#` form came to be unhandled in the first place. It walks SUFFIX_FORMS, so a separator this
  * module knows for grants is a separator it also knows for binding — the two cannot drift apart.
  *

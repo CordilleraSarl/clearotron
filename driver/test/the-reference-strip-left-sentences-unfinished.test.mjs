@@ -57,7 +57,7 @@ const census = () => { const files = tracked(); return files === null ? null : c
 test("185 the reference-strip backlog is a FLOOR — no file may carry more than it is recorded with", (ctx) => {
   const now = census();
   if (now === null) return ctx.skip(skipReason(GUARD));
-  // An empty corpus reports every absence as a repair. The census in tracker issue 1010 exists for this shape.
+  // An empty corpus reports every absence as a repair. The vacuous-pass census exists for this shape.
   assert.ok(Object.keys(now.files).length > 0 || TABLE.total === 0,
     "the census came back empty against a non-empty table — the corpus was not read, and every "
     + "'repaired' line below would be a file this arm failed to open");

@@ -1300,8 +1300,8 @@ if (isMain) {
   // the processes and thats it its done". The foreground supervisor dies with the terminal — his portal
   // was gone between two of his own sessions and every screen spun. The honest fix on a machine with
   // systemd is not a detach flag and a pid file; it is the same user units a server runs, installed for
-  // exactly the pinned BACKGROUND_UNITS set (the census arm keeps that pin honest). Since tracker issue
-  // 2148 settled point 2 that set INCLUDES the client door, which is why the block below writes the
+  // exactly the pinned BACKGROUND_UNITS set (the census arm keeps that pin honest). Since the owner
+  // settled point 2 that set INCLUDES the client door, which is why the block below writes the
   // door's settings before any unit is placed.
   //
   // THE UNITS READ %h/.env, NOT THIS PROCESS'S ENV. Everything the foreground supervisor would have

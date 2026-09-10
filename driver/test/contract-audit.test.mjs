@@ -362,7 +362,7 @@ test("#1211: a cited site is a MINT, never a sentence about the code", () => {
 });
 
 test("#1211: every citation lands on the line that MINTS the code, not near it", () => {
-  // THIS ARM EXISTS BECAUSE IT ALREADY FIRED. tracker issue 1265 landed in connotation-search.mjs while this was being
+  // THIS ARM EXISTS BECAUSE IT ALREADY FIRED. A change landed in connotation-search.mjs while this was being
   // built and moved every mint in that file down 31 lines; all eleven citations into it then pointed at
   // comments and unrelated code, and nothing would have said so. A line number in prose is a claim that
   // decays on somebody else's merge, so it is checked rather than maintained.
@@ -372,7 +372,7 @@ test("#1211: every citation lands on the line that MINTS the code, not near it",
   // which is worse.
   // THE FAILURE OUTPUT IS THE PATCH. A message that says "re-derive the line numbers" hands the next
   // agent — who has the repo and nothing else — a chore with no tool, so this finds the right line and
-  // prints it. tracker issue 1263 is open against connotation-search.mjs as this lands, and whoever merges second
+  // prints it. Another change is open against connotation-search.mjs as this lands, and whoever merges second
   // trips this arm; what they need is the corrected citation, not an instruction to go and look.
   // The MINT shape, not any mention: `reason: "<code>"` is how every one of these is written. Matching a
   // bare quoted occurrence would call the closed-list declarations (CONNOTATION_REASONS,

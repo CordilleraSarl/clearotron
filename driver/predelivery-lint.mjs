@@ -2363,7 +2363,7 @@ const knockoutSurfaces = (findings) => {
 // comparison", "subsisting European rights", "the confusion comparison meets on every limb".
 //
 // THE PARTITION IS DEFAULT-VISIBLE vs FOLDED, WHICH IS NOT THE report/working SPLIT ABOVE. Since the
-// page folds each card's argument (tracker issue 331 A.3), a finding's `basis` is now behind a click,
+// page folds each card's argument, a finding's `basis` is now behind a click,
 // and 333 rule 2 allows the lawyer's vocabulary there where a plain word would lose precision. The same
 // is true of the long `assessment`. So this check reads exactly the fields the renderer DRAWS without
 // a click, and reads nothing else — a check whose population is "the report" would flag the very

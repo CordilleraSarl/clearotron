@@ -328,7 +328,7 @@ test("#1847 the net is installed at import, so a test that forgets to call reapN
 // THE ARM FOR THE LEAK THIS FILE HAD WHILE ASSERTING NOBODY ELSE MAY HAVE IT.
 //
 // The premise arm's cleanup used to be a bare SIGKILL written after its assertions, so a red threw past
-// it and stranded the child — the exact defect tracker issue 1847 exists for, in the file that exists to prevent it.
+// it and stranded the child — the exact defect this file exists to prevent, in the file that exists to prevent it.
 // Proved by forcing that arm red: zero stranded before, one after.
 //
 // This drives the net rather than reading the source for it. A source-shaped arm would pass over a net

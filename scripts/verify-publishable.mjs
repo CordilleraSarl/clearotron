@@ -46,7 +46,7 @@ export function buffersDirs(root, out = []) {
 
 const keep = process.argv.includes("--keep");
 const staging = mkdtempSync(join(tmpdir(), "clearotron-verify-"));
-// ── CAN THIS RUN ON THE TREE IT IS POINTED AT — tracker issue 196 ───────────────────────────────────
+// ── CAN THIS RUN ON THE TREE IT IS POINTED AT ───────────────────────────────────────────────────────
 //
 // THIS SCRIPT WAS INVOKED BY NOTHING for as long as it has existed on the public tree: no workflow, no
 // npm script, every other mention of its name a comment. That is the shape — an

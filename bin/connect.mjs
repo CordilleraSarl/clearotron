@@ -285,8 +285,8 @@ function portOwnerOf(port, bound) {
  * ── WHY IT EXISTS (criterion 3) ──────────────────────────────────────────────────────────────────────
  *
  * Two readers here called `systemctl --user show` directly and neither did what the WRITERS in this
- * same file already do: neither passed `userBusEnv()`, so both failed in exactly the shell tracker issue
- * 121 was filed about, and neither captured stderr, so systemd's own "Failed to connect to bus" went
+ * same file already do: neither passed `userBusEnv()`, so both failed in exactly the shell the
+ * refusal report was filed about, and neither captured stderr, so systemd's own "Failed to connect to bus" went
  * straight past the reader with no remedy beside it.
  *
  * The writers were fixed and these were missed, which made the product WORSE on this path rather than

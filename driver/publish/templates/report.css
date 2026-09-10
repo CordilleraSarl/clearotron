@@ -167,7 +167,7 @@
   .pips.l3 i:nth-child(-n+3){background:var(--high)} .pips.l2 i:nth-child(-n+2){background:var(--med)} .pips.l1 i:nth-child(-n+1){background:var(--low)}
   .pips.g3 i{background:var(--clear)} .pips.g2 i:nth-child(-n+2){background:var(--clear)}
   .mv{font-size:11px;color:var(--slate);margin-top:6px;font-weight:500;line-height:1.3}
-  /* tracker issue 762 D4 — the meter's SECOND position: how well the fact above it is evidenced. It is subordinate
+  /* D4 — the meter's SECOND position: how well the fact above it is evidenced. It is subordinate
      to .mv on purpose (lighter, smaller): the finding is the fact, the receipt is the footnote. It
      wraps inside its own 1fr grid track, so a long evidence clause costs height, never overflow. */
   .mev{font-size:10px;color:var(--faint);margin-top:3px;font-weight:500;line-height:1.3}
@@ -214,7 +214,7 @@
   details.method[open]>summary::after{content:"▴"}
   .method .mbody{padding:0 22px 20px;font-size:13px;color:var(--slate);line-height:1.62}
 
-  /* Ask-your-AI launcher (PR tracker issue 207 addendum) */
+  /* Ask-your-AI launcher */
   .askai{position:relative;display:inline-block}
   .askai-pop{position:absolute;z-index:30;top:calc(100% + 8px);left:0;width:340px;max-width:88vw;background:var(--card);
     border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:14px}
@@ -272,7 +272,7 @@
   .jchip.ww{font-family:inherit;letter-spacing:.03em;color:var(--clear-tx,#2e6b32);background:var(--clear-soft,#EAF3E6);border-color:transparent}
   .jnote{font-size:10.5px;color:var(--faint);line-height:1.4}
 
-  /* spec-49 T4 retired the review-notes caveat body; tracker issue 265 retired the slim internal toolbar that
+  /* spec-49 T4 retired the review-notes caveat body; a later change retired the slim internal toolbar that
      survived it, because the Flag/Etch capture controls it hosted are gone. The .review rules stay:
      reports ALREADY DELIVERED are frozen bytes carrying that markup, and portal-report.mjs strips
      it at serve time against these selectors. */
@@ -349,7 +349,7 @@
        own content was carried correctly and only the control leaked, which is why the commit that added
        the fold could check the half it thought about and ship the half it did not. */
     details.drill>summary,details.method>summary,details.sub-more>summary{display:none!important}
-    /* tracker issue 470 made this line load-bearing for the document's CONTENT, not just its completeness. The
+    /* The caption fold made this line load-bearing for the document's CONTENT, not just its completeness. The
        legal/practical reads now live inside .drillbody, so without this rule the exported PDF would
        carry the one-line verdicts and none of the reasoning behind them. The export prints everything a
        reader could open — ruled on #470, deliberately unchanged. Ticked-card selection (.print-hidden)

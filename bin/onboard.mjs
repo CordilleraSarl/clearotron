@@ -120,8 +120,8 @@ function readIfPresent(path) {
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
-// WHAT IS READ IS NOT ALWAYS WHERE THE NEXT WRITE GOES. An install configured before the move (tracker
-// issue 159) still has its file at the old path, and the loader still reads it — so every READ here asks
+// WHAT IS READ IS NOT ALWAYS WHERE THE NEXT WRITE GOES. An install configured before the move still
+// has its file at the old path, and the loader still reads it — so every READ here asks
 // the same resolver the loader asks, or this command reports "no configuration" over a file every other
 // command is applying. Writes stay on ENV_PATH: a writer that followed the file backwards would keep an
 // install in the directory npm replaces forever.

@@ -39,7 +39,7 @@ const NO_CORPUS = skipReason(GUARD);
 const BINARY_EXTENSIONS = new Set([
   ".zip", // providers/uspto-local/test/fixtures/*.zip — six real archive fixtures, measured 2026-08-16
   // docs/assets/example-report.png — ONE file, the public README's screenshot of a finished report
-  // (tracker issue 857 decision 4), measured 2026-08-20. It was the first image asset tracked outside portal-ui,
+  // (decision 4), measured 2026-08-20. It was the first image asset tracked outside portal-ui,
   // whose twelve assets are .svg and therefore text. The row is stated rather than defaulted because
   // the arm below makes the exemption earn itself in both directions: delete the screenshot and this
   // row fails for exempting nothing, and it also fails the day a .png lands that is somehow NUL-free.

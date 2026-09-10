@@ -67,8 +67,7 @@ export function koPaths(runDir) {
     // rows were left exactly as they were rather than gaining a matching marker: their shape is pinned
     // byte-for-byte by register-count.test.mjs, and a discriminator only one side needs is enough.
     registerRecords: driverDir(runDir, "register-records.json"),
-    // The scoped owner lookups this run owes its promoted filings, and their receipts (tracker issue
-    // 276). Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
+    // The scoped owner lookups this run owes its promoted filings, and their receipts. Both under `_driver/` because both are the DRIVER's own measurement of a call it made — the
     // rule stated fourteen lines above. The seat reads the payloads under research/, never these.
     ownerChecks: driverDir(runDir, "owner-checks.json"),
     ownerCheckLedger: driverDir(runDir, "owner-check.jsonl"),
@@ -401,7 +400,7 @@ export const KO_STAGES = {
       // ADDITIONAL TO `chunkSummary`, NOT A REPLACEMENT. The cross-mark paragraph still exists and still
       // owns the grouped page — the two are different documents for different readers, and collapsing
       // them is what produced the blank.
-      // ── STRUCTURE, AND A SCALE THAT HOLDS (tracker issues 1934 and 2056) ──────────────────────────
+      // ── STRUCTURE, AND A SCALE THAT HOLDS ─────────────────────────────────────────────────────────
       //
       // Owner, 2026-08-31, reading a delivered run: the per-mark opening was "now HUGE and formatted
       // even worse — no newlines, borderline not a summary". Measured on that run: 2,875 characters,

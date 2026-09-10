@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// tracker issues 193 and 109 — two checks read a machine they do not own.
+// Two checks read a machine they do not own.
 //
 // Driven on a real deployment: `doctor` reported five running programs as "executing a DIFFERENT
 // checkout" and advised repointing or restarting them. All five belonged to another account's

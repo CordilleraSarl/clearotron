@@ -170,7 +170,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // calls the sanctioned way to say the repo does not carry one.
     //
     // ONE THING THIS DOES NOT SETTLE, left visible rather than decided quietly. The note calls the unit
-    // "generic since tracker issue 1925" — an argument that a placeholder COULD now ship and be compared,
+    // "generic since the placeholder ruling" — an argument that a placeholder COULD now ship and be compared,
     // because the reason its siblings cannot (real CF Access values inline) may no longer hold here. That
     // is a change which ADDS a file, measured against the deployed copy, and it is not this one. Two
     // prose references in driver/systemd/render-units.mjs also describe this file as though it were in

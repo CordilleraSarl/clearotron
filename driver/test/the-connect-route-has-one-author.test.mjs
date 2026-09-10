@@ -72,8 +72,8 @@ test("1959 ONE AUTHOR — no surface composes this command for itself", () => {
     const src = readFileSync(join(REPO, f), "utf8");
     // A second author is a file that BUILDS the command, not one that mentions the product's name —
     // and that INTENT was already written here while the check could not honour it. A file explaining
-    // why handing `claude mcp add` to a Codex user is a defect was reported as committing it (tracker
-    // issue 1976). Same shape as `render-units.mjs`: a unit DOCUMENTING the placeholder mechanism made
+    // why handing `claude mcp add` to a Codex user is a defect was reported as committing it.
+    // Same shape as `render-units.mjs`: a unit DOCUMENTING the placeholder mechanism made
     // the renderer refuse, and the fix there was to read directive lines only. So: strip comments,
     // then scan. A second author is code, so nothing that matters is lost.
     const code = codeOnly(src, f);

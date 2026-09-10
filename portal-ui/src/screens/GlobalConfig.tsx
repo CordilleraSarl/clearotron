@@ -119,8 +119,8 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
           )}
         </Group>
 
-        {/* WHAT THIS PAGE IS SHOWING, AND WHAT THE LAST RUN SAW — owner ruling 2026-09-05 (tracker
-            issue 170): the page shows LIVE configuration, always, and the age banner is retired.
+        {/* WHAT THIS PAGE IS SHOWING, AND WHAT THE LAST RUN SAW — owner ruling 2026-09-05:
+            the page shows LIVE configuration, always, and the age banner is retired.
 
             THE BANNER WENT BECAUSE IT ANSWERED THE WRONG QUESTION. It said "this snapshot is more than a
             day old", which a reader cannot act on, and it fired on age alone — so a box being configured,

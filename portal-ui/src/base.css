@@ -1242,7 +1242,7 @@ input.filter {
 
 /* The column the wizard's steps live in. 720px, the design's measure for a form — NOT the footer's,
    which spans the screen. */
-/* ── Refs tracker issue 1937 §B — THE MEASURE MOVES OFF THE COLUMN AND ONTO ITS BLOCKS ─────────────
+/* ── §B — THE MEASURE MOVES OFF THE COLUMN AND ONTO ITS BLOCKS ────────────────────────────────────
    The owner: the New clearance page "is bound to an artificially narrow width; the table side-scrolls
    or wraps and looks worse than its content deserves. The top panel already fits the screen width."
    720px is the right measure for a COLUMN OF FIELDS and the wrong one for a five-column comparison. So
@@ -1270,7 +1270,7 @@ input.filter {
   max-width: none;
 }
 
-/* ── Refs tracker issue 1937 §B — "what this search includes", in or out at a glance ────────────────
+/* ── §B — "what this search includes", in or out at a glance ─────────────────────────────────────────
    The list read as three sentences of equal weight, and whether an axis ran at all was buried in the
    clause after the dash. The tick and the cross carry the answer; the colour is a reinforcement, never
    the only signal, because a marker distinguishable by hue alone is not a marker for every reader. */
@@ -2100,7 +2100,7 @@ input.filter {
    the wrong one for a page of controls: the buttons stacked one per row down a 640px column with two
    thirds of the frame empty beside them. The text keeps a readable measure (`--screen-measure`, the
    vocabulary's own, not a ninth invented number) and the buttons take the frame and wrap. No new width
-   is declared here, deliberately — tracker issue 2086 rules that a new one needs its own reason, and
+   is declared here, deliberately — the width vocabulary rules that a new one needs its own reason, and
    this page did not need one, it needed to stop using the narrowest one for everything. */
 .ai-screen h2 {
   font-size: 17px;

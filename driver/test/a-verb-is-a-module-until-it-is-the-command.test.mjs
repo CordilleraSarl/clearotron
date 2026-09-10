@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Importing a verb reads a module; it does not start a command — tracker issue 183.
+// Importing a verb reads a module; it does not start a command.
 //
 // `import("../bin/connect.mjs")` did not import a module. It ran the whole verb, printed the assistant
 // menu and waited for an answer, which hung the run. That was found the only way it could be — by an arm
@@ -8,8 +8,8 @@
 //
 // The cost is not the hang. It is that a verb whose module cannot be imported can only be exercised by
 // SPAWNING it, so its pure parts — message composers, argument parsing, state predicates — get arms that
-// spawn a process, or get no arms at all. The second is what had happened: the failure path in tracker
-// issue 121 shipped with a message nobody could assert on, and nobody noticed it said nothing useful.
+// spawn a process, or get no arms at all. The second is what had happened: the connect failure path
+// shipped with a message nobody could assert on, and nobody noticed it said nothing useful.
 //
 // `bin/clearotron.mjs` has carried the guard from the start and its own comment says why in terms that
 // apply unchanged here: "Without the guard, importing it to read the verb table would DISPATCH — the

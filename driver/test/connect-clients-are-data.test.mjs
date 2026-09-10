@@ -155,7 +155,7 @@ test("2148 §3 NO OFFER EVER CARRIES A LOOPBACK ADDRESS, on any deployment", () 
   }
   // And the row that was wrong resolves exactly like the row that was right — same shape, same answer.
   const strip = (o) => JSON.stringify({ served: o.served, route: o.route, address: o.address, key: o.key });
-  // `cowork` merged into `claude` (tracker issue 147, owner: it is one app). Same population member —
+  // `cowork` merged into `claude` (owner: it is one app). Same population member —
   // an http client reaching the web door — so this arm keeps its subject under the surviving id.
   assert.equal(strip(whatItNeeds(clientById("claude"), PUBLISHED)),
     strip(whatItNeeds(clientById("claude"), PUBLISHED)),

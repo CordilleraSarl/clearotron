@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A missing session bus is not a closed door — tracker issue 130, criterion 3.
+// A missing session bus is not a closed door.
 //
 // ── the regression this exists to stop coming back ──────────────────────────────────────────────────
 //
-// Tracker issue 121 fixed `connect` under `su`/`sudo -u`, where `XDG_RUNTIME_DIR` and
+// An earlier fix made `connect` work under `su`/`sudo -u`, where `XDG_RUNTIME_DIR` and
 // `DBUS_SESSION_BUS_ADDRESS` are unset and `systemctl --user` dies with "Failed to connect to bus". The
 // fix reached the two WRITERS — daemon-reload and enable — and missed the two READERS, which asked
 // systemd the same question with neither the derived bus nor captured stderr.
@@ -23,8 +23,8 @@
 // The branch is driven through an injected reader, which is honest here because the defect IS in the
 // callee: `unitIsHealthy` translated its own could-not-look into its ordinary negative answer.
 //
-// What injection CANNOT see is a caller that stops passing what it was handed — the lesson of tracker
-// issue 179. Here that shape is a NEW read site added straight onto `execFileSync`, bypassing the
+// What injection CANNOT see is a caller that stops passing what it was handed, which is the lesson
+// filed against it. Here that shape is a NEW read site added straight onto `execFileSync`, bypassing the
 // wrapper entirely, which is precisely how this defect arrived. The last arm is aimed at that and reads
 // the file rather than the function.
 
@@ -51,7 +51,7 @@ test("a bus failure at the health read is RAISED, never rendered as a shut door"
   assert.throws(() => unitIsHealthy("clearotron-client-mcp.service", { show: busFailure, pause: noPause }),
     (e) => {
       // The remedy has to travel with it. A raise that says "Command failed" has moved the defect
-      // rather than repaired it — that sentence is what tracker issue 121 was filed about.
+      // rather than repaired it — that sentence is what the refusal report was filed about.
       assert.match(e.message, /Failed to connect to bus/, "systemd's own words were discarded again");
       assert.match(e.message, /XDG_RUNTIME_DIR=\/run\/user\//, "the two exports the reader needs are not in it");
       assert.match(e.message, /DBUS_SESSION_BUS_ADDRESS=unix:path=/);
@@ -71,7 +71,7 @@ test("a unit systemd DID answer about and calls dead is still not healthy", () =
   const up = () => ({ fields: { ActiveState: "active", SubState: "running", NRestarts: "7" }, error: null });
   assert.equal(unitIsHealthy("x.service", { show: up, pause: noPause }), true,
     "a recovered door with a lifetime restart count above zero was called unhealthy — the defect "
-    + "tracker issue 2203 already repaired once on this path");
+    + "already repaired once on this path");
 
   // A failure that is NOT about the bus keeps the old answer too: systemd was reachable and said no.
   const noSuchUnit = () => ({ fields: null,
@@ -92,8 +92,8 @@ test("the reader asks with the bus filled in and keeps what systemd said", () =>
     "stderr is not captured, so systemd's own explanation reaches the operator raw with no remedy "
     + "beside it — or is discarded entirely, which is how this printed a command name and nothing else");
   assert.ok(seen.opts.env && seen.opts.env !== process.env,
-    "the reader was not given a derived environment, so it fails in exactly the shell tracker issue "
-    + "121 was filed about while the writers one screen away succeed");
+    "the reader was not given a derived environment, so it fails in exactly the shell the refusal "
+    + "report was filed about, while the writers one screen away succeed");
 });
 
 test("one authority decides what a bus failure looks like", () => {

@@ -216,7 +216,7 @@ const PROBE = `<script>
       try { parent.postMessage({probeError:String(e && e.message || e)},'*'); } catch (e2) {}
     }
   }
-  // An error in here must not read as "no measurement" — that is the ambiguity tracker issue 1155 was about.
+  // An error in here must not read as "no measurement" — that is the ambiguity this was about.
   window.addEventListener('error', function(ev){
     try { parent.postMessage({probeError:String(ev && ev.message || ev)},'*'); } catch (e) {}
   });

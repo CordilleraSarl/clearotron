@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// What we declare we depend on, against what we actually ship — tracker issues 99 and 115.
+// What we declare we depend on, against what we actually ship.
 //
 // Two failures of the same shape, both silent, both invisible to every check that existed:
 //

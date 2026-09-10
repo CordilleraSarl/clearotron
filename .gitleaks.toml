@@ -19,7 +19,7 @@ paths = [
 # ONLY in the reserved TMP 0/1/2/8/9-thousand bands, so anything matching this regex has been asserted
 # to be synthetic by a check that fails loudly if a real matter number appears.
 #
-# It surfaced when tracker issue 1006 renamed the mark in the slug: the previous name scored below the entropy
+# It surfaced when a rename changed the mark in the slug: the previous name scored below the entropy
 # threshold and the replacement scored above it. That is the tell that the rule was never reading a
 # secret — the same line, the same shape, a different invented word. The wrong fix is to pick mark names
 # a scanner finds boring, which would put an entropy heuristic in charge of the doctrine's vocabulary.
@@ -33,9 +33,9 @@ paths = [
 # synthetic. It scores 3.704 against generic-api-key's 3.7 threshold, so it has been a finding all along.
 #
 # IT DOES NOT FIRE ON MAIN, AND THAT IS NOT BECAUSE MAIN IS CLEAN. Measured with the pinned 8.18.4
-# binary while landing tracker issue 1838: the identical file scans clean, and the SAME file with seven bytes of
+# binary while landing an unrelated change: the identical file scans clean, and the SAME file with seven bytes of
 # padding prepended reports the leak. The scan result depends on where the bytes fall, so any unrelated
-# edit anywhere above it can surface or hide this — tracker issue 1838 shifted bytes across 352 files and surfaced it.
+# edit anywhere above it can surface or hide this — that change shifted bytes across 352 files and surfaced it.
 # A scan this repository treats as a security record must not be decided by alignment, so the entry goes
 # in rather than waiting for the next sweep to find it again.
 #

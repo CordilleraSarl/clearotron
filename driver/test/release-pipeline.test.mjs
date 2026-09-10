@@ -810,7 +810,7 @@ test("tracker 97 a version that merged itself still publishes, because that merg
     "the cron no longer says why it exists, so the next reader will simplify it away");
 
   const jobs = releaseJobs(workflow);
-  // FOUR NOW. `stranded` joined on 2026-09-06 for tracker issue 229: the job that notices a cut sitting
+  // FOUR NOW. `stranded` joined on 2026-09-06: the job that notices a cut sitting
   // on main unpublished used to be `pending`, which is downstream of the version gate on the push path
   // and skipped whenever that gate failed — so it could not run in the one state it exists to detect.
   // The new job has no `needs:` at all, which is the whole of its design and has its own arm.
@@ -1607,8 +1607,8 @@ test("230 every job that publishes carries the tag/release step, and there is mo
   for (const [name, body] of PUBLISHING) tagStepScript(body, name);
 });
 
-// THIS TEST ASSERTED THE OPPOSITE UNTIL 2026-09-07, and the reversal is deliberate (tracker issue 264,
-// reversing his 2026-09-06 ruling). It read "a pre-release is tagged and yields no GitHub release
+// THIS TEST ASSERTED THE OPPOSITE UNTIL 2026-09-07, and the reversal is deliberate — the owner
+// reversed his 2026-09-06 ruling. It read "a pre-release is tagged and yields no GitHub release
 // entry". Left as it was, it would hold the code to a rule that no longer stands — which is why it is
 // rewritten here rather than deleted: the next reader needs to see that the behaviour flipped
 // deliberately, not that a test quietly went missing.
@@ -1985,7 +1985,7 @@ test("264 a merge to main publishes nothing, because auto-merge is turned on onl
   const condition = step.slice(step.indexOf("if:"), step.indexOf("\n        env:"));
   assert.match(condition, /inputs\.cut != 'rehearse'/,
     "the version pull request is set to merge itself without asking whether this run is a requested cut. "
-    + "That is the behaviour tracker issue 264 removed: it publishes a pre-release on every merge.\n"
+    + "That is the behaviour that was removed: it publishes a pre-release on every merge.\n"
     + condition);
   assert.match(condition, /github\.event_name == 'workflow_dispatch'/,
     `the merge step does not require a dispatch, so a push could still reach it\n${condition}`);

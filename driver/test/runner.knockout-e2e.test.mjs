@@ -438,7 +438,7 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   assert.match(report, /not available/, "an untaken count says so, in words — never a blank and never a 0");
   assert.doesNotMatch(report, /Register estimate/, "the model's guess gives way to the measurement");
   // WHAT THE NUMBERS MEAN IS STATED WHERE THEY ARE — but in the column headers now, not in a 70-word
-  // paragraph beneath them (tracker issue 331 B). The paragraph printed twice on the page and the owner
+  // paragraph beneath them. The paragraph printed twice on the page and the owner
   // asked what it meant; the headers answer that in three words each. It is still written to
   // report-data.json and to the workbook, which is where the issue puts it, and that is asserted below
   // rather than here so a failure names which surface lost it.
