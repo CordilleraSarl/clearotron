@@ -48,17 +48,16 @@
 // present, and cannot see whether it ought to be. So it states the mode and what that means for the
 // three readers, and leaves the judgement to a reader who knows which tree they are looking at.
 //
-// NOTHING PINS THIS ANNOUNCEMENT, and this block used to claim something did. Measured 2026-09-09: no
-// test in either repository imports `announceWithheldMode` or asserts its line, so the wording above is
-// held by nothing and a silent removal of it would pass. That gap is filed rather than fixed here,
-// because closing it adds a test file and this change is comment text only.
+// WHAT HOLDS THE ANNOUNCEMENT: `driver/test/the-cut-record-mode-is-announced-once.test.mjs`, in both
+// modes, each in a process of its own. Until 2026-09-10 nothing did, although this block said something
+// did: deleting the line, or swapping the two modes' wording, passed every gate.
 
 let record = null;
 try {
   record = await import("./withheld-paths.mjs");
 } catch {
-  // Absent is the PUBLIC tree's normal state and our tree's alarm. Which one it is, is the caller's to
-  // decide from `CUT_RECORD_PRESENT`; this module only refuses to guess.
+  // Absent is the state of every tree today, as the header says. Whether that is right is the caller's
+  // to judge from `CUT_RECORD_PRESENT`; this module only refuses to guess.
   record = null;
 }
 
