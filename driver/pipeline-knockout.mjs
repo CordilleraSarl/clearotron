@@ -44,7 +44,7 @@ import {
   // implementation; a second copy here would be a second thing to keep true.
   decideRecovery, failureSignature, classifyFailureReason, countRecoveryLanes, weatherCeilingFor,
 } from "./repairs.mjs";
-import { RunCancelled } from "./cancel.mjs";   // stop-by-user: never the failure lane below
+import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutPrompt, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
@@ -985,6 +985,17 @@ export async function knockoutInner(ctx, job, opts = {}) {
     try { writeFileSync(K.assessment, String(merged.batch.executiveSummary ?? "")); } catch { /* prose mirror, best-effort */ }
 
     // 4 — publish (report + workbook + meta + index)
+    //
+    // THE LAST READ OF THE STOP FLAG. Everything above dispatches through the gateway, which reads it
+    // before a turn — so on this lane, where publication follows the final stage directly, a stop
+    // pressed during that stage was never seen and the report went out anyway.
+    assertNotCancelledBeforePublish(run.runDir, "knockout");
+    // PAST THE LAST STOPPABLE POINT, RECORDED WHERE IT BECOMES TRUE. The read above is the final one, so
+    // from this line on a stop cannot prevent delivery — and the screen must stop promising it will.
+    // Written here rather than derived on the screen from a step number: "Report & publish" is step 4 of
+    // 5 on this lane, not the last, so any arithmetic over stepN would name the wrong step and go stale
+    // the day a lane's list changes.
+    writeRunStatus(ctx, { stoppable: false });
     koStep(ctx, "Report & publish");
     const overall = worstBand(ctx.framework, merged.marks);
     const published = await publishKnockout({

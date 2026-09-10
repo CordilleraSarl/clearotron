@@ -57,6 +57,33 @@ export function requestCancel(runDir, { via = "unknown", by = undefined } = {}) 
 }
 
 /**
+ * THE LAST READ BEFORE A REPORT IS PUBLISHED, on both lanes.
+ *
+ * The gateway's read is inside the attempt loop, before a turn is dispatched, and a dispatched turn
+ * always finishes. So the flag is consulted when a stage is about to spend and at no other moment —
+ * which means a stop pressed during the FINAL stage has no later boundary to be seen at, and the run
+ * publishes. Measured 2026-09-09 on a knockout: the stop was recorded, the last stage's turn ran to
+ * completion, and a full report was delivered 100 seconds later. Both the dialog and the API had told
+ * the operator twice that nothing would be delivered.
+ *
+ * ONE DEFINITION FOR BOTH LANES, because the promise is made in one set of words to every operator and
+ * two readings of "past the point of stopping" is how one lane keeps it and the other does not.
+ *
+ * IT GOES AFTER AN ALREADY-PUBLISHED SHORT-CIRCUIT, NEVER BEFORE. A run whose report is already out has
+ * delivered; refusing at that point would mark a delivered run cancelled and tell the operator the
+ * opposite of what happened, which is the same defect pointed the other way.
+ *
+ * This does not make boundary mode able to stop everything — a turn in flight still finishes and its
+ * spend is still spent. It makes the one promise the copy actually makes true: that nothing is
+ * delivered.
+ */
+export function assertNotCancelledBeforePublish(runDir, lane = "run") {
+  if (!isCancelled(runDir)) return null;
+  const rec = readCancel(runDir);
+  throw new RunCancelled(`publish (${lane})`, rec);
+}
+
+/**
  * Thrown by the gateway when a run is asked to stop, and caught by both pipelines' run-level handlers.
  *
  * A DISTINCT CLASS, NOT A StageFailure, and that is load-bearing. A StageFailure goes through

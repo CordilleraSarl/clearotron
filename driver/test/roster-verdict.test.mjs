@@ -51,18 +51,36 @@ test("a store holding a customer the door does not serve also FAILS — disagree
 
 // ── #83 is not lost ──────────────────────────────────────────────────────────────────────────────────
 
-test("#83 survives: a configured store the door is NOT serving fails, and says so by name", () => {
+test("a configured store the door is NOT serving fails, and reports BOTH lists", () => {
   // The door fell back to the bundled demos while a real store sits on disk.
+  //
+  // THIS ARM USED TO PIN A CAUSE THE COMPARISON CANNOT SEE. It required the message to say the customer
+  // store variable was not reaching the service, and that is a set equality over NAMES — a configured
+  // store ordinarily CONTAINS the bundled demo names, so the same evidence is equally consistent with a
+  // door still holding a roster it read before the store changed. Measured 2026-09-09: a company added
+  // minutes earlier, a door serving its boot roster, and this line reporting a variable that was fine.
+  //
+  // What it holds now is what the check actually measured: it fails, it prints both lists, and it offers
+  // both readings instead of picking one.
   const r = v({ keys: DEMOS, onDisk: ["aurora", "petcary", "stranger-co", "zephyr"], expectDemos: false });
   assert.equal(r.state, "fail");
-  assert.match(r.message, /#83/);
-  assert.match(r.message, /not reaching the service/);
+  assert.match(r.message, new RegExp(`${DEMOS.length}[^.]*4`),
+    "the verdict no longer prints both counts — which is the only thing it measured");
+  assert.match(r.message, /still holding a roster/i, "the stale-roster reading is gone, so a reader meets one cause where there are two");
+  assert.match(r.message, /not reaching the service/i, "the missing-variable reading is gone — it is still one of the two");
+  assert.doesNotMatch(r.message, /so this is #83/,
+    "the verdict asserts one cause again, from a comparison that cannot distinguish them");
 });
 
-test("#83 unchanged where it was written for: no configured store, not a test box", () => {
+test("no configured store, not a test box: still fails, and names the likely cause as likely", () => {
+  // Unlike the branch above there is no second list to print, so the fallback reading is the likeliest
+  // one and the message may say so. It still may not present it as established: this process not holding
+  // the variable is not proof the service does not either.
   const r = v({ keys: DEMOS, onDisk: null, expectDemos: false });
   assert.equal(r.state, "fail");
-  assert.match(r.message, /#83/);
+  assert.match(r.message, /most likely/i, "the reading is presented as established rather than probable");
+  assert.match(r.message, /not reaching the service/i, "the likely cause is no longer named at all");
+  assert.match(r.message, /would look identical here/i, "the message does not say what else would produce it");
 });
 
 test("no configured store on a test box: the bundled roster is the CORRECT answer", () => {

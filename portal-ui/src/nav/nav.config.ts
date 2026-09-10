@@ -106,8 +106,10 @@ export type NavEntry = {
 //
 // ── THE LINE, AND WHY IT IS WHERE IT IS ──────────────────────────────────────────────────────────
 // Everything with `scope: 'account'` comes first, then the company switcher, then everything with
-// `scope: 'owner'`. Above the line you REVIEW ACROSS EVERYTHING; below it you CONFIGURE AND START WORK
-// FOR ONE OWNER. The switcher stops being a filter of unknown reach and becomes the label on the group
+// `scope: 'owner'`. THE LINE IS NAVIGATION: above it is the dashboard, below it is working on one
+// company. It is NOT a statement about what the company filter reaches — Home sits above the line and
+// its chips filter its rows, and Clearances sits below it and always filtered. Reading the line as the
+// filter's boundary is what left the chips on Home changing nothing at all. The switcher stops being a filter of unknown reach and becomes the label on the group
 // it governs.
 //
 // Clearances is above the line, with company as one more filter inside it. It is where Home hands

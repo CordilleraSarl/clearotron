@@ -303,12 +303,6 @@
           "skips": 0,
           "todos": 0
         },
-        "a-generic-run-is-filed-and-capped-at-the-claim.test.mjs": {
-          "tests": 2,
-          "asserts": 12,
-          "skips": 0,
-          "todos": 0
-        },
         "a-gone-session-meets-a-door-not-a-json-body.test.mjs": {
           "tests": 4,
           "asserts": 16,
@@ -657,6 +651,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-staff-domain-is-a-grant-not-a-guess.test.mjs": {
+          "tests": 17,
+          "asserts": 77,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -666,6 +672,12 @@
         "a-stored-territory-that-does-nothing-is-named.test.mjs": {
           "tests": 6,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-switched-off-feature-says-so-and-says-what-to-change.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -796,8 +808,8 @@
           "todos": 0
         },
         "an-account-is-never-created-unable-to-start.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 7,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -1277,7 +1289,7 @@
         },
         "connect-key-mints-for-the-caller.test.mjs": {
           "tests": 5,
-          "asserts": 19,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -1703,7 +1715,7 @@
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
           "tests": 24,
-          "asserts": 67,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -1860,12 +1872,6 @@
         "e2e-unread-terminals.test.mjs": {
           "tests": 26,
           "asserts": 48,
-          "skips": 0,
-          "todos": 0
-        },
-        "each-organisations-generic-carries-the-daily-cap.test.mjs": {
-          "tests": 7,
-          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -2266,8 +2272,8 @@
           "todos": 0
         },
         "grant-command.test.mjs": {
-          "tests": 19,
-          "asserts": 75,
+          "tests": 14,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -2878,8 +2884,8 @@
           "todos": 0
         },
         "portal-access.test.mjs": {
-          "tests": 12,
-          "asserts": 47,
+          "tests": 9,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -2897,13 +2903,13 @@
         },
         "portal-carries.test.mjs": {
           "tests": 5,
-          "asserts": 22,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
         "portal-config-view.test.mjs": {
           "tests": 35,
-          "asserts": 95,
+          "asserts": 94,
           "skips": 0,
           "todos": 0
         },
@@ -2915,7 +2921,7 @@
         },
         "portal-local-auth.test.mjs": {
           "tests": 20,
-          "asserts": 76,
+          "asserts": 75,
           "skips": 1,
           "todos": 0
         },
@@ -2933,7 +2939,7 @@
         },
         "portal-queue-order.test.mjs": {
           "tests": 8,
-          "asserts": 21,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -2957,7 +2963,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 122,
-          "asserts": 656,
+          "asserts": 651,
           "skips": 0,
           "todos": 0
         },
@@ -2968,8 +2974,8 @@
           "todos": 0
         },
         "portal-upstream.test.mjs": {
-          "tests": 42,
-          "asserts": 129,
+          "tests": 41,
+          "asserts": 124,
           "skips": 0,
           "todos": 0
         },
@@ -3611,7 +3617,7 @@
         },
         "roster-verdict.test.mjs": {
           "tests": 11,
-          "asserts": 18,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -4066,8 +4072,8 @@
           "todos": 0
         },
         "start-command.test.mjs": {
-          "tests": 26,
-          "asserts": 110,
+          "tests": 27,
+          "asserts": 115,
           "skips": 0,
           "todos": 0
         },
@@ -4288,8 +4294,8 @@
           "todos": 0
         },
         "the-bundled-roster-is-read-not-remembered.test.mjs": {
-          "tests": 8,
-          "asserts": 11,
+          "tests": 9,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -4343,7 +4349,7 @@
         },
         "the-demo-account-shows-a-configured-customer.test.mjs": {
           "tests": 4,
-          "asserts": 24,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -4433,7 +4439,7 @@
         },
         "the-glossary-describes-the-model-the-code-enforces.test.mjs": {
           "tests": 3,
-          "asserts": 14,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -4563,18 +4569,6 @@
           "skips": 0,
           "todos": 0
         },
-        "the-person-who-installs-is-a-person-not-a-domain.test.mjs": {
-          "tests": 19,
-          "asserts": 88,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-portal-and-the-connector-agree-about-a-person.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
-          "skips": 0,
-          "todos": 0
-        },
         "the-portal-asks-whether-its-engine-will-take-it.test.mjs": {
           "tests": 8,
           "asserts": 27,
@@ -4643,8 +4637,8 @@
         },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
-          "asserts": 14,
-          "skips": 3,
+          "asserts": 15,
+          "skips": 4,
           "todos": 0
         },
         "the-repair-order-and-the-tool-schema-agree.test.mjs": {
@@ -5152,7 +5146,7 @@
         },
         "account-principal.test.mjs": {
           "tests": 18,
-          "asserts": 42,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -5271,8 +5265,8 @@
           "todos": 0
         },
         "grants.test.mjs": {
-          "tests": 12,
-          "asserts": 67,
+          "tests": 11,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -5426,8 +5420,8 @@
       "ext": "ts",
       "perFile": {
         "api.test.ts": {
-          "tests": 43,
-          "asserts": 170,
+          "tests": 37,
+          "asserts": 138,
           "skips": 0,
           "todos": 0
         },
@@ -5450,8 +5444,8 @@
           "todos": 0
         },
         "companyOrder.test.ts": {
-          "tests": 10,
-          "asserts": 34,
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -5521,6 +5515,12 @@
           "skips": 0,
           "todos": 0
         },
+        "frameworkGuideLink.test.ts": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "grouping.test.ts": {
           "tests": 23,
           "asserts": 53,
@@ -5536,6 +5536,12 @@
         "home.test.ts": {
           "tests": 46,
           "asserts": 141,
+          "skips": 0,
+          "todos": 0
+        },
+        "homeChipsFilterTheRows.test.ts": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -5571,19 +5577,25 @@
         },
         "measure.test.ts": {
           "tests": 25,
-          "asserts": 85,
+          "asserts": 84,
           "skips": 0,
           "todos": 0
         },
         "nav.test.ts": {
           "tests": 12,
-          "asserts": 55,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
         "newClearanceStructure.test.ts": {
           "tests": 8,
           "asserts": 57,
+          "skips": 0,
+          "todos": 0
+        },
+        "newCompanyReachableFromProfile.test.ts": {
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -5618,8 +5630,8 @@
           "todos": 0
         },
         "permissions.test.ts": {
-          "tests": 5,
-          "asserts": 25,
+          "tests": 2,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -5673,13 +5685,19 @@
         },
         "screenCopy.test.ts": {
           "tests": 56,
-          "asserts": 186,
+          "asserts": 183,
           "skips": 0,
           "todos": 0
         },
         "shell.test.ts": {
           "tests": 8,
-          "asserts": 27,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "stopPromiseIsWithdrawn.test.ts": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },

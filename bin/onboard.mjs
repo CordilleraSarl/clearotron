@@ -2067,6 +2067,60 @@ export async function runCheck() {
       } else {
         ok(`the trigger key is good for ${posture.daysLeft} more day(s), until ${posture.expiresAt}`);
       }
+
+      // ── AND WHICH COMPANIES IT CAN START ────────────────────────────────────────────────────────
+      //
+      // THE THIRD SURFACE, WHICH WAS NEVER WIRED. `triggerCapWarning` exists so the create command, the
+      // portal's boot log and this command cannot say three different things about one gap — its own
+      // comment says "three call sites" — and it had two. The command whose entire job is to report what
+      // a machine is configured for said nothing at all about a cap that decides which companies can be
+      // started. Three is true now, rather than aspirational.
+      //
+      // IT IS `info`, DELIBERATELY, AND THE SENTENCE IS WHY. The portal re-takes its engine credential at
+      // the start of every call, so a stale cap refuses nothing on the ordinary path; the gap bites only
+      // when it CANNOT re-mint. A `problem` here would exit non-zero on installs whose portal re-mints
+      // perfectly well, which is a green install turned red for a refusal that will not happen — and it
+      // would contradict the very sentence it prints. The level is worth revisiting the day the fallback
+      // stops being the exception.
+      //
+      // THE ROSTER IS THE SERVICES', not this process's. A CLI is not started by the units'
+      // EnvironmentFile, and the two answers disagreeing IS a defect this box has produced: a door
+      // resolving the bundled demo roster while the configured store held one more company. Comparing
+      // the units' token against a roster the units never see would report a gap that is not there, or
+      // miss one that is. Which store was read is said, every time.
+      if (posture.readable && posture.accountCapped) {
+        const svcStore = (hosted && serviceKnown) ? (effectiveForService("CLEAROTRON_CUSTOMERS_DIR")?.v || null) : null;
+        let roster = null, why = null;
+        try {
+          const { loadProfiles } = await import(`../driver/profiles.mjs?doctorcap=${Date.now()}`);
+          const { rosterAsItStands } = await import("../driver/company-bundle.mjs");
+          roster = [...rosterAsItStands(svcStore ?? undefined, loadProfiles).keys()];
+        } catch (e) { why = String(e?.message ?? e); }
+
+        // AN EMPTY ROSTER IS NOT A COVERED ONE. `rosterAsItStands` answers an empty Map for a store with
+        // no `generic.json`, and an empty roster leaves NOTHING uncovered — a tick over a could-not-look,
+        // which is the one answer this command must never give.
+        // ALREADY SAID ONCE, AND ONCE IS ENOUGH. A store that refuses to load is reported as a problem by
+        // the roster check a few sections up, in its own words and with its own remedy. Repeating it here
+        // as a second blocker put one fact on the screen three times — the problem, this line, and this
+        // line again in the closing summary — which is how a reader learns to skim the section. Measured
+        // by driving both, with an uncapped token as the control so the duplicate could be told from the
+        // original. What this line adds is the CONSEQUENCE FOR THE CAP, which the roster check does not
+        // know about, so it says that and defers.
+        if (why) {
+          info("whether the trigger key covers them cannot be checked until the roster above loads — not "
+            + "confirmed, and not refused");
+        } else if (!roster.length) {
+          blocking(`the trigger key names a company cap, and no companies could be read from `
+            + `${svcStore ?? "the store this process resolves"} — so nothing here says whether the cap fits`);
+        } else {
+          const { triggerCapGap, triggerCapWarning } = await import("../driver/trigger-cap.mjs");
+          const gap = triggerCapGap({ accounts: posture.accounts, roster });
+          if (gap.uncovered.length) info(triggerCapWarning(gap));
+          else ok(`the trigger key covers all ${roster.length} company(ies) in `
+            + `${svcStore ?? "the store this process resolves"}`);
+        }
+      }
     }
   }
 

@@ -78,6 +78,36 @@ test("a door that resolved exactly the shipped roster is caught — the conditio
   assert.match(message, /not reaching the service/);
 });
 
+test("a door behind its own store is NOT reported as a missing CLEAROTRON_CUSTOMERS_DIR", () => {
+  // MEASURED, 2026-09-09, and the check said the wrong thing about it. A company was created in the
+  // configured store; the door went on serving the roster it read at boot; the surface check reported
+  // "CLEAROTRON_CUSTOMERS_DIR is not reaching the service". The variable was reaching it perfectly well.
+  //
+  // The comparison behind that sentence is a set equality over NAMES, and a configured store ordinarily
+  // CONTAINS the bundled demo names — so it cannot separate a door with no store from a door whose store
+  // has since grown. Asserting one of the two was a claim with no instrument under it, and it sent a
+  // reader to check an environment variable that was fine.
+  //
+  // This arm holds the property that the verdict REPORTS the two lists and does not pick a cause it
+  // cannot see. It deliberately does not pin the whole sentence: the wording is allowed to change, the
+  // unconditional diagnosis is not.
+  const shipped = bundledDemoKeys({ profilesDir: REPO_PROFILES });
+  assert.ok(shipped.length, "this repo ships no client bundles — the arm below would assert nothing");
+  const store = [...shipped, "newco"].sort();
+
+  const { state, message } = rosterVerdict({
+    keys: [...shipped], onDisk: store, bundledDemos: shipped, expectDemos: false,
+  });
+
+  assert.equal(state, "fail", "a door behind its store is still a real disagreement and must be named");
+  assert.match(message, new RegExp(`${shipped.length}[^.]*${store.length}`),
+    "the verdict no longer prints BOTH counts — which is the only thing it actually measured");
+  assert.match(message, /still holding a roster/i,
+    "the verdict stopped offering the stale-roster reading, so a reader meets one cause where there are two");
+  assert.doesNotMatch(message, /so this is #83/,
+    "the verdict asserts the missing-variable cause again, from a name comparison that cannot see it");
+});
+
 test("the same door reads PASS against a roster that has gone stale — the defect, reproduced", () => {
   // THE REGRESSION IN ONE ARM. Feed the verdict a roster missing one shipped bundle — which is exactly
   // what a hand-maintained list becomes the day the directory grows — and the set-equality can never
