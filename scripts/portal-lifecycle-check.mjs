@@ -404,21 +404,19 @@ ${HELPERS}
     await mustSettle(() => document.querySelector('table.data tbody tr td'), 8000, 'People never drew its list');
     out.rows = [...document.querySelectorAll('table.data tbody tr')]
       .map((r) => [...r.querySelectorAll('td')].map((c) => c.innerText.replace(/\\s+/g, ' ').trim()));
-    const add = findByText('button', /Add a person/);
-    out.addDisabled = add.disabled;
+    out.addDisabled = findByText('button', /Add a person/).disabled;
     out.localNotice = /signs in one person/.test(txt());
-    add.click();
+    findByText('button', /Add a person/).click();
     await mustSettle(() => /Give someone access to Clearotron/.test(txt()), 8000, 'Add a person did not open the form');
     out.path = location.pathname;
     const email = document.querySelector('#give-access-email');
     set(email, 'dana@birch.example');
     await sleep(150);
-    const org = findByText('button.attach-row', /Apmxc Group/);
-    org.click();
+    findByText('button.attach-row', /Apmxc Group/).click();
     await sleep(250);
     out.sentence = (document.querySelector('.notice.quiet p') || {}).innerText || null;
     out.saveEnabled = !findByText('button', /^Save$/).disabled;
-    org.click();
+    findByText('button.attach-row', /Apmxc Group/).click();
     set(email, '');
     await sleep(200);
   } catch (e) { out.fatal = String((e && e.message) || e); }
