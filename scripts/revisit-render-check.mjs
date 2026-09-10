@@ -350,7 +350,7 @@ const twice = async (name, enter, expectPath, away = 'Home') => {
   // that does not reproduce leaves nothing else to read. The ok line is unchanged, so two passing runs
   // still diff to nothing.
   const sameText = (t2 || '').trim().length > 0 && (t1 || '').trim().length > 0 && t1 === t2
-  say(sameText, `${name}: the screen renders the same text on both visits${sameText ? '' : ` — ${textDifference(t1, t2) ?? 'neither visit rendered any'}`}`)
+  say(sameText, `${name}: the screen renders the same text on both visits${sameText ? '' : ` — ${textDifference(t1, t2) ?? 'neither visit rendered any text'}`}`)
 
   // The unmount half. Equal counts mean the listener added on visit 1 was removed when the screen was
   // left, rather than accumulating one per visit.

@@ -41,12 +41,13 @@ test("a long text is windowed to one short line that still holds the word", () =
   assert.match(d, /visit 2 "…x+ Zeta x+…"/, d);
 });
 
-test("the check's text pair prints the difference when it fails, from one call site", () => {
+test("the check hands the two visits' texts to the helper, from one call site", () => {
   // Wiring, held at its one call site. The drive in a real browser is what proves the line reads as it
   // should; this keeps the call from being dropped quietly on the next edit near it.
   const src = readFileSync(new URL("../../scripts/revisit-render-check.mjs", import.meta.url), "utf8");
   assert.match(src, /^import \{ textDifference \} from '\.\/text-difference\.mjs'/m);
   const calls = src.match(/textDifference\(/g) ?? [];
   assert.equal(calls.length, 1, `one call site, found ${calls.length}`);
-  assert.match(src, /the screen renders the same text on both visits\$\{sameText \? '' : ` — \$\{textDifference\(t1, t2\)/);
+  // The property, not the message's spelling: the helper is handed the two visits' texts, in order.
+  assert.match(src, /textDifference\(t1, t2\)/, "the helper is not handed the two visits' texts, first visit first");
 });
