@@ -88,7 +88,7 @@ import { rosterVerdict } from "../driver/roster-verdict.mjs";
 import { triggerCapGap, triggerCapWarning } from "../driver/trigger-cap.mjs";   // the portal's own sentence about a key's gap
 import { bundledDemoKeys } from "../driver/bundled-demos.mjs";
 import { unitsActiveVerdict } from "../driver/unit-state-verdict.mjs";
-import { deploymentBox } from "../shared/deployment-box.mjs";   // — extracted; one allowlist, two readers
+import { deploymentBox, DEPLOYMENT_BOXES } from "../shared/deployment-box.mjs";   // — extracted; one allowlist, every reader
 import { unitFileDriftVerdict } from "../driver/unit-file-drift.mjs";   //
 import { placeholdersIn, resolveValues, renderUnit } from "../driver/systemd/render-units.mjs";   //
 import { CHECKED_UNITS, CHECKED_TIMERS, timerVerdict, unitInventoryVerdict, serviceCommitVerdict, unitWorkingDirectory, unitClone } from "../driver/unit-inventory.mjs";   // · -bundle ·
@@ -1012,7 +1012,7 @@ else {
   // unit missing. Deployments set it in the service environment file beside the other box-scoped vars.
   const box = deploymentBox();   // — the shared rule, so /portal/health cannot disagree with this
   const v = unitInventoryVerdict({ live: liveUnits, files: walk.files, collisions: walk.collisions,
-    filesError: walk.error, box, probe });
+    filesError: walk.error, box, probe, boxNames: DEPLOYMENT_BOXES });
   record("every live unit is declared", v.state, v.message);
 
   // — AND WHETHER ANYTHING STILL STARTS THE TIMER-DRIVEN ONES. Reported separately from the line above
