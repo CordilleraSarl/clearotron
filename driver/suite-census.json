@@ -651,6 +651,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -3599,7 +3605,7 @@
         },
         "roster-verdict.test.mjs": {
           "tests": 11,
-          "asserts": 18,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -4276,8 +4282,8 @@
           "todos": 0
         },
         "the-bundled-roster-is-read-not-remembered.test.mjs": {
-          "tests": 8,
-          "asserts": 11,
+          "tests": 9,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -4619,8 +4625,8 @@
         },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
-          "asserts": 14,
-          "skips": 3,
+          "asserts": 15,
+          "skips": 4,
           "todos": 0
         },
         "the-repair-order-and-the-tool-schema-agree.test.mjs": {
@@ -5551,6 +5557,12 @@
           "skips": 0,
           "todos": 0
         },
+        "newCompanyReachableFromProfile.test.ts": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "niceClasses.test.ts": {
           "tests": 9,
           "asserts": 25,
@@ -5644,6 +5656,12 @@
         "shell.test.ts": {
           "tests": 8,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "stopPromiseIsWithdrawn.test.ts": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
