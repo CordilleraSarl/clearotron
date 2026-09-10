@@ -143,33 +143,45 @@ test("#1439 — an instance with nothing wired up sends ROWS saying so, and they
 
 // ── enrolment ───────────────────────────────────────────────────────────────────────────────────────
 
+import { makePrincipal } from "../portal-access.mjs";
+
+// The view is narrowed to what the VIEWER may see, and the install-wide parts of it — the typo list and the
+// grants file — are shown only to a person with access to everything. So the arms below read it as that
+// person, built from the fixture's own entry.
+const KAY = "kay@install.example";
 const GRANTS = { tenants: {
   celta: { accounts: ["aurora", "zephyr"], users: {
     "cli@celta.example": ["aurora"],
     "boss@celta.example": "*",
     "typo@celta.example": ["aurroa"],        // a typo: celta does not hold "aurroa"
   } },
-} };
+}, people: { [KAY]: { run: true, manage: true, everything: true } } };
+const EVERYTHING = makePrincipal({ email: KAY, grants: GRANTS });
+const COMPANIES = { aurora: "Aurora", zephyr: "Zephyr" };
 
 test("a wildcard grant is expanded to what it actually reaches", () => {
-  const v = accessView({ grants: GRANTS, staffDomains: ["example-firm.com"], knownAccounts: ["aurora", "zephyr"] });
+  const v = accessView({ grants: GRANTS, viewer: EVERYTHING, companies: COMPANIES });
   const boss = v.people.find((p) => p.email === "boss@celta.example");
-  assert.deepEqual(boss.accounts, ["aurora", "zephyr"], "'*' means this TENANT's accounts, not every account");
-  assert.equal(boss.wildcard, true);
+  // '*' is the whole ORGANISATION, never the whole install: the row shows one organisation point for celta
+  // rather than expanding it to a company list, and what that point reaches is celta's companies.
+  assert.deepEqual(boss.access, [{ kind: "organisation", key: "celta", name: "celta" }],
+    "'*' means this TENANT, not every account");
+  assert.ok(!boss.access.some((p) => p.kind === "everything"), "a wildcard row is not access to everything");
+  assert.deepEqual(makePrincipal({ email: "boss@celta.example", grants: GRANTS }).accounts, ["aurora", "zephyr"],
+    "and the organisation point reaches exactly the tenant's accounts");
 });
 
 test("a grant naming an account its tenant does not hold is FLAGGED — it fails as a silent 404", () => {
-  const v = accessView({ grants: GRANTS, knownAccounts: ["aurora", "zephyr"] });
+  const v = accessView({ grants: GRANTS, viewer: EVERYTHING, companies: COMPANIES });
   const typo = v.people.find((p) => p.email === "typo@celta.example");
   assert.deepEqual(typo.dangling, ["aurroa"]);
   assert.ok(v.unknownAccounts.includes === undefined || true);
 });
 
 test("an account no profile matches is reported — the other typo direction", () => {
-  const v = accessView({
-    grants: { tenants: { celta: { accounts: ["aurora", "ghost"], users: {} } } },
-    knownAccounts: ["aurora"],
-  });
+  const grants = { tenants: { celta: { accounts: ["aurora", "ghost"], users: {} } },
+    people: { [KAY]: { run: true, manage: true, everything: true } } };
+  const v = accessView({ grants, viewer: makePrincipal({ email: KAY, grants }), companies: { aurora: "Aurora" } });
   assert.deepEqual(v.unknownAccounts, ["ghost"]);
 });
 
@@ -296,9 +308,12 @@ test("OBSERVED NEVER RE-EXPORTS WHAT THE AUDIT LOG IS FOR", () => {
 });
 
 test("accessView carries the grants file through, and tolerates not knowing it", () => {
-  const withFile = accessView({ grants: GRANTS, grantsFile: { name: "grants.json", modifiedAt: "2026-07-18T00:00:00.000Z" } });
+  // Read by a person with access to everything in BOTH calls — the only reader the file is shown to — so
+  // "unknown is null" is a fact about the file, and not about a viewer who would never be shown it.
+  const withFile = accessView({ grants: GRANTS, viewer: EVERYTHING,
+    grantsFile: { name: "grants.json", modifiedAt: "2026-07-18T00:00:00.000Z" } });
   assert.deepEqual(withFile.grantsFile, { name: "grants.json", modifiedAt: "2026-07-18T00:00:00.000Z" });
-  assert.equal(accessView({ grants: GRANTS }).grantsFile, null, "unknown is null, never a guess");
+  assert.equal(accessView({ grants: GRANTS, viewer: EVERYTHING }).grantsFile, null, "unknown is null, never a guess");
 });
 
 // ── the auth row: the one row on this page the PORTAL answers for ───────────────────────────────────

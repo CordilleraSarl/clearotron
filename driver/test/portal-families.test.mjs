@@ -161,8 +161,9 @@ import { makePortalService } from "../portal-service.mjs";
 const svcOn = (root) =>
   makePortalService({
     poolRoot: root, workspaceRoot: "/nonexistent", secret: "s",
-    staffDomains: ["staff.example"],
-    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } } }),
+    // /portal/admin/* is for a person with access to everything, which STAFF holds by its own entry.
+    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } },
+      people: { "k@staff.example": { run: true, manage: true, everything: true } } }),
   });
 
 const STAFF = { email: "k@staff.example" };

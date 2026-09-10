@@ -36,8 +36,9 @@ const poolWith = ({ auditFile = `${RUN}-audit.xlsx`, customerKey = "zephyr", wri
 const svcOn = (root) =>
   makePortalService({
     poolRoot: root, workspaceRoot: "/nonexistent", secret: "s",
-    staffDomains: ["staff.example"],
-    grants: () => ({ tenants: { zephyr: { accounts: ["zephyr"], users: { "c@zephyr.example": ["zephyr"] } } } }),
+    // STAFF has access to everything by its own entry; CLIENT holds zephyr and nothing else.
+    grants: () => ({ tenants: { zephyr: { accounts: ["zephyr"], users: { "c@zephyr.example": ["zephyr"] } } },
+      people: { "k@staff.example": { run: true, manage: true, everything: true } } }),
   });
 
 const STAFF = { email: "k@staff.example" };

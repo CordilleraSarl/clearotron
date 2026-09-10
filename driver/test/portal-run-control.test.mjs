@@ -19,9 +19,11 @@ import { join } from "node:path";
 const { makePortalService } = await import("../portal-service.mjs");
 const { reorderQueue, orderedQueueFiles, readQueueOrder } = await import("../queue-order.mjs");
 
-const STAFF_DOMAINS = ["example-firm.com"];
-const STAFF = { email: "staff@example-firm.com" };
-const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"] } } } };
+// The client holds aurora and Run clearances. Stopping, cancelling and reordering are Run's, so without the
+// switch every route below would 404 on the permission before reaching the ownership check each test is
+// about — and the foreign-run refusals would pass for the wrong reason.
+const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"] } } },
+  people: { "cli@celta.example": { run: true } } };
 const CLIENT = { email: "cli@celta.example" };
 
 function world(jobs, { live = [], pool = [], order = null } = {}) {
@@ -61,7 +63,7 @@ function world(jobs, { live = [], pool = [], order = null } = {}) {
 
 const serviceFor = (w, stops) => makePortalService({
   poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "rc-rec-")),
-  secret: "test-secret", staffDomains: STAFF_DOMAINS, grants: GRANTS,
+  secret: "test-secret", grants: GRANTS,
   trigger: async () => ({ ok: true }),
   stopRun: async (args) => { stops.push(args); return args.id ? { ok: true, action: "dequeued" } : { ok: true, action: "cancel-requested" }; },
   audit: () => {},
@@ -144,7 +146,7 @@ test("cancel: losing the race to the runner is a race, not a failure", async () 
   const w = world([{ id: "q-a", account: "aurora" }]);
   const svc = makePortalService({
     poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "rc-rec-")),
-    secret: "test-secret", staffDomains: STAFF_DOMAINS, grants: GRANTS,
+    secret: "test-secret", grants: GRANTS,
     trigger: async () => ({ ok: true }),
     stopRun: async () => ({ ok: false, action: "already-claimed", note: "Already claimed by the runner" }),
     audit: () => {},
@@ -264,7 +266,7 @@ test("listing: parked-for-human maps to paused + pausedKind operator on the wire
 //   · no pid reaches a browser                       → break: forward the tool result, arm 4 red
 const stopRunReturning = (w, stops, reply) => makePortalService({
   poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "rc-rec-")),
-  secret: "test-secret", staffDomains: STAFF_DOMAINS, grants: GRANTS,
+  secret: "test-secret", grants: GRANTS,
   trigger: async () => ({ ok: true }),
   stopRun: async (args) => { stops.push(args); return reply(args); },
   audit: () => {},

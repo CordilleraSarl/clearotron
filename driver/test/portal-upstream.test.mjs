@@ -15,15 +15,34 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { makeUpstream, stripCodeOwned, serializeProfile, readOnlyFields, frameworkView, PATH_FIELDS, CODE_OWNED_FIELDS, CREATABLE_FIELDS } from "../portal-upstream.mjs";
-import { makePrincipal, PortalDeny } from "../portal-access.mjs";
+import { makePrincipal, PortalDeny, mayManage, mayRun, seesEverything } from "../portal-access.mjs";
 
-const GRANTS = { tenants: {
-  celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"], "boss@celta.example": "*" } },
-} };
-const STAFF_DOMAINS = ["example-firm.com"];
-const P = (email) => makePrincipal({ email, grants: GRANTS, staffDomains: STAFF_DOMAINS });
+// CLIENT holds one company and BOTH switches — Manage (settings, projects) and Run (saved searches). They
+// are held on purpose: every BREACH below must be refused by the TENANCY wall, and a client without them
+// would be refused by the permission gate first and prove nothing about the wall. STAFF has access to
+// everything, by its own entry. VIEWER holds the same company and neither switch.
+const GRANTS = {
+  tenants: {
+    celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"], "boss@celta.example": "*",
+      "viewer@celta.example": ["aurora"] } },
+  },
+  people: {
+    "cli@celta.example": { run: true, manage: true },
+    "staff@example-firm.com": { run: true, manage: true, everything: true },
+  },
+};
+const P = (email) => makePrincipal({ email, grants: GRANTS });
 const CLIENT = P("cli@celta.example");      // aurora ONLY
 const STAFF = P("staff@example-firm.com");   // everyone
+const VIEWER = P("viewer@celta.example");    // aurora only, view-only
+
+test("the fixture: a 404 below is the tenancy wall, because the client holds the permission it would need", () => {
+  assert.ok(mayManage(CLIENT) && mayRun(CLIENT), "the client holds Manage and Run");
+  assert.ok(!seesEverything(CLIENT));
+  assert.deepEqual(CLIENT.accounts, ["aurora"], "and exactly one company");
+  assert.ok(seesEverything(STAFF));
+  assert.ok(!mayManage(VIEWER) && !mayRun(VIEWER), "the viewer holds neither switch");
+});
 
 /** Records what actually reached upstream — the only way to prove nothing leaked past the wall. */
 function spy(json = {}) {
@@ -82,11 +101,14 @@ test("the customer ROSTER is never proxied to a client — it is the list of eve
 
 test("BREACH: a client cannot create a company, and is not told the endpoint exists", async () => {
   const { calls, up } = spy();
-  const r = await up.createCompany(CLIENT, { name: "Aurora Holdings" });
-
-  // 404, never 403. A 403 would confirm the endpoint is there and that somebody else may use it.
-  assert.equal(r.status, 404);
-  assert.deepEqual(r.json, { error: "not_found" });
+  // Creating a company needs Manage AND access to a whole organisation. CLIENT holds Manage on one company,
+  // which cannot add a sibling beside it; VIEWER holds no Manage at all. Each half is refused alone.
+  for (const [who, principal] of [["a company-level manager", CLIENT], ["a view-only client", VIEWER]]) {
+    const r = await up.createCompany(principal, { name: "Aurora Holdings" });
+    // 404, never 403. A 403 would confirm the endpoint is there and that somebody else may use it.
+    assert.equal(r.status, 404, who);
+    assert.deepEqual(r.json, { error: "not_found" }, who);
+  }
   // Nothing reached upstream. A refusal that still made the call would have written the company.
   assert.deepEqual(calls, []);
 });
