@@ -7,8 +7,8 @@
 // after its `@` became a rule, and every address at that domain was staff, seeing every company on the
 // install. With `<account>@localhost` that was one machine; with a real address it was a whole employer,
 // written with nothing said. The rule is deleted. The address is the first person — Run, Manage, access
-// to everything — as their own entry in the grants file, and setup asks one more question directly after
-// it: the organisation's name.
+// to everything — as their own entry in the grants file. Setup asks for the organisation's name and, on a
+// local install, not for the address: that is the local account, shown once in setup's summary.
 //
 // WHAT THESE ARMS PIN, in the order the value travels:
 //
@@ -16,8 +16,8 @@
 //      outlive the rule, and name the setting the reader changes;
 //   2. the REAL `clearotron start`, driven: the local-account default and a real domain both start with
 //      no domain question, and a public provider refuses before any state is written;
-//   3. the wizard's prompt, driven with scripted answers: the address, then the organisation's name,
-//      required, written so the product's own loader reads it back whole;
+//   3. the wizard's prompt, driven with scripted answers: the organisation's name alone, required and
+//      written so the product's own loader reads it back whole, and no address asked;
 //   4. the grants file start writes: the installer's entry and the first organisation, each under its
 //      own condition, through the shared editors, and nobody else at the installer's domain;
 //   5. that file as the real `start` writes it, from the settings setup wrote, and left alone after.
@@ -221,41 +221,37 @@ function drive(answers) {
   return { io, said, asked, text: () => said.join("\n") };
 }
 
-test("the wizard asks for the address, then the organisation's name, and nothing about a domain", async () => {
-  const d = drive(["", "Acme Trading"]);
+test("the wizard asks the organisation's name and nothing else: the address is the local account, unasked", async () => {
+  // Ruling, 2026-09-10: on a local install setup no longer asks for the sign-in address. It is the local
+  // account's, and setup's summary shows it once.
+  const d = drive(["Acme Trading"]);
   const out = await askSignIn(d.io, { localAccount: "operator" });
   assert.deepEqual(out, { PORTAL_LOCAL_USER: "operator@localhost", CLEAROTRON_ORGANISATION_NAME: '"Acme Trading"' },
-    "Enter must take the local-account form, and the name must be carried to the settings file");
-  assert.match(d.asked[0] ?? "", /Sign-in address/i, "the wizard did not ask for the address");
-  assert.match(d.asked[1] ?? "", /organisation's name/i, "the organisation's name must be asked directly after the address");
-  assert.equal(d.asked.length, 2, "the local-account default must cost the reader the address and the name, nothing more");
-});
-
-test("a real domain is asked nothing more: no rule is stated, offered or written", async () => {
-  const d = drive(["alex@a-firm.example-tld", "A Firm Sàrl"]);
-  const out = await askSignIn(d.io, { localAccount: "operator" });
-  assert.deepEqual(out, { PORTAL_LOCAL_USER: "alex@a-firm.example-tld", CLEAROTRON_ORGANISATION_NAME: '"A Firm Sàrl"' },
-    "a real address must be kept as typed, with no domain setting beside it");
-  assert.equal(d.asked.length, 2, "a real domain was asked a question the address alone no longer raises");
+    "the address must be the local-account form, and the name must be carried to the settings file");
+  assert.equal(d.asked.length, 1, `the wizard asked ${d.asked.length} questions where one is due: ${d.asked.join(" | ")}`);
+  assert.match(d.asked[0] ?? "", /organisation's name/i, "the one question must be the organisation's name");
+  assert.doesNotMatch(d.asked.join("\n"), /address/i, "the wizard still asks for an address");
+  assert.doesNotMatch(d.text(), /operator@localhost/, "the address is shown once, in the summary, and not here");
   assert.doesNotMatch(d.text(), /Anyone at|PORTAL_STAFF_DOMAINS|a rule, not a person/);
 });
 
-test("the wizard re-asks rather than accepting a provider, a placeholder or a non-address", async () => {
-  // Each of the three is answered and then corrected, so the loop is driven rather than described. The
-  // final answer is the local-account form, which is also the way out the refusals point at.
-  const d = drive(["someone@gmail.com", "mn@example.com", "not-an-address", "", "Acme"]);
-  const out = await askSignIn(d.io, { localAccount: "operator" });
-  assert.deepEqual(out, { PORTAL_LOCAL_USER: "operator@localhost", CLEAROTRON_ORGANISATION_NAME: '"Acme"' });
-  assert.equal(d.asked.length, 5, "the wizard accepted an address it should have sent back");
-  assert.match(d.text(), /gmail\.com/);
-  assert.match(d.text(), /example\.com/);
-  assert.match(d.text(), /single email address/);
+test("an address the settings file already holds is kept, not replaced by the local account", async () => {
+  // A re-run of setup on an install whose first person was enrolled under a real address. Replacing it
+  // with the local-account form would sign that person out: the passphrase and the grants entry are
+  // theirs, and the portal would admit an address neither knows.
+  const d = drive(["A Firm Sàrl"]);
+  const out = await askSignIn(d.io, { localAccount: "operator", existing: "alex@a-firm.example-tld" });
+  assert.deepEqual(out, { PORTAL_LOCAL_USER: "alex@a-firm.example-tld", CLEAROTRON_ORGANISATION_NAME: '"A Firm Sàrl"' });
+  assert.equal(d.asked.length, 1, "a kept address cost the reader a question");
+  // An empty value in the file is not an address to keep.
+  const blank = await askSignIn(drive(["Acme"]).io, { localAccount: "operator", existing: "  " });
+  assert.equal(blank.PORTAL_LOCAL_USER, "operator@localhost");
 });
 
 test("the organisation's name is required, and the product's own loader reads it back whole", async () => {
-  const d = drive(["", "", "   ", 'Say "hi" Ltd', "Café #1 Sàrl"]);
+  const d = drive(["", "   ", 'Say "hi" Ltd', "Café #1 Sàrl"]);
   const out = await askSignIn(d.io, { localAccount: "operator" });
-  assert.equal(d.asked.length, 5, "a blank name, or one holding a double quote, was accepted");
+  assert.equal(d.asked.length, 4, "a blank name, or one holding a double quote, was accepted");
   assert.match(d.text(), /A name is needed here/);
   assert.match(d.text(), /double quote/);
 
@@ -279,7 +275,10 @@ test("the wizard has ONE sign-in step, and neither command reads or writes the d
   const src = readFileSync(join(ROOT, "bin", "onboard.mjs"), "utf8");
   const calls = [...src.matchAll(/await askSignIn\(/g)];
   assert.equal(calls.length, 1, `the wizard calls askSignIn ${calls.length} times — one call site, or these arms describe code nobody runs`);
-  assert.match(src, /section\("Who signs in"\)/, "the step must be a named section the reader can see they are in");
+  assert.match(src, /section\("Your organisation"\)/, "the step must be a named section the reader can see they are in");
+  // The address is shown in exactly one place, the summary, because it is no longer asked.
+  assert.match(src, /stateLine\("signs in as", candidate\.PORTAL_LOCAL_USER/,
+    "setup's summary must say which address signs in — it is the one place the address is shown");
   // AND ITS ANSWER REACHES THE FILE. `composeEnvBody` writes every key of `candidate`, so assigning the
   // returned object into it is the whole of the write.
   assert.match(src, /Object\.assign\(candidate, await askSignIn\(/,
@@ -390,7 +389,8 @@ test("start files what setup wrote — the installer and the organisation — an
   try {
     const envFile = join(home, ".config", "clearotron", ".env");
     mkdirSync(dirname(envFile), { recursive: true });
-    const out = await askSignIn(drive(["alex@a-firm.example-tld", "Café #1 Sàrl"]).io, { localAccount: "operator" });
+    // The address is the local-account form: setup no longer asks for one (ruling, 2026-09-10).
+    const out = await askSignIn(drive(["Café #1 Sàrl"]).io, { localAccount: "operator" });
     writeFileSync(envFile, composeEnvBody(out, {}), { mode: 0o600 });
 
     const first = await driveThroughTheGrantsFile(home, []);
@@ -398,10 +398,10 @@ test("start files what setup wrote — the installer and the organisation — an
     const grantsFile = installPaths(join(home, "trademark")).grants;
     const written = JSON.parse(readFileSync(grantsFile, "utf8"));
     assert.doesNotThrow(() => assertGrantsShape(written, grantsFile), "start wrote a grants file the portal refuses");
-    assert.deepEqual(written.people, { "alex@a-firm.example-tld": { run: true, manage: true, everything: true } });
+    assert.deepEqual(written.people, { "operator@localhost": { run: true, manage: true, everything: true } });
     assert.deepEqual(Object.values(written.tenants).map((t) => t.name), ["Café #1 Sàrl"],
       "the organisation setup was told did not reach the grants file whole");
-    assert.equal(resolvePerson("alex@a-firm.example-tld", written)?.everything, true);
+    assert.equal(resolvePerson("operator@localhost", written)?.everything, true);
     assert.match(first.said, /organisation "Café #1 Sàrl", filed there/);
 
     // NEVER OVERWRITTEN. Told another name, a second start finds the file and leaves every byte of it.
