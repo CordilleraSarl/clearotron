@@ -2,14 +2,14 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // The workbook gate asked every register finding for a link its own engine is forbidden to supply.
 //
-// WHAT HAPPENED. A delivered clearance's audit workbook carried nine build-gate findings: eight of them
-// "link does not resolve to http(s)", one per register finding in the matter. The register that ran
-// publishes no per-record page (`hasPublicRecordUrl: false`), so publish's own normalizeRecordLinks had
-// emptied every absolute record link the model wrote — deliberately, because constructing a per-record
-// URL for a register that publishes none would be a fabricated citation on a legal deliverable. The gate
-// then reported the result as a defect, once per finding, scaling with how many register hits the matter
-// had. The rule was asking for a URL; what a reader needs is a citation they can act on, which for such a
-// register is the registration number and the office.
+// THE DEFECT, as a mechanism. Where a register publishes no per-record page (`hasPublicRecordUrl:
+// false`), publish's own normalizeRecordLinks empties every absolute record link a model wrote —
+// deliberately, because constructing a per-record URL for a register that publishes none would be a
+// fabricated citation on a legal deliverable. The workbook's build check then reports that emptiness as
+// "link does not resolve to http(s)", once per register-sourced finding, so the count scales with how
+// many register hits a matter has rather than with anything being wrong. The rule asks for a URL; what a
+// reader needs is a citation they can act on, which for such a register is the registration number and
+// the office.
 //
 // The distinction is what these arms drive, in both directions: the exemption must not fire for a
 // register that DOES publish record pages, for a run that cannot say what its register publishes, for a
