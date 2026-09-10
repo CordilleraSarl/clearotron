@@ -13,10 +13,12 @@
 //   - what the scanner refuses stays refused with a `?.` in it: an `env` reached through another object,
 //     an identifier that merely ends in `env`, a comment line, and an assignment;
 //   - a computed read through a bound constant resolves through `?.[` as it does through `[`;
-//   - on this tree, the three names read only through `?.` are product reads, and each is documented.
+//   - on this tree, the three names read only through `?.` are product reads, and each is documented;
+//   - each of them is classified as its row declares, rather than falling to the class a cleanup deletes.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { namesRead, envNameBindings, mergeEnvNameBindings, auditEnv } from "../../scripts/env-audit.mjs";
+import { namesRead, envNameBindings, mergeEnvNameBindings, auditEnv, auditCatalogue, declaredEffects } from "../../scripts/env-audit.mjs";
+import { classify } from "../../scripts/env-classify.mjs";
 
 const seen = (code, bindings = null) => [...namesRead(code, bindings)].sort();
 
@@ -70,4 +72,19 @@ test("on this tree, the names read only through `?.` are product reads, and each
     assert.equal(r.product, true, `${name} is read by ${file}, which ships`);
     assert.equal(r.documented, true, `${name} has no row in either governance document`);
   }
+});
+
+test("each of those names is classified as its row declares, not left in the bucket a cleanup deletes from", () => {
+  // Every row declares `deployment`, and no shape in the classifier matches these names, so each fell
+  // through to `tuning` until it was listed. The one row this tree carries is read for its declaration;
+  // the other two rows sit in the deployment reference, so their class is held by name.
+  const declared = declaredEffects(auditCatalogue().rows);
+  assert.equal(declared.get("CLEAROTRON_INVOKED_AS"), "deployment", "the row no longer declares what this holds it to");
+  const NOBODY = { prod: new Set(), test: new Set(), config: new Set(), ci: new Set(), e2e: new Set(), docs: new Set() };
+  const { rows } = classify({
+    catalogue: ["CLEAROTRON_INVOKED_AS", "CLEAROTRON_REQUIRE_EXPLICIT_PORTS", "CLEAROTRON_UPDATER_STAMP"],
+    sources: NOBODY, setup: new Set(), readSites: () => null,
+  });
+  assert.equal(rows.length, 3, "the classifier did not answer for every name");
+  for (const r of rows) assert.equal(r.class, "deployment", `${r.name} is declared deployment and classified ${r.class}`);
 });
