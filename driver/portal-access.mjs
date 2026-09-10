@@ -134,11 +134,10 @@ export function genericOrgOf(principal, tenant = null) {
  * does not exist for this person, and a refusal that told "you may not" apart from "there is nothing
  * here" would tell a stranger which endpoints exist.
  *
- * ORDERING GENERIC STAYS WITH A PERSON WHO SEES EVERYTHING, and it is refused here rather than per route.
- * Generic is exempt from the daily run cap (runner.mjs: it is the neutral no-customer profile), so a
- * `run` against it is uncapped spend. Seeing an organisation's Generic is the model's rule; spending
- * against it without a cap is not decided yet, and until it is, the chokepoint keeps it where it was.
- * Refusing here covers every spending route at once, including the ones nobody has written yet.
+ * ORDERING GENERIC follows the rule for seeing it: a person who holds the organisation whole, and holds
+ * Run. Spending against it is bounded as a company's is — every organisation's Generic lane carries the
+ * daily cap (owner ruling 2026-09-10), counted by the runner in the lane of the organisation the job is
+ * filed under, which `genericOrgOf` has just decided.
  */
 export function assertPrincipal(principal, { account = null, tenant = null, door = false,
   everything = false, manage = false, run = false, ...rest } = {}) {
@@ -160,7 +159,6 @@ export function assertPrincipal(principal, { account = null, tenant = null, door
   const a = String(account).trim().toLowerCase();
   if (a === "generic") {
     genericOrgOf(principal, tenant);
-    if (run && !seesEverything(principal)) throw new PortalDeny(404, "not found");
     return a;
   }
   if (principal.accounts === "*" || (Array.isArray(principal.accounts) && principal.accounts.includes(a))) return a;

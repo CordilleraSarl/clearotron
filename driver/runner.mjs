@@ -237,10 +237,15 @@ function recordMatter(qdir, entry) {
 // any account that needs a different number says so in its own runCaps block.
 export const DEFAULT_CLIENT_DAILY_RUNS = 20;
 
-export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false }) {
-  // `generic` is the neutral no-customer profile and stays exempt: it is not a brand owner, and capping it
-  // would put a ceiling on staff/email work that was never client-attributed.
-  if (!account || account === "generic") return null;
+export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null }) {
+  // GENERIC IS CAPPED LIKE ANY COMPANY, one lane per organisation (owner ruling 2026-09-10: "every
+  // organisation's Generic lane carries the daily cap; the exemption goes"). A Generic run counts in the
+  // lane of the organisation it was filed under and nowhere else, so one organisation's day cannot use up
+  // another's. What stays uncapped is what was never client-attributed — a job with no `clientRun` stamp:
+  // a person with access to everything, the email door, the CLI — exactly as for a company.
+  if (!account) return null;
+  const inLane = (key, org) => (key ?? null) === account && (account !== "generic" || (org ?? null) === organisation);
+  const lane = account === "generic" ? (organisation ? `Generic for ${organisation}` : "Generic") : account;
   // The default applies to the DAILY allowance only. maxQueued/monthlyRuns stay opt-in per profile.
   const eff = Number.isInteger(caps?.dailyRuns) ? caps : { ...(caps ?? {}), dailyRuns: DEFAULT_CLIENT_DAILY_RUNS };
   caps = eff;
@@ -252,7 +257,7 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
       let files = [];
       try { files = readdirSync(qd).filter(isLiveQueueMarker); } catch { continue; }
       for (const f of files) {
-        try { if ((JSON.parse(readFileSync(join(qd, f), "utf8")).profileKey ?? null) === account) queued++; }
+        try { const j = JSON.parse(readFileSync(join(qd, f), "utf8")); if (inLane(j.profileKey, j.tenant)) queued++; }
         catch { /* mid-rename / prose sidecar — skip */ }
       }
     }
@@ -261,7 +266,7 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
     // the uniform +1 admitted untagged jobs one over the cap).
     const inFlight = queued + (inHandTagged ? 0 : 1);
     if (inFlight > caps.maxQueued) {
-      return `admission cap: ${account} already has ${inFlight - 1} run(s) queued/in-flight (runCaps.maxQueued=${caps.maxQueued}) — wait for the backlog to drain or cancel one (stop_run), then re-send`;
+      return `admission cap: ${lane} already has ${inFlight - 1} run(s) queued/in-flight (runCaps.maxQueued=${caps.maxQueued}) — wait for the backlog to drain or cancel one (stop_run), then re-send`;
     }
   }
   // dailyRuns — the beta allowance, and the ONLY cap that counts a subset of runs rather than all of
@@ -292,23 +297,23 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
         // So a client whose runs keep failing is bounded by the MONTHLY cap, not the daily one — which
         // is why a monthlyRuns value is worth setting on any account this matters for.
         if (e.failed === true) continue;
-        if (e.profileKey === account && e.clientPrincipal === true
+        if (inLane(e.profileKey, e.organisation) && e.clientPrincipal === true
           && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 10) === dayKey) today++;
       }
     }
     if (today + 1 > caps.dailyRuns) {
-      return `daily allowance: ${account} has started ${today} search(es) today (runCaps.dailyRuns=${caps.dailyRuns}) — the allowance resets at midnight UTC, or ask your ${BRAND.name} contact to run this one for you`;
+      return `daily allowance: ${lane} has started ${today} search(es) today (runCaps.dailyRuns=${caps.dailyRuns}) — the allowance resets at midnight UTC, or ask your ${BRAND.name} contact to run this one for you`;
     }
   }
   if (Number.isInteger(caps.monthlyRuns)) {
     let month = 0;
     for (const qd of queueDirs) {
       for (const e of readMatterLedger(qd)) {
-        if (e.profileKey === account && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 7) === monthKey) month++;
+        if (inLane(e.profileKey, e.organisation) && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 7) === monthKey) month++;
       }
     }
     if (month + 1 > caps.monthlyRuns) {
-      return `admission cap: ${account} has started ${month} run(s) this month (runCaps.monthlyRuns=${caps.monthlyRuns}) — the cap resets at month end; raise it in the customer profile if this is intended growth`;
+      return `admission cap: ${lane} has started ${month} run(s) this month (runCaps.monthlyRuns=${caps.monthlyRuns}) — the cap resets at month end; raise it in the customer profile if this is intended growth`;
     }
   }
   return null;
@@ -977,7 +982,8 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   // clarifies before any spend and before the matter is recorded.
   if (!effProfile) note(`[runner] ${base} run-caps skipped — profile resolution errored, caps not evaluable for this admission (fail-open by doctrine, logged for visibility)`);
   const capMsg = checkRunCaps({ account: effProfile?.key ?? null, caps: effProfile?.runCaps, queueDirs: config.queueDirs,
-    inHandTagged: Boolean(job.profileKey), clientRun: job.clientPrincipal === true });
+    inHandTagged: Boolean(job.profileKey), clientRun: job.clientPrincipal === true,
+    organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null });
   if (capMsg) {
     note(`[runner] ${base} ${capMsg}`);
     await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: [capMsg] }, [capMsg]);
@@ -1005,7 +1011,10 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     }
   }
   recordMatter(qdir, { sig, conversationId, msgId: job.msgId, id: job.id, ts: dupNow,
-    ...(effProfile?.key && effProfile.key !== "generic" ? { profileKey: effProfile.key } : {}),
+    // Generic is tagged too, with the organisation whose lane it counts in. An untagged Generic row
+    // counted towards nothing, which was the exemption the owner's 2026-09-10 ruling removed.
+    ...(effProfile?.key ? { profileKey: effProfile.key } : {}),
+    ...(effProfile?.key === "generic" && typeof job.tenant === "string" && job.tenant ? { organisation: job.tenant } : {}),
     // positive-only, and it is what tomorrow's daily count reads. A run that omits it is a staff,
     // email or CLI run and never consumes a client's allowance.
     ...(job.clientPrincipal === true ? { clientPrincipal: true } : {}),

@@ -1455,11 +1455,17 @@ export function makePortalService({
         // identity gets {} here exactly as it does for names and keeps reading the staff-only roster.
         let accountNames = {};
         let accountFacts = {};
-        if (Array.isArray(principal.accounts) && principal.accounts.length) {
+        // GENERIC IS NAMED TOO when the person sees an organisation's Generic. It is not a company, so it is
+        // never in `accounts`, and without a name here the switcher printed the raw key at everyone below
+        // everything. An organisation with no company yet is the case with an empty `accounts`, so the
+        // guard is on the names to look up, not on the company list.
+        const named = Array.isArray(principal.accounts)
+          ? [...principal.accounts, ...(principal.genericOrgs?.length ? ["generic"] : [])] : [];
+        if (named.length) {
           try {
             const { companyFactsOf } = await import("./profiles.mjs");
             const profiles = await loadProfilesImpl();
-            for (const key of principal.accounts) {
+            for (const key of named) {
               const profile = profiles.get(key);
               const name = profile?.name;
               if (typeof name === "string" && name) accountNames[key] = name;
@@ -1703,12 +1709,17 @@ export function makePortalService({
         try { return quoteForJob({ job, profile, searchPolicy: resolved }); } catch { return null; }
       };
 
-      const quotaRefusal = async (account) => {
+      const quotaRefusal = async (account, organisation = null) => {
         if (seesEverything(principal) || !upstream) return null;
         let caps = null, capsRead = false;
         try {
-          const r = await upstream.getProfile(principal, account);
-          if (r.status === 200) { caps = r.json?.readOnly?.runCaps ?? null; capsRead = true; }
+          // Generic's caps are the neutral profile's — one file, every organisation's lane — so they are
+          // read from the store rather than through the settings wall, which answers per company.
+          if (account === "generic") { caps = (await loadProfilesImpl()).get("generic")?.runCaps ?? null; capsRead = true; }
+          else {
+            const r = await upstream.getProfile(principal, account);
+            if (r.status === 200) { caps = r.json?.readOnly?.runCaps ?? null; capsRead = true; }
+          }
         } catch { return null; }   // cannot read the cap ⇒ do not invent one; the wall still holds
         // The same DEFAULT the wall applies (runner.mjs DEFAULT_CLIENT_DAILY_RUNS): a profile READ
         // successfully with no dailyRuns is capped, not uncapped. Mirrored rather than imported because
@@ -1718,7 +1729,7 @@ export function makePortalService({
         if (!capsRead) return null;
         const limit = Number.isInteger(caps?.dailyRuns) ? caps.dailyRuns : DEFAULT_CLIENT_DAILY_RUNS;
         if (!Number.isInteger(limit)) return null;
-        const used = accountUsage({ queueDirs: queueDirs(), account });
+        const used = accountUsage({ queueDirs: queueDirs(), account, organisation });
         // A COUNT WE COULD NOT TAKE IS NOT A ZERO. `complete: false` means no ledger was reachable, and
         // 0 would then mean "nothing recorded" and "nothing readable" at once — the exact confusion that
         // made this refusal unreachable for as long as the path was wrong. Same call the branch
@@ -1750,7 +1761,7 @@ export function makePortalService({
         const job = jobFor({ principal, account, tenant, body });
         const gates = planGates(job);
         if (gates.fail) return gates.fail;
-        const overQuota = await quotaRefusal(account);
+        const overQuota = await quotaRefusal(account, job.tenant ?? null);
         if (overQuota) return overQuota;
         // ONE resolution, and the name, the stage, the turnaround and the effort all come off it.
         const { profile: planProfile, resolved: planResolved, scope: planScope } = resolveFor(job);
@@ -1803,7 +1814,7 @@ export function makePortalService({
         if (gates.fail) return gates.fail;
         // re-checked for the same reason the gates are: a token minted while the account still had
         // allowance must not spend it after another tab has used the last one.
-        const overQuota = await quotaRefusal(account);
+        const overQuota = await quotaRefusal(account, job.tenant ?? null);
         if (overQuota) return overQuota;
         sweepJtis();
         const bad = verifyConfirmation({ secret, token: body.confirmationToken, account, email: principal.email,
@@ -2199,16 +2210,21 @@ export function makePortalService({
       // per-identity: a staff member acting for three clients has three different answers, and one of
       // them is never "yours". Cheap enough to fetch beside the composer and the run list.
       if (parts[1] === "api" && parts[2] === "usage" && method === "GET") {
-        const account = assertPrincipal(principal, { account: query.account ?? null });
+        const account = assertPrincipal(principal, { account: query.account ?? null, tenant: query.tenant ?? null });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
+        // Generic is counted per organisation — the lane the wall caps (runner.mjs checkRunCaps).
+        const organisation = account === "generic" ? genericOrgOf(principal, query.tenant ?? null) : null;
         // Caps live on the customer profile and are code-owned (never client-editable). A deployment
         // with no config surface still answers, with counts and no caps — "we cannot tell you your
         // limit" is a better answer than a fabricated one.
         let caps = null, capsRead = false;
         if (upstream) {
           try {
-            const r = await upstream.getProfile(principal, account);
-            if (r.status === 200) { caps = r.json?.readOnly?.runCaps ?? null; capsRead = true; }
+            if (account === "generic") { caps = (await loadProfilesImpl()).get("generic")?.runCaps ?? null; capsRead = true; }
+            else {
+              const r = await upstream.getProfile(principal, account);
+              if (r.status === 200) { caps = r.json?.readOnly?.runCaps ?? null; capsRead = true; }
+            }
           } catch { /* a settings surface fault must not take the counter down */ }
         }
         // `complete` rides out with the counts (see usage-ledger.mjs): false means no ledger was read and
@@ -2218,8 +2234,8 @@ export function makePortalService({
         // `basis` is dropped here on purpose. What a client is owed is "we could not count", which
         // `complete` says; WHICH kind of nothing it was is an operator's diagnosis of our deployment and
         // belongs in the audit trail, where the quota pre-check puts it.
-        const { basis: _basis, ...used } = accountUsage({ queueDirs: queueDirs(), account });
-        return { status: 200, json: { account, ...used,
+        const { basis: _basis, ...used } = accountUsage({ queueDirs: queueDirs(), account, organisation });
+        return { status: 200, json: { account, ...(account === "generic" ? { tenant: organisation } : {}), ...used,
           // The EFFECTIVE daily allowance: the profile's value, else the default the wall applies — a
           // client reading "—" while the wall enforces 2 is the same lie as a wrong count. But a profile
           // we could NOT read still reports null: "we cannot tell you your limit" is a different

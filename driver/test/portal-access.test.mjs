@@ -88,16 +88,20 @@ test("a row naming a company its own organisation does not hold grants nothing",
   assert.equal(who("x@y.example", g), null);
 });
 
-test("Generic is never offered as a company, and ordering it stays with a person who sees everything", () => {
+test("Generic is never offered as a company, and is ordered by whoever holds its organisation whole with Run", () => {
+  // Owner ruling 2026-09-10: Generic is capped like any company, per organisation, so ordering it follows
+  // the rule for seeing it. The cap itself is the runner's (each-organisations-generic-carries-the-daily-cap).
   const pat = who("pat@southbank.example");
   assert.ok(!pat.accounts.includes("generic"));
-  assert.equal(assertPrincipal(pat, { account: "generic", tenant: "southbank" }), "generic", "Pat sees Southbank's Generic");
-  assert.throws(() => assertPrincipal(pat, { account: "generic", tenant: "southbank", run: true }), (e) => e.status === 404,
-    "but may not spend against it uncapped");
-  assert.throws(() => assertPrincipal(pat, { account: " GENERIC ", tenant: "southbank", run: true }), (e) => e.status === 404,
-    "case and padding do not step around it");
-  const kay = who("kay@northwind.example");
-  assert.equal(assertPrincipal(kay, { account: "generic", tenant: "southbank", run: true }), "generic");
+  assert.equal(assertPrincipal(pat, { account: "generic", tenant: "southbank", run: true }), "generic", "Pat orders Southbank's Generic");
+  assert.equal(assertPrincipal(pat, { account: " GENERIC ", run: true }), "generic", "case and padding normalise, and one organisation is implied");
+  assert.throws(() => assertPrincipal(pat, { account: "generic", tenant: "northwind", run: true }), (e) => e.status === 404,
+    "never another organisation's");
+  assert.throws(() => assertPrincipal(who("dee@southbank.example"), { account: "generic", tenant: "northwind", run: true }),
+    (e) => e.status === 404, "a company-level point never orders its organisation's Generic");
+  assert.throws(() => assertPrincipal(who("tam@harbour.example"), { account: "generic", run: true }), (e) => e.status === 404,
+    "and a person without Run orders nothing");
+  assert.equal(assertPrincipal(who("kay@northwind.example"), { account: "generic", tenant: "southbank", run: true }), "generic");
 });
 
 test("every company a person IS offered actually resolves", () => {

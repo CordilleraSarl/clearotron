@@ -711,7 +711,9 @@ function tenantStamp(scope, asked) {
     if (!orgs.includes(t)) throw new Error(`your access does not include organisation "${t}"`);
     return { tenant: t };
   }
-  return orgs.length === 1 ? { tenant: orgs[0] } : {};
+  if (orgs.length === 1) return { tenant: orgs[0] };
+  if (scope?.everything === true) return {};
+  throw new Error(`name the organisation whose Generic this is (tenant) — your access covers ${orgs.length}`);
 }
 
 // True iff `email`'s domain (the part after the final '@') is one of firmDomains. PURE (no jose), so the HTTP
@@ -965,13 +967,12 @@ export function authorize(scope, toolName, args = {}) {
       throw new Error(`tool "${toolName}" needs Run clearances, which this person does not hold`);
     if (toolName === "start_run" || toolName === "plan_run") {
       // The access bounds which company a person may spend against. `generic` is the neutral profile a
-      // job with no profileKey runs under, and it is not a company: seeing an organisation's Generic does
-      // not extend to ordering it, because Generic is exempt from the daily cap. Ordering it stays with a
-      // person who sees everything — the portal refuses it at its chokepoint for the same reason — so
-      // omitting the field is still no way out of the access.
+      // job with no profileKey runs under, and it is not a company: it is an organisation's own lane,
+      // ordered by a person who holds that organisation whole (or everything) and capped per organisation
+      // like any company (owner ruling 2026-09-10). So omitting the field is still no way out of the access.
       const key = args?.profileKey ?? "generic";
       const reach = scope.accounts === "*" ? "everything" : (Array.isArray(scope.accounts) ? scope.accounts.join(", ") : "");
-      if (key === "generic" ? scope.everything !== true
+      if (key === "generic" ? !(scope.everything === true || (Array.isArray(scope.genericOrgs) && scope.genericOrgs.length))
         : !(scope.accounts === "*" || (Array.isArray(scope.accounts) && scope.accounts.includes(key))))
         throw new Error(`your grant [${reach}] does not include account "${key}" — ${toolName} refused`);
     }
