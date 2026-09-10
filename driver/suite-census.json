@@ -5409,8 +5409,8 @@
           "todos": 0
         },
         "ops.test.mjs": {
-          "tests": 36,
-          "asserts": 150,
+          "tests": 37,
+          "asserts": 156,
           "skips": 0,
           "todos": 0
         },
@@ -5812,6 +5812,12 @@
         "territoryCodeParity.test.ts": {
           "tests": 4,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "theStopNoticeHasItsOwnRow.test.ts": {
+          "tests": 4,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
