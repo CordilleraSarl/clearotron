@@ -400,8 +400,8 @@
           "todos": 0
         },
         "a-new-install-signs-in-with-its-own-passphrase.test.mjs": {
-          "tests": 7,
-          "asserts": 37,
+          "tests": 8,
+          "asserts": 43,
           "skips": 1,
           "todos": 0
         },
