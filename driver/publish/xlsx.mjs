@@ -283,7 +283,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
 
   const rows = [];
   let i = 0;
-  const push = r => rows.push({ '#': ++i, ...r });
+  const push = r => rows.push({ '#': ++i, ...r, Result: readerWords(r.Result), Note: readerWords(r.Note) }); // plain words, after each branch below has classified its row from the engine's own
 
   if (reg.length) {
     push({ 'Search term / variant': 'REGISTER  —  vendor register, worldwide', Scope: '', Result: '', Outcome: '', Note: '', _section: true });
@@ -638,6 +638,38 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
     searched: wb.getWorksheet('What was searched')?.rowCount - 1 || 0,
     gateViolations: gate.violations,
   };
+}
+
+// READER_WORDS — the plain word a reader of "What was searched" gets in place of each engine word BANNED
+// names. That sheet's Result and Note cells carry the search log's own prose, model-authored and already
+// written on every archived run, so the words are put right where each row is written (`push` in
+// `searchRows()`) instead of being left to the advisory gate. The gate still runs; a hit on this sheet is
+// now a name, or a word this table is missing.
+//
+// Lower case only. In these cells a capitalised or upper-case word is a name — a mark, an owner, a
+// platform — and a rewritten name misstates what was searched, so names stay as written. HTTP keeps to
+// that rule with one exception, which is never a name: before a status code it goes in any case, so
+// "provider-rejected (HTTP 429)" reads "provider-rejected (429)" while a mark called HTTP HOUSE keeps its
+// name. A web address loses its scheme in any case and keeps its host and path. has_more is plainNote's.
+//
+// Kept down here, below every line the rest of the tree cites in this file by number.
+export const READER_WORDS = Object.freeze({
+  receipt: 'record', receipts: 'records',
+  lint: 'check', tripwire: 'check', tripwires: 'checks',
+  composite: 'combined', scatter: 'chart', cache: 'stored copy',
+  quadrant: 'position', quadrants: 'positions', coordinate: 'position', coordinates: 'positions',
+  meter: 'measure', meters: 'measures',
+});
+const READER_WORD = new RegExp(`\\b(?:${Object.keys(READER_WORDS).join('|')})\\b`, 'gi');
+
+function readerWords(s) {
+  return String(s ?? '')
+    .replace(/\bhttps?:\/\//gi, '')
+    .replace(/\bhttps?\s+(?=\d{3}\b)/gi, '')
+    .replace(/\bhttps?\b\s*/g, '')
+    .replace(READER_WORD, (w) => (w === w.toLowerCase() ? READER_WORDS[w] : w))
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /**

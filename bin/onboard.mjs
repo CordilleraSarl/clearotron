@@ -2259,12 +2259,34 @@ export async function runCheck() {
   // the provider's own capability rather than a number typed here.
   if (PROBE_PROVIDERS) {
     say("\n  Register lane — proven, not inferred");
+    // THE PROBE ASKS WITH WHAT THE SECTION ABOVE PRINTED. That section reads the environment first and
+    // this install's env file behind it, and says which: `signa (.env)`. This process does not apply the
+    // file — `doctor` is not a CLI entry in shared/env-local.mjs, because reading is not applying — so the
+    // probe took its provider from a module constant fixed from the shell alone, and its key from the
+    // shell at call time. A provider or key kept only in the file, which is where setup writes them,
+    // came back "not set" or "absent" directly under the line that had just printed it. Measured
+    // 2026-09-10 on a fresh install.
+    //
+    // So the provider is resolved from the same reading, and the provider's own variables, the ones the
+    // section above lists, are placed in this process for the probe and put back after it: the adapter
+    // reads them from the environment when it is called. Nothing else moves.
+    const placed = [];
     try {
       const [{ activeProvider }, { makeLaneProbe, probeSpend, DEFAULT_CONTROLS, loadProviderCapabilities }] = await Promise.all([
         import(pathToFileURL(join(REPO, "driver", "driver.config.mjs")).href),
         import(pathToFileURL(join(REPO, "providers", "_shared", "lane-probe.mjs")).href),
       ]);
-      const adapter = activeProvider();
+      const chosen = effective("CLEAROTRON_DATABASE");
+      const adapter = activeProvider(chosen ? { CLEAROTRON_DATABASE: chosen.v } : null);
+      const spec = PROVIDERS.find((p) => p.id === adapter?.id);
+      const names = spec ? [...spec.credentials, ...(spec.optionalCredentials ?? [])]
+        : [adapter?.credEnv, ...(adapter?.credEnvAlso ?? [])].filter(Boolean);
+      for (const k of ["CLEAROTRON_DATABASE", ...names]) {
+        const e = effective(k);
+        if (e?.from !== ".env") continue;   // unset, or the environment already carries it
+        placed.push([k, Object.hasOwn(process.env, k), process.env[k]]);
+        process.env[k] = e.v;
+      }
       // NOT `adapter.capabilities` — that is null on every adapter, and reading it announced a LOCAL
       // index as a billable search. The declaration lives in the provider's own module. (issue 1871)
       const caps = await loadProviderCapabilities(REPO, adapter?.id);
@@ -2293,6 +2315,10 @@ export async function runCheck() {
     } catch (e) {
       // A probe that could not run says so. It is not evidence about the credential either way.
       info(`the register lane could not be probed: ${String(e?.message ?? e)}`);
+    } finally {
+      // EVERY ONE PUT BACK, including those that were absent: the sections below read this process's
+      // environment, and must not report a value from the file as though the shell had set it.
+      for (const [k, had, v] of placed) { if (had) process.env[k] = v; else delete process.env[k]; }
     }
 
     const pxKey = effective("PERPLEXITY_API_KEY");

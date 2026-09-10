@@ -64,8 +64,8 @@
           "todos": 0
         },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
-          "tests": 13,
-          "asserts": 33,
+          "tests": 12,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -468,6 +468,12 @@
         "a-queued-what-if-is-answered-before-its-run-archives.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-real-dispatch-records-the-tool-that-served-it.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -4653,6 +4659,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-reaper-signals-before-it-removes.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-record-cannot-contradict-itself.test.mjs": {
           "tests": 12,
           "asserts": 48,
@@ -4669,6 +4681,12 @@
           "tests": 6,
           "asserts": 15,
           "skips": 4,
+          "todos": 0
+        },
+        "the-register-probe-reads-the-install-env-file.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
           "todos": 0
         },
         "the-repair-order-and-the-tool-schema-agree.test.mjs": {
@@ -5100,6 +5118,12 @@
         "what-doctor-passes-a-search-accepts.test.mjs": {
           "tests": 8,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "what-was-searched-is-written-in-the-readers-words.test.mjs": {
+          "tests": 6,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },

@@ -233,9 +233,11 @@ export const config = {
    * exist, and the read then throws by name, which is loud already. The case nobody hears is a file
    * ABSENT FROM THE OVERLAY AND PRESENT IN THE BASE: a real, readable file is returned, and if that file
    * is a risk framework the matter is rated under somebody else's rubric with nothing in the log. The
-   * shipped tree carries `risk-framework-aurora.md` and `risk-framework-zephyr.md` under the same names
-   * customers use for their own, so removing one from the config store swaps the deck rather than
-   * emptying it.
+   * shipped tree carries `risk-framework.md`, `risk-framework-demo.md` and `risk-framework-triage.md`
+   * under the same names customers use for their own, so removing one from the config store swaps the
+   * deck rather than emptying it. NAME ONLY DECKS THAT SHIP: `files[]` excludes
+   * `risk-framework-*` and re-includes exactly those three, so an example naming any other deck is
+   * describing a tree the reader does not have.
    *
    * `layer` is what happened: "overlay" served from the config store, "base" served from the repo while
    * an overlay was configured and did not hold it, "base-only" served from the repo with no overlay

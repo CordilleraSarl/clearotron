@@ -36,7 +36,8 @@ import { bandMeaningRows } from "./profile-service.mjs";
  * Skill resolution is layered: the config store wins, the repo answers when the store is silent. That
  * fallback is the migration design and every generic methodology file relies on it. For a FRAMEWORK it is
  * different in kind, because the shipped tree carries decks under the same filenames customers use for
- * their own — `risk-framework-aurora.md`, `risk-framework-zephyr.md`. Take a customer's deck out of the
+ * their own — `risk-framework.md`, `risk-framework-demo.md`, `risk-framework-triage.md`, which are the
+ * three `files[]` re-includes after excluding `risk-framework-*`. Take a customer's deck out of the
  * config store and the repo's copy answers: readable, valid, and not theirs. Nothing throws and the
  * matter is rated under another company's rubric.
  *
