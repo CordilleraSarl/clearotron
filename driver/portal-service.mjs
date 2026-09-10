@@ -2423,13 +2423,13 @@ export function makePortalService({
         // reader put down". Every branch below goes through it — a route that stamped only the scope=mine
         // path would leave the same run acknowledged on one screen and not on another.
         const mine = (runs) => withAcks(runs, readAcks(poolRoot, principal?.email));
-        // "All brand owners". STAFF ONLY, and it is a distinct code path rather than a wildcard passed
-        // to assertPrincipal — a client must never reach a branch that skips the account resolution,
-        // even by accident. A client who asks for it gets the same 404 as any account not theirs.
+        // "All brand owners". ONLY FOR A PERSON WHO SEES EVERYTHING, and it is a distinct code path rather
+        // than a wildcard passed to assertPrincipal — nobody else may reach a branch that skips the account
+        // resolution, even by accident. Anyone else who asks for it gets the same 404 as any account not theirs.
         if (query.account === "*") {
-          // THE DOOR FIRST. This branch read `principal.role` directly, and `principal` is null for any
-          // identity that is neither staff nor granted anything — the exact caller this route most needs
-          // to refuse. Reading `.role` off null threw a TypeError, which is not a PortalDeny, so the
+          // THE DOOR FIRST. This branch once read a field off `principal` directly, and `principal` is null
+          // for an identity with no access anywhere — the exact caller this route most needs to refuse.
+          // Reading a field off null threw a TypeError, which is not a PortalDeny, so the
           // catch at the bottom of route() rethrew it and the handler answered 500 "internal". An
           // unenrolled prober therefore got a SERVER ERROR from the one route that lists every customer,
           // while every other surface refused them cleanly — and a 500 is both the wrong answer and a
@@ -4069,12 +4069,11 @@ const PORT = PORT_CHOICE.port;
   // the difference is the point.
   //
   // shared/scope.mjs, first line of accountsForEmail: `if (!grants) return "*"`. With CLEAROTRON_ACCESS_FILE
-  // unset, EVERY identity this portal admits resolves to accounts:"*". makePrincipal hands back
-  // { role: "client", accounts: "*" } (portal-access.mjs — the "*" branch is honoured, only the ROLE
-  // stays client), assertPrincipal then approves whatever ?account= is asked for, and one signed-in
-  // customer reads every other customer's runs, held reports and configuration. Nothing throws, nothing
-  // 403s, nothing appears in a log: it is a silent read-all across the whole book of business, and the
-  // only outward sign is that the account picker offers names its owner has never heard of.
+  // unset, that flat view answers "every customer" for every identity. The portal no longer reads it that
+  // way — `makePrincipal` resolves nobody without a grants file — but other readers of the same function
+  // did, and a portal running with no file would be an install nobody can enter and nothing explains.
+  // Before the access model this was a silent read-all across the whole book of business, and the guard
+  // is kept for the reason it was written: the absence of the one file that decides must stop the start.
   //
   // UNCONDITIONAL, unlike the MCP's. There the guard sits inside the auth-disabled branch, because with
   // auth ON a caller has proven a firm email domain and read-all is what firm staff are supposed to

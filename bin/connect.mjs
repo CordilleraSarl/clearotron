@@ -48,7 +48,7 @@ import { createServer } from "node:net";
 import { CONNECT_CLIENTS, clientById, whatItNeeds } from "../shared/connect-clients.mjs";
 import { stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";
 import { defaultDenylistPath, clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
-import { mintToken, tokenId, accountsForEmail, loadGrants } from "../shared/scope.mjs";
+import { mintToken, tokenId, resolvePerson, loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
 import { atomicWrite } from "../driver/progress.mjs";
 // — F40. SERVER_INSTALL_SET is what `bin/start.mjs` re-exports as
@@ -396,8 +396,17 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
   const reach = { publicAddress: have.publicAddress, reachabilityKnown: envKnown };
   // Resolved HERE because it reads a file, and handed to the pure planner as a fact. A door this verb
   // opens for an identity that is granted nothing is a credential with no reach.
+  //
+  // ENROLLED MEANS A PERSON WITH ACCESS SOMEWHERE, asked of the resolver the door itself reads. The
+  // flat company list could not say it: a person whose only reach is their organisation's Generic holds
+  // no company, and read as enrolled in nothing. No grants file answers "*", as it always has.
   let granted;
-  try { granted = accountsForEmail(identity, loadGrants()); } catch { granted = undefined; }
+  try {
+    const grants = loadGrants();
+    const person = grants ? resolvePerson(identity, grants) : null;
+    granted = !grants ? "*" : !person ? [] : person.accounts === "*" ? "*"
+      : [...person.accounts, ...(person.genericOrgs.length ? ["generic"] : [])];
+  } catch { granted = undefined; }
   // The env file the UNIT reads, not this shell — found by the drive: a shell-exported secret passed
   // every plan check while the door died at birth reading an env file that lacked it.
   // ── THE PLAN CHECKED THE FILE AND THE MINT READ THE SHELL ─────────────────────────────────────────

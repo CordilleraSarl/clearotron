@@ -33,28 +33,27 @@ Three deployment shapes, and they are the whole set:
 | **Shared or hosted** | `PORTAL_AUTH_MODE=auth-proxy` — any login system in front that authenticates in the browser and forwards a verifiable JWT per request (`cf-access` is the older word for this and still works) | Admit the address at your login system, **then** grant it in the guest list — both halves, always |
 | **Neither configured** | the service refuses to start | — |
 
-Exactly two roles exist: **staff**, admitted by an email-domain rule (`PORTAL_STAFF_DOMAINS`), and
-**client**, admitted by a named grant in the guest list (`CLEAROTRON_ACCESS_FILE`). `makePrincipal` →
-`assertPrincipal` is the only path to a decision and no identity source may reach past it. Grants are
-created in the guest-list file by whoever administers the box — `npm run grant` is the editor for it —
-never from a browser. The file is re-read per request, so a grant lands without a restart.
+A person is admitted by their own entry in the guest list (`CLEAROTRON_ACCESS_FILE`) and by nothing
+else. The guest list gives each person access to points on one tree — the whole install, an
+organisation, or one company — and two switches, **Run clearances** and **Manage**. A person sees
+everything below the points they were given and nothing else; both switches off is a person who can read
+and start nothing. In the portal, `makePrincipal` → `assertPrincipal` is the only path to a decision and
+no identity source may reach past it; the connector resolves a key's person through the same function
+(`resolvePerson`, `shared/scope.mjs`), so the two doors cannot disagree about one address. The file is
+re-read per request, so a change lands without a restart. `npm run grant` edits it, and so does anyone
+with Manage from the People page, inside their own access.
 
-**A staff domain is a grant to everyone at that domain, so nothing derives one for you.** Every address
-at a listed domain that gets past the sign-in door is staff, and staff sees every brand owner on the
-instance. The install therefore derives `PORTAL_STAFF_DOMAINS` only from a sign-in address that names no
-second person — the `<account>@localhost` form a single-user machine gets by default. Given a real
-address it states the rule it would create, in the words the People & access screen will later use,
-and refuses to write it: set `PORTAL_STAFF_DOMAINS` yourself, or answer the question `clearotron install`
-asks. A webmail or shared provider is refused outright, because a rule built from one admits the public.
-The People & access screen names the setting the rule came from and the file it is written in, so a
-rule can be traced and undone by whoever finds it.
+**Nothing is admitted by the part of an address after its `@`.** The staff-by-domain rule
+(`PORTAL_STAFF_DOMAINS`) is gone and the setting is ignored. A `*@domain` entry in the guest list still
+names every address at that domain and may hold Run clearances; it may never hold Manage or access to
+everything, and the guest list is refused at load if it tries, because a domain-wide Manage is the staff
+rule by another name.
 
-**That check is on the DERIVATION, not on the value.** A `PORTAL_STAFF_DOMAINS` you set yourself is
-taken as written and never classified: `PORTAL_STAFF_DOMAINS=gmail.com` is accepted, and it admits
-everyone at that provider who gets past the sign-in door. This is deliberate — a value someone typed is
-a decision already taken, and the defect being fixed was a rule created with nobody asked — but it means
-the protection is against the accident and not against the configuration. Read what you set, or set
-nothing and answer the question the install asks.
+**Two organisations are invisible to each other because they are sibling branches.** A company belongs
+to exactly one organisation, and the guest list is refused at load if a company is listed under two. A
+clearance run with no company — Generic — is filed under the organisation it was started in and is
+visible only inside it. A Generic run filed before organisations existed is visible only to a person
+with access to everything.
 
 
 - **On the proxy door**, every HTTP request re-validates a JWT from the fronting auth proxy. The
