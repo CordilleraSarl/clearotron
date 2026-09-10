@@ -88,7 +88,21 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
     [allowanceOwner],
   )
 
-  const runs: readonly Run[] = result?.kind === 'ok' ? result.value : []
+  // THE CHIPS FILTER THE ROWS, per the ruling on the company-setup spec's item 7: the rail line is
+  // navigation — dashboard versus working on one company — and not a statement about what the filter
+  // reaches. Before this, choosing a company on Home changed nothing at all: the same marks stayed on
+  // screen under every selection, and the chips were a control that looked like one.
+  //
+  // TWO SETS, DELIBERATELY, AND THE POLL KEEPS THE UNFILTERED ONE. `usePoll` is armed from whether any
+  // run is still going, and arming it from the FILTERED set would stop the page refreshing the moment
+  // somebody selected a company that happens to be idle — while another company's run was live and
+  // moving. The screen would sit still and look finished. What is displayed is scoped; what decides
+  // whether to keep looking is not.
+  const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
+  const runs = useMemo(
+    () => (ctx.owner ? allRuns.filter((r) => r.account === ctx.owner) : allRuns),
+    [allRuns, ctx.owner],
+  )
   const rows = useMemo(() => inFlight(runs), [runs])
   // — what this reader has put down. A COUNT, not a silent disappearance: acknowledging must not
   // be the same act as forgetting, so the number is on screen and one click opens the list.
@@ -102,7 +116,9 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   const lastDone = useMemo(() => (done.length ? lastFinishedOf(done[0]!) : null), [done])
 
   usePoll(reload, {
-    active: runs.some((r) => !TERMINAL.has(r.state)),
+    // THE UNFILTERED SET, and the comment above the split says why: a quiet company must not stop the
+    // page watching a busy one.
+    active: allRuns.some((r) => !TERMINAL.has(r.state)),
     rateLimited: result?.kind === 'rateLimited',
   })
 
@@ -119,10 +135,10 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         onAll={() => ctx.go('/portal/clearances')}
       />
 
-      {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because it is
-          the dashboard — the line in the rail separates "your dashboard" from "working on one company",
-          not "everything below here is filtered". The chips are how this screen offers the same choice
-          without claiming to be one of the company screens, and they set the same value the rail sets. */}
+      {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because the
+          line is NAVIGATION — it separates "your dashboard" from "working on one company" — rather than
+          a statement about what the filter reaches. The chips set the same value the rail sets AND
+          filter the rows below them, so the two controls cannot disagree and neither is decorative. */}
       <div style={{ margin: '0 0 18px' }}>
         <CompanyChips ctx={ctx} label="Filter by company" />
       </div>
@@ -373,6 +389,7 @@ function Card({
             <StopChoice
               name={displayName(run)}
               step={run.step}
+              stoppable={run.stoppable}
               onImmediate={() => void stop(true)}
               onBoundary={() => void stop(false)}
               onCancel={() => setAsking(false)}
@@ -471,9 +488,10 @@ function AckUndo({ run, onChanged }: { readonly run: Run; readonly onChanged: ()
  * check reddened main on by giving Acknowledge that class. Two more of them inside a dialog would
  * break a browser arm that no unit test can see.
  */
-function StopChoice({ name, step, onImmediate, onBoundary, onCancel }: {
+function StopChoice({ name, step, stoppable, onImmediate, onBoundary, onCancel }: {
   readonly name: string
   readonly step: string | null
+  readonly stoppable: boolean
   readonly onImmediate: () => void
   readonly onBoundary: () => void
   readonly onCancel: () => void
@@ -493,9 +511,17 @@ function StopChoice({ name, step, onImmediate, onBoundary, onCancel }: {
           <span className="modal-rule" aria-hidden />
           <span className="eyebrow" style={{ color: 'var(--accent-quiet)' }}>Stop this clearance</span>
           <h2 style={{ margin: '7px 0 3px', fontSize: 19, fontWeight: 700, color: 'var(--text-strong)' }} data-anon="mark">{name}</h2>
+          {/* THE PROMISE IS WITHDRAWN WHEN IT CANNOT BE KEPT. A run that has committed to publishing is
+              past its last stoppable point, and this line used to tell the reader the opposite -- a
+              report was published a hundred seconds after somebody was told nothing would be. Offering
+              a mode whose stated outcome the run cannot produce is worse than saying so, because the
+              person stops watching. */}
           <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)' }}>
-            Either way it cannot be undone, nothing is delivered, and what has already been spent is
-            spent.
+            {stoppable
+              ? <>Either way it cannot be undone, nothing is delivered, and what has already been spent is
+                spent.</>
+              : <>This run is already writing its report, so stopping it may not prevent delivery. What
+                has been spent is spent, and it cannot be undone either way.</>}
           </p>
         </div>
 

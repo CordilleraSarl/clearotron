@@ -23,7 +23,9 @@ import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import { useLoad } from '../state/useApi.ts'
 import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { CompanyGate, NEW_COMPANY_PATH } from '../shell/CompanyPicker.tsx'
+import { canManage } from '../shell/permissions.ts'
+import { FrameworkGuideLink } from '../components/FrameworkGuideLink.tsx'
 
 type Saved = { readonly at: number; readonly sha: string | null }
 
@@ -157,6 +159,30 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   return (
     <div className="screen">
       <div className="measure">
+        {/* THE ONLY ROUTE TO MAKING A COMPANY, ONCE ONE IS SELECTED. Found by the owner on the test box:
+            `+ New company` lived on the pick panel alone, and choosing a company is exactly what hides
+            that panel — so the person doing the work had no way to make a second one and nothing on
+            screen saying so. This screen is where somebody already is when they think of it.
+
+            NOT IN THE RAIL, and that was decided rather than skipped: a staff-only rail entry breaks the
+            rule that staff and clients see the same page shape, which is why staff administration was
+            moved out of the rail in the first place. The switcher's own action row is the owner's
+            preferred placement and lands with the switcher rebuild.
+
+            `canManage` and the same path constant as the pick panel — one gate and one destination, so
+            the two controls cannot come to disagree about who may create or where it goes. */}
+        {canManage(ctx.me) ? (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 12px' }}>
+            <button
+              type="button"
+              className="start-pill"
+              onClick={() => ctx.go(NEW_COMPANY_PATH)}
+              style={{ flex: 'none', borderColor: 'var(--accent-ink)', color: 'var(--text-accent)', fontWeight: 700 }}
+            >
+              + New company
+            </button>
+          </div>
+        ) : null}
         {/* The framework leads the EDITABLE page, under the scope notice above it.
             It is the one thing here nobody can edit and the one thing that decides what every clearance
             for this account COMES OUT AS — doc 50's rule that a company's own framework rates its
@@ -521,6 +547,12 @@ function FrameworkBlock({
                     {response ? <i className="fw-bmresp"> — {response}</i> : null}
                   </span>
                 )}
+                {/* THE GUIDE, ON THE SCREEN WHERE SOMEBODY MEETS THEIR FRAMEWORK. The framework itself is
+                    read-only here by ruling — expert settings stay on the command line and are SHOWN rather
+                    than edited — so without this link a person can see that a company has a rubric and has no
+                    way to learn they may write their own. Same component as the create form. */}
+                <p style={{ margin: '10px 0 0' }}><FrameworkGuideLink /></p>
+
               </div>
             )
           })}

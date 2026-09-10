@@ -55,6 +55,18 @@ export type Result<T> =
   | { kind: 'noAccess' }
   /** 404. Covers "does not exist" AND "not yours" — deliberately indistinguishable. */
   | { kind: 'notFound' }
+  /**
+   * A feature this deployment has switched OFF by configuration, not a page that is missing.
+   *
+   * Same 404 on the wire and the same answer for every admitted identity, so naming it separates no
+   * account from any other and the 404-never-403 rule is untouched — the argument
+   * `config_surface_unavailable` already makes one branch above.
+   *
+   * `detail` is the operator sentence saying WHICH setting to change, and it is null for anyone who is
+   * not staff: the server withholds it, because it names environment variables and server paths and
+   * this screen is reachable by a client.
+   */
+  | { kind: 'featureOff'; detail: string | null }
   | { kind: 'rateLimited' }
   | { kind: 'tooLarge' }
   /**
@@ -117,6 +129,10 @@ export function saveFailureText<T>(r: Result<T>, fallback = 'That change could n
     case 'noAccess': return 'You are signed in, but this account has not been granted access to that.'
     // Deliberately says the deployment, not the reader. Nothing they can do to their own account fixes it.
     case 'surfaceUnavailable': return 'The settings surface is not configured on this deployment, so nothing could be read or saved. This is a server setting, not your access — an administrator needs to fix it.'
+    // Same shape as the line above and for the same reason: the deployment, not the reader. `detail`
+    // names the setting and arrives only for staff, so it is appended when it is there rather than
+    // assumed — a client sees a true sentence with nothing missing from it.
+    case 'featureOff': return `That is switched off on this installation, so it cannot be read or saved. This is a server setting, not your access.${r.detail ? ` ${r.detail}` : ''}`
     case 'pickAccount': return 'That identity has more than one account — choose one and try again.'
     //. Says what happened and what fixes it, and does NOT say the change failed:
     // it never reached the server, so nothing was half-done and re-doing it after signing in is safe.
@@ -410,6 +426,8 @@ export type Run = {
   /** A stop has been asked for and the step in flight is finishing. Beside a
    *  non-terminal state this is the screen's "Stopping…"; the terminal replaces it. */
   readonly stopRequestedAt: string | null
+  /** Whether a stop can still prevent delivery. False once a lane commits to publishing. */
+  readonly stoppable: boolean
   /** Why a run stopped. A failed run with no reason on screen is a run the user has to ask about. */
   readonly reason: string | null
   readonly failedStage: string | null
@@ -1229,6 +1247,11 @@ const decodeRun = (raw: unknown): Run | null => {
       : [],
     step: asString(r['step']),
     stopRequestedAt: asString(r['stopRequestedAt']),
+    // DEFAULTS TRUE, and the default is the truthful one rather than the convenient one: the field is
+    // written only at the moment a lane commits to publishing, so its absence means the run has not
+    // reached that point. A door that omitted it entirely would be an older build, where the promise
+    // was unreliable anyway -- that is a deployment mismatch, not a state this screen can repair.
+    stoppable: r['stoppable'] !== false,
     stepN: asNumber(r['stepN']),
     stepTotal: asNumber(r['stepTotal']),
     reason: asString(r['reason']),
@@ -1307,6 +1330,11 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       // from any other and the 404-never-403 rule is untouched. Everything else here stays deliberately
       // indistinguishable.
       if (asString(body['error']) === 'config_surface_unavailable') return { kind: 'surfaceUnavailable' }
+      // A CONFIGURED-OFF FEATURE, for the same reason and by the same rule. It is permanent and already
+      // diagnosed by the deployment, and a screen that renders it as a transient fault tells the reader
+      // to retry something that can never succeed.
+      if (['not_configured', 'store_outside_repo'].includes(asString(body['error']) ?? ''))
+        return { kind: 'featureOff', detail: asString(body['detail']) }
       return { kind: 'notFound' }
     case 409: {
       // ── READ BOTH SPELLINGS (finding F14) ────────────────────────────────────────

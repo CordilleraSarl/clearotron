@@ -475,6 +475,11 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, inclu
         // preserved by writeRunStatus's spread-merge, replaced by the terminal when the honour check
         // fires. The UI derives "Stopping…" from this beside a non-terminal state.
         stopRequestedAt: typeof s.stopRequestedAt === "string" ? s.stopRequestedAt : null,
+        // — whether a stop can still prevent delivery. FALSE only once a lane has written it, at the
+        // moment it commits to publishing. Absent means the run has not reached that point, which is
+        // the truthful reading on this build: both lanes write it immediately after their last cancel
+        // read. The screen shows its promise on true and withdraws it on false.
+        stoppable: s.stoppable === false ? false : true,
         // A failed run with no reason on screen is a run the user has to phone somebody about. Both
         // fields are already written by every failure path (pipeline-knockout.mjs, the driver's
         // writeRunStatus); the listing simply used to drop them.
@@ -4430,6 +4435,11 @@ const PORT = PORT_CHOICE.port;
       // directory. The engine refuses that fallback for the same reason; so does this.
       const recipesDir = process.env.CLEAROTRON_RECIPES_DIR || "";
       let callRecipes = null;
+      // WHY THE FEATURE IS OFF, kept rather than only logged. The boot log already carried the exact
+      // diagnosis and the screen carried "try again shortly" — a permanent, already-understood
+      // configuration state rendered as a transient fault, with advice that can never work. The reason
+      // travels with the refusal now so the surface can say what the log knows.
+      let recipesOff = null;
       // — the recipe store's own reachability, decided BEFORE the branch so an unreachable one turns
       // saved searches off rather than throwing. A throw here would land in the catch below and take the
       // PROFILE surface down with it, and the two stores are configured independently: `recipeRepoRoot`
@@ -4444,6 +4454,7 @@ const PORT = PORT_CHOICE.port;
         log(`saved searches OFF — ${storeOutsideRepoMessage({ storeVar: "CLEAROTRON_RECIPES_DIR", storeDir: recipeReach.store, repoVar: "RECIPE_REPO_ROOT", repoRoot: recipeReach.repo })} `
           + `The repo root came from ${recipeResolved.from} (tried ${recipeResolved.tried.join(", ")} in that order). `
           + "Routes answer 404 rather than accepting a save that would orphan its file.");
+        recipesOff = { code: "store_outside_repo", detail: storeOutsideRepoMessage({ storeVar: "CLEAROTRON_RECIPES_DIR", storeDir: recipeReach.store, repoVar: "RECIPE_REPO_ROOT", repoRoot: recipeReach.repo }) };
       } else if (recipesDir) {
         const { makeRecipeService } = await import("./recipe-service.mjs");
         const recipeRepoRoot = recipeResolved.root;
@@ -4456,11 +4467,13 @@ const PORT = PORT_CHOICE.port;
         log(`saved searches ON — store=${recipesDir} repo=${recipeRepoRoot}`);
       } else {
         log("saved searches OFF — CLEAROTRON_RECIPES_DIR unset, so /portal/api/config/searches answers 404");
+        recipesOff = { code: "not_configured", detail: "CLEAROTRON_RECIPES_DIR is not set on this deployment, so there is no store for saved searches." };
       }
 
       return makeUpstream({
         callUpstream: (method, path, body, identity) => profiles.route(method, path, { email: identity?.email }, body ?? {}),
         callRecipes,
+        recipesOff,
       });
     } catch (e) {
       // A settings surface that cannot start must not take the whole portal down — clearances and

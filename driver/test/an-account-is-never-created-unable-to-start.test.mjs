@@ -70,7 +70,7 @@ test("the shared warning describes a CONDITIONAL refusal, because the portal re-
   // re-taking its credential at the start of every call. Nothing here went red when that landed: the
   // arms beside this one pin the union clause and the NOT YET STARTABLE heading, and both survive the
   // sentence becoming untrue. So the warning went on sending operators to re-mint a credential for a
-  // refusal that no longer happens, on three surfaces at once.
+  // refusal that no longer happens, on every surface that speaks it.
   //
   // WHAT THIS CAN AND CANNOT DO, stated because a wording pin invites the wrong repair. It cannot check
   // that the sentence is TRUE — that is a fact about driver/portal-service.mjs, and the arm that holds
@@ -98,6 +98,44 @@ test("the portal still warns at boot, through the shared answer rather than its 
   assert.match(src, /triggerCapGap\(\{ accounts: posture\.accounts, roster \}\)/,
     "the portal computes the gap itself again — three surfaces, three opinions");
   assert.match(src, /triggerCapWarning\(\{ uncovered, union \}\)/, "the portal no longer speaks the shared sentence");
+});
+
+test("doctor reports the cap too — the third surface, and it was never wired", () => {
+  // THE ONE THAT WAS MISSING. The shared function's own comment claimed three call sites and there were
+  // two, so the command whose whole job is to report what a machine is configured for said nothing about
+  // a cap that decides which companies can be started. Held here rather than left to the prose, because
+  // an unwired surface is exactly how the other two came to need this file.
+  const src = readFileSync(join(ROOT, "bin", "onboard.mjs"), "utf8");
+  assert.match(src, /triggerCapGap\(\{ accounts: posture\.accounts, roster \}\)/,
+    "doctor computes the gap itself, or not at all — the third surface is back to its own opinion");
+  assert.match(src, /triggerCapWarning\(gap\)/, "doctor no longer speaks the shared sentence");
+
+  // AND IT READS THE SERVICES' STORE. A CLI is not started by the units' EnvironmentFile, and this box
+  // has produced the disagreement: a door resolving the bundled demo roster while the configured store
+  // held one more company. Comparing the units' token against a roster the units never see reports a gap
+  // that is not there, or misses one that is.
+  const from = src.indexOf("AND WHICH COMPANIES IT CAN START");
+  assert.ok(from > 0, "the cap block moved; this arm can no longer see it");
+  const block = src.slice(from, src.indexOf("Portal sign-in", from));
+  assert.match(block, /effectiveForService\("CLEAROTRON_CUSTOMERS_DIR"\)/,
+    "doctor compares the units' token against a roster resolved for a CLI, which is a different question");
+
+  // AN EMPTY ROSTER LEAVES NOTHING UNCOVERED, so a store that could not be read would tick. Both
+  // could-not-look branches are here, and neither is `ok`.
+  assert.match(block, /cannot be checked until the roster above loads/,
+    "a roster that could not be read reports as covered");
+  // AND IT DOES NOT SAY IT TWICE. The roster check a few sections up already reports a store that refuses
+  // to load, as a problem with its own remedy; a second blocker here put one fact on the screen three
+  // times. Driven with an uncapped token as the control, so the duplicate could be told from the original.
+  assert.doesNotMatch(block, /profiles_overlay_unreadable|\$\{why\}/,
+    "the cap block repeats the roster check's own refusal instead of naming its consequence for the cap");
+  assert.match(block, /no companies could be read/, "an empty roster reports as covered");
+
+  // NOT A `problem`. The sentence it prints says runs are NOT normally refused, because the portal
+  // re-mints per call; exiting non-zero on that would contradict the line itself and turn green installs
+  // red for a refusal that will not happen.
+  assert.doesNotMatch(block, /\bproblem\(/,
+    "a gap the portal normally survives now fails the command, and says so in a sentence explaining that it does not");
 });
 
 test("`brandowner add` says it where the person is looking, and never dies of it", () => {

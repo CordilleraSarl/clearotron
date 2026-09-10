@@ -657,6 +657,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stopped-run-says-why-it-stopped.test.mjs": {
           "tests": 3,
           "asserts": 11,
@@ -666,6 +672,12 @@
         "a-stored-territory-that-does-nothing-is-named.test.mjs": {
           "tests": 6,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-switched-off-feature-says-so-and-says-what-to-change.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -796,8 +808,8 @@
           "todos": 0
         },
         "an-account-is-never-created-unable-to-start.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 7,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -3605,7 +3617,7 @@
         },
         "roster-verdict.test.mjs": {
           "tests": 11,
-          "asserts": 18,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -4282,8 +4294,8 @@
           "todos": 0
         },
         "the-bundled-roster-is-read-not-remembered.test.mjs": {
-          "tests": 8,
-          "asserts": 11,
+          "tests": 9,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -4625,8 +4637,8 @@
         },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
-          "asserts": 14,
-          "skips": 3,
+          "asserts": 15,
+          "skips": 4,
           "todos": 0
         },
         "the-repair-order-and-the-tool-schema-agree.test.mjs": {
@@ -5503,6 +5515,12 @@
           "skips": 0,
           "todos": 0
         },
+        "frameworkGuideLink.test.ts": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "grouping.test.ts": {
           "tests": 23,
           "asserts": 53,
@@ -5518,6 +5536,12 @@
         "home.test.ts": {
           "tests": 46,
           "asserts": 141,
+          "skips": 0,
+          "todos": 0
+        },
+        "homeChipsFilterTheRows.test.ts": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -5566,6 +5590,12 @@
         "newClearanceStructure.test.ts": {
           "tests": 8,
           "asserts": 57,
+          "skips": 0,
+          "todos": 0
+        },
+        "newCompanyReachableFromProfile.test.ts": {
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -5662,6 +5692,12 @@
         "shell.test.ts": {
           "tests": 8,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "stopPromiseIsWithdrawn.test.ts": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },

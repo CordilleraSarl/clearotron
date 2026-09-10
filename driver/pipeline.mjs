@@ -178,7 +178,7 @@ import { caseLawInventory } from "./config-inventory.mjs";   // — the deployme
 import { caseLawSourceRows } from "./case-law-sources.mjs";  // one author for the shape the stage is handed
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
-import { RunCancelled, isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
+import { RunCancelled, isCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
 import { BRAND } from "../shared/brand.mjs";   // — the operator name a client is told to expect, from the tenant seam
 import { CLIENT_ACTION } from "../shared/client-failure-note.mjs";   // — the action, worded once; this surface names the mark itself
 import { stopReason } from "../shared/stop-reason.mjs";   // — one builder, four cancel sites
@@ -14673,6 +14673,13 @@ async function pipelineInner(job, opts = {}) {
       published = JSON.parse(readFileSync(join(run.runDir, ".published"), "utf8"));
       note(`publish skip — already published → ${published.url}`);
     } else {
+      // THE LAST READ OF THE STOP FLAG, and it sits HERE rather than above the branch: a run that has
+      // already published has delivered, and refusing at that point would record a delivered run as
+      // cancelled — the same defect pointed the other way.
+      assertNotCancelledBeforePublish(run.runDir, "clearance");
+      // Same fact, same moment, same words as the knockout lane: past this line a stop cannot prevent
+      // delivery, and the screen is told so rather than working it out.
+      writeRunStatus(ctx, { stoppable: false });
       published = await publishReport({
         runId: `${run.slug}-${run.date}-${run.codename}`, codename: run.codename,
         reportMd: P.report, auditMd: P.audit, findingsJson: P.findings, poolRoot: config.poolRoot, poolUrl: config.poolUrl,

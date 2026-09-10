@@ -16,6 +16,7 @@
 // keeps that true by construction — a box nobody touched is not in `edits` and never reaches the draft.
 import { useEffect, useMemo, useState } from 'react'
 import { api, isOk } from '../contract/api.ts'
+import { FrameworkGuideLink } from '../components/FrameworkGuideLink.tsx'
 import type { CreatedCompany, Result } from '../contract/api.ts'
 import { PROFILE_FIELDS, FIELD_GROUPS, boxValue, typeField, parseLines } from '../contract/profileFields.ts'
 import type { FieldSpec, FormEdit } from '../contract/profileFields.ts'
@@ -285,15 +286,6 @@ function KeyLine({ value, onChange }: { readonly value: string; readonly onChang
  * afterwards says so.
  */
 export function Rating() {
-  const [repo, setRepo] = useState<string | null>(null)
-  useEffect(() => {
-    let live = true
-    void api.about().then((r) => {
-      if (live && isOk(r)) setRepo(r.value.sourceRepo)
-    })
-    return () => { live = false }
-  }, [])
-
   return (
     <section style={{ marginTop: 26 }}>
       <h2 style={{ fontSize: 15, margin: '0 0 8px', color: 'var(--text-strong)' }}>How matters are rated</h2>
@@ -303,16 +295,10 @@ export function Rating() {
           Every company starts here, and the receipt says which framework it was given. You can write
           your own rubric and point a company at it.
         </p>
-        {/* THE REPOSITORY THE SERVER NAMES, never a literal. This portal may be a fork, and a link to
-            somebody else's instructions is worse than no link — it sends a person to a document that
-            does not describe the product they are running. The About screen resolves it the same way,
-            and for the same reason. No link at all until it resolves, rather than a broken one. */}
-        {repo ? (
-          <a href={`${repo}/blob/main/docs/configuration.md`} rel="noreferrer"
-             style={{ fontSize: 13 }}>
-            Use your own risk framework
-          </a>
-        ) : null}
+        {/* One definition, shared with the profile screen: new tab, the anchor for the part about
+            writing a framework, and a sentence naming the file when the repository cannot be resolved
+            rather than nothing at all. */}
+        <FrameworkGuideLink />
       </div>
     </section>
   )
