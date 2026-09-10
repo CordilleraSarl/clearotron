@@ -362,3 +362,87 @@ export function resolveStoreRepoRoot({ names, fallback = null, env = process.env
   if (fallback) return { root: fallback, from: "module-relative fallback", tried };
   return { root: null, from: null, tried };
 }
+
+// ── WHERE A SAVE GOES AFTER IT IS COMMITTED ──────────────────────────────────────────────────────────
+//
+// Everything above ends at a commit. Nothing in this file pushes, and nothing should: what happens to a
+// commit next is a property of the repository the store sits in, not of the save. When that repository's
+// branch tracks a remote one, the next person who syncs or pushes the checkout publishes every save made
+// there, and that person is usually not the one who made them.
+//
+// Measured on a test instance, 2026-09-10: its store sat inside a checkout that people also synced for
+// unrelated work. A company created in the portal was committed there as designed, waited eleven hours
+// as a local commit, and went out with an ordinary pull-then-push. It had happened the evening before,
+// and the only thing that stopped that one was somebody noticing.
+//
+// THIS IS A REPORT, NEVER A REFUSAL. Keeping a store in a repository you push on purpose is a
+// reasonable deployment, and the harm needs a second person doing ordinary git work in the same checkout,
+// which no service can see. So the answer is for whoever reads it (doctor), and no save waits on it.
+//
+// READ FROM THE BRANCH'S TRACKING CONFIGURATION, NOT FROM `@{u}`. The clone of an empty remote has its
+// tracking configured and nothing to resolve `@{u}` to until the first commit, so `@{u}` answers with a
+// usage error for a store whose first save a bare push WOULD publish. The configuration answers the
+// question actually being asked: will a push or pull with no arguments carry this branch anywhere?
+//
+// NO FETCH. A doctor that reaches the network hangs on a box without a route, and the count of commits
+// waiting is measured against the last fetch, which is enough: a commit made here is ahead of any
+// version of the remote branch until somebody pushes it.
+
+/**
+ * Where does a save committed in `dir`'s repository go next? Read-only.
+ *
+ * @param {string} dir  the store directory — any directory inside the repository; git finds the root
+ * @param {{ env?: object }} [opts]  the environment git runs in — a caller can bound the search upwards
+ * @returns one of:
+ *   `{ state: "publishes", root, branch, upstream, ahead }` — the branch tracks a remote branch, so a push
+ *     or pull with no arguments carries the store's commits out. `ahead` counts the commits waiting, or
+ *     is null when git cannot count them (a branch with no commit yet).
+ *   `{ state: "stays-here", root, branch, remotes }` — no tracking branch (or no branch at all): nothing
+ *     leaves unless someone pushes it by name. `remotes` lists the remotes such a push could name.
+ *   `{ state: "not-a-repository", why }` — a save through a door is refused until the store is in one.
+ *   `{ state: "could-not-look", why }` — git would not answer: a missing directory, a repository owned
+ *     by another account, no git on the path. Never read as either answer above.
+ */
+export function whereSavesGo(dir, { env = process.env } = {}) {
+  const ask = (...args) => {
+    try {
+      return { ok: true, out: execFileSync("git", ["-C", String(dir ?? ""), ...args],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env }).trim() };
+    } catch (e) {
+      return { ok: false, status: e?.status ?? null,
+        why: String(e?.stderr || e?.message || e).trim().split("\n")[0].slice(0, 200) };
+    }
+  };
+  const top = ask("rev-parse", "--show-toplevel");
+  if (!top.ok) {
+    return /not a git repository/i.test(top.why)
+      ? { state: "not-a-repository", why: top.why }
+      : { state: "could-not-look", why: top.why };
+  }
+  const root = top.out;
+  const listed = ask("remote");
+  if (!listed.ok) return { state: "could-not-look", why: listed.why };
+  const remotes = listed.out.split("\n").filter(Boolean);
+  // `-q` makes a detached HEAD a quiet exit 1, which is an answer (no branch, so nothing tracks). Any
+  // other failure is git refusing to say, and is reported as that.
+  const head = ask("symbolic-ref", "--short", "-q", "HEAD");
+  if (!head.ok) return head.status === 1 ? { state: "stays-here", root, branch: null, remotes } : { state: "could-not-look", why: head.why };
+  const branch = head.out;
+  // `config --get` exits 1 for a key that is not set, which is again an answer; anything else is not.
+  const setting = (key) => {
+    const r = ask("config", "--get", key);
+    if (r.ok) return { value: r.out };
+    return r.status === 1 ? { value: null } : { why: r.why };
+  };
+  const remote = setting(`branch.${branch}.remote`);
+  if (remote.why) return { state: "could-not-look", why: remote.why };
+  // A branch tracking another LOCAL branch names the remote `.`: a pull merges within this repository
+  // and a push goes nowhere else, so it stays here.
+  if (!remote.value || remote.value === ".") return { state: "stays-here", root, branch, remotes };
+  const merge = setting(`branch.${branch}.merge`);
+  if (merge.why) return { state: "could-not-look", why: merge.why };
+  const upstream = `${remote.value}/${String(merge.value ?? branch).replace(/^refs\/heads\//, "")}`;
+  const count = ask("rev-list", "--count", "@{u}..HEAD");
+  const ahead = count.ok && /^\d+$/.test(count.out) ? Number(count.out) : null;
+  return { state: "publishes", root, branch, upstream, ahead };
+}

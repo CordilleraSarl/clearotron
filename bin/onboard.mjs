@@ -97,6 +97,7 @@ import { processTable } from "../shared/process-table.mjs";   // — /proc is no
 import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";
 import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
+import { whereSavesGo } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
 import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
 import { runRequiredNames, missingRequirements, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
@@ -1754,6 +1755,44 @@ export async function runCheck() {
       }
     } catch (e) {
       info(`could not resolve the profile store from here (${String(e?.message ?? e).slice(0, 80)}) — read a run's \`profile-store\` line instead`);
+    }
+
+    // ── AND WHERE A SAVE GOES ONCE IT IS COMMITTED ─────────────────────────────────────────────────────
+    //
+    // A save through the portal commits into the store's repository and stops there. Whether it then
+    // leaves this machine is a property of that repository, answered by `whereSavesGo` beside the
+    // committer, which carries the measurement: a store inside a checkout that tracks a remote branch has
+    // its saves published by the next person who syncs or pushes that checkout.
+    //
+    // `warn`, NEVER `problem`, and the exit contract near the top of this file is why. rc 1 means
+    // something the operator set is not doing what they think it is. A store in a repository they push is
+    // doing exactly what it was set up to do; the danger is somebody else's ordinary git work in the same
+    // checkout, which this command cannot see. So the line says it, says when it is fine, and leaves the
+    // exit status alone.
+    //
+    // THE SERVICES' STORE on a hosted box, for the reason the roster lines above give. When their
+    // environment could not be read nothing is judged here, and the lines above already said so.
+    {
+      const storeSet = hosted ? (serviceKnown ? effectiveForService("CLEAROTRON_CUSTOMERS_DIR") : null) : effective("CLEAROTRON_CUSTOMERS_DIR");
+      const storeDir = storeSet?.v || null;
+      if (storeDir && existsSync(storeDir)) {
+        const w = whereSavesGo(storeDir);
+        if (w.state === "publishes") {
+          const waiting = w.ahead > 0 ? `, and ${w.ahead} commit(s) made there have not been pushed yet` : "";
+          warn(`saves to ${storeDir} are committed in ${w.root}, whose branch ${w.branch} tracks ${w.upstream} — `
+            + `whoever next syncs or pushes that checkout publishes them${waiting}. Fine if you publish this store `
+            + "on purpose; if other work happens in that checkout, give the store a repository of its own with no remote");
+        } else if (w.state === "stays-here") {
+          ok(`saves to ${storeDir} are committed in ${w.root}, `
+            + (w.branch ? `whose branch ${w.branch} tracks no remote branch` : "which is not on a branch")
+            + " — nothing carries them off this machine unless someone pushes them by name");
+        } else if (w.state === "not-a-repository") {
+          warn(`${storeDir} is not inside a git repository, so a save through the portal is refused rather than `
+            + "recorded until it is");
+        } else {
+          info(`could not ask git where saves to ${storeDir} go (${w.why}) — a failure to look, not a finding`);
+        }
+      }
     }
   }
 
