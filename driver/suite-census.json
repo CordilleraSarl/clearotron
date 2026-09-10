@@ -5145,8 +5145,8 @@
       "ext": "mjs",
       "perFile": {
         "a-company-created-after-the-door-starts-is-listed.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

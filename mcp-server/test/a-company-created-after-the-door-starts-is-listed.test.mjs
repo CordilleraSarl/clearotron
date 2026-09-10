@@ -19,7 +19,7 @@
 // fills the door's copy of the roster, as the boot line does on a running door.
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createServer } from "node:http";
@@ -122,4 +122,22 @@ test("a key granted a company created after the door started is told that compan
   const g = (out?.accountsGranted ?? []).find((a) => a.profileKey === "grantco");
   assert.ok(g, "the granted accounts are no longer listed at all, so this arm measures nothing");
   assert.equal(g.name, "Grantco Tools", "the name came back empty — read from the roster the door read first");
+});
+
+test("a company file that cannot be read keeps the last good list, and the reply says so", async () => {
+  // Re-reading on every call means a bad file added after start is now read at all. Before, the door
+  // answered from its boot read and never saw it; the failure this holds off is one file blanking the
+  // whole list, so the assistant can pick no company.
+  const token = uncapped();
+  const before = await listed(token);
+  assert.ok(before.includes("acme"), "the door had no list to keep, so this arm would measure nothing");
+  writeFileSync(join(STORE, "broken.json"), "{ not json");
+  try {
+    const r = await call(token, "list_profiles");
+    assert.deepEqual((r?.clients ?? []).map((c) => c.key).sort(), before,
+      "one unreadable company file took every other company off the list");
+    assert.match(String(r?.storeUnreadable ?? ""), /could not be re-read/,
+      "the reply did not say that this is the list as last read");
+  } finally { rmSync(join(STORE, "broken.json"), { force: true }); }
+  assert.equal((await call(token, "list_profiles"))?.storeUnreadable, undefined, "the warning outlived the file that caused it");
 });
