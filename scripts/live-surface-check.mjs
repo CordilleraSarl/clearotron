@@ -85,6 +85,7 @@ import { mcpToolCall } from "../driver/portal-mcp-client.mjs";
 import { readFlagSnapshot, builtFor, isStale, postureDelta, PRODUCTION_POSTURE } from "../driver/flag-snapshot.mjs";
 import { policyFor, productAvailability, ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
 import { rosterVerdict } from "../driver/roster-verdict.mjs";
+import { triggerCapGap, triggerCapWarning } from "../driver/trigger-cap.mjs";   // the portal's own sentence about a key's gap
 import { bundledDemoKeys } from "../driver/bundled-demos.mjs";
 import { unitsActiveVerdict } from "../driver/unit-state-verdict.mjs";
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — extracted; one allowlist, two readers
@@ -517,9 +518,32 @@ try {
   try { bundledDemos = bundledDemoKeys({ profilesDir: BUNDLED_PROFILES_DIR }); }
   catch (e) { fail("roster resolves", `the bundled roster could not be derived, so #83 cannot be ruled out: ${e.message}`); }
 
+  // THE DOOR ANSWERED FOR THIS KEY, so the comparison is made within this key's cap. Its claims are read
+  // the way doctor and the brand-owner command read them. A key that cannot be read leaves the verdict
+  // unable to tell a narrowing from a fault, and it says so rather than guessing either way.
+  let caller = { readable: false, accounts: null };
+  try { caller = (await import("../driver/portal-service.mjs")).opsTokenPosture(OPS_TOKEN); }
+  catch { /* stays unreadable — the verdict reports what it could not compare */ }
   if (bundledDemos) {
-    const { state, message } = rosterVerdict({ keys, onDisk, bundledDemos, expectDemos: process.env.CLEAROTRON_E2E_EXPECT_DEMO_ROSTER === "1" });
+    const { state, message } = rosterVerdict({ keys, onDisk, bundledDemos, caller,
+      expectDemos: process.env.CLEAROTRON_E2E_EXPECT_DEMO_ROSTER === "1" });
     ({ pass, fail, skip })[state]("roster resolves", message);
+  }
+  // A COMPANY IN THE STORE THAT THIS KEY CANNOT START is its own finding, not a roster disagreement. A
+  // warning, not a failure: the portal re-takes its credential at the start of every call, so a Start for
+  // it is refused only when that re-mint fails. The sentence is the portal's own.
+  if (onDisk) {
+    if (!caller.readable)
+      skip("trigger key covers the roster", OPS_TOKEN
+        ? "the key's claims could not be read, so its cap was NOT compared with the store"
+        : "no trigger key was found, so there is no cap to compare — see \"trigger lane wired\"");
+    else {
+      const gap = triggerCapGap({ accounts: caller.accounts, roster: onDisk });
+      if (gap.uncovered.length) record("trigger key covers the roster", "warn", triggerCapWarning(gap));
+      else pass("trigger key covers the roster", gap.capped
+        ? `every company in the store (${onDisk.length}) is within the key's cap`
+        : "the key carries no account cap, so it covers every company");
+    }
   }
 } catch (e) {
   fail("roster resolves", `list_profiles failed: ${e.message}`);
