@@ -49,8 +49,9 @@
 // read it: coverage-form.mjs seeded its deferred rows from skeleton qids alone, so an EU+US matter on a
 // box with no index shipped an EU-only clean with no row saying the US was never searched. A false
 // clean, reached through the disclosure that was supposed to prevent one, and this sentence is what
-// made it look already-handled. driver.config.mjs:789 cited it as the reason preflight could stop
-// requiring USPTO_LOCAL_DB.
+// made it look already-handled. driver.config.mjs freeTierMissing cited it as the reason preflight
+// could stop requiring USPTO_LOCAL_DB. Cited by SYMBOL and no line: the number was 84 lines above that
+// comment before anything moved, and a line citation into a file this size stales on the next edit.
 //
 // The split is still right and is unchanged. What had to be built is the consumer: coverage-form.mjs
 // now reads `plan.deferred_coverage` directly and emits an `open` row per active axis. The disclosure
