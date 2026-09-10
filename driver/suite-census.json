@@ -418,8 +418,8 @@
           "todos": 0
         },
         "a-name-documented-in-any-example-file-is-documented.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
+          "tests": 7,
+          "asserts": 16,
           "skips": 1,
           "todos": 0
         },
