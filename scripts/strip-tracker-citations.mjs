@@ -58,7 +58,7 @@
 // wants a guard against reintroduction rather than a backlog. Different residue, different repair.
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { publishedOf } from "../shared/reference-guard-classes.mjs";
+import { publishedOf, wrapsInto } from "../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -137,16 +137,11 @@ export const ANY_CITATION = /\btracker issues?\s+\d+/i;
 // FOUND AND HANDED OFF, NOT JOINED. Joining rewrites BOTH lines, which re-ages every citation on either
 // and re-flows the prose around them; and the removal itself is a sentence repair across a break, which
 // is precisely the work the hand-off exists for. So this makes them visible and stops there.
-export const WRAPPED_HEAD = /\btracker\s*$|\btracker issues?\s*$/i;
-export const WRAPPED_TAIL = /^\s*(?:\/\/|#|\*|--)?\s*(?:issues?\s+)?\d+/i;
-
-/** True when `a` ends a citation that `b` completes. PURE. */
-export const wrapsInto = (a, b) => {
-  if (!WRAPPED_HEAD.test(a) || b === undefined) return false;
-  // `tracker` alone must be completed by the word `issue`; `tracker issue` by a bare number. Without
-  // this split, a line ending in "tracker" followed by any numbered list item reads as a citation.
-  return /\btracker\s*$/i.test(a) ? /^\s*(?:\/\/|#|\*|--)?\s*issues?\s+\d+/i.test(b) : /^\s*(?:\/\/|#|\*|--)?\s*\d+/.test(b);
-};
+// IT LIVES IN shared/ NOW, because the census needs the same answer. The residue census walked one line
+// at a time and was blind to exactly this class while this file could see it — two instruments over one
+// tree, disagreeing about what a citation is. Re-exported here rather than moved out of sight: this file
+// is where the rule is explained, and its arms import it from here.
+export { WRAPPED_HEAD, WRAPPED_TAIL, wrapsInto } from "../shared/reference-guard-classes.mjs";
 
 export const CARRIES_ANOTHER_CITATION = /[A-Za-z0-9_.\-/]+\.[A-Za-z0-9]+:\d+/;
 

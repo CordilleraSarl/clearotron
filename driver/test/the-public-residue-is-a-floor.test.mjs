@@ -30,7 +30,8 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CLASSES, censusOf, offendingClasses, publishedOf } from "../../shared/reference-guard-classes.mjs";
+import { CLASSES, censusOf, offendingClasses, publishedOf, wrapsInto } from "../../shared/reference-guard-classes.mjs";
+import { nonEmpty } from "../../shared/vacuous-pass.mjs";   // — one corpus floor, shared with the guard that reads for it
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -196,6 +197,80 @@ test("the census counts, on a synthetic tree with a known answer", () => {
   const clean = censusOf(["docs/e.md"], () => "A page about trademarks.\n");
   assert.equal(clean.total, 0);
   assert.deepEqual(clean.files, {});
+});
+
+// ── THE CITATION THE CENSUS COULD NOT SEE ──────────────────────────────────────────────────────────
+//
+// Every class reads ONE line, and prose here wraps at a fixed width, so a citation whose words end one
+// line and whose number begins the next matched nothing. Measured on a real branch: four went into code
+// comments, the census counted four and refused; three came out and the count returned to its floor with
+// the fourth still in the tree, because that one had wrapped.
+//
+// That is worse than a miscount. The census is a RATCHET — the floor only falls, and the check passing
+// is the statement that the tree grew nothing new — so a wrapped citation is not merely uncounted, it
+// joins the floor's silence, and nobody looks again because the number did not move.
+//
+// DRIVEN AS A DISTINCTION, not asserted as one. The wrapped specimen below was watched to count ZERO
+// before the pair rule went in, the unwrapped one counted 1 both times, and the two false-positive
+// shapes are here because the cheap version of this fix reports them: joining every line to its
+// successor double-counts each ordinary hit as a wrap on the line above, and collapsing the two head
+// forms turns any line ending in the word "tracker" followed by a numbered list item into a citation.
+test("a citation split across a line break is counted once, and the shapes that only look like one are not", () => {
+  const idx = (id) => CLASSES.findIndex((x) => x.id === id);
+  const spelled = (c, f) => (c.files[f] ?? [])[idx("spelled-citation")] ?? 0;
+  const census = (name, text) => censusOf([name], () => text);
+
+  // THE SPECIMEN, verbatim in shape from the branch it was measured on.
+  const wrapped = census("driver/w.mjs", [
+    "// ... the entry is dropped before the prompt. That is the defect tracker issue",
+    "// 417 names, arriving through the fix for it.",
+  ].join("\n"));
+  assert.equal(spelled(wrapped, "driver/w.mjs"), 1,
+    "a citation broken across a line break is invisible again — it counts nowhere and then becomes part "
+    + "of the floor, which is a miss that stops being looked for");
+
+  // THE CONTROL. The same sentence unbroken has always counted, and must still count exactly once —
+  // this is the arm that fails if the pair rule started counting ordinary hits twice.
+  const single = census("driver/s.mjs", "// That is the defect tracker issue 417 names.");
+  assert.equal(spelled(single, "driver/s.mjs"), 1, "an ordinary citation is counted once, or not at all");
+
+  // BOTH ON ONE HEAD LINE: a complete citation AND a head that wraps. Two citations, two counts — a rule
+  // that merged them would report the repair of one as the repair of both.
+  const both = census("driver/b.mjs", [
+    "// see tracker issue 92, and also the defect tracker issue",
+    "// 417 names.",
+  ].join("\n"));
+  assert.equal(spelled(both, "driver/b.mjs"), 2, "the complete citation and the wrapped one are one count");
+
+  // NOT A CITATION: the line ends in the bare word `tracker` and the next begins with a number, which is
+  // an ordinary numbered list. `tracker` alone has to be completed by the word `issue`.
+  const listItem = census("driver/l.mjs", [
+    "// the numbers below are not a tracker",
+    "// 417 is a count, not a citation",
+  ].join("\n"));
+  assert.equal(spelled(listItem, "driver/l.mjs"), 0, "a numbered line after the word tracker is not a citation");
+
+  // NOT A WRAP: the whole citation sits on the SECOND line. Counted once, by the per-line rule, and the
+  // line above must not be reported as a head — this is the double-count a naive join produces.
+  const onNext = census("driver/n.mjs", [
+    "// the sentence ends here.",
+    "// tracker issue 417 opens the next one.",
+  ].join("\n"));
+  assert.equal(spelled(onNext, "driver/n.mjs"), 1, "a citation on the following line was counted twice");
+
+  // AND A FLOOR ON THE POPULATION, because every assertion above is about a tree this arm built. If the
+  // detector matched nothing at all, five of the six checks above would still pass.
+  nonEmpty(Object.keys(wrapped.files), "the wrapped specimen produced no census rows at all");
+  assert.ok(wrapped.total + single.total + both.total + onNext.total >= 5,
+    "the specimens together carry fewer citations than they are written with — the counter is not reading them");
+});
+
+// THE SWEEP AND THE CENSUS ASK ONE DETECTOR, which is the repair the arm above depends on: while the
+// sweep could see a wrapped citation and the census could not, the tree had two instruments disagreeing
+// about what a citation is, and neither could report the disagreement.
+test("the sweep's wrapped detector and the census's are the same function", async () => {
+  const strip = await import("../../scripts/strip-tracker-citations.mjs");
+  assert.equal(strip.wrapsInto, wrapsInto, "the sweep holds a second copy — they will disagree, silently");
 });
 
 // A RUNTIME PROPERTY THE CLASS TABLE RELIES ON, ASSERTED RATHER THAN ASSUMED. `offendingClasses` holds
