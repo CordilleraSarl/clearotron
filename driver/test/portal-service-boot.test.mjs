@@ -109,9 +109,6 @@ function bootEnv(extra = {}) {
     CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
     PORTAL_SERVICE_HOST: "127.0.0.1", PORTAL_SERVICE_PORT: "0",
     PORTAL_SECRET: BOOT_SECRET,
-    // Set, and deliberately so: this is what the pre-existing `!staffDomains.length && !grants()` check
-    // is satisfied by on every real deployment, which is why that check never caught the read-all.
-    PORTAL_STAFF_DOMAINS: "example-firm.com",
     CLEAROTRON_REPORTS_DIR: tempDir("portal-bootpool-"),
     CLEAROTRON_WORK_DIR: tempDir("portal-bootws-"),
     CLEAROTRON_ACCESS_FILE: undefined,
@@ -138,6 +135,38 @@ function grantsFile(tenants = {}) {
   writeFileSync(p, JSON.stringify({ tenants }));
   return p;
 }
+
+// ── THE UPGRADE THAT DOES NOTHING IS REFUSED, NOT TOLERATED ───────────────────────────────────────────
+//
+// An organisation's `accounts: "*"` is what a guest list written before organisations carries when the
+// upgrade note was not followed. The resolver refuses it, and so does the shape check at every load; the
+// question an operator meets is whether THIS PROCESS starts on it, so it is asked of the real service. A
+// refusal naming the entry without the edit would leave the reader to find the upgrade note again.
+test("a guest list still carrying an organisation's \"*\" refuses to start, naming the entry and the edit", async () => {
+  const file = grantsFile({ acme: { accounts: "*", users: { "dev@local": "*" } } });
+  const r = await boot(bootEnv({ CLEAROTRON_ACCESS_FILE: file, PORTAL_STAFF_DOMAINS: undefined }));
+  assert.equal(r.listened, false, `the portal started on a guest list the model refuses:\n${r.stderr}`);
+  assert.notEqual(r.code, 0, "a refusal must end the process with a failing status");
+  assert.match(r.stderr, /FATAL/);
+  assert.match(r.stderr, /tenants\.acme\.accounts is "\*"/, "the refusal must name the entry, or the reader searches the file for it");
+  assert.match(r.stderr, /Replace "\*" with the list of companies this organisation holds/, "…and the edit that fixes it");
+});
+
+// ── A RETIRED SETTING STILL SET IS SAID AT BOOT ───────────────────────────────────────────────────────
+//
+// PORTAL_STAFF_DOMAINS used to make everyone at a domain staff. Nothing reads it now, so a deployment that
+// still sets it starts normally and admits nobody by domain — and that setting is the first place an
+// operator looks when people cannot sign in. Driven both ways, so a line printed on every boot fails too.
+test("a deployment that still sets PORTAL_STAFF_DOMAINS is told at boot that it is ignored, and what replaced it", async () => {
+  const grants = grantsFile({ acme: { accounts: [], users: {} } });
+  const set = await boot(bootEnv({ CLEAROTRON_ACCESS_FILE: grants, PORTAL_STAFF_DOMAINS: "example-firm.com" }));
+  assert.ok(set.listened, `the portal did not start, so this arm did not reach the boot report:\n${set.stderr}`);
+  assert.match(set.stderr, /PORTAL_STAFF_DOMAINS is set and ignored/);
+  assert.match(set.stderr, /CLEAROTRON_ACCESS_FILE/, "the line must say what replaced the setting, not only that it is dead");
+  const unset = await boot(bootEnv({ CLEAROTRON_ACCESS_FILE: grants, PORTAL_STAFF_DOMAINS: undefined }));
+  assert.ok(unset.listened, `the portal did not start without the setting:\n${unset.stderr}`);
+  assert.doesNotMatch(unset.stderr, /PORTAL_STAFF_DOMAINS/, "the retirement line printed on a deployment that never set it");
+});
 
 test("no CLEAROTRON_ACCESS_FILE ⇒ the portal REFUSES TO START — a missing roster is silent read-all", async () => {
   // shared/scope.mjs accountsForEmail: `if (!grants) return "*"`. Unset, every admitted identity becomes

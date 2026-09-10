@@ -364,6 +364,12 @@ know it is inert** — an unread setting is indistinguishable from a setting tha
 | `CLEAROTRON_SUPPLEMENTAL_PER_CALL` | 12 supplemental queries per call |
 | `CLEAROTRON_WALL_RESCUE_QUIESCE_MS` | 60 seconds waiting for a killed tree to quiesce |
 
+**`PORTAL_STAFF_DOMAINS` is retired differently, because deployments did set it.** Everyone at a listed
+email domain used to be staff. Who may use the portal is now each person's own entry in the grants file
+(`CLEAROTRON_ACCESS_FILE`), with `"everything": true` under `people` for anyone who should see every
+company, and no domain admits anyone. A portal that still finds the setting starts, and says at boot that
+it is ignored and what replaced it.
+
 ## Change management
 
 - **Live env flip (no deploy):** caps, backoffs, feature gates, A/B toggles — edit the deployment's

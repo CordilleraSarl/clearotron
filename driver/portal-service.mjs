@@ -4267,6 +4267,22 @@ const PORT = PORT_CHOICE.port;
     }
   }
 
+  // ── A RETIRED SETTING STILL SET IS SAID HERE, BESIDE THE OTHER GAPS ─────────────────────────────────
+  //
+  // Who may use the portal used to follow PORTAL_STAFF_DOMAINS: everyone at a listed email domain was
+  // staff. That rule is deleted and nothing configures from the setting, so a deployment that still sets
+  // it starts normally and admits nobody by domain — and the setting is the first place an operator looks
+  // when people cannot sign in. Named in this table and looked up, never read as a setting, because it
+  // decides nothing any more.
+  const RETIRED_PORTAL_SETTINGS = {
+    PORTAL_STAFF_DOMAINS: "who may use the portal is each person's own entry in the grants file "
+      + "(CLEAROTRON_ACCESS_FILE), with \"everything\": true under \"people\" for anyone who should see every "
+      + "company. No email domain admits anyone.",
+  };
+  for (const [name, now] of Object.entries(RETIRED_PORTAL_SETTINGS)) {
+    if (process.env[name]) log(`WARNING: ${name} is set and ignored — ${now}`);
+  }
+
   if (OPS_TOKEN) {
     const expiry = posture.expiresAt ? ` expires=${posture.expiresAt.slice(0, 10)} (${posture.daysLeft}d)` : " expires=UNKNOWN";
     // PREFIXED WHEN THE LANE IS DEAD, so this line cannot be read on its own as evidence of a working

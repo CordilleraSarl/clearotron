@@ -478,9 +478,12 @@ export function assertGrantsShape(g, where) {
   }
 }
 
+// THE EDIT FIRST. An organisation left on "*" is what a guest list written before organisations carries
+// when the upgrade was not followed, so the refusal says what to change before it says why.
 function wildcardTenant(path) {
-  return `${path} is "*" — an organisation lists the companies it holds, and a company belongs to exactly one `
-    + `organisation. Access to everything belongs to a person: set "everything": true on their entry under "people".`;
+  return `${path} is "*". Replace "*" with the list of companies this organisation holds, for example `
+    + `["acme-main", "acme-eu"]; a company belongs to exactly one organisation. For a person who should see `
+    + `every company, set "everything": true on their entry under "people".`;
 }
 
 // What a reader sees, in the words of the file they wrote — "an object", not "[object Object]". The

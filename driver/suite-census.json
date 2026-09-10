@@ -2962,8 +2962,8 @@
           "todos": 0
         },
         "portal-service-boot.test.mjs": {
-          "tests": 28,
-          "asserts": 137,
+          "tests": 30,
+          "asserts": 147,
           "skips": 0,
           "todos": 0
         },
