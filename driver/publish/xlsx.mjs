@@ -179,7 +179,7 @@ const FINDING_COLS = ['#', 'Conflicting mark', 'Owner', 'Country', 'Source', 'Cl
   'Status & key dates', 'Record retrieved?', 'Risk band', 'How we treated it',
   'Mark similarity', 'Goods proximity', 'Use', 'Enforcer', 'Link'];
 
-function findingRows(findings, fetchState) {
+function findingRows(findings, fetchState, recordLinks = null) {
   return (findings || []).map(f => {
     const regs = f?.owner?.registrations || [];
     const ctx = !!f.isContextNote;
@@ -190,7 +190,7 @@ function findingRows(findings, fetchState) {
       'Country': f.owner?.country || '',
       'Source': sourceWord(f.source?.source_type || ''),
       'Class': classCell(f),
-      'Registration(s)': regs.length ? regs.map(r => regLabel(r.uri)).join('; ') : (ctx ? '—' : '— (common-law)'),
+      'Registration(s)': regs.length ? regs.map(r => recordLinks?.get(String(r.uri || '').toLowerCase())?.label || regLabel(r.uri)).join('; ') : (ctx ? '—' : '— (common-law)'),
       'Status & key dates': statusDatesCell(f),
       'Record retrieved?': ctx ? 'n/a — noted only' : retrievedCell(f, fetchState),
       'Risk band': f.band || '—',
@@ -200,7 +200,7 @@ function findingRows(findings, fetchState) {
       'Goods proximity': ctx ? 'n/a' : meterCell(f.meters?.goods_proximity),
       'Use': ctx ? 'n/a' : meterCell(f.meters?.use),
       'Enforcer': ctx ? 'n/a' : meterCell(f.meters?.enforcer),
-      'Link': f.source?.resolved_link || '',
+      'Link': f.source?.resolved_link || linkCellFor(regs, recordLinks),   // the office's own page, or why there is none
     };
   });
 }
@@ -598,7 +598,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
     (row, _d, kept) => { if (kept.has('Field')) row.getCell('Field').font = { bold: true }; });
 
   // 2 · Findings — one row per conflict; registrations joined; provenance folded into the driver tags.
-  addSheet(wb, 'Findings', FINDING_COLS, findingRows(findings, fetchState), (row, _d, kept) => {
+  addSheet(wb, 'Findings', FINDING_COLS, findingRows(findings, fetchState, contract?.recordLinks instanceof Map ? contract.recordLinks : null), (row, _d, kept) => {
     if (kept.has('Link')) {
       const link = row.getCell('Link');
       const url = String(link.value || '').trim();
@@ -881,3 +881,8 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
 
   return { ok: v.length === 0, violations: v };
 }
+
+// Where the run's register publishes no record pages of its own, the Findings sheet shows each
+// registration's office and number and links the office's own page (office-record-links.mjs). Kept down
+// here, below every line the rest of the tree cites by number.
+import { linkCellFor } from './office-record-links.mjs';

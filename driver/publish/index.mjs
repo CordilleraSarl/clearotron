@@ -859,7 +859,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     const esPath = driverDir(runDir ?? dirname(reportMd), 'enforcer-signals.json');
     if (existsSync(esPath)) { const es = JSON.parse(readFileSync(esPath, 'utf8')); if (Array.isArray(es)) enforcerSignals = es; }
   } catch { /* absent — no telemetry lines */ }
-  bindFindingsToRecords(findings, recordsByUri);
+  const officeLinks = officeLinksFor(findings, recordsByUri, fetchReceipts); bindFindingsToRecords(findings, recordsByUri);
   // 404-card caveat (2026-07-22): the V4-2 closure pass persisted every cited record its targeted
   // fetch definitively could not retrieve (predelivery-lint.json artifactSet.recordFetchFailures);
   // the evidence join stamps `_recordFetchFailure` from it so the card render carries the
@@ -1030,7 +1030,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0 }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1052,7 +1052,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // worse demo than no toggle.
   const reportNav = siteNav(poolRoot, 'report', null, '../', { anon: false });
   // `demoData` is resolved above the report.md write — one answer, every surface.
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, providerLabel, seniorRights, findingsSchemaVersion }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1151,7 +1151,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     issuedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
     engineCommit: engineCommit(),
-    kind: 'clearance',
+    kind: 'clearance', recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
     searchLevel: searchPolicy?.level ?? undefined,
     // Display-only face of the level ("Depth 4"), frozen alongside it so the list can show which reads
     // have run on a name without the browser having to know the level registry.
@@ -1617,4 +1617,16 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   const footerNote = accessNoteHtml(FONT);
 
   return `<div style="${FONT}">${reviewHeadline}${footerNote}</div>`;
+}
+
+// ── The office's own page for each fetched record, where the run's register publishes none of its own ──
+// Addressed from the record's numbers (office-record-links.mjs), never from the model or the handle, and
+// null on every other register, so those runs publish exactly as before. The tally goes to meta.json and
+// the log, so a register whose numbers never fit shows up as a count rather than as silence. Kept down
+// here, below every line the rest of the tree cites by number.
+import { recordLinksFor } from './office-record-links.mjs';
+function officeLinksFor(findings, recordsByUri, fetchReceipts) {
+  const links = recordLinksFor(findings, recordsByUri, fetchReceipts?.[0]?.provider);
+  if (links) console.log(`[record-links] ${links.summary}`);
+  return links;
 }
