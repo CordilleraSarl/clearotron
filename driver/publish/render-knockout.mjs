@@ -1069,7 +1069,6 @@ function sourceChips(v) {
 // already defines — the same one the clearance report uses for this material — so a reader can see whose
 // voice a line is in. Merging them into the client-voiced body would make the reviewer's asides read as
 // findings about the mark, which is the one way this ruling could produce a worse document.
-const REVIEWER_NOTES_LEGEND = 'Purple notes are for the reviewing lawyer. Remove them before this goes to the client.';
 
 // The clearance lane's own label, copied rather than re-worded. One spelling across
 // both products is the point: a reader who has seen it on a clearance report knows what it means here.
@@ -1425,12 +1424,12 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
       </div>
     </div>`;
   }).join('');
-  // The legend rides the panel and only when a note is actually on it — a standing sentence explaining a
-  // colour no reader can see would be the report describing a convention it did not use.
-  const anyNotes = marks.some((m) => (Array.isArray(m?.purpleNotes) ? m.purpleNotes : [])
-    .some((n) => String(n ?? '').trim()));
-  const legend = anyNotes ? `<p class="ko-refnote">${esc(REVIEWER_NOTES_LEGEND)}</p>` : '';
-  return `<div class="panel ko-glance">${legend}${cards}</div>`;
+  // NO LEGEND. A standing line saying "remove these before this goes to the client" was an instruction
+  // to the reader printed on the document itself, and the owner ruled it out: a report that explains its
+  // own conventions in a caveat is telling the reader how to handle it rather than what was found. The
+  // notes and their "For the reviewing lawyer" label stay — that label names a reader, which is a fact
+  // about the note; the legend told somebody what to do about it, which is not.
+  return `<div class="panel ko-glance">${cards}</div>`;
 }
 
 // The method line names EXACTLY what ran, and its wording is doctrine — with counts on the page, "register
