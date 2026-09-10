@@ -47,7 +47,7 @@ function straddleFile(cut) {
   return text;
 }
 
-test("#1948 a credential straddling a 10,000-byte chunk boundary is found, not truncated away", (ctx) => {
+test("a credential straddling a 10,000-byte chunk boundary is found, not truncated away", (ctx) => {
   let version = null;
   try { version = execFileSync("gitleaks", ["version"], { encoding: "utf8" }).trim(); }
   catch { return ctx.skip("gitleaks is not on PATH — could not look, which is not a pass"); }

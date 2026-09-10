@@ -45,21 +45,21 @@ function declinedPathBranch() {
   return src.slice(from, to);
 }
 
-test("#1907 declining the path offers a way OUT, instead of returning to the same menu", () => {
+test("declining the path offers a way OUT, instead of returning to the same menu", () => {
   const branch = declinedPathBranch();
   assert.match(branch, /confirm\("Continue with no engine configured\?"/,
     "a reader who declines both offers must be asked whether to go on without an engine — "
     + "the menu's last row is the way out and it is invisible from the screen");
 });
 
-test("#1907 that exit's default is YES, because a NO default rebuilds the trap", () => {
+test("that exit's default is YES, because a NO default rebuilds the trap", () => {
   const branch = declinedPathBranch();
   assert.match(branch, /confirm\("Continue with no engine configured\?",\s*true\s*\)/,
     "Enter must take it. With a `false` default the reader presses Enter, answers no, and lands "
     + "back on the menu — the same loop wearing one more prompt");
 });
 
-test("#1907 the exit LEAVES the loop; it does not continue round it", () => {
+test("the exit LEAVES the loop; it does not continue round it", () => {
   const branch = declinedPathBranch();
   const yes = branch.indexOf('confirm("Continue with no engine configured?"');
   assert.notEqual(yes, -1, "anchor missing: the exit confirm — re-aim this arm");
@@ -69,7 +69,7 @@ test("#1907 the exit LEAVES the loop; it does not continue round it", () => {
     + "no-engine lines and then ask the same question again");
 });
 
-test("#1907 nothing in that branch can reach a continue before it has been offered the exit", () => {
+test("nothing in that branch can reach a continue before it has been offered the exit", () => {
   const branch = declinedPathBranch();
   const firstContinue = branch.indexOf("continue;");
   const exit = branch.indexOf('confirm("Continue with no engine configured?"');
@@ -84,7 +84,7 @@ test("#1907 nothing in that branch can reach a continue before it has been offer
   }
 });
 
-test("#1907 what 'no engine' means is said in ONE place, so the two routes cannot drift", () => {
+test("what 'no engine' means is said in ONE place, so the two routes cannot drift", () => {
   const line = "No engine configured, and nothing engine-related will be written.";
   const hits = src.split(line).length - 1;
   assert.equal(hits, 1,
@@ -101,7 +101,7 @@ test("#1907 what 'no engine' means is said in ONE place, so the two routes canno
     + "the menu's last row, the loop's escape, and the platform refusal");
 });
 
-test("#1907 the fix did NOT move which engine Enter selects", () => {
+test("the fix did NOT move which engine Enter selects", () => {
   // The other way to end the loop is to default the menu onto the no-engine row. That also moves the
   // default on a box carrying the SECOND binary and not the first — a different vendor, and a proof
   // turn spent on it, chosen by a reader who pressed Enter. Not this defect's to decide.
@@ -111,7 +111,7 @@ test("#1907 the fix did NOT move which engine Enter selects", () => {
 });
 
 
-// ──, THE REGISTER HALF — owner ruling 2026-08-26: `install` may finish with no register ────────
+// ──, THE REGISTER HALF — ruling 2026-08-26: `install` may finish with no register ────────
 //
 // Every row of PROVIDERS declares required credentials and the prompt had no way out, so a reader with
 // no vendor account could not reach the closing screen. Driven end to end under the PTY, Enter at every
@@ -146,7 +146,7 @@ function doctor({ envFile = null, ...env } = {}) {
   } catch (e) { return { rc: e.status ?? 1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
 }
 
-test("#1907 doctor names the no-register state, and does not fail the install for being in it", () => {
+test("doctor names the no-register state, and does not fail the install for being in it", () => {
   const { rc, out } = doctor();
   assert.match(out, /no register is selected/,
     "the owner's ruling is that this state is allowed; the doctor is what tells a reader they are in it");
@@ -159,14 +159,14 @@ test("#1907 doctor names the no-register state, and does not fail the install fo
     + "fail doctor on a posture setup was told to allow");
 });
 
-test("#1907 doctor does NOT say it when a register IS selected — the line is not unconditional", () => {
+test("doctor does NOT say it when a register IS selected — the line is not unconditional", () => {
   // A control: without this, a line printed on every run would satisfy the arm above forever.
   const { out } = doctor({ envFile: { CLEAROTRON_DATABASE: "euipo" } });
   assert.doesNotMatch(out, /no register is selected/,
     "the no-register line must be conditional on there being no register");
 });
 
-test("#1907 the register credential is skippable, and the skip says what it costs", () => {
+test("the register credential is skippable, and the skip says what it costs", () => {
   assert.match(src, /askValue\(`\$\{k\}:`, \{ secret: true, skippable: true,/,
     "the required-credential prompt must offer a way out: a reader reaches it by picking a register, "
     + "never by choosing to supply a key, and the menu has no 'none' row");
@@ -174,7 +174,7 @@ test("#1907 the register credential is skippable, and the skip says what it cost
     "…and the skip must state the consequence rather than passing silently");
 });
 
-test("#1907 a skipped credential leaves CLEAROTRON_DATABASE UNWRITTEN — half a register is not one", () => {
+test("a skipped credential leaves CLEAROTRON_DATABASE UNWRITTEN — half a register is not one", () => {
   const write = src.indexOf("candidate.CLEAROTRON_DATABASE = spec.id;");
   assert.notEqual(write, -1, "anchor missing: the CLEAROTRON_DATABASE write — re-aim this arm");
   // Search BACKWARD from the write, not forward from the top of the file. `src.indexOf("if
@@ -191,7 +191,7 @@ test("#1907 a skipped credential leaves CLEAROTRON_DATABASE UNWRITTEN — half a
     "the write must sit INSIDE the registerSelected block, not after it closes");
 });
 
-test("#1907 abandoning a register discards the credentials THIS step collected, and only those", () => {
+test("abandoning a register discards the credentials THIS step collected, and only those", () => {
   // Measured, not reasoned: a register with two required credentials — euipo, free-tier — let a reader
   // supply the first and skip the second, and the first was written to the .env with no
   // CLEAROTRON_DATABASE beside it. `candidate` is serialised wholesale at the write step, so anything
@@ -211,7 +211,7 @@ test("#1907 abandoning a register discards the credentials THIS step collected, 
     + "step that runs before the register menu, and it stands for whichever register they pick later");
 });
 
-test("#1907 the wizard's own preflight is SKIPPED, not failed, when there is no provider to check", () => {
+test("the wizard's own preflight is SKIPPED, not failed, when there is no provider to check", () => {
   const i = src.indexOf("Running the driver's own credential preflight");
   assert.notEqual(i, -1, "anchor missing: the preflight step — re-aim this arm");
   const before = src.slice(Math.max(0, i - 400), i);
@@ -225,7 +225,7 @@ test("#1907 the wizard's own preflight is SKIPPED, not failed, when there is no 
     "…and that the run-door guard is untouched, which is the thing a reviewer will want to know");
 });
 
-test("#1907 the closing screen does not recommend a command that will refuse", () => {
+test("the closing screen does not recommend a command that will refuse", () => {
   // RE-AIMED, NOT DELETED. The heading was "Three commands from here" until the
   // owner's point 10 cut the screen to one command with what to expect; the clearance run moved to an
   // "Also" line. What this arm asserts is unchanged, because the property is unchanged — the last
@@ -243,7 +243,7 @@ test("#1907 the closing screen does not recommend a command that will refuse", (
     "…named specifically, because `demo` and `start` are unaffected and stay recommended");
 });
 
-test("#1907 the search-credential prompt is skippable, and both routes print ONE sentence", () => {
+test("the search-credential prompt is skippable, and both routes print ONE sentence", () => {
   // Re-aimed at the derived loop: the Perplexity-only block became one prompt per
   // adapter row, so the property now holds for EVERY search credential by construction — the confirm
   // defaults YES (Enter walks into a key prompt the reader never chose unless the skip line exists),
@@ -308,7 +308,7 @@ test("tracker issue 1907 no askValue can be entered with an empty default and no
 
 const RETRY = 'confirm("Fixed it? Run the turn again"';
 
-test("2191-F9 the re-probe's default is NO, because a YES default is the trap #1907 closed", () => {
+test("the re-probe's default is NO, because a YES default is the trap #1907 closed", () => {
   const at = src.indexOf(RETRY);
   // Anchor discipline, as above: a moved anchor ABORTS. A block that is not there reads as a block
   // containing nothing, and passes every assertion made over it.
@@ -319,7 +319,7 @@ test("2191-F9 the re-probe's default is NO, because a YES default is the trap #1
     + "YES default re-runs a check that is guaranteed to fail — and the header tells them Enter is safe");
 });
 
-test("2191-F9 declining says what it costs, and lands on the menu that has the way out", () => {
+test("declining says what it costs, and lands on the menu that has the way out", () => {
   const at = src.indexOf(RETRY);
   assert.notEqual(at, -1, `anchor missing: ${RETRY} is not in bin/onboard.mjs`);
   const branch = src.slice(at, at + 700);

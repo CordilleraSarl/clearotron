@@ -12,7 +12,7 @@
 // owner's 2026-09-05 ruling that is this deployment READ LIVE — the page shows current configuration,
 // always, and what the last run recorded is a secondary row whose job is to name any field it disagrees
 // with. (It reads live because the portal shares the engine's environment: one configuration per server
-// box, owner ruling 2026-08-26. It did not always, and the prose here said so for longer than it was
+// box, ruling 2026-08-26. It did not always, and the prose here said so for longer than it was
 // true.) And every "I cannot tell" is said in words rather than rendered as an empty list — see the
 // notices below, which are the whole design.
 //
@@ -119,7 +119,7 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
           )}
         </Group>
 
-        {/* WHAT THIS PAGE IS SHOWING, AND WHAT THE LAST RUN SAW — owner ruling 2026-09-05:
+        {/* WHAT THIS PAGE IS SHOWING, AND WHAT THE LAST RUN SAW — ruling 2026-09-05:
             the page shows LIVE configuration, always, and the age banner is retired.
 
             THE BANNER WENT BECAUSE IT ANSWERED THE WRONG QUESTION. It said "this snapshot is more than a

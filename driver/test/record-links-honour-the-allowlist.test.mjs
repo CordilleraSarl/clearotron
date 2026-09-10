@@ -16,7 +16,7 @@
 // and every `/mark/<cc>/<id>` on the card was prefixed with it. The repair was scoped to register
 // sources; the scrape was scoped to nothing. That asymmetry is what these arms pin.
 //
-// ── AND WHAT A CARD SHOWS WHERE A LINK CANNOT GO (owner ruling, 2026-08-20) ────────────────────────
+// ── AND WHAT A CARD SHOWS WHERE A LINK CANNOT GO (ruling, 2026-08-20) ────────────────────────
 //
 // Per provider, and the doctrine lives in the PROVIDER TABLE rather than in a branch on a vendor name
 // inside the renderer: `workbook` (no register UI exists — point at the artifact that does carry the
@@ -48,7 +48,7 @@ const code = (p) => read(p).split("\n").filter((l) => !l.trimStart().startsWith(
 
 // ── the allow-list itself, which the render now depends on ─────────────────────────────────────────
 
-test("#1438 the allow-list already answered correctly — the defect was downstream of it", () => {
+test("the allow-list already answered correctly — the defect was downstream of it", () => {
   // Stated as a precondition rather than assumed: if these move, the fix below is aimed at the wrong
   // thing. `[]` is an ANSWER (this provider publishes no record page), distinct from `null` (no
   // provider named), and record-origins.mjs says so at length.
@@ -63,7 +63,7 @@ test("#1438 the allow-list already answered correctly — the defect was downstr
 
 // ── the fix, at the site that was bypassing it ─────────────────────────────────────────────────────
 
-test("#1438 THE SCRAPED ORIGIN IS GONE — render.mjs no longer takes a host from a finding's source link", () => {
+test("THE SCRAPED ORIGIN IS GONE — render.mjs no longer takes a host from a finding's source link", () => {
   const src = code("driver/publish/render.mjs");
   assert.doesNotMatch(src, /RECORD_ORIGIN \|\| provOrigin/,
     "the `||` fallback is back: a provider whose allow-list is empty will be linked onto whatever host "
@@ -74,7 +74,7 @@ test("#1438 THE SCRAPED ORIGIN IS GONE — render.mjs no longer takes a host fro
     "the renderer must receive the run's allow-list, not one derived origin");
 });
 
-test("#1438 the SAME list reaches both consumers — one allow-list, not two derivations", () => {
+test("the SAME list reaches both consumers — one allow-list, not two derivations", () => {
   const idx = read("driver/publish/index.mjs");
   // normalizeRecordLinks repairs absolute links; render constructs from paths. Before this both had
   // their own idea of what was legitimate, which is how one could refuse while the other allowed.
@@ -97,7 +97,7 @@ test("#1438 the SAME list reaches both consumers — one allow-list, not two der
 // carries `registrations: [{ uri: "/mark/us/usafi0ac…" }]`. The link is not a record claim, so the
 // repair pass correctly leaves it — and the scrape took its origin anyway.
 
-test("#1438 A BARE RECORD PATH LINKS ONLY UNDER A SINGLE ALLOW-LISTED ORIGIN", () => {
+test("A BARE RECORD PATH LINKS ONLY UNDER A SINGLE ALLOW-LISTED ORIGIN", () => {
   // Read from the source of regHref rather than by rendering a whole report: the render entry point
   // needs a full parsed report, and what is under test is one resolver. The RULE is what must hold.
   const src = code("driver/publish/render.mjs");
@@ -111,7 +111,7 @@ test("#1438 A BARE RECORD PATH LINKS ONLY UNDER A SINGLE ALLOW-LISTED ORIGIN", (
     "an already-absolute URI must be checked against the list, not passed through");
 });
 
-test("#1438 `[]` AND `null` MEAN DIFFERENT THINGS and the render must not collapse them", () => {
+test("`[]` AND `null` MEAN DIFFERENT THINGS and the render must not collapse them", () => {
   const src = code("driver/publish/render.mjs");
   // `[]` = this provider publishes nothing, so nothing links. `null` = no provider named (a legacy or
   // receipt-less run), so there is no list to judge by. Collapsing them either strips legitimate links
@@ -127,7 +127,7 @@ test("#1438 `[]` AND `null` MEAN DIFFERENT THINGS and the render must not collap
 
 // ── what the reader gets where a link cannot go ────────────────────────────────────────────────────
 
-test("#1438 THE PER-PROVIDER RULING LIVES IN THE PROVIDER TABLE, not in a vendor branch in the renderer", () => {
+test("THE PER-PROVIDER RULING LIVES IN THE PROVIDER TABLE, not in a vendor branch in the renderer", () => {
   assert.equal(PROVIDERS.signa.recordCitation, "workbook",
     "signa has no register UI at all — the card points at the artifact that carries the record");
   assert.equal(PROVIDERS.clarivate.recordCitation, "placeholder",
@@ -147,7 +147,7 @@ test("#1438 THE PER-PROVIDER RULING LIVES IN THE PROVIDER TABLE, not in a vendor
   }
 });
 
-test("#1438 the workbook is named IN THE WORDS THE READER SEES, and not as an inline .xlsx link", () => {
+test("the workbook is named IN THE WORDS THE READER SEES, and not as an inline .xlsx link", () => {
   const src = read("driver/publish/render.mjs");
   const label = read("portal-ui/src/screens/Result.tsx").match(/Download full audit \(Excel\)/);
   assert.ok(label, "the portal's own download control no longer carries that label — the note below now "
@@ -162,7 +162,7 @@ test("#1438 the workbook is named IN THE WORDS THE READER SEES, and not as an in
     + "left with a named file and no way to reach it");
 });
 
-test("#1438 the strip's justification is no longer false — it cost the last reader a wrong conclusion", () => {
+test("the strip's justification is no longer false — it cost the last reader a wrong conclusion", () => {
   const src = read("driver/portal-report.mjs");
   assert.doesNotMatch(src, /internal by standing policy, and the portal does not serve the file/,
     "the stale justification is back. Both halves are false — portal-service.mjs serves the workbook and "

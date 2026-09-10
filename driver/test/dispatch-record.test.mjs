@@ -16,14 +16,14 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { recordDispatch, dispatchFileName, DISPATCH_SUFFIX } from "../dispatch-record.mjs";
 
-test("#380: the file name is the stage label, its attempt, and its repair ordinal — beside the stage's own jsonl", () => {
+test("the file name is the stage label, its attempt, and its repair ordinal — beside the stage's own jsonl", () => {
   assert.equal(dispatchFileName("register-digest", 1), `register-digest.attempt1.${DISPATCH_SUFFIX}`);
   assert.equal(dispatchFileName("register-digest", 2, 1), `register-digest.attempt2.repair1.${DISPATCH_SUFFIX}`);
   // axis labels carry a colon on real runs (register-unit:primary-sweep.jsonl exists), so the name does too
   assert.equal(dispatchFileName("register-unit:primary-sweep", 1), `register-unit:primary-sweep.attempt1.${DISPATCH_SUFFIX}`);
 });
 
-test("#380: the message is written BYTE-FOR-BYTE and is never truncated at any size", () => {
+test("the message is written BYTE-FOR-BYTE and is never truncated at any size", () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-bytes-"));
   try {
     // the shapes that actually get dispatched: a fenced block (the rulings tail), newlines, non-ASCII
@@ -47,7 +47,7 @@ test("#380: the message is written BYTE-FOR-BYTE and is never truncated at any s
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#380: THE ACCEPTANCE QUESTION — a hint that rides the message BODY is findable in the record", () => {
+test("THE ACCEPTANCE QUESTION — a hint that rides the message BODY is findable in the record", () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-qid-"));
   try {
     // That shape exactly: the deferred-slice reasons were on disk before the digest started, and
@@ -61,7 +61,7 @@ test("#380: THE ACCEPTANCE QUESTION — a hint that rides the message BODY is fi
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#380: three-valued — no runDir is null, a failed write is a RECORDED absence, and neither throws", () => {
+test("three-valued — no runDir is null, a failed write is a RECORDED absence, and neither throws", () => {
   assert.equal(recordDispatch(null, "s", { attempt: 1, message: "x" }), null);
   assert.equal(recordDispatch("", "s", { attempt: 1, message: "x" }), null);
   const dir = mkdtempSync(join(tmpdir(), "dispatch-fail-"));
@@ -76,7 +76,7 @@ test("#380: three-valued — no runDir is null, a failed write is a RECORDED abs
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#380: a re-dispatch of the same attempt PRESERVES the superseded record — an earlier row's sha must not point at bytes that moved", () => {
+test("a re-dispatch of the same attempt PRESERVES the superseded record — an earlier row's sha must not point at bytes that moved", () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-collide-"));
   try {
     // A recovery park re-enters the stage and dispatches ITS attempt 1 again. Overwriting would leave
@@ -95,7 +95,7 @@ test("#380: a re-dispatch of the same attempt PRESERVES the superseded record �
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#380: an IDENTICAL re-dispatch displaces nothing — a resume that replays the same prompt leaves one file", () => {
+test("an IDENTICAL re-dispatch displaces nothing — a resume that replays the same prompt leaves one file", () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-same-"));
   try {
     const a = recordDispatch(dir, "s", { attempt: 1, message: "identical" });
@@ -106,7 +106,7 @@ test("#380: an IDENTICAL re-dispatch displaces nothing — a resume that replays
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#380: an empty or absent message is recorded as the empty string, not skipped", () => {
+test("an empty or absent message is recorded as the empty string, not skipped", () => {
   const dir = mkdtempSync(join(tmpdir(), "dispatch-empty-"));
   try {
     const r = recordDispatch(dir, "s", { attempt: 1 });

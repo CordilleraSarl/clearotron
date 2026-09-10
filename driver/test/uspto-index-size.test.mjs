@@ -34,7 +34,7 @@ const sectionThreeA = () => {
   return install.slice(start, end === -1 ? undefined : end);
 };
 
-test("#807 every GB figure in INSTALL.md §3a is one the code exports", () => {
+test("every GB figure in INSTALL.md §3a is one the code exports", () => {
   // Both throughput (GB/h) and sizes (GB) are collected, because the old text mixed them into the same
   // sentence and that is precisely how "42 GB downloaded" became "6.5 hours at 6.45 GB/h" became a
   // build time nobody had timed.
@@ -51,7 +51,7 @@ test("#807 every GB figure in INSTALL.md §3a is one the code exports", () => {
     + `Allowed: ${[...allowed].join(", ")}. A number the code cannot produce is a promise it cannot keep.`);
 });
 
-test("#807 the three quantities are all stated, and the reader is not asked to infer one", () => {
+test("the three quantities are all stated, and the reader is not asked to infer one", () => {
   const s = sectionThreeA();
   assert.match(s, new RegExp(`${USPTO_ARCHIVE_GB} ?GB`), "the download");
   assert.match(s, new RegExp(`${USPTO_INDEX_GB} ?GB`), "the steady-state index");
@@ -60,7 +60,7 @@ test("#807 the three quantities are all stated, and the reader is not asked to i
   assert.match(s, new RegExp(`${usptoBuildHours()} hours`), "the build time");
 });
 
-test("#807 the superseded figures are gone from the whole document, not just from §3a", () => {
+test("the superseded figures are gone from the whole document, not just from §3a", () => {
   // Named individually because each was a real published claim, and a grep that only checked §3a would
   // pass while §4 still told the reader to provision 60 GB.
   for (const [pattern, what] of [
@@ -75,7 +75,7 @@ test("#807 the superseded figures are gone from the whole document, not just fro
   }
 });
 
-test("#807 what the document promises is what the preflight will demand", () => {
+test("what the document promises is what the preflight will demand", () => {
   // The failure this prevents is the one that produced the issue: prose that says a build fits on a
   // disk the check then refuses. Provisioning advice is DERIVED from the refusal arithmetic, so the
   // only way to break the promise is to change the arithmetic — which changes both at once.
@@ -90,7 +90,7 @@ test("#807 what the document promises is what the preflight will demand", () => 
     "the provisioning figure has drifted more than 5 GB above what the build needs");
 });
 
-test("#807 the carried ratio is pessimistic against the measured one, and both are declared", () => {
+test("the carried ratio is pessimistic against the measured one, and both are declared", () => {
   assert.ok(USPTO_INDEX_BYTES_PER_ARCHIVE_BYTE_CARRIED > USPTO_INDEX_BYTES_PER_ARCHIVE_BYTE_MEASURED,
     "the preflight must charge MORE than one build was observed to use — a full disk mid-ingest leaves "
     + "a partial index that opens, reports rows, and answers a clearance over part of the register");
@@ -100,7 +100,7 @@ test("#807 the carried ratio is pessimistic against the measured one, and both a
     "MEASURED is no longer the ratio of the two sizes it was derived from");
 });
 
-test("#807 there is exactly one copy of the disk arithmetic", () => {
+test("there is exactly one copy of the disk arithmetic", () => {
   // The four figures existed because three files each held their own. `uspto-sync.mjs` owns the
   // refusal, `onboard.mjs` owns the prompt, and neither may compute the requirement itself.
   const strip = (src) => src.split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");

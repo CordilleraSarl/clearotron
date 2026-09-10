@@ -95,7 +95,7 @@ const stamp = (runDir) => stampCoverageJudgmentRows(paths(runDir), runDir, () =>
 // ── 1. THE DERIVATION, AND THE JOIN ────────────────────────────────────────────────────────────────
 const LEDGER_UNITS = LEDGER.map((r) => ({ ...r, unit: `${r.axis} / ${r.scope}` }));
 
-test("#447: the rows are derived from BOTH sources, and a slice that both describe is disclosed ONCE", () => {
+test("the rows are derived from BOTH sources, and a slice that both describe is disclosed ONCE", () => {
   const rows = coverageJudgmentRows(LEDGER_UNITS, RECEIPT);
 
   assert.deepEqual(rows.map((r) => r.area), [
@@ -135,7 +135,7 @@ test("#447: the rows are derived from BOTH sources, and a slice that both descri
 });
 
 // ── 2. THE STAMP REPLACES WHAT THE MODEL TYPED ─────────────────────────────────────────────────────
-test("#447: model-authored rows are replaced wholesale, and the result still parses strictly", () => {
+test("model-authored rows are replaced wholesale, and the result still parses strictly", () => {
   const runDir = runDirWith(baseDoc({
     sufficient: true, reason: "the dangerous subset is enumerated and cleared",
     // What a synthesis authored under the old dictation, and the exact failure mode: a slice named
@@ -163,7 +163,7 @@ test("#447: model-authored rows are replaced wholesale, and the result still par
 // `sufficient` clamps CLEAR→CONDITIONAL. Inventing a coverage_judgment where synthesis emitted none
 // would put a verdict-moving field on nobody's judgment, which is a worse defect than the one this
 // closes.
-test("#447: a run whose synthesis emitted no coverage_judgment does not get one invented", () => {
+test("a run whose synthesis emitted no coverage_judgment does not get one invented", () => {
   const runDir = runDirWith(baseDoc(undefined));
   const before = readFileSync(join(runDir, "findings.json"), "utf8");
   stamp(runDir);
@@ -173,7 +173,7 @@ test("#447: a run whose synthesis emitted no coverage_judgment does not get one 
 });
 
 // ── 4. NOTHING OPEN ⇒ NO ROWS KEY ──────────────────────────────────────────────────────────────────
-test("#447: on a run with nothing open, an authored rows[] is REMOVED rather than left standing", () => {
+test("on a run with nothing open, an authored rows[] is REMOVED rather than left standing", () => {
   const runDir = runDirWith(
     baseDoc({ sufficient: true, reason: "complete", rows: [{ area: "cl. 5 GB", note: "a slice the ledger does not carry" }] }),
     { ledger: [{ axis: "primary-sweep", scope: "all", status: "confirmed-clean", reason: "full" }], receipt: { plan_version: 3, executed: [], missing: [], skipped: [], deferred: [], skeleton: [] } });
@@ -185,7 +185,7 @@ test("#447: on a run with nothing open, an authored rows[] is REMOVED rather tha
 });
 
 // ── 5. NEVER-KILL, AND WHAT A CORRUPT SOURCE ACTUALLY COSTS ────────────────────────────────────────
-test("#447: an unreadable findings.json leaves the bytes alone instead of failing the delivery", () => {
+test("an unreadable findings.json leaves the bytes alone instead of failing the delivery", () => {
   const runDir = runDirWith(baseDoc({ sufficient: true, reason: "complete" }));
   writeFileSync(join(runDir, "findings.json"), "{ truncated mid-writ");
   const before = readFileSync(join(runDir, "findings.json"), "utf8");
@@ -200,7 +200,7 @@ test("#447: an unreadable findings.json leaves the bytes alone instead of failin
 // failure" — so with no prose either, the ledger half of the row set is simply empty. The receipt half
 // still lands. That is the correct degradation (every coverage consumer degrades the same way) but it
 // is a HALF row set, and this test exists so that stops being a surprise.
-test("#447: a corrupt ledger costs the ledger half of the rows and keeps the receipt half", () => {
+test("a corrupt ledger costs the ledger half of the rows and keeps the receipt half", () => {
   const runDir = runDirWith(baseDoc({ sufficient: true, reason: "complete" }));
   writeFileSync(join(runDir, "register-coverage-ledger.json"), "{ this is not json");
   stamp(runDir);
@@ -213,7 +213,7 @@ test("#447: a corrupt ledger costs the ledger half of the rows and keeps the rec
 // A dictation that still offers the key is a dictation a model will still fill in, and the driver would
 // then be silently overwriting work someone was asked for. The two-level rule: the skills teach
 // `{sufficient, reason}` and so does this.
-test("#447: the synthesis dictation no longer invites rows[] and says who writes it", () => {
+test("the synthesis dictation no longer invites rows[] and says who writes it", () => {
   const P = paths("/RUN");
   const job = { marks: [{ name: "VENZY", classes: [5] }], markName: "VENZY", name: "PROJECT K", classes: [5], ref: "TMP447", customer: "ACME", goods: "supplements", forwarder: "jordan", msgId: "<m>" };
   const msg = STAGES.synthesis.message({ paths: P, job, axes: REGISTER_AXES, registerOnly: false, agent: "clawdi", run: { slug: "s", codename: "c" } });
@@ -236,7 +236,7 @@ test("#447: the synthesis dictation no longer invites rows[] and says who writes
 // the dictation's "Do NOT emit rows" and the repair turn's "you may" at the same time, and a corrective
 // dispatch spent on writing rows is a dispatch spent writing something overwritten wholesale. b0ac330
 // fixed this exact drift 271 lines below in the same function and left this arm on the old contract.
-test("#447 review: the findings.json repair hint teaches the same rows[] contract as the dictation", async () => {
+test("review: the findings.json repair hint teaches the same rows[] contract as the dictation", async () => {
   const { correctionHint } = await import("../gateway.mjs");
   const hint = correctionHint("invalid_file:/run/findings.json:findings_coverage_judgment_rows_invalid");
   assert.ok(hint, "the findings.json arm still produces a hint");
@@ -255,7 +255,7 @@ test("#447 review: the findings.json repair hint teaches the same rows[] contrac
 // this one runs a real (mocked, offline) delivery and reads the run journal, which records the decision
 // on every run — including the runs where the derived set was already exact, because "already matched"
 // and "never ran" are different facts and only one of them is a defect.
-test("#447: a real delivered run records the stamp's decision in its own journal", async () => {
+test("a real delivered run records the stamp's decision in its own journal", async () => {
   process.env.MOCK_VERDICT = "CLEAR";
   process.env.MOCK_SKEPTIC = "no flags surfaced";
   process.env.MOCK_COVERAGE_INSUFFICIENT = "1";   // so the run HAS a coverage_judgment for the stamp to rule on

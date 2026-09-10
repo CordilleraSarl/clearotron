@@ -45,7 +45,7 @@ function scaffold({ records = null, calls = null } = {}) {
 
 // ── the guard ───────────────────────────────────────────────────────────────────────────────────────
 
-test("#743 fetches that succeeded with no record body in the run are a FAILURE, not a clean zero", () => {
+test("fetches that succeeded with no record body in the run are a FAILURE, not a clean zero", () => {
   // The exact shape the move could ship: the run made two record fetches, both answered 200, and the
   // run's record log is empty because the bodies went to the old global address. Before this guard the
   // only observable was `records.size === 0`, which is also what an honest untouched run looks like.
@@ -60,7 +60,7 @@ test("#743 fetches that succeeded with no record body in the run are a FAILURE, 
   assert.deepEqual(r.unrecordedFetches, ["/mark/eu/018922211", "/mark/us/86272665"]);
 });
 
-test("#743 a run that fetched nothing at all is still a clean zero", () => {
+test("a run that fetched nothing at all is still a clean zero", () => {
   // The dual, and the reason the guard is keyed on the CALL ledger rather than on `records.size`. Most
   // runs legitimately fetch no records; a guard that fired on all of them would be turned off within a
   // week and the real case would go with it.
@@ -71,7 +71,7 @@ test("#743 a run that fetched nothing at all is still a clean zero", () => {
   assert.equal(r.ledgerError, null, "'no record log yet' is ordinary and must never be a fault");
 });
 
-test("#743 a fetch the register REFUSED is not counted — it has no body to file", () => {
+test("a fetch the register REFUSED is not counted — it has no body to file", () => {
   // A 404 or a provider refusal is disclosed on its own surfaces. Counting it here would report a
   // known, handled provider failure as an evidence-plumbing defect and bury the real one in noise.
   const { runDir, callLog } = scaffold({ records: "", calls: callRow("/mark/us/86272665", false) });
@@ -79,7 +79,7 @@ test("#743 a fetch the register REFUSED is not counted — it has no body to fil
   assert.equal(r.fetchedWithoutRecord, 0);
 });
 
-test("#743 a fetch whose body IS in the run's log passes the guard", () => {
+test("a fetch whose body IS in the run's log passes the guard", () => {
   const { runDir, callLog } = scaffold({
     records: recordRow("/mark/us/86272665"),
     calls: callRow("/mark/us/86272665"),
@@ -90,7 +90,7 @@ test("#743 a fetch whose body IS in the run's log passes the guard", () => {
   assert.equal(r.records.get("/mark/us/86272665").registrationNumber, "4641314");
 });
 
-test("#743 an inherited _records/ artifact satisfies the guard — the fork case", () => {
+test("an inherited _records/ artifact satisfies the guard — the fork case", () => {
   // A resumed or forked run carries `_records/` and may re-cite a record it never re-fetched this
   // session. The guard asks whether the RUN can show the record, not whether this session wrote the row.
   const { runDir, callLog } = scaffold({ records: "", calls: callRow("/mark/us/86272665") });
@@ -102,7 +102,7 @@ test("#743 an inherited _records/ artifact satisfies the guard — the fork case
   assert.equal(r.fetchedWithoutRecord, 0);
 });
 
-test("#743 losing the WITNESS is its own finding — an unreadable call ledger is reported", () => {
+test("losing the WITNESS is its own finding — an unreadable call ledger is reported", () => {
   // Without this the guard is worthless in exactly the situation it exists for: no readable call ledger
   // means no fetch rows, which means `fetchedWithoutRecord === 0` on every run it could ever fail.
   const { runDir } = scaffold({ records: "" });
@@ -123,7 +123,7 @@ test("#743 losing the WITNESS is its own finding — an unreadable call ledger i
 
 // ── the address ─────────────────────────────────────────────────────────────────────────────────────
 
-test("#743 the record log's default address is derived from the run dir the caller already passed", () => {
+test("the record log's default address is derived from the run dir the caller already passed", () => {
   // No second argument, no env var, no home directory: the run dir is the only input, which is what
   // makes concurrent runs in one driver process safe.
   const { runDir } = scaffold({ records: recordRow("/mark/us/86272665") });
@@ -132,7 +132,7 @@ test("#743 the record log's default address is derived from the run dir the call
   assert.equal(runRecordLogPath(runDir), driverDir(runDir, "register-record-bodies.jsonl"));
 });
 
-test("#743 the log's name cannot be confused with the knockout lane's register-records.json", () => {
+test("the log's name cannot be confused with the knockout lane's register-records.json", () => {
   // `<run>/_driver/register-records.json` already exists and is a completely different artifact — the
   // knockout filings listing. Two files one character apart in one directory, holding different things,
   // is a mis-read waiting for an incident.
@@ -142,7 +142,7 @@ test("#743 the log's name cannot be confused with the knockout lane's register-r
 
 // ── the route: a composite's rows name the MEMBER that answered ───────────────────────────────────
 
-test("#743/#546 free-tier exports a ledger binding it must never call — a member's own core writes the row", () => {
+test("free-tier exports a ledger binding it must never call — a member's own core writes the row", () => {
   // free-tier's members are searched through their OWN cores, so a composite run's record rows say
   // `euipo` / `uspto-local` and a free-tier count can be audited against the source that produced it.
   // The binding at providers/free-tier/src/core.js is exported and never called; the moment anyone uses

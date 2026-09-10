@@ -5,7 +5,7 @@
 //
 // ── WHY THIS EXISTS: THE SAME DISEASE AS, ON THE OTHER INSTRUMENT ─────────────────────────────
 //
-// Arm 2 ships as a RATCHET by owner ruling: green-or-red on arm 1, ratchet on arm 2, because a
+// Arm 2 ships as a RATCHET by ruling: green-or-red on arm 1, ratchet on arm 2, because a
 // check that can never go green is disabled within a week. `arm2Regressions` therefore asks only whether
 // a stage GAINED an unpoliced element.
 //
@@ -23,7 +23,7 @@
 //
 // MEMBERSHIP is exact, in both directions: no phantom rows, no unrecorded elements. The RATCHET is
 // untouched — `arm2Regressions` still owns the "a stage gained an unpoliced element" question, and this
-// says nothing about whether the total is going up or down. The owner ruling was that arm 2 must not be
+// says nothing about whether the total is going up or down. The ruling was that arm 2 must not be
 // a permanently-red gate; a membership check is not that, because it goes green the moment the baseline
 // is regenerated, and regenerating is exactly the act that records what changed.
 

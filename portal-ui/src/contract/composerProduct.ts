@@ -757,12 +757,12 @@ export const costBand = (i: EffortInput): number => Math.max(1, Math.min(5, Math
 
 // ── turnaround ──────────────────────────────────────────────────────────────────────────────────────
 //
-// NO ARITHMETIC LIVES IN THIS SECTION. The quote is a table lookup — owner ruling 2026-08-26, recorded
+// NO ARITHMETIC LIVES IN THIS SECTION. The quote is a table lookup — ruling 2026-08-26, recorded
 // in full at `turnaroundBounds` in driver/effort-model.mjs. The run-slot cap used to be copied here as
 // a `CONCURRENCY` constant and multiplied in; it was a fourth copy of a default an operator can change
 // without a deploy, so it disagreed with the deployment by construction.
 //
-// THE QUOTED BOUNDS — the browser's half of one ruled table (owner ruling 2026-08-23).
+// THE QUOTED BOUNDS — the browser's half of one ruled table (ruling 2026-08-23).
 //
 // This mirrors `TURNAROUND_QUOTE` in driver/effort-model.mjs and `effortModelParity.test.ts` pins the two
 // together, which is what makes two copies safe: the number a user was shown when they pressed the button

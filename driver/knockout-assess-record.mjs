@@ -164,7 +164,7 @@ const DECLARED = Object.freeze({
 
 /**
  * Refuse an undeclared key by path. THE SHARED IMPLEMENTATION (preserve-merge.mjs), which six transports
- * now use — reused rather than rebuilt, per this issue's own owner ruling.
+ * now use — reused rather than rebuilt, per this issue's own ruling.
  *
  * THE HAND-ROLLED FIRST CUT OF THIS WAS A PRODUCT-FAILURE RISK, and the shared module is why it did not
  * ship. Mine refused undeclared keys at the TOP LEVEL as well as inside typed sub-objects. The shared one

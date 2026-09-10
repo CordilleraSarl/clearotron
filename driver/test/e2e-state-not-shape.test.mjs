@@ -87,7 +87,7 @@ function deployment(root, { queue = {}, outbox = [], run = null } = {}) {
 
 // ── the matcher: two packet schemes, one function ─────────────────────────────────────────────────────
 
-test("#428: the runId lane finds `<runId>.failed.pending` — the packet the queue-side matcher could never see", () => {
+test("the runId lane finds `<runId>.failed.pending` — the packet the queue-side matcher could never see", () => {
   scratch((root) => {
     const { ob } = deployment(root, { outbox: [`${RUN_ID}.failed.pending`] });
     const r = outboxPackets({ runId: RUN_ID, queueBase: QUEUE_BASE }, ob);
@@ -100,7 +100,7 @@ test("#428: the runId lane finds `<runId>.failed.pending` — the packet the que
   });
 });
 
-test("#428: the intake lane still finds both intake shapes — the R0 case must not regress", () => {
+test("the intake lane still finds both intake shapes — the R0 case must not regress", () => {
   scratch((root) => {
     const { ob } = deployment(root, {
       outbox: [`intake-${QUEUE_BASE}.failed.pending`, `intake-${QUEUE_BASE}.duplicate.pending`],
@@ -110,7 +110,7 @@ test("#428: the intake lane still finds both intake shapes — the R0 case must 
   });
 });
 
-test("#428: a DIFFERENT run's packet is not claimed — the trailing dot is what stops one runId prefixing another", () => {
+test("a DIFFERENT run's packet is not claimed — the trailing dot is what stops one runId prefixing another", () => {
   scratch((root) => {
     const { ob } = deployment(root, { outbox: [`${RUN_ID}-2.failed.pending`, "intake-other-queue-id.failed.pending"] });
     const r = outboxPackets({ runId: RUN_ID, queueBase: QUEUE_BASE }, ob);
@@ -119,7 +119,7 @@ test("#428: a DIFFERENT run's packet is not claimed — the trailing dot is what
   });
 });
 
-test("#428: 'could not look' is not 'found none' — three absences, each naming itself", () => {
+test("'could not look' is not 'found none' — three absences, each naming itself", () => {
   scratch((root) => {
     const { ob } = deployment(root, {});
     // 1. the outbox was never configured
@@ -135,7 +135,7 @@ test("#428: 'could not look' is not 'found none' — three absences, each naming
   });
 });
 
-test("#428: a readable, empty outbox reports NONE — the fix must not make 'never told' unreachable", () => {
+test("a readable, empty outbox reports NONE — the fix must not make 'never told' unreachable", () => {
   scratch((root) => {
     const { ob } = deployment(root, {});
     const r = outboxPackets({ runId: RUN_ID, queueBase: QUEUE_BASE }, ob);
@@ -146,7 +146,7 @@ test("#428: a readable, empty outbox reports NONE — the fix must not make 'nev
 
 // ── the marker suffix: one shape, two meanings, and the runner records which ───────────────────────────
 
-test("#428: `.failed` beside a RUN TERMINAL record reads as a failed run, not as a clarification", () => {
+test("`.failed` beside a RUN TERMINAL record reads as a failed run, not as a clarification", () => {
   scratch((root) => {
     const { q, runDir } = deployment(root, {
       queue: {
@@ -169,7 +169,7 @@ test("#428: `.failed` beside a RUN TERMINAL record reads as a failed run, not as
   });
 });
 
-test("#428: `.failed` beside an INTAKE reason still reads as a clarification — R0's whole subject", () => {
+test("`.failed` beside an INTAKE reason still reads as a clarification — R0's whole subject", () => {
   scratch((root) => {
     const { q } = deployment(root, {
       queue: {
@@ -185,7 +185,7 @@ test("#428: `.failed` beside an INTAKE reason still reads as a clarification —
   });
 });
 
-test("#428: `.failed` with NEITHER sidecar is UNDETERMINED — it is never silently resolved to one reading", () => {
+test("`.failed` with NEITHER sidecar is UNDETERMINED — it is never silently resolved to one reading", () => {
   scratch((root) => {
     const { q } = deployment(root, { queue: { [`${QUEUE_BASE}.failed`]: { id: QUEUE_BASE, ref: "E2E-R2" } } });
     const t = readMarkerTerminal(q, QUEUE_BASE, "failed");
@@ -196,7 +196,7 @@ test("#428: `.failed` with NEITHER sidecar is UNDETERMINED — it is never silen
   });
 });
 
-test("#428: undetermined is raised ONLY where the two readings disagree — .done and .duplicate must not go noisy", () => {
+test("undetermined is raised ONLY where the two readings disagree — .done and .duplicate must not go noisy", () => {
   scratch((root) => {
     const { q } = deployment(root, {
       queue: {
@@ -214,7 +214,7 @@ test("#428: undetermined is raised ONLY where the two readings disagree — .don
   });
 });
 
-test("#428: an in-flight marker is not a terminal, and an unknown suffix is carried rather than dropped", () => {
+test("an in-flight marker is not a terminal, and an unknown suffix is carried rather than dropped", () => {
   scratch((root) => {
     const { q } = deployment(root, { queue: {} });
     const proc = readMarkerTerminal(q, QUEUE_BASE, "processing");
@@ -225,7 +225,7 @@ test("#428: an in-flight marker is not a terminal, and an unknown suffix is carr
   });
 });
 
-test("#428: the two tables disagree on exactly one suffix, and that is the one the discriminator exists for", () => {
+test("the two tables disagree on exactly one suffix, and that is the one the discriminator exists for", () => {
   assert.equal(TERMINAL_BY_SUFFIX.failed, "clarify", "intake semantics — unchanged, R0 depends on it");
   assert.equal(TERMINAL_BY_SUFFIX_RAN.failed, "failed");
   assert.equal(TERMINAL_BY_SUFFIX_RAN.done, TERMINAL_BY_SUFFIX.done);
@@ -247,7 +247,7 @@ function r2Deployment(root, { packet = true } = {}) {
   return { q, ob, runDir };
 }
 
-test("#428: the R2 row — terminal `failed`, and the packet FOUND, from one call", () => {
+test("the R2 row — terminal `failed`, and the packet FOUND, from one call", () => {
   scratch((root) => {
     const { q, ob } = r2Deployment(root);
     withEnv({ CLEAROTRON_OUTBOX_DIR: ob }, () => {
@@ -262,7 +262,7 @@ test("#428: the R2 row — terminal `failed`, and the packet FOUND, from one cal
   });
 });
 
-test("#428: TEETH — the same run with NO packet on disk still reports the requester was never told", () => {
+test("TEETH — the same run with NO packet on disk still reports the requester was never told", () => {
   scratch((root) => {
     const { q, ob } = r2Deployment(root, { packet: false });
     withEnv({ CLEAROTRON_OUTBOX_DIR: ob }, () => {
@@ -274,7 +274,7 @@ test("#428: TEETH — the same run with NO packet on disk still reports the requ
   });
 });
 
-test("#428: a run whose runId cannot be read says the runId lane was never searched — half a search is not a search", () => {
+test("a run whose runId cannot be read says the runId lane was never searched — half a search is not a search", () => {
   scratch((root) => {
     const { q, ob } = r2Deployment(root, { packet: false });
     // the run dir went (a teardown, an archive move): the .result still proves a run started, but the
@@ -295,7 +295,7 @@ test("#428: a run whose runId cannot be read says the runId lane was never searc
   });
 });
 
-test("#428: a marker with a suffix the drain does not know is REPORTED, not dropped", () => {
+test("a marker with a suffix the drain does not know is REPORTED, not dropped", () => {
   scratch((root) => {
     const { q, ob } = deployment(root, {
       queue: { [`${QUEUE_BASE}.stopped-for-reboot`]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } },
@@ -315,7 +315,7 @@ test("#428: a marker with a suffix the drain does not know is REPORTED, not drop
 // scan that reads the queue by ref — and both were found by walking runner.mjs's filename composition
 // rather than by reasoning about what a queue "should" hold.
 
-test("#428: the #377 claim lock is an in-flight state, not a stranded marker", () => {
+test("the #377 claim lock is an in-flight state, not a stranded marker", () => {
   scratch((root) => {
     // `<base>.processing.claimed-<pid>:<starttime>` is the job file renamed for the atomic claim. A live
     // token is a claim in progress; a dead one is restored by sweepAbandonedTakeovers. Reporting it as a
@@ -341,7 +341,7 @@ test("#428: the #377 claim lock is an in-flight state, not a stranded marker", (
   });
 });
 
-test("#428: a `.manifest`-named job splits on the base the RUNNER uses, so its sidecars are found", () => {
+test("a `.manifest`-named job splits on the base the RUNNER uses, so its sidecars are found", () => {
   scratch((root) => {
     // assembleJob tolerates the observed `<id>.manifest.json` forwarding fumble (runner.mjs), which makes
     // the runner's base `<id>.manifest` — so it writes `<id>.manifest.failed` and
@@ -363,7 +363,7 @@ test("#428: a `.manifest`-named job splits on the base the RUNNER uses, so its s
   });
 });
 
-test("#428: an intake refusal still comes back exactly as it did — both doors, both packets", () => {
+test("an intake refusal still comes back exactly as it did — both doors, both packets", () => {
   scratch((root) => {
     const { q, ob } = deployment(root, {
       queue: {
@@ -386,7 +386,7 @@ test("#428: an intake refusal still comes back exactly as it did — both doors,
 
 // ── dedupe arithmetic: an unknown counted as an admission is a guess dressed as a reading ─────────────
 
-test("#428: a run that started and then FAILED counts as an admission — it got past the door", () => {
+test("a run that started and then FAILED counts as an admission — it got past the door", () => {
   const d = dedupeAcrossDoors(["failed", "duplicate"]);
   assert.equal(d.admitted, 1);
   assert.equal(d.parked, 1);
@@ -394,7 +394,7 @@ test("#428: a run that started and then FAILED counts as an admission — it got
   assert.equal(d.neverFired, false);
 });
 
-test("#428: an UNDETERMINED terminal counts as neither, and suspends the 'dedupe never fired' claim", () => {
+test("an UNDETERMINED terminal counts as neither, and suspends the 'dedupe never fired' claim", () => {
   const d = dedupeAcrossDoors(["undetermined", "undetermined"]);
   assert.equal(d.admitted, 0, "an unreadable terminal is not an admission");
   assert.equal(d.undetermined, 2);
@@ -402,7 +402,7 @@ test("#428: an UNDETERMINED terminal counts as neither, and suspends the 'dedupe
   assert.equal(d.ranMoreThanOnce, false);
 });
 
-test("#428: a door still in flight is not an admission — two of them used to read as 'it ran twice'", () => {
+test("a door still in flight is not an admission — two of them used to read as 'it ran twice'", () => {
   const d = dedupeAcrossDoors(["processing", "processing"]);
   assert.equal(d.admitted, 0);
   assert.equal(d.inFlight, 2);
@@ -410,7 +410,7 @@ test("#428: a door still in flight is not an admission — two of them used to r
   assert.equal(d.neverFired, false);
 });
 
-test("#428: TEETH — two genuine admissions still read as 'it ran more than once'", () => {
+test("TEETH — two genuine admissions still read as 'it ran more than once'", () => {
   assert.equal(dedupeAcrossDoors(["delivered", "delivered"]).ranMoreThanOnce, true);
   assert.equal(dedupeAcrossDoors(["delivered", "failed"]).ranMoreThanOnce, true,
     "one delivered and one failed is still two searches for one matter");
@@ -430,7 +430,7 @@ function withRunLog(rows, fn) {
   });
 }
 
-test("#428: a run that never reached placement is NOT PROBED — the assert said so in its own message and failed anyway", () => {
+test("a run that never reached placement is NOT PROBED — the assert said so in its own message and failed anyway", () => {
   withRunLog([{ event: "plan-execution", executed: 1 }, DECISION], (dir) => {
     const r = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
     assert.equal(r.notProbed, true);
@@ -440,7 +440,7 @@ test("#428: a run that never reached placement is NOT PROBED — the assert said
   });
 });
 
-test("#428: TEETH — every way this assert genuinely fails, it still fails", () => {
+test("TEETH — every way this assert genuinely fails, it still fails", () => {
   // placement ran, decision came after it — the 2026-07-30 shape that cost 1,436s
   withRunLog([PLACEMENT, DECISION], (dir) => {
     const r = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
@@ -474,7 +474,7 @@ test("#428: TEETH — every way this assert genuinely fails, it still fails", ()
 
 const STATUS_HANDOFF = { state: "delivered", verdict: "Medium", sendPending: true, runId: RUN_ID };
 
-test("#428: delivery-settled distinguishes 'not looked for' from 'none written', and FAILS on both", () => {
+test("delivery-settled distinguishes 'not looked for' from 'none written', and FAILS on both", () => {
   scratch((root) => {
     writeFileSync(join(root, "status.json"), JSON.stringify(STATUS_HANDOFF));
     const ob = join(root, "outbox"); mkdirSync(ob);
@@ -499,7 +499,7 @@ test("#428: delivery-settled distinguishes 'not looked for' from 'none written',
   });
 });
 
-test("#428: a status.json with no runId is searched under the name the ENGINE would have written", () => {
+test("a status.json with no runId is searched under the name the ENGINE would have written", () => {
   scratch((root) => {
     // outbox-backoff.mjs's rescan composes `sanitize(status.runId ?? basename(runDir))`, so a status.json
     // with no runId does not mean the marker is unnameable — it means the marker is named after the run
@@ -531,7 +531,7 @@ test("#428: a status.json with no runId is searched under the name the ENGINE wo
 // engine. A third writer would make the runId-first rule a lie the day it lands, and this is what says
 // so — the same pattern as `: the knockout lane provably writes no register-plan.json`.
 
-test("#428: every outbox packet the driver writes is named `intake-<queueBase>.…` or `<runId>.…`", () => {
+test("every outbox packet the driver writes is named `intake-<queueBase>.…` or `<runId>.…`", () => {
   const files = ["runner.mjs", "pipeline.mjs", "pipeline-knockout.mjs", "outbox-backoff.mjs"];
   const names = [];
   for (const f of files) {
@@ -551,7 +551,7 @@ test("#428: every outbox packet the driver writes is named `intake-<queueBase>.�
   }
 });
 
-test("#428: the harness derives the SAME runId forms the engine honours, FALLBACK INCLUDED", () => {
+test("the harness derives the SAME runId forms the engine honours, FALLBACK INCLUDED", () => {
   // outbox-backoff.mjs mints the canonical dated runId and treats the legacy dateless `<slug>-<codename>`
   // as the same delivery. A harness that knew only status.runId would read a legacy marker as absent and
   // report a notified requester as never told — the issue's defect one level down.
@@ -582,7 +582,7 @@ test("#428: the harness derives the SAME runId forms the engine honours, FALLBAC
     + "`<slug>-<basename(runDir)>` rides alongside (in a real run it IS the runId, so it collapses)");
 });
 
-test("#428: TEETH — a run with no runId and a packet on disk is found, and another run's is not", () => {
+test("TEETH — a run with no runId and a packet on disk is found, and another run's is not", () => {
   scratch((root) => {
     const ob = join(root, "outbox"); mkdirSync(ob);
     // outbox-backoff.mjs's rescan wrote this name because status.json carried no runId
@@ -598,7 +598,7 @@ test("#428: TEETH — a run with no runId and a packet on disk is found, and ano
   });
 });
 
-test("#428: a packet under the LEGACY dateless name is found, not reported as never sent", () => {
+test("a packet under the LEGACY dateless name is found, not reported as never sent", () => {
   scratch((root) => {
     const ob = join(root, "outbox"); mkdirSync(ob);
     writeFileSync(join(ob, "fixture-mark-fixture-two.pending"), "agent\n");
@@ -611,7 +611,7 @@ test("#428: a packet under the LEGACY dateless name is found, not reported as ne
 
 // ── the class guard: NOT PROBED must not decay into a pass ────────────────────────────────────────────
 
-test("#428: every not-probed return in the harness carries both words the reader needs", () => {
+test("every not-probed return in the harness carries both words the reader needs", () => {
   // Each `notProbed: true` site is a check declining to look. The convention — established by and
   // asserted by its tests — is that the reader is told nothing was examined AND that this is not a pass.
   // A site that returns `ok: true` with neither phrase reads as green in the report.
@@ -624,7 +624,7 @@ test("#428: every not-probed return in the harness carries both words the reader
 });
 
 
-test("#428: cmdReport asks for the requester's notice on a FAILED run, and on an UNDETERMINED one", () => {
+test("cmdReport asks for the requester's notice on a FAILED run, and on an UNDETERMINED one", () => {
   assert.match(E2E_SRC, /const owesNotice = q\.terminal === "clarify" \|\| q\.terminal === "duplicate" \|\| q\.terminal === "failed" \|\| q\.undetermined/,
     "a run that started and then failed writes `<runId>.failed.pending` — it owes the requester a notice like any "
     + "other non-delivery; and a marker whose terminal could not be read must not be the one state where the "
@@ -651,7 +651,7 @@ test("#428: cmdReport asks for the requester's notice on a FAILED run, and on an
 // it" — is checked against the FILE: only a JSON record carrying a ref or an id is a job. The import
 // fixes the nine suffixes that exist; reading the record fixes the tenth suffix nobody has written yet.
 
-test("#428: a job's prose sidecars are not stranded jobs — the false alarm this patch authored", () => {
+test("a job's prose sidecars are not stranded jobs — the false alarm this patch authored", () => {
   scratch((root) => {
     const { q } = deployment(root, {
       queue: {
@@ -672,7 +672,7 @@ test("#428: a job's prose sidecars are not stranded jobs — the false alarm thi
   });
 });
 
-test("#428: every prose sidecar the engine defines is covered, because the list is IMPORTED not retyped", () => {
+test("every prose sidecar the engine defines is covered, because the list is IMPORTED not retyped", () => {
   scratch((root) => {
     // The nine the draft missed. Sourced from runner.mjs's own PROSE_PARTS (which now lives in
     // queue-markers.mjs), so a tenth prose field is covered the day it lands rather than the day someone
@@ -694,7 +694,7 @@ test("#428: every prose sidecar the engine defines is covered, because the list 
   });
 });
 
-test("#428: TEETH — a job in a state nothing drains is still warned about, and it is the FILE that says so", () => {
+test("TEETH — a job in a state nothing drains is still warned about, and it is the FILE that says so", () => {
   scratch((root) => {
     const { q } = deployment(root, {
       // the observed case: a marker renamed to a suffix no drain claims, which is how a run was stranded
@@ -724,7 +724,7 @@ test("#428: TEETH — a job in a state nothing drains is still warned about, and
   });
 });
 
-test("#428: the queue listing lists EVERYTHING — a hidden file is the same sin one notch quieter", () => {
+test("the queue listing lists EVERYTHING — a hidden file is the same sin one notch quieter", () => {
   const fn = E2E_SRC.slice(E2E_SRC.indexOf("function cmdStatus"), E2E_SRC.indexOf("// ── refusals leave no run dir"));
   assert.match(fn, /THE QUEUE DIR DOES NOT EXIST/, "a missing queue dir is a deployment fact, not an empty queue");
   assert.match(fn, /for \(const f of all\)/, "every entry is printed; the draft silently dropped the ones it called sidecars");
@@ -735,7 +735,7 @@ test("#428: the queue listing lists EVERYTHING — a hidden file is the same sin
 
 // ── the vocabulary is imported, not retyped ───────────────────────────────────────────────────────────
 
-test("#428: the harness holds NO private copy of the queue's live-state vocabulary", () => {
+test("the harness holds NO private copy of the queue's live-state vocabulary", () => {
   // created queue-markers.mjs because this vocabulary "has now been written down three times and the
   // copies disagreed". The draft under review wrote it down twice more here. A private copy is how the
   // false alarm above was authored, and it is how the next one would be.
@@ -751,7 +751,7 @@ test("#428: the harness holds NO private copy of the queue's live-state vocabula
   assert.deepEqual([...TERMINAL_QUEUE_SUFFIXES].sort(), ["cancelled", "done", "duplicate", "failed"]);
 });
 
-test("#428: runner.mjs and the harness read ONE prose-sidecar list", () => {
+test("runner.mjs and the harness read ONE prose-sidecar list", () => {
   // The engine must SOURCE the list, not keep its own — otherwise the import above pins a copy.
   const runner = readFileSync(new URL("../runner.mjs", import.meta.url), "utf8");
   assert.match(runner, /import \{[^}]*PROSE_PARTS[^}]*\} from "\.\/queue-markers\.mjs"/,
@@ -767,7 +767,7 @@ test("#428: runner.mjs and the harness read ONE prose-sidecar list", () => {
 
 // ── a record that is there and unreadable is not a record that is absent ──────────────────────────────
 
-test("#428: a TORN `.result` says so — `readJson` returns null for ENOENT and for broken JSON alike", () => {
+test("a TORN `.result` says so — `readJson` returns null for ENOENT and for broken JSON alike", () => {
   scratch((root) => {
     const { q } = deployment(root, { queue: { [`${QUEUE_BASE}.failed`]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } } });
     writeFileSync(join(q, `${QUEUE_BASE}.failed.result`), '{"ok": false, "runDir": "/w/pre');   // cut mid-write
@@ -783,7 +783,7 @@ test("#428: a TORN `.result` says so — `readJson` returns null for ENOENT and 
   });
 });
 
-test("#428: TEETH — a genuinely absent `.result` still reads as absent, and .failed is still undetermined", () => {
+test("TEETH — a genuinely absent `.result` still reads as absent, and .failed is still undetermined", () => {
   scratch((root) => {
     const { q } = deployment(root, { queue: { [`${QUEUE_BASE}.failed`]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } } });
     const t = readMarkerTerminal(q, QUEUE_BASE, "failed");
@@ -794,7 +794,7 @@ test("#428: TEETH — a genuinely absent `.result` still reads as absent, and .f
 
 // ── the pre-run-throw lane: the run dir the caller already holds ──────────────────────────────────────
 
-test("#428: a `.result` that names NO run dir still finds its packet, from the run dir cmdReport holds", () => {
+test("a `.result` that names NO run dir still finds its packet, from the run dir cmdReport holds", () => {
   scratch((root) => {
     // runPrepared's catch sets `{ok:false, reason}` with no runDir — a throw in the SETUP code, before the
     // pipeline's own try{}. runner.mjs backstopFailureNotice then notifies as `<slug>-<basename(runDir)>`,
@@ -819,7 +819,7 @@ test("#428: a `.result` that names NO run dir still finds its packet, from the r
   });
 });
 
-test("#428: TEETH — a searched runId lane with no packet is a FINDING, not a NOT PROBED line", () => {
+test("TEETH — a searched runId lane with no packet is a FINDING, not a NOT PROBED line", () => {
   scratch((root) => {
     const { q, ob, runDir } = deployment(root, {
       queue: { [`${QUEUE_BASE}.failed`]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } },
@@ -841,7 +841,7 @@ test("#428: TEETH — a searched runId lane with no packet is a FINDING, not a N
 // The match is EXACT, and driver/progress.mjs is why: it seeds status.json with `ref: job.ref ?? null`.
 // Relaxing it to the `startsWith` findRunsByRef uses would cross doors — `cli` is a prefix of
 // `client-mcp` — and this is the test that would fail if someone did.
-test("#428: a caller's run dir never reaches ANOTHER door — the match is on the door's own ref", () => {
+test("a caller's run dir never reaches ANOTHER door — the match is on the door's own ref", () => {
   scratch((root) => {
     const { q, ob, runDir } = deployment(root, {
       queue: {
@@ -862,12 +862,12 @@ test("#428: a caller's run dir never reaches ANOTHER door — the match is on th
   });
 });
 
-test("#428: cmdReport hands its own findRunsByRef result to queueOutcomes", () => {
+test("cmdReport hands its own findRunsByRef result to queueOutcomes", () => {
   assert.match(E2E_SRC, /const allQs = queueOutcomes\(ref, QUEUE_DIR, allHits\);/,
     "the run dirs the report already walked are what let the runId lane be searched at all");
 });
 
-test("#428: the prose-drift check reports an unreadable witness and a document that has GONE", () => {
+test("the prose-drift check reports an unreadable witness and a document that has GONE", () => {
   const fn = E2E_SRC.slice(E2E_SRC.indexOf("const witPath"), E2E_SRC.indexOf("// ── the deliverables the scenario ORDERED"));
   assert.match(fn, /gone\.push/, "a recorded document that is no longer on disk is a change, not a skip");
   assert.match(fn, /if \(!pairs\)/, "a witness with no readable path+sha pair is an absence, and an absence is a finding");
@@ -875,7 +875,7 @@ test("#428: the prose-drift check reports an unreadable witness and a document t
     "and a row whose hash the run recorded as null is matched rather than silently unmatched");
 });
 
-test("#428: cmdTeardown is untouched — it deletes files and reports no state, so it is outside this rule", () => {
+test("cmdTeardown is untouched — it deletes files and reports no state, so it is outside this rule", () => {
   // The draft rewrote three things in cmdTeardown: a runId-keyed outbox deletion lane, the queue-id
   // derivation and the delete predicate. None of them reports a state, so none of them is in the ruling's
   // scope, and a widened DELETE predicate is the one kind of change that cannot be undone by re-reading.
@@ -977,7 +977,7 @@ const SWEEP = [
   ["policy", "export function reportIdentityFor(", "sound"],
 ];
 
-test("#428: the sweep is a table, and every site in it is still where the sweep found it", () => {
+test("the sweep is a table, and every site in it is still where the sweep found it", () => {
   const SRC = {
     e2e: E2E_SRC,
     mcp: readFileSync(new URL("../portal-mcp-client.mjs", import.meta.url), "utf8"),
@@ -990,7 +990,7 @@ test("#428: the sweep is a table, and every site in it is still where the sweep 
     + "only claim anyone can check about how wide this patch looked");
 });
 
-test("#428: the sweep's own arithmetic — 49 state-reporting sites examined, 11 were defective", () => {
+test("the sweep's own arithmetic — 49 state-reporting sites examined, 11 were defective", () => {
   assert.equal(SWEEP.length, 49, "sites examined");
   assert.equal(SWEEP.filter(([, , v]) => v === "fixed").length, 11, "sites that reported a state they had not read");
   assert.equal(SWEEP.filter(([, , v]) => v === "sound").length, 38);
@@ -999,7 +999,7 @@ test("#428: the sweep's own arithmetic — 49 state-reporting sites examined, 11
   assert.equal(new Set(SWEEP.map(([w, a]) => `${w} ${a}`)).size, SWEEP.length, "no row counted twice");
 });
 
-test("#428: no check in the harness reads a terminal state out of a filename's shape", () => {
+test("no check in the harness reads a terminal state out of a filename's shape", () => {
   // The three shapes that started this: `x.includes(base)` over the outbox, the intake table applied to
   // every `.failed`, and a suffix allowlist that dropped what it did not recognise.
   assert.ok(!/readdirSync\(outbox\)\.filter\(\(x\) => x\.includes\(base\)\)/.test(E2E_SRC),

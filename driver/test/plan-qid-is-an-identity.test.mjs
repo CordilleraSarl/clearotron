@@ -25,7 +25,7 @@ const plan = (entries, fp = "a") => ({ plan_version: 1, derived_from: { variants
 const termsOf = (p) => p.entries.map((e) => e.term);
 const qidsOf = (p) => p.entries.map((e) => e.qid);
 
-test("#956 a term arriving FIRST in the compile order no longer displaces the terms behind it", () => {
+test("a term arriving FIRST in the compile order no longer displaces the terms behind it", () => {
   // THE MEASURED DEFECT, as a regression. Two Cyrillic terms frozen under old-scheme ordinals; a third
   // arrives and the compiler walks it first, so every ordinal behind it shifts by one. Before the fix
   // this produced `added: ["…q#3"]`, the plan held Расторопша TWICE, and Молочный чертополох — the term
@@ -47,7 +47,7 @@ test("#956 a term arriving FIRST in the compile order no longer displaces the te
     "the extended plan carries a duplicate qid — everything downstream joins on that string exactly, so it would pair the wrong pair");
 });
 
-test("#956 …and the Latin CONTROL behaved correctly all along, which is what made this a script defect", () => {
+test("…and the Latin CONTROL behaved correctly all along, which is what made this a script defect", () => {
   // The same shape with Latin terms. It passed before the fix and must still pass: this arm is what
   // stops the fix being credited for a bug that was never script-specific.
   const frozen = plan([entry("mark-exact:exact:silybum", "Silybum"), entry("mark-exact:exact:cardus", "Cardus")]);
@@ -61,7 +61,7 @@ test("#956 …and the Latin CONTROL behaved correctly all along, which is what m
   assert.deepEqual(termsOf(out), ["Silybum", "Cardus", "Mariana"], "existing entries keep their order; the new one appends");
 });
 
-test("#956 MIGRATION: an old-scheme frozen plan meeting a new-scheme compile neither duplicates nor drops", () => {
+test("MIGRATION: an old-scheme frozen plan meeting a new-scheme compile neither duplicates nor drops", () => {
   // The hazard the fix would otherwise introduce, and the reason `added` is decided by the QUESTION.
   // A plan minted before this change carries `q` / `q#2`; a fresh compile of the SAME terms now mints
   // `q-<fp8>`. Keyed on the qid alone NOTHING matches and every non-Latin entry appends a second time —
@@ -78,7 +78,7 @@ test("#956 MIGRATION: an old-scheme frozen plan meeting a new-scheme compile nei
   assert.equal(out, frozen, "a no-op extend must return the stored plan itself, not a rebuilt copy");
 });
 
-test("#956 the romanisation carriage merge survives the scheme change — it matches the question too", () => {
+test("the romanisation carriage merge survives the scheme change — it matches the question too", () => {
   // The field-level merge exists because append-by-qid alone made the carriage fix inert for any matter
   // with a stored plan. Across the scheme change a stored entry's qid is absent from the fresh compile,
   // so a qid-only lookup would make it inert AGAIN — the exact regression that merge was written to end.
@@ -90,7 +90,7 @@ test("#956 the romanisation carriage merge survives the scheme change — it mat
   assert.equal(out.entries[0].qid, "mark-exact:exact:q", "enrichment is field-level — it never renames the entry");
 });
 
-test("#956 a romanisation still never rides onto a DIFFERENT term, whichever key found the entry", () => {
+test("a romanisation still never rides onto a DIFFERENT term, whichever key found the entry", () => {
   // The guard the merge already had, re-asserted now that a second lookup key exists: a question key
   // that matched loosely would graft one term's transliteration onto another's row, which is worse than
   // the inertness it cures.
@@ -101,7 +101,7 @@ test("#956 a romanisation still never rides onto a DIFFERENT term, whichever key
   assert.equal(stored.romanizedTerms, undefined, "a different term's romanisation was grafted onto this entry");
 });
 
-test("#956 a genuinely new question is ALWAYS added, even when it collides on a stored qid", () => {
+test("a genuinely new question is ALWAYS added, even when it collides on a stored qid", () => {
   // The append guard. Deciding `added` by the question means a new entry can arrive carrying a qid the
   // stored plan already uses — an ordinal-named one does exactly that. It must be renamed, never dropped
   // and never allowed to shadow, and the new name must be derived from the question so a later recompile
@@ -118,7 +118,7 @@ test("#956 a genuinely new question is ALWAYS added, even when it collides on a 
   assert.deepEqual(again.added, added, "the disambiguated qid is not reproducible — it is another ordinal by a different name");
 });
 
-test("#956 an OR-stack and an owner sweep are their own questions, never folded into a bare term", () => {
+test("an OR-stack and an owner sweep are their own questions, never folded into a bare term", () => {
   // The question key has to carry the same distinctions the entry does, or it becomes a new collapse one
   // level up — the failure mode this whole issue is an instance of.
   const frozen = plan([entry("mark-exact:exact:q", "Чертополох")]);
@@ -151,7 +151,7 @@ const CYRILLIC = [
   { value: "Молочный чертополох", category: "transliteration", rationale: "cyrillic" },
 ];
 
-test("#956 the MINT gives each non-Latin term its own identity — no ordinals, no shared sentinel", () => {
+test("the MINT gives each non-Latin term its own identity — no ordinals, no shared sentinel", () => {
   const plan = compileWith(CYRILLIC);
   const cyr = plan.entries.filter((e) => typeof e.term === "string" && /[Ѐ-ӿ]/.test(e.term));
   assert.ok(cyr.length >= 3, `expected the Cyrillic variants to compile into entries, got ${cyr.length}`);
@@ -171,7 +171,7 @@ test("#956 the MINT gives each non-Latin term its own identity — no ordinals, 
   assert.equal(new Set(cyr.map((e) => e.qid)).size, cyr.length, "two Cyrillic entries share a qid");
 });
 
-test("#956 …and that identity does NOT move when the compile order does", () => {
+test("…and that identity does NOT move when the compile order does", () => {
   // The property the ordinals could not have. Same three terms, reversed manifest order: every term
   // must keep the qid it had. Before the fix this reassigned `q`, `q#2`, `q#3` to different terms and
   // the exact-string join downstream then matched the wrong band or reported the slice missing —
@@ -188,7 +188,7 @@ test("#956 …and that identity does NOT move when the compile order does", () =
     assert.equal(b.get(question), qid, `"${question}" changed identity because the compiler walked the terms in a different order`);
 });
 
-test("#956 a LATIN term's qid is byte-unchanged — the fix must move nothing that already worked", () => {
+test("a LATIN term's qid is byte-unchanged — the fix must move nothing that already worked", () => {
   // The blast-radius claim, asserted rather than asserted-in-prose. qids are keyed on across twenty
   // modules (receipts, coverage rows, the band join, the frozen plan on disk, plan-stability's Jaccard),
   // and every stored Latin plan has to keep matching.

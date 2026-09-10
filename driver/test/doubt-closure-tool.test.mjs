@@ -159,7 +159,7 @@ test("seq increments across calls, so two calls in a turn cannot overwrite each 
 // went twice, 40/40 identical each time. A refusal counter reads zero through all of it, which is why
 // disposition's PARK_AFTER_REFUSALS shape could not have caught this.
 
-test("#1239 a re-sent id-set is reported as a repeat, by the call number it repeats", () => {
+test("a re-sent id-set is reported as a repeat, by the call number it repeats", () => {
   const d = runDir();
   const first = recordClosures(specFor(d), { closures: [good] });
   assert.equal(first.repeat_of, null, "the first call of a set cannot be a repeat of anything");
@@ -170,7 +170,7 @@ test("#1239 a re-sent id-set is reported as a repeat, by the call number it repe
   assert.equal(again.repeat_of, 1, "a re-sent batch was not recognised as a repeat of call 1");
 });
 
-test("#1239 THE ORDER IS THE MECHANISM — a call must not match the index row it just wrote", () => {
+test("THE ORDER IS THE MECHANISM — a call must not match the index row it just wrote", () => {
   // `captureCall` appends THIS call's row, hash included. Asking the index afterwards would match that
   // row and every call would report itself as a repeat of itself — a guard that fires on everything,
   // which is the same as one that fires on nothing. Pinned here because the two statements sit adjacent
@@ -182,7 +182,7 @@ test("#1239 THE ORDER IS THE MECHANISM — a call must not match the index row i
   assert.equal(indexLines(d).length, 1, "the fixture did not produce exactly one index row");
 });
 
-test("#1239 the hash is over the ITEMS, not their order or their repetition inside one call", () => {
+test("the hash is over the ITEMS, not their order or their repetition inside one call", () => {
   const d = runDir();
   const a = recordClosures(specFor(d), { closures: [good, { ...good, doubt_id: "d3", verdict: "open", reason: "later" }] });
   // same two items, reversed, and one of them sent twice
@@ -191,7 +191,7 @@ test("#1239 the hash is over the ITEMS, not their order or their repetition insi
   assert.equal(b.repeat_of, 1, "the same item set arriving in a different order was not seen as a repeat");
 });
 
-test("#1239 a DIFFERENT id-set is not a repeat — the guard discriminates", () => {
+test("a DIFFERENT id-set is not a repeat — the guard discriminates", () => {
   // Without this, an always-true match would satisfy every arm above.
   const d = runDir();
   recordClosures(specFor(d), { closures: [good] });
@@ -200,7 +200,7 @@ test("#1239 a DIFFERENT id-set is not a repeat — the guard discriminates", () 
   assert.equal(other.repeat_of, null, "a batch of different items was reported as a repeat");
 });
 
-test("#1239 a call carrying no identifiable rows has no fingerprint and is never a repeat", () => {
+test("a call carrying no identifiable rows has no fingerprint and is never a repeat", () => {
   // `null` rather than the hash of an empty string: there is nothing to be identical TO, and a shared
   // hash for "carried nothing" would make every empty call a repeat of the first empty call.
   const d = runDir();
@@ -211,7 +211,7 @@ test("#1239 a call carrying no identifiable rows has no fingerprint and is never
   assert.equal(alsoEmpty.repeat_of, null, "two calls carrying nothing were matched to each other");
 });
 
-test("#1239 the hash reaches the call INDEX, so a repeat is readable after the run", () => {
+test("the hash reaches the call INDEX, so a repeat is readable after the run", () => {
   // The answer is transient; the index is the artifact a reader opens. If the hash lived only in the
   // return value, the evidence would exist exactly as long as the seat's turn.
   const d = runDir();
@@ -225,7 +225,7 @@ test("#1239 the hash reaches the call INDEX, so a repeat is readable after the r
 
 // ── — THE REPEAT IS ANSWERED, NOT RE-RUN ───────────────────────────────────────────────────────
 
-test("#1239 a repeat writes no second accepted file, so the artifact keeps ONE line per id", () => {
+test("a repeat writes no second accepted file, so the artifact keeps ONE line per id", () => {
   // THE HALF THAT WAS COSTING CORRECTNESS, NOT TIME. `readAcceptedClosures` concatenates every
   // accepted-NNN.json and the render maps all of them, deduping nothing — so before this, a batch sent
   // twice put two lines per row into doubt-closure.md, and where a verdict had changed it put BOTH
@@ -243,7 +243,7 @@ test("#1239 a repeat writes no second accepted file, so the artifact keeps ONE l
   assert.equal(verdictLines.length, 1, `the artifact carries ${verdictLines.length} verdict lines for one row:\n${art}`);
 });
 
-test("#1239 a repeat carrying a CHANGED verdict does not put both answers in the artifact", () => {
+test("a repeat carrying a CHANGED verdict does not put both answers in the artifact", () => {
   // The shape measured on the killed runs: the same id answered SETTLED on one call and OPEN on a later
   // one. Re-running produced a file asserting both at once. The id-set is what identifies the batch, so
   // the second call is served and the ledger keeps the answer it already recorded — the change is visible
@@ -262,7 +262,7 @@ test("#1239 a repeat carrying a CHANGED verdict does not put both answers in the
   assert.equal(payloads.length, 2, "the repeat was not captured as its own call");
 });
 
-test("#1239 a served answer re-derives still_open from the ledger — it is not an echo", () => {
+test("a served answer re-derives still_open from the ledger — it is not an echo", () => {
   // The seat's next move is decided by `still_open`, so a stale echo would send it back for work already
   // done, which is the loop this is bounding.
   const d = runDir();
@@ -273,7 +273,7 @@ test("#1239 a served answer re-derives still_open from the ledger — it is not 
   assert.deepEqual([...again.still_open].sort(), ["d2", "d3"], "the served answer did not re-derive what is owed");
 });
 
-test("#1239 `served_from_ledger` is written on BOTH paths", () => {
+test("`served_from_ledger` is written on BOTH paths", () => {
   // A key that appears only when it is true makes its absence mean two things: "not a repeat" and "this
   // build does not report repeats". The same rule the capture/record pairs above already follow.
   const d = runDir();
@@ -282,7 +282,7 @@ test("#1239 `served_from_ledger` is written on BOTH paths", () => {
   assert.equal(recordClosures(specFor(d), { closures: [good] }).served_from_ledger, true);
 });
 
-test("#1239 a NEW batch after a repeat is still judged — the serve does not latch", () => {
+test("a NEW batch after a repeat is still judged — the serve does not latch", () => {
   // The failure that would make this worse than the loop: a stage that stops accepting work after its
   // first repeat would drop real verdicts and ship the doubts open.
   const d = runDir();

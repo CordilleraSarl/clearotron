@@ -50,7 +50,7 @@ const runIt = (sessionKey) => runStage("tool-time-stage", {
 });
 const rows = (f) => readFileSync(f, "utf8").trim().split("\n").map((l) => JSON.parse(l));
 
-test("#1111 the per-stage attempt row carries BOTH fields — present and zero on a tool-less turn", async () => {
+test("the per-stage attempt row carries BOTH fields — present and zero on a tool-less turn", async () => {
   const r = await runIt("clearotron-tt");
   assert.equal(r.ok, true, `the fixture stage failed (${r.fail}) — the arms below would read nothing`);
   const [row] = rows(driverDir(dir, "tool-time-stage.jsonl"));
@@ -62,7 +62,7 @@ test("#1111 the per-stage attempt row carries BOTH fields — present and zero o
   assert.equal(row.toolWaitMs, 0);
 });
 
-test("#1111 the SPINE carries them too — or a round has to join two files to ask why a stage was slow", async () => {
+test("the SPINE carries them too — or a round has to join two files to ask why a stage was slow", async () => {
   await runIt("clearotron-tt2");
   const attempts = rows(driverDir(dir, "run.jsonl")).filter((e) => e.event === "attempt");
   assert.equal(attempts.length, 1);
@@ -70,7 +70,7 @@ test("#1111 the SPINE carries them too — or a round has to join two files to a
   assert.ok("toolWaitMs" in attempts[0], "run.jsonl's attempt event carries no `toolWaitMs`");
 });
 
-test("#1111 the two fields carry NO content — a count and a duration can never name a mark", async () => {
+test("the two fields carry NO content — a count and a duration can never name a mark", async () => {
   await runIt("clearotron-tt3");
   const [row] = rows(driverDir(dir, "tool-time-stage.jsonl"));
   assert.equal(typeof row.toolCalls, "number", "toolCalls must be a NUMBER — a name or a list would be a "
@@ -99,7 +99,7 @@ const declaredFor = (row, tool) =>
 // `register_execute_plan` and FALSE of the perplexity tools, which dispatch to a MODEL — that wait is
 // another model generating. Which one a wall kill was made of decides whether the clock should count it.
 
-test("#1111 a REAL tool wait is measured, attributed, and the parts sum to the total", async () => {
+test("a REAL tool wait is measured, attributed, and the parts sum to the total", async () => {
   process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([
     { name: "register_execute_plan", ms: 120 },
     { name: "register_execute_plan", ms: 80 },
@@ -256,7 +256,7 @@ test("#1111 a REAL tool wait is measured, attributed, and the parts sum to the t
 // it just gained; and the header refuses a second stall driver in this file, because a second unreliable
 // driver is a second load meter. Rows written down visit every branch on every box, every time — the
 // specimen from the run that took main red among them.
-test("#1111 the per-tool contract: its OWN key, or the row says why it has none", () => {
+test("the per-tool contract: its OWN key, or the row says why it has none", () => {
   const mainRed = {
     toolWaitMs: 284, toolCalls: 3, activeMs: 896,
     toolWaitByTool: { register_execute_plan: 284 },
@@ -291,7 +291,7 @@ test("#1111 the per-tool contract: its OWN key, or the row says why it has none"
   }
 });
 
-test("#1111 ONE ask for several tools is ONE interval under ONE key — never counted twice", async () => {
+test("ONE ask for several tools is ONE interval under ONE key — never counted twice", async () => {
   // A message asking for two tools waits once. Attributing the interval to each name would report roughly
   // double the elapsed wait, and the sum identity above is what makes that visible rather than plausible.
   process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([{ name: ["band_lookup", "band_record"], ms: 120 }]);
@@ -324,7 +324,7 @@ test("#1111 ONE ask for several tools is ONE interval under ONE key — never co
   assert.equal(row.toolCalls, 2, "two tool_use blocks were still asked for");
 });
 
-test("#1111 activeMs separates GENERATING from WAITING, and a no-tool turn reports the whole wall", async () => {
+test("activeMs separates GENERATING from WAITING, and a no-tool turn reports the whole wall", async () => {
   // The field that makes a wall kill readable: a turn killed with most of its elapsed in tool wait is a
   // different event from one that ground for the whole budget generating, and `wall` alone cannot say which.
   process.env.MOCK_CLAUDE_TOOL_WAIT = JSON.stringify([{ name: "register_execute_plan", ms: 250 }]);
@@ -348,7 +348,7 @@ test("#1111 activeMs separates GENERATING from WAITING, and a no-tool turn repor
     + `wall=${Math.round(row.wall * 1000)} unmeasurable=${JSON.stringify(row.toolWaitUnmeasurable)}]`);
 });
 
-test("#1111 a turn that calls no tools reports an EMPTY attribution, not a missing one", async () => {
+test("a turn that calls no tools reports an EMPTY attribution, not a missing one", async () => {
   // `{}` is a measurement — this engine reports, and there was nothing to report. null would mean the engine
   // cannot report at all, and absent would be indistinguishable from a record written before the field.
   await runIt("clearotron-tooltime-empty").catch(() => {});
@@ -360,7 +360,7 @@ test("#1111 a turn that calls no tools reports an EMPTY attribution, not a missi
 
 // ── ROUND 3 — THE CEILING MEASURES WORK, NOT ELAPSED ───────────────────────────────────────────
 //
-// Owner ruling: "there isnt such thing as a hung model. it always delivers something or fails." The
+// Ruling: "there isnt such thing as a hung model. it always delivers something or fails." The
 // ceiling exists for the harness's own failure modes, not to budget the model, so a turn still doing
 // work must not die because a tool it was waiting on took a while to answer.
 //
@@ -370,7 +370,7 @@ test("#1111 a turn that calls no tools reports an EMPTY attribution, not a missi
 
 const { activeElapsedMs } = await import("../engine/anthropic-agent.mjs");
 
-test("#1111 a turn that is mostly TOOL WAIT is not near the ceiling", () => {
+test("a turn that is mostly TOOL WAIT is not near the ceiling", () => {
   // The measured specimen, in round numbers: 646.7s elapsed, 74.8% of it waiting on 17 register calls.
   // On elapsed it is 6.5× past a 100s ceiling; on work it is nowhere near it.
   const wall = 646_700, toolWaitMs = 483_700;
@@ -379,14 +379,14 @@ test("#1111 a turn that is mostly TOOL WAIT is not near the ceiling", () => {
   assert.ok(activeElapsedMs({ wall, toolWaitMs }) < 200_000, "the same turn is well inside it on work");
 });
 
-test("#1111 a turn that is GENERATING for the whole budget still hits it — this is not a ceiling removal", () => {
+test("a turn that is GENERATING for the whole budget still hits it — this is not a ceiling removal", () => {
   // The positive control. A rule that never fires would satisfy the arm above and delete the bound.
   assert.ok(activeElapsedMs({ wall: 400_000, toolWaitMs: 0 }) >= 300_000);
   assert.ok(activeElapsedMs({ wall: 400_000, toolWaitMs: 50_000 }) >= 300_000,
     "some tool wait must not excuse a turn that ground through the budget generating");
 });
 
-test("#1111 a call still IN FLIGHT counts as wait — the case that kills a turn mid-call", () => {
+test("a call still IN FLIGHT counts as wait — the case that kills a turn mid-call", () => {
   // Without this the ceiling charges the model for the wait that killed it, which is the exact reading
   // the whole issue is about.
   const now = 1_000_000;
@@ -396,7 +396,7 @@ test("#1111 a call still IN FLIGHT counts as wait — the case that kills a turn
   assert.equal(activeElapsedMs({ wall: 100, toolWaitMs: 500 }), 0, "active time is never negative");
 });
 
-test("#1111 THE IDENTITY: activeMs + toolWaitMs === wall, on a turn with real tool wait", async () => {
+test("THE IDENTITY: activeMs + toolWaitMs === wall, on a turn with real tool wait", async () => {
   // The cheap red for the whole clock fix, and the one that only holds because the in-flight gap is now
   // closed into the REPORTED toolWaitMs. Before that, the two fields were short of the wall by exactly
   // that gap — on turns killed mid-call, which is the population this issue is about, so a guard would
@@ -425,7 +425,7 @@ test("#1111 THE IDENTITY: activeMs + toolWaitMs === wall, on a turn with real to
   } finally { delete process.env.MOCK_CLAUDE_TOOL_WAIT; }
 });
 
-test("#1111 THE IDENTITY HOLDS ON A TURN KILLED MID-CALL — the case that only the closed gap covers", async () => {
+test("THE IDENTITY HOLDS ON A TURN KILLED MID-CALL — the case that only the closed gap covers", async () => {
   // THE ARM THAT DISCRIMINATES. The identity above holds whether or not the in-flight gap is folded in,
   // because at settle every ask had closed. A turn killed WHILE a call is outstanding is the population
   // is about, and there `toolWaitMs` has not closed: reporting the raw accumulator leaves the two

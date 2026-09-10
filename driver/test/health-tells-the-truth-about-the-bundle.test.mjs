@@ -69,7 +69,7 @@ function bundleFixture() {
   };
 }
 
-test("160 health reports a stale bundle as stale, and stops calling itself ok", () => {
+test("health reports a stale bundle as stale, and stops calling itself ok", () => {
   if (!existsSync(join(DIST, "index.html"))) {
     // NOT A SKIP THAT HIDES THE QUESTION. With no bundle built there is nothing that could be stale, and
     // the arm says which state it found rather than passing quietly.
@@ -105,7 +105,7 @@ test("160 health reports a stale bundle as stale, and stops calling itself ok", 
   }
 });
 
-test("160 every verdict maps to something an operator can act on", () => {
+test("every verdict maps to something an operator can act on", () => {
   // The mapping is total: a verdict with no case would fall through to `built`, which is the answer this
   // whole issue is about.
   for (const [verdict, expected] of [
@@ -126,7 +126,7 @@ test("160 every verdict maps to something an operator can act on", () => {
   assert.notEqual(healthUi("unmeasured").ui, "built", "an unmeasurable bundle claimed to be built");
 });
 
-test("160 the verdict health reads is the one doctor reads", () => {
+test("the verdict health reads is the one doctor reads", () => {
   // One predicate, two callers. Driven, not asserted from the imports: both are called on this tree and
   // must answer identically, so a future edit to either surface's copy would part them here.
   const present = existsSync(join(DIST, "index.html"));
@@ -162,7 +162,7 @@ async function healthBody({ present = true } = {}) {
   }
 }
 
-test("160 the ROUTE says it, not just the predicate behind it", { timeout: 60_000 }, async () => {
+test("the ROUTE says it, not just the predicate behind it", { timeout: 60_000 }, async () => {
   // THE ARM THAT WAS MISSING. Every other arm here drives the predicate and the mapping, so reverting
   // the route to its presence-only answer left all of them green — measured, by planting exactly that.
   // This one asks the endpoint an operator asks.

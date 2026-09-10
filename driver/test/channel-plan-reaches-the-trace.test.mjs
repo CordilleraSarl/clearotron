@@ -29,13 +29,13 @@ const gridWith = (platforms) => JSON.stringify({
   cells: platforms.map((p) => ({ term: "delphi", platform: p, status: "ok", candidates: [] })), gaps: [],
 });
 
-test("#1066 a run that swept every ordered channel reads complete", () => {
+test("a run that swept every ordered channel reads complete", () => {
   const a = traceCommonLawCarry({ gridRaw: gridWith(SPEC_PLATFORMS), findingsText: "", planned: SPEC_PLATFORMS });
   assert.equal(a.totals.channels.state, "complete");
   assert.equal(reconciliationRates(a).channels.rate, 1);
 });
 
-test("#1066 THE CASE THAT WAS INVISIBLE: mandatory channels never searched, named and rated", () => {
+test("THE CASE THAT WAS INVISIBLE: mandatory channels never searched, named and rated", () => {
   const a = traceCommonLawCarry({ gridRaw: gridWith(["web"]), findingsText: "", planned: SPEC_PLATFORMS });
   assert.equal(a.totals.channels.state, "incomplete");
   assert.deepEqual(a.totals.channels.never_searched, ["1688.com", "jd.com", "taobao.com"]);
@@ -47,14 +47,14 @@ test("#1066 THE CASE THAT WAS INVISIBLE: mandatory channels never searched, name
   assert.equal(r.candidates.rate, null, "nothing retrieved, so that rate is undefined — not 0, and not a defect");
 });
 
-test("#1066 no grid spec ⇒ UNKNOWN, never a clean 1", () => {
+test("no grid spec ⇒ UNKNOWN, never a clean 1", () => {
   const a = traceCommonLawCarry({ gridRaw: gridWith(["web"]), findingsText: "" });
   assert.equal(a.totals.channels.state, "unknown");
   assert.equal(reconciliationRates(a).channels.rate, null,
     "a register-only run and a run whose grid spec never landed both genuinely cannot say what was ordered");
 });
 
-test("#1066 the plan is read from the GRID SPEC, and the reason is pinned with the read", () => {
+test("the plan is read from the GRID SPEC, and the reason is pinned with the read", () => {
   // Behaviour cannot reach this: both sources would produce a plausible list on a NAMED profile, and the
   // two only diverge on a generic profile whose channels came from the matter frame. So the source choice
   // is pinned where it is made, and the reason is pinned with it — a later edit that "simplifies" this to
@@ -81,7 +81,7 @@ test("#1066 the plan is read from the GRID SPEC, and the reason is pinned with t
     "the trace no longer receives the ordered channel list");
   assert.ok(!/planned:\s*ctx\.profile/.test(pipeline), "nothing anywhere passes the profile as the plan");
 });
-test("#1066 an unreadable grid spec degrades to unknown and never throws", () => {
+test("an unreadable grid spec degrades to unknown and never throws", () => {
   // Fail-open on a disclosure path: this annotates, it never gates, so a malformed spec must not cost a
   // delivered run. The pure function carries the same property.
   // Expectations are ENUMERATED, not computed. My first version derived the expected state with

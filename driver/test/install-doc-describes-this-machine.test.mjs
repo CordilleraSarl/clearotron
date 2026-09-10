@@ -47,7 +47,7 @@ const NAMES_THE_WRITE_HALF = (text) => /start_run|write verbs?|write tools?/i.te
 
 const GUARD = "install-doc-describes-this-machine (#1866)";
 
-test("#1866 no shipping doc calls the HTTP MCP face read-only without naming the half that spends", (ctx) => {
+test("no shipping doc calls the HTTP MCP face read-only without naming the half that spends", (ctx) => {
   // Through the shared helper, never `git ls-files` directly — it is what turns a missing checkout into
   // a stated skip instead of a wall of meaningless failures, and enumerating the corpus behind its back
   // is its own guarded house rule. This arm tripped that guard on its first CI run.
@@ -75,7 +75,7 @@ test("#1866 no shipping doc calls the HTTP MCP face read-only without naming the
     + offenders.join("\n  "));
 });
 
-test("#1866 INSTALL.md's ingress advice comes AFTER what the surface serves, not before", () => {
+test("INSTALL.md's ingress advice comes AFTER what the surface serves, not before", () => {
   const s = read("INSTALL.md");
   const serves = s.indexOf("`start_run` bills a real search");
   const ingress = s.indexOf("put it behind **your own** reverse proxy");
@@ -91,7 +91,7 @@ test("#1866 INSTALL.md's ingress advice comes AFTER what the surface serves, not
 // why was ~150 lines later under a heading about a different subject. The error text itself is good —
 // it names the port, the variable and why it will not self-heal — which is why this is an ordering fix
 // and not a rewrite.
-test("#1867 the port variables are named BEFORE the first `clearotron start`, not only after it", () => {
+test("the port variables are named BEFORE the first `clearotron start`, not only after it", () => {
   const s = read("INSTALL.md");
   const firstStart = s.indexOf("npx clearotron start\n```");
   assert.ok(firstStart > 0, "the first bare start command must exist in §6");
@@ -112,7 +112,7 @@ test("#1867 the port variables are named BEFORE the first `clearotron start`, no
 // good kind. It then handed the operator `systemctl --user start trademark-test-deploy.service` — a
 // unit of one box, wiped, never recreated, produced by no documented install. `Unit not found`, in
 // answer to a correct refusal.
-test("#1868 the stale-code remedy names no unit the documented install does not produce", () => {
+test("the stale-code remedy names no unit the documented install does not produce", () => {
   const s = read("scripts/e2e.mjs");
   // WHAT THE OPERATOR IS SHOWN, not what the file contains. A whole-file substring check fires on the
   // comment EXPLAINING the fix — measured, on the first run of this arm — and a guard that cannot tell
@@ -130,7 +130,7 @@ test("#1868 the stale-code remedy names no unit the documented install does not 
     + "because a merge or rebase here would rewrite the very thing the guard measures");
 });
 
-test("#1868 the guard's refusal and its reasoning are untouched", () => {
+test("the guard's refusal and its reasoning are untouched", () => {
   const s = read("scripts/e2e.mjs");
   // The fix must not soften the guard. Refusing a PAID run against stale code is exactly right, and
   // this sentence is the whole argument for it.
@@ -142,7 +142,7 @@ test("#1868 the guard's refusal and its reasoning are untouched", () => {
 // A documented install produces no systemd unit at all before §8, so a remedy naming one by name is
 // unreachable advice at the moment it is given. Stated as a check rather than a comment because the
 // next remedy written on a developer's box will reach for the same shape.
-test("#1866-8 no harness refusal hands the operator a unit name as its FIRST remedy", () => {
+test("no harness refusal hands the operator a unit name as its FIRST remedy", () => {
   const s = read("scripts/e2e.mjs");
   const first = /Refusing to start a PAID run against stale code[^\n]*\n[^\n]*console\.log\("(.*?)"\)/s.exec(s);
   assert.ok(first, "the refusal's first remedy line must be findable");
@@ -151,7 +151,7 @@ test("#1866-8 no harness refusal hands the operator a unit name as its FIRST rem
     + "deployment-agnostic remedy goes first; a deploy timer is named conditionally and second.");
 });
 
-test("#1866-8 the install document this family is about is still the one being checked", () => {
+test("the install document this family is about is still the one being checked", () => {
   assert.ok(existsSync(join(ROOT, "INSTALL.md")) && existsSync(join(ROOT, "scripts/e2e.mjs")),
     "both subjects must exist — a renamed file would make every arm above vacuous");
 });

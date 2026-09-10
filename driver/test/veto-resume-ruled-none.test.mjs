@@ -64,7 +64,7 @@ async function runPipeline(env, jobPatch = {}, opts = {}) {
   return { res, events };
 }
 
-test("#589 veto: a corrective retry over a ruled-none meaning population dispatches FRESH, never a resume", async () => {
+test("veto: a corrective retry over a ruled-none meaning population dispatches FRESH, never a resume", async () => {
   // MOCK_CL_UNDISPOSED leaves the owning half's whole meaning population unruled on attempt 1 — the
   // seat did the other work and ruled ZERO of its rows. Whatever token names that failure, and
   // whichever transport carries the rulings, attempt 2 must not resume that session.

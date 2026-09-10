@@ -129,13 +129,13 @@ test("a row the driver never owed is refused — the obligation set is the drive
 // The issue this replaces reads "the seat invents its own row ids". It was never given any: the block
 // printed none, the sidecar it named lists query strings, and the block's own header says "YOU CITE NO
 // IDENTIFIER ANYWHERE". The seat sent the one per-row label it had been shown — the query text.
-test("#1173 a typed row id is refused BY NAME, never ignored", () => {
+test("a typed row id is refused BY NAME, never ignored", () => {
   const r = validateDispositionCall([ok({ row_id: rows()[0].row_id })], RECORDED);
   assert.equal(r.accepted.length, 0, "a row that names an id must not quietly bind");
   assert.equal(r.refused[0].reason, "row_addressed_by_id");
 });
 
-test("#1173 the refusal for a QUERY STRING names the number that query is — one round trip, not a hunt", () => {
+test("the refusal for a QUERY STRING names the number that query is — one round trip, not a hunt", () => {
   // The exact observed payload: 27 distinct query strings sent where a row id belonged, all refused
   // `unknown_row` with a detail that said only what the value was NOT. The seat could not act on that,
   // because nothing it had ever read carried a row id to send instead.
@@ -145,12 +145,12 @@ test("#1173 the refusal for a QUERY STRING names the number that query is — on
     "the remedy must name the number, or the seat is one refusal wiser and no closer");
 });
 
-test("#1173 a row with no address at all is refused for the address, not for something downstream", () => {
+test("a row with no address at all is refused for the address, not for something downstream", () => {
   const r = validateDispositionCall([ok({ row_index: undefined })], RECORDED);
   assert.equal(r.refused[0].reason, "row_position_absent");
 });
 
-test("#1173 the numbers are the ones the seat was SHOWN, not the ones we would mint now", () => {
+test("the numbers are the ones the seat was SHOWN, not the ones we would mint now", () => {
   // A ledger that grows mid-turn re-derives the obligation set. If the addressing list were re-derived
   // with it, a row inserted ahead of another would slide every number after it, and the seat — counting
   // off the page in front of it — would address row 2 and bind row 1. A wrong id is refused; a wrong
@@ -253,7 +253,7 @@ test("every refusal the code can emit is in the declared vocabulary", () => {
     assert.ok(!src.includes(gone), `${gone} is declared live and #1172 retired it`);
 });
 
-test("#1098: the anchor tokens are RETIRED, not deleted — an old ledger must stay readable", () => {
+test("the anchor tokens are RETIRED, not deleted — an old ledger must stay readable", () => {
   // A vocabulary change that drops names makes two corpora incomparable, and the comparison is the only
   // evidence this cure worked: `anchor_unbound` was 162 of 170 refusals on R5, and what `fragment_unbound`
   // does on the next CJK round is the measurement. A token in neither list reads as corruption.

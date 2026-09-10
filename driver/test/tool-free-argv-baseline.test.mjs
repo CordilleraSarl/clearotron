@@ -377,7 +377,7 @@ test("a fan-out recording stage that does NOT declare perAxis THROWS rather than
 // silently-absent grant the colon branch exists to prevent, one separator over. It had never fired
 // because no knockout stage carries a RECORDING row yet: the trap was waiting exactly where the next
 // conversion lands.
-test("2003: a '#'-fanned recording stage that does NOT declare perChunk THROWS rather than granting nothing", () => {
+test("a '#'-fanned recording stage that does NOT declare perChunk THROWS rather than granting nothing", () => {
   assert.throws(() => toolGroupsForStage("report-overview#2"), /does NOT declare/,
     "a '#'-suffixed label on a recording row resolved silently — the knockout conversion would find out in production");
   assert.throws(() => toolGroupsForStage("report-overview#2"), /perChunk/,
@@ -387,13 +387,13 @@ test("2003: a '#'-fanned recording stage that does NOT declare perChunk THROWS r
   assert.match(err.message, /RECORDING row for "report-overview"/, "…and it names the ROW to edit");
 });
 
-test("2003: the ':' form is unchanged — generalizing the block did not move the separator that already worked", () => {
+test("the ':' form is unchanged — generalizing the block did not move the separator that already worked", () => {
   assert.deepEqual(toolGroupsForStage("report-card:2"), ["recording-report-card"], "declared perAxis still resolves");
   assert.throws(() => toolGroupsForStage("report-overview:2"), /perAxis/, "undeclared perAxis still throws, and still names perAxis");
   assert.deepEqual(toolGroupsForStage("report-overview"), ["recording-report-overview"], "the bare name is untouched");
 });
 
-test("2003: a stage with NO recording row is unaffected by either separator", () => {
+test("a stage with NO recording row is unaffected by either separator", () => {
   // ── DERIVED FROM THE TABLES, NOT NAMED ──────────────────────────────────────────
   //
   // knockout-frame was this arm's example and knockout-assess was its example before that. Both have now
@@ -434,7 +434,7 @@ test("2003: a stage with NO recording row is unaffected by either separator", ()
 // be exercised: the branch existed and nothing used it. That arm said, in as many words, that the PR
 // adding the first row owns proving the positive case and deletes it. This is that replacement, written
 // in the same PR that made it fail — which is what the handover was for.
-test("1997B: the declared chunked row resolves its grant AND binds its ordinal, under the dispatched label", () => {
+test("the declared chunked row resolves its grant AND binds its ordinal, under the dispatched label", () => {
   // The label the knockout lane actually dispatches, not the bare stage name.
   assert.deepEqual(toolGroupsForStage("knockout-assess#0"), ["recording-knockout-assess"],
     "the chunk label resolves the grant — before 2003 this was [] and the seat held nothing");
@@ -470,7 +470,7 @@ test("1997B: the declared chunked row resolves its grant AND binds its ordinal, 
 // Its BEFORE state is the CONVERTED_BEFORE row above: bare and both suffixes resolved to nothing at all.
 // This is the AFTER, asserted in the PR that caused it — the same obligation item B's arm above was
 // written to discharge.
-test("1997C: the unfanned recording row resolves bare, and REFUSES both fan-out separators", () => {
+test("the unfanned recording row resolves bare, and REFUSES both fan-out separators", () => {
   assert.deepEqual(toolGroupsForStage("knockout-frame"), ["recording-knockout-frame"],
     "the bare name resolves its grant — before this conversion it was [] and the seat held nothing");
 

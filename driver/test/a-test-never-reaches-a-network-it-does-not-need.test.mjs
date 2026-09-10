@@ -44,7 +44,7 @@ const NEEDS_THE_NETWORK = [
 const SPAWN = /(?:execFileSync|execSync|spawnSync|spawn)\s*\(\s*["'`](?:npm|npx|\/bin\/sh|sh)["'`][\s\S]{0,900}?\)/g;
 const MENTIONS_PM = /\b(?:npm|npx)\b/;
 
-test("2174 a test that spawns a package manager seals the network it does not need", (ctx) => {
+test("a test that spawns a package manager seals the network it does not need", (ctx) => {
   const files = trackedFiles("offline-package-manager-spawns", { root: ROOT, pathspec: ["*.test.mjs"] });
   // A bare `return` here would report this subject CLEAN having measured none of it — which is the
   // vacuous pass this very file exists to prevent, one level up. Say it could not look.
@@ -95,7 +95,7 @@ export function staleExemptions(list, { files, read }) {
   return stale;
 }
 
-test("2174 the exemption rule catches a stale entry, and the real list is clean", (ctx) => {
+test("the exemption rule catches a stale entry, and the real list is clean", (ctx) => {
   const files = trackedFiles("offline-exemptions", { root: ROOT, pathspec: ["*.test.mjs"] });
   if (files == null) return ctx.skip(NO_CORPUS);
 

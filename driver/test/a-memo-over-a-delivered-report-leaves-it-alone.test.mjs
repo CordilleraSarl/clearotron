@@ -100,7 +100,7 @@ function deliveredRun() {
   return dir;
 }
 
-test("2166 a MEMO is allowed on a delivered report — the refusal was answering a narrower question", () => {
+test("a MEMO is allowed on a delivered report — the refusal was answering a narrower question", () => {
   // THE DEFECT, REPRODUCED: the old refusal covered both kinds, so the lawyer's question met a wall.
   const asStage = whatIfRefusal({ location: "archive", state: "delivered" });
   assert.match(asStage, /what-if runs on live runs only/, "the fixture no longer reproduces the refusal this issue is about");
@@ -111,7 +111,7 @@ test("2166 a MEMO is allowed on a delivered report — the refusal was answering
   }
 });
 
-test("2166 a STAGE re-run is still refused on a finished run — the live path is unchanged", () => {
+test("a STAGE re-run is still refused on a finished run — the live path is unchanged", () => {
   // The half that must NOT move. A memo is not a licence to recompute a delivered report's own stages.
   for (const shape of [{ state: "delivered" }, { location: "archive" }, { markers: [".delivered"] }]) {
     assert.match(whatIfRefusal({ ...shape }), /live runs only/, `a stage re-run was allowed on ${JSON.stringify(shape)}`);
@@ -122,7 +122,7 @@ test("2166 a STAGE re-run is still refused on a finished run — the live path i
   assert.equal(whatIfRefusal({ state: "failed", kind: "memo" }), null);
 });
 
-test("2166 a CANCELLED run refuses both kinds, and says why for each", () => {
+test("a CANCELLED run refuses both kinds, and says why for each", () => {
   // Reasoning over a record its owner stopped mid-gather is how a memo comes to say more than the run
   // ever knew — a different failure from re-running a stage, and it gets a different sentence.
   const stage = whatIfRefusal({ state: "cancelled" });
@@ -132,7 +132,7 @@ test("2166 a CANCELLED run refuses both kinds, and says why for each", () => {
   assert.notEqual(stage, memo, "both kinds got one sentence, so a reader cannot tell which was refused");
 });
 
-test("2166 composing a memo leaves the delivered run BYTE-IDENTICAL", () => {
+test("composing a memo leaves the delivered run BYTE-IDENTICAL", () => {
   const parent = deliveredRun();
   const before = hashes(parent);
   assert.equal(before.size, PARENT_FILES.length, "the fixture stopped carrying a file this arm protects");
@@ -149,7 +149,7 @@ test("2166 composing a memo leaves the delivered run BYTE-IDENTICAL", () => {
     "a file appeared in or vanished from the delivered run");
 });
 
-test("2166 the memo carries what a reader needs, and refuses rather than degrade without it", () => {
+test("the memo carries what a reader needs, and refuses rather than degrade without it", () => {
   const memo = composeMemo(OK);
   assert.equal(memo.ok, true, memo.reason);
   assert.ok(memo.text.startsWith(MEMO_BANNER), "the banner is not the first thing a reader meets");
@@ -167,7 +167,7 @@ test("2166 the memo carries what a reader needs, and refuses rather than degrade
   }
 });
 
-test("2166 a limit names the smallest search that would settle it, or the memo refuses", () => {
+test("a limit names the smallest search that would settle it, or the memo refuses", () => {
   const bare = composeMemo({ ...OK, limits: [{ cannot: "Whether the application is abandoned" }] });
   assert.equal(bare.ok, false, "a limit with no named search was accepted — that tells a reader they need "
     + "more without telling them what to buy");
@@ -185,7 +185,7 @@ test("2166 a limit names the smallest search that would settle it, or the memo r
   assert.match(none.text, /no part of the answer above is waiting on a search/);
 });
 
-test("2166 a memo never reads as a report", () => {
+test("a memo never reads as a report", () => {
   const memo = composeMemo(OK);
   assert.match(memo.text, /not a clearance report, and not an update to one/i);
   assert.match(memo.text, /No new searching/i);
@@ -199,7 +199,7 @@ test("2166 a memo never reads as a report", () => {
 
 const token = (op) => Buffer.from(JSON.stringify(op)).toString("base64url");
 
-test("2166 a memo token decodes on its own terms — no stage, and the assumption is required", () => {
+test("a memo token decodes on its own terms — no stage, and the assumption is required", () => {
   const good = decodeOp(token({ runId: "tmpx1-venqori-2026-09-01-jade-anvil", kind: "memo", instructions: OK.assumption }));
   assert.equal(good.kind, "memo");
   assert.equal(good.instructions, OK.assumption);
@@ -217,7 +217,7 @@ test("2166 a memo token decodes on its own terms — no stage, and the assumptio
     /re-runs no stage/);
 });
 
-test("2166 the live token contract is untouched — a stage op still validates exactly as before", () => {
+test("the live token contract is untouched — a stage op still validates exactly as before", () => {
   // Criterion 4 in one arm: the memo branch returns early, and must not have loosened anything behind it.
   assert.throws(() => decodeOp(token({ runId: "r" })), /missing runId/);
   assert.throws(() => decodeOp(token({ runId: "r", stage: "not-a-stage" })), /unknown stage/);

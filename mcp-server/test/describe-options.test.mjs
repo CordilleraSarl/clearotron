@@ -341,7 +341,7 @@ test("the tool registry is COMPLETE in all FOUR directions", () => {
   assert.deepEqual(Object.keys(tools).filter((n) => !defs.includes(n)), [], "implemented but never advertised");
 });
 
-test("#305: every client-reachable tool DECLARES how its result is presented", () => {
+test("every client-reachable tool DECLARES how its result is presented", () => {
   // The fifth direction, and the one whose absence was a live default-allow: presentForPrincipal
   // dispatched by name and fell through to `return result`. The declaration is now required and an
   // undeclared tool refuses at the chokepoint — this
@@ -363,7 +363,7 @@ test("#305: every client-reachable tool DECLARES how its result is presented", (
   );
 });
 
-test("#305: an UNDECLARED tool is refused, loudly, and only for a client principal", () => {
+test("an UNDECLARED tool is refused, loudly, and only for a client principal", () => {
   // Refuse rather than return empty, which is the choice the issue asks to be made: a client handed an
   // empty list believes it, and the failure is silent. A throw reaches the caller as an error and the
   // operator as a log line.
@@ -377,7 +377,7 @@ test("#305: an UNDECLARED tool is refused, loudly, and only for a client princip
   }
 });
 
-test("#305: a declared tool keeps EXACTLY the behaviour it had — this flip changes no client's bytes", () => {
+test("a declared tool keeps EXACTLY the behaviour it had — this flip changes no client's bytes", () => {
   // Every disposition written down is the tool's existing behaviour. The change alters what happens to
   // the NEXT tool somebody adds, not what any client receives today.
   const asClient = { kind: "account", accounts: ["celta"] };
@@ -393,7 +393,7 @@ test("#305: a declared tool keeps EXACTLY the behaviour it had — this flip cha
   assert.ok(!/internal/.test(brief.brief), "the scrub branches still run");
 });
 
-test("#305: the dead search_runs branch is gone — it could never fire", () => {
+test("the dead search_runs branch is gone — it could never fire", () => {
   // search_runs is neither clientSafe nor accountSafe, so authorize() refuses it for both CLIENT_KINDS
   // before dispatch reaches the chokepoint. A dead branch inside a security chokepoint reads as coverage
   // that is not there. If it ever becomes client-reachable, the declaration requirement refuses it until

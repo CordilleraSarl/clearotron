@@ -48,7 +48,7 @@ export function unresolvableWorkspaceDeps(rootPkg, workspacePkgs) {
   return out;
 }
 
-test("#1929 every workspace's runtime dependency is one the root install would resolve", () => {
+test("every workspace's runtime dependency is one the root install would resolve", () => {
   const rootPkg = read("package.json");
   const names = rootPkg.workspaces ?? [];
   // THE POPULATION IS ASSERTED BEFORE IT IS WALKED. An empty workspace list makes the loop below find
@@ -68,7 +68,7 @@ test("#1929 every workspace's runtime dependency is one the root install would r
     + "root's `dependencies`.");
 });
 
-test("#1929 the predicate catches a workspace-only dependency, and honours the stated exclusion", () => {
+test("the predicate catches a workspace-only dependency, and honours the stated exclusion", () => {
   const rootPkg = { dependencies: { undici: "^6", jose: "^6" } };
   assert.deepEqual(unresolvableWorkspaceDeps(rootPkg, [{ name: "driver", pkg: { dependencies: { undici: "^6" } } }]), []);
   assert.deepEqual(

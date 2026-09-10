@@ -44,7 +44,7 @@ const NOTHING_SET = { prod: new Set(), test: new Set(), config: new Set(), ci: n
 const run = (catalogue, declared) =>
   classify({ catalogue, sources: NOTHING_SET, setup: new Set(), declared: new Map(declared) });
 
-test("350 a declared non-knob leaves the deletion walk by RULE, whatever its spelling", () => {
+test("a declared non-knob leaves the deletion walk by RULE, whatever its spelling", () => {
   // EVERY declared class except `tuning`, one name each, in spellings that match none of the later
   // filters — so if the declaration were not read, every one of these would walk on to be judged by its
   // default. Driving four of the five would leave the fifth excluded by a predicate no arm exercises,
@@ -64,7 +64,7 @@ test("350 a declared non-knob leaves the deletion walk by RULE, whatever its spe
 
 // THE NEGATIVE, and the rule above is worth nothing without it: the rule must not empty the walk. A name
 // declared `tuning` agrees with the classifier and is exactly what the deletion work is FOR.
-test("350 a name declared `tuning` still reaches the walk — the rule is not a blanket exemption", () => {
+test("a name declared `tuning` still reaches the walk — the rule is not a blanket exemption", () => {
   const { buckets, sub } = run(["CLEAROTRON_EPSILON_SETTING"], [["CLEAROTRON_EPSILON_SETTING", "tuning"]]);
   assert.deepEqual(buckets["declared-not-a-knob"], [], "an agreeing declaration is not an exclusion");
   assert.ok(sub.CLEAROTRON_EPSILON_SETTING, "…and the name was judged by the walk rather than dropped");
@@ -73,13 +73,13 @@ test("350 a name declared `tuning` still reaches the walk — the rule is not a 
 // AND THE OTHER HALF OF THE SAME REQUIREMENT: an UNDECLARED name is not excluded either. The catalogue
 // carries far more names than declarations, and reading "no declaration" as "not a knob" would empty the
 // candidate list by silence — the failure this whole script was rewritten to end.
-test("350 an UNDECLARED name is not excluded — silence is not a declaration", () => {
+test("an UNDECLARED name is not excluded — silence is not a declaration", () => {
   const { buckets } = run(["CLEAROTRON_ZETA_SETTING"], []);
   assert.deepEqual(buckets["declared-not-a-knob"], [], "a name nobody documented was treated as documented");
 });
 
 // THE BUCKET SAYS WHY, or a reviewer reading the artifact meets a name in a list with no reason attached.
-test("350 the row carries the declaration that excluded it", () => {
+test("the row carries the declaration that excluded it", () => {
   const { rows } = run(["CLEAROTRON_ETA_SETTING"], [["CLEAROTRON_ETA_SETTING", "disclosed-gate"]]);
   assert.equal(rows[0].declared, "disclosed-gate", "the row does not say what the document declared");
   assert.equal(rows[0].class, "tuning", "…and it still records the class the classifier derived, "

@@ -179,7 +179,7 @@ export function decodeOp(confirmationToken, what = "whatIfRun") {
 }
 
 /**
- * whatIfEnqueue — the CLIENT path (owner ruling 2026-08-27). Queues the op for the worker instead of
+ * whatIfEnqueue — the CLIENT path (ruling 2026-08-27). Queues the op for the worker instead of
  * running it, because the remote surfaces never spawn the engine and this module's own lazy import of
  * driver/pipeline.mjs is what keeps that true. Nothing below reaches runExperiment.
  *

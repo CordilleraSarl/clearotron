@@ -37,7 +37,7 @@ const read = (f) => readFileSync(join(ROOT, f), "utf8");
 // comment as a writer would make an unfixed file look fixed — the inversion this repo keeps paying for.
 const code = (f) => read(f).split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
 
-test("#1064 the mechanism itself: a cut is stated, and the tail is kept", () => {
+test("the mechanism itself: a cut is stated, and the tail is kept", () => {
   const long = `${"x".repeat(260)} — the evidence is at _driver/reviewer-flags.json`;
   const r = terminalReasonFields(long);
   assert.equal(r.reason.length, 200);
@@ -46,7 +46,7 @@ test("#1064 the mechanism itself: a cut is stated, and the tail is kept", () => 
     "the pointer past the cut is what #1064 was filed about — it has to survive somewhere in status.json");
 });
 
-test("#1064 a short reason says NOTHING WAS CUT, rather than saying nothing", () => {
+test("a short reason says NOTHING WAS CUT, rather than saying nothing", () => {
   const r = terminalReasonFields("provider refused the count probe");
   assert.equal(r.reasonTruncated, false, "false and absent are different facts — #755's own argument");
   assert.equal(r.reasonFull, null, "and there is no tail to keep, which is not the same as a lost one");
@@ -54,7 +54,7 @@ test("#1064 a short reason says NOTHING WAS CUT, rather than saying nothing", ()
 
 // ── the four writers that never got it ──────────────────────────────────────────────────────────────
 
-test("#1064 NO writer of a terminal or parked reason cuts with a bare slice", () => {
+test("NO writer of a terminal or parked reason cuts with a bare slice", () => {
   const offenders = [];
   // SCOPED TO status.json, deliberately. These files slice at 200 in plenty of other places — a
   // provider cause on a call record, an `unsupported_reason` on a dropped variant, an audit detail —
@@ -77,7 +77,7 @@ test("#1064 NO writer of a terminal or parked reason cuts with a bare slice", ()
     + `two pipeline terminals already do. Widening the 200 cap is NOT the fix — #755's header says why.`);
 });
 
-test("#1064 all four repaired sites use the ONE function, so they cannot drift from it", () => {
+test("all four repaired sites use the ONE function, so they cannot drift from it", () => {
   const runner = code("driver/runner.mjs");
   assert.match(runner, /terminalReasonFields.*from "\.\/pipeline\.mjs"/,
     "the runner must take the shared function rather than growing its own copy of the rule");
@@ -88,7 +88,7 @@ test("#1064 all four repaired sites use the ONE function, so they cannot drift f
     "the parked state is the one a reader diagnoses from status.json alone, and it must carry the fields too");
 });
 
-test("#1064 the three fields travel together — a writer carrying one and not the others is the same defect", () => {
+test("the three fields travel together — a writer carrying one and not the others is the same defect", () => {
   // reasonFull without reasonTruncated is unreadable (was it cut, or is the tail just absent?), and
   // reasonTruncated without reasonFull says a pointer was destroyed without keeping it.
   const runner = code("driver/runner.mjs");

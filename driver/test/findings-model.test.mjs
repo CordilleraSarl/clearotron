@@ -827,7 +827,7 @@ test("spec 64: sentenceCaseLead — first letter capitalized through markdown/qu
 // `- Source: [EUIPO · 018575624](#)`: the delivered R5 shape is about, byte for byte.
 import { isDeadRecordLink } from "../findings-model.mjs";
 
-test("#1710 a register resolved_link with no host is rejected, under its own reason", () => {
+test("a register resolved_link with no host is rejected, under its own reason", () => {
   const withLink = (resolved_link) => raw(clone({
     ...DOC, findings: [{ ...FINDING, source: { source_type: "register-vendor", resolved_link } }],
   }));
@@ -853,7 +853,7 @@ test("#1710 a register resolved_link with no host is rejected, under its own rea
   assert.doesNotThrow(() => parseFindingsJson(withLink(null)));
 });
 
-test("#1710 isDeadRecordLink does not fire on a real record URL that contains a fragment", () => {
+test("isDeadRecordLink does not fire on a real record URL that contains a fragment", () => {
   // THE FALSE POSITIVE THAT WOULD HAVE COST MOST: EUIPO's own record URLs are fragment-based. A rule
   // reading "contains #" would refuse every EUIPO finding in every report — a delivery outage wearing
   // a bug fix's clothes. The rule is "has no http(s) host", which these pass.

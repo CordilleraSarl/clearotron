@@ -64,7 +64,7 @@ const testFiles = () =>
     .filter((f) => f.endsWith(".test.mjs") && f !== SELF)
     .sort();
 
-test("#1479 no test arm bails on an unmeetable precondition without saying so", () => {
+test("no test arm bails on an unmeetable precondition without saying so", () => {
   const undeclared = [];
   for (const f of testFiles()) {
     const hits = topLevelBails(readFileSync(join(REPO, "driver", "test", f), "utf8"));
@@ -79,7 +79,7 @@ test("#1479 no test arm bails on an unmeetable precondition without saying so", 
     + "measure\"; where the bail is right, add it to BAIL_IS_DECLARED with the reason.");
 });
 
-test("#1479 the declarations are not a hiding place — each names what makes it true, and it is still there", () => {
+test("the declarations are not a hiding place — each names what makes it true, and it is still there", () => {
   assert.ok(BAIL_IS_DECLARED.length > 0, "an empty table would make the arm above assert nothing about declarations");
   for (const d of BAIL_IS_DECLARED) {
     const src = readFileSync(join(REPO, "driver", "test", d.file), "utf8");
@@ -94,7 +94,7 @@ test("#1479 the declarations are not a hiding place — each names what makes it
   }
 });
 
-test("#1479 THE DETECTOR BITES, and does not bite the three shapes that are not bails", () => {
+test("THE DETECTOR BITES, and does not bite the three shapes that are not bails", () => {
   // Assembled from parts: written verbatim, the planted bail would be a real one in a file this guard
   // reads. Fixtures live in template literals, which `topLevelBails` blanks — the same reason it does
   // not flag `assert.match(SRC, /if \(!RUN_DIR\) return;/)` in the two files that test for that shape.

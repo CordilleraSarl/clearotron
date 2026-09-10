@@ -173,27 +173,27 @@ describe("the OAuth bridge's warm HTTP door", () => {
     if (credsDir) await rm(credsDir, { recursive: true, force: true });
   });
 
-  test("1933 the door is up and speaks MCP", () => {
+  test("the door is up and speaks MCP", () => {
     // Asserted by `before` having connected at all. Stated as its own arm so a door that never came up
     // names itself in the report rather than appearing as four unrelated failures.
     assert.ok(bridge, "no MCP client — the door did not come up");
     assert.equal(childExit, null, `the warm server exited (${childExit}) instead of serving:\n${childErr.slice(-800)}`);
   });
 
-  test("1933 the allowlisted upstream tools are proxied through", async () => {
+  test("the allowlisted upstream tools are proxied through", async () => {
     const names = ((await bridge.listTools()).tools ?? []).map((t) => t.name).sort();
     assert.ok(names.includes("search"), `\`search\` is missing from the proxied list: ${JSON.stringify(names)}`);
     assert.ok(names.includes("get_counts"), `\`get_counts\` is missing from the proxied list: ${JSON.stringify(names)}`);
   });
 
-  test("1933 an upstream tool that is NOT allowlisted does not reach the caller", async () => {
+  test("an upstream tool that is NOT allowlisted does not reach the caller", async () => {
     const names = ((await bridge.listTools()).tools ?? []).map((t) => t.name);
     assert.ok(!names.includes("read_document"),
       "the mock upstream offers `read_document` and the bridge passed it through — the allowlist is the "
       + `only thing standing between a caller and every tool the upstream has: ${JSON.stringify(names)}`);
   });
 
-  test("1933 a tools/call reaches the upstream and its answer comes back", async () => {
+  test("a tools/call reaches the upstream and its answer comes back", async () => {
     const call = await bridge.callTool({ name: "get_counts", arguments: {} });
     assert.match(JSON.stringify(call), /ok:get_counts/,
       `the call did not reach the mock upstream, or its reply was not returned: ${JSON.stringify(call)}`);
@@ -209,7 +209,7 @@ describe("the OAuth bridge's warm HTTP door", () => {
   // So the same eight calls go STRAIGHT AT THE MOCK first. If they overlap, the fixture can observe
   // overlap and the next arm's `=== 1` means something. If they do not, the measurement is impossible
   // here and this says so instead of letting the next arm pass blind.
-  test("1933 CONTROL: without the bridge in the way, eight calls DO overlap upstream", async () => {
+  test("CONTROL: without the bridge in the way, eight calls DO overlap upstream", async () => {
     const direct = await connectClient(mock.port);
     try {
       maxInFlight = 0;
@@ -222,7 +222,7 @@ describe("the OAuth bridge's warm HTTP door", () => {
     } finally { await direct.close(); }
   });
 
-  test("1933 through the bridge, the same eight calls are serialized upstream", async () => {
+  test("through the bridge, the same eight calls are serialized upstream", async () => {
     // THE GUARANTEE THE WHOLE DOOR EXISTS FOR. Two refreshes racing is what bricks a warm token — the
     // reuse the mutex prevents — so "many downstream callers, one upstream call at a time" is the
     // property, not an implementation detail.

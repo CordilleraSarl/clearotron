@@ -145,7 +145,7 @@ const CHROME_RES = [
 
   // ── the engine's own scaffolding: out of the report, for EVERY reader ───────────────────────────────
   //
-  // Owner ruling, 2026-07-27: "none of this should surface to anyone — only to the internal logs for
+  // Ruling, 2026-07-27: "none of this should surface to anyone — only to the internal logs for
   // analysis." Not a client cut and a staff cut; there is ONE report, and this material was never meant to
   // be in it for anybody. It reads as machinery in a document whose whole job is a legal opinion.
   //
@@ -890,7 +890,7 @@ export function reportsOf(meta) {
  * NOTHING COULD REACH IT. `meta.reports` lists the per-mark HTMLs only, so `resolveReportFile` below
  * matches nothing for it and the portal route 404s; the pool path is not one the edge serves either
  * (test/edge-routes.mjs — one legacy filename, and it is `report.html`). Good prose, composed on every
- * multi-mark run, delivered to nobody. Owner ruling 2026-08-26: the grouped page carries it.
+ * multi-mark run, delivered to nobody. Ruling 2026-08-26: the grouped page carries it.
  *
  * Returns PARAGRAPHS, split the way the document renderer splits them, with inline markdown left in
  * place — the model writes markdown because every surface it feeds renders markdown, and the client
@@ -917,7 +917,7 @@ export function batchSummaryOf(dir) {
   // reading to the end of the file would ship that list and this boundary is load-bearing.
   //
   // — IT USED TO TERMINATE ON ANY HEADING, /^#{1,6}\s/, AND THAT SILENTLY TRUNCATED THE PAGE.
-  // The writer now emits sub-headers INSIDE the summary (owner ruling 2026-08-31, "keep the length, add
+  // The writer now emits sub-headers INSIDE the summary (ruling 2026-08-31, "keep the length, add
   // the structure"). Measured on a ten-line structured summary before the fix: the section ended at the
   // first `## <MARK>` and the grouped page — the report's entry point — rendered ONE sentence, with
   // every following mark dropped and nothing anywhere reporting a loss. Depth cannot mark this boundary

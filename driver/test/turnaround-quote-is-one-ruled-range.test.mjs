@@ -37,9 +37,9 @@ import {
 const job = (levers, names = 1) => ({ levers, names, platforms: 0 });
 const clearance = (extra = {}) => ({ pipeline: "clearance", territories: ["US"], ...extra });
 
-test("#1669 the ruled figures, exactly as the owner stated them", () => {
+test("the ruled figures, exactly as the owner stated them", () => {
   assert.equal(turnaround(job(clearance())), "1.5–2.5 hours");
-  // — the knockout quote is a RANGE, 5-10 minutes, on a later owner ruling. The
+  // — the knockout quote is a RANGE, 5-10 minutes, on a later ruling. The
   // "~15 min" this asserted came from and is superseded; the header's eight-run evidence above is
   // about clearance VARIANCE and is untouched by it. Note what that header already records: the knockout
   // delivered 4-6 minutes against 45 quoted, so 5-10 sits on the measurement and 15 never did.
@@ -47,7 +47,7 @@ test("#1669 the ruled figures, exactly as the owner stated them", () => {
 });
 
 // THE ARM THAT MATTERS. Every lever combination the old model priced, asserted to move nothing.
-test("#1669 NO lever changes a clearance quote — the adders cannot come back one at a time", () => {
+test("NO lever changes a clearance quote — the adders cannot come back one at a time", () => {
   const combos = [];
   for (const caseLaw of [false, true]) {
     for (const nativeLanguage of [false, true]) {
@@ -69,7 +69,7 @@ test("#1669 NO lever changes a clearance quote — the adders cannot come back o
     + `than five carrying fewer. Got: ${[...seen].join("  ")}`);
 });
 
-test("#1669 ONE SOURCE — the rendered figures are the table's own numbers, not a second copy", () => {
+test("ONE SOURCE — the rendered figures are the table's own numbers, not a second copy", () => {
   const c = quoteBoundsFor(clearance());
   assert.deepEqual(c, TURNAROUND_QUOTE.clearance, "the clearance row is selected, not rebuilt");
   assert.deepEqual(quoteBoundsFor({ pipeline: "knockout", territories: ["US"] }), TURNAROUND_QUOTE.knockout);
@@ -82,7 +82,7 @@ test("#1669 ONE SOURCE — the rendered figures are the table's own numbers, not
     "the recorded figure is the table's upper bound — reconcileTurnaround divides by it, and a range cannot be divided by");
 });
 
-test("#1669 the ruled bounds are what the table holds, and 2.5h is BELOW the highest measured wall", () => {
+test("the ruled bounds are what the table holds, and 2.5h is BELOW the highest measured wall", () => {
   assert.deepEqual(TURNAROUND_QUOTE.clearance, { lowHours: 1.5, highHours: 2.5 });
   // — 5-10 minutes, expressed as the same division the table uses so the arm
   // pins the ruled MINUTES rather than a rounded decimal somebody would have to reverse-engineer.
@@ -104,7 +104,7 @@ test("#1669 the ruled bounds are what the table holds, and 2.5h is BELOW the hig
 // operator changes in an `.env` with no deploy. Deleting that arm and stopping there would have left the
 // ruling with no guard at all, which is how a multiplier comes back. So it is re-aimed at the property
 // the owner actually ruled: the NAME COUNT does not move a clearance quote, the same way no lever does.
-test("#1894 the name count does not move the quote — there is no arithmetic left to reintroduce", () => {
+test("the name count does not move the quote — there is no arithmetic left to reintroduce", () => {
   const seen = new Set();
   for (const names of [1, 2, 3, 5, 8, 20, 100]) {
     const i = job(clearance(), names);
@@ -125,7 +125,7 @@ test("#1894 the name count does not move the quote — there is no arithmetic le
 // The run-slot cap was copied into this module as `CONCURRENCY` and multiplied in by `waveCount`; both
 // are gone, and this is what notices if either comes back. It reads the module's EXPORTS, not its text,
 // so the prose above explaining why they went cannot satisfy it.
-test("#1894 the run-slot cap is not copied into the effort model, in any exported form", () => {
+test("the run-slot cap is not copied into the effort model, in any exported form", () => {
   const names = Object.keys(model);
   assert.ok(names.length > 10, "the module barely exported anything — this arm would pass vacuously");
 
@@ -141,7 +141,7 @@ test("#1894 the run-slot cap is not copied into the effort model, in any exporte
   assert.deepEqual(capish, [], `these exports look like a re-copied run-slot cap: ${capish.join(", ")}`);
 });
 
-test("#1669 the quote object carries the RANGE, so nothing downstream has to re-derive it", () => {
+test("the quote object carries the RANGE, so nothing downstream has to re-derive it", () => {
   const q = quoteEffort(job(clearance()));
   assert.equal(q.turnaround, "1.5–2.5 hours");
   assert.equal(q.turnaroundHours, 2.5, "the legacy single figure stays the upper bound");

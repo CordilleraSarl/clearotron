@@ -56,7 +56,7 @@ const registerCard = (html) => {
   return html.slice(start, html.indexOf("</div></div>", at) + 12);
 };
 
-test("274/1935: a BANDED register card does not also say it carries no rating", () => {
+test("a BANDED register card does not also say it carries no rating", () => {
   const html = render("High", "");
   assert.ok(html.includes("BRIMSTONE REG"), "precondition: the register card rendered at all");
   assert.match(registerCard(html), CHIP,
@@ -66,7 +66,7 @@ test("274/1935: a BANDED register card does not also say it carries no rating", 
     + "our voice, on a page a client reads");
 });
 
-test("274/1935: an UNBANDED register card keeps the neutral line and wears no chip", () => {
+test("an UNBANDED register card keeps the neutral line and wears no chip", () => {
   const html = render(null, "");
   assert.ok(html.includes("BRIMSTONE REG"), "precondition: the card rendered");
   assert.ok(html.includes(NOT_WEIGHED_LINE),
@@ -76,7 +76,7 @@ test("274/1935: an UNBANDED register card keeps the neutral line and wears no ch
     "an unbanded card wears a chip — a rating nobody performed, which is the earlier ruling exactly");
 });
 
-test("274/1935: the rater's own read replaces the neutral line, banded or not", () => {
+test("the rater's own read replaces the neutral line, banded or not", () => {
   for (const band of ["High", null]) {
     const html = render(band, "the rater weighed this filing into the verdict");
     assert.ok(html.includes("the rater weighed this filing into the verdict"),

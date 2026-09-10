@@ -18,7 +18,7 @@
 // Nowhere near any bound. Cut, unmarked, and invisible to a check that measures length. "Inc.", "Ltd.",
 // "U.S.", "No. 2" and any internal colon all do it — the words an ask about a company is made of.
 //
-// OWNER RULING 2026-08-10: STOP CUTTING. The 170 governed two surfaces and one of them, the report
+// RULING 2026-08-10: STOP CUTTING. The 170 governed two surfaces and one of them, the report
 // hero's "subject to" line, was DELETED (render.mjs B1 note). What was left is the email banner's own
 // <p>: it wraps, has no width and no clamp, so the cut bought nothing and cost the end of the ask.
 //
@@ -61,7 +61,7 @@ const LONG = "Instruct Japanese and Korean counsel on the joined-script forms be
   + "the senior filings already on the register in those territories.";
 const SHORT = "Instruct Japanese and Korean counsel on the joined-script forms before filing.";
 
-test("#601 arm 1 — an ask that names a company renders to its end", () => {
+test("arm 1 — an ask that names a company renders to its end", () => {
   assert.ok(ABBREV.length < STATEMENT_CLAUSE_MAX,
     "premise: this is a SHORT ask — no length bound was ever going to catch it");
   assert.equal(rendered(ABBREV), ABBREV,
@@ -74,7 +74,7 @@ test("#601 arm 1 — an ask that names a company renders to its end", () => {
   }
 });
 
-test("#601 arm 2 — a long ask renders whole; nothing is capped and nothing is dropped", () => {
+test("arm 2 — a long ask renders whole; nothing is capped and nothing is dropped", () => {
   assert.ok(LONG.length > STATEMENT_CLAUSE_MAX, `premise: ${LONG.length} exceeds the statement's clause bound`);
   assert.equal(rendered(LONG), LONG, "the ask reaches the client entire — the box wraps, it does not cut");
   assert.equal(rendered(SHORT), SHORT, "and a short one is byte-identical to what was authored");
@@ -86,7 +86,7 @@ test("#601 arm 2 — a long ask renders whole; nothing is capped and nothing is 
   assert.ok(!/\[\.:\]\(\?=/.test(fn), "…including the first-sentence match that caused arm 1");
 });
 
-test("#601 arm 3 — the bound is the statement's own clip, and the check reads THAT", () => {
+test("arm 3 — the bound is the statement's own clip, and the check reads THAT", () => {
   // One number, defined where the clipping happens. A copy here would drift the first time the clause
   // width changed, and silently in the direction that matters: a check passing an ask the statement cuts.
   const lint = src("predelivery-lint.mjs");
@@ -100,7 +100,7 @@ test("#601 arm 3 — the bound is the statement's own clip, and the check reads 
     "the number is retyped in the check — it must come from the clip");
 });
 
-test("#601 arm 4 — the check measures what reaches the clause: `condition ?? text`, conditions only", () => {
+test("arm 4 — the check measures what reaches the clause: `condition ?? text`, conditions only", () => {
   // The lede takes conditionClauses = condition ?? text. An action with a typed `condition` is measured
   // on THAT — measuring its ask text would flag an author for a string the statement never renders.
   const short = { id: 1, kind: "consent", text: LONG, condition: "No consent from Matchday, Inc. appears on the record searched", ordinals: [] };
@@ -124,7 +124,7 @@ test("#601 arm 4 — the check measures what reaches the clause: `condition ?? t
   assert.equal(actionBoundLineChecks([], []).length, 0, "no register, no check (presence-gated like the rest)");
 });
 
-test("#601 arm 5 — the clip this check is founded on is real, and it MARKS the cut", () => {
+test("arm 5 — the clip this check is founded on is real, and it MARKS the cut", () => {
   // The whole argument for keeping a bound. If this stopped clipping, or clipped silently, the check
   // would be enforcing a rule the product no longer has.
   const st = riskStatement({ tier: "Elevated", verdict: "CONDITIONAL", reasons: [LONG] });
@@ -136,7 +136,7 @@ test("#601 arm 5 — the clip this check is founded on is real, and it MARKS the
     "and an ask inside the bound rides the statement whole");
 });
 
-test("#601 arm 6 — the seat authoring the ask is told the surviving bound, and told what it costs", () => {
+test("arm 6 — the seat authoring the ask is told the surviving bound, and told what it costs", () => {
   const stages = src("stages.mjs");
   assert.match(stages, /\$\{STATEMENT_CLAUSE_MAX\}/,
     "the dictation must interpolate the same constant — a typed number here is the drift arm 3 forbids");
@@ -148,7 +148,7 @@ test("#601 arm 6 — the seat authoring the ask is told the surviving bound, and
     "the reason the bound exists at all, unchanged by where the bound lives");
 });
 
-test("#601 arm 7 — the rewrite kept everything the box was already right about", () => {
+test("arm 7 — the rewrite kept everything the box was already right about", () => {
   // The cut was one expression inside a function that does four other things. Each of them was fixed
   // for a reason, and a rewrite is exactly where they get lost.
   assert.equal(rendered("**[Open question]** Confirm how the product will be presented"), "",

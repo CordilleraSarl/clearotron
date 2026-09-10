@@ -289,7 +289,7 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // ── — AND WHAT THE REGISTER CANNOT REACH, on the door that commits ──────
   //
   // The same argument the coverage arm above makes, one rung further along. A worldwide search is
-  // ORDERABLE on a partial register now (owner ruling 2026-08-31), so it stops being a blocker and
+  // ORDERABLE on a partial register now (ruling 2026-08-31), so it stops being a blocker and
   // becomes something a requester has to be TOLD before they confirm. The portal says it twice — at
   // the point of choosing and again in the review step — and `describe_options` says it on the menu.
   // Without it here, an assistant can walk a client through the one door that spends and never

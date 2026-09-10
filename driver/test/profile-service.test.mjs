@@ -560,7 +560,7 @@ function layeredSvc() {
   return { service, calls, writeCalls };
 }
 
-test("2080: every read route asks for the layered view when constructed readLayered — the roster answers on an empty store", async () => {
+test("every read route asks for the layered view when constructed readLayered — the roster answers on an empty store", async () => {
   const { service, calls } = layeredSvc();
   const roster = await service.route("GET", "/profiles", STAFF);
   assert.equal(roster.status, 200, JSON.stringify(roster.json));
@@ -574,7 +574,7 @@ test("2080: every read route asks for the layered view when constructed readLaye
     "a readLayered service must never read the store dir alone");
 });
 
-test("2080: saving a SHOWN-THROUGH profile preserves its code-owned fields — the omitted-field class on the override-by-name path", async () => {
+test("saving a SHOWN-THROUGH profile preserves its code-owned fields — the omitted-field class on the override-by-name path", async () => {
   // THE PLANT THIS GUARDS: preservation resolved from the store-alone view finds no existing generic,
   // preserves from null, and the first override-by-name save silently drops frameworkPath — the
   // 2026-07-04 class arriving through the new road. The client body legitimately omits it.
@@ -587,14 +587,14 @@ test("2080: saving a SHOWN-THROUGH profile preserves its code-owned fields — t
     "the shown-through profile's code-owned framework survives a body that omits it");
 });
 
-test("2080: a fixture-built service keeps the explicit read it always had — readLayered is a construction fact, not a default", async () => {
+test("a fixture-built service keeps the explicit read it always had — readLayered is a construction fact, not a default", async () => {
   const { service, dir } = svc();
   const r = await service.route("GET", "/profiles", STAFF);
   assert.equal(r.status, 200);
   assert.ok(r.json.profiles.map((p) => p.key).includes("acme"), `the fixture roster answers from ${dir}`);
 });
 
-test("2080: THE DEPLOYMENT SHAPE, no injection — a real empty store, the real loader, the roster answers", () => {
+test("THE DEPLOYMENT SHAPE, no injection — a real empty store, the real loader, the roster answers", () => {
   // The owner's box, reproduced: CLEAROTRON_CUSTOMERS_DIR names an empty directory, the service is
   // constructed the way portal-service constructs it (readLayered), and GET /profiles must answer with
   // the shown-through generic instead of the REQUIRED refusal. Spawned, because the loader captures the

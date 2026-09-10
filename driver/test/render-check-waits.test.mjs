@@ -24,7 +24,7 @@ const src = (f) => readFileSync(join(ROOT, f), "utf8");
 // reads comments is satisfied — or tripped — by writing about the bug rather than by the bug.
 const code = (f) => src(f).split("\n").filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join("\n");
 
-test("#1809 no call site asserts absence through the THROWING findByText", () => {
+test("no call site asserts absence through the THROWING findByText", () => {
   // Converting one of these by mistake is the failure this change is most at risk against: a throwing
   // findByText on a negated site crashes on the CORRECT path, so the arm would pass only when the bug
   // is present. `!findByText(...).prop` is deliberately NOT forbidden — there the `!` negates the
@@ -43,7 +43,7 @@ test("#1809 no call site asserts absence through the THROWING findByText", () =>
   }
 });
 
-test("#1809 no wait discards its result — every settle is read or is a mustSettle", () => {
+test("no wait discards its result — every settle is read or is a mustSettle", () => {
   for (const f of FILES) {
     const bare = code(f).split("\n")
       .map((l, i) => [i + 1, l])
@@ -52,7 +52,7 @@ test("#1809 no wait discards its result — every settle is read or is a mustSet
   }
 });
 
-test("#1809 both drivers define the pair, and each names the wait it failed", () => {
+test("both drivers define the pair, and each names the wait it failed", () => {
   for (const f of FILES) {
     const s = code(f);
     assert.match(s, /const maybeByText = \(sel, re\)/, `${f}: maybeByText is missing`);
@@ -67,7 +67,7 @@ test("#1809 both drivers define the pair, and each names the wait it failed", ()
   }
 });
 
-test("#1809 the helpers behave: a miss throws naming what it missed, maybeByText stays quiet", () => {
+test("the helpers behave: a miss throws naming what it missed, maybeByText stays quiet", () => {
   // Built from the real source rather than restated here, so a change to the helper reaches this arm.
   const s = src(FILES[0]);
   const from = s.indexOf("const maybeByText");

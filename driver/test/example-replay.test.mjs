@@ -189,7 +189,7 @@ test("a missing frozen demo says what a frozen demo is and how to make one", () 
 // DRIVEN THROUGH THE REAL COMMAND, with the environment stripped, because the defect was in what the
 // command chooses rather than in what any function returns.
 
-test("277 the demo publishes every product the package ships, not just the first", () => {
+test("the demo publishes every product the package ships, not just the first", () => {
   const pool = join(mkdtempSync(join(tmpdir(), "demo-all-")), "pool");
   const r = runDemo(["--pool", pool, "--once"]);
   assert.equal(r.code, 0, `the demo exited ${r.code}:\n${r.out}`);
@@ -211,7 +211,7 @@ test("277 the demo publishes every product the package ships, not just the first
     `the command published ${shipped} and never said how many\n${r.out}`);
 });
 
-test("277 --product still narrows to one, because asking for one is a real thing to want", () => {
+test("--product still narrows to one, because asking for one is a real thing to want", () => {
   const pool = join(mkdtempSync(join(tmpdir(), "demo-one-")), "pool");
   const r = runDemo(["--product", "knockout-search", "--pool", pool, "--once"]);
   assert.equal(r.code, 0, `the demo exited ${r.code}:\n${r.out}`);

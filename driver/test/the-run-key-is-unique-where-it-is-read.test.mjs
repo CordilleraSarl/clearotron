@@ -34,7 +34,7 @@ const roots = () => {
   return { base, studioRoot: join(base, "studio"), archiveRoot: join(base, "archive") };
 };
 
-test("#1367 THE PREMISE — two runs in DIFFERENT roots draw the same codename, and the old guard cannot see it", () => {
+test("THE PREMISE — two runs in DIFFERENT roots draw the same codename, and the old guard cannot see it", () => {
   // A fixed `rand` is the honest way to state this: the existsSync pair is asked about two roots that
   // have never heard of each other, so it answers clean for both. That is the whole defect, and it is a
   // property of the SCOPE rather than of the draw.
@@ -51,7 +51,7 @@ test("#1367 THE PREMISE — two runs in DIFFERENT roots draw the same codename, 
   } finally { rmSync(a.base, { recursive: true, force: true }); rmSync(b.base, { recursive: true, force: true }); }
 });
 
-test("#1367 the claim registry makes the SECOND run take a different name", () => {
+test("the claim registry makes the SECOND run take a different name", () => {
   const a = roots(), b = roots();
   const registryPath = join(a.base, "run-codenames.jsonl");
   try {
@@ -72,7 +72,7 @@ test("#1367 the claim registry makes the SECOND run take a different name", () =
   } finally { rmSync(a.base, { recursive: true, force: true }); rmSync(b.base, { recursive: true, force: true }); }
 });
 
-test("#1367 FIRST WRITER WINS, and the loser is told — the same name claimed twice", () => {
+test("FIRST WRITER WINS, and the loser is told — the same name claimed twice", () => {
   const { base } = roots();
   const registryPath = join(base, "r.jsonl");
   try {
@@ -87,7 +87,7 @@ test("#1367 FIRST WRITER WINS, and the loser is told — the same name claimed t
   } finally { rmSync(base, { recursive: true, force: true }); }
 });
 
-test("#1367 a registry that cannot be read or written degrades to the OLD behaviour, never to a refusal", () => {
+test("a registry that cannot be read or written degrades to the OLD behaviour, never to a refusal", () => {
   // The failure mode is what shipped before this, because a run refused over its own telemetry directory
   // is a worse outcome than the collision this narrows.
   const { base } = roots();
@@ -105,7 +105,7 @@ test("#1367 a registry that cannot be read or written degrades to the OLD behavi
   } finally { rmSync(base, { recursive: true, force: true }); }
 });
 
-test("#1367 the mint still refuses a name whose RUN DIR exists — the older guard is not replaced", () => {
+test("the mint still refuses a name whose RUN DIR exists — the older guard is not replaced", () => {
   // The claim narrows; it does not take over. A same-root re-mint that hits an existing run dir is the
   // idempotency-skip hazard the header describes, and it is a different scope from the ledger's.
   const { base, studioRoot, archiveRoot } = roots();

@@ -44,7 +44,7 @@ never even given. The card's FRAME (the head, `- ord:`, `- group:`, `- source:`,
 already the driver's from the 2026-08-16 frame conversion, and the entries above described it for a
 reader rather than ordering anyone to type it.
 
-**What did NOT move, and must not be finished by a later reader:** the card's PROSE. Owner ruling S2
+**What did NOT move, and must not be finished by a later reader:** the card's PROSE. Ruling S2
 (2026-08-13) re-scoped the proposal rather than adopting it — the mechanical fields move now, and whether the
 analysis itself should be rendered is decided by EVIDENCE, one matter built both ways and read side by
 side. The transport carries the seat's sentences; it does not write them.

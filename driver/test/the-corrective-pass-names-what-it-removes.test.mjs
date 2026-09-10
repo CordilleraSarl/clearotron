@@ -37,7 +37,7 @@ function bed(preDoc, postDoc) {
     read: () => JSON.parse(readFileSync(findings, "utf8")) };
 }
 
-test("#1955 a removal no flag named is restored WHOLE from the snapshot", () => {
+test("a removal no flag named is restored WHOLE from the snapshot", () => {
   const pre = { schema_version: 7, findings: [finding(1, "ALPHA"), finding(2, "BETA"), finding(3, "GAMMA")] };
   const post = { schema_version: 7, findings: [finding(2, "BETA")] };
   const b = bed(pre, post);
@@ -55,7 +55,7 @@ test("#1955 a removal no flag named is restored WHOLE from the snapshot", () => 
   assert.deepEqual(doc.findings[2], pre.findings[2]);
 });
 
-test("#1955 a removal the reviewer DID name stays removed — by ordinal and by mark", () => {
+test("a removal the reviewer DID name stays removed — by ordinal and by mark", () => {
   // A named removal is a JUDGMENT. This function has no business reversing one; what it reverses is a
   // removal nobody stated, which is by construction one nobody reviewed.
   const pre = { schema_version: 7, findings: [finding(1, "ALPHA"), finding(2, "BETA"), finding(3, "GAMMA")] };
@@ -75,7 +75,7 @@ test("#1955 a removal the reviewer DID name stays removed — by ordinal and by 
   assert.deepEqual(byMark.read().findings.map((f) => f.mark), ["ALPHA", "BETA"]);
 });
 
-test("#1955 a top-level register that disappeared comes back, and the rule is DERIVED", () => {
+test("a top-level register that disappeared comes back, and the rule is DERIVED", () => {
   // Not a typed list of key names. A register added next year is covered the day it exists, and there is
   // no second place to remember it.
   const pre = { schema_version: 7, rated_under_framework: "fw-1", ask_answers: [{ ask: "a", answer: "b" }],
@@ -87,7 +87,7 @@ test("#1955 a top-level register that disappeared comes back, and the rule is DE
   assert.deepEqual(b.read().ask_answers, pre.ask_answers, "restored whole, not rebuilt");
 });
 
-test("#1955 THE CONTROL: a pass that legitimately GREW the record does not fire", () => {
+test("THE CONTROL: a pass that legitimately GREW the record does not fire", () => {
   // MORTY'S CONTROL, and it is the arm that stops this rule being a count check. Of five preserved runs
   // with a pre-corrective snapshot, four were clean negatives and ONE went 12 findings to 13 — a
   // corrective pass that ADDED one. A rule keyed on "the count must not fall", or on equality, would
@@ -100,7 +100,7 @@ test("#1955 THE CONTROL: a pass that legitimately GREW the record does not fire"
   assert.equal(b.read().findings.length, 13, "and the file must be left exactly as the pass wrote it");
 });
 
-test("#1955 a clean corrective pass is silent, and an edit-in-place is not a removal", () => {
+test("a clean corrective pass is silent, and an edit-in-place is not a removal", () => {
   // The overwhelming majority of passes. A repair that fires on them is noise that gets the guard turned
   // off, and it would rewrite findings.json on every run for nothing.
   const pre = { schema_version: 7, findings: [finding(1, "ALPHA"), finding(2, "BETA")] };
@@ -115,7 +115,7 @@ test("#1955 a clean corrective pass is silent, and an edit-in-place is not a rem
   assert.equal(edited.read().findings[1].net, "CORRECTED", "and the correction survives untouched");
 });
 
-test("#1955 an absence is not a pass: no snapshot and an unreadable record both decline", () => {
+test("an absence is not a pass: no snapshot and an unreadable record both decline", () => {
   const pre = { schema_version: 7, findings: [finding(1, "ALPHA")] };
   const b = bed(pre, { schema_version: 7, findings: [] });
   assert.equal(repairUnnamedRemovals(b.P, b.runDir, null, [], []), null, "no snapshot — nothing to compare against");
@@ -145,7 +145,7 @@ test("#1955 an absence is not a pass: no snapshot and an unreadable record both 
 //
 // This arm pins the placement, because the placement is the whole safety property and nothing else in
 // this file would notice it moving.
-test("#1955 the repair runs on the SUCCESS branch, so the reviewer re-read covers the repaired document", () => {
+test("the repair runs on the SUCCESS branch, so the reviewer re-read covers the repaired document", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
 
   const rollbackAt = src.indexOf("correctiveRollback = correctivePass.ok");
@@ -186,7 +186,7 @@ test("#1955 the repair runs on the SUCCESS branch, so the reviewer re-read cover
 // seat's corrected judgment and some were put back by the driver, and the reviewer cannot tell them apart
 // by looking — a restored row is a well-formed finding like any other. Weighing a driver-restored row as
 // the author's judgment is the one reading that makes the repair worse than the loss it fixes.
-test("#1955 the reviewer's re-read is TOLD which findings the driver put back", () => {
+test("the reviewer's re-read is TOLD which findings the driver put back", () => {
   assert.equal(restoredFindingsTable(null), "", "no repair — the dispatch must be byte-identical to before");
   assert.equal(restoredFindingsTable({ restoredFindings: [] }), "", "a repair that restored nothing is silent");
 

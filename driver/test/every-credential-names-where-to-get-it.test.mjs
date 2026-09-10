@@ -34,7 +34,7 @@ const GUARD = "every credential names where to get it";
 
 const enrollable = () => caseLawInventory(UNENROLLED).filter((r) => r.key === "caselaw" && r.enrolment === "oauth");
 
-test("2175-F16 the rows this arm is about exist and are unenrolled — or everything below is vacuous", () => {
+test("the rows this arm is about exist and are unenrolled — or everything below is vacuous", () => {
   const rows = enrollable();
   assert.ok(rows.length >= 2, `expected the OAuth case-law bridges; got ${rows.length}`);
   for (const r of rows) {
@@ -43,7 +43,7 @@ test("2175-F16 the rows this arm is about exist and are unenrolled — or everyt
   }
 });
 
-test("2175-F16 a source whose site this build KNOWS names it, in the remedy itself", () => {
+test("a source whose site this build KNOWS names it, in the remedy itself", () => {
   // Not "see the README". The finding is that the URL must be where the reader is standing when they
   // are asked, which is the sentence doctor prints.
   const cl = enrollable().find((r) => r.provider === "courtlistener");
@@ -56,7 +56,7 @@ test("2175-F16 a source whose site this build KNOWS names it, in the remedy itse
   assert.match(cl.remedy, /oauth-mcp-bridge\/README\.md/, "the document that completes the enrolment is no longer named");
 });
 
-test("2175-F16 a source whose site this build does NOT know says so, and invents nothing", () => {
+test("a source whose site this build does NOT know says so, and invents nothing", () => {
   // The half that is a finding rather than a fix. If somebody later writes a URL here it must come from
   // a measurement, not from this arm going quiet — so the arm asserts the absence AND the sentence.
   const ldh = enrollable().find((r) => r.provider === "legaldatahunter");
@@ -66,7 +66,7 @@ test("2175-F16 a source whose site this build does NOT know says so, and invents
   assert.match(ldh.remedy, /ask whoever provisioned the bridge/i, "the reader is not told who to ask instead of searching");
 });
 
-test("2175-F16 that absence is a MEASUREMENT of this tree, not a habit — it holds only while it is true", (ctx) => {
+test("that absence is a MEASUREMENT of this tree, not a habit — it holds only while it is true", (ctx) => {
   // The control for the arm above. It asserts nothing about wording: it reads the tracked tree the way
   // the finding did for `signa.so`, so the day somebody records the domain anywhere, this reds and the
   // table is required to catch up. Without this, "we do not know it" survives knowing it.
@@ -106,7 +106,7 @@ test("2175-F16 that absence is a MEASUREMENT of this tree, not a habit — it ho
     + "there is only correct while the product genuinely does not know where to send a reader.");
 });
 
-test("2175-F16 EUR-Lex names its site too, though it needs no enrolment", () => {
+test("EUR-Lex names its site too, though it needs no enrolment", () => {
   // It is listed precisely so a reader counting gaps can find all four. A source they can open is worth
   // a URL even when there is nothing to configure.
   const eur = caseLawInventory(UNENROLLED).find((r) => r.provider === "eur-lex");
@@ -115,7 +115,7 @@ test("2175-F16 EUR-Lex names its site too, though it needs no enrolment", () => 
   assert.equal(eur.remedy, null, "a source with nothing to configure must not grow a remedy");
 });
 
-test("2175-F16 a source that is not part of the build gets NO url — there is nowhere to send anyone", () => {
+test("a source that is not part of the build gets NO url — there is nowhere to send anyone", () => {
   // The control against "put a link on every row". The Boards of Appeal have no adapter; a signup URL
   // there would invite a reader to enrol with something this build cannot use.
   const boards = caseLawInventory(UNENROLLED).find((r) => r.provider === "euipo-boards-of-appeal");

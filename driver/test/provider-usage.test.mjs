@@ -230,7 +230,7 @@ test("AUDIT #172/4 — a real tally reports how many ledger rows it actually sca
 // UNION across register providers and exactly one is wired per run (REGISTER_PROVIDER) — under signa six
 // entries have no stamp site at all, and clarivate deliberately serves no phoneme tool. A per-provider
 // dead entry is expected, not drift.
-test("#249: KINDS covers every kind the MCP servers stamp — the list cannot silently fall behind", () => {
+test("KINDS covers every kind the MCP servers stamp — the list cannot silently fall behind", () => {
   const mcpDir = join(HERE, "..", "engine", "mcp");
   const servers = readdirSync(mcpDir).filter((f) => f.endsWith("-server.mjs"));
   assert.ok(servers.length >= 3, `expected the MCP server sources at ${mcpDir}; found ${servers.length} — the scrape is looking in the wrong place`);
@@ -252,7 +252,7 @@ test("#249: KINDS covers every kind the MCP servers stamp — the list cannot si
 // The coupling that had no test at all: the per-kind counters are derived from KINDS, so a kind can never
 // be classifiable-but-uncounted. Before this, `out[row.tool]++` on such a kind was undefined++ → NaN →
 // `null` in status.json, with unclassified stuck at 0 because KINDS.includes() had already passed.
-test("#249: every KINDS entry is a live counter — a classifiable kind can never tally NaN", () => {
+test("every KINDS entry is a live counter — a classifiable kind can never tally NaN", () => {
   const empty = tallyRegisterCalls("/no/such/ledger.jsonl", RUN);
   for (const k of KINDS) assert.equal(empty[k], 0, `KINDS entry "${k}" has no counter in emptyTally — it would tally NaN and stringify as null`);
   const t = tallyRows(KINDS.map((k) => row({ tool: k })));

@@ -50,7 +50,7 @@ function cancelSites() {
   return out;
 }
 
-test("#1090 every site that writes a CANCELLED terminal states why — none of them nulls the reason", (ctx) => {
+test("every site that writes a CANCELLED terminal states why — none of them nulls the reason", (ctx) => {
   const sites = cancelSites();
   if (!sites) return ctx.skip(NO_CORPUS);
   assert.ok(sites.length >= 4,
@@ -72,7 +72,7 @@ test("#1090 every site that writes a CANCELLED terminal states why — none of t
     + `passing only what the site actually knows.`);
 });
 
-test("#1090 the builder and the reader agree, and the reader rejects what is not a stop", () => {
+test("the builder and the reader agree, and the reader rejects what is not a stop", () => {
   // ONE PREFIX, TWO USERS. A writer that composes the string and a reader that matches it by hand are two
   // copies of one rule, and they drift. This pins that they are the same rule.
   assert.ok(isStopReason(stopReason()), "the reader does not recognise the builder's own output");
@@ -83,7 +83,7 @@ test("#1090 the builder and the reader agree, and the reader rejects what is not
     assert.equal(isStopReason(notAStop), false, `a non-stop reason read as a stop: ${JSON.stringify(notAStop)}`);
 });
 
-test("#1090 the builder states only what it was given — it never invents a door or an actor", () => {
+test("the builder states only what it was given — it never invents a door or an actor", () => {
   // The four sites know different things: the MCP path knows who asked and through which door, the
   // pipeline paths know the interrupted stage, the runner's parked path knows neither. A builder that
   // padded the missing parts would make a status.json claim provenance nobody recorded, which is the

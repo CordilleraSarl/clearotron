@@ -66,7 +66,7 @@ import { drainPosture, CONTINUOUS } from "./drain-posture.mjs";   // one rule ab
  */
 export function queueWatchVerdict({ queueDirs, watched, unitPath, unitError = null, resolveError = null, timer = null, worker = null } = {}) {
   // ── THE POSTURE QUESTION COMES FIRST, because after the retirement it decides whether the rest of
-  // this function is even asking about anything (; owner ruling 2026-08-26, restated
+  // this function is even asking about anything (; ruling 2026-08-26, restated
   // 2026-08-31). The arrival trigger and the timer were two halves of ONE posture. The worker drains
   // continuously under --watch, so on a box in that posture there is no arrival to trigger and no
   // schedule to wait for, and every finding below would be describing the absence of machinery this

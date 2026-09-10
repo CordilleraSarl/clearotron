@@ -57,7 +57,7 @@ function looksInternal(s) {
   return new Function("s", `return (${m[1]}).test(s)`)(s);
 }
 
-test("#614 arm 1 — the delivered string is recognised as internal; a plain sentence is not", () => {
+test("arm 1 — the delivered string is recognised as internal; a plain sentence is not", () => {
   assert.ok(DELIVERED.length <= 140,
     "premise: it was INSIDE the length floor, which is why length alone never caught it");
   assert.equal(looksInternal(DELIVERED), true,
@@ -66,7 +66,7 @@ test("#614 arm 1 — the delivered string is recognised as internal; a plain sen
     "over-widening costs the reader the one case where the engine's own words help");
 });
 
-test("#614 arm 2 — the card says it cannot be resumed from here", () => {
+test("arm 2 — the card says it cannot be resumed from here", () => {
   // The owner's actual requirement: "today a user cannot tell whether to wait or act". A paused run
   // resumes on its own; a recovering one is already retrying; a failed one is neither.
   const t = live("portal-ui/src/contract/failure.ts");
@@ -77,7 +77,7 @@ test("#614 arm 2 — the card says it cannot be resumed from here", () => {
     "the unknown-stage fallback must say it too, or the worst-informed card is the quietest");
 });
 
-test("#614 arm 3 — home.ts routes `failed` through the mapper, like RiskDot does", () => {
+test("arm 3 — home.ts routes `failed` through the mapper, like RiskDot does", () => {
   const t = live("portal-ui/src/contract/home.ts");
   assert.match(t, /readableFailure\(r\.failedStage, r\.reason\)\.headline/,
     "the failed branch returned the engine's string; every other branch is a written sentence");
@@ -95,7 +95,7 @@ test("#614 arm 3 — home.ts routes `failed` through the mapper, like RiskDot do
   assert.ok(importers.length > 1, `failure.ts must have more than one consumer, got ${importers.length}`);
 });
 
-test("#614 arm 4 — the payload is its own field, from the throw site to the status file", () => {
+test("arm 4 — the payload is its own field, from the throw site to the status file", () => {
   const e = new StageFailure("common-law", "merged half-grids failed the canonical validator", undefined,
     { detail: "connotation_undisposed:KIN-ZY wikipedia", quantity: 6 });
   assert.equal(e.reason, "merged half-grids failed the canonical validator", "the sentence carries no payload");
@@ -113,7 +113,7 @@ test("#614 arm 4 — the payload is its own field, from the throw site to the st
   assert.match(pl, /state: "failed"[\s\S]{0,600}?reasonDetail: reasonDetailField/, "…and write it beside `reason` in status.json");
 });
 
-test("#614 arm 5 — taking the census out of the message does NOT blind the convergence ledger", () => {
+test("arm 5 — taking the census out of the message does NOT blind the convergence ledger", () => {
   // repairs.mjs reads the count out of the message prose. Move the payload without stamping `quantity`
   // and progressQuantity returns null, progress.kind becomes "unknown", and a run converging 29 → 11
   // reads as plateaued — its recovery ladder ends early, silently. added `quantity` for exactly
@@ -129,7 +129,7 @@ test("#614 arm 5 — taking the census out of the message does NOT blind the con
     "the count must ride as its own field, or the ladder loses the only number it converges on");
 });
 
-test("#614 arm 6 — a client session sees neither the reason nor the payload", () => {
+test("arm 6 — a client session sees neither the reason nor the payload", () => {
   const t = live("driver/portal-service.mjs");
   assert.match(t, /reason: CLIENT_FAILURE_NOTE, reasonDetail: null, reasonRedacted: true/,
     "the redaction must take the new field with it — a second field carrying the engine's raw words "

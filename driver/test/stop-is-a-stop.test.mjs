@@ -27,7 +27,7 @@ const runDirFixture = () => {
   return d;
 };
 
-test("2076 the engine child is written down, read back, and cleared when its turn ends", () => {
+test("the engine child is written down, read back, and cleared when its turn ends", () => {
   const dir = runDirFixture();
   assert.equal(readEngineChild(dir), null, "a run with no turn in flight has nothing to target");
 
@@ -41,7 +41,7 @@ test("2076 the engine child is written down, read back, and cleared when its tur
   assert.equal(readEngineChild(dir), null, "the record must not outlive the turn");
 });
 
-test("2076 a slow-exiting child cannot erase the record of the one that replaced it", () => {
+test("a slow-exiting child cannot erase the record of the one that replaced it", () => {
   // Narrow race, and "narrow" is how the next reader inherits a stop that signals a process which
   // finished ten minutes ago. The clear is conditional on the record still naming this pid.
   const dir = runDirFixture();
@@ -52,7 +52,7 @@ test("2076 a slow-exiting child cannot erase the record of the one that replaced
   assert.equal(clearEngineChild(dir, 200), true, "its own child still clears it");
 });
 
-test("2076 liveness is pid AND starttime, because the thing done with the answer is a signal", () => {
+test("liveness is pid AND starttime, because the thing done with the answer is a signal", () => {
   // pid reuse is the whole reason the starttime is recorded. On a box up for days a bare pid can name
   // something else entirely by the time anyone reads it — and this decides who gets SIGTERM.
   const live = { pid: 7, starttime: "s1" };
@@ -66,7 +66,7 @@ test("2076 liveness is pid AND starttime, because the thing done with the answer
   assert.equal(engineChildIsLive({ pid: 0, starttime: "s" }), false);
 });
 
-test("2076 recording is best effort and never fatal — a dispatch that cannot write it must still run", () => {
+test("recording is best effort and never fatal — a dispatch that cannot write it must still run", () => {
   // Failing here costs a stop that falls back to the boundary, which is the behaviour that shipped for
   // a year. Throwing here costs the run. The asymmetry decides the failure direction.
   const dir = runDirFixture();
@@ -76,7 +76,7 @@ test("2076 recording is best effort and never fatal — a dispatch that cannot w
   assert.equal(recordEngineChild(dir, -1), false);
 });
 
-test("2076 THE ORDERING: the sentinel is written before the signal, never after", () => {
+test("THE ORDERING: the sentinel is written before the signal, never after", () => {
   // ACCEPTANCE 3, and it is the load-bearing one. The sentinel is what makes the kill clean — the
   // gateway finds an already-recorded cancel instead of an unexplained dead child, and writes a proper
   // terminal with attribution rather than the `state:running` orphan. Reversed, this change becomes
@@ -103,7 +103,7 @@ test("2076 THE ORDERING: the sentinel is written before the signal, never after"
     "no process-name search may appear in the stop path");
 });
 
-test("2076 an immediate stop with nothing to end falls back to the boundary AND SAYS SO", () => {
+test("an immediate stop with nothing to end falls back to the boundary AND SAYS SO", () => {
   // Acceptance 5. Silence here would be the second silent thing on the same control: the presser asked
   // for an immediate stop, did not get one, and must not be told they did.
   const src = readFileSync(

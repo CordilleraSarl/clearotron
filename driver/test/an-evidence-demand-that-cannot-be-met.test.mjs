@@ -29,20 +29,20 @@ import { livePassages } from "../connotation-search.mjs";
 const LIVE = "The applicant's mark is used on retail services for clothing and footwear in Switzerland.";
 const DEAD = "...";
 
-test("#1100 the fixture is real — LIVE quotes and DEAD does not, by the binder's own measure", () => {
+test("the fixture is real — LIVE quotes and DEAD does not, by the binder's own measure", () => {
   // Without this the arms below could all pass over a fixture the binder would reject anyway, which is the
   // vacuous shape every one of them exists to catch elsewhere.
   assert.ok(livePassages(LIVE).length >= 1, "the LIVE fixture carries no quotable passage");
   assert.equal(livePassages(DEAD).length, 0, "the DEAD fixture is quotable — the arms below prove nothing");
 });
 
-test("#1100 a demand whose candidates carry nothing quotable is UNSATISFIABLE", () => {
+test("a demand whose candidates carry nothing quotable is UNSATISFIABLE", () => {
   const row = { row_id: "r1", quote_required: true, candidates: [{ receipt_id: "rc1", snippet: DEAD }] };
   assert.equal(evidenceSatisfiable(row, {}), false);
   assert.equal(evidenceSatisfiable({ ...row, candidates: [{ receipt_id: "rc1", snippet: LIVE }] }, {}), true);
 });
 
-test("#1100 BEFORE a ruling, ANY candidate with a live passage makes the demand satisfiable", () => {
+test("BEFORE a ruling, ANY candidate with a live passage makes the demand satisfiable", () => {
   // A demand is only impossible when no choice the seat could make would work. Testing the first candidate
   // alone would refuse rows the seat can still discharge by picking a different receipt.
   const row = { row_id: "r1", quote_required: true,
@@ -50,7 +50,7 @@ test("#1100 BEFORE a ruling, ANY candidate with a live passage makes the demand 
   assert.equal(evidenceSatisfiable(row, {}), true);
 });
 
-test("#1100 AFTER a ruling only the CHOSEN receipt counts — a live sibling does not rescue it", () => {
+test("AFTER a ruling only the CHOSEN receipt counts — a live sibling does not rescue it", () => {
   // Once the seat has ruled, `segmentBinding` reads that receipt's snippet and no other. Pooling the
   // siblings here would call a row satisfiable that the enforcement end will refuse — the two ends
   // disagreeing again, in the direction that keeps the live-lock.
@@ -60,7 +60,7 @@ test("#1100 AFTER a ruling only the CHOSEN receipt counts — a live sibling doe
   assert.equal(evidenceSatisfiable(row, { receipt_id: "rc2" }), true);
 });
 
-test("#1100 the outstanding row CARRIES the answer, so the two ends cannot drift apart again", () => {
+test("the outstanding row CARRIES the answer, so the two ends cannot drift apart again", () => {
   const canonical = [{ row_id: "r1", quote_required: true, candidates: [{ receipt_id: "rc1", snippet: DEAD }] }];
   const [row] = outstandingWithAnchors(canonical, []);
   assert.equal(row.evidence_owed, true);
@@ -68,7 +68,7 @@ test("#1100 the outstanding row CARRIES the answer, so the two ends cannot drift
     "the outstanding path still reports a demand the call path would refuse as impossible");
 });
 
-test("#1100 a SATISFIABLE demand says so explicitly — absent is not false", () => {
+test("a SATISFIABLE demand says so explicitly — absent is not false", () => {
   // Written whenever evidence is owed, including `false`. An omitted key cannot be told from a row emitted
   // before this existed, and the answer branches on it.
   const canonical = [{ row_id: "r1", quote_required: true, candidates: [{ receipt_id: "rc1", snippet: LIVE }] }];
@@ -77,7 +77,7 @@ test("#1100 a SATISFIABLE demand says so explicitly — absent is not false", ()
   assert.equal(row.evidence_unsatisfiable, false);
 });
 
-test("#1100 a row owing NO evidence carries no verdict about evidence it does not owe", () => {
+test("a row owing NO evidence carries no verdict about evidence it does not owe", () => {
   const canonical = [{ row_id: "r1", quote_required: false, candidates: [{ receipt_id: "rc1", snippet: DEAD }] }];
   const [row] = outstandingWithAnchors(canonical, []);
   assert.equal(row.evidence_owed, false);
@@ -85,7 +85,7 @@ test("#1100 a row owing NO evidence carries no verdict about evidence it does no
     "a row that owes no evidence was given an opinion about whether it could supply it");
 });
 
-test("#1100 the ANSWER stops demanding the impossible, and names the remedy the refusal path already gives", () => {
+test("the ANSWER stops demanding the impossible, and names the remedy the refusal path already gives", () => {
   // The live-lock, closed. Before this the seat was told to supply a fragment on a row where no fragment
   // can bind — the one instruction it cannot follow — and nothing in the answer said so.
   const impossible = callAnswer({ accepted: [], refused: [], overflow: [] },
@@ -104,7 +104,7 @@ test("#1100 the ANSWER stops demanding the impossible, and names the remedy the 
   assert.doesNotMatch(ordinary, /CANNOT be evidenced/);
 });
 
-test("#1100 a row with no verdict at all keeps the ordinary demand — this never fails toward silence", () => {
+test("a row with no verdict at all keeps the ordinary demand — this never fails toward silence", () => {
   // Archived forms and pure-core callers emit rows without the field. Reading a missing verdict as
   // "unsatisfiable" would tell a seat to give up on rows it could have evidenced.
   const legacy = callAnswer({ accepted: [], refused: [], overflow: [] },

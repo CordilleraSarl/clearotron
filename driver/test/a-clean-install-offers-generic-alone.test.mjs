@@ -40,7 +40,7 @@ const onDisk = () => readdirSync(PROFILES).filter((f) => f.endsWith(".json")).ma
 const marked = (key) => JSON.parse(readFileSync(join(PROFILES, `${key}.json`), "utf8"))?.testFixture === true;
 const demoMarked = (key) => JSON.parse(readFileSync(join(PROFILES, `${key}.json`), "utf8"))?.demoData === true;
 
-test("335 every bundled profile is either offered or marked as a fixture — no third state", () => {
+test("every bundled profile is either offered or marked as a fixture — no third state", () => {
   // The set-level half. A new profile added to this directory is one or the other, and saying which is
   // the deliberate act; a file that is neither would ship to a customer unnoticed, which is the defect.
   assert.deepEqual(onDisk(), [...OFFERED, ...DEMO, ...FIXTURES].sort(),
@@ -50,15 +50,15 @@ test("335 every bundled profile is either offered or marked as a fixture — no 
   for (const k of OFFERED) assert.notEqual(marked(k), true, `${k}.json is offered to users and must not be marked`);
 });
 
-test("342 a resolved roster offers Generic ALONE — not the demo, not a test account", () => {
-  // The behavioural half, and the acceptance as the user met it: what the picker would list. Owner
-  // ruling 2026-09-08 — nobody should have to clean demo material out of an install they just made.
+test("a resolved roster offers Generic ALONE — not the demo, not a test account", () => {
+  // The behavioural half, and the acceptance as the user met it: what the picker would list. Ruling
+  // 2026-09-08 — nobody should have to clean demo material out of an install they just made.
   const keys = [...loadProfiles({ force: true, includeTestFixtures: false, includeDemo: false }).keys()].sort();
   assert.deepEqual(keys, OFFERED,
     "a clean install's brand-owner list must be exactly Generic");
 });
 
-test("342 the demo asks, and gets its own account — the gate is not a one-way door", () => {
+test("the demo asks, and gets its own account — the gate is not a one-way door", () => {
   // Without this arm the one above is satisfied by a loader that returns Generic to everybody, which
   // would pass while making the demo unusable. A refusal proves nothing until the grant is shown too.
   const keys = [...loadProfiles({ force: true, includeTestFixtures: false, includeDemo: true }).keys()].sort();
@@ -66,7 +66,7 @@ test("342 the demo asks, and gets its own account — the gate is not a one-way 
     "the demo must reach the account whose reports it exists to show");
 });
 
-test("342 asking for FIXTURES still yields fixtures, though they are demo data too", () => {
+test("asking for FIXTURES still yields fixtures, though they are demo data too", () => {
   // Every shipped profile but Generic carries `demoData`, so a demo gate applied to all of them would
   // silently swallow a roster somebody asked for by name. The more specific flag decides.
   const keys = [...loadProfiles({ force: true, includeTestFixtures: true, includeDemo: false }).keys()].sort();
@@ -74,13 +74,13 @@ test("342 asking for FIXTURES still yields fixtures, though they are demo data t
     "a caller that asked for the fixtures must receive them, not an empty-handed pass");
 });
 
-test("335 the suite reaches every fixture under the key its baselines use", () => {
+test("the suite reaches every fixture under the key its baselines use", () => {
   // Acceptance 3. Asked for by name, so the ask is visible at the call site rather than ambient.
   const keys = [...loadProfiles({ force: true, includeTestFixtures: true, includeDemo: true }).keys()].sort();
   assert.deepEqual(keys, [...OFFERED, ...DEMO, ...FIXTURES].sort());
 });
 
-test("335 a fixture's projects do not break the walk on an install that cannot see the fixture", () => {
+test("a fixture's projects do not break the walk on an install that cannot see the fixture", () => {
   // The refusal this could have produced is a hard startup failure, not a wrong list: the projects walk
   // throws by name when a project directory has no customer, and a fixture's projects sit in the same
   // checkout as the fixture. On a clone install the roster no longer has the customer, so the product's
@@ -93,7 +93,7 @@ test("335 a fixture's projects do not break the walk on an install that cannot s
   }
 });
 
-test("342 the gate is on the BUNDLED layer — a store somebody curated keeps its own demo account", () => {
+test("the gate is on the BUNDLED layer — a store somebody curated keeps its own demo account", () => {
   // `demoData` means two things depending on where the file is. In the bundled directory it means "our
   // demo account". In a deployment's OWN store it means "this account is fiction, do not let it spend" —
   // which is what the admission wall reads it for, and that account is there because somebody put it
@@ -113,7 +113,7 @@ test("342 the gate is on the BUNDLED layer — a store somebody curated keeps it
     "…while the bundled demo account is still refused, which is the ruling this gate exists for");
 });
 
-test("342 the demo's own projects are skipped when hidden, and reachable when asked for", () => {
+test("the demo's own projects are skipped when hidden, and reachable when asked for", () => {
   // The skip must be CONDITIONAL. An unconditional one would pass the arm above while making the demo's
   // projects permanently invisible, including to the demo — a refusal and a grant are two measurements.
   const hidden = loadProjects({ force: true, profiles: loadProfiles({ force: true, includeDemo: false }) });
@@ -125,7 +125,7 @@ test("342 the demo's own projects are skipped when hidden, and reachable when as
     "the demo must reach its own projects; skipping them unconditionally would hide them from it too");
 });
 
-test("335 the fixtures' own projects ARE reachable when the fixtures are", () => {
+test("the fixtures' own projects ARE reachable when the fixtures are", () => {
   const roster = loadProfiles({ force: true, includeTestFixtures: true });
   const keys = [...loadProjects({ force: true, profiles: roster }).keys()];
   assert.ok(keys.some((k) => k.startsWith("aurora/")),

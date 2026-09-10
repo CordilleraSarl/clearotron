@@ -13,7 +13,7 @@
 // fallback. That fallback survives — for archived runs published before report-data.json existed — and it
 // now says so in the brief instead of being indistinguishable from the real thing. The client-summary
 // branch is deleted, and with it the `**Recommendation:** …` line that only it emitted: the deliverable
-// carries prioritized facts and never advice (owner ruling 2026-07-28) — the recipient is a lawyer who
+// carries prioritized facts and never advice (ruling 2026-07-28) — the recipient is a lawyer who
 // layers advice on top. The line is gone by construction, not suppressed.
 //
 // THE PRODUCT NAME IS DERIVED, NEVER STORED AND NEVER HARDCODED. Every run used to announce itself as

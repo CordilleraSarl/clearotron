@@ -24,7 +24,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const scratch = () => mkdtempSync(join(process.env.TMPDIR || tmpdir(), "unit-files-"));
 
-test("#685 the walk finds unit files outside driver/systemd/, which is the whole point", () => {
+test("the walk finds unit files outside driver/systemd/, which is the whole point", () => {
   const w = findUnitFiles(ROOT);
   assert.equal(w.error, null);
   // Named, not counted: a count assertion passes on the wrong four files.
@@ -40,7 +40,7 @@ test("#685 the walk finds unit files outside driver/systemd/, which is the whole
   }
 });
 
-test("#685 an unreadable root is an ERROR, not an empty list", () => {
+test("an unreadable root is an ERROR, not an empty list", () => {
   const w = findUnitFiles(join(ROOT, "no-such-directory-anywhere"));
   assert.match(w.error, /walk could not start/);
   assert.deepEqual(w.files, []);
@@ -49,7 +49,7 @@ test("#685 an unreadable root is an ERROR, not an empty list", () => {
   assert.ok(w.error && w.files.length === 0, "empty AND explained, so a caller can tell which zero it has");
 });
 
-test("#685 an unreadable subtree is recorded, so a hole cannot pass as an absence", () => {
+test("an unreadable subtree is recorded, so a hole cannot pass as an absence", () => {
   const root = scratch();
   try {
     mkdirSync(join(root, "open"));
@@ -70,7 +70,7 @@ test("#685 an unreadable subtree is recorded, so a hole cannot pass as an absenc
   }
 });
 
-test("#685 a basename at two paths is REPORTED, never silently resolved", () => {
+test("a basename at two paths is REPORTED, never silently resolved", () => {
   const root = scratch();
   try {
     for (const d of ["one", "two"]) {
@@ -84,7 +84,7 @@ test("#685 a basename at two paths is REPORTED, never silently resolved", () => 
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#685 node_modules is pruned — a dependency's unit file is not a unit this repo ships", () => {
+test("node_modules is pruned — a dependency's unit file is not a unit this repo ships", () => {
   const root = scratch();
   try {
     mkdirSync(join(root, "node_modules", "somepkg"), { recursive: true });
@@ -97,7 +97,7 @@ test("#685 node_modules is pruned — a dependency's unit file is not a unit thi
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#685 every unit kind systemd loads is in scope, so a new kind is found and not skipped", () => {
+test("every unit kind systemd loads is in scope, so a new kind is found and not skipped", () => {
   const root = scratch();
   try {
     for (const s of UNIT_SUFFIXES) writeFileSync(join(root, `x${s}`), "[Unit]\n");
@@ -109,7 +109,7 @@ test("#685 every unit kind systemd loads is in scope, so a new kind is found and
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#685 the depth cap RECORDS what it refused to walk, rather than truncating quietly", () => {
+test("the depth cap RECORDS what it refused to walk, rather than truncating quietly", () => {
   // A cap that returns silently is a walk that stops finding files and says nothing — the exact shape
   // this module exists to refuse, hiding inside the guard meant to keep it safe.
   const root = scratch();
@@ -125,7 +125,7 @@ test("#685 the depth cap RECORDS what it refused to walk, rather than truncating
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test("#685 a tree with no unit file returns an empty list and NO error — the caller decides", () => {
+test("a tree with no unit file returns an empty list and NO error — the caller decides", () => {
   const root = scratch();
   try {
     writeFileSync(join(root, "README.md"), "nothing here\n");

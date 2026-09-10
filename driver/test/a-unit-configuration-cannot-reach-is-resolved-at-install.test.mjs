@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // / 1876 — THREE UNITS CARRY A LITERAL CONFIGURATION CANNOT REACH.
 //
-// Owner ruling 2026-08-25, option B: the installer writes resolved copies into ~/.config/systemd/user/
+// Ruling 2026-08-25, option B: the installer writes resolved copies into ~/.config/systemd/user/
 // and the tracked units stay generic. `render-units.mjs` is that installer step; these arms are what
 // stop it from becoming the thing it replaced — a mechanism somebody has to remember.
 //
@@ -26,7 +26,7 @@ import { trackedUnits, unitsNeedingRender, placeholdersIn, renderUnit, resolveVa
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 // ── THE AGREEMENT, IN BOTH DIRECTIONS ────────────────────────────────────────────────────────────
-test("1876: every unit that needs rendering is declared, and everything declared needs rendering", () => {
+test("every unit that needs rendering is declared, and everything declared needs rendering", () => {
   const needing = new Set(unitsNeedingRender(ROOT).map((u) => u.name));
   const declared = new Set(UNIT_INVENTORY.flatMap((e) => e.resolved ?? []));
 
@@ -65,7 +65,7 @@ test("1876: every unit that needs rendering is declared, and everything declared
 });
 
 // ── THE DEFECT THE TOOL FOUND ON ITS OWN FIRST RUN ───────────────────────────────────────────────
-test("1876: a placeholder in a COMMENT does not demand a value", () => {
+test("a placeholder in a COMMENT does not demand a value", () => {
   // profile-service.service explains the convention in prose. The first cut of the scanner read the
   // `@NAME@` in that sentence as a required value, so a unit that DOCUMENTED the mechanism could not be
   // rendered. Found by running the tool, not by an arm — which is why there is now an arm.
@@ -86,7 +86,7 @@ test("1876: a placeholder in a COMMENT does not demand a value", () => {
 });
 
 // ── REFUSE, NEVER PARTIAL ────────────────────────────────────────────────────────────────────────
-test("1876: a missing value refuses the whole unit — a half-resolved unit starts and misbehaves", () => {
+test("a missing value refuses the whole unit — a half-resolved unit starts and misbehaves", () => {
   const CHECKOUT = "CLEAROTRON_CHECKOUT_DIR";
   const WORK = "CLEAROTRON_WORK_DIR";
   const unit = `[Service]\nExecStart=/usr/bin/node @${CHECKOUT}@/x.mjs\nWorkingDirectory=@${WORK}@\n`;
@@ -99,7 +99,7 @@ test("1876: a missing value refuses the whole unit — a half-resolved unit star
 });
 
 // ── AN ABSENCE IS A FINDING ──────────────────────────────────────────────────────────────────────
-test("1876: values are read from the environment file the units themselves load", () => {
+test("values are read from the environment file the units themselves load", () => {
   const dir = mkdtempSync(join(tmpdir(), "render-units-"));
   const envFile = join(dir, ".env");
   writeFileSync(envFile, 'CLEAROTRON_CHECKOUT_DIR="/srv/app"\n# a comment\nexport CLEAROTRON_WORK_DIR=/srv/work\n');
@@ -115,7 +115,7 @@ test("1876: values are read from the environment file the units themselves load"
 });
 
 // ── THE CENSUS, AS A STANDING CHECK ──────────────────────────────────────────────────────────────
-test("1863: no tracked unit names the directory the working home was cut from", () => {
+test("no tracked unit names the directory the working home was cut from", () => {
   // The config STORE is a different repository whose name did not change; four correct lines in
   // profile-service.service name it, and a check that matched the bare string would have condemned
   // them. Reading a count instead of the lines is exactly the mistake this arm is written against.

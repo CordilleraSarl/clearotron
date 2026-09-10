@@ -561,7 +561,7 @@ async function render(offer, have, { dryRun, running, allowMove = false }) {
     return 0;
   }
 
-  // ── AN ADDRESS ROUTE ALWAYS MINTS NOW (owner ruling 2026-09-03,) ─────────────
+  // ── AN ADDRESS ROUTE ALWAYS MINTS NOW (ruling 2026-09-03,) ─────────────
   //
   // This used to be `if (offer.enables)` — mint only when the row said the door still had to be turned
   // on. Under settled point 2 the door auto-starts, so no row asks for that any more and every offer

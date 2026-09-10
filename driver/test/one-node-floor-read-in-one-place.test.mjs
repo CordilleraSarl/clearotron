@@ -12,12 +12,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { declaredRange, floorOf, meetsFloor, partsOf, nodeFloorVerdict } from "../../shared/node-floor.mjs";
 
-test("364 the floor is READ from the manifest, never restated", () => {
+test("the floor is READ from the manifest, never restated", () => {
   const declared = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")).engines.node;
   assert.equal(declaredRange(), declared, "the module must answer with the manifest's own range");
 });
 
-test("364 a MAJOR-ONLY comparison is what let 22.12 through, and this does not repeat it", () => {
+test("a MAJOR-ONLY comparison is what let 22.12 through, and this does not repeat it", () => {
   const floor = floorOf(">=22.13.0");
   assert.equal(meetsFloor("22.12.0", floor), false, "22.12 carries no node:sqlite and must be refused");
   assert.equal(meetsFloor("22.13.0", floor), true, "the floor itself is supported");
@@ -33,20 +33,20 @@ test("364 a MAJOR-ONLY comparison is what let 22.12 through, and this does not r
   assert.equal(meetsFloor("20.19.0", floor), false);
 });
 
-test("364 22.9 is not above 22.13 — the comparison is numeric, not lexical", () => {
+test("22.9 is not above 22.13 — the comparison is numeric, not lexical", () => {
   // A string compare puts "22.9" after "22.13", which is the classic way a floor check passes the
   // versions it exists to stop.
   assert.equal(meetsFloor("22.9.0", floorOf(">=22.13.0")), false);
 });
 
-test("364 the shipped floor is at or above the release that carries node:sqlite", () => {
+test("the shipped floor is at or above the release that carries node:sqlite", () => {
   // Measured 2026-09-08: absent in 22.4.1, 22.5.0 (flagged only), 22.10.0, 22.11.0 and 22.12.0;
   // unflagged from 22.13.0. A floor below that ships the failure this issue is about.
   const [maj, min] = floorOf(declaredRange());
   assert.ok(maj > 22 || (maj === 22 && min >= 13), `the declared floor ${declaredRange()} is below 22.13.0`);
 });
 
-test("364 a RUNNING version this cannot read is a PASS, and the DECLARED range is not", () => {
+test("a RUNNING version this cannot read is a PASS, and the DECLARED range is not", () => {
   // The two unreadables point opposite ways on purpose. A version string this parser does not
   // understand must not be the reason an install fails — that turns a parser gap into an outage on a
   // Node that is probably fine. Our own manifest is the other case: unreadable there is a real defect.
@@ -56,7 +56,7 @@ test("364 a RUNNING version this cannot read is a PASS, and the DECLARED range i
   assert.throws(() => floorOf("^22.13.0"), /does not understand/, "a caret range is guessed at by nobody");
 });
 
-test("364 the reader takes every spelling of the floor we might write, and guesses at none", () => {
+test("the reader takes every spelling of the floor we might write, and guesses at none", () => {
   // Written down because the number is now in one place and whoever edits it should not have to know
   // which spelling the readers accept. All three short forms mean the same floor.
   assert.deepEqual(floorOf(">=22"), [22, 0, 0]);
@@ -68,7 +68,7 @@ test("364 the reader takes every spelling of the floor we might write, and guess
   assert.throws(() => floorOf(undefined), /does not understand/);
 });
 
-test("364 the install gate names the version, the requirement and the one command", () => {
+test("the install gate names the version, the requirement and the one command", () => {
   // The gate is the thing a person meets, so its text is what is asserted — not a helper's string.
   const src = readFileSync(new URL("../../scripts/preinstall-node-check.mjs", import.meta.url), "utf8");
   assert.match(src, /nvm install 22/, "the command that fixes it");

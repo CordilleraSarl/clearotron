@@ -151,7 +151,7 @@ test("two-level rule: the skill files teach the same contract, never the retired
 // What a string test CAN hold is the two-level rule. The ruling lives in PROSE_VOICE and the mirrors in
 // the four files stages.mjs names; a rule added at one level and lost at the other is exactly the drift
 // that put a "recommended action" in the caption for two rounds.
-test("#762 — the reader-owns-every-noun rule rides the contract at both levels", () => {
+test("the reader-owns-every-noun rule rides the contract at both levels", () => {
   assert.match(PROSE_VOICE, /THE READER OWNS EVERY NOUN/, "level 1 states the ruling");
   assert.match(PROSE_VOICE, /DESCRIBE the thing/,
     "…with the positive instruction — a rule that only forbids leaves the writer nothing to write");
@@ -181,7 +181,7 @@ test("#762 — the reader-owns-every-noun rule rides the contract at both levels
   }
 });
 
-test("#762 — the review step reads for it, and needs no new machinery to do so", () => {
+test("the review step reads for it, and needs no new machinery to do so", () => {
   const refutation = msg("narrative-refutation", { intakeAsks: [] });
   assert.match(refutation, /READER-OWNED NOUNS/, "the lens rides the stage that already reviews the narrative");
   assert.match(refutation, /JUDGE MEANING IN CONTEXT, NEVER THE WORD/,
@@ -199,7 +199,7 @@ test("#762 — the review step reads for it, and needs no new machinery to do so
     "…and places it in the verdict logic — an unclassified flag has no disposition");
 });
 
-test("#243 — neither level asks for a second summary of a finding it already summarised", () => {
+test("neither level asks for a second summary of a finding it already summarised", () => {
   // This test used to pin a budget: "### The read" at 2 sentences / ~120 words, stated identically by
   // the skill and the stage. retired the section instead of re-tuning it. It was the THIRD
   // condensation of one finding — beside the card's own `- one:` line and the typed `net` — and a budget

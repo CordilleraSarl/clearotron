@@ -62,7 +62,7 @@ const at = (needle) => {
   return i;
 };
 
-test("#947 IDENTITY IS SEEDED BEFORE BOTH PREFLIGHTS — the ordering IS the fix", () => {
+test("IDENTITY IS SEEDED BEFORE BOTH PREFLIGHTS — the ordering IS the fix", () => {
   const seed = at('state: "running", lane: "knockout",');
   const countRefusal = at("const refusal = countPreflight({");
   assert.ok(seed < countRefusal,
@@ -70,7 +70,7 @@ test("#947 IDENTITY IS SEEDED BEFORE BOTH PREFLIGHTS — the ordering IS the fix
     + "write status before identity exists");
 });
 
-test("#1223 the research-credential door does not refuse, and a reintroduced throw would be caught here", () => {
+test("the research-credential door does not refuse, and a reintroduced throw would be caught here", () => {
   // The arm that used to order this door against the seed. Pinned as an ABSENCE rather than deleted,
   // because deleting it would let the throw come back silently — and a throw here writes a status.json
   // with no `ref`, which is the orphaning bug exists to stop. An absence assertion is the only
@@ -85,14 +85,14 @@ test("#1223 the research-credential door does not refuse, and a reintroduced thr
     + "every mark per call, and die all-failed after the paid frame turn");
 });
 
-test("#947 the seed carries `ref`, which is the ONLY key discovery matches on", () => {
+test("the seed carries `ref`, which is the ONLY key discovery matches on", () => {
   const block = SRC.slice(at("writeRunStatus(ctx, {\n      schema: 1, id: job.id, runId,"), at('state: "running", lane: "knockout",') + 60);
   assert.match(block, /ref: job\.ref \?\? null/, "without this the run is invisible, not merely untokened");
   assert.match(block, /runId/);
   assert.match(block, /id: job\.id/);
 });
 
-test("#947 the seed claims NO progress it has not made", () => {
+test("the seed claims NO progress it has not made", () => {
   // An identity seed that stamped a step, a verdict or a delivered state would be asserting work that
   // has not happened — trading an invisible run for a lying one.
   const block = SRC.slice(at("writeRunStatus(ctx, {\n      schema: 1, id: job.id, runId,"), at('state: "running", lane: "knockout",') + 60);
@@ -100,7 +100,7 @@ test("#947 the seed claims NO progress it has not made", () => {
     assert.ok(!block.includes(forbidden), `the identity seed must not carry \`${forbidden}\``);
 });
 
-test("#947 the full seat-flow seed still runs, and still after the preflights", () => {
+test("the full seat-flow seed still runs, and still after the preflights", () => {
   // The fix ADDS a seed; it does not move the existing one. The step flow depends on `probeWanted`,
   // which the register preflight computes, so hoisting the whole seed was never available.
   const identity = at('state: "running", lane: "knockout",');

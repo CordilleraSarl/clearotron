@@ -54,7 +54,7 @@ const RETRIEVED = [
 
 // ── the defect, restated as a measurement ────────────────────────────────────────────────────────────
 
-test("#1322 THE BLIND SPOT IS REAL: withheld stays 0 while two retrieved marks never reach the findings", () => {
+test("THE BLIND SPOT IS REAL: withheld stays 0 while two retrieved marks never reach the findings", () => {
   const buckets = scoreRecall({
     reference: REFERENCE,
     findings: [{ mark: "MIRANTHEAA", source_type: "register" }],
@@ -68,14 +68,14 @@ test("#1322 THE BLIND SPOT IS REAL: withheld stays 0 while two retrieved marks n
     assert.equal(seen.has(m), false, `${m} reached a bucket — the loop is no longer reference-driven`);
 });
 
-test("#1322 …and the scope measure NAMES them, on the same inputs", () => {
+test("…and the scope measure NAMES them, on the same inputs", () => {
   const ws = withheldScope({ reference: REFERENCE, retrieved: RETRIEVED });
   assert.equal(ws.outside, 2, "the two marks the reference does not name are not being counted");
   assert.match(ws.note, /2 other retrieved marks are outside this measure entirely/);
   assert.match(ws.note, /of 2 reference marks/, "the line must say what the 0 IS scoped to, not only what it misses");
 });
 
-test("#1322 DISTINCT MARKS, not records — one mark on six records is one thing unseen", () => {
+test("DISTINCT MARKS, not records — one mark on six records is one thing unseen", () => {
   // `DELPHIC RESEARCH` appears on two records above. Counting records would inflate the blind spot by
   // the register's own duplication, and a number that moves with record volume invites a conclusion.
   const ws = withheldScope({ reference: REFERENCE, retrieved: RETRIEVED });
@@ -85,7 +85,7 @@ test("#1322 DISTINCT MARKS, not records — one mark on six records is one thing
 
 // ── three answers, never two ─────────────────────────────────────────────────────────────────────────
 
-test("#1322 an EMPTY corpus is its own answer, not the reassuring one", () => {
+test("an EMPTY corpus is its own answer, not the reassuring one", () => {
   // The trap inside the fix. "Nothing sits outside this measure" is vacuously true of an empty corpus
   // and reads as a clean result — which is this issue's defect, recreated one layer in.
   const ws = withheldScope({ reference: REFERENCE, retrieved: [] });
@@ -96,19 +96,19 @@ test("#1322 an EMPTY corpus is its own answer, not the reassuring one", () => {
     "an empty corpus is reading as the everything-is-accounted-for case");
 });
 
-test("#1322 a corpus the reference fully names says so, with the count", () => {
+test("a corpus the reference fully names says so, with the count", () => {
   const ws = withheldScope({ reference: [{ mark: "MIRANTHEAA" }], retrieved: [{ mark: "MIRANTHEAA" }] });
   assert.equal(ws.outside, 0);
   assert.match(ws.note, /all 1 retrieved mark is named by the reference/);
 });
 
-test("#1322 register-only says NOTHING rather than a scope it cannot compute", () => {
+test("register-only says NOTHING rather than a scope it cannot compute", () => {
   // The caller already prints the collapse reason on that row. A second sentence claiming a scope would
   // contradict the one that says the measure could not run at all.
   assert.equal(withheldScope({ reference: REFERENCE, retrieved: RETRIEVED, registerOnly: true }).note, "");
 });
 
-test("#1322 junk in, no throw — this is a harness", () => {
+test("junk in, no throw — this is a harness", () => {
   for (const args of [{}, { reference: null, retrieved: null }, { retrieved: [null, 7, { mark: "" }] }])
     assert.doesNotThrow(() => withheldScope(args), JSON.stringify(args));
   assert.equal(withheldScope({ retrieved: [null, 7, { mark: "  " }] }).retrievedMarks, 0,
@@ -117,7 +117,7 @@ test("#1322 junk in, no throw — this is a harness", () => {
 
 // ── the line itself ──────────────────────────────────────────────────────────────────────────────────
 
-test("#1322 the scorer prints the scope ON the withheld row, not in a footnote", () => {
+test("the scorer prints the scope ON the withheld row, not in a footnote", () => {
   // Asserted on the source: driving the CLI needs a run directory and a reference. The claim made here
   // is the one that can be made honestly — the row is built from the measure rather than from a bare
   // count, which is the property whose absence is the whole issue.

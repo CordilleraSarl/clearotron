@@ -27,7 +27,7 @@ const START = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
 
 // ── THE VALUE IS NEVER PERSISTED, WHICH IS THE PART THAT COULD HAVE GONE WRONG ─────────────────────
 
-test("2175-F10 the passphrase is NOT part of the composed portal environment", () => {
+test("the passphrase is NOT part of the composed portal environment", () => {
   // THE WHOLE RISK OF THIS CHANGE, IN ONE ARM. `--background` writes the union of the composed child
   // environments into the units' env file. A passphrase placed in `envs.portal` would therefore become
   // a permanent PLAINTEXT copy on disk — and the product's own sentence, "it is stored only as a
@@ -48,7 +48,7 @@ test("2175-F10 the passphrase is NOT part of the composed portal environment", (
   }
 });
 
-test("2175-F10 it is handed at the SPAWN CALL, structurally out of reach of the union", () => {
+test("it is handed at the SPAWN CALL, structurally out of reach of the union", () => {
   // Asserted at source because the seam is which object the value is placed in, and an arm that only
   // checked the composed env would pass on a version that filtered it out of the union afterwards —
   // a filter a later author can drop without noticing, where an absent key cannot be dropped.
@@ -61,7 +61,7 @@ test("2175-F10 it is handed at the SPAWN CALL, structurally out of reach of the 
     "if the union stops being built from the composed blocks, this arm's reasoning no longer holds");
 });
 
-test("2175-F10 ONE generator, so there is one entropy decision", () => {
+test("ONE generator, so there is one entropy decision", () => {
   const a = newPassphrase();
   const b = newPassphrase();
   assert.notEqual(a, b, "two mints must not produce the same secret");
@@ -73,7 +73,7 @@ test("2175-F10 ONE generator, so there is one entropy decision", () => {
 
 // ── THE BLOCK ITSELF ───────────────────────────────────────────────────────────────────────────────
 
-test("2175-F10 a FIRST start prints the address and the passphrase adjacent, in a frame", () => {
+test("a FIRST start prints the address and the passphrase adjacent, in a frame", () => {
   const block = START.slice(START.indexOf("if (mintedPassphrase) {"), START.indexOf("} else {", START.indexOf("if (mintedPassphrase) {")));
   assert.match(block, /Open\s+\$\{envs\.url\}/, "the address must be in the block");
   assert.match(block, /Passphrase\s+\$\{mintedPassphrase\}/,
@@ -92,7 +92,7 @@ test("2175-F10 a FIRST start prints the address and the passphrase adjacent, in 
   assert.match(block, /┌|└|│/, "the block must be framed, not another prefixed line in the same register");
 });
 
-test("2175-F10 the summary no longer sends the reader back up into the log", () => {
+test("the summary no longer sends the reader back up into the log", () => {
   // Comments excluded, as in the retired-claims arm: the phrase legitimately appears in the two
   // comments explaining why it went, and a check that could not tell prose from output would forbid
   // this file from recording its own reason.
@@ -108,7 +108,7 @@ test("2175-F10 the summary no longer sends the reader back up into the log", () 
     "the comments explaining the retirement are expected to survive — if they are gone, so is the reason");
 });
 
-test("2175-F10 a LATER start still says the truth, and does not claim to reprint", () => {
+test("a LATER start still says the truth, and does not claim to reprint", () => {
   // F22's fix, kept. On every start after the first the passphrase was minted days ago, possibly to a
   // terminal nobody watched, and a block promising a value would send the reader looking for one that
   // is not there. The branch is chosen by whether THIS run minted, not by whether a file exists now.

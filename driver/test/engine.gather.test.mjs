@@ -93,7 +93,7 @@ test("toolGroupsForStage: gather stages → groups; judgment stages → none", (
 // simply cannot call anything, and a prompt that ordered a live check reads as a model that declined to.
 // That shipped once already (register-digest's prompt ordered live register checks while this map gave it
 // no register tools). Every stage must now resolve to tools OR be declared tool-free WITH A REASON.
-test("#249: every stage either holds tool groups or is DECLARED tool-free — nothing falls into the catch-all", () => {
+test("every stage either holds tool groups or is DECLARED tool-free — nothing falls into the catch-all", () => {
   const stages = Object.keys(STAGES);
   assert.ok(stages.length > 10, `only ${stages.length} stages — this guard is sweeping nothing`);
   const silent = stages.filter((s) => toolGroupsForStage(s).length === 0 && !(s in TOOL_FREE_STAGES));

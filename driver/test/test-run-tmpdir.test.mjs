@@ -125,7 +125,7 @@ const until = async (pred, ms = 15000, every = 50) => {
 };
 
 for (const sig of ["SIGTERM", "SIGINT"]) {
-  test(`#1763 a run cancelled with ${sig} removes its root — the cancel-in-progress path`, async () => {
+  test(`a run cancelled with ${sig} removes its root — the cancel-in-progress path`, async () => {
     const base = mkdtempSync(join(tmpdir(), "testrun-spec-"));
     try {
       const child = spawnLongRun(base);
@@ -139,7 +139,7 @@ for (const sig of ["SIGTERM", "SIGINT"]) {
   });
 }
 
-test("#1763 a cancel that lands during SETUP still removes the root — ownership precedes the mkdtemp", async () => {
+test("a cancel that lands during SETUP still removes the root — ownership precedes the mkdtemp", async () => {
   // THE ARMS ABOVE POLL AT 50ms AND LAND AFTER THE WINDOW. This one signals at the first instant the
   // root exists, which is what a runner's `cancel-in-progress` does on a superseded push: it does not
   // wait for the wrapper to finish wiring itself up.
@@ -180,7 +180,7 @@ test("#1763 a cancel that lands during SETUP still removes the root — ownershi
     + "before it owns the directory it just created");
 });
 
-test("#1763 SIGKILL leaves its root — and the NEXT run's sweep is what collects it", async () => {
+test("SIGKILL leaves its root — and the NEXT run's sweep is what collects it", async () => {
   const base = mkdtempSync(join(tmpdir(), "testrun-spec-"));
   try {
     const child = spawnLongRun(base);
@@ -206,7 +206,7 @@ test("#1763 SIGKILL leaves its root — and the NEXT run's sweep is what collect
   } finally { rmSync(base, { recursive: true, force: true }); }
 });
 
-test("#1763 CT_TESTRUN_STALE_MS moves the floor, and CI is what sets it", () => {
+test("CT_TESTRUN_STALE_MS moves the floor, and CI is what sets it", () => {
   withBase((base) => {
     const stale = join(base, "ct-testrun-ORPHAN");
     mkdirSync(stale);

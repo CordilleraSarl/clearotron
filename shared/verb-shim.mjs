@@ -7,7 +7,7 @@
 // directory, and got `npm error could not determine executable to run`. Not our error, naming no
 // product, suggesting no fix. `npx` resolves a local package by walking UP from the current directory
 // to find node_modules, so every command this product prints worked only where the reader happened to
-// be standing. Owner ruling, 2026-08-26: put the verb on PATH.
+// be standing. Ruling, 2026-08-26: put the verb on PATH.
 //
 // WHY A PER-USER SHIM AND NOT `npm link`. `npm link` writes to npm's global prefix, which on a default
 // install is `/usr` and refuses without root (recorded, which is why that issue

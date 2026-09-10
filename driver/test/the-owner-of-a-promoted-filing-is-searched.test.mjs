@@ -13,7 +13,7 @@
 //   1. THE BOUND. One promoted filing on the issue's own run means ONE extra query on a 5–10 minute
 //      product. A bound that silently widens turns a screen into a per-filing billing surface, and the
 //      widening is invisible in a green test that only checks a query happened.
-//   2. THE OUTAGE. Owner ruling A, 2026-09-07: the report still delivers with an honest "no result" on
+//   2. THE OUTAGE. Ruling A, 2026-09-07: the report still delivers with an honest "no result" on
 //      any row the lookup could not answer; the cite is enforced, its absence never refuses delivery.
 //      A happy-path-only test passes on a change that refuses on outage, which is the one outcome the
 //      owner ruled against.
@@ -48,7 +48,7 @@ const doc = (records, over = {}) => ({
 
 // ── the bound, which is what the ruling is about ─────────────────────────────────────────────────────
 
-test("276: the issue's own run owes exactly ONE query", () => {
+test("the issue's own run owes exactly ONE query", () => {
   const owed = ownersOwedACheck(doc([rec()]));
   assert.equal(owed.length, 1, "one promoted filing, one owner, one query");
   assert.equal(owed[0].owner, "Lumenreed GmbH");
@@ -57,7 +57,7 @@ test("276: the issue's own run owes exactly ONE query", () => {
 
 // A portfolio holder with nine filings is ONE question, not nine. Without this the bound is per-filing
 // and the cost scales with the register rather than with the assessment.
-test("276: many filings by one owner are one query, and the join still reaches every filing", () => {
+test("many filings by one owner are one query, and the join still reaches every filing", () => {
   const many = Array.from({ length: 9 }, (_, i) => rec({ recordId: `R-${i}` }));
   const owed = ownersOwedACheck(doc(many));
   assert.equal(owed.length, 1, "nine filings, one owner, one query");
@@ -66,7 +66,7 @@ test("276: many filings by one owner are one query, and the join still reaches e
 
 // The ruled trigger: a PROMOTED record only — not dead, in an instructed class. A dead filing is not a
 // live right and does not justify the spend.
-test("276: a dead filing and an out-of-class filing owe nothing", () => {
+test("a dead filing and an out-of-class filing owe nothing", () => {
   assert.equal(ownersOwedACheck(doc([rec({ status: "Expired", owner: "Dead Co" })])).length, 0,
     "a dead filing is not a live right");
   assert.equal(ownersOwedACheck(doc([rec({ classes: [30], owner: "Elsewhere Ltd" })])).length, 0,
@@ -77,7 +77,7 @@ test("276: a dead filing and an out-of-class filing owe nothing", () => {
   assert.deepEqual(ownersOwedACheck({ unavailable: "provider down" }), [], "an unavailable register owes none");
 });
 
-test("276: the number of queries is capped whatever the register returns", () => {
+test("the number of queries is capped whatever the register returns", () => {
   const owners = Array.from({ length: 12 }, (_, i) => rec({ recordId: `R-${i}`, owner: `Owner ${i} Ltd` }));
   assert.equal(ownersOwedACheck(doc(owners)).length, OWNER_CHECK_CAP,
     "the page shows at most this many promoted filings, so querying past it buys nothing a reader sees");
@@ -85,7 +85,7 @@ test("276: the number of queries is capped whatever the register returns", () =>
 
 // ── the query itself ─────────────────────────────────────────────────────────────────────────────────
 
-test("276: the query is scoped to owner + mark + field, and asks what the owner SELLS", () => {
+test("the query is scoped to owner + mark + field, and asks what the owner SELLS", () => {
   const q = composeOwnerQuery({ owner: "Lumenreed GmbH", mark: "IRONWHISK", classes: [5, 9] });
   assert.match(q, /Lumenreed GmbH/);
   assert.match(q, /IRONWHISK/);
@@ -97,7 +97,7 @@ test("276: the query is scoped to owner + mark + field, and asks what the owner 
 
 // ── the outage path — the arm the owner's ruling turns on ────────────────────────────────────────────
 
-test("276 acceptance 5: a provider outage yields rows saying so, and NEVER throws", async () => {
+test("acceptance 5: a provider outage yields rows saying so, and NEVER throws", async () => {
   const owed = ownersOwedACheck(doc([rec()]));
   const throwing = async () => { throw new Error("429 Too Many Requests"); };
 
@@ -108,7 +108,7 @@ test("276 acceptance 5: a provider outage yields rows saying so, and NEVER throw
   assert.match(rows[0].cause, /429|threw/, "and the cause is recorded rather than swallowed");
 });
 
-test("276: an executor that resolves not-ok is the same story, and still no throw", async () => {
+test("an executor that resolves not-ok is the same story, and still no throw", async () => {
   const owed = ownersOwedACheck(doc([rec()]));
   const rows = await runOwnerChecks({ owners: owed, exec: async () => ({ ok: false, cause: "provider unreachable", outage: true }), runDir: null });
   assert.equal(rows[0].ok, false);
@@ -118,7 +118,7 @@ test("276: an executor that resolves not-ok is the same story, and still no thro
 
 // A ROW EXISTS FOR EVERY OWNER OWED A CHECK, answered or not. An owner with no row would be
 // indistinguishable from an owner nobody owed a check to — the absence-reads-as-a-pass shape.
-test("276: every owner owed a check gets a row, so a gap can never read as a clean result", async () => {
+test("every owner owed a check gets a row, so a gap can never read as a clean result", async () => {
   const owed = ownersOwedACheck(doc([rec({ recordId: "R-A", owner: "A Ltd" }), rec({ recordId: "R-B", owner: "B Ltd" })]));
   assert.equal(owed.length, 2);
   let n = 0;
@@ -129,7 +129,7 @@ test("276: every owner owed a check gets a row, so a gap can never read as a cle
   assert.equal(rows[1].source, NO_RESULT, "the unanswered one says so, in the clearance lane's words");
 });
 
-test("276: the source is the first URL in the payload, and a payload with none is not a clean negative", async () => {
+test("the source is the first URL in the payload, and a payload with none is not a clean negative", async () => {
   assert.equal(firstSourceUrl("see https://x.example/page, and more"), "https://x.example/page");
   assert.equal(firstSourceUrl("no links here at all"), null);
   const owed = ownersOwedACheck(doc([rec()]));
@@ -138,7 +138,7 @@ test("276: the source is the first URL in the payload, and a payload with none i
     "an answer we cannot point at is reported as no result rather than as an uncited finding");
 });
 
-test("276: the payload is saved beside the mark payloads so the assess stage can read it", async () => {
+test("the payload is saved beside the mark payloads so the assess stage can read it", async () => {
   const d = mkdtempSync(join(tmpdir(), "ko-owner-"));
   mkdirSync(join(d, "research"), { recursive: true });
   const owed = ownersOwedACheck(doc([rec()]));
@@ -173,13 +173,13 @@ const html = (ownerChecks) => renderKnockoutHtml(findingsDoc(), FW, {
   runId: "tmp1-fixture", overall: "Manageable", registerRecords: doc([rec()]), ownerChecks,
 });
 
-test("276 acceptance 2: the card cites where the owner's trade was looked up", () => {
+test("acceptance 2: the card cites where the owner's trade was looked up", () => {
   const out = html([CHECK]);
   assert.match(out, /Use-check source:/, "the clearance lane's own label, not a second wording");
   assert.match(out, /lumenreed\.example\/about/, "and the source the driver actually got");
 });
 
-test("276: an unanswered lookup prints the honest literal, not a silent omission", () => {
+test("an unanswered lookup prints the honest literal, not a silent omission", () => {
   const out = html([{ ...CHECK, ok: false, source: NO_RESULT, payloadFile: null }]);
   assert.match(out, /Use-check source:/);
   assert.match(out, /perplexity_research — no result/, "the clearance lane's wording for an honest non-answer");
@@ -188,7 +188,7 @@ test("276: an unanswered lookup prints the honest literal, not a silent omission
 // THE THIRD STATE, and it is the one a two-state test misses. A run that owed no check must print NO
 // line at all: a "no result" line on a filing nobody was asked about would claim a search that never ran,
 // which is precisely the defect this issue exists to remove.
-test("276: a filing this run owed no check prints no source line at all", () => {
+test("a filing this run owed no check prints no source line at all", () => {
   const out = html([]);
   assert.doesNotMatch(out, /Use-check source:/,
     "silence, because a no-result line here would assert a search that was never made");
@@ -196,7 +196,7 @@ test("276: a filing this run owed no check prints no source line at all", () => 
   assert.doesNotMatch(other, /Use-check source:/, "and the join is by recordId, not by position");
 });
 
-test("276: report-data carries the source, in the same three states as the card", () => {
+test("report-data carries the source, in the same three states as the card", () => {
   const withCheck = knockoutReportData(findingsDoc(), FW, {
     runId: "r", overall: "Manageable", identity: {}, registerCounts: null,
     registerRecords: doc([rec()]), ownerChecks: [CHECK], matter: "r",
@@ -213,7 +213,7 @@ test("276: report-data carries the source, in the same three states as the card"
 });
 
 // An archived run predating this lane must republish byte-identically: no store, no line, no change.
-test("276: an archived run with no owner-check store renders exactly as it was delivered", () => {
+test("an archived run with no owner-check store renders exactly as it was delivered", () => {
   assert.equal(html(undefined), html([]), "undefined and empty behave the same");
   assert.doesNotMatch(html(undefined), /Use-check source:/);
 });

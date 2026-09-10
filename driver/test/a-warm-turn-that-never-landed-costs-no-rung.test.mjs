@@ -65,7 +65,7 @@ async function ladder(tag, turnsAfterFirst, { maxRetries = "2" } = {}) {
   return { turns: n, attempts: readJsonl("synthesis.jsonl"), run: readJsonl("run.jsonl") };
 }
 
-test("#789 a warm turn that never reached the model does not cost a rung", async () => {
+test("a warm turn that never reached the model does not cost a rung", async () => {
   const { turns, attempts, run } = await ladder("free", NEVER_LANDED);
 
   // The premise this rests on: attempt 2 IS the warm one and it recorded no usage.
@@ -88,7 +88,7 @@ test("#789 a warm turn that never reached the model does not cost a rung", async
   assert.equal(rung[0].free_rungs_max, 1);
 });
 
-test("#789 THE CONTROL — a warm turn that DID reach the model still costs its rung", async () => {
+test("THE CONTROL — a warm turn that DID reach the model still costs its rung", async () => {
   // The refund must key on "never answered", not on "failed". A turn that burned tokens and produced a
   // wrong answer has spent real money and a real rung, and refunding it would buy retries with no bound
   // at all — the failure mode the concession is bounded to avoid.
@@ -102,7 +102,7 @@ test("#789 THE CONTROL — a warm turn that DID reach the model still costs its 
     "a turn that reached the model must raise no rung decision at all");
 });
 
-test("#789 THE CONTROL — a COLD turn with no usage is not refunded either", async () => {
+test("THE CONTROL — a COLD turn with no usage is not refunded either", async () => {
   // Only the WARM rung is at issue. A cold attempt that dies at startup is the ordinary failure the
   // ladder exists to absorb, and refunding it would make every ladder unbounded.
   const { turns, run } = await ladder("cold", NEVER_LANDED, { maxRetries: "0" });
@@ -110,7 +110,7 @@ test("#789 THE CONTROL — a COLD turn with no usage is not refunded either", as
   assert.equal(run.filter((r) => r.event === "warm-rung").length, 0);
 });
 
-test("#789 the charging branch cannot fire today, and the bound is why it exists", () => {
+test("the charging branch cannot fire today, and the bound is why it exists", () => {
   // HONEST ABOUT REACH. `warm` requires `!warmUsed`, and `warmUsed` is set the moment one fires, so a
   // ladder gets AT MOST ONE warm turn — there is no second zero-usage warm turn to charge. An arm
   // claiming to exercise that branch would be exercising a fiction.

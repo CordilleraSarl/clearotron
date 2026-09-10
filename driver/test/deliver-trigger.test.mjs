@@ -213,7 +213,7 @@ test("rescan manufactures a marker for an owed run and the same activation deliv
 // Both arms assert the REPORTED OUTCOME, not merely a clean stderr. Initialising `remaining=()` before
 // the loop would silence the shell error while announcing "0 event(s) still pending" over a populated
 // outbox — the same wrong answer in a quieter voice.
-test("#830 DRAIN_WAIT=0 and the courier consumed everything: the drain is reported, not an unbound-variable error", SHELL_GATE, () => {
+test("DRAIN_WAIT=0 and the courier consumed everything: the drain is reported, not an unbound-variable error", SHELL_GATE, () => {
   const h = makeHarness();
   assert.equal(h.env.CLEAROTRON_OUTBOX_DRAIN_WAIT, "0", "this arm is about the zero — the harness must be setting it");
   h.setMode("ok-consume");
@@ -223,7 +223,7 @@ test("#830 DRAIN_WAIT=0 and the courier consumed everything: the drain is report
   assert.match(r.stdout, /prelim-outbox: drained/, "the drain outcome reaches the journal");
 });
 
-test("#830 DRAIN_WAIT=0 with an event left behind: the retained COUNT is reported", SHELL_GATE, () => {
+test("DRAIN_WAIT=0 with an event left behind: the retained COUNT is reported", SHELL_GATE, () => {
   const h = makeHarness();
   h.setMode("clawdi-only");   // clawdi's wake settles ok (woke_ok=1); otherbot's marker is left pending
   writeFileSync(join(h.outbox, "run-c.pending"), "clawdi\n");

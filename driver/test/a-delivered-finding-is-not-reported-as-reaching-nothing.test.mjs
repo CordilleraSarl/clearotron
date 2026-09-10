@@ -38,14 +38,14 @@ function runWith({ subjects, arrivals }) {
 const COMPOSITE = "Delphinus Medical Technologies — SoftVue breast ultrasound device";
 const SOURCE_URL = "https://clinicaltrials.gov/study/NCT03257839";
 
-test("2051 the em-dash separates a name from its description, so the entity is a join key", () => {
+test("the em-dash separates a name from its description, so the entity is a join key", () => {
   const frs = nameFragments(COMPOSITE);
   assert.ok(frs.includes("Delphinus Medical Technologies"),
     `the entity must be testable on its own; got ${JSON.stringify(frs)}`);
   assert.ok(frs.length >= 2, "and the description stays a fragment too — more fragments can only move a row toward ARRIVED");
 });
 
-test("2051 a delivered common-law finding is not reported as reaching nothing", () => {
+test("a delivered common-law finding is not reported as reaching nothing", () => {
   // The identifier deliberately does NOT travel — that is the real shape: the source URL appears only
   // on the common-law surface. The entity name is what arrives, and it is what must be found.
   const dir = runWith({
@@ -59,7 +59,7 @@ test("2051 a delivered common-law finding is not reported as reaching nothing", 
   assert.equal(r.subjects, 1, "…and it was actually examined, not skipped out of the population");
 });
 
-test("2051 A REAL DROP IS STILL REPORTED — the fix must not be `stop reporting`", () => {
+test("A REAL DROP IS STILL REPORTED — the fix must not be `stop reporting`", () => {
   const dir = runWith({
     subjects: [
       { name: COMPOSITE, url: SOURCE_URL },                                  // arrives
@@ -76,7 +76,7 @@ test("2051 A REAL DROP IS STILL REPORTED — the fix must not be `stop reporting
   assert.match(r.lost[0].subject, /Kurena Bioscience/, "and it must be the one that genuinely dropped");
 });
 
-test("2051 a subject naming nothing testable is UNMEASURABLE, never `reached none`", () => {
+test("a subject naming nothing testable is UNMEASURABLE, never `reached none`", () => {
   // The distinction this whole issue is about: "we could not join it" is not "the product lost it".
   const dir = runWith({ subjects: [{ name: "—", url: "" }], arrivals: [] });
   const r = carryThrough(dir);

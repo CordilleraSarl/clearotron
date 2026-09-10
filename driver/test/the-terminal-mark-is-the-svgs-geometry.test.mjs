@@ -29,7 +29,7 @@ const columnsOf = (cells, kind) => {
   return [...cols].sort((a, b) => a - b);
 };
 
-test("2175 the output follows a geometry that is NOT the mark — the control against a literal", () => {
+test("the output follows a geometry that is NOT the mark — the control against a literal", () => {
   // If this function returned a hard-coded picture, every arm that only looks at the real constants
   // would still pass. Nothing here is the real mark: one square, moved.
   const box = { x: 0, y: 0, width: 24, height: 24 };
@@ -46,7 +46,7 @@ test("2175 the output follows a geometry that is NOT the mark — the control ag
   assert.equal(tall.filter((r) => r.some(Boolean)).length, 3);
 });
 
-test("2175 move the block and the block moves — the accent part is read, not assumed", () => {
+test("move the block and the block moves — the accent part is read, not assumed", () => {
   // `block` is the ONE part that takes the accent. A renderer that drew the brackets from data and the
   // block from a remembered position would pass every bracket arm here.
   const at = (x) => columnsOf(bracketAsciiCells({ cols: 12, rows: 6, trim: false, rects: [], block: { x, y: 0, width: 4, height: 24 } }), "block");
@@ -55,7 +55,7 @@ test("2175 move the block and the block moves — the accent part is read, not a
   assert.deepEqual(at(20), [10, 11]);
 });
 
-test("2175 EVERY part of the real mark reaches the screen at the size that ships", () => {
+test("EVERY part of the real mark reaches the screen at the size that ships", () => {
   // The arms are 2 units of 24 and the stems are 2 of 24. A grid coarse enough to be a sensible banner
   // is exactly coarse enough to lose them, and the loss reads as a design choice: `| |` instead of
   // `[ ]`. So each of the seven parts must be load-bearing — remove it and the picture must change.
@@ -69,7 +69,7 @@ test("2175 EVERY part of the real mark reaches the screen at the size that ships
   }
 });
 
-test("2175 a change to the geometry changes the mark, which is the whole point of generating it", () => {
+test("a change to the geometry changes the mark, which is the whole point of generating it", () => {
   // The anti-drift claim, stated as a test: the picture cannot stay still while the constant moves.
   const widened = BRACKET_RECTS.map((r) => (r.width === 2 ? { ...r, width: 4 } : r));
   assert.notEqual(draw(bracketAsciiCells({ rects: widened })), draw(bracketAsciiCells()));
@@ -77,7 +77,7 @@ test("2175 a change to the geometry changes the mark, which is the whole point o
   assert.notEqual(draw(bracketAsciiCells({ block: shifted })), draw(bracketAsciiCells()));
 });
 
-test("2175 what comes out is KINDS — no glyph and no escape code leaves the geometry module", () => {
+test("what comes out is KINDS — no glyph and no escape code leaves the geometry module", () => {
   // `brand.mjs` has no business holding an opinion about what a tty can draw or may colour. If a glyph
   // ever leaks into here, the terminal's fallback story is decided in the wrong file.
   for (const row of bracketAsciiCells({ cols: 30, rows: 15 })) {
@@ -85,7 +85,7 @@ test("2175 what comes out is KINDS — no glyph and no escape code leaves the ge
   }
 });
 
-test("2175 the real mark reads as a bracket pair enclosing a block", () => {
+test("the real mark reads as a bracket pair enclosing a block", () => {
   // The golden. It documents what ships and is deliberately the LAST claim here, not the first: on its
   // own it is satisfied by the hand-drawn copy the finding forbids.
   assert.equal(draw(bracketAsciiCells()), [
@@ -100,7 +100,7 @@ test("2175 the real mark reads as a bracket pair enclosing a block", () => {
   assert.equal(BRACKET_VIEWBOX, "0 0 24 24", "the golden above is sampled over this box");
 });
 
-test("2175 trimming removes empty MARGIN — a gap inside the shape survives it", () => {
+test("trimming removes empty MARGIN — a gap inside the shape survives it", () => {
   // The discriminating case, because the real mark has no interior gap and so cannot show this.
   // Filtering out every empty row instead of walking in from the edges closes a hole in the MIDDLE of
   // a shape: the picture stops following the constant, in the one function whose whole job is that it
@@ -125,7 +125,7 @@ test("2175 trimming removes empty MARGIN — a gap inside the shape survives it"
     "the real mark has no interior gap, so trimming it must lose only the blank rows");
 });
 
-test("2175 a grid that cannot be drawn is refused by name, not silently rounded", () => {
+test("a grid that cannot be drawn is refused by name, not silently rounded", () => {
   for (const [opts, wanted] of [
     [{ cols: 0 }, /cols must be a positive integer/],
     [{ rows: -3 }, /rows must be a positive integer/],
@@ -137,7 +137,7 @@ test("2175 a grid that cannot be drawn is refused by name, not silently rounded"
   ]) assert.throws(() => bracketAsciiCells(opts), wanted, `${JSON.stringify(opts)} was accepted`);
 });
 
-test("2175 the mark reads with colour OFF, because that is the path CI and every log takes", () => {
+test("the mark reads with colour OFF, because that is the path CI and every log takes", () => {
   // The block takes the accent in the SVG. In a pipe there is no accent, so the block has to be told
   // apart by its GLYPH — otherwise the enclosed square disappears into the brackets exactly where a
   // log or a CI transcript is the only record anyone has.
@@ -148,7 +148,7 @@ test("2175 the mark reads with colour OFF, because that is the path CI and every
   assert.ok(out.includes(MARK_GLYPHS.bracket) && out.includes(MARK_GLYPHS.block), "the mark did not print");
 });
 
-test("2175 the box is a rectangle around the MARK too, coloured or not", () => {
+test("the box is a rectangle around the MARK too, coloured or not", () => {
   // The frame used to be sized from the title alone. A mark wider than the title then hangs out of the
   // box it is in — and with colour on, padding measured off a string full of escape codes breaks the
   // other way, on the one path a piped test never sees.
@@ -164,7 +164,7 @@ test("2175 the box is a rectangle around the MARK too, coloured or not", () => {
   }
 });
 
-test("2175 the mark is the first thing dropped when the box would not fit the pane", () => {
+test("the mark is the first thing dropped when the box would not fit the pane", () => {
   // A box that wraps is worse than a box with no logo in it: at 60 columns a 65-column frame folds and
   // he sees neither the mark nor the sentence. The fallback must be TODAY'S banner exactly — this
   // finding adds a surface on a wide terminal, it does not change what a narrow one gets.
@@ -182,7 +182,7 @@ test("2175 the mark is the first thing dropped when the box would not fit the pa
   assert.equal(framed(undefined).join("\n"), framed(Infinity).join("\n"), "an absent width dropped the mark");
 });
 
-test("2175 the mark's block is coloured differently from a refusal", () => {
+test("the mark's block is coloured differently from a refusal", () => {
   // `err` means a refusal. The mark's accent is decoration, and the two sharing a code is how a logo
   // ends up reading as an error the first time anyone looks at a screenshot.
   const s = styleFor({ stream: TTY, env: {} });
@@ -191,7 +191,7 @@ test("2175 the mark's block is coloured differently from a refusal", () => {
   assert.equal(styleFor({ stream: PIPE, env: {} }).accent("x"), "x", "accent must be identity off a terminal");
 });
 
-test("2175 a banner with NO mark is unchanged — this finding adds a surface, it does not move one", () => {
+test("a banner with NO mark is unchanged — this finding adds a surface, it does not move one", () => {
   const style = styleFor({ stream: PIPE, env: {} });
   assert.equal(banner({ title: "Clearotron setup", subtitle: "about five minutes", style }),
     ["┌────────────────────┐",

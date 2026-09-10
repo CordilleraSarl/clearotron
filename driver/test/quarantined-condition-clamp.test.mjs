@@ -110,7 +110,7 @@ test("NEGATIVE CONTROL — the predicate is not a constant", () => {
 // are two populations, and when they disagree the lane accepts a defect it cannot describe to anybody.
 // `salvageRepairTargets` is that decision in one place so the disagreement is assertable here rather
 // than only reachable by driving a whole run to exhaustion.
-test("#1101: every repairable family is COUNTED, and a clean parse counts zero", () => {
+test("every repairable family is COUNTED, and a clean parse counts zero", () => {
   // findings: [] deliberately — the per-family cases below each plant exactly one malformed object, so
   // a valid finding in the base would only add a way for this test to fail for an unrelated reason.
   //
@@ -137,7 +137,7 @@ test("#1101: every repairable family is COUNTED, and a clean parse counts zero",
   }
 });
 
-test("#1101: NEGATIVE CONTROL — the counter is not a constant and tolerates a missing list", () => {
+test("NEGATIVE CONTROL — the counter is not a constant and tolerates a missing list", () => {
   assert.deepEqual(salvageRepairTargets(null), { findings: 0, actions: 0, askAnswers: 0, total: 0 });
   assert.deepEqual(salvageRepairTargets({ quarantined: [{}, {}], actionsQuarantined: [{}], askAnswersQuarantined: [] }),
     { findings: 2, actions: 1, askAnswers: 0, total: 3 }, "counts do not collapse across families");

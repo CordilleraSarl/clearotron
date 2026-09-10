@@ -155,7 +155,7 @@ test("applyClosure still settles a seat citation from any other allowed file", (
 
 // ──, owner-ruled: a PRESENCE doubt closes only on a delivered finding ───────────────────────
 
-test("#1503 a corrections NOTE does not settle a presence doubt, however well it verifies", () => {
+test("a corrections NOTE does not settle a presence doubt, however well it verifies", () => {
   // The plant: a SETTLED line whose quote is verbatim in a file that is NOT the doubt's birth artifact.
   // Everything the stage checks passes — the id is open, the citation is not circular, the quote is
   // present byte-for-byte — and it must still not settle, because a note is not a delivered finding.
@@ -173,7 +173,7 @@ test("#1503 a corrections NOTE does not settle a presence doubt, however well it
     "the run log must say why this was refused, or the seat cannot tell it from an invented quote");
 });
 
-test("#1503 CONTROL — that exact plant DOES settle a non-presence doubt", () => {
+test("CONTROL — that exact plant DOES settle a non-presence doubt", () => {
   // Without this the arm above passes if applyClosure simply stopped settling anything.
   const note = "The register layer re-checked VENTURI and recorded no live CH registration.";
   const d = presenceDoubt({ id: "doubt:crosscheck:common-law:2",
@@ -185,7 +185,7 @@ test("#1503 CONTROL — that exact plant DOES settle a non-presence doubt", () =
     + "not on something the fixture got wrong");
 });
 
-test("#1503 the family is named ONCE — the mint and the closure rule cannot drift apart", async () => {
+test("the family is named ONCE — the mint and the closure rule cannot drift apart", async () => {
   const { PRESENCE_BIRTH_PLACE } = await import("../doubt-ledger.mjs");
   const { mintPresenceDoubts } = await import("../presence-reconciliation.mjs");
   // A RATED SHEET ROW, which is what the mint parses — REGISTER_MD's watchlist line is not one, and

@@ -3,7 +3,7 @@
 //
 // — A TERMINAL GUARD DELIVERS AND CLAMPS; IT DOES NOT WITHHOLD.
 //
-// Owner ruling, 2026-08-27, verbatim intent: **reports always ship**. When a terminal guard finds the
+// Ruling, 2026-08-27, verbatim intent: **reports always ship**. When a terminal guard finds the
 // report incomplete at delivery, the engine sends it with the gap patched conservatively and the defect
 // named in the run record. It never withholds.
 //
@@ -150,7 +150,7 @@ test("neither terminal site throws any more — a regression catch, and it is on
 
 // ── — TWO TEXTS, NEVER ONE ────────────────────────────────────────────────────────────
 
-test("2096 a fused clause is refused BY SHAPE — the old behavior planted, and shown to fail", () => {
+test("a fused clause is refused BY SHAPE — the old behavior planted, and shown to fail", () => {
   // THE PLANT IS THE OLD CODE'S EXACT BEHAVIOR: clause == the run-record reason. Two delivered
   // reports led their Verdict row with this string's shape; the seam now refuses it.
   const fused = "floor_duty_undischarged:22 of 22 floor row(s) — every floor is a LIVE in-class record.";
@@ -164,7 +164,7 @@ test("2096 a fused clause is refused BY SHAPE — the old behavior planted, and 
   assert.throws(() => terminalClampDecision({ verdict: "CLEAR", defect: "d:1", reason: "r" }), /reader-facing clause/);
 });
 
-test("2096 the decision carries BOTH texts, and the record keeps the token the scorer reads", () => {
+test("the decision carries BOTH texts, and the record keeps the token the scorer reads", () => {
   const d = terminalClampDecision({
     verdict: "CLEAR", defect: "floor_duty_undischarged:3",
     reason: "floor_duty_undischarged:3 of 9 floor row(s) came back neither placed nor named: /mark/us/1; /mark/us/2; /mark/us/3",
@@ -175,7 +175,7 @@ test("2096 the decision carries BOTH texts, and the record keeps the token the s
   assert.ok(!ENGINE_TOKEN_RE.test(d.clause), "the clause the Verdict row renders carries no engine identifier");
 });
 
-test("2096 the ENGINE TOKEN SHAPE matches what escaped and passes lawyer prose — both directions", () => {
+test("the ENGINE TOKEN SHAPE matches what escaped and passes lawyer prose — both directions", () => {
   // What escaped, verbatim shapes:
   for (const bad of ["Floor_duty_undischarged:22 of 22 floor row(s)", "synthesis_unaccounted_delivered:2 of 19", "perplexity_research - no result"])
     assert.ok(ENGINE_TOKEN_RE.test(bad), `the shape guard missed the escaped string: ${bad}`);
@@ -187,7 +187,7 @@ test("2096 the ENGINE TOKEN SHAPE matches what escaped and passes lawyer prose �
   ]) assert.ok(!ENGINE_TOKEN_RE.test(good), `lawyer prose tripped the engine-token shape: ${good}`);
 });
 
-test("2096 the lede is the opinion's: guard clauses sort after condition clauses, reasons in step", () => {
+test("the lede is the opinion's: guard clauses sort after condition clauses, reasons in step", () => {
   const clauses = ["GUARD: records not individually addressed remain open points.", "No consent with the owner of the Swiss registration."];
   const reasons = ["floor_duty_undischarged:3 …", "no-consent ask text"];
   const guards = new Set([clauses[0]]);

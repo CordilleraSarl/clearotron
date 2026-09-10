@@ -534,7 +534,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     if (isOk(r)) {
       // ── — A DEMO LANDS ON THE REPORT, it does not report a start ───────────
       //
-      // Owner ruling: pressing New clearance in a demo walks the real flow "and then lands on one of the
+      // Ruling: pressing New clearance in a demo walks the real flow "and then lands on one of the
       // four preloaded finished runs … the visitor sees the ordering experience end to end and reads a
       // real report at the end of it, which is the whole demo in one press."
       //
@@ -2262,7 +2262,7 @@ function ReviewDialog({
               is the stopwatch: it put a clock on a person reading a legal summary, which is the one
               screen where being hurried is worst, and it advertised a deadline nobody needs to know
               about. If the ticket has lapsed by the time they press Start, the server says so in a
-              sentence and the panel above shows it. Owner ruling 2026-07-22. */}
+              sentence and the panel above shows it. Ruling 2026-07-22. */}
         </div>
       </div>
     </div>

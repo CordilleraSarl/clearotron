@@ -29,7 +29,7 @@
 //
 // The GATED (env-conditional) member named in is NOT here: measured on the same tree, the
 // dominant `if (process.env.X …)` idiom is save/restore teardown, which guards no assertion and cannot
-// pass vacuously. Ruled out as measured-harmless (owner ruling 2026-08-20) rather than left unbuilt.
+// pass vacuously. Ruled out as measured-harmless (ruling 2026-08-20) rather than left unbuilt.
 
 /**
  * THE REMEDY, at the site. Wrap the set a loop walks:

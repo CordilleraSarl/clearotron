@@ -36,7 +36,7 @@ test("decideCaseLaw: on the product that carries it, the reading runs whatever t
   assert.equal(d.declined, false);
 });
 
-test("#519 detection on a product that does not carry the reading RECORDS and does not RUN", () => {
+test("detection on a product that does not carry the reading RECORDS and does not RUN", () => {
   // The defect, exactly: a Multi-country focus search whose draft narrative turns on an opposition.
   const d = decideCaseLaw({ job: {}, policy: FOCUS, narrative: REASONED });
   assert.equal(d.run, false, "this is the pass that ran on seven territories and passed no door");
@@ -49,7 +49,7 @@ test("#519 detection on a product that does not carry the reading RECORDS and do
   assert.equal(d.trigger, "famous mark", "which word triggered it is recorded, or the observation is unusable");
 });
 
-test("#519 the trigger word is reported as matched, for every documented trigger", () => {
+test("the trigger word is reported as matched, for every documented trigger", () => {
   for (const w of ["watchlist", "precedent", "case law", "case-law", "opposition", "famous mark"]) {
     const d = decideCaseLaw({ job: {}, policy: FOCUS, narrative: `The read turns on a ${w} here.` });
     assert.equal(d.detected, true, w);
@@ -64,7 +64,7 @@ test("decideCaseLaw: neither requested nor detected means nothing runs and nothi
   assert.equal(d.declined, false, "declined means the reading was CALLED FOR and refused — not that it was silent");
 });
 
-test("#519 an unresolvable product is NOT eligible, and the row says which state it is in", () => {
+test("an unresolvable product is NOT eligible, and the row says which state it is in", () => {
   // Declining is the safe direction — the alternative is starting an unbounded pass on a product nobody
   // established — but it must be legible, or it is an absence read as a decision. REWRITTEN: the old arm
   // asserted `decideCaseLaw({job:{caseLaw:true}}).run === true`, the ungated behaviour that was removed.
@@ -96,7 +96,7 @@ test("decideCaseLaw: the frozen policy's lever requests, exactly as the job's do
   assert.equal(d.requested, true);
 });
 
-test("#519 the LEVER cannot buy the reading on a product that does not sell it", () => {
+test("the LEVER cannot buy the reading on a product that does not sell it", () => {
   // REWRITTEN. The old arm asserted that either side asking was enough and neither could veto, because
   // neither could veto at all. The product can, and that is the change: a saved recipe or a resumed job
   // carrying `caseLaw: true` over a Multi-country focus search must not start the pass.
@@ -112,7 +112,7 @@ test("decideCaseLaw: a policy without the lever changes nothing, and only true c
   assert.equal(decideCaseLaw({ job: {}, policy: { ...FULL, caseLaw: "true" }, narrative: NEUTRAL }).run, false);
 });
 
-test("#519 an archived run's `level` key resolves the product, so a resume is not silently ineligible", () => {
+test("an archived run's `level` key resolves the product, so a resume is not silently ineligible", () => {
   // search-policy writes `product` and `level` as one value under two keys, and archived runs carry
   // `level`. Read only `product` and every resumed pre-rename Full country run stops grounding its
   // citations — with nothing in the record saying why.

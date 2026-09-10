@@ -129,7 +129,7 @@ const scanUndeclared = (body, tables) => {
   return [...new Set(seen)].filter((f) => !declared.has(f));
 };
 
-test("#873 source scan: publishReport reads no store the table does not declare — and the scan REJECTS a planted one", () => {
+test("source scan: publishReport reads no store the table does not declare — and the scan REJECTS a planted one", () => {
   const body = publishSource();
   const tables = [PUBLISH_INPUTS, NOT_READ_BY_NAME, CALLER_SUPPLIED, POOL_SIDE];
 
@@ -143,7 +143,7 @@ test("#873 source scan: publishReport reads no store the table does not declare 
     "with findings.json undeclared the scan must name it — otherwise the scan proves nothing");
 });
 
-test("#873 source scan: no DEAD key — every declared store is still read by publishReport", () => {
+test("source scan: no DEAD key — every declared store is still read by publishReport", () => {
   const body = publishSource();
   const dead = Object.keys(PUBLISH_INPUTS).filter((k) => !body.includes(basename(k)));
   assert.deepEqual(dead, [],

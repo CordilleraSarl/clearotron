@@ -44,7 +44,7 @@
 import { statSync, openSync, readSync, closeSync } from "node:fs";
 
 import { readFlagSnapshot, engineFor, providersFor, postureDisagreement } from "./flag-snapshot.mjs";
-// `isStale` is deliberately NOT imported any more: the age banner is retired (owner ruling,
+// `isStale` is deliberately NOT imported any more: the age banner is retired (ruling,
 // 2026-09-05). The function stays exported for other readers; this page no longer asks how old a
 // reading is, because the question it was standing in for — does this still describe the box — now has
 // a direct answer in `lastRun.disagrees`.
@@ -110,7 +110,7 @@ function postureView(snap) {
 /**
  * The configuration view.
  *
- * THE ANSWER IS THE LIVE CONFIGURATION, ALWAYS — owner ruling 2026-09-05:
+ * THE ANSWER IS THE LIVE CONFIGURATION, ALWAYS — ruling 2026-09-05:
  * "the global configuration page shows LIVE configuration, always. No run-time snapshot as the source of
  * truth — I don't see why it needs to take an old snapshot." Age banners go with it.
  *

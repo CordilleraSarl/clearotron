@@ -30,7 +30,7 @@ const STATUS = readFileSync(join(HERE, "..", "..", "bin", "status.mjs"), "utf8")
 const CONFIG = Date.UTC(2026, 8, 4, 8, 51, 16);
 const at = (h, m, s) => Date.UTC(2026, 8, 4, h, m, s);
 
-test("2179-F48 the incident reproduces: three stale, one fresh", () => {
+test("the incident reproduces: three stale, one fresh", () => {
   const rows = configStaleness({
     configEpochMs: CONFIG,
     units: [
@@ -45,7 +45,7 @@ test("2179-F48 the incident reproduces: three stale, one fresh", () => {
   assert.equal(minutesBehind(rows[1].behindMs), 41, "the portal was 41 minutes behind its configuration");
 });
 
-test("2179-F48 a unit started in the same millisecond as the write is NOT behind it", () => {
+test("a unit started in the same millisecond as the write is NOT behind it", () => {
   // Strictly before, deliberately. An off-by-one in the other direction reports every freshly
   // restarted service as stale, and a warning that cries wolf gets ignored — which costs more than
   // the silence it replaced.
@@ -57,7 +57,7 @@ test("2179-F48 a unit started in the same millisecond as the write is NOT behind
   assert.equal(before.state, "stale");
 });
 
-test("2179-F48 an unreadable start time or config mtime is UNKNOWN, never fresh", () => {
+test("an unreadable start time or config mtime is UNKNOWN, never fresh", () => {
   // The collapse this exists to undo. "We could not tell" and "it is current" are the two answers the
   // product had already merged into one, and merging them again here would rebuild the defect.
   for (const units of [[{ name: "u", startedEpochMs: null }], [{ name: "u" }]])
@@ -66,7 +66,7 @@ test("2179-F48 an unreadable start time or config mtime is UNKNOWN, never fresh"
     "unknown", "with no config mtime there is nothing to be behind, and that is not a clean bill of health");
 });
 
-test("2179-F48 the warning names the services, how far behind, and the only thing that fixes it", () => {
+test("the warning names the services, how far behind, and the only thing that fixes it", () => {
   const stale = configStaleness({
     configEpochMs: CONFIG,
     units: [{ name: "portal", startedEpochMs: at(8, 10, 16) }, { name: "mcp-face", startedEpochMs: at(8, 10, 16) }],
@@ -81,7 +81,7 @@ test("2179-F48 the warning names the services, how far behind, and the only thin
   assert.match(w, /systemctl --user restart portal mcp-face/, "the command must be runnable as printed");
 });
 
-test("2179-F48 `status` asks the question, and reports a could-not-look as one", () => {
+test("`status` asks the question, and reports a could-not-look as one", () => {
   assert.match(STATUS, /configStaleness\(\{/, "status must actually ask, not merely import the answer");
   assert.match(STATUS, /statSync\(ENV_FILE\)\.mtimeMs/,
     "the config's mtime is the other half of the comparison");
@@ -91,7 +91,7 @@ test("2179-F48 `status` asks the question, and reports a could-not-look as one",
     "and it must say so in the words that stop a reader concluding the opposite");
 });
 
-test("2179-F48 the timestamp parse is DRIVEN over systemd's three real outputs", () => {
+test("the timestamp parse is DRIVEN over systemd's three real outputs", () => {
   // Measured on systemd 255 in review, 2026-08, on a machine with a user bus — which this run has not
   // got, and is why the parse was moved out of the shell-out and into the pure module rather than left
   // asserted by grepping status.mjs for a flag string.
@@ -111,7 +111,7 @@ test("2179-F48 the timestamp parse is DRIVEN over systemd's three real outputs",
     "and if systemd ever DID print @0 it is a real epoch, handled by the comparison rather than here");
 });
 
-test("2179-F48 status delegates the parse and never orders formatted times", () => {
+test("status delegates the parse and never orders formatted times", () => {
   assert.match(STATUS, /--timestamp=unix/,
     "the @<seconds> form is the one that cannot be misread across a timezone");
   assert.match(STATUS, /parseSystemdTimestamp\(/,

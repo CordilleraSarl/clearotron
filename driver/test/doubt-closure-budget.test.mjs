@@ -39,7 +39,7 @@ const OBSERVED_CLEAN_PASS_SEC = 497.4;
 const GRACE_SEC = 60;              // gateway's hard wall = timeoutSec + 60. A margin, never a budget.
 const RETRY_MULTIPLIER = 1.5;      // gateway.mjs: `effTimeout = Math.round(timeoutSec * 1.5)`
 
-test("#1502 — every rung of doubt-closure's ladder clears the stage's measured work without the grace", () => {
+test("every rung of doubt-closure's ladder clears the stage's measured work without the grace", () => {
   const rung1 = Number(STAGES["doubt-closure"]?.timeoutSec);
   assert.ok(Number.isFinite(rung1) && rung1 > 0, "doubt-closure declares no timeoutSec");
   const rung2 = Math.round(rung1 * RETRY_MULTIPLIER);
@@ -58,7 +58,7 @@ test("#1502 — every rung of doubt-closure's ladder clears the stage's measured
 // measured rather than remembered: the inherited default is a SILENCE window, and a stage that streams
 // for 497s at 85-116 tok/s never goes quiet inside it. Both incidents signalled `hardWall`, never
 // `stalled`. If that default is ever shrunk, this is where a stage now running 600s finds out.
-test("#1502 — the stall window doubt-closure inherits is a silence window its work does not trip", () => {
+test("the stall window doubt-closure inherits is a silence window its work does not trip", () => {
   const prior = process.env.CLEAROTRON_STALL_MS;
   delete process.env.CLEAROTRON_STALL_MS;
   try {
@@ -94,7 +94,7 @@ function ledgerFor(rows) {
   try { return runLedger(dir); } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-test("#1502 — a wall-killed attempt names the budget it was killed against", () => {
+test("a wall-killed attempt names the budget it was killed against", () => {
   const led = ledgerFor([seatRow(), seatRow({ attempt: 2, wall: 466.0, code: 0, timeoutSec: 450, fail: null, signals: {} })]);
 
   assert.equal(led.attempts[0].timeoutSec, 300,
@@ -109,7 +109,7 @@ test("#1502 — a wall-killed attempt names the budget it was killed against", (
 // THE CONTROL. Without it the arm above passes for a report that stamps "killed at its budget" on
 // everything, which is the same blindness in the other direction: a stage that failed on a validator is
 // not a stage that needed more time, and a reader who cannot tell them apart chases the wrong repair.
-test("#1502 — a retry after a failure FOR CAUSE does not read as a wall kill", () => {
+test("a retry after a failure FOR CAUSE does not read as a wall kill", () => {
   const cause = "invalid_file:/runs/x/doubt-closure.md:banned tone \"Massive\"";
   const led = ledgerFor([
     seatRow({ wall: 44.2, code: 0, fail: cause, signals: {} }),
@@ -125,7 +125,7 @@ test("#1502 — a retry after a failure FOR CAUSE does not read as a wall kill",
 // An absence is a finding. A row that carries no budget is a GAP IN THE RECORD, and saying so is a
 // different statement from a stage that ran without a wall — which cannot happen, since the wall is
 // always timeoutSec + 60. Printing `null` or dropping the clause would read as the latter.
-test("#1502 — a kill whose row recorded no budget says so, rather than reading as unbounded", () => {
+test("a kill whose row recorded no budget says so, rather than reading as unbounded", () => {
   const noBudget = seatRow(); delete noBudget.timeoutSec;
   const led = ledgerFor([noBudget, seatRow({ attempt: 2, wall: 466.0, code: 0, fail: null, signals: {} })]);
 

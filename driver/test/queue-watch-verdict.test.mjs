@@ -37,7 +37,7 @@ const v = (o) => queueWatchVerdict({ unitPath: UNIT, ...o });
 
 // ── the incident ─────────────────────────────────────────────────────────────────────────────────────
 
-test("#1216 a queue directory nothing watches FAILS, and the message names it", () => {
+test("a queue directory nothing watches FAILS, and the message names it", () => {
   const r = v({ queueDirs: ["/srv/ws/queue", "/srv/other/queue"], watched: ["/srv/other/queue"] });
   assert.equal(r.state, "fail");
   assert.match(r.message, /\/srv\/ws\/queue/, "the operator cannot act on a count alone");
@@ -52,20 +52,20 @@ test("#1216 a queue directory nothing watches FAILS, and the message names it", 
     "the black-hole sentence is back on a call with no evidence for it");
 });
 
-test("#1216 every queue watched is a pass, and says what it consulted", () => {
+test("every queue watched is a pass, and says what it consulted", () => {
   const r = v({ queueDirs: ["/srv/a/queue"], watched: ["/srv/a/queue", "/srv/b/queue"] });
   assert.equal(r.state, "pass");
   assert.match(r.message, /prelim-driver\.path/, "a pass that does not say what it read is unauditable");
 });
 
-test("#1216 a trailing slash is not a disagreement", () => {
+test("a trailing slash is not a disagreement", () => {
   assert.equal(v({ queueDirs: ["/srv/a/queue/"], watched: ["/srv/a/queue"] }).state, "pass");
   assert.equal(v({ queueDirs: ["/srv/a/queue"], watched: ["/srv/a/queue/"] }).state, "pass");
 });
 
 // ── the branches a healthy box never produces ────────────────────────────────────────────────────────
 
-test("#1216 resolving NO queue at all is a failure, not a clean sweep", () => {
+test("resolving NO queue at all is a failure, not a clean sweep", () => {
   // An empty set compares nothing and would pass with flying colours — the shape of a guard that has
   // stopped existing.
   const r = v({ queueDirs: [], watched: ["/srv/a/queue"] });
@@ -73,7 +73,7 @@ test("#1216 resolving NO queue at all is a failure, not a clean sweep", () => {
   assert.match(r.message, /NO queue directory at all/);
 });
 
-test("#1216 an unreadable unit is SKIP — never a pass", () => {
+test("an unreadable unit is SKIP — never a pass", () => {
   // On prod these units belong to another account. A privilege-limited read answering "fine" is the
   // exact failure this family of checks exists to refuse, and it is the one that would make this guard
   // decoration on the box that matters most.
@@ -83,13 +83,13 @@ test("#1216 an unreadable unit is SKIP — never a pass", () => {
   assert.match(r.message, /prelim-driver\.path/);
 });
 
-test("#1216 an unresolvable config is SKIP, and says why", () => {
+test("an unresolvable config is SKIP, and says why", () => {
   const r = v({ queueDirs: null, watched: [], resolveError: "CLEAROTRON_REPORTS_DIR has no default" });
   assert.equal(r.state, "skip");
   assert.match(r.message, /no default/);
 });
 
-test("#1216 a unit that watches a path which does not exist yet does NOT fail", () => {
+test("a unit that watches a path which does not exist yet does NOT fail", () => {
   // Normal on a fresh box: the queue is created on first enqueue. A check that reds on every fresh box
   // is a check somebody deletes, and then nothing is watching the watchers either.
   const r = v({ queueDirs: ["/srv/a/queue"], watched: ["/srv/a/queue", "/srv/never/created"] });
@@ -98,7 +98,7 @@ test("#1216 a unit that watches a path which does not exist yet does NOT fail", 
 
 // ── the half that was actually broken: is it wired to anything that RUNS? ────────────────────────────
 
-test("#1216 the check is WIRED into the surface the deploy runs and logs", () => {
+test("the check is WIRED into the surface the deploy runs and logs", () => {
   // This is the assertion that would have caught the original defect. compareWatches was correct and
   // called by nothing; every unit test it had passed. Only "what invokes it" was empty.
   const src = readFileSync(join(ROOT, "scripts", "live-surface-check.mjs"), "utf8")
@@ -133,7 +133,7 @@ test("#1216 the check is WIRED into the surface the deploy runs and logs", () =>
 const withTimer = (timer, o = {}) =>
   v({ queueDirs: ["/srv/ws/queue"], watched: ["/srv/other/queue"], timer, ...o });
 
-test("#1368 an unwatched queue with an ENABLED timer is latency, not loss — and never says 'never drained'", () => {
+test("an unwatched queue with an ENABLED timer is latency, not loss — and never says 'never drained'", () => {
   const r = withTimer({ unit: "prelim-driver.timer", present: true, enabled: true, error: null });
   assert.equal(r.state, "warn", "a directory that demonstrably drains must not red an hourly deploy gate");
   assert.match(r.message, /LATENCY and not loss/);
@@ -142,7 +142,7 @@ test("#1368 an unwatched queue with an ENABLED timer is latency, not loss — an
     "the exact sentence #1368 was filed about, on the exact box state that disproved it");
 });
 
-test("#1368 an unwatched queue with NO timer keeps the strong claim — now evidenced", () => {
+test("an unwatched queue with NO timer keeps the strong claim — now evidenced", () => {
   const r = withTimer({ unit: "prelim-driver.timer", present: false, enabled: false, error: null });
   assert.equal(r.state, "fail");
   assert.match(r.message, /acknowledged and never drained/,
@@ -150,7 +150,7 @@ test("#1368 an unwatched queue with NO timer keeps the strong claim — now evid
   assert.match(r.message, /does not exist/);
 });
 
-test("#1368 a timer that exists but is NOT enabled is loss too, and says which", () => {
+test("a timer that exists but is NOT enabled is loss too, and says which", () => {
   const r = withTimer({ unit: "prelim-driver.timer", present: true, enabled: false, error: null });
   assert.equal(r.state, "fail");
   assert.match(r.message, /exists but is not enabled/,
@@ -158,7 +158,7 @@ test("#1368 a timer that exists but is NOT enabled is loss too, and says which",
   assert.match(r.message, /acknowledged and never drained/);
 });
 
-test("#1368 a timer that could not be READ is unprobed — not passed, and not quietly failed either", () => {
+test("a timer that could not be READ is unprobed — not passed, and not quietly failed either", () => {
   const r = withTimer({ unit: "prelim-driver.timer", present: null, enabled: null, error: "EACCES" });
   assert.equal(r.state, "fail", "the arrival gap is still a real finding");
   assert.match(r.message, /NOT PROBED/);
@@ -167,7 +167,7 @@ test("#1368 a timer that could not be READ is unprobed — not passed, and not q
     "an unprobed drain path cannot license the strongest sentence the arm has");
 });
 
-test("#1368 REPLAY — the issue's own acceptance, in its own terms", () => {
+test("REPLAY — the issue's own acceptance, in its own terms", () => {
   // "with one job in /home/operator/trademark-test/queue and prelim-driver.timer enabled, the arm must
   // not say 'never drained'." Written as the box was measured on 2026-08-19: the directory resolves,
   // the .path unit globs three OTHER directories the deployment does not use, and the timer is enabled.
@@ -182,7 +182,7 @@ test("#1368 REPLAY — the issue's own acceptance, in its own terms", () => {
   assert.match(r.message, new RegExp(QUEUE.replace(/\//g, "\\/")), "the directory still has to be named");
 });
 
-test("#1368 the tick actually SUPPLIES a timer, so 'nobody probed it' is not this caller's normal state", () => {
+test("the tick actually SUPPLIES a timer, so 'nobody probed it' is not this caller's normal state", () => {
   // The verdict's unprobed branch is for a caller that could not look. If the deploy tick never passed
   // a timer at all, every real run would land there and the fix would be a sentence change with no new
   // evidence behind it — which is the defect one level up.
@@ -193,7 +193,7 @@ test("#1368 the tick actually SUPPLIES a timer, so 'nobody probed it' is not thi
     "enabled-ness is a symlink; reading only the unit file cannot tell enabled from merely installed");
 });
 
-test("#1368 VOID CONTROL — the door's warning and the tick's verdict still agree about the timer", () => {
+test("VOID CONTROL — the door's warning and the tick's verdict still agree about the timer", () => {
   // put one unit path behind both surfaces so they could not reach different conclusions about the
   // same box. They still reached different conclusions about the same CONSEQUENCE: the door has said
   // "or not at all if this deployment has no timer" since, while the tick asserted the black hole
@@ -207,7 +207,7 @@ test("#1368 VOID CONTROL — the door's warning and the tick's verdict still agr
 
 const WORKER_ON = { unit: "clearotron-worker.service", present: true, enabled: true };
 
-test("1863 a worker-posture box is a PASS with the reason, not a permanent could-not-read", () => {
+test("a worker-posture box is a PASS with the reason, not a permanent could-not-read", () => {
   // 1888's founding evidence is this module's own sentence — "the .path unit could not be read —
   // …/prelim-driver.path: ENOENT" — reported honestly and forever, with nothing able to say it was
   // expected. After the retirement that is the steady state of every fresh box, so a skip there is not
@@ -220,7 +220,7 @@ test("1863 a worker-posture box is a PASS with the reason, not a permanent could
   assert.match(v.message, /clearotron-worker\.service/, "and the reader is told what does drain");
 });
 
-test("1863 a worker CANNOT talk a could-not-look into a pass — only ENOENT is evidence of the posture", () => {
+test("a worker CANNOT talk a could-not-look into a pass — only ENOENT is evidence of the posture", () => {
   // THE BRANCH THAT MUST NOT BE REACHABLE BY ACCIDENT. `unitError` collapses "not there" with "refused
   // permission to look", and on production these units belong to another account and are unreadable
   // from anywhere else. A worker unit turning that into a pass would put the privilege-limited pass —
@@ -233,7 +233,7 @@ test("1863 a worker CANNOT talk a could-not-look into a pass — only ENOENT is 
   }
 });
 
-test("1863 PRESENT is not ENABLED — an installed worker nobody enabled drains nothing", () => {
+test("PRESENT is not ENABLED — an installed worker nobody enabled drains nothing", () => {
   // Mirrors probeTimer's own discipline. A unit file on disk is not a decision to run it, and answering
   // otherwise licenses this arm's strongest sentence on the strength of a file.
   const v = queueWatchVerdict({
@@ -243,7 +243,7 @@ test("1863 PRESENT is not ENABLED — an installed worker nobody enabled drains 
   assert.equal(v.state, "skip", "present-but-disabled leaves the old answer standing");
 });
 
-test("1863 an unwatched queue under an enabled worker is neither loss nor latency", () => {
+test("an unwatched queue under an enabled worker is neither loss nor latency", () => {
   // The timer branch calls this LATENCY, which is true of a 90s tick and false of a continuous drain.
   // Reporting a cost that is not paid is the same defect as the invented black hole this file's header
   // records: a sentence read exactly as written, sending a reader after a fault that is not there.

@@ -73,7 +73,7 @@ test("item 9a — the validator sets NO length maximum: brevity is the renderer'
 // moved every other piece of card prose behind the drawer, so there is nothing above the fold left
 // for a long sentence to overrun. The test now guards the deletion, because "reintroduce a cap just in
 // case" is the specific regression the ruling names.
-test("#470 — the renderer renders the sentence VERBATIM: no budget, no fold, no ellipsis", () => {
+test("the renderer renders the sentence VERBATIM: no budget, no fold, no ellipsis", () => {
   const src = readFileSync(new URL("../publish/render.mjs", import.meta.url), "utf8");
   assert.match(src, /const one = clause\(f\.net\) \|\| \(card\?\.meta\?\.one\) \|\| oneFallback/,
     "the TYPED record wins over the parsed markdown — that is the whole point of typing it");
@@ -130,7 +130,7 @@ const parseAt = (version, over) => parseFindingsJson(JSON.stringify({
   schema_version: version, rated_under_framework: "house-default", findings: [{ ...REAL, ...over }], coverage: [], actions: [],
 }), { manifest: MANIFEST });
 
-test("#469 — a v7 net carrying the retired chain punctuation is refused, token FIRST and PLURAL", () => {
+test("a v7 net carrying the retired chain punctuation is refused, token FIRST and PLURAL", () => {
   for (const [bad, why] of [
     ["Veltra Labs holds VELTRA in EU/UK for laboratory software; no current use is on record.", "semicolon"],
     ["VELTRA in EU/UK for laboratory software → the registration is vulnerable to revocation.", "the U+2192 arrow"],
@@ -146,7 +146,7 @@ test("#469 — a v7 net carrying the retired chain punctuation is refused, token
   assert.ok(parseAt(7, { net: "Norvell Instruments — a laboratory-equipment maker — could oppose in the EU but has never asserted." }).findings[0].net);
 });
 
-test("#469 — the gate is version-gated at 7, so every archived record still parses byte-identically", () => {
+test("the gate is version-gated at 7, so every archived record still parses byte-identically", () => {
   // This is the ONE net rule that had to be gated. PRESCRIPTION_RE applies at every version because a
   // prescriptive net was always wrong; a CHAIN was MANDATORY until this ruling, so applying this rule
   // retroactively would stop delivered matters republishing (publish/index.mjs strict-parses the
@@ -155,7 +155,7 @@ test("#469 — the gate is version-gated at 7, so every archived record still pa
   for (const v of [4, 5, 6]) assert.equal(parseAt(v, { net: chain }).findings[0].net, chain, `schema_version ${v} must be untouched`);
 });
 
-test("#469 — the parser exempts the SAME two findings the lint row does, and for the same reasons", () => {
+test("the parser exempts the SAME two findings the lint row does, and for the same reasons", () => {
   // The two arms judging different SETS is the failure this pins: it would mean a defect the banner
   // forgives and the parser refuses, on one record. The exemptions are shared through
   // POSITION_REQUIRED_DISPOSITIONS, so they cannot drift.
@@ -173,7 +173,7 @@ test("#469 — the parser exempts the SAME two findings the lint row does, and f
     /findings_net_chained/, "an off-field awareness item carries the sentence like any other card");
 });
 
-test("#469 — the lenient/quarantine path never drops a finding over its punctuation", () => {
+test("the lenient/quarantine path never drops a finding over its punctuation", () => {
   // Dropping a real conflict because its sentence is shaped wrong is silence arrived at by enforcing a
   // rule about clarity — validateNetRequired's reasoning, and the same answer. It also keeps the
   // token out of the A3 salvage lane, whose re-emit is driven by exactly this quarantined[] array.
@@ -186,7 +186,7 @@ test("#469 — the lenient/quarantine path never drops a finding over its punctu
   assert.equal(out.findings.length, 1);
 });
 
-test("#469 — the markers are punctuation and NOTHING else: no length, no quality, no word match", () => {
+test("the markers are punctuation and NOTHING else: no length, no quality, no word match", () => {
   // This gate replaced a character cap — deleted render.mjs's NET_BUDGET fold on 2026-08-06. A
   // gate that counted characters would be that cap wearing a gate's clothes and earn the same defect.
   const long = `Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the United States ${"across every market the applicant has named in its filing instructions ".repeat(8)}on the register material this run holds.`;
@@ -224,7 +224,7 @@ const doc6 = (findings) => JSON.stringify({
 });
 const parse6 = (findings) => parseFindingsJson(doc6(findings), { manifest: MANIFEST });
 
-test("#243 — at v6 the net is REQUIRED: with nothing else authoring a summary, its absence is a finding with no sentence", () => {
+test("at v6 the net is REQUIRED: with nothing else authoring a summary, its absence is a finding with no sentence", () => {
   const netless = { ...V6 };
   delete netless.net;
   assert.throws(() => parse6([netless]), /finding_net_missing:1/,
@@ -234,7 +234,7 @@ test("#243 — at v6 the net is REQUIRED: with nothing else authoring a summary,
   assert.throws(() => parse6([{ ...V6, net: "   " }]), /finding_net_invalid:1/);
 });
 
-test("#243 — the two exemptions are the two #242 already established, and no others", () => {
+test("the two exemptions are the two #242 already established, and no others", () => {
   // withdrawn: a reviewer-killed finding gets no card call at all ( A1) — it has no surface to be
   // silent on, and demanding a summary for a card being deleted would block the corrective pass.
   const killed = { ...V6, disposition: "withdrawn", withdrawn_reason: "reviewer flag: unsourced attribution", band: undefined };
@@ -252,7 +252,7 @@ test("#243 — the two exemptions are the two #242 already established, and no o
   }
 });
 
-test("#243 — archived runs still parse clean, and the LENIENT path never DROPS a finding for a missing net", () => {
+test("archived runs still parse clean, and the LENIENT path never DROPS a finding for a missing net", () => {
   // v4/v5 legitimately predate the field. A gate applied there would fail every archived record on replay.
   const netless = { ...V6 };
   delete netless.net; delete netless.legal_position; delete netless.practical_position;
@@ -269,7 +269,7 @@ test("#243 — archived runs still parse clean, and the LENIENT path never DROPS
   assert.equal(lenient.findings.length + (lenient.quarantined?.length ?? 0), 1, "the finding survives the lenient parse in one bucket or the other");
 });
 
-test("#243 — the lint backstop is version-INDEPENDENT: a down-level file cannot disengage the gate silently", () => {
+test("the lint backstop is version-INDEPENDENT: a down-level file cannot disengage the gate silently", () => {
   // The parser enforces presence at v6. A model that keeps typing 5 would switch that off with nothing
   // behind it — the exact shape of the lint that could not fire.
   // The declared version is no longer an argument here: it is judged by schemaVersionChecks, which
@@ -303,7 +303,7 @@ function assemble(cards, findings) {
   return readFileSync(P.report, "utf8");
 }
 
-test("#243 — report.md carries the TYPED net for every card, stamped from the record like `- group:` is", () => {
+test("report.md carries the TYPED net for every card, stamped from the record like `- group:` is", () => {
   const md = assemble({
     1: "## Owner A — MARK A, US\n- ord: 1\n### Full detail\n- Source: [x](/mark/us/1)\n",
     2: "## Owner B — MARK B, EU\n- ord: 2\n### Full detail\n- Source: [x](/mark/eu/2)\n",
@@ -322,7 +322,7 @@ test("#243 — report.md carries the TYPED net for every card, stamped from the 
   assert.doesNotMatch(md2, /…/, "and nothing folds it anywhere — the renderer's cap went with #470");
 });
 
-test("#243 — no separately-authored condensation survives into report.md, even from a drifted card", () => {
+test("no separately-authored condensation survives into report.md, even from a drifted card", () => {
   // The prompt no longer asks for `- one:`. A card that emits one anyway would put two summaries of one
   // finding back into the delivered artifact, so the assembly drops it rather than trusting the prompt.
   const md = assemble({
@@ -334,7 +334,7 @@ test("#243 — no separately-authored condensation survives into report.md, even
   assert.equal((md.match(/^- net: /gm) || []).length, 1, "one summary per finding — the whole ruling");
 });
 
-test("#243 — a missing net at assembly is LOUD, and a rendered-nothing card stays distinguishable from a filtered-out one", () => {
+test("a missing net at assembly is LOUD, and a rendered-nothing card stays distinguishable from a filtered-out one", () => {
   // Reaching here without a net means the lenient/quarantine path or a down-level record (v6 throws).
   // The card must still render and must SAY what is missing: an omitted line is the silent-absence bug
   // this file family has now shipped seven times, and an empty `- net:` reads as a finding with nothing
@@ -355,7 +355,7 @@ test("#243 — a missing net at assembly is LOUD, and a rendered-nothing card st
   assert.doesNotMatch(md2, /MARK B/, "a finding with no card file is absent entirely — not a blank card");
 });
 
-test("#243 — BOTH card renderers read the typed field; compactCard was the one the eleventh break missed", () => {
+test("BOTH card renderers read the typed field; compactCard was the one the eleventh break missed", () => {
   const src = readFileSync(new URL("../publish/render.mjs", import.meta.url), "utf8");
   const chains = src.match(/const one = .*/g) ?? [];
   assert.equal(chains.length, 2, "findingCard and compactCard — the two places a card's lead sentence is chosen");
@@ -378,7 +378,7 @@ test("#243 — BOTH card renderers read the typed field; compactCard was the one
 const netRow = (findings) => contentModelChecks({ findings, fourAnswers: null, expected: true })
   .find((c) => c.id === "net-conclusion-form");
 
-test("#469 lint — a chain-shaped net is named on the banner, whatever version the file declares", () => {
+test("lint — a chain-shaped net is named on the banner, whatever version the file declares", () => {
   const base = { ordinal: 1, disposition: "adversarial", net: "Veltra Labs is more likely than not to prevail in Germany." };
   assert.equal(netRow([base]).pass, true);
   const chained = netRow([{ ...base, net: "VELTRA in DE; no use on record → vulnerable to revocation." }]);
@@ -388,7 +388,7 @@ test("#469 lint — a chain-shaped net is named on the banner, whatever version 
   assert.match(chained.detail, /legal_position \/ practical_position/, "…and says where the reasoning goes: relocation, never compression");
 });
 
-test("#469 lint — the same two exemptions as one-clause-net, and no others", () => {
+test("lint — the same two exemptions as one-clause-net, and no others", () => {
   const chain = "VELTRA in DE; vulnerable.";
   assert.equal(netRow([{ ordinal: 1, disposition: "withdrawn", net: chain }]).pass, true, "a review-killed finding renders nowhere");
   assert.equal(netRow([{ ordinal: 1, disposition: "adversarial", ruled_out: true, net: chain }]).pass, true, "ruled-out reads off ruled_out_reason");
@@ -396,7 +396,7 @@ test("#469 lint — the same two exemptions as one-clause-net, and no others", (
     assert.equal(netRow([{ ordinal: 1, disposition: d, net: chain }]).pass, false, `${d} reaches a reader, so it is judged`);
 });
 
-test("#469 lint — LIVE-ONLY, so no archived run can ever fail it", () => {
+test("lint — LIVE-ONLY, so no archived run can ever fail it", () => {
   // Every net in the archive was written to the chain contract that was mandatory when it ran.
   // contentModelChecks returns [] without the caller's assertion, and replay-archive.mjs passes no
   // `findings` at all — so the archived lane cannot reach this row by either route.

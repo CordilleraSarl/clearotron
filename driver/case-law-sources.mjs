@@ -30,7 +30,7 @@
 // ground truth. A deployment with a `chmod 000` on one file would tell a client it does not have US
 // federal case law. Nobody knows that. We know only that we could not look.
 //
-// OWNER RULING, 2026-09-05, on the three wordings put to him: report it as a source whose availability
+// RULING, 2026-09-05, on the three wordings put to him: report it as a source whose availability
 // COULD NOT BE CONFIRMED — never as one this deployment does not have, and never as an outage — and stop
 // there. Deliberately it does not say whether to treat the coverage as available: that is a second
 // question, it applies to every product rather than this one source, and settling it as a side effect of

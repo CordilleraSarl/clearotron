@@ -115,7 +115,7 @@ async function runHarness(mode, after) {
 
 // ── the exits nobody wrote a branch for ─────────────────────────────────────────────────────────────
 
-test("2104 a CANCELLED script (SIGTERM) takes its detached group with it", async () => {
+test("a CANCELLED script (SIGTERM) takes its detached group with it", async () => {
   // The measured case: a cancelled CI job. With no handler, SIGTERM terminates without running exit
   // handlers at all — so a reaper on `exit` alone would never fire on the one exit this issue is about.
   const { kid } = await runHarness("signal", async (proc) => {
@@ -125,7 +125,7 @@ test("2104 a CANCELLED script (SIGTERM) takes its detached group with it", async
   assertLiveness(kid, false, "the grandchild outlived the cancelled script — this is the defect");
 });
 
-test("2104 a Ctrl-C (SIGINT) takes it too", async () => {
+test("a Ctrl-C (SIGINT) takes it too", async () => {
   const { kid } = await runHarness("signal", async (proc) => {
     proc.kill("SIGINT");
     await new Promise((r) => proc.once("exit", r));
@@ -133,19 +133,19 @@ test("2104 a Ctrl-C (SIGINT) takes it too", async () => {
   assertLiveness(kid, false, "an interrupted operator leaves a server holding fixed ports");
 });
 
-test("2104 a THROW somewhere else in the script takes it", async () => {
+test("a THROW somewhere else in the script takes it", async () => {
   // Node runs `exit` handlers after an uncaught throw, so this needs no handler of its own — asserted
   // rather than assumed, because the whole design rests on it.
   const { kid } = await runHarness("throw", (proc) => new Promise((r) => proc.once("exit", r)));
   assertLiveness(kid, false, "an unrelated throw stranded the group");
 });
 
-test("2104 CONTROL: an ordinary exit still reaps, as the planned paths always did", async () => {
+test("CONTROL: an ordinary exit still reaps, as the planned paths always did", async () => {
   const { kid } = await runHarness("exit", (proc) => new Promise((r) => proc.once("exit", r)));
   assertLiveness(kid, false, "the ordinary path must keep working, or this fix broke the normal case");
 });
 
-test("2104 the SIGTERM exit code is preserved — CI reads it to tell a cancellation from a failure", async () => {
+test("the SIGTERM exit code is preserved — CI reads it to tell a cancellation from a failure", async () => {
   // A reaper that swallowed the signal and exited 0 would turn every cancelled job green, which is a
   // worse defect than the orphan: a green that means "nobody ran this".
   const { code } = await runHarness("signal", async (proc) => {
@@ -155,7 +155,7 @@ test("2104 the SIGTERM exit code is preserved — CI reads it to tell a cancella
   assert.equal(code, 128 + 15, `expected the shell's 128+signo convention for SIGTERM, got ${code}`);
 });
 
-test("2104 a child that exits on its own is UNWATCHED — no signalling a recycled pid", async () => {
+test("a child that exits on its own is UNWATCHED — no signalling a recycled pid", async () => {
   const { reapOnExit, watchedGroups } = await import("../../shared/reap-on-exit.mjs");
   const short = spawn("sh", ["-c", "exit 0"], { stdio: "ignore" });
   reapOnExit(short);
@@ -170,7 +170,7 @@ test("2104 a child that exits on its own is UNWATCHED — no signalling a recycl
 
 // ── the CLASS, not the instance ─────────────────────────────────────────────────────────────────────
 
-test("2104 EVERY detached spawn in scripts/ reaps on exit — a sixth site cannot be added silently", () => {
+test("EVERY detached spawn in scripts/ reaps on exit — a sixth site cannot be added silently", () => {
   // The issue asks for the shape, not the one line: "grep for other detached spawns whose kill is on a
   // success path". There were five, all with the same gap. This arm is what stops the sixth: a script
   // that detaches and does not register the reaper fails here by name, rather than being discovered
@@ -190,7 +190,7 @@ test("2104 EVERY detached spawn in scripts/ reaps on exit — a sixth site canno
     `these scripts detach a process group and never reap it when the script itself dies: ${missing.join(", ")}`);
 });
 
-test("2104 the six known sites are actually wired — the class arm must not pass on an empty set", () => {
+test("the six known sites are actually wired — the class arm must not pass on an empty set", () => {
   // The arm above is vacuously true if nothing matches `detached: true` — a refactor that renamed the
   // option would turn it green while removing every reap. This pins the population it is about.
   const dir = join(ROOT, "scripts");
@@ -219,7 +219,7 @@ test("2104 the six known sites are actually wired — the class arm must not pas
 const errnoError = (code) => Object.assign(new Error(`stub ${code}`), { code });
 const killThrowing = (code) => ({ kill: () => { throw errnoError(code); } });
 
-test("2178 pidAlive answers for a pid that IS running and one that has gone — measured, not stubbed", async () => {
+test("pidAlive answers for a pid that IS running and one that has gone — measured, not stubbed", async () => {
   // This process is definitively alive, which makes it the one pid on the box needing no fixture.
   assert.strictEqual(pidAlive(process.pid), true,
     "the reader could not see the very process asking the question");
@@ -232,7 +232,7 @@ test("2178 pidAlive answers for a pid that IS running and one that has gone — 
     `pid ${gone} exited and the reader still does not call it gone`);
 });
 
-test("2178 the ERRNO is the answer — EPERM is a LIVE process, and only ESRCH means dead", () => {
+test("the ERRNO is the answer — EPERM is a LIVE process, and only ESRCH means dead", () => {
   // The distinction this whole fix turns on. `docs/architecture/06-operations-runbook.md` warns that a
   // cross-user pid "reads as dead under `kill -0`" — true of the naive form, which treats any throw as
   // death. The kernel can only REFUSE to signal a process that exists, so EPERM is positive evidence of
@@ -245,7 +245,7 @@ test("2178 the ERRNO is the answer — EPERM is a LIVE process, and only ESRCH m
     "a kill that returned without throwing found the process");
 });
 
-test("2178 an instrument that could not look returns null — never the `false` that reads as a pass", () => {
+test("an instrument that could not look returns null — never the `false` that reads as a pass", () => {
   // The collapse 2099 exists to stop, asserted here because THIS file is where it would do the most
   // damage: every arm above post-asserts "the group is gone", and a could-not-look scored as `false`
   // turns all five green on a box that measured nothing.
@@ -256,7 +256,7 @@ test("2178 an instrument that could not look returns null — never the `false` 
     "an error carrying no errno is a reader that failed, and a failed reader knows nothing");
 });
 
-test("2178 a pid that cannot name a process is could-not-look, not a dead one", () => {
+test("a pid that cannot name a process is could-not-look, not a dead one", () => {
   // 0 and the negatives are the dangerous half: to `kill(2)` they address a process GROUP, so a probe
   // that passed them through would be asking an entirely different question of an entirely different
   // set of processes. The old `/proc` form returned `false` for all of these — an answer, about nothing.
@@ -264,7 +264,7 @@ test("2178 a pid that cannot name a process is could-not-look, not a dead one", 
     assert.strictEqual(pidAlive(bad), null, `pidAlive(${String(bad)}) must refuse to answer, not answer "dead"`);
 });
 
-test("2178 the box's own init is alive — the cross-user pid the runbook warns about, on a real process", () => {
+test("the box's own init is alive — the cross-user pid the runbook warns about, on a real process", () => {
   // pid 1 exists on every box this suite runs on, and it is the runbook's case in the flesh: owned by
   // root, so an unprivileged runner gets EPERM and a privileged one gets no throw. Both are life, and
   // the arm holds either way — which is the point, since it is the naive reader that disagrees with
@@ -273,7 +273,7 @@ test("2178 the box's own init is alive — the cross-user pid the runbook warns 
     "init is not dead; a reader that says otherwise is reading the permission, not the process");
 });
 
-test("2178 no liveness probe in driver/test/ builds a /proc path from a pid — the sixth site again", () => {
+test("no liveness probe in driver/test/ builds a /proc path from a pid — the sixth site again", () => {
   // The class arm, in the shape this file already uses for the reaper's call sites. `/proc` is Linux's,
   // and 2099 fixed three readers that assumed otherwise; 2104 then added a fourth in a test, which is
   // how it reached a macOS nightly instead of a review. This is what stops the fifth.

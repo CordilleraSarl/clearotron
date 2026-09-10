@@ -35,7 +35,7 @@ const ctxFor = (runDir, doubts, asks = []) => ({
 });
 const doubt = (id) => ({ id, birth: { artifact: "findings.json", quote: `q ${id}` }, subject: { mark: `M-${id}` } });
 
-test("#1239 refreshCtx drops the doubts a prior attempt already had accepted", () => {
+test("refreshCtx drops the doubts a prior attempt already had accepted", () => {
   const d = runDirWithAccepted({ doubt: [{ verdict: "SETTLED", id: "d1" }], ask: [] });
   const ctx = ctxFor(d, [doubt("d1"), doubt("d2"), doubt("d3")]);
   const out = def.refreshCtx(ctx);
@@ -43,7 +43,7 @@ test("#1239 refreshCtx drops the doubts a prior attempt already had accepted", (
   assert.deepEqual(ctx.openDoubts.map((x) => x.id), ["d1", "d2", "d3"], "refreshCtx mutated its input");
 });
 
-test("#1239 an OPEN verdict counts as answered — the seat already spent the turn on it", () => {
+test("an OPEN verdict counts as answered — the seat already spent the turn on it", () => {
   // The point is not "is it settled", it is "has this seat already been asked and replied". An OPEN
   // reply is a reply; re-presenting it buys the same answer for the same money.
   const d = runDirWithAccepted({ doubt: [{ verdict: "OPEN", id: "d2" }], ask: [] });
@@ -51,7 +51,7 @@ test("#1239 an OPEN verdict counts as answered — the seat already spent the tu
   assert.deepEqual(out.openDoubts.map((x) => x.id), ["d1"]);
 });
 
-test("#1239 with nothing accepted the ctx comes back UNCHANGED, not merely equal", () => {
+test("with nothing accepted the ctx comes back UNCHANGED, not merely equal", () => {
   // Attempt 1 must present everything. Returning the same object identity is the cheapest proof that
   // the first attempt cannot be narrowed by an empty ledger.
   const d = mkdtempSync(join(tmpdir(), "carry-empty-"));
@@ -60,12 +60,12 @@ test("#1239 with nothing accepted the ctx comes back UNCHANGED, not merely equal
   assert.equal(def.refreshCtx(ctx), ctx, "an empty ledger narrowed the first attempt");
 });
 
-test("#1239 a ctx with no runDir asks for everything rather than throwing", () => {
+test("a ctx with no runDir asks for everything rather than throwing", () => {
   const ctx = { openDoubts: [doubt("d1")], openAsks: [] };
   assert.equal(def.refreshCtx(ctx), ctx);
 });
 
-test("#1239 the narrowed ctx composes a SHORTER message that still names what is left", () => {
+test("the narrowed ctx composes a SHORTER message that still names what is left", () => {
   // The ctx change is only worth anything if the composed dispatch shrinks. Driven through the stage's
   // real `message()`, not a stand-in.
   const d = runDirWithAccepted({ doubt: [{ verdict: "SETTLED", id: "d1" }], ask: [] });
@@ -80,7 +80,7 @@ test("#1239 the narrowed ctx composes a SHORTER message that still names what is
 
 // ── the blast radius, which is what this hook has to be safe about ───────────────────────────────────
 
-test("#1239 EXACTLY ONE stage declares refreshCtx", () => {
+test("EXACTLY ONE stage declares refreshCtx", () => {
   // A second declarer is not forbidden — it is a decision, and it should be made deliberately rather
   // than discovered. This fails when one arrives, and the reader is sent to the premises above.
   const declaring = Object.entries(STAGES).filter(([, d]) => typeof d?.refreshCtx === "function").map(([n]) => n);
@@ -89,7 +89,7 @@ test("#1239 EXACTLY ONE stage declares refreshCtx", () => {
     + `"do this stage's ids mean the same thing on attempt 2" — see doubt-closure's two premises.`);
 });
 
-test("#1239 every OTHER stage composes the same bytes however many attempts it takes", () => {
+test("every OTHER stage composes the same bytes however many attempts it takes", () => {
   // THE CONTROL THE HOOK IS FOR. `refreshCtx` is absent on every other stage, so `refreshMessage` is
   // never passed and the gateway's base stays `message` — byte for byte, on attempt 1 and attempt 3
   // alike. Asserted on the declaration rather than by dispatching, because the property IS the absence:

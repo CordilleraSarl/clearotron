@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // products.mjs — THE OFFERING. Which of the four products a request is, and what that product carries.
 //
-// Owner ruling, 2026-08-06. There are four products and a client buys one of them:
+// Ruling, 2026-08-06. There are four products and a client buys one of them:
 //
 //   Knockout search              worldwide or a chosen set; up to 8 names; no case law; no native language
 //   Global preliminary search    WORLDWIDE, nothing else; no case law; no native language

@@ -392,7 +392,7 @@ export const KO_STAGES = {
       // source, never a regex over rendered prose.
       // ── THE PER-MARK OPENING ASSESSMENT ──────────────────────────────────────
       //
-      // Owner ruling, 2026-08-26: a batch client gets the same kind of opening paragraph a single-mark
+      // Ruling, 2026-08-26: a batch client gets the same kind of opening paragraph a single-mark
       // client gets, MODEL-AUTHORED and at full length — "the most useful piece of pre-triage; I don't
       // see why we constrain it; 4× longer like the single mark seems fine."
       //

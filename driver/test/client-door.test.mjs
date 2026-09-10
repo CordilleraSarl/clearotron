@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Turning the client door on: what it refuses, what it says, and what it must never write down.
 //
-//, owner rulings 2026-08-31 ("On demand is fine", then "One press does all of it,
+//, rulings 2026-08-31 ("On demand is fine", then "One press does all of it,
 // invisibly… No second step"). The fence stays off at install and this is what turns it on.
 
 import { test } from "node:test";
@@ -218,7 +218,7 @@ import {
   disablePlan, revokeEveryonePlan, applyDisablePlan, describeClosure,
 } from "../../shared/client-door.mjs";
 
-test("2082: connect ARMS a denylist path when the env has none, and keeps the env's own when it has one", () => {
+test("connect ARMS a denylist path when the env has none, and keeps the env's own when it has one", () => {
   // Measured on production (owner, 2026-08-31): no denylist configured anywhere, and isRevoked() fails
   // open on an unset path — a connect that assumed one made every issued key unrevokable, silently.
   const armed = plan({ denylistPath: "/var/lib/clearotron/denylist" });
@@ -233,7 +233,7 @@ test("2082: connect ARMS a denylist path when the env has none, and keeps the en
   assert.equal(plan().denylistPath, null);
 });
 
-test("2082: applyEnablePlan ensures the denylist FILE before the door starts", () => {
+test("applyEnablePlan ensures the denylist FILE before the door starts", () => {
   const fake = io();
   const p = plan({ denylistPath: "/var/lib/clearotron/denylist" });
   const ensured = [];
@@ -244,7 +244,7 @@ test("2082: applyEnablePlan ensures the denylist FILE before the door starts", (
     `the file must exist before the door starts (saw: ${fake.log.join(" | ")})`);
 });
 
-test("2082: the ledger records IDS and never the credential — the planted token does not survive", () => {
+test("the ledger records IDS and never the credential — the planted token does not survive", () => {
   const g = recordConnectKey({ tenants: { t: { accounts: "*", users: {} } } },
     { jti: "abc123", sub: "lawyer@acme.example", client: "cowork", exp: 1900000000,
       // THE PLANT: a confused caller hands the whole spec, token included. The row build is a closed
@@ -259,7 +259,7 @@ test("2082: the ledger records IDS and never the credential — the planted toke
   assert.throws(() => recordConnectKey({}, { jti: "j" }), /whose key/);
 });
 
-test("2082: recordedKeysFor / removeRecordedKeys round-trip, scoped to the identity", () => {
+test("recordedKeysFor / removeRecordedKeys round-trip, scoped to the identity", () => {
   let g = recordConnectKey({ tenants: {} }, { jti: "j1", sub: "a@x", exp: 1900000000 });
   g = recordConnectKey(g, { jti: "j2", sub: "b@x" });
   assert.deepEqual(recordedKeysFor(g, "a@x").map((r) => r.jti), ["j1"]);
@@ -268,7 +268,7 @@ test("2082: recordedKeysFor / removeRecordedKeys round-trip, scoped to the ident
   assert.deepEqual(recordedKeysFor(after, "b@x").map((r) => r.jti), ["j2"], "the other identity's record survives");
 });
 
-test("2082: connectKeyReport judges by the verifier's own pieces — valid, expired, revoked", () => {
+test("connectKeyReport judges by the verifier's own pieces — valid, expired, revoked", () => {
   const NOW = Date.parse("2026-08-31T12:00:00Z");
   let g = recordConnectKey({ tenants: {} }, { jti: "live", sub: "a@x", exp: Math.floor(NOW / 1000) + 3600 });
   g = recordConnectKey(g, { jti: "old", sub: "a@x", exp: Math.floor(NOW / 1000) - 60 });
@@ -282,7 +282,7 @@ test("2082: connectKeyReport judges by the verifier's own pieces — valid, expi
 const DOOR_OPEN = { env: { CLIENT_MCP_ACCOUNT_ACCESS: "1", TRADEMARK_MCP_TOKEN_DENYLIST: "/srv/deny" },
   unitDir: "/u", exists: (p) => p === `/u/${CLIENT_DOOR_UNIT}` };
 
-test("2148 Q3: a person with no key is told so — and the test is the PERSON, not the door", () => {
+test("Q3: a person with no key is told so — and the test is the PERSON, not the door", () => {
   // ── SUPERSEDED 2026-09-03, rewritten rather than deleted ────────────────────────────────────────
   //
   // This asserted "disconnect on a door that is not open says so plainly", which was 2082's acceptance
@@ -301,7 +301,7 @@ test("2148 Q3: a person with no key is told so — and the test is the PERSON, n
   assert.throws(() => applyDisablePlan(p, {}), /nothing to revoke/);
 });
 
-test("2148 Q3: disconnect revokes the key and TOUCHES NOTHING ELSE — no unit, no fence", () => {
+test("Q3: disconnect revokes the key and TOUCHES NOTHING ELSE — no unit, no fence", () => {
   // ── SUPERSEDED 2026-09-03, and this is the arm the ruling is about ──────────────────────────────
   //
   // It used to require the step list `["revoke", "unit", "fence", "ledger"]` and to assert
@@ -341,7 +341,7 @@ test("2148 Q3: disconnect revokes the key and TOUCHES NOTHING ELSE — no unit, 
     "the closing words still describe a teardown that no longer happens");
 });
 
-test("2082: an install whose env never named a denylist gets one ARMED LATE, and the words say what that cannot do", () => {
+test("an install whose env never named a denylist gets one ARMED LATE, and the words say what that cannot do", () => {
   // A pre-2082 connect or a hand-built box: the running door was born without the variable, so a write
   // to the new file revokes nothing that is already up. The plan still arms it (the next start consults
   // it) and the sentence says the limit out loud rather than letting the reader believe otherwise.
@@ -359,7 +359,7 @@ test("2082: an install whose env never named a denylist gets one ARMED LATE, and
   assert.match(env, /TRADEMARK_MCP_TOKEN_DENYLIST=\/srv\/late-arm\/token-denylist/);
 });
 
-test("2148 Q3: --everyone states BOTH counts before acting, and still leaves the service up", () => {
+test("Q3: --everyone states BOTH counts before acting, and still leaves the service up", () => {
   // The admin act the ruling names: "a separate, deliberate admin act with its own name that states how
   // many people it affects before acting." Two counts, because five keys held by one person and five
   // keys held by five people are the same number and not the same act.
@@ -382,7 +382,7 @@ test("2148 Q3: --everyone states BOTH counts before acting, and still leaves the
   assert.match(none.says.join(" "), /nobody to cut off/i);
 });
 
-test("2148 Q3: a revocation with no denylist anywhere SAYS the keys stay live", () => {
+test("Q3: a revocation with no denylist anywhere SAYS the keys stay live", () => {
   // An absence is a finding. With no path configured the ids have nowhere to go, so reporting a
   // revocation would be the exact "every check looked done" that connect-time arming exists to prevent.
   const p = disablePlan({ env: { CLIENT_MCP_ACCOUNT_ACCESS: "1" }, unitDir: "/u",
@@ -398,7 +398,7 @@ test("2148 Q3: a revocation with no denylist anywhere SAYS the keys stay live", 
     "the record of a key that is still live was struck — the key survives with nothing naming it");
 });
 
-test("2082: a secret in the shell but not in the unit's env file is refused AT PLAN TIME", () => {
+test("a secret in the shell but not in the unit's env file is refused AT PLAN TIME", () => {
   // Found by driving connect: the shell-exported secret satisfied every check, the unit read ~/.env,
   // and the door died at birth. The health probe refused before a key was issued — right — but nothing
   // named the cause until the journal. The plan names it now, with the remedy.
@@ -419,7 +419,7 @@ test("2082: a secret in the shell but not in the unit's env file is refused AT P
 
 const DOOR = (over = {}) => ({ standing: true, fenceOn: true, unitInstalled: true, active: null, serving: false, ...over });
 
-test("2145 CONFIGURED IS NOT RUNNING — the state a half-applied connect leaves is a PROBLEM, not an 'on'", () => {
+test("CONFIGURED IS NOT RUNNING — the state a half-applied connect leaves is a PROBLEM, not an 'on'", () => {
   // The measured defect, in the words it was measured in: a `connect` that died at `daemon-reload` had
   // already written the fence and placed both units, and doctor said "the client door is on" over a unit
   // that was inactive with nothing listening. Every angle read as configured, because configured was all
@@ -434,7 +434,7 @@ test("2145 CONFIGURED IS NOT RUNNING — the state a half-applied connect leaves
   assert.notEqual(down.text, up.text, "running and not-running produced the same sentence");
 });
 
-test("2145 NOBODY ASKED is a third answer — a door whose runtime was not measured is not a door that is down", () => {
+test("NOBODY ASKED is a third answer — a door whose runtime was not measured is not a door that is down", () => {
   // `active: null` is the state of a caller that cannot reach systemd — the very shell that produced the
   // measured defect. Reporting that as down is the same lie in the other direction.
   const unknown = describeDoorState(DOOR({ active: null }));
@@ -444,7 +444,7 @@ test("2145 NOBODY ASKED is a third answer — a door whose runtime was not measu
   assert.doesNotMatch(unknown.text, /NOT RUNNING/, "unmeasured was reported as measured-and-down");
 });
 
-test("2145 AN ABSENCE IS NOT A MISCONFIGURATION — a fresh box is reported, a half-applied one is refused", () => {
+test("AN ABSENCE IS NOT A MISCONFIGURATION — a fresh box is reported, a half-applied one is refused", () => {
   // Doctor's own written rule, not a new one: "No `claude` and nothing set is a fresh machine: reported,
   // exit 0." A first cut returned `problem` for every not-standing door — true of an install, and doctor
   // cannot tell an install from a checkout. Wired, it failed eleven arms including
@@ -462,7 +462,7 @@ test("2145 AN ABSENCE IS NOT A MISCONFIGURATION — a fresh box is reported, a h
   }
 });
 
-test("2145 a door that is not configured names WHICH half is missing — the two have different remedies", () => {
+test("a door that is not configured names WHICH half is missing — the two have different remedies", () => {
   // The sentence this replaced in doctor already named the halves independently ("fence off, unit
   // installed"). Collapsing them into "the unit or the setting" would have been a worse sentence than
   // the one it replaced.
@@ -480,7 +480,7 @@ test("2145 a door that is not configured names WHICH half is missing — the two
   assert.doesNotMatch(unitOnly.text, /is not installed/, "the installed unit was reported absent");
 });
 
-test("2145 EVERY COMMAND IT PRINTS IS INJECTED — a literal verb is `command not found` for a reader with no shim", () => {
+test("EVERY COMMAND IT PRINTS IS INJECTED — a literal verb is `command not found` for a reader with no shim", () => {
   //, and this is the arm that would have caught it before the wiring did: doctor's
   // own guard runs every command doctor prints from a directory that is not the install. The first cut
   // of this function hardcoded `clearotron start` and `clearotron connect`, and both reached doctor's
@@ -503,7 +503,7 @@ test("2145 EVERY COMMAND IT PRINTS IS INJECTED — a literal verb is `command no
   assert.ok(texts.some((t) => t.includes("CLOSE-CMD")), "the close command never reached the text");
 });
 
-test("2145 DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a function nobody reaches", () => {
+test("DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a function nobody reaches", () => {
   // This is the defect itself, so it is driven at the door rather than asserted from the source: the
   // split was correct, tested-by-inspection and UNREACHED for a day. A grep for the identifier in
   // `bin/onboard.mjs` would go green on an import that nothing invokes.
@@ -540,7 +540,7 @@ test("2145 DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a fu
 // the two doors stood outside a guard the other one had — which is why the arm below is about the PATH
 // having one owner, not about either door remembering.
 
-test("2191-F14 the denylist path has exactly one owner in the tree", (ctx) => {
+test("the denylist path has exactly one owner in the tree", (ctx) => {
   const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
   // THE SHARED HELPER, not a git call of my own. `no test enumerates the tracked corpus behind the
   // helper's back` exists so every corpus guard announces itself and SKIPS LOUDLY where there is no
@@ -567,7 +567,7 @@ test("2191-F14 the denylist path has exactly one owner in the tree", (ctx) => {
     + "Four copies is how one door created the file and the other only named it");
 });
 
-test("2191-F14 ensureDenylistFile creates an absent list and never touches an existing one", () => {
+test("ensureDenylistFile creates an absent list and never touches an existing one", () => {
   const seen = { mkdir: null, wrote: null };
   const io = { exists: () => false, dirname: (p) => p.replace(/\/[^/]+$/, ""),
     mkdir: (d) => { seen.mkdir = d; }, write: (f, t) => { seen.wrote = { f, t }; } };
@@ -585,7 +585,7 @@ test("2191-F14 ensureDenylistFile creates an absent list and never touches an ex
   assert.equal(wrote, false, "an existing denylist must never be rewritten");
 });
 
-test("2191-F14 present-but-unreadable is NOT accepted — that is the state that fails open", () => {
+test("present-but-unreadable is NOT accepted — that is the state that fails open", () => {
   assert.throws(() => ensureDenylistFile("/srv/x/token-denylist", {
     exists: () => true, dirname: () => "/srv/x", mkdir: () => {}, write: () => {},
     read: () => { throw Object.assign(new Error("EACCES"), { code: "EACCES" }); },
@@ -600,7 +600,7 @@ test("2191-F14 present-but-unreadable is NOT accepted — that is the state that
 // its own child. Measured on this branch before the fix: the door listening on its port while doctor
 // said "the client door is not set up here" and pointed the reader at the command they had just run.
 
-test("2191-F11 a listening door is reported as answering, not as absent", () => {
+test("a listening door is reported as answering, not as absent", () => {
   const door = clientDoorState({
     env: {}, unitDir: "/nowhere", exists: () => false, active: null, listening: true,
   });
@@ -611,7 +611,7 @@ test("2191-F11 a listening door is reported as answering, not as absent", () => 
   assert.match(said.text, /--background/, "and it must say what would make it outlive the terminal");
 });
 
-test("2191-F11 not listening still reads as not set up, and an UNKNOWN probe changes nothing", () => {
+test("not listening still reads as not set up, and an UNKNOWN probe changes nothing", () => {
   const base = { env: {}, unitDir: "/nowhere", exists: () => false, active: null };
   // FALSE is a real answer: nothing is there.
   const off = describeDoorState(clientDoorState({ ...base, listening: false }));
@@ -638,7 +638,7 @@ const standing = (o) => clientDoorState({
   env: { CLIENT_MCP_ACCOUNT_ACCESS: "1" }, unitDir: "/u", exists: () => true, ...o,
 });
 
-test("2191 a standing door that is down, with the port HELD, says what holds it", () => {
+test("a standing door that is down, with the port HELD, says what holds it", () => {
   const said = describeDoorState(standing({ active: false, listening: true, activeState: "inactive", subState: "dead" }));
   assert.equal(said.level, "problem");
   assert.match(said.text, /something IS listening/,
@@ -648,7 +648,7 @@ test("2191 a standing door that is down, with the port HELD, says what holds it"
     "re-placing the unit onto a port something else holds is not the remedy for this state");
 });
 
-test("2191 a crash loop and a half-finished connect are different sentences", () => {
+test("a crash loop and a half-finished connect are different sentences", () => {
   const loop = describeDoorState(standing({ active: false, listening: false, activeState: "activating", subState: "auto-restart" }));
   const half = describeDoorState(standing({ active: false, listening: false, activeState: "inactive", subState: "dead" }));
   assert.match(loop.text, /CRASH-LOOPING/, loop.text);
@@ -660,14 +660,14 @@ test("2191 a crash loop and a half-finished connect are different sentences", ()
   assert.match(loop.text, /activating\/auto-restart/, loop.text);
 });
 
-test("2191 an unasked systemd plus an answering port is still an answer", () => {
+test("an unasked systemd plus an answering port is still an answer", () => {
   const said = describeDoorState(standing({ active: null, listening: true }));
   assert.equal(said.level, "ok",
     "not asking systemd is not knowing nothing — if the port answers, the door is serving");
   assert.match(said.text, /the port's word rather than the unit's/, "and it must say which evidence it has");
 });
 
-test("2191 a running door is unchanged, and none of this fires on it", () => {
+test("a running door is unchanged, and none of this fires on it", () => {
   const said = describeDoorState(standing({ active: true, listening: true, activeState: "active", subState: "running" }));
   assert.equal(said.level, "ok");
   assert.match(said.text, /on and running/, said.text);

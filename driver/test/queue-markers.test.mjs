@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { isLiveQueueMarker } from "../queue-markers.mjs";
 
-test("#375: a PARKED run is live — the state the test deploy guard counted as zero", () => {
+test("a PARKED run is live — the state the test deploy guard counted as zero", () => {
   // The guard refused correctly twice while R1 executed, then deployed ten seconds after the run parked
   // and restarted the services under it. The run resumed 110 seconds later, on a different commit.
   assert.ok(isLiveQueueMarker("job-a.postponed"), "a rate-limit or recovery park auto-resumes — it is live");
@@ -14,7 +14,7 @@ test("#375: a PARKED run is live — the state the test deploy guard counted as 
   assert.ok(isLiveQueueMarker("job-a.processing.claimed-4321:99"), "claimed, mid-publish (#377's window)");
 });
 
-test("#375: terminal states are not live — nothing further happens to them", () => {
+test("terminal states are not live — nothing further happens to them", () => {
   for (const n of ["job-a.done", "job-a.failed", "job-a.cancelled", "job-a.duplicate"])
     assert.ok(!isLiveQueueMarker(n), `${n} is terminal`);
   // sidecars and results are not entries
@@ -24,7 +24,7 @@ test("#375: terminal states are not live — nothing further happens to them", (
   assert.ok(!isLiveQueueMarker(null), "null");
 });
 
-test("#375: the driver and the deploy guard read ONE definition", async () => {
+test("the driver and the deploy guard read ONE definition", async () => {
   // The guard shells `scripts/queue-inflight.mjs`, which imports this module — the same predicate
   // runner.mjs uses for its queued/in-flight admission count. The failure being fixed is a rule written
   // down twice: the runner listed three live states and the guard's grep listed two.

@@ -51,7 +51,7 @@ const CTXS = [
 ];
 const msg = (stage, ctx) => STAGES[stage].message({ paths: P, job: {}, axis: 1, finding: {}, ...ctx });
 
-test("#253 — the prose standard reaches every stage that writes reader-facing prose", () => {
+test("the prose standard reaches every stage that writes reader-facing prose", () => {
   for (const stage of PROSE_STAGES) {
     for (const [label, ctx] of CTXS) {
       assert.ok(msg(stage, ctx).includes(STANDARD),
@@ -65,7 +65,7 @@ test("#253 — the prose standard reaches every stage that writes reader-facing 
   }
 });
 
-test("#253 — a corrective (followup) pass carries the standard as well", () => {
+test("a corrective (followup) pass carries the standard as well", () => {
   for (const stage of PROSE_STAGES) {
     const composed = composeFollowup(stage, { profile: null, job: {} }, { followup: "Fix the caption." });
     assert.ok(composed.includes(STANDARD),
@@ -73,14 +73,14 @@ test("#253 — a corrective (followup) pass carries the standard as well", () =>
   }
 });
 
-test("#253 — the machine stages deliberately do NOT carry it", () => {
+test("the machine stages deliberately do NOT carry it", () => {
   for (const stage of MACHINE_STAGES) {
     assert.ok(!msg(stage, { profile: null, job: {} }).includes(STANDARD),
       `${stage} writes a machine artifact, not reader prose — paying for the prose standard on every dispatch buys nothing`);
   }
 });
 
-test("#253 — every skill path any stage names resolves to a real file", () => {
+test("every skill path any stage names resolves to a real file", () => {
   const missing = [];
   for (const name of Object.keys(STAGES)) {
     for (const [label, ctx] of CTXS) {

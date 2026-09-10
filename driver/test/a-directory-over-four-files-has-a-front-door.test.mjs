@@ -103,7 +103,7 @@ export function accountedBy(dir, has, readReadme) {
   return null;
 }
 
-test("#1716 every tracked directory over four files has a front door, or an ancestor that names it", (ctx) => {
+test("every tracked directory over four files has a front door, or an ancestor that names it", (ctx) => {
   const tracked = trackedFiles(GUARD, { root: ROOT });
   if (tracked === null) return ctx.skip(skipReason(GUARD));
   const paths = nonEmpty(tracked, "trackedFiles(GUARD, { root: ROOT })");
@@ -125,7 +125,7 @@ test("#1716 every tracked directory over four files has a front door, or an ance
     + "line saying what is in there and why it has none of its own:\n  " + unaccounted.join("\n  "));
 });
 
-test("#1716 the matcher fires in both directions, over planted trees", () => {
+test("the matcher fires in both directions, over planted trees", () => {
   const planted = [
     "pkg/README.md",
     "pkg/src/a.js", "pkg/src/b.js", "pkg/src/c.js", "pkg/src/d.js", "pkg/src/e.js",   // 5 > N
@@ -153,7 +153,7 @@ test("#1716 the matcher fires in both directions, over planted trees", () => {
   assert.equal(accountedBy("pkg/src", has, () => "unsrc"), null);
 });
 
-test("#1716 the walk STOPS at the nearest front door and does not shop for a distant one", () => {
+test("the walk STOPS at the nearest front door and does not shop for a distant one", () => {
   // The failure this prevents: `a/README.md` mentions `src` in prose about something else, `a/b/README.md`
   // is the real front door for `a/b/` and says nothing about `a/b/src/`. Walking past the nearest one
   // would excuse `a/b/src/` on the grandparent's unrelated sentence — and a guard that finds an excuse
@@ -169,7 +169,7 @@ test("#1716 the walk STOPS at the nearest front door and does not shop for a dis
   assert.equal(accountedBy("a/b/src", has, read2), "a/b/README.md");
 });
 
-test("#1716 N is the ADR's number, not a number this file chose", () => {
+test("N is the ADR's number, not a number this file chose", () => {
   const adr = readFileSync(join(ROOT, "docs", "decisions", "0004-documentation-structure.md"), "utf8");
   assert.equal(N, 4);
   assert.match(adr, /one to four files whose parent already maps them/,

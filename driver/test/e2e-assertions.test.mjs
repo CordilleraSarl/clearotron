@@ -126,7 +126,7 @@ test("a HEALTHY zh lane states degraded:false, and the falsy guard still passes 
   });
 });
 
-test("#525 OPS.falsy CANNOT tell `false` from absent — the assert layer stays blind where the printed line no longer is", () => {
+test("OPS.falsy CANNOT tell `false` from absent — the assert layer stays blind where the printed line no longer is", () => {
   // Named so nobody reads a green scenario as proof this is closed. A scenario asserting `falsy` on
   // fold.lanes.zh.degraded passes on a healthy lane AND on a run whose fold never happened. Moving the
   // scenario to `equals: false` is the fix, and those files live in the config repo — a handover item.
@@ -248,7 +248,7 @@ const POLICY_CLEARANCE = {
   recipe: null, extras: null, origins: { level: "job.product" }, caseLaw: false,
 };
 
-test("#324: on the knockout lane an absent register plan is NOT PROBED with its reason — and notProbed is not ok-by-another-name", () => {
+test("on the knockout lane an absent register plan is NOT PROBED with its reason — and notProbed is not ok-by-another-name", () => {
   withRun({ "_driver/search-policy.json": POLICY_KNOCKOUT }, (dir) => {
     const r = evalAssertion({ op: "no-wildcard-exact-pair", path: "_driver/register-plan.json" }, dir);
     assert.equal(r.notProbed, true, "the third state is set, so cmdReport can print it as its own thing");
@@ -258,7 +258,7 @@ test("#324: on the knockout lane an absent register plan is NOT PROBED with its 
   });
 });
 
-test("#324: on the clearance lane an absent register plan is still a FAIL — there the missing plan IS the defect", () => {
+test("on the clearance lane an absent register plan is still a FAIL — there the missing plan IS the defect", () => {
   withRun({ "_driver/search-policy.json": POLICY_CLEARANCE }, (dir) => {
     const r = evalAssertion({ op: "no-wildcard-exact-pair", path: "_driver/register-plan.json" }, dir);
     assert.equal(r.ok, false);
@@ -267,7 +267,7 @@ test("#324: on the clearance lane an absent register plan is still a FAIL — th
   });
 });
 
-test("#324: an unreadable lane FAILS — 'cannot tell which lane ran' is an absence, and an absence is a finding", () => {
+test("an unreadable lane FAILS — 'cannot tell which lane ran' is an absence, and an absence is a finding", () => {
   // No sidecar at all: the shape that would let "missing ⇒ not probed" generalise to every lane.
   withRun({ "status.json": STATUS_HANDOFF }, (dir) => {
     const r = evalAssertion({ op: "no-wildcard-exact-pair", path: "_driver/register-plan.json" }, dir);
@@ -282,7 +282,7 @@ test("#324: an unreadable lane FAILS — 'cannot tell which lane ran' is an abse
   });
 });
 
-test("#324: the short circuit is (knockout AND absent), never the lane alone — a knockout that DID write a plan is read normally", () => {
+test("the short circuit is (knockout AND absent), never the lane alone — a knockout that DID write a plan is read normally", () => {
   const bad = { entries: [{ qid: "primary-sweep:exact:fixture#2", predicate: "exact", term: "FIXTURE*" }] };
   withRun({ "_driver/search-policy.json": POLICY_KNOCKOUT, "_driver/register-plan.json": bad }, (dir) => {
     const r = evalAssertion({ op: "no-wildcard-exact-pair", path: "_driver/register-plan.json" }, dir);
@@ -292,7 +292,7 @@ test("#324: the short circuit is (knockout AND absent), never the lane alone —
   });
 });
 
-test("#324: an unparseable plan is a FAIL on the knockout lane too — present-but-broken is not absent", () => {
+test("an unparseable plan is a FAIL on the knockout lane too — present-but-broken is not absent", () => {
   withRun({ "_driver/search-policy.json": POLICY_KNOCKOUT, "_driver/register-plan.json": "{not json" }, (dir) => {
     const r = evalAssertion({ op: "no-wildcard-exact-pair", path: "_driver/register-plan.json" }, dir);
     assert.equal(r.ok, false);
@@ -304,7 +304,7 @@ test("#324: an unparseable plan is a FAIL on the knockout lane too — present-b
 // "Provably never writes the file" is a claim about SOURCE, so it is checked against source. If a future
 // knockout stage starts freezing a register plan, the not-probed branch becomes a lie — and this is the
 // test that says so, rather than a comment that used to be true.
-test("#324: the knockout lane provably writes no register-plan.json — the premise of the not-probed branch", async () => {
+test("the knockout lane provably writes no register-plan.json — the premise of the not-probed branch", async () => {
   const { readFileSync } = await import("node:fs");
   for (const f of ["pipeline-knockout.mjs", "stages-knockout.mjs", "publish/knockout.mjs"]) {
     const src = readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
@@ -316,7 +316,7 @@ test("#324: the knockout lane provably writes no register-plan.json — the prem
 
 // ── the report asserts nothing it did not examine ──────────────────────────────────────────────────────────────────
 
-test("#324: names-configured-depth passes a surface naming the configured depth and fails one naming another", () => {
+test("names-configured-depth passes a surface naming the configured depth and fails one naming another", () => {
   withRun({ "_driver/search-policy.json": POLICY_KNOCKOUT, "status.json": { ...STATUS_HANDOFF, stageLabel: "Knockout search" } }, (dir) => {
     const r = evalAssertion({ op: "names-configured-depth", path: "status.json" }, dir);
     assert.equal(r.ok, true, r.saw);
@@ -347,7 +347,7 @@ test("#324: names-configured-depth passes a surface naming the configured depth 
 const POLICY_RETIRED_KO = { ...POLICY_KNOCKOUT, level: "knockout", stageLabel: "Depth 1" };
 const POLICY_RETIRED_KOREG = { ...POLICY_KNOCKOUT, level: "knockout-register", stageLabel: "Depth 2" };
 
-test("#463: names-configured-depth checks the name the renderers print, on a retired row too", () => {
+test("names-configured-depth checks the name the renderers print, on a retired row too", () => {
   // The line the knockout renderer actually emits for this level — `.identity`, no rung.
   withRun({ "_driver/search-policy.json": POLICY_RETIRED_KO, "report.html": "<b>Knockout review</b> — screens each name" }, (dir) => {
     const r = evalAssertion({ op: "names-configured-depth", path: "report.html" }, dir);
@@ -362,7 +362,7 @@ test("#463: names-configured-depth checks the name the renderers print, on a ret
   });
 });
 
-test("#463: a product name that CONTAINS another product's name is one search, not two", () => {
+test("a product name that CONTAINS another product's name is one search, not two", () => {
   withRun({ "_driver/search-policy.json": POLICY_RETIRED_KOREG,
             "report.html": "<b>Knockout review with register hit-counts</b> — screens each name" }, (dir) => {
     const r = evalAssertion({ op: "names-configured-depth", path: "report.html" }, dir);
@@ -379,7 +379,7 @@ test("#463: a product name that CONTAINS another product's name is one search, n
   });
 });
 
-test("#324: names-configured-depth fails a surface that names no depth, and fails when the depth is unreadable", () => {
+test("names-configured-depth fails a surface that names no depth, and fails when the depth is unreadable", () => {
   withRun({ "_driver/search-policy.json": POLICY_KNOCKOUT, "knockout-assessment.md": "PROJECT HALCYON is rated Medium (low) for Classes 9 and 41." }, (dir) => {
     const r = evalAssertion({ op: "names-configured-depth", path: "knockout-assessment.md" }, dir);
     assert.equal(r.ok, false, "silence is not transparency — a surface that never says which depth ran cannot be checked");
@@ -390,7 +390,7 @@ test("#324: names-configured-depth fails a surface that names no depth, and fail
   });
 });
 
-test("#324: register-claims-within-counts allows a count and a labelled expectation, and refuses a swept or crowded register", () => {
+test("register-claims-within-counts allows a count and a labelled expectation, and refuses a swept or crowded register", () => {
   // Both sentences are REAL, from a delivered knockout-register run: the standing caveat and the
   // register estimate, the latter self-labelled as an expectation.
   const honest = "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.\n"
@@ -412,7 +412,7 @@ test("#324: register-claims-within-counts allows a count and a labelled expectat
   }
 });
 
-test("#324: register-claims-within-counts declines on a lane that enumerates, and FAILS when the lane is unreadable", () => {
+test("register-claims-within-counts declines on a lane that enumerates, and FAILS when the lane is unreadable", () => {
   withRun({ "_driver/search-policy.json": POLICY_CLEARANCE, "report.md": "The register is crowded." }, (dir) => {
     const r = evalAssertion({ op: "register-claims-within-counts", path: "report.md" }, dir);
     assert.equal(r.notProbed, true, "enumerated language is supported where the lane enumerates");
@@ -425,7 +425,7 @@ test("#324: register-claims-within-counts declines on a lane that enumerates, an
   });
 });
 
-test("#324: survivor-not-clear catches a clear verdict and leaves correct comparative prose alone", () => {
+test("survivor-not-clear catches a clear verdict and leaves correct comparative prose alone", () => {
   // Real prose from two delivered knockout runs. Neither ends a matter, and both contain words a blunt
   // /\bclear\b/ would have flagged — a noise generator on a client deliverable gets read once, then never.
   const fine = "PROJECT HALCYON rates Medium (low), driven by Classes 9 and 42, with the remaining classes reading materially clearer.\n"
@@ -450,7 +450,7 @@ test("#324: survivor-not-clear catches a clear verdict and leaves correct compar
 
 // The suite's own report must be able to SHOW the third state. Wiring, not behaviour: a notProbed result
 // that cmdReport prints as `[ ok ]` would be exactly the silent pass this issue exists to remove.
-test("#324: cmdReport prints NOT PROBED as its own state, keeps it out of INVESTIGATE, and never lets it close as a clean sweep", async () => {
+test("cmdReport prints NOT PROBED as its own state, keeps it out of INVESTIGATE, and never lets it close as a clean sweep", async () => {
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../../scripts/e2e.mjs", import.meta.url), "utf8");
   assert.match(src, /r\.notProbed \? "n\/p " : r\.ok \? " ok " : "FAIL"/, "three print states, and not-probed is not ok");
@@ -559,7 +559,7 @@ test("a degraded lane and a non-delivered terminal state are each flagged", () =
   assert.ok(flags.some((f) => /terminal state is "failed" at knockout-frame/.test(f)));
 });
 
-test("#525 the ledger prints the CAUSE, never the boolean — for lanes and for units", () => {
+test("the ledger prints the CAUSE, never the boolean — for lanes and for units", () => {
   // THE SILENT TRAP. runLedger interpolated `row.degraded` directly. With `degraded` now the boolean,
   // leaving it would print "zh: true": no exception, no failing test, and the cause gone from the E2E
   // ledger entirely — the one place an investigator looks to find out what broke.
@@ -767,7 +767,7 @@ test("the suffixed ref still prefix-matches the base, which is what queueOutcome
 const OPS_NAMES = ["equals", "falsy", "exists", "non-empty", "length"];
 
 // The content rules that lived here as tests over the bundled scenario files moved into the harness
-// when the bundled suite was deleted (one suite, owner ruling 2026-08-07): `lintScenarios` in
+// when the bundled suite was deleted (one suite, ruling 2026-08-07): `lintScenarios` in
 // scripts/e2e.mjs runs them against the REAL store on every list/run, and
 // e2e-scenario-store.test.mjs pins each rule through fixtures.
 
@@ -907,7 +907,7 @@ function edge(routes) {
   });
 }
 
-test("#354: the probe carries the stamped URL's HOST to the loopback edge, and asks only for headers", async () => {
+test("the probe carries the stamped URL's HOST to the loopback edge, and asks only for headers", async () => {
   const { srv, seen, origin } = await edge({ "/tmpe2er4-arbora/report.html": 401 });
   process.env.CLEAROTRON_EDGE_ORIGIN = origin;
   try {
@@ -919,7 +919,7 @@ test("#354: the probe carries the stamped URL's HOST to the loopback edge, and a
   } finally { srv.close(); delete process.env.CLEAROTRON_EDGE_ORIGIN; }
 });
 
-test("#354: a 404 on the stamped URL is distinguishable from every other answer", async () => {
+test("a 404 on the stamped URL is distinguishable from every other answer", async () => {
   const { srv, origin } = await edge({ "/live/report.html": 200 });
   process.env.CLEAROTRON_EDGE_ORIGIN = origin;
   try {
@@ -929,7 +929,7 @@ test("#354: a 404 on the stamped URL is distinguishable from every other answer"
   } finally { srv.close(); delete process.env.CLEAROTRON_EDGE_ORIGIN; }
 });
 
-test("#354: an unreachable edge is NOT PROBED, never a pass and never a 404", async () => {
+test("an unreachable edge is NOT PROBED, never a pass and never a 404", async () => {
   // The distinction is load-bearing. "could not ask" and "asked, and the route is missing" send a reader
   // to two different places, and the harness records, it does not judge.
   const { srv, origin } = await edge({});
@@ -942,7 +942,7 @@ test("#354: an unreachable edge is NOT PROBED, never a pass and never a 404", as
   } finally { delete process.env.CLEAROTRON_EDGE_ORIGIN; }
 });
 
-test("#354: an unusable URL says so rather than throwing mid-report", async () => {
+test("an unusable URL says so rather than throwing mid-report", async () => {
   const r = await probeStampedUrl("not a url");
   assert.match(r.error, /unparseable/);
   assert.equal(r.status, undefined);
@@ -956,7 +956,7 @@ test("#354: an unusable URL says so rather than throwing mid-report", async () =
 // run directory along with the artifact, which is the evidence the next round reads to say WHY a probe
 // behaved as it did. Operator instructions told a human to tar them first; a step that exists only in
 // prose is the step skipped on the round where it mattered.
-test("#356: preserveRunDir writes a tarball and reports the ENTRY COUNT read back off the archive", async () => {
+test("preserveRunDir writes a tarball and reports the ENTRY COUNT read back off the archive", async () => {
   const { preserveRunDir } = await import("../../scripts/e2e.mjs");
   const tmp = mkdtempSync(join(tmpdir(), "e2e-preserve-"));
   try {
@@ -976,7 +976,7 @@ test("#356: preserveRunDir writes a tarball and reports the ENTRY COUNT read bac
   } finally { rmSync(tmp, { recursive: true, force: true }); }
 });
 
-test("#356: a preservation that cannot run REPORTS why and never claims success — it is what stops the purge", async () => {
+test("a preservation that cannot run REPORTS why and never claims success — it is what stops the purge", async () => {
   const { preserveRunDir } = await import("../../scripts/e2e.mjs");
   const tmp = mkdtempSync(join(tmpdir(), "e2e-preserve-fail-"));
   try {
@@ -1005,7 +1005,7 @@ const REFUSED = (reason) => ({
     { door: "cli", accepted: false, reason }, { door: "ops-mcp", accepted: false, reason }] }],
 });
 
-test("#508: every door refused ⇒ the receipt answers, and it names the doors", () => {
+test("every door refused ⇒ the receipt answers, and it names the doors", () => {
   const r = doorRefusal(REFUSED('job rejected — product "prelim-register-only" names no search we offer'), "E2E-R0h",
     { terminal: "clarify", reasonMatches: "no search we offer" });
   assert.deepEqual(r.doors, ["cli", "ops-mcp"]);
@@ -1014,14 +1014,14 @@ test("#508: every door refused ⇒ the receipt answers, and it names the doors",
   assert.equal(r.orderedAdmission, false);
 });
 
-test("#508: a refusal for the WRONG reason does not read as the right one", () => {
+test("a refusal for the WRONG reason does not read as the right one", () => {
   // The whole value of recording the reason. Without it these two cases are indistinguishable.
   const r = doorRefusal(REFUSED("job rejected — 9 names exceeds the 8-name limit"), "E2E-R0h",
     { terminal: "clarify", reasonMatches: "no search we offer" });
   assert.deepEqual(r.missed, ["cli", "ops-mcp"], "both doors refused, neither for the ordered reason");
 });
 
-test("#508: a receipt with no reason is NOT PROBED, never a pass", () => {
+test("a receipt with no reason is NOT PROBED, never a pass", () => {
   // Written by an older round. `missed` must stay empty — computing it against nothing would report
   // "every door said the right thing" about a receipt that recorded nothing at all.
   const r = doorRefusal(REFUSED(null), "E2E-R0h", { terminal: "clarify", reasonMatches: "no search we offer" });
@@ -1029,7 +1029,7 @@ test("#508: a receipt with no reason is NOT PROBED, never a pass", () => {
   assert.deepEqual(r.missed, [], "nothing was compared, so nothing may be claimed either way");
 });
 
-test("#508: the receipt settles NOTHING unless every door refused — absence keeps its meaning", () => {
+test("the receipt settles NOTHING unless every door refused — absence keeps its meaning", () => {
   const mixed = { cases: [{ ref: "E2E-R0d", answers: [
     { door: "cli", accepted: true }, { door: "ops-mcp", accepted: false, reason: "duplicate" }] }] };
   assert.equal(doorRefusal(mixed, "E2E-R0d"), null, "one door admitted — this is the dedupe shape, read from the queue");
@@ -1038,7 +1038,7 @@ test("#508: the receipt settles NOTHING unless every door refused — absence ke
   assert.equal(doorRefusal({ cases: [{ ref: "E2E-R0h", answers: [] }] }, "E2E-R0h"), null, "an entry recording no doors");
 });
 
-test("#508: ordering an ADMISSION and getting a refusal is still a defect, however cleanly it reads", () => {
+test("ordering an ADMISSION and getting a refusal is still a defect, however cleanly it reads", () => {
   const r = doorRefusal(REFUSED("job rejected — something"), "E2E-R0h", { terminal: "delivered" });
   assert.equal(r.orderedAdmission, true);
   for (const want of ["clarify", "reject", "refused", "duplicate"])
@@ -1081,7 +1081,7 @@ test("absent: field ops on a missing file still FAIL — the op does not leak ab
 // the wildcard/exact pairing it was looking at, and worthless. The op is WIDENED rather than renamed:
 // scenario files live in the config repo, so a renamed op is never invoked and the check ships inert,
 // green while examining nothing — the same failure it committed.
-test("#516 the op reports the label row a wildcard/exact check cannot see", () => {
+test("the op reports the label row a wildcard/exact check cannot see", () => {
   const incident = { entries: [
     { qid: "primary-sweep:default:core-bioveltrin", predicate: "default", term: "**Core (BIOVELTRIN, BIO VELTRIN, BIO-VELTRIN, etc.)**" },
     { qid: "primary-sweep:default:formative-root", predicate: "default", term: "**Formative root (VELTRIN, DELPHIN, DELPHINUS, etc.)**" },
@@ -1095,7 +1095,7 @@ test("#516 the op reports the label row a wildcard/exact check cannot see", () =
   });
 });
 
-test("#516 a parenthesised OWNER row still passes — the harness inherits the binding trap's answer too", () => {
+test("a parenthesised OWNER row still passes — the harness inherits the binding trap's answer too", () => {
   // The op imports the driver's own screen rather than restating a rule here, so `predicate:"owner"`
   // stays exempt in both places by construction. A bracket rule would report the register lane broken
   // on every run that cross-checks a company name.
@@ -1130,7 +1130,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
   const ops429 = { door: "ops-mcp", ok: false, status: 429, transport: true,
     out: "MCP initialize refused (429): ops principal rate limit exceeded — retry shortly" };
 
-  test("#757 R0e reproduced: a 429 on one of two doors is NOT a disagreement", () => {
+  test("R0e reproduced: a 429 on one of two doors is NOT a disagreement", () => {
     const v = doorAsymmetry([cliAccepted, ops429]);
     assert.equal(doorAnswerClass(ops429), DOOR_ANSWER.INFRA_UNAVAILABLE);
     assert.equal(v.agreed, true,
@@ -1140,7 +1140,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.equal(v.reducedCoverage, true, "and it is never silent: the case lost a door");
   });
 
-  test("#757 the exclusion does NOT extend to a door that actually judged the case", () => {
+  test("the exclusion does NOT extend to a door that actually judged the case", () => {
     const opsScopeRefusal = { door: "ops-mcp", ok: false, status: 400, transport: true,
       out: "start_run refused: mark is outside the product scope for this customer" };
     assert.equal(doorAnswerClass(opsScopeRefusal), DOOR_ANSWER.ANSWERED,
@@ -1150,7 +1150,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.equal(v.reducedCoverage, false);
   });
 
-  test("#757 5xx is infrastructure; 4xx other than 429 is an answer", () => {
+  test("5xx is infrastructure; 4xx other than 429 is an answer", () => {
     for (const status of [500, 502, 503, 504]) {
       assert.equal(doorAnswerClass({ door: "ops-mcp", ok: false, status, transport: true }),
         DOOR_ANSWER.INFRA_UNAVAILABLE, `${status} is the door dying, not deciding`);
@@ -1162,7 +1162,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     }
   });
 
-  test("#757 BOTH doors lost to infrastructure is not a silent pass", () => {
+  test("BOTH doors lost to infrastructure is not a silent pass", () => {
     const v = doorAsymmetry([{ door: "cli", ok: false, status: 503, transport: true }, ops429]);
     assert.equal(v.compared.length, 0);
     assert.equal(v.agreed, true, "zero opinions cannot disagree");
@@ -1170,7 +1170,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
       "but the case proved NOTHING about the doors, and reducedCoverage is the only thing that says so");
   });
 
-  test("#757 a product refusal both doors make still reads as agreement", () => {
+  test("a product refusal both doors make still reads as agreement", () => {
     const v = doorAsymmetry([
       { door: "cli", ok: false, status: null, out: "refused: out of scope" },
       { door: "ops-mcp", ok: false, status: 400, transport: true, out: "refused: out of scope" },
@@ -1193,7 +1193,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
   //                   running every case against every door is lost silently.
   //   admit cases   — #98 fires "the one that ACCEPTED is the defect" at the door that behaved.
 
-  test("#1865 the not-configured branch marks itself unavailable — driven, not read off the source", async () => {
+  test("the not-configured branch marks itself unavailable — driven, not read off the source", async () => {
     // No TRADEMARK_MCP_HTTP_PORT in this process, which IS the state the finding is about.
     assert.equal(process.env.TRADEMARK_MCP_HTTP_PORT ?? "", "", "this arm is only meaningful with no MCP port in scope");
     const { enqueueViaMcp } = await import("../../scripts/e2e.mjs");
@@ -1204,7 +1204,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
       "an absent door holds no opinion — recorded as a refusal it manufactures agreement and misfires #98");
   });
 
-  test("#1865 admit case: an absent second door is NOT a disagreement (R0d/R0e)", () => {
+  test("admit case: an absent second door is NOT a disagreement (R0d/R0e)", () => {
     const opsAbsent = { door: "ops-mcp", ok: false, transport: true, status: null,
       out: "no TRADEMARK_MCP_HTTP_PORT in scope — this door is not configured on this deployment, so it was never asked" };
     const v = doorAsymmetry([cliAccepted, opsAbsent]);
@@ -1213,7 +1213,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.equal(v.reducedCoverage, true, "single-door coverage, and it is said out loud");
   });
 
-  test("#1865 refusal case: an absent door is not listed as a refuser, and the loss is named (R0a-c/f)", async () => {
+  test("refusal case: an absent door is not listed as a refuser, and the loss is named (R0a-c/f)", async () => {
     const { doorRefusal } = await import("../../scripts/e2e.mjs");
     const receipt = { cases: [{ ref: "E2E-R0a", answers: [
       { door: "cli", accepted: false, answerClass: "answered", status: null, reason: "clarify: the mark is ambiguous" },
@@ -1226,7 +1226,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.deepEqual(r.missed, [], "the door that DID answer carried the ordered reason");
   });
 
-  test("#1865 the exclusion does not weaken a case both doors actually refused", async () => {
+  test("the exclusion does not weaken a case both doors actually refused", async () => {
     const { doorRefusal } = await import("../../scripts/e2e.mjs");
     const receipt = { cases: [{ ref: "E2E-R0b", answers: [
       { door: "cli", accepted: false, answerClass: "answered", reason: "clarify: out of scope" },
@@ -1237,7 +1237,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.deepEqual(r.excluded, [], "and full coverage still reads as full coverage");
   });
 
-  test("#1865 a case where EVERY door was unavailable refuses to read as a refusal at all", async () => {
+  test("a case where EVERY door was unavailable refuses to read as a refusal at all", async () => {
     const { doorRefusal } = await import("../../scripts/e2e.mjs");
     const receipt = { cases: [{ ref: "E2E-R0c", answers: [
       { door: "cli", accepted: false, answerClass: "infra-unavailable", reason: "spawn failed" },
@@ -1267,7 +1267,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     srv.listen(0, "127.0.0.1", () => { const p = srv.address().port; srv.close(() => resolve(p)); });
   });
 
-  test("#1865 a closed socket is a transport failure — driven against a real dead port", async () => {
+  test("a closed socket is a transport failure — driven against a real dead port", async () => {
     // A hand-built `{ code: "ECONNREFUSED" }` would assert that the classifier handles the object I
     // decided to write. The subject is what node actually throws, so the arm has to make node throw it.
     const { mcpToolCall } = await import("../../driver/portal-mcp-client.mjs");
@@ -1286,7 +1286,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
       DOOR_ANSWER.INFRA_UNAVAILABLE, "and the classifier has to agree, or the receipt still says refused");
   });
 
-  test("#1865 the ops door reports a dead port as unavailable, end to end", async () => {
+  test("the ops door reports a dead port as unavailable, end to end", async () => {
     // In a CHILD, because the door's URL is read once at module load: setting the port after importing
     // would drive a module that never saw it. This is the same reason the not-configured arm above runs
     // in a process with no port in scope rather than deleting the variable.
@@ -1311,7 +1311,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
       + "different fixes, and reports that read identically are how this went unnoticed");
   });
 
-  test("#1865 every receipt answer carries its transport classification, including when it is false", async () => {
+  test("every receipt answer carries its transport classification, including when it is false", async () => {
     const { receiptAnswerClassification } = await import("../../scripts/e2e.mjs");
     const dead = receiptAnswerClassification({ ok: false, transport: true, status: null });
     assert.deepEqual(dead, { answerClass: "infra-unavailable", status: null, transport: true });
@@ -1324,7 +1324,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     }
   });
 
-  test("#1865 the widening does not excuse a door that actually answered", async () => {
+  test("the widening does not excuse a door that actually answered", async () => {
     const { doorAnswerClass, DOOR_ANSWER } = await import("../../scripts/e2e.mjs");
     const { isSocketFailure } = await import("../../driver/portal-mcp-client.mjs");
     assert.equal(doorAnswerClass({ ok: false, transport: true, status: 400 }), DOOR_ANSWER.ANSWERED,
@@ -1336,7 +1336,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
       "an upstream refusal is an answer, whatever it says");
   });
 
-  test("#1865 an OLD receipt still reads as it did — no retrospective unavailability", async () => {
+  test("an OLD receipt still reads as it did — no retrospective unavailability", async () => {
     const { doorRefusal } = await import("../../scripts/e2e.mjs");
     const receipt = { cases: [{ ref: "E2E-R0f", answers: [
       { door: "cli", accepted: false, reason: "clarify: ambiguous" },
@@ -1348,7 +1348,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.deepEqual(r.excluded, []);
   });
 
-  test("#757 an old receipt with no answerClass reads exactly as it did before", () => {
+  test("an old receipt with no answerClass reads exactly as it did before", () => {
     // Receipts written before this change carry {door, accepted, reason} only. The fallback must
     // reproduce the previous reading rather than retrospectively inventing infrastructure failures in
     // rounds nobody can re-run.
@@ -1365,10 +1365,10 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
 // that never applied. It was the ONLY failing line in the harness's ledger for such a round, where it
 // read as one more consequence of the run failing rather than as a check that could never have passed.
 //
-// Owner ruling, 2026-08-22, verbatim: "clean up the failed runs. they owe the client nothing."
+// Ruling, 2026-08-22, verbatim: "clean up the failed runs. they owe the client nothing."
 const DELIVERED = { state: "delivered", sendPending: true, runId: "2026-08-22-x" };
 
-test("#1561 a non-delivered terminal run is NOT ASSERTED, and the line says so", () => {
+test("a non-delivered terminal run is NOT ASSERTED, and the line says so", () => {
   for (const state of ["failed", "parked", "cancelled"]) {
     withRun({ "status.json": { state, runId: "2026-08-22-x" } }, (dir) => {
       const r = evalAssertion({ op: "delivery-settled", path: "status.json" }, dir);
@@ -1380,7 +1380,7 @@ test("#1561 a non-delivered terminal run is NOT ASSERTED, and the line says so",
   }
 });
 
-test("#1561 a DELIVERED run is still held to the whole contract", () => {
+test("a DELIVERED run is still held to the whole contract", () => {
   // The scoping must not become a way for a real delivery defect to pass. A delivered run with the flag
   // and no packet still fails, which is the case the assertion was rewritten for in the first place.
   withRun({ "status.json": DELIVERED }, (dir) => {
@@ -1395,7 +1395,7 @@ test("#1561 a DELIVERED run is still held to the whole contract", () => {
   });
 });
 
-test("#1561 a status with NO state is still asserted — absence is not evidence of failure", () => {
+test("a status with NO state is still asserted — absence is not evidence of failure", () => {
   // The scope test keys on a state that positively says otherwise. A missing state must not become a
   // silent exemption, or every unreadable status.json stops being checked.
   withRun({ "status.json": { sendPending: true, runId: "2026-08-22-x" } }, (dir) => {

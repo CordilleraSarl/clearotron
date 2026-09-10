@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// senior-rights.mjs — "verify the right that matters" (WP-receipts, 2026-07-05 owner steer).
+// senior-rights.mjs — "verify the right that matters" (WP-receipts, 2026-07-05 steer).
 //
 // The VENZY reference case: the lead conflict was ONE finding backed by NINE registrations of the same
 // mark (Türkiye, UAE, Saudi, …). The run fetched exactly one leg — the top-scoring UAE 2015 filing —

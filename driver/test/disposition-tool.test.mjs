@@ -249,7 +249,7 @@ test("VOID CONTROL: nothing was recorded before the first call", () => {
 // "the typed call as RECEIVED" — true of the tool, false of the call. 38 of 38 archived payloads carried
 // no `grid_spec_path`, and an audit replaying them read that as a transport omitting a field its own
 // acceptor refuses a call without. The archive was never lossy; the call was narrowed before it arrived.
-test("2026: a field the recorder was handed reaches the archived payload", () => {
+test("a field the recorder was handed reaches the archived payload", () => {
   const f = fixture();
   const r = recordDispositions(f.spec, {
     grid_spec_path: "/run/_driver/grid-spec.json",

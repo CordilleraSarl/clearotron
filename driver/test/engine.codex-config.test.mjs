@@ -85,7 +85,7 @@ test("renderCodexConfigToml: no WebFetch → no fetch server injected", () => {
 // `register-unit:incumbent-class` and its tool call dying at 300s with no band written — a 25-minute
 // budget that never reached the tool layer. The value is the CALLER'S budget, never a constant here.
 
-test("#793 renderCodexConfigToml: toolTimeoutSec → per-server tool_timeout_sec, on EVERY server", () => {
+test("renderCodexConfigToml: toolTimeoutSec → per-server tool_timeout_sec, on EVERY server", () => {
   const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, toolTimeoutSec: 1500 });
   // one per declared server + the injected fetch server (ALLOWED carries WebFetch)
   const hits = toml.match(/^tool_timeout_sec = 1500$/gm) || [];
@@ -94,14 +94,14 @@ test("#793 renderCodexConfigToml: toolTimeoutSec → per-server tool_timeout_sec
   assert.match(toml, /^startup_timeout_sec = 60$/m);
 });
 
-test("#793 renderCodexConfigToml: absent/zero/negative budget emits nothing — codex's default is left alone", () => {
+test("renderCodexConfigToml: absent/zero/negative budget emits nothing — codex's default is left alone", () => {
   for (const v of [undefined, 0, -1, null, ""]) {
     const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, toolTimeoutSec: v });
     assert.ok(!toml.includes("tool_timeout_sec"), `toolTimeoutSec=${JSON.stringify(v)} must not emit the key`);
   }
 });
 
-test("#793 renderCodexConfigToml: the cap is the caller's number, not a constant in this module", () => {
+test("renderCodexConfigToml: the cap is the caller's number, not a constant in this module", () => {
   // The regression this guards: someone 'fixing' a timeout by hard-coding a larger number here. R5's
   // incumbent-class plan is 26 entries and is the largest in the suite TODAY — any constant chosen to
   // fit it fails on the first scenario that dictates 40.
@@ -115,7 +115,7 @@ test("#793 renderCodexConfigToml: the cap is the caller's number, not a constant
   assert.ok(!/tool_timeout_sec = \d/.test(src), "tool_timeout_sec must never be emitted from a literal");
 });
 
-test("#793 renderCodexConfigToml: a fractional budget is floored to a whole second (TOML integer)", () => {
+test("renderCodexConfigToml: a fractional budget is floored to a whole second (TOML integer)", () => {
   const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, toolTimeoutSec: 1500.7 });
   assert.match(toml, /^tool_timeout_sec = 1500$/m);
   assert.ok(!toml.includes("1500.7"), "a decimal would not be a TOML integer");

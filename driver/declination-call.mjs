@@ -210,7 +210,7 @@ export function contradictionFor(reason, row, scope) {
       + `own-right or duplicate-of-delivered.`;
   }
 
-  // ── ECONOMY IS NOT A REASON ABOUT A LIVE IN-CLASS MARK (owner ruling 2026-09-07) ─────────────────
+  // ── ECONOMY IS NOT A REASON ABOUT A LIVE IN-CLASS MARK (ruling 2026-09-07) ─────────────────
   //
   // `not-worth-the-line` means "it fits none of the four manageable categories and is not relevant
   // enough to drive the read". That is a statement about the REPORT'S BUDGET, not about the record. On a

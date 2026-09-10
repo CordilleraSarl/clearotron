@@ -63,7 +63,7 @@ export function discoverComposingSites(src) {
 
 // ── THE CENSUS ───────────────────────────────────────────────────────────────────────────────────────
 
-test("#1183: no repair instruction is composed at its dispatch site — every one goes through the registry", () => {
+test("no repair instruction is composed at its dispatch site — every one goes through the registry", () => {
   const sites = discoverComposingSites(pipelineSrc());
   const registered = sites.filter((s) => s.kind === "registered");
   const bespoke = sites.filter((s) => s.kind === "bespoke");
@@ -81,7 +81,7 @@ test("#1183: no repair instruction is composed at its dispatch site — every on
     + "  while the guard reports that stage clean in all three directions. That happened, on matter-frame.");
 });
 
-test("#1183: the shared repair tail is composed ONLY where composers live", () => {
+test("the shared repair tail is composed ONLY where composers live", () => {
   // The strongest single invariant available, and it needs no list: `editRepairTail` is the file-edit
   // order. If it appears at a dispatch site, a repair instruction is being composed there whatever shape
   // it is written in — which is how the sixteen this issue's own grep could not see were found.
@@ -92,7 +92,7 @@ test("#1183: the shared repair tail is composed ONLY where composers live", () =
     + "driver/repair-composers.mjs, where the #865 guard can walk it.");
 });
 
-test("#1183: every named key is registered, and every registered key is reached — no phantoms", () => {
+test("every named key is registered, and every registered key is reached — no phantoms", () => {
   const used = [...new Set(discoverComposingSites(pipelineSrc()).filter((s) => s.kind === "registered").map((s) => s.key))].sort();
   const known = [...REGISTERED_KEYS].sort();
 
@@ -108,7 +108,7 @@ test("#1183: every named key is registered, and every registered key is reached 
     + "row that describes nothing makes the census overstate what is covered.");
 });
 
-test("#1183: repairFollowup REFUSES an unregistered key at runtime, not only in CI", () => {
+test("repairFollowup REFUSES an unregistered key at runtime, not only in CI", () => {
   // "Registered or it does not reach a seat" is a runtime fact too. The census makes an unregistered
   // composer a build failure; this makes composing one impossible.
   assert.throws(() => repairFollowup("synthesis:invented", {}), /no registered composer/);
@@ -117,7 +117,7 @@ test("#1183: repairFollowup REFUSES an unregistered key at runtime, not only in 
 
 // ── THE SAMPLES, WHICH ARE WHAT THE GUARD WALKS ────────────────────────────────────────────────
 
-test("#1183: every composer composes, and every branch that can emit a tail has a sample that does", () => {
+test("every composer composes, and every branch that can emit a tail has a sample that does", () => {
   assert.ok(REPAIR_COMPOSERS.length >= 25, `only ${REPAIR_COMPOSERS.length} composers registered`);
   for (const c of REPAIR_COMPOSERS) {
     assert.ok(c.samples?.length >= 1, `${c.key} — no sample; the guard has nothing to walk it with`);
@@ -139,7 +139,7 @@ test("#1183: every composer composes, and every branch that can emit a tail has 
   }
 });
 
-test("#1896: a sample cannot declare an artifact hand-written when the driver is its only writer", () => {
+test("a sample cannot declare an artifact hand-written when the driver is its only writer", () => {
   // THE FIX FOR A SAMPLE-WALKING GUARD MUST NOT HAND THE SAMPLES A WAY TO LIE. Before `*:draft-carry`
   // took a `toolWritten` parameter, a sample naming `frame-diff.md` redded the agreement guard on
   // sight, because the composer could only emit the edit order. With the parameter, the same sample plus
@@ -176,7 +176,7 @@ test("#1896: a sample cannot declare an artifact hand-written when the driver is
     "these samples declare an artifact hand-written that TOOL_WRITTEN_ARTIFACTS says the driver alone writes");
 });
 
-test("#1896: a composer that branches on `toolWritten` is PASSED it at every dispatch site", () => {
+test("a composer that branches on `toolWritten` is PASSED it at every dispatch site", () => {
   // THE SAMPLES ARE NOT THE CALL SITE, AND THAT GAP IS WHAT WAS. `*:draft-carry` shipped six
   // conversions with an unconditional `editRepairTail`, and the agreement guard read 19/19 clean the
   // whole time — because it walks the composers' SAMPLES, and both of that composer's named an artifact
@@ -211,7 +211,7 @@ test("#1896: a composer that branches on `toolWritten` is PASSED it at every dis
     + "handed a hand-write order for an artifact whose only writer is the driver");
 });
 
-test("#1183: a stage with exactly ONE composer says so, and the census reds when it gains a second", () => {
+test("a stage with exactly ONE composer says so, and the census reds when it gains a second", () => {
   // Overwatch's addition to this issue's scope: a guard proven at n=1 has proven nothing about ordering,
   // dedup, or interaction between two composers on one stage. Every single-member stage carries an
   // explicit note, so growth is a decision somebody read rather than an absorption.

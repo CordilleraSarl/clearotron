@@ -127,7 +127,7 @@ export function explicitPortRequiredMessage({ what, port, portVar }) {
  *  `portFlag` an optional CLI equivalent, for the entry points that take one.
  */
 /**
- * The first free port at or after `from`, or `null` when nothing in range is free — owner ruling,
+ * The first free port at or after `from`, or `null` when nothing in range is free — ruling,
  * 2026-09-09.
  *
  * WHAT THIS IS FOR AND WHAT IT IS NOT. A collision on a DEFAULT port is this process discovering it

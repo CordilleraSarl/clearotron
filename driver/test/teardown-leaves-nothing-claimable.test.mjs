@@ -29,7 +29,7 @@ const runDir = (status) => {
 };
 const statusOf = (d) => JSON.parse(readFileSync(join(d, "status.json"), "utf8"));
 
-test("#606 a `running` record that survives a purge is corrected to the truth", () => {
+test("a `running` record that survives a purge is corrected to the truth", () => {
   const d = runDir({ runId: "r1", state: "running", step: "placement-inquiry", markName: "AQUA" });
   const r = markTerminal(d, "r1", "purge refused", () => "2026-08-11T00:00:00.000Z");
   assert.deepEqual(r, { runId: "r1", ok: true, why: "corrected to failed" });
@@ -49,14 +49,14 @@ test("#606 a `running` record that survives a purge is corrected to the truth", 
   assert.match(fn, /renameSync\(`\$\{stPath\}\.tmp`, stPath\)/, "…and renamed into place");
 });
 
-test("#606 a record that is ALREADY terminal is left alone, and reported as fine", () => {
+test("a record that is ALREADY terminal is left alone, and reported as fine", () => {
   const d = runDir({ runId: "r2", state: "delivered" });
   const r = markTerminal(d, "r2", "purge refused");
   assert.deepEqual(r, { runId: "r2", ok: true, why: "already delivered" });
   assert.equal(statusOf(d).state, "delivered", "teardown does not relabel a run that finished");
 });
 
-test("#606 a record that CANNOT be corrected is a finding, not a throw and not a silence", () => {
+test("a record that CANNOT be corrected is a finding, not a throw and not a silence", () => {
   // The whole point of returning a row: this is the case the closing report has to name out loud. A
   // throw here would abort a teardown mid-way and leave MORE claimable than it started with.
   const d = runDir(undefined);                       // no status.json at all
@@ -66,7 +66,7 @@ test("#606 a record that CANNOT be corrected is a finding, not a throw and not a
   assert.equal(r.runId, "r3", "the report names the run by id — an unnamed problem is not actionable");
 });
 
-test("#606 the closing line is CONDITIONAL on nothing being left claimable", () => {
+test("the closing line is CONDITIONAL on nothing being left claimable", () => {
   // Source-anchored: the teardown walks a live pool and its closing report is the last thing it prints.
   // What is under test is that the sentence cannot be printed over an outstanding problem.
   const src = readFileSync(new URL("../../scripts/e2e.mjs", import.meta.url), "utf8");

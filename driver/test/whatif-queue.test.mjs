@@ -36,7 +36,7 @@ const op = (runId = "r1") => ({ runId, stage: "report-overview", axis: null, ins
 //
 // This arm is the shape of the fix rather than a case list: for every state a run can be in, the answer
 // the MCP door computes and the answer the worker computes must be the SAME answer.
-test("1953: the door and the worker agree about every run state, marker for state", () => {
+test("the door and the worker agree about every run state, marker for state", () => {
   const cases = [
     { what: "delivered", door: { state: "delivered" }, disk: [".delivered"], eligible: false },
     { what: "archived", door: { location: "archive" }, disk: [".delivered"], eligible: false },
@@ -149,7 +149,7 @@ test("a FINISHED record still says what it was asked to do", async () => {
 // same for both input shapes; this proves the WORKER actually asks it. Planting the old marker list back
 // into `refusalFor` must red something, and until this existed it did not: the agreement arm calls the
 // composer directly and never reaches the worker's own filtering.
-test("1953: a FAILED run is DRAINED by the worker — the case the three copies disagreed about", async () => {
+test("a FAILED run is DRAINED by the worker — the case the three copies disagreed about", async () => {
   const { studioRoot, runDir } = studio();
   writeFileSync(join(runDir, ".failed"), "");
   const job = enqueueWhatIf(runDir, { op: op() });

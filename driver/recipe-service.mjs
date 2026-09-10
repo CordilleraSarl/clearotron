@@ -250,7 +250,7 @@ const PORT = PORT_CHOICE.port;
   //
   // `makeAccessVerifier` has ALWAYS accepted issuer/jwksUrl/emailClaim — this service simply never
   // passed them, which is how one product shipped a provider-agnostic API face and three single-vendor
-  // services beside it. Owner ruling 2026-08-23: "we can't launch with an identity vendor, they bring
+  // services beside it. Ruling 2026-08-23: "we can't launch with an identity vendor, they bring
   // their own… they pick their own."
   const OIDC_ISSUER = process.env.RECIPE_OIDC_ISSUER || "";
   const JWKS_URL = process.env.RECIPE_JWKS_URL || "";

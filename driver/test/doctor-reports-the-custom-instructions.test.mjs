@@ -50,7 +50,7 @@ function doctorWithSkillsOverlay(value) {
   return `${r.stdout ?? ""}${r.stderr ?? ""}`;
 }
 
-test("#1724 `clearotron doctor` REPORTS THE OVERLAY — the arm that fails on the unwired parent", () => {
+test("`clearotron doctor` REPORTS THE OVERLAY — the arm that fails on the unwired parent", () => {
   const out = doctorWithSkillsOverlay("");
   assert.match(out, /Custom instructions/,
     "the doctor must carry a doctrine section at all — on the parent commit it carried none, and the report "
@@ -58,7 +58,7 @@ test("#1724 `clearotron doctor` REPORTS THE OVERLAY — the arm that fails on th
   assert.match(out, /doctrine overlay:/, "and it must be the report's own output, not a heading over nothing");
 });
 
-test("#1724 an install that overrides nothing says so in ONE line, as a NORMAL state", () => {
+test("an install that overrides nothing says so in ONE line, as a NORMAL state", () => {
   const out = doctorWithSkillsOverlay("");
   assert.match(out, /none configured — this install overrides nothing/);
   assert.match(out, /normal, supported state/,
@@ -66,7 +66,7 @@ test("#1724 an install that overrides nothing says so in ONE line, as a NORMAL s
   assert.ok(!/✗[^\n]*doctrine overlay/i.test(out), "and it must not be reported as a problem");
 });
 
-test("#1724 with an overlay configured the doctor names the counts and points at the full detail", () => {
+test("with an overlay configured the doctor names the counts and points at the full detail", () => {
   const dir = mkdtempSync(join(tmpdir(), "doctrine-overlay-"));
   try {
     const skills = join(dir, "skills");
@@ -81,7 +81,7 @@ test("#1724 with an overlay configured the doctor names the counts and points at
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1724 the doctrine section REPORTS and never judges — drift is not a fault in the install", () => {
+test("the doctrine section REPORTS and never judges — drift is not a fault in the install", () => {
   const dir = mkdtempSync(join(tmpdir(), "doctrine-judge-"));
   try {
     const skills = join(dir, "skills");
@@ -98,7 +98,7 @@ test("#1724 the doctrine section REPORTS and never judges — drift is not a fau
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("#1724 an ABSENT overlay does not abort the check", () => {
+test("an ABSENT overlay does not abort the check", () => {
   // RENAMED THIS ARM TO WHAT IT ACTUALLY TESTS. It was called "an UNREADABLE overlay is surfaced
   // …" and passed a MISSING directory, which `overlayReport` returns cleanly for (`ok:false`) — so the
   // doctor's catch block was never entered and the arm asserted that a NON-error does not abort the
@@ -109,7 +109,7 @@ test("#1724 an ABSENT overlay does not abort the check", () => {
     "the sections after this one must still run — a check that aborts tells the reader least");
 });
 
-test("#1787 an UNREADABLE overlay is NAMED and the later sections still run", (ctx) => {
+test("an UNREADABLE overlay is NAMED and the later sections still run", (ctx) => {
   // THE FIXTURE HAS TO THROW, and only a directory the process cannot READ does. A missing one returns
   // cleanly. chmod 000 on a scratch dir this test creates and removes — never a pool, archive or run
   // directory, whose set-GID a non-member chmod strips silently.

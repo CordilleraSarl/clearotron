@@ -80,7 +80,7 @@ test("gateCause and gateResolvedPolicy stay NULL-EQUIVALENT over the coverage ar
   }
 });
 
-test("2075 D6 — NEITHER gate refuses on coverage now, staff prose included", () => {
+test("D6 — NEITHER gate refuses on coverage now, staff prose included", () => {
   // This arm asserted that the staff gate refused with prose naming the register's reach while the
   // client sentence named none of it. Under the owner's D6 ruling (2026-09-02, "disclosure yes, in line
   // with the picker") a coverage fact refuses on neither side: the picker offers a territory the

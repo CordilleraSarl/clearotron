@@ -28,17 +28,17 @@ const SRC = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..
 const READ = { innerScrollbar: false, hOverflowPx: 0, slackPx: 18, heightMsgs: 3, probeMsgs: 8 };
 const UNREAD = { innerScrollbar: "no-probe", hOverflowPx: "no-probe", slackPx: null };
 
-test("239 a probe that posted is a measurement, and the check proceeds", () => {
+test("a probe that posted is a measurement, and the check proceeds", () => {
   const v = probeVerdict(READ);
   assert.equal(v.measured, true, "a run whose probe reported normally was treated as unmeasured");
 });
 
-test("239 a probe that never posted is a could-not-look, not three failures", () => {
+test("a probe that never posted is a could-not-look, not three failures", () => {
   assert.equal(probeVerdict({ ...UNREAD, heightMsgs: 3 }).measured, false,
     "the sentinel values were treated as measurements, so the assertions that read them report as failed");
 });
 
-test("239 and it says WHICH of the two causes the evidence names", () => {
+test("and it says WHICH of the two causes the evidence names", () => {
   // The three assertions failed identically whatever the cause: the frame did not load, the frame loaded
   // and its scripts did not run, or the scripts ran and the message did not arrive. Those are different
   // repairs, and `heightMsgs` separates them — it was already being collected.
@@ -54,7 +54,7 @@ test("239 and it says WHICH of the two causes the evidence names", () => {
   assert.notEqual(probeOnly.why, nothing.why, "both causes produce the same sentence, so it separates nothing");
 });
 
-test("239 any one sentinel is enough — the three do not have to agree to be unread", () => {
+test("any one sentinel is enough — the three do not have to agree to be unread", () => {
   // A partially-arrived probe is still a probe nobody can rely on, and requiring all three to be sentinels
   // would let one real value carry two absent ones into the assertion list.
   for (const [k, v] of [["innerScrollbar", "no-probe"], ["hOverflowPx", "no-probe"], ["slackPx", null]]) {
@@ -63,7 +63,7 @@ test("239 any one sentinel is enough — the three do not have to agree to be un
   }
 });
 
-test("239 the script exits 2 for it, which is the house meaning for could-not-look", () => {
+test("the script exits 2 for it, which is the house meaning for could-not-look", () => {
   // Exit 2 still stops CI — nothing is waved through. What it stops doing is claiming the layout was
   // measured and found wrong, which is what sent a reader to the CSS.
   assert.match(SRC, /process\.exit\(2\)/, "the unmeasured path does not exit 2");

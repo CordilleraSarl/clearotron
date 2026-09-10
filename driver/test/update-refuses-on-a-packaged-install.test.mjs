@@ -46,7 +46,7 @@ function askValueCall(src, name) {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-test("#1929 a directory that is not a checkout is told apart from one that is", () => {
+test("a directory that is not a checkout is told apart from one that is", () => {
   // THE POSITIVE CONTROL FIRST. Without it, a predicate that answered `false` to everything would
   // satisfy the negative case and look correct — the shape that has cost this repo two rules today.
   assert.equal(isGitCheckout(ROOT), true,
@@ -58,7 +58,7 @@ test("#1929 a directory that is not a checkout is told apart from one that is", 
   assert.equal(isGitCheckout(notARepo), false, "a packaged install has no repository to pull from");
 });
 
-test("#1929 the verb ASKS before it pulls, and names the packaged remedy", () => {
+test("the verb ASKS before it pulls, and names the packaged remedy", () => {
   // The arm above drives the predicate. This one holds the WIRING — that the predicate is consulted
   // before the pull rather than merely existing — because a helper nothing calls is the failure this
   // repository keeps finding. Read from source, since driving the whole verb needs a tarball install.
@@ -82,7 +82,7 @@ test("#1929 the verb ASKS before it pulls, and names the packaged remedy", () =>
 //
 // npm does NOT stamp `gitHead` on pack — measured, absent from the packed manifest — so `prepack` writes
 // it and the archive carries it.
-test("#1929 the packaged commit is read from the archive's own stamp, and refused when malformed", () => {
+test("the packaged commit is read from the archive's own stamp, and refused when malformed", () => {
   const good = JSON.stringify({ commit: "a".repeat(40), version: "0.1.0" });
   assert.deepEqual(packagedBuild("/x", () => good), { commit: "a".repeat(40), version: "0.1.0" });
 
@@ -94,7 +94,7 @@ test("#1929 the packaged commit is read from the archive's own stamp, and refuse
     "a checkout has no such file, and that is not an error — git is the answer there");
 });
 
-test("#1929 the stamper refuses rather than shipping an archive that cannot name itself", () => {
+test("the stamper refuses rather than shipping an archive that cannot name itself", () => {
   // The pack hook must STOP when it cannot read a commit. A nameless archive is the artefact the whole
   // stamp exists to prevent, so producing one quietly would defeat it.
   assert.equal(writeBuildInfoMain("/x", { run: () => { throw new Error("not a repo"); } }), 1,
@@ -112,7 +112,7 @@ test("#1929 the stamper refuses rather than shipping an archive that cannot name
   assert.doesNotMatch(written, /\d{4}-\d{2}-\d{2}T/, "a timestamp would make two packs of one tree differ");
 });
 
-test("#1929 doctor CONSULTS the stamp on the not-a-checkout branch, and says which evidence it had", () => {
+test("doctor CONSULTS the stamp on the not-a-checkout branch, and says which evidence it had", () => {
   // The arms above drive the readers. This holds the WIRING — that `doctor` asks — because a helper
   // nothing calls is the failure this repository keeps finding, and the branch itself cannot be driven
   // from here: this tree IS a checkout, so `deploymentCurrency` never reaches that arm.
@@ -126,7 +126,7 @@ test("#1929 doctor CONSULTS the stamp on the not-a-checkout branch, and says whi
     + "from a verified tree");
 });
 
-test("#1929 the install ASKS about the report URL by name, and says what empty costs", () => {
+test("the install ASKS about the report URL by name, and says what empty costs", () => {
   // Nothing in the documented install required CLEAROTRON_REPORTS_URL, so a packaged install completed,
   // ran and DELIVERED carrying "no report URL (pool URL unset)" — the report produced, the links into it
   // absent. An operator who was never asked cannot know they answered wrong, and the first person to

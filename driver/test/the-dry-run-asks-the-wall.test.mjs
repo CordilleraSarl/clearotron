@@ -37,7 +37,7 @@ function dryRun(job, envExtra = {}) {
 const base = (extra) => ({ id: `t${Math.random().toString(36).slice(2, 8)}`, markName: "PROBEMARK",
   classes: [9], forwarder: "probe", ...extra });
 
-test("2040 THE DEFECT: a demo profile dry-ran clean and the wall rejected it minutes later", () => {
+test("THE DEFECT: a demo profile dry-ran clean and the wall rejected it minutes later", () => {
   const r = dryRun(base({ profileKey: "demo-brand-owner" }));
   assert.equal(r.json.ok, false, "the dry run still reports a pass on a job the wall rejects");
   assert.equal(r.json.classify, "reject",
@@ -47,7 +47,7 @@ test("2040 THE DEFECT: a demo profile dry-ran clean and the wall rejected it min
   assert.notEqual(r.code, 0, "a refusal must not exit 0");
 });
 
-test("2040 the check WIDENS and does not tighten — what would run still runs", () => {
+test("the check WIDENS and does not tighten — what would run still runs", () => {
   // Criterion 3. The failure mode of a fix like this is refusing things that would in fact run.
   for (const [job, why] of [
     [base({ profileKey: "generic" }), "an ordinary job on a real account"],
@@ -60,7 +60,7 @@ test("2040 the check WIDENS and does not tighten — what would run still runs",
   }
 });
 
-test("2040 the INVERSE is refused too, and says which way the mismatch runs", () => {
+test("the INVERSE is refused too, and says which way the mismatch runs", () => {
   // A demo banner over a real account's report is the same untruth pointing the other way, and worse.
   const r = dryRun(base({ profileKey: "generic", demoRun: true }));
   assert.equal(r.json.ok, false, "a real account accepted a demo declaration");
@@ -70,7 +70,7 @@ test("2040 the INVERSE is refused too, and says which way the mismatch runs", ()
     "both mismatches printed one sentence — a reader cannot tell which way the disagreement runs");
 });
 
-test("2040 the WALL's precedence: an unresolvable request CLARIFIES, and the demo question is never reached", () => {
+test("the WALL's precedence: an unresolvable request CLARIFIES, and the demo question is never reached", () => {
   // At the wall `!policy.clarify` guards the demo check. A door that asked demo FIRST would reject where
   // the wall clarifies — the same two-surfaces-disagree defect this issue exists to close, reversed.
   const r = dryRun(base({ profileKey: "demo-brand-owner", product: "no-such-product-exists" }));
@@ -81,7 +81,7 @@ test("2040 the WALL's precedence: an unresolvable request CLARIFIES, and the dem
     "the demo sentence overtook the resolution clarify that the wall reaches first");
 });
 
-test("2040 A COULD-NOT-CHECK IS NOT A CHECK — an unreadable STORE says so by name", () => {
+test("A COULD-NOT-CHECK IS NOT A CHECK — an unreadable STORE says so by name", () => {
   // `demoData` lives on the profile, so this question is unanswerable when the profile STORE cannot be
   // read. Doors fail OPEN by doctrine, which here would mean reporting a pass on a question never asked.
   //

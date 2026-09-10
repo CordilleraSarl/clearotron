@@ -17,7 +17,7 @@ import { beat, workerAlive, heartbeatPath, drainingState } from "../worker-heart
 
 const dir = () => mkdtempSync(join(tmpdir(), "ct-hb-"));
 
-test("#1721 a beat this process wrote reads as alive", () => {
+test("a beat this process wrote reads as alive", () => {
   const d = dir();
   try {
     assert.equal(beat(d), true);
@@ -28,12 +28,12 @@ test("#1721 a beat this process wrote reads as alive", () => {
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1721 NO heartbeat is NOT a worker — the honest direction when nothing is known", () => {
+test("NO heartbeat is NOT a worker — the honest direction when nothing is known", () => {
   const d = dir();
   try { assert.equal(workerAlive(d), false); } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1721 a STALE beat is not a worker — a process that stopped leaves its last beat behind", () => {
+test("a STALE beat is not a worker — a process that stopped leaves its last beat behind", () => {
   const d = dir();
   try {
     beat(d);
@@ -43,7 +43,7 @@ test("#1721 a STALE beat is not a worker — a process that stopped leaves its l
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1721 a RECYCLED pid cannot read as alive — the birth stamp is what makes the pid trustworthy", () => {
+test("a RECYCLED pid cannot read as alive — the birth stamp is what makes the pid trustworthy", () => {
   const d = dir();
   try {
     beat(d);
@@ -55,7 +55,7 @@ test("#1721 a RECYCLED pid cannot read as alive — the birth stamp is what make
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1721 a corrupt or half-written beat is not a worker — every unreadable state fails the same way", () => {
+test("a corrupt or half-written beat is not a worker — every unreadable state fails the same way", () => {
   const d = dir();
   try {
     for (const body of ["{not json", "", "null", '{"at":123}', '{"pid":"x","at":1}']) {
@@ -65,7 +65,7 @@ test("#1721 a corrupt or half-written beat is not a worker — every unreadable 
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1721 a dead pid is not a worker", () => {
+test("a dead pid is not a worker", () => {
   const d = dir();
   try {
     writeFileSync(heartbeatPath(d), JSON.stringify({ pid: 0x3ffffe, starttime: "1", at: Date.now() }));
@@ -73,7 +73,7 @@ test("#1721 a dead pid is not a worker", () => {
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1721 beat() NEVER throws — a worker that cannot write its heartbeat must keep draining", () => {
+test("beat() NEVER throws — a worker that cannot write its heartbeat must keep draining", () => {
   // The queue emptying matters more than the portal's label being precise, and the failure direction is
   // the honest one: the portal says "no worker" while one runs, which reads as a problem rather than as a
   // promise, and clears itself on the next successful beat.
@@ -97,7 +97,7 @@ test("#1721 beat() NEVER throws — a worker that cannot write its heartbeat mus
 // These hold the producer to a contract instead of a shape. `alive` is injected so the tri-state is
 // tested without a filesystem: what is under test is which STATE is returned, not whether a beat is fresh.
 
-test("#1786 NOT a supervising install ⇒ null — never false, or every deployed row cries wolf", () => {
+test("NOT a supervising install ⇒ null — never false, or every deployed row cries wolf", () => {
   const never = () => { throw new Error("workerAlive must not be consulted when nobody opted in"); };
   assert.equal(drainingState({}, { alive: never }), null);
   assert.equal(drainingState({ CLEAROTRON_RUN_LOCK_DIR: "/tmp/x" }, { alive: never }), null,
@@ -107,20 +107,20 @@ test("#1786 NOT a supervising install ⇒ null — never false, or every deploye
     "only the exact string \"1\" opts in — a truthy-looking value must not enable the alarm");
 });
 
-test("#1786 supervising but no lock dir ⇒ null — a supervisor that named no dir knows nothing", () => {
+test("supervising but no lock dir ⇒ null — a supervisor that named no dir knows nothing", () => {
   const never = () => { throw new Error("workerAlive must not be consulted without a dir"); };
   assert.equal(drainingState({ PORTAL_LOCAL_WORKER: "1" }, { alive: never }), null);
   assert.equal(drainingState({ PORTAL_LOCAL_WORKER: "1", CLEAROTRON_RUN_LOCK_DIR: "" }, { alive: never }), null);
 });
 
-test("#1786 supervising WITH a lock dir ⇒ the liveness answer, and only then may a row be relabelled", () => {
+test("supervising WITH a lock dir ⇒ the liveness answer, and only then may a row be relabelled", () => {
   const env = { PORTAL_LOCAL_WORKER: "1", CLEAROTRON_RUN_LOCK_DIR: "/tmp/x" };
   assert.equal(drainingState(env, { alive: () => true }), true);
   assert.equal(drainingState(env, { alive: () => false }), false,
     "the ONLY path that may produce false — a supervising install whose worker is not beating");
 });
 
-test("#1786 the producer consults liveness EXACTLY ONCE, with the dir it was given", () => {
+test("the producer consults liveness EXACTLY ONCE, with the dir it was given", () => {
   // A producer that asked twice could answer differently within one response, which is the disagreement
   // the once-per-scan read exists to prevent.
   const seen = [];

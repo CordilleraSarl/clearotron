@@ -161,7 +161,7 @@ test("a down-level schema_version cannot silently disengage the requirement — 
 //
 // The old covering test could not see it because it passed `expected: true` directly. This one derives
 // expected the way the pipeline does, at every version the pipeline can derive it from.
-test("#321: at every down-level version the content-model family goes quiet — and the version check does NOT", () => {
+test("at every down-level version the content-model family goes quiet — and the version check does NOT", () => {
   for (const declared of [1, 2, 3, 4]) {
     const expected = contentModelExpectedFor(declared);
     assert.equal(expected, false, `v${declared} does not assert the v5+ content model`);
@@ -177,7 +177,7 @@ test("#321: at every down-level version the content-model family goes quiet — 
   }
 });
 
-test("#321: a current file passes the version check, so the flag means something when it fires", () => {
+test("a current file passes the version check, so the flag means something when it fires", () => {
   const [c] = schemaVersionChecks({ schemaVersion: FINDINGS_SCHEMA_VERSION });
   assert.equal(c.pass, true);
   assert.equal(c.detail, "");
@@ -329,7 +329,7 @@ test("report-data carries the declared ground beside the per-member positions", 
 // gets no report-card file, and is dropped. It was absent from report.md entirely.
 import { buildReasonedNegativesSection } from "../pipeline.mjs";
 
-test("#340: the off-field findings report.md dropped are present, grouped by their shared ground", () => {
+test("the off-field findings report.md dropped are present, grouped by their shared ground", () => {
   const md = buildReasonedNegativesSection([BASE, OFF_FIELD]);
   assert.match(md, /^# Reasoned negatives/m);
   assert.match(md, /different commercial field/i, "the shared ground, said once as the heading");
@@ -340,7 +340,7 @@ test("#340: the off-field findings report.md dropped are present, grouped by the
     "an on-field conflict is not a reasoned negative and belongs in the cards above");
 });
 
-test("#340: the sentence is the TYPED net — this surface summarises nothing of its own", () => {
+test("the sentence is the TYPED net — this surface summarises nothing of its own", () => {
   // That defect was two AUTHORS of one summary, not one summary on two surfaces. Both surfaces read
   // findings.json and print `net`, so they cannot disagree.
   const md = buildReasonedNegativesSection([OFF_FIELD]);
@@ -352,20 +352,20 @@ test("#340: the sentence is the TYPED net — this surface summarises nothing of
   assert.ok(buildReasonedNegativesSection([legacy]).includes(OFF_FIELD.legal_position));
 });
 
-test("#340: zero is not absence — a run that grouped and found none says so", () => {
+test("zero is not absence — a run that grouped and found none says so", () => {
   const md = buildReasonedNegativesSection([BASE]);
   assert.match(md, /^# Reasoned negatives/m, "the section is present");
   assert.match(md, /None\./, "and states the zero, so a reader never guesses whether the grouping ran");
   assert.deepEqual(buildReasonedNegativesSection([]).split("\n")[0], "# Reasoned negatives");
 });
 
-test("#340: a withdrawn finding stays out — it renders nowhere else either", () => {
+test("a withdrawn finding stays out — it renders nowhere else either", () => {
   const killed = { ...OFF_FIELD, disposition: "withdrawn", withdrawn_reason: "reviewer flag: confabulated owner" };
   const md = buildReasonedNegativesSection([BASE, killed]);
   assert.match(md, /None\./, `a killed finding is not a reasoned negative: ${md}`);
 });
 
-test("#340: groups come out in the contract's order, not the model's array order", () => {
+test("groups come out in the contract's order, not the model's array order", () => {
   const distinguished = { ...OFF_FIELD, ordinal: 3, disposition: "distinguished", band: "Moderate",
     manageable: { category: "large-competitor", reason: "the house mark distinguishes" } };
   delete distinguished.off_field_ground;

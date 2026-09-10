@@ -37,18 +37,18 @@ const DROP_ROW = `## Negative results
 // An in-scope goods drop that names NO record — a violation only when the unnamed arm is enforcing.
 const UNNAMED_ROW = DROP_ROW.replace("out of field, see /mark/ch/57860", "out of field, no record named");
 
-test("#1215 the fixture really is a drop row — otherwise every test below proves nothing", () => {
+test("the fixture really is a drop row — otherwise every test below proves nothing", () => {
   assert.equal(findScreenGateViolations(DROP_ROW, new Set()).length, 1, "fixture stopped parsing as a drop row");
   assert.equal(findScreenGateViolations(DROP_ROW, new Set(["/mark/ch/57860"])).length, 0, "fixture's URI stopped matching the fetched set");
 });
 
-test("#1215 FINDINGS-ABSENT is not a clean run — the suspected cause, and it had no voice", () => {
+test("FINDINGS-ABSENT is not a clean run — the suspected cause, and it had no voice", () => {
   const c = screenGateZeroCause({ findingsPresent: false });
   assert.equal(c.cause, "findings-absent");
   assert.equal(c.dropRows, null, "claimed a drop-row count for a file it never read");
 });
 
-test("#1215 FINDINGS-EMPTY is its own cause, not folded into absent or clean", () => {
+test("FINDINGS-EMPTY is its own cause, not folded into absent or clean", () => {
   for (const body of ["", "   ", "\n\n", "  \n \t "]) {
     const c = screenGateZeroCause({ findingsPresent: true, findingsContent: body });
     assert.equal(c.cause, "findings-empty", `whitespace body ${JSON.stringify(body)} misfiled`);
@@ -56,19 +56,19 @@ test("#1215 FINDINGS-EMPTY is its own cause, not folded into absent or clean", (
   }
 });
 
-test("#1215 NO-DROP-ROWS is genuinely clean and says so", () => {
+test("NO-DROP-ROWS is genuinely clean and says so", () => {
   const c = screenGateZeroCause({ findingsPresent: true, findingsContent: "## Findings\n\nnothing dropped on goods.\n" });
   assert.equal(c.cause, "no-drop-rows");
   assert.equal(c.dropRows, 0);
 });
 
-test("#1215 ALL-FETCHED is the other clean one — rows existed and every record was fetched", () => {
+test("ALL-FETCHED is the other clean one — rows existed and every record was fetched", () => {
   const c = screenGateZeroCause({ findingsPresent: true, findingsContent: DROP_ROW });
   assert.equal(c.cause, "all-fetched");
   assert.equal(c.dropRows, 1, "the row count that distinguishes this from no-drop-rows");
 });
 
-test("#1215 THE DISCRIMINATION ITSELF: the two defects and the three clean states are five distinct records", () => {
+test("THE DISCRIMINATION ITSELF: the two defects and the three clean states are five distinct records", () => {
   // The entire point. Before this, all five wrote `{event:"screen-gate-clean"}` and nothing else.
   const causes = [
     screenGateZeroCause({ findingsPresent: false }),
@@ -82,7 +82,7 @@ test("#1215 THE DISCRIMINATION ITSELF: the two defects and the three clean state
   assert.equal(new Set(causes).size, 5, "two states that need opposite responses share a record");
 });
 
-test("#1215 UNNAMED-DROPS-UNARMED is not 'nothing was dropped' — and it is the DEFAULT mode", () => {
+test("UNNAMED-DROPS-UNARMED is not 'nothing was dropped' — and it is the DEFAULT mode", () => {
   // The caller arms the unnamed class only when CLEAROTRON_SCREEN_GATE_UNNAMED === "enforce", so OFF is the
   // ordinary path. Folding this into no-drop-rows would print "the digest dropped nothing on goods" on
   // the commonest configuration while it had in fact dropped a row nobody counted — the same disease this
@@ -98,7 +98,7 @@ test("#1215 UNNAMED-DROPS-UNARMED is not 'nothing was dropped' — and it is the
   assert.equal(armed.dropRows, 1);
 });
 
-test("#1215 findingsBytes is BYTES — the field name has to survive a non-ASCII mark", () => {
+test("findingsBytes is BYTES — the field name has to survive a non-ASCII mark", () => {
   // Marks carry non-ASCII and String.length counts UTF-16 units. A reader comparing this field to `wc -c`
   // on the same file must get the same number, on exactly the corpus this engine exists for.
   const utf8 = DROP_ROW.replace("ACME", "CAFÉ ÜNÏCØDE 商標");
@@ -107,7 +107,7 @@ test("#1215 findingsBytes is BYTES — the field name has to survive a non-ASCII
   assert.notEqual(c.findingsBytes, utf8.length, "the fixture must actually diverge, or this proves nothing");
 });
 
-test("#1215 unnamedArmed mirrors the caller's own filter, so the count means one thing", () => {
+test("unnamedArmed mirrors the caller's own filter, so the count means one thing", () => {
   // An unnamed drop row (no record URI) is a violation only when the unnamed arm is enforcing —
   // `enforcedViolations` filters exactly this way, and a count computed the other way would describe a
   // different population than the gate acted on.
@@ -127,7 +127,7 @@ test("#1215 unnamedArmed mirrors the caller's own filter, so the count means one
   }
 });
 
-test("#1215 SHAPE FUZZ: no argument, null, and a null body all degrade rather than throw", () => {
+test("SHAPE FUZZ: no argument, null, and a null body all degrade rather than throw", () => {
   // This runs on the CLEAN path of a live run. A throw here would convert a healthy run into a crash —
   // strictly worse than the silence it replaces.
   assert.equal(screenGateZeroCause().cause, "findings-absent");
@@ -136,14 +136,14 @@ test("#1215 SHAPE FUZZ: no argument, null, and a null body all degrade rather th
   assert.equal(screenGateZeroCause({ findingsPresent: true, findingsContent: undefined }).cause, "findings-empty");
 });
 
-test("#1215 NO SECOND PARSER: the row count comes from findScreenGateViolations itself", () => {
+test("NO SECOND PARSER: the row count comes from findScreenGateViolations itself", () => {
   // A hand-rolled counter beside the real parser is how the two drift and the diagnostic starts lying
   // about the thing it exists to explain. Same population, both paths, proven on the same input.
   const viaParser = findScreenGateViolations(DROP_ROW, new Set()).filter((v) => v.uri).length;
   assert.equal(screenGateZeroCause({ findingsPresent: true, findingsContent: DROP_ROW }).dropRows, viaParser);
 });
 
-test("#1215 the pipeline's clean branch actually carries the cause", () => {
+test("the pipeline's clean branch actually carries the cause", () => {
   // The helper being right is worth nothing if the gate still logs a bare event. This pins the wiring.
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   const at = src.indexOf('event: "screen-gate-clean",\n');
@@ -152,7 +152,7 @@ test("#1215 the pipeline's clean branch actually carries the cause", () => {
     "the gate logs a clean gate without saying why it was clean — that is #1215");
 });
 
-test("#1215 the cause REACHES THE CI LOG — a discriminator that stops at run.jsonl has not been produced", () => {
+test("the cause REACHES THE CI LOG — a discriminator that stops at run.jsonl has not been produced", () => {
   // The funnel file's own header states the constraint this test exists for: the discriminator for this
   // failure "exists on disk in the mock run's run.jsonl at the moment of failure, and CI keeps no
   // artifact of it." So the cause landing in run.jsonl is NOT enough — on the three red CI runs that
@@ -174,7 +174,7 @@ test("#1215 the cause REACHES THE CI LOG — a discriminator that stops at run.j
     "the cause line does not branch on the recovered arms — a healed gate renders as undefined(...)");
 });
 
-test("#1215 there are exactly THREE screen-gate-clean writers and only ONE of them is a zero", () => {
+test("there are exactly THREE screen-gate-clean writers and only ONE of them is a zero", () => {
   // If a fourth appears without a cause, the gate0 line silently starts reporting `undefined` again and
   // the recovered branch above stops covering the population. This is the tripwire for that.
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
@@ -184,7 +184,7 @@ test("#1215 there are exactly THREE screen-gate-clean writers and only ONE of th
   assert.equal(zero.length, 1, "exactly one writer is the zero branch that carries a cause");
 });
 
-test("#1215 the gate's BEHAVIOUR is unchanged — this is instrumentation, not a loosened guard", () => {
+test("the gate's BEHAVIOUR is unchanged — this is instrumentation, not a loosened guard", () => {
   // The forbidden outcome on this issue is making the funnel assertion pass by weakening it. Nothing
   // here touches when the gate mints, discloses or clamps: the helper is only ever called on the branch
   // that already decided there were no violations.

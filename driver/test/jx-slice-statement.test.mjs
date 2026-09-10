@@ -50,7 +50,7 @@ const unitsOf = (units) => ({ schema: 1, units, updatedAt: "2026-08-09T00:00:00Z
 
 // ── The derivation ─────────────────────────────────────────────────────────────────────────────────
 
-test("#552 all three slices ran ⇒ executes names all three, joined", () => {
+test("all three slices ran ⇒ executes names all three, joined", () => {
   const { executes, slices } = deriveJxSliceStatement({
     sidecar: sidecarOf(), env: ON,
     units: unitsOf({ "serp-grid:zh": { done: true, degraded: false }, "nativeread:zh": { done: true, degraded: false } }),
@@ -59,7 +59,7 @@ test("#552 all three slices ran ⇒ executes names all three, joined", () => {
   for (const s of JX_SLICES) assert.equal(slices[s.name].state, "ran", s.name);
 });
 
-test("#552 R6's shape: retrieval slices that did not run ⇒ executes is exactly 'candidates'", () => {
+test("R6's shape: retrieval slices that did not run ⇒ executes is exactly 'candidates'", () => {
   // item 8 deleted the per-slice arms, so "the retrieval slices are off" no longer has a switch to
   // express it — and the one switch left kills the whole lane, slice 1 included, so it cannot express it
   // either. R6's property is unchanged and this is now how it is reached: the fold ran, neither unit
@@ -76,7 +76,7 @@ test("#552 R6's shape: retrieval slices that did not run ⇒ executes is exactly
   assert.match(slices["serp-grid"].why, /CANNOT be established/);
 });
 
-test("#1149 item 8 — a KILLED lane is the one thing that still reads not-armed, and it names itself", () => {
+test("item 8 — a KILLED lane is the one thing that still reads not-armed, and it names itself", () => {
   const { executes, slices } = deriveJxSliceStatement({ sidecar: sidecarOf(), env: LANE_OFF });
   assert.equal(executes, "none", "killing the lane stops slice 1 too — there is no partial kill any more");
   assert.equal(slices["serp-grid"].state, "not-armed");
@@ -85,7 +85,7 @@ test("#1149 item 8 — a KILLED lane is the one thing that still reads not-armed
   assert.match(slices["serp-grid"].why, /the lane was killed, not merely idle/);
 });
 
-test("#552 a GAPPED grid is not named in executes — 49/49 gapped is not 'it executed'", () => {
+test("a GAPPED grid is not named in executes — 49/49 gapped is not 'it executed'", () => {
   const cause = "49/49 cells gapped — below the coverage floor. Dominant cause (49/49): SerpAPI 429 quota";
   const { executes, slices } = deriveJxSliceStatement({
     sidecar: sidecarOf(), env: ON,
@@ -97,7 +97,7 @@ test("#552 a GAPPED grid is not named in executes — 49/49 gapped is not 'it ex
   assert.match(slices["serp-grid"].why, /SerpAPI 429/, "the cause travels with it — the units record already knew");
 });
 
-test("#552 executes is NEVER the empty string — `exists` would pass on one", () => {
+test("executes is NEVER the empty string — `exists` would pass on one", () => {
   // Every slice failed or was never armed. The naive join emits "" and R6 goes green on nothing.
   const { executes } = deriveJxSliceStatement({
     sidecar: sidecarOf({ zh: {} }, { zh: { degraded: true, degradedCause: "executor threw" } }),
@@ -107,7 +107,7 @@ test("#552 executes is NEVER the empty string — `exists` would pass on one", (
   assert.notEqual(executes, "");
 });
 
-test("#552 armed-but-refused is NOT not-armed — arming is read from the ENV, never from a skip event", () => {
+test("armed-but-refused is NOT not-armed — arming is read from the ENV, never from a skip event", () => {
   // The flag disagreement this was written for is gone with the arms ( item 8): the pipeline block
   // and the unit now share one condition, so they cannot disagree. The RULE it protects is not gone —
   // arming is read from the environment and never inferred from the presence of a skip event — and a
@@ -126,14 +126,14 @@ test("#552 armed-but-refused is NOT not-armed — arming is read from the ENV, n
   assert.match(refused.slices.nativeread.why, /no zh evidence to read/);
 });
 
-test("#552 armed, no record, no cause ⇒ not-established — an absence is a finding, never a pass", () => {
+test("armed, no record, no cause ⇒ not-established — an absence is a finding, never a pass", () => {
   const { slices } = deriveJxSliceStatement({ sidecar: sidecarOf(), env: ON });
   assert.equal(slices["serp-grid"].state, "not-established");
   assert.match(slices["serp-grid"].why, /CANNOT be established/);
   assert.notEqual(slices["serp-grid"].state, "ran");
 });
 
-test("#552 slice 1 never overstates across lanes — one gapped lane makes the slice gapped", () => {
+test("slice 1 never overstates across lanes — one gapped lane makes the slice gapped", () => {
   const { executes, slices } = deriveJxSliceStatement({
     sidecar: sidecarOf({ zh: {}, ja: {} }, { zh: { degraded: false }, ja: { degraded: true, degradedCause: "executor threw" } }),
     env: { CLEAROTRON_NATIVE_LANGUAGE_ZH: "1", CLEAROTRON_NATIVE_LANGUAGE_JA: "1" },
@@ -163,7 +163,7 @@ function runDir(t, { sidecar = sidecarOf(), units = null, journal = null } = {})
 }
 const readSidecar = (dir) => JSON.parse(readFileSync(driverDir(dir, "jx-lanes.json"), "utf8"));
 
-test("#552 the writer states it on the sidecar and leaves the frozen decision alone", (t) => {
+test("the writer states it on the sidecar and leaves the frozen decision alone", (t) => {
   const dir = runDir(t, { units: unitsOf({ "serp-grid:zh": { done: true, degraded: false } }) });
   const r = stateJxSlices(dir, { env: ON });
   assert.equal(r.stated, true);
@@ -180,7 +180,7 @@ test("#552 the writer states it on the sidecar and leaves the frozen decision al
   assert.equal(s.fold.foldedAt, "2026-08-09T00:00:00Z");
 });
 
-test("#552 the writer is idempotent — a delivered-then-resumed run does not restamp", (t) => {
+test("the writer is idempotent — a delivered-then-resumed run does not restamp", (t) => {
   const dir = runDir(t, { units: unitsOf({ "serp-grid:zh": { done: true, degraded: false } }) });
   stateJxSlices(dir, { env: ON });
   const first = readFileSync(driverDir(dir, "jx-lanes.json"), "utf8");
@@ -189,7 +189,7 @@ test("#552 the writer is idempotent — a delivered-then-resumed run does not re
   assert.equal(readFileSync(driverDir(dir, "jx-lanes.json"), "utf8"), first, "byte-identical");
 });
 
-test("#552 a corrupt sidecar is NOT rewritten — the lane decision is frozen and not this writer's", (t) => {
+test("a corrupt sidecar is NOT rewritten — the lane decision is frozen and not this writer's", (t) => {
   const dir = runDir(t, { sidecar: null });
   writeFileSync(driverDir(dir, "jx-lanes.json"), "{ truncated");
   const notes = [];
@@ -199,7 +199,7 @@ test("#552 a corrupt sidecar is NOT rewritten — the lane decision is frozen an
   assert.match(notes.join("\n"), /NOT writing one/);
 });
 
-test("#552 an absent sidecar produces no file — the writer never mints a lane decision", (t) => {
+test("an absent sidecar produces no file — the writer never mints a lane decision", (t) => {
   const dir = runDir(t, { sidecar: null });
   assert.equal(stateJxSlices(dir, { env: ON }).stated, false);
   assert.throws(() => readSidecar(dir), "no jx-lanes.json is invented");
@@ -209,7 +209,7 @@ test("#552 an absent sidecar produces no file — the writer never mints a lane 
 // for both. BOTH R2 runs of the 2026-08-09 round carry no _driver/jx-lanes.json at all — a clearance
 // with no jx lane simply has none — so "NOT writing one" would have printed on half the overnight round
 // and read as a withheld action. That is the absent-vs-failed conflation this tranche exists to remove.
-test("#552 no jx lane is SILENT; a sidecar that exists and will not parse is LOUD", (t) => {
+test("no jx lane is SILENT; a sidecar that exists and will not parse is LOUD", (t) => {
   const quiet = [];
   const none = stateJxSlices(runDir(t, { sidecar: null }), { env: ON, note: (m) => quiet.push(m) });
   assert.equal(none.reason, "no-jx-lane");
@@ -224,7 +224,7 @@ test("#552 no jx lane is SILENT; a sidecar that exists and will not parse is LOU
     "a corrupt DRIVER-written frozen decision is a defect and must stay loud");
 });
 
-test("#552 the run.jsonl skip cause decorates a refusal and never decides a state", (t) => {
+test("the run.jsonl skip cause decorates a refusal and never decides a state", (t) => {
   const journal = [
     JSON.stringify({ event: "jx-nativeread-skipped", cause: "no zh evidence to read" }),
     JSON.stringify({ event: "stage", stage: "synthesis" }),
@@ -254,7 +254,7 @@ const stateOf = (sidecar, env, units = null) => {
   return { ...sidecar, fold: { ...sidecar.fold, executes, slices } };
 };
 
-test("#552/#858 the run statement is not applied to every lane row — the zh-only grid never lands on ja", () => {
+test("the run statement is not applied to every lane row — the zh-only grid never lands on ja", () => {
   const doc = stateOf(
     sidecarOf({ zh: { depth: "full", jurisdictions: ["CN"] }, ja: { depth: "full", jurisdictions: ["JP"] } },
       { zh: { degraded: false }, ja: { degraded: false } }),
@@ -271,7 +271,7 @@ test("#552/#858 the run statement is not applied to every lane row — the zh-on
   assert.equal(r.statementWhy, null);
 });
 
-test("#858 a lane whose own slice-1 record gapped states what ran FOR IT, not the run's join", () => {
+test("a lane whose own slice-1 record gapped states what ran FOR IT, not the run's join", () => {
   const doc = stateOf(
     sidecarOf({ zh: { depth: "full" }, ja: { depth: "candidates" } },
       { zh: { degraded: true, degradedCause: "ANTHROPIC_API_KEY absent" }, ja: { degraded: false } }),
@@ -282,7 +282,7 @@ test("#858 a lane whose own slice-1 record gapped states what ran FOR IT, not th
   assert.equal(by.ja, "candidates", "and one lane's outage is not the other lane's record");
 });
 
-test("#858 a lane the statement does not cover reads (not stated) — never 'none'", () => {
+test("a lane the statement does not cover reads (not stated) — never 'none'", () => {
   // A run that died before delivery states nothing. `none` would say the slices ran and produced
   // nothing, which is a different fact; this is the `exists`-passes-on-"" defect one layer over.
   const undelivered = readJxLanes({ lanes: { zh: { depth: "full", jurisdictions: ["CN"] } },
@@ -297,7 +297,7 @@ test("#858 a lane the statement does not cover reads (not stated) — never 'non
   assert.equal(ko.executes, null, "a lane no slice record covers is not a lane that ran nothing");
 });
 
-test("#858 the DERIVED value wins over the frozen one; a pre-#858 artifact still keeps its own", () => {
+test("the DERIVED value wins over the frozen one; a pre-#858 artifact still keeps its own", () => {
   // Both generations reach this reader. A run minted between and carries the frozen
   // `candidates` AND a statement saying the grid ran — the record of what ran is the accurate one.
   const both = stateOf(sidecarOf({ zh: { executes: "candidates", depth: "full" } }, { zh: { degraded: false } }),
@@ -314,7 +314,7 @@ test("#858 the DERIVED value wins over the frozen one; a pre-#858 artifact still
     "and a non-string in that slot was never a statement");
 });
 
-test("#858 the mint no longer freezes an `executes` — nothing in the decision claims what ran", () => {
+test("the mint no longer freezes an `executes` — nothing in the decision claims what ran", () => {
   const full = decideJxLanes({ job: { jurisdictions: ["CN"] },
     profile: { jxPolicy: { laneDepth: { zh: "full" } } }, searchPolicy: { components: { jxLanes: true } } });
   assert.equal(full.lanes.zh.executes, undefined,

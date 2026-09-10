@@ -175,7 +175,7 @@ test("a dead engine surfaces as an error, never as a silent success", async () =
 //
 // The E2E harness has to tell "the server is rate-limiting us" from "this job is out of product scope",
 // and until this landed its only evidence was formatted English. The status is on the error now.
-test("#757 a 429 on INITIALIZE throws with .status and .transport, not just a sentence", async () => {
+test("a 429 on INITIALIZE throws with .status and .transport, not just a sentence", async () => {
   const g = await face({ refuse: { on: "initialize", status: 429 } });
   try {
     const err = await mcpToolCall({ url: g.url, token: "t", tool: "start_run", args: { id: "x" } })
@@ -187,7 +187,7 @@ test("#757 a 429 on INITIALIZE throws with .status and .transport, not just a se
   } finally { await g.close(); }
 });
 
-test("#757 a 429 on TOOLS/CALL is classified the same — the limiter fires on every post, not just the first", async () => {
+test("a 429 on TOOLS/CALL is classified the same — the limiter fires on every post, not just the first", async () => {
   const g = await face({ refuse: { on: "tools/call", status: 429 } });
   try {
     const err = await mcpToolCall({ url: g.url, token: "t", tool: "start_run", args: { id: "x" } })
@@ -198,7 +198,7 @@ test("#757 a 429 on TOOLS/CALL is classified the same — the limiter fires on e
   } finally { await g.close(); }
 });
 
-test("#757 a 5xx is transport too — the door died before it could judge anything", async () => {
+test("a 5xx is transport too — the door died before it could judge anything", async () => {
   const g = await face({ refuse: { on: "initialize", status: 503, body: "upstream unavailable" } });
   try {
     const err = await mcpToolCall({ url: g.url, token: "t", tool: "start_run", args: { id: "x" } })

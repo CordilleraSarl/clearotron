@@ -77,7 +77,7 @@ function repoWith(dir, n) {
   return dir;
 }
 
-test("#1475 the payload says HOW OLD the deployment is, not just which sha", async () => {
+test("the payload says HOW OLD the deployment is, not just which sha", async () => {
   await withPortal(async (port) => {
     const body = await health(port);
     assert.ok("engineCommitAt" in body,
@@ -93,7 +93,7 @@ test("#1475 the payload says HOW OLD the deployment is, not just which sha", asy
   });
 });
 
-test("#1475 the payload names WHICH BOX — and an unrecognised one is null, never a guess", async () => {
+test("the payload names WHICH BOX — and an unrecognised one is null, never a guess", async () => {
   const saved = process.env.CLEAROTRON_BOX;
   try {
     delete process.env.CLEAROTRON_BOX;
@@ -121,7 +121,7 @@ test("#1475 the payload names WHICH BOX — and an unrecognised one is null, nev
   }
 });
 
-test("#1475 health and the surface check read ONE box rule, so they cannot drift apart", () => {
+test("health and the surface check read ONE box rule, so they cannot drift apart", () => {
   // The join, asserted at the source rather than by two runtime values that agree today. This is
   // That guard shape and it is here for the same reason: the previous state of the tree had the
   // allowlist written out inline in live-surface-check, and a second copy in the endpoint would have
@@ -137,7 +137,7 @@ test("#1475 health and the surface check read ONE box rule, so they cannot drift
   }
 });
 
-test("#1475 THE MEASUREMENT (premise pin) — a distance from a LOCAL ref reads zero on the stalest instance", () => {
+test("THE MEASUREMENT (premise pin) — a distance from a LOCAL ref reads zero on the stalest instance", () => {
   // PREMISE PIN: green against the pre-fix sources too, deliberately. It asserts the git behaviour that
   // makes the issue's suggested field wrong, not this change's code — so it is worth keeping and worth
   // naming, because an unlabelled always-green arm in a fix's test file reads as coverage it is not.
@@ -178,7 +178,7 @@ test("#1475 THE MEASUREMENT (premise pin) — a distance from a LOCAL ref reads 
     "the commit's own date is local, network-free, and makes no claim about what HEAD should be");
 });
 
-test("#1475 a PINNED release and an unreachable probe must not look alike (premise pin)", () => {
+test("a PINNED release and an unreachable probe must not look alike (premise pin)", () => {
   // PREMISE PIN, like the arm above: `classifyEngineCheckout` predates this change, so this is green on
   // both sides. It pins the fact the payload's `engineState` field rests on — remove that field and
   // this arm still passes, which is exactly why it is labelled rather than counted as coverage.
@@ -204,7 +204,7 @@ test("#1475 a PINNED release and an unreachable probe must not look alike (premi
   assert.equal(blocked.outcome, "blocked", "could-not-determine is its own answer, never `clean`");
 });
 
-test("#1475 the new fields are ADDITIVE — the existing payload a monitor reads is untouched", async () => {
+test("the new fields are ADDITIVE — the existing payload a monitor reads is untouched", async () => {
   // The control. Without it, a red arm above cannot be told apart from a handler that stopped
   // answering at all, and every assertion in this file would be measuring the same single failure.
   await withPortal(async (port) => {
@@ -216,7 +216,7 @@ test("#1475 the new fields are ADDITIVE — the existing payload a monitor reads
   });
 });
 
-test("#1475 engineCommitDate answers a string or null — never throws, never a bare Date", () => {
+test("engineCommitDate answers a string or null — never throws, never a bare Date", () => {
   // A provenance stamp never breaks a health probe: the endpoint answers before identity and is what a
   // deploy confirmation reads, so a git failure here has to degrade to null rather than to a 500.
   const v = engineCommitDate();

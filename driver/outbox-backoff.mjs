@@ -269,11 +269,11 @@ export function settleProgress(agent, now = Date.now()) {
 // them. Measured: 25 of 25 delivered runs carried it, 0 of 29 failed, parked or cancelled. A
 // predicate that is correct by accident is one careless write away from being wrong.
 //
-// **Owner ruling, 2026-08-22, verbatim: "clean up the failed runs. they owe the client nothing."** That
+// **Ruling, 2026-08-22, verbatim: "clean up the failed runs. they owe the client nothing."** That
 // produced a `state === "delivered"` filter here, and the failure packets already in the outbox were
 // disposed of on the box.
 //
-// **Owner ruling, 2026-08-24, SUPERSEDING THIS SWEEP'S HALF OF IT: failed runs' notification packets get
+// **Ruling, 2026-08-24, SUPERSEDING THIS SWEEP'S HALF OF IT: failed runs' notification packets get
 // the same re-drop cover as delivered ones.**
 //
 // BOTH ARE KEPT BECAUSE BOTH ARE STILL TRUE, and reading them as a reversal is the mistake to avoid. A

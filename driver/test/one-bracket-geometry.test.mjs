@@ -36,7 +36,7 @@ function rectsOf(src) {
   });
 }
 
-test("#1431 the bracket's SIX rects are the same six in Logo.tsx and in brand.mjs", () => {
+test("the bracket's SIX rects are the same six in Logo.tsx and in brand.mjs", () => {
   // ── THE END OF THE SLICE IS STRUCTURAL, NOT A NEIGHBOUR'S NAME ──────────────────────────
   //
   // It used to end at `indexOf("export function RidgeMark")`, which coupled this test to the NAME of the
@@ -75,14 +75,14 @@ test("#1431 the bracket's SIX rects are the same six in Logo.tsx and in brand.mj
   assert.ok(!/#[0-9a-f]{6}/i.test(block.fill), "still a token, not the hex literal it stands for");
 });
 
-test("#1431 the two viewBoxes agree — the same rects in a different box is a different mark", () => {
+test("the two viewBoxes agree — the same rects in a different box is a different mark", () => {
   const src = read("portal-ui/src/components/Logo.tsx");
   const at = src.indexOf("export function BracketMark");
   assert.match(src.slice(at, at + 400), new RegExp(`viewBox="${BRACKET_VIEWBOX}"`),
     "BracketMark's viewBox no longer matches BRACKET_VIEWBOX — the rects would render at a different scale");
 });
 
-test("#1431 the portal's favicon IS brand.mjs's favicon, byte for byte", () => {
+test("the portal's favicon IS brand.mjs's favicon, byte for byte", () => {
   // index.html cannot import brand.mjs (it is served as a static file before any bundle runs), so the
   // data-URI is pasted. Pasted and unchecked is how the tab kept the old mark after every other surface
   // moved — which is the shape was filed about.
@@ -93,7 +93,7 @@ test("#1431 the portal's favicon IS brand.mjs's favicon, byte for byte", () => {
     + "FAVICON_LINK — a hand-edited data-URI is how the browser tab keeps a retired mark.");
 });
 
-test("#1431 NO SURFACE this product renders still draws the ridge", () => {
+test("NO SURFACE this product renders still draws the ridge", () => {
   // The acceptance criterion, mechanised. The ridge ASSETS stay on disk — they are the parent company's
   // mark — so this asserts the RENDERERS, which is what the criterion says. Since nothing in this
   // product reads those assets at all: the generated brand-art.ts chain that used to went with the
@@ -117,7 +117,7 @@ test("#1431 NO SURFACE this product renders still draws the ridge", () => {
   }
 });
 
-test("#1431 the mark FIRES — bracketMark draws seven rects and takes its colours from its caller", () => {
+test("the mark FIRES — bracketMark draws seven rects and takes its colours from its caller", () => {
   // A guard that only asserts absence passes on a renderer that draws nothing at all.
   const svg = bracketMark(20, "currentColor");
   assert.equal((svg.match(/<rect/g) ?? []).length, 7, "six bracket rects plus the enclosed block");

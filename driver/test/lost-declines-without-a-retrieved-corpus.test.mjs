@@ -70,7 +70,7 @@ const lostRow = (out) => (out.split("\n").find((l) => /^\s*lost\b/.test(l)) ?? "
 // for, because the decline legitimately contains the words "never retrieved".
 const lostCount = (out) => (lostRow(out).match(/^\s*lost\s+(\S+)/)?.[1] ?? "");
 
-test("2059 a run dir with NO _driver/ declines `lost` and names what is missing", () => {
+test("a run dir with NO _driver/ declines `lost` and names what is missing", () => {
   const row = lostRow(scoreRun(false));
   assert.ok(row, "no `lost` row was printed at all");
   assert.equal(lostCount(scoreRun(false)), "n/a",
@@ -78,7 +78,7 @@ test("2059 a run dir with NO _driver/ declines `lost` and names what is missing"
   assert.match(row, /_driver\//, "the decline must name _driver/, the way `withheld`'s already does");
 });
 
-test("2059 a run dir WITH _driver/ still reports `lost` as a number — the decline is not a blanket", () => {
+test("a run dir WITH _driver/ still reports `lost` as a number — the decline is not a blanket", () => {
   // The control, and it is the one that matters: gating this on `registerOnly` instead of `hasDriver`
   // would silence a bucket that is perfectly computable on every register-only and knockout run.
   const row = lostRow(scoreRun(true));
@@ -88,7 +88,7 @@ test("2059 a run dir WITH _driver/ still reports `lost` as a number — the decl
   assert.match(row, /never retrieved/, "the computable case must keep its own sentence");
 });
 
-test("2059 `withheld` and `lost` decline in ONE voice, so a reader is not told two stories", () => {
+test("`withheld` and `lost` decline in ONE voice, so a reader is not told two stories", () => {
   const out = scoreRun(false);
   const withheld = out.split("\n").find((l) => /^\s*withheld\b/.test(l)) ?? "";
   assert.match(withheld, /NOT COMPUTED/, "the sibling row changed shape — this arm is now measuring nothing");

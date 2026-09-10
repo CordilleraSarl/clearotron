@@ -38,7 +38,7 @@ const tmpRun = () => mkdtempSync(join(tmpdir(), "span-"));
 const rowsOf = (runDir, name) =>
   readFileSync(driverDir(runDir, `${name}.jsonl`), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 
-test("#1345 the decomposition can attribute the span: `wall` in seconds, `ts` at the END, file named for the stage", () => {
+test("the decomposition can attribute the span: `wall` in seconds, `ts` at the END, file named for the stage", () => {
   const d = tmpRun();
   try {
     const started = Date.UTC(2026, 7, 19, 12, 0, 0);
@@ -54,7 +54,7 @@ test("#1345 the decomposition can attribute the span: `wall` in seconds, `ts` at
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1345 a span is NOT a seat dispatch — the seat reader must find nothing in this file", () => {
+test("a span is NOT a seat dispatch — the seat reader must find nothing in this file", () => {
   const d = tmpRun();
   try {
     recordSpan(d, "register-repair", { startedMs: 1_000, endedMs: 3_000 }, { repair: "r", target: "t", outcome: "ok" });
@@ -72,7 +72,7 @@ test("#1345 a span is NOT a seat dispatch — the seat reader must find nothing 
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1345 a caller cannot smuggle a dispatch field in, even by accident", () => {
+test("a caller cannot smuggle a dispatch field in, even by accident", () => {
   const d = tmpRun();
   try {
     recordSpan(d, "register-repair", { startedMs: 0, endedMs: 1_000 },
@@ -84,7 +84,7 @@ test("#1345 a caller cannot smuggle a dispatch field in, even by accident", () =
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1345 an unmeasurable span writes nothing, and never throws", () => {
+test("an unmeasurable span writes nothing, and never throws", () => {
   const d = tmpRun();
   try {
     // No clock, a backwards clock, and a missing run — three ways a caller can be wrong. A receipt that
@@ -97,7 +97,7 @@ test("#1345 an unmeasurable span writes nothing, and never throws", () => {
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1345 both silences the addendum named are actually wired, not just wire-able", () => {
+test("both silences the addendum named are actually wired, not just wire-able", () => {
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   // The register repair: timed at the DISPATCH, and the duration reaches the ledger row.
   assert.match(src, /const dispatchStartedMs = Date\.now\(\);/);
@@ -120,7 +120,7 @@ test("#1345 both silences the addendum named are actually wired, not just wire-a
 // repair took 220 seconds. The issue called it the one-liner; it is a signature change, because `record`
 // is called after the dispatch returns and cannot time what already happened.
 
-test("#1345 the repair row carries how long the dispatch took, in the log and durably", () => {
+test("the repair row carries how long the dispatch took, in the log and durably", () => {
   const d = tmpRun();
   try {
     const rows = [];
@@ -138,7 +138,7 @@ test("#1345 the repair row carries how long the dispatch took, in the log and du
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("#1345 an unmeasured dispatch says nothing rather than saying zero", () => {
+test("an unmeasured dispatch says nothing rather than saying zero", () => {
   const d = tmpRun();
   try {
     const rows = [];

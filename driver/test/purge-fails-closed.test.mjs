@@ -75,7 +75,7 @@ function estate(t) {
 
 // ── No defaults ────────────────────────────────────────────────────────────────────────────────────
 
-test("#559 an unset CLEAROTRON_REPORTS_DIR REFUSES and names the variable — it never resolves to production", (t) => {
+test("an unset CLEAROTRON_REPORTS_DIR REFUSES and names the variable — it never resolves to production", (t) => {
   const e = estate(t);
   const r = purge(["--keep-none"], { workspace: e.workspace });   // pool deliberately absent
   assert.equal(r.code, 2, "a deletion tool with no target must exit non-zero, not proceed on a guess");
@@ -88,7 +88,7 @@ test("#559 an unset CLEAROTRON_REPORTS_DIR REFUSES and names the variable — it
     "the production archive path must not even be MENTIONED as a fallback — naming it invites re-adding it");
 });
 
-test("#559 an unset CLEAROTRON_WORK_DIR refuses too — two of the three stores derive from it", (t) => {
+test("an unset CLEAROTRON_WORK_DIR refuses too — two of the three stores derive from it", (t) => {
   const e = estate(t);
   const r = purge(["--keep-none"], { pool: e.pool });   // workspace deliberately absent
   assert.equal(r.code, 2);
@@ -97,7 +97,7 @@ test("#559 an unset CLEAROTRON_WORK_DIR refuses too — two of the three stores 
     "the production workspace default is gone; fixing only the pool would fail closed on one third of the blast radius");
 });
 
-test("#1532 the scrub removes EVERY spelling — a new-spelling root in the parent cannot leak in", (t) => {
+test("the scrub removes EVERY spelling — a new-spelling root in the parent cannot leak in", (t) => {
   // THE POSITIVE CONTROL FOR THE SCRUB, and the reason it exists. Measured on this tree: with only
   // `CLEAROTRON_REPORTS_DIR` set and `CLEAROTRON_REPORTS_DIR` absent, purge-runs resolved its roots and entered
   // SWEEP mode at exit 0. A helper that deleted the retired name alone would have handed every arm above
@@ -119,7 +119,7 @@ test("#1532 the scrub removes EVERY spelling — a new-spelling root in the pare
   } finally { process.env = saved; }
 });
 
-test("#559 the source carries no production fallback at all", () => {
+test("the source carries no production fallback at all", () => {
   const src = readFileSync(SCRIPT, "utf8");
   // Anchored on the `||` fallback form, not on the bare strings — the doc block above deliberately
   // quotes the old defaults so the next reader knows what was removed and why.
@@ -129,7 +129,7 @@ test("#559 the source carries no production fallback at all", () => {
 
 // ── The target is on screen, and must be restated to delete ────────────────────────────────────────
 
-test("#559 every invocation prints the roots it resolved, dry run included", (t) => {
+test("every invocation prints the roots it resolved, dry run included", (t) => {
   const e = estate(t);
   const r = purge(["--keep-none"], e);
   assert.equal(r.code, 0);
@@ -141,7 +141,7 @@ test("#559 every invocation prints the roots it resolved, dry run included", (t)
   assert.match(r.out, /--apply --expect=0 --expect-root=/);
 });
 
-test("#559 --apply without --expect-root refuses, and says what this run resolved", (t) => {
+test("--apply without --expect-root refuses, and says what this run resolved", (t) => {
   const e = estate(t);
   const r = purge(["--keep-none", "--apply", "--expect=0"], e);
   assert.equal(r.code, 2);
@@ -149,7 +149,7 @@ test("#559 --apply without --expect-root refuses, and says what this run resolve
   assert.match(r.err, /This run resolved/);
 });
 
-test("#559 a dry run on one estate cannot authorise an apply on another", (t) => {
+test("a dry run on one estate cannot authorise an apply on another", (t) => {
   const e = estate(t);
   const other = estate(t);
   const r = purge(["--keep-none", "--apply", "--expect=0", `--expect-root=${other.pool}`], e);
@@ -159,14 +159,14 @@ test("#559 a dry run on one estate cannot authorise an apply on another", (t) =>
   assert.ok(existsSync(e.pool) && existsSync(other.pool), "neither estate is touched by a refused apply");
 });
 
-test("#559 a matching root proceeds — the guard blocks the wrong target, not the tool", (t) => {
+test("a matching root proceeds — the guard blocks the wrong target, not the tool", (t) => {
   const e = estate(t);
   const r = purge(["--keep-none", "--apply", "--expect=0", `--expect-root=${e.pool}`], e);
   assert.equal(r.code, 0, "the correct target must still work, or operators will route around the guard");
   assert.match(r.out, /Removed 0 run directories/);
 });
 
-test("#559 a trailing slash is not a mismatch — the guard must not fire on cosmetics", (t) => {
+test("a trailing slash is not a mismatch — the guard must not fire on cosmetics", (t) => {
   const e = estate(t);
   const r = purge(["--keep-none", "--apply", "--expect=0", `--expect-root=${e.pool}/`], e);
   assert.equal(r.code, 0, "a guard that cries wolf on a trailing slash teaches operators to bypass it");
@@ -174,7 +174,7 @@ test("#559 a trailing slash is not a mismatch — the guard must not fire on cos
 
 // ── The root guard runs BEFORE anything is removed ─────────────────────────────────────────────────
 
-test("#559 the root mismatch is checked before any deletion, not after the first one", (t) => {
+test("the root mismatch is checked before any deletion, not after the first one", (t) => {
   const e = estate(t);
   // A pool entry the sweep would classify as a deletable run, so `del` is non-empty and any ordering
   // bug that deletes first and validates second would leave evidence.
@@ -197,7 +197,7 @@ test("#559 the root mismatch is checked before any deletion, not after the first
 //
 // SOURCE-ANCHORED, like the harness's siblings: the apply is inside a teardown that walks a live pool,
 // and what is under test is which flags the call carries and where the value comes from.
-test("#641 the teardown reads the root off the dry run it ran, and refuses to apply without one", () => {
+test("the teardown reads the root off the dry run it ran, and refuses to apply without one", () => {
   const src = readFileSync(new URL("../../scripts/e2e.mjs", import.meta.url), "utf8");
   const i = src.indexOf('"--apply"');
   assert.ok(i > 0, "the apply call must exist — if it moved, re-anchor rather than delete");

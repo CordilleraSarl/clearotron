@@ -28,13 +28,13 @@ const help = () => {
   return `${r.stdout ?? ""}${r.stderr ?? ""}`;
 };
 
-test("201 the help names the --product flag at all", () => {
+test("the help names the --product flag at all", () => {
   const out = help();
   assert.match(out, /--product/,
     `demo --help does not mention --product, so the other demos are discoverable only by error:\n${out}`);
 });
 
-test("201 the help names EVERY product this tree ships, read off the container", () => {
+test("the help names EVERY product this tree ships, read off the container", () => {
   const shipped = demoChildren(DEMO_ROOT);
   assert.ok(shipped.length >= 2,
     `this tree ships ${shipped.length} demo(s), so an arm about listing several cannot look here`);
@@ -49,7 +49,7 @@ test("201 the help names EVERY product this tree ships, read off the container",
 // publishes every product the package ships, so a help text naming a default would teach the belief the
 // change removed — and it did: the line survived the behaviour change and told a reader on the shipped
 // release that one product was what they got with no flag.
-test("201 the help says a bare `demo` publishes every product, because that is what it does", () => {
+test("the help says a bare `demo` publishes every product, because that is what it does", () => {
   const shipped = demoChildren(DEMO_ROOT);
   const out = help();
   assert.ok(!/\(the default, when --product is not given\)/.test(out),
@@ -69,7 +69,7 @@ test("201 the help says a bare `demo` publishes every product, because that is w
 // another file, intermittently. `example.mjs` derives its repo root from its own location, so a COPY of
 // it in a temp tree reads that tree's `demo/`; `driver` and `shared` are symlinked back, because the
 // modules behind them are the same code either way.
-test("201 a product added to the container appears in the help with no edit to it", () => {
+test("a product added to the container appears in the help with no edit to it", () => {
   const tmp = mkdtempSync(join(tmpdir(), "ct201-"));
   try {
     mkdirSync(join(tmp, "bin"), { recursive: true });

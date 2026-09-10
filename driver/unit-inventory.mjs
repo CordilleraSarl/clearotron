@@ -75,7 +75,7 @@
 /** Where a unit is expected to be installed. "none" is a claim, not an absence — see ORPHANED below. */
 export const BOXES = Object.freeze(["prod", "test", "dev"]);
 
-// ── RESOLVED UNITS (owner ruling 2026-08-25 — option B) ──────────────────────
+// ── RESOLVED UNITS (ruling 2026-08-25 — option B) ──────────────────────
 //
 // `resolved: [...]` names tracked files the INSTALLER rewrites before installing. Three units carry
 // `@NAME@` placeholders because configuration cannot reach them: a `.path` unit reads no environment at
@@ -88,7 +88,7 @@ export const BOXES = Object.freeze(["prod", "test", "dev"]);
 // everything declared here really carries one. A one-way check would let a new placeholder ship
 // undeclared, which is the same shape as the undeclared units this file was written to make impossible.
 
-// ── RETIRED UNITS (; owner ruling 2026-08-26, restated 2026-08-31) ────────────
+// ── RETIRED UNITS (; ruling 2026-08-26, restated 2026-08-31) ────────────
 //
 // `retired: { ruled, filesStayUntil, why }` says a unit's posture has been ruled away while its tracked
 // files are still in the tree. It is a FACT about a decision, not a pointer at a replacement — the
@@ -99,7 +99,7 @@ export const BOXES = Object.freeze(["prod", "test", "dev"]);
 // `filesStayUntil` is a BOX, and it is the whole reason the files are still here. Deleting a tracked
 // file whose unit that box is running today removes the only tracked description of a live service —
 // the mistake this file's own header records being caught once already, for `profile-service` and
-// `prelim-outbox`. Production is on pre-sweep code and is rebuilt rather than migrated (owner ruling
+// `prelim-outbox`. Production is on pre-sweep code and is rebuilt rather than migrated (ruling
 // 2026-08-26), so the rebuild is the event that releases the files, and until then entry and tree
 // disagree ON PURPOSE.
 //
@@ -247,7 +247,7 @@ export const UNIT_INVENTORY = Object.freeze([
     //
     // Until then it was an orphan BY DESIGN: `clearotron connect` installed and started it on demand,
     // because starting it turned on client-account access and a unit that came up with everything else
-    // would have made that consent meaningless (; owner ruling 2026-08-31, "On demand
+    // would have made that consent meaningless (; ruling 2026-08-31, "On demand
     // is fine"). He superseded that knowingly — the door auto-starts and the per-account key is the
     // gate, not whether a process runs.
     //

@@ -100,7 +100,7 @@ test("a save that omits the field KEEPS the stored value — the arm that stops 
   assert.notEqual(DENSE_GRID_CELLS, SAFE_GRID_CELLS, "the two budgets are equal, so the assertion above distinguishes nothing");
 });
 
-test("2012 the demo marker survives a staff save too — it never had a control at all", async () => {
+test("the demo marker survives a staff save too — it never had a control at all", async () => {
   // marketplaceDensity lost its control by ruling; `demoData` never had one. Same position, same strip:
   // profile-page.html reconstructs its payload from the inputs it has, so a key with no input is absent
   // from every save that page makes.

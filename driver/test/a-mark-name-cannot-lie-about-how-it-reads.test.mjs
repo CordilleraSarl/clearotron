@@ -37,7 +37,7 @@ const job = (name) => ({ id: "j1", forwarder: "alex", msgId: "<x@y>", classes: [
   marks: [{ ref: "TM-1", name, classes: [9] }] });
 const nameError = (v) => v.errors.find((e) => /marks\[0\]\.name contains/.test(e));
 
-test("#1913 — a bidi control is refused, and the refusal names the character and where it is", () => {
+test("a bidi control is refused, and the refusal names the character and where it is", () => {
   const j = job("AURORA‮KS");                 // morty's C1a
   const e = nameError(validateJob(j));
   assert.ok(e, "a RIGHT-TO-LEFT OVERRIDE in a mark name must not be accepted");
@@ -48,7 +48,7 @@ test("#1913 — a bidi control is refused, and the refusal names the character a
   assert.match(e, /not stripped for you/);
 });
 
-test("#1913 — every bidi and zero-width class in the issue is covered, not just the one that was driven", () => {
+test("every bidi and zero-width class in the issue is covered, not just the one that was driven", () => {
   // The issue names U+202A–U+202E and U+2066–U+2069, plus U+200B–U+200D and U+FEFF. A guard that
   // covered only the two morty happened to type would leave the class open.
   for (const cp of [0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0x2066, 0x2067, 0x2068, 0x2069,
@@ -59,14 +59,14 @@ test("#1913 — every bidi and zero-width class in the issue is covered, not jus
   }
 });
 
-test("#1913 — a zero-width joiner is refused, because it makes a mark unequal to the one a reader sees", () => {
+test("a zero-width joiner is refused, because it makes a mark unequal to the one a reader sees", () => {
   const zwj = "AUR‍ORA";                      // morty's C1b
   assert.equal(zwj.replace(/‍/g, ""), "AURORA", "the fixture is the render-alike it claims to be");
   assert.notEqual(zwj, "AURORA", "and it does compare unequal — which is the defect");
   assert.match(nameError(validateJob(job(zwj))), /U\+200D ZERO WIDTH JOINER at character 4/);
 });
 
-test("#1913 — NFD collapses to NFC in place, so one mark ordered twice is one matter", () => {
+test("NFD collapses to NFC in place, so one mark ordered twice is one matter", () => {
   const nfd = "SIRÈNE".normalize("NFD");     // morty's C1d
   const nfc = "SIRÈNE".normalize("NFC");
   assert.notEqual(nfd, nfc, "the fixture is genuinely decomposed, or this arm proves nothing");
@@ -84,7 +84,7 @@ test("#1913 — NFD collapses to NFC in place, so one mark ordered twice is one 
   assert.equal(typeof bareJob.marks[0], "string", "the shape it arrived in is the shape it keeps");
 });
 
-test("#1913 — the four measured-but-not-defective cases stay accepted and UNTOUCHED", () => {
+test("the four measured-but-not-defective cases stay accepted and UNTOUCHED", () => {
   // This is the half that stops the fix becoming a worse defect. Each of these is a mark somebody may
   // legitimately want cleared, and each was measured by morty and explicitly not claimed.
   for (const [what, name] of [
@@ -108,7 +108,7 @@ test("#1913 — the four measured-but-not-defective cases stay accepted and UNTO
   }
 });
 
-test("#1913 — every field a job can carry a mark name in is covered, not only marks[]", () => {
+test("every field a job can carry a mark name in is covered, not only marks[]", () => {
   for (const shape of [
     { id: "j1", forwarder: "a", msgId: "<x@y>", classes: [9], markName: "AURORA‮KS" },
     { id: "j1", forwarder: "a", msgId: "<x@y>", classes: [9], name: "AURORA‮KS" },
@@ -133,7 +133,7 @@ test("#1913 — every field a job can carry a mark name in is covered, not only 
   assert.equal(bare.marks[0], "AURORA\u202EKS", "a refused bare-string name must not be silently altered");
 });
 
-test("#1913 — the reader counts by codepoint, so a position past an emoji is the one a human would point at", () => {
+test("the reader counts by codepoint, so a position past an emoji is the one a human would point at", () => {
   // Naive .split("") would count a surrogate pair as two and report the wrong character position, which
   // is exactly the kind of "correct but unusable" message a submitter cannot act on.
   const hits = markDisplayControlsIn("A\u{1F680}B‮C");
@@ -143,7 +143,7 @@ test("#1913 — the reader counts by codepoint, so a position past an emoji is t
 });
 
 
-test("2078 a mark name that is a paragraph is refused, in the words the reader needs, and never truncated", () => {
+test("a mark name that is a paragraph is refused, in the words the reader needs, and never truncated", () => {
   // The owner's own input, shortened: he typed a product description into the mark-name field, and the
   // product accepted it, priced it, ran it, and built the run's identity from it — `deriveSlug` kebabs
   // the mark with no bound, so it became the runId, the run directory and part of every report link.
@@ -190,7 +190,7 @@ test("2078 a mark name that is a paragraph is refused, in the words the reader n
 // must leave every legal name byte-identical, because the slug is already on disk: every run directory,
 // archive directory, pool directory and report link was computed from one. Both hold because the bound
 // is on the NAME rather than on the kebab — a legal name is sliced by nothing.
-test("2114 the slug is bounded at construction, and no legal name's slug moves a byte", () => {
+test("the slug is bounded at construction, and no legal name's slug moves a byte", () => {
   // THE PLANT IS THE FUNCTION AS IT SHIPPED, so byte-equality is measured against the old behaviour
   // rather than against today's output agreeing with itself.
   const asItShipped = (job) => {

@@ -61,7 +61,7 @@ const withDist = (fn, { build = true } = {}) => {
 // registered imperatively as an if-chain on `parts[1]` inside a closure. That is the repo's established
 // idiom for exactly this shape — no-client-identifiers.test.mjs reads driver/phase0.mjs the same way —
 // and it means the assertion needs no booted portal.
-test("#306: SERVER_ROUTE_HEADS is a BIJECTION with the routes the service actually registers", () => {
+test("SERVER_ROUTE_HEADS is a BIJECTION with the routes the service actually registers", () => {
   const src = readFileSync(at("../portal-service.mjs"), "utf8");
 
   // Every `parts[1] === "<head>"` in the router, which is how every route under /portal is dispatched.
@@ -93,7 +93,7 @@ test("#306: SERVER_ROUTE_HEADS is a BIJECTION with the routes the service actual
   );
 });
 
-test("#306: an UNKNOWN path still gets the SPA — this closes the registered set, not the internet", () => {
+test("an UNKNOWN path still gets the SPA — this closes the registered set, not the internet", () => {
   // The issue is explicit that client deep links must survive: the fix is "every registered server route
   // is covered", never "unknown paths are refused". A closed-by-default over arbitrary paths would break
   // every client-routed URL the SPA owns.

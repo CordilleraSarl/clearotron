@@ -261,7 +261,7 @@ not extend the budget for it.
 
 **The hard ceiling — the third clock, and it measures ACTIVE time.** The last-resort wall fires at the
 stage's timeout + 60s (`CLEAROTRON_HARD_MS` pins it; unset and with no stage timeout, 660s) — compared not
-against elapsed but against elapsed MINUS tool wait, including a call still in flight. Owner ruling: a
+against elapsed but against elapsed MINUS tool wait, including a call still in flight. Ruling: a
 model always delivers something or fails, so this ceiling exists for the harness's own failure modes,
 and a turn waiting on a register call is working. Read on elapsed, a stage that spent 74.8% of its wall
 in tool calls and one that stalled are indistinguishable; read on active time the first is a normal turn

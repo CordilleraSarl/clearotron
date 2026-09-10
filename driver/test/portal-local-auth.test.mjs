@@ -30,7 +30,7 @@ const tmp = (name) => join(mkdtempSync(join(tmpdir(), "portal-localauth-")), nam
 
 // ── the credential ─────────────────────────────────────────────────────────────────────────────────
 
-test("#769 establish → check: the right passphrase is true, a wrong one is false, and the record round-trips", () => {
+test("establish → check: the right passphrase is true, a wrong one is false, and the record round-trips", () => {
   const path = tmp("credential.json");
   const { passphrase, generated } = establishCredential({ path, email: USER });
   assert.equal(generated, true, "no passphrase supplied ⇒ one is generated");
@@ -53,7 +53,7 @@ test("#769 establish → check: the right passphrase is true, a wrong one is fal
   assert.equal(checkPassphrase(null, passphrase), false, "no record is not a match");
 });
 
-test("#769 a supplied passphrase is honoured and reported as NOT generated", () => {
+test("a supplied passphrase is honoured and reported as NOT generated", () => {
   const path = tmp("credential.json");
   const r = establishCredential({ path, email: USER, passphrase: "correct horse battery staple" });
   assert.equal(r.generated, false);
@@ -61,7 +61,7 @@ test("#769 a supplied passphrase is honoured and reported as NOT generated", () 
   assert.equal(checkPassphrase(readLocalCredential(path), "correct horse battery staple"), true);
 });
 
-test("#769 the credential file is written 0600, and its directory 0700", () => {
+test("the credential file is written 0600, and its directory 0700", () => {
   // A credential a second account on the box can read is not a credential. The mode is asserted rather
   // than assumed because `mode:` on writeFileSync is masked by the process umask and applies only on
   // create — which is why establishCredential also chmods, and why this checks the result.
@@ -72,7 +72,7 @@ test("#769 the credential file is written 0600, and its directory 0700", () => {
   assert.equal(statSync(dir).mode & 0o777, 0o700, "…and so must the directory it was created in");
 });
 
-test("#769 establishing over an existing credential is REFUSED, not silently overwritten", () => {
+test("establishing over an existing credential is REFUSED, not silently overwritten", () => {
   // Overwriting would mint a passphrase over one somebody has already written down and print the new
   // one as though it were the first. `flag: "wx"` makes the refusal atomic — a check-then-write would
   // still lose the race with a second process starting at the same moment.
@@ -82,14 +82,14 @@ test("#769 establishing over an existing credential is REFUSED, not silently ove
   assert.equal(checkPassphrase(readLocalCredential(path), first.passphrase), true, "the original still works");
 });
 
-test("#769 establishCredential refuses an identity that is not an address", () => {
+test("establishCredential refuses an identity that is not an address", () => {
   for (const bad of [null, "", "   ", "nobody"])
     assert.throws(() => establishCredential({ path: tmp("c.json"), email: bad }), /email address is required/);
 });
 
 // ── absence versus corruption ──────────────────────────────────────────────────────────────────────
 
-test("#769 readLocalCredential: MISSING is null, BROKEN throws — an absence is a finding, a corrupt file is not an absence", () => {
+test("readLocalCredential: MISSING is null, BROKEN throws — an absence is a finding, a corrupt file is not an absence", () => {
   // The whole reason this distinction is load-bearing: the bootstrap answers null by MINTING A NEW
   // PASSPHRASE. A corrupt file read as null would replace a working credential with one nobody holds,
   // print it to a terminal nobody is watching, and lock the owner out with no error anywhere.
@@ -120,7 +120,7 @@ test("#769 readLocalCredential: MISSING is null, BROKEN throws — an absence is
 // asserted nothing, and in the output that is indistinguishable from the wall having been proved. Root
 // reads straight through mode 000, so there is no denial to observe — which is a fact about the reader,
 // not about the credential, and the run should say so by name rather than by a silent pass.
-test("#769 readLocalCredential: a file that exists and cannot be read throws rather than reading as absent",
+test("readLocalCredential: a file that exists and cannot be read throws rather than reading as absent",
   { skip: process.getuid?.() === 0 && "root reads through mode 000 — no denial to observe" }, () => {
   // Distinct from a malformed file: same wrong answer (a new passphrase minted over a working one), a
   // different cause.
@@ -132,7 +132,7 @@ test("#769 readLocalCredential: a file that exists and cannot be read throws rat
   } finally { chmodSync(path, 0o600); }
 });
 
-test("#769 a hand-created directory is left at the mode its owner chose", () => {
+test("a hand-created directory is left at the mode its owner chose", () => {
   // establishCredential tightens only what it created. Re-permissioning a directory the operator
   // already had would be a side effect nobody asked for, and the file's own 0600 is the wall that
   // matters.
@@ -146,7 +146,7 @@ test("#769 a hand-created directory is left at the mode its owner chose", () => 
 
 // ── the session token ──────────────────────────────────────────────────────────────────────────────
 
-test("#769 mint → verify returns the email; a tampered body, a tampered signature and a wrong secret all fail", () => {
+test("mint → verify returns the email; a tampered body, a tampered signature and a wrong secret all fail", () => {
   const token = mintSession({ email: USER, secret: SECRET });
   assert.deepEqual(verifySession({ token, secret: SECRET }), { email: USER });
 
@@ -167,7 +167,7 @@ test("#769 mint → verify returns the email; a tampered body, a tampered signat
     assert.equal(verifySession({ token: bad, secret: SECRET }), null, `${String(bad)} must not verify`);
 });
 
-test("#769 an expired session is refused, and the boundary is exact", () => {
+test("an expired session is refused, and the boundary is exact", () => {
   const now = 1_800_000_000_000;                 // a fixed clock — a test that drifts with the date is not a test
   const token = mintSession({ email: USER, secret: SECRET, ttlSec: 3600, now });
   assert.deepEqual(verifySession({ token, secret: SECRET, now }), { email: USER });
@@ -180,12 +180,12 @@ test("#769 an expired session is refused, and the boundary is exact", () => {
   assert.equal(verifySession({ token: dflt, secret: SECRET, now: now + 13 * 3600_000 }), null);
 });
 
-test("#769 mintSession refuses to mint without a secret or without an identity", () => {
+test("mintSession refuses to mint without a secret or without an identity", () => {
   assert.throws(() => mintSession({ email: USER, secret: "" }), /signing secret is required/);
   assert.throws(() => mintSession({ email: "", secret: SECRET }), /must name the identity/);
 });
 
-test("#769 the identity is normalised on the way in, so the session and the roster agree on one spelling", () => {
+test("the identity is normalised on the way in, so the session and the roster agree on one spelling", () => {
   const token = mintSession({ email: "  One@Laptop.Example  ", secret: SECRET });
   assert.deepEqual(verifySession({ token, secret: SECRET }), { email: USER },
     "makePrincipal lowercases; a session that carried the typed case would compare unequal to the configured user");
@@ -193,7 +193,7 @@ test("#769 the identity is normalised on the way in, so the session and the rost
 
 // ── THE DOMAIN SEPARATOR ───────────────────────────────────────────────────────────────────────────
 
-test("#769 ONE SECRET, TWO FAMILIES: a confirmation signature cannot open a session, and only the prefix separates them", () => {
+test("ONE SECRET, TWO FAMILIES: a confirmation signature cannot open a session, and only the prefix separates them", () => {
   // Isolate the variable. The SAME body is signed both ways with the SAME secret; the only difference
   // is the literal `portal-session.v1|` prefix. If the separator were removed from mintSession/
   // verifySession, the first assertion below would flip and this test would fail — which is the
@@ -209,7 +209,7 @@ test("#769 ONE SECRET, TWO FAMILIES: a confirmation signature cannot open a sess
     "…and the same body with the prefixed signature does verify, so nothing else is doing the work");
 });
 
-test("#769 a real confirmation token cannot be replayed as a session, and a real session cannot be replayed as a confirmation", () => {
+test("a real confirmation token cannot be replayed as a session, and a real session cannot be replayed as a confirmation", () => {
   // The whole-token direction, against the LIVE mint/verify pair on both sides.
   const account = "aurora";
   const jobHash = jobHashOf({ markName: "vantor", classes: [9], goods: "software" });
@@ -231,7 +231,7 @@ test("#769 a real confirmation token cannot be replayed as a session, and a real
 
 // ── the identity handed on ─────────────────────────────────────────────────────────────────────────
 
-test("#769 a local sign-in reaches makePrincipal with the SAME { email } shape the CF path produces", () => {
+test("a local sign-in reaches makePrincipal with the SAME { email } shape the CF path produces", () => {
   // The claim this file makes about itself: it produces an identity, not an authorization. The address
   // out of verifySession goes into makePrincipal untouched and is judged by the roster exactly as a
   // Cloudflare-verified address is — staff by domain, client by grant, and a stranger gets nothing.
@@ -255,7 +255,7 @@ test("#769 a local sign-in reaches makePrincipal with the SAME { email } shape t
 
 // ── the attempt limiter ────────────────────────────────────────────────────────────────────────────
 
-test("#769 login attempts are counted in a fixed window, and the window reopens", () => {
+test("login attempts are counted in a fixed window, and the window reopens", () => {
   const now = 1_800_000_000_000;
   const lim = makeAttemptLimiter({ max: 3, windowMs: 60_000 });
   for (let i = 0; i < 3; i++) assert.equal(lim.take("127.0.0.1", now + i), true, `attempt ${i + 1} is allowed`);
@@ -269,7 +269,7 @@ test("#769 login attempts are counted in a fixed window, and the window reopens"
 
 // ── the default location ───────────────────────────────────────────────────────────────────────────
 
-test("#769 the credential default is under the operator's home, never in the repo and never in the pool", () => {
+test("the credential default is under the operator's home, never in the repo and never in the pool", () => {
   // Asserted on the resolver's own source rather than by booting: this is a one-line decision that
   // would be invisible in any behavioural test, and getting it wrong writes a credential into a git
   // checkout or into the client-matter archive.
@@ -295,7 +295,7 @@ test("#769 the credential default is under the operator's home, never in the rep
 // assertion embeds. That last one HAPPENED — a live generated passphrase reached a runner's output
 // through a failing assertion. It was ephemeral; on CI it would have been durable and world-readable.
 
-test("1960 on a terminal the passphrase is handed over, once", () => {
+test("on a terminal the passphrase is handed over, once", () => {
   const h = localCredentialHandoff({ isTTY: true, resetCommand: "clearotron passphrase --reset" });
   assert.equal(h.printPassphrase, true);
   assert.equal(h.mint, true);
@@ -309,7 +309,7 @@ test("1960 on a terminal the passphrase is handed over, once", () => {
     + "install they cannot sign into, which is the failure the whole handoff exists to prevent");
 });
 
-test("1960 off a terminal the secret is absent from the output EVEN WHEN IT IS PASSED IN", () => {
+test("off a terminal the secret is absent from the output EVEN WHEN IT IS PASSED IN", () => {
   // ✕ THE PLANT THAT MATTERS. Asserting "we took the else branch" proves the branch, not the absence.
   // The secret is handed to the composer here deliberately — a caller that wires it through the wrong
   // branch is the realistic mistake, and it would leak without ever changing which branch ran.
@@ -329,7 +329,7 @@ test("1960 off a terminal the secret is absent from the output EVEN WHEN IT IS P
     "a non-terminal boot that does not name the recovery route leaves an install nobody can sign into");
 });
 
-test("1960 with no recovery route to name it REFUSES, and mints nothing", () => {
+test("with no recovery route to name it REFUSES, and mints nothing", () => {
   // Minting first and discovering afterwards that nobody can be handed it is the silent invention:
   // the digest is on disk, the plaintext is gone, and no sentence says why sign-in fails.
   const h = localCredentialHandoff({ isTTY: false, resetCommand: "" });

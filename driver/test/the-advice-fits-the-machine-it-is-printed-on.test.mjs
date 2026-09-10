@@ -146,7 +146,7 @@ test("the port refusal does not tell a reader to stop the thing they are reading
 
 // ── a door nobody addressed moves; one somebody stated does not ─────────────────────────────────────
 //
-// Owner ruling, 2026-09-09. A collision on a DEFAULT port is this process discovering it guessed
+// Ruling, 2026-09-09. A collision on a DEFAULT port is this process discovering it guessed
 // somebody else's address — nobody stated that number, so stepping off it loses nothing. A collision
 // on a port the reader SET is an address conflict they can reason about, and moving it silently takes
 // the product away from where they pointed it.

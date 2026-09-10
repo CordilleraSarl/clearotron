@@ -306,7 +306,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ── THE VERSION PULL REQUEST MERGES ITSELF (owner ruling, 2026-09-05) ────────────────────────────
+      # ── THE VERSION PULL REQUEST MERGES ITSELF (ruling, 2026-09-05) ────────────────────────────
       #
       # Full automation during the pre-release phase: a merge carrying release notes cuts a version and
       # publishes it, with no click anywhere. The version still lands on `main` THROUGH A PULL REQUEST,

@@ -90,7 +90,7 @@ test("one report: no version pills anywhere; staff nav links each client view; c
   assert.doesNotMatch(acme, /report\.client\.html/, "the retired client export is never linked");
 });
 
-test("#265: no Quality or Feedback nav entry, even with the retired pages left on disk", () => {
+test("no Quality or Feedback nav entry, even with the retired pages left on disk", () => {
   const pool = poolWith([A]);
   regenIndex(pool);
   let staff = readFileSync(join(pool, "index.html"), "utf8");

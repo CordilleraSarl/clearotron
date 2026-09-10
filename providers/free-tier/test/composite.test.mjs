@@ -49,18 +49,18 @@ function members({ euipo = {}, uspto = {} } = {}) {
 
 // ── the derived contract ────────────────────────────────────────────────────────────────────────────
 
-test("#548 offices are the UNION — that is the one field composing genuinely widens", () => {
+test("offices are the UNION — that is the one field composing genuinely widens", () => {
   assert.deepEqual([...CAPABILITIES.offices.covered].sort(), ["EU", "US"]);
   assert.deepEqual(FREE_TIER_MEMBER_IDS, ["euipo", "uspto-local"]);
 });
 
-test("#548 maxOrWidth is the MIN, not the max — the wider member's bound would emit rejected queries", () => {
+test("maxOrWidth is the MIN, not the max — the wider member's bound would emit rejected queries", () => {
   assert.equal(EUIPO.maxOrWidth, 50);
   assert.equal(USPTO.maxOrWidth, 25);
   assert.equal(CAPABILITIES.maxOrWidth, 25, "planning to 50 would send OR-stacks the US index refuses");
 });
 
-test("#548 predicates INTERSECT — a predicate any member lacks is null here, never quietly weakened", () => {
+test("predicates INTERSECT — a predicate any member lacks is null here, never quietly weakened", () => {
   assert.equal(CAPABILITIES.predicates.phonetic, null, "neither member has a phonetic mode");
   for (const k of ["exact", "default", "wildcardPrefix", "wildcardSuffix", "wildcardInfix", "owner"]) {
     assert.ok(typeof CAPABILITIES.predicates[k] === "string" && CAPABILITIES.predicates[k].length,
@@ -73,7 +73,7 @@ test("#548 predicates INTERSECT — a predicate any member lacks is null here, n
     "the predicate contract is CLOSED — every key declared, as a mode or an explicit null");
 });
 
-test("#548 the tri-state and boolean fields take the WEAKEST member", () => {
+test("the tri-state and boolean fields take the WEAKEST member", () => {
   assert.equal(EUIPO.nativeScriptIndex, true);
   assert.equal(USPTO.nativeScriptIndex, null, "the index is UNPROBED for native script");
   assert.equal(CAPABILITIES.nativeScriptIndex, null,
@@ -83,32 +83,32 @@ test("#548 the tri-state and boolean fields take the WEAKEST member", () => {
   assert.equal(CAPABILITIES.oppositions, false, "AND: the composite cannot promise what one source lacks");
 });
 
-test("#548 countProbe takes the costlier mode, and kernel bounds take the min", () => {
+test("countProbe takes the costlier mode, and kernel bounds take the min", () => {
   assert.equal(CAPABILITIES.countProbe, "cheap",
     "euipo's probe is a BILLABLE page-0 search; the composite pays the most expensive member's price");
   assert.equal(CAPABILITIES.kernel.pageSize, Math.min(EUIPO.kernel.pageSize, USPTO.kernel.pageSize));
   assert.equal(CAPABILITIES.kernel.namesChunkDefault, 25);
 });
 
-test("#548 queryableStatuses is ABSENT, not empty — one member never declared it", () => {
+test("queryableStatuses is ABSENT, not empty — one member never declared it", () => {
   assert.ok(Array.isArray(EUIPO.queryableStatuses) && EUIPO.queryableStatuses.length);
   assert.equal(USPTO.queryableStatuses, undefined);
   assert.ok(!("queryableStatuses" in CAPABILITIES),
     "an empty array would claim NO status is queryable, which is a different and false statement from 'undeclared'");
 });
 
-test("#548 the contract is frozen all the way down", () => {
+test("the contract is frozen all the way down", () => {
   for (const o of [CAPABILITIES, CAPABILITIES.predicates, CAPABILITIES.offices, CAPABILITIES.kernel])
     assert.ok(Object.isFrozen(o));
 });
 
-test("#548 members are office-DISJOINT, so no record_id can ever need matching across sources", () => {
+test("members are office-DISJOINT, so no record_id can ever need matching across sources", () => {
   assert.deepEqual(overlappingOffices(), []);
 });
 
 // ── routing ─────────────────────────────────────────────────────────────────────────────────────────
 
-test("#548 translate spans both vocabularies, and an uncovered code returns null rather than a guess", () => {
+test("translate spans both vocabularies, and an uncovered code returns null rather than a guess", () => {
   assert.equal(CAPABILITIES.offices.vocabulary, "iso-3166-plus-eu", "the SUPERSET — EU is not an ISO country");
   assert.equal(CAPABILITIES.offices.translate("EU"), "EU");
   assert.equal(CAPABILITIES.offices.translate("EM"), "EU", "the EUIPO spelling still lands");
@@ -119,13 +119,13 @@ test("#548 translate spans both vocabularies, and an uncovered code returns null
   assert.equal(memberForOffice("CH"), null);
 });
 
-test("#548 an EMPTY regions list is UNRESTRICTED — every member, over its own whole coverage", () => {
+test("an EMPTY regions list is UNRESTRICTED — every member, over its own whole coverage", () => {
   const r = routeRegions([]);
   assert.deepEqual(r, [{ id: "euipo", regions: null }, { id: "uspto-local", regions: null }],
     "worldwide on the free tier honestly means EU+US; every other territory was deferred before the plan compiled");
 });
 
-test("#548 a mixed request splits by office, each member seeing only its own", () => {
+test("a mixed request splits by office, each member seeing only its own", () => {
   assert.deepEqual(routeRegions(["EU", "US"]).routed,
     [{ id: "euipo", regions: ["EU"] }, { id: "uspto-local", regions: ["US"] }]);
   assert.deepEqual(routeRegions(["US"]).routed, [{ id: "uspto-local", regions: ["US"] }]);
@@ -134,7 +134,7 @@ test("#548 a mixed request splits by office, each member seeing only its own", (
 
 // ── search: the merge arithmetic ────────────────────────────────────────────────────────────────────
 
-test("#548 a merged page sums the totals, concatenates the rows, and ORs has_more", () => {
+test("a merged page sums the totals, concatenates the rows, and ORs has_more", () => {
   members({
     euipo: { doSearch: async () => text({ total_hits: 7, has_more: false, results: [{ record_id: "/mark/eu/1" }] }) },
     uspto: { doSearch: async () => text({ total_hits: 3, has_more: true, results: [{ record_id: "/mark/us/2" }] }) },
@@ -147,7 +147,7 @@ test("#548 a merged page sums the totals, concatenates the rows, and ORs has_mor
   });
 });
 
-test("#548 ONE member with an unknown total makes the composite total UNKNOWN — never a partial sum", async () => {
+test("ONE member with an unknown total makes the composite total UNKNOWN — never a partial sum", async () => {
   // This is the dangerous shape: 7 is a real number, smaller than the truth, and indistinguishable
   // downstream from a complete one. On this provider the search response IS the count.
   members({
@@ -160,7 +160,7 @@ test("#548 ONE member with an unknown total makes the composite total UNKNOWN �
   assert.equal(p.results.length, 2, "the rows that DID come back are still carried");
 });
 
-test("#548 a member ERROR fails the whole slice, naming the source — half a band is never a whole answer", async () => {
+test("a member ERROR fails the whole slice, naming the source — half a band is never a whole answer", async () => {
   members({
     euipo: { doSearch: async () => text({ total_hits: 7, has_more: false, results: [{ record_id: "/mark/eu/1" }] }) },
     uspto: { doSearch: async () => err("uspto_local_search — index is stale") },
@@ -171,7 +171,7 @@ test("#548 a member ERROR fails the whole slice, naming the source — half a ba
   assert.match(r.text, /INCOMPLETE and must not be read as a whole-tier answer/);
 });
 
-test("#548 an uncovered region refuses as a CAPABILITY GAP, so it defers instead of grinding the repair ladder", async () => {
+test("an uncovered region refuses as a CAPABILITY GAP, so it defers instead of grinding the repair ladder", async () => {
   members({});
   const r = await doSearch(null, { names: ["X"], regions: ["CH"] }, {});
   assert.ok(isErr(r));
@@ -181,7 +181,7 @@ test("#548 an uncovered region refuses as a CAPABILITY GAP, so it defers instead
 
 // ── enumerate: the state arithmetic ─────────────────────────────────────────────────────────────────
 
-test("#548 both members enumerated ⇒ enumerated, totals summed, records merged", async () => {
+test("both members enumerated ⇒ enumerated, totals summed, records merged", async () => {
   members({
     euipo: { doEnumerate: async () => text({ state: "enumerated", total_hits: 2, records: [{ record_id: "/mark/eu/1" }, { record_id: "/mark/eu/2" }] }) },
     uspto: { doEnumerate: async () => text({ state: "enumerated", total_hits: 1, records: [{ record_id: "/mark/us/3" }] }) },
@@ -192,7 +192,7 @@ test("#548 both members enumerated ⇒ enumerated, totals summed, records merged
   assert.equal(p.count, 3);
 });
 
-test("#548 ONE incomplete member makes the BAND incomplete — a half-tier sweep is not a clean negative", async () => {
+test("ONE incomplete member makes the BAND incomplete — a half-tier sweep is not a clean negative", async () => {
   members({
     euipo: { doEnumerate: async () => text({ state: "enumerated", total_hits: 2, records: [{ record_id: "/mark/eu/1" }, { record_id: "/mark/eu/2" }] }) },
     uspto: { doEnumerate: async () => text({ state: "incomplete", total_hits: 9000, fetched: 1, sample: [{ record_id: "/mark/us/3" }], reason: "crowd" }) },
@@ -203,7 +203,7 @@ test("#548 ONE incomplete member makes the BAND incomplete — a half-tier sweep
   assert.equal(p.fetched, 3, "the records already gathered ride along as the sample they are");
 });
 
-test("#548 a member error during enumerate is an ERROR, not a short band", async () => {
+test("a member error during enumerate is an ERROR, not a short band", async () => {
   members({
     euipo: { doEnumerate: async () => text({ state: "enumerated", total_hits: 1, records: [{ record_id: "/mark/eu/1" }] }) },
     uspto: { doEnumerate: async () => err("uspto_local_enumerate — db locked") },
@@ -215,7 +215,7 @@ test("#548 a member error during enumerate is an ERROR, not a short band", async
 
 // ── count ───────────────────────────────────────────────────────────────────────────────────────────
 
-test("#548 counts sum, and the per-member split is reported", async () => {
+test("counts sum, and the per-member split is reported", async () => {
   members({
     euipo: { doCountHits: async () => ({ ok: true, total: 12 }) },
     uspto: { doCountHits: async () => ({ ok: true, total: 30 }) },
@@ -224,7 +224,7 @@ test("#548 counts sum, and the per-member split is reported", async () => {
   assert.deepEqual({ ok: r.ok, total: r.total, per: r.per_member }, { ok: true, total: 42, per: { euipo: 12, "uspto-local": 30 } });
 });
 
-test("#548 one member that cannot count makes the TOTAL unknown — not the partial sum, not 0", async () => {
+test("one member that cannot count makes the TOTAL unknown — not the partial sum, not 0", async () => {
   members({
     euipo: { doCountHits: async () => ({ ok: true, total: 12 }) },
     uspto: { doCountHits: async () => ({ ok: false, total: null, reason: "no index built" }) },
@@ -237,7 +237,7 @@ test("#548 one member that cannot count makes the TOTAL unknown — not the part
 
 // ── record-level routing ────────────────────────────────────────────────────────────────────────────
 
-test("#548 a record fetch routes by the office IN THE ID — it can never reach the wrong source", async () => {
+test("a record fetch routes by the office IN THE ID — it can never reach the wrong source", async () => {
   const seen = [];
   members({
     euipo: { doRecordFetch: async (a, p) => { seen.push(["euipo", p.record_id]); return text({ ok: true }); } },
@@ -248,7 +248,7 @@ test("#548 a record fetch routes by the office IN THE ID — it can never reach 
   assert.deepEqual(seen, [["euipo", "/mark/eu/018922211"], ["uspto", "/mark/us/86272665"]]);
 });
 
-test("#548 a record id for an uncovered office, or no office at all, is a capability gap", async () => {
+test("a record id for an uncovered office, or no office at all, is a capability gap", async () => {
   members({});
   for (const id of ["/mark/ch/12345", "not-a-record-id", ""]) {
     const r = await doRecordFetch(null, { record_id: id }, {});
@@ -256,7 +256,7 @@ test("#548 a record id for an uncovered office, or no office at all, is a capabi
   }
 });
 
-test("#548 batch screen splits by office and merges, and refuses rather than silently dropping ids", async () => {
+test("batch screen splits by office and merges, and refuses rather than silently dropping ids", async () => {
   members({
     // `rows` — the neutral name, and what every real member returns. These stubs used to answer
     // in `results`, a vocabulary no shipped provider uses; the composite read it because it guessed
@@ -280,7 +280,7 @@ test("#548 batch screen splits by office and merges, and refuses rather than sil
 // alone — a contract resting on the ordering of a `??` chain and the presence of one key. What must
 // happen when a member answers in a name the contract does not declare is a LOUD refusal, because the
 // alternative reads downstream exactly like "nothing matched".
-test("#688 a member answering in a vocabulary the contract does not declare REFUSES, naming its keys", async () => {
+test("a member answering in a vocabulary the contract does not declare REFUSES, naming its keys", async () => {
   members({
     euipo: { doBatchScreen: async (a, p) => text({ results: p.record_ids.map((u) => ({ record_id: u })) }) },
   });
@@ -291,7 +291,7 @@ test("#688 a member answering in a vocabulary the contract does not declare REFU
   assert.match(r.text, /never judged/);
 });
 
-test("#688 euipo's `screened` is a COUNT and must never be read as the row list", async () => {
+test("euipo's `screened` is a COUNT and must never be read as the row list", async () => {
   members({
     // euipo's real shape: a `screened` COUNT beside the `rows` array (providers/euipo/src/core.js).
     euipo: { doBatchScreen: async (a, p) => text({
@@ -310,7 +310,7 @@ test("#688 euipo's `screened` is a COUNT and must never be read as the row list"
 // euipo reads page/size, the local index reads limit/offset. One forwarded `{...params}` meant whichever
 // vocabulary the caller sent, the OTHER member silently used its default page. These assert the
 // translation in both directions and, just as importantly, that neither member ever sees the other's.
-test("#698 a page/size caller reaches uspto-local as limit/offset, and euipo as page/size", async () => {
+test("a page/size caller reaches uspto-local as limit/offset, and euipo as page/size", async () => {
   const seen = {};
   members({
     euipo: { doSearch: async (a, p) => { seen.euipo = p; return text({ total_hits: 1, has_more: false, results: [] }); } },
@@ -330,7 +330,7 @@ test("#698 a page/size caller reaches uspto-local as limit/offset, and euipo as 
   assert.equal(seen.uspto.size, undefined);
 });
 
-test("#698 a limit/offset caller reaches euipo as page/size — the same translation, the other way", async () => {
+test("a limit/offset caller reaches euipo as page/size — the same translation, the other way", async () => {
   const seen = {};
   members({
     euipo: { doSearch: async (a, p) => { seen.euipo = p; return text({ total_hits: 1, has_more: false, results: [] }); } },
@@ -343,7 +343,7 @@ test("#698 a limit/offset caller reaches euipo as page/size — the same transla
   assert.equal(seen.uspto.offset, 60);
 });
 
-test("#698 a ragged offset is NOT rounded into a page — it rides through where it means something", async () => {
+test("a ragged offset is NOT rounded into a page — it rides through where it means something", async () => {
   const seen = {};
   members({
     euipo: { doSearch: async (a, p) => { seen.euipo = p; return text({ total_hits: 1, has_more: false, results: [] }); } },
@@ -360,7 +360,7 @@ test("#698 a ragged offset is NOT rounded into a page — it rides through where
 // The guard on the fix itself. `memberParams` gives a member it does not know NO paging rather than a
 // guessed one — safe, but silent, and silent is what this issue is about. A new member added without a
 // paging decision would page from its defaults forever and nothing would say so. This makes that red.
-test("#698 every free-tier member has a declared paging vocabulary — a new one cannot be added without deciding", () => {
+test("every free-tier member has a declared paging vocabulary — a new one cannot be added without deciding", () => {
   for (const id of FREE_TIER_MEMBER_IDS) {
     const sub = memberParams(id, { names: ["X"], page: 1, size: 10 });
     const paged = sub.page !== undefined || sub.size !== undefined || sub.limit !== undefined || sub.offset !== undefined;
@@ -370,7 +370,7 @@ test("#698 every free-tier member has a declared paging vocabulary — a new one
   }
 });
 
-test("#698 a caller that states no paging leaves both members on their own defaults", async () => {
+test("a caller that states no paging leaves both members on their own defaults", async () => {
   const seen = {};
   members({
     euipo: { doSearch: async (a, p) => { seen.euipo = p; return text({ total_hits: 1, has_more: false, results: [] }); } },
@@ -383,7 +383,7 @@ test("#698 a caller that states no paging leaves both members on their own defau
   }
 });
 
-test("#548 an image fetch for a member that serves no images is a SOURCE LIMITATION, not an absent image", async () => {
+test("an image fetch for a member that serves no images is a SOURCE LIMITATION, not an absent image", async () => {
   members({ euipo: { doImageFetch: async () => text({ ok: true }) }, uspto: { doImageFetch: null } });
   assert.ok(!isErr(await doImageFetch(null, { record_id: "/mark/eu/1" }, {})));
   const r = await doImageFetch(null, { record_id: "/mark/us/2" }, {});
@@ -405,7 +405,7 @@ test("#548 an image fetch for a member that serves no images is a SOURCE LIMITAT
 const M = (id, over = {}) => ({ id, predicates: { exact: `${id}-exact`, default: `${id}-default`,
   wildcardPrefix: null, wildcardSuffix: null, wildcardInfix: null, phonetic: null, owner: null }, ...over });
 
-test("#548 RULE: a predicate ONE member lacks is null on the composite, never the other's mode", () => {
+test("RULE: a predicate ONE member lacks is null on the composite, never the other's mode", () => {
   const a = M("a", { predicates: { exact: "A", default: "A", wildcardPrefix: "A", wildcardSuffix: null, wildcardInfix: null, phonetic: "A", owner: "A" } });
   const b = M("b", { predicates: { exact: "B", default: "B", wildcardPrefix: null, wildcardSuffix: null, wildcardInfix: null, phonetic: null, owner: "B" } });
   const p = derivePredicates([a, b]);
@@ -416,13 +416,13 @@ test("#548 RULE: a predicate ONE member lacks is null on the composite, never th
   assert.equal(p.wildcardSuffix, null, "neither has it");
 });
 
-test("#548 RULE: a single member composes to itself — the derivation adds nothing on its own", () => {
+test("RULE: a single member composes to itself — the derivation adds nothing on its own", () => {
   const a = M("a", { predicates: { exact: "A", default: null, wildcardPrefix: null, wildcardSuffix: null, wildcardInfix: null, phonetic: null, owner: null } });
   assert.equal(derivePredicates([a]).exact, "a: A");
   assert.equal(derivePredicates([a]).default, null);
 });
 
-test("#548 RULE: tri-state — one UNDECLARED member makes the composite undeclared", () => {
+test("RULE: tri-state — one UNDECLARED member makes the composite undeclared", () => {
   const pick = (m) => m.v;
   assert.equal(deriveTriState([{ v: true }, { v: true }], pick), true);
   assert.equal(deriveTriState([{ v: true }, { v: false }], pick), false, "probed-and-absent is false");
@@ -431,7 +431,7 @@ test("#548 RULE: tri-state — one UNDECLARED member makes the composite undecla
   assert.equal(deriveTriState([{ v: true }, {}], pick), null, "an absent field is undeclared, not false");
 });
 
-test("#548 RULE: an optional declared list survives only if EVERY member declares it", () => {
+test("RULE: an optional declared list survives only if EVERY member declares it", () => {
   const both = [{ k: ["A", "B", "C"] }, { k: ["B", "C", "D"] }];
   assert.deepEqual(deriveOptionalList(both, "k"), ["B", "C"], "and then it is the INTERSECTION");
   assert.equal(deriveOptionalList([{ k: ["A"] }, {}], "k"), undefined,
@@ -454,7 +454,7 @@ test("#548 RULE: an optional declared list survives only if EVERY member declare
 // The stubs below return what the REAL members return. A stub returning what the composite happens to
 // read is how this passed review for as long as it did.
 
-test("#548: batch screen actually screens — both param spellings, one return vocabulary", async () => {
+test("batch screen actually screens — both param spellings, one return vocabulary", async () => {
   _resetMemberCores();
   _setMemberCore("euipo", { CAPABILITIES: { offices: { covered: ["EU"] } },
     // — CORRECTED to euipo's real shape. This stub returned `screened` as an ARRAY of rows, which
@@ -483,7 +483,7 @@ test("#548: batch screen actually screens — both param spellings, one return v
   } finally { _resetMemberCores(); }
 });
 
-test("#548: a member whose row list cannot be found REFUSES rather than reporting an empty screen", async () => {
+test("a member whose row list cannot be found REFUSES rather than reporting an empty screen", async () => {
   // The property that would have caught the original defect on its own. An unrecognised shape must not
   // degrade to zero rows: zero is indistinguishable downstream from "nothing matched".
   _resetMemberCores();

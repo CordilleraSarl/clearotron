@@ -29,7 +29,7 @@ const OURS = "/opt/clearotron";
 const THEIRS = "/srv/another-install/node_modules/clearotron";
 const ENTRY = ["driver/portal-service.mjs"];
 
-test("193/109 a process belonging to another account is not in the table this product reads", () => {
+test("a process belonging to another account is not in the table this product reads", () => {
   const ps = psOf([
     line(101, 1000, `/usr/bin/node ${OURS}/driver/portal-service.mjs`),
     line(202, 1007, `/usr/bin/node ${THEIRS}/driver/portal-service.mjs`),
@@ -44,7 +44,7 @@ test("193/109 a process belonging to another account is not in the table this pr
   assert.equal(all.find((p) => p.pid === 202).uid, 1007, "the uid is read off the line, not assumed");
 });
 
-test("193 another account's install is never counted, and never advised on", () => {
+test("another account's install is never counted, and never advised on", () => {
   const ps = psOf([line(202, 1007, `/usr/bin/node ${THEIRS}/driver/portal-service.mjs`)]);
 
   // What shipped: the whole box, so somebody else's production is a program to repoint or restart.
@@ -63,7 +63,7 @@ test("193 another account's install is never counted, and never advised on", () 
     "another account's install would still be reported as a deployment this reader should repoint");
 });
 
-test("193 nothing attributable is NOT everything agreeing", () => {
+test("nothing attributable is NOT everything agreeing", () => {
   // A box where this product is not running at all. The old code answered `current` — the word for
   // "every running program is on the tree this install names" — from having placed nothing.
   const ps = psOf([line(303, 1000, "/usr/bin/node /opt/unrelated/something-else.mjs"), line(304, 1000, "sshd")]);
@@ -75,7 +75,7 @@ test("193 nothing attributable is NOT everything agreeing", () => {
   assert.notEqual(v.state, "current", "could-not-place was reported as everything-agrees");
 });
 
-test("193 a program on the named tree IS agreement, and says so", () => {
+test("a program on the named tree IS agreement, and says so", () => {
   const ps = psOf([line(101, 1000, `/usr/bin/node ${OURS}/driver/portal-service.mjs`)]);
   const v = programsFromAnotherCheckout({
     table: processTable({ platform: "darwin", runPs: ps, uid: 1000 }),
@@ -84,14 +84,14 @@ test("193 a program on the named tree IS agreement, and says so", () => {
   assert.equal(v.attributed, 1, "agreement has to be able to say what it placed, or it is not evidence");
 });
 
-test("193/109 could-not-look survives the filter — an unreadable table is not an empty box", () => {
+test("could-not-look survives the filter — an unreadable table is not an empty box", () => {
   assert.equal(processTable({ platform: "darwin", runPs: () => ({ status: 1, stdout: "" }), uid: 1000 }), null,
     "a ps that did not run must stay null through the scoping, never become an empty machine");
   const v = programsFromAnotherCheckout({ table: null, checkoutDir: OURS, entrypoints: ENTRY });
   assert.equal(v.state, "unknown");
 });
 
-test("193/109 a platform with no user id reads the whole box rather than guessing", () => {
+test("a platform with no user id reads the whole box rather than guessing", () => {
   // Guessing either way is worse than saying so: nothing is filtered, and the row carries what it knows.
   const ps = psOf([line(202, 1007, `/usr/bin/node ${THEIRS}/driver/portal-service.mjs`)]);
   const t = processTable({ platform: "darwin", runPs: ps, uid: null });

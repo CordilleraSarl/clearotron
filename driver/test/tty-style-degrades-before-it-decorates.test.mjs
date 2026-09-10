@@ -17,7 +17,7 @@ const TTY = { isTTY: true };
 const PIPE = { isTTY: false };
 const ESC = /\x1b\[/;
 
-test("2065 a pipe gets no escape codes, and that is the DEFAULT rather than a special case", () => {
+test("a pipe gets no escape codes, and that is the DEFAULT rather than a special case", () => {
   // Positive evidence only. The hazard is a module that colours unless it can prove nobody is watching,
   // because "I could not tell" then renders as decoration into a file — the absence-read-as-a-pass this
   // repository refuses everywhere else, wearing escape codes.
@@ -26,7 +26,7 @@ test("2065 a pipe gets no escape codes, and that is the DEFAULT rather than a sp
   assert.equal(colorEnabled({ stream: {}, env: {} }), false, "a stream that does not say isTTY is not one");
 });
 
-test("2065 NO_COLOR is honoured AS SET, including the empty string", () => {
+test("NO_COLOR is honoured AS SET, including the empty string", () => {
   // Its specification says SET, to any value. Testing truthiness would leave `NO_COLOR=` colouring —
   // and that is the exact spelling a reader who wants it off is most likely to reach for, so the
   // truthiness bug would be invisible to everyone except the person it was aimed at.
@@ -36,12 +36,12 @@ test("2065 NO_COLOR is honoured AS SET, including the empty string", () => {
   assert.equal(colorEnabled({ stream: TTY, env: {} }), true, "and unset leaves a real terminal coloured");
 });
 
-test("2065 TERM=dumb is not a terminal for this purpose", () => {
+test("TERM=dumb is not a terminal for this purpose", () => {
   assert.equal(colorEnabled({ stream: TTY, env: { TERM: "dumb" } }), false);
   assert.equal(colorEnabled({ stream: TTY, env: { TERM: "xterm-256color" } }), true);
 });
 
-test("2065 FORCE_COLOR speaks in both directions, and outranks the stream", () => {
+test("FORCE_COLOR speaks in both directions, and outranks the stream", () => {
   // A caller who sets it is telling us something we cannot otherwise see — a pager, a CI that renders
   // escapes, a recorded demo. Honouring it in one direction only would make the override a trap.
   assert.equal(colorEnabled({ stream: PIPE, env: { FORCE_COLOR: "1" } }), true, "on, off a pipe");
@@ -57,7 +57,7 @@ test("2065 FORCE_COLOR speaks in both directions, and outranks the stream", () =
     "including the empty spelling, which is the one a reader is likeliest to type");
 });
 
-test("2065 with colour off every style is IDENTITY, so a caller needs no second code path", () => {
+test("with colour off every style is IDENTITY, so a caller needs no second code path", () => {
   // The alternative is `if (color) bold(x) else x` at every call site, and the branch nobody exercises
   // is the one that ships escapes into a log. Identity functions make the off path the same path.
   const s = styleFor({ stream: PIPE, env: {} });
@@ -73,7 +73,7 @@ test("2065 with colour off every style is IDENTITY, so a caller needs no second 
   }
 });
 
-test("2065 with colour ON the styles really do differ — or the arms above prove nothing", () => {
+test("with colour ON the styles really do differ — or the arms above prove nothing", () => {
   // A module that never coloured anything would pass every arm above. This is the control.
   const s = styleFor({ stream: TTY, env: {} });
   assert.equal(s.enabled, true);
@@ -89,7 +89,7 @@ test("2065 with colour ON the styles really do differ — or the arms above prov
   assert.equal(seen.size, keys.length, "every kind must be its own code");
 });
 
-test("2065 the banner is a rectangle whatever the styling does to it", () => {
+test("the banner is a rectangle whatever the styling does to it", () => {
   // The frame is composed from the visible text, so a styled title must not push the border out —
   // padding computed from a string that already contains escape codes is the classic way this breaks,
   // and it only shows on the coloured path, which is the one a piped test never sees.

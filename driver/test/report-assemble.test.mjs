@@ -125,7 +125,7 @@ test("spec 64 buildOnlyYouSection: time-critical conditions lead; advisories tag
   // — THIS ARM ASSERTED THE OPPOSITE UNTIL 2026-08-19, and it was not wrong when it was written:
   // filing-routine was dropped by ADVISORY_TAG and this pinned that. then wrote a watch group for
   // "monitoring and filing-routine" without telling the filter, so the kind stayed unreachable and this
-  // arm went on defending it. Owner ruling: it renders, in the watch group, with its own chip.
+  // arm went on defending it. Ruling: it renders, in the watch group, with its own chip.
   assert.match(md, /\*\*\[Filing step\]\*\* File in classes 9 and 41\./, "a filing-routine advisory renders, chipped");
   assert.ok(md.indexOf("Keep an eye on") < md.indexOf("File in classes"),
     "…in the WATCH group, not among the asks — #615's split is the ruled behaviour and a standing filing "
@@ -146,7 +146,7 @@ test("spec 64 buildOnlyYouSection: time-critical conditions lead; advisories tag
 // reports as "drift": two runs carrying the same kinds of item rendered different structures, because
 // the old code keyed the sub-headings on how many buckets were non-empty and the tags on whether an
 // action happened to carry a deadline. Both are incidental facts about a matter, not about a report.
-test("#763 buildOnlyYouSection: same item kinds ⇒ structurally identical section, whatever else the run carries", () => {
+test("buildOnlyYouSection: same item kinds ⇒ structurally identical section, whatever else the run carries", () => {
   const findings = [{ ordinal: 1, disposition: "adversarial" }];
   const shape = (md) => md.split("\n").filter(Boolean).map((l) => (
     l.startsWith("### ") ? "H2" : l.startsWith("**") ? `GROUP:${l}` : `ITEM:${(l.match(/^- \*\*\[([^\]]+)\]\*\*/) || [, "UNTAGGED"])[1]}`));
@@ -277,7 +277,7 @@ test("spec 64 assembleReportMd: a model-authored only-you subsection is REPLACED
 // model wrote, decided by whether one key was present in a file the reader never sees. Spec 64 ruled the
 // section code-built precisely so it can never contradict the register the verdict derives from, and a
 // register that declares no actions is that ruling's answer, not an exemption from it.
-test("#763 assembleReportMd: a findings register with no actions key REMOVES an authored only-you section", () => {
+test("assembleReportMd: a findings register with no actions key REMOVES an authored only-you section", () => {
   const dir = mkdtempSync(join(tmpdir(), "b1-assemble-"));
   mkdirSync(join(dir, "report-cards"));
   const P = { ...mkP(dir), findings: join(dir, "findings.json") };
@@ -292,7 +292,7 @@ test("#763 assembleReportMd: a findings register with no actions key REMOVES an 
 
 // The OTHER side of that gate, and the reason it is a gate rather than an unconditional replace: a run
 // with no findings.json at all is not a register saying nothing — it is nothing to compare against.
-test("#763 assembleReportMd: with NO findings register at all the overview passes through untouched", () => {
+test("assembleReportMd: with NO findings register at all the overview passes through untouched", () => {
   const dir = mkdtempSync(join(tmpdir(), "b1-assemble-"));
   mkdirSync(join(dir, "report-cards"));
   const P = mkP(dir);   // no `findings` path — the pre-register shape
@@ -341,7 +341,7 @@ test("PR-9 buildAskAnswersSection: frozen-intake order leads; unjoined register 
 // the defect only appears when the answer arrives carrying the label, which is what the model actually
 // emitted under the old dictation. The strings below are the DELIVERED ones from
 // demo/multi-country-focus-search/run/findings.json (ask_answers[0] and [1]), not invented shapes.
-test("#762 buildAskAnswersSection: an answer that arrives carrying the label prints it ONCE, not twice", () => {
+test("buildAskAnswersSection: an answer that arrives carrying the label prints it ONCE, not twice", () => {
   const askAnswers = [
     { ask: "EU register only.", answer: `You asked: "EU register only." → Satisfied. Every record in the band is an EUTM or an International registration designating the EU.` },
     { ask: "Nothing outside the EU is in scope for this example.", answer: `You asked: "Nothing outside the EU is in scope for this example." → Honoured. Nothing outside the EU is cited as a conflict.` },
@@ -427,7 +427,7 @@ const DELIVERED_DIRECTIVES = [
 const CLASS_GAP_REASON = "no-code-remedy: a field class-gap with no searchable term×class pair (closing it in the matter's own classes only re-runs the primary sweep — disclosed)";
 const LABEL_REASON = "no-code-remedy: the directive's item is a label, not a mark-shaped search term (a literal dispatch would be a nil search reading as clean) — disclosed; a directive that knows its terms must carry a structured remedy{terms, nice_classes}";
 
-test("#762 deferralCoverageRow: the client heading is never cut mid-word, and the full directive survives in the note", () => {
+test("deferralCoverageRow: the client heading is never cut mid-word, and the full directive survives in the note", () => {
   const PREFIX = "Follow-up / ";
   for (const directive of DELIVERED_DIRECTIVES) {
     const row = deferralCoverageRow(directive, CLASS_GAP_REASON);
@@ -456,7 +456,7 @@ test("#762 deferralCoverageRow: the client heading is never cut mid-word, and th
   assert.doesNotMatch(short.area, /…/, "a heading that fits is never marked as shortened");
 });
 
-test("#762 deferralCoverageRow: BOTH no-code-remedy branches reach the client with no engine token", () => {
+test("deferralCoverageRow: BOTH no-code-remedy branches reach the client with no engine token", () => {
   // The colon-prefixed engine vocabulary — "no-code-remedy:", "mechanical-fail:" — is minted by the
   // driver for the driver. It must never render raw on a client surface, and it must never be DELETED
   // either: the disclosure that the slice went unsearched is the whole reason the row exists.
@@ -482,7 +482,7 @@ test("#762 deferralCoverageRow: BOTH no-code-remedy branches reach the client wi
   assert.match(deferralCoverageRow("source:who inn list", "mechanical-fail:timeout").note, /the source timed out this run/);
 });
 
-test("#762 clipToWord: cuts on whitespace, marks the cut, and trims dangling punctuation", () => {
+test("clipToWord: cuts on whitespace, marks the cut, and trims dangling punctuation", () => {
   assert.equal(clipToWord("short enough", 48), "short enough", "a string within budget is returned unchanged");
   assert.equal(clipToWord("alpha beta gamma delta", 12), "alpha beta…");
   assert.equal(clipToWord("alpha, beta, gamma", 8), "alpha…", "a trailing comma is trimmed before the ellipsis");

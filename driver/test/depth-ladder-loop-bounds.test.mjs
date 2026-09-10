@@ -15,14 +15,14 @@ import { PRODUCT_POLICIES, depthFor } from "../search-policy.mjs";
 const ONE_COUNTRY = "full-country-search";
 const todays = PRODUCT_POLICIES[ONE_COUNTRY].depth.recallFollowupMax;
 
-test("#1503 CONTROL — a graded product really does get a smaller bound than today", () => {
+test("CONTROL — a graded product really does get a smaller bound than today", () => {
   assert.equal(recallFollowupMaxFor({ depth: depthFor({ product: ONE_COUNTRY }) }), todays);
   const graded = recallFollowupMaxFor({ depth: depthFor({ product: "global-preliminary-search" }) });
   assert.ok(graded < todays, `worldwide's bound is ${graded} against today's ${todays} — the row is not `
     + "graded at all, so every arm below would pass on a ladder that does nothing");
 });
 
-test("#1503 an unknown, absent or malformed depth gets TODAY'S bound — never fewer", () => {
+test("an unknown, absent or malformed depth gets TODAY'S bound — never fewer", () => {
   const shouldFallBack = [
     ["no ctx at all", undefined],
     ["a ctx with no depth", {}],
@@ -40,7 +40,7 @@ test("#1503 an unknown, absent or malformed depth gets TODAY'S bound — never f
   }
 });
 
-test("#1503 a product this build does not grade falls back to the one-country row, by NAME", () => {
+test("a product this build does not grade falls back to the one-country row, by NAME", () => {
   // depthFor stamps `source` so a silent fallback is visible in the run record rather than looking like
   // a ladder that ran and chose today's values.
   const unknown = depthFor({ product: "some-product-shipped-after-this-build" });
@@ -50,7 +50,7 @@ test("#1503 a product this build does not grade falls back to the one-country ro
   assert.equal(recallFollowupMaxFor({ depth: unknown }), todays);
 });
 
-test("#1503 THE LADDER MAY ONLY REDUCE — no product may ask for more rounds than one country gets", () => {
+test("THE LADDER MAY ONLY REDUCE — no product may ask for more rounds than one country gets", () => {
   for (const [product, policy] of Object.entries(PRODUCT_POLICIES)) {
     const n = policy?.depth?.recallFollowupMax;
     if (n === undefined) continue;
@@ -61,7 +61,7 @@ test("#1503 THE LADDER MAY ONLY REDUCE — no product may ask for more rounds th
   }
 });
 
-test("#917 multi-country's recall follow-up budget is 2, level with one-country", () => {
+test("multi-country's recall follow-up budget is 2, level with one-country", () => {
   // Owner-ruled, raised 1 → 2. Pinned because the value is one integer in a table of nine and a revert
   // would be invisible: the run still completes, the receipt still prints, and the only difference is a
   // recall round that did not happen. A search that did not run does not announce itself.
@@ -70,7 +70,7 @@ test("#917 multi-country's recall follow-up budget is 2, level with one-country"
     "the one-country row moved — this arm pins multi-country LEVEL WITH it, so both must be read together");
 });
 
-test("#917 worldwide is deliberately NOT raised, and that leaves an inversion on the record", () => {
+test("worldwide is deliberately NOT raised, and that leaves an inversion on the record", () => {
   // The broader product now has the WEAKER recall follow-up. That is the state the ruling produces: it
   // named multi-country, and widening it to the most expensive product is an owner call, not a dev one.
   // Asserted rather than left implicit so nobody "fixes" the ladder without going back to the ruling —

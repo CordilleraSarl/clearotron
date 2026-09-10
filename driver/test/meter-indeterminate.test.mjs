@@ -71,7 +71,7 @@ function meterError(meter_, token) {
   return null;
 }
 
-test("#588 arm 1 — a 3-band meter refuses `unknown` AND says what to write instead", () => {
+test("arm 1 — a 3-band meter refuses `unknown` AND says what to write instead", () => {
   assert.ok(CLOSED_3.includes("goods_proximity"), "premise: goods_proximity has no indeterminate token");
   for (const meter of CLOSED_3) {
     const msg = meterError(meter, "unknown");
@@ -85,7 +85,7 @@ test("#588 arm 1 — a 3-band meter refuses `unknown` AND says what to write ins
   }
 });
 
-test("#588 arm 2 — the MISSING-meter message no longer orders the token that fails", () => {
+test("arm 2 — the MISSING-meter message no longer orders the token that fails", () => {
   // The fault with the arrow reversed: this message told the model to write `unknown` when there was no
   // signal, for all four meters, two of which reject it.
   for (const meter of METERS) {
@@ -100,7 +100,7 @@ test("#588 arm 2 — the MISSING-meter message no longer orders the token that f
     "the validator is again instructing the token it rejects on two of the four meters");
 });
 
-test("#588 arm 3 — `unknown` never sits inside a 3-band meter's stated set in the instruction", () => {
+test("arm 3 — `unknown` never sits inside a 3-band meter's stated set in the instruction", () => {
   // The exact shape that produced it: three meters stated as one set, `unknown` legalised for one of
   // them in a trailing parenthetical. Each set is now stated on its own, so the word is never adjacent
   // to a meter it is illegal on.
@@ -118,7 +118,7 @@ test("#588 arm 3 — `unknown` never sits inside a 3-band meter's stated set in 
   assert.match(enf, /unknown/, "enforcer lost its indeterminate value — the split went one meter too far");
 });
 
-test("#588 arm 4 — the instruction forbids the word by name and leaves the closed sets unchanged", () => {
+test("arm 4 — the instruction forbids the word by name and leaves the closed sets unchanged", () => {
   for (const word of INDETERMINATE)
     assert.ok(STAGES.includes(`"${word}"`),
       `the instruction does not name "${word}" — a closed set stated positively is what produced this`);

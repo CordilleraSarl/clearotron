@@ -36,7 +36,7 @@ test("from the issue alone, a person finds the exact finding and its run evidenc
   // the lawyer's words, VERBATIM and first — a triager should be able to stop reading after this
   assert.ok(body.indexOf(FLAG.why) < body.indexOf("Debug handles"), "what the lawyer said comes first");
   assert.match(body, /lawyer@example\.test, 2026-08-04T09:00:00\.000Z/);
-  // pointer PLUS excerpt (owner ruling) — triage must not require opening the VM to read one sentence
+  // pointer PLUS excerpt (ruling) — triage must not require opening the VM to read one sentence
   assert.match(body, /> Distinguished as wholes on the filed goods\./);
   // the debug handles names
   assert.match(body, /noref000036-petcary-2026-08-04-fixture/);
@@ -180,7 +180,7 @@ test("an empty or missing store is a clean no-op, never a throw", async () => {
 });
 
 // ── — the row-finding instruction has to name a path this run actually has ─────────────────────
-test("#487 a knockout flag points at marks[].findings[] by its printed key, not at a flat findings[]", () => {
+test("a knockout flag points at marks[].findings[] by its printed key, not at a flat findings[]", () => {
   const koFlag = {
     ...FLAG,
     locator: { ordinal: 1, ref: "AURORA BLUE #1", searchedMark: "AURORA BLUE", mark: "BLUE AURORA", band: "Manageable", disposition: null, section: null },

@@ -36,7 +36,7 @@ const parkedQueue = (postponedAt, extra = {}) => {
   return { q, runDir };
 };
 
-test("#443 a park sleeping on a 2033 reset is claimed once its probe interval elapses — no file touched", async () => {
+test("a park sleeping on a 2033 reset is claimed once its probe interval elapses — no file touched", async () => {
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_MS = String(10 * MIN);
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_CEILING_MS = String(40 * MIN);
   const { claimDuePostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
@@ -49,7 +49,7 @@ test("#443 a park sleeping on a 2033 reset is claimed once its probe interval el
   assert.ok(readdirSync(q).some((f) => f.endsWith(".processing")), "and it is atomically claimed, exactly as a due park is");
 });
 
-test("#443 a park inside its probe interval is NOT claimed — this is not resume-always", async () => {
+test("a park inside its probe interval is NOT claimed — this is not resume-always", async () => {
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_MS = String(10 * MIN);
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_CEILING_MS = String(40 * MIN);
   const { claimDuePostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
@@ -61,7 +61,7 @@ test("#443 a park inside its probe interval is NOT claimed — this is not resum
   assert.ok(!readdirSync(q).some((f) => f.endsWith(".processing")));
 });
 
-test("#443 each refused probe widens the next one, so a genuinely long cap is not a poll loop", async () => {
+test("each refused probe widens the next one, so a genuinely long cap is not a poll loop", async () => {
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_MS = String(10 * MIN);
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_CEILING_MS = String(40 * MIN);
   const { claimDuePostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);
@@ -72,7 +72,7 @@ test("#443 each refused probe widens the next one, so a genuinely long cap is no
   assert.deepEqual(claimDuePostponed(q), [], "a run that has already been refused three times waits longer");
 });
 
-test("#443 the park record says what it is waiting on and how it will find out", async () => {
+test("the park record says what it is waiting on and how it will find out", async () => {
   // "Parked until T" is not that, and the whole cost of this defect was that a stranded run and a
   // working one read identically. parkPostponed writes both fields; this pins the contract they carry.
   const { parkPostponed } = await import(`../runner.mjs?bust=${process.hrtime.bigint()}`);

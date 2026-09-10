@@ -92,7 +92,7 @@ test.before(async () => {
 });
 test.after(() => { REFUSED?.clean(); NOBUS?.clean(); });
 
-test("203 a systemd refusal arrives as a sentence, and no stack trace reaches the operator", () => {
+test("a systemd refusal arrives as a sentence, and no stack trace reaches the operator", () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /^start: /m, "the refusal did not come out of this command's own failure path");
   for (const trace of [/node:internal\/errors/, /at genericNodeError/, /at checkExecSyncError/, /^\s+at .*\(node:/m]) {
@@ -101,13 +101,13 @@ test("203 a systemd refusal arrives as a sentence, and no stack trace reaches th
   assert.equal(REFUSED.code, 1, "it must still exit non-zero — a sentence is not a success");
 });
 
-test("203 systemd's own words are printed, not discarded by `stdio: ignore`", () => {
+test("systemd's own words are printed, not discarded by `stdio: ignore`", () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /Failed to enable unit: Unit file clearotron-portal\.service does not exist\./,
     `the reason systemd gave was thrown away before anyone could read it:\n${said.slice(-1500)}`);
 });
 
-test("203 the reader is told which unit refused and what is running", () => {
+test("the reader is told which unit refused and what is running", () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /HALF STARTED/, `no statement of what happened to the install:\n${said.slice(-1500)}`);
   assert.match(said, /was NOT enabled/, "the refusing unit is not named");
@@ -116,7 +116,7 @@ test("203 the reader is told which unit refused and what is running", () => {
   assert.match(said, /clearotron stop/, "nothing tells the reader how to take back down what is up");
 });
 
-test("203 the generic post-write trailer does not double the specific one", () => {
+test("the generic post-write trailer does not double the specific one", () => {
   // Both were printed at first, and the pair read as two answers to one question. The generic line is
   // still right on every OTHER post-write refusal — the arm below holds it there — so this is about
   // suppression at one site, not deletion.
@@ -125,7 +125,7 @@ test("203 the generic post-write trailer does not double the specific one", () =
     `the generic trailer printed beside the specific one:\n${said.slice(-1500)}`);
 });
 
-test("203 and the generic trailer still fires where nothing better was said", async () => {
+test("and the generic trailer still fires where nothing better was said", async () => {
   // THE PLANT FOR THE SUPPRESSION. `fatal(msg, { stated: true })` is opt-in, and an opt-in that turned
   // out to be always-on would delete the re-running-is-safe line from every other post-write refusal in
   // this command with nothing going red. So it is driven at a DIFFERENT post-write refusal.
@@ -165,7 +165,7 @@ test("203 and the generic trailer still fires where nothing better was said", as
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("203 the bus branch and the not-the-bus branch give DIFFERENT remedies", () => {
+test("the bus branch and the not-the-bus branch give DIFFERENT remedies", () => {
   // The defect this half inherits: one remedy appended to every failure, so a
   // unit that would not start for a bound port told the reader to export XDG_RUNTIME_DIR. A confident
   // remedy for a cause that is not the reader's costs more than no remedy.
@@ -181,7 +181,7 @@ test("203 the bus branch and the not-the-bus branch give DIFFERENT remedies", ()
   for (const said of [refused, nobus]) assert.match(said, /HALF STARTED/);
 });
 
-test("203 the OTHER systemd catch still lands, and now leads with what systemd said", async () => {
+test("the OTHER systemd catch still lands, and now leads with what systemd said", async () => {
   // NOTHING DRIVES THIS PATH ANYWHERE ELSE — `reachedTheEnable` above excludes it by name, so the
   // daemon-reload catch was changed with no arm over it. It keeps its own two-cause remedy, which is
   // right and is not the shared one: at that point the question is whether this session can reach a
@@ -223,7 +223,7 @@ test("203 the OTHER systemd catch still lands, and now leads with what systemd s
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("203 the inventory names every unit already up, not just the one that refused", () => {
+test("the inventory names every unit already up, not just the one that refused", () => {
   // A refusal on the third unit leaves two running, and "half started" is not enough to act on when the
   // reader is deciding whether the portal in front of them is theirs. Read at the function, because a
   // drive can only ever produce whichever unit the set happens to enable first.
@@ -238,7 +238,7 @@ test("203 the inventory names every unit already up, not just the one that refus
   assert.match(some, /c\.service was NOT enabled, and nothing after it was reached/);
 });
 
-test("203 a caller with nothing to say about consequence is not given one", () => {
+test("a caller with nothing to say about consequence is not given one", () => {
   // `stands` is the caller's and is omitted rather than invented. `connect` and `start` write different
   // things and leave the box in different states, which is why the shared file never guesses it.
   const bare = systemdFailure({ stderr: "Unit x.service not found." }, { unit: "x.service" });

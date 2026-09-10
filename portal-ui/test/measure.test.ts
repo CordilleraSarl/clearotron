@@ -72,7 +72,7 @@ test('THE 1120px SCREEN CAP IS LOAD-BEARING AND STAYS', () => {
 
 const CLEARANCES = read('../src/screens/Clearances.tsx')
 
-test('#276: an expanded read is a real <tr>, and the table declares its grid', () => {
+test('an expanded read is a real <tr>, and the table declares its grid', () => {
   assert.match(CLEARANCES, /function ReadRow\(/, 'the read is its own row component')
   // made the class conditional (an openable row carries `openable` too), so this pins the
   // structural claim — a <tr> carrying read-row — rather than one literal spelling of it.
@@ -82,7 +82,7 @@ test('#276: an expanded read is a real <tr>, and the table declares its grid', (
   assert.match(BASE, /table\.data\.fixed\s*\{\s*table-layout:\s*fixed/, 'which base.css has to honour')
 })
 
-test('#276: the thread is not rendered inside a spanning cell any more', () => {
+test('the thread is not rendered inside a spanning cell any more', () => {
   // The fault was ONE `<td colSpan>` holding a flex layout: nothing in it participated in the column
   // grid, so any alignment it showed was coincidental and drifted the moment a title changed length.
   // From the JSX, not the comment above it — that comment DESCRIBES the spanning cell this replaced,
@@ -96,7 +96,7 @@ test('#276: the thread is not rendered inside a spanning cell any more', () => {
   assert.match(CLEARANCES, /run\.marks\.length > 1 \? \(\s*<tr>\s*<td colSpan/, 'the per-name block is the one deliberate exception')
 })
 
-test('#276: fixed layout means a cell must WRAP rather than overflow its column', () => {
+test('fixed layout means a cell must WRAP rather than overflow its column', () => {
   // Under `table-layout: fixed` a cell no longer widens for its content, so long unbroken text would
   // spill across the column boundary instead of pushing it — which looks like the alignment bug this
   // issue is closing.
@@ -105,7 +105,7 @@ test('#276: fixed layout means a cell must WRAP rather than overflow its column'
 
 // ──: the row is the control ────────────────────────────────────────────────────────────────────
 
-test('#278: an openable read row is reachable, activatable and named; the button inside it is gone', () => {
+test('an openable read row is reachable, activatable and named; the button inside it is gone', () => {
   assert.match(CLEARANCES, /const openable = Boolean\(read\.report\)/)
   assert.match(CLEARANCES, /role: 'link' as const/)
   assert.match(CLEARANCES, /tabIndex: 0/, 'reachable by keyboard — a row is not focusable on its own')
@@ -117,7 +117,7 @@ test('#278: an openable read row is reachable, activatable and named; the button
   assert.doesNotMatch(readRow, /Open the report\s*\n\s*<Icon/, 'the text button inside the row is gone')
 })
 
-test('#278: a read with NO report gets no affordance at all — a dead target is worse than no target', () => {
+test('a read with NO report gets no affordance at all — a dead target is worse than no target', () => {
   // The Zephyr case: not finished, so there is nothing to open. It must not look clickable, must not
   // take a tab stop, and must not hover.
   assert.match(CLEARANCES, /\{\.\.\.\(openable\s*\n?\s*\? \{/, 'every interactive attribute is behind the same guard')
@@ -127,7 +127,7 @@ test('#278: a read with NO report gets no affordance at all — a dead target is
   assert.doesNotMatch(BASE, /tr\.read-row > td \{[^}]*cursor: pointer/, 'and never applies to every read row')
 })
 
-test('#278: the focus ring is focus-VISIBLE and sits on the row, not on a cell', () => {
+test('the focus ring is focus-VISIBLE and sits on the row, not on a cell', () => {
   // A keyboard user must see where they are; a mouse user must not get a ring they did not ask for.
   // And an outline per cell would read as six targets rather than one.
   assert.match(BASE, /tr\.read-row\.openable:focus \{\s*outline: none/)
@@ -136,7 +136,7 @@ test('#278: the focus ring is focus-VISIBLE and sits on the row, not on a cell',
 
 // ──: the grouping reads as grouping ────────────────────────────────────────────────────────────
 
-test('#277: the company heading is a SECTION HEADER, not the smallest type on the page', () => {
+test('the company heading is a SECTION HEADER, not the smallest type on the page', () => {
   // It was `.eyebrow`: 9.5px, letterspaced caps, --text-faint. That reads as a rule between rows rather
   // than as "everything below this belongs to Aurora Interactive", which is the whole fault.
   assert.match(CLEARANCES, /className="owner-name"/)
@@ -149,14 +149,14 @@ test('#277: the company heading is a SECTION HEADER, not the smallest type on th
   assert.match(BASE, /tr\.group-head \.owner-name \{[^}]*text-transform: none/, 'sentence case, not letterspaced caps')
 })
 
-test('#277: a rule spans the table under the heading and its child rows are indented', () => {
+test('a rule spans the table under the heading and its child rows are indented', () => {
   // Containment visible without reading. The indent is on the FIRST cell only — indenting every cell
   // would move the columns and just fixed.
   assert.match(BASE, /tr\.group-head td \{[^}]*border-bottom: 1px solid var\(--border-strong\)/)
   assert.match(BASE, /tr\.group-head ~ tr\.row > td:first-child \{\s*padding-left: 22px/)
 })
 
-test('#277: GROUP · N and the company chip are GONE — removal, not restyling', () => {
+test('GROUP · N and the company chip are GONE — removal, not restyling', () => {
   // `GROUP · 1` announced a group of one, which is not a group. And the owner chip only ever rendered
   // when grouping was ON — precisely when a header directly above the row said the same thing — so it
   // was the same string twice on one line.
@@ -168,7 +168,7 @@ test('#277: GROUP · N and the company chip are GONE — removal, not restyling'
 
 // ──: selection — one vocabulary, in the palette, moving nothing ─────────────────────────────────
 
-test('#282: PICK is gone and NOT renamed — a checkbox column does not need a header', () => {
+test('PICK is gone and NOT renamed — a checkbox column does not need a header', () => {
   // The issue rejects renaming it: a better word would keep a header that earns nothing. The column is
   // named for screen readers instead, on the header cell and on every checkbox.
   assert.doesNotMatch(CLEARANCES, /<span className="eyebrow">Pick<\/span>/)
@@ -177,7 +177,7 @@ test('#282: PICK is gone and NOT renamed — a checkbox column does not need a h
   assert.match(CLEARANCES, /aria-label=\{`Select \$\{mark\.name\} for grouping`\}/)
 })
 
-test('#282: ONE WORD for the feature — family, everywhere, with no second term in the flow', () => {
+test('ONE WORD for the feature — family, everywhere, with no second term in the flow', () => {
   const bar = CLEARANCES.slice(CLEARANCES.indexOf('className="selection-bar"'), CLEARANCES.indexOf('<div className="table-wrap">'))
   assert.match(bar, /names' : 'name'\} selected|\{picked\.size === 1 \? 'name' : 'names'\} selected/)
   assert.match(bar, /Group as a family/)
@@ -191,7 +191,7 @@ test('#282: ONE WORD for the feature — family, everywhere, with no second term
   assert.match(code, /Group as a family/, 'and family does')
 })
 
-test('#282: the bar OVERLAYS — ticking a box must not move the table under the cursor', () => {
+test('the bar OVERLAYS — ticking a box must not move the table under the cursor', () => {
   // It was a `.notice` in normal flow above the table header, so selecting a row pushed the entire
   // table down. The issue also rejects reserving space with a permanent empty band, which is the other
   // way to stop the jump and leaves a hole on every visit.
@@ -201,7 +201,7 @@ test('#282: the bar OVERLAYS — ticking a box must not move the table under the
   assert.match(BASE, /\.selection-bar \{[^}]*bottom: 20px/)
 })
 
-test('#282: it is NOT .notice — that is the persistent treatment, used by this screen\'s own error state', () => {
+test('it is NOT .notice — that is the persistent treatment, used by this screen\'s own error state', () => {
   // The red left border was never a one-off; `.notice` is shared. Which is why reusing it here was
   // wrong rather than merely ugly: a notice is a thing you read, a selection bar is a thing you act on.
   assert.match(BASE, /\.notice \{[^}]*border-left: 3px solid var\(--accent\)/, 'the shared treatment still exists for its own users')
@@ -209,7 +209,7 @@ test('#282: it is NOT .notice — that is the persistent treatment, used by this
   assert.doesNotMatch(bar, /border-left: 3px/, 'and the transient one does not borrow its border')
 })
 
-test('#282: the checkbox is in the palette in every state — unchecked, checked, focused, disabled', () => {
+test('the checkbox is in the palette in every state — unchecked, checked, focused, disabled', () => {
   // Browser-default blue was the only blue on a warm and maroon page: the clearest sign on the screen
   // that a control had been dropped in and never dressed.
   assert.match(BASE, /input\[type='checkbox'\]\.pickbox \{[^}]*accent-color: var\(--accent\)/)
@@ -221,7 +221,7 @@ test('#282: the checkbox is in the palette in every state — unchecked, checked
 
 // ──: the disclosure is a real control ──────────────────────────────────────────────────────────
 
-test('#284: the disclosure is a <button> with a name and aria-expanded — it was neither', () => {
+test('the disclosure is a <button> with a name and aria-expanded — it was neither', () => {
   // Worse than the issue reports. There was no button: a bare `<span aria-hidden="true">` inside a
   // `<tr onClick>`, so the page's primary navigation was silent to a screen reader AND had no keyboard
   // path at all. Nothing to name, and nothing to press.
@@ -233,7 +233,7 @@ test('#284: the disclosure is a <button> with a name and aria-expanded — it wa
   assert.match(twisty, /aria-hidden="true"/)
 })
 
-test('#284: the name identifies the ROW it controls, and comes from the row\'s own name source', () => {
+test('the name identifies the ROW it controls, and comes from the row\'s own name source', () => {
   // The issue: copy the naming pattern that is CURRENT when you build, not today's string. changed
   // what a row is called and removed "grouping" from the checkbox wording, so a name composed
   // inside the disclosure would already be a third convention drifting from the other two.
@@ -243,14 +243,14 @@ test('#284: the name identifies the ROW it controls, and comes from the row\'s o
   assert.match(CLEARANCES, /aria-label=\{`Select \$\{mark\.name\} for grouping`\}/)
 })
 
-test('#284: pressing the button toggles ONCE — the row handler must not fire as well', () => {
+test('pressing the button toggles ONCE — the row handler must not fire as well', () => {
   // A button inside a clickable row that does not stop propagation toggles twice: open then closed in
   // one click, which looks exactly like a control that does nothing.
   const twisty = CLEARANCES.slice(CLEARANCES.indexOf('function Twisty'), CLEARANCES.indexOf('function FamilyRows'))
   assert.match(twisty, /e\.stopPropagation\(\)\s*\n\s*onToggle\(\)/)
 })
 
-test('#284: the button looks like the span it replaced, and adds one thing — a focus ring', () => {
+test('the button looks like the span it replaced, and adds one thing — a focus ring', () => {
   assert.match(BASE, /button\.twisty \{[^}]*border: 0/)
   assert.match(BASE, /button\.twisty \{[^}]*background: none/)
   assert.match(BASE, /button\.twisty:focus-visible \{[^}]*outline: 2px solid var\(--accent\)/)
@@ -259,7 +259,7 @@ test('#284: the button looks like the span it replaced, and adds one thing — a
 
 // ──: grouping is a toggle, and the owner survives it ───────────────────────────────────────────
 
-test('#281: grouping is ON by default and the toggle state is visible without opening a menu', () => {
+test('grouping is ON by default and the toggle state is visible without opening a menu', () => {
   // Grouped-by-default is right for the common case, a person working one client's book. The toggle is
   // for the case grouping actively obstructs — reading risk across a whole portfolio.
   assert.match(CLEARANCES, /const \[groupByOwner, setGroupByOwner\] = useState<boolean>\(readGroupPref\)/)
@@ -272,7 +272,7 @@ test('#281: grouping is ON by default and the toggle state is visible without op
   assert.match(BASE, /\.group-toggle \{/)
 })
 
-test('#281: the toggle only appears when it can do something', () => {
+test('the toggle only appears when it can do something', () => {
   // One owner in view, or the nav already scoped to one, and there is nothing to group. A control that
   // cannot change anything is the dead-option problem in a new place.
   assert.match(CLEARANCES, /const groupable = ownerFilter === null && ownersHeld > 1/)
@@ -280,7 +280,7 @@ test('#281: the toggle only appears when it can do something', () => {
   assert.match(CLEARANCES, /\{groupable \? \(\s*\n\s*<label className="group-toggle">/)
 })
 
-test('#281: UNGROUPED, the company survives as a column — the issue rejects dropping it', () => {
+test('UNGROUPED, the company survives as a column — the issue rejects dropping it', () => {
   assert.match(CLEARANCES, /const showOwnerColumn = groupable && !groupByOwner/)
   assert.match(CLEARANCES, /\{showOwnerColumn \? <th>Company<\/th> : null\}/)
   // Every row SHAPE needs the cell, or the grid built stops lining up: the mark row, the family
@@ -289,7 +289,7 @@ test('#281: UNGROUPED, the company survives as a column — the issue rejects dr
   assert.match(CLEARANCES, /\{showOwner \? <td \/> : null\}/, 'and the read row carries a spacer')
 })
 
-test('#281: grouping is not silently applied under a sort any more', () => {
+test('grouping is not silently applied under a sort any more', () => {
   // The fault: sorts only ever ordered rows WITHIN an owner block, and nothing on screen said so. With
   // forty rows across six owners, "sort by Risk" produces six risk-ordered lists and reads as broken.
   assert.match(CLEARANCES, /if \(grouped && a\.account !== b\.account\) return a\.account\.localeCompare\(b\.account\)/,

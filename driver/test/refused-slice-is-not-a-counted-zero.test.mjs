@@ -59,7 +59,7 @@ const SANCTIONED_REASON = "count-only crowd descriptor: the run has a hit COUNT 
 const band = (blocks) => parseNamedBand(JSON.stringify(blocks));
 const rowFor = (blocks, qid) => untraceableSlices({ crowds: band(blocks).crowds }).find((r) => r.qid === qid);
 
-test("#1424 the stamps survive the crowd projection at all", () => {
+test("the stamps survive the crowd projection at all", () => {
   // The whole fix rests on this: before it, `named-band.mjs` listed the fields it carried and these
   // two were not among them, so no consumer could have read them however carefully it tried.
   const { crowds } = band([DEFERRED, ERRORED, SANCTIONED]);
@@ -73,7 +73,7 @@ test("#1424 the stamps survive the crowd projection at all", () => {
   assert.equal("deferred" in byQid[SANCTIONED.qid], false);
 });
 
-test("#1424 a refused slice does not claim the run has a count", () => {
+test("a refused slice does not claim the run has a count", () => {
   const deferred = rowFor([DEFERRED, ERRORED, SANCTIONED], DEFERRED.qid);
   const errored = rowFor([DEFERRED, ERRORED, SANCTIONED], ERRORED.qid);
 
@@ -96,7 +96,7 @@ test("#1424 a refused slice does not claim the run has a count", () => {
   assert.match(deferred.reason, /capability gap/i);
 });
 
-test("#1424 the sanctioned count-only crowd is untouched — the control", () => {
+test("the sanctioned count-only crowd is untouched — the control", () => {
   const row = rowFor([DEFERRED, ERRORED, SANCTIONED], SANCTIONED.qid);
   assert.equal(row.reason, SANCTIONED_REASON, "the plan-dictated descriptor's row changed; the split relabelled instead of discriminating");
   // Its arithmetic is a real measurement and must stay one.
@@ -104,7 +104,7 @@ test("#1424 the sanctioned count-only crowd is untouched — the control", () =>
   assert.equal(row.untraced, 169);
 });
 
-test("#1424 the upstream sentence rides verbatim in detail, and is never parsed", () => {
+test("the upstream sentence rides verbatim in detail, and is never parsed", () => {
   // The producer's own words stay available and unbucketed. Deriving the classification from the
   // stamps rather than from this text is what keeps a provider's rewording from re-breaking it: the
   // reason below says neither "capability" nor "error" in the words the classifier would need.
@@ -115,7 +115,7 @@ test("#1424 the upstream sentence rides verbatim in detail, and is never parsed"
   assert.match(row.reason, /provider errored/i, "the classification followed the prose instead of the stamp");
 });
 
-test("#1424 a refused slice becomes its own blind spot, and never the unenumerated one", () => {
+test("a refused slice becomes its own blind spot, and never the unenumerated one", () => {
   const shape = buildBandShape(band([DEFERRED, ERRORED, SANCTIONED]), { targets: ["ZEPHYR"] }).shape;
   const kinds = Object.fromEntries(shape.blind_spots.map((b) => [b.kind, b]));
 
@@ -133,7 +133,7 @@ test("#1424 a refused slice becomes its own blind spot, and never the unenumerat
   }
 });
 
-test("#1424 a run whose provider refused everything still reports a blind spot", () => {
+test("a run whose provider refused everything still reports a blind spot", () => {
   // The seeded fault, and the one that made this silent: with only refused slices in the band, the
   // unenumerated detector matches nothing and pushes nothing, so before this change the shape came
   // back with NO crowd blind spot at all — a total register failure rendering as a clean shape.
@@ -143,7 +143,7 @@ test("#1424 a run whose provider refused everything still reports a blind spot",
   assert.ok(kinds.includes("refused-slice"), "a band of nothing but refusals reported no blind spot");
 });
 
-test("#1424 the shape's prose does not print a hit count for a slice that has none", () => {
+test("the shape's prose does not print a hit count for a slice that has none", () => {
   const { md } = buildBandShape(band([DEFERRED, ERRORED, SANCTIONED]), { targets: ["ZEPHYR"] });
   const refusedLines = md.split("\n").filter((l) => l.includes(DEFERRED.query) || l.includes(ERRORED.query));
   assert.equal(refusedLines.length > 0, true, "the refused slices are absent from the mirror entirely");
@@ -155,7 +155,7 @@ test("#1424 the shape's prose does not print a hit count for a slice that has no
   assert.equal(Number(undefined ?? 0).toLocaleString("en-US"), "0");
 });
 
-test("#1424 the unenumerated blind spot states what was actually read", () => {
+test("the unenumerated blind spot states what was actually read", () => {
   // The coverage-statement half of the issue: how many terms exceeded the read limit, and how deep
   // the register was read. Reported as OBSERVED per slice — the enumerate ceiling is a per-provider
   // ceilingDefault in four capabilities files, so a constant quoted here could be wrong for the run.
@@ -169,7 +169,7 @@ test("#1424 the unenumerated blind spot states what was actually read", () => {
   assert.deepEqual(unenum.read_depth, [0, 600]);
 });
 
-test("#1424 PREMISE: refusals carry no untraced hits, so a hit-sum gate cannot see them", () => {
+test("PREMISE: refusals carry no untraced hits, so a hit-sum gate cannot see them", () => {
   // A PREMISE PIN, not a test of the fix: it passes before and after, because it asserts the
   // arithmetic that made the old gate wrong rather than the gate itself. The gate lives in
   // pipeline.mjs's `note()`, which is stderr-only and reaches no artifact, so it has no direct arm —
@@ -184,7 +184,7 @@ test("#1424 PREMISE: refusals carry no untraced hits, so a hit-sum gate cannot s
   assert.equal(t.untraceable_slices, 2, "the slices themselves must still be countable, or nothing can report them");
 });
 
-test("#1424 every row carries a machine class, and it agrees with its own sentence", () => {
+test("every row carries a machine class, and it agrees with its own sentence", () => {
   const rows = untraceableSlices({ crowds: band([DEFERRED, ERRORED, SANCTIONED]).crowds });
   assert.equal(rows.length, 3);
   // AD-4: on EVERY row, by value. A reader counting refusals never has to interpret an absence.

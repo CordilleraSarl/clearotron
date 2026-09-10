@@ -25,7 +25,7 @@ import { scanAccountRuns } from "../portal-service.mjs";
 // exported from the service, because portal-service.mjs binds a live HTTP surface at import.
 const productNameOf = (product) => (typeof product === "string" ? reportIdentityFor(product).identity ?? null : null);
 
-test("#463 every ORDERABLE product names itself on a run row, in the offering's own words", () => {
+test("every ORDERABLE product names itself on a run row, in the offering's own words", () => {
   assert.ok(PRODUCT_IDS.length === 4, "precondition: the offering is four products");
   for (const id of PRODUCT_IDS) {
     const name = productNameOf(id);
@@ -36,7 +36,7 @@ test("#463 every ORDERABLE product names itself on a run row, in the offering's 
   }
 });
 
-test("#463 no stage or depth number reaches a run row — including on a retired run", () => {
+test("no stage or depth number reaches a run row — including on a retired run", () => {
   // "Stage 1" and "Stage 2" already mean the two halves of the legal reasoning inside every report sent,
   // so a card saying either is not jargon leaking — it is a different, wrong meaning arriving in the one
   // place a client will read it. "Depth N" is the retired ladder.
@@ -53,14 +53,14 @@ test("#463 no stage or depth number reaches a run row — including on a retired
   assert.equal(productNameOf("prelim"), "Preliminary clearance", "the row takes neither");
 });
 
-test("#463 the retired preliminaries stay distinguishable — the reason the card wraps instead of truncating", () => {
+test("the retired preliminaries stay distinguishable — the reason the card wraps instead of truncating", () => {
   // Ellipsised, "Preliminary clearance — register only" and "Preliminary clearance" collapse to the same
   // string, and they are close to opposite. Archived runs still carry both.
   const names = ["prelim", "prelim-register-only", "prelim-jx"].map(productNameOf);
   assert.equal(new Set(names).size, 3, "three retired preliminaries, three distinct names");
 });
 
-test("#463 a level the registry has forgotten resolves to NOTHING, never a guess", () => {
+test("a level the registry has forgotten resolves to NOTHING, never a guess", () => {
   assert.equal(productNameOf("something-new"), null);
   assert.equal(productNameOf(null), null);
   assert.equal(productNameOf(undefined), null);
@@ -94,7 +94,7 @@ const KO_JOB = {
   classes: [8, 21, 35], goods: "kitchen tools; household utensils",
 };
 
-test("#463 a QUEUED row names the product it ordered, off the same resolver as a delivered one", () => {
+test("a QUEUED row names the product it ordered, off the same resolver as a delivered one", () => {
   withQueued(KO_JOB, (row) => {
     assert.equal(row.state, "queued");
     assert.equal(row.product, "knockout-search");
@@ -117,7 +117,7 @@ test("#463 a QUEUED row names the product it ordered, off the same resolver as a
 // `product: "knockout-search"` and called itself `kind: "clearance"`, a literal. Result.tsx gates the
 // names line on that kind, so a three-name batch showed no names at all — and the mark string beside it
 // named ONE of the three, because the row took `marks[0].name`.
-test("#472 a QUEUED knockout batch is a batch, and carries every name it was submitted with", () => {
+test("a QUEUED knockout batch is a batch, and carries every name it was submitted with", () => {
   withQueued(KO_JOB, (row) => {
     assert.equal(row.kind, "knockout-batch", "the row's own product says knockout — it cannot also say clearance");
     assert.deepEqual(row.marks.map((m) => m.name), ["IRONWHISK", "CLUVENDRA", "SUNDAY ROAST CLUB"]);
@@ -157,7 +157,7 @@ function withLive(status, fn) {
   } finally { rmSync(root, { recursive: true, force: true }); }
 }
 
-test("#472 a RUNNING knockout batch reports the names it is reading, and no band for any of them", () => {
+test("a RUNNING knockout batch reports the names it is reading, and no band for any of them", () => {
   // The shape pipeline-knockout.mjs writes at dispatch.
   withLive({ schema: 1, runId: "tmp9100-ironwhisk-2026-08-07-fixture", slug: "tmp9100-ironwhisk", state: "running", lane: "knockout",
              markName: "IRONWHISK +2 more", marks: [{ name: "IRONWHISK" }, { name: "CLUVENDRA" }, { name: "SUNDAY ROAST CLUB" }],
