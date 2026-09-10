@@ -1,5 +1,75 @@
 # clearotron-driver
 
+## 0.3.0-beta.1
+
+### Minor Changes
+
+- f75266d: New: People, in the sidebar for anyone with Manage, lists who can use the installation, and adds a person.
+  
+  Enter their email address, choose what they may do and what they can see, and save. A sentence under the form says what they will and will not see, before you save. They sign in the same way you do; Clearotron issues no passwords.
+  
+  An installation that signs one person in on its own machine cannot hold a second. People says so, and links to how to put a login system in front of it.
+- f75266d: New: Each person now has two permissions, Run clearances and Manage, instead of a staff or client role.
+  
+  A person sees everything below the points they were given: the whole installation, an organisation, or a single company. Someone without Run has no New clearance. Someone without Manage has no People page and cannot add companies.
+  
+  The company menu groups companies by organisation when you can see more than one. Each organisation has its own Generic, listed first and marked Default. The top bar names your organisation when you can see exactly one.
+- f75266d: New: Clearances with no company set up now have a daily allowance per organisation, 20 unless the Generic profile sets another.
+  
+  Anyone with Run clearances on a whole organisation can start them. One organisation's clearances never use up another's, and a person with access to the whole installation is not limited.
+- c4d2768: New: You can now choose which company a clearance is for on the page itself, and set up new companies in the browser.
+  
+  Those screens used to refuse to render until a company was chosen. They told you to pick one at the top left. That is not where the control is when the sidebar is collapsed. They now show you the companies instead. Each one says what it sells, how many marketplaces it covers, and which territories it defaults to.
+  
+  Setting up a company is a page, not a document. It needs a name. Everything else has a default, and the screen says what that default is. It refuses before writing anything, and says why. A name it cannot make a key from, a key already in use, or an email address another company claims. A company you create can run its first search straight away, with no restart, and stop or cancel that search like any other.
+  
+  The product now says company throughout. It used to say brand owner, account, client and customer for the same thing. The firm running the installation is named separately, in the top bar.
+  
+  Companies created through the settings page were saved without a risk framework. Their matters were then rated under the house default, with nothing on screen saying so. Every company created now carries one, and says which.
+- f75266d: New: The setup wizard now asks for the organisation's name after the sign-in address, and the person who installs starts with access to everything.
+  
+  `clearotron grant add` sets a person's two permissions with `--run` and `--manage`; with neither, the person can look and start nothing.
+- f75266d: For operators: Who may sign in is now decided by each person's own entry in the guest list, and nothing else. On a local installation, the next `clearotron start` gives whoever signs in access to everything if the guest list has no `people` section.
+  
+  - For operators: Any other installation with people on it needs one edit to its guest list (`CLEAROTRON_ACCESS_FILE`) before upgrading.
+  - For operators: Anyone admitted because of their email domain needs an entry under a new `people` section: `"everything": true`, `"run": true`, `"manage": true`.
+  - For operators: Each person who starts clearances needs `"run": true`, and each person who adds people or companies needs `"manage": true`. A person with no entry can see what their access covers, and start nothing.
+  - For operators: An organisation whose `accounts` is `"*"` needs the list of companies it holds instead. Until then the portal refuses to start, and names the entry. A company may be listed under one organisation only.
+  - For operators: `PORTAL_STAFF_DOMAINS` is ignored from this version on, and the portal says so at startup.
+  - For operators: After upgrading, sign in to check, and run `clearotron connect` again for each person whose assistant uses a key.
+
+### Patch Changes
+
+- 8ff52d4: Fixed: Installed under a folder named with `#` or `%`, setup's register check now reads the provider's cost instead of calling it unknown. It built the address of the provider's own declaration by hand, and those characters broke it. It now uses the address Node builds, which is also what Windows needs.
+- 350e0ed: New: `clearotron framework <your-framework.md>` reads a risk framework and its manifest, and reports what they declare.
+  
+  Run it before either rates a matter. It prints the ladder in the framework's own order, the company the deck names, and the shape it is. Where the deck and the manifest disagree, it names the band and says what the deck did not do. It creates nothing, rates nothing and contacts nobody, and it exits non-zero when the pair is not ready. `clearotron brandowner add --dry-run` prints the same report.
+  
+  Getting the deck's shape wrong used to fail quietly. The profile screen showed the framework's title and your band colours, and silently omitted the box saying what the bands mean. The new command answers that question directly, using the screen's own read of the deck.
+  
+  Fixed: a framework served from the product's own files, while you have a configuration store set, now says so.
+  
+  Your store is looked in first, and the product's files answer when it is silent. The product ships decks under names you may also have chosen. So a deck that went missing from your store was replaced by ours rather than reported absent. Same band words, different rubric, nothing raised anywhere. The profile screen now writes one line naming what happened, and the new command reports it.
+  
+  Fixed: the house triage ladder's profile page explains its bands again.
+  
+  Its band sections stated their meanings as plain paragraphs, which the screen does not read. Every company without a framework of its own saw band colours and no explanation. The wording is unchanged.
+- cfb9a9f: Fixed: `clearotron doctor` now says which companies your portal's trigger key can start.
+  
+  The key carries a list of the companies it may start runs for. A company added after the key was minted is outside it. Doctor reported the key's expiry and never its coverage. So the one command whose job is to tell you what a machine is configured for said nothing about it.
+  
+  It reads the roster the services read, not the one a command-line process resolves, and it says which. Those two can disagree, and when they do the difference is the whole answer.
+  
+  The line is a note, not a failure. Your portal takes a fresh credential at the start of every call, so a company outside the key is not normally refused. It is refused when the portal cannot take a fresh one, and the line says so and gives you the command to widen the key.
+- ba2899b: Fixed: On reports searched through Signa, each register finding now links to the office's own page for that record, where the office publishes one. Singapore publishes no such page, so its registrations are cited by number, and the report says why. A number that an office's page cannot take is cited the same way.
+- c4d2768: New: The configuration guide now explains how to write your own risk framework, step by step.
+  
+  It gives the manifest in full. It says which fields are required, and what each one may contain. It shows the shape a deck needs for the profile screen to explain your bands.
+  
+  That shape was undocumented, and getting it wrong fails quietly. The screen still shows the framework's title and your band colours. The box saying what the bands mean does not appear at all.
+  
+  The guide also says what is checked and what is not. Nothing reads your rubric for sense. A framework that is subtly wrong produces confident ratings that look exactly like right ones.
+
 ## 0.2.4
 
 ### Patch Changes
