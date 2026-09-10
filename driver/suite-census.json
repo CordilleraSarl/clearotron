@@ -669,6 +669,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-switched-off-feature-says-so-and-says-what-to-change.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-terminal-guard-delivers-and-clamps.test.mjs": {
           "tests": 11,
           "asserts": 40,
@@ -5488,6 +5494,12 @@
         "fieldEditing.test.ts": {
           "tests": 9,
           "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "frameworkGuideLink.test.ts": {
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },

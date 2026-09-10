@@ -25,6 +25,7 @@ import { useUnsaved } from '../state/useUnsaved.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate, NEW_COMPANY_PATH } from '../shell/CompanyPicker.tsx'
 import { canManage } from '../shell/permissions.ts'
+import { FrameworkGuideLink } from '../components/FrameworkGuideLink.tsx'
 
 type Saved = { readonly at: number; readonly sha: string | null }
 
@@ -546,6 +547,12 @@ function FrameworkBlock({
                     {response ? <i className="fw-bmresp"> — {response}</i> : null}
                   </span>
                 )}
+                {/* THE GUIDE, ON THE SCREEN WHERE SOMEBODY MEETS THEIR FRAMEWORK. The framework itself is
+                    read-only here by ruling — expert settings stay on the command line and are SHOWN rather
+                    than edited — so without this link a person can see that a company has a rubric and has no
+                    way to learn they may write their own. Same component as the create form. */}
+                <p style={{ margin: '10px 0 0' }}><FrameworkGuideLink /></p>
+
               </div>
             )
           })}

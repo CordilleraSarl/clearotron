@@ -129,6 +129,10 @@ export function saveFailureText<T>(r: Result<T>, fallback = 'That change could n
     case 'noAccess': return 'You are signed in, but this account has not been granted access to that.'
     // Deliberately says the deployment, not the reader. Nothing they can do to their own account fixes it.
     case 'surfaceUnavailable': return 'The settings surface is not configured on this deployment, so nothing could be read or saved. This is a server setting, not your access — an administrator needs to fix it.'
+    // Same shape as the line above and for the same reason: the deployment, not the reader. `detail`
+    // names the setting and arrives only for staff, so it is appended when it is there rather than
+    // assumed — a client sees a true sentence with nothing missing from it.
+    case 'featureOff': return `That is switched off on this installation, so it cannot be read or saved. This is a server setting, not your access.${r.detail ? ` ${r.detail}` : ''}`
     case 'pickAccount': return 'That identity has more than one account — choose one and try again.'
     //. Says what happened and what fixes it, and does NOT say the change failed:
     // it never reached the server, so nothing was half-done and re-doing it after signing in is safe.
