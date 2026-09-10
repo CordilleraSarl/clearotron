@@ -96,7 +96,11 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
     : !key
       ? 'Needs a key — type one below.'
       : !orgChosen
-        ? 'Choose the organisation it belongs to.'
+        // WITH NO ORGANISATION FILED, a choice cannot fix it, so the screen says what can: the command
+        // `clearotron start` names for the same state.
+        ? (orgsHeld.length === 0
+          ? 'No organisation is filed on this install yet. File one with: clearotron start --organisation "<name>"'
+          : 'Choose the organisation it belongs to.')
       : refusedEntries.length
         ? `${refusedEntries.join(', ')} cannot be searched — fix or remove ${refusedEntries.length === 1 ? 'it' : 'them'}.`
         : null

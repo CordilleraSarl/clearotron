@@ -4512,9 +4512,9 @@ const PORT = PORT_CHOICE.port;
       // roster-vs-ops-token boot check below.
       //
       // — SAME FACT, DIFFERENT READER. In a demo there is no customer whose framework could be shown
-      // wrongly: Demo Brand Owner rates under the generic default, which is the real house rubric rather
-      // than a fixture. Naming two environment variables and a config store at a first-time visitor tells
-      // them the thing they just started is broken, and this output is what gets captured for the website.
+      // wrongly: the demo's company is marked demo data and rates under the framework shipped for it.
+      // Naming two environment variables and a config store at a first-time visitor tells them the thing
+      // they just started is broken, and this output is what gets captured for the website.
       // So the demo's posture line stands wherever a warning would.
       const overlayAtBoot = skillsOverlayAtBoot({
         explicit: envFrom(process.env, "CLEAROTRON_INSTRUCTIONS_DIR"),

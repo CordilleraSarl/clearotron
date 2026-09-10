@@ -208,8 +208,8 @@
           "todos": 0
         },
         "a-demo-says-what-it-is-not-what-it-lacks.test.mjs": {
-          "tests": 4,
-          "asserts": 23,
+          "tests": 5,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -4114,8 +4114,8 @@
           "todos": 0
         },
         "start-command.test.mjs": {
-          "tests": 26,
-          "asserts": 112,
+          "tests": 27,
+          "asserts": 119,
           "skips": 0,
           "todos": 0
         },
@@ -4401,6 +4401,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-demo-is-its-own-install.test.mjs": {
+          "tests": 8,
+          "asserts": 60,
+          "skips": 0,
+          "todos": 0
+        },
         "the-door-answers-the-address-it-advertises.test.mjs": {
           "tests": 9,
           "asserts": 37,
@@ -4612,8 +4618,8 @@
           "todos": 0
         },
         "the-person-who-installs-is-a-person-not-a-domain.test.mjs": {
-          "tests": 19,
-          "asserts": 88,
+          "tests": 18,
+          "asserts": 86,
           "skips": 0,
           "todos": 0
         },
@@ -5708,8 +5714,8 @@
           "todos": 0
         },
         "ownerNames.test.ts": {
-          "tests": 7,
-          "asserts": 16,
+          "tests": 9,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },

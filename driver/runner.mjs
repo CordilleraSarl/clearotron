@@ -27,7 +27,7 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES } from "./queue-markers.mjs";
-import { matterLedgerPath } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
+import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
 import { unitEnvPath, envFileRead } from "../shared/env-local.mjs";   // the file the units read, named by its one author
 import { fileURLToPath } from "node:url";
@@ -235,7 +235,11 @@ function recordMatter(qdir, entry) {
 // which reads as the product being broken rather than as a fair-use wall. The risk this exists to stop is
 // unbounded spend by an unconfigured account, and 20 stops that just as completely. It is the DEFAULT, so
 // any account that needs a different number says so in its own runCaps block.
-export const DEFAULT_CLIENT_DAILY_RUNS = 20;
+//
+// ONE DECLARATION. The number lives in usage-ledger.mjs, the leaf a request path imports without pulling
+// the runner in, and is re-exported here for the gate and its tests. Two declarations held equal by a
+// test is how the screen comes to advertise one allowance while the gate enforces another.
+export { DEFAULT_CLIENT_DAILY_RUNS };
 
 export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null }) {
   // GENERIC IS CAPPED LIKE ANY COMPANY, one lane per organisation (ruling 2026-09-10: "every

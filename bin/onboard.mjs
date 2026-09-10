@@ -72,7 +72,6 @@ import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight wher
 import { bracketAsciiCells, BRAND } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
 // THE REFUSALS ABOUT THE SIGN-IN ADDRESS ITSELF, shared with `bin/start.mjs`. Two copies would be a
 // wizard that accepts an address the launcher then sends back.
-import { addressRefusal } from "../shared/staff-domain.mjs";
 import { join, dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
@@ -594,13 +593,17 @@ const present = (v) => typeof v === "string" && v.trim() !== "";
 /**
  * Ask who signs in, and what their organisation is called.
  *
- * ── WHY THE ADDRESS IS ASKED AT ALL ─────────────────────────────────────────────────────────────────
+ * ── THE ADDRESS IS NOT ASKED (ruling, 2026-09-10) ──────────────────────────────────────────────────
  *
- * Setup never asked for an address. `clearotron start` therefore took one from `--user`, from
- * `PORTAL_LOCAL_USER`, or from the local account as `<account>@localhost`. An outside install reached a
- * state nobody chose that way: an assistant filled a documentation address into the environment file on
- * the operator's behalf, because this wizard had no prompt for it. So the address is asked for here,
- * where a person is definitionally present.
+ * It was, for a while. `clearotron start` took an address from `--user`, from `PORTAL_LOCAL_USER`, or
+ * from the local account as `<account>@localhost`, and an outside install reached a state nobody chose
+ * that way: an assistant filled a documentation address into the environment file on the operator's
+ * behalf. On a local install the question buys nothing the local-account form does not give, so it is
+ * gone: the address is `<account>@localhost`, used without a question and shown once, in the summary's
+ * "signs in as" line. Anyone behind a login system changes it in the grants file.
+ *
+ * AN ADDRESS THE SETTINGS FILE ALREADY HOLDS IS KEPT. A re-run of setup must not sign out the person an
+ * earlier run enrolled: their passphrase and their grants entry are both keyed on that address.
  *
  * WHAT IT NO LONGER DECIDES. The part after its `@` used to decide who was an administrator: everyone at
  * that domain was staff. That rule is deleted, with the question about granting the domain and the
@@ -608,47 +611,28 @@ const present = (v) => typeof v === "string" && v.trim() !== "";
  * written as their own entry in the grants file by `clearotron start` (`installerGrants`), and it admits
  * nobody else whatever its domain.
  *
- * TWO REFUSALS ABOUT THE ADDRESS ITSELF STAY: not a single email address, and a public or reserved
- * domain (shared/staff-domain.mjs, shared with `clearotron start` so the two refuse the same addresses).
+ * THE TWO REFUSALS ABOUT THE ADDRESS ITSELF are `clearotron start`'s (shared/staff-domain.mjs): not a
+ * single email address, and a public or reserved domain. The wizard no longer takes an address to refuse.
  *
- * THE ORGANISATION'S NAME, directly after the address and required. It is the organisation the install
+ * THE ORGANISATION'S NAME, the one question this step asks, and required. It is the organisation the install
  * starts with and the label the portal shows for it; `clearotron start` files it in the grants file the
  * first time that file holds none, and it is renamed there. WRITTEN QUOTED, because the loader reads
  * `.env` with Node's `parseEnv`, which ends an unquoted value at `#` and trims it — measured: "Café #1
  * Sàrl" written bare comes back "Café". Quoted it survives whole, except a double quote, which ends the
  * value, so a name holding one is sent back.
  *
- * THE DEFAULT IS THE LOCAL ACCOUNT AND NOTHING ELSE — not the git author, not the hostname, not a shell
- * variable. The address that becomes the first person comes from the person, or from the one source that
- * cannot name a second person.
+ * THE ADDRESS IS THE LOCAL ACCOUNT AND NOTHING ELSE — not the git author, not the hostname, not a shell
+ * variable: the one source that cannot name a second person.
  *
  * `io` IS INJECTED for the reason `offerUsptoSync`'s is: the branches that matter are the answers that
  * must be sent back, and closed over a terminal they are asserted nowhere. Returns the `.env` keys to
  * write and nothing else.
  */
-export async function askSignIn(io, { localAccount = "user" } = {}) {
+export async function askSignIn(io, { localAccount = "user", existing = null } = {}) {
   const { askValue, ok = () => {}, problem = () => {} } = io;
-  const localDefault = `${localAccount}@localhost`;
-  prose("The portal admits one address on this install, and that address is the first person on it:",
-        "access to everything, with both permissions — Run clearances and Manage. Enter accepts the",
-        "local-account form, which is this machine and nobody else.");
-  let address;
-  for (;;) {
-    const typed = String(await askValue("Sign-in address:", { def: localDefault })).trim().toLowerCase();
-    if (!typed.includes("@") || typed.indexOf("@") !== typed.lastIndexOf("@")) {
-      problem(`"${typed}" is not a single email address. The portal refuses a multi-@ identity outright, `
-        + "so this would sign in and then be denied at the door.");
-      continue;
-    }
-    // The refusal's own sentence, never a second copy: `clearotron start` prints these same words when it
-    // meets the same address, and two wordings of one refusal is how a reader comes to believe they have
-    // met two different problems.
-    const refusal = addressRefusal(typed);
-    if (refusal) { problem(refusal); continue; }
-    address = typed;
-    break;
-  }
-  ok(`${address} — the first person on this install, with access to everything.`);
+  // Returned rather than left to the writer to carry, so the address in force is written whichever file
+  // it was read from.
+  const address = String(existing ?? "").trim() || `${localAccount}@localhost`;
   for (;;) {
     const name = String(await askValue("Your organisation's name:") ?? "").trim();
     if (!name) {
@@ -3612,18 +3596,20 @@ try {
   say("  fallback — falls through by name, so an empty store is a working install. Your own customers");
   say("  are added here by name; the bundled demo customers never show through into your roster.");
 
-  // 7c ── WHO SIGNS IN, AND WHAT THEIR ORGANISATION IS CALLED
+  // 7c ── YOUR ORGANISATION, AND WHO SIGNS IN
   //
-  // The address is the first person on the install and the name is its first organisation. The whole
+  // The name is the install's first organisation. The address is not asked: it is the local account, or
+  // the one the settings file in force already holds, and the summary below shows it once. The whole
   // reasoning, including the domain rule this step no longer writes, is on `askSignIn` above.
-  section("Who signs in");
+  section("Your organisation");
   const localAccount = (() => {
     try { return userInfo().username || "user"; } catch { return "user"; }
   })();
-  // ONE CALL SITE. The loop itself lives in `askSignIn` so that the branches that matter — an address
-  // that must be sent back, a name that is missing — are reachable without a terminal. The same seam
-  // and the same reason as `offerUsptoSync`.
-  Object.assign(candidate, await askSignIn({ askValue, ok, problem }, { localAccount }));
+  const signInKept = readEnvFile(READ_ENV_PATH()).PORTAL_LOCAL_USER ?? null;
+  // ONE CALL SITE. The loop itself lives in `askSignIn` so that the branches that matter — a name that is
+  // missing, or one the settings file cannot keep — are reachable without a terminal. The same seam and
+  // the same reason as `offerUsptoSync`.
+  Object.assign(candidate, await askSignIn({ askValue, ok, problem }, { localAccount, existing: signInKept }));
 
   // 8 ── the engine's own preflight over the whole candidate
   //
@@ -3754,6 +3740,8 @@ try {
   say(`\n  ${style.bold("Setup finished.")} Nothing here needs running again.\n`);
   say("  What this box has now:");
   for (const line of [
+    // THE ONE PLACE THE ADDRESS IS SHOWN (ruling, 2026-09-10): setup no longer asks for it.
+    stateLine("signs in as", candidate.PORTAL_LOCAL_USER, "the local account"),
     stateLine("register", candidate.CLEAROTRON_DATABASE, "no register, so every search refuses until one is chosen"),
     stateLine("web research", present(candidate.PERPLEXITY_API_KEY) ? "a key" : "", "a clearance stops before it starts, and names the missing key; a knockout search runs and discloses the half it skipped"),
     stateLine("data directory", candidate.CLEAROTRON_REPORTS_DIR, "unset"),

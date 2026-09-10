@@ -746,12 +746,12 @@ You sign in as `<your-username>@localhost` unless you say otherwise:
 npx clearotron start --user you@example.com
 ```
 
-The address is written to `.env`, so it is asked for once. It is also the first person on this
-install: the first start writes it into the grants file (`CLEAROTRON_ACCESS_FILE`, §8) with access to
-everything and both permissions, Run clearances and Manage. Setup asks for your organisation's name
-directly after the address, and the same start files it there as your first organisation. The address
-admits nobody else at its domain; enrolling anyone else is that same file, exactly as on a hosted
-instance.
+Setup does not ask for the address: it writes the local-account form to `.env` and shows it once, in
+its summary, as the address that signs in. An address already in `.env` is kept. It is also the first
+person on this install: the first start writes it into the grants file (`CLEAROTRON_ACCESS_FILE`, §8)
+with access to everything and both permissions, Run clearances and Manage. Setup asks for your
+organisation's name, and the same start files it there as your first organisation. The address admits
+nobody else at its domain; enrolling anyone else is that same file, exactly as on a hosted instance.
 
 **No authentication is switched off to make this work, and none can be.** Both doors prove who the
 caller is — the portal by passphrase and a signed session cookie, the engine door by a mandatory
