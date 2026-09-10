@@ -214,9 +214,17 @@ const tools = {
     // Each customer carries its PROJECTS (engagements) so intake can resolve a projectKey too. A bad
     // project file must never blank the whole roster, so the project read is best-effort (its own loud failure
     // surfaces at run time via loadProjects in the driver).
+    //
+    // READ FRESH ON EVERY CALL. `loadProfiles()` and `loadProjects()` answer from module caches with no
+    // expiry, filled by this process's first read — the boot line's — so a company or project created in
+    // the portal after the door started was missing here until the door restarted, while start_run, which
+    // re-reads on a miss (driver/enqueue-schema.mjs), already accepted it. This is the list an assistant
+    // resolves a customer against: a company it cannot see is a company it cannot pick. One read of the
+    // roster, handed to the project walk, so the two cannot come from different moments.
+    const roster = loadProfiles({ force: true });
     let byCustomer = new Map();
     try {
-      for (const [fq, ov] of loadProjects()) {
+      for (const [fq, ov] of loadProjects({ profiles: roster, force: true })) {
         // An ARCHIVED project is not offered for new work: this list is what the intake AI resolves a
         // projectKey against, so a name it cannot see is a name it cannot pick. Already-queued and
         // finished runs are untouched — a run freezes its effective profile at admission.
@@ -226,7 +234,7 @@ const tools = {
         byCustomer.set(ov.customerKey, list);
       }
     } catch { byCustomer = new Map(); }
-    const clients = [...loadProfiles().values()]
+    const clients = [...roster.values()]
       .filter((p) => p.key !== "generic")
       .map((p) => ({ key: p.key, name: p.name, industry: p.industry ?? null,
         projects: (byCustomer.get(p.key) ?? []).sort((a, b) => a.key.localeCompare(b.key)) }))
