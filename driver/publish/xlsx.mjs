@@ -64,6 +64,35 @@ function plainNote(s) {
     .trim();
 }
 
+// READER_WORDS — the plain word a reader of "What was searched" gets in place of each engine word BANNED
+// names. That sheet's Result and Note cells carry the search log's own prose, model-authored and already
+// written on every archived run, so the words are put right where the cell is written instead of being
+// left to the advisory gate. The gate still runs; a hit on this sheet is now a name, or a word this
+// table is missing.
+//
+// Lower case only. In these cells a capitalised or upper-case word is a name — a mark, an owner, a
+// platform — and a rewritten name misstates what was searched, so names stay as written. Two rules are
+// case-blind because neither is ever a name: a web address loses its scheme and keeps its host and path,
+// and a standalone HTTP is dropped, so "provider-rejected (HTTP 429)" reads "provider-rejected (429)".
+// has_more is plainNote's.
+export const READER_WORDS = Object.freeze({
+  receipt: 'record', receipts: 'records',
+  lint: 'check', tripwire: 'check', tripwires: 'checks',
+  composite: 'combined', scatter: 'chart', cache: 'stored copy',
+  quadrant: 'position', quadrants: 'positions', coordinate: 'position', coordinates: 'positions',
+  meter: 'measure', meters: 'measures',
+});
+const READER_WORD = new RegExp(`\\b(?:${Object.keys(READER_WORDS).join('|')})\\b`, 'gi');
+
+function readerWords(s) {
+  return String(s ?? '')
+    .replace(/\bhttps?:\/\//gi, '')
+    .replace(/\bhttps?\b\s*/gi, '')
+    .replace(READER_WORD, (w) => (w === w.toLowerCase() ? READER_WORDS[w] : w))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 // a column is "empty" only when NO data row fills it. Dropping such a column honours the spec's
 // "no dead schema" by construction (a common-law-only run simply omits Class / Registration(s) rather
 // than shipping them blank) AND means the workbook never carries an empty column to trip a gate on.
@@ -283,7 +312,9 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
 
   const rows = [];
   let i = 0;
-  const push = r => rows.push({ '#': ++i, ...r });
+  // Every row on the sheet is written here, so this is where Result and Note are put into the reader's
+  // words: after each branch below has classified its row from the words the engine wrote, never before.
+  const push = r => rows.push({ '#': ++i, ...r, Result: readerWords(r.Result), Note: readerWords(r.Note) });
 
   if (reg.length) {
     push({ 'Search term / variant': 'REGISTER  —  vendor register, worldwide', Scope: '', Result: '', Outcome: '', Note: '', _section: true });
