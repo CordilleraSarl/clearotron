@@ -87,20 +87,23 @@ for (const email of PEOPLE) {
     const { portal, connector } = doors(email);
     assert.equal(portal === null, connector === null,
       `admission: the portal ${portal ? "admits" : "refuses"} and the connector ${connector ? "admits" : "refuses"}`);
-    if (!portal) return;
-    for (const company of COMPANIES) {
-      assert.equal(tries(() => assertPrincipal(portal, { account: company })), accountVisible(connector, company),
-        `seeing company ${company}`);
-      assert.equal(tries(() => assertPrincipal(portal, { account: company, run: true })),
-        tries(() => authorize(connector, "start_run", { markName: "X", profileKey: company })),
-        `starting a clearance for ${company}`);
+    // Refused by both is the whole answer for a person with no access: there is nothing further to see
+    // or start, and the admission assertion above is what measured it.
+    if (portal) {
+      for (const company of COMPANIES) {
+        assert.equal(tries(() => assertPrincipal(portal, { account: company })), accountVisible(connector, company),
+          `seeing company ${company}`);
+        assert.equal(tries(() => assertPrincipal(portal, { account: company, run: true })),
+          tries(() => authorize(connector, "start_run", { markName: "X", profileKey: company })),
+          `starting a clearance for ${company}`);
+      }
+      for (const organisation of ORGS) {
+        assert.equal(mayReadRun(portal, { owner: "generic", organisation }), accountVisible(connector, "generic", organisation),
+          `reading a Generic run filed under ${organisation ?? "no organisation"}`);
+      }
+      const orderGeneric = (organisation) => tries(() => assertPrincipal(portal, { account: "generic", tenant: organisation, run: true }));
+      const portalGeneric = Object.keys(GRANTS.tenants).some(orderGeneric);
+      assert.equal(portalGeneric, tries(() => authorize(connector, "start_run", { markName: "X" })), "ordering Generic");
     }
-    for (const organisation of ORGS) {
-      assert.equal(mayReadRun(portal, { owner: "generic", organisation }), accountVisible(connector, "generic", organisation),
-        `reading a Generic run filed under ${organisation ?? "no organisation"}`);
-    }
-    const orderGeneric = (organisation) => tries(() => assertPrincipal(portal, { account: "generic", tenant: organisation, run: true }));
-    const portalGeneric = GRANTS.tenants && Object.keys(GRANTS.tenants).some(orderGeneric);
-    assert.equal(portalGeneric, tries(() => authorize(connector, "start_run", { markName: "X" })), "ordering Generic");
   });
 }

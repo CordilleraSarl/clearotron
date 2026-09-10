@@ -103,7 +103,6 @@ const SUPPLIED_ELSEWHERE = Object.freeze({
   CLIENT_MCP_OIDC_ISSUER: "the client door's issuer, same choice one door along — INSTALL.md §8",
   MCP_ALLOWED_EMAILS: "who the identity gate admits, by address — one of this pair is required on the proxy path, INSTALL.md §8",
   MCP_ALLOWED_EMAIL_DOMAINS: "who the identity gate admits, by domain — the other half of that pair",
-  PORTAL_STAFF_DOMAINS: "which domains count as staff, the alternative to the grants file for sign-in — INSTALL.md §8",
 
   // ── THE MODE SELECTORS: ABSENCE IS THE DEFAULT, NOT A FAULT ───────────────────────────────────────
   // These refuse over a value that is not a mode the service has. Unset selects the default, so there
