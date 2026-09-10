@@ -230,8 +230,8 @@ test("examples/grants.example.json loads through loadGrants and grants what it l
   // `demo-brand-owner` shipped. The literal could only ever say "these three
   // existed when somebody last looked".
   //
-  // AND IT NOW CHECKS THE CLAIM IT ACTUALLY MAKES. "A demo customer" became machine-checkable in tracker
-  // issue 2012: a profile declares itself with `demoData: true`. So the assertion is no longer "is it on
+  // AND IT NOW CHECKS THE CLAIM IT ACTUALLY MAKES. "A demo customer" became machine-checkable: a profile
+  // declares itself with `demoData: true`. So the assertion is no longer "is it on
   // a list I typed" but "does this repo ship it, AND does it say it is demo data" — which is what an
   // example granting real client accounts would fail, and a stale literal never could.
   const PROFILES = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "driver", "profiles");

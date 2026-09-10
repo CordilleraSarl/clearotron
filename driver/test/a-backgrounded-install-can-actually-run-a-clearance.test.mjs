@@ -12,7 +12,7 @@
 // severs inheritance on purpose — so only what the supervisor WRITES arrives. It wrote the paths and the
 // door secrets and not the register, its credential, the research key, the engine or the engine path.
 //
-// ── WHERE THE REFUSAL LIVES NOW — tracker issue 216, owner ruling 2026-09-06 ────────────────────────
+// ── WHERE THE REFUSAL LIVES NOW — owner ruling 2026-09-06 ──────────────────────────────────────────
 //
 // "someone can install and select key later so it should still start." So the register, its credential,
 // the engine and the engine's binary NO LONGER refuse a `--background` start. They refuse AT ORDER TIME,

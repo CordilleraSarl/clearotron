@@ -328,7 +328,7 @@ test("the portal's secret is generated too, and the portal cannot start without 
   // from the hosted document got a portal unit that exited at boot, and the only route to a working one
   // was running the local-install command the instructions say a server does not need.
   //
-  // Naming the variable in a warning does not help here, which is what tracker issue 122 is about: there
+  // Naming the variable in a warning does not help here, which is the point: there
   // is no action behind the name, because the reader cannot invent 32 random bytes the portal accepts.
   const { out, values } = appliedEnv();
   assert.match(out, /GENERATED the portal's secret/, "the installer minted the portal secret without saying so");

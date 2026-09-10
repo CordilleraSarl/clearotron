@@ -49,7 +49,7 @@ export function tagsHere({ run = (args) => execFileSync("git", args, { encoding:
 }
 
 /**
- * WHICH COMMIT THE QUESTION IS ABOUT — tracker issue 208, measured on run 34050690448.
+ * WHICH COMMIT THE QUESTION IS ABOUT — measured on run 34050690448.
  *
  * `versionAtHead()` reads a COMMIT rather than the working tree, deliberately, and the header above says
  * why at length. That is necessary and it was not sufficient: in the `version` job the changesets action

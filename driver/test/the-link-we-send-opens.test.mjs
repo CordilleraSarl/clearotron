@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The link a delivery sends OPENS (tracker issue 289).
+// The link a delivery sends OPENS.
 //
 // THE DEFECT. The delivered URL was `<origin>/<runId>/report.html` — the pool's directory layout on disk
 // pasted behind the public origin. That is where the documents sit; it is not an application route. It

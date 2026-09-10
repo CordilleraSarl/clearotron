@@ -153,7 +153,7 @@ test("the read renders as STRUCTURE — chip, basis, tight bullets, and the two 
   const html = RENDER([markRow()]);
   assert.match(html, /class="ko-basisline"/, "the basis leads the card");
   assert.match(html, /class="ko-counter"/, "counter-factors are their own block");
-  // THE LABELS CARRY THE BAND'S OWN WORD (tracker issue 331 A.2). The old pair — "What holds it there"
+  // THE LABELS CARRY THE BAND'S OWN WORD. The old pair — "What holds it there"
   // and "What would move it" — was 9.5px grey capitals, and the owner read the first and asked "what
   // holds what?". These name the rung the mark is on and the rung above it, off this fixture's own
   // ladder (Blocking > Medium > Manageable > Low), so the label answers the question by itself.

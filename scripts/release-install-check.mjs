@@ -7,7 +7,7 @@
 //
 // ── WHAT IT IS FOR, AND WHY IT IS NOT ANOTHER MANIFEST ASSERTION ────────────────────────────────────
 //
-// Five consecutive releases published a package npm refused to install (tracker issue 180). Every
+// Five consecutive releases published a package npm refused to install. Every
 // check in the pipeline passed on every one of them, because each asked a question about the tarball
 // and none asked the only question a visitor asks: does `npm install clearotron` work.
 //

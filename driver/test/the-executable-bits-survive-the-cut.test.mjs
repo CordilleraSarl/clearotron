@@ -63,7 +63,7 @@ const EXECUTABLE = [
 // Modes from the INDEX, not from disk. A working tree on a filesystem that does not carry the bit —
 // or a checkout made with a umask that dropped it — would answer for the machine rather than for what
 // ships, and what ships is the whole question here.
-// ONE call, through the helper (tracker issue 235). This asked the helper for its skip contract and
+// ONE call, through the helper. This asked the helper for its skip contract and
 // then spawned git a second time, raw, for the modes. That was correct — the raw call sat behind the
 // null check — but it read exactly like an unguarded enumeration, and the guard that forbids those
 // cannot tell the difference. `trackedIndexModes` carries the mode and the skip together.

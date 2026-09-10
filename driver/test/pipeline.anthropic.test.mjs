@@ -206,7 +206,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   assert.doesNotMatch(packet.subject, /Preliminary clearance/, "the retired literal is gone from the wire");
   assert.ok(packet.emailBodyHtml && packet.emailBodyHtml.length > 0, "email body embedded for clawdi");
   assert.match(packet.whatsappText, /Clearotron search for PROJECT NOVAPULSE.*is done\. Report:/);
-  // THE NOTICE IS ADDRESSED TO WHOEVER ASKED (tracker issue 289). This arm asserted
+  // THE NOTICE IS ADDRESSED TO WHOEVER ASKED. This arm asserted
   // `whatsappTo === "+10000000001"` — the AGENT's number from the demo roster — which is precisely the
   // defect: every user of a deployment shares one agent id, so the operator was paged for work somebody
   // else ordered and the requester was never told. Owner ruling 2026-09-07 routed it to the requester

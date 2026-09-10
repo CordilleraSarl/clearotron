@@ -17,7 +17,7 @@
 // THIS FILE DOES NOT FIX THE GAUGE. Telling "waited zero" from "was not looking" changes what the kill
 // clock consumes, and that is a design question the owner holds. What is built here is the flag: the
 // row says it could not look, so the NEXT occurrence arrives as evidence instead of as a third
-// specimen — which is the position tracker issue 1780 was in for days.
+// specimen — which is the position that arm was in for days.
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync } from "node:fs";
@@ -77,7 +77,7 @@ const runIt = async (key, { startMs = 0, stallMs = 0 } = {}) => {
   return JSON.parse(rows[rows.length - 1]);
 };
 
-test("tracker issue 1828 an ordinary turn measures every wait and records an EMPTY list", async () => {
+test("an ordinary turn measures every wait and records an EMPTY list", async () => {
   // THE CONTROL, and it is not a formality: every arm below passes on an engine that flags every turn.
   // This is the only one that fails on it.
   const row = await runIt("unmeas-clean");
@@ -86,7 +86,7 @@ test("tracker issue 1828 an ordinary turn measures every wait and records an EMP
     + "ordinary delivery, in which case it says nothing, or the field is not being recorded at all");
   // A LOOSE BOUND, DELIBERATELY. This arm asserts that a real wait was measured, so that the empty list
   // above means something; it does NOT assert the gauge is accurate — that claim belongs to
-  // the-attempt-record-carries-tool-time, and it is the claim tracker issue 1828 is about. Measured at
+  // the-attempt-record-carries-tool-time, and it is the claim this file is about. Measured at
   // 240 under concurrent suite load against a 260ms fixture, so a bound near the fixture's own total is
   // a second copy of the brittle threshold rather than a check on anything this file is for.
   assert.ok(row.toolWaitMs >= 150,
@@ -128,7 +128,7 @@ const STALL_LADDER = [
   { startMs: 50, stallMs: 2000 },    // strictly wider each time: if load is the cause, width wins
 ];
 
-test("tracker issue 1828 a wait lost to a stalled loop is NAMED, not silently zeroed", async () => {
+test("a wait lost to a stalled loop is NAMED, not silently zeroed", async () => {
   let observed = null;
   const tried = [];
   for (const [i, rung] of STALL_LADDER.entries()) {
@@ -173,7 +173,7 @@ test("tracker issue 1828 a wait lost to a stalled loop is NAMED, not silently ze
     + `superseded before its own period could be seen. Saw ${JSON.stringify(entry.cause)}`);
 });
 
-test("tracker issue 1828 the flag is RECORDING ONLY — the total and the split are untouched", async () => {
+test("the flag is RECORDING ONLY — the total and the split are untouched", async () => {
   // The per-tool parts sum to the total, and the kill clock reads that total. If this change moved
   // either, it would have reshaped what a kill decision consumes, which is the owner's call and not
   // this one's. Asserted on a stalled turn, where the numbers are at their most wrong.

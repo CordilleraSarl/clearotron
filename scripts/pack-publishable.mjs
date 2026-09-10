@@ -201,7 +201,7 @@ async function main() {
       : "  nothing stripped — no publish-only keys were present");
     // Prove the repo manifest still has them, here, on every pack.
     //
-    // ── WHICH KEYS THIS MAY REFUSE OVER, AND WHY IT IS NOT ALL OF THEM (tracker issue 196) ───────────
+    // ── WHICH KEYS THIS MAY REFUSE OVER, AND WHY IT IS NOT ALL OF THEM ───────────────────────────────
     //
     // This asserted every entry of STRIP_KEYS was present in the repo manifest, and `private` has not
     // been in it since publishing moved into CI — the STRIP_KEYS comment above says so in its own words.

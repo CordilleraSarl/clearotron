@@ -4,7 +4,7 @@
 //
 // THE SHAPE. `if (corpus == null) return;` at the top level of a test arm. node:test counts a bare
 // return as a PASS, so the arm reports its subject clean having measured none of it. The eleven
-// conversions on tracker issue 1479 fixed the instances; this stops the next one arriving.
+// The conversions fixed the instances; this stops the next one arriving.
 //
 // WHY THIS IS A DECLARATION TABLE AND NOT A BAN. The loop half has one correct remedy — assert the set
 // non-empty. This half does not: the question is the CONDITION, not the shape. A bail can be right —
@@ -12,7 +12,7 @@
 // exists. So the detector reports the population and every survivor is declared WITH ITS REASON, at a
 // line a reader meets.
 //
-// THE FIGURE IS 7, NOT 32. tracker issue 1479 quoted 32 from `grep -E '^\s*if\s*\([^)]*\)\s*return\s*;'`, which
+// THE FIGURE IS 7, NOT 32. The report quoted 32 from `grep -E '^\s*if\s*\([^)]*\)\s*return\s*;'`, which
 // counts `return` inside callbacks — where it means `continue` and skips nothing — and `return;` inside
 // regex and template literals in assertions ABOUT the shape. `topLevelBails` tracks brace depth through
 // the line and blanks literals first, so it counts only the spelling that actually bails an arm.

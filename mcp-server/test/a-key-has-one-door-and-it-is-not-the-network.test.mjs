@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A scoped access key has ONE door, and it is not the network one (tracker issue 174).
+// A scoped access key has ONE door, and it is not the network one.
 //
 // THE DESIGN THESE ARMS EXIST TO PIN. The interface serves two populations with different proofs: people
 // through a tunnel with a proxy JWT, and programs on the same box with a scoped key. One authentication

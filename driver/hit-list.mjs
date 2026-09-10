@@ -178,7 +178,7 @@ export function slimLine(rec, reading = null) {
   return line;
 }
 
-// ── CROWDS RIDE THE LIST AS A SIBLING ARRAY (Option A, ruled on tracker issue 95, 2026-08-31) ──────
+// ── CROWDS RIDE THE LIST AS A SIBLING ARRAY (Option A, ruled 2026-08-31) ──────────────────────────
 //
 // WHY THEY HAVE TO RIDE AT ALL. The locked body's acceptance 4 is that no stage reads the fat band or
 // an unpicked record. `band_lookup` answers from the list — but a lookup into a zone that was CROWDED

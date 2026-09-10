@@ -48,7 +48,7 @@ test("227 a different document is caught even when it is a real one", () => {
   assert.equal(v.kind, "wrong-document");
 });
 
-// THIS ASSERTION USED TO SIT IN THE ARM ABOVE AND EXPECTED `wrong-document` (tracker issue 273). It was
+// THIS ASSERTION USED TO SIT IN THE ARM ABOVE AND EXPECTED `wrong-document`. It was
 // wrong in the way that matters: the start page is not a document this run opened, so calling it "a
 // redirect, a stale tab or a second page target" sent a reader looking for a page that never existed.
 // Under a loaded box that is the message the arms produced, which is how a slow browser and a real defect

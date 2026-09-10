@@ -15,9 +15,9 @@ Environment=CLEAROTRON_NO_ENV_FILE=1
 
 # `clearotron update` is the whole mechanism, and it already owns both refusals:
 #
-#   1. it refuses over a configuration store kept INSIDE the checkout (tracker issue 1723) — an upgrade there is a
+#   1. it refuses over a configuration store kept INSIDE the checkout — an upgrade there is a
 #      merge conflict at best and a silent overwrite of the operator's own doctrine at worst;
-#   2. it refuses while a run is queued, claimed or in flight (tracker issue 1883) — `npm ci` rebuilds node_modules
+#   2. it refuses while a run is queued, claimed or in flight — `npm ci` rebuilds node_modules
 #      under whatever is running, and a clearance assembled from halves of two builds does not fail, it
 #      answers wrongly and says nothing.
 #

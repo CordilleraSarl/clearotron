@@ -278,7 +278,7 @@ export function buildKnockoutRun() {
 
   w(p("knockout-frame.md"), "# Frame\nTwo instructed names screened against the register and the open web.\n");
   w(p("knockout-plan.json"), JSON.stringify({ schema: 1, marks: [{ name: "PROJECT HALCYON" }, { name: "HALCYONA" }] }));
-  // THE MARKS CARRY WHAT A DELIVERED RUN'S MARKS CARRY (tracker issue 275). They used to hold a name, a
+  // THE MARKS CARRY WHAT A DELIVERED RUN'S MARKS CARRY. They used to hold a name, a
   // band and a class list and nothing else, which is enough for the brief — it reads report-data from the
   // pool — but not for the audit tools, whose whole subject is the material underneath the band. A fixture
   // with no findings and no negatives cannot tell "list_searches projects the proof of search" from
@@ -385,7 +385,7 @@ export function buildKnockoutRun() {
     "PROJECT HALCYON", "project-halcyon", "HIGH", "in-class",
     [
       { ref: "F1", ordinal: 1, name: "HALCYON", owner: "Halcyon Systems GmbH", band: "HIGH", type: "register", net: "Live EU registration in class 9.", basis: null, evidence: [], shape: "typed" },
-      // A PROMOTED REGISTER FILING THE SEARCH READ AND RATED (tracker issue 274). `shape: "register"` is
+      // A PROMOTED REGISTER FILING THE SEARCH READ AND RATED. `shape: "register"` is
       // what tells it from the typed conflict above, and the pair is the point: the briefing must show
       // this one's rating and read while leaving the typed line byte-identical.
       { ref: "REG #1", ordinal: 2, name: "HALCYON", owner: "Halcyon Holdings", band: "LOW", type: "Register filing", net: "A filing for this name stands on the register.", basis: "A dormant filing in unrelated goods; it does not bear on the rating.", evidence: [], shape: "register" },

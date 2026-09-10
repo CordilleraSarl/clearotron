@@ -95,7 +95,7 @@ export function refuseToCompare(a = {}, b = {}) {
   const modelOf = (x) => String(x?.modelUsed ?? x?.model ?? "").trim();
   if (modelOf(a) !== modelOf(b)) return null;
   return "REFUSING TO COMPARE — neither record names an engine and both name the same model "
-    + `(${modelOf(a) || "none"}), so there is nothing here that tells these two apart (tracker issue 1967). `
+    + `(${modelOf(a) || "none"}), so there is nothing here that tells these two apart. `
     + "A model id resolved from a tier is not the answer: it maps through the Anthropic table whichever "
     + "engine ran, so two arms on different engines read identically.\n"
     + "  The per-attempt `_driver/<stage>.jsonl` records `engine` and `modelUsed` — compare from there.";

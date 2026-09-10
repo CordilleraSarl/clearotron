@@ -50,7 +50,7 @@ import { isFrozen, demoChildren, publishSource } from "../driver/demo-container.
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-import { usageBlock } from "../shared/usage-block.mjs";   // tracker issues 1861/1882
+import { usageBlock } from "../shared/usage-block.mjs";
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 const has = (n) => argv.includes(n);
@@ -65,11 +65,11 @@ if (has("--help") || has("-h")) {
   //
   // Until now the flag was discoverable only by getting it wrong: `--help` listed --run-dir, --base,
   // --port and --no-open and stopped, so three of the four shipped demos were invisible from the
-  // command written to give somebody their first look (tracker issue 201).
+  // command written to give somebody their first look.
   const shipped = demoChildren(join(REPO, "demo"));
   if (shipped.length) {
     console.log(`\n  --product takes one of:`);
-    // NO "DEFAULT" MARKER (tracker issue 277). This printed "(the default, when --product is not given)"
+    // NO "DEFAULT" MARKER. This printed "(the default, when --product is not given)"
     // beside the first id, and kept printing it after the default became ALL of them — so `--help` taught
     // a reader the exact belief the change removed, in the command it was reported against.
     for (const id of shipped) console.log(`    ${id}`);
@@ -110,7 +110,7 @@ const DEMO_ROOT = join(REPO, "demo");
 const wanted = flag("--product");
 const children = demoChildren(DEMO_ROOT);
 
-// ── ALL OF THEM, UNLESS THE CALLER NARROWED IT (tracker issue 277) ──────────────────────────────────
+// ── ALL OF THEM, UNLESS THE CALLER NARROWED IT ──────────────────────────────────────────────────────
 //
 // This used to replay `children[0]` and stop. The package ships one finished report per product, and a
 // first-time reader met one of them with nothing on screen saying the other three existed — so three
@@ -129,8 +129,8 @@ const sampleDirs = flag("--run-dir")
 // the container itself is what it looks at, which is what it always did when `demo/` was empty.
 const sampleDir = sampleDirs[0] ?? resolve(DEMO_ROOT);
 if (!sampleDirs.length || !isFrozen(sampleDir)) {
-  // AN ABSENCE IS A FINDING, AND IT NAMES WHAT IT LOOKED AT. This exits 1 and always has; tracker issue
-  // 2193 reported it exiting 0, which did not reproduce at v0.1.0 or at main's tip. An arm pins it.
+  // AN ABSENCE IS A FINDING, AND IT NAMES WHAT IT LOOKED AT. This exits 1 and always has; a report of
+  // it exiting 0 did not reproduce at v0.1.0 or at main's tip. An arm pins it.
   die(
     `demo: no frozen demo at ${sampleDir}`,
     "",
@@ -231,7 +231,7 @@ console.log(`  reports folder:  ${poolRoot}\n`);
 mkdirSync(poolRoot, { recursive: true });
 const { republishRun } = await import(pathToFileURL(join(REPO, "driver", "publish", "report-registry.mjs")).href);
 
-// ── ONE FAILURE MUST NOT COST THE OTHERS, AND MUST NOT BE A QUIET COUNT (tracker issue 277) ─────────
+// ── ONE FAILURE MUST NOT COST THE OTHERS, AND MUST NOT BE A QUIET COUNT ─────────────────────────────
 //
 // Publishing stopped at the first error, which was right when there was one demo and is wrong now: a
 // reader whose knockout capture is unreadable should still get the other three, and should be TOLD which

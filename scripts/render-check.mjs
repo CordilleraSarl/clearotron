@@ -216,7 +216,7 @@ const PROBE = `<script>
       try { parent.postMessage({probeError:String(e && e.message || e)},'*'); } catch (e2) {}
     }
   }
-  // An error in here must not read as "no measurement" — that is the ambiguity tracker issue 1155 was about.
+  // An error in here must not read as "no measurement" — that is the ambiguity this was about.
   window.addEventListener('error', function(ev){
     try { parent.postMessage({probeError:String(ev && ev.message || ev)},'*'); } catch (e) {}
   });
@@ -508,7 +508,7 @@ async function main() {
     console.log("  Expect the sideways assertion to FAIL. A clean run here means the instrument is blind.\n");
   }
   let failures = 0;
-  // A COULD-NOT-LOOK IS NOT A FAILED MEASUREMENT (tracker issue 239). Counted apart from `failures`
+  // A COULD-NOT-LOOK IS NOT A FAILED MEASUREMENT. Counted apart from `failures`
   // because the two mean different things to whoever reads the exit code: 1 says the layout is wrong,
   // 2 says nothing was measured. Merging them is how a starved runner sends a reader to look at CSS.
   let unmeasured = 0;

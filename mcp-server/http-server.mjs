@@ -27,7 +27,7 @@ import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply t
 import { envFrom } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { doorPostureVerdict } from "./door-posture.mjs";   // — say when this door's mode came from another door's variables
-// The local key door (tracker issue 174): a second listener on a unix socket, so a scoped access key has
+// The local key door: a second listener on a unix socket, so a scoped access key has
 // a path that no tunnel can forward to and the TCP door never learns about keys.
 import { keyDoorRefusal, openKeyDoor, KEY_SOCKET_MODE } from "./key-socket.mjs";
 import { demoPostureLine } from "../driver/demo-posture.mjs";   // — the two mis-aimed warnings answer from one place
@@ -221,7 +221,7 @@ if (isMain) {
     }
   }
 
-  // ── THE KEY PATH, ON THE POSTURE SURFACE (tracker issue 174) ──────────────────────────────────────
+  // ── THE KEY PATH, ON THE POSTURE SURFACE ──────────────────────────────────────────────────────────
   //
   // An operator must be able to see that a local key path exists, and with what permissions, WITHOUT
   // reading a unit file — the acceptance asks for exactly that, and it is the same reasoning as the
@@ -318,7 +318,7 @@ if (isMain) {
     onReady: ({ port: bound }) => log(`listening on http://${HOST}:${bound}/mcp — READ-ONLY staff surface, firmDomains=[${ALLOWED_DOMAINS.join(", ")}], ${door}`),
   });
 
-  // ── THE SECOND DOOR: A LOCAL KEY PATH ON A UNIX SOCKET (tracker issue 174) ────────────────────────
+  // ── THE SECOND DOOR: A LOCAL KEY PATH ON A UNIX SOCKET ────────────────────────────────────────────
   //
   // One process, two transports, two handlers. The TCP door above is untouched and still never honours a
   // key; this one takes a scoped access key and cannot be reached from any network. A tunnel forwards to

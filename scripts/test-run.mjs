@@ -50,7 +50,7 @@ import { mkdtempSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, read
 import { delimiter, dirname, join, parse as parsePath, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
-import { snapshotRepo, repoWrites, explainRepoWrites } from "./repo-writes.mjs";   // tracker issue 198
+import { snapshotRepo, repoWrites, explainRepoWrites } from "./repo-writes.mjs";
 
 
 // ── TAIL — THIS WRAPPER READS BOTH SPELLINGS; IT DOES NOT TRANSLATE THE ENVIRONMENT ───────────
@@ -658,7 +658,7 @@ mkdirSync(process.env.CLEAROTRON_SUITE_TELEMETRY_DIR, { recursive: true });
 
 // ── NO TEST MAY WRITE INSIDE THIS CHECKOUT ──────────────────────────────────────────────────────────
 //
-// Tracker issue 198, and `scripts/repo-writes.mjs` carries the whole reason. In one line: `node --test`
+// `scripts/repo-writes.mjs` carries the whole reason. In one line: `node --test`
 // runs test FILES concurrently against ONE shared working tree, so a test that writes into the checkout
 // is read by every other file in the run, and the red that causes surfaces somewhere else entirely —
 // another arm, another branch, another session, in a diff that never touched the file.

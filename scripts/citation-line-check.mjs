@@ -633,7 +633,7 @@ const CALLS = /^\s*\(/;
 const OWN_NUMBER = /^\s*(?:at\s+\d|:\d)/;
 
 /** The symbol-shaped tokens adjoining a citation, in BOTH grammars: `cite SYM` and `SYM (cite)`. PURE. */
-// ── THE RATCHET: A NEWLY ADDED CITATION CARRIES A SYMBOL (tracker issue 125) ────────────────────────
+// ── THE RATCHET: A NEWLY ADDED CITATION CARRIES A SYMBOL ────────────────────────────────────────────
 //
 // The blindness above is not closeable on the existing corpus. Of the line citations in this tree only a
 // minority name a symbol beside the number, and the rest are checked for EXISTENCE and nothing more — a

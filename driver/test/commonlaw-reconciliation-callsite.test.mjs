@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE tracker issue 703/tracker issue 914 RATCHET, TESTED AT ITS CALL SITE.
+// THE CARRY RATCHET, TESTED AT ITS CALL SITE.
 //
-// `commonlaw-carry-ratchet.test.mjs` is 133 lines, green since tracker issue 914, and tests `reconciliationVerdict`
+// `commonlaw-carry-ratchet.test.mjs` is 133 lines, green for two months, and tests `reconciliationVerdict`
 // in isolation. The ratchet still never recorded once: `deriveRecordCarry`'s verdict block in pipeline.mjs named a bare `slice` with no
 // binding, the ReferenceError threw on the first statement after the verdict, and the catch reported
 // `verdict failed (non-fatal)` — to stderr only. **Ten pool traversals, ten failures, zero successes.**
@@ -16,7 +16,7 @@
 //   · a ReferenceError is recorded as a DRIVER BUG, distinct from a domain failure — one of them means
 //     our code is broken and the other means the artifact was;
 //   · both leave a DURABLE record in run.jsonl. `note()` is stderr-only, which is the second half of why
-//     tracker issue 914 survived two months: no consumer we have reads stderr.
+//     the defect survived two months: no consumer we have reads stderr.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
@@ -45,7 +45,7 @@ const events = (d) => {
 const named = (d, event) => events(d).filter((e) => e.event === event);
 
 test("THE CALL SITE: deriving the carry actually puts a commonlaw-reconciliation line in run.jsonl", () => {
-  // The assertion tracker issue 914 never had. With the unbound identifier in place this fails, and every one of the
+  // The assertion that was never written. With the unbound identifier in place this fails, and every one of the
   // 133 isolated tests still passes — which is the whole lesson.
   const d = runDir();
   deriveRecordCarry(ctxFor(d), "publish", { findings: [] });

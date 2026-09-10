@@ -50,7 +50,7 @@ export const WHATIF_MAX_CONCURRENT = Math.max(1, Number(process.env.CLEAROTRON_W
 // list of markers kept here. This file used to carry its own list, and it included `.failed` where the
 // MCP door's copy did not — so a failed run was planned, enqueued and then refused here. See the
 // declaration for what that cost and why `failed` is now eligible.
-// ── THE MARKERS ARE KIND-INDEPENDENT; THE VERDICT IS NOT (tracker issue 132) ────────────────────────
+// ── THE MARKERS ARE KIND-INDEPENDENT; THE VERDICT IS NOT ────────────────────────────────────────────
 //
 // This used to render the verdict here, calling whatIfRefusal with NO `kind` — so it defaulted to
 // "stage" and refused every memo on a delivered run with "what-if runs on live runs only", the third
@@ -136,7 +136,7 @@ async function settleOne(entry, exec) {
     const result = await exec({ confirmationToken });
     // A memo carries no stage — it re-runs none — so the old form logged a literal "undefined" for
     // every memo the worker settled. The kind is what distinguishes the two here, and an operator
-    // reading the drain log needs to know which of them just ran (tracker issue 132).
+    // reading the drain log needs to know which of them just ran.
     const what = job.op?.kind === "memo" ? "memo" : `${job.op.stage}${job.op.axis ? `:${job.op.axis}` : ""}`;
     note(`[whatif] ${id} ${result?.ok === false ? "failed" : "done"} (${what})`);
     return finishWhatIf(runDir, id, { ok: result?.ok !== false, op: job.op, result, error: result?.ok === false ? (result.fail ?? "the experiment did not complete") : null });

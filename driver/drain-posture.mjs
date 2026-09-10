@@ -4,8 +4,8 @@
 //
 // ── WHY THIS IS A MODULE AND NOT A LINE IN EACH ARM ─────────────────────────────────────────────────
 //
-// Two arms of the same deploy check reached opposite conclusions about one box (tracker issue 206,
-// measured on `c6e183d`). The queue arm read the worker unit, found it enabled, and said the .path/timer
+// Two arms of the same deploy check reached opposite conclusions about one box, measured on
+// `c6e183d`. The queue arm read the worker unit, found it enabled, and said the .path/timer
 // posture it was written for is retired here. The drainer arm did not read anything, applied the
 // timer-era rule, and called an absent drainer a fault. Both sentences shipped in the same report.
 //

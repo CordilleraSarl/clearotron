@@ -98,7 +98,7 @@ import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spin
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";   // — the stamp the late lanes never met
-import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array (tracker issue 95)
+import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
 // rows and the driver applies THOSE. `parseClosureLines`/`parseAskClosureLines` are still exported and
@@ -699,7 +699,7 @@ function deriveHitList(ctx, band) {
     // as a fallback so a provider that promotes the field is not silently ignored.
     const lines = (band?.enumerated ?? []).map((r) =>
       slimLine(r, r?.screen?.mark_transliteration ?? r?.mark_transliteration ?? null));
-    // ── CROWDS RIDE BESIDE THE LINES (Option A, ruled on tracker issue 95) ────────────────────────
+    // ── CROWDS RIDE BESIDE THE LINES (Option A, as ruled) ─────────────────────────────────────────
     //
     // A crowd is a zone that could NOT be enumerated. Without it on the list, `band_lookup` answering
     // from the list returns nothing for a crowded zone — and nothing is indistinguishable from
@@ -4653,7 +4653,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     // verbatim reason below this line names which.
     [REFUSAL_TERMINAL_KIND]: "Nothing failed. This deployment does not serve the search that was ordered, and said so before any work was done — the reason below names what is missing and what to change. Re-running it unchanged returns the same answer.",
   };
-  // ── A CAP DEATH IS A SUBSCRIPTION OUTCOME, NOT AN OUTAGE (tracker issue 103, the fourth ask) ──────
+  // ── A CAP DEATH IS A SUBSCRIPTION OUTCOME, NOT AN OUTAGE (the fourth ask) ─────────────────────────
   //
   // The weather lane carries BOTH an overloaded provider and a usage cap, and its one sentence
   // described the first: "stayed overloaded or unreachable … Re-trigger once the provider is healthy."
@@ -6256,7 +6256,7 @@ function sentinel(runDir, name, obj) {
 }
 
 /**
- * Settle every queued what-if BEFORE the run dir moves into the archive — tracker issue 240.
+ * Settle every queued what-if BEFORE the run dir moves into the archive.
  *
  * A queued job lives under the run directory, and the worker enumerates candidates with `liveRunDirs`,
  * which skips `archive` outright. So archiving carried a pending job out of the worker's reach: not
@@ -8457,7 +8457,7 @@ async function pipelineInner(job, opts = {}) {
   // and carries the measured reason it cannot be queued (queueing it would orphan the mint the last
   // flush's own pass makes). That list is censused by an arm, so this sentence cannot go stale
   // silently again — it read "the ONLY path" while one mechanism had always fired its own pass, and an
-  // invariant with an undeclared violation teaches the next reader the wrong rule (tracker issue 116).
+  // invariant with an undeclared violation teaches the next reader the wrong rule.
   // Everything else: escalation/envelope/screen-gate keep
   // their unit-level work but MINT durable queue items instead of firing their own opus digest pass, and
   // the queue settles in ONE consolidated flush at the frame-reopen seam (pre-synthesis), plus at most
@@ -12036,7 +12036,7 @@ async function pipelineInner(job, opts = {}) {
     // an inventory that cannot be read hands the stage nothing, and the dictation then says nothing about
     // sources rather than asserting a readiness nobody measured.
     try {
-      // COMPOSED BY THE MODULE THAT READS IT (tracker issue 173). This mapping used to be inline here
+      // COMPOSED BY THE MODULE THAT READS IT. This mapping used to be inline here
       // and rebuilt by hand in an arm — two authors for one shape, and the arm's copy went stale the
       // moment this one gained a field, while still passing. `caseLawSourceRows` is now the only place
       // it is written, and it carries `checked` so an UNREADABLE credential reaches the composer as a
@@ -13416,7 +13416,7 @@ async function pipelineInner(job, opts = {}) {
           note(`recall: ${silent.lost.length} position(s) the digest ended as FINDINGS reached no client `
             + `surface and no step said why — ${silent.lost.map((l) => `${l.mark ?? l.uri} (${l.reason})`).join("; ")}`);
         }
-        // ── AND THE STATED CASE, WHICH IS THE ONE THAT REACHED A CLIENT (tracker issue 248) ────────
+        // ── AND THE STATED CASE, WHICH IS THE ONE THAT REACHED A CLIENT ────────────────────────────
         //
         // Same inputs, same seam, same best-effort contract — a second call rather than a widened first
         // one, because the sibling's population boundary is deliberate and correct. It covers a
@@ -13711,7 +13711,7 @@ async function pipelineInner(job, opts = {}) {
                 const askApplied = applyAskClosure(runAsks, acc.ask, fileTexts, { ts: askTs });
                 runAsks = askApplied.asks;
                 for (const u of askApplied.unverified) runLog(run.runDir, { event: "ask-closure-unverified", ...u });
-                // Option A (tracker issue 246): a recall ask whose mark is not in the delivered findings
+                // Option A: a recall ask whose mark is not in the delivered findings
                 // did NOT close. Each one is a mark the run found and the client was not shown, so it is
                 // recorded by name rather than left to be inferred from an ask that merely stayed open.
                 // ✕ NOT written into findings.json here. See the sidecar's own note: a row appended after
@@ -13721,7 +13721,7 @@ async function pipelineInner(job, opts = {}) {
                 if (askApplied.carryIntoFindings?.length)
                   writeFileSync(driverDir(run.runDir, "marks-owed-a-finding.json"),
                     JSON.stringify({
-                      _provenance: "recall asks that could not close because the mark they found is absent from findings.json — owner ruling 2026-09-07, tracker issue 246 Option A, worded about the MARK",
+                      _provenance: "recall asks that could not close because the mark they found is absent from findings.json — owner ruling 2026-09-07, Option A, worded about the MARK",
                       _notWritten: "these are NOT appended to findings.json: a finding carries a band, a net line and a legal position, and a row minted here would carry none of them. The repair belongs where the findings are authored.",
                       count: askApplied.carryIntoFindings.length,
                       marks: askApplied.carryIntoFindings,

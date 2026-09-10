@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // ── The synopsis a verb prints for --help, read out of its own header ─────────────────────────────
 //
-// tracker issues 1861 and 1882. Four verbs printed their LICENCE HEADER as the first line of `--help`:
+// Four verbs printed their LICENCE HEADER as the first line of `--help`:
 //
 //     $ npx clearotron doctor --help
 //     SPDX-License-Identifier: AGPL-3.0-only

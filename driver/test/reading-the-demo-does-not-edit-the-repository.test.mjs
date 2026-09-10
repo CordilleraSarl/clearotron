@@ -39,7 +39,7 @@ test("157 reading the demo leaves the repository exactly as it found it", { time
 
   // Every tracked file under the child, by content. The receipt is the one that moved, and naming only
   // it would miss the next file the publisher learns to write.
-  // Through the helper (tracker issue 235). It drops `-z`, and that costs nothing here: a path this
+  // Through the helper. It drops `-z`, and that costs nothing here: a path this
   // pathspec can reach is publisher-written under demo/, and git only quotes on characters no such
   // path carries. What it buys is the stated skip below instead of a throw off a checkout.
   const listed = trackedFiles(GUARD, { root: REPO, pathspec: [join("demo", product)] });

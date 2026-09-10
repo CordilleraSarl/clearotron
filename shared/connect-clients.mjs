@@ -50,8 +50,8 @@
 // Two tables partitioning the same clients on different axes do not merely risk drifting; they had
 // already drifted before either was finished. The page said Codex needs a key address. This table says
 // Codex needs no key at all. On a local install the page's answer resolved to `null`, so the page named
-// a one-line command in its own instructions and then rendered no command — which is tracker issue
-// 1976's defect, sitting inside the page written to answer it.
+// a one-line command in its own instructions and then rendered no command — which is that very
+// defect, sitting inside the page written to answer it.
 //
 // So the browser no longer derives any of this. It is handed resolved rows and renders them. That is not
 // a preference for server-side logic: the install's own filesystem path is not a browser fact, and any
@@ -123,7 +123,7 @@ export const CONNECT_CLIENTS = Object.freeze([
     ],
   },
   {
-    // NOT A SEPARATE PRODUCT (tracker issue 147; owner: "there is no such thing as desktop"). This is
+    // NOT A SEPARATE PRODUCT (decided: there is no such thing as desktop). This is
     // Claude reached the way that runs on the reader's own machine, so it carries Claude's name and says
     // which way it is in the sub-label. The `desktop-json` stdio shape is unchanged — what moved is what
     // a reader is told this is, not how it connects.
@@ -136,7 +136,7 @@ export const CONNECT_CLIENTS = Object.freeze([
 
   // ── Speaks HTTP. Connects from the vendor's own servers. ────────────────────────────────────────
   //
-  // ONE ROW, BECAUSE IT IS ONE APP (tracker issue 147, owner ruling in session: "you know its just ONE
+  // ONE ROW, BECAUSE IT IS ONE APP (owner ruling in session: "you know its just ONE
   // APP on a laptop which has cowork and code in it and claude is what its called"). `cowork` was a
   // separate row here and is merged in; the sub-label carries where it is met, which is a fact about the
   // reader's screen rather than about our software.
@@ -177,7 +177,7 @@ export const CONNECT_CLIENTS = Object.freeze([
     ],
   },
   {
-    // UNDRIVEN, AND WORDED LIKE IT (tracker issue 148; the owner drives this vendor himself this
+    // UNDRIVEN, AND WORDED LIKE IT (the owner drives this vendor himself this
     // week and the dated stamp appears then). The old second step named "API Key" as the control to
     // choose — the same assertion-from-no-observation that made the cowork row send clients hunting
     // for a box that is not the way in. Two lines and a place to put each is what we actually know.
@@ -201,7 +201,7 @@ export const CONNECT_CLIENTS = Object.freeze([
     // being read by somebody who is not us. Found by driving the four decks; neither instrument could
     // see it, because both ask whether the right row rendered and neither asks whether the sentence reads.
     //
-    // Owner's ruling 2026-09-06, tracker issue 147, option B: this row gets its own line and the approved
+    // Owner's ruling 2026-09-06, option B: this row gets its own line and the approved
     // sentence is left untouched for the three named ones. Option A — renaming the row to "your
     // assistant" — was rejected because it edits a line he approved to repair a line he did not.
     //
@@ -230,7 +230,7 @@ export const CONNECT_CLIENTS = Object.freeze([
  * A stub that restates a wire is a second author for one shape. This is the shape; both callers ask.
  */
 // `sub`, `verifiedOn` and `by` ride only where the ROW carries them, and absent means absent rather than
-// null (tracker issue 147). Two of the three are load-bearing on the page:
+// null. Two of the three are load-bearing on the page:
 //
 //   • `sub` is how one app can appear once per route without two rows claiming to be two products —
 //     "Claude · app, web, and Cowork" and "Claude · app, on this computer" are one product met two ways.

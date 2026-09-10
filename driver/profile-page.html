@@ -261,7 +261,7 @@ function collect() {
   // (set outside this page) must survive a save round-trip instead of being silently rewritten
   const delivery = { ...((current.profile && current.profile.delivery) || {}), email: $("f_email").value };
   // THE MARKING IS THREE-STATE ON THE WIRE and this control has two live options, so the default one
-  // writes ABSENCE and never `false` (tracker issue 1991). It was a checkbox, which rendered absent and
+  // writes ABSENCE and never `false`. It was a checkbox, which rendered absent and
   // `false` identically and wrote a boolean on every save — so a customer who had given no instruction
   // was recorded as "strip the line" the first time anybody pressed Save on an unrelated field, and
   // their next report shipped with no confidentiality line. That is the incident this door has already had.
@@ -517,7 +517,7 @@ function collectProject() {
   // delivery is merged as a WHOLE field (project → customer): overriding it here intentionally replaces the
   // customer's delivery, so a project's delivery carries only email + privileged (style/template are the
   // customer's presentation defaults; a project that needs its own sets them via a code change, like the framework).
-  // Same three-state rule as the customer form (tracker issue 1991): the default option writes NO key, so
+  // Same three-state rule as the customer form: the default option writes NO key, so
   // an overlay never invents "strip the marking" for a project that gave no instruction.
   const email = $("p_email").value; if (email) { o.delivery = { email }; if ($("p_priv").value === "no") o.delivery.privileged = false; }
   const app = ($("p_appetite").value||"").trim(); if (app) o.riskAppetite = app;

@@ -134,13 +134,13 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   assert.ok(existsSync(driverDir(res.runDir, "blind-frame-calls", "call-001.json")),
     "no record_blind_frame call capture — the model reached disk by some other writer");
   assert.ok(existsSync(join(res.runDir, "blind-frame-model.json")), "…and the driver rendered the artifact from it");
-  // tracker issue 1092, second conversion — same keying for skeptic. Both recording stages are now proven by their
+  // The second recording conversion — same keying for skeptic. Both recording stages are now proven by their
   // capture in every run of this test, which is the state e2e could not find on 2e203b75: capture absent,
   // artifact present, hand-written.
   assert.ok(existsSync(driverDir(res.runDir, "skeptic-calls", "call-001.json")),
     "no record_skeptic call capture — skeptic-flags.md reached disk by some other writer");
   assert.ok(existsSync(join(res.runDir, "skeptic-flags.md")), "…and the driver rendered the flags from it");
-  // tracker issue 1092, third conversion — frame-diff, and the first whose ONE call owns TWO artifacts. Both are
+  // The third recording conversion — frame-diff, and the first whose ONE call owns TWO artifacts. Both are
   // asserted, because the pair is the property: the JSON is what every consumer reads and the prose is
   // rendered from the same parsed model, so a run carrying one without the other means the render and the
   // serialize came apart. The capture is still the discriminator — the artifacts have had two writers in
@@ -309,7 +309,7 @@ test("frame-omission: a firing frame-diff fires a supplemental sweep BEFORE plac
   assert.ok(order.includes("blind-frame") && order.includes("frame-diff"), "blind-frame + frame-diff ran");
   assert.ok(events.some((e) => e.event === "frame-diff" && e.firing >= 1 && e.dominant_element_gap === true), "frame-diff flagged a firing directive + a dominant-element gap");
   assert.ok(events.some((e) => e.event === "frame-reopen" && e.swept >= 1), "frame-reopen swept a directive");
-  // ── tracker issue 250, THE WHOLE POINT: ONE placement dispatch ────────────────────────────────────────────────
+  // ── THE WHOLE POINT: ONE placement dispatch ─────────────────────────────────────────────────────────────────
   // Before this issue the reopen regenerated the register band AFTER placement had already run on the
   // pre-enumeration band, and had to dispatch placement a SECOND time or the delivery-freshness gate
   // would refuse the report. That second dispatch was 204K output tokens / ~46 min of wall-clock across
@@ -329,7 +329,7 @@ test("frame-omission: a firing frame-diff fires a supplemental sweep BEFORE plac
   // seam, because there are no prior findings to reconcile against — the digest has not run yet — and
   // settling it there would strand escalation's and envelope's later mints and park the run. Whatever
   // digest passes this run does spend belong to the mechanisms that own them (here: the envelope's
-  // settlement flush at the standalone seam, unchanged by tracker issue 250).
+  // settlement flush at the standalone seam, unchanged by the single-dispatch change).
   assert.ok(events.some((e) => e.event === "frame-reopen-reconcile-not-needed"),
     "the un-needed reconcile is RECORDED, not silently skipped");
   assert.ok(!events.some((e) => e.event === "digest-queued" && e.trigger === "frame-reopen"),
@@ -348,7 +348,7 @@ test("frame-omission: a firing frame-diff fires a supplemental sweep BEFORE plac
   assert.doesNotMatch(readFileSync(join(res.runDir, "report.md"), "utf8"), /frame_reopen_note/, "no fm caveat note post-spec-49");
 });
 
-// ── tracker issue 250 ZERO SEMANTICS ──────────────────────────────────────────────────────────────────────────────
+// ── ZERO SEMANTICS ────────────────────────────────────────────────────────────────────────────────────────────────
 // Seven bugs have shipped at this seam where an absence was read as a pass, so moving the block earns
 // the question directly: after the move, does "the reopen produced no directives" read differently from
 // "the reopen never ran"? Both are an absence of frame-reopen rows, so the discriminator cannot be an
@@ -394,7 +394,7 @@ test("#250 zero semantics: a settled frame, a frame nobody asked about, and a sw
   assert.notDeepEqual(shape(a), shape(c), "settled ≠ swept");
   assert.notDeepEqual(shape(b), shape(c), "never-asked ≠ swept");
 
-  // …and wherever the question IS asked, it is answered BEFORE the one placement dispatch (tracker issue 250)
+  // …and wherever the question IS asked, it is answered BEFORE the one placement dispatch
   for (const { events } of [clean, reopened]) {
     const fdIdx = events.findIndex((e) => e.event === "frame-diff");
     const plIdx = events.findIndex((e) => e.event === "stage" && e.stage === "placement-inquiry");
@@ -530,9 +530,9 @@ test("#1273 THE CONTROL — the SAME ledger with no designation still skips, so 
     "an UNdesignated coverage-limited axis stopped being skippable — the floor is defaulting to on");
 });
 
-// The C-2 acceptance arm and Fix2 #7 are RETIRED with the ⭐ search floor (tracker issue 1203, owner ruling). They
+// The C-2 acceptance arm and Fix2 #7 are RETIRED with the ⭐ search floor (owner ruling). They
 // drove `MOCK_STAR_FLOOR` through a full mock run and asserted the breach reached the delivery
-// disclosure. Both were real end-to-end coverage of a mechanism that is now deleted: after tracker issue 1092
+// disclosure. Both were real end-to-end coverage of a mechanism that is now deleted: after recording
 // conversion 3 no typed field can designate a ⭐, and the owner ruled the capability removed rather than
 // regrown. Git history holds them if mandatory-sweep compliance is ever refiled.
 
@@ -572,7 +572,7 @@ test("spec-49 T3 (H3): a digest that settles NO coverage row → the run FAILS (
   // The doctrine is unchanged: machinery that leaves the coverage-honesty floor unable to run FAILS the
   // run, and never ships a finished-looking CONDITIONAL (the retired spec-48 D1 behaviour).
   //
-  // tracker issue 476 MOVED WHERE IT IS CAUGHT, AND EARLIER IS BETTER. Before the form, "no readable coverage" meant a
+  // WHERE THIS IS CAUGHT MOVED, AND EARLIER IS BETTER. Before the form, "no readable coverage" meant a
   // findings file whose Coverage-ledger section carried no parseable table — a shape that passed the
   // digest's own validator and only died at the pre-verdict floor, after the whole run had been spent.
   // The seat no longer writes that table: it fills in a form the driver wrote, and a form with no status
@@ -633,7 +633,7 @@ test("WS-A: --from register-digest re-run drops the stale JSON, then the driver 
 });
 
 test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM the record body (report.html)", async () => {
-  // The mock emits a fetched record for the cited uri via the PRODUCTION record log — which since tracker issue 743 is
+  // The mock emits a fetched record for the cited uri via the PRODUCTION record log — which is now
   // the RUN's own `_driver/register-record-bodies.jsonl`, not a box-global file, so `MOCK_WRITE_RECORD`
   // alone is the whole setup. The driver's lint-pass assembleRunRecords materializes
   // _records/us-90000001.json from it, and the publish render must source the registry IDs from that body.
@@ -1021,7 +1021,7 @@ test("senior-right closure: an UNREACHABLE senior right → plain-English open i
 test("repair-first A4: one malformed finding object is REFUSED AT THE CALL and restated — the run delivers", async () => {
   // MOCK_BAD_FINDING plants an invented key in finding #1 (finding_key_unknown).
   //
-  // RE-AIMED, NOT RELAXED (tracker issue 1893). This asserted a driver-orchestrated repair: the bad
+  // RE-AIMED, NOT RELAXED. This asserted a driver-orchestrated repair: the bad
   // object reached disk, a validator named it, and the driver re-dispatched synthesis with a composer
   // that NAMED the object — `finding-reemit`. The writer's conversion moves the catch EARLIER: the
   // record is validated at the call, so the malformed object is refused before anything is written and
@@ -1255,7 +1255,7 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
   const s = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
   assert.equal(s.state, "delivered");
   assert.equal(s.verdict, "CLEAR");
-  // THE RUN'S OWN URL IS THE PORTAL ROUTE (tracker issue 289). This asserted `/report\.html$` — the
+  // THE RUN'S OWN URL IS THE PORTAL ROUTE. This asserted `/report\.html$` — the
   // pool's directory layout, which is where the documents sit on disk and is not an application route.
   // The link shipped on every delivered report and, on production, opened the portal's own
   // `{"error":"not_found"}` for the run's OWN owner.
@@ -1300,7 +1300,7 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
 // a readiness BIT and the withholding it drove; what is required is that a recorded defect is never only
 // a flag nobody reads. Warn beside the report link, never suppress the artifact.
 //
-// RULED 2026-07-31, and this test is where the ruling is pinned. tracker issue 162 asserted here that QC reasons
+// RULED 2026-07-31, and this test is where the ruling is pinned. An earlier arm asserted here that QC reasons
 // "never ride the email"; a rebase flipped that to a bare match on the engine's own sentence, which
 // asserts the leak rather than the contract. Neither is right. composeEmailHtml is NOT only the
 // reviewer's reply: portal-service stamps forwarderEmail from the verified principal, so on a
@@ -1739,7 +1739,7 @@ test("Fix2 #1: a wrong-class 0/0 dispatch does NOT sweep the directive — the d
   // the unclosed dominant gap honestly clamps the verdict (never a false CLEAR).
   assert.equal(res.verdict, "CONDITIONAL", "the standing dominant-element gap clamped CLEAR→CONDITIONAL");
 
-  // tracker issue 248 WIRING — the remedy term ledger reaches the receipt, and a term that ran and returned
+  // THE WIRING — the remedy term ledger reaches the receipt, and a term that ran and returned
   // nothing carries its EXECUTED QUERY next to the zero. This is the pipeline half of it: the pure
   // module is unit-tested elsewhere, and this asserts the field is actually written by the run.
   assert.ok(Array.isArray(receipt.remedy_terms) && receipt.remedy_terms.length >= 1,
@@ -1786,7 +1786,7 @@ test("Fix2 #1: a genuine close on the FIRST dispatch sweeps with NO re-attempt (
   assert.ok(fr.swept >= 1);
   assert.equal(res.verdict, "CLEAR");
 
-  // tracker issue 248 WIRING — the closure gate must not manufacture a clamp on a genuine close. Every remedy term
+  // THE WIRING — the closure gate must not manufacture a clamp on a genuine close. Every remedy term
   // here is accounted (`found`: the slice landed with records), so domClosed stays true and the
   // verdict stays CLEAR. Paired with the pure-module test that a single unaccounted term blocks it,
   // this is the gate answering both ways through the real pipeline.
@@ -2144,7 +2144,7 @@ test("A2 report-cards: one card's failure is non-fatal — siblings complete and
   let out;
   try {
     out = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FINDINGS_N: "3", MOCK_FAIL_STAGE: "BOUND TO CARD 2" });
-    // tracker issue 1092 conversion 5 — keyed on the dispatch's own statement of its bound card. It used to read
+    // Recording conversion 5 — keyed on the dispatch's own statement of its bound card. It used to read
     // "report-cards/2.md", and a converted dispatch names no path: the knob would have stopped matching
     // and this test would have measured a run where NO card failed while still asserting one did.
   } finally { process.stderr.write = orig; }
@@ -2178,7 +2178,7 @@ function ledgerSets(raw) {
 
 // ── THE SURVIVING UNSPLIT LEVERS, and which of them a test can actually drive ─────────────────────
 //
-// tracker issue 1149 item 8 deleted CLEAROTRON_COMMONLAW_SPLIT, and with it the only way to ask for the single-member
+// The settings cull deleted CLEAROTRON_COMMONLAW_SPLIT, and with it the only way to ask for the single-member
 // assembly by flipping one variable. Two levers still reach that assembly, both production shapes
 // rather than switches (pipeline.mjs deriveGridSpec), and they are NOT interchangeable here:
 //
@@ -2225,7 +2225,7 @@ async function resumedUnsplitRun(extra = {}) {
 test("A1 split: the merged canonical ledger accounts for exactly the DICTATED grid (cells/gaps/pr_risk)", async () => {
   const split = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   assert.equal(split.res.ok, true, JSON.stringify(split.res));
-  // member shape: the two grid halves AND the meaning seat (tracker issue 517) — never the single member
+  // member shape: the two grid halves AND the meaning seat — never the single member
   const clStages = stageOrder(split.events).filter((s) => s.startsWith("common-law"));
   assert.deepEqual(clStages.sort(), ["common-law-half:a", "common-law-half:b", `common-law-half:${MEANING_SEAT}`].sort(),
     "split gather = two grid halves + the meaning seat");
@@ -2339,7 +2339,7 @@ test("A1 split quarantine: the MEANING SEAT's dictated queries are NEVER silentl
   // the pipeline can see the hole. Pre-fix this shipped a clean meaning-read over searches that never ran
   // (a production false-clean class). The merge gate's per-query identity join must fail the run instead.
   //
-  // tracker issue 517 MOVED THE SEAT THIS TEST KILLS, and that is the point. It used to kill half b, which owned the
+  // THE SEAT THIS TEST KILLS MOVED, and that is the point. It used to kill half b, which owned the
   // whole sweep as well as half a grid; killing a grid half now drops CELLS ONLY (they merge as honest
   // gaps and ride the closure pass), because a grid half is dictated no meaning query at all. The
   // false-clean this test guards lives entirely at the meaning seat now, so that is where it is aimed.
@@ -2403,11 +2403,11 @@ test("P2-C split armed: with-results receipts flow the disposition contract end 
 test("P2-C split: an undisposed receipt fails AT THE OWNING HALF SEAT and the corrective retry heals it — the connotation hint reaches the authoring session", async () => {
   // needle = the FULL first dictated query ("<first grid term> meaning slang", connotation index 0).
   //
-  // tracker issue 345 MOVED THIS SEAT, and that is what this test now pins. Index 0 used to land on half a under the
+  // THIS SEAT MOVED, and that is what this test now pins. Index 0 used to land on half a under the
   // parity partition, which was also the half writing the clean bottom line. The meaning sweep is now
   // SINGLE-SEAT (MEANING_SEAT), so EVERY dictated query — index 0 included — is owned by one half,
   // and the seat that asserts the clean bottom line is no longer the seat that holds the receipts.
-  // That separation is safe precisely because tracker issue 350 armed the gate on the RECEIPTS rather than on prose:
+  // That separation is safe precisely because the gate reads the RECEIPTS rather than the prose:
   // the owning half is policed on what its ledger records, whatever its own document claims.
   // MOCK_CL_UNDISPOSED withholds the rows until a turn carrying the connotation correction dictate.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -2451,7 +2451,7 @@ test("P2-C split cross-half: the half that OWNS the receipt now catches it at IT
   // half b's ledger, which writes NO bottom line of its own, while half a writes the clean claim over zero
   // with-results receipts of its own.
   //
-  // THE SHAPE THIS TEST WAS WRITTEN FOR IS THE HOLE tracker issue 350 CLOSES, so it can no longer arise. Half b used to
+  // THE SHAPE THIS TEST WAS WRITTEN FOR IS THE HOLE THAT GATE CLOSES, so it can no longer arise. Half b used to
   // PASS its own seat — its doc asserted nothing CLEAN_CLAIM_RE matched, so the disposition arm never armed
   // over its own undisposed receipt — and only the MERGED doc was in violation. That is precisely the defect:
   // the arm was a phrase match on model prose, so the half seat that actually owned the receipt was silent
@@ -2462,7 +2462,7 @@ test("P2-C split cross-half: the half that OWNS the receipt now catches it at IT
   // threw StageFailure failClass "deterministic" (parkBudget 0, "never parked at all") and the first fresh
   // split run with it died .failed after the full paid gather with no model turn ever seeing the hint.
   //
-  // tracker issue 345 CLOSED the merge-only channel this comment used to describe. It read: "the recurrence floor
+  // The merge-only channel this comment used to describe is CLOSED. It read: "the recurrence floor
   // counts distinct queries over the UNION, so a receipt under the floor in each half and over it in the
   // merged pair still fails only at the merge." That was true, and it was the VENZY terminal — both
   // halves passed and the merge of them failed, on an obligation neither reader could observe from the
@@ -2652,7 +2652,7 @@ test("#563 the basis derivation runs at both seams, and no third synthesis pass 
 //   then, only if a spec exists ⟸ gridSpec.terms.length >= 2
 //                              && !resumedUnsplit
 //
-// tracker issue 1149 item 8 deleted the `config.commonLawSplit` conjunct (CLEAROTRON_COMMONLAW_SPLIT). That is worth
+// The settings cull deleted the `config.commonLawSplit` conjunct (CLEAROTRON_COMMONLAW_SPLIT). That is worth
 // reading against the incident above rather than skipping: the flag was the obvious suspect BOTH times
 // and was the answer NEITHER time, which is the argument for recording every term instead of trusting
 // the one with a name. The record is why deleting it is safe.
@@ -2673,7 +2673,7 @@ test("#753 a SPLIT run records the split and the quantity that armed it", async 
   assert.equal(rec.path, "split");
   assert.equal(rec.reason, "armed");
   assert.ok(rec.terms >= 2, "the deciding quantity is recorded, not merely the verdict");
-  // `rec.flag` is gone with tracker issue 1149 item 8: the record names the terms of the selector, and the flag is no
+  // `rec.flag` is gone with it: the record names the terms of the selector, and the flag is no
   // longer one of them. The two test lines here were its only readers in the whole tree.
   assert.ok(!("flag" in rec), "a record that still carried `flag` would be naming a term the selector no longer has");
   assert.ok(rec.members.length && rec.members.every((m) => m.startsWith("common-law-half:")),
@@ -2726,7 +2726,7 @@ test("#753 the record can never explain a path the run did not take", async () =
 
 // ── the recorded downgrade is READ, and a run that took it cannot deliver clean ────────────────
 //
-// tracker issue 753 wrote the record; nothing consulted it. A run whose dictated meaning sweep silently became the
+// The record was written; nothing consulted it. A run whose dictated meaning sweep silently became the
 // legacy spec-less path delivered CLEAN, with common-law-path.json sitting on disk naming the downgrade.
 //
 // THE LEVER, and it is a real production shape rather than a synthetic one: a resume of a run with no
@@ -2789,7 +2789,7 @@ test("#979 a legitimate unsplit path is NOT a failure: a pre-split resume still 
   assert.ok(!v.kinds?.commonLawDowngrade, "and carries no downgrade kind");
 });
 
-// tracker issue 979 (3) — the selector/record disagreement FAULTS instead of riding along as a recorded row.
+// The selector/record disagreement FAULTS instead of riding along as a recorded row.
 //
 // It cannot fire on any path the engine has today (both sides of `agrees` come from the one
 // deriveGridSpec call above it), so there is no live run to assert against — the behaviour under test is
@@ -2822,7 +2822,7 @@ test("#979 selector/record disagreement FAULTS, and the record is written BEFORE
 test("#1101: a malformed ACTION gets its own named re-emit and the run recovers — it used to exhaust", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_ACTIONS: "condition-broken" });
   assert.equal(res.ok, true, `the run should recover through the action re-emit: ${JSON.stringify(res)}`);
-  // RE-AIMED (tracker issue 1893): the action-shaped defect is refused at the call now, so there is no
+  // RE-AIMED: the action-shaped defect is refused at the call now, so there is no
   // `action-reemit` and no warm re-dispatch to observe — the seat restates in the same turn. Everything
   // this arm is FOR is asserted below and unchanged: the run recovers, the condition survives, and the
   // verdict it gates is still CONDITIONAL.
@@ -2844,7 +2844,7 @@ test("#1101: a malformed ask_answers entry gets its OWN named re-emit — the la
   // dropped one ships a question the client committed at intake unanswered: worth a repair, not a shrug.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_ASK_ANSWER_BAD: "1" });
   assert.equal(res.ok, true, `the run should recover through the ask_answers re-emit: ${JSON.stringify(res)}`);
-  // RE-AIMED (tracker issue 1893): refused at the call, restated in the same turn, so there is no
+  // RE-AIMED: refused at the call, restated in the same turn, so there is no
   // `ask-answer-reemit` and no warm re-dispatch. The subject is unchanged and is asserted below — a
   // dropped ask_answer ships a question the client committed at intake UNANSWERED, and that is what
   // must not happen however the defect is caught.

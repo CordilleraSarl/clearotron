@@ -667,7 +667,7 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
   // what it saw. Auto-promoting a collision to `found` would be the scorer manufacturing recall from
   // its own confusion, which is the defect one layer up from the one being fixed. score.mjs prints
   // these; a reader adjudicates.
-  // ── THE PREDICATE WAS THE OWNER, AND THE HEADING ABOVE SAYS RECORD (tracker issue 249) ──────────
+  // ── THE PREDICATE WAS THE OWNER, AND THE HEADING ABOVE SAYS RECORD ──────────────────────────────
   //
   // The only condition used to be `ownersMatch`. That implements a different class from the one the
   // paragraph above states, and the justification — "they cannot both be true" — does not hold for any

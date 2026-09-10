@@ -553,7 +553,7 @@ export function countRecoveryLanes(history, { total = 0 } = {}) {
   return { weather, defect: defect + shortfall };
 }
 
-// ── CAP PARKS: A PROVIDER SAYING "NOT YET" IS NOT A STAGE FAILING (tracker issue 103) ──────────────
+// ── CAP PARKS: A PROVIDER SAYING "NOT YET" IS NOT A STAGE FAILING ──────────────────────────────────
 //
 // Owner, watching a run spend 4 of its 6 recovery parks against one subscription cap:
 //

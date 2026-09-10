@@ -123,7 +123,7 @@ test("normal pipeline failure (inside the try{}) is NOT double-noticed by the ba
 // outbox in the headless default and this one did not, so on a deployment without that platform
 // installed (which is every deployment of this product) the notice was simply LOST. The failure it
 // reports is the one nothing else reports: a throw before the run owns a directory.
-// ── tracker issue 216 MOVED THIS CAUSE TO AN EARLIER GATE, and the arm follows it ───────────────────
+// ── THIS CAUSE MOVED TO AN EARLIER GATE, and the arm follows it ─────────────────────────────────────
 //
 // A dropped register credential used to reach `preflightCredentials` and throw there, before the run dir
 // existed. The owner ruled on 2026-09-06 that an install comes up unconfigured and every run is refused
@@ -165,7 +165,7 @@ test("a dropped register credential is refused AT ORDER TIME → a QUEUE-level o
   const reason = readFileSync(join(Q, "job-c.failed.reason"), "utf8");
   assert.match(reason, /CORSEARCH_SESSION_KEY/, "the operator's reason does not name the value to set");
   assert.match(reason, /installed but not configured/, "the operator's reason does not say what is wrong");
-  // AND THE REQUESTER'S DOES NOT, which is the half tracker issue 216 turns on: this text reaches a
+  // AND THE REQUESTER'S DOES NOT, which is the half that change turns on: this text reaches a
   // person who cannot act on an environment variable, and the portal refuses variable-shaped names in
   // anything a browser renders.
   const said = JSON.stringify(packet);

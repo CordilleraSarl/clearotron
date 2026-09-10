@@ -23,7 +23,7 @@ import { fileURLToPath } from "node:url";
 import { trackedFiles } from "../../shared/tracked-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const GUARD = "door-url-base (tracker issue 1928)";
+const GUARD = "door-url-base";
 const SELF = "driver/test/a-door-does-not-build-its-url-from-the-callers-host.test.mjs";
 
 // `new URL(req.url, …)` whose BASE mentions the request headers. Deliberately narrow: it is the

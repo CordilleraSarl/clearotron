@@ -78,8 +78,8 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
   if (tokenOnly && verify) throw new Error("makeHttpHandler: tokenOnly is for a door with no auth proxy in front — pass verify:null");
   return async (req, res) => {
     try {
-      // THE BASE IS A CONSTANT, AND WHAT THE `Host` HEADER IS USED FOR HERE IS: NOTHING (tracker issue
-      // 1928). Only `pathname` and `searchParams` are read below, so the base exists purely so a bare
+      // THE BASE IS A CONSTANT, AND WHAT THE `Host` HEADER IS USED FOR HERE IS: NOTHING. Only
+      // `pathname` and `searchParams` are read below, so the base exists purely so a bare
       // `req.url` parses as a path. Interpolating the caller's `Host` bought a crash and no behaviour:
       // a value that is not a valid authority makes `new URL` throw, the outer catch answers 500 with a
       // stack in the log, and every bit of that happens ABOVE the `authenticate FIRST` block — so an

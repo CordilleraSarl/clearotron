@@ -65,7 +65,7 @@ test("2176-F36 the dry-run tense says the same thing as the applied one", () => 
 
 test("2176-F30 the not-on-the-internet refusal names what to set and where it is documented", () => {
   // `whatItNeeds(client, have)` — positional. With no public address, Cowork is the row that refuses.
-  // `cowork` merged into `claude` (tracker issue 147, owner: it is one app). Same population member —
+  // `cowork` merged into `claude` (owner: it is one app). Same population member —
   // an http client reaching the web door — so this arm keeps its subject under the surviving id.
   const row = whatItNeeds(clientById("claude"), { publicAddress: null, stdioRoutes: {}, operator: "op@localhost" });
   const text = JSON.stringify(row ?? "");

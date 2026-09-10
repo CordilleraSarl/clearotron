@@ -8,7 +8,7 @@
 //
 // A test that drives a real command and expects that command's `.env` to configure it gets the BUILT-IN
 // DEFAULTS instead, silently, including default PORTS. Two independent mechanisms produce it and a drive
-// has to defeat both (tracker issue 204):
+// has to defeat both:
 //
 //   1. `scripts/test-run.mjs` sets `CLEAROTRON_NO_ENV_FILE=1` for every child of the suite. Correct on
 //      its own terms — no test should be configured by a file on the developer's box.

@@ -97,7 +97,7 @@ test("#2007 the comparison can actually SEE a declared install script — CONTRO
   const root = join(ROOT, "package.json");
   assert.deepEqual(declaredInstallScripts(root), ["preinstall", "postinstall"],
     "the root no longer declares both install scripts. `preinstall` refuses an unsupported Node before "
-    + "anything is written (tracker issue 364) and `postinstall` arms the push guards (tracker issue "
+    + "anything is written and `postinstall` arms the push guards (tracker issue "
     + "1978). If dropping one was deliberate the lock must lose `hasInstallScript` in the same commit; "
     + "if it was not, that protection is gone");
 

@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // checkout-move.mjs — is this command about to repoint the whole deployment at a different tree?
 //
-// ── why this exists (tracker issue 193) ─────────────────────────────────────────────────────────────
+// ── why this exists ─────────────────────────────────────────────────────────────────────────────────
 //
 // `clearotron connect` writes `CLEAROTRON_CHECKOUT_DIR` into the install's env file, set to whatever
 // checkout it happened to be run from. Every shipped unit's `ExecStart` is `${CLEAROTRON_CHECKOUT_DIR}/…`,
@@ -152,7 +152,7 @@ export function describeConflict(posture, move) {
 }
 
 /**
- * Programs executing this product from a tree OTHER than the one the install names (tracker issue 193).
+ * Programs executing this product from a tree OTHER than the one the install names.
  *
  * `doctor` already reports a running program older than the checkout. This is the same question with
  * the more dangerous answer: a process on a DIFFERENT tree keeps working until it restarts, and then

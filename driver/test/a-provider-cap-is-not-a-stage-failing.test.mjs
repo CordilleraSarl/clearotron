@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Cap parks: their own ladder, and the provider's clock beats it (tracker issue 103).
+// Cap parks: their own ladder, and the provider's clock beats it.
 //
 // Owner, watching a run spend 4 of its 6 recovery parks against one subscription cap:
 // "surely it can work out when the cap expires and try after that time and not just keep trying and
@@ -109,7 +109,7 @@ test("the schedule is PURE — same inputs, same answer, no clock read", () => {
   assert.deepEqual(a, b);
 });
 
-// ── AND WHEN IT STILL DIES: THE FOURTH ASK (tracker issue 103) ───────────────────────────────────
+// ── AND WHEN IT STILL DIES: THE FOURTH ASK ───────────────────────────────────────────────────────
 //
 // The three above buy the run time. This is what it says when the time runs out. The weather lane
 // carries both an overloaded provider and a usage cap, and its one sentence described the first —

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A memo plan reaches the client with the fields that make it a memo (tracker issue 132).
+// A memo plan reaches the client with the fields that make it a memo.
 //
 // WHY THIS EXISTS. The memo capability was composed and unreachable twice over, one layer apart, and the
 // second one is the reason this file is not just an engine test.

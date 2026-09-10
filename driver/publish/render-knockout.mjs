@@ -24,7 +24,7 @@
 // ONE report. There is no client variant and no internal variant, and that is
 // still the rule — it is what removes the whole class of "the wrong link got sent".
 //
-// WHAT CHANGED, 2026-09-07 (owner ruling, tracker issue 274): the one report now CARRIES the reviewer's
+// WHAT CHANGED, 2026-09-07 (owner ruling): the one report now CARRIES the reviewer's
 // notes rather than routing them to the audit workbook alone. The earlier reading of "one report" was
 // that internal working material is simply not part of it; the ruling is that there is one report and the
 // person who ran Clearotron reads it, so holding material back "just adds confusion for where data is
@@ -87,7 +87,7 @@ export function inlineMd(s) {
     .replace(/(^|[^*])\*([^*]+)\*/g, '$1<i>$2</i>')
     .replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
 }
-// tracker issue 1934 / tracker issue 2056 — BLOCKS, NOT ONLY PARAGRAPHS.
+// BLOCKS, NOT ONLY PARAGRAPHS.
 //
 // The writer emits sub-headers and bullets inside the summary now (owner ruling 2026-08-31: "keep the
 // length, add the structure"). This function read exactly two shapes — a blank line as a paragraph
@@ -318,8 +318,8 @@ function glanceSection(marks, framework, registerCounts) {
 // There is ONE figure per predicate per row, at ONE scope, and the table says which. A second
 // all-classes figure alongside a class-scoped one would be a second count — one more provider call per
 // mark per predicate, billable on Corsearch — and that is a spend the owner has not ruled on. Raised as
-// a follow-up rather than assumed here (tracker issue 717).
-// ── TERRITORIES IN WORDS, NEVER CODES (tracker issue 331 C) ─────────────────────────────────────────
+// a follow-up rather than assumed here.
+// ── TERRITORIES IN WORDS, NEVER CODES ───────────────────────────────────────────────────────────────
 //
 // The line read "territories: EM, US, WO". On a worldwide run the same line printed every register code
 // the provider offers — roughly two hundred, AD through ZZ, internal groupings among them — which the
@@ -373,7 +373,7 @@ function listWords(items) {
 }
 
 /**
- * The counted scope, in one sentence (tracker issue 331 C). Three shapes, and the shape is chosen by
+ * The counted scope, in one sentence. Three shapes, and the shape is chosen by
  * how many registers were counted rather than by which they were:
  *
  *   every register the provider offers  -> "Counted worldwide, 190 registers, on Clarivate Compumark."
@@ -405,7 +405,7 @@ const COUNTS_READER_LINE = 'Counts include live, pending and dead filings. '
   + 'A count is not a conflict; the cards above say which filings matter.';
 
 function countsSection(marks, registerCounts) {
-  // ── THE DEFINITION MOVES INTO THE COLUMN HEADER (tracker issue 331 B) ────────────────────────────
+  // ── THE DEFINITION MOVES INTO THE COLUMN HEADER ──────────────────────────────────────────────────
   //
   // The 70-word count-basis paragraph existed because three one-word headers — Identical, Containing,
   // Close variations — did not say what they counted, so the definition had to go somewhere. Put it in
@@ -451,7 +451,7 @@ function countsSection(marks, registerCounts) {
     return `<tr><td><b>${esc(m.name)}</b><br><span class="ko-classes">${esc(scope)}</span></td>${cells}</tr>`
       + (forms ? `<tr class="ko-forms"><td colspan="${COUNT_PREDICATES.length + 1}">${esc(forms)}</td></tr>` : '');
   }).join('');
-  // COUNT_BASIS IS OFF THE PAGE, NOT OUT OF THE RECORD (tracker issue 331 B). It is still written to
+  // COUNT_BASIS IS OFF THE PAGE, NOT OUT OF THE RECORD. It is still written to
   // report-data.json (knockoutReportData -> registerCountBasis) and still on the workbook, which is where
   // 331 says it belongs; what it stops doing is printing twice on a page whose headers now say the same
   // thing in three words each.
@@ -461,7 +461,7 @@ function countsSection(marks, registerCounts) {
 </div>`;
 }
 
-// tracker issue 706 part 5 — the filings behind the narrow numbers, as a compact appendix under the counts.
+// The filings behind the narrow numbers, as a compact appendix under the counts.
 //
 // FIRST N ROWS, then the workbook. The full list is capped at 100 per name and a hundred rows of
 // register data on a triage document would bury the page it is an appendix to; the workbook is where a
@@ -474,7 +474,7 @@ function countsSection(marks, registerCounts) {
 // of them is a finding. recordsLine owns all three wordings so the report, the workbook and
 // report-data.json cannot phrase them differently.
 /**
- * MATERIALITY, FOR BOTH REGISTER SURFACES (tracker issue 1927).
+ * MATERIALITY, FOR BOTH REGISTER SURFACES.
  *
  * Two caps decide which filings a client sees — the appendix table and the promoted cards — and both
  * took the provider's arrival order. Measured on a delivered four-mark run: one name fetched 23 records,
@@ -591,7 +591,7 @@ function filingsSection(marks, registerRecords) {
       return `<div class="ko-row"><div><p class="ko-name">${esc(m.name)}</p></div>
         <div><p class="ko-bul">${esc(line ?? 'No filings listing was recorded for this name.')}</p></div></div>`;
     }
-    // RANKED, AND DELIBERATELY NOT FILTERED (tracker issue 1927). This table is the evidence behind a
+    // RANKED, AND DELIBERATELY NOT FILTERED. This table is the evidence behind a
     // COUNT: dropping a cancelled or out-of-class row would leave a reader unable to reconcile the table
     // with the number above it, and "we did not show you that one" is a different promise from "it is
     // not material". The cards promote and therefore filter; the appendix evidences and therefore ranks.
@@ -660,7 +660,7 @@ function tierAbsenceLine(registerCounts, probeRan) {
 // nicely, but portal-ui/src/contract/reportFrame.ts refuses a mark from the document side on purpose,
 // and the composite key IS a mark name. The server reads `ref` back off disk once it has resolved.
 /**
- * THE CARD'S DETAIL, FOLDED (tracker issue 331 A.3).
+ * THE CARD'S DETAIL, FOLDED.
  *
  * Visible on a card: the reference, the name, the band chip, the source chip, the one-sentence read and
  * the evidence links. Folded: the paragraph that argues the band, and on a register card the use-check
@@ -685,8 +685,8 @@ const WHY_BAND_LABEL = 'Why this band';
 function findingBlock(v, framework, markIndex) {
   const meta = [v.type, v.owner].filter(Boolean).map((s) => esc(s)).join(' · ');
   const ev = v.evidence.map((u) => linkOrText(u)).join(' · ');
-  // THE CLEARANCE REPORT'S CARD, AND THE KNOCKOUT'S LOCATOR — both classes, deliberately (tracker
-  // issue 1935). report.css is already inlined here and already defines .card, .top, .rail, .cardhead,
+  // THE CLEARANCE REPORT'S CARD, AND THE KNOCKOUT'S LOCATOR — both classes, deliberately. report.css
+  // is already inlined here and already defines .card, .top, .rail, .cardhead,
   // .fnum and .who; this uses them rather than a parallel set, so a client who has read one report
   // recognises the other.
   //
@@ -808,9 +808,9 @@ const NOT_WEIGHED = NOT_WEIGHED_LINE;
 /**
  * The register card's basis line, which cannot be written without knowing whether the card is rated.
  *
- * THE TWO RULINGS MEET HERE AND THEY ALMOST CONTRADICTED EACH OTHER ON A CLIENT PAGE. tracker issue
- * 1935 retired a code-owned placeholder because a rating nobody performed must not appear; tracker
- * issue 274 then ruled that the rater's OWN band for a promoted filing must appear, because a filing
+ * THE TWO RULINGS MEET HERE AND THEY ALMOST CONTRADICTED EACH OTHER ON A CLIENT PAGE. One ruling
+ * retired a code-owned placeholder because a rating nobody performed must not appear; the other then
+ * ruled that the rater's OWN band for a promoted filing must appear, because a filing
  * the rater weighed into the verdict was rendering as though it had not been. Both hold, and they hold
  * over different cards.
  *
@@ -844,7 +844,7 @@ function basisLine(band, read) {
  * Neither test is a judgment about the filing. Whether any of it blocks anything is lawyer work this
  * product does not do — the same line register-records.mjs rule 3 has held since the lane shipped.
  */
-// EXPORTED so the pipeline can ask the same question the page asks (tracker issue 276). The owner
+// EXPORTED so the pipeline can ask the same question the page asks. The owner
 // use-check runs on PROMOTED filings only, and "promoted" has to mean here what it means on the report —
 // a second predicate would let the engine search an owner whose filing the report never shows, or skip
 // one it does.
@@ -864,7 +864,7 @@ export function promotableRecords(entry, mark) {
 /** One sentence of what the filing IS, composed from the register's own fields. No adjective that the
  *  record did not supply, and every absent field says it is absent rather than rendering as a blank —
  *  a blank cell and an unstated field read alike to a human and only one is honest. */
-// ── THE OFFICE, NOT THE VENDOR (tracker issue 331 D) ────────────────────────────────────────────────
+// ── THE OFFICE, NOT THE VENDOR ──────────────────────────────────────────────────────────────────────
 //
 // The sentence read "A filing of the identical name on Clarivate Compumark — held by ..., status
 // PENDING, classes 9, 38, 45, territory us." Clarivate Compumark is the search vendor; the filing is at
@@ -926,7 +926,7 @@ function registerStatement(r, provider) {
  * which the card links.
  */
 /**
- * WHICH OF A MARK'S REGISTER CARDS THE PAGE DRAWS (tracker issue 331 A.3).
+ * WHICH OF A MARK'S REGISTER CARDS THE PAGE DRAWS.
  *
  * THIS FILTERS THE PAGE, NEVER THE RECORD, and that separation is the whole point. 331 rejects dropping
  * anything from report-data.json or the workbook to make the page shorter, so `registerCardViews` still
@@ -951,7 +951,7 @@ function registerStatement(r, provider) {
  * is kept, because "the rater said something, and the safe reading of something we cannot rank is that
  * it is worth pointing at". An absent band is strictly LESS information than an unrankable one, so if
  * unknown keeps, absent keeps. Dropping it would be this renderer deciding a filing is immaterial on
- * the rater's behalf — the same claim tracker issue 274 removed from these cards for the same reason.
+ * the rater's behalf — the same claim a later ruling removed from these cards for the same reason.
  *
  * A run that carries no bands at all still renders every card it was delivered with, which is what
  * clause F asks for; it now falls out of the rule instead of being carved around it.
@@ -961,7 +961,7 @@ function registerCardsOnPage(cards, mark, framework) {
 }
 
 /**
- * DID THE RATER PUT THIS FILING ON THE LADDER'S LOWEST RUNG? (tracker issue 331 A.3)
+ * DID THE RATER PUT THIS FILING ON THE LADDER'S LOWEST RUNG?
  *
  * The ladder runs worst-first, so the lowest rung is the LAST entry. A filing the rater put there is one
  * the rater called manageable, and 331 keeps those in the filings table rather than on a card: three
@@ -1025,7 +1025,7 @@ function registerCardViews(mark, framework, registerRecords) {
  * THE BAND CHIP IS DRAWN ONLY WHEN THE RATER SENT ONE, and that condition is the whole rule. The old note
  * here said "no band chip and no `bandStop`, ever: a rung of the run's ladder would be a rating nobody
  * performed" — which was true for as long as nothing could carry the rater's rating of an individual
- * filing. `registerReads[].band` now can (tracker issue 274), so the objection is answered where it was
+ * filing. `registerReads[].band` now can, so the objection is answered where it was
  * raised: with a band, the rating WAS performed, by the seat, in the framework's own words, and the chip
  * states it. With no band the old rule stands unchanged — --faint rail, no chip, nothing claimed — and
  * that is still what every archived run renders.
@@ -1071,7 +1071,7 @@ function sourceChips(v) {
 // findings about the mark, which is the one way this ruling could produce a worse document.
 const REVIEWER_NOTES_LEGEND = 'Purple notes are for the reviewing lawyer. Remove them before this goes to the client.';
 
-// The clearance lane's own label, copied rather than re-worded (tracker issue 276). One spelling across
+// The clearance lane's own label, copied rather than re-worded. One spelling across
 // both products is the point: a reader who has seen it on a clearance report knows what it means here.
 const USE_CHECK_LABEL = 'Use-check source:';
 
@@ -1087,7 +1087,7 @@ function ownerCheckFor(ownerChecks, recordId) {
 // needs the same answer: the page files each note, and the reviewer warns a writer whose note will file
 // the way they did not intend. One reader, so the two can never disagree.
 /**
- * "About this request" — what was asked, and any flag on the asking (tracker issue 331 A.1).
+ * "About this request" — what was asked, and any flag on the asking.
  *
  * WHAT WAS ASKED IS CODE-OWNED. It is read off the run's own frozen instructed scope, never off model
  * prose, so the line states the request the run was given rather than a paraphrase of it. An archived run
@@ -1143,7 +1143,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   // colour an unknown word as though it were rated.
   const band = row?.band || null;
   const stop = band ? bandStop(framework, band) : null;
-  // ── WHERE THE OWNER'S TRADE WAS LOOKED UP (tracker issue 276) ──────────────────────────────────
+  // ── WHERE THE OWNER'S TRADE WAS LOOKED UP ──────────────────────────────────────────────────────
   //
   // The source is the DRIVER'S, joined by this filing's own recordId — never a URL the seat typed. That
   // is the whole reason a reader can trust it: the row exists because the driver made the call, so
@@ -1288,7 +1288,7 @@ function coverageClause(mark, registerCounts, probeRan) {
 // under a collapsed "Full narrative" — the reader who wants the long form still has it, one click away,
 // and no sentence the stage wrote is dropped on the floor.
 /**
- * THE LABELS, IN THE READER'S WORDS (tracker issue 331 A.2).
+ * THE LABELS, IN THE READER'S WORDS.
  *
  * The old pair was "What holds it there" and "What would move it", 9.5px grey capitals. The owner read
  * the first one and asked "what holds what?" — so the fix is not a synonym in the same style, it is a
@@ -1361,7 +1361,7 @@ function readBlock(m, framework) {
     counter.length ? `<div class="ko-counter"><span class="ko-lbl2">${esc(counterLabel(framework, band))}</span><ul class="ko-bul">${
       counter.map((f) => `<li>${inlineMd(f)}</li>`).join('')}</ul></div>` : '',
     m.mitigation ? `<div class="ko-mitig"><span class="ko-lbl2">What would lower the risk</span><p>${inlineMd(m.mitigation)}</p></div>` : '',
-    // ── THE ASSESSMENT REPLACES THE "FULL NARRATIVE" FOLD (tracker issue 331 A.2) ────────────────────
+    // ── THE ASSESSMENT REPLACES THE "FULL NARRATIVE" FOLD ────────────────────────────────────────────
     //
     // The model writes both. `bullets` (five) say in other words what `factors` (four) already say
     // visible above; `assessment` is the long-form read under its own four headings, and until now the
@@ -1509,7 +1509,7 @@ const CAVEAT_LEAD = 'This screen also carries the following limits:';
 export function renderKnockoutHtml(findings, framework, {
   runId, overall, issued = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
-  // The driver's own record of the owner lookups it ran (tracker issue 276). Defaults to [] so an
+  // The driver's own record of the owner lookups it ran. Defaults to [] so an
   // archived run that predates the lane renders exactly as it was delivered.
   ownerChecks = [],
   identity = null, matter = null, homeHref = null, chromeHref = null, depthNote = null,
@@ -1517,7 +1517,7 @@ export function renderKnockoutHtml(findings, framework, {
   // instructed to do rather than what its artifacts happen to show. Defaults to null, and an archived
   // run that carries none keeps the artifact-derived sentence it was delivered with.
   searchPolicy = null,
-  // — the run's own frozen instructed scope (tracker issue 331 A.1): the goods, classes and
+  // — the run's own frozen instructed scope: the goods, classes and
   // territories the requester asked for, in the requester's words. Defaults to null, and an archived run
   // that carries no such sidecar renders "About this request" from its request-level notes alone, or not
   // at all when it has none. Never derived from model prose — this is what was ASKED, not what was said
@@ -1549,7 +1549,7 @@ export function renderKnockoutHtml(findings, framework, {
   const allViews = marks.flatMap((m) => knockoutFindingViews(m, { manifest: framework }));
   const citedFindings = allViews.filter((v) => v.evidence.length).length;
   const uncitedFindings = allViews.length - citedFindings;
-  // ── A ONE-NAME PAGE HAS NO INDEX (tracker issue 331 A.6) ────────────────────────────────────────
+  // ── A ONE-NAME PAGE HAS NO INDEX ────────────────────────────────────────────────────────────────
   //
   // The glance row exists to let a reader of a BATCH find the name they care about. With one name there
   // is nothing to index, and the row printed that name, its band and its classes for the first of three
@@ -1563,7 +1563,7 @@ export function renderKnockoutHtml(findings, framework, {
   const counts = hasCounts
     ? countsSection(marks, registerCounts)
     : `<div class="panel"><p class="ko-tier">${esc(tierLine)}</p></div>`;
-  // ── A CAVEAT THAT SAYS NOTHING THE SCOPE BLOCK HAS NOT SAID IS NOT RENDERED (tracker issue 331 E) ──
+  // ── A CAVEAT THAT SAYS NOTHING THE SCOPE BLOCK HAS NOT SAID IS NOT RENDERED ────────────────────────
   //
   // The four model-written caveats on the measured run overlap the fixed text completely — 331 item 9,
   // and 333 rule 4 ("say it once") fixes it at the source for runs written under that doctrine. This is
@@ -1631,7 +1631,7 @@ ${filings}`
 </div>
 <div class="fab-stack">${themeButton()}</div>
 <script>
-/* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose (tracker issue 1922).
+/* THE DOCUMENT'S OWN CONTROLS, and they are GLOBAL on purpose.
    The portal frames this document and drives it by postMessage. The bridge injected at serve time looks
    up exportPDF, pickAll and openAll BY NAME and replies "this report has no <verb>" when a name is not
    there. Every one of these lived inside an IIFE, so a knockout answered that to all three and every
@@ -1664,7 +1664,7 @@ window.addEventListener('beforeprint',o);})();</script>
   ${filingsSec}
 
   <div class="sec"><span class="num">${num()}</span><h2>Scope &amp; what we didn't search</h2><span class="note">what this screen is</span></div>
-  <!-- COLLAPSED, like the clearance report's (tracker issue 1935). Both documents already inline the
+  <!-- COLLAPSED, like the clearance report's. Both documents already inline the
        same report.css, and details.scope is its vocabulary — this section was the one place the two
        lanes presented the same thing differently, with the knockout's open panel pushing the filings
        table and the footer down the page on every read. What is inside is unchanged; a reader who
@@ -1674,10 +1674,10 @@ window.addEventListener('beforeprint',o);})();</script>
   <details class="scope"><summary>Scope &amp; what we didn't search</summary>
   <div class="panel drillbody">
     ${(() => {
-      // FROM THE POLICY WHERE THERE IS ONE (tracker issue 1935). The fallback is not a tidy default: an
+      // FROM THE POLICY WHERE THERE IS ONE. The fallback is not a tidy default: an
       // archived run froze no policy, and re-rendering it must not invent a scope claim about a run
       // nobody can now ask. It keeps the sentence it was delivered with.
-      // ── THE SCOPE BLOCK, WHOLE (tracker issue 331 E) ──────────────────────────────────────────────
+      // ── THE SCOPE BLOCK, WHOLE ────────────────────────────────────────────────────────────────────
       //
       // The composed lines said one thing five times in 362 words: "not a clearance" three times,
       // "proceeds to clearance" twice, and the count-basis sentence a second time after the counts table
@@ -1771,7 +1771,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
         classesDriving: m.classesDriving ?? [],
         degraded: Boolean(m.degraded),
         points: m.bullets ?? [],
-        // ── THE ASSESSMENT THE RUN ALREADY WROTE (tracker issue 274) ──────────────────────────────
+        // ── THE ASSESSMENT THE RUN ALREADY WROTE ──────────────────────────────────────────────────
         //
         // Seven keys the assess stage writes into knockout-findings.json reached this file as nothing.
         // They were not withheld by a rule — no code decided against them; this projection is an explicit
@@ -1828,7 +1828,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
           // `shape: 'register'` is the load-bearing field: a consumer can tell a weighed conflict from a
           // pointed-at filing without parsing prose.
           //
-          // `band` AND `basis` NOW CARRY THE RATER'S READ WHEN IT SENT ONE (tracker issue 274). Before
+          // `band` AND `basis` NOW CARRY THE RATER'S READ WHEN IT SENT ONE. Before
           // this, both were constants — `band: null` and the not-weighed sentence — on every filing of
           // every run, including runs where the seat had written a full read of that exact filing and the
           // HTML card was already printing it. The page and this file disagreed, and this file is the one
@@ -1842,8 +1842,8 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
               .find((x) => String(x?.recordId ?? '').trim() && String(x?.recordId ?? '').trim() === String(v.record?.recordId ?? '').trim());
             const read = String(row?.read ?? '').trim() || null;
             const band = String(row?.band ?? '').trim() || null;
-            // The driver's own record of where this filing's proprietor was looked up (tracker issue
-            // 276), joined by recordId. `null` where the run owed no check — the same three states the
+            // The driver's own record of where this filing's proprietor was looked up, joined by
+            // recordId. `null` where the run owed no check — the same three states the
             // card has, so a consumer can tell "searched and found nothing" from "never searched".
             const oc = ownerCheckFor(ownerChecks, v.record?.recordId);
             return {

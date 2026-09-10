@@ -51,7 +51,7 @@ function releaseJobs(workflow) {
 /**
  * The same YAML with its comment lines removed — what the runner actually executes.
  *
- * EVERY ARM ASSERTING WHAT A JOB DOES WANTS THIS, NOT THE RAW TEXT (tracker issue 298). The workflow's
+ * EVERY ARM ASSERTING WHAT A JOB DOES WANTS THIS, NOT THE RAW TEXT. The workflow's
  * comments are long by design and they name the scripts, jobs and settings they discuss, so a raw-text
  * assertion is answered by prose. It fails in both directions and both were live here:
  *
@@ -604,7 +604,7 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   // endpoints — `checks: read` for `commits/{sha}/check-runs`, `actions: read` for `actions/runs`, which
   // is the only one that carries `action_required`. The step would fail loudly rather than pass
   // vacuously, but it would fail on every push, and only on main.
-  // THE VERSION JOB, NOT FOUR OF THEM (tracker issue 298). This sliced from `version:` to `publish:`,
+  // THE VERSION JOB, NOT FOUR OF THEM. This sliced from `version:` to `publish:`,
   // which spans `stranded`, `pending` and `awaited` as well — so a permission granted by any of
   // them answered a question asked about this one.
   const versionJob = jobText("version");
@@ -616,7 +616,7 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   assert.ok(!/administration:/.test(executableJob),
     "the version job asks for `administration` scope, which GitHub does not accept in a job's "
     + "permissions — the whole workflow becomes unparseable and stops running");
-  // OFF THE EXECUTABLE TEXT, AND `write` SATISFIES `read` (tracker issue 298). This read the raw job
+  // OFF THE EXECUTABLE TEXT, AND `write` SATISFIES `read`. This read the raw job
   // and asked for the literal `actions: read`, which appears in this job ONLY in the comment above —
   // the job grants `actions: write`, a superset. So the check was answered by prose and would have
   // stayed green with the permission deleted outright, on a job where an unnamed permission is
@@ -810,7 +810,7 @@ test("tracker 97 a version that merged itself still publishes, because that merg
     "the cron no longer says why it exists, so the next reader will simplify it away");
 
   const jobs = releaseJobs(workflow);
-  // FOUR NOW. `stranded` joined on 2026-09-06 for tracker issue 229: the job that notices a cut sitting
+  // FOUR NOW. `stranded` joined on 2026-09-06: the job that notices a cut sitting
   // on main unpublished used to be `pending`, which is downstream of the version gate on the push path
   // and skipped whenever that gate failed — so it could not run in the one state it exists to detect.
   // The new job has no `needs:` at all, which is the whole of its design and has its own arm.
@@ -1047,7 +1047,7 @@ test("208 the job's budget can contain its own longest step", () => {
   // A `timeout-minutes` below the wait cancels the job at the moment it was about to publish, and a
   // cancelled run reads as neither success nor failure to anybody scanning the list — the release goes
   // missing with nothing red. The two numbers live in different files, so nothing else couples them.
-  // AGAINST THE WAIT THIS JOB ACTUALLY RUNS (tracker issue 247). This arm used to compare the version
+  // AGAINST THE WAIT THIS JOB ACTUALLY RUNS. This arm used to compare the version
   // job's budget to `WAIT_MS`, which belongs to `release-await-cut.mjs` and runs in a DIFFERENT job that
   // this one never invokes. It held by coincidence: two unrelated numbers that happened to be ordered
   // the right way, and it would have gone red the moment the other one was raised, about a job whose
@@ -1057,7 +1057,7 @@ test("208 the job's budget can contain its own longest step", () => {
   const version = jobText("version");
   const budget = Number(/timeout-minutes:\s*(\d+)/.exec(version)?.[1]);
   assert.ok(Number.isFinite(budget), "the version job declares no timeout — this arm could not look");
-  // EXECUTABLE TEXT AND THE RUN STEP, NOT THE BARE NAME (tracker issue 298). This asked for the
+  // EXECUTABLE TEXT AND THE RUN STEP, NOT THE BARE NAME. This asked for the
   // filename anywhere in the job's raw text, so a comment naming the script answered it and the arm
   // stayed green with the step deleted — proven by planting exactly that. The sibling arm on the
   // `stranded` detector already anchored on the run step; this one now matches it.
@@ -1191,7 +1191,7 @@ test("229 the detector SAYS SO — reachable is not the same as heard", () => {
 test("229 the cut decision is recorded BEFORE the gate that can fail", () => {
   // Order is the fix. The decision that notices a stranded cut used to run after the checks gate, so a
   // gate failure meant it was never even asked.
-  // ORDER IS A CLAIM ABOUT STEPS, so it is read off the executable text (tracker issue 298). On the
+  // ORDER IS A CLAIM ABOUT STEPS, so it is read off the executable text. On the
   // raw text a comment mentioning the gate ahead of the step reverses this comparison and reds a
   // workflow whose order is correct.
   const version = executableText(
@@ -1306,7 +1306,7 @@ test("208 the second publish proves its OWN bytes — it does not reuse the firs
 
 test("208 the second publish takes the NEW main, and tags the commit it actually published", () => {
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
-  // NOT `ref: main` ANY MORE (tracker issue 238). The branch name was right about the first half of the
+  // NOT `ref: main` ANY MORE. The branch name was right about the first half of the
   // problem — it does pick up a version that landed after the run began — and wrong about the second:
   // between the wait's last read and this checkout the name can move on to a commit that changes no
   // version, and the tip check below compares versions, so it passes.
@@ -1410,7 +1410,7 @@ test("208 the waiting job's budget contains the wait", () => {
   const job = jobText("awaited");
   const budget = Number(/timeout-minutes:\s*(\d+)/.exec(job)?.[1]);
   assert.ok(Number.isFinite(budget), "the waiting job declares no timeout — this arm could not look");
-  // MARGIN, NOT MERELY ORDER (tracker issue 247). `>` is satisfied by one second of headroom, which
+  // MARGIN, NOT MERELY ORDER. `>` is satisfied by one second of headroom, which
   // cancels the job during the checkout and install that surround the wait — and the prose above
   // `WAIT_MS` claimed a job budget of 30 while the job said 25 for exactly as long as nothing checked.
   assert.ok(budget * 60_000 >= WAIT_MS + MIN_JOB_MARGIN_MS,
@@ -1607,8 +1607,8 @@ test("230 every job that publishes carries the tag/release step, and there is mo
   for (const [name, body] of PUBLISHING) tagStepScript(body, name);
 });
 
-// THIS TEST ASSERTED THE OPPOSITE UNTIL 2026-09-07, and the reversal is deliberate (tracker issue 264,
-// reversing his 2026-09-06 ruling). It read "a pre-release is tagged and yields no GitHub release
+// THIS TEST ASSERTED THE OPPOSITE UNTIL 2026-09-07, and the reversal is deliberate — the owner
+// reversed his 2026-09-06 ruling. It read "a pre-release is tagged and yields no GitHub release
 // entry". Left as it was, it would hold the code to a rule that no longer stands — which is why it is
 // rewritten here rather than deleted: the next reader needs to see that the behaviour flipped
 // deliberately, not that a test quietly went missing.
@@ -1708,7 +1708,7 @@ test("230 planted: a job that compares the tag read by prefix is caught, in each
   }
 });
 
-// ── the awaited publish packs the commit it decided about (tracker issue 238) ────────────────────
+// ── the awaited publish packs the commit it decided about ────────────────────────────────────────
 //
 // The wait watched a version pull request merge itself, then the job below checked out `main` BY NAME.
 // A commit landing in between that moves no version — an instrument fix with no note — was packed and
@@ -1891,7 +1891,7 @@ test("238 planted: a refusal that only checks for emptiness is caught", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-// ── THE REHEARSAL RUNS THE CODE UNDER REVIEW (tracker issue 245) ───────────────────────────────────
+// ── THE REHEARSAL RUNS THE CODE UNDER REVIEW ───────────────────────────────────────────────────────
 //
 // Three jobs checked out `ref: main` and then ran scripts from that checkout. The workflow YAML comes
 // from the ref the run started on, so a `workflow_dispatch` from a branch ran the BRANCH's workflow file
@@ -1985,7 +1985,7 @@ test("264 a merge to main publishes nothing, because auto-merge is turned on onl
   const condition = step.slice(step.indexOf("if:"), step.indexOf("\n        env:"));
   assert.match(condition, /inputs\.cut != 'rehearse'/,
     "the version pull request is set to merge itself without asking whether this run is a requested cut. "
-    + "That is the behaviour tracker issue 264 removed: it publishes a pre-release on every merge.\n"
+    + "That is the behaviour that was removed: it publishes a pre-release on every merge.\n"
     + condition);
   assert.match(condition, /github\.event_name == 'workflow_dispatch'/,
     `the merge step does not require a dispatch, so a push could still reach it\n${condition}`);

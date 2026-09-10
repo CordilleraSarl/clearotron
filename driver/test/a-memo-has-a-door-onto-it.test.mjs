@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// The memo capability is REACHABLE (tracker issue 132).
+// The memo capability is REACHABLE.
 //
 // WHAT WAS ACTUALLY WRONG. Every piece of the memo existed and nothing could reach it: whatif-memo.mjs
 // composed one, whatIfRefusal admitted `kind: "memo"` on a finished run, decodeOp validated a memo op —
@@ -288,7 +288,7 @@ test("parentRatedUnder reads the FROZEN sidecar, and null means none was frozen"
   // THREE ways there is no key, and they must all read null. A plant that defaulted to "generic" was
   // caught by NONE of these until the middle two existed: an absent FILE hits the catch and returns null
   // whatever the default is, so an arm that only tested a bare directory passes a build that
-  // manufactures the exact substitution tracker issue 135 is about.
+  // manufactures the exact substitution this is about.
   const bare = mkdtempSync(join(tmpdir(), "memo-bare-"));
   assert.equal(parentRatedUnder(bare), null, "no sidecar at all");
 
@@ -310,7 +310,7 @@ test("parentRatedUnder reads the FROZEN sidecar, and null means none was frozen"
   assert.equal(parentRatedUnder(corrupt), null, "an unreadable sidecar is a could-not-look, never a customer");
 });
 
-// ── THE WHOLE PATH, BECAUSE ROUTING ARMS COULD NOT SEE THE NEXT GATE (tracker issue 132) ────────────
+// ── THE WHOLE PATH, BECAUSE ROUTING ARMS COULD NOT SEE THE NEXT GATE ────────────────────────────────
 //
 // The arms above and in mcp-server/test/whatif.test.mjs inject the composer. They prove ROUTING — that
 // whatIfRun sends a memo op to askArchivedRun instead of refusing it or running a stage — and that is

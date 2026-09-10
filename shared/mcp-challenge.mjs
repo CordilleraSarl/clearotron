@@ -77,7 +77,7 @@ export function blockedByAccessChallenge(where, status) {
     + "changed at your identity provider, not here, and NOT repaired by recreating the application "
     + "(recreating it loses this setting and changes the audience, which is two symptoms from one "
     + "cause). "
-    // ── NAME THE SWITCH (tracker issue 149) ──────────────────────────────────────────────────────
+    // ── NAME THE SWITCH ──────────────────────────────────────────────────────────────────────────
     // The rule first and the vendor second, because the identity interface is configuration on
     // purpose: issuer, audience, claim and header are all settings, and a Cloudflare-only remedy
     // re-narrows an interface that was widened deliberately. But a rule with no switch behind it is

@@ -2,8 +2,8 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // THE SUMMARY'S BLOCK GRAMMAR — one definition, because it has four readers.
 //
-// Owner ruling 2026-08-31 (tracker issues 1934 and 2056): "keep the length, add the structure, so long
-// as length is consistent more or less." The assess seat now writes sub-headers and bullets inside the
+// Decided 2026-08-31: keep the length and add the structure, so long as length stays
+// broadly consistent. The assess seat now writes sub-headers and bullets inside the
 // summary it emits, and FOUR surfaces read that string back:
 //
 //   driver/publish/render-knockout.mjs   the per-mark report and the grouped HTML

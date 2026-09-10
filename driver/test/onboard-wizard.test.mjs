@@ -86,7 +86,7 @@ function run(args, env = {}) {
       // a .env" writes `<repo>/.env` and requires the wizard to read it. Either of those two variables
       // would make `shared/env-local.mjs` skip the file and hand the command BUILT-IN DEFAULTS with no
       // error — the suite runner sets the first for every child, and the second is inherited by any
-      // descendant of a systemd unit, which on a hosted CI runner includes the job (tracker issue 204).
+      // descendant of a systemd unit, which on a hosted CI runner includes the job.
       // Neither is spread here, so neither arrives. Recorded rather than left to be re-derived, and
       // measured: this file passes with both set in the parent.
       env: {
@@ -1090,7 +1090,7 @@ test("--help prints every command the header documents", async () => {
   // "widened by one when --probe-engine was added". It had not been: the slice ended at line 7 and that
   // flag sits on line 8, so `--help` never mentioned the ONE credential proof this tool already had.
   // Nothing asserted it, so nothing said so — for as long as the flag has existed.
-  // tracker issues 1861/1882 — one reader for every verb that prints a synopsis; it moved to shared/.
+  // One reader for every verb that prints a synopsis; it moved to shared/.
   const { usageBlock } = await import("../../shared/usage-block.mjs");
   const src = readFileSync(ONBOARD, "utf8");
   const block = usageBlock(src);

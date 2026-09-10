@@ -106,7 +106,7 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   max-width: var(--screen-measure);
 }
 
-/* ── THE WIDTH VOCABULARY (tracker issue 2086) ────────────────────────────────────────────────────
+/* ── THE WIDTH VOCABULARY ─────────────────────────────────────────────────────────────────────────
    Owner, on his own screens: "we INCONSISTENTLY use screen width … consistency is important."
    Measured: seventeen inline maxWidth literals across seven screens, in nine different values — each
    its author's guess. Width is now a zone-type decision made HERE, once:
@@ -355,7 +355,7 @@ table.data td {
   vertical-align: top;
 }
 
-/* tracker issue 276 — THE GRID IS DECLARED, NOT EMERGENT.
+/* THE GRID IS DECLARED, NOT EMERGENT.
    Without `table-layout: fixed` a table's columns are sized by their content, so every cell in every row
    is a vote on where the columns sit. That is why opening a row on Clearances could re-flow the parent
    table and truncate the `Updated` header to `Upd`, and why the alignment of an expanded read was
@@ -367,7 +367,7 @@ table.data.fixed {
   table-layout: fixed;
 }
 
-/* tracker issue 280 — THE FIXED TABLE HAS NO FLOOR OF ITS OWN.
+/* THE FIXED TABLE HAS NO FLOOR OF ITS OWN.
    `table.data` sets `min-width: 760px` so a content-sized table cannot collapse into unreadable slivers.
    Under fixed layout that floor is not a safety net, it is the thing that overflows: the columns are
    already declared as percentages of the container, so the table has a shape at any width, and a floor
@@ -378,7 +378,7 @@ table.data.fixed {
   min-width: 0;
 }
 
-/* tracker issue 280 — THE HEADER MUST BE ALLOWED TO WRAP, or the font decides whether the table scrolls.
+/* THE HEADER MUST BE ALLOWED TO WRAP, or the font decides whether the table scrolls.
    `table.data th` sets `white-space: nowrap`, which is right for a content-sized table and wrong here:
    under fixed layout the cells can shrink (overflow-wrap: anywhere) but the header cannot, so the
    letterspaced caps alone set an unshrinkable floor. When the brand webfont is unavailable — no network,
@@ -427,7 +427,7 @@ table.data tr.read-row > td {
   background: var(--surface-sunken);
 }
 
-/* tracker issue 278 — the whole read row opens its report.
+/* the whole read row opens its report.
    The affordance is on the thing you can click, across the WHOLE row, which is the point: the only way
    in used to be a text button at the far right edge, furthest from the run title the reader has just
    read, on a row with `cursor: auto` and no hover state at all. People concluded there was no report.
@@ -466,7 +466,7 @@ table.data tr.row {
   cursor: pointer;
 }
 
-/* tracker issue 284 — the row disclosure is a real button.
+/* the row disclosure is a real button.
    It was a bare span with aria-hidden, inside a <tr onClick>: silent to a screen reader AND with no
    keyboard path to open a row at all. The button carries the name and the state; these rules make it
    look exactly as the span did, so the fix is behavioural rather than visual.
@@ -495,7 +495,7 @@ button.twisty:focus-visible {
   outline-offset: 1px;
 }
 
-/* tracker issue 281 — the grouping toggle. In the toolbar, beside the other view controls, so its state is visible
+/* the grouping toggle. In the toolbar, beside the other view controls, so its state is visible
    WITHOUT opening a menu: a toggle whose state you have to go looking for is a toggle that explains
    nothing about why the sort looked wrong. */
 .group-toggle {
@@ -513,7 +513,7 @@ table.data tr.row:hover td {
   background: var(--surface-sunken);
 }
 
-/* tracker issue 277 — A SECTION HEADER, not a decorative divider.
+/* A SECTION HEADER, not a decorative divider.
    Brand owner is the organising principle of the whole list, and a reader had to work it out: the name
    was set in the smallest, lowest-contrast, most letterspaced type on the page, which reads as a rule
    BETWEEN rows rather than as "everything below this belongs to Foxglade Interactive".
@@ -665,7 +665,7 @@ table.data tr.group-head ~ tr.row > td:first-child {
   border-left-color: var(--border-strong);
 }
 
-/* tracker issue 282 — A TRANSIENT SURFACE, which this codebase did not have one of.
+/* A TRANSIENT SURFACE, which this codebase did not have one of.
    The selection bar used `.notice`. That treatment is not a one-off: it is what the error and empty
    states on the same screen use — which is exactly why it was wrong here. A notice is a persistent
    thing you READ; a selection bar is a transient thing you ACT on, and it appears and vanishes as you
@@ -691,7 +691,7 @@ table.data tr.group-head ~ tr.row > td:first-child {
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* tracker issue 282 — THE CHECKBOX, in the palette, in every state.
+/* THE CHECKBOX, in the palette, in every state.
    It rendered in the browser default blue: the only blue on an otherwise warm and maroon page, and the
    single clearest sign that a control had been dropped in and never dressed.
    `accent-color` handles unchecked and checked in one property. Focus and disabled are separate because
@@ -883,11 +883,11 @@ input.filter {
   font-style: italic;
 }
 
-/* tracker issue 2061 — three labelled rungs where there used to be one line. The requirement is that a
+/* three labelled rungs where there used to be one line. The requirement is that a
    reader can tell the legal read from the consequences AT A GLANCE, so the label is its own strong
    column rather than a lead-in sentence: three sentences run together in the old single-line cell would
    be more text and no more legible, which is the failure this replaces. */
-/* ONE grid for ALL rungs, not one per row (tracker issue 2085): each row being its own grid sized
+/* ONE grid for ALL rungs, not one per row: each row being its own grid sized
    its label column with max-content PER ROW, so the text column started at a different x on every
    line and a long qualifier ("(one or more)") deformed its own row's grid — the owner's screenshot.
    The rows become display:contents so every label shares a single column, sized to the longest label
@@ -916,7 +916,7 @@ input.filter {
 }
 
 .footer-demo-note {
-  max-width: 420px;   /* tracker issue 2086 — the note's width is the note's own, not its call site's */
+  max-width: 420px;   /* the note's width is the note's own, not its call site's */
 }
 
 /* The line beside the primary action: what happens next when it is available, and why it is not when
@@ -1086,7 +1086,7 @@ input.filter {
   max-height: 230px;
 }
 
-/* ── Refs tracker issue 2075 — a territory the wired register does not reach ────────────────────────
+/* ── a territory the wired register does not reach ────────────────────────
    Shown and selectable, never absent: an absent entry teaches a reader nothing, because they cannot
    tell an unsupported territory from one they mistyped. The marker is a statement, not a warning — the
    choice is legitimate and the report discloses it. */
@@ -1242,7 +1242,7 @@ input.filter {
 
 /* The column the wizard's steps live in. 720px, the design's measure for a form — NOT the footer's,
    which spans the screen. */
-/* ── Refs tracker issue 1937 §B — THE MEASURE MOVES OFF THE COLUMN AND ONTO ITS BLOCKS ─────────────
+/* ── §B — THE MEASURE MOVES OFF THE COLUMN AND ONTO ITS BLOCKS ────────────────────────────────────
    The owner: the New clearance page "is bound to an artificially narrow width; the table side-scrolls
    or wraps and looks worse than its content deserves. The top panel already fits the screen width."
    720px is the right measure for a COLUMN OF FIELDS and the wrong one for a five-column comparison. So
@@ -1270,7 +1270,7 @@ input.filter {
   max-width: none;
 }
 
-/* ── Refs tracker issue 1937 §B — "what this search includes", in or out at a glance ────────────────
+/* ── §B — "what this search includes", in or out at a glance ─────────────────────────────────────────
    The list read as three sentences of equal weight, and whether an axis ran at all was buried in the
    clause after the dash. The tick and the cross carry the answer; the colour is a reinforcement, never
    the only signal, because a marker distinguishable by hue alone is not a marker for every reader. */
@@ -1301,7 +1301,7 @@ input.filter {
 .carries-out .carries-mark { color: var(--text-faint); }
 .carries-out { color: var(--text-faint); }
 
-/* Refs tracker issue 2144 — THE SELECTOR'S DEPTH ICONS ARE GONE, by the owner's ruling of
+/* THE SELECTOR'S DEPTH ICONS ARE GONE, by the owner's ruling of
    2026-09-03: "in the summary things rescale and work great. in product selector … we can remove
    these next to the product description, tiny fixed icons. barely visible." The ladder they drew was
    correct and unreadable at the size the row gave it. The FINAL SUMMARY's effort bars stay exactly as
@@ -1372,7 +1372,7 @@ input.filter {
   background: var(--accent-wash);
 }
 
-/* ── Refs tracker issue 2075 — A ROW THAT CANNOT BE PICKED HAS TO LOOK LIKE ONE ─────────────────────
+/* ── A ROW THAT CANNOT BE PICKED HAS TO LOOK LIKE ONE ─────────────────────
    The class was applied by the component and NO RULE EXISTED for it, so a disabled row rendered
    identically to a live one: same border, same surface, same hover. That is exactly what the owner
    reported — "it doesnt appear disabled, no message etc - but i cant select it."
@@ -1411,7 +1411,7 @@ input.filter {
   color: var(--text-muted);
 }
 
-/* ── Refs tracker issue 2087 — a lane this search needs and this deployment does not have ───────────
+/* ── a lane this search needs and this deployment does not have ───────────
    Louder than the coverage note beside it: coverage narrows what a report covers, this removes a whole
    section of the reasoning. Still not a refusal — the search runs and the report states the gap. */
 .pick-row-capability {
@@ -1767,7 +1767,7 @@ input.filter {
   border-bottom: 1px solid var(--border-hairline);
 }
 
-/* ── Refs tracker issue 2076 — the two trades, side by side at the press ────────────────────────────
+/* ── the two trades, side by side at the press ────────────────────────────
    Each option is a BLOCK a reader can read before clicking, not a button with a word on it: the whole
    point of the question is that the two cost different things, and a row of verbs would hide that.
    The safe one is first and plain; "Stop now" is marked but not alarmed — the owner asked for it
@@ -1955,7 +1955,7 @@ input.filter {
   white-space: nowrap; cursor: pointer;
 }
 .home2-stop:hover, .home2-cancel:hover, .home2-ack:hover { border-color: var(--border-strong); color: var(--text-body); }
-/* tracker issue 1986 — the honest face of a Stop this deployment cannot serve. NOT home2-stop: the
+/* the honest face of a Stop this deployment cannot serve. NOT home2-stop: the
    browser check counts that class as a Stop that can act. */
 .home2-stop-unavailable {
   font-size: 12px;
@@ -1967,7 +1967,7 @@ input.filter {
   cursor: not-allowed;
 }
 
-/* tracker issue 2076 — the sentence that replaces the Stop button while a stop is in flight. */
+/* the sentence that replaces the Stop button while a stop is in flight. */
 .home2-stopping {
   font-size: 12px;
   color: var(--text-muted);
@@ -1975,7 +1975,7 @@ input.filter {
 }
 .home2-stop:disabled, .home2-cancel:disabled, .home2-ack:disabled { opacity: 0.55; cursor: default; }
 
-/* ── tracker issue 613: acknowledged, behind a count ──────────────────────────────────────────────────────────
+/* ── acknowledged, behind a count ──────────────────────────────────────────────────────────
    Quiet on purpose. These are runs the reader has already dealt with, and the whole point of the
    feature is that they stop competing with live work for attention — a panel styled like the queue
    would put them back in the fight it just took them out of. */
@@ -2088,7 +2088,7 @@ input.filter {
   .home2-qowner, .home2-qdepth { display: none; }
 }
 
-/* ── Refs tracker issue 2143 — THE USE-YOUR-AI PAGE ─────────────────────────────────────────────────
+/* ── THE USE-YOUR-AI PAGE ─────────────────────────────────────────────────
    The owner walked this page against the standing test — "I am a lawyer, only slightly technical" —
    and failed it. Four of the seven defects he listed were layout, and one of them was one word: the
    buttons carried `className="btn"`, and there is no `.btn` in this file. They rendered as bare
@@ -2100,7 +2100,7 @@ input.filter {
    the wrong one for a page of controls: the buttons stacked one per row down a 640px column with two
    thirds of the frame empty beside them. The text keeps a readable measure (`--screen-measure`, the
    vocabulary's own, not a ninth invented number) and the buttons take the frame and wrap. No new width
-   is declared here, deliberately — tracker issue 2086 rules that a new one needs its own reason, and
+   is declared here, deliberately — the width vocabulary rules that a new one needs its own reason, and
    this page did not need one, it needed to stop using the narrowest one for everything. */
 .ai-screen h2 {
   font-size: 17px;
@@ -2120,7 +2120,7 @@ input.filter {
 
 .ai-connect-head { margin-top: 28px; }
 
-/* ── ONE QUESTION, WHEN THE DEPLOYMENT LEAVES IT OPEN (tracker issue 147) ─────────────────────────── */
+/* ── ONE QUESTION, WHEN THE DEPLOYMENT LEAVES IT OPEN ─────────────────────────── */
 .ai-where { margin: 0 0 14px; max-width: var(--screen-measure); }
 
 .ai-where-q { margin: 0 0 8px; font-size: 15px; color: var(--text-strong); }

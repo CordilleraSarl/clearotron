@@ -221,7 +221,7 @@ test("2177 every candidate location RESOLVES, including the ones nobody has chos
 });
 
 test("2177 the location in force is the one the owner ruled", () => {
-  // THE FLIP LANDED (tracker issue 140, 2026-09-05). This arm used to assert `package-root` and to say
+  // THE FLIP LANDED (2026-09-05). This arm used to assert `package-root` and to say
   // that a failure here means the flip is landing — it did, and the two things it told the next reader
   // to check were done with it: the ruling is on the thread, and doctor's door-divergence pair follows
   // the resolver rather than composing its own path.

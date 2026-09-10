@@ -26,8 +26,8 @@ at runtime.
   This bounds the set at about 35 front doors rather than 100 stubs, and a stub is what rots.
 - **Decisions go in `docs/decisions/`.** A ruling gets a numbered ADR so the next reader finds it settled.
 - **No hand-kept changelogs, at any level.** Git holds the history, and a hand-kept log rots. A
-  per-directory one was never written and stays banned. **Amended 2026-08-31 (owner ruling on tracker
-  issue 2055: the landed release-pipeline decision is master, and the old doc is cleaned up to match
+  per-directory one was never written and stays banned. **Amended 2026-08-31 (owner ruling:
+  the landed release-pipeline decision is master, and the old doc is cleaned up to match
   it, never the machinery bent to the doc):** the root `CHANGELOG.md` is the release pipeline's
   MACHINE-COMPILED output — assembled by `scripts/release-version.mjs` from the pending release notes
   when a release is cut, plain-language-gated, and public-facing (the website receives it). It is not

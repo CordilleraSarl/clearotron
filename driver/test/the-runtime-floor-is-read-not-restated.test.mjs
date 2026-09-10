@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE MINIMUM NODE VERSION HAS ONE SOURCE, AND IT IS COMPARED IN FULL — tracker issue 278.
+// THE MINIMUM NODE VERSION HAS ONE SOURCE, AND IT IS COMPARED IN FULL.
 //
 // There were two spellings of one requirement. `package.json` declared `>=22.19.0`, which npm reads; the
 // product's own check carried `NODE_FLOOR = 22` and compared `Number(version.split(".")[0]) >= 22`. A

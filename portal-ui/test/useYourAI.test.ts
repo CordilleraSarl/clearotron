@@ -81,7 +81,7 @@ test('THE PAGE DERIVES NOTHING — it holds no client table and no offered/withh
 
 test('AN UNSERVED ROW DOES NOT RENDER FOR A CLIENT AT ALL — not a button, not a sentence', () => {
   // THIS ARM USED TO REQUIRE THE SENTENCE. It asserted that an unavailable assistant rendered as prose
-  // with a reason and a remedy, which was right until the owner ruled otherwise on tracker issue 147:
+  // with a reason and a remedy, which was right until the owner ruled otherwise:
   // an unserved row does not render for a client at all.
   //
   // The measurement behind that ruling is why it matters. On a HEALTHY hosted install the three stdio
@@ -179,7 +179,7 @@ test('PARITY: the recipes the delivered report carries are the ones the hand-set
   // surfaces that must agree still has two sides. Read off each file's source rather than a shared
   // helper, because `render.mjs` is byte-frozen at a content hash and exporting from it to import here
   // would move that hash for a test's convenience.
-  // THE ANCHOR STOPS AT THE LABEL'S FIRST WORDS, not at its closing quote. tracker issue 147 put a
+  // THE ANCHOR STOPS AT THE LABEL'S FIRST WORDS, not at its closing quote. A later change put a
   // dated stamp inside that label — `Set up Claude <span…>· ✓ Checked 4 September 2026</span>` — and the
   // old anchor required the quote immediately after "Claude", so it matched nothing and this arm failed
   // with "the report no longer carries its own set-up block" on a report that very much did. A slice
@@ -260,7 +260,7 @@ test('the copy helper reports a REFUSAL, so a blocked clipboard is not read as s
 })
 
 test('EVERY ROW COMPOSES A SENTENCE THAT READS — the generic one carries its own, as data', async () => {
-  // Owner's ruling 2026-09-06 (tracker issue 147, option B). Approved copy line 8 is `Paste it into
+  // Owner's ruling 2026-09-06 (option B). Approved copy line 8 is `Paste it into
   // {assistant}`, and it reads for every proper noun — "Paste it into Claude", "Paste it into ChatGPT",
   // "Paste it into Perplexity" — and not for the one row a reader reaches when their assistant is not
   // listed: "Paste it into Another agent" is not English. Option A (rename the row) was rejected because

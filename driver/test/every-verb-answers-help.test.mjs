@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// tracker issues 1861 (criterion 4) and 1882 — EVERY VERB ANSWERS --help, AND ANSWERS WITH HELP.
+// EVERY VERB ANSWERS --help, AND ANSWERS WITH HELP.
 //
 // Three verbs answered `--help` with an error or with the middle of their own reasoning block. Four
 // others answered with their LICENCE HEADER as the first line:
