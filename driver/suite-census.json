@@ -400,9 +400,9 @@
           "todos": 0
         },
         "a-new-install-signs-in-with-its-own-passphrase.test.mjs": {
-          "tests": 6,
-          "asserts": 34,
-          "skips": 0,
+          "tests": 7,
+          "asserts": 37,
+          "skips": 1,
           "todos": 0
         },
         "a-packaged-install-resolves-every-workspace-dependency.test.mjs": {

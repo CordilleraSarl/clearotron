@@ -51,7 +51,7 @@ test("which credential an install signs in with, over every shape it can meet", 
 
 test("the install's own file is the one installPaths names, and the verb's default install is start's", async () => {
   const { installPaths, defaultGrantsPath } = await import("../../bin/start.mjs");
-  for (const b of ["/srv/a/trademark", "/home/x/elsewhere"])
+  for (const b of ["/srv/a/trademark", "/srv/x/elsewhere"])
     assert.equal(installCredential({ base: b, env: {}, firstStart: true }).path, installPaths(b).credential,
       "the file start chooses and the file the install's layout names must be one file");
   // Driven against start's own default rather than a shared literal: the verb and start must name the same
