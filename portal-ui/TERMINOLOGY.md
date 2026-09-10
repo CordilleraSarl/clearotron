@@ -177,7 +177,7 @@ extractor is known to drop a string:
 | **Account** | 11 | the sign-in, enrolment and spend identity — *"this account has not been granted access"* |
 | **Client** | 0 visible | RULED and gone from copy, and the access-role identifier went with it: the portal reads two permissions, `canRun` and `canManage` |
 | **Customer** | 3 | the deployment's own operator language — *"a server setting on this deployment"* |
-| **Tenant** | 1 | *"all of this tenant"*, one pill on People & access. The extractor drops it; a direct search finds it |
+| **Tenant** | 0 visible | gone from copy with the People page, which prints *Organisation*; it survives in the grants file, on the wire and on the command line |
 | **Organisation** | 1 | the top-bar label, ruled |
 
 **Why three of these are still open, and why *Client* no longer is.** The earlier reasoning here was
