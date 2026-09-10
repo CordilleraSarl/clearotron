@@ -729,6 +729,8 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   )
 }
 
+import { switcherLabel } from './companyRows.ts'
+
 /**
  * Which company's world you are looking at.
  *
@@ -739,8 +741,8 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
  * GROUP HEADINGS ARE `<optgroup>`s, and they appear only for a person who can see more than one
  * organisation. The control stays a native select: it is the most load-bearing piece of context on the
  * page, and a native control is the one every keyboard, screen reader and phone already knows how to
- * open. The Default tag is drawn on the pick panel's card, where there is markup to draw it with; an
- * option can only hold text, and Generic's name already says "default".
+ * open. The pick panel's card draws Generic's Default tag as a pill; an option holds text only, so here
+ * the tag is the word after the name, from `switcherLabel`, beside the rows it labels.
  */
 function BrandOwnerSwitcher({
   grouped,
@@ -753,7 +755,7 @@ function BrandOwnerSwitcher({
 }) {
   const option = (r: CompanyRow) => (
     <option key={r.key} value={r.key}>
-      {r.name}
+      {switcherLabel(r)}
     </option>
   )
 

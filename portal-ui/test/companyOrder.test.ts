@@ -11,7 +11,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { pickerGroups, pickerRows, GENERIC_KEY } from '../src/shell/companyRows.ts'
+import { pickerGroups, pickerRows, GENERIC_KEY, switcherLabel } from '../src/shell/companyRows.ts'
 import type { Organisation, Run } from '../src/contract/api.ts'
 import { genericFor, isGenericKey, orgOfGeneric, wireAccount, runKey } from '../src/contract/genericKey.ts'
 import { ownerSummaries, runsFor } from '../src/contract/home.ts'
@@ -169,4 +169,15 @@ test('THE SWITCHER, THE PANEL AND THE CHIPS take their rows from the one groupin
     )
   same(['zephyr', 'generic', 'acme'], orgMap({ zephyr: 'alder', generic: 'alder', acme: 'alder' }), [ALDER])
   same(['harbour', genericFor('alder'), 'acme', genericFor('birch')], orgMap({ harbour: 'alder', acme: 'birch' }), [ALDER, BIRCH])
+})
+
+test('THE SWITCHER PRINTS EACH GENERIC AS THE DEFAULT, and no company whose name merely says it', () => {
+  // The rail switcher is a native select, so its Default tag is words, and words are the one place a
+  // company's own name could imitate it. The tag follows the row's kind, never its spelling.
+  const withDecoy = (k: string | null) => (k === 'acme' ? 'Default Holdings' : name(k))
+  const inTwo = orgMap({ acme: 'alder', harbour: 'birch', [genericFor('alder')]: 'alder', [genericFor('birch')]: 'birch' })
+  const rows = pickerRows(['harbour', genericFor('birch'), 'acme', genericFor('alder')], inTwo, [ALDER, BIRCH], withDecoy, noFacts)
+  assert.deepEqual(rows.map(switcherLabel),
+    ['Generic default (Default)', 'Default Holdings', 'Generic default (Default)', 'Harbour Ltd'],
+    'each organisation\'s Generic reads as its Default; the company named Default Holdings does not')
 })
