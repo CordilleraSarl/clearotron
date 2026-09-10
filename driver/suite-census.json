@@ -4102,8 +4102,8 @@
           "todos": 0
         },
         "start-command.test.mjs": {
-          "tests": 26,
-          "asserts": 113,
+          "tests": 27,
+          "asserts": 117,
           "skips": 0,
           "todos": 0
         },
