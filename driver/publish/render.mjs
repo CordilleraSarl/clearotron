@@ -66,7 +66,7 @@ let ENFORCER_SIGNALS = new Map();  // E6: registration uri (lowercase) → {aggr
 // inference and no receipt line renders ⇒ archived output stays byte-identical.
 let RECORD_ORIGIN = null;
 let RECORD_ORIGINS = null;   // — the run's ALLOW-LIST, not one origin
-let RECORD_CITATION = null;  // — what a card shows where a link cannot go (provider table)
+let RECORD_CITATION = null, RECORD_LINKS = null;  // — what a card shows where a link cannot go (provider table); the office's own page per fetched record (office-record-links.mjs)
 let PROVIDER_LABEL = null;
 // WP-receipts W3/W4 — senior-right rows by finding ordinal (from _driver/senior-rights.json via
 // publish). The open item is CODE-OWNED: a verdict-driving card whose senior right went unverified
@@ -872,7 +872,7 @@ function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, co
   // page had a register-index entry on it — a definition of a label the reader could not see. It renders
   // now only where such an entry does, and the remaining two say what "inferred" means in the words a
   // reader would use for it rather than in the renderer's.
-  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}“Inferred” beside an owner’s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p>`);
+  if (hasRecordSet || hasCards) parts.push(`<p class="scoperead" style="margin:0 0 4px;font-weight:600">Record provenance</p><p class="provnote" style="margin:0 0 6px;font-size:13px">${hasRecordSet ? 'Registration numbers on the cards were read from the register records. ' : ''}${officeLinkNote()}${hasIndexEntry ? 'A registration shown as a register-index entry was seen in the register index; its full record was not pulled. ' : ''}“Inferred” beside an owner’s likelihood to object means we judged it from what the owner sells and holds; we had no enforcement history to read.</p>`);
   // — this is the one part of §4 that does NOT fold. Same markup, same heading, same marker; it is
   // emitted beside the <details> instead of inside it, wrapped in the panel the only-you section already
   // uses so it reads as a region of the page rather than a stray heading.
@@ -1298,7 +1298,7 @@ function fullDetail(f, card, recordsByUri = new Map()) {
       // "file exists on disk" inference. Absent receipt (archived runs) renders nothing.
       const receiptTail = rec._receipt?.fetched_at
         ? ` · <i class="receipt">verified — ${esc(PROVIDER_LABEL || 'register')} record fetched ${esc(String(rec._receipt.fetched_at).slice(0, 10))}</i>` : '';
-      return `<li><b>${regUri(r.uri)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}</li>`;
+      return `<li><b>${officeRecordCell(r.uri, regUri, RECORD_CITATION ? NO_LINK_NOTE[RECORD_CITATION] : null)}</b>${cls ? ` · Cl.${esc(cls)}` : ''}${status ? ` · ${esc(status)}` : ''}${tail ? ` (${esc(tail)})` : ''}${jur ? ` · ${esc(jur)}${sys ? ` <i class="jsys">(${sys})</i>` : ''}` : ''}${desigHtml}${prio}${receiptTail}</li>`;
     }
     // (2)+(3): a cited record with NO fetched body. NEVER-INVENT when the run has a record set (this URI was
     // not fetched ⇒ the model's fields are unconfirmed); also when there are no findings.json facts to show.
@@ -2072,7 +2072,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   // The provider table's own answer, not a branch on a vendor name here: `workbook` (no register UI
   // exists — point at the artifact that carries the record) or `placeholder` (a UI exists, its
   // per-record URL is unknown — say so, and say it is unfinished). Unset ⇒ plain text, as before.
-  RECORD_CITATION = typeof opts.recordCitation === "string" ? opts.recordCitation : null;
+  RECORD_CITATION = typeof opts.recordCitation === "string" ? opts.recordCitation : null; RECORD_LINKS = opts.recordLinks instanceof Map ? opts.recordLinks : null;
   PROVIDER_LABEL = opts.providerLabel ?? null;     // WP-receipts W2
   SENIOR_RIGHTS = new Map((Array.isArray(opts.seniorRights) ? opts.seniorRights : []).map((r) => [r.ordinal, r]));   // WP-receipts W3/W4
   // A1 — a review-KILLED finding (disposition "withdrawn") renders NOWHERE: not in the
@@ -2410,4 +2410,29 @@ if (isEntrypoint(import.meta.url)) {
   const out = join(outDir, basename(reportPath).replace(/\.report\.md$/, '').replace(/\.md$/, '') + '.html');
   writeFileSync(out, renderHtml(parsed, findings, coverage, { runId: basename(reportPath), contextNotes, markAssessment, fourAnswers }));
   console.log(`rendered ${findings.length} findings + ${coverage.length} coverage areas + ${contextNotes.length} context notes -> ${out}`);
+}
+
+// ── The office's own page for a fetched record, where the run's register publishes none of its own ─────
+// publish addresses each fetched record from its own numbers (office-record-links.mjs) and hands the map
+// in as `recordLinks`. Kept down here, below every line the rest of the tree cites by number.
+import { officeReasonSentences } from './office-record-links.mjs';
+
+// The label is the office and the number, linked where the office has a page. The handle names the
+// vendor's record, not the office's, and a reader can look it up nowhere. With no link the number stands
+// on its own beside the workbook note, and Scope says once, per office, why it is not a link.
+function officeRecordCell(uri, regUri, note) {
+  const l = RECORD_LINKS?.get(String(uri || '').toLowerCase());
+  if (!l?.label) return regUri(uri);
+  if (l.href) return `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>`;
+  return note ? `${esc(l.label)}<span class="reg-nolink">${note}</span>` : esc(l.label);
+}
+
+// What a linked registration number opens and, once per office, why the rest are cited by number. Said
+// in Scope rather than beside every registration, for the reason the placeholder note was removed: a
+// note repeated on every line reads as a broken report. Empty on every other run.
+function officeLinkNote() {
+  if (!RECORD_LINKS) return '';
+  const linked = [...RECORD_LINKS.values()].some((l) => l?.href);
+  return (linked ? 'A registration number shown as a link opens the office’s own page for that record. ' : '')
+    + officeReasonSentences(RECORD_LINKS).map((s) => `${esc(s)} `).join('');
 }
