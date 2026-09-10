@@ -3,11 +3,13 @@
 // ops.test.mjs — the OPS write-face verbs (start_run / stop_run / feed_context) against an isolated
 // temp workspace. No MCP SDK / jose. Sets CLEAROTRON_WORK_DIR BEFORE importing (driver.config reads it
 // at module load), so the queue + run dirs land under a throwaway tmp tree.
-import { test } from "node:test";
+import { test, after } from "node:test";
+import { spawn } from "node:child_process";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { recordEngineChild } from "../../driver/engine/child-record.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
@@ -647,4 +649,36 @@ test("mark_sent: a marker minted under the DERIVED <slug>-<codename> form is cle
     pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", undefined);
     rmSync(runDir, { recursive: true, force: true });
   }
+});
+
+test("an immediate stop reports that a stop was SENT, never that the step has ended", () => {
+  // — RULING 142, DRIVEN AT THE BRANCH THAT MISREPORTED IT.
+  //
+  // The owner pressed "Stop now" on a real knockout on his WSL install of 0.3.0-beta.1. The card said
+  // the step in flight had been ended and the run would be terminal in seconds. It stopped at the next
+  // step. This is that branch, with a real live child to signal.
+  //
+  // `process.kill` returning without throwing means the signal was accepted by the OS FOR DELIVERY. It
+  // is not evidence the child took it, exited, or that the step is over — a process that handles or
+  // ignores SIGTERM leaves this code path looking identical. So the answer may report the send and must
+  // not report the outcome.
+  const { runDir, runId } = makeRun({ slug: "tmpc-sig", codename: "2026-06-16-sig-x" });
+
+  // A REAL live child, so the branch is reached rather than argued about. It is this test's own
+  // process to kill, and the signal that goes to it is the one the product would send.
+  const child = spawn("sleep", ["300"], { stdio: "ignore" });
+  after(() => { try { child.kill("SIGKILL"); } catch { /* already gone */ } });
+  recordEngineChild(runDir, child.pid);
+
+  const s = stopRun({ runId, immediate: true });
+  assert.equal(s.action, "cancel-requested");
+  assert.equal(s.immediate.attempted, true, "the branch under test was not reached — no signal was attempted");
+  assert.equal(s.immediate.signalled, "SIGTERM", "the branch under test was not reached — nothing was signalled");
+  assert.equal(s.immediate.ended, null,
+    "the answer claims to know whether the step ended; nothing in this path observes that");
+
+  assert.doesNotMatch(s.note, /has been ended|has now been ended/,
+    "the answer states the step was ended, which is the promise the mechanism cannot keep");
+  assert.match(s.note, /next step boundary/,
+    "the answer does not tell the presser what happens when the step will not take the stop");
 });
