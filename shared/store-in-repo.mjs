@@ -392,7 +392,8 @@ export function resolveStoreRepoRoot({ names, fallback = null, env = process.env
  * Where does a save committed in `dir`'s repository go next? Read-only.
  *
  * @param {string} dir  the store directory — any directory inside the repository; git finds the root
- * @param {{ env?: object }} [opts]  the environment git runs in — a caller can bound the search upwards
+ * @param {{ env?: object, gitVersion?: string }} [opts]  the environment git runs in — a caller can bound the
+ *   search upwards — and, for a test, the `git version` answer to reason from instead of asking git
  * @returns one of:
  *   `{ state: "publishes", root, branch, upstream, ahead, via }` — a push with no arguments carries the store's
  *     commits out: the branch tracks a remote branch (`via: "tracking"`), or it tracks none and git's push
@@ -404,7 +405,7 @@ export function resolveStoreRepoRoot({ names, fallback = null, env = process.env
  *   `{ state: "could-not-look", why }` — git would not answer: a missing directory, a repository owned
  *     by another account, no git on the path. Never read as either answer above.
  */
-export function whereSavesGo(dir, { env = process.env } = {}) {
+export function whereSavesGo(dir, { env = process.env, gitVersion = null } = {}) {
   const ask = (...args) => {
     try {
       return { ok: true, out: execFileSync("git", ["-C", String(dir ?? ""), ...args],
@@ -458,14 +459,28 @@ export function whereSavesGo(dir, { env = process.env } = {}) {
     for (const x of [pushRemote, pushDefault, mode]) if (x.why) return { state: "could-not-look", why: x.why };
     const auto = ask("config", "--type=bool", "--get", "push.autoSetupRemote");
     if (!auto.ok && auto.status !== 1) return { state: "could-not-look", why: auto.why };
-    const fallback = remotes.includes("origin") ? "origin" : remotes.length === 1 ? remotes[0] : null;
-    const fetchesFrom = remote.value || fallback;
+    // ── WHICH GIT IS ANSWERING ─────────────────────────────────────────────────────────────────────────
+    //
+    // Two of these rules arrived in git 2.37.0: `push.autoSetupRemote`, and the fallback that makes the only
+    // remote the default when it is not named `origin`. Before 2.37 the default remote is `origin` whether
+    // or not one exists, so a lone remote with another name is never the default. A push remote naming it
+    // is then triangular against a missing `origin`, and `simple` pushes. A review found that for the git on
+    // Ubuntu 22.04 (2.34), where the 2.37 reading here said the store stayed: a missed publish, the one
+    // direction this must not err in. A version git will not state is read as a current one.
+    const ver = /(\d+)\.(\d+)/.exec(String(gitVersion ?? ask("version").out ?? ""));
+    const modern = !ver || Number(ver[1]) > 2 || (Number(ver[1]) === 2 && Number(ver[2]) >= 37);
+    const fallback = remotes.includes("origin") ? "origin" : modern && remotes.length === 1 ? remotes[0] : null;
+    const fetchesFrom = remote.value || (modern ? fallback : "origin");
     const dest = pushRemote.value || pushDefault.value || (remote.value === "." ? null : fallback);
     const pushing = mode.value || "simple";
+    const triangular = dest !== fetchesFrom;
+    const autoOn = modern && auto.ok && auto.out === "true";
     const via = !dest || !remotes.includes(dest) ? null
       : pushing === "current" ? "push.default is current"
-      : (pushing === "simple" || pushing === "upstream") && auto.ok && auto.out === "true" ? "push.autoSetupRemote is on"
-      : pushing === "simple" && dest !== fetchesFrom ? `push.default is simple, and it pushes to ${dest}, not the remote this branch fetches from`
+      // `upstream` refuses a push to a remote the branch does not fetch from, tracking set up or not:
+      // "You are pushing to remote 'x', which is not the upstream of your current branch".
+      : autoOn && (pushing === "simple" || (pushing === "upstream" && !triangular)) ? "push.autoSetupRemote is on"
+      : pushing === "simple" && triangular ? `push.default is simple, and it pushes to ${dest}, not the remote this branch fetches from`
       : pushing === "matching" && ask("rev-parse", "--verify", "-q", `refs/remotes/${dest}/${branch}`).ok
         ? "push.default is matching, and the remote has this branch"
       : null;
