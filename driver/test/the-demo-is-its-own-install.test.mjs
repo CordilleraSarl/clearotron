@@ -34,14 +34,15 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { createServer, connect } from "node:net";
 import { createHash } from "node:crypto";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync, existsSync, lstatSync } from "node:fs";
 import { tmpdir, userInfo } from "node:os";
-import { join, dirname, relative } from "node:path";
+import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDemoEntry, loadEnvLocal } from "../../shared/env-local.mjs";
 import { installerGrants, installPaths, DEMO_ORGANISATION, demoAccounts, seedDemoStore } from "../../bin/start.mjs";
 import { resolvePerson } from "../../shared/scope.mjs";
 import { establishCredential } from "../portal-local-auth.mjs";
+import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { switcherKeys } from "../../portal-ui/src/shell/companyRows.ts";
 import { genericFor } from "../../portal-ui/src/contract/genericKey.ts";
 
@@ -52,17 +53,18 @@ const DEMO_KEY = "demo-brand-owner";
 /** Output with any line about a passphrase taken out, so no assertion message can carry one. */
 const safe = (s) => String(s).split("\n").map((l) => (/passphrase/i.test(l) ? "[a passphrase line, redacted]" : l)).join("\n");
 
-/** Every file under `root`, relative path → digest. Names and digests only: nothing a file holds is printed. */
+/**
+ * Every file under `root`, relative path → digest. Names and digests only: nothing a file holds is printed.
+ * One read of the whole tree, so an empty directory part-way down (a fresh store's `.git/refs/tags`) is
+ * ordinary, and only a root that holds nothing at all refuses: a comparison over it would compare nothing.
+ */
 function tree(root) {
   const out = {};
-  const walk = (d) => {
-    for (const e of readdirSync(d, { withFileTypes: true })) {
-      const p = join(d, e.name);
-      if (e.isDirectory()) walk(p);
-      else if (e.isFile()) out[relative(root, p)] = createHash("sha256").update(readFileSync(p)).digest("hex");
-    }
-  };
-  if (existsSync(root)) walk(root);
+  if (!existsSync(root)) return out;
+  for (const rel of nonEmpty(readdirSync(root, { recursive: true }), `the entries under ${root}`)) {
+    const p = join(root, rel);
+    if (lstatSync(p).isFile()) out[rel] = createHash("sha256").update(readFileSync(p)).digest("hex");
+  }
   return out;
 }
 
@@ -301,6 +303,8 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
       demoCredential(home);
       const before = installState(home);
       assert.ok(Object.keys(before.install).length >= 5, "anti-vacuity: the planted install holds files to compare");
+      assert.ok(before.credential["portal-local-credential.json"] && before.settings[".env"],
+        "anti-vacuity: the planted install's credential and settings file are there to compare");
 
       const base = await freePorts(3);
       ports = [base, base + 1, base + 2];
