@@ -209,6 +209,8 @@ test("a branch with no tracking PUBLISHES when a bare push would carry it — he
     ["simple, the branch's pushRemote names origin beside a second remote", ["origin", "second"], { "branch.main.pushRemote": "origin" }],
     ["simple, the only remote is not origin and remote.pushDefault names it", ["other"], { "remote.pushDefault": "other" }],
     ["simple, two remotes, neither origin, remote.pushDefault names one", ["one", "two"], { "remote.pushDefault": "one" }],
+    ["push.default=upstream with push.autoSetupRemote, the branch's pushRemote names a second remote", ["origin", "second"],
+      { "push.default": "upstream", "push.autoSetupRemote": "true", "branch.main.pushRemote": "second" }],
     ["simple, a branch tracking a local branch, remote.pushDefault names origin", ["origin"],
       { "branch.main.remote": ".", "branch.main.merge": "refs/heads/base", "remote.pushDefault": "origin" }, { base: true }],
   ];
@@ -243,5 +245,37 @@ test("a branch with no tracking PUBLISHES when a bare push would carry it — he
     // FLOORS on both outcomes: a table in which nothing published, or everything did, could pass by agreeing
     // with a function that always answers one way.
     assert.ok(tally.published >= 5 && tally.stayed >= 5, `the table must exercise both outcomes: ${JSON.stringify(tally)}`);
+  } finally { s.cleanup(); }
+});
+
+test("on git older than 2.37 the answer follows that git — the lone-remote fallback and push.autoSetupRemote are both 2.37", () => {
+  // No box here runs a git older than 2.37, so the older reading is pinned at an injected version while the
+  // push table holds the current one to git itself. A review measured the difference against git 2.34, the
+  // one Ubuntu 22.04 ships, and git's own source dates both rules to 2.37.0.
+  const s = scratch();
+  try {
+    const lone = join(s.dir, "lone");
+    s.git(s.dir, "init", "-q", "-b", "main", "lone");
+    s.commit(lone, "seed");
+    s.git(s.dir, "init", "-q", "--bare", "-b", "main", "other.git");
+    s.git(lone, "remote", "add", "other", join(s.dir, "other.git"));
+    const at = (repo, v) => whereSavesGo(repo, { env: s.env, gitVersion: v }).state;
+    s.git(lone, "config", "remote.pushDefault", "other");
+    assert.equal(at(lone, "git version 2.34.1"), "publishes", "before 2.37 the push is triangular against a missing origin, and simple pushes");
+    assert.equal(at(lone, "git version 2.43.0"), "stays-here", "from 2.37 the lone remote is the default, so the push is not triangular");
+    assert.equal(at(lone, "git version 2.39.3 (Apple Git-145)"), "stays-here", "a vendor suffix is still read as its version");
+    s.git(lone, "config", "--unset", "remote.pushDefault");
+    s.git(lone, "config", "push.default", "current");
+    assert.equal(at(lone, "git version 2.34.1"), "stays-here", "before 2.37 a push with no named destination goes to origin, and there is none");
+    assert.equal(at(lone, "git version 2.43.0"), "publishes", "from 2.37 it goes to the lone remote");
+
+    const withOrigin = join(s.dir, "with-origin");
+    s.git(s.dir, "init", "-q", "-b", "main", "with-origin");
+    s.commit(withOrigin, "seed");
+    s.git(s.dir, "init", "-q", "--bare", "-b", "main", "origin.git");
+    s.git(withOrigin, "remote", "add", "origin", join(s.dir, "origin.git"));
+    s.git(withOrigin, "config", "push.autoSetupRemote", "true");
+    assert.equal(at(withOrigin, "git version 2.34.1"), "stays-here", "push.autoSetupRemote does not exist before 2.37");
+    assert.equal(at(withOrigin, "git version 2.43.0"), "publishes");
   } finally { s.cleanup(); }
 });
