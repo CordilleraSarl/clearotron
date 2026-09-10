@@ -123,6 +123,25 @@ export const UNIT_INVENTORY = Object.freeze([
     // exists to make impossible — and a mechanism that installs itself is the easiest kind to ship
     // undeclared.
     unit: "clearotron-deploy", runsOn: ["test"],
+    // ── ATTRIBUTED BY ITS OWN STAMP, NOT BY A TREE UNDER IT ────────────────────────────────────────
+    //
+    // Both halves of the commit attribution fail for this one unit, and it is the unit that performs the
+    // deploy. It is a `oneshot` running from a home directory with no checkout under it, so there is no
+    // tree to resolve; and its command line is the update script rather than the product entry point, so
+    // the running-process half cannot reach it either. It was therefore reported as "could NOT be read
+    // and was NOT compared" — the mechanism that places every commit on this box being the one thing the
+    // check could not say anything about.
+    //
+    // IT IS NOT GIVEN THE CHECKOUT'S HEAD, which is the obvious repair and a false one. The updater has
+    // no commit of its own: it is a script copied out of a separate store, and handing it the commit of
+    // the tree it merely operates on would make "N units, all on <sha>" true of the tree and false of the
+    // updater — and it would pass in exactly the case worth catching, since a stale updater still leaves
+    // the tree it just deployed on the deployed commit.
+    //
+    // So it leaves the compared population by name rather than by silence: the commit arm reports it as
+    // stamped and says where its verdict lives, and driver/updater-identity.mjs makes that verdict from
+    // the digests the updater records about itself.
+    attribution: "stamp",
       measured: "2026-09-08, the test deployment: the timer and its service are installed for that deployment's own user, the timer is enabled and ACTIVE, and it last fired within the hour — `systemctl --user list-timers`. The service's own state says nothing about this: it is `inactive` between runs and `inactive` when the timer has been stopped. The timer's ActiveState says the timer itself is still up. It is NOT a next elapse and does not promise one: `active` means UP, never SCHEDULED. Proving something will still fire takes a real next elapse, which `systemctl list-timers --all` supplies and `show -p ActiveState` cannot. Measured in testing 2026-09-09: a timer reading `ActiveState=active` whose `OnCalendar` names a date already past, so `list-timers` reports its next fire as null and it will never run again.",
     tracked: ["clearotron-deploy.service", "clearotron-deploy.timer"],
     note: "the install's own updater. Placed on the test deployment, where it pulls hourly; production takes it when the owner asks.",
@@ -588,6 +607,18 @@ export const CHECKED_UNITS = Object.freeze(
 );
 
 /**
+ * The units that are attributed by a stamp they write about themselves, not by a tree under them.
+ *
+ * DERIVED FROM THE INVENTORY RATHER THAN SPELLED AT THE USE SITE. A literal `["clearotron-deploy"]` in
+ * the verdict would be a spelling, not a property: it would keep passing after the entry was renamed,
+ * retired or given to another box, and the unit would fall back into the could-not-read pile with
+ * nothing saying why. The entry that declares the unit is the one place that decides how it is judged.
+ */
+export const STAMP_ATTRIBUTED_UNITS = Object.freeze(
+  UNIT_INVENTORY.filter((u) => u.runsOn.length > 0 && u.attribution === "stamp").map((u) => u.unit),
+);
+
+/**
  * The TIMER units this deployment claims to have, by name, as systemd spells them.
  *
  * ── WHY A SECOND LIST AND NOT MORE NAMES IN THE ONE ABOVE ───────────────────────────────────────────
@@ -942,12 +973,23 @@ export function unitWorkingDirectory(raw) {
  * @param {boolean} a.ahead            the clone holds commits its remote does not
  * @returns {{state:"pass"|"fail"|"skip", message:string, owned:string[], foreign:string[]}}
  */
-export function serviceCommitVerdict({ clones = [], deployClone = null, expectHead = null, ahead = false } = {}) {
-  const running = (clones ?? []).filter((c) => c?.head);
+export function serviceCommitVerdict({ clones = [], deployClone = null, expectHead = null, ahead = false, stampAttributed = STAMP_ATTRIBUTED_UNITS } = {}) {
+  // — TAKEN OUT OF THE POPULATION BY NAME, BEFORE ANYTHING ELSE READS IT, and reported in its own
+  // clause below. These units have no tree to resolve and are judged by a stamp they write about
+  // themselves; leaving them here put the mechanism that performs the deploy into the "could NOT be
+  // read" pile, where it read as a gap in the check rather than as a unit judged somewhere else.
+  //
+  // THE POPULATION MUST NOT LOSE A MEMBER ON THE WAY THROUGH. Removing a unit here and failing to
+  // report it there is the silently narrowed population this verdict already carries two comments
+  // about — so the four buckets are asserted to account for every row that arrived.
+  const stampedNames = new Set(stampAttributed ?? []);
+  const stamped = (clones ?? []).filter((c) => c && stampedNames.has(c.unit));
+  const rest = (clones ?? []).filter((c) => !(c && stampedNames.has(c.unit)));
+  const running = rest.filter((c) => c?.head);
   // — ASKED AND FAILED, which is not the same as "reported no WorkingDirectory". Only a unit the
   // caller actually tried to read and could not lands here; an inactive unit with nothing to compare is
   // not a gap in the population and is not reported as one.
-  const unreadable = (clones ?? []).filter((c) => c && !c.head && c.unreadable);
+  const unreadable = rest.filter((c) => c && !c.head && c.unreadable);
   const norm = (p) => String(p ?? "").replace(/\/+$/, "");
   const foreign = running.filter((c) => norm(c.clone) !== norm(deployClone));
   const owned = running.filter((c) => norm(c.clone) === norm(deployClone));
@@ -955,12 +997,27 @@ export function serviceCommitVerdict({ clones = [], deployClone = null, expectHe
     foreign.length
       ? `${foreign.length} unit(s) on another clone, not this deploy's to judge: ${foreign.map((c) => c.unit).join(", ")}`
       : "",
+    stamped.length
+      ? `${stamped.length} unit(s) attributed by their own stamp rather than by a tree, and judged on the `
+        + `updater arm instead of here: ${stamped.map((c) => c.unit).join(", ")}`
+      : "",
     unreadable.length
       ? `${unreadable.length} unit(s) could NOT be read and were NOT compared: ${unreadable.map((c) => `${c.unit} (${c.unreadable})`).join("; ")}`
       : "",
   ].filter(Boolean);
   const aside = asideParts.length ? ` · ${asideParts.join(" · ")}` : "";
-  const names = { owned: owned.map((c) => c.unit), foreign: foreign.map((c) => c.unit), unreadable: unreadable.map((c) => c.unit) };
+  // — `idle` IS RETURNED BUT NOT NARRATED, and the split is deliberate on both sides. An inactive unit
+  // with nothing to compare is genuinely not a gap, so the message stays quiet about it as it always
+  // has; but a bucket that exists only inside this function is a bucket no test can count, and the
+  // rows this verdict drops are exactly what a silently narrowed population looks like. Naming it here
+  // lets a test assert that the five buckets account for every row that arrived, without adding a
+  // sentence to a report that is right not to carry one.
+  const idle = rest.filter((c) => c && !c.head && !c.unreadable);
+  const names = {
+    owned: owned.map((c) => c.unit), foreign: foreign.map((c) => c.unit),
+    unreadable: unreadable.map((c) => c.unit), stamped: stamped.map((c) => c.unit),
+    idle: idle.map((c) => c.unit),
+  };
 
   // COULD NOT SCOPE ⇒ DO NOT JUDGE. Without knowing which clone is being deployed, every unit looks
   // equally like ours, which is the state that produced the false red. A failure to look is not a

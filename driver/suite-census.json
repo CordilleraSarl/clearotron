@@ -4863,6 +4863,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-updater-that-deploys-this-box-says-what-it-is.test.mjs": {
+          "tests": 18,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
         "the-verb-table-resolves-to-files-that-ship.test.mjs": {
           "tests": 6,
           "asserts": 12,
