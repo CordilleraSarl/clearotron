@@ -55,6 +55,11 @@ export function triggerCapGap({ accounts = null, roster = [] } = {}) {
 /**
  * The one sentence every surface says about a gap, so three of them cannot say three different things.
  *
+ * IT WAS TWO UNTIL THE THIRD WAS WIRED. This function's own comment claimed three call sites and there
+ * were two — the create command and the portal's boot log. `doctor`, the command whose whole job is to
+ * report what a machine is configured for, said nothing at all about a cap that decides which companies
+ * can be started. The claim was aspirational and is now accurate.
+ *
  * The wording is the portal boot check's, kept deliberately: it was measured to be the thing that would
  * have saved the owner an afternoon, and rewording it per surface is how the good half of a defect gets
  * lost while the fix ships.

@@ -796,8 +796,8 @@
           "todos": 0
         },
         "an-account-is-never-created-unable-to-start.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 7,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
