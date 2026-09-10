@@ -14,6 +14,7 @@ import type { Families, Row } from './grouping.ts'
 import { NO_FAMILIES, marksOf, rowsOf } from './grouping.ts'
 import { newestFirst } from './reads.ts'
 import { readableFailure } from './failure.ts'
+import { runKey } from './genericKey.ts'
 
 /** Card order is fixed and is not a sort the user can change. A failure never sinks below live work. */
 const RANK: Record<string, number> = { failed: 0, running: 1, paused: 2, queued: 3 }
@@ -170,7 +171,7 @@ export function ownerSummaries(
 ): readonly OwnerSummary[] {
   return keys
     .map((key) => {
-      const mine = runs.filter((r) => r.account === key)
+      const mine = runs.filter((r) => runKey(r) === key)
       return {
         key,
         name: nameOf(key),
@@ -185,6 +186,17 @@ export function ownerSummaries(
         String(b.date ?? '').localeCompare(String(a.date ?? '')) ||
         a.name.localeCompare(b.name),
     )
+}
+
+/**
+ * The runs one company's view shows, or every run when no company is picked.
+ *
+ * THROUGH `runKey`, like every other run-to-owner comparison. An organisation's Generic is the owner key
+ * `generic:<org>` while its runs carry the wire account `generic` and their organisation, so comparing
+ * `run.account` with the owner drops every Generic run the moment somebody picks one.
+ */
+export function runsFor(runs: readonly Run[], owner: string | null): readonly Run[] {
+  return owner ? runs.filter((r) => runKey(r) === owner) : runs
 }
 
 /**

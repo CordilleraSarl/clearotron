@@ -5,6 +5,9 @@
 //
 //   npx clearotron start                  start the portal and the trigger lane; print one URL
 //   npx clearotron start --user you@host  the one address that signs in (persisted; asked for once)
+//   npx clearotron start --organisation <name>
+//                                        your organisation's name, filed in a grants file that holds
+//                                        none yet (setup asks for it; unset, none is invented)
 //   npx clearotron start --base <dir>     where this install keeps its data (default ~/trademark)
 //   npx clearotron start --port <n>       the portal's port (default 18802); the engine door takes
 //                                        n+1 and the client door n+2 unless each is set explicitly
@@ -130,9 +133,13 @@ import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13
 import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names one spelling has set nothing that wins
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // never serve a bundle older than its sources
-// ONE CLASSIFIER FOR WHAT A STAFF RULE ADMITS, shared with the setup wizard. Two copies of this
-// judgement would be a wizard that asks about one rule and a launcher that writes another.
-import { classifyStaffDomain, staffDomainRefusal, staffGrantSentence } from "../shared/staff-domain.mjs";
+// THE REFUSALS ABOUT THE SIGN-IN ADDRESS ITSELF, shared with the setup wizard so the two cannot send
+// back different addresses.
+import { addressRefusal } from "../shared/staff-domain.mjs";
+// The grants file's editors, shared with `clearotron grant` and the portal's People page: the installer's
+// entry is written through them, so this command cannot produce a shape of its own.
+import { withPerson, withOrganisation } from "../shared/grants-edit.mjs";
+import { assertGrantsShape, resolvePerson } from "../shared/scope.mjs";
 import { backgroundManager } from "../shared/os-advice.mjs";
 import { frontingVariablesSet } from "../shared/install-auth.mjs";   // — one owner for what counts as a proxy in front of a door
 
@@ -371,74 +378,43 @@ export function installPaths(base) {
   };
 }
 
-/** A staff rule this command will not build. Carries the sentence the operator reads, and why. */
-export class StaffDomainRefused extends Error {
-  constructor(domain, message) { super(message); this.name = "StaffDomainRefused"; this.domain = domain; }
-}
-
 /**
- * The one address that signs in, and the staff domain derived from it.
+ * The grants file after this start has made sure the person who installed can use the install.
  *
- * Derived, never asked twice. In local mode the portal admits EXACTLY ONE address, so a domain-wide
- * staff rule built from that address admits exactly that address and nobody else — which is what makes
- * it safe here and would not be safe on a hosted instance. Without it the sign-in succeeds and every
- * page 403s, because signing in is not being enrolled (portal-access.mjs decides that, and it is
- * deliberately blind to which door you came through).
+ * THE PERSON WHO INSTALLS IS THE FIRST PERSON: Run, Manage, access to everything. That used to be derived
+ * from the part of their address after the `@` — a domain rule that admitted exactly one identity on
+ * `<account>@localhost` and a whole employer on anything else. The rule is deleted. The installer is an
+ * entry of their own under `people`, and nothing about a domain admits anyone.
  *
- * ── AND THAT PARAGRAPH IS ONLY TRUE OF `<account>@localhost` ─────────────────────────────────────────
+ * TWO CONDITIONS, DECIDED SEPARATELY:
  *
- * "admits exactly that address and nobody else" is a property of the DOMAIN, not of the mode. It holds
- * for `localhost`. It does not hold for a domain other people have addresses at: the rule this line
- * produces from `alex@a-firm.example-tld` says *anyone at that domain*, the settings page then reports
- * it back in those words, and on a deployment where identity arrives from an external login system the
- * domain is the whole of the check. Nobody was asked, and there is nothing on the box recording that a
- * grant was made.
+ *   the installer's entry   written when the file names nobody under `people` — a fresh file, and the
+ *                           `{"tenants":{}}` this command wrote before `people` existed, whose local user
+ *                           was admitted by the domain rule and would otherwise be locked out of their own
+ *                           install on the first start after an upgrade. A file that names anybody is
+ *                           somebody's decision, and it is left exactly as it is.
+ *   the first organisation  created when the file holds no organisation and a name is known. Absent a
+ *                           name, none is invented: a person with access to everything resolves without
+ *                           any organisation, and Generic then files under none, which is how every
+ *                           Generic run was filed before organisations existed.
  *
- * So the derivation now refuses the domains that can never be a staff rule — a webmail provider, a
- * documentation domain — and hands anything wider than one machine back to the caller to state and
- * confirm. `shared/staff-domain.mjs` is the one classifier, shared with the setup wizard, so the
- * question the wizard asks and the rule this command builds cannot drift apart.
- *
- * An UNPARSEABLE address still returns `""`, and that is not the same answer as a refusal: nothing was
- * classified, so nothing was decided. The caller already refuses a non-address one line earlier.
+ * PURE, so the policy can be DRIVEN rather than read — the reason `homeEnvUpdate` is extracted: the start
+ * that writes this binds ports and spawns children. `unadmitted` says the address resolves to no access
+ * in the result; the caller reports that rather than repairing it.
  */
-export function staffDomainFor(email) {
-  const at = String(email ?? "").lastIndexOf("@");
-  const domain = at > 0 ? String(email).slice(at + 1).toLowerCase() : "";
-  if (!domain) return "";
-  const refusal = staffDomainRefusal(domain);
-  if (refusal) throw new StaffDomainRefused(domain, refusal);
-  return domain;
-}
-
-/**
- * What to say when the derived domain is a real one — wider than this machine, and never assumed.
- *
- * A REFUSAL RATHER THAN A PROMPT, and the reason is that this command has no reader. `start` runs from
- * a script, from `--background`, and from a service manager as often as from a terminal; a question
- * asked there either hangs or is answered by whatever happens to be on stdin. Every other decision on
- * this boundary already refuses instead — an unset access file, a multi-`@` identity, local mode off
- * loopback — so this is the idiom the rest of the door speaks.
- *
- * The consent itself lives where a person is definitionally present: `clearotron install` asks for the
- * address, shows this same sentence, and writes the answer down as an explicit `PORTAL_STAFF_DOMAINS`.
- * After that the `||` above this call short-circuits and the derivation is never reached again.
- */
-export function wideStaffDomainRefusal({ user, domain, envPath }) {
-  return `${user} would make every address at ${domain} an administrator of this install.\n`
-    + "\n"
-    + `  The rule that would be written is:  ${staffGrantSentence(domain, { staffLabel: `${BRAND.name} staff` })}\n`
-    + "\n"
-    + "  That is a grant to a group, and this command will not make one on your behalf. Pick the one\n"
-    + "  that is true here:\n"
-    + "\n"
-    + `    · only you use this machine — start without --user, or use ${String(user).slice(0, String(user).lastIndexOf("@"))}@localhost.\n`
-    + `      The rule is then this machine and nobody else, and nothing is granted to anyone.\n`
-    + `    · your colleagues at ${domain} should all be administrators — say so once, in writing:\n`
-    + `        PORTAL_STAFF_DOMAINS=${domain}\n`
-    + `      in ${envPath}, or in the environment. The settings page then names that file as where the\n`
-    + "      rule came from, so whoever reads it later can undo it.\n"
-    + `    · run \`${invocationPrefix()}clearotron install\`, which asks for the address and this question with it.`;
+export function installerGrants(existing, { user, organisation = null }) {
+  let grants = existing ?? { tenants: {} };
+  const changed = [];
+  if (!Object.keys(grants.people ?? {}).length) {
+    grants = withPerson(grants, { email: user, switches: { run: true, manage: true, everything: true } });
+    changed.push("person");
+  }
+  const name = String(organisation ?? "").trim();
+  if (name && !Object.keys(grants.tenants ?? {}).length) {
+    ({ grants } = withOrganisation(grants, { name }));
+    changed.push("organisation");
+  }
+  return { grants, changed, unadmitted: resolvePerson(user, grants) === null };
 }
 
 /**
@@ -514,7 +490,7 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   "profile-service.service": "the portal constructs the profile service IN-PROCESS (driver/portal-service.mjs); the standalone unit is the separate-editor deployment shape and running both double-serves the store",
 });
 
-export function childEnv({ ports, paths, user, staffDomains, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null, env = process.env }) {
+export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null, env = process.env }) {
   // ONE AUTHOR FOR THIS EXPRESSION. The hosted install path composes the same
   // origin, and the near-miss is specific: this is an ORIGIN, the portal's client appends `/mcp`
   // itself, and a second author writing the endpoint form produces a doubled path — a 404 at submit
@@ -628,7 +604,6 @@ export function childEnv({ ports, paths, user, staffDomains, portalSecret, token
       ...shared,
       PORTAL_AUTH_MODE: "local",
       PORTAL_LOCAL_USER: user,
-      PORTAL_STAFF_DOMAINS: staffDomains,
       PORTAL_SECRET: portalSecret,
       PORTAL_SERVICE_HOST: host,
       PORTAL_SERVICE_PORT: String(ports.portal),
@@ -879,45 +854,32 @@ if (isMain) {
 
   // The ADDRESS is not asked for here: a local install has one user, this machine already knows their
   // name, and the address never leaves the machine — `--user` is there for a reader who wants their real
-  // one, and whatever is resolved here is written to `.env` so the question is never put twice. What IS
-  // asked for, and used not to be, is the staff rule the address implies once it is a real one; that is
-  // the block below the address, and `clearotron install` is where the question is actually put.
+  // one, and whatever is resolved here is written to `.env` so the question is never put twice. It is the
+  // first person on the install (`installerGrants`, below); the part of it after the `@` decides nothing
+  // about anybody else.
   let whoami = "user";
   try { whoami = userInfo().username || "user"; } catch { /* a container with no passwd entry */ }
   // In a demo the address is the demo's own and is never written anywhere: see the DEMO block above.
   const user = String(flag("--user", DEMO ? "demo@localhost" : (process.env.PORTAL_LOCAL_USER || `${whoami}@localhost`))).trim().toLowerCase();
   if (!user.includes("@") || user.indexOf("@") !== user.lastIndexOf("@"))
     fatal(`--user "${user}" is not a single email address. It is the one identity that signs in here, and the portal refuses a multi-@ identity outright.`);
-  // ── THE STAFF RULE THIS ADDRESS IMPLIES, STATED BEFORE IT IS WRITTEN ──────────────────────────────
+  // ── THE REFUSALS ABOUT THE ADDRESS ITSELF, the wizard's own (shared/staff-domain.mjs) ──────────────
   //
-  // An explicit `PORTAL_STAFF_DOMAINS` is a decision somebody already made in writing, and it wins
-  // untouched — including a domain the classifier would otherwise refuse, because an operator who
-  // typed it has said what they mean and this command does not overrule that.
-  //
-  // Absent one, the rule is DERIVED from the single address, and that derivation is the defect this
-  // block exists to close. Three outcomes:
-  //
-  //   `localhost` (or any bare hostname)  — one machine, no second person, nothing to ask. Silent, as
-  //                                         it has always been. This is the default path and the only
-  //                                         one a laptop ever reaches.
-  //   a webmail or documentation domain   — refused by `staffDomainFor` itself; there is no yes that
-  //                                         makes it right.
-  //   any other real domain               — refused HERE, with the rule quoted in the words the
-  //                                         settings page uses and the three ways out named.
+  // A public provider or a documentation domain is sent back in the words `clearotron install` uses for
+  // the same address, with where this one came from, because that is the value the reader changes.
   //
   // BEFORE THIS RUN CHANGES THE BOX, deliberately — it sits above the state-written divide further
   // down, with the units gate, the auth-mode gate and the port probe. A refused start has written no
   // `.env`, minted no secret and placed no unit, so the reader's only question — is my install
   // half-made — has one answer.
-  let staffDomains = process.env.PORTAL_STAFF_DOMAINS;
-  if (!staffDomains) {
-    let derived = "";
-    try { derived = staffDomainFor(user); }
-    catch (e) { fatal(e.message); }
-    if (derived && classifyStaffDomain(derived) === "wide")
-      fatal(wideStaffDomainRefusal({ user, domain: derived, envPath: ENV_PATH }));
-    staffDomains = derived;
-  }
+  const refusal = addressRefusal(user);
+  if (refusal) fatal(`${refusal}\n  This address came from ${flag("--user") ? "--user" : `PORTAL_LOCAL_USER, in the environment or ${ENV_PATH}`}.`);
+  // YOUR ORGANISATION'S NAME, which `clearotron install` asks for directly after the address and writes
+  // as CLEAROTRON_ORGANISATION_NAME. It is read only to file the first organisation into a grants file
+  // that holds none (`installerGrants`); after that the grants file is where the name lives, and renaming
+  // it is an edit there. A DEMO TAKES NONE FROM THE SETTING, for the reason it takes no address from it:
+  // the reader's real install must not decide what the demo shows.
+  const organisation = String(flag("--organisation", DEMO ? "" : (process.env.CLEAROTRON_ORGANISATION_NAME ?? "")) ?? "").trim();
 
   say("");
   say(`  ${BRAND.name} ${BRAND.product.toLowerCase()} — local install`);
@@ -1092,13 +1054,60 @@ if (isMain) {
   for (const d of [paths.pool, paths.workspace, paths.queue, paths.outbox, paths.locks, paths.recipes]) {
     try { mkdirSync(d, { recursive: true }); } catch (e) { fatal(`could not create ${d} (${String(e?.message ?? e)}).`); }
   }
-  if (!existsSync(paths.grants)) {
-    // An empty roster is the correct starting state: it admits the staff domain above and grants no
-    // client anything. What is not legitimate is having no file — the portal refuses to start without
-    // one, because with no grants file every admitted identity resolves to every account.
-    try { writeFileSync(paths.grants, `${JSON.stringify({ tenants: {} }, null, 2)}\n`); }
-    catch (e) { fatal(`could not create the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
-    say(`  created        ${paths.grants} (an empty roster — one staff address, no clients yet)`);
+  // ── THE GRANTS FILE, AND THE PERSON WHO INSTALLED IN IT ─────────────────────────────────────────────
+  //
+  // Having no file is not legitimate — the portal refuses to start without one, because with no grants
+  // file every admitted identity resolves to every account. `installerGrants` holds the policy for what
+  // goes in it; this block reads, writes and says what happened.
+  //
+  // READ AND CHECKED FIRST, with the portal's own shape check: a file the portal will refuse is named
+  // here, where the reader can still fix it, rather than as a child that exits after the doors are up.
+  //
+  // A DEMO WRITES ONLY ITS OWN FILE. The demo visitor is simply the first person on a box holding only
+  // demo data, so it gets the installer's entry — in the demo's base and nowhere else. An environment
+  // pointing CLEAROTRON_ACCESS_FILE elsewhere names a real install's roster, and a demo identity with
+  // access to everything does not belong in it.
+  {
+    let existing = null;
+    if (existsSync(paths.grants)) {
+      try {
+        existing = JSON.parse(readFileSync(paths.grants, "utf8"));
+        assertGrantsShape(existing, paths.grants);
+      } catch (e) {
+        fatal(`the grants file at ${paths.grants} cannot be used: ${String(e?.message ?? e)}\n`
+          + "  The portal refuses to start on it as well. Fix that entry by hand, or set CLEAROTRON_ACCESS_FILE to the file you mean.");
+      }
+    }
+    if (DEMO && paths.grants !== installPaths(paths.base).grants) {
+      err(`  WARNING: CLEAROTRON_ACCESS_FILE points this demo at ${paths.grants}, outside ${paths.base}. The demo `
+        + `writes nothing there, so ${user} has no access unless that file already gives it some`
+        + `${existing ? "" : " — and it does not exist, so the portal will refuse to start"}. `
+        + "Unset CLEAROTRON_ACCESS_FILE to run the demo on its own file.");
+    } else {
+      let seeded;
+      try { seeded = installerGrants(existing, { user, organisation }); }
+      catch (e) { fatal(`could not add ${user} to the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
+      if (!existing || seeded.changed.length) {
+        // ATOMIC, because a --background refresh runs beside units that read this file per request, and a
+        // reader catching half of it gets malformed JSON.
+        const { atomicWrite } = await import("../driver/progress.mjs");
+        try { atomicWrite(paths.grants, `${JSON.stringify(seeded.grants, null, 2)}\n`); }
+        catch (e) { fatal(`could not write the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
+      }
+      if (!existing) say(`  created        ${paths.grants} — ${user}: Run, Manage, access to everything`);
+      else if (seeded.changed.includes("person"))
+        say(`  grants         ${paths.grants} named nobody, so ${user} was added: Run, Manage, access to everything`);
+      if (seeded.changed.includes("organisation")) say(`                 organisation "${organisation}", filed there — rename it there too`);
+      else if (seeded.changed.includes("person") && !Object.keys(seeded.grants.tenants ?? {}).length)
+        say(`                 no organisation named yet — \`${invocationPrefix()}clearotron start --organisation "<name>"\` files the first one`);
+      // REPORTED, NOT REPAIRED. A file that names other people is somebody's decision, and adding this
+      // address to it would give access to everything to an address nobody enrolled.
+      if (seeded.unadmitted)
+        err(`  WARNING: ${paths.grants} gives ${user} no access, so it signs in and every page refuses it.\n`
+          + "  The file already names other people, so this command leaves it as it is. Add under \"people\":\n"
+          + `    "${user}": { "run": true, "manage": true, "everything": true }\n`
+          + "  or start with --user set to an address that file gives access.");
+    }
   }
   // THE REVOCATION LIST, CREATED — not merely named (found in review).
   //
@@ -1252,7 +1261,7 @@ if (isMain) {
   // process's resolved environment, which is where `<repo>/.env` has already been applied, so a
   // decision recorded in that file survives a start rather than being silently overwritten with "1".
   const declaredFence = String(process.env.CLIENT_MCP_ACCOUNT_ACCESS ?? "").trim();
-  const envs = childEnv({ ports, paths, user, staffDomains, portalSecret, tokenSecret, opsToken,
+  const envs = childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken,
     localWorker: wantWorker, demo: DEMO, clientFence: declaredFence || null });
 
   // ── 3b. the configuration snapshot, so the portal can name this install's MODE ────────────────────

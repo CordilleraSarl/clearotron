@@ -1,40 +1,41 @@
 {
   "tenants": {
-    "the-firm": {
-      "accounts": "*",
-      "users": {
-        "principal@firm.example": "*",
-        "associate@firm.example": [
-          "demo-brand-owner"
-        ]
-      }
-    },
-    "brand-owner-direct": {
+    "demo-org": {
+      "name": "Demo Org",
       "accounts": [
         "demo-brand-owner"
       ],
       "users": {
-        "*@brand-owner.example": "*"
+        "*@demo-org.example": "*",
+        "consultant@outside.example": [
+          "demo-brand-owner"
+        ]
       }
     },
     "evaluation": {
-      "accounts": [
-        "demo-brand-owner"
-      ],
+      "name": "Evaluation",
+      "accounts": [],
       "users": {
         "reviewer@partner.example": "*",
-        "observer@partner.example": [
-          "demo-brand-owner"
-        ]
+        "observer@partner.example": "*"
       }
+    }
+  },
+  "people": {
+    "you@install.example": {
+      "run": true,
+      "manage": true,
+      "everything": true
     },
-    "demo-org": {
-      "accounts": [
-        "demo-brand-owner"
-      ],
-      "users": {
-        "*@demo-org.example": "*"
-      }
+    "*@demo-org.example": {
+      "run": true
+    },
+    "consultant@outside.example": {
+      "run": true
+    },
+    "reviewer@partner.example": {
+      "run": true,
+      "manage": true
     }
   }
 }

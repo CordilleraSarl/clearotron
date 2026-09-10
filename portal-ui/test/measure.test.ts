@@ -292,6 +292,10 @@ test('UNGROUPED, the company survives as a column — the issue rejects dropping
 test('grouping is not silently applied under a sort any more', () => {
   // The fault: sorts only ever ordered rows WITHIN an owner block, and nothing on screen said so. With
   // forty rows across six owners, "sort by Risk" produces six risk-ordered lists and reads as broken.
-  assert.match(CLEARANCES, /if \(grouped && a\.account !== b\.account\) return a\.account\.localeCompare\(b\.account\)/,
+  // The owner key is `runKey` — a company, or one organisation's Generic — so two organisations' Generic
+  // runs are two owners here, as they are everywhere else. What this pins is the GATE: owner-first
+  // ordering happens only inside `grouped &&`.
+  assert.match(CLEARANCES, /if \(grouped && runKey\(a\) !== runKey\(b\)\) return runKey\(a\)\.localeCompare\(runKey\(b\)\)/,
     'the owner-first sort is still there — but now only when the toggle says so')
+  assert.doesNotMatch(CLEARANCES, /\n\s*if \(runKey\(a\) !== runKey\(b\)\)/, 'and never outside the toggle')
 })

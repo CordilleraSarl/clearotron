@@ -122,10 +122,11 @@ function allowanceFor(profile, { scope, now = Date.now() } = {}) {
     dailyRunsEffective: dailyRuns,
     monthlyRuns: caps?.monthlyRuns ?? null,
     maxQueued: caps?.maxQueued ?? null,
-    // Only a CLIENT principal is capped — the same positive-only rule the runner applies (checkRunCaps
-    // bites jobs stamped clientPrincipal:true, and only the account door stamps them). Staff previewing
-    // for this customer see the counts and are not blocked by them.
-    capped: scope?.kind === "account",
+    // Only a session whose jobs are stamped for the cap is capped — the same positive-only rule the runner
+    // applies (checkRunCaps bites jobs stamped clientPrincipal:true, and the account door stamps every job
+    // except a person's with access to everything). Anyone else previewing sees the counts and is not
+    // blocked by them.
+    capped: scope?.kind === "account" && scope?.everything !== true,
   };
   if (!usage?.complete) {
     return { ...shared, complete: false, today: null, thisMonth: null, queued: null, exhausted: false };
@@ -136,7 +137,7 @@ function allowanceFor(profile, { scope, now = Date.now() } = {}) {
     ...shared,
     complete: true,
     today: usage.today, thisMonth: usage.thisMonth, queued: usage.queued,
-    exhausted: scope?.kind === "account" && usage.today >= dailyRuns,
+    exhausted: scope?.kind === "account" && scope?.everything !== true && usage.today >= dailyRuns,
   };
 }
 

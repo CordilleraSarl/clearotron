@@ -19,11 +19,12 @@ enrolment — and none of it is done by installing this repo.
 
 ## The model
 
-| Who | Sees |
+| Who | Sees and does |
 |---|---|
-| Staff (email domain ∈ `PORTAL_STAFF_DOMAINS`) | everything, with an explicit **acting-for** account on scoped routes (never an implicit firm-wide default) |
-| Enrolled client (email in the grants file) | exactly their accounts: their searches, their runs, their released client reports |
-| Anyone else | 403 at the door; cross-account probes read as **404** (existence never leaks) |
+| A person with access to everything | every organisation, company and person, naming a company on scoped routes (never an implicit install-wide default) |
+| A person with access to an organisation or a company | everything below those points: its companies and their runs and reports, and — for an organisation — its Generic |
+| Run clearances · Manage | the two switches each person holds: start and stop clearances; add people, add companies and change settings — both inside the person's access |
+| Anyone else | 403 at the door; probes outside a person's access read as **404** (existence never leaks) |
 
 The enrolment substrate IS the grants file (`CLEAROTRON_ACCESS_FILE`, [the operations runbook](architecture/06-operations-runbook.md#access-control-and-instance-isolation)
 for the shape and `examples/grants.example.json` for a runnable one) — portal
@@ -33,12 +34,12 @@ whichever door this instance runs, then granted here; the model is stated once i
 [docs/SECURITY.md](SECURITY.md). On a proxied instance that means
 `MCP_ALLOWED_EMAIL_DOMAINS` and/or `MCP_ALLOWED_EMAILS` (no default — the portal
 refuses to start with neither set, and combines the two as a UNION rather than the verifier's default
-intersection) must admit the CLIENT identities as well as the staff domain: the staff domain in the
-domain list, and individually named client addresses in `MCP_ALLOWED_EMAILS` rather than their whole
-domain — admitting a consumer domain wholesale to enrol one client would put every address on it
-through the door, leaving the grants file as the only wall. Untagged and `generic` runs are staff-only on
-every client surface — a run with no account tag belongs to no client, so it is shown to none of them.
-Multi-account clients enter the door normally and pick an account (`/portal/api/me` returns the list).
+intersection) must admit every person in the guest list: your own domain in the domain list, and
+individually named outside addresses in `MCP_ALLOWED_EMAILS` rather than their whole domain — admitting a
+consumer domain wholesale to enrol one person would put every address on it through the door, leaving
+the grants file as the only wall. A run with no company tag is shown only to a person with access to
+everything, and a Generic run only inside the organisation it was filed under. A person with several
+companies enters the door normally and picks one (`/portal/api/me` returns the list).
 The one-shot confirmation store is in memory, which bounds the deployment to **one portal process per
 instance**: a second process would not see the first's CONSUMED jtis, so the one-shot guarantee fails
 OPEN rather than closed — the token itself verifies anywhere (both processes hold the same
@@ -108,7 +109,7 @@ What that command starts, for anyone who needs to drive the portal on its own:
 ```bash
 # the portal with the LOCAL identity source (no CF Access, loopback only)
 PORTAL_AUTH_MODE=local PORTAL_LOCAL_USER=cli@celta.example \
-PORTAL_STAFF_DOMAINS=example-firm.com CLEAROTRON_ACCESS_FILE=$HOME/trademark-dev/grants.json \
+CLEAROTRON_ACCESS_FILE=$HOME/trademark-dev/grants.json \
 PORTAL_SECRET="$(openssl rand -base64 32)" CLEAROTRON_REPORTS_DIR=$HOME/trademark-dev/pool \
 CLEAROTRON_WORK_DIR=$HOME/trademark-dev/workspace node driver/portal-service.mjs
 # → http://127.0.0.1:18802/portal/login
@@ -121,8 +122,8 @@ and restarting mints a new passphrase.
 
 What local mode does **not** change is who sees what. It produces an email address and stops;
 `makePrincipal` and the `assertPrincipal` chokepoint judge it exactly as they judge a
-proxy-verified address, so `PORTAL_LOCAL_USER` must ALSO be enrolled — a staff domain for the
-staff view, a grants row for the client view. Sign in as an address the roster does not know and every
+proxy-verified address, so `PORTAL_LOCAL_USER` must ALSO have an entry in the guest list —
+`"everything": true` under `people` for the whole install. Sign in as an address the roster does not know and every
 page refuses it at the door, which is the correct answer and is warned about at boot. The roster itself
 stays mandatory: local mode has a population of one, and one is still a population.
 

@@ -1568,6 +1568,10 @@ function attachProfile(ctx, job, { write = true } = {}) {
   // job-derived field in that subset would make it unrecomputable. The swept set is visible in the frozen
   // platforms; where the extras came from is run telemetry, logged below.
   ctx.profile.profileSha = profileShaOf(ctx.profile);   // T9 (K3)
+  // WHICH ORGANISATION'S GENERIC this run is filed under — the door stamps it on a Generic job, from the
+  // verified principal. Set AFTER the hash for the reason the provenance note above gives: it is job-
+  // derived, and `profileSha` must stay recomputable from profiles/<key>.json. Absent on a company's run.
+  if (typeof job?.tenant === "string" && job.tenant && ctx.profile.profileKey === "generic") ctx.profile.organisation = job.tenant;
   const tmp = `${sidecarPath}.tmp`;
   writeFileSync(tmp, JSON.stringify(ctx.profile, null, 2) + "\n");
   renameSync(tmp, sidecarPath);

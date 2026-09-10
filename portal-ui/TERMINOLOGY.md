@@ -62,9 +62,9 @@ The strongest evidence for a canonical term is what a user clicks to reach the t
 carries thirteen labels, and they are treated here as settled by the product:
 
 ```
-Home · Use your AI · New clearance · Clearances · Clearance · About
+Home · Use your AI · People · New clearance · Clearances · Clearance · About
 Profile · Projects · Custom searches
-Admin settings · People & access · Global config · Your preferences
+Admin settings · Global config · Your preferences
 ```
 
 ---
@@ -112,8 +112,8 @@ hyphenated forms would sit one population-widening away from demanding a protoco
 copy rule, which is not a trade a terminology map is entitled to make.
 
 **Three CI browser gates assert on this copy**, and the rename went through all three:
-`composer-render-check.mjs` tested the heading text, and `portal-lifecycle-check.mjs:354` selects the
-note field by `aria-label === 'Note about this …'` — an exact-match selector that would have found
+`composer-render-check.mjs` tested the heading text, and `portal-lifecycle-check.mjs` selects the note
+field by `aria-label === 'Note about this …'` — an exact-match selector that would have found
 nothing and failed downstream. All three are inside the guard's population now, so the next renamer is
 told rather than finding out from a red build.
 
@@ -148,7 +148,7 @@ Both words are on screen at once, which is exactly how a sweep gets one of them 
 you are looking at; *Organisation* is who you are.
 
 **The code keeps its own names**, on the same rule the Custom search row states: `account`, `accounts`,
-`?account=`, `Role = 'staff' | 'client'`, the `brand.*` screen ids and routes, the CSS classes
+`?account=`, the `brand.*` screen ids and routes, the CSS classes
 `owner-name` and `owner-count`, the `cordillera-clearances-group-by-owner` storage key, and
 `demo-brand-owner` in the package manifest are untouched. 167 of the 428 raw `account` hits sit in
 `contract/`, which is the wire; a sweep that took them would have rewritten the API and passed CI.
@@ -175,9 +175,9 @@ extractor is known to drop a string:
 |---|---|---|
 | **Company** | 36 | the canonical term, ruled — listed for scale, not as an open question |
 | **Account** | 11 | the sign-in, enrolment and spend identity — *"this account has not been granted access"* |
-| **Client** | 0 visible | RULED and gone from copy. The access ROLE identifier (`Role = 'staff' \| 'client'`) remains, and is wire vocabulary |
+| **Client** | 0 visible | RULED and gone from copy, and the access-role identifier went with it: the portal reads two permissions, `canRun` and `canManage` |
 | **Customer** | 3 | the deployment's own operator language — *"a server setting on this deployment"* |
-| **Tenant** | 1 | *"all of this tenant"*, one pill on People & access. The extractor drops it; a direct search finds it |
+| **Tenant** | 0 visible | gone from copy with the People page, which prints *Organisation*; it survives in the grants file, on the wire and on the command line |
 | **Organisation** | 1 | the top-bar label, ruled |
 
 **Why three of these are still open, and why *Client* no longer is.** The earlier reasoning here was
@@ -186,9 +186,8 @@ privilege model. **That decision has been taken** — an owner design session re
 with access points and two permissions — so the reason for parking *Client* has gone with it.
 
 What was ruled is the NOUN a reader meets: the party a firm acts for is the **company**, and the phrases
-that called it a client are retired above and enforced. What is NOT ruled here is the access-role
-identifier `Role = 'staff' | 'client'`, which is wire vocabulary and moves when the access model is
-built, not before.
+that called it a client are retired above and enforced. The access-role identifier that stood beside
+it is gone too: the portal decides nothing by a role word, and the wire carries two permissions.
 
 *Account*, *Customer* and *Tenant* stay open for the reason below: they are single words and live
 identifiers, and the ruling that replaces them is a change to the wire rather than to copy.
@@ -196,7 +195,7 @@ identifiers, and the ruling that replaces them is a change to the wire rather th
 **Why *Account* is not in the Retired column, stated rather than left for the next reader to rediscover.**
 The guard scans comment-stripped source, and that is only safe while every retired spelling contains a
 space, because identifiers do not. *Account*, *Client*, *Customer* and *Tenant* are all single words and
-all live identifiers — `me.accounts`, `?account=`, `Role`, `person.tenant`. Retiring them here would flag
+all live identifiers — `me.accounts`, `?account=`, `person.tenant`. Retiring them here would flag
 several hundred identifiers, and narrowing the guard to the extractor's corpus to compensate would trade
 a real safety net for one that states its own inadequacy at the top of `uiStrings.ts`.
 

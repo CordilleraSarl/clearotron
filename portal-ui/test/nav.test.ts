@@ -1,20 +1,26 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Routing is role-gated data, and several properties matter enough to pin.
+// Routing is permission-gated data, and several properties matter enough to pin.
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { navFor, navGroupsFor, avatarMenuFor, screenForPath, NAV, HOME, type NavEntry } from '../src/nav/nav.config.ts'
+import { navFor, navGroupsFor, avatarMenuFor, screenForPath, NAV, HOME, type NavEntry, type Viewer } from '../src/nav/nav.config.ts'
+
+// Three people, and together they cover both switches: the manager, the person who runs clearances, and
+// the view-only person. A reader used to be one of two role words; now a reader is what they may do.
+const MANAGER: Viewer = { permissions: { run: true, manage: true } }
+const RUNNER: Viewer = { permissions: { run: true, manage: false } }
+const READER: Viewer = { permissions: { run: false, manage: false } }
 
 test('a screen reached from a row still resolves, even though the sidebar never lists it', () => {
   // The Clearances list links to /portal/result/<runId>. If that resolves to null the user is told
   // "That page does not exist." after clicking Open the report — a dead link inside the product.
-  assert.equal(screenForPath('/portal/result/some-run-id', 'client')?.id, 'result')
-  assert.equal(screenForPath('/portal/result', 'staff')?.id, 'result')
+  assert.equal(screenForPath('/portal/result/some-run-id', RUNNER)?.id, 'result')
+  assert.equal(screenForPath('/portal/result', MANAGER)?.id, 'result')
 
   // …and it is still absent from the navigation, because it is not a place you go from a menu.
-  const ids = navFor('client').map((e) => e.id)
+  const ids = navFor(RUNNER).map((e) => e.id)
   assert.equal(ids.includes('result'), false)
   // The sidebar order IS this array's order, so asserting it is asserting the deliverable.
   //
@@ -33,47 +39,61 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
   // by the switcher silently narrows what someone sees, while one wrongly left out merely ignores it.
   // But nothing in the shipped nav should be relying on that default: an undeclared entry is one nobody
   // has decided about.
-  for (const e of navFor('client')) {
+  for (const e of navFor(RUNNER)) {
     assert.ok(e.scope === 'account' || e.scope === 'owner', `${e.id} does not say which side of the switcher it is on`)
   }
-  const g = navGroupsFor('client')
+  const g = navGroupsFor(RUNNER)
   assert.deepEqual(g.account.map((e) => e.id), ['home', 'ai'], 'reviewed across everything')
   assert.deepEqual(g.owner.map((e) => e.id), ['new', 'clearances', 'brand.profile', 'brand.projects', 'brand.searches'], 'one company at a time')
-  // Staff and clients differ only in HOW MANY companies they hold, never in the shape of the page.
-  assert.deepEqual(navGroupsFor('staff').account.map((e) => e.id), g.account.map((e) => e.id))
-  assert.deepEqual(navGroupsFor('staff').owner.map((e) => e.id), g.owner.map((e) => e.id))
+  // WHAT DIFFERS BETWEEN PEOPLE IS EXACTLY THE TWO SWITCHES, and each one moves one entry. Manage puts
+  // People in the rail above the line; Run is what puts New clearance below it — absent for a person
+  // without it, never present and refusing. Nothing else about the page changes shape.
+  assert.deepEqual(navGroupsFor(MANAGER).account.map((e) => e.id), ['home', 'ai', 'people'], 'People is in the rail for a manager')
+  assert.deepEqual(navGroupsFor(MANAGER).owner.map((e) => e.id), g.owner.map((e) => e.id))
+  assert.deepEqual(navGroupsFor(READER).account.map((e) => e.id), ['home', 'ai'])
+  assert.deepEqual(navGroupsFor(READER).owner.map((e) => e.id), ['clearances', 'brand.profile', 'brand.projects', 'brand.searches'],
+    'no New clearance for a person who cannot start one')
 })
 
-test('a staff-only path is indistinguishable, to a client, from a made-up one', () => {
-  assert.equal(screenForPath('/portal/admin/config', 'staff')?.id, 'admin.config')
+test('a manage-only path is indistinguishable, to someone without Manage, from a made-up one', () => {
+  assert.equal(screenForPath('/portal/admin/config', MANAGER)?.id, 'admin.config')
 
   // For a client, a real-but-forbidden staff path answers exactly what a path that was never a path at
   // all answers. Returning null for one and a screen for the other would make the router an oracle for
   // which staff surfaces exist. With the Admin PARENT staff-gated too, that shared answer is now `null`
   // rather than "the parent screen" — the property is the sameness, not which value it settles on.
-  assert.equal(screenForPath('/portal/admin/config', 'client'), null)
+  assert.equal(screenForPath('/portal/admin/config', RUNNER), null)
   assert.deepEqual(
-    screenForPath('/portal/admin/config', 'client'),
-    screenForPath('/portal/admin/not-a-real-screen', 'client'),
+    screenForPath('/portal/admin/config', RUNNER),
+    screenForPath('/portal/admin/not-a-real-screen', RUNNER),
   )
-  assert.equal(screenForPath('/portal/nonsense', 'client'), null)
+  assert.equal(screenForPath('/portal/nonsense', RUNNER), null)
 })
 
-test('a client sees no admin surface anywhere, and admin left the sidebar for the avatar menu', () => {
-  // The refusal is unchanged and is still the boundary: a client cannot ROUTE to an admin screen.
-  assert.equal(screenForPath('/portal/admin/access', 'client'), null)
-  assert.equal(screenForPath('/portal/admin', 'client'), null)
-  assert.equal(navFor('client').some((e) => e.id.startsWith('admin')), false)
+test('without Manage there is no admin surface and no People; with it, People is in the rail and admin in the avatar menu', () => {
+  // The refusal is unchanged and is still the boundary: without Manage nobody can ROUTE to these.
+  assert.equal(screenForPath('/portal/people', RUNNER), null)
+  assert.equal(screenForPath('/portal/people', READER), null)
+  assert.equal(screenForPath('/portal/people', MANAGER)?.id, 'people')
+  assert.equal(navFor(MANAGER).some((e) => e.id === 'people'), true, 'People is a rail entry, not a menu item')
+  assert.equal(navFor(RUNNER).some((e) => e.id === 'people'), false)
+  // The form People opens: routable for a manager, lit under People by the dot rule, never in the rail.
+  assert.equal(screenForPath('/portal/people/add', MANAGER)?.id, 'people.add')
+  assert.equal(screenForPath('/portal/people/add', RUNNER), null)
+  assert.equal(navFor(MANAGER).some((e) => e.id === 'people.add'), false, 'reached from + Add a person only')
+  assert.equal(screenForPath('/portal/admin', RUNNER), null)
+  assert.equal(navFor(RUNNER).some((e) => e.id.startsWith('admin')), false)
 
   // What changed is where staff reach it from. NOBODY has it in the sidebar now — it belongs to the
   // person rather than to either scope, and in the sidebar it would have had to sit on one side of the
   // company switcher, claiming to be account-scoped or owner-scoped when it is neither.
-  assert.equal(navFor('staff').some((e) => e.id.startsWith('admin')), false, 'not in the staff sidebar either')
-  assert.deepEqual(avatarMenuFor('staff').map((e) => e.id), ['preferences', 'admin.access', 'admin.config', 'about'])
+  assert.equal(navFor(MANAGER).some((e) => e.id.startsWith('admin')), false, 'not in the staff sidebar either')
+  assert.deepEqual(avatarMenuFor(MANAGER).map((e) => e.id), ['preferences', 'admin.config', 'about'],
+    'People left the avatar menu for the rail')
   // …and the role gate still lives in the DATA, so a client's menu is simply shorter.
   // About rides here for EVERY role — it is the AGPL §13 source offer, owed to whoever is
   // using the service, so it is the one entry in this menu that is not about administering anything.
-  assert.deepEqual(avatarMenuFor('client').map((e) => e.id), ['preferences', 'about'])
+  assert.deepEqual(avatarMenuFor(RUNNER).map((e) => e.id), ['preferences', 'about'])
 })
 
 test('standing on Brand profile highlights nothing else', () => {
@@ -82,7 +102,7 @@ test('standing on Brand profile highlights nothing else', () => {
   // AppShell's, copied verbatim so it cannot drift away from what the sidebar actually does.
   const active = (id: string, current: string) => current === id || current.startsWith(id + '.')
   for (const current of ['brand.profile', 'brand.projects', 'brand.searches']) {
-    const lit = navFor('staff').filter((e) => active(e.id, current)).map((e) => e.id)
+    const lit = navFor(MANAGER).filter((e) => active(e.id, current)).map((e) => e.id)
     assert.deepEqual(lit, [current], `${current} must highlight only itself`)
   }
   // …and the structural reason it holds: nothing is named `brand`, so nothing is a prefix of them.
@@ -92,18 +112,18 @@ test('standing on Brand profile highlights nothing else', () => {
 })
 
 test('preferences stays routable for everyone while leaving the sidebar', () => {
-  assert.equal(screenForPath('/portal/preferences', 'client')?.id, 'preferences')
-  assert.equal(screenForPath('/portal/preferences', 'staff')?.id, 'preferences')
-  assert.equal(navFor('client').some((e) => e.id === 'preferences'), false)
+  assert.equal(screenForPath('/portal/preferences', RUNNER)?.id, 'preferences')
+  assert.equal(screenForPath('/portal/preferences', MANAGER)?.id, 'preferences')
+  assert.equal(navFor(RUNNER).some((e) => e.id === 'preferences'), false)
 
   // Its only door is the avatar menu. That door used to be a written-out `go('/portal/preferences')`
   // pinned here as text; the menu is now MAPPED FROM DATA (so no staff-only path is written into the
   // shell — see the admin test), which means the guarantee moves from "the literal is present" to
   // "the entry is in the menu for everyone" and the shell renders the menu at all.
-  assert.ok(avatarMenuFor('client').some((e) => e.id === 'preferences'), 'a client can reach preferences')
-  assert.ok(avatarMenuFor('staff').some((e) => e.id === 'preferences'), 'so can staff')
+  assert.ok(avatarMenuFor(RUNNER).some((e) => e.id === 'preferences'), 'a client can reach preferences')
+  assert.ok(avatarMenuFor(MANAGER).some((e) => e.id === 'preferences'), 'so can staff')
   const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url), 'utf8')
-  assert.match(shell, /avatarMenuFor\(role\)\.map/, 'and the shell actually renders that menu')
+  assert.match(shell, /avatarMenuFor\(me\)\.map/, 'and the shell actually renders that menu')
 })
 
 test('navFor drops a hidden child, while screenForPath still finds it', () => {
@@ -119,32 +139,32 @@ test('navFor drops a hidden child, while screenForPath still finds it', () => {
     { id: 'p.hidden', label: 'H', path: '/portal/p/h', icon: 'x', hidden: true },
   ] }] as unknown as readonly NavEntry[]
 
-  const listed = navFor('staff', fixture)
+  const listed = navFor(MANAGER, fixture)
   assert.deepEqual(listed[0]?.children?.map((c) => c.id), ['p.shown'], 'the hidden child is not listed')
 
   // The asymmetry that makes `hidden` a menu concern rather than a boundary: it still resolves.
-  assert.equal(screenForPath('/portal/p/h', 'staff', fixture)?.id, 'p.hidden', 'but it is still routable')
+  assert.equal(screenForPath('/portal/p/h', MANAGER, fixture)?.id, 'p.hidden', 'but it is still routable')
 
   // A hidden TOP-LEVEL entry stays filtered too — the fix must not have traded one level for the other.
   const topHidden = [{ id: 'q', label: 'Q', path: '/portal/q', icon: 'x', hidden: true }] as unknown as readonly NavEntry[]
-  assert.deepEqual(navFor('staff', topHidden), [], 'a hidden top-level entry is still absent')
-  assert.equal(screenForPath('/portal/q', 'staff', topHidden)?.id, 'q', 'and still routable')
+  assert.deepEqual(navFor(MANAGER, topHidden), [], 'a hidden top-level entry is still absent')
+  assert.equal(screenForPath('/portal/q', MANAGER, topHidden)?.id, 'q', 'and still routable')
 })
 
 test('the old settings paths do not resolve, so they land on not-found rather than a blank screen', () => {
   // AppShell renders "That page does not exist." for a null entry. These bookmarks are now dead links
   // by design; what must not happen is a match that renders an empty shell.
   for (const p of ['/portal/settings', '/portal/settings/profile', '/portal/settings/preferences', '/portal/settings/config']) {
-    assert.equal(screenForPath(p, 'staff'), null, `${p} must not resolve`)
-    assert.equal(screenForPath(p, 'client'), null, `${p} must not resolve`)
+    assert.equal(screenForPath(p, MANAGER), null, `${p} must not resolve`)
+    assert.equal(screenForPath(p, RUNNER), null, `${p} must not resolve`)
   }
 })
 
 test('longest match wins, so a sub-screen does not resolve to its parent', () => {
-  assert.equal(screenForPath('/portal/brand/profile', 'client')?.id, 'brand.profile')
-  assert.equal(screenForPath('/portal/admin/access', 'staff')?.id, 'admin.access')
-  assert.equal(screenForPath('/portal/admin', 'staff')?.id, 'admin')
-  assert.equal(screenForPath('/portal/admin/', 'staff')?.id, 'admin')
+  assert.equal(screenForPath('/portal/brand/profile', RUNNER)?.id, 'brand.profile')
+  assert.equal(screenForPath('/portal/admin/config', MANAGER)?.id, 'admin.config')
+  assert.equal(screenForPath('/portal/admin', MANAGER)?.id, 'admin')
+  assert.equal(screenForPath('/portal/admin/', MANAGER)?.id, 'admin')
 })
 
 test('the landing screen is chosen by id, not by whichever entry sits first', () => {
@@ -154,7 +174,7 @@ test('the landing screen is chosen by id, not by whichever entry sits first', ()
   // silently re-point /portal. Asserting the lookup itself keeps that guarantee without depending on an
   // arrangement that has now changed twice.
   assert.equal(HOME.id, 'home')
-  assert.equal(screenForPath('/portal/home', 'client')?.id, 'home', 'and it resolves for a client')
+  assert.equal(screenForPath('/portal/home', RUNNER)?.id, 'home', 'and it resolves for a client')
   assert.ok(NAV.some((e) => e.id === 'home'), 'HOME is a real entry, not a synthesised one')
 })
 
@@ -210,8 +230,9 @@ test('every in-app navigation target is a route that resolves', () => {
   assert.ok(targets.size >= 4, 'the scan found almost nothing — the pattern has drifted, not the code')
   for (const t of targets) {
     // A run id is appended at runtime, so the bare /portal/result is what the literal carries and what
-    // must resolve. Both roles, because a client landing on a staff-only literal is the same dead end.
-    assert.ok(screenForPath(t, 'staff'), `${t} is navigated to but does not resolve for staff`)
+    // must resolve — for a person holding both switches, who can reach every screen there is.
+    const target = screenForPath(t, MANAGER)
+    assert.ok(target, `${t} is navigated to but does not resolve even with both permissions`)
     // A STAFF-ONLY TARGET IS ALLOWED, AND ONLY BEHIND THE ROLE THAT CAN OPEN IT. The rule this arm
     // holds is that no reader meets a link to a page they cannot open — not that no such path may be
     // written. A blocked client on New clearance needs to be sent somewhere; a client cannot read the
@@ -219,7 +240,14 @@ test('every in-app navigation target is a route that resolves', () => {
     // what has to be checked is that it is not drawn for them. Every line writing a staff-only literal
     // carries the role test on the same line, which is exactly the shape a reviewer can see. A carve-out
     // by path name would have asserted nothing about the call site and passed a bare link forever.
-    if (!screenForPath(t, 'client')) {
+    // THE GATE IS READ OFF THE TARGET'S OWN `needs`, not off a list of paths. A literal to a screen that
+    // needs Run must sit behind `canRun`, one that needs Manage behind `canManage`: a view-only person
+    // shown a New clearance button meets "That page does not exist" as surely as someone without Manage
+    // shown a settings link. Deriving the gate from the entry means a newly gated screen is covered by
+    // declaring its `needs`, with nothing here to update.
+    const needs = target?.needs
+    if (needs) {
+      const gate = needs === 'run' ? 'canRun' : 'canManage'
       // THE LINE SCAN MUST HAVE FOUND THIS TARGET, or the check below iterates nothing and passes.
       // `targets` is collected over the whole file and `sites` line by line with the same pattern, and
       // `\s*` spans newlines — so a `go(` whose path sits on the next line is in the first set and not
@@ -245,10 +273,13 @@ test('every in-app navigation target is a route that resolves', () => {
         // lines, or in a variable computed above, is invisible to it and reads as ungated. That is
         // the safe direction — it refuses what it cannot see rather than passing it — but it is not
         // a proof that no client can reach the link.
-        const staffBranch = new RegExp(`role === 'staff'\\s*\\?[^:]*${t.replace(/[/.]/g, '\\$&')}`)
-        assert.match(line, staffBranch,
-          `${t} does not resolve for a client and is not inside the staff branch of a role test on `
-          + `the line that navigates to it: ${line.trim()}`)
+        // EVERY metacharacter in the target is escaped, not only `/` and `.`: a target carrying a query
+        // string — `/portal/new?search=` — otherwise reads its `?` as a quantifier and can never match
+        // the line it sits on. Invisible until a query-string target was the one needing a gate.
+        const trueBranch = new RegExp(`${gate}\\(ctx\\.me\\)\\s*\\?[^:]*${t.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}`)
+        assert.match(line, trueBranch,
+          `${t} needs ${needs} and is not inside the true branch of ${gate}(ctx.me) on the line that `
+          + `navigates to it: ${line.trim()}`)
       }
     }
   }

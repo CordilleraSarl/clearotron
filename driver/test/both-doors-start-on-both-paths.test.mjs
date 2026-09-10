@@ -25,7 +25,7 @@ const BASE = {
   ports: resolvePorts({}),
   paths: { base: "/i", pool: "/i/pool", workspace: "/i/w", queue: "/i/q", outbox: "/i/o",
     locks: "/i/l", grants: "/i/grants.json", audit: "/i/audit", recipes: "/i/r", configStore: "/i/c" },
-  user: "op@localhost", staffDomains: "localhost", portalSecret: "s", tokenSecret: "t", opsToken: "o",
+  user: "op@localhost", portalSecret: "s", tokenSecret: "t", opsToken: "o",
 };
 
 test("the foreground path composes an environment for the client door at all", () => {
@@ -355,7 +355,7 @@ test("a oneshot is judged by being enabled, and its counter is irrelevant there 
 test("both doors get the operator's denylist when one is set", () => {
   const base = { ports: { portal: 1, mcp: 2, client: 3 },
     paths: { base: "/b", pool: "/b/pool", grants: "/b/g.json", configStore: "/b/c", audit: "/b/a", recipes: "/b/r" },
-    user: "a@b", staffDomains: "b", portalSecret: "s", tokenSecret: "t", opsToken: "o" };
+    user: "a@b", portalSecret: "s", tokenSecret: "t", opsToken: "o" };
   const e = childEnv({ ...base, env: { TRADEMARK_MCP_TOKEN_DENYLIST: "/srv/operator-chosen" } });
   assert.equal(e.client.TRADEMARK_MCP_TOKEN_DENYLIST, "/srv/operator-chosen",
     "the client door ignored the operator's variable entirely, so revoking by the documented route "

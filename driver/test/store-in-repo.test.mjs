@@ -168,7 +168,7 @@ function portalEnv(extra) {
     PORTAL_AUTH_MODE: "local", PORTAL_LOCAL_USER: "dev@local",
     PORTAL_LOCAL_CREDENTIAL: join(mkdtempSync(join(tmpdir(), "sir-cred-")), "credential.json"),
     CF_ACCESS_TEAM: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined, CLEAROTRON_OIDC_AUDIENCE: undefined,
-    PORTAL_SECRET: "sir-test-secret", PORTAL_STAFF_DOMAINS: "example-firm.com",
+    PORTAL_SECRET: "sir-test-secret",
     CLEAROTRON_ACCESS_FILE: grants,
     CLEAROTRON_REPORTS_DIR: mkdtempSync(join(tmpdir(), "sir-pool-")),
     CLEAROTRON_WORK_DIR: mkdtempSync(join(tmpdir(), "sir-ws-")),

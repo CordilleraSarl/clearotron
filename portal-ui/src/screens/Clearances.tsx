@@ -35,6 +35,8 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyChips } from '../shell/CompanyChips.tsx'
+import { canManage, canRun } from '../shell/permissions.ts'
+import { runKey } from '../contract/genericKey.ts'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -130,7 +132,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // looking at — and leaves exactly one place to change it.
   const ownerFilter = ctx.owner
   const runs: readonly Run[] = useMemo(
-    () => (ownerFilter ? allRuns.filter((r) => r.account === ownerFilter) : allRuns),
+    () => (ownerFilter ? allRuns.filter((r) => runKey(r) === ownerFilter) : allRuns),
     [allRuns, ownerFilter],
   )
 
@@ -161,7 +163,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // Which marks are ticked for grouping. Cleared whenever the grouping changes, so the checkboxes never
   // outlive the rows they referred to.
   const [picked, setPicked] = useState<ReadonlySet<string>>(new Set())
-  const canGroup = ctx.me.role === 'staff'
+  // Grouping marks into a family and retiring a run are CURATION — changing what the archive says —
+  // so they ask Manage, the one permission that changes things for other people. Someone without it
+  // reads the same archive and never meets a control that would only refuse them.
+  const canGroup = canManage(ctx.me)
 
   // — THE FOLD, AND THE COUNT THAT SAYS IT HAS ANYTHING IN IT.
   //
@@ -193,7 +198,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   //
   // Counted off the runs actually held rather than off a roster: an identity granted six companies
   // with work under one of them needs no headings, and the roster cannot tell us that.
-  const ownersHeld = useMemo(() => new Set(allRuns.map((r) => r.account)).size, [allRuns])
+  const ownersHeld = useMemo(() => new Set(allRuns.map(runKey)).size, [allRuns])
   // GROUPING IS A TOGGLE, on by default.
   //
   // Name, Status, Risk and Updated are all sortable, and grouping was always applied FIRST with nothing
@@ -274,7 +279,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     return [...rowsOf(marks, families)].sort((a, b) => {
       // Owner leads when grouping, or a heading would reappear every time the sort interleaved two
       // owners' rows. Within a group the user's chosen sort is untouched.
-      if (grouped && a.account !== b.account) return a.account.localeCompare(b.account)
+      if (grouped && runKey(a) !== runKey(b)) return runKey(a).localeCompare(runKey(b))
       switch (sort.key) {
         case 'title':
           return dir * a.name.localeCompare(b.name)
@@ -342,7 +347,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // So the empty state is claimed only once the server has actually said so.
   if (!result) return <Loading />
 
-  if (!runs.length) return <FirstRun go={ctx.go} />
+  if (!runs.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
 
   // A family is asserted over RUNS, because a mark is a grouping the browser derives rather than
   // anything the pool stores. Ticking a name therefore files every read of it.
@@ -542,8 +547,8 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         />
       </div>
 
-      {/* THE FAMILY BAR. Present only for staff, and only once something is ticked — a control that does
-          nothing until you have made a selection is better introduced BY the selection.
+      {/* THE FAMILY BAR. Present only for a person with Manage, and only once something is ticked — a control
+          that does nothing until you have made a selection is better introduced BY the selection.
           — IT OVERLAYS RATHER THAN INSERTS. It used to be a `.notice` in normal flow, above the
           table header, so ticking a box pushed the entire table down and the page jumped under the
           cursor. It is now pinned to the bottom of the viewport: selecting or clearing a row moves
@@ -677,7 +682,8 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               // spans a page break, the continuation page must repeat the heading. Otherwise the first
               // rows of page 2 sit under no owner at all, which is precisely the confusion — two brand
               // owners' identically-named marks reading as one — that grouping exists to prevent.
-              const newGroup = grouped && r.account !== visible[i - 1]?.account
+              const before = visible[i - 1]
+              const newGroup = grouped && (!before || runKey(r) !== runKey(before))
               return (
                 <Fragment key={r.id}>
                   {newGroup ? (
@@ -687,10 +693,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                     <tr className="group-head">
                       <td colSpan={(canGroup ? 6 : 5) + (showOwnerColumn ? 1 : 0)}>
                         <span className="owner-name" data-anon="mark">
-                          {ctx.ownerName(r.account)}
+                          {ctx.ownerName(runKey(r))}
                         </span>
                         <span className="owner-count">
-                          {rows.filter((x) => x.account === r.account).length} in this view
+                          {rows.filter((x) => runKey(x) === runKey(r)).length} in this view
                         </span>
                       </td>
                     </tr>
@@ -703,7 +709,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       go={ctx.go}
                       picking={canGroup}
                       showOwner={showOwnerColumn}
-                      ownerLabel={ctx.ownerName(r.account)}
+                      ownerLabel={ctx.ownerName(runKey(r))}
                       isPicked={(id) => picked.has(id)}
                       onPick={pick}
                       onUngroup={canGroup ? ungroupFamily : undefined}
@@ -718,7 +724,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       go={ctx.go}
                       picking={canGroup}
                       showOwner={showOwnerColumn}
-                      ownerLabel={ctx.ownerName(r.account)}
+                      ownerLabel={ctx.ownerName(runKey(r))}
                       picked={picked.has(r.id)}
                       onPick={() => pick(r.id)}
                       onRetire={canGroup ? retireMark : undefined}
@@ -768,7 +774,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       <td>
                         <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>{displayName(run)}</b>
                       </td>
-                      <td data-anon="mark" style={{ color: 'var(--text-muted)' }}>{ctx.ownerName(run.account)}</td>
+                      <td data-anon="mark" style={{ color: 'var(--text-muted)' }}>{ctx.ownerName(runKey(run))}</td>
                       <td className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>{run.date ?? ''}</td>
                       <td>
                         <button
@@ -1351,7 +1357,23 @@ function ReadRow({
   )
 }
 
-function FirstRun({ go }: { readonly go: (p: string) => void }) {
+/**
+ * The empty archive. `onNew` is null for a person who may not start a clearance — they get the plain
+ * fact and no button, because the page a button would open does not exist for them.
+ */
+function FirstRun({ onNew }: { readonly onNew: (() => void) | null }) {
+  if (!onNew) {
+    return (
+      <div className="screen">
+        <div className="empty">
+          <h1 style={{ fontSize: 25, color: 'var(--text-strong)', margin: '0 0 8px' }}>No clearances yet</h1>
+          <p className="prose" style={{ margin: '0 auto' }}>
+            Reports for the companies you can see will appear here once they are delivered.
+          </p>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="screen">
       <div className="empty">
@@ -1364,7 +1386,7 @@ function FirstRun({ go }: { readonly go: (p: string) => void }) {
           type="button"
           className="nav-item active"
           style={{ width: 'auto', margin: '0 auto', justifyContent: 'center' }}
-          onClick={() => go('/portal/new')}
+          onClick={onNew}
         >
           Start your first clearance
         </button>
@@ -1382,8 +1404,8 @@ function FirstRun({ go }: { readonly go: (p: string) => void }) {
 /**
  * The account's daily allowance, as a quiet trailing sentence.
  *
- * Rendered only for principals it actually BINDS. Staff are uncapped, and telling a staff member "2 of 3
- * used" would be both wrong and alarming; a null cap means the server could not tell us the limit, which
+ * Rendered only for principals it actually BINDS. A person with access to everything is uncapped, and
+ * telling them "2 of 3 used" would be both wrong and alarming; a null cap means the server could not tell us the limit, which
  * renders as nothing rather than as zero or as unlimited — inventing either would be a claim about
  * someone's commercial terms.
  *

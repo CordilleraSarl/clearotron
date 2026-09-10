@@ -28,8 +28,12 @@ import { useUnsaved } from '../state/useUnsaved.ts'
 import { ContextPackEditor } from '../components/ContextPackEditor.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
+import { canManage } from '../shell/permissions.ts'
 
 export function Projects({ ctx }: { readonly ctx: ShellContext }) {
+  // Project writes need Manage: creating, archiving, bringing back and saving. Without it the list and each
+  // project's settings stay readable, and no control is drawn that would only refuse.
+  const mayChange = canManage(ctx.me)
   const account = ctx.owner
   const needsOwner = ctx.me.allAccounts && account === null
   // `/portal/brand/projects?project=<key>` opens straight onto one project.
@@ -74,7 +78,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   }
   if (!result) return <div className="screen" />
 
-  if (open) return <ProjectEditor account={account} project={open} onBack={() => { setOpen(null); reload() }} />
+  if (open) return <ProjectEditor account={account} project={open} mayChange={mayChange} onBack={() => { setOpen(null); reload() }} />
   if (creating) {
     return <NewProject account={account} taken={projects.map((p) => p.key)}
       onDone={(key) => { setCreating(false); reload(); setOpen(key) }}
@@ -135,11 +139,13 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
           </div>
         ) : null}
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-          <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => setCreating(true)}>
-            New project
-          </button>
-        </div>
+        {mayChange ? (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+            <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => setCreating(true)}>
+              New project
+            </button>
+          </div>
+        ) : null}
 
         {projects.length === 0 ? (
           // "No projects FOR THIS COMPANY", deliberately not "no projects exist" — the phrasing
@@ -151,11 +157,13 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
               Add one when an engagement needs its own marketplaces, classes or depth. Archive it when it
               ends — the reports it produced stay exactly as issued.
             </p>
-            <div style={{ marginTop: 12 }}>
-              <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => setCreating(true)}>
-                New project
-              </button>
-            </div>
+            {mayChange ? (
+              <div style={{ marginTop: 12 }}>
+                <button type="button" className="pill" style={{ cursor: 'pointer' }} onClick={() => setCreating(true)}>
+                  New project
+                </button>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div style={{ display: 'grid', gap: 8 }}>
@@ -191,7 +199,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
                   <div className="mono" style={{ fontSize: 12, color: 'var(--text-muted)' }}>{p.key}</div>
                 </button>
 
-                {confirming === p.key ? (
+                {!mayChange ? null : confirming === p.key ? (
                   <>
                     <button
                       type="button"
@@ -384,10 +392,13 @@ function NewProject({
 function ProjectEditor({
   account,
   project,
+  mayChange,
   onBack,
 }: {
   readonly account: string | null
   readonly project: string
+  /** False without Manage: every setting stays readable, and nothing that would write is drawn. */
+  readonly mayChange: boolean
   readonly onBack: () => void
 }) {
   const { result, reload } = useLoad(() => api.project(account, project), [account, project])
@@ -550,7 +561,7 @@ function ProjectEditor({
             <b>This project is archived</b>
             <p style={{ margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>
               It is no longer offered when a new clearance is set up, and the reports it produced are
-              unchanged. Its settings can still be edited, and it can be un-archived below.
+              unchanged.{mayChange ? ' Its settings can still be edited, and it can be un-archived below.' : ''}
             </p>
           </div>
         ) : null}
@@ -569,6 +580,8 @@ function ProjectEditor({
             was `delivery.email` until  removed that dead control; the mechanism is
             unchanged, but an example naming a spec that no longer exists sends the next reader looking
             for it.) */}
+        {/* One wrapper, as on Profile: a disabled fieldset disables every control inside it. */}
+        <fieldset disabled={!mayChange} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
         {fields.map((spec) => (
           <OverlayField
             key={spec.key}
@@ -594,6 +607,7 @@ function ProjectEditor({
           hint="What this engagement covers and the concerns particular to it. Replaces the company's background when set — it is not added to it."
           rows={6}
         />
+        </fieldset>
 
 
 
@@ -623,6 +637,7 @@ function ProjectEditor({
           </div>
         ) : null}
 
+        {mayChange ? (
         <div style={{ marginTop: 22, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <button
             type="button"
@@ -650,7 +665,13 @@ function ProjectEditor({
             Save
           </button>
         </div>
+        ) : (
+          <p style={{ marginTop: 22, fontSize: 13, color: 'var(--text-muted)' }}>
+            You can read this project's settings. Changing them needs the Manage permission.
+          </p>
+        )}
 
+        {mayChange ? (
         <div style={{ marginTop: 26, paddingTop: 18, borderTop: '1px solid var(--border-hairline)' }}>
           <div style={{ fontWeight: 700, color: 'var(--text-strong)', fontSize: 14 }}>
             {isArchived ? 'Un-archive this project' : 'Archive this project'}
@@ -695,6 +716,7 @@ function ProjectEditor({
               roles, and it is the one above: nothing is deleted, and it can be un-archived at any time.
               A warning kept past the condition it described is worse than no warning. */}
         </div>
+        ) : null}
       </div>
     </div>
   )
