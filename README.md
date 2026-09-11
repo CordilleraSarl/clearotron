@@ -59,6 +59,9 @@ npx clearotron@beta install
 What each channel promises, and when a stable is cut: [docs/RELEASES.md](docs/RELEASES.md). If you are not
 sure, the first command is the one you want.
 
+Removing it later: **[INSTALL.md §2a](INSTALL.md#2a-removing-it)** lists every path an install writes, and
+says which one holds your reports so you can keep them deliberately.
+
 ## Quick start
 
 With it installed, check what it found before it does anything. `doctor` only reads — it writes nothing,
