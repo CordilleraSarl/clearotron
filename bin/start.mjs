@@ -111,7 +111,7 @@ async function runTables() {
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal } from "../shared/store-in-repo.mjs";   //
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
-import { demoProgramPlan } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
+import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
 import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
@@ -1464,25 +1464,9 @@ if (isMain) {
   // The same version goes into `<base>/program` (shared/permanent-install.mjs), BEFORE the services start
   // so the portal's connect rows name it too, and only when it is not there already. It never stops the
   // demo: if npm fails, the demo runs as before and says the line will not survive a cache clean.
-  let demoProgramRoot = null;
-  if (DEMO) {
-    const plan = demoProgramPlan({ base: paths.base });
-    if (plan?.current) demoProgramRoot = plan.root;
-    else if (plan && !plan.skip) {
-      say(`  program        copying clearotron ${plan.version} into ${plan.prefix}, so your assistant's connection survives npm cleaning its cache`);
-      // The npm that launched this, when npm says which: no second npm is guessed at.
-      const npmCli = process.env.npm_execpath;
-      const r = npmCli && existsSync(npmCli)
-        ? spawnSync(process.execPath, [npmCli, ...plan.npmArgs], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", timeout: 180_000 })
-        : spawnSync("npm", plan.npmArgs, { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", timeout: 180_000 });
-      if (r.status === 0 && existsSync(join(plan.root, "mcp-server", "server.mjs"))) demoProgramRoot = plan.root;
-      else {
-        const why = r.error ? r.error.message : String(r.stderr ?? "").trim().split("\n").pop() || `npm exited ${r.status}`;
-        say(`  program        could not be copied (${why}). The connect line below runs from npm's temporary cache,`);
-        say("                 so it stops working when npm cleans that cache; start the demo again to retry.");
-      }
-    }
-  }
+  // `clearotron demo` makes the copy before it starts this file, and starts this file FROM the copy, so
+  // there this finds nothing to do; it acts for a `start --demo` typed at npx directly.
+  const demoProgramRoot = DEMO ? ensureDemoProgram({ base: paths.base, say }) : null;
 
   const envs = childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken,
     localWorker: wantWorker, demo: DEMO, clientFence: declaredFence || null,

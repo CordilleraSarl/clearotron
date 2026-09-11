@@ -201,3 +201,37 @@ export function demoProgramPlan({ base, installDir = INSTALL_DIR, platform = pro
     npmArgs: ["install", "--global", "--prefix", prefix, "--prefer-offline", "--no-fund", "--no-audit", `clearotron@${version}`],
   };
 }
+
+/**
+ * Lays the demo's copy down when it is missing or another version, and returns its root; `null` when there
+ * is no copy to use (not run from npx, or a copy that could not be made). It never stops the demo: if npm
+ * fails, the demo runs from npx's cache as before and says what that costs. `demoProgramPlan` decides;
+ * this is the one place that acts on it, for `demo` and for a `start --demo` run from npx.
+ */
+export function ensureDemoProgram({ base, say, env = process.env, run = spawnSync, exists = existsSync, plan = demoProgramPlan({ base }) }) {
+  if (plan?.current) return plan.root;
+  if (!plan || plan.skip) return null;
+  say(`  program        copying clearotron ${plan.version} into ${plan.prefix}, so the commands below and your assistant's connection survive npm cleaning its cache`);
+  // The npm that launched this, when npm says which: no second npm is guessed at.
+  const npmCli = env.npm_execpath;
+  const opts = { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", timeout: 180_000 };
+  const r = npmCli && exists(npmCli) ? run(process.execPath, [npmCli, ...plan.npmArgs], opts) : run("npm", plan.npmArgs, opts);
+  if (r.status === 0 && exists(join(plan.root, "mcp-server", "server.mjs"))) return plan.root;
+  const why = r.error ? r.error.message : String(r.stderr ?? "").trim().split("\n").pop() || `npm exited ${r.status}`;
+  say(`  program        could not be copied (${why}). The commands and the connect line below run from npm's temporary`);
+  say("                 cache, so they stop working when npm cleans it; start the demo again to retry.");
+  return null;
+}
+
+/**
+ * The environment a demo's services get when they run from the demo's copy. What makes their printed
+ * commands name the copy is running from it: `invocationPrefix` answers from the running install. npm's
+ * marks of an npx arrival (`npm_command=exec` among them) and the npx path the dispatcher hands down
+ * describe a process npm started, which the copy is not, so they are taken off, as `install` takes them
+ * off when it moves out of the cache.
+ */
+export function demoProgramEnv(env = process.env) {
+  const out = { ...env };
+  for (const k of ["npm_command", "npm_lifecycle_event", "npm_execpath", "CLEAROTRON_INVOKED_AS"]) delete out[k];
+  return out;
+}
