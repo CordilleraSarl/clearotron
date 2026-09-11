@@ -59,6 +59,8 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // a pull cannot update an untracked bundle
+import { packagedUpdate } from "../shared/permanent-install.mjs";   // — a packaged install updates at its own prefix
+import { installShim, inspectShim, shimPath } from "../shared/verb-shim.mjs";   // — npm's link replaces the launcher
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -246,13 +248,22 @@ export async function update(argv = process.argv.slice(2)) {
   // not succeed` — true, useless, and pointing at the wrong thing entirely. `update` is the verb a
   // stranger reaches for, so the one install we expect most people to have must not be answered with
   // a git error about a directory that was never a repository.
+  //
+  // A PACKAGED INSTALL NOW UPDATES ITSELF, the way it was installed: npm, at the prefix it lives under, on
+  // the channel it came from (shared/permanent-install.mjs). It runs AFTER the live-run refusal below,
+  // because npm replaces the program's files as surely as `npm ci` does. Only a layout that cannot be
+  // named is still refused.
+  let packaged = null;
   if (!isGitCheckout()) {
-    console.error("\n  This install is not a git checkout, so there is nothing to pull.");
-    console.error("  It was installed from a package rather than cloned, which is the ordinary way.");
-    console.error("\n  Update it the way it was installed:\n");
-    console.error("      npm install -g clearotron@latest\n");
-    console.error("  Nothing was touched.");
-    return 4;
+    packaged = packagedUpdate();
+    if (!packaged) {
+      console.error("\n  This install is not a git checkout, so there is nothing to pull.");
+      console.error("  It was installed from a package rather than cloned, which is the ordinary way.");
+      console.error("\n  Update it the way it was installed:\n");
+      console.error("      npm install -g clearotron@latest\n");
+      console.error("  Nothing was touched.");
+      return 4;
+    }
   }
 
   // ── AND THE SECOND REFUSAL: NOT OVER A LIVE RUN ──────────────────────────────────────────────
@@ -287,6 +298,27 @@ export async function update(argv = process.argv.slice(2)) {
     for (const u of holds.unreadable) console.error(`    ${u.path}: ${u.error}`);
     console.error("\n  That is an absence of evidence, not evidence of absence. Nothing was touched.\n");
     return 4;
+  }
+
+  if (packaged) {
+    if (packaged.current) {
+      say(`\n  This install is ${packaged.installed}, and nothing newer is published (${packaged.tag}: ${packaged.version}). Nothing was touched.\n`);
+      return 0;
+    }
+    if (packaged.unread) say(`\n  npm did not say which versions are published, so this follows the ${packaged.tag} channel.`);
+    say(`\n  Updating this install at ${packaged.prefix} from ${packaged.installed ?? "an unreadable version"} to clearotron@${packaged.spec}.`);
+    const rc = runInCheckout("npm", packaged.npmArgs);
+    if (rc !== 0) return rc;
+    // npm puts its own link back at `<prefix>/bin/clearotron` on every install, over the launcher the
+    // install wrote, and that link runs whichever `node` is first on PATH. Put the launcher back, but only
+    // over npm's link or our own: anything else there was not ours before this update either.
+    const kind = inspectShim(shimPath()).kind;
+    if (kind === "npm-link" || kind === "ours" || kind === "ours-other-install") {
+      const shim = installShim();
+      if (!shim.ok) console.error(`\n  The update worked, but the launcher at ${shim.path ?? "~/.local/bin/clearotron"} could not be written back: ${shim.detail}.`);
+    }
+    say("\n  Updated. An assistant starts the new version the next time it launches Clearotron; restart the services for the portal.\n");
+    return 0;
   }
 
   say("\n  Configuration store is outside the checkout. Updating the product.");

@@ -68,6 +68,8 @@ import { nodeFloorVerdict } from "../shared/node-floor.mjs";   // — the floor 
 import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that form
 import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
+import { relocationPlan } from "../shared/permanent-install.mjs";   // — and the program out of npx's cache
+import { isWsl } from "../shared/wsl.mjs";   // — one answer to "is this WSL", shared with the connect lines
 import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight where the meaning is
 import { bracketAsciiCells, BRAND } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
 // THE REFUSALS ABOUT THE SIGN-IN ADDRESS ITSELF, shared with `bin/start.mjs`. Two copies would be a
@@ -703,23 +705,8 @@ export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindows
 /** A path on a Windows drive as WSL mounts it. */
 export const ON_A_WINDOWS_DRIVE = /^\/mnt\/[a-z]\//i;
 
-/**
- * Whether this is a Linux running under Windows.
- *
- * BOTH SIGNALS INJECTABLE, for the reason `platformEngineRefusal` gives: the readers this protects
- * are the ones who cannot run this suite to find out, so a Linux runner has to be able to drive both
- * answers rather than read the source and agree with it.
- *
- * A READ THAT FAILS ANSWERS "NOT WSL", and that is the direction that changes nothing: it leaves the
- * resolution exactly as it was before this existed. Claiming WSL on a could-not-read would start
- * refusing candidates under /mnt on an ordinary Linux box with an ordinary mount.
- */
-export function isWsl({ env = process.env, procVersion = null } = {}) {
-  if (String(env.WSL_DISTRO_NAME ?? "").trim()) return true;
-  if (String(env.WSL_INTEROP ?? "").trim()) return true;
-  const v = procVersion ?? (() => { try { return readFileSync("/proc/version", "utf8"); } catch { return ""; } })();
-  return /microsoft|wsl/i.test(v);
-}
+/** Whether this is a Linux running under Windows: the one answer, from shared/wsl.mjs. */
+export { isWsl };
 
 /**
  * What to say about candidates passed over because they sit on a Windows drive — or `null` when none
@@ -2931,6 +2918,39 @@ if (!input.isTTY) {
   console.error("\nsetup: this is an interactive wizard and stdin is not a terminal.\n"
     + `Run it in a terminal, or use \`${invoke("doctor")}\` to see what is configured.\n`);
   process.exit(2);
+}
+
+// ── OUT OF NPX'S CACHE, BEFORE ANYTHING IS WRITTEN ─────────────────────────────────────────────────────
+//
+// Run from npx, this program lives in npm's cache, and everything below would be wired to a directory npm
+// deletes: the launcher, and the connect line an assistant is registered with. So the install first puts
+// this same version somewhere permanent (shared/permanent-install.mjs) and runs itself from there. Nothing
+// has been written yet, so a failure here costs nothing, and it stops rather than carrying on: an install
+// finished from the cache is the defect, not a fallback.
+const move = relocationPlan();
+if (move && !move.skip && process.env.CLEAROTRON_RELOCATED !== "1") {
+  say(`\n  This is running from npm's temporary npx cache. Installing clearotron ${move.version} to ${move.prefix}`);
+  say("  first, so the launcher and your assistants keep working after npm cleans that cache or you update.\n");
+  // The npm that launched this, when npm says which: no second npm is guessed at.
+  const npmCli = process.env.npm_execpath;
+  const r = npmCli && existsSync(npmCli)
+    ? spawnSync(process.execPath, [npmCli, ...move.npmArgs], { stdio: "inherit" })
+    : spawnSync("npm", move.npmArgs, { stdio: "inherit" });
+  if (r.status !== 0 || !existsSync(move.entry)) {
+    console.error(`\n  Could not install clearotron to ${move.prefix}${r.error ? ` (${r.error.message})` : ""}. Nothing was installed, and nothing of yours was changed.`);
+    console.error(`  Run \`npm install --global --prefix ${move.prefix} clearotron@${move.version}\`, then \`${join(move.prefix, "bin", "clearotron")} install\`.\n`);
+    process.exit(1);
+  }
+  // THE REST OF THE INSTALL RUNS FROM THE PERMANENT COPY, with npm's marks of an npx arrival taken off, so
+  // it prints the commands of the install it now is.
+  const env = { ...process.env, CLEAROTRON_RELOCATED: "1" };
+  for (const k of ["npm_command", "npm_lifecycle_event", "npm_execpath"]) delete env[k];
+  const moved = spawnSync(process.execPath, [move.entry, "install", ...process.argv.slice(2)], { stdio: "inherit", env });
+  process.exit(moved.status ?? 1);
+}
+if (move?.skip) {
+  console.error(`\n  Note: this is running from npm's temporary npx cache and cannot be moved out of it here (${move.skip}).`);
+  console.error("  It will stop working when npm cleans that cache. `npm install -g clearotron` installs it permanently.\n");
 }
 
 // A credential typed at a prompt is echoed by the terminal and then sits in scrollback, in tmux history,

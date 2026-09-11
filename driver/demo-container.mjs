@@ -23,9 +23,9 @@
 // stage apart. This module is the single answer. `cut/` cannot import it (that directory does not travel
 // and this one does), so the pack gate restates the disjunction and its own test pins the two together.
 
-import { cpSync, existsSync, mkdtempSync, readdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve, sep } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 
 /** The entry file each lane's publisher reads as its source, in the order a child is probed for one. */
 export const ENTRY_FILES = Object.freeze(["report.md", "knockout-findings.json"]);
@@ -77,4 +77,32 @@ export function publishSource(dir, { repoRoot, tmp = tmpdir() } = {}) {
   const copy = join(mkdtempSync(join(tmp, "clearotron-demo-")), "sample");
   cpSync(here, copy, { recursive: true });
   return copy;
+}
+
+/**
+ * THE DEMO'S SAMPLE RUNS, WHERE AN ASSISTANT LOOKS FOR RUNS.
+ *
+ * The demo published its samples as reports and made no run directory, so the connector its own connect
+ * line wires listed nothing: an assistant, one of the demo's three faces, had nothing to explore. Each
+ * sample's finished `run/` is copied to the layout the connector walks, under the DEMO'S OWN workspace:
+ * `<workspace>/workspace-<agent>/studio/prelim-search/<slug>/<date>-<codename>/`. Nothing is written
+ * anywhere else, so a real install started afterwards sees none of it (the demo is its own install).
+ *
+ * Copied, never linked: a connector reading a run may write beside it, and `demo/` is tracked. A run
+ * already in place is left alone, so a visitor's second start changes nothing.
+ */
+export function seedDemoRuns({ workspace, examplesDir }) {
+  const seeded = [], already = [];
+  for (const name of demoChildren(examplesDir)) {
+    const run = join(examplesDir, name, "run");
+    let s;
+    try { s = JSON.parse(readFileSync(join(run, "status.json"), "utf8")); } catch { continue; }
+    if (!s?.slug || !s?.codename || !s?.date) continue;
+    const dir = join(workspace, `workspace-${s.agent || "clawdi"}`, "studio", "prelim-search", s.slug, `${s.date}-${s.codename}`);
+    if (existsSync(join(dir, "status.json"))) { already.push(s.runId); continue; }
+    mkdirSync(dirname(dir), { recursive: true });
+    cpSync(run, dir, { recursive: true });
+    seeded.push(s.runId);
+  }
+  return { seeded, already };
 }

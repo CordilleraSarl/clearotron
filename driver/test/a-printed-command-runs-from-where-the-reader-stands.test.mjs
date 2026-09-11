@@ -25,6 +25,7 @@ import { delimiter, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { invocationForm, invocationPrefix, invoke } from "../../shared/invocation.mjs";
 import { INSTALL_DIR, inspectShim, installShim, shimBody, shimPath } from "../../shared/verb-shim.mjs";
+import { signInResetCommand } from "../portal-local-auth.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -481,20 +482,43 @@ test("the portal's sign-in page names a passphrase reset the reader can run", ()
   const src = readFileSync(join(REPO, "driver", "portal-service.mjs"), "utf8");
   const hint = /Lost the passphrase\? Run <code>([^<]*)<\/code>/.exec(src);
   assert.ok(hint, "the sign-in page's passphrase hint is gone — re-point this arm rather than deleting it");
-  assert.doesNotMatch(hint[1], /npx clearotron/,
-    "the sign-in hint hardcodes the npx form again; it must compose through invoke() like every other "
-    + "printed command, or a reader follows it from their home directory and gets npm's error");
-  assert.match(hint[1], /\$\{[^}]*bareInvocation\("passphrase"\)[^}]*\}/,
-    "the hint must come from the helper, not from a second treatment living in HTML");
+  assert.doesNotMatch(hint[1], /npx clearotron|invocationPrefix|invoke\(|\/|cd /,
+    "the sign-in hint is composed in HTML again; it must come from signInResetCommand, the one author "
+    + "that names no path");
+  assert.match(src, /resetCommand: signInResetCommand\(/, "the portal's reset line is no longer composed by signInResetCommand");
 
   // ✕ AND IT MUST NOT NAME THIS MACHINE. The sign-in page is read by somebody who is not authenticated
   // and may not be on the box at all. Composed with invoke(), a shim-less install renders
   // `cd /srv/whatever && npx clearotron passphrase --reset` — the server's absolute path, its home
   // directory and its account name, on a page a stranger can load. This is the arm that keeps the
-  // fix for issue 1916 from turning into a disclosure while satisfying its own criteria.
-  assert.doesNotMatch(hint[1], /invocationPrefix|invoke\(|\/|cd /,
-    "the sign-in hint carries a path or a directory-changing form; an unauthenticated reader must not "
-    + "be handed this machine's filesystem layout to learn how to reset a passphrase");
+  // fix for issue 1916 from turning into a disclosure while satisfying its own criteria. DRIVEN across
+  // every layout the line can take, because the line now depends on where the install is.
+  const home = "/srv/someone";
+  const layouts = [
+    [null, null],
+    [join(home, "trademark", "portal-local-credential.json"), null],
+    [join(home, "trademark-demo", "portal-local-credential.json"), "0.3.0-beta.5"],
+    [join(home, "trademark-demo", "portal-local-credential.json"), null],
+    [join(home, "work", "my firm", "portal-local-credential.json"), null],
+    ["/opt/firm/portal-local-credential.json", "0.3.0"],
+    ["/opt/firm/creds.json", null],
+  ];
+  for (const [credentialPath, npxVersion] of layouts) {
+    const line = signInResetCommand({ credentialPath, home, npxVersion });
+    assert.match(line, /passphrase --reset/, `${credentialPath}: no reset verb`);
+    assert.doesNotMatch(line, /someone|\/srv|\/opt|(^|\s)cd\s/,
+      `${credentialPath}: the sign-in page's line names this machine: ${line}`);
+  }
+});
+
+test("the sign-in page's reset line reaches a demo run from npx, and the demo's own credential", () => {
+  // THE CASE THE PAGE GOT WRONG, measured on a published beta: `npx clearotron demo`, nothing on the
+  // PATH, the credential inside `~/trademark-demo`. The bare line ran nothing, and would have reset the
+  // shared default if it had.
+  const line = signInResetCommand({ credentialPath: "/srv/someone/trademark-demo/portal-local-credential.json", home: "/srv/someone", npxVersion: "0.3.0-beta.5" });
+  assert.equal(line, "npx clearotron@0.3.0-beta.5 passphrase --reset --base $HOME/trademark-demo");
+  // The default install needs neither half.
+  assert.equal(signInResetCommand({ credentialPath: "/srv/someone/trademark/portal-local-credential.json", home: "/srv/someone" }), "clearotron passphrase --reset");
 });
 
 test("a shim whose interpreter is gone is reported, not ticked", () => {

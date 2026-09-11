@@ -40,6 +40,8 @@ import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mj
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
 import { bareInvocation, invocationPrefix, installRoute } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
+import { isWsl } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run
+import { inNpxCache, ownVersion } from "../shared/permanent-install.mjs";   // — a demo from npx is reset through npx
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 
 /**
@@ -112,7 +114,7 @@ import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, 
 // makePrincipal and assertPrincipal exactly as a Cloudflare-verified address does.
 import { readLocalCredential, establishCredential, checkPassphrase, mintSession, verifySession,
   makeAttemptLimiter, credentialPathFor,
-  localCredentialHandoff, firstRunCredentialLines, passphraseResetCommand } from "./portal-local-auth.mjs";   
+  localCredentialHandoff, firstRunCredentialLines, passphraseResetCommand, signInResetCommand } from "./portal-local-auth.mjs";   
 import { appendFlag, feedbackDir, MAX_WHY, VERDICTS } from "./feedback-store.mjs";
 import { loadRecipes, PRODUCT_POLICIES, policyFor, countJobMarks, kebabCollisions,
   gateResolvedPolicy, productAvailability, UNAVAILABLE_NOTE, coverageDisclosure, reportIdentityFor } from "./search-policy.mjs";
@@ -2314,7 +2316,7 @@ export function makePortalService({
         // COMPOSED IN ONE PLACE and handed over as a string. The browser cannot know this install's
         // path, so the three surfaces stating this route cannot drift apart even if someone tries.
         const stdio = seesEverything(principal)
-          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null })
+          ? stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null })
           : null;
 
         // ── THE PAGE IS HANDED ANSWERS, NOT FACTS TO REASON FROM ─────────────
@@ -2339,8 +2341,9 @@ export function makePortalService({
         const offers = connectOffers({
           stdioRoutes: stdio
             ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) =>
-                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null })]))
+                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null })]))
             : {},
+          wsl: isWsl(),
           // ONE ADDRESS, and it is the publicly reachable one ( §5). The
           // `localAddress` and `clientDoorStanding` inputs are gone with the axis that read them: no
           // surface serves a loopback address to anybody, and the door's running-or-not stopped being
@@ -3374,6 +3377,21 @@ async function readJsonBody(req, limitBytes = 131072) {
 
 
 /**
+ * The instance a refusal page names: its organisation when one is configured, otherwise the host of the
+ * sign-in service it sends people to (the OIDC issuer, or the Access team's own domain, derived as the
+ * verifier derives it). `null` when neither is set. Read from the environment at call time.
+ */
+function instanceIdentity(env = process.env) {
+  if (ORGANISATION_NAME) return `This is ${ORGANISATION_NAME}'s ${BRAND.name} portal`;
+  const issuer = String(env.PORTAL_OIDC_ISSUER ?? "").trim();
+  const team = String(env.CF_ACCESS_TEAM ?? "").trim();
+  let host = null;
+  try { host = issuer ? new URL(issuer).host : null; } catch { host = null; }
+  if (!host && team) host = `${team}.cloudflareaccess.com`;
+  return host ? `This ${BRAND.name} portal signs people in through ${host}` : null;
+}
+
+/**
  * The sign-in refusal page.
  *
  * A person refused at the door is the ONE case where a JSON body is actively harmful: they cannot read
@@ -3393,6 +3411,12 @@ async function readJsonBody(req, limitBytes = 131072) {
  */
 export function denialPage(status, message) {
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // WHICH INSTANCE THIS IS. Reached through a forwarded port, this page read as a local demo refusing its own
+  // user (measured 2026-09-11, a VS Code Remote-SSH forward on WSL); named, a person can tell it is not
+  // theirs. Named by the organisation when one is set, otherwise by the sign-in service the browser is sent
+  // to, which is public by nature: never by this server's own hostname. No advice about ports: the people
+  // who normally see this page are a hosted instance's own clients, with nothing local to move.
+  const who = instanceIdentity();
   // The upstream message names the address and the reason. That is useful to the person reading it and
   // to whoever they forward it to — but it is a DIAGNOSTIC, so it sits below the fold of the sentence
   // that actually tells them what to do.
@@ -3433,6 +3457,7 @@ ${DOOR_THEME_INIT}
   <a class="btn primary" href="/portal/sign-out">Sign in as someone else</a>
   <a class="btn" href="/portal">Try again</a>
 </div>
+${who ? `<p style="margin-top:20px;font-size:14px">${esc(who)}.</p>` : ""}
 <code>${esc(message)}</code>
 </div></body></html>`;
 }
@@ -3482,7 +3507,8 @@ const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<"
 //
 // The dark ground moved with that change: the block this page used to carry had guessed #17150f/#ece5d8,
 // and brand pack §01 fixes dark at #0f0e0c near-black + #f0e8d8 parchment. The pack wins.
-export function loginPage({ email, error = null, signedIn = false }) {
+export function loginPage({ email, error = null, signedIn = false, discarded = false, resetCommand = null }) {
+  const reset = resetCommand || `${bareInvocation("passphrase")} --reset`;
   const title = signedIn ? "Signed in" : "Sign in";
   const lockup = `<span class="lockup"><span class="mark">${bracketMark(20, "currentColor", PALETTE.crimson)}</span>`
     + `<span class="word">${escHtml(BRAND.name.toLowerCase())}</span></span>`;
@@ -3526,16 +3552,24 @@ ${signedIn
 <div><a href="/portal">Go to the portal</a></div>
 <form method="post" action="/portal/logout"><button type="submit">Sign out</button></form>`
     : `<p>${escHtml(BRAND.name)} portal, as <span class="who">${escHtml(email)}</span>.</p>
+${discarded ? `<p class="hint">A session this portal did not start, from another ${escHtml(BRAND.name)} on this address or an expired one, was set aside. Sign in below.</p>` : ""}
 ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
 <form method="post" action="/portal/login">
   <label for="passphrase">Passphrase</label>
-  <input id="passphrase" name="passphrase" type="password" autocomplete="current-password" autofocus>
+  <input id="passphrase" name="passphrase" type="password" autocomplete="new-password" autofocus>
   <button type="submit">Sign in</button>
 </form>
-<p class="hint">Lost the passphrase? Run <code>${escHtml(bareInvocation("passphrase"))} --reset</code> on the machine
+<p class="hint">Lost the passphrase? Run <code>${escHtml(reset)}</code> on the machine
 running this portal. It mints a new one and prints it once.</p>`}
 </div></body></html>`;
 }
+// THE FIELD DOES NOT INVITE THE BROWSER'S SAVED PASSWORDS. Every local install and demo answers on
+// 127.0.0.1, so a browser that saved one install's passphrase fills it into the next install's page, and
+// the person is told a passphrase they never typed is wrong (read from the handler, 2026-09-11: the POST
+// compares only what the browser sent). `new-password` is the value browsers honour on a password field;
+// `off` is ignored there. The refusal says to check the field, for a browser that fills it regardless.
+const WRONG_PASSPHRASE = "That passphrase is not correct. If your browser filled the field in, clear it and type the passphrase yourself.";
+
 // The cookie the local session rides in. HttpOnly (no script needs it and nothing in the SPA reads it),
 // SameSite=Strict (there is no cross-site flow to preserve — every portal navigation is same-origin),
 // Path=/ so a report under /portal/report/… carries it too.
@@ -3617,6 +3651,9 @@ class LocalAuthError extends Error {
  * cases the right answer is "sign in again", not "resolve this name through the roster and see what it
  * gets" — which is what accepting the token's own `sub` would do.
  */
+/** Whether this request carries a session cookie at all, readable or not. */
+const hasSessionCookie = (req) => !!parseCookies(req.headers?.cookie)[SESSION_COOKIE];
+
 function localSessionIdentity(req, localAuth) {
   const token = parseCookies(req.headers?.cookie)[SESSION_COOKIE];
   if (!token) return null;
@@ -3797,17 +3834,25 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
           res.writeHead(302, { location: to, "cache-control": "no-store", "content-length": 0, ...extra });
           return res.end();
         };
+        // A SESSION COOKIE THIS PORTAL CANNOT READ IS CLEARED, AND SAID. Cookies ignore ports, so a browser
+        // that visited another Clearotron on this address (an earlier demo, another instance) brings that
+        // cookie here, where it verifies as nothing. Cleared, the next sign-in starts clean; and the page
+        // says an old session was set aside, rather than leave a person to guess what changed.
+        const who = localSessionIdentity(req, localAuth);
+        const stale = !who && hasSessionCookie(req);
+        const setAside = stale ? { "set-cookie": clearSessionCookie({ secure }) } : {};
         if (url.pathname === "/portal/login" && req.method === "GET")
-          return page(200, loginPage({ email: localAuth.email, signedIn: !!localSessionIdentity(req, localAuth) }));
+          return page(200, loginPage({ email: localAuth.email, resetCommand: localAuth.resetCommand, signedIn: !!who, discarded: stale }), setAside);
         if (url.pathname === "/portal/login" && req.method === "POST") {
           // Keyed on the peer address, counted by localAuth.attempts (portal-local-auth.mjs:
           // makeAttemptLimiter — a fixed window, NOT the 120/min token bucket the API routes share).
           // On a loopback install every attempt keys to 127.0.0.1, so the window is global; that is the
           // right answer for one user on one machine and is written down in the limiter's own comment.
           if (!localAuth.attempts.take(req.socket?.remoteAddress ?? "unknown"))
-            return page(429, loginPage({ email: localAuth.email, error: "Too many attempts. Wait a few minutes and try again." }));
+            return page(429, loginPage({ email: localAuth.email, resetCommand: localAuth.resetCommand, error: "Too many attempts. Wait a few minutes and try again." }));
           let form;
-          try { form = await readFormBody(req); } catch { return page(400, loginPage({ email: localAuth.email, error: "That passphrase is not correct." })); }
+          // A form that could not be read says nothing about the passphrase, so it is not answered as one.
+          try { form = await readFormBody(req); } catch { return page(400, loginPage({ email: localAuth.email, resetCommand: localAuth.resetCommand, error: "The sign-in form could not be read. Reload this page and try again." }), setAside); }
           let record;
           try {
             record = localAuth.credential();
@@ -3815,14 +3860,19 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
             // A credential file that has gone corrupt since boot. The operator gets the reason on
             // stderr; the browser gets a sentence with no filesystem in it.
             log(`local sign-in unavailable: ${String(e?.message ?? e)}`);
-            return page(500, loginPage({ email: localAuth.email, error: "Sign-in is not available. The terminal that started the portal says why." }));
+            return page(500, loginPage({ email: localAuth.email, resetCommand: localAuth.resetCommand, error: "Sign-in is not available. The terminal that started the portal says why." }));
           }
-          if (!record) log("local sign-in attempted but no credential is configured — stop the portal and start it again to mint one");
-          // ONE SENTENCE FOR EVERY FAILURE. A wrong passphrase, an absent credential and an
-          // unparseable form all answer "That passphrase is not correct." at 401: anything more
-          // specific tells an unauthenticated caller which half of the credential they got right.
+          // A REFUSAL FOR ANY REASON BUT THE PASSPHRASE SAYS ITS REASON. "That passphrase is not correct."
+          // sent a person to reset a passphrase that was never wrong. An install with no credential has no
+          // passphrase to be right or wrong about, so saying so gives a caller nothing to guess against.
+          if (!record) {
+            log("local sign-in attempted but no credential is configured — stop the portal and start it again to mint one");
+            return page(401, loginPage({ email: localAuth.email, resetCommand: localAuth.resetCommand, error: "No passphrase is set for this install yet. Stop the portal and start it again to create one." }), setAside);
+          }
+          // ONE SENTENCE FOR A WRONG PASSPHRASE, and nothing more specific: which half of a credential was
+          // right is exactly what an unauthenticated caller must not learn.
           if (!checkPassphrase(record, form.get("passphrase") ?? ""))
-            return page(401, loginPage({ email: localAuth.email, error: "That passphrase is not correct." }));
+            return page(401, loginPage({ email: localAuth.email, resetCommand: localAuth.resetCommand, error: WRONG_PASSPHRASE }), setAside);
           const token = mintSession({ email: localAuth.email, secret: localAuth.secret, ttlSec: localAuth.ttlSec });
           return redirect("/portal", { "set-cookie": setSessionCookie(token, { secure, maxAgeSec: localAuth.ttlSec }) });
         }
@@ -4786,6 +4836,9 @@ const PORT = PORT_CHOICE.port;
       // than a stale copy held in memory.
       credential: () => readLocalCredential(credentialPath),
       attempts: makeAttemptLimiter({ max: 10, windowMs: 5 * 60 * 1000 }),
+      // The sign-in page's recovery line. It resets the file this portal reads, and names no path on this
+      // machine, because the page is read before anyone has signed in (signInResetCommand says how).
+      resetCommand: signInResetCommand({ credentialPath, npxVersion: inNpxCache() ? ownVersion() : null }),
     };
   })();
 

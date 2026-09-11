@@ -44,14 +44,15 @@ touches no network. If that works, everything below is configuration.
 One command. Substitute your clone's path and your workspace root:
 
 ```sh
-claude mcp add trademark-artifacts \
+claude mcp add trademark-artifacts --scope user \
   -e CLEAROTRON_WORK_DIR=/path/to/your/workspace \
   -- node /path/to/clearotron/mcp-server/server.mjs
 ```
 
 Check it: `claude mcp list` prints `trademark-artifacts: … - √ Connected`.
 
-Add `-s user` to make it available in every project instead of just this one. Remove it with
+`--scope user` makes it available in every project, not only the directory you ran it in. In Windows
+PowerShell 5.1, write the separator as `"--"`: that shell drops a bare `--`. Remove it with
 `claude mcp remove trademark-artifacts`.
 
 ## Claude Desktop

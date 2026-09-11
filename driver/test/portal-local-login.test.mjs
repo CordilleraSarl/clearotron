@@ -25,7 +25,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_REPORTS_DIR") || __mkdtemp(__join(__tmpdir(), "portal-login-pool-")));
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createServer, request as httpRequest } from "node:http";
@@ -42,7 +42,7 @@ const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr"], users: { [U
  * A portal in local mode: the real service, the real handler, the real credential file, one user who
  * is granted `aurora` and NOT `zephyr`.
  */
-async function withLocalPortal(fn, { attempts = makeAttemptLimiter({ max: 10, windowMs: 5 * 60 * 1000 }) } = {}) {
+async function withLocalPortal(fn, { attempts = makeAttemptLimiter({ max: 10, windowMs: 5 * 60 * 1000 }), resetCommand } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "portal-login-"));
   const credentialPath = join(dir, "credential.json");
   const { passphrase } = establishCredential({ path: credentialPath, email: USER });
@@ -58,7 +58,7 @@ async function withLocalPortal(fn, { attempts = makeAttemptLimiter({ max: 10, wi
   });
   const localAuth = {
     email: USER, secret: SECRET, ttlSec: 60 * 60 * 12,
-    credential: () => readLocalCredential(credentialPath), attempts,
+    credential: () => readLocalCredential(credentialPath), attempts, resetCommand,
   };
   // No static handler: the SPA bundle is not what is under test, and wiring it would make every
   // assertion below depend on whether portal-ui had been built.
@@ -167,6 +167,33 @@ test("a wrong passphrase is a 401 and one generic sentence, with no cookie and n
       assert.equal(r.status, 401, `${JSON.stringify(fields)} must answer exactly as a wrong passphrase does`);
       assert.ok(r.body.includes("That passphrase is not correct."));
     }
+  });
+});
+
+test("the sign-in field does not invite a saved password, and a refusal says to check what the browser filled", async () => {
+  // Every local install answers on 127.0.0.1, so a password saved for one fills into the next one's page
+  // and the person is refused a passphrase they never typed.
+  await withLocalPortal(async ({ port }) => {
+    const page = await req(port, "/portal/login");
+    const field = /<input id="passphrase"[^>]*>/.exec(page.body)?.[0];
+    assert.ok(field, "the passphrase field is gone from the page");
+    assert.match(field, /autocomplete="new-password"/);
+    assert.doesNotMatch(field, /current-password|autocomplete="on"/, "the field asks the browser for a saved password");
+    const r = await postForm(port, "/portal/login", { passphrase: "a saved one from another install" });
+    assert.equal(r.status, 401);
+    assert.match(r.body, /If your browser filled the field in, clear it and type the passphrase yourself\./);
+  });
+});
+
+test("the sign-in page shows the reset line the portal was given, not a bare one", async () => {
+  const line = "npx clearotron@0.3.0-beta.5 passphrase --reset --base $HOME/trademark-demo";
+  await withLocalPortal(async ({ port }) => {
+    for (const r of [await req(port, "/portal/login"), await postForm(port, "/portal/login", { passphrase: "wrong" })])
+      assert.ok(r.body.includes(`<code>${line}</code>`), `status ${r.status}: the page does not show this install's reset line`);
+  }, { resetCommand: line });
+  // THE CONTROL: with none given, the page falls back to the bare line it always showed.
+  await withLocalPortal(async ({ port }) => {
+    assert.ok((await req(port, "/portal/login")).body.includes("<code>clearotron passphrase --reset</code>"));
   });
 });
 
@@ -469,6 +496,53 @@ test("an unauthenticated NON-write is refused and journalled nowhere", async () 
     const r = await req(port, "/portal/api/runs", { method: "GET", headers: { accept: "application/json" } });
     assert.equal(r.status, 401, "the refusal is unchanged");
     assert.deepEqual(audits, [], "and it leaves no row — every unauthenticated poll would otherwise file one");
+  });
+});
+
+// ── A SESSION COOKIE THIS PORTAL DID NOT MINT ────────────────────────────────────────────────────────
+//
+// Cookies ignore ports, so a browser that visited another Clearotron on this address brings its session
+// cookie here. It must never stand between a correct passphrase and a session, and a refusal for any reason
+// but the passphrase says its reason (walked on WSL, 2026-09-11: a correct passphrase was answered "not
+// correct" in a browser that had visited other instances, while the same passphrase signed in from curl).
+
+test("a foreign or expired session cookie does not refuse a correct passphrase", async () => {
+  await withLocalPortal(async ({ port, passphrase }) => {
+    const foreign = mintSession({ email: USER, secret: "another-instance-secret" });
+    const expired = mintSession({ email: USER, secret: SECRET, ttlSec: 60, now: Date.now() - 60 * 60 * 1000 });
+    for (const [label, token] of [["another instance's", foreign], ["an expired", expired]]) {
+      const r = await req(port, "/portal/login", { method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded", cookie: `portal_session=${token}` },
+        body: `passphrase=${encodeURIComponent(passphrase)}` });
+      assert.equal(r.status, 302, `${label} cookie turned a correct passphrase into ${r.status}: ${r.body.slice(0, 200)}`);
+      assert.doesNotMatch(r.body, /not correct/);
+      assert.ok(r.cookies.some((c) => c.startsWith("portal_session=ps1.")), "no new session was issued in place of the old one");
+    }
+  });
+});
+
+test("the form clears a session cookie it cannot read, and says an old session was set aside", async () => {
+  await withLocalPortal(async ({ port }) => {
+    const foreign = mintSession({ email: USER, secret: "another-instance-secret" });
+    const r = await req(port, "/portal/login", { headers: { cookie: `portal_session=${foreign}` } });
+    assert.equal(r.status, 200);
+    assert.ok(r.cookies.some((c) => /^portal_session=;.*Max-Age=0/.test(c)), `the unreadable cookie was left in place: ${JSON.stringify(r.cookies)}`);
+    assert.match(r.body, /was set aside/);
+    // THE CONTROL: no cookie, so nothing is cleared and nothing is said.
+    const clean = await req(port, "/portal/login");
+    assert.deepEqual(clean.cookies, []);
+    assert.doesNotMatch(clean.body, /was set aside/);
+  });
+});
+
+test("an install with no passphrase says so, rather than calling a passphrase wrong", async () => {
+  await withLocalPortal(async ({ port, credentialPath }) => {
+    rmSync(credentialPath);
+    const r = await req(port, "/portal/login", { method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" }, body: "passphrase=anything" });
+    assert.equal(r.status, 401);
+    assert.match(r.body, /No passphrase is set for this install yet/);
+    assert.doesNotMatch(r.body, /not correct/);
   });
 });
 
