@@ -197,6 +197,33 @@ test("the sign-in page shows the reset line the portal was given, not a bare one
   });
 });
 
+test("a pasted passphrase with whitespace around it signs in; whitespace inside it, or a missing character, does not", async () => {
+  // Measured 2026-09-11 on a published beta: a passphrase copied from the terminal carried a trailing space
+  // or line break, and the digest of the copy was not the digest of the passphrase, so a correct one was
+  // refused as wrong.
+  await withLocalPortal(async ({ port, passphrase }) => {
+    for (const pasted of [`${passphrase} `, ` ${passphrase}`, `${passphrase}\n`, `\t${passphrase}\r\n`]) {
+      const r = await postForm(port, "/portal/login", { passphrase: pasted });
+      assert.equal(r.status, 302, `${JSON.stringify(pasted)} was refused: surrounding whitespace was read as part of the passphrase`);
+    }
+    // THE CONTROLS: a trim that swallowed more than the edges would let these in.
+    const mid = Math.floor(passphrase.length / 2);
+    for (const wrong of [`${passphrase.slice(0, mid)} ${passphrase.slice(mid)}`, passphrase.slice(0, -1), "   "]) {
+      const r = await postForm(port, "/portal/login", { passphrase: wrong });
+      assert.equal(r.status, 401, `${JSON.stringify(wrong)} signed in`);
+    }
+  });
+  // And at mint: a supplied passphrase is stored without its surrounding whitespace.
+  const dir = mkdtempSync(join(tmpdir(), "portal-trim-"));
+  try {
+    const path = join(dir, "credential.json");
+    const { passphrase } = establishCredential({ path, email: USER, passphrase: "  a chosen one \n" });
+    assert.equal(passphrase, "a chosen one");
+    const { checkPassphrase } = await import("../portal-local-auth.mjs");
+    assert.equal(checkPassphrase(readLocalCredential(path), "a chosen one"), true);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test("Secure is set ONLY when the request arrived over TLS", async () => {
   // The failure this exists for is total and silent: a laptop user on http://127.0.0.1 handed a Secure
   // cookie gets a browser that stores it and never sends it back — every sign-in "succeeds" and every

@@ -311,7 +311,8 @@ export function establishCredential({ path, email, passphrase = null }) {
   // 18 bytes → 24 base64url characters, no padding and no ambiguous punctuation: readable off a
   // terminal, typeable into a browser, and 144 bits of entropy so a generated one is never the weak
   // half of this design.
-  const secret = generated ? newPassphrase() : String(passphrase);
+  // Trimmed for the reason checkPassphrase trims: surrounding whitespace is never part of a passphrase.
+  const secret = generated ? newPassphrase() : String(passphrase).trim();
   if (!secret) throw new Error("establishCredential: an empty passphrase is not a credential");
   const salt = randomBytes(16).toString("base64url");
   const rec = {
@@ -343,7 +344,14 @@ export function establishCredential({ path, email, passphrase = null }) {
  */
 export function checkPassphrase(record, passphrase) {
   if (!record || typeof record.salt !== "string" || typeof record.hash !== "string") return false;
-  if (typeof passphrase !== "string" || !passphrase) return false;
+  if (typeof passphrase !== "string") return false;
+  // SURROUNDING WHITESPACE IS NOT PART OF A PASSPHRASE. A value copied from a terminal or a chat carries a
+  // trailing space or line break, and the digest of `pass ` is not the digest of `pass`, so a correct
+  // passphrase was refused as wrong (measured 2026-09-11 on a published beta). Every passphrase is minted
+  // trimmed (establishCredential, below), and a generated one has no whitespace at all, so trimming here
+  // refuses nothing that matched before. Whitespace INSIDE a passphrase is kept.
+  passphrase = passphrase.trim();
+  if (!passphrase) return false;
   if (record.algo !== ALGO) return false;
   let got;
   try { got = derive(passphrase, record.salt); } catch { return false; }
