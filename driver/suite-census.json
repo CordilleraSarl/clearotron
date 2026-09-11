@@ -171,6 +171,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -4504,8 +4510,8 @@
           "todos": 0
         },
         "the-corrective-pass-names-what-it-removes.test.mjs": {
-          "tests": 8,
-          "asserts": 33,
+          "tests": 12,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
