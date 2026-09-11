@@ -73,7 +73,7 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
 import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
-import { canManage } from '../shell/permissions.ts'
+import { seesEverything } from '../shell/permissions.ts'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -1553,10 +1553,10 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             setupRoute={ctx.me.setupRoute}
             programDisputed={ctx.me.engineProgramDisputed}
             // ONE CLICK TO THE PAGE THAT EXPLAINS IT, and only for a reader who can open it. Global
-            // config is staff-only at the door: a client following this link would land on "the
-            // configuration cannot be read from here", which is a worse answer than no link at all.
+            // config is served only to someone who sees everything, so this asks the fact the avatar
+            // menu asks: Manage alone would link a manager of one organisation to a dead end.
             // Null is the honest shape for "there is nowhere to send this reader", not a dead button.
-            onSettings={canManage(ctx.me) ? () => ctx.go('/portal/admin/config') : null}
+            onSettings={seesEverything(ctx.me) ? () => ctx.go('/portal/admin/config') : null}
             saveOpen={saveOpen}
             saveName={saveName}
             saveText={saveText}

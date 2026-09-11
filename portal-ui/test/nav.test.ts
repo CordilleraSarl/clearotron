@@ -9,7 +9,10 @@ import { navFor, navGroupsFor, avatarMenuFor, screenForPath, NAV, HOME, type Nav
 
 // Three people, and together they cover both switches: the manager, the person who runs clearances, and
 // the view-only person. A reader used to be one of two role words; now a reader is what they may do.
+// Manage over what they can see, and no more: a manager of one organisation.
 const MANAGER: Viewer = { permissions: { run: true, manage: true } }
+// The same switches, and sight of everything: the one reader the server serves the installation's settings to.
+const STAFF: Viewer = { permissions: { run: true, manage: true }, allAccounts: true }
 const RUNNER: Viewer = { permissions: { run: true, manage: false } }
 const READER: Viewer = { permissions: { run: false, manage: false } }
 
@@ -56,7 +59,10 @@ test('THE LINE: every sidebar entry declares which side of the switcher it is on
 })
 
 test('a manage-only path is indistinguishable, to someone without Manage, from a made-up one', () => {
-  assert.equal(screenForPath('/portal/admin/config', MANAGER)?.id, 'admin.config')
+  assert.equal(screenForPath('/portal/admin/config', STAFF)?.id, 'admin.config')
+  // Manage acts inside what a person can see, and a manager of one organisation cannot see the
+  // installation, so the server refuses them this page and the router does not offer it.
+  assert.equal(screenForPath('/portal/admin/config', MANAGER), null, 'Manage alone does not reach the installation settings')
 
   // For a client, a real-but-forbidden staff path answers exactly what a path that was never a path at
   // all answers. Returning null for one and a screen for the other would make the router an oracle for
@@ -88,8 +94,11 @@ test('without Manage there is no admin surface and no People; with it, both are 
   // person rather than to either scope, and in the sidebar it would have had to sit on one side of the
   // company switcher, claiming to be account-scoped or owner-scoped when it is neither.
   assert.equal(navFor(MANAGER).some((e) => e.id.startsWith('admin')), false, 'not in the staff sidebar either')
-  assert.deepEqual(avatarMenuFor(MANAGER).map((e) => e.id), ['preferences', 'people', 'admin.config', 'about'],
+  assert.deepEqual(avatarMenuFor(STAFF).map((e) => e.id), ['preferences', 'people', 'admin.config', 'about'],
     'People is in the avatar menu, directly above Global config')
+  // A manager of one organisation has People and not Global config: the menu offers what the server serves.
+  assert.deepEqual(avatarMenuFor(MANAGER).map((e) => e.id), ['preferences', 'people', 'about'],
+    'Global config is offered to a manager the server refuses it to')
   // …and the role gate still lives in the DATA, so a client's menu is simply shorter.
   // About rides here for EVERY role — it is the AGPL §13 source offer, owed to whoever is
   // using the service, so it is the one entry in this menu that is not about administering anything.
@@ -162,9 +171,9 @@ test('the old settings paths do not resolve, so they land on not-found rather th
 
 test('longest match wins, so a sub-screen does not resolve to its parent', () => {
   assert.equal(screenForPath('/portal/brand/profile', RUNNER)?.id, 'brand.profile')
-  assert.equal(screenForPath('/portal/admin/config', MANAGER)?.id, 'admin.config')
-  assert.equal(screenForPath('/portal/admin', MANAGER)?.id, 'admin')
-  assert.equal(screenForPath('/portal/admin/', MANAGER)?.id, 'admin')
+  assert.equal(screenForPath('/portal/admin/config', STAFF)?.id, 'admin.config')
+  assert.equal(screenForPath('/portal/admin', STAFF)?.id, 'admin')
+  assert.equal(screenForPath('/portal/admin/', STAFF)?.id, 'admin')
 })
 
 test('the landing screen is chosen by id, not by whichever entry sits first', () => {
@@ -230,9 +239,10 @@ test('every in-app navigation target is a route that resolves', () => {
   assert.ok(targets.size >= 4, 'the scan found almost nothing — the pattern has drifted, not the code')
   for (const t of targets) {
     // A run id is appended at runtime, so the bare /portal/result is what the literal carries and what
-    // must resolve — for a person holding both switches, who can reach every screen there is.
-    const target = screenForPath(t, MANAGER)
-    assert.ok(target, `${t} is navigated to but does not resolve even with both permissions`)
+    // must resolve — for a person holding both switches who also sees everything, the one reader who can
+    // reach every screen there is.
+    const target = screenForPath(t, STAFF)
+    assert.ok(target, `${t} is navigated to but does not resolve even for someone who can open every screen`)
     // A STAFF-ONLY TARGET IS ALLOWED, AND ONLY BEHIND THE ROLE THAT CAN OPEN IT. The rule this arm
     // holds is that no reader meets a link to a page they cannot open — not that no such path may be
     // written. A blocked client on New clearance needs to be sent somewhere; a client cannot read the
@@ -247,7 +257,8 @@ test('every in-app navigation target is a route that resolves', () => {
     // declaring its `needs`, with nothing here to update.
     const needs = target?.needs
     if (needs) {
-      const gate = needs === 'run' ? 'canRun' : 'canManage'
+      // And one that needs sight of everything behind `seesEverything`, the predicate that answers it.
+      const gate = needs === 'run' ? 'canRun' : needs === 'everything' ? 'seesEverything' : 'canManage'
       // THE LINE SCAN MUST HAVE FOUND THIS TARGET, or the check below iterates nothing and passes.
       // `targets` is collected over the whole file and `sites` line by line with the same pattern, and
       // `\s*` spans newlines — so a `go(` whose path sits on the next line is in the first set and not

@@ -619,3 +619,38 @@ test("an onboarded owner IS counted, and the demo is named beside it rather than
   assert.match(line, /demo-brand-owner/, "the demo named separately, not counted among the owners");
   assert.doesNotMatch(line, /2 brand owner\(s\)/, "the demo must never be counted into the total");
 });
+
+// ── SAVED SEARCHES, JUDGED BY THE PORTAL'S OWN RULE ─────────────────────────────────────────────────────
+//
+// The portal switches saved searches off when the store sits outside the repository its saves commit to,
+// and says so only in its boot log. Doctor passed that install; it names it now, and a store holding a
+// file that cannot be read, which fails every company's saved searches the same way.
+
+test("doctor names why saved searches are off, and says when they are on", () => {
+  const home = installedHome(GOOD_ENV);
+  const repo = mkdtempSync(join(tmpdir(), "rec-repo-"));
+  const outside = mkdtempSync(join(tmpdir(), "rec-outside-"));
+  const inside = join(repo, "recipes");
+  mkdirSync(inside, { recursive: true });
+  try {
+    const off = doctor(home, { CLEAROTRON_RECIPES_DIR: outside, RECIPE_REPO_ROOT: repo }).out;
+    assert.match(off, /saved searches are OFF/, `doctor said nothing about a store the portal refuses:\n${off}`);
+    assert.match(off, /CLEAROTRON_RECIPES_DIR/, "the line names the variable to fix");
+    // THE CONTROL: the same repository with the store inside it. The refusal goes, and the store is named.
+    const on = doctor(home, { CLEAROTRON_RECIPES_DIR: inside, RECIPE_REPO_ROOT: repo }).out;
+    assert.doesNotMatch(on, /saved searches are OFF/, "a store inside its repository is not off");
+    assert.match(on, /saved searches are read from/);
+    // And a file that cannot be read, in a store that is otherwise fine, is named as that.
+    mkdirSync(join(inside, "acme"));
+    writeFileSync(join(inside, "acme", "broken.json"), "{ not json");
+    const bad = doctor(home, { CLEAROTRON_RECIPES_DIR: inside, RECIPE_REPO_ROOT: repo }).out;
+    assert.match(bad, /saved searches cannot be read from/, `doctor passed a store that fails to load:\n${bad}`);
+  } finally { for (const d of [home, repo, outside]) rmSync(d, { recursive: true, force: true }); }
+});
+
+test("doctor says saved searches are off when no store is named", () => {
+  const home = installedHome(GOOD_ENV);
+  try {
+    assert.match(doctor(home).out, /saved searches are off: CLEAROTRON_RECIPES_DIR is not set/);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});

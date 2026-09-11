@@ -49,3 +49,16 @@ export function canManage(who: Who): boolean {
 export function canRun(who: Who): boolean {
   return who.permissions.run
 }
+
+/**
+ * Does this person see everything?
+ *
+ * Not a permission and not a rank: it is what the person was given ACCESS to, the whole installation
+ * rather than an organisation or a company. It is asked because the server asks it before serving the
+ * installation's own surfaces (Global config, the activity log, mark families, retired runs), and a screen
+ * that asked Manage instead offered a manager of one organisation pages the server refuses them. /me says
+ * it as `accounts: "*"`, and only that grant says it.
+ */
+export function seesEverything(who: { readonly allAccounts?: boolean }): boolean {
+  return who.allAccounts === true
+}

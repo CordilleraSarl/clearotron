@@ -43,3 +43,17 @@ export function activeRecordOrigins(env = process.env) {
   const id = String(env?.CLEAROTRON_DATABASE ?? "").trim().toLowerCase();
   return id ? recordOriginsFor(id) : null;
 }
+
+/**
+ * The record origins of the register a stored artefact NAMES — a knockout's listing, a run's fetch
+ * receipts — or null when it names none.
+ *
+ * EMPTY IS "NOBODY SAID", and it turns the gate off, as normalizeRegisterRecordLinks reads the same
+ * field: an artefact that never recorded its register cannot be judged against one. An id this table
+ * does not know is an answer, and resolves as recordOriginsFor resolves it, to no origins, because no
+ * host of its can be established as legitimate.
+ */
+export function declaredRecordOrigins(provider) {
+  const id = String(provider ?? "").trim().toLowerCase();
+  return id ? recordOriginsFor(id) : null;
+}

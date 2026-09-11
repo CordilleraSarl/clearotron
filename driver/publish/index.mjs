@@ -22,7 +22,7 @@ import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../searc
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
 import { deliveryFlagLines } from '../predelivery-lint.mjs';
 import { PROVIDERS, config } from '../driver.config.mjs';
-import { recordOriginsFor } from '../record-origins.mjs';
+import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   // — one demo question, every product; 2134 — every SURFACE
 import { engineCommit } from '../engine-build.mjs';
@@ -546,7 +546,7 @@ export async function regenSurfaces(poolRoot) {}
  *                             all three client surfaces state the same link. That agreement is the point:
  *                             a repair that reached the report and not the workbook would put two
  *                             different registers in one delivery.
- * @param {string[]|null} origins  recordOriginsFor(the run's own provider). `null` = the run has no fetch
+ * @param {string[]|null} origins  declaredRecordOrigins(the run's own provider). `null` = the run has no fetch
  *                             receipts (legacy/archived): a NO-OP, byte-identical output, because a run
  *                             that never named its register cannot be judged against one. `[]` is a
  *                             different answer — this provider publishes no per-record page at all, so no
@@ -773,7 +773,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   //
   // So this REPAIRS rather than refuses, keyed on the RUN's own provider (the receipts above), never on
   // today's CLEAROTRON_DATABASE — a republished archive keeps its own register.
-  const runOrigins = fetchReceipts ? recordOriginsFor(String(fetchReceipts[0]?.provider ?? '').toLowerCase()) : null;
+  // Receipts that name no provider are read as no receipts: the gate is off, as it is for a legacy run.
+  const runOrigins = fetchReceipts ? declaredRecordOrigins(fetchReceipts[0]?.provider) : null;
   const foreignRecordLinks = normalizeRecordLinks(findings, runOrigins);
   // — the SAME list reaches the renderer. normalizeRecordLinks repairs foreign ABSOLUTE links on
   // register-sourced findings; render.mjs separately CONSTRUCTS links from bare record paths, and until

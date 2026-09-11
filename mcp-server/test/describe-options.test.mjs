@@ -247,6 +247,28 @@ test("saved searches: an account with none gets an empty list and NO note", () =
   assert.equal(out.account.savedSearchesNote, null, "nothing is switched off, so nothing is claimed to be");
 });
 
+test("saved searches: a store that cannot be READ is not reported as having none", () => {
+  // The same empty list an account with none gets, and that was the defect: an assistant told "none"
+  // tells the client so. A store that fails to load carries a note now, and the note names no variable.
+  const dir = mkdtempSync(join(tmpdir(), "options-recipes-"));
+  mkdirSync(join(dir, "aurora"), { recursive: true });
+  writeFileSync(join(dir, "aurora", "broken.json"), "{ this is not json");
+  const before = process.env.CLEAROTRON_RECIPES_DIR;
+  process.env.CLEAROTRON_RECIPES_DIR = dir;
+  try {
+    const out = describeOptions({}, { scope: CLIENT });
+    assert.deepEqual(out.account.savedSearches, []);
+    assert.match(out.account.savedSearchesNote ?? "", /could not be read/, "a failed store must say so rather than read as none");
+    assert.doesNotMatch(out.account.savedSearchesNote, /CLEAROTRON_|\//, "the note may reach a client, so it names no variable and no path");
+    // THE CONTROL: the same store with the unreadable file gone. The note goes with it.
+    rmSync(join(dir, "aurora", "broken.json"));
+    assert.equal(describeOptions({}, { scope: CLIENT }).account.savedSearchesNote, null, "the same store, readable, carries no note");
+  } finally {
+    if (before === undefined) delete process.env.CLEAROTRON_RECIPES_DIR; else process.env.CLEAROTRON_RECIPES_DIR = before;
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 // ---- 4. the allowance ---------------------------------------------------------------------------
 
 test("the allowance is the LEDGER's number — the same one the admission wall counts", () => {
