@@ -2188,8 +2188,8 @@
           "todos": 0
         },
         "exit1-artifact-rescue.test.mjs": {
-          "tests": 20,
-          "asserts": 79,
+          "tests": 25,
+          "asserts": 101,
           "skips": 0,
           "todos": 0
         },
