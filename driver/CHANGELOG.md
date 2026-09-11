@@ -1,5 +1,13 @@
 # clearotron-driver
 
+## 0.3.0-beta.7
+
+### Patch Changes
+
+- c5744bf: Fixed: A demo started with npx keeps its assistant connection working after npm cleans its cache.
+- c5744bf: Fixed: An assistant connected to the demo now opens each sample report on the demo's own portal, not on another server.
+- c5744bf: Fixed: The portal names the organisation setup recorded, and the product keeps its own name beside it.
+
 ## 0.3.0-beta.6
 
 ### Patch Changes
