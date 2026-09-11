@@ -248,6 +248,11 @@ export type Me = {
    * browser from `access` would be a visibility rule written twice, once on each side of the wire.
    */
   readonly genericOrgs: readonly string[]
+  /**
+   * The command that files an organisation on this install, for the one screen that needs one first. The
+   * server composes it, because only the server knows how this install was reached; it names no path.
+   */
+  readonly organisationCommand: string
   readonly email: string
   /**
    * The accounts this identity is granted, NAMED.
@@ -1705,6 +1710,7 @@ export const api = {
         Object.entries(asRecord(b['accountOrgs'])).filter(([, v]) => typeof v === 'string' && v),
       ) as Readonly<Record<string, string>>,
       genericOrgs: asArray(b['genericOrgs']).filter((o): o is string => typeof o === 'string' && o.length > 0),
+      organisationCommand: asString(b['organisationCommand']) || 'clearotron start --organisation "<name>"',
       email: asString(b['email']) ?? '',
       accounts: asArray(b['accounts']).filter((a): a is string => typeof a === 'string'),
       allAccounts: b['accounts'] === '*',

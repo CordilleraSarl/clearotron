@@ -622,6 +622,8 @@ test("multi-account client: door routes admit; scoped routes demand a named acco
   const me = await service.route("GET", "/portal/api/me", BOSS);
   assert.equal(me.status, 200, "the front door admits multi-account clients (review 2026-07-18: this was a 404 lockout)");
   assert.deepEqual(me.json.accounts, ["aurora", "zephyr"], "the accounts array feeds the UI picker");
+  // The command the New company screen shows when no organisation is filed: a name, never a path here.
+  assert.equal(me.json.organisationCommand, 'clearotron start --organisation "<name>"');
   // (the SPA document itself is portal-static.mjs's job now — see portal-static.test.mjs)
   assert.equal((await service.route("GET", "/portal", BOSS)).status, 404);
   const un = await service.route("GET", "/portal/api/searches", BOSS, {}, {});

@@ -3095,7 +3095,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 124,
-          "asserts": 670,
+          "asserts": 671,
           "skips": 1,
           "todos": 0
         },
@@ -4584,6 +4584,12 @@
         "the-family-tag-is-writable-and-sweeps-contains.test.mjs": {
           "tests": 4,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-first-hour-reads-true.test.mjs": {
+          "tests": 8,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },

@@ -123,7 +123,7 @@ import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
-import { invocationPrefix, invoke } from "../shared/invocation.mjs";   // — the banner names the verb
+import { invocationPrefix, invoke, reachableCommand } from "../shared/invocation.mjs";   // — the banner names the verb
 import { unitEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
 import { homedir, userInfo } from "node:os";
 import { dirname, join } from "node:path";
@@ -1253,7 +1253,7 @@ if (isMain) {
         say(`  grants         ${paths.grants} named nobody, so ${user} was added: Run, Manage, access to everything`);
       if (seeded.changed.includes("organisation")) say(`                 organisation "${organisation}", filed there — rename it there too`);
       else if (seeded.changed.includes("person") && !Object.keys(seeded.grants.tenants ?? {}).length)
-        say(`                 no organisation named yet — \`${invocationPrefix()}clearotron start --organisation "<name>"\` files the first one`);
+        say(`                 no organisation named yet — \`${reachableCommand('start --organisation "<name>"')}\` files the first one`);
       // REPORTED, NOT REPAIRED. A file that names other people is somebody's decision, and adding this
       // address to it would give access to everything to an address nobody enrolled.
       if (seeded.unadmitted)

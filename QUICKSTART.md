@@ -44,6 +44,11 @@ clearotron install
 clearotron doctor --probe-engine
 ```
 
+On a Linux Node from the distribution or NodeSource, npm's global directory is `/usr`, owned by root,
+and the first line fails with `EACCES`. Do not answer that with `sudo`: run
+`npm install -g clearotron --prefix ~/.local` instead, or `npx clearotron install`, which installs under
+`~/.local` itself.
+
 `doctor` is the one to read. It checks that your CLI is on `PATH`, that it is signed in — by running
 a turn, not by finding the executable — and that your register credential resolves. An executable
 that is signed out passes every other check and fails at the first stage.

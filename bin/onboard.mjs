@@ -63,7 +63,7 @@ import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { accessSync, constants, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync, chmodSync } from "node:fs";   // read the process table here; moved that to shared/process-table.mjs
 import { homedir, userInfo } from "node:os";
-import { invocationPrefix } from "../shared/invocation.mjs";   // — one rule for how the reader invokes us
+import { invocationPrefix, installRoute, reachableCommand } from "../shared/invocation.mjs";   // — one rule for how the reader invokes us
 import { nodeFloorVerdict } from "../shared/node-floor.mjs";   // — the floor is package.json engines, not a constant here
 import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that form
 import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
@@ -130,6 +130,12 @@ function readIfPresent(path) {
 }
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
+// A PACKAGED INSTALL IS NOT A CHECKOUT. doctor says which one it is talking to, and names only commands
+// that run there: npm's scripts and a checkout's tree are not where a package's reader stands.
+const PACKAGED = installRoute(REPO) === "packaged";
+const THIS_TREE = PACKAGED ? "the installed package" : "this checkout";
+// The example job, by the path it has in THIS install, so the printed command runs from any directory.
+const EXAMPLE_JOB = join(REPO, "examples", "job.euipo.json");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 // WHAT IS READ IS NOT ALWAYS WHERE THE NEXT WRITE GOES. An install configured before the move still
 // has its file at the old path, and the loader still reads it — so every READ here asks
@@ -1105,7 +1111,10 @@ export async function runCheck() {
     say("      Restart whatever supervises them; this command does not, because which supervisor owns");
     say("      them is a property of your deployment and not of this checkout.");
   } else if (running.state === "unknown") {
-    warn(`could not tell whether running programs are on the current tree: ${running.detail}`);
+    // A PACKAGED INSTALL HAS NO TREE TO BE BEHIND. npm replaces the whole package on an update, so this
+    // question belongs to a checkout, and on a package it is a `!` nothing can ever clear.
+    if (PACKAGED) info("running programs against a checkout's tree: not applicable to a packaged install");
+    else warn(`could not tell whether running programs are on the current tree: ${running.detail}`);
   }
 
   // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE ──────────────────────────────
@@ -1137,7 +1146,8 @@ export async function runCheck() {
     if (elsewhere.programs.length > 6) say(`      … and ${elsewhere.programs.length - 6} more`);
     say("      Either point the install back at the tree they run from, or restart them onto this one.");
   } else if (elsewhere.state === "unknown") {
-    warn(`could not tell whether running programs are on a different checkout: ${elsewhere.detail}`);
+    if (PACKAGED && !configuredTree) info("running programs on a different checkout: not applicable to a packaged install");
+    else warn(`could not tell whether running programs are on a different checkout: ${elsewhere.detail}`);
   } else if (elsewhere.state === "unplaced") {
     // PRINTED, because the alternative is silence that reads as a clean answer. Nothing here was placed
     // on a tree, which is not the same as everything being on the right one, and the reader is the only
@@ -1343,7 +1353,7 @@ export async function runCheck() {
     const installMode = engineMode(engineInventory(invEnv));
     if (installMode === ENGINE_MODES.DEMO) {
       info("MODE: demo — everything works except starting a NEW search. The example report, its audit trail "
-        + "and the MCP connection are live right now; `npm run example` needs no engine.");
+        + `and the MCP connection are live right now; \`${reachableCommand("demo")}\` needs no engine.`);
       // NAMES THE COMMAND, AND THE RESTART. The settings page says both now, and a doctor that named
       // the program but not how to install it — or that left out the restart, which is what actually
       // unsticks a reader who has just installed it — would be the third opinion this issue exists to
@@ -1548,9 +1558,9 @@ export async function runCheck() {
   {
     const inCheckout = (p) => isInsideCheckout(p, REPO);
     for (const [name, what] of [
-      ["CLEAROTRON_CUSTOMERS_DIR", "customers resolve to the bundled demo roster IN this checkout"],
-      ["CLEAROTRON_INSTRUCTIONS_DIR", "doctrine resolves to the bundled files IN this checkout"],
-      ["PROFILE_REPO_ROOT", "the portal's profile editor commits INTO this checkout"],
+      ["CLEAROTRON_CUSTOMERS_DIR", `customers resolve to the bundled demo roster IN ${THIS_TREE}`],
+      ["CLEAROTRON_INSTRUCTIONS_DIR", `doctrine resolves to the bundled files IN ${THIS_TREE}`],
+      ["PROFILE_REPO_ROOT", `the portal's profile editor commits INTO ${THIS_TREE}`],
     ]) {
       // — WHICH NAME THE READER IS TOLD IS NOT ONE QUESTION, IT IS TWO.
       //
@@ -1891,7 +1901,8 @@ export async function runCheck() {
       info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
         + "whether the services read an overlay is not judged here");
     }
-    if (report.ok && report.overlayConfigured) say("\n  Full detail: npm run doctrine-report");
+    if (report.ok && report.overlayConfigured)
+      say(`\n  Full detail: ${PACKAGED ? `node ${join(REPO, "scripts", "doctrine-report.mjs")}` : "npm run doctrine-report"}`);
   } catch (e) {
     // An unreadable overlay THROWS by design (config.resolveSkillPath refuses rather than falling back
     // to the product's copy). Surfaced here rather than allowed to abort the whole check: the doctor's
@@ -2224,15 +2235,26 @@ export async function runCheck() {
   say("\n  Portal sign-in");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");
+    // A BOX WITH NO UNITS RUNS THE PORTAL `clearotron start` LAUNCHES, as the line below says, and start
+    // hands that portal `PORTAL_AUTH_MODE=local` and refuses any other declared mode (bin/start.mjs). So on
+    // such a box the door is start's, not the bare service's fronted default. Reading the bare default told
+    // a fresh home that the portal would refuse to start and that nobody could use it; `start` then came
+    // up on the local sign-in and created the grants file (measured on a published beta, 2026-09-11).
+    const startLaunched = !hosted;
+    const declaredAuth = String(effectiveForService("PORTAL_AUTH_MODE")?.v ?? "").trim();
     const door = authView({
-      mode: effectiveForService("PORTAL_AUTH_MODE")?.v ?? "",
+      mode: startLaunched ? "local" : declaredAuth,
       oidcIssuer: effectiveForService("PORTAL_OIDC_ISSUER")?.v ?? "",
       team: effectiveForService("CF_ACCESS_TEAM")?.v ?? "",
       jwksUrl: effectiveForService("PORTAL_JWKS_URL")?.v ?? "",
       emailClaim: effectiveForService("PORTAL_EMAIL_CLAIM")?.v ?? "",
       authHeader: effectiveForService("PORTAL_AUTH_HEADER")?.v ?? "",
     });
-    const typed = door.declared ? `PORTAL_AUTH_MODE=${door.declared}` : "PORTAL_AUTH_MODE is unset";
+    const typed = declaredAuth ? `PORTAL_AUTH_MODE=${declaredAuth}`
+      : startLaunched ? "PORTAL_AUTH_MODE is unset, and `start` runs the local sign-in" : "PORTAL_AUTH_MODE is unset";
+    if (startLaunched && declaredAuth && declaredAuth.toLowerCase() !== "local")
+      problem(`${typed}: \`${reachableCommand("start")}\` refuses it, because start is the local install `
+        + "and runs the local sign-in; that mode belongs to a hosted deployment's units");
     // NOT A TICK, AND THAT IS THE POINT. This reads the environment THIS command is
     // typed in. `bin/start.mjs` INJECTS `PORTAL_AUTH_MODE: "local"` into the portal's own environment,
     // and a systemd unit's EnvironmentFile can name a third thing — so a green tick here was a
@@ -2297,7 +2319,13 @@ export async function runCheck() {
       const { makePrincipal } = await import("../driver/portal-access.mjs");
       // ASKED OF THE SERVICE'S OWN ENVIRONMENT. Reading this command's file here is what produced a hard
       // ✗ claiming nobody could use a portal that was admitting its operator on every request.
-      const grantsFile = effectiveForService("CLEAROTRON_ACCESS_FILE")?.v ?? "";
+      // ON A BOX `start` RUNS, an unset grants file is the one start creates on its first run, admitting
+      // the person who started it (`paths.grants` in bin/start.mjs). Before that run it does not exist,
+      // which is a first start still to come, not a portal nobody can use.
+      const namedGrants = effectiveForService("CLEAROTRON_ACCESS_FILE")?.v ?? "";
+      const startGrants = startLaunched && !namedGrants ? startPaths({ env: {} }).grants : null;
+      const beforeFirstStart = Boolean(startGrants) && !existsSync(startGrants);
+      const grantsFile = namedGrants || (beforeFirstStart ? "" : startGrants ?? "");
       let grants = null, unreadable = null;
       if (grantsFile) {
         try { grants = JSON.parse(readFileSync(grantsFile, "utf8")); }
@@ -2310,7 +2338,10 @@ export async function runCheck() {
       // A FAILURE TO LOOK IS NOT A LOCKOUT. On a hosted box whose unit environment
       // could not be read, every name above resolves empty — which is indistinguishable from a box that
       // has genuinely configured nothing, and would print the loudest ✗ in this command on no evidence.
-      if (!serviceKnown) {
+      if (beforeFirstStart) {
+        info(`no grants file yet: the first \`${reachableCommand("start")}\` creates ${startGrants} and gives the person `
+          + "who runs it access to everything");
+      } else if (!serviceKnown) {
         info("who may use this portal is not judged here: the units' environment could not be read, so a "
           + "grants file configured there would be invisible to this check");
       } else if (unreadable) {
@@ -3945,11 +3976,13 @@ try {
 
   say(`\n  ${style.bold("Start here:")}\n`);
   say(`    ${invocationPrefix()}clearotron start\n`);
-  say("      Starts the portal and the engine door, prints one address, and opens it. That address is");
-  say("      the product: you order a clearance from it and read the report there.\n");
+  say("      Starts the portal and the engine door and prints one address to open in your browser. That");
+  say("      address is the product: you order a clearance from it and read the report there.\n");
   say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
-  say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job examples/job.euipo.json\` runs a first real clearance on the EU register.`)}`);
-  say(`  ${style.dim("Each still works the old way too — `npm start`, `npm run example`, `node driver/pipeline.mjs`.")}\n`);
+  say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
+  // THE OLD WAY IS A CHECKOUT'S. A package has no npm scripts where its reader stands.
+  if (!PACKAGED) say(`  ${style.dim("Each still works the old way too — `npm start`, `npm run example`, `node driver/pipeline.mjs`.")}`);
+  say("");
 
   // WHY THOSE LINES LOOK THE WAY THEY DO, when they are not the bare verb.
   //
