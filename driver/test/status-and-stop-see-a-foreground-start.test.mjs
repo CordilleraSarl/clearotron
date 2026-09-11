@@ -53,7 +53,11 @@ test("a record is read while its process lives, ignored once it is gone, and rem
 
 test("status says the product is up, with the addresses start printed, when the portal answers", async () => {
   const { h, env, dir } = home();
-  const server = createServer((_, res) => { res.writeHead(200); res.end("ok"); });
+  // As the portal answers in local mode: liveness without a session, and the address itself asks for one.
+  const server = createServer((req, res) => {
+    if (req.url === "/portal/health") { res.writeHead(200); res.end("ok"); }
+    else { res.writeHead(302, { location: "/portal/login" }); res.end(); }
+  });
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   try {
     const url = `http://127.0.0.1:${server.address().port}/portal`;

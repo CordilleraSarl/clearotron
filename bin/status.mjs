@@ -66,7 +66,9 @@ const startedEpochMs = (u) => {
 const running = readRunning();
 for (const r of running) {
   const what = r.demo ? "The demo" : "The product";
-  if (await probe(r.url)) say(`  ${what} is up, in the foreground — a terminal holds \`start\` (pid ${r.pid}); Ctrl-C there stops it.`);
+  // The portal's liveness route, which answers without a session: the address itself asks for a sign-in
+  // and read as "not answering" over a portal that was up (driven 2026-09-11).
+  if (await probe(new URL("/portal/health", r.url).href)) say(`  ${what} is up, in the foreground — a terminal holds \`start\` (pid ${r.pid}); Ctrl-C there stops it.`);
   else say(`  ${what} was started in the foreground (pid ${r.pid}), but its portal at ${r.url} is not answering.`);
   say(`    Open         ${r.url}`);
   say(`    Engine door  http://${r.host}:${r.ports.mcp}/mcp`);
