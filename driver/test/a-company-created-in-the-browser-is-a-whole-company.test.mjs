@@ -9,10 +9,13 @@
 // live today through the staff pool page, and the first arm below is the one that would have caught it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { makeProfileService, browserRefusal } from "../profile-service.mjs";
+import { makeStoreCommit, makeCommittableAudit } from "../../shared/store-in-repo.mjs";
+import { makeUpstream } from "../portal-upstream.mjs";
 import { Refusal } from "../../shared/onboarding-store.mjs";
 import { readFileSync } from "node:fs";
 import { DEFAULT_FRAMEWORK } from "../framework.mjs";
@@ -103,25 +106,118 @@ test("an existing key is refused, and so is the house default's own key", async 
   assert.equal(writeCalls.length, 0, "neither refusal wrote anything");
 });
 
-test("written and recorded are two events, and a failed commit is not reported as a failed create", async () => {
-  const dir = mkdtempSync(join(tmpdir(), "company-create-nogit-"));
-  writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "Generic default", platforms: ["amazon.com"] }));
-  const service = makeProfileService({
-    profileDir: dir,
-    writeProfile: (a) => ({ files: [`${a.key}.json`] }),
-    gitCommit: () => { throw new Error("index.lock exists"); },
-    audit: () => {},
-  });
-  const r = await service.route("POST", "/profiles", STAFF, { name: "Ferrymead Instruments" });
+// ── A CREATE THE STORE CANNOT RECORD IS REFUSED ─────────────────────────────────────────────────────────
+//
+// This answered 201 with the company live and a `commitError` beside it. Measured on the test instance: a
+// fresh store with no committer identity, the default state of a machine nobody configured, got a live
+// company with no commit behind it on its first create, and a grant filed for it too. Each arm below drives
+// a real create against a real store and reads the response, the disk and the audit trail.
+//
+// NO IDENTITY, DETERMINISTICALLY. Whether git guesses an identity from the account and the hostname
+// depends on the machine, so the global config these arms give git says it may not; the store under test
+// then has an identity only if it sets one itself. `-c` on a seed commit would not count, and nothing here
+// uses it.
+const KEY = "ferrymead-instruments";
+const GIT_ENV_KEYS = ["GIT_CONFIG_GLOBAL", "GIT_CONFIG_NOSYSTEM", "EMAIL", "GIT_AUTHOR_NAME", "GIT_AUTHOR_EMAIL", "GIT_COMMITTER_NAME", "GIT_COMMITTER_EMAIL"];
 
-  // The write is live the instant it renames. Telling somebody nothing happened, about a company that is
-  // already governing runs, is the wrong half to report.
-  assert.equal(r.status, 201);
-  assert.equal(r.json.written, true);
-  assert.equal(r.json.commit, null, "the commit did not happen and the response says so");
-  assert.match(r.json.commitError, /created and LIVE/,
-    "and it says which half failed, so the receipt can show it in red rather than green");
-});
+/** A store in the given state, and a service committing into it as the portal wires one. */
+function realStore(state) {
+  const root = mkdtempSync(join(tmpdir(), `company-create-${state}-`));
+  const git = (...a) => execFileSync("git", ["-C", root, ...a], { encoding: "utf8", stdio: "pipe" }).trim();
+  const profileDir = join(root, "profiles");
+  mkdirSync(profileDir, { recursive: true });
+  writeFileSync(join(profileDir, "generic.json"), JSON.stringify({ name: "Generic default", platforms: ["amazon.com"] }));
+  if (state !== "no-repository") git("init", "-q");
+  if (state === "healthy" || state === "hook-refuses") {
+    git("config", "user.email", "store@example.test");
+    git("config", "user.name", "store");
+    git("add", "-A");
+    git("commit", "-q", "-m", "seed");
+  }
+  if (state === "hook-refuses") writeFileSync(join(root, ".git", "hooks", "pre-commit"), "#!/bin/sh\necho 'refused by a hook' >&2\nexit 1\n", { mode: 0o755 });
+  const auditPath = join(profileDir, "_audit.log");
+  const service = makeProfileService({ profileDir, gitCommit: makeStoreCommit({ repoRoot: root }), audit: makeCommittableAudit({ auditPath, repoRoot: root }) });
+  const rows = () => (existsSync(auditPath) ? readFileSync(auditPath, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l).event) : []);
+  const staged = () => (state === "no-repository" ? "" : git("diff", "--cached", "--name-only"));
+  return { root, git, service, file: join(profileDir, `${KEY}.json`), rows, staged };
+}
+
+/** Run `fn` with git unable to guess an identity: only a repository's own config supplies one. */
+async function withNoGuessedIdentity(fn) {
+  const saved = Object.fromEntries(GIT_ENV_KEYS.map((k) => [k, process.env[k]]));
+  const dir = mkdtempSync(join(tmpdir(), "company-create-gitconfig-"));
+  writeFileSync(join(dir, "config"), "[user]\n\tuseConfigOnly = true\n");
+  for (const k of GIT_ENV_KEYS) delete process.env[k];
+  process.env.GIT_CONFIG_GLOBAL = join(dir, "config");
+  process.env.GIT_CONFIG_NOSYSTEM = "1";
+  try { return await fn(); }
+  finally { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } }
+}
+
+const create = (s) => s.service.route("POST", "/profiles", STAFF, { name: "Ferrymead Instruments" });
+
+test("THE CONTROL: a healthy store creates the company, commits it and its audit row, and leaves nothing staged", () => withNoGuessedIdentity(async () => {
+  const s = realStore("healthy");
+  const r = await create(s);
+  assert.equal(r.status, 201, JSON.stringify(r.json));
+  assert.match(r.json.commit, /^[0-9a-f]{40}$/);
+  assert.ok(existsSync(s.file), "the profile is on disk");
+  assert.match(s.git("log", "-1", "--format=%s"), new RegExp(`create company ${KEY}`));
+  assert.deepEqual(s.git("show", "--name-only", "--format=", "HEAD").split("\n").sort(), [`profiles/${KEY}.json`, "profiles/_audit.log"].sort());
+  assert.deepEqual(s.rows(), ["profile-create"]);
+  assert.equal(s.staged(), "");
+}));
+
+test("a fresh store with no git identity refuses the create, names the store and the command, and writes nothing", () => withNoGuessedIdentity(async () => {
+  const s = realStore("no-identity");
+  const r = await create(s);
+  assert.equal(r.status, 409, JSON.stringify(r.json));
+  assert.equal(r.json.code, "store_no_identity");
+  assert.match(r.json.error, /^No company was created: .*has no git identity/);
+  assert.ok(r.json.error.includes(s.root) && r.json.error.includes(`git -C ${s.root} config user.email`), r.json.error);
+  assert.doesNotMatch(r.json.error, /Please tell me who you are|Committer identity unknown/, "the operator's terms, not git's");
+  assert.ok(!existsSync(s.file), "no profile on disk");
+  assert.deepEqual(s.rows(), [], "nothing happened, so the audit trail records nothing");
+  assert.equal(s.staged(), "");
+}));
+
+test("a store that is not a repository refuses the create the same way, and writes nothing", () => withNoGuessedIdentity(async () => {
+  const s = realStore("no-repository");
+  const r = await create(s);
+  assert.equal(r.status, 409, JSON.stringify(r.json));
+  assert.equal(r.json.code, "store_not_a_repository");
+  assert.match(r.json.error, /is not a git repository this install can record into[\s\S]*git init/);
+  assert.ok(!existsSync(s.file), "no profile on disk");
+  assert.deepEqual(s.rows(), []);
+}));
+
+test("a commit refused after the write is withdrawn: the file is gone, nothing is staged, and the trail says so", () => withNoGuessedIdentity(async () => {
+  const s = realStore("hook-refuses");
+  const r = await create(s);
+  assert.equal(r.status, 409, JSON.stringify(r.json));
+  assert.equal(r.json.code, "store_commit_failed");
+  assert.match(r.json.error, /^No company was created: the store could not record it .*Nothing was left behind\.$/);
+  assert.ok(!existsSync(s.file), "the profile was removed");
+  assert.ok(!s.staged().split("\n").includes(`profiles/${KEY}.json`), `the profile is still staged, and the next save would commit it: ${s.staged()}`);
+  assert.deepEqual(s.rows(), ["profile-create", "store-commit-failed", "profile-create-withdrawn"]);
+  assert.match(s.git("log", "-1", "--format=%s"), /^seed$/, "no commit landed");
+}));
+
+test("a refused create files no grant: the organisation's grant rides a 201 only", () => withNoGuessedIdentity(async () => {
+  const filed = [];
+  const principal = { email: STAFF.email, genericOrgs: ["firm"], everything: true, permissions: { run: true, manage: true } };
+  for (const [state, status, grants] of [["no-identity", 409, 0], ["healthy", 201, 1]]) {
+    const s = realStore(state);
+    filed.length = 0;
+    const upstream = makeUpstream({
+      callUpstream: (method, path, body) => s.service.route(method, path, STAFF, body ?? {}),
+      fileCompany: async (g) => { filed.push(g); },
+    });
+    const r = await upstream.createCompany(principal, { name: "Ferrymead Instruments" });
+    assert.equal(r.status, status, `${state}: ${JSON.stringify(r.json)}`);
+    assert.equal(filed.length, grants, `${state}: grants filed`);
+  }
+}));
 
 test("a name is required, and the refusal is the one a person can act on", async () => {
   const { service } = svc();

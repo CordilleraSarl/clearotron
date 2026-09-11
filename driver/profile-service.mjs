@@ -471,13 +471,41 @@ export function makeProfileService({
         throw e;
       }
 
+      // A CREATE THE STORE CANNOT RECORD IS REFUSED, NOT REPORTED AS DONE. This answered 201 with the
+      // company live and a `commitError` beside it, so a machine with no git identity got a company with no
+      // record of who made it or when, on its first company, and the store move had been made to close
+      // exactly that gap. The store is asked first, and a refusal writes nothing: no profile, no audit row
+      // and, since the organisation's grant is filed only on a 201, no grant.
+      const cannot = typeof gitCommit?.refusal === "function" ? gitCommit.refusal() : null;
+      if (cannot) {
+        return { status: 409, json: { error: `No company was created: ${cannot.message}, then try again.`, code: `store_${cannot.code.replace(/-/g, "_")}` } };
+      }
       const { files } = writeProfile({ profileDir, key: wanted, profile, contextPack: "" });
-      // WRITTEN AND RECORDED ARE TWO EVENTS. The write is live the instant it renames; the commit can
-      // fail on its own. Reporting them as one is how somebody is told nothing happened about a company
-      // that is already governing runs.
       const message = `chore(clearotron): create company ${wanted} (via portal, by ${by})`;
       const { commit, commitError } = commitWithAuditRow({ audit, gitCommit, files, message, by,
         row: { event: "profile-create", key: wanted, by, fields: Object.keys(profile) } });
+      // AND ONE THAT FAILS ANYWAY IS WITHDRAWN. A hook or a full disk can refuse the commit after the store
+      // said it could record. The paths this create wrote were absent before it, so they are returned to
+      // absent, and a third audit row says so after the two the failed commit left.
+      if (commitError) {
+        // GIT'S LAST WORD, NOT ITS ECHO. The error opens with the whole command line it ran, message and
+        // author included, and ends with the refusal itself: a hook's own sentence, "No space left on
+        // device". The operator acts on the last line.
+        const cause = String(commitError).trim().split("\n").map((l) => l.trim()).filter(Boolean).pop() ?? String(commitError);
+        let left = null;
+        try {
+          if (typeof gitCommit?.withdraw !== "function") throw new Error("this store cannot withdraw what it wrote");
+          gitCommit.withdraw(files);
+        } catch (e) { left = String(e?.message ?? e).slice(0, 200); }
+        try {
+          audit({ event: "profile-create-withdrawn", of: "profile-create", key: wanted, by,
+            note: left ? `the create could not be recorded and its files could not be removed (${left})` : "the create could not be recorded, so its files were removed" });
+        } catch { /* the refusal below is the report; a journal failure must not mask it */ }
+        if (left) {
+          return { status: 500, json: { key: wanted, error: `The company could not be recorded (${cause}), and its file could not be removed afterwards (${left}). It is on disk with no record behind it — tell an administrator.` } };
+        }
+        return { status: 409, json: { error: `No company was created: the store could not record it (${cause}). Nothing was left behind.`, code: "store_commit_failed" } };
+      }
       return { status: 201, json: {
         key: wanted, name, written: true, created: true, commit,
         // The receipt reads off THESE, so it can say which framework and how many marketplaces, and

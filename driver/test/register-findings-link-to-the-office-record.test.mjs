@@ -28,6 +28,9 @@ const { SIGNA_OFFICE_SNAPSHOT } = await import("../../providers/signa/src/office
 const { parseReport } = await import("../publish/parse.mjs");
 const { renderHtml } = await import("../publish/render.mjs");
 const { buildAudit } = await import("../publish/xlsx.mjs");
+const { PROVIDERS } = await import("../driver.config.mjs");
+const { recordOriginsFor } = await import("../record-origins.mjs");
+const { normalizeRecord: clarivateRecord } = await import("../../providers/clarivate/src/core.js");
 
 // A record as the vendor's normaliser hands it over, numbers in the vendor's own published form.
 const SIGNA = (office, applicationNumber, registrationNumber, extra = {}) =>
@@ -73,7 +76,7 @@ test("the only reshaping is the padding and prefix the office's own format defin
 test("a number in any other form gets no link, at every office with a page", () => {
   const off = [
     SIGNA("au", "A2145673", null), SIGNA("ca", "TMA1024576", null), SIGNA("ch", "12345-2020", null),
-    SIGNA("eu", "EU018165108", null), SIGNA("fr", "20/4123456", null), SIGNA("gb", "3456789", "3456789"),
+    SIGNA("eu", "EU018165108", null), SIGNA("fr", "20/4123456", null), SIGNA("gb", "345678", "345678"),
     SIGNA("no", "12345", null), SIGNA("se", "2020/12345", null), SIGNA("us", "5847291", null),
     SIGNA("wo", "R123", "R123", { filingRoute: "madrid_ir" }),
   ];
@@ -137,20 +140,29 @@ const FINDINGS = [
   finding(2, "Northwind Asia", "SG", ["/mark/sg/s3", "/mark/fr/s4", "/mark/ch/s5"]),
 ];
 
-test("links are built only for a register with no record pages of its own; every other register is left alone", () => {
-  for (const other of ["euipo", "uspto-local", "free-tier", "corsearch", "clarivate", "", undefined]) assert.equal(recordLinksFor(FINDINGS, RECORDS, other), null, String(other));
-  assert.ok(recordLinksFor(FINDINGS, RECORDS, "signa"));
+test("links are built for every register that publishes no page per record, and for no other", () => {
+  // Driven by each register's own declaration, the answer publish hands in, never by a list of names: a
+  // list once named one vendor, and the next register without record pages reached readers with handles.
+  const registers = Object.entries(PROVIDERS).filter(([, c]) => typeof c?.hasPublicRecordUrl === "boolean");
+  const without = registers.filter(([id]) => recordOriginsFor(id).length === 0).map(([id]) => id);
+  const withPages = registers.filter(([id]) => recordOriginsFor(id).length > 0).map(([id]) => id);
+  assert.ok(without.length >= 2 && withPages.length >= 3, `a floor on both sides: ${without} / ${withPages}`);
+  assert.ok(without.includes("clarivate") && without.includes("signa"), `the two registers with no record pages are among them: ${without}`);
+  for (const id of without) assert.ok(recordLinksFor(FINDINGS, RECORDS, recordOriginsFor(id)), id);
+  for (const id of withPages) assert.equal(recordLinksFor(FINDINGS, RECORDS, recordOriginsFor(id)), null, id);
+  assert.equal(recordLinksFor(FINDINGS, RECORDS, null), null, "no register named, nothing addressed");
+  assert.equal(recordLinksFor(FINDINGS, RECORDS, undefined), null);
 });
 
 test("the run's tally counts linked, cited-by-number and not-retrieved registrations per office", () => {
-  const out = recordLinksFor(FINDINGS, RECORDS, "signa");
+  const out = recordLinksFor(FINDINGS, RECORDS, recordOriginsFor("signa"));
   assert.deepEqual(out.tally, { linked: { au: 1 }, cited: { sg: { "no-page": 2 }, fr: { unaddressable: 1 } }, notRetrieved: 1 });
   assert.equal(out.summary, "linked 1 (au 1) · cited by number 3 (sg 2 no-page, fr 1 unaddressable) · record not retrieved 1");
   assert.equal(out.byUri.get("/mark/ch/s5"), null, "an unfetched registration has no link and no label of its own");
 });
 
 test("the reason is stated once per office, with no count the cards could contradict", () => {
-  const { byUri } = recordLinksFor(FINDINGS, RECORDS, "signa");
+  const { byUri } = recordLinksFor(FINDINGS, RECORDS, recordOriginsFor("signa"));
   assert.deepEqual(officeReasonSentences(byUri), [
     "France: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.",
     "Singapore: the register publishes no page for a single record, so its registrations are cited by number.",
@@ -175,7 +187,7 @@ const COVERAGE = [{ area: "register / Australia", state: "confirmed-clean", note
 const cardOpts = (extra = {}) => ({ runId: "noref-office-links", recordsByUri: RECORDS, recordOrigins: [], recordCitation: "workbook", ...extra });
 
 test("the card links the office and number, cites the rest by number, and states each office's reason once", () => {
-  const { byUri } = recordLinksFor(FINDINGS, RECORDS, "signa");
+  const { byUri } = recordLinksFor(FINDINGS, RECORDS, recordOriginsFor("signa"));
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, cardOpts({ recordLinks: byUri }));
   assert.match(html, /<a href="https:\/\/search\.ipaustralia\.gov\.au\/trademarks\/search\/view\/2145673" target="_blank" rel="noopener noreferrer">AU 2145673<\/a>/);
   assert.match(html, /<b>SG 40202012345Y<span class="reg-nolink">/, "an unlinked registration shows its office and number, with the workbook note");
@@ -213,7 +225,7 @@ const FM = { title: "NORTHWIND", matter: "noref-office-links", classes: "9", ove
 test("the workbook's Link carries the office's page or the reason, and its link rule is not widened", async () => {
   const dir = mkdtempSync(join(tmpdir(), "office-links-xlsx-"));
   try {
-    const { byUri } = recordLinksFor(FINDINGS, RECORDS, "signa");
+    const { byUri } = recordLinksFor(FINDINGS, RECORDS, recordOriginsFor("signa"));
     const book = join(dir, "book.xlsx");
     const counts = await buildAudit({ findings: FINDINGS, coverage: COVERAGE, registerPublishesRecordPages: false, recordLinks: byUri }, auditMd, book, "NORTHWIND", FM);
     const { rows } = await findingsSheet(book);
@@ -241,10 +253,76 @@ test("with no office-link map the workbook has no Link column and labels registr
 });
 
 test("the workbook's Link cell prefers any linked registration, then the first stated reason", () => {
-  const { byUri } = recordLinksFor(FINDINGS, RECORDS, "signa");
+  const { byUri } = recordLinksFor(FINDINGS, RECORDS, recordOriginsFor("signa"));
   const regs = (...uris) => uris.map((uri) => ({ uri }));
   assert.equal(linkCellFor(regs("/mark/sg/s2", "/mark/au/s1"), byUri), "https://search.ipaustralia.gov.au/trademarks/search/view/2145673");
   assert.equal(linkCellFor(regs("/mark/ch/s5", "/mark/fr/s4"), byUri), "Number not in the form this register's page address takes (France); cited by number");
   assert.equal(linkCellFor(regs("/mark/ch/s5"), byUri), "");
   assert.equal(linkCellFor(regs("/mark/au/s1"), null), "");
+});
+
+// ── The other register with no record pages, in its own record shape ────────────────────────────────────
+// Records as Compumark's own normaliser hands them over, numbers in the forms it returned on the test
+// instance (2026-09-11, one knockout, 59 records over 22 offices): US serials; EU numbers under the office
+// code EM, unpadded; UK numbers both prefixed and as bare seven-digit national numbers; an IR number as a
+// WIPO record's registration number; and offices this table holds no address for. The numbers below are
+// made up in those forms.
+const compumark = (office, guid, applicationNumber, registrationNumber = null) => clarivateRecord({
+  id: guid, registrationOfficeCode: office, status: { application: { applicationNumber }, registration: { registrationNumber } },
+}, office);
+const CM = {
+  us: compumark("US", "g-us", "79123456"),
+  em: compumark("EM", "g-em", "12345678", "12345678"),
+  gb: compumark("GB", "g-gb", "4123456", "4123456"),
+  gbuk: compumark("GB", "g-gbuk", "UK00912345678", "UK00912345678"),
+  wo: compumark("WO", "g-wo", null, "1234567"),
+  cn: compumark("CN", "g-cn", "71234567", "71234567"),
+  jp: compumark("JP", "g-jp", "H02-012345"),
+};
+const CM_RECORDS = new Map(Object.values(CM).map((r) => [r.uri.toLowerCase(),
+  { _uri: r.uri, ...r, jurisdiction: r.office.toUpperCase(), statusText: "Registered", classList: ["9"] }]));
+const CM_FINDINGS = [
+  finding(1, "Northwind Holdings", "US", [CM.us.uri, CM.em.uri, CM.gb.uri, CM.gbuk.uri]),
+  finding(2, "Northwind Asia", "CN", [CM.wo.uri, CM.cn.uri, CM.jp.uri]),
+];
+
+test("a Compumark record is addressed from its own numbers, the EU under its code EM and a UK national number in either form", () => {
+  assert.ok(Object.values(CM).every((r) => r.provider === "clarivate" && r.resolved_link === null), "the fixture is Compumark's own shape, with no link of its own");
+  const { byUri, tally } = recordLinksFor(CM_FINDINGS, CM_RECORDS, recordOriginsFor("clarivate"));
+  const got = Object.fromEntries([...byUri].map(([k, l]) => [k, [l.label, l.href, l.reason]]));
+  assert.deepEqual(got, {
+    "/mark/us/g-us": ["US 79123456", "https://tsdr.uspto.gov/#caseNumber=79123456&caseType=SERIAL_NO&searchType=statusSearch", null],
+    "/mark/em/g-em": ["EU 012345678", "https://euipo.europa.eu/eSearch/#details/trademarks/012345678", null],
+    "/mark/gb/g-gb": ["UK00004123456", "https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/UK00004123456", null],
+    "/mark/gb/g-gbuk": ["UK00912345678", "https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/UK00912345678", null],
+    "/mark/wo/g-wo": ["WO 1234567", "https://www3.wipo.int/madrid/monitor/en/showData.jsp?ID=ROM.1234567", null],
+    "/mark/cn/g-cn": ["CN 71234567", null, "unknown-office"],
+    "/mark/jp/g-jp": ["JP H02-012345", null, "unknown-office"],
+  });
+  assert.deepEqual(tally, { linked: { us: 1, eu: 1, gb: 2, wo: 1 }, cited: { cn: { "unknown-office": 1 }, jp: { "unknown-office": 1 } }, notRetrieved: 0 });
+  assert.ok(!("em" in OFFICE_RECORD_PAGES), "EM is an alias for the EU's entry, never a second entry for one office");
+});
+
+test("offices the table holds no address for share one sentence, after the per-office ones", () => {
+  const { byUri } = recordLinksFor(CM_FINDINGS, CM_RECORDS, recordOriginsFor("clarivate"));
+  assert.deepEqual(officeReasonSentences(byUri), ["CN, JP: we hold no page address for these registers, so their registrations are cited by number."]);
+  const one = (office, reason) => ({ office, label: `${office.toUpperCase()} 1`, href: null, reason });
+  const mixed = new Map([["a", one("cn", "unknown-office")], ["b", one("sg", "no-page")], ["c", one("jp", "unknown-office")], ["d", one("br", "unknown-office")]]);
+  assert.deepEqual(officeReasonSentences(mixed), [
+    "Singapore: the register publishes no page for a single record, so its registrations are cited by number.",
+    "BR, CN, JP: we hold no page address for these registers, so their registrations are cited by number.",
+  ]);
+  assert.deepEqual(officeReasonSentences(new Map([["a", one("cn", "unknown-office")]])),
+    ["CN: we hold no page address for this register, so its registrations are cited by number."], "one such office keeps the singular");
+});
+
+test("a Compumark card links the US record at TSDR and cites the Chinese one by number, with the reason once", () => {
+  const { byUri } = recordLinksFor(CM_FINDINGS, CM_RECORDS, recordOriginsFor("clarivate"));
+  const html = renderHtml(parsedOf(REPORT), CM_FINDINGS, COVERAGE, cardOpts({ recordsByUri: CM_RECORDS, recordLinks: byUri }));
+  assert.match(html, /<a href="https:\/\/tsdr\.uspto\.gov\/#caseNumber=79123456&amp;caseType=SERIAL_NO&amp;searchType=statusSearch" target="_blank" rel="noopener noreferrer">US 79123456<\/a>/);
+  assert.match(html, /<a href="https:\/\/euipo\.europa\.eu\/eSearch\/#details\/trademarks\/012345678"[^>]*>EU 012345678<\/a>/);
+  assert.match(html, /<b>CN 71234567<span class="reg-nolink">/, "the Chinese record shows its office and number");
+  assert.doesNotMatch(html, /<a [^>]*>CN 71234567/, "and no link, since the table holds no address for it");
+  assert.equal(html.split("CN, JP: we hold no page address for these registers").length - 1, 1, "the reason, once");
+  assert.doesNotMatch(html, /<b>\/mark\/(us|em|gb|wo|cn|jp)\//, "a fetched record is never labelled with the handle");
 });

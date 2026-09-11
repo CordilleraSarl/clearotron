@@ -221,14 +221,31 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 // the truncation as a lower request count — the failure mode that would make this whole check lie in the
 // safe-looking direction. Wait until the server has been silent for `quiet` ms, capped so a screen that
 // requests forever fails loudly instead of hanging.
-const settle = async ({ quiet = 900, cap = 12000 } = {}) => {
+//
+// SILENCE BEFORE THE FIRST REQUEST IS NOT QUIET, WHERE A REQUEST IS OWED. `Page.navigate` returns as soon
+// as the navigation is committed, long before the app's bundle has run, so the quiet clock above used to
+// start while the server had heard nothing at all — and a first fetch that arrived later than `quiet`
+// closed the window empty. Every request that followed was then counted into the NEXT window, so the
+// whole drive read one bucket late: visit 1 empty, the revisit holding what boot had asked for. On a warm
+// machine the bundle runs in well under a second and it never showed; on a slow runner it failed nine
+// assertions about a product that was behaving. Reproduced by delaying the bundle 1.5s at this fixture.
+//
+// `expectTraffic` is for a window that follows a FULL NAVIGATION — the shell's boot and the Result
+// screen's first visit, the two places this drive calls `Page.navigate`. Each reloads the bundle, so each
+// has the same gap between the navigation committing and the app's first fetch. A client-side visit runs
+// on the bundle already loaded and has no such gap, which is why it is not the default: a revisit is
+// allowed to ask for nothing, and that is the very thing this file measures, so a window there must still
+// be able to close on silence.
+const settle = async ({ quiet = 900, cap = 12000, expectTraffic = false } = {}) => {
   const started = Date.now()
+  const before = hits.length
   let last = hits.length
   let lastChange = Date.now()
   for (;;) {
     await sleep(100)
     if (hits.length !== last) { last = hits.length; lastChange = Date.now() }
-    if (Date.now() - lastChange >= quiet) return true
+    const heard = hits.length > before
+    if ((heard || !expectTraffic) && Date.now() - lastChange >= quiet) return true
     if (Date.now() - started >= cap) return false
   }
 }
@@ -290,7 +307,8 @@ const record = {}
 // The shell, once. Everything after this is client-side.
 epoch = 'boot'
 await navigateOrRefuse(cmd, `${origin}/portal/home`, { what: 'revisit-render-check' })
-if (!(await settle())) say(false, 'the shell never went quiet within 12s — it is still requesting')
+if (!(await settle({ expectTraffic: true })))
+  say(false, 'the shell did not finish loading within 12s — it never reached the fixture server, or never stopped requesting')
 const bootPath = await where()
 say(bootPath === '/portal/home', `the shell loaded on /portal/home (got ${bootPath})`)
 
@@ -384,7 +402,7 @@ await twice('clearances', () => clickNav('Clearances'), '/portal/clearances')
 // runs AppShell's popstate listener rather than its click funnel.
 epoch = 'result:1'
 await navigateOrRefuse(cmd, `${origin}/portal/result/${RUN_ID}`, { what: 'revisit-render-check' })
-const rq1 = await settle()
+const rq1 = await settle({ expectTraffic: true })   // a full navigation, like boot
 const rp1 = await where()
 const rt1 = await screenText()
 say(rp1 === `/portal/result/${RUN_ID}`, `result: visit 1 landed on the run (got ${rp1})`)

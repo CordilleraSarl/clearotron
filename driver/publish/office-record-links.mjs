@@ -67,9 +67,13 @@ export const OFFICE_RECORD_PAGES = Object.freeze({
   fr: { name: "France", address: (r) => addressFrom([r.applicationNumber, r.registrationNumber], /^(?:FR)?(\d{7})$/i, (m) => ({
     number: `FR${m[1]}`, href: `https://data.inpi.fr/marques/FR${m[1]}` })) },
   // The office's record address as indexed; it challenges automated fetches, so none was opened from a
-  // server. UK numbers are UK plus eleven digits (UK000..., UK008..., UK009...).
-  gb: { name: "United Kingdom", address: (r) => addressFrom([r.applicationNumber, r.registrationNumber], /^(UK\d{11})$/i, (m) => ({
-    number: m[1].toUpperCase(), href: `https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/${m[1].toUpperCase()}` })) },
+  // server. UK numbers are UK plus eleven digits (UK000..., UK008..., UK009...). A national number given
+  // bare, seven digits as one register hands it over, is the same number under the office's UK0000
+  // prefix: UK00003456789 is national mark 3456789.
+  gb: { name: "United Kingdom", address: (r) => addressFrom([r.applicationNumber, r.registrationNumber], /^(?:(UK\d{11})|(\d{7}))$/i, (m) => {
+    const n = m[1] ? m[1].toUpperCase() : `UK0000${m[2]}`;
+    return { number: n, href: `https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/${n}` };
+  }) },
   // The register's own search opens records at exactly this address: the application number, then the
   // registration number when there is one. Opened a real record. The older search.patentstyret.no
   // addresses now answer 410 Gone.
@@ -91,6 +95,12 @@ export const OFFICE_RECORD_PAGES = Object.freeze({
 
 const handleOffice = (uri) => (/^\/mark\/([a-z]{2,4})\//i.exec(clean(uri))?.[1] ?? "").toLowerCase();
 
+// The same office under another register's code. The EUIPO's WIPO ST.3 code is EM, and a register that
+// keeps it (Compumark does) names the office the table holds as EU. An alias, never a second table entry:
+// the table is keyed by the offices, and one office has one address.
+const OFFICE_ALIASES = Object.freeze({ em: "eu" });
+const officeOf = (code) => OFFICE_ALIASES[code] ?? code;
+
 // A number that already carries its office's letters (FR4123456, UK00003456789) stands alone; a bare
 // one is shown with its office (CH 08133/2025), so the label always says whose number it is.
 const labelOf = (office, number) => (number ? (/^[a-z]{2}/i.test(number) ? number : `${office.toUpperCase()} ${number}`) : null);
@@ -108,7 +118,7 @@ const labelOf = (office, number) => (number ? (/^[a-z]{2}/i.test(number) ? numbe
 export function officeRecordLink(rec, uri = "") {
   if (!rec || typeof rec !== "object") return null;
   const designation = clean(rec.filingRoute) === "madrid_designation";
-  const office = designation ? "wo" : (clean(rec.office).toLowerCase() || handleOffice(uri));
+  const office = designation ? "wo" : officeOf(clean(rec.office).toLowerCase() || handleOffice(uri));
   const page = OFFICE_RECORD_PAGES[office];
   const own = designation ? clean(rec.irNumber) : clean(rec.applicationNumber) || clean(rec.registrationNumber);
   const unlinked = (reason) => ({ office, label: labelOf(office, own), href: null, reason });
@@ -118,17 +128,28 @@ export function officeRecordLink(rec, uri = "") {
   return a ? { office, label: labelOf(office, a.number), href: a.href, reason: null } : unlinked("unaddressable");
 }
 
-/** The registers whose records carry no page of the vendor's own, so the office's page is the link. */
-export const VENDORS_WITHOUT_RECORD_PAGES = Object.freeze(["signa"]);
+/**
+ * Does the run's register publish no page per record, so that the office's page is the only link a reader
+ * can be given? `origins` is `recordOriginsFor`'s answer for the run's register: the hosts it may put in a
+ * record URL. An EMPTY list is that answer, and it is the same one normalizeRecordLinks enforces, which
+ * strips every record URL on such a register, so none of its records reaches publish with a link of its
+ * own. Null means no register was named, and nothing is addressed.
+ *
+ * DECIDED BY THE REGISTER'S DECLARATION, NEVER BY A LIST OF VENDOR NAMES. A list here once named one
+ * vendor, on the premise that every other register's records carry links of their own. Compumark's do
+ * not, and its runs reached the reader with a handle and no reason, while this code knew the address.
+ */
+const publishesNoRecordPages = (origins) => Array.isArray(origins) && origins.length === 0;
 
 /**
- * Every registration the findings cite, keyed by its lower-cased uri, for a run whose register is
- * `provider`. Returns null for any other register, so those runs render exactly as before: their records
- * carry links of their own. `tally` is what publish records, per office, so that a register whose numbers
- * never fit shows up as a count instead of as a report that quietly looks the way it always did.
+ * Every registration the findings cite, keyed by its lower-cased uri, for a run whose register may put a
+ * record URL on `origins` (see publishesNoRecordPages). Returns null for a register that publishes pages
+ * of its own, so those runs render exactly as before. `tally` is what publish records, per office, so
+ * that a register whose numbers never fit shows up as a count instead of as a report that quietly looks
+ * the way it always did.
  */
-export function recordLinksFor(findings, recordsByUri, provider) {
-  if (!VENDORS_WITHOUT_RECORD_PAGES.includes(clean(provider).toLowerCase())) return null;
+export function recordLinksFor(findings, recordsByUri, origins) {
+  if (!publishesNoRecordPages(origins)) return null;
   const byUri = new Map();
   const tally = { linked: {}, cited: {}, notRetrieved: 0 };
   for (const f of Array.isArray(findings) ? findings : []) {
@@ -169,17 +190,30 @@ const nameOf = (office) => OFFICE_RECORD_PAGES[office]?.name ?? office.toUpperCa
  * NO COUNT. The cards list only some findings' registrations (an off-field finding lists none), so a
  * number here could name more registrations than the reader can find on the page. The workbook lists
  * them all, each with its reason.
+ *
+ * ONE SENTENCE FOR EVERY OFFICE THE TABLE HOLDS NO ADDRESS FOR, after the per-office ones. A register
+ * covering the world cites filings from offices this table does not know: one Compumark knockout on the
+ * test instance listed sixteen of them. A sentence each would repeat one caveat sixteen times, which is
+ * the repeated note the owner ruled reads to a client as a broken report.
  */
 export function officeReasonSentences(byUri) {
   const keys = new Set();
-  for (const l of byUri instanceof Map ? byUri.values() : []) if (l && !l.href) keys.add(`${l.office} ${l.reason}`);
-  return [...keys].sort().map((k) => {
+  const unknown = new Set();
+  for (const l of byUri instanceof Map ? byUri.values() : []) {
+    if (!l || l.href) continue;
+    if (l.reason === "unknown-office") unknown.add(l.office);
+    else keys.add(`${l.office} ${l.reason}`);
+  }
+  const each = [...keys].sort().map((k) => {
     const [office, reason] = k.split(" ");
     const name = nameOf(office);
     if (reason === "no-page") return `${name}: the register publishes no page for a single record, so its registrations are cited by number.`;
-    if (reason === "unknown-office") return `${name}: we hold no page address for this register, so its registrations are cited by number.`;
     return `${name}: registrations whose numbers are not in the form the register's page address takes are cited by number, not linked.`;
   });
+  const codes = [...unknown].sort().map(nameOf);
+  if (codes.length === 1) each.push(`${codes[0]}: we hold no page address for this register, so its registrations are cited by number.`);
+  else if (codes.length > 1) each.push(`${codes.join(", ")}: we hold no page address for these registers, so their registrations are cited by number.`);
+  return each;
 }
 
 /**
@@ -215,20 +249,21 @@ export function linkCellFor(registrations, byUri) {
 
 /**
  * A knockout's listed filings, each addressed at its office's page, for a listing taken on a register
- * with no record pages of its own. `doc` is register-records.json, and each filing that carries an office
- * number gains an `officeLink` in place, as normalizeRegisterRecordLinks rewrites links in place, so the
- * report, the workbook and report-data.json all state the same link. Returns null for any other
- * register, whose filings render exactly as before.
+ * with no record pages of its own. `doc` is register-records.json and `origins` is `recordOriginsFor`'s
+ * answer for the register the sidecar names (see publishesNoRecordPages). Each filing that carries an
+ * office number gains an `officeLink` in place, as normalizeRegisterRecordLinks rewrites links in place, so
+ * the report, the workbook and report-data.json all state the same link. Returns null for a register that
+ * publishes pages of its own, whose filings render exactly as before.
  *
  * A FILING WITH NO OFFICE NUMBER IS LEFT AS IT WAS, and shows as it always did. Every listing taken
  * before the numbers were kept is that case, so an archived knockout republishes unchanged. An
  * `officeLink` found already on the sidecar is dropped first: the link is set here, from the numbers, and
  * nowhere else.
  */
-export function addressListedFilings(doc) {
+export function addressListedFilings(doc, origins) {
   const records = (doc?.marks ?? []).flatMap((m) => m?.records ?? []).filter((r) => r && typeof r === "object");
   for (const r of records) delete r.officeLink;
-  if (!VENDORS_WITHOUT_RECORD_PAGES.includes(clean(doc?.provider).toLowerCase())) return null;
+  if (!publishesNoRecordPages(origins)) return null;
   const tally = { linked: {}, cited: {}, noNumber: 0 };
   for (const r of records) {
     const link = officeRecordLink(r, r.recordId);
