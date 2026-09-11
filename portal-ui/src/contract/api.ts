@@ -1415,6 +1415,11 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
         return { kind: 'featureOff', detail: asString(body['detail']) }
       return { kind: 'notFound' }
     case 409: {
+      // A STORE THAT CANNOT RECORD A SAVE is a refusal to read and act on, not a gate and not a clash. It
+      // decoded as a gate, which no create screen renders, so the New company page answered "Try again
+      // shortly" over a sentence naming the one fix, and trying again can never work.
+      const refused = refusalDetail(body)
+      if (refused?.code.startsWith('store_')) return { kind: 'reject', errors: errorsOf(body), detail: refused }
       // ── READ BOTH SPELLINGS (finding F14) ────────────────────────────────────────
       //
       // The server writes a refusal under `error` in most places and under `errors[]` in others, and

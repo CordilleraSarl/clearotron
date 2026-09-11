@@ -119,6 +119,30 @@ test('409 with neither spelling still says something, and says it once', async (
   assert.ok(msg.length > 0, 'a 409 with no refusal text rendered nothing at all')
 })
 
+test('a store that cannot record a company reaches the New company page as its own sentence, never "try again shortly"', async () => {
+  // The door refused with the one fix, and the page threw it away: a store refusal decoded as a gate, the
+  // New company page renders every kind but `reject` through a title that ends "Try again shortly", and
+  // trying again can never work on a store with no git identity.
+  const sentence = 'No company was created: the store at /srv/example/config has no git identity, so nothing saved '
+    + 'to it can be recorded — run `git -C /srv/example/config config user.email "you@example.com"`, then try again.'
+  const r = await withFetch(409, { error: sentence, code: 'store_no_identity' }, () => api.createCompany({ name: 'Acme' }))
+  assert.equal(r.kind, 'reject', 'a store refusal must decode to the kind the create page renders sentence by sentence')
+  assert.deepEqual(r.kind === 'reject' ? r.errors : null, [sentence], 'the fix sentence arrives whole')
+  assert.equal(r.kind === 'reject' ? r.detail?.code : null, 'store_no_identity')
+
+  // THE CONTROL: a 409 with no store code is still the gate it always was.
+  const gate = await withFetch(409, { error: 'the request changed after confirmation — review the plan again and re-confirm' },
+    () => api.createCompany({ name: 'Acme' }))
+  assert.equal(gate.kind, 'gate')
+
+  // AND THE PAGE RENDERS THAT KIND AS WRITTEN. This runner cannot mount a `.tsx` (see screenCopy.test.ts),
+  // so the two lines that carry it are read: a reject prints each sentence, and never reaches the
+  // title that tells the reader to try again.
+  const page = readFileSync(new URL('../src/screens/NewCompany.tsx', import.meta.url), 'utf8')
+  assert.match(page, /rejected\.map\(\(e, i\) => \(\s*<p key=\{i\}[^>]*>\{e\}<\/p>/, 'the reject branch no longer prints the sentences it was given')
+  assert.match(page, /result\.kind !== 'reject' \? result : null/, 'a reject must never fall through to the "Try again shortly" title')
+})
+
 test('a staff identity granted everything is not a client with no accounts', async () => {
   // The wire sends "*" — not a list, and not something to silently coerce to []. A sidebar that read
   // an empty array here would tell a Cordillera lawyer they have no companies.

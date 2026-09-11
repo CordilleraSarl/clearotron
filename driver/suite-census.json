@@ -747,6 +747,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-store-refusal-reaches-the-person-who-can-fix-it.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stored-territory-that-does-nothing-is-named.test.mjs": {
           "tests": 6,
           "asserts": 12,
@@ -5594,8 +5600,8 @@
       "ext": "ts",
       "perFile": {
         "api.test.ts": {
-          "tests": 43,
-          "asserts": 170,
+          "tests": 44,
+          "asserts": 176,
           "skips": 0,
           "todos": 0
         },
