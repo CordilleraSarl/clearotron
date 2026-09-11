@@ -14,7 +14,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSyn
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { relocationPlan, packagedUpdate, channelOf, stableInstallRoot, compareVersions, readDistTags, demoProgramPlan } from "../../shared/permanent-install.mjs";
+import { relocationPlan, packagedUpdate, channelOf, stableInstallRoot, compareVersions, readDistTags, demoProgramPlan, ensureDemoProgram, demoProgramEnv } from "../../shared/permanent-install.mjs";
+import { invocationPrefix } from "../../shared/invocation.mjs";
 import { installShim, inspectShim, shimPath, SHIM_MARKER } from "../../shared/verb-shim.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -195,9 +196,60 @@ test("a demo's services name the demo's own copy first, then the permanent insta
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("the demo lays its copy down before its services start, and its connect line names it", () => {
+test("the demo's copy is made only when missing, and a failed copy is said and never stops the demo", () => {
+  const plan = demoProgramPlan({ base: "/srv/op/trademark-demo", installDir: NPX, platform: "linux", version: "0.3.0-beta.6", exists: () => false });
+  const drive = ({ status = 0, stderr = "", laid = true, env = {}, p = plan } = {}) => {
+    const calls = [], said = [];
+    const root = ensureDemoProgram({ base: "/srv/op/trademark-demo", say: (l) => said.push(l), env, plan: p,
+      run: (cmd, args) => { calls.push([cmd, ...args]); return { status, stderr }; },
+      exists: (f) => f === "/srv/op/npm-cli.js" || (laid && f === join(plan.root, "mcp-server", "server.mjs")) });
+    return { root, calls, said };
+  };
+  // A current copy is used as it is: no npm, nothing said.
+  const current = drive({ p: { ...plan, current: true } });
+  assert.deepEqual([current.root, current.calls.length, current.said.length], [plan.root, 0, 0]);
+  // Nothing to copy: outside npx, or a layout that says why it cannot.
+  for (const p of [null, { skip: "windows" }]) assert.deepEqual(drive({ p }).root, null);
+  assert.equal(drive({ p: null }).calls.length, 0);
+  // A fresh copy through the npm that launched this, when npm names one, else `npm` itself.
+  const viaNpx = drive({ env: { npm_execpath: "/srv/op/npm-cli.js" } });
+  assert.equal(viaNpx.root, plan.root);
+  assert.deepEqual(viaNpx.calls, [[process.execPath, "/srv/op/npm-cli.js", ...plan.npmArgs]]);
+  assert.deepEqual(drive().calls, [["npm", ...plan.npmArgs]]);
+  // FAILURES ARE NULL AND SAID: npm refusing, and npm reporting success with no program laid down.
+  const refused = drive({ status: 1, stderr: "npm notice\nnetwork unreachable" });
+  assert.equal(refused.root, null);
+  assert.match(refused.said.join("\n"), /could not be copied \(network unreachable\)/);
+  assert.equal(drive({ laid: false }).root, null, "an npm exit 0 with no program on disk was taken as a copy");
+});
+
+test("services started from the demo's copy print commands that name the copy, not npm's cache", () => {
+  const prefix = "/srv/op/trademark-demo/program";
+  const root = join(prefix, "lib", "node_modules", "clearotron");
+  const npxEnv = { HOME: "/srv/op/nobody-home", PATH: "/usr/bin:/bin", npm_command: "exec", npm_lifecycle_event: "npx",
+    npm_execpath: "/srv/op/npm-cli.js", CLEAROTRON_INVOKED_AS: `${NPX}/../.bin/clearotron`, CLEAROTRON_DEMO: "1" };
+  const env = demoProgramEnv(npxEnv);
+  for (const k of ["npm_command", "npm_lifecycle_event", "npm_execpath", "CLEAROTRON_INVOKED_AS"]) assert.equal(env[k], undefined, `${k} reached the copy's services`);
+  assert.deepEqual([env.HOME, env.PATH, env.CLEAROTRON_DEMO], [npxEnv.HOME, npxEnv.PATH, "1"], "the rest of the environment must pass through");
+  assert.equal(npxEnv.npm_command, "exec", "the caller's environment was edited in place");
+  // npm puts the executable in `<prefix>/bin`, which is on nobody's PATH, so the command names it in full.
+  const io = { exists: (f) => f === join(prefix, "bin", "clearotron"), read: () => { throw new Error("no shim"); } };
+  assert.equal(invocationPrefix(join(root, "bin", "start.mjs"), env, io, root), `${prefix}/bin/`);
+  // THE CONTROL: the same services started from npx's cache print the cache's form, which a clean breaks.
+  const fromCache = invocationPrefix(join(NPX, "bin", "start.mjs"), npxEnv, io, NPX);
+  assert.match(fromCache, /_npx.*npx $/, "the control no longer prints npx's form; this arm is not measuring the move");
+});
+
+test("the demo starts its services from its copy, and a start --demo from npx still makes one", () => {
+  const example = readFileSync(join(ROOT, "bin", "example.mjs"), "utf8");
+  const copy = example.indexOf("const programRoot = ensureDemoProgram({ base: demoBase");
+  const spawnAt = example.indexOf("const child = spawn(process.execPath, [join(startFrom, \"bin\", \"start.mjs\"), ...startArgs]");
+  assert.ok(copy > 0 && copy < spawnAt, "the services are started before the copy is made, so they run from npm's cache");
+  assert.match(example.slice(spawnAt), /^const child = spawn\([^;]*cwd: startFrom,[^;]*env: programRoot \? demoProgramEnv\(process\.env\) : process\.env,/,
+    "the services started from the copy keep npm's npx marks, or run in the cache's directory");
+  assert.equal(example.match(/spawn\(process\.execPath/g).length, 1, "a second start of the services bypasses the copy");
   const start = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
-  const plan = start.indexOf("const plan = demoProgramPlan({ base: paths.base });");
+  const plan = start.indexOf("const demoProgramRoot = DEMO ? ensureDemoProgram({ base: paths.base, say }) : null;");
   const spawnEnv = start.indexOf("const envs = childEnv({ ports, paths, user");
   assert.ok(plan > 0 && plan < spawnEnv, "the copy is made after the services' environment is composed, so the portal names the cache");
   assert.match(start, /stdioConnectOffer\(\{ workDir: paths\.workspace, reportsDir: paths\.pool, \.\.\.\(demoProgramRoot \? \{ installRoot: demoProgramRoot \} : \{\}\) \}\)/,

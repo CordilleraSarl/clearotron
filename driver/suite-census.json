@@ -970,9 +970,9 @@
           "todos": 0
         },
         "an-install-from-npx-moves-out-of-the-cache.test.mjs": {
-          "tests": 11,
-          "asserts": 61,
-          "skips": 6,
+          "tests": 13,
+          "asserts": 78,
+          "skips": 7,
           "todos": 0
         },
         "an-mcp-route-says-which-challenge-it-answers-with.test.mjs": {

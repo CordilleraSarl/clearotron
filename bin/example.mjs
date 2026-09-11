@@ -47,6 +47,7 @@ import { spawn } from "node:child_process";
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { isFrozen, demoChildren, publishSource } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
+import { ensureDemoProgram, demoProgramEnv } from "../shared/permanent-install.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -369,8 +370,19 @@ console.log(`  Removing this demo later is one directory:  ${removeDirectory(dem
 strayFromAnOlderDemo();
 console.log("");
 
-const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), ...startArgs], {
-  cwd: REPO, stdio: ["ignore", "inherit", "inherit"],
+// ── RUN FROM NPX, THE SERVICES RUN FROM THE DEMO'S OWN COPY ─────────────────────────────────────────
+//
+// Started from npm's cache, the supervisor printed every command it gives the reader as `cd <npm's cache>
+// && npx clearotron …`: the passphrase reset, the key, the free-port hint, `start --background`. Each one
+// failed once npm cleaned that cache (measured on a published beta, 2026-09-11). So the copy the demo
+// keeps in `<base>/program` is laid down first and the supervisor is started from it, which also puts the
+// portal and the doors on a program that outlives the cache. Everywhere else, and when the copy cannot be
+// made, it starts from here as before.
+const programRoot = ensureDemoProgram({ base: demoBase, say: (line) => console.log(line) });
+const startFrom = programRoot ?? REPO;
+const child = spawn(process.execPath, [join(startFrom, "bin", "start.mjs"), ...startArgs], {
+  cwd: startFrom, stdio: ["ignore", "inherit", "inherit"],
+  env: programRoot ? demoProgramEnv(process.env) : process.env,
 });
 child.on("error", (e) => die(`demo: could not start the portal: ${String(e?.message ?? e)}`));
 // Its exit code is the demo's. A supervisor that swallowed a child's refusal would report a demo that
