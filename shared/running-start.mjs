@@ -17,10 +17,16 @@ import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-/** Where the records live: per user, under the XDG state directory, one file per serving process. */
-export function runningDir({ env = process.env, home = homedir() } = {}) {
-  const state = String(env.XDG_STATE_HOME ?? "").trim() || join(home, ".local", "state");
-  return join(state, "clearotron", "running");
+/**
+ * Where the records live: one file per serving process, beside the settings and the revocation list.
+ *
+ * `~/.config/clearotron` is this product's per-user directory and the only one it reads. An XDG state
+ * directory would be the tidier home for this, and it would be a NEW environment variable read by product
+ * code — a thing this repo documents in two contract files and classifies in another repo. Not worth a
+ * paired change for a file the reader never opens.
+ */
+export function runningDir({ home = homedir() } = {}) {
+  return join(home, ".config", "clearotron", "running");
 }
 
 /** Is this process alive? EPERM means it exists and belongs to somebody else, which is alive. */

@@ -26,8 +26,7 @@ const deadPid = () => spawnSync(process.execPath, ["-e", "process.stdout.write(S
 
 function home() {
   const h = mkdtempSync(join(tmpdir(), "fg-home-"));
-  return { h, env: { PATH: process.env.PATH, HOME: h, XDG_STATE_HOME: join(h, "state"), CLEAROTRON_NO_ENV_FILE: "1" },
-    dir: runningDir({ env: { XDG_STATE_HOME: join(h, "state") } }) };
+  return { h, env: { PATH: process.env.PATH, HOME: h, CLEAROTRON_NO_ENV_FILE: "1" }, dir: runningDir({ home: h }) };
 }
 const rec = (pid, url) => ({ pid, demo: false, base: "/b", url, host: "127.0.0.1",
   ports: { portal: 1, mcp: 18790, client: 18811 }, startedAt: new Date().toISOString() });
