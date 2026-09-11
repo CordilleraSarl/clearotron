@@ -66,6 +66,9 @@ const ROUTES = {
   '/portal/api/me': { permissions: { run: true, manage: false }, email: 'demo@example.test', accounts: ['coastline'], allAccounts: false,
     access: [{ kind: 'company', key: 'coastline', name: 'Coastline', org: 'coastline-org' }], organisations: [{ key: 'coastline-org', name: 'Coastline' }],
     accountOrgs: { coastline: 'coastline-org' } },
+  // The roster, for the notice states whose reader sees everything: that reader takes their company from
+  // it, and with one company in it the composer opens on that company without asking.
+  '/portal/admin/roster': { customers: [{ key: 'coastline', name: 'Coastline' }] },
   // ── the engine states, driven in phase two ────────────────────────────────────────────────────────
   //
   // The composer above is measured on a working install, which is the state that renders no notice at
@@ -854,8 +857,10 @@ const NOTICE_STATES = [
     me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: false, permissions: { run: true, manage: false } },
     says: /install a reasoning CLI/, alsoSays: /npx clearotron install/, andSays: /restart the service/i,
     link: false },
+  // "Staff" is a reader who sees everything, said the way /me says it (`accounts: "*"`): Global config is
+  // served to them and to no one else, so the link is offered on that fact and not on Manage.
   { name: 'no engine program, source checkout, staff',
-    me: { engineMode: 'demo', setupRoute: 'checkout', engineProgramDisputed: false, permissions: { run: true, manage: true } },
+    me: { engineMode: 'demo', setupRoute: 'checkout', engineProgramDisputed: false, permissions: { run: true, manage: true }, accounts: '*' },
     says: /install a reasoning CLI/, alsoSays: /npm run setup/, andSays: /restart the service/i,
     link: true },
   { name: 'the program is here and the engine cannot see it, client',
@@ -863,7 +868,7 @@ const NOTICE_STATES = [
     says: /could not find it when it last started/, alsoSays: /Restart the engine service/,
     andSays: /will not change this/, link: false },
   { name: 'the program is here and the engine cannot see it, staff',
-    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, permissions: { run: true, manage: true } },
+    me: { engineMode: 'demo', setupRoute: 'packaged', engineProgramDisputed: true, permissions: { run: true, manage: true }, accounts: '*' },
     says: /could not find it when it last started/, alsoSays: /Restart the engine service/,
     andSays: /will not change this/, link: true },
 ]
