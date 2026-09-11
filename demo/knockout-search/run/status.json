@@ -33,7 +33,7 @@
   "stepN": 6,
   "stepTotal": 6,
   "verdict": "Low",
-  "url": "https://test-trademark.cordillera.ch/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/report.html",
+  "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/",
   "failedStage": null,
   "reason": null,
   "deliveredAt": "2026-09-02T21:46:53.238Z",
@@ -254,7 +254,7 @@
   "reports": [
     {
       "mark": "VENQORI",
-      "url": "https://test-trademark.cordillera.ch/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/report.html"
+      "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-02-sample-capture/"
     }
   ],
   "sendPending": true,

@@ -36,7 +36,7 @@ function brandUnder(env) {
 }
 
 test("AN INSTALLATION NOBODY BRANDED NAMES NO ORGANISATION", () => {
-  const { product, organisation } = brandUnder({ CLEAROTRON_BRAND_NAME: undefined });
+  const { product, organisation } = brandUnder({ CLEAROTRON_BRAND_NAME: undefined, CLEAROTRON_ORGANISATION_NAME: undefined });
 
   // THE CONTROL, FIRST. If the module did not evaluate, or the env reached it in some other shape, both
   // values come back empty and the assertion below passes while measuring nothing.
@@ -48,17 +48,50 @@ test("AN INSTALLATION NOBODY BRANDED NAMES NO ORGANISATION", () => {
 });
 
 test("AN INSTALLATION THAT NAMES ITS OPERATOR GETS THAT NAME, not the product's", () => {
-  // The other direction. A seam hard-wired to null would satisfy the arm above and brand nothing.
-  const { product, organisation } = brandUnder({ CLEAROTRON_BRAND_NAME: "Tolliver & Quillon" });
+  // The other direction. A seam hard-wired to null would satisfy the arm above and brand nothing. The name
+  // comes from the setting setup writes, and the product keeps its own name.
+  const { product, organisation } = brandUnder({ CLEAROTRON_BRAND_NAME: undefined, CLEAROTRON_ORGANISATION_NAME: "Tolliver & Quillon" });
   assert.equal(organisation, "Tolliver & Quillon");
-  assert.equal(product, "Tolliver & Quillon",
-    "the product name follows the same variable — the two differ on absence, not on presence");
+  assert.equal(product, "Clearotron", "naming the organisation renamed the product");
+});
+
+test("A BRAND ALONE NAMES NO ORGANISATION", () => {
+  // THE DEFECT, measured on a published beta (2026-09-11): the organisation was read from the brand
+  // variable, so setup's organisation was never named, and an operator who set the brand to reach it got
+  // "This is Acme's Acme portal" with the title and logo renamed too. The brand renames the product only.
+  const { product, organisation } = brandUnder({ CLEAROTRON_BRAND_NAME: "Tolliver & Quillon", CLEAROTRON_ORGANISATION_NAME: undefined });
+  assert.equal(product, "Tolliver & Quillon");
+  assert.equal(organisation, null, "the product's brand was read as the organisation running the install");
+});
+
+test("A DEMO'S PORTAL IS HANDED NO ORGANISATION, whatever the reader's shell exports", async () => {
+  // The portal names the organisation from its environment, and a demo is not the reader's organisation:
+  // an exported value is their real one. A child is spawned with the shell's environment under its own
+  // block, so the portal's block has to say "none" rather than say nothing.
+  const { childEnv, installPaths } = await import("../../bin/start.mjs");
+  const saved = process.env.CLEAROTRON_ORGANISATION_NAME;
+  process.env.CLEAROTRON_ORGANISATION_NAME = "The Reader's Real Firm";
+  try {
+    const args = { ports: { portal: 28802, mcp: 28790, client: 28791 }, paths: installPaths("/srv/op/trademark-demo"), user: "demo@localhost",
+      portalSecret: "s", tokenSecret: "t", opsToken: "o" };
+    const demo = childEnv({ ...args, demo: true });
+    const live = childEnv({ ...args, demo: false });
+    assert.ok(demo.portal && live.portal, "childEnv handed no portal environment, so this arm would check nothing");
+    assert.equal(demo.portal.CLEAROTRON_ORGANISATION_NAME, "", "the demo's portal was left to take the reader's organisation from the shell");
+    // THE CONTROL: outside a demo the setting is not blanked by this, so a real install can name itself.
+    assert.notEqual(live.portal.CLEAROTRON_ORGANISATION_NAME, "", "a real install's portal was handed an empty organisation");
+    // AND ONLY THE PORTAL: the doors name no organisation, and a demo leaves them as a live install's.
+    for (const door of ["mcp", "worker", "client"])
+      assert.equal(demo[door].CLEAROTRON_ORGANISATION_NAME, live[door].CLEAROTRON_ORGANISATION_NAME, `the demo changed the ${door}'s organisation`);
+  } finally {
+    if (saved === undefined) delete process.env.CLEAROTRON_ORGANISATION_NAME; else process.env.CLEAROTRON_ORGANISATION_NAME = saved;
+  }
 });
 
 test("SURROUNDING WHITESPACE IS NOT AN ORGANISATION", () => {
-  // An env file written as `CLEAROTRON_BRAND_NAME= ` is the commonest way to mean "unset", and a bare
-  // truthiness check renders a blank name beside a label that promises one.
-  assert.equal(brandUnder({ CLEAROTRON_BRAND_NAME: "   " }).organisation, null);
+  // An env file written as `CLEAROTRON_ORGANISATION_NAME= ` is the commonest way to mean "unset", and a
+  // bare truthiness check renders a blank name beside a label that promises one.
+  assert.equal(brandUnder({ CLEAROTRON_ORGANISATION_NAME: "   " }).organisation, null);
 });
 
 test("THE WIRE SENDS THE ORGANISATION, and has no path back to the product name", () => {

@@ -23,7 +23,7 @@
 // stage apart. This module is the single answer. `cut/` cannot import it (that directory does not travel
 // and this one does), so the pack gate restates the disjunction and its own test pins the two together.
 
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 
@@ -89,9 +89,17 @@ export function publishSource(dir, { repoRoot, tmp = tmpdir() } = {}) {
  * anywhere else, so a real install started afterwards sees none of it (the demo is its own install).
  *
  * Copied, never linked: a connector reading a run may write beside it, and `demo/` is tracked. A run
- * already in place is left alone, so a visitor's second start changes nothing.
+ * already in place is not copied again, so a visitor's second start changes nothing but its links.
+ *
+ * ITS REPORT LINKS POINT AT THIS DEMO'S PORTAL. Each sample's `status.json` carried the report URL it was
+ * stamped with where it was captured, a test instance's address, and the connector hands a run's `url` to
+ * the assistant as-is, so an assistant asked to open a demo report sent the person to that host (measured
+ * on a published beta, 2026-09-11). The tracked samples now carry the portal's own route,
+ * `/portal/report/<runId>/`, with no host, and each copy here is stamped with `portalOrigin`, the demo
+ * portal's address. Stamped on EVERY start, the copies already in place included: `--port` moves the
+ * portal, and a copy laid down by an earlier version still carries the old host.
  */
-export function seedDemoRuns({ workspace, examplesDir }) {
+export function seedDemoRuns({ workspace, examplesDir, portalOrigin = null }) {
   const seeded = [], already = [];
   for (const name of demoChildren(examplesDir)) {
     const run = join(examplesDir, name, "run");
@@ -99,10 +107,37 @@ export function seedDemoRuns({ workspace, examplesDir }) {
     try { s = JSON.parse(readFileSync(join(run, "status.json"), "utf8")); } catch { continue; }
     if (!s?.slug || !s?.codename || !s?.date) continue;
     const dir = join(workspace, `workspace-${s.agent || "clawdi"}`, "studio", "prelim-search", s.slug, `${s.date}-${s.codename}`);
-    if (existsSync(join(dir, "status.json"))) { already.push(s.runId); continue; }
-    mkdirSync(dirname(dir), { recursive: true });
-    cpSync(run, dir, { recursive: true });
-    seeded.push(s.runId);
+    if (existsSync(join(dir, "status.json"))) already.push(s.runId);
+    else {
+      mkdirSync(dirname(dir), { recursive: true });
+      cpSync(run, dir, { recursive: true });
+      seeded.push(s.runId);
+    }
+    if (portalOrigin) stampReportLinks(join(dir, "status.json"), portalOrigin);
   }
   return { seeded, already };
+}
+
+/** The portal route that serves a run's report: the one `scanAccountRuns` hands the portal's own list. */
+export const reportRoute = (runId) => `/portal/report/${encodeURIComponent(runId)}/`;
+
+/**
+ * Point a seeded run's report links at `origin`. A link already on the portal's route keeps its path; any
+ * other (the host an older sample carried) becomes the run's own route. Written only when something moved.
+ */
+export function stampReportLinks(statusFile, origin) {
+  let s;
+  try { s = JSON.parse(readFileSync(statusFile, "utf8")); } catch { return false; }
+  if (!s?.runId) return false;
+  const base = String(origin).replace(/\/+$/, "");
+  const local = (url) => {
+    const path = String(url ?? "").replace(/^https?:\/\/[^/]+/, "");
+    return `${base}${path.startsWith("/portal/report/") ? path : reportRoute(s.runId)}`;
+  };
+  const next = { ...s, url: local(s.url) };
+  if (Array.isArray(s.reports)) next.reports = s.reports.map((r) => (r && typeof r === "object" ? { ...r, url: local(r.url) } : r));
+  const text = `${JSON.stringify(next, null, 2)}\n`;
+  if (text === `${JSON.stringify(s, null, 2)}\n`) return false;
+  writeFileSync(statusFile, text);
+  return true;
 }

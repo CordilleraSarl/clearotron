@@ -111,6 +111,7 @@ async function runTables() {
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal } from "../shared/store-in-repo.mjs";   //
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
+import { demoProgramPlan } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
 import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
@@ -756,6 +757,10 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       // already wrong for a process that is not the portal.
       ...(demo ? {
         CLEAROTRON_DEMO: "1",
+        // A DEMO NAMES NO ORGANISATION. The portal reads this to name the one running the install, on its
+        // top bar and its sign-in refusal page, and an exported value is the reader's real organisation.
+        // The portal's alone: no door names an organisation, and the doors stay as a live install's.
+        CLEAROTRON_ORGANISATION_NAME: "",
         // AND THE SIGN-IN CREDENTIAL LIVES IN THE DEMO'S OWN BASE. Without this it defaults to
         // ~/.cordillera/portal-local-credential.json — shared with every install on the box — and the
         // demo then inherits a digest minted for somebody else's address: the portal prints "the
@@ -1389,8 +1394,9 @@ if (isMain) {
     const { publishSource, seedDemoRuns } = await import("../driver/demo-container.mjs");
     const seed = await seedPool({ pool: paths.pool, examplesDir: publishSource(join(REPO, "demo"), { repoRoot: REPO }), republish: republishRun });
     // AND AS RUNS, so the assistant this demo's connect line wires has them to list, brief and open. Under
-    // the demo's own workspace only: nothing of it reaches an install started afterwards.
-    const runs = seedDemoRuns({ workspace: paths.workspace, examplesDir: join(REPO, "demo") });
+    // the demo's own workspace only: nothing of it reaches an install started afterwards. Their report
+    // links are stamped with this portal's address, the one the Open line prints.
+    const runs = seedDemoRuns({ workspace: paths.workspace, examplesDir: join(REPO, "demo"), portalOrigin: `http://${HOST}:${ports.portal}` });
     if (runs.seeded.length) say(`  runs           ${runs.seeded.length} sample run(s) your assistant can list, brief and open`);
     // WHAT WAS ALREADY THERE IS SAID TOO. This branch used to run only when the pool
     // was empty; it now tops a stale pool up to the package's set, so "seeded 1" on an upgrade is a fact
@@ -1451,6 +1457,33 @@ if (isMain) {
   // the file the verb resets is the file the portal reads. A demo keeps its own, by layout (childEnv).
   const { installCredential } = await import("../driver/portal-local-auth.mjs");
   const signIn = DEMO ? null : installCredential({ base: paths.base, env: process.env, firstStart: firstStartOfThisInstall });
+  // ── A DEMO RUN FROM NPX KEEPS ITS OWN COPY OF THE PROGRAM ───────────────────────────────────────────
+  //
+  // Its connect line launched the connector from npm's cache, which npm deletes when it cleans up, so an
+  // assistant registered with it lost the demo without a word (measured on a published beta, 2026-09-11).
+  // The same version goes into `<base>/program` (shared/permanent-install.mjs), BEFORE the services start
+  // so the portal's connect rows name it too, and only when it is not there already. It never stops the
+  // demo: if npm fails, the demo runs as before and says the line will not survive a cache clean.
+  let demoProgramRoot = null;
+  if (DEMO) {
+    const plan = demoProgramPlan({ base: paths.base });
+    if (plan?.current) demoProgramRoot = plan.root;
+    else if (plan && !plan.skip) {
+      say(`  program        copying clearotron ${plan.version} into ${plan.prefix}, so your assistant's connection survives npm cleaning its cache`);
+      // The npm that launched this, when npm says which: no second npm is guessed at.
+      const npmCli = process.env.npm_execpath;
+      const r = npmCli && existsSync(npmCli)
+        ? spawnSync(process.execPath, [npmCli, ...plan.npmArgs], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", timeout: 180_000 })
+        : spawnSync("npm", plan.npmArgs, { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", timeout: 180_000 });
+      if (r.status === 0 && existsSync(join(plan.root, "mcp-server", "server.mjs"))) demoProgramRoot = plan.root;
+      else {
+        const why = r.error ? r.error.message : String(r.stderr ?? "").trim().split("\n").pop() || `npm exited ${r.status}`;
+        say(`  program        could not be copied (${why}). The connect line below runs from npm's temporary cache,`);
+        say("                 so it stops working when npm cleans that cache; start the demo again to retry.");
+      }
+    }
+  }
+
   const envs = childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken,
     localWorker: wantWorker, demo: DEMO, clientFence: declaredFence || null,
     credential: signIn && signIn.source !== "shared" ? signIn.path : null });
@@ -2233,7 +2266,8 @@ if (isMain) {
   // and a line of instruction with more than one author drifts silently.
   // THE WORKSPACE AND POOL THE SERVICES WERE HANDED, not this process's environment: a demo reads no env
   // file, so its own line named no workspace and the connector fell back to the real install's.
-  const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool });
+  // A demo run from npx names its own copy of the program, which a cache clean does not remove.
+  const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool, ...(demoProgramRoot ? { installRoot: demoProgramRoot } : {}) });
   say("  Connect your assistant to this install — one line, no address and no sign-in:");
   say("");
   say(`    ${connect.command}`);

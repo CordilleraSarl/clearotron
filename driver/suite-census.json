@@ -970,9 +970,9 @@
           "todos": 0
         },
         "an-install-from-npx-moves-out-of-the-cache.test.mjs": {
-          "tests": 8,
-          "asserts": 45,
-          "skips": 4,
+          "tests": 11,
+          "asserts": 61,
+          "skips": 6,
           "todos": 0
         },
         "an-mcp-route-says-which-challenge-it-answers-with.test.mjs": {
@@ -2745,6 +2745,12 @@
           "skips": 0,
           "todos": 0
         },
+        "no-internal-hostname-ships-in-the-package.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "no-nul-bytes.test.mjs": {
           "tests": 3,
           "asserts": 7,
@@ -4408,8 +4414,8 @@
           "todos": 0
         },
         "the-bar-names-no-organisation-nobody-named.test.mjs": {
-          "tests": 4,
-          "asserts": 7,
+          "tests": 6,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -4500,6 +4506,12 @@
         "the-demo-is-its-own-install.test.mjs": {
           "tests": 8,
           "asserts": 61,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-demo-links-its-reports-to-its-own-portal.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },

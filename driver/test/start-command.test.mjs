@@ -540,8 +540,9 @@ test("the demo posture reaches the portal and changes nothing about either door"
     "the worker learned it is a demo — it has no message to re-aim and no reader to protect");
   // A CLOSED LIST, and the arm fails on anything outside it. Writing it as "everything except
   // PORTAL_DEMO" let the second difference in silently when it arrived; the credential path below is a
-  // deliberate difference and is named here, so the NEXT one has to be named too.
-  const DEMO_ONLY = ["CLEAROTRON_DEMO", "PORTAL_LOCAL_CREDENTIAL", ...Object.keys(DEMO_STORE)];
+  // deliberate difference and is named here, so the NEXT one has to be named too. So is the organisation,
+  // handed empty: the portal names the organisation running the install, and a demo is not the reader's.
+  const DEMO_ONLY = ["CLEAROTRON_DEMO", "PORTAL_LOCAL_CREDENTIAL", "CLEAROTRON_ORGANISATION_NAME", ...Object.keys(DEMO_STORE)];
   const surplus = Object.keys(demo.portal).filter((k) => !(k in live.portal) && !DEMO_ONLY.includes(k));
   assert.deepEqual(surplus, [], `a demo added portal keys nobody declared: ${surplus.join(", ")}`);
   for (const [k, v] of Object.entries(live.portal))

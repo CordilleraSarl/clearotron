@@ -161,7 +161,43 @@ export function packagedUpdate({ installDir = INSTALL_DIR, version = ownVersion(
  */
 export function stableInstallRoot({ installRoot = INSTALL_DIR, env = process.env, exists = existsSync } = {}) {
   if (!inNpxCache(installRoot)) return installRoot;
+  const has = (root) => !!root && exists(join(root, "mcp-server", "server.mjs"));
+  // A DEMO'S OWN COPY FIRST: it is this version, and it lives inside the demo's base. The demo's children
+  // are handed `CLEAROTRON_DEMO=1` and their workspace, `<base>/workspace`, which is how they find it.
+  const work = String(env?.CLEAROTRON_WORK_DIR ?? "").trim();
+  const demoRoot = env?.CLEAROTRON_DEMO === "1" && work ? packageRootUnder(demoProgramPrefix(dirname(work))) : null;
+  if (has(demoRoot)) return demoRoot;
   const prefix = permanentPrefix(env);
   const root = prefix ? packageRootUnder(prefix) : null;
-  return root && exists(join(root, "mcp-server", "server.mjs")) ? root : installRoot;
+  return has(root) ? root : installRoot;
+}
+
+/**
+ * WHERE A DEMO RUN FROM NPX KEEPS ITS OWN COPY OF THE PROGRAM: inside the demo's base, never `~/.local`.
+ *
+ * `npx clearotron demo` ran from npm's cache like `install` did, so the connect line it printed launched
+ * the connector from `_npx/<hash>/`, which npm deletes when it cleans up (measured on a published beta,
+ * 2026-09-11). The install's answer, a copy under `~/.local`, would leave a trace of the demo outside the
+ * demo's directory; this copy lives in `<base>/program`, so removing the demo is still one directory.
+ */
+export function demoProgramPrefix(base) {
+  return join(base, "program");
+}
+
+/**
+ * What `demo` does about its program. PURE given its inputs. `null` outside npx's cache; `{ skip }` on
+ * Windows, where npm's global layout differs, or with an unreadable version; otherwise a plan whose
+ * `current` says the copy is already this version, so a second start runs no npm at all.
+ */
+export function demoProgramPlan({ base, installDir = INSTALL_DIR, platform = process.platform, version = ownVersion(installDir), exists = existsSync, read = readFileSync } = {}) {
+  if (!inNpxCache(installDir)) return null;
+  if (platform === "win32") return { skip: "windows" };
+  if (!version) return { skip: "no-version" };
+  const prefix = demoProgramPrefix(base);
+  const root = packageRootUnder(prefix);
+  const current = exists(join(root, "mcp-server", "server.mjs")) && ownVersion(root, read) === version;
+  return {
+    prefix, root, version, current,
+    npmArgs: ["install", "--global", "--prefix", prefix, "--prefer-offline", "--no-fund", "--no-audit", `clearotron@${version}`],
+  };
 }
