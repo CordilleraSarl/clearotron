@@ -2026,8 +2026,8 @@
           "todos": 0
         },
         "engine.anthropic.test.mjs": {
-          "tests": 60,
-          "asserts": 215,
+          "tests": 61,
+          "asserts": 222,
           "skips": 0,
           "todos": 0
         },
