@@ -922,12 +922,19 @@ their own integration work.
 **Two shapes, and the line between them is what your assistant can do — not where it runs.** Ruling
 2026-09-03, on the vendor's own documented behaviour:
 
-1. **An assistant that can launch a local process** — Claude Code, Claude Desktop's local config,
-   Codex CLI, an agent that runs commands. It spawns the server over stdio. No address, no key, no
-   network, no ingress. `npx clearotron start` prints the one line to paste, and `npx clearotron
-   connect` hands it over per assistant.
-2. **Everything else, wherever it appears to run** — Cowork, ChatGPT, claude.ai, Perplexity, the mobile
-   apps. These need **a publicly reachable HTTPS address**, plus a key. Always.
+1. **Clearotron is installed on the machine the assistant runs on** — Claude's desktop app, Claude Code,
+   Codex, the ChatGPT desktop app, an agent that runs commands. The assistant spawns the server over
+   stdio. No address, no key, no network, no ingress. `npx clearotron start` prints the one line to
+   paste, and `npx clearotron connect --where here` hands it over per assistant.
+2. **Clearotron is running somewhere else** — a server, a cloud machine, anywhere the assistant is
+   not. These need **a publicly reachable HTTPS address**, plus a key made for the person connecting.
+   Always. Claude (app, web, Cowork and mobile), ChatGPT on the web, Perplexity and other agents only
+   ever connect this way; Claude Code and Codex can connect either way. `npx clearotron connect
+   --where elsewhere` makes the key and prints the steps for the assistant you name.
+
+Without `--where`, `connect` asks when both answers are possible, and `--client <name>` on its own keeps
+the answer that assistant had before: a key for Claude, the local line for Claude Code and Codex.
+`npx clearotron disconnect` takes the same `--where`.
 
 **A loopback address is never an answer for shape 2, and that is not about your network.** A remote MCP
 connector is reached **from the vendor's cloud**, never from the reader's device. Anthropic's own help
