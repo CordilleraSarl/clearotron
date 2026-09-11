@@ -4,6 +4,16 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0-beta.8
+
+### Fixed
+
+- Commands the install, start and the New company screen print now run as printed, from any directory and after npm cleans its cache.
+- A demo started with npx prints commands that keep working after npm cleans its cache.
+- Doctor, run before the first start, describes the local sign-in that start brings up, and drops checkout-only warnings on a packaged install.
+- The package no longer names the hosted service's own hostnames; a deployment names its own.
+- The README installs with `npx clearotron install`, which needs no root, and no longer says the demo opens a browser.
+
 ## 0.3.0-beta.7
 
 ### Fixed

@@ -1,5 +1,15 @@
 # clearotron-driver
 
+## 0.3.0-beta.8
+
+### Patch Changes
+
+- 9181d6a: Fixed: Commands the install, start and the New company screen print now run as printed, from any directory and after npm cleans its cache.
+- 0d75b4a: Fixed: A demo started with npx prints commands that keep working after npm cleans its cache.
+- 9181d6a: Fixed: Doctor, run before the first start, describes the local sign-in that start brings up, and drops checkout-only warnings on a packaged install.
+- 91888b2: Fixed: The package no longer names the hosted service's own hostnames; a deployment names its own.
+- 9181d6a: Fixed: The README installs with `npx clearotron install`, which needs no root, and no longer says the demo opens a browser.
+
 ## 0.3.0-beta.7
 
 ### Patch Changes
