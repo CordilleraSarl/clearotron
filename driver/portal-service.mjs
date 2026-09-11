@@ -38,10 +38,9 @@ import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStoreRepoRoot, makeStoreCommit } from "../shared/store-in-repo.mjs";   //,
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
-import { bareInvocation, invocationPrefix, installRoute } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
+import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { isWsl } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run
-import { inNpxCache, ownVersion } from "../shared/permanent-install.mjs";   // — a demo from npx is reset through npx
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 
 /**
@@ -1534,6 +1533,10 @@ export function makePortalService({
           // half its readers. A WORD, never a command line and never a prefix: `invocationForm` can
           // answer with this machine's absolute path, and this value is rendered in a browser.
           setupRoute: installRoute(),
+          // THE COMMAND THAT FILES AN ORGANISATION, for the screen that cannot create a company without one.
+          // `browserCommand`'s rule: no path on this machine, and from npx's cache the published version
+          // rather than a bare name that reader does not have.
+          organisationCommand: browserCommand('start --organisation "<name>"'),
           // — a button that always fails must not render as available. The reason is
           // operator-shaped and staff-only; a client reads the generic sentence the button carries.
           controls: { stop: { available: stopControl.available !== false,
@@ -4838,7 +4841,7 @@ const PORT = PORT_CHOICE.port;
       attempts: makeAttemptLimiter({ max: 10, windowMs: 5 * 60 * 1000 }),
       // The sign-in page's recovery line. It resets the file this portal reads, and names no path on this
       // machine, because the page is read before anyone has signed in (signInResetCommand says how).
-      resetCommand: signInResetCommand({ credentialPath, npxVersion: inNpxCache() ? ownVersion() : null }),
+      resetCommand: signInResetCommand({ credentialPath, npxVersion: npxVersionOf() }),
     };
   })();
 

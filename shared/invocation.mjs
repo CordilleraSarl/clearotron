@@ -36,8 +36,8 @@
 // below is not a resolver check: the shim is read and must NAME THIS INSTALL, and a `clearotron` found
 // earlier on PATH demotes the bare form rather than confirming it. Identity, not availability. A later
 // sweep tempted to simplify this into `command -v` would be reintroducing the defect, not tidying it.
-import { existsSync } from "node:fs";
-import { basename, sep } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { basename, join, sep } from "node:path";
 import { INSTALL_DIR, inspectShim, pathPosition, shimDir, shimPath } from "./verb-shim.mjs";
 import { chdirPrefix } from "./os-advice.mjs";
 
@@ -272,6 +272,25 @@ export function invocationPrefix(argv1 = process.argv[1] ?? "", env = process.en
 export const invoke = (verb, argv1 = process.argv[1] ?? "", env = process.env, io = FS, installDir = INSTALL_DIR) =>
   `${invocationPrefix(argv1, env, io, installDir)}clearotron ${verb}`;
 
+/** This install's version when it runs from npx's cache, read off its own manifest; `null` anywhere else. */
+export function npxVersionOf(installDir = INSTALL_DIR, read = readFileSync) {
+  if (!/[\\/]_npx[\\/]/.test(String(installDir ?? ""))) return null;
+  try { return JSON.parse(read(join(installDir, "package.json"), "utf8")).version ?? null; } catch { return null; }
+}
+
+/**
+ * A command the reader can type from any directory that still runs after npm cleans its cache.
+ *
+ * `invoke` answers how this install is reached NOW. From npx's cache that is `cd <the cache> && npx
+ * clearotron …`, which stops working once npm cleans the cache, and a remedy is typed later, often after
+ * that. So from npx's cache this names the published version, `npx clearotron@<version> …`, which npm
+ * fetches again wherever it is typed. Everywhere else it is `invoke`'s answer.
+ */
+export function reachableCommand(verb, { argv1 = process.argv[1] ?? "", env = process.env, io = FS, installDir = INSTALL_DIR, read = readFileSync } = {}) {
+  const version = npxVersionOf(installDir, read);
+  return version ? `npx clearotron@${version} ${verb}` : invoke(verb, argv1, env, io, installDir);
+}
+
 /**
  * The verb by NAME ONLY — no prefix, no path, no `npx`.
  *
@@ -291,6 +310,16 @@ export const invoke = (verb, argv1 = process.argv[1] ?? "", env = process.env, i
  * and for somebody who already has it, names the exact runnable form.
  */
 export const bareInvocation = (verb) => `clearotron ${verb}`;
+
+/**
+ * A command for a page rendered in a browser: `bareInvocation`'s rule, never a path on this machine, with
+ * one exception. Run from npx's cache the bare name is one the reader does not have, so the published
+ * version is named instead, `npx clearotron@<version> …`, which runs anywhere and names no path.
+ */
+export const browserCommand = (verb, installDir = INSTALL_DIR, read = readFileSync) => {
+  const version = npxVersionOf(installDir, read);
+  return version ? `npx clearotron@${version} ${verb}` : bareInvocation(verb);
+};
 
 /**
  * Refuse a prompt when there is nobody to answer it.

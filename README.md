@@ -19,33 +19,41 @@ no gateway, no platform, and nothing about your matters reaches us.
 
 ## Install
 
-**See it work first, with nothing checked out.**
+**See it work first, with nothing installed.**
 
 ```bash
 npx clearotron demo
 ```
 
-That fetches the published package — it will ask once before downloading — then replays a finished
-clearance into a local pool and opens the report in your browser. No account, no credentials, no network
-calls to us.
+That fetches the published package — it will ask once before downloading — then replays finished
+clearances into a local portal and prints the portal's address and the passphrase to sign in with. Open
+the address in your browser. No account, no credentials, no network calls to us.
 
 **Then install it.**
 
 ```bash
-npm install -g clearotron
+npx clearotron install
 ```
 
-Node 22.13 or newer, on macOS or Linux. That puts `clearotron` on your `PATH`; every command below
-works in that short form. **On Windows the demo above runs natively; a real clearance needs WSL2.**
-Native Windows clearances are planned for a later release. Until then the engine does not run on native
-Windows: it resolves the reasoning CLI the POSIX way, and a clearance started there refuses at preflight.
+Node 22.13 or newer, on macOS or Linux. It needs no root: it puts the program under `~/.local`, with the
+`clearotron` command in `~/.local/bin`, then asks one question at a time and checks each credential
+before it saves it. With `~/.local/bin` on your `PATH`, every command below works in the short form;
+otherwise use the full path `install` prints at the end. **On Windows the demo above runs natively; a
+real clearance needs WSL2.** Native Windows clearances are planned for a later release. Until then the
+engine does not run on native Windows: it resolves the reasoning CLI the POSIX way, and a clearance
+started there refuses at preflight.
 
-That command gives you the **stable** release — the one that has run a real clearance end to end before it
-was published. If you want the newest code instead, a beta is published whenever there is something worth
-testing — deliberately, days apart, not on every merge:
+`npm install -g clearotron` also works where npm's global directory is yours to write. On a Linux Node
+from the distribution or NodeSource that directory is `/usr`, owned by root, and npm refuses with
+`EACCES`. Do not answer that with `sudo`; install under your home instead:
+`npm install -g clearotron --prefix ~/.local`.
+
+`npx clearotron install` gives you the **stable** release — the one that has run a real clearance end to
+end before it was published. If you want the newest code instead, a beta is published whenever there is
+something worth testing — deliberately, days apart, not on every merge:
 
 ```bash
-npm install -g clearotron@beta
+npx clearotron@beta install
 ```
 
 What each channel promises, and when a stable is cut: [docs/RELEASES.md](docs/RELEASES.md). If you are not
@@ -53,17 +61,17 @@ sure, the first command is the one you want.
 
 ## Quick start
 
-Check the install before it does anything. `doctor` only reads — it writes nothing, calls nobody, and
-names whatever is still missing:
+With it installed, check what it found before it does anything. `doctor` only reads — it writes nothing,
+calls nobody, and names whatever is still missing:
 
 ```bash
-npx clearotron doctor
+clearotron doctor
 ```
 
-Then start the product and open the portal it prints:
+Then start the product and open the portal address it prints:
 
 ```bash
-npx clearotron start
+clearotron start
 ```
 
 That is the portal a brand owner uses. Ordering a clearance is the same screen — describe it in a
@@ -82,11 +90,10 @@ rights-holders behind them by jurisdiction:
 
 ![The conflict landscape, with rights-holders grouped by jurisdiction](docs/assets/portal-conflict-landscape.jpg)
 
-Then run your own. `install` asks one question at a time and checks each credential before it saves it:
+Then run your own: order it in the portal, or hand the engine a job file:
 
 ```bash
-npx clearotron install
-npx clearotron run --job my-job.json
+clearotron run --job my-job.json
 ```
 
 ## How it fits together
