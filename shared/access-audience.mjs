@@ -135,13 +135,14 @@ export function readAudience({ location = "", status = null, error = null, wwwAu
   if (error) return { kind: "unreachable", why: String(error?.message ?? error).slice(0, 200) };
   // ── THREE DOORS, NOT ONE ────────────────────────────────────────────────────────────────────────
   //
-  // This returned `not-fronted` for every response with no redirect, and measured against production's
-  // four configured hostnames that one label covered three materially different states:
+  // This returned `not-fronted` for every response with no redirect, and measured against a production
+  // deployment's four configured hostnames that one label covered three materially different states
+  // (the hosts are written here as placeholders; a deployment names its own):
   //
-  //   trademark.cordillera.ch        302  redirect present  → audience read, kid agrees
-  //   mcp.cordillera.ch/mcp          401  no redirect       → not-fronted   ← FALSE, it IS fronted
-  //   clients-mcp.cordillera.ch/mcp  401  no redirect       → not-fronted   ← FALSE, it IS fronted
-  //   agent-mcp.cordillera.ch/mcp    502  no redirect       → not-fronted   ← an origin fault
+  //   portal.example.com             302  redirect present  → audience read, kid agrees
+  //   mcp.example.com/mcp            401  no redirect       → not-fronted   ← FALSE, it IS fronted
+  //   clients-mcp.example.com/mcp    401  no redirect       → not-fronted   ← FALSE, it IS fronted
+  //   agent-mcp.example.com/mcp      502  no redirect       → not-fronted   ← an origin fault
   //
   // None of these was a false pass — every one returned ok:false, which is the property that matters
   // most and is untouched. It was a WRONG DIAGNOSIS on a safe failure, and the cost is a reader's hour
