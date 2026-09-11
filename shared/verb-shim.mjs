@@ -18,7 +18,7 @@
 // install "I wrote that shim, and it points at ME". If the sentence that writes it and the sentence
 // that matches it sat in different files, a change to either would leave the other quietly answering
 // the old question — the shape recorded as "a mechanical rename must move both ends".
-import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, closeSync, existsSync, lstatSync, mkdirSync, openSync, readSync, realpathSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { delimiter, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -84,6 +84,15 @@ function readHead(path, cap = 4096) {
  * exactly the `which` mistake shared/invocation.mjs refuses to make, wearing different clothes.
  */
 export function inspectShim(path, { installDir = INSTALL_DIR, read = readHead } = {}) {
+  // NPM'S OWN LINK INTO THIS INSTALL IS OURS TO REPLACE. An install moved out of npx's cache is put in
+  // place by `npm install --global --prefix ~/.local`, and npm links `~/.local/bin/clearotron` to the
+  // package's executable: the very path the shim goes in. Read as a file it carries no marker, so it was
+  // reported as somebody else's and left alone, and it reaches `node` through `env`, which a service's
+  // PATH may not carry. A link that resolves to THIS install's own executable is replaced with the shim.
+  try {
+    if (lstatSync(path).isSymbolicLink() && realpathSync(path) === realpathSync(join(installDir, "bin", "clearotron.mjs")))
+      return { kind: "npm-link", installDir, interpreter: null, interpreterMissing: null };
+  } catch { /* not a link, or one that leads nowhere: read below as a file */ }
   let head;
   try {
     head = read(path);

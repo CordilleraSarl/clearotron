@@ -64,6 +64,15 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   npx clearotron install
   ```
 
+  Run from `npx`, the install first installs Clearotron under `~/.local`, as `npm install -g --prefix
+  ~/.local` would, and finishes from there. That way the `clearotron` command and your assistant's connection
+  do not point into npm's temporary cache, which npm replaces on an update and deletes when it cleans up.
+  Later, the `update` command updates that copy in place.
+
+  On WSL, a program on the Windows side can hold a port that WSL reports as free, and the browser reaches
+  it first. VS Code's Remote-SSH port forwarding is the common case. If the page that opens is not this
+  install's sign-in, run the same command again with `--port 28802`, or any free number.
+
   A *hosted* deployment needs Linux for one further thing, the systemd outbox trigger —
   [driver/systemd/README.md](driver/systemd/README.md).
 - **A reasoning CLI on your `PATH`, signed in.** This is the prerequisite people miss. Every stage runs

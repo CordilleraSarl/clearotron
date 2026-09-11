@@ -2230,7 +2230,7 @@ test("mcp-access: STAFF are handed the local connect route; a CLIENT never is", 
   // ASSERTED AGAINST THE COMPOSER, not against a literal. Spelling the command here would make this file
   // a second author of it — which the one-author guard correctly flagged when this arm first did that —
   // and it is the stronger check anyway: the wire must carry exactly what the one composer produces.
-  assert.equal(staff.json.stdio.command, stdioConnectCommand({ workDir: process.env.CLEAROTRON_WORK_DIR || null }),
+  assert.equal(staff.json.stdio.command, stdioConnectCommand({ workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null }),
     "the wire carries a command the composer did not produce");
   assert.ok(staff.json.stdio.note && staff.json.stdio.verify, "a bare command with no note or check");
 

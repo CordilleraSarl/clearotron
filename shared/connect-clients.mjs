@@ -289,6 +289,10 @@ export const leadRouteFor = (id) => {
  * @param {{ stdioRoutes?: object, publicAddress?: string|null, operator?: string|null }} have
  * @param {"disk"|"public-http"} [route] defaults to the row's `lead`
  */
+/** The first step of every "on this computer" route when the install runs under WSL. */
+export const WSL_STEP = "Do this inside your WSL terminal, the Linux one where Clearotron is installed, not in PowerShell. "
+  + "An assistant running on Windows itself cannot start it from there.";
+
 export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
   const author = client.routes?.[route];
@@ -320,6 +324,10 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
         reason: "this copy of the software is incomplete, so there is nothing to hand your assistant",
         fix: "whoever installed it will need to install it again" };
     }
+    // ON WSL, "THIS COMPUTER" IS THE LINUX INSIDE WINDOWS. The line names WSL paths, so it runs in the WSL
+    // terminal where Clearotron is installed. Pasted into PowerShell it fails, and an assistant running on
+    // Windows itself could not start a program at a Linux path anyway.
+    if (have.wsl) steps.unshift({ text: WSL_STEP });
     const first = steps.find((s) => s.copy)?.copy;
     // `command` and `stdio` ride for the terminal, which prints a disk offer's copy by its shape.
     return { client, served: true, route, steps, launch: client.launch ?? null, enables: null, ...evidence,

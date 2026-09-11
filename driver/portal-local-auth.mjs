@@ -45,7 +45,7 @@
 // need the prefix — one side of a pair is enough to separate the pair.
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from "node:crypto";
 import { readFileSync, writeFileSync, mkdirSync, chmodSync, existsSync } from "node:fs";
-import { basename, dirname, join } from "node:path";
+import { basename, dirname, join, relative, isAbsolute, sep } from "node:path";
 import { homedir } from "node:os";
 import { envPrefix } from "../shared/os-advice.mjs";
 
@@ -185,6 +185,30 @@ export function passphraseResetCommand({ prefix = "", credentialPath = null, env
   const posix = prefix.lastIndexOf("&& "), ps = prefix.lastIndexOf("; ");
   const at = Math.max(posix < 0 ? 0 : posix + 3, ps < 0 ? 0 : ps + 2);
   return `${prefix.slice(0, at)}${envPrefix("PORTAL_LOCAL_CREDENTIAL", path)}${prefix.slice(at)}clearotron passphrase --reset`;
+}
+
+/**
+ * The recovery line the SIGN-IN PAGE shows: one that resets the credential this portal reads, and that
+ * names no path on this machine.
+ *
+ * The page is read by somebody who is not signed in, so `passphraseResetCommand`'s line, with its
+ * `cd <install> && ` and its absolute `--base`, would show the server's home directory and account to
+ * anyone who loads it. So the install is named from `$HOME`, which POSIX shells and PowerShell both
+ * expand, and a demo run from npx's cache is reached as `npx clearotron@<version>`, which runs from any
+ * directory. The bare `clearotron passphrase --reset` this replaced reset the shared default, not a
+ * demo's own credential, and did not run at all where `clearotron` is not on the PATH (measured
+ * 2026-09-11 on a published beta).
+ */
+export function signInResetCommand({ credentialPath = null, home = null, npxVersion = null } = {}) {
+  const verb = `${npxVersion ? `npx clearotron@${npxVersion}` : "clearotron"} passphrase --reset`;
+  if (!credentialPath || basename(credentialPath) !== INSTALL_CREDENTIAL_FILE) return verb;
+  const h = home ?? homedir();
+  const dir = dirname(credentialPath);
+  if (dir === defaultInstallBase({ home: h })) return verb;
+  const rel = relative(h, dir);
+  if (!rel || rel.startsWith("..") || isAbsolute(rel)) return `${verb} --base <this install's folder>`;
+  const at = `$HOME/${rel.split(sep).join("/")}`;
+  return `${verb} --base ${/\s/.test(at) ? `"${at}"` : at}`;
 }
 
 /**

@@ -159,6 +159,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-connect-line-says-where-it-runs.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -502,8 +508,8 @@
           "todos": 0
         },
         "a-printed-command-runs-from-where-the-reader-stands.test.mjs": {
-          "tests": 14,
-          "asserts": 59,
+          "tests": 15,
+          "asserts": 62,
           "skips": 0,
           "todos": 0
         },
@@ -961,6 +967,12 @@
           "tests": 8,
           "asserts": 27,
           "skips": 0,
+          "todos": 0
+        },
+        "an-install-from-npx-moves-out-of-the-cache.test.mjs": {
+          "tests": 8,
+          "asserts": 45,
+          "skips": 4,
           "todos": 0
         },
         "an-mcp-route-says-which-challenge-it-answers-with.test.mjs": {
@@ -3040,8 +3052,8 @@
           "todos": 0
         },
         "portal-local-login.test.mjs": {
-          "tests": 22,
-          "asserts": 89,
+          "tests": 27,
+          "asserts": 107,
           "skips": 0,
           "todos": 0
         },
@@ -4473,6 +4485,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-demo-hands-its-runs-to-the-assistant.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-demo-help-names-every-product-it-ships.test.mjs": {
           "tests": 4,
           "asserts": 8,
@@ -4675,6 +4693,12 @@
           "tests": 8,
           "asserts": 23,
           "skips": 1,
+          "todos": 0
+        },
+        "the-open-line-says-what-to-do-when-the-page-is-not-ours.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
           "todos": 0
         },
         "the-owner-of-a-promoted-filing-is-searched.test.mjs": {

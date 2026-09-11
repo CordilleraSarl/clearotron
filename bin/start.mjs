@@ -301,6 +301,22 @@ export function resolvePorts(env = {}) {
 }
 
 /**
+ * WHAT TO DO WHEN THE PAGE THAT OPENS IS NOT OURS. Printed under every "Open" line.
+ *
+ * A port can be free where this runs and taken where the browser runs: on WSL, a Windows-side listener
+ * (VS Code's Remote-SSH forwarding is the one measured, 2026-09-11) answers 127.0.0.1 before WSL does. The
+ * doors bind cleanly, the in-use detection has nothing to see, and the browser shows somebody else's page
+ * with nothing on this screen saying so. `--port` already moves all three doors; the reader has to be told
+ * about it at the moment the address is handed over, which is here.
+ */
+export function foreignPageHint(verb) {
+  return [
+    "If the page that opens is not this install's sign-in, another program on this machine holds that",
+    `port from outside this environment. Run \`${invoke(verb)} --port 28802\` (or any free number) instead.`,
+  ];
+}
+
+/**
  * Apply `--port <n>` to the three doors.
  *
  * PURE, AND EXPORTED, because the inline version of this could only be tested by spawning a supervisor
@@ -1370,8 +1386,12 @@ if (isMain) {
     // SEEDED FROM A COPY, for the reason the player publishes from one: republishing writes a receipt
     // into the run directory it reads, and `demo/` is tracked. This is the path a reader actually takes
     // — `clearotron demo` hands over to this — so fixing the player alone left the defect where it was.
-    const { publishSource } = await import("../driver/demo-container.mjs");
+    const { publishSource, seedDemoRuns } = await import("../driver/demo-container.mjs");
     const seed = await seedPool({ pool: paths.pool, examplesDir: publishSource(join(REPO, "demo"), { repoRoot: REPO }), republish: republishRun });
+    // AND AS RUNS, so the assistant this demo's connect line wires has them to list, brief and open. Under
+    // the demo's own workspace only: nothing of it reaches an install started afterwards.
+    const runs = seedDemoRuns({ workspace: paths.workspace, examplesDir: join(REPO, "demo") });
+    if (runs.seeded.length) say(`  runs           ${runs.seeded.length} sample run(s) your assistant can list, brief and open`);
     // WHAT WAS ALREADY THERE IS SAID TOO. This branch used to run only when the pool
     // was empty; it now tops a stale pool up to the package's set, so "seeded 1" on an upgrade is a fact
     // about what was MISSING and says nothing on its own about how many are now listed.
@@ -1879,6 +1899,7 @@ if (isMain) {
     }
     say("");
     say(`  Open:            ${envs.url}`);
+    for (const line of foreignPageHint(DEMO ? "demo" : "start")) say(`                   ${line}`);
     say("  This SURVIVES the terminal — close the window, the product keeps running.");
     say(`  Stop it:         ${invoke("stop")}   (stops and removes the units; issued connect keys survive — \`${invoke("disconnect")}\` revokes those)`);
     say(`  Is it up?        ${invoke("status")}`);
@@ -2112,6 +2133,7 @@ if (isMain) {
 
   say("");
   say(`  Open   ${envs.url}`);
+  for (const line of foreignPageHint(DEMO ? "demo" : "start")) say(`         ${line}`);
   say("");
   // ── TWO DOORS, TWO AUDIENCES, BOTH NAMED ( — F26) ─────────────────────────
   //
@@ -2209,7 +2231,9 @@ if (isMain) {
   //
   // The string comes from the ONE composer, not from a literal here: three surfaces state this route
   // and a line of instruction with more than one author drifts silently.
-  const connect = stdioConnectOffer({ workDir: process.env.CLEAROTRON_WORK_DIR || null });
+  // THE WORKSPACE AND POOL THE SERVICES WERE HANDED, not this process's environment: a demo reads no env
+  // file, so its own line named no workspace and the connector fell back to the real install's.
+  const connect = stdioConnectOffer({ workDir: paths.workspace, reportsDir: paths.pool });
   say("  Connect your assistant to this install — one line, no address and no sign-in:");
   say("");
   say(`    ${connect.command}`);

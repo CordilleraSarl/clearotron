@@ -346,6 +346,9 @@ export const DEPLOYMENT_NAMES = new Set([
   // by nothing else, so moving it to the house prefix dropped it through to `tuning` — the bucket step 3
   // deletes from. The audience did not change; only the spelling did, and this list is what says so.
   "CLEAROTRON_DEMO",
+  // Set by the install on the copy it starts after moving out of npx's cache, never by an operator. Its
+  // row declares `deployment`, and no shape matches it, so unlisted it would fall through to `tuning`.
+  "CLEAROTRON_RELOCATED",
   // Three names read only through optional chaining, so no catalogue check saw them until the scanner
   // learned `?.`. Each row declares `deployment`, and no shape matches them (`_PORT$` does not take
   // `_PORTS`), so unlisted each fell through to `tuning`, the bucket step 3 deletes from. The first is set

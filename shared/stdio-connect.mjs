@@ -31,6 +31,7 @@
 
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { stableInstallRoot } from "./permanent-install.mjs";
 
 /** The install root — the directory holding `mcp-server/`, resolved from this module rather than cwd. */
 export const INSTALL_ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..");
@@ -49,10 +50,8 @@ export const STDIO_SERVER_NAME = "trademark-artifacts";
  * @param {{ installRoot?: string, workDir?: string|null }} [opts]
  * @returns {string} the exact command to run
  */
-export function stdioConnectCommand({ installRoot = INSTALL_ROOT, workDir = null } = {}) {
-  const server = join(installRoot, "mcp-server", "server.mjs");
-  const env = workDir ? ` -e CLEAROTRON_WORK_DIR=${workDir}` : "";
-  return `claude mcp add ${STDIO_SERVER_NAME}${env} -- node ${server}`;
+export function stdioConnectCommand({ installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform } = {}) {
+  return STDIO_SHAPES["claude-cli"].render({ server: join(installRoot, "mcp-server", "server.mjs"), workDir, reportsDir, platform });
 }
 
 /**
@@ -89,24 +88,42 @@ export function stdioConnectOffer(opts = {}) {
 // So the three facts are resolved ONCE and rendered three ways. A row names its shape; nothing switches
 // on a client's name. Adding a host is a renderer plus a row, and it cannot invent a different route.
 
+/**
+ * The settings the server is started with: the workspace it reads runs from, and the folder its reports are
+ * published to. Handed over rather than left to the server's own defaults, so it reads what the services
+ * read: a demo's own base, not the real install's workspace. Only what is set is written.
+ */
+function envOf({ workDir = null, reportsDir = null } = {}) {
+  return { ...(workDir ? { CLEAROTRON_WORK_DIR: workDir } : {}), ...(reportsDir ? { CLEAROTRON_REPORTS_DIR: reportsDir } : {}) };
+}
+const envFlags = (o) => Object.entries(envOf(o)).map(([k, v]) => ` -e ${k}=${v}`).join("");
+const envBlock = (o) => (Object.keys(envOf(o)).length ? { env: envOf(o) } : {});
+
+/**
+ * The argument that ends Claude Code's own options. Windows PowerShell 5.1 drops a bare `--` before it
+ * reaches a native program, so the line failed with "missing required argument"; quoted, every shell passes
+ * it through (bash, zsh, PowerShell and cmd alike), so a Windows install is handed the quoted form.
+ */
+const separator = (platform = process.platform) => (platform === "win32" ? '"--"' : "--");
+
 /** How each host takes the same three facts. A row of CONNECT_CLIENTS names one of these by key. */
 export const STDIO_SHAPES = Object.freeze({
   "claude-cli": {
     kind: "command",
     where: null,
-    render: ({ server, workDir }) =>
-      `claude mcp add ${STDIO_SERVER_NAME}${workDir ? ` -e CLEAROTRON_WORK_DIR=${workDir}` : ""} -- node ${server}`,
+    render: ({ server, workDir, reportsDir, platform }) =>
+      `claude mcp add ${STDIO_SERVER_NAME} --scope user${envFlags({ workDir, reportsDir })} ${separator(platform)} node ${server}`,
     after: null,
   },
   "desktop-json": {
     kind: "config",
     where: "Settings → Developer → Edit Config",
-    render: ({ server, workDir }) => JSON.stringify({
+    render: ({ server, workDir, reportsDir }) => JSON.stringify({
       mcpServers: {
         [STDIO_SERVER_NAME]: {
           command: "node",
           args: [server],
-          ...(workDir ? { env: { CLEAROTRON_WORK_DIR: workDir } } : {}),
+          ...envBlock({ workDir, reportsDir }),
         },
       },
     }, null, 2),
@@ -117,10 +134,10 @@ export const STDIO_SHAPES = Object.freeze({
   "generic-json": {
     kind: "config",
     where: "your agent's MCP server configuration",
-    render: ({ server, workDir }) => JSON.stringify({
+    render: ({ server, workDir, reportsDir }) => JSON.stringify({
       command: "node",
       args: [server],
-      ...(workDir ? { env: { CLEAROTRON_WORK_DIR: workDir } } : {}),
+      ...envBlock({ workDir, reportsDir }),
     }, null, 2),
     after: null,
   },
@@ -134,11 +151,12 @@ export const STDIO_SHAPES = Object.freeze({
     // Codex does not forward the shell environment, and a credential would have to be forwarded BY NAME
     // rather than written into a file. This server takes no credential — the work directory is a path,
     // not a secret — so `env` is correct here and would not be for a server that wanted a key.
-    render: ({ server, workDir }) => [
+    render: ({ server, workDir, reportsDir }) => [
       `[mcp_servers.${STDIO_SERVER_NAME}]`,
       `command = "node"`,
       `args = ["${server}"]`,
-      ...(workDir ? [`env = { CLEAROTRON_WORK_DIR = "${workDir}" }`] : []),
+      ...(Object.keys(envOf({ workDir, reportsDir })).length
+        ? [`env = { ${Object.entries(envOf({ workDir, reportsDir })).map(([k, v]) => `${k} = "${v}"`).join(", ")} }`] : []),
     ].join("\n"),
     after: null,
   },
@@ -215,13 +233,13 @@ export function remoteConnectFor(shape, { address = null } = {}) {
  * absence is a finding: a row naming a shape nobody implemented should surface as missing, and the
  * table's own arm refuses such a row outright.
  */
-export function stdioConnectFor(shape, { installRoot = INSTALL_ROOT, workDir = null } = {}) {
+export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform } = {}) {
   const spec = Object.hasOwn(STDIO_SHAPES, String(shape ?? "")) ? STDIO_SHAPES[shape] : null;
   if (!spec) return null;
   const server = join(installRoot, "mcp-server", "server.mjs");
   return {
     shape, kind: spec.kind, where: spec.where, after: spec.after,
-    text: spec.render({ server, workDir }),
+    text: spec.render({ server, workDir, reportsDir, platform }),
     name: STDIO_SERVER_NAME,
   };
 }
