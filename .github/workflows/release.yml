@@ -297,7 +297,7 @@ jobs:
         # PINNED TO A COMMIT, because `v1` and `v2` are BRANCHES here, not tags — there is no tag `v1`
         # at all (measured 2026-09-05), so `@v2` is whatever was last pushed to that branch. This is the
         # step that opens a pull request against `main` with a token; it does not float.
-        uses: changesets/action@8488615a623b1b9c987934bb89eae8af6a946ac1   # v2
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51   # v2
         with:
           version-script: node scripts/release-version.mjs
           pr-title: 'Release: the next version, and everything in it'
