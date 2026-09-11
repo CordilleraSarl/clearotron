@@ -116,7 +116,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 // one synopsis reader for every verb that prints one.
 import { usageBlock } from "../shared/usage-block.mjs";
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
-import { parseEnvFile } from "../driver/systemd/render-units.mjs";   // — ONE KEY=value reader; a second copy would drift from what systemd actually reads
+import { parseEnvFile } from "../shared/env-file-merge.mjs";   // — ONE KEY=value reader, taken from a leaf: the unit renderer re-exports this same function, and it is a COMMAND, so importing it from here would put a command in this binary's graph
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";   // — F34: claim about the UNITS only from the units' own environment
 
 /**

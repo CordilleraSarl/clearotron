@@ -15,7 +15,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { BACKGROUND_UNITS, resolvePorts } from "./start.mjs";
-import { parseEnvFile } from "../driver/systemd/render-units.mjs";   // ONE KEY=value reader — what systemd actually reads
+import { parseEnvFile } from "../shared/env-file-merge.mjs";   // ONE KEY=value reader — what systemd actually reads, taken from the leaf the unit renderer re-exports it from
 import { CLIENT_DOOR_UNIT, clientDoorPort } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";
 import { readRunning, probe } from "../shared/running-start.mjs";
