@@ -749,6 +749,8 @@ Use the demo to see what this system produces. Use `npx clearotron start` to run
 
 - Generates `PORTAL_SECRET` and `TRADEMARK_MCP_TOKEN_SECRET` and **appends** them to `~/.config/clearotron/.env` at
   mode 600. Append, never rewrite: that file also holds the credentials `npx clearotron install` collected.
+  It also records where saved searches are kept, `CLEAROTRON_RECIPES_DIR` and `RECIPE_REPO_ROOT`, so
+  `clearotron doctor` and a connected assistant read the same saved searches as the portal.
 - Creates `~/trademark/` — `pool/`, `workspace/`, `queue/`, `outbox/`, `locks/`, an empty grants file,
   and a small git repository for saved searches. Same base directory `npx clearotron install` uses, so whichever
   of the two you ran first, the other finds the same install. Move it with `npx clearotron start --base <dir>`.

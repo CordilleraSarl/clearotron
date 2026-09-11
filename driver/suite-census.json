@@ -381,6 +381,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-local-install-hands-its-stores-to-every-reader.test.mjs": {
+          "tests": 1,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
           "tests": 9,
           "asserts": 37,

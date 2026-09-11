@@ -667,7 +667,7 @@ test("with no units, doctor reports the store `clearotron start` hands the porta
   const home = mkdtempSync(join(tmpdir(), "local-home-"));
   try {
     const never = doctor(home).out;
-    assert.match(never, /saved searches switch on at the first `clearotron start`/,
+    assert.match(never, /saved searches switch on at the first `[^`]*clearotron start`/,
       `an install that has never started was not told where its saved searches will come from:\n${never}`);
     assert.doesNotMatch(never, /saved searches are off|saved searches cannot be read/i,
       "a store that does not exist yet is neither off nor broken");
@@ -677,7 +677,7 @@ test("with no units, doctor reports the store `clearotron start` hands the porta
     mkdirSync(join(handed.configStore, ".git"), { recursive: true });
     mkdirSync(handed.recipes, { recursive: true });
     const started = doctor(home).out;
-    assert.match(started, new RegExp(`saved searches are read from ${esc(handed.recipes)} — where \`clearotron start\` puts them, `
+    assert.match(started, new RegExp(`saved searches are read from ${esc(handed.recipes)} — where \`[^\`]*clearotron start\` puts them, `
       + `and saves are committed in ${esc(handed.configStore)}`),
       `doctor did not report the store start hands its children:\n${started}`);
     assert.doesNotMatch(started, /saved searches are off/i, "THE REPORTED CASE: a working store was reported off");
