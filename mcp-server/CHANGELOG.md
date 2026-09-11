@@ -1,5 +1,11 @@
 # trademark-artifacts-mcp
 
+## 0.3.0-beta.5
+
+### Patch Changes
+
+- e7cd9e1: Fixed: On an install run with `clearotron start`, a connected assistant now lists the same saved searches as the portal, including Generic's. `clearotron doctor` no longer says working saved searches are off, and it names one place profiles come from.
+
 ## 0.3.0-beta.4
 
 No changes in this release.
