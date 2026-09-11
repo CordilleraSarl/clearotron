@@ -1832,6 +1832,39 @@ test("the staff config and access surfaces are STAFF-ONLY, and a client gets a p
   }
 });
 
+test("the avatar menu offers Global config to exactly the people the server serves it to", async () => {
+  // ONE RULE ON BOTH SIDES. The menu decided on Manage and the server on seeing everything, so a manager
+  // of one organisation was offered an entry that opened on "This page is not available." This renders
+  // the menu the page renders, from the /me the page reads, against the route the entry opens: for a
+  // person who sees everything, a manager of one organisation, and a client who manages nothing.
+  const { avatarMenuFor, screenForPath } = await import("../../portal-ui/src/nav/nav.config.ts");
+  const { service } = world();
+  const { poolRoot, workspaceRoot } = world();
+  const managed = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret", grants: GRANTS_CLIENT_MANAGES, audit: () => {} });
+  const served = {};
+  for (const [who, svc, principal] of [["staff", service, STAFF], ["manager", managed, CLIENT], ["client", service, CLIENT]]) {
+    const me = await svc.route("GET", "/portal/api/me", principal, {}, {});
+    assert.equal(me.status, 200, `/me for ${who}`);
+    // Decoded as the page decodes it (contract/api.ts): the two switches, and "*" as seeing everything.
+    const viewer = { permissions: { run: me.json.permissions?.run === true, manage: me.json.permissions?.manage === true },
+      allAccounts: me.json.accounts === "*" };
+    if (who === "manager") assert.equal(viewer.permissions.manage, true, "the manager case must hold Manage, or it is not the defect's case");
+    const status = (await svc.route("GET", "/portal/admin/config", principal, {}, { account: "aurora" })).status;
+    served[who] = status === 200;
+    const offered = avatarMenuFor(viewer).some((e) => e.id === "admin.config");
+    assert.equal(offered, served[who], `${who}: the menu ${offered ? "offers" : "hides"} Global config, and the server answers ${status}`);
+    assert.equal(screenForPath("/portal/admin/config", viewer)?.id === "admin.config", served[who], `${who}: routing agrees with the server`);
+    // The loads Clearances and People make in the background ask the same fact, so none of them 404s.
+    for (const p of ["/portal/admin/families", "/portal/admin/observed", "/portal/admin/retired"]) {
+      const s = (await svc.route("GET", p, principal, {}, { account: "aurora" })).status;
+      assert.equal(s === 200, viewer.allAccounts, `${who}: ${p} answers ${s}; the page asks it only of a reader who sees everything`);
+    }
+  }
+  // A FLOOR ON THE POPULATION. Were every case answered alike, the equalities above would hold for a menu
+  // that never changes. One must be served and the manager must be refused.
+  assert.deepEqual(served, { staff: true, manager: false, client: false });
+});
+
 test("the observed surface answers 200-unavailable when the log cannot be read, never an error", async () => {
   // Asserted as a STATUS, not just a body: an error status here would trip the screen's load gate and
   // blank the whole access page to report that an optional extra was missing. The panel is allowed to
