@@ -1,5 +1,22 @@
 # clearotron-driver
 
+## 0.3.0-beta.6
+
+### Patch Changes
+
+- 2ca849d: Fixed: When codex's sign-in can no longer be refreshed, the search stops and says to run `codex login`. It used to retry with a bare exit code.
+- a81279f: Fixed: When the portal address opens someone else's page, for example a port forwarded from outside WSL, Clearotron now says so and points you to `--port`.
+- a81279f: Fixed: The sign-in page clears a session left by another Clearotron on the same address and says so. A refusal that is not about the passphrase now says what it is about.
+- f133f7d: Fixed: A passphrase pasted with a space or line break at either end now signs in, instead of being refused as wrong.
+- 2ca849d: Fixed: A manager who does not run the installation no longer sees server file paths when a new company cannot be recorded or filed.
+- a81279f: Fixed: The local sign-in page no longer invites the browser to fill in a saved password from another install.
+- a81279f: Fixed: `npx clearotron install` now installs Clearotron permanently under `~/.local` before setting up. The `clearotron` command and your assistants' connections keep working after npm cleans its cache.
+- 2ca849d: Fixed: When the saved-search store exists but cannot be read, the connector and `clearotron doctor` now say so, instead of reporting no saved searches.
+- a81279f: Fixed: On WSL, the "on this computer" connect steps now say to run them inside WSL. The Claude Code line registers Clearotron for every project and works in Windows PowerShell.
+- a81279f: New: An assistant connected to `clearotron demo` can now list, brief and open the demo's four sample runs. They stay inside the demo's own folder.
+- a81279f: Fixed: The sign-in page's reset line now runs for a demo started with npx, and resets that demo's own passphrase.
+- a81279f: New: `clearotron update` now updates an npm-installed copy itself, and a beta install moves on to the release once it is published.
+
 ## 0.3.0-beta.5
 
 ### Patch Changes
