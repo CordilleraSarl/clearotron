@@ -4,6 +4,22 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0-beta.4
+
+### New
+
+- Use your own AI asks first where Clearotron is running, then shows the steps for your app beside the list. The same five apps are offered either way.
+- Claude Code and Codex can connect to an installation running elsewhere, and the ChatGPT desktop app to one on the same machine.
+- the company switcher in the sidebar ends with `+ New company`. Making a company is now one click from every screen, whether or not a company is selected.
+
+### Fixed
+
+- Codex was told to paste a settings block into a terminal. Its steps now name the file the block goes in.
+
+### For operators
+
+- `clearotron connect` and `clearotron disconnect` take `--where here` or `--where elsewhere`. Assistant names used before, such as `cowork`, still work.
+
 ## 0.3.0-beta.3
 
 ### Fixed

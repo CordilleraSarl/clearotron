@@ -1,5 +1,21 @@
 # clearotron-driver
 
+## 0.3.0-beta.4
+
+### Minor Changes
+
+- a9f5375: New: Use your own AI asks first where Clearotron is running, then shows the steps for your app beside the list. The same five apps are offered either way.
+  
+  New: Claude Code and Codex can connect to an installation running elsewhere, and the ChatGPT desktop app to one on the same machine.
+  
+  Fixed: Codex was told to paste a settings block into a terminal. Its steps now name the file the block goes in.
+  
+  For operators: `clearotron connect` and `clearotron disconnect` take `--where here` or `--where elsewhere`. Assistant names used before, such as `cowork`, still work.
+
+### Patch Changes
+
+- a9f5375: New: the company switcher in the sidebar ends with `+ New company`. Making a company is now one click from every screen, whether or not a company is selected.
+
 ## 0.3.0-beta.3
 
 ### Patch Changes
