@@ -25,12 +25,12 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
   evalAssertion, doorDisagreementLine, isAdmitCase, pathsAnOpDoesNotRead,
-  DELIVERY_STATUS_FILE, FIXED_FILE_OPS,
+  DELIVERY_STATUS_FILE, FIXED_FILE_OPS, caseDoors, doorCoverage,
 } from "../../scripts/e2e.mjs";
 
 /** A run dir whose status.json says delivered, and whose _driver/delivery.json is the packet it really is. */
@@ -115,4 +115,77 @@ test("a receipt written before the case's contract was carried reads as the old 
   assert.match(line, /the door that ACCEPTED is the defect/,
     "an old receipt got a retrospective reading it cannot support");
   assert.match(line, /accepted by cli/, "the receipt spelling `accepted` is not read; only run-time `ok` is");
+});
+
+// ── A CASE MAY SAY WHICH DOORS CAN ANSWER IT ─────────────────────────────────────────────────────────
+//
+// The line above told its reader to "declare `doors` on the case", and nothing read that declaration: every
+// case still went through every door, so R0e's scoped-key refusal kept landing in INVESTIGATE. These arms
+// drive the declaration from both ends, the doors a case is sent through and what the report makes of the
+// doors it left out, and the refusals that stop a declaration from quietly shrinking a round.
+
+const SCENARIO_DOORS = ["cli", "ops-mcp"];
+
+test("a case that declares no doors goes through every door the scenario drives", () => {
+  const { asked, notAsked } = caseDoors(SCENARIO_DOORS, { id: "RX" });
+  assert.deepEqual(asked, SCENARIO_DOORS, "a case with no declaration lost a door");
+  assert.deepEqual(notAsked, []);
+});
+
+test("a case that declares its doors goes through those alone, and says why for each it leaves out", () => {
+  const why = "the ops door's scoped key refuses an unnamed customer before this case's question";
+  const { asked, notAsked } = caseDoors(SCENARIO_DOORS, { id: "R0e", doors: ["cli"], "why-doors": why });
+  assert.deepEqual(asked, ["cli"], "the declared door is not the one asked");
+  assert.deepEqual(notAsked, [{ door: "ops-mcp", why }], "the door left out is not named with the case's reason");
+  // A reason written as several lines, the way this store writes its other `why-` fields, reads as one.
+  const joined = caseDoors(SCENARIO_DOORS, { id: "R0e", doors: ["cli"], "why-doors": ["two", "lines"] });
+  assert.equal(joined.notAsked[0].why, "two lines");
+  // No reason written still leaves one on the record rather than an empty string.
+  assert.match(caseDoors(SCENARIO_DOORS, { id: "R0e", doors: ["cli"] }).notAsked[0].why, /declares/);
+});
+
+test("a declaration that cannot be honoured is REFUSED, naming the case, never narrowed in silence", () => {
+  assert.throws(() => caseDoors(SCENARIO_DOORS, { id: "RT", doors: ["opsmcp"] }), /RT: .*"opsmcp".*not a door/,
+    "a mistyped door name was accepted, and the case would have run through fewer doors than meant");
+  assert.throws(() => caseDoors(SCENARIO_DOORS, { id: "RU", doors: ["portal"] }), /RU: .*portal.*does not drive/,
+    "a door this scenario never drives was accepted, so the case would be submitted nowhere by it");
+  for (const bad of [[], "cli", [""], [1]])
+    assert.throws(() => caseDoors(SCENARIO_DOORS, { id: "RV", doors: bad }), /RV: `doors` must be/,
+      `${JSON.stringify(bad)} was accepted as a list of doors`);
+});
+
+test("the report reads a door left out by declaration as REDUCED COVERAGE, and a refusal case still disagrees", () => {
+  const rec = { cases: [
+    // R0e as the fixed harness records it: only the cli door asked, so there is nothing to compare.
+    { id: "R0e", agreed: true, answers: [{ door: "cli", accepted: true, answerClass: "answered" }],
+      notSubmitted: [{ door: "ops-mcp", why: "scoped key" }] },
+    // A refusal case where the doors split: the asymmetry rule is still owed its verdict here.
+    { id: "R0a", agreed: false, answers: [{ door: "cli", accepted: true, answerClass: "answered" },
+      { door: "ops-mcp", accepted: false, answerClass: "answered" }] },
+    // A door lost to the transport AND a door left out, on one case: counted once.
+    { id: "R0x", agreed: true, answers: [{ door: "cli", accepted: false, answerClass: "infra-unavailable" }],
+      notSubmitted: [{ door: "ops-mcp", why: "declared" }] },
+  ] };
+  const { dis, chose, lost, reduced } = doorCoverage(rec);
+  assert.deepEqual(dis.map((c) => c.id), ["R0a"], "a declared door was read as a disagreement, or a real one was dropped");
+  assert.deepEqual(chose.map((c) => c.id), ["R0e", "R0x"]);
+  assert.deepEqual(lost.map((x) => x.c.id), ["R0x"]);
+  assert.equal(reduced, 2, "a case with both kinds of reduced coverage was counted twice");
+  // A receipt written before the field existed carries none, and reads exactly as it did.
+  assert.deepEqual(doorCoverage({ cases: [{ id: "old", agreed: true, answers: [] }] }).chose, []);
+});
+
+test("the round submits each case through the doors caseDoors settled, at its ONE enqueue site", () => {
+  // The two arms above drive caseDoors and doorCoverage; this one holds the wiring, because a loop that
+  // went back to iterating the scenario's doors would pass both of them and send R0e to the ops door again.
+  // The run is top-level script code, so it is read rather than driven: one enqueue site, inside the loop
+  // over the case's own settled doors, and every case settled before that site is reached.
+  const src = readFileSync(join(import.meta.dirname, "..", "..", "scripts", "e2e.mjs"), "utf8");
+  const sites = [...src.matchAll(/await enqueue\(/g)].map((m) => m.index);
+  assert.equal(sites.length, 1, `expected ONE enqueue site, found ${sites.length} — a second one may not honour a case's doors`);
+  const before = src.slice(Math.max(0, sites[0] - 600), sites[0]);
+  assert.match(before, /const \{ asked, notAsked \} = doorsFor\.get\(caseId\);/, "the loop does not take the case's settled doors");
+  assert.match(before, /for \(const d of asked\) \{\s*const res = $/, "the enqueue site does not iterate the case's own doors");
+  const settled = src.indexOf("doorsFor.set(id, caseDoors(doors, kase))");
+  assert.ok(settled > 0 && settled < sites[0], "cases are not all settled before the first enqueue, so a bad declaration could refuse half a round");
 });
