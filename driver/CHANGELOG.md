@@ -1,5 +1,100 @@
 # clearotron-driver
 
+## 0.3.0-beta.2
+
+### Minor Changes
+
+- cdc7c84: New: `clearotron brandowner framework <key> <path>` points an existing company at a risk framework.
+  
+  Which framework rates a company's matters is set on the command line. Until now the only verb there was `add`, which creates a company. A company made in the browser could not be pointed at its own rubric at all.
+  
+  New: The framework's deck is checked before anything is written. A path that does not resolve, or a manifest that will not load, is refused. The company is left exactly as it was.
+
+### Patch Changes
+
+- c7c96f3: Fixed: A key pasted at a yes-or-no question in setup is never shown on screen. Where the question leads to a key, a token or a credential, setup takes what was pasted as the answer. It does not ask for it again.
+  
+  While setup waits for a yes or no, it shows only what you type toward one. Anything else stays off the screen, so a pasted key never reaches the terminal's history.
+  
+  Fixed: The up-arrow at a later question in setup no longer brings back a key, a token or a password typed earlier. Setup keeps no history of its answers.
+- 184fbc8: Fixed: A knockout searched on Signa now shows each filing's owner, classes and filing date. Before, those cells were blank on every filing.
+  
+  Fixed: Each filing in a Signa knockout that carries its office's number now links to the trade mark office's own page for that record. Where it cannot be linked, the report gives the office and the number, and says once why. A filing without a number shows as before. The audit workbook carries the same link or number.
+- 5851a16: Fixed: A knockout no longer refuses a finding that names the register filings it rests on. Before, the assessment was refused and retried, and the delivered findings lost the labels that say where each one came from.
+- 4585112: Fixed: A new install signs in with a passphrase of its own, and its first start prints it. This holds even on a machine where an earlier install left a sign-in behind.
+  
+  Each new install keeps its sign-in inside its own directory, `~/trademark/` by default. An install that already signs in with the shared one under `~/.cordillera/` keeps using it, so no passphrase stops working when you upgrade.
+  
+  Fixed: When a start does not print the passphrase, its first line now says how to get a new one: `clearotron passphrase --reset`. It also says which sign-in file it is using, when that file was created, and for which address.
+  
+  Fixed: The demo always gives you a passphrase that works. Each demo start makes a new one and prints it, instead of reusing one an earlier demo left behind.
+  
+  Fixed: A new install can open its companies' profiles. If its configuration folder overrides no instruction files, the portal no longer answers with an error. Nor does it warn that risk frameworks might be synthetic. Setup also creates the `skills` folder its closing screen tells you to use.
+  
+  Fixed: A search refused because the install is not fully configured now names the settings file `clearotron start` read. It no longer names a file that does not exist on that machine.
+- b45a5cf: New: A screening report's summary, basis lines and conflict sentences now read in plain language.
+  
+  Long sentences are split and the profession's shorthand is replaced with the everyday word. No rating, name or reason is changed.
+- b45a5cf: Fixed: An audit workbook no longer reports every register finding as missing its link when the register publishes no page per record.
+  
+  The registration number and the office are the citation in that case. A finding that carries neither is called out instead.
+  
+  Fixed: A search now records any of your default territories that the engine cannot search, in the record of that search. A mistyped default no longer narrows a search silently.
+- eacfce4: Fixed: An assistant connected to a local install now sees the saved searches the portal shows, and can plan a run from one of them. Before, outside the demo, only the portal was told where saved searches are kept, so an assistant was told the install had none.
+- 34cc1c7: For operators: A health check that could not look now fails instead of reporting success. Two halves of the unit check can go quiet. One goes quiet when the installation does not say which installation it is; the other when the walk over the unit files does not finish. Both used to note that they had not run and then pass.
+  
+  For operators: Set `CLEAROTRON_BOX` to `prod` or `test`. Those are the only two values the check accepts; anything else, including any other name, reads as unnamed and fails. The failure names the setting and says what went unchecked.
+  
+  For operators: The half that goes quiet is the one that notices a service that has stopped and stayed stopped. The other half lists what is running, so it cannot see something that is no longer there. While that half is suppressed, a service can disappear without the check saying anything.
+- b45a5cf: Fixed: `clearotron doctor` now reports everything a search would be refused for, checked against the environment the search will run in. So an installation it passes is one that can run a search.
+  
+  Fixed: A token set in the installation's own configuration file now reaches the engine check. A headless server set up the documented way proves its engine instead of reporting it signed out.
+  
+  Fixed: When a search is refused because the installation is not configured, the message names every configuration file that reaches the run.
+  
+  Fixed: The signed-out message now offers a sign-in route for a machine with no browser.
+- 332967f: For operators: `clearotron doctor` now says where a company or project saved in the portal goes once it is recorded. Sometimes the settings folder sits in a copy of a repository that other work also pulls and pushes. The next person to do that then publishes those saves. Doctor now warns about this, and counts the saves still waiting to go. Publishing your settings on purpose is still supported: this is only a warning, and it does not change doctor's result.
+- cdc7c84: Fixed: Filtering Clearances to a company with no clearances no longer clears the page.
+  
+  The company buttons and the status filters stay on screen, so you can pick another. They used to disappear along with the list, and they are the only way to change company there.
+- b45a5cf: Fixed: Pressing Stop now prevents the report from being published.
+  
+  A run stopped during its final step used to finish and deliver anyway, after telling you nothing would be delivered.
+  
+  Fixed: The Stop dialog no longer promises that nothing will be delivered when the report is already being written. It says so instead.
+- e3db928: Fixed: "Stop now" ends the step in flight and anything that step started, and says the step has ended only once it has.
+  
+  If the step cannot be ended, the card says so and the run stops at its next step instead.
+- b1dbbd5: Fixed: Pressing "Stop now" no longer says the step in flight has ended. It says a stop was sent, and what happens if the step will not take it.
+  
+  A stop is sent to the step under way. If it takes it the run ends in seconds; if it does not, the run ends at its next step. The old wording promised the first of those every time.
+  
+  Fixed: The notice shown while a run is stopping no longer overlaps the elapsed time on the card.
+  
+  It has its own line under the run, so "1 min so far" stays readable while a stop is in flight.
+- fc3c17d: Fixed: `clearotron demo` no longer reads the settings of a real install on the same computer. Before, it showed that install's companies instead of its own and put its four example reports into that install's archive. A company created in the demo would have been saved into that install's customer list. An assistant connected to the demo could be offered that install's saved searches. The demo now keeps all of this in its own folder.
+  
+  Fixed: The demo's company switcher lists the demo company and Generic. A company you create in the demo belongs to the demo's own organisation.
+  
+  Fixed: If no organisation is set up yet, New company now says so and names the command that sets one up.
+  
+  For operators: On a local install, setup no longer asks for a sign-in address. It uses your computer account's name at `localhost` and shows it once in the summary. An address already in your settings file is kept.
+- cdc7c84: Fixed: A Knockout report no longer carries a line telling the reader to remove the reviewer's notes before it goes to a client.
+  
+  The notes are reference material and the report says so where they sit. An instruction to edit the document was addressed to the lawyer and read by whoever opened it.
+- ad088d6: Fixed: `clearotron doctor`'s register check now tests the register your install is set up for. A register or key kept only in your install's settings file came back as not set, though doctor had just listed it. The check now reads that file too, and a value set in your shell still wins.
+- b45a5cf: Fixed: You can now start a new company from the Company profile screen. It used to be reachable only from the company picker, which disappears as soon as you pick a company.
+  
+  Fixed: Choosing a company on the dashboard now shows only that company's clearances. The buttons above the list used to change nothing.
+  
+  Fixed: When a feature is switched off on your installation, the screen says so and what to change. It used to suggest trying again shortly.
+  
+  Fixed: The link to the risk-framework guide opens in a new tab and goes straight to the section on writing your own. It also appears on the Company profile screen.
+- ad088d6: Fixed: The audit workbook's "What was searched" sheet is now in plain words. Its Result and Note columns carry the search log's own notes. Engine vocabulary could reach them: a receipt "deferred", a full web address, a bare HTTP code. Those words are now replaced as the workbook is built, a republished report included. A search recorded as not run still reads as not searched. Search terms and names stay exactly as written, because they record what was searched.
+- ff16a3b: For operators: The deployment health check now reports whether the component that updates an installation is itself up to date. It was the one part of a deployment the check could not identify. An installation kept current by an out-of-date updater could report healthy while serving stale code.
+  
+  For operators: An updater that cannot be identified is now reported as a failure rather than passed over. A copy old enough to predate this reporting writes nothing at all. That silence is the case worth knowing about, so it is treated as a finding.
+
 ## 0.3.0-beta.1
 
 ### Minor Changes
