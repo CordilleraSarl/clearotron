@@ -491,6 +491,25 @@ matches, the neutral Generic default applies.
 - **Your real customers live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
   config store and the engine loads *those* accounts instead. **Same engine, different config path** —
   the code carries no customer identities.
+
+  Two things go with it, and both are refusals rather than preferences:
+
+  - **`PROFILE_REPO_ROOT` moves too.** The customer directory has to sit inside the repository that
+    variable names, because editing a profile is a commit. Point one somewhere new and leave the other
+    behind and the portal and the profile service both refuse to start, naming both variables.
+  - **That repository needs a `user.name` and a `user.email` of its own.** Saves are committed under
+    the name of whoever asked for them, but git also records who *made* the commit, and it will not
+    commit at all without one. A service account usually has no global git identity, so a store created
+    by hand needs its own:
+
+    ```bash
+    git init -b main /srv/clearotron-store
+    git -C /srv/clearotron-store config user.name  "clearotron local install"
+    git -C /srv/clearotron-store config user.email "clearotron@example.com"
+    ```
+
+    `clearotron start` does this for the store it creates. A store you make yourself does not get it,
+    and the symptom is the first save failing at a commit rather than anything about profiles.
 - **Run data is external too.** Published reports, audits, and per-run state go to the archive pool at
   `CLEAROTRON_REPORTS_DIR`. Nothing customer-specific is committed to the repository.
 
