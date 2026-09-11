@@ -1590,7 +1590,10 @@ export function makePortalService({
           // A provider outage is not a portal fault and must not read as one. The composer shows the
           // sentence and keeps every field the user already typed — the brief is still in the box.
           audit({ event: "compose-read", by: principal.email, ok: false, error: String(e?.message ?? e) });
-          return { status: 502, json: { code: "read_failed", error: "The reader is not answering just now — set the search up below." } };
+          // NOT "just now": a throw says nothing about whether it will pass, and that wording sent a reader
+          // back to the button for a failure no retry fixes. It names the check instead.
+          return { status: 502, json: { code: "read_failed",
+            error: `The request could not be read: the reader failed. \`${browserCommand("doctor --probe-engine")}\` finds out why — set the search up below meanwhile.` } };
         }
         // Length, never content. A brief is client material — whose mark, for whose product, before
         // whose deadline — and an audit log is a different disclosure surface from a run store.
@@ -4711,7 +4714,8 @@ const PORT = PORT_CHOICE.port;
         return null;
       }
       log(`brief reading ON — engine=${runner.engine} billing=${runner.authMode} model=${model}`);
-      return makeComposeReader({ turn: runner.turn });
+      // The check a failed read points at, as a reader types it, with no path of this machine in it.
+      return makeComposeReader({ turn: runner.turn, checkCommand: browserCommand("doctor --probe-engine") });
     } catch (e) {
       // A missing dependency or a bad key shape must not stop the portal booting: everything else on
       // this service is the load-bearing product, and the composer degrades to exactly what it did

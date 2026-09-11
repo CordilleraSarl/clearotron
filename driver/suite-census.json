@@ -381,6 +381,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-key-the-demo-prints-signs-for-that-demo.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-killed-browser-takes-its-children.test.mjs": {
           "tests": 2,
           "asserts": 4,
@@ -546,6 +552,12 @@
         "a-queued-what-if-is-answered-before-its-run-archives.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-read-the-engine-could-not-answer-names-the-check.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -3101,7 +3113,7 @@
         },
         "portal-service.test.mjs": {
           "tests": 124,
-          "asserts": 671,
+          "asserts": 673,
           "skips": 1,
           "todos": 0
         },
@@ -4227,6 +4239,12 @@
           "skips": 0,
           "todos": 0
         },
+        "status-and-stop-see-a-foreground-start.test.mjs": {
+          "tests": 6,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "status-says-when-a-service-predates-its-config.test.mjs": {
           "tests": 7,
           "asserts": 24,
@@ -4518,6 +4536,12 @@
         "the-demo-links-its-reports-to-its-own-portal.test.mjs": {
           "tests": 3,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-demo-offers-no-background-form.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

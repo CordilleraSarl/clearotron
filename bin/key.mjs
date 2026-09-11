@@ -29,7 +29,8 @@
 import "../shared/env-local.mjs";   // side effect: apply the install's .env — FIRST, before anything reads process.env
 import { invocationPrefix } from "../shared/invocation.mjs";
 import { existsSync, readFileSync } from "node:fs";
-import { defaultGrantsPath } from "./start.mjs";
+import { defaultGrantsPath, installPaths } from "./start.mjs";
+import { demoTokenSecretPath } from "../shared/client-door.mjs";
 import { mintFromOptions } from "../mcp-server/mint-token.mjs";
 
 const argv = process.argv.slice(2);
@@ -44,6 +45,7 @@ const USAGE = `usage: ${p}clearotron key issue <email> [options]
 
     --accounts a,b     cap the key to these account keys as well (omit = whatever their grant allows)
     --ttl-days <n>     how long it is valid (default 90)
+    --base <dir>       the install or demo to issue for, when it is not the one set up in ~/trademark
 
 The token is printed ONCE on stdout and stored nowhere — possession is the credential. Everything
 else goes to stderr, including the jti that revokes it.`;
@@ -64,6 +66,17 @@ const email = positional[0];
 // a silent default here would issue a key to the wrong identity.
 if (!email) die(`who is the key for? Give the person's email.\n\n${USAGE}`);
 if (!email.includes("@")) die(`"${email}" is not an email address — the subject of an account key is the identity their assistant presents, and the grants file is keyed on it.`);
+
+// `--base` NAMES THE INSTALL, as it does for `start` and `passphrase`: its guest list, and — for a demo,
+// which keeps its signing secret in its own base rather than in any settings file — that secret. Without
+// it the verb read the install's settings and refused to issue a key for a running demo.
+const baseAt = rest.indexOf("--base");
+const base = baseAt >= 0 ? rest[baseAt + 1] : null;
+if (baseAt >= 0 && (!base || base.startsWith("--"))) die(`--base needs a directory.\n\n${USAGE}`);
+if (base) {
+  const secretFile = demoTokenSecretPath(base);
+  if (existsSync(secretFile)) process.env.TRADEMARK_MCP_TOKEN_SECRET = readFileSync(secretFile, "utf8").trim();
+}
 
 const ttlDays = Number(flag("--ttl-days") ?? 90);
 const accounts = flag("--accounts") ? flag("--accounts").split(",").map((s) => s.trim()).filter(Boolean) : null;
@@ -93,7 +106,7 @@ for (const line of minted.notes) console.error(line);
 // inert. STDERR, so the token stays alone on stdout and `key issue ... > token.txt` keeps working —
 // that split is deliberate and this must not undo it.
 try {
-  const rosterPath = defaultGrantsPath();
+  const rosterPath = base ? installPaths(base).grants : defaultGrantsPath();
   if (!existsSync(rosterPath)) {
     console.error(`\nNOTE: no guest list at ${rosterPath} yet, so nothing grants ${email} anything and this key will be refused at the door. \`clearotron start\` writes the list; then: clearotron grant add ${email} --tenant <name> --accounts <brand-owner-key>`);
   } else {

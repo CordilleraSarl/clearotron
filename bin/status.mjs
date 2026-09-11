@@ -18,6 +18,7 @@ import { BACKGROUND_UNITS, resolvePorts } from "./start.mjs";
 import { parseEnvFile } from "../driver/systemd/render-units.mjs";   // ONE KEY=value reader — what systemd actually reads
 import { CLIENT_DOOR_UNIT, clientDoorPort } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";
+import { readRunning, probe } from "../shared/running-start.mjs";
 import { configStaleness, stalenessWarning, parseSystemdTimestamp } from "../driver/config-staleness.mjs";   // — F48
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
@@ -57,15 +58,32 @@ const startedEpochMs = (u) => {
     return parseSystemdTimestamp(line?.slice("ActiveEnterTimestamp=".length));
   } catch { return null; }
 };say("");
+// ── A FOREGROUND START ANSWERS HERE TOO ─────────────────────────────────────────────────────────────
+//
+// The README starts the product in a terminal, and this verb answered only for background units: with
+// everything up it printed a sentence about units the reader never installed (measured on a published
+// beta, 2026-09-11). The record gives the address `start` printed; the portal itself says whether it is up.
+const running = readRunning();
+for (const r of running) {
+  const what = r.demo ? "The demo" : "The product";
+  if (await probe(r.url)) say(`  ${what} is up, in the foreground — a terminal holds \`start\` (pid ${r.pid}); Ctrl-C there stops it.`);
+  else say(`  ${what} was started in the foreground (pid ${r.pid}), but its portal at ${r.url} is not answering.`);
+  say(`    Open         ${r.url}`);
+  say(`    Engine door  http://${r.host}:${r.ports.mcp}/mcp`);
+  if (r.ports.client) say(`    Client door  http://${r.host}:${r.ports.client}/mcp`);
+  say("");
+}
 let installed = 0;
 for (const u of BACKGROUND_UNITS) {
   if (!existsSync(join(UNIT_DIR, u))) continue;
   installed++;
   say(`  ${u.padEnd(34)} ${state(u)}`);
 }
-if (!installed) {
-  say("  No background units are installed — this box runs the product only while a terminal holds");
-  say(`  \`clearotron start\`. \`clearotron start --background\` is the form that survives the terminal.`);
+if (!installed && running.length) {
+  say("  No background units are installed.");
+} else if (!installed) {
+  say("  The product is not running: no terminal holds `start`, and no background units are installed.");
+  say(`  \`${invoke("start")}\` runs it in a terminal; \`${invoke("start")} --background\` runs it as services that survive logout.`);
 } else {
   // The ports come from the same resolver start uses, RESOLVED OVER THE UNITS' OWN FILE: the running
   // services read %h/.env via systemd, and this CLI's shell env may know nothing of it — the first

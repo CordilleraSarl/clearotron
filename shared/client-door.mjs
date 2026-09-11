@@ -103,6 +103,45 @@ export function denylistFor({ paths, demo = false, env = {}, home }) {
 }
 
 /**
+ * THE DEMO'S SIGNING SECRET, KEPT IN THE DEMO'S OWN BASE.
+ *
+ * The demo generated its signing secret per run and held it in memory only, so the key command its
+ * terminal printed could never sign a key its door would accept: run from a second terminal, as printed,
+ * it read the install's settings and refused (measured on a published beta, 2026-09-11). The secret now
+ * lives beside the demo's revocation list, mode 600, so `key issue --base <demo base>` reads the one the
+ * door was given, and removing the demo is still removing one directory.
+ */
+export const demoTokenSecretPath = (base) => join(base, "token-secret");
+
+/**
+ * The secret a demo's door signs with: the one its base already holds, or a new one written there.
+ * `io` is `{ read, write, mint }`; a read that finds nothing is the first start.
+ */
+export function demoTokenSecret(base, io) {
+  const path = demoTokenSecretPath(base);
+  let held = "";
+  try { held = String(io.read(path) ?? "").trim(); } catch { /* not yet written */ }
+  if (held) return held;
+  const fresh = io.mint();
+  io.write(path, `${fresh}\n`);
+  return fresh;
+}
+
+/**
+ * The key command a start prints beside its client door — runnable exactly as printed.
+ *
+ * A demo's door admits the demo's own account, so the command names it rather than a placeholder a reader
+ * cannot type, and it names the demo's base so the verb reads that demo's secret and guest list. An
+ * install moved with `--base` is named too, for its guest list; the default install needs neither.
+ */
+export function keyIssueCommand({ prefix = "", demo = false, user = null, base = null, defaultBase = null } = {}) {
+  const q = (d) => (/\s/.test(d) ? `"${d}"` : d);
+  const who = demo && user ? user : "<email>";
+  const where = base && (demo || base !== defaultBase) ? ` --base ${q(base)}` : "";
+  return `${prefix}clearotron key issue ${who}${where}`;
+}
+
+/**
  * Create the denylist if it is absent, so the door is born consulting a file that exists.
  *
  * Idempotent and never destructive: an existing list is left exactly as it is. Mode 600 because it
