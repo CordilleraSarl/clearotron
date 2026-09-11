@@ -4,6 +4,16 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0-beta.10
+
+### New
+
+- The install guide now says how to remove Clearotron, naming every path it writes and which one holds your reports.
+
+### Fixed
+
+- A portal address that does not exist now says so wherever it is. Addresses under the admin path used to show the Global config screen.
+
 ## 0.3.0-beta.9
 
 ### Fixed
