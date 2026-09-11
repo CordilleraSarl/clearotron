@@ -241,8 +241,8 @@ test("a Signa listing taken before the numbers were kept renders its filings as 
   assert.deepEqual(meta.recordLinks, { linked: {}, cited: {}, noNumber: 4 });
 });
 
-test("on any other register the filings render byte for byte as before, with no office link", async () => {
-  const other = (doc) => ({ ...doc, provider: "clarivate", providerLabel: "Clarivate" });
+test("on a register that publishes record pages of its own the filings render byte for byte as before, with no office link", async () => {
+  const other = (doc) => ({ ...doc, provider: "euipo", providerLabel: "EUIPO" });
   const kept = await publish(other(structuredClone(LISTING)), "ko-office-record-other");
   const before = await publish(other(withoutNumbers(LISTING)), "ko-office-record-other");
   assert.ok(kept.html.includes(`<td class="ko-findev">${HANDLE.ch}</td>`), "the filing shows by its handle, as before");
@@ -254,7 +254,7 @@ test("on any other register the filings render byte for byte as before, with no 
 
 test("an office link already on the sidecar is never what the report shows", async () => {
   const planted = { office: "ch", label: "CH 99999/2020", href: "https://planted.invalid/record", reason: null };
-  const other = { ...structuredClone(LISTING), provider: "clarivate" };
+  const other = { ...structuredClone(LISTING), provider: "euipo" };
   other.marks[0].records = other.marks[0].records.map((r) => ({ ...r, officeLink: planted }));
   const signa = structuredClone(LISTING);
   signa.marks[0].records = signa.marks[0].records.map((r) => (r.recordId === HANDLE.none ? { ...r, officeLink: planted } : r));
@@ -274,7 +274,7 @@ test("the connector's evidence view states each filing's link as report-data.jso
   const shapes = [
     ["numbers kept", structuredClone(LISTING), 3],
     ["numbers not kept", withoutNumbers(LISTING), 0],
-    ["another register", { ...structuredClone(LISTING), provider: "clarivate", providerLabel: "Clarivate" }, 0],
+    ["another register", { ...structuredClone(LISTING), provider: "euipo", providerLabel: "EUIPO" }, 0],
     ["a link planted on the sidecar", plantedOn(structuredClone(LISTING)), 3],
   ];
   const seen = {};
@@ -302,4 +302,77 @@ test("the connector's evidence view states each filing's link as report-data.jso
   assert.deepEqual(kept.get(HANDLE.wo).officeRecord, { label: WO.label, href: WO.href, reason: null });
   assert.deepEqual([kept.get(HANDLE.sg).officeRecord, kept.get(HANDLE.sg).url], [{ label: SG.label, href: null, reason: "no-page" }, null]);
   for (const h of [HANDLE.ch, HANDLE.sg, HANDLE.wo]) assert.notEqual(kept.get(h).url, h, `the connector gave the handle ${h} as the link`);
+});
+
+// ── The other register with no record pages: Compumark, through its own adapter ─────────────────────────
+// Its search answers with record ids alone and its screen call hydrates them, so the stand-in vendor
+// answers both. The numbers are made up, in the forms Compumark returned on the test instance: a US
+// serial, an EU number under the office code EM and unpadded, a bare seven-digit UK national number, and
+// a Chinese number, an office the table holds no address for.
+const compumarkRecord = (office, applicationNumber, registrationNumber = null) => ({
+  id: `g-${office.toLowerCase()}`, registrationOfficeCode: office,
+  wordMarkSpecification: { markVerbalElementText: MARK },
+  applicants: [{ applicantName: `Kurena ${office}` }],
+  niceClassifications: [{ classNumber: 9 }],
+  status: { cmNormalisedStatus: "Registered", application: { applicationNumber, applicationDate: "20210304" }, registration: { registrationNumber } },
+});
+const COMPUMARK_RECORDS = [
+  compumarkRecord("US", "79123456"), compumarkRecord("EM", "12345678", "12345678"),
+  compumarkRecord("GB", "4123456", "4123456"), compumarkRecord("CN", "71234567", "71234567"),
+];
+
+/** The listing, taken through Compumark's own adapter against a stand-in vendor. */
+async function listOnCompumark() {
+  const realFetch = globalThis.fetch;
+  const called = [];
+  process.env.CLARIVATE_API_KEY = "fixture-key";
+  process.env.CLARIVATE_API_BASE = "https://clarivate.test";
+  const ids = {};
+  for (const r of COMPUMARK_RECORDS) (ids[r.registrationOfficeCode] ??= []).push(r.id);
+  globalThis.fetch = async (url) => {
+    const { host, pathname } = new URL(String(url));
+    called.push(`${host}${pathname}`);
+    const body = pathname === "/search" ? { ids, took: 1 } : { trademarks: COMPUMARK_RECORDS, nonTrademarks: [] };
+    return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
+  };
+  try {
+    // The executor's own call (resolveRecordExecutor), with the offices named outright: a run hands the
+    // lister the offices it resolved from the matter, and a record log of the run's own.
+    const recordLog = join(mkdtempSync(join(ROOT, "compumark-")), "register-records.jsonl");
+    const lister = (term, { classes, limit }) => PROVIDERS.clarivate.listRecords(
+      { name: term, matchMode: "exact", classes, regions: ["US", "EU", "GB", "CN"], limit }, { agentId: "t", sessionKey: "t", recordLog });
+    const doc = await listRegisterRecords({ marks: [{ name: MARK, classes: [9] }], provider: "clarivate", capabilities: { id: "clarivate" }, lister });
+    assert.deepEqual([...new Set(called)].sort(), ["clarivate.test/search", "clarivate.test/text"], "every call went to the stand-in vendor");
+    return doc;
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+}
+
+test("a Compumark knockout gives each filing its office's page from its own numbers, and cites the Chinese one by number", async () => {
+  const listing = await listOnCompumark();
+  const records = listing.marks[0].records;
+  const of = (office) => records.find((r) => r.recordId === `/mark/${office}/g-${office}`);
+  assert.equal(records.length, COMPUMARK_RECORDS.length, "the listing kept every filing");
+  assert.deepEqual([of("us").applicationNumber, of("em").applicationNumber, of("gb").applicationNumber, of("cn").registrationNumber],
+    ["79123456", "12345678", "4123456", "71234567"], "the listing kept the office's numbers from the screen rows");
+
+  const US = officeRecordLink(of("us"), of("us").recordId);
+  const EU = officeRecordLink(of("em"), of("em").recordId);
+  const GB = officeRecordLink(of("gb"), of("gb").recordId);
+  const CN = officeRecordLink(of("cn"), of("cn").recordId);
+  assert.equal(US.href, "https://tsdr.uspto.gov/#caseNumber=79123456&caseType=SERIAL_NO&searchType=statusSearch");
+  assert.equal(EU.href, "https://euipo.europa.eu/eSearch/#details/trademarks/012345678");
+  assert.equal(GB.href, "https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/UK00004123456");
+  assert.deepEqual([CN.href, CN.reason, CN.label], [null, "unknown-office", "CN 71234567"]);
+
+  const { html, filings, meta } = await publish(structuredClone(listing));
+  for (const l of [US, EU, GB]) assert.ok(count(html, anchor(l)) >= 1, `${l.label} is not linked to its office's page in the report`);
+  assert.ok(html.includes(`<td class="ko-findev">${CN.label}</td>`), "the Chinese row cites its number");
+  assert.equal(count(html, "CN: we hold no page address for this register, so its registrations are cited by number."), 1, "the reason, once");
+  for (const r of records) assert.ok(!html.includes(r.recordId), `the handle ${r.recordId} reached the report`);
+  const note = Object.fromEntries(filings.map((r) => [r.Record, r.Note]));
+  assert.deepEqual(Object.keys(note).sort(), [US.href, EU.href, GB.href, CN.label].sort(), "the workbook's Record cells");
+  assert.equal(note[CN.label], reasonCellFor(CN));
+  assert.deepEqual(meta.recordLinks, { linked: { us: 1, eu: 1, gb: 1 }, cited: { cn: { "unknown-office": 1 } }, noNumber: 0 });
 });

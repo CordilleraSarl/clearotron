@@ -26,6 +26,8 @@ export { koPaths } from "../../driver/stages-knockout.mjs";
 // this same function rather than from a second reading of the numbers. office-record-links.mjs imports
 // nothing, so the read-only server stays light.
 export { addressListedFilings } from "../../driver/publish/office-record-links.mjs";
+// Which registers publish no page per record, as publish decides it: the sidecar's register, looked up.
+export { recordOriginsFor } from "../../driver/record-origins.mjs";
 
 // stripInternal/stripEngineInternals/stripTelemetry are the driver's OWN client-safety transforms — the
 // same ones publish/render.mjs applies to the client HTML export. lib/scrub.mjs composes them so the MCP
