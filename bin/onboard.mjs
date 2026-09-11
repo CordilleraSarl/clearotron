@@ -1206,7 +1206,7 @@ export async function runCheck() {
   // deliberate — a second reader would drift from this one exactly as the composer and the checker did
   // in F41, and the drift is invisible because both sides keep passing their own arms.
   const unitDir = join(homedir(), ".config", "systemd", "user");
-  const { BACKGROUND_UNITS } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
+  const { BACKGROUND_UNITS, startPaths } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
   const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
   const unitEnv = hosted
     ? unitEnvironment({
@@ -1628,6 +1628,13 @@ export async function runCheck() {
         // because a reader debugging `clearotron run` by hand IS this process.
         info(`this command's own process ${where} — a CLI is not started by the units' EnvironmentFile, so `
           + "that differs by design and is not what a run uses");
+      } else if (!hosted && svcCustomers?.from === serviceEnvLabel) {
+        // NAMED IN THE ENV FILE ALONE, ON AN INSTALL WITH NO UNITS. `clearotron start` loads that file and
+        // its services inherit the store; this command does not load it, so its own process fell back to
+        // the bundled roster and printed that as the answer, one line below a ✓ for the same variable.
+        ok(`the services resolve profiles from ${svcCustomers.v} (${svcCustomers.from})`);
+        info(`this command's own process ${where} — it does not load ${serviceEnvFile}, so that differs by `
+          + "design and is not what `clearotron start` hands the services");
       } else {
         if (r.situation === "overlay" && !r.findings.length) ok(`${where} — the configured store`);
         else if (r.situation === "bundled-fallback") info(`${where} — THE BUNDLED DEMO ROSTER, because CLEAROTRON_CUSTOMERS_DIR is unset. Legitimate on a generic-defaults install; a fallback either way, and it is what a misconfigured deployment also looks like`);
@@ -1638,7 +1645,8 @@ export async function runCheck() {
         info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
           + "what the services resolve is not judged here, and the line above is this process's own answer");
       info("what a RUN used is its own `profile-store` journal line — this command reports what the "
-        + (hosted ? "units' file says, which the running services read at their own start" : "environment you are typing in says"));
+        + (hosted ? "units' file says, which the running services read at their own start"
+          : "environment you are typing in and your environment file say, which `clearotron start` reads at its own start"));
       // ── AND WHO IS ACTUALLY IN IT ─────────────────────────────────────────
       //
       // The line above names the STORE. An operator who has just configured one wants to know their
@@ -1807,16 +1815,32 @@ export async function runCheck() {
   // be read, the lines above already said so and nothing is judged here. A store that is configured but
   // holds a file that cannot be read fails every company's saved searches, in the portal and the
   // connector alike, so that is read here too.
+  //
+  // WITH NO UNITS, THE SERVICES ARE `clearotron start`'s CHILDREN, and it hands every one of them a store
+  // whether or not the env file names it. So "off" is only ever true of a hosted box. This read the env
+  // file alone, and on a local install started before `start` wrote the store there, it told a portal
+  // that was listing saved searches that they were off.
   if (!hosted || serviceKnown) {
-    const recipesSet = hosted ? effectiveForService("CLEAROTRON_RECIPES_DIR") : effective("CLEAROTRON_RECIPES_DIR");
+    // Layered as effectiveForService layers it — this command's environment over the services' file — so
+    // the repository root is read from the same place the store directory is.
+    let storeEnv = { ...(serviceFileEnv ?? {}), ...process.env };
+    let recipesSet = effectiveForService("CLEAROTRON_RECIPES_DIR");
+    let handedBy = "";
+    if (!hosted && !recipesSet?.v) {
+      const handed = startPaths({ env: storeEnv });
+      recipesSet = { v: handed.recipes, from: "clearotron start", name: "CLEAROTRON_RECIPES_DIR" };
+      storeEnv = { ...storeEnv, RECIPE_REPO_ROOT: handed.configStore };
+      handedBy = " — where `clearotron start` puts them";
+    }
     const recipesDir = recipesSet?.v || null;
     if (!recipesDir) {
       info("saved searches are off: CLEAROTRON_RECIPES_DIR is not set, so Custom searches in the portal and the "
         + "connector offer none. Name a directory inside a git repository to switch them on");
+    } else if (handedBy && !existsSync(join(storeEnv.RECIPE_REPO_ROOT, ".git"))) {
+      // NOT CREATED YET IS NOT UNREADABLE. The store does not exist until the first start makes it, and
+      // reading it now would report a missing directory as a broken one.
+      info(`saved searches switch on at the first \`clearotron start\`, which creates their store in ${recipesDir}`);
     } else {
-      // Layered as effectiveForService layers it — this command's environment over the services' file — so
-      // the repository root is read from the same place the store directory above was.
-      const storeEnv = { ...(serviceFileEnv ?? {}), ...process.env };
       const resolved = resolveStoreRepoRoot({ names: ["RECIPE_REPO_ROOT", "PROFILE_REPO_ROOT"], fallback: REPO, env: storeEnv });
       const reach = storeInRepo(recipesDir, resolved.root);
       if (!reach.ok) {
@@ -1829,7 +1853,7 @@ export async function runCheck() {
         if (unreadable) {
           warn(`saved searches cannot be read from ${recipesDir}: ${unreadable}. Every company's saved searches fail `
             + "to load, in the portal and the connector, until that file is fixed");
-        } else ok(`saved searches are read from ${recipesDir}, and saves are committed in ${reach.repo}`);
+        } else ok(`saved searches are read from ${recipesDir}${handedBy}, and saves are committed in ${reach.repo}`);
       }
     }
   }
