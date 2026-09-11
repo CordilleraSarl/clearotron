@@ -1,5 +1,11 @@
 # portal-ui
 
+## 0.3.0-beta.5
+
+### Patch Changes
+
+- 2878809: Fixed: When the company store cannot record a new company, the New company page now says why and what fixes it, instead of "Try again shortly". Someone who does not run the installation is told to ask whoever does.
+
 ## 0.3.0-beta.4
 
 No changes in this release.

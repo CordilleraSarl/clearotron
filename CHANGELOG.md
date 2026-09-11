@@ -4,6 +4,15 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0-beta.5
+
+### Fixed
+
+- A Clearotron install signed in to OpenAI's `codex` with a subscription keeps working after codex refreshes its login. Before, every search after the first refresh failed within seconds until you signed in again.
+- When the company store cannot record a new company, the New company page now says why and what fixes it, instead of "Try again shortly". Someone who does not run the installation is told to ask whoever does.
+- On an install run with `clearotron start`, a connected assistant now lists the same saved searches as the portal, including Generic's. `clearotron doctor` no longer says working saved searches are off, and it names one place profiles come from.
+- When setup offers to try your engine, it no longer names an Anthropic model to someone who chose OpenAI's `codex`.
+
 ## 0.3.0-beta.4
 
 ### New

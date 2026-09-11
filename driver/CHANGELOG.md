@@ -1,5 +1,14 @@
 # clearotron-driver
 
+## 0.3.0-beta.5
+
+### Patch Changes
+
+- 5f7e295: Fixed: A Clearotron install signed in to OpenAI's `codex` with a subscription keeps working after codex refreshes its login. Before, every search after the first refresh failed within seconds until you signed in again.
+- 2878809: Fixed: When the company store cannot record a new company, the New company page now says why and what fixes it, instead of "Try again shortly". Someone who does not run the installation is told to ask whoever does.
+- e7cd9e1: Fixed: On an install run with `clearotron start`, a connected assistant now lists the same saved searches as the portal, including Generic's. `clearotron doctor` no longer says working saved searches are off, and it names one place profiles come from.
+- e7cd9e1: Fixed: When setup offers to try your engine, it no longer names an Anthropic model to someone who chose OpenAI's `codex`.
+
 ## 0.3.0-beta.4
 
 ### Minor Changes
