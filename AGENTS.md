@@ -151,3 +151,19 @@ npm run build:ui                              # only if you changed portal-ui/sr
 
 Grep the suite log for `[repo-guard] SKIPPED`: a guard that skipped cleared nothing, and CI asserts there
 are none. `CONTRIBUTING.md` has the full rules.
+
+## Before you merge onto a release commit
+
+The release workflow merges its own version pull request, and a merge made with the workflow's token
+starts no workflow. The version commit then sits on `main`, cut but not published, until the release
+workflow next runs there: on the next push to `main`, or on its schedule, which can be hours late.
+
+That next push publishes the tree **it** carries, under the version already on `main`. So when `main`'s
+version has no tag yet, a merge that ships code publishes that code under a changelog that does not
+mention it. Publish the waiting version first, with a merge that touches only files the package does not
+ship (this file is one; `npm pack --dry-run` lists what ships), or wait for the tag.
+
+```sh
+node -p "require('./package.json').version"     # the version on main
+git ls-remote --tags origin "v$(node -p "require('./package.json').version")"   # empty: not published yet
+```
