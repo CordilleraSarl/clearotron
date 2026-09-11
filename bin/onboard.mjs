@@ -1503,6 +1503,9 @@ export async function runCheck() {
     } else if (form.form === "shim-path") {
       warn(`${form.dir} is not on this shell's PATH, so the bare \`clearotron\` will not resolve here`);
       info(`add it with: export PATH="${form.dir}:$PATH"  — or open a new login shell`);
+    } else if (form.form === "npx-pinned") {
+      info(`this is running from npm's npx cache, so the commands below name this version through npx (\`${form.prefix.trim()}\`), `
+        + `which works from any directory and after npm cleans its cache; \`${invoke("install")}\` puts \`clearotron\` on your PATH`);
     } else if (form.shimKind === "ours-other-install") {
       warn(`${form.shim} is a shim for a DIFFERENT install (${form.otherInstall})`);
       info(`re-run \`${invoke("install")}\` to point the bare name at this one`);

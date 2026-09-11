@@ -205,6 +205,24 @@ export function invocationForm(env = process.env, io = FS, installDir = INSTALL_
     // right there and naming it in full is true from any directory.
     return { form: "shim-path", prefix: `${globalDir}${sep}`, shim: globalExe, dir: globalDir, onPath, shadowedBy, staleInterpreter: null, via: "global" };
   }
+  // ── FROM NPX'S CACHE, THE PUBLISHED VERSION, NOT THE CACHE ──────────────────────────────────────────
+  //
+  // `in-place` below names the directory this install runs from, and under npx that is npm's cache:
+  // `cd <npm's cache> && npx clearotron …`. npm deletes that directory when it cleans its cache, so every
+  // command a verb printed there stopped working before its reader typed it (a packaged-install drive of
+  // `doctor`, 2026-09-11, found thirteen). `npx -p clearotron@<version>` fetches this same version from any
+  // directory. It is the decision `browserCommand` makes for a page, `npx clearotron@<version> <verb>`,
+  // spelled for a PREFIX, which the word `clearotron` follows. Asked after a shim of ours and a global
+  // install, which are stronger evidence than the cache path; a version that cannot be read falls through
+  // to `in-place` rather than naming a guess.
+  const npxVersion = npxVersionOf(installDir, io.read ?? readFileSync);
+  if (npxVersion) {
+    return {
+      form: "npx-pinned", prefix: `npx -p clearotron@${npxVersion} `, shim: path, dir,
+      onPath: false, shadowedBy: null, shimKind: shim.kind, otherInstall: shim.installDir,
+      staleInterpreter: shim.interpreterMissing === true ? shim.interpreter : null,
+    };
+  }
   // ✕ A BROKEN SHIM MUST NOT BE THE FORM WE HAND BACK, however well it identifies itself. Driven and
   // caught: doctor reported the stale interpreter and then told the reader to run `clearotron install`
   // to fix it — through the very shim it had just called broken. The advice for repairing a route
