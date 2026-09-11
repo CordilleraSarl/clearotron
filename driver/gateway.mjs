@@ -1058,6 +1058,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
+    const dispatchedAt = Date.now();   //: start of this attempt's window in the per-run refusal journals
     const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files });   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
@@ -1368,7 +1369,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // ONE artifact judgement, shared by both rescues below (the rule: never a second, drifting copy of
     // the contract). Present + written by THIS attempt (the per-attempt snapshot — an inherited file and
     // equally an earlier attempt's file never rescue a failed turn) + passes the stage's own validator.
-    const attemptWroteTruth = () => {
+    const attemptWroteTruth = (why = null) => {
       // — the rescues judge with `validate` directly rather than through judgeArtifacts, so the union
       // has to run here too or a rescued turn would be refused for rows the form already holds. Idempotent,
       // so the double call on the normal path costs a regeneration and changes nothing.
@@ -1381,16 +1382,21 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // answer for a killed-in-the-gap attempt is no. Idempotent, so the double call costs a regeneration.
       const pu = syncPlacementForm(files);
       if (pu) lastPlacementUnion = pu;
+      // `why`, when a caller passes one, is told WHICH file failed and on what, so a refusal can name both.
       return files.every((f) => {
         const now = statOf(f);
-        if (now === null || now === preArtifact.get(f)) return false;   // absent, or not written by this attempt
-        if (validate) { const v = validate(f, readFileSync(f, "utf8")); if (!v.ok) return false; }
+        const no = (cause, reason) => { if (why) Object.assign(why, { file: rel(f), cause, ...(reason ? { reason } : {}) }); return false; };
+        if (now === null) return no("absent");
+        if (now === preArtifact.get(f)) return no("not-written-by-this-attempt");
+        if (validate) { const v = validate(f, readFileSync(f, "utf8")); if (!v.ok) return no("invalid", v.reason ? String(v.reason) : undefined); }
         return true;
       });
     };
     let rescued = null;
     let quiescentMs = null;   //: how long the artifact had been untouched when the turn settled
-    let rescueRefused = null; //: WHICH of the rescue's three causes refused — on the row, not only in a note
+    let rescueRefused = null; //: WHICH of the rescue's four causes refused — on the row, not only in a note
+    let rescueRefusedFile = null, rescueRefusedReason = null;   //: and which file, and on what
+    let attemptRefusals = null;   //: this dispatch's refusals of a tool-written artifact, on a timeout
     if (fail && /^nonzero_exit_/.test(fail) && files.length) {
       if (killClass || killSeen) {
         note(`[${name}] ${fail} with a kill-class attempt in this ladder — the exit-1 rescue stays CLOSED (a killed turn's artifact may be torn mid-write and a validator cannot prove it whole); failing honestly instead`);
@@ -1427,16 +1433,28 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     //
     // A stage with no validator, or whose artifact fails it, or which never wrote, is untouched.
     else if (fail === "timeout" && turn.signals?.hardWall && files.length && validate && wallRescueEnabled()) {
-      // — `unreadable` is tracked as its own fact rather than inferred from the -1 sentinel. The
-      // sentinel is not the only way this goes negative: an artifact written in the same instant the turn
-      // settled yields a small NEGATIVE elapsed, and the refusal message read that as "artifact
-      // unreadable" — a diagnosis about the filesystem for a file that was perfectly readable and simply
-      // still being written. That is the under-quiescence case, and it is now named as one.
-      let unreadable = false;
-      const quiet = files.map((f) => { try { return settledAt - statSync(f).mtimeMs; } catch { unreadable = true; return -1; } });
-      quiescentMs = quiet.length ? Math.min(...quiet) : null;
+      // — A FILE THAT COULD NOT BE STAT'ED IS NAMED, WITH WHY, rather than folded into a number. It
+      // used to be a -1 in `quiescentMs` and the cause `artifact-unreadable`, and the commonest way to get
+      // there is not a filesystem fault at all: the turn was killed before it wrote. Measured on two
+      // stages of one run, 2026-09-10: both rows read `wrote: false`, `quiescentMs: -1`,
+      // `artifact-unreadable`, for files that did not exist. An ABSENT file (ENOENT) is its own cause now;
+      // `artifact-unreadable` stays for a stat that fails any other way, with its error code. Rows
+      // written before this change say `artifact-unreadable` for both.
+      //
+      // `quiescentMs` IS A MEASUREMENT OR IT IS ABSENT. With a file unstat'able there is no quiescence of
+      // the set to measure, so it stays null and the row omits it: a -1 reads as a number to anything that
+      // averages or compares it. An mtime that lands after the settle instant (written in that same
+      // instant, or a clock step) measures 0 rather than a negative; it is the under-quiescence case.
+      let missing = null;
+      const quiet = [];
+      for (const f of files) {
+        try { quiet.push(Math.max(0, settledAt - statSync(f).mtimeMs)); }
+        catch (e) { if (!missing) missing = { file: rel(f), code: String(e?.code ?? "unknown") }; }
+      }
+      quiescentMs = missing || !quiet.length ? null : Math.min(...quiet);
       const bar = wallRescueQuiesceMs();
-      if (quiescentMs >= bar && attemptWroteTruth()) {
+      const why = {};
+      if (quiescentMs !== null && quiescentMs >= bar && attemptWroteTruth(why)) {
         rescued = fail;
         fail = null;
         note(`[${name}] hard-wall kill at ${Math.round(wall)}s, but every expected artifact was written by this attempt, passes its validator and had been untouched for ${Math.round(quiescentMs / 1000)}s when the turn settled — the stage FINISHED and the wall is a fact about the dispatch, not a failure of the stage (the resume's skip path would accept these same bytes)`);
@@ -1451,12 +1469,24 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // rescue was refused on the third cause, its validator — and 31 minutes of finished work were
         // discarded and re-run cold. `grep -c rescue run.jsonl` on that run returns 0. Nothing in the
         // record said why, and reconstructing it took a file-mtime comparison against a preserved run dir.
-        rescueRefused = unreadable ? "artifact-unreadable"
+        rescueRefused = missing ? (missing.code === "ENOENT" ? "artifact-absent" : "artifact-unreadable")
           : quiescentMs < bar ? "under-quiescence"
           : "not-written-by-this-attempt-or-invalid";
-        note(`[${name}] hard-wall kill at ${Math.round(wall)}s — wall rescue REFUSED (${unreadable ? "artifact unreadable" : quiescentMs < bar ? `artifact touched ${Math.round(quiescentMs / 1000)}s before the kill, under the ${Math.round(bar / 1000)}s quiescence bar` : "not written by this attempt, or fails its validator"}); failing honestly as timeout`);
+        // — AND WHICH FILE, AND ON WHAT: an unstat'able file with its error code; under the bar, the file
+        // touched last (`quiescentMs` carries the number); otherwise the first file the artifact judgement
+        // failed, with its cause — `absent`, `not-written-by-this-attempt`, or the validator's own reason.
+        if (missing) { rescueRefusedFile = missing.file; rescueRefusedReason = missing.code; }
+        else if (quiescentMs < bar) rescueRefusedFile = rel(files[quiet.indexOf(quiescentMs)]);
+        else { rescueRefusedFile = why.file ?? null; rescueRefusedReason = why.reason ?? why.cause ?? null; }
+        note(`[${name}] hard-wall kill at ${Math.round(wall)}s — wall rescue REFUSED (${rescueRefused}: ${rescueRefusedFile ?? "no file named"}${rescueRefusedReason ? `, ${rescueRefusedReason}` : quiescentMs < bar ? `, touched ${Math.round(quiescentMs / 1000)}s before the kill, under the ${Math.round(bar / 1000)}s bar` : ""}); failing honestly as timeout`);
       }
     }
+    // — WHAT A KILLED ATTEMPT WAS DOING, where its transport kept a record. A tool-written artifact's
+    // refusal journal says how many times this attempt sent its record and was told no, and the reason the
+    // last time. The missing-file row has carried that last reason since the journal existed; a timeout row
+    // carried nothing, so an attempt that spent forty minutes being refused read the same as one that never
+    // called. Counted from THIS dispatch only: the journal is per run, and every attempt appends to it.
+    if (fail === "timeout" && files.length) attemptRefusals = refusalsInWindow(files, runDir, dispatchedAt, settledAt);
     // Arm the ladder-wide refusal for every LATER attempt. Read before `classifyWedge` below only because
     // the rescue above needs it; the two can never disagree in reach — isTaintRow excludes lane_wedge, and
     // a wedge is a `timeout` fail that breaks the ladder immediately, so no later attempt exists to judge.
@@ -1675,6 +1705,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // arm did not apply (no wall, no validator, no declared file).
         quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,
         rescueRefused: rescueRefused ?? undefined,   // — the cause, when the rescue looked and refused
+        rescueRefusedFile: rescueRefusedFile ?? undefined, rescueRefusedReason: rescueRefusedReason ?? undefined,
+        refusedCalls: attemptRefusals ?? undefined,   // — {count, last}: this dispatch's refusals, on a timeout
         //: the verbatim message this attempt was dispatched with — {file, sha, bytes, chars, kind}.
         // null when the run has no directory or the gate is off; {present:false, error} when the write
         // failed. An absence is a record here, never a silence.
@@ -1740,6 +1772,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           rescued: rescued ?? undefined, killed: killed || undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row
           rescueRefused: rescueRefused ?? undefined,   // — the cause, when the rescue looked and refused
+          rescueRefusedFile: rescueRefusedFile ?? undefined, rescueRefusedReason: rescueRefusedReason ?? undefined,
+          refusedCalls: attemptRefusals ?? undefined,   // — see the per-stage row
           // — AND THE BILLING PAIR, by the same argument makes for the model pair one field up:
           // the spine carries it or the two logs disagree about what ran. This is the row a sweep across
           // archived runs actually reads, and the question "has this box ever billed API" could not be
@@ -2005,6 +2039,30 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
   // sessionKey on FAILURE = the last attempted key (lastKey) — callers that recover terminally (e.g. the
   // WS-A coverage-ledger quarantine) need a session to attribute/resume; it is best-effort, not a winner.
   return { ok: false, attempts: attempt, fail: lastFail, sessionKey: lastKey, modelWire: lastModelWire, modelUsed: lastModelUsed, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, quantity: lastQuantity, reads: lastReads, readsTruncated: lastReadsTruncated, warm: lastWarm, wrote: lastWrote, formRepairs: formRepairsUsed };
+}
+
+/**
+ * One dispatch's refusals, read from the refusal journals of the tool-written artifacts in `files`.
+ * An entry is placed by its `at`; one with no readable `at` cannot be placed in a dispatch, so it is
+ * counted apart rather than guessed into this one.
+ * @returns {{ count: number, last: string|null, unattributed?: number } | null}  null when no file in
+ *   `files` has a refusal journal, so "this stage keeps no journal" never reads as "nothing was refused".
+ */
+function refusalsInWindow(files, runDir, from, to) {
+  let journals = 0, count = 0, unattributed = 0, last = null, lastAt = -Infinity;
+  for (const f of files) {
+    const reader = toolWrittenArtifact(f)?.refusals;
+    if (!reader) continue;
+    journals++;
+    for (const r of reader(runDir, f) ?? []) {
+      const at = Date.parse(String(r?.at ?? ""));
+      if (!Number.isFinite(at)) { unattributed++; continue; }
+      if (at < from || at > to) continue;
+      count++;
+      if (at >= lastAt) { lastAt = at; last = String(r?.reason ?? ""); }
+    }
+  }
+  return journals ? { count, last, ...(unattributed ? { unattributed } : {}) } : null;
 }
 
 function rel(p) {
