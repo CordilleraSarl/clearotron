@@ -4589,7 +4589,7 @@ const PORT = PORT_CHOICE.port;
         const recipeCommit = committing(recipeRepoRoot, "saved-search");
         // — same, against the RECIPE repo root, which may differ from the profile one.
         const recAudit = makeCommittableAudit({ auditPath: recipeAuditPath, repoRoot: recipeRepoRoot });
-        const recipes = makeRecipeService({ recipesDir, profileDir, gitCommit: recipeCommit, audit: recAudit });
+        const recipes = makeRecipeService({ recipesDir, profileDir, readLayered: true, gitCommit: recipeCommit, audit: recAudit });
         callRecipes = (method, path, body, identity) => recipes.route(method, path, { email: identity?.email }, body ?? {});
         log(`saved searches ON — store=${recipesDir} repo=${recipeRepoRoot}`);
       } else {

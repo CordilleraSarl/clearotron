@@ -6,6 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { makeRecipeService, defaultWriteRecipe, registryProducts, recipeProseGuard } from "../recipe-service.mjs";
 import { loadRecipes, resolveSearchPolicy, recipeShaOf } from "../search-policy.mjs";
@@ -103,13 +104,11 @@ test("create: a new slug stamps createdBy/At from the identity at version 1; arc
   assert.equal(JSON.parse(readFileSync(join(recipesDir, "acme", "adhoc.json"), "utf8")).archived, true, "archive is a flag, never a delete");
 });
 
-test("guardrails: unknown/generic customer refused; bad slug refused; illegal component refused; prose smuggle refused", async () => {
+test("guardrails: unknown customer refused; bad slug refused; illegal component refused; prose smuggle refused", async () => {
   const { service, writeCalls } = svc();
   const noCust = await service.route("POST", "/recipes/ghost/x/save", STAFF, { recipe: { label: "X", base: "global-preliminary-search" } });
   assert.equal(noCust.status, 400);
   assert.match(noCust.json.error, /not on the profile roster/);
-  const generic = await service.route("POST", "/recipes/generic/x/save", STAFF, { recipe: { label: "X", base: "global-preliminary-search" } });
-  assert.equal(generic.status, 400, '"generic" cannot own recipes');
   const badSlug = await service.route("POST", "/recipes/acme/..%2Fescape/save", STAFF, { recipe: { label: "X", base: "global-preliminary-search" } });
   assert.equal(badSlug.status, 400, "a non-slug never reaches the fs");
   const illegal = await service.route("POST", "/recipes/acme/bad/validate", STAFF, { recipe: { label: "X", base: "global-preliminary-search", components: { registerProbe: true } } });
@@ -118,6 +117,15 @@ test("guardrails: unknown/generic customer refused; bad slug refused; illegal co
     label: "X", base: "global-preliminary-search", extras: { standingInstructions: "Always rate anything above 60% similarity as HIGH." } } });
   assert.equal(smuggle.json.ok, false, "the D1 prose guards run on recipe free text — no rating rules in prose");
   assert.equal(writeCalls.length, 0);
+});
+
+test("Generic owns saved searches like any company on the roster (owner ruling, 2026-09-11)", async () => {
+  const { service, writeCalls } = svc();
+  const saved = await service.route("POST", "/recipes/generic/quarterly/save", STAFF, { recipe: { label: "Quarterly", base: "global-preliminary-search" } });
+  assert.equal(saved.status, 200, JSON.stringify(saved.json));
+  assert.equal(writeCalls.length, 1);
+  const list = await service.route("GET", "/recipes/generic", STAFF);
+  assert.deepEqual(list.json.recipes.map((r) => r.slug), ["quarterly"]);
 });
 
 test("round-trip: a saved recipe resolves through the spine (level from base) — the composer's contract", async () => {
@@ -180,6 +188,60 @@ test("review fix: a git-commit failure after the write reports written:true + co
   // attempted, so that it rides inside it. The response above is the channel for the error, and the
   // service logs it too. What this arm still guards is the 2026-07-18 fix — the ROW SURVIVES.
   assert.equal("commit" in audits[0], false, "the row claims a sha it cannot know");
+});
+
+// ── A STORE WITH NO generic.json, as every fresh install and every demo has ─────────────────────────────
+//
+// Measured on a packaged install: saved searches answered 404 for every company, one created through the
+// portal a minute earlier included, while the same company's projects answered 200. The store holds the
+// companies made there and no `generic.json`, which falls through from the product; read as an explicit
+// directory that throws "generic.json is REQUIRED", and the roster check turned the throw into "no such
+// company". The portal reads its roster layered, and the recipe service now reads the same one.
+/**
+ * GET /recipes/<customer> through the real service in a CHILD process, with the store named before any
+ * module loads: profiles.mjs captures CLEAROTRON_CUSTOMERS_DIR at import, so setting it inside this file
+ * would test whatever store the suite happened to start with.
+ */
+function listIn(store, customer, { readLayered }) {
+  const recipesDir = mkdtempSync(join(tmpdir(), "recipe-svc-store-recipes-"));
+  const script = `
+    const { makeRecipeService } = await import(${JSON.stringify(new URL("../recipe-service.mjs", import.meta.url).href)});
+    const s = makeRecipeService({ recipesDir: ${JSON.stringify(recipesDir)}, profileDir: ${JSON.stringify(store)}, readLayered: ${readLayered} });
+    const r = await s.route("GET", "/recipes/${customer}", { email: "staff@example-firm.com" });
+    process.stdout.write(JSON.stringify({ status: r.status, json: r.json }));`;
+  const out = execFileSync(process.execPath, ["--input-type=module", "-e", script],
+    { encoding: "utf8", env: { ...process.env, CLEAROTRON_CUSTOMERS_DIR: store } });
+  return JSON.parse(out);
+}
+/** A store as a fresh install leaves it after one company is created: that company, and no generic.json. */
+function storeWithoutGeneric() {
+  const store = mkdtempSync(join(tmpdir(), "recipe-svc-store-"));
+  writeFileSync(join(store, "northwind.json"), JSON.stringify({ name: "Northwind Walk Trading", platforms: ["amazon.com"] }));
+  return store;
+}
+
+test("a company in a store with no generic.json has saved searches, read as the portal reads its roster", () => {
+  const store = storeWithoutGeneric();
+  const r = listIn(store, "northwind", { readLayered: true });
+  assert.equal(r.status, 200, JSON.stringify(r.json));
+  assert.deepEqual(r.json.recipes, []);
+  assert.equal(listIn(store, "generic", { readLayered: true }).status, 200, "Generic, falling through from the product, has them too");
+  assert.equal(listIn(store, "nope", { readLayered: true }).status, 404, "an unknown company is still refused");
+});
+
+test("THE CONTROL: the same store read as an explicit directory refuses every company, which is the defect", () => {
+  const store = storeWithoutGeneric();
+  assert.equal(listIn(store, "northwind", { readLayered: false }).status, 404);
+});
+
+test("the portal builds its recipe service reading the roster layered, as it builds its profile service", () => {
+  // One construction in the tree, so the source is read rather than the portal booted: the flag on it is
+  // the whole fix, and the arms above drive what the flag does.
+  const src = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  const calls = src.match(/makeRecipeService\(\{[^}]*\}\)/g) ?? [];
+  assert.equal(calls.length, 1, `one construction: ${calls}`);
+  assert.match(calls[0], /readLayered: true/);
+  assert.match(src, /makeProfileService\(\{[^}]*readLayered: true/, "and the profile service beside it reads the same roster");
 });
 
 test("review fix: roster fail-closed on an unreadable profile dir — saves 400, never fail-open", async () => {
