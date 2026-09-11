@@ -3052,8 +3052,8 @@
           "todos": 0
         },
         "portal-local-login.test.mjs": {
-          "tests": 27,
-          "asserts": 107,
+          "tests": 28,
+          "asserts": 111,
           "skips": 0,
           "todos": 0
         },
