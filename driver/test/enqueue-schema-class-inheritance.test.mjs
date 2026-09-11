@@ -24,7 +24,7 @@
 // client name appears here.
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, chmodSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -151,4 +151,23 @@ test("the gate holds at CLAIM as well as at intake — same ladder both times", 
   // claim would park an admitted job as .failed on the runner's own second look.
   const v = validateJob({ ...UNSCOPED, profileKey: "bare", projectKey: "wearables" }, { atClaim: true });
   assert.equal(v.ok, true, `an admitted job must survive its own re-validation; errors: ${JSON.stringify(v.errors)}`);
+});
+
+// A saved-search store that cannot be read throws now, where it used to read as empty. A job that names no
+// saved search never needed it, so it must still inherit its account's classes rather than be refused.
+test("an unreadable saved-search store does not refuse a job that names no saved search", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, () => {
+  const shut = mkdtempSync(join(tmpdir(), "enqueue-recipes-shut-"));
+  const before = process.env.CLEAROTRON_RECIPES_DIR;
+  try {
+    chmodSync(shut, 0o000);
+    assert.throws(() => readdirSync(shut), "the fixture store is readable, so this arm proves nothing");
+    pinEnv(process.env, "CLEAROTRON_RECIPES_DIR", shut);
+    const v = validateJob({ ...UNSCOPED, profileKey: "classy" });
+    assert.equal(v.ok, true, `a job that never asked for a saved search was refused over the store: ${JSON.stringify(v.errors)}`);
+    assert.match(v.warnings.join(" | "), /Nice classes 9, 42/, "the account's classes were not inherited");
+  } finally {
+    if (before === undefined) delete process.env.CLEAROTRON_RECIPES_DIR; else pinEnv(process.env, "CLEAROTRON_RECIPES_DIR", before);
+    try { chmodSync(shut, 0o700); } catch { /* already gone */ }
+    rmSync(shut, { recursive: true, force: true });
+  }
 });

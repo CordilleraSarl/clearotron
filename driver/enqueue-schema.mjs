@@ -456,7 +456,9 @@ export function validateJob(job, { atClaim = false } = {}) {
       if (projectKey) consulted.push(`the project ${JSON.stringify(projectKey)}`);
       // The saved search is a rung above the project. `clarify` means the selector itself is wrong, which
       // the recipeKey/product checks further down report properly — here it just means no scope to read.
-      const resolved = resolveSearchPolicy(job, { profile, recipes: loadRecipes({ force: true, proseGuard: recipeProseGuard }) });
+      // The store is read only for a job that names a saved search, as every other door reads it: one that
+      // cannot be read must not refuse a job that never asked for anything in it.
+      const resolved = resolveSearchPolicy(job, { profile, recipes: job.recipeKey ? loadRecipes({ force: true, proseGuard: recipeProseGuard }) : null });
       if (job.recipeKey) consulted.push(`the saved search ${JSON.stringify(String(job.recipeKey))}`);
       const scope = resolveEffectiveScope(job, profile, resolved?.clarify ? null : resolved);
       inherited = Array.isArray(scope?.classes) ? scope.classes : [];

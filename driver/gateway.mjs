@@ -1511,6 +1511,12 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // Guarded on `fail`: a turn whose finished, validated artifact was just accepted (the exit-1 rescue above)
     // stays accepted — the NEXT stage's first turn hits the same cap at 0 tokens spent and postpones cleanly.
     if (turn.signals?.rateLimited && fail) fail = "rate_limited";
+    // AN ENGINE WHOSE SIGN-IN EXPIRED IS NAMED, not left as `nonzero_exit_1`. codex fails its refresh in
+    // seconds with a bare exit code while `codex login status` still reports the user signed in, so the
+    // one thing that fixes it has to be in the failure itself. AFTER the rate limit, which wins when both
+    // appear: a postponed run resumes on its own, and a signed-out one cannot. The sentence rides after
+    // the colon, as `model_mismatch:` carries its detail, so no run-level classifier needs a new token.
+    else if (turn.signals?.signedOut && fail) fail = `engine_signed_out: ${turn.signals.signedOut}`;
     // A6 (addendum 2026-07-30): stop_reason max_tokens with ZERO usable output is a DETECTED FAULT with a
     // name — never a silent paid retry. The turn ran to its output-token ceiling and the artifact never
     // landed (a content fail on a "successful" turn), or the turn itself died at the ceiling (transport
@@ -2000,6 +2006,12 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // twice. Break immediately and let the stage fail with the mismatch named on every row.
     if (fail.startsWith("model_mismatch:")) {
       note(`[${name}] model mismatch is deterministic — breaking the ladder (a retry re-buys the same wrong model)`);
+      break;
+    }
+    // A sign-in that could not be refreshed refuses every attempt the same way: the next one sends the
+    // same credential and gets the same 401, seconds apart. Break, and let the stage fail with it named.
+    if (fail.startsWith("engine_signed_out:")) {
+      note(`[${name}] the engine's sign-in could not be refreshed — breaking the ladder (a retry re-sends the same credential)`);
       break;
     }
     // D3: overload (529 / status_overloaded) — stop the ladder here: an in-ladder re-attempt hammers an

@@ -1078,11 +1078,16 @@ export function loadRecipes({ dir = process.env.CLEAROTRON_RECIPES_DIR || null, 
   const recipes = new Map();
   retiredBaseSkips.length = 0;
   let customers = [];
+  // ABSENT IS EMPTY; UNREADABLE IS AN ERROR. Only a store that is not there is a store with nothing in it.
+  // One that is there and refuses to be read (permissions, a failing disk) used to come back empty too, and
+  // every door then told its reader the company had no saved searches, while the doors that say "could not
+  // be read" never fired, because they fire on a throw.
+  const absent = (e) => e?.code === "ENOENT" || e?.code === "ENOTDIR";
   try { customers = readdirSync(dir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name); }
-  catch { recipeCache = { dir, recipes }; return recipes; }   // no recipe store ⇒ empty (not an error)
+  catch (e) { if (!absent(e)) throw e; recipeCache = { dir, recipes }; return recipes; }   // no recipe store ⇒ empty (not an error)
   for (const customer of customers) {
     let files = [];
-    try { files = readdirSync(join(dir, customer)).filter((f) => f.endsWith(".json")); } catch { continue; }
+    try { files = readdirSync(join(dir, customer)).filter((f) => f.endsWith(".json")); } catch (e) { if (!absent(e)) throw e; continue; }
     for (const f of files) {
       const slug = f.replace(/\.json$/, "");
       const r = JSON.parse(readFileSync(join(dir, customer, f), "utf8"));   // parse error = loud (config bug)
