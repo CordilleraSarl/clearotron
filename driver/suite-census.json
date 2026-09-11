@@ -3665,7 +3665,7 @@
         },
         "report-record-link-host.test.mjs": {
           "tests": 3,
-          "asserts": 26,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
