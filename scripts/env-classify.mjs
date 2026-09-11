@@ -10,6 +10,7 @@
 //   node scripts/env-classify.mjs            print the classification
 //   node scripts/env-classify.mjs --apply    write docs/architecture/env-classification.json
 //   node scripts/env-classify.mjs --check    rebuild and diff against the committed artifact
+//   node scripts/env-classify.mjs --check --artifact <path>   …against another copy, for a driven check
 //   node scripts/env-classify.mjs --gather-prod --unit-dir <d> --env-file <f>   the production name list
 //
 // ── WHAT IS READ, AND WHAT IS NEVER READ ─────────────────────────────────────────────────────────
@@ -327,7 +328,9 @@ function topLevelKeys(text, code, open) {
 //
 // Nothing would have said so. `--check` is the only thing that compares the artifact to the tree, and
 // it ran in no workflow, no hook and no test; the reproducibility arm deliberately does not re-run the
-// classifier. This commit wires `--check` into CI, which is the half that makes the drift audible.
+// classifier. It cannot run in this repository's CI at all: the artifact and the production name list it
+// needs are withheld from the public tree, so here it stops at "could not look". It runs where they are
+// laid, in the private control, and a stale artifact there names the rows that moved.
 //
 // The comment beside AUDIENCE/ISSUER below already recorded this class, one name at a time:
 // "a rename is exactly when a shape-based classifier goes wrong, and this one is a rename programme."
@@ -596,6 +599,60 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
   } };
 }
 
+/**
+ * PURE. Which rows of the classification moved between the committed artifact and the tree.
+ *
+ * @param {object|null} prev  the committed artifact, parsed; null when it could not be read
+ * @param {object} next  the classification this tree produces
+ * @returns {{ added: string[], removed: string[], changed: Array<{ name: string, fields: string[] }>, header: string[] }}
+ *   `changed` lists every field that differs, compared as JSON, so a field one side lacks counts as changed.
+ *   `header` names the top-level keys other than `rows` that differ, such as the counts.
+ */
+export function classificationDrift(prev, next) {
+  // A NAME CAN SIT ON MORE THAN ONE ROW. The catalogue can list a name more than once, and the
+  // classification then carries it once per listing, the rows identical in every field. So rows are
+  // grouped by name and compared as lists. Keyed by name alone, the last row of each name hid the others,
+  // and a change to the first of two rows read as "only the formatting differs".
+  const rowsOf = (a) => {
+    const m = new Map();
+    for (const r of Array.isArray(a?.rows) ? a.rows : []) m.set(r?.name, [...(m.get(r?.name) ?? []), r]);
+    return m;
+  };
+  const was = rowsOf(prev), now = rowsOf(next);
+  const added = [...now.keys()].filter((n) => !was.has(n)).sort();
+  const removed = [...was.keys()].filter((n) => !now.has(n)).sort();
+  const changed = [];
+  for (const [name, rows] of now) {
+    const before = was.get(name);
+    if (!before) continue;
+    if (before.length !== rows.length) { changed.push({ name, fields: [`${before.length} row${before.length === 1 ? "" : "s"}, now ${rows.length}`] }); continue; }
+    const fields = new Set();
+    rows.forEach((row, i) => {
+      for (const k of new Set([...Object.keys(before[i]), ...Object.keys(row)]))
+        if (JSON.stringify(before[i][k]) !== JSON.stringify(row[k])) fields.add(k);
+    });
+    if (fields.size) changed.push({ name, fields: [...fields].sort() });
+  }
+  changed.sort((a, b) => a.name.localeCompare(b.name));
+  const header = [...new Set([...Object.keys(prev ?? {}), ...Object.keys(next ?? {})])]
+    .filter((k) => k !== "rows" && JSON.stringify(prev?.[k]) !== JSON.stringify(next?.[k])).sort();
+  return { added, removed, changed, header };
+}
+
+/** PURE. The drift as lines a reader can act on, each list capped so a large drift stays readable. */
+export function describeDrift(d, { cap = 12, unreadable = false, missing = false } = {}) {
+  const list = (names) => names.length > cap ? `${names.slice(0, cap).join(", ")} and ${names.length - cap} more` : names.join(", ");
+  const out = [];
+  if (missing) out.push("  the committed artifact is absent, so every row below reads as added");
+  if (unreadable) out.push("  the committed artifact is not valid JSON, so every row below reads as added");
+  if (d.added.length) out.push(`  ${d.added.length} row(s) added: ${list(d.added)}`);
+  if (d.removed.length) out.push(`  ${d.removed.length} row(s) removed: ${list(d.removed)}`);
+  if (d.changed.length) out.push(`  ${d.changed.length} row(s) changed: ${list(d.changed.map((c) => `${c.name} (${c.fields.join(", ")})`))}`);
+  if (d.header.length) out.push(`  outside the rows: ${d.header.join(", ")}`);
+  if (!out.length) out.push("  no row differs, and neither does anything outside the rows: the difference is in the file's formatting");
+  return out;
+}
+
 function build() {
   const audit = JSON.parse(execFileSync(process.execPath, [join(ROOT, "scripts/env-audit.mjs"), "--json"],
     { encoding: "utf8", cwd: ROOT, maxBuffer: 1e8 }));
@@ -690,10 +747,20 @@ function main() {
   }
   if (arg === "--apply") { writeFileSync(ART, JSON.stringify(next, null, 2) + "\n"); console.log(`wrote ${ART}`); return; }
   if (arg === "--check") {
-    const prev = existsSync(ART) ? readFileSync(ART, "utf8") : "";
+    // `--artifact <path>` compares against another copy instead of the committed one, so a driven check
+    // can hand it an artifact with a row removed without touching the file a reviewer reads.
+    const against = flag("artifact") || ART;
+    const prev = existsSync(against) ? readFileSync(against, "utf8") : "";
     const same = prev === JSON.stringify(next, null, 2) + "\n";
     console.log(same ? "CHECK — the committed classification matches this tree." : "CHECK FAILED — the classification is stale. Re-stamp: node scripts/env-classify.mjs --apply");
-    if (!same) process.exitCode = 1;
+    if (!same) {
+      // SAY WHICH ROWS. "Stale" alone sends the reader to diff two large JSON files by eye; the rows that
+      // moved are what they have to judge, and they are the part a regeneration would silently absorb.
+      let before = null;
+      try { before = JSON.parse(prev); } catch { /* unreadable: said below */ }
+      for (const line of describeDrift(classificationDrift(before, next), { unreadable: prev !== "" && before === null, missing: prev === "" })) console.log(line);
+      process.exitCode = 1;
+    }
     return;
   }
   console.log(JSON.stringify(next._counts));

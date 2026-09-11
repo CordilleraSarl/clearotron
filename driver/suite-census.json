@@ -723,6 +723,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stale-classification-names-the-rows-that-moved.test.mjs": {
+          "tests": 6,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -737,7 +743,7 @@
         },
         "a-store-in-a-pushed-checkout-is-told-its-saves-will-be-published.test.mjs": {
           "tests": 9,
-          "asserts": 34,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },

@@ -466,24 +466,37 @@ export function whereSavesGo(dir, { env = process.env, gitVersion = null } = {})
     // or not one exists, so a lone remote with another name is never the default. A push remote naming it
     // is then triangular against a missing `origin`, and `simple` pushes. A review found that for the git on
     // Ubuntu 22.04 (2.34), where the 2.37 reading here said the store stayed: a missed publish, the one
-    // direction this must not err in. A version git will not state is read as a current one.
+    // direction this must not err in. A version git will not state is read both ways, below.
     const ver = /(\d+)\.(\d+)/.exec(String(gitVersion ?? ask("version").out ?? ""));
-    const modern = !ver || Number(ver[1]) > 2 || (Number(ver[1]) === 2 && Number(ver[2]) >= 37);
-    const fallback = remotes.includes("origin") ? "origin" : modern && remotes.length === 1 ? remotes[0] : null;
-    const fetchesFrom = remote.value || (modern ? fallback : "origin");
-    const dest = pushRemote.value || pushDefault.value || (remote.value === "." ? null : fallback);
     const pushing = mode.value || "simple";
-    const triangular = dest !== fetchesFrom;
-    const autoOn = modern && auto.ok && auto.out === "true";
-    const via = !dest || !remotes.includes(dest) ? null
-      : pushing === "current" ? "push.default is current"
-      // `upstream` refuses a push to a remote the branch does not fetch from, tracking set up or not:
-      // "You are pushing to remote 'x', which is not the upstream of your current branch".
-      : autoOn && (pushing === "simple" || (pushing === "upstream" && !triangular)) ? "push.autoSetupRemote is on"
-      : pushing === "simple" && triangular ? `push.default is simple, and it pushes to ${dest}, not the remote this branch fetches from`
-      : pushing === "matching" && ask("rev-parse", "--verify", "-q", `refs/remotes/${dest}/${branch}`).ok
-        ? "push.default is matching, and the remote has this branch"
-      : null;
+    const reading = (modern) => {
+      const fallback = remotes.includes("origin") ? "origin" : modern && remotes.length === 1 ? remotes[0] : null;
+      const fetchesFrom = remote.value || (modern ? fallback : "origin");
+      const dest = pushRemote.value || pushDefault.value || (remote.value === "." ? null : fallback);
+      const triangular = dest !== fetchesFrom;
+      const autoOn = modern && auto.ok && auto.out === "true";
+      const via = !dest || !remotes.includes(dest) ? null
+        : pushing === "current" ? "push.default is current"
+        // `upstream` refuses a push to a remote the branch does not fetch from, tracking set up or not:
+        // "You are pushing to remote 'x', which is not the upstream of your current branch".
+        : autoOn && (pushing === "simple" || (pushing === "upstream" && !triangular)) ? "push.autoSetupRemote is on"
+        : pushing === "simple" && triangular ? `push.default is simple, and it pushes to ${dest}, not the remote this branch fetches from`
+        : pushing === "matching" && ask("rev-parse", "--verify", "-q", `refs/remotes/${dest}/${branch}`).ok
+          ? "push.default is matching, and the remote has this branch"
+        : null;
+      return { via, dest };
+    };
+    // A GIT THAT WILL NOT STATE ITS VERSION IS READ BOTH WAYS, and publishing wins. Reading it as current
+    // was the exception to "never err toward staying": in the lone-remote case the older reading is the one
+    // that publishes. A review of that exception named it; every real git states its version, so this
+    // costs nothing today and removes the one case where the promise above did not hold.
+    const modernNow = ver && (Number(ver[1]) > 2 || (Number(ver[1]) === 2 && Number(ver[2]) >= 37));
+    const now = ver ? reading(modernNow) : reading(true);
+    const older = ver ? null : reading(false);
+    const r = now.via ? now
+      : older?.via ? { ...older, via: `${older.via}, as a git older than 2.37 would push it; this git did not state its version` }
+      : now;
+    const { via, dest } = r;
     if (!via) return { state: "stays-here", root, branch, remotes };
     const known = ask("rev-list", "--count", `refs/remotes/${dest}/${branch}..HEAD`);
     return { state: "publishes", root, branch, upstream: `${dest}/${branch}`, via,
