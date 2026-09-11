@@ -1366,8 +1366,8 @@
           "todos": 0
         },
         "connect-clients-are-data.test.mjs": {
-          "tests": 12,
-          "asserts": 46,
+          "tests": 15,
+          "asserts": 75,
           "skips": 0,
           "todos": 0
         },
@@ -1397,7 +1397,7 @@
         },
         "connector-annotations-and-pack.test.mjs": {
           "tests": 7,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -5774,8 +5774,8 @@
           "todos": 0
         },
         "newCompanyReachableFromProfile.test.ts": {
-          "tests": 3,
-          "asserts": 7,
+          "tests": 5,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -5913,7 +5913,7 @@
         },
         "useYourAI.test.ts": {
           "tests": 13,
-          "asserts": 46,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },

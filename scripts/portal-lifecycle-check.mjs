@@ -341,9 +341,12 @@ ${HELPERS}
   const rail = document.querySelector('.sidebar');
   const railSelect = rail && rail.querySelector('select[aria-label="Company"]');
   out.railKind = railSelect ? 'select' : 'none';
+  // The companies only: "+ New company" is an action at the foot of the same menu, not a company to be in.
   out.railOwner = railSelect
-    ? [...railSelect.options].map((o) => o.textContent.trim()).filter((t) => t !== 'All companies')
+    ? [...railSelect.options].filter((o) => !o.hasAttribute('data-action'))
+      .map((o) => o.textContent.trim()).filter((t) => t !== 'All companies')
     : [];
+  out.railNewCompany = railSelect ? [...railSelect.options].some((o) => o.getAttribute('data-action') === 'new-company') : false;
   // The rail must carry NO owner block when there is nothing to switch. Asserted positively, so a
   // regression back to naming the owner three times on one screen fails here too.
   out.railHasOwnerBlock = !!(rail && [...rail.querySelectorAll('.eyebrow')]

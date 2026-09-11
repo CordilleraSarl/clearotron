@@ -2123,126 +2123,248 @@ input.filter {
 }
 
 
-.ai-connect-head { margin-top: 28px; }
+/* ── WHAT YOU CAN DO ─────────────────────────────────────────────────────────────────────────────── */
+.ai-can { margin-top: 20px; max-width: 860px; }
 
-/* ── ONE QUESTION, WHEN THE DEPLOYMENT LEAVES IT OPEN ─────────────────────────── */
-.ai-where { margin: 0 0 14px; max-width: var(--screen-measure); }
+.ai-screen .ai-can h2 { font-size: 14.5px; margin: 0 0 3px; }
 
-.ai-where-q { margin: 0 0 8px; font-size: 15px; color: var(--text-strong); }
+.ai-can-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 28px;
+}
 
-.ai-seg { display: inline-flex; border: 1px solid var(--border-hairline); border-radius: 7px; overflow: hidden; }
+@media (max-width: 700px) { .ai-can-list { grid-template-columns: 1fr; } }
 
-.ai-seg-btn {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  padding: 7px 14px;
-  font: inherit;
+.ai-can-list li { display: flex; gap: 9px; font-size: 14px; line-height: 1.5; color: var(--text-body); }
+
+.ai-can-list li svg { margin-top: 3px; color: var(--accent-quiet); }
+
+.ai-can-foot {
+  margin: 13px 0 0;
+  padding-top: 11px;
+  border-top: 1px solid var(--border-hairline);
+  font-size: 13.5px;
   color: var(--text-muted);
-  cursor: pointer;
 }
 
-.ai-seg-btn + .ai-seg-btn { border-left: 1px solid var(--border-hairline); }
+.ai-can-foot strong { color: var(--text-strong); }
 
-.ai-seg-btn[data-on] { background: var(--surface-sunken); color: var(--text-strong); }
+.ai-connect { margin-top: 34px; }
 
-.ai-where-sub { margin: 10px 0 14px; color: var(--text-muted); max-width: var(--screen-measure); }
+.ai-screen .ai-connect-head { margin: 0 0 12px; }
 
-.ai-none { margin: 0; max-width: var(--screen-measure); color: var(--text-muted); line-height: 1.65; }
+/* ── THE WHERE-CHOICE ─────────────────────────────────────────────────────────────────────────────
+   ONE control, the same size before and after a pick. Selection is shown the way every other choice in
+   the portal shows it — accent wash, accent border, filled radio — and never a second colour. */
+.where-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-.ai-none strong { color: var(--text-strong); }
+@media (max-width: 640px) { .where-grid { grid-template-columns: 1fr; } }
 
-/* ── THE DESTINATION LIST ─────────────────────────────────────────────────────────────────────────── */
-.ai-dests {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: var(--screen-measure);
-}
-
-/* ONE HEIGHT AND ONE WIDTH, ALWAYS. The owner reported the old row set as "stacked, inconsistent
-   heights"; more importantly a row that resizes when it is pressed moves its neighbours, which is the
-   reflow this rebuild exists to end. */
-.ai-dest {
+.where-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  width: 100%;
-  min-height: 46px;
-  padding: 8px 14px;
-  border: 1px solid var(--border-hairline);
-  border-radius: 8px;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
   background: var(--surface-raised);
   font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-strong);
   text-align: left;
   cursor: pointer;
 }
 
-.ai-dest[data-selected] { border-color: var(--accent); }
+.where-card:hover { border-color: var(--accent-ink); }
 
-/* THE PRESSED CONTROL IS THE CONFIRMATION. Solid accent, not a muted caption underneath — the previous
-   feedback was grey text below the button and the owner could not see it happen. */
-.ai-dest[data-copied] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--text-on-accent);
+.where-card[aria-pressed='true'],
+.where-card[aria-pressed='true']:hover { border-color: var(--accent); background: var(--accent-wash); }
+
+.ai-none { margin: 22px 0 0; max-width: 860px; border-left-color: var(--tone-medium); }
+
+.ai-none p { margin: 6px 0 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.55; }
+
+/* ── THE APP LIST AND THE PANEL BESIDE IT ─────────────────────────────────────────────────────── */
+.ai-connect-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 22px;
+  align-items: start;
 }
 
-.ai-dest[data-copied] .ai-dest-sub { color: inherit; opacity: 0.85; }
+@media (max-width: 860px) { .ai-connect-grid { grid-template-columns: 1fr; } }
 
-.ai-dest-name { display: flex; flex-direction: column; gap: 2px; color: var(--text-strong); }
+.ai-apps { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
 
-.ai-dest[data-copied] .ai-dest-name { color: inherit; }
+/* The New Clearance picker's radio-row, centred because these rows carry a name and at most one line. */
+.ai-app { width: 100%; align-items: center; font: inherit; }
 
-.ai-dest-sub { font-size: 12.5px; color: var(--text-faint); }
+.ai-app-label { min-width: 0; }
 
-/* THE SLOT BOTH LABELS SHARE. Laid out with a grid so the cell is as wide as the WIDER of the two, in
-   every row, whether or not it has been pressed — swapping the text then costs zero layout. */
-.ai-dest-say { display: grid; font-size: 13px; }
+.ai-app-name { display: block; font-size: 14px; font-weight: 700; color: var(--text-strong); }
 
-.ai-dest-idle, .ai-dest-done { grid-area: 1 / 1; white-space: nowrap; }
+.ai-app-sub { display: block; margin-top: 1px; font-size: 12px; line-height: 1.5; color: var(--text-muted); }
 
-.ai-dest-idle { color: var(--text-faint); }
+.ai-app-go { margin-left: auto; display: inline-flex; color: var(--text-accent); opacity: 0; }
 
-.ai-dest-done { color: inherit; font-weight: 600; visibility: hidden; }
+.pick-row-on .ai-app-go { opacity: 1; }
 
-.ai-dest[data-copied] .ai-dest-idle { visibility: hidden; }
+/* ── THE RESERVED SLOT ──────────────────────────────────────────────────────────────────────────────
+   A MINIMUM HEIGHT WHETHER OR NOT ANYTHING IS IN IT, and the page raises it to the tallest panel this
+   card can show — so neither picking an app nor pressing Copy moves anything around it. */
+.ai-slot { position: relative; min-height: 180px; }
 
-.ai-dest[data-copied] .ai-dest-done { visibility: visible; }
+/* The hidden copy of every panel the slot's height is taken from. Laid out at the slot's own width, never
+   seen, never reached by a pointer or a keyboard. */
+.ai-probe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  align-items: start;
+  visibility: hidden;
+  pointer-events: none;
+}
 
-/* ── THE RESERVED SLOT ────────────────────────────────────────────────────────────────────────────── */
-/* A MINIMUM HEIGHT WHETHER OR NOT ANYTHING IS IN IT. This is what makes "nothing above the panel moves"
-   a property of the layout rather than a hope about content sizes. */
-.ai-slot {
+/* Stacked in one cell, so the copy is as tall as its tallest panel and never taller than the slot. */
+.ai-probe > * { grid-area: 1 / 1; }
+
+.steps-panel {
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  background: var(--surface-raised);
+  padding: 18px 20px 20px;
+}
+
+.ai-slot > .steps-panel { min-height: inherit; }
+
+.steps-panel-empty {
+  border-left-color: var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.steps-empty { display: flex; align-items: center; gap: 9px; color: var(--text-faint); font-size: 14px; }
+
+.ai-screen .steps-name { margin: 3px 0 0; font-size: 18px; font-weight: 700; color: var(--text-strong); }
+
+/* ── THE NUMBERED STEPS ─────────────────────────────────────────────────────────────────────────── */
+ol.steps {
+  list-style: none;
+  counter-reset: step;
   margin: 16px 0 0;
-  min-height: 240px;
-  max-width: var(--screen-measure);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.ai-slot-empty { margin: 0; color: var(--text-faint); }
+ol.steps > li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 11px;
+}
 
-.ai-panel {
-  padding: 14px 16px;
+ol.steps > li::before {
+  content: counter(step);
+  width: 23px;
+  height: 23px;
+  margin-top: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-sunken);
   border: 1px solid var(--border-hairline);
-  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.step-text { font-size: 14px; line-height: 1.55; color: var(--text-body); }
+
+.step-text b { color: var(--text-strong); }
+
+.step-hint { margin-top: 4px; font-size: 12.5px; line-height: 1.5; color: var(--text-muted); }
+
+.ai-code {
+  padding: 1px 5px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 4px;
+  background: var(--surface-sunken);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+
+.codeblock {
+  margin-top: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 10px 10px 13px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 10px;
   background: var(--surface-sunken);
 }
 
-.ai-panel-head { margin: 0 0 8px; font-size: 15px; color: var(--text-strong); }
-
-.ai-panel-landed { margin: 0 0 10px; font-size: 13px; color: var(--text-muted); }
-
-.ai-panel-steps {
+.codeblock pre {
+  flex: 1;
+  min-width: 0;
   margin: 0;
-  padding-left: 20px;
-  line-height: 1.7;
-  color: var(--text-body);
+  padding-top: 3px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-strong);
 }
 
-.ai-panel-stamp { margin: 10px 0 0; font-size: 12.5px; color: var(--text-faint); }
+.codeblock .btn-ghost { padding: 6px 12px; white-space: nowrap; }
+
+.secret-btn { margin-top: 8px; }
+
+/* THE PRESSED CONTROL IS THE CONFIRMATION: solid accent on the button pressed, never a muted caption. */
+.is-copied,
+.is-copied:hover,
+.btn-primary.is-copied:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--text-on-accent); }
+
+.landed {
+  margin-top: 10px;
+  padding: 10px 13px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 10px;
+  background: var(--surface-sunken);
+}
+
+.landed-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.landed .mono { font-size: 12px; color: var(--text-strong); overflow-wrap: anywhere; }
+
+.landed .mono + .mono { margin-top: 2px; }
 
 .ai-said { margin: 0 0 6px; color: var(--text-muted); }
+
+.ai-failed { margin: 10px 0 0; }
 
 .ai-pre {
   margin: 0;
@@ -2253,21 +2375,12 @@ input.filter {
   font-size: 13px;
 }
 
-/* The help a person needs, on the page. The link to the document keeps an honest label beside it. */
-.ai-help { margin: 30px 0 0; max-width: var(--screen-measure); }
+/* The help a person needs, as a quiet notice. The link opens the document where a reader's own AI can
+   read it too. */
+.ai-help { margin-top: 30px; max-width: 860px; }
 
-.ai-help > summary {
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: 13px;
-  font-style: italic;
-}
+.ai-help p { margin: 6px 0 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.55; }
 
-.ai-help-body { margin: 10px 0 0; color: var(--text-muted); line-height: 1.65; }
-
-.ai-help-body p { margin: 0 0 10px; }
-
-.ai-help-doc { font-size: 13px; }
 
 /* ── Give someone access: the points on the tree a new person can be given ─────────────────────────────
    One row per point. A BUTTON, because choosing a point is an action and a keyboard has to reach it; the

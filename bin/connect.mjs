@@ -45,7 +45,7 @@ import { homedir, userInfo } from "node:os";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createServer } from "node:net";
-import { CONNECT_CLIENTS, clientById, whatItNeeds } from "../shared/connect-clients.mjs";
+import { CONNECT_CLIENTS, WHERE_FLAG, clientById, leadRouteFor, plainStep, whatItNeeds } from "../shared/connect-clients.mjs";
 import { stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";
 import { defaultDenylistPath, clientDoorAddress, clientDoorPort, clientDoorState, enablePlan, applyEnablePlan, describeChange, recordConnectKey, CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
 import { mintToken, tokenId, resolvePerson, loadGrants } from "../shared/scope.mjs";
@@ -555,17 +555,12 @@ async function render(offer, have, { dryRun, running, allowMove = false }) {
     return 1;
   }
 
-  if (offer.route === "disk" || (offer.route === "either" && offer.command)) {
-    // A COMMAND AND A CONFIG BLOCK ARE NOT THE SAME INSTRUCTION, and saying "run this" over a TOML
-    // block is how a reader pastes four lines into a shell. The shape says which it is.
-    const s = offer.stdio;
-    say(s?.kind === "config"
-      ? `  Add this to ${s.where}:`
-      : "  Run this once, on this machine:");
+  if (offer.route === "disk") {
+    // THE ROW'S OWN STEPS, and nothing written here. A command and a settings block are not the same
+    // instruction — saying "run this" over a TOML block is how a reader pastes four lines into a shell —
+    // and the steps already say which each one is and where it goes.
+    printSteps(offer, null);
     say("");
-    for (const line of String(offer.command).split("\n")) say(`    ${line}`);
-    say("");
-    if (s?.after) { say(`  ${s.after}`); say(""); }
     say(`  ${offer.note}`);
     return 0;
   }
@@ -621,22 +616,40 @@ async function render(offer, have, { dryRun, running, allowMove = false }) {
   }
 
   say(`  Address:  ${offer.address}`);
-  if (key) say(`  Key:      ${key}`);          // printed once, stored nowhere
-  // ── AND WHERE TO PUT THEM ( — F35) ───────────────────────────────────────
-  //
-  // The owner was left with two strings and no destination: *"I don't know how to connect it in Claude
-  // Cowork with those details."* The steps were DEFINED IN THE PRODUCT the whole time — `withSteps`
-  // computes them for every offer, interpolating this install's own address and operator — and this
-  // verb simply never printed them. Nothing new is authored here; a second set of instructions written
-  // at the CLI would drift from the page's, which is the defect connect-clients-are-data exists against.
-  if (offer.steps?.length) {
-    say("");
-    say(`  In ${offer.client?.name ?? "your assistant"}:`);
-    offer.steps.forEach((step, n) => say(`    ${n + 1}. ${step}`));
-  }
+  // Printed once, stored nowhere — and only here when no step hands it over. A step whose copy carries
+  // the key prints it inside the line the reader pastes, which is the one place it is needed.
+  const keyInSteps = (offer.steps ?? []).some((s) => s.copy?.kind === "secret");
+  if (key && !keyInSteps) say(`  Key:      ${key}`);
+  printSteps(offer, key);
   say("");
   say(`  ${offer.note}`);
   return 0;
+}
+
+/**
+ * The offer's own steps, numbered, with each copy printed under the step that hands it over.
+ *
+ * ── AND WHERE TO PUT THEM ( — F35) ───────────────────────────────────────
+ *
+ * The owner was left with two strings and no destination: *"I don't know how to connect it in Claude
+ * Cowork with those details."* The steps were DEFINED IN THE PRODUCT the whole time and this verb simply
+ * never printed them. Nothing is authored here; a second set of instructions written at the CLI would
+ * drift from the page's, which is the defect connect-clients-are-data exists against. A secret copy is
+ * printed with the key this press minted put in its slot — the page does the same substitution into the
+ * clipboard — and with no key (a dry run) the step prints and its copy does not.
+ */
+function printSteps(offer, key) {
+  if (offer.steps?.length) {
+    say("");
+    say(`  In ${offer.client?.name ?? "your assistant"}:`);
+    offer.steps.forEach((step, n) => {
+      say(`    ${n + 1}. ${plainStep(step.text)}`);
+      const c = step.copy;
+      const text = !c ? null : c.kind === "secret" ? (key ? c.template.split(c.slot).join(key) : null) : c.text;
+      if (text) { say(""); for (const line of text.split("\n")) say(`         ${line}`); say(""); }
+      if (step.hint) say(`       ${plainStep(step.hint)}`);
+    });
+  }
 }
 
 async function main() {
@@ -654,6 +667,9 @@ async function main() {
     say("  not about you.");
     say("");
     say("    --client <name>   skip the question (see --list for the names)");
+    say("    --where here      your assistant runs on this machine: it starts the software itself");
+    say("    --where elsewhere your assistant runs somewhere else and reaches this install over the");
+    say("                      internet, with a key made for you now");
     say("    --list            the assistants this build knows");
     say("    --dry-run         say what would change, change nothing");
     say("    --allow-checkout-move");
@@ -663,7 +679,7 @@ async function main() {
     say("");
     return 0;
   }
-  const known = new Set(["--client", "--list", "--dry-run", "--allow-checkout-move", "--help", "-h"]);
+  const known = new Set(["--client", "--where", "--list", "--dry-run", "--allow-checkout-move", "--help", "-h"]);
   const unknown = argv.filter((a) => a.startsWith("--") && !known.has(a));
   if (unknown.length) {
     console.error(`connect: unrecognised flag(s): ${unknown.join(", ")}`);
@@ -671,6 +687,12 @@ async function main() {
     process.exit(2);
   }
   const dryRun = argv.includes("--dry-run");
+  const w = argv.indexOf("--where");
+  if (w >= 0 && !Object.hasOwn(WHERE_FLAG, argv[w + 1] ?? "")) {
+    console.error(`connect: --where takes one of: ${Object.keys(WHERE_FLAG).join(", ")}`);
+    process.exit(2);
+  }
+  let route = w >= 0 ? WHERE_FLAG[argv[w + 1]] : null;
   // F40 — reason about the RUNNING product from the units' own environment, not this CLI's env file.
   const running = runningEnv();
   const have = deploymentHas(running.env);
@@ -712,9 +734,30 @@ async function main() {
       chosen = CONNECT_CLIENTS[Number(answer) - 1] ?? clientById(answer);
     } finally { rl.close(); }
     if (!chosen) { console.error("connect: not one of the listed assistants."); process.exit(2); }
+    // THE SECOND QUESTION, ASKED ONLY WHEN IT HAS TWO ANSWERS — the page's own, in the terminal's words.
+    // Where only one route is served here, asking would offer a choice whose other half cannot work.
+    const both = ["disk", "public-http"].filter((r) => whatItNeeds(chosen, have, r)?.served);
+    if (!route && both.length > 1) {
+      say("");
+      say("  Where does it run?");
+      say("");
+      say("    1) On this machine — it starts the software itself, nothing to open up");
+      say("    2) Somewhere else — it reaches this install over the internet, with a key made for you now");
+      say("");
+      const rl2 = createInterface({ input: stdin, output: stdout });
+      try {
+        const answer = (await rl2.question("  1-2: ")).trim();
+        route = answer === "1" ? "disk" : answer === "2" ? "public-http" : null;
+      } finally { rl2.close(); }
+      if (!route) { console.error("connect: answer 1 or 2."); process.exit(2); }
+    }
+    route ??= both[0] ?? chosen.lead;
   }
 
-  return await render(whatItNeeds(chosen, have), have, { dryRun, running, allowMove: argv.includes("--allow-checkout-move") });
+  // NAMED WITHOUT --where: the route this id had before every row took both, so a scripted
+  // `--client cowork` still mints a key and `--client codex` still prints a settings block.
+  route ??= leadRouteFor(argv[i + 1]);
+  return await render(whatItNeeds(chosen, have, route), have, { dryRun, running, allowMove: argv.includes("--allow-checkout-move") });
 }
 
 // THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND. Without the guard, importing
