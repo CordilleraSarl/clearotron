@@ -4479,6 +4479,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-doors-comparison-knows-an-admit-case.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-doubt-carries-its-placement-tier.test.mjs": {
           "tests": 17,
           "asserts": 56,
