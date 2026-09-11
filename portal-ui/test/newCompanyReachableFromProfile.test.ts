@@ -53,7 +53,7 @@ test('the destination is declared once and shared', () => {
     'the shared path constant is gone — each caller now spells the route itself')
 })
 
-// ── THE SWITCHER, ON THE OWNER'S RULING OF 2026-09-11 (tracker issue 439) ───────────────────────────
+// ── THE SWITCHER, ON THE OWNER'S RULING OF 2026-09-11 ─────────────────────────────────────────────────
 //
 // "+ New company goes into the company switcher drop-down in the nav bar": the menu a person opens to pick
 // a company, so making one is one click from every screen, whether or not a company is selected. The pick
