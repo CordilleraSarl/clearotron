@@ -135,6 +135,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-codex-login-survives-its-own-refresh.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-can-be-given-a-framework-after-it-exists.test.mjs": {
           "tests": 8,
           "asserts": 19,

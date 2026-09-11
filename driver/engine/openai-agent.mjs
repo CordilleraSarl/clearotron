@@ -22,7 +22,8 @@
 // CLEAROTRON_CODEX_SANDBOX_BYPASS=1 swaps that `--sandbox workspace-write` for
 // `--dangerously-bypass-approvals-and-sandbox` — see buildCodexArgs below for why.
 
-import { mkdtempSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { mkdtempSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
+import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
@@ -173,6 +174,49 @@ export function spawnEnv(base = process.env, codexHome) {
 }
 
 const authFilePath = (env = process.env) => env.CLEAROTRON_OPENAI_AUTH_FILE || join(homedir(), ".codex", "auth.json");
+
+// ── THE LOGIN IS THE MASTER'S, NOT A COPY'S ─────────────────────────────────────────────────────────
+//
+// codex refreshes its access token inside a turn and rotates the refresh token as it does, and the
+// provider accepts each refresh token once. The stage home used to be seeded with a COPY of the master
+// login and deleted when its ladder settled, so the rotated token was deleted with it. The master kept a
+// token the provider had already consumed, and every later stage on every run failed its refresh with a
+// 401 until a person signed in again. The engine's only report was an exit code.
+//
+// So the stage home LINKS to the master: a refresh codex writes in place lands where the next stage
+// reads, including a ladder running beside this one. If codex replaces the link with a file of its own,
+// `returnAuth` writes that file back.
+
+/** Point `<codexHome>/auth.json` at the master login. Returns what the master held, for `returnAuth`. */
+function seedAuth(masterPath, codexHome) {
+  const seat = join(codexHome, "auth.json");
+  // A LINK LEFT BY THIS LADDER'S PREVIOUS TURN is removed first: copying the master onto a link to
+  // itself would truncate the one file the login lives in.
+  rmSync(seat, { force: true });
+  symlinkSync(masterPath, seat);
+  return readFileSync(masterPath, "utf8");
+}
+
+/**
+ * After a turn: a login codex rewrote as its own file goes back to the master.
+ *
+ * ONLY WHILE THE MASTER STILL HOLDS WHAT THIS TURN WAS SEEDED WITH. A master that moved meanwhile was
+ * rotated by another ladder, and the provider accepts one refresh per token, so of two rotations from
+ * one seed only one can be live. Writing ours over theirs could put back the spent one.
+ */
+export function returnAuth(masterPath, codexHome, seeded) {   // @internal
+  const seat = join(codexHome, "auth.json");
+  let st;
+  try { st = lstatSync(seat); } catch { return false; }
+  if (st.isSymbolicLink() || !st.isFile()) return false;   // written through the link, or not there
+  const now = readFileSync(seat, "utf8");
+  if (now === seeded) return false;
+  let master;
+  try { master = readFileSync(masterPath, "utf8"); } catch { return false; }
+  if (master !== seeded) return false;
+  writeSecretFile(masterPath, now);
+  return true;
+}
 
 // Build the codex argv. Prompt rides STDIN via the `-` placeholder (no MAX_ARG_STRLEN ceiling on a 150KB
 // register prompt). Global flags precede the `resume` subcommand (flag-corpus ordering). config.toml
@@ -530,6 +574,7 @@ export const openaiAgentEngine = {
     const ownHome = !providedHome;
     try { codexHome = providedHome ?? mkdtempSync(join(tmpdir(), "codex-home-")); }
     catch (e) { return errResult(t0, e, resumeRef); }
+    let authMaster = null, seeded = null;
     try {
       // Auth toggle (may throw loud on api-key-without-key — a config error, not a retryable failure).
       const { env, mode } = spawnEnv(process.env, codexHome);
@@ -537,7 +582,9 @@ export const openaiAgentEngine = {
         const af = authFilePath(process.env);
         if (!existsSync(af))
           throw new Error(`CLEAROTRON_AI_BILLING=subscription but no auth.json at ${af} — run \`codex login\` (or set CLEAROTRON_OPENAI_AUTH_FILE — NOT an aliased name, and deliberately left as it is), or use CLEAROTRON_AI_BILLING=api-key + CODEX_API_KEY.`);
-        copyFileSync(af, join(codexHome, "auth.json"));
+        // The REAL path, so a master that is itself a link is written where its login actually lives.
+        authMaster = realpathSync(af);
+        seeded = seedAuth(authMaster, codexHome);
       }
       // Per-run config.toml: the gather MCP servers (translated from the claude-shaped mcpConfig, so
       // gather-config.mjs is untouched) + developer_instructions = WRITE_DISCIPLINE (codex's
@@ -574,6 +621,9 @@ export const openaiAgentEngine = {
       if (!ev.model) ev.model = readServedModel(codexHome, spawnedAtMs);
       return settleTuple({ r, ev, resumeRef });
     } finally {
+      // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the
+      // turn's result as it was; the next turn is seeded from the master either way.
+      try { if (authMaster) returnAuth(authMaster, codexHome, seeded); } catch { /* the master is unchanged */ }
       try { if (ownHome && codexHome) rmSync(codexHome, { recursive: true, force: true }); } catch { /* best-effort cleanup */ }
     }
   },
