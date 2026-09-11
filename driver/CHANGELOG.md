@@ -1,5 +1,15 @@
 # clearotron-driver
 
+## 0.3.0-beta.9
+
+### Patch Changes
+
+- 86061f4: Fixed: Commands printed while running from npx name the published version, so they still work after npm cleans its cache.
+- ab9dc2d: Fixed: When the engine cannot answer "Describe it", the page names the check that finds out why. It says "just now" only for a usage limit.
+- ab9dc2d: Fixed: `clearotron status` says whether a product started in a terminal is up, and on which addresses. `clearotron stop` says how to stop it.
+- ab9dc2d: Fixed: The demo no longer offers `start --background`, which set up an empty install in your home instead of running the demo.
+- ab9dc2d: Fixed: The key command the demo prints issues a key the demo's client door accepts, run exactly as printed.
+
 ## 0.3.0-beta.8
 
 ### Patch Changes
