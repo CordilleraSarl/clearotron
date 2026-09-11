@@ -46,8 +46,14 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
   const repo = useSourceRepo()
   // A SECOND, INDEPENDENT load. Deliberately not folded into the gate below: the activity feed is an
   // extra, and a page whose job is explaining access must not go blank because an optional log could
-  // not be read.
-  const { result: observed } = useLoad(() => api.adminObserved(), [])
+  // not be read. ASKED ONLY BY SOMEONE WHO SEES EVERYTHING, the one reader the server serves it to:
+  // People is Manage's, the activity log is the installation's, and a manager of one organisation used
+  // to fire a 404 here on every visit. Anyone else gets the not-found the panel renders as nothing.
+  const seesAll = ctx.me.allAccounts
+  const { result: observed } = useLoad<ObservedView>(
+    () => (seesAll ? api.adminObserved() : Promise.resolve({ kind: 'notFound' as const })),
+    [seesAll],
+  )
 
   if (result && result.kind !== 'ok') {
     return (

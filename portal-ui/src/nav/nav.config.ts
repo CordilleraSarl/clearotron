@@ -17,8 +17,11 @@ import type { Permissions } from '../contract/api.ts'
  * It replaces a `Role` argument, and the difference is not cosmetic. A role was one word standing for a
  * bundle of unrelated allowances, so a screen gated on it inherited every other thing that word implied;
  * a permission is the single allowance the entry actually needs, named.
+ *
+ * `allAccounts` is the one fact here that is not a permission: whether the reader sees everything, which
+ * is what the server asks before it serves the installation's own settings. Absent reads as no.
  */
-export type Viewer = { readonly permissions: Permissions }
+export type Viewer = { readonly permissions: Permissions; readonly allAccounts?: boolean }
 
 /**
  * Screen ids, and why the dots are where they are.
@@ -68,10 +71,14 @@ export type NavEntry = {
    * Omitted ⇒ visible to everyone who can sign in, which is what ACCESS already means. Present ⇒ only a
    * person holding that permission sees the entry, and only they route to it.
    *
-   * One permission, not a list. Nothing here needs both, and a list would invite an entry that reads
-   * "either of these will do" — which is a rank wearing a permission's clothes.
+   * One gate, not a list. Nothing here needs two, and a list would invite an entry that reads "either of
+   * these will do" — which is a rank wearing a permission's clothes.
+   *
+   * `'everything'` is the one gate that is not a permission: the reader sees everything. It is what the
+   * server asks before it serves the installation's own settings, and an entry that asked Manage instead
+   * was offered to a manager of one organisation and opened on "This page is not available."
    */
-  readonly needs?: keyof Permissions
+  readonly needs?: keyof Permissions | 'everything'
   /** Sub-entries revealed when the parent is active. */
   readonly children?: readonly NavEntry[]
   /**
@@ -181,18 +188,20 @@ export const NAV: readonly NavEntry[] = [
   // routing is DERIVED from this array, so removing the entries would not tidy the sidebar, it would
   // turn the avatar menu's links into dead ones.
   //
-  // People is not in this group. It needs Manage like Global config, and the avatar menu lists it above
-  // Global config by its own id, so its route and its dot-child stay as they were. What
-  // remains here is the installation's own settings, which is genuinely rare and genuinely global.
+  // People is not in this group. It needs Manage, and the avatar menu lists it above Global config by its
+  // own id, so its route and its dot-child stay as they were. What remains here is the installation's own
+  // settings, which is genuinely rare and genuinely global — and so gated on what the server asks before
+  // serving them, seeing everything. Manage acts inside what a person can see, and a manager of one
+  // organisation cannot see the installation.
   {
     id: 'admin',
     label: 'Admin settings',
     path: '/portal/admin',
     icon: 'settings',
-    needs: 'manage',
+    needs: 'everything',
     hidden: true,
     children: [
-      { id: 'admin.config', label: 'Global config', path: '/portal/admin/config', icon: 'server', needs: 'manage' },
+      { id: 'admin.config', label: 'Global config', path: '/portal/admin/config', icon: 'server', needs: 'everything' },
     ],
   },
 
@@ -203,7 +212,9 @@ export const NAV: readonly NavEntry[] = [
   { id: 'preferences', label: 'Your preferences', path: '/portal/preferences', icon: 'sliders', hidden: true },
 ]
 
-const visible = (e: NavEntry, who: Viewer): boolean => !e.needs || who.permissions[e.needs]
+const holds = (who: Viewer, gate: NonNullable<NavEntry['needs']>): boolean =>
+  gate === 'everything' ? who.allAccounts === true : who.permissions[gate]
+const visible = (e: NavEntry, who: Viewer): boolean => !e.needs || holds(who, e.needs)
 
 /**
  * The nav tree as one person sees it. Hidden entries are absent, not disabled.
@@ -299,7 +310,7 @@ export function avatarMenuFor(who: Viewer, entries: readonly NavEntry[] = NAV): 
 /**
  * Resolve a URL path to a screen, respecting what the person may do.
  *
- * Someone without Manage who types /portal/admin/config gets `null` — the same as a path that does not
+ * Someone who does not see everything and types /portal/admin/config gets `null` — the same as a path that does not
  * exist. The server is the real boundary (that endpoint refuses them), but the UI must not present a
  * screen it cannot fill, and it must not distinguish "not for you" from "not a thing".
  */

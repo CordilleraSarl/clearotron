@@ -148,11 +148,16 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     if (wanted && wanted !== ctx.owner) ctx.setOwner(wanted)
   }, [ctx])
 
-  // Families are STAFF curation, and this route 404s for a client by design (see portal-service). Any
-  // non-ok answer therefore means "no families", never "something is wrong": a client whose Clearances
-  // page reported a fault because grouping was unavailable would see an error on every load.
-  const account = ownerFilter ?? (ctx.me.allAccounts ? '*' : (ctx.me.accounts.length === 1 ? ctx.me.accounts[0]! : null))
-  const { result: famResult, reload: reloadFamilies } = useLoad(() => api.families(account), [account])
+  // Families are curation by someone who sees everything, and the route 404s for anyone else by design
+  // (see portal-service). So only that reader ASKS: everyone else has no families without a request,
+  // where a manager of one organisation used to fire a 404 in the background on every load. Any non-ok
+  // answer still means "no families", never "something is wrong".
+  const seesAll = ctx.me.allAccounts
+  const account = ownerFilter ?? (seesAll ? '*' : (ctx.me.accounts.length === 1 ? ctx.me.accounts[0]! : null))
+  const { result: famResult, reload: reloadFamilies } = useLoad<Families>(
+    () => (seesAll ? api.families(account) : Promise.resolve({ kind: 'ok' as const, value: NO_FAMILIES })),
+    [account, seesAll],
+  )
   // NO PRODUCT-MENU FETCH HERE ANY MORE. This screen used to load `api.searches` for one
   // reason — to turn `run.product` into a name for readLabel — and that menu is the ORDERABLE list, so
   // every archived run missed the join and rendered its `stageLabel`, a Depth number, at a client. The
@@ -164,9 +169,10 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // outlive the rows they referred to.
   const [picked, setPicked] = useState<ReadonlySet<string>>(new Set())
   // Grouping marks into a family and retiring a run are CURATION — changing what the archive says —
-  // so they ask Manage, the one permission that changes things for other people. Someone without it
-  // reads the same archive and never meets a control that would only refuse them.
-  const canGroup = canManage(ctx.me)
+  // so they ask Manage, the one permission that changes things for other people, AND that the reader
+  // sees everything, because every curation route is an installation route the server serves to no one
+  // else. Someone without both reads the same archive and never meets a control that would only refuse them.
+  const canGroup = canManage(ctx.me) && seesAll
 
   // — THE FOLD, AND THE COUNT THAT SAYS IT HAS ANYTHING IN IT.
   //
