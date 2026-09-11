@@ -1214,6 +1214,11 @@ export async function doBatchScreen(apiKey, base, params, tctx) {
         application_date: nr.applicationDate,
         registration_date: nr.registrationDate,
         expiry_date: nr.expiryDate,
+        // The office's own numbers, which the record carries and a reader looks the record up by. A
+        // knockout's filings list is built from these rows, and without them it could name no record a
+        // reader can open.
+        application_number: nr.applicationNumber,
+        registration_number: nr.registrationNumber,
         live_status: liveStatusOf(rec),
         all_class: isAllClass(nr.niceClasses),
       };

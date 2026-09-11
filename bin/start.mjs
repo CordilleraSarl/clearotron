@@ -109,7 +109,7 @@ async function runTables() {
   return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE };
 }
 import { spawn, spawnSync, execFileSync } from "node:child_process";
-import { storeInRepo, storeOutsideRepoMessage } from "../shared/store-in-repo.mjs";   //
+import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal } from "../shared/store-in-repo.mjs";   //
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
@@ -1252,6 +1252,12 @@ if (isMain) {
       // search is what will fail.
       err(`  WARNING: could not initialise the saved-search store at ${paths.configStore} (${String(e?.message ?? e)}). Searches will list and run; SAVING one will fail until this is a git repository.`);
     }
+  } else {
+    // AN ADOPTED STORE IS ASKED WHETHER IT CAN RECORD A SAVE, HERE, not at the first save. A repository
+    // made by hand has no identity unless somebody gave it one, and on a machine with no global identity
+    // the first company created in the portal is then refused. The one created above sets its own.
+    const cannot = storeCommitRefusal(paths.configStore);
+    if (cannot) err(`  WARNING: ${cannot.message}. Until then, creating a company or saving a search is refused.`);
   }
 
   // ── THE DEMO'S OWN STORE, WITH ITS COMPANY IN IT ────────────────────────────────────────────────

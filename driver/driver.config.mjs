@@ -1110,6 +1110,11 @@ export const PROVIDERS = {
           office: row?.office ?? null,
           application_date: row?.application_date ?? null,
           registration_date: row?.registration_date ?? null,
+          // The office's own numbers: publish addresses the filing at the office's page from these, the
+          // way it does for this register's clearance findings. Compumark states no filing route or IR
+          // number of its own, so a Madrid designation is addressed as the national filing it is listed as.
+          application_number: row?.application_number ?? null,
+          registration_number: row?.registration_number ?? null,
           // hasPublicRecordUrl:false on this provider — there is no per-record page to link, and a
           // fabricated one would be worse than none.
           record_url: null,

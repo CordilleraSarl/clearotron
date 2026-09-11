@@ -142,7 +142,7 @@ export function storeOutsideRepoMessage({ storeVar, storeDir, repoVar, repoRoot 
 // knows both. So the appender returns a path only when that path is committable, and the core commits
 // what it is handed.
 
-import { appendFileSync } from "node:fs";
+import { appendFileSync, rmSync } from "node:fs";
 
 /**
  * A repo root is a PATH, and every helper below interpolates it into a git invocation. Anything else
@@ -289,6 +289,39 @@ import { execFileSync } from "node:child_process";
 export const isTransientGitFault = (detail) =>
   /index\.lock|another git process seems to be running|Unable to create/i.test(String(detail ?? ""));
 
+/**
+ * Why a commit into `repoRoot` would be refused, asked BEFORE anything is written; null when it would not
+ * be. Read-only: `rev-parse` and `git var` change nothing. `{ code, detail, message }`, where `message` names
+ * the store and the command that clears it, in terms an operator acts on rather than git's own words:
+ *
+ *   not-a-repository — the store is not inside a git repository this process can use;
+ *   no-identity      — git has no committer identity here. That is the default state of any machine where
+ *                      nobody ran `git config user.email`, a fresh Windows install among them. A save names
+ *                      its author; the COMMITTER is the machine's, and git refuses a commit it cannot name
+ *                      one for. `git -c user.email=…` on a one-off seed commit does not help: `-c` configures
+ *                      that invocation, not the repository, so every save after it fails the same way.
+ */
+export function storeCommitRefusal(repoRoot, { env = process.env } = {}) {
+  requireRepoRootPath(repoRoot, "storeCommitRefusal");
+  const ask = (...args) => execFileSync("git", ["-C", repoRoot, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env });
+  const said = (e) => String(e?.stderr || e?.message || e).trim().split("\n").filter(Boolean);
+  try { ask("rev-parse", "--git-dir"); }
+  catch (e) {
+    const detail = said(e)[0]?.slice(0, 200) ?? "";
+    const fix = /dubious ownership/i.test(detail)
+      ? `run \`git config --global --add safe.directory ${repoRoot}\` as the account the service runs as`
+      : `run \`git init\` in ${repoRoot}, or point PROFILE_REPO_ROOT at the repository that holds the store`;
+    return { code: "not-a-repository", detail, message: `the store at ${repoRoot} is not a git repository this install can record into (${detail}) — ${fix}` };
+  }
+  try { ask("var", "GIT_COMMITTER_IDENT"); }
+  catch (e) {
+    return { code: "no-identity", detail: said(e).pop()?.slice(0, 200) ?? "",
+      message: `the store at ${repoRoot} has no git identity, so nothing saved to it can be recorded — run `
+        + `\`git -C ${repoRoot} config user.email "you@example.com"\` and \`git -C ${repoRoot} config user.name "Your Name"\`` };
+  }
+  return null;
+}
+
 export function makeStoreCommit({ repoRoot, log = () => {}, what = "store", retries = 3, waitMs = 50 }) {
   requireRepoRootPath(repoRoot, "makeStoreCommit");
   const git = (...args) => execFileSync("git", ["-C", repoRoot, ...args], { encoding: "utf8" }).toString().trim();
@@ -309,7 +342,7 @@ export function makeStoreCommit({ repoRoot, log = () => {}, what = "store", retr
   const napping = (ms) => { try { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms); } catch { /* best effort */ } };
   const detailOf = (e) => String(e?.stderr ?? e?.message ?? e);
 
-  return ({ files, message, author }) => {
+  const commit = ({ files, message, author }) => {
     // Asked BEFORE anything composes a diff, so the caller gets the refusal rather than a fallback-mode
     // parse error. Throwing here also means the write is never followed by a silent half-save: the
     // caller's own catch is what turns this into a failed save.
@@ -350,6 +383,21 @@ export function makeStoreCommit({ repoRoot, log = () => {}, what = "store", retr
       }
     }
   };
+  // ── TWO MORE ANSWERS, FOR A CREATE, WHICH IS REFUSED RATHER THAN LEFT HALF-MADE ──────────────────────
+  //
+  // A save of something that already exists stays as above: live, staged, completed by the next save.
+  // A CREATE is different, because "before" exists: the paths it wrote were absent. So a create asks
+  // `refusal()` first and writes nothing when the store cannot record it, and when the commit fails anyway
+  // (a hook, a full disk), `withdraw(files)` returns those paths to absent: out of the index, so the next
+  // save's completion step cannot commit a company that does not exist, and off the disk. Nothing else is
+  // touched, and the audit row the create staged stays staged, because it records what happened.
+  commit.refusal = () => storeCommitRefusal(repoRoot);
+  commit.withdraw = (files) => {
+    const paths = (files ?? []).map((f) => resolve(repoRoot, f));
+    if (paths.length) git("rm", "--cached", "--quiet", "--ignore-unmatch", "--", ...paths);
+    for (const p of paths) rmSync(p, { force: true });
+  };
+  return commit;
 }
 
 export function resolveStoreRepoRoot({ names, fallback = null, env = process.env } = {}) {

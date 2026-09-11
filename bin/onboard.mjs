@@ -97,7 +97,7 @@ import { processTable } from "../shared/process-table.mjs";   // — /proc is no
 import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";
 import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
-import { whereSavesGo } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed
+import { whereSavesGo, storeCommitRefusal } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
 import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
 import { runRequiredNames, missingRequirements, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
@@ -1846,7 +1846,21 @@ export async function runCheck() {
   }
 
   say("\n  Register provider");
-  const prov = effective("CLEAROTRON_DATABASE");
+  // WHAT THE SERVICES WILL SEARCH, READ AS THE ORDER-TIME CHECK BELOW READS IT. This section asked the
+  // shell and this command's .env, so in a fresh terminal on a hosted box it told a working install that
+  // no register was selected, one screen above "nothing a search is refused for is missing from the units'
+  // environment": one install, two answers, and the fix it named was already set. effectiveForService is
+  // the reader that check asks, so the two lines cannot disagree; where it cannot read the units, this
+  // says it could not look rather than reporting the register absent.
+  // Only a HOSTED box has a second environment to read; with no units, the services are started from
+  // this command's own file, and `effective` has always read and labelled exactly that.
+  const serviceValue = hosted ? effectiveForService : effective;
+  const prov = serviceKnown ? serviceValue("CLEAROTRON_DATABASE") : null;
+  if (!serviceKnown) {
+    info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
+      + "which register the services search, and whether its keys are set, is not judged here: a failure to look, not a finding");
+  }
+  else
   // `blocking`, not `warn` and not `problem`. The exit status is a CONTRACT — an absence reports and
   // exits 0, a misconfiguration exits 1, and onboard-wizard.test.mjs holds it — so this cannot become a
   // `problem` however much it stops the reader: an install that has not chosen a register yet is
@@ -1865,7 +1879,7 @@ export async function runCheck() {
     else {
       ok(`${spec.id} — ${spec.label} (${prov.from})`);
       for (const k of spec.credentials) {
-        const c = effective(k);
+        const c = serviceValue(k);
         // issue 1871 — SET, not WORKING, and the line now says which. An operator reads a tick as "this
         // works"; this one is equally true of a valid key, an expired key, a key scoped to the wrong
         // account and forty characters of nonsense. --probe-providers is what settles it.
@@ -1876,7 +1890,7 @@ export async function runCheck() {
       // and never as a problem, but never silently either: the reader has to know which offices this
       // box will not reach before they read a report that says nothing was found there.
       for (const k of spec.optionalCredentials ?? []) {
-        const c = effective(k);
+        const c = serviceValue(k);
         if (c) ok(`${k} present (${c.from}) — presence only; add --probe-providers to prove it retrieves`);
         else info(`${k} is NOT set — ${spec.id} will run without it and DISCLOSE the offices it cannot reach as deferred coverage. Set it to search them.`);
       }
@@ -1884,8 +1898,10 @@ export async function runCheck() {
   }
 
   say("\n  Research provider");
-  const px = effective("PERPLEXITY_API_KEY");
-  if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
+  // The same reader as the register, for the same reason: this is a key the services use.
+  const px = serviceKnown ? serviceValue("PERPLEXITY_API_KEY") : null;
+  if (!serviceKnown) info("the units' environment could not be read, so whether the services hold PERPLEXITY_API_KEY is not judged here — a failure to look, not a finding");
+  else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
   else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
 
   // ── — THE LANES A PRODUCT DECLARES IT NEEDS, BEFORE A REPORT NAMES THEM ──
@@ -3644,6 +3660,14 @@ try {
   candidate["CLEAROTRON_CUSTOMERS_DIR"] = join(cfg, "profiles");
   candidate.PROFILE_REPO_ROOT = cfg;   // no alias row — this name is current
   for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "PROFILE_REPO_ROOT"]) ok(`${k}=${candidate[k]}`);
+  // A REPOSITORY ALREADY THERE IS ASKED NOW, while the operator is still here, whether it can record a
+  // save. `clearotron start` gives a store it creates an identity of its own; one made by hand has none
+  // unless somebody set it, and on a machine with no global identity the first company created in the
+  // portal is refused. Said here, with the command, rather than discovered on that first company.
+  if (existsSync(join(cfgAbs, ".git"))) {
+    const cannot = storeCommitRefusal(cfgAbs);
+    if (cannot) warn(`${cannot.message}. Until then, creating a company in the portal is refused.`);
+  }
 
   // CLEAROTRON_INSTRUCTIONS_DIR IS DELIBERATELY NOT WRITTEN (found in review).
   //

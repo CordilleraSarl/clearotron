@@ -859,7 +859,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     const esPath = driverDir(runDir ?? dirname(reportMd), 'enforcer-signals.json');
     if (existsSync(esPath)) { const es = JSON.parse(readFileSync(esPath, 'utf8')); if (Array.isArray(es)) enforcerSignals = es; }
   } catch { /* absent — no telemetry lines */ }
-  const officeLinks = officeLinksFor(findings, recordsByUri, fetchReceipts); bindFindingsToRecords(findings, recordsByUri);
+  const officeLinks = officeLinksFor(findings, recordsByUri, runOrigins); bindFindingsToRecords(findings, recordsByUri);
   // 404-card caveat (2026-07-22): the V4-2 closure pass persisted every cited record its targeted
   // fetch definitively could not retrieve (predelivery-lint.json artifactSet.recordFetchFailures);
   // the evidence join stamps `_recordFetchFailure` from it so the card render carries the
@@ -1621,12 +1621,14 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
 
 // ── The office's own page for each fetched record, where the run's register publishes none of its own ──
 // Addressed from the record's numbers (office-record-links.mjs), never from the model or the handle, and
-// null on every other register, so those runs publish exactly as before. The tally goes to meta.json and
-// the log, so a register whose numbers never fit shows up as a count rather than as silence. Kept down
-// here, below every line the rest of the tree cites by number.
+// null on every register that publishes pages of its own, so those runs publish exactly as before. Which
+// registers those are is `runOrigins`, the same answer the record-URL normalisation above keys on, so the
+// two cannot disagree about one register. The tally goes to meta.json and the log, so a register whose
+// numbers never fit shows up as a count rather than as silence. Kept down here, below every line the rest
+// of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
-function officeLinksFor(findings, recordsByUri, fetchReceipts) {
-  const links = recordLinksFor(findings, recordsByUri, fetchReceipts?.[0]?.provider);
+function officeLinksFor(findings, recordsByUri, runOrigins) {
+  const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);
   return links;
 }

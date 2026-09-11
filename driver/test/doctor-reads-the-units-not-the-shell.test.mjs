@@ -155,6 +155,65 @@ test("doctor run from a shell with NOTHING set does not report the units' values
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
+// ── THE REGISTER, READ WHERE THE SERVICES READ IT ───────────────────────────────────────────────────────
+//
+// Measured on the test instance: the env file the units read named the register, its key and the research
+// key, knockout runs used that register the same day, and doctor in a fresh terminal said "no register is
+// selected", one screen above "nothing a search is refused for is missing from the units' environment".
+// The register section read the shell. These arms hold it to the units, and to the order-time check.
+const REGISTER_NAMES = ["CLEAROTRON_DATABASE=clarivate", "CLARIVATE_API_KEY=fixture-key", "PERPLEXITY_API_KEY=fixture-key"];
+const REGISTERED_ENV = GOOD_ENV + REGISTER_NAMES.join("\n") + "\n";
+/** One section of doctor's report: from its heading to the next. */
+const sectionOf = (out, heading) => (out.split(`\n  ${heading}\n`)[1] ?? "").split(/\n  (?=[A-Z])/)[0];
+/** The order-time check's own line, which reads the units through the same reader. */
+const orderTimeOf = (out) => sectionOf(out, "Will a search run?");
+
+test("a register the units carry is reported from the units' environment, in a shell with nothing set", () => {
+  const home = installedHome(REGISTERED_ENV);
+  try {
+    const r = doctor(home);
+    // THE FLOOR: the order-time check read the units, so this doctor took the hosted path, and the lines
+    // below are about the units rather than about a file this command happened to find.
+    assert.match(orderTimeOf(r.out), /the units' environment/, `the fixture did not reach the hosted path:\n${r.out}`);
+    const register = sectionOf(r.out, "Register provider");
+    assert.match(register, /clarivate — .*\(the units' environment\)/, `the register was not read from the units:\n${register}`);
+    assert.match(register, /CLARIVATE_API_KEY present \(the units' environment\)/);
+    assert.doesNotMatch(r.out, /no register is selected/, "the units name a register and doctor said none was selected");
+    assert.match(sectionOf(r.out, "Research provider"), /PERPLEXITY_API_KEY present \(the units' environment\)/);
+    assert.doesNotMatch(orderTimeOf(r.out), /CLEAROTRON_DATABASE|CLARIVATE_API_KEY/, "and the order-time check agrees");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("THE CONTROL — with no units, a register in the process environment is reported from there", () => {
+  const home = mkdtempSync(join(tmpdir(), "f34-bare-"));
+  try {
+    const r = doctor(home, Object.fromEntries(REGISTER_NAMES.map((l) => l.split("="))));
+    assert.match(sectionOf(r.out, "Register provider"), /clarivate — .*\(environment\)/, r.out);
+    assert.doesNotMatch(r.out, /no register is selected/);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("THE PLANT — units that name no register are reported as selecting none, and both lines say so", () => {
+  const home = installedHome(GOOD_ENV);
+  try {
+    // A register in the SHELL only: the services will not see it, so it must not rescue the report.
+    const r = doctor(home, { CLEAROTRON_DATABASE: "" });
+    assert.match(sectionOf(r.out, "Register provider"), /no register is selected/, r.out);
+    assert.match(orderTimeOf(r.out), /refused until[\s\S]*CLEAROTRON_DATABASE/, "the order-time check names the same absence");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("units whose environment cannot be read are a could-not-look for the register, never an absence", () => {
+  const home = installedHome(REGISTERED_ENV);
+  try {
+    for (const u of UNITS) writeFileSync(join(home, ".config", "systemd", "user", u), "[Service]\nEnvironmentFile=/nonexistent/clearotron.env\nExecStart=/bin/true\n");
+    const r = doctor(home);
+    const register = sectionOf(r.out, "Register provider");
+    assert.match(register, /could not be read[\s\S]*not judged here/, register);
+    assert.doesNotMatch(register, /no register is selected/, "a register this command could not look for was reported absent");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
 test("THE PLANT — with the value genuinely absent from the units, doctor DOES report it", () => {
   // Why this arm exists: the one above asserts an absence of output, and an absence of output is what
   // a doctor that stopped checking would also produce. This plants the real fault — units installed,

@@ -24,8 +24,8 @@
 // server-owned (monotonic per save); EVERY write re-runs the SAME load-time validator the driver uses
 // (search-policy.mjs validateRecipe), so the UI can never persist a recipe the driver would later reject;
 // free text gets the profiles.mjs anti-rule prose guards (a recipe must never smuggle a rating rule in as
-// prose — levels select machinery, never rating authority); a recipe belongs to a REAL customer on the
-// profile roster (never "generic"). The routing core (`makeRecipeService`) is fs-only + injected
+// prose — levels select machinery, never rating authority); a recipe belongs to a company on the
+// profile roster, Generic included. The routing core (`makeRecipeService`) is fs-only + injected
 // git/audit so it unit-tests offline; auth + rate-limit are wired in the bootstrap.
 
 import "../shared/env-local.mjs";   // — FIRST: the CLEAROTRON_* translation must land before any
@@ -61,6 +61,13 @@ export const componentCatalog = () =>
 export function makeRecipeService({
   recipesDir,
   profileDir = undefined,                      // undefined ⇒ profiles.mjs default dir
+  // THE ROSTER THE PORTAL SHOWS, read the way profile-service reads it (its `readLayered` note). The
+  // portal passes true: the deployment's store, overlay over base, with `generic` falling through from
+  // the product. Read as an explicit directory instead, a store holding no `generic.json` — every fresh
+  // install and every demo — throws "generic.json is REQUIRED", the catch below turned that into "no
+  // such company", and saved searches answered 404 for every company on the install, one created a
+  // minute earlier included, while the same company's projects answered 200.
+  readLayered = false,
   loadRecipes = loadRecipesDefault,
   loadProfiles = loadProfilesDefault,
   writeRecipe = defaultWriteRecipe,
@@ -69,8 +76,10 @@ export function makeRecipeService({
 } = {}) {
   const rosterHas = (customer) => {
     try {
-      const profiles = profileDir === undefined ? loadProfiles({ force: true }) : loadProfiles({ dir: profileDir, force: true });
-      return profiles.has(customer) && customer !== "generic";
+      const profiles = readLayered || profileDir === undefined ? loadProfiles({ force: true }) : loadProfiles({ dir: profileDir, force: true });
+      // GENERIC OWNS SAVED SEARCHES LIKE ANY COMPANY (owner ruling, 2026-09-11). It was refused here as not a
+      // real customer, and a fresh install, which holds Generic alone, opened Custom searches on an error.
+      return profiles.has(customer);
     } catch { return false; }   // an unreadable roster fails CLOSED here — writes need a verifiable owner
   };
   const listRow = ([key, r]) => {
@@ -122,7 +131,7 @@ export function makeRecipeService({
       return { status: 404, json: { error: "not_found" } };
     if (method !== "POST") return { status: 405, json: { error: "method_not_allowed" } };
     if (!rosterHas(customer))
-      return { status: 400, json: { error: `customer "${customer}" is not on the profile roster — a saved search belongs to a real customer (create the profile first; "generic" cannot own recipes)` } };
+      return { status: 400, json: { error: `customer "${customer}" is not on the profile roster — a saved search belongs to a company on the roster (create the company first)` } };
 
     const incoming = body.recipe;
     if (!incoming || typeof incoming !== "object" || Array.isArray(incoming))

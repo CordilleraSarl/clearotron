@@ -27,7 +27,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 
-import { koPaths, addressListedFilings } from "./driver.mjs";
+import { koPaths, addressListedFilings, recordOriginsFor } from "./driver.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -213,7 +213,7 @@ export function knockoutEvidence(run) {
   // office's own page, or the office and the number and why that is not a link. This view states the same,
   // from the same function over the same sidecar, so the connector and the report cannot give one filing
   // two links. On any other register the call sets nothing, and every row is exactly as it was.
-  if (Array.isArray(recordsDoc?.marks)) addressListedFilings(recordsDoc);
+  if (Array.isArray(recordsDoc?.marks)) addressListedFilings(recordsDoc, recordOriginsFor(String(recordsDoc?.provider ?? "").toLowerCase()));
   const out = [];
 
   for (const entry of (Array.isArray(recordsDoc?.marks) ? recordsDoc.marks : [])) {
