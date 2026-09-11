@@ -28,7 +28,7 @@
 //   MOCK_FAIL_STAGE=<substr[&&substr]>  — fail (stderr + exit 1) the turns whose prompt contains ALL parts
 //   MOCK_BARRIER_FILE=<path>            — hold the matter-frame turn until the sentinel appears
 //   MOCK_WARM_MODE=flake|draft|soft_fail|stubborn — the warm-patch ladder (resume detected via the patch msg)
-import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, readdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, readdirSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { applyStageWrites } from "./mock-stage-fixtures.mjs";
 
@@ -104,6 +104,30 @@ if (process.env.MOCK_CODEX_CALL_LOG) {
     }
   } catch { /* best-effort */ }
   try { appendFileSync(process.env.MOCK_CODEX_CALL_LOG, JSON.stringify({ argv, prompt: msg, codexHome: process.env.CODEX_HOME || null, configToml, hasAuth }) + "\n"); } catch { /* best-effort */ }
+}
+
+// ── A LOGIN THAT ROTATES, and a provider that accepts each refresh token ONCE. ──
+//   MOCK_CODEX_AUTH_LEDGER=<file>  every refresh token this stand-in provider has consumed. A turn reads
+//                                  $CODEX_HOME/auth.json and refuses it, the way codex reports the 401,
+//                                  when its refresh token is in the ledger. Otherwise the turn consumes the
+//                                  token and writes the rotated login. Every turn refreshes, which is
+//                                  stricter than real codex, which refreshes only when the access token expires.
+//   MOCK_CODEX_AUTH_WRITE=inplace|rename  how the rotated login is written: through whatever sits at
+//                                  auth.json, a link included, or as a new file renamed over it, which
+//                                  replaces a link.
+if (process.env.MOCK_CODEX_AUTH_LEDGER && codexHomeDir) {
+  const seat = join(codexHomeDir, "auth.json");
+  const ledger = process.env.MOCK_CODEX_AUTH_LEDGER;
+  const login = JSON.parse(readFileSync(seat, "utf8"));
+  const spent = existsSync(ledger) ? readFileSync(ledger, "utf8").split("\n") : [];
+  if (spent.includes(login.tokens.refresh_token)) {
+    process.stderr.write('ERROR codex_login::auth::manager: Failed to refresh token: 401 Unauthorized: {"error":{"message":"Your refresh token has already been used to generate a new access token. Please try signing in again."}}\n');
+    process.exit(1);
+  }
+  appendFileSync(ledger, `${login.tokens.refresh_token}\n`);
+  const rotated = JSON.stringify({ ...login, tokens: { ...login.tokens, refresh_token: `${login.tokens.refresh_token}+` }, last_refresh: new Date().toISOString() });
+  if (process.env.MOCK_CODEX_AUTH_WRITE === "rename") { writeFileSync(`${seat}.tmp`, rotated); renameSync(`${seat}.tmp`, seat); }
+  else writeFileSync(seat, rotated);
 }
 
 const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
