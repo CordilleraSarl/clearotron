@@ -55,13 +55,19 @@ test("run as printed it issues a key the demo's secret verifies — and without 
   const was = process.env.TRADEMARK_MCP_TOKEN_SECRET;
   try {
     writeFileSync(demoTokenSecretPath(base), "the-demo-secret\n", { mode: 0o600 });
-    writeFileSync(join(base, "grants.json"), JSON.stringify({ tenants: { "Demo Org": { users: { "demo@localhost": { run: true } } } } }));
+    // THE DEMO'S OWN GUEST LIST, as `start --demo` writes it: the account is granted through the
+    // top-level `people` map, and the tenant's `users` is empty. A reader that walks only `users` calls
+    // this key inert while the door accepts it.
+    writeFileSync(join(base, "grants.json"), JSON.stringify({
+      tenants: { "demo-org": { name: "Demo Org", accounts: ["demo-brand-owner"], users: {} } },
+      people: { "demo@localhost": { run: true, manage: true, everything: true } },
+    }));
     const env = { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" };
     const key = (args) => spawnSync(process.execPath, [join(ROOT, "bin", "key.mjs"), ...args], { encoding: "utf8", cwd: ROOT, env });
 
     const issued = key(["issue", "demo@localhost", "--base", base]);
     assert.equal(issued.status, 0, issued.stderr);
-    assert.doesNotMatch(issued.stderr, /no guest list|on no tenant/, "the guest list read is the demo's, which admits its own account");
+    assert.doesNotMatch(issued.stderr, /no guest list|granted nothing/, "the guest list read is the demo's, which admits its own account");
     process.env.TRADEMARK_MCP_TOKEN_SECRET = "the-demo-secret";
     const { verifyToken } = await import("../../shared/scope.mjs");
     assert.equal(verifyToken(issued.stdout.trim()).sub, "demo@localhost", "the door, handed the demo's secret, accepts it");
@@ -70,6 +76,12 @@ test("run as printed it issues a key the demo's secret verifies — and without 
     const refused = key(["issue", "demo@localhost"]);
     assert.notEqual(refused.status, 0);
     assert.match(refused.stderr, /no token signing secret/);
+
+    // AND THE CONTROL FOR THE NOTE: an identity the guest list grants nothing is still told the door
+    // will refuse its key, so the silence above is a reading and not a check that cannot fire.
+    const stranger = key(["issue", "nobody@example.com", "--base", base]);
+    assert.equal(stranger.status, 0, "the key is still issued: issuing before granting is a legitimate order");
+    assert.match(stranger.stderr, /resolves to no accounts/);
   } finally {
     if (was === undefined) delete process.env.TRADEMARK_MCP_TOKEN_SECRET; else process.env.TRADEMARK_MCP_TOKEN_SECRET = was;
     for (const d of [base, home]) rmSync(d, { recursive: true, force: true });

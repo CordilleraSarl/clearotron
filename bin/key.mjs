@@ -31,6 +31,7 @@ import { invocationPrefix } from "../shared/invocation.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { defaultGrantsPath, installPaths } from "./start.mjs";
 import { demoTokenSecretPath } from "../shared/client-door.mjs";
+import { resolvePerson } from "../shared/scope.mjs";   // the door's own reading of the guest list, so one answer serves both
 import { mintFromOptions } from "../mcp-server/mint-token.mjs";
 
 const argv = process.argv.slice(2);
@@ -110,11 +111,15 @@ try {
   if (!existsSync(rosterPath)) {
     console.error(`\nNOTE: no guest list at ${rosterPath} yet, so nothing grants ${email} anything and this key will be refused at the door. \`clearotron start\` writes the list; then: clearotron grant add ${email} --tenant <name> --accounts <brand-owner-key>`);
   } else {
+    // THE DOOR'S OWN RESOLVER DECIDES, not a second reading of the file. This walked `tenants[].users`
+    // alone, and the demo's guest list grants its account through the top-level `people` map — so the
+    // demo's own key came with a note saying the door would refuse it, over a key the door accepts
+    // (driven 2026-09-11). One reader for one question.
     const roster = JSON.parse(readFileSync(rosterPath, "utf8"));
-    const tenants = roster?.tenants && typeof roster.tenants === "object" ? roster.tenants : {};
-    const listed = Object.values(tenants).some((t) => t?.users && Object.prototype.hasOwnProperty.call(t.users, email));
+    const person = resolvePerson(email, roster);
+    const listed = Boolean(person && (person.everything || person.accounts?.length || person.organisations?.length));
     if (!listed)
-      console.error(`\nNOTE: ${email} is on no tenant in ${rosterPath}, so this key resolves to no accounts and the door will refuse it. Grant them access with: clearotron grant add ${email} --tenant <name> --accounts <brand-owner-key>`);
+      console.error(`\nNOTE: ${email} is granted nothing in ${rosterPath}, so this key resolves to no accounts and the door will refuse it. Grant them access with: clearotron grant add ${email} --tenant <name> --accounts <brand-owner-key>`);
   }
 } catch (e) {
   // A ROSTER THIS COMMAND CANNOT READ IS NOT A ROSTER SAYING THE SUBJECT IS ABSENT. Said as what it is,
