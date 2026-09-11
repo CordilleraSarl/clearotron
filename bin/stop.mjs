@@ -23,6 +23,7 @@ import { systemdSaid, looksLikeBusFailure, busRemedy, CAPTURE_STDERR } from "../
 import { BACKGROUND_UNITS } from "./start.mjs";
 import { CLIENT_DOOR_UNIT } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";
+import { readRunning } from "../shared/running-start.mjs";
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const say = (s = "") => console.log(s);
@@ -91,17 +92,31 @@ for (const u of BACKGROUND_UNITS) {
 }
 // THE COMMENT HERE ALREADY NAMED THE CAUSE AND SHRUGGED AT IT. If there is no user bus, the disables
 // above did not happen either — so this is where that is said.
-try {
-  execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR);
-} catch (e) {
-  const said = systemdSaid(e);
-  err(`  could not ask systemd to reload its units — ${said}`);
-  if (looksLikeBusFailure(said)) err(`\n${busRemedy()}\n`);
+// ONLY WHEN THERE WAS SOMETHING TO RELOAD. On a box with no unit installed the reload has nothing to do,
+// and asking anyway printed a bus error and `su` advice to a reader whose product was running in a
+// terminal — a WSL distribution without systemd meets exactly that (measured 2026-09-11).
+if (found) {
+  try {
+    execFileSync("systemctl", ["--user", "daemon-reload"], CAPTURE_STDERR);
+  } catch (e) {
+    const said = systemdSaid(e);
+    err(`  could not ask systemd to reload its units — ${said}`);
+    if (looksLikeBusFailure(said)) err(`\n${busRemedy()}\n`);
+  }
 }
 
 if (!found) {
-  say("  Nothing was running in the background — no pinned unit is installed on this box.");
-  say("  Nothing to do, and nothing was changed.");
+  // A FOREGROUND START IS NOT "NOTHING RUNNING". It is not this verb's to stop — its terminal holds it —
+  // but saying nothing was running while it served is the answer that sent a reader looking elsewhere.
+  const foreground = readRunning();
+  if (foreground.length) {
+    say("  No background product is installed, but the product is running in the foreground:");
+    for (const r of foreground) say(`    ${r.demo ? "the demo" : "the product"} at ${r.url} (pid ${r.pid})`);
+    say("  Ctrl-C in the terminal that holds it stops it. This verb stops only what `start --background` installed.");
+  } else {
+    say("  Nothing was running in the background — no pinned unit is installed on this box.");
+    say("  Nothing to do, and nothing was changed.");
+  }
 } else if (failures.length) {
   // THE SENTENCE THAT WAS WRONG. "The background product is stopped and the box runs nothing again" was
   // printed unconditionally — including on the run where four services stayed up. A reader who is told

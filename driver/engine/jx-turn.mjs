@@ -94,7 +94,10 @@ export function readJxTuple(tuple, { vendor, authMode, engine }) {
   if (tuple?.killed || tuple?.signals?.stalled)
     return { ok: false, cause: "the engine turn was killed before it answered (stall or wall)", truncationObservable: observable, ...base };
   if (tuple?.signals?.rateLimited)
-    return { ok: false, cause: "the engine turn was rate-limited", truncationObservable: observable, ...base };
+    // FLAGGED, not only described: a rate limit is the one failure a caller may call passing, and it
+    // needs to know that without parsing this sentence. `resetsAt` is the adapter's, when it read one.
+    return { ok: false, cause: "the engine turn was rate-limited", rateLimited: true, resetsAt: tuple?.signals?.resetsAt ?? null,
+      truncationObservable: observable, ...base };
   if (tuple?.code !== 0 || tuple?.json?.status !== "ok")
     return { ok: false, cause: `the engine turn did not complete cleanly (code ${tuple?.code ?? "?"}, status ${tuple?.json?.status ?? "none"})`,
       truncationObservable: observable, ...base };

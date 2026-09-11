@@ -325,7 +325,26 @@ export function jsonFromTurnText(text) {
   return null;
 }
 
-export function makeComposeReader({ turn, now = () => new Date() } = {}) {
+/**
+ * What the page says when the engine did not answer a read.
+ *
+ * "JUST NOW" ONLY WHERE IT IS TRUE. Every failed turn said the reader "could not reach the engine just
+ * now", and on a fresh install whose engine was not signed in that sent a stranger to press the button
+ * again, forever: the failure was the sign-in, which no retry changes (measured on a published beta,
+ * 2026-09-11). A rate limit is the one failure known to pass, so it alone says so, with its reset time
+ * when the engine gave one. Everything else names the check that finds the cause — `checkCommand`, in the
+ * reader's own invocation and with no machine path, because the page is not a place to print one.
+ */
+export function engineFailureMessage(t, { checkCommand = "clearotron doctor --probe-engine" } = {}) {
+  if (t?.rateLimited) {
+    const at = t.resetsAt ? new Date(t.resetsAt) : null;
+    const when = at && !Number.isNaN(at.getTime()) ? ` It resets at ${at.toISOString().slice(11, 16)} UTC.` : "";
+    return `The engine is at its usage limit just now.${when} Try again then, or set the search up below.`;
+  }
+  return `The request could not be read: the engine did not answer it. \`${checkCommand}\` finds out why — set the search up below meanwhile.`;
+}
+
+export function makeComposeReader({ turn, now = () => new Date(), checkCommand } = {}) {
   if (typeof turn !== "function") return null;
   return async function read(brief) {
     const text = String(brief ?? "").trim();
@@ -361,7 +380,7 @@ export function makeComposeReader({ turn, now = () => new Date() } = {}) {
         + `${JSON.stringify(READ_SCHEMA)}\n\nThe brief:\n${text}`,
     });
     if (!t?.ok) {
-      return { ok: false, error: "engine", message: "The reader could not reach the engine just now — set the search up below.",
+      return { ok: false, error: "engine", message: engineFailureMessage(t, { ...(checkCommand ? { checkCommand } : {}) }),
         cause: t?.cause ?? "the engine turn did not complete", vendor: t?.vendor ?? null, authMode: t?.authMode ?? null,
         engine: t?.engine ?? null, model: t?.model ?? null };
     }

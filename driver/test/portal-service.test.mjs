@@ -343,7 +343,9 @@ test("compose/read: a refusal is a sentence at 400/422; a provider throw is 502 
   const broken = world({ composeRead: async () => { throw new Error("provider 529 overloaded"); } });
   const out = await broken.service.route("POST", "/portal/api/compose/read", CLIENT, { brief: "x" }, {});
   assert.equal(out.status, 502, "an outage upstream is not a fault here");
-  assert.match(out.json.error, /not answering just now/);
+  assert.match(out.json.error, /could not be read/);
+  assert.match(out.json.error, /doctor --probe-engine/, "it names the check that finds the cause");
+  assert.doesNotMatch(out.json.error, /just now|try again|shortly/i, "a throw is not known to pass, so nothing says it will");
   assert.ok(!/529|overloaded|Error/.test(out.json.error), "the provider's own words never reach a client screen");
   assert.equal(broken.audits.find((a) => a.event === "compose-read").ok, false);
 });
