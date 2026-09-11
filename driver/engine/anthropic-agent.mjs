@@ -467,19 +467,32 @@ export const anthropicAgentEngine = {
       let rateLimitEvent = null;   // a 429 session-cap rejection rides a `rate_limit_event` (status:"rejected" + resetsAt)
       // Streamed-usage accumulator: what the turn PROVABLY moved, observed from the stream itself, so a
       // killed turn is never journalled as usage:null when millions of tokens moved (the "137 + usage:null
-      // ⇒ mislabelled transient/lane-wedge" class). Per completed API call the `assistant` event's usage is
-      // authoritative (summed); an in-flight call contributes its `message_start` usage + the latest
-      // `message_delta` output count until its own assistant event supersedes them (no double count).
-      const streamTotals = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
-      let pendingStart = null, pendingDeltaOut = 0;
+      // ⇒ mislabelled transient/lane-wedge" class).
+      //
+      // KEYED BY MESSAGE, AND EACH FIELD IS THE LARGEST READING SEEN FOR THAT MESSAGE. One API call's usage
+      // reaches the stream several times: on `message_start`, on every `assistant` event (one per content
+      // block), and on its `message_delta`, whose output count is the call's own running total. Summing the
+      // assistant events counted a call's input and cache once per block and its output at whatever it
+      // was when the block went out, and dropping the delta lost the rest: a turn killed after 75 calls
+      // journalled 810 output tokens. Which event carries the final count need not be known here, and the
+      // order is inferred rather than recorded, so every reading is kept and the largest wins. A delta names
+      // no message, so it belongs to the one its last `message_start` opened; an assistant event with no id
+      // and no open message is a call of its own, as it always was.
+      const perMessage = new Map();
+      let openMessage = null, anonMessages = 0;
+      const foldUsage = (key, u) => {
+        if (!u) return;
+        const was = perMessage.get(key);
+        perMessage.set(key, was
+          ? { input: Math.max(was.input, u.input), output: Math.max(was.output, u.output),
+              cacheRead: Math.max(was.cacheRead, u.cacheRead), cacheWrite: Math.max(was.cacheWrite, u.cacheWrite) }
+          : { input: u.input, output: u.output, cacheRead: u.cacheRead, cacheWrite: u.cacheWrite });
+      };
       const streamedUsage = () => {
-        const p = mapUsage(pendingStart) ?? { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
-        const u = {
-          input: streamTotals.input + p.input,
-          output: streamTotals.output + p.output + pendingDeltaOut,
-          cacheRead: streamTotals.cacheRead + p.cacheRead,
-          cacheWrite: streamTotals.cacheWrite + p.cacheWrite,
-        };
+        const u = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+        for (const m of perMessage.values()) {
+          u.input += m.input; u.output += m.output; u.cacheRead += m.cacheRead; u.cacheWrite += m.cacheWrite;
+        }
         u.total = u.input + u.output + u.cacheRead + u.cacheWrite;
         return u.total > 0 ? u : null;   // zero observed movement stays null — a never-admitted turn must keep classifying as a lane wedge
       };
@@ -703,9 +716,9 @@ export const anthropicAgentEngine = {
             periodStart = now; periodChunk = chunkSeq;
           }
           syncOpenAsk();
-          const u = mapUsage(ev.message?.usage);
-          if (u) { streamTotals.input += u.input; streamTotals.output += u.output; streamTotals.cacheRead += u.cacheRead; streamTotals.cacheWrite += u.cacheWrite; }
-          pendingStart = null; pendingDeltaOut = 0;   // this call's usage is now authoritative — drop its partials
+          // This block's usage, folded into its own call: the largest reading wins, so a block's early count
+          // never replaces the delta's running total, and a second block of the same call adds nothing twice.
+          foldUsage(ev.message?.id ?? openMessage ?? `__assistant_${++anonMessages}`, mapUsage(ev.message?.usage));
           progress();
         }
         else if (ev.type === "user") {
@@ -737,8 +750,12 @@ export const anthropicAgentEngine = {
         }
         else if (ev.type === "stream_event") {
           const t = ev.event?.type;
-          if (t === "message_start") { pendingStart = ev.event.message?.usage ?? null; progress(); }
-          else if (t === "message_delta") { const o = Number(ev.event?.usage?.output_tokens); if (o > 0) pendingDeltaOut = o; progress(); }
+          if (t === "message_start") {
+            openMessage = ev.event.message?.id ?? `__start_${++anonMessages}`;
+            foldUsage(openMessage, mapUsage(ev.event.message?.usage));
+            progress();
+          }
+          else if (t === "message_delta") { foldUsage(openMessage ?? "__delta_without_start", mapUsage(ev.event?.usage)); progress(); }
           else if (t === "content_block_delta" || t === "content_block_start") progress();
           // THINKING GAUGE (partials): the earliest tells. Any one is sufficient; belt-and-braces so a
           // display-mode or CLI-version change cannot silently blind the gauge.
