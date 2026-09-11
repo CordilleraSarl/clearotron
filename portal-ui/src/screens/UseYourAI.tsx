@@ -1,58 +1,45 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Use your own AI — one question, one list, one panel that never moves.
+// Use your own AI — two questions, then one panel of steps that never moves.
 //
-// ── WHAT WAS WRONG, AND THREE OF THE FIVE WERE MEASURED ──────────────────────────────────────────
+// ── WHAT THIS REBUILD ANSWERS ────────────────────────────────────────────────────────────────────
 //
-// Owner, reviewing the live page: *"Claude desktop, cowork and claude and code? wtf??? you know its
-// just ONE APP on a laptop which has cowork and code in it and claude is what its called and there is
-// no such thing as desktop. Its also just a garbage design - new links open and move shit around. the
-// 'copied text' is not obvious still - muted colours. And who is going to read THREE PARAGRAPHS OF
-// TEXT... someone opens it, they want a SIMPLE way to triage wtf with terminology they need."*
+// Observed by the owner on a hosted install: he did not see the small where-toggle, pressed Claude, was
+// handed the on-this-computer block, and concluded the page could never work from his laptop. Nothing
+// said the toggle changed the steps below it. The approved design answers that with two things this
+// file is built around:
 //
-// The first three were measured by running `connectOffers()` with exactly what
-// `driver/portal-service.mjs` hands a hosted client — `stdioRoutes: {}` plus a resolved public address:
+//   1. THE WHERE-CHOICE IS THE FIRST THING, AND IT IS BIG. Two cards, the same size before and after a
+//      pick, and nothing below them until one is picked — so nobody reaches an app's steps without
+//      having said where Clearotron is.
+//   2. PRESSING AN APP SHOWS ITS STEPS; IT COPIES NOTHING. Step 1 is always the copy, with its own
+//      button, so the reader sees what they are about to take before they take it.
 //
-//   1. A HEALTHY HOSTED INSTALL TOLD A PAYING CLIENT THE SOFTWARE WAS BROKEN, THREE TIMES. The stdio
-//      rows resolve `served: false` carrying "this copy of the software is incomplete… whoever installed
-//      it will need to install it again." Nothing is incomplete. Those strings are the OPERATOR's case,
-//      correct for somebody whose disk route is genuinely missing, reused for a reader who simply has no
-//      shell. A lawyer opened this page and read that their software needed reinstalling. That was the
-//      highest-value defect in the issue and it is the one this file's structure retires.
-//   2. Eight buttons were eight labels on ONE action — every served row on a wired client resolves to
-//      the same route, the same address and the same press, differing only in where the result is pasted.
-//   3. The `other` row told a client to run a local command, and `command` is null for a client.
+// ── NOTHING ON THE PAGE MOVES WHEN A ROW OR A COPY BUTTON IS PRESSED ─────────────────────────────
 //
-// ── THE FIX IS STRUCTURAL, WHICH IS WHY A RESTYLE WAS REJECTED ───────────────────────────────────
+// The owner met the page before last as "new links open and move shit around". The steps panel sits
+// beside the list and holds ONE height per card — the tallest any app's steps reach, with every copy
+// done — measured from a hidden copy of every panel rather than guessed, so switching apps or pressing
+// Copy changes nothing around it. Any per-row expansion would move every row beneath it, so there is
+// none.
 //
-// Single-select plus a reserved slot IS the mechanism. One panel at a time, in a fixed position, so
-// nothing above it moves on any press. Accordions cannot deliver that — any per-row expansion moves
-// every row beneath it, which is what the owner met as "new links open and move shit around" — so they
-// are gone rather than tuned.
+// ── THIS SCREEN HOLDS NO CLIENT TABLE ────────────────────────────────────────────────────────────
 //
-// THE PAGE ASKS AS MANY QUESTIONS AS THE DEPLOYMENT LEAVES OPEN, never a fixed number:
+// Every row, every step and every string a reader copies is resolved server-side through
+// `shared/connect-clients.mjs`, and arrives here as data. Grouping is by the offer's own `route`. A
+// static table here would be a second author for one fact — the drift that file documents and
+// `connect-clients-are-data` refuses. A client id in a conditional on this file is a defect.
 //
-//   hosted client   one route served     NO question    destination list, one press
-//   staff, wired    both routes served   ONE question   where does your assistant run?
-//   staff, local    one route served     NO question    destination list, command route
-//   nothing served  —                    NO question    one deployment-level sentence, no control
-//
-// Grouping is by the offer's own `route`, which is already on the wire. THIS SCREEN HOLDS NO CLIENT
-// TABLE AND NO GROUPING TABLE. A static grouping here would be a second author for one fact — the drift
-// `shared/connect-clients.mjs` documents twice and `connect-clients-are-data` refuses. A grep for a
-// client id in a conditional on this file is a defect, not a shortcut.
-//
-// ── AN UNSERVED ROW DOES NOT RENDER FOR A CLIENT AT ALL ──────────────────────────────────────────
-//
-// Ruling: not as a button, not as a sentence. That is what retires defect 1 — the operator-shaped
-// wording stays correct for an operator, and a client never reaches it because a client never sees the
-// row. The one honest deployment-level absence survives: when nothing at all is served, the page says so
-// once, in words, and offers no control. An absence that names nobody reads as breakage.
+// AN UNSERVED ROW DOES NOT RENDER FOR A CLIENT AT ALL. On a hosted install the disk routes resolve
+// unserved carrying "this copy of the software is incomplete… install it again" — the OPERATOR's case,
+// which a lawyer once read as their software being broken. Filtering to served offers before anything
+// reasons about routes is what keeps that wording off a reader's page.
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { api } from '../contract/api.ts'
-import type { McpAccess, ConnectOffer } from '../contract/api.ts'
+import type { McpAccess, ConnectOffer, ConnectCopy } from '../contract/api.ts'
+import { Icon } from '../components/Icon.tsx'
 
 /** What the connected assistant can do. His words, four bullets, no jargon. Unchanged, per the brief. */
 const WHAT_YOU_CAN_DO = [
@@ -62,48 +49,26 @@ const WHAT_YOU_CAN_DO = [
   'Ask what-if: why a finding was rated as it was, what changes if the goods narrow',
 ]
 
-/** How long the pressed row keeps saying it copied. Long enough to be seen, short enough not to stick. */
+/** How long a pressed Copy keeps saying it copied. Long enough to be seen, short enough not to stick. */
 const COPIED_MS = 2600
 
 /**
- * THE TWO PLACES AN ASSISTANT CAN RUN, in the reader's terms rather than the product's.
- *
- * Keyed by the offer's `route`, which the resolver already decided. TWO, never three — the owner ruled
- * two, and a third group added to accommodate a vendor would be sorting by vendor again, which is the
- * shape this page was rebuilt to remove.
+ * THE TWO PLACES, in the reader's words, keyed by the offer's `route`. Two, never three: a third to
+ * accommodate one vendor would be sorting by vendor again.
  */
-const WHERE: Record<string, string> = {
-  disk: 'On this computer',
-  'public-http': 'Somewhere else',
+const PLACES = ['disk', 'public-http'] as const
+const WHERE: Record<(typeof PLACES)[number], { readonly label: string; readonly icon: string }> = {
+  disk: { label: 'Clearotron is installed on this machine (laptop/desktop)', icon: 'laptop' },
+  'public-http': { label: 'Clearotron is running elsewhere (e.g. Cloud/Server)', icon: 'server' },
 }
 
 /**
- * `either` IS NOT A THIRD PLACE, AND MUST NOT BECOME A THIRD SEGMENT.
- *
- * The generic row — an assistant we do not have a table entry for — resolves `route: "either"` because
- * it can take a command OR an address. That is a statement about what it ACCEPTS, not about where it
- * runs, and the reader's question is where it runs.
- *
- * Treating it as its own route produced a defect a reader meets rather than an arm: on a staff deck it
- * rendered a SECOND segment also labelled "On this computer", because `either` was mapped to the same
- * words as `disk`. The question was answered twice, identically, and pressing the wrong one silently
- * changed what got copied. Found in review driving the staff decks.
- *
- * A distinct label would be the wrong fix — the owner ruled TWO groups and a third to accommodate one
- * row is sorting by vendor again. So an `either` offer belongs to BOTH groups: whichever place the
- * reader says their assistant runs, this row can serve it.
+ * The owner-dictated help link. Its text names the document by what a person searching for it would
+ * type, which is why it is the one place on the arriving page the six mechanism words may appear — the
+ * browser check exempts exactly this string and nothing else.
  */
-const EITHER = 'either'
-const placesOf = (offers: readonly ConnectOffer[]): readonly string[] => {
-  const named = [...new Set(offers.map((o) => o.route ?? 'public-http'))].filter((r) => r !== EITHER)
-  // Only generic rows served: it can go either way, so ask nothing and lead with the route that needs
-  // nothing. Asking a question whose two answers offer the identical row is worse than not asking.
-  return named.length ? named : (offers.length ? ['disk'] : [])
-}
-const servesPlace = (o: ConnectOffer, place: string): boolean => {
-  const r = o.route ?? 'public-http'
-  return r === place || r === EITHER
-}
+const HELP_URL = 'https://github.com/CordilleraSarl/clearotron/blob/main/mcp-server/CONNECT.md'
+const HELP_LINK_TEXT = 'GitHub MCP Connector Documentation'
 
 // A REFUSAL IS A VALUE, NEVER A SWALLOWED EXCEPTION. The one-time reveal below is reachable only if a
 // blocked clipboard comes back as `false`; a bare `catch {}` here would tell a reader we had copied
@@ -122,115 +87,141 @@ async function copy(text: string): Promise<boolean> {
  */
 const mask = (key: string): string => (key.length > 3 ? `${key.slice(0, 3)}••••` : '••••')
 
-/**
- * The paste sentence for one row.
- *
- * `Paste it into {name}` reads for every proper noun — Claude, ChatGPT, Perplexity — and does not read
- * for the generic row, whose name is a description rather than a product: "Paste it into Another agent"
- * is not English. It passes every gate on this page: it is not mechanism vocabulary, it breaks no banned
- * word, and the row label is correct where it stands on its own. Only the COMPOSED sentence stumbles,
- * on a page whose whole subject is being read by somebody who is not us. Found by driving the four
- * decks, not by reading them — both instruments here ask whether the right row rendered and neither
- * asks whether the sentence reads.
- *
- * Owner's ruling 2026-09-06, option B: the generic row gets its own line and the
- * approved sentence is left untouched for the three named ones. Option A — renaming the row to "your
- * assistant" — was the alternative, and it was rejected because it edits a line the owner approved in
- * order to repair a line he did not.
- *
- * IT BRANCHES ON NOTHING — the row carries its own sentence or it does not, and this composes the
- * default. An earlier cut of this keyed on `offer.id === 'other'` and
- * `driver/test/connect-clients-are-data.test.mjs` refused it, correctly: no surface may branch on a
- * client's identity, because a branch in a screen drifts from the table silently and both keep rendering
- * while the reader follows whichever one is wrong. The exception lives on the row now, so a fifth client
- * needing its own line is a row edit and this file never changes.
- *
- * ONE AUTHOR, TWO SLOTS. The row's label and the panel's heading render the same sentence, and they had
- * two copies of it before this. Two copies of a sentence is how one of them gets fixed.
- */
-const pasteLine = (offer: ConnectOffer): string =>
-  offer.pasteAs ?? `Paste it into ${offer.name}`
+type Secret = Extract<ConnectCopy, { kind: 'secret' }>
+
+/** The one substitution this page performs: a value into the slot the server composed around it. */
+const fill = (c: Secret, value: string): string => c.template.split(c.slot).join(value)
 
 /**
- * One destination row. THE PRESSED CONTROL IS THE CONFIRMATION — the owner reported the previous
- * feedback as "not obvious still - muted colours", so this is a state change on the thing he pressed.
- *
- * THE LABEL'S SLOT IS RESERVED IN EVERY ROW, ALWAYS, not only while copied. Swapping "Paste it into
- * Claude" for "✓ Copied" at natural width would resize the row and shift its neighbours — the reflow
- * this rebuild exists to end, arriving through the fix for it. Both labels are always laid out; one is
- * hidden.
+ * A step's two marks, drawn: `**…**` names a control the reader looks for, a backtick pair a literal
+ * they type or read back. Nothing else is interpreted, so a step can never carry markup the page trusts.
  */
-function Destination({
-  offer, selected, copied, onPick,
-}: {
-  readonly offer: ConnectOffer
-  readonly selected: boolean
-  readonly copied: boolean
-  readonly onPick: () => void
-}) {
+function Marked({ text }: { readonly text: string }) {
+  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).filter((p) => p !== '')
   return (
-    <button
-      type="button"
-      className="ai-dest"
-      // ONE SOURCE for the state a check reads and the state the CSS paints, so a green assertion and a
-      // green-looking row cannot disagree with each other.
-      // THE ID, ON THE ELEMENT. One product can legitimately appear under one name on two routes, so a
-      // name is not an identifier here and anything selecting by one picks whichever came first.
-      data-id={offer.id}
-      data-selected={selected ? '' : undefined}
-      data-copied={copied ? '' : undefined}
-      aria-pressed={selected}
-      onClick={onPick}
-    >
-      <span className="ai-dest-name">
-        {offer.name}
-        {offer.sub ? <span className="ai-dest-sub">{offer.sub}</span> : null}
-      </span>
-      <span className="ai-dest-say">
-        <span className="ai-dest-idle">{pasteLine(offer)}</span>
-        <span className="ai-dest-done">✓ Copied</span>
-      </span>
-    </button>
+    <>
+      {parts.map((p, n) =>
+        p.length > 4 && p.startsWith('**') && p.endsWith('**') ? <b key={n}>{p.slice(2, -2)}</b>
+          : p.length > 2 && p.startsWith('`') && p.endsWith('`') ? <code key={n} className="ai-code">{p.slice(1, -1)}</code>
+            : <span key={n}>{p}</span>)}
+    </>
   )
 }
 
-/** The panel. ONE, in a slot with a reserved minimum height, below everything it could otherwise push. */
-function Panel({ offer, landed }: { readonly offer: ConnectOffer; readonly landed: string | null }) {
+/** What a press left behind, per step: which step flashed, and what one step's secret put on the clipboard. */
+type PressState = {
+  readonly copiedAt: number | null
+  readonly landedAt: number | null
+  readonly landed: string | null
+  readonly revealedAt: number | null
+  readonly revealed: string | null
+}
+const AT_REST: PressState = { copiedAt: null, landedAt: null, landed: null, revealedAt: null, revealed: null }
+
+/**
+ * One app's steps. `measuring` draws the TALLEST state — every secret already copied — for the hidden
+ * copy the slot's height is taken from, and binds nothing.
+ */
+function StepsPanel({
+  offer, measuring = false, state = AT_REST, onBlock, onSecret,
+}: {
+  readonly offer: ConnectOffer
+  readonly measuring?: boolean
+  readonly state?: PressState
+  readonly onBlock?: (i: number, text: string) => void
+  readonly onSecret?: (i: number, c: Secret) => void
+}) {
   return (
-    <div className="ai-panel" data-for={offer.id}>
-      <h3 className="ai-panel-head">{pasteLine(offer)}</h3>
-      {landed ? (
-        <p className="ai-panel-landed">On your clipboard now: <code className="mono">{landed}</code></p>
-      ) : null}
-      {offer.steps.length ? (
-        <ol className="ai-panel-steps">
-          {offer.steps.map((line) => <li key={line}>{line}</li>)}
-        </ol>
-      ) : null}
-      {/* A DRIVEN ROW SAYS WHEN; AN UNDRIVEN ONE SAYS SO IN WORDS AND CARRIES NO DATE. `verifiedOn` rides
-          only where the resolver's row has it, so a stamp cannot appear over steps nobody opened. */}
-      {offer.verifiedOn ? (
-        <p className="ai-panel-stamp">✓ Checked {offer.verifiedOn} — these are the taps this app actually has today.</p>
-      ) : (
-        <p className="ai-panel-stamp ai-panel-stamp-none">
-          These steps name no button we have not opened ourselves. Your app may word them differently.
-        </p>
-      )}
+    <div className="steps-panel" data-for={measuring ? undefined : offer.id}>
+      <div className="eyebrow">Steps for</div>
+      <h3 className="steps-name">{offer.name}</h3>
+      <ol className="steps">
+        {offer.steps.map((s, i) => {
+          const c = s.copy
+          const flashed = !measuring && state.copiedAt === i
+          const landed = measuring && c?.kind === 'secret' ? fill(c, mask('')) : state.landedAt === i ? state.landed : null
+          return (
+            <li key={i}>
+              <div>
+                <div className="step-text"><Marked text={s.text} /></div>
+                {c?.kind === 'block' ? (
+                  <div className="codeblock">
+                    <pre>{c.text}</pre>
+                    <button
+                      type="button"
+                      className={`btn-ghost${flashed ? ' is-copied' : ''}`}
+                      data-step={i}
+                      tabIndex={measuring ? -1 : undefined}
+                      onClick={() => onBlock?.(i, c.text)}
+                    >{flashed ? '✓ Copied' : 'Copy'}</button>
+                  </div>
+                ) : null}
+                {c?.kind === 'secret' ? (
+                  <>
+                    <div className="secret-btn">
+                      <button
+                        type="button"
+                        className={`btn-primary${flashed ? ' is-copied' : ''}`}
+                        data-step={i}
+                        tabIndex={measuring ? -1 : undefined}
+                        onClick={() => onSecret?.(i, c)}
+                      >{flashed ? <><Icon name="check" size={15} />Copied</> : landed ? 'Copy again' : c.label}</button>
+                    </div>
+                    {landed ? (
+                      <div className="landed">
+                        <div className="landed-label">On your clipboard now</div>
+                        {landed.split('\n').map((line, n) => <div key={n} className="mono">{line}</div>)}
+                      </div>
+                    ) : null}
+                    {!measuring && state.revealedAt === i && state.revealed ? (
+                      <div className="landed">
+                        <p className="ai-said">
+                          Your browser would not let us copy it. Copy this by hand — it is yours,
+                          and it will not be shown again.
+                        </p>
+                        <pre className="ai-pre">{state.revealed}</pre>
+                      </div>
+                    ) : null}
+                  </>
+                ) : null}
+                {s.hint ? <div className="step-hint"><Marked text={s.hint} /></div> : null}
+              </div>
+            </li>
+          )
+        })}
+      </ol>
+    </div>
+  )
+}
+
+/** The one honest unavailable, about the DEPLOYMENT rather than the reader, naming who can change it. */
+function NotOnline() {
+  return (
+    <div className="notice ai-none">
+      <strong>Not available on this installation yet</strong>
+      <p>
+        Your AI app reaches Clearotron over the internet, and this installation isn&rsquo;t on the internet
+        yet. Whoever installed it can put it online — it takes about a minute and needs no account.
+      </p>
     </div>
   )
 }
 
 export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
   const [access, setAccess] = useState<McpAccess | null>(null)
-  const [route, setRoute] = useState<string | null>(null)
+  const [place, setPlace] = useState<string | null>(null)
   const [picked, setPicked] = useState<string | null>(null)
+  const [copiedAt, setCopiedAt] = useState<number | null>(null)
+  const [landedAt, setLandedAt] = useState<number | null>(null)
   const [landed, setLanded] = useState<string | null>(null)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
   const [failed, setFailed] = useState<string | null>(null)
   // THE DEGRADED PATH, AND ONLY IT. A credential reaches the DOM in exactly one world — the browser
   // refused the clipboard — where the alternative is a reader with no way forward at all.
-  const [revealed, setRevealed] = useState<{ address: string; key: string } | null>(null)
+  const [revealedAt, setRevealedAt] = useState<number | null>(null)
+  const [revealed, setRevealed] = useState<string | null>(null)
+  const [slotHeight, setSlotHeight] = useState(0)
   const timer = useRef<number | null>(null)
+  const probe = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     void api.mcpAccess().then((r) => { if (r.kind === 'ok') setAccess(r.value) })
@@ -243,174 +234,168 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
   // RULING 3, APPLIED TO THE DATA BEFORE ANYTHING REASONS ABOUT IT. Everything below sees served rows
   // only, so no later branch can render an unserved one by accident.
   const served = offers.filter((o) => o.served)
-  const routes = placesOf(served)
-  // The route that needs nothing leads, where this deployment has it.
-  const active = route ?? (routes.includes('disk') ? 'disk' : routes[0] ?? null)
-  const here = served.filter((o) => active !== null && servesPlace(o, active))
+  const routes = PLACES.filter((p) => served.some((o) => o.route === p))
+  // THE CARDS SHOW WHENEVER THIS INSTALL SERVES THE DISK ROUTE — which is to say, to the people who run
+  // it. Both cards, always, even with no public address: the approved design puts the "not on the
+  // internet yet" notice under the second card, so the person who can fix it learns why, where they
+  // would look for it. A client is never handed the disk route, sees no cards, and gets the list.
+  const asks = routes.includes('disk')
+  const active = asks ? place : (routes[0] ?? null)
+  const here = served.filter((o) => active !== null && o.route === active)
   const chosen = here.find((o) => o.id === picked) ?? null
 
-  const press = async (offer: ConnectOffer) => {
-    setPicked(offer.id)
-    setFailed(null)
-    setRevealed(null)
-    setLanded(null)
+  // THE SLOT'S HEIGHT IS MEASURED, NOT GUESSED: every panel on this card is drawn, hidden, at the slot's
+  // own width, and the tallest wins. Re-measured when the width or the fonts change the answer.
+  useLayoutEffect(() => {
+    const el = probe.current
+    if (!el) return
+    const measure = () => setSlotHeight(Math.max(0, ...[...el.children].map((c) => (c as HTMLElement).offsetHeight)))
+    measure()
+    const seen = new ResizeObserver(measure)
+    seen.observe(el)
+    return () => seen.disconnect()
+  }, [active, here.length])
 
-    // A local route: the line is a command with no secret in it, so it never needs the server.
-    if (offer.command) {
-      if (!(await copy(offer.command))) {
-        setFailed('Your browser would not let us copy it. The steps below still apply.')
-        return
-      }
-      setLanded(offer.command)
-    } else {
-      // THE CREDENTIAL LIVES IN THIS FUNCTION AND NOWHERE ELSE: minted for the person pressing, handed
-      // to the clipboard, dropped when this call returns. Never in state, never a prop, never rendered —
-      // except on the refused-clipboard path below.
-      const r = await api.connectKey()
-      if (r.kind !== 'ok') {
-        setFailed('We could not set this up just now. Try again, or ask us.')
-        return
-      }
-      if (!(await copy(`${r.value.address}\n${r.value.key}`))) {
-        setRevealed({ address: r.value.address, key: r.value.key })
-        return
-      }
-      setLanded(`${r.value.address}  ${mask(r.value.key)}`)
-    }
-
-    setCopiedId(offer.id)
+  const settle = () => {
+    setCopiedAt(null); setLandedAt(null); setLanded(null); setRevealedAt(null); setRevealed(null); setFailed(null)
+  }
+  const flash = (i: number) => {
+    setCopiedAt(i)
     if (timer.current) window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(() => setCopiedId(null), COPIED_MS)
+    timer.current = window.setTimeout(() => setCopiedAt(null), COPIED_MS)
+  }
+
+  const copyBlock = async (i: number, text: string) => {
+    setFailed(null)
+    if (!(await copy(text))) {
+      setFailed('Your browser would not let us copy it. Select the text above and copy it by hand.')
+      return
+    }
+    flash(i)
+  }
+
+  const press = async (i: number, c: Secret) => {
+    setFailed(null)
+    setRevealedAt(null)
+    setRevealed(null)
+    // THE CREDENTIAL LIVES IN THIS FUNCTION AND NOWHERE ELSE: minted for the person pressing, put into
+    // the line the server composed, handed to the clipboard, dropped when this call returns. Never in
+    // state, never a prop, never rendered — except masked, and on the refused-clipboard path below.
+    const r = await api.connectKey()
+    if (r.kind !== 'ok') {
+      setFailed('We could not set this up just now. Try again, or ask us.')
+      return
+    }
+    if (!(await copy(fill(c, r.value.key)))) {
+      setRevealedAt(i)
+      setRevealed(fill(c, r.value.key))
+      return
+    }
+    setLandedAt(i)
+    setLanded(fill(c, mask(r.value.key)))
+    flash(i)
   }
 
   return (
     <div className="screen ai-screen">
+      <div className="eyebrow">Use your own AI</div>
       <h1 className="ai-title">Use your own AI</h1>
       <p className="ai-lead">
         Run and interrogate clearances from the assistant you already use — by voice, by email, or just
         by asking.
       </p>
 
-      <section className="ai-can">
+      <section className="ctx-card ai-can">
         <h2>What you can do</h2>
-        <ul>
-          {WHAT_YOU_CAN_DO.map((line) => <li key={line}>{line}</li>)}
+        <ul className="ai-can-list">
+          {WHAT_YOU_CAN_DO.map((line) => <li key={line}><Icon name="check" size={15} />{line}</li>)}
         </ul>
-        {/* THE BOUNDARY PARAGRAPH IS CUT (ruling — of the three paragraphs he would not read, it
-            was the one he had never approved). Its job, saying what this reaches, survives as the bolded
-            half of one sentence. */}
-        <p className="ai-can-foot">
-          Every report also has an <strong>Ask AI</strong> button that jumps straight to that run.{' '}
-          <strong>What you set up here reaches your own clearances and nothing else.</strong>
-        </p>
+        <p className="ai-can-foot">Use the <strong>Ask AI</strong> button on a report.</p>
       </section>
 
-      <h2 className="ai-connect-head">Connect it</h2>
+      <section className="ai-connect">
+        <h2 className="ai-connect-head">Connect it</h2>
 
-      {!served.length ? (
-        /* THE ONE HONEST UNAVAILABLE, and it is about the DEPLOYMENT rather than the reader. It names
-           who can change it: an absence naming nobody reads as breakage. */
-        <p className="ai-none">
-          <strong>Not available on this installation yet.</strong> Your assistants reach this service over
-          the internet, and this installation is not on the internet. Whoever installed it can put it
-          online — it takes about a minute and needs no account.
-        </p>
-      ) : (
-        <>
-          {routes.length > 1 ? (
-            <div className="ai-where">
-              <h3 className="ai-where-q">Where does your assistant run?</h3>
-              <div className="ai-seg" role="group" aria-label="Where does your assistant run?">
-                {routes.map((r) => (
+        {!served.length ? <NotOnline /> : (
+          <>
+            {asks ? (
+              <div className="where-grid" role="group" aria-label="Where Clearotron is running">
+                {PLACES.map((p) => (
                   <button
-                    key={r}
+                    key={p}
                     type="button"
-                    className="ai-seg-btn"
-                    data-on={r === active ? '' : undefined}
-                    aria-pressed={r === active}
-                    onClick={() => { setRoute(r); setPicked(null); setLanded(null); setRevealed(null); setFailed(null) }}
-                  >{WHERE[r] ?? WHERE['public-http']}</button>
+                    className="where-card"
+                    data-place={p}
+                    aria-pressed={p === active}
+                    onClick={() => { if (p !== active) { setPlace(p); setPicked(null); settle() } }}
+                  >
+                    <span className={p === active ? 'radio radio-on' : 'radio'} aria-hidden="true" />
+                    <Icon name={WHERE[p].icon} size={19} />
+                    {WHERE[p].label}
+                  </button>
                 ))}
               </div>
-              <p className="ai-where-sub">
-                Pick your assistant. We copy the one line it needs — nothing to sign up for, nothing
-                opened up.
-              </p>
-            </div>
-          ) : (
-            <p className="ai-where-sub">
-              Pick where you will paste it. One press copies everything your assistant needs.
-            </p>
-          )}
+            ) : null}
 
-          <div className="ai-dests">
-            {here.map((o) => (
-              <Destination
-                key={o.id}
-                offer={o}
-                selected={o.id === picked}
-                copied={o.id === copiedId}
-                onPick={() => void press(o)}
-              />
-            ))}
-          </div>
+            {active === null ? null : !here.length ? <NotOnline /> : (
+              <div className="ai-connect-grid">
+                <div>
+                  <h3 className="section-title">Select AI app</h3>
+                  <div className="ai-apps">
+                    {here.map((o) => (
+                      <button
+                        key={o.id}
+                        type="button"
+                        className={`pick-row ai-app${o.id === picked ? ' pick-row-on' : ''}`}
+                        // THE ID, ON THE ELEMENT: a name is what a reader sees, not what a check selects by.
+                        data-id={o.id}
+                        aria-pressed={o.id === picked}
+                        onClick={() => { if (o.id !== picked) { setPicked(o.id); settle() } }}
+                      >
+                        <span className={o.id === picked ? 'radio radio-on' : 'radio'} aria-hidden="true" />
+                        <span className="ai-app-label">
+                          <span className="ai-app-name">{o.name}</span>
+                          {o.sub ? <span className="ai-app-sub">{o.sub}</span> : null}
+                        </span>
+                        <span className="ai-app-go"><Icon name="chevron" size={16} /></span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-          {/* THE RESERVED SLOT. It holds a minimum height whether or not anything is in it, so picking a
-              destination cannot move one pixel above this line. */}
-          <div className="ai-slot" aria-live="polite">
-            {failed ? <p className="ai-said">{failed}</p> : null}
-            {revealed ? (
-              <div className="ai-panel">
-                <p className="ai-said">
-                  Your browser would not let us copy it. Paste these two lines into{' '}
-                  {chosen?.name ?? 'your assistant'} — they are yours, and they will not be shown again.
-                </p>
-                <pre className="ai-pre">{revealed.address}{'\n'}{revealed.key}</pre>
+                {/* THE RESERVED SLOT, and the hidden copy of every panel its height is taken from. */}
+                <div className="ai-slot" aria-live="polite" style={slotHeight ? { minHeight: slotHeight } : undefined}>
+                  {chosen ? (
+                    <StepsPanel
+                      offer={chosen}
+                      state={{ copiedAt, landedAt, landed, revealedAt, revealed }}
+                      onBlock={(i, text) => void copyBlock(i, text)}
+                      onSecret={(i, c) => void press(i, c)}
+                    />
+                  ) : (
+                    <div className="steps-panel steps-panel-empty">
+                      <span className="steps-empty"><Icon name="arrow-left" size={16} />Select AI to see instructions</span>
+                    </div>
+                  )}
+                  {failed ? <p className="ai-said ai-failed">{failed}</p> : null}
+                  <div className="ai-probe" ref={probe} aria-hidden="true">
+                    {here.map((o) => <StepsPanel key={o.id} offer={o} measuring />)}
+                  </div>
+                </div>
               </div>
-            ) : chosen ? (
-              <Panel offer={chosen} landed={landed} />
-            ) : (
-              <p className="ai-slot-empty">
-                Pick your assistant and we will copy what it needs, then show you exactly where it goes.
-              </p>
             )}
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </section>
 
-      {/* KEPT, and a named dependency rather than a leftover: the link serves the engineer and the
-          assistant-reading-on-your-behalf case, and the ruling says it does not get cut. A `<details>`
-          because nothing may be expanded on arrival — its text stays out of an arriving reader's
-          innerText, which is what the browser check reads. */}
-      <details className="ai-help">
-        <summary>Not connecting, or want to set it up yourself?</summary>
-        <div className="ai-help-body">
-          <p>
-            Press the button for your assistant and it will tell you the next thing to do — usually
-            three taps inside that app&rsquo;s own settings. If your assistant is not listed, pick
-            <strong> Another agent</strong>: it will give you both of the things any assistant can take.
-          </p>
-          <p>
-            Once it is connected, you do not have to learn anything new. Ask it in your own words —
-            <em> &ldquo;start a knockout for our new drinks name across the US&rdquo;</em>, or
-            <em> &ldquo;why did you rate that one high?&rdquo;</em> — and it will do the same work you
-            would do on these screens.
-          </p>
-          {/* KEPT VERBATIM. Approved copy line 14 is "the existing fold and its link to the full technical
-              instructions, KEPT", and this paragraph is part of that fold. I had dropped it while
-              rewriting the page around it — an unsanctioned deletion of client-facing copy, which is the
-              exact class of change the sign-off criterion on this issue exists for. Restored to main's
-              wording, character for character. */}
-          <p>
-            If a press does not finish, the most common reason is that your assistant runs somewhere
-            this service cannot be reached from. The team who set this up can tell you in a sentence.
-          </p>
-          <p className="ai-help-doc">
-            <a href="/portal/connect-help" target="_blank" rel="noreferrer">The full technical
-            instructions</a> — written for an engineer, or for an assistant reading on your behalf.
-          </p>
-        </div>
-      </details>
+      {/* THE HELP, AS A QUIET NOTICE rather than a fold. It replaced a `<details>` whose link went to a
+          portal route serving the same document; the document's public home is one a reader's own AI can
+          open too, which is what "point your AI at it" asks for. */}
+      <div className="notice quiet ai-help">
+        <strong>If it doesn&rsquo;t connect</strong>
+        <p>Point your AI at the full technical setup instructions to diagnose.</p>
+        <p><a href={HELP_URL} target="_blank" rel="noreferrer">{HELP_LINK_TEXT} ↗</a></p>
+      </div>
     </div>
   )
 }

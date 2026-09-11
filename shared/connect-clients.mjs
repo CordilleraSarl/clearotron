@@ -8,386 +8,347 @@
 // understand, i can access the UI at 127.0.0.1 but i cant access the MCP server? … i didnt need to mint
 // a key for the UI or open a tunnel i just ran clearotron start?"* And then: *"AND it might not just be
 // cowork, it might be chatgpt or perplexity. or [another agent platform]. COME ON MAN. this shouldn't
-// be so hard."* (One platform he named is not named back: this product does not require it, and a
-// product that lists an integrator by name starts describing itself in terms of what it happens to run.
-// Any agent of that shape is served by the "Another agent" row, which is what that row is for.)
+// be so hard."*
 //
-// He is right that it should not be hard, and his second message is what makes it easy. The thing that
-// varies is NOT the reader's network. It is WHAT EACH CLIENT CAN ACCEPT — a property of the client,
-// which we know and the reader should never have to work out:
+// He is right that it should not be hard. The reader knows two things for certain: which app they use,
+// and whether Clearotron is on the machine that app runs on. Everything else — a command or a settings
+// block, an address, a key — follows from those two answers, so the product works it out and the reader
+// is only ever asked the two questions.
 //
-//   accepts "stdio"  the client can spawn a local process. It needs a command and NOTHING else: no key,
-//                    no address, no port, no tunnel. This is the whole answer and readers do not
-//                    believe it, having just been told about tunnels — so the copy says it plainly.
-//   accepts "http"   the client speaks to an address and proves itself with a key. That address is
-//                    ALWAYS the publicly reachable one — see below.
-//   accepts "either" we do not know what the reader's agent can do, so we say both and let them pick.
+// ── TWO ROUTES, AND EVERY APP TAKES BOTH ─────────────────────────────────────────────────────────────
 //
-// ── THE `runsOn` AXIS IS DELETED, AND WAS A LIVE FALSE OFFER ( §3, §9) ─────────
+//   disk          Clearotron is installed on the machine the app runs on. The app starts the server
+//                 itself from the copy already there: no key, no address, no network.
+//   public-http   Clearotron is running elsewhere. The app reaches its public address with a key minted
+//                 for the person pressing. That address is ALWAYS the publicly reachable one — see
+//                 below for why no loopback address is ever a true answer.
 //
-// It used to sit beside `accepts` and answer "which address is enough": `readers-machine` got loopback,
-// `vendor-cloud` got the public one. The distinction does not exist. From the vendor's own help centre:
-//
-//   "Claude connects to your remote MCP server from Anthropic's cloud infrastructure, rather than from
-//    your local device. This is true across every Claude client, including claude.ai, Claude Desktop,
-//    Cowork, and the mobile apps." … "Your MCP server must be reachable over the public internet from
-//    Anthropic's IP ranges."
-//
-// Cowork RUNS on the reader's machine and CONNECTS from the vendor's cloud; the axis conflated the two
-// and classified it `readers-machine`, so `clearotron connect --client cowork` printed a loopback
-// address that Cowork rejects — today, in the shipped product. HTTPS only; plain HTTP is refused too.
-//
-// So the axis is gone rather than corrected. Correcting it would leave a field that is now fully
-// determined by `accepts` — a second name for one fact, and an invitation to branch on it again.
-//
-// So the tunnel is not a mode anybody chooses. It is what every `accepts: "http"` row requires, and
-// picking Claude Code never mentions it.
-//
-// ── WHY THIS TABLE REPLACED THE BROWSER'S OWN ───────────────────────────────
-//
-// There were TWO tables. This one, and `portal-ui/src/contract/assistants.ts`, which carried its own
-// axis — `door: browser|key|either` × `reach: remote|local` — and its own offered/withheld derivation.
-// Two tables partitioning the same clients on different axes do not merely risk drifting; they had
-// already drifted before either was finished. The page said Codex needs a key address. This table says
-// Codex needs no key at all. On a local install the page's answer resolved to `null`, so the page named
-// a one-line command in its own instructions and then rendered no command — which is that very
-// defect, sitting inside the page written to answer it.
-//
-// So the browser no longer derives any of this. It is handed resolved rows and renders them. That is not
-// a preference for server-side logic: the install's own filesystem path is not a browser fact, and any
-// derivation that needs it must happen where it is known. `assistantsFor`, `addressFor` and the `reach`
-// axis are DELETED rather than kept in step, because a second author kept in step by hand is the thing
-// that broke.
+// This table used to give each row ONE of those, as an `accepts` axis, and it was wrong in both
+// directions: Claude Code and Codex were offered only on this computer although both connect to a remote
+// address with a key, and ChatGPT only remotely although its desktop app reads the same settings file as
+// Codex. The owner met the result as a hosted install that "could never work from his laptop". So every
+// row now carries both routes' steps, drawn from the approved design, and the page asks where
+// Clearotron is running instead of guessing.
 //
 // ── DATA, NOT BRANCHES ───────────────────────────────────────────────────────────────────────────
 //
 // "The list of clients is data, not code branches — adding one is a row." A single `if (id === 'codex')`
-// anywhere downstream is the seed of the same drift: the branch and the row disagree, both still render,
-// and the reader follows whichever one is wrong. `driver/test/connect-clients-are-data.test.mjs` refuses
-// a client name in a conditional on every surface that renders these rows.
+// anywhere downstream is the seed of drift: the branch and the row disagree, both still render, and the
+// reader follows whichever one is wrong. `driver/test/connect-clients-are-data.test.mjs` refuses a client
+// name in a conditional on every surface that renders these rows.
+//
+// A STEP NAMES ITS COPY BY SHAPE, and never spells it. The strings a reader pastes are composed in
+// `shared/stdio-connect.mjs`, once, and a row says which one its first step hands over. That keeps each
+// command to one author (`driver/test/the-connect-route-has-one-author.test.mjs`) and lets two rows that
+// take the same file — ChatGPT's desktop app and Codex both read `~/.codex/config.toml` — hand over the
+// same bytes by construction rather than by care.
+//
+// STEP TEXT CARRIES TWO MARKS and nothing else: `**…**` for the name of a control the reader looks for,
+// and a backtick pair for a literal they type or read back. The page draws them; the terminal prints the
+// literal and drops the emphasis. Anything richer would be markup in data, which a surface then has to
+// trust.
+//
+// ── THESE SENTENCES ARE READ BY A LAWYER, NOT AN ENGINEER ────────────────────────────────────────
+//
+// The owner quoted two earlier refusals back as fails: "this installation is not running yet, so there
+// is nothing for an assistant to connect to" ("very confusing") and "connects from its vendor's servers,
+// so it cannot reach a machine that is not published to the internet … under a name that resolves".
+// Every refusal here says the fact as WHAT HAPPENS NEXT and WHO DOES IT.
+//
+// NO REFUSAL MAY SAY "address" OR "key". A refusal renders where an arriving reader can see it, and
+// `scripts/ai-page-render-check.mjs` refuses six words on every line of the arriving page. The steps may
+// use them: they appear only after the reader has picked an app, which is the moment those words start
+// meaning something to them.
+//
+// ── THE LAUNCH ROUTE ( settled 8; owner: "fastest possible way to reach 'chat about my report'") ──
+//
+// A row MAY carry `launch: { url, verifiedOn, by }` — a page a press can open so the reader lands in
+// their assistant with the connector in front of them. NO ROW CARRIES ONE TODAY, and that is a statement
+// rather than an omission: which vendors allow it is a fact somebody has to DRIVE, and a URL written here
+// from memory would be a button that looks like it works and does not. `connect-clients-are-data`
+// REFUSES a launch URL that carries no date and no name.
+
+import { KEY_SLOT, STDIO_SERVER_NAME, remoteConnectFor } from "./stdio-connect.mjs";
+
+/** The two places Clearotron can be, relative to the reader's app. The page asks; the terminal flags. */
+export const ROUTES = Object.freeze(["disk", "public-http"]);
+
+/** The terminal's spelling of the same question: `--where here|elsewhere`, from the reader's side. */
+export const WHERE_FLAG = Object.freeze({ here: "disk", elsewhere: "public-http" });
+
+// Hints more than one row uses. One spelling each, so two apps cannot describe one fact two ways.
+const KEY_HINT = "The key is made for you when you press, and is not shown again.";
+const CHECK_HINT = `To check: \`claude mcp list\` shows \`${STDIO_SERVER_NAME} ✓ Connected\`.`;
+const BRIEF = "ask it to brief you on your clearances.";
 
 /**
- * Every client we can speak to, and what it can accept. Adding one is a row.
+ * Every app we can speak to, and the steps for each route. Adding one is a row.
  *
- * `steps` is a function of what the deployment resolved, not a fixed list, because the instruction for
- * a browser-door assistant names an email and the instruction for a stdio assistant names a command.
- * Interpolating them here keeps the recipe and the address that recipe refers to in one place.
+ * `routes[route]` is `{ steps(ctx) }`: the reader's steps, in order, as `{ text, copy?, hint? }`. Step 1
+ * is always the copy — the one thing the reader takes away — and `copy` names a shape in
+ * `shared/stdio-connect.mjs` (a stdio shape on disk, a remote shape on the web). `ctx` carries what the
+ * deployment resolved that a sentence may name: today, the operator's sign-in identity.
+ *
+ * `lead` is the route a caller gets when it names none — the terminal's `--client` without `--where`.
+ * It is the route each row was served on before both existed, so a scripted invocation keeps doing what
+ * it did. `aliases` are ids a row answered to before rows merged, each with the route it meant; old
+ * scripts and old muscle memory keep working, and nothing else reads them.
  */
-/* ── item 5 — THESE SENTENCES ARE READ BY A LAWYER, NOT AN ENGINEER ─────────
-   The owner quoted two of them back as fails: "this installation is not running yet, so there is
-   nothing for an assistant to connect to" ("very confusing") and "connects from its vendor's servers,
-   so it cannot reach a machine that is not published to the internet … under a name that resolves"
-   ("who cares about vendors servers etc if you are a UI user … resolves, vendors severs, wtf?").
-
-   Every one of them now says the same fact as WHAT HAPPENS NEXT and WHO DOES IT. No vendor's servers,
-   no name resolution, no processes, no checkouts — the four things a reader cannot act on.
-
-   AND NONE OF THEM MAY SAY "address" OR "key". These rows render on the ARRIVING page, before any
-   press, and `scripts/ai-page-render-check.mjs` refuses six words on every line an arriving reader
-   sees. That constraint is why the old sentence reached for "a name that resolves" instead of the
-   obvious word, and it is worth knowing before rewriting one of these: the plain word is "on the web".
-
-   WHICH of these states should exist at all is a different question and not this issue's — it is open
-   with the owner as  Q1, and his Settled 4 may delete the
-   local one entirely. Wording them honestly costs nothing if it does. */
-/* ── THE LAUNCH ROUTE ( settled 8; owner: "fastest possible way to reach 'chat about
-   my report'") ────────────────────────────────────────────────────────────────────────────────────────
-
-   A row MAY carry `launch: { url, verifiedOn, by }` — a page a press can open so the reader lands in
-   their assistant with the connector in front of them, instead of being told where to click.
-
-   NO ROW CARRIES ONE TODAY, and that is a statement rather than an omission. The ruling is "where a
-   vendor allows launching directly, launch; otherwise the shortest possible paste", and which vendors
-   allow it is a fact about their product that somebody has to DRIVE before we can claim it. A URL
-   written here from memory would be a button that looks like it works and does not — the exact class
-   this file exists to prevent, and the one the owner has already met twice.
-
-   So the mechanism is built and the data is empty. Populating it is one row plus the evidence:
-   `verifiedOn` is the date it was driven and `by` is who drove it, and `connect-clients-are-data`
-   REFUSES a launch URL that carries neither. Nobody has to touch the page.  */
 export const CONNECT_CLIENTS = Object.freeze([
-  // ── Runs on the reader's own machine and can spawn a process: needs NOTHING but a command. ──────
   {
-    id: "claude-code", name: "Claude Code", accepts: "stdio", stdioShape: "claude-cli",
-    steps: ({ command }) => [
-      "Paste it into a terminal on this machine and run it",
-      "Then ask it to brief you on this service — it reads its own instructions",
-      ...(command ? [] : ["(this copy of the software is incomplete — whoever installed it will need to install it again)"]),
-    ],
+    id: "claude", name: "Claude", lead: "public-http",
+    // ONE ROW, BECAUSE IT IS ONE APP ("you know its just ONE APP on a laptop which has cowork and code in
+    // it and claude is what its called and there is no such thing as desktop"). `cowork` and
+    // `claude-desktop` were rows once; they answer here now, each on the route it used to mean.
+    aliases: { cowork: "public-http", "claude-desktop": "disk" },
+    routes: {
+      disk: {
+        steps: () => [
+          { text: "Copy this.", copy: "desktop-json" },
+          { text: "In the Claude desktop app, open **Settings → Developer → Edit Config** and paste it in.",
+            hint: `Other servers already there? Add just the \`${STDIO_SERVER_NAME}\` entry inside \`mcpServers\`.` },
+          { text: `Restart the Claude app. \`${STDIO_SERVER_NAME}\` appears in its tools.`,
+            hint: "Desktop app only — Claude on the web or your phone can’t reach this machine." },
+        ],
+      },
+      "public-http": {
+        // DRIVEN, NOT RECALLED: the owner connected on 2026-09-04 by pasting the address, setting
+        // Authentication to None, and adding an `Authorization: Bearer <key>` request header. The warning
+        // travels with the steps and is not optional — Claude probes, infers sign-in, and shows an
+        // authentication warning even when None is right; a reader who is not told to ignore it will
+        // assume they have done it wrong.
+        verifiedOn: "2026-09-04", by: "owner",
+        steps: () => [
+          { text: "Copy your address and key.", copy: "address-and-key", hint: KEY_HINT },
+          { text: "In Claude, open **Settings → Connectors → Add custom connector**." },
+          { text: "Paste the address — the first line." },
+          { text: "Set **Authentication** to **None**." },
+          { text: "Add a request header: **Authorization** = `Bearer`, then the key — the second line." },
+          { text: "Press **Add**. If Claude shows an authentication warning, ignore it." },
+        ],
+      },
+    },
   },
   {
-    id: "codex", name: "Codex CLI", accepts: "stdio", stdioShape: "codex-toml",
-    steps: () => [
-      "Paste it into a terminal on this machine and run it",
-      "Then ask it to brief you on this service — it reads its own instructions",
-    ],
+    id: "claude-code", name: "Claude Code", lead: "disk",
+    routes: {
+      disk: {
+        steps: () => [
+          { text: "Copy this.", copy: "claude-cli" },
+          { text: "Paste it into a terminal on this computer and press Enter." },
+          { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
+        ],
+      },
+      // From the vendor's documentation, 2026-09-11; not yet driven against a hosted install.
+      "public-http": {
+        steps: () => [
+          { text: "Copy this command.", copy: "claude-cli-http", hint: KEY_HINT },
+          { text: "Paste it into a terminal and press Enter." },
+          { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
+        ],
+      },
+    },
   },
   {
-    // NOT A SEPARATE PRODUCT (decided: there is no such thing as desktop). This is
-    // Claude reached the way that runs on the reader's own machine, so it carries Claude's name and says
-    // which way it is in the sub-label. The `desktop-json` stdio shape is unchanged — what moved is what
-    // a reader is told this is, not how it connects.
-    id: "claude-desktop", name: "Claude", sub: "app, on this computer", accepts: "stdio", stdioShape: "desktop-json",
-    steps: () => [
-      "Paste it into Claude Desktop's own settings file — Advanced, under these steps, names the file",
-      "Restart Claude Desktop, and this service appears in its tools",
-    ],
-  },
-
-  // ── Speaks HTTP. Connects from the vendor's own servers. ────────────────────────────────────────
-  //
-  // ONE ROW, BECAUSE IT IS ONE APP (ruling in session: "you know its just ONE
-  // APP on a laptop which has cowork and code in it and claude is what its called"). `cowork` was a
-  // separate row here and is merged in; the sub-label carries where it is met, which is a fact about the
-  // reader's screen rather than about our software.
-  //
-  // THE STEPS BELOW WERE DRIVEN, NOT RECALLED, and the merge is what settles which of two contradictory
-  // sequences survives. This row previously said "Connect, then sign in when the browser opens" — nobody
-  // ever drove that. The cowork row said something different and somebody had: the owner connected on
-  // 2026-09-04 by pasting the address, setting Authentication to None, and adding an
-  // `Authorization: Bearer <key>` request header. Both rows described the same app reaching the same
-  // door — `accepts: "http"`, one `public-http` offer, same address, same press — so they were never two
-  // routes to keep apart. They were one app described twice, and only one description was observed.
-  //
-  // The earlier defect in the same class, kept here because it is the reason the rule exists: the row
-  // used to end "Choose API key, and paste the second line we copied", and there is no API key control
-  // in that dialog. A client following it went looking for a box that is not the way in, on the page
-  // whose entire job is to get them connected.
-  //
-  // The warning travels with the steps and is not optional: Claude tags the server "Always required ·
-  // Detected" because it probes and infers OAuth. `None` is still correct despite the orange box, and a
-  // reader who is not told that will assume they have done it wrong.
-  {
-    id: "claude", name: "Claude", sub: "app, web, and Cowork", accepts: "http",
-    verifiedOn: "2026-09-04", by: "owner",
-    steps: ({ address }) => [
-      "Settings → Connectors → Add custom connector",
-      `Paste ${address ?? "the first of the two lines we copied"}`,
-      "Set Authentication to None",
-      "Add a request header: Authorization = Bearer, then the second line we copied",
-      "Add. If it warns that authentication is required, that is its own guess — None is correct here",
-    ],
+    id: "chatgpt", name: "ChatGPT", lead: "public-http",
+    routes: {
+      // The ChatGPT desktop app reads Codex's settings file (the vendor's documentation, 2026-09-11), so
+      // it takes Codex's shape and the same bytes. ChatGPT on the web cannot start a local server.
+      disk: {
+        steps: () => [
+          { text: "Copy this.", copy: "codex-toml" },
+          { text: "Open `~/.codex/config.toml` and paste it at the end.",
+            hint: "The ChatGPT desktop app reads the same settings file as Codex." },
+          { text: "Restart the ChatGPT app.",
+            hint: "Desktop app only — ChatGPT on the web or your phone can’t reach this machine." },
+        ],
+      },
+      // The address and no key: ChatGPT signs its reader in through the browser. The Developer-mode path
+      // is the one the vendor documents today; the older "Connectors → Advanced" path was stale.
+      "public-http": {
+        steps: ({ operator }) => [
+          { text: "Copy the address.", copy: "address" },
+          { text: "In ChatGPT on the web, turn on **Settings → Security and login → Developer mode**.",
+            hint: "Needs a Plus, Pro, Business, Enterprise or Edu plan. On a company plan, your admin may have to allow it." },
+          { text: "Add a custom connector and paste the address." },
+          { text: `Sign in when the browser opens — use ${operator ?? "your work email"}.` },
+        ],
+      },
+    },
   },
   {
-    id: "chatgpt", name: "ChatGPT", accepts: "http",
-    steps: ({ address, operator }) => [
-      "Settings → Connectors → Advanced → Developer mode",
-      `Add MCP server, paste ${address ?? "the first of the two lines we copied"}`,
-      `Sign in when the browser opens (${operator} email)`,
-    ],
+    id: "codex", name: "Codex", lead: "disk",
+    routes: {
+      // A SETTINGS BLOCK, NOT A COMMAND. This row once said "Paste it into a terminal on this machine and
+      // run it" over a TOML block whose home is a file — an instruction that ends in a shell error.
+      disk: {
+        steps: () => [
+          { text: "Copy this.", copy: "codex-toml" },
+          { text: "Open `~/.codex/config.toml` and paste it at the end." },
+          { text: `Restart Codex and ${BRIEF}`,
+            hint: "Codex in the terminal, your code editor and the ChatGPT desktop app all read this file." },
+        ],
+      },
+      // The key goes in the shell profile and the file names the variable, because Codex does not forward
+      // the environment and a key written into a settings file outlives the moment it was needed.
+      "public-http": {
+        steps: () => [
+          { text: "Copy this.", copy: "codex-toml-http" },
+          { text: "Open `~/.codex/config.toml` and paste it at the end." },
+          { text: "Copy your key and add the line to your shell profile.", copy: "codex-key-line",
+            hint: "Codex reads the key from there, so it never sits in the settings file." },
+          { text: `Restart Codex and ${BRIEF}` },
+        ],
+      },
+    },
   },
   {
-    // UNDRIVEN, AND WORDED LIKE IT (the owner drives this vendor himself this
-    // week and the dated stamp appears then). The old second step named "API Key" as the control to
-    // choose — the same assertion-from-no-observation that made the cowork row send clients hunting
-    // for a box that is not the way in. Two lines and a place to put each is what we actually know.
-    id: "perplexity", name: "Perplexity", accepts: "http",
-    steps: ({ address }) => [
-      "Settings → Connectors → Add connector, choose a custom MCP server",
-      `Paste ${address ?? "the first line we copied"} as the server address`,
-      "Give it the second line we copied as the credential, wherever it asks for one",
-    ],
-  },
-
-  // ── Anything else. We do not know what it can do, so we do not pretend to. ──────────────────────
-  {
-    id: "other", name: "Another agent", accepts: "either", stdioShape: "generic-json",
-    // THE PASTE SENTENCE, ON THE ROW, because it cannot be composed from the name here.
-    //
-    // Every other row's name is a proper noun and `Paste it into {name}` reads: Claude, ChatGPT,
-    // Perplexity. This row's name is a DESCRIPTION, and "Paste it into Another agent" is not English. It
-    // passes every gate on that page — not mechanism vocabulary, no banned word, and the label is right
-    // where it stands alone — so only the composed sentence stumbles, on a page whose whole subject is
-    // being read by somebody who is not us. Found by driving the four decks; neither instrument could
-    // see it, because both ask whether the right row rendered and neither asks whether the sentence reads.
-    //
-    // Owner's ruling 2026-09-06, option B: this row gets its own line and the approved
-    // sentence is left untouched for the three named ones. Option A — renaming the row to "your
-    // assistant" — was rejected because it edits a line he approved to repair a line he did not.
-    //
-    // HERE RATHER THAN IN THE SCREEN, and that is this table's own rule enforced by
-    // `connect-clients-are-data.test.mjs`: no surface may branch on a client's identity, because a branch
-    // in a screen drifts from the row silently and both keep rendering while the reader follows whichever
-    // one is wrong. A fifth row that needs its own sentence writes it here and the page needs no edit.
-    pasteAs: "Paste it wherever your assistant takes it.",
-    steps: () => [
-      "If your agent can run a local command, paste what we copied and run it — it needs nothing else",
-      "If it can only reach a web link, use Advanced under these steps, which carries both lines it wants",
-    ],
+    // ANYTHING ELSE. We do not know what the app is, so the steps name what any of them takes. The sub
+    // line names two it covers, because a reader scanning for their app's name should find somewhere to
+    // land; Perplexity had a row of its own with steps nobody had driven, and is folded in here.
+    id: "other", name: "Another agent", sub: "Perplexity, OpenClaw and others", lead: "disk",
+    aliases: { perplexity: "public-http" },
+    routes: {
+      disk: {
+        steps: () => [
+          { text: "Copy this.", copy: "generic-json" },
+          { text: "Paste it wherever your app adds an MCP server." },
+          { text: "Restart the app if it asks you to." },
+        ],
+      },
+      "public-http": {
+        steps: () => [
+          { text: "Copy your address and key.", copy: "address-and-key", hint: KEY_HINT },
+          { text: "Paste the address and the key wherever your app adds a custom MCP server.",
+            hint: "It may call them “server URL” and “bearer token”." },
+        ],
+      },
+    },
   },
 ]);
+
+/** A step's text for a surface that draws no emphasis: the terminal. The literals keep their marks. */
+export const plainStep = (text) => String(text ?? "").replace(/\*\*/g, "");
 
 /**
  * The offers as they go ON THE WIRE, composed once for every caller that puts them there.
  *
- * ── WHY THIS IS A FUNCTION ────────────────────────────────────────────────
- *
  * There were two hand-written copies of this mapping: the portal route's, and the browser check's stub
  * of the portal route. They agreed until the day the shape changed, and then the check went red about
- * the page rather than about itself — the stub was still dropping a field the route had started to
- * send, so the real page rendered nothing and the arm reported that as the page's fault.
+ * the page rather than about itself. A stub that restates a wire is a second author for one shape. This
+ * is the shape; both callers ask.
  *
- * A stub that restates a wire is a second author for one shape. This is the shape; both callers ask.
+ * A copy goes out as what the page needs to hand it over and nothing more: a block's text, or a secret's
+ * button label and the template the minted key is put into. The stdio route object stays server-side —
+ * the page has no use for where a block goes, because the step text already says.
  */
-// `sub`, `verifiedOn` and `by` ride only where the ROW carries them, and absent means absent rather than
-// null. Two of the three are load-bearing on the page:
-//
-//   • `sub` is how one app can appear once per route without two rows claiming to be two products —
-//     "Claude · app, web, and Cowork" and "Claude · app, on this computer" are one product met two ways.
-//   • `verifiedOn`/`by` are what let the page show "✓ Checked <date>" on a row somebody actually drove
-//     and NO stamp on one nobody did. A stamp defaulted onto an undriven row would be the file's own
-//     defect class — asserting vendor behaviour from no observation — dressed up as evidence.
-//
-// So a row without them sends no key at all, and the page has nothing to render rather than something
-// empty to render badly.
 export const offersForWire = (offers) =>
   offers.map(({ client, steps, ...rest }) => ({
     id: client.id,
     name: client.name,
     ...(client.sub ? { sub: client.sub } : {}),
-    ...(client.verifiedOn ? { verifiedOn: client.verifiedOn } : {}),
-    ...(client.by ? { by: client.by } : {}),
-    steps: Array.isArray(steps) ? steps : [],
+    steps: (Array.isArray(steps) ? steps : []).map((s) => ({
+      text: s.text,
+      ...(s.hint ? { hint: s.hint } : {}),
+      ...(s.copy ? { copy: s.copy.kind === "secret"
+        ? { kind: "secret", label: s.copy.label, template: s.copy.template, slot: s.copy.slot }
+        : { kind: "block", text: s.copy.text } } : {}),
+    })),
     ...rest,
   }));
 
-/** The client by id, or null. */
-export const clientById = (id) => CONNECT_CLIENTS.find((c) => c.id === String(id ?? "").trim()) ?? null;
+const ALIAS_ROUTE = new Map(CONNECT_CLIENTS.flatMap((c) =>
+  Object.entries(c.aliases ?? {}).map(([alias, route]) => [alias, { client: c, route }])));
+
+/** The client by id — or by an id it answered to before rows merged — or null. */
+export const clientById = (id) => {
+  const key = String(id ?? "").trim();
+  return CONNECT_CLIENTS.find((c) => c.id === key) ?? ALIAS_ROUTE.get(key)?.client ?? null;
+};
 
 /**
- * What THIS client needs from THIS deployment. PURE — the caller supplies what the deployment has.
+ * The route a caller gets for this id when it names none: an alias's own route, else the row's `lead`.
+ * An alias says which route it meant — `cowork` was the web, `claude-desktop` the disk — and answering
+ * `--client cowork` with a settings block would be handing that reader the other half of a merged row.
+ */
+export const leadRouteFor = (id) => {
+  const key = String(id ?? "").trim();
+  return ALIAS_ROUTE.get(key)?.route ?? CONNECT_CLIENTS.find((c) => c.id === key)?.lead ?? null;
+};
+
+/**
+ * What THIS client needs from THIS deployment on ONE route. PURE — the caller supplies what the
+ * deployment has.
  *
- * THREE SHAPES, and the middle one is the owner's ruling (2026-08-31, "On demand is fine"):
+ *   served: true    ready now — every copy the steps name resolved against this deployment.
+ *   served: false   cannot be served here, with the reason and what would change it.
  *
- *   served: true                      ready now — a command, or an address and a key.
- *   served: true,  enables: {...}     ready as soon as the reader says so. The connector door is not
- *                                     standing and turning it on is a real change to who can reach this
- *                                     install, so the row carries WHAT WOULD BE TURNED ON in words, and
- *                                     the caller states it before doing it. Never silently.
- *   served: false                     cannot be served here, with the reason and what would change it.
- *
- * `served: false` always carries `reason` and `fix`. An absence with no reason reads as breakage — the
- * defect `` closed on the knockout's Export menu, and the
- * defect this page had for every self-hosted reader.
+ * `served: false` always carries `reason` and `fix`. An absence with no reason reads as breakage.
  *
  * @param {object} client a row of CONNECT_CLIENTS
- * @param {{ stdioCommand?: string|null, publicAddress?: string|null, operator?: string|null }} have
+ * @param {{ stdioRoutes?: object, publicAddress?: string|null, operator?: string|null }} have
+ * @param {"disk"|"public-http"} [route] defaults to the row's `lead`
  */
-export function whatItNeeds(client, have = {}) {
+export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;
-  const {
-    stdioRoutes = {}, publicAddress = null, operator = null,
-  } = have;
-  // THE ROUTE FOR THIS HOST'S OWN SHAPE, never a fallback to another host's. Handing a Codex user
-  // `claude mcp add` is a command their machine does not have, delivered with confidence — the same
-  // false-offer class as pointing Cowork at the door that refuses its key.
-  const route = Object.hasOwn(stdioRoutes, client.stdioShape ?? "") ? stdioRoutes[client.stdioShape] : null;
+  const author = client.routes?.[route];
+  if (!author) return null;
+  const { stdioRoutes = {}, publicAddress = null, operator = null } = have;
 
-  const withSteps = (offer) => ({
-    ...offer,
-    // The launch page, when this vendor has a driven one. Null everywhere today — see the note above
-    // the table. Carried only on an offer that is actually served: opening a vendor's connector screen
-    // for a deployment that has nothing to connect to is a worse answer than the refusal.
-    launch: offer.served ? (client.launch ?? null) : null,
-    steps: client.steps({ command: offer.command ?? null, address: offer.address ?? null, operator: operator ?? "your" }),
-  });
+  // EACH COPY RESOLVES TO ITS OWN SHAPE, never to another's. Handing a Codex user `claude mcp add` is a
+  // command their machine does not have, delivered with confidence — so a shape this deployment cannot
+  // produce is an unserved route, not a fallback to one it can.
+  const resolve = route === "disk"
+    ? (shape) => {
+        const r = Object.hasOwn(stdioRoutes, shape ?? "") ? stdioRoutes[shape] : null;
+        return r ? { kind: "block", text: r.text, stdio: r } : null;
+      }
+    : (shape) => {
+        const r = remoteConnectFor(shape, { address: publicAddress });
+        if (!r) return null;
+        return r.secret ? { kind: "secret", label: r.label, template: r.text, slot: KEY_SLOT } : { kind: "block", text: r.text };
+      };
 
-  // ── stdio: the route that needs nothing, and the reason this issue has a happy answer at all. ───
-  const stdioOffer = () => route
-    ? withSteps({ client, served: true, route: "disk", command: route.text, stdio: route, address: null, key: null, enables: null,
-        note: "Nothing to sign up for and nothing to open up — this assistant runs the software itself, from the copy already on this machine." })
-    : withSteps({ client, served: false, enables: null,
+  const asked = author.steps({ operator });
+  const steps = asked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s }));
+  const resolved = steps.every((s, i) => !asked[i].copy || s.copy);
+  const evidence = { ...(author.verifiedOn ? { verifiedOn: author.verifiedOn } : {}), ...(author.by ? { by: author.by } : {}) };
+
+  if (route === "disk") {
+    if (!resolved) {
+      return { client, served: false, route, steps: [], launch: null, enables: null, command: null, address: null, key: null,
         reason: "this copy of the software is incomplete, so there is nothing to hand your assistant",
-        fix: "whoever installed it will need to install it again" });
-
-  if (client.accepts === "stdio") return stdioOffer();
-
-  // ── THE WEB DOOR — for every assistant that is not spawning the software itself ─────────────────
-  //
-  // ── THIS USED TO BE TWO BRANCHES AND THE FIRST ONE WAS A FALSE OFFER ( §3) ────
-  //
-  // There was a `localOffer()` here for assistants classified `runsOn: "readers-machine"` — Cowork and
-  // "Another agent" — which served them a LOOPBACK address with the note "nothing to publish, nothing
-  // to open up". It is refuted at source, by the vendor:
-  //
-  //   "Claude connects to your remote MCP server from Anthropic's cloud infrastructure, rather than
-  //    from your local device. This is true across every Claude client, including claude.ai, Claude
-  //    Desktop, Cowork, and the mobile apps." … "Your MCP server must be reachable over the public
-  //    internet from Anthropic's IP ranges."
-  //
-  // Cowork RUNS on the reader's machine and CONNECTS from the vendor's cloud, and the axis conflated
-  // those. `clearotron connect --client cowork` therefore printed an address Cowork rejects — a live
-  // wrong answer, of exactly the class this file's own comments exist to prevent, and the reason the
-  // owner's testing kept failing. HTTPS only; HTTP is refused as well.
-  //
-  // So there is ONE address now, the publicly reachable one, and no surface serves loopback to anybody.
-  // Two rows in the whole model: an assistant that can launch a local process needs a command and
-  // nothing else, and everything else — wherever it appears to run — needs the public address and a key.
-  const webOffer = () => publicAddress
-    ? withSteps({ client, served: true, route: "public-http", address: publicAddress, key: "issued",
-        command: null, enables: null,
-        note: "This assistant connects through its maker's service, so it reaches this installation at its web address rather than from your machine." })
-    // ── THE ONE HONEST UNAVAILABLE ( §5) ────────────────────────────────────────
-    // "Not available" is honest in exactly one case: this deployment has no public web address. It has
-    // nothing to do with who is reading, and it is never bare — the copy names who enables it. The
-    // state it replaces ("this service is not set up to take assistants yet") described the client door
-    // not running, which under settled point 2 cannot happen: the door auto-starts with the product and
-    // the key is the gate.
-    // NOT "address", and not "key" either. These rows render on the ARRIVING page, before any press,
-    // where `scripts/ai-page-render-check.mjs` refuses six words on every line a reader sees. The plain
-    // word for a reader is "the internet", and it happens to be the truer one: what is missing is not a
-    // string somebody forgot to type, it is that nothing outside this machine can reach the service.
-    : withSteps({ client, served: false, enables: null,
-        reason: `${client.name} reaches this service over the internet, and this installation is not on the internet yet`,
-        // ── NAME THE ACTOR *AND* WHAT RESOLVES IT ( — F30) ─────────────────
-        //
-        // "whoever installed it can put it online" is written for a client looking at somebody else's
-        // deployment. The person reading this in a terminal IS whoever installed it, and the sentence
-        // named no command, no file and no document — while INSTALL.md §7 covers exactly this.
-        // `connect` cannot do it itself either: the address comes from the installer's question or from
-        // CLEAROTRON_CLIENT_MCP_URL, and neither was named.
-        //
-        // KEEPING THE ACTOR IS NOT A REGRESSION, and dropping it was a near-miss caught in review. This
-        // row renders on TWO surfaces with two audiences: a terminal, where the reader is the operator
-        // and "whoever installed it" names them uselessly, and the portal's own page, where a CLIENT
-        // reads it and genuinely cannot do this themselves. For that reader, WHO resolves it is part of
-        // what resolves it. So the sentence carries both — the actor, and the thing to set — which is
-        // what the theme asked for and what neither wording alone delivered.
-        fix: "whoever installed it can put it online — it takes about a minute and needs no account",
-        // THE OPERATOR'S HALF, WHICH THE ARRIVING PAGE MUST NEVER RENDER ( — F30).
-        //
-        // Two audiences, two incompatible constraints, and one string cannot serve both. `fix` is read
-        // by a lawyer on the arriving page, where `scripts/ai-page-render-check.mjs` refuses six words —
-        // MCP, connector, token, scope, address, key — so it cannot name the variable OR the thing the
-        // variable sets. The operator reading this in a terminal needs exactly those.
-        //
-        // I learned that by breaking it: F30's first fix put the variable name and "public address" into
-        // `fix`, and the browser check caught both words on the page a client sees. The comment above
-        // this table warns about it in as many words, and I had read it. So the row carries BOTH
-        // registers as separate fields and each surface takes the one its reader can act on — which is
-        // this file's own rule, data rather than a branch downstream.
-        operatorFix: "put it online and set CLEAROTRON_CLIENT_MCP_URL to the public URL of this install — INSTALL.md §7 walks the tunnel" });
-
-  if (client.accepts === "either") {
-    // Both routes, because we do not know which one this agent can walk. The stdio answer LEADS: it is
-    // the one that needs nothing, and an agent that can take it must not be sent to mint a key. Settled
-    // point 6 makes that the rule for the whole page and not just this row.
-    const stdio = stdioOffer();
-    if (stdio.served) {
-      // `stdio` CARRIES THROUGH. Without it the caller cannot tell a command from a config block, and
-      // renders "run this once" over four lines of JSON — an instruction that reads as a shell command
-      // and is not one. The shape is part of the answer, not decoration on it.
-      return withSteps({ client, served: true, route: "either", command: stdio.command, stdio: stdio.stdio,
-        address: null, key: null, enables: null,
-        note: "Two ways in. Most agents take the configuration above and need nothing else. "
-          + "If yours can only reach a web link, connect it that way instead." });
+        fix: "whoever installed it will need to install it again" };
     }
-    return webOffer();
+    const first = steps.find((s) => s.copy)?.copy;
+    // `command` and `stdio` ride for the terminal, which prints a disk offer's copy by its shape.
+    return { client, served: true, route, steps, launch: client.launch ?? null, enables: null, ...evidence,
+      command: first?.text ?? null, stdio: first?.stdio ?? null, address: null, key: null,
+      note: "Nothing to sign up for and nothing to open up — this assistant runs the software itself, from the copy already on this machine." };
   }
 
-  // Everything else, wherever it appears to run.
-  return webOffer();
+  // ── THE WEB ROUTE ─────────────────────────────────────────────────────────────────────────────────
+  //
+  // ONE ADDRESS, and it is the publicly reachable one. There used to be a loopback offer for apps that
+  // run on the reader's machine, and it is refuted at source, by the vendor: "Claude connects to your
+  // remote MCP server from Anthropic's cloud infrastructure, rather than from your local device. This is
+  // true across every Claude client, including claude.ai, Claude Desktop, Cowork, and the mobile apps."
+  // An app on this machine that wants no network takes the disk route; nothing is served loopback.
+  if (!resolved || !publicAddress) {
+    // THE ONE HONEST UNAVAILABLE. "Not available" is true in exactly one case — this deployment has no
+    // public web address — and it is never bare: it names who resolves it. `fix` renders where a client
+    // reads it, so it names the actor and no banned word; `operatorFix` is the terminal's, read by the
+    // person who IS that actor, and carries the variable and the document they need.
+    return { client, served: false, route, steps: [], launch: null, enables: null, command: null, address: null, key: null,
+      reason: `${client.name} reaches this service over the internet, and this installation is not on the internet yet`,
+      fix: "whoever installed it can put it online — it takes about a minute and needs no account",
+      operatorFix: "put it online and set CLEAROTRON_CLIENT_MCP_URL to the public URL of this install — INSTALL.md §7 walks the tunnel" };
+  }
+  return { client, served: true, route, steps, launch: client.launch ?? null, enables: null, ...evidence,
+    command: null, stdio: null, address: publicAddress, key: "issued",
+    note: "This assistant connects through its maker's service, so it reaches this installation at its web address rather than from your machine." };
 }
 
-/** Every client, resolved against one deployment. The page and the verb both render this. */
-export const connectOffers = (have = {}) => CONNECT_CLIENTS.map((c) => whatItNeeds(c, have));
+/** Every client on every route, resolved against one deployment. The page and the verb both render this. */
+export const connectOffers = (have = {}) =>
+  CONNECT_CLIENTS.flatMap((c) => ROUTES.map((route) => whatItNeeds(c, have, route)));

@@ -15,8 +15,8 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { grepTrackedFiles, skipReason } from "../../shared/tracked-files.mjs";
-import { CONNECT_CLIENTS, clientById, whatItNeeds, connectOffers } from "../../shared/connect-clients.mjs";
-import { STDIO_SHAPES, stdioConnectFor, stdioConnectCommand } from "../../shared/stdio-connect.mjs";
+import { CONNECT_CLIENTS, ROUTES, clientById, leadRouteFor, whatItNeeds, connectOffers, offersForWire } from "../../shared/connect-clients.mjs";
+import { STDIO_SHAPES, REMOTE_SHAPES, KEY_SLOT, stdioConnectFor, stdioConnectCommand, remoteConnectFor } from "../../shared/stdio-connect.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const GUARD = "connect-clients-are-data";
@@ -26,45 +26,121 @@ const routes = () => Object.fromEntries(Object.keys(STDIO_SHAPES)
 // branch that read them. A deployment offers exactly one address now, and it is the public one.
 const HAVE = { stdioRoutes: routes(), publicAddress: null, operator: "lawyer@acme.example" };
 const PUBLISHED = { ...HAVE, publicAddress: "https://mcp.example.test" };
+const offerOf = (have, id, route) => connectOffers(have).find((o) => o.client.id === id && o.route === route);
 
-test("every row names a shape that exists, and an invented one resolves to NOTHING rather than a fallback", () => {
+test("every step names a shape that exists, step 1 is always the copy, and an invented shape resolves to NOTHING", () => {
+  let named = 0;
   for (const c of CONNECT_CLIENTS) {
-    if (c.accepts === "http") continue;                       // an http row reads no stdio shape
-    assert.ok(c.stdioShape, `${c.id} names no stdio shape`);
-    assert.ok(Object.hasOwn(STDIO_SHAPES, c.stdioShape), `${c.id} names shape "${c.stdioShape}", which does not exist`);
+    for (const route of ROUTES) {
+      const steps = c.routes?.[route]?.steps({ operator: null }) ?? [];
+      assert.ok(steps.length >= 2, `${c.id} has no steps for ${route}`);
+      // "Step 1 is always the copy" — the approved design's rule, and what lets the page size its panel
+      // and the terminal lead with the thing to take away.
+      assert.ok(steps[0].copy, `${c.id}'s first ${route} step hands nothing over`);
+      const table = route === "disk" ? STDIO_SHAPES : REMOTE_SHAPES;
+      for (const s of steps.filter((x) => x.copy)) {
+        named++;
+        assert.ok(Object.hasOwn(table, s.copy), `${c.id} names ${route} shape "${s.copy}", which does not exist`);
+      }
+    }
   }
+  assert.ok(named >= CONNECT_CLIENTS.length * ROUTES.length, "the walk above found too few copies to mean anything");
   // THE PLANT, because the assertion above is only worth what its failure mode is worth: a row naming a
   // shape nobody implemented must surface as an absence. A fallback here is precisely how a Codex user
   // gets handed `claude mcp add`.
   assert.equal(stdioConnectFor("a-shape-nobody-wrote", {}), null);
-  const invented = { id: "invented", name: "Invented", accepts: "stdio", stdioShape: "nope", steps: () => [] };
-  const offer = whatItNeeds(invented, HAVE);
+  assert.equal(remoteConnectFor("a-shape-nobody-wrote", { address: "https://x.test" }), null);
+  const invented = { id: "invented", name: "Invented", lead: "disk", routes: {
+    disk: { steps: () => [{ text: "Copy this.", copy: "nope" }, { text: "Then this." }] },
+    "public-http": { steps: () => [{ text: "Copy this.", copy: "nope" }, { text: "Then this." }] } } };
+  const offer = whatItNeeds(invented, PUBLISHED, "disk");
   assert.equal(offer.served, false, "a row with an unimplemented shape must not be reported as served");
-  // — the wording moved into the reader's vocabulary ("this copy of the
-  // software is incomplete"), so this matches the FACT the row must state rather than the old phrase.
   // Both halves, because a reason with no next step is the absence-with-no-cause this file exists to
   // refuse: the reader must learn what is wrong AND who fixes it.
   assert.match(offer.reason, /incomplete/, "the row does not say what is wrong");
   assert.match(offer.fix, /install it again/, "the row does not say what would change it");
+  assert.equal(whatItNeeds(invented, PUBLISHED, "public-http").served, false,
+    "an unimplemented web shape was served on a published install");
 });
 
 test("THE CLASS: each host gets ITS OWN shape's text — not the one the first host happened to need", () => {
-  // The defect this catches, verbatim from the tree it was found in: all three stdio rows resolved
-  // through `stdioConnectCommand`, so Codex and Claude Desktop were both handed `claude mcp add` — a
-  // command a Codex user does not have, stated with confidence. `mcp-server/CONNECT.md` documents three
-  // genuinely different shapes and this asserts each row lands on its own.
-  const by = Object.fromEntries(connectOffers(HAVE).filter((o) => o.stdio).map((o) => [o.client.id, o]));
+  // The defect this catches, verbatim from the tree it was found in: every stdio row resolved through
+  // `stdioConnectCommand`, so Codex and Claude's desktop app were both handed `claude mcp add` — a
+  // command a Codex user does not have, stated with confidence.
+  const disk = connectOffers(HAVE).filter((o) => o.route === "disk" && o.served);
+  assert.equal(disk.length, CONNECT_CLIENTS.length, "a row has no disk route on an install that has every shape");
+  const by = Object.fromEntries(disk.map((o) => [o.client.id, o]));
   assert.match(by["claude-code"].command, /^claude mcp add /, "Claude Code takes a CLI registration");
   assert.match(by["codex"].command, /^\[mcp_servers\./, "Codex takes a TOML block");
-  assert.match(by["claude-desktop"].command, /"mcpServers"/, "Claude Desktop takes a JSON block under mcpServers");
-  // A DIFFERENT MEMBER of the class, because "each gets its own" is a claim about all of them: no two
-  // hosts may resolve to the same bytes, which is what a fallback would produce.
-  const texts = Object.values(by).map((o) => o.command);
-  assert.equal(new Set(texts).size, texts.length, "two hosts resolved to identical text — something is falling back");
-  for (const [id, o] of Object.entries(by)) {
-    if (id === "claude-code") continue;
-    assert.doesNotMatch(o.command, /^claude mcp add /, `${id} was handed Claude Code's command`);
+  assert.match(by["claude"].command, /"mcpServers"/, "Claude's desktop app takes a JSON block under mcpServers");
+  // THE PROPERTY, over every member: a row's bytes are exactly its shape's, so two rows share bytes only
+  // when they name one shape (ChatGPT's desktop app and Codex read the same file) and two shapes never
+  // collapse to one text — which is what a fallback would produce.
+  const shapeText = new Map();
+  for (const o of disk) {
+    assert.equal(o.command, HAVE.stdioRoutes[o.stdio.shape].text, `${o.client.id} did not get its own shape's text`);
+    const seen = shapeText.get(o.command);
+    assert.ok(!seen || seen === o.stdio.shape, `shapes ${seen} and ${o.stdio.shape} resolved to identical text`);
+    shapeText.set(o.command, o.stdio.shape);
+    if (o.stdio.shape !== "claude-cli") assert.doesNotMatch(o.command, /^claude mcp add /, `${o.client.id} was handed Claude Code's command`);
   }
+  assert.equal(by["chatgpt"].command, by["codex"].command, "ChatGPT's desktop app reads Codex's file, so it must get Codex's bytes");
+});
+
+test("THE WEB ROUTE: each host's copy names this install's address, and a key only ever as the slot", () => {
+  // Claude Code and Codex connect to a remote address with a key; the design gives each its own spelling
+  // (`--transport http` with a header; `url` plus the NAME of a variable). A key is minted per press and
+  // never composed into a string on the server, so every secret copy carries the slot and no value.
+  const web = connectOffers(PUBLISHED).filter((o) => o.route === "public-http");
+  assert.equal(web.filter((o) => o.served).length, CONNECT_CLIENTS.length, "a row has no web route on a published install");
+  const copies = web.flatMap((o) => o.steps.filter((s) => s.copy).map((s) => ({ id: o.client.id, ...s.copy })));
+  for (const c of copies) {
+    const text = c.kind === "secret" ? c.template : c.text;
+    if (c.kind === "secret") {
+      assert.equal(c.slot, KEY_SLOT, `${c.id}'s secret copy names no slot for the key`);
+      assert.ok(text.includes(KEY_SLOT), `${c.id}'s secret copy has nowhere to put the key`);
+      assert.ok(c.label, `${c.id}'s secret copy has no button label`);
+    } else {
+      assert.ok(!text.includes(KEY_SLOT), `${c.id} shows a block with a key slot in it — that block would be shown in full`);
+    }
+  }
+  const code = offerOf(PUBLISHED, "claude-code", "public-http").steps[0].copy;
+  assert.match(code.template, /^claude mcp add --transport http \S+ https:\/\/mcp\.example\.test --header "Authorization: Bearer \{key\}"$/);
+  const codex = offerOf(PUBLISHED, "codex", "public-http").steps.filter((s) => s.copy).map((s) => s.copy);
+  assert.match(codex[0].text, /url = "https:\/\/mcp\.example\.test"\nbearer_token_env_var = "CLEAROTRON_KEY"/);
+  assert.equal(codex[1].template, "export CLEAROTRON_KEY={key}");
+  // ChatGPT signs its reader in, so it is handed the address and nothing that needs a key.
+  assert.deepEqual(offerOf(PUBLISHED, "chatgpt", "public-http").steps.filter((s) => s.copy).map((s) => s.copy.kind), ["block"]);
+});
+
+test("the wire carries what the page hands over and nothing it would have to trust", () => {
+  const wire = offersForWire(connectOffers(PUBLISHED));
+  assert.equal(wire.length, CONNECT_CLIENTS.length * ROUTES.length);
+  for (const o of wire) {
+    for (const s of o.steps) {
+      assert.equal(typeof s.text, "string");
+      assert.doesNotMatch(s.text, /<[a-z]/i, `${o.id} carries markup in a step — the page would have to trust it`);
+      if (s.copy) assert.deepEqual(Object.keys(s.copy).sort(), s.copy.kind === "secret"
+        ? ["kind", "label", "slot", "template"] : ["kind", "text"], `${o.id} sends a copy in a shape the page does not read`);
+    }
+  }
+});
+
+test("an old id still answers, on the route it used to mean", () => {
+  // `cowork`, `claude-desktop` and `perplexity` were rows. A script or a reader typing one must land on
+  // the merged row AND on the half of it that id meant — `cowork` handed a settings block would be the
+  // other half of a merged row, delivered as if it were the answer.
+  assert.equal(clientById("cowork")?.id, "claude");
+  assert.equal(leadRouteFor("cowork"), "public-http");
+  assert.equal(clientById("claude-desktop")?.id, "claude");
+  assert.equal(leadRouteFor("claude-desktop"), "disk");
+  assert.equal(clientById("perplexity")?.id, "other");
+  assert.equal(leadRouteFor("perplexity"), "public-http");
+  // And a live id keeps its own lead, which is the route it had before both existed.
+  assert.deepEqual(Object.fromEntries(CONNECT_CLIENTS.map((c) => [c.id, leadRouteFor(c.id)])),
+    { claude: "public-http", "claude-code": "disk", chatgpt: "public-http", codex: "disk", other: "disk" });
+  assert.equal(clientById("nobody"), null);
+  assert.equal(leadRouteFor("nobody"), null);
 });
 
 test("a command and a config block are distinguishable, because they are not the same instruction", () => {
@@ -86,10 +162,10 @@ test("ONE AUTHOR: the pre-existing composer and the claude-cli shape are byte-id
 
 test("THE THREE OUTCOMES, and a client we cannot serve says why AND what would change it", () => {
   const fresh = connectOffers(HAVE);
-  // EVERY http row, not the ones that used to be labelled cloud: under §3 there is
-  // no second kind. Cowork is in this population now, and it is the row the old axis got wrong.
-  const cloud = fresh.filter((o) => o.client.accepts === "http");
-  assert.ok(cloud.length >= 3, "the population this arm is about is present");
+  // EVERY web offer: under §3 there is no second kind, and since every row takes both routes every row
+  // is in this population.
+  const cloud = fresh.filter((o) => o.route === "public-http");
+  assert.equal(cloud.length, CONNECT_CLIENTS.length, "the population this arm is about is present");
   for (const o of cloud) {
     assert.equal(o.served, false, `${o.client.id} cannot be served with no public address`);
     // An absence with no reason reads as breakage. Both halves, on every member.
@@ -99,7 +175,7 @@ test("THE THREE OUTCOMES, and a client we cannot serve says why AND what would c
   // Published: the same rows become served. Proves the refusal above is a MEASUREMENT of the deployment
   // and not a property of those rows — a check that always refuses would pass the loop above too.
   for (const o of connectOffers(PUBLISHED)) {
-    if (o.client.accepts === "http") assert.equal(o.served, true, `${o.client.id} stayed refused on a published deployment`);
+    if (o.route === "public-http") assert.equal(o.served, true, `${o.client.id} stayed refused on a published deployment`);
   }
 });
 
@@ -191,7 +267,8 @@ test("NO SURFACE BRANCHES ON A CLIENT'S NAME — and the surfaces are derived, n
     "no surface imports the table — this guard is asserting nothing. If you have just added one, stage it: "
     + "a corpus guard walking the index cannot see an unstaged file.");
 
-  const ids = CONNECT_CLIENTS.map((c) => c.id);
+  // The ids a row still answers to are identities too: a branch on `"cowork"` is the same drift.
+  const ids = CONNECT_CLIENTS.flatMap((c) => [c.id, ...Object.keys(c.aliases ?? {})]);
   // COLLECTED AND ASSERTED, never `assert.fail` inside the loop. A fail-in-the-loop only executes when
   // there IS a violation, so on a clean tree the assertion never runs at all — and an arm whose
   // assertion never runs is indistinguishable from an arm that stopped asserting. ``'s
@@ -220,32 +297,33 @@ test("THE CLASS, DRIVEN: resolution follows the ROW'S SHAPE, not the client's id
   // happen to be in the table today. So it is checked against a row that does not exist: same shape,
   // different identity. If resolution ever keys on WHO rather than WHAT, this fails and the
   // no-branching-on-a-name guard above would not have caught it, because a table lookup is not a branch.
-  const real = CONNECT_CLIENTS.find((c) => c.accepts === "http");
-  assert.ok(real, "no http client — this arm asserts nothing");
-  const twin = { id: "a-client-that-does-not-exist", name: "Some Agent", accepts: real.accepts,
-    stdioShape: real.stdioShape, steps: () => [] };
-  const strip = (o) => JSON.stringify({ served: o.served, route: o.route, address: o.address, key: o.key, enables: o.enables });
-  assert.equal(strip(whatItNeeds(twin, PUBLISHED)), strip(whatItNeeds(real, PUBLISHED)),
-    "two rows of identical shape resolved differently — something keys on the client's identity");
+  const real = clientById("claude");
+  assert.ok(real, "no client to copy — this arm asserts nothing");
+  const twin = { ...real, id: "a-client-that-does-not-exist", name: "Some Agent", aliases: undefined };
+  const strip = (o) => JSON.stringify({ served: o.served, route: o.route, address: o.address, key: o.key,
+    enables: o.enables, command: o.command, copies: o.steps.map((s) => s.copy ?? null) });
+  for (const route of ROUTES) {
+    assert.equal(strip(whatItNeeds(twin, PUBLISHED, route)), strip(whatItNeeds(real, PUBLISHED, route)),
+      `two rows of identical shape resolved differently on ${route} — something keys on the client's identity`);
+  }
   // And a row of a DIFFERENT shape must not collapse to the same answer, or the check above passes on
-  // a resolver that returns one thing for everybody. The contrast is now `accepts`, because that is the
-  // only axis left: §3 deleted `runsOn`, which used to carry it.
-  const local = { ...twin, accepts: "stdio", stdioShape: "claude-cli" };
-  assert.notEqual(strip(whatItNeeds(local, PUBLISHED)), strip(whatItNeeds(real, PUBLISHED)));
+  // a resolver that returns one thing for everybody.
+  const other = { ...twin, routes: { ...twin.routes, disk: { steps: () => [{ text: "Copy this.", copy: "claude-cli" }, { text: "Run it." }] } } };
+  assert.notEqual(strip(whatItNeeds(other, PUBLISHED, "disk")), strip(whatItNeeds(real, PUBLISHED, "disk")));
 });
 
-test("the 'either' fallback EXECUTES — a branch nobody has driven asserts nothing", () => {
-  // `other` names a shape that always renders, so the address-route fallback below it had never run: an
-  // if/else arm written out of the author's doubt rather than the product's behaviour. Driven with no
-  // shapes at all it must fall through to the web route — which is now the PUBLIC one and carries no
-  // enable, because the door is already there and the key is the gate ( §9).
-  const noShapes = whatItNeeds(clientById("other"), { ...PUBLISHED, stdioRoutes: {} });
-  assert.equal(noShapes.route, "public-http", "the fallback did not run");
-  assert.equal(noShapes.command, null);
-  assert.equal(noShapes.enables, null, "the fallback still asks to open a door the installer places");
-  // On a deployment with no web address that same fallback must REFUSE rather than invent one.
-  const unpublished = whatItNeeds(clientById("other"), { ...HAVE, stdioRoutes: {} });
-  assert.equal(unpublished.served, false, "the fallback served an assistant with no address to serve");
+test("each route refuses on its own, and says what resolves it to the reader who can act", () => {
+  // A client of a hosted install is handed no stdio shapes at all, so every disk route is unserved — and
+  // on an install with no public address every web route is. Neither may fall through to the other: a
+  // web row answered with a disk refusal would tell a lawyer their software needed reinstalling.
+  const noShapes = whatItNeeds(clientById("other"), { ...PUBLISHED, stdioRoutes: {} }, "disk");
+  assert.equal(noShapes.served, false, "a disk route was served with no shape to hand over");
+  assert.equal(noShapes.route, "disk");
+  assert.equal(whatItNeeds(clientById("other"), { ...PUBLISHED, stdioRoutes: {} }, "public-http").served, true,
+    "the web route stopped serving because the disk route could not");
+  // On a deployment with no web address the web route must REFUSE rather than invent one.
+  const unpublished = whatItNeeds(clientById("other"), { ...HAVE, stdioRoutes: {} }, "public-http");
+  assert.equal(unpublished.served, false, "the web route served an assistant with no address to serve");
   // TWO AUDIENCES, TWO FIELDS, and the split is the finding's real resolution. `fix` is read by a
   // lawyer on the ARRIVING page, where ai-page-render-check refuses six words outright — so it names
   // the actor and nothing that would trip them. `operatorFix` is read in a terminal by the person who
@@ -261,6 +339,6 @@ test("the 'either' fallback EXECUTES — a branch nobody has driven asserts noth
     "and the document that walks it, since this verb cannot do it itself");
   // And the normal case still leads with the route that needs nothing, and authorises nothing.
   const withShapes = whatItNeeds(clientById("other"), PUBLISHED);
-  assert.equal(withShapes.route, "either");
+  assert.equal(withShapes.route, "disk");
   assert.equal(withShapes.enables, null);
 });

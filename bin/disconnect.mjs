@@ -57,7 +57,7 @@ import { stdin, stdout } from "node:process";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { homedir, userInfo } from "node:os";
-import { CONNECT_CLIENTS, clientById } from "../shared/connect-clients.mjs";
+import { CONNECT_CLIENTS, WHERE_FLAG, clientById, leadRouteFor } from "../shared/connect-clients.mjs";
 import { defaultDenylistPath, disablePlan, revokeEveryonePlan, applyDisablePlan, describeClosure, recordedKeysFor, removeRecordedKeys } from "../shared/client-door.mjs";
 import { loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
@@ -83,6 +83,8 @@ async function main() {
     say("  `clearotron grant` manages that.");
     say("");
     say("    --client <name>   which assistant you connected (see --list for the names)");
+    say("    --where here|elsewhere");
+    say("                      how you connected it: on this machine, or over the internet with a key");
     say("    --list            the assistants this build knows");
     say("    --everyone        the admin act: revoke EVERY issued key on this install. It says");
     say("                      how many keys and how many people that is before doing it.");
@@ -90,7 +92,7 @@ async function main() {
     say("");
     return 0;
   }
-  const known = new Set(["--client", "--list", "--dry-run", "--everyone", "--help", "-h"]);
+  const known = new Set(["--client", "--where", "--list", "--dry-run", "--everyone", "--help", "-h"]);
   const unknown = argv.filter((a) => a.startsWith("--") && !known.has(a));
   if (unknown.length) {
     console.error(`disconnect: unrecognised flag(s): ${unknown.join(", ")}`);
@@ -137,18 +139,21 @@ async function main() {
   say(`  ${chosen.name}`);
   say("");
 
-  // The row's own property decides the side. `accepts: "stdio"` never touched this install; "either"
-  // only opens the door when its stdio route was missing, and on THIS box (the one disconnect runs on)
-  // the stdio route resolves, so its connect handed over a command too.
-  if (chosen.accepts === "stdio" || chosen.accepts === "either") {
+  // THE ROUTE DECIDES THE SIDE, not the assistant: every row takes both now. Connected on this machine,
+  // it never touched this install; connected over the internet, it holds a key and the key is what goes.
+  // Unnamed, the route is the one `connect` gives the same id unnamed, so the two verbs pair up.
+  const w = argv.indexOf("--where");
+  if (w >= 0 && !Object.hasOwn(WHERE_FLAG, argv[w + 1] ?? "")) {
+    console.error(`disconnect: --where takes one of: ${Object.keys(WHERE_FLAG).join(", ")}`);
+    process.exit(2);
+  }
+  const route = w >= 0 ? WHERE_FLAG[argv[w + 1]] : (i >= 0 ? leadRouteFor(argv[i + 1]) : chosen.lead);
+  if (route === "disk") {
     say("  Connecting this assistant changed nothing on this install — it runs the software itself,");
     say("  from the configuration you added on its side. To disconnect it, remove that entry in the");
     say("  assistant's own settings.");
-    if (chosen.accepts === "either") {
-      say("");
-      say("  If you connected it by address instead, the door and key are shared — disconnect the");
-      say("  assistant you named when the door was opened, and the closure covers this one too.");
-    }
+    say("");
+    say("  If you connected it over the internet instead, run this again with --where elsewhere.");
     return 0;
   }
 

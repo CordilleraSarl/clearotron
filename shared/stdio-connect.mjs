@@ -144,6 +144,69 @@ export const STDIO_SHAPES = Object.freeze({
   },
 });
 
+// ── THE SAME SERVER, REACHED OVER THE WEB ──────────────────────────────────────────────────────────
+//
+// An install running elsewhere is reached at its public address with a key, and three hosts take that in
+// three spellings: Claude Code registers it with `--transport http` and a header, Codex reads a `url` and
+// the NAME of a variable holding the key, and everything else takes the two lines as they are. They are
+// composed here for the reason the stdio shapes are: a surface that spelled `claude mcp add` for itself
+// would be a second author of it, and the browser does not know the address anyway.
+//
+// A KEY IS NEVER IN THESE STRINGS. It is minted when a person presses, for that person, and the page
+// holds it only for the length of the press. So a shape that needs one carries KEY_SLOT where the key
+// goes, and the only thing a surface does with the string is put the key it was just handed there.
+
+/** Where a minted key goes in a composed string. Nothing else in a copy looks like it. */
+export const KEY_SLOT = "{key}";
+
+/** The variable Codex reads the key from, so it never sits in the settings file itself. */
+export const KEY_ENV_VAR = "CLEAROTRON_KEY";
+
+/** How each host takes the public address. A step of CONNECT_CLIENTS names one of these by key. */
+export const REMOTE_SHAPES = Object.freeze({
+  "address-and-key": {
+    label: "Copy address and key",
+    render: ({ address }) => `${address}\n${KEY_SLOT}`,
+  },
+  // A host that signs its reader in through the browser needs the address and nothing else.
+  "address": {
+    label: null,
+    render: ({ address }) => address,
+  },
+  "claude-cli-http": {
+    label: "Copy command",
+    render: ({ address }) =>
+      `claude mcp add --transport http ${STDIO_SERVER_NAME} ${address} --header "Authorization: Bearer ${KEY_SLOT}"`,
+  },
+  "codex-toml-http": {
+    label: null,
+    render: ({ address }) => [
+      `[mcp_servers.${STDIO_SERVER_NAME}]`,
+      `url = "${address}"`,
+      `bearer_token_env_var = "${KEY_ENV_VAR}"`,
+    ].join("\n"),
+  },
+  "codex-key-line": {
+    label: "Copy key line",
+    render: () => `export ${KEY_ENV_VAR}=${KEY_SLOT}`,
+  },
+});
+
+/**
+ * One remote copy, resolved against this install's public address. PURE.
+ *
+ * `secret` is read off the composed string rather than declared beside it, so a shape cannot say it
+ * needs no key while carrying the slot, or the reverse. Null for an unknown shape or for an install with
+ * no public address: there is nothing true to hand over in either case.
+ */
+export function remoteConnectFor(shape, { address = null } = {}) {
+  const spec = Object.hasOwn(REMOTE_SHAPES, String(shape ?? "")) ? REMOTE_SHAPES[shape] : null;
+  if (!spec || !address) return null;
+  const text = spec.render({ address });
+  const secret = text.includes(KEY_SLOT);
+  return { shape, secret, label: secret ? spec.label : null, text, name: STDIO_SERVER_NAME };
+}
+
 /**
  * The stdio route for ONE host, in that host's own shape. PURE.
  *

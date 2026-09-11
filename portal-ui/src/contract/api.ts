@@ -801,46 +801,46 @@ export type McpAccess = {
   readonly offers: readonly ConnectOffer[]
 }
 
-/** One assistant's answer: what it needs, or why this deployment cannot serve it. */
+/**
+ * What one step hands over. A `block` has no secret in it and is shown in full. A `secret` is never
+ * shown: its `template` carries `slot` where a key minted on the press goes, and the page's only work is
+ * that substitution — the string itself is composed server-side, by the one author of every command.
+ */
+export type ConnectCopy =
+  | { readonly kind: 'block'; readonly text: string }
+  | { readonly kind: 'secret'; readonly label: string; readonly template: string; readonly slot: string }
+
+/**
+ * One step, in the reader's words. `text` and `hint` carry two marks and no markup: `**…**` for a
+ * control the reader looks for, and a backtick pair for a literal they type or read back.
+ */
+export type ConnectStep = {
+  readonly text: string
+  readonly hint?: string
+  readonly copy?: ConnectCopy
+}
+
+/** One assistant's answer on one route: what it needs, or why this deployment cannot serve it. */
 export type ConnectOffer = {
   readonly id: string
   readonly name: string
-  /**
-   * Where the reader MEETS this assistant, when one product is reachable two ways — "app, web, and
-   * Cowork" against "app, on this computer". It exists so one app can appear once per route without two
-   * rows implying two products (decided: it is just one app). Absent on a row only
-   * reachable one way, and absent means absent rather than empty.
-   */
+  /** A second line under the name, only where the name alone does not say what it covers. */
   readonly sub?: string
   /**
-   * WHEN SOMEBODY ACTUALLY OPENED THIS VENDOR'S DIALOG, and who. Present only on a row that was driven;
-   * a row nobody drove sends neither, so the page shows a dated stamp on one and nothing on the other.
-   * A stamp defaulted onto an undriven row would be this product's own defect class — asserting vendor
-   * behaviour from no observation — wearing the costume of evidence.
+   * WHEN SOMEBODY ACTUALLY OPENED THIS VENDOR'S DIALOG, and who — present only on a route that was
+   * driven. The page no longer draws a stamp from it (struck by the owner with the rebuild); it stays on
+   * the wire as the record of which steps were observed rather than read in documentation.
    */
   readonly verifiedOn?: string
   readonly by?: string
-  /**
-   * THIS ROW'S OWN PASTE SENTENCE, when the composed one does not read.
-   *
-   * The page composes `Paste it into {name}`, which works for every proper noun — Claude, ChatGPT,
-   * Perplexity — and not for a row whose name is a description: "Paste it into Another agent" is not
-   * English (ruling 2026-09-06, option B). Absent on every row where the
-   * composed sentence reads, and absent means compose it — never an empty string.
-   *
-   * ON THE ROW RATHER THAN IN THE SCREEN because no surface may branch on a client's identity; a branch
-   * in a screen drifts from the table silently and both keep rendering.
-   */
-  readonly pasteAs?: string
   /** False ⇒ NOT A BUTTON. `reason` and `fix` are then both present, because an absence with no reason reads as breakage. */
   readonly served: boolean
   readonly route: string | null
   /**
-   * The path a user of THAT vendor actually takes — "Settings → Connectors → Add custom connector".
-   *: the page leads with this and demotes the command behind a fold. Resolved
-   * server-side because the step that names an address must name the one this deployment resolved.
+   * The path a user of THAT vendor actually takes, step 1 being the copy. Resolved server-side because
+   * the copy that names an address must name the one this deployment resolved.
    */
-  readonly steps: readonly string[]
+  readonly steps: readonly ConnectStep[]
   /**
    * A page a press can open so the reader lands in their assistant with the connector in front of them.
    *  settled 8. Null for every vendor today — the mechanism is built and the
@@ -2206,9 +2206,27 @@ export const api = {
           ...(asString(r['sub']) ? { sub: asString(r['sub']) as string } : {}),
           ...(asString(r['verifiedOn']) ? { verifiedOn: asString(r['verifiedOn']) as string } : {}),
           ...(asString(r['by']) ? { by: asString(r['by']) as string } : {}),
-          // Only strings survive, same rule as `accountNames` above: a malformed entry is dropped rather
-          // than rendered, because a step that reads "[object Object]" is worse than one fewer step.
-          steps: asArray(r['steps']).filter((x): x is string => typeof x === 'string' && x !== ''),
+          // Validated field by field, same rule as `accountNames` above: a malformed step is dropped rather
+          // than rendered, because a step that reads "[object Object]" is worse than one fewer step — and
+          // a malformed COPY drops the whole step, since a step whose one job is to hand something over
+          // is a false instruction without it.
+          steps: asArray(r['steps']).flatMap((x): ConnectStep[] => {
+            const s = asRecord(x)
+            const text = asString(s['text'])
+            if (!text) return []
+            const hint = asString(s['hint'])
+            const c = s['copy'] == null ? null : asRecord(s['copy'])
+            let copy: ConnectCopy | undefined
+            if (c) {
+              const kind = asString(c['kind'])
+              if (kind === 'block' && asString(c['text'])) copy = { kind, text: asString(c['text']) as string }
+              else if (kind === 'secret' && asString(c['label']) && asString(c['template']) && asString(c['slot'])
+                && (asString(c['template']) as string).includes(asString(c['slot']) as string)) {
+                copy = { kind, label: asString(c['label']) as string, template: asString(c['template']) as string, slot: asString(c['slot']) as string }
+              } else return []
+            }
+            return [{ text, ...(hint ? { hint } : {}), ...(copy ? { copy } : {}) }]
+          }),
           // Only an https page survives. A wire value of any other shape is dropped rather than opened:
           // this is the one field on this screen that navigates a reader somewhere.
           launch: (() => {

@@ -215,6 +215,11 @@ const DECLARED_IN_BUNDLE = [
     re: /github\.com\/CordilleraSarl\/Clearotron/ },
   { what: "the trademark attribution on About — the notice TRADEMARKS.md exists to state",
     re: /trade marks of Cordillera S/ },
+  // The same public repository as the source offer, reached at the one document a reader's own assistant
+  // is pointed at when a connection does not work. Named as that document, not as the repository, so a
+  // second link into the firm's account elsewhere on the page is still undeclared.
+  { what: "the Use-your-AI help link — the connect instructions in the public repository",
+    re: /github\.com\/CordilleraSarl\/clearotron\/blob\/main\/mcp-server\/CONNECT\.md/ },
 ];
 
 test("arm F — the built portal bundle carries only the DECLARED firm references", (ctx) => {

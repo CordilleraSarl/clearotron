@@ -81,9 +81,16 @@ test("no connector row names a control the dialog does not have", () => {
   // Asserted over EVERY row rather than the one that was wrong — the issue names the class as "the
   // connector table asserts vendor behaviour from no observation", and cowork was its second instance.
   nonEmpty(CONNECT_CLIENTS, "the connector table is empty");
+  // Every route of every row — both carry steps now, and the row that was wrong was a web one.
+  const walked = [];
   for (const row of CONNECT_CLIENTS) {
-    const steps = (row.steps?.({ address: "https://example.test/mcp", command: null }) ?? []).join(" | ");
-    assert.doesNotMatch(steps, /choose api key/i,
-      `${row.id} tells a reader to choose an API key; that control does not exist in the dialog`);
+    for (const [route, author] of Object.entries(row.routes ?? {})) {
+      const steps = nonEmpty(author.steps({ operator: null }), `${row.id}'s ${route} steps`)
+        .map((s) => `${s.text} ${s.hint ?? ""}`).join(" | ");
+      walked.push(`${row.id}/${route}`);
+      assert.doesNotMatch(steps, /choose api key/i,
+        `${row.id} tells a reader to choose an API key; that control does not exist in the dialog`);
+    }
   }
+  assert.ok(walked.length >= CONNECT_CLIENTS.length * 2, `too few routes walked to mean anything: ${walked.join(", ")}`);
 });

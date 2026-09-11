@@ -30,9 +30,10 @@ test("the offer a served client gets actually carries steps to print", () => {
   assert.equal(offer.served, true, "expected a served offer on a published install");
   const steps = nonEmpty(offer.steps, "the served offer's steps");
   assert.ok(steps.length >= 2, `a destination needs more than one step, got ${JSON.stringify(steps)}`);
-  // They are THIS install's, not a template: the address the reader was just handed appears in them.
-  assert.ok(steps.some((s) => s.includes("https://x.example/mcp")),
-    `the steps must name the address this install serves, got ${JSON.stringify(steps)}`);
+  // They are THIS install's, not a template: the address the reader was just handed is in what they copy.
+  const copied = steps.map((s) => s.copy?.template ?? s.copy?.text ?? "");
+  assert.ok(copied.some((t) => t.includes("https://x.example/mcp")),
+    `the steps must hand over the address this install serves, got ${JSON.stringify(steps)}`);
 });
 
 test("connect prints them, and does not author a second set", () => {

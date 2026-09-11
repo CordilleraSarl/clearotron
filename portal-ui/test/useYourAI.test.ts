@@ -57,7 +57,16 @@ test('NOTHING TECHNICAL REACHES THE READER — the six words that may not appear
   // "address" 47 times and "key" 31. A reader connecting their own assistant is not choosing a
   // transport or a scope, and every one of those words asked them to understand something the product
   // should be deciding for them.
-  const text = readerText(SCREEN)
+  // ONE EXEMPTION, BY VALUE. The owner dictated the help link's text — it names the document by what a
+  // person searching for it would type — and it is the only string on the page allowed the words. It is
+  // removed as that exact constant, so a second string carrying them is still caught.
+  // Its address is the same exemption in the other slot: an href held in a constant, which no reader
+  // reads as text (`href=` itself is already stripped above; the constant it points at is not).
+  const LINK = 'GitHub MCP Connector Documentation'
+  const URL_ = 'https://github.com/CordilleraSarl/clearotron/blob/main/mcp-server/CONNECT.md'
+  assert.ok(SCREEN.includes(`const HELP_LINK_TEXT = '${LINK}'`), 'the help link text moved — the exemption below is now exempting nothing')
+  assert.ok(SCREEN.includes(`const HELP_URL = '${URL_}'`), 'the help address moved — the exemption below is now exempting nothing')
+  const text = readerText(SCREEN).split('\n').filter((l) => l !== LINK && l !== URL_).join('\n')
   assert.ok(text.includes('Use your own AI'), 'the extractor found no page text — it is asserting nothing')
   for (const word of ['MCP', 'connector', 'token', 'scope', 'address', 'key']) {
     const hits = text.split('\n').filter((l) => new RegExp(`\\b${word}\\b`, 'i').test(l))
@@ -150,15 +159,35 @@ test('THE PANEL CANNOT PUSH THE PAGE — the slot reserves height whether or not
     + 'the page under the reader, which is the reflow this redesign removes')
 })
 
-test('THE COPIED LABEL COSTS ZERO LAYOUT — both labels occupy one reserved cell, in every row', () => {
-  // Swapping "Paste it into Claude" for "✓ Copied" at natural width would resize the pressed row and
-  // shift its neighbours — the same reflow, arriving through the fix for it.
+// "THE COPIED LABEL COSTS ZERO LAYOUT" LIVED HERE and is retired with the thing it guarded: a row no
+// longer copies anything (the approved design, 2026-09-11 — "Pressing a row no longer copies anything"),
+// so there is no "✓ Copied" label on a row to swap. The property it protected — a press moves nothing —
+// is measured in pixels by `scripts/ai-page-render-check.mjs` on every pick and every Copy press, and the
+// panel's reserved height is pinned below.
+
+test('THE SLOT IS AS TALL AS ITS TALLEST PANEL — measured from a hidden copy of every panel, not guessed', () => {
+  // A fixed minimum reserves some space; only the tallest panel's height reserves enough. So the page
+  // draws every panel on the card, hidden, at the slot's width, and takes the largest — and the copy must
+  // be stacked in one cell, or it is as tall as all of them together and pads the page below.
+  const c = code(SCREEN)
+  assert.match(c, /className="ai-probe"[^>]*ref=\{probe\}/, 'the hidden copy the slot is measured from is gone')
+  assert.match(c, /here\.map\(\(o\) => <StepsPanel key=\{o\.id\} offer=\{o\} measuring \/>\)/,
+    'the hidden copy does not draw EVERY panel on this card, so the tallest may be missing from it')
+  assert.match(c, /Math\.max\(0, \.\.\.\[\.\.\.el\.children\]/, 'the slot is not sized to the tallest panel')
   const css = readFileSync(new URL('../src/base.css', import.meta.url), 'utf8')
-  const say = css.slice(css.indexOf('.ai-dest-say {'), css.indexOf('.ai-slot {'))
-  assert.match(say, /display:\s*grid/, 'the two labels no longer share one grid cell')
-  assert.match(say, /grid-area:\s*1 \/ 1/, 'the labels are not stacked in the same cell')
-  assert.match(say, /visibility:\s*hidden/,
-    'a label is being removed from the layout rather than hidden, which resizes the cell')
+  const probe = css.slice(css.indexOf('.ai-probe {'), css.indexOf('}', css.indexOf('.ai-probe > *')))
+  assert.match(probe, /visibility:\s*hidden/, 'the measuring copy is visible')
+  assert.match(probe, /grid-area:\s*1 \/ 1/, 'the measuring copy is not stacked in one cell')
+})
+
+test('THE WHERE-CHOICE — the approved labels, and asked of the people it has two answers for', () => {
+  const prose = SCREEN.replace(/\s+/g, ' ')
+  assert.ok(prose.includes("disk: { label: 'Clearotron is installed on this machine (laptop/desktop)'"))
+  assert.ok(prose.includes("'public-http': { label: 'Clearotron is running elsewhere (e.g. Cloud/Server)'"))
+  // Nothing shows below the cards until one is picked: the active place starts empty where they show.
+  assert.match(code(SCREEN), /const active = asks \? place : \(routes\[0\] \?\? null\)/,
+    'with the cards showing, something is picked on the reader\'s behalf')
+  assert.match(code(SCREEN), /useState<string \| null>\(null\)/)
 })
 
 test('every allowance sentence is still off the page', () => {
@@ -259,68 +288,10 @@ test('the copy helper reports a REFUSAL, so a blocked clipboard is not read as s
   assert.match(helper, /catch \{ return false \}/, 'a refused clipboard is swallowed rather than reported')
 })
 
-test('EVERY ROW COMPOSES A SENTENCE THAT READS — the generic one carries its own, as data', async () => {
-  // Owner's ruling 2026-09-06 (option B). Approved copy line 8 is `Paste it into
-  // {assistant}`, and it reads for every proper noun — "Paste it into Claude", "Paste it into ChatGPT",
-  // "Paste it into Perplexity" — and not for the one row a reader reaches when their assistant is not
-  // listed: "Paste it into Another agent" is not English. Option A (rename the row) was rejected because
-  // it edits a line he approved to repair a line he did not.
-  //
-  // THE EXCEPTION IS DATA, NOT A BRANCH, and that was not my first cut. Keying the screen on
-  // `offer.id === 'other'` is what I wrote, and `driver/test/connect-clients-are-data.test.mjs` refused
-  // it — correctly: no surface may branch on a client's identity, because a branch in a screen drifts
-  // from the table silently and both keep rendering while the reader follows whichever one is wrong. The
-  // sentence lives on the row now, so a fifth client needing its own line is a row edit.
-  //
-  // DRIVEN AGAINST THE REAL TABLE, not a fixture and not the three names the defect was found on.
-  // `mask()` above establishes the technique: lift the expression out of the page's source and run it,
-  // so what is measured is the page's own rule rather than a second copy of it in this file.
-  const m = SCREEN.match(/const pasteLine = \(offer: ConnectOffer\): string =>\n\s*([^\n]*)/)
-  assert.ok(m, 'pasteLine() is gone or has changed shape — the sentence has no single author any more')
-  const pasteLine = new Function('offer', `return (${m![1]})`) as (o: { name: string; pasteAs?: string }) => string
-
-  const { CONNECT_CLIENTS } = await import('../../shared/connect-clients.mjs')
-  assert.ok(CONNECT_CLIENTS.length >= 4, 'the client table is too small for this arm to prove anything')
-
-  // THE WHOLE CLASS, one row at a time — the arm that would have caught the defect, because the two
-  // instruments that missed it both ask whether the right row rendered and neither asks whether the
-  // sentence reads.
-  let carriedOwn = 0
-  for (const c of CONNECT_CLIENTS) {
-    const line = pasteLine(c as { name: string; pasteAs?: string })
-    assert.ok(line.trim().length > 0, `${c.id} composes no sentence at all`)
-    if (c.pasteAs) { assert.equal(line, c.pasteAs, `${c.id} carries its own sentence and the page ignored it`); carriedOwn++ }
-    else assert.ok(line === `Paste it into ${c.name}`, `${c.id} lost the approved sentence: ${line}`)
-  }
-  assert.ok(carriedOwn >= 1,
-    'no row carries its own paste sentence — the branch this arm exists for would pass over nothing')
-
-  // THE ROW THE DEFECT WAS ABOUT, by its own vocabulary rather than by its id. `accepts: "either"` is
-  // what makes a row generic in this table, so a fifth generic row is judged here too and not silently
-  // exempted for not being called "other".
-  const generic = CONNECT_CLIENTS.find((c: { accepts: string }) => c.accepts === 'either')
-  assert.ok(generic, 'no generic row exists — the assertion below would pass over nothing')
-  assert.equal(pasteLine(generic as { name: string; pasteAs?: string }),
-    'Paste it wherever your assistant takes it.', 'the generic row no longer carries the approved sentence')
-  assert.ok(!pasteLine(generic as { name: string; pasteAs?: string }).includes(`into ${generic.name}`),
-    'the generic row still composes the ungrammatical sentence')
-
-  // NO IDENTITY IN THE SCREEN. Driven with a plant: a row with no sentence of its own composes the
-  // default whatever it is called, so a future edit that keys on a name fails here rather than in a
-  // browser.
-  assert.equal(pasteLine({ name: 'Something Else' }), 'Paste it into Something Else',
-    'pasteLine() branches on something other than the row carrying its own sentence')
-  // AGAINST THE CODE, NOT THE FILE. `code()` strips comments, and the comment above `pasteLine` QUOTES
-  // the branch it replaced so the next reader knows why it is not there — a whole-file match reads that
-  // sentence as the defect. An arm that cannot tell an explanation from the thing it explains forces the
-  // next person to delete the explanation to go green, which is how a file loses its reasons.
-  assert.doesNotMatch(code(SCREEN), /offer\.id === '[a-z]+'/,
-    'the screen branches on a client id — connect-clients-are-data.test.mjs refuses this, and it is right')
-
-  // ONE AUTHOR, TWO SLOTS. The row label and the panel heading render the same sentence and each had its
-  // own copy before this. Two copies of a sentence is how one of them gets fixed.
-  assert.ok(!/Paste it into \{offer\.name\}/.test(SCREEN),
-    'a slot still interpolates the name directly instead of calling pasteLine()')
-  assert.equal((SCREEN.match(/pasteLine\(offer\)/g) ?? []).length, 2,
-    'the two slots no longer both route through pasteLine()')
-})
+// "EVERY ROW COMPOSES A SENTENCE THAT READS" LIVED HERE and is retired with the sentence. It pinned the
+// row label and panel heading "Paste it into {name}", and the generic row's own `pasteAs` line under the
+// owner's 2026-09-06 ruling (option B). The approved design replaces both slots: a row carries the app's
+// name alone, and the panel is headed "Steps for {name}", which reads for every row including "Another
+// agent". With no composed sentence left there is nothing for a row to override, so `pasteAs` is gone
+// from the table and the wire. What that arm also held — no identity in the screen — is held by
+// "THE PAGE DERIVES NOTHING" above and by driver/test/connect-clients-are-data.test.mjs.
