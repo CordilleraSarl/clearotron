@@ -7,9 +7,9 @@
 - a782aad: Fixed: Creating a company is refused, with nothing left behind, when the configuration store cannot record it. The company used to be created anyway, with no record of who made it or when, and its organisation was given access to it.
   
   A store with no git identity is the usual cause on a new machine, and the refusal names the command that fixes it. Setup and `clearotron start` now check a store they adopt for this straight away.
-- d1ef225: Fixed: A stage stopped at its time limit now records the output it actually produced. It used to record a small fraction, so a stage that was working read as one that had stalled.
+- d1ef225: Fixed: A search step stopped at its time limit now records the output it actually produced. It used to record a small fraction, so a step that was working read as one that had stalled.
   
-  The token totals `clearotron tokens` reports for runs with a stopped stage now include that output.
+  The token totals `clearotron tokens` reports for runs with a stopped step now include that output.
 - 0ff42d1: Fixed: `clearotron doctor` now says when saved searches are switched off and why, and when a saved search file cannot be read.
   
   An assistant asking for saved searches is told when they could not be read, instead of being told there are none.
@@ -63,11 +63,11 @@
   
   Fixed: A search now records any of your default territories that the engine cannot search, in the record of that search. A mistyped default no longer narrows a search silently.
 - eacfce4: Fixed: An assistant connected to a local install now sees the saved searches the portal shows, and can plan a run from one of them. Before, outside the demo, only the portal was told where saved searches are kept, so an assistant was told the install had none.
-- 34cc1c7: For operators: A health check that could not look now fails instead of reporting success. Two halves of the unit check can go quiet. One goes quiet when the installation does not say which installation it is; the other when the walk over the unit files does not finish. Both used to note that they had not run and then pass.
+- 34cc1c7: For operators: A deployment health check that could not finish now fails instead of reporting success. Two parts of the service check could skip themselves. One skipped when the installation did not say which installation it is; the other when the scan of the service files did not finish. Both used to note that they had not run and then pass.
   
   For operators: Set `CLEAROTRON_BOX` to `prod` or `test`. Those are the only two values the check accepts; anything else, including any other name, reads as unnamed and fails. The failure names the setting and says what went unchecked.
   
-  For operators: The half that goes quiet is the one that notices a service that has stopped and stayed stopped. The other half lists what is running, so it cannot see something that is no longer there. While that half is suppressed, a service can disappear without the check saying anything.
+  For operators: The part that could skip itself is the one that notices a service that has stopped and stayed stopped. The other part lists what is running, so it cannot see something that is no longer there. While the first part is skipped, a service can disappear without the check saying anything.
 - b45a5cf: Fixed: `clearotron doctor` now reports everything a search would be refused for, checked against the environment the search will run in. So an installation it passes is one that can run a search.
   
   Fixed: A token set in the installation's own configuration file now reaches the engine check. A headless server set up the documented way proves its engine instead of reporting it signed out.
@@ -112,7 +112,7 @@
   Fixed: When a feature is switched off on your installation, the screen says so and what to change. It used to suggest trying again shortly.
   
   Fixed: The link to the risk-framework guide opens in a new tab and goes straight to the section on writing your own. It also appears on the Company profile screen.
-- ad088d6: Fixed: The audit workbook's "What was searched" sheet is now in plain words. Its Result and Note columns carry the search log's own notes. Engine vocabulary could reach them: a receipt "deferred", a full web address, a bare HTTP code. Those words are now replaced as the workbook is built, a republished report included. A search recorded as not run still reads as not searched. Search terms and names stay exactly as written, because they record what was searched.
+- ad088d6: Fixed: The audit workbook's "What was searched" sheet is now in plain words. Its Result and Note columns carry the search log's own notes. Internal terms could reach them: a status such as "deferred", a full web address, a bare HTTP code. Those words are now replaced as the workbook is built, a republished report included. A search recorded as not run still reads as not searched. Search terms and names stay exactly as written, because they record what was searched.
 - ff16a3b: For operators: The deployment health check now reports whether the component that updates an installation is itself up to date. It was the one part of a deployment the check could not identify. An installation kept current by an out-of-date updater could report healthy while serving stale code.
   
   For operators: An updater that cannot be identified is now reported as a failure rather than passed over. A copy old enough to predate this reporting writes nothing at all. That silence is the case worth knowing about, so it is treated as a finding.
@@ -142,7 +142,7 @@
   
   The product now says company throughout. It used to say brand owner, account, client and customer for the same thing. The firm running the installation is named separately, in the top bar.
   
-  Companies created through the settings page were saved without a risk framework. Their matters were then rated under the house default, with nothing on screen saying so. Every company created now carries one, and says which.
+  Companies created through the settings page were saved without a risk framework. Their matters were then rated under the default risk framework, with nothing on screen saying so. Every company created now carries one, and says which.
 - f75266d: New: The setup wizard now asks for the organisation's name after the sign-in address, and the person who installs starts with access to everything.
   
   `clearotron grant add` sets a person's two permissions with `--run` and `--manage`; with neither, the person can look and start nothing.
@@ -164,18 +164,18 @@
   
   Getting the deck's shape wrong used to fail quietly. The profile screen showed the framework's title and your band colours, and silently omitted the box saying what the bands mean. The new command answers that question directly, using the screen's own read of the deck.
   
-  Fixed: a framework served from the product's own files, while you have a configuration store set, now says so.
+  Fixed: When you have a configuration store set and a risk framework comes from the product's own files instead, the product now says so.
   
   Your store is looked in first, and the product's files answer when it is silent. The product ships decks under names you may also have chosen. So a deck that went missing from your store was replaced by ours rather than reported absent. Same band words, different rubric, nothing raised anywhere. The profile screen now writes one line naming what happened, and the new command reports it.
   
-  Fixed: the house triage ladder's profile page explains its bands again.
+  Fixed: The built-in triage framework's profile page explains its bands again.
   
   Its band sections stated their meanings as plain paragraphs, which the screen does not read. Every company without a framework of its own saw band colours and no explanation. The wording is unchanged.
-- cfb9a9f: Fixed: `clearotron doctor` now says which companies your portal's trigger key can start.
+- cfb9a9f: Fixed: `clearotron doctor` now lists the companies your portal's key may start runs for.
   
   The key carries a list of the companies it may start runs for. A company added after the key was minted is outside it. Doctor reported the key's expiry and never its coverage. So the one command whose job is to tell you what a machine is configured for said nothing about it.
   
-  It reads the roster the services read, not the one a command-line process resolves, and it says which. Those two can disagree, and when they do the difference is the whole answer.
+  It reads the company list the background services read, not the one a command run in a terminal would find, and it says which. The two can differ, and when they do, that difference is the answer.
   
   The line is a note, not a failure. Your portal takes a fresh credential at the start of every call, so a company outside the key is not normally refused. It is refused when the portal cannot take a fresh one, and the line says so and gives you the command to widen the key.
 - ba2899b: Fixed: On reports searched through Signa, each register finding now links to the office's own page for that record, where the office publishes one. Singapore publishes no such page, so its registrations are cited by number, and the report says why. A number that an office's page cannot take is cited the same way.

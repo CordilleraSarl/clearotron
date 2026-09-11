@@ -8,10 +8,10 @@ Run it before either rates a matter. It prints the ladder in the framework's own
 
 Getting the deck's shape wrong used to fail quietly. The profile screen showed the framework's title and your band colours, and silently omitted the box saying what the bands mean. The new command answers that question directly, using the screen's own read of the deck.
 
-Fixed: a framework served from the product's own files, while you have a configuration store set, now says so.
+Fixed: When you have a configuration store set and a risk framework comes from the product's own files instead, the product now says so.
 
 Your store is looked in first, and the product's files answer when it is silent. The product ships decks under names you may also have chosen. So a deck that went missing from your store was replaced by ours rather than reported absent. Same band words, different rubric, nothing raised anywhere. The profile screen now writes one line naming what happened, and the new command reports it.
 
-Fixed: the house triage ladder's profile page explains its bands again.
+Fixed: The built-in triage framework's profile page explains its bands again.
 
 Its band sections stated their meanings as plain paragraphs, which the screen does not read. Every company without a framework of its own saw band colours and no explanation. The wording is unchanged.
