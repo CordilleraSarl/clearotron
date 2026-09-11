@@ -15,7 +15,7 @@
 //   4. The allowance is the ledger's number, not a guess.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -248,6 +248,41 @@ test("saved searches: an account with none gets an empty list and NO note", () =
   const out = describeOptions({}, { scope: CLIENT });
   assert.deepEqual(out.account.savedSearches, []);
   assert.equal(out.account.savedSearchesNote, null, "nothing is switched off, so nothing is claimed to be");
+});
+
+test("saved searches: a store whose directory refuses to be read is not reported as having none", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, () => {
+  // The walked case: a store holding a real saved search, made unreadable by its permissions. It came back
+  // as the empty list with no note, which is what an account with none gets.
+  const dir = mkdtempSync(join(tmpdir(), "options-recipes-shut-"));
+  mkdirSync(join(dir, "aurora"), { recursive: true });
+  writeFileSync(join(dir, "aurora", "quarterly.json"), JSON.stringify({ version: 1, label: "Quarterly screen", base: "knockout-search" }));
+  const before = process.env.CLEAROTRON_RECIPES_DIR;
+  process.env.CLEAROTRON_RECIPES_DIR = dir;
+  try {
+    chmodSync(dir, 0o000);
+    const client = describeOptions({}, { scope: CLIENT }).account;
+    assert.deepEqual(client.savedSearches, []);
+    assert.match(client.savedSearchesNote ?? "", /could not be read/, "an unreadable store read as one with none");
+    assert.doesNotMatch(client.savedSearchesNote, /CLEAROTRON_|\/|EACCES/, "a client was shown the store's path or error");
+    const staff = describeOptions({ profileKey: "aurora" }, { scope: { kind: "ops", accounts: "*" } }).account;
+    assert.match(staff.savedSearchesNote ?? "", /could not be read/);
+    assert.ok(staff.savedSearchesNote.includes(dir), `the people who run the installation were not told which store: ${staff.savedSearchesNote}`);
+    // Staff who came in through the account door see everything, and are told the same.
+    const lead = describeOptions({}, { scope: { ...CLIENT, everything: true } }).account;
+    assert.ok(lead.savedSearchesNote?.includes(dir), `a person with access to everything was not told which store: ${lead.savedSearchesNote}`);
+    // A caller with no scope at all is not assumed to run the installation.
+    const nobody = describeOptions({ profileKey: "aurora" }, {}).account;
+    assert.doesNotMatch(nobody?.savedSearchesNote ?? "could not be read", /\/|EACCES/, "a session with no scope was shown the store's path");
+    // THE CONTROL: readable again, the saved search is listed and nothing is claimed.
+    chmodSync(dir, 0o700);
+    const back = describeOptions({}, { scope: CLIENT }).account;
+    assert.deepEqual(back.savedSearches.map((s) => s.slug), ["quarterly"], "the fixture's saved search does not load, so the arm above proves nothing");
+    assert.equal(back.savedSearchesNote, null);
+  } finally {
+    try { chmodSync(dir, 0o700); } catch { /* already gone */ }
+    if (before === undefined) delete process.env.CLEAROTRON_RECIPES_DIR; else process.env.CLEAROTRON_RECIPES_DIR = before;
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("saved searches: a store that cannot be READ is not reported as having none", () => {

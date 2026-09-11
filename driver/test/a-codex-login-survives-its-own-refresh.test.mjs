@@ -89,6 +89,26 @@ test("THE CONTROL: the stand-in provider refuses a refresh token it has already 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test("a login that can no longer be refreshed names the fix, and the stage does not retry it", async () => {
+  // A master left holding a spent token, the state every install was in before the write-back above.
+  // Three attempts are allowed, so a ladder that retried would show it.
+  const dir = mkdtempSync(join(tmpdir(), "codex-login-out-"));
+  try {
+    const master = masterIn(dir);
+    const ledger = join(dir, "spent");
+    writeFileSync(ledger, "r0\n");
+    const out = join(dir, "ctx.md");
+    const r = await withEnv({ CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: MOCK, CLEAROTRON_AI_BILLING: "subscription",
+      CODEX_API_KEY: "", CLEAROTRON_RETRY_BACKOFF_MS: "0", MOCK_CODEX_FILE: "# ctx\n", CLEAROTRON_OPENAI_AUTH_FILE: master, MOCK_CODEX_AUTH_LEDGER: ledger },
+    () => runStage("matter-frame", { message: `write it. OUTPUT_FILE: ${out}`, model: "opus", sessionKey: `login-out-${process.pid}`,
+      runDir: dir, expectFile: out, maxRetries: 2 }));
+    assert.equal(r.ok, false);
+    assert.match(r.fail, /^engine_signed_out: /, `the failure does not name the sign-in: ${r.fail}`);
+    assert.match(r.fail, /`codex login`/, "the failure does not say what fixes it");
+    assert.equal(r.attempts, 1, "a refusal that re-sends the same credential was retried");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test("a login is written back only while the master still holds what the turn was seeded with", () => {
   const dir = mkdtempSync(join(tmpdir(), "codex-login-cas-"));
   try {

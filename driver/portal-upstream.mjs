@@ -425,11 +425,17 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
       // on it and must not be shown the server's paths, so they are told what to do instead.
       if (r.status === 409 && String(r.json?.code ?? "").startsWith("store_") && !seesEverything(principal))
         return { status: 409, json: { code: r.json.code, error: STORE_REFUSAL_FOR_MANAGERS } };
+      // AND A CREATE THE STORE COULD NOT UNDO answers 500 with git's last word and the file it left behind,
+      // either of which can name a server path. Same reader, same rule.
+      if (r.status === 500 && !seesEverything(principal))
+        return { status: 500, json: { ...(r.json?.key ? { key: r.json.key } : {}), error: STORE_FAULT_FOR_MANAGERS } };
       if (r.status !== 201 || org == null || !fileCompany) return r;
       const key = r.json?.key ?? r.json?.profile?.key ?? draft.key;
       try { await fileCompany({ tenant: org, account: key }); }
       catch (e) {
-        return { status: 500, json: { error: `The company was created, but it could not be filed under its organisation (${String(e?.message ?? e).slice(0, 200)}). A person with access to everything can see it and file it.`, key } };
+        // The cause is the grants file's own error, which names its path: said to staff only.
+        const cause = seesEverything(principal) ? ` (${String(e?.message ?? e).slice(0, 200)})` : "";
+        return { status: 500, json: { error: `The company was created, but it could not be filed under its organisation${cause}. A person with access to everything can see it and file it.`, key } };
       }
       return { ...r, json: { ...r.json, tenant: org } };
     },
@@ -439,6 +445,10 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
 /** The store refusal as a manager who does not run the installation reads it: no path, no command. */
 export const STORE_REFUSAL_FOR_MANAGERS = "No company was created: this installation cannot save new companies yet, "
   + "and nothing was changed. Ask whoever runs it to fix the company store.";
+
+/** A create the store could not undo, as that manager reads it: what happened and who acts, no path. */
+export const STORE_FAULT_FOR_MANAGERS = "The company could not be recorded, and part of it may still be on the server. "
+  + "Tell whoever runs this installation before trying again.";
 
 /**
  * What a browser may state when creating a company.

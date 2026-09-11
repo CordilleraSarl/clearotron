@@ -11,7 +11,7 @@
 //   - the admission gate refuses what this build/deployment cannot run, loudly.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, chmodSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -370,6 +370,28 @@ test("loadRecipes: missing dir ⇒ empty map; valid store loads customer-keyed; 
   assert.equal(m.get("acme/quick").base, "knockout-search");
   writeFileSync(join(dir, "acme", "bad.json"), JSON.stringify({ label: "Bad", base: "nope" }));
   assert.throws(() => loadRecipes({ dir, force: true }), /is not a known product/, "a corrupt recipe store is a config bug — loud, never skipped");
+});
+
+// A process running as root reads through any mode, so there the planted refusal never happens.
+const READS_THROUGH_MODES = process.getuid?.() === 0 && "root reads through any file mode";
+
+test("loadRecipes: a store that is there and cannot be read throws, at either level; only an absent one is empty", { skip: READS_THROUGH_MODES }, () => {
+  const dir = mkdtempSync(join(tmpdir(), "recipes-shut-"));
+  mkdirSync(join(dir, "acme"));
+  writeFileSync(join(dir, "acme", "quick.json"), JSON.stringify({ label: "Quick", base: "knockout-search" }));
+  try {
+    chmodSync(dir, 0o000);
+    assert.throws(() => loadRecipes({ dir, force: true }), /EACCES|EPERM/, "an unreadable store was read as one with nothing in it");
+    chmodSync(dir, 0o700);
+    chmodSync(join(dir, "acme"), 0o000);
+    assert.throws(() => loadRecipes({ dir, force: true }), /EACCES|EPERM/, "an unreadable company directory was read as one with nothing in it");
+    // THE CONTROL: the same store, readable again, loads its one saved search.
+    chmodSync(join(dir, "acme"), 0o700);
+    assert.equal(loadRecipes({ dir, force: true }).get("acme/quick")?.base, "knockout-search");
+  } finally {
+    for (const d of [dir, join(dir, "acme")]) { try { chmodSync(d, 0o700); } catch { /* already gone */ } }
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("checkScopeAgainstPolicy: scope is refused only by machinery that cannot act on it", () => {

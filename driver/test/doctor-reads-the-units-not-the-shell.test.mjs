@@ -16,7 +16,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -646,6 +646,28 @@ test("doctor names why saved searches are off, and says when they are on", () =>
     const bad = doctor(home, { CLEAROTRON_RECIPES_DIR: inside, RECIPE_REPO_ROOT: repo }).out;
     assert.match(bad, /saved searches cannot be read from/, `doctor passed a store that fails to load:\n${bad}`);
   } finally { for (const d of [home, repo, outside]) rmSync(d, { recursive: true, force: true }); }
+});
+
+// The walked case: a store the connector cannot open because of its permissions. Doctor checked the setting
+// and passed it; it reads the store now, the way the connector does.
+test("doctor says when the saved-search store itself cannot be opened", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, () => {
+  const home = installedHome(GOOD_ENV);
+  const repo = mkdtempSync(join(tmpdir(), "rec-repo-"));
+  const inside = join(repo, "recipes");
+  mkdirSync(join(inside, "acme"), { recursive: true });
+  writeFileSync(join(inside, "acme", "quick.json"), JSON.stringify({ label: "Quick", base: "knockout-search" }));
+  try {
+    chmodSync(inside, 0o000);
+    const shut = doctor(home, { CLEAROTRON_RECIPES_DIR: inside, RECIPE_REPO_ROOT: repo }).out;
+    assert.match(shut, /saved searches cannot be read from/, `doctor passed a store the connector cannot open:\n${shut}`);
+    assert.doesNotMatch(shut, /saved searches are read from/, "doctor said both");
+    // THE CONTROL: the same store, opened again, passes.
+    chmodSync(inside, 0o700);
+    assert.match(doctor(home, { CLEAROTRON_RECIPES_DIR: inside, RECIPE_REPO_ROOT: repo }).out, /saved searches are read from/);
+  } finally {
+    try { chmodSync(inside, 0o700); } catch { /* already gone */ }
+    for (const d of [home, repo]) rmSync(d, { recursive: true, force: true });
+  }
 });
 
 // THE CONTROL FOR THE LOCAL-INSTALL ARMS BELOW. This home has units, so it is a hosted box, where a store

@@ -412,6 +412,10 @@ export function readServedModel(codexHome, sinceMs = 0) {
 // that cannot recur. This alternation is still a list of prose a vendor may change without notice,
 // which is exactly why `rateLimitBasis: "text-match"` stays on the record.
 const RATE_LIMIT_RE = /\b429\b|rate.?limit|usage limit|quota|too many requests|insufficient_quota/i;
+// A SIGN-IN THAT CAN NO LONGER BE REFRESHED, in codex's own words (measured on a live install, 2026-09-11).
+// Narrow on purpose: a register provider's 401 or 403 can land in a stage's stderr too, and reading that as
+// the operator's codex login having expired would send them to sign in again for nothing.
+const REFRESH_FAILED_RE = /refresh token (?:has|was) already been used|access token could not be refreshed|failed to refresh token/i;
 
 // A retry hint, WHEN THE MESSAGE HAPPENS TO CARRY ONE. Two anchored shapes and nothing clever: an
 // explicit timestamp, or a relative delay with a unit. Anything else yields undefined and the driver
@@ -484,6 +488,7 @@ function settleTuple({ r, ev, resumeRef }) {
   // backoff (CLEAROTRON_RATE_LIMIT_DEFAULT_BACKOFF_MS), exactly as the anthropic no-reset 429 path does.
   const rateLimitText = `${ev.turnFailed || ""}\n${ev.streamError || ""}\n${r.stderr || ""}`;
   const rateLimited = !killed && RATE_LIMIT_RE.test(rateLimitText);
+  const signedOut = !killed && REFRESH_FAILED_RE.test(rateLimitText);
   const resetsAt = rateLimited ? parseResetHint(rateLimitText) : undefined;
   return {
     code: killed ? 137 : (failed ? (r.rawCode || 1) : 0),
@@ -521,6 +526,9 @@ function settleTuple({ r, ev, resumeRef }) {
       // receives and is not this adapter's call — but nothing downstream can any longer fail to know.
       mcpRefused: mcpToolGauge(ev).mcpToolCallsRefused > 0 || undefined,
       rateLimited: rateLimited || undefined,
+      // The engine's sign-in could not be refreshed: what the operator runs to fix it. The gateway names the
+      // stage's failure with it.
+      signedOut: signedOut ? "codex sign-in expired — run `codex login`, then start the search again" : undefined,
       rateLimitBasis: rateLimited ? "text-match" : undefined,
       // resetsAtBasis (2026-08-20): same honesty as rateLimitBasis one line up, for the reset
       // CLOCK rather than the classification. codex states its reset as human prose with NO timezone

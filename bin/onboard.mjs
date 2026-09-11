@@ -1860,7 +1860,7 @@ export async function runCheck() {
         try { loadRecipes({ dir: recipesDir, force: true }); } catch (e) { unreadable = String(e?.message ?? e).split("\n")[0]; }
         if (unreadable) {
           warn(`saved searches cannot be read from ${recipesDir}: ${unreadable}. Every company's saved searches fail `
-            + "to load, in the portal and the connector, until that file is fixed");
+            + "to load, in the portal and the connector, until it is fixed");
         } else ok(`saved searches are read from ${recipesDir}${handedBy}, and saves are committed in ${reach.repo}`);
       }
     }

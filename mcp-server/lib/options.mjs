@@ -223,7 +223,7 @@ function accountFor(key, { scope, now }) {
         ? null
         : "This account names no default search. A request that names none is whichever search its resolved territories make it — worldwide is a Global preliminary search, one country is a Full country search, anything else is a Multi-country focus search.",
     },
-    ...savedSearchesFor(key),
+    ...savedSearchesFor(key, scope),
     allowance: allowanceFor(profile, { scope, now }),
   };
 }
@@ -246,12 +246,17 @@ function accountFor(key, { scope, now }) {
  * repeats it to the client as the answer. The note names no variable and no path: its reader may be a
  * client, and the reason belongs to whoever runs the installation, whose `clearotron doctor` names it.
  */
-function savedSearchesFor(key) {
+function savedSearchesFor(key, scope) {
   let recipes;
   try { recipes = loadRecipes({ force: true, proseGuard: recipeProseGuard }); }
-  catch {
+  catch (e) {
+    // The store's own error, path included, goes only to a session POSITIVELY known to run the installation:
+    // an ops session, or a person with access to everything. Everyone else, a missing scope included, gets
+    // the sentence alone, because its reader may be a client.
+    const operator = scope?.kind === "ops" || scope?.everything === true;
+    const cause = operator ? ` (${String(e?.message ?? e).split("\n")[0].slice(0, 300)})` : "";
     return { savedSearches: [], savedSearchesNote: "Saved searches could not be read on this installation, so none are "
-      + "listed. That is not the same as having none, and the people who run the installation can see why." };
+      + `listed. That is not the same as having none, and the people who run the installation can see why${cause}.` };
   }
   return {
     savedSearches: [...recipes.entries()]

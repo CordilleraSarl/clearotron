@@ -21,7 +21,7 @@ pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", envFrom(process.env, "CLEAROTRON_R
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { PRODUCT_IDS } from "../products.mjs";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, chmodSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
@@ -245,6 +245,26 @@ test("/portal/api/about answers the §13 source offer, and answers it to a STRAN
   // here and no window where the About page names one licence and the repository declares another.
   const pkg = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8"));
   assert.equal(r.json.license, pkg.license);
+});
+
+test("an unreadable saved-search store empties the saved searches, never the product menu", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, async () => {
+  const { service, recipesDir } = world();
+  try {
+    chmodSync(recipesDir, 0o000);
+    const client = await service.route("GET", "/portal/api/searches", CLIENT, {}, {});
+    assert.equal(client.status, 200, `the whole menu failed with the store: ${JSON.stringify(client.json)}`);
+    assert.ok(client.json.products.length > 0, "the products went with the saved searches");
+    assert.deepEqual(client.json.recipes, []);
+    assert.match(client.json.recipesNote ?? "", /could not be read/, "an unreadable store read as one with none");
+    assert.doesNotMatch(client.json.recipesNote, /\/|EACCES/, "a client was shown the store's path or error");
+    const staff = await service.route("GET", "/portal/api/searches", STAFF, {}, { account: "aurora" });
+    assert.ok(staff.json.recipesNote?.includes(recipesDir), `staff were not told which store: ${staff.json.recipesNote}`);
+    // THE CONTROL: readable again, the saved search is back and nothing is claimed.
+    chmodSync(recipesDir, 0o700);
+    const back = await service.route("GET", "/portal/api/searches", CLIENT, {}, {});
+    assert.deepEqual(back.json.recipes.map((r) => r.slug), ["screen"]);
+    assert.equal(back.json.recipesNote, null);
+  } finally { try { chmodSync(recipesDir, 0o700); } catch { /* already gone */ } }
 });
 
 test("routes: stranger 403 everywhere; client sees only their account's searches; staff need an explicit acting-for", async () => {

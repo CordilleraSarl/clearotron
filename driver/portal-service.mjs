@@ -1197,8 +1197,16 @@ export function makePortalService({
   const usedJtis = new Map();
   const sweepJtis = (now = Date.now()) => { for (const [k, exp] of usedJtis) if (exp < now) usedJtis.delete(k); };
 
-  const searchesFor = (account) => {
-    const recipes = loadRecipesImpl({});
+  const searchesFor = (account, principal) => {
+    // A SAVED-SEARCH STORE THAT CANNOT BE READ COSTS THE SAVED SEARCHES, NOT THE MENU. Every product is
+    // still offered; the list comes back empty with a sentence saying why, and only a person who sees
+    // everything is shown the store's own error, which names a server path.
+    let recipes = new Map(), recipesNote = null;
+    try { recipes = loadRecipesImpl({}); }
+    catch (e) {
+      const cause = seesEverything(principal) ? ` (${String(e?.message ?? e).split("\n")[0].slice(0, 300)})` : "";
+      recipesNote = `Saved searches could not be read on this installation, so none are listed${cause}.`;
+    }
     const built = readBuilt();
     const canCount = readCanCount();
     const territories = readTerritories();
@@ -1264,6 +1272,7 @@ export function makePortalService({
       recipes: [...recipes.entries()]
         .filter(([k, r]) => k.startsWith(`${account}/`) && !r.archived)
         .map(([k, r]) => ({ slug: k.split("/")[1], label: r.label, base: r.base, version: r.version ?? null, nativeLanguage: r.nativeLanguage === true })),
+      recipesNote,
       // ── — THE MARK-NAME BUDGET, SENT RATHER THAN DUPLICATED ──────────────
       //
       // The owner typed a product description into the mark-name field and the product accepted it,
@@ -1547,7 +1556,7 @@ export function makePortalService({
       if (parts[1] === "api" && parts[2] === "searches" && method === "GET") {
         const account = assertPrincipal(principal, { account: query.account ?? null });
         if (!account) return { status: 400, json: { error: "name an account (?account=)" } };
-        return { status: 200, json: { account, ...searchesFor(account) } };
+        return { status: 200, json: { account, ...searchesFor(account, principal) } };
       }
       // /portal/api/compose/read — turn a pasted brief into a filled-in composer.
       //

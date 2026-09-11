@@ -136,8 +136,8 @@
           "todos": 0
         },
         "a-codex-login-survives-its-own-refresh.test.mjs": {
-          "tests": 3,
-          "asserts": 14,
+          "tests": 4,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -760,8 +760,8 @@
           "todos": 0
         },
         "a-store-refusal-reaches-the-person-who-can-fix-it.test.mjs": {
-          "tests": 3,
-          "asserts": 11,
+          "tests": 5,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -1822,9 +1822,9 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 32,
-          "asserts": 93,
-          "skips": 0,
+          "tests": 33,
+          "asserts": 96,
+          "skips": 1,
           "todos": 0
         },
         "doctor-refuses-what-cannot-run.test.mjs": {
@@ -2098,9 +2098,9 @@
           "todos": 0
         },
         "enqueue-schema-class-inheritance.test.mjs": {
-          "tests": 11,
-          "asserts": 28,
-          "skips": 0,
+          "tests": 12,
+          "asserts": 31,
+          "skips": 1,
           "todos": 0
         },
         "enqueue-schema-unreadable-store.test.mjs": {
@@ -3076,9 +3076,9 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 123,
-          "asserts": 662,
-          "skips": 0,
+          "tests": 124,
+          "asserts": 670,
+          "skips": 1,
           "todos": 0
         },
         "portal-static.test.mjs": {
@@ -4036,9 +4036,9 @@
           "todos": 0
         },
         "search-policy.test.mjs": {
-          "tests": 34,
-          "asserts": 177,
-          "skips": 0,
+          "tests": 35,
+          "asserts": 180,
+          "skips": 1,
           "todos": 0
         },
         "seat-outputs-outside-driver-tree.test.mjs": {
@@ -5427,9 +5427,9 @@
           "todos": 0
         },
         "describe-options.test.mjs": {
-          "tests": 23,
-          "asserts": 99,
-          "skips": 0,
+          "tests": 24,
+          "asserts": 108,
+          "skips": 1,
           "todos": 0
         },
         "diff.test.mjs": {
