@@ -148,8 +148,8 @@
           "todos": 0
         },
         "a-company-created-in-the-browser-is-a-whole-company.test.mjs": {
-          "tests": 7,
-          "asserts": 36,
+          "tests": 11,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -370,8 +370,8 @@
           "todos": 0
         },
         "a-knockout-filing-links-to-its-office.test.mjs": {
-          "tests": 12,
-          "asserts": 56,
+          "tests": 13,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -1804,8 +1804,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 24,
-          "asserts": 67,
+          "tests": 28,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
@@ -3322,8 +3322,8 @@
           "todos": 0
         },
         "recipe-service.test.mjs": {
-          "tests": 12,
-          "asserts": 67,
+          "tests": 16,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
@@ -3478,8 +3478,8 @@
           "todos": 0
         },
         "register-findings-link-to-the-office-record.test.mjs": {
-          "tests": 16,
-          "asserts": 44,
+          "tests": 19,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
