@@ -141,6 +141,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-command-printed-from-npx-outlives-the-cache.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-can-be-given-a-framework-after-it-exists.test.mjs": {
           "tests": 8,
           "asserts": 19,
