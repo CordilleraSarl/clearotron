@@ -401,8 +401,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // THE OFFICE'S OWN PAGE FOR EACH LISTED FILING, where the run's register publishes none of its own:
   // the addressing the clearance gives its register findings (office-record-links.mjs), set on the
   // sidecar here for the same reason the normalisation above is. Keyed on the run's own provider, and
-  // the tally goes to meta.json, so numbers that never fit show as a count rather than as silence.
-  const officeLinks = addressListedFilings(registerRecords, recordOriginsFor(String(registerRecords?.provider ?? '').toLowerCase()));
+  // the tally goes to meta.json, so numbers that never fit show as a count rather than as silence. A
+  // sidecar that names no provider is left as it was, as the normalisation above leaves it.
+  const officeLinks = addressListedFilings(registerRecords, declaredRecordOrigins(registerRecords?.provider));
   if (officeLinks) note(`[record-links] ${officeLinks.summary}`);
 
   // ── Predelivery lint — the APPLICABLE subset, FLAGS not FAILS (2026-07-31) ─────────────────────────
@@ -753,4 +754,4 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 // The office's own page for each listed filing (office-record-links.mjs). Kept down here, below every
 // line the rest of the tree cites by number.
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
-import { recordOriginsFor } from '../record-origins.mjs';
+import { declaredRecordOrigins } from '../record-origins.mjs';

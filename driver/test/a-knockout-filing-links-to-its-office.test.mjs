@@ -376,3 +376,24 @@ test("a Compumark knockout gives each filing its office's page from its own numb
   assert.equal(note[CN.label], reasonCellFor(CN));
   assert.deepEqual(meta.recordLinks, { linked: { us: 1, eu: 1, gb: 1 }, cited: { cn: { "unknown-office": 1 } }, noNumber: 0 });
 });
+
+test("a register the artefact does not name reads as no answer, and one it names as the table's answer", async () => {
+  const { declaredRecordOrigins } = await import("../record-origins.mjs");
+  assert.equal(declaredRecordOrigins(undefined), null);
+  assert.equal(declaredRecordOrigins("  "), null);
+  assert.deepEqual(declaredRecordOrigins(" Signa "), [], "a named register resolves as recordOriginsFor resolves it");
+  assert.deepEqual(declaredRecordOrigins("no-such-register"), [], "an unknown id is an answer, not an absence");
+});
+
+test("a listing that names no register is left as it was, as the link normaliser leaves it", async () => {
+  // Empty is "nobody said which register", and normalizeRegisterRecordLinks turns its gate off for it.
+  // The office links read the same field by a different rule: an empty provider looked up as a register
+  // with no record pages, so its filings were addressed. Both read it one way now.
+  const unnamed = structuredClone(LISTING);
+  delete unnamed.provider;
+  const { meta } = await publish(unnamed);
+  assert.equal(meta.recordLinks ?? null, null, "office links were set on a listing that names no register");
+  // THE CONTROL: the same listing naming its register is addressed, so the absence above is the field's doing.
+  const named = await publish(structuredClone(LISTING));
+  assert.ok(named.meta.recordLinks, "the same listing, naming Signa, should be addressed");
+});
