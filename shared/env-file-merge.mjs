@@ -34,6 +34,30 @@
  *                             like an engine fault. Names here must be values this code MINTS; putting
  *                             a credential a reader supplied in this list would delete their work.
  */
+// ── THE ONE `KEY=value` READER, AND IT LIVES IN A LEAF ────────────────────────────────────────────
+//
+// This reads the same file systemd's EnvironmentFile= reads, and systemd does no shell expansion there
+// either. Quotes are stripped because operators write them.
+//
+// IT USED TO LIVE IN `driver/systemd/render-units.mjs`, which is a COMMAND as well as a module, and its
+// `--apply` path awaits at the top level and imports `bin/start.mjs` from inside that await. So a reader
+// that took the parser from there put the command's own module in its import path: `start.mjs` importing
+// it closed a cycle, the CLI's top-level await never settled, and 21 install arms died at once with
+// "Detected unsettled top-level await" and nothing naming the cause (measured 2026-09-12). The parser has
+// no business depending on any of that — it is eleven lines of string handling — so it sits here, in a
+// file that imports nothing, and `render-units.mjs` re-exports it so its readers keep one reader.
+export function parseEnvFile(text) {
+  const out = {};
+  for (const line of String(text ?? "").split("\n")) {
+    const m = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/.exec(line);
+    if (!m) continue;
+    let v = m[2].trim();
+    if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
+    out[m[1]] = v;
+  }
+  return out;
+}
+
 export function mergeEnvFile(text, additions, { by = "`npm start` (bin/start.mjs)", notes = {}, refresh = [] } = {}) {
   const body = typeof text === "string" ? text : "";
   const present = new Set();

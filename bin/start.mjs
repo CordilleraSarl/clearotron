@@ -125,7 +125,7 @@ import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, r
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke, reachableCommand } from "../shared/invocation.mjs";   // — the banner names the verb
 import { unitEnvPath, activeEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
-import { parseEnvFile } from "../driver/systemd/render-units.mjs";   // ONE KEY=value reader, the one systemd itself reads with
+import { parseEnvFile } from "../shared/env-file-merge.mjs";   // ONE KEY=value reader, in a leaf: render-units is a COMMAND, and importing it from here closed a cycle
 import { homedir, userInfo } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";

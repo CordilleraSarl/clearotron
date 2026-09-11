@@ -112,19 +112,13 @@ export function unitsNeedingRender(root = ROOT) {
 // through `envFrom`, so a name that later gains an old spelling in the alias table keeps resolving —
 // a literal `process.env.X` here would be a spelling, and a spelling goes stale in silence.
 //
-// A `KEY=value` parser and nothing more: this reads the same file systemd's EnvironmentFile= reads, and
-// systemd does no shell expansion there either. Quotes are stripped because operators write them.
-export function parseEnvFile(text) {
-  const out = {};
-  for (const line of String(text ?? "").split("\n")) {
-    const m = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/.exec(line);
-    if (!m) continue;
-    let v = m[2].trim();
-    if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
-    out[m[1]] = v;
-  }
-  return out;
-}
+// A `KEY=value` parser and nothing more, and it lives in `shared/env-file-merge.mjs` — a file that
+// imports nothing. THIS module is a command too: its `--apply` path awaits at the top level and imports
+// `bin/start.mjs` from inside that await, so anything that took the parser from here put a CLI in its
+// import path, and `start.mjs` doing so closed a cycle that stopped 21 install arms at once. Re-exported
+// so every reader here keeps one reader and one spelling.
+export { parseEnvFile } from "../../shared/env-file-merge.mjs";
+import { parseEnvFile } from "../../shared/env-file-merge.mjs";
 
 export function resolveValues(names, { env = process.env, envFile = null } = {}) {
   const fileVals = envFile && existsSync(envFile) ? parseEnvFile(readFileSync(envFile, "utf8")) : {};
