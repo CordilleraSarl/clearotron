@@ -1052,13 +1052,16 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         grant: gatherAllowedTools,
       })
       : null;
+    // The start of this attempt's window in the per-run refusal journals. Taken before the witness and
+    // the snapshot, which only widens the window by their own time: an earlier attempt's refusals all
+    // precede its own settle, so they stay outside it.
+    const dispatchedAt = Date.now();
     for (const line of describeMethodologyDrift(witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)))
       note(`[${name}] ${line}`);
     // — the frozen judged-by set, hashed into THIS PROCESS'S MEMORY before the seat runs. Never
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const dispatchedAt = Date.now();   //: start of this attempt's window in the per-run refusal journals
     const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files });   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else

@@ -101,7 +101,7 @@ function isPlumbing(node, child) {
   // A ternary BRANCH is plumbing; a ternary TEST is a decision, and classify() handles that separately.
   // This was the whole of the unresolved bucket — three sites, all one shape:
   //
-  //     const wrote   = files.length ? files.some(…) : null;              gateway.mjs:1407
+  //     const wrote   = files.length ? files.some(…) : null;              gateway.mjs (by name)
   //     const inScope = scope.size   ? tokens.some(…) : (…);              reasoning-tripwires.mjs:82
   //     const reached = b.layer === "national" ? (…) : regions.some(…);   register-plan.mjs:318
   //
