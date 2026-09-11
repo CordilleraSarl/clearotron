@@ -1002,11 +1002,59 @@ export function doorUnavailableLabel(a, { max = 90 } = {}) {
   return "no status and no reason recorded";
 }
 
-export function doorAsymmetry(answers) {
+/**
+ * ── THE ASYMMETRY RULE IS WRITTEN FOR A CASE BOTH DOORS SHOULD REFUSE ───────────────────────────
+ *
+ * "The one that ACCEPTED is the defect" rests on a premise nobody wrote down: that the case EXPECTS a
+ * refusal. Eight of R0's nine cases do, so the premise held by accident for as long as the ninth could
+ * not be measured.
+ *
+ * R0e is the one admit case. Its own `expect.terminal` is `"delivered"` and it asserts the run resolves
+ * to `generic`. On 2026-09-10, the first round in which both doors actually ANSWERED it, the cli door
+ * accepted and delivered `profileKey: "generic"` — the case's whole contract, met — and the ops-mcp door
+ * refused at `assertScopedProfileKey`, a deliberate cross-customer bypass gate doing its job for an
+ * accounts-scoped session. Both doors were right. The rule named the one that behaved.
+ *
+ * The three earlier rounds hid it: the ops-mcp door was lost to the transport every time, so the case
+ * never reached this comparison as two real answers.
+ *
+ * SO THE POLARITY IS NOT INVERTED HERE, and that matters. "On an admit case the door that REFUSED is the
+ * defect" would blame a security gate for holding. What is wrong is the VERDICT, not its direction: on an
+ * admit case this comparison does not know which door is at fault, and it says so instead of guessing.
+ * A case that declares which doors can admit it (`doors`) stops the guess entirely.
+ */
+export function doorAsymmetry(answers, { expectTerminal = null } = {}) {
   const compared = answers.filter((a) => doorAnswerClass(a) === DOOR_ANSWER.ANSWERED);
   const unavailable = answers.filter((a) => doorAnswerClass(a) === DOOR_ANSWER.INFRA_UNAVAILABLE);
   const agreed = compared.length < 2 ? true : compared.every((a) => a.ok === compared[0].ok);
-  return { agreed, compared, unavailable, reducedCoverage: unavailable.length > 0 };
+  return { agreed, compared, unavailable, reducedCoverage: unavailable.length > 0, admit: isAdmitCase(expectTerminal) };
+}
+
+/** A case whose own contract is that a door ACCEPTS. `delivered` and `duplicate` both admit; the rest refuse. */
+export function isAdmitCase(expectTerminal) {
+  const t = String(expectTerminal ?? "").trim().toLowerCase();
+  return t === "delivered" || t === "duplicate";
+}
+
+/**
+ * The sentence a disagreement gets — ONE author, because the run printed it and the report pushed it into
+ * `toInvestigate` from two separate literals, and a fix to either would have left the other saying the
+ * old thing.
+ *
+ * `accepted`/`refused` read `ok` at run time and `accepted` on the receipt; both spellings are the same
+ * fact and one formatter has to serve both surfaces or they drift.
+ */
+export function doorDisagreementLine(caseId, answers, { expectTerminal = null } = {}) {
+  const took = (a) => (a?.ok ?? a?.accepted) === true;
+  const accepted = answers.filter(took).map((a) => a.door);
+  const refused = answers.filter((a) => !took(a)).map((a) => a.door);
+  const both = `accepted by ${accepted.join(", ") || "(none)"}, refused by ${refused.join(", ") || "(none)"}`;
+  if (!isAdmitCase(expectTerminal))
+    return `${caseId}: THE DOORS DISAGREE — ${both}; the door that ACCEPTED is the defect`;
+  return `${caseId}: THE DOORS DISAGREE on a case whose own expect.terminal ADMITS — ${both}. `
+    + `The accepting door met this case's stated contract; the refusing door answered a question the case did not ask. `
+    + `WHICH IS AT FAULT IS NOT DECIDED HERE — a door may refuse for a reason this case cannot satisfy at that door, `
+    + `and naming the accepter would blame the door that behaved. Declare \`doors\` on the case to say which doors can admit it.`;
 }
 
 const enqueue = (job, door) =>
@@ -1114,6 +1162,46 @@ const OPS = {
   "non-empty": (v) => ({ ok: Array.isArray(v) ? v.length > 0 : Boolean(v), saw: Array.isArray(v) ? `${v.length} item(s)` : JSON.stringify(v) }),
   length: (v, want) => ({ ok: Array.isArray(v) && v.length === want, saw: Array.isArray(v) ? `${v.length}` : JSON.stringify(v) }),
 };
+
+/**
+ * The file `delivery-settled` reads, and the ONLY one it reads.
+ *
+ * Named rather than inlined because two places have to agree about it: the op itself, and the check that
+ * asks every scenario whether the path it declared for an op is one that op can read. A literal in both
+ * is the shape that produced the defect this constant exists to prevent.
+ */
+export const DELIVERY_STATUS_FILE = "status.json";
+
+/**
+ * Which ops read a FIXED file rather than the path the scenario declares, and what that file is.
+ *
+ * DERIVED CHECKS NEED THIS TABLE, not a hand-written list of known-bad scenarios: a scenario nobody
+ * thought to add is exactly the one that goes unnoticed, and R13 went unnoticed for four rounds.
+ */
+export const FIXED_FILE_OPS = Object.freeze({ "delivery-settled": DELIVERY_STATUS_FILE });
+
+/**
+ * Every scenario case whose declared `path` names a file its `op` does not read.
+ *
+ * Not a pass/fail — the op reads the right file either way. It is a REPORT, so a scenario stating a wrong
+ * belief about an op is visible to whoever runs it. Built from the scenario set, never from a list of
+ * names: the point is to find the next one.
+ */
+export function pathsAnOpDoesNotRead(scenarios) {
+  const out = [];
+  for (const s of scenarios ?? []) {
+    const cases = s?.cases ?? (s?.expect ? [{ id: s.id, expect: s.expect }] : []);
+    for (const c of cases) {
+      for (const a of c?.expect?.assert ?? []) {
+        const fixed = FIXED_FILE_OPS[a?.op];
+        if (!fixed) continue;
+        const declared = String(a?.path ?? "").split(":")[0];
+        if (declared && declared !== fixed) out.push({ scenario: s.id, case: c.id ?? s.id, op: a.op, declared, reads: fixed });
+      }
+    }
+  }
+  return out;
+}
 
 function evalAssertion(a, runDir) {
   const [file, field] = String(a.path ?? "").split(":");
@@ -1335,8 +1423,21 @@ function evalAssertion(a, runDir) {
   // exist. A run that flipped sendPending without writing one would have passed the old assertion and
   // fails this one.
   if (a.op === "delivery-settled") {
-    const st = readJson(full);
-    if (!st) return { ok: false, saw: "status.json absent or unparseable" };
+    // — THIS OP READS `status.json`, WHATEVER PATH THE SCENARIO DECLARED, and the error text three
+    // lines below always said so while the read above it took `full`. R13 declared `_driver/delivery.json`,
+    // which parses cleanly and carries no `sendPending`, so the assertion read `undefined`, failed a run
+    // that had delivered correctly, and pushed a product defect that did not exist into `INVESTIGATE`.
+    // It went unseen for four rounds because R13 had been REPORTED once.
+    //
+    // Reading the run's own status is not a correction of the scenario — it is what the op has always
+    // meant. The scenario's `path` is still ANSWERED FOR rather than ignored: `declaredPathNote` says so
+    // in the line, so a scenario stating a belief about this op that is wrong is visible to the reader
+    // who runs it, not only to whoever next reads this function.
+    const st = readJson(join(runDir, DELIVERY_STATUS_FILE));
+    const declaredPathNote = (file && file !== DELIVERY_STATUS_FILE)
+      ? ` — NOTE: this scenario declares \`path: "${file}"\` for \`delivery-settled\`, which reads \`${DELIVERY_STATUS_FILE}\` and nothing else. The declared path was not read.`
+      : "";
+    if (!st) return { ok: false, saw: `${DELIVERY_STATUS_FILE} absent or unparseable${declaredPathNote}` };
     // — THERE IS NO MODE TO READ ANY MORE, and this is the one place where that mattered rather
     // than being a comment fix. This used to open `process.env.CLEAROTRON_DELIVERY || "email"` and take a
     // `sendPending === false` branch for anything that was not `handoff`. With the variable deleted that
@@ -1392,7 +1493,7 @@ function evalAssertion(a, runDir) {
     const { packets, unreadable } = outboxPackets({ runIds: runIdForms(st, runDir) });
     return { ok: st.sendPending === true && packets.length > 0,
       saw: `mode=handoff sendPending=${JSON.stringify(st.sendPending)} packet=${
-        packets.length ? packets.join(", ") : unreadable ? `NOT LOOKED FOR — ${unreadable}` : "NONE WRITTEN"}` };
+        packets.length ? packets.join(", ") : unreadable ? `NOT LOOKED FOR — ${unreadable}` : "NONE WRITTEN"}${declaredPathNote}` };
   }
 
   // `absent` — the file must NOT exist, and its absence is the asserted state, not a silent pass.
@@ -1811,7 +1912,7 @@ async function cmdRun(id) {
   // ever wants the launch to stop.
   printPreviousRoundNotice(s);
 
-  const jobs = s.job ? [{ id: s.id, job: s.job }] : (s.cases ?? []).map((c) => ({ id: c.id, job: c.job, what: c.what, oneMatterAcrossDoors: c.oneMatterAcrossDoors === true }));
+  const jobs = s.job ? [{ id: s.id, job: s.job }] : (s.cases ?? []).map((c) => ({ id: c.id, job: c.job, what: c.what, oneMatterAcrossDoors: c.oneMatterAcrossDoors === true, expectTerminal: (c.expect ?? {}).terminal ?? null }));
 
   // door: "all" is the point of R0 — a rule enforced in one door and not another is exactly the #98
   // asymmetry. Every case goes through EVERY drivable door and the answers are compared. runner.mjs's
@@ -1827,7 +1928,7 @@ async function cmdRun(id) {
   // over whatever was there, so the second run of a pair destroyed the first round's token and the
   // first half became unreportable with nothing saying so.
   const round = { token: RUN_TOKEN, startedAt: new Date().toISOString(), startedAtSource: "run", doors, cases: [] };
-  for (const { id: caseId, job, what, oneMatterAcrossDoors } of jobs) {
+  for (const { id: caseId, job, what, oneMatterAcrossDoors, expectTerminal } of jobs) {
     // The round token goes on the BASE ref, so the door suffix (and R0d's opt-out from it) still decides
     // whether the doors are one matter or two. See refForRun and refForDoor.
     const roundRef = refForRun(job.ref);
@@ -1857,7 +1958,7 @@ async function cmdRun(id) {
         console.log(`      [${a.door}] ${a.ok ? "accepted" : "refused"}: ${a.out.split("\n").slice(0, 2).join(" ").slice(0, 200)}`);
       }
     }
-    if (!agreed) console.log(`      ⚠ THE DOORS DISAGREE on this case — the one that ACCEPTED is the defect`);
+    if (!agreed) console.log(`      ⚠ ${doorDisagreementLine(caseId, answers, { expectTerminal })}`);
     // — named, never silent. A door lost to the transport costs this case a share of its door
     // coverage, and that is a fact about the ROUND, not about the product. Saying nothing here is how
     // the R0e 429 cost a third of a scenario's coverage without appearing anywhere.
@@ -3083,9 +3184,13 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
         .filter((x) => x.out.length);
       console.log(`\ndoors: ${rec.doors.join(", ") || "(not recorded)"} — ${rec.cases.length} case(s), ${dis.length} disagreement(s), ${unavailable.length} case(s) with reduced door coverage`);
       for (const c of dis) {
+        // — the RECEIPT does not carry the case's contract, so it is joined back to the scenario by
+        // id. A receipt written before this field existed reads null and gets the old sentence, which is
+        // the right reading for it rather than a retrospective one.
+        const expectTerminal = ((s.cases ?? []).find((x) => x.id === c.id)?.expect ?? {}).terminal ?? null;
         const accepted = c.answers.filter((a) => a.accepted).map((a) => a.door);
         console.log(`  ⚠ ${c.id}: accepted by ${accepted.join(", ") || "(none)"}, refused by ${c.answers.filter((a) => !a.accepted).map((a) => a.door).join(", ") || "(none)"}`);
-        toInvestigate.push(`${c.id}: THE DOORS DISAGREE — accepted by ${accepted.join(", ")}; the door that ACCEPTED is the defect`);
+        toInvestigate.push(doorDisagreementLine(c.id, c.answers, { expectTerminal }));
       }
       for (const { c, out } of unavailable) {
         const who = out.map((a) => `${a.door} (${doorUnavailableLabel(a)})`).join(", ");
