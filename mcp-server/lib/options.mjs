@@ -193,7 +193,10 @@ function accountFor(key, { scope, now }) {
     profile = loadProfiles().get(key) ?? null;
     if (!profile) { fresh = loadProfiles({ force: true }); profile = fresh.get(key) ?? null; }
   } catch { return null; }   // unreadable roster ⇒ say nothing
-  if (!profile || profile.key === "generic") return null;
+  // GENERIC IS ANSWERED LIKE ANY COMPANY (owner ruling, 2026-09-11). It owns saved searches in the portal,
+  // and a fresh install holds Generic alone, so treating it as nobody's account told the assistant on
+  // every such install that none existed.
+  if (!profile) return null;
 
   let projects = [];
   try {

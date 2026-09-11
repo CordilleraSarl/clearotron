@@ -648,9 +648,59 @@ test("doctor names why saved searches are off, and says when they are on", () =>
   } finally { for (const d of [home, repo, outside]) rmSync(d, { recursive: true, force: true }); }
 });
 
+// THE CONTROL FOR THE LOCAL-INSTALL ARMS BELOW. This home has units, so it is a hosted box, where a store
+// nobody named really is off. With no units the services are `clearotron start`'s children, and it hands
+// every one of them a store, so there "off" would be false.
 test("doctor says saved searches are off when no store is named", () => {
   const home = installedHome(GOOD_ENV);
   try {
     assert.match(doctor(home).out, /saved searches are off: CLEAROTRON_RECIPES_DIR is not set/);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── A LOCAL INSTALL: NO UNITS, THE SERVICES ARE `clearotron start`'s CHILDREN ─────────────────────────
+
+const { startPaths } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+test("with no units, doctor reports the store `clearotron start` hands the portal, never off", () => {
+  const home = mkdtempSync(join(tmpdir(), "local-home-"));
+  try {
+    const never = doctor(home).out;
+    assert.match(never, /saved searches switch on at the first `[^`]*clearotron start`/,
+      `an install that has never started was not told where its saved searches will come from:\n${never}`);
+    assert.doesNotMatch(never, /saved searches are off|saved searches cannot be read/i,
+      "a store that does not exist yet is neither off nor broken");
+
+    // Started before `start` recorded the store in the env file: the layout is there, the file names nothing.
+    const handed = startPaths({ env: {}, base: join(home, "trademark") });
+    mkdirSync(join(handed.configStore, ".git"), { recursive: true });
+    mkdirSync(handed.recipes, { recursive: true });
+    const started = doctor(home).out;
+    assert.match(started, new RegExp(`saved searches are read from ${esc(handed.recipes)} — where \`[^\`]*clearotron start\` puts them, `
+      + `and saves are committed in ${esc(handed.configStore)}`),
+      `doctor did not report the store start hands its children:\n${started}`);
+    assert.doesNotMatch(started, /saved searches are off/i, "THE REPORTED CASE: a working store was reported off");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("with no units, a store the env file names is where profiles resolve from, said once", () => {
+  const home = mkdtempSync(join(tmpdir(), "local-home-"));
+  const envFile = join(home, ".config", "clearotron", ".env");
+  try {
+    const store = profileStore(home, "profiles-local", { acme: { name: "Acme" } });
+    mkdirSync(dirname(envFile), { recursive: true });
+    writeFileSync(envFile, `CLEAROTRON_CUSTOMERS_DIR=${store}\n`);
+    const out = doctor(home).out;
+    assert.match(out, new RegExp(`the services resolve profiles from ${esc(store)} \\(your environment file\\)`),
+      `doctor did not report the store the env file names:\n${out}`);
+    assert.doesNotMatch(out.split("this command's own process")[0], /THE BUNDLED DEMO ROSTER/,
+      "THE REPORTED CASE: the variable read as set on one line and unset on the next");
+
+    // THE CONTROL: nothing names a store, and the bundled roster is then the one answer.
+    rmSync(envFile);
+    const bare = doctor(home).out;
+    assert.match(bare, /THE BUNDLED DEMO ROSTER, because CLEAROTRON_CUSTOMERS_DIR is unset/);
+    assert.doesNotMatch(bare, /the services resolve profiles from/, "no store is named, so none is reported");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });

@@ -233,8 +233,11 @@ test("a session with no account of its own is told so, rather than shown someone
   assert.equal(ops.account, null);
   assert.equal(ops.accountsGranted, undefined, "a full grant is not a list of accounts to offer");
   assert.match(ops.accountNote, /Pass profileKey/);
-  // the neutral profile is not an account
-  assert.equal(describeOptions({ profileKey: "generic" }, { scope: { kind: "ops", accounts: "*" } }).account, null);
+  // Generic, named, is answered like any company: it owns saved searches in the portal, and a fresh
+  // install holds it alone.
+  const generic = describeOptions({ profileKey: "generic" }, { scope: { kind: "ops", accounts: "*" } }).account;
+  assert.equal(generic?.profileKey, "generic", "Generic named by key was answered as nobody's account");
+  assert.ok(Array.isArray(generic.savedSearches), "Generic's account block carries its saved searches");
 });
 
 test("saved searches: an account with none gets an empty list and NO note", () => {

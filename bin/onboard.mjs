@@ -99,7 +99,15 @@ import { entrypointOf } from "../driver/systemd/install-census.mjs";         // 
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
 import { whereSavesGo, storeCommitRefusal, storeInRepo, storeOutsideRepoMessage, resolveStoreRepoRoot } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed, and why saved searches are off
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
-import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
+import { probeEngineTurn, probeFailureText, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
+
+// THE PROVING SENTENCES NAME NO MODEL. They printed the driver's tier word, which is an Anthropic model's
+// name, on both engines, so a codex user was told setup was about to spend on a model family they do not
+// use. "Its cheapest model" is true of either engine and brands neither.
+export const probingLine = (engineId) =>
+  `Probing ${engineId} with one turn on its cheapest model (this SPENDS; ${PROBE_TIMEOUT_SEC}s ceiling)…`;
+export const proveQuestion = ({ engineId, lane }) =>
+  `Prove ${engineId} on the ${lane} lane now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
 import { runRequiredNames, missingRequirements, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -1206,7 +1214,7 @@ export async function runCheck() {
   // deliberate — a second reader would drift from this one exactly as the composer and the checker did
   // in F41, and the drift is invisible because both sides keep passing their own arms.
   const unitDir = join(homedir(), ".config", "systemd", "user");
-  const { BACKGROUND_UNITS } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
+  const { BACKGROUND_UNITS, startPaths } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
   const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
   const unitEnv = hosted
     ? unitEnvironment({
@@ -1440,7 +1448,7 @@ export async function runCheck() {
     } else if (!bin.executable || bin.relative) {
       info("not probed — there is no usable binary to probe. Fix the line above first.");
     } else {
-      say(`\n  Probing ${engineId} with one ${PROBE_MODEL}-tier turn (this SPENDS; ${PROBE_TIMEOUT_SEC}s ceiling)…`);
+      say(`\n  ${probingLine(engineId)}`);
       // The engine as a RUN would see it: environment first, .env behind it. Only the engine-selection
       // keys — the probe must bill exactly the way this box bills and moves no other variable.
       const probeEnv = { ...process.env };
@@ -1628,6 +1636,13 @@ export async function runCheck() {
         // because a reader debugging `clearotron run` by hand IS this process.
         info(`this command's own process ${where} — a CLI is not started by the units' EnvironmentFile, so `
           + "that differs by design and is not what a run uses");
+      } else if (!hosted && svcCustomers?.from === serviceEnvLabel) {
+        // NAMED IN THE ENV FILE ALONE, ON AN INSTALL WITH NO UNITS. `clearotron start` loads that file and
+        // its services inherit the store; this command does not load it, so its own process fell back to
+        // the bundled roster and printed that as the answer, one line below a ✓ for the same variable.
+        ok(`the services resolve profiles from ${svcCustomers.v} (${svcCustomers.from})`);
+        info(`this command's own process ${where} — it does not load ${serviceEnvFile}, so that differs by `
+          + `design and is not what \`${invoke("start")}\` hands the services`);
       } else {
         if (r.situation === "overlay" && !r.findings.length) ok(`${where} — the configured store`);
         else if (r.situation === "bundled-fallback") info(`${where} — THE BUNDLED DEMO ROSTER, because CLEAROTRON_CUSTOMERS_DIR is unset. Legitimate on a generic-defaults install; a fallback either way, and it is what a misconfigured deployment also looks like`);
@@ -1638,7 +1653,8 @@ export async function runCheck() {
         info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
           + "what the services resolve is not judged here, and the line above is this process's own answer");
       info("what a RUN used is its own `profile-store` journal line — this command reports what the "
-        + (hosted ? "units' file says, which the running services read at their own start" : "environment you are typing in says"));
+        + (hosted ? "units' file says, which the running services read at their own start"
+          : `environment you are typing in and your environment file say, which \`${invoke("start")}\` reads at its own start`));
       // ── AND WHO IS ACTUALLY IN IT ─────────────────────────────────────────
       //
       // The line above names the STORE. An operator who has just configured one wants to know their
@@ -1807,16 +1823,32 @@ export async function runCheck() {
   // be read, the lines above already said so and nothing is judged here. A store that is configured but
   // holds a file that cannot be read fails every company's saved searches, in the portal and the
   // connector alike, so that is read here too.
+  //
+  // WITH NO UNITS, THE SERVICES ARE `clearotron start`'s CHILDREN, and it hands every one of them a store
+  // whether or not the env file names it. So "off" is only ever true of a hosted box. This read the env
+  // file alone, and on a local install started before `start` wrote the store there, it told a portal
+  // that was listing saved searches that they were off.
   if (!hosted || serviceKnown) {
-    const recipesSet = hosted ? effectiveForService("CLEAROTRON_RECIPES_DIR") : effective("CLEAROTRON_RECIPES_DIR");
+    // Layered as effectiveForService layers it — this command's environment over the services' file — so
+    // the repository root is read from the same place the store directory is.
+    let storeEnv = { ...(serviceFileEnv ?? {}), ...process.env };
+    let recipesSet = effectiveForService("CLEAROTRON_RECIPES_DIR");
+    let handedBy = "";
+    if (!hosted && !recipesSet?.v) {
+      const handed = startPaths({ env: storeEnv });
+      recipesSet = { v: handed.recipes, from: "clearotron start", name: "CLEAROTRON_RECIPES_DIR" };
+      storeEnv = { ...storeEnv, RECIPE_REPO_ROOT: handed.configStore };
+      handedBy = ` — where \`${invoke("start")}\` puts them`;
+    }
     const recipesDir = recipesSet?.v || null;
     if (!recipesDir) {
       info("saved searches are off: CLEAROTRON_RECIPES_DIR is not set, so Custom searches in the portal and the "
         + "connector offer none. Name a directory inside a git repository to switch them on");
+    } else if (handedBy && !existsSync(join(storeEnv.RECIPE_REPO_ROOT, ".git"))) {
+      // NOT CREATED YET IS NOT UNREADABLE. The store does not exist until the first start makes it, and
+      // reading it now would report a missing directory as a broken one.
+      info(`saved searches switch on at the first \`${invoke("start")}\`, which creates their store in ${recipesDir}`);
     } else {
-      // Layered as effectiveForService layers it — this command's environment over the services' file — so
-      // the repository root is read from the same place the store directory above was.
-      const storeEnv = { ...(serviceFileEnv ?? {}), ...process.env };
       const resolved = resolveStoreRepoRoot({ names: ["RECIPE_REPO_ROOT", "PROFILE_REPO_ROOT"], fallback: REPO, env: storeEnv });
       const reach = storeInRepo(recipesDir, resolved.root);
       if (!reach.ok) {
@@ -1829,7 +1861,7 @@ export async function runCheck() {
         if (unreadable) {
           warn(`saved searches cannot be read from ${recipesDir}: ${unreadable}. Every company's saved searches fail `
             + "to load, in the portal and the connector, until that file is fixed");
-        } else ok(`saved searches are read from ${recipesDir}, and saves are committed in ${reach.repo}`);
+        } else ok(`saved searches are read from ${recipesDir}${handedBy}, and saves are committed in ${reach.repo}`);
       }
     }
   }
@@ -3281,7 +3313,7 @@ try {
     // skipping it costs an hour later.
     info("A file that exists is not an engine that works — so setup tries one before writing anything.");
     info("It takes a few seconds here. Skipped, a broken engine surfaces an hour into a real search.");
-    if (!await confirm(`Prove ${pick.id} on the ${authPick.id} lane now with one ${PROBE_MODEL}-tier turn (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`, true)) {
+    if (!await confirm(proveQuestion({ engineId: pick.id, lane: authPick.id }), true)) {
       info("Not proven, so not written. Pick again — the last row configures no engine at all.");
       continue;
     }

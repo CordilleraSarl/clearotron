@@ -35,7 +35,7 @@
 // env at module top — and every static import evaluates before this file's own body runs, so applying the
 // aliases in the body would be too late for the capture it is meant to fix.
 import "../shared/env-local.mjs";
-import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC } from "../driver/engine/probe.mjs";
+import { probeEngineTurn, probeFailureText, PROBE_TIMEOUT_SEC } from "../driver/engine/probe.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 const argv = process.argv.slice(2);
@@ -62,7 +62,7 @@ if (isEntrypoint(import.meta.url)) {
   const env = engine ? { ...process.env, CLEAROTRON_AI: engine } : process.env;
   const asJson = argv.includes("--json");
   if (!asJson) {
-    console.error(`engine-probe: one ${PROBE_MODEL}-tier turn, up to ${PROBE_TIMEOUT_SEC}s, on this box's own `
+    console.error(`engine-probe: one turn on the engine's cheapest model, up to ${PROBE_TIMEOUT_SEC}s, on this box's own `
       + `credential — real, and it costs whatever one cheap turn costs.`);
   }
   const verdict = await probeEngineTurn({ env });

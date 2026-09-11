@@ -355,6 +355,50 @@ export function defaultGrantsPath({ env = process.env, demo = false } = {}) {
   return installPaths(join(homedir(), demo ? "trademark-demo" : "trademark")).grants;
 }
 
+/**
+ * The paths `clearotron start` hands its services: the install's layout under `base`, with whatever the
+ * environment already names winning over the layout's default, as `start` has always applied it.
+ *
+ * EXPORTED FOR THE ONE OTHER READER THAT MUST AGREE WITH IT. On an install with no background units,
+ * `clearotron doctor` has no unit file to read the services' environment from: the services are this
+ * command's children and get the saved-search store from here. An install started before the store was
+ * written to the env file has no line there to read, so doctor asks this function for it, and the
+ * answer it prints and the one the services were given have one author.
+ *
+ * NOT IN A DEMO. Nothing the environment says about an install is the demo's: with the reader's settings
+ * in force, 0.3.0-beta.1's demo seeded its example reports into their real archive.
+ */
+export function startPaths({ env = process.env, base = join(homedir(), "trademark"), demo = false } = {}) {
+  const paths = installPaths(base);
+  if (demo) return paths;
+  for (const [k, name] of [["pool", "CLEAROTRON_REPORTS_DIR"], ["workspace", "CLEAROTRON_WORK_DIR"], ["queue", "CLEAROTRON_QUEUE_DIR"],
+    ["outbox", "CLEAROTRON_OUTBOX_DIR"], ["locks", "CLEAROTRON_RUN_LOCK_DIR"], ["grants", "CLEAROTRON_ACCESS_FILE"],
+    ["recipes", "CLEAROTRON_RECIPES_DIR"]]) if (env[name]) paths[k] = env[name];
+  if (env.RECIPE_REPO_ROOT) paths.configStore = env.RECIPE_REPO_ROOT;
+  if (env.PORTAL_AUDIT) paths.audit = env.PORTAL_AUDIT;
+  return paths;
+}
+
+/**
+ * The saved-search store, as the env file must record it for every reader OUTSIDE this command's tree.
+ *
+ * The services are handed the store by `childEnv`. A connector an assistant launches, `clearotron doctor`
+ * and every other hand-run command are not this command's children: they read the env file, and the
+ * file never named the store. So on a local install the portal listed a company's saved searches, the
+ * connected assistant was told there were none, and doctor said saved searches were off. Written
+ * add-only beside the secrets, as `npx clearotron install` writes the reports and work directories: a
+ * line an operator wrote wins.
+ */
+export function storesForOtherReaders(paths) {
+  return { CLEAROTRON_RECIPES_DIR: paths.recipes, RECIPE_REPO_ROOT: paths.configStore };
+}
+
+// Written above each line, so a reader who moves the install sees that these two move with it.
+const STORE_NOTES = {
+  CLEAROTRON_RECIPES_DIR: "Where saved searches are kept. `clearotron start` created it; edit both lines if you move the install.",
+  RECIPE_REPO_ROOT: "The git repository saved searches are committed in, which holds the directory above.",
+};
+
 /** Everything this install keeps on disk, under one base directory. */
 export function installPaths(base) {
   return {
@@ -846,20 +890,11 @@ if (isMain) {
   const DEMO = argv.includes("--demo");
   // The same base `npm run setup` writes under, so whichever of the two a reader ran first, the other
   // finds the same install rather than a second one beside it.
-  const paths = installPaths(flag("--base", join(homedir(), DEMO ? "trademark-demo" : "trademark")));
   // Whatever the environment already says wins over the base-derived default, for every path — a reader
-  // who ran `npm run setup` has these in .env already and this must not move their data.
-  //
-  // NOT IN A DEMO. Nothing the environment says about an install is the demo's: with the reader's
-  // settings in force, 0.3.0-beta.1's demo seeded its example reports into their real archive. Not read,
-  // rather than deleted from the environment, so a real start cannot be reached by this branch at all.
-  if (!DEMO) {
-    for (const [k, name] of [["pool", "CLEAROTRON_REPORTS_DIR"], ["workspace", "CLEAROTRON_WORK_DIR"], ["queue", "CLEAROTRON_QUEUE_DIR"],
-      ["outbox", "CLEAROTRON_OUTBOX_DIR"], ["locks", "CLEAROTRON_RUN_LOCK_DIR"], ["grants", "CLEAROTRON_ACCESS_FILE"],
-      ["recipes", "CLEAROTRON_RECIPES_DIR"]]) if (process.env[name]) paths[k] = process.env[name];
-    if (process.env.RECIPE_REPO_ROOT) paths.configStore = process.env.RECIPE_REPO_ROOT;
-    if (process.env.PORTAL_AUDIT) paths.audit = process.env.PORTAL_AUDIT;
-  }
+  // who ran `npm run setup` has these in .env already and this must not move their data. Not in a demo,
+  // which `startPaths` says why. One author, because `doctor` asks the same function what the services
+  // were handed.
+  const paths = startPaths({ env: process.env, base: flag("--base", join(homedir(), DEMO ? "trademark-demo" : "trademark")), demo: DEMO });
   // ── THIS INSTALL'S FIRST START, read before this start writes either file that answers it ────────────
   //
   // The grants file and the config store's repository are both written further down, on every start
@@ -1117,14 +1152,19 @@ if (isMain) {
   const portalSecret = secretFor("PORTAL_SECRET");
   const tokenSecret = secretFor("TRADEMARK_MCP_TOKEN_SECRET");
   if (!process.env.PORTAL_LOCAL_USER) generated.PORTAL_LOCAL_USER = user;
+  const stores = DEMO ? {} : storesForOtherReaders(paths);
 
   // A DEMO WRITES NO SECRETS AND NO ADDRESS. They are generated per run and live in memory only, which
   // is the same posture the ops key already has here — and it is what makes "removing the demo is one
   // directory" true rather than nearly true.
-  if (Object.keys(generated).length && !DEMO) {
+  //
+  // THE STORES ARE WRITTEN EVEN WHEN NO SECRET IS. An install whose secrets are already in the file is
+  // exactly the install whose connector and doctor could not see its saved searches, and a gate on the
+  // secrets alone would never reach it.
+  if ((Object.keys(generated).length || Object.keys(stores).length) && !DEMO) {
     let existing = "";
     try { existing = readFileSync(ENV_PATH, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${ENV_PATH} exists but could not be read (${e.code}).`); }
-    const merged = mergeEnvFile(existing, generated);
+    const merged = mergeEnvFile(existing, { ...generated, ...stores }, { notes: STORE_NOTES });
     if (merged.added.length) {
       // ONE WRITER FOR EVERY FILE THAT HOLDS CREDENTIALS, and it creates the directory. This site had its
       // own copy of the write and did not learn what the wizard's copy learned when `.env` moved under
@@ -1135,7 +1175,7 @@ if (isMain) {
       } catch (e) {
         fatal(`could not write ${ENV_PATH} (${String(e?.message ?? e)}).`);
       }
-      // NAMES only. This file is where the credentials are.
+      // NAMES only. Some of what this file holds is credentials.
       say(`  wrote          ${merged.added.join(", ")} to ${ENV_PATH} (mode 600)`);
     }
   }
