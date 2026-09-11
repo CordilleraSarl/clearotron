@@ -225,6 +225,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-sample-that-cannot-be-read-is-named.test.mjs": {
+          "tests": 7,
+          "asserts": 35,
+          "skips": 4,
+          "todos": 0
+        },
         "a-demo-says-what-it-is-not-what-it-lacks.test.mjs": {
           "tests": 5,
           "asserts": 32,
@@ -3311,7 +3317,7 @@
         },
         "reading-the-demo-does-not-edit-the-repository.test.mjs": {
           "tests": 2,
-          "asserts": 8,
+          "asserts": 13,
           "skips": 1,
           "todos": 0
         },
@@ -4211,7 +4217,7 @@
         },
         "start-command.test.mjs": {
           "tests": 27,
-          "asserts": 120,
+          "asserts": 121,
           "skips": 0,
           "todos": 0
         },

@@ -1391,8 +1391,11 @@ if (isMain) {
     // SEEDED FROM A COPY, for the reason the player publishes from one: republishing writes a receipt
     // into the run directory it reads, and `demo/` is tracked. This is the path a reader actually takes
     // — `clearotron demo` hands over to this — so fixing the player alone left the defect where it was.
-    const { publishSource, seedDemoRuns } = await import("../driver/demo-container.mjs");
-    const seed = await seedPool({ pool: paths.pool, examplesDir: publishSource(join(REPO, "demo"), { repoRoot: REPO }), republish: republishRun });
+    // ONE SAMPLE AT A TIME: one whose files cannot be read is left out and named below, and the others
+    // seed. Copied in one call, a single unreadable file emptied the whole archive.
+    const { publishContainer, seedDemoRuns } = await import("../driver/demo-container.mjs");
+    const container = publishContainer(join(REPO, "demo"), { repoRoot: REPO });
+    const seed = await seedPool({ pool: paths.pool, examplesDir: container.dir, republish: republishRun });
     // AND AS RUNS, so the assistant this demo's connect line wires has them to list, brief and open. Under
     // the demo's own workspace only: nothing of it reaches an install started afterwards. Their report
     // links are stamped with this portal's address, the one the Open line prints.
@@ -1417,10 +1420,16 @@ if (isMain) {
     }
     // Never a silent nothing. "The archive is empty" and "the archive is empty and nobody noticed why"
     // look identical in the browser, so both other outcomes are said out loud.
-    if (seed.skipped) say(`  archive        ${seed.skipped}`);
+    // A SAMPLE LEFT OUT IS NAMED ONCE, by the first copy that could not take it (its report or its run).
+    const leftOut = new Map();
+    for (const u of [...container.unusable, ...runs.failed]) if (!leftOut.has(u.name)) leftOut.set(u.name, u.why);
+    // The seeder counts "every example this package ships" off the copy it was handed, so with a sample
+    // left out that sentence would name the copy's count as the package's; the warnings below say instead.
+    if (seed.skipped && !leftOut.size) say(`  archive        ${seed.skipped}`);
     for (const p of seed.problems) err(`  WARNING: sample seeding — ${p}`);
+    for (const [name, why] of leftOut) err(`  WARNING: demo sample ${name} left out — ${why}`);
   } catch (e) {
-    err(`  WARNING: the example report could not be seeded (${String(e?.message ?? e)}) — the archive will come up empty. Everything else works; \`npm run example\` shows a sample without touching this install.`);
+    err(`  WARNING: the example report could not be seeded (${String(e?.message ?? e)}) — the archive will come up empty. Everything else works; \`${invoke("demo")}\` shows a sample without touching this install.`);
   }
 
   let roster = [];
