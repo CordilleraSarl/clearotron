@@ -63,7 +63,7 @@ test("a ternary BRANCH is plumbing, and a ternary TEST is a decision", () => {
   //
   // Getting this wrong did not misclassify anything — it produced an UNRESOLVED bucket, which reads as
   // a limit of the pattern rather than as a gap in the instrument. All three unresolved sites on main
-  // were this one shape (gateway.mjs:1407, reasoning-tripwires.mjs:82, register-plan.mjs:318), and the
+  // were this one shape (`wrote` in gateway.mjs, `inScope` in reasoning-tripwires.mjs, `reached` in register-plan.mjs), and the
   // discovered population went from 93 to 96 once it was fixed.
   assert.deepEqual(buckets(`const v = xs.some((x) => x.q) ? 1 : 2;`), ["decided"], "the TEST decides here");
   assert.deepEqual(where(`const v = n ? xs.some((x) => x.q) : null;`), ["local"], "a consequent travels");

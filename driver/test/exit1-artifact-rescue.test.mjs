@@ -343,6 +343,7 @@ test("a hard-wall kill whose artifact was still being written is REFUSED — and
     // refusals: this one is under the bar, but a refusal for a failed validator carries a large
     // quiescentMs and looked identical on the row.
     assert.equal(rows.at(-1).rescueRefused, "under-quiescence");
+    assert.ok(String(rows.at(-1).rescueRefusedFile).endsWith("out.md"), "and the refusal names the file it judged");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -377,6 +378,8 @@ test("a quiescent, WRITTEN artifact refused by its VALIDATOR names that cause �
     assert.ok(row.quiescentMs >= 300_000, "the artifact was long finished when the turn was killed");
     assert.equal(row.rescueRefused, "not-written-by-this-attempt-or-invalid",
       "and the record now says WHICH of the three causes refused — the fact R1's journal could not supply");
+    assert.ok(String(row.rescueRefusedFile).endsWith("out.md"), "and which file");
+    assert.equal(row.rescueRefusedReason, "placementmodel_missing", "and the validator's own reason, not a word standing for it");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -592,5 +595,105 @@ test("an ARCHIVED run keeps the old floor — deleting the arm must not re-judge
     const v = validators.placement(out, readFileSync(out, "utf8"));
     assert.equal(v.ok, false, "pre-#562 vintage: the seat owed placements.json and did not write it");
     assert.equal(v.reason, "placementmodel_missing");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// — THE WALL RESCUE NAMES WHAT IT COULD NOT KEEP. Measured 2026-09-10 on two stages of one run: both
+// killed attempts had written nothing, and both rows read `quiescentMs: -1` and `artifact-unreadable`,
+// a sentinel and a filesystem diagnosis for files that did not exist.
+const stageRowsOf = (dir, stage = "teststage") =>
+  readFileSync(driverDir(dir, `${stage}.jsonl`), "utf8").trim().split("\n").map(JSON.parse);
+const spineRowsOf = (dir, stage = "teststage") =>
+  readFileSync(driverDir(dir, "run.jsonl"), "utf8").trim().split("\n").map(JSON.parse)
+    .filter((row) => row.event === "attempt" && row.stage === stage);
+const wallOnce = (name, dir, out, runTurn, validate = (f, text) => ({ ok: /COMPLETE/.test(text) })) =>
+  withEngine(name, runTurn, () => runStage("teststage", {
+    agent: "clawdi", sessionKey: `clearotron-test-${name}`, message: "do it",
+    model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
+    validate, runDir: dir, maxRetries: 0,
+  }));
+
+test("a hard-wall kill that never wrote its artifact is refused as ABSENT, names the file, and records no quiescence number", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "wall-absent-"));
+  const out = join(dir, "out.md");
+  mkdirSync(driverDir(dir), { recursive: true });
+  try {
+    const r = await wallOnce("fake-wall-never-wrote", dir, out, async ({ timeoutSec }) => hardWallTurn(timeoutSec));
+    assert.equal(r.ok, false);
+    assert.equal(r.fail, "timeout");
+    const rows = [stageRowsOf(dir).at(-1), spineRowsOf(dir).at(-1)];
+    assert.ok(rows.every(Boolean), "both journals carry the attempt: the per-stage file and run.jsonl");
+    for (const row of rows) {
+      assert.equal(row.rescueRefused, "artifact-absent", "a file that was never written is absent, not unreadable");
+      assert.ok(String(row.rescueRefusedFile).endsWith("out.md"), "and the row names the file");
+      assert.equal(row.rescueRefusedReason, "ENOENT");
+      assert.equal(row.quiescentMs, undefined, "nothing was measured, so there is no number: never the -1 sentinel");
+    }
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a stat that fails for any reason but absence stays UNREADABLE, with its error code", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "wall-notdir-"));
+  writeFileSync(join(dir, "blocker"), "a file where a directory belongs\n");
+  const out = join(dir, "blocker", "out.md");   // stat of this path fails ENOTDIR, not ENOENT
+  mkdirSync(driverDir(dir), { recursive: true });
+  try {
+    const r = await wallOnce("fake-wall-notdir", dir, out, async ({ timeoutSec }) => hardWallTurn(timeoutSec));
+    assert.equal(r.ok, false);
+    const row = stageRowsOf(dir).at(-1);
+    assert.equal(row.rescueRefused, "artifact-unreadable", "the other member of the distinction: not every failed stat is an absence");
+    assert.equal(row.rescueRefusedReason, "ENOTDIR");
+    assert.equal(row.quiescentMs, undefined);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("an artifact whose mtime lands after the settle instant measures 0, not a negative, and is refused under the bar", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "wall-future-"));
+  const out = join(dir, "out.md");
+  mkdirSync(driverDir(dir), { recursive: true });
+  try {
+    const r = await wallOnce("fake-wall-future-mtime", dir, out, async ({ timeoutSec }) => {
+      writeFileSync(out, "# COMPLETE\n");
+      const t = Date.now() / 1000 + 30; utimesSync(out, t, t);   // stamped 30 s after the turn settles
+      return hardWallTurn(timeoutSec);
+    });
+    assert.equal(r.ok, false);
+    const row = stageRowsOf(dir).at(-1);
+    assert.equal(row.quiescentMs, 0, "a measurement, clamped at zero: never a negative for anything to average");
+    assert.equal(row.rescueRefused, "under-quiescence");
+    assert.ok(String(row.rescueRefusedFile).endsWith("out.md"));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a timeout row counts THIS dispatch's refusals of its record, and none from an earlier one", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "wall-refused-"));
+  const out = join(dir, "register-findings.md");   // tool-written: its transport keeps a per-run refusal journal
+  mkdirSync(driverDir(dir, "register-digest-calls"), { recursive: true });
+  const journal = driverDir(dir, "register-digest-calls", "refusals.jsonl");
+  // an EARLIER attempt's refusal, already in the journal before this dispatch
+  writeFileSync(journal, JSON.stringify({ at: new Date(Date.now() - 3600e3).toISOString(), reason: "registerdigest_unaccounted_records:631 of 685 record(s)" }) + "\n");
+  const lastReason = "registerdigest_unaccounted_records:612 of 685 record(s)";
+  try {
+    const r = await wallOnce("fake-wall-refused-twice", dir, out, async ({ timeoutSec }) => {
+      for (const reason of ["registerdigest_unaccounted_records:684 of 685 record(s)", lastReason])
+        writeFileSync(journal, JSON.stringify({ at: new Date().toISOString(), reason }) + "\n", { flag: "a" });
+      return hardWallTurn(timeoutSec);
+    }, () => ({ ok: false, reason: "never written" }));
+    assert.equal(r.ok, false);
+    const rows = [stageRowsOf(dir).at(-1), spineRowsOf(dir).at(-1)];
+    assert.ok(rows.every(Boolean));
+    for (const row of rows)
+      assert.deepEqual(row.refusedCalls, { count: 2, last: lastReason },
+        "two refusals in this dispatch, the earlier attempt's left out, and the last reason carried");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a timeout on a stage whose artifact keeps no refusal journal records no refusal count, not a zero", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "wall-nojournal-"));
+  const out = join(dir, "out.md");
+  mkdirSync(driverDir(dir), { recursive: true });
+  try {
+    await wallOnce("fake-wall-no-journal", dir, out, async ({ timeoutSec }) => hardWallTurn(timeoutSec));
+    assert.equal(stageRowsOf(dir).at(-1).refusedCalls, undefined, "\"keeps no journal\" must not read as \"nothing was refused\"");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

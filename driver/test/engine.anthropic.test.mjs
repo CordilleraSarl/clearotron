@@ -771,6 +771,36 @@ test("streamed-usage honesty: a token-moving stall kill carries the STREAMED usa
   assert.equal(classifyWedge("timeout", r.usage, r.signals), "timeout");
 }));
 
+test("a turn killed after several completed calls reconstructs the output those calls streamed, not their opening counts", timed(async () => {
+  // THE KILLED-TURN UNDERCOUNT. A completed turn takes its usage from the result event; a killed one has
+  // none and rebuilds it from the stream. That rebuild summed each call's assistant event as authoritative
+  // and dropped the call's message_delta, and an assistant event carries the usage known when its message
+  // began: a couple of output tokens a call. A turn killed at its wall after 75 calls journalled 810 output
+  // tokens, and its tokens per second read as a stall. The mock streams several completed calls in the
+  // CLI's order, logs what it sent, then goes silent until the kill.
+  const dir = mkdtempSync(join(tmpdir(), "killed-multicall-"));
+  const log = join(dir, "emitted.json");
+  try {
+    const t0 = Date.now();
+    const r = await run({ message: "x", model: "opus", thinking: "high", timeoutSec: 60 },
+      { MOCK_CLAUDE_KILLED_MULTICALL: "5", MOCK_CLAUDE_EMITTED_LOG: log, CLEAROTRON_STALL_MS: "1500" });
+    const wall = (Date.now() - t0) / 1000;
+    assert.equal(r.killed, true, "the fixture must end in a kill, or this reads a result event instead");
+    assert.equal(r.signals?.usageStreamed, true, "the usage must be the stream's reconstruction");
+    const sent = JSON.parse(readFileSync(log, "utf8"));
+    const emitted = sent.finals.reduce((a, b) => a + b, 0);
+    assert.ok(sent.calls >= 3 && emitted > 1000, "the fixture streamed too little to tell a final count from an opening one");
+    // With no margin: the reconstruction is the sum of each call's final message_delta count.
+    assert.equal(r.usage.output, emitted, `reconstructed ${r.usage.output} output tokens against ${emitted} streamed`);
+    // Each call's input and cache figures once, though each call sent two assistant events carrying them.
+    assert.equal(r.usage.cacheRead, sent.calls * sent.perCall.cacheRead, "a call's cache figures are counted once per call, not once per event");
+    assert.equal(r.usage.input, sent.calls * sent.perCall.input);
+    // And on the same wall the row's rate is what the streamed output gives, not a stall's.
+    const { tokensPerSec } = await import("../gateway.mjs");
+    assert.equal(tokensPerSec(r.usage, wall), tokensPerSec({ output: emitted }, wall));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}));
+
 test("startup-class death: a CLI exit with NO stream events carries the noStreamEvents signal + a named stderr diagnosis", async () => {
   // The 3× register-digest code=1 zero-token shape: claude died before emitting a single stream event.
   // `sh -c 'exit 7'` stands in for the CLI failing at startup (bad arg/auth/MCP). The tuple must name
