@@ -420,6 +420,11 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
       const draft = {};
       for (const k of CREATABLE_FIELDS) if (body[k] !== undefined) draft[k] = body[k];
       const r = await call("POST", "/profiles", draft, principal);
+      // A STORE THAT CANNOT RECORD THE COMPANY is answered with its path and the git commands that fix it.
+      // That sentence is for whoever runs the installation. A manager who holds an organisation cannot act
+      // on it and must not be shown the server's paths, so they are told what to do instead.
+      if (r.status === 409 && String(r.json?.code ?? "").startsWith("store_") && !seesEverything(principal))
+        return { status: 409, json: { code: r.json.code, error: STORE_REFUSAL_FOR_MANAGERS } };
       if (r.status !== 201 || org == null || !fileCompany) return r;
       const key = r.json?.key ?? r.json?.profile?.key ?? draft.key;
       try { await fileCompany({ tenant: org, account: key }); }
@@ -430,6 +435,10 @@ export function makeUpstream({ callUpstream, callRecipes = null, recipesOff = nu
     },
   };
 }
+
+/** The store refusal as a manager who does not run the installation reads it: no path, no command. */
+export const STORE_REFUSAL_FOR_MANAGERS = "No company was created: this installation cannot save new companies yet, "
+  + "and nothing was changed. Ask whoever runs it to fix the company store.";
 
 /**
  * What a browser may state when creating a company.
