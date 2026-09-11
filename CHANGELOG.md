@@ -4,6 +4,14 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0-beta.7
+
+### Fixed
+
+- A demo started with npx keeps its assistant connection working after npm cleans its cache.
+- An assistant connected to the demo now opens each sample report on the demo's own portal, not on another server.
+- The portal names the organisation setup recorded, and the product keeps its own name beside it.
+
 ## 0.3.0-beta.6
 
 ### New
