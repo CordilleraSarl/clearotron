@@ -16,6 +16,7 @@ import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { demoTokenSecret, demoTokenSecretPath, keyIssueCommand } from "../../shared/client-door.mjs";
+import { handRunEnv } from "./drive-env.mjs";   // a hand-run command's environment, with this box's own marks off it
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -53,13 +54,13 @@ test("a demo is refused over an install's directory, so its secret never lands w
   const home = mkdtempSync(join(tmpdir(), "demo-over-install-"));
   const start = (base, extra = {}) => spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--base", base], {
     encoding: "utf8", cwd: ROOT, timeout: 60000,
-    env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", ...extra },
+    env: handRunEnv({ HOME: home, ...extra }, { PATH: process.env.PATH }),
   });
   try {
     // The directory an install is set up in by default.
     const dflt = join(home, "trademark");
     mkdirSync(join(dflt, "pool"), { recursive: true });
-    const one = start(dflt);
+    const one = start(dflt, { CLEAROTRON_NO_ENV_FILE: "1" });
     assert.notEqual(one.status, 0);
     assert.match(`${one.stdout}${one.stderr}`, /--demo cannot run in .*trademark/);
     assert.ok(!existsSync(demoTokenSecretPath(dflt)), "the demo wrote its signing secret into the install's directory");
@@ -68,15 +69,25 @@ test("a demo is refused over an install's directory, so its secret never lands w
     const moved = join(home, "elsewhere");
     mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
     writeFileSync(join(home, ".config", "clearotron", ".env"), `CLEAROTRON_REPORTS_DIR=${join(moved, "pool")}\n`);
-    const two = start(moved, { CLEAROTRON_NO_ENV_FILE: "" });
+    const two = start(moved);
     assert.notEqual(two.status, 0);
     assert.match(`${two.stdout}${two.stderr}`, /keeps its reports in/);
     assert.ok(!existsSync(demoTokenSecretPath(moved)), "the demo wrote its signing secret into the moved install's directory");
 
+    // AN INSTALL SOMEBODY PUT SOMEWHERE OF ITS OWN AND NEVER CONFIGURED. No settings name it, it holds no
+    // settings file and it is not the default directory — only its guest list says an install lives here.
+    const quiet = join(home, "work", "tm");
+    mkdirSync(quiet, { recursive: true });
+    writeFileSync(join(quiet, "grants.json"), JSON.stringify({ tenants: {}, people: {} }));
+    const four = start(quiet);
+    assert.notEqual(four.status, 0);
+    assert.match(`${four.stdout}${four.stderr}`, /guest list/);
+    assert.ok(!existsSync(demoTokenSecretPath(quiet)), "the demo wrote its signing secret into an install nobody configured");
+
     // THE CONTROL: a directory of the demo's own is not refused — this run gets past the guard and stops
     // at the next thing wrong with it, which is the port it was given.
     const own = join(home, "a-demo-of-its-own");
-    const three = start(own, { CLEAROTRON_NO_ENV_FILE: "", PORTAL_SERVICE_PORT: "not-a-port" });
+    const three = start(own, { PORTAL_SERVICE_PORT: "not-a-port" });
     assert.notEqual(three.status, 0);
     assert.doesNotMatch(`${three.stdout}${three.stderr}`, /--demo cannot run in/);
     assert.match(`${three.stdout}${three.stderr}`, /is not a port number/);

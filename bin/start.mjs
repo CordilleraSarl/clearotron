@@ -118,7 +118,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
-import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, keyIssueCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
+import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, demoTokenSecretPath, keyIssueCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
@@ -941,6 +941,11 @@ if (isMain) {
     if (inside(settings.CLEAROTRON_WORK_DIR)) found.push(`an install works in ${settings.CLEAROTRON_WORK_DIR}`);
     if (existsSync(join(paths.base, ".env"))) found.push(`it holds a settings file, ${join(paths.base, ".env")}`);
     if (!found.length && base === resolve(join(homedir(), "trademark"))) found.push("it is the directory an install is set up in by default");
+    // AN INSTALL NOBODY CONFIGURED still answers. `start --base <dir>` writes a guest list on every start
+    // and no settings at all, so an install somewhere of its own passes every check above. A guest list
+    // with no demo secret beside it is somebody's install; a demo's own base has both.
+    if (!found.length && existsSync(paths.grants) && !existsSync(demoTokenSecretPath(paths.base)))
+      found.push(`it holds a guest list, ${paths.grants}, and no demo of its own`);
     if (found.length)
       fatal(`--demo cannot run in ${paths.base}: ${found.join("; ")}.\n`
         + "  The demo keeps its own data, and its own signing secret, in its base. Leaving those in an\n"
