@@ -14,7 +14,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSyn
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { relocationPlan, packagedUpdate, channelOf, stableInstallRoot, compareVersions, readDistTags } from "../../shared/permanent-install.mjs";
+import { relocationPlan, packagedUpdate, channelOf, stableInstallRoot, compareVersions, readDistTags, demoProgramPlan } from "../../shared/permanent-install.mjs";
 import { installShim, inspectShim, shimPath, SHIM_MARKER } from "../../shared/verb-shim.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -157,4 +157,49 @@ test("the move comes before any question or write, update runs npm only after th
     const signature = connect.slice(at, connect.indexOf("{\n", at));
     assert.match(signature, /installRoot = stableInstallRoot\(/, `${fn} composes from the running root even inside npx's cache`);
   }
+});
+
+test("a demo run from npx plans its own copy inside its base, and runs no npm when that copy is current", () => {
+  const at = (o) => demoProgramPlan({ base: "/srv/op/trademark-demo", installDir: NPX, platform: "linux", version: "0.3.0-beta.6", exists: () => false, ...o });
+  const plan = at();
+  assert.equal(plan.prefix, "/srv/op/trademark-demo/program", "the copy is outside the demo's base, so removing the demo would not remove it");
+  assert.equal(plan.root, "/srv/op/trademark-demo/program/lib/node_modules/clearotron");
+  assert.equal(plan.current, false);
+  assert.equal(plan.npmArgs.at(-1), "clearotron@0.3.0-beta.6", "the copy must be THIS version");
+  assert.deepEqual(plan.npmArgs.slice(0, 4), ["install", "--global", "--prefix", "/srv/op/trademark-demo/program"]);
+  // Current: the copy is there at this version, so a second start runs no npm.
+  const read = (p) => (p.endsWith("package.json") ? JSON.stringify({ version: "0.3.0-beta.6" }) : "");
+  assert.equal(at({ exists: () => true, read }).current, true);
+  assert.equal(at({ exists: () => true, read: () => JSON.stringify({ version: "0.3.0-beta.5" }) }).current, false, "an older copy was taken as current");
+  // THE CONTROLS: outside npx there is nothing to copy; Windows and an unreadable version say why.
+  assert.equal(at({ installDir: ROOT }), null);
+  assert.deepEqual(at({ platform: "win32" }), { skip: "windows" });
+  assert.deepEqual(at({ version: null }), { skip: "no-version" });
+});
+
+test("a demo's services name the demo's own copy first, then the permanent install, then the running root", () => {
+  const home = mkdtempSync(join(tmpdir(), "demo-program-"));
+  try {
+    const base = join(home, "trademark-demo");
+    const env = { HOME: home, CLEAROTRON_DEMO: "1", CLEAROTRON_WORK_DIR: join(base, "workspace") };
+    const lay = (root) => { mkdirSync(join(root, "mcp-server"), { recursive: true }); writeFileSync(join(root, "mcp-server", "server.mjs"), ""); };
+    assert.equal(stableInstallRoot({ installRoot: NPX, env }), NPX, "nothing laid down yet, so there is nothing else to name");
+    const permanent = join(home, ".local", "lib", "node_modules", "clearotron");
+    lay(permanent);
+    assert.equal(stableInstallRoot({ installRoot: NPX, env }), permanent);
+    const own = join(base, "program", "lib", "node_modules", "clearotron");
+    lay(own);
+    assert.equal(stableInstallRoot({ installRoot: NPX, env }), own, "the demo named another install rather than its own copy");
+    // THE CONTROL: the same layout without the demo flag is an install's, and names the permanent copy.
+    assert.equal(stableInstallRoot({ installRoot: NPX, env: { ...env, CLEAROTRON_DEMO: undefined } }), permanent);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("the demo lays its copy down before its services start, and its connect line names it", () => {
+  const start = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
+  const plan = start.indexOf("const plan = demoProgramPlan({ base: paths.base });");
+  const spawnEnv = start.indexOf("const envs = childEnv({ ports, paths, user");
+  assert.ok(plan > 0 && plan < spawnEnv, "the copy is made after the services' environment is composed, so the portal names the cache");
+  assert.match(start, /stdioConnectOffer\(\{ workDir: paths\.workspace, reportsDir: paths\.pool, \.\.\.\(demoProgramRoot \? \{ installRoot: demoProgramRoot \} : \{\}\) \}\)/,
+    "the terminal's connect line does not name the demo's own copy");
 });

@@ -87,10 +87,14 @@ export const BRAND = {
  * installation, which on a fresh install has no answer, and answering it with the product's name puts
  * "Organisation: Clearotron" on the top bar of every install that never set it.
  *
- * Null rather than an empty string, so a caller cannot render it by accident. Nothing sets the variable
- * today; setup gains the question that will.
+ * Null rather than an empty string, so a caller cannot render it by accident.
+ *
+ * ITS OWN SETTING, `CLEAROTRON_ORGANISATION_NAME`, the one setup writes. This read `CLEAROTRON_BRAND_NAME`,
+ * which renames the PRODUCT: a wizard-configured organisation was never named, and an operator who set
+ * the brand to reach it got "This is Acme's Acme portal" with the title and the logo renamed too
+ * (measured on a published beta, 2026-09-11). The two differ on presence as well as on absence now.
  */
-export const ORGANISATION_NAME = process.env.CLEAROTRON_BRAND_NAME?.trim() || null;
+export const ORGANISATION_NAME = process.env.CLEAROTRON_ORGANISATION_NAME?.trim() || null;
 
 /**
  * THE CONFIDENTIALITY POSTURE ON A DELIVERED DOCUMENT — one rule, both report templates.
