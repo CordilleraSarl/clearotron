@@ -2747,7 +2747,7 @@
         },
         "no-internal-hostname-ships-in-the-package.test.mjs": {
           "tests": 1,
-          "asserts": 3,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
