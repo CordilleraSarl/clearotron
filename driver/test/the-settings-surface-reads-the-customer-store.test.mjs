@@ -291,6 +291,64 @@ test("a brand owner in the configured store can read and save their settings", a
   }
 });
 
+test("on a fresh install and on the demo, saved searches load for Generic and for the demo company", async () => {
+  // THE PORTAL ROUTE, DRIVEN. The recipe service read its roster as an explicit directory, and a store with
+  // no generic.json throws there, which is every fresh install and every demo, since Generic falls through
+  // from the product. The throw read as "no such company", so Custom searches answered 404 for every
+  // company. This store is the demo's, filled the way the demo fills it: the demo's company and no
+  // generic.json, so Generic falls through from the product, as it does on a fresh install.
+  const { establishCredential } = await import("../portal-local-auth.mjs");
+  const root = mkdtempSync(join(tmpdir(), "cs499-repo-"));
+  execFileSync("git", ["init", "-q", root]);
+  execFileSync("git", ["-C", root, "config", "user.email", "t@example-firm.com"]);
+  execFileSync("git", ["-C", root, "config", "user.name", "t"]);
+  const store = join(root, "profiles");
+  const recipes = join(root, "recipes");
+  mkdirSync(recipes);
+  writeFileSync(join(recipes, ".keep"), "");
+  const { seedDemoStore, demoAccounts } = await import("../../bin/start.mjs");
+  const copied = seedDemoStore({ from: join(HERE, "..", "profiles"), to: store, accounts: demoAccounts() });
+  assert.ok(copied.includes("demo-brand-owner"), `the demo's seeding copied ${copied.join(", ") || "nothing"}`);
+  execFileSync("git", ["-C", root, "add", "-A"]);
+  execFileSync("git", ["-C", root, "commit", "-qm", "store"]);
+  const credPath = join(mkdtempSync(join(tmpdir(), "cs499-kc-")), "credential.json");
+  const PASS = "correct horse battery staple 499";
+  establishCredential({ path: credPath, email: "dev@example-firm.com", passphrase: PASS });
+
+  let child;
+  try {
+    const b = await boot({
+      CLEAROTRON_CUSTOMERS_DIR: store, PROFILE_REPO_ROOT: root,
+      CLEAROTRON_RECIPES_DIR: recipes, RECIPE_REPO_ROOT: root,
+      PORTAL_LOCAL_CREDENTIAL: credPath, CLEAROTRON_DEMO_PROFILES: "1",
+    });
+    child = b.child;
+    assert.ok(b.port, `the portal must listen [said=${safe(b.said).slice(-400)}]`);
+    assert.doesNotMatch(safe(b.said), /saved searches OFF|config surface unavailable/,
+      `saved searches must be on for this store, or the arm below tests the switch [said=${safe(b.said).slice(-500)}]`);
+
+    const base = `http://127.0.0.1:${b.port}`;
+    const login = await fetch(`${base}/portal/login`, {
+      method: "POST", redirect: "manual",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ passphrase: PASS }).toString(),
+    });
+    const cookie = (login.headers.get("set-cookie") ?? "").split(";")[0];
+    assert.ok(cookie, `sign-in returned no session cookie (status ${login.status}) — the rest of this arm would test nothing`);
+
+    for (const account of ["generic", "demo-brand-owner"]) {
+      const r = await fetch(`${base}/portal/api/config/searches?account=${account}`, { headers: { cookie } });
+      const text = await r.text();
+      assert.equal(r.status, 200, `Custom searches under ${account} answered ${r.status} [body=${text.slice(0, 300)}]`);
+      // The list the screen renders, as its list or its empty state: `recipes`, as contract/api.ts decodes it.
+      assert.ok(Array.isArray(JSON.parse(text).recipes), `the answer under ${account} is not the list the screen renders [body=${text.slice(0, 300)}]`);
+    }
+  } finally {
+    try { child?.kill("SIGKILL"); } catch { /* gone */ }
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("an unbuilt config surface NAMES itself, instead of answering the bare not_found that reads as a refusal", async () => {
   // THE DEFECT, DRIVEN. `PROFILE_REPO_ROOT` that does not contain the store makes `storeInRepo` throw,
   // `makeUpstream` return null, and every /portal/api/config/* route refuse. It refused with 404, which
