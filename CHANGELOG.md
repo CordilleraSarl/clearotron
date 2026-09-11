@@ -26,8 +26,8 @@ Install or upgrade with `npm install -g clearotron`.
 
 - Creating a company is refused, with nothing left behind, when the configuration store cannot record it. The company used to be created anyway, with no record of who made it or when, and its organisation was given access to it.
 - A store with no git identity is the usual cause on a new machine, and the refusal names the command that fixes it. Setup and `clearotron start` now check a store they adopt for this straight away.
-- A stage stopped at its time limit now records the output it actually produced. It used to record a small fraction, so a stage that was working read as one that had stalled.
-- The token totals `clearotron tokens` reports for runs with a stopped stage now include that output.
+- A search step stopped at its time limit now records the output it actually produced. It used to record a small fraction, so a step that was working read as one that had stalled.
+- The token totals `clearotron tokens` reports for runs with a stopped step now include that output.
 - `clearotron doctor` now says when saved searches are switched off and why, and when a saved search file cannot be read.
 - An assistant asking for saved searches is told when they could not be read, instead of being told there are none.
 - `clearotron doctor` reports the register and the research key the background services will use, read from the file they read. Run from a new terminal, it used to say no register was selected on an install whose searches were running.
@@ -90,14 +90,14 @@ Install or upgrade with `npm install -g clearotron`.
 - Choosing a company on the dashboard now shows only that company's clearances. The buttons above the list used to change nothing.
 - When a feature is switched off on your installation, the screen says so and what to change. It used to suggest trying again shortly.
 - The link to the risk-framework guide opens in a new tab and goes straight to the section on writing your own. It also appears on the Company profile screen.
-- The audit workbook's "What was searched" sheet is now in plain words. Its Result and Note columns carry the search log's own notes. Engine vocabulary could reach them: a receipt "deferred", a full web address, a bare HTTP code. Those words are now replaced as the workbook is built, a republished report included. A search recorded as not run still reads as not searched. Search terms and names stay exactly as written, because they record what was searched.
+- The audit workbook's "What was searched" sheet is now in plain words. Its Result and Note columns carry the search log's own notes. Internal terms could reach them: a status such as "deferred", a full web address, a bare HTTP code. Those words are now replaced as the workbook is built, a republished report included. A search recorded as not run still reads as not searched. Search terms and names stay exactly as written, because they record what was searched.
 - An assistant reading a knockout's filings through the connector now gets each filing's page at the trade mark office, as the report does. Where that register publishes no page for a single record, it gets the office and the number instead. Before, it got a reference that opens nowhere.
 
 ### For operators
 
-- A health check that could not look now fails instead of reporting success. Two halves of the unit check can go quiet. One goes quiet when the installation does not say which installation it is; the other when the walk over the unit files does not finish. Both used to note that they had not run and then pass.
+- A deployment health check that could not finish now fails instead of reporting success. Two parts of the service check could skip themselves. One skipped when the installation did not say which installation it is; the other when the scan of the service files did not finish. Both used to note that they had not run and then pass.
 - Set `CLEAROTRON_BOX` to `prod` or `test`. Those are the only two values the check accepts; anything else, including any other name, reads as unnamed and fails. The failure names the setting and says what went unchecked.
-- The half that goes quiet is the one that notices a service that has stopped and stayed stopped. The other half lists what is running, so it cannot see something that is no longer there. While that half is suppressed, a service can disappear without the check saying anything.
+- The part that could skip itself is the one that notices a service that has stopped and stayed stopped. The other part lists what is running, so it cannot see something that is no longer there. While the first part is skipped, a service can disappear without the check saying anything.
 - `clearotron doctor` now says where a company or project saved in the portal goes once it is recorded. Sometimes the settings folder sits in a copy of a repository that other work also pulls and pushes. The next person to do that then publishes those saves. Doctor now warns about this, and counts the saves still waiting to go. Publishing your settings on purpose is still supported: this is only a warning, and it does not change doctor's result.
 - On a local install, setup no longer asks for a sign-in address. It uses your computer account's name at `localhost` and shows it once in the summary. An address already in your settings file is kept.
 - The deployment health check now reports whether the component that updates an installation is itself up to date. It was the one part of a deployment the check could not identify. An installation kept current by an out-of-date updater could report healthy while serving stale code.
@@ -119,7 +119,7 @@ Install or upgrade with `npm install -g clearotron`.
 - Those screens used to refuse to render until a company was chosen. They told you to pick one at the top left. That is not where the control is when the sidebar is collapsed. They now show you the companies instead. Each one says what it sells, how many marketplaces it covers, and which territories it defaults to.
 - Setting up a company is a page, not a document. It needs a name. Everything else has a default, and the screen says what that default is. It refuses before writing anything, and says why. A name it cannot make a key from, a key already in use, or an email address another company claims. A company you create can run its first search straight away, with no restart, and stop or cancel that search like any other.
 - The product now says company throughout. It used to say brand owner, account, client and customer for the same thing. The firm running the installation is named separately, in the top bar.
-- Companies created through the settings page were saved without a risk framework. Their matters were then rated under the house default, with nothing on screen saying so. Every company created now carries one, and says which.
+- Companies created through the settings page were saved without a risk framework. Their matters were then rated under the default risk framework, with nothing on screen saying so. Every company created now carries one, and says which.
 - The setup wizard now asks for the organisation's name after the sign-in address, and the person who installs starts with access to everything.
 - `clearotron grant add` sets a person's two permissions with `--run` and `--manage`; with neither, the person can look and start nothing.
 - `clearotron framework <your-framework.md>` reads a risk framework and its manifest, and reports what they declare.
@@ -133,18 +133,18 @@ Install or upgrade with `npm install -g clearotron`.
 ### Fixed
 
 - Installed under a folder named with `#` or `%`, setup's register check now reads the provider's cost instead of calling it unknown. It built the address of the provider's own declaration by hand, and those characters broke it. It now uses the address Node builds, which is also what Windows needs.
-- a framework served from the product's own files, while you have a configuration store set, now says so.
+- When you have a configuration store set and a risk framework comes from the product's own files instead, the product now says so.
 - Your store is looked in first, and the product's files answer when it is silent. The product ships decks under names you may also have chosen. So a deck that went missing from your store was replaced by ours rather than reported absent. Same band words, different rubric, nothing raised anywhere. The profile screen now writes one line naming what happened, and the new command reports it.
-- the house triage ladder's profile page explains its bands again.
+- The built-in triage framework's profile page explains its bands again.
 - Its band sections stated their meanings as plain paragraphs, which the screen does not read. Every company without a framework of its own saw band colours and no explanation. The wording is unchanged.
-- `clearotron doctor` now says which companies your portal's trigger key can start.
+- `clearotron doctor` now lists the companies your portal's key may start runs for.
 - The key carries a list of the companies it may start runs for. A company added after the key was minted is outside it. Doctor reported the key's expiry and never its coverage. So the one command whose job is to tell you what a machine is configured for said nothing about it.
-- It reads the roster the services read, not the one a command-line process resolves, and it says which. Those two can disagree, and when they do the difference is the whole answer.
+- It reads the company list the background services read, not the one a command run in a terminal would find, and it says which. The two can differ, and when they do, that difference is the answer.
 - The line is a note, not a failure. Your portal takes a fresh credential at the start of every call, so a company outside the key is not normally refused. It is refused when the portal cannot take a fresh one, and the line says so and gives you the command to widen the key.
 - On reports searched through Signa, each register finding now links to the office's own page for that record, where the office publishes one. Singapore publishes no such page, so its registrations are cited by number, and the report says why. A number that an office's page cannot take is cited the same way.
-- a company you create in the browser now appears in your assistant's list of companies straight away.
+- A company you create in the browser now appears in your assistant's list of companies straight away.
 - It used to appear only after the service restarted, although a search could already be started for it. Its projects were missing from the list in the same way, and so was its account in the search options.
-- The live surface check no longer reports a company outside the portal's trigger key as the service and the store disagreeing. It names the key's gap on a line of its own, with the command to widen the key.
+- The check comparing the running service with the configuration store no longer calls a company the portal's key does not cover a disagreement. It names that gap on a line of its own, with the command that widens the key.
 
 ### For operators
 

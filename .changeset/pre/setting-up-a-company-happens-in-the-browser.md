@@ -10,4 +10,4 @@ Setting up a company is a page, not a document. It needs a name. Everything else
 
 The product now says company throughout. It used to say brand owner, account, client and customer for the same thing. The firm running the installation is named separately, in the top bar.
 
-Companies created through the settings page were saved without a risk framework. Their matters were then rated under the house default, with nothing on screen saying so. Every company created now carries one, and says which.
+Companies created through the settings page were saved without a risk framework. Their matters were then rated under the default risk framework, with nothing on screen saying so. Every company created now carries one, and says which.
