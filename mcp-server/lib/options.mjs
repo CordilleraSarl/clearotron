@@ -238,11 +238,18 @@ function accountFor(key, { scope, now }) {
  * wherever it resolves — so there is no shut state left to probe, and the invitation cannot disagree with
  * the enforcement because neither consults an environment.
  *
- * An account that simply has no saved searches gets an empty list and no note.
+ * An account that simply has no saved searches gets an empty list and no note. A store that cannot be
+ * READ gets the empty list AND a note, because those are different facts, and an assistant told "none"
+ * repeats it to the client as the answer. The note names no variable and no path: its reader may be a
+ * client, and the reason belongs to whoever runs the installation, whose `clearotron doctor` names it.
  */
 function savedSearchesFor(key) {
   let recipes;
-  try { recipes = loadRecipes({ force: true, proseGuard: recipeProseGuard }); } catch { return { savedSearches: [], savedSearchesNote: null }; }
+  try { recipes = loadRecipes({ force: true, proseGuard: recipeProseGuard }); }
+  catch {
+    return { savedSearches: [], savedSearchesNote: "Saved searches could not be read on this installation, so none are "
+      + "listed. That is not the same as having none, and the people who run the installation can see why." };
+  }
   return {
     savedSearches: [...recipes.entries()]
       .filter(([k, r]) => k.startsWith(`${key}/`) && !r.archived)

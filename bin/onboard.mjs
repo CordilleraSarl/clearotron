@@ -97,7 +97,7 @@ import { processTable } from "../shared/process-table.mjs";   // — /proc is no
 import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";
 import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
-import { whereSavesGo, storeCommitRefusal } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed
+import { whereSavesGo, storeCommitRefusal, storeInRepo, storeOutsideRepoMessage, resolveStoreRepoRoot } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed, and why saved searches are off
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
 import { probeEngineTurn, probeFailureText, PROBE_MODEL, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
 import { runRequiredNames, missingRequirements, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
@@ -1795,6 +1795,41 @@ export async function runCheck() {
         } else {
           info(`could not ask git where saves to ${storeDir} go (${w.why}) — a failure to look, not a finding`);
         }
+      }
+    }
+  }
+
+  // — SAVED SEARCHES, JUDGED BY THE RULE THE PORTAL APPLIES WHEN IT STARTS. The portal switches them off,
+  // and answers every saved-search route "not found", when the store is unset or sits outside the
+  // repository its saves are committed in. Its boot log said so and nothing an operator runs did, so an
+  // install whose Custom searches could never load passed this command. Same resolver, same containment
+  // check, read from the services' environment for the reason the roster lines give; when that could not
+  // be read, the lines above already said so and nothing is judged here. A store that is configured but
+  // holds a file that cannot be read fails every company's saved searches, in the portal and the
+  // connector alike, so that is read here too.
+  if (!hosted || serviceKnown) {
+    const recipesSet = hosted ? effectiveForService("CLEAROTRON_RECIPES_DIR") : effective("CLEAROTRON_RECIPES_DIR");
+    const recipesDir = recipesSet?.v || null;
+    if (!recipesDir) {
+      info("saved searches are off: CLEAROTRON_RECIPES_DIR is not set, so Custom searches in the portal and the "
+        + "connector offer none. Name a directory inside a git repository to switch them on");
+    } else {
+      // Layered as effectiveForService layers it — this command's environment over the services' file — so
+      // the repository root is read from the same place the store directory above was.
+      const storeEnv = { ...(serviceFileEnv ?? {}), ...process.env };
+      const resolved = resolveStoreRepoRoot({ names: ["RECIPE_REPO_ROOT", "PROFILE_REPO_ROOT"], fallback: REPO, env: storeEnv });
+      const reach = storeInRepo(recipesDir, resolved.root);
+      if (!reach.ok) {
+        warn(`saved searches are OFF: ${storeOutsideRepoMessage({ storeVar: "CLEAROTRON_RECIPES_DIR", storeDir: reach.store, repoVar: "RECIPE_REPO_ROOT", repoRoot: reach.repo })} `
+          + `The repository came from ${resolved.from}. Until this is fixed the portal answers every saved-search request as not found`);
+      } else {
+        const { loadRecipes } = await import("../driver/search-policy.mjs");
+        let unreadable = null;
+        try { loadRecipes({ dir: recipesDir, force: true }); } catch (e) { unreadable = String(e?.message ?? e).split("\n")[0]; }
+        if (unreadable) {
+          warn(`saved searches cannot be read from ${recipesDir}: ${unreadable}. Every company's saved searches fail `
+            + "to load, in the portal and the connector, until that file is fixed");
+        } else ok(`saved searches are read from ${recipesDir}, and saves are committed in ${reach.repo}`);
       }
     }
   }

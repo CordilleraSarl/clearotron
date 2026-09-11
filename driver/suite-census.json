@@ -370,8 +370,8 @@
           "todos": 0
         },
         "a-knockout-filing-links-to-its-office.test.mjs": {
-          "tests": 13,
-          "asserts": 70,
+          "tests": 15,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -1804,8 +1804,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 28,
-          "asserts": 79,
+          "tests": 30,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
@@ -3058,8 +3058,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 122,
-          "asserts": 656,
+          "tests": 123,
+          "asserts": 662,
           "skips": 0,
           "todos": 0
         },
@@ -5403,8 +5403,8 @@
           "todos": 0
         },
         "describe-options.test.mjs": {
-          "tests": 22,
-          "asserts": 94,
+          "tests": 23,
+          "asserts": 98,
           "skips": 0,
           "todos": 0
         },
@@ -5763,7 +5763,7 @@
         },
         "nav.test.ts": {
           "tests": 12,
-          "asserts": 55,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
