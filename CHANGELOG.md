@@ -4,6 +4,23 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0-beta.3
+
+### Fixed
+
+- Creating a company is refused, with nothing left behind, when the configuration store cannot record it. The company used to be created anyway, with no record of who made it or when, and its organisation was given access to it.
+- A store with no git identity is the usual cause on a new machine, and the refusal names the command that fixes it. Setup and `clearotron start` now check a store they adopt for this straight away.
+- A stage stopped at its time limit now records the output it actually produced. It used to record a small fraction, so a stage that was working read as one that had stalled.
+- The token totals `clearotron tokens` reports for runs with a stopped stage now include that output.
+- `clearotron doctor` now says when saved searches are switched off and why, and when a saved search file cannot be read.
+- An assistant asking for saved searches is told when they could not be read, instead of being told there are none.
+- `clearotron doctor` reports the register and the research key the background services will use, read from the file they read. Run from a new terminal, it used to say no register was selected on an install whose searches were running.
+- Global config appears in the account menu only for people who can open it. Someone managing one organisation used to be offered it, and the page then said it was not available.
+- Clearances and People no longer ask for installation-wide data that a manager of one organisation cannot see.
+- A clearance or knockout searched through Compumark now links each register record to the trade mark office's own page for it. Those records used to show an internal reference nobody could open.
+- The offices linked are the United States, the European Union, the United Kingdom, Canada, Australia, Switzerland, France, Norway, Sweden and WIPO. A record from any other office is cited by its number, and the report says why once, under the findings.
+- Saved searches work on a fresh install and in the demo, for every company, Generic included. They used to fail to load for every company, with a message saying to try again shortly.
+
 ## 0.3.0-beta.2
 
 ### New
