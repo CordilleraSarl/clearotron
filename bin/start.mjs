@@ -118,15 +118,16 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
-import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
+import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, demoTokenSecretPath, keyIssueCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke, reachableCommand } from "../shared/invocation.mjs";   // — the banner names the verb
-import { unitEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
+import { unitEnvPath, activeEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
+import { parseEnvFile } from "../shared/env-file-merge.mjs";   // ONE KEY=value reader, in a leaf: render-units is a COMMAND, and importing it from here closed a cycle
 import { homedir, userInfo } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { usageBlock } from "../shared/usage-block.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -142,6 +143,7 @@ import { addressRefusal } from "../shared/staff-domain.mjs";
 import { withPerson, withOrganisation, withCompany } from "../shared/grants-edit.mjs";
 import { assertGrantsShape, resolvePerson } from "../shared/scope.mjs";
 import { backgroundManager } from "../shared/os-advice.mjs";
+import { recordRunning } from "../shared/running-start.mjs";
 import { frontingVariablesSet } from "../shared/install-auth.mjs";   // — one owner for what counts as a proxy in front of a door
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -909,6 +911,11 @@ if (isMain) {
   // Decided before any path is, because in a demo every path below is the demo's own. The posture
   // itself is described at the DEMO block further down.
   const DEMO = argv.includes("--demo");
+  // A DEMO HAS NO BACKGROUND FORM, and asking for one is refused before anything is written. The
+  // background path installs units that run the reader's own install, so `--demo --background` would set
+  // up an empty install in their home and call it the demo.
+  if (DEMO && wantBackground)
+    fatal("the demo has no background form — it runs as long as its terminal does. `--background` starts your own install as services, not the demo.");
   // The same base `npm run setup` writes under, so whichever of the two a reader ran first, the other
   // finds the same install rather than a second one beside it.
   // Whatever the environment already says wins over the base-derived default, for every path — a reader
@@ -916,6 +923,35 @@ if (isMain) {
   // which `startPaths` says why. One author, because `doctor` asks the same function what the services
   // were handed.
   const paths = startPaths({ env: process.env, base: flag("--base", join(homedir(), DEMO ? "trademark-demo" : "trademark")), demo: DEMO });
+  // ── NOTHING OF THE DEMO LANDS IN AN INSTALL, AND THAT IS CHECKED BEFORE ANYTHING IS WRITTEN ───────
+  //
+  // The demo keeps its signing secret in its base and `key issue --base` reads it from there, so a demo
+  // pointed at an install's directory would leave a secret where that install's own key command looks:
+  // every key issued afterwards would be signed with the demo's while the install's door verified with
+  // its own — a key that looks issued and is refused, with nothing said either way. The settings are
+  // READ here and never applied; a demo still takes nothing from them.
+  if (DEMO) {
+    const base = resolve(paths.base);
+    const inside = (p) => { const v = String(p ?? "").trim(); if (!v) return false; const r = resolve(v); return r === base || r.startsWith(base + sep); };
+    let settings = {};
+    try { settings = parseEnvFile(readFileSync(activeEnvPath(), "utf8")); } catch { /* no settings in force: nothing of an install to collide with */ }
+    const found = [];
+    if (inside(settings.CLEAROTRON_REPORTS_DIR)) found.push(`an install keeps its reports in ${settings.CLEAROTRON_REPORTS_DIR}`);
+    if (inside(settings.RECIPE_REPO_ROOT)) found.push(`an install keeps its saved searches in ${settings.RECIPE_REPO_ROOT}`);
+    if (inside(settings.CLEAROTRON_WORK_DIR)) found.push(`an install works in ${settings.CLEAROTRON_WORK_DIR}`);
+    if (existsSync(join(paths.base, ".env"))) found.push(`it holds a settings file, ${join(paths.base, ".env")}`);
+    if (!found.length && base === resolve(join(homedir(), "trademark"))) found.push("it is the directory an install is set up in by default");
+    // AN INSTALL NOBODY CONFIGURED still answers. `start --base <dir>` writes a guest list on every start
+    // and no settings at all, so an install somewhere of its own passes every check above. A guest list
+    // with no demo secret beside it is somebody's install; a demo's own base has both.
+    if (!found.length && existsSync(paths.grants) && !existsSync(demoTokenSecretPath(paths.base)))
+      found.push(`it holds a guest list, ${paths.grants}, and no demo of its own`);
+    if (found.length)
+      fatal(`--demo cannot run in ${paths.base}: ${found.join("; ")}.\n`
+        + "  The demo keeps its own data, and its own signing secret, in its base. Leaving those in an\n"
+        + "  install's directory would make keys issued for that install refuse at its door.\n"
+        + "  Run the demo without --base, or give it a directory of its own.");
+  }
   // ── THIS INSTALL'S FIRST START, read before this start writes either file that answers it ────────────
   //
   // The grants file and the config store's repository are both written further down, on every start
@@ -1171,7 +1207,15 @@ if (isMain) {
     return v;
   };
   const portalSecret = secretFor("PORTAL_SECRET");
-  const tokenSecret = secretFor("TRADEMARK_MCP_TOKEN_SECRET");
+  // A DEMO'S SIGNING SECRET IS KEPT IN ITS OWN BASE, so the key command it prints can sign for it; see
+  // `demoTokenSecret`. Every other secret a demo uses stays in memory.
+  const tokenSecret = DEMO
+    ? demoTokenSecret(paths.base, {
+      read: (f) => readFileSync(f, "utf8"),
+      write: (f, text) => { mkdirSync(dirname(f), { recursive: true }); writeSecretFile(f, text); },
+      mint: () => randomBytes(32).toString("base64url"),
+    })
+    : secretFor("TRADEMARK_MCP_TOKEN_SECRET");
   if (!process.env.PORTAL_LOCAL_USER) generated.PORTAL_LOCAL_USER = user;
   const stores = DEMO ? {} : storesForOtherReaders(paths);
 
@@ -2185,12 +2229,26 @@ if (isMain) {
     if (adoptedClientDoor)
       say(`               Already running as ${CLIENT_DOOR_UNIT}; this start kept it, so existing keys still work.`);
     else
-      say(`               It refuses every caller until a key is issued: ${invocationPrefix()}clearotron key issue <email>`);
+      say(`               It refuses every caller until a key is issued: ${keyIssueCommand({ prefix: invocationPrefix(), demo: DEMO, user, base: paths.base, defaultBase: join(homedir(), "trademark") })}`);
   } else {
     say(`  Client door  NOT RUNNING on ${HOST}:${ports.client} — its output above says why. The portal and`);
     say("               the engine door are unaffected; a client assistant cannot connect until it is up.");
   }
   say("");
+  // ── WHAT `status` AND `stop` READ ABOUT THIS START ───────────────────────────────────────────────
+  //
+  // Both verbs knew only about background units, so with this start serving, `status` described units
+  // nobody installed and `stop` said nothing was running (measured on a published beta, 2026-09-11). The
+  // record is the address this banner just printed. It goes on every exit — Ctrl-C, a fatal refusal, a
+  // crash — and a start killed outright leaves a record whose process is gone, which the readers ignore.
+  try {
+    const forget = recordRunning({ pid: process.pid, demo: DEMO, base: paths.base, url: envs.url, host: HOST,
+      ports: { portal: ports.portal, mcp: ports.mcp, client: doorRunning ? ports.client : null },
+      startedAt: new Date().toISOString() });
+    process.on("exit", forget);
+  } catch (e) {
+    say(`  (\`status\` will not see this start: its record could not be written — ${String(e?.message ?? e)})`);
+  }
   // — THE BANNER TOLD THE SAME STORY ON EVERY START, and it was only true of the first.
   //
   // "printed once, above" describes what a FIRST start does. On every start after it the passphrase was
@@ -2282,15 +2340,33 @@ if (isMain) {
   // cannot succeed and given a service manager that is not on the machine and cannot be put there.
   // Reported from a real run. Same rule as the engine refusal above: do not name a route this platform
   // does not have.
-  const manager = backgroundManager();
-  if (manager) {
-    say(`  To get your prompt back instead, stop this and run  ${invoke("start")} --background`);
-    say(`  — same product, managed by ${manager}, and it survives logout.`);
-  } else {
-    say("  There is no background form on this platform: the product runs as long as this window does.");
-    say("  Leave it open and use a second terminal for the commands above.");
-  }
+  for (const line of backgroundOfferLines({ demo: DEMO, manager: backgroundManager(), start: invoke("start") })) say(line);
   say("");
+}
+
+/**
+ * The closing offer of a foreground start: how to get the prompt back, where there is a way.
+ *
+ * NOT IN A DEMO. The offer ran `start --background`, which set up a new, empty install in the reader's
+ * home — not the demo, its samples or its sign-in — and then failed where the user's systemd was not
+ * reachable (measured on a published beta, 2026-09-11). A demo has no background form, so it is not
+ * offered one. Where the offer stands, it names what it needs BEFORE the reader stops what is running.
+ * PURE.
+ */
+export function backgroundOfferLines({ demo = false, manager = null, start = "clearotron start" } = {}) {
+  if (demo) return [
+    "  The demo has no background form: it runs as long as this window does. Leave it open and use a",
+    "  second terminal for the commands above.",
+  ];
+  if (!manager) return [
+    "  There is no background form on this platform: the product runs as long as this window does.",
+    "  Leave it open and use a second terminal for the commands above.",
+  ];
+  return [
+    `  To get your prompt back instead, stop this and run  ${start} --background`,
+    `  — same product, managed by ${manager}, and it survives logout. It needs ${manager}'s user manager`,
+    "  reachable from this session; where it is not, that command says so and changes nothing you use.",
+  ];
 }
 
 /**

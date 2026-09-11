@@ -4,6 +4,16 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0-beta.9
+
+### Fixed
+
+- Commands printed while running from npx name the published version, so they still work after npm cleans its cache.
+- When the engine cannot answer "Describe it", the page names the check that finds out why. It says "just now" only for a usage limit.
+- `clearotron status` says whether a product started in a terminal is up, and on which addresses. `clearotron stop` says how to stop it.
+- The demo no longer offers `start --background`, which set up an empty install in your home instead of running the demo.
+- The key command the demo prints issues a key the demo's client door accepts, run exactly as printed.
+
 ## 0.3.0-beta.8
 
 ### Fixed
