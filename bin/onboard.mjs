@@ -1852,7 +1852,10 @@ export async function runCheck() {
   // environment": one install, two answers, and the fix it named was already set. effectiveForService is
   // the reader that check asks, so the two lines cannot disagree; where it cannot read the units, this
   // says it could not look rather than reporting the register absent.
-  const prov = serviceKnown ? effectiveForService("CLEAROTRON_DATABASE") : null;
+  // Only a HOSTED box has a second environment to read; with no units, the services are started from
+  // this command's own file, and `effective` has always read and labelled exactly that.
+  const serviceValue = hosted ? effectiveForService : effective;
+  const prov = serviceKnown ? serviceValue("CLEAROTRON_DATABASE") : null;
   if (!serviceKnown) {
     info(`the units are installed but their environment could not be read (${unitEnv?.why ?? "no reason given"}) — `
       + "which register the services search, and whether its keys are set, is not judged here: a failure to look, not a finding");
@@ -1876,7 +1879,7 @@ export async function runCheck() {
     else {
       ok(`${spec.id} — ${spec.label} (${prov.from})`);
       for (const k of spec.credentials) {
-        const c = effectiveForService(k);
+        const c = serviceValue(k);
         // issue 1871 — SET, not WORKING, and the line now says which. An operator reads a tick as "this
         // works"; this one is equally true of a valid key, an expired key, a key scoped to the wrong
         // account and forty characters of nonsense. --probe-providers is what settles it.
@@ -1887,7 +1890,7 @@ export async function runCheck() {
       // and never as a problem, but never silently either: the reader has to know which offices this
       // box will not reach before they read a report that says nothing was found there.
       for (const k of spec.optionalCredentials ?? []) {
-        const c = effectiveForService(k);
+        const c = serviceValue(k);
         if (c) ok(`${k} present (${c.from}) — presence only; add --probe-providers to prove it retrieves`);
         else info(`${k} is NOT set — ${spec.id} will run without it and DISCLOSE the offices it cannot reach as deferred coverage. Set it to search them.`);
       }
@@ -1896,7 +1899,7 @@ export async function runCheck() {
 
   say("\n  Research provider");
   // The same reader as the register, for the same reason: this is a key the services use.
-  const px = serviceKnown ? effectiveForService("PERPLEXITY_API_KEY") : null;
+  const px = serviceKnown ? serviceValue("PERPLEXITY_API_KEY") : null;
   if (!serviceKnown) info("the units' environment could not be read, so whether the services hold PERPLEXITY_API_KEY is not judged here — a failure to look, not a finding");
   else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
   else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
