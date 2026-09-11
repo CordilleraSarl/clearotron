@@ -25,6 +25,8 @@ import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
 import { switcherKeys, switcherLabel, pickerGroups, type CompanyGroup, type CompanyRow } from './companyRows.ts'
 import { permissionsPhrase } from './accessWords.ts'
+import { canManage } from './permissions.ts'
+import { NEW_COMPANY_PATH } from './CompanyPicker.tsx'
 import { GENERIC_ACCOUNT, isGenericKey, orgOfGeneric } from '../contract/genericKey.ts'
 import { companyFactsMap, type CompanyFacts } from '../contract/companyFacts.ts'
 import type { RosterCompany } from '../contract/api.ts'
@@ -562,7 +564,12 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
                 // between one thing and itself.
                 <div style={{ marginBottom: 10 }}>
                   <div className="eyebrow">Company</div>
-                  <BrandOwnerSwitcher grouped={grouped} value={ownerInView} onChange={setOwnerGuarded} />
+                  <BrandOwnerSwitcher
+                    grouped={grouped}
+                    value={ownerInView}
+                    onChange={setOwnerGuarded}
+                    onAdd={canManage(me) ? () => go(NEW_COMPANY_PATH) : undefined}
+                  />
                 </div>
               )}
               <NavList entries={groups.owner} current={entry?.id ?? null} go={go} collapsed={collapsed && !mobile} />
@@ -732,14 +739,23 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
  * open. The pick panel's card draws Generic's Default tag as a pill; an option holds text only, so here
  * the tag is the word after the name, from `switcherLabel`, beside the rows it labels.
  */
+/**
+ * The value `+ New company` carries in the switcher. Never a company key — company keys are slugs, and a
+ * colon is not in the slug alphabet — so choosing it can only ever mean the action.
+ */
+const NEW_COMPANY_OPTION = ':new-company'
+
 function BrandOwnerSwitcher({
   grouped,
   value,
   onChange,
+  onAdd,
 }: {
   readonly grouped: { readonly headings: boolean; readonly groups: readonly CompanyGroup[] }
   readonly value: string | null
   readonly onChange: (v: string | null) => void
+  /** Absent ⇒ no create action. Someone without Manage never gets one. */
+  readonly onAdd?: (() => void) | undefined
 }) {
   const option = (r: CompanyRow) => (
     <option key={r.key} value={r.key}>
@@ -750,7 +766,10 @@ function BrandOwnerSwitcher({
   return (
     <select
       value={value ?? ''}
-      onChange={(e) => onChange(e.target.value || null)}
+      // CHOOSING `+ New company` IS NOT A SWITCH. The select is controlled, so the value it shows stays the
+      // company in view; the action goes through the guarded navigation like every other way into the
+      // create screen, and an unsaved edit is asked about there.
+      onChange={(e) => (e.target.value === NEW_COMPANY_OPTION ? onAdd?.() : onChange(e.target.value || null))}
       aria-label="Company"
       style={{
         width: '100%',
@@ -777,6 +796,12 @@ function BrandOwnerSwitcher({
           g.rows.map(option)
         ),
       )}
+      {/* THE OWNER'S PLACEMENT (2026-09-11): the same menu a person opens to pick a company, so making one
+          is one click from every screen, whether or not a company is selected. The pick panel and the
+          Company profile keep theirs. */}
+      {onAdd ? (
+        <option value={NEW_COMPANY_OPTION} data-action="new-company">+ New company</option>
+      ) : null}
     </select>
   )
 }
