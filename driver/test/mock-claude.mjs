@@ -11,6 +11,8 @@
 //      noise without having spoken its protocol, which is)
 //   MOCK_CLAUDE_STALL=1   — emit init then go SILENT forever (no result) → the engine stall-watchdog must kill it
 //   MOCK_CLAUDE_USAGE_THEN_STALL=1 — one assistant turn WITH usage, then silence → the kill must carry streamed usage
+//   MOCK_CLAUDE_KILLED_MULTICALL=<n> — <n> completed calls streamed in the CLI's order, then silence → the kill's
+//     reconstruction must count each call's FINAL output (+ MOCK_CLAUDE_EMITTED_LOG=<file>: what was streamed)
 //   MOCK_CLAUDE_JUNK_STREAM=<ms>   — byte-alive non-progress chatter forever → the NO-PROGRESS watchdog must kill it
 //     (+ MOCK_CLAUDE_JUNK_COUNT=<n> to finish cleanly instead; + MOCK_CLAUDE_JUNK_WRITE_FILE/_MS = artifact-advance progress)
 //     (+ MOCK_CLAUDE_TOOL_HANG=1 to open an UNRETURNED tool ask first — the  case)
@@ -273,6 +275,35 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
   const u = process.env.MOCK_CLAUDE_USAGE ? JSON.parse(process.env.MOCK_CLAUDE_USAGE)
     : { input_tokens: 7, output_tokens: 3, cache_read_input_tokens: 2950000, cache_creation_input_tokens: 0 };
   send({ type: "assistant", message: { role: "assistant", model: wireModel, content: [{ type: "text", text: "working…" }], usage: u }, session_id: session });
+  setInterval(() => {}, 1 << 30);
+} else if (process.env.MOCK_CLAUDE_KILLED_MULTICALL) {
+  // A turn KILLED MID-WORK after several completed API calls, streamed in the order the CLI streams them:
+  // each call opens with message_start, emits an assistant event per content block carrying the usage
+  // known at that moment (an early output count), and closes with a message_delta carrying the call's
+  // final output count. Then silence, and the stall watchdog kills it. MOCK_CLAUDE_EMITTED_LOG=<file>
+  // receives what the mock actually streamed, so a test compares the engine's reconstruction against what
+  // was sent rather than against its own arithmetic.
+  const calls = Number(process.env.MOCK_CLAUDE_KILLED_MULTICALL);
+  const early = { input_tokens: 6, output_tokens: 2, cache_read_input_tokens: 120000, cache_creation_input_tokens: 400 };
+  const finals = [];
+  for (let i = 1; i <= calls; i++) {
+    const id = `msg_mock_${i}`;
+    const final = 900 * i + 137;
+    finals.push(final);
+    send({ type: "stream_event", event: { type: "message_start", message: { id, role: "assistant", model: wireModel, usage: early } } });
+    send({ type: "stream_event", event: { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "working" } } });
+    // TWO assistant events for one message, one per content block, each carrying the same early usage.
+    send({ type: "assistant", message: { id, role: "assistant", model: wireModel, content: [{ type: "text", text: "working" }], usage: early } });
+    send({ type: "assistant", message: { id, role: "assistant", model: wireModel,
+      content: [{ type: "tool_use", id: `toolu_mock_${i}`, name: "RegisterLookup", input: {} }], usage: early } });
+    send({ type: "stream_event", event: { type: "message_delta", delta: { stop_reason: "tool_use" }, usage: { output_tokens: final } } });
+    send({ type: "stream_event", event: { type: "message_stop" } });
+    send({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: `toolu_mock_${i}`, content: "ok" }] } });
+  }
+  if (process.env.MOCK_CLAUDE_EMITTED_LOG) {
+    writeFileSync(process.env.MOCK_CLAUDE_EMITTED_LOG, JSON.stringify({ calls, finals,
+      perCall: { input: early.input_tokens, cacheRead: early.cache_read_input_tokens, cacheWrite: early.cache_creation_input_tokens } }));
+  }
   setInterval(() => {}, 1 << 30);
 } else if (process.env.MOCK_CLAUDE_JUNK_STREAM) {
   // No-progress substrate (charter P1 §1): keep the PIPE warm forever with non-progress chatter (system
