@@ -47,12 +47,40 @@ import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { catalogueRows } from "./env-audit.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ART = join(ROOT, "docs/architecture/env-classification.json");
 const PROD = join(ROOT, "docs/architecture/env-set-in-production.txt");
 const read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const git = (...a) => { try { return execFileSync("git", ["-C", ROOT, ...a], { encoding: "utf8", maxBuffer: 1e8 }); } catch { return ""; } };
+
+// THE ENV EXAMPLE FILES, NAMED ONCE AND READ ONE WAY. This module had two lists of them, and the one that
+// decides `documented` left out `.env.deployment.example`, the largest, while the other read all four.
+// Every name documented only there was recorded as undocumented: 159 in the committed classification
+// when that was measured, 2026-09-10. A row is read by the catalogue's own `catalogueRows`, so "has a
+// row" means here what it means in the audit.
+export const ENV_EXAMPLE_FILES = [".env.example", ".env.deployment.example", ".env.dev.example", ".env.prod.example"];
+
+/**
+ * Every name the example files carry a row for, commented or not.
+ *
+ * AN ABSENT FILE ADDS NOTHING. Three of the four are withheld from the public tree, and a public checkout
+ * must still gather; the artifact is minted only where they are laid, because it refuses without the
+ * production list that is withheld with them. A file that EXISTS and cannot be read refuses instead, for
+ * the reason `mustRead` gives: read as empty, every name it documents would record as undocumented.
+ */
+export function exampleNames(root = ROOT) {
+  return ENV_EXAMPLE_FILES.flatMap((f) => {
+    const p = join(root, f);
+    let text = "";
+    try { text = readFileSync(p, "utf8"); } catch (e) {
+      if (e.code !== "ENOENT")
+        throw new Error(`env-classify: ${p} exists and could not be read (${e.code}). Read as empty, every name it documents would record as undocumented.`);
+    }
+    return catalogueRows(text).map((r) => r.name);
+  });
+}
 
 /** Assignment NAMES from a shell-shaped env file. Values are matched and discarded, never returned. */
 export function namesInEnvFile(text) {
@@ -169,8 +197,7 @@ export function gather({ root = ROOT, prodList = null } = {}) {
     e2e: set(["scripts/e2e.mjs", "scripts/test-run.mjs"]
       .flatMap((f) => namesMentioned(mustRead(root, f, "It is the end-to-end surface, and the names it sets are set nowhere else.")))),
     // A DESCRIPTION, never a setting. Kept apart so `everSet` cannot be satisfied by documentation.
-    docs: set([".env.example", ".env.dev.example", ".env.prod.example"]
-      .flatMap((f) => [...read(join(root, f)).matchAll(/^#?\s*([A-Z][A-Z0-9_]*)=/gm)].map((m) => m[1]))),
+    docs: set(exampleNames(root)),
     _tracked: tracked,
   };
 }
@@ -368,6 +395,9 @@ export const DEPLOYMENT_NAMES = new Set([
   "TRADEMARK_MCP_AUTH_MODE",
   "TRADEMARK_MCP_DEV",
   "TRADEMARK_MCP_EMAIL_CLAIM",
+  // The key door's socket path. Its row declares `deployment`, and until it was listed the
+  // `TRADEMARK_MCP_` prefix arm was its only route there, which a house-prefix sweep would take away.
+  "TRADEMARK_MCP_KEY_SOCKET",
   "TRADEMARK_MCP_MAX_BYTES",
   "TRADEMARK_MCP_SESSION_MAX",
   "TRADEMARK_MCP_SESSION_TTL_MS",
@@ -471,6 +501,9 @@ export function classify({ catalogue, sources, setup = setupNames(), readSites =
     // `declared` is the catalogue's own `# effect:` for this name, carried on the row so the artifact
     // says what the document claims beside what this script derived. The two are different questions and
     // the row is where a reader compares them.
+    //
+    // `documented` is a row in any example file. The minted catalogue is itself read from two of those
+    // files, so every row there reads true; a false would mean a name reached it from somewhere else.
     return { name, class: cls(name), everSet: setIn, declared: declared.get(name) ?? null,
       documented: Boolean(sources.docs?.has(name)) };
   });
@@ -632,13 +665,8 @@ function main() {
     // AND IT REPORTS WHAT IT DROPPED. A filter that drops silently replaces one invisible loss with
     // another; the shape goes to stderr so the artifact stays exactly the names, and it is grouped by
     // first token and COUNTED rather than listed, because a dropped name can identify someone.
-    const catalogueNames = [];
-    for (const f of [".env.example", ".env.deployment.example", ".env.dev.example", ".env.prod.example"]) {
-      try {
-        const txt = readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
-        for (const m of txt.matchAll(/^#?\s*([A-Z][A-Z0-9_]*)\s*=/gm)) catalogueNames.push(m[1]);
-      } catch { /* an absent example file narrows the allowlist; the drop report shows the effect */ }
-    }
+    // An absent example file narrows the allowlist; the drop report shows the effect.
+    const catalogueNames = exampleNames();
     const isOwned = makeIsProductOwned({ credentialNames: AMBIENT_KEYS, catalogueNames });
     const { kept, dropped } = partitionByOwnership([...names], isOwned);
     console.error(`# ${FILTER_DECLARATION}`);
