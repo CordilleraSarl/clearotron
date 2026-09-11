@@ -1057,6 +1057,57 @@ export function doorDisagreementLine(caseId, answers, { expectTerminal = null } 
     + `and naming the accepter would blame the door that behaved. Declare \`doors\` on the case to say which doors can admit it.`;
 }
 
+/**
+ * The doors ONE case goes through: the scenario's doors, narrowed by the case's own `doors` list when it
+ * declares one. Pure, and settled for EVERY case before anything is queued, so a mistyped declaration
+ * refuses the round instead of quietly shrinking it.
+ *
+ * WHY A CASE MAY NARROW THEM. `door: "all"` exists to catch a rule one door enforces and another does not,
+ * and that only works when every door can ASK the case's question. R0e asks what a request naming no
+ * customer falls back to. The ops door rides an accounts-scoped key, and its gate refuses such a request
+ * before that question is reached, correctly. So comparing that door's answer with the cli door's reported
+ * a disagreement between two doors that both behaved. A declared list says which doors can answer; a door
+ * left out is reduced coverage the case chose, recorded with its reason, and never a disagreement.
+ *
+ * Refused, each naming the case: a list that is empty or not a list of names, a name that is no door at
+ * all, and a door this scenario does not drive. Each of those would run the case through fewer doors than
+ * its author meant, with nothing saying so.
+ */
+export function caseDoors(scenarioDoors, kase = {}) {
+  const declared = kase?.doors;
+  if (declared == null) return { asked: [...scenarioDoors], notAsked: [] };
+  const id = kase?.id ?? "(unnamed case)";
+  if (!Array.isArray(declared) || !declared.length || declared.some((d) => typeof d !== "string" || !d))
+    throw new Error(`${id}: \`doors\` must be a non-empty list of door names, got ${JSON.stringify(declared)}`);
+  const unknown = declared.filter((d) => !Object.hasOwn(DOORS, d));
+  if (unknown.length)
+    throw new Error(`${id}: \`doors\` names ${unknown.map((d) => JSON.stringify(d)).join(", ")}, which is not a door (${Object.keys(DOORS).join(", ")})`);
+  const outside = declared.filter((d) => !scenarioDoors.includes(d));
+  if (outside.length)
+    throw new Error(`${id}: \`doors\` names ${outside.join(", ")}, which this scenario does not drive (${scenarioDoors.join(", ")})`);
+  const said = kase["why-doors"];
+  const why = (Array.isArray(said) ? said.join(" ") : String(said ?? "")).replace(/\s+/g, " ").trim()
+    || "the case declares which doors can answer it";
+  return { asked: scenarioDoors.filter((d) => declared.includes(d)), notAsked: scenarioDoors.filter((d) => !declared.includes(d)).map((door) => ({ door, why })) };
+}
+
+/**
+ * One round's door coverage, read off its receipt: the cases whose doors disagreed, the cases that lost a
+ * door to the transport, and the cases that left a door out by declaration. `reduced` counts a case once
+ * however many of those it has. ONE reading for `report`, so the count on the summary line and the lines
+ * under it cannot be two derivations of one fact.
+ */
+export function doorCoverage(rec) {
+  const cases = rec?.cases ?? [];
+  const dis = cases.filter((c) => !c.agreed);
+  const lost = cases
+    .map((c) => ({ c, out: (c.answers || []).filter((a) => (a.answerClass ?? doorAnswerClass(a)) === DOOR_ANSWER.INFRA_UNAVAILABLE) }))
+    .filter((x) => x.out.length);
+  const chose = cases.filter((c) => Array.isArray(c.notSubmitted) && c.notSubmitted.length);
+  const reduced = new Set([...lost.map((x) => x.c.id), ...chose.map((c) => c.id)]).size;
+  return { dis, lost, chose, reduced };
+}
+
 const enqueue = (job, door) =>
   door === "cli" ? enqueueViaCli(job)
   : door === "ops-mcp" ? enqueueViaMcp(job)
@@ -1912,13 +1963,20 @@ async function cmdRun(id) {
   // ever wants the launch to stop.
   printPreviousRoundNotice(s);
 
-  const jobs = s.job ? [{ id: s.id, job: s.job }] : (s.cases ?? []).map((c) => ({ id: c.id, job: c.job, what: c.what, oneMatterAcrossDoors: c.oneMatterAcrossDoors === true, expectTerminal: (c.expect ?? {}).terminal ?? null }));
+  const jobs = s.job ? [{ id: s.id, job: s.job, kase: {} }] : (s.cases ?? []).map((c) => ({ id: c.id, job: c.job, what: c.what, oneMatterAcrossDoors: c.oneMatterAcrossDoors === true, expectTerminal: (c.expect ?? {}).terminal ?? null, kase: c }));
 
   // door: "all" is the point of R0 — a rule enforced in one door and not another is exactly the #98
   // asymmetry. Every case goes through EVERY drivable door and the answers are compared. runner.mjs's
   // claimAndPrep is the wall they all land on, so they must agree; if they ever do not, the door that
-  // admits is the bug, not the door that refuses.
+  // admits is the bug, not the door that refuses. A case that declares `doors` goes through those alone
+  // (caseDoors says why a case may).
   const doors = s.door === "all" ? Object.entries(DOORS).filter(([, d]) => d.real).map(([k]) => k) : [s.door];
+  // Settled for every case BEFORE the first enqueue: a declaration that cannot be honoured refuses the
+  // round here, not after half of it has been queued.
+  const doorsFor = new Map();
+  for (const { id, kase } of jobs) {
+    try { doorsFor.set(id, caseDoors(doors, kase)); } catch (e) { die(`e2e: ${s.id}: ${e.message}. Nothing was queued.`); }
+  }
 
   // `token` is what lets `report` — a later, separate process — read THIS round rather than every round
   // that ever used these refs. Without it the second same-day round's report mixes both rounds' queue
@@ -1933,11 +1991,15 @@ async function cmdRun(id) {
     // whether the doors are one matter or two. See refForRun and refForDoor.
     const roundRef = refForRun(job.ref);
     const answers = [];
-    for (const d of doors) {
+    // The scenario's `doors` still decide the ref suffix, so a case asked at one door keeps the ref it
+    // would have had at that door in a round that asked every door.
+    const { asked, notAsked } = doorsFor.get(caseId);
+    for (const d of asked) {
       const res = await enqueue({ ...job, ref: refForDoor(roundRef, d, { doors, oneMatterAcrossDoors }) }, d);
       answers.push({ door: d, ...res });
     }
-    const { agreed, unavailable, reducedCoverage } = doorAsymmetry(answers);
+    const { agreed, unavailable, reducedCoverage: lostADoor } = doorAsymmetry(answers);
+    const reducedCoverage = lostADoor || notAsked.length > 0;
     console.log(`  ${agreed ? (answers[0].ok ? "queued " : "REFUSED") : "DISAGREE"} ${caseId}${what ? ` — ${what}` : ""}`);
     // — ONE LINE PER JOB, ALWAYS. This printed one line per CASE and, when the doors agreed and
     // accepted, nothing per door — so a 2-case round across 2 doors printed 2 lines while enqueuing 4
@@ -1979,7 +2041,12 @@ async function cmdRun(id) {
     // `expect.reasonMatches`, and a case refused for the WRONG reason read exactly like one refused for
     // the right one. Whitespace-collapsed and truncated because the two doors answer in different shapes
     // (the CLI returns JSON, the MCP door an error string) and the receipt is a record, not a transcript.
+    // A door the case left out by declaration, named with the case's reason. Not a disagreement and not a
+    // lost door: the case chose it, and the round's reader still needs to know the case compared fewer doors.
+    for (const n of notAsked)
+      console.log(`      ⓘ [${n.door}] not submitted — ${n.why}; this case has reduced door coverage by its own declaration`);
     round.cases.push({ id: caseId, ref: job.ref, submittedRef: roundRef, agreed, reducedCoverage,
+      ...(notAsked.length ? { notSubmitted: notAsked } : {}),
       answers: answers.map((a) => ({ door: a.door, accepted: a.ok,
         // — the job id this door queued, on the RECEIPT as well as on the screen. `report` runs in
         // a later process and could otherwise only re-derive the job set from refs; a watcher reading
@@ -3175,14 +3242,19 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
       console.log(`\ndoors: NO RECEIPT at ${receiptPath(POOL_ROOT, s.id)} — cannot tell whether the doors agreed`);
       toInvestigate.push(`no doors receipt — run this scenario with the current e2e.mjs to record what each door answered`);
     } else {
-      const dis = rec.cases.filter((c) => !c.agreed);
-      // — a door lost to the transport is REDUCED COVERAGE, and it is reported as its own line.
-      // Older receipts carry no answerClass; `doorAnswerClass` falls back to "answered" for them, which
-      // reproduces the previous reading rather than inventing a retrospective one.
-      const unavailable = rec.cases
-        .map((c) => ({ c, out: (c.answers || []).filter((a) => (a.answerClass ?? doorAnswerClass(a)) === DOOR_ANSWER.INFRA_UNAVAILABLE) }))
-        .filter((x) => x.out.length);
-      console.log(`\ndoors: ${rec.doors.join(", ") || "(not recorded)"} — ${rec.cases.length} case(s), ${dis.length} disagreement(s), ${unavailable.length} case(s) with reduced door coverage`);
+      // — a door lost to the transport is REDUCED COVERAGE, and it is reported as its own line; so is a
+      // door a case left out by declaration. Older receipts carry no answerClass; `doorAnswerClass` falls
+      // back to "answered" for them, which reproduces the previous reading rather than inventing a
+      // retrospective one. One reading of the receipt, doorCoverage, for the count and the lines under it.
+      const { dis, lost: unavailable, chose, reduced } = doorCoverage(rec);
+      console.log(`\ndoors: ${rec.doors.join(", ") || "(not recorded)"} — ${rec.cases.length} case(s), ${dis.length} disagreement(s), ${reduced} case(s) with reduced door coverage`);
+      for (const c of chose) {
+        const who = c.notSubmitted.map((n) => `${n.door} (${n.why})`).join(", ");
+        console.log(`  ⓘ ${c.id}: not submitted to ${who}`);
+        // NOT toInvestigate, for the same reason as a lost door below: the case chose to compare fewer
+        // doors, and that is a limit on what this round proved, not a finding about the product.
+        notProbed.push(`${c.id}: not submitted to ${who} — the case declares which doors can answer it, so its door agreement covers fewer doors than the scenario drives`);
+      }
       for (const c of dis) {
         // — the RECEIPT does not carry the case's contract, so it is joined back to the scenario by
         // id. A receipt written before this field existed reads null and gets the old sentence, which is
