@@ -75,11 +75,15 @@ test('a manage-only path is indistinguishable, to someone without Manage, from a
   )
   assert.equal(screenForPath('/portal/nonsense', RUNNER), null)
 
-  // AN ADDRESS NOBODY SERVES IS NOBODY'S, under /portal/admin as anywhere else. Every path under it
-  // resolved to the admin parent and rendered Global config, with the address bar keeping what was
-  // typed, while every other unknown path said it did not exist (measured on a published beta,
-  // 2026-09-11). Asked of STAFF, who DO reach the admin screens: for anyone else these are null either
-  // way, which is why the existing arm above could not see this.
+})
+
+// AN ADDRESS NOBODY SERVES IS NOBODY'S, under /portal/admin as anywhere else. Every path under it
+// resolved to the admin parent and rendered Global config, with the address bar keeping what was typed,
+// while every other unknown path said it did not exist (measured on a published beta, 2026-09-11).
+// Asked of STAFF, who DO reach the admin screens: for anyone else these are null either way, which is
+// why the arm above could not see this — and why these assertions are their own arm rather than more
+// lines inside it, so a red names what actually broke.
+test('a path under a screen resolves to it only where the screen declares it owns one', () => {
   assert.equal(screenForPath('/portal/admin/zzz', STAFF), null, 'an unknown admin path is not a screen')
   assert.equal(screenForPath('/portal/admin/people', STAFF), null, 'a plausible guess is still not a screen')
   assert.equal(screenForPath('/portal/admin/roster', STAFF), null, 'an API endpoint is not a screen either')
@@ -90,6 +94,11 @@ test('a manage-only path is indistinguishable, to someone without Manage, from a
   // …and the one screen that owns what is under it still does, or every run link 404s.
   assert.equal(screenForPath('/portal/result/some-run-id', STAFF)?.id, 'result')
   assert.equal(screenForPath('/portal/result/some-run-id/a-mark', STAFF)?.id, 'result')
+  // JUST OUTSIDE IT, which is the half that says the subtree has an edge at all: a sibling sharing the
+  // prefix without the separator is a different address, and it is null only because the match requires
+  // that separator. An arm that drove only inside the subtree would pass on a bare `startsWith`.
+  assert.equal(screenForPath('/portal/resultsomething', STAFF), null, 'a sibling sharing the prefix is not the run screen')
+  assert.equal(screenForPath('/portal/results', STAFF), null)
 })
 
 test('without Manage there is no admin surface and no People; with it, both are in the avatar menu', () => {

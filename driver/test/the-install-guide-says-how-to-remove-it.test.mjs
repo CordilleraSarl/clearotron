@@ -21,7 +21,10 @@ import { installPaths } from "../../bin/start.mjs";
 import { SERVER_INSTALL_SET } from "../../shared/server-units.mjs";
 import { defaultDenylistPath } from "../../shared/client-door.mjs";
 import { runningDir } from "../../shared/running-start.mjs";
-import { envLocalPath } from "../../shared/env-local.mjs";
+// `unitEnvPath` is here because a list derived from resolvers is only as complete as the resolvers asked,
+// and this one was missed: `start --background` writes ~/.env, mode 600, carrying the credentials the
+// services read, and the section said nothing about it while the arm read as complete (found in review).
+import { envLocalPath, unitEnvPath } from "../../shared/env-local.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const INSTALL = readFileSync(join(ROOT, "INSTALL.md"), "utf8");
@@ -40,13 +43,13 @@ test("the removal section names every path an install writes", () => {
   const paths = installPaths(join(HOME, "trademark"));
   const wanted = [
     ...Object.values(paths).filter((p) => typeof p === "string" && p.startsWith(HOME)),
-    envLocalPath({ home: HOME }), runningDir({ home: HOME }), defaultDenylistPath(HOME),
+    envLocalPath({ home: HOME }), unitEnvPath({ home: HOME }), runningDir({ home: HOME }), defaultDenylistPath(HOME),
     join(HOME, ".local", "lib", "node_modules", "clearotron"), join(HOME, ".local", "bin", "clearotron"),
     join(HOME, "trademark-demo"),
   ];
   // A FLOOR ON THE POPULATION, not just on the matches: a resolver that answered nothing would make every
   // assertion below vacuous, and an empty list reads exactly like a complete one.
-  assert.ok(wanted.length >= 12, `only ${wanted.length} paths derived — the readers answered nothing`);
+  assert.ok(wanted.length >= 13, `only ${wanted.length} paths derived — the readers answered nothing`);
   const missing = wanted.filter((p) => !section.includes(p));
   assert.deepEqual(missing, [], `paths an install writes that the removal section does not name: ${missing.join(", ")}`);
 });

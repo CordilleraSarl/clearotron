@@ -351,6 +351,12 @@ clearotron-worker.service
 clearotron-client-mcp.service
 ```
 
+**And `~/.env`, which only a background install writes.** A service inherits nothing from the terminal
+that installed it, so `clearotron start --background` writes everything those services need into `~/.env`,
+mode 600 — your register credential, your research key and the engine's settings among it. It is not the
+same file as `~/.config/clearotron/.env`, which configures the product when you run it yourself. Delete
+both, or you leave a file of credentials in your home for services that no longer exist.
+
 Nothing else on the machine is ours: no system-wide files, no services outside your own user, and nothing
 in `/etc`, `/usr` or `/var`.
 
