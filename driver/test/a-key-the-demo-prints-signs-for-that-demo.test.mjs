@@ -10,7 +10,7 @@
 // the demo's own account.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -47,6 +47,40 @@ test("the start banner prints that command, and a demo signs with the secret in 
   const src = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
   assert.match(src, /until a key is issued: \$\{keyIssueCommand\(\{ prefix: invocationPrefix\(\), demo: DEMO, user, base: paths\.base,/);
   assert.match(src, /const tokenSecret = DEMO\s*\n\s*\? demoTokenSecret\(paths\.base, \{/);
+});
+
+test("a demo is refused over an install's directory, so its secret never lands where the install's key command looks", () => {
+  const home = mkdtempSync(join(tmpdir(), "demo-over-install-"));
+  const start = (base, extra = {}) => spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--base", base], {
+    encoding: "utf8", cwd: ROOT, timeout: 60000,
+    env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", ...extra },
+  });
+  try {
+    // The directory an install is set up in by default.
+    const dflt = join(home, "trademark");
+    mkdirSync(join(dflt, "pool"), { recursive: true });
+    const one = start(dflt);
+    assert.notEqual(one.status, 0);
+    assert.match(`${one.stdout}${one.stderr}`, /--demo cannot run in .*trademark/);
+    assert.ok(!existsSync(demoTokenSecretPath(dflt)), "the demo wrote its signing secret into the install's directory");
+
+    // An install moved elsewhere, named by the settings in force rather than by its path.
+    const moved = join(home, "elsewhere");
+    mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+    writeFileSync(join(home, ".config", "clearotron", ".env"), `CLEAROTRON_REPORTS_DIR=${join(moved, "pool")}\n`);
+    const two = start(moved, { CLEAROTRON_NO_ENV_FILE: "" });
+    assert.notEqual(two.status, 0);
+    assert.match(`${two.stdout}${two.stderr}`, /keeps its reports in/);
+    assert.ok(!existsSync(demoTokenSecretPath(moved)), "the demo wrote its signing secret into the moved install's directory");
+
+    // THE CONTROL: a directory of the demo's own is not refused — this run gets past the guard and stops
+    // at the next thing wrong with it, which is the port it was given.
+    const own = join(home, "a-demo-of-its-own");
+    const three = start(own, { CLEAROTRON_NO_ENV_FILE: "", PORTAL_SERVICE_PORT: "not-a-port" });
+    assert.notEqual(three.status, 0);
+    assert.doesNotMatch(`${three.stdout}${three.stderr}`, /--demo cannot run in/);
+    assert.match(`${three.stdout}${three.stderr}`, /is not a port number/);
+  } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
 test("run as printed it issues a key the demo's secret verifies — and without --base it cannot", async () => {

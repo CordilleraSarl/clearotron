@@ -124,9 +124,10 @@ import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
 import { invocationPrefix, invoke, reachableCommand } from "../shared/invocation.mjs";   // — the banner names the verb
-import { unitEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
+import { unitEnvPath, activeEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
+import { parseEnvFile } from "../driver/systemd/render-units.mjs";   // ONE KEY=value reader, the one systemd itself reads with
 import { homedir, userInfo } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { usageBlock } from "../shared/usage-block.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -922,6 +923,30 @@ if (isMain) {
   // which `startPaths` says why. One author, because `doctor` asks the same function what the services
   // were handed.
   const paths = startPaths({ env: process.env, base: flag("--base", join(homedir(), DEMO ? "trademark-demo" : "trademark")), demo: DEMO });
+  // ── NOTHING OF THE DEMO LANDS IN AN INSTALL, AND THAT IS CHECKED BEFORE ANYTHING IS WRITTEN ───────
+  //
+  // The demo keeps its signing secret in its base and `key issue --base` reads it from there, so a demo
+  // pointed at an install's directory would leave a secret where that install's own key command looks:
+  // every key issued afterwards would be signed with the demo's while the install's door verified with
+  // its own — a key that looks issued and is refused, with nothing said either way. The settings are
+  // READ here and never applied; a demo still takes nothing from them.
+  if (DEMO) {
+    const base = resolve(paths.base);
+    const inside = (p) => { const v = String(p ?? "").trim(); if (!v) return false; const r = resolve(v); return r === base || r.startsWith(base + sep); };
+    let settings = {};
+    try { settings = parseEnvFile(readFileSync(activeEnvPath(), "utf8")); } catch { /* no settings in force: nothing of an install to collide with */ }
+    const found = [];
+    if (inside(settings.CLEAROTRON_REPORTS_DIR)) found.push(`an install keeps its reports in ${settings.CLEAROTRON_REPORTS_DIR}`);
+    if (inside(settings.RECIPE_REPO_ROOT)) found.push(`an install keeps its saved searches in ${settings.RECIPE_REPO_ROOT}`);
+    if (inside(settings.CLEAROTRON_WORK_DIR)) found.push(`an install works in ${settings.CLEAROTRON_WORK_DIR}`);
+    if (existsSync(join(paths.base, ".env"))) found.push(`it holds a settings file, ${join(paths.base, ".env")}`);
+    if (!found.length && base === resolve(join(homedir(), "trademark"))) found.push("it is the directory an install is set up in by default");
+    if (found.length)
+      fatal(`--demo cannot run in ${paths.base}: ${found.join("; ")}.\n`
+        + "  The demo keeps its own data, and its own signing secret, in its base. Leaving those in an\n"
+        + "  install's directory would make keys issued for that install refuse at its door.\n"
+        + "  Run the demo without --base, or give it a directory of its own.");
+  }
   // ── THIS INSTALL'S FIRST START, read before this start writes either file that answers it ────────────
   //
   // The grants file and the config store's repository are both written further down, on every start

@@ -382,8 +382,8 @@
           "todos": 0
         },
         "a-key-the-demo-prints-signs-for-that-demo.test.mjs": {
-          "tests": 4,
-          "asserts": 16,
+          "tests": 5,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
