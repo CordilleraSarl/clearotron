@@ -315,11 +315,17 @@ test("reducing a record uri to its path RE-BINDS it to the record the run actual
     },
   });
 
-  const i = html.indexOf(KEY.slice(1));
+  // A FETCHED record on a register with no record pages of its own is labelled by the office's number, not
+  // by the handle (office-record-links.mjs), so that label is the identity the card must carry. This one's
+  // number is not in the form the EU register's page address takes, so it is cited rather than linked.
+  const { officeRecordLink } = await import("../publish/office-record-links.mjs");
+  const label = officeRecordLink({ office: "EU", applicationNumber: "RECORDBOUND0001", registrationNumber: "RECORDBOUND0001" }, KEY);
+  assert.deepEqual([label.href, label.reason], [null, "unaddressable"], "precondition: a number the EU page cannot take");
+  const i = html.indexOf(label.label);
   assert.ok(i > 0, "the record identity is not on the page at all");
   const item = html.slice(html.lastIndexOf("<li", i), html.indexOf("</li>", i));
   assert.ok(!item.includes(foreign), `the foreign absolute uri survived into the card:\n  ${item}`);
-  assert.ok(!/<a\b/i.test(item), `clarivate publishes no record page, so this must not be a link:\n  ${item}`);
+  assert.ok(!/<a\b/i.test(item), `a number the office's page cannot take must not be a link:\n  ${item}`);
   assert.match(item, /REGISTERED/, `the fetched record's status did not reach the card:\n  ${item}`);
   assert.match(item, /2019/, `the fetched record's dates did not reach the card:\n  ${item}`);
   assert.doesNotMatch(item, /register-index entry/,
