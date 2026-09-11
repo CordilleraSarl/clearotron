@@ -93,6 +93,17 @@ export type NavEntry = {
   /** Routable, but not listed in the sidebar. For screens reached from a row or a link. */
   readonly hidden?: boolean
   /**
+   * This screen OWNS everything under its path — `/portal/result/<runId>/<mark>` is the run's screen.
+   *
+   * Without it, every entry owned its subtree, and an entry whose path is a prefix of a typed one
+   * answered for addresses it knows nothing about: `/portal/admin/zzz`, `/portal/admin/people` and
+   * `/portal/admin/roster` all rendered Global config, with the address bar keeping the path that was
+   * asked for, while `/portal/zzz` got "That page does not exist" (measured on a published beta,
+   * 2026-09-11). A guessed or stale address showing a legitimate-looking page is the defect; the 404
+   * everywhere else is what makes it one. So a subtree is DECLARED, and everything else matches exactly.
+   */
+  readonly subtree?: boolean
+  /**
    * WHAT THE COMPANY SWITCHER REACHES.
    *
    * `'account'` — the screen spans everything the account holds and IGNORES the switcher.
@@ -156,7 +167,8 @@ export const NAV: readonly NavEntry[] = [
   // Reached from a row, never from the sidebar — but it must still RESOLVE, or "Open the report" leads
   // to "That page does not exist." `hidden` keeps it out of the nav while keeping it routable; a screen
   // you can navigate to and a screen you can see in a menu are different questions.
-  { id: 'result', label: 'Clearance', path: '/portal/result', icon: 'layers', hidden: true },
+  // OWNS ITS SUBTREE: the run, and the mark within it, are in the path — /portal/result/<runId>/<mark>.
+  { id: 'result', label: 'Clearance', path: '/portal/result', icon: 'layers', hidden: true, subtree: true },
   // About — the AGPL §13 source offer. `hidden`, and reached from the AVATAR MENU, which
   // renders on every screen: §13 wants the offer available wherever the user is, and the sidebar is
   // the WORK lane. A sidebar item would rank a licence notice above "New clearance" in the visual
@@ -320,8 +332,10 @@ export function screenForPath(path: string, who: Viewer, entries: readonly NavEn
   // including from tests that scan the raw navigation literals out of the source.
   const clean = path.replace(/[?#].*$/, '').replace(/\/+$/, '') || '/portal'
   const all = flatten(routableFor(who, entries))
-  // Longest match wins, so /portal/admin/config does not resolve to /portal/admin.
-  const hits = all.filter((e) => clean === e.path || clean.startsWith(e.path + '/'))
+  // Longest match wins, so /portal/admin/config does not resolve to /portal/admin. A path UNDER an
+  // entry resolves only where that entry declares it owns its subtree (`result`, which is
+  // /portal/result/<runId>/<mark>); anything else is exact, so an address nobody serves is nobody's.
+  const hits = all.filter((e) => clean === e.path || (e.subtree === true && clean.startsWith(e.path + '/')))
   if (!hits.length) return null
   return hits.reduce((a, b) => (b.path.length > a.path.length ? b : a))
 }

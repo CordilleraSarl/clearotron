@@ -295,6 +295,71 @@ keeps working throughout.
 provider, so it is safe to run on any machine that has the repository. "Safe anywhere" is about spend,
 not about where it will run — on a packaged tree it refuses, as above.
 
+## 2a. Removing it
+
+An install is not one directory, so removing it is not one command. Everything it writes is listed here.
+Read the list before you delete anything: one of these directories holds your reports.
+
+**Stop it first.** If the product is running in a terminal, Ctrl-C in that terminal. If you installed the
+background services, `clearotron stop` stops them and removes their unit files. `clearotron status` says
+which of the two you have.
+
+**The program.** Installed globally, `npm rm -g clearotron` removes it. Installed by `clearotron install`
+(which is also what a demo run from `npx` leaves behind), it lives in two places under `~/.local`:
+
+```
+~/.local/lib/node_modules/clearotron
+~/.local/bin/clearotron
+```
+
+**The settings, and the keys.** `~/.config/clearotron/.env` holds this install's signing secrets, so
+deleting it invalidates every key it ever issued. Beside it: `~/.config/clearotron/token-denylist`, the
+list of keys you revoked, and `~/.config/clearotron/running`, which records a product running in a
+terminal and is rewritten on every start.
+
+**Your work.** The install keeps it all under one directory, `~/trademark` by default — wherever
+`CLEAROTRON_REPORTS_DIR`'s parent points if you moved it:
+
+```
+~/trademark/pool                              THE REPORTS. Every clearance this install delivered.
+~/trademark/workspace                         the working files of each run, including unfinished ones
+~/trademark/queue                             work ordered and not yet run
+~/trademark/outbox                            what the product prepared to send
+~/trademark/locks                             which runs are in flight
+~/trademark/config                            your companies, their projects and your saved searches
+~/trademark/config/recipes                    the saved searches themselves
+~/trademark/config/profiles                   the company profiles
+~/trademark/grants.json                       who may use this install
+~/trademark/portal-audit.log                  what the portal was asked to do
+~/trademark/portal-local-credential.json      the sign-in this install minted for you
+```
+
+**Keep the pool if you want the reports.** They are finished documents and nothing else reads them: move
+`~/trademark/pool` somewhere of your own and delete the rest. Deleting the pool deletes the clearances.
+
+**The demo, if you ran one.** `~/trademark-demo` holds the demo's own copy of everything above, including
+its own copy of the program under `~/trademark-demo/program`. It is one directory to remove and it shares
+nothing with an install.
+
+**The background services, if you installed them.** `clearotron stop` removes the four unit files; if you
+would rather see them, they are in `~/.config/systemd/user`:
+
+```
+clearotron-portal.service
+clearotron-mcp-face.service
+clearotron-worker.service
+clearotron-client-mcp.service
+```
+
+**And `~/.env`, which only a background install writes.** A service inherits nothing from the terminal
+that installed it, so `clearotron start --background` writes everything those services need into `~/.env`,
+mode 600 — your register credential, your research key and the engine's settings among it. It is not the
+same file as `~/.config/clearotron/.env`, which configures the product when you run it yourself. Delete
+both, or you leave a file of credentials in your home for services that no longer exist.
+
+Nothing else on the machine is ours: no system-wide files, no services outside your own user, and nothing
+in `/etc`, `/usr` or `/var`.
+
 ## 3. Configuration (environment)
 
 Runtime configuration is by environment variable, and there are two ways to supply them.

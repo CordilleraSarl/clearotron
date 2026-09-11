@@ -4665,6 +4665,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-install-guide-says-how-to-remove-it.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "the-install-names-the-auth-values-it-needs.test.mjs": {
           "tests": 9,
           "asserts": 25,
@@ -5858,8 +5864,8 @@
           "todos": 0
         },
         "nav.test.ts": {
-          "tests": 12,
-          "asserts": 57,
+          "tests": 13,
+          "asserts": 67,
           "skips": 0,
           "todos": 0
         },
