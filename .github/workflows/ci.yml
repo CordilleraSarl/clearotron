@@ -454,3 +454,11 @@ jobs:
       # population as a fault rather than reporting all-current over nothing.
       - name: Every generated file in the tree is current
         run: node scripts/generated-files-are-current.mjs
+
+      # A COMMAND THAT AWAITS AT ITS TOP LEVEL CANNOT BE IMPORTED BACK BY WHAT IT AWAITS. The import asks
+      # for a module still being evaluated, nothing resolves, and node reports an unsettled top-level await
+      # naming the await rather than the import that caused it. One such import stopped 21 install arms at
+      # once while lint, these guards, the portal build and the packaged-bytes guard all passed around it —
+      # the command it broke is the documented server install. Reads source, needs no base.
+      - name: Nothing a command awaits imports that command back
+        run: node scripts/import-cycle-check.mjs

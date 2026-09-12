@@ -48,6 +48,10 @@ import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusa
 import { PROVIDERS as REGISTER_TABLE } from "../../shared/register-selection.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+// ONE READER FOR THE IMPORT SHAPE. The arm below names one file pair; `scripts/import-cycle-check.mjs`
+// holds the same property for every command in the tree and runs in CI. Sharing its reader is what keeps
+// the two from disagreeing about what an import is.
+import { staticSpecifiers } from "../../scripts/import-cycle-check.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 // THE PRODUCT'S OWN TABLES. Not a copy — see the header.
@@ -217,7 +221,7 @@ test("start.mjs never STATICALLY imports the wizard — that cycle takes `doctor
   // A dynamic import inside a function closes no load-time loop, which is why the register table is
   // fetched at call time. This arm is what stops the next reader "tidying" it back up to the top.
   const src = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
-  const statics = [...src.matchAll(/^\s*import\s[^;]*from\s+["']([^"']+)["']/gm)].map((m) => m[1]);
+  const statics = staticSpecifiers(src);
   assert.ok(!statics.some((sp) => /onboard\.mjs$/.test(sp)),
     "bin/start.mjs statically imports bin/onboard.mjs — that is the cycle that makes `clearotron doctor` exit 13");
   assert.match(src, /await import\("\.\/onboard\.mjs"\)/,
