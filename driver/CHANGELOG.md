@@ -1,5 +1,12 @@
 # clearotron-driver
 
+## 0.3.1-beta.0
+
+### Patch Changes
+
+- a2c4b94: Fixed: A correction to a coverage note or an action is now applied, or the run records why it was not.
+- b320c65: Fixed: A demo sample that cannot be read is named in the demo's output, and the other demos still publish.
+
 ## 0.3.0
 
 ### Minor Changes
