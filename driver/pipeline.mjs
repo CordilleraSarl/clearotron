@@ -38,7 +38,7 @@ import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, 
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, verdictHardenedTo } from "./verify.mjs";
 import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
-import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags } from "./corrections-feedforward.mjs";
+import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
 import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
@@ -5741,9 +5741,9 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
  * event so e2e can assert exactly that, and a non-zero count is a report of the fix not holding rather
  * than of this backstop working.
  *
- * @returns {null | {restoredFindings: {ordinal: *, mark: *}[], restoredKeys: string[], leftRemoved: {ordinal: *, mark: *}[]}}
+ * @returns {null | {restoredFindings: {ordinal: *, mark: *}[], restoredKeys: string[], restoredRows: {register: string, key: string}[], leftRemoved: {ordinal: *, mark: *}[]}}
  */
-export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks) {   // @internal
+export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks, namedLines = []) {   // @internal
   if (!pre?.raw) return null;                                   // nothing held — nothing to compare against
   let preDoc = null, postDoc = null, postRaw = null;
   try { preDoc = JSON.parse(pre.raw); } catch { return null; }
@@ -5769,10 +5769,38 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks)
   // covered the day it exists — a list of key names here would be a second place to remember.
   const restoredKeys = Object.keys(preDoc).filter((k) => !(k in postDoc));
 
-  if (!restoredFindings.length && !restoredKeys.length) return null;
+  // ROWS OF A REGISTER, NOT ONLY WHOLE REGISTERS. A pass rewriting a coverage note or an action sends the
+  // complete array in its PATCH, and a patch REPLACES the stored register — so a row the seat left out is
+  // a row deleted, and nothing downstream objects unless the slice was a limited one. A row no flag named
+  // is restored whole, keyed as `reportLines` keys it; a row the reviewer named stays out, as a named
+  // finding does.
+  const lineKeys = new Set(namedLines ?? []);
+  const restoredRows = [];
+  const rowsBack = {};
+  for (const [reg, keyOf] of Object.entries(REPORT_LINE_KEY)) {
+    if (!Array.isArray(preDoc[reg]) || !Array.isArray(postDoc[reg])) continue;
+    const have = new Set(postDoc[reg].map(keyOf));
+    const back = preDoc[reg].filter((r) => !have.has(keyOf(r)) && !lineKeys.has(keyOf(r)));
+    if (!back.length) continue;
+    rowsBack[reg] = back;
+    for (const r of back) restoredRows.push({ register: reg, key: keyOf(r), label: REPORT_LINE_LABEL[reg](r) });
+  }
+
+  if (!restoredFindings.length && !restoredKeys.length && !restoredRows.length) return null;
 
   const merged = { ...postDoc };
   for (const k of restoredKeys) merged[k] = preDoc[k];
+  for (const [reg, back] of Object.entries(rowsBack)) {
+    // In the snapshot's order, the post-pass version of every row it kept, then any row the pass added.
+    const keyOf = REPORT_LINE_KEY[reg];
+    const post = new Map(postDoc[reg].map((r) => [keyOf(r), r]));
+    const restored = new Set(back);
+    const inPre = new Set(preDoc[reg].map(keyOf));
+    merged[reg] = [
+      ...preDoc[reg].flatMap((r) => restored.has(r) ? [r] : post.has(keyOf(r)) ? [post.get(keyOf(r))] : []),
+      ...postDoc[reg].filter((r) => !inPre.has(keyOf(r))),
+    ];
+  }
   if (restoredFindings.length) {
     // Back in the order the reviewer read them, by ordinal — a restored finding appended to the end
     // would be a different document from the one that was correct.
@@ -5785,6 +5813,7 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks)
     ts: new Date().toISOString(),
     restoredFindings: restoredFindings.map(brief),
     restoredKeys,
+    restoredRows,
     leftRemoved: leftRemoved.map(brief),
   };
   atomicWrite(P.findings, JSON.stringify(merged, null, 2) + "\n");
@@ -5811,7 +5840,22 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks)
  */
 export function restoredFindingsTable(repair) {   // @internal
   const rows = repair?.restoredFindings ?? [];
-  if (!rows.length) return "";
+  // A RESTORED ROW IS THE DRIVER'S DOING TOO, and this read only findings — so a coverage note or an
+  // action the driver put back reached the reviewer as the pass's own work, which is the one reading
+  // this section exists to prevent. Same repair, same snapshot, same sentence (found in review).
+  const lines = repair?.restoredRows ?? [];
+  if (!rows.length && !lines.length) return "";
+  if (!rows.length) return [
+    "RESTORED BY THE DRIVER, NOT BY THE AUTHOR — read these before anything else.",
+    "The corrective pass removed the line(s) below and no flag of yours named them, so the driver put them",
+    "back exactly as you last read them. They carry NONE of this round's corrections, and they are not the",
+    "author's judgment about anything. If a removal here was in fact right, say so in your review and name",
+    "the ground — that is the statement the pass failed to make.",
+    "",
+    ...lines.map((l) => `  ${l.label} — restored: removed by the corrective pass with no flag naming it`),
+    "",
+    "These lines MOVED, whatever the scope note above says about what did not.",
+  ].join("\n");
   return [
     "RESTORED BY THE DRIVER, NOT BY THE AUTHOR — read these before anything else.",
     "The corrective pass removed the finding(s) below and no flag of yours named them, so the driver put",
@@ -5820,6 +5864,7 @@ export function restoredFindingsTable(repair) {   // @internal
     "and name the ground — that is the statement the pass failed to make.",
     "",
     ...rows.map((f) => `  #${f.ordinal} ${f.mark} — restored: removed by the corrective pass with no flag naming it`),
+    ...lines.map((l) => `  ${l.label} — restored: removed by the corrective pass with no flag naming it`),
     "",
     "These rows MOVED, whatever the scope note above says about findings that did not.",
   ].join("\n");
@@ -5836,6 +5881,35 @@ function correctionNamedOrdinals(P) {
     for (const r of parseCorrections(review)) if (Array.isArray(r?.ordinals)) out.push(...r.ordinals);
   } catch { /* no ordinals — every removal is then judged by mark alone */ }
   return out;
+}
+
+/**
+ * The non-finding lines the review's flags name or quote, as `reportLines` keys — matched against the
+ * PRE-corrective document, for the reason the names are: a removed row is absent from the post file.
+ *
+ * ── THIS JOIN DECIDES A RESTORATION, AND ITS TWO FAILURE DIRECTIONS ARE OPPOSITE ─────────────────────
+ *
+ * `linesOf` applies no correction anywhere — but these keys become `namedLines`, and `repairUnnamedRemovals`
+ * keeps a removed row OUT when its key is among them. So a prose match decides whether a row the pass
+ * deleted comes back:
+ *
+ *   a MISS  → the row is restored although the reviewer asked for it to go: the driver overrides a
+ *             judgment that was made, and the reviewer sees it named as restored and can say so again.
+ *   a FALSE HIT → an accidental deletion stays deleted: the row leaves the client's report and the
+ *             restored-lines section says nothing, because the driver believed it was asked for.
+ *
+ * The second is the worse one and it is the same bet the backstop already makes by mark for findings.
+ * What keeps it bounded is that the reviewer is told: every restored row prints in the re-read section,
+ * so an override is visible, and a flag whose wording missed still leaves its own row in the observation
+ * table as unresolved. `namesLine` wants the label's shape — "the coverage line for <area>" — so a flag
+ * writing "the US coverage note" misses unless it also quoted eight running words of the line.
+ */
+function correctionNamedLines(P, doc0) {
+  try {
+    const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+    const lines = reportLines(doc0);
+    return [...new Set(parseCorrections(review).flatMap((r) => linesOf(r?.text, lines).map((l) => l.key)))];
+  } catch { return []; }   // no review read — every row removal is then unnamed, and restored
 }
 
 /**
@@ -6082,12 +6156,9 @@ function plainRegisterExtra(ctx) {
     const visible = [];
     const add = (where, v) => { const t = String(v ?? "").trim(); if (t) visible.push({ where, text: t }); };
     for (const f of doc.findings ?? []) add(`conflict ${f?.ordinal ?? "?"}'s one sentence`, f?.net);
-    for (const c of doc.coverage ?? []) add(`the coverage line for "${c?.area ?? "an area"}"`, c?.note);
-    for (const a of doc.actions ?? []) add(`the action "${a?.id ?? a?.kind ?? ""}"`.replace(/ ""$/, ""), a?.text);
-    for (const k of ["distinctiveness", "connotation"]) {
-      const v = doc.markAssessment?.[k];
-      add(`the mark assessment's ${k}`, typeof v === "string" ? v : v?.read);
-    }
+    // The lines that are not a finding, labelled by `reportLines` — the labels the corrective cycle's
+    // observation joins a flag back to, so what the reviewer is handed and what the driver reads agree.
+    for (const l of reportLines(doc)) add(l.label, l.text);
 
     const hits = [];
     for (const { where, text } of visible) {
@@ -7534,6 +7605,8 @@ export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {  
     "findings-removed": "the finding this named was removed rather than corrected",
     "not-entity-scoped": "the run could not check whether this was addressed",
     "not-checkable": "the run could not check whether this was addressed",
+    "line-unchanged": "the line this named was left as written",
+    "line-removed": "the line this named was removed rather than corrected",
   };
   const items = rows.map((r) => {
     const bits = [];
@@ -12186,7 +12259,7 @@ async function pipelineInner(job, opts = {}) {
         let preDocForNames = null;
         try { preDocForNames = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null; } catch { /* fall back to the file */ }
         const repaired = repairUnnamedRemovals(P, run.runDir, preCorrective,
-          correctionNamedOrdinals(P), correctionNamedSet(P, preDocForNames));
+          correctionNamedOrdinals(P), correctionNamedSet(P, preDocForNames), correctionNamedLines(P, preDocForNames));
         correctiveRepair = repaired;   // carried to the reviewer's re-read, which must know these are the DRIVER's
         if (repaired) {
           // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
@@ -12194,12 +12267,14 @@ async function pipelineInner(job, opts = {}) {
           // primary fix not holding, never this backstop working.
           runLog(run.runDir, { event: "corrective-unnamed-removal-repaired", defect: true,
             restored: repaired.restoredFindings.length, keys: repaired.restoredKeys.length,
+            rows: repaired.restoredRows.length,
             leftRemoved: repaired.leftRemoved.length,
             findings: repaired.restoredFindings.map((f) => `${f.ordinal}:${f.mark}`) });
           note(`[corrections] the corrective pass removed ${repaired.restoredFindings.length} finding(s) `
             + `no flag named — restored whole from the pre-corrective snapshot: `
             + `${repaired.restoredFindings.map((f) => `#${f.ordinal} ${f.mark}`).join(", ")}`
             + (repaired.restoredKeys.length ? `; and ${repaired.restoredKeys.length} top-level register(s): ${repaired.restoredKeys.join(", ")}` : "")
+            + (repaired.restoredRows.length ? `; and ${repaired.restoredRows.length} row(s): ${repaired.restoredRows.map((r) => r.key).join(", ")}` : "")
             + (repaired.leftRemoved.length ? `. ${repaired.leftRemoved.length} removal(s) the reviewer DID name stay removed.` : "")
             + " The reviewer re-reads the repaired document before it ships.");
         }

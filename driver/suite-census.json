@@ -177,6 +177,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -235,6 +241,12 @@
           "tests": 4,
           "asserts": 19,
           "skips": 0,
+          "todos": 0
+        },
+        "a-demo-sample-that-cannot-be-read-is-named.test.mjs": {
+          "tests": 7,
+          "asserts": 35,
+          "skips": 4,
           "todos": 0
         },
         "a-demo-says-what-it-is-not-what-it-lacks.test.mjs": {
@@ -3341,7 +3353,7 @@
         },
         "reading-the-demo-does-not-edit-the-repository.test.mjs": {
           "tests": 2,
-          "asserts": 8,
+          "asserts": 13,
           "skips": 1,
           "todos": 0
         },
@@ -4241,7 +4253,7 @@
         },
         "start-command.test.mjs": {
           "tests": 27,
-          "asserts": 120,
+          "asserts": 121,
           "skips": 0,
           "todos": 0
         },
@@ -4516,8 +4528,8 @@
           "todos": 0
         },
         "the-corrective-pass-names-what-it-removes.test.mjs": {
-          "tests": 8,
-          "asserts": 33,
+          "tests": 12,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },

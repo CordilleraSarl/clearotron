@@ -219,7 +219,12 @@ test("the launcher SEEDS THE POOL, and does it through the same publisher the de
   // What must not change is which container the samples come from.
   assert.match(src, /examplesDir:[^,]*join\(REPO, "demo"\)/,
     "the samples must come from the repo's demo/ container, one child per product type");
-  assert.match(src, /examplesDir:\s*publishSource\(/,
+  // It seeds from publishContainer's copy of that container, laid down one sample at a time so one
+  // unreadable sample cannot empty the archive; that the copy is outside the tree is driven in
+  // reading-the-demo-does-not-edit-the-repository.test.mjs.
+  assert.match(src, /const container = publishContainer\(join\(REPO, "demo"\), \{ repoRoot: REPO \}\);/,
+    "the samples must come from a copy of the repo's demo/ container");
+  assert.match(src, /seedPool\(\{[^}]*examplesDir:\s*container\.dir/,
     "the launcher seeds straight out of the tracked container again — a reader who only ran the demo is "
     + "left with a dirty checkout and an engine reporting engineState: dirty");
   assert.match(src, /republish:\s*republishRun/,
