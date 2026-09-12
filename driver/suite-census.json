@@ -69,6 +69,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
+          "tests": 9,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "a-cancel-marker-names-its-actor.test.mjs": {
           "tests": 14,
           "asserts": 34,
@@ -2980,8 +2986,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 93,
-          "asserts": 785,
+          "tests": 94,
+          "asserts": 792,
           "skips": 0,
           "todos": 0
         },

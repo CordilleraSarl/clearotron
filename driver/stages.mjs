@@ -4664,3 +4664,15 @@ export function recordEmptyReturn(built, id, { parts, ids, empty }) {
 export function dispatchBlockWhy(ctx, stage, id) {
   return ctx?.dispatchBlocks?.[stage]?.empty?.find((x) => x.id === id)?.why ?? null;
 }
+
+// The stages whose dispatch hands the seat the band reading layer. Declared as data so the driver can
+// ask "does this stage read the band" without composing its message, and pinned by a test that DERIVES
+// the same set from which stage functions reference `BAND_READING_CONTRACT` — the declaration is
+// convenience, the derivation is the authority.
+//
+// AT THE FOOT OF THIS FILE ON PURPOSE, not beside the contract it belongs to. Every line inserted above
+// a cited line silently mis-points every citation below it, and this file is cited by line in twenty
+// places; the citation check only fails when a cited span goes entirely blank, so a citation shifted
+// onto a different real line passes while describing the wrong code. Adding below the last cited line
+// is the one placement that cannot do that. See band-size.mjs for what reads this.
+export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-digest", "synthesis"]);
