@@ -25,6 +25,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { findings, sentences } from "./changelog-plain-language.mjs";
 import { tagsHere } from "./release-cut-decision.mjs";
+import { preModeFrom } from "./release-dist-tag.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -39,6 +40,70 @@ export function alreadyOut({ version, tags = [], published = false }) {
   if (tags.includes(`v${version}`)) where.push(`tagged here as v${version}`);
   if (published === true) where.push("published on the registry");
   return where;
+}
+
+// ── THE CHANNEL DECIDES THE MODE, AND IT HAS TO BE DECIDED HERE ───────────────────────────────────
+//
+// `changeset version` computes a pre-release number or a stable one depending on whether the tree is in
+// pre-release mode when it runs. So something has to put the tree in the mode the chosen channel needs.
+//
+// THAT USED TO BE A STEP IN THE WORKFLOW, AND IT COULD NEVER HAVE WORKED. The step edited
+// `.changeset/pre.json` in the working tree, and the action that runs this script rebuilds that tree
+// before running it: `git checkout changeset-release/main`, then `git reset --hard` to the commit the
+// run was dispatched from. Read in the pinned action's own source, in this order — the rebuild, then
+// this script, then a commit made with `git add .` from the working tree, and nothing in between that
+// touches git. So an edit made before the action is discarded, and an edit made here is committed.
+//
+// The failure had two halves and only one of them was visible. A stable dispatch could not leave
+// pre-release mode, so it computed another beta and refused at the channel check — loud, and it cost a
+// cut. The other half is silent: a stable deletes `pre.json` rather than leaving it saying `exit`, so a
+// later beta dispatch finds no flag, cannot enter pre mode, and computes a STABLE version from a button
+// marked beta. Fixing only the direction that announces itself would leave that one live, and it would
+// surface weeks later as a release published to the wrong channel.
+//
+// Both directions are therefore driven from here, and both are no-ops when the tree is already right:
+// the mode a cut needs is a fact about the channel asked for, not about what the last cut happened to do.
+export const CUT_FLAG = "--cut=";
+
+/**
+ * PURE. What this cut must do to the tree's pre-release mode before the version is computed.
+ *
+ * `null` means leave the tree alone — a rehearsal, an ordinary push, or a tree already in the right
+ * mode. Anything else is the `changeset pre` arguments that put it there.
+ *
+ * An UNKNOWN channel leaves the tree alone rather than guessing. This runs on every push as well as on
+ * a dispatch, and a push carries no channel at all: changing the mode there would make an ordinary
+ * merge silently switch the line it is publishing on.
+ */
+export function modeTransition({ cut, mode }) {
+  const inPre = mode === "pre";
+  if (cut === "beta") return inPre ? null : ["pre", "enter", "beta"];
+  if (cut === "stable") return inPre ? ["pre", "exit"] : null;
+  return null;
+}
+
+/**
+ * The channel this run asked for, and the arguments to forward on without it.
+ *
+ * SPLIT RATHER THAN READ, because everything not consumed here is forwarded verbatim to
+ * `changeset version`, which refuses an argument it does not know. A flag added to this script that is
+ * not removed from that list stops the cut.
+ */
+export function splitCut(args = []) {
+  const flag = args.find((a) => a.startsWith(CUT_FLAG));
+  return { cut: flag ? flag.slice(CUT_FLAG.length) : "", rest: args.filter((a) => a !== flag) };
+}
+
+/**
+ * The tree's pre-release mode, or `"none"` when it carries no flag at all.
+ *
+ * `"none"` is a real state here rather than a missing reading: it is what a tree looks like after a
+ * stable, because `changeset version` DELETES the file rather than leaving it saying `exit`.
+ */
+export function preModeHere(root = ROOT) {
+  const p = join(root, ".changeset", "pre.json");
+  if (!existsSync(p)) return "none";
+  return preModeFrom(readFileSync(p, "utf8")) ? "pre" : "exit";
 }
 
 /**
@@ -223,11 +288,23 @@ export function writeRootChangelog({ version, groups }, root = ROOT) {
 }
 
 function main() {
-  const args = process.argv.slice(2);
+  const { cut, rest } = splitCut(process.argv.slice(2));
   const run = (...a) => execFileSync(process.execPath,
     [join(ROOT, "node_modules/@changesets/cli/bin.js"), ...a], { cwd: ROOT, stdio: "inherit" });
 
-  run("version", ...args);
+  // BEFORE THE VERSION IS COMPUTED, because the mode is what decides the number. The header above says
+  // why this cannot live in the workflow. It is announced either way: a cut that did nothing to the mode
+  // and a cut whose mode change was lost look identical in a log that only speaks up when it acts.
+  const modeWas = preModeHere();
+  const transition = modeTransition({ cut, mode: modeWas });
+  console.log(`release-version: asked for ${cut || "no channel"}, tree is in pre-release mode ${modeWas}`
+    + ` — ${transition ? `running changeset ${transition.join(" ")}` : "nothing to change"}`);
+  if (transition) {
+    run(...transition);
+    console.log(`release-version: pre-release mode is now ${preModeHere()}`);
+  }
+
+  run("version", ...rest);
   const version = groupVersion();
 
   // ── A VERSION ALREADY OUT IS REFUSED HERE, BEFORE ANYTHING IS STAMPED ─────────────────────────────
@@ -258,8 +335,11 @@ function main() {
     console.error(`release-version: this cut computed ${version}, and that version is already out: `
       + `${out.join(" and ")}. Publishing it would fail after main is stamped and the notes are consumed.\n`
       + "  The pre-release line keeps no record of its last number: .changeset/pre.json holds only its mode "
-      + "and tag, and a stable release deletes it, so this was counted again from package.json. Put the "
-      + "line back where its last published version left it, then cut again.");
+      + "and tag, and a stable release deletes it, so this was counted again from package.json.\n"
+      + "  The MODE is not the thing to repair — this step sets it from the channel that was asked for, and "
+      + "the line above says which mode it found and what it did. What is wrong is the NUMBER the manifests "
+      + "count from: open an ordinary pull request setting them to the last published version, which "
+      + "publishes nothing, and cut again.");
     process.exitCode = 1;
     return;
   }
