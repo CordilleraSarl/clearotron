@@ -1,5 +1,12 @@
 # clearotron-driver
 
+## 0.3.0-beta.10
+
+### Patch Changes
+
+- fd3a4f7: Fixed: A portal address that does not exist now says so wherever it is. Addresses under the admin path used to show the Global config screen.
+- fd3a4f7: New: The install guide now says how to remove Clearotron, naming every path it writes and which one holds your reports.
+
 ## 0.3.0-beta.9
 
 ### Patch Changes
