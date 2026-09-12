@@ -1,5 +1,32 @@
 # clearotron-driver
 
+## 0.3.0
+
+### Minor Changes
+
+- d2afa5e: Before you upgrade: Name every person who uses your installation in the file that lists who may sign in, or the portal will not start. That file is in your install folder.
+- d2afa5e: New: Switch between companies from any screen, and set a new one up in the browser.
+- d2afa5e: New: Add people from the portal, and give each the right to run clearances, to manage people and companies, or both.
+- d2afa5e: New: Every register finding in a report links to the trade mark office's own page for that record.
+- d2afa5e: New: A clearance records any territory it could not cover, so a partial search never reads as a complete one.
+- d2afa5e: New: Connect Clearotron to your own AI assistant — Claude Code, Codex, or ChatGPT — on your computer or a shared server.
+- d2afa5e: New: A saved search is available in every company, in the portal and in your AI assistant.
+- d2afa5e: New: Check a risk framework for errors before it rates a clearance, and point a company at its own.
+- d2afa5e: New: Group companies under an organisation, each with its own daily limit on clearances.
+- d2afa5e: New: Clearotron installs to a fixed location, so the commands it prints and your AI assistant's connection keep working.
+- d2afa5e: New: `clearotron update` moves an installation, beta included, to the current release.
+
+### Patch Changes
+
+- d2afa5e: Fixed: You sign in, open your companies, and run your first clearance on a new installation.
+- d2afa5e: Fixed: The demo reads and writes only its own companies, reports, and saved searches.
+- d2afa5e: Fixed: `clearotron doctor` checks what a clearance needs, so an installation it clears can run one.
+- d2afa5e: Fixed: A key you paste at a yes-or-no question stays off the screen and out of your command history.
+- d2afa5e: Fixed: Clearotron stays signed in to a paid Codex plan when Codex renews the sign-in.
+- d2afa5e: Fixed: The dashboard shows only the chosen company's clearances, and keeps the filters on screen.
+- d2afa5e: Fixed: The Stop button ends a run before its report goes out, and its dialog says what stopping does.
+- d2afa5e: Fixed: A knockout report names the filings behind each finding, and marks the reviewer's notes as reference.
+
 ## 0.3.0-beta.10
 
 ### Patch Changes
