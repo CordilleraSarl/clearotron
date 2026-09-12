@@ -35,7 +35,7 @@
 // PURE. It opens no file and knows no path: the caller injects the unit text and the env-file text, so
 // every branch — including the ones a developer box cannot produce — is drivable from a test.
 
-import { parseEnvFile } from "./systemd/render-units.mjs";
+import { parseEnvFile } from "../shared/env-file-merge.mjs";   // the leaf the unit renderer re-exports it from; this module stays free of the command
 
 /** systemd's own name for "load this file, and do not fail if it is missing". */
 const OPTIONAL = "-";
