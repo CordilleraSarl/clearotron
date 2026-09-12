@@ -4840,8 +4840,8 @@
           "todos": 0
         },
         "the-published-manifest-is-not-the-repos-manifest.test.mjs": {
-          "tests": 18,
-          "asserts": 65,
+          "tests": 21,
+          "asserts": 82,
           "skips": 1,
           "todos": 0
         },

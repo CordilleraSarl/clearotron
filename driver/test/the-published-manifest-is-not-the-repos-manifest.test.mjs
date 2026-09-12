@@ -41,13 +41,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, existsSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { publishableManifest, STRIP_KEYS } from "../../scripts/pack-publishable.mjs";
 import { sealTarball } from "../../scripts/release-artifact-seal.mjs";
-import { installsAsADependency, manifestOf, binNames, looksLikeCouldNotLook }
+import { installsAsADependency, manifestOf, binNames, looksLikeCouldNotLook, npmSpoke }
   from "../../scripts/release-install-check.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -374,6 +374,83 @@ test("and npm's own refusal is still a refusal, not an excuse", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+// ── A SILENCED npm, WHICH IS HOW THIS SUITE IS OFTEN STARTED ────────────────────────────────────────
+//
+// `npm run -s` and `npm --silent` export `npm_config_loglevel=silent` to everything beneath them. These
+// tests read npm's OWN words, so a silenced npm made three of them fail while the tree was correct, and
+// the check reported a refusal it could not read as a statement about the artefact — exit 1 where 2 is
+// the honest answer. Measured 2026-09-12: three red with the variable set, 18/18 without it, same tree.
+test("npm is made to speak, so the refusal still carries npm's own reason when the parent silenced it", () => {
+  const dir = scratch();
+  const had = Object.hasOwn(process.env, "npm_config_loglevel");
+  const saved = process.env.npm_config_loglevel;
+  process.env.npm_config_loglevel = "silent";
+  try {
+    const tgz = packTarball(dir, { name: "silenced-probe", version: "1.0.0",
+      dependencies: { "left-pad": "not a range at all" } });
+    const r = offline(() => installsAsADependency(tgz));
+    assert.equal(r.ok, false);
+    assert.equal(r.couldNotLook, false, "npm's refusal was readable, so this is a refusal and not an absence");
+    assert.match(r.why, /EINVALIDTAGNAME|Invalid tag name/,
+      "the parent's silence reached npm, so the reader gets a failure with no cause attached");
+  } finally {
+    if (had) process.env.npm_config_loglevel = saved; else delete process.env.npm_config_loglevel;
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+/** An `npm` first on PATH that fails without writing a word — the state the branch below exists for. */
+function withSilentNpm(fn) {
+  const dir = mkdtempSync(join(tmpdir(), "silent-npm-"));
+  const exe = join(dir, "npm");
+  writeFileSync(exe, "#!/bin/sh\nexit 1\n");
+  chmodSync(exe, 0o755);
+  const saved = process.env.PATH;
+  process.env.PATH = `${dir}:${saved}`;
+  try { return fn(); } finally { process.env.PATH = saved; rmSync(dir, { recursive: true, force: true }); }
+}
+
+test("an npm that fails without a word is a could-not-look, and the command says so", () => {
+  // DRIVEN, not inferred from the predicate. Telling npm to speak means this branch cannot be reached
+  // through npm's own behaviour any more, and a branch nothing routes to is the same as no branch — which
+  // is exactly how it went unnoticed that silence was being reported as a refusal. A stub `npm` that
+  // exits 1 and prints nothing puts the check in that state whatever the real npm does.
+  const dir = scratch();
+  try {
+    const tgz = packTarball(dir, { name: "silent-npm-probe", version: "1.0.0" },
+      { "index.js": "module.exports = 1;\n" });
+    const r = withSilentNpm(() => installsAsADependency(tgz));
+    assert.equal(r.ok, false);
+    assert.equal(r.couldNotLook, true,
+      "an npm that said nothing was reported as a refusal — a verdict about the bytes made out of an absence");
+    assert.match(r.why, /said nothing of its own/);
+    assert.match(r.why, /npm_config_loglevel=silent/, "the reader is not told what silences npm");
+
+    // And through the command, which is what the release path reads.
+    const said = withSilentNpm(() => {
+      try {
+        execFileSync(process.execPath, [join(REPO, "scripts", "release-install-check.mjs"), "--tarball", tgz],
+          { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+        return { code: 0, out: "" };
+      } catch (e) { return { code: e.status, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
+    });
+    assert.equal(said.code, 2, `a silent npm exited ${said.code}, so the release path reads it as a verdict`);
+    assert.match(said.out, /COULD NOT LOOK/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("an npm that says nothing of its own is an absence, never a verdict about the bytes", () => {
+  // THE PREDICATE, both directions. The runner's own line is all `execFileSync` composes when the child
+  // wrote nothing; anything beyond it is npm talking.
+  assert.equal(npmSpoke("Command failed: npm install /tmp/x.tgz --no-audit --no-fund"), false);
+  assert.equal(npmSpoke(""), false);
+  assert.equal(npmSpoke("Command failed: npm install /tmp/x.tgz\nnpm error code EINVALIDTAGNAME"), true);
+  assert.equal(npmSpoke("npm error code ENOTCACHED"), true);
+  // AND ERRING TOWARDS SPOKE: a message this predicate has never seen is npm talking, because reading
+  // speech as silence costs a re-run and reading silence as a refusal publishes a verdict nobody made.
+  assert.equal(npmSpoke("something no npm has ever printed"), true);
+});
+
 test("the exit codes CI reads carry the house meanings", () => {
   // THE THREE ANSWERS AS A CALLER SEES THEM. Everything above tests the function; the workflow reads
   // the process's status, and a branch that returns the right object under an exit code nobody set is
@@ -400,6 +477,20 @@ test("the exit codes CI reads carry the house meanings", () => {
       { "index.js": "module.exports = 1;\n" });
     assert.equal(run(["--tarball", good], { npm_config_offline: "true" }).code, 0,
       "an artefact that installs did not exit 0");
+
+    // AND THE SAME THREE ANSWERS WHEN THE CALLER SILENCED npm. `npm run -s` exports
+    // `npm_config_loglevel=silent` to everything beneath it, which is how this check is usually reached:
+    // silenced, npm printed nothing, and this command reported a refusal it could not read as a verdict
+    // about the artefact — exit 1 over an absence. It tells npm to speak now, so a broken artefact is
+    // still refused WITH npm's reason, and a good one still clears.
+    const brokenSilenced = packTarball(dir, { name: "exit-probe-silenced", version: "1.0.0",
+      dependencies: { "left-pad": "not a range at all" } });
+    const silenced = run(["--tarball", brokenSilenced], { npm_config_offline: "true", npm_config_loglevel: "silent" });
+    assert.equal(silenced.code, 1, `a broken artefact under a silenced npm exited ${silenced.code}: ${silenced.said.slice(-300)}`);
+    assert.match(silenced.said, /EINVALIDTAGNAME|Invalid tag name/,
+      "the caller's silence reached npm, so the refusal arrives with no cause a reader can act on");
+    assert.equal(run(["--tarball", good], { npm_config_offline: "true", npm_config_loglevel: "silent" }).code, 0,
+      "silencing npm turned an artefact that installs into a failure");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
