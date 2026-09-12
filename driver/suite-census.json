@@ -1325,7 +1325,7 @@
         },
         "client-door.test.mjs": {
           "tests": 38,
-          "asserts": 161,
+          "asserts": 162,
           "skips": 1,
           "todos": 0
         },
