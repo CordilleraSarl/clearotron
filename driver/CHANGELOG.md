@@ -1,5 +1,12 @@
 # clearotron-driver
 
+## 0.3.0-beta.11
+
+### Patch Changes
+
+- 4254754: Fixed: The setup and status commands no longer load the unit renderer while starting up. That shape once made an install command refuse to run at all. A check now refuses it anywhere it appears.
+- 30cf86d: For operators: The install check now reports an npm failure it cannot read as a could-not-look, instead of refusing your package.
+
 ## 0.3.0-beta.10
 
 ### Patch Changes
