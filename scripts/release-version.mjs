@@ -30,7 +30,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const GROUP = ["driver", "mcp-server", "portal-ui", "providers/oauth-mcp-bridge"];
 /** The page's order, user-facing first, from the owner's contract. */
-export const GROUPS = ["New", "Fixed", "For operators"];
+export const GROUPS = ["Before you upgrade", "New", "Fixed", "For operators"];
 const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 
 /** PURE. Where `version` is already out: tagged in this checkout, published on the registry, both, or neither. */
@@ -126,7 +126,7 @@ export function notesOf(section) {
     if (!lines) return;
     const text = lines.join(" ");
     lines = null;
-    const own = /^(New|Fixed|For operators):\s/.exec(text)?.[1];
+    const own = /^(Before you upgrade|New|Fixed|For operators):\s/.exec(text)?.[1];
     if (own) current = own;
     note.push(own || !current ? text : `${current}: ${text}`);
   };
@@ -177,7 +177,7 @@ export function group(bullets) {
   const groups = Object.fromEntries(GROUPS.map((g) => [g, []]));
   const ungrouped = [];
   for (const b of bullets) {
-    const m = /^(New|Fixed|For operators):\s+(.*)$/s.exec(b);
+    const m = /^(Before you upgrade|New|Fixed|For operators):\s+(.*)$/s.exec(b);
     if (!m) { ungrouped.push(b); continue; }
     groups[m[1]].push(m[2].trim());
   }

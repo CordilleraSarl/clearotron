@@ -54,5 +54,5 @@ Downgrading is an ordinary install of the older version. Your configuration and 
 by either — they live outside the package — so moving between channels is not a migration.
 
 Every version's notes are on the [releases page](https://github.com/CordilleraSarl/clearotron/releases)
-and in `CHANGELOG.md`, grouped New / Fixed / For operators. A beta's notes are the same notes; the stable
+and in `CHANGELOG.md`, grouped Before you upgrade / New / Fixed / For operators. A beta's notes are the same notes; the stable
 that follows aggregates all of them into one entry.
