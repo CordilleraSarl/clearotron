@@ -1142,10 +1142,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
     writeRunStatus(ctx, { state: "failed", failedStage, reason: shortReason, reasonTruncated, reasonFull, terminalKind });
     recordRunConsumption(ctx, { phase: "failed", tokens: stampTokenRollup(run.runDir, "failed") });
     rollupStatus(run.studioRoot);
-    // The two failure-notice lanes are MUTUALLY EXCLUSIVE, mirroring pipelineInner's failPingSent gate:
-    // the outbox run-failed event is the primary; sendPending + the wake marker are the BACKSTOP only
-    // when the event write failed (sendPending has no failure-side clear in the ack_event loop — arming
-    // both double-notifies and leaves a permanent SEND PENDING; review 2026-07-17).
+    // OWED EITHER WAY, mirroring pipelineInner: the flag is armed whichever lane wrote the packet,
+    // because mark_sent is the only clear and it settles a failure.json on the same evidence a delivery
+    // needs. The marker is NOT duplicated — the primary lane's own packet lands `<runId>.failed.pending`
+    // and the *.pending watch matches it; a second `<runId>.pending` would outlive every settle.
     let failPingSent = false;
     try {
       const rich = buildFailurePacket({
@@ -1160,14 +1160,14 @@ export async function knockoutInner(ctx, job, opts = {}) {
       writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
       failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
       if (!failPingSent) {
-        // a fresh notice supersedes an older send's skip-guards (a resumed-then-failed-again run must
-        // still notify — the .sent/receipts invariant, clearance parity)
-        try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-        try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-        writeRunStatus(ctx, { sendPending: true });
         mkdirSync(config.outboxDir, { recursive: true });
         writeFileSync(join(config.outboxDir, `${runId}.pending`), `${agent}\n`);
       }
+      // a fresh notice supersedes an older send's skip-guards (a resumed-then-failed-again run must
+      // still notify — the .sent/receipts invariant, clearance parity)
+      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
+      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+      writeRunStatus(ctx, { sendPending: true });
     } catch (nfErr) { note(`knockout failure-notice write skipped (${String(nfErr?.message ?? nfErr).slice(0, 100)})`); }
     note(`=== KNOCKOUT ${terminalKind === REFUSAL_TERMINAL_KIND ? "REFUSED" : "FAILED"} ${run.codename} at ${failedStage}: ${shortReason} ===\n`);
     // `codename`: this lane's terminals reach the SAME CLI exit as the clearance lane's, and the

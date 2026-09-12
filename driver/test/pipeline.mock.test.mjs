@@ -1246,8 +1246,12 @@ test("hard stage failure → .failed sentinel, pipeline returns ok:false, and th
   assert.equal(res.failedStage, "matter-frame");
   assert.ok(existsSync(join(res.runDir, ".failed")));
   // spec-49 T5 (J5), handoff form: the CODE-authored failure packet is written and the outbox marker
-  // is the pending signal (the level-triggered *.pending watch keeps the notice alive until ack_event;
-  // sendPending has no failure-side clear in the ack loop, so the handoff path never sets it).
+  // is the pending signal (the level-triggered *.pending watch keeps the notice alive until the settle).
+  // This used to add that sendPending had no failure-side clear, so the handoff path never set it. Both
+  // halves are now wrong: the clear is mark_sent, which settles a failure packet on the same evidence a
+  // delivery needs, and the flag is set on BOTH paths so a failed run is owed whichever wrote the packet.
+  // The sentence outlived its code and read as current — it is kept here, corrected, rather than deleted,
+  // because the next reader meets a run that DOES set the flag twenty lines below it.
   const packetPath = driverDir(res.runDir, "failure.json");
   assert.ok(existsSync(packetPath), "the failure packet is written");
   const packet = JSON.parse(readFileSync(packetPath, "utf8"));

@@ -15322,9 +15322,9 @@ async function pipelineInner(job, opts = {}) {
     // rides the outbox like every other event (the engine has no message tool; a chat-ping stage on it
     // would burn a turn and fail) — the never-silent guarantee, headless form (docs/DELIVERY.md
     // run-failed packet; the level-triggered *.pending watch keeps it alive until ack_event).
-    // failPingSent records whether the notice is already on its way; the T5 packet lane below
-    // fires ONLY when it is not (its sendPending flag has no failure-side clear in the ack_event loop,
-    // so it must stay a backstop, never the primary).
+    // failPingSent records which lane WROTE the packet. It no longer decides whether the notice is
+    // owed: a failure arms sendPending either way (below), because mark_sent is the only clear and it
+    // settles a failure.json on the same evidence a delivery needs. ONE SEND PATH, ruled 2026-09-12.
     let failPingSent = false;
     {
       try {
@@ -15364,27 +15364,37 @@ async function pipelineInner(job, opts = {}) {
     // no longer silence it ( F9: teal-keystone died silently on exactly that). Best-effort —
     // packet-write trouble must never mask the original failure; the .failed sentinel + status.json
     // remain the durable record either way.
-    if (!failPingSent) {
-      try {
+    //
+    // OWED EITHER WAY, AND EXACTLY ONE MARKER. A failed run used to read sendPending:false whenever the
+    // packet write SUCCEEDED, so the owed-run scan could not see it and the notice waited on a reader of
+    // the outbox instead. Now the flag is armed on both lanes. What is NOT duplicated is the marker: the
+    // primary lane's packet IS one, because writeOutboxPacket("<runId>.failed") lands
+    // `<runId>.failed.pending` and the *.pending watch already matches it. Arming a second
+    // `<runId>.pending` beside it would leave a file mark_sent does not clear — it clears `<id>.pending`
+    // for each id the run was known by, not this suffixed form — and the sweep re-arms off whatever is
+    // on disk, which is how a permanent SEND PENDING was born. So: the flag always, the packet and the
+    // marker only when nothing wrote them.
+    try {
+      if (!failPingSent) {
         const packet = buildFailurePacket({
           runId: `${run.slug}-${run.date}-${run.codename}`, agent, job, failedStage, shortReason,   // canonical runId form (charter P1 §3)
           reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, terminalKind,
           repairs: attemptedRepairs ?? [], priorAttempts, whatsappTo: AGENT_WHATSAPP[agent] ?? null,
           reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the BACKSTOP notice carries it too
         });
-        // same per-send invariant as the delivery handoff: a fresh notice supersedes an older send's
-        // .sent marker AND its per-channel receipts (e.g. a resumed run that fails again must still
-        // notify on every channel, not be skip-guarded by the earlier send's receipts).
-        try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-        try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
         writeFileSync(driverDir(run.runDir, "failure.json"), JSON.stringify(packet, null, 2) + "\n");
-        writeRunStatus(ctx, { sendPending: true });
         mkdirSync(config.outboxDir, { recursive: true });
         writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
-        note(`failure notice: handoff → _driver/failure.json + outbox marker (completion-watch sends it)`);
-      } catch (nfErr) {
-        note(`failure-notice packet write skipped (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — .failed + status.json remain the record`);
       }
+      // same per-send invariant as the delivery handoff: a fresh notice supersedes an older send's
+      // .sent marker AND its per-channel receipts (e.g. a resumed run that fails again must still
+      // notify on every channel, not be skip-guarded by the earlier send's receipts).
+      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
+      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+      writeRunStatus(ctx, { sendPending: true });
+      note(`failure notice OWED (${failPingSent ? "event lane wrote the packet" : "handoff wrote the packet"}) — mark_sent is the only clear`);
+    } catch (nfErr) {
+      note(`failure-notice arming skipped (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — .failed + status.json remain the record`);
     }
     note(`=== FAILED ${run.codename} at ${failedStage}: ${reason} ===\n`);
     // `codename` matches the three sibling terminals (postpone, recovery park, cancelled). Without it
