@@ -17,7 +17,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { installedUnits, SERVER_UNITS, UNIT_DIR } from "../../bin/start.mjs";
 import { doorDivergence } from "../../bin/onboard.mjs";
@@ -107,8 +107,19 @@ test("doctor CONSULTS it, and the reader is told which file the services actuall
   assert.match(src, /the second is what the/,
     "and must say which file the SERVICES run with; 'they differ' leaves the operator to guess which "
     + "one is the one that matters");
-  // ONE READER, NOT A SECOND COPY: the parser is imported from render-units, which is what actually
-  // renders the units systemd reads. Two KEY=value parsers drift, and they drift silently.
-  assert.match(src, /import \{ parseEnvFile \} from "\.\.\/driver\/systemd\/render-units\.mjs"/,
-    "the env parser must be the one the unit renderer uses");
+  // ONE READER, NOT A SECOND COPY — AND NOT A PATH. Two KEY=value parsers drift, and they drift
+  // silently, so the wizard must read env files with the same function the unit renderer uses. WHICH
+  // FILE HOLDS IT IS NOT THE PROPERTY: it has already moved once, out of the renderer, because the
+  // renderer is a command and a binary importing it closed a load-time cycle. An assertion pinned to
+  // that spelling would have gone red for the move that fixed a defect, and stayed green for a second
+  // copy appearing beside it. So: resolve both and require the same file, and require no second parser.
+  const renderer = readFileSync(join(ROOT, "driver", "systemd", "render-units.mjs"), "utf8");
+  const wizardSpec = /import \{ parseEnvFile \} from "([^"]+)"/.exec(src)?.[1];
+  const rendererSpec = /export \{ parseEnvFile \} from "([^"]+)"/.exec(renderer)?.[1];
+  assert.ok(wizardSpec, "the wizard no longer imports parseEnvFile at all");
+  assert.ok(rendererSpec, "the unit renderer no longer re-exports parseEnvFile, so there is nothing to share");
+  assert.equal(resolve(join(ROOT, "bin"), wizardSpec),
+    resolve(join(ROOT, "driver", "systemd"), rendererSpec),
+    "the wizard's env parser is not the one the unit renderer uses");
+  assert.doesNotMatch(src, /function parseEnvFile\b/, "the wizard has grown a second parser of its own");
 });

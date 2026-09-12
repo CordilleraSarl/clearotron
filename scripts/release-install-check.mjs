@@ -73,6 +73,30 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
  * malformed tarball are deliberately absent: those ARE about the bytes, and calling them could-not-look
  * would let a genuinely broken package publish.
  */
+/**
+ * Did npm say anything of its own, or is this only the runner reporting a non-zero exit?
+ *
+ * `execFileSync` composes "Command failed: <the command>" and appends whatever the child wrote. With npm
+ * silenced — `npm run -s` and `npm --silent` export `npm_config_loglevel=silent` to every child — npm
+ * writes nothing at all, and that first line is the whole of it. Every judgement below reads npm's words,
+ * so with none to read there is nothing to judge: not a refusal, not a clearance, an absence.
+ *
+ * The test is deliberately crude and errs towards SPOKE: any content beyond the command echo counts, so a
+ * message this function has never seen is treated as npm talking rather than as silence. The direction
+ * matters — reading silence as a refusal publishes a verdict nobody made, and that is the defect this
+ * exists for; reading speech as silence only costs a re-run. PURE.
+ */
+export function npmSpoke(said) {
+  const text = String(said ?? "").trim();
+  if (!text) return false;
+  const rest = text
+    .split("\n")
+    .filter((l) => l.trim() && !/^Command failed:/i.test(l.trim()))
+    .join("")
+    .trim();
+  return rest.length > 0;
+}
+
 export function looksLikeCouldNotLook(said) {
   return /\b(ENOTCACHED|ENOTFOUND|EAI_AGAIN|ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENETUNREACH|EAGAIN|ENOSPC|ENOENT|ERR_SOCKET_TIMEOUT)\b/i
     .test(String(said ?? ""))
@@ -116,10 +140,28 @@ export function installsAsADependency(tarballPath, { keep = false, timeoutMs = 9
       `${JSON.stringify({ name: "clearotron-install-check-consumer", version: "1.0.0", private: true }, null, 2)}\n`);
 
     try {
-      execFileSync("npm", ["install", abs, "--no-audit", "--no-fund"],
-        { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: timeoutMs });
+      // NPM IS TOLD TO SPEAK, RATHER THAN INHERITING WHETHER IT MAY. This check reads npm's own words —
+      // it is the only thing that tells a reader WHY an install failed — and `npm run -s`, which is how a
+      // suite or a release script is often started, exports `npm_config_loglevel=silent` to everything
+      // beneath it. Silenced, npm exits non-zero and prints nothing, and this file then reports a refusal
+      // it could not read as a statement about the artefact. Measured 2026-09-12: the same three tests
+      // red under `npm run -s` and green without it, on the same tree, in three seconds either way.
+      execFileSync("npm", ["install", abs, "--no-audit", "--no-fund", "--loglevel", "error"],
+        { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: timeoutMs,
+          env: { ...process.env, npm_config_loglevel: "error" } });
     } catch (e) {
       const said = `${e?.stderr ?? ""}`.trim() || `${e?.stdout ?? ""}`.trim() || `${e?.message ?? e}`;
+      // AN ANSWER NOBODY CAN READ IS NOT A VERDICT ON THE BYTES. When npm says nothing of its own — both
+      // streams empty, so `said` is the runner's "Command failed: npm install …" and nothing else — this
+      // file used to call it a refusal and exit 1, which is a statement that the artefact is broken made
+      // out of an absence. It is a could-not-look: the install did not get far enough to answer.
+      if (!npmSpoke(said)) {
+        return { ok: false, couldNotLook: true, missingBins: [], installed: null,
+          why: "npm exited non-zero and said nothing of its own, so there is no refusal to read:\n\n"
+            + `${said}\n\nThis says nothing about the artefact. Run the check again with npm allowed to `
+            + "speak — `npm run -s` and `npm --silent` pass `npm_config_loglevel=silent` to everything "
+            + "beneath them — and it will either refuse with npm's reason or clear these bytes." };
+      }
       if (looksLikeCouldNotLook(said)) {
         return { ok: false, couldNotLook: true, missingBins: [], installed: null,
           why: `npm could not complete an install here for a reason that is not about these bytes:\n\n${said}` };
@@ -176,6 +218,13 @@ function main() {
     process.exit(2);
   }
 
+  // ── THE ORDER OF THESE TWO BLOCKS IS THE CORRECTNESS, NOT EITHER CONDITION ──────────────────────────
+  //
+  // Every could-not-look return also carries `ok: false`, so both blocks match the same result and the
+  // first one wins. Tested in this order, an absence exits 2 and never reaches the refusal below. Swapped,
+  // it exits 1 — a statement that somebody's package is broken, made out of an answer nobody could read —
+  // and nothing in either block looks wrong on its own. What holds it is the arm that drives this command
+  // and asserts the code, whose message names the consequence rather than the number.
   if (r.couldNotLook) {
     console.error(`  COULD NOT LOOK (exit 2): ${r.why}\n`);
     console.error("  This says nothing about the artefact. It has not been cleared and it has not been "
