@@ -115,6 +115,24 @@ test("normal pipeline failure (inside the try{}) is NOT double-noticed by the ba
   assert.equal(pending.length, 1, `exactly one outbox marker (pipeline-written, not doubled): ${pending.join(", ")}`);
   const packet = JSON.parse(readFileSync(driverDir(res.runDir, "failure.json"), "utf8"));
   assert.equal(packet.failedStage, "matter-frame", "packet is the pipeline's, not a backstop 'pre-run' overwrite");
+
+  // THE NOTICE IS OWED ON THIS LANE TOO, and this is the assertion whose absence let a failure notice be
+  // lost. The packet write SUCCEEDING used to mean the owed flag was never set, so the scan that looks for
+  // owed runs could not see a failed run at all, and a notice sat unread for more than a day. Asserting
+  // that the packet exists is not the same claim — it existed then too, and nobody was told.
+  // status.json is the run dir's OWN file, not a _driver/ sidecar (progress.mjs statusPath) — the
+  // packet beside it is, which is an easy pair to mix up and reads as a missing status rather than a
+  // wrong path.
+  const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
+  assert.equal(status.sendPending, true,
+    `a failed run must read sendPending until a send is confirmed, whichever lane wrote the packet\n${log}`);
+  // AND THE ONE MARKER IS THE PACKET'S OWN NAME, which is why no second one is written. writeOutboxPacket
+  // appends ".pending", so the primary lane's packet IS the wake marker. A `<runId>.pending` armed beside
+  // it would outlive every settle — mark_sent clears `<id>.pending` per known id, not this suffixed form —
+  // and the sweep re-arms from whatever is on disk. Pinning the NAME, not just the count, is what stops a
+  // later "arm the marker on both lanes" tidy-up from reintroducing a permanently owed run.
+  assert.match(pending[0], /\.failed\.pending$/,
+    `the single marker is the packet written through the outbox, not a second bare marker: ${pending[0]}`);
 });
 
 // — THE NO-RUN-DIR ARM CHANGED LANE, AND THAT IS THE WHOLE POINT OF THE ARM. It used to assert

@@ -203,6 +203,24 @@ test("mark_sent: BOTH runId forms of the marker are cleared — the packet's and
     assert.ok(!existsSync(datedMarker) && !existsSync(datelessMarker));
     assert.ok(existsSync(bystander), "another run's marker is never touched");
     rmSync(bystander, { force: true });
+
+    // THE FAILURE FORM IS A THIRD NAME, and it was unsettleable. A failure's
+    // packet is written THROUGH the outbox, so it lands as `<id>.failed.pending`: a marker by name and a
+    // packet by content. Clearing only `<id>.pending` left it on disk after every settle, and the sweep
+    // re-arms from what is on disk, so the run stayed owed forever. Stranded markers of this form were
+    // found on a live box; markers of the PLAIN form strand for a different reason (nothing calling this
+    // function at all), so do not read one population as evidence of the other.
+    const failedMarker = join(outbox, `${dated}.failed.pending`);
+    const failedDateless = join(outbox, `${dateless}.failed.pending`);
+    writeFileSync(failedMarker, `${AGENT}\n`);
+    writeFileSync(failedDateless, `${AGENT}\n`);
+    const otherFailed = join(outbox, "tmpx-bystander-jade-q.failed.pending");
+    writeFileSync(otherFailed, `${AGENT}\n`);
+    markSent({ runId: dated });
+    assert.ok(!existsSync(failedMarker), "the failure form of the resolved run's id is cleared");
+    assert.ok(!existsSync(failedDateless), "and of the packet's own id — both names the run was known by");
+    assert.ok(existsSync(otherFailed), "another run's FAILURE marker is never touched either");
+    rmSync(otherFailed, { force: true });
   } finally {
     pinEnv(process.env, "CLEAROTRON_OUTBOX_DIR", undefined);
   }
