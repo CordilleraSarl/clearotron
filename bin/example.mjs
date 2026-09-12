@@ -46,7 +46,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
-import { isFrozen, demoChildren, publishSource } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
+import { isFrozen, demoChildren, demoInventory, prepareSample } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
 import { ensureDemoProgram, demoProgramEnv } from "../shared/permanent-install.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -109,7 +109,10 @@ const DEMO_ROOT = join(REPO, "demo");
 // --run-dir takes a directory outright. --product names a child. Neither given: EVERY child, and the
 // names are PRINTED below rather than assumed, because "the demo" means several.
 const wanted = flag("--product");
-const children = demoChildren(DEMO_ROOT);
+// EVERY SAMPLE THE CONTAINER HOLDS, the unusable ones named (driver/demo-container.mjs says why).
+const inventory = demoInventory(DEMO_ROOT);
+const children = inventory.children;
+const ALL = !flag("--run-dir") && !wanted;
 
 // ── ALL OF THEM, UNLESS THE CALLER NARROWED IT ──────────────────────────────────────────────────────
 //
@@ -129,6 +132,9 @@ const sampleDirs = flag("--run-dir")
 // The refusal below is about ONE directory, and with nothing shipped there is no directory to name — so
 // the container itself is what it looks at, which is what it always did when `demo/` was empty.
 const sampleDir = sampleDirs[0] ?? resolve(DEMO_ROOT);
+// EVERY SAMPLE UNUSABLE is the absence below with its reasons, not "no frozen demo" over a full container.
+if (ALL && !sampleDirs.length && inventory.unusable.length)
+  die("demo: no demo could be replayed.", "", ...inventory.unusable.map((u) => `  ${u.name}: ${u.why}`));
 if (!sampleDirs.length || !isFrozen(sampleDir)) {
   // AN ABSENCE IS A FINDING, AND IT NAMES WHAT IT LOOKED AT. This exits 1 and always has; a report of
   // it exiting 0 did not reproduce at v0.1.0 or at main's tip. An arm pins it.
@@ -153,15 +159,22 @@ if (!sampleDirs.length || !isFrozen(sampleDir)) {
 // PUBLISHING WRITES A RECEIPT INTO THE RUN DIRECTORY, and `demo/` is tracked — so a reader who only READ
 // the demo came back to a dirty checkout. `publishSource` is the one definition of that rule, shared with
 // the launcher, which seeds the pool from the same container on every `--demo` start.
-// EVERY ONE THAT WAS ASKED FOR IS READ BEFORE ANY IS PUBLISHED, so a manifest missing a runId is a
-// refusal about that demo by name rather than a partial pool nobody can account for.
-const samples = sampleDirs.map((dir) => {
-  const manifest = join(dir, "meta.json");
-  if (!isFrozen(dir)) die(`demo: ${dir} is not a frozen demo — it holds no meta.json and lane entry file.`);
-  const m = JSON.parse(readFileSync(manifest, "utf8"));
-  if (!m?.runId) die(`example: ${manifest} names no runId — it is not a frozen example manifest.`);
-  return { dir, meta: m, publishFrom: publishSource(dir, { repoRoot: REPO }), name: basename(dir) };
-});
+// EVERY ONE THAT WAS ASKED FOR IS READ BEFORE ANY IS PUBLISHED. One named by --product or --run-dir that
+// cannot be used is a refusal about it by name. With every sample asked for, ONE THAT CANNOT BE USED MUST
+// NOT COST THE OTHERS: it joins the failures the replay below collects, named with its reason, and the
+// rest are published. An unreadable file inside one sample used to throw out of the copy here and take
+// every demo down with a stack trace (measured on a published beta, 2026-09-11).
+const failures = ALL ? inventory.unusable.map((u) => ({ name: u.name, why: u.why })) : [];
+const samples = [];
+for (const dir of sampleDirs) {
+  const r = prepareSample(dir, { repoRoot: REPO });
+  if (r.sample) samples.push(r.sample);
+  else if (ALL) failures.push({ name: r.name, why: r.why });
+  else die(`demo: ${dir} cannot be replayed — ${r.why}.`);
+}
+if (!samples.length) die("demo: no demo could be replayed.", "", ...failures.map((f) => `  ${f.name}: ${f.why}`));
+// How many samples this tree ships: the ones replayed and the ones named as failures, never the readable ones.
+const shipped = samples.length + failures.length;
 const publishFrom = samples[0].publishFrom;
 const meta = samples[0].meta;
 
@@ -226,7 +239,7 @@ if (existsSync(poolRoot) && !statSync(poolRoot).isDirectory()) die(`demo: ${pool
 console.log(`\n  ${BRAND.name} ${BRAND.product.toLowerCase()} — demo\n`);
 console.log(samples.length === 1
   ? `  sample:  ${samples[0].dir}`
-  : `  samples: ${samples.length} — ${samples.map((x) => x.name).join(", ")}`);
+  : `  samples: ${samples.length}${failures.length ? ` of ${shipped}` : ""} — ${samples.map((x) => x.name).join(", ")}`);
 console.log(`  reports folder:  ${poolRoot}\n`);
 
 mkdirSync(poolRoot, { recursive: true });
@@ -242,7 +255,6 @@ const { republishRun } = await import(pathToFileURL(join(REPO, "driver", "publis
 // The failures are collected and reported together at the end, and the process exits non-zero, because a
 // demo that came up missing a quarter of itself is not a success however good the three look.
 const results = [];
-const failures = [];
 for (const s0 of samples) {
   try {
     // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
@@ -291,11 +303,12 @@ const spineOf = (pub) =>
              evidence, on ${pub.receipts.citing}/${pub.receipts.marks} mark(s)`
       : `this lane's publisher reported no finding count — the report itself is the record`;
 for (const r of results) console.log(`  published: ${r.published.runId}\n             ${r.name} — ${spineOf(r.published)}`);
-if (results.length > 1) console.log(`\n  ${results.length} demo reports are published and listed — one per product.`);
+// "ONE PER PRODUCT" ONLY WHEN IT IS TRUE: with a sample missing, the count below says how many of how many.
+if (results.length > 1 && !failures.length) console.log(`\n  ${results.length} demo reports are published and listed — one per product.`);
 // LOUD, AND ON STDERR, AND NON-ZERO. Said after the successes so a reader sees what they DID get first,
 // and cannot mistake the run for a clean one.
 if (failures.length) {
-  console.error(`\n  ${failures.length} of ${samples.length} demo(s) could NOT be replayed:`);
+  console.error(`\n  ${failures.length} of ${shipped} demo(s) could NOT be replayed:`);
   for (const f of failures) console.error(`    ${f.name}: ${f.why}`);
   console.error(`  The portal below lists the ${results.length} that published. This exits non-zero.`);
   process.exitCode = 1;

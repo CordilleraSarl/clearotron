@@ -23,9 +23,9 @@
 // stage apart. This module is the single answer. `cut/` cannot import it (that directory does not travel
 // and this one does), so the pack gate restates the disjunction and its own test pins the two together.
 
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, join, resolve, sep } from "node:path";
 
 /** The entry file each lane's publisher reads as its source, in the order a child is probed for one. */
 export const ENTRY_FILES = Object.freeze(["report.md", "knockout-findings.json"]);
@@ -51,6 +51,49 @@ export function demoChildren(root) {
   try { entries = readdirSync(root, { withFileTypes: true }); } catch { return []; }
   return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort()
     .filter((n) => isFrozen(join(root, n)));
+}
+
+const why = (e) => e?.code ?? e?.message ?? String(e);
+const NOT_FROZEN = "it holds no meta.json and lane entry file, so it is not a frozen demo";
+
+/**
+ * EVERY SAMPLE THE CONTAINER HOLDS, the ones that cannot be used NAMED rather than dropped.
+ *
+ * `demoChildren` answers "which can be replayed" and drops the rest, which is right for a caller choosing
+ * one and wrong for a caller replaying all of them. A sample whose directory could not be read vanished,
+ * and the demo said "3 demo reports are published and listed — one per product" over a package that ships
+ * four (measured on a published beta, 2026-09-11). Here every directory in the container counts: one that
+ * cannot be read, or is not a frozen demo, comes back in `unusable` with the reason.
+ */
+export function demoInventory(root) {
+  let entries;
+  try { entries = readdirSync(root, { withFileTypes: true }); } catch { return { children: [], unusable: [] }; }
+  const children = [], unusable = [];
+  for (const name of entries.filter((e) => e.isDirectory() && !e.name.startsWith(".")).map((e) => e.name).sort()) {
+    const dir = join(root, name);
+    try { readdirSync(dir); } catch (e) { unusable.push({ name, why: `its directory could not be read (${why(e)})` }); continue; }
+    if (isFrozen(dir)) children.push(name);
+    else unusable.push({ name, why: NOT_FROZEN });
+  }
+  return { children, unusable };
+}
+
+/**
+ * ONE SAMPLE, READ AND COPIED TO PUBLISH FROM — or the reason it could not be. `{ sample }` or `{ name, why }`.
+ *
+ * A file inside a sample that could not be read made the copy throw, and the uncaught EACCES took all four
+ * demos down with a stack trace (measured on a published beta, 2026-09-11). It is returned instead, so the
+ * caller replays the others and names this one.
+ */
+export function prepareSample(dir, { repoRoot, tmp } = {}) {
+  const name = basename(dir);
+  if (!isFrozen(dir)) return { name, why: NOT_FROZEN };
+  const manifest = join(dir, "meta.json");
+  let meta;
+  try { meta = JSON.parse(readFileSync(manifest, "utf8")); } catch (e) { return { name, why: `its meta.json could not be read (${why(e)})` }; }
+  if (!meta?.runId) return { name, why: `${manifest} names no runId, so it is not a frozen demo manifest` };
+  try { return { sample: { dir, meta, name, publishFrom: publishSource(dir, { repoRoot, ...(tmp ? { tmp } : {}) }) } }; }
+  catch (e) { return { name, why: `it could not be copied to publish from (${why(e)})` }; }
 }
 
 
@@ -80,6 +123,33 @@ export function publishSource(dir, { repoRoot, tmp = tmpdir() } = {}) {
 }
 
 /**
+ * THE WHOLE CONTAINER, PUBLISHED FROM — `publishSource`'s rule applied one sample at a time.
+ * `{ dir, unusable }`: the directory to publish the container from, and every sample left out, named.
+ *
+ * The launcher seeds the portal's archive from the whole container, and copied it in one call: one file
+ * it could not read failed the copy, and with it every sample, so the archive came up empty over three
+ * good ones (driven on a published beta's container, 2026-09-11). Here a sample that cannot be copied is
+ * left out and named, and the others are published.
+ */
+export function publishContainer(root, { repoRoot, tmp = tmpdir() } = {}) {
+  const repo = resolve(repoRoot ?? "");
+  const here = resolve(root);
+  if (!repo || !(here === repo || here.startsWith(repo + sep))) return { dir: root, unusable: demoInventory(root).unusable };
+  const copy = join(mkdtempSync(join(tmp, "clearotron-demo-")), "sample");
+  mkdirSync(copy, { recursive: true });
+  const { children, unusable } = demoInventory(here);
+  const left = [...unusable];
+  for (const name of children) {
+    try { cpSync(join(here, name), join(copy, name), { recursive: true }); }
+    catch (e) {
+      rmSync(join(copy, name), { recursive: true, force: true });
+      left.push({ name, why: `it could not be copied to publish from (${why(e)})` });
+    }
+  }
+  return { dir: copy, unusable: left };
+}
+
+/**
  * THE DEMO'S SAMPLE RUNS, WHERE AN ASSISTANT LOOKS FOR RUNS.
  *
  * The demo published its samples as reports and made no run directory, so the connector its own connect
@@ -100,7 +170,7 @@ export function publishSource(dir, { repoRoot, tmp = tmpdir() } = {}) {
  * portal, and a copy laid down by an earlier version still carries the old host.
  */
 export function seedDemoRuns({ workspace, examplesDir, portalOrigin = null }) {
-  const seeded = [], already = [];
+  const seeded = [], already = [], failed = [];
   for (const name of demoChildren(examplesDir)) {
     const run = join(examplesDir, name, "run");
     let s;
@@ -109,13 +179,20 @@ export function seedDemoRuns({ workspace, examplesDir, portalOrigin = null }) {
     const dir = join(workspace, `workspace-${s.agent || "clawdi"}`, "studio", "prelim-search", s.slug, `${s.date}-${s.codename}`);
     if (existsSync(join(dir, "status.json"))) already.push(s.runId);
     else {
-      mkdirSync(dirname(dir), { recursive: true });
-      cpSync(run, dir, { recursive: true });
+      // ONE SAMPLE'S UNREADABLE FILE COSTS THAT SAMPLE ONLY, and is named, never a throw out of the loop.
+      try {
+        mkdirSync(dirname(dir), { recursive: true });
+        cpSync(run, dir, { recursive: true });
+      } catch (e) {
+        rmSync(dir, { recursive: true, force: true });
+        failed.push({ name, why: `its run could not be copied (${why(e)})` });
+        continue;
+      }
       seeded.push(s.runId);
     }
     if (portalOrigin) stampReportLinks(join(dir, "status.json"), portalOrigin);
   }
-  return { seeded, already };
+  return { seeded, already, failed };
 }
 
 /** The portal route that serves a run's report: the one `scanAccountRuns` hands the portal's own list. */

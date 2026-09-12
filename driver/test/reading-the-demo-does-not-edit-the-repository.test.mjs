@@ -21,7 +21,7 @@ import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from "no
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { demoChildren, publishSource } from "../demo-container.mjs";
+import { demoChildren, prepareSample, publishContainer, publishSource } from "../demo-container.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // tracker issue 235
 
@@ -79,12 +79,26 @@ test("both publishers of the shipped demos read the same rule", () => {
   // player's arm above passed the whole time that second publisher went on rewriting the tracked
   // receipt — caught by driving the launcher under a wiped home and reading `git status` afterwards.
   //
-  // So the rule has one home and this refuses a caller that grows its own copy of it.
-  const roots = ["bin/example.mjs", "bin/start.mjs"];
-  for (const rel of roots) {
+  // So the rule has one home and this refuses a caller that grows its own copy of it. Both callers reach
+  // publishSource's rule one sample at a time, so one unreadable sample cannot take the others down: the
+  // player through prepareSample, the launcher through publishContainer.
+  for (const [rel, call] of [["bin/example.mjs", /prepareSample\(/], ["bin/start.mjs", /publishContainer\(/]]) {
     const src = readFileSync(join(REPO, rel), "utf8");
-    assert.match(src, /publishSource\(/, `${rel} publishes a shipped demo without asking publishSource where to read it from`);
+    assert.match(src, call, `${rel} publishes a shipped demo without asking publishSource where to read it from`);
   }
+  // AND THE PLAYER'S ROUTE IS publishSource's RULE, driven rather than read: a shipped sample prepareSample
+  // prepares is published from a copy outside the tree, never from the tracked directory.
+  const [first] = demoChildren(DEMO);
+  const prepared = prepareSample(join(DEMO, first), { repoRoot: REPO });
+  assert.ok(prepared.sample, `the shipped sample ${first} could not be prepared: ${prepared.why}`);
+  assert.ok(!prepared.sample.publishFrom.startsWith(REPO + "/"), `the player publishes ${first} from inside the tree: ${prepared.sample.publishFrom}`);
+  rmSync(dirname(prepared.sample.publishFrom), { recursive: true, force: true });
+  // AND THE LAUNCHER'S: the whole shipped container is published from a copy outside the tree, all of it.
+  const whole = publishContainer(DEMO, { repoRoot: REPO });
+  assert.ok(!whole.dir.startsWith(REPO + "/"), `the launcher seeds from inside the tree: ${whole.dir}`);
+  assert.deepEqual(whole.unusable, [], "a shipped sample was left out of the launcher's copy");
+  assert.deepEqual(demoChildren(whole.dir), demoChildren(DEMO), "the launcher's copy does not hold every shipped sample");
+  rmSync(dirname(whole.dir), { recursive: true, force: true });
 
   // And the rule itself: inside the tree is copied, outside it is left alone.
   const outside = "/somewhere/else/demo";
