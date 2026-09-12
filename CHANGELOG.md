@@ -4,6 +4,13 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.1-beta.0
+
+### Fixed
+
+- A correction to a coverage note or an action is now applied, or the run records why it was not.
+- A demo sample that cannot be read is named in the demo's output, and the other demos still publish.
+
 ## 0.3.0
 
 ### Before you upgrade
