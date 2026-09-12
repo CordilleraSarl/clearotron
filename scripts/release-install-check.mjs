@@ -218,6 +218,13 @@ function main() {
     process.exit(2);
   }
 
+  // ── THE ORDER OF THESE TWO BLOCKS IS THE CORRECTNESS, NOT EITHER CONDITION ──────────────────────────
+  //
+  // Every could-not-look return also carries `ok: false`, so both blocks match the same result and the
+  // first one wins. Tested in this order, an absence exits 2 and never reaches the refusal below. Swapped,
+  // it exits 1 — a statement that somebody's package is broken, made out of an answer nobody could read —
+  // and nothing in either block looks wrong on its own. What holds it is the arm that drives this command
+  // and asserts the code, whose message names the consequence rather than the number.
   if (r.couldNotLook) {
     console.error(`  COULD NOT LOOK (exit 2): ${r.why}\n`);
     console.error("  This says nothing about the artefact. It has not been cleared and it has not been "
