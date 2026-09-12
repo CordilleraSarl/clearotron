@@ -166,7 +166,7 @@ test("tracker 97 a note names a package that exists, decided when it is written 
 
 test("tracker 97 the page groups the notes, and a note that names no group is refused rather than filed wrongly", () => {
   assert.deepEqual(GROUPS, CHANGELOG_GROUPS, "the lint and the changelog disagree about what the groups are");
-  assert.deepEqual(GROUPS, ["New", "Fixed", "For operators"], "user-facing groups come first, per the contract");
+  assert.deepEqual(GROUPS, ["Before you upgrade", "New", "Fixed", "For operators"], "user-facing groups come first, per the contract");
 
   for (const g of GROUPS) assert.deepEqual(offences(`${g}: The demo lists its accounts.`), []);
   assert.ok(findings(note("The demo lists its accounts.")).some((f) => /opens with its group/.test(f.rule)));
@@ -176,7 +176,7 @@ test("tracker 97 the page groups the notes, and a note that names no group is re
   // something is missing, which is a worse lie than not printing the group.
   const g = group(["New: A.", "Fixed: B.", "Fixed: C."]);
   assert.deepEqual(g.ungrouped, []);
-  assert.deepEqual(g.groups, { New: ["A."], Fixed: ["B.", "C."], "For operators": [] });
+  assert.deepEqual(g.groups, { "Before you upgrade": [], New: ["A."], Fixed: ["B.", "C."], "For operators": [] });
   const rendered = renderTo(g, "9.9.9");
   assert.match(rendered, /### New\n\n- A\./);
   assert.match(rendered, /### Fixed\n\n- B\.\n- C\./);
@@ -186,6 +186,17 @@ test("tracker 97 the page groups the notes, and a note that names no group is re
 
   // AND AN UNGROUPED BULLET IS SURFACED, never defaulted into a group.
   assert.deepEqual(group(["A stray line."]).ungrouped, ["A stray line."]);
+  // — AND SPECIFICALLY NOT INTO THE FIRST GROUP, which now carries breaking changes. A stray that
+  // defaulted into position 0 would tell a reader to do something before upgrading that nothing
+  // requires, and the group stops being believed the first time that happens.
+  assert.deepEqual(group(["A stray line."]).groups["Before you upgrade"], []);
+
+  // THE BREAKING-CHANGE GROUP LEADS THE PAGE. A reader who misses it cannot start the product after
+  // upgrading, so its position is the contract, not a preference.
+  const withBreak = renderTo(group(["Before you upgrade: Edit the guest list.", "New: A.", "Fixed: B."]), "9.9.9");
+  assert.match(withBreak, /### Before you upgrade\n\n- Edit the guest list\./);
+  assert.ok(withBreak.indexOf("### Before you upgrade") < withBreak.indexOf("### New"),
+    "a breaking change was printed after the features it breaks");
 });
 
 /** The changelog the generator would write for one grouped set, rendered in a directory of its own. */

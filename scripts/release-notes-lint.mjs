@@ -26,7 +26,7 @@ import { lineFindings, sourceDirectories, userDocs } from "./plain-language-rule
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** The three groups a note belongs to on the page. User-facing first, as the contract orders them. */
-export const GROUPS = ["New", "Fixed", "For operators"];
+export const GROUPS = ["Before you upgrade", "New", "Fixed", "For operators"];
 
 /** At most this many words in a sentence. The contract's number, not a tuned one. */
 export const MAX_WORDS = 25;
@@ -155,7 +155,7 @@ export function findings(text, {
 
   // The group, which is how the page is ordered. Not part of the owner's contract text — it is the
   // mechanism that delivers its rule 5 — so it is checked first and named as itself.
-  const group = /^(New|Fixed|For operators):\s/.exec(body)?.[1];
+  const group = /^(Before you upgrade|New|Fixed|For operators):\s/.exec(body)?.[1];
   if (!group) {
     out.push({
       line: bodyStart + 1,
