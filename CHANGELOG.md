@@ -4,6 +4,46 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.0
+
+### Before you upgrade
+
+- Name every person who uses your installation in the file that lists who may sign in, or the portal will not start. That file is in your install folder.
+
+### New
+
+- Switch between companies from any screen, and set a new one up in the browser.
+- Add people from the portal, and give each the right to run clearances, to manage people and companies, or both.
+- Every register finding in a report links to the trade mark office's own page for that record.
+- A clearance records any territory it could not cover, so a partial search never reads as a complete one.
+- Connect Clearotron to your own AI assistant — Claude Code, Codex, or ChatGPT — on your computer or a shared server.
+- A saved search is available in every company, in the portal and in your AI assistant.
+- Check a risk framework for errors before it rates a clearance, and point a company at its own.
+- Group companies under an organisation, each with its own daily limit on clearances.
+- Clearotron installs to a fixed location, so the commands it prints and your AI assistant's connection keep working.
+- `clearotron update` moves an installation, beta included, to the current release.
+
+### Fixed
+
+- You sign in, open your companies, and run your first clearance on a new installation.
+- The demo reads and writes only its own companies, reports, and saved searches.
+- `clearotron doctor` checks what a clearance needs, so an installation it clears can run one.
+- A key you paste at a yes-or-no question stays off the screen and out of your command history.
+- Clearotron stays signed in to a paid Codex plan when Codex renews the sign-in.
+- The dashboard shows only the chosen company's clearances, and keeps the filters on screen.
+- The Stop button ends a run before its report goes out, and its dialog says what stopping does.
+- A knockout report names the filings behind each finding, and marks the reviewer's notes as reference.
+
+## 0.3.0-beta.10
+
+### New
+
+- The install guide now says how to remove Clearotron, naming every path it writes and which one holds your reports.
+
+### Fixed
+
+- A portal address that does not exist now says so wherever it is. Addresses under the admin path used to show the Global config screen.
+
 ## 0.3.0-beta.9
 
 ### Fixed

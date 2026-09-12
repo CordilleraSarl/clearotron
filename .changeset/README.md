@@ -40,9 +40,9 @@ They are still notes and the lint still reads them.
 
     npx changeset
 
-Pick the packages, then write the note. **Open it with its group**: `New:`, `Fixed:` or `For operators:`.
+Pick the packages, then write the note. **Open it with its group**: `Before you upgrade:`, `New:`, `Fixed:` or `For operators:`.
 That is the one thing the standard below does not spell out, because it is the mechanism rather than the
-rule — the page groups notes New / Fixed / For operators and only the person writing the note knows which
+rule — the page groups notes Before you upgrade / New / Fixed / For operators, and only the note's author knows which
 it is, so the note carries it and the changelog reads it off. A note without one is refused.
 
 Every paragraph of a note reaches the page as an entry of its own, and so does each list item, so write
@@ -95,7 +95,8 @@ A note states, in one plain sentence, what is different for that reader after up
 3. Name the reader by situation, never a bare "you": "Anyone installing with npm can verify…" — or write it
    without a person at all: "Each release is signed, so an install can be checked against this repository."
 4. Say the outcome. Mechanism only when the reader needs it to act, and then in plain words.
-5. Group on the page: **New** · **Fixed** · **For operators** (server/hosted installs). User-facing groups first.
+5. Group on the page: **Before you upgrade** · **New** · **Fixed** · **For operators** (server/hosted installs).
+   A breaking change goes FIRST, because a reader who misses it cannot start the product after upgrading.
 
 ## Banned in a note (the lint refuses these)
 - Issue numbers, PR numbers, `#NNN`, "tracker issue", agent or lane names.
@@ -128,7 +129,7 @@ A note states, in one plain sentence, what is different for that reader after up
    path/module name; prints the offending line and the rule. A refused note blocks the merge, not the release.
 3. The PR template: one line — "Release note added under .changeset/, written for a lawyer, passes the lint."
 4. The version step's compiled changelog and the GitHub release body are generated from the notes only, grouped
-   New / Fixed / For operators, no commit hashes, no contributor handles.
+   Before you upgrade / New / Fixed / For operators, no commit hashes, no contributor handles.
 
 ---
 

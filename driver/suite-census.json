@@ -653,7 +653,7 @@
         },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
-          "asserts": 63,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -1325,7 +1325,7 @@
         },
         "client-door.test.mjs": {
           "tests": 38,
-          "asserts": 161,
+          "asserts": 162,
           "skips": 1,
           "todos": 0
         },
@@ -2805,6 +2805,12 @@
           "skips": 0,
           "todos": 0
         },
+        "nothing-a-command-awaits-imports-it-back.test.mjs": {
+          "tests": 16,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
         "numeric-setting-refuses.test.mjs": {
           "tests": 15,
           "asserts": 35,
@@ -4241,7 +4247,7 @@
         },
         "start-refuses-on-a-box-that-has-the-services.test.mjs": {
           "tests": 6,
-          "asserts": 17,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -4846,8 +4852,8 @@
           "todos": 0
         },
         "the-published-manifest-is-not-the-repos-manifest.test.mjs": {
-          "tests": 18,
-          "asserts": 65,
+          "tests": 21,
+          "asserts": 82,
           "skips": 1,
           "todos": 0
         },

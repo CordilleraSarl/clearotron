@@ -18,6 +18,8 @@ import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 const NO_CORPUS = skipReason("2191-F14 denylist path has one owner");
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+// — doctor injects every command it prints through this, so a derived sentence must use it too.
+import { invoke } from "../../shared/invocation.mjs";
 
 // NOT A HOME DIRECTORY. `` refuses any executable line naming a specific operator's home, and it
 // is right to: a path like that is one copy-paste from being a real person's box in a real command.
@@ -520,12 +522,62 @@ test("DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a functio
   assert.doesNotMatch(out, /the client door is HALF open/, "the superseded half-open sentence is still printed");
   assert.doesNotMatch(out, /its unit is installed by .*connect.* only, never at install/,
     "doctor still prints the pre-2148 sentence, which is false of every install now");
-  // And it prints one of the four this function produces.
-  // FIVE SENTENCES NOW, not four: 2191-F11 added the listening one, because unit-file presence could
-  // not see a foreground door. Added here rather than loosened — the point of this arm is that the line
-  // came from describeDoorState, so the set it may print has to be enumerated.
-  assert.match(out, /the client door is (on and running|not set up here|HALF configured)|whether it is RUNNING was not checked|is NOT RUNNING|something is listening on the client door's address/,
-    "doctor's door line came from neither the old code nor describeDoorState");
+  // AND THE LINE CAME FROM `describeDoorState` — DERIVED, NOT RESTATED.
+  //
+  // This half listed the sentences by hand and said so: "the set it may print has to be enumerated".
+  // The list went stale and the staleness was invisible here, because the shapes it missed need states
+  // continuous integration does not have. Measured over a sweep of the states this function reads: it
+  // produced fourteen distinct sentences and the hand-written list accepted nine of them. There is no
+  // exhaustive count to quote — the sentences carrying systemd's own words vary with those words, which
+  // is why the patterns below collapse them rather than listing them.
+  //
+  // A box with the door installed and no session bus reddened on one of the five it missed — the
+  // port's-word sentence — every full run, while this arm stayed green in continuous integration, where
+  // nothing listens and doctor takes another branch.
+  //
+  // So the accepted set is BUILT BY CALLING THE FUNCTION over every state it reads. A sentence added
+  // inside an existing branch is covered by construction; only a new FIELD would need a change here,
+  // and that is a change somebody makes deliberately.
+  const CLI = join(ROOT, "bin", "clearotron.mjs");
+  // `invoke` resolves against the CALLING process, so deriving with this process's argv would embed a
+  // different command than the doctor we just spawned and fail for a reason that is not the subject.
+  const opts = { unit: CLIENT_DOOR_UNIT, closeCmd: invoke("disconnect", CLI),
+    startCmd: invoke("start", CLI), connectCmd: invoke("connect", CLI) };
+  const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const accepted = new Set();
+  for (const standing of [true, false]) for (const fenceOn of [true, false]) for (const unitInstalled of [true, false])
+    for (const listening of [true, false, null]) for (const active of [true, false, null])
+      // `(activeState/subState)` is systemd's own words, not ours: derived with a sentinel and matched
+      // as a wildcard, so the SHAPE is asserted and the contents are left to systemd.
+      //
+      // THE REAL VALUES ARE NOT DECORATION, AND THERE ARE TWO GATES. Crash-looping is
+      // `activeState === "activating"` OR `subState === "auto-restart"`, so a sweep over the fields
+      // alone never enters it. Driven twice, and the second time in review: with sentinels only the
+      // derived set missed the crash-loop sentence entirely; with the first gate only it missed the
+      // crash-loop sentence reached through the SECOND — where `activeState` is absent, so there is no
+      // parenthesised span at all and every wildcarded pattern fails to match it. A box whose door
+      // reports that sub-state without an active-state would have redded this arm for a reason that is
+      // not its subject, which is the defect it is being repaired for, two levels down.
+      //
+      // The sentinel marks the span; the other half carries whatever value a branch is gated on.
+      for (const [activeState, subState] of [[undefined, undefined], ["SENTA", "SENTB"],
+        ["activating", "SENTB"], [undefined, "auto-restart"]]) {
+        const { text } = describeDoorState({ standing, fenceOn, unitInstalled, listening, active,
+          activeState, subState }, opts);
+        const marked = text.replace(/\([^)]*SENTB\)/g, "«STATE»");
+        accepted.add(escapeRe(marked).replace(/«STATE»/g, "\\([^)]*\\)"));
+      }
+  // A FLOOR ON THE DERIVATION. An empty or tiny set would fail this arm for the wrong reason, and a set
+  // built from a function that stopped answering would accept whatever it did return. FOURTEEN PATTERNS
+  // stood when this landed — fewer than the sentences the function prints, because the ones carrying
+  // systemd's words collapse into a wildcard. The floor sits just under that rather than far below it:
+  // a floor a quarter below the real count tolerates losing a branch without a word, which is the
+  // failure this arm exists to stop. Adding a sentence is still not a failure; the derivation picks it up.
+  assert.ok(accepted.size >= 12,
+    `only ${accepted.size} sentences derived from describeDoorState — it has stopped answering, so this arm is not measuring its subject`);
+  const doorLines = out.split("\n").filter((l) => /client door|Client connector/i.test(l)).join("\n");
+  assert.ok([...accepted].some((re) => new RegExp(re).test(out)),
+    `doctor's door line came from neither the old code nor describeDoorState:\n${doorLines}`);
 });
 
 // ── 2191 F14 · A REVOKED KEY THAT STILL WORKED ──────────────────────────────────────────────────────
