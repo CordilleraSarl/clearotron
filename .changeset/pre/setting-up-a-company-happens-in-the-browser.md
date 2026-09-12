@@ -2,9 +2,7 @@
 "clearotron-driver": minor
 ---
 
-New: You can now choose which company a clearance is for on the page itself, and set up new companies in the browser.
-
-Those screens used to refuse to render until a company was chosen. They told you to pick one at the top left. That is not where the control is when the sidebar is collapsed. They now show you the companies instead. Each one says what it sells, how many marketplaces it covers, and which territories it defaults to.
+New: You can now choose which company a clearance is for on the page itself, and set up new companies in the browser. Those screens used to refuse to render until a company was chosen. They told you to pick one at the top left. That is not where the control is when the sidebar is collapsed. They now show you the companies instead. Each one says what it sells, how many marketplaces it covers, and which territories it defaults to.
 
 Setting up a company is a page, not a document. It needs a name. Everything else has a default, and the screen says what that default is. It refuses before writing anything, and says why. A name it cannot make a key from, a key already in use, or an email address another company claims. A company you create can run its first search straight away, with no restart, and stop or cancel that search like any other.
 
