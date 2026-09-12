@@ -14,7 +14,7 @@ import { findings as release } from "../../scripts/changelog-plain-language.mjs"
 
 const note = (body) => `---\n"clearotron-driver": patch\n---\n\n${body}\n`;
 /** What the release reads: the sentence as a changelog bullet, its group moved into the heading above it. */
-const asBullet = (body) => `- ${body.replace(/^(New|Fixed|For operators):\s*/, "")}`;
+const asBullet = (body) => `- ${body.replace(/^(Before you upgrade|New|Fixed|For operators):\s*/, "")}`;
 
 const TABLE = [
   ["Fixed: A key pasted at a yes/no question in setup is never shown on screen.", false],
@@ -42,7 +42,7 @@ test("every note in the tree that the release would refuse, the lint refuses too
   if (!paths.length) return ctx.skip("no notes under .changeset/ in this tree: the version step has consumed them");
   for (const p of paths) {
     const text = readFileSync(p, "utf8");
-    const bullets = bodyOf(text).split("\n").map((l) => l.replace(/^(New|Fixed|For operators):\s*/, "")).join("\n");
+    const bullets = bodyOf(text).split("\n").map((l) => l.replace(/^(Before you upgrade|New|Fixed|For operators):\s*/, "")).join("\n");
     if (release(bullets).length) assert.ok(lint(text).length, `${p}: the release refuses it, and the lint passes it`);
   }
 });

@@ -647,7 +647,7 @@
         },
         "a-release-note-is-written-for-its-reader.test.mjs": {
           "tests": 9,
-          "asserts": 63,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
