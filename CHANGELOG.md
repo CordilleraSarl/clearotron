@@ -14,7 +14,7 @@ Install or upgrade with `npm install -g clearotron`.
 
 ### For operators
 
-- an assistant asking which searches still owe someone a notice now gets all of them, not just the fifty most recent. Asking for recent searches is unchanged.
+- An assistant asking which searches still owe someone a notice now gets all of them, not just the fifty most recent. Asking for recent searches is unchanged.
 - The portal's start-up check now says when its engine address is behind a sign-in it cannot pass, instead of reporting that address as reachable.
 
 ## 0.3.0
