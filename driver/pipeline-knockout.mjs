@@ -1146,7 +1146,19 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // because mark_sent is the only clear and it settles a failure.json on the same evidence a delivery
     // needs. The marker is NOT duplicated — the primary lane's own packet lands `<runId>.failed.pending`
     // and the *.pending watch matches it; a second `<runId>.pending` would outlive every settle.
+    // THE RECORD OF AN OBLIGATION MUST NOT BE CONTINGENT ON THE ACTION IT OBLIGES — clearance parity,
+    // and the same defect this lane would have had. `writeOutboxPacket` returns null rather than throwing,
+    // so an unwritable outbox reaches the raw marker write below; with the flag after it, that throw took
+    // the record of the obligation with it and the run ended failed and NOT owed. Guards first, then the
+    // flag, then the writes that can fail.
     let failPingSent = false;
+    try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
+    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+    // a fresh notice supersedes an older send's skip-guards (a resumed-then-failed-again run must
+    // still notify — the .sent/receipts invariant, clearance parity)
+    try { writeRunStatus(ctx, { sendPending: true }); } catch (sErr) {
+      note(`knockout failure notice could NOT be recorded as owed (${String(sErr?.message ?? sErr).slice(0, 100)}) — the run directory is unwritable`);
+    }
     try {
       const rich = buildFailurePacket({
         runId, agent, job, failedStage, shortReason, terminalKind,
@@ -1163,12 +1175,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
         mkdirSync(config.outboxDir, { recursive: true });
         writeFileSync(join(config.outboxDir, `${runId}.pending`), `${agent}\n`);
       }
-      // a fresh notice supersedes an older send's skip-guards (a resumed-then-failed-again run must
-      // still notify — the .sent/receipts invariant, clearance parity)
-      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-      writeRunStatus(ctx, { sendPending: true });
-    } catch (nfErr) { note(`knockout failure-notice write skipped (${String(nfErr?.message ?? nfErr).slice(0, 100)})`); }
+    } catch (nfErr) { note(`knockout failure notice is owed but its packet/marker could not be written (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — status.json carries the obligation`); }
     note(`=== KNOCKOUT ${terminalKind === REFUSAL_TERMINAL_KIND ? "REFUSED" : "FAILED"} ${run.codename} at ${failedStage}: ${shortReason} ===\n`);
     // `codename`: this lane's terminals reach the SAME CLI exit as the clearance lane's, and the
     // CLI composes its resume line from the returned identity. Without it a knockout operator is the only

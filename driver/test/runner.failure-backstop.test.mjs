@@ -135,6 +135,50 @@ test("normal pipeline failure (inside the try{}) is NOT double-noticed by the ba
     `the single marker is the packet written through the outbox, not a second bare marker: ${pending[0]}`);
 });
 
+test("an UNWRITABLE outbox still leaves the run recorded as owing a notice", async () => {
+  // THE CONDITION EVERY OTHER ARM HERE IS BLIND TO, and the reason this one exists. Each of them drives a
+  // writable outbox, so "the flag is armed on both paths" was true in the only state ever tested — and a
+  // revision of this code set the flag AFTER the marker write, where an unwritable outbox threw and took
+  // the record of the obligation with it. The run then ended failed and NOT owed: silent in exactly the
+  // case where the flag is the only thing that could still say somebody is waiting.
+  //
+  // The packet writer swallows its own failure and returns null rather than throwing, which is why this
+  // reaches the raw marker write at all, and why the throw lands where it does.
+  const root = mkdtempSync(join(tmpdir(), "backstop-rofs-"));
+  const Q = queueFor(root);
+  mkdirSync(Q, { recursive: true });
+  const outbox = join(root, "outbox");
+  mkdirSync(outbox, { recursive: true });
+  chmodSync(outbox, 0o555);   // readable and traversable, not writable
+  try {
+    // The guard on the guard: if this process CAN still write there, the arm proves nothing and must say
+    // so rather than pass. Running as a user who bypasses the mode is exactly how this would rot.
+    let writable = false;
+    try { writeFileSync(join(outbox, ".probe"), "x"); writable = true; } catch { /* expected */ }
+    assert.equal(writable, false,
+      "this process can write to a 0555 directory, so the condition under test never happened — the pass "
+      + "below would be about nothing");
+
+    writeFileSync(join(Q, "job-ro.json"), JSON.stringify(job("TMP9303", "STAGE FAIL")));
+    // AWAITED INSIDE THE try, WHICH IS THE WHOLE ARM. `return promise` inside a try/finally runs the
+    // finally when the RETURN EXPRESSION is evaluated, not when the promise settles — so the chmod back
+    // to 0755 fired microseconds after the child was spawned and the directory was writable for the
+    // entire run under test. The probe above still passed, because at the instant it ran the mode really
+    // was 0555: a correct floor over a state that is undone before the thing being tested happens. The
+    // arm then passed with the fix present AND with it reverted, which is the only outcome that matters.
+    const { code, log } = await runToExit(envFor(root, { MOCK_FAIL_STAGE: "record_matter_frame", CLEAROTRON_DELIVERY: "handoff" }));
+    assert.equal(code, 0, log);
+    const res = JSON.parse(readFileSync(join(Q, "job-ro.failed.result"), "utf8"));
+    const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
+    assert.equal(status.sendPending, true,
+      `the outbox was unwritable and the run recorded no obligation, so nothing can discover that this `
+      + `requester is owed a notice\n${log}`);
+    assert.equal(status.state, "failed", "and it is still recorded as failed");
+  } finally {
+    chmodSync(outbox, 0o755);   // so the temp tree can be cleaned up
+  }
+});
+
 // — THE NO-RUN-DIR ARM CHANGED LANE, AND THAT IS THE WHOLE POINT OF THE ARM. It used to assert
 // the opposite of what it asserts now: zero outbox markers, and a direct gateway ping carrying the
 // sentence. That ping was the ONE un-gated spawn left in the product — its three siblings each took the
