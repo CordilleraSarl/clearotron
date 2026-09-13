@@ -4337,8 +4337,15 @@ const PORT = PORT_CHOICE.port;
       try {
         const res = await fetch(new URL("/mcp", MCP_URL), { method: "GET", redirect: "manual",
           signal: AbortSignal.timeout(2500) });
+        // THE BODY IS READ BECAUSE THE HEADER DOES NOT SEPARATE THE TWO DOORS. A proxy-fronted door and
+        // a key door both refuse with 401 and no `www-authenticate`; each names the credential it wants
+        // in the body, and that is the only thing on the wire that tells them apart. Bounded and
+        // best-effort: a door that sends nothing readable leaves this null and the verdict reports
+        // rather than judges.
+        let body = null;
+        if (res.status === 401) { try { body = (await res.text()).slice(0, 400); } catch { body = null; } }
         probe = { ok: res.status < 500, status: res.status, error: null,
-          challenge: res.headers.get("www-authenticate") };
+          challenge: res.headers.get("www-authenticate"), body };
       } catch (e) { probe = { ok: false, status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
       // `verbs` IS DELIBERATELY NOT PASSED. That check short-circuits ahead of the probe, so handing it
       // in would answer a question about the TOKEN where a question about the DOOR was asked — and the

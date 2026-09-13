@@ -2579,8 +2579,14 @@ export async function runCheck() {
         // returns null when the header is absent — a looked-and-none answer, not a did-not-look — and
         // the readers separate those, so a probe that omits the field reads as never-looked rather
         // than silently as "no challenge".
+        // AND SO DOES THE REFUSAL'S OWN SENTENCE, for the same reason one line up: absence and
+        // did-not-look are different answers. A proxy-fronted door and a key door both refuse with 401
+        // and no challenge header, so the body is what separates them — doctor must read it too, or it
+        // would answer this question differently from the portal off the same shared verdict.
+        let body = null;
+        if (res.status === 401) { try { body = (await res.text()).slice(0, 400); } catch { body = null; } }
         probe = { ok: res.status < 500, status: res.status, error: null,
-          challenge: res.headers.get("www-authenticate") };
+          challenge: res.headers.get("www-authenticate"), body };
       } catch (e) { probe = { ok: false, status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
     }
     // THE PREFIX TRAVELS WITH THE MESSAGE. Doctor's own guard runs every command

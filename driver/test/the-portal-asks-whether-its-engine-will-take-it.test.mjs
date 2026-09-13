@@ -66,7 +66,13 @@ test("the shared verdict calls the outage's own door shape a PASS", () => {
   // A door that ANSWERED something wrong is still a fail — waiting does not fix a 500.
   assert.equal(verdictFor({ status: 500, ok: false, challenge: null, error: null }).state, "fail");
   assert.equal(verdictFor(null).state, "unprobed", "no probe was read as a verdict");
-  assert.equal(verdictFor({ status: 401, ok: true, challenge: null, error: null }).state, "pass");
+  // THIS ONE MOVED, AND IT IS THE POINT OF THE CHANGE THAT MOVED IT. A 401 with no challenge and nothing
+  // in its body naming a credential used to read as a pass, and that sentence was printed identically for
+  // a door that honours the portal's key and one fronted by an identity proxy that will never accept it.
+  // A line identical in both states carries no information about either. It is now REPORTED rather than
+  // judged, which is the doctrine this verdict already follows for an ambiguous challenge.
+  assert.equal(verdictFor({ status: 401, ok: true, challenge: null, error: null }).state, "unsettled",
+    "a refusal naming no credential in either its challenge or its body cannot be called a working lane");
 });
 
 test("asking about the door is not answered with a fact about the token", () => {
