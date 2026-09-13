@@ -5523,8 +5523,8 @@
           "todos": 0
         },
         "delivery-state.test.mjs": {
-          "tests": 11,
-          "asserts": 28,
+          "tests": 12,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },

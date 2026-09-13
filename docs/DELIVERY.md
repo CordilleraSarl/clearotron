@@ -136,8 +136,26 @@ drives the whole delivery side over the ops MCP face — mint its token verb-sco
    `sendPending`, clears the marker — idempotent). **A settle is a receipt, not an intention:** with
    neither `messageId` nor an `attestation` it REFUSES, and if the send was blocked or
    failed you do not call it at all — the marker stays and the send stays owed.
-3. For every other kind: route the packet's ready-made `text` → **`ack_event(file)`** (idempotent;
-   validated as a bare `*.pending` name).
+3. For `run-failed`: the requester is **owed** this notice exactly as they are owed a report. Route the
+   packet's ready-made `text`, then settle it with **`mark_sent`**, not `ack_event`. A failed run carries
+   `sendPending` until a send is confirmed, whichever lane wrote the packet, and `mark_sent` is the only
+   thing that clears it. Acknowledging the event instead removes the marker and leaves the run owed, so
+   the backstop scan re-arms it and the requester is told again on the next sweep.
+4. For the remaining kinds — `intake-rejected`, `duplicate-skipped`, `late-bind-ack` — route the
+   packet's `text` → **`ack_event(file)`** (idempotent; validated as a bare `*.pending` name). These
+   describe something that did not become a run, so there is no run to settle.
+
+**Poll at any hour.** Owed work does not keep office hours: a run that fails at 03:00 owes its requester
+a notice at 03:00. Ask the door directly with **`list_runs({ sendPending: true })`** — the no-filesystem
+equivalent of the backstop scan below, returning every run still owed a send, live or archived, with no
+cap. An integrator that only runs during the day leaves a failure unreported until it next wakes, and
+nothing in the product can compensate for that: the product composes the notice and records that it is
+owed, and sending is yours.
+
+**Two things that make that list incomplete, both silent.** A token scoped to named accounts sees only
+those accounts' runs, so a run for an account the token does not carry is invisible rather than absent —
+mint the integrator's token to cover every account it delivers for, and re-mint it when one is added.
+And a `limit` you pass yourself is obeyed as given: for this query, do not pass one.
 
 The filesystem loop below remains equivalent for integrators that do have data-plane access.
 
