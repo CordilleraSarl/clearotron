@@ -1,5 +1,15 @@
 # clearotron-driver
 
+## 0.3.1-beta.0
+
+### Patch Changes
+
+- a2c4b94: Fixed: A correction to a coverage note or an action is now applied, or the run records why it was not.
+- b320c65: Fixed: A demo sample that cannot be read is named in the demo's output, and the other demos still publish.
+- d9798db: Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+- ae2cc82: For operators: an assistant asking which searches still owe someone a notice now gets all of them, not just the fifty most recent. Asking for recent searches is unchanged.
+- e390417: For operators: The portal's start-up check now says when its engine address is behind a sign-in it cannot pass, instead of reporting that address as reachable.
+
 ## 0.3.0
 
 ### Minor Changes
