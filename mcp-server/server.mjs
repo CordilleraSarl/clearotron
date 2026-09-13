@@ -205,10 +205,21 @@ const tools = {
   brief({ runId }) {
     return { _note: BRIEFING_NOTE, ...buildBrief(mustRun(runId)) };
   },
-  list_runs({ agent, state, slug, mark, sendPending, limit = 50 } = {}) {
+  // ── ASKING FOR OWED RUNS IS A COMPLETENESS QUESTION, NOT A BROWSING ONE ──────────────────────────
+  //
+  // The default cap of 50 is right for "show me the recent runs" and wrong for "which runs still owe
+  // their requester a notice". An integrator polls the second to decide what to send; a cap silently
+  // drops the fifty-first, and the run it dropped is indistinguishable from a run that owes nothing.
+  // Nothing in the reply says a page was cut, so the caller cannot tell the difference either.
+  //
+  // So `sendPending: true` returns ALL of them unless the caller names a limit itself. Every other call
+  // keeps the cap it has always had: an explicit limit is still obeyed, and an unfiltered list is still
+  // 50, so no existing caller changes.
+  list_runs({ agent, state, slug, mark, sendPending, limit } = {}) {
     let out = enumerateRuns({ agent, state, slug, mark }).map(runSummary);
     if (sendPending === true || sendPending === false) out = out.filter((r) => r.sendPending === sendPending);
-    return out.slice(0, limit);
+    const cap = limit ?? (sendPending === true ? out.length : 50);
+    return out.slice(0, cap);
   },
   list_profiles() {
     // Each customer carries its PROJECTS (engagements) so intake can resolve a projectKey too. A bad
