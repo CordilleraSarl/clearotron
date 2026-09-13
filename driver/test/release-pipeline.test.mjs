@@ -28,7 +28,7 @@ import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_P
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { assembleRoot, writeRootChangelog, group } from "../../scripts/release-version.mjs";
+import { assembleRoot, writeRootChangelog, group, modeTransition, splitCut, CUT_FLAG } from "../../scripts/release-version.mjs";
 import { unreachableBareSites, sentenceFor } from "../../shared/root-doc-commands.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
@@ -2246,18 +2246,58 @@ test("no condition keys on a CHANNEL where it means 'is this a real cut'", () =>
     + "real cut, the test is `!= 'rehearse'`; naming a channel there breaks the moment another is added.");
 });
 
-test("the tree is put in the mode the chosen channel needs, before the version is computed", () => {
+// ── THE MODE A CUT NEEDS, DRIVEN RATHER THAN MATCHED ──────────────────────────────────────────────
+//
+// This used to read the workflow step that set the mode, and the step it was reading could never have
+// worked: it edited the working tree, and the action rebuilds that tree before computing the version.
+// The arm passed for as long as the defect existed, because it asserted the step's TEXT and the defect
+// was in where the step ran. So the property is driven here instead of matched anywhere.
+//
+// BOTH DIRECTIONS, and the table is the point. Driving only the stable direction is what a fix for the
+// half that announces itself would pass: a stable dispatch refused loudly, so that is the row anybody
+// would write. The row that matters as much is a beta asked for on a tree with no flag — the state a
+// stable leaves behind — because getting that wrong publishes a stable version to `latest` from a
+// button marked beta, and nothing in the run says so.
+test("the mode a cut needs is decided from the channel and the tree, in both directions", () => {
+  const cases = [
+    // cut,        mode found,  what must happen
+    ["beta",       "none",      ["pre", "enter", "beta"], "a beta after a stable must ENTER pre mode — a stable deletes the flag"],
+    ["beta",       "exit",      ["pre", "enter", "beta"], "a beta on a tree that left pre mode must re-enter it"],
+    ["beta",       "pre",       null,                     "a beta on a tree already in pre mode must do nothing"],
+    ["stable",     "pre",       ["pre", "exit"],          "a stable must LEAVE pre mode or it computes another beta"],
+    ["stable",     "none",      null,                     "a stable on a tree with no flag must do nothing"],
+    ["stable",     "exit",      null,                     "a stable on a tree already out of pre mode must do nothing"],
+    ["rehearse",   "pre",       null,                     "a rehearsal must not touch the mode"],
+    ["rehearse",   "none",      null,                     "a rehearsal must not touch the mode"],
+    ["",           "pre",       null,                     "a push carries no channel and must not touch the mode"],
+    ["",           "none",      null,                     "a push carries no channel and must not touch the mode"],
+  ];
+  for (const [cut, mode, expected, why] of cases) {
+    assert.deepEqual(modeTransition({ cut, mode }), expected, `${why} (cut=${cut || "none"}, mode=${mode})`);
+  }
+  // A FLOOR ON THE TABLE, so a future edit that empties it cannot pass by asserting nothing.
+  assert.ok(cases.filter(([, , e]) => e !== null).length >= 3,
+    "the table no longer drives a transition in both directions");
+});
+
+test("the channel is taken off the arguments before the rest are forwarded", () => {
+  // `changeset version` refuses an argument it does not know, so a flag left in the forwarded list
+  // stops the cut. This is the seam where that happens.
+  const { cut, rest } = splitCut([`${CUT_FLAG}stable`, "--snapshot", "x"]);
+  assert.equal(cut, "stable");
+  assert.deepEqual(rest, ["--snapshot", "x"], "the channel flag is still in the forwarded arguments");
+  assert.deepEqual(splitCut([]), { cut: "", rest: [] }, "no arguments must read as no channel, not as a cut");
+  assert.deepEqual(splitCut(["--snapshot"]), { cut: "", rest: ["--snapshot"] },
+    "arguments carrying no channel must be forwarded untouched");
+  assert.equal(splitCut([`${CUT_FLAG}`]).cut, "", "an empty channel is no channel");
+});
+
+test("the version step is handed the channel, and no step tries to set the mode before the rebuild", () => {
   const version = jobBlock("version");
-  const at = version.indexOf("- name: Put the tree in the mode this cut needs");
-  assert.ok(at >= 0, "nothing puts the tree in pre-release mode, so the input cannot decide the channel");
-  const step = version.slice(at, version.indexOf("- name: Open or update the standing version pull request"));
-  assert.ok(at < version.indexOf("- name: Open or update the standing version pull request"),
-    "the mode is set AFTER the version is computed, which is too late to affect it");
-  assert.match(step, /changeset pre enter beta/, "a beta cut does not enter pre-release mode");
-  assert.match(step, /changeset pre exit/, "a stable cut does not leave pre-release mode");
-  // Both directions must be no-ops when the tree is already right, or an ordinary second cut fails.
-  assert.match(step, /already in pre-release mode/, "entering when already in pre mode is not handled");
-  assert.match(step, /not in pre-release mode/, "exiting when already out of pre mode is not handled");
+  assert.match(version, new RegExp(`version-script: node scripts/release-version\\.mjs ${CUT_FLAG}\\$\\{\\{ inputs\\.cut \\}\\}`),
+    "the version script is not handed the channel, so it cannot set the mode the cut needs");
+  assert.equal(version.indexOf("- name: Put the tree in the mode this cut needs"), -1,
+    "a step sets the mode before the action, where the rebuild discards it — the version script owns this");
 });
 
 test("the refusal asks the VERSION, not the arrangement that produced it", () => {
