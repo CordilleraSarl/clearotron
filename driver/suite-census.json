@@ -3905,7 +3905,7 @@
         },
         "runner.failure-backstop.test.mjs": {
           "tests": 3,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -5614,7 +5614,7 @@
         },
         "ops.test.mjs": {
           "tests": 38,
-          "asserts": 161,
+          "asserts": 164,
           "skips": 0,
           "todos": 0
         },
