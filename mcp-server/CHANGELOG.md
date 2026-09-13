@@ -1,5 +1,11 @@
 # trademark-artifacts-mcp
 
+## 0.3.1-beta.0
+
+### Patch Changes
+
+- d9798db: Fixed: A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+
 ## 0.3.0
 
 No changes in this release.
