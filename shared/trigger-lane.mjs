@@ -61,6 +61,27 @@ export const SUPERVISED = "supervised";
  * because a command printed without it is command-not-found in the terminal the reader is sitting in:
  * doctor's own guard runs every command doctor prints, and it caught this one.
  */
+/**
+ * Which credential did the door ask for when it refused? `"proxy"`, `"key"`, or null for "it did not say".
+ *
+ * THE DOOR'S OWN SENTENCE IS THE EVIDENCE, because the header is not. An identity-proxy door and a key
+ * door both answer an unauthenticated request with 401 and neither sends `www-authenticate`, so the only
+ * thing on the wire that distinguishes them is what the refusal says it wants.
+ *
+ * THIS MATCHES A SPELLING, AND A SPELLING CAN MOVE. The two sentences are written by the door
+ * (`mcp-server/lib/cf-access.mjs` for the proxy refusal, `mcp-server/lib/http-handler.mjs` for the key
+ * one). If either is reworded this stops recognising it and the verdict degrades to "did not say" — the
+ * reported state, not a wrong confident one, which is the right direction to fail in. A test pins both
+ * sentences against the doors that send them so the drift is named rather than silent.
+ */
+export function doorCredential(probe) {
+  const body = String(probe?.body ?? "");
+  if (!body) return null;
+  if (/auth-proxy jwt|jwt-assertion|access token/i.test(body)) return "proxy";
+  if (/access key|[?&]token=/i.test(body)) return "key";
+  return null;
+}
+
 export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null, posture = SUPERVISED, probe = null, invoke = "" } = {}) {
   const startCmd = `${invoke}clearotron start`;
   const raw = String(url ?? "").trim();
@@ -131,6 +152,51 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
   const challenge = challengeVerdict(probe);
   if (challenge.blocked) return { state: "fail", message: blockedByAccessChallenge(raw, probe.status) };
   if (probe.ok) {
+    // ── A 401 IS ANSWERED BY STATUS AND REFUSED IN SUBSTANCE ─────────────────────────────────────────
+    //
+    // `probe.ok` is `status < 500`, so a door REFUSING the caller lands here and was reported as a lane
+    // that answers. That is not a near miss: an identity-proxy door and a key door both refuse an
+    // unauthenticated GET with 401 and NEITHER sends `www-authenticate`, so the challenge test above
+    // cannot separate them and this line printed the same sentence for a deployment that works and one
+    // that cannot carry a Start. A line that is identical in both states carries no information about
+    // either, which is what makes it a defect rather than an optimistic guess.
+    //
+    // WHAT SEPARATES THEM IS THE DOOR'S OWN SENTENCE. Each mode says which credential it wants, in the
+    // body: the proxy door asks for a proxy assertion, the key door asks for an access key. This portal
+    // holds a key and cannot produce a proxy identity, so the first is unreachable to it no matter what
+    // the key is.
+    const wants = doorCredential(probe);
+    if (probe.status === 401 && wants === "proxy") {
+      return { state: "fail",
+        message: `${raw} is fronted by an identity proxy: it refused an unauthenticated request by asking `
+          + "for a proxy identity, and this portal presents an access key. The Start button will fail at "
+          + "the door with a 401 upstream and a 502 to the client, whatever the key is. Either put the "
+          + "portal behind the same proxy, or give it a door that accepts the key." };
+    }
+    if (probe.status === 401 && wants === "key") {
+      return { state: "pass",
+        message: `the trigger lane answers at ${raw} (401 to an unauthenticated check, asking for the `
+          + `access key this portal holds)${challengeNote(challenge)}` };
+    }
+    if (probe.status === 401) {
+      // THE BODY IS NEW EVIDENCE, NOT A REPLACEMENT FOR WHAT WE HAD. A door that challenges for a bearer
+      // token has said, in the header, that it takes the kind of credential this portal holds — that is
+      // the reading this verdict was built on and it stays. Only when the refusal names no credential in
+      // EITHER place is there nothing to go on.
+      if (/bearer|oauth/i.test(String(probe.challenge ?? ""))) {
+        return { state: "pass",
+          message: `the trigger lane answers at ${raw} (401 to an unauthenticated check, challenging for a `
+            + `token)${challengeNote(challenge)}` };
+      }
+      // REPORTED, NOT JUDGED — the doctrine this block already follows for an ambiguous challenge. A 401
+      // that names no credential in its body and offers no challenge may be a proxy we have not met or a
+      // door that changed its wording; claiming either way would be the original defect with the
+      // confidence pointed somewhere new.
+      return { state: "unsettled",
+        message: `${raw} refused an unauthenticated check with 401 and did not say which credential it `
+          + "wants, in its challenge or its body, so this cannot tell whether the portal's access key will "
+          + "be accepted. Present the key against it before relying on the Start button." };
+    }
     return { state: "pass",
       message: `the trigger lane answers at ${raw}${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
   }

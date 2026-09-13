@@ -4473,6 +4473,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-boot-line-says-which-door-it-found.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "the-bundle-ships-no-commentary.test.mjs": {
           "tests": 2,
           "asserts": 3,
