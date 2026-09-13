@@ -10,9 +10,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { scan, POPULATION_FLOOR, KNOWN_ABSENT, topLevelAwaitLines, fragmentsOf, resolveSpecifier,
+import { scan, POPULATION_FLOOR, KNOWN_ABSENT, topLevelAwaitLines, fragmentsOf, resolveSpecifier, cyclePairs,
   reachedDuringTopLevelAwait, staticSpecifiers } from "../../scripts/import-cycle-check.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -214,4 +215,58 @@ test("the one declared absence is declared with its reason, not skipped in silen
     "the withheld pack gate is no longer declared, so its absence now reads as nothing to check");
   for (const m of scan().missing)
     assert.ok(KNOWN_ABSENT.includes(m), `${m} is reached during a top-level await and is absent undeclared`);
+});
+
+// ── ONE LINE PER CYCLE, HOWEVER MANY ROUTES REACH IT ──────────────────────────────────────────────────
+//
+// The detector walks every route into the importer and is right to, so the same PAIR appears once per
+// route. Printed straight through, one cycle read as two — and a reader who removed one import saw the
+// count halve rather than go to nothing, which reads as a second cycle still being there. The pair is the
+// finding; the route is context.
+//
+// Driven on the shape rather than on the tree, because the tree is green: a cycle reachable two ways is
+// exactly what a real one looks like and the scan cannot be asked to produce one on demand.
+test("a cycle reached by two routes is reported once, with both routes beside it", () => {
+  const twoRoutes = [
+    { entry: "driver/systemd/render-units.mjs", importer: "shared/env-file-merge.mjs", reached: "shared/env-file-merge.mjs" },
+    { entry: "driver/systemd/render-units.mjs", importer: "shared/env-file-merge.mjs", reached: "bin/start.mjs" },
+  ];
+  const pairs = cyclePairs(twoRoutes);
+  assert.equal(pairs.length, 1, "the same pair reported twice is the defect this closes");
+  assert.deepEqual(pairs[0].routes, ["shared/env-file-merge.mjs", "bin/start.mjs"],
+    "both routes are kept beside the pair — they are context a reader may want, not noise to drop");
+
+  // TWO DIFFERENT PAIRS STAY TWO. The repair must not collapse distinct cycles into one line, which
+  // would hide a real second finding behind the first.
+  const twoPairs = cyclePairs([
+    { entry: "a.mjs", importer: "b.mjs", reached: "b.mjs" },
+    { entry: "c.mjs", importer: "d.mjs", reached: "d.mjs" },
+  ]);
+  assert.equal(twoPairs.length, 2, "distinct cycles must not be merged");
+
+  // And a route repeated for the same pair is not listed twice.
+  const dupRoute = cyclePairs([
+    { entry: "a.mjs", importer: "b.mjs", reached: "x.mjs" },
+    { entry: "a.mjs", importer: "b.mjs", reached: "x.mjs" },
+  ]);
+  assert.deepEqual(dupRoute[0].routes, ["x.mjs"]);
+  assert.deepEqual(cyclePairs([]), [], "nothing in, nothing out");
+});
+
+// THE SUMMARY NAMES WHAT IT COUNTED. It said "commands", and the population includes a test file that
+// decides whether it was run and awaits at its top level — a member by the rule, a surprise to a reader
+// reconciling the number against the binaries.
+//
+// READ WHAT IT PRINTS, NOT WHAT THE SOURCE SAYS. The sentence is built from two template literals joined
+// by a `+`, so any pattern over the source is really a pattern over how the line happens to be wrapped —
+// it would fail on a reflow that changed nothing a reader sees, and pass on a wording change that split
+// differently. The output is the thing under test.
+test("the population is described as what the detector looks for, not as what it is usually for", () => {
+  const out = execFileSync(process.execPath, [join(ROOT, "scripts", "import-cycle-check.mjs")],
+    { encoding: "utf8" });
+  assert.match(out, /deciding whether they were run/,
+    `the summary does not name the population in terms a reader can reconcile against the tree:\n${out}`);
+  assert.ok(!/of them commands/.test(out),
+    `the old wording is back, and a reader checking the count against the binaries will not find the test `
+    + `file in it:\n${out}`);
 });
