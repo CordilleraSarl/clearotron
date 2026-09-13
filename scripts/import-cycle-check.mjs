@@ -378,6 +378,27 @@ export function staticClosureOf(start, readSource) {
 }
 
 /** The whole check, as data. Callers decide what to print and what to exit. */
+/**
+ * One entry per CYCLE, with the routes that reach it beside it.
+ *
+ * THE PAIR IS THE FINDING AND THE ROUTE IS CONTEXT. A cycle is reported once per route that reaches the
+ * importer, so the same pair printed twice when two paths led to it — and a reader who removed one import
+ * saw the count halve rather than go to nothing, which reads as a second cycle still being there. The
+ * detector is right to walk every route; the report is what had to change.
+ *
+ * Pure, and separate from the scan, so the shape the scan returns is untouched: its callers assert on it.
+ */
+export function cyclePairs(violations = []) {
+  const byPair = new Map();
+  for (const v of violations) {
+    const key = `${v.entry}\u0000${v.importer}`;
+    if (!byPair.has(key)) byPair.set(key, { entry: v.entry, importer: v.importer, routes: [] });
+    const p = byPair.get(key);
+    if (v.reached != null && !p.routes.includes(v.reached)) p.routes.push(v.reached);
+  }
+  return [...byPair.values()];
+}
+
 export function scan({ read = readFileSync, list = readdirSync } = {}) {
   const { readSource, missing, unreadable } = makeReader(read);
   const files = moduleFiles(ROOT, ROOTS, list);
@@ -417,8 +438,13 @@ if (import.meta.url === `file://${process.argv[1]}` || (process.argv[1] ?? "").e
     process.exit(2);
   }
 
-  console.log(`import-cycle-check: ${r.scanned} modules, ${r.entries.length} of them commands, `
-    + `${r.withTopLevelAwait.length} of those awaiting at the top level.`);
+  // NAME WHAT WAS COUNTED, NOT WHAT IT IS USUALLY FOR. This said "commands", and the set correctly
+  // includes a test file that decides whether it was run and awaits at its top level — by the rule it
+  // belongs, but a reader reconciling the number against the binaries will not find it and will conclude
+  // the count is wrong. The detector looks for modules that decide whether they were run; that is the
+  // population, and a test doing it is a member rather than a surprise.
+  console.log(`import-cycle-check: ${r.scanned} modules, ${r.entries.length} of them deciding whether they `
+    + `were run, ${r.withTopLevelAwait.length} of those awaiting at the top level.`);
 
   // COULD NOT LOOK — never a pass, and three separate ways to get there.
   if (r.withTopLevelAwait.length < POPULATION_FLOOR) {
@@ -454,7 +480,12 @@ if (import.meta.url === `file://${process.argv[1]}` || (process.argv[1] ?? "").e
 
   console.error("");
   console.error("These commands are imported back by something they reach while their top-level await is settling:");
-  for (const v of r.violations) console.error(`    ${v.entry}  <=  ${v.importer}   (reached via ${v.reached})`);
+  for (const p of cyclePairs(r.violations)) {
+    console.error(`    ${p.entry}  <=  ${p.importer}`);
+    // The routes are context, not the finding. Printed under the pair and only when there is more than
+    // one, because a single route repeats what the line above already says.
+    if (p.routes.length > 1) console.error(`        reached via ${p.routes.join(", ")}`);
+  }
   console.error("");
   console.error("Run as a command, each of these hangs: the import asks for a module that is still being");
   console.error("evaluated, so it never resolves. Node reports an unsettled top-level await naming the await,");

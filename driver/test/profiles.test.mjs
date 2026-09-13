@@ -771,3 +771,39 @@ test("config nulls: an explicit null in a project overlay says NOTHING, it does 
   assert.ok(r.profile.platforms.includes("etsy.com"), "the project's own store is added");
   assert.equal(r.origins.platforms, "customer+project", "and the union is recorded honestly");
 });
+
+// ── THE REFUSAL NAMES THE RULE THAT FIRED ─────────────────────────────────────────────────────────────
+//
+// This is the sentence a person reads. The settings panel renders THIS — the server validator's line —
+// and not the field contract's wording, so correcting the contract and not this one left the refusal
+// telling a reader to do exactly what they had just done: it refused an unknown two-letter code with a
+// sentence asking for a two-letter code. Found on a walk of the published build, after the contract half
+// had already shipped.
+//
+// Driven through the validator rather than asserted against a copy of its text, because a copy is what
+// let the two halves drift apart in the first place.
+test("an unknown territory is refused by a sentence that does not ask for what was just supplied", () => {
+  const v = validateProfileEdit("acme", {
+    name: "Acme", platforms: ["amazon.com"], defaultJurisdictions: ["XX"],
+  }, "");
+  assert.equal(v.ok, false, "an unknown territory must still be refused");
+  const line = v.errors.find((e) => /territor/i.test(e));
+  assert.ok(line, `no territory refusal came back: ${v.errors.join(" | ")}`);
+
+  // The defect, stated as the reader meets it: XX IS a two-letter code, so a refusal asking for one
+  // describes the entry's shape rather than the rule, and reads as advice already taken.
+  assert.ok(!/or a two-letter code such as/.test(line),
+    `the refusal asks for a two-letter code and refused one — it names the shape, not the rule:\n  ${line}`);
+  assert.match(line, /codes the engine holds/,
+    `the refusal does not say what actually decides it — that the engine must hold the territory:\n  ${line}`);
+
+  // And it still names the offending entry, which is the half a fixed sentence cannot do.
+  assert.match(line, /"XX"/, "the refusal no longer names which entry was refused");
+
+  // A territory the engine DOES hold is not refused by any of this.
+  const held = validateProfileEdit("acme", {
+    name: "Acme", platforms: ["amazon.com"], defaultJurisdictions: ["US", "EU", "France"],
+  }, "");
+  assert.deepEqual(held.errors.filter((e) => /territor/i.test(e)), [],
+    "a country name and codes the engine holds were refused");
+});

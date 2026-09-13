@@ -567,17 +567,34 @@ test("DOCTOR ACTUALLY CALLS IT — the arms above pass just as well on a functio
         const marked = text.replace(/\([^)]*SENTB\)/g, "«STATE»");
         accepted.add(escapeRe(marked).replace(/«STATE»/g, "\\([^)]*\\)"));
       }
-  // A FLOOR ON THE DERIVATION. An empty or tiny set would fail this arm for the wrong reason, and a set
-  // built from a function that stopped answering would accept whatever it did return. FOURTEEN PATTERNS
-  // stood when this landed — fewer than the sentences the function prints, because the ones carrying
-  // systemd's words collapse into a wildcard. The floor sits just under that rather than far below it:
-  // a floor a quarter below the real count tolerates losing a branch without a word, which is the
-  // failure this arm exists to stop. Adding a sentence is still not a failure; the derivation picks it up.
-  assert.ok(accepted.size >= 12,
-    `only ${accepted.size} sentences derived from describeDoorState — it has stopped answering, so this arm is not measuring its subject`);
+  // ── THE ORDER HERE IS THE ARM, and it was wrong. ──────────────────────────────────────────────────
+  //
+  // The floor used to come first, and a test stops at its first failure. So the plant most likely to be
+  // used to check this arm — make the function return a superseded sentence — collapsed the derived set
+  // to one, tripped the floor, and stopped. The property was never reached. A reader of that red learns
+  // "the derivation is undersized", which is true and is not the finding, while the assertion that holds
+  // the subject went unrun on exactly the drive meant to exercise it.
+  //
+  // Split by what each question is FOR. "Did it answer at all" is the floor's own subject and must be
+  // asked first, or an empty set fails the property with a sentence about the doctor's line. "Is the
+  // doctor's line derived from this function" is the property, and it must be asked before the richness
+  // floor, so a planted sentence names the match rather than the size. The richness floor keeps its
+  // value and asks last.
+  assert.ok(accepted.size > 0,
+    "describeDoorState derived no sentences at all — it has stopped answering, so this arm is not measuring its subject");
+
   const doorLines = out.split("\n").filter((l) => /client door|Client connector/i.test(l)).join("\n");
   assert.ok([...accepted].some((re) => new RegExp(re).test(out)),
     `doctor's door line came from neither the old code nor describeDoorState:\n${doorLines}`);
+
+  // A FLOOR ON THE DERIVATION, asked last because it is about the population and not about the subject.
+  // A set built from a function that stopped answering would accept whatever it did return. FOURTEEN
+  // PATTERNS stood when this landed — fewer than the sentences the function prints, because the ones
+  // carrying systemd's words collapse into a wildcard. The floor sits just under that rather than far
+  // below it: a floor a quarter below the real count tolerates losing a branch without a word, which is
+  // the failure this exists to stop. Adding a sentence is still not a failure; the derivation picks it up.
+  assert.ok(accepted.size >= 12,
+    `only ${accepted.size} sentences derived from describeDoorState — the derivation is undersized, so it would accept whatever it still returns`);
 });
 
 // ── 2191 F14 · A REVOKED KEY THAT STILL WORKED ──────────────────────────────────────────────────────
