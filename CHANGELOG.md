@@ -4,6 +4,14 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.1-beta.1
+
+### Fixed
+
+- A clearance that stops is recorded as owing a notice even when the folder its notice is queued in cannot be written to.
+- Check now reports the same problems Save would refuse, so a company setting can no longer pass the check and then fail to save.
+- On older Windows-Subsystem installations the engine now identifies the platform by its interop registration rather than by the kernel version string.
+
 ## 0.3.1-beta.0
 
 ### Fixed

@@ -492,7 +492,23 @@ function ProjectEditor({
       })
       return
     }
-    if (action === 'validate') { setChecked(true); return }
+    if (action === 'validate') {
+      // Same shape as the company settings screen, and the same reason: the dry run answers 200 while
+      // carrying its verdict in the body, so reading the status alone reports a refused overlay as
+      // checked and leaves Save to deliver the reasons this step already had.
+      const dryRun = 'value' in r && r.value && typeof r.value === 'object' ? (r.value as Record<string, unknown>) : {}
+      const errors = Array.isArray(dryRun['errors']) ? (dryRun['errors'] as string[]) : []
+      if (dryRun['ok'] === false || errors.length) {
+        setChecked(false)
+        setProblem({
+          title: 'That cannot be saved as written',
+          lines: errors.length ? errors : ['This project was refused, and no reason came back.'],
+        })
+        return
+      }
+      setChecked(true)
+      return
+    }
     setChecked(false)
     // — live but uncommitted is a WARNING, not a failure: the change is on disk.
     const uncommittedEdit = notCommitted(r)

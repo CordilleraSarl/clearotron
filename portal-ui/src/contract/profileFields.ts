@@ -278,7 +278,10 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     //
     // The vocabulary is the composer's own, not a second list. A picker that suggests a territory the box
     // then flags as unknown would be two controls disagreeing under one label.
-    item: { ok: isTerritoryEntry, strict: true, expected: 'a territory from the picker below, or a two-letter code' },
+    // THE REFUSAL HAS TO NAME THE RULE THAT FIRED. This said "or a two-letter code" and refused XX —
+    // which IS a two-letter code, so the sentence told the reader to do the thing they had just done.
+    // The rule is not the shape of the entry, it is whether the engine holds that territory.
+    item: { ok: isTerritoryEntry, strict: true, expected: 'a territory from the picker below, or a two-letter country code the engine holds, like US, GB or EU' },
     // THE HINT SAYS WHAT THE FIELD DOES WITH WHAT YOU TYPE, which is the question that was actually
     // asked: "Is this validated? It accepts 'XX' so I guess not." It is, and it now refuses rather than
     // flags, so the honest sentence is the shorter one.
