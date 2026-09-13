@@ -1,5 +1,13 @@
 # clearotron-driver
 
+## 0.3.1-beta.1
+
+### Patch Changes
+
+- c3228f3: Fixed: A clearance that stops is recorded as owing a notice even when the folder its notice is queued in cannot be written to.
+- c3228f3: Fixed: Check now reports the same problems Save would refuse, so a company setting can no longer pass the check and then fail to save.
+- c3228f3: Fixed: On older Windows-Subsystem installations the engine now identifies the platform by its interop registration rather than by the kernel version string.
+
 ## 0.3.1-beta.0
 
 ### Patch Changes
