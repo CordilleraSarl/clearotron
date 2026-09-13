@@ -4,6 +4,19 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.1-beta.0
+
+### Fixed
+
+- A correction to a coverage note or an action is now applied, or the run records why it was not.
+- A demo sample that cannot be read is named in the demo's output, and the other demos still publish.
+- A clearance that stops now always records that its notice is still owed, so a failure cannot be passed over as already handled.
+
+### For operators
+
+- An assistant asking which searches still owe someone a notice now gets all of them, not just the fifty most recent. Asking for recent searches is unchanged.
+- The portal's start-up check now says when its engine address is behind a sign-in it cannot pass, instead of reporting that address as reachable.
+
 ## 0.3.0
 
 ### Before you upgrade
