@@ -30,7 +30,7 @@ test("on WSL every on-this-computer route opens by saying to run it inside WSL, 
 test("WSL is read from WSL_DISTRO_NAME, WSL_INTEROP or the kernel's own name, and a failed read is not WSL", () => {
   assert.equal(isWsl({ env: { WSL_DISTRO_NAME: "Ubuntu" }, procVersion: "" }), true);
   assert.equal(isWsl({ env: { WSL_INTEROP: "/run/WSL/1_interop" }, procVersion: "" }), true);
-  assert.equal(isWsl({ env: {}, procVersion: "Linux version 6.6.87.2-microsoft-standard-WSL2" }), true);
+  assert.equal(isWsl({ env: {}, procVersion: "Linux version 6.6.87.2-standard-WSL2" }), true);
   assert.equal(isWsl({ env: {}, procVersion: "Linux version 6.17.0-1022-azure" }), false);
   assert.equal(isWsl({ env: {}, procVersion: "" }), false);
 });

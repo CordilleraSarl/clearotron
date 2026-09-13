@@ -5164,8 +5164,8 @@
           "todos": 0
         },
         "under-wsl-the-windows-binary-on-path-is-not-the-engine.test.mjs": {
-          "tests": 8,
-          "asserts": 26,
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
