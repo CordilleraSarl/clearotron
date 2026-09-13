@@ -81,11 +81,21 @@ test("the sentences the doors actually send are still the ones the verdict recog
   const cfAccess = readFileSync(join(REPO, "mcp-server", "lib", "cf-access.mjs"), "utf8");
   const handler = readFileSync(join(REPO, "mcp-server", "lib", "http-handler.mjs"), "utf8");
 
+  // EXACTLY ONE SITE, THEN THE CAPTURE. `exec` takes the FIRST match, so a second 401 added above the real
+  // one would silently move what this reads: the arm keeps passing and keeps printing reassuring text while
+  // no longer being about the door at all. Counting first turns "there is a sentence here" into "there is
+  // one sentence here and this is it", which is what everything below rests on.
+  const proxySites = cfAccess.match(/throw new AuthError\(401,\s*"[^"]+"/g) ?? [];
+  assert.equal(proxySites.length, 1,
+    `the proxy door has ${proxySites.length} refusal sentences; this arm reads the first and would measure the wrong one`);
   const proxySentence = /throw new AuthError\(401,\s*"([^"]+)"/.exec(cfAccess)?.[1];
   assert.ok(proxySentence, "the proxy door's 401 sentence could not be read — this guard is measuring nothing");
   assert.equal(doorCredential({ body: proxySentence }), "proxy",
     `the proxy door now says ${JSON.stringify(proxySentence)}, which the verdict no longer recognises as a proxy`);
 
+  const keySites = handler.match(/send\(res,\s*401,\s*\{\s*error:\s*"[^"]+"/g) ?? [];
+  assert.equal(keySites.length, 1,
+    `the key door has ${keySites.length} refusal sentences; this arm reads the first and would measure the wrong one`);
   const keySentence = /send\(res,\s*401,\s*\{\s*error:\s*"([^"]+)"/.exec(handler)?.[1];
   assert.ok(keySentence, "the key door's 401 sentence could not be read — this guard is measuring nothing");
   assert.equal(doorCredential({ body: keySentence }), "key",

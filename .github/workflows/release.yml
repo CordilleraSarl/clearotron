@@ -267,31 +267,17 @@ jobs:
       # have computed a stable version and published it to `latest`: a stable release out of a button
       # marked beta, with nothing in the run saying so.
       #
-      # Both directions are idempotent by construction: entering pre when already in it, or exiting when
-      # already out, is a no-op here rather than an error, because the state a cut needs is a fact about
-      # the tree and not about what the last cut happened to do.
-      - name: Put the tree in the mode this cut needs
-        if: github.event_name == 'workflow_dispatch' && inputs.cut != 'rehearse'
-        run: |
-          set -euo pipefail
-          mode=$(node -p "try{require('./.changeset/pre.json').mode}catch(e){'none'}")
-          echo "pre-release mode before this cut: $mode"
-          if [ "${{ inputs.cut }}" = "beta" ]; then
-            if [ "$mode" != "pre" ]; then
-              npx changeset pre enter beta
-              echo "entered pre-release mode with tag beta"
-            else
-              echo "already in pre-release mode — nothing to do"
-            fi
-          else
-            if [ "$mode" = "pre" ]; then
-              npx changeset pre exit
-              echo "left pre-release mode"
-            else
-              echo "not in pre-release mode — nothing to do"
-            fi
-          fi
-
+      # THE MODE IS SET BY THE VERSION SCRIPT, AND A STEP HERE COULD NOT DO IT. A step at this point edits
+      # the working tree, and the action below rebuilds that tree before it runs anything: it checks out
+      # `changeset-release/main` and resets hard to this run's commit. Read in the pinned action's own
+      # source — the rebuild, then the version script, then a commit made with `git add .` from the
+      # working tree. So the only place a mode change survives to be counted is inside the version script,
+      # which is why the channel is passed to it below rather than applied here.
+      #
+      # A step here did exist and was believed to work. Its stable direction failed loudly — the cut
+      # computed another beta and the channel check refused it. Its beta direction fails SILENTLY, which
+      # is the half worth naming: after a stable there is no `pre.json` at all, so a beta dispatch would
+      # compute a stable version and publish it to `latest` from a button marked beta.
       - name: Open or update the standing version pull request
         id: changesets
         # PINNED TO A COMMIT, because `v1` and `v2` are BRANCHES here, not tags — there is no tag `v1`
@@ -299,7 +285,10 @@ jobs:
         # step that opens a pull request against `main` with a token; it does not float.
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51   # v2
         with:
-          version-script: node scripts/release-version.mjs
+          # The channel travels to the step that runs AFTER the rebuild. A push carries no channel, and
+          # the empty string it becomes there means "leave the mode alone" — an ordinary merge must never
+          # switch the line this repository publishes on.
+          version-script: node scripts/release-version.mjs --cut=${{ inputs.cut }}
           pr-title: 'Release: the next version, and everything in it'
           commit-message: 'Cut a version'
           push-with-git-cli: true

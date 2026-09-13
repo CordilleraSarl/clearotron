@@ -85,11 +85,35 @@ test("a path the reader typed is reported, never overruled", () => {
 test("WSL is detected from either signal, and a read that fails answers NOT WSL", () => {
   assert.equal(isWsl({ env: { WSL_DISTRO_NAME: "Ubuntu" }, procVersion: "Linux" }), true);
   assert.equal(isWsl({ env: { WSL_INTEROP: "/run/WSL/8_interop" }, procVersion: "Linux" }), true);
-  assert.equal(isWsl({ env: {}, procVersion: "Linux 5.15.0 microsoft-standard-WSL2" }), true);
+  assert.equal(isWsl({ env: {}, procVersion: "Linux 5.15.0 standard-WSL2" }), true);
   assert.equal(isWsl({ env: {}, procVersion: "Linux 6.17.0-1022-azure #1 SMP Debian" }), false);
   // The direction that changes nothing. Claiming WSL on a read nobody could make would start refusing
   // candidates under /mnt on an ordinary Linux box with an ordinary mount.
   assert.equal(isWsl({ env: {}, procVersion: "" }), false);
+});
+
+test("the interop registration is a signal in its own right, driven both ways", () => {
+  // THE SIGNAL THIS FILE NOW RESTS ON FOR THE OLDER GENERATION, and the reason it is injectable at all.
+  // That generation's kernel string carries a vendor name and NOT the platform token, so the pattern
+  // below cannot answer for it and the registration is the whole of the evidence. It is also the part
+  // that cannot be demonstrated from this machine: nothing here runs either generation, so these drive
+  // the FUNCTION's use of the signal, and an install walk is what shows the platform sets it.
+  //
+  // Both answers, with the pattern deliberately unable to help either way — an empty kernel string, so
+  // a pass here is the registration and nothing else.
+  assert.equal(isWsl({ env: {}, procVersion: "", interopEntry: true }), true,
+    "the registration alone must be enough, or the older generation has no route left");
+  assert.equal(isWsl({ env: {}, procVersion: "", interopEntry: false }), false,
+    "and its absence must not be read as presence — the fail-safe direction this file documents");
+
+  // The two routes are independent: the newer generation still answers from its token with no
+  // registration, and an ordinary box answers false with neither.
+  assert.equal(isWsl({ env: {}, procVersion: "Linux 5.15.0 standard-WSL2", interopEntry: false }), true);
+  assert.equal(isWsl({ env: {}, procVersion: "Linux 6.17.0-1022-azure #1 SMP Debian", interopEntry: false }), false);
+
+  // The environment signals still take precedence over both, so a box that says what it is is believed
+  // before anything is read off disk.
+  assert.equal(isWsl({ env: { WSL_DISTRO_NAME: "Ubuntu" }, procVersion: "", interopEntry: false }), true);
 });
 
 test("the production pattern matches a Windows drive and not an ordinary /mnt directory", () => {

@@ -643,8 +643,17 @@ export function markSent(args = {}) {
     const legacy = run.slug && run.codename ? `${run.slug}-${run.codename}` : null;
     const forms = [...new Set([packet.runId, run.runId, args.runId, legacy]
       .filter((id) => id != null && String(id).trim() !== "").map(sanitize))];
+    // BOTH SUFFIXES, because a failure's marker IS its packet. The delivery lane drops `<id>.pending`;
+    // the failure lane writes its packet through the outbox as `<id>.failed.pending`, which the same
+    // *.pending watch matches. Clearing only the first left the failure form on disk after a settle, the
+    // sweep re-armed off it, and the run stayed owed forever — the permanent SEND PENDING the pipelines'
+    // old comment feared, arriving by the one route nobody had named. A missing form is a no-op, as
+    // before. (How many were stranded when this was found is a fact about one box on one day; it lives on
+    // the issue, not here, because a count in a comment rots and the mechanism does not.)
     for (const id of forms) {
-      try { rmSync(join(config.outboxDir, `${id}.pending`), { force: true }); } catch { /* best-effort */ }
+      for (const suffix of [".pending", ".failed.pending"]) {
+        try { rmSync(join(config.outboxDir, `${id}${suffix}`), { force: true }); } catch { /* best-effort */ }
+      }
     }
   };
   const sentPath = join(run.runDir, ".sent");

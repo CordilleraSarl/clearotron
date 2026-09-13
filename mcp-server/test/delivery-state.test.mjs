@@ -78,6 +78,33 @@ test("list_runs: sendPending:true filter returns only owed runs, false returns o
   assert.ok(!settled.some((r) => r.runId === "tmpd-owed2-2026-07-08-delta-x"));
 });
 
+// ── ASKING WHICH RUNS ARE OWED IS A COMPLETENESS QUESTION ────────────────────────────────────────
+//
+// The default cap of 50 suits "show me recent runs" and silently breaks "which runs still owe a
+// notice": the run it drops is indistinguishable from a run that owes nothing, and nothing in the
+// reply says a page was cut. An integrator polls this to decide what to send, so a dropped row is a
+// requester who is never told.
+//
+// DRIVEN OVER THE BOUNDARY, not near it. Fifty would pass against the old code by luck; the arm has to
+// stand on the far side of the cap to mean anything.
+test("list_runs: an owed-runs query is not capped at the browsing default, and an explicit limit still wins", () => {
+  for (let i = 0; i < 61; i++) {
+    makeRun({ slug: `tmpcap-${String(i).padStart(3, "0")}`, codename: "2026-07-09-kilo-x", sendPending: true });
+  }
+  const owed = tools.list_runs({ sendPending: true });
+  const mine = owed.filter((r) => String(r.slug ?? "").startsWith("tmpcap-"));
+  assert.equal(mine.length, 61,
+    `every owed run is returned, not the first 50 — got ${mine.length}. A cap here hides a requester `
+    + "who is owed a notice, and the reply does not say it truncated.");
+
+  // The caller's own limit is still obeyed: this widens nothing for a caller that asked to be capped.
+  assert.equal(tools.list_runs({ sendPending: true, limit: 5 }).length, 5, "an explicit limit is still honoured");
+
+  // AND NOTHING ELSE MOVED. An unfiltered list keeps the browsing cap it has always had — the change
+  // is to one query, not to the verb.
+  assert.equal(tools.list_runs({}).length, 50, "the unfiltered default is unchanged at 50");
+});
+
 // ── B4: per-channel dual-read (channels.email / channels.whatsapp) ────────────────────────────────
 // A channel counts as sent when the run has that channel's receipt in _driver/send-receipts.json
 // (written by clearotron-deliver right after EACH send lands) OR the legacy all-channels .sent marker.

@@ -3634,8 +3634,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 91,
-          "asserts": 353,
+          "tests": 93,
+          "asserts": 356,
           "skips": 0,
           "todos": 0
         },
@@ -3905,7 +3905,7 @@
         },
         "runner.failure-backstop.test.mjs": {
           "tests": 3,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -4475,7 +4475,7 @@
         },
         "the-boot-line-says-which-door-it-found.test.mjs": {
           "tests": 5,
-          "asserts": 19,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -5170,8 +5170,8 @@
           "todos": 0
         },
         "under-wsl-the-windows-binary-on-path-is-not-the-engine.test.mjs": {
-          "tests": 8,
-          "asserts": 26,
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -5529,8 +5529,8 @@
           "todos": 0
         },
         "delivery-state.test.mjs": {
-          "tests": 11,
-          "asserts": 28,
+          "tests": 12,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -5620,7 +5620,7 @@
         },
         "ops.test.mjs": {
           "tests": 38,
-          "asserts": 161,
+          "asserts": 164,
           "skips": 0,
           "todos": 0
         },
