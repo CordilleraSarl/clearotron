@@ -150,7 +150,7 @@ test("importing by that specifier actually resolves a real module", async () => 
 
 // The demo launcher's own import, where a Windows install puts it: a user name with a space, under the
 // cache npx unpacks into.
-const WIN_ROOT = "C:\\Users\\a b\\AppData\\Local\\npm-cache\\_npx\\1f2e\\node_modules\\clearotron";
+const WIN_ROOT = "C:\\Users\\a b\\AppData\\Local\\npm-cache\\_npx\\1f2e\\Node_modules\\clearotron";
 const WIN_MODULE = win32.join(WIN_ROOT, "driver", "publish", "report-registry.mjs");
 
 test("the demo launcher's import as a raw drive-letter path is refused for its scheme — the Windows crash, reproduced here", async () => {
