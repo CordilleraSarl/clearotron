@@ -145,6 +145,21 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
       return
     }
     if (action === 'validate') {
+      // THE TRANSPORT ANSWERED, WHICH IS NOT THE SAME AS THE PROFILE BEING ACCEPTABLE. The dry run
+      // returns 200 CARRYING its verdict — `{ ok: false, errors: [...] }` — and this read only the
+      // status, so a profile the server had just refused was reported as checked. The Save that followed
+      // failed with 400 and the very reasons this step already held. Two steps of one form disagreeing,
+      // with the same validator behind both, and the step whose whole job is to catch a problem first
+      // was the one that said nothing.
+      const errors = Array.isArray(r.value['errors']) ? (r.value['errors'] as string[]) : []
+      if (r.value['ok'] === false || errors.length) {
+        setChecked(false)
+        setProblem({
+          title: errors.length === 1 ? '1 thing to fix before saving:' : `${errors.length} things to fix before saving:`,
+          lines: errors.length ? errors : ['This company’s settings were refused, and no reason came back.'],
+        })
+        return
+      }
       setChecked(true)
       return
     }

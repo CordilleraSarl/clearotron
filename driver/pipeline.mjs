@@ -15374,6 +15374,22 @@ async function pipelineInner(job, opts = {}) {
     // for each id the run was known by, not this suffixed form — and the sweep re-arms off whatever is
     // on disk, which is how a permanent SEND PENDING was born. So: the flag always, the packet and the
     // marker only when nothing wrote them.
+    // THE RECORD OF AN OBLIGATION MUST NOT BE CONTINGENT ON THE ACTION IT OBLIGES. The flag says
+    // somebody is owed a notice. Setting it downstream of the attempt to deliver that notice means it is
+    // only set when the delivery path already worked — the case that needed it least. This block did
+    // exactly that for one revision: `writeOutboxPacket` swallows its own failure and returns null, so
+    // an unwritable outbox fell to the branch below, where the RAW marker write threw and took the flag
+    // with it. The run then ended failed and NOT owed, in the one condition where the flag is the only
+    // thing that could still record the obligation. Order, therefore: supersede the old send's guards,
+    // arm the flag, and only then attempt the writes that can fail.
+    try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
+    try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
+    // A fresh notice supersedes an older send's .sent marker AND its per-channel receipts (a resumed run
+    // that fails again must still notify on every channel, not be skip-guarded by the earlier send's).
+    // Both are best-effort removals above, so neither can keep the flag below from being written.
+    try { writeRunStatus(ctx, { sendPending: true }); } catch (sErr) {
+      note(`failure notice could NOT be recorded as owed (${String(sErr?.message ?? sErr).slice(0, 100)}) — the run directory is unwritable, so nothing here can say a notice is outstanding`);
+    }
     try {
       if (!failPingSent) {
         const packet = buildFailurePacket({
@@ -15386,15 +15402,13 @@ async function pipelineInner(job, opts = {}) {
         mkdirSync(config.outboxDir, { recursive: true });
         writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
       }
-      // same per-send invariant as the delivery handoff: a fresh notice supersedes an older send's
-      // .sent marker AND its per-channel receipts (e.g. a resumed run that fails again must still
-      // notify on every channel, not be skip-guarded by the earlier send's receipts).
-      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-      try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
-      writeRunStatus(ctx, { sendPending: true });
       note(`failure notice OWED (${failPingSent ? "event lane wrote the packet" : "handoff wrote the packet"}) — mark_sent is the only clear`);
     } catch (nfErr) {
-      note(`failure-notice arming skipped (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — .failed + status.json remain the record`);
+      // NOT "status.json remains the record" — that sentence was here and it was false on exactly the
+      // path that reaches this catch, because the flag was written after the throw. It is written before
+      // it now, so the record genuinely does stand, and saying which part failed is what keeps the next
+      // reader looking in the right place.
+      note(`failure notice is owed but its packet/marker could not be written (${String(nfErr?.message ?? nfErr).slice(0, 100)}) — status.json carries the obligation; the outbox does not`);
     }
     note(`=== FAILED ${run.codename} at ${failedStage}: ${reason} ===\n`);
     // `codename` matches the three sibling terminals (postpone, recovery park, cancelled). Without it
