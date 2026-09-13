@@ -223,7 +223,7 @@ function renderEditor(key, p, contextPack, derived, framework, isNew) {
       <div class="row2">
         ${f("Default trademark classes", "f_classes", (p.defaultClasses||[]).join(", "), "Comma-separated Nice class numbers (e.g. 9, 41). Used only when a request doesn't list its own classes.")}
       </div>
-      ${f("Default countries", "f_juris", (p.defaultJurisdictions||[]).join(", "), "Comma-separated country codes (e.g. US, EU, UK) that matter to this customer. A request can override or add to these.")}
+      ${f("Default jurisdictions", "f_juris", (p.defaultJurisdictions||[]).join(", "), "The territories that matter to this customer, comma-separated: a country name like France, or a two-letter code the engine holds such as US, GB or EU. A request can override or add to these.")}
       ${f("Email domains", "f_match", (p.matchDomains||[]).join(", "), "Email domains that automatically map a request to this customer (e.g. acme.com). Usually left empty — intake normally tags the customer directly.", undefined, true)}
       ${ta("The customer's own names", "f_excl", (p.selfExclusionOwners||[]).join("\n"), "The customer's own and affiliated company names, one per line. We never flag the customer against its own marks.", undefined, true)}
       <div class="sectionh">Default search</div>
@@ -353,8 +353,16 @@ function prettyServerError(msg) {
     [/must be CONTEXT[\s\S]*not a decision rule/i,       "f_pack",      "Background must be facts and concerns, not rules — rephrase any rule as a concern or a question."],
     [/exceeds the \d+-char budget/i,                     "f_pack",      "Background is too long — keep it under 8000 characters."],
     [/delivery\.email must be/i,                         "f_email",     "Pick a cover email format from the list."],
+    // THE TERRITORY REFUSAL NAMES THE OFFENDING ENTRIES ITSELF, so this maps it to the field and keeps
+    // the server's sentence rather than replacing it — the other rows replace jargon, and this one is
+    // already the plainer of the two. Unmapped, it landed in the headline list with no field marked,
+    // which is the half that tells a reader WHERE.
+    [/(is not a territory|are not territories) the engine can search/i, "f_juris",
+      (m) => String(m).replace(/^profiles\/[^:]+:\s*/, "")],
   ];
-  for (const [re, id, friendly] of MAP) if (re.test(M)) return { id, friendly };
+  // `friendly` may be a FUNCTION where the server's own wording is better than a replacement — it
+  // names the offending entries, which a fixed sentence cannot.
+  for (const [re, id, friendly] of MAP) if (re.test(M)) return { id, friendly: typeof friendly === "function" ? friendly(M) : friendly };
   return { id:null, friendly:M };
 }
 function showServerErrors(headline, errors) {
@@ -490,7 +498,7 @@ function renderProjectEditor(customer, project, data, isNew) {
     <div class="row2">
       ${f("Default classes", "p_classes", (ov.defaultClasses||[]).join(", "), inheritHint((inh.defaultClasses||[]).join(", ")||"—"))}
     </div>
-    ${f("Default countries", "p_juris", (ov.defaultJurisdictions||[]).join(", "), inheritHint((inh.defaultJurisdictions||[]).join(", ")||"—"))}
+    ${f("Default jurisdictions", "p_juris", (ov.defaultJurisdictions||[]).join(", "), inheritHint((inh.defaultJurisdictions||[]).join(", ")||"—"))}
     <div class="field"><label for="p_email">Cover email format</label><div class="hint">Inherit, or set just for this project.</div>
       <select id="p_email"><option value=""${!d?" selected":""}>Inherit</option><option value="summary"${d&&d.email!=="table"?" selected":""}>Summary</option><option value="table"${d&&d.email==="table"?" selected":""}>Table</option></select></div>
     <div class="field"><label for="p_priv">Confidentiality marking</label><div class="hint">Only applies when a format is set above.</div><select id="p_priv"><option value=""${d&&d.privileged===false?"":" selected"}>Privileged &amp; Confidential</option><option value="no"${d&&d.privileged===false?" selected":""}>No marking</option></select></div>
