@@ -75,6 +75,77 @@ test("a removal the reviewer DID name stays removed — by ordinal and by mark",
   assert.deepEqual(byMark.read().findings.map((f) => f.mark), ["ALPHA", "BETA"]);
 });
 
+// ── A ROW OF A REGISTER, NOT ONLY A WHOLE REGISTER ──────────────────────────────────────────────────
+//
+// A corrective pass rewriting a coverage note or an action sends the complete array in its patch, and a
+// patch REPLACES the stored register — so a row the seat left out is a row deleted, and nothing
+// downstream objects unless the slice was a limited one. These arms drive that reach: the rows come back,
+// a row the reviewer named stays out, the order is the snapshot's, and the reviewer is told.
+test("a coverage row and an action nobody named come back, keyed as the reader's lines are", () => {
+  const pre = { schema_version: 7, findings: [finding(1, "ALPHA")],
+    coverage: [{ area: "EUIPO class 9", state: "confirmed-clean", note: "both registers read" },
+      { area: "UKIPO class 9", state: "coverage-limited", note: "one register read" }],
+    actions: [{ id: 3, kind: "file", text: "file before the deadline" }, { id: 4, kind: "watch", text: "watch the opposition" }] };
+  const post = { schema_version: 7, findings: [finding(1, "ALPHA")],
+    coverage: [{ area: "EUIPO class 9", state: "confirmed-clean", note: "both registers read, and no other class" }],
+    actions: [{ id: 4, kind: "watch", text: "watch the opposition" }] };
+  const b = bed(pre, post);
+  const r = repairUnnamedRemovals(b.P, b.runDir, b.pre, [], [], []);
+  assert.ok(r, "two rows vanished with no flag naming them, and the repair did not fire");
+  assert.deepEqual(r.restoredRows.map((x) => x.key), ["coverage:ukipo class 9", "action:3"],
+    "the restored rows are the ones that vanished, keyed the way the observation keys them");
+  assert.deepEqual(r.restoredRows.map((x) => x.label),
+    ['the coverage line for "UKIPO class 9"', 'the action "3"'],
+    "and they carry the reader's own name for the line, not a key");
+
+  const doc = b.read();
+  // THE ORDER IS THE SNAPSHOT'S, with the pass's own version of a row it kept — not the snapshot's copy
+  // of it, which would throw the correction away along with the restoration.
+  assert.deepEqual(doc.coverage.map((c) => c.area), ["EUIPO class 9", "UKIPO class 9"]);
+  assert.equal(doc.coverage[0].note, "both registers read, and no other class", "the pass's correction was discarded");
+  assert.deepEqual(doc.actions.map((a) => a.id), [3, 4]);
+});
+
+test("a row the reviewer's flag named stays removed, and a row the pass ADDED is kept", () => {
+  const pre = { schema_version: 7, findings: [finding(1, "ALPHA")],
+    coverage: [{ area: "EUIPO class 9", state: "confirmed-clean", note: "both registers read" },
+      { area: "UKIPO class 9", state: "coverage-limited", note: "one register read" }] };
+  const post = { schema_version: 7, findings: [finding(1, "ALPHA")],
+    coverage: [{ area: "WIPO", state: "not-searched", note: "added by the pass" }] };
+  const b = bed(pre, post);
+  // The reviewer named the UKIPO line; the EUIPO one it did not.
+  const r = repairUnnamedRemovals(b.P, b.runDir, b.pre, [], [], ["coverage:ukipo class 9"]);
+  assert.deepEqual(r.restoredRows.map((x) => x.key), ["coverage:euipo class 9"],
+    "a removal the reviewer asked for is a judgment, and this function has no business reversing it");
+  assert.deepEqual(b.read().coverage.map((c) => c.area), ["EUIPO class 9", "WIPO"],
+    "the restored row keeps the snapshot's place and the pass's new row is still there, at the end");
+});
+
+test("THE CONTROL: a pass that only rewrote a row does not fire the repair", () => {
+  const pre = { schema_version: 7, findings: [finding(1, "ALPHA")],
+    coverage: [{ area: "EUIPO class 9", state: "confirmed-clean", note: "both registers read" }],
+    actions: [{ id: 3, kind: "file", text: "file before the deadline" }] };
+  const post = { schema_version: 7, findings: [finding(1, "ALPHA")],
+    coverage: [{ area: "EUIPO class 9", state: "confirmed-clean", note: "rewritten, and correctly" }],
+    actions: [{ id: 3, kind: "file", text: "file before the deadline" }] };
+  const b = bed(pre, post);
+  assert.equal(repairUnnamedRemovals(b.P, b.runDir, b.pre, [], [], []), null,
+    "nothing vanished, so nothing is restored — a rule keyed on 'the note changed' would undo every correction");
+  assert.equal(b.read().coverage[0].note, "rewritten, and correctly");
+});
+
+test("the reviewer's re-read names a restored LINE, not only a restored finding", () => {
+  const lines = restoredFindingsTable({ restoredFindings: [], restoredRows: [{ register: "coverage", key: "coverage:ukipo class 9", label: 'the coverage line for "UKIPO class 9"' }] });
+  assert.match(lines, /RESTORED BY THE DRIVER, NOT BY THE AUTHOR/);
+  assert.match(lines, /the coverage line for "UKIPO class 9" — restored/);
+  // Both together, because a repair can restore both in one pass and the reviewer reads one section.
+  const both = restoredFindingsTable({ restoredFindings: [{ ordinal: 2, mark: "BETA" }], restoredRows: [{ register: "actions", key: "action:3", label: 'the action "3"' }] });
+  assert.match(both, /#2 BETA — restored/);
+  assert.match(both, /the action "3" — restored/);
+  // AND THE CONTROL: nothing restored, nothing said — every ordinary run.
+  assert.equal(restoredFindingsTable({ restoredFindings: [], restoredRows: [] }), "");
+});
+
 test("a top-level register that disappeared comes back, and the rule is DERIVED", () => {
   // Not a typed list of key names. A register added next year is covered the day it exists, and there is
   // no second place to remember it.

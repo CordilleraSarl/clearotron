@@ -1276,7 +1276,7 @@ export const STAGES = {
       },
       "Campaign shape (stated) — the intake's campaign facts retyped from the `Stated campaign shape` line the dispatch already carries": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "CLASS ALIGNED WITH `## Instructed scope` in this same stage — same mechanism, same job object, same retyping of a driver-held value, so the same discharge: code stamps the line rather than the model retyping it. Not pre-bound: pre-bound means the driver writes the value into a FORM before dispatch, and nothing here does that. The driver holds job.campaignShape and puts it in the dispatch; the model retypes it into the frame. The dispatch itself calls it \"facts, not judgment\". Same shape as `## Instructed scope` eight elements above, which is already mechanical. NOTE FOR E7: this is derivable-and-not-derived, and it is NOT covered by frame_scope_missing — instructed-scope.json carries marks/classes/jurisdictions/goods/customer (pipeline.mjs:6199) and no campaign field, so nothing joins the frame's copy back to the intake value. [citation unverified]",
+        why: "CLASS ALIGNED WITH `## Instructed scope` in this same stage — same mechanism, same job object, same retyping of a driver-held value, so the same discharge: code stamps the line rather than the model retyping it. Not pre-bound: pre-bound means the driver writes the value into a FORM before dispatch, and nothing here does that. The driver holds job.campaignShape and puts it in the dispatch; the model retypes it into the frame. The dispatch itself calls it \"facts, not judgment\". Same shape as `## Instructed scope` eight elements above, which is already mechanical. NOTE FOR E7: this is derivable-and-not-derived, and it is NOT covered by frame_scope_missing — instructed-scope.json carries marks/classes/jurisdictions/goods/customer (written at intake by `pipelineInner()` in `pipeline.mjs`) and no campaign field, so nothing joins the frame's copy back to the intake value.",
       },
       "Campaign shape (inferred) — the inference where intake stated none, and the decision to label the line `(inferred — not stated in the request)`": {
         class: "judgment", tokens: [],
@@ -4664,3 +4664,15 @@ export function recordEmptyReturn(built, id, { parts, ids, empty }) {
 export function dispatchBlockWhy(ctx, stage, id) {
   return ctx?.dispatchBlocks?.[stage]?.empty?.find((x) => x.id === id)?.why ?? null;
 }
+
+// The stages whose dispatch hands the seat the band reading layer. Declared as data so the driver can
+// ask "does this stage read the band" without composing its message, and pinned by a test that DERIVES
+// the same set from which stage functions reference `BAND_READING_CONTRACT` — the declaration is
+// convenience, the derivation is the authority.
+//
+// AT THE FOOT OF THIS FILE ON PURPOSE, not beside the contract it belongs to. Every line inserted above
+// a cited line silently mis-points every citation below it, and this file is cited by line in twenty
+// places; the citation check only fails when a cited span goes entirely blank, so a citation shifted
+// onto a different real line passes while describing the wrong code. Adding below the last cited line
+// is the one placement that cannot do that. See band-size.mjs for what reads this.
+export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-digest", "synthesis"]);

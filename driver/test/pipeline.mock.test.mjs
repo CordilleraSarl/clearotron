@@ -81,6 +81,40 @@ async function runPipeline(env, jobPatch = {}, opts = {}) {
 }
 const stageOrder = (events) => events.filter((e) => e.event === "stage").map((e) => e.stage);
 
+// ── THE BAND A STAGE'S WALL RAN AGAINST REACHES THE SPINE, on a LIVE dispatch ──────────────────────
+//
+// Written here rather than beside the unit arms because of what a plant showed: with the measurement
+// disabled at the dispatch site, every arm that hands `runStage` a size directly stayed green — they
+// drive the gateway, never the site that computes one. Only a real run exercises that call. The band
+// itself may or may not exist in a mock run, and the assertion does not care: what must hold is that a
+// band-reading stage's attempt event SAYS something about the band, measured or named-absent, and that
+// a stage which never reads one says nothing at all.
+test("a band-reading stage's attempt event carries the band it ran against; other stages carry no such key", async () => {
+  const { BAND_READING_STAGES } = await import("../stages.mjs");
+  const { events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
+  const attempts = events.filter((e) => e.event === "attempt");
+  assert.ok(attempts.length > 0, "no attempt events at all — the run dispatched nothing and this arm is blind");
+  const base = (e) => String(e.stage).split(":")[0];
+  const bandAttempts = attempts.filter((e) => BAND_READING_STAGES.has(base(e)));
+  // A FLOOR ON THE POPULATION: an empty intersection would satisfy every assertion below while proving
+  // nothing, which is the shape a passing-but-blind arm always has.
+  assert.ok(bandAttempts.length >= 1,
+    `this run dispatched no band-reading stage (${[...new Set(attempts.map(base))].join(", ")}) — the arm cannot see the wiring`);
+  for (const e of bandAttempts) {
+    assert.ok("band" in e, `${e.stage} reads the band and its attempt event records nothing about it`);
+    assert.equal(typeof e.band, "object", `${e.stage}'s band is not an object: ${JSON.stringify(e.band)}`);
+    // Either a measurement or a named absence — never a bare zero, and never null.
+    assert.ok(Number.isFinite(e.band?.records) || typeof e.band?.absent === "string",
+      `${e.stage}'s band is neither a measurement nor a named absence: ${JSON.stringify(e.band)}`);
+  }
+  // The other direction, on this run's own stages: a stage outside the set must not carry the key.
+  const others = attempts.filter((e) => !BAND_READING_STAGES.has(base(e)));
+  assert.ok(others.length >= 1, "every dispatched stage reads the band — the negative half is untestable here");
+  for (const e of others) {
+    assert.ok(!("band" in e), `${e.stage} does not read the band yet its row claims one: ${JSON.stringify(e.band)}`);
+  }
+});
+
 // ── The retired `client-summary` stage (2026-08-01) ─────────────────────────────────────────────────
 // The stage is gone, and this is the test that says so from the OUTSIDE: a full live pipeline run must
 // produce no client-summary.md, dispatch no such stage, write no scope sidecar for it — and still

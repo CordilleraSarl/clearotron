@@ -55,6 +55,100 @@ export function targetsOf(flagText, known) {
   return hits;
 }
 
+/**
+ * The identity a non-finding line keeps across a rewrite, per register. One implementation, because the
+ * observation below and the removal backstop in pipeline.mjs must agree on which row is which. PURE.
+ */
+export const REPORT_LINE_KEY = Object.freeze({
+  coverage: (c) => `coverage:${norm(c?.area)}`,
+  actions: (a) => `action:${a?.id ?? a?.kind ?? ""}`,
+});
+
+/**
+ * The reader's name for such a row. One implementation, because three surfaces print it: the plain-words
+ * pre-check that hands the reviewer its labels, the observation below, and the driver's own account of
+ * what it restored — and a reviewer comparing two of those must not be reading two vocabularies. PURE.
+ */
+export const REPORT_LINE_LABEL = Object.freeze({
+  coverage: (c) => `the coverage line for "${c?.area ?? "an area"}"`,
+  actions: (a) => `the action "${a?.id ?? a?.kind ?? ""}"`.replace(/ ""$/, ""),
+});
+
+/**
+ * THE LINES A CLEARANCE READER MEETS FIRST THAT ARE NOT A FINDING — each coverage row's note, each
+ * action's text and the mark assessment's two reads — with the identity each keeps across a rewrite.
+ *
+ * A finding carries an ordinal and a name, and a flag joins to it by either. These lines carry neither,
+ * so a flag rewriting one came out `not-entity-scoped` whatever the corrective pass did with it: seven
+ * such flags survived one clearance on the test box, and a production matter showed the same split
+ * (2026-09-11). The label is the one the plain-words pre-check hands the reviewer, so a flag repeating it
+ * joins on the driver's own words.
+ *
+ * Reads the parsed record (`markAssessment`) and the raw one (`mark_assessment`) alike. PURE.
+ */
+export function reportLines(doc) {
+  const out = [];
+  const add = (key, label, v) => {
+    const text = typeof v === "string" ? v : (typeof v?.read === "string" ? v.read : "");
+    if (text.trim()) out.push({ key, label, text });
+  };
+  for (const c of Array.isArray(doc?.coverage) ? doc.coverage : [])
+    add(REPORT_LINE_KEY.coverage(c), REPORT_LINE_LABEL.coverage(c), c?.note);
+  for (const a of Array.isArray(doc?.actions) ? doc.actions : [])
+    add(REPORT_LINE_KEY.actions(a), REPORT_LINE_LABEL.actions(a), a?.text);
+  const ma = doc?.markAssessment ?? doc?.mark_assessment;
+  for (const k of ["distinctiveness", "connotation"]) add(`mark-assessment:${k}`, `the mark assessment's ${k}`, ma?.[k]);
+  return out;
+}
+
+const QUOTE_WORDS = 8;
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** A flag that carries the line's identity: its label, or the plain ways of saying it. PURE. */
+function namesLine(hay, l) {
+  const at = l.key.indexOf(":");
+  const kind = l.key.slice(0, at), id = norm(l.key.slice(at + 1));
+  if (!id) return false;
+  if (kind === "coverage") return new RegExp(` coverage (?:line|note|row|entry) (?:for |on |about )?(?:the )?${escapeRe(id)} `).test(hay);
+  if (kind === "action") return hay.includes(` action ${id} `);
+  return new RegExp(` mark assessment (?:s )?(?:[a-z]+ )?${escapeRe(id)} `).test(hay);
+}
+
+/** A flag that quotes the line: eight running words of it, or all of a shorter one of four or more. PURE. */
+function quotesLine(hay, text) {
+  const words = norm(text).split(" ").filter(Boolean);
+  if (words.length < QUOTE_WORDS) return words.length >= 4 && hay.includes(` ${words.join(" ")} `);
+  for (let i = 0; i + QUOTE_WORDS <= words.length; i++)
+    if (hay.includes(` ${words.slice(i, i + QUOTE_WORDS).join(" ")} `)) return true;
+  return false;
+}
+
+/**
+ * Which of `lines` a flag is about — named by its label, or quoted, which is what the reviewer is told
+ * to do with a sentence it rewrites.
+ *
+ * THIS OBSERVES; IT APPLIES NOTHING. Matching prose is how a rewrite lands on the wrong thing, which is
+ * why no correction is ever routed by it. Here a miss leaves the row where it was, `not-entity-scoped`,
+ * and a hit prints the line's label beside the flag, where the reviewer reading the table can see it. PURE.
+ */
+export function linesOf(flagText, lines) {
+  const hay = ` ${norm(flagText)} `;
+  return (lines ?? []).filter((l) => namesLine(hay, l) || quotesLine(hay, l.text));
+}
+
+/** The corrective pass's own words about a line it was flagged on, from the `corrections` register. PURE. */
+function reasonFor(hit, doc) {
+  const c = doc?.corrections;
+  const said = [
+    ...(Array.isArray(c?.entries) ? c.entries.map((e) => [e?.entity, e?.disposition, e?.note].filter(Boolean).join(": ")) : []),
+    ...String(c?.note ?? "").split(/\n|;\s+/),
+  ].map((s) => s.trim()).filter(Boolean);
+  const hitSays = said.find((s) => linesOf(s, hit).length);
+  return hitSays ? hitSays.slice(0, 300) : null;
+}
+
+const squash = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
+
 /** A finding's comparable state — the fields a correction can move. PURE. */
 const stateOf = (f) => JSON.stringify({
   disposition: f?.disposition ?? null,
@@ -82,7 +176,10 @@ function byName(doc) {
  *   findings-removed      — a finding this flag names was present before the pass and is GONE after it;
  *   findings-changed      — at least one finding this flag names has a different comparable state;
  *   findings-unchanged    — it named findings and none of them moved;
- *   not-entity-scoped     — the flag names no finding (a prose/structure correction);
+ *   line-removed          — a non-finding line this flag names or quotes (`reportLines`) is GONE after it;
+ *   line-changed          — that line's text is different after the pass;
+ *   line-unchanged        — it reads the same; the row carries the pass's reason, or null for none;
+ *   not-entity-scoped     — the flag names no finding and no such line (a prose/structure correction);
  *   not-checkable         — the pre-corrective snapshot is missing, so nothing can be compared.
  *
  * "findings-unchanged" is NOT a failure and must never be rendered as one: correcting a narrative
@@ -162,6 +259,7 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc) {
   const known = knownEntities(preDoc, postDoc);
   const pre = byName(preDoc), post = byName(postDoc);
   const preOrd = byOrdinal(preDoc), postOrd = byOrdinal(postDoc);
+  const preLines = reportLines(preDoc), postLine = new Map(reportLines(postDoc).map((l) => [l.key, l]));
   return (rows ?? []).map((r) => {
     // — a DECLARED ordinal wins over the name match. `targetsOf` is a normalised prose join and it
     // is why six of nine flags on a delivered run resolved to nothing; the declaration is the reviewer's
@@ -185,10 +283,22 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc) {
     const declaredOrds = (Array.isArray(r.ordinals) ? r.ordinals : [])
       .filter((o) => preOrd.has(o) || postOrd.has(o));
     const label = (o) => { const f = preOrd.get(o) ?? postOrd.get(o); return f?.mark ?? f?.owner?.name ?? `finding ${o}`; };
-    const targets = declaredOrds.length ? declaredOrds.map(label) : targetsOf(r.text, known);
+    // — A LINE THAT IS NOT A FINDING, asked before the name match. A flag that names or quotes a coverage
+    // note, an action or the mark assessment is about that line, and a mark or owner named inside the
+    // line it quotes is incidental. Asked only where no ordinal was declared: a declaration still wins.
+    const hit = preDoc && !declaredOrds.length ? linesOf(r.text, preLines) : [];
+    const targets = declaredOrds.length ? declaredOrds.map(label)
+      : hit.length ? hit.map((l) => l.label) : targetsOf(r.text, known);
     let outcome;
     let removed = [];
     if (!preDoc) outcome = "not-checkable";
+    else if (hit.length) {
+      // The same three answers a finding gets, asked of the line's own text. REMOVAL WINS, as it does
+      // for a finding: a line gone after the pass was answered by deletion, and that is the question.
+      const gone = hit.filter((l) => !postLine.has(l.key));
+      if (gone.length) { outcome = "line-removed"; removed = gone.map((l) => l.label); }
+      else outcome = hit.some((l) => squash(postLine.get(l.key).text) !== squash(l.text)) ? "line-changed" : "line-unchanged";
+    }
     else if (declaredOrds.length) {
       // The certain path. Every question below is asked of the finding the reviewer NAMED, by ordinal.
       removed = declaredOrds.filter((o) => preOrd.has(o) && !postOrd.has(o)).map(label);
@@ -229,7 +339,10 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc) {
     // unrecoverable; one field makes it answerable from the next run on. It also feeds the report's
     // open-points section, which prints `(finding N)` beside a point and had no ordinals to print.
     return { n: r.n, kind: r.kind, typed: r.typed, text: r.text,
-      ordinals: Array.isArray(r.ordinals) ? r.ordinals : null, targets, outcome, removed };
+      ordinals: Array.isArray(r.ordinals) ? r.ordinals : null, targets, outcome, removed,
+      // A line's row carries the pass's own reason for it, or null when the pass gave none: "declined
+      // with a reason" is then a fact the run recorded, and "neither applied nor declined" is too.
+      ...(hit.length && preDoc ? { reason: reasonFor(hit, postDoc) } : {}) };
   });
 }
 
@@ -256,9 +369,12 @@ export function buildCorrectionsApplied(rows, preDoc, postDoc) {
  * belongs on the printed side. Deciding it here rather than at the report keeps one implementation of a
  * question this file already answered once.
  *
+ * `line-changed` is the same fact about a line that is not a finding, so it is resolved too; its
+ * `line-removed` and `line-unchanged` stay printed for the reasons their finding twins do.
+ *
  * PURE.
  */
-export const RESOLVED_OUTCOMES = Object.freeze(["findings-changed"]);
+export const RESOLVED_OUTCOMES = Object.freeze(["findings-changed", "line-changed"]);
 
 /** The rows to print. Anything not positively resolved, including a row of an outcome nobody has met. */
 export const unresolvedFlags = (rows) =>
@@ -307,8 +423,9 @@ export function correctionsAppliedTable(applied) {
   for (const r of applied) {
     // — a removal NAMES what left. `findings-removed` alone would tell the recheck that something
     // was deleted and not which fact, which is the half it needs to decide whether the deletion was legitimate.
-    const what = r.outcome === "findings-removed" && r.removed?.length
+    const what = (r.outcome === "findings-removed" || r.outcome === "line-removed") && r.removed?.length
       ? `${r.outcome}: ${r.removed.join(", ")}`
+      : r.reason ? `${r.outcome} — the pass said: ${r.reason.slice(0, 120)}${r.reason.length > 120 ? "…" : ""}`
       : r.outcome;
     out.push(`| ${r.n} | ${r.kind} | ${r.text.slice(0, 90)}${r.text.length > 90 ? "…" : ""} | ${r.targets.join(", ") || "—"} | ${what} |`);
   }
@@ -322,5 +439,11 @@ export function correctionsAppliedTable(applied) {
       + "so it reads as resolved while the report is no truer than before. Check each named finding: a "
       + "withdrawal the evidence supports is legitimate and belongs in the record AS a withdrawal with its "
       + "reason; a fact removed because it was inconvenient to correct is the defect this row exists to show you.");
+  if (applied.some((r) => String(r.outcome).startsWith("line-")))
+    out.push("",
+      "`line-*` rows compare a line the reader sees that is not a finding — a coverage note, an action, the mark "
+      + "assessment — as the flag named or quoted it, before and after the pass. A `line-unchanged` row with no "
+      + "reason beside it is a flag the pass neither applied nor declined; `line-removed` means the line is gone "
+      + "rather than rewritten.");
   return out.join("\n");
 }

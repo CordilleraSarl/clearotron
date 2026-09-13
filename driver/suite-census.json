@@ -69,6 +69,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
+          "tests": 9,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "a-cancel-marker-names-its-actor.test.mjs": {
           "tests": 14,
           "asserts": 34,
@@ -168,6 +174,12 @@
         "a-connect-line-says-where-it-runs.test.mjs": {
           "tests": 4,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -2986,8 +2998,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 93,
-          "asserts": 785,
+          "tests": 94,
+          "asserts": 792,
           "skips": 0,
           "todos": 0
         },
@@ -4516,8 +4528,8 @@
           "todos": 0
         },
         "the-corrective-pass-names-what-it-removes.test.mjs": {
-          "tests": 8,
-          "asserts": 33,
+          "tests": 12,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },

@@ -207,6 +207,14 @@ export const REPAIR_COMPOSERS = [
         `IF YOU REMOVE THE SUPPORT FOR A CLAIM, THE CLAIM GOES WITH IT. Deleting the evidence and leaving the sentence standing does not make it safer, it makes it unsupported and therefore stronger than the record allows. A run was refused for exactly this.`,
         `1. Correct the flagged narrative sections — send back ONLY the sections a flag names, and every section the flags do not name is left out and comes back byte-identical;`,
         `2. mirror every correction into the finding objects the flags name (owner names, levels/composites, meters). A finding the review KILLS is not deleted: keep its object, set "disposition": "withdrawn" and add "withdrawn_reason": "<the review flag that killed it>". Add a top-level "corrections": {"applied": true, "note": "<one line per flagged entity: corrected / withdrawn / no-change-because-…>"}.`,
+        // THE LINES THAT ARE NOT A FINDING. A coverage note, an action and the mark assessment carry no
+        // ordinal, so step 2 cannot reach them, and nothing said where a rewrite of one goes: seven such
+        // flags survived one clearance on the test box, each recorded as naming nothing (2026-09-11). The
+        // channel already existed — a PATCH copies a top-level register of the findings document through
+        // — and this names it. The coverage-account rule above forbids NEW claims about what was searched;
+        // rewording a note keeps its claims, and the text says so, or the seat reads the two as a conflict
+        // and does nothing, which is what it did.
+        `3. A flag about a line the reader sees that is NOT a finding — a coverage row's "note", an action's "text", or the mark assessment's "distinctiveness" or "connotation" — is applied in the same PATCH: send the complete top-level \`coverage\` array (every row, the unflagged ones exactly as you last sent them), the complete \`actions\` array, or the complete \`mark_assessment\`, with the flagged line rewritten. A row left out of the array is a row deleted, so send every row. Rewording a coverage note is NOT reopening the coverage account: keep its area, its state and every fact it states, and change only how it says them. A flagged line you leave as written is named in the "corrections" note with the reason, as the flag names it — for example: the coverage line for "<area>": no-change-because …`,
         // ── CONVERTED. `editRepairTail` stood here and ordered targeted Edits of
         // both files. The seat holds no Edit for either any more — but the ECONOMICS that argued for a
         // targeted edit are preserved rather than lost, which is why the call has a patch shape at all:
