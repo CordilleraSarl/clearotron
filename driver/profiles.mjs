@@ -664,7 +664,11 @@ export function validateProfileEdit(key, profileObj, contextPack = "", { sparse 
       errors.push(`profiles/${key}.json: ${dropped.map((d) => JSON.stringify(d)).join(", ")} `
         + `${dropped.length === 1 ? "is not a territory" : "are not territories"} the engine can search, `
         + `so storing ${dropped.length === 1 ? "it" : "them"} would be a default that silently does `
-        + `nothing. Use a country name, or a two-letter code such as US, GB or EU.`);
+        // NAME THE RULE THAT FIRED, and this is the sentence a person actually reads — the panel renders
+        // THIS, not the field contract's wording, so correcting that one and not this one left the
+        // refusal telling a reader to do what they had just done. The rule is not the shape of the entry:
+        // an unknown two-letter code is refused by a sentence that used to ask for a two-letter code.
+        + `nothing. Use a country name, or one of the two-letter codes the engine holds, such as US, GB or EU.`);
     }
   }
   return { ok: errors.length === 0, errors };

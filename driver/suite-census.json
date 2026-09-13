@@ -1337,7 +1337,7 @@
         },
         "client-door.test.mjs": {
           "tests": 38,
-          "asserts": 162,
+          "asserts": 163,
           "skips": 1,
           "todos": 0
         },
@@ -2818,8 +2818,8 @@
           "todos": 0
         },
         "nothing-a-command-awaits-imports-it-back.test.mjs": {
-          "tests": 16,
-          "asserts": 49,
+          "tests": 18,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -3250,8 +3250,8 @@
           "todos": 0
         },
         "profiles.test.mjs": {
-          "tests": 43,
-          "asserts": 241,
+          "tests": 44,
+          "asserts": 247,
           "skips": 0,
           "todos": 0
         },
