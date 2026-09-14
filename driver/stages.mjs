@@ -4613,6 +4613,15 @@ export function whatsappRouting(job, agentId) {
   const who = email || handle || "the requester";
   return {
     whatsappTo: to,
+    // THE CHANNEL, BESIDE THE NUMBER, because a courier's messaging tool refuses a send that does not
+    // name one as soon as the assistant has more than one channel configured — "Channel is required
+    // when multiple channels are configured: msteams, whatsapp" — and the notice is then composed,
+    // addressed and discarded on one log line. The courier sheet said "send it there" and named no
+    // channel, so the instruction was correct for an assistant with exactly one and silently wrong for
+    // any other. A field is harder to lose than a sentence: the packet now states which channel this
+    // route is on, and the sheet tells the courier to pass it. It rides into the delivery packet by
+    // construction — pipeline.mjs and pipeline-knockout.mjs both spread this object into it.
+    whatsappChannel: "whatsapp",
     whatsappToReason: to ? null : `no chat number is held for ${who} — set one in CLEAROTRON_REQUESTER_WHATSAPP to notify them`,
     whatsappCcOperator: OPERATOR_WHATSAPP_COPY ? (AGENT_WHATSAPP[agentId] ?? null) : null,
   };
