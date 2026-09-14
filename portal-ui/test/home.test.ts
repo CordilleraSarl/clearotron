@@ -284,9 +284,14 @@ test('elapsed is coarse, and never a countdown', () => {
  * The same technique screenCopy.test.ts uses, and for the same reason: these assertions are about what
  * reaches a client's eyes, and a comment explaining why the screen refuses to show an ETA would
  * otherwise fail a test that forbids the word "ETA".
+ *
+ * A JSX COMMENT IS COMMENTARY TOO, and the line filter alone did not reach one: `{/*` is not `/*`, and
+ * the lines under it open with ordinary words. So a note explaining why a button exists counted as a
+ * second button, and the arm that counts the routes into the archive passed on its own prose after the
+ * second route was removed. The span goes first, then the line filter.
  */
 const body = (src: string) =>
-  src.split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join('\n')
+  src.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join('\n')
 
 const home = body(readFileSync(new URL('../src/screens/Home.tsx', import.meta.url), 'utf8'))
 // Read for the one-spelling arm below: the rail is where the label is DECIDED, and the screen is where
@@ -363,10 +368,12 @@ test('the finished line leads into Clearances, and Home lists nothing else', () 
   assert.match(home, /\/portal\/clearances/)
 })
 
-test('ONE LOOK AND ONE SPELLING FOR THE ARCHIVE — the rail, both Home routes and the screen agree', () => {
+test('ONE BUTTON INTO THE ARCHIVE, ONE SPELLING — the rail, Home and the screen agree', () => {
   // One destination had three presentations: a rail item, a button wearing the rail item's class (grey,
   // flat, and read as scenery), and red text with a different icon and a different capitalisation. A
   // reader who meets three of them does not know they are one place, and the quiet one goes unpressed.
+  // Then there were two identical buttons, one at the top and one at the bottom, competing for the same
+  // press — so the tail's route is a quiet line now and the button is the one at the top.
   //
   // THE LABEL IS TAKEN FROM THE RAIL, never typed here as a fourth copy — that is the failure this arm
   // is about, one layer up. If the rail is renamed again, every surface below it is checked against the
@@ -376,15 +383,44 @@ test('ONE LOOK AND ONE SPELLING FOR THE ARCHIVE — the rail, both Home routes a
   const label = rail[1]
   assert.equal(label, 'All Clearances', 'the rail item is the one spelling everything else follows')
 
-  // BOTH Home routes carry it, and both are the same button rather than one button and one text link.
-  assert.equal((home.match(new RegExp(label, 'g')) ?? []).length, 2, 'Home names the archive twice — once per route')
+  // ONE button, and it says the rail's word. Counted on the prose rather than the file, because the
+  // note explaining why the button is there says the label too, and counting that is how this arm read
+  // as green on the day the second button went away.
+  assert.equal((home.match(new RegExp(label, 'g')) ?? []).length, 1, 'Home names the archive more than once')
+  assert.equal((home.match(/className="btn-ghost home2-all"/g) ?? []).length, 1,
+    'the archive button has a twin again — one primary and one secondary per page, not two of one')
   assert.doesNotMatch(home, /className="nav-item" onClick={onAll}/, 'a Home button is wearing the rail item\'s clothes again')
-  assert.equal((home.match(/className="btn-ghost home2-all"/g) ?? []).length, 2,
-    'the two routes into the archive are not the same button')
+
+  // AND THE TAIL STILL ENDS IN A WAY OUT, as a line rather than a second button: a summary with no
+  // route to the whole is the first half of the design only.
+  assert.match(home, /className="home2-see-all"/, 'the tail has no way into the archive at all')
+  assert.equal((home.match(/\/portal\/clearances'\)/g) ?? []).length, 2, 'the two routes do not both land on the archive')
 
   // And the screen it leads to says the same word, so a reader who follows it lands somewhere named
   // what they pressed.
   assert.ok(CLEARANCES.includes(`<div className="eyebrow">${label}</div>`), 'the screen does not name itself as the rail does')
+})
+
+test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row', () => {
+  // WITH NOTHING IN FLIGHT this page was a band saying zero and one finished clearance under a heading
+  // reading "Last finished", which is All Clearances with everything taken away. The screen now says
+  // which page it is, the empty band says what to do, and the tail is a few rows ending in how many
+  // there are in total.
+  assert.match(home, /recentlyFinished\(runs, undefined, 3\)/, 'the tail is back to a single row, or uncapped')
+  assert.match(home, /See all \{total\} finished/, 'the count of everything finished is not offered')
+  assert.match(home, /finished\(runs\)\.length/, 'the total is derived somewhere other than the contract')
+  assert.match(home, /Recently finished/)
+  assert.doesNotMatch(home, /Last finished/, 'the old single-row heading is still on the page')
+
+  // THE HEADING, which is the half a reader uses to tell this page from the archive.
+  assert.match(home, /className="eyebrow">Home</, 'the page does not name itself')
+  assert.match(home, /<h1[^>]*>Now<\/h1>/, 'the heading does not say what this page is for')
+
+  // AND THE EMPTY BAND SAYS WHAT TO DO — but only to somebody who may do it. `slotNote` describes a cap
+  // on concurrent runs, which is a sentence about nothing when nothing is running.
+  assert.match(home, /Nothing running right now\./)
+  assert.match(home, /canRun\(ctx\.me\) \? ' Start one with New clearance\.' : ''/,
+    'a person who may not start a clearance is told to start one')
 })
 
 test('THERE IS NO ROLE SPLIT ON THIS PAGE', () => {
