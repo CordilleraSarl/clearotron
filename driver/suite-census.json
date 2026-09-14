@@ -4161,6 +4161,12 @@
           "skips": 0,
           "todos": 0
         },
+        "setup-asks-how-claude-is-paid.test.mjs": {
+          "tests": 4,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
         "shipped-brand-is-the-product.test.mjs": {
           "tests": 7,
           "asserts": 24,
