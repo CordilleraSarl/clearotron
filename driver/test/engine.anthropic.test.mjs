@@ -438,6 +438,82 @@ test("NO-PROGRESS watchdog: byte-alive junk chatter is killed on the no-progress
   assert.equal(isTimeout({ killed: r.killed, code: r.code, wall: r.wall, stderr: r.stderr, timeoutSec: 60 }), true);
 }));
 
+// ── A TRICKLE IS A STALL WEARING A STREAM ────────────────────────────────────────────────────
+//
+// A judgment stage produced 0.08 output tokens per second and survived 46 minutes, killed only by the
+// last-resort wall with the whole attempt discarded; its retry did the same work at 74 tokens/sec in 29.
+// Neither clock above can see that shape and both are behaving as specified: the byte-stall resets on
+// any byte, and the no-progress ceiling counts token movement as progress deliberately, because the
+// engine contract promises a slow-but-working streaming turn is never clipped.
+//
+// THE THRESHOLD IS WHAT THESE ARMS VARY, not the fixture. A mock that streams slowly enough to trip a
+// production floor would take minutes per arm; driving the floor past a fixed fixture asks the same
+// question of the same site and answers it in seconds. The floor's own default is not asserted here —
+// it is provisional until the rate window has been read across more than one round, which is the one
+// acceptance criterion this change leaves open.
+
+test("TRICKLE: a turn streaming under the floor is killed well below the wall, and recorded as a stall", timed(async () => {
+  const t0 = Date.now();
+  const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
+    { MOCK_CLAUDE_TOKEN_STREAM: "100", MOCK_CLAUDE_TOKEN_COUNT: "600", MOCK_CLAUDE_NOFILE: "1",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "1000", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
+      CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
+  assert.equal(r.killed, true, "a turn under the floor must die on the floor, not on the wall");
+  assert.ok(Date.now() - t0 < 10000, "well below the wall — every other clock here is pinned at 60s");
+  assert.equal(r.signals?.stalled, true, "a trickle IS a stall: the retry policy keys on this, and must not extend the budget");
+  assert.equal(r.signals?.trickle, true, "and carries its own discriminator, so a reader can tell it from silence");
+  assert.equal(r.signals?.noProgress, undefined, "not the no-progress ceiling — token movement kept that one satisfied throughout");
+  assert.equal(r.signals?.hardWall, undefined, "and never the 'needed more time' kill this exists to prevent");
+  assert.match(r.stderr, /trickle floor/, "the sentence says what happened; 0 streamed tokens is the one thing this is not");
+  assert.match(r.stderr, /output tokens\/sec of active time/, "and carries the rate, so the threshold can be argued from artifacts");
+}));
+
+test("TRICKLE, THE CONTROL: the same fixture under a floor it clears is left alone", timed(async () => {
+  // Without this the arm above would pass on a floor that killed everything. Same stream, same warm-up,
+  // a floor the fixture is comfortably above — roughly ten tokens per second against one.
+  const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
+    { MOCK_CLAUDE_TOKEN_STREAM: "100", MOCK_CLAUDE_TOKEN_COUNT: "12", MOCK_CLAUDE_NOFILE: "1",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "1", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
+      CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
+  assert.equal(r.killed, false, "a turn producing at a healthy rate must never meet this instrument");
+  assert.equal(r.signals?.trickle, undefined);
+}));
+
+test("TRICKLE: a turn that is mostly TOOL WAIT is judged on active time, not elapsed", timed(async () => {
+  // The promise the hard ceiling already makes, kept by this instrument too: a turn waiting on a slow
+  // register lookup is producing no tokens, and killing it for that would be this change costing the
+  // very runs it exists to protect. The floor is absurd and the warm-up is short; active time never
+  // reaches the warm-up, because the wait is not active time.
+  const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
+    { MOCK_CLAUDE_TOOL_WAIT: JSON.stringify([{ name: "RegisterLookup", ms: 1500 }]),
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "100000", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
+      CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
+  assert.ok(r.toolWaitMs >= 1000, `the fixture waited ${r.toolWaitMs}ms — under ~1s there is no elapsed-vs-active gap to measure`);
+  assert.equal(r.killed, false, "the floor read elapsed time: a turn waiting on a tool was killed for not generating");
+  assert.equal(r.signals?.trickle, undefined);
+}));
+
+test("TRICKLE: zero disables the instrument, and disabling it does not disable the wall", timed(async () => {
+  // THE FAIL-SAFE DIRECTION, and the bug it pins is one I wrote and caught before pushing: the floor
+  // sat in the watchdog's else-chain as `else if (enabled) { if (trickling) … }`, which SWALLOWED the
+  // chain — with the floor on and the rate healthy, the hard ceiling below was never evaluated at all.
+  // Adding an instrument must not switch off the last backstop, so both directions are driven.
+  const off = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
+    { MOCK_CLAUDE_TOKEN_STREAM: "100", MOCK_CLAUDE_TOKEN_COUNT: "12", MOCK_CLAUDE_NOFILE: "1",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "0", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
+      CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
+  assert.equal(off.killed, false, "zero must read as 'no floor', never as 'floor of zero'");
+
+  // …and with the floor ENABLED and comfortably cleared, a turn that generates forever still meets the
+  // ceiling. Same fixture as the ceiling's own arm, with the floor switched on beside it.
+  const walled = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
+    { MOCK_CLAUDE_TOKEN_STREAM: "40", MOCK_CLAUDE_TOKEN_COUNT: "200", MOCK_CLAUDE_NOFILE: "1",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "1", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
+      CLEAROTRON_HARD_MS: "600", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000" });
+  assert.equal(walled.killed, true, "the hard ceiling still fires with the floor enabled — the chain was swallowed");
+  assert.equal(walled.signals?.trickle, undefined, "and it was the ceiling that killed it, not the floor");
+}));
+
 // ── THE CEILING SITE ITSELF, NOT THE FUNCTION IT CALLS ──────────────────────────────────────
 //
 // The change moved the hard ceiling off ELAPSED and onto ACTIVE time. It shipped with three arms on

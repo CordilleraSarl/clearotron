@@ -495,7 +495,7 @@ export function Result({
   // Back is ONE step, not always the list. With a name open the step back is the family it came out of;
   // without one there is no family above this and the step back is the clearances list, as before.
   const back = markSlug === null
-    ? { label: 'Clearances', href: '/portal/clearances' }
+    ? { label: 'All Clearances', href: '/portal/clearances' }
     : { label: 'All names', href: family }
 
   return (

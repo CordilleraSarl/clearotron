@@ -128,14 +128,31 @@ const LOOPBACK = new Set(["127.0.0.1", "::1"]);
 // transport is imported lazily here (it pulls @hono/node-server/undici) so nothing else has to.
 // `owner` = the authed email that created the session; stored on the entry so the handler can refuse a
 // different identity attaching to it (session owner-binding).
-async function createSession(sessions, scope = { kind: "internal", runId: null }, owner = null) {
+// ── DNS-REBINDING PROTECTION BELONGS TO THE NETWORK DOOR, AND ONLY TO IT ────────────────────────────
+//
+// `networkDoor` is false for the key socket. Both doors share this factory, and the allowed-hosts list
+// it arms is read from the TCP door's own environment — so a socket caller was being held to a Host
+// header naming the TCP door's address, on a transport that has no host, no port and no DNS.
+//
+// key-socket.mjs already states in terms that this refusal does not apply to it: "the allowed-hosts
+// refusal arms DNS-rebinding protection, which is an attack on a browser resolving a HOSTNAME. A socket
+// has no hostname and no DNS." That was true of the door it builds and false of the sessions that door
+// creates, because the exclusion lived in a comment beside one handler while the protection lived in
+// the factory both handlers call. Measured on a real key over a real socket: the call succeeds ONLY if
+// the caller sends a Host naming the TCP listener, which is a requirement nothing documents and no
+// integrator would guess.
+//
+// The network door is UNCHANGED — it passes nothing and keeps the default — so this narrows one
+// transport rather than relaxing a protection.
+async function createSession(sessions, scope = { kind: "internal", runId: null }, owner = null,
+                             { networkDoor = true } = {}) {
   const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
   // HTTP is never the trusted-local surface: local:false (so what-if is never exposed remotely, even to ops).
   const server = makeServer({ scope, local: false });
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: () => randomUUID(),
-    enableDnsRebindingProtection: ALLOWED_HOSTS.length > 0,
-    allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : undefined,
+    enableDnsRebindingProtection: networkDoor && ALLOWED_HOSTS.length > 0,
+    allowedHosts: networkDoor && ALLOWED_HOSTS.length ? ALLOWED_HOSTS : undefined,
     onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
   });
   transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
@@ -303,6 +320,9 @@ if (isMain) {
   // non-firm identity a mis-scoped edge might admit. Tenants gated purely by MCP_ALLOWED_EMAILS leave this
   // list empty, so tokenless internal read-all stays off for them (fail-closed) unless they set the domain list.
   const handler = makeHttpHandler({ verify, limiter, opsLimiter, sessions, createSession, ns: NS, sessionMax: SESSION_MAX,
+    // The network door tells a caller who sends a key WHERE the key door is, when this deployment has
+    // one. Refusing without saying that is what sent the last operator to the proxy's configuration.
+    keyDoorPath: KEY_SOCKET || null,
     authHeader: AUTH_HEADER, devMode: !TOKEN_ONLY && AUTH_DISABLED && DEV, tokenOnly: TOKEN_ONLY, firmDomains: ALLOWED_DOMAINS, log });
   // Three states now, and the line must name the one it is in. "AUTH OFF (dev)" was printed by anything
   // with a null `verify`, which from here on includes the key door — a line claiming the opposite of
@@ -337,7 +357,10 @@ if (isMain) {
     if (refusal) { log(`FATAL: ${refusal}`); process.exit(1); }
     const keyHandler = makeHttpHandler({
       verify: null, tokenOnly: true, devMode: false,
-      limiter, opsLimiter, sessions: new Map(), createSession, ns: NS, sessionMax: SESSION_MAX,
+      limiter, opsLimiter, sessions: new Map(), ns: NS, sessionMax: SESSION_MAX,
+      // The socket's sessions are not network sessions — see createSession. Passed here rather than
+      // read inside it, so the factory keeps one rule and the caller names which door it is.
+      createSession: (sessions, scope, owner) => createSession(sessions, scope, owner, { networkDoor: false }),
       authHeader: AUTH_HEADER, firmDomains: ALLOWED_DOMAINS, log,
     });
     openKeyDoor({ handler: keyHandler, path: KEY_SOCKET, log })

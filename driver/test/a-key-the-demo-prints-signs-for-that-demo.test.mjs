@@ -16,6 +16,7 @@ import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { demoTokenSecret, demoTokenSecretPath, keyIssueCommand } from "../../shared/client-door.mjs";
+import { demoBaseResetTarget } from "../../bin/start.mjs";
 import { handRunEnv } from "./drive-env.mjs";   // a hand-run command's environment, with this box's own marks off it
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -91,6 +92,64 @@ test("a demo is refused over an install's directory, so its secret never lands w
     assert.notEqual(three.status, 0);
     assert.doesNotMatch(`${three.stdout}${three.stderr}`, /--demo cannot run in/);
     assert.match(`${three.stdout}${three.stderr}`, /is not a port number/);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── THE DEMO'S OWN DEFAULT FOLDER IS ITS OWN, AND IT IS RESET RATHER THAN REFUSED ─────────────────
+//
+// A demo before this one kept its base, so a machine that met the product once carries a guest list in
+// ~/trademark-demo. The guard above read that as somebody's install and refused — on a run with NO
+// FLAGS AT ALL — telling the reader to "run the demo without --base", which is the command they had
+// just run. Measured on a WSL walk of a published beta: the demo published its samples, copied the
+// program, then refused its own default directory.
+//
+// The reset is narrow by construction and this arm drives the narrowness, not just the fix: the
+// directory must be the demo's own default and the reader must not have named it. Every --base arm
+// above still refuses, which is what keeps this from being "the demo deletes directories".
+test("only the demo's own default folder is ever reset, and only when the reader did not name it", () => {
+  // THE RULE, AS A TABLE, because the thing being decided is whether a directory is removed. Driven on
+  // the exported decision rather than by starting a product: the site's own next complaint arrives
+  // BEFORE this point (ports resolve first), so a spawn cannot reach the reset without running the
+  // whole demo — which is a walk, not an arm. The call site is pinned separately below.
+  const DEFAULT = "/h/trademark-demo";
+  assert.equal(demoBaseResetTarget({ baseGiven: false, base: DEFAULT, demoDefault: DEFAULT }), DEFAULT,
+    "the demo's own default folder, on a run with no flags — the case that was refused");
+  assert.equal(demoBaseResetTarget({ baseGiven: true, base: DEFAULT, demoDefault: DEFAULT }), null,
+    "a directory the reader NAMED is theirs, even when it is the same path");
+  assert.equal(demoBaseResetTarget({ baseGiven: false, base: "/h/work/tm", demoDefault: DEFAULT }), null,
+    "any other directory is not the demo's to clear");
+  assert.equal(demoBaseResetTarget({ baseGiven: false, base: "/h/trademark-demo-2", demoDefault: DEFAULT }), null,
+    "compared whole: a path that merely STARTS with the default is a different directory");
+  assert.equal(demoBaseResetTarget({}), null, "and an unanswerable question answers no, never a path");
+});
+
+test("the reset is wired into the demo guard, and every named base still goes through the install checks", () => {
+  // A PURE RULE NOTHING CALLS IS NOT A CHANGE — the trap this tree has hit before. Counted against the
+  // source, so the table above cannot satisfy it on its own.
+  const src = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
+  assert.match(src, /const reset = demoBaseResetTarget\(\{ baseGiven: BASE_GIVEN, base, demoDefault:/,
+    "the guard no longer asks the exported rule which directory it may reset");
+  assert.match(src, /if \(reset && existsSync\(reset\)\) \{[\s\S]{0,200}rmSync\(reset,/,
+    "and the removal is keyed on that answer rather than on a path computed beside it");
+});
+
+test("a refusal never tells the reader to drop a flag they did not give", () => {
+  // The other half of the reported defect, and the half that would survive a narrow fix: the remedy
+  // sentence was written for a reader who had passed --base, and printed to one who had not.
+  const home = mkdtempSync(join(tmpdir(), "demo-remedy-"));
+  try {
+    const quiet = join(home, "work", "tm");
+    mkdirSync(quiet, { recursive: true });
+    writeFileSync(join(quiet, "grants.json"), JSON.stringify({ tenants: {}, people: {} }));
+    const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--base", quiet], {
+      encoding: "utf8", cwd: ROOT, timeout: 60000,
+      env: handRunEnv({ HOME: home, CLEAROTRON_NO_ENV_FILE: "1" }, { PATH: process.env.PATH }),
+    });
+    const out = `${r.stdout}${r.stderr}`;
+    assert.match(out, /--demo cannot run in/, "a base the reader NAMED that looks like an install is still refused");
+    assert.doesNotMatch(out, /without --base/, "the remedy told the reader to omit the flag they had just passed");
+    assert.match(out, new RegExp(`remove ${quiet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`),
+      "and it names the exact directory, which is what the reader has to act on");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 

@@ -9,6 +9,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { makePrincipal, assertPrincipal, genericOrgOf, seesEverything, mayRun, mayManage } from "../portal-access.mjs";
 
 // The worked example: two organisations, one company, four people. Kay has access to everything; Pat runs
@@ -157,4 +158,53 @@ test("a person with one company still resolves it without naming it", () => {
   assert.throws(() => assertPrincipal(who("pat@southbank.example"), { account: null }),
     (e) => e.status === 400 && /no company of its own/.test(e.message),
     "an organisation holding no company resolved to something anyway");
+});
+
+// ── SOMEBODY ADDED ON THE PEOPLE PAGE CAN SIGN IN, WITHOUT A RESTART ──────────────────────────────
+//
+// The page writes the person into the deployment's own guest list and the write succeeds. The sign-in
+// check read two lists out of the ENVIRONMENT once, at construction, and never looked at that file — so
+// the new person was refused at the door with a 403 naming their address, and restarting did not help,
+// because the values do not come from the file they were added to. That is the page's whole promise.
+test("the guest list is read at verify time, from both shapes the file carries", async () => {
+  const { addressesInGrants } = await import("../../shared/scope.mjs");
+  const file = {
+    people: { "he@firm.test": { run: true, manage: false } },
+    tenants: { acme: { name: "Acme", accounts: [], users: { "she@acme.test": [] } } },
+  };
+  let mtimeMs = 1;
+  const io = { stat: () => ({ mtimeMs }), read: () => JSON.stringify(file) };
+  const now = () => addressesInGrants({ grantsPath: "/grants.json", io });
+
+  // BOTH SHAPES, because the file carries two facts and they are not the same one: `people` at the TOP
+  // LEVEL is a person and their permissions; `tenants.<org>.users` is who reaches which organisation.
+  // Reading one and not the other returns a short list that looks exactly like a lost write.
+  assert.deepEqual(now().sort(), ["he@firm.test", "she@acme.test"]);
+
+  // ADDED WITHOUT A RESTART, which is the acceptance: the file changes, its mtime moves, and the next
+  // request sees the new person.
+  file.people["new@firm.test"] = { run: true, manage: false };
+  assert.ok(!now().includes("new@firm.test"), "an unchanged mtime must cost a stat and not a parse");
+  mtimeMs = 2;
+  assert.ok(now().includes("new@firm.test"), "the person added on the page still cannot sign in");
+});
+
+test("an unreadable guest list widens nothing, and neither does a malformed one", async () => {
+  const { addressesInGrants } = await import("../../shared/scope.mjs");
+  // THE FAIL-CLOSED DIRECTION. This list can only ADD to what the environment already permits, so the
+  // worst an unreadable file may do is leave the door exactly as it was — never open it, and never throw
+  // on a request path, where an exception would refuse everybody rather than just the unnamed.
+  assert.deepEqual(addressesInGrants({ grantsPath: "/nope.json", io: { stat: () => { throw new Error("ENOENT"); }, read: () => "" } }), []);
+  assert.deepEqual(addressesInGrants({ grantsPath: "/bad.json", io: { stat: () => ({ mtimeMs: 7 }), read: () => "{ not json" } }), []);
+  assert.deepEqual(addressesInGrants({ grantsPath: "", io: {} }), [], "no file configured is not a reason to admit anyone");
+});
+
+test("the verifier ASKS at verify time — a resolver nothing calls would leave the door where it was", async () => {
+  // A pure reader and a wired one are different claims, and the first is the one that looks finished.
+  const src = readFileSync(new URL("../../mcp-server/lib/cf-access.mjs", import.meta.url), "utf8");
+  assert.match(src, /allowedNow\(\)\.includes\(email\)/, "the union branch no longer consults the resolver");
+  assert.match(src, /const okAdded = !okDomain && !okEmail && typeof allowedNow === "function"/,
+    "the resolver is consulted before the env lists, so it could widen a door the environment closed");
+  const portal = readFileSync(new URL("../portal-service.mjs", import.meta.url), "utf8");
+  assert.match(portal, /allowedNow: \(\) => addressesInGrants\(\)/, "the portal builds its verifier without the guest list");
 });

@@ -171,3 +171,32 @@ test("both completion packets route through whatsappRouting, and neither picks t
       `${f}'s completion packet picks AGENT_WHATSAPP directly — that is the defect, one call site over`);
   }
 });
+
+// ── THE CHANNEL TRAVELS WITH THE NUMBER ───────────────────────────────────────────────────────────
+//
+// A courier's messaging tool refuses a send that names no channel as soon as the assistant has more
+// than one configured — "Channel is required when multiple channels are configured: msteams, whatsapp"
+// — and the refusal is a single log line: the notice is composed, correctly addressed and discarded,
+// with nothing raised and nothing queued. Four notices went that way in one morning, on a gateway
+// where a second channel had just been added beside the first.
+//
+// The courier sheet said "send it there" and named no channel, which is correct for an assistant with
+// exactly one and silently wrong for any other. So the packet states the channel rather than the prose
+// implying it: a field is harder to lose than a sentence, and an integrator reading the packet cannot
+// end up guessing from their own configuration.
+test("the routing names the channel the number is on, beside the number", () => {
+  const r = whatsappRouting(job(), "clawdi");
+  assert.equal(r.whatsappChannel, "whatsapp", "the packet says which channel this route is on");
+  assert.equal(r.whatsappTo, REQUESTER);
+});
+
+test("the channel is stated even when there is nobody to send to", () => {
+  // NOT CONDITIONAL ON THE RECIPIENT, and that is deliberate. A courier reads the field to decide how to
+  // send; a field that appears only when a number happens to be held would be absent exactly when an
+  // integrator is debugging why nothing arrived, and "sometimes present" is the shape that teaches a
+  // reader to fall back to their own configuration.
+  const r = whatsappRouting(job({ forwarderEmail: "nobody@tenant.example", forwarder: "nobody" }), "clawdi");
+  assert.equal(r.whatsappTo, null);
+  assert.equal(r.whatsappChannel, "whatsapp");
+  assert.match(r.whatsappToReason, /no chat number is held/);
+});

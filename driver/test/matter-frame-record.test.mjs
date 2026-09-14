@@ -30,6 +30,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import {
   acceptMatterFrame, renderMatterFrame, recordMatterFrame, matterFrameWasRecorded,
   matterFrameCallPaths, MATTER_CONTEXT_FILE, SCOPE_BASES, INTAKE_ASK_OWNERS,
+  mergeMatterFrameCall, frameIdentifiedClasses,
 } from "../matter-frame-record.mjs";
 import { channelsDiagnosis, channelsFromMatterContext } from "../scope-ledger.mjs";
 import { meaningAnglesFromMatterContext } from "../connotation-search.mjs";
@@ -251,4 +252,121 @@ test("conversion 2 — the render is a projection of the model, and the prose bo
   assert.ok(v.content.includes(PROSE),
     "the seat's judgment prose rides VERBATIM — reflowing text that S2 scans and twelve seats read would "
     + "be the driver editing legal reasoning to fit a renderer");
+});
+
+// ── CLASSES THE FRAME JUDGED NECESSARY BEYOND THE INSTRUCTED ONES ───────────────────────────────────
+//
+// The frame reads the description of use and can conclude a class nobody instructed is in scope. It has
+// always said so in its prose and nothing could act on it: the plan compile takes its classes from the
+// driver's intake record, so an identified class reached the sweep only if something proposed it as
+// supplemental work, competing for capped slots with model-minted extras. A cap decided coverage the
+// frame had already judged necessary.
+//
+// TYPED RATHER THAN PARSED. Deriving classes from judgment prose is ruled against with measurement —
+// 19 of 21 runs carry the same class in both an applied and a dropped row, and deriving there dropped
+// the primary class. These arms drive the field, not a parser.
+
+test("the frame's identified classes are accepted with a reason each, and normalised", () => {
+  const v = accepted({ identified_classes: [
+    { class: "9", reason: "the software the goods run on" },
+    { class: 42, reason: "the hosted service the client sells" },
+  ] });
+  assert.deepEqual(v.model.identified_classes, [
+    { class: "9", reason: "the software the goods run on" },
+    { class: "42", reason: "the hosted service the client sells" },
+  ], "a number and a string both land as the same string form");
+});
+
+test("an identified class without a reason is refused, because it widens what the client is charged to search", () => {
+  const v = acceptMatterFrame({ ...PARAMS, identified_classes: [{ class: "9" }] }, { instructedScope: SCOPE });
+  assert.equal(v.ok, false);
+  assert.match(v.reason, /^matterframe_identified_class_reason_missing:9/);
+});
+
+test("a class outside 1-45, a non-number and a duplicate are each refused, and differently", () => {
+  const refuse = (rows) => acceptMatterFrame({ ...PARAMS, identified_classes: rows }, { instructedScope: SCOPE });
+  const zero = refuse([{ class: "0", reason: "x" }]);
+  const high = refuse([{ class: "46", reason: "x" }]);
+  const word = refuse([{ class: "nine", reason: "x" }]);
+  const dupe = refuse([{ class: "9", reason: "a" }, { class: "9", reason: "b" }]);
+  for (const [name, v] of [["0", zero], ["46", high], ["nine", word], ["duplicate", dupe]])
+    assert.equal(v.ok, false, `${name} was accepted`);
+  // THE REFUSALS MUST BE DISTINGUISHABLE, or this arm asserts one thing four times and a ladder cannot
+  // tell a reader which mistake they made.
+  assert.match(dupe.reason, /^matterframe_identified_class_duplicate:9/);
+  for (const v of [zero, high, word]) assert.match(v.reason, /^matterframe_identified_class_invalid:/);
+  assert.equal(new Set([zero, high, word, dupe].map((v) => v.reason)).size, 4, "four mistakes, four sentences");
+});
+
+test("ABSENT AND EMPTY CHANGE NOTHING — the ruling's own condition", () => {
+  // The field is optional by design: a frame that identifies nothing is the ordinary case. Both forms
+  // must produce the same model and the same document as a frame that never heard of the field, or this
+  // lands as a silent behaviour change on every run that does not use it.
+  const absent = accepted({});
+  const empty = accepted({ identified_classes: [] });
+  assert.deepEqual(absent.model.identified_classes, []);
+  assert.deepEqual(empty.model.identified_classes, []);
+  assert.equal(absent.content, empty.content, "an empty list renders exactly as an absent field");
+  assert.ok(!absent.content.includes("identified by the frame"),
+    "a frame that identified nothing must not render a row saying so");
+});
+
+test("the rendered frame says which classes were added and why, as their own rows", () => {
+  const v = accepted({ identified_classes: [{ class: "9", reason: "the software the goods run on" }] });
+  const rows = v.content.split("\n").filter((l) => l.includes("identified by the frame"));
+  assert.equal(rows.length, 1, "one row per identified class");
+  assert.match(rows[0], /Class 9/);
+  assert.match(rows[0], /the software the goods run on/, "the frame's own sentence, not a paraphrase");
+  // AND IT IS NOT FOLDED INTO THE INSTRUCTED SCOPE, which is a different claim: that section is what the
+  // client asked for, quoted from the driver's record; this is what the frame concluded as well.
+  const instructed = v.content.slice(0, v.content.indexOf("## The matter"));
+  assert.ok(!instructed.includes("identified by the frame"),
+    "an instruction and a judgement must not render in the same block");
+});
+
+test("a partial repair that omits the field KEEPS it — dropping it would narrow the next compile", () => {
+  // The merge rule, and the reason it is keep-if-absent rather than replace. The plan compile unions
+  // these into every variant axis, so a repair call that simply did not mention them would narrow the
+  // search silently, in the direction that misses rights.
+  const first = accepted({ identified_classes: [{ class: "9", reason: "the software the goods run on" }] });
+  const merged = mergeMatterFrameCall(first.model, { prose_body: PROSE });
+  assert.deepEqual(merged.identified_classes, first.model.identified_classes,
+    "a repair that omits the field must not withdraw the classes");
+});
+
+test("the compile reads the identified classes off the run, and an absent frame is empty rather than a throw", () => {
+  // THE HALF THAT CHANGES THE SEARCH. Everything above is about the document; this is the value the plan
+  // compile unions into every variant axis, so its failure mode is a narrower sweep rather than a
+  // quieter frame.
+  const runDir = mkdtempSync(join(tmpdir(), "frame-classes-"));
+
+  // A run with no frame at all — the ordinary state before the stage has run, and every legacy or
+  // replayed run whose accepted call predates the field. Empty, never a throw: a compile that threw here
+  // would fail a run for the absence of an optional judgement.
+  assert.deepEqual(frameIdentifiedClasses(runDir), [], "no frame yet must read as no classes");
+  assert.deepEqual(frameIdentifiedClasses(join(runDir, "nope")), [], "an unreadable run dir too");
+
+  recordMatterFrame(runDir, { ...PARAMS, identified_classes: [
+    { class: "9", reason: "the software the goods run on" },
+    { class: "42", reason: "the hosted service" },
+  ] }, { instructedScope: SCOPE });
+  assert.deepEqual(frameIdentifiedClasses(runDir), ["9", "42"],
+    "the numbers the compile unions, as strings, in the order the frame gave them");
+
+  // AND A RECORDED FRAME THAT IDENTIFIED NOTHING STILL READS EMPTY, so the union is a no-op rather than
+  // an undefined that spreads into the class list as a hole.
+  const bare = mkdtempSync(join(tmpdir(), "frame-classes-bare-"));
+  recordMatterFrame(bare, PARAMS, { instructedScope: SCOPE });
+  assert.deepEqual(frameIdentifiedClasses(bare), []);
+});
+
+test("the plan compile actually calls it — the wiring, not the helper", () => {
+  // An exported function nothing calls reads as done. This pins the one call site: the register-plan
+  // compile's own job.classes, unioned with the instructed list. Asserted on the source because the
+  // compile happens inside a stage this file cannot run.
+  const pipeline = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  const line = pipeline.split("\n").find((l) => l.includes("jobKey: ctx.run.slug") && l.includes("classes:"));
+  assert.ok(line, "the register-plan compile's job line could not be found — this arm cannot look");
+  assert.match(line, /frameIdentifiedClasses\(/, "the compile does not union the frame's identified classes");
+  assert.match(line, /inScopeClassList\(/, "and it must still carry the instructed ones");
 });

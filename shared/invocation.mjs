@@ -356,3 +356,28 @@ export function requireInteractive({ verb, stdin = process.stdin, exit = (c) => 
     + "Run it in a terminal. `--list` and `--dry-run` need no answer and work either way.\n");
   exit(2);
 }
+
+/**
+ * WHAT TO DO WHEN THE PAGE THAT OPENS IS NOT OURS. Printed under every "Open" line.
+ *
+ * A port can be free where this runs and taken where the browser runs: on WSL, a Windows-side listener
+ * (VS Code's Remote-SSH forwarding is the one measured, 2026-09-11) answers 127.0.0.1 before WSL does. The
+ * doors bind cleanly, the in-use detection has nothing to see, and the browser shows somebody else's page
+ * with nothing on this screen saying so. `--port` already moves all three doors; the reader has to be told
+ * about it at the moment the address is handed over, which is here.
+ */
+export function foreignPageHint(verb, port = null) {
+  // THE SUGGESTED NUMBER IS NEVER THE ONE IN USE. It was a fixed 28802, and a reader who had already
+  // moved the doors with `--port 28802` — which is how the owner met this — was told to escape the
+  // collision by running the command they had just run. The number is a suggestion, so it only has to
+  // be free-looking and different; where this cannot be sure, it names none and keeps "any free number",
+  // which is the half that always holds.
+  const n = Number(port);
+  const suggestion = Number.isInteger(n) && n >= 1 && n <= 65533 ? (n >= 28802 ? 38802 : 28802) : null;
+  return [
+    "If the page that opens is not this install's sign-in, another program on this machine holds that",
+    suggestion
+      ? `port from outside this environment. Run \`${invoke(verb)} --port ${suggestion}\` (or any free number) instead.`
+      : `port from outside this environment. Run \`${invoke(verb)} --port <a free number>\` instead.`,
+  ];
+}

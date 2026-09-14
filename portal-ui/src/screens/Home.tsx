@@ -32,7 +32,7 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
+  recentlyFinished, finished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
@@ -117,8 +117,12 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   const ackedStamps = useMemo(() => readStamps(acked), [acked])
   // Routed through grouping.ts — the SAME function Clearances renders — so the two screens cannot
   // disagree about what finished most recently or what it came back as.
-  const done = useMemo(() => recentlyFinished(runs, undefined, 1), [runs])
-  const lastDone = useMemo(() => (done.length ? lastFinishedOf(done[0]!) : null), [done])
+  // RECENTLY FINISHED, NOT THE LAST ONE. With nothing in flight, Home was a heading over a single
+  // finished clearance, which reads as the archive with one row rather than as a summary of it. Three
+  // is enough to read as a tail and short enough that nobody mistakes it for the list.
+  const done = useMemo(() => recentlyFinished(runs, undefined, 3), [runs])
+  const recent = useMemo(() => done.map(lastFinishedOf).filter((r): r is Finished => r !== null), [done])
+  const finishedCount = useMemo(() => finished(runs).length, [runs])
 
   usePoll(reload, {
     // THE UNFILTERED SET, and the comment above the split says why: a quiet company must not stop the
@@ -133,9 +137,16 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen home2">
+      {/* HOME SAYS WHICH PAGE IT IS. With nothing in flight this screen was a heading-less list of
+          finished clearances — which is what All Clearances is — and a reader arriving here asked where
+          their clearances had gone. The archive keeps its own name; this one says what it is for. */}
+      <div className="eyebrow">Home</div>
+      <h1 style={{ fontSize: 27, margin: '4px 0 14px', color: 'var(--text-strong)' }}>Now</h1>
       <InFlightBand
         count={cards.length + queue.length}
-        note={slotNote(null, ctx.me.concurrentRuns)}
+        note={cards.length + queue.length === 0
+          ? `Nothing running right now.${canRun(ctx.me) ? ' Start one with New clearance.' : ''}`
+          : slotNote(null, ctx.me.concurrentRuns)}
         onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null}
         onAll={() => ctx.go('/portal/clearances')}
       />
@@ -196,9 +207,9 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
         </div>
       ) : null}
 
-      {lastDone ? <LastFinished row={lastDone} ctx={ctx} /> : null}
+      {recent.length ? <RecentlyFinished rows={recent} total={finishedCount} ctx={ctx} /> : null}
 
-      {answer === 'ok' && !cards.length && !queue.length && !lastDone ? (
+      {answer === 'ok' && !cards.length && !queue.length && !recent.length ? (
         <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
       ) : null}
 
@@ -231,11 +242,16 @@ function InFlightBand({
       <span className="home2-band-rule" />
       <span className="home2-band-note">{note}</span>
       {/* The way OUT of the dashboard and into the archive. Home shows what is in flight; everything
-          that has finished lives on Clearances, and the rail was the only route there. */}
-      <button type="button" className="nav-item" onClick={onAll}
-        style={{ width: 'auto', flex: 'none', marginRight: 8 }}>
+          that has finished lives there, and the rail was the only route to it.
+          ONE LOOK IN BOTH PLACES AND IN THE RAIL. This was a rail item in disguise — grey, flat, and
+          reading as scenery rather than as something to press — while the same destination lower down
+          the page was red text with a different icon and a different capitalisation. Three
+          presentations of one route teach a reader nothing. Both are the secondary button now, with
+          the rail's own word and icon, one step below New clearance so the primary action stays
+          primary. */}
+      <button type="button" className="btn-ghost home2-all" onClick={onAll} style={{ marginRight: 8 }}>
         <Icon name="layers" />
-        <span>All clearances</span>
+        <span>All Clearances</span>
       </button>
       {onNew ? (
         <button type="button" className="home2-new" onClick={onNew}>
@@ -721,45 +737,43 @@ function CancelButton({ run, onChanged }: { readonly run: Run; readonly onChange
   )
 }
 
-function LastFinished({
-  row,
+function RecentlyFinished({
+  rows,
+  total,
   ctx,
 }: {
-  readonly row: Finished
+  readonly rows: readonly Finished[]
+  readonly total: number
   readonly ctx: ShellContext
 }) {
-  // ONE LINE, and it links INTO Clearances. Everything a finished list would offer — threads, families,
-  // filters, sort, paging — already exists there and is better; a second, worse copy here would only
-  // teach people not to go.
+  // A TAIL, AND THEN THE WAY INTO THE ARCHIVE — not a second archive. Everything a finished list would
+  // offer (threads, families, filters, sort, paging) already exists on All Clearances and is better
+  // there; a worse copy here would teach people not to go. What changed is that one row read as the
+  // archive with a single entry, and the way out was a button inside a band a reader does not look at.
   return (
     <>
       <div className="home2-done-band">
-        <span className="home2-band-label faint">Last finished</span>
+        <span className="home2-band-label faint">Recently finished</span>
         <span className="home2-band-rule" />
       </div>
-      <div className="home2-done" onClick={() => ctx.go(`/portal/result/${encodeURIComponent(row.runId)}`)}>
-        <span className="home2-done-dot" style={row.tone ? { background: toneColor(row.tone) } : undefined} />
-        <span className="home2-done-mark" data-anon="mark">
-          {row.name}
-        </span>
-        {row.band ? <span className="home2-done-verdict">{row.band}</span> : null}
-        <span className="home2-done-meta" data-anon="mark">
-          · {ctx.ownerName(runKey(row))}
-          {row.date ? ` · ${row.date}` : ''}
-        </span>
-        <span className="home2-done-spacer" />
-        <button
-          type="button"
-          className="home2-all"
-          onClick={(e) => {
-            e.stopPropagation()
-            ctx.go('/portal/clearances')
-          }}
-        >
-          All clearances
-          <Icon name="arrow-right" />
-        </button>
-      </div>
+      {rows.map((row) => (
+        <div key={row.runId} className="home2-done" onClick={() => ctx.go(`/portal/result/${encodeURIComponent(row.runId)}`)}>
+          <span className="home2-done-dot" style={row.tone ? { background: toneColor(row.tone) } : undefined} />
+          <span className="home2-done-mark" data-anon="mark">
+            {row.name}
+          </span>
+          {row.band ? <span className="home2-done-verdict">{row.band}</span> : null}
+          <span className="home2-done-meta" data-anon="mark">
+            · {ctx.ownerName(runKey(row))}
+            {row.date ? ` · ${row.date}` : ''}
+          </span>
+        </div>
+      ))}
+      {/* A LINE, NOT A SECOND BUTTON. The one button belongs at the top beside New clearance; this says
+          how much more there is, which is the question a tail leaves a reader with. */}
+      <button type="button" className="home2-see-all" onClick={() => ctx.go('/portal/clearances')}>
+        See all {total} finished
+      </button>
     </>
   )
 }

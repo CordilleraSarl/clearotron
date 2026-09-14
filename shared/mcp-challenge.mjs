@@ -98,3 +98,35 @@ export function challengeNote(v) {
   if (v.bearer) return " with a Bearer challenge, the form an assistant follows";
   return "";
 }
+
+/**
+ * WHICH CREDENTIAL THIS DOOR ACTUALLY TAKES, from one unauthenticated probe of it.
+ *
+ * The page that hands a reader their connector steps had this fixed: Claude's steps said to paste a key
+ * and turn authentication off, because that was driven once against a door that took a key. Every hosted
+ * deployment sits behind an identity provider, whose door answers a sign-in challenge and never honours
+ * a key — so those steps minted a key for nothing and told the reader to ignore the one correct signal
+ * on their screen. The steps have to follow what the door answers.
+ *
+ * `"sign-in"` a Bearer/OAuth challenge came back: an assistant can follow it, and there is no key.
+ * `"key"`     it refused and named an access key in the body, which is what our own key door does.
+ * `null`      NOT KNOWN — it was not probed, it did not answer, or it refused in a shape neither of the
+ *             above recognises. The caller says so and offers both rather than guessing; a wrong guess
+ *             here is a reader following steps that cannot work, which is the defect this comes from.
+ *
+ * The body is read for the key case because the header does not separate the two: a proxy-fronted door
+ * and a key door can both answer 401 with nothing in `www-authenticate`, and only the body says which.
+ * PURE.
+ */
+export function doorKind(probe) {
+  if (!probe || probe.error) return null;
+  const v = challengeVerdict(probe);
+  if (v.bearer) return "sign-in";
+  // KEYED ON THE DOOR SAYING IT REQUIRES ONE, never on the words "access key" appearing. The proxy door's
+  // own refusal contains that phrase in the negative — "takes an auth-proxy JWT and never an access key"
+  // — so a substring match would read the door that refuses keys as the door that wants one. That is the
+  // same shape as a guard firing on a word that contains its pattern, met twice in this tree already.
+  if (probe.status === 401 && /\b(?:key|token) is mandatory|mandatory on every request|requires an (?:access|account) key/i
+    .test(String(probe.body ?? ""))) return "key";
+  return null;
+}

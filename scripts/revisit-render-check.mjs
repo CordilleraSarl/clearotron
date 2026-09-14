@@ -79,6 +79,25 @@ if (!existsSync(join(DIST, 'index.html'))) {
   process.exit(2)
 }
 
+// THE RAIL DECIDES ITS OWN SPELLING, and this file reads it rather than keeping a fourth copy. Typed
+// here, the label was "Clearances"; the rail item became "All Clearances" and every assertion after it
+// collapsed — not into one cosmetic miss but into six that read like a navigation regression. See the
+// note beside the away click for how one missing button does that.
+//
+// A COULD-NOT-LOOK, not a default. Guessing a label here would put this file back where it started:
+// driving a rail item that may not exist and reporting the consequences as findings.
+const NAV_SRC = join(HERE, '..', 'portal-ui', 'src', 'nav', 'nav.config.ts')
+const CLEARANCES_LABEL = (() => {
+  const m = /label: '([^']+)', path: '\/portal\/clearances'/.exec(readFileSync(NAV_SRC, 'utf8'))
+  if (!m) {
+    console.error(`revisit-render-check: no rail item for /portal/clearances in ${NAV_SRC}. `
+      + 'This drive enters and leaves two screens by that button; without its label every assertion '
+      + 'after it measures a screen this file did not choose.')
+    process.exit(2)
+  }
+  return m[1]
+})()
+
 const KEY = 'acme'
 const NAME = 'Acme'
 const RUN_ID = 'tmpa-revisit-1'
@@ -395,7 +414,7 @@ const twice = async (name, enter, expectPath, away = 'Home') => {
   }
 }
 
-await twice('clearances', () => clickNav('Clearances'), '/portal/clearances')
+await twice('clearances', () => clickNav(CLEARANCES_LABEL), '/portal/clearances')
 
 // Result has no sidebar button — it is a hidden route reached from a run. So the first visit is a real
 // URL and the SECOND is the Back button, which is the revisit a reader actually performs and the one that
@@ -408,55 +427,69 @@ const rt1 = await screenText()
 say(rp1 === `/portal/result/${RUN_ID}`, `result: visit 1 landed on the run (got ${rp1})`)
 
 epoch = 'result:away'
-const ra = await clickNav('Clearances')
+const ra = await clickNav(CLEARANCES_LABEL)
 say(!ra || ra.ok !== false, 'result: left the screen by the sidebar')
 await settle()
 
-epoch = 'result:2'
-await value(`(async () => { window.history.back(); await new Promise(r => setTimeout(r, 200)); return true })()`)
-const rq2 = await settle()
-const rp2 = await where()
-const rt2 = await screenText()
-
-const rc1 = countsFor('result:1')
-const rc2 = countsFor('result:2')
-record.result = { visit1: rc1, visit2: rc2, away: countsFor('result:away') }
-
-say(rq1 && rq2, 'result: both visits went quiet inside the cap')
-say(rp2 === `/portal/result/${RUN_ID}`, `result: Back returned to the run (got ${rp2})`)
-say((rt1 || '').trim().length > 0, 'result: visit 1 rendered text')
-say((rt2 || '').trim().length > 0, 'result: visit 2 rendered text')
-
-// Visit 1 is a fresh document, so the shell's own fetches are inside it; visit 2 is client-side. The two
-// tallies are NOT comparable route-for-route the way the clearances pair is, and pretending otherwise
-// would manufacture a finding on every shell route. What IS comparable — and what the ranked risk is
-// about — is the SCREEN's own routes, so those are named and compared, and the rest is printed.
+// EVERY MEASUREMENT BELOW DEPENDS ON HAVING LEFT. `history.back()` after a click that never happened
+// goes back past this route to whatever the reader was on before it, and the tallies then compare THAT
+// screen's second visit against this one's first. When the rail item was renamed, that is what turned
+// one missing button into six failures — a Back button landing in the wrong place, a revisit asking
+// twice, a route asking nothing — every one of them phrased as a regression in a screen nobody had
+// touched, and none of them true.
 //
-// AND AN EQUAL PAIR OF ZEROES IS NOT A PASS. `0x on both visits` compares identically to `1x on both`
-// and reads the same in the output, so a route the fixture never triggers would certify itself. It
-// caught this file out once already: the fixture's `report` field said `report.html` where the service
-// sends `/portal/report/<runId>/`, the frame 404'd on a path this server does not count, and both
-// report-frame assertions passed on nothing. Routes that did not fire are reported as NOT EXERCISED and
-// listed at the end, never as ok.
-const RESULT_OWN = ['/portal/api/runs?scope=mine', '/portal/api/mcp-access', '/portal/api/run/:id/summary', '/portal/report/:id']
+// So it is a could-not-look and it says so. Nothing below is claimed, the run still fails on the
+// assertion above, and the one line a reader has to act on is the one naming the button.
 const unexercised = []
-for (const r of RESULT_OWN) {
-  const a = rc1[r] ?? 0
-  const b = rc2[r] ?? 0
-  if (a === 0 && b === 0) { unexercised.push(r); lines.push(`  --  result: ${r} — NOT EXERCISED by this fixture, so nothing is claimed about it`); console.log(lines[lines.length - 1]); continue }
-  say(a === b, `result: ${r} — first visit asked ${a}x, revisit asked ${b}x`)
-  say(b <= 1, `result: ${r} — one request per visit (revisit asked ${b}x)`)
-}
-say((rc1['/portal/api/runs?scope=mine'] ?? 0) > 0,
-  `result: the screen really did load its run list — ${stable(rc1)}`)
+if (ra && ra.ok === false) {
+  say(false, 'result: NOTHING BELOW IS MEASURED — the away click never happened, so there is nothing to '
+    + 'come back from and every tally here would describe a different screen')
+} else {
+  epoch = 'result:2'
+  await value(`(async () => { window.history.back(); await new Promise(r => setTimeout(r, 200)); return true })()`)
+  const rq2 = await settle()
+  const rp2 = await where()
+  const rt2 = await screenText()
 
-// The report frame is the reason Result is worth driving at all: AppShell's own comment records a
-// redundant render remounting the frame mid-measurement, with the bridge oscillating between two
-// settled heights. If the frame never loaded, this check is not reaching that interaction and must say
-// so rather than imply it held.
-say((rc1['/portal/report/:id'] ?? 0) > 0,
-  `result: the report frame actually loaded its document — ${rc1['/portal/report/:id'] ?? 0} fetch(es) on the first visit`)
-say(true, `result: full tallies — visit 1 ${stable(rc1)} · revisit ${stable(rc2)}`)
+  const rc1 = countsFor('result:1')
+  const rc2 = countsFor('result:2')
+  record.result = { visit1: rc1, visit2: rc2, away: countsFor('result:away') }
+
+  say(rq1 && rq2, 'result: both visits went quiet inside the cap')
+  say(rp2 === `/portal/result/${RUN_ID}`, `result: Back returned to the run (got ${rp2})`)
+  say((rt1 || '').trim().length > 0, 'result: visit 1 rendered text')
+  say((rt2 || '').trim().length > 0, 'result: visit 2 rendered text')
+
+  // Visit 1 is a fresh document, so the shell's own fetches are inside it; visit 2 is client-side. The two
+  // tallies are NOT comparable route-for-route the way the clearances pair is, and pretending otherwise
+  // would manufacture a finding on every shell route. What IS comparable — and what the ranked risk is
+  // about — is the SCREEN's own routes, so those are named and compared, and the rest is printed.
+  //
+  // AND AN EQUAL PAIR OF ZEROES IS NOT A PASS. `0x on both visits` compares identically to `1x on both`
+  // and reads the same in the output, so a route the fixture never triggers would certify itself. It
+  // caught this file out once already: the fixture's `report` field said `report.html` where the service
+  // sends `/portal/report/<runId>/`, the frame 404'd on a path this server does not count, and both
+  // report-frame assertions passed on nothing. Routes that did not fire are reported as NOT EXERCISED and
+  // listed at the end, never as ok.
+  const RESULT_OWN = ['/portal/api/runs?scope=mine', '/portal/api/mcp-access', '/portal/api/run/:id/summary', '/portal/report/:id']
+  for (const r of RESULT_OWN) {
+    const a = rc1[r] ?? 0
+    const b = rc2[r] ?? 0
+    if (a === 0 && b === 0) { unexercised.push(r); lines.push(`  --  result: ${r} — NOT EXERCISED by this fixture, so nothing is claimed about it`); console.log(lines[lines.length - 1]); continue }
+    say(a === b, `result: ${r} — first visit asked ${a}x, revisit asked ${b}x`)
+    say(b <= 1, `result: ${r} — one request per visit (revisit asked ${b}x)`)
+  }
+  say((rc1['/portal/api/runs?scope=mine'] ?? 0) > 0,
+    `result: the screen really did load its run list — ${stable(rc1)}`)
+
+  // The report frame is the reason Result is worth driving at all: AppShell's own comment records a
+  // redundant render remounting the frame mid-measurement, with the bridge oscillating between two
+  // settled heights. If the frame never loaded, this check is not reaching that interaction and must say
+  // so rather than imply it held.
+  say((rc1['/portal/report/:id'] ?? 0) > 0,
+    `result: the report frame actually loaded its document — ${rc1['/portal/report/:id'] ?? 0} fetch(es) on the first visit`)
+  say(true, `result: full tallies — visit 1 ${stable(rc1)} · revisit ${stable(rc2)}`)
+}
 
 // The poll cadence assumption, checked rather than assumed. usePoll holds a 30s interval when nothing is
 // in flight; if this drive ever runs long enough for one to fire, a poll request lands inside a

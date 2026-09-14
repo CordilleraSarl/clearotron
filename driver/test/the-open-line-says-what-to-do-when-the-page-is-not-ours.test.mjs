@@ -16,12 +16,26 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { foreignPageHint } = await import("../../bin/start.mjs");
 
-test("the hint names the command being run, with --port", () => {
+test("the hint names the command being run, and never the port already in use", () => {
   for (const verb of ["demo", "start"]) {
-    const text = foreignPageHint(verb).join(" ");
+    const text = foreignPageHint(verb, 18802).join(" ");
     assert.match(text, /not this install's sign-in/);
-    assert.match(text, new RegExp(`clearotron ${verb} --port 28802`), `the ${verb} hint does not name the ${verb} command`);
+    assert.match(text, new RegExp(`clearotron ${verb} --port \\d+`), `the ${verb} hint does not name the ${verb} command`);
   }
+
+  // THE DEFECT THIS CARRIES: the number was a fixed 28802, so a reader who had ALREADY moved the doors
+  // with `--port 28802` — which is how it was met — was told to escape the collision by running the
+  // command they had just run. Driven at that exact port, because that is the one where a fixed
+  // suggestion and a correct one look the same everywhere else.
+  const moved = foreignPageHint("demo", 28802).join(" ");
+  assert.doesNotMatch(moved, /--port 28802\b/, "the hint suggested the port the reader is already on");
+  assert.match(moved, /--port \d+/, "and it must still suggest a number rather than trailing off");
+
+  // WHERE THE PORT IS NOT KNOWN, no number is named and the sentence still works — setup prints it
+  // before anything is listening.
+  const unknown = foreignPageHint("start").join(" ");
+  assert.match(unknown, /--port <a free number>/);
+  assert.doesNotMatch(unknown, /--port \d/, "a number was invented for a command with no address yet");
 });
 
 test("every Open line in start is followed by the hint, whichever way it was started", () => {
@@ -30,7 +44,35 @@ test("every Open line in start is followed by the hint, whichever way it was sta
   const opens = src.map((l, i) => (/say\(`  Open[: ] .*\$\{envs\.url\}`\)/.test(l) ? i : -1)).filter((i) => i >= 0);
   assert.equal(opens.length, 2, `expected the foreground and background Open lines, found ${opens.length}`);
   for (const i of opens)
-    assert.match(src[i + 1], /foreignPageHint\(DEMO \? "demo" : "start"\)/, `the Open line at ${i + 1} is not followed by the hint`);
+    assert.match(src[i + 1], /foreignPageHint\(DEMO \? "demo" : "start"/, `the Open line at ${i + 1} is not followed by the hint`);
+});
+
+test("the FRAMED first-run box carries it too — the one address a stranger actually copies", () => {
+  // The box exists because a first-time reader skips the log wall and acts on it; the code's own note
+  // calls it visually unmistakable. So the one address they copy was the one address with nothing
+  // beside it saying what to do when the page that opens is somebody else's — the sentence was nine
+  // lines above, addressed to a reader who by design did not read there.
+  const src = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
+  const box = src.slice(src.indexOf("say(`  ┌${rule}┐`)"), src.indexOf("say(`  └${rule}┘`)"));
+  assert.ok(box.length > 0, "the framed block moved — this arm is reading nothing");
+  assert.match(box, /foreignPageHint\(DEMO \? "demo" : "start"/, "the framed box hands over an address with no hint beside it");
+});
+
+test("setup carries it as well, so all three commands answer the same way", () => {
+  // `install` printed no Open line and imported nothing: it starts nothing, so it has no address —
+  // which is exactly why its reader meets the sentence at the moment they are handed the command that
+  // does. Pinned to the import too, because a second copy of this sentence is how three commands come
+  // to answer differently.
+  const src = readFileSync(join(ROOT, "bin", "onboard.mjs"), "utf8");
+  assert.match(src, /import \{ foreignPageHint \} from "\.\.\/shared\/invocation\.mjs";/,
+    "setup composes its own copy of the sentence, or takes it from a command rather than a module");
+  assert.match(src, /for \(const line of foreignPageHint\("start"\)\) say\(/, "setup never prints it");
+
+  // AND IT TAKES IT FROM A MODULE, NOT FROM A COMMAND. The first cut imported bin/start.mjs here; the
+  // import-cycle guard refused it, and rightly — this file has a top-level await, so a command asking
+  // for it back mid-evaluation never resolves and the wizard installs nothing rather than failing
+  // loudly. The sentence lives in the module that owns how a reader invokes us, and start re-exports it.
+  assert.doesNotMatch(src, /from "\.\/start\.mjs"/, "setup imports a command, which hangs at run time rather than failing at build");
 });
 
 test("a sign-in refusal says which instance it is, so a person can tell it is not their own", async () => {
@@ -51,9 +93,21 @@ test("a sign-in refusal says which instance it is, so a person can tell it is no
     delete process.env.PORTAL_OIDC_ISSUER;
     process.env.CF_ACCESS_TEAM = "examplefirm";
     if (!ORGANISATION_NAME) assert.match(denialPage(401, "x"), /signs people in through examplefirm\.cloudflareaccess\.com/);
-    // THE CONTROL: nothing configured, nothing claimed.
+    // NOTHING CONFIGURED IS STILL NOT NOTHING SAID, and this is the branch the criterion turned on.
+    // The page used to identify itself by organisation, or by sign-in service, or NOT AT ALL — and the
+    // instance with neither is the one most likely to be reached by accident, through a forward, by
+    // somebody who cannot tell it from their own. It names the address it answers on instead, which is
+    // what a reader can compare with the one they typed. The machine name is the last resort rather
+    // than the first: an organisation and a sign-in service mean something to a reader and are public
+    // by nature, and this is disclosed only where the alternative is a page that identifies nothing.
     delete process.env.CF_ACCESS_TEAM;
-    if (!ORGANISATION_NAME) assert.doesNotMatch(denialPage(401, "x"), /signs people in through/);
+    if (!ORGANISATION_NAME) {
+      const bare = denialPage(401, "x");
+      assert.doesNotMatch(bare, /signs people in through/, "it claimed a sign-in service with none configured");
+      assert.match(bare, /is the one running on [^<]+/, "an instance with neither setting said nothing about itself");
+      assert.match(bare, new RegExp(`:${process.env.PORTAL_SERVICE_PORT ?? "\\d+"}`),
+        "the port is the half that matters where a forward is in play — the machine name is often the same on both sides");
+    }
   } finally {
     for (const [k, v] of [["PORTAL_OIDC_ISSUER", saved.issuer], ["CF_ACCESS_TEAM", saved.team]]) {
       if (v === undefined) delete process.env[k]; else process.env[k] = v;

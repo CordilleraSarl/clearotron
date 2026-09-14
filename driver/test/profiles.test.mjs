@@ -17,6 +17,7 @@ import { findPlatformIdentityViolations } from "../common-law-receipts.mjs";
 import { STAGES, lines } from "../stages.mjs";
 import { properNameCandidates, referenceChecks, runLint } from "../predelivery-lint.mjs";
 
+const HERE = dirname(fileURLToPath(import.meta.url));
 const GAMING_DOMAINS = ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com", "gog.com", "itch.io"];
 
 function profileDir(files) {
@@ -153,6 +154,92 @@ test("identity join: right count + wrong marketplaces FAILS; dictated set passes
   assert.deepEqual(findPlatformIdentityViolations(MANIFEST, ledgerFor([...dictated, "web"], "otherterm"), dictated), []);
   // no dictated list ⇒ no-op (legacy)
   assert.deepEqual(findPlatformIdentityViolations(MANIFEST, ledgerFor(GAMING_DOMAINS), []), []);
+});
+
+// ── A CHANNEL NO HALF RAN IS NOBODY'S ────────────────────────────────────────────────────────────
+//
+// The grid is split by term into two halves, both carrying the same platforms. On a delivered run half A
+// wrote that the repositories were "not in grid mandate, assigned to the parallel half"; half B wrote
+// that they were covered indirectly, through general web search. Neither ran them, each said the other
+// owned them, and the delivered coverage carried it as a NOTE — so a channel the matter's own ecosystem
+// publishes on was never queried and nothing in the report said it was open.
+//
+// The per-variant join could not see it: a channel nobody reached is partial coverage for EVERY variant,
+// and partial coverage is skipped here deliberately so the count ladder's carve-outs do not re-fail. The
+// fold is where both halves are in one file, and it is the only place the question has an answer.
+test("at the fold, a dictated channel with no receipt from either half is reported once", () => {
+  const dictated = ACME.platforms;
+  const ran = [...dictated.slice(0, dictated.length - 1), "web"];
+  const deferred = ACME.platforms[ACME.platforms.length - 1];
+
+  const out = findPlatformIdentityViolations(MANIFEST, ledgerFor(ran), dictated, { wholeGrid: true });
+  const whole = out.filter((v) => v.whole);
+  assert.equal(whole.length, 1, "the channel nobody ran was not reported as a channel");
+  assert.deepEqual(whole[0].missing, [deferred]);
+  assert.equal(whole[0].variant, "*", "it is a fact about the channel, not about one variant");
+
+  // ONCE, whatever the grid's shape: the fact is that nothing in this ledger touched it, so it does not
+  // repeat per term. The per-variant rows beside it are the existing join's and are left alone — this
+  // adds a reading the join could not reach rather than replacing what it already says.
+
+  // AND A FULL GRID IS SILENT, which is what says this is not simply refusing every ledger.
+  assert.deepEqual(findPlatformIdentityViolations(MANIFEST, ledgerFor([...dictated, "web"]), dictated, { wholeGrid: true }), []);
+});
+
+test("the unrun channel becomes an OPEN ledger row, and the run still delivers", async () => {
+  // THE POINT OF DISCLOSURE, and the correction to my first cut of this: failing the fold would turn a
+  // gap the client can see into a clearance that delivers nothing. The ledger already has the state for
+  // a slice that could not run — `deferred`, which the deadline envelope re-runs, the verdict floor
+  // clamps over, and the report shows where open rows are shown — so the channel lands there as a row
+  // in the shape every consumer already reads, and nothing new is drawn anywhere.
+  const { openChannelRows } = await import("../common-law-receipts.mjs");
+  const dictated = ACME.platforms;
+  const deferred = dictated[dictated.length - 1];
+  const files = {
+    "/run/_driver/grid-spec.json": JSON.stringify({ terms: ["novapulse"], platforms: [...dictated, "web"] }),
+    "/run/common-law-grid.json": ledgerFor([...dictated.slice(0, dictated.length - 1), "web"]),
+  };
+  const io = { exists: (p) => Object.hasOwn(files, p), read: (p) => files[p] };
+
+  const rows = openChannelRows("/run", io);
+  assert.equal(rows.length, 1, "the channel nobody ran produced no row");
+  assert.equal(rows[0].status, "deferred", "it must use the ledger's own open state, not a new one");
+  assert.equal(rows[0].axis, "common-law");
+  assert.ok(rows[0].unit.includes(deferred), "the row does not name the channel a reader has to chase");
+  assert.match(rows[0].reason, /open — not run/);
+  assert.match(rows[0].reason, /not a receipt/, "the reason does not say why a pass's say-so did not count");
+
+  // A FULL GRID PRODUCES NOTHING, which is what keeps this from putting an open row on every run.
+  const full = { ...files, "/run/common-law-grid.json": ledgerFor([...dictated, "web"]) };
+  assert.deepEqual(openChannelRows("/run", { exists: (p) => Object.hasOwn(full, p), read: (p) => full[p] }), []);
+
+  // AND AN UNREADABLE RUN PRODUCES NOTHING RATHER THAN A GAP NOBODY CAN CLOSE: no spec, no merged
+  // ledger, or an unparseable one is not evidence that a channel went unrun.
+  assert.deepEqual(openChannelRows("/run", { exists: () => false, read: () => "" }), []);
+  assert.deepEqual(openChannelRows("/run", { exists: () => true, read: () => "{ not json" }), []);
+});
+
+test("the open rows are WIRED at the ledger chokepoint — a row nothing reads is not a disclosure", () => {
+  // A pure function nothing calls would leave the gap exactly where it was, and the earlier draft of
+  // this change failed the fold instead, which nobody wanted. The chokepoint is the one place every
+  // consumer reads the ledger through — the escalation gate, the deadline envelope and the verdict
+  // clamp all act on what it returns — so the rows join there, beside the two relabels already applied.
+  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  assert.match(src, /const relabel = \(rows\) => \[\.\.\.applyTaintDeferred\(coerceToolAbsenceDeferred\(rows\), taintAxes\), \.\.\.openChannelRows\(runDir\)\]/,
+    "the coverage chokepoint no longer adds the open-channel rows");
+  assert.doesNotMatch(src, /findPlatformIdentityViolations\([^)]*wholeGrid: true/,
+    "the fold is failing on an unrun channel again — it is a disclosed gap, not a dead clearance");
+});
+
+test("a HALF's own ledger gets no channel verdict — the split is allowed, the silence at the fold is not", () => {
+  // Asked for by the caller, and only where both halves are in one file. On a half's own ledger a channel
+  // its sibling ran is legitimately absent, so no CHANNEL verdict is drawn there. Whatever the per-variant
+  // join says about that same ledger is unchanged and not this arm's business — the default is off, so
+  // every existing caller keeps exactly the answers it had.
+  const dictated = ACME.platforms;
+  const halfOnly = ledgerFor([...dictated.slice(0, dictated.length - 1), "web"]);
+  const out = findPlatformIdentityViolations(MANIFEST, halfOnly, dictated);
+  assert.deepEqual(out.filter((v) => v.whole), [], "a half was given a channel verdict its sibling owns half of");
 });
 
 test("identity join honors the count ladder's carve-outs: partial entries skip; ' / ' families union across keys", () => {

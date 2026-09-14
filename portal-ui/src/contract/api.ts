@@ -1088,6 +1088,13 @@ export type Person = {
   readonly access: readonly AccessPoint[]
   /** Companies this person's access names that do not exist. Usually a typo; it fails as a silent 404. */
   readonly dangling: readonly string[]
+  /**
+   * Whether the guest list holds a PERMISSIONS entry for this person, as opposed to naming them only in
+   * an organisation's access list. The two are different facts — what somebody may DO against what they
+   * can REACH — and the page drew them identically, so a person with no entry read as one whose
+   * permissions had been considered and set to none. Absent on an older payload, which reads as true.
+   */
+  readonly listed?: boolean
 }
 
 export type AccessView = {

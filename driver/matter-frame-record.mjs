@@ -125,6 +125,16 @@ export function renderMatterFrame(model) {
     out.push(`- **Scope jurisdictions:** ${model.scope_jurisdictions.join(", ")}`);
   if (model.excluded_jurisdictions.length)
     out.push(`- **Excluded jurisdictions:** ${model.excluded_jurisdictions.join(", ")}`);
+  // CLASSES THE FRAME ADDED, WITH THE REASON IT ADDED THEM. Rendered as its own rows rather than folded
+  // into the instructed scope above, because the two are different claims: that section is what the
+  // client asked for, quoted from the driver's intake record, and these are what the frame concluded is
+  // necessary as well. A reader who cannot tell those apart cannot tell an instruction from a judgement.
+  //
+  // NOTHING RENDERS WHEN THERE ARE NONE — no heading, no "none" line. An asserted zero is right where a
+  // seat might have skipped the question (meaning angles below), and wrong here: the frame is not asked
+  // to find extra classes, so finding none is the ordinary case and not an answer worth a row.
+  for (const c of (model.identified_classes ?? []))
+    out.push(`- **Class ${c.class} — identified by the frame:** ${c.reason}`);
   out.push("");
 
   // `Search channels:` — domains only; the grid site-restricts to them and the general web is always
@@ -156,12 +166,33 @@ export function renderMatterFrame(model) {
  */
 /** The shape this tool declares, at every depth — what the ACCEPTOR enforces. */
 const DECLARED = Object.freeze({
-  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "meaning_angles", "meaning_angles_none", "intake_asks"],
+  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "meaning_angles", "meaning_angles_none", "intake_asks", "identified_classes"],
   intake_asks: ["ask", "owner"],
+  identified_classes: ["class", "reason"],
 });
 
 /** Refuse an undeclared key by path, at depth. Shared walk; the table above is what is this tool's. */
 export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLARED, "matterframe");
+
+/**
+ * The Nice classes the frame judged necessary beyond the instructed ones, as strings. IMPURE (reads
+ * the run's own accepted call).
+ *
+ * THE PLAN COMPILE UNIONS THIS WITH THE INSTRUCTED CLASSES so every variant axis carries both. Before
+ * it existed the axes carried the instructed classes alone and a class the frame had identified reached
+ * the sweep only if something proposed it as supplemental work — where it competed for capped slots
+ * with model-minted extras. A cap was deciding coverage the frame had already judged necessary, and on
+ * the run this came from the delivered report said two such classes were "covered for the name and open
+ * for its variants" while the reviewing lawyer's scope included one of them throughout.
+ *
+ * EMPTY IS THE ORDINARY ANSWER and must stay cheap: no frame yet, a legacy or replayed run whose
+ * accepted call predates the field, a frame that identified nothing — all of them return `[]`, the
+ * union is a no-op, and the plan is exactly what it was.
+ */
+export function frameIdentifiedClasses(runDir) {
+  const rows = lastAcceptedMatterFrame(runDir)?.identified_classes;
+  return (Array.isArray(rows) ? rows : []).map((r) => String(r?.class ?? "").trim()).filter(Boolean);
+}
 
 /** The last ACCEPTED call for this run, or null. */
 export function lastAcceptedMatterFrame(runDir) {
@@ -190,6 +221,12 @@ export function mergeMatterFrameCall(stored, received) {
     scope_jurisdictions: keepIfAbsent(received?.scope_jurisdictions, base.scope_jurisdictions),
     excluded_jurisdictions: keepIfAbsent(received?.excluded_jurisdictions, base.excluded_jurisdictions),
     meaning_angles_none: keepIfAbsent(received?.meaning_angles_none, base.meaning_angles_none),
+    // KEEP-IF-ABSENT, for the same reason as the two above and one more. These are classes the frame
+    // judged necessary beyond the instructed ones, and the plan compile unions them into every variant
+    // axis — so a partial call that dropped them would not merely make the frame quieter, it would
+    // NARROW THE SEARCH on the next compile, silently and in the direction that misses rights. An
+    // omission here is a repair that did not mention them, never a decision to withdraw them.
+    identified_classes: keepIfAbsent(received?.identified_classes, base.identified_classes),
   };
 }
 
@@ -228,6 +265,35 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     intake_asks.push({ ask, owner });
   }
 
+  // ── CLASSES THE FRAME JUDGED NECESSARY BEYOND THE INSTRUCTED ONES ─────────────────────────────────
+  //
+  // The frame reads the description of use and can conclude that a class nobody instructed is in scope.
+  // It has always said so in its prose. Nothing could act on that: the plan compile takes its classes
+  // from the driver's intake record, so the identified ones reached the sweep only if a model proposed
+  // them as supplemental work, where they competed for capped slots with model-minted extras — a cap
+  // deciding coverage the frame had already judged necessary.
+  //
+  // TYPED RATHER THAN PARSED OUT OF THE PROSE, and that is the whole reason this field exists. Deriving
+  // classes from judgment prose is ruled against with measurement: 19 of 21 runs carry the same class
+  // number in both an applied and a dropped row, and deriving there dropped the PRIMARY class. A field
+  // the frame fills in deliberately is a decision; a number scraped out of a sentence is a guess.
+  //
+  // A REASON PER CLASS IS REQUIRED, not decorative. This widens a client's search, and the next reader
+  // asking why class 9 was swept needs the frame's own sentence rather than an inference from a number.
+  // ABSENT OR EMPTY CHANGES NOTHING — the compile unions an empty list and the plan is what it was.
+  const identified_classes = [];
+  for (const c of (Array.isArray(params?.identified_classes) ? params.identified_classes : [])) {
+    const raw = str(c?.class), reason = str(c?.reason);
+    const n = Number(raw);
+    if (!Number.isInteger(n) || n < 1 || n > 45)
+      return { ok: false, reason: `matterframe_identified_class_invalid:${raw || "<empty>"} — a Nice class is a whole number 1-45` };
+    if (!reason)
+      return { ok: false, reason: `matterframe_identified_class_reason_missing:${n} — every class the frame adds carries a one-line reason, because it widens what the client is charged to search` };
+    if (identified_classes.some((k) => k.class === String(n)))
+      return { ok: false, reason: `matterframe_identified_class_duplicate:${n} — one row per class` };
+    identified_classes.push({ class: String(n), reason });
+  }
+
   const model = {
     schema_version: SCHEMA_VERSION,
     instructed_scope: instructedScope ?? null,
@@ -238,6 +304,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     search_channels: list(params?.search_channels),
     meaning_angles, meaning_angles_none,
     intake_asks,
+    identified_classes,
   };
   return { ok: true, model, content: renderMatterFrame(model) };
 }

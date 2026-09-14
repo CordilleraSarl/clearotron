@@ -293,7 +293,27 @@ export function compilePhraseValue(term, { pre = "", post = "", dropReserved = f
   // the leading token boundary (AN ADJ APPLE* = 31 vs *AN ADJ APPLE* = 55), which is why it is not done
   // generally — but the alternative here is not a narrower search, it is no search at all.
   const leadWrap = (kept.length > 1 && kept[0].length === 1) ? "" : pre;
-  return `${leadWrap}${value}${post}`;
+  // AND THE SAME AT THE OTHER END, which was never added and cost a family search on a live matter. A
+  // root whose LAST word is one character — a sequel number, an article, an initial — compiled to
+  // `*PLAN ADJ B*`, and the trailing `B*` is the same sub-query over most of the register that the
+  // leading rule above exists for. Probed on the test install, count calls only:
+  //   *PLAN ADJ B*   500      *PLAN ADJ B    200, 36 records
+  //   *LEVEL ADJ 2*  500      *LEVEL ADJ 2   200, 14 records
+  //   *ROB ADJ A*    500      *ROB ADJ A     200,  3 records
+  // A delivered run planned a family search on such a root, every attempt was refused, the refusal was
+  // retried as if transient and the slice was filed as a provider gap — so a family of pending filings
+  // for a third-party title went unseen and the matter was rated on what was left.
+  const last = kept.length - 1;
+  const tailWrap = (kept.length > 1 && kept[last].length === 1) ? "" : post;
+  // THE WILDCARD PREDICATE CARRIES ITS OWN STAR, so `post` is empty there and the two rules above
+  // cannot reach it: the caller writes `STEAL A*` and the star is part of the token. Same shape, same
+  // refusal, so the same subtraction — the star comes off a one-character final token. Nothing else is
+  // touched: a longer final token keeps the caller's pattern exactly as written, and a `?` is a
+  // single-character class rather than a sub-query, so it is not this.
+  if (kept.length > 1 && /^[^*?]\*$/.test(kept[last])) {
+    value = value.slice(0, -1);
+  }
+  return `${leadWrap}${value}${tailWrap}`;
 }
 
 // ── Caller-input safety: NEVER let a term silently change the query's SEMANTICS ────────────────────

@@ -18,7 +18,7 @@
 // throw without it). enforcement is centralized in authorize(), called at the ONE CallTool dispatch chokepoint.
 
 import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { envFrom } from "./env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
 const SECRET = () => process.env.TRADEMARK_MCP_TOKEN_SECRET || "";
@@ -381,6 +381,46 @@ export const USER_FINDING_GROUPS = new Set(["on-field", "off-field", "out-of-sco
 // "*"|[keys] } } } }. File UNSET ⇒ enforcement OFF (single-tenant trust, today's behavior — every scope
 // gets accounts:"*"). File SET but unreadable/malformed ⇒ THROW (a configured guest list must never fail
 // open). Account keys are the profileKey values a run freezes into _driver/profile.json.
+/**
+ * EVERY ADDRESS THE GUEST LIST NAMES, read now rather than at boot, cached on the file's own mtime.
+ *
+ * The People page writes a person into this file and the write succeeds; the sign-in check read two
+ * lists out of the environment once, at construction, and never looked here — so somebody added on the
+ * page was refused at the door with a 403 naming their address, and no restart helped, because the
+ * values do not come from the file they were added to. That is the page's whole promise.
+ *
+ * BOTH SHAPES, because the file carries two and they are not the same fact. `people` at the TOP LEVEL
+ * holds a person and their permissions; `tenants.<org>.users` holds who reaches which organisation.
+ * Looking in only one place returns a short list that reads exactly like a lost write — and looking
+ * under `tenants.<org>.people` finds nothing at all, which reads the same way again.
+ *
+ * A STAT PER CALL, NOT A PARSE PER CALL: this is on the sign-in path of every request. The mtime is the
+ * cache key, so an edit is picked up on the next request and an unchanged file costs one `statSync`.
+ * Unreadable, malformed or absent answers `[]` — never a throw on a request path, and never a widening:
+ * this list can only ADD to what the environment already permits.
+ */
+let grantsAddressCache = { path: null, mtimeMs: null, emails: [] };
+export function addressesInGrants({ grantsPath = envFrom(process.env, "CLEAROTRON_ACCESS_FILE"), io = {} } = {}) {
+  const stat = io.stat ?? ((p) => statSync(p));
+  const read = io.read ?? ((p) => readFileSync(p, "utf8"));
+  if (!grantsPath) return [];
+  let mtimeMs = null;
+  try { mtimeMs = stat(grantsPath).mtimeMs; } catch { return []; }
+  if (grantsAddressCache.path === grantsPath && grantsAddressCache.mtimeMs === mtimeMs) return grantsAddressCache.emails;
+  let emails = [];
+  try {
+    const g = JSON.parse(read(grantsPath));
+    const out = new Set();
+    for (const e of Object.keys(g?.people ?? {})) { const v = String(e).trim().toLowerCase(); if (v) out.add(v); }
+    for (const t of Object.values(g?.tenants ?? {})) {
+      for (const e of Object.keys(t?.users ?? {})) { const v = String(e).trim().toLowerCase(); if (v) out.add(v); }
+    }
+    emails = [...out];
+  } catch { emails = []; }
+  grantsAddressCache = { path: grantsPath, mtimeMs, emails };
+  return emails;
+}
+
 export function loadGrants({ grantsPath = envFrom(process.env, "CLEAROTRON_ACCESS_FILE") } = {}) {
   if (!grantsPath) return null;
   const g = JSON.parse(readFileSync(grantsPath, "utf8"));

@@ -240,7 +240,14 @@ function Row({ person }: { readonly person: Person }) {
           {person.email}
         </span>
       </td>
-      <td style={{ color: viewOnly ? 'var(--text-muted)' : 'var(--text-strong)' }}>{permissionsPhrase(person.permissions)}</td>
+      {/* TWO SHAPES, SAID APART. A row that exists only in an organisation's user list has no
+          permissions entry to read, and drawing it as "View reports" said something the file does not:
+          that somebody decided this person may only view. It says what it is instead. */}
+      <td style={{ color: viewOnly ? 'var(--text-muted)' : 'var(--text-strong)' }}>
+        {person.listed === false
+          ? <span title="This address appears in an organisation's access list. Nothing sets what they may do, so they can view what they reach.">Reach only — no permissions set</span>
+          : permissionsPhrase(person.permissions)}
+      </td>
       <td>
         {chips.length ? (
           <span style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>

@@ -299,8 +299,30 @@ function clearFieldErrors() {
   [...$("editor").querySelectorAll(".invalid")].forEach(el => el.classList.remove("invalid"));
   [...$("editor").querySelectorAll(".fielderr")].forEach(el => el.remove());
 }
+// ── ONE REFUSAL, WHICHEVER VIEW IS RENDERED ─────────────────────────────────────────────────────────
+//
+// The customer editor and the project overlay both write into #editor, so they REPLACE each other and
+// at most one input for a given concept is ever in the document. They name the same concepts under
+// different prefixes: f_juris and p_juris, f_platforms and p_platforms, ten of the thirteen in all.
+//
+// The server-error table names the customer editor's id. On the overlay that id resolves to nothing,
+// markField's guard correctly returns, and the refusal reaches the panel with no field marked — the
+// reader is told WHAT is wrong and not WHERE, which is the half the main editor already fixes.
+//
+// RESOLVED HERE, IN THE ONE FUNCTION EVERY CALLER GOES THROUGH, rather than by giving the table a
+// second column. A column covers the rows somebody remembered; this covers every row by construction,
+// including the three concepts that have no overlay counterpart today and any row added later. Those
+// three resolve to nothing and markField's guard handles them exactly as before.
+//
+// It never crosses views: the alternate is consulted ONLY when the named id is absent, so a customer
+// editor on screen always marks its own field even though the overlay names the same concept.
+function onScreenField(id) {
+  if ($(id)) return id;
+  const alt = String(id).replace(/^f_/, "p_");
+  return alt !== id && $(alt) ? alt : id;
+}
 function markField(id, message) {
-  const el = $(id); if (!el) return;
+  const el = $(onScreenField(id)); if (!el) return;
   el.classList.add("invalid");
   const det = el.closest("details"); if (det) det.open = true;   // surface a highlight hidden under More options
   const field = el.closest(".field") || el.parentElement;

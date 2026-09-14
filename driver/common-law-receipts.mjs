@@ -15,6 +15,10 @@
 
 // 6 mandatory store platforms + the general-web cell. Field-scoped cells are additive (a matter can
 // have MORE rows per variant, never fewer).
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import { driverDir } from "../shared/driver-dir.mjs";   // — one definition of where a run's _driver/ is
+
 export const MIN_CELLS_PER_VARIANT = 7;
 
 const norm = (s) => (s || "").trim().replace(/^["'`]+|["'`]+$/g, "").toLowerCase();
@@ -281,12 +285,39 @@ export function findGridLedgerViolations(manifestOrTerms, ledgerRaw, { minCellsP
 // (same contract as findGridLedgerViolations).
 //
 // @returns {Array<{variant:string, missing:string[]}>}
-export function findPlatformIdentityViolations(manifestOrTerms, ledgerRaw, dictatedPlatforms = []) {
+export function findPlatformIdentityViolations(manifestOrTerms, ledgerRaw, dictatedPlatforms = [], { wholeGrid = false } = {}) {
   if (!dictatedPlatforms.length) return [];
   const map = parseGridLedger(ledgerRaw);
   const want = dictatedPlatforms.map(norm);
   const out = [];
   const variants = Array.isArray(manifestOrTerms) ? manifestOrTerms : parseManifestVariants(manifestOrTerms);
+
+  // ── A CHANNEL NO HALF RAN IS NOBODY'S, AND THAT IS THE ONE THIS COULD NOT SEE ────────────────────
+  //
+  // The per-variant join below judges a variant that plausibly attempted the whole dictated grid, and
+  // skips one whose coverage is partial — deliberately, so the count ladder's carve-outs do not re-fail
+  // here. A channel that NO variant reached is partial for every one of them, so every variant was
+  // skipped and the channel went unreported.
+  //
+  // That is what happened on a delivered run. The grid is split in two by term, and both halves carried
+  // the same platforms; half A wrote that the repositories were "not in grid mandate, assigned to the
+  // parallel half", half B wrote that they were covered "indirectly, via general web search". Neither
+  // ran them, each said the other owned them, and the delivered coverage carried it as a NOTE. A pass's
+  // statement that another pass owns a channel is not a receipt, and prose is not a state.
+  //
+  // Reported once, against the whole grid rather than per variant, because the fact is about the
+  // channel: nothing in this ledger touched it. The caller fails the fold with it, and the coverage
+  // ledger then carries the channel as deferred — open, not run — instead of a sentence.
+  const everywhere = new Set();
+  for (const cells of map.values()) for (const pl of cells) everywhere.add(pl);
+  //
+  // ASKED FOR BY THE CALLER, and only where the ledger is the MERGED fold artifact. On one half's own
+  // ledger a channel the other half ran is legitimately absent, and reporting it there would re-fail
+  // exactly the split this gate was built to allow. The fold is where both halves are in one file, and
+  // it is the only place the question "did anybody run this" has an answer.
+  const untouched = want.filter((w) => !everywhere.has(w));
+  if (wholeGrid && untouched.length && everywhere.size) out.push({ variant: "*", missing: untouched, whole: true });
+
   for (const variant of variants) {
     // UNION the " / " family's accounted platforms before judging: workers legitimately re-key
     // between the packed and split forms (copper-conduit, 2026-06-12) and a supplementary closure
@@ -902,4 +933,50 @@ export function findSimilarListingSignals(findingsContent) {
   }
   flush();
   return signals;
+}
+
+/**
+ * THE CHANNELS THE RUN DICTATED AND NOBODY RAN, as coverage-ledger rows.
+ *
+ * A channel one half says the other owns is nobody's: on a delivered run half A wrote that the
+ * repositories were "not in grid mandate, assigned to the parallel half" and half B wrote that they were
+ * covered indirectly through general web search. Neither ran them, and the delivered coverage carried it
+ * as a NOTE. Prose is not a state, and a reader cannot act on it.
+ *
+ * A ROW IN THE LEDGER'S OWN SHAPE AND ITS OWN OPEN STATE, never a new one and never a refusal. `deferred`
+ * is what this ledger already calls a slice that could not run at all, every consumer already reads it —
+ * the deadline envelope re-runs it, the verdict floor clamps over it, the report shows it where open rows
+ * are shown — and a disclosed gap is the point. Failing the fold instead would turn a gap the client can
+ * see into a clearance that delivers nothing, which is the opposite of what disclosure is for.
+ *
+ * Reads the run's own two artifacts and answers `[]` for anything it cannot read: no spec, no merged
+ * ledger, or an unparseable one. An absence here is not a finding — the receipts gate above owns that
+ * question — and inventing a row from a file this could not read would be a gap nobody can close.
+ */
+export function openChannelRows(runDir, io = {}) {
+  const read = io.read ?? ((p) => readFileSync(p, "utf8"));
+  const exists = io.exists ?? ((p) => existsSync(p));
+  // THE SHARED ACCESSOR, not a hand-built path. `shared/driver-dir.mjs` exists to end exactly this:
+  // its own header records 1123 hand-built sites across 221 files, and the state that made it
+  // indefensible — the hook whose job is policing writes into this subtree computed the subtree's
+  // location by hand, like everyone else, so the location was not a decision anybody owned. An arm
+  // enforces it; a hand-join here is caught rather than merely untidy.
+  const at = (name) => driverDir(runDir, name);
+  try {
+    if (!exists(at("grid-spec.json")) || !exists(join(runDir, "common-law-grid.json"))) return [];
+    const spec = JSON.parse(read(at("grid-spec.json")));
+    const platforms = (spec?.platforms ?? []).filter(Boolean);
+    if (!platforms.length) return [];
+    const ledgerRaw = read(join(runDir, "common-law-grid.json"));
+    const terms = (spec?.terms ?? spec?.variants ?? []).filter(Boolean);
+    const violations = findPlatformIdentityViolations(terms.length ? terms : [], ledgerRaw, platforms, { wholeGrid: true });
+    const whole = violations.find((v) => v.whole);
+    return (whole?.missing ?? []).map((platform) => ({
+      axis: "common-law",
+      status: "deferred",
+      unit: `common-law / ${platform}`,
+      reason: `open — not run: ${platform} was dictated in the grid and no pass produced a receipt for it. `
+        + "A pass stating that another pass owns a channel is not a receipt.",
+    }));
+  } catch { return []; }
 }

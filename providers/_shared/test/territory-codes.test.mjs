@@ -77,3 +77,36 @@ test("map values are codes or the worldwide sentinel — nothing multi-word leak
     assert.ok(code === "" || /^[A-Z]{2}$/.test(code), `${name} → "${code}" is not a 2-letter code`);
   }
 });
+
+// ── A COUNTRY NAMED IN WORDS RESOLVES, INCLUDING THE TWO THAT DID NOT ─────────────────────────────
+//
+// "Belgium" and "Luxembourg" answered null while "BE", "NL" and "Netherlands" all answered — so a
+// clearance ordered for Belgium by name was carried as an unrecognized territory. The table maps
+// BENELUX to the office that stands in for those two countries' national register, which is easy to
+// read as covering them; it does not, because this table answers "what did the requester type".
+test("Belgium and Luxembourg resolve by name, exactly as their neighbours do", () => {
+  assert.equal(normalizeTerritory("Belgium"), "BE");
+  assert.equal(normalizeTerritory("Luxembourg"), "LU");
+  assert.equal(normalizeTerritory("Netherlands"), "NL", "the neighbour that always worked — the asymmetry is the defect");
+  // The Benelux office is a DIFFERENT question from the country, and both answers stay available.
+  assert.equal(normalizeTerritory("Benelux"), "BX");
+  assert.equal(normalizeTerritory("BE"), "BE", "the code was never the broken half");
+});
+
+test("the long tail resolves too, and the curated promises are not at the mercy of runtime data", () => {
+  // MEASURED, not assumed: 224 of the 262 codes this engine holds had no display name in the curated
+  // table. The tail is derived from the runtime's own region names, so a requester naming an ordinary
+  // country in words is answered rather than dropped.
+  assert.equal(normalizeTerritory("Denmark"), "DK");
+  assert.equal(normalizeTerritory("Portugal"), "PT");
+  assert.equal(normalizeTerritory("Czechia"), "CZ");
+
+  // AND THE WIDENING CANNOT REACH THE SENTINELS. A runtime that does not know a code answers with the
+  // code itself or with "Unknown Region"; read as a name, either would make the regional and worldwide
+  // sentinels resolve as words and quietly change what a scope means.
+  assert.equal(normalizeTerritory("Unknown Region"), null);
+  assert.equal(normalizeTerritory("Narnia"), null, "an absence is still an absence");
+  assert.equal(normalizeTerritory("Worldwide"), "", "the worldwide sentinel is the curated table's, not a region name");
+  assert.equal(normalizeTerritory("European Union"), "EU", "and the curated entry still wins over any derived one");
+  assert.equal(normalizeTerritory("International"), "WO");
+});

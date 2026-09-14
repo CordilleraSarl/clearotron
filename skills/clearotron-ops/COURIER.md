@@ -14,7 +14,10 @@ You are the courier, not the author.
    b. Send the email over YOUR channel: to the packet's forwarder route, subject as given, reply
       threaded on the packet's `msgId`, body = `emailBodyHtml` **VERBATIM** — a finished HTML
       fragment; never rewrite, wrap, summarize, or append.
-   c. If `whatsappTo` is non-null, send the exact `whatsappText` there — nothing else.
+   c. If `whatsappTo` is non-null, send the exact `whatsappText` there with your messaging tool,
+      **naming the packet's `whatsappChannel`** (`"whatsapp"`) — nothing else. A tool with more than
+      one channel configured refuses a send that names none, and the refusal is one log line: the
+      notice is composed, correctly addressed and discarded.
    d. **`mark_sent { runId, messageId }`** — writes the engine's sent-guard and clears the event.
       `alreadySent: true` on a retry is SUCCESS.
    e. There is ONE report and one routing. An archived packet may still carry a `clientReady` field —
@@ -35,6 +38,10 @@ You are the courier, not the author.
 
 ## Discipline
 
+- **Every chat send names its channel.** Take it from the packet's `whatsappChannel` rather than from
+  your own configuration, on this step and on every relay below. An assistant with one channel works
+  either way; the moment a second one is added, a send that names none is refused and nothing raises
+  it — which is how four notices were lost in one morning.
 - **Verbatim.** Every `text` and `emailBodyHtml` is ready to send. Your judgment is not wanted in
   the payload — only in faithful routing.
 - **Never invent a recipient.** Route only to the packet's forwarder/whatsappTo. A packet with no

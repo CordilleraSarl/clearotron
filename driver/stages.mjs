@@ -1359,7 +1359,7 @@ export const STAGES = {
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE (: a field phrased outside one was
       // written 0 of 9 times against 74 of 74 when imperative-carried).
       `Hand the frame back by calling the \`record_matter_frame\` tool. Send \`prose_body\` — the commercial read of the matter in full prose: client, sector, product description, customer base, channels of trade, off-field sectors, sector-convergence flags, watchlist-owner seeds, your scope reasoning, the class scope and adjacency call with a one-line reason per class, the applicant's own and affiliated marks, and the campaign shape where you are inferring one (label an inference as an inference).`,
-      `Send \`scope_basis\` as "instructed" or "derived", with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories.`,
+      `Send \`scope_basis\` as "instructed" or "derived", with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories. Send \`identified_classes\` — the Nice classes you judge NECESSARY that the request did NOT instruct, each as {class, reason}, the class a whole number 1-45 and the reason one line. These are searched for every variant, not only the exact name, so name a class only where you would defend charging for it; omit the field or send an empty array where the instructed classes are the whole scope, which is the ordinary answer and adds nothing.`,
       // The driver STAMPS the instructed-scope section from _driver/instructed-scope.json, so the seat is
       // not asked to quote back values the driver wrote at intake. That retyping was the stage's
       // `frame_scope_missing` loop and it is gone; see matter-frame-record.mjs.
@@ -4613,6 +4613,15 @@ export function whatsappRouting(job, agentId) {
   const who = email || handle || "the requester";
   return {
     whatsappTo: to,
+    // THE CHANNEL, BESIDE THE NUMBER, because a courier's messaging tool refuses a send that does not
+    // name one as soon as the assistant has more than one channel configured — "Channel is required
+    // when multiple channels are configured: msteams, whatsapp" — and the notice is then composed,
+    // addressed and discarded on one log line. The courier sheet said "send it there" and named no
+    // channel, so the instruction was correct for an assistant with exactly one and silently wrong for
+    // any other. A field is harder to lose than a sentence: the packet now states which channel this
+    // route is on, and the sheet tells the courier to pass it. It rides into the delivery packet by
+    // construction — pipeline.mjs and pipeline-knockout.mjs both spread this object into it.
+    whatsappChannel: "whatsapp",
     whatsappToReason: to ? null : `no chat number is held for ${who} — set one in CLEAROTRON_REQUESTER_WHATSAPP to notify them`,
     whatsappCcOperator: OPERATOR_WHATSAPP_COPY ? (AGENT_WHATSAPP[agentId] ?? null) : null,
   };

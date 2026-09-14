@@ -180,6 +180,20 @@ and only where it exceeds the stall window), `CLEAROTRON_KILL_ESCALATE_MS`
 fills mid-run surfaces as a *missing artifact* at a later stage rather than as a disk error. `0`
 disables; a non-numeric value throws rather than silently disabling the guard.).
 
+`CLEAROTRON_MIN_TOKENS_PER_SEC` (1) and `CLEAROTRON_MIN_TOKENS_WARMUP_MS` (5 minutes) — the trickle floor, and
+how long a turn is left alone before it applies. A stage that streams a token every few seconds is not a
+slow stage: it holds off the stall clock, which resets on any streamed byte, and the no-progress ceiling,
+which counts token movement as progress on purpose, so the only thing that ever stopped one was the wall
+— at which point the attempt is thrown away and done again from the start. The floor is counted in output
+tokens per second of ACTIVE time (elapsed minus tool wait), for the same reason the hard ceiling is: a
+turn waiting on a slow register lookup is producing nothing and must not be killed for it. A turn under
+the floor is stopped there and recorded as a stall, so a retry gets the ordinary budget rather than an
+extended one. `0` disables the floor entirely and is read as "no floor", never as a floor of zero; a
+negative or unreadable value falls back to the default rather than switching the instrument off. The
+default is a floor against a pathology rather than a budget for a stage — the readings it was written
+from were three orders of magnitude apart, 0.08 tokens per second against 74 — and it is expected to
+move once the same window has been read across more runs.
+
 ### 5.4 Pipeline feature gates & kill switches — T3 (defaults ON; `0` disables)
 
 `CLEAROTRON_PLAN_DISPATCH`, `CLEAROTRON_SATPROBE_CODESIDE`,
