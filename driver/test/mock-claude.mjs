@@ -426,6 +426,9 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       stop_reason: fail ? "error" : "end_turn", session_id: session,
       total_cost_usd: process.env.MOCK_CLAUDE_COST != null ? Number(process.env.MOCK_CLAUDE_COST) : 0.0123,
       usage,
+      // MOCK_CLAUDE_PROVIDER=<word> — the per-model usage the real program reports, naming its provider
+      // ("firstParty", "foundry"). Absent by default, as it was before the provider gauge read it.
+      ...(process.env.MOCK_CLAUDE_PROVIDER ? { modelUsage: { [wireModel]: { provider: process.env.MOCK_CLAUDE_PROVIDER } } } : {}),
     };
     // MOCK_CLAUDE_NO_NEWLINE=1 — emit the FINAL result event with NO trailing newline (NDJSON last record);
     // the engine MUST flush its buffer on close or the result is dropped (the B1 regression).

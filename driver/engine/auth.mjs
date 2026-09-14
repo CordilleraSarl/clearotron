@@ -20,28 +20,94 @@
 // spelling list let the OpenAI half decide how an Anthropic run bills. deleted the old names, so
 // there is one variable, only the selected engine is ever consulted, and the hazard has no route left.
 //
-// And deliberately written OUT at each site rather than through a helper: the guard in
-// `env-governance.test.mjs` finds a product read by the literal `env.NAME`, so a helper taking the
-// name as an argument makes both reads invisible to it — measured, it turned them harness-only and
-// put both names on the "no longer read by product code" list. The repetition is what keeps them
-// visible to the census that has to see them.
+// And deliberately written OUT as a literal rather than passed to a helper as an argument: the env
+// audit finds a product read by the literal `env.NAME`, so a helper taking the name as an argument makes
+// the read invisible to it — measured, it turned the reads harness-only and put the name on the "no
+// longer read by product code" list. `billingMode` below spells the name out, which keeps it visible.
+
+// THREE MODES FOR CLAUDE, AND NOTHING ELSE IS A MODE. `cloud` bills Claude through the reader's own
+// Google, Microsoft or Amazon account, or through a gateway in front of one (ANTHROPIC_BASE_URL). The
+// vendor's program already routes on its own switches, which reach it because the stage environment is
+// the driver's; what was missing was a billing word that says so. Without it a cloud machine had two
+// choices and both were wrong: `api-key` refused for want of an Anthropic key the machine does not have,
+// and `subscription` ran and stamped every row as billed to a subscription nobody was paying.
+//
+// AN UNKNOWN WORD IS REFUSED. It used to run as `subscription` on both engines, so a typo in the one
+// setting that decides who pays was a quiet bill to the wrong account. It refuses here, at the top of
+// runStage, in the probe and in the jx runner, before any turn runs.
+export const BILLING_MODES = Object.freeze(["subscription", "api-key", "cloud"]);
+
+/**
+ * The billing word as the environment writes it, normalised and NOT validated: unset or blank reads as
+ * the default. The one parse of the word. `resolveAuthMode` validates it; the anthropic adapter's
+ * `spawnEnv`, which must never throw, reads it through here rather than parsing it a second way.
+ */
+export function billingMode(env = process.env) {
+  return String(env.CLEAROTRON_AI_BILLING ?? "").trim().toLowerCase() || "subscription";
+}
+
+// The vendor's own switches, read the way its program reads them: "1", "true", "yes" or "on" switches
+// one on. Spelled out one per line for the reason given above. The order is only the order a refusal
+// names them in.
+const switchedOn = (v) => ["1", "true", "yes", "on"].includes(String(v ?? "").trim().toLowerCase());
+const CLOUD_SWITCH = Object.freeze({ vertex: "CLAUDE_CODE_USE_VERTEX", foundry: "CLAUDE_CODE_USE_FOUNDRY", bedrock: "CLAUDE_CODE_USE_BEDROCK" });
+function cloudsSwitchedOn(env) {
+  const on = [];
+  if (switchedOn(env.CLAUDE_CODE_USE_VERTEX)) on.push("vertex");
+  if (switchedOn(env.CLAUDE_CODE_USE_FOUNDRY)) on.push("foundry");
+  if (switchedOn(env.CLAUDE_CODE_USE_BEDROCK)) on.push("bedrock");
+  return on;
+}
+
+// Every refusal below carries `billingRefusal: true`, so a reader classifies it by what it is rather than
+// by its wording: the probe does, and a sign-in error that also names this setting is not one of these.
+const refuse = (message) => Object.assign(new Error(message), { billingRefusal: true });
+const notAMode = (mode, modes) => refuse(
+  `CLEAROTRON_AI_BILLING=${mode} is not a billing mode — refusing to guess, because the guess would bill ` +
+  `the subscription. One of: ${modes.join(", ")}.`);
 
 export function resolveAuthMode({ engineName, env = process.env } = {}) {
   const name = String(engineName || "").toLowerCase();
 
   if (name === "anthropic-agent") {
-    const mode = (env.CLEAROTRON_AI_BILLING || "subscription").toLowerCase() === "api-key" ? "api-key" : "subscription";
-    if (mode === "api-key" && !env.ANTHROPIC_API_KEY)
-      throw new Error(
-        `CLEAROTRON_AI_BILLING=api-key but ANTHROPIC_API_KEY is not set — refusing to silently bill the ` +
-        `subscription instead. Set the key, or use CLEAROTRON_AI_BILLING=subscription.`);
-    return { provider: "anthropic", mode, apiBilled: mode === "api-key" };
+    const mode = billingMode(env);
+    if (mode === "subscription") return { provider: "anthropic", mode, apiBilled: false };
+    if (mode === "api-key") {
+      if (!env.ANTHROPIC_API_KEY)
+        throw refuse(
+          `CLEAROTRON_AI_BILLING=api-key but ANTHROPIC_API_KEY is not set — refusing to silently bill the ` +
+          `subscription instead. Set the key, or use CLEAROTRON_AI_BILLING=subscription.`);
+      return { provider: "anthropic", mode, apiBilled: true };
+    }
+    if (mode === "cloud") {
+      const on = cloudsSwitchedOn(env);
+      if (on.length > 1)
+        throw refuse(
+          `CLEAROTRON_AI_BILLING=cloud but more than one cloud is switched on ` +
+          `(${on.map((c) => CLOUD_SWITCH[c]).join(", ")}) — set exactly one, so the run can say which account it bills.`);
+      // A switch names the cloud. ANTHROPIC_BASE_URL alone is the gateway form: a cloud reached through the
+      // reader's own proxy. With a switch also set, the switch is what the program routes on.
+      const cloud = on[0] ?? (env.ANTHROPIC_BASE_URL ? "gateway" : null);
+      if (!cloud)
+        throw refuse(
+          `CLEAROTRON_AI_BILLING=cloud but none of CLAUDE_CODE_USE_VERTEX, CLAUDE_CODE_USE_FOUNDRY, ` +
+          `CLAUDE_CODE_USE_BEDROCK or ANTHROPIC_BASE_URL is set — refusing to silently bill the subscription ` +
+          `instead. Set the one for your cloud (INSTALL.md), or use CLEAROTRON_AI_BILLING=subscription.`);
+      return { provider: "anthropic", mode, apiBilled: true, cloud };
+    }
+    throw notAMode(mode, BILLING_MODES);
   }
 
   if (name === "openai-agent") {
-    const mode = (env.CLEAROTRON_AI_BILLING || "subscription").toLowerCase() === "api-key" ? "api-key" : "subscription";
+    const mode = billingMode(env);
+    if (mode === "cloud")
+      throw refuse(
+        `CLEAROTRON_AI_BILLING=cloud bills Claude through a cloud account, and this machine runs the Codex ` +
+        `engine — refusing rather than billing the ChatGPT subscription instead. Use subscription or api-key ` +
+        `with Codex, or CLEAROTRON_AI=anthropic-agent for a cloud account.`);
+    if (mode !== "subscription" && mode !== "api-key") throw notAMode(mode, ["subscription", "api-key"]);
     if (mode === "api-key" && !env.CODEX_API_KEY)
-      throw new Error(
+      throw refuse(
         `CLEAROTRON_AI_BILLING=api-key but CODEX_API_KEY is not set — refusing to silently bill the ChatGPT ` +
         `subscription instead. Set the key, or use CLEAROTRON_AI_BILLING=subscription.`);
     return { provider: "openai", mode, apiBilled: mode === "api-key" };

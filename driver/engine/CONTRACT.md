@@ -41,6 +41,8 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
   sessionRef: string | null,         // opaque resume handle (claude session_id | codex thread_id)
   modelWire:  string | null,         // MODEL GAUGE — the served model id this turn observed (§3);
                                      // null = nothing was observed, never the requested alias
+  providerWire: string | null,       // PROVIDER GAUGE — the program's own word for who served the turn
+                                     // ("firstParty", "foundry"); null = not said, or said inconsistently
   signals:    { stalled?, noProgress?, hardWall?, rateLimited?, rateLimitBasis?, resetsAt?,
                 resetsAtBasis?, usageStreamed?, noStreamEvents?, thought: bool|null },
                                      // THINKING GAUGE — see below.

@@ -123,9 +123,9 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // codex adapter owns `codex login`); paraphrasing them here creates a second wording that drifts.
   if (error) {
     const msg = String(error?.message ?? error);
-    if (/=api-key but/i.test(msg))
+    if (error?.billingRefusal === true || /=api-key but/i.test(msg))   // auth.mjs marks every billing refusal
       return v("auth-misconfigured", "config",
-        `${id} cannot start: the billing mode this box declares has no key`, msg, { detail: null });
+        `${id} cannot start: ${/=api-key but/i.test(msg) ? "the billing mode this box declares has no key" : "the billing setting this box declares is refused"}`, msg, { detail: null });
     if (SIGNED_OUT_RE.test(msg))
       return v("signed-out", "config", `${id} is not signed in`, msg);
     if (TIER_RE.test(msg))

@@ -280,6 +280,6 @@ export const jxBillingStamp = (executorSource, result = null) => {
   // NO VENDOR ON THE RESULT MEANS NO DISPATCH HAPPENED. A fixture, an injected executor, or a
   // configuration the engine door refused all return without one, and none of them is provider-billed.
   // Saying so in its own words beats "unknown", which is indistinguishable from an unstamped legacy row.
-  if (executorSource !== "engine" || !result?.vendor) return { engine: "not-provider-billed", authMode: "not-provider-billed" };
-  return { engine: result.vendor, authMode: result.authMode ?? "not-provider-billed" };
+  if (executorSource !== "engine" || !result?.vendor) return { engine: "not-provider-billed", authMode: "not-provider-billed", cloud: null };
+  return { engine: result.vendor, authMode: result.authMode ?? "not-provider-billed", cloud: result.cloud ?? null };   // cloud: which account a cloud mode bills
 };

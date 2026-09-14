@@ -1144,17 +1144,17 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // it; the log was already saying what the code believed.
     //
     // TWO FIELDS, NEVER COLLAPSED INTO ONE:
-    //   modelUsed   — the requested resolution. Unchanged in meaning and unchanged in value, because
-    //                 run-economics.mjs and tokens.mjs both read it and a field that quietly changes
-    //                 what it means is its own corruption.
-    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream
-    //                 never said: an engine that does not emit one (codex), a turn killed before any
-    //                 event, a spawn error. It NEVER falls back to the requested alias.
-    // `modelBasis` names which of the two the row can defend: "actual" or "unknown". There is no third
-    // state in which a requested value is dressed as an observed one.
+    //   modelUsed   — the requested resolution, unchanged in meaning and value: run-economics.mjs and
+    //                 tokens.mjs both read it, and a field that quietly changes meaning is its own corruption.
+    //   modelActual — the id the WIRE reported (engine tuple `modelWire`), or NULL when the stream never
+    //                 said: an engine that does not emit one (codex), a turn killed before any event, a
+    //                 spawn error. It NEVER falls back to the requested alias, and `modelBasis` ("actual" or
+    //                 "unknown") never dresses a requested value as an observed one. `providerReported` is
+    //                 the provider word the same stream gave (tuple `providerWire`), null on the same terms.
     const modelRequested = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model);
     const modelActual = (typeof turn.modelWire === "string" && turn.modelWire) ? turn.modelWire : null;
     const modelBasis = modelActual ? "actual" : "unknown";
+    const providerReported = (typeof turn.providerWire === "string" && turn.providerWire) ? turn.providerWire : null;
     // WHETHER THE OBSERVED ID NAMES A FIXED BUILD. `modelBasis: "actual"` says the provider answered,
     // not that the answer is pinned: two of the three tiers come back as undated aliases the provider
     // may repoint, and recorded beside a dated one they read identically. null when there is nothing to
@@ -1297,7 +1297,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           attempt, key, agent, model,
           modelUsed: (lastModelUsed = engine.resolveModelId ? engine.resolveModelId(model) : resolveModel(model)),
           // Same billing stamp as the attempt row, written on the same terms — see the note there.
-          engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true,
+          engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           code: rt.code, wall: rt.wall, timeoutSec: effTimeout,
           // — same rename as the attempt row above. This row already carries the driver's verdict as
           // `repairOutcome` (only "repaired" is success), so it needs no `ok`; what it lacked was any mark
@@ -1641,7 +1641,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         //   modelMismatch — true/false when both sides name a family, null when either does not.
         // Written even on the rows where they are null, so "this engine cannot report" stays visibly
         // different from "this record predates the gauge".
-        modelActual, modelBasis, modelSnapshot, modelMismatch,
+        modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
         cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
         // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
         // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
@@ -1656,7 +1656,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // "every telemetry field is written unconditionally, so 'did not happen' stays distinguishable
         // from 'not recorded'" (instrumentation-house-rule.test.mjs). A run must be able to STATE that it
         // billed subscription, not merely fail to state that it billed API.
-        engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true,
+        engine: engine.name, writeBoundary: writeBoundaryOf(engine), authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
         // build 2 — THIS attempt is the fresh dispatch bought by discarding a warm session that
         // reproduced its own failure. Exact, not cumulative: a `warmEscalatedAt > 0` test would mark
         // every later attempt too the moment the ladder is deepened, and the row would stop meaning
@@ -1779,7 +1779,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: !fail, fail: fail ?? null,
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
-          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch,
+          model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
           cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
           rescued: rescued ?? undefined, killed: killed || undefined,
@@ -1792,7 +1792,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           // archived runs actually reads, and the question "has this box ever billed API" could not be
           // answered from it because the pair was only ever on the per-stage log. Written unconditionally,
           // like everything else here: a subscription run states `false`.
-          authMode: auth.mode, apiBilled: auth.apiBilled === true,
+          authMode: auth.mode, apiBilled: auth.apiBilled === true, cloud: auth.cloud ?? null,
           //: the spine carries the POINTER and the sha, not the text — enough to find the file and
           // to tell two attempts apart without opening either.
           dispatch: dispatch?.file ?? null, dispatchSha: dispatch?.sha ?? null,

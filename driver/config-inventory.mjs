@@ -42,7 +42,7 @@ import {
   DEFAULT_ENGINE_ID, ENGINE_BINARIES, PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS,
   missingCredentials, preflightEngineBinary, providerIdFrom,
 } from "./driver.config.mjs";
-import { resolveAuthMode } from "./engine/auth.mjs";
+import { resolveAuthMode, billingMode } from "./engine/auth.mjs";
 import { CASELAW_BRIDGES } from "./engine/mcp/gather-config.mjs";   // — the list that decides what is spawned
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -60,7 +60,9 @@ const shown = (names) => names.map((n) => n);
  * absent, because the alternative is silently billing a subscription the operator thought they had
  * stopped using (engine/auth.mjs's opening argument). A writer that caught that and recorded "unknown"
  * would erase precisely the misconfiguration a staff config page exists to surface, so it is caught and
- * recorded AS ITSELF: mode `api-key`, `apiBilled: false`, and a fault naming the variable to set.
+ * recorded AS ITSELF: mode `api-key`, `apiBilled: false`, and a fault naming the variable to set. The
+ * cloud mode's refusals, and a word that is not a mode at all, are recorded as themselves too, by the
+ * refusal's own sentence.
  *
  * `apiBilled` is what the page should believe over `mode` — the two come apart in exactly this case,
  * and only one of them describes who gets the invoice.
@@ -78,14 +80,14 @@ export function engineInventory(env = process.env) {
     try {
       const a = resolveAuthMode({ engineName: id, env });
       return { mode: a.mode, apiBilled: a.apiBilled === true, missing: [] };
-    } catch {
-      // The one state resolveAuthMode throws for. The message carries no value, but it is not copied
-      // either — the two variable names are reconstructed from the table so this cannot drift from it.
-      return {
-        mode: "api-key",
-        apiBilled: false,
-        missing: spec?.apiKeyEnv ? shown([spec.apiKeyEnv]) : [],
-      };
+    } catch (e) {
+      // Recorded AS ITSELF, whichever refusal it was. An API-key mode with no key names the variable to
+      // set, reconstructed from the table so it cannot drift from it. Every other refusal (a cloud mode with
+      // no cloud switched on or with two, a word that is not a mode) carries its own sentence, which names
+      // variables and never a value, and leaves `missing` empty: the page reads `missing` as "set this key".
+      const mode = billingMode(env);
+      if (mode === "api-key") return { mode, apiBilled: false, missing: spec?.apiKeyEnv ? shown([spec.apiKeyEnv]) : [] };
+      return { mode, apiBilled: false, missing: [], refusal: String(e?.message ?? e) };
     }
   })();
 

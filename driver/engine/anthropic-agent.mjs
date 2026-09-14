@@ -6,7 +6,7 @@
 //
 // Contract: engine/CONTRACT.md. runTurn() returns the registry-standard normalized tuple
 // (`{code, killed, wall, stdout, stderr, laneWaitMs, json, usage, reads, readsTruncated, modelWire,
-// sessionRef, signals}`), with a SYNTHESIZED `json` envelope in the classifier's shape so every downstream
+// providerWire, sessionRef, signals}`), with a SYNTHESIZED `json` envelope in the classifier's shape so every downstream
 // classifier in gateway.mjs (payloadText, json.status check, isEmbeddedFallback, isTimeout,
 // isLaneWedge) works unchanged.
 //
@@ -24,6 +24,7 @@ import { resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
+import { billingMode } from "./auth.mjs";   // — the one parse of the billing word (see spawnEnv)
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
 // ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
@@ -39,10 +40,15 @@ const claudeBin = () => { const r = resolveEngineProgram("anthropic-agent"); ret
 // .env, and a present API key OVERRIDES the subscription — so we must STRIP it from the claude subprocess
 // env. CLEAROTRON_AI_BILLING=api-key keeps the key (the standing fallback for when the subscription is
 // revoked — Anthropic's advance notice = today's per-call API cost). Default = subscription.
+//
+// `cloud` strips it too, as that mode's acceptance asks: a key has no part in a turn the vendor's switches
+// send to the reader's cloud account, and dropping it means a leftover key can never be what bills. A
+// gateway's credential is its own ANTHROPIC_AUTH_TOKEN, which rides through like every other name. The
+// word is parsed by auth.mjs (billingMode), the one place that reads it. This never validates and never
+// throws, because the doors that do (the top of runStage, the probe, the jx runner) have already run.
 export function spawnEnv(base = process.env) {
   const env = { ...base };
-  const mode = (base.CLEAROTRON_AI_BILLING || "subscription").toLowerCase();
-  if (mode !== "api-key") delete env.ANTHROPIC_API_KEY;   // subscription: force OAuth/subscription billing
+  if (billingMode(base) !== "api-key") delete env.ANTHROPIC_API_KEY;   // subscription and cloud
   return env;
 }
 // 120s of ZERO streamed output = the silent-provider-stall abort. A healthy turn
@@ -1017,6 +1023,10 @@ export const anthropicAgentEngine = {
           // message first (what served the call), init second (what the session was configured with).
           // Never the requested alias — see the declaration above.
           modelWire: wireModelAssistant ?? wireModelInit ?? null,
+          // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
+          // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
+          // or null when the stream never said or its models disagree. Recorded, never inferred from config.
+          providerWire: providerOf(resultEvent),
           sessionRef: resultEvent?.session_id ?? resumeRef ?? null,
           // The raw result event's total_cost_usd is a provider-side field and stays in the provider's
           // own stream; the tuple carries no currency (tokens-only directive 2026-07-11) — `usage` is
@@ -1050,6 +1060,21 @@ function errResult(t0, e, resumeRef) {
     // reads: a spawn error means NO turn ran — [] is the true observation (nothing was read), not a gap.
     // modelWire: null for the opposite reason — no turn ran, so the wire said nothing about a model, and
     // the record must say UNKNOWN rather than inherit the alias that was asked for.
-    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, sessionRef: resumeRef ?? null,
+    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null,
   };
+}
+
+/**
+ * The program's own word for which provider served a turn, from the result event's per-model usage:
+ * `modelUsage[<model>].provider`, "firstParty" on Anthropic's own API and "foundry" on Azure Foundry
+ * (measured 2026-09-14, CLI 2.1.263). One word when every model the turn used names the same provider;
+ * null when none does or they disagree, because a single word would then be a guess.
+ */
+export function providerOf(resultEvent) {
+  const words = new Set();
+  for (const u of Object.values(resultEvent?.modelUsage ?? {})) {
+    const w = typeof u?.provider === "string" ? u.provider.trim() : "";
+    if (w) words.add(w);
+  }
+  return words.size === 1 ? [...words][0] : null;
 }
