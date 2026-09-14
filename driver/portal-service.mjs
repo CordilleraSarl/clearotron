@@ -35,6 +35,13 @@
 import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* translation before any module-top
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
+import { hostname as osHostname } from "node:os";   // — the address a refusal page names when nothing else identifies this instance
+
+// The port this service listens on when nobody says otherwise. Declared here rather than at the
+// listener, because the refusal page names the address too and it is composed on IMPORT-side code: the
+// listener's own constants live inside the entry-point branch and do not exist when another module
+// calls in. One definition, two readers, no second literal to drift.
+const PORTAL_PORT_DEFAULT = 18802;
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, resolveStoreRepoRoot, makeStoreCommit } from "../shared/store-in-repo.mjs";   //,
 import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mjs";   // — one store for the surface and the runs
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
@@ -3385,7 +3392,20 @@ async function readJsonBody(req, limitBytes = 131072) {
 /**
  * The instance a refusal page names: its organisation when one is configured, otherwise the host of the
  * sign-in service it sends people to (the OIDC issuer, or the Access team's own domain, derived as the
- * verifier derives it). `null` when neither is set. Read from the environment at call time.
+ * verifier derives it), and failing both the address this process is answering on.
+ *
+ * NEVER NULL, AND THAT IS THE CHANGE. It used to return null with neither configured, and a page that
+ * says nothing about which instance it is defeats the whole point of the sentence — the reader who met
+ * this through a forwarded port could not tell somebody else's refusal from their own, which is the
+ * defect the line exists for. The unconfigured instance is the one most likely to be reached by
+ * accident, so it is the last case that should stay silent.
+ *
+ * THE HOSTNAME IS THE LAST RESORT, not the first, and the note that used to say "never by this
+ * server's own hostname" was right about the order and wrong about the floor. An organisation name and
+ * a sign-in service are public by nature and mean something to a reader; a machine name is neither, and
+ * it is disclosed only where the alternative is a page that identifies nothing at all — an instance
+ * with no organisation and no sign-in service, which is a local one whose reader is the person running
+ * it. Read from the environment at call time.
  */
 function instanceIdentity(env = process.env) {
   if (ORGANISATION_NAME) return `This is ${ORGANISATION_NAME}'s ${BRAND.name} portal`;
@@ -3394,7 +3414,13 @@ function instanceIdentity(env = process.env) {
   let host = null;
   try { host = issuer ? new URL(issuer).host : null; } catch { host = null; }
   if (!host && team) host = `${team}.cloudflareaccess.com`;
-  return host ? `This ${BRAND.name} portal signs people in through ${host}` : null;
+  if (host) return `This ${BRAND.name} portal signs people in through ${host}`;
+  // The address this process answers on: what a reader can compare against the one they typed. The port
+  // is the half that matters where a forward is in play, since the machine name will often be the same.
+  const port = String(env.PORTAL_SERVICE_PORT ?? "").trim() || String(PORTAL_PORT_DEFAULT);
+  const machine = (() => { try { return osHostname(); } catch { return ""; } })();
+  const at = [machine, port].filter(Boolean).join(":");
+  return at ? `This ${BRAND.name} portal is the one running on ${at}` : `This is a ${BRAND.name} portal`;
 }
 
 /**
@@ -4058,7 +4084,7 @@ if (isMain) {
   // — resolved through the shared helper so the SOURCE travels with the number. "18802" and
 // "18802 because nobody said otherwise" are different addresses to an operator, and only the
 // second one is a guess at which instance this is.
-const PORT_CHOICE = resolvePort({ value: process.env.PORTAL_SERVICE_PORT, name: "PORTAL_SERVICE_PORT", fallback: 18802 });
+const PORT_CHOICE = resolvePort({ value: process.env.PORTAL_SERVICE_PORT, name: "PORTAL_SERVICE_PORT", fallback: PORTAL_PORT_DEFAULT });
 const PORT = PORT_CHOICE.port;
   const HOST = process.env.PORTAL_SERVICE_HOST || "127.0.0.1";
   // ──: THE IDENTITY SOURCE IS A MODE, AND IT IS NAMED, NOT INFERRED ─────────────────────────

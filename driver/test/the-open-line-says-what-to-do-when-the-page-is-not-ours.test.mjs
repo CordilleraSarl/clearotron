@@ -93,9 +93,21 @@ test("a sign-in refusal says which instance it is, so a person can tell it is no
     delete process.env.PORTAL_OIDC_ISSUER;
     process.env.CF_ACCESS_TEAM = "examplefirm";
     if (!ORGANISATION_NAME) assert.match(denialPage(401, "x"), /signs people in through examplefirm\.cloudflareaccess\.com/);
-    // THE CONTROL: nothing configured, nothing claimed.
+    // NOTHING CONFIGURED IS STILL NOT NOTHING SAID, and this is the branch the criterion turned on.
+    // The page used to identify itself by organisation, or by sign-in service, or NOT AT ALL — and the
+    // instance with neither is the one most likely to be reached by accident, through a forward, by
+    // somebody who cannot tell it from their own. It names the address it answers on instead, which is
+    // what a reader can compare with the one they typed. The machine name is the last resort rather
+    // than the first: an organisation and a sign-in service mean something to a reader and are public
+    // by nature, and this is disclosed only where the alternative is a page that identifies nothing.
     delete process.env.CF_ACCESS_TEAM;
-    if (!ORGANISATION_NAME) assert.doesNotMatch(denialPage(401, "x"), /signs people in through/);
+    if (!ORGANISATION_NAME) {
+      const bare = denialPage(401, "x");
+      assert.doesNotMatch(bare, /signs people in through/, "it claimed a sign-in service with none configured");
+      assert.match(bare, /is the one running on [^<]+/, "an instance with neither setting said nothing about itself");
+      assert.match(bare, new RegExp(`:${process.env.PORTAL_SERVICE_PORT ?? "\\d+"}`),
+        "the port is the half that matters where a forward is in play — the machine name is often the same on both sides");
+    }
   } finally {
     for (const [k, v] of [["PORTAL_OIDC_ISSUER", saved.issuer], ["CF_ACCESS_TEAM", saved.team]]) {
       if (v === undefined) delete process.env[k]; else process.env[k] = v;
