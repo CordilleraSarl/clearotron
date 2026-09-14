@@ -2099,7 +2099,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 61,
-          "asserts": 222,
+          "asserts": 223,
           "skips": 0,
           "todos": 0
         },
@@ -4932,6 +4932,12 @@
         "the-report-carries-what-the-assessment-wrote.test.mjs": {
           "tests": 10,
           "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-report-names-the-models-that-served-it.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
