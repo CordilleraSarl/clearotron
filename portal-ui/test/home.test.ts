@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs'
 import {
   inFlight, acknowledged, finished, recentlyFinished, recentProjects, ownerSummaries, ownerNote,
   sentence, openingLine, count, slotNote, elapsed, pips, projectNote,
-  active, waiting, runProductLabel, cardReason, limitLine, moveBefore,
+  active, waiting, runProductLabel, cardReason, limitLine, moveBefore, readStamps,
 } from '../src/contract/home.ts'
 import type { Run } from '../src/contract/api.ts'
 
@@ -602,4 +602,63 @@ test('Stop asks the question rather than stating the answer, and names what each
   // anything.
   assert.match(home, /\{took\?\.note[\s\S]{0,40}\?\s*took\.note/,
     'the stopping line ignores what the server said actually happened')
+})
+
+// ── TWO READS OF ONE MARK ARE NOT ONE READ ────────────────────────────────────────────────────────
+//
+// Two failed reads of the same mark for the same owner drew byte-identical cards: depth, state, mark,
+// owner, step and failure sentence, and nothing saying which read it was. A person acknowledged the
+// first, met the second, read it as the first coming back, pressed the button three times and reported
+// it broken. It had worked every time.
+test('two reads of one mark are told apart, and a single read gains nothing', () => {
+  const twins = [
+    run({ runId: 'a', state: 'failed', date: '2026-09-12', issuedAt: '2026-09-12T09:05:00Z' }),
+    run({ runId: 'b', state: 'failed', date: '2026-09-13', issuedAt: '2026-09-13T11:40:00Z' }),
+  ]
+  const byDay = readStamps(twins)
+  assert.notEqual(byDay.get('a'), byDay.get('b'), 'the two cards must not be the same string')
+  assert.equal(byDay.get('a'), '2026-09-12', 'a day apart is told apart by the day, which is what a reader sees')
+
+  // CRITERION 3, and it is the half a fix like this usually loses: a lone card says no more than before.
+  assert.equal(readStamps([twins[0]!]).get('a'), null, 'one read must not put a date on the band as decoration')
+
+  // A THIRD RUN THAT IS NOT A TWIN STAYS QUIET while the twins speak, so the stamp is a property of the
+  // ambiguity and not of the list having more than one row in it.
+  const mixed = readStamps([...twins, run({ runId: 'c', markName: 'OTHER', state: 'failed' })])
+  assert.equal(mixed.get('c'), null)
+  assert.ok(mixed.get('a'))
+})
+
+test('two reads on ONE day fall back to the time, which is the case that produced the report', () => {
+  // `issuedAt` states this rule itself: the date is what a reader sees, and the time shows only when two
+  // reads share a day and would otherwise be indistinguishable. A matter that fails fast is re-submitted
+  // the same morning, so the tie is the reported case rather than the exotic one.
+  const same = readStamps([
+    run({ runId: 'a', state: 'failed', date: '2026-09-14', issuedAt: '2026-09-14T08:10:00Z' }),
+    run({ runId: 'b', state: 'failed', date: '2026-09-14', issuedAt: '2026-09-14T13:55:00Z' }),
+  ])
+  assert.notEqual(same.get('a'), same.get('b'))
+  assert.match(String(same.get('a')), /^2026-09-14 \d{2}:\d{2}$/)
+
+  // AN UNUSABLE STAMP DEGRADES TO THE DAY rather than to "Invalid Date": the band is short, and a broken
+  // token in it is worse than the ambiguity it was meant to resolve. The twins then read the same, which
+  // is honest — there is nothing in the data that tells them apart.
+  const broken = readStamps([
+    run({ runId: 'a', state: 'failed', date: '2026-09-14', issuedAt: 'not-a-date' }),
+    run({ runId: 'b', state: 'failed', date: '2026-09-14', issuedAt: null }),
+  ])
+  assert.equal(broken.get('a'), '2026-09-14')
+  assert.equal(broken.get('b'), '2026-09-14')
+})
+
+test('the same mark under two different owners is not a twin', () => {
+  // What a reader compares is what the card DRAWS, and the card draws the owner. Two owners clearing the
+  // same word are two different questions, and stamping both would put a date on cards nobody could
+  // confuse — the decoration criterion 3 refuses.
+  const stamps = readStamps([
+    run({ runId: 'a', account: 'zephyr', state: 'failed' }),
+    run({ runId: 'b', account: 'aurora', state: 'failed' }),
+  ])
+  assert.equal(stamps.get('a'), null)
+  assert.equal(stamps.get('b'), null)
 })
