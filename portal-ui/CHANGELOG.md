@@ -1,5 +1,13 @@
 # portal-ui
 
+## 0.3.1-beta.2
+
+### Patch Changes
+
+- 240673c: Fixed: The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
+- 240673c: Fixed: The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
+- f96c089: Fixed: When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
+
 ## 0.3.1-beta.1
 
 No changes in this release.

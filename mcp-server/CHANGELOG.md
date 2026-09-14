@@ -1,5 +1,17 @@
 # trademark-artifacts-mcp
 
+## 0.3.1-beta.2
+
+### Patch Changes
+
+- f96c089: Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- 240673c: Fixed: Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
+  
+  Fixed: That refusal also names the local door where a key is accepted. Before, it reported only a missing sign-in assertion, which sent operators to the wrong configuration.
+  
+  For operators: A program on the same machine can now reach the engine's local key door without setting a host name for it. The local door no longer applies a browser protection that only a network address needs.
+- f96c089: New: The free preview of a search lists, for each territory ordered, which registers legally bind it.
+
 ## 0.3.1-beta.1
 
 No changes in this release.
