@@ -62,16 +62,16 @@ test("every shape carries the reports folder when it is known, and invents none 
 test("every on-this-computer shape starts the server INSIDE the distribution when the install is on WSL", async () => {
   const { STDIO_SHAPES, stdioConnectFor } = await import("../../shared/stdio-connect.mjs");
   const wsl = { distro: "Ubuntu" };
-  const opts = { installRoot: "/home/u/app", workDir: "/home/u/work", wsl };
+  const opts = { installRoot: "/opt/clearotron", workDir: "/srv/clearotron/work", wsl };
 
   for (const shape of Object.keys(STDIO_SHAPES)) {
     const text = stdioConnectFor(shape, opts).text;
     assert.match(text, /wsl\.exe/, `${shape} still hands a Windows host a Linux interpreter`);
     assert.match(text, /-d[\s",]+Ubuntu/, `${shape} does not name the distribution, so it starts whichever is default`);
-    assert.ok(text.includes("/home/u/app/mcp-server/server.mjs"), `${shape} lost the server path`);
+    assert.ok(text.includes("/opt/clearotron/mcp-server/server.mjs"), `${shape} lost the server path`);
     // THE ENVIRONMENT HAS TO CROSS. A host on Windows sets variables for the process it starts, which
     // is wsl.exe; they stop at the boundary. Inside the command, `env` sets them where the server reads.
-    assert.match(text, /env[\s",]+CLEAROTRON_WORK_DIR=\/home\/u\/work/, `${shape} sets the work directory where the server will never see it`);
+    assert.match(text, /env[\s",]+CLEAROTRON_WORK_DIR=\/srv\/clearotron\/work/, `${shape} sets the work directory where the server will never see it`);
   }
 });
 
@@ -96,7 +96,7 @@ test("the distribution is named when we know it, and left to the default when we
   assert.equal(wslTarget({ env: {}, procVersion: "Linux 6.17.0-1022-azure", interopEntry: false }), null,
     "a plain Linux box must not be handed a Windows wrapper");
 
-  const unnamed = stdioConnectFor("claude-cli", { installRoot: "/home/u/app", wsl: { distro: null } }).text;
+  const unnamed = stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron", wsl: { distro: null } }).text;
   assert.match(unnamed, /wsl\.exe -e node/, "with no distribution name the command runs in the default one");
   assert.doesNotMatch(unnamed, /-d\b/, "it invented a distribution name");
 });

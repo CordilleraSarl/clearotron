@@ -92,7 +92,7 @@ const minTokensPerSec = () => {
 // Five minutes of ACTIVE time is well past the point where a working turn has produced something, and
 // far short of the 46 and 41 minutes the killed attempts burned.
 const rateWarmupMs = () => {
-  const v = Number(process.env.CLEAROTRON_RATE_WARMUP_MS);
+  const v = Number(process.env.CLEAROTRON_MIN_TOKENS_WARMUP_MS);
   return Number.isFinite(v) && v > 0 ? v : 300000;
 };
 const noProgressMs = (stallClockMs) => {

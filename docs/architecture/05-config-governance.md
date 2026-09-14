@@ -180,7 +180,7 @@ and only where it exceeds the stall window), `CLEAROTRON_KILL_ESCALATE_MS`
 fills mid-run surfaces as a *missing artifact* at a later stage rather than as a disk error. `0`
 disables; a non-numeric value throws rather than silently disabling the guard.).
 
-`CLEAROTRON_MIN_TOKENS_PER_SEC` (1) and `CLEAROTRON_RATE_WARMUP_MS` (5 minutes) — the trickle floor, and
+`CLEAROTRON_MIN_TOKENS_PER_SEC` (1) and `CLEAROTRON_MIN_TOKENS_WARMUP_MS` (5 minutes) — the trickle floor, and
 how long a turn is left alone before it applies. A stage that streams a token every few seconds is not a
 slow stage: it holds off the stall clock, which resets on any streamed byte, and the no-progress ceiling,
 which counts token movement as progress on purpose, so the only thing that ever stopped one was the wall

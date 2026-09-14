@@ -456,7 +456,7 @@ test("TRICKLE: a turn streaming under the floor is killed well below the wall, a
   const t0 = Date.now();
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_TOKEN_STREAM: "100", MOCK_CLAUDE_TOKEN_COUNT: "600", MOCK_CLAUDE_NOFILE: "1",
-      CLEAROTRON_MIN_TOKENS_PER_SEC: "1000", CLEAROTRON_RATE_WARMUP_MS: "300",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "1000", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
       CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
   assert.equal(r.killed, true, "a turn under the floor must die on the floor, not on the wall");
   assert.ok(Date.now() - t0 < 10000, "well below the wall — every other clock here is pinned at 60s");
@@ -473,7 +473,7 @@ test("TRICKLE, THE CONTROL: the same fixture under a floor it clears is left alo
   // a floor the fixture is comfortably above — roughly ten tokens per second against one.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_TOKEN_STREAM: "100", MOCK_CLAUDE_TOKEN_COUNT: "12", MOCK_CLAUDE_NOFILE: "1",
-      CLEAROTRON_MIN_TOKENS_PER_SEC: "1", CLEAROTRON_RATE_WARMUP_MS: "300",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "1", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
       CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
   assert.equal(r.killed, false, "a turn producing at a healthy rate must never meet this instrument");
   assert.equal(r.signals?.trickle, undefined);
@@ -486,7 +486,7 @@ test("TRICKLE: a turn that is mostly TOOL WAIT is judged on active time, not ela
   // reaches the warm-up, because the wait is not active time.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_TOOL_WAIT: JSON.stringify([{ name: "RegisterLookup", ms: 1500 }]),
-      CLEAROTRON_MIN_TOKENS_PER_SEC: "100000", CLEAROTRON_RATE_WARMUP_MS: "300",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "100000", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
       CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
   assert.ok(r.toolWaitMs >= 1000, `the fixture waited ${r.toolWaitMs}ms — under ~1s there is no elapsed-vs-active gap to measure`);
   assert.equal(r.killed, false, "the floor read elapsed time: a turn waiting on a tool was killed for not generating");
@@ -500,7 +500,7 @@ test("TRICKLE: zero disables the instrument, and disabling it does not disable t
   // Adding an instrument must not switch off the last backstop, so both directions are driven.
   const off = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_TOKEN_STREAM: "100", MOCK_CLAUDE_TOKEN_COUNT: "12", MOCK_CLAUDE_NOFILE: "1",
-      CLEAROTRON_MIN_TOKENS_PER_SEC: "0", CLEAROTRON_RATE_WARMUP_MS: "300",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "0", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
       CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000", CLEAROTRON_HARD_MS: "60000" });
   assert.equal(off.killed, false, "zero must read as 'no floor', never as 'floor of zero'");
 
@@ -508,7 +508,7 @@ test("TRICKLE: zero disables the instrument, and disabling it does not disable t
   // ceiling. Same fixture as the ceiling's own arm, with the floor switched on beside it.
   const walled = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_TOKEN_STREAM: "40", MOCK_CLAUDE_TOKEN_COUNT: "200", MOCK_CLAUDE_NOFILE: "1",
-      CLEAROTRON_MIN_TOKENS_PER_SEC: "1", CLEAROTRON_RATE_WARMUP_MS: "300",
+      CLEAROTRON_MIN_TOKENS_PER_SEC: "1", CLEAROTRON_MIN_TOKENS_WARMUP_MS: "300",
       CLEAROTRON_HARD_MS: "600", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000" });
   assert.equal(walled.killed, true, "the hard ceiling still fires with the floor enabled — the chain was swallowed");
   assert.equal(walled.signals?.trickle, undefined, "and it was the ceiling that killed it, not the floor");
