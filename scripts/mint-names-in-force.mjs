@@ -37,7 +37,12 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO = dirname(dirname(fileURLToPath(import.meta.url)));
-const OUT = join(REPO, "shared", "names-in-force.mjs");
+// ONE SPELLING OF THIS FILE'S OWN PATH, because it is used twice — to write, and to exclude itself
+// from what it reads. Two spellings would drift, and the drift is invisible: the scan would quietly
+// start counting this file again and every name in it would become self-sustaining, which is the exact
+// defect the exclusion exists to close.
+const OUT_REL = join("shared", "names-in-force.mjs");
+const OUT = join(REPO, OUT_REL);
 
 /**
  * Files whose `CLEAROTRON_*` mentions count as a read.
@@ -65,7 +70,21 @@ export function sourceFiles(root = REPO) {
   const p = publishedOf(all, root);
   if (p.error) { console.error(`mint-names-in-force: ${p.error}`); process.exit(2); }
   if (p.laid) console.log(`mint-names-in-force: ${p.laid} tracked path(s) are not in HEAD — laid over this checkout, not published in it, and not counted`);
-  return p.files.filter((f) => !/(^|\/)(test|tests|bench)\//.test(f) && !/\.test\.(mjs|ts|js)$/.test(f));
+  // ── AND THIS FILE'S OWN OUTPUT IS NOT A READ OF THE NAMES IN IT ──────────────────────────────────
+  //
+  // The population is every tracked source file, and until now that included the file this script
+  // WRITES. Its entire content is `CLEAROTRON_*` string literals, so every name already in it was
+  // rediscovered as a name the build reads and written straight back. The derivation fed itself: a name
+  // that code stopped reading never left, because the list it was supposed to leave is what kept it.
+  //
+  // Measured by planting a name that existed ONLY in the output and re-minting: exit 0, name still
+  // there, nothing else in the tree spelling it. It is add-only in practice — a name enters when code
+  // starts reading it and never leaves when code stops — and this file is published, so the list
+  // answering "which names does this build read" answered with names it does not.
+  //
+  // Excluded by OUT_REL, the same constant the write uses, for the reason stated at its declaration.
+  return p.files.filter((f) => f !== OUT_REL
+    && !/(^|\/)(test|tests|bench)\//.test(f) && !/\.test\.(mjs|ts|js)$/.test(f));
 }
 
 const NAME_RE = /\bCLEAROTRON_[A-Z0-9_]+/g;
