@@ -123,7 +123,11 @@ import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
-import { invocationPrefix, invoke, reachableCommand } from "../shared/invocation.mjs";   // — the banner names the verb
+import { invocationPrefix, invoke, reachableCommand, foreignPageHint } from "../shared/invocation.mjs";   // — the banner names the verb
+// RE-EXPORTED, NOT RE-DECLARED. The sentence moved to a module that imports nothing of ours, because
+// setup imports it and setup has a top-level await: a command importing a command closes a loop that
+// hangs at run time rather than failing at build. Its readers keep this spelling.
+export { foreignPageHint };
 import { unitEnvPath, activeEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
 import { parseEnvFile } from "../shared/env-file-merge.mjs";   // ONE KEY=value reader, in a leaf: render-units is a COMMAND, and importing it from here closed a cycle
 import { homedir, userInfo } from "node:os";
@@ -303,21 +307,6 @@ export function resolvePorts(env = {}) {
     client: one("CLIENT_MCP_HTTP_PORT", clientDoorPort({})) };
 }
 
-/**
- * WHAT TO DO WHEN THE PAGE THAT OPENS IS NOT OURS. Printed under every "Open" line.
- *
- * A port can be free where this runs and taken where the browser runs: on WSL, a Windows-side listener
- * (VS Code's Remote-SSH forwarding is the one measured, 2026-09-11) answers 127.0.0.1 before WSL does. The
- * doors bind cleanly, the in-use detection has nothing to see, and the browser shows somebody else's page
- * with nothing on this screen saying so. `--port` already moves all three doors; the reader has to be told
- * about it at the moment the address is handed over, which is here.
- */
-export function foreignPageHint(verb) {
-  return [
-    "If the page that opens is not this install's sign-in, another program on this machine holds that",
-    `port from outside this environment. Run \`${invoke(verb)} --port 28802\` (or any free number) instead.`,
-  ];
-}
 
 /**
  * Apply `--port <n>` to the three doors.
@@ -329,6 +318,26 @@ export function foreignPageHint(verb) {
  * Returns a new ports object; throws (never exits) so the CLI keeps ownership of how a bad value is
  * reported. An explicitly-set variable is left alone — see the call site for why.
  */
+export function portsForFlag(portFlag, ports, env = {}) {
+  if (portFlag === undefined || portFlag === null || portFlag === "") return { ...ports };
+  const n = Number(portFlag);
+  if (!Number.isInteger(n) || n < 1 || n > 65535) {
+    throw new Error(`--port ${portFlag} is not a port number (1–65535).`);
+  }
+  if (n > 65533) {
+    throw new Error(`--port ${n} leaves no room for the two doors that follow it (${n + 1}, ${n + 2}). `
+      + `Choose a port at or below 65533, or set PORTAL_SERVICE_PORT, TRADEMARK_MCP_HTTP_PORT and `
+      + `CLIENT_MCP_HTTP_PORT individually.`);
+  }
+  const explicit = (name) => String(env[name] ?? "").trim() !== "";
+  return {
+    ...ports,
+    portal: n,
+    mcp: explicit("TRADEMARK_MCP_HTTP_PORT") ? ports.mcp : n + 1,
+    client: explicit("CLIENT_MCP_HTTP_PORT") ? ports.client : n + 2,
+  };
+}
+
 /**
  * THE DEMO'S OWN DOORS — the numbers it opens when the reader has asked for none.
  *
@@ -357,26 +366,6 @@ export function demoPortDefaults(ports, env = {}) {
     portal: explicit("PORTAL_SERVICE_PORT") ? ports.portal : DEMO_PORT_BASE,
     mcp: explicit("TRADEMARK_MCP_HTTP_PORT") ? ports.mcp : DEMO_PORT_BASE + 1,
     client: explicit("CLIENT_MCP_HTTP_PORT") ? ports.client : DEMO_PORT_BASE + 2,
-  };
-}
-
-export function portsForFlag(portFlag, ports, env = {}) {
-  if (portFlag === undefined || portFlag === null || portFlag === "") return { ...ports };
-  const n = Number(portFlag);
-  if (!Number.isInteger(n) || n < 1 || n > 65535) {
-    throw new Error(`--port ${portFlag} is not a port number (1–65535).`);
-  }
-  if (n > 65533) {
-    throw new Error(`--port ${n} leaves no room for the two doors that follow it (${n + 1}, ${n + 2}). `
-      + `Choose a port at or below 65533, or set PORTAL_SERVICE_PORT, TRADEMARK_MCP_HTTP_PORT and `
-      + `CLIENT_MCP_HTTP_PORT individually.`);
-  }
-  const explicit = (name) => String(env[name] ?? "").trim() !== "";
-  return {
-    ...ports,
-    portal: n,
-    mcp: explicit("TRADEMARK_MCP_HTTP_PORT") ? ports.mcp : n + 1,
-    client: explicit("CLIENT_MCP_HTTP_PORT") ? ports.client : n + 2,
   };
 }
 
@@ -2035,7 +2024,7 @@ if (isMain) {
     }
     say("");
     say(`  Open:            ${envs.url}`);
-    for (const line of foreignPageHint(DEMO ? "demo" : "start")) say(`                   ${line}`);
+    for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`                   ${line}`);
     say("  This SURVIVES the terminal — close the window, the product keeps running.");
     say(`  Stop it:         ${invoke("stop")}   (stops and removes the units; issued connect keys survive — \`${invoke("disconnect")}\` revokes those)`);
     say(`  Is it up?        ${invoke("status")}`);
@@ -2289,7 +2278,7 @@ if (isMain) {
 
   say("");
   say(`  Open   ${envs.url}`);
-  for (const line of foreignPageHint(DEMO ? "demo" : "start")) say(`         ${line}`);
+  for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`         ${line}`);
   say("");
   // ── TWO DOORS, TWO AUDIENCES, BOTH NAMED ( — F26) ─────────────────────────
   //
@@ -2371,6 +2360,11 @@ if (isMain) {
     say(`  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`);
     say(`  │  nothing — not this product, not this terminal — can read it back.`);
     say(`  │  Lost it? ${reset}`);
+    // THE HINT BELONGS IN THE BOX TOO, and this was the reader the whole sentence was written for. The
+    // frame exists because a first-time reader skips the log wall and acts on it — so the one address
+    // they copy was the one address with nothing beside it saying what to do when the page that opens
+    // is somebody else's. It was printed nine lines above, to a reader who by design did not read there.
+    for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`  │  ${line}`);
     say(`  └${rule}┘`);
   } else {
     // THE WAY BACK IN FIRST, then which credential, when and for whom: laterStartLines says why. Read for
