@@ -2098,8 +2098,8 @@
           "todos": 0
         },
         "engine.anthropic.test.mjs": {
-          "tests": 61,
-          "asserts": 222,
+          "tests": 65,
+          "asserts": 238,
           "skips": 0,
           "todos": 0
         },
@@ -6156,8 +6156,8 @@
           "todos": 0
         },
         "providers/_shared/test/territory-codes.test.mjs": {
-          "tests": 9,
-          "asserts": 25,
+          "tests": 11,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
