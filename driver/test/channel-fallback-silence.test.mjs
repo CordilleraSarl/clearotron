@@ -23,7 +23,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { channelsDiagnosis, channelsFromMatterContext, CHANNEL_STATES } from "../scope-ledger.mjs";
+import { channelsDiagnosis, gridChannels, channelsFromMatterContext, CHANNEL_STATES } from "../scope-ledger.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -78,7 +78,11 @@ test("the diagnosis is WIRED into the fallback — not merely exported", () => {
   // Presence is not firing. The function could be complete and tested while pipeline.mjs still called
   // the old one and every real run stayed silent.
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
-  assert.match(src, /const diag = channelsDiagnosis\(matterMd\)/, "the generic branch no longer calls the diagnosis");
+  // WIRED THROUGH THE CHANNEL RULE NOW, which is where both readings live: the diagnosis is what
+  // gridChannels returns alongside the channels, so the four silences still reach the run's own record
+  // while the choice of channels is made in one place for every profile.
+  assert.match(src, /gridChannels\(\{ profilePlatforms: ctx\.profile\.platforms,/, "the grid no longer asks the channel rule which channels to run");
+  assert.match(src, /const diag = chosen\.diag/, "the diagnosis is not read, so the four silences collapse into one again");
   // The runLog calls are bound to the RUN-DIR NAME THAT EXISTS IN THAT SCOPE. deriveGridSpec destructures
   // `const P = ctx.paths` and has no `run` binding at all — my first cut wrote `runLog(run.runDir, …)`,
   // which is a ReferenceError the moment a generic-profile run reaches an empty channels line. NOTHING
@@ -93,4 +97,47 @@ test("the diagnosis is WIRED into the fallback — not merely exported", () => {
   // The else that did not exist: every empty state must now reach a note.
   assert.match(src, /\} else if \(diag\.state === "all-rejected"\) \{[\s\S]{0,600}?\} else \{/,
     "the branch has lost its else — an empty result would fall through silently again");
+});
+
+// ── THE MATTER'S OWN CHANNELS REACH THE GRID, BESIDE THE CLIENT'S ────────────────────────────────
+//
+// The frame's channels only ever reached the grid on a GENERIC profile, and there they REPLACED the
+// profile's platforms. A named profile therefore searched its own platforms whatever the frame had
+// named, and every channel the frame named went unqueried. The grid then said nothing about that:
+// an unqueried channel leaves no row, so a clean pass over the platforms that did run reads exactly
+// like a clean pass over every channel that was asked for. A pass's say-so is not a receipt — what
+// a run actually reached has to be stated by the run, never inferred from an absence of findings.
+test("a named profile keeps its own platforms AND gains the ones the frame named", () => {
+  const md = "Search channels: forge.example, plugins.example.org, amazon.com\n";
+  const r = gridChannels({ profilePlatforms: ["amazon.com", "etsy.com"], profileKey: "aurora", matterMd: md });
+
+  assert.deepEqual(r.channels, ["amazon.com", "etsy.com", "forge.example", "plugins.example.org"],
+    "the client's mandate stands and the matter's channels run beside it");
+  assert.deepEqual(r.added, ["forge.example", "plugins.example.org"], "what was added is reported, so the run can say so");
+  // DEDUPLICATED, so a frame naming a platform the profile already carries adds a sentence and not a
+  // second cell — the grid is a cross-product and a duplicated column is paid for per term.
+  assert.ok(!r.added.includes("amazon.com"));
+  // ORDER IS PROFILE-FIRST, so an existing run's cells keep their place in the spec.
+  assert.equal(r.channels[0], "amazon.com");
+});
+
+test("the generic profile still REPLACES, which is the branch that keeps a regulated matter off storefronts", () => {
+  // Not an inconsistency: generic's platforms are a house default rather than anybody's mandate, and this
+  // branch exists so a veterinary-pharma or B2B matter searches its real channels instead of being forced
+  // onto consumer storefronts and then read as swept. A union here would put them back.
+  const md = "Search channels: ema.europa.eu, fda.gov\n";
+  const r = gridChannels({ profilePlatforms: ["amazon.com", "etsy.com"], profileKey: "generic", matterMd: md });
+  assert.deepEqual(r.channels, ["ema.europa.eu", "fda.gov"]);
+  assert.deepEqual(r.added, [], "nothing is added on generic — the frame's list IS the list");
+});
+
+test("a frame that named nothing changes nothing, on either profile", () => {
+  // THE CONTROL. Back-compatible in the direction that matters: a run whose frame says nothing gets
+  // exactly the platforms it got before, and the four silences keep their own diagnosis.
+  for (const profileKey of ["aurora", "generic"]) {
+    const r = gridChannels({ profilePlatforms: ["amazon.com"], profileKey, matterMd: "" });
+    assert.deepEqual(r.channels, ["amazon.com"], `${profileKey} lost its platforms when the frame was silent`);
+    assert.deepEqual(r.added, []);
+    assert.equal(r.diag.state, "no-document", "the reason the frame said nothing still travels");
+  }
 });

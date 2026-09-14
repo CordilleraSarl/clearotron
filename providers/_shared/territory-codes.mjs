@@ -45,6 +45,14 @@ export const TERRITORY_TO_CODE = Object.freeze({
   "SPAIN": "ES",
   "ITALY": "IT",
   "NETHERLANDS": "NL",
+  // THE OTHER TWO BENELUX MEMBERS, and their absence was not a typo — it is the shape this table has.
+  // A clearance ordered for "Belgium" in words resolved to nothing and was carried as an unrecognized
+  // territory, while "BE" and "Netherlands" both resolved. Belgium and Luxembourg have no national
+  // register of their own (the Benelux office stands in its place, which `binding-layers.mjs` already
+  // models), and the entry for BENELUX above is easy to read as covering them. It does not: this table
+  // answers "what did the requester type", not "which register is that".
+  "BELGIUM": "BE",
+  "LUXEMBOURG": "LU",
   "SWITZERLAND": "CH",
   "AUSTRIA": "AT",
   "SWEDEN": "SE",
@@ -73,10 +81,45 @@ export const TERRITORY_TO_CODE = Object.freeze({
   "SOUTH AFRICA": "ZA",
 });
 
+// ── THE LONG TAIL, DERIVED RATHER THAN TYPED ──────────────────────────────────────────────────────
+//
+// Measured while fixing Belgium: of the 262 jurisdiction codes this engine holds, 224 had no display
+// name in the table above — Denmark, Portugal, Czechia, Hungary, Israel and most of the world. The
+// curated table is a shortlist that grew by demand, and every gap in it is a territory a requester can
+// name in words and have resolved to nothing.
+//
+// So the tail is derived from the runtime's own region names instead of being typed out: every
+// two-letter code whose English name the runtime knows maps back to that code. A name the runtime does
+// not know answers with the code itself, or "Unknown Region", and both are rejected — a map keyed on
+// "WO" pointing at WO would make the sentinel codes resolve as words.
+//
+// THE CURATED TABLE STILL WINS, and that is the point rather than an ordering detail. Its entries are
+// promises this engine makes — the aliases, the regional systems, the worldwide sentinel, and now the
+// two Benelux members — and they must not depend on which internationalisation data a customer's
+// runtime happens to carry. What is derived is a WIDENING: it can only add names that would otherwise
+// have resolved to nothing, and a build whose data is thinner loses names it never promised.
+const DERIVED_NAME_TO_CODE = (() => {
+  const out = Object.create(null);
+  let names;
+  try { names = new Intl.DisplayNames(["en"], { type: "region" }); } catch { return out; }
+  for (let a = 65; a <= 90; a++) {
+    for (let b = 65; b <= 90; b++) {
+      const code = String.fromCharCode(a, b);
+      let name;
+      try { name = names.of(code); } catch { continue; }
+      if (!name || name === code || /^unknown/i.test(name)) continue;
+      const key = strip(name);
+      if (key && !(key in TERRITORY_TO_CODE) && !(key in out)) out[key] = code;
+    }
+  }
+  return out;
+})();
+
 export function normalizeTerritory(value) {
   const s = strip(value);
   if (!s) return null;
   if (/^[A-Z]{2}$/.test(s)) return s;                 // already a code (UK stays UK — provider translate owns aliasing)
   if (s in TERRITORY_TO_CODE) return TERRITORY_TO_CODE[s];
+  if (s in DERIVED_NAME_TO_CODE) return DERIVED_NAME_TO_CODE[s];
   return null;
 }

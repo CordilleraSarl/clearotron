@@ -104,13 +104,63 @@ test("THE WEB ROUTE: each host's copy names this install's address, and a key on
       assert.ok(!text.includes(KEY_SLOT), `${c.id} shows a block with a key slot in it — that block would be shown in full`);
     }
   }
-  const code = offerOf(PUBLISHED, "claude-code", "public-http").steps[0].copy;
+  // THE KEY SHAPES ARE THE KEY DOOR'S, and they are asked for by name now rather than assumed. A hosted
+  // deployment behind an identity provider never honours a key, so these belong to a door that answered
+  // as taking one — see the arm below for what the other answer produces.
+  const KEYED = { ...PUBLISHED, door: "key" };
+  const code = offerOf(KEYED, "claude-code", "public-http").steps[0].copy;
   assert.match(code.template, /^claude mcp add --transport http \S+ https:\/\/mcp\.example\.test --header "Authorization: Bearer \{key\}"$/);
-  const codex = offerOf(PUBLISHED, "codex", "public-http").steps.filter((s) => s.copy).map((s) => s.copy);
+  const codex = offerOf(KEYED, "codex", "public-http").steps.filter((s) => s.copy).map((s) => s.copy);
   assert.match(codex[0].text, /url = "https:\/\/mcp\.example\.test"\nbearer_token_env_var = "CLEAROTRON_KEY"/);
   assert.equal(codex[1].template, "export CLEAROTRON_KEY={key}");
-  // ChatGPT signs its reader in, so it is handed the address and nothing that needs a key.
+  // ChatGPT signs its reader in wherever the door does, so on a sign-in door it is handed the address
+  // and nothing that needs a key.
   assert.deepEqual(offerOf(PUBLISHED, "chatgpt", "public-http").steps.filter((s) => s.copy).map((s) => s.copy.kind), ["block"]);
+});
+
+// ── THE STEPS FOLLOW WHAT THE DOOR ANSWERS ────────────────────────────────────────────────────────
+//
+// Claude's hosted steps said: paste a freshly minted key, set Authentication to None, add a Bearer
+// header, and ignore the authentication warning. Driven once, against a door that took a key. Every
+// hosted deployment we run sits behind an identity provider whose door answers a sign-in challenge and
+// never honours a key — so on production those steps could not work, the key was minted for nothing,
+// and "ignore the warning" told the reader to ignore the one correct signal on the screen. The page's
+// own ChatGPT row said the opposite, on the same page, about the same deployment.
+test("a sign-in door gets no key, no header and no ignore-the-warning — on every hosted row", () => {
+  const SIGNIN = { ...PUBLISHED, door: "sign-in" };
+  const web = connectOffers(SIGNIN).filter((o) => o.route === "public-http");
+  assert.equal(web.length, CONNECT_CLIENTS.length, "a row lost its web route — this arm would then prove nothing about it");
+
+  for (const o of web) {
+    const text = o.steps.map((s) => s.text).join(" \n ");
+    const copies = o.steps.filter((s) => s.copy).map((s) => s.copy);
+    // NOT ONE KEY ANYWHERE: no slot in a copy, and nothing minted for the reader to paste.
+    for (const c of copies) {
+      assert.notEqual(c.kind, "secret", `${o.client.id} still mints a key against a door that cannot take one`);
+      assert.ok(!String(c.text ?? "").includes(KEY_SLOT), `${o.client.id}'s copy carries a key slot`);
+      assert.doesNotMatch(String(c.text ?? ""), /Authorization: Bearer/i, `${o.client.id} still sets a bearer header`);
+    }
+    assert.doesNotMatch(text, /ignore it|ignore the/i, `${o.client.id} tells the reader to ignore the sign-in challenge`);
+    assert.doesNotMatch(text, /Authentication\*\* to \*\*None/i, `${o.client.id} turns authentication off on a door that requires it`);
+    assert.match(text, /sign in|Sign in/, `${o.client.id} never tells the reader how they are let in`);
+  }
+});
+
+test("a key door keeps the key route, because on a bare install it is the only one that works", () => {
+  const KEYED = { ...PUBLISHED, door: "key" };
+  const claude = offerOf(KEYED, "claude", "public-http");
+  assert.equal(claude.steps[0].copy.kind, "secret", "the key door lost the key it takes");
+  assert.match(claude.steps.map((s) => s.text).join(" "), /Authentication\*\* to \*\*None/,
+    "the driven key steps changed — they were verified against a door that takes a key");
+
+  // AND AN UNREADABLE DOOR SAYS SO rather than guessing. The safe default is the sign-in shape, which
+  // mints nothing: a wrong guess there costs a reader one failed attempt, where the other way round
+  // issues a live credential for a door that cannot use it.
+  const UNKNOWN = { ...PUBLISHED, door: null };
+  const unsure = offerOf(UNKNOWN, "claude", "public-http");
+  assert.notEqual(unsure.steps[0].copy.kind, "secret", "an unreadable door minted a key anyway");
+  assert.match(String(unsure.steps[0].hint ?? ""), /could not be read/, "the page does not say that it could not tell");
+  assert.match(String(unsure.steps[0].hint ?? ""), /key/, "…and does not name the other way in");
 });
 
 test("the wire carries what the page hands over and nothing it would have to trust", () => {

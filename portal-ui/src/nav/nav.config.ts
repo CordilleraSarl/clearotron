@@ -163,7 +163,7 @@ export const NAV: readonly NavEntry[] = [
   // filtered its rows by the switcher's value while sitting in the group whose whole definition is that
   // the switcher does not reach it. It obeyed a control the layout said did not apply to it, and nothing
   // on the page said it was filtered. Below the line the two agree.
-  { id: 'clearances', label: 'Clearances', path: '/portal/clearances', icon: 'layers', scope: 'owner' },
+  { id: 'clearances', label: 'All Clearances', path: '/portal/clearances', icon: 'layers', scope: 'owner' },
   // Reached from a row, never from the sidebar — but it must still RESOLVE, or "Open the report" leads
   // to "That page does not exist." `hidden` keeps it out of the nav while keeping it routable; a screen
   // you can navigate to and a screen you can see in a menu are different questions.

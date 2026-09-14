@@ -323,6 +323,12 @@ export function accessView({ grants, viewer = null, companies = {}, grantsFile =
     list.push({
       email,
       permissions: { run: entry.run === true, manage: entry.manage === true && !pattern },
+      // WHICH OF THE FILE'S TWO SHAPES THIS ROW CAME FROM. They are different facts and the list drew
+      // them identically: the top-level `people` entry says what a person may DO, and a tenant's `users`
+      // entry says what they can REACH. Somebody who appears only in the second has no permissions
+      // entry at all, and the page rendered that as "View reports" — indistinguishable from a person
+      // whose permissions were considered and set to none.
+      listed: key !== undefined,
       access: shown.map((p) => namedPoint(p, grants, companies)),
       dangling: r.dangling,
     });

@@ -96,7 +96,7 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed
+import { lastAcceptedMatterFrame, frameIdentifiedClasses } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
@@ -139,7 +139,7 @@ import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKe
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf } from "./stage-freshness.mjs";
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
-  GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings,
+  GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
   routeHalfTermScopes, findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
@@ -156,7 +156,7 @@ import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
 import { parseFrameworkManifest, loadFrameworkManifest, frameworkFor, manifestPathFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
-import { renderScopeLedgerJson, scopeLedgerJsonFromRows, channelsDiagnosis, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
+import { renderScopeLedgerJson, scopeLedgerJsonFromRows, gridChannels, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
 // qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-clearotron
 // honesty row/note. jx-lanes.mjs is a PURE zero-import leaf (data + decisions, no env/fs), so a static
 // import here costs a plain clearotron nothing — the "lazy import" rule below (jx.mjs / jx-units.mjs) guards
@@ -336,7 +336,7 @@ export function loadCoverageLedger(runDir) {   // @internal
   // pass was kill-touched (register-taint.mjs) is downgraded to deferred at the same choke point, so the
   // envelope re-runs it and the verdict floor clamps over it, whatever the prose self-reported.
   const taintAxes = readActiveTaintAxes(runDir);
-  const relabel = (rows) => applyTaintDeferred(coerceToolAbsenceDeferred(rows), taintAxes);
+  const relabel = (rows) => [...applyTaintDeferred(coerceToolAbsenceDeferred(rows), taintAxes), ...openChannelRows(runDir)];
   const jsonPath = join(runDir, "register-coverage-ledger.json");
   if (existsSync(jsonPath)) {
     try { return { rows: relabel(parseCoverageLedgerJson(readFileSync(jsonPath, "utf8"))), source: "machine", dropped: [] }; }
@@ -925,28 +925,28 @@ function deriveGridSpec(ctx) {
     // deterministic grid runs grid-spec.platforms and the receipts gate joins the SAME file, so this is the
     // single, consistent lever. Frame named none ⇒ keep the profile default (back-compat, never worse).
     const matterMd = existsSync(P.matterContext) ? readFileSync(P.matterContext, "utf8") : "";
-    let channels = ctx.profile.platforms;
-    if (ctx.profile.profileKey === "generic") {
-      // THE FALLBACK IS UNCHANGED; ONLY THE SILENCE IS. This branch had no else, so four different facts
-      // — no matter-context file, no "Search channels:" line, a line whose every value was discarded for
-      // not being domain-shaped, and a genuine "none named" — all fell through to the profile's platforms
-      // identically and said nothing. "The frame named none" is a decision; "we could not read the line"
-      // is not, and the third case is the expensive one: the seat DID answer and its answer was thrown
-      // away for its shape, which reads in the record exactly like a considered none.
-      //
-      // Nothing about which channels get searched moves here. The run gains a sentence, and an operator
-      // reading the log can tell a considered clean from an unread one.
-      const diag = channelsDiagnosis(matterMd);
-      if (diag.channels.length) {
-        channels = diag.channels;
-        note(`common-law channels derived from the matter frame (generic profile): ${diag.channels.join(", ")}`);
-      } else if (diag.state === "all-rejected") {
-        note(`common-law channels: the matter frame's "Search channels:" line named ${diag.offered.length} value(s) and NONE is domain-shaped, so every one was discarded and the profile default stands — ${diag.rejected.slice(0, 6).map((s) => JSON.stringify(s)).join(", ")}. The frame answered; the answer could not be used.`);
-        runLog(P.runDir, { event: "commonlaw-channels-unusable", state: diag.state, rejected: diag.rejected.slice(0, 12) });
-      } else {
-        note(`common-law channels: ${diag.state === "no-document" ? "no matter-context file to read" : "the matter frame carries no \"Search channels:\" line"}, so the profile default stands (${channels.length} platform(s)).`);
-        runLog(P.runDir, { event: "commonlaw-channels-unstated", state: diag.state });
-      }
+    // THE FRAME'S CHANNELS REACH THE GRID FOR EVERY PROFILE NOW, not only the generic one. A delivered
+    // run swept the customer's eight storefronts while the frame named this matter's own ecosystem — a
+    // plugin repository among them — and none of it was queried; the lawyer graded a plugin published
+    // there. A named profile's list is the client's mandate, so it stands and the frame's channels run
+    // BESIDE it; generic still replaces, because its list is a house default and that branch exists to
+    // keep a regulated matter off consumer storefronts. gridChannels owns both readings.
+    // Read once and reported below: a considered "none named" and an unreadable line are not one silence.
+    const chosen = gridChannels({ profilePlatforms: ctx.profile.platforms,
+      profileKey: ctx.profile.profileKey, matterMd });
+    const channels = chosen.channels;
+    const diag = chosen.diag;
+    if (chosen.added.length) {
+      note(`common-law channels: the matter frame named ${chosen.added.length} channel(s) the profile does not carry, added beside it — ${chosen.added.join(", ")}`);
+      runLog(P.runDir, { event: "commonlaw-channels-added", added: chosen.added, from: "matter-frame" });
+    } else if (ctx.profile.profileKey === "generic" && diag.channels.length) {
+      note(`common-law channels derived from the matter frame (generic profile): ${diag.channels.join(", ")}`);
+    } else if (diag.state === "all-rejected") {
+      note(`common-law channels: the matter frame's "Search channels:" line named ${diag.offered.length} value(s) and NONE is domain-shaped, so every one was discarded and the profile's stand — ${diag.rejected.slice(0, 6).map((s) => JSON.stringify(s)).join(", ")}. The frame answered; the answer could not be used.`);
+      runLog(P.runDir, { event: "commonlaw-channels-unusable", state: diag.state, rejected: diag.rejected.slice(0, 12) });
+    } else {
+      note(`common-law channels: ${diag.state === "no-document" ? "no matter-context file to read" : "the matter frame carries no \"Search channels:\" line"}, so the profile's ${channels.length} platform(s) stand.`);
+      runLog(P.runDir, { event: "commonlaw-channels-unstated", state: diag.state });
     }
     // CONNOTATION / MEANING sweep (the gang-slang near-miss fix — live incident: a benign-reading name one
     // letter off a major street-gang label, meaning sweep skipped, clean PR claimed): the driver DICTATES the meaning queries (mark +
@@ -2262,7 +2262,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // for the documented normal case. Harmless on corsearch (an absent region clause is a worldwide
       // sweep); fatal on a provider whose regions[] is mandatory, where every entry then errored on its
       // count probe and the whole plan joined MISSING at fan-in (review finding 11).
-      job: { jobKey: ctx.run.slug, classes: inScopeClassList(ctx.job, ctx.profile), jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
+      job: { jobKey: ctx.run.slug, classes: [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])], jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
       form, skillVersion: "prelim-register@spec48",
       // phase 3 — the plan is compiled AGAINST THE ACTIVE PROVIDER's declared capabilities, so the
       // frozen artifact is executable by construction: the OR-stack split uses that provider's width,

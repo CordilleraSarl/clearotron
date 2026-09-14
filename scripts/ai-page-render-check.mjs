@@ -32,15 +32,26 @@
 // moved to `offers`, and every deck failed with "the Connect buttons did not render". The handler's own
 // output shape is pinned by driver/test/portal-service.test.mjs; the composition below follows it.
 //
-// THE DECKS are the two axes the resolver actually answers to — who is looking (staff get this box's
-// stdio routes, clients never do) and whether the client door is standing:
+// THE DECKS are the three axes the resolver answers to — who is looking (staff get this box's stdio
+// routes, clients never do), whether the client door is standing, and WHAT THAT DOOR ANSWERS:
 //
 //   local-staff      a fresh local install, the reader is the operator. The stdio assistants are live
 //                    with no door at all; everything needing an address says why it cannot work here.
 //   unwired-client   a client on a box with no door. NOTHING is connectable — the page must say so
 //                    per assistant, with a reason, and render no button. Zero buttons is the pass.
-//   wired-client     the hosted shape: address assistants live, stdio ones honestly absent.
-//   wired-staff      everything on offer at once — the widest bijection.
+//   wired-client     the hosted shape, behind an identity provider: the steps say to sign in, and no
+//                    key is minted for a door that would refuse it.
+//   wired-staff      a self-hosted door that takes a key, with the stdio routes as well — everything
+//                    on offer at once, and the only deck where a key-bearing Copy exists to be pressed.
+//   silent-door      served, and the door could not be read. The steps say so rather than guessing at
+//                    one of the two answers, which is the branch a reader meets when a probe times out.
+//
+// THE DOOR IS A DECK FACT, not an omission. It arrived with the probe that reads it, and the fixture
+// went on composing without it — so every deck resolved the unknown branch, the key-bearing steps
+// existed on no deck at all, and the five assertions that press one silently stopped running. Only the
+// floor under the population said anything. That is the same drift the paragraph above describes, in
+// the same function, one axis later: a fixture that composes through the real resolver still has to
+// hand it the facts the real handler hands it.
 import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
@@ -67,17 +78,18 @@ const ADDRESS = 'https://mcp.test.invalid/mcp'
 const MINTED = { address: 'https://mcp.test.invalid/mcp', key: 'fixture-credential-1976-never-real' }
 
 const STATES = {
-  'local-staff': { role: 'staff', url: null },
-  'unwired-client': { role: 'client', url: null },
-  'wired-client': { role: 'client', url: ADDRESS },
-  'wired-staff': { role: 'staff', url: ADDRESS },
+  'local-staff': { role: 'staff', url: null, door: null },
+  'unwired-client': { role: 'client', url: null, door: null },
+  'wired-client': { role: 'client', url: ADDRESS, door: 'sign-in' },
+  'wired-staff': { role: 'staff', url: ADDRESS, door: 'key' },
+  'silent-door': { role: 'client', url: ADDRESS, door: null },
 }
 
 /**
  * The mcp-access body for one deck, composed the way driver/portal-service.mjs composes it: staff get
  * this install's stdio routes, offers resolve through the one table, `steps` is dropped on the way out.
  */
-function accessFor({ role, url }) {
+function accessFor({ role, url, door }) {
   const stdio = role === 'staff' ? stdioConnectOffer({ workDir: null }) : null
   const offers = connectOffers({
     stdioRoutes: stdio
@@ -85,6 +97,9 @@ function accessFor({ role, url }) {
       : {},
     publicAddress: url,
     operator: 'counsel@coastline.test',
+    // WHAT THE DOOR ANSWERS. The handler reads it off the door with a probe; a deck states it, because
+    // a fixture's job is to be the deployment, not to re-run the probe.
+    door,
   })
   return {
     url, keyUrl: null, email: 'counsel@coastline.test', enabled: !!url, stdio,

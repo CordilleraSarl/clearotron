@@ -91,3 +91,50 @@ for (const f of governed()) {
     assert.match(text, /\.laid/, `${f} does not report the paths it excluded`);
   });
 }
+
+// ── A MINTER DOES NOT READ ITS OWN OUTPUT ───────────────────────────────────────────────────────────
+//
+// `mint-names-in-force.mjs` derives the CLEAROTRON_* names this build reads by scanning every tracked
+// source file — and the file it WRITES is a tracked source file whose entire content is those names as
+// string literals. So every name already in the list was rediscovered as a name the build reads and
+// written back: the derivation fed itself, and a name that code stopped reading never left, because the
+// list it was supposed to leave is what kept it there.
+//
+// DRIVEN THROUGH THE SCRIPT'S OWN `sourceFiles`, not asserted against the regex. A pattern test would
+// pass on any filter that happened to contain the right characters; this asks the function the question
+// the minter asks it.
+test("the names minter excludes its own output from the tree it scans", async () => {
+  const { sourceFiles } = await import("../../scripts/mint-names-in-force.mjs");
+  const files = sourceFiles(ROOT);
+
+  // THE FLOOR FIRST. An empty or tiny population would satisfy the absence below while measuring
+  // nothing at all, which is the shape this whole file exists to refuse.
+  assert.ok(files.length > 200, `the population read as ${files.length} files — too few to be measuring anything`);
+
+  const self = join("shared", "names-in-force.mjs");
+  assert.ok(!files.includes(self), "the minter's own output is in the population it derives from");
+
+  // AND THE EXCLUSION IS NARROW. Its neighbours in the same directory are still read, so this removed
+  // one file rather than a directory — an over-broad filter would drop real reads and shrink the list.
+  assert.ok(files.some((f) => f.startsWith("shared/") && f !== self),
+    "nothing under shared/ is read any more, so the exclusion took more than its own file");
+  assert.ok(files.some((f) => f.startsWith("driver/") && f.endsWith(".mjs")),
+    "the driver is not being read at all");
+});
+
+test("a name only the output carries does not survive, and a name the code reads does", async () => {
+  const { sourceFiles } = await import("../../scripts/mint-names-in-force.mjs");
+  const files = sourceFiles(ROOT);
+  const text = files.map((f) => { try { return readFileSync(join(ROOT, f), "utf8"); } catch { return ""; } }).join("\n");
+
+  // THE PROPERTY, BOTH DIRECTIONS. A ghost is a name the published list carries that no scanned source
+  // mentions; a real name is one a scanned source does mention. The first set must be empty and the
+  // second must not, or the derivation is either self-feeding or reading nothing.
+  const listed = [...new Set([...readFileSync(join(ROOT, "shared", "names-in-force.mjs"), "utf8")
+    .matchAll(/"(CLEAROTRON_[A-Z0-9_]+)"/g)].map((m) => m[1]))];
+  assert.ok(listed.length > 100, `the list carries ${listed.length} names — too few to be measuring anything`);
+
+  const ghosts = listed.filter((n) => !new RegExp(`\\b${n}\\b`).test(text));
+  assert.deepEqual(ghosts, [],
+    "the published list carries names no scanned source reads — the derivation is feeding itself again");
+});

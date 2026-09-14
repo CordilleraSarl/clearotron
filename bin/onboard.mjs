@@ -66,6 +66,12 @@ import { homedir, userInfo } from "node:os";
 import { invocationPrefix, installRoute, reachableCommand } from "../shared/invocation.mjs";   // — one rule for how the reader invokes us
 import { nodeFloorVerdict } from "../shared/node-floor.mjs";   // — the floor is package.json engines, not a constant here
 import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that form
+// One sentence about a page that is not ours, from the module that owns how a reader invokes us — NOT
+// from bin/start.mjs, which is where it used to live. A command importing a command closes a loop that
+// hangs at run time rather than failing at build: this file has a top-level await, so start.mjs asking
+// for it back mid-evaluation never resolves and the wizard installs nothing. The import-cycle guard
+// names that pair; the sentence now lives where both commands can read it.
+import { foreignPageHint } from "../shared/invocation.mjs";
 import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
 import { relocationPlan } from "../shared/permanent-install.mjs";   // — and the program out of npx's cache
@@ -4163,6 +4169,15 @@ try {
   say(`    ${invocationPrefix()}clearotron start\n`);
   say("      Starts the portal and the engine door and prints one address to open in your browser. That");
   say("      address is the product: you order a clearance from it and read the report there.\n");
+  // THE ONE SENTENCE A READER NEEDS BEFORE THEY OPEN THAT ADDRESS, and setup was the only one of the
+  // three commands that never said it. A port can be free where the product runs and taken where the
+  // BROWSER runs — a forwarding listener outside this environment answers 127.0.0.1 first — and the
+  // page that opens is then somebody else's, with nothing on screen saying so. It is printed here
+  // rather than beside an address because setup starts nothing and has no address to print: the reader
+  // meets it moments before the command that does. Composed by the same function `start` and `demo`
+  // use, with no number, so the three commands cannot drift into three answers.
+  for (const line of foreignPageHint("start")) say(`      ${line}`);
+  say("");
   say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
   say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
   // THE OLD WAY IS A CHECKOUT'S. A package has no npm scripts where its reader stands.

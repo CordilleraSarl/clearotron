@@ -78,6 +78,34 @@ export function activeElapsedMs({ wall, toolWaitMs = 0, toolAskedAt = null, now 
 // so it can never fire before the byte-stall and never clips a legitimately quiet-but-working stretch
 // shorter than 5 minutes. A no-progress kill is RECORDED as a stall (signals.stalled + signals.noProgress),
 // never as "the stage needed more time" — the retry policy must not extend the budget for it.
+// TRICKLE FLOOR — a turn that streams a token every twelve seconds is not a slow turn, and no clock
+// above can see it. The byte-stall resets on any streamed byte; the no-progress ceiling resets on token
+// movement, deliberately, because a healthy streaming turn must never be clipped for being slow. So a
+// trickle held both off and was stopped only by the last-resort wall, at budget + 60s, with the whole
+// attempt discarded and re-run from the start.
+//
+// MEASURED, on one round of one scenario, and that is stated because it is not yet a distribution: two
+// stages killed at the wall streamed 0.08 and 0.12 output tokens per second of ACTIVE time; their own
+// retries, same matter and same engine, ran at 74 and 82.83. Three orders of magnitude apart, which is
+// why a floor needs no fine calibration to separate them — and exactly why the floor below sits far
+// under the slowest healthy sample rather than near the gap. The number that finally ships wants the
+// same window read across the other preserved rounds; until then this is a floor against a pathology,
+// not a budget for a stage.
+//
+// ON ACTIVE TIME, never elapsed, for the reason the hard ceiling states at length: a turn waiting on a
+// slow tool is not producing tokens and must not be killed for it. Zero disables the instrument.
+const minTokensPerSec = () => {
+  const v = Number(process.env.CLEAROTRON_MIN_TOKENS_PER_SEC);
+  return Number.isFinite(v) && v >= 0 ? v : 1;
+};
+// THE WARM-UP IS NOT A COURTESY, it is what makes the measurement meaningful: a rate over three seconds
+// of active time is noise, and a turn that thinks before it writes would fail a floor applied at once.
+// Five minutes of ACTIVE time is well past the point where a working turn has produced something, and
+// far short of the 46 and 41 minutes the killed attempts burned.
+const rateWarmupMs = () => {
+  const v = Number(process.env.CLEAROTRON_MIN_TOKENS_WARMUP_MS);
+  return Number.isFinite(v) && v > 0 ? v : 300000;
+};
 const noProgressMs = (stallClockMs) => {
   const pinned = Number(process.env.CLEAROTRON_NO_PROGRESS_MS);
   if (pinned > 0) return pinned;
@@ -433,6 +461,8 @@ export const anthropicAgentEngine = {
     // (default 120s) so a real wedge still trips fast. Clamp NaN/≤0 → global so a misconfig never disables it.
     const STALL = (Number(stallSec) > 0 ? Number(stallSec) * 1000 : stallMs());
     const NOPROG = noProgressMs(STALL);   // the honest-progress ceiling (see noProgressMs) — ≥ STALL by construction unless pinned for tests
+    const MIN_RATE = minTokensPerSec();   // output tokens per second of ACTIVE time; 0 disables (see minTokensPerSec)
+    const WARMUP = rateWarmupMs();        // active time before the floor may fire at all
     // legacy-engine parity (+60s past the stage timeout); clamp NaN/≤0 → 660s so the hard wall never
     // silently disables. `CLEAROTRON_HARD_MS` pins it for tests, exactly as CLEAROTRON_STALL_MS and
     // CLEAROTRON_NO_PROGRESS_MS pin the other two clocks — and it is why this ceiling had no end-to-end arm
@@ -472,6 +502,7 @@ export const anthropicAgentEngine = {
       try { child.stdin.write(input); child.stdin.end(); } catch { /* child gone — handled by close/error */ }
       let buf = "", stderr = "", resultEvent = null, killed = false, stallKill = false, settled = false;
       let noProgressKill = false;               // the no-progress ceiling fired (a stall discriminator, see noProgressMs)
+      let trickleKill = false;                  // the token-rate floor fired (a stall discriminator, see minTokensPerSec)
       let overflow = false;                     // A3: stdout/stderr exceeded maxBuffer — force a nonzero fail, never parse the truncated tail
       const maxBuffer = engineMaxBufferChars();
       let lastMove = Date.now();
@@ -805,6 +836,20 @@ export const anthropicAgentEngine = {
           if (sig !== null && artifactSeen.get(f) !== sig) { artifactSeen.set(f, sig); progress(); }
         }
       };
+      // Is this turn producing tokens too slowly to be working? Active time, after the warm-up, over the
+      // turn's own streamed output — the same accumulator the journal reports, so the number that kills a
+      // turn is the number a reader afterwards sees.
+      // What the rate WAS when the floor fired, for the failure line. Two decimals: the readings this
+      // exists for are hundredths of a token per second.
+      const trickleRate = (now = Date.now()) => {
+        const activeMs = activeElapsedMs({ wall: now - (firstOutputAt ?? now), toolWaitMs, toolAskedAt, now });
+        return activeMs > 0 ? (((streamedUsage()?.output ?? 0) * 1000) / activeMs).toFixed(2) : "0.00";
+      };
+      const isTrickling = (now) => {
+        const activeMs = activeElapsedMs({ wall: now - firstOutputAt, toolWaitMs, toolAskedAt, now });
+        if (activeMs < WARMUP) return false;
+        return (streamedUsage()?.output ?? 0) < (MIN_RATE * activeMs) / 1000;
+      };
       const watchdog = setInterval(() => {
         artifactProgress();
         const now = Date.now();
@@ -832,6 +877,25 @@ export const anthropicAgentEngine = {
         // kill it NOW, well below the wall, and record it as a STALL — never let the ceiling raise turn
         // into extended stall burn, and never let this kill read as "the stage needed more time".
         else if (progIdle >= (started ? NOPROG : Math.max(NOPROG, GRACE))) { stallKill = true; noProgressKill = true; killed = true; killTree(); }
+        // ── A TRICKLE IS A STALL WEARING A STREAM ────────────────────────────────────────────
+        //
+        // Both clocks above are satisfied by a token every twelve seconds: the byte-stall resets on any
+        // byte, and the no-progress ceiling counts token movement as progress ON PURPOSE, because the
+        // engine contract promises a slow-but-working streaming turn is never clipped. So the only thing
+        // that stopped a trickle was the wall, at budget + 60s, with the whole attempt thrown away.
+        //
+        // This fires far below the wall and is RECORDED AS A STALL with its own discriminator, so the
+        // retry policy treats it as one and never extends the budget for the next attempt — the thing a
+        // ceiling raise would have done, and the reason this is not one.
+        //
+        // The rate is over the turn's own streamed output, on active time, after a warm-up. A healthy
+        // turn is nowhere near it: the samples that motivated this ran at 74 and 82.83 tokens per second
+        // against kills at 0.08 and 0.12, and the floor sits at 1.
+        // ONE CONDITION, NOT A NESTED BLOCK. An `else if (enabled) { if (trickling) … }` would swallow
+        // the chain: with the floor enabled and the rate healthy, the hard ceiling below would never be
+        // reached, and the only clock that bounds a turn producing tokens at a normal rate forever would
+        // have been switched off by adding this one.
+        else if (started && MIN_RATE > 0 && isTrickling(now)) { stallKill = true; trickleKill = true; killed = true; killTree(); }
         // ── THE CEILING MEASURES ACTIVE TIME, NOT ELAPSED ────────────────────────────────────
         //
         // Ruling: "there isnt such thing as a hung model. it always delivers something or fails."
@@ -967,6 +1031,13 @@ export const anthropicAgentEngine = {
             ? (stderr + `\nrequest timed out (anthropic-agent no-progress watchdog: no token movement / agent-loop step / artifact write for ${Math.round(NOPROG / 1000)}s — a STALL, not a slow turn)`
               + `\nanthropic-agent no-progress specimen: firstByteMs=${firstOutputAt === null ? "NEVER" : Math.round(firstOutputAt - t0)}`
               + ` toolCalls=${toolCalls} noProgressMs=${NOPROG} graceMs=${GRACE}`)
+          : trickleKill
+            // ITS OWN SENTENCE, because "0 streamed tokens" is the one thing this kill is not. A reader
+            // meeting the stall line over a turn that streamed for forty minutes would go looking for a
+            // silent process and find a talkative one. The rate that killed it rides the line, so the
+            // threshold can be argued from artifacts rather than from memory.
+            ? (stderr + `\nrequest timed out (anthropic-agent trickle floor: ${trickleRate()} output tokens/sec of active time,`
+              + ` under the ${MIN_RATE}/sec floor after a ${Math.round(WARMUP / 1000)}s warm-up — a STALL that kept the pipe warm, not a slow turn)`)
           : stallKill ? (stderr + "\nrequest timed out (anthropic-agent stall-watchdog: 0 streamed tokens)")
           // Startup-class death (the 3× register-digest code=1 zero-token shape): the CLI exited without
           // emitting a single stream event — the failure happened before any turn ran (arg/auth/MCP
@@ -1039,6 +1110,10 @@ export const anthropicAgentEngine = {
           // never journal a token-moving kill as usage:null). noStreamEvents: the CLI died before emitting
           // ANY stream event — a startup-class failure, diagnosable from stderrTail alone.
           signals: { stalled: stallKill || undefined, noProgress: noProgressKill || undefined,
+            // A TRICKLE IS A STALL, and this says which kind. Retry policy keys on `stalled` — so this
+            // never extends the next attempt's budget — while a reader keys on this to tell a turn that
+            // said nothing from one that said almost nothing for three quarters of an hour.
+            trickle: trickleKill || undefined,
             hardWall: (killed && !stallKill) || undefined, rateLimited: rateLimited || undefined, resetsAt,
             usageStreamed: (streamUsage != null) || undefined,
             noStreamEvents: (!sawAnyEvent && resultEvent == null) || undefined,

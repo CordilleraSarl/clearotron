@@ -121,9 +121,13 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort, demoTokenSecret, demoTokenSecretPath, keyIssueCommand } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage, nextFreePort } from "../shared/listen.mjs";
-import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
-import { invocationPrefix, invoke, reachableCommand } from "../shared/invocation.mjs";   // — the banner names the verb
+import { invocationPrefix, invoke, reachableCommand, foreignPageHint } from "../shared/invocation.mjs";   // — the banner names the verb
+// RE-EXPORTED, NOT RE-DECLARED. The sentence moved to a module that imports nothing of ours, because
+// setup imports it and setup has a top-level await: a command importing a command closes a loop that
+// hangs at run time rather than failing at build. Its readers keep this spelling.
+export { foreignPageHint };
 import { unitEnvPath, activeEnvPath } from "../shared/env-local.mjs";   // — the file the units read, named once
 import { parseEnvFile } from "../shared/env-file-merge.mjs";   // ONE KEY=value reader, in a leaf: render-units is a COMMAND, and importing it from here closed a cycle
 import { homedir, userInfo } from "node:os";
@@ -303,21 +307,6 @@ export function resolvePorts(env = {}) {
     client: one("CLIENT_MCP_HTTP_PORT", clientDoorPort({})) };
 }
 
-/**
- * WHAT TO DO WHEN THE PAGE THAT OPENS IS NOT OURS. Printed under every "Open" line.
- *
- * A port can be free where this runs and taken where the browser runs: on WSL, a Windows-side listener
- * (VS Code's Remote-SSH forwarding is the one measured, 2026-09-11) answers 127.0.0.1 before WSL does. The
- * doors bind cleanly, the in-use detection has nothing to see, and the browser shows somebody else's page
- * with nothing on this screen saying so. `--port` already moves all three doors; the reader has to be told
- * about it at the moment the address is handed over, which is here.
- */
-export function foreignPageHint(verb) {
-  return [
-    "If the page that opens is not this install's sign-in, another program on this machine holds that",
-    `port from outside this environment. Run \`${invoke(verb)} --port 28802\` (or any free number) instead.`,
-  ];
-}
 
 /**
  * Apply `--port <n>` to the three doors.
@@ -346,6 +335,37 @@ export function portsForFlag(portFlag, ports, env = {}) {
     portal: n,
     mcp: explicit("TRADEMARK_MCP_HTTP_PORT") ? ports.mcp : n + 1,
     client: explicit("CLIENT_MCP_HTTP_PORT") ? ports.client : n + 2,
+  };
+}
+
+/**
+ * THE DEMO'S OWN DOORS — the numbers it opens when the reader has asked for none.
+ *
+ * A demo used to start on the install's default portal port. On WSL that put the browser's address in
+ * the hands of whatever holds that number on the WINDOWS side: a Remote-SSH forward answered 127.0.0.1
+ * first, and the reader opened a production portal's "not signed in" page believing it was the demo.
+ * A local free-port walk cannot help there — the port IS free inside WSL, which is why the bind
+ * succeeded — so the fix is not to look harder but to stop using the number anybody else would.
+ *
+ * 18860 has no meaning: it is unusual, it is clear of the three an install opens by default (18802,
+ * 18790, 18811) and of the range a moved door walks into, and a stranger's machine is unlikely to be
+ * running something there. The two doors that follow take the next two numbers, which is the same
+ * arithmetic `--port` already uses, so a reader who moves the demo and a reader who does not meet one
+ * layout rather than two.
+ *
+ * AN EXPLICIT VARIABLE STILL WINS, exactly as it does for the flag: somebody who set a port chose that
+ * number, and a demo is a convenience over the defaults rather than an override of a decision. So is
+ * `--port`, which is applied after this and replaces it. PURE.
+ */
+export const DEMO_PORT_BASE = 18860;
+
+export function demoPortDefaults(ports, env = {}) {
+  const explicit = (name) => String(env[name] ?? "").trim() !== "";
+  return {
+    ...ports,
+    portal: explicit("PORTAL_SERVICE_PORT") ? ports.portal : DEMO_PORT_BASE,
+    mcp: explicit("TRADEMARK_MCP_HTTP_PORT") ? ports.mcp : DEMO_PORT_BASE + 1,
+    client: explicit("CLIENT_MCP_HTTP_PORT") ? ports.client : DEMO_PORT_BASE + 2,
   };
 }
 
@@ -911,6 +931,14 @@ if (isMain) {
   // Decided before any path is, because in a demo every path below is the demo's own. The posture
   // itself is described at the DEMO block further down.
   const DEMO = argv.includes("--demo");
+  // THE DEMO CLEANS UP AFTER ITSELF (owner ruling, 2026-09-14). A reader who tries the product once
+  // should not be left with a folder they did not choose, a guest list and a signing secret in their
+  // home — and the next demo on that machine should not have to reason about the last one's leftovers.
+  // `--keep` is for somebody who wants the reports to outlive the window, and it prints the one command
+  // that removes them.
+  const DEMO_KEEP = argv.includes("--keep");
+  // Whether the reader chose this base, which decides whether leftovers in it are the demo's to reset.
+  const BASE_GIVEN = argv.includes("--base");
   // A DEMO HAS NO BACKGROUND FORM, and asking for one is refused before anything is written. The
   // background path installs units that run the reader's own install, so `--demo --background` would set
   // up an empty install in their home and call it the demo.
@@ -944,13 +972,36 @@ if (isMain) {
     // AN INSTALL NOBODY CONFIGURED still answers. `start --base <dir>` writes a guest list on every start
     // and no settings at all, so an install somewhere of its own passes every check above. A guest list
     // with no demo secret beside it is somebody's install; a demo's own base has both.
-    if (!found.length && existsSync(paths.grants) && !existsSync(demoTokenSecretPath(paths.base)))
+    //
+    // ONLY WHERE THE READER CHOSE THE BASE. On the demo's own default directory this check refused the
+    // demo's OWN leftovers — a 0.3.0-era demo wrote a guest list there, and the next `demo` with no
+    // flag at all was told to "run the demo without --base", which is the command it had just run. The
+    // default directory is the demo's; what is in it is the demo's to reset.
+    if (BASE_GIVEN && !found.length && existsSync(paths.grants) && !existsSync(demoTokenSecretPath(paths.base)))
       found.push(`it holds a guest list, ${paths.grants}, and no demo of its own`);
     if (found.length)
       fatal(`--demo cannot run in ${paths.base}: ${found.join("; ")}.\n`
         + "  The demo keeps its own data, and its own signing secret, in its base. Leaving those in an\n"
         + "  install's directory would make keys issued for that install refuse at its door.\n"
-        + "  Run the demo without --base, or give it a directory of its own.");
+        + `  Give the demo a directory of its own, or remove ${paths.base} if nothing in it is wanted.`);
+
+    // ── AN OLDER DEMO'S BASE IS RESET, SILENTLY, AND ONLY WHEN IT IS THE DEMO'S OWN ─────────────────
+    //
+    // Demos before this one kept their base, so a machine that met the product once carries one. The
+    // next demo must neither refuse it nor start half inside it: a base holding one version's pool and
+    // another's program is a state nobody designed and nobody can read.
+    //
+    // THE RAILS ARE WHAT MAKE THIS SAFE TO WRITE AT ALL, because this line removes a directory:
+    //   · a demo, never an ordinary start;
+    //   · a base the reader did NOT name — the demo's own default, not a directory they pointed at;
+    //   · every install signal above already checked and none found;
+    //   · the path still compared against the default before the call, so a future edit that changes
+    //     how the default is computed cannot silently widen what this removes.
+    const reset = demoBaseResetTarget({ baseGiven: BASE_GIVEN, base, demoDefault: resolve(join(homedir(), "trademark-demo")) });
+    if (reset && existsSync(reset)) {
+      try { rmSync(reset, { recursive: true, force: true }); }
+      catch (e) { fatal(`the demo could not reset its own folder ${reset} (${e.code ?? e.message}). Remove it and run the demo again.`); }
+    }
   }
   // ── THIS INSTALL'S FIRST START, read before this start writes either file that answers it ────────────
   //
@@ -1020,6 +1071,10 @@ if (isMain) {
   // the flag is a convenience over the defaults, not an override of a decision. Driven in the issue:
   // with all three exported, the demo already came up correctly — that path must not change.
   const portFlag = flag("--port");
+  // THE DEMO'S DEFAULTS, BEFORE THE FLAG AND AFTER THE ENVIRONMENT. Applied only when the reader asked
+  // for no port at all: `--port` below replaces whatever this chose, and a variable somebody set is
+  // preserved inside the function itself. See demoPortDefaults for why the demo may not share 18802.
+  if (DEMO && !portFlag) Object.assign(ports, demoPortDefaults(ports, process.env));
   if (portFlag) {
     let moved;
     try { moved = portsForFlag(portFlag, ports, process.env); }
@@ -1969,7 +2024,7 @@ if (isMain) {
     }
     say("");
     say(`  Open:            ${envs.url}`);
-    for (const line of foreignPageHint(DEMO ? "demo" : "start")) say(`                   ${line}`);
+    for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`                   ${line}`);
     say("  This SURVIVES the terminal — close the window, the product keeps running.");
     say(`  Stop it:         ${invoke("stop")}   (stops and removes the units; issued connect keys survive — \`${invoke("disconnect")}\` revokes those)`);
     say(`  Is it up?        ${invoke("status")}`);
@@ -2069,6 +2124,26 @@ if (isMain) {
         signalGroup(c, "SIGKILL");
       }
       await new Promise((r) => setTimeout(r, 200));
+    }
+    // ── THE DEMO TAKES ITS FOLDER WITH IT ───────────────────────────────────────────────────────────
+    //
+    // AFTER the children are down, not before: the runner and the two services write into this base
+    // while they live, and removing it under them would turn an orderly stop into a page of ENOENT.
+    //
+    // The same rails as the reset at the top of the run, plus one more: the demo only removes a base it
+    // MADE this run. A reader who asked for a directory of their own keeps it — they named it, so it is
+    // theirs — and `--keep` is for the reader who wants the reports to outlive the window.
+    if (DEMO && !BASE_GIVEN && !DEMO_KEEP) {
+      try {
+        rmSync(paths.base, { recursive: true, force: true });
+        say(`\n  The demo removed everything it created: ${paths.base} is gone, and nothing of it is left on this machine.`);
+      } catch (e) {
+        // A FAILED CLEANUP IS SAID, NOT SWALLOWED. The promise this prints is the one thing a reader
+        // cannot check for themselves once the window closes.
+        err(`\n  The demo could not remove ${paths.base} (${e.code ?? e.message}) — remove it by hand if nothing in it is wanted.`);
+      }
+    } else if (DEMO) {
+      say(`\n  The demo's folder is kept at ${paths.base}. Remove it when you are done:  rm -rf ${paths.base}`);
     }
     process.exit(code);
   }
@@ -2203,7 +2278,7 @@ if (isMain) {
 
   say("");
   say(`  Open   ${envs.url}`);
-  for (const line of foreignPageHint(DEMO ? "demo" : "start")) say(`         ${line}`);
+  for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`         ${line}`);
   say("");
   // ── TWO DOORS, TWO AUDIENCES, BOTH NAMED ( — F26) ─────────────────────────
   //
@@ -2285,6 +2360,11 @@ if (isMain) {
     say(`  │  WRITE THE PASSPHRASE DOWN NOW. It is stored only as a digest, so`);
     say(`  │  nothing — not this product, not this terminal — can read it back.`);
     say(`  │  Lost it? ${reset}`);
+    // THE HINT BELONGS IN THE BOX TOO, and this was the reader the whole sentence was written for. The
+    // frame exists because a first-time reader skips the log wall and acts on it — so the one address
+    // they copy was the one address with nothing beside it saying what to do when the page that opens
+    // is somebody else's. It was printed nine lines above, to a reader who by design did not read there.
+    for (const line of foreignPageHint(DEMO ? "demo" : "start", ports.portal)) say(`  │  ${line}`);
     say(`  └${rule}┘`);
   } else {
     // THE WAY BACK IN FIRST, then which credential, when and for whom: laterStartLines says why. Read for
@@ -2340,8 +2420,28 @@ if (isMain) {
   // cannot succeed and given a service manager that is not on the machine and cannot be put there.
   // Reported from a real run. Same rule as the engine refusal above: do not name a route this platform
   // does not have.
-  for (const line of backgroundOfferLines({ demo: DEMO, manager: backgroundManager(), start: invoke("start") })) say(line);
+  for (const line of backgroundOfferLines({ demo: DEMO, keep: DEMO_KEEP || BASE_GIVEN, manager: backgroundManager(), start: invoke("start") })) say(line);
   say("");
+}
+
+/**
+ * WHICH DIRECTORY, IF ANY, A DEMO MAY RESET BEFORE IT STARTS. Null means none, and null is the answer
+ * for everything except one case.
+ *
+ * The one case: the demo's OWN DEFAULT directory, which the reader did not name. Demos before this one
+ * kept their base, so a machine that met the product once carries one; the next demo must neither
+ * refuse it — which is what happened, on a run with no flags, with a remedy telling the reader to drop
+ * a flag they had not passed — nor start half inside it.
+ *
+ * A DIRECTORY THE READER NAMED IS THEIRS. `--base` is a decision about where their data lives, and
+ * nothing in a demo may remove a path somebody chose; the install checks at the call site refuse those
+ * instead. Separated from the call site so the rule can be driven as a table rather than by starting a
+ * product, and because a rule this consequential should be readable in one screen. PURE.
+ */
+export function demoBaseResetTarget({ baseGiven = false, base = "", demoDefault = "" } = {}) {
+  if (baseGiven) return null;                      // the reader chose it, so it is not the demo's to clear
+  if (!base || !demoDefault) return null;          // nothing to compare: say no
+  return base === demoDefault ? base : null;       // compared whole, never by prefix — a sibling path is not this
 }
 
 /**
@@ -2353,10 +2453,16 @@ if (isMain) {
  * offered one. Where the offer stands, it names what it needs BEFORE the reader stops what is running.
  * PURE.
  */
-export function backgroundOfferLines({ demo = false, manager = null, start = "clearotron start" } = {}) {
+export function backgroundOfferLines({ demo = false, keep = false, manager = null, start = "clearotron start" } = {}) {
   if (demo) return [
     "  The demo has no background form: it runs as long as this window does. Leave it open and use a",
     "  second terminal for the commands above.",
+    // SAID BEFORE THE READER PRESSES IT, not only afterwards. A person deciding whether to close the
+    // window is deciding whether to keep the reports, and finding that out from the last line is too
+    // late. `--keep` is named here because this is where the choice is made.
+    keep
+      ? "  This demo keeps its folder: the reports stay after the window closes, and the last line says how to remove them."
+      : "  Everything the demo made goes when this window closes — pass --keep to leave the folder and its reports behind.",
   ];
   if (!manager) return [
     "  There is no background form on this platform: the product runs as long as this window does.",

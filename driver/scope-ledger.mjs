@@ -305,3 +305,36 @@ export function channelsDiagnosis(md) {
   // empty `offered` — which is honest, because the seat did write the line.
   return { state: channels.length ? "named" : "all-rejected", channels, offered, rejected };
 }
+
+/**
+ * THE CHANNELS THE OFF-REGISTER GRID ACTUALLY RUNS, for any profile.
+ *
+ * The grid used to search the customer profile's storefronts whatever the matter was about. A delivered
+ * global preliminary carried 45 terms across 8 platforms, and the 8 were the profile's list; the matter
+ * frame had named the matter's own ecosystem — server hosts, a plugin repository, a competing platform —
+ * and none of it reached the grid, because nothing carried a frame-named channel into it. The reviewing
+ * lawyer graded a plugin published on a repository the run never queried.
+ *
+ * THE FRAME'S CHANNELS ARE ADDED, NOT SUBSTITUTED, for a named profile. That profile's platform list is
+ * the client's own mandate — it is what they told us to sweep — so it stands, and what the frame names
+ * about this matter runs beside it.
+ *
+ * THE GENERIC PROFILE STILL REPLACES, and that is a decision rather than an inconsistency. Generic's
+ * platforms are a house default, not anybody's mandate, and the reason the replacement exists is that a
+ * regulated or B2B matter must not be forced onto consumer storefronts and then read as swept. A union
+ * there would put the storefronts back into exactly the runs that branch was written to keep them out of.
+ *
+ * Order is profile-first so an existing run's cells keep their place in the spec, and the frame's
+ * additions follow. Deduplicated on the normalised value: a frame naming a platform the profile already
+ * carries adds a sentence, never a second cell. PURE.
+ *
+ * @returns {{channels: string[], added: string[], diag: object}}
+ */
+export function gridChannels({ profilePlatforms = [], profileKey = null, matterMd = "" } = {}) {
+  const diag = channelsDiagnosis(matterMd);
+  const base = (profilePlatforms ?? []).filter(Boolean);
+  if (profileKey === "generic") return { channels: diag.channels.length ? diag.channels : base, added: [], diag };
+  const seen = new Set(base.map((p) => String(p).trim().toLowerCase()));
+  const added = diag.channels.filter((c) => !seen.has(String(c).trim().toLowerCase()));
+  return { channels: [...base, ...added], added, diag };
+}

@@ -34,7 +34,7 @@ export class AuthError extends Error {
  * applied IN ADDITION to the domain gate (either empty list = that gate off). Building a verifier with
  * NO identity gate at all requires an explicit allowAnyDomain:true (fail-closed footgun guard).
  */
-export function makeAccessVerifier({ team, aud, allowedDomains = [], allowedEmails = [], allowAnyDomain = false, identityMode = "intersection", issuer, jwksUrl, emailClaim = "email", jwks } = {}) {
+export function makeAccessVerifier({ team, aud, allowedDomains = [], allowedEmails = [], allowedNow = null, allowAnyDomain = false, identityMode = "intersection", issuer, jwksUrl, emailClaim = "email", jwks } = {}) {
   const iss = issuer || (team ? `https://${team}.cloudflareaccess.com` : "");
   // `!aud` alone does not close this: an EMPTY ARRAY is truthy, so a parser that returned `[]` for an
   // unset variable would satisfy this guard and the four call sites' `!AUD` at once. MEASURED, because
@@ -94,7 +94,21 @@ export function makeAccessVerifier({ team, aud, allowedDomains = [], allowedEmai
     if (identityMode === "union") {
       const okDomain = domains.length > 0 && domains.includes(domain);
       const okEmail = emails.length > 0 && emails.includes(email);
-      if (!okDomain && !okEmail) throw new AuthError(403, `email not permitted: ${email}`);
+      // ── AND THE PEOPLE THE DEPLOYMENT HAS ADDED SINCE THIS VERIFIER WAS BUILT ──────────────────────
+      //
+      // The two lists above are read once, at construction, out of the environment. The People page
+      // writes a person into the deployment's own guest list and the write succeeds — and this check
+      // never saw it, so the person was refused at the door with a 403 naming their address, and no
+      // restart helped because the values do not come from the file they were added to. Somebody added
+      // on the page could not sign in, which is the page's whole promise.
+      //
+      // ASKED AT VERIFY TIME, not frozen: `allowedNow` is a callback the caller supplies, reading the
+      // guest list as it is now. It can only ADD — the env lists stay exactly as they were, so a
+      // deployment that names nobody in a file is not widened by this and the fail-closed guards above
+      // still decide whether a verifier may be built at all.
+      const okAdded = !okDomain && !okEmail && typeof allowedNow === "function"
+        && (() => { try { return allowedNow().includes(email); } catch { return false; } })();
+      if (!okDomain && !okEmail && !okAdded) throw new AuthError(403, `email not permitted: ${email}`);
     } else {
       if (domains.length && !domains.includes(domain)) throw new AuthError(403, `email domain not permitted: ${email}`);
       if (emails.length && !emails.includes(email)) throw new AuthError(403, `email not on the allowlist: ${email}`);

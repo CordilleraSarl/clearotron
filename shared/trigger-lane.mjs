@@ -129,6 +129,25 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
         + "knows where to call and cannot authenticate. The Start button fails at the door." };
   }
 
+  // ── A LOCAL SOCKET IS AN ADDRESS TOO, AND THE ORIGIN RULE BELOW MUST NOT MEET IT ─────────────────
+  //
+  // `unix:/run/clearotron/engine.sock` names the engine's local key door. Its whole value is a
+  // filesystem path, so the "must be an ORIGIN" refusal below — written for an http value carrying
+  // `/mcp` — would reject every socket address with a sentence about double paths that is not what is
+  // wrong. The client separates the socket path from the request path; see dialTarget.
+  //
+  // NOT PROBED THE SAME WAY EITHER, and this returns before the probe branch deliberately. The probe
+  // exists because a network lane can answer, redirect or challenge while looking configured; a socket
+  // either connects or does not, has no hostname to be challenged on, and cannot be intercepted by a
+  // proxy that was never in front of it. Reporting it as `unprobed` would file a real address under the
+  // state this module uses for "nobody walked the hop", which is the sentence that gets a lane chased.
+  const sock = /^unix:(.+)$/i.exec(raw);
+  if (sock) {
+    return { state: "ok",
+      message: `the portal calls the engine over the local socket ${sock[1]} — a filesystem address, so it `
+        + "carries no host, cannot be reached from any network, and is not a lane a proxy can sit in front of." };
+  }
+
   let parsed;
   try { parsed = new URL(raw); }
   catch { return { state: "fail", message: `PORTAL_MCP_URL is not a URL: ${raw}` }; }

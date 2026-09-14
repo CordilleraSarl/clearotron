@@ -392,8 +392,14 @@ test("THE PLANT — a genuine lockout still fires, or the fix is a silencer", ()
 test("a local install whose grants file admits nobody is still reported — the mode is not an exemption", () => {
   // The fix originally filed was "exempt PORTAL_AUTH_MODE=local". It would have been wrong twice: the
   // variable was absent from the file being read, AND a local install genuinely admitting nobody is a
-  // real lockout. `portal-service.mjs:4461-4462` states the rule — a local sign-in produces an email
-  // and nothing else, and the roster still decides.
+  // real lockout. `portal-service.mjs` states the rule at its local sign-in boot, in these words: "The
+  // roster still decides. A local sign-in produces an email and nothing else."
+  //
+  // REPOINTED WITH NO NUMBER, 2026-09-14. The old citation named a line that had moved long before this
+  // edit, and a bare number is checked for EXISTING rather than for being right — it resolved happily to
+  // whatever had slid into its place. A symbol was the other repair and it does not fit: the rule sits
+  // inside the service's boot block, where the enclosing construct is not a named function, so naming one
+  // would have been a second wrong answer that passed. Quoted words survive every edit above them.
   const home = homeWithGrants(["PORTAL_AUTH_MODE=local", "PORTAL_LOCAL_USER=op@localhost"]);
   try {
     const r = doctor(home);

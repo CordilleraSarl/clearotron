@@ -162,3 +162,63 @@ test("enumerate's per-term probe is this kernel — same calls, same null-on-fai
   assert.ok(probes.length >= 3, "one probe per term, through the shared kernel");
   assert.deepEqual(probes[0].fields, ["uri"]);
 });
+
+// ── THE REFUSAL THAT WAS NEVER RECOGNISED ─────────────────────────────────────────────────────────
+//
+// A provider can refuse to COUNT a slice because the query shape would match too much. That is not an
+// outage and not a transient: the same shape is refused identically on every future run, so retrying
+// it is work that cannot succeed, and recording it as a provider error files a searched slice as a
+// permanent gap. The kernel has an arm for exactly this — it returns a CROWD descriptor with an
+// unknown total rather than a zero — and the arm is keyed on a recogniser the provider declares.
+//
+// It had never fired. The clarivate provider declared the recogniser at the top of its capabilities
+// file and built its enumeration from the KERNEL SUBSET of that file, which did not carry the key, so
+// every refusal rode the repair ladder and landed as a gap. Both halves are driven below: the kernel
+// behaviour, and the wiring that decides whether the kernel ever sees it.
+test("a count refusal keyed on the provider's own sentence becomes a crowd, not a zero and not a retry", async () => {
+  const REFUSAL = "HTTP 500: INTERNAL_SERVER_ERROR - Count Failed - IL - Near/Adj queries with sub queries "
+    + "that can return a huge amount of results are not allowed";
+  let counts = 0;
+  const { enumerate } = makeEnumerate({
+    count: async () => { counts += 1; return { ok: false, total: null, reason: REFUSAL }; },
+    search: async () => { throw new Error("a refused count must never reach the search — that is the spend this arm prevents"); },
+    capabilities: {
+      countProbe: "endpoint",
+      cardinalityRefusal: /Near\/Adj queries with sub queries that can return a huge amount of results are not allowed/i,
+    },
+  });
+  const parsed = JSON.parse((await enumerate("auth", { name: "PLAN B", nice_classes: [9] }, {})).text);
+
+  assert.equal(parsed.state, "incomplete", "a slice nobody could count is never complete");
+  assert.equal(parsed.total_hits, null, "UNKNOWN, not zero — the count never returned, and a zero here is a false clean");
+  assert.equal(parsed.crowd_basis, "provider-refused-count");
+  assert.equal(parsed.count_unavailable, true);
+  assert.equal(counts, 1, "one probe: a structural refusal is the same on every attempt, so the ladder has nothing to offer it");
+
+  // THE CONTROL, and without it this arm would pass just as well on a kernel that called everything a
+  // crowd: an ordinary count failure is NOT this, and must still read as a provider error with a zero
+  // it can defend — the two answers have to be different or the recogniser is decorative.
+  const { enumerate: plain } = makeEnumerate({
+    count: async () => ({ ok: false, total: null, reason: "HTTP 503: upstream briefly unavailable" }),
+    search: async () => text({ total_hits: 0, results: [], has_more: false }),
+    capabilities: {
+      countProbe: "endpoint",
+      cardinalityRefusal: /Near\/Adj queries with sub queries that can return a huge amount of results are not allowed/i,
+    },
+  });
+  const other = JSON.parse((await plain("auth", { name: "PLAN B" }, {})).text);
+  assert.notEqual(other.crowd_basis, "provider-refused-count", "a transient outage is not a structural refusal");
+});
+
+test("the provider that declares the recogniser hands it to the kernel it builds", async () => {
+  // THE WIRING, ASSERTED AT THE ONE PLACE IT CAN BREAK. The arm above proves the kernel behaves when it
+  // is given the recogniser; this proves it is given one. Those are different claims, and for the life
+  // of this code the first was true and the second was false.
+  const { CAPABILITIES } = await import("../../clarivate/src/capabilities.js");
+  assert.ok(CAPABILITIES.kernel.cardinalityRefusal instanceof RegExp,
+    "the enumeration seam reads `cardinalityRefusal` off the kernel subset — declared anywhere else, it is dead");
+  assert.equal(CAPABILITIES.kernel.cardinalityRefusal, CAPABILITIES.cardinalityRefusal,
+    "and it must be the SAME object, not a second copy that agrees today");
+  assert.match("Count Failed - IL - Near/Adj queries with sub queries that can return a huge amount of results are not allowed",
+    CAPABILITIES.kernel.cardinalityRefusal, "the sentence the provider actually sends still matches it");
+});

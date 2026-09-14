@@ -38,3 +38,18 @@ export function isWsl({ env = process.env, procVersion = null, interopEntry = nu
   const v = procVersion ?? (() => { try { return readFileSync("/proc/version", "utf8"); } catch { return ""; } })();
   return /wsl/i.test(v);
 }
+
+/**
+ * The distribution an "on this computer" row should start the server in, or null when this is not WSL.
+ *
+ * Named from `WSL_DISTRO_NAME`, and null rather than a guess when it is absent: `wsl.exe` with no `-d`
+ * takes the DEFAULT distribution, which on a machine with more than one may be a distribution with no
+ * install on it. A row that starts the wrong Linux fails in a way nobody would connect to this choice,
+ * so the name travels when we have it and the command falls back to the default only when we do not.
+ * PURE, given its environment.
+ */
+export function wslTarget({ env = process.env, procVersion = null, interopEntry = null } = {}) {
+  if (!isWsl({ env, procVersion, interopEntry })) return null;
+  const distro = String(env.WSL_DISTRO_NAME ?? "").trim();
+  return { distro: distro || null };
+}

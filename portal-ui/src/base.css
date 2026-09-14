@@ -2062,7 +2062,7 @@ input.filter {
   color: var(--accent-quiet); white-space: nowrap;
 }
 
-/* ── last finished ────────────────────────────────────────────────────────────────────────────── */
+/* ── recently finished ────────────────────────────────────────────────────────────────────────────── */
 .home2-done-band { margin-top: 26px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .home2-done {
   display: flex; align-items: center; gap: 13px; padding: 14px 2px; flex-wrap: wrap; cursor: pointer;
@@ -2072,12 +2072,22 @@ input.filter {
 .home2-done-mark { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; color: var(--text-strong); }
 .home2-done-verdict { font-size: 15px; color: var(--text-body); }
 .home2-done-meta { font-size: 13px; color: var(--text-faint); }
-.home2-done-spacer { flex: 1; }
-.home2-all {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
-  white-space: nowrap; background: transparent; border: 0; color: var(--text-accent); cursor: pointer;
-}
+/* ONE BUTTON INTO THE ARCHIVE, and it is `btn-ghost` — the secondary button this stylesheet already
+   had. This class used to be the whole look of one of two routes (accent text, no border) while the
+   other borrowed the rail item's, so the same destination read as two different things and neither
+   read as a button. What is left here is the icon size and the not-wrapping, which is all this place
+   needs on top of the shared style. */
+.home2-all { white-space: nowrap; }
 .home2-all svg { width: 14px; height: 14px; }
+/* THE TAIL'S WAY OUT IS A LINE, NOT A SECOND BUTTON. A page carries one primary action and one
+   secondary; a third control of the same weight at the bottom would compete with the button at the top
+   for the same destination, which is the confusion this replaced. So: the count as quiet text, aligned
+   with the rows above it, underlined on hover the way a link is. */
+.home2-see-all {
+  display: block; margin: 2px 0 0; padding: 6px 2px; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 13px; color: var(--text-faint); text-align: left;
+}
+.home2-see-all:hover { color: var(--text-body); text-decoration: underline; }
 
 /* ── limits ───────────────────────────────────────────────────────────────────────────────────────
    A SWAPPABLE SLOT. Capping may move to tokens or another billing model, so it stays one line in one

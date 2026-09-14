@@ -498,8 +498,10 @@ For every Consumer-confusion-risks row that is a **game title** (Steam game, Mic
 
 **Extraction sources, in priority order:**
 1. The Perplexity result's explicit "developed by X" / "published by Y" statement, when present
-2. The platform store page's developer / publisher metadata (Steam, Microsoft Store, App Store all expose these as structured fields)
+2. **The platform's own record of the thing** — whatever that platform publishes about who made it, when it appeared and how large it is. A store's developer / publisher metadata is the familiar case (Steam, Microsoft Store and the app stores expose these as structured fields), and it is an EXAMPLE rather than the set: a platform that is not a store still keeps a record, in page metadata or on a public endpoint of its own, and it is read the same way. Open it before writing that the owner is unknown.
 3. The game's Wikipedia article's infobox developer / publisher row, when the platform page is ambiguous
+
+**"Not extracted" is written with the source OPEN and the field genuinely absent.** A delivered run held a competing platform's own page address for a title, wrote that no creator account behind it could be identified, and carried no launch date and no scale — while that platform published the creator, the creation date and the visit count, unauthenticated, to anyone who asked. The reviewing lawyer named the studio, the month and the visit count, and rated the game inactive on them. The pass had treated a non-store platform as unreadable because this list named only stores. Record what you read, including the reading that came back empty; `not extracted` after a look is a finding, and `not extracted` instead of a look is a gap the reader has to close by hand.
 
 **When the attribution cannot be extracted:**
 - Write **`not extracted`** as the field value

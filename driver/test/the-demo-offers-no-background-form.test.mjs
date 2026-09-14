@@ -35,7 +35,12 @@ test("an install is offered it, with the prerequisite named in the same breath",
 
 test("the banner takes its offer from that one function", () => {
   const src = readFileSync(join(ROOT, "bin", "start.mjs"), "utf8");
-  assert.match(src, /backgroundOfferLines\(\{ demo: DEMO, manager: backgroundManager\(\), start: invoke\("start"\) \}\)/);
+  // PINNED TO THE CALL, NOT TO ITS ARGUMENT LIST. The old spelling named every argument in order, so
+  // adding one — `keep`, when the demo learned to clean up after itself — reddened this arm for a
+  // change that could not affect the property it is named for. What matters is that the banner asks
+  // this function and hands it the two things only the banner knows.
+  assert.match(src, /backgroundOfferLines\(\{[^}]*demo: DEMO[^}]*manager: backgroundManager\(\)[^}]*\}\)/,
+    "the banner no longer takes its offer from the one function that composes it");
   assert.doesNotMatch(src, /To get your prompt back instead, stop this and run  \$\{invoke\("start"\)\} --background`\);\n\s*say/,
     "a second, unconditional copy of the offer is back in the banner");
 });
@@ -54,4 +59,23 @@ test("`start --demo --background` is refused before anything is written", () => 
     assert.ok(!existsSync(join(home, ".config", "systemd")), "a unit was written");
     assert.ok(readdirSync(home).every((n) => n.startsWith(".")) , `something was created in the home: ${readdirSync(home).join(", ")}`);
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── THE DEMO SAYS WHAT HAPPENS TO ITS FOLDER, BEFORE THE READER DECIDES ──────────────────────────
+//
+// The demo removes what it created when its window closes (owner ruling, 2026-09-14), and a reader
+// deciding whether to close the window is deciding whether to keep the reports. Finding that out from
+// the last line is too late, so the offer says it while the terminal is still open — and says the
+// opposite, correctly, for a run that was told to keep the folder.
+test("the demo's offer says whether the folder survives the window, and names the flag that changes it", () => {
+  const goes = backgroundOfferLines({ demo: true, keep: false }).join("\n");
+  assert.match(goes, /goes when this window closes/, "a reader must know the reports are not kept before they close it");
+  assert.match(goes, /--keep/, "and the one flag that changes it");
+
+  const kept = backgroundOfferLines({ demo: true, keep: true }).join("\n");
+  assert.match(kept, /keeps its folder/, "a run told to keep it must not warn that everything goes");
+  assert.doesNotMatch(kept, /goes when this window closes/, "the two states must not print the same sentence");
+
+  // THE CONTROL: this is a demo sentence and belongs to no other start.
+  assert.ok(backgroundOfferLines({ demo: false, manager: "systemd" }).every((l) => !l.includes("--keep")));
 });

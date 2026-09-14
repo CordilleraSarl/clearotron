@@ -137,3 +137,48 @@ test("constructor: issuer still needs an identity gate (fail-closed); neither is
   assert.throws(() => makeAccessVerifier({ aud: AUD, issuer: "https://x.example.com", jwks }), /allowAnyDomain/);
   assert.throws(() => makeAccessVerifier({ aud: AUD, jwks }), /required/i);
 });
+
+// ── SOMEBODY ADDED ON THE PEOPLE PAGE SIGNS IN, WITH NO RESTART ───────────────────────────────────
+//
+// The deployment's own guest list is written by the People page and the write succeeds. This verifier
+// read its two lists out of the environment ONCE, at construction, and never looked at that file — so
+// the new person met a 403 naming their address, and restarting did not help, because the values do not
+// come from the file they were added to.
+//
+// Driven on ONE verifier instance across a change to the list, which is what "no restart" means here:
+// the same object refuses and then admits, with nothing rebuilt in between.
+test("the union gate consults the guest list at verify time, so a person added after boot is admitted", async () => {
+  let listed = [];
+  const verify = makeAccessVerifier({
+    team: TEAM, aud: AUD, jwks, identityMode: "union",
+    allowedEmails: ["already@other.test"],        // the environment's floor, unchanged throughout
+    allowedNow: () => listed,
+  });
+
+  const token = await mint({ email: "added@later.test" });
+  await assert.rejects(() => verify(token), isAuth(403), "an address in neither list must still be refused");
+
+  listed = ["added@later.test"];
+  const claims = await verify(token);
+  assert.equal(claims.email, "added@later.test", "the person added to the guest list is still refused");
+
+  // THE FLOOR IS UNTOUCHED: what the environment permitted before is permitted now, and the callback
+  // can only add. A deployment that names nobody in a file is not widened by any of this.
+  assert.equal((await verify(await mint({ email: "already@other.test" }))).email, "already@other.test");
+});
+
+test("a resolver that throws, or answers nothing, leaves the door exactly where it was", async () => {
+  // ON A REQUEST PATH, so it must not be able to make things worse. A guest list that cannot be read is
+  // not a reason to refuse the people the environment already permits, and not a reason to admit anyone.
+  const boom = makeAccessVerifier({ team: TEAM, aud: AUD, jwks, identityMode: "union",
+    allowedEmails: ["already@other.test"], allowedNow: () => { throw new Error("ENOENT"); } });
+  assert.equal((await boom(await mint({ email: "already@other.test" }))).email, "already@other.test",
+    "an unreadable guest list refused somebody the environment permits");
+  const strangerToken = await mint({ email: "added@later.test" });
+  await assert.rejects(() => boom(strangerToken), isAuth(403),
+    "an unreadable guest list admitted somebody nothing permits");
+
+  // NO RESOLVER AT ALL is the shape every other caller has, and it must behave exactly as before.
+  const plain = makeAccessVerifier({ team: TEAM, aud: AUD, jwks, identityMode: "union", allowedEmails: ["already@other.test"] });
+  await assert.rejects(() => plain(strangerToken), isAuth(403));
+});

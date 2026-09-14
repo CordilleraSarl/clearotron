@@ -477,9 +477,12 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen">
-      <div className="eyebrow">Clearances</div>
+      {/* THE EYEBROW NAMES THE SCREEN AND THE HEADING NAMES THE FILTER, which is what keeps "All"
+          honest: with a company selected this list is that company's, and the heading says so while
+          the eyebrow still matches the rail item a reader pressed to get here. */}
+      <div className="eyebrow">All Clearances</div>
       <h1 style={{ fontSize: 27, margin: '4px 0 6px', color: 'var(--text-strong)' }}>
-        {ownerFilter ? ctx.ownerName(ownerFilter) : 'Clearances'}
+        {ownerFilter ? ctx.ownerName(ownerFilter) : 'All Clearances'}
       </h1>
       {/* THE SUBTITLE IS GONE. "Every name in clearance and where it stands" restated the heading for a
           reader who had already read it, directly above a control row that says something they cannot
