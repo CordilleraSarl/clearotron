@@ -23,9 +23,10 @@
 import "../shared/env-local.mjs";   // — FIRST: the CLEAROTRON_* translation must land before any
                                      // module-top capture below it evaluates. A call in this file's BODY
                                      // would run too late — that was the repair that left this open.
-import { readdirSync, statSync, readFileSync, rmSync, existsSync } from "node:fs";
+import { readdirSync, statSync, readFileSync, rmSync, existsSync, appendFileSync } from "node:fs";
 import { join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
+import { pendingRunIds, noticeOwed } from "../shared/notice-owed.mjs";   // one reading of "still owes a notice", shared with the delivery path
 // The ONE exception to this script's no-driver-imports posture, and it is the reason that posture exists:
 // this file deletes, so its liveness rule must be the SAME rule the runner claims with, not a copy that
 // can drift. driver/claim-liveness.mjs is pure and carries the argument in its header.
@@ -74,6 +75,49 @@ const requireRoot = (name, what) => {
 };
 const POOL_ROOT = requireRoot("CLEAROTRON_REPORTS_DIR", "client archive");
 const WORKSPACE_ROOT = requireRoot("CLEAROTRON_WORK_DIR", "workspace");
+
+// ── WHETHER A RUN STILL OWES ITS REQUESTER A NOTICE ──────────────────────────────────────────────
+//
+// Nothing in this tool was keyed to that, so it would delete a run whose report or failure notice
+// nobody had sent and take the packet with it — leaving the outbox holding a marker for a run that no
+// longer exists, which can never be settled and whose contents are gone.
+//
+// The reading is `shared/notice-owed.mjs`, which the comment there explains is deliberately ONE
+// function rather than a notion of owed-ness this script invents for itself.
+//
+// THE OUTBOX ROOT IS NOT REQUIRED THE WAY THE OTHER TWO ARE, and that asymmetry is deliberate. A
+// missing `CLEAROTRON_REPORTS_DIR` means this tool does not know WHAT to delete, so it must refuse
+// outright. A missing outbox root means it cannot tell whether what it is about to delete is owed —
+// a narrower gap, and one that only bites the delete half. So a dry run still reports, marking every
+// row `owed=unknown` rather than silently `no`, and `--apply` refuses on it below. Reading null here
+// rather than an empty list is the whole point: `readdirSync` throwing and an empty outbox are the
+// same answer to a careless reader, and the careless answer is DELETE.
+// THE SAME RESOLUTION THE DELIVERY PATH USES, including its default. Reading only the environment
+// variable would be a SECOND resolution, and a wrong one: `driver.config.mjs` falls back to
+// `<workspaceRoot>/prelim-outbox`, so on every box that does not set the variable — which is most of
+// them — an env-only read answers "no outbox" for an outbox that exists and has markers in it. That is
+// the same class of defect as not looking at all.
+const OUTBOX_DIR = String(process.env.CLEAROTRON_OUTBOX_DIR ?? "").trim() || join(WORKSPACE_ROOT, "prelim-outbox");
+const OUTBOX_NAMES = (() => {
+  try { return readdirSync(OUTBOX_DIR); } catch (e) {
+    // AN OUTBOX THAT WAS NEVER CREATED IS EMPTY; ONE THAT WILL NOT OPEN IS UNKNOWN. Collapsing the two
+    // would make this refuse on every fresh estate, which teaches an operator to pass the override as a
+    // matter of course — and an override typed by habit protects nothing. A permissions error or a bad
+    // mount is a real could-not-look and stays one.
+    if (e?.code === "ENOENT") return [];
+    return null;
+  }
+})();
+const PENDING = pendingRunIds(OUTBOX_NAMES);
+const owedFor = (it) => noticeOwed({
+  runId: it.runId,
+  pending: PENDING,
+  sent: existsSync(join(it.dir, ".sent")),
+  // READ HERE rather than carried on the item, because only the live store parses status.json during
+  // collection — a pool or archive run would otherwise answer `sendPending:false` because nobody looked,
+  // which is the absence-as-pass this whole block exists to refuse.
+  sendPending: readJson(join(it.dir, "status.json"))?.sendPending === true,
+});
 // Agents are DISCOVERED from the workspace root, not compiled in — the same doctrine the survivor list
 // below states ("never compiled in"), applied one line up. A hardcoded roster silently makes every run
 // of an unlisted agent invisible to this tool: not spared, not reported, just absent. Found on the test
@@ -289,7 +333,9 @@ function main() {
     process.exit(2);
   }
 
-  const items = collect().map((it) => ({ ...it, verdict: verdict(it, only, keepRunIds, keepCustomerKeys) }));
+  const overrideOwed = argv.includes("--delete-owed-notices");
+  const items = collect().map((it) => ({ ...it, verdict: verdict(it, only, keepRunIds, keepCustomerKeys) }))
+    .map((it) => ({ ...it, owed: owedFor(it) }));
   const del = items.filter((i) => i.verdict === "DELETE");
   const keep = items.filter((i) => i.verdict === "KEEP");
 
@@ -312,8 +358,16 @@ function main() {
       it.state ? `state=${it.state}` : null,
       hold ? `claim=${hold.state}` : null,
     ].filter(Boolean);
+    // ── THE OWED MARK GOES IN FRONT OF THE ROW, NOT INTO THE PARENTHESES ──────────────────────────
+    //
+    // The criterion is that an operator scanning this table SEES it without looking for it. Another
+    // lower-case word inside the trailing `(orphan, state=…)` group is not that: it is exactly where a
+    // reader's eye has already learned there is nothing that stops them. So it takes its own column,
+    // ahead of the verdict, and it is the only upper-case thing on the line.
+    const owed = it.owed;
+    const mark = owed.state === "owed" ? "OWED!  " : owed.state === "unknown" ? "owed?  " : "       ";
     console.log(
-      `${it.verdict.padEnd(6)} ${it.store.padEnd(8)} ${(it.customerKey || "-").padEnd(10)} ${it.runId}` +
+      `${mark}${it.verdict.padEnd(6)} ${it.store.padEnd(8)} ${(it.customerKey || "-").padEnd(10)} ${it.runId}` +
         (flags.length ? `  (${flags.join(", ")})` : ""),
     );
   }
@@ -402,8 +456,65 @@ function main() {
     process.exit(2);
   }
 
+  // ── A RUN WHOSE NOTICE IS STILL OWED IS NOT DELETED BY AN ORDINARY APPLY ────────────────────────
+  //
+  // The flag NAMES WHAT IT OVERRIDES rather than being another force: `--delete-owed-notices` says the
+  // thing the operator is giving up, so it cannot be typed as a reflex the way `--force` is. The
+  // refusal names the runs, because "3 runs are owed" sends the operator back to a table they have
+  // already read instead of telling them which rows to look at.
+  //
+  // UNKNOWN REFUSES TOO, and that is the half worth keeping. A tool that removes bytes treating "I
+  // could not read the outbox" as "nothing is owed" is the same defect as not checking at all, only
+  // now with a check in front of it that reads as reassurance.
+  const owedDel = del.filter((d) => d.owed.state === "owed");
+  const unknownDel = del.filter((d) => d.owed.state === "unknown");
+  if (!overrideOwed && (owedDel.length || unknownDel.length)) {
+    console.error("\nREFUSING TO DELETE — a notice is still owed, or could not be checked:");
+    for (const d of owedDel) console.error(`  - OWED    ${d.store}:${d.runId} — ${d.owed.why}`);
+    for (const d of unknownDel) console.error(`  - UNKNOWN ${d.store}:${d.runId} — ${d.owed.why}`);
+    if (unknownDel.length)
+      console.error(`\n  The outbox at ${OUTBOX_DIR} exists but could not be read, so this run could not look.`);
+    console.error("\n  Deleting these removes the report or failure notice nobody has sent, and leaves the");
+    console.error("  outbox holding a marker for a run that no longer exists — unsettleable, and empty.");
+    console.error("\n  Send them first, or, if the notice really is to be abandoned: --delete-owed-notices");
+    process.exit(2);
+  }
+
+  // ── THE RECEIPT IS WRITTEN BEFORE THE DELETE, NOT AFTER ─────────────────────────────────────────
+  //
+  // What this tool removed, when, and whether any of it was owed — the issue's third criterion, and
+  // the reason the three stranded markers on production cannot be attributed to anything today. It
+  // goes beside the pool, appended, one JSON object per applied invocation, so a later reader who
+  // opens the estate finds it without having been told it exists.
+  //
+  // WRITTEN FIRST because a receipt written after a delete that dies halfway records nothing about the
+  // bytes that are already gone, and the half-deleted estate is exactly the state somebody will be
+  // trying to reconstruct. A receipt naming runs that survived a crash is a readable error; a delete
+  // with no receipt is the state this issue was filed about.
+  const receiptPath = join(POOL_ROOT, ".purge-log.jsonl");
+  const receipt = {
+    at: new Date().toISOString(),
+    pool: POOL_ROOT, workspace: WORKSPACE_ROOT,
+    mode: only.length ? `target:${only.join(",")}` : "sweep",
+    outbox: OUTBOX_DIR, outboxRead: OUTBOX_NAMES !== null,
+    overrodeOwed: overrideOwed,
+    removed: del.map((d) => ({ store: d.store, runId: d.runId, customerKey: d.customerKey, owed: d.owed.state })),
+  };
+  try {
+    appendFileSync(receiptPath, `${JSON.stringify(receipt)}\n`);
+  } catch (e) {
+    // A RECEIPT THAT CANNOT BE WRITTEN STOPS THE DELETE. The alternative is deleting bytes with no
+    // record, which is the state being fixed — a warning here would make this check decorative.
+    console.error(`\nCOULD NOT WRITE THE PURGE RECEIPT at ${receiptPath}: ${e.message}`);
+    console.error("  Nothing removed. A delete this tool cannot record is the defect this receipt exists to close.");
+    process.exit(2);
+  }
+
   for (const it of del) rmSync(it.dir, { recursive: true, force: true });
   console.log(`\nRemoved ${del.length} run directories.`);
+  console.log(`Recorded in ${receiptPath}.`);
+  if (overrideOwed && owedDel.length)
+    console.log(`${owedDel.length} of them still owed a notice, removed under --delete-owed-notices.`);
 
   // A matter dir left with no runs is dead weight that still renders as a matter. Clean up only
   // those we emptied, and only if they are genuinely empty.
