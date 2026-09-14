@@ -1012,8 +1012,10 @@ export function doorUnavailableLabel(a, { max = 90 } = {}) {
  * R0e is the one admit case. Its own `expect.terminal` is `"delivered"` and it asserts the run resolves
  * to `generic`. On 2026-09-10, the first round in which both doors actually ANSWERED it, the cli door
  * accepted and delivered `profileKey: "generic"` — the case's whole contract, met — and the ops-mcp door
- * refused at `assertScopedProfileKey`, a deliberate cross-customer bypass gate doing its job for an
- * accounts-scoped session. Both doors were right. The rule named the one that behaved.
+ * refused at the door's scoped-account gate, a deliberate cross-customer bypass gate doing its job for
+ * an accounts-scoped session. Both doors were right. The rule named the one that behaved. (That gate now
+ * RESOLVES the omitted key to `generic` where the session's access covers it, rather than refusing, so
+ * the two doors agree on this case — the rule below is what would have caught the disagreement anyway.)
  *
  * The three earlier rounds hid it: the ops-mcp door was lost to the transport every time, so the case
  * never reached this comparison as two real answers.

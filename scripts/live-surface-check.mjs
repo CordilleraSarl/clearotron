@@ -49,8 +49,8 @@
 //
 // Learned while writing this, and worth stating because it is the same trap as #98 wearing a different
 // hat. A token-less loopback call to the ops face initialises an accounts-scoped session with NO
-// accounts: `list_profiles` answers `clients: 0` and `plan_run` refuses with "an accounts-scoped session
-// must set profileKey explicitly". The first version of this script read that as a live #83 and was
+// accounts: `list_profiles` answers `clients: 0` and `plan_run` refuses, because an empty grant covers
+// no account and not the neutral profile either. The first version of this script read that as a live #83 and was
 // WRONG — the deployment was fine; the caller was not. With the portal's own ops token the same call
 // answers `clients: 10`.
 //

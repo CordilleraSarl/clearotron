@@ -600,6 +600,24 @@ export function accountVisible(scope, accountKey, organisation = null) {
   try { assertAccountAccess(scope, accountKey, "this run", organisation); return true; } catch { return false; }
 }
 
+// MAY THIS SESSION ORDER UNDER GENERIC? One answer, because the two doors below ask it with different
+// words — an ops grant names `generic` among its accounts, a person's access carries the organisations
+// whose Generic they see — and a door that re-derived either would be a second opinion about one grant.
+// The connector's own instructions tell an assistant to omit `profileKey` for a new or unknown client,
+// so something has to be able to say whether that is true for the session in front of it.
+export function grantsGeneric(scope) {
+  if (!scope) return false;
+  if (scope.kind === "account")
+    return scope.everything === true || (Array.isArray(scope.genericOrgs) && scope.genericOrgs.length > 0);
+  if (scope.accounts == null || scope.accounts === "*") return true;
+  return Array.isArray(scope.accounts) && scope.accounts.includes("generic");
+}
+
+// What a refused session should DO about it. A bare refusal is what stopped a lawyer commissioning a
+// search for a new client: the door said no and the assistant had nothing to offer her next.
+export const GENERIC_NOT_GRANTED = "the neutral generic profile is not part of this session's access — "
+  + "ask the account holder to grant it, or set the new client up as their own company in the portal";
+
 // Ops-token issuance (INSTALL.md §8): `sub` names the PRINCIPAL the token was minted
 // for (an integrator connector, an operator) and rides into the audit log; `verbs` (ops-only) is an
 // optional least-privilege allowlist of WRITE tools — an intake-only connector carries
@@ -910,8 +928,10 @@ export function authorize(scope, toolName, args = {}) {
     // profileKey runs under the neutral "generic" account — that too must be granted explicitly.
     if ((toolName === "start_run" || toolName === "plan_run") && Array.isArray(scope?.accounts)) {
       const key = args?.profileKey ?? "generic";
-      if (!scope.accounts.includes(key))
-        throw new Error(`your grant [${scope.accounts.join(", ")}] does not include account "${key}" — ${toolName} refused`);
+      const held = key === "generic" ? grantsGeneric(scope) : scope.accounts.includes(key);
+      if (!held)
+        throw new Error(`your grant [${scope.accounts.join(", ")}] does not include account "${key}" — ${toolName} refused`
+          + (key === "generic" ? `. ${GENERIC_NOT_GRANTED}` : ""));
     }
     // The PREVIEW only, deliberately — the same line the internal branch draws below.
     //
@@ -975,9 +995,10 @@ export function authorize(scope, toolName, args = {}) {
       // like any company (ruling 2026-09-10). So omitting the field is still no way out of the access.
       const key = args?.profileKey ?? "generic";
       const reach = scope.accounts === "*" ? "everything" : (Array.isArray(scope.accounts) ? scope.accounts.join(", ") : "");
-      if (key === "generic" ? !(scope.everything === true || (Array.isArray(scope.genericOrgs) && scope.genericOrgs.length))
+      if (key === "generic" ? !grantsGeneric(scope)
         : !(scope.accounts === "*" || (Array.isArray(scope.accounts) && scope.accounts.includes(key))))
-        throw new Error(`your grant [${reach}] does not include account "${key}" — ${toolName} refused`);
+        throw new Error(`your grant [${reach}] does not include account "${key}" — ${toolName} refused`
+          + (key === "generic" ? `. ${GENERIC_NOT_GRANTED}` : ""));
     }
     if (toolName === "start_run" || toolName === "plan_run") {
       // WHO IS ASKING is server-stamped from the CF-verified identity, never caller-supplied. Both the

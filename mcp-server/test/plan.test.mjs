@@ -32,6 +32,20 @@ const { TOOL_DEFS } = await import("../server.mjs");
 
 const BASE = { forwarder: "ops", markName: "NOVAPULSE", classes: [9, 41], profileKey: "aurora" };
 
+// The FREE preview is the first call an assistant makes for a new client, so it has to answer the same
+// way the door does: an omitted account resolves to the neutral profile where the session's access
+// covers it, and the preview then describes the job start_run would build rather than refusing it.
+test("plan_run: a new client with no account previews under the neutral profile instead of being refused", () => {
+  const { profileKey: _drop, ...noKey } = BASE;
+  const holdsGeneric = { kind: "ops", sub: "connector", accounts: ["aurora", "generic"] };
+  const p = planRun({ ...noKey }, { scope: holdsGeneric });
+  assert.equal(p.ok, true, JSON.stringify(p));
+  assert.equal(p.wouldRun, true, "the preview of a new client's search must not come back as a blocker");
+  const noGeneric = { kind: "ops", sub: "connector", accounts: ["aurora"] };
+  assert.throws(() => planRun({ ...noKey }, { scope: noGeneric }), /portal/,
+    "and where the access does not cover it, the refusal still says what the requester can do next");
+});
+
 test("plan_run writes NOTHING — the whole point is that it is free", () => {
   const before = existsSync(QUEUE) ? readdirSync(QUEUE).length : 0;
   const p = planRun({ ...BASE });

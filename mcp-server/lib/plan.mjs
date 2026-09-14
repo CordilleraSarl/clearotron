@@ -34,7 +34,7 @@ import { gateResolvedRequest } from "../../driver/door-gates.mjs";   // the reso
 import { quoteForJob } from "../../driver/run-quote.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";
 import { config } from "./driver.mjs";
-import { buildJob, assertScopedProfileKey } from "./ops.mjs";
+import { buildJob, resolveScopedProfileKey } from "./ops.mjs";
 import { BRAND } from "../../shared/brand.mjs";   // — the operator name in the allowance note, from the tenant seam
 
 // The verbatim legal caveat every plan carries. NOT paraphrasable: it states what a common-law-first
@@ -147,7 +147,9 @@ function allowanceFor(profile, { scope, now = Date.now() } = {}) {
  * Takes the SAME args as start_run. Confirming is a separate, explicit start_run call with the same args.
  */
 export function planRun(args = {}, { scope, now = Date.now() } = {}) {
-  assertScopedProfileKey(args, scope, "plan_run");
+  // Resolved, not merely checked — and BEFORE buildJob, so the preview describes the job start_run
+  // would build, including the account it would run under when the request named none.
+  args = resolveScopedProfileKey(args, scope, "plan_run");
   // The EXACT job start_run would build — not a lookalike assembled here, which could drift from it.
   const job = buildJob(args, { scope });
 
