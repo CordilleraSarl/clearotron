@@ -9,6 +9,7 @@ import {
   active, waiting, runProductLabel, cardReason, limitLine, moveBefore, readStamps,
 } from '../src/contract/home.ts'
 import type { Run } from '../src/contract/api.ts'
+import { prose } from './support/prose.ts'
 
 const run = (over: Partial<Run>): Run => ({
   runId: over.runId ?? 'r1', account: 'zephyr', title: 'X', markName: 'X',
@@ -290,8 +291,7 @@ test('elapsed is coarse, and never a countdown', () => {
  * second button, and the arm that counts the routes into the archive passed on its own prose after the
  * second route was removed. The span goes first, then the line filter.
  */
-const body = (src: string) =>
-  src.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join('\n')
+const body = (src: string) => prose(src)
 
 const home = body(readFileSync(new URL('../src/screens/Home.tsx', import.meta.url), 'utf8'))
 // Read for the one-spelling arm below: the rail is where the label is DECIDED, and the screen is where

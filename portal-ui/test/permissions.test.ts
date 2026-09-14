@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs'
 import { canManage, canRun } from '../src/shell/permissions.ts'
 import { permissionsPhrase, accessChips, accessSentence } from '../src/shell/accessWords.ts'
 import type { Permissions } from '../src/contract/api.ts'
+import { prose } from './support/prose.ts'
 
 // EVERY combination of the two switches, written out. A permission test that exercises one person is a
 // claim about that person and says nothing about the distinction it is named for — so the list is
@@ -66,10 +67,7 @@ test('THE CREATE CONTROL ASKS THE PERMISSION, never a role word', () => {
   // deciding for itself at the point of the control, which is how the same person comes to be offered a
   // control on one screen and refused it on the next.
   const src = readFileSync(new URL('../src/shell/CompanyPicker.tsx', import.meta.url), 'utf8')
-  const body = src
-    .split('\n')
-    .filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l))
-    .join('\n')
+  const body = prose(src)
 
   // FLOOR FIRST. Every assertion after this one is about the content of a particular line; if the file
   // moved or the control was renamed, they would all pass against text that no longer contains it.

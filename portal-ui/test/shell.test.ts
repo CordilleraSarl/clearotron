@@ -8,10 +8,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
+import { prose } from './support/prose.ts'
 
 const shell = readFileSync(new URL('../src/shell/AppShell.tsx', import.meta.url), 'utf8')
 /** The markup with commentary stripped, so a comment explaining a rule cannot satisfy the rule. */
-const body = shell.split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join('\n')
+const body = prose(shell)
 
 test('THE TOP-BAR TITLE NAMES THE SCOPE YOU ARE IN, not the screen', () => {
   // The screen name earned nothing up there — the sidebar already highlights the active item.
