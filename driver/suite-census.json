@@ -3064,8 +3064,8 @@
           "todos": 0
         },
         "portal-access.test.mjs": {
-          "tests": 13,
-          "asserts": 50,
+          "tests": 16,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -5505,8 +5505,8 @@
           "todos": 0
         },
         "cf-access.test.mjs": {
-          "tests": 18,
-          "asserts": 28,
+          "tests": 20,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },

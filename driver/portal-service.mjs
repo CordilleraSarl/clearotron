@@ -88,7 +88,7 @@ export function opsTokenFor({ bootToken, roster, mint }) {
 // `EnvironmentFile=%h/.env`, and `childEnv` passes the same value to the portal child — so this process
 // has held the signing secret on both start paths for as long as both have existed. The comment has been
 // corrected in place rather than left to be trusted.
-import { mintToken, loadGrants, resolvePerson } from "../shared/scope.mjs";
+import { mintToken, loadGrants, resolvePerson, addressesInGrants } from "../shared/scope.mjs";
 import { withPerson, withCompany } from "../shared/grants-edit.mjs";
 import { resolvePort } from "../shared/listen.mjs";   // — the port SOURCE, decided once
 import { fileURLToPath } from "node:url";
@@ -4235,7 +4235,12 @@ const PORT = PORT_CHOICE.port;
     // within one domain, and catastrophic here: staff would fail the email list while clients failed the
     // domain list, refusing everyone. That is not hypothetical; it happened in production and locked out
     // every identity including the one the domain rule exists for.
+    // AND THE PEOPLE ADDED SINCE THIS LINE RAN. The two lists above are the environment's, read once —
+    // they mirror a sign-in configuration that lives off this box, and they are the fail-closed floor.
+    // The guest list is this deployment's own, written by the People page, and it is asked at verify
+    // time so somebody added on the page can sign in without a restart. It can only ADD.
     verify = makeAccessVerifier({ team: TEAM, aud: AUD, allowedDomains: DOMAINS, allowedEmails: EMAILS, identityMode: "union",
+      allowedNow: () => addressesInGrants(),
       issuer: OIDC_ISSUER || undefined, jwksUrl: JWKS_URL || undefined, emailClaim: EMAIL_CLAIM });
     // THE BANNER NAMES THE HEADER AND THE CLAIM, because a mis-set header is otherwise indistinguishable
     // from a blanket 401 — the operator reads it here instead of discovering it as "nobody can log in".
