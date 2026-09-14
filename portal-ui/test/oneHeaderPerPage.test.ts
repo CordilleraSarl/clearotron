@@ -16,6 +16,7 @@ import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { join } from 'node:path'
+import { prose } from './support/prose.ts'
 
 const SRC = fileURLToPath(new URL('../src/', import.meta.url))
 const walk = (dir: string): string[] =>
@@ -23,11 +24,16 @@ const walk = (dir: string): string[] =>
     e.isDirectory() ? walk(join(dir, e.name)) : (e.name.endsWith('.tsx') ? [join(dir, e.name)] : []))
 
 const FILES = walk(SRC).filter((f) => !f.endsWith('components/PageHeader.tsx'))
-// The screens a reader navigates to, plus the one placeholder screen that lives in the entry file. The
-// shell is deliberately not here — see the note in the arm that uses this.
-const SCREENS = FILES.filter((f) => f.includes('/screens/') || f.endsWith('/main.tsx') || f.endsWith('shell/CompanyPicker.tsx'))
 const rel = (f: string) => f.slice(SRC.length)
 const read = (f: string) => readFileSync(f, 'utf8')
+
+// A SCREEN IS A FILE THAT DRAWS A SCREEN, not a file in a directory. Keyed on the directory, this rule
+// held only inside `screens/` — a page written anywhere else was outside it, and a hand-written header
+// at the original size in a new folder passed the whole suite. Every screen in this product renders a
+// `screen` root, wherever its file lives, and the frame is the one file that also draws the top bar.
+// Read off the prose so a comment mentioning either cannot enrol or excuse a file.
+const draws = (f: string, what: RegExp) => what.test(prose(read(f)))
+const SCREENS = FILES.filter((f) => draws(f, /className="screen/) && !draws(f, /className="topbar/))
 
 test('the population is the whole tree, and it is plausibly large', () => {
   // A FLOOR FIRST. Everything below is an absence, and an absence over an empty list reads exactly like
@@ -35,6 +41,14 @@ test('the population is the whole tree, and it is plausibly large', () => {
   // extension — would certify the entire rule.
   assert.ok(FILES.length >= 20, `the screen walk found ${FILES.length} files, which is not this tree`)
   assert.ok(FILES.some((f) => rel(f) === 'screens/Home.tsx'), 'the walk missed Home — it is not reading src/')
+  // AND THE SCREENS ARE FOUND BY WHAT THEY DRAW. This population is derived, so it can collapse to
+  // nothing — a renamed root class, a changed spelling — and every absence below would then be an
+  // absence over an empty list. It must also hold the two the owner named and the frame must NOT be in
+  // it, or the derivation has stopped telling a screen from the thing screens render inside.
+  assert.ok(SCREENS.length >= 14, `the derivation found ${SCREENS.length} screens, which is not this product`)
+  for (const name of ['screens/Home.tsx', 'screens/Clearances.tsx', 'screens/Result.tsx', 'main.tsx'])
+    assert.ok(SCREENS.some((f) => rel(f) === name), `${name} draws a screen and the derivation missed it`)
+  assert.ok(!SCREENS.some((f) => rel(f) === 'shell/AppShell.tsx'), 'the frame is being judged as a screen')
 })
 
 test('NO SCREEN OPENS WITH AN EYEBROW OVER A HEADING — that pair is the double header', () => {
