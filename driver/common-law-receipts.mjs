@@ -17,6 +17,7 @@
 // have MORE rows per variant, never fewer).
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { driverDir } from "../shared/driver-dir.mjs";   // — one definition of where a run's _driver/ is
 
 export const MIN_CELLS_PER_VARIANT = 7;
 
@@ -955,7 +956,12 @@ export function findSimilarListingSignals(findingsContent) {
 export function openChannelRows(runDir, io = {}) {
   const read = io.read ?? ((p) => readFileSync(p, "utf8"));
   const exists = io.exists ?? ((p) => existsSync(p));
-  const at = (name) => join(runDir, "_driver", name);
+  // THE SHARED ACCESSOR, not a hand-built path. `shared/driver-dir.mjs` exists to end exactly this:
+  // its own header records 1123 hand-built sites across 221 files, and the state that made it
+  // indefensible — the hook whose job is policing writes into this subtree computed the subtree's
+  // location by hand, like everyone else, so the location was not a decision anybody owned. An arm
+  // enforces it; a hand-join here is caught rather than merely untidy.
+  const at = (name) => driverDir(runDir, name);
   try {
     if (!exists(at("grid-spec.json")) || !exists(join(runDir, "common-law-grid.json"))) return [];
     const spec = JSON.parse(read(at("grid-spec.json")));
