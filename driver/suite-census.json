@@ -400,8 +400,8 @@
           "todos": 0
         },
         "a-key-the-demo-prints-signs-for-that-demo.test.mjs": {
-          "tests": 5,
-          "asserts": 30,
+          "tests": 8,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -4576,8 +4576,8 @@
           "todos": 0
         },
         "the-demo-offers-no-background-form.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
