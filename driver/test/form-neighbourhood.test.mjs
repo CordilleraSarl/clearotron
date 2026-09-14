@@ -73,11 +73,19 @@ test("consonantSkeleton + skeletonPatterns retrieve the phonetic vowel family", 
 // just as well if the function had been made to return nothing at all, which would delete the axis for
 // every mark. The keepers are the control: their patterns are pinned to the exact strings the generator
 // emits today, so a change that quietly narrows retrieval reds here rather than shipping.
-const NO_VOWEL = ["SMS", "BCG", "KFC", "HSBC", "TSB", "NRJ", "XLR8", "X", "H&M", "3M", "MTV", "BBC", "CNN"];
+//
+// COINED STRINGS, NOT REAL MARKS. The reported class is initialisms, and the obvious table is famous
+// ones — but this repository is public and permanently indexed, and a trademark clearance product
+// listing live third-party marks in its own fixtures is the wrong artefact to leave behind. The
+// property under test is purely structural (does the element contain a vowel), so invented strings
+// exercise it exactly as well. Each member below is shaped like the real case it stands in for:
+// three-consonant, four-consonant, consonant-plus-digit, single character, and ampersand/digit forms
+// that normalize down to two consonants.
+const NO_VOWEL = ["ZMS", "BCG", "KFQ", "HSBQ", "TSV", "NRJ", "XLR8", "Z", "H&Q", "3Q", "MTV", "BQC", "CNN"];
 const KEEPS_ITS_PATTERNS = {
   AI: ["?"],
-  SKY: ["sk?", "s*k"],
-  DKNY: ["dkn?", "d*n"],
+  ZKY: ["zk?", "z*k"],
+  DQNY: ["dqn?", "d*n"],
   VELTRIN: ["v?ltr?n", "v*n"],
   PARADISE: ["p?r?d?s?", "p*s"],
 };
@@ -94,8 +102,8 @@ test("no element compiles a wildcard pattern carrying neither * nor ? — the vo
   const stillProductive = NO_VOWEL.filter((el) => skeletonPatterns(el).length > 0);
   assert.equal(stillProductive.length, NO_VOWEL.length - 1,
     "the fix must drop the degenerate pattern, not the axis: only the single-character element goes empty");
-  assert.deepEqual(skeletonPatterns("X"), []);
-  assert.deepEqual(skeletonPatterns("SMS"), ["s*s"]);
+  assert.deepEqual(skeletonPatterns("Z"), []);
+  assert.deepEqual(skeletonPatterns("ZMS"), ["z*s"]);
 });
 
 test("an element WITH vowels keeps the exact patterns it emits today — the control on the fix", () => {
