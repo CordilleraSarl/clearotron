@@ -30,8 +30,8 @@
 //   _driver/stage-inputs/    what each stage was handed
 //   _history/                pre-reopen snapshots
 // Dropping the telemetry drops `meta.tokens` (driver/publish/index.mjs:971 — the only consumer of
-// rollupTokens), and with it the record of which models served the run (driver/tokens.mjs:181
-// servedModels): `servedModels` on meta.json and report-data.json, and the one line that closes the
+// rollupTokens), and with it the record of which models served the run (servedModels in
+// driver/tokens.mjs): `servedModels` on meta.json and report-data.json, and the one line that closes the
 // report's scope section. Those are the differences step 5 is told to expect, and it says so out loud
 // rather than normalising them away in silence.
 //
@@ -228,7 +228,7 @@ const substituteVendorKey = (key) => {
 // meta.json keys the freeze is EXPECTED to change, with the reason. Anything else differing is a finding.
 const EXPECTED_META_DELTA = {
   tokens: "telemetry pruned — _driver/*.jsonl is the only source (driver/tokens.mjs:82)",
-  servedModels: "telemetry pruned — the attempt rows in _driver/*.jsonl are the only source (driver/tokens.mjs:181)",
+  servedModels: "telemetry pruned — the attempt rows in _driver/*.jsonl are the only source (servedModels in driver/tokens.mjs)",
 };
 
 // THE SAME CAUSE, ON THE TWO OTHER SURFACES THAT SHOW IT. report-data.json carries `servedModels` beside the
