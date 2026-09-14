@@ -139,6 +139,61 @@ test("a placeholder on PATH, inside an npm install of the vendor's package, is p
   assert.equal(r.rejected[0].path, join(globalBin, "claude"));
 });
 
+/** What the run door says when it refuses, or "" when it does not. */
+const refusal = (env, opts) => { try { preflightEngineBinary(env, opts); return ""; } catch (e) { return e.message; } };
+
+test("a copy in npx's cache, first on PATH, is never taken for the machine's own; a project's own copy still is", () => {
+  // `npx clearotron install` moves Clearotron out of npx's cache and runs setup from the moved install, with
+  // the cache's node_modules/.bin still first on PATH. That copy belongs to another install, npm deletes it
+  // when it cleans up, and taken it would be written into the settings file as the machine's own.
+  const cache = join(fresh(), "_npx", "0123abcd");
+  const cached = plant(cache, CLAUDE);
+  const cacheBin = join(cache, "node_modules", ".bin");
+  mkdirSync(cacheBin, { recursive: true });
+  symlinkSync(cached, join(cacheBin, "claude"));
+  const root = fresh();
+  const installed = plant(root, CLAUDE);
+  const moved = resolveEngineProgram("anthropic-agent", { env: { PATH: cacheBin }, bundledDir: root });
+  assert.equal(moved.source, "bundled", `npx's cached copy was taken: ${JSON.stringify(moved)}`);
+  assert.equal(moved.resolved, installed);
+  const machine = onPath("claude");
+  const withMachine = resolveEngineProgram("anthropic-agent", { env: { PATH: [cacheBin, machine.dir].join(delimiter) }, bundledDir: root });
+  assert.equal(withMachine.resolved, machine.p, "the machine's copy, later on PATH, still wins");
+  // THE CONTROL: the same layout outside npx's cache. A project's own node_modules/.bin is on PATH because
+  // the reader is working in that project, and its copy is found on PATH as before.
+  const project = fresh();
+  const projectCopy = plant(project, CLAUDE);
+  const projectBin = join(project, "node_modules", ".bin");
+  mkdirSync(projectBin, { recursive: true });
+  symlinkSync(projectCopy, join(projectBin, "claude"));
+  const own = resolveEngineProgram("anthropic-agent", { env: { PATH: projectBin }, bundledDir: root });
+  assert.equal(own.source, "path", `a project's own copy is not npx's cache, and must still be found on PATH: ${JSON.stringify(own)}`);
+  assert.equal(own.resolved, join(projectBin, "claude"));
+});
+
+test("the run door says no copy was installed only when none was", () => {
+  const root = fresh();
+  plant(root, CLAUDE, { content: PLACEHOLDER });
+  const refused = refusal({ PATH: "" }, { bundledDir: root });
+  assert.match(refused, /the placeholder/, refused);
+  assert.doesNotMatch(refused, /no copy was installed with Clearotron/,
+    "an installed copy that cannot run was reported as never installed, which sends the reader to install it again");
+  // THE CONTROL: with nothing installed, it says so.
+  const none = refusal({ PATH: "" }, { bundledDir: fresh() });
+  assert.match(none, /no copy was installed with Clearotron/, none);
+});
+
+test("under WSL, the run door names the Windows copies it passed over", () => {
+  // /mnt/c cannot be created on a Linux runner without root, so the drive predicate is injected.
+  const win = onPath("claude");
+  const onWindowsDrive = (p) => p.startsWith(win.dir);
+  const said = refusal({ PATH: win.dir }, { bundledDir: fresh(), wsl: true, onWindowsDrive });
+  assert.ok(said.includes(win.p), `the refusal does not name the copy it passed over: ${said}`);
+  assert.match(said, /Windows drive/, said);
+  // THE CONTROL: off WSL the same copy is found.
+  assert.equal(preflightEngineBinary({ PATH: win.dir }, { bundledDir: fresh(), wsl: false }).resolved, win.p);
+});
+
 test("the engine's own fallback word is the default spelled out; any other value is a choice that never falls through", () => {
   const root = fresh();
   const installed = plant(root, CLAUDE);

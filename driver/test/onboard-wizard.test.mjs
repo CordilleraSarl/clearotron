@@ -21,10 +21,10 @@ import { preflightSkillsStore } from "../skills-store-provenance.mjs";
 import { RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOptions,
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
-  offerUsptoSync, deploymentCurrency, namingProgram } from "../../bin/onboard.mjs";
+  offerUsptoSync, deploymentCurrency, namingProgram, engineProgramSetting, unusableEngineWords } from "../../bin/onboard.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
-import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES } from "../driver.config.mjs";
+import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
 import { loadEnvLocal } from "../../shared/env-local.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -1458,19 +1458,99 @@ test("the wizard names the installed copy by path where it tells the reader what
   }
 });
 
-test("the wizard never writes the installed copy's path into .env: every write of an engine path is guarded", () => {
-  // Written, that path becomes the explicit setting, an explicit setting never falls back, and a copy the
-  // reader installs on this machine later would never be used. The wizard is not driven here (it refuses a
-  // non-terminal stdin), so this reads its source: EVERY statement that puts an engine program's variable
-  // into the candidate .env must exclude the installed copy on that same statement. If this fails because
-  // the write moved or changed shape, re-pin it to that property, not to the new spelling.
+test("setup writes the installed copy as the engine's default word, which replaces an older path and still finds the copy", () => {
+  // Written as its path, the installed copy would become the explicit setting, and a copy the reader
+  // installs on this machine later would never be used. Left out, a path an older setup wrote survives the
+  // rewrite, because composeEnvBody keeps what setup did not collect, and the run door refuses on it for good.
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n");
+  const dir = mkdtempSync(join(tmpdir(), "onboard-rewrite-"));
+  try {
+    const envFile = join(dir, ".env");
+    writeFileSync(envFile, composeEnvBody({ [eng.env]: engineProgramSetting(eng, { source: "bundled", path: program }) },
+      { [eng.env]: "/gone/since/bin/claude" }));
+    const written = readEnvFile(envFile)[eng.env];
+    assert.equal(written, eng.fallback, `the rewrite kept "${written}" where the engine's default word belongs`);
+    const now = resolveEngineProgram("anthropic-agent", { env: { PATH: "", [eng.env]: written }, bundledDir: root });
+    assert.equal(now.source, "bundled", `what setup wrote does not reach the installed copy: ${JSON.stringify(now)}`);
+    assert.equal(now.resolved, program);
+    const machine = mkdtempSync(join(tmpdir(), "onboard-machine-copy-"));
+    writeFileSync(join(machine, eng.fallback), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+    const later = resolveEngineProgram("anthropic-agent", { env: { PATH: machine, [eng.env]: written }, bundledDir: root });
+    rmSync(machine, { recursive: true, force: true });
+    assert.equal(later.source, "path", "a copy this machine gets later must win over what setup wrote");
+    // A copy found on PATH or given by path is written as that path: a service's PATH is not the shell's.
+    for (const source of ["path", "explicit"])
+      assert.equal(engineProgramSetting(eng, { source, path: "/usr/local/bin/claude" }), "/usr/local/bin/claude");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the wizard writes the engine's program setting in one statement, and it is engineProgramSetting's answer", () => {
+  // The wizard refuses a non-terminal stdin, so its flow is not driven here: the arm above drives the value,
+  // and this holds the wiring. ONE write, so every path through the engine step reaches the same answer.
   const src = readFileSync(ONBOARD, "utf8");
   const writes = nonEmpty(
     src.split("\n").filter((l) =>
       /candidate\[eng\.env\]\s*=|candidate\s*=\s*\{[^}]*\[eng\.env\]|Object\.assign\(\s*candidate\b[^)]*\[eng\.env\]/.test(l)),
     "statements writing an engine program's variable into the wizard's candidate .env");
-  for (const w of writes) {
-    assert.match(w, /bin\.source\s*!==\s*"bundled"/,
-      `this write of the engine's program path does not exclude the copy installed with Clearotron:\n  ${w.trim()}`);
+  assert.equal(writes.length, 1, `more than one statement writes the engine's program setting:\n${writes.join("\n")}`);
+  assert.match(writes[0], /=\s*engineProgramSetting\(eng,\s*bin\)/, writes[0].trim());
+});
+
+test("--check names the placeholder when the setting points at it, not a permission the file does not lack", () => {
+  // An earlier setup wrote the path of a global install that later ran with --ignore-scripts, so the file
+  // it names is the vendor's placeholder: executable, and unable to run a stage.
+  const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
+  try {
+    const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: program });
+    assert.equal(r.code, 1, r.out);
+    assert.ok(r.out.includes(`${program} is the placeholder`), r.out);
+    assert.match(r.out, /Reinstall without --ignore-scripts/, r.out);
+    assert.doesNotMatch(r.out, /is not an executable file/, r.out);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("where no copy can run, the wizard says which was refused and why, never that none was installed", () => {
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
+  try {
+    const b = resolveEngineBin(eng.fallback, { engine: "anthropic-agent", env: { PATH: "" }, bundledDir: root });
+    assert.equal(b.executable, false, "the placeholder must not resolve");
+    const said = unusableEngineWords(eng, b);
+    assert.ok(said.includes(program) && /Reinstall without --ignore-scripts/.test(said), said);
+    assert.doesNotMatch(said, /no copy was installed/, said);
+    assert.match(unusableEngineWords(eng, { rejected: [] }, "claude-beta"), /CLEAROTRON_CLAUDE_PATH="claude-beta"/);
+    // THE CONTROL: nothing found and nothing named, and it does say none was installed. The fallback word is
+    // the default spelled out, not a program somebody named.
+    for (const setting of ["", eng.fallback])
+      assert.match(unusableEngineWords(eng, { rejected: [] }, setting), /no copy was installed with Clearotron/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("the licence setup states for each engine program is the one its package declares", (ctx) => {
+  // Every sentence in the wizard that states a CLI's licence takes it from the engine table.
+  const sentences = nonEmpty(readFileSync(ONBOARD, "utf8").split("\n").filter((l) => /say\(/.test(l) && /'s CLI is /.test(l)),
+    "wizard sentences stating a CLI's licence");
+  for (const l of sentences) assert.match(l, /\$\{eng\.licence\}/, `a licence stated as a literal: ${l.trim()}`);
+  let read = 0;
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    assert.ok(eng.licence, `${id} states no licence`);
+    const pkg = join(REPO, "node_modules", ...eng.package.split("/"), "package.json");
+    if (!existsSync(pkg)) continue;
+    read++;
+    const declared = String(JSON.parse(readFileSync(pkg, "utf8")).license ?? "");
+    if (/^SEE LICEN[CS]E|^UNLICENSED$/i.test(declared)) assert.match(eng.licence, /proprietary/, `${id}: ${eng.package} declares "${declared}"`);
+    else {
+      assert.ok(eng.licence.includes(declared), `${id}: ${eng.package} declares "${declared}", and setup says "${eng.licence}"`);
+      assert.doesNotMatch(eng.licence, /proprietary/, `${id}: an open licence called proprietary`);
+    }
+  }
+  if (!read) ctx.skip("no engine package is installed in this checkout (an install with --omit=optional)");
 });

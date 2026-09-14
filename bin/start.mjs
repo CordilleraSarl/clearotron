@@ -104,7 +104,7 @@ import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngine
  * driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs refuses a static import of
  * onboard from this file, so the cycle cannot come back quietly.
  */
-async function runTables() {
+export async function runTables() {
   const { PROVIDERS } = await import("./onboard.mjs");
   return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE, resolveEngine: resolveEngineProgram };
 }

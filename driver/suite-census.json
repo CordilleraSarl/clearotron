@@ -982,8 +982,8 @@
           "todos": 0
         },
         "an-engine-program-installed-with-clearotron-is-the-last-resort.test.mjs": {
-          "tests": 10,
-          "asserts": 35,
+          "tests": 13,
+          "asserts": 46,
           "skips": 1,
           "todos": 0
         },
@@ -2836,9 +2836,9 @@
           "todos": 0
         },
         "onboard-wizard.test.mjs": {
-          "tests": 66,
-          "asserts": 237,
-          "skips": 2,
+          "tests": 70,
+          "asserts": 257,
+          "skips": 3,
           "todos": 0
         },
         "onboarding-sets-the-framework-it-says-it-set.test.mjs": {
@@ -5242,8 +5242,8 @@
           "todos": 0
         },
         "update-refuses-on-a-packaged-install.test.mjs": {
-          "tests": 6,
-          "asserts": 21,
+          "tests": 8,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
@@ -5350,8 +5350,8 @@
           "todos": 0
         },
         "what-doctor-passes-a-search-accepts.test.mjs": {
-          "tests": 12,
-          "asserts": 39,
+          "tests": 15,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },

@@ -713,6 +713,36 @@ export function namingProgram(text, eng, bin) {
   return String(text).replace(new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`, "g"), (_, before) => `${before}${program}`);
 }
 
+/**
+ * What setup writes into an engine's program setting for the copy it just proved: the absolute path of a
+ * copy found on PATH or given by path, because a service's PATH is not the shell's, and for the copy
+ * installed with Clearotron the engine's own fallback word, which means exactly what unset means.
+ *
+ * WRITTEN, NOT LEFT OUT. The installed copy's path must never be written: it would become the explicit
+ * setting, and a copy the reader installs on this machine later would never be used. Leaving the setting
+ * out of the file is not enough either. Setup never reads the file it rewrites (it is on the NO_DOTFILE
+ * list), and composeEnvBody keeps every setting it did not collect, so a path an earlier setup wrote would
+ * survive the rewrite, and the run door, which never overrules a named path, would refuse every run on a
+ * program that has since gone. The fallback word replaces it.
+ */
+export function engineProgramSetting(eng, bin) {
+  return bin?.source === "bundled" ? eng.fallback : bin.path;
+}
+
+/**
+ * Why no copy of an engine's program can run, in one clause, for a wizard line that would otherwise
+ * report an absence: each copy found and refused with its reason, the setting that names a program that
+ * is not there, or that there is none. The vendor's placeholder is a copy that IS installed and cannot
+ * run, and its fix is a reinstall, not the vendor install this step offers next.
+ */
+export function unusableEngineWords(eng, bin, setting = "") {
+  const set = String(setting ?? "").trim();
+  const named = set && set !== eng.fallback ? `${eng.env}="${set}"` : "";
+  if (bin?.rejected?.length) return `${named ? `${named} → ` : ""}${bin.rejected.map((x) => `${x.path} is ${x.why}`).join("; ")}`;
+  if (named) return `${named} names nothing on PATH that can run`;
+  return `no \`${eng.fallback}\` on PATH, and no copy was installed with Clearotron`;
+}
+
 /** Whether this is a Linux running under Windows: the one answer, from shared/wsl.mjs. */
 export { isWsl };
 
@@ -1396,7 +1426,9 @@ export async function runCheck() {
     // file — and the file is usually fine. The relativity is the defect.
     else if (bin.relative) problem(`${engSpec.env}="${binSetting}" is RELATIVE — stage subprocesses run with cwd set to the run directory, so it will not resolve there. Use an absolute path (${bin.path} from here)`);
     else if (!bin.path) problem(`${engSpec.env}="${binSetting}" resolves to nothing on PATH`);
-    else problem(`${engSpec.env}="${binSetting}" → ${bin.path} is not an executable file`);
+    // The resolver's reason, not a fixed phrase: the vendor's placeholder IS an executable file, and "not an
+    // executable file" sent the reader to check a permission that was fine.
+    else problem(`${engSpec.env}="${binSetting}" → ${bin.path} is ${bin.rejected?.[0]?.why ?? "not an executable file"}`);
     // SAID AFTER THE CHAIN ABOVE, AND OUTSIDE IT. This block is one if/else-if ladder, so a statement
     // placed between two of its clauses re-parents every clause below onto the new `if` — measured:
     // it made doctor report an executable mock binary as "not an executable file", because the ladder's
@@ -3246,7 +3278,7 @@ try {
       const b = resolveEngineBin(process.env[e.env] || e.fallback, { engine: id });
       const creds = [e.apiKeyEnv, e.headless?.tokenEnv].filter((n) => n && present(process.env[n]));
       const which = b.source === "bundled" ? "installed with Clearotron" : b.source === "explicit" ? `set in ${e.env}` : "on PATH";
-      say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path}, ${which}${b.version ? `, ${b.version}` : ""})` : "no CLI on PATH, and none installed with Clearotron"}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
+      say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path}, ${which}${b.version ? `, ${b.version}` : ""})` : unusableEngineWords(e, b, process.env[e.env])}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
     }
     say("  Choosing an engine also chooses how it bills — the subscription you sign in with, or an");
     say("  API key. That question comes right after this one.");
@@ -3289,15 +3321,15 @@ try {
       // turn — is work this file already does either side of the gap.
       //
       // THE COMMAND IS SHOWN IN FULL AND THE DEFAULT IS NO. It runs as this user, it installs
-      // PROPRIETARY THIRD-PARTY SOFTWARE governed by that vendor's terms rather than by this
+      // THIRD-PARTY SOFTWARE governed by that vendor's terms rather than by this
       // repository's licence (README §Licence, INSTALL §1), and it is the one thing setup does that
       // reaches outside this checkout. A reader has to be able to read it before answering, which is
       // also why the command in ENGINE_BINARIES is an npm install rather than the vendor's
       // `curl … | bash` — a piped remote script cannot be read before it runs.
-      warn(`no \`${eng.fallback}\` binary on PATH.`);
+      warn(`${unusableEngineWords(eng, bin, process.env[eng.env])}.`);
       say(`    ${eng.label}`);
       say("");
-      say(`    ${eng.vendor}'s CLI is proprietary third-party software. Installing it accepts ${eng.vendor}'s`);
+      say(`    ${eng.vendor}'s CLI is ${eng.licence}. Installing it accepts ${eng.vendor}'s`);
       say("    terms, not this product's licence, and this product redistributes no part of it.");
       say("");
       // ── WHICH ROUTE CAN WORK ON THIS BOX, MEASURED FIRST ─────────────────
@@ -3339,8 +3371,10 @@ try {
           if (!(bin.executable && !bin.relative)) {
             const home = process.env.HOME || homedir();
             const local = join(home, ".local", "bin", eng.fallback);
-            if (isExec(local)) { ok(`found it at ${local} — not on this shell's PATH yet`); bin = resolveEngineBin(local); }
-            else info("still not found — the path prompt below takes the absolute location if it landed somewhere else.");
+            // The resolver's answer, not an execute-bit check, so the vendor's placeholder is not "found".
+            const there = resolveEngineBin(local, { engine: pick.id });
+            if (there.executable) { ok(`found it at ${local} — not on this shell's PATH yet`); bin = there; }
+            else info(there.rejected?.length ? `${unusableEngineWords(eng, there)}.` : "still not found — the path prompt below takes the absolute location if it landed somewhere else.");
           } else ok(`installed: ${bin.path}`);
         }
       } else if (await confirm(`Run \`${eng.install}\` now?`, false)) {
@@ -3363,11 +3397,14 @@ try {
             return q.status === 0 ? String(q.stdout).trim() : null;
           })();
           const guess = prefix ? join(prefix, "bin", eng.fallback) : null;
-          if (guess && isExec(guess)) {
+          // The resolver's answer, not an execute-bit check. With `ignore-scripts` in npm's own config the
+          // vendor install leaves its placeholder here: executable, on PATH, and unable to run a stage.
+          const there = guess ? resolveEngineBin(guess, { engine: pick.id }) : null;
+          if (there?.executable) {
             ok(`installed, but not on this shell's PATH — found it at ${guess}`);
-            bin = resolveEngineBin(guess);
+            bin = there;
           } else {
-            warn(`no \`${eng.fallback}\` on PATH after that command.`);
+            warn(there?.rejected?.length ? `${unusableEngineWords(eng, there)}.` : `no \`${eng.fallback}\` on PATH after that command.`);
             if (prefix) info(`npm installs global binaries under ${join(prefix, "bin")} — add that to PATH, or give the absolute path below.`);
             // The other route, re-offered rather than a dead end: what happened is
             // reported above; what to do next must not be only a path prompt at a file that never landed.
@@ -3400,16 +3437,16 @@ try {
         continue;
       }
       const p = await askValue("Absolute path:");
-      bin = resolveEngineBin(p);
+      bin = resolveEngineBin(p, { engine: pick.id });
       if (bin.relative) warn("that path is relative. Stage subprocesses run with cwd set to the run directory, so it will not resolve — using the absolute form.");
-      if (!bin.executable) { problem(`${bin.path ?? resolve(p)} is not an executable file.`); continue; }
+      if (!bin.executable) { problem(`${bin.path ?? resolve(p)} is ${bin.rejected?.[0]?.why ?? "not an executable file"}.`); continue; }
     }
     ok(`found ${bin.path}${bin.source === "bundled" ? `, the copy installed with Clearotron${bin.version ? ` (${bin.version})` : ""}` : ""}`);
     // THE TERMS SENTENCE TRAVELS WITH THE PROGRAM, NOT WITH THE INSTALL OFFER. It was said only when this
     // step offered to install the CLI, and a copy that arrived with Clearotron skips that offer, so it is
     // said here too. Using it, rather than installing it, is what accepts the vendor's terms.
     if (bin.source === "bundled") {
-      say(`    ${eng.vendor}'s CLI is proprietary third-party software. Using it accepts ${eng.vendor}'s`);
+      say(`    ${eng.vendor}'s CLI is ${eng.licence}. Using it accepts ${eng.vendor}'s`);
       say("    terms, not this product's licence, and this product redistributes no part of it.");
     }
 
@@ -3476,18 +3513,15 @@ try {
       if (v.ok) {
         ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
         candidate.CLEAROTRON_AI = pick.id;
-        // THE COPY INSTALLED WITH CLEAROTRON IS NEVER WRITTEN DOWN. Written, it would become the explicit
-        // setting, and a copy the reader installs on this machine later would never be used: the machine's
-        // own copy wins only while nothing names another. It needs no path anyway, because the engine finds
-        // it without PATH. A copy found on this shell's PATH is still written, in its absolute form, because
-        // a service's PATH is not your shell's.
-        if (bin.source !== "bundled") candidate[eng.env] = bin.path;
+        // ALWAYS WRITTEN, and for the copy installed with Clearotron as the engine's default word: see
+        // engineProgramSetting for why leaving it out was not enough.
+        candidate[eng.env] = engineProgramSetting(eng, bin);
         candidate[eng.authEnv] = authPick.id;
         if (apiKey) candidate[eng.apiKeyEnv] = apiKey;
         info(`CLEAROTRON_AI=${pick.id}`);
         info(`${eng.authEnv}=${authPick.id} — the lane the turn above actually ran on.`);
         if (apiKey) info(`${eng.apiKeyEnv}=… — adopted, so a run bills the way you just proved.`);
-        if (bin.source === "bundled") info(`${eng.env} is left unset — the engine uses the copy installed with Clearotron until this machine has one of its own.`);
+        if (bin.source === "bundled") info(`${eng.env}=${eng.fallback} — the engine's default: this machine's own \`${eng.fallback}\` once it has one, and the copy installed with Clearotron until then.`);
         else info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
         break engine;
       }

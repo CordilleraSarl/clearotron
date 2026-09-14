@@ -774,7 +774,7 @@ async function backstopFailureNotice({ res, job, agentId, base, codename, studio
 // starts, so nothing is spent and nothing is promised.
 
 let __runTables = null;
-async function runTables() {
+export async function runTables() {   // exported for the requirement-check wiring test
   // AT CALL TIME, never a static import. `driver/run-requirements.mjs`'s header states the reason and it
   // is load-bearing: the register SELECTION table lives in `bin/onboard.mjs`, a CLI entry point, and a
   // static import from `driver/` would point the driver at `bin/` — the cycle that makes `clearotron

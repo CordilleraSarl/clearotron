@@ -20,6 +20,7 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { homeEnvUpdate, LAUNCHER_MINTED } from "../../bin/start.mjs";
 import { opsTokenPosture } from "../portal-service.mjs";
+import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
@@ -40,7 +41,7 @@ function doctorWithHomeEnv(body) {
   try {
     if (body !== null) writeFileSync(join(home, ".env"), body, { mode: 0o600 });
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"],
-      { cwd: ROOT, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home } });
+      { cwd: ROOT, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home, ...NO_INSTALLED_ENGINES } });
     return { status: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
   } finally {
     rmSync(home, { recursive: true, force: true });

@@ -31,9 +31,9 @@ import { fileURLToPath } from "node:url";
 // A namespace import, not a named one: a named import of an export a tree does not have fails the WHOLE
 // file before any arm runs, and every other arm here would then read as red for a reason it never tested.
 import * as probe from "../engine/probe.mjs";
-import { orderTimeRefusal, startEnvFileOf } from "../run-requirements.mjs";
+import { orderTimeRefusal, startEnvFileOf, runRequirements } from "../run-requirements.mjs";
 import { handRunEnv } from "./drive-env.mjs";
-import { ENGINE_BINARIES, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
+import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } from "../driver.config.mjs";
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -177,6 +177,57 @@ test("THE CONTROL: with everything the gate asks for, doctor says so and refuses
     assert.match(r.out, /nothing a search is refused for at order time is missing/);
     assert.doesNotMatch(r.out, /a search is refused until/);
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── THE ENGINE ROW COUNTS WHAT THE RESOLVER FINDS ────────────────────────────────────────────────
+//
+// A program on PATH, or the copy installed with Clearotron, needs no path written anywhere, and setup
+// writes none for the installed copy. Asking only whether the variable was set refused an install whose
+// engine the run door would have started.
+
+test("the engine row is present when the resolver finds the program; without a resolver only the variable answers", () => {
+  const env = { CLEAROTRON_AI: "anthropic-agent" };
+  const name = ENGINE_BINARIES["anthropic-agent"].env;
+  const row = (resolveEngine, e = env) => runRequirements(e, { ...TABLES, resolveEngine }).find((r) => r.name === name);
+  const asked = [];
+  assert.equal(row((id, o) => { asked.push([id, o.env]); return { resolved: "/opt/claude" }; }).present, true);
+  assert.deepEqual(asked, [["anthropic-agent", env]], "the resolver is asked about this engine, in the environment being checked");
+  assert.equal(row(() => ({ resolved: null })).present, false, "not found is missing");
+  assert.equal(row(() => { throw new Error("unreadable"); }).present, false, "a resolver that throws has found nothing");
+  assert.equal(row(undefined).present, false, "with no resolver, the unset variable is all there is to see");
+  assert.equal(row(undefined, { ...env, [name]: "/opt/claude" }).present, true, "a set variable is present with or without one");
+});
+
+test("doctor counts the copy installed with Clearotron as the engine a search needs", () => {
+  // THE CONTROL is the first doctor arm above: the same install with nothing installed is refused for the
+  // engine's program setting.
+  const spec = ENGINE_BINARIES["anthropic-agent"];
+  const root = mkdtempSync(join(tmpdir(), "doctor-installed-copy-"));
+  const dir = join(root, "node_modules", ...spec.package.split("/"));
+  mkdirSync(join(dir, "bin"), { recursive: true });
+  writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version: "9.9.9", bin: { [spec.fallback]: "bin/claude.exe" } }));
+  writeFileSync(join(dir, "bin", "claude.exe"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+  const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"]);
+  try {
+    const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"], { cwd: ROOT, encoding: "utf8", timeout: 120000,
+      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_BUNDLED_ENGINES_DIR: root }, {}) });
+    if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
+    const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
+    assert.match(out, /nothing a search is refused for at order time is missing/, out);
+    assert.doesNotMatch(out, /a search is refused until/, out);
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("`clearotron start` and the runner hand the engine resolver to the requirement check too", async () => {
+  // Doctor is driven above. Start's and the runner's tables are read as they build them: each passes the
+  // one resolver, so no door counts only a set variable.
+  const { runTables: startTables } = await import("../../bin/start.mjs");
+  const { runTables: runnerTables } = await import("../runner.mjs");
+  assert.equal((await startTables()).resolveEngine, resolveEngineProgram, "`clearotron start` checks requirements without the resolver");
+  assert.equal((await runnerTables()).resolveEngine, resolveEngineProgram, "the runner checks requirements without the resolver");
 });
 
 // ── A RUNNER THAT `clearotron start` STARTED ─────────────────────────────────────────────────────

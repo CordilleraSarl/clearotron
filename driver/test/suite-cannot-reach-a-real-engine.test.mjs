@@ -192,6 +192,11 @@ test("COMPLETENESS: every engine in ENGINE_BINARIES is covered, not just the one
 // REAL program. PATH is asked first, so the shim answers every child that keeps the wrapper's PATH; a
 // child that composes its own PATH reaches the last step. So this asks the resolver ITSELF, inside the
 // wrapper's child, with a PATH that holds nothing, for every engine the table declares.
+//
+// WHAT IT CANNOT CLOSE. The setting reaches every process that inherits the wrapper's environment, and no
+// other. A drive that spawns a command with an environment composed from nothing (`env: { PATH, HOME }`)
+// hands that command this checkout's own node_modules, real programs included. Such a drive spreads
+// NO_INSTALLED_ENGINES from drive-env.mjs; nothing here can see one that does not.
 
 test("THE COPY INSTALLED WITH CLEAROTRON is closed for the whole suite, whatever PATH a child composes", async () => {
   const { mkdtempSync, mkdirSync, writeFileSync, chmodSync } = await import("node:fs");

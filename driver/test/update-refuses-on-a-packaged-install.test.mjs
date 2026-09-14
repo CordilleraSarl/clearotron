@@ -16,7 +16,10 @@ import { mkdtempSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { isGitCheckout } from "../../bin/update.mjs";
+import { isGitCheckout, engineRefresh } from "../../bin/update.mjs";
+import { packageRootUnder } from "../../shared/permanent-install.mjs";
+import { ENGINE_BINARIES } from "../driver.config.mjs";
+import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { packagedBuild } from "../../bin/onboard.mjs";
 import { main as writeBuildInfoMain } from "../../scripts/write-build-info.mjs";
 
@@ -45,6 +48,47 @@ function askValueCall(src, name) {
 }
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
+// ── A CURRENT PACKAGED INSTALL, AND THE ENGINE PROGRAMS INSTALLED WITH IT ───────────────────────────────
+//
+// Claude Code and the Codex CLI are optional dependencies at "this version or newer", so re-running the
+// same install moves them to the newest their vendors publish. Twice that must not happen: on a local
+// build newer than anything published, which the install would replace with the older published version,
+// and on an install made without them, which it would fill with both.
+
+test("a current packaged install refreshes its engine programs only at the published version, and only when it has them", () => {
+  const prefix = mkdtempSync(join(tmpdir(), "packaged-prefix-"));
+  try {
+    const current = { prefix, installed: "0.3.2", version: "0.3.2", current: true };
+    const bare = engineRefresh({ packaged: current });
+    assert.equal(bare.refresh, false, "an install made without the engine programs would be handed both");
+    assert.match(bare.why, /installed without/);
+    // One of them, where a global install puts it: inside the package, under the prefix.
+    const pkg = join(packageRootUnder(prefix), "node_modules", ...ENGINE_BINARIES["openai-agent"].package.split("/"));
+    mkdirSync(pkg, { recursive: true });
+    writeFileSync(join(pkg, "package.json"), "{}");
+    assert.deepEqual(engineRefresh({ packaged: current }), { refresh: true, why: null });
+    const newer = engineRefresh({ packaged: { ...current, installed: "0.3.3-dev.1" } });
+    assert.equal(newer.refresh, false, "a local build newer than anything published would be replaced with the older one");
+    assert.match(newer.why, /not a published version/);
+  } finally {
+    rmSync(prefix, { recursive: true, force: true });
+  }
+});
+
+test("the current branch asks engineRefresh before it reinstalls, and its answer stops the reinstall", () => {
+  // The arm above drives the decision; this holds the wiring, read from source for the reason the arm
+  // below gives: driving the whole verb needs a tarball install.
+  const src = readFileSync(join(ROOT, "bin", "update.mjs"), "utf8");
+  const at = src.indexOf("if (packaged.current) {");
+  assert.ok(at > 0, "the current branch is gone or renamed; re-pin this to it");
+  const branch = src.slice(at);
+  const ask = branch.indexOf("engineRefresh({ packaged })");
+  const install = branch.indexOf("reinstall()");
+  assert.ok(ask > 0 && install > ask, "the branch must ask engineRefresh before it reinstalls");
+  assert.match(branch.slice(ask, install), /if \(!plan\.refresh\)[\s\S]*return 0;/, "the answer must stop the reinstall, not only be asked");
+  assert.equal((src.match(/engineRefresh\(/g) ?? []).length, 2, "one definition and one call: nothing else decides this");
+});
 
 test("a directory that is not a checkout is told apart from one that is", () => {
   // THE POSITIVE CONTROL FIRST. Without it, a predicate that answered `false` to everything would

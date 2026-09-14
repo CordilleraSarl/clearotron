@@ -19,6 +19,24 @@
 // collision arm wrote a free high port into a drive's `.env` and ended up measuring whatever holds the
 // built-in default on the machine running the suite, which on a shared box is another live install.
 import assert from "node:assert/strict";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+/**
+ * The suite's "no copy installed with Clearotron", for a drive that composes its child's environment from
+ * nothing instead of through handRunEnv.
+ *
+ * The engine resolver's last step reads the programs installed with Clearotron from THIS install's own
+ * node_modules, and on a checkout where `npm ci` ran those are the real programs. scripts/test-run.mjs
+ * points that step at an empty directory, but only for the processes that inherit its environment. A
+ * child spawned with `env: { PATH, HOME }` inherits nothing, so its doctor finds a real engine on CI and
+ * none on an install that left optional packages out, and the arm measures the checkout, not its subject.
+ * Spread this into such an `env`. Outside the suite it is a fresh empty directory.
+ */
+export const NO_INSTALLED_ENGINES = {
+  CLEAROTRON_BUNDLED_ENGINES_DIR: process.env.CLEAROTRON_BUNDLED_ENGINES_DIR || mkdtempSync(join(tmpdir(), "no-installed-engines-")),
+};
 
 /**
  * A hand-run environment: this process's, minus the two things that would make the driven command

@@ -14,6 +14,7 @@ import { homedir } from "node:os";
 import { isWsl } from "../shared/wsl.mjs";   // — the one answer to "is this Linux under Windows", which decides the /mnt/<drive> skip
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
+import { inNpxCache } from "../shared/permanent-install.mjs";   // — the one answer to "is this npx's cache", whose copy of an engine is never the machine's
 import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
 import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs";   // — a number, or a refusal that names the variable; never NaN
 
@@ -1900,6 +1901,9 @@ export const ENGINE_BINARIES = {
     // it only when the machine has no copy of its own (resolveEngineProgram); the package's own `bin` field
     // names the program, so no path inside the vendor's package is written down here.
     package: "@anthropic-ai/claude-code",
+    // The licence setup states wherever it tells a reader what they are about to install or use, as the
+    // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
+    licence: "proprietary third-party software",
     label: "Anthropic — each stage runs as a headless `claude -p` turn",
     module: "engine/anthropic-agent.mjs", adapter: "anthropicAgentEngine",
     signIn: "run `claude` once in a terminal and complete the sign-in",
@@ -1931,6 +1935,7 @@ export const ENGINE_BINARIES = {
     vendor: "OpenAI",
     env: "CLEAROTRON_CODEX_PATH", fallback: "codex",
     package: "@openai/codex",
+    licence: "third-party software under the Apache-2.0 licence",   // the package's own "license" field
     label: "OpenAI — each stage runs as a headless `codex exec` turn",
     module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",
     signIn: "run `codex login`",
@@ -1977,7 +1982,8 @@ export function engineAdapterSpecifier(engine) {
 //   3. The copy npm installed with Clearotron (`optionalDependencies`), only when the machine has none.
 //      Under `npm run` and `npx`, npm puts `node_modules/.bin` on PATH, so a PATH hit that IS that copy is
 //      passed over in step 2 and taken for what it is in step 3. Otherwise it would win step 2 on every such
-//      box and be reported, and written into a settings file, as the machine's own.
+//      box and be reported, and written into a settings file, as the machine's own. A PATH hit inside npx's
+//      own cache is passed over too, whichever install it came with: npm deletes it when it cleans up.
 //
 // FILESYSTEM ONLY, like the rest of this door (see the header above ENGINE_BINARIES): nothing is spawned.
 
@@ -2080,7 +2086,7 @@ function engineCandidate(p, spec) {
  * `resolved` is an absolute path or null. `source` is "explicit" | "path" | "bundled" | null. `version` is
  * read from the copy's own package.json when npm installed it, and null otherwise, because nothing is
  * spawned to ask. `skipped` lists Windows copies passed over under WSL; `rejected` lists candidates that
- * could not run, each with its reason.
+ * could not run, each with its reason and the step that found it (`source`).
  *
  * `bundledDir`: undefined reads BUNDLED_ENGINES_DIR_ENV from THIS process and then falls back to this
  * install's own tree; a directory looks there; null looks nowhere. It is read from the process rather than
@@ -2101,7 +2107,7 @@ export function resolveEngineProgram(engine, { env = process.env, bundledDir = u
   const onDrive = onWindowsDrive ?? ((p) => ON_A_WINDOWS_DRIVE.test(p));
   const take = (p, source) => {
     const c = engineCandidate(p, spec);
-    if (!c.ok) { out.rejected.push({ path: p, why: c.why }); return false; }
+    if (!c.ok) { out.rejected.push({ path: p, why: c.why, source }); return false; }
     Object.assign(out, { resolved: p, source, version: c.version });
     return true;
   };
@@ -2126,6 +2132,12 @@ export function resolveEngineProgram(engine, { env = process.env, bundledDir = u
     // in" because the credential it looks for is the Linux one. Passed over, and named for the caller to say.
     if (underWsl && onDrive(p)) { out.skipped.push(p); continue; }
     if (bundledReal && realOrNull(p) === bundledReal) continue;
+    // NOR IS A COPY IN NPX'S CACHE. `npx clearotron install` puts `_npx/<hash>/node_modules/.bin` first on
+    // PATH, moves Clearotron out of the cache and runs setup from the moved install, whose installed copy is
+    // a different file, so the test above does not fire. Taken, the cache's copy would be reported and
+    // written into the settings file as the machine's own, and npm deletes it when it cleans its cache. A
+    // program somebody named is theirs to name, so this applies to the default lookup only.
+    if (!out.explicit && [p, realOrNull(p)].some((q) => q && inNpxCache(q))) continue;
     if (take(p, out.explicit ? "explicit" : "path")) return out;
   }
   if (bundled) take(bundled, "bundled");
@@ -2143,7 +2155,7 @@ export function resolveEngineProgram(engine, { env = process.env, bundledDir = u
  * version of gateway.selectEngine's error. One definition of "that is not an engine", and it is the
  * registry's.
  */
-export function preflightEngineBinary(env = process.env, { platform = process.platform, bundledDir = undefined } = {}) {
+export function preflightEngineBinary(env = process.env, { platform = process.platform, bundledDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
   // item 3 — NATIVE WINDOWS REFUSES BY NAME, BEFORE ANYTHING READS PATH.
   //
   // INSTALL.md promises a native-Windows run "refuses at preflight". Nothing implemented it, so what a
@@ -2183,7 +2195,7 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
   // `envFrom` is therefore BELT-AND-BRACES, not the repair: it makes this site correct on its own terms
   // rather than correct because something upstream normalised the environment first — a coupling
   // nothing at this site declares and nothing here could notice breaking.
-  const r = resolveEngineProgram(engine, { env, bundledDir });
+  const r = resolveEngineProgram(engine, { env, bundledDir, wsl, onWindowsDrive });   // injectable for the reason it gives
   const bin = r.bin;
   const setTo = String(envFrom(env, spec.env) ?? "").trim();
   const where = `${spec.env}${r.explicit ? "" : setTo
@@ -2198,12 +2210,20 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
 
   if (!r.resolved) {
     const passedOver = r.rejected.map((x) => `${x.path} is ${x.why}`).join("; ");
+    // "No copy was installed" only when none was. An installed copy that cannot run is named in the
+    // passed-over list with its reason, and the claim beside it would send the reader to install again.
+    const installedRefused = r.rejected.some((x) => x.source === "bundled");
+    // Under WSL the Windows copies on the appended PATH were passed over on purpose, and the reader's own
+    // `which` still prints them, so the refusal names them and says why.
+    const windows = r.skipped.length
+      ? `. Passed over because they sit on a Windows drive, and a Windows build cannot run a stage here: ${r.skipped.join(", ")}` : "";
     throw new Error(`[preflight] the ${engine} engine cannot run: ${where} names "${bin}", which is `
       + (bin.includes("/")
         ? (r.rejected[0]?.why ?? "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)")
         : `not on PATH as an executable file (PATH=${env.PATH || "(empty)"})`
-          + (r.explicit ? "" : ", and no copy was installed with Clearotron")
-          + (passedOver ? `. Passed over: ${passedOver}` : ""))
+          + (r.explicit || installedRefused ? "" : ", and no copy was installed with Clearotron")
+          + (passedOver ? `. Passed over: ${passedOver}` : "")
+          + windows)
       + ". Every stage of a run spawns it, so the run is refused now rather than at the first stage.");
   }
   return { engine, binEnv: spec.env, bin, resolved: r.resolved, source: r.source, version: r.version };

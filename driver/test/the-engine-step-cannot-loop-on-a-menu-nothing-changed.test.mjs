@@ -25,6 +25,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { hermeticInstallRoot } from "./hermetic-install-root.mjs";
+import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ONBOARD = join(REPO, "bin", "onboard.mjs");
@@ -141,7 +142,7 @@ function doctor({ envFile = null, ...env } = {}) {
     return { rc: 0, out: execFileSync(process.execPath, [onboard, "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
       env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, HOME: mkdtempSync(join(tmpdir(), "onboard-1907-home-")),
-             CLEAROTRON_NO_ENV_FILE: "1", ...env },
+             CLEAROTRON_NO_ENV_FILE: "1", ...NO_INSTALLED_ENGINES, ...env },
     }) };
   } catch (e) { return { rc: e.status ?? 1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
 }

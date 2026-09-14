@@ -51,7 +51,7 @@ import { existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { config } from "../driver/driver.config.mjs";
+import { config, ENGINE_BINARIES } from "../driver/driver.config.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule
 import { overlayReport, renderOverlayReport, treeFiles } from "../shared/doctrine-overlay.mjs";
 import { liveRunHolds } from "../driver/deploy-live-run-guard.mjs";   // — one live-run test, shared with deploy-preflight
@@ -59,7 +59,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // a pull cannot update an untracked bundle
-import { packagedUpdate } from "../shared/permanent-install.mjs";   // — a packaged install updates at its own prefix
+import { packagedUpdate, packageRootUnder } from "../shared/permanent-install.mjs";   // — a packaged install updates at its own prefix
 import { installShim, inspectShim, shimPath } from "../shared/verb-shim.mjs";   // — npm's link replaces the launcher
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -178,6 +178,27 @@ export function isGitCheckout(repo = REPO, exists = existsSync) {
   // caught it. It is also more than the question needs: a packaged install has no `.git` at all, and a
   // worktree's `.git` is a file rather than a directory, which `existsSync` answers for both.
   return exists(join(repo, ".git"));
+}
+
+/**
+ * Whether `clearotron update` on a packaged install that is already current re-runs the same install, to
+ * move the engine programs installed with it to the newest their vendors publish. `{refresh, why}`, where
+ * `why` tells the reader why not.
+ *
+ * ONLY AT THE PUBLISHED VERSION. `current` also covers an install NEWER than anything published, a local
+ * build, and re-running the install there would replace it with the older published one.
+ *
+ * ONLY WHEN IT HAS ONE OF THEM. An install made with `--omit=optional` has neither, and npm keeps no record
+ * of a flag given on the command line, so re-running the install would download both, platform binaries
+ * included, onto a machine whose operator chose to leave them out.
+ */
+export function engineRefresh({ packaged, root = packageRootUnder(packaged.prefix), exists = existsSync }) {
+  if (packaged.version !== packaged.installed)
+    return { refresh: false, why: "It is not a published version, so there is nothing to refresh the engine programs from." };
+  const has = Object.values(ENGINE_BINARIES)
+    .some((e) => e.package && exists(join(root, "node_modules", ...e.package.split("/"), "package.json")));
+  if (!has) return { refresh: false, why: "It was installed without the Claude Code and Codex programs, so there are none to refresh." };
+  return { refresh: true, why: null };
 }
 
 function runInCheckout(cmd, args) {
@@ -323,11 +344,10 @@ export async function update(argv = process.argv.slice(2)) {
       // npm resolves them afresh on every install: running the same install at the SAME version moves them
       // to the newest their vendors publish (measured with npm 10.9.8, 2026-09-14). A machine's own copy on
       // PATH updates itself and is used first; this keeps the installed fallback from falling behind it.
-      //
-      // ONLY AT THE PUBLISHED VERSION. `current` also covers an install NEWER than anything published, a
-      // local build, and re-running the install there would replace it with the older published one.
-      if (packaged.version !== packaged.installed) {
-        say("  It is not a published version, so there is nothing to refresh the engine programs from. Nothing was touched.\n");
+      // When it must not, and why, is engineRefresh's to say.
+      const plan = engineRefresh({ packaged });
+      if (!plan.refresh) {
+        say(`  ${plan.why} Nothing was touched.\n`);
         return 0;
       }
       say("  Refreshing the Claude Code and Codex programs installed with it.");
