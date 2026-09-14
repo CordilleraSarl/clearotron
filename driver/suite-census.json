@@ -1222,8 +1222,8 @@
           "todos": 0
         },
         "bundle-rebuild-and-ports.test.mjs": {
-          "tests": 7,
-          "asserts": 17,
+          "tests": 10,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },

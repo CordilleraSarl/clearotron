@@ -329,6 +329,37 @@ export function foreignPageHint(verb) {
  * Returns a new ports object; throws (never exits) so the CLI keeps ownership of how a bad value is
  * reported. An explicitly-set variable is left alone — see the call site for why.
  */
+/**
+ * THE DEMO'S OWN DOORS — the numbers it opens when the reader has asked for none.
+ *
+ * A demo used to start on the install's default portal port. On WSL that put the browser's address in
+ * the hands of whatever holds that number on the WINDOWS side: a Remote-SSH forward answered 127.0.0.1
+ * first, and the reader opened a production portal's "not signed in" page believing it was the demo.
+ * A local free-port walk cannot help there — the port IS free inside WSL, which is why the bind
+ * succeeded — so the fix is not to look harder but to stop using the number anybody else would.
+ *
+ * 18860 has no meaning: it is unusual, it is clear of the three an install opens by default (18802,
+ * 18790, 18811) and of the range a moved door walks into, and a stranger's machine is unlikely to be
+ * running something there. The two doors that follow take the next two numbers, which is the same
+ * arithmetic `--port` already uses, so a reader who moves the demo and a reader who does not meet one
+ * layout rather than two.
+ *
+ * AN EXPLICIT VARIABLE STILL WINS, exactly as it does for the flag: somebody who set a port chose that
+ * number, and a demo is a convenience over the defaults rather than an override of a decision. So is
+ * `--port`, which is applied after this and replaces it. PURE.
+ */
+export const DEMO_PORT_BASE = 18860;
+
+export function demoPortDefaults(ports, env = {}) {
+  const explicit = (name) => String(env[name] ?? "").trim() !== "";
+  return {
+    ...ports,
+    portal: explicit("PORTAL_SERVICE_PORT") ? ports.portal : DEMO_PORT_BASE,
+    mcp: explicit("TRADEMARK_MCP_HTTP_PORT") ? ports.mcp : DEMO_PORT_BASE + 1,
+    client: explicit("CLIENT_MCP_HTTP_PORT") ? ports.client : DEMO_PORT_BASE + 2,
+  };
+}
+
 export function portsForFlag(portFlag, ports, env = {}) {
   if (portFlag === undefined || portFlag === null || portFlag === "") return { ...ports };
   const n = Number(portFlag);
@@ -1051,6 +1082,10 @@ if (isMain) {
   // the flag is a convenience over the defaults, not an override of a decision. Driven in the issue:
   // with all three exported, the demo already came up correctly — that path must not change.
   const portFlag = flag("--port");
+  // THE DEMO'S DEFAULTS, BEFORE THE FLAG AND AFTER THE ENVIRONMENT. Applied only when the reader asked
+  // for no port at all: `--port` below replaces whatever this chose, and a variable somebody set is
+  // preserved inside the function itself. See demoPortDefaults for why the demo may not share 18802.
+  if (DEMO && !portFlag) Object.assign(ports, demoPortDefaults(ports, process.env));
   if (portFlag) {
     let moved;
     try { moved = portsForFlag(portFlag, ports, process.env); }
