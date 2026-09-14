@@ -1,5 +1,49 @@
 # clearotron-driver
 
+## 0.3.1-beta.2
+
+### Patch Changes
+
+- 240673c: Fixed: A chat notice now carries the channel to send it on, so an assistant with several chat channels no longer drops it silently.
+- 240673c: Fixed: Naming a country in words rather than by code now works for every country, including Belgium and Luxembourg. Before, some were carried as unrecognised.
+- 240673c: Fixed: A family search on a name whose first or last word is a single letter or digit now runs. Before, one register refused it and the search was reported as an outage.
+  
+  Fixed: A conflict whose owner could not be identified is no longer given a risk rating. It is carried as an open item naming who must be identified.
+- f96c089: Fixed: Running the test suite from inside another test run no longer lets the outer run delete the inner run's temporary files.
+- f96c089: Fixed: A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- 240673c: Fixed: In the staff editor, a refused territory in a project now highlights the field it is about, as it already did when editing a customer. Before, the message appeared but no field was marked.
+- 240673c: Fixed: A sign-in refusal now always says which instance answered — by organisation, by sign-in service, or by the address it runs on.
+- 240673c: Fixed: The published list of settings this build reads no longer keeps a name after the code stops reading it. The list was derived from a scan that included the list itself, so a retired name kept itself alive.
+- 240673c: Fixed: A search step that streams at a crawl is now stopped early and retried, instead of running to its time limit and losing the work.
+- f96c089: Fixed: A mark whose main element contains no vowel — a consonant-only initialism, for example — can now be cleared. Before, the search plan refused to compile and the whole clearance ended without delivering anything.
+- 240673c: Fixed: Use your AI now gives the steps your connector actually takes — sign-in where it signs you in, a key only where a key works.
+- f96c089: Fixed: `doctor` now names the deployment it is checking, and refuses a name that is missing or not recognised. Before, a deployment that was misnamed — or not named at all — passed the check in silence.
+- 240673c: Fixed: Setup and the framed first-run box now say what to do when the page that opens belongs to another program.
+  
+  Fixed: The port that advice suggests is never the port already in use.
+- f96c089: For operators: The repository's own comment-to-code references are now checked for having moved, not only for existing.
+- 240673c: Fixed: On WSL, the "on this computer" rows now start the server inside WSL for you, so an assistant running on Windows can use them.
+- 240673c: Fixed: Somebody you add on the People page can sign in straight away. Before, they were refused until the service restarted with a changed setting.
+- 240673c: Fixed: The demo now removes everything it created when its window closes, and says so. Pass `--keep` to leave the folder and its reports.
+  
+  Fixed: Trying the demo a second time on a machine that has run it before now works. Before, it refused its own folder and suggested dropping a flag that had not been given.
+- 240673c: Fixed: The demo opens ports of its own rather than the ones an installation uses, so the page it points you at is the demo's.
+- 240673c: Fixed: A search now covers every spelling and sound-alike of the name in each category of goods or services the engine judges relevant.
+  
+  Fixed: Before, the added categories were searched for the name exactly and nothing else. The matter frame records each one with the reason it was added.
+- 240673c: Fixed: An off-register search now also covers the channels the matter itself names, not only the account's usual marketplaces.
+  
+  Fixed: A channel no pass ran is now recorded as open rather than described in a note.
+  
+  Fixed: A finding reads what the platform's own record says before calling an owner unidentified.
+- 240673c: For operators: The portal can now call the engine over a local socket instead of a network port, by naming it as its engine address. The deployment check reports that address as wired and says which socket it is.
+- f96c089: Fixed: The run purge no longer deletes a clearance whose report or failure notice has not been sent yet.
+  
+  Fixed: Those runs are marked in the table the purge prints, and removing one now takes a flag that says so.
+  
+  For operators: Every applied purge leaves a record of what it removed, when, and whether any of it was still owed.
+- 1905ea4: Fixed: Saving a territory the engine cannot search now says so, instead of suggesting the kind of entry that was just refused.
+
 ## 0.3.1-beta.1
 
 ### Patch Changes
