@@ -1359,15 +1359,7 @@ export const STAGES = {
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE (: a field phrased outside one was
       // written 0 of 9 times against 74 of 74 when imperative-carried).
       `Hand the frame back by calling the \`record_matter_frame\` tool. Send \`prose_body\` — the commercial read of the matter in full prose: client, sector, product description, customer base, channels of trade, off-field sectors, sector-convergence flags, watchlist-owner seeds, your scope reasoning, the class scope and adjacency call with a one-line reason per class, the applicant's own and affiliated marks, and the campaign shape where you are inferring one (label an inference as an inference).`,
-      `Send \`scope_basis\` as "instructed" or "derived", with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories.`,
-      // THE CLASS CALL BECOMES A FIELD, not only a paragraph. The prose_body line above already asks for
-      // "the class scope and adjacency call with a one-line reason per class", and the frame has been
-      // giving it — in prose nothing could act on. The plan compile takes its classes from the driver's
-      // intake record, so a class the frame judged necessary reached the sweep only if something later
-      // proposed it as supplemental work, competing for capped slots with model-minted extras. This
-      // field is that same judgement in a form the compile can union, and the prose keeps the reasoning.
-      // NOT A REPLACEMENT for the prose line: a reader of the frame still gets the argument.
-      `Send \`identified_classes\` — the Nice classes you judge NECESSARY for this matter that the request did NOT instruct, each as {class, reason} with the class a whole number 1-45 and the reason one line. These are searched for every variant, not only the exact name, so name a class only where you would defend charging for it. Omit the field, or send an empty array, where the instructed classes are the whole scope — that is the ordinary answer and nothing is added.`,
+      `Send \`scope_basis\` as "instructed" or "derived", with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories. Send \`identified_classes\` — the Nice classes you judge NECESSARY that the request did NOT instruct, each as {class, reason}, the class a whole number 1-45 and the reason one line. These are searched for every variant, not only the exact name, so name a class only where you would defend charging for it; omit the field or send an empty array where the instructed classes are the whole scope, which is the ordinary answer and adds nothing.`,
       // The driver STAMPS the instructed-scope section from _driver/instructed-scope.json, so the seat is
       // not asked to quote back values the driver wrote at intake. That retyping was the stage's
       // `frame_scope_missing` loop and it is gone; see matter-frame-record.mjs.
