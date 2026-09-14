@@ -48,6 +48,7 @@ import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — 
 import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
 import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
+import { doorKind } from "../shared/mcp-challenge.mjs";   // — one reading of what a connector asks for, shared with doctor
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 
 /**
@@ -2308,6 +2309,30 @@ export function makePortalService({
       // every multi-account client was told the connector did not exist yet, while single-account clients
       // saw it. `door:true` is the mode for exactly this question — may this identity enter — and it is what
       // /portal/api/me already uses.
+// ── ONE READING OF THE CONNECTOR'S OWN DOOR, CACHED ────────────────────────────────────────────────
+//
+// The same unauthenticated probe `doctor` makes, asked here so the connector steps follow what the door
+// actually answers. Bounded three ways, because this sits on a page load: a short timeout, a one-minute
+// cache, and a failure that answers `null` rather than throwing — a page that cannot read its door says
+// so, which is the honest half of this change.
+let doorKindCache = { at: 0, url: null, kind: null };
+const DOOR_KIND_TTL_MS = 60_000;
+async function connectorDoorKind(url) {
+  if (!url) return null;
+  const now = Date.now();
+  if (doorKindCache.url === url && now - doorKindCache.at < DOOR_KIND_TTL_MS) return doorKindCache.kind;
+  let probe = null;
+  try {
+    const res = await fetch(url, { method: "GET", redirect: "manual", signal: AbortSignal.timeout(2000) });
+    let body = null;
+    if (res.status === 401) { try { body = (await res.text()).slice(0, 400); } catch { body = null; } }
+    probe = { ok: res.status < 500, status: res.status, error: null, challenge: res.headers.get("www-authenticate"), body };
+  } catch (e) { probe = { ok: false, status: null, error: String(e?.cause?.code ?? e?.name ?? e?.message ?? e) }; }
+  const kind = doorKind(probe);
+  doorKindCache = { at: now, url, kind };
+  return kind;
+}
+
       if (parts[1] === "api" && parts[2] === "mcp-access" && method === "GET") {
         assertPrincipal(principal, { door: true });   // throws PortalDeny(403) for an unmapped identity
         const url = process.env.CLEAROTRON_CLIENT_MCP_URL || null;
@@ -2363,6 +2388,13 @@ export function makePortalService({
           // a question the moment it auto-started with the product.
           publicAddress: url,
           operator: principal.email ?? null,
+          // WHAT THE DOOR ANSWERS, read from the door rather than assumed by the row. The steps used to
+          // be fixed: Claude's said to paste a key and set authentication to None, which is right for a
+          // self-hosted door and cannot work on any deployment behind an identity provider — the key is
+          // minted for nothing and the warning the reader is told to ignore IS the sign-in. Cached
+          // because this is a page load, not a check: one reading serves every reader for a minute, and
+          // a door that could not be read leaves this null so the page says so instead of guessing.
+          door: await connectorDoorKind(url),
         });
         return { status: 200, json: {
           url,                                   // null ⇒ the UI keeps its honest empty state

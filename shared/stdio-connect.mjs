@@ -245,6 +245,20 @@ export const REMOTE_SHAPES = Object.freeze({
     label: null,
     render: ({ address }) => address,
   },
+  // THE SAME TWO HOSTS WITH NO KEY IN THEM, for a door that signs its reader in. A door behind an
+  // identity provider never honours a key, so a command carrying a header is a command that cannot
+  // work — and the key it names was minted for nothing.
+  "claude-cli-http-signin": {
+    label: "Copy command",
+    render: ({ address }) => `claude mcp add --transport http ${STDIO_SERVER_NAME} ${address}`,
+  },
+  "codex-toml-http-signin": {
+    label: "Copy block",
+    render: ({ address }) => [
+      `[mcp_servers.${STDIO_SERVER_NAME}]`,
+      `url = "${address}"`,
+    ].join("\n"),
+  },
   "claude-cli-http": {
     label: "Copy command",
     render: ({ address }) =>

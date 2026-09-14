@@ -1438,8 +1438,8 @@
           "todos": 0
         },
         "connect-clients-are-data.test.mjs": {
-          "tests": 15,
-          "asserts": 75,
+          "tests": 17,
+          "asserts": 87,
           "skips": 0,
           "todos": 0
         },
