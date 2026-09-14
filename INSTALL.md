@@ -1326,7 +1326,7 @@ answer on any of them:
   by that vendor's terms. AGPL-3.0 grants you nothing over it, and this repository redistributes no
   part of it.
 - **Register and research providers are your own agreements.** EUIPO, the USPTO bulk product,
-  `PERPLEXITY_API_KEY`, CourtListener, and the subscription registers (Corsearch, Clarivate, Signa)
+  `PERPLEXITY_API_KEY`, CourtListener, and the subscription registers (Clarivate, Signa, Corsearch)
   each sit on terms you accept directly with that provider. The adapters in `providers/` are ours and
   are licensed with the rest of the code; what they connect to is not.
 - **npm dependencies carry their own licences.** `package-lock.json` is the resolved set, and each
