@@ -50,8 +50,23 @@ export function billingMode(env = process.env) {
 // one on. Spelled out one per line for the reason given above. The order is only the order a refusal
 // names them in.
 const switchedOn = (v) => ["1", "true", "yes", "on"].includes(String(v ?? "").trim().toLowerCase());
-const CLOUD_SWITCH = Object.freeze({ vertex: "CLAUDE_CODE_USE_VERTEX", foundry: "CLAUDE_CODE_USE_FOUNDRY", bedrock: "CLAUDE_CODE_USE_BEDROCK" });
-function cloudsSwitchedOn(env) {
+export const CLOUD_SWITCH = Object.freeze({ vertex: "CLAUDE_CODE_USE_VERTEX", foundry: "CLAUDE_CODE_USE_FOUNDRY", bedrock: "CLAUDE_CODE_USE_BEDROCK" });
+
+// EVERY NAME THE PROGRAM READS TO REACH AND PAY A CLOUD, as setup writes them and the install page lists
+// them: each cloud's switch and its least settings, the gateway pair, and the three model pins a cloud
+// deployment is named by. A run takes every line of its settings file, so it has these already. Setup's
+// proof turn and doctor read the file name by name, and carry these so a check proves the account a run
+// bills rather than whatever the shell happened to hold.
+export const CLOUD_SETTINGS = Object.freeze([
+  ...Object.values(CLOUD_SWITCH),
+  "ANTHROPIC_VERTEX_PROJECT_ID", "CLOUD_ML_REGION", "GOOGLE_APPLICATION_CREDENTIALS",
+  "ANTHROPIC_FOUNDRY_RESOURCE", "ANTHROPIC_FOUNDRY_API_KEY",
+  "AWS_REGION", "AWS_PROFILE",
+  "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN",
+  "ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+]);
+
+export function cloudsSwitchedOn(env = process.env) {
   const on = [];
   if (switchedOn(env.CLAUDE_CODE_USE_VERTEX)) on.push("vertex");
   if (switchedOn(env.CLAUDE_CODE_USE_FOUNDRY)) on.push("foundry");

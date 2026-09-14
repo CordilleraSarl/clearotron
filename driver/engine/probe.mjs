@@ -55,7 +55,7 @@
 // `CLEAROTRON_CLAUDE_PATH` — the same offline fixture the engine tests already spawn.
 
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, engineAdapterSpecifier } from "../driver.config.mjs";
-import { resolveAuthMode } from "./auth.mjs";
+import { resolveAuthMode, CLOUD_SETTINGS } from "./auth.mjs";
 
 /** Six words. Short enough to be free in practice, and it still requires a real completed turn. */
 export const PROBE_PROMPT = "Reply with the single word: ok.";
@@ -144,7 +144,11 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // which pipe this happened to look at.
   const detail = tail(tuple.stderr) ?? tail(tuple.stdout);
 
-  if (tuple.code === 0) return { ok: true, engine: id, mode: "ok", basis: "completed-turn", headline: `${id} completed a turn`, fix: null, detail: null };
+  // A completed turn names what served it, the model and the provider as the program reported them, and
+  // null where it named neither, so a proof says which model and whose account it proved.
+  if (tuple.code === 0) return { ok: true, engine: id, mode: "ok", basis: "completed-turn", headline: `${id} completed a turn`, fix: null, detail: null,
+    served: typeof tuple.modelWire === "string" && tuple.modelWire ? tuple.modelWire : null,
+    provider: typeof tuple.providerWire === "string" && tuple.providerWire ? tuple.providerWire : null };
 
   // spawn itself failed. The filesystem preflight normally catches this first; when it does not, say so
   // in the binary's own vocabulary rather than as a mysterious engine fault.
@@ -292,11 +296,15 @@ export function probeWeatherWarning(verdict) {
  * and a caller building the environment it hands this module fills from it. `doctor` kept a second copy
  * that had dropped both credentials, so it filled a probe environment without the very token it then
  * reported missing. Exported so there is nothing left to copy.
+ *
+ * The cloud a Claude turn is sent to and paid through is on it too (`CLOUD_SETTINGS`, from auth.mjs).
+ * Without those names a cloud answered in setup would pass the resolver, which reads the caller's
+ * environment, and never reach the turn, which reads this process's: a proof of an account no run bills.
  */
 export function engineEnvKeys() {
   return [...new Set(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES)
     .flatMap((s) => [s.env, s.authEnv, s.apiKeyEnv, s.headless?.tokenEnv])
-    .filter(Boolean)])];
+    .filter(Boolean), ...CLOUD_SETTINGS])];
 }
 
 function applyEngineEnv(env) {

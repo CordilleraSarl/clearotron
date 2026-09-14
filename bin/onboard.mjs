@@ -93,7 +93,7 @@ import {
 // around, and it is cache-busted whether or not this static import happened first.
 import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE,
   enginesFolder, engineInstallArgs, engineInstallCommand } from "../driver/driver.config.mjs";
-import { resolveAuthMode } from "../driver/engine/auth.mjs";
+import { resolveAuthMode, CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
 import { processTable } from "../shared/process-table.mjs";   // — /proc is not the only box
@@ -111,6 +111,76 @@ export const probingLine = (engineId) =>
   `Probing ${engineId} with one turn on its cheapest model (this SPENDS; ${PROBE_TIMEOUT_SEC}s ceiling)…`;
 export const proveQuestion = ({ engineId, lane }) =>
   `Prove ${engineId} on the ${lane} lane now with one turn on its cheapest model (a few tokens, ${PROBE_TIMEOUT_SEC}s ceiling)?`;
+
+// HOW CLAUDE IS PAID FOR, IN THE OWNER'S WORDS (2026-09-14): one question, three answers, the third a cloud
+// account. Codex keeps the question it had: a cloud account bills Claude only, and the resolver refuses
+// `cloud` on Codex, so offering it there would offer an answer that cannot run.
+export const CLAUDE_PAY_QUESTION = "How is Claude paid for on this machine?";
+const CLAUDE_PAY_ANSWERS = Object.freeze([
+  { id: "subscription", label: "A Claude subscription (Pro, Max or Team): you sign in once" },
+  { id: "api-key", label: "An Anthropic API key: pay per use, paste the key" },
+  { id: "cloud", label: "Through your Google, Microsoft or Amazon cloud account: pay per use on that cloud's bill" },
+]);
+/** The pay question setup asks for an engine, and its answers; each answer's id is a billing word. */
+export function payQuestion({ engineId, eng, bin }) {
+  if (engineId === "anthropic-agent") return { question: CLAUDE_PAY_QUESTION, answers: CLAUDE_PAY_ANSWERS };
+  return {
+    question: `How does this box pay for ${engineId}?`,
+    answers: [
+      { id: "subscription", label: `Subscription — ${namingProgram(eng.subscriptionHow, eng, bin)}` },
+      { id: "api-key", label: `API key — metered per token, from ${eng.apiKeyEnv}` },
+    ],
+  };
+}
+
+// THE THREE CLOUDS, what each is called where a reader sees it, and the least setup asks for each. The rest
+// is a sign-in the machine already has (gcloud's, Azure's, AWS's), which the program finds by itself. Every
+// name asked for is on auth.mjs's CLOUD_SETTINGS, so the proof turn and doctor carry it.
+export const CLOUD_CHOICES = Object.freeze([
+  { id: "vertex", label: "Google Cloud (Vertex AI)", account: "your Google Cloud account (Vertex AI)",
+    note: "It uses the Google sign-in on this machine: gcloud's, or the service-account key GOOGLE_APPLICATION_CREDENTIALS names.",
+    asks: [
+      { env: "ANTHROPIC_VERTEX_PROJECT_ID", q: "Google Cloud project id:" },
+      { env: "CLOUD_ML_REGION", q: "Region your Claude quota is in:", def: "global" },
+    ] },
+  { id: "foundry", label: "Microsoft Azure (Foundry)", account: "your Microsoft Azure account (Foundry)",
+    note: "Foundry calls each model by the name of its deployment, so give the names you deployed them under.",
+    asks: [
+      { env: "ANTHROPIC_FOUNDRY_RESOURCE", q: "Foundry resource name:" },
+      { env: "ANTHROPIC_FOUNDRY_API_KEY", q: "Its key:", secret: true, skippable: true, skipped: "No key: the Azure sign-in on this machine is used." },
+      { env: "ANTHROPIC_DEFAULT_OPUS_MODEL", q: "Your Opus deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
+      { env: "ANTHROPIC_DEFAULT_SONNET_MODEL", q: "Your Sonnet deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
+      { env: "ANTHROPIC_DEFAULT_HAIKU_MODEL", q: "Your Haiku deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
+    ] },
+  { id: "bedrock", label: "Amazon Bedrock", account: "your Amazon Bedrock account",
+    note: "It uses the AWS credentials on this machine: a profile, an instance role or the standard AWS variables.",
+    asks: [
+      { env: "AWS_REGION", q: "AWS region your Claude models are enabled in:" },
+    ] },
+]);
+
+/**
+ * The settings a cloud answer writes, as a run reads them: the billing word, that cloud's switch, and each
+ * answer given. A blank answer writes nothing, so the program falls back to what the machine has. Pure, so a
+ * test can drive it through the resolver.
+ */
+export function cloudSettings(cloud, answers = {}) {
+  const out = { CLEAROTRON_AI_BILLING: "cloud", [CLOUD_SWITCH[cloud]]: "1" };
+  for (const [k, v] of Object.entries(answers)) {
+    const t = String(v ?? "").trim();
+    if (t) out[k] = t;
+  }
+  return out;
+}
+
+/** Whose bill a cloud billing mode charges, as doctor says it. */
+export const cloudAccount = (cloud) =>
+  cloud === "gateway" ? "the gateway at ANTHROPIC_BASE_URL" : (CLOUD_CHOICES.find((c) => c.id === cloud)?.account ?? `the ${cloud} account`);
+
+/** What a completed probe turn says served it, as the program reported; null when it named nothing. */
+export const servedLine = (v) => (v?.served || v?.provider)
+  ? `served by ${v.served ?? "a model the program did not name"}${v.provider ? `; the program names its provider "${v.provider}"` : ""}.`
+  : null;
 import { runRequiredNames, missingRequirements, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -1536,15 +1606,18 @@ export async function runCheck() {
     // here as the problem it is: that .env cannot run a stage, and finding out at `--check` is the
     // entire point of the command.
     try {
-      // Same construction as the probe env below: the environment as a RUN would see it, with the .env's
-      // values overlaid for exactly the keys this answer depends on and no others.
+      // The same construction as the probe env below, from the same list: the environment as a RUN would
+      // see it, with the .env's values overlaid for the keys an engine spawn is made of. The cloud's names
+      // are on it, because with the billing word read from the file and a cloud's switch left to the shell,
+      // a cloud file that runs would read as refused.
       const envForResolve = { ...process.env };
-      for (const k of [engSpec.authEnv, engSpec.apiKeyEnv]) {
-        const e = k ? effective(k) : null;
+      for (const k of engineEnvKeys()) {
+        const e = effective(k);
         if (e) envForResolve[k] = e.v;
       }
       const auth = resolveAuthMode({ engineName: engineId, env: envForResolve });
       if (auth.mode === "unknown") info(`billing: no policy for ${engineId} — this engine declares no sign-in modes`);
+      else if (auth.mode === "cloud") ok(`billing: cloud — charged per use ${auth.cloud === "gateway" ? "through" : "to"} ${cloudAccount(auth.cloud)}`);
       else ok(`billing: ${auth.mode}${auth.apiBilled ? ` — charged per token against ${engSpec.apiKeyEnv}` : " — charged to the signed-in subscription, not per token"}`);
     } catch (e) {
       problem(String(e?.message ?? e));
@@ -1583,6 +1656,8 @@ export async function runCheck() {
       const v = await probeEngineTurn({ env: probeEnv });
       if (v.ok) {
         ok(`${engineId} completed a turn — binary, credential and model access all work`);
+        const served = servedLine(v);
+        if (served) info(served);
         // The ONLY route to READY. Everything else in this block reads the filesystem, and a signed-out
         // CLI passes every filesystem test there is — which is why this line is here and not above.
         ok("MODE: engine ready — proven by the turn just spent, not inferred from a file being executable.");
@@ -3409,11 +3484,16 @@ try {
     // adopting OPENAI_API_KEY instead would write a .env that `auth.mjs` refuses — the same defect this
     // item exists to remove, wearing the other engine.
     const ambientKeyPresent = present(process.env[eng.apiKeyEnv]);
-    const authPick = await choose(`How does this box pay for ${pick.id}?`, [
-      { id: "subscription", label: `Subscription — ${namingProgram(eng.subscriptionHow, eng, bin)}` },
-      { id: "api-key", label: `API key — metered per token, from ${eng.apiKeyEnv}` },
-    ], ambientKeyPresent ? 1 : 0);
+    // A cloud switched on in this shell is the reader's own setup saying how Claude is paid, so it makes the
+    // cloud answer the default, as a key in the environment makes the key answer the default.
+    const ambientClouds = pick.id === "anthropic-agent" ? cloudsSwitchedOn(process.env) : [];
+    const ambientCloud = ambientClouds.length === 1 ? CLOUD_CHOICES.findIndex((c) => c.id === ambientClouds[0]) : -1;
+    const pay = payQuestion({ engineId: pick.id, eng, bin });
+    const authPick = await choose(pay.question, pay.answers, ambientCloud >= 0 ? 2 : ambientKeyPresent ? 1 : 0);
     let apiKey = null;
+    // A cloud answer's settings: the billing word, the cloud's switch and each answer given. They are the
+    // probe's environment below and, once it passes, lines in the .env, so a run bills the account proved.
+    let cloudEnv = null;
     if (authPick.id === "api-key") {
       if (ambientKeyPresent) {
         apiKey = process.env[eng.apiKeyEnv];
@@ -3421,13 +3501,26 @@ try {
       } else {
         apiKey = await askValue(`${eng.apiKeyEnv}:`, { secret: true });
       }
-    } else if (ambientKeyPresent) {
-      // Not a warning: it is the resolved behaviour, stated once, because the opposite guess is the
-      // expensive one. The adapter strips the key under subscription, so the probe below really does
-      // exercise the subscription and the key sitting in the environment changes nothing.
-      info(`${eng.apiKeyEnv} is set in your environment and will NOT be used — subscription mode strips it from every stage.`);
+    } else if (authPick.id === "cloud") {
+      const cloud = await choose("Which cloud account pays?", CLOUD_CHOICES, Math.max(ambientCloud, 0));
+      info(cloud.note);
+      const answers = {};
+      for (const a of cloud.asks) {
+        // A value already in this shell is the default, except a secret: that is adopted and named, and never
+        // shown in a prompt.
+        const have = process.env[a.env];
+        if (a.secret && present(have)) { answers[a.env] = have; info(`${a.env} is already in your environment — adopting it.`); continue; }
+        answers[a.env] = await askValue(a.q, { def: present(have) ? have : (a.def ?? ""), secret: a.secret === true, skippable: a.skippable === true, skipped: a.skipped ?? null });
+      }
+      cloudEnv = cloudSettings(cloud.id, answers);
     }
-    const authEnv = { [eng.authEnv]: authPick.id, ...(apiKey ? { [eng.apiKeyEnv]: apiKey } : {}) };
+    if (authPick.id !== "api-key" && ambientKeyPresent) {
+      // Not a warning: it is the resolved behaviour, stated once, because the opposite guess is the
+      // expensive one. The adapter strips the key under subscription and under cloud, so the probe below
+      // really does exercise that lane and the key sitting in the environment changes nothing.
+      info(`${eng.apiKeyEnv} is set in your environment and will NOT be used — ${authPick.id} mode strips it from every stage.`);
+    }
+    const authEnv = cloudEnv ?? { [eng.authEnv]: authPick.id, ...(apiKey ? { [eng.apiKeyEnv]: apiKey } : {}) };
 
     // THE PROOF. An executable file is not a working engine: a signed-out CLI, an expired credential, an
     // unreachable tier and a spent quota all pass every check above and surface as a stage failure after
@@ -3453,15 +3546,21 @@ try {
       const v = await probeEngineTurn({ env: { ...process.env, CLEAROTRON_AI: pick.id, [eng.env]: bin.path, ...authEnv } });
       if (v.ok) {
         ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
+        const served = servedLine(v);
+        if (served) info(served);
         candidate.CLEAROTRON_AI = pick.id;
         // ALWAYS WRITTEN, and for the copy Clearotron installed it is the engine's default word: see
         // engineProgramSetting for why leaving it out was not enough.
         candidate[eng.env] = engineProgramSetting(eng, bin);
         candidate[eng.authEnv] = authPick.id;
         if (apiKey) candidate[eng.apiKeyEnv] = apiKey;
+        // A cloud answer writes the settings the turn above ran on, every one, so a run bills that account.
+        const cloudLines = Object.entries(cloudEnv ?? {}).filter(([k]) => k !== eng.authEnv);
+        for (const [k, val] of cloudLines) candidate[k] = val;
         info(`CLEAROTRON_AI=${pick.id}`);
         info(`${eng.authEnv}=${authPick.id} — the lane the turn above actually ran on.`);
         if (apiKey) info(`${eng.apiKeyEnv}=… — adopted, so a run bills the way you just proved.`);
+        for (const [k, val] of cloudLines) info(`${k}=${/_KEY$|_TOKEN$/.test(k) ? "…" : val}`);
         if (bin.source === "installed") info(`${eng.env}=${eng.fallback} — the engine's default: this machine's own \`${eng.fallback}\` once it has one, and the copy Clearotron installed until then.`);
         else info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
         break engine;
