@@ -185,6 +185,61 @@ test("COMPLETENESS: every engine in ENGINE_BINARIES is covered, not just the one
     + `scripts/test-run.mjs.`);
 });
 
+// ── the copy installed with Clearotron ──────────────────────────────────────────────────────────────
+//
+// The engine resolver's last step (driver.config.mjs resolveEngineProgram) reads the copy npm installed
+// with Clearotron from node_modules, never from PATH, and on a checkout where `npm ci` ran that copy is a
+// REAL program. PATH is asked first, so the shim answers every child that keeps the wrapper's PATH; a
+// child that composes its own PATH reaches the last step. So this asks the resolver ITSELF, inside the
+// wrapper's child, with a PATH that holds nothing, for every engine the table declares.
+
+test("THE COPY INSTALLED WITH CLEAROTRON is closed for the whole suite, whatever PATH a child composes", async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync, chmodSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { pathToFileURL } = await import("node:url");
+  const m = await import("../driver.config.mjs");
+  const engines = Object.keys(m.ENGINE_BINARIES).sort();
+  assert.ok(engines.length >= 2, `expected the engine table, found ${engines.length} entry(ies)`);
+  // A module import needs a promise, which runWrapper's one-expression child cannot wait for; the base
+  // environment is cleared the way runWrapper clears it, and the lookup setting too, so the answer is the
+  // wrapper's and not whatever this process inherited. The child imports by file URL, written out whole so
+  // the computed-import guard can read that it is one.
+  const ask = (setup) => {
+    const env = { ...process.env };
+    for (const n of ENGINE_VARS) delete env[n];
+    delete env[OVERRIDE];
+    delete env[m.BUNDLED_ENGINES_DIR_ENV];
+    const child = `import(${JSON.stringify(pathToFileURL(join(ROOT, "driver", "driver.config.mjs")).href)}).then((m) => { ${setup} const out = {}; `
+      + "for (const id of Object.keys(m.ENGINE_BINARIES)) { const r = m.resolveEngineProgram(id, { env: { PATH: \"/nonexistent\" } }); "
+      + "out[id] = { source: r.source, resolved: r.resolved }; } console.log(\"REPORT:\" + JSON.stringify(out)); })";
+    const r = spawnSync(process.execPath, [RUNNER, process.execPath, "-e", child], { cwd: ROOT, env, encoding: "utf8" });
+    const line = (r.stdout ?? "").split("\n").find((l) => l.startsWith("REPORT:"));
+    return { code: r.status, report: line ? JSON.parse(line.slice("REPORT:".length)) : null, all: `${r.stdout ?? ""}${r.stderr ?? ""}` };
+  };
+
+  const closed = ask("");
+  assert.ok(closed.report, `the child never reported; wrapper exited ${closed.code}\n${closed.all.slice(0, 800)}`);
+  const reachable = Object.entries(closed.report).filter(([, v]) => v.resolved !== null).map(([id, v]) => `${id}: ${v.source} ${v.resolved}`);
+  assert.deepEqual(reachable, [],
+    `a child that composes its own PATH can still reach an installed engine program:\n  ${reachable.join("\n  ")}\n`
+    + `scripts/test-run.mjs must point ${m.BUNDLED_ENGINES_DIR_ENV} at an empty directory.`);
+
+  // THE CONTROL. The same child, with the lookup pointed at a planted tree, finds a copy for every engine:
+  // the empty answer above is the wrapper closing the route, not a resolver that cannot see one.
+  const planted = mkdtempSync(join(tmpdir(), "planted-installed-copy-"));
+  for (const spec of Object.values(m.ENGINE_BINARIES)) {
+    const dir = join(planted, "node_modules", ...spec.package.split("/"));
+    mkdirSync(join(dir, "bin"), { recursive: true });
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version: "0.0.1", bin: { [spec.fallback]: "bin/program" } }));
+    writeFileSync(join(dir, "bin", "program"), "#!/bin/sh\nexit 0\n");
+    chmodSync(join(dir, "bin", "program"), 0o755);
+  }
+  const open = ask(`process.env[m.BUNDLED_ENGINES_DIR_ENV] = ${JSON.stringify(planted)};`);
+  assert.ok(open.report, `the control child never reported; wrapper exited ${open.code}\n${open.all.slice(0, 800)}`);
+  const found = Object.entries(open.report).filter(([, v]) => v.source === "bundled").map(([id]) => id).sort();
+  assert.deepEqual(found, engines, "the control could not find a planted copy, so the empty answer above proves nothing");
+});
+
 // ── the credentials ──────────────────────────────────────────────────────────────────────────────────
 
 test("COMPLETENESS: no credential declared by any driver.config table reaches the suite", async () => {

@@ -91,7 +91,7 @@ import {
 // does nothing at import time, so this is inert — the ONE sharp edge it carries (a module-level
 // REGISTER_PROVIDER frozen at first import) is the one `preflightCandidate` below already cache-busts
 // around, and it is cache-busted whether or not this static import happened first.
-import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver/driver.config.mjs";
+import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE } from "../driver/driver.config.mjs";
 import { resolveAuthMode } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
@@ -673,44 +673,45 @@ export async function askSignIn(io, { localAccount = "user", existing = null } =
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
  * this file still assumed one engine, and a name that lies is how the second adapter stayed invisible.
  */
-export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null } = {}) {
-  // The predicate, not just the pattern, because /mnt/c cannot be created on a Linux runner without
-  // root — so an arm that could only supply a PATH could never drive the skip, and the branch would
-  // ship asserted by nobody. `ON_A_WINDOWS_DRIVE` is held to real paths by its own arm.
-  const onDrive = onWindowsDrive ?? ((x) => ON_A_WINDOWS_DRIVE.test(x));
-  // driver/engine/anthropic-agent.mjs — `CLEAROTRON_CLAUDE_PATH || "claude"`; openai-agent.mjs — the same
-  // shape on `CLEAROTRON_CODEX_PATH || "codex"`. A RELATIVE path is the trap for BOTH: stage subprocesses are
-  // spawned with cwd set to the RUN DIRECTORY (driver/engine/common.mjs resolveSpawnCwd, shared by the
-  // two adapters), so a relative binary resolves against a directory that did not exist at setup time.
-  const underWsl = wsl ?? isWsl({ env });
-  if (bin.includes("/")) {
-    const abs = resolve(bin);
-    // A PATH SOMEBODY TYPED IS NOT OVERRULED, only reported. The reader stated this one, and silently
-    // resolving somewhere else would be the launcher moving a door off a port that was asked for.
-    return { path: abs, executable: isExec(abs), relative: !isAbsolute(bin), windowsShim: underWsl && onDrive(abs), skipped: [] };
-  }
-  // ── UNDER WSL, THE WINDOWS PATH IS APPENDED TO THIS ONE ────────────────────────────────────────
+export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null, engine = null, bundledDir = undefined } = {}) {
+  // A VIEW OVER THE DRIVER'S ONE RESOLVER (driver.config.mjs resolveEngineProgram), which every other
+  // reader asks too: the run door, the inventory the portal reads, and both adapters. This used to be a
+  // second PATH walk of its own, and it was the only one that knew to pass over a Windows copy under WSL;
+  // that skip now lives in the one resolver, so the run door and this command cannot disagree about it.
   //
-  // So `claude` on a fresh WSL2 Ubuntu resolves to /mnt/c/…/claude — the WINDOWS shim — before any
-  // Linux install is reached, and it is executable by every test this makes. It then fails the proof
-  // turn as "not signed in", because the credential it is looking for is the Linux one, and a reader
-  // is sent to fix a sign-in that was never the problem. Reported from a real WSL2 attempt.
-  //
-  // SKIPPED, AND NAMED. Passing over a candidate silently would leave the reader with "no binary
-  // found" on a machine where `which claude` prints one, so the skips travel back for the caller to
-  // say out loud. A missing Linux install then reports as missing, which is the true answer.
-  const skipped = [];
-  for (const dir of (env.PATH || "").split(delimiter).filter(Boolean)) {
-    const p = join(dir, bin);
-    if (!isExec(p)) continue;
-    if (underWsl && onDrive(p)) { skipped.push(p); continue; }
-    return { path: p, executable: true, relative: false, windowsShim: false, skipped };
-  }
-  return { path: null, executable: false, relative: false, windowsShim: false, skipped };
+  // `bin` is the candidate the wizard wants checked, a path or a bare name, and it is asked under the
+  // engine's own setting, so "the setting names this" and "this is what the engine would find" are one
+  // question. The engine's fallback word is the default, so `claude` asks PATH and then the copy
+  // installed with Clearotron. `wsl` and `onWindowsDrive` stay injectable: /mnt/c cannot be created on a
+  // Linux runner without root, so an arm that could only supply a PATH could never drive the skip.
+  const id = engine ?? Object.keys(ENGINE_BINARIES).find((k) => ENGINE_BINARIES[k].fallback === bin) ?? DEFAULT_ENGINE_ID;
+  const spec = ENGINE_BINARIES[id];
+  const r = resolveEngineProgram(id, { env: { ...env, [spec.env]: bin }, wsl, onWindowsDrive, bundledDir });
+  const found = { source: r.source, version: r.version, rejected: r.rejected, skipped: r.skipped, windowsShim: r.windowsShim };
+  // A RELATIVE path is the trap for both adapters: stage subprocesses run with cwd set to the RUN
+  // DIRECTORY (driver/engine/common.mjs resolveSpawnCwd), so it resolves against a directory that did not
+  // exist at setup time. Reported with its absolute form from here, which is what the wizard then uses.
+  if (r.relative) { const abs = resolve(bin); return { path: abs, executable: isExec(abs), relative: true, ...found }; }
+  // A PATH SOMEBODY TYPED IS NOT OVERRULED, only reported: the resolver never falls through from it.
+  if (!r.resolved && r.explicit && bin.includes("/")) return { path: resolve(bin), executable: false, relative: false, ...found };
+  return { path: r.resolved, executable: Boolean(r.resolved), relative: false, ...found };
 }
 
-/** A path on a Windows drive as WSL mounts it. */
-export const ON_A_WINDOWS_DRIVE = /^\/mnt\/[a-z]\//i;
+/** A path on a Windows drive as WSL mounts it: the driver's one definition. */
+export { ON_A_WINDOWS_DRIVE };
+
+/**
+ * An engine instruction that names its program (`run \`claude\` once…`, `claude setup-token`), rewritten to
+ * name the copy that will actually run when that copy is the one installed with Clearotron. The package
+ * links only `clearotron` onto PATH, so for that copy the bare word is a command the reader's shell cannot
+ * find, at the one step nobody can do for them. Any other copy is on PATH or named by path already, and
+ * the text is returned unchanged.
+ */
+export function namingProgram(text, eng, bin) {
+  if (!text || bin?.source !== "bundled" || !bin.path) return text;
+  const program = /\s/.test(bin.path) ? `"${bin.path}"` : bin.path;
+  return String(text).replace(new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`, "g"), (_, before) => `${before}${program}`);
+}
 
 /** Whether this is a Linux running under Windows: the one answer, from shared/wsl.mjs. */
 export { isWsl };
@@ -1350,9 +1351,17 @@ export async function runCheck() {
     // — through `effective`, so the engine binary is found under whichever spelling is set. Read
     // literally, this reported a configured binary as missing on any install the wizard had written.
     const binEff = effective(engSpec.env, [engSpec.env]);
-    const binSet = !!binEff;
+    // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
+    // `claude` is not a configuration that can be wrong: it asks PATH, then the copy installed with Clearotron.
+    const binSet = !!binEff && String(binEff.v).trim() !== engSpec.fallback;
     const binSetting = binEff?.v || engSpec.fallback;
-    const bin = resolveEngineBin(binSetting);
+    const bin = resolveEngineBin(binSetting, { engine: engineId });
+    // WHICH COPY, AND ITS VERSION, because the machine's own install and the one installed with Clearotron
+    // are both legitimate and behave differently: the first updates itself, the second moves with
+    // `clearotron update`. The version comes from the copy's own package.json when npm installed it;
+    // doctor spawns nothing to ask (a vendor's own native installer leaves no package.json to read).
+    const copyWords = (b) => `${b.source === "bundled" ? "the copy installed with Clearotron"
+      : b.source === "explicit" ? `set in ${engSpec.env}` : "on PATH"}${b.version ? `, version ${b.version}` : ", version not read"}`;
     // ── NATIVE WINDOWS IS ANSWERED HERE, BEFORE ANY PATH IS RESOLVED OR REPORTED ──────────────────
     //
     // `resolveEngineBin` tests a candidate with `accessSync(X_OK)` and `isFile()`. Windows has no
@@ -1374,11 +1383,14 @@ export async function runCheck() {
     // and needs no engine, which is why four reports published on that same Windows box.
     const platformRefusal = platformEngineRefusal();
     if (platformRefusal) problem(platformRefusal);
-    else if (bin.executable && !bin.relative) ok(`${bin.path}`);
+    else if (bin.executable && !bin.relative) ok(`${bin.path} — ${copyWords(bin)}`);
+    // A copy that is there and cannot run is a broken install, not an absence: the vendor's placeholder
+    // left by an install that skipped its step, most often. Named with the reason and the fix.
+    else if (!binSet && bin.rejected?.length) problem(`no usable \`${engSpec.fallback}\`: ${bin.rejected.map((x) => `${x.path} is ${x.why}`).join("; ")}`);
     // The FACT only. It used to carry "install it for a real run (`npm run example` needs no engine)",
     // which is the absence framing was filed about — and it now says half of what the MODE line
     // below says, in worse words. One statement of a state, in the place that states states.
-    else if (!binSet) info(`no \`${engSpec.fallback}\` on PATH`);
+    else if (!binSet) info(`no \`${engSpec.fallback}\` on PATH, and no copy was installed with Clearotron`);
     // Relative is reported BEFORE not-executable. A relative path that also does not resolve from the
     // current directory would otherwise be reported as a missing file, sending the reader to check the
     // file — and the file is usually fine. The relativity is the defect.
@@ -1434,8 +1446,11 @@ export async function runCheck() {
       // platform rather than the binary. Naming WSL2 is the only instruction that ends this state.
       for (const line of leaveDemoAdvice(engSpec)) info(line);
     } else {
+      // THE COMMAND THE READER CAN TYPE FROM HERE, as the demo line above names its own. A bare
+      // `clearotron` is not on PATH for an install run from npx, and now that the engine program comes
+      // with the install this is the line most installs see first.
       info("The engine program is installed. Whether it is signed in cannot be read from disk: run "
-        + "clearotron doctor --probe-engine to find out.");
+        + `\`${reachableCommand("doctor --probe-engine")}\` to find out.`);
     }
 
     // AND WHETHER THE ENGINE AGREES, which is a different question from the one above and the reason an
@@ -2070,7 +2085,7 @@ export async function runCheck() {
   if (!serviceKnown) {
     info("the units' environment could not be read, so what a search would be refused for is NOT checked here — a failure to look is not a clean result");
   } else {
-    const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
+    const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
     // Two passes: which credentials a run needs depends on the register and the engine it names.
     const view = {};
     const fill = (names) => { for (const n of names) { const e = effectiveForService(n); if (e) view[n] = e.v; } };
@@ -3228,9 +3243,10 @@ try {
     // a guessed "signed in" that the turn then contradicts costs more than no claim.
     say("\n  What this box already has:");
     for (const [id, e] of Object.entries(ENGINE_BINARIES)) {
-      const b = resolveEngineBin(process.env[e.env] || e.fallback);
+      const b = resolveEngineBin(process.env[e.env] || e.fallback, { engine: id });
       const creds = [e.apiKeyEnv, e.headless?.tokenEnv].filter((n) => n && present(process.env[n]));
-      say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path})` : "no CLI on PATH"}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
+      const which = b.source === "bundled" ? "installed with Clearotron" : b.source === "explicit" ? `set in ${e.env}` : "on PATH";
+      say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path}, ${which}${b.version ? `, ${b.version}` : ""})` : "no CLI on PATH, and none installed with Clearotron"}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
     }
     say("  Choosing an engine also chooses how it bills — the subscription you sign in with, or an");
     say("  API key. That question comes right after this one.");
@@ -3259,7 +3275,7 @@ try {
       continue;
     }
 
-    let bin = resolveEngineBin(process.env[eng.env] || eng.fallback);
+    let bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
     // Under WSL the Windows build on the appended PATH has been passed over. Said before the install
     // offer below, because otherwise a reader whose Linux install is genuinely missing is asked to
     // install a binary their own `which` already prints — and would decline for the wrong reason.
@@ -3319,7 +3335,7 @@ try {
           say("    (~/.local/bin must be on PATH.) Run that yourself in another terminal, then continue.");
         }
         if (await confirm("Done (or already installed elsewhere)? Check this box again", true)) {
-          bin = resolveEngineBin(process.env[eng.env] || eng.fallback);
+          bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
           if (!(bin.executable && !bin.relative)) {
             const home = process.env.HOME || homedir();
             const local = join(home, ".local", "bin", eng.fallback);
@@ -3338,7 +3354,7 @@ try {
         // turn.
         if (r.error) problem(`could not run it: ${r.error.message}`);
         else if (r.status !== 0) warn(`that command exited ${r.status ?? "on a signal"} — checking anyway, since its exit code is not what settles this.`);
-        bin = resolveEngineBin(process.env[eng.env] || eng.fallback);
+        bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
         if (!(bin.executable && !bin.relative)) {
           // The common ending: npm's global prefix is not on this shell's PATH. Naming the path it
           // would be at is the difference between a dead end and one more answer.
@@ -3388,7 +3404,14 @@ try {
       if (bin.relative) warn("that path is relative. Stage subprocesses run with cwd set to the run directory, so it will not resolve — using the absolute form.");
       if (!bin.executable) { problem(`${bin.path ?? resolve(p)} is not an executable file.`); continue; }
     }
-    ok(`found ${bin.path}`);
+    ok(`found ${bin.path}${bin.source === "bundled" ? `, the copy installed with Clearotron${bin.version ? ` (${bin.version})` : ""}` : ""}`);
+    // THE TERMS SENTENCE TRAVELS WITH THE PROGRAM, NOT WITH THE INSTALL OFFER. It was said only when this
+    // step offered to install the CLI, and a copy that arrived with Clearotron skips that offer, so it is
+    // said here too. Using it, rather than installing it, is what accepts the vendor's terms.
+    if (bin.source === "bundled") {
+      say(`    ${eng.vendor}'s CLI is proprietary third-party software. Using it accepts ${eng.vendor}'s`);
+      say("    terms, not this product's licence, and this product redistributes no part of it.");
+    }
 
     // ── item 5 — HOW THIS BOX PAYS, asked BEFORE the proof ────────────────────────────────────
     //
@@ -3409,7 +3432,7 @@ try {
     // item exists to remove, wearing the other engine.
     const ambientKeyPresent = present(process.env[eng.apiKeyEnv]);
     const authPick = await choose(`How does this box pay for ${pick.id}?`, [
-      { id: "subscription", label: `Subscription — ${eng.subscriptionHow}` },
+      { id: "subscription", label: `Subscription — ${namingProgram(eng.subscriptionHow, eng, bin)}` },
       { id: "api-key", label: `API key — metered per token, from ${eng.apiKeyEnv}` },
     ], ambientKeyPresent ? 1 : 0);
     let apiKey = null;
@@ -3453,13 +3476,19 @@ try {
       if (v.ok) {
         ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
         candidate.CLEAROTRON_AI = pick.id;
-        candidate[eng.env] = bin.path;
+        // THE COPY INSTALLED WITH CLEAROTRON IS NEVER WRITTEN DOWN. Written, it would become the explicit
+        // setting, and a copy the reader installs on this machine later would never be used: the machine's
+        // own copy wins only while nothing names another. It needs no path anyway, because the engine finds
+        // it without PATH. A copy found on this shell's PATH is still written, in its absolute form, because
+        // a service's PATH is not your shell's.
+        if (bin.source !== "bundled") candidate[eng.env] = bin.path;
         candidate[eng.authEnv] = authPick.id;
         if (apiKey) candidate[eng.apiKeyEnv] = apiKey;
         info(`CLEAROTRON_AI=${pick.id}`);
         info(`${eng.authEnv}=${authPick.id} — the lane the turn above actually ran on.`);
         if (apiKey) info(`${eng.apiKeyEnv}=… — adopted, so a run bills the way you just proved.`);
-        info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
+        if (bin.source === "bundled") info(`${eng.env} is left unset — the engine uses the copy installed with Clearotron until this machine has one of its own.`);
+        else info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
         break engine;
       }
       problem(probeFailureText(v));
@@ -3481,7 +3510,7 @@ try {
       // someone, so the wizard names the command, waits, and re-probes rather than ending at a
       // description of what is wrong. The text comes from ENGINE_BINARIES so the two adapters cannot
       // drift into one set of instructions.
-      info(`if it is signed out: ${eng.signIn}, then answer yes below.`);
+      info(`if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes below.`);
       // ── THE HEADLESS ENDING ────────────────────────────────────────────────
       //
       // On a box with no browser the interactive sign-in cannot complete, and the documented route had
@@ -3492,7 +3521,10 @@ try {
       // headless ending writes its own auth file and there is nothing to capture — the command is
       // named, and the re-probe is the proof either way.
       if (eng.headless) {
-        info(`on a box with no browser: run \`${eng.headless.cmd}\`${eng.headless.tokenEnv ? " (from any machine you can sign in on)" : " here"}.`);
+        // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made
+        // on any machine, so its command keeps the bare word, and this machine's copy is named beside it.
+        info(`on a box with no browser: run \`${eng.headless.tokenEnv ? eng.headless.cmd : namingProgram(eng.headless.cmd, eng, bin)}\``
+          + `${eng.headless.tokenEnv ? ` (from any machine you can sign in on${bin.source === "bundled" ? `; on this one the program is ${bin.path}` : ""})` : " here"}.`);
         if (eng.headless.tokenEnv) {
           // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
           const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });

@@ -11,6 +11,12 @@ they are not distributed, so they carry no obligation for anyone who installs th
 
 177 packages.
 
+> **Installed with this product by npm, and not part of it:** `@anthropic-ai/claude-code` (>=2.1.270), `@openai/codex` (>=0.154.0).
+> They are declared as optional dependencies, so npm downloads each one from its vendor's registry at
+> install time. No part of them is in this package, and each is governed by its vendor's own licence
+> terms rather than by this product's. They are named here and not attributed below, because this
+> file lists what this product bundles.
+
 > **Declared but NOT INSTALLED, so not distributed and not attributed below:** `@cfworker/json-schema`.
 > npm lists these with no version and no path — an unmet or optional peer. Recorded because a name
 > silently missing from this file reads the same as one that was never declared.

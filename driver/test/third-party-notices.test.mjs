@@ -69,7 +69,7 @@ test("a package with no licence TEXT is recorded, not skipped", () => {
     assert.ok(doc.includes(`${r.name}@${r.version}`),
       `${r.name} declares ${r.licence} and ships no licence file, and the notices file does not say so`);
   // And the not-installed case, which is derived rather than listed by hand.
-  for (const r of rows().filter((x) => !x.installed))
+  for (const r of rows().filter((x) => !x.installed && !x.installedWith))
     assert.match(doc, new RegExp(`NOT INSTALLED[\\s\\S]{0,400}${r.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`),
       `${r.name} is declared but not installed, and the notices file does not record it`);
 });
@@ -211,4 +211,24 @@ test("a problem one step broader than the declaration is still UNDECLARED", () =
   assert.deepEqual(undeclaredProblems(["invalid: other@1.2.3"]), ["invalid: other@1.2.3"],
     "a problem nobody declared passed as declared, so the attributions would be generated from a tree "
     + "nobody looked at — a licence obligation quietly unmet");
+});
+
+// ── THE ENGINE PROGRAMS ARE INSTALLED WITH THE PRODUCT, AND NEVER LISTED AS BUNDLED IN IT ──────────────
+//
+// Claude Code is proprietary. A heading for it under "This product bundles the packages below" would claim
+// this product distributes it, and it does not: npm downloads it from its vendor when a user installs
+// Clearotron. The population is the root manifest's `optionalDependencies`, read here without asking the
+// generator; the per-platform packages beneath each one must not appear either, or the file would differ
+// by the machine that generated it.
+test("the engine programs npm installs beside the product are named, and never attributed as bundled", () => {
+  const optional = Object.keys(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).optionalDependencies ?? {});
+  nonEmpty(optional, "the root manifest declares no optionalDependencies, so this arm checks nothing");
+  const doc = readFileSync(OUTPUT, "utf8");
+  const paragraph = /Installed with this product by npm, and not part of it:[^\n]*/.exec(doc)?.[0] ?? "";
+  for (const name of optional) {
+    const q = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.ok(!new RegExp(`^## ${q}@`, "m").test(doc), `${name} is attributed under "This product bundles", which claims this product distributes it`);
+    assert.ok(!new RegExp(`^## ${q}-`, "m").test(doc), `a platform package of ${name} is attributed, so this file now depends on the machine that generated it`);
+    assert.ok(paragraph.includes(`\`${name}\``), `${name} is installed with the product and the notices file does not say so`);
+  }
 });

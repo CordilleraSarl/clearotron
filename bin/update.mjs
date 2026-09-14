@@ -301,22 +301,45 @@ export async function update(argv = process.argv.slice(2)) {
   }
 
   if (packaged) {
+    // ONE NPM RUN, WITH THE LAUNCHER PUT BACK AFTER IT, and both branches below install through it, so
+    // neither can run npm and forget the second half. npm puts its own link back at
+    // `<prefix>/bin/clearotron` on every install, over the launcher the install wrote, and that link runs
+    // whichever `node` is first on PATH. Put the launcher back, but only over npm's link or our own:
+    // anything else there was not ours before this update either.
+    const reinstall = () => {
+      const rc = runInCheckout("npm", packaged.npmArgs);
+      if (rc !== 0) return rc;
+      const kind = inspectShim(shimPath()).kind;
+      if (kind === "npm-link" || kind === "ours" || kind === "ours-other-install") {
+        const shim = installShim();
+        if (!shim.ok) console.error(`\n  The update worked, but the launcher at ${shim.path ?? "~/.local/bin/clearotron"} could not be written back: ${shim.detail}.`);
+      }
+      return 0;
+    };
     if (packaged.current) {
-      say(`\n  This install is ${packaged.installed}, and nothing newer is published (${packaged.tag}: ${packaged.version}). Nothing was touched.\n`);
+      say(`\n  This install is ${packaged.installed}, and nothing newer is published (${packaged.tag}: ${packaged.version}).`);
+      // CURRENT STILL REFRESHES THE ENGINE PROGRAMS. Claude Code and the Codex CLI are installed with this
+      // package as optional dependencies at "this version or newer", and a package carries no lockfile, so
+      // npm resolves them afresh on every install: running the same install at the SAME version moves them
+      // to the newest their vendors publish (measured with npm 10.9.8, 2026-09-14). A machine's own copy on
+      // PATH updates itself and is used first; this keeps the installed fallback from falling behind it.
+      //
+      // ONLY AT THE PUBLISHED VERSION. `current` also covers an install NEWER than anything published, a
+      // local build, and re-running the install there would replace it with the older published one.
+      if (packaged.version !== packaged.installed) {
+        say("  It is not a published version, so there is nothing to refresh the engine programs from. Nothing was touched.\n");
+        return 0;
+      }
+      say("  Refreshing the Claude Code and Codex programs installed with it.");
+      const rc = reinstall();
+      if (rc !== 0) return rc;
+      say("\n  Refreshed. Clearotron itself was already current; restart the services so they use the refreshed programs.\n");
       return 0;
     }
     if (packaged.unread) say(`\n  npm did not say which versions are published, so this follows the ${packaged.tag} channel.`);
     say(`\n  Updating this install at ${packaged.prefix} from ${packaged.installed ?? "an unreadable version"} to clearotron@${packaged.spec}.`);
-    const rc = runInCheckout("npm", packaged.npmArgs);
+    const rc = reinstall();
     if (rc !== 0) return rc;
-    // npm puts its own link back at `<prefix>/bin/clearotron` on every install, over the launcher the
-    // install wrote, and that link runs whichever `node` is first on PATH. Put the launcher back, but only
-    // over npm's link or our own: anything else there was not ours before this update either.
-    const kind = inspectShim(shimPath()).kind;
-    if (kind === "npm-link" || kind === "ours" || kind === "ours-other-install") {
-      const shim = installShim();
-      if (!shim.ok) console.error(`\n  The update worked, but the launcher at ${shim.path ?? "~/.local/bin/clearotron"} could not be written back: ${shim.detail}.`);
-    }
     say("\n  Updated. An assistant starts the new version the next time it launches Clearotron; restart the services for the portal.\n");
     return 0;
   }

@@ -42,6 +42,15 @@ function ourNames(root) {
   return names;
 }
 
+/**
+ * What this product has npm install BESIDE it rather than bundle: the root manifest's
+ * `optionalDependencies`, name → declared range. Today that is the two engine programs, Claude Code and
+ * the Codex CLI. Read from the manifest for the reason `ourNames` gives: a list written here goes stale.
+ */
+export function installedWithRanges(root) {
+  return new Map(Object.entries(JSON.parse(readFileSync(join(root, "package.json"), "utf8")).optionalDependencies ?? {}));
+}
+
 const licenceOf = (p) => {
   const l = p.license ?? p.licenses;
   if (typeof l === "string") return l;
@@ -276,10 +285,20 @@ export function collect(root = ROOT, tree = npmTree(root), { linkTarget = defaul
   // So the omission was never about `fast-uri`: it is every transitive dependency of any package
   // whose stub occurrence happens to sort first. Rows still dedupe by `name@version` — a package is
   // attributed once — but DESCENT now follows the occurrence that actually has children.
+  // ── THE ENGINE PROGRAMS ARE INSTALLED WITH THIS PRODUCT, NOT BUNDLED IN IT ─────────────────────────
+  //
+  // Claude Code and the Codex CLI are root `optionalDependencies`: npm downloads each from its vendor at
+  // install time, and no byte of either is in this package. So they are not rows under "This product
+  // bundles"; they are named in a paragraph of their own (render). Excluded by the manifest's own list,
+  // never by a name written here, and at the ROOT only: the platform packages each one pulls sit beneath
+  // it, so skipping the descent excludes them too, and with them the per-platform rows that would make
+  // this file differ by the machine that generated it.
+  const installedWith = installedWithRanges(root);
   const seen = new Map();
   const descended = new Set();
   (function walk(node) {
     for (const [name, d] of Object.entries(node.dependencies ?? {})) {
+      if (node === tree && installedWith.has(name)) continue;
       const key = `${name}@${d.version}`;
       // Prefer an occurrence that carries a real path: a stub's is often absent, and the path is
       // where the licence text is read from.
@@ -327,12 +346,20 @@ export function collect(root = ROOT, tree = npmTree(root), { linkTarget = defaul
     rows.push({ name, version, installed: true, licence: licenceOf(pkg), repository: repoOf(pkg), textFile, text });
   }
   // — `rows: ` makes "no production dependency ships without a licence" pass over nothing, and
-  // renders an attributions file claiming the product bundles nothing. Neither is an answer.
-  return nonEmpty(rows, "collect(): the production dependency rows npm resolved");
+  // renders an attributions file claiming the product bundles nothing. Neither is an answer. Asked of the
+  // bundled rows alone, before the rows below join them, or those would make it pass over nothing.
+  const bundled = nonEmpty(rows, "collect(): the production dependency rows npm resolved");
+  // Each named with the range the manifest declares, and nothing that depends on this machine: the version
+  // npm happened to install here, and which platform package came with it, differ by machine; this file
+  // must not.
+  for (const [name, range] of installedWith)
+    bundled.push({ name, version: null, range, installed: false, installedWith: true, licence: null, repository: null, textFile: null, text: null });
+  return bundled;
 }
 
 export function render(allRows) {
-  const notInstalled = allRows.filter((r) => !r.installed);
+  const installedWith = allRows.filter((r) => r.installedWith);
+  const notInstalled = allRows.filter((r) => !r.installed && !r.installedWith);
   const rows = allRows.filter((r) => r.installed);
   const unlicensed = rows.filter((r) => !r.licence);
   const noText = rows.filter((r) => r.licence && !r.text);
@@ -351,6 +378,13 @@ export function render(allRows) {
     `${rows.length} packages.`,
     "",
   ];
+  if (installedWith.length) head.push(
+    "> **Installed with this product by npm, and not part of it:** "
+      + installedWith.map((r) => `\`${r.name}\` (${r.range})`).join(", ") + ".",
+    "> They are declared as optional dependencies, so npm downloads each one from its vendor's registry at",
+    "> install time. No part of them is in this package, and each is governed by its vendor's own licence",
+    "> terms rather than by this product's. They are named here and not attributed below, because this",
+    "> file lists what this product bundles.", "");
   if (unlicensed.length) head.push(
     "> **Packages declaring no licence:** " + unlicensed.map((r) => `\`${r.name}@${r.version}\``).join(", ") + ".",
     "> An unlicensed package is not permissively licensed; it is all rights reserved by default. Listed",

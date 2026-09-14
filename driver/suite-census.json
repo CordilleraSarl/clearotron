@@ -581,7 +581,7 @@
         },
         "a-real-dispatch-records-the-tool-that-served-it.test.mjs": {
           "tests": 1,
-          "asserts": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -695,7 +695,7 @@
         },
         "a-run-records-the-tool-that-served-it.test.mjs": {
           "tests": 13,
-          "asserts": 32,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -4312,8 +4312,8 @@
           "todos": 0
         },
         "suite-cannot-reach-a-real-engine.test.mjs": {
-          "tests": 10,
-          "asserts": 26,
+          "tests": 11,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -5074,8 +5074,8 @@
           "todos": 0
         },
         "third-party-notices.test.mjs": {
-          "tests": 14,
-          "asserts": 25,
+          "tests": 15,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },

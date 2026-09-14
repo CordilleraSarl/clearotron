@@ -33,6 +33,12 @@ export function handRunEnv(extra = {}, base = process.env) {
   const env = { ...base };
   delete env.CLEAROTRON_NO_ENV_FILE;
   delete env.INVOCATION_ID;
+  // THE SUITE'S "NO INSTALLED ENGINE COPY" TRAVELS INTO A COMPOSED ENVIRONMENT TOO. scripts/test-run.mjs
+  // points the engine resolver's last step at an empty directory, because on a checkout where `npm ci` ran,
+  // the copy installed with Clearotron is a REAL program; a drive that composes its environment from
+  // nothing would otherwise hand its command a real engine. `extra` can still set it, or remove it.
+  if (process.env.CLEAROTRON_BUNDLED_ENGINES_DIR && !("CLEAROTRON_BUNDLED_ENGINES_DIR" in env))
+    env.CLEAROTRON_BUNDLED_ENGINES_DIR = process.env.CLEAROTRON_BUNDLED_ENGINES_DIR;
   for (const [k, v] of Object.entries(extra)) {
     if (v === undefined) delete env[k];
     else env[k] = v;

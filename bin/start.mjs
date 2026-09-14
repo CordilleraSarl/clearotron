@@ -85,7 +85,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
 // the driver must not point at `bin/`.
 import { runRequiredNames, missingRequirements } from "../driver/run-requirements.mjs";
-import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE } from "../driver/driver.config.mjs";
+import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
 
 /**
  * The tables the requirements authority needs — resolved at CALL time, never at module scope.
@@ -106,7 +106,7 @@ import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE } from "../dri
  */
 async function runTables() {
   const { PROVIDERS } = await import("./onboard.mjs");
-  return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE };
+  return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE, resolveEngine: resolveEngineProgram };
 }
 import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal } from "../shared/store-in-repo.mjs";   //

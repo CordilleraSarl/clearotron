@@ -43,6 +43,14 @@ const ONBOARD = join(REPO, "bin", "onboard.mjs");
 const NODE_BIN = mkdtempSync(join(tmpdir(), "onboard-node-"));
 symlinkSync(process.execPath, join(NODE_BIN, "node"));
 
+/**
+ * A directory with no packages in it, for `run()` to hand the engine resolver as the place to find the
+ * copy installed with Clearotron. On a checkout where `npm ci` ran, node_modules holds the REAL engine
+ * programs, and the resolver's last step finds them without PATH, so a hermetic PATH alone no longer means
+ * "no engine on this machine".
+ */
+const NO_BUNDLE = mkdtempSync(join(tmpdir(), "onboard-no-bundle-"));
+
 /** Run the CLI with the ambient environment stripped — the shell this test runs in has real credentials. */
 function run(args, env = {}) {
   try {
@@ -91,7 +99,7 @@ function run(args, env = {}) {
       // measured: this file passes with both set in the parent.
       env: {
         HOME: env.HOME ?? tmpdir(), PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"),
-        CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...env,
+        CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_BUNDLED_ENGINES_DIR: NO_BUNDLE, ...env,
       },
     });
     return { code: 0, out };

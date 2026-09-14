@@ -781,8 +781,8 @@ async function runTables() {
   // doctor` exit 13 after printing most of a report.
   if (!__runTables) {
     const { PROVIDERS } = await import("../bin/onboard.mjs");
-    const { ENGINE_BINARIES, DEFAULT_ENGINE_ID } = await import("./driver.config.mjs");
-    __runTables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
+    const { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } = await import("./driver.config.mjs");
+    __runTables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
   }
   return __runTables;
 }

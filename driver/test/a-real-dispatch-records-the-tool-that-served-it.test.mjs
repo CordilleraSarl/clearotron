@@ -59,6 +59,8 @@ for (const [engine, { version, env }] of Object.entries(ENGINES)) {
         const last = rows[rows.length - 1];
         assert.equal(last.cliVersion, version, `${where} does not carry the version the binary answered: ${JSON.stringify(last).slice(0, 240)}`);
         assert.equal(last.cliVersionProbe, "ok", `${where} does not say the probe answered`);
+        assert.equal(last.cliSource, "explicit",
+          `${where} does not say which copy served; this arm names its stand-in by path, which is the explicit setting`);
       }
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });

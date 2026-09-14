@@ -21,12 +21,17 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
-import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
-const claudeBin = () => envFrom(process.env, "CLEAROTRON_CLAUDE_PATH") || "claude";
+// ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
+// then PATH, then the copy installed with Clearotron. What it found is spawned by ABSOLUTE path, because a
+// bare word lets spawn(2) walk PATH on its own and never reach the installed copy. When nothing resolved,
+// what was asked for is spawned unchanged, so that failure reads exactly as it always has; the run door
+// (preflightEngineBinary) refuses that case before any stage runs.
+const claudeBin = () => { const r = resolveEngineProgram("anthropic-agent"); return r.resolved ?? r.bin; };
 
 // AUTH TOGGLE (config, not code). The subscription path is the cost-saving default: claude -p with NO
 // ANTHROPIC_API_KEY in its env falls back to the OAuth subscription credentials (apiKeySource:"none" →

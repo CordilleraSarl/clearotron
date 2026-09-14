@@ -101,9 +101,9 @@ const val = (env, name) => String(env?.[name] ?? "").trim();
  * environment in hand: the composer has the supervisor's, and the guard has the one it just wrote into
  * the unit file. A function that read the ambient environment would answer about neither.
  *
- * PURE.
+ * PURE, apart from the engine resolver a caller passes in `tables.resolveEngine` (see the engine row).
  */
-export function runRequirements(env = {}, { registers = [], engines = {}, defaultEngine = null } = {}) {
+export function runRequirements(env = {}, { registers = [], engines = {}, defaultEngine = null, resolveEngine = null } = {}) {
   const out = [];
   const push = (name, blocking, why, at = ORDER) =>
     out.push({ name, blocking, why, at, present: Boolean(val(env, name)) });
@@ -128,9 +128,20 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
 
   // ── THE ENGINE, AND THE BINARY IT DRIVES ─────────────────────────────────────────────────────────
   push(ENGINE_ENV, true, "which reasoning engine runs the stages");
-  const engine = (engines ?? {})[val(env, ENGINE_ENV) || defaultEngine || ""];
-  if (engine?.env)
+  const engineId = val(env, ENGINE_ENV) || defaultEngine || "";
+  const engine = (engines ?? {})[engineId];
+  if (engine?.env) {
     push(engine.env, true, `the path to the ${engine.vendor} CLI this engine drives — a stage cannot dispatch without it`);
+    // FOUND IS WHAT COUNTS, NOT SET. A program on this environment's PATH, or the copy installed with
+    // Clearotron, needs no path written anywhere, and asking only whether the variable was set refused an
+    // install whose engine the run door would have started. The resolver arrives through the tables, like
+    // everything else this module knows, so the module imports nothing; a caller that passes no resolver
+    // gets the variable's own answer, which is all it can see.
+    const row = out[out.length - 1];
+    if (!row.present && typeof resolveEngine === "function") {
+      try { row.present = Boolean(resolveEngine(engineId, { env })?.resolved); } catch { /* not found is not present */ }
+    }
+  }
   if (engine?.authEnv)
     push(engine.authEnv, false, "how the engine bills — subscription or key; the adapter refuses before spending if the sign-in it names is absent");
 

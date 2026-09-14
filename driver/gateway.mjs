@@ -1170,9 +1170,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // "written before anybody asked", which is the distinction the field exists for. One spawn per
     // binary per process; a probe never throws, because taking down a dispatch to record a version
     // would be a worse defect than the gap it closes.
+    // `source` says WHICH copy served (explicit / path / bundled), and it is attached here, outside the
+    // probe's cache: that cache is keyed by the file, and one file can be reached by more than one route.
     const cli = (() => {
-      try { return probeCliVersion(preflightEngineBinary(process.env)?.resolved ?? null); }
-      catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160) }; }
+      try {
+        const pre = preflightEngineBinary(process.env);
+        return { ...probeCliVersion(pre?.resolved ?? null), source: pre?.source ?? null };
+      } catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160), source: null }; }
     })();
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
     // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
@@ -1638,7 +1642,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // Written even on the rows where they are null, so "this engine cannot report" stays visibly
         // different from "this record predates the gauge".
         modelActual, modelBasis, modelSnapshot, modelMismatch,
-        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
+        cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
         // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
         // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
         // — the actual proof is the provider console (claude's stream also reports apiKeySource; codex does
@@ -1776,7 +1780,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
           model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch,
-          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}),
+          cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
           rescued: rescued ?? undefined, killed: killed || undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row

@@ -147,12 +147,19 @@ test("every production package npm resolves has a notices entry", (ctx) => {
     .filter(Boolean));
   nonEmpty([...ours], "no local package names were derived, so our own workspaces would read as third parties");
 
+  // THE ENGINE PROGRAMS NPM INSTALLS BESIDE THE PRODUCT ARE NOT BUNDLED IN IT. Read from the root
+  // manifest's own `optionalDependencies`, not from the generator, and excluded with everything beneath
+  // them (their per-platform packages): npm fetches them from their vendors at install time, so they carry
+  // no attribution here. The paragraph the generator writes for them instead is checked in
+  // third-party-notices.test.mjs.
+  const installedWith = new Set(Object.keys(JSON.parse(readFileSync(join(REPO, "package.json"), "utf8")).optionalDependencies ?? {}));
   const resolved = new Map();
   const stack = [tree];
   const guard = new Set();
   while (stack.length) {
     const node = stack.pop();
     for (const [name, d] of Object.entries(node?.dependencies ?? {})) {
+      if (node === tree && installedWith.has(name)) continue;
       if (d?.version && !ours.has(name)) resolved.set(`${name}@${d.version}`, name);
       const id = `${name}@${d?.version}@${d?.path ?? ""}`;
       if (d?.dependencies && !guard.has(id)) { guard.add(id); stack.push(d); }
