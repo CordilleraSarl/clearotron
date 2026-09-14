@@ -430,8 +430,42 @@ test("stop_run (queue-id form): scoped sessions get 'not-found' for foreign jobs
   assert.equal(ok.action, "dequeued");
   const full = await stopRun({ id: foreign.id }, { scope: { kind: "ops", sub: "x", accounts: "*" } });
   assert.equal(full.action, "dequeued", "a full-grant session dequeues anything");
-  // scoped start_run must name profileKey explicitly (the forwarderDomain resolution bypass is closed)
-  assert.throws(() => startRun({ markName: "X", forwarder: "req", classes: [9] }, { scope: scoped }), /profileKey explicitly/);
+  // a scoped start_run whose session cannot reach the neutral profile is still refused, and the job is
+  // still never resolved from the requester's domain (the forwarderDomain bypass is closed)
+  assert.throws(() => startRun({ markName: "X", forwarder: "req", classes: [9] }, { scope: scoped }), /names no account/);
+});
+
+// ── A CLIENT WITH NO ACCOUNT IS NOT A REFUSAL ─────────────────────────────────────────────────────────
+//
+// The connector's own instructions tell an assistant to leave profileKey out for a customer that does
+// not exist yet, and on an accounts-scoped session that omission threw. A reviewing lawyer commissioning
+// a clearance for a NEW client was stopped by it with nothing to do next, which is the whole cost: the
+// assistant had been briefed that the case is non-blocking, so it could not explain the block either.
+//
+// The bypass the gate exists for is an UNTAGGED job, which the runner could resolve to a foreign
+// customer from the requester's email domain. Tagging the job closes that as completely as refusing it
+// does, so where the session's access covers the neutral profile the door writes the key in.
+//
+// Driven through the door rather than against the helper, and read out of the QUEUE FILE, because what
+// matters is the account the runner is handed — not what the door returned to the caller.
+test("start_run: an accounts-scoped session whose access covers the neutral profile may omit profileKey — the job goes out TAGGED generic", () => {
+  const holdsGeneric = { kind: "ops", sub: "connector", accounts: ["aurora", "generic"] };
+  const r = startRun({ markName: "NEWCLIENTA", forwarder: "req", classes: [9] }, { scope: holdsGeneric });
+  assert.equal(r.ok, true, JSON.stringify(r));
+  const job = JSON.parse(readFileSync(r.queuePath, "utf8"));
+  assert.equal(job.profileKey, "generic",
+    "an omitted key must reach the runner as the neutral profile, never as an untagged job it could resolve from a domain");
+
+  // CONTROL, and it is the half that proves the arm is measuring the grant rather than the omission: the
+  // same call on a session that does NOT hold the neutral profile is still refused.
+  const noGeneric = { kind: "ops", sub: "connector", accounts: ["aurora"] };
+  assert.throws(() => startRun({ markName: "NEWCLIENTB", forwarder: "req", classes: [9] }, { scope: noGeneric }),
+    /portal/, "a refusal with no next step in it is what stopped the search this arm is named for");
+
+  // And naming a key the session does not hold is untouched by any of it — that gate is the face's.
+  const named = startRun({ markName: "NEWCLIENTC", forwarder: "req", classes: [9], profileKey: "aurora" }, { scope: holdsGeneric });
+  assert.equal(JSON.parse(readFileSync(named.queuePath, "utf8")).profileKey, "aurora",
+    "an explicitly named account is never rewritten to the neutral profile");
 });
 
 test("start_run: per-run scope rides the MCP door and lands NORMALIZED in the queue file", () => {

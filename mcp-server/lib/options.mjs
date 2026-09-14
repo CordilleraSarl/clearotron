@@ -331,7 +331,7 @@ export function describeOptions(args = {}, { scope, now = Date.now() } = {}) {
   const account = accountFor(key, { scope, now });
   const granted = scope?.accounts;
   // The profileKey discovery answer: several accounts held, none named. Listing the KEYS (and, where the
-  // roster reads, their names) is what turns "an accounts-scoped session must set profileKey explicitly"
+  // roster reads, their names) is what turns "this session holds [...] and the request names no account"
   // from a dead end into a question the assistant can put to its user.
   const accountsGranted = !account && Array.isArray(granted) && granted.length
     ? granted.map((k) => {

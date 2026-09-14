@@ -42,9 +42,16 @@ Extract from the request, faithfully (verbatim beats paraphrase):
   where the report goes; a wrong route misdelivers a confidential document.
 - **`profileKey`** — call **`list_profiles`** and resolve by JUDGMENT: an explicit name, a
   misspelling (a name typed as it sounds), or an implicit reference ("our functional-beverage client") all
-  map to a key. OMIT it for a new/unknown customer (the neutral generic profile applies — this is
-  non-blocking by design). Ask the requester only when you genuinely cannot tell. **Never pick a
+  map to a key. OMIT it for a new/unknown customer: the search runs under the neutral **generic**
+  profile, which carries this deployment's standard framework, territories and marketplaces. This is
+  non-blocking by design — a customer who does not exist yet is never a reason to refuse a search. Say
+  so to the requester, and offer the other way forward in the same breath: their own company can be set
+  up in the portal first, so its framework, territories and marketplaces apply instead. Ask the
+  requester only when you genuinely cannot tell which existing customer is meant. **Never pick a
   profile from the sender's email domain.**
+  If your session's access does not cover the generic profile, the refusal says that in those words —
+  an access question, not a fault in the request. Relay it, name the customers the session does hold,
+  and offer the portal route.
 - **`customer`** — the applicant/owner name as stated. Omitting it arms the engine's late-bind
   watch; supply it later via `feed_context` when the requester answers.
 - **`upfrontInstructions`** — the requester's per-mark guidance, VERBATIM. Do not summarize away
