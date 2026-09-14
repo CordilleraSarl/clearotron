@@ -87,15 +87,19 @@ const killEscalateMs = () => Math.max(50, Number(process.env.CLEAROTRON_KILL_ESC
 // clock, so the watchdog never trips). Default 64MB (gateway parity); CLEAROTRON_ENGINE_MAX_BUFFER shrinks it for tests.
 const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_ENGINE_MAX_BUFFER || 64 * 1024 * 1024));
 
-// tier/alias → claude -p model alias. haiku passes straight through (claude understands the alias —
-// the 2026-06-16 capture used `--model haiku`). opus and sonnet are PINNED to their full model names
-// (claude-opus-5 / claude-sonnet-5) rather than the bare "opus"/"sonnet" aliases, so they no longer
-// silently drift to whatever Anthropic/the CLI currently calls "opus"/"sonnet" — matching the driver's
-// reproducibility conventions (warm-resume same-model, PURE-FILE replay). opus was bumped off the
-// floating "opus" alias to the pinned claude-opus-5 on 2026-07-27: the bare alias still resolved to
-// claude-opus-4-8 on the live CLI (2.1.209) at the time, so this is a real, GRADE-MOVING model change
-// validated in the paid A/B (CONTRACT §3), never on $0 replay — same price as 4.8 ($5/$25). The
-// non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
+// tier/alias → claude -p model alias. EVERY TIER GOES AS THE VENDOR'S OWN ALIAS — opus, sonnet, haiku,
+// fable — so the CLI serves the newest model of that family, and a new one arrives with no edit here.
+// opus and sonnet were pinned to claude-opus-5 / claude-sonnet-5 from 2026-07-27, when the bare "opus"
+// still resolved to Opus 4.8 on the live CLI (2.1.209). The pin was reversed on 2026-09-14, for two
+// reasons. A hand-pinned id is a silent downgrade on every clearance from the day a better model ships.
+// And on Bedrock, Vertex and Foundry the CLI resolves an alias through the vendor's own
+// ANTHROPIC_DEFAULT_OPUS_MODEL / _SONNET_MODEL / _HAIKU_MODEL, which an exact id bypasses: a cloud with
+// no deployment of that exact name refuses the turn. The cost is that a model can move under a clearance
+// without a test; the witness is the id the CLI reports, recorded on every attempt row (`modelActual`)
+// and on the published run. To hold a tier still, set the vendor's variable in the env file
+// (ANTHROPIC_DEFAULT_OPUS_MODEL=<id>): the stage's environment is the driver's, so it reaches the CLI
+// with no setting of Clearotron's own. A catalog id a caller names (anthropic/claude-opus-5) still goes
+// as that exact id. The non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
 // substituted with an anthropic model (also GRADE-MOVING, A/B-only); their bare-alias substitutes
 // (e.g. deepseek → "opus") are legacy aliases no stage names today, intentionally left un-pinned. They
 // stay registered so a stage that names one is SUBSTITUTED loudly rather than caught by the regex
@@ -118,7 +122,7 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // non-GPT id. That is the issue's requirement in one line: an unhonoured model override is an error,
 // not a substitution.
 const CLAUDE_MODEL = {
-  opus: "claude-opus-5", sonnet: "claude-sonnet-5", haiku: "haiku", fable: "fable",
+  opus: "opus", sonnet: "sonnet", haiku: "haiku", fable: "fable",
   "anthropic/claude-opus-5": "claude-opus-5", "anthropic/claude-sonnet-5": "claude-sonnet-5",
   "anthropic/claude-sonnet-4-6": "sonnet", "anthropic/claude-haiku-4-5": "haiku",
 };

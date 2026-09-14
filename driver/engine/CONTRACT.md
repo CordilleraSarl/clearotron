@@ -139,8 +139,8 @@ Stages must name **abstract tiers**, not provider aliases. Per-engine maps:
 
 | tier | role (stage examples) | anthropic-agent (claude alias) | openai-agent (codex `-m`) |
 |---|---|---|---|
-| `judgment` | matter-frame, register-digest, synthesis, narrative-refutation | `claude-opus-5` (pinned) | `$CLEAROTRON_OPENAI_MODEL_JUDGMENT` |
-| `sweep` | register-unit, case-law, skeptic, report-overview, report-card | `claude-sonnet-5` (pinned) | `$CLEAROTRON_OPENAI_MODEL_SWEEP` |
+| `judgment` | matter-frame, register-digest, synthesis, narrative-refutation | `opus` | `$CLEAROTRON_OPENAI_MODEL_JUDGMENT` |
+| `sweep` | register-unit, case-law, skeptic, report-overview, report-card | `sonnet` | `$CLEAROTRON_OPENAI_MODEL_SWEEP` |
 | `cheap` | saturation-probe | `haiku` | `$CLEAROTRON_OPENAI_MODEL_CHEAP` |
 
 **AN UNHONOURED OVERRIDE IS AN ERROR, NOT A SUBSTITUTION** ( corruption 3, 2026-08-03). This
@@ -150,7 +150,11 @@ anthropic engine, "grade-moving, validated only in the paid A/B". The substituti
 and could not be: the telemetry logged the alias that was ASKED FOR, so an arm run at gemini reported
 gemini and ran sonnet. Both tiers are gone — the failover chain was deleted in and both stages
 declare an anthropic tier in `STAGES` — and every engine's model map now **refuses** an alias it cannot
-run (`claudeModel`, `openaiModel`). A concrete provider id passes through; anything else throws.
+run (`claudeModel`, `openaiModel`). On the anthropic engine a tier goes as the vendor's alias, a catalog
+id in the table (`anthropic/claude-opus-5`) goes as itself, a bare or dated `claude-*` id goes as its
+family's alias, and anything else throws. To hold a tier on one model, set the vendor's own
+`ANTHROPIC_DEFAULT_OPUS_MODEL` / `_SONNET_MODEL` / `_HAIKU_MODEL`; it reaches the CLI through the stage's
+environment.
 
 **Model provenance — two fields, never collapsed.** Every dispatch row (`_driver/<stage>.jsonl`) and
 every `attempt` row (`_driver/run.jsonl`) carries:

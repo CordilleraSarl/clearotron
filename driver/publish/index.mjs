@@ -17,7 +17,7 @@ import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, join
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
 import { parseFrameworkManifest } from '../framework.mjs';
-import { rollupTokens } from '../tokens.mjs';
+import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
 import { deliveryFlagLines } from '../predelivery-lint.mjs';
@@ -1052,8 +1052,13 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // rather than wire the overlay in: client names saturate privileged report prose — a partial blur is a
   // worse demo than no toggle.
   const reportNav = siteNav(poolRoot, 'report', null, '../', { anon: false });
+  // The models that served this run, as the engine reported them (tokens.mjs servedModels). The closing
+  // line of the report's scope section, the data file and the meta below all take this one read; a read
+  // that throws records nothing rather than failing the publish.
+  let served = null;
+  try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
   // `demoData` is resolved above the report.md write — one answer, every surface.
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1127,7 +1132,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // is the LAST resort (a level today's registry no longer knows). meta.json below keeps the frozen
       // stamp BY DESIGN — its readers re-derive.
       auditFile, searchLevel: searchPolicy?.level ?? null, stageLabel: stageLabel ?? searchPolicy?.stageLabel ?? null,
-      engineCommit: engineCommit(),
+      engineCommit: engineCommit(), servedModels: served,
       framework, verdictInfo, findings, coverage, contextNotes, markAssessment, fourAnswers, askAnswers,
       actions: actionsRegister, jurisdiction, searchedJurisdictions, scopeBasis, caption: fm.overall_caption ?? null,
     });
@@ -1152,6 +1157,9 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     issuedAt,
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
     engineCommit: engineCommit(),
+    // The models that served the run, as reported (tokens.mjs servedModels). Absent when nothing was
+    // read, so a meta written before the record existed keeps its shape; [] when turns ran and named none.
+    servedModels: served ?? undefined,
     kind: 'clearance', recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
     searchLevel: searchPolicy?.level ?? undefined,
     // Display-only face of the level ("Depth 4"), frozen alongside it so the list can show which reads

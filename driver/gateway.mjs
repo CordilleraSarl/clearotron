@@ -1170,7 +1170,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // "written before anybody asked", which is the distinction the field exists for. One spawn per
     // binary per process; a probe never throws, because taking down a dispatch to record a version
     // would be a worse defect than the gap it closes.
-    // `source` says WHICH copy served (explicit / path / bundled), and it is attached here, outside the
+    // `source` says WHICH copy served (explicit / path / installed), and it is attached here, outside the
     // probe's cache: that cache is keyed by the file, and one file can be reached by more than one route.
     const cli = (() => {
       try {

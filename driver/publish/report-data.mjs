@@ -67,7 +67,7 @@ function assessmentField(v) {
  * "no data file this publish" and stamps meta.reportSchema only on success.
  */
 export function clearanceReportData({
-  runId, codename, matter, markName, title, customerKey, issued, url, auditFile, engineCommit = null,
+  runId, codename, matter, markName, title, customerKey, issued, url, auditFile, engineCommit = null, servedModels = null,
   searchLevel, stageLabel, framework, verdictInfo, findings, coverage, contextNotes,
   markAssessment, fourAnswers, askAnswers, actions, jurisdiction, searchedJurisdictions, scopeBasis, caption,
 } = {}) {
@@ -90,6 +90,9 @@ export function clearanceReportData({
     issued: issued || null,
     // The engine build that produced this report — the join from a flagged finding to a diff.
     engineCommit: engineCommit || null,
+    // The models that served the run, as the engine reported them, in first-use order (tokens.mjs
+    // servedModels). null when nothing was read, never the tier a stage asked for.
+    servedModels: Array.isArray(servedModels) ? servedModels : null,
     url: url || null,
     auditFile: auditFile || null,
     level: { searchLevel: searchLevel ?? null, stageLabel: stageLabel ?? null },

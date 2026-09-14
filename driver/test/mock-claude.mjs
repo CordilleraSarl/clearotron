@@ -91,8 +91,9 @@ const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
 // field, so a mock that ignores --model would report a mismatch on every honest turn.
 //
 // The real CLI echoes the model it resolved, in ITS OWN naming — a dated id for haiku
-// ("claude-haiku-4-5-20251001", the form driver.config's normaliser exists for), the pinned catalog
-// names for opus/sonnet. The table is keyed on what `claudeModel()` actually passes on the wire.
+// ("claude-haiku-4-5-20251001", the form driver.config's normaliser exists for), the undated catalog
+// names for opus/sonnet, which is what the vendor's aliases served when this was written. The table is
+// keyed on what `claudeModel()` actually passes on the wire: the alias, or a catalog id a caller named.
 //   MOCK_CLAUDE_WIRE_MODEL=<id> — report <id> INSTEAD, whatever was asked for. That is the substitution
 //     fixture: the shape `--model gemini` had when it logged gemini and ran sonnet.
 const mIdx = argv.indexOf("--model");

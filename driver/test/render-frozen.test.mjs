@@ -1769,7 +1769,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "8dd38aef74b3e67f0528273cbd135c8321665784d46f6820535016c55d18fc64";
+// Advanced again by the break recorded above the FROZEN constant: the closing line naming the models that
+// served the search, a behaviour change and not licence-only, so both constants move.
+const FROZEN_BEFORE_SPDX = "620dbacc4e2f4a3719c11baffbd9bd11be1cb0370c48d2b6b3f490b1e66635fa";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2044,7 +2046,26 @@ const FROZEN_BEFORE_SPDX = "8dd38aef74b3e67f0528273cbd135c8321665784d46f68205350
 //
 // The renderer's own lines are edited in place and its two new helpers sit at the end of the file, so no
 // line the rest of the tree cites by number moved.
-const FROZEN = "9303411196d233dc66e216474335f041b6084e4af4b30f9936c8bb618a72ae77";
+//
+// THE MODELS THAT SERVED THE SEARCH, as one closing line of Scope (2026-09-14). Every tier now goes to the
+// program as the vendor's alias, so the tier a stage asked for names no model; the ids the engine reported
+// for its turns are the record, and the owner asked for them on the report. The file's own checklist,
+// answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES. doRepublish re-renders from the archived workspace, whose
+//      attempt rows carry the id the engine reported, so a re-rendered run gains one line naming the
+//      models that served it. That adds provenance; no finding, band, count, record or date moves. A run
+//      with no such rows renders as before, and that is MEASURED: the three committed clearance demos and
+//      the knockout demo, republished through the ordinary publisher before and after this change, gave
+//      report.html and meta.json that differ only in the issue stamp, and a report-data.json that gains
+//      only `"servedModels": null`.
+//   2. Could it live in report.css or brand.mjs? NO. It is words read from the run's own record.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The renderer's own lines are edited in place and its one new helper sits at the end of the file, so no
+// line the rest of the tree cites by number moved.
+const FROZEN = "d5cf5847ed5a58b56f8a0645a5db3447c8c206c03785e23722b3f4ca1b999992";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

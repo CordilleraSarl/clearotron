@@ -47,7 +47,7 @@ import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLi
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
-import { demoBannerHtml } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
+import { demoBannerHtml, servedModelsLine } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
 // here. `makeClassifyStatus` and `isAllClass` are the screening lane's own, already shipped, already
 // fail-open; re-deriving either in a renderer would be this file starting a second status vocabulary,
@@ -1544,6 +1544,10 @@ export function renderKnockoutHtml(findings, framework, {
   // renders the same plain "Privileged & Confidential" this template always printed — so the ~15 unit
   // fixtures and both render-check scripts, none of which pass one, are unchanged by its arrival.
   delivery = null,
+  // The models that served the batch, as the engine reported them (tokens.mjs servedModels): the scope
+  // section's closing line. Defaults to null, so a fixture or an archived run that passes none renders
+  // as it always did.
+  servedModels = null,
   // — IS THIS AN INVENTED MARK? This template had no demo handling of any kind, so
   // every demo knockout shipped looking real: an invented mark, a real register basis, a real-looking
   // risk assessment, a published URL, and nothing saying the matter is fiction. The clearance template
@@ -1721,7 +1725,7 @@ window.addEventListener('beforeprint',o);})();</script>
     ${newCaveats.length ? `<p class="ko-scope" style="border-top:1px solid var(--line)">${CAVEAT_LEAD}<br>${newCaveats.map((c) => inlineMd(c)).join('<br>')}</p>` : ''}
     ${auditFile ? `<p class="ko-scope" style="border-top:1px solid var(--line)"><a href="${escAttr(auditFile)}">Download the audit workbook (Excel)</a> — every search run, every negative result, and the working notes behind these ratings.${
     citedFindings ? ` The reference beside each common-law conflict above (for example <span class="mono">${esc(firstRef(marks, framework))}</span>) is its row on the workbook's Findings sheet.${
-      registerCardCount ? ` A <span class="mono">REG</span> reference is a register filing rather than a common-law conflict — it has no Findings row, and its receipt is the register record the card links.` : ''}` : ''}</p>` : ''}
+      registerCardCount ? ` A <span class="mono">REG</span> reference is a register filing rather than a common-law conflict — it has no Findings row, and its receipt is the register record the card links.` : ''}` : ''}</p>` : ''}${servedModelsLine(servedModels)}
   </div>
   </details>
 
@@ -1746,7 +1750,7 @@ window.addEventListener('beforeprint',o);})();</script>
  * where the working notes live, and a data file that quietly re-admitted them would reopen exactly the
  * leak this series closed.
  */
-export function knockoutReportData(findings, framework, { runId, codename, overall, issued, identity, registerCounts, registerRecords = null, ownerChecks = [], url, auditFile, customerKey, matter }) {
+export function knockoutReportData(findings, framework, { runId, codename, overall, issued, identity, registerCounts, registerRecords = null, ownerChecks = [], url, auditFile, customerKey, matter, servedModels = null }) {
   const marks = findings?.marks ?? [];
   return {
     schema: 'report-data/1',
@@ -1757,6 +1761,9 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
     issued: issued || null,
     url: url || null,
     auditFile: auditFile || null,
+    // The models that served the run, as the engine reported them, in first-use order (tokens.mjs
+    // servedModels). null when nothing was read, never the tier a stage asked for.
+    servedModels: Array.isArray(servedModels) ? servedModels : null,
     level: {
       searchLevel: identity?.level ?? null,
       stageLabel: identity?.stageLabel ?? null,

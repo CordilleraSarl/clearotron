@@ -169,6 +169,47 @@ export function rollupTokens(runDir) {
 }
 
 /**
+ * THE MODELS THAT SERVED THIS RUN, as the engine reported them: distinct ids, in the order each first
+ * served a turn. Read from every attempt row's `modelActual` (gateway.mjs), the id the wire named. Never
+ * the tier a stage asked for: a tier goes to the CLI as the vendor's alias, so the request says nothing
+ * about which model ran, and this is the record that does.
+ *
+ * THREE-VALUED. `null` when there is no attempt row to read (no telemetry directory, or no row in it is
+ * a provider turn), so nothing was looked at. `[]` when attempt rows exist and none names a served model
+ * (an engine that does not report one, a turn killed before it said). An empty list is never a guess.
+ */
+export function servedModels(runDir) {
+  const dDir = driverDir(runDir);
+  let files;
+  try { files = readdirSync(dDir).filter((f) => f.endsWith(".jsonl") && f !== "run.jsonl"); }
+  catch { return null; }
+  const firstSeen = new Map();   // id → the earliest row timestamp that named it
+  let attempts = 0;
+  for (const file of files) {
+    let raw;
+    try { raw = readFileSync(join(dDir, file), "utf8"); } catch { continue; }
+    for (const ln of raw.split("\n")) {
+      if (!ln.trim()) continue;
+      let rec;
+      try { rec = JSON.parse(ln); } catch { continue; }
+      // The same test rollupTokens applies for an attempt row, less the driver's own code-side rows:
+      // no provider served those, so they cannot stand for "a turn ran and named no model".
+      if (!rec || typeof rec.model !== "string" || isCodeSide(rec)) continue;
+      attempts += 1;
+      const id = typeof rec.modelActual === "string" ? rec.modelActual.trim() : "";
+      // `<synthetic>` is the Claude CLI's name for a message it wrote itself, measured in testing on a
+      // turn a cloud refused for a missing deployment (2026-09-14). No model served that turn, so a
+      // bracketed marker is never listed as one.
+      if (!id || /^<.*>$/.test(id)) continue;
+      const ts = String(rec.ts ?? "");
+      if (!firstSeen.has(id) || ts < firstSeen.get(id)) firstSeen.set(id, ts);
+    }
+  }
+  if (!attempts) return null;
+  return [...firstSeen].sort((a, b) => (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0)).map(([id]) => id);
+}
+
+/**
  * Stamp the rollup onto the run: the `token-rollup` event in _driver/run.jsonl plus `status.json.tokens`.
  *
  * Called at EVERY terminal state, not just delivery (2026-07-28). It used to live inline on the publish

@@ -118,6 +118,10 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   **Installed is not usable.** `npx clearotron install` proves the engine can complete a turn before it
   writes anything, and `npx clearotron doctor --probe-engine` re-proves it on a configured box. Both
   spend one cheap turn; plain `doctor` spends nothing.
+
+  **Models follow the vendor.** Each step asks for a tier, opus, sonnet or haiku, and the vendor answers
+  with its newest model of that tier. Every report names the model that ran. To hold a tier at one
+  version, set the vendor's pin, `ANTHROPIC_DEFAULT_OPUS_MODEL` and siblings.
 - **A register credential**, and **`PERPLEXITY_API_KEY`**. Both are required for a real run and both
   fail closed at preflight — before a stage has spent, never at the grid after. The one exception is a
   Knockout search, which runs keyless: it returns register filing counts and states on the report that
@@ -419,6 +423,7 @@ CLEAROTRON_AI=anthropic-agent            # headless `claude -p`
 CLEAROTRON_CLAUDE_PATH=claude             # path to the Claude CLI (default: `claude` on PATH)
 CLEAROTRON_AI_BILLING=subscription       # `subscription` (OAuth, default) | `api-key`
 # ANTHROPIC_API_KEY=sk-ant-...           # only when CLEAROTRON_AI_BILLING=api-key
+# ANTHROPIC_DEFAULT_OPUS_MODEL=...       # optional: hold the opus tier at one model (and _SONNET_, _HAIKU_)
 # CLEAROTRON_AI=openai-agent             # …or the second adapter: headless `codex exec`
 # CLEAROTRON_CODEX_PATH=codex              # path to the codex CLI (default: `codex` on PATH)
 
