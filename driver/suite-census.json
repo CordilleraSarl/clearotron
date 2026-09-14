@@ -5151,6 +5151,12 @@
           "skips": 0,
           "todos": 0
         },
+        "two-ratified-forms-get-reasoned-apart.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "two-word-annotated-variant-is-refused.test.mjs": {
           "tests": 6,
           "asserts": 21,
