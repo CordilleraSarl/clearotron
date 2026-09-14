@@ -158,12 +158,16 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 ### 5.2 Engine & models — T3
 
 `CLEAROTRON_AI` (anthropic-agent | openai-agent; default anthropic-agent), `CLEAROTRON_AI_BILLING`
-(subscription|api-key), `CLEAROTRON_AI_BILLING` (subscription|api-key), `CLEAROTRON_CODEX_PATH`,
+(subscription|api-key|cloud; cloud is Claude only), `CLEAROTRON_CODEX_PATH`,
 `CLEAROTRON_OPENAI_AUTH_FILE`, `CLEAROTRON_OPENAI_MODEL_JUDGMENT` / `CLEAROTRON_OPENAI_MODEL_SWEEP` /
 `CLEAROTRON_OPENAI_MODEL_CHEAP` (all gpt-5.6-sol),
 `CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy Clearotron installed), `CLEAROTRON_AZURE_MODEL`,
 `CLEAROTRON_SYNTHESIS_MODEL` (opus), `CLEAROTRON_KNOCKOUT_MODEL` (opus),
 `CLEAROTRON_KNOCKOUT_PRESET` (pro-search), `CLEAROTRON_MAX_BUDGET_USD` (unset).
+
+The Claude program's own cloud settings (`CLAUDE_CODE_USE_*`, each cloud's settings, the gateway pair and
+the model pins) are the vendor's names, not this tier's; the configuration reference's credentials table
+lists them.
 
 ### 5.3 Concurrency, admission, retries, walls — T3 (walls are load-bearing; change deliberately)
 
