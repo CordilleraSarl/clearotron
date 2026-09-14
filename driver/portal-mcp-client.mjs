@@ -21,12 +21,43 @@ const PROTOCOL_VERSION = "2025-03-26";
 // dev-portal test convention), and the SSE answer needs early-close handling a streamed fetch text()
 // can wedge on. Collects the body until the server ends the response OR the wanted JSON-RPC id has
 // arrived on an SSE frame (whichever first — the transport may hold streams open).
-function post(urlStr, { headers = {}, body = "", wantId = null, timeoutMs = 30000 } = {}) {
+// ── AN ADDRESS IS EITHER A NETWORK ORIGIN OR A LOCAL SOCKET ─────────────────────────────────────────
+//
+// `unix:/run/clearotron/engine.sock` names the engine's local key door. The engine can serve a key door
+// on a socket and an identity door on a port from ONE process, which is the whole point — a deployment
+// that needed both used to run the process twice, and the last attempt to collapse that by switching
+// modes instead of adding a transport cost an outage.
+//
+// THE SOCKET PATH AND THE REQUEST PATH ARE DIFFERENT THINGS, which is the trap this shape exists to
+// avoid. For a network origin the request path is what `/mcp` is appended to; for a socket the whole
+// value IS a filesystem path and the request path is `/mcp` alone. Composing one string for both gives
+// `unix:/run/x.sock/mcp`, which is a file that does not exist — and the failure arrives as a connect
+// error naming a path nobody configured.
+//
+// THE HOST HEADER IS EXPLICIT, AND THE REASON IS NARROWER THAN THE FIRST DRAFT CLAIMED. That draft said
+// Node sends no Host over a socket. It does: measured on this runtime, a request with `socketPath` and
+// no `host` option arrives carrying `Host: localhost` already. So the header is NOT what makes the
+// request work today, and an arm asserting the server saw a Host would pass with this line deleted.
+//
+// It stays because the value is then OURS rather than a runtime default — HTTP/1.1 requires a Host, a
+// socket has no hostname to derive one from, and a default that is currently convenient is not a
+// contract. It names no machine and resolves nothing either way.
+export function dialTarget(urlStr, requestPath) {
+  const raw = String(urlStr ?? "").trim();
+  const m = /^unix:(.+)$/i.exec(raw);
+  if (m) return { socketPath: m[1], path: requestPath, headers: { host: "localhost" }, https: false };
+  const u = new URL(`${raw.replace(/\/$/, "")}${requestPath}`);
+  return { socketPath: null, host: u.hostname, port: u.port || (u.protocol === "https:" ? 443 : 80),
+    path: u.pathname + u.search, headers: {}, https: u.protocol === "https:" };
+}
+
+function post(urlStr, { headers = {}, body = "", wantId = null, timeoutMs = 30000, target = null } = {}) {
   return new Promise((resolve, reject) => {
-    const u = new URL(urlStr);
-    const req = (u.protocol === "https:" ? httpsRequest : httpRequest)({
-      host: u.hostname, port: u.port || (u.protocol === "https:" ? 443 : 80), path: u.pathname + u.search,
-      method: "POST", headers: { ...headers, "content-length": Buffer.byteLength(body) },
+    const t = target ?? dialTarget(urlStr, "");
+    const req = (t.https ? httpsRequest : httpRequest)({
+      ...(t.socketPath ? { socketPath: t.socketPath } : { host: t.host, port: t.port }),
+      path: t.path,
+      method: "POST", headers: { ...t.headers, ...headers, "content-length": Buffer.byteLength(body) },
     }, (res) => {
       let data = "";
       const done = () => resolve({ status: res.statusCode ?? 0, headers: res.headers, text: data });
@@ -103,7 +134,10 @@ export const SOCKET_FAILURE_CODES = Object.freeze([
 export const isSocketFailure = (e) => SOCKET_FAILURE_CODES.includes(e?.code);
 
 export async function mcpToolCall({ url, token, tool, args, timeoutMs = 30000 }) {
-  const endpoint = `${String(url).replace(/\/$/, "")}/mcp`;
+  // Resolved ONCE, so all three requests of the handshake dial the same place. Composed per call, the
+  // socket form would have to be re-parsed three times and a divergence would show up as a session that
+  // initializes and then cannot be found.
+  const endpoint = dialTarget(url, "/mcp");
   const headers = (extra = {}) => ({
     "content-type": "application/json",
     "accept": "application/json, text/event-stream",
@@ -112,7 +146,7 @@ export async function mcpToolCall({ url, token, tool, args, timeoutMs = 30000 })
   });
 
   // 1 — initialize (the transport refuses everything else without a session)
-  const initRes = await post(endpoint, { headers: headers(), wantId: 1, timeoutMs,
+  const initRes = await post(null, { target: endpoint, headers: headers(), wantId: 1, timeoutMs,
     body: JSON.stringify({ jsonrpc: JSONRPC, id: 1, method: "initialize", params: {
       protocolVersion: PROTOCOL_VERSION, capabilities: {},
       clientInfo: { name: "trademark-portal", version: "poc" } } }) });
@@ -122,11 +156,11 @@ export async function mcpToolCall({ url, token, tool, args, timeoutMs = 30000 })
   parseRpcText(initRes, 1);   // surfaces JSON-RPC-level init errors
 
   // 2 — initialized notification (the spec's handshake close; some transports require it)
-  await post(endpoint, { headers: headers({ "mcp-session-id": sessionId }), timeoutMs,
+  await post(null, { target: endpoint, headers: headers({ "mcp-session-id": sessionId }), timeoutMs,
     body: JSON.stringify({ jsonrpc: JSONRPC, method: "notifications/initialized" }) }).catch(() => { /* best-effort */ });
 
   // 3 — the one tool call
-  const callRes = await post(endpoint, { headers: headers({ "mcp-session-id": sessionId }), wantId: 2, timeoutMs,
+  const callRes = await post(null, { target: endpoint, headers: headers({ "mcp-session-id": sessionId }), wantId: 2, timeoutMs,
     body: JSON.stringify({ jsonrpc: JSONRPC, id: 2, method: "tools/call", params: { name: tool, arguments: args } }) });
   if (callRes.status >= 400) throw transportError(`MCP tools/call refused (${callRes.status}): ${callRes.text.slice(0, 200)}`, callRes.status);
   const msg = parseRpcText(callRes, 2);
