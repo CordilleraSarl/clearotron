@@ -378,11 +378,22 @@ ${HELPERS}
     await sleep(700);
   }
 
-  // The SCREEN's heading, not the top bar's. The top bar carries an <h1> with the nav label ("Clearances")
-  // and it comes first in the document, so a bare h1 selector reads the one place that is supposed to say
-  // the screen's name and never the company's.
-  const h1 = document.querySelector('.main .screen h1');
-  out.clearancesHeading = h1 ? h1.innerText.trim() : null;
+  // The SCREEN's header, not the top bar's. The top bar carries an <h1> with the nav label
+  // ("Clearances") and it comes first in the document, so a bare h1 selector reads the one place that is
+  // supposed to say the screen's name and never the company's.
+  //
+  // THE WHOLE HEADER BLOCK, not its <h1>. The screen used to open with an eyebrow reading
+  // "All Clearances" over a heading reading the company's name; it is one header now, titled for the
+  // screen, with the company on the line beneath it. What has to be true is unchanged and is what this
+  // reads: a person looking at one company's list can see whose it is, where the page begins. Pinned to
+  // the h1, this asserted a layout decision and would have to be rewritten by whoever next moves it.
+  const header = document.querySelector('.main .screen .page-header');
+  out.clearancesHeading = header ? header.innerText.trim() : null;
+  // THE COMPANY, AS ITS OWN READING. The block above also carries the allowance sentence, which differs
+  // by identity — so comparing whole blocks between two logins reports a difference that is the point of
+  // the line rather than the bug this file exists for. The company is marked in the markup; read it.
+  const mark = header && header.querySelector('[data-anon="mark"]');
+  out.clearancesCompany = mark ? mark.innerText.trim() : null;
   out.topbarHeading = (document.querySelector('.topbar h1') || {}).innerText || null;
 
   await goto('/portal/new');
@@ -734,7 +745,8 @@ for (const [who, out] of [['client', asClient], ['staff', asStaff], ['multi-acco
   // organisation. A company name appearing here is the dual meaning coming back.
   ok(!(out.accountCorner ?? '').includes(NAME),
     `${who}: the identity corner names the company — read ${JSON.stringify(out.accountCorner)}`)
-  ok(out.clearancesHeading === NAME, `${who}: the Clearances heading reads ${JSON.stringify(out.clearancesHeading)}, not ${JSON.stringify(NAME)}`)
+  ok((out.clearancesHeading ?? '').includes(NAME),
+    `${who}: the Clearances header does not name the company being looked at — read ${JSON.stringify(out.clearancesHeading)}`)
   ok(out.composerCard?.includes(NAME), `${who}: the New clearance context card does not name the company — read ${JSON.stringify(out.composerCard)}`)
   ok(out.nameOnScreen, `${who}: the company's name is nowhere on the composer`)
   ok(!out.slugOnScreen, `${who}: the account KEY "${KEY}" is printed on screen where the name belongs`)
@@ -743,8 +755,8 @@ for (const [who, out] of [['client', asClient], ['staff', asStaff], ['multi-acco
 const headings = [['client', asClient], ['staff', asStaff], ['multi-account client', asMulti]]
   .filter(([, o]) => o && !o.fatal)
 for (const [who, out] of headings) {
-  ok(out.clearancesHeading === headings[0][1].clearancesHeading,
-    `the same company reads "${out.clearancesHeading}" to a ${who} and "${headings[0][1].clearancesHeading}" to a ${headings[0][0]}`)
+  ok(out.clearancesCompany === headings[0][1].clearancesCompany,
+    `the same company reads "${out.clearancesCompany}" to a ${who} and "${headings[0][1].clearancesCompany}" to a ${headings[0][0]}`)
 }
 
 // The multi-account client is the ONLY identity whose switcher is populated from `me` rather than from

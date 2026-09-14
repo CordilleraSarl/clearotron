@@ -9,6 +9,7 @@ import {
   active, waiting, runProductLabel, cardReason, limitLine, moveBefore, readStamps,
 } from '../src/contract/home.ts'
 import type { Run } from '../src/contract/api.ts'
+import { prose } from './support/prose.ts'
 
 const run = (over: Partial<Run>): Run => ({
   runId: over.runId ?? 'r1', account: 'zephyr', title: 'X', markName: 'X',
@@ -290,8 +291,7 @@ test('elapsed is coarse, and never a countdown', () => {
  * second button, and the arm that counts the routes into the archive passed on its own prose after the
  * second route was removed. The span goes first, then the line filter.
  */
-const body = (src: string) =>
-  src.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join('\n')
+const body = (src: string) => prose(src)
 
 const home = body(readFileSync(new URL('../src/screens/Home.tsx', import.meta.url), 'utf8'))
 // Read for the one-spelling arm below: the rail is where the label is DECIDED, and the screen is where
@@ -389,6 +389,22 @@ test('ONE BUTTON INTO THE ARCHIVE, ONE SPELLING — the rail, Home and the scree
   assert.equal((home.match(new RegExp(label, 'g')) ?? []).length, 1, 'Home names the archive more than once')
   assert.equal((home.match(/className="btn-ghost home2-all"/g) ?? []).length, 1,
     'the archive button has a twin again — one primary and one secondary per page, not two of one')
+  // AND IT IS ON THE HEADER ROW, beside New clearance, not inside the in-flight band. The band is a
+  // status line: it goes quiet when nothing is running, which is the moment a reader most wants the
+  // button, and a control inside it reads as part of the status rather than as something to press.
+  const actions = /actions=\{<>([\s\S]*?)<\/>\}/.exec(home)
+  assert.ok(actions, 'Home\'s header carries no actions — the buttons have moved somewhere else again')
+  assert.match(actions[1], /home2-all/, 'the archive button is not on the header row')
+  assert.match(actions[1], /NewClearanceButton/, 'New clearance is not on the header row beside it')
+  // TO THE NEXT TOP-LEVEL DECLARATION, not to the next `\n}`. The first cut ended at `}: {` — the brace
+  // closing the parameter list — so the slice was four lines of destructuring and "no button in here"
+  // was true of text that could never hold one. A plant putting a button back in the band did not red.
+  // Hence the floor: the slice has to be big enough, and has to contain the band's own markup, before
+  // any absence is claimed about it.
+  const band = /\nfunction InFlightBand\([\s\S]*?\n(?=(?:function |export )|$)/.exec(home)
+  assert.ok(band, 'the in-flight band moved — this arm is reading nothing')
+  assert.match(band[0], /className="home2-band"/, 'the slice does not reach the band it is named for')
+  assert.doesNotMatch(band[0], /<button/, 'a button is back inside the in-flight band')
   assert.doesNotMatch(home, /className="nav-item" onClick={onAll}/, 'a Home button is wearing the rail item\'s clothes again')
 
   // AND THE TAIL STILL ENDS IN A WAY OUT, as a line rather than a second button: a summary with no
@@ -398,7 +414,7 @@ test('ONE BUTTON INTO THE ARCHIVE, ONE SPELLING — the rail, Home and the scree
 
   // And the screen it leads to says the same word, so a reader who follows it lands somewhere named
   // what they pressed.
-  assert.ok(CLEARANCES.includes(`<div className="eyebrow">${label}</div>`), 'the screen does not name itself as the rail does')
+  assert.ok(CLEARANCES.includes(`title="${label}"`), 'the screen does not name itself as the rail does')
 })
 
 test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row', () => {
@@ -412,9 +428,14 @@ test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row
   assert.match(home, /Recently finished/)
   assert.doesNotMatch(home, /Last finished/, 'the old single-row heading is still on the page')
 
-  // THE HEADING, which is the half a reader uses to tell this page from the archive.
-  assert.match(home, /className="eyebrow">Home</, 'the page does not name itself')
-  assert.match(home, /<h1[^>]*>Now<\/h1>/, 'the heading does not say what this page is for')
+  // THE HEADING, which is the half a reader uses to tell this page from the archive — ONE line of it.
+  // It shipped as an eyebrow reading "Home" over a heading reading "Now": two lines saying one thing,
+  // and "Now" saying nothing a reader could act on. The owner's own word is Home, once, through the
+  // component every screen's header goes through.
+  assert.match(home, /<PageHeader\s+title="Home"/, 'the page does not name itself')
+  assert.doesNotMatch(home, /\bNow<\/h1>|>Now</, 'the withdrawn heading is back')
+  assert.doesNotMatch(home, /className="eyebrow">Home</, 'the page carries a second header line again')
+  assert.doesNotMatch(home, /<h1\b/, 'the screen writes its own heading instead of going through the one component')
 
   // AND THE EMPTY BAND SAYS WHAT TO DO — but only to somebody who may do it. `slotNote` describes a cap
   // on concurrent runs, which is a sentence about nothing when nothing is running.

@@ -9,14 +9,14 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { prose } from './support/prose.ts'
 
 const read = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), 'utf8')
 
 // Comments stripped before asserting on rendered content, the same reason screenCopy.test.ts does it:
 // this component's header explains the tagline is absent BY NAMING IT, so a whole-file search finds the
 // explanation and fails a component that is doing exactly the right thing.
-const body = (src: string) =>
-  src.split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join('\n')
+const body = (src: string) => prose(src)
 
 // THE RIDGE ARM WAS HERE AND WENT WITH THE MARK. It proved the generated module carried the
 // vendored SVG unmodified — a real property of a chain that no longer exists, because nothing this

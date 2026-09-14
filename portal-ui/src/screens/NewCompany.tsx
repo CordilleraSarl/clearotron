@@ -26,6 +26,7 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { companyKeyFrom } from '../contract/companyKey.ts'
 import { handOff } from '../contract/companyCreated.ts'
 import { canRun } from '../shell/permissions.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 /**
  * What a person may state when making a company.
@@ -159,13 +160,11 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen">
-      <div className="eyebrow">Company</div>
       <div className="measure">
-        <h1 style={{ fontSize: 27, margin: '0 0 4px', color: 'var(--text-strong)' }}>New company</h1>
-        <p style={{ margin: '0 0 18px', color: 'var(--text-muted)', fontSize: 14.5 }}>
-          The business whose names you are checking. Only the name is needed; everything else has a
-          default you can change later.
-        </p>
+        <PageHeader
+          title="New company"
+          lede="The business whose names you are checking. Only the name is needed; everything else has a default you can change later."
+        />
 
         {/* Asked only of a person who holds more than one organisation whole — the only case with a
             choice to make. Everyone else creates the company in the one organisation they hold. */}

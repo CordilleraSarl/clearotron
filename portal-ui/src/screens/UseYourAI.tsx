@@ -40,6 +40,7 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { api } from '../contract/api.ts'
 import type { McpAccess, ConnectOffer, ConnectCopy } from '../contract/api.ts'
 import { Icon } from '../components/Icon.tsx'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 /** What the connected assistant can do. His words, four bullets, no jargon. Unchanged, per the brief. */
 const WHAT_YOU_CAN_DO = [
@@ -298,12 +299,10 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen ai-screen">
-      <div className="eyebrow">Use your own AI</div>
-      <h1 className="ai-title">Use your own AI</h1>
-      <p className="ai-lead">
-        Run and interrogate clearances from the assistant you already use — by voice, by email, or just
-        by asking.
-      </p>
+      <PageHeader
+        title="Use your own AI"
+        lede="Run and interrogate clearances from the assistant you already use — by voice, by email, or just by asking."
+      />
 
       <section className="ctx-card ai-can">
         <h2>What you can do</h2>

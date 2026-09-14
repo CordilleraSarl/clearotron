@@ -5151,6 +5151,12 @@
           "skips": 0,
           "todos": 0
         },
+        "two-ratified-forms-get-reasoned-apart.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "two-word-annotated-variant-is-refused.test.mjs": {
           "tests": 6,
           "asserts": 21,
@@ -5865,7 +5871,7 @@
         },
         "home.test.ts": {
           "tests": 51,
-          "asserts": 169,
+          "asserts": 177,
           "skips": 0,
           "todos": 0
         },
@@ -5941,6 +5947,12 @@
           "skips": 0,
           "todos": 0
         },
+        "oneHeaderPerPage.test.ts": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "ownerNames.test.ts": {
           "tests": 9,
           "asserts": 23,
@@ -5974,6 +5986,12 @@
         "profileFields.test.ts": {
           "tests": 49,
           "asserts": 145,
+          "skips": 0,
+          "todos": 0
+        },
+        "proseIsStrippedOnce.test.ts": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
