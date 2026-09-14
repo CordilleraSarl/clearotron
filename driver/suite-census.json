@@ -178,8 +178,8 @@
           "todos": 0
         },
         "a-connect-line-says-where-it-runs.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -406,8 +406,8 @@
           "todos": 0
         },
         "a-key-the-demo-prints-signs-for-that-demo.test.mjs": {
-          "tests": 5,
-          "asserts": 30,
+          "tests": 8,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -623,6 +623,12 @@
         },
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refusal-marks-the-field-in-whichever-view-is-open.test.mjs": {
+          "tests": 4,
           "asserts": 10,
           "skips": 0,
           "todos": 0
@@ -1228,8 +1234,8 @@
           "todos": 0
         },
         "bundle-rebuild-and-ports.test.mjs": {
-          "tests": 7,
-          "asserts": 17,
+          "tests": 10,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -1300,8 +1306,8 @@
           "todos": 0
         },
         "channel-fallback-silence.test.mjs": {
-          "tests": 6,
-          "asserts": 18,
+          "tests": 9,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -1444,8 +1450,8 @@
           "todos": 0
         },
         "connect-clients-are-data.test.mjs": {
-          "tests": 15,
-          "asserts": 75,
+          "tests": 17,
+          "asserts": 87,
           "skips": 0,
           "todos": 0
         },
@@ -2104,8 +2110,8 @@
           "todos": 0
         },
         "engine.anthropic.test.mjs": {
-          "tests": 61,
-          "asserts": 223,
+          "tests": 65,
+          "asserts": 239,
           "skips": 0,
           "todos": 0
         },
@@ -2716,8 +2722,8 @@
           "todos": 0
         },
         "matter-frame-record.test.mjs": {
-          "tests": 12,
-          "asserts": 48,
+          "tests": 20,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -3070,8 +3076,8 @@
           "todos": 0
         },
         "portal-access.test.mjs": {
-          "tests": 13,
-          "asserts": 50,
+          "tests": 16,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -3262,8 +3268,8 @@
           "todos": 0
         },
         "profiles.test.mjs": {
-          "tests": 44,
-          "asserts": 247,
+          "tests": 48,
+          "asserts": 263,
           "skips": 0,
           "todos": 0
         },
@@ -4493,7 +4499,7 @@
         },
         "the-boot-line-says-which-door-it-found.test.mjs": {
           "tests": 5,
-          "asserts": 21,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -4588,8 +4594,8 @@
           "todos": 0
         },
         "the-demo-offers-no-background-form.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -4774,8 +4780,8 @@
           "todos": 0
         },
         "the-minters-read-the-published-tree.test.mjs": {
-          "tests": 2,
-          "asserts": 6,
+          "tests": 4,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -4792,14 +4798,14 @@
           "todos": 0
         },
         "the-notice-goes-to-whoever-asked.test.mjs": {
-          "tests": 8,
-          "asserts": 23,
+          "tests": 10,
+          "asserts": 28,
           "skips": 1,
           "todos": 0
         },
         "the-open-line-says-what-to-do-when-the-page-is-not-ours.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
+          "tests": 6,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -5058,6 +5064,12 @@
         "the-trigger-key-has-a-deadline-somebody-is-counting.test.mjs": {
           "tests": 5,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-trigger-reaches-a-local-socket.test.mjs": {
+          "tests": 4,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -5517,8 +5529,8 @@
           "todos": 0
         },
         "cf-access.test.mjs": {
-          "tests": 18,
-          "asserts": 28,
+          "tests": 20,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
@@ -5876,8 +5888,8 @@
           "todos": 0
         },
         "home.test.ts": {
-          "tests": 49,
-          "asserts": 152,
+          "tests": 51,
+          "asserts": 169,
           "skips": 0,
           "todos": 0
         },
@@ -6102,8 +6114,8 @@
           "todos": 0
         },
         "providers/_shared/test/count-kernel.test.mjs": {
-          "tests": 8,
-          "asserts": 36,
+          "tests": 10,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -6174,8 +6186,14 @@
           "todos": 0
         },
         "providers/_shared/test/territory-codes.test.mjs": {
-          "tests": 9,
-          "asserts": 25,
+          "tests": 11,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/phrase-value.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
