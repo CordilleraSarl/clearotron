@@ -46,6 +46,43 @@ test("plan_run: a new client with no account previews under the neutral profile 
     "and where the access does not cover it, the refusal still says what the requester can do next");
 });
 
+// ── WHAT A TERRITORY ALREADY BINDS, BEFORE ANYTHING IS SPENT ────────────────────────────────────────
+//
+// A requester asked to clear a mark in ONE EU member state and was sold the member state AND the EU as
+// two territories, on the reasoning that the EU-wide right had to be listed to be covered. It does not:
+// an EU trade mark blocks use in the member state without appearing in that state's national register.
+// Two territories resolve to a different product — no case-law reading, no automatic native-language
+// investigation — so the wider list bought less coverage, and a second search was then offered to
+// recover it. The preview now states the binding layers, so that answer is checkable for free.
+//
+// Driven through planRun rather than against bindingLayersFor, because the defect was that this surface
+// said nothing, not that the model was wrong.
+test("plan_run says what each ordered territory already binds — one country carries its regional and international layers", () => {
+  const p = planRun({ ...BASE, product: "full-country-search", jurisdictions: ["France"] });
+  const [fr] = p.scope.bindingLayers;
+  assert.equal(fr.territory, "France");
+  assert.deepEqual(fr.binds.map((b) => b.layer), ["national", "regional", "international"],
+    "a member state bound by the EU-wide register and by international registrations must say so here");
+  assert.ok(fr.binds.every((b) => b.why && !("returns" in b) && !("searched" in b)),
+    "this reports what BINDS the territory — a claim about what a provider returns is a different fact and must not appear");
+
+  // THE COMPARISON THE REQUESTER COULD NOT SEE. Ordering the member state alone keeps the case-law
+  // reading; adding its region as a second territory silently resolves the product that carries none.
+  assert.equal(p.search.caseLaw, true);
+  const two = planRun({ ...BASE, jurisdictions: ["France", "EU"] });
+  assert.equal(two.search.caseLaw, false, "two territories lose the reading — the preview must be able to show that before it is bought");
+  assert.deepEqual(two.scope.bindingLayers.map((b) => b.territory), ["France", "EU"],
+    "and every ordered territory is reported, not just the first");
+
+  // A TERRITORY THIS BUILD CANNOT RESOLVE SAYS SO rather than vanishing from the list — a silent
+  // omission reads as "nothing binds there", which is never true. (Driven with a name the register
+  // table does not carry; the row is a statement, not an empty result.)
+  const odd = planRun({ ...BASE, jurisdictions: ["Narnia"] });
+  const [row] = odd.scope.bindingLayers;
+  assert.equal(row.binds, null);
+  assert.match(row.note, /could not be matched/);
+});
+
 test("plan_run writes NOTHING — the whole point is that it is free", () => {
   const before = existsSync(QUEUE) ? readdirSync(QUEUE).length : 0;
   const p = planRun({ ...BASE });
@@ -432,7 +469,17 @@ test("a can't-count register blocks the Knockout search with the provider cause 
       "the provider cause — this is not a version problem, so waiting will not fix it");
     assert.doesNotMatch(p.blockers.join(" "), /Not part of the current release/,
       "the retired lie: it sent the reader to wait for a release that will never help");
-    assert.doesNotMatch(JSON.stringify(p), /signa|countProbe|canCount/, "WHICH register is wired is staff knowledge");
+    // WORD-BOUNDED, and that is the property rather than a loosening. The bare pattern also matched
+    // "designating" — the legal term for an international registration that reaches a territory, which
+    // the preview now uses when it says what binds each ordered territory. A guard that fires on an
+    // ordinary English word inside correct client-facing prose reports the spelling, not the leak, and
+    // the repair a reader reaches for next is deleting the assertion. So it is tightened and then
+    // DRIVEN both ways, because a narrowed pattern that no longer catches anything looks identical to
+    // a clean tree.
+    const LEAKS = /\bsigna\b|countProbe|canCount/;
+    assert.match(JSON.stringify({ register: { provider: "signa" } }), LEAKS, "the tightened pattern still catches the wired register's name");
+    assert.doesNotMatch("an international registration designating FR binds FR", LEAKS, "and no longer fires on the word it is a substring of");
+    assert.doesNotMatch(JSON.stringify(p), LEAKS, "WHICH register is wired is staff knowledge");
   } finally {
     rmSync(stateDir, { recursive: true, force: true });
   }

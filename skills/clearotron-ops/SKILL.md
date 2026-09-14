@@ -64,6 +64,15 @@ Extract from the request, faithfully (verbatim beats paraphrase):
   worldwide and nothing else, a **Multi-country focus search** a region or two-or-more countries, a
   **Full country search** exactly one. Only the **Knockout search** takes worldwide *or* any set of
   territories.
+  A COUNTRY ALREADY CARRIES THE REGIONAL AND INTERNATIONAL RIGHTS THAT BIND IT — a clearance for an
+  EU member state reaches its national register, the EU-wide register (an EU trade mark blocks use
+  there without appearing in the national register) and international registrations designating
+  either. Do NOT add the region as a second territory to "include" it: one country is a **Full country
+  search**, which carries the case-law reading and the automatic native-language investigation, while
+  two territories resolve to a **Multi-country focus search**, which carries neither. The wider list
+  buys less. If the requester asks for the country AND its region, tell them what it costs before you
+  compose it, and never silently rewrite what they asked for. `plan_run` reports what each ordered
+  territory binds.
 - **`platforms`** — extra marketplaces to sweep, as bare store domains, when the requester names a
   storefront that matters to them. These are ADDED to the account's own; you cannot remove theirs.
   Every one widens the grid, so pass only what was actually asked for.

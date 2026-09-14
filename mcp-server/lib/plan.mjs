@@ -36,6 +36,8 @@ import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledg
 import { config } from "./driver.mjs";
 import { buildJob, resolveScopedProfileKey } from "./ops.mjs";
 import { BRAND } from "../../shared/brand.mjs";   // — the operator name in the allowance note, from the tenant seam
+import { bindingLayersFor } from "../../driver/binding-layers.mjs";   // — what BINDS a territory; never what a provider returns
+import { normalizeTerritory } from "../../providers/_shared/territory-codes.mjs";
 
 // The verbatim legal caveat every plan carries. NOT paraphrasable: it states what a common-law-first
 // screen can and cannot tell you, and softening it would misrepresent the product to the person deciding
@@ -139,6 +141,43 @@ function allowanceFor(profile, { scope, now = Date.now() } = {}) {
     today: usage.today, thisMonth: usage.thisMonth, queued: usage.queued,
     exhausted: scope?.kind === "account" && scope?.everything !== true && usage.today >= dailyRuns,
   };
+}
+
+/**
+ * WHICH REGISTERS ALREADY BIND EACH ORDERED TERRITORY, for the preview to say out loud.
+ *
+ * A requester asked to clear a mark in one EU member state and was sold the member state AND the EU as
+ * two territories, on the reasoning that the EU-wide right had to be listed to be covered. It does not:
+ * an EU trade mark blocks use in the member state without appearing in its national register, and the
+ * engine has searched on that basis since the ruling `binding-layers.mjs` quotes in its header. Naming
+ * two territories instead resolves a different product — the one that carries no case-law reading and
+ * no automatic native-language investigation — so the composition bought less coverage for more money,
+ * and nothing on this surface said so.
+ *
+ * WHAT BINDS A TERRITORY, NOT WHAT A SEARCH RETURNS. `binding-layers.mjs` separates those two facts
+ * deliberately: the first is a property of the territory and always true, the second is a vendor fact
+ * that is often unestablished. This reports the first only. `search.registerReach` next to it is the
+ * second, and the two must never be blurred into one sentence.
+ *
+ * A territory this build cannot resolve to a register says so rather than being dropped from the list:
+ * a silent omission reads as "nothing binds there", which is never true.
+ */
+function bindingLayersForOrder(jurisdictions) {
+  const out = [];
+  for (const j of jurisdictions ?? []) {
+    const code = normalizeTerritory(j);
+    if (!code) {
+      out.push({ territory: j, code: null, binds: null,
+        note: `"${j}" could not be matched to a register this build knows, so what binds it is not stated here` });
+      continue;
+    }
+    try {
+      out.push({ territory: j, code, binds: bindingLayersFor(code).map((b) => ({ layer: b.layer, office: b.office, why: b.why })) });
+    } catch {
+      out.push({ territory: j, code, binds: null, note: `what binds "${j}" could not be read` });
+    }
+  }
+  return out;
 }
 
 /**
@@ -354,6 +393,10 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
     scope: {
       jurisdictions: eff.jurisdictions,
       jurisdictionsFrom: eff.jurisdictionsFrom,
+      // WHAT EACH ORDERED TERRITORY ALREADY BINDS — so nobody adds a region to the list to "include"
+      // a right that the country already carries, and pays for it with the product that change
+      // resolves to. This is the territory's own property, never a claim about what the search returns.
+      bindingLayers: bindingLayersForOrder(eff.jurisdictions),
       platforms: eff.platforms,
       platformsAdded: eff.platformsAdded,
       platformsFrom: eff.platformsFrom,

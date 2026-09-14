@@ -5511,8 +5511,8 @@
           "todos": 0
         },
         "connector-guidance.test.mjs": {
-          "tests": 12,
-          "asserts": 68,
+          "tests": 13,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -5637,8 +5637,8 @@
           "todos": 0
         },
         "plan.test.mjs": {
-          "tests": 27,
-          "asserts": 115,
+          "tests": 28,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },
