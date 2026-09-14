@@ -44,6 +44,20 @@ test("the socket path and the request path are resolved apart, for both address 
   assert.notEqual(Boolean(sock.socketPath), Boolean(net.socketPath));
 });
 
+test("the URL-ish spellings of a socket address normalise to one path", () => {
+  // They all CONNECT without this, because POSIX collapses leading slashes — which is worse than a
+  // refusal: the wrong spelling works, gets written into a settings file, and the next reader comparing
+  // the configured path against the one the engine prints finds two strings that differ and one machine.
+  const of = (u) => dialTarget(u, "/mcp").socketPath;
+  assert.equal(of("unix:/run/x.sock"), "/run/x.sock", "the documented form");
+  assert.equal(of("unix://run/x.sock"), "/run/x.sock", "and the two-slash spelling lands on the same path");
+  assert.equal(of("unix:///run/x.sock"), "/run/x.sock", "and the three-slash one");
+  assert.equal(new Set(["unix:/run/x.sock", "unix://run/x.sock", "unix:///run/x.sock"].map(of)).size, 1,
+    "one address, however it was typed");
+  // A path is not otherwise rewritten — only the leading run is collapsed.
+  assert.equal(of("unix:/var/run/deep/nested/x.sock"), "/var/run/deep/nested/x.sock");
+});
+
 test("a whole tool call completes over a real unix socket", async () => {
   const dir = mkdtempSync(join(tmpdir(), "trigger-sock-"));
   const path = join(dir, "engine.sock");

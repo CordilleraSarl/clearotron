@@ -126,8 +126,14 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
             // That is this issue's own false-reassurance finding, reintroduced by the fix for its
             // neighbour. Naming the JWT puts it in the proxy branch, which is checked first and is the
             // true answer: this door wants a proxy identity.
+            // THE PATH IS NOT IN THE SENTENCE, and the first draft put it there. This door faces the
+            // internet and answers before anyone has authenticated, so naming the socket's filesystem
+            // path hands an unauthenticated stranger a piece of the deployment's layout. They cannot
+            // reach it — the protection is the filesystem — so it is disclosure rather than exposure,
+            // and it buys nothing: an operator needs to know a local socket is where to look, and
+            // already has the path in the boot line and the unit file. A stranger gets nothing usable.
             return send(res, 401, { error: "this listener takes an auth-proxy JWT and never an access key — a key has no door here"
-              + (keyDoorPath ? `. The key door on this deployment is the local socket at ${keyDoorPath}` : ". This deployment has no key door configured") });
+              + (keyDoorPath ? ". A key is taken on this deployment's local socket; the engine's boot line names it" : ". This deployment has no key door configured") });
           }
           log(`auth reject ${status}: ${e.message}`);
           return send(res, status, { error: e.message });

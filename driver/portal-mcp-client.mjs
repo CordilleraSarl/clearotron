@@ -44,8 +44,19 @@ const PROTOCOL_VERSION = "2025-03-26";
 // contract. It names no machine and resolves nothing either way.
 export function dialTarget(urlStr, requestPath) {
   const raw = String(urlStr ?? "").trim();
+  // ── ONE SPELLING, AND THE OTHERS NORMALISE RATHER THAN ALMOST-WORK ───────────────────────────────
+  //
+  // `unix:/run/x.sock` is the documented form. `unix://` and `unix:///` are what somebody types who has
+  // seen a URL before, and taking everything after the colon verbatim made those produce `//run/x.sock`
+  // and `///run/x.sock`. Both CONNECT, because POSIX collapses leading slashes — so the wrong spelling
+  // works on this platform, is recorded in a settings file, and is a defect waiting for a reader who
+  // compares the configured path to the one the engine prints and finds they differ.
+  //
+  // Collapsed to a single leading slash rather than refused: refusing a spelling that demonstrably
+  // connects would be a new failure for deployments that already use it, and the value is unambiguous
+  // either way — a socket address is always absolute.
   const m = /^unix:(.+)$/i.exec(raw);
-  if (m) return { socketPath: m[1], path: requestPath, headers: { host: "localhost" }, https: false };
+  if (m) return { socketPath: m[1].replace(/^\/+/, "/"), path: requestPath, headers: { host: "localhost" }, https: false };
   const u = new URL(`${raw.replace(/\/$/, "")}${requestPath}`);
   return { socketPath: null, host: u.hostname, port: u.port || (u.protocol === "https:" ? 443 : 80),
     path: u.pathname + u.search, headers: {}, https: u.protocol === "https:" };

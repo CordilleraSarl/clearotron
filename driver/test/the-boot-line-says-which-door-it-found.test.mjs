@@ -117,6 +117,37 @@ test("the sentences the doors actually send are still the ones the verdict recog
   assert.ok(byVerdict.get("proxy"),
     `the handler's key-presented refusal must read as a PROXY door, since that is what this listener wants; the verdict sees ${JSON.stringify(sentences)}`);
 
+  // AND NEITHER REFUSAL HANDS AN UNAUTHENTICATED CALLER A FILESYSTEM PATH. This door answers the
+  // internet before anyone has authenticated. The key door's location is something an operator reads
+  // from the boot line; putting it in a refusal discloses a piece of the deployment's layout to a
+  // stranger and buys the operator nothing they did not already have.
+  //
+  // THE COMPOSITION IS EVALUATED, NOT SCANNED, and two earlier drafts of this check prove why. The
+  // first read only the opening quoted string, so a path appended after it was outside what was
+  // measured. The second read the whole expression and still could not see it, because the path
+  // arrives as `${keyDoorPath}` — a VARIABLE. There is no literal path in this file to find, on any
+  // pattern, and both drafts passed against a deliberate reintroduction while reading as guards.
+  //
+  // So the expression is executed with a path substituted in, which is the only form of this check
+  // that can fail. A refusal that interpolates the path produces it here; one that does not, cannot.
+  // ANCHORED ON THE LITERAL-FIRST FORM, which is the population the classifier reads and the one this
+  // arm is about. The file sends 401 from five places; the other three compose their body from a value
+  // rather than opening with a quoted sentence, and a pattern loose enough to take them read five.
+  const refusalExprs = [...handler.matchAll(/send\(res,\s*401,\s*\{\s*error:\s*("[\s\S]*?)\}\s*\)/g)].map((m) => m[1]);
+  assert.equal(refusalExprs.length, 2, `expected two composed refusals opening with a sentence, read ${refusalExprs.length}`);
+
+  const SECRET = "/run/clearotron/engine.sock";
+  for (const expr of refusalExprs) {
+    const body = new Function("keyDoorPath", `return (${expr});`)(SECRET);
+    assert.equal(typeof body, "string", "a refusal body must compose to a string");
+    assert.ok(!body.includes(SECRET),
+      `a refusal sent before authentication carries the key door's path: ${JSON.stringify(body)}`);
+    // THE FLOOR. If the substitution never reached the expression, the assertion above is vacuous —
+    // it would hold for any sentence at all. At least one refusal must actually consult the path.
+  }
+  assert.ok(refusalExprs.some((e) => /keyDoorPath/.test(e)),
+    "neither refusal consults keyDoorPath, so substituting one proves nothing about either");
+
   // And they are not both recognised as the same thing, which a loose pattern would do.
   assert.notEqual(doorCredential({ body: proxySentence }), doorCredential({ body: keySentence }));
 });
