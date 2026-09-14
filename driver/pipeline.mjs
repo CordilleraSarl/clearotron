@@ -96,7 +96,7 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed
+import { lastAcceptedMatterFrame, frameIdentifiedClasses } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
@@ -2262,7 +2262,7 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // for the documented normal case. Harmless on corsearch (an absent region clause is a worldwide
       // sweep); fatal on a provider whose regions[] is mandatory, where every entry then errored on its
       // count probe and the whole plan joined MISSING at fan-in (review finding 11).
-      job: { jobKey: ctx.run.slug, classes: inScopeClassList(ctx.job, ctx.profile), jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
+      job: { jobKey: ctx.run.slug, classes: [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])], jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
       form, skillVersion: "prelim-register@spec48",
       // phase 3 — the plan is compiled AGAINST THE ACTIVE PROVIDER's declared capabilities, so the
       // frozen artifact is executable by construction: the OR-stack split uses that provider's width,
