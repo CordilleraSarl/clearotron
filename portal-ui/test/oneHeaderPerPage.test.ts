@@ -23,6 +23,9 @@ const walk = (dir: string): string[] =>
     e.isDirectory() ? walk(join(dir, e.name)) : (e.name.endsWith('.tsx') ? [join(dir, e.name)] : []))
 
 const FILES = walk(SRC).filter((f) => !f.endsWith('components/PageHeader.tsx'))
+// The screens a reader navigates to, plus the one placeholder screen that lives in the entry file. The
+// shell is deliberately not here — see the note in the arm that uses this.
+const SCREENS = FILES.filter((f) => f.includes('/screens/') || f.endsWith('/main.tsx') || f.endsWith('shell/CompanyPicker.tsx'))
 const rel = (f: string) => f.slice(SRC.length)
 const read = (f: string) => readFileSync(f, 'utf8')
 
@@ -60,17 +63,68 @@ test('THE EYEBROW CLASS STILL LABELS SECTIONS, and that is not a regression', ()
     `only ${survivors.length} file(s) still label a section — the class has been swept rather than demoted`)
 })
 
-test('EVERY PAGE HEADER GOES THROUGH THE ONE COMPONENT, never a hand-styled heading', () => {
-  // The rule that keeps the sizes from drifting again. Not "no h1 anywhere": an empty state, a session
-  // notice and a run's own mark are headings inside a page rather than the page's name, and they are
-  // sized for where they sit. What may not come back is a screen composing the PAGE's header itself,
-  // and the tell for that is the 27px the ten copies all carried.
-  const handRolled = FILES.filter((f) => /<h1[^>]*fontSize: 27/.test(read(f))).map(rel)
-  assert.deepEqual(handRolled, [], 'a screen is writing the page header itself again')
+test('EVERY ROUTED SCREEN OPENS WITH THE SHARED COMPONENT — the property, not a font size', () => {
+  // THE FIRST CUT OF THIS ARM MATCHED A LITERAL: an `<h1>` carrying `fontSize: 27`, which was the
+  // inline style the ten hand-written headers happened to share. A bare `<h1>About</h1>` passed it, and
+  // so would a 28. Three of those bare ones were live on a screen reachable from the navigation while
+  // this arm read green — the repair is the property the rule is actually about.
+  //
+  // THE PROPERTY: in every file that draws a screen, the FIRST heading-level element is the shared
+  // component. Not "no h1 anywhere" — an empty state, a session notice and a run's own mark are
+  // headings INSIDE a page rather than the page's name, and they are sized for where they sit. What
+  // may not happen is a screen opening with a heading it wrote itself.
+  // THE POPULATION IS THE SCREENS, and the shell is not one of them. AppShell's headings are the top
+  // bar's nav label and two notices about the whole application — a session that ended, an identity
+  // holding nothing — none of which is a page naming itself, and the lifecycle drive reads that top-bar
+  // heading by that selector on purpose. Excluded by what it IS rather than by name: it is the file
+  // that draws the frame every screen renders inside.
+  const offenders: string[] = []
+  for (const f of SCREENS) {
+    const src = read(f)
+    const header = src.indexOf('<PageHeader')
+    const h1 = src.indexOf('<h1')
+    if (header < 0 && h1 < 0) continue                  // a file that draws no heading at all
+    if (header < 0) { offenders.push(`${rel(f)} writes a heading and never the shared component`); continue }
+    if (h1 >= 0 && h1 < header) offenders.push(`${rel(f)} opens with a heading of its own, before the shared component`)
+  }
+  // ONE SCREEN IS OUT, AND NOT BY NAME. The result screen's only heading is the mark a run was ordered
+  // for — a value out of the run, marked for the screen-share blur — rather than the page's own name,
+  // and the note beside it records why it must not restate the report's headline. Putting the page's
+  // name above it is a design decision about the screen a client spends the most time on, and this
+  // issue did not ask for one; it is raised rather than taken here.
+  //
+  // WHAT KEEPS THAT HONEST is asserted, not assumed: that screen may hold exactly one heading and it
+  // must render run data. A page-name heading added beside it makes two, and this reds.
+  const result = SCREENS.find((f) => rel(f) === 'screens/Result.tsx')
+  assert.ok(result, 'the result screen moved — this exemption is describing a file that is not there')
+  const resultSrc = read(result)
+  const resultH1s = resultSrc.match(/<h1\b/g) ?? []
+  assert.equal(resultH1s.length, 1, `the result screen has ${resultH1s.length} headings — one of them is a page name`)
+  assert.match(resultSrc, /<h1[^>]*data-anon="mark"/, 'the result screen\'s heading is no longer the run\'s own mark')
 
-  const users = FILES.filter((f) => /<PageHeader\b/.test(read(f))).map(rel)
-  assert.ok(users.length >= 10,
-    `only ${users.length} screen(s) use the shared header — the others are composing their own`)
-  assert.ok(users.includes('screens/Home.tsx') && users.includes('screens/Clearances.tsx'),
+  assert.deepEqual(offenders.filter((o) => !o.startsWith('screens/Result.tsx')), [],
+    'a screen is writing its own page header again')
+
+  // A RATCHET OVER THE WHOLE POPULATION, because "the FIRST heading is the component" only covers the
+  // first render branch. About draws its header in three — the build it could not report, the wait, and
+  // the answer — and putting a bare heading back in the third left this arm green, because the first
+  // branch still opened correctly. A plant found that; the count is what closes it.
+  //
+  // THREE HEADINGS REMAIN IN THE SCREENS, and each is a heading INSIDE a page rather than a page naming
+  // itself: two empty states on the archive ("No clearances yet", once with a way to start and once
+  // without) and the result screen's mark. The number may fall and may not rise. A new screen writing
+  // its own page header raises it, wherever in the file it is written.
+  const headings = SCREENS.flatMap((f) => (read(f).match(/<h1\b/g) ?? []).map(() => rel(f)))
+  assert.ok(headings.length <= 3,
+    `${headings.length} hand-written headings in the screens, up from 3 — ${JSON.stringify(headings)}`)
+
+  // AND THE COMPONENT IS ACTUALLY REACHED, so the rule above cannot be met by a file that draws nothing.
+  // Counted rather than asserted per name: two files carry two headers, so call sites and files differ
+  // and a count of one is a count of neither.
+  const users = FILES.filter((f) => /<PageHeader\b/.test(read(f)))
+  const sites = FILES.reduce((n, f) => n + (read(f).match(/<PageHeader\b/g) ?? []).length, 0)
+  assert.ok(users.length >= 12, `only ${users.length} file(s) use the shared header`)
+  assert.ok(sites >= 14, `only ${sites} call site(s) — a screen has stopped drawing its header`)
+  assert.ok(users.some((f) => rel(f) === 'screens/Home.tsx') && users.some((f) => rel(f) === 'screens/Clearances.tsx'),
     'the two screens the owner named are not both on the shared header')
 })

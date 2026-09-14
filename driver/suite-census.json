@@ -5949,7 +5949,7 @@
         },
         "oneHeaderPerPage.test.ts": {
           "tests": 4,
-          "asserts": 7,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
