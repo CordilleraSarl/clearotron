@@ -82,6 +82,13 @@ export const CLARIVATE_OFFICE_ALIASES = Object.freeze({
   WIPO: "WO",
 });
 
+// ONE COPY OF THE PROVIDER'S OWN SENTENCE, read by two consumers. Declared here rather than in the
+// kernel block below because it belongs beside the other two limits — and referenced there rather than
+// re-typed, because the kernel is the object the enumeration seam actually receives. The first cut
+// declared it here only, the kernel never got it, and the arm that turns this refusal into a crowd
+// descriptor had therefore never fired on a single run.
+const CARDINALITY_REFUSAL = /Near\/Adj queries with sub queries that can return a huge amount of results are not allowed/i;
+
 export const CAPABILITIES = Object.freeze({
   id: "clarivate",
   label: "Clarivate Compumark",
@@ -130,7 +137,7 @@ export const CAPABILITIES = Object.freeze({
   //
   // Declared as the provider's verbatim signature so the recognition lives beside the other two limits
   // rather than in the kernel, and so a vendor rewording is a one-line change here.
-  cardinalityRefusal: /Near\/Adj queries with sub queries that can return a huge amount of results are not allowed/i,
+  cardinalityRefusal: CARDINALITY_REFUSAL,
   // regions[] is MANDATORY on every request path here (buildSearchRequest throws without it) — unlike
   // corsearch, where an absent region clause is simply a worldwide sweep. Declared so the shared
   // execute-plan seam can backfill an entry that carries none from the FROZEN PLAN's own regions
@@ -261,6 +268,11 @@ export const CAPABILITIES = Object.freeze({
     //   * a screen FAILURE is total content loss, not a degraded extra — it can never ship as
     //     state:"enumerated".
     contentFromScreen: true,
+    // THE REFUSAL RECOGNISER, IN THE OBJECT THE SEAM ACTUALLY READS. `makeEnumerate` destructures
+    // `cardinalityRefusal` from the capabilities it is handed, and what it is handed is this kernel
+    // subset — so declaring it at the top of this file alone left the recogniser dead for as long as it
+    // has existed, with every refusal riding the repair ladder and landing as a permanent gap.
+    cardinalityRefusal: CARDINALITY_REFUSAL,
   }),
 });
 
