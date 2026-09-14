@@ -621,6 +621,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refusal-marks-the-field-in-whichever-view-is-open.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-means-nothing-without-its-control.test.mjs": {
           "tests": 8,
           "asserts": 38,
