@@ -30,8 +30,10 @@
 //   _driver/stage-inputs/    what each stage was handed
 //   _history/                pre-reopen snapshots
 // Dropping the telemetry drops `meta.tokens` (driver/publish/index.mjs:971 — the only consumer of
-// rollupTokens). That is the one difference step 5 is told to expect, and it says so out loud rather than
-// normalising it away in silence.
+// rollupTokens), and with it the record of which models served the run (driver/tokens.mjs:181
+// servedModels): `servedModels` on meta.json and report-data.json, and the one line that closes the
+// report's scope section. Those are the differences step 5 is told to expect, and it says so out loud
+// rather than normalising them away in silence.
 //
 // WHAT THIS SCRIPT DOES NOT DO
 // It does not decide the sample is publishable. It greps for the shapes that must never leave the VM
@@ -226,7 +228,18 @@ const substituteVendorKey = (key) => {
 // meta.json keys the freeze is EXPECTED to change, with the reason. Anything else differing is a finding.
 const EXPECTED_META_DELTA = {
   tokens: "telemetry pruned — _driver/*.jsonl is the only source (driver/tokens.mjs:82)",
+  servedModels: "telemetry pruned — the attempt rows in _driver/*.jsonl are the only source (driver/tokens.mjs:181)",
 };
+
+// THE SAME CAUSE, ON THE TWO OTHER SURFACES THAT SHOW IT. report-data.json carries `servedModels` beside the
+// report's content, and the page renders it as the scope section's closing line (render.mjs
+// servedModelsLine, class "servedby"). Only that key and that one paragraph are set aside, on both sides
+// and out loud; a difference anywhere else in either file is still a finding. The paragraph holds escaped
+// text and no markup, so the pattern cannot run past its own closing tag. It takes the whitespace before
+// the paragraph with it: the clearance page joins its scope parts with a line break and an indent, which
+// exists only because the line does.
+const EXPECTED_DATA_DELTA = ["servedModels"];
+const SERVED_LINE_RE = /\s*<p class="servedby"[^>]*>[^<]*<\/p>/g;
 
 // ── args ─────────────────────────────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2);
@@ -594,7 +607,27 @@ if (proofOk) {
       }
       continue;
     }
-    if (normalise(rawA) === normalise(rawB)) { note(`${name} identical (${rawB.length} bytes)`); continue; }
+    // The served-model record is set aside by name on both sides (EXPECTED_DATA_DELTA, SERVED_LINE_RE),
+    // and only when it is what differed does the note say so.
+    let sA = normalise(rawA), sB = normalise(rawB), aside = [];
+    if (/^report-data(?:-.+)?\.json$/.test(name)) {
+      let dA = null, dB = null;
+      try { dA = JSON.parse(rawA); dB = JSON.parse(rawB); } catch { dA = dB = null; }
+      if (dA && dB) {
+        aside = EXPECTED_DATA_DELTA.filter((k) => JSON.stringify(dA[k]) !== JSON.stringify(dB[k]));
+        for (const k of EXPECTED_DATA_DELTA) { delete dA[k]; delete dB[k]; }
+        sA = normalise(JSON.stringify(dA, null, 2)); sB = normalise(JSON.stringify(dB, null, 2));
+      }
+    } else if (name.endsWith(".html") && sA !== sB) {
+      const tA = sA.replace(SERVED_LINE_RE, ""), tB = sB.replace(SERVED_LINE_RE, "");
+      if (tA === tB) { aside = ["the scope section's served-models line"]; sA = tA; sB = tB; }
+    }
+    if (sA === sB) {
+      note(aside.length
+        ? `${name} identical apart from ${aside.join(", ")}, which differs as expected — ${EXPECTED_META_DELTA.servedModels}`
+        : `${name} identical (${rawB.length} bytes)`);
+      continue;
+    }
     finding(`${name} differs between the source run and the frozen copy — the allowlist dropped an input the renderer reads`);
   }
 }
