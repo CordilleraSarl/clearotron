@@ -289,6 +289,10 @@ const body = (src: string) =>
   src.split('\n').filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l)).join('\n')
 
 const home = body(readFileSync(new URL('../src/screens/Home.tsx', import.meta.url), 'utf8'))
+// Read for the one-spelling arm below: the rail is where the label is DECIDED, and the screen is where
+// a reader lands. Both are read rather than quoted, so a rename is checked instead of duplicated.
+const NAV_CONFIG = readFileSync(new URL('../src/nav/nav.config.ts', import.meta.url), 'utf8')
+const CLEARANCES = readFileSync(new URL('../src/screens/Clearances.tsx', import.meta.url), 'utf8')
 
 test('Home promises no ETA, no percentage and no price', () => {
   // The three things the data cannot support. Each would look like precision and be invented.
@@ -326,7 +330,7 @@ test('HOME DOES NOT RE-LIST THE ARCHIVE — it links to the screen that owns it'
   // properly, with families and threads. Two screens showing the same work in two shapes is a second
   // answer, not a summary. The tail is short, capped in the contract, and ends in a way out.
   assert.match(home, /recentlyFinished\(/, 'the tail comes from the grouping contract, not from a slice of runs')
-  assert.match(home, /All clearances/)
+  assert.match(home, /All Clearances/)
   assert.doesNotMatch(home, /\.filter\(\(r\) => r\.state === 'delivered'\)/,
     'Home does not re-derive "finished" — that lives in one tested place')
 })
@@ -355,8 +359,32 @@ test('the finished line leads into Clearances, and Home lists nothing else', () 
   // "Home shows what is happening; the menu gives you the depth" — a summary with no way out is only
   // the first half, and a second, worse archive on the landing screen teaches people not to go to the
   // real one.
-  assert.match(home, /All clearances/)
+  assert.match(home, /All Clearances/)
   assert.match(home, /\/portal\/clearances/)
+})
+
+test('ONE LOOK AND ONE SPELLING FOR THE ARCHIVE — the rail, both Home routes and the screen agree', () => {
+  // One destination had three presentations: a rail item, a button wearing the rail item's class (grey,
+  // flat, and read as scenery), and red text with a different icon and a different capitalisation. A
+  // reader who meets three of them does not know they are one place, and the quiet one goes unpressed.
+  //
+  // THE LABEL IS TAKEN FROM THE RAIL, never typed here as a fourth copy — that is the failure this arm
+  // is about, one layer up. If the rail is renamed again, every surface below it is checked against the
+  // new word rather than against a literal that stopped matching.
+  const rail = /label: '([^']+)', path: '\/portal\/clearances'/.exec(NAV_CONFIG)
+  assert.ok(rail, 'the rail no longer names the clearances screen — this arm is reading nothing')
+  const label = rail[1]
+  assert.equal(label, 'All Clearances', 'the rail item is the one spelling everything else follows')
+
+  // BOTH Home routes carry it, and both are the same button rather than one button and one text link.
+  assert.equal((home.match(new RegExp(label, 'g')) ?? []).length, 2, 'Home names the archive twice — once per route')
+  assert.doesNotMatch(home, /className="nav-item" onClick={onAll}/, 'a Home button is wearing the rail item\'s clothes again')
+  assert.equal((home.match(/className="btn-ghost home2-all"/g) ?? []).length, 2,
+    'the two routes into the archive are not the same button')
+
+  // And the screen it leads to says the same word, so a reader who follows it lands somewhere named
+  // what they pressed.
+  assert.ok(CLEARANCES.includes(`<div className="eyebrow">${label}</div>`), 'the screen does not name itself as the rail does')
 })
 
 test('THERE IS NO ROLE SPLIT ON THIS PAGE', () => {

@@ -231,11 +231,16 @@ function InFlightBand({
       <span className="home2-band-rule" />
       <span className="home2-band-note">{note}</span>
       {/* The way OUT of the dashboard and into the archive. Home shows what is in flight; everything
-          that has finished lives on Clearances, and the rail was the only route there. */}
-      <button type="button" className="nav-item" onClick={onAll}
-        style={{ width: 'auto', flex: 'none', marginRight: 8 }}>
+          that has finished lives there, and the rail was the only route to it.
+          ONE LOOK IN BOTH PLACES AND IN THE RAIL. This was a rail item in disguise — grey, flat, and
+          reading as scenery rather than as something to press — while the same destination lower down
+          the page was red text with a different icon and a different capitalisation. Three
+          presentations of one route teach a reader nothing. Both are the secondary button now, with
+          the rail's own word and icon, one step below New clearance so the primary action stays
+          primary. */}
+      <button type="button" className="btn-ghost home2-all" onClick={onAll} style={{ marginRight: 8 }}>
         <Icon name="layers" />
-        <span>All clearances</span>
+        <span>All Clearances</span>
       </button>
       {onNew ? (
         <button type="button" className="home2-new" onClick={onNew}>
@@ -750,14 +755,14 @@ function LastFinished({
         <span className="home2-done-spacer" />
         <button
           type="button"
-          className="home2-all"
+          className="btn-ghost home2-all"
           onClick={(e) => {
             e.stopPropagation()
             ctx.go('/portal/clearances')
           }}
         >
-          All clearances
-          <Icon name="arrow-right" />
+          <Icon name="layers" />
+          All Clearances
         </button>
       </div>
     </>

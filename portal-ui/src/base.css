@@ -2073,10 +2073,12 @@ input.filter {
 .home2-done-verdict { font-size: 15px; color: var(--text-body); }
 .home2-done-meta { font-size: 13px; color: var(--text-faint); }
 .home2-done-spacer { flex: 1; }
-.home2-all {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
-  white-space: nowrap; background: transparent; border: 0; color: var(--text-accent); cursor: pointer;
-}
+/* ONE STYLE FOR BOTH ROUTES INTO THE ARCHIVE, and it is `btn-ghost` — the secondary button this
+   stylesheet already had. This class used to be the whole look of one of them (accent text, no border)
+   while the other borrowed the rail item's, so the same destination read as two different things and
+   neither read as a button. What is left here is the icon size and the not-wrapping, which is all this
+   place needs on top of the shared style. */
+.home2-all { white-space: nowrap; }
 .home2-all svg { width: 14px; height: 14px; }
 
 /* ── limits ───────────────────────────────────────────────────────────────────────────────────────
