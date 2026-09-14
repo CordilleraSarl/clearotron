@@ -21,7 +21,7 @@ import { preflightSkillsStore } from "../skills-store-provenance.mjs";
 import { RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOptions,
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
-  offerUsptoSync, deploymentCurrency } from "../../bin/onboard.mjs";
+  offerUsptoSync, deploymentCurrency, namingProgram } from "../../bin/onboard.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
 import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES } from "../driver.config.mjs";
@@ -1377,4 +1377,100 @@ test("unset is the supported mode and it passes, which is why setup no longer wr
   assert.match(src, /CLEAROTRON_INSTRUCTIONS_DIR stays unset/,
     "the closing note must say the name is unset and what to do when they do want an overlay");
   assert.match(src, /COMMIT it/, "including that an uncommitted store is the state that cannot be identified");
+});
+
+// ── THE COPY INSTALLED WITH CLEAROTRON, WHERE A READER MEETS IT ──────────────────────────────────────
+//
+// The resolver's own arms are in an-engine-program-installed-with-clearotron-is-the-last-resort.test.mjs.
+// These hold the two surfaces a reader sees that copy on: `--check` names it or refuses its placeholder,
+// and the wizard names it by path where it tells the reader what to run, and never writes its path down.
+
+/** An npm install of the Claude package in a fresh directory, whose program is `content`. */
+function plantInstalledCopy(content, version = "9.9.9") {
+  const spec = ENGINE_BINARIES["anthropic-agent"];
+  const root = mkdtempSync(join(tmpdir(), "onboard-installed-"));
+  const dir = join(root, "node_modules", ...spec.package.split("/"));
+  mkdirSync(join(dir, "bin"), { recursive: true });
+  writeFileSync(join(dir, "package.json"),
+    JSON.stringify({ name: spec.package, version, bin: { [spec.fallback]: "bin/claude.exe" } }));
+  const program = join(dir, "bin", "claude.exe");
+  writeFileSync(program, content, { mode: 0o755 });
+  return { root, program };
+}
+
+test("--check names the copy installed with Clearotron and its version, and offers no vendor install", () => {
+  const { install } = ENGINE_BINARIES["anthropic-agent"];
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n");
+  try {
+    const r = run(["--check"], { CLEAROTRON_BUNDLED_ENGINES_DIR: root });
+    assert.equal(r.code, 0, r.out);
+    assert.ok(r.out.includes(`${program} — the copy installed with Clearotron, version 9.9.9`), r.out);
+    assert.ok(!r.out.includes(install), `a copy was found and the reader was still told to install one:\n${r.out}`);
+    // THE CONTROL, so both assertions above can fail: with nothing installed, --check says so, and it
+    // does print the vendor's install command.
+    const none = run(["--check"]);
+    assert.match(none.out, /no copy was installed with Clearotron/, none.out);
+    assert.ok(none.out.includes(install),
+      `the control never prints the install command, so its absence above proves nothing:\n${none.out}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("--check refuses the placeholder the Claude package leaves when its install step did not run", () => {
+  // The package ships a shell script with no `#!` as its program and replaces it in its install step, so
+  // `npm install --ignore-scripts` leaves a file that passes an execute-bit check and fails every stage.
+  const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
+  try {
+    const r = run(["--check"], { CLEAROTRON_BUNDLED_ENGINES_DIR: root });
+    assert.equal(r.code, 1, r.out);
+    assert.ok(r.out.includes(`${program} is the placeholder`), r.out);
+    assert.match(r.out, /Reinstall without --ignore-scripts/, r.out);
+    assert.ok(!r.out.includes("the copy installed with Clearotron, version"),
+      `the placeholder was reported as a usable copy:\n${r.out}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("the wizard names the installed copy by path where it tells the reader what to run, and only that copy", () => {
+  // The package links only `clearotron` onto PATH, so for the installed copy the bare program word is a
+  // command the reader's shell cannot find. Driven over the engine table's own sentences, never a copy.
+  const path = "/opt/app/node_modules/pkg/bin/program";
+  const spaced = "/opt/my app/node_modules/pkg/bin/program";
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    const bare = new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`);
+    let named = 0;
+    for (const text of [eng.subscriptionHow, eng.signIn, eng.headless?.cmd].filter((t) => typeof t === "string")) {
+      for (const source of ["path", "explicit"]) {
+        assert.equal(namingProgram(text, eng, { source, path }), text,
+          `${id}: a copy found by ${source} is reachable as named, so "${text}" must not change`);
+      }
+      if (!bare.test(text)) continue;
+      named++;
+      const out = namingProgram(text, eng, { source: "bundled", path });
+      assert.ok(out.includes(path), `${id}: "${text}" does not name the installed copy: "${out}"`);
+      assert.doesNotMatch(out, bare, `${id}: "${out}" still tells the reader to run a bare \`${eng.fallback}\``);
+      assert.ok(namingProgram(text, eng, { source: "bundled", path: spaced }).includes(`"${spaced}"`),
+        `${id}: a path with a space is not quoted, so the command cannot be pasted`);
+    }
+    assert.ok(named > 0, `none of ${id}'s sign-in sentences names its program, so this arm checks nothing for it`);
+  }
+});
+
+test("the wizard never writes the installed copy's path into .env: every write of an engine path is guarded", () => {
+  // Written, that path becomes the explicit setting, an explicit setting never falls back, and a copy the
+  // reader installs on this machine later would never be used. The wizard is not driven here (it refuses a
+  // non-terminal stdin), so this reads its source: EVERY statement that puts an engine program's variable
+  // into the candidate .env must exclude the installed copy on that same statement. If this fails because
+  // the write moved or changed shape, re-pin it to that property, not to the new spelling.
+  const src = readFileSync(ONBOARD, "utf8");
+  const writes = nonEmpty(
+    src.split("\n").filter((l) =>
+      /candidate\[eng\.env\]\s*=|candidate\s*=\s*\{[^}]*\[eng\.env\]|Object\.assign\(\s*candidate\b[^)]*\[eng\.env\]/.test(l)),
+    "statements writing an engine program's variable into the wizard's candidate .env");
+  for (const w of writes) {
+    assert.match(w, /bin\.source\s*!==\s*"bundled"/,
+      `this write of the engine's program path does not exclude the copy installed with Clearotron:\n  ${w.trim()}`);
+  }
 });

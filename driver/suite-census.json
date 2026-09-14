@@ -2836,8 +2836,8 @@
           "todos": 0
         },
         "onboard-wizard.test.mjs": {
-          "tests": 62,
-          "asserts": 222,
+          "tests": 66,
+          "asserts": 237,
           "skips": 2,
           "todos": 0
         },
