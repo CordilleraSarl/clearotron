@@ -289,9 +289,22 @@ export const leadRouteFor = (id) => {
  * @param {{ stdioRoutes?: object, publicAddress?: string|null, operator?: string|null }} have
  * @param {"disk"|"public-http"} [route] defaults to the row's `lead`
  */
-/** The first step of every "on this computer" route when the install runs under WSL. */
-export const WSL_STEP = "Do this inside your WSL terminal, the Linux one where Clearotron is installed, not in PowerShell. "
-  + "An assistant running on Windows itself cannot start it from there.";
+/**
+ * The first step of every "on this computer" route when the install runs under WSL.
+ *
+ * IT USED TO SEND THE READER AWAY, and for a person whose product runs in WSL the assistant on Windows
+ * is the normal one — so "an assistant on Windows cannot start it from there" left them with no working
+ * row at all. The row now starts the server INSIDE the distribution through `wsl.exe`, so the sentence
+ * says what the command does rather than where the reader may not be: paste it where the assistant
+ * lives, on either side, and it crosses the boundary for them.
+ *
+ * The Windows-side caveat stays as the second half, because a row that a host rewrites, or an assistant
+ * that resolves `wsl.exe` differently, still fails on the same boundary — and then the terminal inside
+ * the distribution is the answer.
+ */
+export const WSL_STEP = "This install runs inside WSL, and the command below starts the server in there for you — "
+  + "paste it where your assistant lives, on Windows or in the WSL terminal, whichever it is. "
+  + "If your assistant rewrites the command or cannot find wsl.exe, run it from the WSL terminal instead.";
 
 export function whatItNeeds(client, have = {}, route = client?.lead) {
   if (!client) return null;

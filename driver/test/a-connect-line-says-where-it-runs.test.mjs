@@ -49,3 +49,54 @@ test("every shape carries the reports folder when it is known, and invents none 
     assert.doesNotMatch(stdioConnectFor(shape, { workDir: "/w" }).text, /CLEAROTRON_REPORTS_DIR/, `${shape} invented a reports folder`);
   }
 });
+
+// ── ON WSL THE ROW CROSSES THE BOUNDARY ITSELF ───────────────────────────────────────────────────
+//
+// The rows named a Linux path and left the reader to run them in the WSL terminal. For somebody whose
+// product runs in WSL the assistant on WINDOWS is the normal one, and it read
+// `/home/<user>/…/server.mjs` as `C:\home\<user>\…`: MODULE_NOT_FOUND, four times, then "couldn't
+// start". The path was right and the interpreter was on the wrong side.
+//
+// Driven on the composed strings, which is what this box can see. Criterion 4 — the row pasted into
+// Claude Desktop and Claude Code on a real Windows machine — is the owner's, and is not claimed here.
+test("every on-this-computer shape starts the server INSIDE the distribution when the install is on WSL", async () => {
+  const { STDIO_SHAPES, stdioConnectFor } = await import("../../shared/stdio-connect.mjs");
+  const wsl = { distro: "Ubuntu" };
+  const opts = { installRoot: "/home/u/app", workDir: "/home/u/work", wsl };
+
+  for (const shape of Object.keys(STDIO_SHAPES)) {
+    const text = stdioConnectFor(shape, opts).text;
+    assert.match(text, /wsl\.exe/, `${shape} still hands a Windows host a Linux interpreter`);
+    assert.match(text, /-d[\s",]+Ubuntu/, `${shape} does not name the distribution, so it starts whichever is default`);
+    assert.ok(text.includes("/home/u/app/mcp-server/server.mjs"), `${shape} lost the server path`);
+    // THE ENVIRONMENT HAS TO CROSS. A host on Windows sets variables for the process it starts, which
+    // is wsl.exe; they stop at the boundary. Inside the command, `env` sets them where the server reads.
+    assert.match(text, /env[\s",]+CLEAROTRON_WORK_DIR=\/home\/u\/work/, `${shape} sets the work directory where the server will never see it`);
+  }
+});
+
+test("off WSL every shape is byte-identical to what it always was", () => {
+  // THE CONTROL, and the half that says this is a new branch rather than a rewrite: every reader on
+  // macOS, Linux and Windows-without-WSL must get exactly the command they got before.
+  for (const shape of Object.keys(STDIO_SHAPES)) {
+    const text = stdioConnectFor(shape, { installRoot: "/opt/app", workDir: "/w" }).text;
+    assert.doesNotMatch(text, /wsl\.exe/, `${shape} wrapped a reader who is not on WSL`);
+    assert.match(text, /node/, `${shape} stopped naming the interpreter`);
+  }
+});
+
+test("the distribution is named when we know it, and left to the default when we do not", async () => {
+  const { wslTarget } = await import("../../shared/wsl.mjs");
+  const { stdioConnectFor } = await import("../../shared/stdio-connect.mjs");
+  // A machine with more than one distribution has a default that may hold no install, so the name
+  // travels wherever the environment carries it.
+  assert.deepEqual(wslTarget({ env: { WSL_DISTRO_NAME: "Ubuntu" } }), { distro: "Ubuntu" });
+  assert.deepEqual(wslTarget({ env: { WSL_INTEROP: "/run/WSL/8_interop" } }), { distro: null },
+    "WSL with no name is still WSL — the wrapper is right, the -d is what cannot be guessed");
+  assert.equal(wslTarget({ env: {}, procVersion: "Linux 6.17.0-1022-azure", interopEntry: false }), null,
+    "a plain Linux box must not be handed a Windows wrapper");
+
+  const unnamed = stdioConnectFor("claude-cli", { installRoot: "/home/u/app", wsl: { distro: null } }).text;
+  assert.match(unnamed, /wsl\.exe -e node/, "with no distribution name the command runs in the default one");
+  assert.doesNotMatch(unnamed, /-d\b/, "it invented a distribution name");
+});

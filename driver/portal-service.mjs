@@ -47,7 +47,7 @@ import { customerStoreDir, customerStoreLine } from "../shared/customer-store.mj
 import { clientFailureNote } from "../shared/client-failure-note.mjs";   // — one sentence, three surfaces
 import { bareInvocation, browserCommand, invocationPrefix, installRoute, npxVersionOf } from "../shared/invocation.mjs";   // — and why this one surface is by NAME
 import { stdioConnectOffer, stdioConnectFor, STDIO_SHAPES } from "../shared/stdio-connect.mjs";   // — ONE author for the connect route
-import { isWsl } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run
+import { isWsl, wslTarget } from "../shared/wsl.mjs";   // — on WSL, the connect lines say where they run and cross the boundary themselves
 import { connectOffers, offersForWire } from "../shared/connect-clients.mjs";                 // — ONE table, resolved server-side
 
 /**
@@ -2354,7 +2354,7 @@ export function makePortalService({
         const offers = connectOffers({
           stdioRoutes: stdio
             ? Object.fromEntries(Object.keys(STDIO_SHAPES).map((shape) =>
-                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null })]))
+                [shape, stdioConnectFor(shape, { workDir: process.env.CLEAROTRON_WORK_DIR || null, reportsDir: process.env.CLEAROTRON_REPORTS_DIR || null, wsl: wslTarget() })]))
             : {},
           wsl: isWsl(),
           // ONE ADDRESS, and it is the publicly reachable one ( §5). The

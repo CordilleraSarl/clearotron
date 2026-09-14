@@ -106,27 +106,75 @@ const envBlock = (o) => (Object.keys(envOf(o)).length ? { env: envOf(o) } : {});
  */
 const separator = (platform = process.platform) => (platform === "win32" ? '"--"' : "--");
 
+/**
+ * WHAT THE HOST ACTUALLY RUNS, and on WSL that is not `node`.
+ *
+ * An assistant running on WINDOWS reads these rows. Handed `node /home/<user>/…/server.mjs`, Windows
+ * Node reads the path as `C:\home\<user>\…` and answers MODULE_NOT_FOUND — measured on a real walk,
+ * four times over, ending in "couldn't start". The path is right and the interpreter is on the wrong
+ * side of the boundary.
+ *
+ * Windows can run a command inside the distribution itself, so the row does that: `wsl.exe -d <distro>
+ * -e …`. The distribution is named from `WSL_DISTRO_NAME` when we have it, because a machine with more
+ * than one would otherwise get whichever is default — which may be a distribution with no install.
+ *
+ * THE ENVIRONMENT CROSSES THROUGH `env`, NOT THROUGH THE HOST'S OWN env BLOCK. A host on Windows sets
+ * variables for the process it starts, which is `wsl.exe`; they do not cross the boundary into the
+ * distribution, so a work directory set that way is silently absent on the other side and the server
+ * reads its own defaults instead. Running `env K=V … node …` inside the distribution sets them where
+ * the server will read them. Nothing here is a secret: these are paths.
+ *
+ * Off WSL the launcher is exactly what it always was, so every row on every other platform is
+ * byte-identical to before. PURE.
+ */
+export function stdioLauncher({ server, workDir = null, reportsDir = null, wsl = null } = {}) {
+  const vars = envOf({ workDir, reportsDir });
+  if (!wsl) return { command: "node", args: [server], env: vars, crossesIntoWsl: false };
+  const distro = String(wsl.distro ?? "").trim();
+  return {
+    command: "wsl.exe",
+    // `-e` runs the command directly rather than through a login shell, so nothing of the reader's
+    // profile can rewrite the arguments between Windows and the server.
+    args: [...(distro ? ["-d", distro] : []), "-e",
+      ...(Object.keys(vars).length ? ["env", ...Object.entries(vars).map(([k, v]) => `${k}=${v}`)] : []),
+      "node", server],
+    // Already carried inside the argument list above; a host-side env block would set them on the
+    // Windows process and never reach the server.
+    env: {},
+    crossesIntoWsl: true,
+  };
+}
+
 /** How each host takes the same three facts. A row of CONNECT_CLIENTS names one of these by key. */
 export const STDIO_SHAPES = Object.freeze({
   "claude-cli": {
     kind: "command",
     where: null,
-    render: ({ server, workDir, reportsDir, platform }) =>
-      `claude mcp add ${STDIO_SERVER_NAME} --scope user${envFlags({ workDir, reportsDir })} ${separator(platform)} node ${server}`,
+    render: ({ server, workDir, reportsDir, platform, wsl }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+      // The host's own `-e` flags set variables for the process IT starts. Off WSL that is the server;
+      // through the wrapper it is `wsl.exe`, and they stop at the boundary — so on WSL they ride inside
+      // the command instead and this line carries none.
+      const flags = l.crossesIntoWsl ? "" : envFlags({ workDir, reportsDir });
+      return `claude mcp add ${STDIO_SERVER_NAME} --scope user${flags} ${separator(platform)} ${l.command} ${l.args.join(" ")}`;
+    },
     after: null,
   },
   "desktop-json": {
     kind: "config",
     where: "Settings → Developer → Edit Config",
-    render: ({ server, workDir, reportsDir }) => JSON.stringify({
-      mcpServers: {
-        [STDIO_SERVER_NAME]: {
-          command: "node",
-          args: [server],
-          ...envBlock({ workDir, reportsDir }),
+    render: ({ server, workDir, reportsDir, wsl }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+      return JSON.stringify({
+        mcpServers: {
+          [STDIO_SERVER_NAME]: {
+            command: l.command,
+            args: l.args,
+            ...(Object.keys(l.env).length ? { env: l.env } : {}),
+          },
         },
-      },
-    }, null, 2),
+      }, null, 2);
+    },
     after: "Restart Claude Desktop.",
   },
   // CONNECT.md's "Any other MCP host": the contract itself, in the shape most hosts read. Offered when
@@ -134,11 +182,14 @@ export const STDIO_SHAPES = Object.freeze({
   "generic-json": {
     kind: "config",
     where: "your agent's MCP server configuration",
-    render: ({ server, workDir, reportsDir }) => JSON.stringify({
-      command: "node",
-      args: [server],
-      ...envBlock({ workDir, reportsDir }),
-    }, null, 2),
+    render: ({ server, workDir, reportsDir, wsl }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+      return JSON.stringify({
+        command: l.command,
+        args: l.args,
+        ...(Object.keys(l.env).length ? { env: l.env } : {}),
+      }, null, 2);
+    },
     after: null,
   },
   "codex-toml": {
@@ -151,13 +202,16 @@ export const STDIO_SHAPES = Object.freeze({
     // Codex does not forward the shell environment, and a credential would have to be forwarded BY NAME
     // rather than written into a file. This server takes no credential — the work directory is a path,
     // not a secret — so `env` is correct here and would not be for a server that wanted a key.
-    render: ({ server, workDir, reportsDir }) => [
-      `[mcp_servers.${STDIO_SERVER_NAME}]`,
-      `command = "node"`,
-      `args = ["${server}"]`,
-      ...(Object.keys(envOf({ workDir, reportsDir })).length
-        ? [`env = { ${Object.entries(envOf({ workDir, reportsDir })).map(([k, v]) => `${k} = "${v}"`).join(", ")} }`] : []),
-    ].join("\n"),
+    render: ({ server, workDir, reportsDir, wsl }) => {
+      const l = stdioLauncher({ server, workDir, reportsDir, wsl });
+      return [
+        `[mcp_servers.${STDIO_SERVER_NAME}]`,
+        `command = "${l.command}"`,
+        `args = [${l.args.map((a) => `"${a}"`).join(", ")}]`,
+        ...(Object.keys(l.env).length
+          ? [`env = { ${Object.entries(l.env).map(([k, v]) => `${k} = "${v}"`).join(", ")} }`] : []),
+      ].join("\n");
+    },
     after: null,
   },
 });
@@ -233,13 +287,13 @@ export function remoteConnectFor(shape, { address = null } = {}) {
  * absence is a finding: a row naming a shape nobody implemented should surface as missing, and the
  * table's own arm refuses such a row outright.
  */
-export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform } = {}) {
+export function stdioConnectFor(shape, { installRoot = stableInstallRoot({ installRoot: INSTALL_ROOT }), workDir = null, reportsDir = null, platform = process.platform, wsl = null } = {}) {
   const spec = Object.hasOwn(STDIO_SHAPES, String(shape ?? "")) ? STDIO_SHAPES[shape] : null;
   if (!spec) return null;
   const server = join(installRoot, "mcp-server", "server.mjs");
   return {
     shape, kind: spec.kind, where: spec.where, after: spec.after,
-    text: spec.render({ server, workDir, reportsDir, platform }),
+    text: spec.render({ server, workDir, reportsDir, platform, wsl }),
     name: STDIO_SERVER_NAME,
   };
 }
