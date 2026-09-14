@@ -615,8 +615,8 @@ export function grantsGeneric(scope) {
 
 // What a refused session should DO about it. A bare refusal is what stopped a lawyer commissioning a
 // search for a new client: the door said no and the assistant had nothing to offer her next.
-export const GENERIC_NOT_GRANTED = "the neutral generic profile is not part of this session's access — "
-  + "ask the account holder to grant it, or set the new client up as their own company in the portal";
+export const GENERIC_NOT_GRANTED = "The neutral generic profile is not part of this session's access — "
+  + "ask the account holder to grant it, or set the new client up as their own company in the portal.";
 
 // Ops-token issuance (INSTALL.md §8): `sub` names the PRINCIPAL the token was minted
 // for (an integrator connector, an operator) and rides into the audit log; `verbs` (ops-only) is an
@@ -930,8 +930,8 @@ export function authorize(scope, toolName, args = {}) {
       const key = args?.profileKey ?? "generic";
       const held = key === "generic" ? grantsGeneric(scope) : scope.accounts.includes(key);
       if (!held)
-        throw new Error(`your grant [${scope.accounts.join(", ")}] does not include account "${key}" — ${toolName} refused`
-          + (key === "generic" ? `. ${GENERIC_NOT_GRANTED}` : ""));
+        throw new Error(`your grant [${scope.accounts.join(", ")}] does not include account "${key}" — ${toolName} refused.`
+          + (key === "generic" ? ` ${GENERIC_NOT_GRANTED}` : ""));
     }
     // The PREVIEW only, deliberately — the same line the internal branch draws below.
     //
@@ -997,8 +997,8 @@ export function authorize(scope, toolName, args = {}) {
       const reach = scope.accounts === "*" ? "everything" : (Array.isArray(scope.accounts) ? scope.accounts.join(", ") : "");
       if (key === "generic" ? !grantsGeneric(scope)
         : !(scope.accounts === "*" || (Array.isArray(scope.accounts) && scope.accounts.includes(key))))
-        throw new Error(`your grant [${reach}] does not include account "${key}" — ${toolName} refused`
-          + (key === "generic" ? `. ${GENERIC_NOT_GRANTED}` : ""));
+        throw new Error(`your grant [${reach}] does not include account "${key}" — ${toolName} refused.`
+          + (key === "generic" ? ` ${GENERIC_NOT_GRANTED}` : ""));
     }
     if (toolName === "start_run" || toolName === "plan_run") {
       // WHO IS ASKING is server-stamped from the CF-verified identity, never caller-supplied. Both the

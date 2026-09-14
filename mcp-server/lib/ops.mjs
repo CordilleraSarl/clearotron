@@ -242,8 +242,8 @@ export function resolveScopedProfileKey(args, scope, verb) {
   if (!Array.isArray(scope?.accounts)) return args;
   if (args.profileKey && String(args.profileKey).trim()) return args;
   if (grantsGeneric(scope)) return { ...args, profileKey: "generic" };
-  throw new Error(`${verb}: this session holds [${scope.accounts.join(", ")}] and the request names no account — `
-    + `${GENERIC_NOT_GRANTED} (a job that names no customer is never resolved from the requester's email domain)`);
+  throw new Error(`${verb}: this session holds [${scope.accounts.join(", ")}] and the request names no account. `
+    + `${GENERIC_NOT_GRANTED} A job that names no customer is never resolved from the requester's email domain.`);
 }
 
 // start_run — enqueue a clearotron job the runner will drain. Returns the queue id + slug; the runId/codename is
