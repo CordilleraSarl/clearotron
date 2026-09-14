@@ -156,7 +156,7 @@ import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
 import { parseFrameworkManifest, loadFrameworkManifest, frameworkFor, manifestPathFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
-import { renderScopeLedgerJson, scopeLedgerJsonFromRows, channelsDiagnosis, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
+import { renderScopeLedgerJson, scopeLedgerJsonFromRows, gridChannels, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
 // qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-clearotron
 // honesty row/note. jx-lanes.mjs is a PURE zero-import leaf (data + decisions, no env/fs), so a static
 // import here costs a plain clearotron nothing — the "lazy import" rule below (jx.mjs / jx-units.mjs) guards
@@ -925,28 +925,28 @@ function deriveGridSpec(ctx) {
     // deterministic grid runs grid-spec.platforms and the receipts gate joins the SAME file, so this is the
     // single, consistent lever. Frame named none ⇒ keep the profile default (back-compat, never worse).
     const matterMd = existsSync(P.matterContext) ? readFileSync(P.matterContext, "utf8") : "";
-    let channels = ctx.profile.platforms;
-    if (ctx.profile.profileKey === "generic") {
-      // THE FALLBACK IS UNCHANGED; ONLY THE SILENCE IS. This branch had no else, so four different facts
-      // — no matter-context file, no "Search channels:" line, a line whose every value was discarded for
-      // not being domain-shaped, and a genuine "none named" — all fell through to the profile's platforms
-      // identically and said nothing. "The frame named none" is a decision; "we could not read the line"
-      // is not, and the third case is the expensive one: the seat DID answer and its answer was thrown
-      // away for its shape, which reads in the record exactly like a considered none.
-      //
-      // Nothing about which channels get searched moves here. The run gains a sentence, and an operator
-      // reading the log can tell a considered clean from an unread one.
-      const diag = channelsDiagnosis(matterMd);
-      if (diag.channels.length) {
-        channels = diag.channels;
-        note(`common-law channels derived from the matter frame (generic profile): ${diag.channels.join(", ")}`);
-      } else if (diag.state === "all-rejected") {
-        note(`common-law channels: the matter frame's "Search channels:" line named ${diag.offered.length} value(s) and NONE is domain-shaped, so every one was discarded and the profile default stands — ${diag.rejected.slice(0, 6).map((s) => JSON.stringify(s)).join(", ")}. The frame answered; the answer could not be used.`);
-        runLog(P.runDir, { event: "commonlaw-channels-unusable", state: diag.state, rejected: diag.rejected.slice(0, 12) });
-      } else {
-        note(`common-law channels: ${diag.state === "no-document" ? "no matter-context file to read" : "the matter frame carries no \"Search channels:\" line"}, so the profile default stands (${channels.length} platform(s)).`);
-        runLog(P.runDir, { event: "commonlaw-channels-unstated", state: diag.state });
-      }
+    // THE FRAME'S CHANNELS REACH THE GRID FOR EVERY PROFILE NOW, not only the generic one. A delivered
+    // run swept the customer's eight storefronts while the frame named this matter's own ecosystem — a
+    // plugin repository among them — and none of it was queried; the lawyer graded a plugin published
+    // there. A named profile's list is the client's mandate, so it stands and the frame's channels run
+    // BESIDE it; generic still replaces, because its list is a house default and that branch exists to
+    // keep a regulated matter off consumer storefronts. gridChannels owns both readings.
+    // Read once and reported below: a considered "none named" and an unreadable line are not one silence.
+    const chosen = gridChannels({ profilePlatforms: ctx.profile.platforms,
+      profileKey: ctx.profile.profileKey, matterMd });
+    const channels = chosen.channels;
+    const diag = chosen.diag;
+    if (chosen.added.length) {
+      note(`common-law channels: the matter frame named ${chosen.added.length} channel(s) the profile does not carry, added beside it — ${chosen.added.join(", ")}`);
+      runLog(P.runDir, { event: "commonlaw-channels-added", added: chosen.added, from: "matter-frame" });
+    } else if (ctx.profile.profileKey === "generic" && diag.channels.length) {
+      note(`common-law channels derived from the matter frame (generic profile): ${diag.channels.join(", ")}`);
+    } else if (diag.state === "all-rejected") {
+      note(`common-law channels: the matter frame's "Search channels:" line named ${diag.offered.length} value(s) and NONE is domain-shaped, so every one was discarded and the profile's stand — ${diag.rejected.slice(0, 6).map((s) => JSON.stringify(s)).join(", ")}. The frame answered; the answer could not be used.`);
+      runLog(P.runDir, { event: "commonlaw-channels-unusable", state: diag.state, rejected: diag.rejected.slice(0, 12) });
+    } else {
+      note(`common-law channels: ${diag.state === "no-document" ? "no matter-context file to read" : "the matter frame carries no \"Search channels:\" line"}, so the profile's ${channels.length} platform(s) stand.`);
+      runLog(P.runDir, { event: "commonlaw-channels-unstated", state: diag.state });
     }
     // CONNOTATION / MEANING sweep (the gang-slang near-miss fix — live incident: a benign-reading name one
     // letter off a major street-gang label, meaning sweep skipped, clean PR claimed): the driver DICTATES the meaning queries (mark +

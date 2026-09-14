@@ -281,12 +281,39 @@ export function findGridLedgerViolations(manifestOrTerms, ledgerRaw, { minCellsP
 // (same contract as findGridLedgerViolations).
 //
 // @returns {Array<{variant:string, missing:string[]}>}
-export function findPlatformIdentityViolations(manifestOrTerms, ledgerRaw, dictatedPlatforms = []) {
+export function findPlatformIdentityViolations(manifestOrTerms, ledgerRaw, dictatedPlatforms = [], { wholeGrid = false } = {}) {
   if (!dictatedPlatforms.length) return [];
   const map = parseGridLedger(ledgerRaw);
   const want = dictatedPlatforms.map(norm);
   const out = [];
   const variants = Array.isArray(manifestOrTerms) ? manifestOrTerms : parseManifestVariants(manifestOrTerms);
+
+  // ── A CHANNEL NO HALF RAN IS NOBODY'S, AND THAT IS THE ONE THIS COULD NOT SEE ────────────────────
+  //
+  // The per-variant join below judges a variant that plausibly attempted the whole dictated grid, and
+  // skips one whose coverage is partial — deliberately, so the count ladder's carve-outs do not re-fail
+  // here. A channel that NO variant reached is partial for every one of them, so every variant was
+  // skipped and the channel went unreported.
+  //
+  // That is what happened on a delivered run. The grid is split in two by term, and both halves carried
+  // the same platforms; half A wrote that the repositories were "not in grid mandate, assigned to the
+  // parallel half", half B wrote that they were covered "indirectly, via general web search". Neither
+  // ran them, each said the other owned them, and the delivered coverage carried it as a NOTE. A pass's
+  // statement that another pass owns a channel is not a receipt, and prose is not a state.
+  //
+  // Reported once, against the whole grid rather than per variant, because the fact is about the
+  // channel: nothing in this ledger touched it. The caller fails the fold with it, and the coverage
+  // ledger then carries the channel as deferred — open, not run — instead of a sentence.
+  const everywhere = new Set();
+  for (const cells of map.values()) for (const pl of cells) everywhere.add(pl);
+  //
+  // ASKED FOR BY THE CALLER, and only where the ledger is the MERGED fold artifact. On one half's own
+  // ledger a channel the other half ran is legitimately absent, and reporting it there would re-fail
+  // exactly the split this gate was built to allow. The fold is where both halves are in one file, and
+  // it is the only place the question "did anybody run this" has an answer.
+  const untouched = want.filter((w) => !everywhere.has(w));
+  if (wholeGrid && untouched.length && everywhere.size) out.push({ variant: "*", missing: untouched, whole: true });
+
   for (const variant of variants) {
     // UNION the " / " family's accounted platforms before judging: workers legitimately re-key
     // between the packed and split forms (copper-conduit, 2026-06-12) and a supplementary closure

@@ -155,6 +155,47 @@ test("identity join: right count + wrong marketplaces FAILS; dictated set passes
   assert.deepEqual(findPlatformIdentityViolations(MANIFEST, ledgerFor(GAMING_DOMAINS), []), []);
 });
 
+// ── A CHANNEL NO HALF RAN IS NOBODY'S ────────────────────────────────────────────────────────────
+//
+// The grid is split by term into two halves, both carrying the same platforms. On a delivered run half A
+// wrote that the repositories were "not in grid mandate, assigned to the parallel half"; half B wrote
+// that they were covered indirectly, through general web search. Neither ran them, each said the other
+// owned them, and the delivered coverage carried it as a NOTE — so a channel the matter's own ecosystem
+// publishes on was never queried and nothing in the report said it was open.
+//
+// The per-variant join could not see it: a channel nobody reached is partial coverage for EVERY variant,
+// and partial coverage is skipped here deliberately so the count ladder's carve-outs do not re-fail. The
+// fold is where both halves are in one file, and it is the only place the question has an answer.
+test("at the fold, a dictated channel with no receipt from either half is reported once", () => {
+  const dictated = ACME.platforms;
+  const ran = [...dictated.slice(0, dictated.length - 1), "web"];
+  const deferred = ACME.platforms[ACME.platforms.length - 1];
+
+  const out = findPlatformIdentityViolations(MANIFEST, ledgerFor(ran), dictated, { wholeGrid: true });
+  const whole = out.filter((v) => v.whole);
+  assert.equal(whole.length, 1, "the channel nobody ran was not reported as a channel");
+  assert.deepEqual(whole[0].missing, [deferred]);
+  assert.equal(whole[0].variant, "*", "it is a fact about the channel, not about one variant");
+
+  // ONCE, whatever the grid's shape: the fact is that nothing in this ledger touched it, so it does not
+  // repeat per term. The per-variant rows beside it are the existing join's and are left alone — this
+  // adds a reading the join could not reach rather than replacing what it already says.
+
+  // AND A FULL GRID IS SILENT, which is what says this is not simply refusing every ledger.
+  assert.deepEqual(findPlatformIdentityViolations(MANIFEST, ledgerFor([...dictated, "web"]), dictated, { wholeGrid: true }), []);
+});
+
+test("a HALF's own ledger gets no channel verdict — the split is allowed, the silence at the fold is not", () => {
+  // Asked for by the caller, and only where both halves are in one file. On a half's own ledger a channel
+  // its sibling ran is legitimately absent, so no CHANNEL verdict is drawn there. Whatever the per-variant
+  // join says about that same ledger is unchanged and not this arm's business — the default is off, so
+  // every existing caller keeps exactly the answers it had.
+  const dictated = ACME.platforms;
+  const halfOnly = ledgerFor([...dictated.slice(0, dictated.length - 1), "web"]);
+  const out = findPlatformIdentityViolations(MANIFEST, halfOnly, dictated);
+  assert.deepEqual(out.filter((v) => v.whole), [], "a half was given a channel verdict its sibling owns half of");
+});
+
 test("identity join honors the count ladder's carve-outs: partial entries skip; ' / ' families union across keys", () => {
   const dictated = ACME.platforms;
   // a variant the ladder satisfied elsewhere, holding 2 supplementary cells of its own → NOT judged
