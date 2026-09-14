@@ -181,7 +181,7 @@ test("THE CONTROL: with everything the gate asks for, doctor says so and refuses
 
 // ── THE ENGINE ROW COUNTS WHAT THE RESOLVER FINDS ────────────────────────────────────────────────
 //
-// A program on PATH, or the copy installed with Clearotron, needs no path written anywhere, and setup
+// A program on PATH, or the copy Clearotron installed, needs no path written anywhere, and setup
 // writes none for the installed copy. Asking only whether the variable was set refused an install whose
 // engine the run door would have started.
 
@@ -198,7 +198,7 @@ test("the engine row is present when the resolver finds the program; without a r
   assert.equal(row(undefined, { ...env, [name]: "/opt/claude" }).present, true, "a set variable is present with or without one");
 });
 
-test("doctor counts the copy installed with Clearotron as the engine a search needs", () => {
+test("doctor counts the copy Clearotron installed as the engine a search needs", () => {
   // THE CONTROL is the first doctor arm above: the same install with nothing installed is refused for the
   // engine's program setting.
   const spec = ENGINE_BINARIES["anthropic-agent"];
@@ -210,7 +210,7 @@ test("doctor counts the copy installed with Clearotron as the engine a search ne
   const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"]);
   try {
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"], { cwd: ROOT, encoding: "utf8", timeout: 120000,
-      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_BUNDLED_ENGINES_DIR: root }, {}) });
+      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: root }, {}) });
     if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
     const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.match(out, /nothing a search is refused for at order time is missing/, out);

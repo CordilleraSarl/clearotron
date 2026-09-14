@@ -161,7 +161,7 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 (subscription|api-key), `CLEAROTRON_AI_BILLING` (subscription|api-key), `CLEAROTRON_CODEX_PATH`,
 `CLEAROTRON_OPENAI_AUTH_FILE`, `CLEAROTRON_OPENAI_MODEL_JUDGMENT` / `CLEAROTRON_OPENAI_MODEL_SWEEP` /
 `CLEAROTRON_OPENAI_MODEL_CHEAP` (all gpt-5.6-sol),
-`CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy installed with Clearotron), `CLEAROTRON_AZURE_MODEL`,
+`CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy Clearotron installed), `CLEAROTRON_AZURE_MODEL`,
 `CLEAROTRON_SYNTHESIS_MODEL` (opus), `CLEAROTRON_KNOCKOUT_MODEL` (opus),
 `CLEAROTRON_KNOCKOUT_PRESET` (pro-search), `CLEAROTRON_MAX_BUDGET_USD` (unset).
 
@@ -457,12 +457,11 @@ It must be **asked for**: a real deployment behind its upstream still reports be
 blank value is not a declaration, and the doctor names this variable in its output when it obeys it. Set
 it in CI and nowhere else — on a deployed box it silences the one check that notices the box is stale.
 
-Test-suite declaration: `CLEAROTRON_BUNDLED_ENGINES_DIR` — read only by the engine resolver in
-`driver/driver.config.mjs`, and only to decide where the copy of Claude Code or the Codex CLI installed
-with Clearotron is looked for. The suite runner points it at an empty directory: on a checkout where
-`npm ci` ran, the installed copies are real programs, and a test that composes its own `PATH` would
-otherwise reach one. Unset on every deployment, where the resolver looks in the install's own
-`node_modules`.
+Engines folder: `CLEAROTRON_ENGINES_DIR` — where setup installs the chosen engine's program, where
+`clearotron update` refreshes it, and where the engine resolver in `driver/driver.config.mjs` looks for it
+after the explicit setting and `PATH`. Unset on a deployment, where it is
+`~/.local/share/clearotron/engines`. The suite runner points it at an empty directory, so a test never
+reaches a program the developer's own setup installed.
 
 > **Write every name out. No `*`, no `{A,B}`, no `/_SUFFIX`.** The enforcement test matches a name on
 > a word boundary, so shorthand documents a variable to a human and hides it from the guard. This row

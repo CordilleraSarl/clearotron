@@ -91,7 +91,8 @@ import {
 // does nothing at import time, so this is inert — the ONE sharp edge it carries (a module-level
 // REGISTER_PROVIDER frozen at first import) is the one `preflightCandidate` below already cache-busts
 // around, and it is cache-busted whether or not this static import happened first.
-import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE } from "../driver/driver.config.mjs";
+import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE,
+  enginesFolder, engineInstallArgs, engineInstallCommand } from "../driver/driver.config.mjs";
 import { resolveAuthMode } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
@@ -673,7 +674,7 @@ export async function askSignIn(io, { localAccount = "user", existing = null } =
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
  * this file still assumed one engine, and a name that lies is how the second adapter stayed invisible.
  */
-export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null, engine = null, bundledDir = undefined } = {}) {
+export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null, engine = null, enginesDir = undefined } = {}) {
   // A VIEW OVER THE DRIVER'S ONE RESOLVER (driver.config.mjs resolveEngineProgram), which every other
   // reader asks too: the run door, the inventory the portal reads, and both adapters. This used to be a
   // second PATH walk of its own, and it was the only one that knew to pass over a Windows copy under WSL;
@@ -682,11 +683,11 @@ export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindows
   // `bin` is the candidate the wizard wants checked, a path or a bare name, and it is asked under the
   // engine's own setting, so "the setting names this" and "this is what the engine would find" are one
   // question. The engine's fallback word is the default, so `claude` asks PATH and then the copy
-  // installed with Clearotron. `wsl` and `onWindowsDrive` stay injectable: /mnt/c cannot be created on a
+  // Clearotron installed. `wsl` and `onWindowsDrive` stay injectable: /mnt/c cannot be created on a
   // Linux runner without root, so an arm that could only supply a PATH could never drive the skip.
   const id = engine ?? Object.keys(ENGINE_BINARIES).find((k) => ENGINE_BINARIES[k].fallback === bin) ?? DEFAULT_ENGINE_ID;
   const spec = ENGINE_BINARIES[id];
-  const r = resolveEngineProgram(id, { env: { ...env, [spec.env]: bin }, wsl, onWindowsDrive, bundledDir });
+  const r = resolveEngineProgram(id, { env: { ...env, [spec.env]: bin }, wsl, onWindowsDrive, enginesDir });
   const found = { source: r.source, version: r.version, rejected: r.rejected, skipped: r.skipped, windowsShim: r.windowsShim };
   // A RELATIVE path is the trap for both adapters: stage subprocesses run with cwd set to the RUN
   // DIRECTORY (driver/engine/common.mjs resolveSpawnCwd), so it resolves against a directory that did not
@@ -702,13 +703,13 @@ export { ON_A_WINDOWS_DRIVE };
 
 /**
  * An engine instruction that names its program (`run \`claude\` once…`, `claude setup-token`), rewritten to
- * name the copy that will actually run when that copy is the one installed with Clearotron. The package
- * links only `clearotron` onto PATH, so for that copy the bare word is a command the reader's shell cannot
+ * name the copy that will actually run when that copy is the one Clearotron installed. That copy is not on
+ * PATH, so for it the bare word is a command the reader's shell cannot
  * find, at the one step nobody can do for them. Any other copy is on PATH or named by path already, and
  * the text is returned unchanged.
  */
 export function namingProgram(text, eng, bin) {
-  if (!text || bin?.source !== "bundled" || !bin.path) return text;
+  if (!text || bin?.source !== "installed" || !bin.path) return text;
   const program = /\s/.test(bin.path) ? `"${bin.path}"` : bin.path;
   return String(text).replace(new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`, "g"), (_, before) => `${before}${program}`);
 }
@@ -716,7 +717,7 @@ export function namingProgram(text, eng, bin) {
 /**
  * What setup writes into an engine's program setting for the copy it just proved: the absolute path of a
  * copy found on PATH or given by path, because a service's PATH is not the shell's, and for the copy
- * installed with Clearotron the engine's own fallback word, which means exactly what unset means.
+ * Clearotron installed the engine's own fallback word, which means exactly what unset means.
  *
  * WRITTEN, NOT LEFT OUT. The installed copy's path must never be written: it would become the explicit
  * setting, and a copy the reader installs on this machine later would never be used. Leaving the setting
@@ -726,7 +727,7 @@ export function namingProgram(text, eng, bin) {
  * program that has since gone. The fallback word replaces it.
  */
 export function engineProgramSetting(eng, bin) {
-  return bin?.source === "bundled" ? eng.fallback : bin.path;
+  return bin?.source === "installed" ? eng.fallback : bin.path;
 }
 
 /**
@@ -740,7 +741,7 @@ export function unusableEngineWords(eng, bin, setting = "") {
   const named = set && set !== eng.fallback ? `${eng.env}="${set}"` : "";
   if (bin?.rejected?.length) return `${named ? `${named} → ` : ""}${bin.rejected.map((x) => `${x.path} is ${x.why}`).join("; ")}`;
   if (named) return `${named} names nothing on PATH that can run`;
-  return `no \`${eng.fallback}\` on PATH, and no copy was installed with Clearotron`;
+  return `no \`${eng.fallback}\` on PATH, and Clearotron has not installed one`;
 }
 
 /** Whether this is a Linux running under Windows: the one answer, from shared/wsl.mjs. */
@@ -1382,15 +1383,15 @@ export async function runCheck() {
     // literally, this reported a configured binary as missing on any install the wizard had written.
     const binEff = effective(engSpec.env, [engSpec.env]);
     // The engine's own fallback word is the default spelled out (resolveEngineProgram), so a setting of
-    // `claude` is not a configuration that can be wrong: it asks PATH, then the copy installed with Clearotron.
+    // `claude` is not a configuration that can be wrong: it asks PATH, then the copy Clearotron installed.
     const binSet = !!binEff && String(binEff.v).trim() !== engSpec.fallback;
     const binSetting = binEff?.v || engSpec.fallback;
     const bin = resolveEngineBin(binSetting, { engine: engineId });
-    // WHICH COPY, AND ITS VERSION, because the machine's own install and the one installed with Clearotron
+    // WHICH COPY, AND ITS VERSION, because the machine's own install and the one Clearotron installed
     // are both legitimate and behave differently: the first updates itself, the second moves with
     // `clearotron update`. The version comes from the copy's own package.json when npm installed it;
     // doctor spawns nothing to ask (a vendor's own native installer leaves no package.json to read).
-    const copyWords = (b) => `${b.source === "bundled" ? "the copy installed with Clearotron"
+    const copyWords = (b) => `${b.source === "installed" ? "the copy Clearotron installed"
       : b.source === "explicit" ? `set in ${engSpec.env}` : "on PATH"}${b.version ? `, version ${b.version}` : ", version not read"}`;
     // ── NATIVE WINDOWS IS ANSWERED HERE, BEFORE ANY PATH IS RESOLVED OR REPORTED ──────────────────
     //
@@ -1420,7 +1421,7 @@ export async function runCheck() {
     // The FACT only. It used to carry "install it for a real run (`npm run example` needs no engine)",
     // which is the absence framing was filed about — and it now says half of what the MODE line
     // below says, in worse words. One statement of a state, in the place that states states.
-    else if (!binSet) info(`no \`${engSpec.fallback}\` on PATH, and no copy was installed with Clearotron`);
+    else if (!binSet) info(`no \`${engSpec.fallback}\` on PATH, and Clearotron has not installed one`);
     // Relative is reported BEFORE not-executable. A relative path that also does not resolve from the
     // current directory would otherwise be reported as a missing file, sending the reader to check the
     // file — and the file is usually fine. The relativity is the defect.
@@ -3277,7 +3278,7 @@ try {
     for (const [id, e] of Object.entries(ENGINE_BINARIES)) {
       const b = resolveEngineBin(process.env[e.env] || e.fallback, { engine: id });
       const creds = [e.apiKeyEnv, e.headless?.tokenEnv].filter((n) => n && present(process.env[n]));
-      const which = b.source === "bundled" ? "installed with Clearotron" : b.source === "explicit" ? `set in ${e.env}` : "on PATH";
+      const which = b.source === "installed" ? "installed by Clearotron" : b.source === "explicit" ? `set in ${e.env}` : "on PATH";
       say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path}, ${which}${b.version ? `, ${b.version}` : ""})` : unusableEngineWords(e, b, process.env[e.env])}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
     }
     say("  Choosing an engine also chooses how it bills — the subscription you sign in with, or an");
@@ -3313,106 +3314,46 @@ try {
     // install a binary their own `which` already prints — and would decline for the wrong reason.
     const shimNote = windowsShimNote(bin.skipped, eng.fallback);
     if (shimNote) info(shimNote);
-    if (!(bin.executable && !bin.relative) && eng.install) {
-      // ── — INSTALLING IT IS ONE COMMAND, AND WE USED TO STOP AT A SENTENCE ───────────────────
+    if (!(bin.executable && !bin.relative) && eng.package) {
+      // ── SETUP INSTALLS THE ONE PROGRAM THIS ENGINE RUNS ─────────────────────────────────────────────
       //
-      // Signing in is a browser round-trip nobody here can perform for someone. Installing the binary
-      // is not, and the whole sequence — install, hand off to the vendor's own login, prove it with a
-      // turn — is work this file already does either side of the gap.
+      // Signing in is a browser round-trip nobody here can perform for someone. Installing the program
+      // is not, and the whole sequence (install, hand off to the vendor's own login, prove it with a
+      // turn) is work this file already does either side of the gap.
       //
-      // THE COMMAND IS SHOWN IN FULL AND THE DEFAULT IS NO. It runs as this user, it installs
-      // THIRD-PARTY SOFTWARE governed by that vendor's terms rather than by this
-      // repository's licence (README §Licence, INSTALL §1), and it is the one thing setup does that
-      // reaches outside this checkout. A reader has to be able to read it before answering, which is
-      // also why the command in ENGINE_BINARIES is an npm install rather than the vendor's
-      // `curl … | bash` — a piped remote script cannot be read before it runs.
+      // NOTHING IS BUNDLED INTO THE PACKAGE. Installing every engine for everyone, before anyone has
+      // chosen one, downloaded both programs, and on npm 10 every platform's binaries too. So the program
+      // is installed here, for the engine just picked and this platform only, into the engines folder
+      // Clearotron owns under the reader's home (driver.config.mjs enginesFolder). That folder needs no
+      // root, so there is one route and no prefix to probe, and it is not on PATH, so a copy this machine
+      // installs itself later is still found first.
+      //
+      // THE COMMAND IS SHOWN IN FULL AND THE DEFAULT IS NO. It runs as this user and installs
+      // THIRD-PARTY SOFTWARE governed by that vendor's terms rather than by this repository's licence
+      // (README §Licence, INSTALL §1), so a reader has to be able to read it before answering. It is an
+      // npm install, never the vendor's `curl … | bash`, because a piped remote script cannot be read
+      // before it runs, and it is spawned as argv, never through a shell.
       warn(`${unusableEngineWords(eng, bin, process.env[eng.env])}.`);
       say(`    ${eng.label}`);
       say("");
       say(`    ${eng.vendor}'s CLI is ${eng.licence}. Installing it accepts ${eng.vendor}'s`);
       say("    terms, not this product's licence, and this product redistributes no part of it.");
+      const dir = enginesFolder();
+      say(`    It goes into ${dir}, for this user and this platform only, and not`);
+      say("    onto PATH, so a copy this machine installs itself later is used first.");
       say("");
-      // ── WHICH ROUTE CAN WORK ON THIS BOX, MEASURED FIRST ─────────────────
-      //
-      // `npm install -g` on a root-owned prefix cannot work as this user; offering only it, then
-      // mis-reporting its failure, was the owner's dead end. The prefix is probed by ACCESS, and when
-      // it needs root the vendor's own no-root installer is NAMED — never run: the stance in
-      // ENGINE_BINARIES holds, a piped remote script is not a command this product executes for
-      // someone. The reader runs it by their own hand, and the loop below re-checks rather than
-      // dead-ending at a path prompt for a file that does not exist.
-      const npmPrefix = (() => {
-        const q = spawnSync("npm", ["prefix", "-g"], { encoding: "utf8" });
-        return !q.error && q.status === 0 ? String(q.stdout).trim() : null;
-      })();
-      const prefixWritable = (() => {
-        if (!npmPrefix) return null;   // could not ask npm — not a verdict either way
-        try { accessSync(join(npmPrefix, "lib"), constants.W_OK); return true; } catch { /* fall through */ }
-        try { accessSync(npmPrefix, constants.W_OK); return true; } catch { return false; }
-      })();
-      if (prefixWritable === false) {
-        say(`    npm's global prefix here is ${npmPrefix}, and this user cannot write to it — the npm`);
-        say("    route needs root on this box, so it is not offered first.");
-        if (eng.installNoRoot) {
-          say(`    ${eng.vendor}'s no-root installer lands in ${eng.installNoRoot.lands} and needs no sudo:`);
-          say("");
-          say(`      ${eng.installNoRoot.cmd}`);
-          say("");
-          say("    Run it YOURSELF in another terminal — it is the vendor's script, and this setup will");
-          say("    not pipe a remote script into a shell for you. Come back and continue here.");
-        } else {
-          say("    The no-root way is to point npm at a prefix you own, then install:");
-          say("");
-          say(`      npm config set prefix ~/.local && ${eng.install}`);
-          say("");
-          say("    (~/.local/bin must be on PATH.) Run that yourself in another terminal, then continue.");
-        }
-        if (await confirm("Done (or already installed elsewhere)? Check this box again", true)) {
-          bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
-          if (!(bin.executable && !bin.relative)) {
-            const home = process.env.HOME || homedir();
-            const local = join(home, ".local", "bin", eng.fallback);
-            // The resolver's answer, not an execute-bit check, so the vendor's placeholder is not "found".
-            const there = resolveEngineBin(local, { engine: pick.id });
-            if (there.executable) { ok(`found it at ${local} — not on this shell's PATH yet`); bin = there; }
-            else info(there.rejected?.length ? `${unusableEngineWords(eng, there)}.` : "still not found — the path prompt below takes the absolute location if it landed somewhere else.");
-          } else ok(`installed: ${bin.path}`);
-        }
-      } else if (await confirm(`Run \`${eng.install}\` now?`, false)) {
-        say(`  $ ${eng.install}`);
-        const [cmd, ...args] = eng.install.split(" ");
-        const r = spawnSync(cmd, args, { stdio: "inherit" });
-        // THE EXIT CODE IS NOT THE ANSWER, and this is the issue's own rule. A package manager that
-        // exits 0 having installed to a prefix outside this shell's PATH has succeeded at its job and
-        // left us exactly where we started; one that exits non-zero may still have left a usable
-        // binary. So what decides is the same resolution the ENGINE resolves with, and after that, a
-        // turn.
+      if (await confirm(`Run \`${engineInstallCommand(eng, dir)}\` now?`, false)) {
+        say(`  $ ${engineInstallCommand(eng, dir)}`);
+        const r = spawnSync("npm", engineInstallArgs(eng, dir), { stdio: "inherit" });
+        // THE EXIT CODE IS NOT THE ANSWER, and this is the issue's own rule. An install that exits 0 may
+        // have left the vendor's placeholder (npm told to skip install scripts), and one that exits
+        // non-zero may still have left a usable program. So what decides is the same resolution the
+        // ENGINE resolves with, and after that, a turn.
         if (r.error) problem(`could not run it: ${r.error.message}`);
         else if (r.status !== 0) warn(`that command exited ${r.status ?? "on a signal"} — checking anyway, since its exit code is not what settles this.`);
         bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
-        if (!(bin.executable && !bin.relative)) {
-          // The common ending: npm's global prefix is not on this shell's PATH. Naming the path it
-          // would be at is the difference between a dead end and one more answer.
-          const prefix = (() => {
-            const q = spawnSync("npm", ["prefix", "-g"], { encoding: "utf8" });
-            return q.status === 0 ? String(q.stdout).trim() : null;
-          })();
-          const guess = prefix ? join(prefix, "bin", eng.fallback) : null;
-          // The resolver's answer, not an execute-bit check. With `ignore-scripts` in npm's own config the
-          // vendor install leaves its placeholder here: executable, on PATH, and unable to run a stage.
-          const there = guess ? resolveEngineBin(guess, { engine: pick.id }) : null;
-          if (there?.executable) {
-            ok(`installed, but not on this shell's PATH — found it at ${guess}`);
-            bin = there;
-          } else {
-            warn(there?.rejected?.length ? `${unusableEngineWords(eng, there)}.` : `no \`${eng.fallback}\` on PATH after that command.`);
-            if (prefix) info(`npm installs global binaries under ${join(prefix, "bin")} — add that to PATH, or give the absolute path below.`);
-            // The other route, re-offered rather than a dead end: what happened is
-            // reported above; what to do next must not be only a path prompt at a file that never landed.
-            if (eng.installNoRoot) info(`the vendor's no-root installer is \`${eng.installNoRoot.cmd}\` — run it yourself in another terminal (lands in ${eng.installNoRoot.lands}), then give the path below or re-run setup.`);
-          }
-        } else {
-          ok(`installed: ${bin.path}`);
-        }
+        if (bin.executable && !bin.relative) ok(`installed: ${bin.path}`);
+        else warn(`${unusableEngineWords(eng, bin, process.env[eng.env])}.`);
       }
     }
     if (!(bin.executable && !bin.relative)) {
@@ -3441,11 +3382,11 @@ try {
       if (bin.relative) warn("that path is relative. Stage subprocesses run with cwd set to the run directory, so it will not resolve — using the absolute form.");
       if (!bin.executable) { problem(`${bin.path ?? resolve(p)} is ${bin.rejected?.[0]?.why ?? "not an executable file"}.`); continue; }
     }
-    ok(`found ${bin.path}${bin.source === "bundled" ? `, the copy installed with Clearotron${bin.version ? ` (${bin.version})` : ""}` : ""}`);
+    ok(`found ${bin.path}${bin.source === "installed" ? `, the copy Clearotron installed${bin.version ? ` (${bin.version})` : ""}` : ""}`);
     // THE TERMS SENTENCE TRAVELS WITH THE PROGRAM, NOT WITH THE INSTALL OFFER. It was said only when this
-    // step offered to install the CLI, and a copy that arrived with Clearotron skips that offer, so it is
+    // step offered to install the CLI, and a copy Clearotron installed on an earlier run skips that offer, so it is
     // said here too. Using it, rather than installing it, is what accepts the vendor's terms.
-    if (bin.source === "bundled") {
+    if (bin.source === "installed") {
       say(`    ${eng.vendor}'s CLI is ${eng.licence}. Using it accepts ${eng.vendor}'s`);
       say("    terms, not this product's licence, and this product redistributes no part of it.");
     }
@@ -3513,7 +3454,7 @@ try {
       if (v.ok) {
         ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
         candidate.CLEAROTRON_AI = pick.id;
-        // ALWAYS WRITTEN, and for the copy installed with Clearotron as the engine's default word: see
+        // ALWAYS WRITTEN, and for the copy Clearotron installed it is the engine's default word: see
         // engineProgramSetting for why leaving it out was not enough.
         candidate[eng.env] = engineProgramSetting(eng, bin);
         candidate[eng.authEnv] = authPick.id;
@@ -3521,7 +3462,7 @@ try {
         info(`CLEAROTRON_AI=${pick.id}`);
         info(`${eng.authEnv}=${authPick.id} — the lane the turn above actually ran on.`);
         if (apiKey) info(`${eng.apiKeyEnv}=… — adopted, so a run bills the way you just proved.`);
-        if (bin.source === "bundled") info(`${eng.env}=${eng.fallback} — the engine's default: this machine's own \`${eng.fallback}\` once it has one, and the copy installed with Clearotron until then.`);
+        if (bin.source === "installed") info(`${eng.env}=${eng.fallback} — the engine's default: this machine's own \`${eng.fallback}\` once it has one, and the copy Clearotron installed until then.`);
         else info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
         break engine;
       }
@@ -3558,7 +3499,7 @@ try {
         // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made
         // on any machine, so its command keeps the bare word, and this machine's copy is named beside it.
         info(`on a box with no browser: run \`${eng.headless.tokenEnv ? eng.headless.cmd : namingProgram(eng.headless.cmd, eng, bin)}\``
-          + `${eng.headless.tokenEnv ? ` (from any machine you can sign in on${bin.source === "bundled" ? `; on this one the program is ${bin.path}` : ""})` : " here"}.`);
+          + `${eng.headless.tokenEnv ? ` (from any machine you can sign in on${bin.source === "installed" ? `; on this one the program is ${bin.path}` : ""})` : " here"}.`);
         if (eng.headless.tokenEnv) {
           // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
           const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });

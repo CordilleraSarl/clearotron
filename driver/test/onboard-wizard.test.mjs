@@ -44,12 +44,12 @@ const NODE_BIN = mkdtempSync(join(tmpdir(), "onboard-node-"));
 symlinkSync(process.execPath, join(NODE_BIN, "node"));
 
 /**
- * A directory with no packages in it, for `run()` to hand the engine resolver as the place to find the
- * copy installed with Clearotron. On a checkout where `npm ci` ran, node_modules holds the REAL engine
- * programs, and the resolver's last step finds them without PATH, so a hermetic PATH alone no longer means
- * "no engine on this machine".
+ * An empty engines folder, for `run()` to hand the engine resolver as the place to find the copy
+ * Clearotron installed. A developer's own engines folder may hold a REAL engine program, and the
+ * resolver's last step finds it without PATH, so a hermetic PATH alone does not mean "no engine on this
+ * machine".
  */
-const NO_BUNDLE = mkdtempSync(join(tmpdir(), "onboard-no-bundle-"));
+const NO_ENGINES = mkdtempSync(join(tmpdir(), "onboard-no-engines-"));
 
 /** Run the CLI with the ambient environment stripped — the shell this test runs in has real credentials. */
 function run(args, env = {}) {
@@ -99,7 +99,7 @@ function run(args, env = {}) {
       // measured: this file passes with both set in the parent.
       env: {
         HOME: env.HOME ?? tmpdir(), PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"),
-        CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_BUNDLED_ENGINES_DIR: NO_BUNDLE, ...env,
+        CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: NO_ENGINES, ...env,
       },
     });
     return { code: 0, out };
@@ -1064,16 +1064,18 @@ test("the wizard offers the install, and does NOT take the installer's exit code
   // in it — the command comes from the table, and success is decided by resolution and then a turn.
   const src = readFileSync(join(REPO, "bin/onboard.mjs"), "utf8");
 
-  assert.match(src, /confirm\([^)]*eng\.install/,
+  assert.match(src, /confirm\([^)]*engineInstallCommand\(eng, dir\)/,
     "the wizard never offers to run the install command, so a reader with no engine still ends at a "
     + "sentence — the gap #1720 measured");
-  assert.match(src, /spawnSync\(cmd, args/,
-    "the install is not spawned as argv — a shell here would make the table's contents shell input");
+  // The command shown and the argv spawned are made from the same parts for the same folder; that the
+  // shown command parses back to that argv is driven in the last-resort test file.
+  assert.match(src, /spawnSync\("npm", engineInstallArgs\(eng, dir\)/,
+    "the install is not spawned as argv from the parts the reader was shown — a shell here would make the table's contents shell input");
 
   // The rule, asserted as an ORDER: the binary is re-resolved AFTER the spawn, and the probe still
   // gates what gets written. A wizard that wrote an engine on a zero exit code would be claiming a
   // working engine from a package manager's opinion.
-  const spawnAt = src.indexOf("spawnSync(cmd, args");
+  const spawnAt = src.search(/spawnSync\("npm", engineInstallArgs\(eng, dir\)/);
   assert.ok(spawnAt > 0, "no install spawn to reason about — this arm has lost its subject");
   // WITHIN THE INSTALL BLOCK, not "anywhere after it". Searching the rest of the file finds the
   // give-me-a-path branch's own resolve and passes with the re-resolve deleted — planted exactly that
@@ -1398,18 +1400,18 @@ function plantInstalledCopy(content, version = "9.9.9") {
   return { root, program };
 }
 
-test("--check names the copy installed with Clearotron and its version, and offers no vendor install", () => {
+test("--check names the copy Clearotron installed and its version, and offers no vendor install", () => {
   const { install } = ENGINE_BINARIES["anthropic-agent"];
   const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n");
   try {
-    const r = run(["--check"], { CLEAROTRON_BUNDLED_ENGINES_DIR: root });
+    const r = run(["--check"], { CLEAROTRON_ENGINES_DIR: root });
     assert.equal(r.code, 0, r.out);
-    assert.ok(r.out.includes(`${program} — the copy installed with Clearotron, version 9.9.9`), r.out);
+    assert.ok(r.out.includes(`${program} — the copy Clearotron installed, version 9.9.9`), r.out);
     assert.ok(!r.out.includes(install), `a copy was found and the reader was still told to install one:\n${r.out}`);
     // THE CONTROL, so both assertions above can fail: with nothing installed, --check says so, and it
     // does print the vendor's install command.
     const none = run(["--check"]);
-    assert.match(none.out, /no copy was installed with Clearotron/, none.out);
+    assert.match(none.out, /Clearotron has not installed one/, none.out);
     assert.ok(none.out.includes(install),
       `the control never prints the install command, so its absence above proves nothing:\n${none.out}`);
   } finally {
@@ -1422,11 +1424,11 @@ test("--check refuses the placeholder the Claude package leaves when its install
   // `npm install --ignore-scripts` leaves a file that passes an execute-bit check and fails every stage.
   const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
   try {
-    const r = run(["--check"], { CLEAROTRON_BUNDLED_ENGINES_DIR: root });
+    const r = run(["--check"], { CLEAROTRON_ENGINES_DIR: root });
     assert.equal(r.code, 1, r.out);
     assert.ok(r.out.includes(`${program} is the placeholder`), r.out);
     assert.match(r.out, /Reinstall without --ignore-scripts/, r.out);
-    assert.ok(!r.out.includes("the copy installed with Clearotron, version"),
+    assert.ok(!r.out.includes("the copy Clearotron installed, version"),
       `the placeholder was reported as a usable copy:\n${r.out}`);
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -1448,10 +1450,10 @@ test("the wizard names the installed copy by path where it tells the reader what
       }
       if (!bare.test(text)) continue;
       named++;
-      const out = namingProgram(text, eng, { source: "bundled", path });
+      const out = namingProgram(text, eng, { source: "installed", path });
       assert.ok(out.includes(path), `${id}: "${text}" does not name the installed copy: "${out}"`);
       assert.doesNotMatch(out, bare, `${id}: "${out}" still tells the reader to run a bare \`${eng.fallback}\``);
-      assert.ok(namingProgram(text, eng, { source: "bundled", path: spaced }).includes(`"${spaced}"`),
+      assert.ok(namingProgram(text, eng, { source: "installed", path: spaced }).includes(`"${spaced}"`),
         `${id}: a path with a space is not quoted, so the command cannot be pasted`);
     }
     assert.ok(named > 0, `none of ${id}'s sign-in sentences names its program, so this arm checks nothing for it`);
@@ -1467,16 +1469,16 @@ test("setup writes the installed copy as the engine's default word, which replac
   const dir = mkdtempSync(join(tmpdir(), "onboard-rewrite-"));
   try {
     const envFile = join(dir, ".env");
-    writeFileSync(envFile, composeEnvBody({ [eng.env]: engineProgramSetting(eng, { source: "bundled", path: program }) },
+    writeFileSync(envFile, composeEnvBody({ [eng.env]: engineProgramSetting(eng, { source: "installed", path: program }) },
       { [eng.env]: "/gone/since/bin/claude" }));
     const written = readEnvFile(envFile)[eng.env];
     assert.equal(written, eng.fallback, `the rewrite kept "${written}" where the engine's default word belongs`);
-    const now = resolveEngineProgram("anthropic-agent", { env: { PATH: "", [eng.env]: written }, bundledDir: root });
-    assert.equal(now.source, "bundled", `what setup wrote does not reach the installed copy: ${JSON.stringify(now)}`);
+    const now = resolveEngineProgram("anthropic-agent", { env: { PATH: "", [eng.env]: written }, enginesDir: root });
+    assert.equal(now.source, "installed", `what setup wrote does not reach the installed copy: ${JSON.stringify(now)}`);
     assert.equal(now.resolved, program);
     const machine = mkdtempSync(join(tmpdir(), "onboard-machine-copy-"));
     writeFileSync(join(machine, eng.fallback), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
-    const later = resolveEngineProgram("anthropic-agent", { env: { PATH: machine, [eng.env]: written }, bundledDir: root });
+    const later = resolveEngineProgram("anthropic-agent", { env: { PATH: machine, [eng.env]: written }, enginesDir: root });
     rmSync(machine, { recursive: true, force: true });
     assert.equal(later.source, "path", "a copy this machine gets later must win over what setup wrote");
     // A copy found on PATH or given by path is written as that path: a service's PATH is not the shell's.
@@ -1519,7 +1521,7 @@ test("where no copy can run, the wizard says which was refused and why, never th
   const eng = ENGINE_BINARIES["anthropic-agent"];
   const { root, program } = plantInstalledCopy('echo "Error: the native binary is not installed." >&2\nexit 1\n');
   try {
-    const b = resolveEngineBin(eng.fallback, { engine: "anthropic-agent", env: { PATH: "" }, bundledDir: root });
+    const b = resolveEngineBin(eng.fallback, { engine: "anthropic-agent", env: { PATH: "" }, enginesDir: root });
     assert.equal(b.executable, false, "the placeholder must not resolve");
     const said = unusableEngineWords(eng, b);
     assert.ok(said.includes(program) && /Reinstall without --ignore-scripts/.test(said), said);
@@ -1528,29 +1530,19 @@ test("where no copy can run, the wizard says which was refused and why, never th
     // THE CONTROL: nothing found and nothing named, and it does say none was installed. The fallback word is
     // the default spelled out, not a program somebody named.
     for (const setting of ["", eng.fallback])
-      assert.match(unusableEngineWords(eng, { rejected: [] }, setting), /no copy was installed with Clearotron/);
+      assert.match(unusableEngineWords(eng, { rejected: [] }, setting), /Clearotron has not installed one/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 });
 
-test("the licence setup states for each engine program is the one its package declares", (ctx) => {
-  // Every sentence in the wizard that states a CLI's licence takes it from the engine table.
+test("every sentence in the wizard that states a CLI's licence takes it from the engine table", () => {
+  // The licence each vendor's package declares is recorded beside it in ENGINE_BINARIES (read from the
+  // packages, 2026-09-14: Claude Code "SEE LICENSE IN README.md", the Codex CLI "Apache-2.0"). Nothing is
+  // bundled, so no package is in this checkout to read again; what this holds is that no sentence in the
+  // wizard states a licence of its own, which is how an Apache-2.0 program was called proprietary.
   const sentences = nonEmpty(readFileSync(ONBOARD, "utf8").split("\n").filter((l) => /say\(/.test(l) && /'s CLI is /.test(l)),
     "wizard sentences stating a CLI's licence");
   for (const l of sentences) assert.match(l, /\$\{eng\.licence\}/, `a licence stated as a literal: ${l.trim()}`);
-  let read = 0;
-  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
-    assert.ok(eng.licence, `${id} states no licence`);
-    const pkg = join(REPO, "node_modules", ...eng.package.split("/"), "package.json");
-    if (!existsSync(pkg)) continue;
-    read++;
-    const declared = String(JSON.parse(readFileSync(pkg, "utf8")).license ?? "");
-    if (/^SEE LICEN[CS]E|^UNLICENSED$/i.test(declared)) assert.match(eng.licence, /proprietary/, `${id}: ${eng.package} declares "${declared}"`);
-    else {
-      assert.ok(eng.licence.includes(declared), `${id}: ${eng.package} declares "${declared}", and setup says "${eng.licence}"`);
-      assert.doesNotMatch(eng.licence, /proprietary/, `${id}: an open licence called proprietary`);
-    }
-  }
-  if (!read) ctx.skip("no engine package is installed in this checkout (an install with --omit=optional)");
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) assert.ok(eng.licence, `${id} states no licence`);
 });

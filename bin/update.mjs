@@ -51,7 +51,7 @@ import { existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { config, ENGINE_BINARIES } from "../driver/driver.config.mjs";
+import { config, ENGINE_BINARIES, enginesFolder, engineInstallArgs } from "../driver/driver.config.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule
 import { overlayReport, renderOverlayReport, treeFiles } from "../shared/doctrine-overlay.mjs";
 import { liveRunHolds } from "../driver/deploy-live-run-guard.mjs";   // — one live-run test, shared with deploy-preflight
@@ -59,7 +59,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // a pull cannot update an untracked bundle
-import { packagedUpdate, packageRootUnder } from "../shared/permanent-install.mjs";   // — a packaged install updates at its own prefix
+import { packagedUpdate } from "../shared/permanent-install.mjs";   // — a packaged install updates at its own prefix
 import { installShim, inspectShim, shimPath } from "../shared/verb-shim.mjs";   // — npm's link replaces the launcher
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -181,24 +181,31 @@ export function isGitCheckout(repo = REPO, exists = existsSync) {
 }
 
 /**
- * Whether `clearotron update` on a packaged install that is already current re-runs the same install, to
- * move the engine programs installed with it to the newest their vendors publish. `{refresh, why}`, where
- * `why` tells the reader why not.
- *
- * ONLY AT THE PUBLISHED VERSION. `current` also covers an install NEWER than anything published, a local
- * build, and re-running the install there would replace it with the older published one.
- *
- * ONLY WHEN IT HAS ONE OF THEM. An install made with `--omit=optional` has neither, and npm keeps no record
- * of a flag given on the command line, so re-running the install would download both, platform binaries
- * included, onto a machine whose operator chose to leave them out.
+ * The engine programs setup installed for this user, which `clearotron update` refreshes: every engine
+ * whose package is in the engines folder. Setup installs only the one the reader chose, so this is usually
+ * one, and none where the machine's own copy was found first or the reader declined the install.
  */
-export function engineRefresh({ packaged, root = packageRootUnder(packaged.prefix), exists = existsSync }) {
-  if (packaged.version !== packaged.installed)
-    return { refresh: false, why: "It is not a published version, so there is nothing to refresh the engine programs from." };
-  const has = Object.values(ENGINE_BINARIES)
-    .some((e) => e.package && exists(join(root, "node_modules", ...e.package.split("/"), "package.json")));
-  if (!has) return { refresh: false, why: "It was installed without the Claude Code and Codex programs, so there are none to refresh." };
-  return { refresh: true, why: null };
+export function enginesToRefresh({ dir = enginesFolder(), exists = existsSync } = {}) {
+  return Object.values(ENGINE_BINARIES)
+    .filter((e) => e.package && exists(join(dir, "node_modules", ...e.package.split("/"), "package.json")));
+}
+
+/**
+ * Run setup's install again for each of them, in the same folder. The same command, because re-running an
+ * install with a `>=` range moves the program to the newest its vendor publishes (driver.config.mjs, above
+ * engineInstallArgs). Returns 0, or the first failing exit code.
+ */
+function refreshEngines(engines, dir = enginesFolder()) {
+  if (!engines.length) return 0;
+  say(`\n  Refreshing the engine program Clearotron installed in ${dir}.`);
+  for (const e of engines) {
+    const rc = runInCheckout("npm", engineInstallArgs(e, dir));
+    if (rc !== 0) {
+      console.error(`\n  npm could not refresh ${e.package}. \`clearotron doctor\` says which copy a run would use now.`);
+      return rc;
+    }
+  }
+  return 0;
 }
 
 function runInCheckout(cmd, args) {
@@ -339,27 +346,21 @@ export async function update(argv = process.argv.slice(2)) {
     };
     if (packaged.current) {
       say(`\n  This install is ${packaged.installed}, and nothing newer is published (${packaged.tag}: ${packaged.version}).`);
-      // CURRENT STILL REFRESHES THE ENGINE PROGRAMS. Claude Code and the Codex CLI are installed with this
-      // package as optional dependencies at "this version or newer", and a package carries no lockfile, so
-      // npm resolves them afresh on every install: running the same install at the SAME version moves them
-      // to the newest their vendors publish (measured with npm 10.9.8, 2026-09-14). A machine's own copy on
-      // PATH updates itself and is used first; this keeps the installed fallback from falling behind it.
-      // When it must not, and why, is engineRefresh's to say.
-      const plan = engineRefresh({ packaged });
-      if (!plan.refresh) {
-        say(`  ${plan.why} Nothing was touched.\n`);
-        return 0;
-      }
-      say("  Refreshing the Claude Code and Codex programs installed with it.");
-      const rc = reinstall();
+      // CURRENT STILL REFRESHES THE ENGINE PROGRAM setup installed: it moves on its vendor's schedule, not
+      // this package's. A machine's own copy on PATH updates itself and is used first.
+      const engines = enginesToRefresh();
+      if (!engines.length) { say("  Nothing was touched.\n"); return 0; }
+      const rc = refreshEngines(engines);
       if (rc !== 0) return rc;
-      say("\n  Refreshed. Clearotron itself was already current; restart the services so they use the refreshed programs.\n");
+      say("\n  Clearotron itself was already current; restart the services so they use the refreshed program.\n");
       return 0;
     }
     if (packaged.unread) say(`\n  npm did not say which versions are published, so this follows the ${packaged.tag} channel.`);
     say(`\n  Updating this install at ${packaged.prefix} from ${packaged.installed ?? "an unreadable version"} to clearotron@${packaged.spec}.`);
     const rc = reinstall();
     if (rc !== 0) return rc;
+    const refreshed = refreshEngines(enginesToRefresh());
+    if (refreshed !== 0) return refreshed;
     say("\n  Updated. An assistant starts the new version the next time it launches Clearotron; restart the services for the portal.\n");
     return 0;
   }
@@ -411,6 +412,9 @@ export async function update(argv = process.argv.slice(2)) {
     // update DID happen, and exiting nonzero here would tell a script it did not.
     console.error(`  the custom instructions could not be read — ${e.message}`);
   }
+
+  const refreshed = refreshEngines(enginesToRefresh());
+  if (refreshed !== 0) return refreshed;
 
   say("\n  Up to date.\n");
   return 0;

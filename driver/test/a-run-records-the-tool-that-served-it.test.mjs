@@ -171,7 +171,7 @@ test("the attempt record carries the version AND its probe state, on both rows",
     "both attempt rows must carry it — one carries the row the run record reads, the other the telemetry");
   assert.match(src, /probeCliVersion\(/, "the dispatch does not probe at all");
   assert.match(src, /cliVersionWhy/, "the reason must reach the record, or 'unreadable' names no cause");
-  // WHICH COPY served (the explicit setting, PATH, or the copy installed with Clearotron) travels beside
+  // WHICH COPY served (the explicit setting, PATH, or the copy Clearotron installed) travels beside
   // the version on both rows: a machine can hold two copies of one program at different versions.
   assert.equal([...src.matchAll(/cliSource: cli\.source/g)].length, 2,
     "both attempt rows must say which copy of the program served, beside the version it answered");

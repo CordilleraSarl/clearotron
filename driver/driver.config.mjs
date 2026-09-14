@@ -14,7 +14,6 @@ import { homedir } from "node:os";
 import { isWsl } from "../shared/wsl.mjs";   // — the one answer to "is this Linux under Windows", which decides the /mnt/<drive> skip
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
-import { inNpxCache } from "../shared/permanent-install.mjs";   // — the one answer to "is this npx's cache", whose copy of an engine is never the machine's
 import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
 import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs";   // — a number, or a refusal that names the variable; never NaN
 
@@ -1897,10 +1896,11 @@ export const ENGINE_BINARIES = {
     // running the searches", and `label` below is the MECHANISM, which is what took off that page.
     vendor: "Anthropic",
     env: "CLEAROTRON_CLAUDE_PATH", fallback: "claude",
-    // The npm package that carries this program. Clearotron installs it as an optional dependency and uses
-    // it only when the machine has no copy of its own (resolveEngineProgram); the package's own `bin` field
-    // names the program, so no path inside the vendor's package is written down here.
-    package: "@anthropic-ai/claude-code",
+    // The npm package that carries this program, and the oldest version setup installs: "this version or
+    // newer", with no ceiling. Setup installs it into the engines folder (enginesFolder, below the table)
+    // when the reader picks this engine, and the resolver uses it only when the machine has no copy of its
+    // own. The package's own `bin` field names the program, so no path inside it is written down here.
+    package: "@anthropic-ai/claude-code", floor: "2.1.270",
     // The licence setup states wherever it tells a reader what they are about to install or use, as the
     // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
     licence: "proprietary third-party software",
@@ -1909,20 +1909,10 @@ export const ENGINE_BINARIES = {
     signIn: "run `claude` once in a terminal and complete the sign-in",
     authEnv: "CLEAROTRON_AI_BILLING", apiKeyEnv: "ANTHROPIC_API_KEY",
     subscriptionHow: "sign in once with `claude`",
-    // — HERE RATHER THAN IN THE WIZARD, for the same reason `authEnv` is: this table is what the
-    // wizard and the run-door preflight both read, and an install command living in the wizard would be
-    // a second place an engine is described. Verified against the registry 2026-08-24: 2.1.241.
-    //
-    // npm, NOT the vendor's shell installer. `curl … | bash` is the other documented route for this CLI
-    // and the wizard will not run one: a command this product executes on someone's box has to be one
-    // they can read in full before they answer, and a piped remote script is not.
-    install: "npm install -g @anthropic-ai/claude-code",
-    // — THE NO-ROOT ROUTE, NAMED AND NEVER EXECUTED. The stance above holds: this
-    // product does not run a piped remote script. But on a box whose npm prefix needs root, the npm
-    // route CANNOT work as this user, and offering only it was a dead end the owner hit. The wizard
-    // prints this for the reader to run BY THEIR OWN HAND in another terminal — their shell, their
-    // eyes, their decision — and says where it lands so the path answer afterwards is not a guess.
-    installNoRoot: { cmd: "curl -fsSL https://claude.ai/install.sh | bash", lands: "~/.local/bin" },
+    // `install`, the command that puts this program in the engines folder, is written in below the table
+    // from `package` and `floor`, so the command a reader is shown and the one setup runs cannot drift.
+    // npm, NOT the vendor's shell installer: a command this product executes on someone's box has to be
+    // one they can read in full before they answer, and a piped remote script is not.
     // — the documented headless ending. `claude setup-token` walks the sign-in and
     // prints a long-lived token; the stage subprocess env is a spread of the driver's — spawnEnv
     // strips ONLY the API key under subscription — so a token in the env file reaches the CLI
@@ -1934,23 +1924,62 @@ export const ENGINE_BINARIES = {
   "openai-agent": {
     vendor: "OpenAI",
     env: "CLEAROTRON_CODEX_PATH", fallback: "codex",
-    package: "@openai/codex",
+    package: "@openai/codex", floor: "0.154.0",
     licence: "third-party software under the Apache-2.0 licence",   // the package's own "license" field
     label: "OpenAI — each stage runs as a headless `codex exec` turn",
     module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",
     signIn: "run `codex login`",
     authEnv: "CLEAROTRON_AI_BILLING", apiKeyEnv: "CODEX_API_KEY",
     subscriptionHow: "sign in once with `codex login` — the adapter reads ~/.codex/auth.json and refuses before spending if it is absent",
-    // Verified against the registry 2026-08-24: 0.149.1.
-    install: "npm install -g @openai/codex",
-    // — no vendor shell installer exists for this CLI; the no-root answer on a
-    // root-only prefix is npm's own prefix move, which the wizard names the same way.
-    installNoRoot: null,
     // — codex's headless ending writes its own ~/.codex/auth.json; there is no
     // token to capture into an env file, and inventing one would be a route nobody has driven.
     headless: { cmd: "codex login --device-auth", tokenEnv: null },
   },
 };
+
+// ── WHERE SETUP INSTALLS AN ENGINE'S PROGRAM, AND THE COMMAND THAT DOES IT ─────────────────────────────
+//
+// Nothing is bundled into the package. Setup installs the ONE program the reader's engine runs, when they
+// say yes, as an ordinary npm project in a folder Clearotron owns under their home directory: npm then
+// fetches that platform's binary and nothing else, and needs no root. The folder is not on PATH, so a copy
+// the machine installs itself is found first (resolveEngineProgram). `clearotron update` runs the same
+// install again, which moves the program to the newest its vendor publishes: measured on npm 10.9.8 and
+// 11.19.1, re-running an install with a `>=` range over an older copy moves it to the newest, where
+// `npm update` would stop at the caret npm writes into the folder's package.json.
+
+/** Where to install, and look for, the engine programs instead of the default folder. An EMPTY directory means none. */
+export const ENGINES_DIR_ENV = "CLEAROTRON_ENGINES_DIR";
+
+/** The default engines folder as a reader types it. */
+const ENGINES_FOLDER_TYPED = "~/.local/share/clearotron/engines";
+
+/**
+ * The folder setup installs engine programs into and the resolver's last step reads: ENGINES_DIR_ENV from
+ * this process when set, otherwise `~/.local/share/clearotron/engines`. Under the home directory rather
+ * than the install's own tree, because an update replaces that tree, and because every service runs as a
+ * user unit under the same home as the setup that installed it. XDG_DATA_HOME is not consulted: a shell's
+ * value does not reach the services, and the two would then look in different folders.
+ */
+export function enginesFolder({ env = process.env, home = homedir() } = {}) {
+  return String(env[ENGINES_DIR_ENV] ?? "").trim() || join(home, ".local", "share", "clearotron", "engines");
+}
+
+/** The npm arguments that install, or refresh, an engine's program in `dir`: "this version or newer". */
+export function engineInstallArgs(spec, dir = enginesFolder()) {
+  return ["install", "--prefix", dir, "--no-fund", "--no-audit", `${spec.package}@>=${spec.floor}`];
+}
+
+/** A shell word as a reader pastes it: quoted when it must be, because a bare `>=` is a redirection. */
+const shellWord = (w) => (/^[\w@%+=:,./~-]+$/.test(w) ? w : `'${String(w).replace(/'/g, "'\\''")}'`);
+
+/** The same install as a command a reader can paste. The default folder is written the way they type it. */
+export function engineInstallCommand(spec, dir = ENGINES_FOLDER_TYPED) {
+  return ["npm", ...engineInstallArgs(spec, dir)].map(shellWord).join(" ");
+}
+
+// The printable command each engine carries, for the readers that show one without a folder to hand (the
+// portal's engine page, doctor's way out of demo mode), made from the same parts as the install setup runs.
+for (const spec of Object.values(ENGINE_BINARIES)) spec.install = engineInstallCommand(spec);
 
 /** The production default, in ONE place rather than a literal repeated at every reader. */
 export const DEFAULT_ENGINE_ID = "anthropic-agent";
@@ -1979,16 +2008,12 @@ export function engineAdapterSpecifier(engine) {
 //      would run a program nobody chose. The engine's own fallback word (`claude`, `codex`) is the default
 //      spelled out, which is how the shipped example files write it, so it means exactly what unset means.
 //   2. The program on PATH: the machine's own install, which keeps updating itself.
-//   3. The copy npm installed with Clearotron (`optionalDependencies`), only when the machine has none.
-//      Under `npm run` and `npx`, npm puts `node_modules/.bin` on PATH, so a PATH hit that IS that copy is
-//      passed over in step 2 and taken for what it is in step 3. Otherwise it would win step 2 on every such
-//      box and be reported, and written into a settings file, as the machine's own. A PATH hit inside npx's
-//      own cache is passed over too, whichever install it came with: npm deletes it when it cleans up.
+//   3. The copy setup installed in the engines folder (enginesFolder, above), only when the machine has
+//      none. That folder is not on PATH. If a reader puts its node_modules/.bin there, a PATH hit that IS
+//      that copy is passed over in step 2 and taken for what it is in step 3, so it is never reported, or
+//      written into a settings file, as the machine's own.
 //
 // FILESYSTEM ONLY, like the rest of this door (see the header above ENGINE_BINARIES): nothing is spawned.
-
-/** Where to look for the programs installed with Clearotron, instead of its own tree. An EMPTY directory means none. */
-export const BUNDLED_ENGINES_DIR_ENV = "CLEAROTRON_BUNDLED_ENGINES_DIR";
 
 /** A path on a Windows drive as WSL mounts it. */
 export const ON_A_WINDOWS_DRIVE = /^\/mnt\/[a-z]\//i;
@@ -2035,31 +2060,16 @@ function owningPackage(file) {
   return null;
 }
 
-/**
- * The directory the installed copy of `spec.package` lives in, or null. `root`: undefined for this
- * install's own tree, a directory to look under instead, or null to look nowhere.
- */
-function bundledPackageDir(spec, root) {
-  if (!spec.package || root === null) return null;
-  const parts = spec.package.split("/");
-  const has = (d) => (existsSync(join(d, "package.json")) ? d : null);
-  if (typeof root === "string") return has(join(root, "node_modules", ...parts));
-  // Nested under this package: a global install, and a checkout.
-  const nested = has(join(REPO_ROOT, "node_modules", ...parts));
-  if (nested) return nested;
-  // Hoisted BESIDE it, when this package is a dependency of a project: `npx`, and a local install. The
-  // project's own package.json tells the two apart. A global prefix's lib/node_modules looks the same from
-  // in here, but it is a shelf of unrelated installs, and a copy the reader installed globally on that shelf
-  // is theirs, found on PATH, and never ours.
-  const shelf = dirname(REPO_ROOT);
-  if (basename(shelf) === "node_modules" && existsSync(join(dirname(shelf), "package.json")))
-    return has(join(shelf, ...parts));
-  return null;
+/** The directory the installed copy of `spec.package` lives in under the engines folder `root`, or null. */
+function installedPackageDir(spec, root) {
+  if (!spec.package || !root) return null;
+  const dir = join(root, "node_modules", ...spec.package.split("/"));
+  return existsSync(join(dir, "package.json")) ? dir : null;
 }
 
 /** The program that installed copy declares for this engine, by the package's own `bin` field, or null. */
-function bundledProgram(spec, root) {
-  const dir = bundledPackageDir(spec, root);
+function installedProgram(spec, root) {
+  const dir = installedPackageDir(spec, root);
   if (!dir) return null;
   const pkg = readPackage(dir);
   const rel = typeof pkg?.bin === "string" ? pkg.bin : pkg?.bin?.[spec.fallback];
@@ -2083,18 +2093,19 @@ function engineCandidate(p, spec) {
  * Find the program an engine spawns. Never throws: refusing is the caller's decision (preflightEngineBinary).
  *
  * Returns `{engine, binEnv, bin, explicit, relative, resolved, source, version, windowsShim, skipped, rejected}`.
- * `resolved` is an absolute path or null. `source` is "explicit" | "path" | "bundled" | null. `version` is
+ * `resolved` is an absolute path or null. `source` is "explicit" | "path" | "installed" | null. `version` is
  * read from the copy's own package.json when npm installed it, and null otherwise, because nothing is
  * spawned to ask. `skipped` lists Windows copies passed over under WSL; `rejected` lists candidates that
  * could not run, each with its reason and the step that found it (`source`).
  *
- * `bundledDir`: undefined reads BUNDLED_ENGINES_DIR_ENV from THIS process and then falls back to this
- * install's own tree; a directory looks there; null looks nowhere. It is read from the process rather than
- * from `env` because it describes this install, not the configuration being asked about: doctor asks about
- * the units' environment from a shell, and the installed copy is the same file either way. `wsl` and
- * `onWindowsDrive` are injectable for the reason shared/wsl.mjs gives.
+ * `enginesDir`: undefined reads the engines folder (enginesFolder: ENGINES_DIR_ENV from THIS process, then
+ * the default under the home directory); a directory looks there; null looks nowhere. It is read from the
+ * process rather than from `env` because it describes this user's install, not the configuration being
+ * asked about: doctor asks about the units' environment from a shell, and the folder is the same either
+ * way, because the services run as user units under the same home. `wsl` and `onWindowsDrive` are
+ * injectable for the reason shared/wsl.mjs gives.
  */
-export function resolveEngineProgram(engine, { env = process.env, bundledDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
+export function resolveEngineProgram(engine, { env = process.env, enginesDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
   const id = String(engine ?? "").trim().toLowerCase();
   const spec = ENGINE_BINARIES[id];
   const out = { engine: id, binEnv: spec?.env ?? null, bin: null, explicit: false, relative: false,
@@ -2121,9 +2132,8 @@ export function resolveEngineProgram(engine, { env = process.env, bundledDir = u
 
   // THE PATH WALK splits on the platform's own delimiter. This file's walk used to split on ":", which
   // tears a Windows PATH at every drive letter; the wizard's walk already used the delimiter.
-  const root = bundledDir !== undefined ? bundledDir : (String(process.env[BUNDLED_ENGINES_DIR_ENV] ?? "").trim() || undefined);
-  const bundled = out.explicit ? null : bundledProgram(spec, root);
-  const bundledReal = bundled ? realOrNull(bundled) : null;
+  const installed = out.explicit ? null : installedProgram(spec, enginesDir !== undefined ? enginesDir : enginesFolder());
+  const installedReal = installed ? realOrNull(installed) : null;
   for (const dir of String(env.PATH ?? "").split(delimiter).filter(Boolean)) {
     const p = join(dir, out.bin);
     if (!isExecFile(p)) continue;
@@ -2131,16 +2141,10 @@ export function resolveEngineProgram(engine, { env = process.env, bundledDir = u
     // Windows build before any Linux install. It is executable, and it fails the proof turn as "not signed
     // in" because the credential it looks for is the Linux one. Passed over, and named for the caller to say.
     if (underWsl && onDrive(p)) { out.skipped.push(p); continue; }
-    if (bundledReal && realOrNull(p) === bundledReal) continue;
-    // NOR IS A COPY IN NPX'S CACHE. `npx clearotron install` puts `_npx/<hash>/node_modules/.bin` first on
-    // PATH, moves Clearotron out of the cache and runs setup from the moved install, whose installed copy is
-    // a different file, so the test above does not fire. Taken, the cache's copy would be reported and
-    // written into the settings file as the machine's own, and npm deletes it when it cleans its cache. A
-    // program somebody named is theirs to name, so this applies to the default lookup only.
-    if (!out.explicit && [p, realOrNull(p)].some((q) => q && inNpxCache(q))) continue;
+    if (installedReal && realOrNull(p) === installedReal) continue;
     if (take(p, out.explicit ? "explicit" : "path")) return out;
   }
-  if (bundled) take(bundled, "bundled");
+  if (installed) take(installed, "installed");
   return out;
 }
 
@@ -2155,7 +2159,7 @@ export function resolveEngineProgram(engine, { env = process.env, bundledDir = u
  * version of gateway.selectEngine's error. One definition of "that is not an engine", and it is the
  * registry's.
  */
-export function preflightEngineBinary(env = process.env, { platform = process.platform, bundledDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
+export function preflightEngineBinary(env = process.env, { platform = process.platform, enginesDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
   // item 3 — NATIVE WINDOWS REFUSES BY NAME, BEFORE ANYTHING READS PATH.
   //
   // INSTALL.md promises a native-Windows run "refuses at preflight". Nothing implemented it, so what a
@@ -2195,12 +2199,12 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
   // `envFrom` is therefore BELT-AND-BRACES, not the repair: it makes this site correct on its own terms
   // rather than correct because something upstream normalised the environment first — a coupling
   // nothing at this site declares and nothing here could notice breaking.
-  const r = resolveEngineProgram(engine, { env, bundledDir, wsl, onWindowsDrive });   // injectable for the reason it gives
+  const r = resolveEngineProgram(engine, { env, enginesDir, wsl, onWindowsDrive });   // injectable for the reason it gives
   const bin = r.bin;
   const setTo = String(envFrom(env, spec.env) ?? "").trim();
   const where = `${spec.env}${r.explicit ? "" : setTo
-    ? ` (set to its default "${spec.fallback}": the one on PATH, then the copy installed with Clearotron)`
-    : ` (unset — defaulting to "${spec.fallback}" on PATH, then the copy installed with Clearotron)`}`;
+    ? ` (set to its default "${spec.fallback}": the one on PATH, then the copy Clearotron installed)`
+    : ` (unset — defaulting to "${spec.fallback}" on PATH, then the copy Clearotron installed)`}`;
 
   if (r.relative) {
     throw new Error(`[preflight] ${where} is the RELATIVE path "${bin}", which cannot work: the engine is `
@@ -2210,9 +2214,9 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
 
   if (!r.resolved) {
     const passedOver = r.rejected.map((x) => `${x.path} is ${x.why}`).join("; ");
-    // "No copy was installed" only when none was. An installed copy that cannot run is named in the
-    // passed-over list with its reason, and the claim beside it would send the reader to install again.
-    const installedRefused = r.rejected.some((x) => x.source === "bundled");
+    // "None installed" only when none was. An installed copy that cannot run is named in the passed-over
+    // list with its reason, and the claim beside it would send the reader to install it again.
+    const installedRefused = r.rejected.some((x) => x.source === "installed");
     // Under WSL the Windows copies on the appended PATH were passed over on purpose, and the reader's own
     // `which` still prints them, so the refusal names them and says why.
     const windows = r.skipped.length
@@ -2221,7 +2225,7 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
       + (bin.includes("/")
         ? (r.rejected[0]?.why ?? "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)")
         : `not on PATH as an executable file (PATH=${env.PATH || "(empty)"})`
-          + (r.explicit || installedRefused ? "" : ", and no copy was installed with Clearotron")
+          + (r.explicit || installedRefused ? "" : ", and Clearotron has not installed one")
           + (passedOver ? `. Passed over: ${passedOver}` : "")
           + windows)
       + ". Every stage of a run spawns it, so the run is refused now rather than at the first stage.");

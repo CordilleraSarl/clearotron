@@ -983,8 +983,8 @@
         },
         "an-engine-program-installed-with-clearotron-is-the-last-resort.test.mjs": {
           "tests": 13,
-          "asserts": 46,
-          "skips": 1,
+          "asserts": 47,
+          "skips": 0,
           "todos": 0
         },
         "an-environment-read-through-optional-chaining-is-a-read.test.mjs": {
@@ -2837,8 +2837,8 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 70,
-          "asserts": 257,
-          "skips": 3,
+          "asserts": 254,
+          "skips": 2,
           "todos": 0
         },
         "onboarding-sets-the-framework-it-says-it-set.test.mjs": {
@@ -5080,8 +5080,8 @@
           "todos": 0
         },
         "third-party-notices.test.mjs": {
-          "tests": 15,
-          "asserts": 28,
+          "tests": 14,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -5243,7 +5243,7 @@
         },
         "update-refuses-on-a-packaged-install.test.mjs": {
           "tests": 8,
-          "asserts": 30,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

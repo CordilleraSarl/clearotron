@@ -27,7 +27,7 @@ import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
 // ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
-// then PATH, then the copy installed with Clearotron. What it found is spawned by ABSOLUTE path, because a
+// then PATH, then the copy Clearotron installed. What it found is spawned by ABSOLUTE path, because a
 // bare word lets spawn(2) walk PATH on its own and never reach the installed copy. When nothing resolved,
 // what was asked for is spawned unchanged, so that failure reads exactly as it always has; the run door
 // (preflightEngineBinary) refuses that case before any stage runs.

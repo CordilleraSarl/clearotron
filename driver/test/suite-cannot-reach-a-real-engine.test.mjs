@@ -185,17 +185,17 @@ test("COMPLETENESS: every engine in ENGINE_BINARIES is covered, not just the one
     + `scripts/test-run.mjs.`);
 });
 
-// ── the copy installed with Clearotron ──────────────────────────────────────────────────────────────
+// ── the copy Clearotron installed──────────────────────────────────────────────────────────────
 //
-// The engine resolver's last step (driver.config.mjs resolveEngineProgram) reads the copy npm installed
-// with Clearotron from node_modules, never from PATH, and on a checkout where `npm ci` ran that copy is a
-// REAL program. PATH is asked first, so the shim answers every child that keeps the wrapper's PATH; a
+// The engine resolver's last step (driver.config.mjs resolveEngineProgram) reads the copy setup installed
+// in the engines folder under the home directory, never PATH, and on a developer's machine that copy can
+// be a REAL program. PATH is asked first, so the shim answers every child that keeps the wrapper's PATH; a
 // child that composes its own PATH reaches the last step. So this asks the resolver ITSELF, inside the
 // wrapper's child, with a PATH that holds nothing, for every engine the table declares.
 //
 // WHAT IT CANNOT CLOSE. The setting reaches every process that inherits the wrapper's environment, and no
-// other. A drive that spawns a command with an environment composed from nothing (`env: { PATH, HOME }`)
-// hands that command this checkout's own node_modules, real programs included. Such a drive spreads
+// other. A drive that spawns a command with an environment composed from nothing, and no HOME or the real
+// one, hands that command the developer's own engines folder, real programs included. Such a drive spreads
 // NO_INSTALLED_ENGINES from drive-env.mjs; nothing here can see one that does not.
 
 test("THE COPY INSTALLED WITH CLEAROTRON is closed for the whole suite, whatever PATH a child composes", async () => {
@@ -213,7 +213,7 @@ test("THE COPY INSTALLED WITH CLEAROTRON is closed for the whole suite, whatever
     const env = { ...process.env };
     for (const n of ENGINE_VARS) delete env[n];
     delete env[OVERRIDE];
-    delete env[m.BUNDLED_ENGINES_DIR_ENV];
+    delete env[m.ENGINES_DIR_ENV];
     const child = `import(${JSON.stringify(pathToFileURL(join(ROOT, "driver", "driver.config.mjs")).href)}).then((m) => { ${setup} const out = {}; `
       + "for (const id of Object.keys(m.ENGINE_BINARIES)) { const r = m.resolveEngineProgram(id, { env: { PATH: \"/nonexistent\" } }); "
       + "out[id] = { source: r.source, resolved: r.resolved }; } console.log(\"REPORT:\" + JSON.stringify(out)); })";
@@ -227,7 +227,7 @@ test("THE COPY INSTALLED WITH CLEAROTRON is closed for the whole suite, whatever
   const reachable = Object.entries(closed.report).filter(([, v]) => v.resolved !== null).map(([id, v]) => `${id}: ${v.source} ${v.resolved}`);
   assert.deepEqual(reachable, [],
     `a child that composes its own PATH can still reach an installed engine program:\n  ${reachable.join("\n  ")}\n`
-    + `scripts/test-run.mjs must point ${m.BUNDLED_ENGINES_DIR_ENV} at an empty directory.`);
+    + `scripts/test-run.mjs must point ${m.ENGINES_DIR_ENV} at an empty directory.`);
 
   // THE CONTROL. The same child, with the lookup pointed at a planted tree, finds a copy for every engine:
   // the empty answer above is the wrapper closing the route, not a resolver that cannot see one.
@@ -239,9 +239,9 @@ test("THE COPY INSTALLED WITH CLEAROTRON is closed for the whole suite, whatever
     writeFileSync(join(dir, "bin", "program"), "#!/bin/sh\nexit 0\n");
     chmodSync(join(dir, "bin", "program"), 0o755);
   }
-  const open = ask(`process.env[m.BUNDLED_ENGINES_DIR_ENV] = ${JSON.stringify(planted)};`);
+  const open = ask(`process.env[m.ENGINES_DIR_ENV] = ${JSON.stringify(planted)};`);
   assert.ok(open.report, `the control child never reported; wrapper exited ${open.code}\n${open.all.slice(0, 800)}`);
-  const found = Object.entries(open.report).filter(([, v]) => v.source === "bundled").map(([id]) => id).sort();
+  const found = Object.entries(open.report).filter(([, v]) => v.source === "installed").map(([id]) => id).sort();
   assert.deepEqual(found, engines, "the control could not find a planted copy, so the empty answer above proves nothing");
 });
 

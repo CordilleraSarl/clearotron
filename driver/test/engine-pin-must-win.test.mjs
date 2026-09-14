@@ -33,9 +33,9 @@ const GUARD = "engine pins in the test corpus";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 // Every environment variable in this tree that names an executable the engine layer will SPAWN, or the
-// directory it finds one in (the copy installed with Clearotron). Derived once and named here so a sixth
+// folder it finds one in (the engines folder setup installs into). Derived once and named here so a sixth
 // one cannot arrive and be excused by omission.
-const ENGINE_BINS = ["ENGINE_BIN", "CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_BUNDLED_ENGINES_DIR"];
+const ENGINE_BINS = ["ENGINE_BIN", "CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_ENGINES_DIR"];
 
 // Two shapes, because the corpus uses two. The direct form names the variable; the keyed form pins a
 // whole block through `Object.entries(...)` and names nothing on the assigning line — which is exactly

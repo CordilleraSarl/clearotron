@@ -74,10 +74,6 @@
     "jose": "^6.2.3",
     "undici": "^7.29.1"
   },
-  "optionalDependencies": {
-    "@anthropic-ai/claude-code": ">=2.1.270",
-    "@openai/codex": ">=0.154.0"
-  },
   "bin": {
     "clearotron": "bin/clearotron.mjs"
   },

@@ -154,9 +154,10 @@ checkout by a debugging session cannot quietly reconfigure the queue drain.
 **If the service fails to start**, `systemctl --user status prelim-driver.service` names the reason.
 The two that have actually happened: `CLEAROTRON_CHECKOUT_DIR` unset — so `ExecStart` resolves to
 `/driver/runner.mjs`, which does not exist — and no `claude` the unit can find, which is not a start
-failure at all but shows later as every stage burning its retry ladder for zero tokens. The package
-installs its own copy of each engine program, and the unit uses it when its `PATH` has none, so the
-second happens only on an install that left optional packages out. For it, set `CLEAROTRON_CLAUDE_PATH`
+failure at all but shows later as every stage burning its retry ladder for zero tokens. `clearotron
+install` offers to install the chosen engine's program into `~/.local/share/clearotron/engines`, and the
+unit uses that copy when its `PATH` has none, so the second happens only when that offer was declined.
+Accept it by running `clearotron install` again, or set `CLEAROTRON_CLAUDE_PATH`
 in `~/.env` to the binary's absolute path; the unit's `PATH` already covers `~/.local/bin` and
 `~/.npm-global/bin`, the two layouts the documents permit.
 
