@@ -3256,8 +3256,8 @@
           "todos": 0
         },
         "profiles.test.mjs": {
-          "tests": 46,
-          "asserts": 252,
+          "tests": 48,
+          "asserts": 263,
           "skips": 0,
           "todos": 0
         },

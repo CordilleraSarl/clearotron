@@ -17,6 +17,7 @@ import { findPlatformIdentityViolations } from "../common-law-receipts.mjs";
 import { STAGES, lines } from "../stages.mjs";
 import { properNameCandidates, referenceChecks, runLint } from "../predelivery-lint.mjs";
 
+const HERE = dirname(fileURLToPath(import.meta.url));
 const GAMING_DOMAINS = ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com", "gog.com", "itch.io"];
 
 function profileDir(files) {
@@ -183,6 +184,51 @@ test("at the fold, a dictated channel with no receipt from either half is report
 
   // AND A FULL GRID IS SILENT, which is what says this is not simply refusing every ledger.
   assert.deepEqual(findPlatformIdentityViolations(MANIFEST, ledgerFor([...dictated, "web"]), dictated, { wholeGrid: true }), []);
+});
+
+test("the unrun channel becomes an OPEN ledger row, and the run still delivers", async () => {
+  // THE POINT OF DISCLOSURE, and the correction to my first cut of this: failing the fold would turn a
+  // gap the client can see into a clearance that delivers nothing. The ledger already has the state for
+  // a slice that could not run — `deferred`, which the deadline envelope re-runs, the verdict floor
+  // clamps over, and the report shows where open rows are shown — so the channel lands there as a row
+  // in the shape every consumer already reads, and nothing new is drawn anywhere.
+  const { openChannelRows } = await import("../common-law-receipts.mjs");
+  const dictated = ACME.platforms;
+  const deferred = dictated[dictated.length - 1];
+  const files = {
+    "/run/_driver/grid-spec.json": JSON.stringify({ terms: ["novapulse"], platforms: [...dictated, "web"] }),
+    "/run/common-law-grid.json": ledgerFor([...dictated.slice(0, dictated.length - 1), "web"]),
+  };
+  const io = { exists: (p) => Object.hasOwn(files, p), read: (p) => files[p] };
+
+  const rows = openChannelRows("/run", io);
+  assert.equal(rows.length, 1, "the channel nobody ran produced no row");
+  assert.equal(rows[0].status, "deferred", "it must use the ledger's own open state, not a new one");
+  assert.equal(rows[0].axis, "common-law");
+  assert.ok(rows[0].unit.includes(deferred), "the row does not name the channel a reader has to chase");
+  assert.match(rows[0].reason, /open — not run/);
+  assert.match(rows[0].reason, /not a receipt/, "the reason does not say why a pass's say-so did not count");
+
+  // A FULL GRID PRODUCES NOTHING, which is what keeps this from putting an open row on every run.
+  const full = { ...files, "/run/common-law-grid.json": ledgerFor([...dictated, "web"]) };
+  assert.deepEqual(openChannelRows("/run", { exists: (p) => Object.hasOwn(full, p), read: (p) => full[p] }), []);
+
+  // AND AN UNREADABLE RUN PRODUCES NOTHING RATHER THAN A GAP NOBODY CAN CLOSE: no spec, no merged
+  // ledger, or an unparseable one is not evidence that a channel went unrun.
+  assert.deepEqual(openChannelRows("/run", { exists: () => false, read: () => "" }), []);
+  assert.deepEqual(openChannelRows("/run", { exists: () => true, read: () => "{ not json" }), []);
+});
+
+test("the open rows are WIRED at the ledger chokepoint — a row nothing reads is not a disclosure", () => {
+  // A pure function nothing calls would leave the gap exactly where it was, and the earlier draft of
+  // this change failed the fold instead, which nobody wanted. The chokepoint is the one place every
+  // consumer reads the ledger through — the escalation gate, the deadline envelope and the verdict
+  // clamp all act on what it returns — so the rows join there, beside the two relabels already applied.
+  const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
+  assert.match(src, /const relabel = \(rows\) => \[\.\.\.applyTaintDeferred\(coerceToolAbsenceDeferred\(rows\), taintAxes\), \.\.\.openChannelRows\(runDir\)\]/,
+    "the coverage chokepoint no longer adds the open-channel rows");
+  assert.doesNotMatch(src, /findPlatformIdentityViolations\([^)]*wholeGrid: true/,
+    "the fold is failing on an unrun channel again — it is a disclosed gap, not a dead clearance");
 });
 
 test("a HALF's own ledger gets no channel verdict — the split is allowed, the silence at the fold is not", () => {

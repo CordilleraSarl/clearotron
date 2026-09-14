@@ -413,14 +413,14 @@ function commonLawEvidence(p, c) {
       // platform-identity join: the count above proves how MANY platforms — this proves WHICH.
       if (dictatedPlatforms.length) {
         let wrong;
-        try { wrong = findPlatformIdentityViolations(joinKeys, ledgerRaw, dictatedPlatforms, { wholeGrid: true }); }
+        try { wrong = findPlatformIdentityViolations(joinKeys, ledgerRaw, dictatedPlatforms); }
         catch (e) { return fail(`platform_identity_error:${String(e.message).slice(0, 80)}`); }   // never silently disable the join
         if (wrong.length) {
           // truncate at whole violations, never mid-domain (the correction hint dictates these cells)
           const details = [];
           let len = 0;
           for (const v of wrong) {
-            const d = `${v.whole ? "no-half-ran" : v.variant}:${v.missing.join("+")}`;
+            const d = `${v.variant}:${v.missing.join("+")}`;
             if (len + d.length > 160 && details.length) break;
             details.push(d);
             len += d.length + 1;

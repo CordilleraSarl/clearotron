@@ -139,7 +139,7 @@ import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKe
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf } from "./stage-freshness.mjs";
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
-  GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings,
+  GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
   routeHalfTermScopes, findDroppedConnotationQueries, findErroredConnotationQueries, findGridCandidateOmissions } from "./common-law-receipts.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
@@ -336,7 +336,7 @@ export function loadCoverageLedger(runDir) {   // @internal
   // pass was kill-touched (register-taint.mjs) is downgraded to deferred at the same choke point, so the
   // envelope re-runs it and the verdict floor clamps over it, whatever the prose self-reported.
   const taintAxes = readActiveTaintAxes(runDir);
-  const relabel = (rows) => applyTaintDeferred(coerceToolAbsenceDeferred(rows), taintAxes);
+  const relabel = (rows) => [...applyTaintDeferred(coerceToolAbsenceDeferred(rows), taintAxes), ...openChannelRows(runDir)];
   const jsonPath = join(runDir, "register-coverage-ledger.json");
   if (existsSync(jsonPath)) {
     try { return { rows: relabel(parseCoverageLedgerJson(readFileSync(jsonPath, "utf8"))), source: "machine", dropped: [] }; }

@@ -15,6 +15,9 @@
 
 // 6 mandatory store platforms + the general-web cell. Field-scoped cells are additive (a matter can
 // have MORE rows per variant, never fewer).
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+
 export const MIN_CELLS_PER_VARIANT = 7;
 
 const norm = (s) => (s || "").trim().replace(/^["'`]+|["'`]+$/g, "").toLowerCase();
@@ -929,4 +932,45 @@ export function findSimilarListingSignals(findingsContent) {
   }
   flush();
   return signals;
+}
+
+/**
+ * THE CHANNELS THE RUN DICTATED AND NOBODY RAN, as coverage-ledger rows.
+ *
+ * A channel one half says the other owns is nobody's: on a delivered run half A wrote that the
+ * repositories were "not in grid mandate, assigned to the parallel half" and half B wrote that they were
+ * covered indirectly through general web search. Neither ran them, and the delivered coverage carried it
+ * as a NOTE. Prose is not a state, and a reader cannot act on it.
+ *
+ * A ROW IN THE LEDGER'S OWN SHAPE AND ITS OWN OPEN STATE, never a new one and never a refusal. `deferred`
+ * is what this ledger already calls a slice that could not run at all, every consumer already reads it —
+ * the deadline envelope re-runs it, the verdict floor clamps over it, the report shows it where open rows
+ * are shown — and a disclosed gap is the point. Failing the fold instead would turn a gap the client can
+ * see into a clearance that delivers nothing, which is the opposite of what disclosure is for.
+ *
+ * Reads the run's own two artifacts and answers `[]` for anything it cannot read: no spec, no merged
+ * ledger, or an unparseable one. An absence here is not a finding — the receipts gate above owns that
+ * question — and inventing a row from a file this could not read would be a gap nobody can close.
+ */
+export function openChannelRows(runDir, io = {}) {
+  const read = io.read ?? ((p) => readFileSync(p, "utf8"));
+  const exists = io.exists ?? ((p) => existsSync(p));
+  const at = (name) => join(runDir, "_driver", name);
+  try {
+    if (!exists(at("grid-spec.json")) || !exists(join(runDir, "common-law-grid.json"))) return [];
+    const spec = JSON.parse(read(at("grid-spec.json")));
+    const platforms = (spec?.platforms ?? []).filter(Boolean);
+    if (!platforms.length) return [];
+    const ledgerRaw = read(join(runDir, "common-law-grid.json"));
+    const terms = (spec?.terms ?? spec?.variants ?? []).filter(Boolean);
+    const violations = findPlatformIdentityViolations(terms.length ? terms : [], ledgerRaw, platforms, { wholeGrid: true });
+    const whole = violations.find((v) => v.whole);
+    return (whole?.missing ?? []).map((platform) => ({
+      axis: "common-law",
+      status: "deferred",
+      unit: `common-law / ${platform}`,
+      reason: `open — not run: ${platform} was dictated in the grid and no pass produced a receipt for it. `
+        + "A pass stating that another pass owns a channel is not a receipt.",
+    }));
+  } catch { return []; }
 }
