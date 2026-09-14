@@ -1870,8 +1870,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 33,
-          "asserts": 96,
+          "tests": 37,
+          "asserts": 111,
           "skips": 1,
           "todos": 0
         },
@@ -4348,8 +4348,8 @@
           "todos": 0
         },
         "symbol-citation-survives-a-move.test.mjs": {
-          "tests": 8,
-          "asserts": 18,
+          "tests": 9,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -4426,8 +4426,8 @@
           "todos": 0
         },
         "test-run-tmpdir.test.mjs": {
-          "tests": 11,
-          "asserts": 25,
+          "tests": 12,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

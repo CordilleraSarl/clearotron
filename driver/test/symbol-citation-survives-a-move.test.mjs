@@ -16,7 +16,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { symbolCitationsIn, symbolCitationMisses, SYMBOLIC } from "../../scripts/citation-line-check.mjs";
+import { symbolCitationsIn, symbolCitationMisses, SYMBOLIC, judgeCheckable } from "../../scripts/citation-line-check.mjs";
 
 /** A one-file corpus and a reader over a fake tree, so the arms drive the real functions. */
 function harness(citedBody) {
@@ -140,4 +140,30 @@ test("the gate FAILS on a symbol miss — the check is wired to the exit code, n
     "symbolGone must appear in the exit-code expression, in both the --json and the printed path");
   assert.equal(code.filter((l) => /symbolGone\.length \|\|/.test(l)).length, 2,
     "both exit paths, or the JSON caller and the human caller disagree about whether the tree is clean");
+});
+
+// ── AND THE CONVERSION ONLY GOES ONE WAY ─────────────────────────────────────────────────────────
+//
+// Converting a corpus takes many changes by many people, so the state in between is what has to be
+// protected: a citation that has been made checkable must not quietly go back. The cheapest repair
+// available to whoever meets a red at an unlucky moment is to delete the symbol — which turns the
+// light green, leaves the total untouched, and returns the citation to the class this whole file is
+// about. The population floor cannot see it, because nothing was removed.
+//
+// Driven over the judgement rather than the tree: the tree's own number is a moving target, and what
+// this arm is about is the RULE — never down without saying so.
+test("the checkable count may rise and may not fall", () => {
+  assert.equal(judgeCheckable(101, 100).ok, true, "a conversion is always welcome");
+  assert.equal(judgeCheckable(100, 100).ok, true, "standing still is not a regression");
+
+  const dropped = judgeCheckable(99, 100);
+  assert.equal(dropped.ok, false, "a citation that stopped naming a symbol is back to being unchecked");
+  assert.match(dropped.reason, /no longer does/, "the refusal has to say what happened, not just that a number fell");
+  assert.match(dropped.reason, /--allow-loss/, "and name the way through, or the guard gets deleted the first time somebody needs it");
+
+  // THE WAY THROUGH IS DELIBERATE AND THE UNRECORDED TREE IS NOT A FAILURE — a tree that has never
+  // recorded a count has nothing to ratchet against, and refusing there would stop a new repository
+  // adopting the check at all. Both are stated here because both are how a guard gets removed.
+  assert.equal(judgeCheckable(99, 100, { allowLoss: true }).ok, true);
+  assert.equal(judgeCheckable(0, null).ok, true, "an unrecorded tree has nothing to compare against");
 });
