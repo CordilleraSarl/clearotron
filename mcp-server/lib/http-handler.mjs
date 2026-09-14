@@ -69,7 +69,7 @@ export function evictOldest(sessions) {
  * presents another identity's mcp-session-id is refused (403) — a leaked/guessed session id must never
  * let one CF-authed person attach to another's session (which may carry an ops-scoped inner token).
  */
-export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, devMode = false, tokenOnly = false, log = () => {} }) {
+export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, devMode = false, tokenOnly = false, keyDoorPath = null, log = () => {} }) {
   if (!verify && !devMode && !tokenOnly) throw new Error("makeHttpHandler: verify is required unless devMode:true or tokenOnly:true (fail-closed; refusing to build an unauthenticated handler)");
   // The two verify-less modes mean OPPOSITE things and must never be combined: devMode trusts the local
   // operator and hands out a synthetic identity, tokenOnly trusts NOBODY without a valid key. Together,
@@ -99,6 +99,36 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
           user = await verify(hdr(req.headers[authHeader]));
         } catch (e) {
           const status = e instanceof AuthError ? e.status : 401;
+          // ── A KEY PRESENTED HERE IS NOT A MISSING JWT, AND THE OLD SENTENCE SAID IT WAS ─────────
+          //
+          // This door takes a proxy identity and has no path that reads an access key — the refusal is
+          // structural rather than a check. But the sentence a caller got was "missing auth-proxy JWT",
+          // which is a statement about an ABSENT assertion and says nothing about the key that was
+          // actually sent. Measured against a real key on all three carriers: an operator reads it as a
+          // misconfigured proxy and goes looking there. That is the outage this issue was raised from
+          // wearing a different hat — a true sentence that is not the one the reader needs.
+          //
+          // DETECTED ON THE UNAMBIGUOUS CARRIERS ONLY. `?token=` and `x-trademark-token` carry nothing
+          // but a trademark key. `Authorization` is NOT read here even though a key can arrive in it,
+          // because on a proxy-fronted door that header belongs to whatever the proxy or agent is doing
+          // and reading it as a key would put this sentence in front of callers who never sent one. So
+          // a key in `Authorization` still gets the old message: narrower than the finding, and wrong
+          // in the direction that costs nothing.
+          const keySent = e instanceof AuthError && e.status === 401
+            && Boolean(url.searchParams.get("token") || hdr(req.headers["x-trademark-token"]));
+          if (keySent) {
+            log("auth reject 401: an access key was presented on the proxy door, which has no key path");
+            // THE SENTENCE IS ALSO READ BY A MACHINE, and the first draft of it broke that. `doorCredential`
+            // in shared/trigger-lane.mjs classifies a door by what its refusal asks for, and the portal's
+            // boot probe uses that to report which lane it has. A sentence saying "an access key has no
+            // door here" contains the words "access key", so it classified as a KEY door — and the portal
+            // would have announced that the network door takes its key, against a door that refuses it.
+            // That is this issue's own false-reassurance finding, reintroduced by the fix for its
+            // neighbour. Naming the JWT puts it in the proxy branch, which is checked first and is the
+            // true answer: this door wants a proxy identity.
+            return send(res, 401, { error: "this listener takes an auth-proxy JWT and never an access key — a key has no door here"
+              + (keyDoorPath ? `. The key door on this deployment is the local socket at ${keyDoorPath}` : ". This deployment has no key door configured") });
+          }
           log(`auth reject ${status}: ${e.message}`);
           return send(res, status, { error: e.message });
         }

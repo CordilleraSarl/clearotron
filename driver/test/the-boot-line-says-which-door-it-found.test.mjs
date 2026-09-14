@@ -93,13 +93,29 @@ test("the sentences the doors actually send are still the ones the verdict recog
   assert.equal(doorCredential({ body: proxySentence }), "proxy",
     `the proxy door now says ${JSON.stringify(proxySentence)}, which the verdict no longer recognises as a proxy`);
 
+  // TWO SENTENCES NOW, AND EACH IS PINNED TO ITS OWN ANSWER. The handler refuses a request with no key
+  // on the key door, and separately refuses a request that presents a key on the PROXY door — a
+  // distinction added because the proxy door's old sentence talked only about an absent assertion and
+  // sent operators to the proxy's configuration.
+  //
+  // COUNTING ALONE STOPPED BEING ENOUGH THE MOMENT THERE WAS MORE THAN ONE. The original arm read the
+  // first match and asserted there was exactly one, which is the right guard while one is the truth. The
+  // failure it was built to prevent is a second sentence silently becoming the one measured — so now
+  // both are read, each is classified, and they must classify DIFFERENTLY. That is strictly stronger:
+  // the old form could not have caught the first draft of the key-presented sentence, which contained
+  // the words "access key" and therefore classified as a key door, and would have had the portal
+  // announce that the network door takes the key it actually refuses.
   const keySites = handler.match(/send\(res,\s*401,\s*\{\s*error:\s*"[^"]+"/g) ?? [];
-  assert.equal(keySites.length, 1,
-    `the key door has ${keySites.length} refusal sentences; this arm reads the first and would measure the wrong one`);
-  const keySentence = /send\(res,\s*401,\s*\{\s*error:\s*"([^"]+)"/.exec(handler)?.[1];
-  assert.ok(keySentence, "the key door's 401 sentence could not be read — this guard is measuring nothing");
-  assert.equal(doorCredential({ body: keySentence }), "key",
-    `the key door now says ${JSON.stringify(keySentence)}, which the verdict no longer recognises as a key door`);
+  assert.equal(keySites.length, 2,
+    `the handler has ${keySites.length} refusal sentences; this arm knows two and would measure the wrong one`);
+  const sentences = [...handler.matchAll(/send\(res,\s*401,\s*\{\s*error:\s*"([^"]+)"/g)].map((m) => m[1]);
+  const byVerdict = new Map(sentences.map((t) => [doorCredential({ body: t }), t]));
+  assert.equal(byVerdict.size, 2,
+    `both of the handler's refusals classify the same way (${[...byVerdict.keys()]}), so a caller cannot tell the doors apart: ${JSON.stringify(sentences)}`);
+  const keySentence = byVerdict.get("key");
+  assert.ok(keySentence, `no refusal in the handler reads as a key door — the verdict sees ${JSON.stringify(sentences)}`);
+  assert.ok(byVerdict.get("proxy"),
+    `the handler's key-presented refusal must read as a PROXY door, since that is what this listener wants; the verdict sees ${JSON.stringify(sentences)}`);
 
   // And they are not both recognised as the same thing, which a loose pattern would do.
   assert.notEqual(doorCredential({ body: proxySentence }), doorCredential({ body: keySentence }));
