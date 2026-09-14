@@ -17,7 +17,7 @@ import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
 import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
-import { assertAccountAccess, attributionOf } from "../../shared/scope.mjs";
+import { assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
@@ -224,20 +224,33 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
   }),
 });
 
-// The accounts-scoped rule shared by start_run and plan_run: name the account EXPLICITLY. The grant gate
-// keys on profileKey, but the runner's forwarderDomain→matchDomains fallback could resolve a FOREIGN
-// customer for an untagged job — closing the bypass at the door. plan_run enforces it
-// too so a scoped caller cannot use the free preview to probe another customer's configuration.
-export function assertScopedProfileKey(args, scope, verb) {
-  if (Array.isArray(scope?.accounts) && !(args.profileKey && String(args.profileKey).trim()))
-    throw new Error(`${verb}: an accounts-scoped session must set profileKey explicitly (domain-based customer resolution is not available to scoped tokens)`);
+// The accounts-scoped rule shared by start_run and plan_run: the job must NAME the account it runs
+// under. The grant gate keys on profileKey, but the runner's forwarderDomain→matchDomains fallback could
+// resolve a FOREIGN customer for an untagged job — so an untagged job is what the door refuses to build.
+// plan_run goes through it too, so a scoped caller cannot use the free preview to probe another
+// customer's configuration.
+//
+// NAMING IT IS NOT THE SAME AS THE CALLER TYPING IT, and reading the two as one refused the ordinary
+// case this door exists to serve. A clearance for a NEW client has no account yet; the connector's own
+// instructions say to omit profileKey then, and this threw on exactly that, so an assistant following
+// its briefing hit a wall it could not explain. Where the session's access covers Generic, the neutral
+// profile a job with no profileKey runs under anyway, the door now writes that key into the job itself:
+// the bypass stays closed because the job is tagged, and the caller gets the run they asked for.
+//
+// Where it does not, the refusal says what to do next instead of only what is forbidden.
+export function resolveScopedProfileKey(args, scope, verb) {
+  if (!Array.isArray(scope?.accounts)) return args;
+  if (args.profileKey && String(args.profileKey).trim()) return args;
+  if (grantsGeneric(scope)) return { ...args, profileKey: "generic" };
+  throw new Error(`${verb}: this session holds [${scope.accounts.join(", ")}] and the request names no account. `
+    + `${GENERIC_NOT_GRANTED} A job that names no customer is never resolved from the requester's email domain.`);
 }
 
 // start_run — enqueue a clearotron job the runner will drain. Returns the queue id + slug; the runId/codename is
 // assigned by the runner on claim, so the caller polls list_runs(slug) / run_changes for it.
 export function startRun(args = {}, { scope } = {}) {
   const agent = args.agent ? String(args.agent) : "";
-  assertScopedProfileKey(args, scope, "start_run");
+  args = resolveScopedProfileKey(args, scope, "start_run");
   const qdir = queueDir(agent);
   // ONE builder shared with plan_run, so the preview a caller confirms is the job that actually runs.
   let job;

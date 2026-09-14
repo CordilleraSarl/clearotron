@@ -43,6 +43,41 @@ test("a CLIENT principal is briefed, and with the pack that matches what it can 
   assert.doesNotMatch(acct, /connected, read-only, to \*\*one\*\*/i, "the account principal got the run-bound report-link pack");
 });
 
+// ── A CLIENT WITH NO ACCOUNT HERE YET ─────────────────────────────────────────────────────────────
+//
+// What a person actually met: a clearance was commissioned over the connector for a brand-new client,
+// and the assistant offered two ways forward — name one of the accounts already granted, or create a
+// profile. It never mentioned running under the neutral profile, because nothing it had been given
+// mentioned it either. The engine's answer is in the door; the person's answer is in this text, and a
+// door that behaves while the briefing is silent is a fix nobody receives.
+//
+// Pinned to the BRIEFING an assistant is served, not to the files on disk, because serving is the step
+// that failed before: the ops pack sat shipped and undelivered for as long as nothing read it.
+test("a principal that can commission searches is told what to do for a client with no account", () => {
+  for (const kind of ["account", "ops"]) {
+    const text = instructionsFor({ kind });
+    assert.ok(text, `${kind} is not briefed at all`);
+    assert.match(text, /generic profile/i,
+      `the ${kind} pack never names the neutral profile, so an assistant meeting a new client has only the accounts it already holds — which is the refusal this arm exists to prevent`);
+    assert.match(text, /portal/i,
+      `the ${kind} pack offers no second way forward — a person who wants their own framework applied must be told the company can be set up in the portal`);
+  }
+});
+
+// The same briefing has to carry the composition rule, for the same reason: the assistant in the
+// reported case reasoned from the territory list alone because that is all it was given, and composed a
+// country plus its region — which is a different product, carrying no case-law reading. What binds a
+// territory is implemented carefully in the engine and was invisible where the search is composed.
+test("a principal that can commission searches is told that a country already carries the rights binding it", () => {
+  for (const kind of ["account", "ops"]) {
+    const text = instructionsFor({ kind });
+    assert.match(text, /case.law/i,
+      `the ${kind} pack never says the case-law reading is at stake, so the cost of adding a territory cannot be put to the requester`);
+    assert.match(text, /region/i,
+      `the ${kind} pack says nothing about ordering a country and its region, which is the composition that went wrong`);
+  }
+});
+
 test("no principal gets the CLIENT pack wrongly — ops gets its own, staff still gets none", () => {
   // THIS ARM CHANGED DELIBERATELY (ruling 7). It used to assert that ops got
   // NOTHING, and that was right while ops meant OUR agents — briefed separately by the Claude Code

@@ -62,7 +62,7 @@
 //   · commonlaw-carry.mjs:386   `completed` folds ALL THREE stage labels from one `outcomes` read and is
 //                               handed to `classifyCandidate` for every candidate in the same call.
 //   · findings-model.mjs:475    `boundLost` and `names` both come off the one `index` argument.
-//   · form-neighbourhood.mjs:286,287,288  one `familyDispatched` feeds BOTH the returned
+//   · `familyDispatched` declared in `form-neighbourhood.mjs`  feeds BOTH the returned
 //                               `phoneticFamilyDispatched` and the `complete` verdict beside it — the
 //                               good shape: two ends, one computation, no second derivation to drift.
 //   · gateway.mjs:1293,1501     the two `wrote` producers — see the disagreement below; both now guard

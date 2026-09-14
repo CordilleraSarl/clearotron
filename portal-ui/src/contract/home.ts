@@ -12,7 +12,7 @@
 import type { Run } from './api.ts'
 import type { Families, Row } from './grouping.ts'
 import { NO_FAMILIES, marksOf, rowsOf } from './grouping.ts'
-import { newestFirst } from './reads.ts'
+import { newestFirst, displayName } from './reads.ts'
 import { readableFailure } from './failure.ts'
 import { runKey } from './genericKey.ts'
 
@@ -54,6 +54,67 @@ export function acknowledged(runs: readonly Run[]): readonly Run[] {
     .filter((r) => r.state !== 'delivered' && r.acked)
     .slice()
     .sort((a, b) => (RANK[a.state] ?? 9) - (RANK[b.state] ?? 9))
+}
+
+/**
+ * WHICH READ THIS IS — the stamp a card shows, and only when a card would otherwise be a twin.
+ *
+ * Two failed reads of one mark for one owner drew byte-identical cards: depth, state, mark, owner,
+ * step and failure sentence, and nothing saying which read it was. A person acknowledged the first,
+ * met the second, read it as the first coming back, pressed the button three times and reported it
+ * broken. It was working every time. A card that cannot say which read it is turns "the second
+ * attempt failed too" into "the dismiss button does not work".
+ *
+ * THE RULE IS THE ONE `issuedAt` ALREADY STATES, not a second one invented here: the date is what a
+ * reader sees, and the time appears only when two reads share a day and would otherwise be
+ * indistinguishable. So this returns, per run:
+ *
+ *   · null   — nothing else in this list could be confused with it, so the card says no more than today
+ *   · a date — a twin exists, and the day tells them apart
+ *   · a date and a time — the day ties too, which is exactly the case that produced the report
+ *
+ * Twins are judged on what the card DRAWS — the mark as displayed, the owner, the project — because
+ * that is what a reader compares. Two runs differing only in `runId` are twins to the eye however
+ * different they are underneath, which is the whole defect.
+ *
+ * The id is deliberately not the answer. It is long, it is not a name, and the question a reader is
+ * actually asking is "is this the one I just put down".
+ */
+export function readStamps(rows: readonly Run[]): ReadonlyMap<string, string | null> {
+  const identity = (r: Run) =>
+    [displayName(r), runKey(r), r.projectKey ?? r.projectName ?? ""].join("\u0000");
+  const groups = new Map<string, Run[]>();
+  for (const r of rows) {
+    const k = identity(r);
+    const g = groups.get(k);
+    if (g) g.push(r); else groups.set(k, [r]);
+  }
+
+  const out = new Map<string, string | null>();
+  for (const g of groups.values()) {
+    if (g.length < 2) { for (const r of g) out.set(r.runId, null); continue; }
+    // The day ties when another twin shares it — counted within the group, since a date shared with a
+    // run a reader cannot see on this screen tells them nothing and costs the band a line.
+    const perDay = new Map<string, number>();
+    for (const r of g) perDay.set(r.date ?? "", (perDay.get(r.date ?? "") ?? 0) + 1);
+    for (const r of g) {
+      const day = r.date ?? "";
+      const time = clockOf(r.issuedAt);
+      // A run with neither a date nor a usable stamp says nothing rather than "Invalid Date" — the
+      // band is short and a broken token in it is worse than the ambiguity it was meant to resolve.
+      if (!day) { out.set(r.runId, time); continue; }
+      out.set(r.runId, (perDay.get(day) ?? 0) > 1 && time ? `${day} ${time}` : day);
+    }
+  }
+  return out;
+}
+
+/** "14:20" from a stamp, or null when there is nothing readable in it. 24-hour, as everywhere here. */
+function clockOf(iso: string | null): string | null {
+  if (!iso) return null;
+  const t = new Date(iso);
+  if (Number.isNaN(t.getTime())) return null;
+  return t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
 }
 
 /** Every finished run, newest first. The count Home reports, and the pool the tail is drawn from. */

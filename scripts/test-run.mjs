@@ -682,6 +682,13 @@ child = spawn(argv[0], argv.slice(1), {
   env: {
     ...process.env,
     TMPDIR: root,
+    // AND THE REAL BASE, so a NESTED run does not root itself inside this one. The line above hands the
+    // child a TMPDIR pointing at this run's own root; `os.tmpdir()` honours it, so a child that starts
+    // its own runner would put its root INSIDE the parent's and the parent's cleanup — or its sweep of
+    // abandoned roots — would delete a live child's fixtures underneath it. The variable this passes is
+    // the one the top of this file reads before TMPDIR is rewritten, so the chain stays anchored to the
+    // real temp directory however deep the nesting goes. A caller's own value wins, as everywhere else.
+    CT_TEST_TMP_BASE: String(process.env.CT_TEST_TMP_BASE ?? "").trim() || REAL_TMP,
     TRADEMARK_MCP_AUDIT_LOG: String(process.env.TRADEMARK_MCP_AUDIT_LOG ?? "").trim()
       || join(root, "mcp-access.jsonl"),
     // AND THE PORTAL'S AUDIT LOG, for the same reason and by the same rule as the line above it.

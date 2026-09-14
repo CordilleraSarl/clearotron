@@ -2,6 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { termPredicateIssue } from "../../providers/_shared/term-shape.mjs";
 import {
   normalizeElement, foldDiacritics, radiusFor, editNeighbourhood, consonantSkeleton,
   skeletonPatterns, visualConfusables, confusableSkeleton, transliterations,
@@ -58,6 +59,106 @@ test("consonantSkeleton + skeletonPatterns retrieve the phonetic vowel family", 
   assert.equal(consonantSkeleton("anna"), "n");      // doublings collapse
   const pats = skeletonPatterns("zurena");
   assert.ok(pats.includes("z?r?n?"), "vowel-slot wildcard for ZYRONA/ZIRINA-class");
+});
+
+// ── A VOWEL-LESS ELEMENT MUST NOT COMPILE A WILDCARD ENTRY CARRYING NO WILDCARD ──────────────────────
+//
+// The observed failure: a production clearance whose dominant element had no vowel died at
+// `register-plan` with `failClass: deterministic` and delivered nothing. The vowel-slot loop has no run
+// to replace, so it returned the element itself; the fringe pushes every member under a hard-coded
+// `wildcard` predicate; the freeze lint reads that pair as unexecutable and the pipeline throws on a
+// freshly minted plan. Retrying could not help, and every released version carries it.
+//
+// BOTH HALVES OF THE CLASS ARE DRIVEN HERE. Asserting only that the initialisms are fixed would pass
+// just as well if the function had been made to return nothing at all, which would delete the axis for
+// every mark. The keepers are the control: their patterns are pinned to the exact strings the generator
+// emits today, so a change that quietly narrows retrieval reds here rather than shipping.
+//
+// COINED STRINGS, NOT REAL MARKS. The reported class is initialisms, and the obvious table is famous
+// ones — but this repository is public and permanently indexed, and a trademark clearance product
+// listing live third-party marks in its own fixtures is the wrong artefact to leave behind. The
+// property under test is purely structural (does the element contain a vowel), so invented strings
+// exercise it exactly as well. Each member below is shaped like the real case it stands in for:
+// three-consonant, four-consonant, consonant-plus-digit, single character, and ampersand/digit forms
+// that normalize down to two consonants.
+const NO_VOWEL = ["ZMS", "BCG", "KFQ", "HSBQ", "TSV", "NRJ", "XLR8", "Z", "H&Q", "3Q", "MTV", "BQC", "CNN"];
+const KEEPS_ITS_PATTERNS = {
+  AI: ["?"],
+  ZKY: ["zk?", "z*k"],
+  DQNY: ["dqn?", "d*n"],
+  VELTRIN: ["v?ltr?n", "v*n"],
+  PARADISE: ["p?r?d?s?", "p*s"],
+};
+
+test("no element compiles a wildcard pattern carrying neither * nor ? — the vowel-less class", () => {
+  for (const el of NO_VOWEL) {
+    const pats = skeletonPatterns(el);
+    const unexecutable = pats.filter((pat) => termPredicateIssue(pat, "wildcard"));
+    assert.deepEqual(unexecutable, [],
+      `${el}: every emitted pattern must survive the freeze lint under the wildcard predicate`);
+  }
+  // THE FLOOR. Twelve of the thirteen still yield their anchored skeleton, so this table is not passing
+  // by returning nothing — only `X`, which normalizes to one character, has no consonant pair to anchor.
+  const stillProductive = NO_VOWEL.filter((el) => skeletonPatterns(el).length > 0);
+  assert.equal(stillProductive.length, NO_VOWEL.length - 1,
+    "the fix must drop the degenerate pattern, not the axis: only the single-character element goes empty");
+  assert.deepEqual(skeletonPatterns("Z"), []);
+  assert.deepEqual(skeletonPatterns("ZMS"), ["z*s"]);
+});
+
+test("an element WITH vowels keeps the exact patterns it emits today — the control on the fix", () => {
+  for (const [el, expected] of Object.entries(KEEPS_ITS_PATTERNS)) {
+    assert.deepEqual(skeletonPatterns(el), expected, `${el}: retrieval must be unchanged`);
+    assert.deepEqual(skeletonPatterns(el).filter((pat) => termPredicateIssue(pat, "wildcard")), [],
+      `${el}: and still executable`);
+  }
+});
+
+test("an empty phonetic family reads as COMPLETE and is disclosed, never as an unreached family", () => {
+  // The half of this that is client-facing. If an element with no retrieval pattern read as a gap, the
+  // coverage ledger would report the phonetic family unsearched for a matter where there was nothing to
+  // search — a false gap in a client's report.
+  const bandX = formNeighbourhood("X");
+  assert.deepEqual(bandX.wildcardPatterns, []);
+  const gX = coverageGaps(bandX, { dispatched: [...bandX.exactQueries] });
+  assert.equal(gX.complete, true, "no pattern to dispatch ⇒ the axis cannot be incomplete");
+  assert.deepEqual(formGapDirectives([{ element: "X", band: bandX }], { dispatched: [...bandX.exactQueries] }), []);
+
+  // AND THE INSTRUMENT IS NOT BLIND. An element that DOES emit patterns, with none of them dispatched,
+  // still fires the unreached-family directive — so the pass above is a result, not a guard that never
+  // speaks. Without this the arm would pass equally if coverage had stopped reading the axis at all.
+  const bandZ = formNeighbourhood("ZURENA");
+  assert.ok(bandZ.wildcardPatterns.length > 0);
+  const gZ = coverageGaps(bandZ, { dispatched: [...bandZ.exactQueries] });
+  assert.equal(gZ.complete, false);
+  assert.equal(formGapDirectives([{ element: "ZURENA", band: bandZ }], { dispatched: [...bandZ.exactQueries] }).length, 1);
+
+  // NOTHING GOES QUIET: the ledger row says the axis produced no pattern, in the voice it uses for an
+  // axis judgment dropped, and says the metaphone keys still verify — rather than reading as ordinary.
+  const row = bandX.ledger.axes.find((a) => a.axis === "phonetic-family");
+  assert.equal(row.count, 0);
+  assert.match(row.mechanism, /NO PATTERN/);
+  assert.match(row.mechanism, /Double-Metaphone key\(s\) \[[^\]]+\] still verify/,
+    "X's keys are NOT empty, and the row must not call the whole axis dead");
+
+  // ── THE OTHER MEMBER OF THE SAME CLASS, WHICH THE FIRST DRAFT OF THIS ARM DID NOT DRIVE ───────────
+  //
+  // Pinning X alone made this arm name the disclosure property and test one member of it. A purely
+  // numeric element has no pattern AND no metaphone key, and the row shipped
+  // "Double-Metaphone key(s) [] still verify what the other axes return" — a client-facing claim of a
+  // verification that did not happen, which is a worse failure than the silence it was written to
+  // prevent. Both members are driven here now, and they must land DIFFERENTLY: an arm where every
+  // member gets the same answer is a claim, not a test.
+  const bandNum = formNeighbourhood("99");
+  assert.deepEqual(bandNum.wildcardPatterns, []);
+  assert.deepEqual(bandNum.phoneticKeys, [], "the premise: this element has no keys either");
+  const rowNum = bandNum.ledger.axes.find((a) => a.axis === "phonetic-family");
+  assert.match(rowNum.mechanism, /NO PATTERN/, "same third state as X");
+  assert.doesNotMatch(rowNum.mechanism, /still verify/,
+    "with no keys there is nothing verifying, and the row must not say there is");
+  assert.match(rowNum.mechanism, /verifies nothing/, "and it says so rather than falling silent");
+  assert.notEqual(rowNum.mechanism, row.mechanism,
+    "the two members of the no-pattern class are disclosed differently — otherwise this arm is a claim");
 });
 
 test("visualConfusables + confusableSkeleton fold look-alikes", () => {

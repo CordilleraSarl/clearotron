@@ -19,6 +19,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
+import { termPredicateIssue } from "../../providers/_shared/term-shape.mjs";
 import {
   compileRegisterPlan, parseRegisterPlan, joinPlanToBands, deriveCoverageSkeleton,
   validatePlanFeasibility, planMaxOrWidth, predicateGap, resolveRegions, wildcardCapabilityKey,
@@ -477,6 +478,9 @@ test("wildcard is THREE sub-capabilities: the anchoring decides which one is che
   assert.equal(wildcardCapabilityKey("EVERLIGH*"), "wildcardPrefix");
   assert.equal(wildcardCapabilityKey("*VERLIGHT"), "wildcardSuffix");
   assert.equal(wildcardCapabilityKey("*VERLIGH*"), "wildcardInfix");
+  // WHICH ANCHOR, not whether the term is dispatchable. An unanchored term resolves to the infix key
+  // because that is what the executor would do with it — this function has, and needs, no opinion on
+  // whether the string is a pattern at all. `termPredicateIssue` owns that question; see the arm below.
   assert.equal(wildcardCapabilityKey("VERLIGHT"), "wildcardInfix");
   const sig = capabilitiesFor("signa");
   assert.equal(predicateGap("wildcard", "EVERLIGH*", sig), null, "signa anchors a prefix — `starts_with`");
@@ -497,6 +501,40 @@ test("wildcard is THREE sub-capabilities: the anchoring decides which one is che
     assert.match(predicateGap("phonetic", "LUMENGARDE", capabilitiesFor(id)), /phonetic/,
       `${id}: no phonetic surface — the slice must defer, never degrade to an exact search`);
   }
+});
+
+// ── THE TWO READINGS OF A STARLESS WILDCARD TERM, AND WHY THEY ARE NOT IN CONFLICT ──────────────────
+//
+// These two functions were reported as contradicting each other: `wildcardCapabilityKey` maps an
+// unanchored term to `wildcardInfix`, a real dispatchable capability, while `termPredicateIssue` calls a
+// wildcard term carrying no pattern syntax a compiler bug. Both are on main and the strict one runs
+// later, so it wins — which reads like one of them being wrong.
+//
+// They are keyed on different characters and answer different questions. THE ARM DRIVES THREE MEMBERS
+// rather than asserting the distinction in prose, because a test whose name claims a distinction and
+// then drives one member is a claim, not a test: if all three landed the same way, the name would be
+// the hazard. `sk?` is the member that carries the argument — the form generator really mints it, it is
+// starless, and it must stay dispatchable.
+test("wildcardCapabilityKey answers WHICH ANCHOR; termPredicateIssue answers WHETHER IT IS A PATTERN", () => {
+  const CASES = [
+    // term     anchor key         well-formed under `wildcard`?   why this member is here
+    ["s*s",    "wildcardInfix",   true,  "anchored on neither end, and a real pattern — infix, dispatched"],
+    ["sk?",    "wildcardInfix",   true,  "STARLESS and a real pattern — the generator mints it; must stay dispatchable"],
+    ["sms",    "wildcardInfix",   false, "neither * nor ? — the compiler must never emit this at all"],
+    ["everl*", "wildcardPrefix",  true,  "the anchoring reading still works, and differs, on the same inputs"],
+    ["*erlgt", "wildcardSuffix",  true,  "…and in the other direction"],
+  ];
+  for (const [term, key, wellFormed] of CASES) {
+    assert.equal(wildcardCapabilityKey(term), key, `${term}: anchor key`);
+    assert.equal(termPredicateIssue(term, "wildcard") === null, wellFormed, `${term}: well-formedness`);
+  }
+  // THE DISTINCTION IS REAL, NOT RESTATED. `sk?` and `sms` get the SAME answer from one function and
+  // OPPOSITE answers from the other — which is only possible if the two are reading different things.
+  assert.equal(wildcardCapabilityKey("sk?"), wildcardCapabilityKey("sms"));
+  assert.notEqual(termPredicateIssue("sk?", "wildcard") === null, termPredicateIssue("sms", "wildcard") === null);
+  // And the three anchor keys are genuinely exercised above, so the first column is not one value in a
+  // loop wearing a table's clothes.
+  assert.equal(new Set(CASES.map(([t]) => wildcardCapabilityKey(t))).size, 3);
 });
 
 test("an unsupported predicate compiles to a DEFERRED slice, never a weaker query", () => {

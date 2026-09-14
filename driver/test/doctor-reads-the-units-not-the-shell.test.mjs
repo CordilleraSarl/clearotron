@@ -726,3 +726,87 @@ test("with no units, a store the env file names is where profiles resolve from, 
     assert.doesNotMatch(bare, /the services resolve profiles from/, "no store is named, so none is reported");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
+
+// ── THE BOX NAMES ITSELF, AND DOCTOR SAYS WHICH ONE IT IS ───────────────────────────────────────────
+//
+// `CLEAROTRON_BOX` is how a deployment declares which box it is, and it is never inferred from the
+// account, the checkout or the port. Doctor printed no line naming it, so an unset or misspelled value
+// left the command exiting 0 and ending "Nothing wrong with what is configured" — the one check that
+// would catch a deployment lying about itself was the one check that did not report.
+//
+// FIVE MEMBERS, AND THEY MUST LAND DIFFERENTLY. An arm whose members all pass the same way is a claim
+// rather than a test, and this arm is at exactly that risk: four of the five are "doctor printed
+// something about the box". They are asserted apart — a tick, two distinct refusals, a could-not-look,
+// and a disagreement warning that must NOT fire when the two agree.
+test("doctor names the box from the units' file, and refuses an unset or unrecognised one", () => {
+  const home = installedHome("CLEAROTRON_BOX=prod\n");
+  try {
+    const out = doctor(home).out;
+    assert.match(out, /this box names itself "prod"/, "the name is printed at all — the whole issue");
+    assert.match(out, /from the units' environment/,
+      "and sourced from the file the service loads, not from this command's shell");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("the box comes from the UNITS' file even when the shell says something else", () => {
+  // THE MEMBER THAT PROVES THE SOURCING. Every other member would pass equally if doctor read its own
+  // environment, because in those the shell is empty and the file is the only thing carrying a value.
+  // Here the two disagree, and the file must win — the running service goes by the file.
+  const home = installedHome("CLEAROTRON_BOX=test\n");
+  try {
+    const out = doctor(home, { CLEAROTRON_BOX: "prod" }).out;
+    assert.match(out, /this box names itself "test"/, "the file decides");
+    assert.doesNotMatch(out, /this box names itself "prod"/, "the shell does not");
+    assert.match(out, /your shell says CLEAROTRON_BOX="prod", which disagrees/,
+      "and the disagreement is itself reported, because two answers for one machine is a finding");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+
+  // AND IT DOES NOT CRY WOLF when they agree — without this the warning above could be unconditional.
+  const same = installedHome("CLEAROTRON_BOX=test\n");
+  try {
+    const out = doctor(same, { CLEAROTRON_BOX: "test" }).out;
+    assert.match(out, /this box names itself "test"/);
+    assert.doesNotMatch(out, /disagrees with/, "agreement is not a finding");
+  } finally { rmSync(same, { recursive: true, force: true }); }
+});
+
+test("an unset box and an unrecognised one are refused, and refused DIFFERENTLY", () => {
+  const unset = installedHome("PORTAL_MCP_URL=http://127.0.0.1:18790\n");
+  let unsetOut;
+  try {
+    unsetOut = doctor(unset).out;
+    assert.match(unsetOut, /no CLEAROTRON_BOX in the units' environment/,
+      "a file read successfully that does not carry the name is a real absence, and reportable");
+    assert.match(unsetOut, /prod, test/, "and it says what the accepted values are");
+  } finally { rmSync(unset, { recursive: true, force: true }); }
+
+  const wrong = installedHome("CLEAROTRON_BOX=staging\n");
+  try {
+    const out = doctor(wrong).out;
+    assert.match(out, /CLEAROTRON_BOX is "staging"/, "refused BY NAME, as the requirement asks");
+    assert.doesNotMatch(out, /no CLEAROTRON_BOX in/,
+      "a wrong name is not an absent one — reporting it as unset would hide that somebody set something");
+    assert.notEqual(out.includes('is "staging"'), unsetOut.includes('is "staging"'),
+      "the two refusals are distinguishable, or this arm is asserting one thing twice");
+  } finally { rmSync(wrong, { recursive: true, force: true }); }
+});
+
+test("a hosted box whose units' file cannot be read says it COULD NOT LOOK, never that the box is unset", () => {
+  // THE FOURTH STATE, which the requirement does not name and which is the one that would lie. Units
+  // exist and require a file that is not there: every name comes back unknown. Reporting "no
+  // CLEAROTRON_BOX" here would be an assertion about a file this command never read — an absence
+  // reported as a finding, in the section whose whole job is to make the box visible.
+  const home = mkdtempSync(join(tmpdir(), "f34-box-unreadable-"));
+  try {
+    const unitDir = join(home, ".config", "systemd", "user");
+    mkdirSync(unitDir, { recursive: true });
+    for (const u of UNITS)
+      writeFileSync(join(unitDir, u), `[Service]\nEnvironmentFile=%h/.env\nExecStart=/bin/true\n`);
+    // deliberately NO %h/.env written — the units require a file that does not exist
+    const out = doctor(home).out;
+    assert.match(out, /could not determine whether CLEAROTRON_BOX is set for the units/);
+    assert.doesNotMatch(out, /no CLEAROTRON_BOX in/,
+      "the could-not-look must not be phrased as the absence it exists to avoid asserting");
+    assert.doesNotMatch(out, /this box names itself/, "and it must not name a box either");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});

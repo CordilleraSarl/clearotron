@@ -118,6 +118,7 @@ import { usageBlock } from "../shared/usage-block.mjs";
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 import { parseEnvFile } from "../shared/env-file-merge.mjs";   // — ONE KEY=value reader, taken from a leaf: the unit renderer re-exports this same function, and it is a COMMAND, so importing it from here would put a command in this binary's graph
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";   // — F34: claim about the UNITS only from the units' own environment
+import { DEPLOYMENT_BOXES } from "../shared/deployment-box.mjs";   // the allowlist, imported — never a second copy that drifts
 
 /**
  * A file's text, or null when it is not there or cannot be read.
@@ -1051,6 +1052,29 @@ export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
   say(`  repo: ${REPO}`);
 
+  // ── ONE READING OF THE UNITS' ENVIRONMENT, FOR EVERY SECTION THAT CLAIMS ANYTHING ABOUT THEM ─────
+  //
+  // F34: two sections asserted facts about the units while reading the operator's shell, and both of
+  // their reported problems were false on a correctly-running install. Resolving this once is
+  // deliberate — a second reader would drift from this one exactly as the composer and the checker did
+  // in F41, and the drift is invisible because both sides keep passing their own arms.
+  //
+  // HOISTED TO THE TOP OF runCheck, from just above the Engine section, so that the FIRST section —
+  // Deployment — can name the box from the file the units load. A box line sourced from this command's
+  // own shell would be the defect it is there to catch: the shell and the units' file can disagree,
+  // and it is the units' value that decides what the running service thinks it is.
+  const fileEnv = readEnvFile(READ_ENV_PATH());
+  const unitDir = join(homedir(), ".config", "systemd", "user");
+  const { BACKGROUND_UNITS, startPaths } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
+  const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
+  const unitEnv = hosted
+    ? unitEnvironment({
+        units: BACKGROUND_UNITS.map((u) => ({ name: u, text: readIfPresent(join(unitDir, u)) })),
+        readEnvFile: readIfPresent,
+        // These are USER units under ~/.config/systemd/user, so systemd's %h is this home.
+        home: homedir() })
+    : null;
+
   // — CURRENT, not just configured. Printed before anything else because a stale deployment
   // makes every line below it a report about the wrong build.
   say("\n  Deployment");
@@ -1078,6 +1102,56 @@ export async function runCheck() {
   else warn(`could not tell whether this deployment is current: ${cur.detail}`);
   if (cur.state !== "not-a-checkout" && cur.state !== "no-upstream" && cur.state !== "pinned") {
     info("this does not fetch — the count is against the last fetch, not against the remote right now");
+  }
+
+  // ── WHICH BOX THIS IS, NAMED OUT LOUD ───────────────────────────────────────────────────────────
+  //
+  // `CLEAROTRON_BOX` is how a deployment names itself; `shared/deployment-box.mjs` says it is never
+  // inferred from the account, the checkout or the port, because all three correlate with the answer
+  // and none of them IS the answer. But nothing here printed it, so an unset or misspelled value left
+  // doctor exiting 0 and ending "Nothing wrong with what is configured" — the one check that would
+  // catch a deployment lying about itself was the one check that did not report.
+  //
+  // FOUR STATES, NOT THREE. Set, unset and unrecognised are the three the requirement names. The
+  // fourth is a hosted box whose unit environment COULD NOT BE READ, and calling that "unset" would
+  // claim the file says nothing when it was never read — absence reported as a finding, in the section
+  // whose entire job is to make the box visible. `couldNotDetermine` already exists for exactly this
+  // and is what the token and URL checks below use.
+  //
+  // THE VALUE COMES FROM THE FILE THE UNITS LOAD, never from this command's shell, and the two can
+  // disagree: an operator with CLEAROTRON_BOX exported in their own environment would otherwise read
+  // their own shell back and call it the deployment's identity. The shell is reported only when it
+  // CONTRADICTS the file, because that disagreement is itself a finding.
+  //
+  // The allowlist is imported rather than re-typed. Two inline copies agree on the day they are
+  // written and drift afterwards, which is the reason that module exists at all.
+  const boxSource = hosted ? "the units' environment" : "your environment file";
+  const boxFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
+  if (hosted && unitEnv?.known !== true) {
+    warn(couldNotDetermine("CLEAROTRON_BOX", unitEnv));
+  } else {
+    const raw = (boxFileEnv?.CLEAROTRON_BOX ?? "").trim();
+    if (!raw) {
+      // AN ABSENCE IS NOT A MISCONFIGURATION, and this command already separates the two — a machine
+      // nobody has configured yet has no box, legitimately, and `--check` on one exits 0 by contract.
+      // Reported at `!` so it is visible rather than silent, which is the whole requirement; raising it
+      // to `✗` made every unconfigured machine fail its own acceptance arm, and said "fault" about a
+      // state that is the normal beginning of an install.
+      warn(`no CLEAROTRON_BOX in ${boxSource} — this deployment does not name itself, so nothing below `
+        + `can be read as a statement about a particular box. Set it to one of: ${DEPLOYMENT_BOXES.join(", ")}`);
+    } else if (!DEPLOYMENT_BOXES.includes(raw)) {
+      problem(`CLEAROTRON_BOX is "${raw}" in ${boxSource}, which is not a box this build knows `
+        + `(${DEPLOYMENT_BOXES.join(", ")}). An unrecognised name reads as NO box everywhere it is `
+        + "consulted, which is quieter than a wrong one and just as wrong");
+    } else {
+      ok(`this box names itself "${raw}", from ${boxSource}`);
+      const shell = (process.env.CLEAROTRON_BOX ?? "").trim();
+      if (shell && shell !== raw) {
+        warn(`your shell says CLEAROTRON_BOX="${shell}", which disagrees with ${boxSource}. The running `
+          + "service goes by the file; your own commands go by the shell, so the two would report "
+          + "different boxes for the same machine");
+      }
+    }
   }
 
   // ── THE TWO FILES MAY DISAGREE ABOUT THE DOOR ────────────────────────────────
@@ -1163,7 +1237,10 @@ export async function runCheck() {
   // Read the file up here rather than at the `.env` heading below: the engine section is the first that
   // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
   // is not applying — see readEnvFile's header.
-  const fileEnv = readEnvFile(READ_ENV_PATH());
+  // `fileEnv` is read at the top of runCheck now — the Deployment section needs it to name the box on a
+  // box that runs no units, and a `const` used above its declaration is a dead-zone crash, not a
+  // fallback. It reached here as one on the first draft of that section: harmless on a hosted box,
+  // where the ternary never evaluates this branch, and fatal on every install without units.
   // Environment wins over the file (the loader contract), so report the effective value and say which
   // source it came from — a value read from the wrong place is the whole class of bug here.
   // ── CHECK 1 — THE CHECKER READS EVERY SPELLING THE ENGINE ACCEPTS ─────────────────────────
@@ -1210,16 +1287,9 @@ export async function runCheck() {
   // their reported problems were false on a correctly-running install. Resolving this once, here, is
   // deliberate — a second reader would drift from this one exactly as the composer and the checker did
   // in F41, and the drift is invisible because both sides keep passing their own arms.
-  const unitDir = join(homedir(), ".config", "systemd", "user");
-  const { BACKGROUND_UNITS, startPaths } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
-  const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
-  const unitEnv = hosted
-    ? unitEnvironment({
-        units: BACKGROUND_UNITS.map((u) => ({ name: u, text: readIfPresent(join(unitDir, u)) })),
-        readEnvFile: readIfPresent,
-        // These are USER units under ~/.config/systemd/user, so systemd's %h is this home.
-        home: homedir() })
-    : null;
+  // The reading itself was hoisted AGAIN, to the top of runCheck, so the Deployment section can name
+  // the box from the file the units load. `unitDir`, `hosted`, `unitEnv` and `startPaths` are all in
+  // scope from there; nothing between here and there consumed them, which is why the move is safe.
 
   // ── AND THE DOOR SECTION IS THE THIRD SUCH SECTION ──────────────────────────────────────────────
   //

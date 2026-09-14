@@ -19,7 +19,7 @@ import { test } from "node:test";
 import { pinEnvAll } from "../../shared/env-aliases.mjs";   // — a spread carries EVERY spelling, so an override must clear every spelling
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -283,4 +283,109 @@ test("a RUNNING run with no claim is still spared — the original guard is unto
   const r = run(p, "--keep-none");
   assert.equal(r.status, 0, r.out);
   assert.deepEqual(counts(r.out), { del: 0, keep: 1 });
+});
+
+// ── A RUN WHOSE NOTICE IS STILL OWED ────────────────────────────────────────────────────────────────
+//
+// Nothing in this tool was keyed to an outstanding notice, so it would delete a finished run nobody had
+// sent and take the packet with it, leaving the outbox holding a marker for a run that is no longer
+// there — unsettleable, and empty. Three such markers are on production from 2026-09-04.
+//
+// THE OUTBOX IS RESOLVED THE WAY THE DELIVERY PATH RESOLVES IT, default included, so these fixtures
+// write markers where the running product would write them rather than where a test found convenient.
+
+/** The outbox the delivery path would resolve for this fixture, with the given runs owed. */
+function outbox(env, owedRunIds = []) {
+  const dir = join(env.wsRoot, "prelim-outbox");
+  mkdirSync(dir, { recursive: true });
+  for (const id of owedRunIds) writeFileSync(join(dir, `${id}.pending`), "clawdi\n");
+  return dir;
+}
+
+function runOut(env, outboxDir, ...args) {
+  const r = spawnSync(process.execPath, [SCRIPT, ...args], {
+    encoding: "utf8",
+    env: pinEnvAll({ ...process.env }, {
+      CLEAROTRON_REPORTS_DIR: env.poolRoot, CLEAROTRON_WORK_DIR: env.wsRoot,
+      ...(outboxDir === null ? {} : { CLEAROTRON_OUTBOX_DIR: outboxDir }),
+    }),
+  });
+  return { status: r.status, out: `${r.stdout}${r.stderr}` };
+}
+
+test("the dry-run table MARKS a run whose notice is still owed", () => {
+  const env = pool([["alpha", "acme"], ["beta", "acme"]]);
+  const ob = outbox(env, ["alpha"]);
+  const r = runOut(env, ob, "--keep-none");
+  assert.equal(r.status, 0, r.out);
+  const alpha = r.out.split("\n").find((l) => l.includes("alpha"));
+  const beta = r.out.split("\n").find((l) => l.includes("beta"));
+  assert.match(alpha, /OWED!/, "the owed run is marked");
+  assert.doesNotMatch(beta, /OWED!/, "and the settled one is NOT — or the mark says nothing");
+});
+
+test("--apply REFUSES an owed run, names it, and removes nothing", () => {
+  const env = pool([["alpha", "acme"], ["beta", "acme"]]);
+  const ob = outbox(env, ["alpha"]);
+  const r = runOut(env, ob, "--keep-none", "--apply", "--expect=2", `--expect-root=${env.poolRoot}`);
+  assert.equal(r.status, 2, r.out);
+  assert.match(r.out, /REFUSING TO DELETE/);
+  assert.match(r.out, /OWED\s+pool:alpha/, "the refusal names the run, not just a count");
+  assert.ok(existsSync(join(env.poolRoot, "alpha")), "nothing removed");
+  assert.ok(existsSync(join(env.poolRoot, "beta")), "and the refusal is for the WHOLE apply, not a skip");
+});
+
+test("--delete-owed-notices is what removes it, and the receipt records that it was owed", () => {
+  const env = pool([["alpha", "acme"], ["beta", "acme"]]);
+  const ob = outbox(env, ["alpha"]);
+  const r = runOut(env, ob, "--keep-none", "--apply", "--expect=2",
+    `--expect-root=${env.poolRoot}`, "--delete-owed-notices");
+  assert.equal(r.status, 0, r.out);
+  assert.ok(!existsSync(join(env.poolRoot, "alpha")), "the override is what deletes it");
+  const log = readFileSync(join(env.poolRoot, ".purge-log.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
+  assert.equal(log.length, 1);
+  assert.equal(log[0].overrodeOwed, true);
+  assert.deepEqual(log[0].removed.find((x) => x.runId === "alpha").owed, "owed",
+    "the record says WHICH of them was owed, which is the point of keeping one");
+  assert.deepEqual(log[0].removed.find((x) => x.runId === "beta").owed, "settled");
+  assert.ok(log[0].at && log[0].pool === env.poolRoot, "when, and from where");
+});
+
+test("an outbox that cannot be READ refuses too — a blind check is not a passed one", () => {
+  const env = pool([["alpha", "acme"]]);
+  const ob = outbox(env, []);
+  chmodSync(ob, 0o000);
+  try {
+    const r = runOut(env, ob, "--keep-none", "--apply", "--expect=1", `--expect-root=${env.poolRoot}`);
+    assert.equal(r.status, 2, r.out);
+    assert.match(r.out, /UNKNOWN\s+pool:alpha/);
+    assert.match(r.out, /could not be read/);
+    assert.ok(existsSync(join(env.poolRoot, "alpha")), "nothing removed on a could-not-look");
+  } finally { chmodSync(ob, 0o755); }
+});
+
+test("an outbox that was never created is EMPTY, not unknown — or every fresh estate refuses", () => {
+  // THE OTHER SIDE OF THE ARM ABOVE, and the one that keeps it honest. If a missing directory read as
+  // could-not-look, the refusal would fire on every estate that has never delivered anything, and an
+  // operator would learn to pass --delete-owed-notices as a matter of course. An override typed by
+  // habit protects nothing.
+  const env = pool([["alpha", "acme"]]);
+  const r = runOut(env, join(env.wsRoot, "no-outbox-here"), "--keep-none", "--apply", "--expect=1",
+    `--expect-root=${env.poolRoot}`);
+  assert.equal(r.status, 0, r.out);
+  assert.ok(!existsSync(join(env.poolRoot, "alpha")), "a never-created outbox does not block a purge");
+});
+
+test("a receipt that cannot be written STOPS the delete", () => {
+  // Otherwise the record is decorative: the one tool that removes bytes would carry on removing them
+  // with no way to reconstruct what went, which is the state this was filed about.
+  const env = pool([["alpha", "acme"]]);
+  const ob = outbox(env, []);
+  chmodSync(env.poolRoot, 0o555);   // readable, not writable — the receipt cannot be appended
+  try {
+    const r = runOut(env, ob, "--keep-none", "--apply", "--expect=1", `--expect-root=${env.poolRoot}`);
+    assert.equal(r.status, 2, r.out);
+    assert.match(r.out, /COULD NOT WRITE THE PURGE RECEIPT/);
+    assert.ok(existsSync(join(env.poolRoot, "alpha")), "and it stopped BEFORE deleting, not after");
+  } finally { chmodSync(env.poolRoot, 0o755); }
 });

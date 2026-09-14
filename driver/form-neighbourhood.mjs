@@ -114,7 +114,32 @@ export function skeletonPatterns(element) {
   // also leading/trailing-anchored substrings of the skeleton, so a long mark's family is reachable in pieces.
   const sk = consonantSkeleton(w);
   if (sk.length >= 2) { out.add(`${sk[0]}*${sk[sk.length - 1]}`); }
-  return [...out];
+  // ── A PATTERN THAT DEGENERATES TO ITS OWN ELEMENT IS NOT A PATTERN ────────────────────────────────
+  //
+  // The vowel-slot loop above replaces each vowel RUN with `?`. An element carrying no vowel has no run
+  // to replace, so it falls through the loop unchanged and `pat` is the normalized element itself — a
+  // plain string with no pattern syntax in it. Every initialism is in this class: SMS, BCG, KFC, HSBC,
+  // MTV, CNN, and single-character elements like X.
+  //
+  // That string used to be returned and dispatched under the hard-coded `wildcard` predicate the
+  // register-plan fringe pushes. `termPredicateIssue` reads the pair as unexecutable, the pipeline
+  // raises StageFailure at plan compile because the entry was freshly minted rather than inherited, and
+  // THE WHOLE MATTER DIES BEFORE ONE QUERY IS SENT — nothing delivered, and the message correctly says
+  // retrying will not help. A mark whose dominant element has no vowel could not be cleared at all.
+  //
+  // SCREENED HERE RATHER THAN AT THE PUSH SITE, and that is a decision rather than convenience. The
+  // entry is worthless, not a lost slice: a starless wildcard term maps to `wildcardInfix`, which every
+  // provider serves as a contains search over the raw term — the same search the crowd-gate parent
+  // already dispatches one line earlier with `predicate: "default"` over the same element. Stamping it
+  // `unsupported` at the funnel would therefore publish a disclosed coverage gap for an axis that is
+  // NOT uncovered, and a false gap in a client's report is worse than the honest death it replaces.
+  // The funnel's own rules (markup, substance, variant values) screen terms the compiler does not
+  // author; this one it authors, here, and this is the only producer of `wildcardPatterns` in the tree.
+  //
+  // ONE SCREEN OVER EVERYTHING THIS FUNCTION RETURNS, not a guard beside each member. The anchored
+  // form below carries `*` by construction today, so filtering it is a no-op today — which is the
+  // point: a pattern added here later is covered without anybody remembering this rule.
+  return [...out].filter((p) => /[*?]/.test(p));
 }
 
 // ── Visual confusables (Unicode-confusable axis) — look-alikes an examiner/consumer would conflate ──────
@@ -241,7 +266,24 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
       dropped_axes: [...drop].sort(),
       axes: [
         { axis: "edit-1", count: edits.length, mechanism: "Damerau-Levenshtein edit-1, exhaustive" },
-        { axis: "phonetic-family", count: wildcards.length, mechanism: drop.has("phonetic-family") ? "DROPPED — judgment's variant-layer scope decision" : `consonant-skeleton wildcard + Double-Metaphone key(s) [${keys.join(",")}]` },
+        // NO PATTERN is a THIRD state, and it is disclosed in the same voice as a judgment drop. An
+        // element with too few consonants to anchor a skeleton wildcard (X, and anything normalizing to
+        // one character) yields no retrieval pattern at all — see skeletonPatterns. Silence here would
+        // let the axis read as ordinary, when what happened is that it contributed nothing.
+        //
+        // AND THE KEYS ARE A SEPARATE QUESTION FROM THE PATTERNS, so the row asks it separately. For an
+        // element like X the metaphone keys survive and really do verify which returned marks are true
+        // sound-alikes, and the row should say so rather than call the whole axis dead. For a purely
+        // numeric element — "99", "5" — there are no keys either, and a row that still claimed the keys
+        // verify would be a CLIENT-FACING CLAIM OF A VERIFICATION THAT DID NOT HAPPEN. That is the worse
+        // failure of the two, so the clause is dropped rather than printed empty. The first draft of
+        // this row hard-coded the clause and pinned only X in its test, which has keys — the arm named
+        // the disclosure property and drove one member of it, so it passed while this was live.
+        { axis: "phonetic-family", count: wildcards.length,
+          mechanism: drop.has("phonetic-family") ? "DROPPED — judgment's variant-layer scope decision"
+            : wildcards.length ? `consonant-skeleton wildcard + Double-Metaphone key(s) [${keys.join(",")}]`
+            : keys.length ? `NO PATTERN — "${el}" has too few consonants to anchor a skeleton wildcard, so the family has no retrieval pattern; Double-Metaphone key(s) [${keys.join(",")}] still verify what the other axes return`
+            : `NO PATTERN — "${el}" has too few consonants to anchor a skeleton wildcard and yields no Double-Metaphone key, so this axis contributes nothing for this element and verifies nothing` },
         { axis: "visual-confusable", count: confs.length, mechanism: drop.has("visual-confusable") ? "DROPPED — judgment's variant-layer scope decision" : "Unicode-confusable homoglyph + multigraph table" },
         { axis: "transliteration", count: trans.length, mechanism: drop.has("transliteration") ? "DROPPED — judgment's variant-layer scope decision" : `scoped scripts: ${scripts.join(", ")}` },
       ],

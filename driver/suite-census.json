@@ -1870,8 +1870,8 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 33,
-          "asserts": 96,
+          "tests": 37,
+          "asserts": 111,
           "skips": 1,
           "todos": 0
         },
@@ -2368,8 +2368,8 @@
           "todos": 0
         },
         "form-neighbourhood.test.mjs": {
-          "tests": 17,
-          "asserts": 68,
+          "tests": 20,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -3310,8 +3310,8 @@
           "todos": 0
         },
         "purge-runs.test.mjs": {
-          "tests": 19,
-          "asserts": 47,
+          "tests": 25,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -3520,8 +3520,8 @@
           "todos": 0
         },
         "register-capabilities.test.mjs": {
-          "tests": 33,
-          "asserts": 263,
+          "tests": 34,
+          "asserts": 268,
           "skips": 0,
           "todos": 0
         },
@@ -4348,8 +4348,8 @@
           "todos": 0
         },
         "symbol-citation-survives-a-move.test.mjs": {
-          "tests": 8,
-          "asserts": 18,
+          "tests": 9,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -4426,8 +4426,8 @@
           "todos": 0
         },
         "test-run-tmpdir.test.mjs": {
-          "tests": 11,
-          "asserts": 25,
+          "tests": 12,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -5511,8 +5511,8 @@
           "todos": 0
         },
         "connector-guidance.test.mjs": {
-          "tests": 11,
-          "asserts": 65,
+          "tests": 13,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -5619,8 +5619,8 @@
           "todos": 0
         },
         "ops.test.mjs": {
-          "tests": 38,
-          "asserts": 164,
+          "tests": 39,
+          "asserts": 168,
           "skips": 0,
           "todos": 0
         },
@@ -5637,8 +5637,8 @@
           "todos": 0
         },
         "plan.test.mjs": {
-          "tests": 26,
-          "asserts": 112,
+          "tests": 28,
+          "asserts": 125,
           "skips": 0,
           "todos": 0
         },
@@ -5852,8 +5852,8 @@
           "todos": 0
         },
         "home.test.ts": {
-          "tests": 46,
-          "asserts": 141,
+          "tests": 49,
+          "asserts": 152,
           "skips": 0,
           "todos": 0
         },

@@ -272,6 +272,14 @@ export function readBaseline(root = ROOT) {
   } catch { return null; }
 }
 
+/** What the tree last recorded as CHECKABLE — a citation naming a symbol, with or without a line. */
+export function readCheckableBaseline(root = ROOT) {
+  try {
+    const n = JSON.parse(readFileSync(join(root, CITATION_BASELINE), "utf8"))?.checkable;
+    return Number.isInteger(n) && n >= 0 ? n : null;
+  } catch { return null; }
+}
+
 /**
  * @returns {{ok: true} | {ok: false, reason: string}} — whether this count is credible against the record.
  */
@@ -286,6 +294,30 @@ export function judgeCount(citations, baseline, { allowLoss = false } = {}) {
   return { ok: false, reason: `${citations} citation(s) against a recorded ${baseline} — a drop past `
     + `${floor}. Either the extractor stopped matching, or citations were deliberately removed; if the `
     + "second, re-run with --record-count --allow-loss and say in the commit what was removed and why." };
+}
+
+/**
+ * THE CONVERSION ONLY GOES ONE WAY — the ratchet under the corpus, as opposed to the floor under it.
+ *
+ * A bare line citation is checked for EXISTENCE and nothing else, so one that drifts onto a different
+ * REAL line reads as correct; this script has said so about itself since it was written. The remedy is
+ * the symbol, which resolves by declaration and cannot drift — and a corpus is converted a few
+ * citations at a time, over many changes, by many people.
+ *
+ * Which is why a floor on the TOTAL does not protect it. Deleting a symbol from a citation to silence a
+ * red leaves the total untouched and puts the citation back in the invisible class, and that is the
+ * cheapest repair available to whoever meets the red at an unlucky moment. So the checkable count is
+ * recorded too and may only rise. There is no tolerance on it, unlike the population floor: a drop is
+ * never noise, because every checkable citation is one somebody wrote deliberately.
+ */
+export function judgeCheckable(checkable, baseline, { allowLoss = false } = {}) {
+  if (baseline == null) return { ok: true };   // — an unrecorded tree has nothing to ratchet against yet
+  if (checkable >= baseline) return { ok: true };
+  if (allowLoss) return { ok: true };
+  return { ok: false, reason: `${checkable} checkable citation(s) against a recorded ${baseline} — a `
+    + "citation that named a symbol no longer does, so its line is back to being checked for existence "
+    + "alone. Restore the symbol, or re-run with --record-count --allow-loss and say in the commit which "
+    + "citation stopped being checkable and why." };
 }
 
 export function corpusOf(root = ROOT) {
@@ -331,30 +363,6 @@ function main() {
   const credible = judgeCount(citations.length, baseline, { allowLoss });
   const floorBroken = !credible.ok;
 
-  // RECORDING IS A SEPARATE VERB, and it happens only when the tree is otherwise sound — writing a new
-  // baseline out of a run that just found dangling citations would record the damage as the new normal.
-  if (process.argv.includes("--record-count")) {
-    const clean = !dangling.length && !overrun.length && !ambiguous.length;
-    if (!clean && !allowLoss) {
-      console.error(`citation-line-check: refusing to record a count from a tree with unresolved `
-        + "citations. Fix them, or pass --allow-loss to record deliberately.");
-      process.exit(1);
-    }
-    // THE DIRECTORY MAY NOT EXIST, and the first time it did not the write threw into a spawn that
-    // swallowed it — the baseline stayed null, the next run refused, and the reason was invisible. A
-    // brand-new repository recording its first baseline is exactly that case.
-    const at = join(ROOT, CITATION_BASELINE);
-    try {
-      mkdirSync(dirname(at), { recursive: true });
-      writeFileSync(at, `${JSON.stringify({ citations: citations.length, files: corpus.length }, null, 2)}\n`);
-    } catch (e) {
-      console.error(`citation-line-check: could not record the count at ${CITATION_BASELINE}: ${e.message}`);
-      process.exit(2);   // could not look, never a pass
-    }
-    console.error(`citation-line-check: recorded ${citations.length} citation(s) across `
-      + `${corpus.length} file(s) in ${CITATION_BASELINE}`);
-  }
-
   const linesCache = new Map();
   const readLines = (p) => {
     if (!linesCache.has(p)) {
@@ -372,6 +380,38 @@ function main() {
     (c) => (c.symbols ?? []).some((sy) => constructRange(readLines(c.path) ?? [], sy)));
   // — the no-symbol slice: a cited span that is entirely blank or brace-only.
   const { misses: blankTarget, unshipped: blankUnshipped } = structuralMisses(citations, readLines);
+
+  // THE CHECKABLE COUNT, and it is recorded and ratcheted rather than merely reported. Both forms count:
+  // a citation carrying a symbol beside its number, and one naming a symbol and no line at all.
+  const checkable = symbolClaims.length + symCites.length;
+  const checkableBaseline = readCheckableBaseline();
+  const checkableJudgement = judgeCheckable(checkable, checkableBaseline, { allowLoss });
+  const ratchetBroken = !checkableJudgement.ok;
+
+  // RECORDING IS A SEPARATE VERB, and it happens only when the tree is otherwise sound — writing a new
+  // baseline out of a run that just found dangling citations would record the damage as the new normal.
+  if (process.argv.includes("--record-count")) {
+    const clean = !dangling.length && !overrun.length && !ambiguous.length;
+    if (!clean && !allowLoss) {
+      console.error(`citation-line-check: refusing to record a count from a tree with unresolved `
+        + "citations. Fix them, or pass --allow-loss to record deliberately.");
+      process.exit(1);
+    }
+    // THE DIRECTORY MAY NOT EXIST, and the first time it did not the write threw into a spawn that
+    // swallowed it — the baseline stayed null, the next run refused, and the reason was invisible. A
+    // brand-new repository recording its first baseline is exactly that case.
+    const at = join(ROOT, CITATION_BASELINE);
+    try {
+      mkdirSync(dirname(at), { recursive: true });
+      writeFileSync(at, `${JSON.stringify({ citations: citations.length, files: corpus.length, checkable }, null, 2)}\n`);
+    } catch (e) {
+      console.error(`citation-line-check: could not record the count at ${CITATION_BASELINE}: ${e.message}`);
+      process.exit(2);   // could not look, never a pass
+    }
+    console.error(`citation-line-check: recorded ${citations.length} citation(s) across `
+      + `${corpus.length} file(s), ${checkable} of them checkable, in ${CITATION_BASELINE}`);
+  }
+
 
   // ── `--ratchet`: refuse a NEW citation that carries a line number and no symbol ────────────────────
   //
@@ -413,12 +453,13 @@ function main() {
       files: corpus.length, citations: citations.length, resolved: resolved.length,
       dangling, overrun, danglingUnshipped, ambiguous, declared: declared.length,
       exempt: exempt.length, baseline, floorBroken, countReason: credible.ok ? null : credible.reason, blindness: BLINDNESS,
+      checkable, checkableBaseline, ratchetBroken, ratchetReason: checkableJudgement.ok ? null : checkableJudgement.reason,
       symbolClaims: symbolClaims.length, wrongLine,
       symbolCitations: symCites.length, symbolGone,
       blankTarget, blankUnshipped: blankUnshipped.length,
     }, null, 2));
     process.exit(dangling.length || overrun.length || ambiguous.length || wrongLine.length
-      || symbolGone.length || blankTarget.length || floorBroken ? 1 : 0);
+      || symbolGone.length || blankTarget.length || floorBroken || ratchetBroken ? 1 : 0);
   }
 
   console.log(`citation-line-check (#1135) - ${citations.length} line citation(s) across ${corpus.length} tracked file(s)`);
@@ -454,13 +495,18 @@ function main() {
   for (const h of blankUnshipped) console.log(`\n  unshipped ${h.from}:${h.atLine}  cites ${h.cited}:${h.start}`
     + `${h.spanEnd !== h.start ? "-" + h.spanEnd : ""} - an empty span, in a document the cut does not carry`);
 
+  console.log(`  ${checkable} are CHECKABLE — they name a symbol, so a line inserted above them cannot`
+    + ` quietly mis-point them${checkableBaseline == null ? "" : ` (recorded: ${checkableBaseline}, and this count may only rise)`}`);
+  if (ratchetBroken) {
+    console.error(`\ncitation-line-check: ${checkableJudgement.reason}`);
+  }
   if (floorBroken) {
     console.log(`\nCOUNT NOT CREDIBLE: ${credible.reason}`);
   }
 
   console.log(`\n${BLINDNESS}`);
   process.exit(dangling.length || overrun.length || ambiguous.length || wrongLine.length
-      || symbolGone.length || blankTarget.length || floorBroken ? 1 : 0);
+      || symbolGone.length || blankTarget.length || floorBroken || ratchetBroken ? 1 : 0);
 }
 
 

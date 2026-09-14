@@ -32,7 +32,7 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor,
+  recentlyFinished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
@@ -109,6 +109,12 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   const [showAcked, setShowAcked] = useState(false)
   const cards = useMemo(() => active(rows), [rows])
   const queue = useMemo(() => waiting(rows), [rows])
+  // WHICH READ EACH CARD IS, and only where two of them could be mistaken for each other. Computed over
+  // the whole band — cards and queue together — because a reader compares what is on the screen, not
+  // what one component was handed. The acknowledged list is its own population for the same reason: it
+  // is opened on its own and its rows are compared with each other.
+  const stamps = useMemo(() => readStamps(rows), [rows])
+  const ackedStamps = useMemo(() => readStamps(acked), [acked])
   // Routed through grouping.ts — the SAME function Clearances renders — so the two screens cannot
   // disagree about what finished most recently or what it came back as.
   const done = useMemo(() => recentlyFinished(runs, undefined, 1), [runs])
@@ -153,12 +159,12 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
       {cards.length ? (
         <div className="home2-cards">
           {cards.map((r) => (
-            <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} />
+            <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} stamp={stamps.get(r.runId) ?? null} />
           ))}
         </div>
       ) : null}
 
-      {queue.length ? <Queue rows={queue} ctx={ctx} onChanged={reload} /> : null}
+      {queue.length ? <Queue rows={queue} ctx={ctx} onChanged={reload} stamps={stamps} /> : null}
 
       {/* — ACKNOWLEDGED, BEHIND A COUNT. The run is unchanged and still in Clearances with its
           status intact; this is one reader's dashboard, and the way back is here rather than somewhere
@@ -178,6 +184,9 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
               {acked.map((r) => (
                 <li key={r.runId}>
                   <span data-anon="mark">{displayName(r)}</span>
+                  {ackedStamps.get(r.runId) ? (
+                    <span className="home2-acked-when">{ackedStamps.get(r.runId)}</span>
+                  ) : null}
                   <span className="home2-acked-state">{r.state === 'failed' ? 'Not finished' : 'Stopped'}</span>
                   <AckUndo run={r} onChanged={reload} />
                 </li>
@@ -242,10 +251,13 @@ function Card({
   run,
   ctx,
   onChanged,
+  stamp,
 }: {
   readonly run: Run
   readonly ctx: ShellContext
   readonly onChanged: () => void
+  /** Which read this is — null when nothing on the band could be confused with it. See readStamps. */
+  readonly stamp: string | null
 }) {
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState<string | null>(null)
@@ -340,6 +352,10 @@ function Card({
           {ctx.ownerName(runKey(run))}
           {run.projectName || run.projectKey ? ` · ${run.projectName ?? run.projectKey}` : ''}
         </div>
+        {/* WHICH READ, and only when another card would otherwise be its twin. A single read shows
+            nothing here: the band is a short list of short things and the failure sentence below is
+            already the long item on it. */}
+        {stamp ? <div className="home2-card-when">{stamp}</div> : null}
 
         {run.step ? <div className="home2-step">{run.step}</div> : null}
 
@@ -577,10 +593,13 @@ function Queue({
   rows,
   ctx,
   onChanged,
+  stamps,
 }: {
   readonly rows: readonly Run[]
   readonly ctx: ShellContext
   readonly onChanged: () => void
+  /** Which read each waiting row is, by runId — null for one nothing can be confused with. */
+  readonly stamps: ReadonlyMap<string, string | null>
 }) {
   const [open, setOpen] = useState(false)
   const [order, setOrder] = useState<readonly string[]>(() => rows.map((r) => r.runId))
@@ -659,8 +678,13 @@ function Queue({
               <span className="home2-qmark" data-anon="mark">
                 {displayName(r)}
               </span>
+              {/* The stamp rides IN the owner cell rather than in a column of its own: this row is a
+                  grid with named columns and a narrow-screen rule that hides two of them, so a new
+                  child would have had to be added to both or it would break the layout it was meant
+                  to clarify. */}
               <span className="home2-qowner" data-anon="mark">
                 {ctx.ownerName(runKey(r))}
+                {stamps.get(r.runId) ? ` · ${stamps.get(r.runId)}` : ''}
               </span>
               <span className="home2-qdepth">{runProductLabel(r.productName, r.marks.length)}</span>
               {mayRun ? <CancelButton run={r} onChanged={onChanged} /> : null}

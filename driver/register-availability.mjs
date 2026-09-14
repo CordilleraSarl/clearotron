@@ -41,9 +41,9 @@
 // CORRECTED 2026-08-11 — THIS PARAGRAPH USED TO SAY "one qid per office … which is the shape
 // joinPlanToBands already has", AND THAT WAS FALSE ABOUT THE COMPILER IT DOCUMENTS. There is no
 // per-office qid. compileRegisterPlan narrows ONE shared `regions` array and hands it to every entry
-// (register-plan.mjs:550); the unreachable office produces no entry, so no qid, so no band block, so
+// (register-plan.mjs:572 compileRegisterPlan); the unreachable office produces no entry, so no qid, so no band block, so
 // nothing ever reaches joinPlanToBands' deferred bucket — whose only source is a block stamped
-// `error:true && deferred:true` (register-plan.mjs:1093).
+// `error:true && deferred:true` (register-plan.mjs:1115 extendRegisterPlan).
 //
 // The consequence was not academic. `deferred_coverage` rode the plan and nothing that a reader sees
 // read it: coverage-form.mjs seeded its deferred rows from skeleton qids alone, so an EU+US matter on a

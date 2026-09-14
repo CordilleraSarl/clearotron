@@ -42,9 +42,16 @@ Extract from the request, faithfully (verbatim beats paraphrase):
   where the report goes; a wrong route misdelivers a confidential document.
 - **`profileKey`** — call **`list_profiles`** and resolve by JUDGMENT: an explicit name, a
   misspelling (a name typed as it sounds), or an implicit reference ("our functional-beverage client") all
-  map to a key. OMIT it for a new/unknown customer (the neutral generic profile applies — this is
-  non-blocking by design). Ask the requester only when you genuinely cannot tell. **Never pick a
+  map to a key. OMIT it for a new/unknown customer: the search runs under the neutral **generic**
+  profile, which carries this deployment's standard framework, territories and marketplaces. This is
+  non-blocking by design — a customer who does not exist yet is never a reason to refuse a search. Say
+  so to the requester, and offer the other way forward in the same breath: their own company can be set
+  up in the portal first, so its framework, territories and marketplaces apply instead. Ask the
+  requester only when you genuinely cannot tell which existing customer is meant. **Never pick a
   profile from the sender's email domain.**
+  If your session's access does not cover the generic profile, the refusal says that in those words —
+  an access question, not a fault in the request. Relay it, name the customers the session does hold,
+  and offer the portal route.
 - **`customer`** — the applicant/owner name as stated. Omitting it arms the engine's late-bind
   watch; supply it later via `feed_context` when the requester answers.
 - **`upfrontInstructions`** — the requester's per-mark guidance, VERBATIM. Do not summarize away
@@ -57,6 +64,15 @@ Extract from the request, faithfully (verbatim beats paraphrase):
   worldwide and nothing else, a **Multi-country focus search** a region or two-or-more countries, a
   **Full country search** exactly one. Only the **Knockout search** takes worldwide *or* any set of
   territories.
+  A COUNTRY ALREADY CARRIES THE REGIONAL AND INTERNATIONAL RIGHTS THAT BIND IT — a clearance for an
+  EU member state reaches its national register, the EU-wide register (an EU trade mark blocks use
+  there without appearing in the national register) and international registrations designating
+  either. Do NOT add the region as a second territory to "include" it: one country is a **Full country
+  search**, which carries the case-law reading and the automatic native-language investigation, while
+  two territories resolve to a **Multi-country focus search**, which carries neither. The wider list
+  buys less. If the requester asks for the country AND its region, tell them what it costs before you
+  compose it, and never silently rewrite what they asked for. `plan_run` reports what each ordered
+  territory binds.
 - **`platforms`** — extra marketplaces to sweep, as bare store domains, when the requester names a
   storefront that matters to them. These are ADDED to the account's own; you cannot remove theirs.
   Every one widens the grid, so pass only what was actually asked for.

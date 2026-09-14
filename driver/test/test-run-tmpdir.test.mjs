@@ -44,6 +44,60 @@ test("a fixture made by the child lands inside the run root, not in the ambient 
   });
 });
 
+// ── A NESTED RUN ROOTS ITSELF BESIDE ITS PARENT, NOT INSIDE IT ──────────────────────────────────
+//
+// The runner hands its child a TMPDIR pointing at its own root, and `os.tmpdir()` honours it — so a
+// child that starts a SECOND runner used to create its root INSIDE the first's. Two things then go
+// wrong and neither announces itself: the outer cleanup removes a live inner run's fixtures on the way
+// out, and the outer sweep of abandoned roots can reach into a running one.
+//
+// Driven as a real nesting — the runner, running a script, that runs the runner again — because the
+// property is the environment crossing two process boundaries. Asserting it against the exported
+// constant would prove the constant.
+test("a nested run does not root itself inside its parent's root", () => {
+  withBase((base) => {
+    const inner = join(base, "inner.mjs");
+    writeFileSync(inner, [
+      'import { mkdtempSync } from "node:fs";',
+      'import { join } from "node:path";',
+      'import { tmpdir } from "node:os";',
+      'console.log(mkdtempSync(join(tmpdir(), "inner-")));',
+    ].join("\n"));
+    // The paths travel as environment rather than as interpolated source: a script that writes a script
+    // that writes a path is where a quoting mistake reads as a product failure.
+    const outer = join(base, "outer.mjs");
+    writeFileSync(outer, [
+      'import { execFileSync } from "node:child_process";',
+      'process.stdout.write(execFileSync("node",',
+      '  [process.env.NESTED_RUNNER, "node", process.env.NESTED_SCRIPT], { encoding: "utf8" }));',
+    ].join("\n"));
+
+    // THE OUTER RUN IS SANDBOXED BY TMPDIR, NOT BY CT_TEST_TMP_BASE, and that is what makes this arm
+    // measure anything. The variable under test is the one the outer runner PASSES DOWN; handing it to
+    // the outer run as well would let the inner one read it from the ambient environment and pass
+    // whether or not the runner propagates it — the arm would name the property and drive nothing.
+    // So the outer run gets a temp directory and no base, exactly as an ordinary invocation does.
+    //
+    // The data-plane variables are dropped rather than inherited: this suite's own run points them
+    // inside ITS root, which is neither of these runs' base, so the nested runner would refuse on
+    // containment before it ever chose a root — a refusal about a different property wearing this
+    // arm's name.
+    const env = { ...process.env, TMPDIR: base, NESTED_RUNNER: RUNNER, NESTED_SCRIPT: inner };
+    delete env.CT_TEST_TMP_BASE;
+    for (const v of ["CLEAROTRON_QUEUE_DIR", "CLEAROTRON_REPORTS_DIR", "CLEAROTRON_WORK_DIR"]) delete env[v];
+    const out = execFileSync("node", [RUNNER, "node", outer], { encoding: "utf8", env }).trim();
+    const nested = out.split("\n").pop().trim();
+
+    assert.ok(nested.startsWith(join(base, "ct-testrun-")),
+      `the nested run put its fixture at ${nested}, which is not under a run root directly beneath ${base}`);
+    // THE PROPERTY, stated as the failure it prevents: exactly one run root on the path. Two means the
+    // inner root lives under the outer one, which is the state whose cleanup eats live fixtures.
+    const roots = nested.slice(base.length + 1).split("/").filter((seg) => seg.startsWith("ct-testrun-"));
+    assert.equal(roots.length, 1,
+      `the nested run rooted itself inside its parent — ${nested} carries ${roots.length} run roots, so the outer cleanup would delete the inner run's fixtures`);
+  });
+});
+
 test("the run root is gone when the run ends — the leak itself", () => {
   withBase((base) => {
     const script = join(base, "child.mjs");
