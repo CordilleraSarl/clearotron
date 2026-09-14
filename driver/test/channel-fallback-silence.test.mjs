@@ -101,12 +101,12 @@ test("the diagnosis is WIRED into the fallback — not merely exported", () => {
 
 // ── THE MATTER'S OWN CHANNELS REACH THE GRID, BESIDE THE CLIENT'S ────────────────────────────────
 //
-// The frame's channels only ever reached the grid on a GENERIC profile, and there they replaced the
-// profile's platforms. A named customer's run therefore searched that customer's storefronts whatever
-// the matter was about: a delivered run carried 45 terms across the profile's 8 platforms while the
-// frame had named this matter's own ecosystem — server hosts, a plugin repository, a competing
-// platform — and none of it was queried. The reviewing lawyer graded a plugin published on a
-// repository the run never asked about.
+// The frame's channels only ever reached the grid on a GENERIC profile, and there they REPLACED the
+// profile's platforms. A named profile therefore searched its own platforms whatever the frame had
+// named, and every channel the frame named went unqueried. The grid then said nothing about that:
+// an unqueried channel leaves no row, so a clean pass over the platforms that did run reads exactly
+// like a clean pass over every channel that was asked for. A pass's say-so is not a receipt — what
+// a run actually reached has to be stated by the run, never inferred from an absence of findings.
 test("a named profile keeps its own platforms AND gains the ones the frame named", () => {
   const md = "Search channels: forge.example, plugins.example.org, amazon.com\n";
   const r = gridChannels({ profilePlatforms: ["amazon.com", "etsy.com"], profileKey: "aurora", matterMd: md });
