@@ -102,7 +102,7 @@ clearotron run --job my-job.json
 ## How it fits together
 
 - **A reasoning CLI does the thinking.** Every stage runs as a headless turn of the [Claude CLI](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`), which must be installed. `CLEAROTRON_AI_BILLING` chooses what pays for the turn: your signed-in subscription, or an API key. Either way the CLI is what runs — there is no path that calls the model directly.
-- **One register credential sets coverage and cost.** `CLEAROTRON_DATABASE` has no default — a run refuses rather than picking a vendor for you. EUIPO and a local USPTO index cost nothing; Signa, Clarivate and Corsearch are subscriptions. [The six, and what each reaches](providers/README.md).
+- **One register credential sets coverage and cost.** `CLEAROTRON_DATABASE` has no default — a run refuses rather than picking a vendor for you. EUIPO and a local USPTO index cost nothing; Clarivate, Signa and Corsearch are subscriptions. [The six, and what each reaches](providers/README.md).
 - **One research key.** `PERPLEXITY_API_KEY` covers the open web and the marketplaces. A clearance refuses without it at the door, before a register stage has spent.
 - **A run takes hours, and survives interruption.** Every finished stage stays on disk; a resume re-runs only what is missing, and a run parked on a provider cap continues by itself.
 - **A finished run is queryable.** An MCP server lets Claude, ChatGPT or your editor read and question
