@@ -107,7 +107,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
   // showing that as "could not be loaded" reads as a fault that retrying never fixes (C7's fix
   // covered the four other account-scoped screens; this one was missed).
   if (needsOwner || result?.kind === 'pickAccount') {
-    return <CompanyGate ctx={ctx} eyebrow="Company" heading="Profile" line="Pick a company to see its profile." />
+    return <CompanyGate ctx={ctx} heading="Profile" line="Pick a company to see its profile." />
   }
   if (result && result.kind !== 'ok') return <Unavailable kind={result.kind} />
   if (!loaded || !draft || pack == null) return <div className="screen" />

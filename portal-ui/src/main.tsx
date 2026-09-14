@@ -21,6 +21,7 @@ import { GiveAccess } from './screens/GiveAccess.tsx'
 import { About } from './screens/About.tsx'
 import { resultRoute } from './nav/nav.config.ts'
 import type { ScreenId } from './nav/nav.config.ts'
+import { PageHeader } from './components/PageHeader.tsx'
 
 /**
  * A screen that exists in the navigation but has not been built yet.
@@ -32,8 +33,7 @@ import type { ScreenId } from './nav/nav.config.ts'
 function NotYet({ title, phase, what }: { readonly title: string; readonly phase: string; readonly what: string }) {
   return (
     <div className="screen">
-      <div className="eyebrow">{title}</div>
-      <h1 style={{ fontSize: 25, margin: '4px 0 10px', color: 'var(--text-strong)' }}>{title}</h1>
+      <PageHeader title={title} />
       <div className="notice quiet">
         <p style={{ margin: 0, color: 'var(--text-muted)' }}>{what}</p>
         <p style={{ margin: '8px 0 0', fontSize: 13, color: 'var(--text-faint)' }}>

@@ -206,6 +206,21 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   border-top: 1px solid var(--border-hairline);
 }
 
+/* ── the page header ──────────────────────────────────────────────────────────────────────────────
+   ONE LINE, ONE SIZE, ONE PLACE. Ten screens carried `fontSize: 27` inline above an uppercase eyebrow
+   saying the same word; two had already drifted to different margins. The eyebrow class below stays,
+   because it still labels SECTIONS inside a page — a group of fields, a stop control, a set of reads —
+   which is what it was for before it became a second heading. */
+.page-header {
+  display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin: 0 0 16px;
+}
+.page-header-text { flex: 1 1 260px; min-width: 0; }
+.page-title {
+  font-size: 27px; margin: 0; color: var(--text-strong); letter-spacing: -0.02em;
+}
+.page-lede { margin: 4px 0 0; color: var(--text-muted); font-size: 14.5px; }
+.page-header-actions { flex: none; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
 .eyebrow {
   font-size: 9.5px;
   font-weight: 700;

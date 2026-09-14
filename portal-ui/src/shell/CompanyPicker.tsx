@@ -23,6 +23,7 @@ import type { CompanyFacts } from '../contract/companyFacts.ts'
 import type { Organisation, Permissions } from '../contract/api.ts'
 import { pickerGroups, pickerRows, GENERIC_KEY, type CompanyRow } from './companyRows.ts'
 import { canManage } from './permissions.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 export { pickerRows, GENERIC_KEY }
 
@@ -73,7 +74,6 @@ function CompanyCard({ row, onPick }: { readonly row: CompanyRow; readonly onPic
 }
 
 export function CompanyPicker({
-  eyebrow,
   heading,
   line,
   keys,
@@ -84,7 +84,6 @@ export function CompanyPicker({
   onPick,
   onAdd,
 }: {
-  readonly eyebrow: string
   readonly heading: string
   /** What picking a company gets you, on THIS screen. One line; the panel explains nothing else. */
   readonly line: string
@@ -103,24 +102,24 @@ export function CompanyPicker({
 
   return (
     <div className="screen">
-      <div className="eyebrow">{eyebrow}</div>
       <div className="measure">
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, margin: '4px 0 18px' }}>
-          <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: 27, margin: '0 0 4px', color: 'var(--text-strong)' }}>{heading}</h1>
-            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 14.5 }}>{line}</p>
-          </div>
-          {onAdd ? (
+        {/* The `eyebrow` prop is gone rather than renamed. Three callers passed "Company" and one
+            passed its own heading twice, so the line above the title was either the word "Company" over
+            a company screen or the title again. Neither is a header. */}
+        <PageHeader
+          title={heading}
+          lede={line}
+          actions={onAdd ? (
             <button
               type="button"
               className="start-pill"
               onClick={onAdd}
-              style={{ flex: 'none', borderColor: 'var(--accent-ink)', color: 'var(--text-accent)', fontWeight: 700 }}
+              style={{ borderColor: 'var(--accent-ink)', color: 'var(--text-accent)', fontWeight: 700 }}
             >
               + New company
             </button>
           ) : null}
-        </div>
+        />
         {groups.map((g, i) => (
           <div key={g.org?.key ?? ''}>
             {headings && g.org ? (
@@ -154,7 +153,6 @@ export function CompanyPicker({
  */
 export function CompanyGate({
   ctx,
-  eyebrow,
   heading,
   line,
 }: {
@@ -168,13 +166,11 @@ export function CompanyGate({
     readonly setOwner: (owner: string | null) => void
     readonly go: (path: string) => void
   }
-  readonly eyebrow: string
   readonly heading: string
   readonly line: string
 }) {
   return (
     <CompanyPicker
-      eyebrow={eyebrow}
       heading={heading}
       line={line}
       keys={ctx.ownerKeys}

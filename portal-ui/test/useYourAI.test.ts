@@ -42,6 +42,12 @@ function readerText(src: string): string {
   let c = code(src)
   c = c.replace(/style=\{\{[\s\S]*?\}\}/g, ' ')          // style objects are not prose
   c = c.replace(/\b(className|href|rel|target|type|key)=(\{[^}]*\}|"[^"]*"|'[^']*')/g, ' ')
+  // PROSE PASSED AS A PROP IS STILL PROSE. The page's own title and standfirst moved into
+  // `<PageHeader title="…" lede="…" />`, and a double-quoted attribute is neither a JSX text node nor a
+  // quoted string this extractor collected — so the heading vanished from its view and, with it, every
+  // word of the standfirst. The floor below caught that, which is the whole reason it is there: without
+  // it this arm would have gone on reporting six words absent from text it could no longer see.
+  c = c.replace(/\b(title|lede|label|hint|note|placeholder)="([^"]*)"/g, ' >$2< ')
   // An interpolation is an EXPRESSION, not prose: `${r.value.address}` puts a property name inside a
   // template literal, and reading that as something the reader sees would force a rename to satisfy a
   // rule about English. The surrounding text is prose and is still checked.

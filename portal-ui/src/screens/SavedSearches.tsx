@@ -44,6 +44,7 @@ import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyGate } from '../shell/CompanyPicker.tsx'
 import { canRun } from '../shell/permissions.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 export function SavedSearches({ ctx }: { readonly ctx: ShellContext }) {
   // Who this is FOR — resolved exactly as the composer resolves it. A staff member acting for a client
@@ -388,15 +389,14 @@ function Empty({ onNew }: { readonly onNew: (() => void) | null }) {
 }
 
 function PickCompany({ ctx }: { readonly ctx: ShellContext }) {
-  return <CompanyGate ctx={ctx} eyebrow="Company" heading="Custom searches" line="Pick a company to see its custom searches." />
+  return <CompanyGate ctx={ctx} heading="Custom searches" line="Pick a company to see its custom searches." />
 }
 
 /** The screen's own title. The company is named in the rail, and once is enough. */
 function Heading() {
   return (
     <>
-      <div className="eyebrow">Custom searches</div>
-      <h1 style={{ fontSize: 27, margin: '4px 0 6px', color: 'var(--text-strong)' }}>Custom searches</h1>
+      <PageHeader title="Custom searches" />
     </>
   )
 }

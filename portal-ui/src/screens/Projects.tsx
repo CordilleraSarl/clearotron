@@ -56,7 +56,7 @@ export function Projects({ ctx }: { readonly ctx: ShellContext }) {
   // Same rule as Profile: a multi-account client's ownerless read answers pickAccount, and that is
   // "choose an owner", never "could not be loaded".
   if (needsOwner || result?.kind === 'pickAccount') {
-    return <CompanyGate ctx={ctx} eyebrow="Company" heading="Projects" line="Pick a company to see its projects." />
+    return <CompanyGate ctx={ctx} heading="Projects" line="Pick a company to see its projects." />
   }
   if (result && result.kind !== 'ok') {
     return (
