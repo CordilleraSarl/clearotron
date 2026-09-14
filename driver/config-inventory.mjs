@@ -83,10 +83,12 @@ export function engineInventory(env = process.env) {
     } catch (e) {
       // Recorded AS ITSELF, whichever refusal it was. An API-key mode with no key names the variable to
       // set, reconstructed from the table so it cannot drift from it. Every other refusal (a cloud mode with
-      // no cloud switched on or with two, a word that is not a mode) carries its own sentence, which names
-      // variables and never a value, and leaves `missing` empty: the page reads `missing` as "set this key".
+      // no cloud switched on or with two, a cloud switch beside a mode it contradicts, a word that is not a
+      // mode) carries its own sentence, which names variables and never a value, and leaves `missing` empty:
+      // the page reads `missing` as "set this key", and a key that is set is not missing.
       const mode = billingMode(env);
-      if (mode === "api-key") return { mode, apiBilled: false, missing: spec?.apiKeyEnv ? shown([spec.apiKeyEnv]) : [] };
+      const keyAbsent = Boolean(spec?.apiKeyEnv) && String(env[spec.apiKeyEnv] ?? "") === "";
+      if (mode === "api-key" && keyAbsent) return { mode, apiBilled: false, missing: shown([spec.apiKeyEnv]) };
       return { mode, apiBilled: false, missing: [], refusal: String(e?.message ?? e) };
     }
   })();

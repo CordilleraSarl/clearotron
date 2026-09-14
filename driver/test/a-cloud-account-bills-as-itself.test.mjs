@@ -11,6 +11,8 @@
 //   - resolveAuthMode names the cloud from the vendor's own switch, or `gateway` for ANTHROPIC_BASE_URL
 //     alone; refuses with no cloud switched on and with two; refuses a word that is not a mode on either
 //     engine; refuses cloud on the Codex engine; and keeps the subscription and api-key results as they were;
+//   - a cloud switch left on under subscription or api-key is refused, because the program bills that cloud
+//     whatever the word says, and a missing key is still named first;
 //   - spawnEnv drops ANTHROPIC_API_KEY under cloud, lets a gateway's own token through, and never throws;
 //   - providerOf reads the program's own provider word, and names none when the models disagree;
 //   - a real stage turn under cloud stamps the mode, the bill, the cloud and the reported provider on its
@@ -66,6 +68,39 @@ test("cloud refuses by name: no cloud switched on, a switch set to off, and two 
   assert.throws(cloud({ ANTHROPIC_API_KEY: "sk-x" }), NONE);
   assert.throws(cloud({ CLAUDE_CODE_USE_FOUNDRY: "1", CLAUDE_CODE_USE_VERTEX: "1" }),
     /more than one cloud is switched on \(CLAUDE_CODE_USE_VERTEX, CLAUDE_CODE_USE_FOUNDRY\)/);
+});
+
+test("a cloud switch left on under subscription or api-key is refused, because the program bills that cloud whatever the word says", () => {
+  // Measured on Foundry, 2026-09-14: the switch on and the word unset, the program reported Foundry as its
+  // provider and the row said subscription.
+  let refused = 0;
+  for (const base of [{}, { CLEAROTRON_AI_BILLING: "subscription" }, { CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: "sk-x" }])
+    for (const sw of ["CLAUDE_CODE_USE_VERTEX", "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_BEDROCK"]) {
+      const env = { ...base, [sw]: "1" };
+      let error = null;
+      try { claude(env); } catch (e) { error = e; }
+      assert.ok(error, `refused: ${JSON.stringify(env)}`);
+      assert.match(error.message,
+        new RegExp(`^${sw} is on, which sends Claude to that cloud account, while CLEAROTRON_AI_BILLING says ${billingMode(env)} `));
+      assert.equal(error.billingRefusal, true);
+      const p = classifyProbe({ engine: "anthropic-agent", error });
+      assert.equal(p.mode, "auth-misconfigured", JSON.stringify(env));
+      assert.match(p.headline, /the billing setting this box declares is refused/, "a key that is set is not reported as absent");
+      refused++;
+    }
+  assert.equal(refused, 9);
+  assert.throws(() => claude({ CLAUDE_CODE_USE_VERTEX: "1", CLAUDE_CODE_USE_BEDROCK: "on" }),
+    { message: /^CLAUDE_CODE_USE_VERTEX and CLAUDE_CODE_USE_BEDROCK are on, .* or turn them off\.$/ });
+  assert.throws(() => claude({ CLEAROTRON_AI_BILLING: "api-key", CLAUDE_CODE_USE_BEDROCK: "1" }),
+    { message: /^CLEAROTRON_AI_BILLING=api-key but ANTHROPIC_API_KEY is not set/ }, "a missing key is named first, as the config page names it");
+  // CONTROL: a switch that is off, and a gateway address alone, leave both modes as they were, and the
+  // Codex engine does not read Claude's switches at all.
+  for (const env of [{ CLAUDE_CODE_USE_FOUNDRY: "0" }, { CLAUDE_CODE_USE_FOUNDRY: "" }, { ANTHROPIC_BASE_URL: "https://gateway.test" }])
+    assert.deepEqual(claude(env), { provider: "anthropic", mode: "subscription", apiBilled: false }, JSON.stringify(env));
+  assert.deepEqual(claude({ CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: "sk-x", ANTHROPIC_BASE_URL: "https://gateway.test" }),
+    { provider: "anthropic", mode: "api-key", apiBilled: true });
+  assert.deepEqual(resolveAuthMode({ engineName: "openai-agent", env: { CLAUDE_CODE_USE_FOUNDRY: "1" } }),
+    { provider: "openai", mode: "subscription", apiBilled: false });
 });
 
 test("a word that is not a billing mode is refused on both engines, where it used to bill the subscription", () => {
@@ -186,6 +221,15 @@ test("the config inventory records each cloud refusal as itself, never as a miss
   assert.deepEqual(ok.billing, { mode: "cloud", apiBilled: true, missing: [] });
   // CONTROL: the API-key refusal keeps its own shape, naming the key.
   assert.deepEqual(engineInventory({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "api-key", PATH: "" }).billing,
+    { mode: "api-key", apiBilled: false, missing: ["ANTHROPIC_API_KEY"] });
+  // A cloud switch beside a key that IS set is a refusal, not a missing key; with the key absent too, the
+  // page names the key first, as the run door does.
+  const keyed = engineInventory({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: "sk-x", CLAUDE_CODE_USE_BEDROCK: "1", PATH: "" });
+  assert.deepEqual(keyed.billing.missing, [], "the key is set; the page must not ask for it");
+  assert.match(keyed.billing.refusal, /^CLAUDE_CODE_USE_BEDROCK is on/);
+  assert.match(engineInventory({ CLEAROTRON_AI: "anthropic-agent", CLAUDE_CODE_USE_FOUNDRY: "1", PATH: "" }).billing.refusal,
+    /^CLAUDE_CODE_USE_FOUNDRY is on, .* says subscription /);
+  assert.deepEqual(engineInventory({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "api-key", CLAUDE_CODE_USE_BEDROCK: "1", PATH: "" }).billing,
     { mode: "api-key", apiBilled: false, missing: ["ANTHROPIC_API_KEY"] });
 });
 

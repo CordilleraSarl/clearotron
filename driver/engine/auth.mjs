@@ -71,16 +71,23 @@ export function resolveAuthMode({ engineName, env = process.env } = {}) {
 
   if (name === "anthropic-agent") {
     const mode = billingMode(env);
+    if (mode === "api-key" && !env.ANTHROPIC_API_KEY)
+      throw refuse(
+        `CLEAROTRON_AI_BILLING=api-key but ANTHROPIC_API_KEY is not set — refusing to silently bill the ` +
+        `subscription instead. Set the key, or use CLEAROTRON_AI_BILLING=subscription.`);
+    const on = cloudsSwitchedOn(env);
+    // A cloud's switch sends the program to that cloud whatever the billing word says. Measured on Foundry,
+    // 2026-09-14: with the switch on and the word unset, the program reported Foundry as its provider and
+    // the row was stamped as the subscription's. So a switch beside `subscription` or `api-key` is refused,
+    // after a missing key, which is the fault the config page names first.
+    if ((mode === "subscription" || mode === "api-key") && on.length)
+      throw refuse(
+        `${on.map((c) => CLOUD_SWITCH[c]).join(" and ")} ${on.length > 1 ? "are" : "is"} on, which sends Claude to ` +
+        `that cloud account, while CLEAROTRON_AI_BILLING says ${mode} — refusing rather than record the wrong ` +
+        `account. Use CLEAROTRON_AI_BILLING=cloud, or ${on.length > 1 ? "turn them off" : "turn the switch off"}.`);
     if (mode === "subscription") return { provider: "anthropic", mode, apiBilled: false };
-    if (mode === "api-key") {
-      if (!env.ANTHROPIC_API_KEY)
-        throw refuse(
-          `CLEAROTRON_AI_BILLING=api-key but ANTHROPIC_API_KEY is not set — refusing to silently bill the ` +
-          `subscription instead. Set the key, or use CLEAROTRON_AI_BILLING=subscription.`);
-      return { provider: "anthropic", mode, apiBilled: true };
-    }
+    if (mode === "api-key") return { provider: "anthropic", mode, apiBilled: true };
     if (mode === "cloud") {
-      const on = cloudsSwitchedOn(env);
       if (on.length > 1)
         throw refuse(
           `CLEAROTRON_AI_BILLING=cloud but more than one cloud is switched on ` +
