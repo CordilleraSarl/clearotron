@@ -142,8 +142,8 @@
           "todos": 0
         },
         "a-cloud-account-bills-as-itself.test.mjs": {
-          "tests": 11,
-          "asserts": 62,
+          "tests": 12,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
