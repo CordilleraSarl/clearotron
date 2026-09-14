@@ -5028,7 +5028,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-## react@19.2.8
+## react@19.3.0
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/react/react
@@ -5058,7 +5058,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## react-dom@19.2.8
+## react-dom@19.3.0
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/react/react
@@ -5592,10 +5592,10 @@ SOFTWARE.
 - **Repository:** https://github.com/lddubeau/saxes
 - **Licence file:** none shipped
 
-## scheduler@0.27.0
+## scheduler@0.28.0
 
 - **Licence declared:** `MIT`
-- **Repository:** https://github.com/facebook/react
+- **Repository:** https://github.com/react/react
 - **Licence file:** `LICENSE`
 
 ```
