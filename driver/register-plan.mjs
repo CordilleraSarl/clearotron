@@ -260,6 +260,28 @@ export const planMaxOrWidth = (capabilities) =>
 // The plan emits ONE `wildcard` predicate; the provider contract splits it into three sub-capabilities.
 // Mirrors the executor's planPredicateParams anchoring exactly (trailing * → prefix/starts-with,
 // leading * → suffix/ends-with, both/neither → infix over the raw pattern).
+//
+// ── WHICH ANCHOR, NEVER WHETHER THE TERM IS A PATTERN ────────────────────────────────────────────────
+//
+// This function and `termPredicateIssue` (providers/_shared/term-shape.mjs) were read as contradicting
+// each other: this one maps an unanchored term to `wildcardInfix` — a real, dispatchable capability —
+// while that one calls a wildcard term carrying no pattern syntax a compiler bug. They are not in
+// conflict, because they are keyed on different things and answer different questions:
+//
+//   this function      keys on `*` ALONE, because `*` is what the executor anchors on, and answers
+//                      WHICH of the three sub-capabilities a provider must declare.
+//   termPredicateIssue keys on `[*?]`, and answers WHETHER the term is a pattern at all.
+//
+// `?` is the case that shows the two apart rather than merely asserting they differ. The
+// form-neighbourhood generator mints vowel-slot patterns like `sk?` and `v?ltr?n`: starless, so this
+// function correctly calls them infix, and full of pattern syntax, so termPredicateIssue correctly
+// passes them. They are dispatched, and they must stay dispatchable. Keying this function on `[*?]`
+// to make the two "agree" would desync it from planPredicateParams and misroute every `?` pattern.
+//
+// A term carrying NEITHER `*` NOR `?` is the only string both functions see, and it is one that must
+// never reach the compiler at all: skeletonPatterns no longer emits one (see the note there). This
+// function keeps no opinion about it, which is correct — asking an anchoring mirror to police
+// well-formedness is what would put the two definitions in genuine conflict.
 export function wildcardCapabilityKey(term) {
   const t = String(term ?? "");
   if (t.endsWith("*") && !t.startsWith("*")) return "wildcardPrefix";

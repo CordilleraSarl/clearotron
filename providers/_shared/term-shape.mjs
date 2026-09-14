@@ -64,6 +64,12 @@ export function termPredicateIssue(term, predicate) {
   // `?` IS pattern syntax on the wildcard predicate (form-neighbourhood mints single-char patterns
   // like n?v?p?ls?; the executor hands the raw pattern to the provider default) — it just never makes
   // a term wildcard-SHAPED under a literal predicate (GUESS? is a mark).
+  //
+  // KEYED ON `[*?]`, WHERE wildcardCapabilityKey IS KEYED ON `*` ALONE, and that is deliberate rather
+  // than an inconsistency between the two. That function answers which anchor sub-capability a
+  // provider must declare, so it reads the anchors; this one answers whether there is a pattern here
+  // to anchor at all. A starless `sk?` is infix by the first reading and well-formed by this one —
+  // both correct, and it is the member that proves the two are asking different questions.
   if (p === "wildcard" && !/[*?]/.test(t))
     return `predicate "wildcard" over "${t.slice(0, 40)}" which carries neither \`*\` nor \`?\` — there is no pattern to anchor; use a literal predicate`;
   return null;

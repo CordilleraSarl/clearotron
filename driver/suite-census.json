@@ -2368,8 +2368,8 @@
           "todos": 0
         },
         "form-neighbourhood.test.mjs": {
-          "tests": 17,
-          "asserts": 68,
+          "tests": 20,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
@@ -3520,8 +3520,8 @@
           "todos": 0
         },
         "register-capabilities.test.mjs": {
-          "tests": 33,
-          "asserts": 263,
+          "tests": 34,
+          "asserts": 268,
           "skips": 0,
           "todos": 0
         },
