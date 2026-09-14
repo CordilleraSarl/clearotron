@@ -26,6 +26,7 @@ import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
 import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine } from "../../bin/onboard.mjs";
+import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ONBOARD = join(HERE, "..", "..", "bin", "onboard.mjs");
@@ -103,7 +104,13 @@ test("the probe's turn sees the cloud settings its caller passed, they are gone 
 
 const NODE_BIN = mkdtempSync(join(tmpdir(), "setup-pay-node-"));
 symlinkSync(process.execPath, join(NODE_BIN, "node"));
-/** `doctor --check` in a throwaway home whose settings file holds `lines`; returns what it printed. */
+/**
+ * `doctor --check` in a throwaway home whose settings file holds `lines`; returns what it printed.
+ *
+ * Its environment is composed from nothing, through handRunEnv: neither the runner's no-env-file flag nor
+ * a unit's invocation id can make doctor skip the file, and none of the runner's own settings can
+ * override it. So a `billing: cloud` line can only have come from the file, which is the proof it was read.
+ */
 function doctor(lines) {
   const home = mkdtempSync(join(tmpdir(), "setup-pay-home-"));
   mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
@@ -111,7 +118,8 @@ function doctor(lines) {
     ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_CLAUDE_PATH=${MOCK}`, ...lines].join("\n") + "\n");
   try {
     return execFileSync(process.execPath, [ONBOARD, "--check"], {
-      encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000, env: { HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin` } });
+      encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
+      env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
   } catch (e) {
     return `${e.stdout ?? ""}${e.stderr ?? ""}`;
   }
