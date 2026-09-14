@@ -131,7 +131,26 @@ test("an empty phonetic family reads as COMPLETE and is disclosed, never as an u
   assert.equal(row.count, 0);
   assert.match(row.mechanism, /NO PATTERN/);
   assert.match(row.mechanism, /Double-Metaphone key\(s\) \[[^\]]+\] still verify/,
-    "the keys are NOT empty in this state and the row must not call the whole axis dead");
+    "X's keys are NOT empty, and the row must not call the whole axis dead");
+
+  // ── THE OTHER MEMBER OF THE SAME CLASS, WHICH THE FIRST DRAFT OF THIS ARM DID NOT DRIVE ───────────
+  //
+  // Pinning X alone made this arm name the disclosure property and test one member of it. A purely
+  // numeric element has no pattern AND no metaphone key, and the row shipped
+  // "Double-Metaphone key(s) [] still verify what the other axes return" — a client-facing claim of a
+  // verification that did not happen, which is a worse failure than the silence it was written to
+  // prevent. Both members are driven here now, and they must land DIFFERENTLY: an arm where every
+  // member gets the same answer is a claim, not a test.
+  const bandNum = formNeighbourhood("99");
+  assert.deepEqual(bandNum.wildcardPatterns, []);
+  assert.deepEqual(bandNum.phoneticKeys, [], "the premise: this element has no keys either");
+  const rowNum = bandNum.ledger.axes.find((a) => a.axis === "phonetic-family");
+  assert.match(rowNum.mechanism, /NO PATTERN/, "same third state as X");
+  assert.doesNotMatch(rowNum.mechanism, /still verify/,
+    "with no keys there is nothing verifying, and the row must not say there is");
+  assert.match(rowNum.mechanism, /verifies nothing/, "and it says so rather than falling silent");
+  assert.notEqual(rowNum.mechanism, row.mechanism,
+    "the two members of the no-pattern class are disclosed differently — otherwise this arm is a claim");
 });
 
 test("visualConfusables + confusableSkeleton fold look-alikes", () => {

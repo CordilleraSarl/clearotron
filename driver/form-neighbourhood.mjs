@@ -269,13 +269,21 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
         // NO PATTERN is a THIRD state, and it is disclosed in the same voice as a judgment drop. An
         // element with too few consonants to anchor a skeleton wildcard (X, and anything normalizing to
         // one character) yields no retrieval pattern at all — see skeletonPatterns. Silence here would
-        // let the axis read as ordinary, when what happened is that it contributed nothing. The
-        // Double-Metaphone keys are NOT empty in this state and still verify which returned marks are
-        // true sound-alikes, so the row says which half ran rather than calling the axis dead.
+        // let the axis read as ordinary, when what happened is that it contributed nothing.
+        //
+        // AND THE KEYS ARE A SEPARATE QUESTION FROM THE PATTERNS, so the row asks it separately. For an
+        // element like X the metaphone keys survive and really do verify which returned marks are true
+        // sound-alikes, and the row should say so rather than call the whole axis dead. For a purely
+        // numeric element — "99", "5" — there are no keys either, and a row that still claimed the keys
+        // verify would be a CLIENT-FACING CLAIM OF A VERIFICATION THAT DID NOT HAPPEN. That is the worse
+        // failure of the two, so the clause is dropped rather than printed empty. The first draft of
+        // this row hard-coded the clause and pinned only X in its test, which has keys — the arm named
+        // the disclosure property and drove one member of it, so it passed while this was live.
         { axis: "phonetic-family", count: wildcards.length,
           mechanism: drop.has("phonetic-family") ? "DROPPED — judgment's variant-layer scope decision"
             : wildcards.length ? `consonant-skeleton wildcard + Double-Metaphone key(s) [${keys.join(",")}]`
-            : `NO PATTERN — "${el}" has too few consonants to anchor a skeleton wildcard, so the family has no retrieval pattern; Double-Metaphone key(s) [${keys.join(",")}] still verify what the other axes return` },
+            : keys.length ? `NO PATTERN — "${el}" has too few consonants to anchor a skeleton wildcard, so the family has no retrieval pattern; Double-Metaphone key(s) [${keys.join(",")}] still verify what the other axes return`
+            : `NO PATTERN — "${el}" has too few consonants to anchor a skeleton wildcard and yields no Double-Metaphone key, so this axis contributes nothing for this element and verifies nothing` },
         { axis: "visual-confusable", count: confs.length, mechanism: drop.has("visual-confusable") ? "DROPPED — judgment's variant-layer scope decision" : "Unicode-confusable homoglyph + multigraph table" },
         { axis: "transliteration", count: trans.length, mechanism: drop.has("transliteration") ? "DROPPED — judgment's variant-layer scope decision" : `scoped scripts: ${scripts.join(", ")}` },
       ],
