@@ -170,12 +170,27 @@ test("C1: each on-field card joins to its OWN ordinal's prose — no copy-paste 
   assert.equal(count("RAVENREAD"), 1, "ord-3 renders its OWN read (shares owner+mark with ord-2, still distinct)");
 });
 
-test("askAi: internal report includes the launcher + shared read-only MCP; runId keys the prompt", () => {
-  const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
-  assert.match(html, /https:\/\/mcp\.test\/mcp/);
-  assert.match(html, /Copy question/);
-  assert.match(html, /Set up Claude/);
-  assert.match(html, /Brief me on trademark clearance run noref-demo\./);
+test("THE REPORT COMPOSES NO ASK-AI CONTROL: no question, no connector address, no minted token", () => {
+  // This arm used to assert the opposite, on the same render. The band came out under the owner's
+  // 2026-09-15 ruling — it was a second Ask-AI control beside the shell's own header button, it named
+  // the staff host, and on every render it minted a read-only access token into a document that gets
+  // forwarded. The portal's control replaced it and carries no address at all.
+  //
+  // INVERTED RATHER THAN DELETED. A deleted arm says nothing if the band grows back; this one fails.
+  // And it is asserted with the environment SET, because the old gate was "render it when a connector
+  // address is configured" — an arm run with that unset would pass on a tree that still drew the band.
+  const saved = process.env.CLEAROTRON_MCP_URL;
+  process.env.CLEAROTRON_MCP_URL = "https://mcp.test/mcp";
+  try {
+    const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo", mcpUrl: "https://mcp.test/mcp" });
+    assert.ok(html.length > 2000, "a render this small is a could-not-look, not an absence");
+    assert.doesNotMatch(html, /askband|askai-/, "the band is back in the document");
+    assert.doesNotMatch(html, /mcp\.test\/mcp/, "the connector address is back in the document");
+    assert.doesNotMatch(html, /Copy question|Set up Claude/, "the copy-and-setup panel is back");
+    assert.doesNotMatch(html, /Brief me on/, "the report is composing a question again — there is one definition now, in the portal");
+  } finally {
+    if (saved === undefined) delete process.env.CLEAROTRON_MCP_URL; else process.env.CLEAROTRON_MCP_URL = saved;
+  }
 });
 
 test("A1 / askAi: one report — lint flags render nowhere; ::p:: notes render labelled for review; explicit mcpUrl drives the launcher", () => {
@@ -193,9 +208,13 @@ test("A1 / askAi: one report — lint flags render nowhere; ::p:: notes render l
   // a stale opts.client changes nothing
   const stale = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { client: true, lintFlags: LINT });
   assert.equal(stale, internal, "opts.client no longer forks the render");
-  // an explicit scoped url drives the launcher (env-based CLEAROTRON_MCP_URL is unset under test)
+  // The launcher half of this arm went with the band: `opts.mcpUrl` no longer drives anything, because
+  // nothing in the renderer composes an Ask-AI control. Held as an absence rather than dropped, so a
+  // re-introduced address fails here as well as in the arm above.
   const scoped = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { mcpUrl: "https://mcp.example.com/c/acme/mcp" });
-  assert.match(scoped, /mcp\.example\.com\/c\/acme\/mcp/);
+  assert.doesNotMatch(scoped, /mcp\.example\.com/, "a connector address passed in still reaches the document");
+  assert.equal(scoped, renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {}),
+    "passing an address changes the render, so something is still reading it");
 });
 
 test("spec-49 T4 (H1): the reasoning-integrity caveat renders NOWHERE — receipts live on the audit surfaces", () => {
@@ -616,7 +635,9 @@ test("§2.5/2.7: the under-hero actions strip is gone; Export popover + collapsi
   assert.doesNotMatch(html, /class="actions no-print"/, "the old under-hero actions strip is removed");
   assert.match(html, /class="tb-pop tb-exp-pop" hidden/);                  // one Export popover in the top line
   assert.match(html, /class="homebtn tb-back no-print"/);                  // back link carries the homebtn marker (pool-admin idempotency)
-  assert.match(html, /<details class="askband no-print">/);                // Ask-AI is its own collapsible banner
+  // The Ask-AI banner that used to be asserted here is gone from the report entirely (owner, 2026-09-15);
+  // the control lives in the portal's own header now. Both spellings of it are held as absences.
+  assert.doesNotMatch(html, /class="askband/, "the Ask-AI banner is back in the report");
   assert.doesNotMatch(html, /class="askai-toggle"/, "the old popover-button Ask-AI launcher is gone");
 });
 

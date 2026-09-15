@@ -668,10 +668,68 @@ export function validateMergedFindings(runDir, merged, plan) {
     // would put a field in the artifact the stage never emitted.
     try { const ranked = validateKnockoutFindings(m.findings, { manifest }); if (Array.isArray(m.findings)) m.findings = ranked; }
     catch (e) { failures.push(`mark "${m.name}": ${e.message}`); }
+    const above = markRatedAboveItsCards(manifest, m);
+    if (above) failures.push(above);
   }
   const receipts = knockoutReceipts(runDir, marks);
   failures.push(...receipts.failures);
   return { ok: failures.length === 0, failures, receipts: receipts.checked };
+}
+
+// ── A NAME IS NEVER RATED ABOVE THE WORST CARD ON ITS PAGE ───────────────────────────────────────────
+//
+// Three names went out rated a band above every conflict card on their own pages. Twelve cards across
+// the three, all at the client's bottom band; three names a band above them; nothing on any page
+// explaining the gap. The reviewing lawyer read the cards as right and the names as wrong.
+//
+// Nothing tied the two together. The name's band is the model's own `rating` and no check compared it
+// with the bands underneath it — a gap the full clearance does not have, where the headline is computed
+// from the worst live finding. The doctrine that produced the lift (the everyday-words floor) is retired
+// in this change; this is the floor under it, so the same shape cannot arrive by another route.
+//
+// IT REFUSES AND ASKS AGAIN. It never lowers the band itself, and that restraint is the point: a page
+// whose badge a script moved while its basis line still argues for the old band gives a reader a
+// Manageable chip over a Medium argument, which is worse than the defect. The corrective ladder this
+// failure list feeds re-dispatches the mark with the reason, and the model reasons the band again.
+//
+// A CARD IS A RATED ITEM ON THIS NAME'S PAGE — a `findings[]` record, or a `registerReads[]` row that
+// carries a band. A register row's band is optional by design (a read with no band prints no chip), so
+// a row without one is not a card and does not count; including it would invent a floor out of silence.
+// There is no withdrawn state on a knockout finding — that is the clearance lane's concept and it does
+// not exist here, so nothing is filtered for it. Whoever brings it over adds the filter with it.
+//
+// RATING BELOW THE WORST CARD STAYS ALLOWED. It has happened, and the one that was checked was reasoned
+// — the worst card's holder touched only the edge of the request. This refuses one direction only.
+//
+// INDEX 0 IS THE WORST BAND, as `worstBand` below says in its own comment, so "above" is a SMALLER
+// index. Written the other way round this check would pass on the exact production run it was written
+// for and fire on correct ones; the arms assert the direction against a real four-band ladder rather
+// than trusting this sentence.
+const cardBands = (m) => [
+  ...(Array.isArray(m?.findings) ? m.findings : []).map((f) => f?.band),
+  ...(Array.isArray(m?.registerReads) ? m.registerReads : []).map((r) => r?.band),
+].filter((b) => b != null && String(b).trim());
+
+export function markRatedAboveItsCards(framework, m) {
+  const ladder = ladderOf(framework);
+  if (!ladder.length) return null;                       // no frozen ladder — the band checks above own that
+  const mine = bandIdx(ladder, m?.rating);
+  if (mine < 0) return null;                             // an unknown band is knockout_band_unknown's to name
+  const idxs = cardBands(m).map((b) => bandIdx(ladder, b)).filter((i) => i >= 0);
+  // NO CARDS, NOTHING TO BE ABOVE — and the code stops here deliberately.
+  //
+  // The doctrine says a name with nothing found against it takes the bottom band, and that belongs in
+  // the reasoning where it is written (calibration rule 8). Enforcing it HERE would be a second rule in
+  // code: a floor that forces a band down, which is what the ruling forbids in terms — "do not replace
+  // the removed rule with another floor, cap or word list. The two rulings are the whole requirement."
+  //
+  // The first draft of this function did enforce it, and the e2e batch is what said so: a mark with no
+  // cards, correctly rated Manageable on a five-band ladder, was refused because the bottom of that
+  // ladder is Low. That is the retired rule's own shape — a band decided by something other than the
+  // evidence on the page — arriving from the opposite direction.
+  if (!idxs.length) return null;
+  const worst = Math.min(...idxs);
+  return mine < worst ? `knockout_rating_above_cards:${m?.name}: rated "${m?.rating}", above every card on its page — the worst is "${ladder[worst]}". Rate the name from its cards, or write the risk that lifts it as a finding of its own and rate it there. Rating BELOW the worst card is allowed and wants a sentence saying which card does not carry the name.` : null;
 }
 
 // worst band across the batch, in the frozen ladder's own order (index 0 = worst)

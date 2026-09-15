@@ -26,6 +26,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../contract/api.ts'
 import type { About as AboutInfo } from '../contract/api.ts'
 import { isOk } from '../contract/api.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 const LICENCE_URL = 'https://www.gnu.org/licenses/agpl-3.0.html'
 
@@ -46,7 +47,7 @@ export function About() {
   if (failed) {
     return (
       <section className="screen">
-        <h1>About</h1>
+        <PageHeader title="About" />
         <p>
           This deployment could not report which build it is running. That is a fault, not a
           configuration choice — the source offer below is incomplete without it.
@@ -57,13 +58,13 @@ export function About() {
       </section>
     )
   }
-  if (!info) return <section className="screen"><h1>About</h1><p>Loading…</p></section>
+  if (!info) return <section className="screen"><PageHeader title="About" /><p>Loading…</p></section>
 
   const shortSha = info.commit ? info.commit.slice(0, 12) : null
 
   return (
     <section className="screen">
-      <h1>About {info.name}</h1>
+      <PageHeader title={`About ${info.name}`} />
 
       <dl>
         <dt>Product</dt>

@@ -37,6 +37,7 @@ import type { ShellContext } from '../shell/AppShell.tsx'
 import { CompanyChips } from '../shell/CompanyChips.tsx'
 import { canManage, canRun } from '../shell/permissions.ts'
 import { runKey } from '../contract/genericKey.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
@@ -477,19 +478,21 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen">
-      {/* THE EYEBROW NAMES THE SCREEN AND THE HEADING NAMES THE FILTER, which is what keeps "All"
-          honest: with a company selected this list is that company's, and the heading says so while
-          the eyebrow still matches the rail item a reader pressed to get here. */}
-      <div className="eyebrow">All Clearances</div>
-      <h1 style={{ fontSize: 27, margin: '4px 0 6px', color: 'var(--text-strong)' }}>
-        {ownerFilter ? ctx.ownerName(ownerFilter) : 'All Clearances'}
-      </h1>
-      {/* THE SUBTITLE IS GONE. "Every name in clearance and where it stands" restated the heading for a
-          reader who had already read it, directly above a control row that says something they cannot
-          work out for themselves. The allowance line was the only load-bearing part and it stays. */}
-      <p style={{ margin: 0, color: 'var(--text-muted)' }}>
-        <AllowanceLine account={account} />
-      </p>
+      {/* THE TITLE NAMES THE SCREEN AND THE LEDE NAMES THE FILTER. These were an eyebrow over a
+          heading — "All Clearances" above the company's name — and that pair is the one place on the
+          portal where the two lines were not saying the same thing twice. Collapsing it would have cost
+          either the screen's name or what you are looking at, so it keeps a second line; it just is not
+          a second header any more. With no company selected the title says it all and the filter line
+          is the allowance alone.
+          THE OLD SUBTITLE IS STILL GONE. "Every name in clearance and where it stands" restated the
+          heading for a reader who had already read it. The allowance was the load-bearing part. */}
+      <PageHeader
+        title="All Clearances"
+        lede={<>
+          {ownerFilter ? <><span data-anon="mark">{ctx.ownerName(ownerFilter)}</span> · </> : null}
+          <AllowanceLine account={account} />
+        </>}
+      />
 
       {/* Which company's clearances these are, as a filter rather than as a fact about the rail. This
           screen has always been filtered by the switcher; the chips are the first thing on it to SAY

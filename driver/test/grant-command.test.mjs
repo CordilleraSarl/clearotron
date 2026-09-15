@@ -254,11 +254,16 @@ test("removing a person from everywhere removes their permissions and their acce
   g.tenants.acme.users["owner@acme.test"] = "*";
   g.people = { "owner@acme.test": { run: true, manage: true, everything: true } };
   const f = withFile(g);
-  // FROM ONE TENANT the entry stays — they may hold access elsewhere — and the command says what remains.
+  // FROM ONE TENANT IT IS REFUSED, where it used to be done and then warned about. Access to everything
+  // lives under `people` and in no organisation, so striking one organisation's row changed nothing this
+  // person could see — and the line reporting the removal was printed above the correction. The file is
+  // read back to prove the refusal wrote nothing, not merely that it exited 1.
+  const before = JSON.stringify(read(f));
   const one = run(f, ["remove", "owner@acme.test", "--tenant", "acme"]);
-  assert.equal(one.code, 0, one.err);
-  assert.equal(read(f).people["owner@acme.test"]?.everything, true);
-  assert.match(one.out, /still has access to everything/, "a removal that leaves the whole install reachable must say so");
+  assert.equal(one.code, 1, "a removal that would change nothing the person sees must refuse");
+  assert.match(one.err + one.out, /access to everything/);
+  assert.match(one.err + one.out, /Nothing written/);
+  assert.equal(JSON.stringify(read(f)), before, "a refused removal still edited the file");
   // FROM EVERYWHERE nothing is left that admits them. A removal that left `everything` behind would report
   // success and revoke nothing.
   const all = run(f, ["remove", "owner@acme.test"]);

@@ -1,5 +1,22 @@
 # portal-ui
 
+## 0.3.1-beta.3
+
+### Patch Changes
+
+- f1c5925: Fixed: Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
+- 56a760f: New: The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
+  
+  Fixed: Somebody listed only in a company's access list, with no permissions of their own, is now shown as that. They used to read as a view-only person, which is a different thing.
+
+## 0.3.1-beta.2
+
+### Patch Changes
+
+- 240673c: Fixed: The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
+- 240673c: Fixed: The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
+- f96c089: Fixed: When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
+
 ## 0.3.1-beta.1
 
 No changes in this release.

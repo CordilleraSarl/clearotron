@@ -20,17 +20,14 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { prose } from './support/prose.ts'
 
 const read = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), 'utf8')
 const SRC = new URL('../src/', import.meta.url)
 
 /** Source with comments stripped — a comment explaining a rule must not trip the rule. */
 const body = (src: string) =>
-  src
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .split('\n')
-    .filter((l) => !/^\s*(\/\/|\*)/.test(l))
-    .join('\n')
+  prose(src)
 
 const screens = readdirSync(fileURLToPath(new URL('screens/', SRC))).filter((f) => f.endsWith('.tsx'))
 const contracts = ['profileFields.ts', 'composerProduct.ts', 'home.ts', 'composeRead.ts']

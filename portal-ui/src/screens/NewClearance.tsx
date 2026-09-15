@@ -74,6 +74,7 @@ import { CompanyGate } from '../shell/CompanyPicker.tsx'
 import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
 import { seesEverything } from '../shell/permissions.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 /** Which way in. `null` until one is chosen — the two-card fork the design opens on. */
 type Entry = null | 'describe' | 'manual'
@@ -677,7 +678,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // there: a form that cannot be filled in and says nothing about why.
   if (needsOwner || searches?.kind === 'pickAccount') {
     return (
-      <CompanyGate ctx={ctx} eyebrow="New clearance" heading="New clearance"
+      <CompanyGate ctx={ctx} heading="New clearance"
         line="Pick a company to run this clearance on." />
     )
   }
@@ -743,14 +744,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen">
-      <div className="eyebrow">{editingSlug ? 'Custom search' : 'New clearance'}</div>
       {/* WHAT WAS JUST DECIDED FOR YOU, on the page you came here to use. A confirmation page of its own
           was drawn and turned down: easier to make unmissable, and it interrupts the one thing the person
-          came to do. The framework was the only reason that page existed, and this still names it. */}
+          came to do. The framework was the only reason that page existed, and this still names it.
+          IT SITS ABOVE THE HEADER rather than between two of them: the eyebrow that used to open this
+          screen said "New clearance" over a heading saying "New clearance". */}
       <CreatedStrip />
-      <h1 style={{ fontSize: 27, margin: '4px 0 14px', color: 'var(--text-strong)' }}>
-        {editingSlug ? 'Edit a custom search' : 'New clearance'}
-      </h1>
+      <PageHeader title={editingSlug ? 'Edit a custom search' : 'New clearance'} />
 
       {/* Editing a saved search happens ON this screen, because a saved search is these levers with a
           name on it. The heading changes and this line says what the levers below are — without it the
@@ -2490,8 +2490,7 @@ function OptionsUnavailable({
 function Submitted({ go, onAnother }: { readonly go: (p: string) => void; readonly onAnother: () => void }) {
   return (
     <div className="screen">
-      <div className="eyebrow">Queued</div>
-      <h1 style={{ fontSize: 27, margin: '4px 0 14px', color: 'var(--text-strong)' }}>Clearance started</h1>
+      <PageHeader title="Clearance started" />
       <div className="notice prose">
         <b>It is in the queue</b>
         <p style={{ margin: '6px 0 0', color: 'var(--text-muted)' }}>

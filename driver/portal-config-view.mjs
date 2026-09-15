@@ -43,6 +43,7 @@
 
 import { statSync, openSync, readSync, closeSync } from "node:fs";
 import { namedPoint } from "./portal-access.mjs";
+import { recordedKeysFor } from "../shared/client-door.mjs";   // — how many issued keys a person holds, counted by the module that revokes them
 
 import { readFlagSnapshot, engineFor, providersFor, postureDisagreement } from "./flag-snapshot.mjs";
 // `isStale` is deliberately NOT imported any more: the age banner is retired (ruling,
@@ -311,7 +312,8 @@ export function authView({ mode = "", oidcIssuer = "", team = "", jwksUrl = "", 
  * `companies` maps each company key the profile store holds to its name. `localSignIn` says this install
  * cannot hold a second person at all, which is what disables Add.
  */
-export function accessView({ grants, viewer = null, companies = {}, grantsFile = null, localSignIn = false }) {
+export function accessView({ grants, viewer = null, companies = {}, grantsFile = null, localSignIn = false,
+  keysRevocable = false }) {
   const tenants = grants?.tenants ?? {};
   const everything = viewer?.everything === true;
   const viewerOrgs = viewer?.genericOrgs ?? [];
@@ -359,6 +361,23 @@ export function accessView({ grants, viewer = null, companies = {}, grantsFile =
       // whose permissions were considered and set to none.
       listed: key !== undefined,
       access: shown.map((p) => namedPoint(p, grants, companies)),
+      // WHETHER THIS ROW IS THE WHOLE OF THIS PERSON, from where the viewer stands. Every other field
+      // here is narrowed silently — a manager of one organisation sees that organisation's half of
+      // somebody and nothing says it is a half — and that was serviceable while the page could only
+      // ADD. It is not serviceable for a page that changes and removes: permissions belong to the
+      // person and not to a point, so a narrowed viewer must be told they cannot change them, and a
+      // removal they order must say it takes away their organisation rather than the install.
+      //
+      // The same test the write routes apply (`reachCovers`), computed here from the same `inside`
+      // that narrowed the list, so the sentence the page draws and the refusal the server would give
+      // cannot disagree.
+      covered: everything || all.every(inside),
+      // HOW MANY ISSUED KEYS THIS PERSON HOLDS — counted by the module that revokes them rather than by
+      // reading `connectKeys` here, so the count and the revocation cannot come to different answers
+      // about who a key belongs to. The removal confirmation needs it BEFORE the press: what happens to
+      // somebody's assistant is part of what the reader is agreeing to, and a page that found out
+      // afterwards would be telling them about it too late to matter.
+      keys: recordedKeysFor(grants, email).length,
       dangling: r.dangling,
     });
   }
@@ -368,6 +387,12 @@ export function accessView({ grants, viewer = null, companies = {}, grantsFile =
     // Add is offered to a manager, and never where local sign-in holds the install to one person.
     canAdd: viewer?.permissions?.manage === true && !localSignIn,
     localSignIn,
+    // Can an issued key be withdrawn on this installation at all? A connector started without a
+    // revocation list never loaded one, so a key minted through it cannot be called back and dies at its
+    // own expiry — `disablePlan` calls that state `lateArm` and refuses to strike the record for it.
+    // Stated here so the confirmation can say which of the two removals this would be before it happens,
+    // rather than correcting itself in the answer.
+    keysRevocable,
     // Companies named in grants that no profile matches — the other typo direction. Install-wide, so it
     // is shown to a person who sees everything and to nobody else.
     unknownAccounts: everything ? [...unknownAccounts].sort() : [],

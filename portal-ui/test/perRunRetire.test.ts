@@ -23,15 +23,14 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { prose } from './support/prose.ts'
 
 const SRC = readFileSync(fileURLToPath(new URL('../src/screens/Clearances.tsx', import.meta.url)), 'utf8')
 
 // Comment lines out. This file's own commentary quotes the very shapes it is asserting — the paragraph
 // above says `runIds: [run.runId]` — so a naive search over the whole file matches the explanation and
 // passes on a screen that never got the control. Same helper, same reason, as screenCopy.test.ts.
-const body = SRC.split('\n')
-  .filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l))
-  .join('\n')
+const body = prose(SRC)
 
 test('a per-READ retire exists and sends exactly one run id', () => {
   // THE OBSERVED SHAPE, not a reconstruction of it. The issue quotes the defect as `retireMark` mapping

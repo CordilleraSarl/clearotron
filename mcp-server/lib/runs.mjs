@@ -70,11 +70,23 @@ function runFromStatusFile(statusFile, agent) {
 // exist". `mark` is the name-shaped filter: case-insensitive, on a PART of the word, and
 // over the mark name AND the slug, because a client may hold either. `slug` stays exact — enumerateRuns
 // has driver consumers (status-snapshot.mjs, repair-digest.mjs) that pass a slug meaning that one run.
+//
+// AND OVER THE CLIENT'S NAME AND THE PROJECT'S, which is the same defect a second time. A lawyer asked
+// for one client's recent searches by that client's name; every row matched the mark filter on nothing,
+// the list came back empty, and the assistant answered that no such search existed — of work delivered
+// to that client the same day. The note above records the first instance and fixed only the name the
+// mark is filed under. A name-shaped question is asked with whichever name the asker holds, and for a
+// firm acting for many clients that is the client's as often as the mark's.
+//
+// IT WIDENS WHAT IS FOUND, NEVER WHO MAY SEE IT. The account gate runs on the RESULT of the tool call
+// (filterByAccounts), after this, so a scoped session naming another firm's client still receives
+// nothing — the row is found here and dropped there, exactly as a row found by mark name always was.
 function markMatches(run, mark) {
   const needle = String(mark).trim().toLowerCase();
   if (!needle) return true;
-  return String(run.markName ?? "").toLowerCase().includes(needle)
-      || String(run.slug ?? "").toLowerCase().includes(needle);
+  const facts = runProfileFacts(run);
+  return [run.markName, run.slug, facts.clientName, facts.projectName]
+    .some((field) => String(field ?? "").toLowerCase().includes(needle));
 }
 
 // All runs (newest-first), optionally filtered by agent / state / slug / mark.
@@ -189,6 +201,34 @@ export function runAccountKey(run) {
     const p = JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"));
     return p.profileKey ?? p.key ?? null;
   } catch { return null; }
+}
+
+// WHO THE RUN WAS FOR, from the sidecar the driver freezes at the start of every run. The engine has
+// always known this — `runAccountKey` reads the same file to decide who may SEE a run — and no surface
+// ever showed it, so a list of eight runs for two clients named neither.
+//
+// A SEPARATE READER RATHER THAN A REFACTOR of the two below. Those two are the access path: the grants
+// tests pin them against the real frozen shape, the legacy `{key}` shape and the unreadable case, and
+// this issue asks for a field on a row rather than a rewrite of who can see what. The cost is one more
+// parse of a small file on the calls that ask for these facts.
+//
+// AN UNREADABLE SIDECAR IS ANSWERED, NOT OMITTED. A row with no client field reads as a run belonging
+// to nobody in particular, which is how eight rows managed to say nothing about who they were for;
+// `known: false` says the engine cannot tell, which is a different sentence and an actionable one.
+export function runProfileFacts(run) {
+  try {
+    const p = JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"));
+    const key = p.profileKey ?? p.key ?? null;
+    return {
+      known: true,
+      account: key,
+      clientName: typeof p.name === "string" && p.name ? p.name : null,
+      projectKey: typeof p.projectKey === "string" && p.projectKey ? p.projectKey : null,
+      projectName: typeof p.projectName === "string" && p.projectName ? p.projectName : null,
+    };
+  } catch {
+    return { known: false, account: null, clientName: null, projectKey: null, projectName: null };
+  }
 }
 
 // A Generic run's organisation, from the same frozen sidecar. Null for a company's run, for one filed

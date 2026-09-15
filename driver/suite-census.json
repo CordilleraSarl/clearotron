@@ -477,6 +477,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-name-is-never-rated-above-its-worst-card.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-name-the-wizard-returns-is-a-setup-name.test.mjs": {
           "tests": 5,
           "asserts": 9,
@@ -2451,9 +2457,15 @@
           "skips": 0,
           "todos": 0
         },
+        "giving-access-to-everything-is-a-switch-not-a-point.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "grant-command.test.mjs": {
           "tests": 19,
-          "asserts": 75,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -3154,8 +3166,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 124,
-          "asserts": 673,
+          "tests": 127,
+          "asserts": 683,
           "skips": 1,
           "todos": 0
         },
@@ -3677,7 +3689,7 @@
         },
         "render.test.mjs": {
           "tests": 154,
-          "asserts": 630,
+          "asserts": 632,
           "skips": 0,
           "todos": 0
         },
@@ -4395,6 +4407,12 @@
           "skips": 0,
           "todos": 0
         },
+        "taking-access-away-is-the-editor-that-gave-it.test.mjs": {
+          "tests": 9,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "teardown-leaves-nothing-claimable.test.mjs": {
           "tests": 4,
           "asserts": 19,
@@ -4833,6 +4851,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-people-page-can-change-and-remove-a-person.test.mjs": {
+          "tests": 16,
+          "asserts": 80,
+          "skips": 0,
+          "todos": 0
+        },
         "the-person-who-installs-is-a-person-not-a-domain.test.mjs": {
           "tests": 18,
           "asserts": 86,
@@ -5175,6 +5199,12 @@
           "skips": 0,
           "todos": 0
         },
+        "two-ratified-forms-get-reasoned-apart.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "two-word-annotated-variant-is-refused.test.mjs": {
           "tests": 6,
           "asserts": 21,
@@ -5474,6 +5504,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-removed-person-loses-their-assistant-too.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-list-names-its-client.test.mjs": {
+          "tests": 4,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "account-audit-chain.test.mjs": {
           "tests": 10,
           "asserts": 46,
@@ -5744,6 +5786,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {
+          "tests": 10,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
         "token-door-boot.test.mjs": {
           "tests": 7,
           "asserts": 8,
@@ -5768,8 +5816,8 @@
           "todos": 0
         },
         "askAi.test.ts": {
-          "tests": 5,
-          "asserts": 12,
+          "tests": 11,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
@@ -5839,6 +5887,12 @@
           "skips": 0,
           "todos": 0
         },
+        "decodePersonCarriesEveryField.test.ts": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "effortModelParity.test.ts": {
           "tests": 7,
           "asserts": 31,
@@ -5889,7 +5943,7 @@
         },
         "home.test.ts": {
           "tests": 51,
-          "asserts": 169,
+          "asserts": 177,
           "skips": 0,
           "todos": 0
         },
@@ -5965,6 +6019,12 @@
           "skips": 0,
           "todos": 0
         },
+        "oneHeaderPerPage.test.ts": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "ownerNames.test.ts": {
           "tests": 9,
           "asserts": 23,
@@ -5998,6 +6058,12 @@
         "profileFields.test.ts": {
           "tests": 49,
           "asserts": 145,
+          "skips": 0,
+          "todos": 0
+        },
+        "proseIsStrippedOnce.test.ts": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -6086,8 +6152,8 @@
           "todos": 0
         },
         "useYourAI.test.ts": {
-          "tests": 13,
-          "asserts": 41,
+          "tests": 12,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },

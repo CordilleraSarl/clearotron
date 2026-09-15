@@ -24,6 +24,7 @@ import { accessSentence, permissionsPhrase } from '../shell/accessWords.ts'
 import { isGenericKey } from '../contract/genericKey.ts'
 import { PEOPLE } from '../nav/nav.config.ts'
 import { loginInFrontDoc, useSourceRepo } from './PeopleAccess.tsx'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 type Chosen = { readonly everything: boolean; readonly orgs: ReadonlySet<string>; readonly companies: ReadonlySet<string> }
 const NOTHING: Chosen = { everything: false, orgs: new Set(), companies: new Set() }
@@ -62,9 +63,8 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
   if (view && isOk(view) && !view.value.canAdd) {
     return (
       <div className="screen">
-        <div className="eyebrow">People</div>
         <div className="measure" style={{ '--screen-measure': '640px' } as CSSProperties}>
-          <h1 style={{ fontSize: 27, margin: '4px 0 12px', color: 'var(--text-strong)' }}>Give someone access to Clearotron</h1>
+          <PageHeader title="Give someone access to Clearotron" />
           <div className="notice quiet">
             <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-muted)' }}>
               <b style={{ color: 'var(--text-strong)' }}>This Clearotron signs in one person: you.</b> To add
@@ -138,12 +138,13 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen">
-      <div className="eyebrow">People</div>
       <div className="measure" style={{ '--screen-measure': '640px' } as CSSProperties}>
-        <h1 style={{ fontSize: 27, margin: '4px 0 4px', color: 'var(--text-strong)' }}>Give someone access to Clearotron</h1>
-        <p style={{ margin: '0 0 22px', color: 'var(--text-muted)', fontSize: 14.5 }}>
-          Enter their email, choose what they can see and do, then save. They sign in the same way you do.
-        </p>
+        {/* "People" over the sentence naming the action was the section above the page, not a second
+            header. The rail already says which section this is. */}
+        <PageHeader
+          title="Give someone access to Clearotron"
+          lede="Enter their email, choose what they can see and do, then save. They sign in the same way you do."
+        />
 
         <label className="field-label" htmlFor="give-access-email">Email</label>
         <input

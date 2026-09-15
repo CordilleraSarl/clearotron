@@ -35,6 +35,7 @@ import {
   recentlyFinished, finished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
+import { PageHeader } from '../components/PageHeader.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { readableFailure } from '../contract/failure.ts'
@@ -137,18 +138,32 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen home2">
-      {/* HOME SAYS WHICH PAGE IT IS. With nothing in flight this screen was a heading-less list of
-          finished clearances — which is what All Clearances is — and a reader arriving here asked where
-          their clearances had gone. The archive keeps its own name; this one says what it is for. */}
-      <div className="eyebrow">Home</div>
-      <h1 style={{ fontSize: 27, margin: '4px 0 14px', color: 'var(--text-strong)' }}>Now</h1>
+      {/* HOME SAYS WHICH PAGE IT IS, IN ONE LINE. With nothing in flight this screen was a
+          heading-less list of finished clearances — which is what All Clearances is — and a reader
+          arriving here asked where their clearances had gone. It said so for a day in two lines,
+          "Home" over "Now", which is a header and its echo. The rail's own word, once.
+          AND THE PAGE'S CONTROLS SIT ON THE HEADER ROW. Both were inside the in-flight band, which is
+          a status line: it goes quiet when nothing is running, and it is the last place a reader looks
+          for a button. New clearance is the primary and sits last; the way into the archive is beside
+          it, the same secondary button, and nothing is left on the band. */}
+      <PageHeader
+        title="Home"
+        actions={<>
+          <button type="button" className="btn-ghost home2-all" onClick={() => ctx.go('/portal/clearances')}>
+            <Icon name="layers" />
+            <span>All Clearances</span>
+          </button>
+          {/* THE GATE AND THE NAVIGATION ON ONE LINE, which is what nav.test.ts reads: a literal to a
+              screen that needs Run must sit behind `canRun` where a reviewer can see the pair. Spread
+              over a multi-line ternary the two drift apart in the file and the arm cannot pair them. */}
+          {canRun(ctx.me) ? <NewClearanceButton onNew={() => ctx.go('/portal/new')} /> : null}
+        </>}
+      />
       <InFlightBand
         count={cards.length + queue.length}
         note={cards.length + queue.length === 0
           ? `Nothing running right now.${canRun(ctx.me) ? ' Start one with New clearance.' : ''}`
           : slotNote(null, ctx.me.concurrentRuns)}
-        onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null}
-        onAll={() => ctx.go('/portal/clearances')}
       />
 
       {/* The company filter, directly under the band. Home stays ABOVE the rail's switcher because the
@@ -220,45 +235,34 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   )
 }
 
+function NewClearanceButton({ onNew }: { readonly onNew: () => void }) {
+  // The page's primary action, in its own component so the permission test and the route literal fit on
+  // one line at the call site. See the note there.
+  return (
+    <button type="button" className="home2-new" onClick={onNew}>
+      <Icon name="plus-circle" />
+      New clearance
+    </button>
+  )
+}
+
 function InFlightBand({
   count,
   note,
-  onNew,
-  onAll,
 }: {
   readonly count: number
   readonly note: string | null
-  /** Null for a person who may not start a clearance: the button is absent, never present and refusing. */
-  readonly onNew: (() => void) | null
-  readonly onAll: () => void
 }) {
-  // A GRID, not a spacer-and-wrap. The button stays pinned right at every width; a flex-wrap
-  // construction drops it onto its own line the moment the note gets long, which is exactly when the
-  // row is busiest and the button is most wanted.
+  // A STATUS LINE, AND NOTHING ELSE ON IT. This carried both of the page's buttons, one of them the
+  // primary. They are on the header row now, for two reasons that point the same way: this band goes
+  // quiet when nothing is running, which is exactly when a reader most wants "start one" — and a
+  // control living inside a status line reads as part of the status rather than as something to press.
   return (
     <div className="home2-band">
       <span className="home2-band-label">In flight</span>
       <span className="home2-band-count mono">{count}</span>
       <span className="home2-band-rule" />
       <span className="home2-band-note">{note}</span>
-      {/* The way OUT of the dashboard and into the archive. Home shows what is in flight; everything
-          that has finished lives there, and the rail was the only route to it.
-          ONE LOOK IN BOTH PLACES AND IN THE RAIL. This was a rail item in disguise — grey, flat, and
-          reading as scenery rather than as something to press — while the same destination lower down
-          the page was red text with a different icon and a different capitalisation. Three
-          presentations of one route teach a reader nothing. Both are the secondary button now, with
-          the rail's own word and icon, one step below New clearance so the primary action stays
-          primary. */}
-      <button type="button" className="btn-ghost home2-all" onClick={onAll} style={{ marginRight: 8 }}>
-        <Icon name="layers" />
-        <span>All Clearances</span>
-      </button>
-      {onNew ? (
-        <button type="button" className="home2-new" onClick={onNew}>
-          <Icon name="plus-circle" />
-          New clearance
-        </button>
-      ) : null}
     </div>
   )
 }

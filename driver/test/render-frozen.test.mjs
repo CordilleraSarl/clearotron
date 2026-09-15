@@ -1775,7 +1775,10 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Claude's, a behaviour change and not licence-only, so both constants move.
 // Advanced again by the break recorded above the FROZEN constant: Fable is a tier word like the other
 // three, a behaviour change and not licence-only, so both constants move.
-const FROZEN_BEFORE_SPDX = "839d9f028dca4547cb247308e3cce5acf43831177d6cb0a430d95b3120fb8343";
+// Advanced again by the break recorded above the FROZEN constant: the Ask-AI band comes out of the
+// report, a behaviour change and not licence-only, so both constants move.
+// Advanced again when those four breaks met in one file; see the merge entry above the FROZEN constant.
+const FROZEN_BEFORE_SPDX = "b14e471f8f8e60ada80d5ca659f7afdbe6fad7eb0699baf67ee70b7fe953fb03";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2105,7 +2108,47 @@ const FROZEN_BEFORE_SPDX = "839d9f028dca4547cb247308e3cce5acf43831177d6cb0a430d9
 //      with it.
 //
 // The edit is three lines beside the file's last helper, changed in place, so no line the rest of the tree cites moved.
-const FROZEN = "a9f3d419f25c925cbdf71582de65ae9856b3861734c15d8c089218f9a631680f";
+//
+// ── BREAK: the Ask-AI band comes out of the report ──────────────────────────────────────────────────
+//
+// WHAT WENT. `askAi()`, the "Ask your AI about this run" banner under the verdict; the `mcpUrl`
+// resolution that fed it, including the run-scoped token it minted into the page; the `.askai-copy`
+// click handler in the inline script; and the now-unused `mintToken` import. The renderer no longer
+// composes a question, names a connector, or embeds a credential.
+//
+// WHY, answering this file's own checklist rather than around it:
+//
+//   1. IS IT REACHABLE FROM A REPUBLISH? Yes, and that is the point. `doRepublish()` re-renders archived
+//      runs, so every report re-rendered from here on loses the band — which is what "the band comes out
+//      of the report for everyone" means. A delivered document that is never re-rendered keeps its own
+//      bytes and keeps its band; nothing reaches back and rewrites a file already sent.
+//   2. COULD IT LIVE IN report.css OR brand.mjs? No. It is markup, a click handler and a minted token,
+//      and neither file carries any of the three. Hiding it in CSS would leave the credential in the
+//      document, which is the half of this that is worth doing on its own.
+//   3. THE HASH MOVES HERE, in the commit that ships it, and FROZEN_BEFORE_SPDX advances with it because
+//      this is not licence-only.
+//
+// THE DECISION IS THE OWNER'S, 2026-09-15: the report's band and the shell's header button were two
+// Ask-AI controls on one screen for staff, and he approved the design that leaves one. The report was
+// the wrong one to keep — it teaches connection inside a document, names the staff host, and on every
+// render minted a read-only token into a file that gets forwarded. The control that survives is the
+// portal's, which opens the reader's own assistant and carries no address at all.
+//
+// WHAT STILL STRIPS. `ASKAI_RE` in driver/portal-report.mjs stays and now runs for every reader, not
+// only clients: reports rendered before this commit are served as baked bytes and still carry the band.
+// Deleting the strip would put the staff host back in front of whoever opens an archived run.
+//
+// A LINE-COUNT NOTE: this removes lines from the middle of render.mjs, so citations aimed INTO it below
+// the band move. `scripts/citation-line-check.mjs` is the instrument; it ran clean on this commit.
+//
+// MERGED (2026-09-15): the Ask-AI break above and this branch's three breaks before it, in one file. They
+// edit different parts of render.mjs and git combined them with no conflict in the file itself, so every
+// entry above stands as written. The hash below is of the combined file, and it was taken only after this
+// measurement: the three committed clearance demos and the knockout demo, republished through the ordinary
+// publisher with main's renderer and with the combined one, gave report.html files that differ only in the
+// issue stamp, meta.json files that differ only in the engine commit, and report-data.json files that
+// differ in those two and gain `"servedModels": null`. Nothing else moved.
+const FROZEN = "3b4d39c310ed2569ae20ac3a8d97bc509ec368104a050d858220b343a57a00d2";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

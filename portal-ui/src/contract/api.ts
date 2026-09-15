@@ -789,6 +789,16 @@ export type McpAccess = {
    */
   readonly stdio: { readonly command: string; readonly note: string; readonly verify: string } | null
   /**
+   * Whether this reader's assistant has been seen calling a connector on this installation.
+   *
+   * THREE VALUES, AND NOT ONE OF THEM IS OPTIONAL. `null` means the installation could not be asked —
+   * the connector's access log does not exist yet, or could not be read — which is a different fact
+   * from `false`, and a screen that collapsed them would be claiming a measurement nobody took. It is
+   * declared non-optional for the reason an optional field on this type once went undecoded for months
+   * and drew a state nobody had ever seen: an optional property makes a missing decode invisible.
+   */
+  readonly aiConnected: boolean | null
+  /**
    * Every assistant, ALREADY RESOLVED against this deployment.
    *
    * The browser used to hold its own client table and derive offered-versus-withheld from `url`,
@@ -1109,12 +1119,37 @@ export type Person = {
    * permissions had been considered and set to none. Absent on an older payload, which reads as true.
    */
   readonly listed?: boolean
+  /**
+   * Whether this row is the WHOLE of this person, from where the viewer stands.
+   *
+   * Every other field here is narrowed silently: a manager of one organisation is shown that
+   * organisation's half of somebody, with nothing saying it is a half. That was serviceable while the
+   * page could only add. It is not serviceable for a page that changes and removes — permissions belong
+   * to the person and not to a point, so a narrowed viewer has to be told they cannot change them, and
+   * the button that takes access away has to say it takes away an organisation rather than the
+   * installation. Absent on an older payload, which reads as false: the cautious direction, because it
+   * costs a reader a disabled switch and the other direction costs somebody their access.
+   */
+  readonly covered?: boolean
+  /**
+   * How many connector keys this person holds — the keys their AI assistant signs in with. Needed by
+   * the removal confirmation BEFORE the press, because what happens to somebody's assistant is part of
+   * what the reader is agreeing to. Absent reads as none, which is the state of almost everybody.
+   */
+  readonly keys?: number
 }
 
 export type AccessView = {
   readonly note: string
   readonly unknownAccounts: readonly string[]
   readonly people: readonly Person[]
+  /**
+   * Whether a key already issued to somebody can be withdrawn on this installation. A connector started
+   * without a revocation list never loaded one, so keys minted through it cannot be called back and die
+   * at their own expiry. False when the server did not say, which is the cautious direction: the
+   * confirmation then promises less than it might have delivered rather than more.
+   */
+  readonly keysRevocable?: boolean
   /** Where access is recorded. Null when the file could not be stat'd — never a guess. */
   readonly grantsFile: { readonly name: string; readonly modifiedAt: string } | null
   /**
@@ -1700,6 +1735,21 @@ function decodePerson(r: Record<string, unknown>): Person {
     },
     access: decodeAccess(r),
     dangling: asArray(r['dangling']).filter((s): s is string => typeof s === 'string'),
+    // THESE ARE OPTIONAL ON THE TYPE, WHICH IS WHY ONE OF THEM WAS MISSING HERE FOR MONTHS.
+    // The server has always sent `listed`, the People page has always read it as `listed === false`, and
+    // this function returned an object literal that never mentioned it — so it was `undefined` on every
+    // row, the comparison was never true, and the "Reach only — no permissions set" line the server goes
+    // to the trouble of distinguishing has never once been drawn. Nothing failed: an optional field
+    // makes a missing decode invisible to the compiler and identical, on screen, to a server that did
+    // not send it. `decodePersonCarriesEveryField` is the arm.
+    //
+    // The defaults are not one default. A payload that omits `listed` is an older server whose people
+    // all had entries; a payload that omits `covered` is one that cannot tell us whether we are looking
+    // at half of somebody, and that resolves the cautious way — a disabled switch costs a reader a
+    // moment, and the other direction costs somebody their access.
+    listed: r['listed'] !== false,
+    covered: r['covered'] === true,
+    keys: typeof r['keys'] === 'number' && r['keys'] > 0 ? r['keys'] : 0,
   }
 }
 
@@ -2206,6 +2256,11 @@ export const api = {
       keyUrl: asString(b['keyUrl']),
       email: asString(b['email']),
       enabled: b['enabled'] === true,
+      // TRUE, FALSE AND "COULD NOT BE ASKED" — anything that is not a boolean on the wire is the third
+      // one. An older server that does not send this field reads as null, which draws the connect panel,
+      // which is the state that costs a reader one press rather than an assistant that cannot see the
+      // report.
+      aiConnected: typeof b['aiConnected'] === 'boolean' ? (b['aiConnected'] as boolean) : null,
       // — VALIDATED, not spread. A wire field is untrusted input like any other,
       // and a half-formed object here would render a Copy button over an undefined command.
       stdio: (() => {
@@ -2447,6 +2502,7 @@ export const api = {
       })(),
       canAdd: b['canAdd'] === true,
       localSignIn: b['localSignIn'] === true,
+      keysRevocable: b['keysRevocable'] === true,
     })),
 
   /**
@@ -2469,6 +2525,62 @@ export const api = {
       // screen must not claim it set. The answer's `person` carries them as they now stand either way.
       switchesApplied: b['switchesApplied'] === true,
     }), { method: 'POST', body: JSON.stringify(body) }),
+
+  /**
+   * Change what somebody may do and see. Manage only.
+   *
+   * `access` is the state the page WANTS, not a diff — the server reads the file itself and works out
+   * what to add and what to take away. That is deliberate: a page open while somebody else edited the
+   * same person would otherwise write its own stale copy back over them, and the half it would
+   * overwrite is the half outside its own view.
+   *
+   * Leaving nothing ticked is refused rather than treated as a removal. Removing is its own call with
+   * its own confirmation, and reaching it by unticking every row would do half of that act under the
+   * word "save".
+   */
+  changePerson: (body: {
+    readonly email: string
+    readonly permissions: Permissions
+    readonly access: readonly { readonly kind: 'organisation' | 'company'; readonly key: string }[]
+  }): Promise<Result<{ readonly person: Person; readonly switchesApplied: boolean; readonly added: number; readonly removed: number }>> =>
+    call('/portal/admin/people/change', (b) => ({
+      person: decodePerson(asRecord(b['person'])),
+      switchesApplied: b['switchesApplied'] === true,
+      added: typeof b['added'] === 'number' ? b['added'] : 0,
+      removed: typeof b['removed'] === 'number' ? b['removed'] : 0,
+    }), { method: 'POST', body: JSON.stringify(body) }),
+
+  /**
+   * Take somebody's access away. Manage only, and HOW FAR IT REACHES IS THE SERVER'S ANSWER: this sends
+   * an address and nothing else. Somebody who can see all of this person removes them from the
+   * installation; somebody who can see one organisation's worth of them takes away that organisation.
+   * The request carries no scope, so a page left open cannot ask for more than the person pressing it
+   * can see, and `removed` in the answer says which of the two happened.
+   *
+   * `keys` reports what became of the connector keys the person held. `checked:false` means this
+   * installation cannot withdraw them from here; `lateArm` means the connector was started without a
+   * revocation list, so the keys stay live until they expire and their records are deliberately NOT
+   * struck — a record removed while its key still works is the only trace of that key, gone.
+   */
+  removePerson: (body: { readonly email: string }): Promise<Result<{
+    readonly removed: 'install' | 'organisations'
+    readonly organisations: readonly string[]
+    readonly keys: { readonly checked: boolean; readonly revoked: number; readonly lateArm: boolean; readonly failed: boolean; readonly note: string | null }
+  }>> =>
+    call('/portal/admin/people/remove', (b) => {
+      const k = asRecord(b['keys'])
+      return {
+        removed: b['removed'] === 'install' ? ('install' as const) : ('organisations' as const),
+        organisations: asStrings(b['organisations']),
+        keys: {
+          checked: k['checked'] === true,
+          revoked: typeof k['revoked'] === 'number' ? k['revoked'] : 0,
+          lateArm: k['lateArm'] === true,
+          failed: k['failed'] === true,
+          note: asString(k['note']),
+        },
+      }
+    }, { method: 'POST', body: JSON.stringify(body) }),
 
   /**
    * Staff-only, best-effort. ALWAYS 200 — `available:false` is the shape for "the log could not be

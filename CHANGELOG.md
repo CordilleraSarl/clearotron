@@ -4,6 +4,84 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.1-beta.3
+
+### New
+
+- Ask AI on a report now opens Claude or ChatGPT with a question about that report already typed in. One press, in a new tab, and nothing is sent until you send it.
+- The button used to hand over a connector address and a question carrying the run's internal code, with no indication of which one you needed. The address belongs on the Use your own AI page, where you set the connector up once. It is no longer shown on reports at all.
+- If you have not connected an assistant yet, the button explains that in a line and offers to take you there.
+- Access can now be narrowed and taken away, not only added to. Somebody who manages one organisation removes that organisation alone. Somebody who can see all of a person removes their access to the installation, and withdraws the keys their AI assistant was using.
+- The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
+
+### Fixed
+
+- A name in a knockout batch is no longer rated above every conflict found against it. Its rating now follows from the conflicts on its own page.
+- Before, a rule forced any name made of everyday words off the lowest band, whatever the search found. That rule is gone for every client.
+- Giving somebody access to everything on the installation now works from the access form. It used to refuse. The message it refused with said you can only give access to what you hold yourself, which was not true of the person seeing it.
+- `clearotron grant remove --tenant` now refuses when the person has access to everything on the installation. It used to remove the organisation and then warn that nothing they could see had changed.
+- Removing somebody whose address is spelled with different capitalisation in different parts of the access file now removes all of them. Half of the entry used to survive, and the command reported success.
+- A removal now says plainly when the connector cannot be told about it yet, instead of implying the assistant lost access too.
+- Where a search covers two ratified forms of a name, the report now reasons each form and says which conflicts differ between them.
+- Before, both forms were searched but one combined read came back. When the forms read alike the report now says so, rather than leaving it unsaid.
+- Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
+- Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
+- Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
+- Somebody listed only in a company's access list, with no permissions of their own, is now shown as that. They used to read as a view-only person, which is a different thing.
+
+### For operators
+
+- the report's own "Ask your AI" band is gone, so there is one Ask AI control rather than two. Reports rendered before this upgrade keep the band in their own file, and it is hidden when the portal serves them.
+
+## 0.3.1-beta.2
+
+### New
+
+- The free preview of a search lists, for each territory ordered, which registers legally bind it.
+
+### Fixed
+
+- A chat notice now carries the channel to send it on, so an assistant with several chat channels no longer drops it silently.
+- Naming a country in words rather than by code now works for every country, including Belgium and Luxembourg. Before, some were carried as unrecognised.
+- A family search on a name whose first or last word is a single letter or digit now runs. Before, one register refused it and the search was reported as an outage.
+- A conflict whose owner could not be identified is no longer given a risk rating. It is carried as an open item naming who must be identified.
+- Running the test suite from inside another test run no longer lets the outer run delete the inner run's temporary files.
+- A clearance for a new client can be ordered through an assistant connector without setting up a company first.
+- In the staff editor, a refused territory in a project now highlights the field it is about, as it already did when editing a customer. Before, the message appeared but no field was marked.
+- A sign-in refusal now always says which instance answered — by organisation, by sign-in service, or by the address it runs on.
+- The published list of settings this build reads no longer keeps a name after the code stops reading it. The list was derived from a scan that included the list itself, so a retired name kept itself alive.
+- A search step that streams at a crawl is now stopped early and retried, instead of running to its time limit and losing the work.
+- A mark whose main element contains no vowel — a consonant-only initialism, for example — can now be cleared. Before, the search plan refused to compile and the whole clearance ended without delivering anything.
+- Use your AI now gives the steps your connector actually takes — sign-in where it signs you in, a key only where a key works.
+- `doctor` now names the deployment it is checking, and refuses a name that is missing or not recognised. Before, a deployment that was misnamed — or not named at all — passed the check in silence.
+- Setup and the framed first-run box now say what to do when the page that opens belongs to another program.
+- The port that advice suggests is never the port already in use.
+- On WSL, the "on this computer" rows now start the server inside WSL for you, so an assistant running on Windows can use them.
+- Somebody you add on the People page can sign in straight away. Before, they were refused until the service restarted with a changed setting.
+- The demo now removes everything it created when its window closes, and says so. Pass `--keep` to leave the folder and its reports.
+- Trying the demo a second time on a machine that has run it before now works. Before, it refused its own folder and suggested dropping a flag that had not been given.
+- The demo opens ports of its own rather than the ones an installation uses, so the page it points you at is the demo's.
+- A search now covers every spelling and sound-alike of the name in each category of goods or services the engine judges relevant.
+- Before, the added categories were searched for the name exactly and nothing else. The matter frame records each one with the reason it was added.
+- An off-register search now also covers the channels the matter itself names, not only the account's usual marketplaces.
+- A channel no pass ran is now recorded as open rather than described in a note.
+- A finding reads what the platform's own record says before calling an owner unidentified.
+- The run purge no longer deletes a clearance whose report or failure notice has not been sent yet.
+- Those runs are marked in the table the purge prints, and removing one now takes a flag that says so.
+- Saving a territory the engine cannot search now says so, instead of suggesting the kind of entry that was just refused.
+- Sending an access key to the engine's network address now gets a refusal that says so. It reports that the address takes an identity from the sign-in proxy and never a key.
+- That refusal also names the local door where a key is accepted. Before, it reported only a missing sign-in assertion, which sent operators to the wrong configuration.
+- The home page now says what it is for. With nothing running it tells you how to start a clearance, rather than showing an empty list. It ends with the last few finished clearances and a line to all of them.
+- The archive of finished clearances is called All Clearances everywhere, and the route to it from the home page is a button you can see.
+- When two attempts at one search both await dismissal, the dashboard shows which is which instead of two identical cards.
+
+### For operators
+
+- The repository's own comment-to-code references are now checked for having moved, not only for existing.
+- The portal can now call the engine over a local socket instead of a network port, by naming it as its engine address. The deployment check reports that address as wired and says which socket it is.
+- Every applied purge leaves a record of what it removed, when, and whether any of it was still owed.
+- A program on the same machine can now reach the engine's local key door without setting a host name for it. The local door no longer applies a browser protection that only a network address needs.
+
 ## 0.3.1-beta.1
 
 ### Fixed

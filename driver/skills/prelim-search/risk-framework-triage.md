@@ -23,17 +23,17 @@
 
 ### Manageable
 
-- **Triage read.** Minor findings, no strong claims. Flag major competitors/brand owners if relevant. The floor for any common English phrase.
+- **Triage read.** Minor findings, no strong claims. Flag major competitors/brand owners if relevant.
 
 ### Low
 
-- **Triage read.** No issues found. Available only for coined/fanciful terms (calibration rule 3).
+- **Triage read.** No issues found.
 
 ## Calibration rules (they override gut instinct — reviewer-derived)
 
 1. **Class-specific ratings are mandatory at Medium and above** — "Medium (Classes 9, 25, 28, 41)", never a bare band.
 2. **Crowded field = diluted risk, not amplified** — many small non-enforcing players typically caps risk at Medium.
-3. **Common English phrases never rate Low** (Manageable floor + a purple register-pending note); **coined/fanciful terms CAN be Low**. The test: could a reasonable person use this word in everyday speech without reference to the proposed mark? No → coined → Low available. Yes → common phrase → Manageable floor.
+3. **RETIRED — an everyday name with nothing serious found can reach the bottom band** (owner, 2026-09-15). This read "common English phrases never rate Low"; it decided a band from how ordinary the words were, which no evidence supports and which the clearance lane's own instruction forbids in terms — the applicant's own-mark read is advisory and never moves a band. How ordinary or ownable the words are is a note for the reviewing lawyer. Anything that should lift a name is a finding of its own, rated as one.
 4. **Every rating is pending register overlay** — the standing caveat rides every summary.
 5. **Enforcer profiling matters** at Medium+ — portfolio brand? opposition history? institutional filer? "No assertive enforcers" can cap a Medium at "Medium (low)".
 6. **Client's prior use mitigates, never overrides** — rate the full external landscape first; note the mitigation in a purple bullet.

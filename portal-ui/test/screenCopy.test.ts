@@ -23,6 +23,7 @@ import assert from 'node:assert/strict'
 import { PRODUCT_IDS } from '../../driver/products.mjs'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { prose } from './support/prose.ts'
 
 const read = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), 'utf8')
 
@@ -39,10 +40,7 @@ const SAVED_SEARCHES = read('../src/screens/SavedSearches.tsx')
 // the claim was wrong — so a naive search over the whole file matches the explanation and passes on a
 // screen that still lies to the user. The prose has to be tested separately from the commentary.
 const body = (src: string) =>
-  src
-    .split('\n')
-    .filter((l) => !/^\s*(\/\/|\/\*|\*)/.test(l))
-    .join('\n')
+  prose(src)
 
 // ── the screen-share blur ────────────────────────────────────────────────────────────────────────
 

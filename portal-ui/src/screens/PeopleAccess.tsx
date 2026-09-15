@@ -23,7 +23,8 @@ import { Icon } from '../components/Icon.tsx'
 import { useLoad } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { permissionsPhrase, accessChips } from '../shell/accessWords.ts'
-import { ADD_PERSON } from '../nav/nav.config.ts'
+import { ADD_PERSON, MODIFY_PERSON } from '../nav/nav.config.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 /**
  * Where putting a login system in front is explained — the way out of an install that signs in one person.
@@ -78,23 +79,19 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen">
-      <div className="eyebrow">People</div>
       <div className="measure" style={{ '--screen-measure': '900px' } as CSSProperties}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, margin: '4px 0 16px' }}>
-          <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: 27, margin: '0 0 4px', color: 'var(--text-strong)' }}>People</h1>
-            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 14.5 }}>
-              Who can use Clearotron <span data-anon="mark">{where}</span>, what they can do, and which
-              companies they can see.
-            </p>
-          </div>
-          {/* DISABLED, NOT HIDDEN, where the install cannot hold a second person — and the notice below
-              says why. A button that vanished would leave a reader looking for it; one that is visibly
-              off, beside the sentence explaining it, answers the question before it is asked. */}
-          <button type="button" className="btn-primary" style={{ flex: 'none' }} disabled={!v.canAdd} onClick={() => ctx.go(ADD_PERSON.path)}>
-            + Add a person
-          </button>
-        </div>
+        <PageHeader
+          title="People"
+          lede={<>Who can use Clearotron <span data-anon="mark">{where}</span>, what they can do, and which companies they can see.</>}
+          // DISABLED, NOT HIDDEN, where the install cannot hold a second person — and the notice below
+          // says why. A button that vanished would leave a reader looking for it; one that is visibly
+          // off, beside the sentence explaining it, answers the question before it is asked.
+          actions={
+            <button type="button" className="btn-primary" disabled={!v.canAdd} onClick={() => ctx.go(ADD_PERSON.path)}>
+              + Add a person
+            </button>
+          }
+        />
 
         {v.localSignIn ? (
           <div className="notice quiet" style={{ marginBottom: 14 }}>
@@ -140,15 +137,21 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
                 <th>Person</th>
                 <th>Permissions</th>
                 <th>Access to</th>
+                {/* No heading. The column holds one control per row and a word above it would be
+                    labelling a button that already says what it does. */}
+                <th aria-label="Change or remove" />
               </tr>
             </thead>
             <tbody>
               {v.people.length === 0 ? (
                 <tr>
-                  <td colSpan={3} style={{ color: 'var(--text-muted)' }}>Nobody has been given access yet.</td>
+                  <td colSpan={4} style={{ color: 'var(--text-muted)' }}>Nobody has been given access yet.</td>
                 </tr>
               ) : (
-                v.people.map((p) => <Row key={p.email} person={p} />)
+                v.people.map((p) => (
+                  <Row key={p.email} person={p} you={p.email.toLowerCase() === ctx.me.email.toLowerCase()}
+                    onModify={() => ctx.go(`${MODIFY_PERSON.path}?email=${encodeURIComponent(p.email)}`)} />
+                ))
               )}
             </tbody>
           </table>
@@ -230,7 +233,20 @@ function Observed({ result }: { readonly result: ReturnType<typeof useLoad<Obser
   )
 }
 
-function Row({ person }: { readonly person: Person }) {
+/**
+ * One person.
+ *
+ * YOUR OWN ROW HAS NO MODIFY AND SAYS `You`. Nobody changes their own permissions — the Add form has
+ * always refused to set the adder's own switches, and this refuses the whole act, because a manager who
+ * could take their own Manage away can lock the installation's last manager out of it with one press and
+ * the way back is a text editor on the box. It also means the last person who can manage everything
+ * cannot be removed by accident, which is the rule falling out rather than a second rule.
+ */
+function Row({ person, you, onModify }: {
+  readonly person: Person
+  readonly you: boolean
+  readonly onModify: () => void
+}) {
   const chips = accessChips(person.access)
   const viewOnly = !person.permissions.run && !person.permissions.manage
   return (
@@ -239,6 +255,7 @@ function Row({ person }: { readonly person: Person }) {
         <span style={{ fontWeight: 700, color: 'var(--text-strong)', wordBreak: 'break-all' }} data-anon="mark">
           {person.email}
         </span>
+        {you ? <span className="pill" style={{ fontSize: 10.5, padding: '1px 7px', marginLeft: 7 }}>You</span> : null}
       </td>
       {/* TWO SHAPES, SAID APART. A row that exists only in an organisation's user list has no
           permissions entry to read, and drawing it as "View reports" said something the file does not:
@@ -259,6 +276,13 @@ function Row({ person }: { readonly person: Person }) {
           </span>
         ) : (
           <span style={{ color: 'var(--text-muted)' }}>Nothing yet — signed in, and given no access.</span>
+        )}
+      </td>
+      <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+        {you ? null : (
+          <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }} onClick={onModify}>
+            Modify
+          </button>
         )}
       </td>
     </tr>

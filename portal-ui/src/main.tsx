@@ -18,9 +18,11 @@ import { Projects } from './screens/Projects.tsx'
 import { GlobalConfig } from './screens/GlobalConfig.tsx'
 import { PeopleAccess } from './screens/PeopleAccess.tsx'
 import { GiveAccess } from './screens/GiveAccess.tsx'
+import { ModifyAccess } from './screens/ModifyAccess.tsx'
 import { About } from './screens/About.tsx'
 import { resultRoute } from './nav/nav.config.ts'
 import type { ScreenId } from './nav/nav.config.ts'
+import { PageHeader } from './components/PageHeader.tsx'
 
 /**
  * A screen that exists in the navigation but has not been built yet.
@@ -32,8 +34,7 @@ import type { ScreenId } from './nav/nav.config.ts'
 function NotYet({ title, phase, what }: { readonly title: string; readonly phase: string; readonly what: string }) {
   return (
     <div className="screen">
-      <div className="eyebrow">{title}</div>
-      <h1 style={{ fontSize: 25, margin: '4px 0 10px', color: 'var(--text-strong)' }}>{title}</h1>
+      <PageHeader title={title} />
       <div className="notice quiet">
         <p style={{ margin: 0, color: 'var(--text-muted)' }}>{what}</p>
         <p style={{ margin: '8px 0 0', fontSize: 13, color: 'var(--text-faint)' }}>
@@ -143,6 +144,11 @@ function screen(id: ScreenId, ctx: ShellContext) {
     // half-filled form must survive somebody touching the switcher beside it.
     case 'people.add':
       return <GiveAccess ctx={ctx} />
+    // Unkeyed on the company for the same reason, and keyed on the ADDRESS inside the screen instead:
+    // opening a second person is a different form with different contents, and React would otherwise
+    // hand them the first person's unsaved ticks.
+    case 'people.modify':
+      return <ModifyAccess ctx={ctx} />
     // Admin settings has no screen of its own; landing on the parent shows its only child. People used
     // to be that first child and moved to the rail, so the parent now falls through to Global config.
     case 'admin':

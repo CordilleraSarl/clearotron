@@ -56,6 +56,7 @@ import { Icon } from '../components/Icon.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { operatorName } from '../contract/api.ts'
 import { permissionsPhrase, accessChips } from '../shell/accessWords.ts'
+import { PageHeader } from '../components/PageHeader.tsx'
 
 type Theme = 'light' | 'dark'
 
@@ -80,11 +81,12 @@ export function Preferences({ ctx }: { readonly ctx: ShellContext }) {
 
   return (
     <div className="screen">
-      <div className="eyebrow">Settings</div>
-      <h1 style={{ fontSize: 27, margin: '4px 0 6px', color: 'var(--text-strong)' }}>Your preferences</h1>
-      <p className="prose" style={{ margin: 0, color: 'var(--text-muted)' }}>
-        Who you are signed in as, and how the portal looks on this computer.
-      </p>
+      {/* "Settings" over "Your preferences" was the same page named twice. The rail says Your
+          preferences, so that is the one that stays. */}
+      <PageHeader
+        title="Your preferences"
+        lede="Who you are signed in as, and how the portal looks on this computer."
+      />
 
       <div className="measure" style={{ '--screen-measure': '720px' } as CSSProperties}>
         <Section title="Your sign-in" hint={`Held by ${operatorName(ctx.me.brand)}. Nothing here can be changed from this page.`}>

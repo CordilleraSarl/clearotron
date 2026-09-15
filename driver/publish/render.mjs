@@ -32,7 +32,6 @@ import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
-import { mintToken } from '../../shared/scope.mjs';   // mint a scoped read-only USER token for "Ask your AI" (dep-free; no-op fallback when no secret)
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -1745,32 +1744,6 @@ function method(_text) {
 // lawyer signs. The slim internal toolbar that survived it existed ONLY to host the Flag/Etch
 // controls and rendered nothing without them, so took it with them.
 
-// "Ask your AI" launcher (§2.7) — its own collapsible banner under the verdict (a native <details>, default
-// collapsed, no-print). COPY-FIRST, bring-your-own-AI. Same gating as before: rendered only when a mcpUrl is
-// present (internal = shared read-only MCP; client export = OMITTED unless a scoped mcpUrl is given).
-function askAi(fm, { mcpUrl, runId }) {
-  const mark = String(fm.title || fm.matter || 'this mark').trim();
-  const prompt = runId ? `Brief me on trademark clearance run ${runId}.` : `Brief me on the ${mark} trademark clearance.`;
-  const pa = escAttr(prompt);
-  const steps = (label, items) => `<details class="askai-steps"><summary>${label}</summary><ol>${items.map(i => `<li>${i}</li>`).join('')}</ol></details>`;
-  return `<details class="askband no-print">
-    <summary>
-      <div class="askband-ic" aria-hidden="true">💬</div>
-      <div class="askband-main">
-        <div class="askband-title">Ask your AI about this run <span class="askband-exp" aria-hidden="true">▾</span></div>
-        <div class="askband-sub">Connect once and interrogate the findings in the Claude or ChatGPT you already use — read-only.</div>
-      </div>
-    </summary>
-    <div class="askband-body">
-      <button type="button" class="util primary askai-copy" data-copy="${pa}">📋 Copy question</button>
-      <p class="askai-hint">Paste into the Claude or ChatGPT you already use — read-only. New chat: <a href="https://claude.ai/new" target="_blank" rel="noopener">Claude →</a> · <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT →</a></p>
-      <div class="askai-field"><code class="askai-url">${esc(mcpUrl)}</code><button type="button" class="util askai-copy" data-copy="${escAttr(mcpUrl)}">Copy</button></div>
-      ${steps('Set up Claude <span class="askai-checked">· ✓ Checked 4 September 2026</span>', ['Settings → Connectors → Add custom connector', 'Paste the address above — it already carries your key', 'Set Authentication to None', 'Add. If it warns that authentication is required, that is its own guess — None is correct here'])}
-      ${steps('Set up ChatGPT', ['Settings → Connectors → Advanced → Developer mode', 'Add MCP server, paste the address above', `Sign in when the browser opens (${BRAND.name} email)`])}
-      <p class="askai-hint askai-note">These steps name no button we have not opened ourselves. Your app may word them differently.</p>
-    </div>
-  </details>`;
-}
 
 // Brand :root tokens are sourced from shared/brand.mjs (REPORT_ROOT) and prepended to the
 // report stylesheet, so report.css carries only rules — the palette lives in ONE place across surfaces.
@@ -1808,7 +1781,6 @@ window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';d.open=true;});});
 window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
-document.addEventListener('click',function(e){var cp=e.target.closest('.askai-copy');if(cp){navigator.clipboard&&navigator.clipboard.writeText(cp.getAttribute('data-copy'));}});
 document.addEventListener('click',function(e){var t=e.target.closest('.tb-exp-toggle'),pop=document.querySelector('.tb-exp-pop');if(t){if(pop){pop.hidden=!pop.hidden;t.setAttribute('aria-expanded',String(!pop.hidden));}return;}if(pop&&!pop.hidden&&!e.target.closest('.tb-exp-pop')){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pop=document.querySelector('.tb-exp-pop');if(pop&&!pop.hidden){pop.hidden=true;var b=document.querySelector('.tb-exp-toggle');if(b)b.setAttribute('aria-expanded','false');}}});`;
 
@@ -2154,21 +2126,6 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
 
   // Excel/audit download — lives inside the topbar Export popover (portal-report strips the link at serve time for non-staff).
   const excelBtn2 = !opts.auditFile ? '' : `<a class="util" href="${esc(opts.auditFile)}" download>⬇ Download full audit (Excel)</a>`;
-  // "Ask your AI" target. Explicit opts.mcpUrl wins. Otherwise the staff surface (CLEAROTRON_MCP_URL), with
-  // a run-scoped read-only token embedded when a secret is configured. ONE report: the document always
-  // carries the staff connector; portal-report.mjs strips the whole block (and redacts any surviving MCP
-  // host) for non-staff readers at serve time — the client's connector path is the portal's own
-  // /portal/api/mcp-access, which needs no baked credential. FAIL CLOSED on a missing env: NO placeholder
-  // host — a forgotten env used to render a mcp.example.com connector that looked configured and resolved
-  // nowhere.
-  let mcpUrl = opts.mcpUrl || '';
-  if (!mcpUrl) {
-    const base = process.env.CLEAROTRON_MCP_URL || '';
-    let tok = '';
-    if (base && opts.runId) { try { tok = mintToken({ scope: 'user', runId: opts.runId }); } catch { tok = ''; } }
-    mcpUrl = base ? (tok ? `${base}?token=${tok}` : base) : '';
-  }
-  const askAiHtml = mcpUrl ? askAi(fm, { mcpUrl, runId: opts.runId }) : '';
 
   const cardFor = f => matchCard(f, cards);
   const recordsByUri = opts.recordsByUri || new Map();   // Instance #6 — the run's _records/ set (publishReport loads it)
@@ -2371,8 +2328,6 @@ ${opts.nav || ''}
     // label, so it renders where the label can and stays off every page where it cannot.
     findings.some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
       && (recordsByUri.size > 0 || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length))))), opts.servedModels)}
-
-  ${askAiHtml}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK

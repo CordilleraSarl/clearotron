@@ -214,22 +214,6 @@
   details.method[open]>summary::after{content:"▴"}
   .method .mbody{padding:0 22px 20px;font-size:13px;color:var(--slate);line-height:1.62}
 
-  /* Ask-your-AI launcher */
-  .askai{position:relative;display:inline-block}
-  .askai-pop{position:absolute;z-index:30;top:calc(100% + 8px);left:0;width:340px;max-width:88vw;background:var(--card);
-    border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:14px}
-  .askai-hint{font-size:11.5px;color:var(--slate);margin:9px 0 8px;line-height:1.45}
-  .askai-field{display:flex;gap:6px;align-items:center;background:var(--bg2);border-radius:9px;padding:6px 8px;margin-bottom:8px}
-  .askai-url{font-family:var(--mono);font-size:11px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .askai-steps>summary{cursor:pointer;font-size:11.5px;font-weight:700;color:var(--crimson);padding:4px 0;list-style:none}
-  .askai-steps>summary::-webkit-details-marker{display:none}
-  .askai-steps ol{margin:4px 0 8px;padding-left:18px;font-size:11.5px;color:var(--slate)}
-  /* The dated stamp on a set-up recipe we have actually driven. Muted on purpose: the recipe's own
-     summary is crimson and bold, and a stamp that shouted as loudly would read as part of the step. */
-  .askai-steps>summary .askai-checked{font-weight:600;color:var(--slate)}
-  /* The note under BOTH recipes. `.askband-body .askai-hint` zeroes the top margin for the hint that
-     opens the body; this one closes it and needs the gap back. */
-  details.askband .askband-body .askai-note{margin-top:10px}
 
   footer{margin-top:54px;padding-top:20px;border-top:2px solid var(--ink);font-size:12px;color:var(--faint);line-height:1.6;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   footer .wm{font-size:13px}
@@ -282,19 +266,6 @@
   .rv-tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a06aa3}
   .rv-spacer{flex:1;min-width:16px}
 
-  /* Ask-AI banner (collapsible) */
-  details.askband{display:block;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--crimson);border-radius:14px;padding:16px 18px;margin:20px 0 0;box-shadow:var(--shadow)}
-  details.askband>summary{cursor:pointer;list-style:none;display:flex;gap:14px;align-items:flex-start}
-  details.askband>summary::-webkit-details-marker{display:none}
-  .askband-ic{flex:none;width:38px;height:38px;border-radius:11px;background:var(--high-soft);color:var(--high-tx);display:flex;align-items:center;justify-content:center;font-size:18px}
-  .askband-main{flex:1;min-width:0}
-  .askband-title{font-weight:900;font-size:16px;letter-spacing:-.01em;margin:0 0 3px}
-  .askband-sub{font-size:13px;color:var(--slate);line-height:1.5;margin:0}
-  .askband-exp{display:inline-block;transition:.15s;color:var(--faint);font-size:12px;margin-left:4px}
-  details.askband[open] .askband-exp{transform:rotate(180deg)}
-  details.askband .askband-body{margin-top:12px;padding-left:52px;max-width:560px}
-  details.askband .askband-body .askai-hint{margin-top:0}
-  @media(max-width:560px){details.askband .askband-body{padding-left:0}}
 
   /* cross-region rights-holder rows (.rrow) + secondary region groups (.rgroup) */
   .keypanel{overflow-y:auto}
@@ -334,7 +305,7 @@
   @media (min-width:760px){.rn-why{flex:1 1 46%;min-width:280px}}
 
   @media print{
-    .topbar,.no-print,.review,.askband,.int-note{display:none!important}
+    .topbar,.no-print,.review,.int-note{display:none!important}
     body{background:#fff}
     .panel,.card,.land,.firstUp,.method{box-shadow:none}
     /* Only PURE TOGGLES hide their summary line in print — the drill toggles ("The read" / "Full detail

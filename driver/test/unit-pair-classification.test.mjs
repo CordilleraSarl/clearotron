@@ -53,9 +53,9 @@
 // arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
-// ── THE RULING, ALL TWENTY-ONE AS CLASSIFIED — TWENTY IN THE SWEEP TODAY, SEE THE CURE BELOW ─────────
+// ── THE RULING, ALL TWENTY-TWO AS CLASSIFIED — TWENTY-ONE IN THE SWEEP TODAY, SEE THE CURE BELOW ─────
 //
-//  AGREE (19) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (20) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · band-shape.mjs:494        `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
@@ -89,6 +89,16 @@
 //                               sentence has no satisfaction side to disagree with.
 //   · claimsLive declared in registry-fidelity.mjs, with claimsDead beside it, is built on `scoped`
 //                               and read twice against the same `rec`, inside one loop iteration.
+//   · `covered` in portal-config-view.mjs's `accessView` is minted in the SAME object literal as the
+//                               `access` array it summarises, from the same `all` and the same `inside`.
+//                               It answers "is this row the whole of this person, from where the viewer
+//                               stands", and the row it rides is the only thing that carries the
+//                               narrowed points — so a reader holding one holds the other, and there is
+//                               no second derivation for later data to contradict. The enforcement side
+//                               is `reachCovers` on the write routes, which reads the FILE rather than
+//                               this row: that is deliberate and is the opposite of the defect, because
+//                               the page's copy of somebody is never what a change is applied against.
+//                               (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
 //   · gateway.mjs:1293   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
@@ -102,7 +112,7 @@
 //                        row already guarded the same emptiness.
 //
 //  UNGUARDED (1), CURED — `706646eb`, and the site has left this population:
-//   · publish/render.mjs:1952   A SECOND COPY OF A SHARED PREDICATE. findings-model exports
+//   · publish/render.mjs         A SECOND COPY OF A SHARED PREDICATE. findings-model exports
 //                        `inDispositionMode` and its comment called it "the mode switch both sort sites
 //                        use". render.mjs imported it, never called it, and answered the same question
 //                        inline to set `DISPOSITION_MODE` — which every prominence helper in that file
@@ -117,8 +127,8 @@
 //                        freeze, where the rest of render.mjs's single-definition rules already are.
 //
 //                        THE SITE IS GONE FROM THE SWEEP, NOT MERELY FIXED. Calling the predicate
-//                        instead of re-typing it removes the `.some()` from render.mjs:1952 altogether,
-//                        so the adjudication set is 20 today and this ruling is the record of the
+//                        instead of re-typing it removes the `.some()` from render.mjs altogether, so
+//                        the adjudication set is 20 today and this ruling is the record of the
 //                        twenty-first. `publish/render.mjs` stays in RULED on :372, which is why nothing
 //                        red when the cure landed — a file leaving one ruling and keeping another is not
 //                        a state the two-directional arm can see, and this paragraph is what a reader
@@ -174,6 +184,7 @@ const RULED = new Map([
   ["form-neighbourhood.mjs", 3], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reasoning-tripwires.mjs", 1], ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
+  ["portal-config-view.mjs", 1],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");
