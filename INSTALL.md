@@ -84,7 +84,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   a key or a cloud account.
 
   **Models follow the vendor.** Each step asks for a tier, opus, sonnet or haiku, and the vendor answers
-  with its newest model of that tier. Every report names the model that ran. To hold a tier at one
+  with its newest model of that tier. Every report names the models that ran. To hold a tier at one
   version, set the vendor's pin, `ANTHROPIC_DEFAULT_OPUS_MODEL` and siblings.
 
   `CLEAROTRON_AI` picks the program for the whole install. A key or a cloud account is not a substitute

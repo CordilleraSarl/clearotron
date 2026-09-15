@@ -54,6 +54,8 @@ test("the install pages leave installing the reasoning program to setup", () => 
     "the Windows steps no longer end in the one install line");
   assert.match(flat(one), /the program setup installed \(doctor prints its path\), or `claude` if the machine has its own/,
     "the sign-in table still sends the reader to a `claude` command that setup's copy does not put on PATH");
+  // A run that used three tiers lists three models on its report, so the page says models, plural.
+  assert.ok(flat(one).includes("Every report names the models that ran."), "INSTALL.md §1 says a report names one model; it names each model that ran");
 
   const readme = flat(read("README.md"));
   assert.doesNotMatch(readme, /which must be installed/, "the README still says the program must be installed first");
