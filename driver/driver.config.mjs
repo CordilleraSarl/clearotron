@@ -1895,6 +1895,9 @@ export const ENGINE_BINARIES = {
     // `vendor` is the one word a person needs — the staff config page answers "which engine is
     // running the searches", and `label` below is the MECHANISM, which is what took off that page.
     vendor: "Anthropic",
+    // `product` is the name a reader knows the program by, beside the vendor in setup's engine question
+    // ("Claude (Anthropic)"). Not `fallback`, which is the command word and lower-case.
+    product: "Claude",
     env: "CLEAROTRON_CLAUDE_PATH", fallback: "claude",
     // The npm package that carries this program, and the oldest version setup installs: "this version or
     // newer", with no ceiling. Setup installs it into the engines folder (enginesFolder, below the table)
@@ -1928,6 +1931,7 @@ export const ENGINE_BINARIES = {
   },
   "openai-agent": {
     vendor: "OpenAI",
+    product: "Codex",
     env: "CLEAROTRON_CODEX_PATH", fallback: "codex",
     package: "@openai/codex", floor: "0.154.0",
     installMB: 324,   // measured the same way and on the same day as Claude's, above

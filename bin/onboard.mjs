@@ -109,6 +109,7 @@ import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.m
 import { whereSavesGo, storeCommitRefusal, storeInRepo, storeOutsideRepoMessage, resolveStoreRepoRoot } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed, and why saved searches are off
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
 import { probeEngineTurn, probeFailureText, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
+import { probeCliVersion } from "../driver/engine/cli-version.mjs";   // the engine question reads each program's version the way a run records it
 
 // THE PROVING SENTENCES NAME NO MODEL. They printed the driver's tier word, which is an Anthropic model's
 // name, on both engines, so a codex user was told setup was about to spend on a model family they do not
@@ -891,18 +892,57 @@ export function installSizeLine(eng) {
  * exist — or hide one that does. Same guarantee the register-provider list has.
  *
  * The last row is deliberately NOT an engine, and that is what makes the refusal above workable: a
- * reader whose CLI is signed out, or who only wants `npm run example`, has a stated route through setup
- * that does not end in a `.env` naming an engine nobody proved. `id: null` is that row; anything
+ * reader whose CLI is signed out, or who only wants the demo, has a stated route through setup that does
+ * not end in a `.env` naming an engine nobody proved. `id: null` is that row, "none for now"; what still
+ * works without an engine is said after that choice (sayNoEngine), not crammed into the row. Anything
  * asserting this list against the adapter registry must drop it first.
+ *
+ * EACH ROW SAYS WHAT SETUP FOUND, in the words the owner approved on 2026-09-14: "found: 2.1.270 on this
+ * machine", "found on this machine" when the program would not say its version, "not installed: setup can
+ * install it". `found` is engineMenuState's answer; without it the rows carry the names alone.
  */
-export function engineOptions() {
+export function engineOptions(found = {}) {
+  // The PROGRAM and its VENDOR, not `label`: the labels are mechanism sentences (`claude -p`, `codex
+  // exec`) and the menu is the first question a lawyer reads. The mechanism still appears in the
+  // confirmation lines after a choice, where it belongs.
+  const rows = Object.entries(ENGINE_BINARIES).map(([id, s]) => ({ id, name: `${s.product} (${s.vendor})`, state: foundWords(s, found[id]) }));
+  const width = Math.max(...rows.map((r) => r.name.length));
   return [
-    // The VENDOR and plain words, not `label` — the labels are mechanism sentences (`claude -p`,
-    // `codex exec`) and the menu is the first question a lawyer reads. The
-    // mechanism still appears in the confirmation lines after a choice, where it belongs.
-    ...Object.entries(ENGINE_BINARIES).map(([id, s]) => ({ id, label: `${s.vendor} — uses its \`${s.fallback}\` program on this machine` })),
-    { id: null, label: "Neither yet — configure no engine (`npm run example` needs none; a real run will refuse)" },
+    ...rows.map(({ id, name, state }) => ({ id, label: state ? `${name.padEnd(width)}   ${state}` : name })),
+    { id: null, label: "none for now" },
   ];
+}
+
+/** What setup found of one engine's program, as its menu row says it; "" when nothing was looked for. */
+function foundWords(eng, bin) {
+  if (!bin) return "";
+  if (bin.executable && !bin.relative) return bin.version ? `found: ${bin.version} on this machine` : "found on this machine";
+  // A copy that was refused, or a setting naming something that cannot run, is not "not installed", and
+  // installing another is not always the fix: the reasons are printed once the engine is picked.
+  if (bin.rejected?.length || bin.relative || bin.explicit) return "not usable: setup says why if you pick it";
+  return eng.package ? "not installed: setup can install it" : "not installed";
+}
+
+/**
+ * What this machine has of each engine's program, for the engine question: resolved the way a run
+ * resolves it (the explicit path setting, then PATH, then the copy setup installed), and the version of
+ * whatever was found. The copy setup installed says its version in its own package.json, and so does one
+ * npm put on PATH; anything else is asked with `--version`, the same short, time-limited call a run makes
+ * to record the tool that served it (driver/engine/cli-version.mjs). That call starts no session and
+ * needs no network; one that fails or times out leaves the version null, and the row then says "found
+ * on this machine". `readVersion` is injectable so an arm can drive the unreadable branch.
+ */
+export function engineMenuState({ env = process.env, enginesDir = undefined, readVersion = (p) => probeCliVersion(p).version } = {}) {
+  const out = {};
+  for (const [id, e] of Object.entries(ENGINE_BINARIES)) {
+    const set = env[e.env];
+    const bin = resolveEngineBin(set || e.fallback, { env, engine: id, enginesDir });
+    const usable = bin.executable && !bin.relative;
+    let version = bin.version;
+    if (usable && !version) { try { version = readVersion(bin.path) ?? null; } catch { version = null; } }
+    out[id] = { ...bin, version, explicit: Boolean(set) && set !== e.fallback };
+  }
+  return out;
 }
 
 /**
@@ -3367,9 +3407,11 @@ try {
     // before anything is asked: the binary, and the credentials already in the environment. Sign-in
     // state itself is deliberately NOT guessed — the proof turn is the only honest answer to it, and
     // a guessed "signed in" that the turn then contradicts costs more than no claim.
+    // Resolved once per pass, for these lines and the menu's rows alike, so the two cannot disagree.
+    const found = engineMenuState();
     say("\n  What this box already has:");
     for (const [id, e] of Object.entries(ENGINE_BINARIES)) {
-      const b = resolveEngineBin(process.env[e.env] || e.fallback, { engine: id });
+      const b = found[id];
       const creds = [e.apiKeyEnv, e.headless?.tokenEnv].filter((n) => n && present(process.env[n]));
       const which = b.source === "installed" ? "installed by Clearotron" : b.source === "explicit" ? `set in ${e.env}` : "on PATH";
       say(`    ${e.vendor}: ${b.executable ? `CLI found (${b.path}, ${which}${b.version ? `, ${b.version}` : ""})` : unusableEngineWords(e, b, process.env[e.env])}${creds.length ? ` · ${creds.join(" and ")} already set` : ""}`);
@@ -3377,7 +3419,7 @@ try {
     say("  Choosing an engine also chooses how it bills — the subscription you sign in with, or an");
     say("  API key. That question comes right after this one.");
 
-    const pick = await choose("Which engine runs the reasoning stages?", engineOptions(), 0);
+    const pick = await choose("Which program does the reasoning?", engineOptions(found), 0);
     if (!pick.id) { sayNoEngine(); break; }
     const eng = ENGINE_BINARIES[pick.id];
 

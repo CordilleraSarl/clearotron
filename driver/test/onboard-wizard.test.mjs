@@ -22,7 +22,7 @@ import { RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOptions,
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
   offerUsptoSync, deploymentCurrency, namingProgram, engineProgramSetting, unusableEngineWords,
-  installSizeLine } from "../../bin/onboard.mjs";
+  installSizeLine, engineMenuState } from "../../bin/onboard.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
 import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
@@ -479,9 +479,72 @@ test("the engine menu is built from the driver's registry, plus one row that is 
   assert.equal(opts[0].id, "anthropic-agent", "the production default is the Enter answer — setup must not change what a run does by accident");
   const none = opts.filter((o) => o.id === null);
   assert.equal(none.length, 1, "exactly one deliberate 'no engine' row");
-  assert.match(none[0].label, /npm run example/, "…and it says what still works without one");
+  assert.equal(none[0].label, "none for now", "the row that is not an engine, in the approved words");
+  // What still works without an engine is said AFTER that choice, by the one helper every no-engine route
+  // uses, rather than in the row.
+  const src = readFileSync(ONBOARD, "utf8");
+  const helper = src.slice(src.indexOf("const sayNoEngine = () => {"), src.indexOf("const choose = async"));
+  assert.match(helper, /\$\{invoke\("demo"\)\}\\` needs none/,"the no-engine ending no longer says the demo still works");
+  assert.match(src, /if \(!pick\.id\) \{ sayNoEngine\(\); break; \}/, "picking \"none for now\" no longer reaches that ending");
   for (const o of opts.filter((o) => o.id)) {
-    assert.ok(o.label.includes(ENGINE_BINARIES[o.id].fallback), `${o.id} names the binary it needs`);
+    const e = ENGINE_BINARIES[o.id];
+    assert.ok(e.product && o.label.startsWith(`${e.product} (${e.vendor})`), `${o.id} is not named by its program and vendor from the registry: ${o.label}`);
+  }
+});
+
+// THE ENGINE QUESTION SAYS WHAT SETUP FOUND. Its rows said "uses its `claude` program on this machine"
+// whether or not there was one, so a reader could not tell from the question which answer needed an
+// install. The approved rows, with the version setup read:
+test("each row of the engine question says what setup found of that program, in the approved words", () => {
+  const opts = engineOptions({
+    "anthropic-agent": { executable: true, relative: false, version: "2.1.270", rejected: [] },
+    "openai-agent": { executable: false, relative: false, version: null, rejected: [] },
+  });
+  assert.deepEqual(opts.map((o) => o.label), [
+    "Claude (Anthropic)   found: 2.1.270 on this machine",
+    "Codex (OpenAI)       not installed: setup can install it",
+    "none for now",
+  ]);
+  // A program found whose version could not be read is still found.
+  assert.equal(engineOptions({ "anthropic-agent": { executable: true, relative: false, version: null, rejected: [] } })[0].label,
+    "Claude (Anthropic)   found on this machine");
+});
+
+test("the engine question resolves each program the way a run does: setting, then PATH, then the copy setup installed", () => {
+  const sh = (dir, name, body) => { const p = join(dir, name); writeFileSync(p, `#!/bin/sh\n${body}\n`, { mode: 0o755 }); return p; };
+  const machine = mkdtempSync(join(tmpdir(), "onboard-menu-path-"));
+  const elsewhere = mkdtempSync(join(tmpdir(), "onboard-menu-set-"));
+  const silent = mkdtempSync(join(tmpdir(), "onboard-menu-silent-"));
+  sh(machine, "claude", 'echo "2.1.241 (Claude Code)"');
+  const named = sh(elsewhere, "my-claude", 'echo "3.0.0 (Claude Code)"');
+  sh(silent, "claude", "exit 1");
+  const { root } = plantInstalledCopy("#!/bin/sh\nexit 1\n", "2.1.270");
+  const labels = (state) => engineOptions(state).map((o) => o.label);
+  try {
+    // The machine's own copy, on PATH: its version is asked with `--version`.
+    const onPath = engineMenuState({ env: { PATH: machine }, enginesDir: NO_ENGINES });
+    assert.equal(onPath["anthropic-agent"].path, join(machine, "claude"));
+    assert.deepEqual(labels(onPath).slice(0, 2), [
+      "Claude (Anthropic)   found: 2.1.241 on this machine",
+      "Codex (OpenAI)       not installed: setup can install it",
+    ]);
+    // The explicit setting comes before PATH.
+    const set = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: named }, enginesDir: NO_ENGINES });
+    assert.equal(set["anthropic-agent"].path, named);
+    assert.equal(labels(set)[0], "Claude (Anthropic)   found: 3.0.0 on this machine");
+    // The copy setup installed is found last, and says its version in its own package.json: the program
+    // itself exits 1 on `--version`, so the version can only have come from there.
+    const installed = engineMenuState({ env: { PATH: "" }, enginesDir: root });
+    assert.equal(installed["anthropic-agent"].source, "installed");
+    assert.equal(labels(installed)[0], "Claude (Anthropic)   found: 2.1.270 on this machine");
+    // A program that will not say its version is still found.
+    const quiet = engineMenuState({ env: { PATH: silent }, enginesDir: NO_ENGINES });
+    assert.equal(labels(quiet)[0], "Claude (Anthropic)   found on this machine");
+    // CONTROL: a setting naming nothing is not reported as found, nor as something an install mends.
+    const gone = engineMenuState({ env: { PATH: machine, [ENGINE_BINARIES["anthropic-agent"].env]: join(elsewhere, "absent") }, enginesDir: NO_ENGINES });
+    assert.equal(labels(gone)[0], "Claude (Anthropic)   not usable: setup says why if you pick it");
+  } finally {
+    for (const d of [machine, elsewhere, silent, root]) rmSync(d, { recursive: true, force: true });
   }
 });
 
