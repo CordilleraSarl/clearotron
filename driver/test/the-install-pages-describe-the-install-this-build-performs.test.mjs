@@ -54,6 +54,11 @@ test("the install pages leave installing the reasoning program to setup", () => 
     "the Windows steps no longer end in the one install line");
   assert.match(flat(one), /the program setup installed \(doctor prints its path\), or `claude` if the machine has its own/,
     "the sign-in table still sends the reader to a `claude` command that setup's copy does not put on PATH");
+  // The quickstart's table sends the reader to the same sign-in, for the same reason: setup's copy is not on PATH.
+  const row = read("QUICKSTART.md").split("\n").find((l) => l.startsWith("| A reasoning program |"));
+  assert.ok(row, "QUICKSTART.md's table has no row for the reasoning program");
+  assert.match(row, /Sign in with the program setup installed \(doctor prints its path\)/,
+    "the quickstart's table does not say how to sign in with the copy setup installed");
   // A run that used three tiers lists three models on its report, so the page says models, plural.
   assert.ok(flat(one).includes("Every report names the models that ran."), "INSTALL.md §1 says a report names one model; it names each model that ran");
 
@@ -249,9 +254,16 @@ test("every model pin the checks carry is documented beside the others, the fabl
   const [from, to] = [adapter.indexOf("// tier/alias → claude -p model alias"), adapter.indexOf("const CLAUDE_MODEL = {")];
   assert.ok(from !== -1 && to > from, "the Claude adapter's model table no longer has its comment above it");
   const comment = flat(adapter.slice(from, to).replace(/^\s*\/\/\s?/gm, ""));
+  // A LIST OF PINS LISTS ALL OF THEM, here as in §3b. A sentence naming two or more pins is a list; checked
+  // across the whole text instead, a later sentence naming the fable pin on its own would pass while the
+  // list itself left fable out.
+  const short = (n) => new RegExp(`_${n.replace(/^ANTHROPIC_DEFAULT_|_MODEL$/g, "")}_MODEL\\b`);
   for (const [where, text] of [["CONTRACT.md §3", tiers], ["the comment above the Claude adapter's model table", comment]]) {
-    for (const n of pins)
-      assert.match(text, new RegExp(`_${n.replace(/^ANTHROPIC_DEFAULT_|_MODEL$/g, "")}_MODEL\\b`), `${where} does not name ${n}`);
+    for (const n of pins) assert.match(text, short(n), `${where} does not name ${n}`);
+    const lists = text.split(/(?<=\.)\s+/).filter((s) => pins.filter((n) => short(n).test(s)).length >= 2);
+    assert.ok(lists.length >= 1, `${where} has no sentence listing the pins, so the check below would hold nothing`);
+    for (const s of lists)
+      for (const n of pins) assert.match(s, short(n), `${where} lists the pins without ${n}: ${s}`);
     assert.match(text, /ANTHROPIC_DEFAULT_FABLE_MODEL[^.]*CLEAROTRON_SYNTHESIS_MODEL=fable/, `${where} does not say when the fable pin is read`);
   }
 });

@@ -10,7 +10,7 @@ of its own and calls nothing on your behalf.
 
 | What | Why | Where |
 |---|---|---|
-| A reasoning program | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`). Setup installs it if the machine has none, and shows you how to sign in |
+| A reasoning program | Every stage runs as a headless turn of it | [Claude Code](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`). Setup installs it if the machine has none. Sign in with the program setup installed (doctor prints its path), or with `claude` or `codex login` if the machine has its own |
 | A register | Sets what the search reaches, and what it costs | [Signa](https://signa.so) — one key, self-serve, US + EU + WIPO and eight more offices |
 | Web research | Covers the open web and the marketplaces | [Perplexity](https://www.perplexity.ai) |
 

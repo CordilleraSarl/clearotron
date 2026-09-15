@@ -95,7 +95,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   | `CLEAROTRON_AI` | Program | Signed-in laptop | A machine you cannot complete a sign-in on |
   |---|---|---|---|
   | `anthropic-agent` (default) | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
-  | `openai-agent` | `codex` | run the program setup installed with `login` (doctor prints its path), or `codex login` if the machine has its own | `login --device-auth` on the same program — prints a code you complete on another device |
+  | `openai-agent` | `codex` | `login` on the program setup installed (doctor prints its path), or `codex login` if the machine has its own | `login --device-auth` on the same program — prints a code you complete on another device |
 
   **The right-hand column is about where you can complete a sign-in, not about whether the machine has a
   screen.** A server you can reach a browser from takes the left-hand route perfectly well; a laptop
