@@ -128,6 +128,24 @@ on:
           - rehearse
           - beta
           - stable
+      # ── DEPRECATING OLD VERSIONS IS A DISPATCH INPUT BECAUSE NOBODY CAN DO IT ANYWHERE ELSE ────────
+      #
+      # The publish credential is minted per run from this workflow's OIDC token and stored nowhere, so
+      # `npm whoami` is 401 on every box by design. That design is right and the consequence is that a
+      # deprecation has no path at all unless this file opens one.
+      #
+      # IT IS A SEPARATE INPUT FROM `cut`, not a fourth option on it. A cut publishes a new version and a
+      # deprecation warns old ones; they are different acts on different days, and folding the second
+      # into the first would mean no way to run either alone. Left blank, nothing about a cut changes.
+      #
+      # THE VALUE IS THE STABLE READERS SHOULD MOVE TO, and everything strictly below it is warned. The
+      # script refuses a version that is not published, because pointing readers at a version that does
+      # not exist is worse than leaving them unwarned.
+      deprecate-below:
+        description: 'Deprecate every published version below this one (e.g. 0.3.1). Leave blank to do nothing.'
+        type: string
+        required: false
+        default: ''
 
 concurrency:
   group: release-${{ github.ref }}
@@ -1548,3 +1566,48 @@ jobs:
           else
             gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
+
+  # ── THE DEPRECATION SWEEP ─────────────────────────────────────────────────────────────────────────
+  #
+  # ITS OWN JOB, GATED ON ITS OWN INPUT, sharing nothing with the cut. It needs no version, no tag and no
+  # artefact — only the registry and a credential — so making it depend on the cut jobs would mean a
+  # deprecation could not run on a day nothing is being released, which is most days.
+  #
+  # THE SAME CREDENTIAL PATH AS THE PUBLISH: `id-token: write` and the `npm` environment, so npm mints a
+  # short-lived credential from this run's OIDC token. Whether that credential is permitted to deprecate
+  # as well as publish is the one thing this cannot be sure of until it runs — the token is scoped by
+  # npm, not by us, and it cannot be rehearsed from a box where `npm whoami` is 401 by design. The script
+  # reports each version's registry read-back rather than the command's exit code, so a credential that
+  # publishes but cannot deprecate shows up as "reported success and the registry reads back NOTHING"
+  # against a named version rather than as a green run.
+  #
+  # NO RANGE REACHES npm. `npm deprecate pkg "<1.0.0"` is one command that can warn every version a
+  # project ever shipped, and the undo is one command per version; the script enumerates, compares and
+  # deprecates one at a time instead.
+  deprecate:
+    name: Deprecate published versions below a stable
+    if: github.event_name == 'workflow_dispatch' && inputs.deprecate-below != ''
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write     # the OIDC token npm exchanges for a short-lived credential
+    steps:
+      - uses: actions/checkout@v7
+      # NO `registry-url:`, and the guard in release-publish-guard.mjs refuses one for a stated reason:
+      # it writes an .npmrc that authenticates with NODE_AUTH_TOKEN, and trusted publishing needs no
+      # registry configured at all, so its presence means somebody is wiring a token. It caught this step
+      # on the first draft, correctly.
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm ci
+      # EVERY JOB IN THIS FILE RUNS IT, and an arm counts the jobs so a new one cannot quietly skip it.
+      # That arm caught this job on its first draft — which is the guard working, since a job that can
+      # reach the registry with a credential is exactly what it exists to hold.
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+      # A DEPRECATION IS NOT HELD TO `main` the way a publish is. It changes no code and stamps no
+      # version; it puts a message on versions that are already out, and the message names a stable that
+      # must already be published or the script refuses. There is nothing a branch could poison.
+      - name: Deprecate everything below the named stable
+        run: node scripts/deprecate-below.mjs --below "${{ inputs.deprecate-below }}"

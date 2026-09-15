@@ -887,8 +887,13 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // SIX NOW. `awaited` and `publish-awaited` joined on 2026-09-06: a push routinely publishes a version
   // already stranded AND cuts a new one, and publishing only the older one is what left a version
   // stranded after every merge.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "publish", "publish-awaited"],
-    "the release workflow's jobs are not the six this file is written about");
+  // SEVEN NOW. `deprecate` joined on 2026-09-15 and is unlike the other six: it takes part in no cut,
+  // needs no version, tag or artefact, and is gated on its own dispatch input rather than on the cut.
+  // It is here because the publish credential exists only inside this workflow, so a deprecation has no
+  // path anywhere else — and it is in THIS list because a job that can reach the registry is exactly
+  // what this arm exists to make somebody declare.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "publish", "publish-awaited", "deprecate"],
+    "the release workflow's jobs are not the seven this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -1408,7 +1413,11 @@ test("the two publish jobs carry the same steps, so they cannot drift apart", ()
   // The cost of duplication is drift, and this is what pays it: the same steps, in the same order.
   const names = (block) => [...block.matchAll(/^      - name: (.+)$/gm)].map((m) => m[1].trim());
   const first = names(jobText("publish"));
-  const second = names(RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:")));
+  // `jobText`, NOT a slice to the end of the file. This read everything from `publish-awaited:` onwards,
+  // which was the same text until a job was added after it — and then that job's steps counted as this
+  // one's. A slice whose end is "the rest of the file" is a slice that silently grows; the helper above
+  // ends at the next job, which is what "this job's steps" means.
+  const second = names(jobText("publish-awaited"));
   assert.ok(first.length >= 10, `only ${first.length} steps found in the first publish — this arm could not look`);
 
   // EVERY STEP OF THE FIRST APPEARS IN THE SECOND, IN ORDER. A subsequence rather than equality, because
