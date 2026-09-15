@@ -5480,6 +5480,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-list-names-its-client.test.mjs": {
+          "tests": 4,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "account-audit-chain.test.mjs": {
           "tests": 10,
           "asserts": 46,
