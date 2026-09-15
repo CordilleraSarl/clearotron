@@ -55,7 +55,7 @@
 import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
-import { readFileSync, existsSync, rmSync } from 'node:fs'
+import { readFileSync, existsSync, rmSync, writeFileSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
@@ -333,6 +333,10 @@ let secretPresses = 0
 // it was never established — three plants each failed to reproduce it — so zero is counted and named as an
 // ENVIRONMENT failure rather than explained.
 let clipboardReached = 0
+// A FRAME PER DECK, for a reader rather than for an assertion. Any change here is one a person sees, and
+// a diff cannot show placement — the rule that came from a release shipping a button in the wrong place.
+const shotDir = process.argv.includes('--shot-dir') ? process.argv[process.argv.indexOf('--shot-dir') + 1] : null
+
 let clipboardRefused = 0
 
 const out = {}
@@ -420,10 +424,30 @@ for (const state of Object.keys(STATES)) {
       // sign-in steps exactly as a deck that had been read — while the step text underneath promised
       // the reader that both ways were shown. Asserted on the NULL decks and asserted ABSENT on the
       // others: an alternative beside a door we did read is a set of instructions that cannot work.
-      const wantsBoth = Object.hasOwn(o, 'door') && o.door === null && (o.altSteps?.length ?? 0) > 0
+      // KEYED ON THE DECK, NEVER ON THE OFFER. `o` comes from the same `offersForWire` call that feeds
+      // the page, so an expectation read off it moves with the thing it is checking: dropping both
+      // fields from the wire — the exact pre-fix state — left every assertion here passing, because
+      // `wantsBoth` went false at the same moment the page stopped drawing them. The DECK states what
+      // this deployment is; that is the fact the page is supposed to honour.
+      if (shotDir) {
+        const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+        const data = shot.result?.result?.data ?? shot.result?.data
+        if (data) writeFileSync(join(shotDir, `ai-${state}-${o.id}.png`), Buffer.from(data, 'base64'))
+      }
+      const wantsBoth = STATES[state].url !== null && STATES[state].door === null && o.route === 'public-http'
       if (wantsBoth) {
-        ok(s.altStepCount === o.altSteps.length && s.altFirstStepCopies,
-          `"${o.name}" on a door nobody could read shows all ${o.altSteps.length} of the other way's steps, copy first (saw ${s.altStepCount}, copy: ${s.altFirstStepCopies})`)
+        ok(s.altStepCount > 0 && s.altFirstStepCopies,
+          `"${o.name}" on a door nobody could read shows the other way's steps, copy first (saw ${s.altStepCount}, copy: ${s.altFirstStepCopies})`)
+        // AND THE WIRE ACTUALLY CARRIED THEM. Asserted against the deck above, so this cannot go quiet
+        // by the resolver simply ceasing to produce an alternative.
+        ok((o.altSteps?.length ?? 0) > 0 && o.door === null,
+          `the wire dropped the other way in for "${o.name}" — the page has nothing to draw and nothing to say`)
+        // NULL-SAFE ON THE WIRE'S OWN FIELD. Reading `.length` off an absent `altSteps` threw here, and a
+        // check that throws stops reporting: the two decks after this one were never measured, so the
+        // run said less about the page than it had already learned. A missing alternative is a finding
+        // the assertion above states; it must not also be an exception.
+        ok(s.altStepCount === (o.altSteps?.length ?? 0),
+          `"${o.name}" drew ${s.altStepCount} of the ${o.altSteps?.length ?? 0} steps the wire carried`)
         ok(!!s.unknownDoorNote, `"${o.name}" says the door could not be checked rather than drawing one way as though it had been`)
         ok(!!s.altHeading, `the second list on "${o.name}" is headed, so a reader can tell which set is which`)
       } else {

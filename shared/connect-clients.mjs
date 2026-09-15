@@ -105,9 +105,11 @@ const BRIEF = "ask it to brief you on your clearances.";
 export const DOOR_KINDS = Object.freeze(["sign-in", "key"]);
 const SIGNIN_HINT = "No key: this connector signs you in through your browser, and the sign-in is the "
   + "authentication your assistant is asking about.";
-const UNKNOWN_DOOR_HINT = "This deployment's connector could not be read just now, so both ways are "
-  + "shown: sign-in is what a hosted connector answers, a key is what a self-hosted one takes. Try the "
-  + "sign-in first — an assistant that needs a key will say so.";
+// THE UNKNOWN DOOR IS THE PAGE'S SENTENCE NOW, NOT A STEP HINT. This hint said "both ways are shown"
+// while one set was drawn — a promise the page could not keep — and it said it in the words that screen
+// is not allowed to show a reader. The panel states it once, above both lists, and the lists make it
+// true. A hint under step one repeating it would be the same sentence twice, the second time in
+// vocabulary the reader did not ask for.
 
 /**
  * Every app we can speak to, and the steps for each route. Adding one is a row.
@@ -159,7 +161,7 @@ export const CONNECT_CLIENTS = Object.freeze([
         ] : [
           // THE SIGN-IN DOOR. No key is minted and no header is set: the warning the old steps told the
           // reader to ignore IS the sign-in, and following it is the whole of the connection.
-          { text: "Copy the address.", copy: "address", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy the address.", copy: "address", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "In Claude, open **Settings → Connectors → Add custom connector**." },
           { text: "Paste the address and press **Add**." },
           { text: `Sign in when the browser opens — use ${operator ?? "your work email"}.` },
@@ -185,7 +187,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
         ] : [
           // The command carries no header, because a door that signs its reader in never honours one.
-          { text: "Copy this command.", copy: "claude-cli-http-signin", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy this command.", copy: "claude-cli-http-signin", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "Paste it into a terminal and press Enter." },
           { text: "Sign in when the browser opens." },
           { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
@@ -220,7 +222,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: "Add a custom connector and paste the address." },
           { text: "Give the key as the connector's bearer token — the second line." },
         ] : [
-          { text: "Copy the address.", copy: "address", hint: door === null ? UNKNOWN_DOOR_HINT : undefined },
+          { text: "Copy the address.", copy: "address", hint: undefined },
           { text: "In ChatGPT on the web, turn on **Settings → Security and login → Developer mode**.",
             hint: "Needs a Plus, Pro, Business, Enterprise or Edu plan. On a company plan, your admin may have to allow it." },
           { text: "Add a custom connector and paste the address." },
@@ -252,7 +254,7 @@ export const CONNECT_CLIENTS = Object.freeze([
             hint: "Codex reads the key from there, so it never sits in the settings file." },
           { text: `Restart Codex and ${BRIEF}` },
         ] : [
-          { text: "Copy this.", copy: "codex-toml-http-signin", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy this.", copy: "codex-toml-http-signin", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "Open `~/.codex/config.toml` and paste it at the end." },
           // ITS OWN STEP, not a hint on the one before it. The sign-in IS the connection here, and a
           // reader skimming numbered steps does not read the small print under one of them.
@@ -282,7 +284,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: "Paste the address and the key wherever your app adds a custom MCP server.",
             hint: "It may call them “server URL” and “bearer token”." },
         ] : [
-          { text: "Copy the address.", copy: "address", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy the address.", copy: "address", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "Paste it wherever your app adds a custom MCP server, and sign in when the browser opens.",
             hint: "It may call the address the “server URL”. There is no token to give it." },
         ]),

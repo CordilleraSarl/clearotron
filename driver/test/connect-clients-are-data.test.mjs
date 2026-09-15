@@ -149,18 +149,38 @@ test("a sign-in door gets no key, no header and no ignore-the-warning — on eve
 test("a key door keeps the key route, because on a bare install it is the only one that works", () => {
   const KEYED = { ...PUBLISHED, door: "key" };
   const claude = offerOf(KEYED, "claude", "public-http");
+  const KEYED_OFFER = claude;
   assert.equal(claude.steps[0].copy.kind, "secret", "the key door lost the key it takes");
   assert.match(claude.steps.map((s) => s.text).join(" "), /Authentication\*\* to \*\*None/,
     "the driven key steps changed — they were verified against a door that takes a key");
 
-  // AND AN UNREADABLE DOOR SAYS SO rather than guessing. The safe default is the sign-in shape, which
-  // mints nothing: a wrong guess there costs a reader one failed attempt, where the other way round
-  // issues a live credential for a door that cannot use it.
+  // AND AN UNREADABLE DOOR OFFERS BOTH rather than guessing. The sign-in shape leads because it mints
+  // nothing: a wrong guess there costs a reader one failed attempt, where the other way round issues a
+  // live credential for a door that cannot use it.
+  //
+  // ASSERTED ON THE OFFER, NOT ON A SENTENCE. These two lines used to match the words "could not be
+  // read" and "key" in step one's hint. That hint was the only place the alternative was mentioned —
+  // it told the reader both ways were shown while one was drawn — so the repair moved the statement to
+  // the page and gave it real steps to be true about. Matching the hint's new wording would have kept
+  // this green while checking a sentence that no longer carries the property; matching its old wording
+  // reds for the spelling rather than the behaviour. What the page needs from this layer is the DOOR
+  // and the other way's STEPS, so that is what is asserted. That the page draws them is the render
+  // check's arm, where a browser can see it.
   const UNKNOWN = { ...PUBLISHED, door: null };
   const unsure = offerOf(UNKNOWN, "claude", "public-http");
   assert.notEqual(unsure.steps[0].copy.kind, "secret", "an unreadable door minted a key anyway");
-  assert.match(String(unsure.steps[0].hint ?? ""), /could not be read/, "the page does not say that it could not tell");
-  assert.match(String(unsure.steps[0].hint ?? ""), /key/, "…and does not name the other way in");
+  assert.equal(unsure.door, null, "the offer does not say the door was unreadable, so the page cannot either");
+  assert.ok(Array.isArray(unsure.altSteps) && unsure.altSteps.length > 0, "the other way in is not offered at all");
+  assert.equal(unsure.altSteps[0].copy?.kind, "secret", "the other way in does not hand over the thing it needs");
+  // IT IS THE KEY ROUTE'S OWN STEPS, not a second set written here. Composed by asking the same author
+  // with the other answer, so the two cannot drift.
+  assert.deepEqual(unsure.altSteps.map((x) => x.text), claude.steps.map((x) => x.text),
+    "the alternative is not the key door's own steps");
+
+  // AND A DOOR THAT WAS READ IS OFFERED ONE WAY. An alternative beside a door we did read is a set of
+  // instructions that cannot work for that reader, presented as though it might.
+  assert.equal(KEYED_OFFER.door, "key");
+  assert.equal(KEYED_OFFER.altSteps, undefined, "a door that WAS read carries a second set of steps anyway");
 });
 
 test("the wire carries what the page hands over and nothing it would have to trust", () => {
