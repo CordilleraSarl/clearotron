@@ -194,7 +194,10 @@ function billingKeyOf(rec) {
   // is modelKey's own, a non-empty string `modelUsed`, and not `modelUsed == null`: under that looser test
   // a row stamped `modelUsed: ""` keyed its bucket as the empty string while the rollup keyed the same
   // turn `<engine>/no-model-reported`. Two copies of one rule drifting apart is how the census and the
-  // rollup came to disagree about what an attempt is, so the tests hold these two copies to each other.
+  // rollup came to disagree about what an attempt is, so the tests hold these two copies to each other on
+  // the rows the engine writes. They still part on a row no writer produces: no model and no engine, or
+  // engine `anthropic-agent`. This key names the missing model there, while modelKey resolves the absent
+  // model through the catalog before it asks whether one exists, and buckets the row as `undefined`.
   const stamped = typeof rec.modelUsed === "string" && rec.modelUsed;
   const model = !stamped && typeof rec.model !== "string"
     ? `${typeof rec.engine === "string" && rec.engine ? rec.engine : "unknown"}/no-model-reported`
