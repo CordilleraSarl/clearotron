@@ -1,5 +1,12 @@
 # trademark-artifacts-mcp
 
+## 0.3.1-beta.3
+
+### Patch Changes
+
+- 56a760f: Fixed: Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
+- c05e0a7: Fixed: Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
+
 ## 0.3.1-beta.2
 
 ### Patch Changes

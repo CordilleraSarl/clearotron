@@ -1,5 +1,30 @@
 # clearotron-driver
 
+## 0.3.1-beta.3
+
+### Patch Changes
+
+- d0d42f7: Fixed: A name in a knockout batch is no longer rated above every conflict found against it. Its rating now follows from the conflicts on its own page.
+  
+  Fixed: Before, a rule forced any name made of everyday words off the lowest band, whatever the search found. That rule is gone for every client.
+- 56a760f: Fixed: Giving somebody access to everything on the installation now works from the access form. It used to refuse. The message it refused with said you can only give access to what you hold yourself, which was not true of the person seeing it.
+- 8c3bc3b: New: Ask AI on a report now opens Claude or ChatGPT with a question about that report already typed in. One press, in a new tab, and nothing is sent until you send it.
+  
+  The button used to hand over a connector address and a question carrying the run's internal code, with no indication of which one you needed. The address belongs on the Use your own AI page, where you set the connector up once. It is no longer shown on reports at all.
+  
+  If you have not connected an assistant yet, the button explains that in a line and offers to take you there.
+  
+  For operators: the report's own "Ask your AI" band is gone, so there is one Ask AI control rather than two. Reports rendered before this upgrade keep the band in their own file, and it is hidden when the portal serves them.
+- 56a760f: Fixed: `clearotron grant remove --tenant` now refuses when the person has access to everything on the installation. It used to remove the organisation and then warn that nothing they could see had changed.
+  
+  Fixed: Removing somebody whose address is spelled with different capitalisation in different parts of the access file now removes all of them. Half of the entry used to survive, and the command reported success.
+- 56a760f: New: Access can now be narrowed and taken away, not only added to. Somebody who manages one organisation removes that organisation alone. Somebody who can see all of a person removes their access to the installation, and withdraws the keys their AI assistant was using.
+  
+  Fixed: A removal now says plainly when the connector cannot be told about it yet, instead of implying the assistant lost access too.
+- f1c5925: Fixed: Where a search covers two ratified forms of a name, the report now reasons each form and says which conflicts differ between them.
+  
+  Fixed: Before, both forms were searched but one combined read came back. When the forms read alike the report now says so, rather than leaving it unsaid.
+
 ## 0.3.1-beta.2
 
 ### Patch Changes

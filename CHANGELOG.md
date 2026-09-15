@@ -4,6 +4,35 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.1-beta.3
+
+### New
+
+- Ask AI on a report now opens Claude or ChatGPT with a question about that report already typed in. One press, in a new tab, and nothing is sent until you send it.
+- The button used to hand over a connector address and a question carrying the run's internal code, with no indication of which one you needed. The address belongs on the Use your own AI page, where you set the connector up once. It is no longer shown on reports at all.
+- If you have not connected an assistant yet, the button explains that in a line and offers to take you there.
+- Access can now be narrowed and taken away, not only added to. Somebody who manages one organisation removes that organisation alone. Somebody who can see all of a person removes their access to the installation, and withdraws the keys their AI assistant was using.
+- The People page can now change what somebody may do and see, and take their access away. Modify on a row opens the same form used to add them, filled in. Unticking a row removes that access. Remove sits below Save and asks once before it acts. Your own row has neither, so nobody can lock themselves out.
+
+### Fixed
+
+- A name in a knockout batch is no longer rated above every conflict found against it. Its rating now follows from the conflicts on its own page.
+- Before, a rule forced any name made of everyday words off the lowest band, whatever the search found. That rule is gone for every client.
+- Giving somebody access to everything on the installation now works from the access form. It used to refuse. The message it refused with said you can only give access to what you hold yourself, which was not true of the person seeing it.
+- `clearotron grant remove --tenant` now refuses when the person has access to everything on the installation. It used to remove the organisation and then warn that nothing they could see had changed.
+- Removing somebody whose address is spelled with different capitalisation in different parts of the access file now removes all of them. Half of the entry used to survive, and the command reported success.
+- A removal now says plainly when the connector cannot be told about it yet, instead of implying the assistant lost access too.
+- Where a search covers two ratified forms of a name, the report now reasons each form and says which conflicts differ between them.
+- Before, both forms were searched but one combined read came back. When the forms read alike the report now says so, rather than leaving it unsaid.
+- Removing somebody's access now ends their assistant's connection on its next request. Until now an assistant that had already connected kept the access it started with for up to half an hour.
+- Ask your assistant for a client's recent searches by the client's name and it finds them. Every search in the list now says which client it was for, and which project. A search whose own record cannot be read says so, instead of appearing to belong to nobody.
+- Every page in the portal now has one heading instead of two saying nearly the same thing. The home page is called Home, and the All Clearances and New clearance buttons sit together at the top of it.
+- Somebody listed only in a company's access list, with no permissions of their own, is now shown as that. They used to read as a view-only person, which is a different thing.
+
+### For operators
+
+- the report's own "Ask your AI" band is gone, so there is one Ask AI control rather than two. Reports rendered before this upgrade keep the band in their own file, and it is hidden when the portal serves them.
+
 ## 0.3.1-beta.2
 
 ### New
