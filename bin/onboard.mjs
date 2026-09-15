@@ -935,6 +935,34 @@ export function leaveDemoAdvice(engSpec, { platform = process.platform, command 
 }
 
 /**
+ * What doctor says when the engine's capture and this machine disagree about whether the engine's program
+ * can be found. `capture` and `live` are the comparison's words, "found" or "not found" (flag-snapshot.mjs,
+ * postureDisagreement); `command` is the setup command as the reader can type it from here.
+ *
+ * THE CAPTURE IS WRITTEN WHEN THE SERVICES START and at no other time: by `clearotron start`, whose children
+ * they are, and by the worker unit's ExecStartPost. So "not found" there means the services could not find
+ * the program when they last started, and a restart makes them look again. A program this machine finds and
+ * they still do not is one they cannot see, and the copy setup installs is the one they find without PATH
+ * (resolveEngineProgram: the path setting, then PATH, then that copy, in a folder under the same home).
+ *
+ * This used to tell the reader to restart the engine service so it re-read its PATH, or to install the CLI
+ * where the service could see it: words from before setup installed the program, given for both directions,
+ * and one of them is a machine the services found the program on.
+ */
+export function programDisagreement({ capture, live }, { command = reachableCommand("install") } = {}) {
+  const head = `The engine that last ran and this machine disagree about the engine program: the last run `
+    + `recorded it as ${capture}, this machine reads it as ${live}. A NEW search will refuse while that is true.`;
+  if (capture === "not found") {
+    return `${head} The services could not find the program when they last started. Restart them so they look `
+      + `again. If they still cannot find it, run \`${command}\` and let it install the program where they look `
+      + "(the copy setup installs is found without PATH), then restart them.";
+  }
+  return `${head} The services found the program when they last started, and this shell cannot find it now. `
+    + `If it was removed, run \`${command}\` to install it again (the copy setup installs is found without PATH), `
+    + "then restart the services so they look again.";
+}
+
+/**
  * What an engine's install takes on disk, and how to take it back: the line setup's install offer says
  * right after it names the folder, and before it asks. A reader deciding whether to let a program onto
  * their machine is owed its size and its way off, and neither was said. The size is the registry's
@@ -1704,12 +1732,7 @@ export async function runCheck() {
       // NULL IS NOT AGREEMENT and neither is an empty pool — a box with no capture has nothing to
       // disagree with, and saying so beats printing a clean bill nobody measured.
       const clash = (rows ?? []).find((r) => r.what === "engine program");
-      if (clash) {
-        problem(`The engine that last ran and this machine disagree about the engine program: the last run `
-          + `recorded it as ${clash.capture}, this machine reads it as ${clash.live}. A NEW search will `
-          + `refuse while that is true. Restart the engine service so it re-reads its PATH, or install the `
-          + `CLI where the service can see it.`);
-      }
+      if (clash) problem(programDisagreement(clash));
     } catch (e) {
       // WHAT ACTUALLY REACHES THIS CATCH, established by driving it rather than by reading it.
       //

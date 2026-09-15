@@ -17,15 +17,27 @@
 // is the other half, because this shipped to people who are using it today.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 import { whatHoldsPort, stopThatProcess, removeDirectory, chdirPrefix, envPrefix, backgroundManager } from "../../shared/os-advice.mjs";
 import { listenErrorMessage, nextFreePort } from "../../shared/listen.mjs";
-import { platformEngineRefusal, leaveDemoAdvice } from "../../bin/onboard.mjs";
+import { platformEngineRefusal, leaveDemoAdvice, programDisagreement } from "../../bin/onboard.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { reachableCommand } from "../../shared/invocation.mjs";
+import { buildFlagSnapshot, snapshotPath } from "../flag-snapshot.mjs";
+import { handRunEnv } from "./drive-env.mjs";
 
 const POSIX = ["linux", "darwin"];
+const HERE = dirname(fileURLToPath(import.meta.url));
+const ONBOARD = join(HERE, "..", "..", "bin", "onboard.mjs");
+const MOCK = join(HERE, "mock-claude.mjs");
+// A PATH holding node and nothing else of this machine's, so doctor's environment is composed from nothing.
+const NODE_BIN = mkdtempSync(join(tmpdir(), "advice-node-"));
+symlinkSync(process.execPath, join(NODE_BIN, "node"));
 
 test("the POSIX advice is byte-for-byte what it always was", () => {
   // The regression that matters most here is not a wrong Windows string; it is a changed Linux one.
@@ -114,6 +126,48 @@ test("the way out of demo is setup, which installs the program, and names no com
   }
   // Unset, the command is the one the reader can type from here.
   assert.ok(leaveDemoAdvice(ENGINE_BINARIES["anthropic-agent"], { platform: "linux" })[0].includes(`\`${reachableCommand("install")}\``));
+});
+
+test("doctor's engine-program disagreement says which side could not find it, and names setup's install and the restart", () => {
+  // It said "Restart the engine service so it re-reads its PATH, or install the CLI where the service can see
+  // it" in both directions, from before setup installed the program into a folder the services find without
+  // PATH, and one direction is a machine the services found the program on.
+  const command = "npx clearotron install";
+  const unseen = programDisagreement({ capture: "not found", live: "found" }, { command });
+  assert.match(unseen, /recorded it as not found, this machine reads it as found\. A NEW search will refuse while that is true\./);
+  assert.match(unseen, / The services could not find the program when they last started\. Restart them so they look again\. If they still cannot find it, run `npx clearotron install` and let it install the program where they look \(the copy setup installs is found without PATH\), then restart them\.$/);
+  const gone = programDisagreement({ capture: "found", live: "not found" }, { command });
+  assert.match(gone, / The services found the program when they last started, and this shell cannot find it now\. If it was removed, run `npx clearotron install` to install it again \(the copy setup installs is found without PATH\), then restart the services so they look again\.$/);
+  assert.doesNotMatch(gone, /could not find the program/, "the services are said to have missed a program they found");
+  for (const s of [unseen, gone]) assert.doesNotMatch(s, /re-reads its PATH|where the service can see it|the CLI\b/, s);
+  // Unset, the command is the one the reader can type from here.
+  assert.ok(programDisagreement({ capture: "not found", live: "found" }).includes(`\`${reachableCommand("install")}\``));
+});
+
+test("doctor prints that disagreement over a capture the services wrote, and nothing over one that agrees", () => {
+  // Driven, not read: a real `doctor --check` in a throwaway home whose pool holds a capture written when the
+  // services last started, and whose settings file names a program this machine can run.
+  const drive = (binaryPresent) => {
+    const home = mkdtempSync(join(tmpdir(), "advice-capture-"));
+    const pool = join(home, "pool");
+    mkdirSync(join(pool, "_state"), { recursive: true });
+    writeFileSync(snapshotPath(pool), JSON.stringify(buildFlagSnapshot({}, { capturedAt: new Date().toISOString(),
+      engine: { id: "anthropic-agent", vendor: "Anthropic", known: true, billing: { mode: "subscription" }, binaryPresent } })));
+    mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+    writeFileSync(join(home, ".config", "clearotron", ".env"),
+      ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_CLAUDE_PATH=${MOCK}`, `CLEAROTRON_REPORTS_DIR=${pool}`].join("\n") + "\n");
+    try {
+      return execFileSync(process.execPath, [ONBOARD, "--check"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
+        env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin`, CLEAROTRON_REPORTS_DIR: pool }, {}) });
+    } catch (e) { return `${e.stdout ?? ""}${e.stderr ?? ""}`; }
+  };
+  const out = drive(false);
+  assert.match(out, /disagree about the engine program: the last run recorded it as not found, this machine reads it as found/, out);
+  assert.match(out, /The services could not find the program when they last started\. Restart them so they look again\. If they still cannot find it, run `[^`]+` and let it install the program where they look \(the copy setup installs is found without PATH\), then restart them\./, out);
+  assert.doesNotMatch(out, /re-reads its PATH/, out);
+  // CONTROL: the same machine under a capture that found the program says nothing about it, so the line
+  // above came from the capture and not from something else doctor prints.
+  assert.doesNotMatch(drive(true), /disagree about the engine program/);
 });
 
 // ── the invocation string every surface prints, and the two prefixes that compose into it ───────────
