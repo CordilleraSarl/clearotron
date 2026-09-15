@@ -60,7 +60,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   sudo apt update && sudo apt install -y curl
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
   . "$HOME/.nvm/nvm.sh" && nvm install 22    # 22.13 or newer, per the floor above
-  npx clearotron install  # installs the reasoning program if the machine has none, and shows you how to sign it in
+  npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
   ```
 
   Run from `npx`, the install first installs Clearotron under `~/.local`, as `npm install -g --prefix
@@ -350,7 +350,9 @@ clearotron-client-mcp.service
 
 **And `~/.env`, which only a background install writes.** A service inherits nothing from the terminal
 that installed it, so `clearotron start --background` writes everything those services need into `~/.env`,
-mode 600 — your register credential, your research key and the engine's settings among it. It is not the
+mode 600 — your register credential, your research key and the engine's settings among it. A later start
+adds only what the file lacks and never replaces a line, and names any setting on which the file and your
+configuration differ; to change one, change it in both. It is not the
 same file as `~/.config/clearotron/.env`, which configures the product when you run it yourself. Delete
 both, or you leave a file of credentials in your home for services that no longer exist.
 
@@ -518,8 +520,14 @@ staleness thresholds that decide when an index is too old to trust are in
 
 Set `CLEAROTRON_AI_BILLING=cloud` and the lines for your cloud below. The Claude program still has to be
 installed (§1): it is what talks to the cloud. Clearotron checks that exactly one cloud is switched on,
-or that a gateway is named (below), and refuses to start otherwise. Every run records which cloud account
+or that a gateway is named (below). Otherwise every search is refused before anything is spent, and
+`clearotron start` and `clearotron doctor` name what to set. Every run records which cloud account
 paid for it. Codex does not run through a cloud account.
+
+`clearotron start --background` carries these settings into `~/.env`, which the background services
+read. It only adds a line `~/.env` lacks and never replaces one, so to change cloud later, change the
+switch in both `~/.env` and Clearotron's settings file, then restart; `start` names any setting on which
+the two differ.
 
 Tested on Microsoft Azure. For Google Cloud and Amazon Bedrock these are the Claude program's own
 settings, as its documentation gives them.

@@ -39,7 +39,7 @@ Then carry on below. [INSTALL.md](INSTALL.md) §1 has the exact version floor an
 
 ```bash
 npm install -g clearotron
-clearotron install  # installs the reasoning program if the machine has none, and shows you how to sign it in
+clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
 clearotron doctor --probe-engine
 ```
 

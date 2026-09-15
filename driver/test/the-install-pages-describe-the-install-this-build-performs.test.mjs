@@ -49,7 +49,8 @@ test("the install pages leave installing the reasoning program to setup", () => 
     + "short, unattended session of Claude Code or the Codex CLI. Setup installs the one your engine uses, for this "
     + "machine, when you say yes. A copy already on the machine is used instead and keeps updating itself."),
   "INSTALL.md §1 no longer opens the reasoning program with the approved paragraph");
-  assert.match(one, /^\s*npx clearotron install {2}# installs the reasoning program if the machine has none, and shows you how to sign it in$/m,
+  // "Offers": setup asks before it installs anything, and says first how much space the program takes.
+  assert.match(one, /^\s*npx clearotron install {2}# offers to install the reasoning program if the machine has none, and shows you how to sign it in$/m,
     "the Windows steps no longer end in the one install line");
   assert.match(flat(one), /the program setup installed \(doctor prints its path\), or `claude` if the machine has its own/,
     "the sign-in table still sends the reader to a `claude` command that setup's copy does not put on PATH");
@@ -95,8 +96,14 @@ test("the cloud-account section says a gateway alone is accepted, as the billing
   assert.throws(() => claude({ CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_VERTEX: "1", CLAUDE_CODE_USE_FOUNDRY: "1" }), /more than one cloud/);
   // The section's first paragraph, the one that says what Clearotron checks.
   const opening = flat(section(read("INSTALL.md"), "3b.").split("\n\n")[1]);
-  assert.match(opening, /checks that exactly one cloud is switched on, or that a gateway is named \(below\), and refuses to start otherwise/,
+  assert.match(opening, /checks that exactly one cloud is switched on, or that a gateway is named \(below\)\. Otherwise every search is refused before anything is spent/,
     "§3b says Clearotron refuses unless exactly one cloud is switched on, and the gateway form it describes below has none");
+  // A search is refused at order time; `clearotron start` comes up and names what to set (run-requirements.mjs,
+  // the cloud rows are at: ORDER), so "refuses to start" described a start that does not happen.
+  assert.doesNotMatch(flat(section(read("INSTALL.md"), "3b.")), /refuses to start/, "§3b says Clearotron refuses to start over a cloud setting, and it starts");
+  // AND IT SAYS WHAT A BACKGROUND START DOES WITH THEM, which is the one way to change cloud later.
+  assert.match(flat(section(read("INSTALL.md"), "3b.")), /`clearotron start --background` carries these settings into `~\/\.env`.*change the switch in both `~\/\.env` and Clearotron's settings file/,
+    "§3b does not say that a background start carries the cloud settings, adds only what the file lacks, or that both files must change");
 });
 
 test("the quickstart's install line says what it installs, as the reference's does", () => {
