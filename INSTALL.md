@@ -571,7 +571,8 @@ standard AWS key variables, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (wit
 temporary credentials).
 
 On Google Cloud and Bedrock, set `ANTHROPIC_DEFAULT_OPUS_MODEL`, `_SONNET_` and `_HAIKU_` to the model
-ids your account offers if the program does not pick up the newest ones by itself.
+ids your account offers if the program does not pick up the newest ones by itself, and `_FABLE_` to your Fable
+model's id if you set `CLEAROTRON_SYNTHESIS_MODEL=fable`.
 
 **Through a gateway.** If your organisation puts its own proxy in front of a cloud, set
 `CLEAROTRON_AI_BILLING=cloud`, `ANTHROPIC_BASE_URL` to the gateway and `ANTHROPIC_AUTH_TOKEN` to its

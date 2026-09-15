@@ -229,6 +229,15 @@ test("every model pin the checks carry is documented beside the others, the fabl
   // A stage reaches fable only through the synthesis override, so each page says the pin is for that.
   for (const [where, text] of [["§3b", flat(b)], ["the reference's pin row", pinRow], [".env.example", flat(example.replace(/^#\s?/gm, ""))]])
     assert.match(text, /fable deployment's name if you set `?CLEAROTRON_SYNTHESIS_MODEL=fable/i, `${where} does not say when to set the fable pin`);
+  // A SENTENCE THAT LISTS THE PINS LISTS ALL OF THEM. The presence check above passes when one paragraph of
+  // §3b names the fable pin, so a second list of pins elsewhere in the section, for another cloud, could
+  // leave it out and contradict the first. Every prose paragraph that names the Opus pin names the fable one,
+  // in full or by its short form.
+  const prose = b.replace(/```[\s\S]*?```/g, "").split(/\n\s*\n/).map(flat);
+  const lists = prose.filter((p) => p.includes("ANTHROPIC_DEFAULT_OPUS_MODEL"));
+  assert.ok(lists.length >= 1, "no prose paragraph of §3b lists the pins, so the arm below would hold nothing");
+  for (const p of lists)
+    assert.match(p, /ANTHROPIC_DEFAULT_FABLE_MODEL|`_FABLE_`/, `§3b lists the pins without the fable one: ${p}`);
 });
 
 test("the release notes promise what setup does", () => {
