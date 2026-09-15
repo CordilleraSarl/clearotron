@@ -617,12 +617,12 @@ export const MODELS = {
   gemini: "google/gemini-3.1-pro-preview",
   "gemini-flash": "google/gemini-3-flash-preview",
   "deepseek-v4-pro": "together/deepseek-ai/DeepSeek-V4-Pro",
-  // azure = the proven-working Azure GPT-5.4 (api: openai-completions). It REPLACED the dead
-  // azure-openai-pro/gpt-5.4-pro (api: azure-openai-responses), which rejected every payload at the
-  // provider level — "provider rejected the request schema or tool payload" — and was retired
-  // 2026-06-08 (live-probed both: 5.4-pro exit 1, 5.4 completions clean). Env-overridable for dev/prod
-  // parity; default is the rendered $AZURE_OPENAI_DEPLOYMENT catalog id.
-  azure: process.env.CLEAROTRON_AZURE_MODEL || "azure-openai/gpt-5.4",
+  // azure = a legacy catalogue entry for an Azure GPT deployment. NO STAGE NAMES IT AND NO ENGINE RUNS IT:
+  // the Claude adapter refuses the alias and the codex adapter maps no tier onto it. So its target is a
+  // constant. The setting that used to override it was retired on 2026-09-15 and nothing reads it any
+  // more; the configuration reference lists it under the settings that do nothing. It is named only
+  // there, in prose, because a name written in a source file here counts as a name this build reads.
+  azure: "azure-openai/gpt-5.4",
 };
 
 // alias → full id; a value that's already a full provider/model id (contains "/") passes through.

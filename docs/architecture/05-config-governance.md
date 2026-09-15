@@ -161,7 +161,7 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 (subscription|api-key|cloud; cloud is Claude only), `CLEAROTRON_CODEX_PATH`,
 `CLEAROTRON_OPENAI_AUTH_FILE`, `CLEAROTRON_OPENAI_MODEL_JUDGMENT` / `CLEAROTRON_OPENAI_MODEL_SWEEP` /
 `CLEAROTRON_OPENAI_MODEL_CHEAP` (all gpt-5.6-sol),
-`CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy Clearotron installed), `CLEAROTRON_AZURE_MODEL`,
+`CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy Clearotron installed),
 `CLEAROTRON_SYNTHESIS_MODEL` (opus), `CLEAROTRON_KNOCKOUT_MODEL` (opus),
 `CLEAROTRON_KNOCKOUT_PRESET` (pro-search), `CLEAROTRON_MAX_BUDGET_USD` (unset).
 
@@ -492,11 +492,9 @@ reaches a program the developer's own setup installed.
 > see `providers/oauth-mcp-bridge/README.md`) were listed there for years and read by nothing, which
 > made a reader configure a variable and get no behaviour.
 >
-> `COURTLISTENER_TOKEN` is gone. The four`AZURE_OPENAI_*` names are **still there and stay**:
-> they are a reconstructed external contract, the file says so in place and tells a reader to verify
-> the spellings against the platform that consumes them. Naming a foreign contract is not the same
-> defect as inviting someone to set a variable this product reads — the rule above is about the
-> second.
+> Both are gone. The four `AZURE_OPENAI_*` names left `.env.example` on 2026-09-15: on a page that
+> explains paying for Claude through an Azure account, four Azure variables nothing in Clearotron reads
+> looked like that setup's settings, and they are not.
 
 `portal-ui/` has **zero** env config (no `VITE_*`, no `import.meta.env`) — the SPA talks to its
 origin; all portal config lives server-side in portal-service.

@@ -535,7 +535,8 @@ export function auditEnv(root = ROOT) {
 //                            roster, while ADR-0003 had already ruled case-law setup an OAuth flow
 //                            and not a variable at all. Evidence of a reader is not evidence of a
 //                            READ: the roster is a list of names to look for, not a call site.
-//                         4  the AZURE_OPENAI_* block, an external contract (below).
+//                         4  the AZURE_OPENAI_* block, an external contract (below; the rows were
+//                            removed from `.env.example` on 2026-09-15).
 //                         1  CLEAROTRON_SEND_TOOL_PREFIX — genuinely dead, and this direction does not
 //                            catch it either: its one surviving mention is a governance-doc line, and
 //                            a mention is enough to spare a row. Under-firing is the cost of the
@@ -561,10 +562,11 @@ export function auditEnv(root = ROOT) {
 // ── AND IT IS NOT A SUPPRESSION LIST ────────────────────────────────────────────────────────────
 //
 // forbids one, rightly: "if a row is deliberately readerless, the row goes, not the guard."
-// Applied literally that ruling deletes three rows it should not. `.env.example`'s Azure block
-// documents the variables an EXTERNAL agent platform consumes — the block says so itself, ruled
-// it, and `MODELS.azure` / `CLEAROTRON_AZURE_MODEL` / `jxPolicy.providerStance: "azure-only"` are live.
-// There is no reader in this tree and there never was one to retire.
+// Applied literally, that ruling deletes a row whose consumer is not this tree at all: a variable read
+// by a program the product spawns, such as the Claude program's own sign-in token. The row documents a
+// contract with that consumer, and there is no reader here to retire. (The four AZURE_OPENAI_* rows that
+// first raised this were a different case. They named another platform's settings, nothing the product
+// runs read them, and they were removed from `.env.example` on 2026-09-15.)
 //
 // So a row is ACCOUNTED FOR two ways, and this is one rule applied to every row rather than a list of
 // exempt names: something in the tree names it, OR the row carries an inline `# external:` line

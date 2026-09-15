@@ -29,7 +29,7 @@ time, so all of them honour a mid-process env flip — the file's own NOTE besid
 `./driver.config.mjs` resolves to ONE cached module instance across the offline test fleet, so
 import-time captures silently pinned every test to the first test's env. What IS frozen at first import
 is the module-level declarations beside it — the consts `REGISTER_PROVIDER` and
-`UNREACHABLE_SENIOR_POLICY`, and `MODELS.azure`, a plain property reading `CLEAROTRON_AZURE_MODEL`.
+`UNREACHABLE_SENIOR_POLICY`.
 Because the driver runs as a systemd **oneshot** (a fresh process per activation), editing the
 deployment's `.env` takes effect on the next queue-triggered run with no deploy and no restart — that is the
 supported way to change caps and A/B toggles. One trap: `synthesis.model` reads
@@ -130,7 +130,7 @@ through anything containing `/`):
 | gemini | `google/gemini-3.1-pro-preview` |
 | gemini-flash | `google/gemini-3-flash-preview` |
 | deepseek-v4-pro | `together/deepseek-ai/DeepSeek-V4-Pro` |
-| azure | `CLEAROTRON_AZURE_MODEL` (default `azure-openai/gpt-5.4`) |
+| azure | `azure-openai/gpt-5.4` |
 
 The bottom four are **legacy names that no stage declares and no engine can run** — they resolve at
 level 1 and then throw at level 2 (below). They are catalogue entries, not available tiers.
@@ -348,7 +348,6 @@ cannot be read as one list.
 | `CLEAROTRON_SYNTHESIS_MODEL` | unset (⇒ opus) | Stage-specific synthesis model override — the live A/B toggle (e.g. `fable`). Alias must be registered in the engine map or the dispatch REFUSES by name (; it used to run sonnet silently and log the alias asked for). Read at module load; effective per fresh oneshot process. |
 | `CLEAROTRON_MEANING_SEAT_MODEL` | unset (⇒ `haiku`) | The common-law MEANING seat's model (`COMMON_LAW_SEAT_TIER[MEANING_SEAT]`, `stages.mjs`). The default moved sonnet → haiku on measured evidence: 2 attempts / 423 s against 1 attempt / 1674 s for the same outcome. **Margin:** sufficient at every load the test suite exercises, but at its densest scenario haiku used the last rung of the retry ladder — suspect this variable first if a dense matter's meaning seat goes terminal. Set`sonnet` to roll back with no code change. The thinking budget is NOT overridable (one variable, by design). |
 | `CLEAROTRON_STAGE_THINKING` | unset (⇒ each stage's declared tier) | Per-stage thinking-tier override, `<stage>=<tier>[,…]` (e.g. `register-digest=high`) — the A/B instrument, so a suite arm needs no code fork or redeploy between runs. Thinking only: models are deliberately not overridable here, so one arm can never move two variables. **The env override is a dev/test instrument**; a permanent change edits the tier in `stages.mjs` and ships. Unknown stage or tier **throws** — `effortFor()` falls back to `medium`, so a typo would otherwise run a stage at a tier nobody chose and every number measured against it would be wrong. Read per call, so an arm can flip mid-process. |
-| `CLEAROTRON_AZURE_MODEL` | `azure-openai/gpt-5.4` | Target of the `azure` alias — a legacy catalogue entry no engine can run (see model tiers above). |
 | `CLEAROTRON_DUMP_JSON` | unset | Dump each attempt's raw engine envelope to `_driver/<stage>.attempt<N>.rawjson.json`. Opt-in: any value except `0`/`off`/`false`/`no`/empty arms it. |
 | `CLEAROTRON_DISPATCH_RECORD` | **on** | Write the verbatim message of every stage dispatch to `_driver/<stage>.attempt<N>[.repair<M>].dispatch.txt`, with `{file, sha, bytes, chars, kind}` on the attempt row. **Default ON** — `0`/`off`/`false`/`no` disarms it. Unlike `CLEAROTRON_DUMP_JSON` beside it, this is opt-OUT: the question it answers ("was the model given this?") is asked *after* the run that raised it, so a flag someone had to remember would be off on exactly the run that needed it. The files carry client identity verbatim and are deliberately not in the artifact table. |
 | `CLEAROTRON_GATHER_SESSION_KEY` / `CLEAROTRON_GATHER_AGENT` / `CLEAROTRON_GATHER_SESSION_ID` | set per stage | Telemetry attribution into the provider-call ledger (set by the gather config; not operator-set). |
@@ -363,8 +362,12 @@ The settings below were deleted. Nothing in any environment set them, so each be
 had always resolved to. **They are listed because an operator whose `.env` still carries one needs to
 know it is inert** — an unread setting is indistinguishable from a setting that works.
 
+`CLEAROTRON_AZURE_MODEL` left for a different reason, on 2026-09-15: it retargeted the `azure` alias,
+which no stage names and no engine runs, so whatever it held, no run read it.
+
 | Was | Now fixed at |
 |---|---|
+| `CLEAROTRON_AZURE_MODEL` | `azure-openai/gpt-5.4`, the target of the `azure` alias (see model tiers above) |
 | `CLEAROTRON_BAND_SHAPE_PART_CHARS` | 70000 characters per shape part |
 | `CLEAROTRON_DEDUP_WINDOW_HOURS` | 24 hours, and the window can no longer be disabled |
 | `CLEAROTRON_FETCH_MAX_CHARS` | 200000 characters per fetched page |

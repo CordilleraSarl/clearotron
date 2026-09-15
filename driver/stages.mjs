@@ -2833,8 +2833,8 @@ export const STAGES = {
     // 20-min override on the VELTRIPHEN run). NOTE 2026-06-17: Opus fast mode was REMOVED here and everywhere
     // (it ~2.5x'd subscription usage → 5h-cap 429s); HIGH effort retained.
     // CLEAROTRON_SYNTHESIS_MODEL (2026-07-10): stage-specific override for a live A/B test (Fable vs Opus 4.8) on
-    // just this stage — the driver's only other env override (CLEAROTRON_AZURE_MODEL, driver.config.mjs) is
-    // tier-wide, which would retarget all 6 opus stages. Unset ⇒ unchanged default "opus". Toggled live in
+    // just this stage — stage-specific because a tier-wide override would retarget all 6 opus stages.
+    // Unset ⇒ unchanged default "opus". Toggled live in
     // the service's EnvironmentFile (a oneshot unit — no restart needed, takes effect on the next
     // queue-triggered run), never hardcoded here.
     model: process.env.CLEAROTRON_SYNTHESIS_MODEL || "opus", thinking: "high", timeoutSec: 2500, stallSec: 900,
