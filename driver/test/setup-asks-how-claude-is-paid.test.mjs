@@ -14,8 +14,8 @@
 //   - the probe's turn sees the cloud settings its caller passed, and they are gone again after it;
 //   - a successful probe names the model that served it and the provider the program reported;
 //   - an Amazon machine whose keys are only in the settings file is proved by doctor and by setup's proof turn
-//     with those keys, the proof turn takes the file in a run's order, and a secret setup shows is shown as
-//     set, never with its value;
+//     with those keys, the proof turn takes the file in a run's order, reads the file at the old location on
+//     an install still configured there, and a secret setup shows is shown as set, never with its value;
 //   - doctor reads a cloud from the settings file and names the account it charges, and reports a cloud
 //     with no switch, and a switch beside subscription, as the refusals they are.
 import { test } from "node:test";
@@ -29,9 +29,9 @@ import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SECRETS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
 import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting, signInHandOff,
-  proofTurn, readEnvFile } from "../../bin/onboard.mjs";
+  proofTurn, readEnvFile, settingsInForce } from "../../bin/onboard.mjs";
 import { payWays } from "../run-requirements.mjs";
-import { loadEnvLocal } from "../../shared/env-local.mjs";
+import { loadEnvLocal, envLocalPath } from "../../shared/env-local.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -239,9 +239,46 @@ test("setup's proof turn on an Amazon machine whose keys are only in the setting
   const without = await proves(["AWS_REGION=eu-central-1"]);
   assert.deepEqual(without.saw, ["absent"], JSON.stringify(without.v));
   assert.equal(without.v.ok, false);
-  // And setup hands its proof turn the file it rewrites. The turn runs only behind a terminal, so the call is
-  // read from the source.
-  assert.match(readFileSync(ONBOARD, "utf8"), /probeEngineTurn\(proofTurn\(\{ engineId: pick\.id, eng, bin, authEnv, settings: readEnvFile\(ENV_PATH\) \}\)\)/);
+  // And setup hands its proof turn the file a search reads. The turn runs only behind a terminal, so the call
+  // is read from the source; the arm below drives what it is handed.
+  assert.match(readFileSync(ONBOARD, "utf8"), /probeEngineTurn\(proofTurn\(\{ engineId: pick\.id, eng, bin, authEnv, settings: settingsInForce\(\) \}\)\)/);
+});
+
+test("setup's proof turn on an install still configured at the old location reads the file a search reads there", async () => {
+  // An install configured before the settings file moved keeps it at the old location, in the install folder,
+  // and the loader still reads it there. The proof turn read only the new location, so the keys every search
+  // used never reached it. A throwaway install folder and home, so neither this checkout nor the suite's home
+  // is read.
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const shell = handRunEnv({ HOME: mkdtempSync(join(tmpdir(), "setup-pay-old-shell-")), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
+  const answers = cloudSettings("bedrock", { AWS_REGION: "eu-central-1" });
+  const install = (lines) => {
+    const at = { repoRoot: mkdtempSync(join(tmpdir(), "setup-pay-old-install-")), home: mkdtempSync(join(tmpdir(), "setup-pay-old-home-")) };
+    writeFileSync(join(at.repoRoot, ".env"), [...AMAZON, ...lines].join("\n") + "\n");
+    return at;
+  };
+  const proves = async (at) => {
+    const program = amazonProgram(mkdtempSync(join(tmpdir(), "setup-pay-old-amazon-")));
+    const v = await probeEngineTurn(proofTurn({ engineId: "anthropic-agent", eng, bin: { source: "explicit", path: program.bin },
+      authEnv: answers, env: shell, settings: settingsInForce(at) }));
+    return { v, saw: program.saw() };
+  };
+  const at = install(Object.entries(AWS_KEYS).map(([k, v]) => `${k}=${v}`));
+  // Precondition: the file setup writes is somewhere else and absent, so only the old location can answer.
+  assert.notEqual(envLocalPath(at), join(at.repoRoot, ".env"));
+  assert.equal(existsSync(envLocalPath(at)), false);
+  // THE RUN'S RESOLUTION, from the run's own loader rather than restated: what it applies on this install.
+  const run = {};
+  loadEnvLocal({ env: run, ...at, note: () => {} });
+  const settings = settingsInForce(at);
+  for (const k of CLOUD_SETTINGS) assert.equal(settings[k], run[k], `${k} is not what a search on this install reads`);
+  const withKeys = await proves(at);
+  assert.deepEqual(withKeys.saw, ["present"], `the program ran without the keys a search on this install reads: ${JSON.stringify(withKeys.v)}`);
+  assert.equal(withKeys.v.ok, true, JSON.stringify(withKeys.v));
+  // CONTROL: the same install with no keys in its file. The program ran and saw none, so nothing is proved.
+  const without = await proves(install([]));
+  assert.deepEqual(without.saw, ["absent"], JSON.stringify(without.v));
+  assert.equal(without.v.ok, false);
 });
 
 test("setup's proof turn takes the file's cloud settings in a run's order: the shell over the file, an answer over both", () => {

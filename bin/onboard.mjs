@@ -827,10 +827,9 @@ export function signInHandOff(eng, bin, billing) {
  * a path the reader set, and a failed turn told the reader to run a bare `claude` or `codex login`, which
  * that copy does not answer to, above lines naming the copy itself.
  *
- * THE CLOUD SETTINGS IN THE SETTINGS FILE RIDE WITH IT, as a run reads them. `settings` is what the file setup
- * rewrites holds now (readEnvFile), and every line setup does not collect survives that rewrite
- * (composeEnvBody), so a run after setup reads them. The turn was built from the shell and the answers alone,
- * so on an Amazon machine whose keys live only in that file it ran without them and failed while searches
+ * THE CLOUD SETTINGS IN THE SETTINGS FILE RIDE WITH IT, as a run reads them. `settings` is what the file a
+ * search reads holds now (settingsInForce, below). The turn was built from the shell and the answers alone, so
+ * on an Amazon machine whose keys live only in that file it ran without them and failed while searches
  * worked. Only the names on auth.mjs's CLOUD_SETTINGS are taken, in a run's order: a name the shell holds wins
  * over the file, even when it is empty, because that is what the loader does (shared/env-local.mjs,
  * loadEnvLocal); an answer given in setup wins over both, because it is written over the file.
@@ -839,6 +838,21 @@ export function proofTurn({ engineId, eng, bin, authEnv = {}, env = process.env,
   const fromFile = Object.fromEntries(CLOUD_SETTINGS.filter((k) => settings[k] !== undefined).map((k) => [k, settings[k]]));
   return { env: { ...fromFile, ...env, CLEAROTRON_AI: engineId, [eng.env]: bin.path, ...authEnv },
     program: { source: bin.source ?? null, path: bin.path } };
+}
+
+/**
+ * What the settings file a search reads holds now: the file the loader resolves (activeEnvPath), which is
+ * the one at the old location on an install configured before the move, and not always the one setup writes.
+ *
+ * THE PROOF TURN READS THIS, NOT THE FILE SETUP WRITES. It read `ENV_PATH`, so on an install still configured
+ * at the old location the keys every search and doctor were using never reached setup's test turn. The write
+ * stays on `ENV_PATH` (see READ_ENV_PATH), and it carries only that file's lines: on such an install the file
+ * setup writes starts without the old one's, which a run then reads instead. That is the write's behaviour,
+ * not this read's. `repoRoot` and `home` are here so a test can drive an install at the old location without
+ * touching this checkout or the home it runs in.
+ */
+export function settingsInForce({ repoRoot = REPO, home = homedir() } = {}) {
+  return readEnvFile(activeEnvPath({ repoRoot, home }), { home });
 }
 
 /**
@@ -3709,7 +3723,7 @@ try {
     for (;;) {
       say("  Running one turn…");
       // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
-      const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: readEnvFile(ENV_PATH) }));
+      const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: settingsInForce() }));
       if (v.ok) {
         ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
         const served = servedLine(v);
