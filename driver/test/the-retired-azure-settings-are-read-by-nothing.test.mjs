@@ -23,9 +23,9 @@ const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const RETIRED = "CLEAROTRON_AZURE_MODEL";
 
 test("the azure alias keeps its target whatever the retired setting holds", () => {
-  const config = pathToFileURL(join(ROOT, "driver", "driver.config.mjs")).href;
+  // The child imports a file URL, written where the import sits so the portable-import check reads it as one.
   const out = execFileSync(process.execPath, ["--input-type=module", "-e",
-    `const m = await import(${JSON.stringify(config)}); process.stdout.write(String(m.MODELS.azure));`],
+    `const m = await import(${JSON.stringify(pathToFileURL(join(ROOT, "driver", "driver.config.mjs")).href)}); process.stdout.write(String(m.MODELS.azure));`],
   { encoding: "utf8", env: { ...process.env, [RETIRED]: "azure-openai/a-deployment-somebody-set" } });
   assert.equal(out, "azure-openai/gpt-5.4", `the alias followed ${RETIRED}, so the setting is still read`);
   // Nothing that runs changed: the alias was never runnable, and still is not.
