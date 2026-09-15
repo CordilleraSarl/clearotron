@@ -119,12 +119,13 @@ const signInLine = (engine, program = null) => {
   const base = spec?.signIn ? namingProgram(spec.signIn, spec, program) : "sign the CLI in";
   const h = spec?.headless;
   // Both forms the wizard already offers, read off the same table: a TOKEN route is run elsewhere and
-  // carried here by variable; a DEVICE route is run on this box and signs it in directly.
+  // carried here by variable; a DEVICE route is run on this machine and signs it in directly. The route is
+  // named by where a sign-in can be completed, as INSTALL.md's sign-in table names it.
   if (!h?.cmd) return base;
   const here = namingProgram(h.cmd, spec, program);
   return h.tokenEnv
-    ? `${base} — or, on a box with no browser, run \`${h.cmd}\` on any machine you can sign in on${here !== h.cmd ? ` (on this one, \`${here}\`)` : ""} and set the token it prints as ${h.tokenEnv} in this install's environment file`
-    : `${base} — or, on a box with no browser, run \`${here}\` here`;
+    ? `${base} — or, on a machine you cannot complete a sign-in on, run \`${h.cmd}\` on any machine you can sign in on${here !== h.cmd ? ` (on this one, \`${here}\`)` : ""} and set the token it prints as ${h.tokenEnv} in this install's environment file`
+    : `${base} — or, on a machine you cannot complete a sign-in on, run \`${here}\` here`;
 };
 
 /**

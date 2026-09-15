@@ -814,7 +814,7 @@ export function signInHandOff(eng, bin, billing) {
   // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made on
   // any machine, so its command keeps the bare word, and this machine's copy is named beside it.
   if (eng.headless) {
-    lines.push(`on a box with no browser: run \`${eng.headless.tokenEnv ? eng.headless.cmd : namingProgram(eng.headless.cmd, eng, bin)}\``
+    lines.push(`on a machine you cannot complete a sign-in on: run \`${eng.headless.tokenEnv ? eng.headless.cmd : namingProgram(eng.headless.cmd, eng, bin)}\``
       + `${eng.headless.tokenEnv ? ` (from any machine you can sign in on${bin?.source === "installed" ? `; on this one the program is ${bin.path}` : ""})` : " here"}.`);
   }
   return { lines, captureToken: Boolean(eng.headless?.tokenEnv) };

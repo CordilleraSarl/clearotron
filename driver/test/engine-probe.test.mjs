@@ -218,7 +218,17 @@ test("CONTROL: on a subscription the sign-in advice is what it always was", () =
   const sub = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, auth: { mode: "subscription" } });
   assert.equal(sub.fix, today.fix);
   assert.equal(sub.headline, "anthropic-agent is not signed in");
-  assert.match(sub.fix, /^Sign in: run `claude` once in a terminal and complete the sign-in — or, on a box with no browser, run `claude setup-token`/);
+  assert.match(sub.fix, /^Sign in: run `claude` once in a terminal and complete the sign-in — or, on a machine you cannot complete a sign-in on, run `claude setup-token`/);
+});
+
+test("the sign-in advice names the route by the machine a sign-in cannot be completed on, as the install page does", () => {
+  const install = readFileSync(join(HERE, "..", "..", "INSTALL.md"), "utf8");
+  assert.match(install, /\| A machine you cannot complete a sign-in on \|/, "the install page's sign-in table no longer names that column so");
+  for (const engine of Object.keys(ENGINE_BINARIES)) {
+    const { fix } = classifyProbe({ engine, tuple: REFUSED, auth: { mode: "subscription" } });
+    assert.match(fix, / — or, on a machine you cannot complete a sign-in on, run `/, `${engine}: ${fix}`);
+    assert.doesNotMatch(fix, /\bbox\b/, `${engine}: ${fix}`);
+  }
 });
 
 test("the probe advises by the billing mode it resolved, and names a setting it checks, never its value", async () => {
