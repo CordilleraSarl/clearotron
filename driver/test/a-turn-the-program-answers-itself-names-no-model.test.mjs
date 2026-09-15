@@ -10,9 +10,10 @@
 // What the arms hold:
 //   - a stream whose only assistant event carries `<synthetic>` reports no served model, even though its
 //     init event named one: init says what the session was configured with, not what served the turn;
-//   - the CONTROLS: a normal stream reports the id its assistant event named; a real id earlier in the same
-//     turn still stands when the program writes a message of its own after it; and a stream that never
-//     reached an assistant event still reports init's answer, as it did before;
+//   - a real id earlier in the same turn is named when the program writes a message of its own after it.
+//     This is new: before the label was refused, the later label overwrote the earlier id;
+//   - the CONTROLS, which hold on the code before the change too: a normal stream reports the id its
+//     assistant event named, and a stream that never reached an assistant event reports init's answer;
 //   - the attempt row a real stage turn writes from that stream says no model served it (`modelActual` null,
 //     `modelBasis` "unknown"), and the control turn's row records the served id.
 //
@@ -83,10 +84,13 @@ test("a turn only the program answered reports no served model, though its init 
   assert.equal(t.modelWire, null, "no model served this turn, so neither the label nor init's configured model is reported");
 });
 
-test("the CONTROLS: a served turn reports its id, an earlier served call stands, and init still answers a turn cut short", async () => {
-  assert.equal((await adapterTurn(STREAMS.served)).modelWire, "claude-opus-5", "a normal stream reports the id its assistant event named");
+test("a model that served part of a turn is named when the program writes its own message after it", async () => {
   assert.equal((await adapterTurn(STREAMS.servedThenAnsweredItself)).modelWire, "claude-opus-5",
     "a model served part of this turn before the program wrote its own message, so that model is named");
+});
+
+test("the CONTROLS: a served turn reports its id, and init still answers a turn cut short", async () => {
+  assert.equal((await adapterTurn(STREAMS.served)).modelWire, "claude-opus-5", "a normal stream reports the id its assistant event named");
   assert.equal((await adapterTurn(STREAMS.initOnly)).modelWire, "claude-opus-5",
     "a stream with no assistant event keeps init's answer, as before: only a message the program wrote itself stops it");
 });

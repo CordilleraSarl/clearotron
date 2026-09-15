@@ -574,7 +574,8 @@ export const anthropicAgentEngine = {
       // said `<synthetic>`. No model served that turn, so the label is never taken as a served id, and
       // `answeredItself` stops init's answer from standing in for one: init says what the session was
       // configured with, and naming it here would name a model for a turn no model served. A real id on
-      // an earlier assistant event of the same turn still stands, because that model did serve a call.
+      // an earlier assistant event of the same turn now stands, because that model did serve a call;
+      // before the label was refused, the label that followed overwrote it.
       let wireModelInit = null, wireModelAssistant = null, answeredItself = false;
       // READS GAUGE (AD-4, 2026-07-30 addendum): which files this turn actually OPENED, from the stream's
       // completed Read tool_use blocks. The stage prompt OFFERS a set of documents (declared inputs +
