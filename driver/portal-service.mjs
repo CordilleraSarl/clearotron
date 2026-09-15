@@ -89,7 +89,7 @@ export function opsTokenFor({ bootToken, roster, mint }) {
 // has held the signing secret on both start paths for as long as both have existed. The comment has been
 // corrected in place rather than left to be trusted.
 import { mintToken, loadGrants, resolvePerson, addressesInGrants } from "../shared/scope.mjs";
-import { withPerson, withCompany } from "../shared/grants-edit.mjs";
+import { withPerson, withoutPerson, personPoints, withCompany } from "../shared/grants-edit.mjs";
 import { resolvePort } from "../shared/listen.mjs";   // — the port SOURCE, decided once
 import { fileURLToPath } from "node:url";
 
@@ -1094,6 +1094,14 @@ export function makePortalService({
   // CLEAROTRON_ACCESS_FILE. Null means this service cannot write the file, and the routes that would
   // need to say so rather than pretend.
   writeGrants = null,
+  // Revoking the connector keys a removed person holds. INJECTED for the reason `writeGrants` is: this
+  // constructor stays pure over its inputs, an arm can watch the revocation without a denylist file on
+  // disk, and boot is where the paths live. It takes the grants object the removal produced and returns
+  // it with the struck records gone, so one write lands both facts.
+  //
+  // Null means this service cannot revoke, and the answer SAYS so — a removal that quietly left a live
+  // key would be the exact failure the page's own sentence promises against.
+  revokeConnectorKeys = null,
   // The queue directories the RUNNER drains — the same list it hands checkRunCaps. The allowance counter
   // and the quota pre-check read their ledger beside these, so they count what the wall counts (:
   // they used to reconstruct a workspace-relative path that resolved to nothing once the queue moved out
@@ -3060,7 +3068,13 @@ async function connectorDoorKind(url) {
             const p = envFrom(process.env, "CLEAROTRON_ACCESS_FILE");
             if (p) grantsFile = { name: basename(p), modifiedAt: new Date(statSync(p).mtimeMs).toISOString() };
           } catch { /* reported as unknown; a failed stat must not take down the page that explains access */ }
-          return { status: 200, json: accessView({ grants: grantsHere, viewer: principal, companies, grantsFile, localSignIn }) };
+          // WHETHER AN ISSUED KEY CAN BE WITHDRAWN AT ALL, read the same way `disablePlan` reads it: the
+          // door loaded a revocation list at start, or it did not and never will for the keys already
+          // out. The variable's PRESENCE is the whole question — its value is a path, and this route
+          // must not say where.
+          const keysRevocable = Boolean(revokeConnectorKeys)
+            && String(process.env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim() !== "";
+          return { status: 200, json: accessView({ grants: grantsHere, viewer: principal, companies, grantsFile, localSignIn, keysRevocable }) };
         }
         // /portal/admin/people — give someone access. Manage-gated above; everything else is decided here.
         //
@@ -3075,18 +3089,32 @@ async function connectorDoorKind(url) {
           const email = String(body?.email ?? "").trim().toLowerCase();
           if (!email || email.indexOf("@") <= 0 || email.indexOf("@") !== email.lastIndexOf("@"))
             return { status: 400, json: { error: "Enter one email address." } };
+          // ACCESS TO EVERYTHING IS NOT A POINT, and the handler used to treat it as one. The form draws
+          // "Everything on this Clearotron" only to somebody who holds it, and sent it as
+          // `{kind:"everything"}` alongside the organisation and company points; nothing here matched
+          // that kind, so it fell to the 404 below and the page rendered the refusal it keeps for a
+          // point outside the adder's reach — "You can only give access to what you have access to
+          // yourself" — to the one person on the install for whom that is false. The control had never
+          // worked. It lives under `people` as a switch, not in any organisation, so it is read as one.
           const points = [];
+          let wantsEverything = false;
           for (const a of Array.isArray(body?.access) ? body.access : []) {
             const key = typeof a?.key === "string" ? a.key : "";
-            if (a?.kind === "organisation" && (principal.genericOrgs ?? []).includes(key)) points.push({ tenant: key });
+            if (a?.kind === "everything" && seesEverything(principal)) wantsEverything = true;
+            else if (a?.kind === "organisation" && (principal.genericOrgs ?? []).includes(key)) points.push({ tenant: key });
             else if (a?.kind === "company" && principal.accountOrgs?.[key]) points.push({ tenant: principal.accountOrgs[key], account: key });
             else return { status: 404, json: { error: "not_found" } };
           }
-          if (!points.length) return { status: 400, json: { error: "Choose at least one organisation or company this person may see." } };
-          const want = { run: body?.permissions?.run === true, manage: body?.permissions?.manage === true };
+          if (!points.length && !wantsEverything) return { status: 400, json: { error: "Choose at least one organisation or company this person may see." } };
+          const want = { run: body?.permissions?.run === true, manage: body?.permissions?.manage === true, everything: wantsEverything };
           if (want.run && !mayRun(principal)) return { status: 400, json: { error: "You cannot give Run clearances without holding it yourself." } };
           const existing = resolvePerson(email, grantsHere);
           const setSwitches = email !== principal.email && (!existing || reachCovers(principal, existing));
+          // THE SWITCHES ARE WHERE ACCESS TO EVERYTHING IS WRITTEN, so a grant of it that cannot write
+          // them writes nothing at all — and `withPerson` would return unchanged grants and this route a
+          // 201 naming a person who gained nothing. Said instead of returned.
+          if (wantsEverything && !setSwitches)
+            return { status: 400, json: { error: "Access to everything is part of what a person may do, and that cannot be set from here for this address. Nothing was saved." } };
           let next;
           try { next = withPerson(grantsHere, { email, points, switches: want, setSwitches }); }
           catch (e) { return { status: 400, json: { error: String(e?.message ?? e).slice(0, 300) } }; }
@@ -3100,6 +3128,132 @@ async function connectorDoorKind(url) {
           const companies = Object.fromEntries([...loadProfiles({ force: true }).values()].map((p) => [p.key, p.name ?? p.key]));
           const person = accessView({ grants: next, viewer: principal, companies }).people.find((p) => p.email === email) ?? null;
           return { status: 201, json: { person, switchesApplied: setSwitches } };
+        }
+
+        // /portal/admin/people/change — change what somebody may do and see.
+        //
+        // THE DIFF IS COMPUTED HERE, FROM THE FILE, and never taken from the request. The page sends the
+        // state it wants; this reads what the file holds right now, narrows that to the part of the
+        // person the caller can see, and works out what to add and what to take away between the two. A
+        // page that had been open while somebody else was edited would otherwise write its own stale
+        // copy back over them — and the half it would overwrite is the half outside its own view, which
+        // nobody looking at either screen could see happen.
+        //
+        // NOBODY CHANGES THEMSELVES. The Add form already refuses to set the adder's own switches; this
+        // refuses the whole act, because a manager who can take their own Manage away can lock the
+        // install's last manager out of it with one press, and the way back is a text editor on the box.
+        if (parts[2] === "people" && parts[3] === "change" && parts.length === 4 && method === "POST") {
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
+          const email = String(body?.email ?? "").trim().toLowerCase();
+          if (email === principal.email) return { status: 400, json: { error: "You cannot change your own access. Somebody else who manages this install can." } };
+          const existing = resolvePerson(email, grantsHere);
+          const held = personPoints(grantsHere, email);
+          if (!existing && !held.listed && !held.points.length) return { status: 404, json: { error: "not_found" } };
+
+          // What the caller can see of this person, and what they asked for — both in the same shape, so
+          // the difference between them is the change.
+          const inReach = (pt) => pt.account == null
+            ? (principal.genericOrgs ?? []).includes(pt.tenant)
+            : principal.accountOrgs?.[pt.account] === pt.tenant;
+          const mine = held.points.filter(inReach);
+          const want = [];
+          for (const a of Array.isArray(body?.access) ? body.access : []) {
+            const key = typeof a?.key === "string" ? a.key : "";
+            if (a?.kind === "organisation" && (principal.genericOrgs ?? []).includes(key)) want.push({ tenant: key, account: null });
+            else if (a?.kind === "company" && principal.accountOrgs?.[key]) want.push({ tenant: principal.accountOrgs[key], account: key });
+            else return { status: 404, json: { error: "not_found" } };
+          }
+          const id = (pt) => `${pt.tenant}/${pt.account ?? "*"}`;
+          const wanted = new Set(want.map(id));
+          const kept = new Set(mine.map(id));
+          const drop = mine.filter((pt) => !wanted.has(id(pt)));
+          const add = want.filter((pt) => !kept.has(id(pt)));
+          // TAKING THE WHOLE OF SOMEBODY'S VISIBLE ACCESS AWAY IS REMOVAL, and it has its own route, its
+          // own confirmation and its own revocation. Reaching it by unticking every row would do half of
+          // that act under the word "save".
+          if (!want.length) return { status: 400, json: { error: "Leave them at least one organisation or company, or remove them instead." } };
+
+          const switches = { run: body?.permissions?.run === true, manage: body?.permissions?.manage === true,
+            everything: held.switches.everything };
+          if (switches.run && !held.switches.run && !mayRun(principal))
+            return { status: 400, json: { error: "You cannot give Run clearances without holding it yourself." } };
+          // Switches belong to the person and not to a point, so they are set only when the whole of this
+          // person sits inside the caller's reach. Otherwise the points move and the switches stay, and
+          // the answer says which happened — the same contract adding already has.
+          const setSwitches = reachCovers(principal, existing);
+          let next;
+          try {
+            next = drop.length ? withoutPerson(grantsHere, { email, points: drop }) : grantsHere;
+            next = withPerson(next, { email, points: add, switches, setSwitches });
+          } catch (e) { return { status: 400, json: { error: String(e?.message ?? e).slice(0, 300) } }; }
+          try { await writeGrants(next); }
+          catch (e) {
+            audit({ event: "person-change", by: principal.email, person: email, ok: false, error: String(e?.message ?? e).slice(0, 200) });
+            return { status: 500, json: { error: "The guest list could not be written, so nothing was changed." } };
+          }
+          audit({ event: "person-change", by: principal.email, person: email, added: add.length, removed: drop.length,
+            switchesApplied: setSwitches, ok: true, status: 200 });
+          const { loadProfiles } = await import("./profiles.mjs");
+          const companies = Object.fromEntries([...loadProfiles({ force: true }).values()].map((p) => [p.key, p.name ?? p.key]));
+          const person = accessView({ grants: next, viewer: principal, companies }).people.find((p) => p.email.toLowerCase() === email) ?? null;
+          return { status: 200, json: { person, switchesApplied: setSwitches, added: add.length, removed: drop.length } };
+        }
+
+        // /portal/admin/people/remove — take their access away.
+        //
+        // HOW FAR IT REACHES IS THE SERVER'S ANSWER, NOT THE REQUEST'S. A caller who can see the whole of
+        // this person removes them from the install; a caller who can see one organisation's worth of
+        // them takes away that organisation and nothing else. The page draws a different button for each
+        // — it reads the same `covered` the view computes — but the request carries no scope to get
+        // wrong, so a stale page cannot ask for more than the person pressing it can see.
+        if (parts[2] === "people" && parts[3] === "remove" && parts.length === 4 && method === "POST") {
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
+          const email = String(body?.email ?? "").trim().toLowerCase();
+          if (email === principal.email) return { status: 400, json: { error: "You cannot remove your own access. Somebody else who manages this install can." } };
+          const existing = resolvePerson(email, grantsHere);
+          const held = personPoints(grantsHere, email);
+          if (!existing && !held.listed && !held.points.length) return { status: 404, json: { error: "not_found" } };
+          const whole = reachCovers(principal, existing);
+          const inReach = (pt) => pt.account == null
+            ? (principal.genericOrgs ?? []).includes(pt.tenant)
+            : principal.accountOrgs?.[pt.account] === pt.tenant;
+          const mine = held.points.filter(inReach);
+          if (!whole && !mine.length) return { status: 404, json: { error: "not_found" } };
+
+          let next;
+          try { next = withoutPerson(grantsHere, whole ? { email, all: true } : { email, points: mine }); }
+          catch (e) { return { status: 400, json: { error: String(e?.message ?? e).slice(0, 300) } }; }
+
+          // THE KEYS, AND ONLY ON A WHOLE REMOVAL. A narrowing leaves the person on the install with
+          // access somewhere else, and their connector key is how they reach that.
+          let keys = { checked: false };
+          if (whole) {
+            if (!revokeConnectorKeys) keys = { checked: false, note: "this installation cannot revoke issued keys from here" };
+            else {
+              try {
+                const { grants: written, ...said } = await revokeConnectorKeys({ email, grants: next });
+                next = written ?? next;
+                keys = { checked: true, ...said };
+              }
+              // A REVOCATION THAT FAILED MUST NOT LOOK LIKE ONE THAT HAPPENED, and it must not take the
+              // removal with it either: the access record is the gate every surface reads, and leaving
+              // it in place because a key file could not be appended would be the larger failure.
+              catch (e) { keys = { checked: true, failed: true, note: String(e?.message ?? e).slice(0, 200) }; }
+            }
+          }
+
+          try { await writeGrants(next); }
+          catch (e) {
+            audit({ event: "person-remove", by: principal.email, person: email, ok: false, error: String(e?.message ?? e).slice(0, 200) });
+            return { status: 500, json: { error: "The guest list could not be written, so nothing was changed." } };
+          }
+          audit({ event: "person-remove", by: principal.email, person: email, scope: whole ? "install" : "organisations",
+            organisations: whole ? null : [...new Set(mine.map((pt) => pt.tenant))].length,
+            keysRevoked: keys.revoked ?? 0, keysUnrevokable: keys.lateArm ? (keys.jtis?.length ?? 0) : 0, ok: true, status: 200 });
+          return { status: 200, json: { removed: whole ? "install" : "organisations",
+            organisations: whole ? [] : [...new Set(mine.map((pt) => pt.tenant))], keys } };
         }
         // /portal/admin/observed — who has actually USED this instance lately, from the audit log.
         //
@@ -4302,6 +4456,39 @@ const PORT = PORT_CHOICE.port;
     atomicWrite(envFrom(process.env, "CLEAROTRON_ACCESS_FILE"), `${JSON.stringify(g, null, 2)}\n`);
   };
 
+  // Revoking a removed person's connector keys, from the same module `clearotron disconnect` revokes
+  // through — one author for what revoking means, and one place the ordering rule lives: the id reaches
+  // the denylist before its record is struck, because a record removed first leaves a live key with no
+  // trace it ever existed.
+  //
+  // IT NEVER NAMES THE LIST IN `.env`. `applyDisablePlan` will do that when a plan is `lateArm` — the
+  // door was started without a revocation list, so the running process never loaded one — and that step
+  // belongs to an operator at a terminal, not to a web request rewriting the install's environment. So
+  // a lateArm plan is NOT applied: nothing is written, and the answer says the keys stay live until they
+  // expire. Striking the records instead would delete the only record of a working key.
+  const revokeConnectorKeys = async ({ email, grants: g }) => {
+    const { recordedKeysFor, removeRecordedKeys, disablePlan, applyDisablePlan, denylistPathFor } = await import("../shared/client-door.mjs");
+    const { homedir } = await import("node:os");
+    const { existsSync, mkdirSync, writeFileSync, appendFileSync } = await import("node:fs");
+    const { join, dirname } = await import("node:path");
+    const home = homedir();
+    const recorded = recordedKeysFor(g, email);
+    const plan = disablePlan({ env: process.env, unitDir: join(home, ".config", "systemd", "user"), exists: existsSync,
+      identity: email, recorded, denylistPath: denylistPathFor(process.env, home) });
+    if (!plan.possible) return { grants: g, revoked: 0, jtis: [], lateArm: false, says: plan.says };
+    if (plan.lateArm) return { grants: g, revoked: 0, jtis: plan.jtis, lateArm: true, says: plan.says ?? [] };
+    let next = g;
+    applyDisablePlan(plan, {
+      appendDenylist: (path, jtis) => {
+        mkdirSync(dirname(path), { recursive: true });
+        if (!existsSync(path)) writeFileSync(path, "# Revoked key ids, one jti per line. Read on every key check.\n", { mode: 0o600 });
+        appendFileSync(path, jtis.map((j) => `${j}\n`).join(""));
+      },
+      strikeRecords: (jtis) => { next = removeRecordedKeys(next, jtis); },
+    });
+    return { grants: next, revoked: plan.jtis.length, jtis: plan.jtis, lateArm: false };
+  };
+
   const { config } = await import("./driver.config.mjs");
   const { appendFileSync: append } = await import("node:fs");
   const auditPath = process.env.PORTAL_AUDIT || join(HERE, "..", "portal-audit.log");
@@ -4805,7 +4992,7 @@ const PORT = PORT_CHOICE.port;
   const service = makePortalService({ poolRoot: config.poolRoot, workspaceRoot: config.workspaceRoot,
     // Re-read per request (a getter that rescans), so a workspace created after boot is counted.
     queueDirs: () => config.queueDirs,
-    secret, grants, localSignIn: LOCAL_MODE, writeGrants, trigger, stopRun, audit, auditPath, upstream, composeRead, stopControl,
+    secret, grants, localSignIn: LOCAL_MODE, writeGrants, revokeConnectorKeys, trigger, stopRun, audit, auditPath, upstream, composeRead, stopControl,
     // — the ONLY place the environment is read for this. `bin/start.mjs` is the
     // only thing that sets it, and it sets it explicitly rather than passing the operator's inherited
     // environment through, so a stray `.env` can neither put a live install into demo mode nor take a

@@ -2439,9 +2439,15 @@
           "skips": 0,
           "todos": 0
         },
+        "giving-access-to-everything-is-a-switch-not-a-point.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "grant-command.test.mjs": {
           "tests": 19,
-          "asserts": 75,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -4377,6 +4383,12 @@
           "skips": 0,
           "todos": 0
         },
+        "taking-access-away-is-the-editor-that-gave-it.test.mjs": {
+          "tests": 9,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "teardown-leaves-nothing-claimable.test.mjs": {
           "tests": 4,
           "asserts": 19,
@@ -4812,6 +4824,12 @@
         "the-passphrase-line-tells-the-truth-on-a-first-start.test.mjs": {
           "tests": 2,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-people-page-can-change-and-remove-a-person.test.mjs": {
+          "tests": 11,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -5456,6 +5474,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-removed-person-loses-their-assistant-too.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "account-audit-chain.test.mjs": {
           "tests": 10,
           "asserts": 46,
@@ -5818,6 +5842,12 @@
         "customPropertiesResolve.test.ts": {
           "tests": 4,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "decodePersonCarriesEveryField.test.ts": {
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

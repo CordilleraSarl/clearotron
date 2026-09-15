@@ -10,7 +10,7 @@
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { AuthError } from "./cf-access.mjs";
 import { appendAudit } from "./audit.mjs";
-import { resolveScope, isFirmDomain, verifyToken } from "./scope.mjs";
+import { resolveScope, isFirmDomain, verifyToken, addressesInGrants } from "./scope.mjs";
 
 const hdr = (v) => (Array.isArray(v) ? v[0] : v);
 
@@ -69,13 +69,63 @@ export function evictOldest(sessions) {
  * presents another identity's mcp-session-id is refused (403) — a leaked/guessed session id must never
  * let one CF-authed person attach to another's session (which may carry an ops-scoped inner token).
  */
-export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, devMode = false, tokenOnly = false, keyDoorPath = null, log = () => {} }) {
+export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, createSession, ns = "trademark-artifacts", sessionMax = 500, maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, devMode = false, tokenOnly = false, keyDoorPath = null,
+  // Is this identity still on the guest list? ASKED PER REQUEST on an ACCOUNT session, cached on the
+  // grants file's mtime, so it costs a stat between edits. Injected so an arm can move the answer
+  // without a file; the default is the real read, because a door composed without this seam would
+  // silently go back to resolving reach once and holding it for half an hour.
+  stillEnrolled = (email) => addressesInGrants().includes(String(email ?? "").trim().toLowerCase()),
+  log = () => {} }) {
   if (!verify && !devMode && !tokenOnly) throw new Error("makeHttpHandler: verify is required unless devMode:true or tokenOnly:true (fail-closed; refusing to build an unauthenticated handler)");
   // The two verify-less modes mean OPPOSITE things and must never be combined: devMode trusts the local
   // operator and hands out a synthetic identity, tokenOnly trusts NOBODY without a valid key. Together,
   // the synthetic identity would be the thing that answers — an open door wearing a locked door's label.
   if (tokenOnly && devMode) throw new Error("makeHttpHandler: tokenOnly and devMode are mutually exclusive (devMode's synthetic identity would defeat the mandatory key)");
   if (tokenOnly && verify) throw new Error("makeHttpHandler: tokenOnly is for a door with no auth proxy in front — pass verify:null");
+
+  /**
+   * Has this identity been taken off the guest list since its session was opened? Null when it has not,
+   * or when the question does not apply — and the body to send back when it has.
+   *
+   * ── WHY THIS IS ASKED AGAIN AT ALL ──────────────────────────────────────────────────────────────
+   *
+   * An ACCOUNT session's reach is resolved ONCE, at `resolveScope`, and lives in the server the
+   * transport was built around. After that, this branch compared the caller's email against the
+   * session's and nothing else — so somebody removed from an installation kept a whole account's reach
+   * through their assistant until the session went idle for `SESSION_TTL_MS`, half an hour by default.
+   * The portal's own side has never had that gap: it reads the file on every request. The People page
+   * now tells a manager that removing somebody takes their access away "straight away, here and through
+   * their AI", and this is what makes the second half of that sentence true rather than nearly true.
+   *
+   * ── WHY IT IS THIS NARROW ───────────────────────────────────────────────────────────────────────
+   *
+   * Four kinds of session reach this branch and only one of them is answerable from the guest list.
+   * A run-bound `user` session and an `ops` session carry a token whose subject is a run id or an
+   * automation principal, neither of which is an address anybody enrols; `internal` is firm staff,
+   * admitted by a domain rule that does not live in this file. Asking the guest list about any of them
+   * would refuse a caller for not being something they were never supposed to be — so the gate is the
+   * client surface and the `account` kind, which is exactly the population the removal sentence is
+   * about. Every other session behaves as it did.
+   *
+   * ── AND WHY IT FAILS CLOSED ─────────────────────────────────────────────────────────────────────
+   *
+   * A guest list that names nobody refuses. `CLEAROTRON_ACCESS_FILE` is mandatory on any door that can
+   * hold an account session (the boot guard exits on its absence), and the file is written by an atomic
+   * rename, so a reader sees the old file or the new one and never a torn one. An empty answer is
+   * therefore a real state — the file was emptied, or it stopped parsing — and not a transient worth
+   * holding a door open for.
+   */
+  const revokedMidSession = (entry) => {
+    // WHO, read off the SCOPE and never off `user.email`. The two are the same address on a
+    // CF-fronted door and are NOT on the others: a key door names the token's subject, and dev mode
+    // hands out a synthetic identity that was never enrolled anywhere. Asking the guest list about the
+    // synthetic one refuses every session on a developer's box, which is how this was found.
+    if (!clientSurface || entry?.kind !== "account" || !entry?.sub) return null;
+    if (stillEnrolled(entry.sub)) return null;
+    log(`session withdrawn mid-session: ${entry.sub} is no longer on this installation's guest list`);
+    return { error: "your access to this installation has been withdrawn — ask whoever manages it, then start a new session" };
+  };
+
   return async (req, res) => {
     try {
       // THE BASE IS A CONSTANT, AND WHAT THE `Host` HEADER IS USED FOR HERE IS: NOTHING. Only
@@ -175,6 +225,7 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
 
         const sid = hdr(req.headers["mcp-session-id"]);
         let entry = sid ? sessions.get(sid) : null;
+        let stampScope = null;
         if (!entry) {
           if (sid) return send(res, 404, { error: "unknown or expired session" });
           if (!isInitializeRequest(body)) return send(res, 400, { error: "no session — the first request must be an MCP initialize" });
@@ -204,11 +255,29 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
           }
           const transport = await createSession(sessions, scope, user.email);
           entry = { transport, sub: scope.sub ?? null, kind: scope.kind ?? null };
+          // STAMP THE SCOPE'S OWN FACTS ONTO THE STORED ENTRY, HERE, AND AFTER THE HANDSHAKE.
+          //
+          // `createSession` is injected, and every caller carries its own copy of the entry shape — two
+          // servers and every arm that builds a door — so `sub` and `kind` are recorded by some of them
+          // and omitted by others. A gate reading either would be true about whichever copies happened
+          // to set it and silently inert everywhere else, which is the one failure a gate must not have.
+          // The local `entry` above is this request's only; the map's is what every later request reads.
+          //
+          // AFTER, because the session has no id until the transport has answered the initialize: the
+          // id is minted inside `handleRequest`, and `onsessioninitialized` is what puts the entry in
+          // the map. Stamping before that read `sessions.get(undefined)`, found nothing, wrote nothing,
+          // and left the gate reading a field nobody had set — green, and doing nothing.
+          stampScope = () => {
+            const stored = transport.sessionId ? sessions.get(transport.sessionId) : null;
+            if (stored) { stored.sub = scope.sub ?? null; stored.kind = scope.kind ?? null; }
+          };
         } else {
           if (entry.email && entry.email !== user.email) {
             log(`session owner mismatch: ${user.email} presented a session created by another identity`);
             return send(res, 403, { error: "session belongs to another identity" });
           }
+          const gone = revokedMidSession(entry);
+          if (gone) return send(res, 403, gone);
           entry.lastSeen = Date.now();
         }
         // OPS-TOKENS item 6 — automation principals get their own (lower) bucket, keyed by the token's
@@ -219,7 +288,9 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         // Audit AFTER scope resolution so the line names the PRINCIPAL (token sub), not just the
         // transport identity — still strictly before any tool dispatch. Best-effort, never blocks.
         try { appendAudit({ email: user.email, sub: entry.sub ?? null, body }); } catch { /* best-effort */ }
-        return entry.transport.handleRequest(req, res, body);
+        const answered = entry.transport.handleRequest(req, res, body);
+        if (stampScope) { try { await answered; } finally { stampScope(); } }
+        return answered;
       }
 
       if (req.method === "GET" || req.method === "DELETE") {
@@ -230,6 +301,8 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
           log(`session owner mismatch: ${user.email} presented a session created by another identity`);
           return send(res, 403, { error: "session belongs to another identity" });
         }
+        const gone = revokedMidSession(entry);
+        if (gone) return send(res, 403, gone);
         entry.lastSeen = Date.now();
         return entry.transport.handleRequest(req, res);
       }

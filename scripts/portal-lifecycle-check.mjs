@@ -37,6 +37,11 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const DIST = join(HERE, '..', 'portal-ui', 'dist')
 const keep = process.argv.includes('--keep')
 const shotAt = process.argv.includes('--shot') ? process.argv[process.argv.indexOf('--shot') + 1] : null
+// A DIRECTORY, not a file. The owner's rule is that a change a person sees on a screen arrives with a
+// picture of that screen, and the change-and-remove form is two screens: the form filled in, and the
+// confirmation it asks before it acts. One `--shot` path cannot carry both, and the second is the one
+// worth looking at — a reader who only ever sees the pre-confirm pill has not seen what they agree to.
+const shotsDir = process.argv.includes('--shots') ? process.argv[process.argv.indexOf('--shots') + 1] : null
 
 if (!existsSync(join(DIST, 'index.html'))) {
   console.error(`no build at ${DIST} — run: npm run build:ui`)
@@ -111,13 +116,34 @@ const ME = () => {
 
 // PEOPLE, as the access route answers the whole-install pass: three people on a hosted install, and the
 // one person a local sign-in holds. Each person arrives already narrowed to what the viewer may see.
-const HOSTED_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: true, localSignIn: false, people: [
-  { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [] },
-  { email: 'owner@example.test', permissions: { run: true, manage: false }, access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }], dangling: [] },
-  { email: 'viewer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }], dangling: [] },
-] }
-const LOCAL_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: false, localSignIn: true, people: [
-  { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [] },
+//
+// `covered` says whether a row is the WHOLE of that person from where the viewer stands, and this pass is
+// the whole-install viewer, so every row is. `keys` is how many connector keys the person holds, and
+// `keysRevocable` whether this installation could withdraw one — both read by the removal confirmation
+// BEFORE it is pressed, which is the only moment at which they are any use to a reader.
+//
+// `owner@example.test` deliberately holds TWO points. A person holding one cannot demonstrate the change
+// this form is for: unticking their only row is not a narrowing, it is the removal, and the form refuses
+// it by name.
+// Flipped for one pass. A connector started without a revocation list never loaded one, so a key already
+// issued through it cannot be called back — and the confirmation has to say that INSTEAD of "through
+// their AI", before the press rather than in the answer. It is a branch of a client-facing sentence, so
+// it is driven rather than reasoned about.
+let keysRevocable = true
+const HOSTED_PEOPLE = () => ({ note: '', unknownAccounts: [], grantsFile: null, canAdd: true, localSignIn: false, keysRevocable, people: [
+  { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [], listed: true, covered: true, keys: 0 },
+  { email: 'owner@example.test', permissions: { run: true, manage: false }, dangling: [], listed: true, covered: true, keys: 1,
+    access: [{ kind: 'organisation', key: 'org-a', name: 'Apmxc Group' }, { kind: 'company', key: KEY2, name: NAME2, org: 'org-b' }] },
+  { email: 'viewer@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY, name: NAME, org: 'org-a' }], dangling: [], listed: true, covered: true, keys: 0 },
+  // A FOURTH PERSON, AND THE ONLY REASON FOR THEM IS `listed: false`. They appear in a company's access
+  // list and have no permissions entry at all, which is a different fact from having permissions set to
+  // none — the server has always said which, and the decoder dropped the field, so this row rendered as
+  // a considered "view only" for as long as the page has existed. Nothing here would have caught it
+  // either, because the fixture had nobody of this shape.
+  { email: 'reach@example.test', permissions: { run: false, manage: false }, access: [{ kind: 'company', key: KEY2, name: NAME2, org: 'org-b' }], dangling: [], listed: false, covered: true, keys: 0 },
+] })
+const LOCAL_PEOPLE = { note: '', unknownAccounts: [], grantsFile: null, canAdd: false, localSignIn: true, keysRevocable: false, people: [
+  { email: 'lawyer@cordillera.test', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], dangling: [], listed: true, covered: true, keys: 0 },
 ] }
 
 // THE ENGINE'S OWN ROW for a level, not a restatement of it. `available`/`unavailableNote` are the
@@ -250,7 +276,7 @@ const server = createServer((req, res) => {
   // HTML, and People would report itself unavailable — a failure of the fixture wearing the page's name.
   if (p === '/portal/admin/access') {
     if (role !== 'staff') { res.writeHead(404); res.end('{}'); return }
-    return json(res, localMode ? LOCAL_PEOPLE : HOSTED_PEOPLE)
+    return json(res, localMode ? LOCAL_PEOPLE : HOSTED_PEOPLE())
   }
   if (p === '/portal/admin/observed') return json(res, { available: false, truncated: false, people: [], note: 'No activity log is kept here.' })
   if (p === '/portal/api/mcp-access') return json(res, { url: null, keyUrl: null, email: null, enabled: false })
@@ -462,6 +488,72 @@ ${HELPERS}
     const linkSel = 'a[href*="putting-your-own-login-provider-in-front"]';
     const linked = await settle(() => document.querySelector(linkSel), 8000);
     out.linkHref = linked ? document.querySelector(linkSel).href : null;
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
+/**
+ * Modify, and the confirmation Remove asks — the two screens the change-and-remove work added.
+ *
+ * It unticks a row rather than only opening the form, because the sentence under the form is the thing
+ * that had to be built rather than reused: the Add form never had to say what somebody LOSES. Reading
+ * it back is what distinguishes a form that drew from a form that drew and then said the right thing.
+ *
+ * It stops at the confirmation. Pressing through would need the write routes stubbed, and this pass has
+ * no business exercising a removal — what it is here to prove is that a reader is told what they are
+ * agreeing to before they agree to it.
+ */
+const MODIFY_SCRIPT = `
+(async () => {
+${HELPERS}
+  const out = {};
+  try {
+    await goto('/portal/people');
+    await mustSettle(() => document.querySelector('table.data tbody tr td'), 8000, 'People never drew its list');
+    const rowOf = (email) => [...document.querySelectorAll('table.data tbody tr')]
+      .find((r) => r.innerText.indexOf(email) === 0 || r.innerText.indexOf(email) >= 0);
+    // THE PILL, not the row's text. The pill sits flush against the address, so innerText runs the two
+    // together and a word-boundary match on it finds nothing — an arm that would have reported the mark
+    // missing while it was on the screen.
+    out.youPill = ((rowOf('lawyer@cordillera.test') || document.createElement('tr')).querySelector('.pill') || {}).innerText || null;
+    out.youHasModify = !!(rowOf('lawyer@cordillera.test') || document.createElement('tr')).querySelector('button.pill');
+    out.otherPill = ((rowOf('owner@example.test') || document.createElement('tr')).querySelector('span.pill') || {}).innerText || null;
+    out.otherHasModify = !!(rowOf('owner@example.test') || document.createElement('tr')).querySelector('button.pill');
+    rowOf('owner@example.test').querySelector('button.pill').click();
+    await mustSettle(() => /Modify access/.test(txt()), 8000, 'Modify did not open the form');
+    out.path = location.pathname + location.search;
+    out.email = (document.querySelector('.page-lede') || {}).innerText || null;
+    out.ticked = [...document.querySelectorAll('button.attach-row')]
+      .filter((b) => b.className.indexOf(' on') >= 0).map((b) => b.innerText.replace(/\\s+/g, ' ').trim());
+    out.saveDisabledBefore = findByText('button', /Save changes/).disabled;
+    findByText('button.attach-row', /Foxglade Interactive/).click();
+    await sleep(250);
+    out.sentence = (document.querySelector('.notice.quiet p') || {}).innerText || null;
+    out.saveEnabledAfter = !findByText('button', /Save changes/).disabled;
+    out.removeLabel = (maybeByText('button.pill', /^Remove from/) || {}).innerText || null;
+  } catch (e) { out.fatal = String((e && e.message) || e); }
+  return out;
+})()
+`
+
+/** The confirmation, pressed open and read — never pressed through. */
+const CONFIRM_SCRIPT = `
+(async () => {
+${HELPERS}
+  const out = {};
+  try {
+    findByText('button.pill', /^Remove from/).click();
+    await mustSettle(() => /Confirm . remove|Confirm — remove/.test(txt()), 8000, 'Remove did not ask');
+    // NOT the first .notice — the sentence under the form is the quiet one and comes first in the
+    // document, so that selector read the wrong paragraph and every assertion below reported the
+    // confirmation's copy missing while it was on screen. The confirmation is the loud one.
+    const loud = [...document.querySelectorAll('.notice:not(.quiet) p')];
+    out.said = loud.length ? loud[loud.length - 1].innerText : null;
+    // maybeByText, not findByText: absence is what is being measured here, and findByText THROWS on it,
+    // so a double-negation of it can never be false and the arm would report a missing button as a crash.
+    out.hasConfirm = !!maybeByText('button.pill', /Confirm/);
+    out.hasCancel = !!maybeByText('button.pill', /^Cancel$/);
   } catch (e) { out.fatal = String((e && e.message) || e); }
   return out;
 })()
@@ -689,6 +781,30 @@ role = 'staff'
 await reload()
 const asStaff = await value(NAMES_SCRIPT)
 const people = await value(PEOPLE_SCRIPT)
+// BEFORE the local-sign-in pass, deliberately. That pass serves a guest list of ONE — the person signed
+// in — so the row this drives would not be on the page at all, and the failure reads as "Modify is
+// broken" rather than "the fixture moved underneath it".
+await reload()
+const modify = await value(MODIFY_SCRIPT)
+if (shotsDir) {
+  const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (data) writeFileSync(join(shotsDir, 'people-modify.png'), Buffer.from(data, 'base64'))
+}
+const confirm = modify && !modify.fatal ? await value(CONFIRM_SCRIPT) : { fatal: 'the form never opened' }
+if (shotsDir) {
+  // TAKEN WITH THE CONFIRMATION OPEN — the state a reader is actually shown before they act, which is
+  // the one worth a picture. A shot of the pre-confirm pill shows a button, not a decision.
+  const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (data) writeFileSync(join(shotsDir, 'people-remove-confirm.png'), Buffer.from(data, 'base64'))
+}
+keysRevocable = false
+await reload()
+const modifyNoRevoke = await value(MODIFY_SCRIPT)
+const confirmNoRevoke = modifyNoRevoke && !modifyNoRevoke.fatal ? await value(CONFIRM_SCRIPT) : { fatal: 'the form never opened' }
+keysRevocable = true
+
 localMode = true
 await reload()
 const peopleLocal = await value(PEOPLE_LOCAL_SCRIPT)
@@ -804,10 +920,16 @@ for (const [who, out] of [['client', asClient], ['multi-account client', asMulti
 if (!people || people.fatal) {
   fail.push(`people: ${people?.fatal ?? 'the driver returned nothing'}`)
 } else {
-  ok(people.rows.length === 3, `People should list the three people it was sent — it drew ${people.rows.length} rows`)
+  ok(people.rows.length === 4, `People should list the four people it was sent — it drew ${people.rows.length} rows`)
   ok(people.rows.some((r) => r[1] === 'Runs clearances · Manages' && /Everything/.test(r[2] ?? '')),
     `no row reads both permissions with access to everything: ${JSON.stringify(people.rows)}`)
   ok(people.rows.some((r) => r[1] === 'View reports'), `the view-only person is not described as such: ${JSON.stringify(people.rows)}`)
+  // THE OTHER SHAPE, SAID APART. Somebody who exists only in a company's access list has no permissions
+  // entry to read, and calling that "View reports" says the file does not say: that somebody decided
+  // this person may only view. The page has drawn the distinction since it was written; the field it
+  // keys on was being dropped between the server and the screen, so it had never once appeared.
+  ok(people.rows.some((r) => /Reach only/.test(r[1] ?? '')),
+    `a person listed only in a company's access list is still described as view-only: ${JSON.stringify(people.rows)}`)
   ok(!people.rows.some((r) => /staff|client/i.test(r.join(' '))), `a role word is back on People: ${JSON.stringify(people.rows)}`)
   ok(people.addDisabled === false && !people.localNotice, 'a hosted install offers Add, with no local sign-in notice')
   ok(people.path === '/portal/people/add', `Add a person opened ${people.path}`)
@@ -815,6 +937,55 @@ if (!people || people.fatal) {
     `the form does not say what the new person will see: ${JSON.stringify(people.sentence)}`)
   ok(/cannot add companies or people/.test(people.sentence ?? ''), `the form does not say what they cannot do: ${JSON.stringify(people.sentence)}`)
   ok(people.saveEnabled === true, 'Save is off with an address and a choice made')
+}
+
+// ── MODIFY AND REMOVE ───────────────────────────────────────────────────────────────────────────────
+if (!modify || modify.fatal) {
+  ok(false, `the Modify form could not be driven: ${modify?.fatal ?? 'no answer'}`)
+} else {
+  ok(modify.youHasModify === false, 'your own row offers Modify — nobody changes their own permissions')
+  ok((modify.youPill ?? '').trim() === 'You', `your own row is not marked You: ${JSON.stringify(modify.youPill)}`)
+  ok(modify.otherPill === null, `somebody else's row is marked You: ${JSON.stringify(modify.otherPill)}`)
+  ok(modify.otherHasModify === true, 'another person\'s row offers no way in')
+  ok((modify.path ?? '').startsWith('/portal/people/modify?email='),
+    `Modify opened ${modify.path} rather than the form, carrying which person in the query`)
+  ok(/owner@example\.test/.test(modify.email ?? ''), `the form does not name whose access it is: ${JSON.stringify(modify.email)}`)
+  // FILLED IN. The whole design decision is that this is the Add form showing what the person HOLDS, so
+  // a form that opened blank would look almost right and be the one thing it must not be.
+  ok((modify.ticked ?? []).some((t) => /Apmxc Group/.test(t)) && (modify.ticked ?? []).some((t) => /Foxglade Interactive/.test(t)),
+    `the form did not open filled in with what they hold: ${JSON.stringify(modify.ticked)}`)
+  ok(modify.saveDisabledBefore === true, 'Save is live on a form nobody has changed yet')
+  ok(modify.saveEnabledAfter === true, 'Save stayed off after a row was unticked')
+  // THE SENTENCE THE ADD FORM NEVER NEEDED.
+  ok(/lose/i.test(modify.sentence ?? '') && /Foxglade Interactive/.test(modify.sentence ?? ''),
+    `the form does not say what they lose before it is saved: ${JSON.stringify(modify.sentence)}`)
+  ok(/^Remove from Clearotron/.test(modify.removeLabel ?? ''),
+    `a viewer who can see all of somebody is not offered the whole removal: ${JSON.stringify(modify.removeLabel)}`)
+}
+
+if (!confirm || confirm.fatal) {
+  ok(false, `the removal confirmation could not be read: ${confirm?.fatal ?? 'no answer'}`)
+} else {
+  ok(confirm.hasConfirm === true && confirm.hasCancel === true, 'the confirmation does not offer both answers')
+  // WHAT A READER AGREES TO, before they agree to it: who loses what, when, and the half this product
+  // does not own.
+  ok(/owner@example\.test/.test(confirm.said ?? ''), `the confirmation does not name the person: ${JSON.stringify(confirm.said)}`)
+  ok(/straight away/.test(confirm.said ?? ''), `the confirmation does not say when: ${JSON.stringify(confirm.said)}`)
+  ok(/through their AI/.test(confirm.said ?? ''), `the confirmation does not say the assistant loses it too: ${JSON.stringify(confirm.said)}`)
+  ok(/login system/.test(confirm.said ?? ''), `the confirmation does not say what this product cannot do: ${JSON.stringify(confirm.said)}`)
+}
+
+// THE OTHER BRANCH OF THAT SENTENCE. The same press, on an installation whose connector was started
+// without a revocation list. "Through their AI" is not true there, so it must not be printed there.
+if (!confirmNoRevoke || confirmNoRevoke.fatal) {
+  ok(false, `the confirmation could not be read where keys cannot be withdrawn: ${confirmNoRevoke?.fatal ?? 'no answer'}`)
+} else {
+  ok(!/through their AI/.test(confirmNoRevoke.said ?? ''),
+    `the confirmation promises the assistant loses access on an installation that cannot withdraw the key: ${JSON.stringify(confirmNoRevoke.said)}`)
+  ok(/until it expires/.test(confirmNoRevoke.said ?? ''),
+    `it does not say the key keeps working: ${JSON.stringify(confirmNoRevoke.said)}`)
+  ok(/straight away/.test(confirmNoRevoke.said ?? ''),
+    `it stopped saying what IS immediate: ${JSON.stringify(confirmNoRevoke.said)}`)
 }
 if (!peopleLocal || peopleLocal.fatal) {
   fail.push(`people (local sign-in): ${peopleLocal?.fatal ?? 'the driver returned nothing'}`)
