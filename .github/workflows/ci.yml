@@ -321,6 +321,7 @@ jobs:
       - run: node scripts/clearances-render-check.mjs
       - run: node scripts/composer-render-check.mjs
       - run: node scripts/ai-page-render-check.mjs
+      - run: node scripts/ask-ai-render-check.mjs
       - run: node scripts/portal-lifecycle-check.mjs
 
       # ARRIVED WITH THE PORTAL-MAJORS MERGE AND RAN NOWHERE. Every other check above drives a screen

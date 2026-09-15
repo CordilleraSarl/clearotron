@@ -25,7 +25,7 @@ error would otherwise reach a committed bundle. `npm run typecheck -w portal-ui`
 | `niceClasses.test.ts`, `ownerNames.test.ts` | Class parsing and owner-name normalisation |
 | `productMatrix.test.ts`, `effortModelParity.test.ts` | That the UI's product claims match `../../driver/products.mjs` and `effort-model.mjs` |
 | `profileFields.test.ts` | The profile field definitions and their copy |
-| `askAi.test.ts` | The shell's Ask-AI control — the question's parity with the report's own, and that the address shown is the CLIENT connector, never the staff host |
+| `askAi.test.ts` | The shell's Ask-AI control — the question it opens an assistant with, which readers are offered the menu rather than the setup panel, and that no address or copy link reaches a report in any state |
 | `assistants.test.ts` | The four connection entry points, and the rule that each is handed the address ITS door uses — Perplexity cannot open the browser sign-in |
 | `copyLint.test.ts` | Two rules on centrally-authored copy: a vendor-vocabulary banlist and a length ceiling |
 | `exportControls.test.ts` | The Export menu composed from what the framed document announces it can do — including that an un-announced document and an empty announcement are different answers |

@@ -20,6 +20,7 @@
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { appendAudit } from "./lib/audit.mjs";
 import {
   ListToolsRequestSchema, CallToolRequestSchema,
   ListResourcesRequestSchema, ReadResourceRequestSchema, ListResourceTemplatesRequestSchema,
@@ -1081,6 +1082,21 @@ export { tools, TOOL_DEFS, NS, log };
 const isMain = isEntrypoint(import.meta.url);
 if (isMain) {
   makeServer().connect(new StdioServerTransport())
-    .then(() => log("ready — read-only interrogation + gated what-if over clearotron runs"))
+    .then(() => {
+      log("ready — read-only interrogation + gated what-if over clearotron runs");
+      // ── LEAVE A RECORD THE PORTAL CAN READ ────────────────────────────────────────────────────────
+      //
+      // The HTTP doors write the caller's email to the access log on every request; this route wrote
+      // nothing, so a reader whose only connector is the local one was invisible to the portal and its
+      // Ask-AI control could only offer them setup they had already done.
+      //
+      // NO EMAIL, AND NONE IS SYNTHESIZED. This transport has no signed-in identity — it is a process an
+      // assistant spawned on somebody's own machine — and an invented address would match a person who
+      // did nothing. The record says what is true: a connector on this box was started over the local
+      // route. On an install with no hosted client door the reader IS the operator, which is the same
+      // split `stdioConnectOffer` already trusts, so that fact answers the question by itself; on a
+      // hosted install it answers for nobody and the portal ignores it.
+      appendAudit({ email: null, sub: null, body: { method: "initialize" }, status: "connected", transport: "stdio" });
+    })
     .catch((e) => { log(`fatal: ${e?.stack ?? e}`); process.exit(1); });
 }

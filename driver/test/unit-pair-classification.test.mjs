@@ -112,7 +112,7 @@
 //                        row already guarded the same emptiness.
 //
 //  UNGUARDED (1), CURED — `706646eb`, and the site has left this population:
-//   · publish/render.mjs:1952   A SECOND COPY OF A SHARED PREDICATE. findings-model exports
+//   · publish/render.mjs         A SECOND COPY OF A SHARED PREDICATE. findings-model exports
 //                        `inDispositionMode` and its comment called it "the mode switch both sort sites
 //                        use". render.mjs imported it, never called it, and answered the same question
 //                        inline to set `DISPOSITION_MODE` — which every prominence helper in that file
@@ -127,8 +127,8 @@
 //                        freeze, where the rest of render.mjs's single-definition rules already are.
 //
 //                        THE SITE IS GONE FROM THE SWEEP, NOT MERELY FIXED. Calling the predicate
-//                        instead of re-typing it removes the `.some()` from render.mjs:1952 altogether,
-//                        so the adjudication set is 20 today and this ruling is the record of the
+//                        instead of re-typing it removes the `.some()` from render.mjs altogether, so
+//                        the adjudication set is 20 today and this ruling is the record of the
 //                        twenty-first. `publish/render.mjs` stays in RULED on :372, which is why nothing
 //                        red when the cure landed — a file leaving one ruling and keeping another is not
 //                        a state the two-directional arm can see, and this paragraph is what a reader

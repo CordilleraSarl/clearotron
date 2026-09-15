@@ -1,109 +1,163 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Ask AI — the control the shell strips from every client report and never put back.
+// Ask AI — one press opens the reader's own assistant with the question typed in.
 //
-// THE DEFECT. The full clearance report carries an "Ask your AI about this run"
-// band: a copy-question button, the connector address, the setup recipes. `prepareReportForEmbed` strips
-// it from every client-facing framed report because the band names the STAFF host — and unlike the
-// report's Export menu, which the shell strips and then reproduces in its own header, nothing
-// reproduced this one. The knockout renderer never had a band at all.
+// WHAT THESE ARMS ARE FOR. The owner watched a lawyer press this button, read what opened, dismiss it,
+// and go to Claude to type a question by hand. The control handed over two monospace strings with a Copy
+// link each and said nothing about which one was needed. So the things worth holding are: the question
+// reads like something a person would type, the control is not offered to a reader who cannot use it,
+// and a reader whose state we could not measure is not told a fact about themselves.
 //
-// So no client, on any run kind, could reach an Ask-AI control anywhere in the portal. The owner
-// reported it missing; it was missing by construction, which is why no test caught it.
+// THIS FILE USED TO BE A PARITY TEST. The delivered report composed the same sentence, and the arm read
+// it back off the rendered HTML so the two surfaces could not drift. The report's band came out under
+// the owner's 2026-09-15 ruling, so there is one definition and nothing left to hold in step — and an
+// arm reading a band that is no longer rendered would have gone green on an empty string forever.
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { askAiPrompt, askAiOffer } from '../src/contract/askAi.ts'
-// @ts-expect-error — the driver is plain .mjs with no types; this is a parity read, not an API.
-import { renderHtml } from '../../driver/publish/render.mjs'
-// @ts-expect-error — same.
-import { parseReport } from '../../driver/publish/parse.mjs'
-import { mkdtempSync, writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { askAiPrompt, askAiOffer, readableDate, ASSISTANTS, AI_SETUP_PATH } from '../src/contract/askAi.ts'
 
-const WIRED = { url: 'https://mcp.example.test/mcp', enabled: true }
+const WIRED = { url: 'https://mcp.example.test/mcp', enabled: true, aiConnected: true }
+const RUN = { markName: 'ACME', date: '2026-09-14', kind: 'clearance' as const }
 
-/** The sentence a DELIVERED report offers, read off the button a reader actually copies from. */
-function promptInReport(runId: string): string {
-  const md = [
-    '---', 'type: prelim-clearance', `matter: ${runId}`, 'title: MOONBERRY',
-    'overall_label: MEDIUM', 'overall_badge: l3', 'overall_caption: medium overall.',
-    'classes: 5 · 42', 'jurisdiction: worldwide', 'run: 2026-08-26', '---', '',
-    '# Marks', '## Beta Inc', '- one: A senior register mark on the filed goods.', '',
-  ].join('\n')
-  const dir = mkdtempSync(join(process.env['TMPDIR'] ?? tmpdir(), 'askai-'))
-  const path = join(dir, 'f.report.md')
-  writeFileSync(path, md)
-  const html: string = renderHtml(parseReport(path), [], [], { runId, mcpUrl: 'https://staff.invalid/mcp' })
-  return /class="[^"]*\baskai-copy\b[^"]*"[^>]*data-copy="([^"]*)"/.exec(html)?.[1] ?? ''
-}
+test('the question is a sentence a person could have typed: the mark, the date, no run code', () => {
+  // The owner's own example, 2026-09-15. Every part of it is load-bearing: the run code is gone because
+  // it read as something meant for a machine, and the date is in because it is what tells two reads of
+  // the same mark apart — which is the one thing the assistant has to get right.
+  assert.equal(askAiPrompt('ACME', '2026-09-14'), 'Brief me on the ACME clearance from 14 September.')
 
-test('PARITY: the shell asks the same question the delivered report asks', () => {
-  // One rule, two surfaces. A reader who copies the sentence off the shell and a reader who copies it out
-  // of a delivered document are asking the same question about the same run.
-  //
-  // READ OFF THE RENDERED REPORT, not off a shared helper — and that is a deliberate choice, not the
-  // lazy one. `render.mjs` is BYTE-FROZEN at a content hash with a documented break checklist, because
-  // it renders documents that are re-rendered after delivery; exporting a function from it to import
-  // here would have moved that hash for a test's convenience. Reading the attribute a reader actually
-  // copies from is also the stronger claim: it tests the artifact rather than a helper the artifact
-  // happens to call today.
-  for (const runId of ['tmp1-aurora-run', 'tmp4-aurora-batch']) {
-    const inReport = promptInReport(runId)
-    assert.ok(inReport, `the report offers a copyable question for ${runId}`)
-    assert.equal(askAiPrompt(runId, 'MOONBERRY'), inReport,
-      `the shell and the delivered report disagree about what to ask for ${runId}`)
+  // THE RUN CODE IS THE REGRESSION TO CATCH, so say so rather than only asserting the whole string. A
+  // future edit that appends "(run noref4d19…)" would fail the equality above with a message about a
+  // sentence; this one fails with a message about the thing that was ruled out.
+  for (const runId of ['noref000001-acme-2026-09-14-amber-harbour', 'tmp4-aurora-batch']) {
+    assert.ok(!askAiPrompt('ACME', '2026-09-14').includes(runId), 'no run identifier in the visible question')
   }
 })
 
-test('the question names the run, so an assistant is asked about THIS one', () => {
-  assert.equal(askAiOffer('tmp4-aurora-batch', 'IRONWHISK', WIRED).question,
-    'Brief me on trademark clearance run tmp4-aurora-batch.')
+test('a knockout batch is named the way its own screens name it', () => {
+  assert.equal(askAiPrompt('ACME', '2026-09-14', 'knockout-batch'),
+    'Brief me on the ACME knockout search from 14 September.')
 })
 
-test('THE ADDRESS IS THE CLIENT DOOR, and a missing one is an answer', () => {
+test('a date it cannot read is left out rather than guessed', () => {
+  // A WRONG DATE IS WORSE THAN NO DATE, because this sentence sits one line under a header that prints
+  // the right one. Null, empty, a timestamp, a locale spelling — none of those is `YYYY-MM-DD`.
+  assert.equal(askAiPrompt('ACME', null), 'Brief me on the ACME clearance.')
+  for (const bad of ['', '14/09/2026', '2026-09-14T10:00:00Z', 'yesterday', '2026-9-4', '2026-13-01', '2026-09-00']) {
+    assert.equal(readableDate(bad), null, `${JSON.stringify(bad)} is not a date this may print`)
+  }
+  assert.equal(readableDate('2026-01-01'), '1 January', 'and a date it CAN read still reads')
+})
+
+test('the date is formatted from the parts, so it does not move a day west of Greenwich', () => {
+  // `new Date('2026-09-14')` is UTC midnight and prints as the 13th in any negative offset. The report's
+  // header, one line above, would still say the 14th. Asserted by running the arm in a zone that would
+  // expose it rather than by reading the source for the absence of a call.
+  const before = process.env['TZ']
+  try {
+    process.env['TZ'] = 'Pacific/Honolulu'      // UTC-10
+    assert.equal(readableDate('2026-09-14'), '14 September')
+    process.env['TZ'] = 'Pacific/Kiritimati'    // UTC+14
+    assert.equal(readableDate('2026-09-14'), '14 September')
+  } finally {
+    if (before === undefined) delete process.env['TZ']; else process.env['TZ'] = before
+  }
+})
+
+test('a mark the run never recorded still yields a sentence', () => {
+  // Runs delivered before publish started copying `markName` carry null. The fallback is the one the
+  // rest of the shell uses, and the point is that it never produces "the  clearance".
+  assert.equal(askAiPrompt(null, '2026-09-14'), 'Brief me on the this mark clearance from 14 September.')
+  assert.equal(askAiPrompt('   ', null), 'Brief me on the this mark clearance.')
+})
+
+test('THE BUTTON IS NOT DRAWN WHERE IT COULD DO NOTHING', () => {
+  // A panel explaining that there is nothing to connect to was turned down by the owner: a button that
+  // can do nothing is not drawn. The three ways an installation has nothing:
+  assert.equal(askAiOffer(RUN, null).drawn, false, 'the route has not answered yet')
+  assert.equal(askAiOffer(RUN, { url: null, enabled: true, aiConnected: null }).drawn, false, 'no connector wired')
+  assert.equal(askAiOffer(RUN, { url: 'https://x/mcp', enabled: false, aiConnected: null }).drawn, false,
+    'disabled means disabled')
+
+  // And the two ways it has something. The local route counts: that is the whole of a laptop install.
+  assert.equal(askAiOffer(RUN, WIRED).drawn, true, 'a published client door')
+  assert.equal(askAiOffer(RUN, { url: null, enabled: false, stdio: { command: 'x' }, aiConnected: null }).drawn, true,
+    'a local route and no published door is a laptop install, which is the case this used to strand')
+})
+
+test('COULD-NOT-MEASURE IS NOT "NEVER CONNECTED", and both draw the panel', () => {
+  // The difference matters even though the two render the same, because the reason they render the same
+  // is a decision about POLARITY and not an accident: offering the menu to a reader with no assistant
+  // opens a chat that cannot see the report, which is the dead end this control exists to end. A null
+  // must never harden into a stored `false` somewhere upstream on the strength of them looking alike.
+  assert.equal(askAiOffer(RUN, { ...WIRED, aiConnected: true }).connected, true)
+  assert.equal(askAiOffer(RUN, { ...WIRED, aiConnected: false }).connected, false)
+  assert.equal(askAiOffer(RUN, { ...WIRED, aiConnected: null }).connected, false, 'no log to read draws the panel')
+  assert.equal(askAiOffer(RUN, { url: WIRED.url, enabled: true }).connected, false,
+    'a server too old to send the field draws the panel too')
+})
+
+test('both links carry the question and go to the two assistants the owner checked', () => {
+  // He opened both by hand on 2026-09-15: each opens a new chat with the text typed in and not sent.
+  // A floor first, so a future edit that empties the list fails here rather than rendering no menu.
+  assert.equal(ASSISTANTS.length, 2, 'two assistants are offered')
+  assert.deepEqual(ASSISTANTS.map((a) => a.label), ['Ask Claude', 'Ask ChatGPT'])
+
+  const q = askAiPrompt('ACME', '2026-09-14')
+  const hrefs = ASSISTANTS.map((a) => a.href(q))
+  assert.equal(hrefs[0], `https://claude.ai/new?q=${encodeURIComponent(q)}`)
+  assert.equal(hrefs[1], `https://chatgpt.com/?q=${encodeURIComponent(q)}`)
+  for (const href of hrefs) {
+    assert.ok(href.includes(encodeURIComponent('Brief me on the ACME clearance')), 'the question travels')
+    assert.ok(!/ /.test(href), 'and it is encoded, so the link is not cut at the first space')
+  }
+})
+
+test('NO ADDRESS AND NO COPY LINK REACHES A REPORT, in any state', () => {
   // The band is stripped from client reports precisely because it names the staff host. A control the
-  // shell draws itself that re-introduced that host would defeat the strip rather than complete it — so
-  // the address comes from the client-connector API, and null renders as a sentence rather than a host
-  // that will not connect.
-  assert.equal(askAiOffer('r1', 'M', WIRED).address, 'https://mcp.example.test/mcp')
-  assert.equal(askAiOffer('r1', 'M', null).address, null, 'no answer yet is not an address')
-  assert.equal(askAiOffer('r1', 'M', { url: null, enabled: true }).address, null, 'no connector wired')
-  assert.equal(askAiOffer('r1', 'M', { url: 'https://x/mcp', enabled: false }).address, null,
-    'disabled means disabled — a url that is not offered is not shown')
-})
+  // shell draws itself that put an address back would defeat that strip rather than complete it — and a
+  // Copy link is what the owner watched a reader give up on. Read off the screen's source, because the
+  // claim is about what is RENDERED and the offer type no longer carries an address to assert about.
+  const screen = readFileSync(fileURLToPath(new URL('../src/screens/Result.tsx', import.meta.url)), 'utf8')
+  const start = screen.indexOf('function AskAiMenu(')
+  const end = screen.indexOf('function ExportMenu(')
+  assert.ok(start > 0 && end > start, 'found the control in the screen')
+  const control = screen.slice(start, end)
+  assert.ok(control.length > 800, 'and it is the whole control, not a stub this arm would pass over')
 
-test('the question survives a deployment with no connector', () => {
-  // It is the sentence to say once there IS one, and it costs nothing to show. Blanking the whole
-  // control on a null address would leave the reader with the same nothing they had before.
-  const offer = askAiOffer('tmp9', 'LUMEN', null)
-  assert.match(offer.question, /Brief me on trademark clearance run tmp9\./)
-  assert.equal(offer.instructionsPath, '/portal/ai', 'and a way to the setup instructions')
+  assert.doesNotMatch(control, /offer\.address|access\.url|access\?\.url|keyUrl/, 'no address reaches the control')
+  assert.doesNotMatch(control, /clipboard|Copy/, 'no copy link, and nothing that would need one')
 })
 
 test('THE CLASS: the control is drawn for every run kind, not gated on the framed document', () => {
-  // Export can only offer what the document defines — that is. This offers nothing of
-  // the document: the question comes from the run and the address from the deployment. Asserted on the
-  // screen's source because the gate is a render decision, and the arm that would have caught the
-  // original defect is exactly "is there a control here at all".
+  // Export can only offer what the document defines. This offers nothing of the document: the question
+  // comes from the run. The arm that would have caught the original defect is exactly "is there a
+  // control here at all", so it is asserted on the render rather than on the helper.
   const screen = readFileSync(fileURLToPath(new URL('../src/screens/Result.tsx', import.meta.url)), 'utf8')
-  assert.match(screen, /<AskAiMenu runId=\{run\.runId\}/, 'the shell draws one')
-  // Not inside the `run.report ?` branch that gates Export: a batch has no run-level document and would
-  // lose the control exactly where the reader most needs it.
+  assert.match(screen, /<AskAiMenu run=\{run\}/, 'the shell draws one')
   const header = /<span style=\{\{ flex: 1 \}\} \/>([\s\S]*?)<\/div>/.exec(screen)?.[1] ?? ''
   assert.match(header, /<AskAiMenu/, 'in the master header')
 
-  // NOT BEHIND ANY GATE, not merely not behind one SPELLING of one. The previous form of this arm read
+  // NOT BEHIND ANY GATE, not merely not behind one SPELLING of one. An earlier form of this arm read
   // `doesNotMatch(header, /run\.report \? <AskAiMenu/)`, and a plant plainly gating the control —
-  // `{run.report && <AskAiMenu …/>}` — compiled, shipped the defect, and left the suite 459/459 green.
-  // An arm whose message names a class has to be able to fail for the class. What a gate looks like in
-  // JSX is a conditional immediately before the element, whatever operator spells it.
+  // `{run.report && <AskAiMenu …/>}` — compiled, shipped the defect, and left the suite green. What a
+  // gate looks like in JSX is a conditional immediately before the element, whatever spells it.
+  //
+  // The control's OWN `if (!offer.drawn) return null` is not that gate and must not be: a batch has no
+  // run-level document and would lose the button exactly where the reader most needs it.
   const before = header.slice(0, header.indexOf('<AskAiMenu'))
   const lastOpen = before.lastIndexOf('{')
   const expr = lastOpen === -1 ? '' : before.slice(lastOpen)
   assert.doesNotMatch(expr, /\?|&&|\|\|/,
     `the control is drawn unconditionally; found a conditional immediately before it: ${JSON.stringify(expr.slice(-60))}`)
+})
+
+test('the panel and the menu both lead to the one page that sets a connector up', () => {
+  assert.equal(AI_SETUP_PATH, '/portal/ai')
+  const screen = readFileSync(fileURLToPath(new URL('../src/screens/Result.tsx', import.meta.url)), 'utf8')
+  const control = screen.slice(screen.indexOf('function AskAiMenu('), screen.indexOf('function ExportMenu('))
+  assert.equal((control.match(/ctx\.go\(AI_SETUP_PATH\)/g) ?? []).length, 2,
+    'Set it up (panel) and Connect another AI (menu) — both by the named constant, never a typed path')
 })
