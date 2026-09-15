@@ -827,6 +827,12 @@ if (shotsDir) {
 }
 await reload()
 const domainRow = await value(DOMAIN_SCRIPT)
+if (shotsDir) {
+  // The third state a person sees, and the one whose words differ most from the other two.
+  const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+  const data = shot.result?.result?.data ?? shot.result?.data
+  if (data) writeFileSync(join(shotsDir, 'people-remove-domain.png'), Buffer.from(data, 'base64'))
+}
 
 keysRevocable = false
 await reload()
