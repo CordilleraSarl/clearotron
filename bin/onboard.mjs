@@ -99,7 +99,7 @@ import {
 // around, and it is cache-busted whether or not this static import happened first.
 import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE,
   enginesFolder, engineInstallArgs, engineInstallCommand } from "../driver/driver.config.mjs";
-import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SECRETS, cloudsSwitchedOn } from "../driver/engine/auth.mjs";
+import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SETTINGS, CLOUD_SECRETS, cloudsSwitchedOn } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
 import { processTable } from "../shared/process-table.mjs";   // — /proc is not the only box
@@ -826,9 +826,18 @@ export function signInHandOff(eng, bin, billing) {
  * the probe's advice names it as what it is. Pinned by path, the copy setup installed reads to the probe as
  * a path the reader set, and a failed turn told the reader to run a bare `claude` or `codex login`, which
  * that copy does not answer to, above lines naming the copy itself.
+ *
+ * THE CLOUD SETTINGS IN THE SETTINGS FILE RIDE WITH IT, as a run reads them. `settings` is what the file setup
+ * rewrites holds now (readEnvFile), and every line setup does not collect survives that rewrite
+ * (composeEnvBody), so a run after setup reads them. The turn was built from the shell and the answers alone,
+ * so on an Amazon machine whose keys live only in that file it ran without them and failed while searches
+ * worked. Only the names on auth.mjs's CLOUD_SETTINGS are taken, in a run's order: a name the shell holds wins
+ * over the file, even when it is empty, because that is what the loader does (shared/env-local.mjs,
+ * loadEnvLocal); an answer given in setup wins over both, because it is written over the file.
  */
-export function proofTurn({ engineId, eng, bin, authEnv = {}, env = process.env }) {
-  return { env: { ...env, CLEAROTRON_AI: engineId, [eng.env]: bin.path, ...authEnv },
+export function proofTurn({ engineId, eng, bin, authEnv = {}, env = process.env, settings = {} }) {
+  const fromFile = Object.fromEntries(CLOUD_SETTINGS.filter((k) => settings[k] !== undefined).map((k) => [k, settings[k]]));
+  return { env: { ...fromFile, ...env, CLEAROTRON_AI: engineId, [eng.env]: bin.path, ...authEnv },
     program: { source: bin.source ?? null, path: bin.path } };
 }
 
@@ -3676,7 +3685,8 @@ try {
     }
     for (;;) {
       say("  Running one turn…");
-      const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv }));
+      // Read on every try, so a setting the reader fixes in the file between tries is the one the next turn uses.
+      const v = await probeEngineTurn(proofTurn({ engineId: pick.id, eng, bin, authEnv, settings: readEnvFile(ENV_PATH) }));
       if (v.ok) {
         ok(`${pick.id} completed a turn on the ${authPick.id} lane — binary, credential, billing mode and model access all work.`);
         const served = servedLine(v);

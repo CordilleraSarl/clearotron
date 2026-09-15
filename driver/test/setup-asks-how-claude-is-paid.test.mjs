@@ -13,8 +13,9 @@
 //     is one the probe carries;
 //   - the probe's turn sees the cloud settings its caller passed, and they are gone again after it;
 //   - a successful probe names the model that served it and the provider the program reported;
-//   - an Amazon machine whose keys are only in the settings file is proved by doctor with those keys, and a
-//     secret setup shows is shown as set, never with its value;
+//   - an Amazon machine whose keys are only in the settings file is proved by doctor and by setup's proof turn
+//     with those keys, the proof turn takes the file in a run's order, and a secret setup shows is shown as
+//     set, never with its value;
 //   - doctor reads a cloud from the settings file and names the account it charges, and reports a cloud
 //     with no switch, and a switch beside subscription, as the refusals they are.
 import { test } from "node:test";
@@ -27,7 +28,10 @@ import { execFileSync } from "node:child_process";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SECRETS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
-import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting, signInHandOff } from "../../bin/onboard.mjs";
+import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting, signInHandOff,
+  proofTurn, readEnvFile } from "../../bin/onboard.mjs";
+import { payWays } from "../run-requirements.mjs";
+import { loadEnvLocal } from "../../shared/env-local.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -53,6 +57,9 @@ test("Claude's pay question is the owner's wording with three answers, and Codex
   const codex = payQuestion({ engineId: "openai-agent", eng: ENGINE_BINARIES["openai-agent"], bin: null });
   assert.deepEqual(codex.answers.map((a) => a.id), ["subscription", "api-key"]);
   assert.doesNotMatch(codex.question, /Claude/);
+  // And `clearotron start`'s billing row names the same ways for each engine as this question offers.
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES))
+    assert.deepEqual(payWays(id, eng), payQuestion({ engineId: id, eng, bin: null }).answers.map((a) => a.id), id);
 
   // Setup asks the question this returns. Read from the source because setup refuses a non-terminal input
   // (the wizard tests say why); if the call is renamed, re-point this rather than delete it.
@@ -206,6 +213,59 @@ test("doctor on an Amazon machine whose credentials are refused names Amazon and
   const signedOut = doctorProves(sub.bin, []);
   assert.match(signedOut, /anthropic-agent is not signed in — Sign in: run `claude` once in a terminal/, signedOut);
   assert.doesNotMatch(signedOut, /refused the credentials/, signedOut);
+});
+
+test("setup's proof turn on an Amazon machine whose keys are only in the settings file runs with them, as a search does", async () => {
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  // The shell is composed from nothing and holds no Amazon credential of any kind, so a key can only reach the
+  // program from the settings file. The answers are the ones setup takes for Amazon: the region.
+  const shell = handRunEnv({ HOME: mkdtempSync(join(tmpdir(), "setup-pay-proof-home-")), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
+  const answers = cloudSettings("bedrock", { AWS_REGION: "eu-central-1" });
+  const proves = async (lines) => {
+    const dir = mkdtempSync(join(tmpdir(), "setup-pay-proof-amazon-"));
+    const program = amazonProgram(dir);
+    const file = join(dir, "settings.env");
+    writeFileSync(file, lines.join("\n") + "\n");
+    const v = await probeEngineTurn(proofTurn({ engineId: "anthropic-agent", eng, bin: { source: "explicit", path: program.bin },
+      authEnv: answers, env: shell, settings: readEnvFile(file) }));
+    return { v, saw: program.saw() };
+  };
+  const withKeys = await proves(Object.entries(AWS_KEYS).map(([k, v]) => `${k}=${v}`));
+  assert.deepEqual(withKeys.saw, ["present"], `the program ran without the keys the settings file holds: ${JSON.stringify(withKeys.v)}`);
+  assert.equal(withKeys.v.ok, true, JSON.stringify(withKeys.v));
+  for (const val of Object.values(AWS_KEYS)) assert.ok(!JSON.stringify(withKeys.v).includes(val), "the verdict carries a key's value");
+  // CONTROL: the same setup with no keys in the file. The program ran and saw none, so the pair above measured
+  // the keys and not the stand-in, and nothing is proved.
+  const without = await proves(["AWS_REGION=eu-central-1"]);
+  assert.deepEqual(without.saw, ["absent"], JSON.stringify(without.v));
+  assert.equal(without.v.ok, false);
+  // And setup hands its proof turn the file it rewrites. The turn runs only behind a terminal, so the call is
+  // read from the source.
+  assert.match(readFileSync(ONBOARD, "utf8"), /probeEngineTurn\(proofTurn\(\{ engineId: pick\.id, eng, bin, authEnv, settings: readEnvFile\(ENV_PATH\) \}\)\)/);
+});
+
+test("setup's proof turn takes the file's cloud settings in a run's order: the shell over the file, an answer over both", () => {
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const lines = ["AWS_REGION=file-region", "AWS_ACCESS_KEY_ID=file-id", "AWS_SECRET_ACCESS_KEY=file-secret", "AWS_PROFILE=file-profile",
+    "CLEAROTRON_DATABASE=file-register"];
+  const dir = mkdtempSync(join(tmpdir(), "setup-pay-order-"));
+  const file = join(dir, "settings.env");
+  writeFileSync(file, lines.join("\n") + "\n");
+  const shell = { PATH: "/usr/bin:/bin", AWS_ACCESS_KEY_ID: "shell-id", AWS_PROFILE: "" };
+  const answers = cloudSettings("bedrock", { AWS_REGION: "answer-region" });
+  const { env } = proofTurn({ engineId: "anthropic-agent", eng, bin: { path: "/opt/claude" }, authEnv: answers, env: shell, settings: readEnvFile(file) });
+  // THE RUN'S ORDER, from the run's own loader rather than restated: what it leaves in a copy of the shell.
+  const run = { ...shell };
+  loadEnvLocal({ env: run, file, note: () => {} });
+  for (const k of CLOUD_SETTINGS) assert.equal(env[k], k in answers ? answers[k] : run[k], `${k} is not what a run after this setup reads`);
+  assert.equal(env.AWS_ACCESS_KEY_ID, "shell-id", "the shell's value wins over the file's");
+  assert.equal(env.AWS_SECRET_ACCESS_KEY, "file-secret", "the file fills a name the shell does not hold");
+  assert.equal(env.AWS_PROFILE, "", "a name the shell holds empty wins, as the loader keeps it");
+  assert.equal(env.AWS_REGION, "answer-region", "an answer given in setup wins over the file");
+  // Only the cloud settings are taken from the file.
+  assert.equal(env.CLEAROTRON_DATABASE, undefined);
+  // CONTROL: without the file, nothing but the shell and the answers.
+  assert.equal(proofTurn({ engineId: "anthropic-agent", eng, bin: { path: "/opt/claude" }, authEnv: answers, env: shell }).env.AWS_SECRET_ACCESS_KEY, undefined);
 });
 
 test("after a failed proof turn setup hands off the sign-in only on a subscription, and says how to change the answers otherwise", () => {
