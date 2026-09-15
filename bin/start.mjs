@@ -1736,14 +1736,17 @@ if (isMain) {
       // `Environment=PATH=%h/…`, which the unit reader expands to this home. Never this shell's PATH,
       // which the units do not inherit.
       //
-      // The env file reads as empty on purpose: its lines are `already` and `union` above. Only the
-      // unit's own assignments are asked for, and in every shipped unit `Environment=` follows
-      // `EnvironmentFile=`, so its PATH wins over one in the file, as it does here.
+      // THE SETTINGS FILE IS READ WITH IT, because on systemd a PATH in that file wins over the unit's own
+      // `Environment=PATH=` line, wherever the two lines sit (systemd.exec(5)), and the unit reader
+      // applies that rule. Nothing Clearotron writes puts a PATH there, but a hand-edited file can, and
+      // then the worker searches that PATH and not the unit's. A file that is not there yet reads as
+      // empty: this command is about to write it, and the unit's PATH is then the one in force.
       {
         let text = null;
         try { text = readFileSync(join(REPO, "driver", "systemd", "clearotron-worker.service"), "utf8"); } catch { /* the install loop below names a missing unit */ }
+        const settingsFile = (p) => { if (p !== HOME_ENV) return ""; try { return readFileSync(p, "utf8"); } catch { return ""; } };
         const workerPath = unitValue(unitEnvironment({ units: [{ name: "clearotron-worker.service", text }],
-          readEnvFile: () => "", home: homedir() }), "PATH").value;
+          readEnvFile: settingsFile, home: homedir() }), "PATH").value;
         if (workerPath) willRead.PATH = workerPath;
       }
       const miss = missingRequirements(willRead, RUN_TABLES);

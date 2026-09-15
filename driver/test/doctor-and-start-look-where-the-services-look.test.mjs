@@ -65,6 +65,17 @@ test("an Environment= value has %h expanded to the unit's home, as systemd does"
   assert.equal(unitValue(r, "A").value, "plain", "a value with no specifier is carried as written");
 });
 
+test("an escaped percent in an Environment= value becomes one percent, and %%h is not the home", () => {
+  // systemd reads `%%` as a literal `%`, so these reach the service as `50%`, `%h` and `x%y`.
+  const r = unitEnvironment({
+    units: [{ name: "u.service", text: "Environment=A=50%% B=%%h C=x%%y D=%h%%\n" }],
+    home: "/srv/example" });
+  assert.equal(r.known, true, r.why ?? "");
+  assert.deepEqual(r.env, { A: "50%", B: "%h", C: "x%y", D: "/srv/example%" });
+  // With no home, an escaped `%%h` is still a literal and needs none; a real `%h` is a gap in the reading.
+  assert.equal(unitEnvironment({ units: [{ name: "u.service", text: "Environment=B=%%h\n" }] }).env.B, "%h");
+});
+
 test("the shipped worker unit's PATH comes back with the home in it and no %h left", () => {
   const home = "/srv/example";
   const r = unitEnvironment({ units: [{ name: WORKER, text: readFileSync(join(SYSTEMD, WORKER), "utf8") }],
@@ -99,12 +110,14 @@ function doctor(home, shellPath = "/usr/bin:/bin") {
 }
 
 /** A home with the shipped background units installed as written, reading `<home>/.env`. */
-function hostedHome({ plant }) {
+function hostedHome({ plant, settingsPath = null }) {
   const home = mkdtempSync(join(tmpdir(), "services-path-doctor-"));
   const unitDir = join(home, ".config", "systemd", "user");
   mkdirSync(unitDir, { recursive: true });
   for (const u of BACKGROUND_UNITS) writeFileSync(join(unitDir, u), readFileSync(join(SYSTEMD, u), "utf8"));
-  writeFileSync(join(home, ".env"), CONFIGURED.join("\n") + "\n");
+  // `settingsPath` is a PATH line in the file the units load, given as a function of the home.
+  const lines = [...CONFIGURED, ...(settingsPath ? [`PATH=${settingsPath(home)}`] : [])];
+  writeFileSync(join(home, ".env"), lines.join("\n") + "\n");
   if (plant) plantProgram(join(home, ".local", "bin"));
   return home;
 }
@@ -124,6 +137,21 @@ test("THE CONTROL: the same units with no program anywhere still refuse for the 
     const out = doctor(home);
     assert.match(out, new RegExp(`a search is refused until this is set in the units' environment: ${PATH_SETTING}\\s*$`, "m"), out);
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("a PATH in the units' settings file is the one doctor searches, since on systemd it wins over the unit's", () => {
+  // Every shipped unit writes its PATH after its EnvironmentFile= line, and systemd still gives the service
+  // the file's PATH. So a program only on the unit's PATH is not found by the services, and doctor must not
+  // count it; and a program only on the file's PATH is found, and doctor must count it.
+  const shadowed = hostedHome({ plant: true, settingsPath: () => "/usr/bin:/bin" });
+  const own = hostedHome({ plant: false, settingsPath: (home) => `${join(home, "tools")}:/usr/bin:/bin` });
+  try {
+    const out = doctor(shadowed);
+    assert.match(out, new RegExp(`a search is refused until this is set in the units' environment: ${PATH_SETTING}\\s*$`, "m"), out);
+    plantProgram(join(own, "tools"));
+    const found = doctor(own);
+    assert.match(found, /nothing a search is refused for at order time is missing from the units' environment/, found);
+  } finally { for (const h of [shadowed, own]) rmSync(h, { recursive: true, force: true }); }
 });
 
 test("with no units, doctor looks on the PATH that `clearotron start` hands its children", () => {
@@ -161,10 +189,12 @@ async function freePort() {
  * XDG_RUNTIME_DIR nor DBUS_SESSION_BUS_ADDRESS, and `systemctl --user` fails before it touches any unit.
  * The command stops there, after the announcement this arm reads. Everything it writes is under `home`.
  */
-async function driveStart({ plant }) {
+async function driveStart({ plant, settingsPath = null }) {
   const home = mkdtempSync(join(tmpdir(), "services-path-start-"));
   mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
   writeFileSync(join(home, ".config", "clearotron", ".env"), "PORTAL_LOCAL_USER=drive@localhost\n");
+  // A PATH line in `<home>/.env`, the file the units load.
+  if (settingsPath) writeFileSync(join(home, ".env"), `PATH=${settingsPath}\n`);
   if (plant) plantProgram(join(home, ".local", "bin"));
   const env = handRunEnv({ HOME: home, PATH: "/usr/bin:/bin",
     PORTAL_SERVICE_PORT: String(await freePort()), TRADEMARK_MCP_HTTP_PORT: String(await freePort()),
@@ -192,6 +222,16 @@ test("start --background counts a program on the worker unit's PATH, and says a 
     assert.ok(names.includes("CLEAROTRON_DATABASE"), `the announcement lists: ${names.join(", ")}`);
     assert.ok(!names.includes(PATH_SETTING),
       `a run is announced as refused for ${PATH_SETTING}, though the program is on the worker unit's PATH:\n${names.join(", ")}`);
+  } finally { d.clean(); }
+});
+
+test("start --background searches the PATH in the units' settings file, which wins over the worker unit's own", async () => {
+  // The program is on the unit's PATH and not on the file's, so the worker would not find it.
+  const d = await driveStart({ plant: true, settingsPath: "/usr/bin:/bin" });
+  try {
+    const names = announced(d.said);
+    assert.ok(names.includes(PATH_SETTING),
+      `the program on the unit's PATH was counted, though the settings file's PATH is the one the worker gets:\n${names.join(", ")}`);
   } finally { d.clean(); }
 });
 
