@@ -217,6 +217,15 @@ export function homeEnvUpdate(homeText, union) {
  * because the file holding one this command does not is exactly the machine billing an account nobody
  * chose any more. They are compared as the program reads them: an unset billing word is the subscription,
  * and a switch is on or off, so `1` beside `true` is not a difference.
+ *
+ * BUT ONLY WHERE THIS COMMAND HOLDS AN OPINION. A configuration that sets no billing word says nothing
+ * about how the services pay: an api-key, Codex api-key or cloud install whose billing lives in the units'
+ * file alone, where start's own remedy offers to put it, was warned about its billing word and its switch
+ * on every start. So with no billing word here, neither the word nor the cloud settings are compared. Under
+ * `cloud` with no cloud named here, which cloud is not compared either. And under `subscription` or
+ * `api-key` a cloud setting this command holds counts as unset, because the run door refuses a switch
+ * beside either word and start never carries one: naming it sent the operator to put into the file a
+ * switch every search would then be refused over. A cloud the FILE holds under those words still counts.
  */
 export function unitsFileAfterStart(homeText, union, { config = {}, tables = {} } = {}) {
   const merged = homeEnvUpdate(homeText, union);
@@ -227,11 +236,41 @@ export function unitsFileAfterStart(homeText, union, { config = {}, tables = {} 
   const switches = Object.values(CLOUD_SWITCH);
   const as = (k, v) => words.has(k) ? (v.toLowerCase() || "subscription")
     : switches.includes(k) ? cloudsSwitchedOn({ [k]: v }).length > 0 : v;
-  const eitherWay = (k) => words.has(k) || CLOUD_ROUTES.includes(k);
+  const ourWord = ([...words].map(ours).find(Boolean) ?? "").toLowerCase();
+  const ourRoutes = Object.fromEntries(CLOUD_ROUTES.map((k) => [k, ours(k)]));
+  const ourCloud = cloudsSwitchedOn(ourRoutes).length > 0 || ourRoutes.ANTHROPIC_BASE_URL !== "";
+  const route = (k) => CLOUD_ROUTES.includes(k);
+  const opinion = (k) => ourWord !== "" && (!route(k) || ourWord !== "cloud" || ourCloud);
+  const oursAs = (k) => as(k, route(k) && ourWord !== "cloud" ? "" : ours(k));
+  const eitherWay = (k) => words.has(k) || route(k);
   const names = new Set([...runRequiredNames(config, tables), ...runRequiredNames(reads, tables), ...CLOUD_ROUTES]);
   const differ = [...names].filter((k) => !LAUNCHER_MINTED.includes(k)
-    && (eitherWay(k) ? as(k, ours(k)) !== as(k, theirs(k)) : ours(k) !== "" && ours(k) !== theirs(k)));
+    && (eitherWay(k) ? opinion(k) && oursAs(k) !== as(k, theirs(k)) : ours(k) !== "" && ours(k) !== theirs(k)));
   return { merged, reads, differ };
+}
+
+/**
+ * What start says about `differ`, the settings on which the units' file and this command's configuration
+ * disagree. PURE, so the words are driven rather than read from source. Names only, never a value.
+ *
+ * BOTH PLACES, because the add-only merge makes one of them a trap. This said to edit the units' file and
+ * restart. An operator who moved the services from one cloud to another that way, with this command's
+ * configuration still naming the first, had the first cloud's switch added back on the next start, since
+ * the file no longer held its line: two clouds on, and every search refused. Deleting that line, as the
+ * notice said, only repeated it. So it names the file the units read and the configuration start adds from,
+ * `cliEnv` (envFileRead(), or null when this command read no file and its shell is the configuration).
+ */
+export function keptSettingsNotice(differ, { homeEnv, cliEnv = null } = {}) {
+  if (!differ?.length) return [];
+  const one = differ.length === 1;
+  return [
+    `  ⚠ ${homeEnv} and this command's configuration differ on ${one ? "this setting" : "these settings"}, and the units use what the file says:`,
+    `      ${differ.join(", ")}`,
+    `    This command only adds a setting the file has no line for; it never replaces one. To change what the units`,
+    `    use, change ${one ? "it" : "them"} in both places, then restart them:`,
+    `      ${homeEnv}\n          the file the units read`,
+    `      ${cliEnv ?? "this command's environment"}\n          what this command adds from: a line the file above lacks is added back from here on the next start`,
+  ];
 }
 
 /**
@@ -1882,13 +1921,9 @@ if (isMain) {
       // The merge never replaces a line (see `unitsFileAfterStart`), so a setting changed in this
       // command's configuration after the first start does not reach the units. A machine moved from one
       // cloud to another went on billing the first, and a rotated key stayed at its first value, while this
-      // command reported the file complete. Said here, by name and never by value, with the one remedy.
-      if (unitsFile.differ.length) {
-        say(`  ⚠ ${HOME_ENV} and this command's configuration differ on ${unitsFile.differ.length === 1 ? "this setting" : "these settings"}, and the units use what the file says:`);
-        say(`      ${unitsFile.differ.join(", ")}`);
-        say(`    This command only adds a setting the file has no line for; it never replaces one. To change`);
-        say(`    what the units use, edit ${HOME_ENV} and restart them.`);
-      }
+      // command reported the file complete. Said here, by name and never by value, naming both places the
+      // setting lives (see `keptSettingsNotice` for why one is not enough).
+      for (const line of keptSettingsNotice(unitsFile.differ, { homeEnv: HOME_ENV, cliEnv: envFileRead() })) say(line);
     }
 
     // THE TRIGGER KEY IS MINTED HERE, SO IT IS REWRITTEN HERE. Everything else in this union is

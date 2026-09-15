@@ -44,7 +44,7 @@ import { fileURLToPath } from "node:url";
 import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusal, ORDER } from "../run-requirements.mjs";
 import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SETTINGS } from "../engine/auth.mjs";
 import { parseEnvFile } from "../../shared/env-file-merge.mjs";
-import { runTables, homeEnvUpdate, unitsFileAfterStart, BACKGROUND_UNITS } from "../../bin/start.mjs";
+import { runTables, homeEnvUpdate, unitsFileAfterStart, keptSettingsNotice, BACKGROUND_UNITS } from "../../bin/start.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -342,20 +342,61 @@ test("start's guard reads the file its merge leaves, and names every run setting
   // program's path and the research key there alone. None of that is a disagreement, and a switch written `true`
   // here and `1` there is the same switch.
   const bare = { CLEAROTRON_REPORTS_DIR: BASE.CLEAROTRON_REPORTS_DIR, CLEAROTRON_AI: BASE.CLEAROTRON_AI };
-  for (const [label, file, config] of [
+  const codexBare = { ...bare, CLEAROTRON_AI: "openai-agent" };
+  const codexKey = { ...BASE, CLEAROTRON_AI: "openai-agent", [CODEX.env]: "/usr/bin/true", CLEAROTRON_AI_BILLING: "api-key", [CODEX.apiKeyEnv]: SECRET };
+  const apiKey = { ...BASE, CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: SECRET };
+  const noSwitch = (c) => Object.fromEntries(Object.entries(cloud(c)).filter(([k]) => !Object.values(CLOUD_SWITCH).includes(k) && k !== "ANTHROPIC_BASE_URL"));
+  const healthyShapes = [
     ["subscription", first({ ...BASE, CLEAROTRON_AI_BILLING: "subscription" }), bare],
     ["Microsoft", first(cloud("foundry")), { ...bare, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "true" }],
-  ]) {
+    // How this install pays lives in the units' file alone, where start's own remedy offers to put it.
+    ["api-key, bare configuration", first(apiKey), bare],
+    ["api-key, full configuration less the billing word", first(apiKey), BASE],
+    ["Codex api-key, bare configuration", first(codexKey), codexBare],
+    ...Object.keys(CLOUDS).map((c) => [`${c}, bare configuration`, first(cloud(c)), bare]),
+    ...Object.keys(CLOUDS).map((c) => [`${c}, the billing word here and the cloud in the file`, first(cloud(c)), noSwitch(c)]),
+    // A cloud setting left in this shell, which the run door refuses beside the subscription and start never carries.
+    ["subscription, a stray switch in this shell", first({ ...BASE, CLEAROTRON_AI_BILLING: "subscription" }),
+      { ...BASE, CLEAROTRON_AI_BILLING: "subscription", CLAUDE_CODE_USE_VERTEX: "1" }],
+    ["no billing word, a stray gateway address in this shell", first(BASE), { ...BASE, ANTHROPIC_BASE_URL: "https://proxy.example.test" }],
+  ];
+  for (const [label, file, config] of healthyShapes) {
     const healthy = after(file, config);
     assert.equal(healthy.reads[REG.credentials[0]], "fixture-credential", `${label}: the floor: the file holds what the shell does not`);
+    assert.deepEqual(missingRequirements(healthy.reads, T).atOrder.map((r) => r.name), [], `${label}: the floor: the services' file runs`);
     assert.deepEqual(healthy.differ, [], `${label}: a working install is warned about its own settings`);
   }
   // NAMES ONLY: what start prints is this list, and it carries no value.
   for (const f of [empty, twice, gateway, subscription, rot]) for (const n of f.differ) assert.match(n, /^[A-Z][A-Z0-9_]*$/);
-  // AND START PRINTS IT. Read from its source, as the wiring arms in the background-install file read it.
+  // AND START PRINTS IT, through the notice below. Read from its source, as the wiring tests in the
+  // background-install file read it: the background path installs systemd units and cannot run here.
   const src = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
-  assert.match(src, /if \(unitsFile\.differ\.length\) \{\n\s*say\(/, "start no longer says which settings the file keeps");
-  assert.match(src, /say\(`\s+\$\{unitsFile\.differ\.join\(", "\)\}`\)/, "start no longer names them");
+  assert.match(src, /for \(const line of keptSettingsNotice\(unitsFile\.differ, \{ homeEnv: HOME_ENV, cliEnv: envFileRead\(\) \}\)\) say\(line\);/,
+    "start no longer says which settings the file keeps");
+});
+
+test("following start's notice about a kept setting ends with one cloud on, across three starts", () => {
+  const after = (existing, supervisor) => unitsFileAfterStart(existing, carried(supervisor), { config: supervisor, tables: T });
+  const google = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_VERTEX: "1" };
+  const microsoft = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1" };
+  const where = { homeEnv: "/srv/example/.env", cliEnv: "/srv/example/clearotron/.env" };
+  // START 1 on Google's cloud; then the operator moves the services to Microsoft's by editing the units' file.
+  const edited = servicesFile(google).text.replace("CLAUDE_CODE_USE_VERTEX=1", "CLAUDE_CODE_USE_FOUNDRY=1");
+  // START 2, this command's configuration still on Google: the file lacks Google's line, so start adds it back.
+  const second = after(edited, google);
+  assert.match(doorSays(second.reads) ?? "", /more than one cloud is switched on/, "the floor: the second start leaves two clouds on");
+  assert.ok(second.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `the kept switch is not named: ${second.differ}`);
+  const said = keptSettingsNotice(second.differ, where).join("\n");
+  assert.ok(said.includes("CLAUDE_CODE_USE_FOUNDRY"), `the notice does not name the setting:\n${said}`);
+  assert.ok(said.includes(where.homeEnv) && said.includes(where.cliEnv), `the notice does not name both places the setting lives:\n${said}`);
+  assert.match(said, /in both places/, `the notice does not say to change it in both:\n${said}`);
+  assert.match(keptSettingsNotice(["CLAUDE_CODE_USE_FOUNDRY"], { homeEnv: where.homeEnv }).join("\n"), /this command's environment/,
+    "with no settings file of its own, the notice does not say where this command's configuration lives");
+  // START 3, after doing what the notice says: both places on Microsoft, and the line start added back removed.
+  const third = after(second.merged.text.split("\n").filter((l) => !l.startsWith("CLAUDE_CODE_USE_VERTEX=")).join("\n"), microsoft);
+  assert.equal(resolveAuthMode({ engineName: "anthropic-agent", env: third.reads }).cloud, "foundry", "the services do not bill Microsoft");
+  assert.deepEqual([third.differ, missingRequirements(third.reads, T).atOrder.map((r) => r.name)], [[], []]);
+  assert.deepEqual(keptSettingsNotice(third.differ, where), [], "a file that agrees is warned about");
 });
 
 // ── DOCTOR, AGAINST THE SERVICES' FILE ─────────────────────────────────────────────────────────────
