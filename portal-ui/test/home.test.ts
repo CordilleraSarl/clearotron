@@ -64,6 +64,12 @@ test('a stopped run with no readable stamp is SHOWN, not dropped', () => {
   const garbage = run({ runId: 'g', state: 'failed', issuedAt: 'not-a-date', date: 'also-not' })
   const ids = recentFailures([nostamp, garbage], { now: NOW }).map((r) => r.runId)
   assert.deepEqual(new Set(ids), new Set(['n', 'g']), 'both survive the window')
+
+  // AND THEY SORT TO THE FRONT, which is the other half of the same rule. Keeping a run because we
+  // cannot tell how old it is, and then sorting it below everything we can date, buries it exactly where
+  // a reader stops looking — kept by one rule and hidden by the other.
+  const mixed = recentFailures([stoppedRun({ runId: 'dated', daysAgo: 1 }), nostamp], { now: NOW })
+  assert.deepEqual(mixed.map((r) => r.runId), ['n', 'dated'], 'an undateable failure is shown FIRST, not last')
 })
 
 test('the failures list is bounded by age, acknowledged or not', () => {
@@ -115,15 +121,25 @@ test('`acknowledged` is the exact complement of the failures list', () => {
     run({ runId: 'c', state: 'running' }),
     stoppedRun({ runId: 'd', state: 'cancelled', acked: true }),
     run({ runId: 'e', state: 'delivered', acked: true }),
+    stoppedRun({ runId: 'stale', daysAgo: FAILURE_WINDOW_DAYS + 3 }),
   ]
   const shown = new Set(recentFailures(rows, { now: NOW }).map((r) => r.runId))
   const put = new Set(acknowledged(rows, { now: NOW }).map((r) => r.runId))
   assert.deepEqual(shown, new Set(['b']), 'the list holds what has not been put down')
   assert.deepEqual(put, new Set(['a', 'd']), 'and the count holds exactly what left it')
-  const terminal = rows.filter((r) => r.state === 'failed' || r.state === 'cancelled').map((r) => r.runId)
-  assert.ok(terminal.length >= 3, 'the population is not empty — a partition over nothing proves nothing')
-  assert.equal(shown.size + put.size, terminal.length, 'every stopped run is in exactly one of them')
-  assert.ok(terminal.every((id) => shown.has(id) !== put.has(id)), 'and never in both')
+  // THE CHECK WINDOWS THE SAME WAY THE FUNCTIONS DO. Both filter by age; a sum taken over every
+  // terminal row instead agrees with them on any fixture that happens to sit inside the window, and
+  // fails with the wrong sentence on one that does not — a check reporting honestly about a population
+  // one step smaller than the thing it checks. The stale row below is here so that this is demonstrated
+  // rather than asserted: it is terminal, it is outside the window, and it belongs to neither list.
+  const inWindow = (r: Run) => Date.parse(String(r.issuedAt ?? r.date)) >= NOW - FAILURE_WINDOW_DAYS * DAY
+  const terminal = rows.filter((r) => r.state === 'failed' || r.state === 'cancelled')
+  const windowed = terminal.filter(inWindow).map((r) => r.runId)
+  assert.ok(terminal.length > windowed.length, 'the fixture holds a stale row, so the windowing is exercised rather than assumed')
+  assert.ok(windowed.length >= 3, 'the population is not empty — a partition over nothing proves nothing')
+  assert.equal(shown.size + put.size, windowed.length, 'every stopped run inside the window is in exactly one of them')
+  assert.ok(windowed.every((id) => shown.has(id) !== put.has(id)), 'and never in both')
+  assert.ok(!shown.has('stale') && !put.has('stale'), 'and one outside it is in neither')
   // Neither list is about live or delivered work.
   assert.ok(!shown.has('c') && !put.has('c'), 'a running run is in neither')
   assert.ok(!shown.has('e') && !put.has('e'), 'and neither is a delivered one')

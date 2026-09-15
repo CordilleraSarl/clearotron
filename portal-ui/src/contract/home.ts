@@ -69,6 +69,26 @@ const withinWindow = (r: Run, now: number, days: number): boolean => {
   return at === null || now - at <= days * 24 * 60 * 60 * 1000
 }
 
+/**
+ * Newest first, and a run we cannot date sorts FIRST rather than last.
+ *
+ * ONE RULE, STATED ONCE, BECAUSE THE TWO HALVES DISAGREED. `withinWindow` keeps an undateable run on the
+ * grounds that "we cannot tell how old it is" must not hide it — and `newestFirst` then sorted it to the
+ * bottom of the list, which is where a reader stops looking. Kept by one rule and buried by the other is
+ * not a decision; it is two rules that were never read together.
+ *
+ * So the same reasoning decides both: not knowing when something failed is a reason to put it in front
+ * of somebody, not behind everything. It is also the rarer case by far, so the cost of being wrong is a
+ * recent-looking row at the top rather than a failure nobody sees.
+ */
+const failuresNewestFirst = (a: Run, b: Run): number => {
+  const at = whenOf(a), bt = whenOf(b)
+  if (at === null && bt === null) return 0
+  if (at === null) return -1
+  if (bt === null) return 1
+  return newestFirst(a, b)
+}
+
 export type InFlight = readonly Run[]
 
 /**
@@ -114,7 +134,7 @@ export function recentFailures(
   return runs
     .filter((r) => STOPPED.has(r.state) && !r.acked && withinWindow(r, now, days))
     .slice()
-    .sort(newestFirst)
+    .sort(failuresNewestFirst)
 }
 
 /**
@@ -132,7 +152,7 @@ export function acknowledged(
   return runs
     .filter((r) => STOPPED.has(r.state) && r.acked === true && withinWindow(r, now, days))
     .slice()
-    .sort(newestFirst)
+    .sort(failuresNewestFirst)
 }
 
 /**
