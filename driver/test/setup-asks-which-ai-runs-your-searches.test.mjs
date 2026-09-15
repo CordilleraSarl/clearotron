@@ -14,9 +14,9 @@
 // are tied to what the resolver finds (a vendor's placeholder, a copy without the execute bit, a setting
 // naming nothing) and not to a hand-built state that could drift from it.
 //
-// READ AS A NAMESPACE, so a name this file needs and the module lacks fails its own arm rather than the
+// READ AS A NAMESPACE, so a name this file needs and the module lacks fails its own test rather than the
 // whole file at import.
-import test from "node:test";
+import test, { after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -30,6 +30,7 @@ const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
 const ENGINES = Object.keys(ENGINE_BINARIES);
 // An empty directory: a PATH with nothing on it, and an engines folder with nothing installed.
 const NOWHERE = mkdtempSync(join(tmpdir(), "which-ai-nowhere-"));
+after(() => rmSync(NOWHERE, { recursive: true, force: true }));
 const PLACEHOLDER = 'echo "Error: the native binary is not installed." >&2\nexit 1\n';   // no #!, as the vendor ships it
 
 /** A copy of an engine's program installed where setup installs one, its program file holding `content`. */
@@ -124,6 +125,14 @@ test("a row with nothing found says setup can install it, and only where there i
     assert.equal(said(id).what, "not on this computer — setup can install it");
     // THE HONEST FORM: with no package there is nothing for setup to install, and the row must not offer it.
     assert.equal(setup.foundWords({ ...eng, package: null }, { executable: false, relative: false, rejected: [] }), "not on this computer");
+    // A SETTING OF SPACES, OR THE DEFAULT WORD WITH A SPACE AFTER IT, IS UNSET to the resolver and to the
+    // line after the pick, so the row says nothing was found, and that line agrees with it.
+    for (const blank of [" ", `${eng.fallback} `]) {
+      const row = said(id, { [eng.env]: blank });
+      assert.equal(row.state.explicit, false, `${JSON.stringify(blank)} is read as a setting in force`);
+      assert.equal(row.what, "not on this computer — setup can install it", JSON.stringify(blank));
+      assert.equal(setup.cannotRunLine(eng, row.state, blank), `${setup.unusableEngineWords(eng, row.state, "")}.`, JSON.stringify(blank));
+    }
   }
 });
 
@@ -214,6 +223,46 @@ test("setup says those words where the copy cannot run, and declining the instal
   assert.match(declined, /\} else if \(namedSetting\(eng, process\.env\[eng\.env\]\)\) info\(ownCopyLine\(eng\)\);\n\s*\}\s*$/,
     "declining the install with a setting in force does not say how to use one's own copy");
   assert.equal([...src.matchAll(/(?<!function )ownCopyLine\(/g)].length, 1, "the declined-install line is said in more than one place");
+});
+
+test("accepting the install with a setting in force uses the copy setup installed, and names no setting", () => {
+  // "Setup can install Claude and use that instead" is said only when a setting is in force, and a setting
+  // naming a program never falls through to the copy setup installed. So the look after the install is
+  // made with the engine's default word, which finds that copy, and which is what setup then writes.
+  const other = mkdtempSync(join(tmpdir(), "which-ai-set-"));
+  try {
+    for (const id of ENGINES) {
+      const eng = ENGINE_BINARIES[id];
+      const copy = installed(id, "#!/bin/sh\nexit 0\n");   // what the install put in the engines folder
+      const elsewhere = installed(id, PLACEHOLDER);          // a placeholder the setting names, outside it
+      try {
+        for (const setting of [join(other, `absent-${eng.fallback}`), `./no-such-${eng.fallback}`, elsewhere.program]) {
+          const env = { PATH: NOWHERE, [eng.env]: setting };
+          const before = setup.resolveEngineBin(setting, { engine: id, env, enginesDir: copy.root });
+          assert.equal(before.executable, false, `fixture precondition: ${setting} names nothing that can run`);
+          assert.match(setup.cannotRunLine(eng, before, setting), /Setup can install/, `fixture precondition: setup offered the install for ${setting}`);
+          const bin = setup.resolveEngineBin(eng.fallback, { engine: id, env, enginesDir: copy.root });
+          assert.deepEqual({ executable: bin.executable, source: bin.source, path: bin.path },
+            { executable: true, source: "installed", path: copy.program }, `after the install, with ${setting} in force`);
+          assert.equal(setup.engineProgramSetting(eng, bin), eng.fallback, "the setting written for that copy is not the default word, so the one that failed would stay");
+        }
+      } finally { for (const d of [copy.root, elsewhere.root]) rmSync(d, { recursive: true, force: true }); }
+    }
+  } finally { rmSync(other, { recursive: true, force: true }); }
+
+  // The install block makes that look: from the install it runs to the branch taken when it is declined.
+  const spawn = src.indexOf('spawnSync("npm", engineInstallArgs(eng, dir)');
+  const declined = src.indexOf("} else if (namedSetting(eng, process.env[eng.env])) info(ownCopyLine(eng));", spawn);
+  assert.notEqual(spawn, -1, "anchor missing: the install setup runs");
+  assert.ok(declined > spawn, "anchor missing: the declined branch after the install");
+  const accepted = src.slice(spawn, declined).split("\n").filter((l) => !/^\s*\/\//.test(l)).join("\n");
+  assert.match(accepted, /\n\s*bin = resolveEngineBin\(eng\.fallback, \{ engine: pick\.id \}\);\n/,
+    "after the install, setup looks for the program under the setting in force, which never finds the copy it installed");
+  assert.doesNotMatch(accepted, /process\.env\[eng\.env\]|unusableEngineWords|eng\.env\}/,
+    "after an accepted install, setup reads or names the setting in force");
+  assert.match(accepted, /else warn\(cannotRunLine\(eng, bin, ""\)\);/, "an install that left nothing that can run is not said in the approved words");
+  assert.match(accepted, /if \(bin\.source === "installed"\) ok\(`installed: \$\{bin\.path\}`\);/,
+    "setup says it installed a copy that may be the machine's own");
 });
 
 test("choosing None for now says the approved line, through the one helper every route uses", () => {

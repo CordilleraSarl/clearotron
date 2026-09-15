@@ -1056,7 +1056,7 @@ export function engineOptions(found = {}) {
 }
 
 // A COPY REFUSED AS THE VENDOR'S PLACEHOLDER, told apart by the resolver's own reason for refusing it
-// (driver.config.mjs engineCandidate). setup-asks-which-ai-runs-your-searches.test.mjs plants a real
+// (driver.config.mjs engineCandidate). setup-asks-which-ai-runs-your-searches.test.mjs creates a real
 // placeholder and reads the row, so a reworded reason turns that test red instead of this row wrong.
 const isPlaceholder = (x) => /^the placeholder /.test(String(x?.why ?? ""));
 
@@ -1122,7 +1122,7 @@ export function ownCopyLine(eng) {
  * npm put on PATH; anything else is asked with `--version`, the same short, time-limited call a run makes
  * to record the tool that served it (driver/engine/cli-version.mjs). That call starts no session and
  * needs no network; one that fails or times out leaves the version null, and the row then says "found
- * on this machine". `readVersion` is injectable so a test can drive the unreadable branch.
+ * on this computer". `readVersion` is injectable so a test can drive the unreadable branch.
  *
  * SHORTER THAN A RUN'S CALL, AND ONLY A VERSION IS SHOWN. The question waits on these calls, one program
  * after another, before it prints, and a run's five-second limit let two programs that hang hold the
@@ -1130,7 +1130,11 @@ export function ownCopyLine(eng) {
  * enough to wait on. The answers are kept apart from the run's own record of the tool, so a call cut
  * short here is not what a run reads. And a program that answers in prose, which a run records as said,
  * put its whole first line in the menu row; the row shows a version only when the answer is shaped like
- * one, and otherwise says "found on this machine".
+ * one, and otherwise says "found on this computer".
+ *
+ * A SETTING IN FORCE IS ASKED THE WAY THE LINE AFTER A PICK ASKS IT (namedSetting): trimmed, and the
+ * engine's default word counts as unset, as the resolver counts it. A setting of spaces alone made the
+ * row say the setting named a copy that isn't there while the resolver and that line treated it as unset.
  */
 const MENU_VERSION_TIMEOUT_MS = 2000;
 const MENU_VERSIONS = new Map();
@@ -1146,7 +1150,7 @@ export function engineMenuState({ env = process.env, enginesDir = undefined, rea
       try { version = readVersion(bin.path) ?? null; } catch { version = null; }
       if (!/^\d+\.\d+/.test(String(version ?? ""))) version = null;
     }
-    out[id] = { ...bin, version, explicit: Boolean(set) && set !== e.fallback };
+    out[id] = { ...bin, version, explicit: Boolean(namedSetting(e, set)) };
   }
   return out;
 }
@@ -3662,7 +3666,9 @@ try {
     // (foundWords). A block above the question used to say it a second time, with each program's path,
     // where it was found and any API key already set; the path is said once a program is chosen, and a
     // key already set is said at the pay question, where it makes the key the default and is either
-    // adopted or named as unused. Sign-in state itself is deliberately NOT guessed — the proof turn is the
+    // adopted or named as unused. A sign-in token already set, which that block named and never adopted,
+    // is no longer said before the proof turn, which is still handed it with the rest of the shell
+    // (proofTurn). Sign-in state itself is deliberately NOT guessed — the proof turn is the
     // only honest answer to it, and a guessed "signed in" that the turn then contradicts costs more than
     // no claim. Resolved once per pass, so a reader who mends something and comes back sees it mended.
     const found = engineMenuState();
@@ -3734,9 +3740,18 @@ try {
         // ENGINE resolves with, and after that, a turn.
         if (r.error) problem(`could not run it: ${r.error.message}`);
         else if (r.status !== 0) warn(`that command exited ${r.status ?? "on a signal"} — checking anyway, since its exit code is not what settles this.`);
-        bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
-        if (bin.executable && !bin.relative) ok(`installed: ${bin.path}`);
-        else warn(`${unusableEngineWords(eng, bin, process.env[eng.env])}.`);
+        bin = resolveEngineBin(eng.fallback, { engine: pick.id });
+        if (bin.executable && !bin.relative) { if (bin.source === "installed") ok(`installed: ${bin.path}`); }
+        else warn(cannotRunLine(eng, bin, ""));
+        // RESOLVED WITH THE ENGINE'S DEFAULT WORD, NOT THE SETTING IN FORCE. The line above the offer promised
+        // to install the program "and use that instead", and it is said only when a setting names a copy that
+        // cannot run. A setting that names a program never falls through to the copy setup installed, so
+        // resolving with it here found nothing, whatever npm had put in place, and setup asked for a path.
+        // The default word is what a run reads once the proof turn passes (engineProgramSetting writes it for
+        // the copy setup installed), and it replaces the setting in the file setup writes. So what is found
+        // here is what a run will use: the machine's own copy on PATH if it has one, and otherwise the copy
+        // just installed, and "installed" is said only of the latter. A failure is said without the
+        // setting's name, which only the declined branch below says.
       } else if (namedSetting(eng, process.env[eng.env])) info(ownCopyLine(eng));
     }
     if (!(bin.executable && !bin.relative)) {
