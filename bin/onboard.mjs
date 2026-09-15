@@ -202,7 +202,7 @@ export const cloudAccount = (cloud) =>
 export const servedLine = (v) => (v?.served || v?.provider)
   ? `served by ${v.served ?? "a model the program did not name"}${v.provider ? `; the program names its provider "${v.provider}"` : ""}.`
   : null;
-import { runRequiredNames, missingRequirements, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
+import { runRequiredNames, missingRequirements, billingRefusalWords, REGISTER_ENV, ENGINE_ENV } from "../driver/run-requirements.mjs";   // the order-time gate's own question, asked here rather than restated
 import { pinEnv, envFrom } from "../shared/env-aliases.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 // one synopsis reader for every verb that prints one.
@@ -934,17 +934,22 @@ export function platformEngineRefusal({ platform = process.platform } = {}) {
  * demo mode, so none can be named, and setup names the one that signs in the copy it proves. `command` is
  * the setup command as the reader can type it from here.
  */
-export function leaveDemoAdvice(engSpec, { platform = process.platform, command = reachableCommand("install") } = {}) {
+export function leaveDemoAdvice(engSpec, { platform = process.platform, command = reachableCommand("install"),
+  startCommand = reachableCommand("start") } = {}) {
   if (platform === "win32") {
     return [`To leave demo on Windows: run the product under WSL2, or in the devcontainer. Installing `
       + `${engSpec.vendor}'s CLI natively will not change this — the run door refuses on the platform, `
       + "not on the program."];
   }
+  // BACKGROUND SERVICES ARE THE EXCEPTION to "restart them": they read `~/.env`, which setup does not write,
+  // and `start --background` only adds lines to it (see programDisagreement below, which says the same).
   return [
     `To leave demo: run \`${command}\`. It offers to install ${engSpec.vendor}'s CLI if this machine has none, `
       + "asks how it is paid for, and proves it with one turn; if the CLI is not signed in, it names the command that signs it in.",
     "If Clearotron's services are already running, restart them afterwards: they read the settings setup writes "
-      + "when they start, and the portal reports what the engine saw when it last started.",
+      + "when they start, and the portal reports what the engine saw when it last started. Background services "
+      + `read \`~/.env\` instead, which setup does not write, and \`${startCommand} --background\` adds to it only the `
+      + "lines it lacks, so change there any setting it already has.",
   ];
 }
 
@@ -1614,6 +1619,15 @@ export async function runCheck() {
     }
     return null;
   };
+  // WHAT THE SERVICES THEMSELVES READ, for the two judgements that decide whether a search runs: how they
+  // pay, and "Will a search run?". On a machine with units, that is their file and nothing else: they run
+  // with CLEAROTRON_NO_ENV_FILE=1, so doctor's shell never reaches them. Layered as effectiveForService
+  // layers it, a cloud switch this shell exported for its own use was judged the services' own, and doctor
+  // reported "a search is refused" on services that ran; a billing word here asked them for a key they did
+  // not need. With no units, the services are the children of `clearotron start` and inherit its shell, so
+  // effectiveForService is the true answer there.
+  const servicesRead = (k) => (!hosted ? effectiveForService(k)
+    : serviceFileEnv && present(serviceFileEnv[k]) ? { v: serviceFileEnv[k], from: serviceEnvLabel, name: k } : null);
 
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
@@ -1801,7 +1815,9 @@ export async function runCheck() {
           if (auth.mode === "unknown") return { say: info, text: `billing: no policy for ${eng} — this engine declares no sign-in modes` };
           if (auth.mode === "cloud") return { say: ok, text: `billing: cloud — charged per use ${auth.cloud === "gateway" ? "through" : "to"} ${cloudAccount(auth.cloud)}` };
           return { say: ok, text: `billing: ${auth.mode}${auth.apiBilled ? ` — charged per token against ${ENGINE_BINARIES[eng]?.apiKeyEnv ?? engSpec.apiKeyEnv}` : " — charged to the signed-in subscription, not per token"}` };
-        } catch (e) { return { say: problem, text: String(e?.message ?? e) }; }
+        // A word that is not a billing mode is quoted by the run door, and a key pasted there by mistake is
+        // that word: said by name here, as the order-time reason says it.
+        } catch (e) { return { say: problem, text: billingRefusalWords(String(e?.message ?? e)) }; }
       };
       const here = billingOf(engineId, envForResolve);
       here.say(here.text);
@@ -1809,15 +1825,23 @@ export async function runCheck() {
       // this command's configuration; the services read their own file, and a start never replaces a line
       // in it. So a machine whose services pay through a cloud account printed "billing: subscription" here,
       // two sections above "Will a search run?" reading the services' file. Both are said when they differ.
-      // A caution and not a problem: the services' refusal, if there is one, is reported under that section.
+      // Read as the services read it (servicesRead), never through this shell.
+      //
+      // A CAUTION ONLY WHEN THIS COMMAND SAYS OTHERWISE. With no billing word in this command's configuration,
+      // the line above is the default and contradicts nothing, and a working api-key or cloud install whose
+      // billing lives in the services' file alone was cautioned on every run from a bare shell. Then it is
+      // information. Never a problem: the services' refusal, if there is one, is reported under that section.
       if (hosted && serviceKnown) {
         const envForService = {};
         for (const k of engineEnvKeys()) {
-          const e = effectiveForService(k);
+          const e = servicesRead(k);
           if (e) envForService[k] = e.v;
         }
         const svc = billingOf(String(envForService.CLEAROTRON_AI ?? DEFAULT_ENGINE_ID).trim().toLowerCase(), envForService);
-        if (svc.text !== here.text) warn(`the services read how they pay from ${serviceEnvLabel}, and it says otherwise — ${svc.text}`);
+        if (svc.text !== here.text) {
+          if (effective(engSpec?.authEnv ?? "CLEAROTRON_AI_BILLING")) warn(`the services read how they pay from ${serviceEnvLabel}, and it says otherwise — ${svc.text}`);
+          else info(`the services pay as ${serviceEnvLabel} says — ${svc.text}`);
+        }
       }
     } catch (e) {
       problem(String(e?.message ?? e));
@@ -2402,7 +2426,8 @@ export async function runCheck() {
     // one and its missing switch went unreported. It stops at the first pass that finds no new value: the names
     // asked for depend only on the values found, so the next pass would ask for the names this one just read.
     const view = {};
-    const fill = (names) => { for (const n of names) { const e = effectiveForService(n); if (e) view[n] = e.v; } };
+    // Read as the services read it (servicesRead): a value in this shell never reaches a unit.
+    const fill = (names) => { for (const n of names) { const e = servicesRead(n); if (e) view[n] = e.v; } };
     fill([REGISTER_ENV, ENGINE_ENV]);
     let before;
     do { before = Object.keys(view).length; fill(runRequiredNames(view, tables)); } while (Object.keys(view).length > before);

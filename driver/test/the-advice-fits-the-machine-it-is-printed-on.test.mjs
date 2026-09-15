@@ -125,6 +125,12 @@ test("the way out of demo is setup, which installs the program, and names no com
     // The restart is said for what it is still for: the settings setup writes, read when a service starts.
     assert.doesNotMatch(second, /re-reads its PATH|notice a new install/, `${id}: the restart is still justified by PATH`);
     assert.match(second, /^If Clearotron's services are already running, restart them afterwards: they read the settings setup writes when they start/);
+    // Background services read `~/.env`, which setup does not write, so a restart alone does not bring them
+    // setup's settings, and the sentence above is not the whole answer for them.
+    assert.match(second, /Background services read `~\/\.env` instead, which setup does not write/,
+      "the advice to restart the services does not say that background services read another file");
+    assert.match(second, /start --background` adds to it only the lines it lacks, so change there any setting it already has/,
+      "the advice does not say how to change a setting background services already have");
   }
   // Unset, the command is the one the reader can type from here.
   assert.ok(leaveDemoAdvice(ENGINE_BINARIES["anthropic-agent"], { platform: "linux" })[0].includes(`\`${reachableCommand("install")}\``));
