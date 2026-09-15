@@ -632,7 +632,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     markName: batchMarkName(markNames) ?? undefined,
     engineCommit: engineCommit(),
     // The models that served the batch, named as a client may read them (tokens.mjs servedModels). Absent when
-    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none.
+    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
     servedModels: served ?? undefined,
     client: null, customerKey: customerKey || 'generic',
     // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as

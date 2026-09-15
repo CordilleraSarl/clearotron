@@ -1158,7 +1158,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // WHICH BUILD produced this. null off a git checkout — a provenance stamp never fails a publish.
     engineCommit: engineCommit(),
     // The models that served the run, named as a client may read them (tokens.mjs servedModels). Absent when
-    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none.
+    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
     servedModels: served ?? undefined,
     kind: 'clearance', recordLinks: officeLinks?.tally ?? undefined,   // per office: linked, or cited by number and why; only where the register has no record pages
     searchLevel: searchPolicy?.level ?? undefined,
