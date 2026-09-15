@@ -1773,6 +1773,8 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // served the search, a behaviour change and not licence-only, so both constants move.
 // Advanced again by the break recorded above the FROZEN constant: a tier word on the closing line is
 // Claude's, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: Fable is a tier word like the other
+// three, a behaviour change and not licence-only, so both constants move.
 const FROZEN_BEFORE_SPDX = "839d9f028dca4547cb247308e3cce5acf43831177d6cb0a430d95b3120fb8343";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
@@ -2087,7 +2089,7 @@ const FROZEN_BEFORE_SPDX = "839d9f028dca4547cb247308e3cce5acf43831177d6cb0a430d9
 //
 // FABLE IS A TIER WORD LIKE THE OTHER THREE (2026-09-15). A stage reaches the fable tier through the synthesis
 // override, and a fable turn served under a company's deployment name was left off the list, because the tier
-// reader placed only opus, sonnet and haiku; the entry above said so. servedModels (tokens.mjs) now lists such a
+// reader placed only opus, sonnet and haiku; servedModels' docstring in tokens.mjs said so. servedModels (tokens.mjs) now lists such a
 // turn as "Fable", so the line's tier-word pattern reads Fable too, or that list would print "Prepared with:"
 // and lose its vendor. The file's own checklist, answered:
 //
