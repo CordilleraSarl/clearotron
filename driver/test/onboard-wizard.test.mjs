@@ -606,6 +606,11 @@ test("setup's proof turn pins the path of the copy it proves, and its advice sti
     assert.equal(v.mode, "signed-out");
     assert.ok(v.fix.includes(`run \`${program}\` once`), v.fix);
     assert.doesNotMatch(v.fix, /run `claude` once/, "the bare word, which that copy does not answer to");
+    // And these are the arguments the wizard's proof turn is given. The turn itself runs only behind a
+    // terminal, so the call is read from the source.
+    const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+    assert.match(src, /const v = await probeEngineTurn\(proofTurn\(\{ engineId: pick\.id, eng, bin, authEnv \}\)\);/,
+      "setup's proof turn no longer takes its arguments from proofTurn, so the copy it proves is not handed to the probe");
   } finally { for (const d of [root, empty]) rmSync(d, { recursive: true, force: true }); }
 });
 
