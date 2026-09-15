@@ -235,7 +235,7 @@ test("every model pin the checks carry is documented beside the others, the fabl
   // in full or by its short form.
   const prose = b.replace(/```[\s\S]*?```/g, "").split(/\n\s*\n/).map(flat);
   const lists = prose.filter((p) => p.includes("ANTHROPIC_DEFAULT_OPUS_MODEL"));
-  assert.ok(lists.length >= 1, "no prose paragraph of §3b lists the pins, so the arm below would hold nothing");
+  assert.ok(lists.length >= 1, "no prose paragraph of §3b lists the pins, so the check below would hold nothing");
   for (const p of lists)
     assert.match(p, /ANTHROPIC_DEFAULT_FABLE_MODEL|`_FABLE_`/, `§3b lists the pins without the fable one: ${p}`);
 });
