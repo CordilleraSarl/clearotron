@@ -35,7 +35,8 @@ mark) and the assessment turn; nothing you write here searches anything.
    integers only. Scope expansion is NEVER silent.
 4. **Context framing** per mark (MANDATORY): what does this name read as in THIS context — coined,
    compound, common phrase, cultural echo? ("Coop" = chicken coop for a poultry brand, not a
-   cooperative.) The assessor's rating hangs off this framing.
+   cooperative.) It tells the assessor what the name reads as. It does not set the band — a framing
+   never raises or lowers a rating, and a risk belonging to the name is a finding of its own.
 5. **Prior knowledge** from the request/instructions: anything the forwarder said about a mark
    ("client loves this one", known history) — folded in verbatim, never invented.
 6. **Execution order**: common-word / known-problem marks first (they surface the batch's hard calls

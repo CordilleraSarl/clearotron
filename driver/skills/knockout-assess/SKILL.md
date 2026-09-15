@@ -16,7 +16,8 @@ there is no other value: a band that needs sharpening is the band above it, stat
 ## Per mark — the mandatory sequence
 
 1. **Context framing FIRST** (from the plan; correct it only if plainly wrong): coined vs common
-   phrase vs cultural echo — the rating hangs off this.
+   phrase vs cultural echo. It frames what the name READS as, and the evidence bullets draw on it.
+   The band does not: no framing raises or lowers a rating (calibration rule 3, retired).
 2. **Parody / evocation check**: does the name echo a famous mark or property even without identical
    ownership ("Free Range 1s" echoes "Air Force 1s")? Flag it even when nobody owns the echoed form.
 3. **Band per the framework ladder**, applying the calibration rules below.
@@ -58,11 +59,21 @@ there is no other value: a band that needs sharpening is the band above it, stat
    read." It was the only instruction in this seat's context licensing that move, and the readiest
    explanation for a Disney hit rating Very High and an EA hit rating High against a lawyer's Medium and
    Manageable. The rest of the rule stands and is doctrine.)*
-3. **Never rate the lowest band for common English phrases — DO rate it for coined/fanciful terms.**
-   Common word or phrase → second-lowest band minimum even on a clean sweep, plus the purple
-   register-pending note. Coined/invented word with a clean sweep → the lowest band is correct.
-   The test: could a reasonable person use this word in everyday speech without reference to the
-   proposed mark? No → coined. Yes → common phrase → floor applies.
+3. **RETIRED — how ordinary the words are is a note for the reviewing lawyer, never a band.**
+   This forbade the lowest band for a common English phrase and put a floor a band above it. On a
+   scale that ends in Low it kept an everyday name off "no issues found"; on a client scale with no
+   Low band the floor landed one band higher still, and three names went out rated above every
+   conflict card on their own pages — twelve cards, all at the bottom band, under three names a band
+   above them, with nothing on the page to explain it. The reviewing lawyer rated the cards right and
+   the names wrong.
+   **Removed for every client, not only where it misfired** (owner, 2026-09-15). Keeping it on scales
+   that have a Low band was considered and rejected; so was explaining the gap on the report, because
+   a report that explains a wrong rating is still wrong.
+   Say what the words are in the reading — coined, compound, everyday phrase, cultural echo — and let
+   it inform the evidence bullets. It does not set, floor or lift a band. A risk that belongs to the
+   NAME rather than to one user is written as its own `findings[]` record and rated there; Famous
+   Brand and Cultural Reference are already card types for exactly that.
+   *The number is kept and not reused*, for the reason rule 4 gives below.
 4. **RETIRED — the caveat is conditional now, and it is not this file's to state.**
    This rule ordered the pending-register caveat on *every* summary, unconditionally. When the register
    ran and surfaced live filings, that sentence tells a client its ratings are common-law only while the
@@ -77,6 +88,24 @@ there is no other value: a band that needs sharpening is the band above it, stat
    at its "(low)" qualifier.
 7. **Client's prior use mitigates, doesn't eliminate.** Rate the full external landscape first; note
    the mitigation separately in a purple bullet.
+8. **A NAME IS NEVER RATED ABOVE THE WORST CARD ON ITS PAGE.** The page is one judgment: the name's
+   band, its basis line, its Why and Why-not boxes and its opening read all have to agree with each
+   other and with the cards under them. A reader who sees a band on the name and a milder band on
+   every card beneath it has been given two answers and no way to choose.
+   **Cards means every rated item on this name's page** — each `findings[]` record, and each
+   `registerReads[]` row that carries a band. A row with no band is not a card and does not count.
+   **A name with no rated cards takes the bottom band of the client's own ladder.** Nothing was found
+   against it; that is what the bottom band is for. It is not a reason to reach up a band.
+   **Rating BELOW the worst card is allowed and needs a sentence**, because it is a real judgment:
+   the worst card's holder may touch only the edge of the request. Say which card and why it does not
+   carry the name.
+   **Anything that should lift a name is a card of its own** — a famous-mark echo, a cultural
+   reading, a risk that belongs to the NAME rather than to one user. Write it as a `findings[]`
+   record and rate it there, where a reader can see what it is and disagree with it. A band lifted
+   without a card is a conclusion with its evidence left out.
+   The driver checks this and REFUSES, naming the card it read: it never rewrites your band. A
+   corrected band you reasoned is the product; a band a script lowered under prose that still argues
+   for the old one is worse than the defect it replaced.
 
 ## Degraded marks (research unavailable or null — never inflate)
 
