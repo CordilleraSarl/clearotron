@@ -140,11 +140,11 @@ level 1 and then throw at level 2 (below). They are catalogue entries, not avail
 as aliases, so each tier follows the vendor's newest model; to hold one still, set
 `ANTHROPIC_DEFAULT_OPUS_MODEL` (or `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`).
 The catalog ids `anthropic/claude-opus-5` and `anthropic/claude-sonnet-5` are passed as those
-concrete models; `anthropic/claude-haiku-4-5` and `anthropic/claude-sonnet-4-6` go over as the `haiku`
-and `sonnet` aliases, so they follow the vendor the same way. A bare or dated
-Anthropic id (`claude-haiku-4-5-20251001`) still resolves to its family — that is a naming form of a
-model the CLI can run, not a substitution of a different one. Telemetry keeps the level-1 catalog id as
-the model asked for, and the attempt row records the id the program reports it served.
+concrete models; `anthropic/claude-haiku-4-5` goes over as the `haiku` alias, so it follows the
+vendor the same way. A bare or dated Anthropic id (`claude-haiku-4-5-20251001`) still resolves to
+its family — that is a naming form of a model the CLI can run, not a substitution of a different
+one. Telemetry keeps the level-1 catalog id as the model asked for, and the attempt row records the
+id the program reports it served.
 
 **Anything else throws.** There is no regex fall-through to sonnet and no cross-provider
 substitution: the `gemini`/`gemini-flash`/`deepseek-v4-pro`/`azure` mappings are gone with the

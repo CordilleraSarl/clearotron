@@ -82,7 +82,7 @@ test("the configuration reference says a tier follows the vendor, as the Claude 
   // a rule about catalog ids: the level-1 target of `haiku` goes over as `haiku`. The page names each group;
   // every name in it is held to what the adapter does with it.
   const ids = (list) => [...list.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
-  const said = /The catalog ids (.+?) are passed as those concrete models; (.+?) go over as the /.exec(ref);
+  const said = /The catalog ids (.+?) are passed as those concrete models; (.+?) goe?s? over as the /.exec(ref);
   assert.ok(said, "the reference no longer says which catalog ids go over as a concrete model and which as an alias");
   const [concrete, aliased] = [ids(said[1]), ids(said[2])];
   for (const id of concrete)
@@ -168,7 +168,7 @@ test("the release notes promise what setup does", () => {
   assert.match(program, /Setup offers to install the reasoning program your engine uses/);
   assert.match(program, /how much space the program takes and how to remove it/);
   // What the note promises is what setup's offer and its engine question say, for every program it installs.
-  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES).filter(([, e]) => e.package)) {
     assert.match(installSizeLine(eng), /^It takes about \d+ MB\. To remove it, delete that folder\.$/,
       `setup's install offer for ${eng.product} names no size, which the release note promises`);
     const row = (found) => engineOptions({ [id]: found }).find((o) => o.id === id).label;
