@@ -99,7 +99,7 @@ import {
 // around, and it is cache-busted whether or not this static import happened first.
 import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE,
   enginesFolder, engineInstallArgs, engineInstallCommand } from "../driver/driver.config.mjs";
-import { resolveAuthMode, CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";
+import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SECRETS, cloudsSwitchedOn } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
 import { processTable } from "../shared/process-table.mjs";   // — /proc is not the only box
@@ -181,6 +181,9 @@ export function cloudSettings(cloud, answers = {}) {
   }
   return out;
 }
+
+/** A cloud setting as setup shows it after writing it: a secret (auth.mjs's CLOUD_SECRETS) as set, never its value. */
+export const shownSetting = (k, v) => `${k}=${CLOUD_SECRETS.includes(k) ? "…" : v}`;
 
 /** Whose bill a cloud billing mode charges, as doctor says it. */
 export const cloudAccount = (cloud) =>
@@ -3623,7 +3626,7 @@ try {
         info(`CLEAROTRON_AI=${pick.id}`);
         info(`${eng.authEnv}=${authPick.id} — the lane the turn above actually ran on.`);
         if (apiKey) info(`${eng.apiKeyEnv}=… — adopted, so a run bills the way you just proved.`);
-        for (const [k, val] of cloudLines) info(`${k}=${/_KEY$|_TOKEN$/.test(k) ? "…" : val}`);
+        for (const [k, val] of cloudLines) info(shownSetting(k, val));
         if (bin.source === "installed") info(`${eng.env}=${eng.fallback} — the engine's default: this machine's own \`${eng.fallback}\` once it has one, and the copy Clearotron installed until then.`);
         else info(`${eng.env}=${bin.path} — the absolute form, because a service's PATH is not your shell's.`);
         break engine;

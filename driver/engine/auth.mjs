@@ -57,13 +57,24 @@ export const CLOUD_SWITCH = Object.freeze({ vertex: "CLAUDE_CODE_USE_VERTEX", fo
 // deployment is named by. A run takes every line of its settings file, so it has these already. Setup's
 // proof turn and doctor read the file name by name, and carry these so a check proves the account a run
 // bills rather than whatever the shell happened to hold.
+//
+// THE STANDARD AWS KEY VARIABLES ARE ON IT. A machine with no AWS profile and no instance role keeps its
+// Amazon keys in the settings file, and a search reads them from there. Without these three names doctor's
+// proof turn ran without the keys and reported a fault on a machine whose searches worked.
 export const CLOUD_SETTINGS = Object.freeze([
   ...Object.values(CLOUD_SWITCH),
   "ANTHROPIC_VERTEX_PROJECT_ID", "CLOUD_ML_REGION", "GOOGLE_APPLICATION_CREDENTIALS",
   "ANTHROPIC_FOUNDRY_RESOURCE", "ANTHROPIC_FOUNDRY_API_KEY",
-  "AWS_REGION", "AWS_PROFILE",
+  "AWS_REGION", "AWS_PROFILE", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN",
   "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN",
   "ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+]);
+
+// THE ONES THAT HOLD A SECRET, by name. Wherever a cloud setting is shown, one of these is shown as set and
+// never with its value. Named rather than matched by suffix: AWS_ACCESS_KEY_ID ends like the Google project
+// id beside it, and only one of the two is a credential.
+export const CLOUD_SECRETS = Object.freeze([
+  "ANTHROPIC_FOUNDRY_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "ANTHROPIC_AUTH_TOKEN",
 ]);
 
 export function cloudsSwitchedOn(env = process.env) {

@@ -13,19 +13,21 @@
 //     is one the probe carries;
 //   - the probe's turn sees the cloud settings its caller passed, and they are gone again after it;
 //   - a successful probe names the model that served it and the provider the program reported;
+//   - an Amazon machine whose keys are only in the settings file is proved by doctor with those keys, and a
+//     secret setup shows is shown as set, never with its value;
 //   - doctor reads a cloud from the settings file and names the account it charges, and reports a cloud
 //     with no switch, and a switch beside subscription, as the refusals they are.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, symlinkSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, symlinkSync, chmodSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
-import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SWITCH } from "../engine/auth.mjs";
+import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SECRETS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
-import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount } from "../../bin/onboard.mjs";
+import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting } from "../../bin/onboard.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -137,6 +139,75 @@ function doctor(lines) {
     return `${e.stdout ?? ""}${e.stderr ?? ""}`;
   }
 }
+
+/**
+ * A stand-in for the Claude program on an Amazon machine: it completes the turn only when both standard AWS
+ * key variables reach it, and otherwise answers the way Bedrock refuses a request without credentials. It
+ * writes down which it saw, so the witness is the spawned process, not what doctor says about it.
+ */
+function amazonProgram(dir) {
+  const log = join(dir, "program-saw.log");
+  const bin = join(dir, "claude-on-amazon.sh");
+  writeFileSync(bin, [
+    "#!/bin/sh",
+    `if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then echo present >> "${log}"; exec "${process.execPath}" "${MOCK}" "$@"; fi`,
+    `echo absent >> "${log}"`,
+    `echo "API Error: 403 The security token included in the request is invalid." >&2`,
+    "exit 1",
+  ].join("\n") + "\n");
+  chmodSync(bin, 0o755);
+  return { bin, saw: () => (existsSync(log) ? readFileSync(log, "utf8").trim().split("\n") : []) };
+}
+
+/** `doctor --check --probe-engine` with the settings file holding `lines`, the program set to `bin`. */
+function doctorProves(bin, lines) {
+  const home = mkdtempSync(join(tmpdir(), "setup-pay-probe-"));
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  writeFileSync(join(home, ".config", "clearotron", ".env"),
+    ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_CLAUDE_PATH=${bin}`, ...lines].join("\n") + "\n");
+  try {
+    return execFileSync(process.execPath, [ONBOARD, "--check", "--probe-engine"], {
+      encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 90000,
+      env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
+  } catch (e) {
+    return `${e.stdout ?? ""}${e.stderr ?? ""}`;
+  }
+}
+
+const AMAZON = ["CLEAROTRON_AI_BILLING=cloud", "CLAUDE_CODE_USE_BEDROCK=1", "AWS_REGION=eu-central-1"];
+const AWS_KEYS = { AWS_ACCESS_KEY_ID: "AKIA-TEST-NOT-REAL", AWS_SECRET_ACCESS_KEY: "secret-test-not-real", AWS_SESSION_TOKEN: "session-test-not-real" };
+
+test("an Amazon machine whose keys are only in the settings file is proved by doctor the way its searches run", () => {
+  // Doctor's environment is composed from nothing (doctorProves), so a key can only reach the program from the file.
+  const dir = mkdtempSync(join(tmpdir(), "setup-pay-amazon-"));
+  const program = amazonProgram(dir);
+  const out = doctorProves(program.bin, [...AMAZON, ...Object.entries(AWS_KEYS).map(([k, v]) => `${k}=${v}`)]);
+  assert.deepEqual(program.saw(), ["present"], `the program ran without the keys the settings file holds:\n${out}`);
+  assert.match(out, /billing: cloud — charged per use to your Amazon Bedrock account/, out);
+  assert.match(out, /anthropic-agent completed a turn/, out);
+  for (const v of Object.values(AWS_KEYS)) assert.ok(!out.includes(v), `doctor printed a key's value:\n${out}`);
+
+  // CONTROL: the same machine with no keys anywhere. The program ran and saw none, so the pair above
+  // measured the keys and not the stand-in, and nothing is claimed proven.
+  const bare = amazonProgram(mkdtempSync(join(tmpdir(), "setup-pay-amazon-bare-")));
+  const refused = doctorProves(bare.bin, AMAZON);
+  assert.deepEqual(bare.saw(), ["absent"], refused);
+  assert.doesNotMatch(refused, /completed a turn/, refused);
+});
+
+test("where setup shows a cloud setting it wrote, a secret is shown as set and never with its value", () => {
+  const secrets = new Set(["ANTHROPIC_FOUNDRY_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "ANTHROPIC_AUTH_TOKEN"]);
+  assert.deepEqual(new Set(CLOUD_SECRETS), secrets);
+  // Every secret is a setting the checks carry, so the walk below meets each one.
+  for (const k of secrets) assert.ok(CLOUD_SETTINGS.includes(k), `${k} is not carried by setup's proof turn and doctor`);
+  for (const k of CLOUD_SETTINGS) {
+    const line = shownSetting(k, "value-test-not-real");
+    if (secrets.has(k)) assert.equal(line, `${k}=…`, `${k} holds a credential and its value was shown`);
+    else assert.equal(line, `${k}=value-test-not-real`, `${k} is not a credential, so the reader is shown what was written`);
+  }
+  // The setup screen that lists what it wrote goes through this, rather than a pattern of its own.
+  assert.match(readFileSync(ONBOARD, "utf8"), /for \(const \[k, val\] of cloudLines\) info\(shownSetting\(k, val\)\);/);
+});
 
 test("doctor reads a cloud from the settings file and names the account it charges", () => {
   const out = doctor(["CLEAROTRON_AI_BILLING=cloud", "CLAUDE_CODE_USE_FOUNDRY=1"]);
