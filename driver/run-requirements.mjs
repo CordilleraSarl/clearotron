@@ -143,7 +143,7 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     }
   }
   if (engine?.authEnv)
-    push(engine.authEnv, false, "how the engine bills — subscription or key; the adapter refuses before spending if the sign-in it names is absent");
+    push(engine.authEnv, false, "how the engine is paid for — subscription, API key or cloud account; unset means the subscription, and the adapter refuses before spending if the key or cloud account it names is absent");
 
   push(RESEARCH_ENV, false, "the three clearance searches carry the common-law grid and refuse at preflight without it; a Knockout search still runs and discloses the half it skipped");
 

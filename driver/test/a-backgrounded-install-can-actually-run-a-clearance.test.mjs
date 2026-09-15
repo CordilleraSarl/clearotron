@@ -181,6 +181,17 @@ test("a value that NARROWS the product never refuses a start — a Knockout box 
   assert.match(row.why, /Knockout/, "the reason must say which product still works, or it reads as a dead install");
 });
 
+test("the billing row names every way the engine can be paid for, and never refuses a start", () => {
+  // `clearotron start` prints this reason beside the setting when it is unset. It said "subscription or
+  // key" after a third mode, a cloud account, was added, and "sign-in" for what a key or a cloud needs.
+  const name = ENGINE_BINARIES[DEFAULT_ENGINE_ID].authEnv;
+  const row = runRequirements({ ...SUPERVISOR, [name]: undefined }, T).find((r) => r.name === name);
+  assert.ok(row, `the requirements carry no ${name} row, so there is nothing to read`);
+  assert.equal(row.blocking, false, "an unset billing mode means the subscription, and must never refuse");
+  assert.match(row.why, /^how the engine is paid for — subscription, API key or cloud account; /);
+  assert.doesNotMatch(row.why, /subscription or key|sign-in/, row.why);
+});
+
 test("the composer and the guard read ONE list, so the guard cannot pass on what the composer forgot", () => {
   // The join, asserted as an identity rather than by inspection: everything the guard can block on must
   // be something the composer was told to carry. A guard with names the composer never saw is a refusal
