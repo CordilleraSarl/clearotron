@@ -184,7 +184,12 @@ test("THE DEFECT: the capture and the box disagreeing about the engine program i
   const row = rows.find((r) => r.what === "engine program");
   assert.ok(row, `the field that decides whether a search can start is not compared: ${JSON.stringify(rows.map((r) => r.what))}`);
   assert.match(String(row.effect), /NEW search can start/, "the row does not say what it costs the reader");
-  assert.match(String(row.effect), /Restart the engine service|install the CLI/, "…and does not say what to do about it");
+  // What to do, as it is true now: the capture is written when the services start, so a restart makes them
+  // look again, and doctor is the command that says which side to fix. It used to send the reader to
+  // "install the CLI where the service can see it", which predates setup's own install of the program.
+  assert.match(String(row.effect), /Restart the services so they look again/, "…and does not say what to do about it");
+  assert.match(String(row.effect), /`clearotron doctor` says which side to fix/, "…or where the rest of the answer is");
+  assert.doesNotMatch(String(row.effect), /install the CLI where the service can see it/, "the advice from before setup installed the program");
 });
 
 test("…and it reads as words, because the browser contract parses these two values with asString", () => {
