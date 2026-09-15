@@ -119,6 +119,35 @@ test('409 with neither spelling still says something, and says it once', async (
   assert.ok(msg.length > 0, 'a 409 with no refusal text rendered nothing at all')
 })
 
+test('an internal refusal CODE never reaches the reader as page copy', async () => {
+  // WHAT A READER WAS SHOWN. People → Modify, turn a permission off, press Save on an install that signs
+  // one person in: the route refuses correctly with `local_sign_in`, and that word was drawn between the
+  // sentence describing the change and the button. `errorsOf` falls back to `error`, the 409 branch
+  // matched neither "version" nor "conflict", and the token became the message.
+  const r = await withFetch(409, { error: 'local_sign_in', code: 'local_sign_in' },
+    () => api.changePerson({ email: 'someone@example.test', permissions: { run: false, manage: false }, access: [] }))
+  assert.equal(r.kind, 'gate')
+  const shown = saveFailureText(r)
+  assert.ok(!/local_sign_in/.test(shown), `the code itself was rendered: "${shown}"`)
+  assert.ok(/\s/.test(shown), 'and what is rendered instead is a sentence, not another token')
+  assert.equal(r.kind === 'gate' ? r.detail?.code : null, 'local_sign_in',
+    'the code is still on the result, because that is what a screen composes its own sentence from')
+
+  // THE SCREENS COMPOSE FROM THE CODE, NOT FROM THE KIND. This runner cannot mount a `.tsx`, so the two
+  // lines that carry it are read. Keyed on `kind` alone they would fire on an unrelated gate.
+  for (const screen of ['ModifyAccess', 'GiveAccess']) {
+    const page = readFileSync(new URL(`../src/screens/${screen}.tsx`, import.meta.url), 'utf8')
+    assert.match(page, /detail\?\.code === 'local_sign_in'/, `${screen} does not key its sentence on the code`)
+    assert.match(page, /signs in one person/, `${screen} lost the sentence it had prepared`)
+  }
+
+  // THE CONTROL: a 409 that carries no code is still rendered exactly as the server wrote it. This must
+  // not become "every 409 gets a general sentence" — most of them ARE the sentence.
+  const prose = 'Choose at least one organisation or company this person may see.'
+  const plain = await withFetch(409, { error: prose }, () => api.runs('aurora'))
+  assert.equal(saveFailureText(plain), prose, 'a refusal written as prose still reaches the reader whole')
+})
+
 test('a store that cannot record a company reaches the New company page as its own sentence, never "try again shortly"', async () => {
   // The door refused with the one fix, and the page threw it away: a store refusal decoded as a gate, the
   // New company page renders every kind but `reject` through a title that ends "Try again shortly", and

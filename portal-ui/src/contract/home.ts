@@ -16,44 +16,143 @@ import { newestFirst, displayName } from './reads.ts'
 import { readableFailure } from './failure.ts'
 import { runKey } from './genericKey.ts'
 
-/** Card order is fixed and is not a sort the user can change. A failure never sinks below live work. */
+/**
+ * Card order in the live band, and it is not a sort the user can change.
+ *
+ * OWNED BY `inFlight` ALONE. `failed` is still listed because `RANK` is a lookup with a fallback and a
+ * state missing from it sorts last — but no failure reaches this function any more, so the entry is a
+ * floor rather than a rule. The order failures are shown in belongs to `recentFailures`, which is
+ * newest-first for a different reason: that list is history, and history reads by date.
+ */
 const RANK: Record<string, number> = { failed: 0, running: 1, paused: 2, queued: 3 }
+
+/**
+ * The two states a run ends in when it did not deliver, and the two `ACKNOWLEDGEABLE` names in
+ * driver/portal-acks.mjs. One set, used by both functions below, so the live band and the failures list
+ * cannot disagree about what counts as stopped.
+ */
+const STOPPED: ReadonlySet<Run['state']> = new Set<Run['state']>(['failed', 'cancelled'])
+
+/**
+ * How long a stopped run stays on the dashboard, acknowledged or not.
+ *
+ * A dismissal is per reader (driver/portal-acks.mjs: one file per viewer, by design, so a staff member
+ * tidying their own screen cannot hide a client's run). The consequence is that nothing a previous
+ * reader did helps the next one: without an age limit the list is unbounded, and a person signing in
+ * for the first time meets every failure the deployment has ever had — which is what happened on
+ * production. A week is long enough that a failure cannot be missed over a weekend and short enough
+ * that the list stays a list.
+ */
+export const FAILURE_WINDOW_DAYS = 7
+
+/**
+ * When a run happened, as a number, or null when nothing on it can be read as a time.
+ *
+ * `issuedAt` first because it is the precise stamp the band already tie-breaks on; `date` is day
+ * precision and is the fallback. NULL IS NOT ZERO, and that distinction is the whole function: a run
+ * with no readable stamp must not compare as 1970 and silently drop out of every list. The callers
+ * below treat null as "show it", which is the same direction `asRunState` takes for a state it does not
+ * recognise and `readStamps` takes for a token it cannot parse — when we cannot tell, the reader sees it.
+ */
+const whenOf = (r: Run): number | null => {
+  for (const raw of [r.issuedAt, r.date]) {
+    if (!raw) continue
+    const t = new Date(raw).getTime()
+    if (!Number.isNaN(t)) return t
+  }
+  return null
+}
+
+/** Inside the window, or unreadable — never silently absent. */
+const withinWindow = (r: Run, now: number, days: number): boolean => {
+  const at = whenOf(r)
+  return at === null || now - at <= days * 24 * 60 * 60 * 1000
+}
+
+/**
+ * Newest first, and a run we cannot date sorts FIRST rather than last.
+ *
+ * ONE RULE, STATED ONCE, BECAUSE THE TWO HALVES DISAGREED. `withinWindow` keeps an undateable run on the
+ * grounds that "we cannot tell how old it is" must not hide it — and `newestFirst` then sorted it to the
+ * bottom of the list, which is where a reader stops looking. Kept by one rule and buried by the other is
+ * not a decision; it is two rules that were never read together.
+ *
+ * So the same reasoning decides both: not knowing when something failed is a reason to put it in front
+ * of somebody, not behind everything. It is also the rarer case by far, so the cost of being wrong is a
+ * recent-looking row at the top rather than a failure nobody sees.
+ */
+const failuresNewestFirst = (a: Run, b: Run): number => {
+  const at = whenOf(a), bt = whenOf(b)
+  if (at === null && bt === null) return 0
+  if (at === null) return -1
+  if (bt === null) return 1
+  return newestFirst(a, b)
+}
 
 export type InFlight = readonly Run[]
 
 /**
  * The rows Home puts in its "In flight" band, in the order it puts them.
  *
- * `delivered` is not in flight; everything else is, including `failed` — a run that stopped is the thing
- * the person most needs to see, and dropping it here is how a failure becomes a silence.
+ * WHAT IS ACTUALLY HAPPENING, and nothing else. `delivered` is not in flight; neither is a run that
+ * stopped. A failure used to live here on the reasoning that a failure which vanishes is a silence —
+ * right about the danger, wrong about the place. It made an ordinary screen depend on a per-reader
+ * dismissal: the band filled with dead runs, and because a dismissal is one person's, every colleague
+ * and every new client met the same wall and had to clear it again. Failures now have their own list
+ * below, `recentFailures`, which is bounded by age so nobody has to clear anything for this screen to
+ * be right. The silence the old comment feared is prevented by `sentence`, which reads BOTH lists.
  *
- * — …WHICH IS TRUE UNTIL THE PERSON HAS SEEN IT. A failed run is neither in flight nor waiting and
- * had no way out, so the band filled with dead runs and stopped showing the live ones. `acked` is the
- * viewer's own dismissal, stamped per request by the service from that reader's file: nothing about the
- * run changes, it is untouched in Clearances, and another reader's dashboard still shows it.
+ * DEFINED BY EXCLUSION, NEVER BY A LIST OF LIVE STATES. `asRunState` in ./api.ts maps every state it
+ * does not recognise to `running` on purpose, so that an unknown state is shown rather than hidden. An
+ * allowlist here would invert that the first time the engine gains a park state, and invert it silently.
  *
- * The filter is HERE rather than in the screen because `acknowledged` below must be its exact
- * complement — the count that says how many were put down is the only thing standing between
- * "acknowledged" and "forgotten", and two independent filters would drift.
+ * `acked` is no longer consulted, and that is not a dropped filter: a dismissal is keyed on (runId,
+ * state) and only `failed` and `cancelled` may be dismissed at all, so no run this function returns can
+ * carry one.
  */
 export function inFlight(runs: readonly Run[]): InFlight {
   return runs
-    .filter((r) => r.state !== 'delivered' && !r.acked)
+    .filter((r) => r.state !== 'delivered' && !STOPPED.has(r.state))
     .slice()
     .sort((a, b) => (RANK[a.state] ?? 9) - (RANK[b.state] ?? 9))
 }
 
 /**
- * — the runs this viewer has put down: the exact complement of what `inFlight` dropped.
+ * The stopped runs still worth a reader's attention: recent, and not yet put down by this reader.
  *
- * A count with a way to look, never a silent disappearance. Same order as the band they left, so a
- * reader who opens it recognises the list rather than meeting a new one.
+ * Newest first — this is history, and the question is "what went wrong lately", so the most recent
+ * answer is the one at the top. Outside the window a run leaves whether or not anyone acknowledged it,
+ * which is what keeps the list from becoming the second wall.
+ *
+ * `now` is a parameter rather than a call to `Date.now()` so this stays pure and the window is testable
+ * without waiting a week.
  */
-export function acknowledged(runs: readonly Run[]): readonly Run[] {
+export function recentFailures(
+  runs: readonly Run[],
+  { now = Date.now(), days = FAILURE_WINDOW_DAYS }: { now?: number; days?: number } = {},
+): readonly Run[] {
   return runs
-    .filter((r) => r.state !== 'delivered' && r.acked)
+    .filter((r) => STOPPED.has(r.state) && !r.acked && withinWindow(r, now, days))
     .slice()
-    .sort((a, b) => (RANK[a.state] ?? 9) - (RANK[b.state] ?? 9))
+    .sort(failuresNewestFirst)
+}
+
+/**
+ * — the runs this viewer has put down: the exact complement of what `recentFailures` shows.
+ *
+ * A count with a way to look, never a silent disappearance. The two functions partition one population —
+ * stopped runs inside the window — so a run that leaves one appears in the other, and the number on
+ * screen is what stands between "acknowledged" and "forgotten". They take the same window for the same
+ * reason: a dismissal that outlived the run it dismissed would inflate that count for ever.
+ */
+export function acknowledged(
+  runs: readonly Run[],
+  { now = Date.now(), days = FAILURE_WINDOW_DAYS }: { now?: number; days?: number } = {},
+): readonly Run[] {
+  return runs
+    .filter((r) => STOPPED.has(r.state) && r.acked === true && withinWindow(r, now, days))
+    .slice()
+    .sort(failuresNewestFirst)
 }
 
 /**
@@ -301,14 +400,27 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
  * `owners` is passed only for the staff view, where the interesting number is how many clients have work
  * in flight rather than which. A client never sees it — for them there is only ever one.
  */
-export function sentence(rows: InFlight, { owners = 0 }: { owners?: number } = {}): string {
-  if (!rows.length) return 'Nothing running.'
+export function sentence(
+  rows: InFlight,
+  stopped: readonly Run[],
+  { owners = 0 }: { owners?: number } = {},
+): string {
+  // BOTH POPULATIONS, AND NEITHER IS OPTIONAL. The sentence is the largest text on the screen and must
+  // not disagree with the cards under it — and since failures moved to their own list, there are two
+  // sets of cards. The dangerous half is this one: nothing live and a failure ten minutes old used to
+  // read "Nothing running.", which is the silence the band was carrying failures to prevent. A caller
+  // that has no failures list says so by passing an empty array; there is no default that lets one
+  // forget.
+  const failed = stopped.length
+  if (!rows.length && !failed) return 'Nothing running.'
 
   const n = (s: string) => rows.filter((r) => r.state === s).length
-  const failed = n('failed')
 
   if (owners > 1) {
-    const live = rows.length - failed
+    // COUNTED FROM `rows`, NOT `rows.length - failed`. That arithmetic was correct only while failures
+    // were inside the band; now that they never are, subtracting them would undercount live work by
+    // exactly the number of unrelated failures on the page.
+    const live = rows.length
     // NEVER "no in flight". `count(0)` is the word "no", so a staff view with only stopped work read
     // "32 stopped · no in flight, five companies." — a sentence that leads with a number nobody can
     // act on and then says nothing is happening. When nothing is live, say only what stopped.
@@ -340,7 +452,7 @@ export function sentence(rows: InFlight, { owners = 0 }: { owners?: number } = {
  * Distinguished from "nothing live right now" because they are different facts and the second one is
  * reassuring where the first is an invitation.
  */
-export const openingLine = (rows: InFlight, anyHistory: boolean, known = true): string =>
+export const openingLine = (rows: InFlight, stopped: readonly Run[], anyHistory: boolean, known = true): string =>
   // AND A THIRD THING, WHICH IS NEITHER: we have not been told.
   //
   // A client holding several companies cannot ask for "all of them" — the server answers 404 to
@@ -348,7 +460,8 @@ export const openingLine = (rows: InFlight, anyHistory: boolean, known = true): 
   // firm with a decade of history opened this page and read "Nothing has run yet." The honest line is
   // the instruction that unblocks them, which is also the only thing the page can act on.
   !known ? 'Pick a company to see its work.'
-    : rows.length ? sentence(rows) : anyHistory ? 'Nothing running.' : 'Nothing has run yet.'
+    : rows.length || stopped.length ? sentence(rows, stopped)
+      : anyHistory ? 'Nothing running.' : 'Nothing has run yet.'
 
 /**
  * "Two run at once, across all companies."

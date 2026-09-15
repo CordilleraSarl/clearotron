@@ -150,6 +150,7 @@ export function PeopleAccess({ ctx }: { readonly ctx: ShellContext }) {
               ) : (
                 v.people.map((p) => (
                   <Row key={p.email} person={p} you={p.email.toLowerCase() === ctx.me.email.toLowerCase()}
+                    canModify={!v.localSignIn}
                     onModify={() => ctx.go(`${MODIFY_PERSON.path}?email=${encodeURIComponent(p.email)}`)} />
                 ))
               )}
@@ -242,9 +243,11 @@ function Observed({ result }: { readonly result: ReturnType<typeof useLoad<Obser
  * the way back is a text editor on the box. It also means the last person who can manage everything
  * cannot be removed by accident, which is the rule falling out rather than a second rule.
  */
-function Row({ person, you, onModify }: {
+function Row({ person, you, canModify, onModify }: {
   readonly person: Person
   readonly you: boolean
+  /** False where the install signs one person in: the write routes refuse, and the notice above says why. */
+  readonly canModify: boolean
   readonly onModify: () => void
 }) {
   const chips = accessChips(person.access)
@@ -279,8 +282,13 @@ function Row({ person, you, onModify }: {
         )}
       </td>
       <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+        {/* DISABLED, NOT HIDDEN — the same choice the Add button makes eight lines up, and for the same
+            reason: the notice above already explains it, and a control that vanished would leave a
+            reader hunting for it. Pressing it on such an install reached a page whose Save and Remove
+            both refused, so the answer was three screens away from the question. */}
         {you ? null : (
-          <button type="button" className="pill" style={{ cursor: 'pointer', fontSize: 12 }} onClick={onModify}>
+          <button type="button" className="pill" disabled={!canModify}
+            style={{ cursor: canModify ? 'pointer' : 'default', fontSize: 12 }} onClick={onModify}>
             Modify
           </button>
         )}
