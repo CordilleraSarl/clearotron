@@ -44,12 +44,43 @@ const SELF = "driver/test/a-dynamic-import-of-a-path-is-a-file-url.test.mjs";
 
 // Every import( on a code line, with its argument read to the matching paren. Quote-aware, so a paren
 // inside a string does not end it; comment lines are skipped because they describe imports, not make them.
+// Is the character at `at` inside a string literal on this line? A single pass from the start of the
+// line, so an apostrophe in prose cannot open a quote that swallows the rest of it: the scanner tracks
+// the quote character that OPENED, steps over an escape, and closes only on the same character.
+//
+// LINE-LOCAL ON PURPOSE. A template literal spanning lines would need a parser, and this file is a
+// guard rather than one — what it must never do is read the word in a message as a call, and a message
+// is on one line. Anything it cannot judge stays judged as code, which is the direction that refuses.
+function inString(line, at) {
+  let q = null;
+  for (let i = 0; i < at; i++) {
+    const c = line[i];
+    if (q) {
+      if (c === "\\") { i++; continue; }
+      if (c === q) q = null;
+    } else if (c === "'" || c === '"' || c === "`") q = c;
+  }
+  return q !== null;
+}
+
 function importsIn(src) {
   const out = [];
   src.split("\n").forEach((l, i) => {
     const t = l.trim();
     if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) return;
     for (const m of l.matchAll(/\bimport\s*\(/g)) {
+      // AND NOT AN `import(` THAT IS ITSELF INSIDE A STRING. This was quote-aware about the ARGUMENT —
+      // it tracks quotes carefully while reading to the matching paren — and never asked whether the
+      // `import(` it had just matched was inside a literal. So `\`… ${n} NEW import(s) name a file …\``
+      // in a console message read as a computed import whose argument is `s`, and the guard reported
+      // an unaccounted dynamic import in a file that has none. Two of them, in a private ops script,
+      // for however long that message has existed; every overlay run carried them as undeclared reds
+      // and the accused file had nothing to repair (tracker issue 569).
+      //
+      // The comment two lines up already had the reasoning: comment lines are skipped "because they
+      // describe imports, not make them". A string literal describes them too, and that thought
+      // stopped at comments.
+      if (inString(l, m.index)) continue;
       let j = m.index + m[0].length, depth = 1, q = null, arg = "";
       for (; j < l.length; j++) {
         const c = l[j];
@@ -88,8 +119,11 @@ const ACCOUNTED = [
   ["scripts/e2e.mjs", 'origin.protocol === "https:" ? "node:https" : "node:http"', "one of two built-in modules"],
   ["driver/test/owner-descriptor-claims-only-what-it-observes.test.mjs", "PRODUCER_URL.href", "a URL, not a path"],
   ["driver/test/preflight-engine-binary.test.mjs", "specifier", "an engine adapter specifier, asserted to be a file URL on the line before"],
-  ["driver/test/product-identity.test.mjs", `'" + pathToFileURL(join(bare, "shared", "product-identity.mjs")).href + "'`,
-    "a file URL from pathToFileURL, concatenated into a child script"],
+  // REMOVED: driver/test/product-identity.test.mjs. Its line was `const probe = "import('" + … + "')"`,
+  // a call being ASSEMBLED AS TEXT for a child script, and the extractor could not tell that from a
+  // call in this file — so it needed an exemption to stay quiet. It can tell now, the entry accounts
+  // for nothing, and the guard refused it on exactly the rule it states: an entry that accounts for
+  // nothing hides the next one. Two more like it were the whole of tracker issue 569.
 ];
 
 test("every computed import() in the tracked corpus is a file URL, a portable specifier, or accounted for", (t) => {
