@@ -256,7 +256,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:2243 (the non-supplemental-lane branch)",
+    where: "driver/stages.mjs:2253 (the non-supplemental-lane branch)",
     surface: "stage-message",
     evidence: "BAND ARTIFACT (MANDATORY): ALSO write the COMPLETE NAMED BAND for this axis to <path> — a JSON ARRAY, one block per register_enumerate / count-probe call, in the named-band contract: {\"state\":\"enumerated\",\"query\":\"<what was searched>\",\"total_hits\":N,\"records\":[{record_id, mark_text, classes, status,",
     reparsedBy: "driver/named-band.mjs parseNamedBand / bandRecords / bandCrowds / mergeNamedBands (named in driver/skills/prelim-register/unit.md:60-62); validators.registerUnit",
@@ -265,7 +265,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:2207",
+    where: "driver/stages.mjs:2217",
     surface: "stage-message",
     evidence: "Every block you append MUST carry \"state\":\"enumerated\" (ONLY if you paged it to has_more:false) or \"state\":\"incomplete\" — EXACTLY those two strings; there is no \"verified\"/\"checked\"/\"complete\"/\"clean\" state, and any other value fails the stage.",
     reparsedBy: "driver/named-band.mjs parseNamedBand (off-enum state fails validators.registerUnit)",
@@ -283,7 +283,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:4177 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4157 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
+    where: "driver/stages.mjs:4191 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4157 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
     surface: "stage-message",
     evidence: "Every block you append MUST carry \"state\":\"enumerated\" (ONLY if paged to has_more:false) or \"state\":\"incomplete\" — EXACTLY those two strings … (re-dispatch builders, which REPLACE def.message)",
     reparsedBy: "driver/named-band.mjs parseNamedBand. Scope warning: these builders replace def.message on every escalation / envelope-close / frame-reopen dispatch, so an E3 lint that walks STAGES[*].message only never sees them",
@@ -301,7 +301,7 @@ export const E3_BACKLOG = [
   {
     stage: "placement-inquiry",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:2403",
+    where: "driver/stages.mjs:2413",
     surface: "stage-message",
     evidence: "· tier EXACTLY one of headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered.",
     reparsedBy: "driver/placement-form.mjs / driver/placement-model.mjs via validators.placement",
@@ -346,7 +346,7 @@ export const E3_BACKLOG = [
     // (coverage-form.mjs coverageFormBrief) and the tool schema, with every row receiver-validated at
     // call time. Same dictated vocabulary, same authored site, new route — this row's evidence follows
     // the dictation so the row keeps describing something that exists.
-    where: "driver/stages.mjs:2608 (the digest message) + driver/coverage-form.mjs (coverageFormBrief — the dispatch block carrying the enum and the row shape)",
+    where: "driver/stages.mjs:2618 (the digest message) + driver/coverage-form.mjs (coverageFormBrief — the dispatch block carrying the enum and the row shape)",
     surface: "stage-message",
     evidence: "Record a \"status\" and a \"reason\" on EVERY row ONLY by calling the … tool — the driver validates each row as it arrives, holds the record itself, and renders both the ## Coverage ledger table and the coverage JSON from it",
     reparsedBy: "driver/coverage-call.mjs validateCoverageCall (receiver-validated at call time, the same predicates the gate judges with) + driver/coverage-form.mjs rowIsSettled via validators.registerFindings over the _driver/ accumulator",
@@ -429,7 +429,7 @@ export const E3_BACKLOG = [
   {
     stage: "frame-diff",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:2788",
+    where: "driver/stages.mjs:2798",
     surface: "stage-message",
     evidence: "For each blind-model variant / field / source the run did NOT scope or search, emit one directive {layer, item, observation, severity} … severity = dominant-element (the omission is ON the spine) | material (a real omission worth a targeted sweep) | minor (already covered, or presentation only).",
     reparsedBy: "driver/verify.mjs validators.frameDiff + driver/pipeline.mjs runSupplementalSweeps (the parser REFUSES a firing variant directive that dictates nothing dispatchable)",
@@ -453,7 +453,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3164",
+    where: "driver/stages.mjs:3178",
     surface: "stage-message",
     evidence: "MACHINE FINDINGS (MANDATORY): … a JSON OBJECT {\"schema_version\":<FINDINGS_SCHEMA_VERSION>,\"rated_under_framework\":\"…\",\"findings\":[...],\"coverage\":[...],\"context_notes\":[...],\"actions\":[...],\"ask_answers\":[...]} … Each finding object has EXACTLY these keys: {\"ordinal\",\"mark\",\"owner\",\"band\",\"net\",\"bor",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson via validators.narrative",
@@ -467,7 +467,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:3200",
+    where: "driver/stages.mjs:3214",
     surface: "stage-message",
     evidence: "- off_field_ground (MANDATORY on every off-field finding, FORBIDDEN on every other disposition): EXACTLY one bare token of: ${OFF_FIELD_GROUNDS.join(\" / \")}",
     reparsedBy: "driver/findings-model.mjs validateOffFieldGround — the enum is imported from findings-model.mjs and interpolated back into the prompt, so code already holds the list it asks the model to type",
@@ -476,7 +476,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3201",
+    where: "driver/stages.mjs:3215",
     surface: "stage-message",
     evidence: "- manageable …: {\"category\":\"<EXACTLY one of large-competitor / commercial-partner / troll / well-known-enforcer>\",\"reason\":\"<one-two lines…>\"}",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
@@ -485,7 +485,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3217",
+    where: "driver/stages.mjs:3231",
     surface: "stage-message",
     evidence: "- meters: {\"mark_similarity\":{...},\"goods_proximity\":{...},\"use\":{...},\"enforcer\":{...}} — all four present, each {\"token\",\"basis\",\"source\"}. … mark_similarity = high | medium | low. goods_proximity = high | medium | low. enforcer = high | medium | low | unknown. use = confirmed | not-confirmed | un",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; driver/verify.mjs:1066 checkFindingsSibling gates meters.*.source; finding_basis_source_missing",
@@ -494,7 +494,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3218",
+    where: "driver/stages.mjs:3232",
     surface: "stage-message",
     evidence: "- quadrant: {\"x\",\"y\"} numbers in [0,1]. x = goods/services proximity (0 = distant, 1 = identical). y = mark similarity (0 = distinct, 1 = identical).",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
@@ -503,7 +503,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3219",
+    where: "driver/stages.mjs:3233",
     surface: "stage-message",
     evidence: "- source: {\"source_type\",\"resolved_link\"}. source_type EXACTLY one of: register-vendor / register-euipo / common-law-marketplace / common-law-web / case-law",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
@@ -512,7 +512,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:3220",
+    where: "driver/stages.mjs:3234",
     surface: "stage-message",
     evidence: "coverage[]: ONE object per coverage AREA, EXACTLY {\"area\",\"state\",\"note\"}. … state EXACTLY one of: confirmed-clean / coverage-limited / open / not-searched / note.",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; the render owns the coverage panel from these typed states",
@@ -521,7 +521,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3229",
+    where: "driver/stages.mjs:3243",
     surface: "stage-message",
     evidence: "use_check = {\"source\",\"quality\"}: … quality: OPTIONAL, EXACTLY one of owner-site / independent / register-mirror … own_rights = {\"source\"}",
     reparsedBy: "driver/verify.mjs:988 checkFindingsSibling (finding_use_check_missing); driver/own-rights.mjs:19-22",
@@ -530,7 +530,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3286",
+    where: "driver/stages.mjs:3300",
     surface: "stage-message",
     evidence: "MARK ASSESSMENT … STRUCTURED FORM …: either field may instead be an OBJECT {\"read\":\"…\",\"spectrum\":\"…\",\"per_class\":[{\"class\":\"5\",\"note\":\"…\"}],\"per_market\":[{\"market\":\"CN\",\"note\":\"…\"}],\"counter_registrations\":[{\"mark\":\"…\",\"uri\":\"/mark/…\",\"note\":\"…\"}],\"acquired\":\"<optional>\",\"note\":\"<optional residual>",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson; the report collapses the rows behind toggles and the audit workbook renders them",
@@ -539,7 +539,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3292",
+    where: "driver/stages.mjs:3306",
     surface: "stage-message",
     evidence: "FOUR ANSWERS …: \"four_answers\": {\"third_party_rights\":{...},\"objection_likelihood\":{...},\"registrability\":{...},\"client_enforceability\":{...}} … Each answer … is {\"read\":\"…\",\"token\":\"…\",\"basis\":\"…\",\"ordinals\":[…]}. Tokens (closed enums …): third_party_rights = strong|moderate|weak; objection_likelih",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
@@ -557,7 +557,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:3299",
+    where: "driver/stages.mjs:3313",
     surface: "stage-message",
     evidence: "COVERAGE JUDGMENT …: emit \"coverage_judgment\": {\"sufficient\":<bool>, \"reason\":\"<one line…>\"} — EXACTLY those two keys. Do NOT emit \"rows\": the driver writes that register itself … anything you type there is replaced wholesale.",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson. The \"Do NOT emit rows\" clause is the purest E3 case in the tree — the prompt names a field, dictates its shape and states in the same breath that code overwrites it",
@@ -566,7 +566,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3142",
+    where: "driver/stages.mjs:3156",
     surface: "stage-message",
     // RE-QUOTED, NOT PARKED. The writer's conversion reworded this dictation — the
     // ask answers ride the findings RECORD now and the driver renders the labelled line into both the
@@ -590,7 +590,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3063 (restated at driver/skills/prelim-search/synthesis-rules.md:428)",
+    where: "driver/stages.mjs:3077 (restated at driver/skills/prelim-search/synthesis-rules.md:428)",
     surface: "stage-message",
     evidence: "END that finding's actual-use line with a literal \"- **Use-check source:** <result URL | \"perplexity_research — no result\">\" line",
     reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal at driver/gateway.mjs:2153",
@@ -599,7 +599,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3076 (restated at driver/skills/prelim-search/synthesis-rules.md:475)",
+    where: "driver/stages.mjs:3090 (restated at driver/skills/prelim-search/synthesis-rules.md:475)",
     surface: "stage-message",
     evidence: "END that finding's reasoning with a literal \"- **Own-rights source:** <record URI(s) | \"no applicant-owned registrations in the searched register material\">\" line",
     reparsedBy: "driver/own-rights.mjs:19-22 — \"This module only requires the 'Own-rights source:' line to exist\"; repair hint at driver/gateway.mjs:2361 (the `own_rights_missing` branch; re-verified 2026-08-29 — the old :1736 predated this branch and pointed into the A4 repeat-signature block)",
@@ -608,7 +608,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:3278",
+    where: "driver/stages.mjs:3292",
     surface: "stage-message",
     evidence: "add it to the top-level \"context_notes\" array — each object EXACTLY {\"type\":\"famous-neighbour-ungrounded\",\"mark\",\"owner\",\"context\"}",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson",
@@ -617,7 +617,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3166",
+    where: "driver/stages.mjs:3180",
     surface: "stage-message",
     evidence: "- owner: {\"name\",\"country\",\"registrations\":[...]}. … Each registration: {\"uri\", optionally \"classes\":[\"9\",\"41\"],\"status\",\"filed\",\"expiry\",\"jurisdiction\"}. The \"uri\" is the ONLY field that matters: the driver BINDS classes/status/filed/expiry/jurisdiction AND the owner name from the FETCHED record ke",
     reparsedBy: "driver/findings-model.mjs:813 parseFindingsJson + the record-binding join. Six of the seven keys are stated in the prompt and overwritten by code in the same sentence",
@@ -626,16 +626,16 @@ export const E3_BACKLOG = [
   {
     stage: "case-law",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3448",
+    where: "driver/stages.mjs:3462",
     surface: "stage-message",
     evidence: "ALSO write the RETRIEVAL RECORD to <path> — a JSON OBJECT with EXACTLY these keys: {\"schema_version\":1,\"queries\":[{\"query\":\"<the search you dispatched, verbatim>\",\"jurisdiction\":\"…\",\"results\":<how many hits it returned>}, …],\"citations\":[{\"proceeding\":\"…\",\"forum\":\"…\",\"jurisdiction\":\"…\",\"decided\":\"…\"",
-    reparsedBy: "driver/verify.mjs validators.caseLaw — the ledger arm, armed by the stage-contract marker `citations` (stages.mjs:1810)",
+    reparsedBy: "driver/verify.mjs validators.caseLaw — the ledger arm, armed by the stage-contract marker `citations` (stages.mjs:1820)",
     removedByMove: "M5 moves `queries[]` to the call log (and is itself blocked: tool-calls.jsonl records no arguments); the envelope, schema_version, `read` enum and `citations[]` skeleton survive M5 entirely",
   },
   {
     stage: "case-law",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3456",
+    where: "driver/stages.mjs:3470",
     surface: "stage-message",
     evidence: "EVERY \"Grounded profile\" section MUST start its body with the line \"- ord: <N>\" naming which finding it grounds (use the ordinal from this list; a profile that grounds no listed finding omits the line)",
     reparsedBy: "driver/publish/parse.mjs:339 parseCaseLawProfiles (\"the optional '- ord: <N>' first body line … gives an EXACT join\"); driver/findings-model.mjs:273 /^-\\s*ord:\\s*(\\d+)\\s*$/m; driver/publish/index.mjs:776",
@@ -669,7 +669,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:3588",
+    where: "driver/stages.mjs:3602",
     surface: "stage-message",
     // RE-QUOTED BY CONVERSION 9. The LINE-TOKEN half is gone — no "anywhere on the line", no "[kind: …]
     // token", no "a line with no token is treated as fact", because a kind is a typed field now and an
@@ -768,7 +768,7 @@ export const E3_BACKLOG = [
   {
     stage: "report-card",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3897",
+    where: "driver/stages.mjs:3911",
     surface: "stage-message",
     evidence: "The finding's OWN record — the ONLY source for this card …:\\n```json\\n<JSON.stringify(finding, null, 2)>\\n```",
     reparsedBy: "none — this is the INPUT side, and that is why it belongs in the survey: a full JSON object rendered into the prompt is exactly the mechanism #850 proves produced R-RECEIPT (the model pattern-matches a shown shape). E3's clause 1 as written (\"a code fence or inline example showing the exact object shape the model must emit\") does not reach an injected record, so the lint needs an explicit rule for shown-but-not-owed structure",

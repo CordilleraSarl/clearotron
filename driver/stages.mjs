@@ -1363,6 +1363,16 @@ export const STAGES = {
       // The driver STAMPS the instructed-scope section from _driver/instructed-scope.json, so the seat is
       // not asked to quote back values the driver wrote at intake. That retyping was the stage's
       // `frame_scope_missing` loop and it is gone; see matter-frame-record.mjs.
+      // RATIFIED FORMS CARRY THEIR OWN IMPERATIVE, for the reason stated above this block: a field
+      // phrased outside one was written 0 of 9 times against 74 of 74 when imperative-carried. Without
+      // this sentence the typed field is never filled, and the floor under the per-form read in
+      // validators.narrative is green because it is inert — which is the exact defect that floor exists
+      // to end, arriving one layer up.
+      //
+      // ONLY WHEN THE CLIENT RATIFIED MORE THAN ONE. The ordinary matter is one name and must stay
+      // free: a seat asked to list forms for a single-form matter will invent a second one, and the
+      // floor would then demand a read of a form nobody bought.
+      `Send \`ratified_forms\` ONLY if the instruction ratifies more than one form of the same name — the name and a variant of it, both to be searched as one matter. Send each form exactly as the client wrote it. Omit the field entirely for an ordinary single-name matter; do not invent a second form.`,
       `You are NOT asked to quote the request's marks, classes, territories or goods back — the driver stamps that section from its own intake record, so it cannot drift from what was asked.`,
       `Do NOT write or edit any file. There is no path for you to write to: the driver renders the frame from what you send, and nothing you hand-write is read.`,
       `When the tool accepts your call, return ONLY a 2-3 line summary of the frame.`,
@@ -2655,7 +2665,7 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1466; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1476; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
@@ -2860,6 +2870,10 @@ export const STAGES = {
         class: "mechanical:code-rendered", tokens: ["intake_ask_unanswered"],
         why: "the driver already code-builds the report's section from the ask_answers register (assembleReportMd · buildAskAnswersSection, named in stages.mjs) — the narrative section is a second authoring of a register the driver renders anyway",
       },
+      "narrative per-form read — each ratified form reasoned through the framework, or the reads stated alike": {
+        class: "judgment", tokens: ["ratified_form_unread"],
+        why: "a client who ratified two forms is choosing between them; which conflicts move between the forms is the read they bought, and the token is a floor on whether the question was answered at all rather than on the reasoning",
+      },
       "narrative coverage prose — how a coverage gap is stated": {
         class: "judgment", tokens: ["coverage_recommendation", "coverage_gap_unexplained"],
         why: "what the run could and could not clear is the lawyer's honest statement; the token polices only the forbidden 'commission a re-run' form",
@@ -2886,7 +2900,7 @@ export const STAGES = {
       },
       "findings[].meters.use.token / meters.enforcer.token — the two strengths with no quadrant axis": {
         class: "judgment", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],
-        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (stages.mjs:1733), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry. [citation unverified]",
+        why: "Judgment, and S1 does not reach them: quadrant plots goods proximity and mark similarity only (stages.mjs, the quadrant element), so nothing derives use (confirmed/not-confirmed/unknown) or enforcer strength. Deriving these from the quadrant would invent a reading the position does not carry.",
       },
       "findings[].meters.mark_similarity.token / meters.goods_proximity.token — the coarse 3-pip restatement of the quadrant position": {
         class: "mechanical:code-assigned", tokens: ["finding_meter_missing", "finding_meter_token_invalid", "finding_meter_unknown"],

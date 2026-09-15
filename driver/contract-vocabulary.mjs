@@ -96,6 +96,7 @@ export const VOCABULARY = [
   { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding_use_check_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "intake_ask_unanswered", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "ratified_form_unread", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "coverage_recommendation", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "coverage_gap_unexplained", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding", stages: ["synthesis"], site: "driver/verify.mjs:704", family: "driver/findings-model.mjs (token-first throws; `finding_*` and `findings_*`)", dynamic: "D2" },
