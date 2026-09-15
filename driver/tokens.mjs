@@ -278,7 +278,8 @@ const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku", "fable"]);   // fable i
 // a company's deployment name, so it is read for the report alone, placed where the family reader places the
 // other three: the whole request, or first in it or after a `/`, with or without `claude-`. So `fable` and a
 // request in a pinned id's spelling (`claude-fable-5-1`) both read fable, and `acme-fable` does not. A turn
-// served as a fable id never reaches this: that id is a Claude model's name and prints as itself.
+// served as a fable id never reaches this: that id is a Claude model's name and prints as itself. A request
+// that names another tier as well reads as that tier (`fable-x/sonnet` is Sonnet): modelFamily is asked first.
 const FABLE_REQUEST_RE = /(?:^|\/)(?:claude-)?fable(?:[-.]|$)/i;
 const requestedTier = (asked) =>
   modelFamily(asked) ?? (FABLE_REQUEST_RE.test(String(resolveModel(asked) ?? "")) ? "fable" : null);
