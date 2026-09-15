@@ -2211,6 +2211,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-json-response-says-how-it-may-be-cached.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "every-lane-declares-its-transport-position.test.mjs": {
           "tests": 7,
           "asserts": 12,
