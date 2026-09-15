@@ -31,8 +31,10 @@ import { reachableCommand } from "../../shared/invocation.mjs";
 import { buildFlagSnapshot, snapshotPath } from "../flag-snapshot.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
+const { BACKGROUND_UNITS } = await import("../../bin/start.mjs");
 const POSIX = ["linux", "darwin"];
 const HERE = dirname(fileURLToPath(import.meta.url));
+const SYSTEMD = join(HERE, "..", "systemd");
 const ONBOARD = join(HERE, "..", "..", "bin", "onboard.mjs");
 const MOCK = join(HERE, "mock-claude.mjs");
 // A PATH holding node and nothing else of this machine's, so doctor's environment is composed from nothing.
@@ -134,12 +136,24 @@ test("doctor's engine-program disagreement says which side could not find it, an
   // PATH, and one direction is a machine the services found the program on.
   const command = "npx clearotron install";
   const unseen = programDisagreement({ capture: "not found", live: "found" }, { command });
-  assert.match(unseen, /recorded it as not found, this machine reads it as found\. A NEW search will refuse while that is true\./);
-  assert.match(unseen, / The services could not find the program when they last started\. Restart them so they look again\. If they still cannot find it, run `npx clearotron install` and let it install the program where they look \(the copy setup installs is found without PATH\), then restart them\.$/);
+  // It opens with what the services recorded when they last started, the only time the capture is written.
+  assert.match(unseen, /^When the services last started they recorded the engine program as not found; this machine reads it as found\. A NEW search will refuse while that is true\./);
+  // Without units, setup is the remedy, and it installs only where this shell finds no program: over one it
+  // finds, it writes that program's full path instead.
+  assert.match(unseen, / Restart them so they look again\. If they still cannot find it, it is not on the PATH they run with: run `npx clearotron install`: it writes the full path of the program this shell finds into Clearotron's settings, or offers to install a copy found without PATH if this shell finds none\. Then restart them\.$/);
+  assert.doesNotMatch(unseen, /let it install the program where they look/, "an install promised where setup would not offer one");
+  // With units, the services read `~/.env`, which setup does not write, so the remedy is the setting there.
+  const units = programDisagreement({ capture: "not found", live: "found" },
+    { command, hosted: true, setting: "CLEAROTRON_CLAUDE_PATH", file: "/srv/clearotron/.env" });
+  assert.match(units, / If they still cannot find it, it is not on the PATH they run with: set CLEAROTRON_CLAUDE_PATH to its full path in \/srv\/clearotron\/\.env, which they read when they start, then restart them\.$/);
+  assert.doesNotMatch(units, /npx clearotron install/, "setup named where what it writes does not reach the services");
   const gone = programDisagreement({ capture: "found", live: "not found" }, { command });
-  assert.match(gone, / The services found the program when they last started, and this shell cannot find it now\. If it was removed, run `npx clearotron install` to install it again \(the copy setup installs is found without PATH\), then restart the services so they look again\.$/);
-  assert.doesNotMatch(gone, /could not find the program/, "the services are said to have missed a program they found");
-  for (const s of [unseen, gone]) assert.doesNotMatch(s, /re-reads its PATH|where the service can see it|the CLI\b/, s);
+  assert.match(gone, /^When the services last started they recorded the engine program as found; this machine reads it as not found\. A NEW search will refuse while that is true\. If the program was removed, run `npx clearotron install` to install it again \(the copy setup installs is found without PATH\), then restart the services so they look again\.$/);
+  assert.doesNotMatch(gone, /could not find|cannot find it/, "the services are said to have missed a program they found");
+  for (const s of [unseen, units, gone]) {
+    assert.doesNotMatch(s, /re-reads its PATH|where the service can see it|the CLI\b/, s);
+    assert.doesNotMatch(s, /last run/, `the capture is written when the services start, not by a run: ${s}`);
+  }
   // Unset, the command is the one the reader can type from here.
   assert.ok(programDisagreement({ capture: "not found", live: "found" }).includes(`\`${reachableCommand("install")}\``));
 });
@@ -147,7 +161,7 @@ test("doctor's engine-program disagreement says which side could not find it, an
 test("doctor prints that disagreement over a capture the services wrote, and nothing over one that agrees", () => {
   // Driven, not read: a real `doctor --check` in a throwaway home whose pool holds a capture written when the
   // services last started, and whose settings file names a program this machine can run.
-  const drive = (binaryPresent) => {
+  const drive = (binaryPresent, { hosted = false } = {}) => {
     const home = mkdtempSync(join(tmpdir(), "advice-capture-"));
     const pool = join(home, "pool");
     mkdirSync(join(pool, "_state"), { recursive: true });
@@ -156,18 +170,28 @@ test("doctor prints that disagreement over a capture the services wrote, and not
     mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
     writeFileSync(join(home, ".config", "clearotron", ".env"),
       ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_CLAUDE_PATH=${MOCK}`, `CLEAROTRON_REPORTS_DIR=${pool}`].join("\n") + "\n");
+    if (hosted) {
+      // The shipped background units, as written, reading `<home>/.env`, which holds no program setting.
+      const unitDir = join(home, ".config", "systemd", "user");
+      mkdirSync(unitDir, { recursive: true });
+      for (const u of BACKGROUND_UNITS) writeFileSync(join(unitDir, u), readFileSync(join(SYSTEMD, u), "utf8"));
+      writeFileSync(join(home, ".env"), ["CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_REPORTS_DIR=${pool}`].join("\n") + "\n");
+    }
     try {
-      return execFileSync(process.execPath, [ONBOARD, "--check"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
-        env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin`, CLEAROTRON_REPORTS_DIR: pool }, {}) });
-    } catch (e) { return `${e.stdout ?? ""}${e.stderr ?? ""}`; }
+      return { home, out: execFileSync(process.execPath, [ONBOARD, "--check"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
+        env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin`, CLEAROTRON_REPORTS_DIR: pool }, {}) }) };
+    } catch (e) { return { home, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
   };
-  const out = drive(false);
-  assert.match(out, /disagree about the engine program: the last run recorded it as not found, this machine reads it as found/, out);
-  assert.match(out, /The services could not find the program when they last started\. Restart them so they look again\. If they still cannot find it, run `[^`]+` and let it install the program where they look \(the copy setup installs is found without PATH\), then restart them\./, out);
-  assert.doesNotMatch(out, /re-reads its PATH/, out);
+  const { out } = drive(false);
+  assert.match(out, /When the services last started they recorded the engine program as not found; this machine reads it as found/, out);
+  assert.match(out, /Restart them so they look again\. If they still cannot find it, it is not on the PATH they run with: run `[^`]+`: it writes the full path of the program this shell finds into Clearotron's settings, or offers to install a copy found without PATH if this shell finds none\. Then restart them\./, out);
+  assert.doesNotMatch(out, /re-reads its PATH|the last run recorded/, out);
+  // With units placed, the services read `<home>/.env`, and that file and the program setting are what is named.
+  const units = drive(false, { hosted: true });
+  assert.match(units.out, new RegExp(`it is not on the PATH they run with: set CLEAROTRON_CLAUDE_PATH to its full path in ${join(units.home, ".env").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}, which they read when they start, then restart them\\.`), units.out);
   // CONTROL: the same machine under a capture that found the program says nothing about it, so the line
   // above came from the capture and not from something else doctor prints.
-  assert.doesNotMatch(drive(true), /disagree about the engine program/);
+  assert.doesNotMatch(drive(true).out, /recorded the engine program as/);
 });
 
 // ── the invocation string every surface prints, and the two prefixes that compose into it ───────────

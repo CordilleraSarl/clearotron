@@ -951,29 +951,41 @@ export function leaveDemoAdvice(engSpec, { platform = process.platform, command 
 /**
  * What doctor says when the engine's capture and this machine disagree about whether the engine's program
  * can be found. `capture` and `live` are the comparison's words, "found" or "not found" (flag-snapshot.mjs,
- * postureDisagreement); `command` is the setup command as the reader can type it from here.
+ * postureDisagreement); `command` is the setup command as the reader can type it from here; `hosted` says
+ * whether the services are systemd units, `setting` names the engine's program setting, and `file` is the
+ * settings file the services read (doctor's serviceEnvFile).
  *
  * THE CAPTURE IS WRITTEN WHEN THE SERVICES START and at no other time: by `clearotron start`, whose children
- * they are, and by the worker unit's ExecStartPost. So "not found" there means the services could not find
- * the program when they last started, and a restart makes them look again. A program this machine finds and
- * they still do not is one they cannot see, and the copy setup installs is the one they find without PATH
- * (resolveEngineProgram: the path setting, then PATH, then that copy, in a folder under the same home).
+ * they are, and by the worker unit's ExecStartPost. So the sentence opens with what they recorded then, and
+ * "not found" means a restart makes them look again.
+ *
+ * A PROGRAM THIS MACHINE FINDS AND THEY STILL DO NOT is not on the PATH they run with, and what gets it to
+ * them depends on which file they read. Without units they are the children of `clearotron start`, which reads
+ * Clearotron's settings file when it starts, so setup is the remedy: it writes the full path of the program
+ * this shell finds there, or, when this shell finds none, offers to install a copy, which is found without
+ * PATH (resolveEngineProgram: the path setting, then PATH, then that copy). It does NOT install over a program
+ * it finds, so the install is not promised on its own. Units read `~/.env` instead, which setup does not
+ * write and `clearotron start --background` only adds names to, so there the remedy is the setting in that file.
  *
  * This used to tell the reader to restart the engine service so it re-read its PATH, or to install the CLI
  * where the service could see it: words from before setup installed the program, given for both directions,
  * and one of them is a machine the services found the program on.
  */
-export function programDisagreement({ capture, live }, { command = reachableCommand("install") } = {}) {
-  const head = `The engine that last ran and this machine disagree about the engine program: the last run `
-    + `recorded it as ${capture}, this machine reads it as ${live}. A NEW search will refuse while that is true.`;
+export function programDisagreement({ capture, live }, { command = reachableCommand("install"), hosted = false,
+  setting = null, file = null } = {}) {
+  const head = `When the services last started they recorded the engine program as ${capture}; this machine `
+    + `reads it as ${live}. A NEW search will refuse while that is true.`;
   if (capture === "not found") {
-    return `${head} The services could not find the program when they last started. Restart them so they look `
-      + `again. If they still cannot find it, run \`${command}\` and let it install the program where they look `
-      + "(the copy setup installs is found without PATH), then restart them.";
+    const remedy = hosted
+      ? `set ${setting ?? "the engine's program setting"} to its full path in ${file ?? "the file they read"}, `
+        + "which they read when they start, then restart them."
+      : `run \`${command}\`: it writes the full path of the program this shell finds into Clearotron's settings, `
+        + "or offers to install a copy found without PATH if this shell finds none. Then restart them.";
+    return `${head} Restart them so they look again. If they still cannot find it, it is not on the PATH they `
+      + `run with: ${remedy}`;
   }
-  return `${head} The services found the program when they last started, and this shell cannot find it now. `
-    + `If it was removed, run \`${command}\` to install it again (the copy setup installs is found without PATH), `
-    + "then restart the services so they look again.";
+  return `${head} If the program was removed, run \`${command}\` to install it again (the copy setup installs is `
+    + "found without PATH), then restart the services so they look again.";
 }
 
 /**
@@ -1746,7 +1758,7 @@ export async function runCheck() {
       // NULL IS NOT AGREEMENT and neither is an empty pool — a box with no capture has nothing to
       // disagree with, and saying so beats printing a clean bill nobody measured.
       const clash = (rows ?? []).find((r) => r.what === "engine program");
-      if (clash) problem(programDisagreement(clash));
+      if (clash) problem(programDisagreement(clash, { hosted, setting: engSpec?.env, file: serviceEnvFile }));
     } catch (e) {
       // WHAT ACTUALLY REACHES THIS CATCH, established by driving it rather than by reading it.
       //
