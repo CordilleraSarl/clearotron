@@ -2005,10 +2005,10 @@ input.filter {
    than faint; the fold below it is the part that keeps the dashboard about what is happening now. */
 .home2-stopped { margin-top: 18px; }
 .home2-stopped-toggle {
-  padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 13px;
-  color: var(--text-muted); text-decoration: underline;
+  padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 13.5px;
+  font-weight: 600; color: var(--text-strong); text-decoration: underline;
 }
-.home2-stopped-toggle:hover { color: var(--text-strong); }
+.home2-stopped-toggle:hover { color: var(--text-accent); }
 .home2-stopped .home2-cards { margin-top: 11px; }
 
 .home2-acked { margin-top: 13px; }
