@@ -36,7 +36,7 @@ export type Result<T> =
   /** 422 with NO classify — mark-batch names collide after kebab-casing. */
   | { kind: 'collision'; errors: string[] }
   /** 409 from the confirmation gate. `message` is one of seven strings; render it as-is. */
-  | { kind: 'gate'; message: string }
+  | { kind: 'gate'; message: string; detail?: RefusalDetail }
   /** 409 from recipe-service via the proxy — an optimistic-concurrency version conflict on save. */
   | { kind: 'conflict'; message: string }
   /**
@@ -1475,6 +1475,20 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       // completed." The server had written three sentences explaining exactly where they were and what
       // to pick instead, and the screen threw them away. `errorsOf` is the reader every other branch
       // here already uses; its own fallback is the last resort rather than the first.
+      // ── A REFUSAL THAT CARRIES A CODE NEVER RENDERS THE CODE ──────────────────────────────────
+      //
+      // The People write routes answer `409 {"error":"local_sign_in"}` — correct refusals on an install
+      // that signs one person in. `errorsOf` falls back to `error`, nothing below matched "version" or
+      // "conflict", and the token became the page copy: a reader pressing Save was shown the word
+      // `local_sign_in` between the sentence describing their change and the button.
+      //
+      // THE FIX IS A FIELD, NOT A BETTER PATTERN. `error` on this server carries a SENTENCE on most
+      // routes and a token on a few — both shapes are live in portal-service.mjs, counted — so no amount
+      // of looking at it can tell a reader's sentence from an internal name, and a second prose match
+      // would fail the same way on the next refusal that is about neither. A `code` field is decidable.
+      // The message beside it is deliberately general: a screen that knows the code composes its own
+      // sentence, and a screen that does not must never fall back to the code.
+      if (refused) return { kind: 'gate', message: 'That could not be done. Nothing was changed.', detail: refused }
       const msg = errorsOf(body)[0] ?? 'This action could not be completed.'
       return /version|conflict/i.test(msg) && !/confirmation|plan again|re-confirm/i.test(msg)
         ? { kind: 'conflict', message: msg }

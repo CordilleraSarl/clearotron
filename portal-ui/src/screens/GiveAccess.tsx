@@ -125,7 +125,12 @@ export function GiveAccess({ ctx }: { readonly ctx: ShellContext }) {
   }
 
   const failure = result && !isOk(result)
-    ? result.kind === 'conflict'
+    // KEYED ON THE CODE. The server refuses this with `local_sign_in`, which matched neither word the
+    // 409 branch looked for, so the token itself was the message. The `conflict` arm below stays for a
+    // proxy's own version clash, which is a different fact.
+    ? result.kind === 'gate' && result.detail?.code === 'local_sign_in'
+      ? 'This Clearotron now signs in one person, so nobody can be added. Nothing was saved.'
+      : result.kind === 'conflict'
       // The one refusal the server names for this route: the install changed to local sign-in since the
       // page loaded, and it cannot hold a second person.
       ? 'This Clearotron now signs in one person, so nobody can be added. Nothing was saved.'

@@ -3198,7 +3198,9 @@ async function connectorDoorKind(url) {
         // as they were, and the answer says which happened. Nobody sets their own switches, and nobody
         // gives Run without holding it.
         if (parts[2] === "people" && parts.length === 3 && method === "POST") {
-          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in", code: "local_sign_in" } };   // CODE AS ITS OWN FIELD. `error` carries a sentence on most routes here and a token on a few, so a
+          // client cannot tell the two apart by looking at it — and the one that reached the page as page copy
+          // was a token. A code the client reads as a FIELD is decidable; prose never is.
           if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
           const email = String(body?.email ?? "").trim().toLowerCase();
           if (!email || email.indexOf("@") <= 0 || email.indexOf("@") !== email.lastIndexOf("@"))
@@ -3257,7 +3259,9 @@ async function connectorDoorKind(url) {
         // refuses the whole act, because a manager who can take their own Manage away can lock the
         // install's last manager out of it with one press, and the way back is a text editor on the box.
         if (parts[2] === "people" && parts[3] === "change" && parts.length === 4 && method === "POST") {
-          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in", code: "local_sign_in" } };   // CODE AS ITS OWN FIELD. `error` carries a sentence on most routes here and a token on a few, so a
+          // client cannot tell the two apart by looking at it — and the one that reached the page as page copy
+          // was a token. A code the client reads as a FIELD is decidable; prose never is.
           if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
           const email = String(body?.email ?? "").trim().toLowerCase();
           if (email === principal.email) return { status: 400, json: { error: "You cannot change your own access. Somebody else who manages this install can." } };
@@ -3322,7 +3326,9 @@ async function connectorDoorKind(url) {
         // — it reads the same `covered` the view computes — but the request carries no scope to get
         // wrong, so a stale page cannot ask for more than the person pressing it can see.
         if (parts[2] === "people" && parts[3] === "remove" && parts.length === 4 && method === "POST") {
-          if (localSignIn) return { status: 409, json: { error: "local_sign_in" } };
+          if (localSignIn) return { status: 409, json: { error: "local_sign_in", code: "local_sign_in" } };   // CODE AS ITS OWN FIELD. `error` carries a sentence on most routes here and a token on a few, so a
+          // client cannot tell the two apart by looking at it — and the one that reached the page as page copy
+          // was a token. A code the client reads as a FIELD is decidable; prose never is.
           if (!writeGrants) return { status: 503, json: { error: "cannot_write_grants" } };
           const email = String(body?.email ?? "").trim().toLowerCase();
           if (email === principal.email) return { status: 400, json: { error: "You cannot remove your own access. Somebody else who manages this install can." } };
