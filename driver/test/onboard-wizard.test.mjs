@@ -988,7 +988,7 @@ test("--check names the MODE on a machine with no engine, and does not send the 
   assert.match(r.out, /MODE: demo/, `--check no longer names the mode:\n${r.out}`);
   assert.match(r.out, /everything works except starting a NEW search/,
     "the demo line stopped saying what DOES work, which is the half a reader is deciding on");
-  assert.match(r.out, /To leave demo: install .+ CLI/, "nothing tells the reader how to leave demo mode");
+  assert.match(r.out, /To leave demo: run `[^`]*clearotron install`/, "nothing tells the reader how to leave demo mode");
 
   // Advice that cannot pay off is noise. With nothing to spawn, --probe-engine answers "there is no
   // usable binary to probe" — so offering it here spends a reader's round trip to be told what they
@@ -1504,13 +1504,17 @@ test("--check names the copy Clearotron installed and its version, and offers no
     const r = run(["--check"], { CLEAROTRON_ENGINES_DIR: root });
     assert.equal(r.code, 0, r.out);
     assert.ok(r.out.includes(`${program} — the copy Clearotron installed, version 9.9.9`), r.out);
+    // The install is offered by setup, and --check sends a reader with no copy there. The npm command
+    // itself is said only by setup's own offer, so --check prints it in neither case.
+    const offersInstall = /To leave demo: run `[^`]*clearotron install`\. It offers to install/;
+    assert.doesNotMatch(r.out, offersInstall, `a copy was found and the reader was still told to install one:\n${r.out}`);
     assert.ok(!r.out.includes(install), `a copy was found and the reader was still told to install one:\n${r.out}`);
-    // THE CONTROL, so both assertions above can fail: with nothing installed, --check says so, and it
-    // does print the vendor's install command.
+    // THE CONTROL, so the assertion above can fail: with nothing installed, --check says so, and it
+    // does send the reader to setup's install.
     const none = run(["--check"]);
     assert.match(none.out, /Clearotron has not installed one/, none.out);
-    assert.ok(none.out.includes(install),
-      `the control never prints the install command, so its absence above proves nothing:\n${none.out}`);
+    assert.match(none.out, offersInstall,
+      `the control never offers the install, so its absence above proves nothing:\n${none.out}`);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

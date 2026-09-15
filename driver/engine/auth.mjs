@@ -77,6 +77,21 @@ export const CLOUD_SECRETS = Object.freeze([
   "ANTHROPIC_FOUNDRY_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "ANTHROPIC_AUTH_TOKEN",
 ]);
 
+// WHAT A READER CHECKS WHEN A CLOUD REFUSES THE CREDENTIALS, per cloud: who refused, by the name a reader
+// knows it by, and the settings and sign-in that decide it. Names only, never a value. The remedy for a
+// subscription, run the program once and sign in, means nothing on a machine that pays through a cloud, and
+// it was the only remedy the checks gave. Every setting named here is on CLOUD_SETTINGS, so doctor and
+// setup's proof turn carry what this tells a reader to check.
+export const CLOUD_CREDENTIAL_CHECK = Object.freeze({
+  vertex: Object.freeze({ who: "Google Cloud",
+    check: "ANTHROPIC_VERTEX_PROJECT_ID, CLOUD_ML_REGION, and the Google sign-in on this machine (gcloud's, or the key GOOGLE_APPLICATION_CREDENTIALS names)" }),
+  foundry: Object.freeze({ who: "Microsoft Azure",
+    check: "ANTHROPIC_FOUNDRY_API_KEY, or the Azure sign-in on this machine, and ANTHROPIC_FOUNDRY_RESOURCE" }),
+  bedrock: Object.freeze({ who: "Amazon Bedrock",
+    check: "AWS_REGION and the AWS credentials on this machine (a profile, an instance role, or AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY)" }),
+  gateway: Object.freeze({ who: "the gateway", check: "ANTHROPIC_BASE_URL and ANTHROPIC_AUTH_TOKEN" }),
+});
+
 export function cloudsSwitchedOn(env = process.env) {
   const on = [];
   if (switchedOn(env.CLAUDE_CODE_USE_VERTEX)) on.push("vertex");

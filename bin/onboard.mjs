@@ -108,7 +108,7 @@ import { entrypointOf } from "../driver/systemd/install-census.mjs";         // 
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
 import { whereSavesGo, storeCommitRefusal, storeInRepo, storeOutsideRepoMessage, resolveStoreRepoRoot } from "../shared/store-in-repo.mjs";   // — doctor says where a portal save goes once it is committed, and why saved searches are off
 import { engineInventory, engineMode, ENGINE_MODES } from "../driver/config-inventory.mjs";   //
-import { probeEngineTurn, probeFailureText, PROBE_TIMEOUT_SEC, engineEnvKeys } from "../driver/engine/probe.mjs";
+import { probeEngineTurn, probeFailureText, PROBE_TIMEOUT_SEC, engineEnvKeys, namingProgram } from "../driver/engine/probe.mjs";
 import { probeCliVersion } from "../driver/engine/cli-version.mjs";   // the engine question reads each program's version the way a run records it
 
 // THE PROVING SENTENCES NAME NO MODEL. They printed the driver's tier word, which is an Anthropic model's
@@ -784,16 +784,31 @@ export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindows
 export { ON_A_WINDOWS_DRIVE };
 
 /**
- * An engine instruction that names its program (`run \`claude\` once…`, `claude setup-token`), rewritten to
- * name the copy that will actually run when that copy is the one Clearotron installed. That copy is not on
- * PATH, so for it the bare word is a command the reader's shell cannot
- * find, at the one step nobody can do for them. Any other copy is on PATH or named by path already, and
- * the text is returned unchanged.
+ * An engine instruction rewritten to name the copy Clearotron installed, which is not on PATH. One copy of
+ * it, in engine/probe.mjs, because the probe's sign-in advice names that copy too; re-exported here.
  */
-export function namingProgram(text, eng, bin) {
-  if (!text || bin?.source !== "installed" || !bin.path) return text;
-  const program = /\s/.test(bin.path) ? `"${bin.path}"` : bin.path;
-  return String(text).replace(new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`, "g"), (_, before) => `${before}${program}`);
+export { namingProgram };
+
+/**
+ * What setup says after a failed proof turn about the step it cannot take for the reader, by how the turn
+ * is paid for (`billing`, the billing word). On a subscription that is the sign-in, naming the copy that runs,
+ * and the route for a machine with no browser; `captureToken` says whether that route's token is offered for
+ * pasting. Under an API key or a cloud account there is nothing to sign in to, and the verdict above names
+ * what to check, so it says how to change what the turn ran on instead. A sign-in the subscription uses
+ * would not be used under either, so no token is offered there.
+ */
+export function signInHandOff(eng, bin, billing) {
+  if (billing === "cloud") return { lines: ["if you fixed the cloud's sign-in on this machine, answer yes below; to change the answers "
+    + "above, answer no and pick the engine again."], captureToken: false };
+  if (billing === "api-key") return { lines: ["to give a different key, answer no below and pick the engine again."], captureToken: false };
+  const lines = [`if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes below.`];
+  // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made on
+  // any machine, so its command keeps the bare word, and this machine's copy is named beside it.
+  if (eng.headless) {
+    lines.push(`on a box with no browser: run \`${eng.headless.tokenEnv ? eng.headless.cmd : namingProgram(eng.headless.cmd, eng, bin)}\``
+      + `${eng.headless.tokenEnv ? ` (from any machine you can sign in on${bin?.source === "installed" ? `; on this one the program is ${bin.path}` : ""})` : " here"}.`);
+  }
+  return { lines, captureToken: Boolean(eng.headless?.tokenEnv) };
 }
 
 /**
@@ -865,18 +880,27 @@ export function platformEngineRefusal({ platform = process.platform } = {}) {
  * On the platform the run door refuses, the standard advice is a loop: install a CLI the reader may
  * already have, then restart a service — neither of which can change the answer, because the refusal
  * is about the platform rather than the program. Naming WSL2 is the only instruction that ends it.
+ *
+ * ELSEWHERE IT NAMES SETUP, WHICH DOES THE WORK NOW. This used to say to install the CLI by hand with
+ * `npm install -g`, then run `claude` to sign in, and to restart the engine service so it re-read its PATH.
+ * Setup offers to install the program itself, into a folder that is not on PATH, so the bare `claude` it
+ * named was a command the reader's shell does not have; and a run finds that copy without re-reading PATH.
+ * What a restart is still for is the settings setup writes: a running service reads them when it starts,
+ * and the portal reports what the engine saw then. No sign-in command is named here: no copy can run in
+ * demo mode, so none can be named, and setup names the one that signs in the copy it proves. `command` is
+ * the setup command as the reader can type it from here.
  */
-export function leaveDemoAdvice(engSpec, { platform = process.platform } = {}) {
+export function leaveDemoAdvice(engSpec, { platform = process.platform, command = reachableCommand("install") } = {}) {
   if (platform === "win32") {
     return [`To leave demo on Windows: run the product under WSL2, or in the devcontainer. Installing `
       + `${engSpec.vendor}'s CLI natively will not change this — the run door refuses on the platform, `
       + "not on the program."];
   }
   return [
-    `To leave demo: install ${engSpec.vendor}'s CLI (\`${engSpec.fallback}\`)`
-      + `${engSpec.install ? ` with \`${engSpec.install}\`` : ""}, then ${engSpec.signIn}.`,
-    "Restart any running engine service afterwards so it re-reads its PATH: the portal reports what the "
-      + "engine saw when it last started, and it will not notice a new install until then.",
+    `To leave demo: run \`${command}\`. It offers to install ${engSpec.vendor}'s CLI if this machine has none, `
+      + "asks how it is paid for, and proves it with one turn; if the CLI is not signed in, it names the command that signs it in.",
+    "If Clearotron's services are already running, restart them afterwards: they read the settings setup writes "
+      + "when they start, and the portal reports what the engine saw when it last started.",
   ];
 }
 
@@ -3649,8 +3673,10 @@ try {
       // — THE HAND-OFF. Signing in is the one step of this sequence nobody here can perform for
       // someone, so the wizard names the command, waits, and re-probes rather than ending at a
       // description of what is wrong. The text comes from ENGINE_BINARIES so the two adapters cannot
-      // drift into one set of instructions.
-      info(`if it is signed out: ${namingProgram(eng.signIn, eng, bin)}, then answer yes below.`);
+      // drift into one set of instructions. BY HOW THE TURN IS PAID FOR (signInHandOff): the sign-in is a
+      // subscription's step, and on a cloud or under a key the verdict above has named what to check.
+      const handOff = signInHandOff(eng, bin, authPick.id);
+      for (const line of handOff.lines) info(line);
       // ── THE HEADLESS ENDING ────────────────────────────────────────────────
       //
       // On a box with no browser the interactive sign-in cannot complete, and the documented route had
@@ -3660,21 +3686,15 @@ try {
       // stream layout is not ours to guess at, and a paste works whatever it prints where. Codex's
       // headless ending writes its own auth file and there is nothing to capture — the command is
       // named, and the re-probe is the proof either way.
-      if (eng.headless) {
-        // Codex's headless sign-in runs HERE, so it names the copy that runs here. Claude's token can be made
-        // on any machine, so its command keeps the bare word, and this machine's copy is named beside it.
-        info(`on a box with no browser: run \`${eng.headless.tokenEnv ? eng.headless.cmd : namingProgram(eng.headless.cmd, eng, bin)}\``
-          + `${eng.headless.tokenEnv ? ` (from any machine you can sign in on${bin.source === "installed" ? `; on this one the program is ${bin.path}` : ""})` : " here"}.`);
-        if (eng.headless.tokenEnv) {
-          // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
-          const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });
-          const tok = answer.value ?? (answer.yes
-            ? await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." }) : null);
-          if (tok !== null) {
-            candidate[eng.headless.tokenEnv] = tok;
-            authEnv[eng.headless.tokenEnv] = tok;   // the re-probe below must prove the lane WITH it
-            info(`${eng.headless.tokenEnv} captured — the turn below proves it before anything is written.`);
-          }
+      if (handOff.captureToken) {
+        // A TOKEN PASTED AT THE YES/NO IS THE ANSWER (confirmOrKey): taken, never shown, not asked for twice.
+        const answer = await confirmOrKey(`Did that give you a token to paste? Capture it into ${eng.headless.tokenEnv} now`, false, { what: "token" });
+        const tok = answer.value ?? (answer.yes
+          ? await askValue(`${eng.headless.tokenEnv}:`, { secret: true, skippable: true, skipped: "Nothing captured." }) : null);
+        if (tok !== null) {
+          candidate[eng.headless.tokenEnv] = tok;
+          authEnv[eng.headless.tokenEnv] = tok;   // the re-probe below must prove the sign-in WITH it
+          info(`${eng.headless.tokenEnv} captured — the turn below proves it before anything is written.`);
         }
       }
       // — found in review, and the same trap closed one prompt over. The default

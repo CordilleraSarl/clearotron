@@ -22,6 +22,8 @@ import { readFileSync } from "node:fs";
 import { whatHoldsPort, stopThatProcess, removeDirectory, chdirPrefix, envPrefix, backgroundManager } from "../../shared/os-advice.mjs";
 import { listenErrorMessage, nextFreePort } from "../../shared/listen.mjs";
 import { platformEngineRefusal, leaveDemoAdvice } from "../../bin/onboard.mjs";
+import { ENGINE_BINARIES } from "../driver.config.mjs";
+import { reachableCommand } from "../../shared/invocation.mjs";
 
 const POSIX = ["linux", "darwin"];
 
@@ -89,11 +91,29 @@ test("the way out of demo mode is the one that can work on that platform", () =>
   assert.doesNotMatch(win[0], /Restart any running engine service/, "and to restart a service that cannot help");
 
   for (const platform of POSIX) {
-    const posix = leaveDemoAdvice(spec, { platform });
+    const posix = leaveDemoAdvice(spec, { platform, command: "npx clearotron install" });
     assert.equal(posix.length, 2, "the POSIX route keeps both of its lines");
-    assert.match(posix[0], /install Anthropic's CLI/);
-    assert.match(posix[1], /Restart any running engine service/);
+    assert.match(posix[0], /^To leave demo: run `npx clearotron install`\. It offers to install Anthropic's CLI/);
+    assert.match(posix[1], /restart them afterwards/);
   }
+});
+
+test("the way out of demo is setup, which installs the program, and names no command the reader's shell lacks", () => {
+  // Setup installs the program into a folder that is not on PATH, so the old advice (install it with
+  // `npm install -g`, then run `claude` to sign in, then restart so the service re-reads its PATH) sent a
+  // reader to a command their shell does not have, and to a restart for a reason that is no longer true.
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    const [first, second] = leaveDemoAdvice(eng, { platform: "linux", command: "npx clearotron install" });
+    assert.match(first, /^To leave demo: run `npx clearotron install`\./, `${id}: the way out is not setup`);
+    assert.match(first, new RegExp(`offers to install ${eng.vendor}'s CLI if this machine has none`), id);
+    assert.doesNotMatch(first, new RegExp(`\`${eng.fallback}[\\s\`]`), `${id}: a bare \`${eng.fallback}\` is named, which setup's copy does not put on PATH`);
+    assert.doesNotMatch(first, /npm install -g/, `${id}: the hand install setup replaced is still offered`);
+    // The restart is said for what it is still for: the settings setup writes, read when a service starts.
+    assert.doesNotMatch(second, /re-reads its PATH|notice a new install/, `${id}: the restart is still justified by PATH`);
+    assert.match(second, /^If Clearotron's services are already running, restart them afterwards: they read the settings setup writes when they start/);
+  }
+  // Unset, the command is the one the reader can type from here.
+  assert.ok(leaveDemoAdvice(ENGINE_BINARIES["anthropic-agent"], { platform: "linux" })[0].includes(`\`${reachableCommand("install")}\``));
 });
 
 // ── the invocation string every surface prints, and the two prefixes that compose into it ───────────

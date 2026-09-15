@@ -27,7 +27,7 @@ import { execFileSync } from "node:child_process";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SECRETS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
-import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting } from "../../bin/onboard.mjs";
+import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting, signInHandOff } from "../../bin/onboard.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -193,6 +193,41 @@ test("an Amazon machine whose keys are only in the settings file is proved by do
   const refused = doctorProves(bare.bin, AMAZON);
   assert.deepEqual(bare.saw(), ["absent"], refused);
   assert.doesNotMatch(refused, /completed a turn/, refused);
+});
+
+test("doctor on an Amazon machine whose credentials are refused names Amazon and what to check, not the subscription's sign-in", () => {
+  const program = amazonProgram(mkdtempSync(join(tmpdir(), "setup-pay-amazon-refused-")));
+  const out = doctorProves(program.bin, AMAZON);
+  assert.deepEqual(program.saw(), ["absent"], out);
+  assert.match(out, /Amazon Bedrock refused the credentials — check AWS_REGION and the AWS credentials on this machine/, out);
+  assert.doesNotMatch(out, /run `claude` once|claude setup-token|is not signed in/, `a cloud machine was given the subscription's sign-in:\n${out}`);
+  // CONTROL: the same refusal on a machine paying by subscription keeps the sign-in advice.
+  const sub = amazonProgram(mkdtempSync(join(tmpdir(), "setup-pay-subscription-refused-")));
+  const signedOut = doctorProves(sub.bin, []);
+  assert.match(signedOut, /anthropic-agent is not signed in — Sign in: run `claude` once in a terminal/, signedOut);
+  assert.doesNotMatch(signedOut, /refused the credentials/, signedOut);
+});
+
+test("after a failed proof turn setup hands off the sign-in only on a subscription, and says how to change the answers otherwise", () => {
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const installed = { source: "installed", path: "/opt/engines/node_modules/@anthropic-ai/claude-code/bin/claude.exe" };
+  const sub = signInHandOff(eng, installed, "subscription");
+  assert.equal(sub.captureToken, true, "the subscription's token route is offered");
+  assert.equal(sub.lines[0], `if it is signed out: run \`${installed.path}\` once in a terminal and complete the sign-in, then answer yes below.`);
+  assert.match(sub.lines[1], /run `claude setup-token` \(from any machine you can sign in on; on this one the program is /);
+  for (const billing of ["cloud", "api-key"]) {
+    const h = signInHandOff(eng, installed, billing);
+    assert.equal(h.captureToken, false, `${billing}: a subscription token is offered where the turn would not use it`);
+    assert.ok(h.lines.length > 0, `${billing}: nothing is said`);
+    for (const l of h.lines) assert.doesNotMatch(l, /signed out|setup-token|once in a terminal/, `${billing}: "${l}" is the subscription's advice`);
+    assert.match(h.lines.join(" "), /answer no below|answer no and pick the engine again/, `${billing}: no way to change what the turn ran on`);
+  }
+  // CONTROL: Codex declares no token to paste, so none is offered even on a subscription.
+  assert.equal(signInHandOff(ENGINE_BINARIES["openai-agent"], null, "subscription").captureToken, false);
+  // Setup prints what this returns and offers the token only when it says so.
+  const src = readFileSync(ONBOARD, "utf8");
+  assert.match(src, /const handOff = signInHandOff\(eng, bin, authPick\.id\);\n\s*for \(const line of handOff\.lines\) info\(line\);/);
+  assert.match(src, /if \(handOff\.captureToken\) \{\n\s*\/\/ A TOKEN PASTED/);
 });
 
 test("where setup shows a cloud setting it wrote, a secret is shown as set and never with its value", () => {

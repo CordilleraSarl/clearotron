@@ -16,17 +16,20 @@
 //      `driver/test/mock-claude.mjs` — the same offline fixture the rest of the engine suite spawns —
 //      and asserts from the mock's call log that the argv came out of `buildClaudeArgs`.
 //
-// No test here resolves a real `claude` or `codex`, and none can: the two that spawn set an absolute
-// CLEAROTRON_CLAUDE_PATH, and everything else injects.
+// No test here spawns a real `claude` or `codex`, and none can: the two that spawn set an absolute
+// CLEAROTRON_CLAUDE_PATH, and everything else injects. The probe also RESOLVES the program, to name the copy
+// that runs in its advice; that reads the filesystem and spawns nothing, and the one test about it puts the
+// copy it resolves in a temporary folder and empties PATH around it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chmodSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
   PROBE_MODEL, PROBE_THINKING, PROBE_PROMPT } from "../engine/probe.mjs";
+import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
@@ -161,6 +164,120 @@ test("signed out: a headless box is told its own route, in the form the engine d
   assert.equal(codex.mode, "signed-out");
   assert.match(codex.fix, /codex login --device-auth/, "a device route is named, to be run on this box");
   assert.doesNotMatch(codex.fix, /set the token it prints/, "and no token variable is invented for an engine that declares none");
+});
+
+// ── THE ADVICE FOLLOWS HOW THE TURN IS PAID FOR ─────────────────────────────────────────────────────────
+//
+// A cloud that refuses the credentials, and a vendor that refuses a key, answer 401 or 403 like a
+// signed-out program, and the only advice was the subscription's: run the program once and sign in. The
+// mode stays `signed-out`, so the run door refuses exactly as before; the words name who refused and what
+// to check, by name and never by value.
+
+const REFUSED = tupleOf({ stderr: "API Error: 401 Unauthorized" });
+const SUBSCRIPTION_ADVICE = /run `claude` once|claude setup-token|is not signed in|Sign in:/;
+
+test("a cloud that refuses the credentials is named, with what to check, and never the subscription's sign-in", () => {
+  const clouds = Object.keys(CLOUD_CREDENTIAL_CHECK);
+  assert.deepEqual(clouds.sort(), ["bedrock", "foundry", "gateway", "vertex"]);
+  for (const cloud of clouds) {
+    const v = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, auth: { mode: "cloud", cloud } });
+    assert.equal(v.mode, "signed-out", `${cloud}: the mode moved, and the run door refuses on the mode`);
+    assert.equal(probeVerdictLane(v), "configuration", `${cloud}: the run door no longer refuses it`);
+    const text = probeFailureText(v);
+    assert.doesNotMatch(text, SUBSCRIPTION_ADVICE, `${cloud}: "${text}" is the subscription's advice`);
+    // Every setting it tells the reader to check is one doctor and setup's proof turn carry.
+    const named = text.match(/\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b/g) ?? [];
+    assert.ok(named.length > 0, `${cloud}: names no setting to check`);
+    for (const n of named) assert.ok(CLOUD_SETTINGS.includes(n), `${cloud}: names ${n}, which the checks do not carry`);
+  }
+  const say = (cloud) => probeFailureText(classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, auth: { mode: "cloud", cloud } }));
+  assert.equal(say("foundry"), "Microsoft Azure refused the credentials — check ANTHROPIC_FOUNDRY_API_KEY, or the Azure sign-in "
+    + "on this machine, and ANTHROPIC_FOUNDRY_RESOURCE, then run this again.");
+  assert.match(say("vertex"), /^Google Cloud refused the credentials — check ANTHROPIC_VERTEX_PROJECT_ID, CLOUD_ML_REGION, and the Google sign-in on this machine \(gcloud's, or the key GOOGLE_APPLICATION_CREDENTIALS names\)/);
+  assert.match(say("bedrock"), /^Amazon Bedrock refused the credentials — check AWS_REGION and the AWS credentials on this machine/);
+  assert.match(say("gateway"), /^The gateway refused the credentials — check ANTHROPIC_BASE_URL and ANTHROPIC_AUTH_TOKEN/);
+
+  // The startup-class shape, inferred from silence, points at the same check on a cloud.
+  const mute = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ signals: { noStreamEvents: true } }), auth: { mode: "cloud", cloud: "foundry" } });
+  assert.equal(mute.mode, "signed-out");
+  assert.equal(mute.basis, "startup-class");
+  assert.match(mute.fix, /start there: check ANTHROPIC_FOUNDRY_API_KEY/);
+  assert.doesNotMatch(mute.fix, SUBSCRIPTION_ADVICE);
+});
+
+test("under an API key the advice is about the key, for either engine", () => {
+  const claude = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, auth: { mode: "api-key" } });
+  assert.equal(claude.mode, "signed-out");
+  assert.equal(probeFailureText(claude), "Anthropic refused the API key — check ANTHROPIC_API_KEY, then run this again.");
+  const codex = classifyProbe({ engine: "openai-agent", tuple: REFUSED, auth: { mode: "api-key" } });
+  assert.equal(probeFailureText(codex), "OpenAI refused the API key — check CODEX_API_KEY, then run this again.");
+});
+
+test("CONTROL: on a subscription the sign-in advice is what it always was", () => {
+  const today = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED });
+  const sub = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, auth: { mode: "subscription" } });
+  assert.equal(sub.fix, today.fix);
+  assert.equal(sub.headline, "anthropic-agent is not signed in");
+  assert.match(sub.fix, /^Sign in: run `claude` once in a terminal and complete the sign-in — or, on a box with no browser, run `claude setup-token`/);
+});
+
+test("the probe advises by the billing mode it resolved, and names a setting it checks, never its value", async () => {
+  const key = "foundry-key-test-not-real";
+  const v = await probeEngineTurn({ loadAdapter: explode, runTurn: async () => REFUSED,
+    env: { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1",
+      ANTHROPIC_FOUNDRY_RESOURCE: "resource-test", ANTHROPIC_FOUNDRY_API_KEY: key } });
+  assert.match(probeFailureText(v), /^Microsoft Azure refused the credentials — check ANTHROPIC_FOUNDRY_API_KEY/);
+  assert.ok(!JSON.stringify(v).includes(key), "the verdict carries the key's value");
+  // CONTROL: the same refusal under the default billing mode is the subscription's.
+  const sub = await probeEngineTurn({ loadAdapter: explode, runTurn: async () => REFUSED, env: { CLEAROTRON_AI: "anthropic-agent" } });
+  assert.match(probeFailureText(sub), /is not signed in — Sign in: run `claude` once/);
+});
+
+// ── THE ADVICE NAMES THE COPY THAT RUNS ──────────────────────────────────────────────────────────────
+//
+// The copy setup installs is not on PATH, so "run `claude` once" is a command the reader's shell cannot
+// find on exactly the machines setup set up. Any other copy is reachable as named, and the text stays.
+
+test("the sign-in advice names the copy Clearotron installed, and only that copy", () => {
+  const installed = { source: "installed", path: "/opt/engines/node_modules/@anthropic-ai/claude-code/bin/claude.exe" };
+  const v = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, program: installed });
+  assert.match(v.fix, new RegExp(`^Sign in: run \`${installed.path.replace(/[.]/g, "\\.")}\` once in a terminal`));
+  assert.doesNotMatch(v.fix, /run `claude` once/, "the bare word survived for a copy that is not on PATH");
+  // The token route runs on any machine, so it keeps the bare word and names this machine's copy beside it.
+  assert.ok(v.fix.includes(`run \`claude setup-token\` on any machine you can sign in on (on this one, \`${installed.path} setup-token\`)`), v.fix);
+  const mute = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ signals: { noStreamEvents: true } }), program: installed });
+  assert.ok(mute.fix.includes(`run \`${installed.path}\` once`), mute.fix);
+  // Codex's device route runs here, so it names the copy that runs here.
+  const codex = classifyProbe({ engine: "openai-agent", tuple: REFUSED, program: { source: "installed", path: "/opt/engines/codex" } });
+  assert.ok(codex.fix.includes("run `/opt/engines/codex login --device-auth` here"), codex.fix);
+  // CONTROL: a copy on PATH, or named by its setting, is reachable as named.
+  const today = classifyProbe({ engine: "anthropic-agent", tuple: REFUSED }).fix;
+  for (const source of ["path", "explicit"])
+    assert.equal(classifyProbe({ engine: "anthropic-agent", tuple: REFUSED, program: { source, path: "/usr/local/bin/claude" } }).fix, today, source);
+});
+
+test("the probe finds the copy that runs the way the adapter does, and names the installed one", async () => {
+  const engines = mkdtempSync(join(tmpdir(), "probe-installed-"));
+  const spec = ENGINE_BINARIES["anthropic-agent"];
+  const dir = join(engines, "node_modules", ...spec.package.split("/"));
+  mkdirSync(join(dir, "bin"), { recursive: true });
+  writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version: "9.9.9", bin: { claude: "bin/claude.exe" } }));
+  const program = join(dir, "bin", "claude.exe");
+  writeFileSync(program, "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+  const saved = { PATH: process.env.PATH, CLEAROTRON_ENGINES_DIR: process.env.CLEAROTRON_ENGINES_DIR };
+  // An empty PATH, so no copy of the machine's own can be the one resolved.
+  process.env.PATH = mkdtempSync(join(tmpdir(), "probe-empty-path-"));
+  process.env.CLEAROTRON_ENGINES_DIR = engines;
+  try {
+    const v = await probeEngineTurn({ loadAdapter: explode, runTurn: async () => REFUSED, env: { CLEAROTRON_AI: "anthropic-agent" } });
+    assert.ok(v.fix.includes(`run \`${program}\` once`), v.fix);
+    // CONTROL: with nothing installed the resolver finds nothing, and the advice names the bare word.
+    process.env.CLEAROTRON_ENGINES_DIR = mkdtempSync(join(tmpdir(), "probe-no-installed-"));
+    const bare = await probeEngineTurn({ loadAdapter: explode, runTurn: async () => REFUSED, env: { CLEAROTRON_AI: "anthropic-agent" } });
+    assert.match(bare.fix, /run `claude` once/);
+  } finally {
+    for (const [k, val] of Object.entries(saved)) if (val === undefined) delete process.env[k]; else process.env[k] = val;
+  }
 });
 
 test("no quota: the reset TIME is the message, and where it came from is on the record", () => {
