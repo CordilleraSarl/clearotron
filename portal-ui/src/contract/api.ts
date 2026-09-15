@@ -2423,7 +2423,7 @@ export const api = {
                       const raw = bill['reason']
                       const r = typeof raw === 'object' && !Array.isArray(raw) ? asRecord(raw) : {}
                       return {
-                        kind: asString(r['kind']) ?? 'other',
+                        kind: asString(r['kind']) ?? 'unclassified',
                         mode: asString(r['mode']),
                         defaulted: r['defaulted'] === true,
                         setting: asString(r['setting']) ?? '',

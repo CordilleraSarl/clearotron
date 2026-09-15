@@ -163,7 +163,9 @@ export function cloudName(cloud) {
  *   cloud-on-codex      cloud, on the Codex engine, which a cloud account cannot pay for (`engineSetting`
  *                       and `engineChoice` name the Claude engine only where it would pay: one cloud
  *                       switched on, or none and a gateway address; otherwise that move is one more refusal)
- *   other               a refusal this list does not name; the page says only that searches are refused
+ *   unclassified        a refusal this list does not name; the page says only that searches are refused.
+ *                       Not "other": that is an assistant's id in connect-clients.mjs, and a surface may
+ *                       not name one in code
  *
  * `defaulted` says the billing setting is blank, so `subscription` is the default and not a word anybody
  * wrote: a page that said "payment is set to subscription" would send a reader looking for a line their
@@ -202,7 +204,7 @@ export function billingRefusalReason(id, env = process.env) {
     }
     if (!BILLING_MODES.includes(mode)) return { ...base, kind: "not-a-mode", modes: [...BILLING_MODES] };
   }
-  return { ...base, kind: "other", mode: BILLING_MODES.includes(mode) ? mode : null };
+  return { ...base, kind: "unclassified", mode: BILLING_MODES.includes(mode) ? mode : null };
 }
 
 /**
