@@ -15,7 +15,7 @@ after §5 is needed to produce a report.
 
 | | Sections | For |
 |---|---|---|
-| **Installing** | §1 Prerequisites · §2 Install · §3 Configuration · §3a Free register route · §4 Config store · §5 Run a clearance | Anyone |
+| **Installing** | §1 Prerequisites · §2 Install · §3 Configuration · §3a Free register route · §3b Paying through a cloud account · §4 Config store · §5 Run a clearance | Anyone |
 | **Operating** | §6 `npx clearotron start` · §7 The MCP server · §8 Access control and isolation | Running it as a service for other people |
 | **Reference** | §9 What an integrator supplies · §10 Licence | — |
 
@@ -46,9 +46,10 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   `ERR_UNKNOWN_BUILTIN_MODULE`, saying nothing about Node. `package.json` declares the floor, the
   install refuses below it before writing anything, and `nvm use` picks the pin up.
 - **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
-  demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine resolves
-  the reasoning CLI the POSIX way, so a native-Windows clearance refuses at preflight even with the CLI
-  on `PATH`. Native Windows clearances are planned for a later release. Until then, on Windows,
+  demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine spawns
+  each stage with POSIX path and process semantics, so on native Windows the run door refuses before it
+  reads `PATH`, even with the program installed. Native Windows clearances are planned for a later
+  release. Until then, on Windows,
   `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
   from **inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no
   curl and no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node at all, and
@@ -59,9 +60,7 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   sudo apt update && sudo apt install -y curl
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
   . "$HOME/.nvm/nvm.sh" && nvm install 22    # 22.13 or newer, per the floor above
-  npm install -g @anthropic-ai/claude-code
-  claude                              # once, interactively, to sign in
-  npx clearotron install
+  npx clearotron install  # installs the reasoning program if the machine has none, and shows you how to sign it in
   ```
 
   Run from `npx`, the install first installs Clearotron under `~/.local`, as `npm install -g --prefix
@@ -75,31 +74,28 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
 
   A *hosted* deployment needs Linux for one further thing, the systemd outbox trigger —
   [driver/systemd/README.md](driver/systemd/README.md).
-- **A reasoning CLI on your `PATH`, signed in.** This is the prerequisite people miss. Every stage runs
-  as a headless turn of a third-party binary, and `CLEAROTRON_AI` picks which one for the whole install.
-  An API key is not a substitute for the binary — it decides what the child process is handed, not
-  whether one is spawned.
+- **Setup installs the reasoning program.** Clearotron runs each step of a clearance as a short,
+  unattended session of Claude Code or the Codex CLI. Setup installs the one your engine uses, for this
+  machine, when you say yes. A copy already on the machine is used instead and keeps updating itself.
 
-  **Install one first.** The sign-in table below assumes the binary is already on the box; these are the
-  same commands the installer offers when it asks you, so nothing here is new advice.
+  **Sign in, or give it a key.** Sign in once with a Claude subscription (Pro, Max or Team), paste an
+  Anthropic API key, or point it at the Google, Microsoft or Amazon cloud account that already bills you
+  for AI. A key or a cloud account skips the sign-in. Hosting Clearotron for other organisations requires
+  a key or a cloud account.
 
-  | `CLEAROTRON_AI` | Binary | Install it with |
-  |---|---|---|
-  | `anthropic-agent` (default) | `claude` | `npm install -g @anthropic-ai/claude-code` |
-  | `openai-agent` | `codex` | `npm install -g @openai/codex` |
+  **Models follow the vendor.** Each step asks for a tier, opus, sonnet or haiku, and the vendor answers
+  with its newest model of that tier. Every report names the model that ran. To hold a tier at one
+  version, set the vendor's pin, `ANTHROPIC_DEFAULT_OPUS_MODEL` and siblings.
 
-  **If npm's global prefix needs root and you do not have it**, the `claude` CLI has a second route —
-  `curl -fsSL https://claude.ai/install.sh | bash`, which lands in `~/.local/bin` and prints its own
-  `PATH` advice. Run it by your own hand: this product will not execute a piped remote script for you,
-  because a command it runs on your box has to be one you can read in full before you answer. There is
-  no vendor shell installer for `codex`; on a root-only prefix, move npm's prefix instead.
+  `CLEAROTRON_AI` picks the program for the whole install. A key or a cloud account is not a substitute
+  for the program: it decides what the program is handed, not whether it runs.
 
-  Then sign it in:
+  To sign in:
 
-  | `CLEAROTRON_AI` | Binary | Signed-in laptop | A box you cannot complete a sign-in on |
+  | `CLEAROTRON_AI` | Program | Signed-in laptop | A machine you cannot complete a sign-in on |
   |---|---|---|---|
-  | `anthropic-agent` (default) | `claude` | `claude` OAuth login — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
-  | `openai-agent` | `codex` | `codex login` | `codex login --device-auth` — prints a code you complete on another device |
+  | `anthropic-agent` (default) | `claude` | run the program setup installed (doctor prints its path), or `claude` if the machine has its own, once — rides your subscription | `claude setup-token` once anywhere you *can* log in, then put it on the server as `CLAUDE_CODE_OAUTH_TOKEN` |
+  | `openai-agent` | `codex` | `login` on the program setup installed (doctor prints its path), or `codex login` if the machine has its own | `codex login --device-auth` — prints a code you complete on another device |
 
   **The right-hand column is about where you can complete a sign-in, not about whether the box has a
   screen.** A server you can reach a browser from takes the left-hand route perfectly well; a laptop
@@ -113,15 +109,12 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   spread of the driver's — and that inheritance is the whole mechanism.
 
   Both stay on the subscription. Reach for `CLEAROTRON_AI_BILLING=api-key` (plus `ANTHROPIC_API_KEY` or
-  `CODEX_API_KEY`) only when metered billing is what you want.
+  `CODEX_API_KEY`) only when metered billing is what you want, or for `CLEAROTRON_AI_BILLING=cloud` to
+  pay for Claude through your own Google Cloud, Microsoft Azure or Amazon Bedrock account (§3b).
 
   **Installed is not usable.** `npx clearotron install` proves the engine can complete a turn before it
   writes anything, and `npx clearotron doctor --probe-engine` re-proves it on a configured box. Both
   spend one cheap turn; plain `doctor` spends nothing.
-
-  **Models follow the vendor.** Each step asks for a tier, opus, sonnet or haiku, and the vendor answers
-  with its newest model of that tier. Every report names the model that ran. To hold a tier at one
-  version, set the vendor's pin, `ANTHROPIC_DEFAULT_OPUS_MODEL` and siblings.
 - **A register credential**, and **`PERPLEXITY_API_KEY`**. Both are required for a real run and both
   fail closed at preflight — before a stage has spent, never at the grid after. The one exception is a
   Knockout search, which runs keyless: it returns register filing counts and states on the report that
@@ -420,12 +413,12 @@ Only the integrator-set knobs are shown — copy what you need:
 ```sh
 # ── Reasoning engine (LLM) ─────────────────────────────────────────────
 CLEAROTRON_AI=anthropic-agent            # headless `claude -p`
-CLEAROTRON_CLAUDE_PATH=claude             # path to the Claude CLI (default: `claude` on PATH)
-CLEAROTRON_AI_BILLING=subscription       # `subscription` (OAuth, default) | `api-key`
+# CLEAROTRON_CLAUDE_PATH=                # only to force one copy (default: `claude` on PATH, then the copy setup installed)
+CLEAROTRON_AI_BILLING=subscription       # `subscription` (OAuth, default) | `api-key` | `cloud` (§3b)
 # ANTHROPIC_API_KEY=sk-ant-...           # only when CLEAROTRON_AI_BILLING=api-key
 # ANTHROPIC_DEFAULT_OPUS_MODEL=...       # optional: hold the opus tier at one model (and _SONNET_, _HAIKU_)
 # CLEAROTRON_AI=openai-agent             # …or the second adapter: headless `codex exec`
-# CLEAROTRON_CODEX_PATH=codex              # path to the codex CLI (default: `codex` on PATH)
+# CLEAROTRON_CODEX_PATH=                 # only to force one copy (default: `codex` on PATH, then the copy setup installed)
 
 # ── Where this install keeps its data ──────────────────────────────────
 # REQUIRED. CLEAROTRON_REPORTS_DIR has NO default: unset, a run refuses and names it.
@@ -520,6 +513,61 @@ credentials are in, and the US office rides as a deferred coverage row until the
 **Nothing schedules the sync for you.** The daily refresh, the systemd and cron recipes, and the
 staleness thresholds that decide when an index is too old to trust are in
 [providers/uspto-local/README.md](providers/uspto-local/README.md).
+
+## 3b. Paying for Claude through your cloud account
+
+Set `CLEAROTRON_AI_BILLING=cloud` and the lines for your cloud below. The Claude program still has to be
+installed (§1): it is what talks to the cloud. Clearotron checks that exactly one cloud is switched on,
+refuses to start otherwise, and records on every run which cloud account paid for it. Codex does not run
+through a cloud account.
+
+Tested on Microsoft Azure. For Google Cloud and Amazon Bedrock these are the Claude program's own
+settings, as its documentation gives them.
+
+**Microsoft Azure (Foundry)**
+
+```sh
+CLEAROTRON_AI_BILLING=cloud
+CLAUDE_CODE_USE_FOUNDRY=1
+ANTHROPIC_FOUNDRY_RESOURCE=<your Foundry resource name>
+ANTHROPIC_FOUNDRY_API_KEY=<its key>              # or leave unset to use an Azure sign-in already on the machine
+ANTHROPIC_DEFAULT_OPUS_MODEL=<your Opus deployment name>
+ANTHROPIC_DEFAULT_SONNET_MODEL=<your Sonnet deployment name>
+ANTHROPIC_DEFAULT_HAIKU_MODEL=<your Haiku deployment name>
+```
+
+Foundry calls each model by the name of your deployment, so set the three to your deployment names. A tier
+whose deployment does not exist is refused by Azure, and the run stops and names it.
+
+**Google Cloud (Vertex AI)**
+
+```sh
+CLEAROTRON_AI_BILLING=cloud
+CLAUDE_CODE_USE_VERTEX=1
+ANTHROPIC_VERTEX_PROJECT_ID=<your project id>
+CLOUD_ML_REGION=global                            # or the region your Claude quota is in
+GOOGLE_APPLICATION_CREDENTIALS=<path to a service-account key>   # or a gcloud sign-in already on the machine
+```
+
+**Amazon Bedrock (not yet tested)**
+
+```sh
+CLEAROTRON_AI_BILLING=cloud
+CLAUDE_CODE_USE_BEDROCK=1
+AWS_REGION=<the region your Claude models are enabled in>
+```
+
+Bedrock uses whatever AWS credentials the machine already has: a profile, an instance role, or the
+standard AWS key variables, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` (with `AWS_SESSION_TOKEN` for
+temporary credentials).
+
+On Google Cloud and Bedrock, set `ANTHROPIC_DEFAULT_OPUS_MODEL`, `_SONNET_` and `_HAIKU_` to the model
+ids your account offers if the program does not pick up the newest ones by itself.
+
+**Through a gateway.** If your organisation puts its own proxy in front of a cloud, set
+`CLEAROTRON_AI_BILLING=cloud`, `ANTHROPIC_BASE_URL` to the gateway and `ANTHROPIC_AUTH_TOKEN` to its
+token. Under `cloud`, Clearotron removes `ANTHROPIC_API_KEY` from every step, so the gateway's credential
+has to be the token.
 
 ## 4. The config-store model
 
@@ -1120,6 +1168,10 @@ infer it from an install step. The operational side — issuing and rotating gra
 
 What belongs here is only what you set at install time.
 
+**Serving other organisations.** An instance that runs searches for organisations other than your own
+bills Claude through an API key or a cloud account, never a Claude subscription, as Anthropic's terms
+require.
+
 **The guest list.** `CLEAROTRON_ACCESS_FILE` turns account scoping on for **every face at once** — the
 portal, the MCP read face, and the client connector. `npx clearotron start` (§6) writes one into its
 state directory the first time it runs: you, with access to everything, your organisation if setup was
@@ -1326,10 +1378,11 @@ About page, the MCP server's `server_info`, and `npx clearotron start --license`
 **Everything §1 told you to bring is outside it.** Read this before you count the licence as your
 answer on any of them:
 
-- **The reasoning CLI is proprietary third-party software.** Every reasoning stage spawns the Claude
-  CLI or the Codex CLI as a child process. You install it and sign in to it, and your use is governed
-  by that vendor's terms. AGPL-3.0 grants you nothing over it, and this repository redistributes no
-  part of it.
+- **The reasoning program is third-party software.** Claude Code is proprietary, under Anthropic's
+  terms; the Codex CLI is open source, under the licence OpenAI publishes with it. Every reasoning stage
+  spawns one of them as a child process. Setup installs it when you say yes and you sign in to it, and
+  your use is governed by that vendor's terms. AGPL-3.0 grants you nothing over it, and this repository
+  redistributes no part of it.
 - **Register and research providers are your own agreements.** EUIPO, the USPTO bulk product,
   `PERPLEXITY_API_KEY`, CourtListener, and the subscription registers (Clarivate, Signa, Corsearch)
   each sit on terms you accept directly with that provider. The adapters in `providers/` are ours and
