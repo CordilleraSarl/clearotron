@@ -236,11 +236,17 @@ test("corruption 3: modelFamily is three-valued — an unknown id is UNKNOWN, ne
   // `modelFamily("fable") === null`, on the rationale that fable's wire id was unprobed, so an unknown could
   // never manufacture a mismatch. The report's model line needs the tier of a fable turn served under a
   // company's deployment name, and a fable turn served as `claude-fable-5-1` must compare as the same family.
-  // Only ids the pattern places move; a name that merely contains the word still reads null.
+  // Only ids the pattern places move; a name with the word further in still reads null.
   assert.equal(CFG.modelFamily("fable"), "fable");
   assert.equal(CFG.modelFamily("claude-fable-5-1"), "fable", "a served fable id is the same family as the alias that asked for it");
   assert.equal(CFG.modelFamily("anthropic/claude-fable-5-1"), "fable");
-  assert.equal(CFG.modelFamily("acme-fable-a"), null, "a deployment name that only contains the word is still unknown");
+  assert.equal(CFG.modelFamily("acme-fable-a"), null, "a deployment name with the word further in is still unknown");
+  // A NAME THAT BEGINS WITH THE WORD IS PLACED, as a name that begins with any other tier always was. The
+  // opus control is not new: it read opus before fable was a family, and it is why fable is placed the same
+  // way rather than being the one tier that differs.
+  assert.equal(CFG.modelFamily("fable-prod"), "fable", "a deployment name that begins with the word reads fable");
+  assert.equal(CFG.modelFamily("prod/fable"), "fable", "the word after a slash reads fable");
+  assert.equal(CFG.modelFamily("opus-prod"), "opus", "control: a name that begins with another tier has always been placed");
 });
 
 // The runStage harness: one stage turn against the mock claude, returning the journalled attempt rows.
@@ -318,6 +324,25 @@ test("corruption 3: a fable request served as a fable id agrees, under a deploym
   assert.equal(swapped.r.ok, false, "a fable request served by Sonnet was accepted");
   assert.match(swapped.r.fail, /^model_mismatch:fable->sonnet$/, `the failure names both sides: ${swapped.r.fail}`);
   assert.equal(swapped.rows.length, 1, "a mismatch breaks the ladder on the first attempt");
+});
+
+test("corruption 3: since fable is a family, an unknown becomes a refusal both ways, deployment names included", async () => {
+  // Each of these compared as UNKNOWN while fable was placed nowhere, and each turn ran. They are held here so
+  // the change is stated in full rather than by its one friendliest example. The other direction: a tier's
+  // request served by a fable id. And the deployment-name class: a name that begins with a tier is placed as
+  // that tier, as it always was for opus, sonnet and haiku, so a Fable deployment named after another tier is
+  // refused, and so is another tier's deployment named after fable.
+  for (const [model, wire, fail] of [
+    ["opus", "claude-fable-5-1", "model_mismatch:opus->fable"],
+    ["fable", "opus-deployment", "model_mismatch:fable->opus"],
+    ["opus", "fable-prod", "model_mismatch:opus->fable"],
+  ]) {
+    const { r, rows } = await oneTurn({ model, wire });
+    assert.equal(r.ok, false, `a ${model} request served as ${wire} was accepted`);
+    assert.equal(r.fail, fail, `the failure names both sides for ${model} served as ${wire}`);
+    assert.equal(rows.length, 1, `a mismatch breaks the ladder on the first attempt (${model} served as ${wire})`);
+    assert.equal(rows.at(-1).modelMismatch, true, `${model} served as ${wire} is recorded as a mismatch`);
+  }
 });
 
 test("corruption 3 zero semantics: a wire that reports NO model records `unknown`, never the alias", async () => {

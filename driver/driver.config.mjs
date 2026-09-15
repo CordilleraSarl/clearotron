@@ -663,10 +663,13 @@ export function resolveModel(model) {
 // FABLE IS READ AS A FAMILY TOO (2026-09-15). It was left out while nobody had seen what the wire reports for
 // a fable turn, on the rationale that an unprobed id must stay unknown. The report's model line needs the tier
 // of a fable turn served under a company's deployment name, and a fable request served as `claude-fable-5-1`
-// must compare as the same family. Only an id this pattern matches moves from null to "fable": `fable`,
-// `claude-fable-…`, `anthropic/claude-fable-…`. A deployment name that merely contains the word
-// (`acme-fable-a`) still reads null, so its comparison stays unknown. A fable request served by another
-// tier's model now compares as a mismatch and is refused, which is the substitution the check exists for.
+// must compare as the same family. The word is placed where the other three are: as the whole id, or first
+// in it or after a `/`, with or without `claude-`. So `fable`, `claude-fable-…` and `anthropic/claude-fable-…`
+// read fable, and so does a deployment name that begins with it (`fable-prod`, `prod/fable`), as `opus-prod`
+// has always read opus. Only a name with the word further in (`acme-fable-a`) still reads null. BOTH WAYS a
+// comparison that was unknown can now be a mismatch and refuse the turn: a fable request served by another
+// tier's id or a name that begins with another tier (`claude-sonnet-5`, `opus-prod`), and another tier's
+// request served by a fable id or a name that begins with the word (`claude-fable-5-1`, `fable-prod`).
 const MODEL_FAMILY_RE = /(?:^|\/)(?:claude-)?(opus|sonnet|haiku|fable)(?:[-.]|$)/i;
 
 // — THE OPENAI SIDE, added when the codex path could first answer "what ran".
