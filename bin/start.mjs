@@ -86,6 +86,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 // the driver must not point at `bin/`.
 import { runRequiredNames, missingRequirements } from "../driver/run-requirements.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
+import { unitEnvironment, unitValue } from "../driver/unit-environment.mjs";   // the PATH the worker unit will run with, read the way doctor reads it
 
 /**
  * The tables the requirements authority needs — resolved at CALL time, never at module scope.
@@ -1726,6 +1727,25 @@ if (isMain) {
             + `its own, so that is the address. \`${invoke("install")}\` writes them for you IN A TERMINAL.`;
       };
       const willRead = { ...already, ...union };
+      // ── AND THE PATH THE WORKER WILL SEARCH FOR THE ENGINE'S PROGRAM ─────────────────────────────
+      //
+      // The check asks the engine resolver, and a resolver handed no PATH finds only a path setting or
+      // the copy setup installed. So a `claude` on the units' PATH was announced as "every run is
+      // refused", and the run found it and ran. The PATH is the worker unit's own, read from the file
+      // placed below: the worker runs the clearance, and every shipped unit sets
+      // `Environment=PATH=%h/…`, which the unit reader expands to this home. Never this shell's PATH,
+      // which the units do not inherit.
+      //
+      // The env file reads as empty on purpose: its lines are `already` and `union` above. Only the
+      // unit's own assignments are asked for, and in every shipped unit `Environment=` follows
+      // `EnvironmentFile=`, so its PATH wins over one in the file, as it does here.
+      {
+        let text = null;
+        try { text = readFileSync(join(REPO, "driver", "systemd", "clearotron-worker.service"), "utf8"); } catch { /* the install loop below names a missing unit */ }
+        const workerPath = unitValue(unitEnvironment({ units: [{ name: "clearotron-worker.service", text }],
+          readEnvFile: () => "", home: homedir() }), "PATH").value;
+        if (workerPath) willRead.PATH = workerPath;
+      }
       const miss = missingRequirements(willRead, RUN_TABLES);
       // ── — WHICH HALF OF `blocking` MAY REFUSE A START ─────────────────────────
       //

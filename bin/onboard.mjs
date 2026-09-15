@@ -2286,6 +2286,14 @@ export async function runCheck() {
     const fill = (names) => { for (const n of names) { const e = effectiveForService(n); if (e) view[n] = e.v; } };
     fill([REGISTER_ENV, ENGINE_ENV]);
     fill(runRequiredNames(view, tables));
+    // AND THE PATH THE SERVICES SEARCH, so the engine's program is looked for where a run looks for it.
+    // The view held the settings and no PATH, so a `claude` on the services' PATH, with no path setting and
+    // no copy installed by setup, was reported as a search refused while the run found it and ran. On a
+    // machine with units that PATH is the units' own (every unit sets it, with `%h` for the home, which the
+    // unit reader expands); never this shell's, which the units do not inherit. With no units, the
+    // services are the children of `clearotron start`, which inherit the PATH of the shell it runs in.
+    const servicesPath = hosted ? unitValue(unitEnv, "PATH").value : process.env.PATH;
+    if (servicesPath) view.PATH = servicesPath;
     const { atOrder } = missingRequirements(view, tables);
     if (atOrder.length) {
       blocking(`a search is refused until ${atOrder.length === 1 ? "this is" : "these are"} set in ${serviceEnvLabel}: ${atOrder.map((r) => r.name).join(", ")}`);

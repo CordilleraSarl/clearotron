@@ -68,7 +68,8 @@ function expandSpecifiers(raw, home) {
  *
  * @param {string} unitText            the unit file's contents
  * @param {(path: string) => string|null} readEnvFile  returns the file's text, or null if unreadable
- * @returns {{env: Object, missing: string[]}}  `missing` names REQUIRED files that could not be read
+ * @returns {{env: Object, missing: string[]}}  `missing` names REQUIRED files that could not be read, and
+ *   assignments whose value carries a specifier that could not be expanded
  */
 function applyUnit(unitText, readEnvFile, home) {
   const env = {};
@@ -76,11 +77,22 @@ function applyUnit(unitText, readEnvFile, home) {
   for (const raw of String(unitText ?? "").split("\n")) {
     const line = raw.trim();
     // `Environment=` may carry several assignments on one line; systemd splits on whitespace.
+    //
+    // ITS VALUES ARE EXPANDED TOO, by the same rule as a file path. Every shipped unit writes
+    // `Environment=PATH=%h/.local/bin:%h/.npm-global/bin:…`, and systemd hands the service that PATH with
+    // the home filled in. Passed through as written, it named a folder called `%h/.local/bin` that exists
+    // nowhere, so a check that looked for the engine's program on the units' PATH found nothing on a
+    // machine whose searches found it and ran. A value that cannot be expanded is a hole in the picture,
+    // for the reason the file branch below gives: a literal `%h` answers "absent" for a reader that
+    // failed.
     const direct = /^Environment=(.*)$/.exec(line);
     if (direct) {
       for (const pair of direct[1].trim().split(/\s+/)) {
         const m = /^"?([A-Za-z_][A-Za-z0-9_]*)=(.*?)"?$/.exec(pair);
-        if (m) env[m[1]] = m[2];
+        if (!m) continue;
+        const value = expandSpecifiers(m[2], home);
+        if (value.unresolved !== undefined) missing.push(`${m[1]}=${value.unresolved} (unresolved systemd specifier)`);
+        else env[m[1]] = value.path;
       }
       continue;
     }
@@ -143,7 +155,7 @@ export function unitEnvironment({ units = [], readEnvFile = () => null, home = n
     // name we did not find might live in it — and reporting those as absent would be the original bug
     // with a smaller blast radius. The whole picture is refused instead.
     return { known: false, env, read,
-      why: `the units require environment file(s) this command could not read: ${[...new Set(holes)].join(", ")}` };
+      why: `the units require environment file(s) or values this command could not read: ${[...new Set(holes)].join(", ")}` };
   }
   return { known: true, env, read, why: null };
 }
