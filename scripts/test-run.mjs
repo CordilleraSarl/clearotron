@@ -626,6 +626,16 @@ if (String(process.env[REAL_ENGINE_OVERRIDE] ?? "").trim()) {
     catch { copyFileSync(ENGINE_STUB, p); chmodSync(p, 0o755); }
   }
   process.env.PATH = shimDir + delimiter + (process.env.PATH ?? "");
+  // AND THE COPY CLEAROTRON INSTALLED, which no PATH can close. The resolver's last step
+  // (driver.config.mjs resolveEngineProgram) reads the engines folder under the home directory, where
+  // setup installs `@anthropic-ai/claude-code` or `@openai/codex`, never PATH, and on a developer's machine
+  // that folder can hold a REAL program. The shim above answers every child that keeps this PATH, because
+  // PATH is asked first; a child that composes its own PATH would fall straight through to a real binary.
+  // So the folder is pointed at an EMPTY directory for the whole suite: the suite keeps the no-installed-
+  // copy world it was written for, and an arm about the installed copy plants its own folder and names it.
+  const noEngines = join(root, "no-installed-engines");
+  mkdirSync(noEngines, { recursive: true });
+  process.env.CLEAROTRON_ENGINES_DIR = noEngines;
   // Names, never values — this line is read by whoever is wondering why a credential-reading test skipped.
   const withheld = Object.keys(process.env)
     .filter((n) => CREDENTIAL_RE.test(n) || CREDENTIAL_NAMES.includes(n))

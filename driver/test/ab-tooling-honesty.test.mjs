@@ -232,6 +232,16 @@ test("corruption 3: modelFamily is three-valued — an unknown id is UNKNOWN, ne
   assert.equal(CFG.modelFamily("google/gemini-3.1-pro-preview"), null);
   assert.equal(CFG.modelFamily("fable"), null, "fable's wire id is unprobed — unknown, so it can never manufacture a mismatch");
   assert.equal(CFG.modelFamily(null), null);
+
+  // FABLE STAYS UNKNOWN IN EVERY SPELLING, and the assertion above is the one that always stood here. Fable was
+  // placed as a family on 2026-09-15, so the report could name a fable turn served under a company's
+  // deployment name, and taken out again the same day: every id below then read fable, and a comparison that
+  // had been unknown refused turns that had always run (the turn-level test below drives them). The report
+  // reads a fable request's tier itself (servedModels in tokens.mjs), so nothing here needs to place it.
+  for (const id of ["claude-fable-5-1", "anthropic/claude-fable-5-1", "fable-prod", "prod/fable", "acme-fable-a"])
+    assert.equal(CFG.modelFamily(id), null, `${id} must stay unknown to the comparison`);
+  // CONTROL: a name that begins with another tier has always been placed, so the nulls above are fable's alone.
+  assert.equal(CFG.modelFamily("opus-prod"), "opus");
 });
 
 // The runStage harness: one stage turn against the mock claude, returning the journalled attempt rows.
@@ -293,6 +303,37 @@ test("corruption 3: an honoured request records modelBasis 'actual' and is NOT f
   assert.equal(row.modelActual, "claude-haiku-4-5-20251001", "the wire's dated id, verbatim — not normalised away");
   assert.equal(row.modelBasis, "actual", "#240's cost reconstruction can key on this per record");
   assert.equal(row.modelMismatch, false, "false, not absent: 'checked and agreed' is a different fact from 'not checked'");
+});
+
+test("corruption 3: a turn with fable on either side compares as unknown and runs, whatever served it", async () => {
+  // Every one of these ran before fable was placed as a family on 2026-09-15, and each was then refused on its
+  // first attempt. They run again: fable is unknown to the comparison, so a turn that asks for it, or is
+  // served under a fable id or a name beginning with the word, is recorded as unknown (null), neither a match
+  // nor a refusal. The wire id on the row shows each turn reached the comparison; a turn that never did would
+  // pass the first assertion for the wrong reason.
+  for (const [model, wire] of [
+    ["fable", "claude-fable-5-1"],
+    ["fable", "acme-fable-a"],
+    ["fable", "fable-prod"],
+    ["fable", "claude-sonnet-5"],
+    ["fable", "claude-opus-5"],
+    ["fable", "opus-deployment"],
+    ["fable", "gpt-5.6-sol"],
+    ["opus", "claude-fable-5-1"],
+    ["opus", "fable-prod"],
+    ["sonnet", "fable-prod"],
+    ["haiku", "fable-prod"],
+  ]) {
+    const { r, rows } = await oneTurn({ model, wire });
+    assert.equal(r.ok, true, `a ${model} request served as ${wire} was refused: ${r.fail}`);
+    const row = rows.at(-1);
+    assert.equal(row.modelActual, wire, `the wire's answer for ${model} served as ${wire} reached the row`);
+    assert.equal(row.modelMismatch, null, `${model} served as ${wire} is unknown, neither a match nor a mismatch`);
+  }
+  // CONTROL, through the same harness: a turn whose two sides are both placed still refuses a substitution.
+  const swapped = await oneTurn({ model: "opus", wire: "claude-sonnet-5" });
+  assert.equal(swapped.r.ok, false, "an opus request served by Sonnet was accepted");
+  assert.equal(swapped.r.fail, "model_mismatch:opus->sonnet");
 });
 
 test("corruption 3 zero semantics: a wire that reports NO model records `unknown`, never the alias", async () => {

@@ -155,7 +155,7 @@ what an index actually holds, including whether the 1884 backfile is in it (a da
 identical on every other number and is missing a century).
 
 This replaces only the *register* half of a clearance
-— the reasoning engine still needs its own subscription or API key, and the unregistered-use half
+— the reasoning engine still needs its own subscription, API key or cloud account, and the unregistered-use half
 still wants `PERPLEXITY_API_KEY`.
 
 **It refuses rather than answering zero.** An absent index, a schema with no rows, or an index whose

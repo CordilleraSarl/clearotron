@@ -69,16 +69,22 @@ test("an OPTIONAL missing file is not a hole, but an UNRESOLVED specifier is", (
   }
 });
 
-test("%h expands to the unit's home, and later assignments win as systemd applies them", () => {
-  const r = unitEnvironment({
-    units: [{ name: "u.service", text: "EnvironmentFile=%h/.env\nEnvironment=B=from-unit C=3\n" }],
-    readEnvFile: (p) => (p === "/srv/example/.env" ? "A=1\nB=from-file\n" : null),
-    home: "/srv/example" });
-  assert.equal(r.known, true, r.why ?? "");
-  assert.equal(unitValue(r, "A").value, "1");
-  assert.equal(unitValue(r, "C").value, "3");
-  assert.equal(unitValue(r, "B").value, "from-unit",
-    "Environment= appears after EnvironmentFile= here, and systemd lets the later assignment win");
+test("%h expands to the unit's home, and a settings file wins over Environment= as systemd applies them", () => {
+  // systemd.exec(5), on EnvironmentFile=: "Settings from these files override settings made with
+  // Environment=." Where the lines sit does not change that, so both orders give the file's value.
+  for (const text of ["EnvironmentFile=%h/.env\nEnvironment=B=from-unit C=3\n", "Environment=B=from-unit C=3\nEnvironmentFile=%h/.env\n"]) {
+    const r = unitEnvironment({
+      units: [{ name: "u.service", text }],
+      readEnvFile: (p) => (p === "/srv/example/.env" ? "A=1\nB=from-file\n" : null),
+      home: "/srv/example" });
+    assert.equal(r.known, true, r.why ?? "");
+    assert.equal(unitValue(r, "A").value, "1");
+    assert.equal(unitValue(r, "C").value, "3", "a name only the unit sets keeps the unit's value");
+    assert.equal(unitValue(r, "B").value, "from-file", `the unit's own value won over the settings file's for:\n${text}`);
+  }
+  // Within one kind, a later assignment still wins.
+  const twice = unitEnvironment({ units: [{ name: "u.service", text: "Environment=B=1\nEnvironment=B=2\n" }] });
+  assert.equal(unitValue(twice, "B").value, "2");
 });
 
 test("no units at all is UNKNOWN, and says so in words a reader can act on", () => {

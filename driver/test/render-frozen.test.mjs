@@ -1769,7 +1769,16 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break recorded above the FROZEN constant: seven fixed sentences on the
 // clearance page, which is a behaviour change and not licence-only, so both constants move for the same
 // measured reason.
-const FROZEN_BEFORE_SPDX = "fb41ccf65827b2c2026b5fc4267d13fa8da323de1c2395a7d3f04a968a95b2e4";
+// Advanced again by the break recorded above the FROZEN constant: the closing line naming the models that
+// served the search, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: a tier word on the closing line is
+// Claude's, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: Fable is a tier word like the other
+// three, a behaviour change and not licence-only, so both constants move.
+// Advanced again by the break recorded above the FROZEN constant: the Ask-AI band comes out of the
+// report, a behaviour change and not licence-only, so both constants move.
+// Advanced again when those four breaks met in one file; see the merge entry above the FROZEN constant.
+const FROZEN_BEFORE_SPDX = "b14e471f8f8e60ada80d5ca659f7afdbe6fad7eb0699baf67ee70b7fe953fb03";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2045,6 +2054,61 @@ const FROZEN_BEFORE_SPDX = "fb41ccf65827b2c2026b5fc4267d13fa8da323de1c2395a7d3f0
 // The renderer's own lines are edited in place and its two new helpers sit at the end of the file, so no
 // line the rest of the tree cites by number moved.
 //
+// THE MODELS THAT SERVED THE SEARCH, as one closing line of Scope (2026-09-14). Every tier now goes to the
+// program as the vendor's alias, so the tier a stage asked for names no model; the ids the engine reported
+// for its turns are the record, and the owner asked for them on the report. The file's own checklist,
+// answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES. doRepublish re-renders from the archived workspace, whose
+//      attempt rows carry the id the engine reported, so a re-rendered run gains one line naming the
+//      models that served it. That adds provenance; no finding, band, count, record or date moves. A run
+//      with no such rows renders as before, and that is MEASURED: the three committed clearance demos and
+//      the knockout demo, republished through the ordinary publisher before and after this change, gave
+//      report.html and meta.json that differ only in the issue stamp, and a report-data.json that gains
+//      only `"servedModels": null`.
+//   2. Could it live in report.css or brand.mjs? NO. It is words read from the run's own record.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The renderer's own lines are edited in place and its one new helper sits at the end of the file, so no
+// line the rest of the tree cites by number moved.
+//
+// A COMPANY'S OWN NAME FOR ITS DEPLOYMENT NEVER REACHES THE LINE (2026-09-15). Through a cloud, a turn may
+// report a name the company gave its own deployment. servedModels (tokens.mjs) now lists such a turn as the
+// tier it asked for ("Opus"), and a cloud's spelling of a Claude id as the dated Claude id, so the list may
+// read "claude-opus-5, Haiku". The line has to count a tier word as Claude's, or that list would print
+// "Prepared with:" and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES, and that is the point: a republished run served under a
+//      deployment name loses the name and gains the tier word. Every list the previous code could be
+//      handed (Claude ids only, any other ids, nothing) renders byte for byte as before, because a list
+//      with no tier word takes exactly the old branch. The served-models test's earlier line arms, unchanged
+//      and green, hold that.
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit sits inside the file's last helper, after every line the rest of the tree cites by number.
+//
+// FABLE IS A TIER WORD LIKE THE OTHER THREE (2026-09-15). A stage reaches the fable tier through the synthesis
+// override, and a fable turn served under a company's deployment name was left off the list, because the tier
+// reader placed only opus, sonnet and haiku; servedModels' docstring in tokens.mjs said so. servedModels (tokens.mjs) now lists such a
+// turn as "Fable", so the line's tier-word pattern reads Fable too, or that list would print "Prepared with:"
+// and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES: a republished run whose fable turns were served under a
+//      deployment name gains "Prepared with Claude: Fable." where it printed no line, or names Fable beside the
+//      other models where it named only those. Every other list renders as before: a list with no Fable in it
+//      takes exactly the old branch. MEASURED: the three committed clearance demos and the knockout demo,
+//      republished through the ordinary publisher before and after this change, gave report.html, meta.json and
+//      report-data.json identical once the issue stamp is removed (twelve files; their record carries no served
+//      model, so the new word cannot reach them).
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit is three lines beside the file's last helper, changed in place, so no line the rest of the tree cites moved.
+//
 // ── BREAK: the Ask-AI band comes out of the report ──────────────────────────────────────────────────
 //
 // WHAT WENT. `askAi()`, the "Ask your AI about this run" banner under the verdict; the `mcpUrl`
@@ -2076,7 +2140,15 @@ const FROZEN_BEFORE_SPDX = "fb41ccf65827b2c2026b5fc4267d13fa8da323de1c2395a7d3f0
 //
 // A LINE-COUNT NOTE: this removes lines from the middle of render.mjs, so citations aimed INTO it below
 // the band move. `scripts/citation-line-check.mjs` is the instrument; it ran clean on this commit.
-const FROZEN = "30d9b4e881b80bba648332ac544a0943a241ea3cb62d0774ed55d77354f28b53";
+//
+// MERGED (2026-09-15): the Ask-AI break above and this branch's three breaks before it, in one file. They
+// edit different parts of render.mjs and git combined them with no conflict in the file itself, so every
+// entry above stands as written. The hash below is of the combined file, and it was taken only after this
+// measurement: the three committed clearance demos and the knockout demo, republished through the ordinary
+// publisher with main's renderer and with the combined one, gave report.html files that differ only in the
+// issue stamp, meta.json files that differ only in the engine commit, and report-data.json files that
+// differ in those two and gain `"servedModels": null`. Nothing else moved.
+const FROZEN = "3b4d39c310ed2569ae20ac3a8d97bc509ec368104a050d858220b343a57a00d2";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

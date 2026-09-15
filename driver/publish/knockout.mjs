@@ -21,6 +21,7 @@ import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, knockoutReportData } from './render-knockout.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
 import { engineCommit } from '../engine-build.mjs';
+import { servedModels } from '../tokens.mjs';
 import { knockoutFindingViews, knockoutFindingRange } from '../findings-model.mjs';
 import { knockoutReceipts, worstBand } from '../verify-knockout.mjs';
 
@@ -518,6 +519,10 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // — resolved once for the whole publish, off the same two sources the clearance
   // publisher uses (frozen sidecar, then roster; either marks, neither un-marks).
   const demoData = resolveDemoData({ runDir, customerKey });
+  // The models that served this batch, named as a client may read them — read once, like the demo answer,
+  // because it is a property of the run. A read that throws records nothing rather than failing a publish.
+  let served = null;
+  try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
   const reports = markRows.map((m) => {
     const slug = kebab(m.name);
     const file = single ? 'report.html' : `report-${slug}.html`;
@@ -558,12 +563,13 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       // document says it did not search is what the run was instructed not to search.
       searchPolicy: searchPolicy ?? null,
       delivery,
+      servedModels: served,
     }));
     // The run as data — what the assistant drafts client-facing mail from, and the shape the portal's
     // native-render path has been reading for since before anything wrote it. One per report, so the
     // native render of a per-mark document is that mark's data and not the batch's.
     writeRO(dataFile, JSON.stringify(knockoutReportData(one, framework, {
-      runId, codename, overall: markBand, issued, registerCounts, registerRecords, ownerChecks, auditFile, customerKey, matter: runId,
+      runId, codename, overall: markBand, issued, registerCounts, registerRecords, ownerChecks, auditFile, customerKey, matter: runId, servedModels: served,
       identity: { ...identity, level: searchPolicy?.level ?? null },
       url: reportUrlFor(slug),
     }), null, 2));
@@ -625,6 +631,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       .filter(Boolean).join(' — '),
     markName: batchMarkName(markNames) ?? undefined,
     engineCommit: engineCommit(),
+    // The models that served the batch, named as a client may read them (tokens.mjs servedModels). Absent when
+    // nothing was read, so a meta from before the record keeps its shape; [] when turns ran and named none a client may read.
+    servedModels: served ?? undefined,
     client: null, customerKey: customerKey || 'generic',
     // WHICH ORGANISATION'S GENERIC this batch was filed under, read from the frozen sidecar exactly as
     // the clearance publisher reads it. Absent on a company's batch and on one filed before

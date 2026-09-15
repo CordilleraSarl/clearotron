@@ -113,26 +113,23 @@ test("the binary→variable map still matches what the engines actually read", (
   // form, so step 4 moving these reads to `envFrom(process.env, …)` reddened it for the CONVERSION
   // rather than for a drift. An arm that cannot tell those two apart is not checking the thing it
   // claims to check — so it accepts either read form, under any spelling the alias table carries.
-  const sources = {
-    "anthropic-agent": ["anthropic-agent.mjs", "claude"],
-    "openai-agent": ["openai-agent.mjs", "codex"],
-  };
-  for (const [engineId, [file, fallback]] of Object.entries(sources)) {
+  //
+  // THE PROPERTY IS STRUCTURAL NOW, AND THE PIN MOVED WITH IT. Each adapter used to read its variable
+  // itself, so this arm checked that two copies of one decision agreed. There is one copy now: an adapter
+  // asks resolveEngineProgram under ITS OWN engine id, which reads ENGINE_BINARIES[id].env, the row the
+  // preflight reads. So what is pinned is that each adapter asks the one resolver under its own id. That
+  // it then spawns what the resolver found is driven, not read: the arms in
+  // an-engine-program-installed-with-clearotron-is-the-last-resort.test.mjs run each adapter against a
+  // copy only the resolver can find.
+  for (const [engineId, file] of Object.entries({ "anthropic-agent": "anthropic-agent.mjs", "openai-agent": "openai-agent.mjs" })) {
     const declared = ENGINE_BINARIES[engineId].env;
-    // Named, not assumed: if the row ever stops carrying `env`, the line below builds a regex out of
-    // nothing and this arm fails with a message about a missing read rather than about the map that
-    // lost its field.
+    // Named, not assumed: if the row ever stops carrying `env`, the resolver reads nothing for it.
     assert.match(declared ?? "", /^[A-Z][A-Z0-9_]*$/,
       `ENGINE_BINARIES["${engineId}"].env does not name a variable — the map lost the field this arm reads`);
     const src = readFileSync(join(REPO, "driver", "engine", file), "utf8");
-    const forms = [declared].flatMap((sp) => [
-      new RegExp(String.raw`process\.env\.${sp}\s*\|\|\s*"${fallback}"`),
-      new RegExp(String.raw`envFrom\(\s*process\.env\s*,\s*["\x27]${sp}["\x27]\s*\)\s*\|\|\s*"${fallback}"`),
-    ]);
-    assert.ok(forms.some((re) => re.test(src)),
-      `${engineId} does not read ${declared} — under any of its spellings (${[declared].join(", ")}), `
-      + `in either read form — and fall back to "${fallback}". The preflight would approve a variable the `
-      + `engine does not read, which is the drift this arm exists to catch.`);
+    assert.match(src, new RegExp(String.raw`resolveEngineProgram\(\s*["\x27]${engineId}["\x27]`),
+      `${engineId} does not ask the one resolver under its own id, so the program it spawns and the one `
+      + "the preflight approved could be different programs, which is the drift this arm exists to catch.");
   }
 });
 

@@ -45,8 +45,8 @@ Node 22.13 or newer, on macOS or Linux. It needs no root: it puts the program un
 before it saves it. With `~/.local/bin` on your `PATH`, every command below works in the short form;
 otherwise use the full path `install` prints at the end. **On Windows the demo above runs natively; a
 real clearance needs WSL2.** Native Windows clearances are planned for a later release. Until then the
-engine does not run on native Windows: it resolves the reasoning CLI the POSIX way, and a clearance
-started there refuses at preflight.
+engine does not run on native Windows: it spawns each stage with POSIX path and process semantics, so
+a clearance is refused there before it starts.
 
 `npm install -g clearotron` also works where npm's global directory is yours to write. On a Linux Node
 from the distribution or NodeSource that directory is `/usr`, owned by root, and npm refuses with
@@ -106,7 +106,7 @@ clearotron run --job my-job.json
 
 ## How it fits together
 
-- **A reasoning CLI does the thinking.** Every stage runs as a headless turn of the [Claude CLI](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`), which must be installed. `CLEAROTRON_AI_BILLING` chooses what pays for the turn: your signed-in subscription, or an API key. Either way the CLI is what runs — there is no path that calls the model directly.
+- **A reasoning CLI does the thinking.** Every stage runs as a headless turn of the [Claude CLI](https://claude.com/claude-code) (`claude`) or the Codex CLI (`codex`); setup installs it if the machine has none. `CLEAROTRON_AI_BILLING` chooses what pays: your signed-in subscription, an API key, or your own Google, Microsoft or Amazon cloud account. Whichever pays, the CLI is what runs — there is no path that calls the model directly.
 - **One register credential sets coverage and cost.** `CLEAROTRON_DATABASE` has no default — a run refuses rather than picking a vendor for you. EUIPO and a local USPTO index cost nothing; Clarivate, Signa and Corsearch are subscriptions. [The six, and what each reaches](providers/README.md).
 - **One research key.** `PERPLEXITY_API_KEY` covers the open web and the marketplaces. A clearance refuses without it at the door, before a register stage has spent.
 - **A run takes hours, and survives interruption.** Every finished stage stays on disk; a resume re-runs only what is missing, and a run parked on a provider cap continues by itself.

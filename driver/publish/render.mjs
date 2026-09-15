@@ -851,7 +851,7 @@ function plainScopeNote(text) {
   if (!t) return '';
   return stripTelemetry(t).trim();   // trim: an all-telemetry note leaves only newlines, and '' is falsy
 }
-function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false, hasIndexEntry = false) {
+function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, contextNotes, fm = {}, hasRecordSet = false, hasCards = false, hasIndexEntry = false, servedModels = null) {
   const parts = [];
   // B3 (spec 2026-07-30 §4) — record provenance, stated ONCE, here, instead of a hedge stamped on
   // every card. This is the single home of what "fetched", "register-index entry" and "inferred"
@@ -907,7 +907,7 @@ function scopeSection(ranBucket, coverage, coverageJudgment, methodologyText, co
   const meth = plainScopeNote(methodologyText);
   if (meth) parts.push(`<p class="scoperead" style="margin:10px 0 4px;font-weight:600">How this search was run</p><div class="methnote" style="font-size:13px">${renderProse(meth)}</div>`);
   const cn = contextNotesBlock(contextNotes);
-  if (cn) parts.push(cn);
+  for (const p of [cn, servedModelsLine(servedModels)]) if (p) parts.push(p);   // context notes, then the closing line naming the models that served
   // spec 62 — CONFIGURATION PROVENANCE (INTERNAL only): when the run is under a project, show which layer
   // (project / customer / house) set each operational knob. Provenance, not process-exhaust — never on export.
   if (fm.origins_json) {
@@ -2327,7 +2327,7 @@ ${opts.nav || ''}
     // is the state that draws the "(register-index entry)" label. The provenance paragraph explains that
     // label, so it renders where the label can and stays off every page where it cannot.
     findings.some((f) => (f?.owner?.registrations ?? []).some((r) => r?.uri
-      && (recordsByUri.size > 0 || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length))))))}
+      && (recordsByUri.size > 0 || !(r.status || r.filed || r.expiry || (r.classes && r.classes.length))))), opts.servedModels)}
 
   <footer>
     <span>${productName ? `${esc(productName)}. ` : ''}${FRAMEWORK
@@ -2390,4 +2390,25 @@ function officeLinkNote() {
   const linked = [...RECORD_LINKS.values()].some((l) => l?.href);
   return (linked ? 'A registration number shown as a link opens the office’s own page for that record. ' : '')
     + officeReasonSentences(RECORD_LINKS).map((s) => `${esc(s)} `).join('');
+}
+
+// THE MODELS THAT SERVED THIS SEARCH, as one closing line of the scope section (2026-09-14). The ids are
+// the ones the engine reported for its turns (tokens.mjs servedModels), never the tier a stage asked
+// for in place of a model the engine named: every tier goes to the program as the vendor's alias, and an
+// alias names no model. Both report
+// kinds call this, so they say it in the same words. '' when the run recorded none, so a run published
+// before the record existed renders exactly as it was delivered.
+//
+// A TIER WORD IS CLAUDE'S. servedModels lists a turn served under a company's own deployment name as the
+// tier it asked for ("Opus"), never the name, so the list may read "claude-opus-5, Haiku". Both are
+// Claude's and the line says so once; in a list that also names another vendor, the word says it itself
+// ("Claude Opus"). The four words, Fable among them, are the ones servedModels writes. They are kept here
+// rather than imported, because tokens.mjs loads the driver's settings and this module renders without them.
+const CLAUDE_TIER_WORD_RE = /^(?:Opus|Sonnet|Haiku|Fable)$/;
+export function servedModelsLine(ids) {
+  const list = (Array.isArray(ids) ? ids : []).map((s) => String(s ?? '').trim()).filter(Boolean);
+  if (!list.length) return '';
+  const claude = list.every((id) => /^claude-/i.test(id) || CLAUDE_TIER_WORD_RE.test(id));
+  const shown = claude ? list : list.map((id) => (CLAUDE_TIER_WORD_RE.test(id) ? `Claude ${id}` : id));
+  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">Prepared with${claude ? ' Claude' : ''}: ${shown.map(esc).join(', ')}.</p>`;
 }

@@ -106,15 +106,20 @@ export function envelopeFromTurnText(text, toolName) {
  * so the ORDER of those checks lives here once rather than three times.
  *
  * `turn` is supplied by the driver and is injectable for tests:
- *   async ({prompt, kind}) => { ok, text, truncated, usage:{input,output}, model, vendor, authMode, cause }
+ *   async ({prompt, kind}) => { ok, text, truncated, usage:{input,output}, model, vendor, authMode, cloud, cause }
  *
  * ATTRIBUTION RIDES EVERY RETURN, including the failures. A degrade still spent tokens, and without the
  * model, vendor and billing mode beside them they cannot be attributed in the run's rollup — which is
  * the half of that says a run must be able to state who did the work.
+ *
+ * `cloud` is part of that attribution: under the cloud billing mode it names the account that paid
+ * ("foundry", "vertex", "bedrock", "gateway"), and it is null under every other mode. The ledger stamp
+ * reads it from THIS return, so a field left off here reached every native-language record as
+ * `cloud: null` while the main steps of the same run said which cloud paid.
  */
 export async function runJxTurn({ body, turn, kind, started, truncatedCause, parse }) {
   const t0 = Number.isFinite(started) ? started : Date.now();
-  const blank = { tookMs: 0, model: null, vendor: null, authMode: null, usage: null };
+  const blank = { tookMs: 0, model: null, vendor: null, authMode: null, cloud: null, usage: null };
   if (typeof turn !== "function") return { ok: false, cause: `${kind}: no turn runner was supplied`, ...blank };
 
   const { prompt, toolName } = promptFromRequest(body);
@@ -124,7 +129,7 @@ export async function runJxTurn({ body, turn, kind, started, truncatedCause, par
 
   const attribution = {
     tookMs: Date.now() - t0,
-    model: r?.model ?? null, vendor: r?.vendor ?? null, authMode: r?.authMode ?? null,
+    model: r?.model ?? null, vendor: r?.vendor ?? null, authMode: r?.authMode ?? null, cloud: r?.cloud ?? null,
     // Passed through WHOLE, and `null` stays null. The driver hands over the engine contract's canonical
     // Usage ({input, output, cacheRead, cacheWrite, total}); re-shaping it to two fields here would drop
     // cache and total tokens from the rollup, and a zeroed object in place of null would report a

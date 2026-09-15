@@ -54,8 +54,8 @@
 // The one place the real adapter is exercised, it is pointed at `driver/test/mock-claude.mjs` through
 // `CLEAROTRON_CLAUDE_PATH` — the same offline fixture the engine tests already spawn.
 
-import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, engineAdapterSpecifier } from "../driver.config.mjs";
-import { resolveAuthMode } from "./auth.mjs";
+import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, engineAdapterSpecifier, resolveEngineProgram } from "../driver.config.mjs";
+import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "./auth.mjs";
 
 /** Six words. Short enough to be free in practice, and it still requires a real completed turn. */
 export const PROBE_PROMPT = "Reply with the single word: ok.";
@@ -90,20 +90,63 @@ const tail = (s) => {
   return t.length > DETAIL_CHARS ? `…${t.slice(-DETAIL_CHARS)}` : t;
 };
 
+/**
+ * An engine instruction that names its program (`run \`claude\` once…`, `claude setup-token`), rewritten to
+ * name the copy that will actually run when that copy is the one Clearotron installed. That copy is not on
+ * PATH, so for it the bare word is a command the reader's shell cannot
+ * find, at the one step nobody can do for them. Any other copy is on PATH or named by path already, and
+ * the text is returned unchanged.
+ *
+ * HERE, AND RE-EXPORTED BY SETUP. Setup's own screens used it and the probe's sign-in advice, which doctor
+ * and the run door print, did not, so after setup's install doctor told the reader to run a `claude` their
+ * shell does not have. The probe cannot import the wizard, so the one copy lives on this side.
+ */
+export function namingProgram(text, eng, bin) {
+  if (!text || bin?.source !== "installed" || !bin.path) return text;
+  const program = /\s/.test(bin.path) ? `"${bin.path}"` : bin.path;
+  return String(text).replace(new RegExp(`(^|\`)${eng.fallback}(?=[\\s\`]|$)`, "g"), (_, before) => `${before}${program}`);
+}
+
 // THE HEADLESS ROUTE, WHERE THE ENGINE HAS ONE. The interactive sign-in is the one thing a server with no
 // browser cannot do, and it was the only remedy this offered — including to a box that had configured the
 // route built for servers. The engine table already carries that route; this reads it rather than a copy.
-const signInLine = (engine) => {
+//
+// `program` is the copy that ran ({ source, path }, or null), and every command run ON THIS MACHINE is named
+// through `namingProgram`. The token route's command can run on any machine, so it keeps the bare word,
+// with this machine's copy named beside it, as setup names it.
+const signInLine = (engine, program = null) => {
   const spec = ENGINE_BINARIES[engine];
-  const base = spec?.signIn ?? "sign the CLI in";
+  const base = spec?.signIn ? namingProgram(spec.signIn, spec, program) : "sign the CLI in";
   const h = spec?.headless;
   // Both forms the wizard already offers, read off the same table: a TOKEN route is run elsewhere and
-  // carried here by variable; a DEVICE route is run on this box and signs it in directly.
+  // carried here by variable; a DEVICE route is run on this machine and signs it in directly. The route is
+  // named by where a sign-in can be completed, as INSTALL.md's sign-in table names it.
   if (!h?.cmd) return base;
+  const here = namingProgram(h.cmd, spec, program);
   return h.tokenEnv
-    ? `${base} — or, on a box with no browser, run \`${h.cmd}\` on any machine you can sign in on and set the token it prints as ${h.tokenEnv} in this install's environment file`
-    : `${base} — or, on a box with no browser, run \`${h.cmd}\` here`;
+    ? `${base} — or, on a machine you cannot complete a sign-in on, run \`${h.cmd}\` on any machine you can sign in on${here !== h.cmd ? ` (on this one, \`${here}\`)` : ""} and set the token it prints as ${h.tokenEnv} in this install's environment file`
+    : `${base} — or, on a machine you cannot complete a sign-in on, run \`${here}\` here`;
 };
+
+/**
+ * Who refused the credentials and what to check, for a turn paid through an API key or a cloud account:
+ * `{ who, what, check }`, or null on a subscription, whose remedy is the sign-in above. `auth` is the
+ * resolver's answer for the turn ({ mode, cloud }). Names only, never a value.
+ *
+ * THE SIGN-IN IS A SUBSCRIPTION'S REMEDY AND NO OTHER'S. A cloud that refuses the credentials, or a key the
+ * vendor refuses, answers 401 or 403 like a signed-out program, and the advice was to run the program once
+ * and sign in: nothing to sign in to on a cloud, and a sign-in the adapter would not use under a key.
+ */
+export function credentialCheck(engine, auth) {
+  if (auth?.mode === "cloud") {
+    const c = CLOUD_CREDENTIAL_CHECK[auth.cloud];
+    return c ? { who: c.who, what: "the credentials", check: c.check } : null;
+  }
+  const spec = ENGINE_BINARIES[engine];
+  if (auth?.mode === "api-key" && spec?.apiKeyEnv) return { who: spec.vendor, what: "the API key", check: spec.apiKeyEnv };
+  return null;
+}
+const capitalised = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
  * One verdict from one turn. PURE — no clock, no filesystem, no process.
@@ -111,23 +154,33 @@ const signInLine = (engine) => {
  * `tuple` is the engine's normalized return (engine/CONTRACT.md §1); `error` is a THROW, which is a
  * distinct class and not a returned failure: `openai-agent.runTurn` throws for both of its auth shapes
  * (resolveAuthMode on api-key-without-key, and the auth.json refusal) rather than settling a tuple.
+ *
+ * `auth` is how the turn was paid for (resolveAuthMode's `{ mode, cloud }`) and `program` the copy that ran
+ * (`{ source, path }`); both only shape the advice, never the mode, so the run door refuses exactly what it
+ * refused before. Absent, the advice is the subscription's, naming the bare program word.
  */
-export function classifyProbe({ engine, tuple = null, error = null, timeoutSec = PROBE_TIMEOUT_SEC } = {}) {
+export function classifyProbe({ engine, tuple = null, error = null, timeoutSec = PROBE_TIMEOUT_SEC, auth = null, program = null } = {}) {
   const id = String(engine ?? "").trim().toLowerCase();
   const v = (mode, basis, headline, fix, extra = {}) =>
     ({ ok: false, engine: id, mode, basis, headline, fix, detail: null, ...extra });
 
   // ── a THROW ────────────────────────────────────────────────────────────────────────────────────────
-  // The thrown text is relayed VERBATIM as the fix wherever the thrower already says what to do. Those
-  // messages were written by the module that owns the decision (auth.mjs owns the billing refusal, the
-  // codex adapter owns `codex login`); paraphrasing them here creates a second wording that drifts.
+  // The thrown text is relayed as the fix wherever the thrower already says what to do. Those messages
+  // were written by the module that owns the decision (auth.mjs owns the billing refusal, the codex
+  // adapter owns `codex login`); paraphrasing them here creates a second wording that drifts.
+  //
+  // ONE CHANGE ONLY, AND ONLY TO A SIGN-IN: the program's name. The codex adapter refuses a subscription
+  // with no sign-in by throwing "run `codex login`" before it starts anything, which is the commonest way a
+  // signed-out Codex reaches this line. Relayed as thrown, that told a reader whose only copy is the one
+  // setup installed, which is not on PATH, to run a command their shell does not have. `namingProgram`
+  // rewrites the bare word for that copy and leaves every other copy's text as it was thrown.
   if (error) {
     const msg = String(error?.message ?? error);
-    if (/=api-key but/i.test(msg))
+    if (error?.billingRefusal === true || /=api-key but/i.test(msg))   // auth.mjs marks every billing refusal
       return v("auth-misconfigured", "config",
-        `${id} cannot start: the billing mode this box declares has no key`, msg, { detail: null });
+        `${id} cannot start: ${/=api-key but/i.test(msg) ? "the billing mode this box declares has no key" : "the billing setting this box declares is refused"}`, msg, { detail: null });
     if (SIGNED_OUT_RE.test(msg))
-      return v("signed-out", "config", `${id} is not signed in`, msg);
+      return v("signed-out", "config", `${id} is not signed in`, ENGINE_BINARIES[id] ? namingProgram(msg, ENGINE_BINARIES[id], program) : msg);
     if (TIER_RE.test(msg))
       return v("tier-unavailable", "config", `${id} cannot reach the model it was asked for`, tierFix(id, msg));
     return v("failed", "throw", `${id} could not run a turn`, msg);
@@ -144,7 +197,11 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // which pipe this happened to look at.
   const detail = tail(tuple.stderr) ?? tail(tuple.stdout);
 
-  if (tuple.code === 0) return { ok: true, engine: id, mode: "ok", basis: "completed-turn", headline: `${id} completed a turn`, fix: null, detail: null };
+  // A completed turn names what served it, the model and the provider as the program reported them, and
+  // null where it named neither, so a proof says which model and whose account it proved.
+  if (tuple.code === 0) return { ok: true, engine: id, mode: "ok", basis: "completed-turn", headline: `${id} completed a turn`, fix: null, detail: null,
+    served: typeof tuple.modelWire === "string" && tuple.modelWire ? tuple.modelWire : null,
+    provider: typeof tuple.providerWire === "string" && tuple.providerWire ? tuple.providerWire : null };
 
   // spawn itself failed. The filesystem preflight normally catches this first; when it does not, say so
   // in the binary's own vocabulary rather than as a mysterious engine fault.
@@ -163,9 +220,15 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
       { resetsAt: s.resetsAt ?? null, detail });
   }
 
+  // THE MODE STAYS `signed-out` UNDER EVERY WAY OF PAYING, because the run door refuses on the mode and a
+  // refused credential is as much this machine's to fix as a signed-out program. Only the words follow how
+  // the turn is paid for.
+  const refused = credentialCheck(id, auth);
   if (SIGNED_OUT_RE.test(text))
-    return v("signed-out", "text-match", `${id} is not signed in`,
-      `Sign in: ${signInLine(id)}, then run this again. Setup does not do it for you — the CLI owns its own login.`, { detail });
+    return refused
+      ? v("signed-out", "text-match", `${capitalised(refused.who)} refused ${refused.what}`, `check ${refused.check}, then run this again.`, { detail })
+      : v("signed-out", "text-match", `${id} is not signed in`,
+        `Sign in: ${signInLine(id, program)}, then run this again. Setup does not do it for you — the CLI owns its own login.`, { detail });
 
   if (TIER_RE.test(text))
     return v("tier-unavailable", "text-match", `${id} cannot reach the model it was asked for`, tierFix(id, text), { detail });
@@ -179,7 +242,9 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // from the shape rather than read from a message.
   if (s.noStreamEvents)
     return v("signed-out", "startup-class", `${id} exited before it produced anything`,
-      `That is the signed-out shape, so start there: ${signInLine(id)}, then run this again. The engine's stderr below is the diagnosis if it is something else.`, { detail });
+      refused
+        ? `That is what refused credentials look like, so start there: check ${refused.check}, then run this again. The engine's stderr below is the diagnosis if it is something else.`
+        : `That is the signed-out shape, so start there: ${signInLine(id, program)}, then run this again. The engine's stderr below is the diagnosis if it is something else.`, { detail });
 
   return v("failed", "nonzero-exit", `${id} ran but the turn failed (exit ${tuple.code})`,
     "The engine's stderr below is the whole story; a turn that starts and fails is not a configuration this check can name.", { detail });
@@ -292,11 +357,15 @@ export function probeWeatherWarning(verdict) {
  * and a caller building the environment it hands this module fills from it. `doctor` kept a second copy
  * that had dropped both credentials, so it filled a probe environment without the very token it then
  * reported missing. Exported so there is nothing left to copy.
+ *
+ * The cloud a Claude turn is sent to and paid through is on it too (`CLOUD_SETTINGS`, from auth.mjs).
+ * Without those names a cloud answered in setup would pass the resolver, which reads the caller's
+ * environment, and never reach the turn, which reads this process's: a proof of an account no run bills.
  */
 export function engineEnvKeys() {
   return [...new Set(["CLEAROTRON_AI", ...Object.values(ENGINE_BINARIES)
     .flatMap((s) => [s.env, s.authEnv, s.apiKeyEnv, s.headless?.tokenEnv])
-    .filter(Boolean)])];
+    .filter(Boolean), ...CLOUD_SETTINGS])];
 }
 
 function applyEngineEnv(env) {
@@ -346,6 +415,12 @@ async function defaultLoadAdapter(engine) {
 /**
  * Run the probe and return a verdict. Never throws for a configuration fault — a caller that wants a
  * refusal calls `preflightEngineTurn`, and a caller that wants to report calls this.
+ *
+ * `program` is the copy the caller has already found and is running (`{ source, path }`), for a caller
+ * that knows more about it than its setting says. Setup pins the program setting to the absolute path of
+ * the copy it proves, so the turn runs exactly that copy; resolved from that setting alone, the copy setup
+ * installed reads as a path the reader set, and the advice then named the bare word that copy does not
+ * answer to. Without it, the probe resolves the copy itself.
  */
 export async function probeEngineTurn({
   env = process.env,
@@ -354,6 +429,7 @@ export async function probeEngineTurn({
   loadAdapter = defaultLoadAdapter,
   timeoutSec = PROBE_TIMEOUT_SEC,
   stallSec = PROBE_STALL_SEC,
+  program: knownProgram = null,
 } = {}) {
   const id = String(env.CLEAROTRON_AI || DEFAULT_ENGINE_ID).trim().toLowerCase();
   if (!ENGINE_BINARIES[id]) {
@@ -366,8 +442,10 @@ export async function probeEngineTurn({
     };
   }
 
-  // The billing-mode door, before anything spawns — a fail-loud config error must not cost a turn.
-  try { resolveAuthMode({ engineName: id, env }); }
+  // The billing-mode door, before anything spawns — a fail-loud config error must not cost a turn. Its
+  // answer is kept: a refusal from a cloud or of a key is advised on differently from a signed-out program.
+  let auth;
+  try { auth = resolveAuthMode({ engineName: id, env }); }
   catch (e) { return classifyProbe({ engine: id, error: e, timeoutSec }); }
 
   let turn = injectedRunTurn;
@@ -377,11 +455,20 @@ export async function probeEngineTurn({
   }
 
   const restore = applyEngineEnv(env);
+  let program = null;
   try {
+    // THE COPY THAT RUNS, resolved the way the adapter resolves it: by the one resolver, inside the
+    // environment the turn runs in. The sign-in advice names it when it is the copy Clearotron installed,
+    // which is not on PATH. AFTER applyEngineEnv, NEVER BEFORE: the resolver reads this process's
+    // environment, and the caller's program setting is only there from that line until `restore()`, so above
+    // it this would name whatever copy the shell happened to point at. Inside the try, so the `finally` puts
+    // the environment back whatever it does. A resolver that cannot answer leaves the bare word.
+    if (knownProgram?.path) program = { source: knownProgram.source ?? null, path: knownProgram.path };
+    else try { const r = resolveEngineProgram(id); program = r.resolved ? { source: r.source, path: r.resolved } : null; } catch { /* the bare word */ }
     const tuple = await turn({ message: PROBE_PROMPT, model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec });
-    return classifyProbe({ engine: id, tuple, timeoutSec });
+    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program });
   } catch (e) {
-    return classifyProbe({ engine: id, error: e, timeoutSec });
+    return classifyProbe({ engine: id, error: e, timeoutSec, auth, program });
   } finally {
     restore();
   }

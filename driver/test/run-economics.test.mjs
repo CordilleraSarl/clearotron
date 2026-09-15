@@ -18,6 +18,7 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { runEconomics, stampRunEconomics, quotedVsActual, BILLING_CLASSES } from "../run-economics.mjs";
+import { rollupTokens } from "../tokens.mjs";
 
 function mkRun(stages = {}, { runEvents = [], status = null } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "run-econ-"));
@@ -329,7 +330,112 @@ test("runEconomics: the direct-API jx lane is attributed to api-key billing, apa
     assert.equal(api[0].engine, "anthropic-direct");
     const sub = Object.values(e.byBilling).filter((b) => b.authMode === "subscription");
     assert.equal(sub[0].tokens.output, 100);
-    assert.equal(e.dispatchCensus.total, 2, "a row with no model is not a dispatch");
+    assert.equal(e.dispatchCensus.total, 2, "a row that names no model and records no turn (no `modelActual: null`) is not a dispatch");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// A native-language turn that RAN AND NAMED NO MODEL: the Claude program answered it itself, or its stream
+// never named one. The row below is the shape the engine door writes for such a turn, measured through a
+// stand-in program in the-report-names-the-models-that-served-it.test.mjs: the vendor's stamp, no `model`,
+// `modelActual: null`, and the usage the turn reported. The token rollup counts it as an attempt; this
+// census used to ask for a `model`, so the same run read one attempt and 30 tokens there and no dispatch
+// and no tokens here.
+test("runEconomics: a native-language turn that named no model is a dispatch, counted as the token rollup counts it", () => {
+  const unnamed = { ts: "2026-09-14T10:00:00.000Z", lane: "zh", mark: "M", executor: "engine",
+    engine: "anthropic", authMode: "subscription", cloud: null, took_ms: 4100, ok: true, candidates: 0,
+    modelActual: null, usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } };
+  // The CONTROL beside it: a native-language call no provider served (an injected executor) writes neither
+  // `model` nor `modelActual`, and is still no dispatch in either instrument.
+  const injected = { ts: "2026-09-14T10:00:01.000Z", lane: "ja", mark: "M", executor: "injected",
+    engine: "not-provider-billed", authMode: "not-provider-billed", cloud: null, took_ms: 1, ok: true, candidates: 2 };
+  const dir = mkRun({
+    "synthesis": [agentRow({ usage: { input: 5, output: 100 } })],
+    "jx-completions": [unnamed, injected],
+  });
+  try {
+    const e = runEconomics(dir);
+    const t = rollupTokens(dir);
+    const jx = e.byStage["jx-completions"];
+    assert.equal(jx.dispatches.total, 1, "the turn ran, so it is a dispatch; the injected call is not");
+    assert.equal(jx.dispatches.measured, 1, "it reported its usage, so it is measured, not a gap");
+    assert.deepEqual(jx.tokens, { input: 10, output: 20, cacheWrite: 0, cacheRead: 0 }, "the tokens it reported reach the stage");
+    assert.equal(e.dispatchCensus.total, 2);
+    assert.equal(e.tokensComplete, true);
+
+    // THE CLAIM: both instruments count the same rows and the same tokens.
+    assert.equal(t.total.attempts, 2, "the token rollup counts the turn, and not the injected call");
+    assert.equal(e.dispatchCensus.total, t.total.attempts, "run economics and the token rollup agree on the run's attempts");
+    assert.equal(jx.dispatches.total, t.byStage["jx-completions"].attempts, "…and on the stage's");
+    for (const k of BILLING_CLASSES) {
+      assert.equal(e.tokens[k], t.total[k], `…and on the run's ${k} tokens`);
+      assert.equal(jx.tokens[k], t.byStage["jx-completions"][k], `…and on the stage's ${k} tokens`);
+    }
+
+    // Keyed under the rollup's own name for a turn that named no model, never the "unknown" of an
+    // unstamped legacy row.
+    const key = "anthropic|subscription|anthropic/no-model-reported";
+    assert.ok(e.byBilling[key], `byBilling keys: ${JSON.stringify(Object.keys(e.byBilling))}`);
+    assert.equal(e.byBilling[key].dispatches, 1);
+    assert.equal(e.byBilling[key].tokens.output, 20);
+    assert.ok(Object.hasOwn(t.byModel, e.byBilling[key].model),
+      `the bucket names the model as the rollup's byModel does: ${JSON.stringify(Object.keys(t.byModel))}`);
+    assert.equal(jx.byBilling[key]?.dispatches, 1, "the stage's own billing split agrees");
+    assert.equal(e.dispatches.find((d) => d.stage === "jx-completions")?.model, "anthropic/no-model-reported");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// The same agreement when the turn reported NO usage: it is still one dispatch, counted as unmeasured, and
+// the gap is named by the model key the rollup uses.
+test("runEconomics: a native-language turn that named no model and reported no usage is an unmeasured dispatch, named as the rollup names it", () => {
+  const dir = mkRun({ "jx-completions": [{ ts: "2026-09-14T10:00:00.000Z", lane: "zh", mark: "M", executor: "engine",
+    engine: "anthropic", authMode: "subscription", cloud: null, took_ms: 90000, ok: false, candidates: 0,
+    modelActual: null, cause: "killed" }] });
+  try {
+    const e = runEconomics(dir);
+    assert.equal(e.dispatchCensus.total, rollupTokens(dir).total.attempts);
+    assert.equal(e.dispatchCensus.unmeasured, 1, "a turn that ran and recorded nothing is a gap, not a free turn");
+    assert.equal(e.tokensComplete, false);
+    assert.equal(e.unmeasuredDispatches[0]?.model, "anthropic/no-model-reported");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// The billing key copies the rollup's rule for "no model reported" (tokens.mjs does not export it), so the
+// two copies are held to each other on a row that tells a loose "no stamp" test from the rollup's: an
+// empty `modelUsed`. The rollup takes an empty stamp for no stamp; a `modelUsed == null` test did not, and
+// keyed the bucket as the empty string.
+test("runEconomics: a turn stamped with an empty modelUsed and no model is keyed as the token rollup keys it", () => {
+  const dir = mkRun({ "jx-completions": [{ ts: "2026-09-14T10:00:00.000Z", lane: "zh", mark: "M", executor: "engine",
+    engine: "anthropic", authMode: "subscription", modelUsed: "", modelActual: null,
+    usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } }] });
+  try {
+    const e = runEconomics(dir);
+    const t = rollupTokens(dir);
+    assert.deepEqual(Object.keys(t.byModel), ["anthropic/no-model-reported"], "the rollup's own key, the one the bucket must match");
+    assert.deepEqual(Object.values(e.byBilling).map((b) => b.model), Object.keys(t.byModel),
+      "byBilling names the turn's model differently from the rollup's byModel");
+    assert.equal(e.dispatches[0]?.model, "anthropic/no-model-reported");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// A native-language row stamps its VENDOR as its engine (`anthropic`, `openai`: jxBillingStamp writes the
+// provider the engine door resolved). Counting its turns as dispatches put that name into the run's billing
+// composition, and a vendor table that did not know it read an Anthropic-only run as one whose vendor
+// "is NOT the whole run", naming `anthropic` as an engine that bills to no vendor.
+test("runEconomics: a run of Claude stages and native-language turns that named no model states one vendor", () => {
+  const dir = mkRun({
+    "synthesis": [agentRow({ usage: { input: 5, output: 100 } })],
+    "jx-completions": [{ ts: "2026-09-14T10:00:00.000Z", lane: "zh", mark: "M", executor: "engine",
+      engine: "anthropic", authMode: "subscription", cloud: null, ok: true, candidates: 0,
+      modelActual: null, usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } }],
+  });
+  try {
+    const c = runEconomics(dir).billingComposition;
+    assert.deepEqual(c.engines, ["anthropic", "anthropic-agent"], "the turn reached the composition under its own stamp");
+    assert.deepEqual(c.vendors, ["anthropic"]);
+    assert.deepEqual(c.unmappedEngines, [], "the native-language rows' vendor stamp is an engine this build cannot place");
+    assert.equal(c.mixedVendors, false);
+    assert.doesNotMatch(c.statement, /bill to no vendor/, c.statement);
+    assert.match(c.statement, /one vendor \(anthropic\) under one billing mode \(subscription\)/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

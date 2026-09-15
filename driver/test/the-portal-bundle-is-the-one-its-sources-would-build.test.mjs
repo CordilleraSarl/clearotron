@@ -41,6 +41,7 @@ import { fileURLToPath } from "node:url";
 import { bundleFreshness } from "../../shared/bundle-freshness.mjs";   // moved there when /portal/health became its second reader
 import { hermeticInstallRoot } from "./hermetic-install-root.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
 /** A bundle whose sources are an hour newer than it — the shape a pull leaves behind. */
 const STALE_TIMES = { distMtime: 1_000, newestSrcMtime: 4_600_000 };
@@ -147,7 +148,7 @@ function doctor(root) {
   try {
     const out = execFileSync(process.execPath, [join(root, "bin", "onboard.mjs"), "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
+      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
