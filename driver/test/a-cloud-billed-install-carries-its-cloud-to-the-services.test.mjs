@@ -11,11 +11,11 @@
 // door refused over only what it had been given: "CLEAROTRON_AI_BILLING=cloud but none of
 // CLAUDE_CODE_USE_VERTEX, CLAUDE_CODE_USE_FOUNDRY, CLAUDE_CODE_USE_BEDROCK or ANTHROPIC_BASE_URL is set".
 //
-// These arms compose the services' file the way start does — start's own tables, a COPY of its carry loop
+// These tests compose the services' file the way start does — start's own tables, a COPY of its carry loop
 // (`carried` below: start runs those four lines inline, so there is no function to call), and its add-only
 // merge — and then ask the run door's own resolver about ONLY what the file holds. A composer checked against
 // the environment it was composed from passes on exactly the machine that fails. Where start's guard and its
-// write are concerned, the arms call start's own reading, `unitsFileAfterStart`, and not a copy.
+// write are concerned, the tests call start's own reading, `unitsFileAfterStart`, and not a copy.
 //
 // BREAK MATRIX:
 //   · two clouds, a switch beside subscription, api-key   → break: drop the run door's refusal from the
@@ -26,7 +26,7 @@
 //   · start's guard reads the file its merge leaves, and  → break: let start's value win in the reading, or
 //     names what the file keeps from another config        name nothing, red
 //   · doctor says how the services pay when it differs    → break: drop the second billing line, red
-//   · each cloud and the gateway reach the services      → break: drop the cloud rows, the per-cloud arms go red
+//   · each cloud and the gateway reach the services      → break: drop the cloud rows, the per-cloud tests go red
 //   · a stray switch under subscription stays behind     → break: gate the rows on a switch, not the word, red
 //   · Codex's list does not change                       → break: drop the engine's pay-ways gate, red
 //   · a missing switch is refused at order time, named   → break: drop the unnamed-cloud row, red
@@ -65,7 +65,7 @@ const BASE = Object.freeze({
   CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: "/usr/bin/true",
   PERPLEXITY_API_KEY: "fixture-research-key",
   // NOT A CLOUD SETTING, and a secret: it must stay in the shell. The carry copies named settings, never
-  // the environment, and this is the arm's witness that it still does.
+  // the environment, and this is the tests' witness that it still does.
   UNRELATED_SHELL_TOKEN: SECRET,
 });
 
@@ -104,7 +104,7 @@ for (const [cloud, settings] of Object.entries(CLOUDS)) {
   test(`a machine paying through ${cloud} hands the services its switch and its settings, and the run door accepts it`, () => {
     const supervisor = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", ...settings };
     // THE FLOOR: the configuration start holds is one the run door accepts, with this cloud. Without it the
-    // arm below could pass over a fixture that never named a cloud.
+    // check below could pass over a fixture that never named a cloud.
     assert.equal(resolveAuthMode({ engineName: "anthropic-agent", env: supervisor }).cloud, cloud);
     const { text, env } = servicesFile(supervisor);
     for (const [k, v] of Object.entries(settings))
@@ -187,18 +187,32 @@ test("no secret's value appears in a row or a refusal", () => {
   // holds while start keeps that shape. Google's settings hold no secret (its key is a file, named by path),
   // so there is nothing of it to leak.
   const withSecrets = Object.entries(CLOUDS).filter(([, s]) => Object.values(s).includes(SECRET));
-  assert.deepEqual(withSecrets.map(([c]) => c), ["foundry", "bedrock", "gateway"], "the clouds this arm reaches changed");
+  assert.deepEqual(withSecrets.map(([c]) => c), ["foundry", "bedrock", "gateway"], "the clouds this test reaches changed");
+  const printedFor = (supervisor) => [...runRequirements(supervisor, T).map((r) => `${r.name} — ${r.why}`),
+    ...Object.values(orderTimeRefusal(supervisor, T, { envFile: "/srv/example/.env" }) ?? {}).flat()].join("\n");
   for (const [cloud, settings] of withSecrets) {
     for (const supervisor of [{ ...BASE, CLEAROTRON_AI_BILLING: "cloud", ...settings },
       // and with the switch missing, so the rows that ARE printed are reached
       Object.fromEntries(Object.entries({ ...BASE, CLEAROTRON_AI_BILLING: "cloud", ...settings }).filter(([k]) => !Object.values(CLOUD_SWITCH).includes(k) && k !== "ANTHROPIC_BASE_URL"))]) {
-      const rows = runRequirements(supervisor, T);
       // THE FLOOR: the secret-holding settings were read into rows, so there was something to leak.
-      assert.ok(rows.some((r) => supervisor[r.name] === SECRET), `${cloud}: no row carries a secret setting — this arm would prove nothing`);
-      const printed = [...rows.map((r) => `${r.name} — ${r.why}`),
-        ...Object.values(orderTimeRefusal(supervisor, T, { envFile: "/srv/example/.env" }) ?? {}).flat()].join("\n");
+      assert.ok(runRequirements(supervisor, T).some((r) => supervisor[r.name] === SECRET), `${cloud}: no row carries a secret setting — this test would prove nothing`);
+      const printed = printedFor(supervisor);
       assert.ok(!printed.includes(SECRET), `${cloud}: a secret's value is in what is printed:\n${printed.replaceAll(SECRET, "<SECRET>")}`);
     }
+  }
+  // A KEY PASTED INTO THE BILLING WORD, on either engine. The run door quotes a word that is not a billing
+  // mode, and its refusal became the billing row's reason, which start, doctor and the runner's log print.
+  for (const engine of [{ CLEAROTRON_AI: "anthropic-agent" }, { CLEAROTRON_AI: "openai-agent", [CODEX.env]: "/usr/bin/true" }]) {
+    const supervisor = { ...BASE, ...engine, CLEAROTRON_AI_BILLING: SECRET };
+    // THE FLOOR: the door's own words carry the value, and the order wall refuses over the billing word.
+    let door = "";
+    try { resolveAuthMode({ engineName: engine.CLEAROTRON_AI, env: supervisor }); } catch (e) { door = e.message; }
+    assert.ok(door.toLowerCase().includes(SECRET), `${engine.CLEAROTRON_AI}: the run door no longer quotes the word, so this proves nothing`);
+    const row = missingRequirements(supervisor, T).atOrder.find((r) => r.name === "CLEAROTRON_AI_BILLING");
+    assert.ok(row, `${engine.CLEAROTRON_AI}: a word that is not a billing mode is not refused at order time`);
+    assert.match(row.why, /CLEAROTRON_AI_BILLING is set to a word that is not a billing mode/, `${engine.CLEAROTRON_AI}: the reason does not say what is wrong`);
+    const printed = printedFor(supervisor);
+    assert.ok(!printed.toLowerCase().includes(SECRET), `${engine.CLEAROTRON_AI}: the billing word's value is in what is printed:\n${printed.replaceAll(SECRET, "<SECRET>")}`);
   }
 });
 
@@ -225,7 +239,9 @@ test("a services' file the run door refuses for what it holds is refused at orde
     assert.deepEqual(miss.atOrder.map((r) => r.name), [name], `${label}: the order wall does not name ${name}`);
     const r = orderTimeRefusal(file, T, { envFile: "/srv/example/.env" });
     assert.ok(r?.operator.includes(name), `${label}: the order-time refusal does not name ${name}`);
-    if (name === "CLEAROTRON_AI_BILLING") assert.ok(miss.atOrder[0].why.includes(doorSays(file)), `${label}: the reason is not the run door's own words`);
+    // The door's own words, less the one value a refusal quotes: a word that is not a billing mode.
+    if (name === "CLEAROTRON_AI_BILLING") assert.ok(miss.atOrder[0].why.includes(doorSays(file).replace(/^CLEAROTRON_AI_BILLING=metered /, "CLEAROTRON_AI_BILLING is set to a word that ")),
+      `${label}: the reason is not the run door's own words`);
     assert.doesNotMatch(r.client, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, `${label}: a variable name reached the client`);
   }
   // CONTROL: each word with what it needs, and one cloud, is refused nowhere.
@@ -264,7 +280,16 @@ test("a cloud switch that is set and not on is neither carried nor passed over i
   const row = missingRequirements(supervisor, T).atOrder.find((r) => r.anyOf);
   assert.ok(row, "the missing switch is no longer refused at order time");
   assert.match(row.why, /CLAUDE_CODE_USE_FOUNDRY is set, but not on/, "the reason does not say the switch that is set is not on");
-  const names = runRequiredNames(supervisor, T);
+});
+
+test("a name two rows ask for is handed out once", () => {
+  // The register table is handed in, so a register whose credential another row also names (here the
+  // research key) makes two rows of one name. Read twice, it is reported twice.
+  const tables = { ...T, registers: [{ id: "shares-a-key", credentials: ["PERPLEXITY_API_KEY"] }] };
+  const env = { ...BASE, CLEAROTRON_DATABASE: "shares-a-key" };
+  // THE FLOOR: two rows really do carry the name.
+  assert.equal(runRequirements(env, tables).filter((r) => r.name === "PERPLEXITY_API_KEY").length, 2, "no state gives two rows one name, so this proves nothing");
+  const names = runRequiredNames(env, tables);
   assert.equal(new Set(names).size, names.length, `a name is handed out twice: ${names.join(", ")}`);
 });
 
@@ -359,7 +384,7 @@ function doctor(home) {
     out = execFileSync(process.execPath, [join(REPO, "bin", "onboard.mjs"), "--check"], { encoding: "utf8", stdio: "pipe", timeout: 120_000,
       env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
   } catch (e) {
-    if (e.status == null) throw new Error(`doctor did not come back (${e.signal ?? e.message}) — a could-not-look, not a verdict`);
+    if (e.status == null) throw new Error(`doctor did not come back (${e.signal ?? e.message}) — nothing was checked, so this is not a verdict`);
     out = `${e.stdout ?? ""}${e.stderr ?? ""}`;
   }
   return out;

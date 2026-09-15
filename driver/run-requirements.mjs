@@ -123,6 +123,15 @@ export function payWays(engineId, engine = {}) {
 }
 
 /**
+ * A billing refusal from the run door, in words that carry no value. Every refusal names settings and the
+ * billing word, except the one for a word that is not a billing mode, which quotes the word as it is set;
+ * that quote is replaced by the setting's name. PURE. Any other message comes back unchanged.
+ */
+export function billingRefusalWords(message) {
+  return String(message ?? "").replace(/^([A-Z][A-Z0-9_]*)=[\s\S]*? is not a billing mode/, "$1 is set to a word that is not a billing mode");
+}
+
+/**
  * Every environment name this box's configuration says a clearance needs, with the reason each one is
  * there and whether its absence blocks or narrows.
  *
@@ -274,10 +283,15 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     // the services' file, as the cloud rows above intend. `present` on a row means SATISFIED, which is
     // what every reader of it asks; for this row, set is not enough. When a row above already names what
     // is missing, that row is the answer and this adds nothing, because the door's refusal is the same one.
+    //
+    // ONE OF THE DOOR'S REFUSALS QUOTES A VALUE: the word that is not a billing mode. A key pasted into the
+    // billing word by mistake is that value, and this reason is printed by start, by doctor and in the
+    // runner's log. So it is said by name, through billingRefusalWords below.
     if (!out.slice(billingRows).some((r) => r.blocking && !r.present)) {
       try { resolveAuthMode({ engineName: engineId, env }); } catch (e) {
         if (e?.billingRefusal)
-          Object.assign(billingRow, { blocking: true, present: false, at: ORDER, why: `every search is refused before spending, over how this machine is set to pay: ${e.message}` });
+          Object.assign(billingRow, { blocking: true, present: false, at: ORDER,
+            why: `every search is refused before spending, over how this machine is set to pay: ${billingRefusalWords(e.message)}` });
       }
     }
   }
