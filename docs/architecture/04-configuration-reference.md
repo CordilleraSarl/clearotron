@@ -139,7 +139,9 @@ level 1 and then throw at level 2 (below). They are catalogue entries, not avail
 (`CLAUDE_MODEL` in `engine/anthropic-agent.mjs`): `opus`, `sonnet`, `haiku` and `fable` pass through
 as aliases, so each tier follows the vendor's newest model; to hold one still, set
 `ANTHROPIC_DEFAULT_OPUS_MODEL` (or `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`).
-A full catalog id (`anthropic/claude-opus-5`) is passed as that concrete model. A bare or dated
+The catalog ids `anthropic/claude-opus-5` and `anthropic/claude-sonnet-5` are passed as those
+concrete models; `anthropic/claude-haiku-4-5` and `anthropic/claude-sonnet-4-6` go over as the `haiku`
+and `sonnet` aliases, so they follow the vendor the same way. A bare or dated
 Anthropic id (`claude-haiku-4-5-20251001`) still resolves to its family — that is a naming form of a
 model the CLI can run, not a substitution of a different one. Telemetry keeps the level-1 catalog id as
 the model asked for, and the attempt row records the id the program reports it served.
@@ -319,7 +321,7 @@ cannot be read as one list.
 | Var | Consumer |
 |---|---|
 | `ANTHROPIC_API_KEY` | Engine child env in `api-key` mode only (deleted in subscription and cloud modes). |
-| `CLAUDE_CODE_USE_VERTEX` / `CLAUDE_CODE_USE_FOUNDRY` / `CLAUDE_CODE_USE_BEDROCK` | **Read by the Claude program**, which sends every turn to that cloud; `1`, `true`, `yes` or `on` switches one on. Clearotron reads them only to name the cloud under `CLEAROTRON_AI_BILLING=cloud` and to refuse a switch left on under `subscription` or `api-key`. Setup's proof turn and doctor carry these and the four rows below from the settings file (`CLOUD_SETTINGS` in `driver/engine/auth.mjs`); a run takes the whole file. |
+| `CLAUDE_CODE_USE_VERTEX` / `CLAUDE_CODE_USE_FOUNDRY` / `CLAUDE_CODE_USE_BEDROCK` | **Read by the Claude program**, which sends every turn to that cloud; `1`, `true`, `yes` or `on` switches one on. Clearotron reads them only to name the cloud under `CLEAROTRON_AI_BILLING=cloud` and to refuse a switch left on under `subscription` or `api-key`. Doctor carries these and the four rows below from the settings file, and setup's proof turn from the shell and the answers given (`CLOUD_SETTINGS` in `driver/engine/auth.mjs`); a run takes the whole file. |
 | `ANTHROPIC_VERTEX_PROJECT_ID` / `CLOUD_ML_REGION` / `GOOGLE_APPLICATION_CREDENTIALS` | Vertex AI's project, region and service-account key, read by the Claude program. Without the key file it uses gcloud's sign-in. |
 | `ANTHROPIC_FOUNDRY_RESOURCE` / `ANTHROPIC_FOUNDRY_API_KEY` | The Foundry resource and its key, read by the Claude program. Without the key it uses the machine's Azure sign-in. |
 | `AWS_REGION` / `AWS_PROFILE` / `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN` | Bedrock's region, optionally the AWS profile, and the standard AWS key variables (the session token only for temporary credentials), read by the Claude program. Without the keys it uses the machine's other AWS credentials, such as an instance role. |

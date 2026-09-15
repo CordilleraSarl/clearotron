@@ -14,10 +14,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { ENGINE_BINARIES } from "../driver.config.mjs";
+import { ENGINE_BINARIES, MODELS, resolveEngineProgram } from "../driver.config.mjs";
 import { CLOUD_SETTINGS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { claudeModel } from "../engine/anthropic-agent.mjs";
-import { platformEngineRefusal } from "../../bin/onboard.mjs";
+import { platformEngineRefusal, installSizeLine, engineOptions } from "../../bin/onboard.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
@@ -77,6 +77,20 @@ test("the configuration reference says a tier follows the vendor, as the Claude 
   const ref = flat(read("docs/architecture/04-configuration-reference.md"));
   assert.doesNotMatch(ref, /opus and sonnet are pinned/, "the reference says two tiers are pinned; the adapter passes them as aliases");
   assert.ok(ref.includes("each tier follows the vendor's newest model"), "the reference no longer says what a tier resolves to");
+
+  // WHICH CATALOG IDS GO OVER AS A CONCRETE MODEL, and which as a tier's alias, is the adapter's table, not
+  // a rule about catalog ids: the level-1 target of `haiku` goes over as `haiku`. The page names each group;
+  // every name in it is held to what the adapter does with it.
+  const ids = (list) => [...list.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
+  const said = /The catalog ids (.+?) are passed as those concrete models; (.+?) go over as the /.exec(ref);
+  assert.ok(said, "the reference no longer says which catalog ids go over as a concrete model and which as an alias");
+  const [concrete, aliased] = [ids(said[1]), ids(said[2])];
+  for (const id of concrete)
+    assert.equal(claudeModel(id), id.replace(/^anthropic\//, ""), `the reference says ${id} is passed as that concrete model; the adapter sends ${claudeModel(id)}`);
+  for (const id of aliased)
+    assert.ok(["opus", "sonnet", "haiku"].includes(claudeModel(id)), `the reference says ${id} goes over as an alias; the adapter sends ${claudeModel(id)}`);
+  for (const tier of ["opus", "sonnet", "haiku"])
+    assert.ok([...concrete, ...aliased].includes(MODELS[tier]), `the reference does not say what happens to ${MODELS[tier]}, the catalog id ${tier} resolves to`);
 });
 
 test("the licence words name each program's own licence", () => {
@@ -107,6 +121,16 @@ test("the cloud-account section asks only for settings setup and doctor carry, a
   for (const n of named)
     if (n !== "CLEAROTRON_AI_BILLING") assert.ok(CLOUD_SETTINGS.includes(n), `§3b asks for ${n}, which setup's proof turn and doctor do not carry`);
   for (const sw of Object.values(CLOUD_SWITCH)) assert.ok(named.has(sw), `§3b has no block for ${sw}`);
+  // THE PROSE ASKS FOR SETTINGS TOO. The AWS keys are named in a sentence, not on a `NAME=` line, and the
+  // lines above cannot see them. ANTHROPIC_API_KEY is the one name the section gives only to say a cloud
+  // removes it, so it is held to that sentence instead.
+  const prose = new Set([...b.matchAll(/`([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+)`/g)].map((m) => m[1]));
+  for (const n of ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN"])
+    assert.ok(prose.has(n), `§3b's prose no longer names ${n}, so the check below would hold less than the page asks for`);
+  assert.match(flat(b), /Clearotron removes `ANTHROPIC_API_KEY` from every step/);
+  for (const n of prose)
+    if (n !== "CLEAROTRON_AI_BILLING" && n !== "ANTHROPIC_API_KEY")
+      assert.ok(CLOUD_SETTINGS.includes(n), `§3b's prose names ${n}, which setup's proof turn and doctor do not carry`);
   assert.match(b, /^\*\*Amazon Bedrock \(not yet tested\)\*\*$/m, "Amazon is not marked as not yet tested");
   assert.match(b, /^\*\*Google Cloud \(Vertex AI\)\*\*$/m, "Google's heading changed; it is not marked");
   assert.match(b, /^Tested on Microsoft Azure\./m);
@@ -115,6 +139,25 @@ test("the cloud-account section asks only for settings setup and doctor carry, a
   assert.match(three, /^CLEAROTRON_AI_BILLING=subscription\s+#.*`api-key` \| `cloud`/m, "§3's billing line does not offer cloud");
   assert.match(three, /^# CLEAROTRON_CLAUDE_PATH= +# only to force one copy/m,
     "§3 still shows CLEAROTRON_CLAUDE_PATH as a line to set; it only forces one copy");
+
+  // THE EXAMPLE SETTINGS FILE GIVES THE SAME ADVICE. Its row keeps the engine's own word, which the resolver
+  // reads as unset; a path written there forces that copy and passes over setup's. So the comment above the
+  // row may not tell a reader to write a path whenever the program is not on PATH, which is exactly where
+  // setup's copy lives.
+  const claude = ENGINE_BINARIES["anthropic-agent"];
+  assert.equal(resolveEngineProgram("anthropic-agent", { env: { [claude.env]: claude.fallback, PATH: "" }, enginesDir: null }).explicit, false,
+    `the resolver now reads ${claude.env}=${claude.fallback} as a forced copy; the example file's row and its comment must change`);
+  assert.equal(resolveEngineProgram("anthropic-agent", { env: { [claude.env]: "/opt/engines/node_modules/.bin/claude", PATH: "" }, enginesDir: null }).explicit, true);
+  const example = read(".env.example");
+  const row = example.indexOf(`\n${claude.env}=${claude.fallback}\n`);
+  assert.ok(row > 0, `.env.example has no ${claude.env}=${claude.fallback} row`);
+  // The comment block right above the row, with its `#` markers taken off, so a sentence wrapped across
+  // two comment lines still reads as one.
+  const above = flat(example.slice(0, row).split(/\n(?!#)/).pop().replace(/^#\s?/gm, ""));
+  assert.doesNotMatch(above, /ABSOLUTE path if the binary is not on PATH/,
+    ".env.example still tells a reader to write a path when the program is not on PATH, which forces a copy and passes over setup's");
+  assert.match(above, /only to force one copy/);
+  assert.match(above, /then the copy setup installed/);
   assert.match(flat(section(install, "8. Access control")),
     /\*\*Serving other organisations\.\*\* An instance that runs searches for organisations other than your own bills Claude through an API key or a cloud account, never a Claude subscription/);
 });
@@ -124,6 +167,16 @@ test("the release notes promise what setup does", () => {
   assert.doesNotMatch(program, /needs nothing installed first/, "the note promises a machine needs nothing installed; setup offers, and the reader may say no");
   assert.match(program, /Setup offers to install the reasoning program your engine uses/);
   assert.match(program, /how much space the program takes and how to remove it/);
+  // What the note promises is what setup's offer and its engine question say, for every program it installs.
+  for (const [id, eng] of Object.entries(ENGINE_BINARIES)) {
+    assert.match(installSizeLine(eng), /^It takes about \d+ MB\. To remove it, delete that folder\.$/,
+      `setup's install offer for ${eng.product} names no size, which the release note promises`);
+    const row = (found) => engineOptions({ [id]: found }).find((o) => o.id === id).label;
+    assert.match(row({ executable: true, version: "1.2.3" }), /found: 1\.2\.3 on this machine/, `the ${eng.product} row does not show the version found`);
+    assert.match(row({ executable: false, rejected: [] }), /not installed: setup can install it/, `the ${eng.product} row does not say setup can install it`);
+  }
+  assert.match(program, /shows the version it found on this machine or says setup can install it/);
+  assert.equal(engineOptions().at(-1).label, "none for now");
   assert.match(flat(read(".changeset/claude-through-your-own-cloud-account.md")),
     /Tested on Microsoft Azure; Google Cloud and Amazon Bedrock use the Claude program's own settings\./);
 });

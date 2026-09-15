@@ -21,10 +21,11 @@ reach one office each; Signa is the recommended paid route and the fastest to a 
 **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron demo` runs
 anywhere Node does, native Windows included. A real clearance does not: the engine spawns each stage
 with POSIX path and process semantics, so on native Windows the run door refuses before it reads
-`PATH`, even with the program installed. On Windows, `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page from
-**inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no curl and
-no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node, and apt's package is below
-what this needs, so `npx` answers "not found" before anything of ours runs. From the Ubuntu prompt:
+`PATH`, even with the program installed. On Windows, `wsl --install -d Ubuntu`, then
+`wsl -d Ubuntu`, and work through this page from **inside** that distribution. Name it: plain `wsl`
+can open a minimal image with no apt, no curl and no bash, and everything below assumes Ubuntu. A
+fresh Ubuntu has no Node, and apt's package is below what this needs, so `npx` answers "not found"
+before anything of ours runs. From the Ubuntu prompt:
 
 ```bash
 sudo apt update && sudo apt install -y curl
@@ -47,10 +48,10 @@ and the first line fails with `EACCES`. Do not answer that with `sudo`: run
 `npm install -g clearotron --prefix ~/.local` instead, or `npx clearotron install`, which installs under
 `~/.local` itself.
 
-`doctor` is the one to read. It checks that the reasoning program is there — on `PATH`, or the copy
-setup installed — that it is signed in — by running a turn, not by finding the executable — and that
-your register credential resolves. An executable
-that is signed out passes every other check and fails at the first stage.
+`doctor` is the one to read. It checks that the reasoning program is there, on `PATH` or as the copy
+setup installed; that it is signed in, by running a turn rather than by finding the executable; and
+that your register credential resolves. An executable that is signed out passes every other check and
+fails at the first stage.
 
 ## Run one
 
