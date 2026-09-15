@@ -875,6 +875,18 @@ export function leaveDemoAdvice(engSpec, { platform = process.platform } = {}) {
 }
 
 /**
+ * What an engine's install takes on disk, and how to take it back: the line setup's install offer says
+ * right after it names the folder, and before it asks. A reader deciding whether to let a program onto
+ * their machine is owed its size and its way off, and neither was said. The size is the registry's
+ * measured figure (driver.config.mjs, `installMB`), kept beside the package it measures rather than in
+ * this file. The removal is the folder, because the install is an npm project inside it and puts nothing
+ * on PATH.
+ */
+export function installSizeLine(eng) {
+  return `${Number.isFinite(eng?.installMB) ? `It takes about ${eng.installMB} MB. ` : ""}To remove it, delete that folder.`;
+}
+
+/**
  * The engine menu, built from the driver's registry so the wizard cannot offer an adapter that does not
  * exist — or hide one that does. Same guarantee the register-provider list has.
  *
@@ -3422,6 +3434,7 @@ try {
       const dir = enginesFolder();
       say(`    It goes into ${dir}, for this user and this platform only, and not`);
       say("    onto PATH, so a copy this machine installs itself later is used first.");
+      say(`    ${installSizeLine(eng)}`);
       say("");
       if (await confirm(`Run \`${engineInstallCommand(eng, dir)}\` now?`, false)) {
         say(`  $ ${engineInstallCommand(eng, dir)}`);

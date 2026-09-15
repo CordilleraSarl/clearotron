@@ -1901,6 +1901,11 @@ export const ENGINE_BINARIES = {
     // when the reader picks this engine, and the resolver uses it only when the machine has no copy of its
     // own. The package's own `bin` field names the program, so no path inside it is written down here.
     package: "@anthropic-ai/claude-code", floor: "2.1.270",
+    // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
+    // declared by the vendor: the engines folder after a fresh install of this package into an empty
+    // folder, on npm 10.9.8 and on 11.19.1, 2026-09-14. A later release can be larger or smaller, so setup
+    // says "about". Re-measure when the floor moves.
+    installMB: 214,
     // The licence setup states wherever it tells a reader what they are about to install or use, as the
     // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
     licence: "proprietary third-party software",
@@ -1925,6 +1930,7 @@ export const ENGINE_BINARIES = {
     vendor: "OpenAI",
     env: "CLEAROTRON_CODEX_PATH", fallback: "codex",
     package: "@openai/codex", floor: "0.154.0",
+    installMB: 324,   // measured the same way and on the same day as Claude's, above
     licence: "third-party software under the Apache-2.0 licence",   // the package's own "license" field
     label: "OpenAI — each stage runs as a headless `codex exec` turn",
     module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",

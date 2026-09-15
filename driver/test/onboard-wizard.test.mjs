@@ -21,7 +21,8 @@ import { preflightSkillsStore } from "../skills-store-provenance.mjs";
 import { RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOptions,
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
-  offerUsptoSync, deploymentCurrency, namingProgram, engineProgramSetting, unusableEngineWords } from "../../bin/onboard.mjs";
+  offerUsptoSync, deploymentCurrency, namingProgram, engineProgramSetting, unusableEngineWords,
+  installSizeLine } from "../../bin/onboard.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
 import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
@@ -1056,6 +1057,34 @@ test("every engine in the table carries an install command, and it is one a read
     const [cmd] = eng.install.split(" ");
     assert.match(cmd, /^[a-z][a-z0-9-]*$/, `${id}'s install command does not start with a plain program name`);
   }
+});
+
+// THE OFFER SAYS WHAT THE INSTALL TAKES AND HOW TO TAKE IT BACK. It showed the licence, the folder and
+// the command, and asked, so a reader agreed to a download of a few hundred megabytes without being told
+// its size or that removing it is deleting one folder.
+test("each engine's install offer states its measured size and how to remove it", () => {
+  const withPackage = Object.entries(ENGINE_BINARIES).filter(([, e]) => e.package);
+  assert.ok(withPackage.length >= 2, "fixture precondition: both engines carry a package setup can install");
+  for (const [id, eng] of withPackage) {
+    assert.ok(Number.isInteger(eng.installMB) && eng.installMB > 0,
+      `${id} carries no measured install size beside its package, so the offer cannot say what it takes`);
+  }
+  // The measured figures, in the words the offer prints.
+  assert.equal(installSizeLine(ENGINE_BINARIES["anthropic-agent"]), "It takes about 214 MB. To remove it, delete that folder.");
+  assert.equal(installSizeLine(ENGINE_BINARIES["openai-agent"]), "It takes about 324 MB. To remove it, delete that folder.");
+});
+
+test("the size line is said after the folder is named and before the question, whose default stays No", () => {
+  // Source-shape, for the reason the next arm gives: the offer only runs behind a terminal.
+  const src = readFileSync(join(REPO, "bin/onboard.mjs"), "utf8");
+  const folder = src.indexOf("say(`    It goes into ${dir}");
+  const size = src.indexOf("say(`    ${installSizeLine(eng)}`)");
+  const ask = src.indexOf("await confirm(`Run \\`${engineInstallCommand(eng, dir)}\\` now?`");
+  assert.notEqual(folder, -1, "anchor missing: the line naming the engines folder");
+  assert.notEqual(ask, -1, "anchor missing: the install question");
+  assert.ok(size > folder && size < ask,
+    "the size and removal line must follow the folder line (\"delete that folder\" points at it) and come before the question");
+  assert.match(src.slice(ask, ask + 120), /now\?`, false\)/, "the install question must still default to No");
 });
 
 test("the wizard offers the install, and does NOT take the installer's exit code as proof", () => {
