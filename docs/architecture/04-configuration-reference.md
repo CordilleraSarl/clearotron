@@ -138,7 +138,8 @@ level 1 and then throw at level 2 (below). They are catalogue entries, not avail
 **Level 2 — the active engine** maps aliases to the CLI's own model names. On `anthropic-agent`
 (`CLAUDE_MODEL` in `engine/anthropic-agent.mjs`): `opus`, `sonnet`, `haiku` and `fable` pass through
 as aliases, so each tier follows the vendor's newest model; to hold one still, set
-`ANTHROPIC_DEFAULT_OPUS_MODEL` (or `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`).
+`ANTHROPIC_DEFAULT_OPUS_MODEL` (or `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`,
+`ANTHROPIC_DEFAULT_FABLE_MODEL`).
 The catalog ids `anthropic/claude-opus-5` and `anthropic/claude-sonnet-5` are passed as those
 concrete models; `anthropic/claude-haiku-4-5` goes over as the `haiku` alias, so it follows the
 vendor the same way. A bare or dated Anthropic id (`claude-haiku-4-5-20251001`) still resolves to
@@ -326,7 +327,7 @@ cannot be read as one list.
 | `ANTHROPIC_FOUNDRY_RESOURCE` / `ANTHROPIC_FOUNDRY_API_KEY` | The Foundry resource and its key, read by the Claude program. Without the key it uses the machine's Azure sign-in. |
 | `AWS_REGION` / `AWS_PROFILE` / `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN` | Bedrock's region, optionally the AWS profile, and the standard AWS key variables (the session token only for temporary credentials), read by the Claude program. Without the keys it uses the machine's other AWS credentials, such as an instance role. |
 | `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` | A gateway in front of a cloud, and its token, read by the Claude program. With no cloud switch, `ANTHROPIC_BASE_URL` is the gateway form of `CLEAROTRON_AI_BILLING=cloud`; the gateway's credential must then be the token, because `ANTHROPIC_API_KEY` is deleted. |
-| `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_DEFAULT_HAIKU_MODEL` | The model each tier's alias resolves to, read by the Claude program: on Foundry, the deployment names; anywhere, a way to hold a tier still. |
+| `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL` / `ANTHROPIC_DEFAULT_HAIKU_MODEL` / `ANTHROPIC_DEFAULT_FABLE_MODEL` | The model each tier's alias resolves to, read by the Claude program: on Foundry, the deployment names; anywhere, a way to hold a tier still. Set the fable one to your Fable deployment's name if you set `CLEAROTRON_SYNTHESIS_MODEL=fable`; setup does not ask for it. |
 | `OPENAI_API_KEY` | **Read only to be DELETED.** The `openai-agent` adapter strips it from the `codex exec` environment under subscription billing, so an unrelated key exported on the box cannot spoil a clean subscription bill. It is never the api-key credential for this product — that is `CODEX_API_KEY`. Listed because a reader who has one set needs to know it is removed. |
 | `CORSEARCH_SESSION_KEY` | Register provider auth (session cookie). **Preflighted at run start — a missing credential fails fast before any model spend.** |
 | `CLARIVATE_API_KEY` / `CLARIVATE_API_BASE` | Clarivate adapter — on the engine path: `clarivate-server.mjs` in `gather-config.mjs`'s stage-grant table, plus driver-side `recordFetch` / `countHits` / `listRecords` / `executePlan`. `CLARIVATE_API_BASE` overrides the core's `DEFAULT_BASE`. |

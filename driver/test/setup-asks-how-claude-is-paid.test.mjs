@@ -99,6 +99,28 @@ test("the cloud menu marks Amazon Bedrock as not yet tested, and only there", ()
   assert.match(readFileSync(ONBOARD, "utf8"), /await choose\("Which cloud account pays\?", CLOUD_CHOICES,/);
 });
 
+test("setup's proof turn and doctor carry the fable tier's pin, and setup does not ask for it", () => {
+  // A stage asks for fable only through the synthesis override, so setup's questions stay at the three
+  // deployment names every run reaches. A reader who sets the override writes the fourth pin by hand, and
+  // the checks must then prove the configuration a run would use, not a shell without it.
+  const pin = "ANTHROPIC_DEFAULT_FABLE_MODEL";
+  assert.ok(CLOUD_SETTINGS.includes(pin), `${pin} is not one of the cloud settings`);
+  assert.ok(engineEnvKeys().includes(pin), `the probe does not carry ${pin}, so the proof turn would run without it`);
+  const eng = ENGINE_BINARIES["anthropic-agent"];
+  const { env } = proofTurn({ engineId: "anthropic-agent", eng, bin: { path: "/opt/claude" },
+    authEnv: cloudSettings("foundry", { ANTHROPIC_FOUNDRY_RESOURCE: "res-test" }), env: { PATH: "/usr/bin:/bin" },
+    settings: { [pin]: "fable-deployment", CLEAROTRON_DATABASE: "file-register" } });
+  assert.equal(env[pin], "fable-deployment", "setup's proof turn left the settings file's fable pin behind");
+  assert.equal(shownSetting(pin, "fable-deployment"), `${pin}=fable-deployment`, "a deployment name is not a secret, so it is shown as written");
+  for (const c of CLOUD_CHOICES)
+    assert.ok(!c.asks.some((a) => a.env === pin), `${c.id}: setup asks for ${pin}, which only the synthesis override reaches`);
+  // CONTROLS: the Foundry questions still ask the three pins a stage reaches without the override, and a
+  // setting that is no cloud setting stays in the file.
+  const foundry = CLOUD_CHOICES.find((c) => c.id === "foundry").asks.map((a) => a.env);
+  for (const tier of ["OPUS", "SONNET", "HAIKU"]) assert.ok(foundry.includes(`ANTHROPIC_DEFAULT_${tier}_MODEL`), `setup no longer asks the ${tier.toLowerCase()} deployment`);
+  assert.equal(env.CLEAROTRON_DATABASE, undefined);
+});
+
 test("the probe's turn sees the cloud settings its caller passed, they are gone again after it, and it names what served it", async () => {
   const env = { CLEAROTRON_AI: "anthropic-agent",
     ...cloudSettings("foundry", { ANTHROPIC_FOUNDRY_RESOURCE: "res-test", ANTHROPIC_DEFAULT_HAIKU_MODEL: "dep-haiku" }) };

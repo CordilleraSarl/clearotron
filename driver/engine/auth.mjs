@@ -53,10 +53,15 @@ const switchedOn = (v) => ["1", "true", "yes", "on"].includes(String(v ?? "").tr
 export const CLOUD_SWITCH = Object.freeze({ vertex: "CLAUDE_CODE_USE_VERTEX", foundry: "CLAUDE_CODE_USE_FOUNDRY", bedrock: "CLAUDE_CODE_USE_BEDROCK" });
 
 // EVERY NAME THE PROGRAM READS TO REACH AND PAY A CLOUD, as setup writes them and the install page lists
-// them: each cloud's switch and its least settings, the gateway pair, and the three model pins a cloud
+// them: each cloud's switch and its least settings, the gateway pair, and the four model pins a cloud
 // deployment is named by. A run takes every line of its settings file, so it has these already. Setup's
 // proof turn and doctor read the file name by name, and carry these so a check proves the account a run
 // bills rather than whatever the shell happened to hold.
+//
+// THE FABLE PIN IS ON IT, THOUGH SETUP NEVER ASKS FOR IT. The program reads a pin for every tier it takes as
+// an alias, fable included, and a stage asks for fable only through the synthesis override. On Foundry that
+// alias resolves to nothing unless the pin names a deployment, so a reader who sets the override sets the
+// pin by hand, and doctor, setup's proof turn and a background start must carry it like the other three.
 //
 // THE STANDARD AWS KEY VARIABLES ARE ON IT. A machine with no AWS profile and no instance role keeps its
 // Amazon keys in the settings file, and a search reads them from there. Without these three names doctor's
@@ -67,7 +72,7 @@ export const CLOUD_SETTINGS = Object.freeze([
   "ANTHROPIC_FOUNDRY_RESOURCE", "ANTHROPIC_FOUNDRY_API_KEY",
   "AWS_REGION", "AWS_PROFILE", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN",
   "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN",
-  "ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+  "ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_FABLE_MODEL",
 ]);
 
 // THE ONES THAT HOLD A SECRET, by name. Wherever a cloud setting is shown, one of these is shown as set and

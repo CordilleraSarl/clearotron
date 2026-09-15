@@ -144,6 +144,22 @@ test("Codex's list is what it was: a cloud billing word and a switch add nothing
   assert.ok(asToday.includes(CODEX.env) && asToday.includes("CLEAROTRON_AI_BILLING"), "the Codex list lost its own names");
 });
 
+test("the fable tier's pin reaches the services with the other three, set by hand beside the synthesis override", () => {
+  // The program reads a pin for every tier it takes as an alias, fable included, and a stage asks for fable
+  // only through the synthesis override. On Foundry that alias names no deployment without its pin, so a pin
+  // left behind by the carry would have every fable turn of a background run refused by Azure.
+  for (const tier of ["OPUS", "SONNET", "HAIKU", "FABLE"])
+    assert.ok(CLOUD_SETTINGS.includes(`ANTHROPIC_DEFAULT_${tier}_MODEL`), `the ${tier.toLowerCase()} pin is not one of the cloud settings`);
+  const supervisor = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", ...CLOUDS.foundry, ANTHROPIC_DEFAULT_FABLE_MODEL: "fable-deployment" };
+  const { env } = servicesFile(supervisor);
+  assert.equal(env.ANTHROPIC_DEFAULT_FABLE_MODEL, "fable-deployment", "the fable pin did not reach the services' file");
+  // CONTROLS: a pin set beside it arrived, so the file was composed from this configuration; and under a
+  // subscription the same pin stays in the shell, as every cloud setting does.
+  assert.equal(env.ANTHROPIC_DEFAULT_OPUS_MODEL, "opus-deployment");
+  const sub = servicesFile({ ...BASE, CLEAROTRON_AI_BILLING: "subscription", ANTHROPIC_DEFAULT_FABLE_MODEL: "fable-deployment" });
+  assert.equal(sub.env.ANTHROPIC_DEFAULT_FABLE_MODEL, undefined, "a subscription machine was handed a cloud pin");
+});
+
 test("a cloud-billed configuration with no switch is refused at order time, never at start, naming every way to fix it", () => {
   const supervisor = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", ANTHROPIC_FOUNDRY_RESOURCE: "example-resource", ANTHROPIC_FOUNDRY_API_KEY: SECRET };
   const miss = missingRequirements(supervisor, T);

@@ -209,6 +209,26 @@ test("the cloud-account section asks only for settings setup and doctor carry, a
     /\*\*Serving other organisations\.\*\* An instance that runs searches for organisations other than your own bills Claude through an API key or a cloud account, never a Claude subscription/);
 });
 
+test("every model pin the checks carry is documented beside the others, the fable pin with when to set it", () => {
+  // The containment above runs one way, pages within the code, so a pin added to the code and left off the
+  // pages passes it. This runs the other way for the pins: each one on CLOUD_SETTINGS is named in §3b, in
+  // the reference's pin row and in the example settings file's Foundry block.
+  const pins = CLOUD_SETTINGS.filter((n) => /^ANTHROPIC_DEFAULT_[A-Z]+_MODEL$/.test(n));
+  assert.ok(pins.includes("ANTHROPIC_DEFAULT_FABLE_MODEL"), `the fable pin is not carried, so the pages would be held to ${pins.length}`);
+  const b = section(read("INSTALL.md"), "3b.");
+  const pinRow = read("docs/architecture/04-configuration-reference.md").split("\n").find((l) => l.startsWith("| `ANTHROPIC_DEFAULT_OPUS_MODEL`"));
+  assert.ok(pinRow, "the configuration reference has no row for the model pins");
+  const example = read(".env.example");
+  for (const n of pins) {
+    assert.ok(b.includes(n), `§3b does not name ${n}`);
+    assert.ok(pinRow.includes(`\`${n}\``), `the reference's pin row does not name ${n}`);
+    assert.match(example, new RegExp(`^# ${n}=`, "m"), `.env.example does not show ${n}`);
+  }
+  // A stage reaches fable only through the synthesis override, so each page says the pin is for that.
+  for (const [where, text] of [["§3b", flat(b)], ["the reference's pin row", pinRow], [".env.example", flat(example.replace(/^#\s?/gm, ""))]])
+    assert.match(text, /fable deployment's name if you set `?CLEAROTRON_SYNTHESIS_MODEL=fable/i, `${where} does not say when to set the fable pin`);
+});
+
 test("the release notes promise what setup does", () => {
   const program = flat(read(".changeset/the-reasoning-program-comes-with-the-install.md"));
   assert.doesNotMatch(program, /needs nothing installed first/, "the note promises a machine needs nothing installed; setup offers, and the reader may say no");

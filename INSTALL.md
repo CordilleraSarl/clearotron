@@ -418,7 +418,7 @@ CLEAROTRON_AI=anthropic-agent            # headless `claude -p`
 # CLEAROTRON_CLAUDE_PATH=                # only to force one copy (default: `claude` on PATH, then the copy setup installed)
 CLEAROTRON_AI_BILLING=subscription       # `subscription` (OAuth, default) | `api-key` | `cloud` (§3b)
 # ANTHROPIC_API_KEY=sk-ant-...           # only when CLEAROTRON_AI_BILLING=api-key
-# ANTHROPIC_DEFAULT_OPUS_MODEL=...       # optional: hold the opus tier at one model (and _SONNET_, _HAIKU_)
+# ANTHROPIC_DEFAULT_OPUS_MODEL=...       # optional: hold the opus tier at one model (and _SONNET_, _HAIKU_, _FABLE_)
 # CLEAROTRON_AI=openai-agent             # …or the second adapter: headless `codex exec`
 # CLEAROTRON_CODEX_PATH=                 # only to force one copy (default: `codex` on PATH, then the copy setup installed)
 
@@ -545,7 +545,8 @@ ANTHROPIC_DEFAULT_HAIKU_MODEL=<your Haiku deployment name>
 ```
 
 Foundry calls each model by the name of your deployment, so set the three to your deployment names. A tier
-whose deployment does not exist is refused by Azure, and the run stops and names it.
+whose deployment does not exist is refused by Azure, and the run stops and names it. Set
+`ANTHROPIC_DEFAULT_FABLE_MODEL` to your Fable deployment's name if you set `CLEAROTRON_SYNTHESIS_MODEL=fable`.
 
 **Google Cloud (Vertex AI)**
 
