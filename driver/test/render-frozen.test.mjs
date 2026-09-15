@@ -1771,7 +1771,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // measured reason.
 // Advanced again by the break recorded above the FROZEN constant: the closing line naming the models that
 // served the search, a behaviour change and not licence-only, so both constants move.
-const FROZEN_BEFORE_SPDX = "620dbacc4e2f4a3719c11baffbd9bd11be1cb0370c48d2b6b3f490b1e66635fa";
+// Advanced again by the break recorded above the FROZEN constant: a tier word on the closing line is
+// Claude's, a behaviour change and not licence-only, so both constants move.
+const FROZEN_BEFORE_SPDX = "2eae03c2dcfcaa75f0064663053e3f59c7c7aebb85ed8d3a50733df291f81d59";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2065,7 +2067,24 @@ const FROZEN_BEFORE_SPDX = "620dbacc4e2f4a3719c11baffbd9bd11be1cb0370c48d2b6b3f4
 //
 // The renderer's own lines are edited in place and its one new helper sits at the end of the file, so no
 // line the rest of the tree cites by number moved.
-const FROZEN = "d5cf5847ed5a58b56f8a0645a5db3447c8c206c03785e23722b3f4ca1b999992";
+//
+// A COMPANY'S OWN NAME FOR ITS DEPLOYMENT NEVER REACHES THE LINE (2026-09-15). Through a cloud, a turn may
+// report a name the company gave its own deployment. servedModels (tokens.mjs) now lists such a turn as the
+// tier it asked for ("Opus"), and a cloud's spelling of a Claude id as the dated Claude id, so the list may
+// read "claude-opus-5, Haiku". The line has to count a tier word as Claude's, or that list would print
+// "Prepared with:" and lose its vendor. The file's own checklist, answered:
+//
+//   1. Is it reachable from a REPUBLISH? YES, and that is the point: a republished run served under a
+//      deployment name loses the name and gains the tier word. Every list the previous code could be
+//      handed (Claude ids only, any other ids, nothing) renders byte for byte as before, because a list
+//      with no tier word takes exactly the old branch. The served-models test's earlier line arms, unchanged
+//      and green, hold that.
+//   2. Could it live in report.css or brand.mjs? NO. It decides which words the line prints.
+//   3. The hash moves HERE, in the commit that ships it. NOT licence-only, so FROZEN_BEFORE_SPDX advances
+//      with it.
+//
+// The edit sits inside the file's last helper, after every line the rest of the tree cites by number.
+const FROZEN = "863e0cc5b6df9cd0340fc5d6efd4f1f203a4db04611fefbf11f50a3d9a56242c";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

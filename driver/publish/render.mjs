@@ -2439,12 +2439,21 @@ function officeLinkNote() {
 
 // THE MODELS THAT SERVED THIS SEARCH, as one closing line of the scope section (2026-09-14). The ids are
 // the ones the engine reported for its turns (tokens.mjs servedModels), never the tier a stage asked
-// for: every tier goes to the program as the vendor's alias, and an alias names no model. Both report
+// for in place of a model the engine named: every tier goes to the program as the vendor's alias, and an
+// alias names no model. Both report
 // kinds call this, so they say it in the same words. '' when the run recorded none, so a run published
 // before the record existed renders exactly as it was delivered.
+//
+// A TIER WORD IS CLAUDE'S. servedModels lists a turn served under a company's own deployment name as the
+// tier it asked for ("Opus"), never the name, so the list may read "claude-opus-5, Haiku". Both are
+// Claude's and the line says so once; in a list that also names another vendor, the word says it itself
+// ("Claude Opus"). The three words are the ones servedModels writes. They are kept here rather than
+// imported, because tokens.mjs loads the driver's settings and this module renders without them.
+const CLAUDE_TIER_WORD_RE = /^(?:Opus|Sonnet|Haiku)$/;
 export function servedModelsLine(ids) {
   const list = (Array.isArray(ids) ? ids : []).map((s) => String(s ?? '').trim()).filter(Boolean);
   if (!list.length) return '';
-  const vendor = list.every((id) => /^claude-/i.test(id)) ? ' Claude' : '';
-  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">Prepared with${vendor}: ${list.map(esc).join(', ')}.</p>`;
+  const claude = list.every((id) => /^claude-/i.test(id) || CLAUDE_TIER_WORD_RE.test(id));
+  const shown = claude ? list : list.map((id) => (CLAUDE_TIER_WORD_RE.test(id) ? `Claude ${id}` : id));
+  return `<p class="servedby" style="margin:10px 0 0;font-size:13px">Prepared with${claude ? ' Claude' : ''}: ${shown.map(esc).join(', ')}.</p>`;
 }

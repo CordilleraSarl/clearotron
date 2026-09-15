@@ -46,7 +46,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { resolveModel } from "./driver.config.mjs";
+import { resolveModel, modelFamily } from "./driver.config.mjs";
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 import { stampRunEconomics, isCodeSide } from "./run-economics.mjs";
@@ -190,13 +190,20 @@ export function rollupTokens(runDir) {
  * THE MODELS THAT SERVED THIS RUN, as the engine reported them: distinct ids, in the order each first
  * served a turn. Read from every attempt row's `modelActual`, the id the wire named: the stage rows
  * gateway.mjs writes and the native-language rows jx.mjs and jx-units.mjs write, one list across both. Never
- * the tier a stage asked for: a tier goes to the CLI as the vendor's alias, so the request says nothing
- * about which model ran, and this is the record that does.
+ * the tier a stage asked for in place of a model the wire named: a tier goes to the CLI as the vendor's
+ * alias, so the request says nothing about which model ran, and this is the record that does. The tier
+ * stands in only for a name no client may read (below).
  *
  * THREE-VALUED. `null` when there is no attempt row to read (no telemetry directory, or no row in it is
  * a provider turn), so nothing was looked at. `[]` when attempt rows exist and none names a served model
  * (an engine that does not report one, a turn killed before it said, a turn the Claude program answered
  * itself), on a stage turn and a native-language turn alike. An empty list is never a guess.
+ *
+ * WHAT IS LISTED IS WHAT A CLIENT MAY READ, mapped here and nowhere else (servedName below), so meta.json,
+ * report-data.json and the report's closing line carry one list and cannot disagree. Through a cloud, a
+ * turn reports either that cloud's spelling of a Claude model or a name the company gave its own
+ * deployment. The first is listed as the Claude id it names; the second is listed as the tier the turn
+ * asked for ("Opus"), never as the name. The attempt row itself keeps what the program reported.
  */
 export function servedModels(runDir) {
   const dDir = driverDir(runDir);
@@ -221,12 +228,61 @@ export function servedModels(runDir) {
       // turn a cloud refused for a missing deployment (2026-09-14). No model served that turn, so a
       // bracketed marker is never listed as one.
       if (!id || /^<.*>$/.test(id)) continue;
+      // Keyed on the name a client reads, so two deployments serving one tier, or one model reached
+      // through two clouds, are listed once.
+      const name = servedName(rec, id);
+      if (!name) continue;
       const ts = String(rec.ts ?? "");
-      if (!firstSeen.has(id) || ts < firstSeen.get(id)) firstSeen.set(id, ts);
+      if (!firstSeen.has(name) || ts < firstSeen.get(name)) firstSeen.set(name, ts);
     }
   }
   if (!attempts) return null;
   return [...firstSeen].sort((a, b) => (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0)).map(([id]) => id);
+}
+
+// Imported here, beside its one reader: the tier every native-language step asks for (see servedName).
+import { JX_TIER } from "./engine/jx-turn.mjs";
+
+// AMAZON'S SPELLING OF A CLAUDE ID: an optional cross-region prefix (`us.`, `eu.`, `apac.`, `global.`), the
+// vendor prefix `anthropic.`, and a version suffix (`-v1:0`), optionally at the end of an inference
+// profile's full address (`arn:aws:bedrock:<region>:<account>:inference-profile/…`), whose account number
+// is the company's and is dropped with the rest. `us.anthropic.claude-opus-4-1-20250805-v1:0` is
+// `claude-opus-4-1-20250805`. Anchored on `anthropic.claude-`, so no other vendor's id is rewritten.
+const AMAZON_CLAUDE_ID_RE = /^(?:arn:aws[\w-]*:bedrock:[^/]*\/)?(?:[a-z]{2,6}(?:-[a-z]+)?\.)?anthropic\.(claude-[a-z0-9.-]+?)(?:-v\d+(?::\d+)?)?$/i;
+// GOOGLE'S SPELLING, `claude-opus-4-1@20250805`. It already names the model; it is listed as the dated id
+// `claude-opus-4-1-20250805` because that is the same model's name on Anthropic's own API and on Amazon's,
+// so a model reached through two routes is one entry rather than two spellings of one model.
+const GOOGLE_CLAUDE_ID_RE = /^(claude-[a-z0-9.-]+)@(\d{8})$/i;
+// The engine names a Claude turn's row carries: the stage rows' engine, and the native-language rows'
+// vendor (jxBillingStamp in jx-lanes.mjs).
+const CLAUDE_ENGINES = new Set(["anthropic-agent", "anthropic"]);
+const CLAUDE_TIERS = new Set(["opus", "sonnet", "haiku"]);
+
+/**
+ * The name a client reads for one served id, or null when it must not be listed.
+ *
+ * A CLAUDE ID, in any cloud's spelling, is the model it names. ANY OTHER ID ON A CLAUDE TURN names no
+ * Claude model, and on Azure Foundry that is the name a company gave its deployment (`acme-prod-opus`): a
+ * company's internal name, and never one to print on its client's report. The turn is listed as the tier
+ * it asked for instead, which is what the company deployed under that name. A row with no engine stamp
+ * reads as Claude's, as modelKey above reads it. Any other engine's id is listed as reported: a Codex id
+ * is the model's own name.
+ */
+function servedName(rec, id) {
+  const amazon = AMAZON_CLAUDE_ID_RE.exec(id);
+  const google = amazon ? null : GOOGLE_CLAUDE_ID_RE.exec(id);
+  const named = amazon ? amazon[1] : google ? `${google[1]}-${google[2]}` : id;
+  if (/^claude-/i.test(named)) return named;
+  const engine = typeof rec.engine === "string" ? rec.engine : "";
+  if (engine && !CLAUDE_ENGINES.has(engine)) return named;
+  // THE TIER THE TURN ASKED FOR. A stage row's `model` is that request ("opus"). A native-language row's
+  // `model` is its SERVED id, written beside `modelActual` from the same value (jxModelFields), so reading
+  // it as the request would hand back the deployment name; those rows record no request, and every one of
+  // those steps asks for JX_TIER. modelFamily is the one tier reader. A tier it cannot place returns null
+  // and the id is left off: listing nothing is honest, and listing the name is the leak this prevents.
+  const asked = rec.model === rec.modelActual ? JX_TIER : rec.model;
+  const tier = modelFamily(asked);
+  return CLAUDE_TIERS.has(tier) ? tier[0].toUpperCase() + tier.slice(1) : null;
 }
 
 /**
