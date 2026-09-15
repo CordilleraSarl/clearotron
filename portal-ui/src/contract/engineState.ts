@@ -33,6 +33,8 @@ export type BillingRefusal = {
   readonly kind: string
   /** subscription, api-key or cloud; null for a word that is not a mode, which is never sent. */
   readonly mode: string | null
+  /** The billing setting is blank, so `mode` is the default rather than a word anybody wrote. */
+  readonly defaulted?: boolean
   /** The billing setting, by name. */
   readonly setting: string
   readonly clouds: readonly { readonly name: string; readonly setting: string }[]
@@ -79,9 +81,14 @@ const setupCommandWords = (route: EngineFacts['setupRoute']): string =>
 const listed = (xs: readonly string[], and = 'and'): string =>
   xs.length <= 1 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} ${and} ${xs[xs.length - 1]}`
 
-/** How each billing mode reads inside "payment is set to …". */
+/** How each billing mode reads inside "payment is set to …". Looked up by own key only (`paidBy`). */
 const PAID_BY: Readonly<Record<string, string>> = { subscription: 'subscription', 'api-key': 'an API key', cloud: 'a cloud account' }
+// OWN KEYS ONLY: `PAID_BY['constructor']` is a function, and a mode of that name would print its source.
+const paidBy = (mode: string | null): string =>
+  mode !== null && Object.hasOwn(PAID_BY, mode) ? (PAID_BY[mode] as string) : (mode ?? 'a way of paying')
 const COUNT = ['no', 'one', 'two', 'three', 'four']
+/** The kinds whose sentence is built from the clouds; with none sent, it could name none. */
+const NAMES_CLOUDS = new Set(['switch-beside-mode', 'two-clouds', 'no-cloud'])
 
 /**
  * THE ONE SENTENCE A REFUSED BILLING SETTING PUTS ON THE ROW: that searches will be refused, why, and the
@@ -93,14 +100,21 @@ const COUNT = ['no', 'one', 'two', 'three', 'four']
  */
 export function billingRefusalSentence(r: BillingRefusal): string {
   const setting = r.setting || 'the billing setting'
-  const paid = PAID_BY[r.mode ?? ''] ?? r.mode ?? 'a way of paying'
+  const generic = `Searches will be refused over how this machine is set to pay. Check ${setting} and the settings beside it.`
+  // A CLOUD SENTENCE WITH NO CLOUD IN IT reads "the  switches ()". A reason that names none, from a cloud
+  // this build has no name for, takes the sentence that names no cloud.
+  if (NAMES_CLOUDS.has(r.kind) && r.clouds.length === 0) return generic
+  // BLANK IS NOT A WORD ANYBODY WROTE. "Payment is set to subscription" sends a reader to a line their
+  // settings file does not have, when the subscription is only the default for a blank setting.
+  const paid = r.defaulted ? `${paidBy(r.mode)}, the default while ${setting} is not set`
+    : `set to ${paidBy(r.mode)}`
   switch (r.kind) {
     case 'switch-beside-mode': {
       const one = r.clouds.length === 1
       const names = listed(r.clouds.map((c) => c.name))
       const switches = listed(r.clouds.map((c) => c.setting))
       const keep = r.mode === 'api-key' ? 'to pay with the API key' : 'to pay by subscription'
-      return `Searches will be refused: payment is set to ${paid}, but the ${names} ${one ? 'switch' : 'switches'} `
+      return `Searches will be refused: payment is ${r.defaulted ? 'by ' : ''}${paid}, but the ${names} ${one ? 'switch' : 'switches'} `
         + `(${switches}) ${one ? 'is' : 'are'} also on. `
         + (one
           ? `Turn ${switches} off ${keep}, or set ${setting} to cloud to pay through ${names}.`
@@ -110,10 +124,14 @@ export function billingRefusalSentence(r: BillingRefusal): string {
       return `Searches will be refused: payment is set to a cloud account, but ${COUNT[r.clouds.length] ?? r.clouds.length} `
         + `clouds are switched on, ${listed(r.clouds.map((c) => `${c.name} (${c.setting})`))}. `
         + 'Turn off all but the one you pay through.'
+    // BOTH WAYS OUT, as the run door gives them: choose a cloud, or go back to the subscription. A switch
+    // alone does not reach a cloud, which also needs its project, resource or region, so the sentence says so.
     case 'no-cloud':
       return 'Searches will be refused: payment is set to a cloud account, but no cloud is chosen. '
-        + `Turn on your cloud's switch (${listed(r.clouds.map((c) => `${c.setting} for ${c.name}`), 'or')})`
-        + (r.gateway ? `, or set ${r.gateway} for a gateway.` : '.')
+        + `Turn on your cloud's switch (${listed(r.clouds.map((c) => `${c.setting} for ${c.name}`), 'or')}) `
+        + 'with the settings that cloud needs'
+        + (r.gateway ? `, set ${r.gateway} for a gateway,` : ',')
+        + ` or set ${setting} to subscription.`
     case 'not-a-mode':
       return `Searches will be refused: ${setting} is set to a word Clearotron does not know. `
         + `Set it to ${listed(r.modes, 'or')}.`
@@ -124,7 +142,7 @@ export function billingRefusalSentence(r: BillingRefusal): string {
           ? `, or set ${r.engineSetting} to ${r.engineChoice} to pay for Claude through your cloud.`
           : '.')
     default:
-      return `Searches will be refused over how this machine is set to pay. Check ${setting} and the settings beside it.`
+      return generic
   }
 }
 
@@ -154,6 +172,9 @@ export function engineRowFaults(
     // named a hand install and a restart "so it re-reads its PATH"; setup installs the program now, into a
     // folder a run finds without PATH, so it names setup. The restart stays for what it is still for: the
     // services look for the program when they start, and the search screen reads what they found then.
+    // It does not say setup asks how the program is paid for: setup writes Clearotron's settings file, and
+    // services running in the background read another, so that half would be true only on some machines,
+    // and it is not what this fault is about.
     //
     // No program name means an older service or an engine this build does not ship, which the `known`
     // fault above already names. The sentence that shipped before, unchanged, rather than one naming null.
@@ -161,8 +182,8 @@ export function engineRowFaults(
       ? []
       : engine.program
         ? [`The engine program \`${engine.program}\` cannot be found or run on this machine. `
-           + `Run the setup wizard, ${setupCommandWords(engine.setupRoute)}: it offers to install the program, `
-           + 'asks how it is paid for, and proves it with one turn. '
+           + `Run the setup wizard, ${setupCommandWords(engine.setupRoute)}: it offers to install the program `
+           + 'and proves it with one turn. '
            + "Then restart Clearotron's services, which look for the program when they start."]
         : ['The engine program cannot be found or run on this machine.']),
     // SELECTED IS NOT USABLE, and this row is where those two got drawn the same.

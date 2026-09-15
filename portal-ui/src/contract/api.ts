@@ -2360,13 +2360,17 @@ export const api = {
                 cloudName: asString(bill['cloudName']),
                 // THE REASON, NEVER THE REFUSAL'S SENTENCE. The driver classifies a refusal once and sends
                 // its kind and the names in it; the row words it in engineState.ts. `kind` survives as any
-                // string, so a refusal this build cannot name still turns the row red.
-                reason: bill['reason'] != null && typeof bill['reason'] === 'object' && !Array.isArray(bill['reason'])
+                // string, so a refusal this build cannot name still turns the row red — and so does a reason
+                // of a shape it cannot read (a string, a list), which decodes as a refusal of no known kind
+                // rather than as no refusal at all. Only an absent reason is a green one.
+                reason: bill['reason'] != null
                   ? (() => {
-                      const r = asRecord(bill['reason'])
+                      const raw = bill['reason']
+                      const r = typeof raw === 'object' && !Array.isArray(raw) ? asRecord(raw) : {}
                       return {
                         kind: asString(r['kind']) ?? 'other',
                         mode: asString(r['mode']),
+                        defaulted: r['defaulted'] === true,
                         setting: asString(r['setting']) ?? '',
                         clouds: asArray(r['clouds']).flatMap((c) => {
                           const x = asRecord(c)

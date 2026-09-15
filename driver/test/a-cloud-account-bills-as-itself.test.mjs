@@ -38,13 +38,13 @@ delete process.env.CLEAROTRON_MCP_URL;
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { driverDir } from "../../shared/driver-dir.mjs";
-const { resolveAuthMode, billingMode } = await import("../engine/auth.mjs");
+const { resolveAuthMode, billingMode, CLOUD_SWITCH } = await import("../engine/auth.mjs");
 const { spawnEnv, providerOf } = await import("../engine/anthropic-agent.mjs");
 const { runStage } = await import("../gateway.mjs");
 const { makeJxTurnRunner } = await import("../engine/jx-turn.mjs");
 const { jxBillingStamp } = await import("../jx-lanes.mjs");
 const { runJxTurn } = await import("../../providers/jx/src/turn-envelope.mjs");
-const { engineInventory } = await import("../config-inventory.mjs");
+const { engineInventory, cloudName } = await import("../config-inventory.mjs");
 const { probeEngineTurn, classifyProbe } = await import("../engine/probe.mjs");
 
 const MOCK = join(dirname(fileURLToPath(import.meta.url)), "mock-claude.mjs");
@@ -307,12 +307,17 @@ test("every billing refusal carries its reason as a kind and the names in it, ne
   const reason = (env, engine = "anthropic-agent") => engineInventory({ CLEAROTRON_AI: engine, PATH: "", ...env }).billing.reason;
   const cloudOf = (c) => ({ name: { vertex: "Google Cloud", foundry: "Microsoft Azure", bedrock: "Amazon Bedrock" }[c],
     setting: { vertex: "CLAUDE_CODE_USE_VERTEX", foundry: "CLAUDE_CODE_USE_FOUNDRY", bedrock: "CLAUDE_CODE_USE_BEDROCK" }[c] });
-  const base = { setting: "CLEAROTRON_AI_BILLING", mode: null, clouds: [], modes: [], gateway: null, engineSetting: null, engineChoice: null };
+  const base = { setting: "CLEAROTRON_AI_BILLING", mode: null, defaulted: false, clouds: [], modes: [], gateway: null, engineSetting: null, engineChoice: null };
 
   assert.deepEqual(reason({ CLEAROTRON_AI_BILLING: "subscription", CLAUDE_CODE_USE_FOUNDRY: "1" }),
     { ...base, kind: "switch-beside-mode", mode: "subscription", clouds: [cloudOf("foundry")] });
-  assert.deepEqual(reason({ CLAUDE_CODE_USE_VERTEX: "1", CLAUDE_CODE_USE_BEDROCK: "on" }),
-    { ...base, kind: "switch-beside-mode", mode: "subscription", clouds: [cloudOf("vertex"), cloudOf("bedrock")] }, "an unset word is subscription");
+  // AN UNSET WORD IS SUBSCRIPTION, AND SAYS SO: the page must not tell a reader the setting holds a word
+  // their file does not have. Blank and whitespace are unset too, as billingMode reads them.
+  for (const unset of [{}, { CLEAROTRON_AI_BILLING: "" }, { CLEAROTRON_AI_BILLING: "  " }]) {
+    assert.deepEqual(reason({ ...unset, CLAUDE_CODE_USE_VERTEX: "1", CLAUDE_CODE_USE_BEDROCK: "on" }),
+      { ...base, kind: "switch-beside-mode", mode: "subscription", defaulted: true, clouds: [cloudOf("vertex"), cloudOf("bedrock")] },
+      `an unset word is subscription, by default: ${JSON.stringify(unset)}`);
+  }
   assert.deepEqual(reason({ CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: "sk-x", CLAUDE_CODE_USE_BEDROCK: "1" }),
     { ...base, kind: "switch-beside-mode", mode: "api-key", clouds: [cloudOf("bedrock")] });
   assert.deepEqual(reason({ CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1", CLAUDE_CODE_USE_VERTEX: "1" }),
@@ -325,6 +330,14 @@ test("every billing refusal carries its reason as a kind and the names in it, ne
     { ...base, kind: "not-a-mode", modes: ["subscription", "api-key"] }, "Codex takes two modes, and the reason names those two");
   assert.deepEqual(reason({ CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1" }, "openai-agent"),
     { ...base, kind: "cloud-on-codex", mode: "cloud", modes: ["subscription", "api-key"], engineSetting: "CLEAROTRON_AI", engineChoice: "anthropic-agent" });
+  assert.equal(reason({ CLEAROTRON_AI_BILLING: "cloud", ANTHROPIC_BASE_URL: "https://gateway.test" }, "openai-agent").engineChoice, "anthropic-agent",
+    "a gateway address alone is a cloud the Claude engine pays through");
+  // MOVING TO THE CLAUDE ENGINE IS OFFERED ONLY WHERE IT WOULD PAY. With no cloud chosen, or two, that
+  // engine refuses too, so the reason names no engine to move to.
+  for (const env of [{}, { CLAUDE_CODE_USE_VERTEX: "1", CLAUDE_CODE_USE_BEDROCK: "1" }, { CLAUDE_CODE_USE_VERTEX: "1", CLAUDE_CODE_USE_FOUNDRY: "1", CLAUDE_CODE_USE_BEDROCK: "1" }]) {
+    assert.deepEqual(reason({ CLEAROTRON_AI_BILLING: "cloud", ...env }, "openai-agent"),
+      { ...base, kind: "cloud-on-codex", mode: "cloud", modes: ["subscription", "api-key"] }, JSON.stringify(env));
+  }
 
   // A MISSING KEY IS NOT A REASON: it keeps its own shape, and the two never arrive together.
   for (const [env, engine] of [[{ CLEAROTRON_AI_BILLING: "api-key" }, "anthropic-agent"], [{ CLEAROTRON_AI_BILLING: "api-key", CLAUDE_CODE_USE_BEDROCK: "1" }, "anthropic-agent"], [{ CLEAROTRON_AI_BILLING: "api-key" }, "openai-agent"]]) {
@@ -336,14 +349,103 @@ test("every billing refusal carries its reason as a kind and the names in it, ne
   // THE WORD THAT IS NOT A MODE IS WHATEVER WAS TYPED, and a key pasted into the setting is that word. It
   // reaches no field of what is written to the capture and served to the page: not the mode, not the
   // refusal's sentence, not the reason.
-  const typed = "zz-a-key-pasted-into-the-billing-word-zz";
+  // Each word carries a marker that must reach no field. The second and third CONTAIN the resolver's own
+  // phrase, which a clean-up by pattern stops at, leaving the rest of the word behind; the fourth spans a line.
+  const typed = [
+    ["zz-a-key-pasted-into-the-billing-word-zz", "zz-a-key-pasted"],
+    ["x is not a billing mode leaktail-one", "leaktail-one"],
+    ["a=b is not a billing mode leaktail-two", "leaktail-two"],
+    ["first-line\nleaktail-three", "leaktail-three"],
+  ];
   for (const engine of ["anthropic-agent", "openai-agent"]) {
-    const e = engineInventory({ CLEAROTRON_AI: engine, CLEAROTRON_AI_BILLING: typed, PATH: "" });
-    assert.equal(e.billing.reason.kind, "not-a-mode", engine);
-    assert.equal(e.billing.mode, "unknown", `${engine}: the typed word was recorded as the mode`);
-    assert.match(e.billing.refusal, /^CLEAROTRON_AI_BILLING is set to a word that is not a billing mode/, engine);
-    assert.ok(!JSON.stringify(e).toLowerCase().includes(typed), `${engine}: the typed word reached the inventory: ${JSON.stringify(e)}`);
+    for (const [word, marker] of typed) {
+      const e = engineInventory({ CLEAROTRON_AI: engine, CLEAROTRON_AI_BILLING: word, PATH: "" });
+      const at = `${engine}, ${JSON.stringify(word)}`;
+      assert.equal(e.billing.reason.kind, "not-a-mode", at);
+      assert.equal(e.billing.mode, "unknown", `${at}: the typed word was recorded as the mode`);
+      assert.equal(e.billing.refusal, "CLEAROTRON_AI_BILLING is set to a word that is not a billing mode — refusing to guess, "
+        + `because the guess would bill the subscription. One of: ${e.billing.reason.modes.join(", ")}.`, at);
+      assert.ok(!JSON.stringify(e).toLowerCase().includes(marker), `${at}: the typed word reached the inventory: ${JSON.stringify(e)}`);
+    }
   }
+});
+
+// ── THE CLASSIFIER HELD TO THE RESOLVER ─────────────────────────────────────────────────────────────
+//
+// billingRefusalReason reads a refusal's kind back from the environment, in the resolver's order, because
+// the resolver throws a sentence and nothing else. Nothing else holds the two together: reorder the
+// resolver's checks and the page names one refusal while the run door throws another, with every fixed
+// case above still green. So this drives every combination of the settings the resolver reads, asks the
+// resolver, and asks the inventory, and they must name the same refusal.
+test("the reason's kind is the refusal the run door throws, over every combination of the billing settings", () => {
+  // The resolver's sentences, by the words that tell them apart. A sentence none of these match is a
+  // refusal this test does not know, and it fails rather than passing it by.
+  const KINDS = [
+    [/=api-key but (ANTHROPIC|CODEX)_API_KEY is not set/, "missing-key"],
+    [/^CLAUDE_CODE_USE_\w+( and CLAUDE_CODE_USE_\w+)* (is|are) on, which sends Claude/, "switch-beside-mode"],
+    [/more than one cloud is switched on/, "two-clouds"],
+    [NONE, "no-cloud"],
+    [/is not a billing mode/, "not-a-mode"],
+    [/this machine runs the Codex engine/, "cloud-on-codex"],
+  ];
+  const words = [undefined, "", "subscription", "api-key", "cloud", " Cloud ", "subscriptoin"];
+  let refusals = 0, combinations = 0;
+  for (const engine of ["anthropic-agent", "openai-agent"]) {
+    for (const word of words) {
+      for (const keyed of [false, true]) {
+        for (let switches = 0; switches < 8; switches++) {
+          for (const gateway of [false, true]) {
+            const env = {
+              ...(word === undefined ? {} : { CLEAROTRON_AI_BILLING: word }),
+              ...(keyed ? { ANTHROPIC_API_KEY: "k", CODEX_API_KEY: "k" } : {}),
+              ...(switches & 1 ? { CLAUDE_CODE_USE_VERTEX: "1" } : {}),
+              ...(switches & 2 ? { CLAUDE_CODE_USE_FOUNDRY: "1" } : {}),
+              ...(switches & 4 ? { CLAUDE_CODE_USE_BEDROCK: "1" } : {}),
+              ...(gateway ? { ANTHROPIC_BASE_URL: "https://gateway.test" } : {}),
+            };
+            combinations++;
+            const at = `${engine} ${JSON.stringify(env)}`;
+            let thrown = null;
+            try { resolveAuthMode({ engineName: engine, env }); } catch (e) { thrown = e; }
+            const b = engineInventory({ CLEAROTRON_AI: engine, PATH: "", ...env }).billing;
+            if (!thrown) {
+              assert.equal(b.reason, undefined, `${at}: the run door resolves, and the page names a refusal`);
+              assert.deepEqual(b.missing, [], at);
+              continue;
+            }
+            refusals++;
+            const kind = KINDS.find(([re]) => re.test(thrown.message))?.[1];
+            assert.ok(kind, `${at}: the resolver refuses in a way this test does not know: ${thrown.message}`);
+            if (kind === "missing-key") {
+              assert.equal(b.missing.length, 1, at);
+              assert.equal(b.reason, undefined, at);
+            } else {
+              assert.equal(b.reason?.kind, kind, `${at}: the run door throws ${kind}, the page names ${b.reason?.kind}`);
+            }
+            // THE ENGINE THE PAGE OFFERS TO MOVE TO PAYS, in this same environment.
+            if (b.reason?.engineChoice) {
+              assert.doesNotThrow(() => resolveAuthMode({ engineName: b.reason.engineChoice, env }), `${at}: moving to ${b.reason.engineChoice} is refused too`);
+            }
+          }
+        }
+      }
+    }
+  }
+  assert.equal(combinations, 448);
+  assert.ok(refusals > 100, `too few refusals to have held anything: ${refusals}`);
+});
+
+test("every cloud the run door can bill has a name on the page", () => {
+  // A cloud with a switch and no name draws a working cloud account as "API key", and a refusal naming it
+  // as "the  switch ()". The name comes from the credential advice's table; this holds that every cloud
+  // the resolver can return, and every switch it reads, has one.
+  for (const c of [...Object.keys(CLOUD_SWITCH), "gateway"]) {
+    const name = cloudName(c);
+    assert.ok(typeof name === "string" && name.length > 0, `${c}: no name for this cloud`);
+  }
+  const r = engineInventory({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "cloud", PATH: "" }).billing.reason;
+  assert.deepEqual(r.clouds.map((c) => c.setting), Object.values(CLOUD_SWITCH), "the no-cloud reason lists another set of switches");
+  for (const c of r.clouds) assert.ok(c.name, `${c.setting}: sent with no name`);
 });
 
 test("the probe refuses a cloud mode with no cloud switched on before it spends a turn", async () => {

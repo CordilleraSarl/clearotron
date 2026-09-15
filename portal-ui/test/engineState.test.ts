@@ -72,6 +72,9 @@ test('one reading, no engine program anywhere: the row is not green and names bo
     'the row does not name the setup command that installs the program')
   assert.doesNotMatch(sentence, /npm install -g|re-reads its PATH|where the service can see it|the CLI\b/,
     'the row still gives the hand install, or the restart for PATH, from before setup installed the program')
+  // Setup writes Clearotron's settings file, which services in the background do not read, so "asks how it
+  // is paid for" is true only on some machines, and it is not this fault.
+  assert.doesNotMatch(sentence, /paid for/, 'the missing-program row promises what setup does about payment')
   assert.match(sentence, /restart/i, 'the row does not say a restart is what makes the install visible')
   for (const [route, command] of [['packaged', '`npx clearotron install`:'], ['checkout', '`npm run setup`:']] as const) {
     const one = engineRowFaults({ ...reading.engine, setupRoute: route }).join(' ')
@@ -229,7 +232,7 @@ test('the configuration screen renders the shared decision whole, and derives no
 // A field dropped at any of those hops turns a state back into the word or the silence it had before.
 
 /** The config route's answer for one environment, decoded by the portal exactly as the page decodes it. */
-async function rowFromEnvironment(env: Record<string, string>) {
+async function rowFromEnvironment(env: Record<string, string>, opts: { readonly programDisputed?: boolean } = {}) {
   const root = mkdtempSync(join(tmpdir(), 'engine-row-'))
   // The driver's configuration module reads its settings when it loads, and its pool default is a real
   // archive, so both are pinned before anything imports it.
@@ -243,18 +246,18 @@ async function rowFromEnvironment(env: Record<string, string>) {
   const { flagView } = await import('../../driver/portal-config-view.mjs')
   const live = buildFlagSnapshot({}, { capturedAt: new Date().toISOString(), engine: engineInventory(env), providers: [] })
   const wire = JSON.parse(JSON.stringify(flagView(root, { live }))) as Record<string, any>
-  return { wire, row: await decodedRow(wire) }
+  return { wire, row: await decodedRow(wire, opts) }
 }
 
 /** The portal's own decoder over one response body, then the row the page draws from it. */
-async function decodedRow(wire: unknown) {
+async function decodedRow(wire: unknown, opts: { readonly programDisputed?: boolean } = {}) {
   const original = globalThis.fetch
   globalThis.fetch = (async () => new Response(JSON.stringify(wire), { status: 200, headers: { 'content-type': 'application/json' } })) as typeof fetch
   try {
     const got = await api.adminConfig()
     assert.equal(got.kind, 'ok', JSON.stringify(got))
     if (got.kind !== 'ok' || !got.value.engine) throw new Error('the config view decoded to no engine')
-    return engineRow(got.value.engine)
+    return engineRow(got.value.engine, opts)
   } finally {
     globalThis.fetch = original
   }
@@ -280,9 +283,14 @@ const BILLING_STATES: readonly { readonly name: string; readonly env: Record<str
   { name: 'a cloud switch beside an API key', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'api-key', ANTHROPIC_API_KEY: 'sk-x', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
     fault: 'Searches will be refused: payment is set to an API key, but the Amazon Bedrock switch (CLAUDE_CODE_USE_BEDROCK) is also on. '
       + 'Turn CLAUDE_CODE_USE_BEDROCK off to pay with the API key, or set CLEAROTRON_AI_BILLING to cloud to pay through Amazon Bedrock.' },
-  { name: 'two cloud switches beside subscription', env: { ...CLAUDE, CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
-    fault: 'Searches will be refused: payment is set to subscription, but the Google Cloud and Amazon Bedrock switches (CLAUDE_CODE_USE_VERTEX and CLAUDE_CODE_USE_BEDROCK) are also on. '
+  // THE BILLING WORD UNSET, the state measured on Foundry: the subscription is the default, not a line in
+  // the settings file, and the sentence must not send a reader looking for one.
+  { name: 'two cloud switches, the billing word unset', env: { ...CLAUDE, CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
+    fault: 'Searches will be refused: payment is by subscription, the default while CLEAROTRON_AI_BILLING is not set, but the Google Cloud and Amazon Bedrock switches (CLAUDE_CODE_USE_VERTEX and CLAUDE_CODE_USE_BEDROCK) are also on. '
       + 'Turn them off to pay by subscription, or set CLEAROTRON_AI_BILLING to cloud and leave one on.' },
+  { name: 'one cloud switch, the billing word unset', env: { ...CLAUDE, CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Subscription',
+    fault: 'Searches will be refused: payment is by subscription, the default while CLEAROTRON_AI_BILLING is not set, but the Microsoft Azure switch (CLAUDE_CODE_USE_FOUNDRY) is also on. '
+      + 'Turn CLAUDE_CODE_USE_FOUNDRY off to pay by subscription, or set CLEAROTRON_AI_BILLING to cloud to pay through Microsoft Azure.' },
   { name: 'a cloud account with two clouds on', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Subscription',
     fault: 'Searches will be refused: payment is set to a cloud account, but two clouds are switched on, Google Cloud (CLAUDE_CODE_USE_VERTEX) and Microsoft Azure (CLAUDE_CODE_USE_FOUNDRY). '
       + 'Turn off all but the one you pay through.' },
@@ -291,8 +299,8 @@ const BILLING_STATES: readonly { readonly name: string; readonly env: Record<str
       + 'Turn off all but the one you pay through.' },
   { name: 'a cloud account with no cloud chosen', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'cloud' }, state: 'Subscription',
     fault: "Searches will be refused: payment is set to a cloud account, but no cloud is chosen. Turn on your cloud's switch "
-      + '(CLAUDE_CODE_USE_VERTEX for Google Cloud, CLAUDE_CODE_USE_FOUNDRY for Microsoft Azure or CLAUDE_CODE_USE_BEDROCK for Amazon Bedrock), '
-      + 'or set ANTHROPIC_BASE_URL for a gateway.' },
+      + '(CLAUDE_CODE_USE_VERTEX for Google Cloud, CLAUDE_CODE_USE_FOUNDRY for Microsoft Azure or CLAUDE_CODE_USE_BEDROCK for Amazon Bedrock) '
+      + 'with the settings that cloud needs, set ANTHROPIC_BASE_URL for a gateway, or set CLEAROTRON_AI_BILLING to subscription.' },
   { name: 'a payment word Clearotron does not know', env: { ...CLAUDE, CLEAROTRON_AI_BILLING: 'subscriptoin' }, state: 'Subscription',
     fault: 'Searches will be refused: CLEAROTRON_AI_BILLING is set to a word Clearotron does not know. Set it to subscription, api-key or cloud.' },
   { name: 'Codex on subscription', env: CODEX, state: 'Subscription', fault: null },
@@ -302,6 +310,14 @@ const BILLING_STATES: readonly { readonly name: string; readonly env: Record<str
   { name: 'Codex on a cloud account', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_FOUNDRY: '1' }, state: 'Subscription',
     fault: 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this machine runs the Codex engine. '
       + 'Set CLEAROTRON_AI_BILLING to subscription or api-key, or set CLEAROTRON_AI to anthropic-agent to pay for Claude through your cloud.' },
+  // THE SECOND WAY OUT ONLY WHERE IT LEADS OUT. With no cloud chosen, or two, the Claude engine would refuse
+  // too, so the sentence stops at the one change that works.
+  { name: 'Codex on a cloud account with no cloud chosen', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud' }, state: 'Subscription',
+    fault: 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this machine runs the Codex engine. '
+      + 'Set CLEAROTRON_AI_BILLING to subscription or api-key.' },
+  { name: 'Codex on a cloud account with two clouds on', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'cloud', CLAUDE_CODE_USE_VERTEX: '1', CLAUDE_CODE_USE_BEDROCK: '1' }, state: 'Subscription',
+    fault: 'Searches will be refused: payment is set to a cloud account, which pays only for Claude, and this machine runs the Codex engine. '
+      + 'Set CLEAROTRON_AI_BILLING to subscription or api-key.' },
   { name: 'Codex on a payment word it does not know', env: { ...CODEX, CLEAROTRON_AI_BILLING: 'subscriptoin' }, state: 'Subscription',
     fault: 'Searches will be refused: CLEAROTRON_AI_BILLING is set to a word Clearotron does not know. Set it to subscription or api-key.' },
 ]
@@ -316,6 +332,62 @@ test('from the driver to the row: the state word names what pays, and a refused 
   // A refusal the driver names by a kind this build does not know is still red, with a sentence.
   assert.equal(billingRefusalSentence({ ...SWITCH_BESIDE_SUBSCRIPTION, kind: 'a-kind-from-a-later-release' }),
     'Searches will be refused over how this machine is set to pay. Check CLEAROTRON_AI_BILLING and the settings beside it.')
+})
+
+test('from the driver to the row: a missing program names the one setup command this install runs, and a disputed one the setting for its path', async () => {
+  // THE PROGRAM IS NAMED BY A PATH THAT DOES NOT EXIST, so it is missing on any machine: a path setting
+  // that is set is not second-guessed by a copy setup installed.
+  const nowhere = join(mkdtempSync(join(tmpdir(), 'no-program-')), 'not-here')
+  for (const [id, setting] of [['anthropic-agent', 'CLEAROTRON_CLAUDE_PATH'], ['openai-agent', 'CLEAROTRON_CODEX_PATH']] as const) {
+    const { wire, row } = await rowFromEnvironment({ CLEAROTRON_AI: id, [setting]: nowhere, PATH: '' })
+    const route = wire['engine']['setupRoute']
+    assert.ok(route === 'packaged' || route === 'checkout', `${id}: the service sent no route word: ${route}`)
+    assert.equal(wire['engine']['programSetting'], setting, `${id}: the service names another setting`)
+    const text = row.faults.join(' ')
+    assert.equal(row.ok, false, `${id}: green with no program`)
+    const command = route === 'packaged' ? '`npx clearotron install`' : '`npm run setup`'
+    assert.ok(text.includes(`Run the setup wizard, ${command}:`), `${id}: the row does not name this install's setup command: ${text}`)
+    assert.ok(!text.includes('from a copy of the source'),
+      `${id}: the row names both setup commands although the service said which one this install runs: ${text}`)
+
+    // THE PROGRAM FOUND HERE AND NOT BY THE ENGINE: the row names the setting that holds its full path.
+    const disputed = await rowFromEnvironment({ ...HERE, CLEAROTRON_AI: id }, { programDisputed: true })
+    const said = disputed.row.faults.join(' ')
+    assert.ok(said.includes(`set ${setting} to the program's full path`), `${id}: the disputed row does not name ${setting}: ${said}`)
+  }
+})
+
+test('a reason of a shape this build cannot read still turns the row red', async () => {
+  // Only an absent reason is a green one. A string or a list is a service saying something about a refusal
+  // this build cannot read, and drawing that green would hide every search being refused.
+  const { wire } = await rowFromEnvironment(CLAUDE)
+  for (const odd of ['a sentence', [], 7, true]) {
+    const w = structuredClone(wire)
+    w['engine']['billing']['reason'] = odd
+    const row = await decodedRow(w)
+    assert.equal(row.ok, false, `a reason of ${JSON.stringify(odd)} drew a green row`)
+    assert.deepEqual(row.faults,
+      ['Searches will be refused over how this machine is set to pay. Check the billing setting and the settings beside it.'],
+      JSON.stringify(odd))
+  }
+  // A cloud this build has no name for is dropped by the decoder, and the sentence then names no cloud
+  // rather than "the  switches ()".
+  const w = structuredClone(wire)
+  w['engine']['billing']['reason'] = { ...SWITCH_BESIDE_SUBSCRIPTION, clouds: [{ name: null, setting: 'CLAUDE_CODE_USE_NEWCLOUD' }] }
+  assert.deepEqual((await decodedRow(w)).faults,
+    ['Searches will be refused over how this machine is set to pay. Check CLEAROTRON_AI_BILLING and the settings beside it.'])
+})
+
+test('a refusal sentence names no cloud it was not sent, and prints no code for a mode named like an object key', () => {
+  for (const kind of ['switch-beside-mode', 'two-clouds', 'no-cloud']) {
+    const said = billingRefusalSentence({ ...SWITCH_BESIDE_SUBSCRIPTION, kind, clouds: [] })
+    assert.equal(said, 'Searches will be refused over how this machine is set to pay. Check CLEAROTRON_AI_BILLING and the settings beside it.', kind)
+  }
+  for (const mode of ['constructor', 'toString', '__proto__', 'hasOwnProperty']) {
+    const said = billingRefusalSentence({ ...SWITCH_BESIDE_SUBSCRIPTION, mode })
+    assert.doesNotMatch(said, /function|native code|\[object/, `${mode}: ${said}`)
+    assert.ok(said.includes(`payment is set to ${mode},`), `${mode}: ${said}`)
+  }
 })
 
 test('an older service, which sends no cloud and no reason, draws the row exactly as it was drawn before', async () => {

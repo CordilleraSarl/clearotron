@@ -50,6 +50,7 @@ import { readFlagSnapshot, engineFor, providersFor, postureDisagreement } from "
 // reading is, because the question it was standing in for — does this still describe the box — now has
 // a direct answer in `lastRun.disagrees`.
 import { engineMode } from "./config-inventory.mjs";   // — the mode is DERIVED at read time, never stored
+import { BILLING_MODES } from "./engine/auth.mjs";   // — the three words a capture's billing mode may be shown as
 // THE ENGINE TABLE, READ FOR TWO WORDS. A row saying an engine cannot run has to name the program it
 // could not find and the command that installs it, or the reader is told they have a problem and not
 // what to do about it — and this table is already where the wizard and the run-door preflight read
@@ -143,8 +144,27 @@ function postureView(snap) {
  * The capture does not go away; it stops being the answer. It becomes "what the last run saw", and its
  * job is to name any field on which it disagrees with the live reading.
  */
+/**
+ * A CAPTURE'S BILLING WORD, SHOWN ONLY WHEN IT IS ONE OF THE MODES.
+ *
+ * The inventory records a billing word that is not a mode as `unknown`, because whatever was typed into
+ * the setting that decides who pays can be a key pasted there by mistake. A capture written before it
+ * did holds the typed word itself, as its mode and inside its refusal's sentence, and this page would
+ * print it twice: in the last-run comparison, whose live side now reads `unknown`, and under a capture
+ * shown in place of a live reading. So such a capture is read as `unknown`, with no refusal sentence,
+ * which the page does not read anyway (it words the refusal from `reason`). Until the engine service
+ * restarts and writes its capture again, that is the only copy of the word the page could reach.
+ */
+function withKnownBillingWord(snap) {
+  const billing = snap?.engine?.billing;
+  if (!billing || typeof billing !== "object") return snap;
+  if (billing.mode == null || billing.mode === "unknown" || BILLING_MODES.includes(billing.mode)) return snap;
+  const { refusal: _typed, ...rest } = billing;
+  return { ...snap, engine: { ...snap.engine, billing: { ...rest, mode: "unknown" } } };
+}
+
 export function flagView(poolRoot, { live = null } = {}) {
-  const snap = readFlagSnapshot(poolRoot);
+  const snap = withKnownBillingWord(readFlagSnapshot(poolRoot));
 
   // NO LIVE POSTURE IS A DIFFERENT PAGE, NOT A DEGRADED ONE. A caller that supplied none cannot be
   // answered "live" at all, so this says which reading it is showing rather than presenting a capture

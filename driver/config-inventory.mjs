@@ -98,13 +98,21 @@ export function engineInventory(env = process.env) {
         return { mode, apiBilled: false, missing: shown([spec.apiKeyEnv]), cloud: null, cloudName: null };
       }
       const reason = billingRefusalReason(id, env);
+      const notAMode = reason.kind === "not-a-mode";
       return {
         // A WORD THAT IS NOT A MODE IS NOT RECORDED. It is whatever was typed into the setting that decides
         // who pays, and a key pasted there by mistake is that word; this inventory is written to a file and
         // served to a browser. So the mode reads `unknown`, and the refusal says the setting by name.
-        mode: reason.kind === "not-a-mode" ? "unknown" : mode,
+        mode: notAMode ? "unknown" : mode,
         apiBilled: false, missing: [], cloud: null, cloudName: null,
-        refusal: billingRefusalWords(String(e?.message ?? e)),
+        // THAT REFUSAL IS WRITTEN HERE, NOT CLEANED FROM THE RESOLVER'S. The resolver's sentence quotes the
+        // typed word, and removing it by pattern depends on how the word is spelled: a word that itself
+        // contains " is not a billing mode" left its tail behind. Built from names alone, nothing typed can
+        // reach it. Every other refusal quotes only setting names and the three mode words.
+        refusal: notAMode
+          ? `${reason.setting} is set to a word that is not a billing mode — refusing to guess, because the guess `
+            + `would bill the subscription. One of: ${reason.modes.join(", ")}.`
+          : billingRefusalWords(String(e?.message ?? e)),
         reason,
       };
     }
@@ -152,8 +160,14 @@ export function cloudName(cloud) {
  *   no-cloud            cloud, and no cloud switched on and no gateway address (`clouds` lists every
  *                       switch, and `gateway` the gateway's setting, as the choices to make)
  *   not-a-mode          a word that is not a billing mode (`modes` are the ones this engine takes)
- *   cloud-on-codex      cloud, on the Codex engine, which a cloud account cannot pay for
+ *   cloud-on-codex      cloud, on the Codex engine, which a cloud account cannot pay for (`engineSetting`
+ *                       and `engineChoice` name the Claude engine only where it would pay: one cloud
+ *                       switched on, or none and a gateway address; otherwise that move is one more refusal)
  *   other               a refusal this list does not name; the page says only that searches are refused
+ *
+ * `defaulted` says the billing setting is blank, so `subscription` is the default and not a word anybody
+ * wrote: a page that said "payment is set to subscription" would send a reader looking for a line their
+ * settings file does not have. It is the state measured on Foundry, a switch on and the word unset.
  *
  * THE SAME PREDICATES AS THE RESOLVER, IN ITS ORDER. `resolveAuthMode` refuses by throwing a sentence and
  * nothing else, so the kind is read back from the same environment through the same functions it uses
@@ -166,10 +180,16 @@ export function billingRefusalReason(id, env = process.env) {
   const mode = billingMode(env);
   const setting = "CLEAROTRON_AI_BILLING";
   const clouds = (ids) => ids.map((c) => ({ name: cloudName(c), setting: CLOUD_SWITCH[c] }));
-  const base = { setting, mode: null, clouds: [], modes: [], gateway: null, engineSetting: null, engineChoice: null };
+  const defaulted = String(env[setting] ?? "").trim() === "";
+  const base = { setting, mode: null, defaulted, clouds: [], modes: [], gateway: null, engineSetting: null, engineChoice: null };
   if (id === "openai-agent") {
     if (mode === "cloud") {
-      return { ...base, kind: "cloud-on-codex", mode, modes: ["subscription", "api-key"], engineSetting: "CLEAROTRON_AI", engineChoice: "anthropic-agent" };
+      // The resolver's own test for a cloud the Claude engine would pay through, in its words: one switch,
+      // or no switch and a gateway address.
+      const on = cloudsSwitchedOn(env);
+      const claudeWouldPay = on.length === 1 || (!on.length && Boolean(env.ANTHROPIC_BASE_URL));
+      return { ...base, kind: "cloud-on-codex", mode, modes: ["subscription", "api-key"],
+        ...(claudeWouldPay ? { engineSetting: "CLEAROTRON_AI", engineChoice: "anthropic-agent" } : {}) };
     }
     if (mode !== "subscription" && mode !== "api-key") return { ...base, kind: "not-a-mode", modes: ["subscription", "api-key"] };
   }
