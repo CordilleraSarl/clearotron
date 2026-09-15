@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import { ENGINE_BINARIES, MODELS, resolveEngineProgram } from "../driver.config.mjs";
 import { CLOUD_SETTINGS, CLOUD_SWITCH, BILLING_MODES, resolveAuthMode } from "../engine/auth.mjs";
 import { claudeModel } from "../engine/anthropic-agent.mjs";
-import { platformEngineRefusal, installSizeLine, engineOptions } from "../../bin/onboard.mjs";
+import { platformEngineRefusal, installSizeLine, engineOptions, leaveDemoAdvice } from "../../bin/onboard.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
@@ -221,4 +221,29 @@ test("the release notes promise what setup does", () => {
   assert.equal(engineOptions().at(-1).label, "none for now");
   assert.match(flat(read(".changeset/claude-through-your-own-cloud-account.md")),
     /Tested on Microsoft Azure; Google Cloud and Amazon Bedrock use the Claude program's own settings\./);
+});
+
+test("the release notes say which machines a sentence holds on, where the code decides it by machine", () => {
+  // One entry of a note: each paragraph reaches the releases page on its own (.changeset/README.md).
+  const entry = (note, re) => read(`.changeset/${note}.md`).split(/\n\s*\n/).map(flat).find((p) => re.test(p));
+  // DEMO MODE NAMES SETUP ONLY OFF WINDOWS. On native Windows the run door refuses on the platform, so the
+  // advice names WSL2 and the devcontainer, and a note saying demo mode points to setup is false there.
+  const claude = ENGINE_BINARIES["anthropic-agent"];
+  assert.match(leaveDemoAdvice(claude, { platform: "linux", command: "clearotron install" }).join(" "), /clearotron install/,
+    "demo mode's advice off Windows no longer names setup; the note below must change with it");
+  assert.doesNotMatch(leaveDemoAdvice(claude, { platform: "win32", command: "clearotron install" }).join(" "), /clearotron install|setup/i,
+    "demo mode's advice on Windows now names setup; the note below can drop its qualifier");
+  const demo = entry("the-sign-in-advice-fits-how-the-machine-pays", /demo mode/);
+  assert.ok(demo, "the sign-in note no longer says what demo mode points to");
+  assert.match(demo, /Outside Windows/, "the note says demo mode points to setup on every machine, and on Windows it names WSL2 instead");
+  // A CLOUD'S OWN SWITCH STOPS ONLY A CLAUDE SEARCH. The Codex engine never reads the switches, so on a Codex
+  // install one left on stops nothing, and the upgrade warning is true on a Claude install alone.
+  const env = { CLAUDE_CODE_USE_FOUNDRY: "1" };
+  assert.throws(() => resolveAuthMode({ engineName: "anthropic-agent", env }), /CLAUDE_CODE_USE_FOUNDRY is on/,
+    "a cloud's switch beside the subscription no longer stops a Claude search; the upgrade warning must change with it");
+  assert.doesNotThrow(() => resolveAuthMode({ engineName: "openai-agent", env }),
+    "a cloud's switch now stops a Codex search too; the upgrade warning can drop its qualifier");
+  const warning = entry("claude-through-your-own-cloud-account", /CLAUDE_CODE_USE_FOUNDRY/);
+  assert.ok(warning, "the cloud note no longer warns about a cloud's own switch");
+  assert.match(warning, /On a Claude install/, "the upgrade warning says a cloud's switch stops every search, and a Codex search reads no switch");
 });

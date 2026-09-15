@@ -8,8 +8,8 @@ New: Each run records which cloud account paid for it, and `clearotron doctor` n
 
 New: Setup asks how Claude is paid for, and for a cloud account asks which cloud and checks it with one turn.
 
-New: Setup's engine question, and `clearotron start` when no billing is set, name a cloud account for Claude beside a subscription and an API key.
+New: `clearotron start`, when no billing is set, names a cloud account for Claude beside a subscription and an API key.
 
 Before you upgrade: A billing setting Clearotron does not recognise now stops a search before it starts, where it used to bill the subscription. Run `clearotron doctor` after upgrading.
 
-Before you upgrade: With a cloud's own switch, such as `CLAUDE_CODE_USE_FOUNDRY`, on, a search now stops unless `CLEAROTRON_AI_BILLING=cloud`, since Claude bills that cloud.
+Before you upgrade: On a Claude install, a cloud's own switch left on, such as `CLAUDE_CODE_USE_FOUNDRY`, now stops a search unless `CLEAROTRON_AI_BILLING=cloud`.
