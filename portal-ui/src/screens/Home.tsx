@@ -32,7 +32,7 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, finished, inFlight, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
+  recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
@@ -104,6 +104,12 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
   const runs = useMemo(() => runsFor(allRuns, ctx.owner), [allRuns, ctx.owner])
   const rows = useMemo(() => inFlight(runs), [runs])
+  // — the runs that stopped recently and this reader has not put down. THEIR OWN SECTION, not the
+  // live band: a failure from three days ago is not in flight, and while it sat in the band the screen
+  // was only correct once every individual reader had dismissed it by hand. Bounded by age, so the list
+  // cannot become the wall it replaced.
+  const stopped = useMemo(() => recentFailures(runs), [runs])
+  const [showStopped, setShowStopped] = useState(false)
   // — what this reader has put down. A COUNT, not a silent disappearance: acknowledging must not
   // be the same act as forgetting, so the number is on screen and one click opens the list.
   const acked = useMemo(() => acknowledged(runs), [runs])
@@ -115,6 +121,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // what one component was handed. The acknowledged list is its own population for the same reason: it
   // is opened on its own and its rows are compared with each other.
   const stamps = useMemo(() => readStamps(rows), [rows])
+  const stoppedStamps = useMemo(() => readStamps(stopped), [stopped])
   const ackedStamps = useMemo(() => readStamps(acked), [acked])
   // Routed through grouping.ts — the SAME function Clearances renders — so the two screens cannot
   // disagree about what finished most recently or what it came back as.
@@ -192,6 +199,34 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
 
       {queue.length ? <Queue rows={queue} ctx={ctx} onChanged={reload} stamps={stamps} /> : null}
 
+      {/* WHAT STOPPED RECENTLY — a count that is always on screen, over a list that is not.
+          The count is the part that must never be silent: it is what tells a reader a search failed
+          while they were away, and it is there whether or not anybody has opened the list. The rows
+          are folded because they are history and the live work above them is not — and because the
+          band being full of them is the defect this section exists to undo. Rendered as CARDS, the
+          same component the band uses, so Acknowledge stays exactly where a reader who opens the list
+          already expects it. A run older than the window is in neither list and is read in Clearances,
+          where nothing ages out. */}
+      {stopped.length ? (
+        <div className="home2-stopped">
+          <button
+            type="button"
+            className="home2-stopped-toggle"
+            aria-expanded={showStopped}
+            onClick={() => setShowStopped((v) => !v)}
+          >
+            {stopped.length} stopped recently{showStopped ? '' : ' — show'}
+          </button>
+          {showStopped ? (
+            <div className="home2-cards">
+              {stopped.map((r) => (
+                <Card key={r.runId} run={r} ctx={ctx} onChanged={reload} stamp={stoppedStamps.get(r.runId) ?? null} />
+              ))}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
       {/* — ACKNOWLEDGED, BEHIND A COUNT. The run is unchanged and still in Clearances with its
           status intact; this is one reader's dashboard, and the way back is here rather than somewhere
           else on the site. Rendered only when there is something in it. */}
@@ -224,7 +259,7 @@ export function Home({ ctx }: { readonly ctx: ShellContext }) {
 
       {recent.length ? <RecentlyFinished rows={recent} total={finishedCount} ctx={ctx} /> : null}
 
-      {answer === 'ok' && !cards.length && !queue.length && !recent.length ? (
+      {answer === 'ok' && !cards.length && !queue.length && !recent.length && !stopped.length && !acked.length ? (
         <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
       ) : null}
 

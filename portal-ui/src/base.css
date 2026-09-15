@@ -2000,6 +2000,17 @@ input.filter {
    Quiet on purpose. These are runs the reader has already dealt with, and the whole point of the
    feature is that they stop competing with live work for attention — a panel styled like the queue
    would put them back in the fight it just took them out of. */
+/* WHAT STOPPED RECENTLY — louder than acknowledged, quieter than live work.
+   The count carries the page's only standing signal that something failed, so it is readable rather
+   than faint; the fold below it is the part that keeps the dashboard about what is happening now. */
+.home2-stopped { margin-top: 18px; }
+.home2-stopped-toggle {
+  padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 13px;
+  color: var(--text-muted); text-decoration: underline;
+}
+.home2-stopped-toggle:hover { color: var(--text-strong); }
+.home2-stopped .home2-cards { margin-top: 11px; }
+
 .home2-acked { margin-top: 13px; }
 .home2-acked-toggle {
   padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 12.5px;
