@@ -2378,7 +2378,8 @@ export async function runCheck() {
     // register and the engine name their credentials, their program and the billing word; a billing word of
     // `cloud` names the cloud switches; a switch names that cloud's settings. Two passes stopped before the
     // billing word was read, so a machine that pays through a cloud account was checked as a subscription
-    // one and its missing switch went unreported. The view only grows and the names are finite, so this ends.
+    // one and its missing switch went unreported. It stops at the first pass that finds no new value: the names
+    // asked for depend only on the values found, so the next pass would ask for the names this one just read.
     const view = {};
     const fill = (names) => { for (const n of names) { const e = effectiveForService(n); if (e) view[n] = e.v; } };
     fill([REGISTER_ENV, ENGINE_ENV]);

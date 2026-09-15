@@ -194,15 +194,19 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
       if (!on.length && val(env, "ANTHROPIC_BASE_URL"))
         push("ANTHROPIC_BASE_URL", true, `the gateway ${payWord} pays through — ${refused}`);
       if (!on.length && !val(env, "ANTHROPIC_BASE_URL")) {
-        // NOTHING SAYS WHICH CLOUD, and a row has one name. Any one of four settings satisfies it, so the
-        // row is named by all four, in the resolver's own words, and carries them as `anyOf` so a reader
-        // that fills an environment by name (doctor's view of the services) looks for each. A single
-        // representative switch would send a Microsoft machine to set Google's, and doctor, reading only
-        // that one, would report a switch the services hold as missing.
+        // NOTHING SAYS WHICH CLOUD, and a row has one name. Any one of four settings satisfies it. The row is
+        // NAMED by one real setting, Google's switch, the representative `payWays` above already uses for "a
+        // cloud account", because every reader of a row treats its name as a variable: start and doctor print
+        // it, the runner logs it, and a composite name read as four more items in doctor's list of what is
+        // missing. The REASON names all four, with whose each is. And the row carries all four as `anyOf`,
+        // which `runRequiredNames` hands out as names to read: doctor fills its view of the services by name,
+        // and reading only Google's switch reported a Microsoft machine's switch, held by its services, as
+        // missing.
         const anyOf = [...Object.values(CLOUD_SWITCH), "ANTHROPIC_BASE_URL"];
-        out.push({ name: `${anyOf.slice(0, -1).join(", ")} or ${anyOf.at(-1)}`, anyOf, blocking: true, at: ORDER, present: false,
-          why: `${payWord} pays through a cloud account and nothing names which one — set the switch for yours to 1 `
-            + `(${["vertex", "foundry", "bedrock"].map((c) => CLOUD_CREDENTIAL_CHECK[c].who).join(", ")}), or ANTHROPIC_BASE_URL for a gateway; ${refused}` });
+        out.push({ name: CLOUD_SWITCH.vertex, anyOf, blocking: true, at: ORDER, present: false,
+          why: `${payWord} pays through a cloud account and nothing names which one — set `
+            + `${["vertex", "foundry", "bedrock"].map((c) => `${CLOUD_SWITCH[c]}=1 for ${CLOUD_CREDENTIAL_CHECK[c].who}`).join(", ")}, `
+            + `or ANTHROPIC_BASE_URL for a gateway; ${refused}` });
       }
       // EVERY OTHER CLOUD SETTING THAT IS SET, CARRIED AND NEVER ASKED FOR. Which of them a cloud needs
       // depends on how the machine signs in to it — an Azure key or the Azure sign-in, an AWS profile, an

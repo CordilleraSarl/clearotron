@@ -20,7 +20,9 @@
 //   · a stray switch under subscription stays behind     → break: gate the rows on a switch, not the word, red
 //   · Codex's list does not change                       → break: drop the engine's pay-ways gate, red
 //   · a missing switch is refused at order time, named   → break: drop the unnamed-cloud row, red
-//   · doctor reads a switch the services hold            → break: doctor's fill back to two passes, red
+//   · every row is one setting, and carried              → break: name the row by all four, red
+//   · doctor reads a switch the services hold            → break: doctor's fill back to two passes, or read
+//                                                           only the row's name and not its alternatives, red
 //   · no secret value is printed                          → break: put a value into a row's reason, red
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -135,8 +137,11 @@ test("a cloud-billed configuration with no switch is refused at order time, neve
   assert.ok(row, `nothing is refused at order time on a configuration the run door refuses: ${miss.atOrder.map((r) => r.name).join(", ")}`);
   assert.equal(row.at, ORDER);
   assert.deepEqual(row.anyOf, [...Object.values(CLOUD_SWITCH), "ANTHROPIC_BASE_URL"]);
-  for (const n of row.anyOf) assert.ok(row.name.includes(n), `the refusal does not name ${n}`);
-  assert.match(row.why, /Google Cloud.*Microsoft Azure.*Amazon Bedrock/, "the reason does not say which switch is whose");
+  // ONE REAL SETTING AS THE NAME, because every reader prints or logs it as a variable; the four in the reason.
+  assert.ok(row.anyOf.includes(row.name), `the row is named by something that is not a setting: ${row.name}`);
+  for (const n of row.anyOf) assert.ok(row.why.includes(n), `the reason does not name ${n}`);
+  assert.match(row.why, /CLAUDE_CODE_USE_VERTEX=1 for Google Cloud.*CLAUDE_CODE_USE_FOUNDRY=1 for Microsoft Azure.*CLAUDE_CODE_USE_BEDROCK=1 for Amazon Bedrock/,
+    "the reason does not say which switch is whose");
   // THE RUN DOOR AGREES: this is the configuration it refuses, so a refusal here is not a stricter opinion.
   assert.throws(() => resolveAuthMode({ engineName: "anthropic-agent", env: supervisor }), /none of CLAUDE_CODE_USE_VERTEX/);
   // EVERY ALTERNATIVE IS A NAME TO READ, so doctor's view of the services looks for each.
@@ -146,6 +151,20 @@ test("a cloud-billed configuration with no switch is refused at order time, neve
   const r = orderTimeRefusal(supervisor, T, { envFile: "/srv/example/.env" });
   assert.ok(r?.operator.includes(row.name), "the order-time refusal does not name the missing switch");
   assert.doesNotMatch(r.client, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, "a variable name reached the client");
+});
+
+test("under a cloud billing word every row is named by one setting, and every one of them is carried", () => {
+  // The identity the composer and the guard share, driven where the cloud rows exist: a row checked and not
+  // carried is a refusal nobody can satisfy, and a name that is not a setting reads as several in a list.
+  const states = { "no switch": {}, ...CLOUDS };
+  for (const [state, settings] of Object.entries(states)) {
+    const env = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", ...settings };
+    const carried = new Set(runRequiredNames(env, T));
+    for (const r of runRequirements(env, T)) {
+      assert.match(r.name, /^[A-Z][A-Z0-9_]*$/, `${state}: a row is named by something that is not a setting: ${r.name}`);
+      assert.ok(carried.has(r.name), `${state}: ${r.name} is checked and not carried`);
+    }
+  }
 });
 
 test("no secret's value appears in a row, a refusal, or start's announcement lines", () => {
@@ -209,7 +228,9 @@ test("doctor reports a cloud-billed machine whose services lack the switch, and 
     const a = doctor(lacking);
     // THE FLOOR: this doctor read the units, so its verdict is about the services and not about a file it found.
     assert.match(willRun(a), /the units' environment/, `the fixture did not reach the hosted path:\n${a.replaceAll(SECRET, "…")}`);
-    assert.match(willRun(a), /a search is refused until[^\n]*CLAUDE_CODE_USE_FOUNDRY/, `the missing switch was not reported:\n${willRun(a)}`);
+    assert.match(willRun(a), /a search is refused until this is set in the units' environment: CLAUDE_CODE_USE_VERTEX\s*$/m,
+      `the missing switch was not reported:\n${willRun(a)}`);
+    assert.match(willRun(a), /CLAUDE_CODE_USE_FOUNDRY=1 for Microsoft Azure/, "the reason under it does not name the other clouds' switches");
     const b = doctor(holding);
     assert.match(willRun(b), /nothing a search is refused for at order time is missing from the units' environment/,
       `a switch the services hold was reported missing:\n${willRun(b)}`);
