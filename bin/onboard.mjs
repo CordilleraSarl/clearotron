@@ -159,7 +159,9 @@ export const CLOUD_CHOICES = Object.freeze([
       { env: "ANTHROPIC_DEFAULT_SONNET_MODEL", q: "Your Sonnet deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
       { env: "ANTHROPIC_DEFAULT_HAIKU_MODEL", q: "Your Haiku deployment name:", skippable: true, skipped: "Not set: the program's own default name is used." },
     ] },
-  { id: "bedrock", label: "Amazon Bedrock", account: "your Amazon Bedrock account",
+  // AMAZON IS OFFERED AND MARKED, because nobody has run Claude through a Bedrock account with it yet. The
+  // mark is on the menu row only: doctor's account wording (`account`) names the account, not our testing.
+  { id: "bedrock", label: "Amazon Bedrock (not yet tested)", account: "your Amazon Bedrock account",
     note: "It uses the AWS credentials on this machine: a profile, an instance role or the standard AWS variables.",
     asks: [
       { env: "AWS_REGION", q: "AWS region your Claude models are enabled in:" },

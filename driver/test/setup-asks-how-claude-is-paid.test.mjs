@@ -25,7 +25,7 @@ import { execFileSync } from "node:child_process";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
-import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine } from "../../bin/onboard.mjs";
+import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount } from "../../bin/onboard.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -75,6 +75,19 @@ test("each cloud's answers make settings the resolver takes as that cloud, and e
   // A blank answer writes nothing, so the program uses the sign-in the machine already has.
   assert.deepEqual(cloudSettings("foundry", { ANTHROPIC_FOUNDRY_RESOURCE: " r ", ANTHROPIC_FOUNDRY_API_KEY: "" }),
     { CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1", ANTHROPIC_FOUNDRY_RESOURCE: "r" });
+});
+
+test("the cloud menu marks Amazon Bedrock as not yet tested, and only there", () => {
+  // Nobody has run Claude through a Bedrock account with this yet, so setup keeps offering it and says so.
+  const label = (id) => CLOUD_CHOICES.find((c) => c.id === id).label;
+  assert.equal(label("bedrock"), "Amazon Bedrock (not yet tested)");
+  // CONTROLS: the other two rows carry no mark, so the one above is not a suffix every row gets; and
+  // doctor's account wording, which names the account and not our testing, is unchanged.
+  assert.equal(label("vertex"), "Google Cloud (Vertex AI)");
+  assert.equal(label("foundry"), "Microsoft Azure (Foundry)");
+  assert.equal(cloudAccount("bedrock"), "your Amazon Bedrock account");
+  // The menu is these labels as they stand: setup hands CLOUD_CHOICES to its chooser unchanged.
+  assert.match(readFileSync(ONBOARD, "utf8"), /await choose\("Which cloud account pays\?", CLOUD_CHOICES,/);
 });
 
 test("the probe's turn sees the cloud settings its caller passed, they are gone again after it, and it names what served it", async () => {
