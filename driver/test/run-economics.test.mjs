@@ -399,6 +399,46 @@ test("runEconomics: a native-language turn that named no model and reported no u
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+// The billing key copies the rollup's rule for "no model reported" (tokens.mjs does not export it), so the
+// two copies are held to each other on a row that tells a loose "no stamp" test from the rollup's: an
+// empty `modelUsed`. The rollup takes an empty stamp for no stamp; a `modelUsed == null` test did not, and
+// keyed the bucket as the empty string.
+test("runEconomics: a turn stamped with an empty modelUsed and no model is keyed as the token rollup keys it", () => {
+  const dir = mkRun({ "jx-completions": [{ ts: "2026-09-14T10:00:00.000Z", lane: "zh", mark: "M", executor: "engine",
+    engine: "anthropic", authMode: "subscription", modelUsed: "", modelActual: null,
+    usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } }] });
+  try {
+    const e = runEconomics(dir);
+    const t = rollupTokens(dir);
+    assert.deepEqual(Object.keys(t.byModel), ["anthropic/no-model-reported"], "the rollup's own key, the one the bucket must match");
+    assert.deepEqual(Object.values(e.byBilling).map((b) => b.model), Object.keys(t.byModel),
+      "byBilling names the turn's model differently from the rollup's byModel");
+    assert.equal(e.dispatches[0]?.model, "anthropic/no-model-reported");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// A native-language row stamps its VENDOR as its engine (`anthropic`, `openai`: jxBillingStamp writes the
+// provider the engine door resolved). Counting its turns as dispatches put that name into the run's billing
+// composition, and a vendor table that did not know it read an Anthropic-only run as one whose vendor
+// "is NOT the whole run", naming `anthropic` as an engine that bills to no vendor.
+test("runEconomics: a run of Claude stages and native-language turns that named no model states one vendor", () => {
+  const dir = mkRun({
+    "synthesis": [agentRow({ usage: { input: 5, output: 100 } })],
+    "jx-completions": [{ ts: "2026-09-14T10:00:00.000Z", lane: "zh", mark: "M", executor: "engine",
+      engine: "anthropic", authMode: "subscription", cloud: null, ok: true, candidates: 0,
+      modelActual: null, usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } }],
+  });
+  try {
+    const c = runEconomics(dir).billingComposition;
+    assert.deepEqual(c.engines, ["anthropic", "anthropic-agent"], "the turn reached the composition under its own stamp");
+    assert.deepEqual(c.vendors, ["anthropic"]);
+    assert.deepEqual(c.unmappedEngines, [], "the native-language rows' vendor stamp is an engine this build cannot place");
+    assert.equal(c.mixedVendors, false);
+    assert.doesNotMatch(c.statement, /bill to no vendor/, c.statement);
+    assert.match(c.statement, /one vendor \(anthropic\) under one billing mode \(subscription\)/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 // ── 6. the stamp, and the standing rule ───────────────────────────────────────────────────────────
 
 test("stampRunEconomics: writes the full record to _driver/economics.json and a summary to status.json + run.jsonl", () => {

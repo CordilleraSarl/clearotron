@@ -189,7 +189,14 @@ function billingKeyOf(rec) {
   // token rollup keys it (modelKey in tokens.mjs): `<engine>/no-model-reported`, a name that says the
   // model is missing. Read through the old `?? "unknown"` it landed beside legacy rows nobody stamped,
   // and its byBilling bucket named a different model from the rollup's byModel for the same turn.
-  const model = rec.modelUsed == null && typeof rec.model !== "string"
+  //
+  // A COPY OF modelKey's RULE, NOT A SHARED ONE: tokens.mjs does not export it. So the test for "no stamp"
+  // is modelKey's own, a non-empty string `modelUsed`, and not `modelUsed == null`: under that looser test
+  // a row stamped `modelUsed: ""` keyed its bucket as the empty string while the rollup keyed the same
+  // turn `<engine>/no-model-reported`. Two copies of one rule drifting apart is how the census and the
+  // rollup came to disagree about what an attempt is, so the tests hold these two copies to each other.
+  const stamped = typeof rec.modelUsed === "string" && rec.modelUsed;
+  const model = !stamped && typeof rec.model !== "string"
     ? `${typeof rec.engine === "string" && rec.engine ? rec.engine : "unknown"}/no-model-reported`
     : String(rec.modelUsed ?? rec.model ?? "unknown");
   return { engine, authMode, model, key: `${engine}|${authMode}|${model}` };
@@ -236,11 +243,19 @@ function foldBilling(bucketMap, rec, cls) {
 // future engine whose name began that way, which is how a vendor claim becomes a guess. An engine this
 // table does not know is reported BY NAME and blocks the single-vendor claim, because "I do not know who
 // billed this" and "one vendor" are different answers and only one of them is safe to print.
+//
+// THE NATIVE-LANGUAGE ROWS STAMP THE VENDOR ITSELF. jxBillingStamp (jx-lanes.mjs) writes as the row's
+// engine the provider the engine door resolved, `anthropic` or `openai` (engine/auth.mjs), so those two
+// names are engines this table must place. Without them an Anthropic-only run with a native-language turn
+// named `anthropic` as an engine that bills to no vendor, in the same sentence that named anthropic as its
+// one vendor. Two exact names, still a closed table.
 export const ENGINE_VENDORS = Object.freeze({
   "anthropic-agent": "anthropic",
   "anthropic-direct": "anthropic",
   "anthropic-completions": "anthropic",
   "openai-agent": "openai",
+  "anthropic": "anthropic",
+  "openai": "openai",
 });
 /** The vendor an engine bills to, or null when the table does not name one. */
 export const vendorOf = (engine) => ENGINE_VENDORS[String(engine ?? "")] ?? null;
