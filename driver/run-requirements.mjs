@@ -157,8 +157,10 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     // FOUND IS WHAT COUNTS, NOT SET. A program on this environment's PATH, or the copy installed with
     // Clearotron, needs no path written anywhere, and asking only whether the variable was set refused an
     // install whose engine the run door would have started. The resolver arrives through the tables, like
-    // everything else this module knows, so the module imports nothing; a caller that passes no resolver
-    // gets the variable's own answer, which is all it can see.
+    // everything else this module knows about the install; a caller that passes no resolver gets the
+    // variable's own answer, which is all it can see. The module's one import is engine/auth.mjs, for the
+    // billing row below: a driver leaf with no imports of its own, pure, and the one authority on which
+    // billing words an engine takes, so importing it keeps this module pure and reaches nothing in `bin/`.
     const row = out[out.length - 1];
     if (!row.present && typeof resolveEngine === "function") {
       try { row.present = Boolean(resolveEngine(engineId, { env })?.resolved); } catch { /* not found is not present */ }
