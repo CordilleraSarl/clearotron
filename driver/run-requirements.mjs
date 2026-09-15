@@ -44,6 +44,9 @@
 //   BLOCKING — without these nothing runs at all, in any product. The register and its credential (the
 //     driver throws by name at the first stage), the engine and the binary it drives, and the pool the
 //     report is written into. This is the set whose absence produced the outcome at the top of this file.
+//     And what the billing word needs, because the run door refuses without it before any turn: under
+//     `cloud` the switch of the cloud it pays through (or the gateway address), under `api-key` the
+//     engine's key; and the billing word itself, whenever the run door refuses the way it is set.
 //
 //   NARROWING — `PERPLEXITY_API_KEY`. Its absence does NOT crash a run and does not deliver a false
 //     notice: the three clearance searches carry the common-law grid and cannot switch it off, so they
@@ -71,8 +74,9 @@
 //     Refusing here is refusing over OUR bug, and there is nothing for a reader to go and set.
 //
 //   at:"order"   the value an OPERATOR supplies — the register, its credential, the engine and the
-//     binary it drives. Absent, the install is not finished. The doors come up and every run is refused
-//     AT ORDER TIME, before a stage dispatches and before anything is spent, naming what is missing.
+//     binary it drives, and what the billing word needs (above). Absent, the install is not finished.
+//     The doors come up and every run is refused AT ORDER TIME, before a stage dispatches and before
+//     anything is spent, naming what is missing.
 //
 // The axis is on the ROW, not in the caller, for the reason the whole module exists: a start that
 // decides for itself which names are its own and a runner that decides separately are two opinions
@@ -87,6 +91,9 @@ export const REGISTER_ENV = "CLEAROTRON_DATABASE";
 export const ENGINE_ENV = "CLEAROTRON_AI";
 /** Narrowing, never blocking — see the header. */
 export const RESEARCH_ENV = "PERPLEXITY_API_KEY";
+/** The settings that decide WHICH cloud a Claude turn goes to: each cloud's switch, and the gateway address.
+ *  Any one of them answers the cloud billing word; start compares all of them against the services' file. */
+export const CLOUD_ROUTES = Object.freeze([...Object.values(CLOUD_SWITCH), "ANTHROPIC_BASE_URL"]);
 
 /** WHEN a blocking value is asked for. `START` is what `clearotron start` writes itself; `ORDER` is what
  *  an operator configures, and its absence refuses a RUN rather than an install. See the header. */
@@ -171,6 +178,26 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     const said = ways.map((m) => PAY_WORDS[m]);
     push(engine.authEnv, false, `how the engine is paid for — ${said.length > 1 ? `${said.slice(0, -1).join(", ")} or ${said.at(-1)}` : said[0]}; `
       + `unset means the subscription, and the adapter refuses before spending if the ${ways.includes("cloud") ? "key or cloud account" : "key"} it names is absent`);
+    const billingRow = out[out.length - 1];
+    const billingRows = out.length;
+    const word = billingMode(env);
+    const refused = "without it the engine refuses every search before spending";
+    // ── THE KEY, WHEN THE WORD IS `api-key` ──────────────────────────────────────────────────────────
+    //
+    // The same defect as the cloud below, one billing word over: the word travelled to the services' file
+    // and the key did not, so the run door refused every search after intake ("api-key but
+    // ANTHROPIC_API_KEY is not set"), while start and doctor reported nothing. Blocking at order time, like
+    // the switch: an operator's value, and the run door's own refusal without it.
+    if (word === "api-key" && engine.apiKeyEnv && ways.includes("api-key"))
+      push(engine.apiKeyEnv, true, `the key ${engine.authEnv}=api-key bills every turn to — ${refused}`);
+    // ── THE LONG-LIVED SIGN-IN, WHEN THE WORD IS THE SUBSCRIPTION ────────────────────────────────────
+    //
+    // Setup captures it on a machine that cannot complete a sign-in, which is the server a background
+    // install runs on, and the program reads it from its environment. Carried when set and never asked
+    // for: a machine signed in through the program itself needs none.
+    const tokenEnv = engine.headless?.tokenEnv;
+    if (word === "subscription" && tokenEnv && val(env, tokenEnv))
+      push(tokenEnv, false, `the long-lived sign-in the ${engine.vendor} CLI uses for the subscription on a machine it cannot sign in on; carried as set, and not asked for`);
     // ── A CLOUD ACCOUNT, AND THE SETTINGS THAT REACH IT ──────────────────────────────────────────────
     //
     // The billing word travelled and the cloud did not. A machine set up to pay through a cloud account and
@@ -182,10 +209,9 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
     // a list of engines here. Under subscription or api-key nothing of a cloud is carried: a switch left on
     // in a shell and written into the services' file sends Claude to that cloud, and the run door refuses
     // a switch beside either word. Codex refuses a cloud account outright, so its rows do not change.
-    if (billingMode(env) === "cloud" && ways.includes("cloud")) {
+    if (word === "cloud" && ways.includes("cloud")) {
       const on = cloudsSwitchedOn(env);
       const payWord = `${engine.authEnv}=cloud`;
-      const refused = "without it the engine refuses every search before spending";
       // BLOCKING, AT ORDER TIME. Without the switch the run door refuses (engine/auth.mjs), so this is the
       // same class as the engine and its program: an operator's value, whose absence refuses a run at
       // intake and never a start.
@@ -202,11 +228,19 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
         // which `runRequiredNames` hands out as names to read: doctor fills its view of the services by name,
         // and reading only Google's switch reported a Microsoft machine's switch, held by its services, as
         // missing.
-        const anyOf = [...Object.values(CLOUD_SWITCH), "ANTHROPIC_BASE_URL"];
-        out.push({ name: CLOUD_SWITCH.vertex, anyOf, blocking: true, at: ORDER, present: false,
+        //
+        // A SWITCH THAT IS SET AND NOT ON IS SAID, because it reads as on to a person and as off to the
+        // program: `CLAUDE_CODE_USE_FOUNDRY=0` on a Microsoft machine was answered with Google's switch
+        // and nothing else, and the reader was left to work out why the one they set did not count.
+        // And it is not an alternative to read or carry: `anyOf` is handed to the composer too, and the
+        // set-and-off line would travel through it.
+        const off = Object.values(CLOUD_SWITCH).filter((k) => val(env, k));
+        out.push({ name: CLOUD_SWITCH.vertex, anyOf: CLOUD_ROUTES.filter((k) => !off.includes(k)), blocking: true, at: ORDER, present: false,
           why: `${payWord} pays through a cloud account and nothing names which one — set `
             + `${["vertex", "foundry", "bedrock"].map((c) => `${CLOUD_SWITCH[c]}=1 for ${CLOUD_CREDENTIAL_CHECK[c].who}`).join(", ")}, `
-            + `or ANTHROPIC_BASE_URL for a gateway; ${refused}` });
+            + `or ANTHROPIC_BASE_URL for a gateway`
+            + (off.length ? ` (${off.join(" and ")} ${off.length > 1 ? "are" : "is"} set, but not on: a switch is on at 1, true, yes or on)` : "")
+            + `; ${refused}` });
       }
       // EVERY OTHER CLOUD SETTING THAT IS SET, CARRIED AND NEVER ASKED FOR. Which of them a cloud needs
       // depends on how the machine signs in to it — an Azure key or the Azure sign-in, an AWS profile, an
@@ -215,11 +249,36 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
       // only for a name that is set: present by construction, it can never be reported missing or refuse
       // anything, and exists so the composer carries it. Names on CLOUD_SETTINGS only — never the rest of
       // the environment, which would put every secret in a shell into the services' file.
+      //
+      // NEVER A SWITCH. One that is on is a row above. One that is set and not on switches nothing, and
+      // carried into the services' file it held that line there, where the add-only merge kept a later
+      // `=1` out of it for good.
       const who = on.length === 1 ? CLOUD_CREDENTIAL_CHECK[on[0]].who : !on.length && val(env, "ANTHROPIC_BASE_URL") ? "the gateway" : "the cloud account";
-      const named = new Set(out.map((r) => r.name));
+      const named = new Set(out.flatMap((r) => r.anyOf ?? [r.name]));
       for (const k of CLOUD_SETTINGS)
-        if (!named.has(k) && val(env, k))
+        if (!named.has(k) && !Object.values(CLOUD_SWITCH).includes(k) && val(env, k))
           push(k, false, `one of the settings Claude reads to reach and pay ${who}; carried as set, and not asked for, because which ones a cloud needs depends on how this machine signs in to it`);
+    }
+    // ── AND ANY OTHER WAY THE RUN DOOR REFUSES HOW THIS IS PAID FOR ──────────────────────────────────
+    //
+    // The rows above name what is MISSING. The run door also refuses what is set wrongly: two clouds
+    // switched on, a switch left on beside `subscription` or `api-key`, a word that is not a billing mode,
+    // a cloud account on Codex. Each passed start's guard, the order wall and doctor, and the run was then
+    // refused after intake. Measured 2026-09-15: a services' file holding Microsoft's switch from one start
+    // and Google's from the next read clean everywhere and refused every search.
+    //
+    // ASKED OF THE RUN DOOR ITSELF, `resolveAuthMode`, over the environment being judged, and its refusal
+    // is the reason: one authority, so this check can be neither stricter nor laxer than the door. Its
+    // words carry names and the billing word, never a key. The row that turns blocking is the billing
+    // word's own, so no new name is handed to the composer: a switch beside `subscription` stays out of
+    // the services' file, as the cloud rows above intend. `present` on a row means SATISFIED, which is
+    // what every reader of it asks; for this row, set is not enough. When a row above already names what
+    // is missing, that row is the answer and this adds nothing, because the door's refusal is the same one.
+    if (!out.slice(billingRows).some((r) => r.blocking && !r.present)) {
+      try { resolveAuthMode({ engineName: engineId, env }); } catch (e) {
+        if (e?.billingRefusal)
+          Object.assign(billingRow, { blocking: true, present: false, at: ORDER, why: `set so that the engine refuses every search before spending: ${e.message}` });
+      }
     }
   }
 
@@ -237,7 +296,8 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
  */
 export function runRequiredNames(env = {}, tables = {}) {
   // A row any one of several settings satisfies names them in `anyOf`, and each is a name to carry or read.
-  return runRequirements(env, tables).flatMap((r) => r.anyOf ?? [r.name]);
+  // Each name once: a name handed out twice is read twice and reported twice.
+  return [...new Set(runRequirements(env, tables).flatMap((r) => r.anyOf ?? [r.name]))];
 }
 
 /**

@@ -1795,10 +1795,30 @@ export async function runCheck() {
         const e = effective(k);
         if (e) envForResolve[k] = e.v;
       }
-      const auth = resolveAuthMode({ engineName: engineId, env: envForResolve });
-      if (auth.mode === "unknown") info(`billing: no policy for ${engineId} — this engine declares no sign-in modes`);
-      else if (auth.mode === "cloud") ok(`billing: cloud — charged per use ${auth.cloud === "gateway" ? "through" : "to"} ${cloudAccount(auth.cloud)}`);
-      else ok(`billing: ${auth.mode}${auth.apiBilled ? ` — charged per token against ${engSpec.apiKeyEnv}` : " — charged to the signed-in subscription, not per token"}`);
+      const billingOf = (eng, env) => {
+        try {
+          const auth = resolveAuthMode({ engineName: eng, env });
+          if (auth.mode === "unknown") return { say: info, text: `billing: no policy for ${eng} — this engine declares no sign-in modes` };
+          if (auth.mode === "cloud") return { say: ok, text: `billing: cloud — charged per use ${auth.cloud === "gateway" ? "through" : "to"} ${cloudAccount(auth.cloud)}` };
+          return { say: ok, text: `billing: ${auth.mode}${auth.apiBilled ? ` — charged per token against ${ENGINE_BINARIES[eng]?.apiKeyEnv ?? engSpec.apiKeyEnv}` : " — charged to the signed-in subscription, not per token"}` };
+        } catch (e) { return { say: problem, text: String(e?.message ?? e) }; }
+      };
+      const here = billingOf(engineId, envForResolve);
+      here.say(here.text);
+      // AND AS THE SERVICES READ IT, when this machine runs them and that reading differs. The line above is
+      // this command's configuration; the services read their own file, and a start never replaces a line
+      // in it. So a machine whose services pay through a cloud account printed "billing: subscription" here,
+      // two sections above "Will a search run?" reading the services' file. Both are said when they differ.
+      // A caution and not a problem: the services' refusal, if there is one, is reported under that section.
+      if (hosted && serviceKnown) {
+        const envForService = {};
+        for (const k of engineEnvKeys()) {
+          const e = effectiveForService(k);
+          if (e) envForService[k] = e.v;
+        }
+        const svc = billingOf(String(envForService.CLEAROTRON_AI ?? DEFAULT_ENGINE_ID).trim().toLowerCase(), envForService);
+        if (svc.text !== here.text) warn(`the services read how they pay from ${serviceEnvLabel}, and it says otherwise — ${svc.text}`);
+      }
     } catch (e) {
       problem(String(e?.message ?? e));
     }
@@ -2376,8 +2396,9 @@ export async function runCheck() {
     const tables = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID, resolveEngine: resolveEngineProgram };
     // UNTIL NOTHING NEW IS NAMED: which names a run needs depends on values read in the pass before. The
     // register and the engine name their credentials, their program and the billing word; a billing word of
-    // `cloud` names the cloud switches; a switch names that cloud's settings. Two passes stopped before the
-    // billing word was read, so a machine that pays through a cloud account was checked as a subscription
+    // `cloud` names the cloud switches and the gateway address; a switch found becomes the blocking row, and
+    // the cloud's other settings are named only where the view already holds them. Two passes stopped before
+    // the billing word was read, so a machine that pays through a cloud account was checked as a subscription
     // one and its missing switch went unreported. It stops at the first pass that finds no new value: the names
     // asked for depend only on the values found, so the next pass would ask for the names this one just read.
     const view = {};

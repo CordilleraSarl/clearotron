@@ -11,11 +11,21 @@
 // door refused over only what it had been given: "CLEAROTRON_AI_BILLING=cloud but none of
 // CLAUDE_CODE_USE_VERTEX, CLAUDE_CODE_USE_FOUNDRY, CLAUDE_CODE_USE_BEDROCK or ANTHROPIC_BASE_URL is set".
 //
-// These arms compose the services' file the way start does — start's own tables, its carry loop, its add-only
+// These arms compose the services' file the way start does — start's own tables, a COPY of its carry loop
+// (`carried` below: start runs those four lines inline, so there is no function to call), and its add-only
 // merge — and then ask the run door's own resolver about ONLY what the file holds. A composer checked against
-// the environment it was composed from passes on exactly the machine that fails.
+// the environment it was composed from passes on exactly the machine that fails. Where start's guard and its
+// write are concerned, the arms call start's own reading, `unitsFileAfterStart`, and not a copy.
 //
 // BREAK MATRIX:
+//   · two clouds, a switch beside subscription, api-key   → break: drop the run door's refusal from the
+//     with no key: refused at order time, door's words      billing row, or the key row, red
+//   · the key and the long-lived sign-in travel           → break: drop either row, red
+//   · a switch set and not on is not carried, and said    → break: carry it through the alternatives or the
+//                                                           other settings, or drop the sentence, red
+//   · start's guard reads the file its merge leaves, and  → break: let start's value win in the reading, or
+//     names what the file keeps from another config        name nothing, red
+//   · doctor says how the services pay when it differs    → break: drop the second billing line, red
 //   · each cloud and the gateway reach the services      → break: drop the cloud rows, the per-cloud arms go red
 //   · a stray switch under subscription stays behind     → break: gate the rows on a switch, not the word, red
 //   · Codex's list does not change                       → break: drop the engine's pay-ways gate, red
@@ -27,14 +37,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runRequirements, runRequiredNames, missingRequirements, orderTimeRefusal, ORDER } from "../run-requirements.mjs";
 import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SETTINGS } from "../engine/auth.mjs";
 import { parseEnvFile } from "../../shared/env-file-merge.mjs";
-import { runTables, homeEnvUpdate, BACKGROUND_UNITS } from "../../bin/start.mjs";
+import { runTables, homeEnvUpdate, unitsFileAfterStart, BACKGROUND_UNITS } from "../../bin/start.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -76,13 +86,18 @@ const CLOUDS = Object.freeze({
  * authority, then its add-only merge onto `existing`. Returned as the file's text and as what a unit reads.
  */
 function servicesFile(supervisor, existing = "") {
+  const { text } = homeEnvUpdate(existing, carried(supervisor));
+  return { text, env: parseEnvFile(text) };
+}
+
+/** What start's carry loop takes from `supervisor`: a copy of the loop in `bin/start.mjs` over the one authority. */
+function carried(supervisor) {
   const union = {};
   for (const name of runRequiredNames(supervisor, T)) {
     const v = String(supervisor[name] ?? "").trim();
     if (v && union[name] === undefined) union[name] = v;
   }
-  const { text } = homeEnvUpdate(existing, union);
-  return { text, env: parseEnvFile(text) };
+  return union;
 }
 
 for (const [cloud, settings] of Object.entries(CLOUDS)) {
@@ -167,8 +182,10 @@ test("under a cloud billing word every row is named by one setting, and every on
   }
 });
 
-test("no secret's value appears in a row, a refusal, or start's announcement lines", () => {
-  // Google's settings hold no secret (its key is a file, named by path), so there is nothing of it to leak.
+test("no secret's value appears in a row or a refusal", () => {
+  // Start prints a row as `${r.name} — ${r.why}`, and this rebuilds that line rather than driving start, so it
+  // holds while start keeps that shape. Google's settings hold no secret (its key is a file, named by path),
+  // so there is nothing of it to leak.
   const withSecrets = Object.entries(CLOUDS).filter(([, s]) => Object.values(s).includes(SECRET));
   assert.deepEqual(withSecrets.map(([c]) => c), ["foundry", "bedrock", "gateway"], "the clouds this arm reaches changed");
   for (const [cloud, settings] of withSecrets) {
@@ -183,6 +200,124 @@ test("no secret's value appears in a row, a refusal, or start's announcement lin
       assert.ok(!printed.includes(SECRET), `${cloud}: a secret's value is in what is printed:\n${printed.replaceAll(SECRET, "<SECRET>")}`);
     }
   }
+});
+
+// ── WHAT THE RUN DOOR REFUSES THAT IS SET, NOT MISSING ─────────────────────────────────────────────
+//
+// The rows named what was missing and nothing else, so a services' file the run door refuses for what it
+// holds (two clouds switched on, a switch beside subscription, api-key with no key) passed start's guard,
+// the order wall and doctor, and every search was refused after intake. Measured 2026-09-15; the first of
+// them is what a start with Google's cloud leaves in a file written by a start with Microsoft's.
+
+const doorSays = (env) => { try { resolveAuthMode({ engineName: "anthropic-agent", env }); return null; } catch (e) { return e.message; } };
+
+test("a services' file the run door refuses for what it holds is refused at order time, in the door's own words", () => {
+  for (const [label, file, name, door] of [
+    ["two clouds", { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1", CLAUDE_CODE_USE_VERTEX: "1" }, "CLEAROTRON_AI_BILLING", /more than one cloud is switched on/],
+    ["a switch beside subscription", { ...BASE, CLEAROTRON_AI_BILLING: "subscription", CLAUDE_CODE_USE_FOUNDRY: "1" }, "CLEAROTRON_AI_BILLING", /CLAUDE_CODE_USE_FOUNDRY is on/],
+    ["api-key with no key", { ...BASE, CLEAROTRON_AI_BILLING: "api-key" }, "ANTHROPIC_API_KEY", /ANTHROPIC_API_KEY is not set/],
+    ["a word that is no billing mode", { ...BASE, CLEAROTRON_AI_BILLING: "metered" }, "CLEAROTRON_AI_BILLING", /is not a billing mode/],
+  ]) {
+    // THE FLOOR: the run door refuses this file, so a refusal here is the door's and not a stricter opinion.
+    assert.match(doorSays(file) ?? "(the run door accepts it)", door, label);
+    const miss = missingRequirements(file, T);
+    assert.deepEqual(miss.atStart.map((r) => r.name), [], `${label}: refused a start — an operator's value never bricks an install`);
+    assert.deepEqual(miss.atOrder.map((r) => r.name), [name], `${label}: the order wall does not name ${name}`);
+    const r = orderTimeRefusal(file, T, { envFile: "/srv/example/.env" });
+    assert.ok(r?.operator.includes(name), `${label}: the order-time refusal does not name ${name}`);
+    if (name === "CLEAROTRON_AI_BILLING") assert.ok(miss.atOrder[0].why.includes(doorSays(file)), `${label}: the reason is not the run door's own words`);
+    assert.doesNotMatch(r.client, /[A-Z][A-Z0-9]*_[A-Z0-9_]+/, `${label}: a variable name reached the client`);
+  }
+  // CONTROL: each word with what it needs, and one cloud, is refused nowhere.
+  for (const file of [{ ...BASE, CLEAROTRON_AI_BILLING: "subscription" }, { ...BASE, CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: SECRET },
+    { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "1" }]) {
+    assert.equal(doorSays(file), null);
+    assert.deepEqual(missingRequirements(file, T).atOrder.map((r) => r.name), [], file.CLEAROTRON_AI_BILLING);
+  }
+  // AND NO NAME JOINS THE LIST TO CARRY: a switch beside subscription still stays out of the services' file.
+  assert.equal(servicesFile({ ...BASE, CLEAROTRON_AI_BILLING: "subscription", CLAUDE_CODE_USE_FOUNDRY: "1" }).env.CLAUDE_CODE_USE_FOUNDRY, undefined);
+});
+
+test("an api-key machine hands the services its key, and a subscription machine its long-lived sign-in", () => {
+  const apiKey = { ...BASE, CLEAROTRON_AI_BILLING: "api-key", ANTHROPIC_API_KEY: SECRET };
+  const { env } = servicesFile(apiKey);
+  assert.equal(env.ANTHROPIC_API_KEY, SECRET, "the key did not reach the services' file");
+  assert.equal(doorSays(env), null, "the services' file of an api-key machine refuses at the run door");
+  const codex = { ...BASE, CLEAROTRON_AI: "openai-agent", [CODEX.env]: "/usr/bin/true", CLEAROTRON_AI_BILLING: "api-key", [CODEX.apiKeyEnv]: SECRET };
+  assert.equal(servicesFile(codex).env[CODEX.apiKeyEnv], SECRET, "Codex's key did not reach the services' file");
+  const token = T.engines["anthropic-agent"].headless.tokenEnv;
+  const signedIn = { ...BASE, CLEAROTRON_AI_BILLING: "subscription", [token]: SECRET };
+  assert.equal(servicesFile(signedIn).env[token], SECRET, `${token} did not reach the services' file`);
+  assert.equal(runRequirements(signedIn, T).find((r) => r.name === token).blocking, false, "a sign-in the program can hold itself was made a requirement");
+  // CONTROL: a key the subscription strips from every turn does not travel, and nothing is asked of a subscription.
+  assert.equal(servicesFile({ ...BASE, CLEAROTRON_AI_BILLING: "subscription", ANTHROPIC_API_KEY: SECRET }).env.ANTHROPIC_API_KEY, undefined);
+  assert.deepEqual(missingRequirements({ ...BASE, CLEAROTRON_AI_BILLING: "subscription" }, T).blocking.map((r) => r.name), []);
+});
+
+test("a cloud switch that is set and not on is neither carried nor passed over in silence", () => {
+  const supervisor = { ...BASE, CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_FOUNDRY: "0", ANTHROPIC_FOUNDRY_RESOURCE: "example-resource" };
+  // THE FLOOR: the run door reads the switch as off.
+  assert.match(doorSays(supervisor) ?? "", /none of CLAUDE_CODE_USE_VERTEX/);
+  const { env } = servicesFile(supervisor);
+  assert.equal(env.CLAUDE_CODE_USE_FOUNDRY, undefined, "a switch that is off was written into the services' file, where it keeps a later =1 out");
+  assert.equal(env.ANTHROPIC_FOUNDRY_RESOURCE, "example-resource", "the settings beside it stopped travelling");
+  const row = missingRequirements(supervisor, T).atOrder.find((r) => r.anyOf);
+  assert.ok(row, "the missing switch is no longer refused at order time");
+  assert.match(row.why, /CLAUDE_CODE_USE_FOUNDRY is set, but not on/, "the reason does not say the switch that is set is not on");
+  const names = runRequiredNames(supervisor, T);
+  assert.equal(new Set(names).size, names.length, `a name is handed out twice: ${names.join(", ")}`);
+});
+
+// ── START, ACROSS TWO STARTS ───────────────────────────────────────────────────────────────────────
+//
+// Start's merge never replaces a line in the services' file. Its guard read `{ ...file, ...start }`, where
+// start's value wins, so it passed files the units then read differently; and a second start after moving to
+// another cloud, or after rotating a key, reported the file complete while the services kept the old values.
+
+test("start's guard reads the file its merge leaves, and names every run setting that file keeps from another configuration", () => {
+  const after = (existing, supervisor) => unitsFileAfterStart(existing, carried(supervisor), { config: supervisor, tables: T });
+  const cloud = (c) => ({ ...BASE, CLEAROTRON_AI_BILLING: "cloud", ...CLOUDS[c] });
+  const first = (supervisor) => servicesFile(supervisor).text;
+
+  // AN EMPTY LINE KEPT: start holds the switch, the file keeps its empty line, and the units have no cloud.
+  const empty = after("CLAUDE_CODE_USE_FOUNDRY=\n", cloud("foundry"));
+  assert.equal(empty.reads.CLAUDE_CODE_USE_FOUNDRY, "", "the reading is not what the file says");
+  assert.match(doorSays(empty.reads) ?? "", /none of CLAUDE_CODE_USE_VERTEX/, "the floor: the units' file refuses at the run door");
+  assert.ok(missingRequirements(empty.reads, T).atOrder.some((r) => r.anyOf), "start's guard passed a file the run door refuses");
+  assert.ok(empty.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `the kept empty line is not named: ${empty.differ}`);
+
+  // MICROSOFT, THEN GOOGLE: both switches end up in the file, and the guard now sees it.
+  const twice = after(first(cloud("foundry")), cloud("vertex"));
+  assert.equal(twice.reads.CLAUDE_CODE_USE_FOUNDRY, "1");
+  assert.deepEqual(missingRequirements(twice.reads, T).atOrder.map((r) => r.name), ["CLEAROTRON_AI_BILLING"]);
+  assert.ok(twice.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `Microsoft's switch, kept by the file, is not named: ${twice.differ}`);
+
+  // MICROSOFT, THEN A GATEWAY, AND MICROSOFT, THEN THE SUBSCRIPTION: the run door accepts the file, and it
+  // bills Microsoft. Nothing refuses, so saying it is the whole of the protection.
+  const gateway = after(first(cloud("foundry")), cloud("gateway"));
+  assert.equal(resolveAuthMode({ engineName: "anthropic-agent", env: gateway.reads }).cloud, "foundry", "the floor: the services still bill Microsoft");
+  assert.ok(gateway.differ.includes("CLAUDE_CODE_USE_FOUNDRY"), `a gateway machine billing Microsoft is not told: ${gateway.differ}`);
+  const subscription = after(first(cloud("foundry")), { ...BASE, CLEAROTRON_AI_BILLING: "subscription" });
+  for (const n of ["CLEAROTRON_AI_BILLING", "CLAUDE_CODE_USE_FOUNDRY"])
+    assert.ok(subscription.differ.includes(n), `a subscription machine billing Microsoft is not told about ${n}: ${subscription.differ}`);
+
+  // A ROTATED KEY: the file keeps the first value, and says which.
+  const rotated = { ...cloud("bedrock"), AWS_ACCESS_KEY_ID: "rotated", AWS_SECRET_ACCESS_KEY: "rotated", AWS_SESSION_TOKEN: "rotated" };
+  const rot = after(first(cloud("bedrock")), rotated);
+  assert.equal(rot.reads.AWS_SESSION_TOKEN, SECRET, "the floor: the file kept the first value");
+  assert.deepEqual(rot.differ, ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN"]);
+
+  // CONTROL: the same configuration started twice differs on nothing and refuses nothing.
+  for (const c of Object.keys(CLOUDS)) {
+    const again = after(first(cloud(c)), cloud(c));
+    assert.deepEqual([again.differ, missingRequirements(again.reads, T).atOrder.map((r) => r.name)], [[], []], c);
+  }
+  // NAMES ONLY: what start prints is this list, and it carries no value.
+  for (const f of [empty, twice, gateway, subscription, rot]) for (const n of f.differ) assert.match(n, /^[A-Z][A-Z0-9_]*$/);
+  // AND START PRINTS IT. Read from its source, as the wiring arms in the background-install file read it.
+  const src = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
+  assert.match(src, /if \(unitsFile\.differ\.length\) \{\n\s*say\(/, "start no longer says which settings the file keeps");
+  assert.match(src, /say\(`\s+\$\{unitsFile\.differ\.join\(", "\)\}`\)/, "start no longer names them");
 });
 
 // ── DOCTOR, AGAINST THE SERVICES' FILE ─────────────────────────────────────────────────────────────
@@ -234,8 +369,25 @@ test("doctor reports a cloud-billed machine whose services lack the switch, and 
     const b = doctor(holding);
     assert.match(willRun(b), /nothing a search is refused for at order time is missing from the units' environment/,
       `a switch the services hold was reported missing:\n${willRun(b)}`);
+    // AND ITS BILLING LINE SAYS HOW THE SERVICES PAY. Doctor's shell holds nothing, so its own reading is the
+    // subscription; the services pay Microsoft, and doctor printed only the first.
+    assert.match(b, /billing: subscription/, "the floor: doctor's own configuration reads as the subscription");
+    assert.match(b, /the services read how they pay from the units' environment, and it says otherwise — billing: cloud — charged per use to your Microsoft Azure account \(Foundry\)/,
+      `doctor does not say how the services pay:\n${b.replaceAll(SECRET, "…")}`);
     for (const out of [a, b]) assert.ok(!out.includes(SECRET), "doctor printed a secret's value");
   } finally { for (const h of [lacking, holding]) rmSync(h, { recursive: true, force: true }); }
+});
+
+test("doctor reports services that hold two clouds, which the run door refuses after intake", () => {
+  const home = unitsHome({ ...UNITS_BASE, CLEAROTRON_AI_BILLING: "cloud", ...CLOUDS.foundry, CLAUDE_CODE_USE_VERTEX: "1" });
+  try {
+    const out = doctor(home);
+    assert.match(willRun(out), /the units' environment/, `the fixture did not reach the hosted path:\n${out.replaceAll(SECRET, "…")}`);
+    assert.match(willRun(out), /a search is refused until this is set in the units' environment: CLEAROTRON_AI_BILLING\s*$/m,
+      `two clouds in the services' file were not reported:\n${willRun(out).replaceAll(SECRET, "…")}`);
+    assert.match(willRun(out), /more than one cloud is switched on \(CLAUDE_CODE_USE_VERTEX, CLAUDE_CODE_USE_FOUNDRY\)/, "the reason is not the run door's");
+    assert.ok(!out.includes(SECRET), "doctor printed a secret's value");
+  } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
 test("THE CONTROL: a subscription machine's doctor verdict is unchanged", () => {

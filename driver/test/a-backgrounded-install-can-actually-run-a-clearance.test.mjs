@@ -235,9 +235,14 @@ test("start.mjs wires both halves — composition and guard — at the --backgro
     "--background no longer TELLS the operator what is unconfigured — a silent unconfigured install "
     + "is the failure one step along from the one 216 fixed");
   // THE GUARD IS CHECKED AGAINST WHAT THE UNITS WILL READ, not against this shell. Checking process.env
-  // would pass on exactly the box that fails, because the supervisor always has what the units lack.
-  assert.match(src, /const willRead = \{ \.\.\.already, \.\.\.union \}/,
+  // would pass on exactly the box that fails, because the supervisor always has what the units lack. And
+  // against the file the add-only merge leaves, which the write below then uses: a guard over
+  // `{ ...file, ...union }` let this command's value win where the file keeps its own line.
+  assert.match(src, /const unitsFile = unitsFileAfterStart\(homeText, union, \{ config: process\.env, tables: RUN_TABLES \}\)/,
+    "the guard and the write no longer share one reading of the file");
+  assert.match(src, /const willRead = \{ \.\.\.unitsFile\.reads \}/,
     "the guard reads something other than the composed unit environment");
+  assert.match(src, /const \{ merged \} = unitsFile;/, "the file written is not the file the guard read");
 });
 
 test("start.mjs never STATICALLY imports the wizard — that cycle takes `doctor` down", () => {
