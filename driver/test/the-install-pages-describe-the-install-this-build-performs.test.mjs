@@ -226,7 +226,8 @@ test("every model pin the checks carry is documented beside the others, the fabl
     assert.ok(pinRow.includes(`\`${n}\``), `the reference's pin row does not name ${n}`);
     assert.match(example, new RegExp(`^# ${n}=`, "m"), `.env.example does not show ${n}`);
   }
-  // A stage reaches fable only through the synthesis override, so each page says the pin is for that.
+  // No stage asks for fable by default; the synthesis override is the setting documented for it, so each
+  // page says the pin is for that.
   for (const [where, text] of [["§3b", flat(b)], ["the reference's pin row", pinRow], [".env.example", flat(example.replace(/^#\s?/gm, ""))]])
     assert.match(text, /fable deployment's name if you set `?CLEAROTRON_SYNTHESIS_MODEL=fable/i, `${where} does not say when to set the fable pin`);
   // A SENTENCE THAT LISTS THE PINS LISTS ALL OF THEM. The presence check above passes when one paragraph of
@@ -238,6 +239,21 @@ test("every model pin the checks carry is documented beside the others, the fabl
   assert.ok(lists.length >= 1, "no prose paragraph of §3b lists the pins, so the check below would hold nothing");
   for (const p of lists)
     assert.match(p, /ANTHROPIC_DEFAULT_FABLE_MODEL|`_FABLE_`/, `§3b lists the pins without the fable one: ${p}`);
+
+  // THE ENGINE'S OWN DOCUMENTS LIST THE PINS TOO: the adapter contract's tier section, and the comment above
+  // the Claude adapter's model table, which a maintainer reads before changing how a tier goes to the program.
+  // Each names every pin, in full or by its short form, and says the fable one is read only when an override
+  // asks for fable.
+  const tiers = flat(section(read("driver/engine/CONTRACT.md"), "3. Tier abstraction"));
+  const adapter = read("driver/engine/anthropic-agent.mjs");
+  const [from, to] = [adapter.indexOf("// tier/alias → claude -p model alias"), adapter.indexOf("const CLAUDE_MODEL = {")];
+  assert.ok(from !== -1 && to > from, "the Claude adapter's model table no longer has its comment above it");
+  const comment = flat(adapter.slice(from, to).replace(/^\s*\/\/\s?/gm, ""));
+  for (const [where, text] of [["CONTRACT.md §3", tiers], ["the comment above the Claude adapter's model table", comment]]) {
+    for (const n of pins)
+      assert.match(text, new RegExp(`_${n.replace(/^ANTHROPIC_DEFAULT_|_MODEL$/g, "")}_MODEL\\b`), `${where} does not name ${n}`);
+    assert.match(text, /ANTHROPIC_DEFAULT_FABLE_MODEL[^.]*CLEAROTRON_SYNTHESIS_MODEL=fable/, `${where} does not say when the fable pin is read`);
+  }
 });
 
 test("the release notes promise what setup does", () => {
@@ -247,16 +263,18 @@ test("the release notes promise what setup does", () => {
   assert.ok(program.includes("Setup offers to install the reasoning program your engine uses."),
     "the note no longer carries the approved sentence about setup's install offer as it was approved");
   assert.match(program, /how much space the program takes and how to remove it/);
+  assert.ok(program.includes("Setup asks which AI should run your searches, Claude or Codex, and says what it found on this computer."),
+    "the note no longer says what setup's first question asks and that it says what it found");
   // What the note promises is what setup's offer and its engine question say, for every program it installs.
+  // The note says setup "says what it found on this computer"; each row says it in the approved words.
   for (const [id, eng] of Object.entries(ENGINE_BINARIES).filter(([, e]) => e.package)) {
     assert.match(installSizeLine(eng), /^It takes about \d+ MB\. To remove it, delete that folder\.$/,
       `setup's install offer for ${eng.product} names no size, which the release note promises`);
     const row = (found) => engineOptions({ [id]: found }).find((o) => o.id === id).label;
-    assert.match(row({ executable: true, version: "1.2.3" }), /found: 1\.2\.3 on this machine/, `the ${eng.product} row does not show the version found`);
-    assert.match(row({ executable: false, rejected: [] }), /not installed: setup can install it/, `the ${eng.product} row does not say setup can install it`);
+    assert.match(row({ executable: true, version: "1.2.3" }), /found on this computer \(version 1\.2\.3\)/, `the ${eng.product} row does not show the version found`);
+    assert.match(row({ executable: false, rejected: [] }), /not on this computer — setup can install it/, `the ${eng.product} row does not say setup can install it`);
   }
-  assert.match(program, /shows the version it found on this machine or says setup can install it/);
-  assert.equal(engineOptions().at(-1).label, "none for now");
+  assert.equal(engineOptions().at(-1).label, "None for now");
   assert.match(flat(read(".changeset/claude-through-your-own-cloud-account.md")),
     /Tested on Microsoft Azure; Google Cloud and Amazon Bedrock use the Claude program's own settings\./);
 });
@@ -271,8 +289,8 @@ test("the release notes say which machines a sentence holds on, where the code d
     "demo mode's advice off Windows no longer names setup; the note below must change with it");
   assert.doesNotMatch(leaveDemoAdvice(claude, { platform: "win32", command: "clearotron install" }).join(" "), /clearotron install|setup/i,
     "demo mode's advice on Windows now names setup; the note below can drop its qualifier");
-  const demo = entry("the-sign-in-advice-fits-how-the-machine-pays", /demo mode/);
-  assert.ok(demo, "the sign-in note no longer says what demo mode points to");
+  const demo = entry("the-reasoning-program-comes-with-the-install", /demo mode/);
+  assert.ok(demo, "the install note no longer says what demo mode points to");
   assert.match(demo, /Outside Windows/, "the note says demo mode points to setup on every machine, and on Windows it names WSL2 instead");
   // A CLOUD'S OWN SWITCH STOPS ONLY A CLAUDE SEARCH. The Codex engine never reads the switches, so on a Codex
   // install one left on stops nothing, and the upgrade warning is true on a Claude install alone.

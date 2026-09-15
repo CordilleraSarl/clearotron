@@ -127,13 +127,14 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // still resolved to Opus 4.8 on the live CLI (2.1.209). The pin was reversed on 2026-09-14, for two
 // reasons. A hand-pinned id is a silent downgrade on every clearance from the day a better model ships.
 // And on Bedrock, Vertex and Foundry the CLI resolves an alias through the vendor's own
-// ANTHROPIC_DEFAULT_OPUS_MODEL / _SONNET_MODEL / _HAIKU_MODEL, which an exact id bypasses: a cloud with
-// no deployment of that exact name refuses the turn. The cost is that a model can move under a clearance
-// without a test; the witness is the id the CLI reports, recorded on every attempt row (`modelActual`)
-// and on the published run. To hold a tier still, set the vendor's variable in the env file
+// ANTHROPIC_DEFAULT_OPUS_MODEL / _SONNET_MODEL / _HAIKU_MODEL / _FABLE_MODEL, which an exact id bypasses:
+// a cloud with no deployment of that exact name refuses the turn. The cost is that a model can move under a
+// clearance without a test; the witness is the id the CLI reports, recorded on every attempt row
+// (`modelActual`) and on the published run. To hold a tier still, set the vendor's variable in the env file
 // (ANTHROPIC_DEFAULT_OPUS_MODEL=<id>): the stage's environment is the driver's, so it reaches the CLI
-// with no setting of Clearotron's own. A catalog id a caller names (anthropic/claude-opus-5) still goes
-// as that exact id. The non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
+// with no setting of Clearotron's own. ANTHROPIC_DEFAULT_FABLE_MODEL holds fable, which no stage asks for
+// unless an override names it, as CLEAROTRON_SYNTHESIS_MODEL=fable does. A catalog id a caller names
+// (anthropic/claude-opus-5) still goes as that exact id. The non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
 // substituted with an anthropic model (also GRADE-MOVING, A/B-only); their bare-alias substitutes
 // (e.g. deepseek → "opus") are legacy aliases no stage names today, intentionally left un-pinned. They
 // stay registered so a stage that names one is SUBSTITUTED loudly rather than caught by the regex

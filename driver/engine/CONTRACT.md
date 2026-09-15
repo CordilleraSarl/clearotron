@@ -155,8 +155,9 @@ declare an anthropic tier in `STAGES` — and every engine's model map now **ref
 run (`claudeModel`, `openaiModel`). On the anthropic engine a tier goes as the vendor's alias, a catalog
 id in the table (`anthropic/claude-opus-5`) goes as itself, a bare or dated `claude-*` id goes as its
 family's alias, and anything else throws. To hold a tier on one model, set the vendor's own
-`ANTHROPIC_DEFAULT_OPUS_MODEL` / `_SONNET_MODEL` / `_HAIKU_MODEL`; it reaches the CLI through the stage's
-environment.
+`ANTHROPIC_DEFAULT_OPUS_MODEL` / `_SONNET_MODEL` / `_HAIKU_MODEL`, or `ANTHROPIC_DEFAULT_FABLE_MODEL` for
+`fable`, which no stage asks for unless an override names it, as `CLEAROTRON_SYNTHESIS_MODEL=fable` does; each
+reaches the CLI through the stage's environment.
 
 **Model provenance — two fields, never collapsed.** Every dispatch row (`_driver/<stage>.jsonl`) and
 every `attempt` row (`_driver/run.jsonl`) carries:
