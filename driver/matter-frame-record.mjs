@@ -135,6 +135,12 @@ export function renderMatterFrame(model) {
   // to find extra classes, so finding none is the ordinary case and not an answer worth a row.
   for (const c of (model.identified_classes ?? []))
     out.push(`- **Class ${c.class} — identified by the frame:** ${c.reason}`);
+  // THE FORMS THE CLIENT RATIFIED, when there is more than one. One form is the ordinary case and
+  // renders nothing: a row saying the name is itself tells a reader nothing they did not have from the
+  // heading. Two or more is a fact about what was bought, and it is what the per-form read downstream
+  // is owed against — so the frame states it where a reader can see it rather than only in a field.
+  if ((model.ratified_forms ?? []).length > 1)
+    out.push(`- **Ratified forms:** ${model.ratified_forms.join(", ")}`);
   out.push("");
 
   // `Search channels:` — domains only; the grid site-restricts to them and the general web is always
@@ -166,7 +172,7 @@ export function renderMatterFrame(model) {
  */
 /** The shape this tool declares, at every depth — what the ACCEPTOR enforces. */
 const DECLARED = Object.freeze({
-  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "meaning_angles", "meaning_angles_none", "intake_asks", "identified_classes"],
+  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "meaning_angles", "meaning_angles_none", "intake_asks", "identified_classes", "ratified_forms"],
   intake_asks: ["ask", "owner"],
   identified_classes: ["class", "reason"],
 });
@@ -192,6 +198,24 @@ export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLA
 export function frameIdentifiedClasses(runDir) {
   const rows = lastAcceptedMatterFrame(runDir)?.identified_classes;
   return (Array.isArray(rows) ? rows : []).map((r) => String(r?.class ?? "").trim()).filter(Boolean);
+}
+
+/**
+ * The forms of the name this run's client ratified, as strings. IMPURE (reads the run's own accepted
+ * call). Empty or one form is the ordinary answer.
+ *
+ * WHAT READS IT IS A FLOOR, NOT A FEATURE. `validators.narrative` uses this to decide whether the
+ * narrative owes a per-form read, and it owes one only when the frame froze MORE THAN ONE. A run with
+ * no frame, a replayed or archived run whose accepted call predates the field, and every ordinary
+ * single-form run all return a list the floor ignores — so none of them changes behaviour and every one
+ * of them re-verifies byte-identically.
+ *
+ * THE TRIM IS NOT COSMETIC. A form is compared against the narrative's own text downstream, so a
+ * trailing space here would be a form the narrative can never be found to have named.
+ */
+export function frameRatifiedForms(runDir) {
+  const rows = lastAcceptedMatterFrame(runDir)?.ratified_forms;
+  return (Array.isArray(rows) ? rows : []).map((r) => String(r ?? "").trim()).filter(Boolean);
 }
 
 /** The last ACCEPTED call for this run, or null. */
@@ -227,6 +251,7 @@ export function mergeMatterFrameCall(stored, received) {
     // NARROW THE SEARCH on the next compile, silently and in the direction that misses rights. An
     // omission here is a repair that did not mention them, never a decision to withdraw them.
     identified_classes: keepIfAbsent(received?.identified_classes, base.identified_classes),
+    ratified_forms: keepIfAbsent(received?.ratified_forms, base.ratified_forms),
   };
 }
 
@@ -294,6 +319,33 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     identified_classes.push({ class: String(n), reason });
   }
 
+  // ── THE RATIFIED FORMS OF THE NAME, TYPED ─────────────────────────────────────────────────────────
+  //
+  // A client ratifies two forms of one candidate — the name and a slight twist on it — and both are
+  // searched. Until now the second form arrived only in the instruction PROSE, and nothing downstream
+  // could tell "two forms of one name" from "one name": `job.marks` with more than one entry means a
+  // BATCH, which is a different product. So the synthesis dictation asking for a per-form read had no
+  // deterministic floor under it: its arms matched the wording, which reds when the prose moves and
+  // cannot red when a model ignores the ask.
+  //
+  // TYPED RATHER THAN PARSED, for the reason the field above states and measures: a list derived from
+  // judgment prose dropped the PRIMARY entry in 19 of 21 runs. A field the frame fills in is a
+  // decision; a name scraped out of a sentence is a guess.
+  //
+  // ABSENT OR ONE FORM IS THE ORDINARY CASE and stays free: the floor that reads this is off unless
+  // there is more than one, so every archived run and every single-form run verifies exactly as before.
+  const ratified_forms = [];
+  for (const f of (Array.isArray(params?.ratified_forms) ? params.ratified_forms : [])) {
+    const form = str(f);
+    if (!form)
+      return { ok: false, reason: "matterframe_ratified_form_empty — a ratified form is the name as the client ratified it, never a blank row" };
+    // CASE-INSENSITIVE, because two rows differing only in case are one form written twice and the
+    // per-form read below would then be asked for a distinction the client never made.
+    if (ratified_forms.some((k) => k.toLowerCase() === form.toLowerCase()))
+      return { ok: false, reason: `matterframe_ratified_form_duplicate:${form} — one row per form` };
+    ratified_forms.push(form);
+  }
+
   const model = {
     schema_version: SCHEMA_VERSION,
     instructed_scope: instructedScope ?? null,
@@ -305,6 +357,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     meaning_angles, meaning_angles_none,
     intake_asks,
     identified_classes,
+    ratified_forms,
   };
   return { ok: true, model, content: renderMatterFrame(model) };
 }

@@ -713,7 +713,26 @@ const OWN_NUMBER = /^\s*(?:at\s+\d|:\d)/;
 // The cost of naming a file is that a REAL bare citation added there also escapes. That is the same trade
 // the reference-strip signatures make for the same reason, and it is preferable to a pattern, which would
 // quietly widen to files nobody considered.
-export const RATCHET_EXEMPT = ["driver/test/a-new-citation-carries-something-that-can-be-checked.test.mjs"];
+// ── EXEMPT FROM THE RATCHET, AND ONLY WHERE SOMETHING STRONGER CHECKS THE SAME CITATIONS ───────────
+//
+// The ratchet refuses a NEW bare citation, which is right everywhere it is the only check. It is not the
+// only check on `contract-e3-backlog.mjs`: `contract-audit.test.mjs` reads each backlog row's own
+// evidence, finds where that dictation now starts, and refuses a row whose number points away from it.
+// That is a stronger guarantee than "a symbol sits beside the number" — it verifies the number itself.
+//
+// THE TWO ARE IN DIRECT CONFLICT ON THAT FILE, and the conflict is not hypothetical: an edit to
+// `stages.mjs` moves those rows, the evidence guard then DEMANDS they be repointed, and every repointed
+// row reads to the ratchet as a newly added bare citation. Under both rules at once the only permitted
+// change to that file is no change at all. Measured on the change that found this: 31 rows repointed at
+// the evidence guard's own instruction, 31 refused by the ratchet.
+//
+// So the file is exempt from the weaker check and stays under the stronger one. Anything NOT covered by
+// an evidence guard does not belong on this list — the exemption is earned by being checked better, not
+// by being inconvenient.
+export const RATCHET_EXEMPT = [
+  "driver/test/a-new-citation-carries-something-that-can-be-checked.test.mjs",
+  "driver/contract-e3-backlog.mjs",
+];
 
 export function newBareCitations(addedLines) {
   const out = [];

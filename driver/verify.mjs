@@ -12,7 +12,7 @@ import { dirname, join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
-import { matterFrameWasRecorded } from "./matter-frame-record.mjs";
+import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
 import { findConnotationViolations, parsePrRiskResults, MEANING_ANGLES_RE,
   parseDispositionForm, CONNOTATION_UNRULED_REASONS } from "./connotation-search.mjs";
 import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
@@ -2249,6 +2249,40 @@ export const validators = {
           return fail(`intake_ask_unanswered:${asks.length - answered}:of:${asks.length}`);
       }
     } catch { /* no sidecar / unreadable — legacy run, gate off */ }
+
+    // ── A TWO-FORM MATTER OWES A READ PER FORM ────────────────────────────────────────────────────
+    //
+    // Synthesis is told to reason each ratified form through the framework and to say which conflicts
+    // move between them — or to state in one line that the reads are the same for both. Until this,
+    // nothing enforced it: the arms on that dictation match the wording, so they red when the prose
+    // moves and cannot red when a model ignores the ask. This is the deterministic floor under it.
+    //
+    // GATED ON THE FRAME HAVING FROZEN MORE THAN ONE FORM, which is why it can exist at all. A run with
+    // no frame, an archived or replayed run whose accepted call predates the field, and every ordinary
+    // single-form run reach `forms.length > 1` as false and leave here untouched — so every one of them
+    // re-verifies byte-identically. Same shape as the intake-asks gate above, and the same reason.
+    //
+    // WHAT IT ASKS FOR IS THE CHEAPEST HONEST THING: each form NAMED in the narrative, or the
+    // stated-alike line. It does not judge the reasoning — a floor that tried would be a worse version
+    // of the refutation pass, which stays the semantic backstop. It judges that the question was
+    // answered at all, which is exactly what was missing: a narrative that never mentions the second
+    // form is indistinguishable from one that examined it and found nothing, and a client who ratified
+    // two forms is choosing between them.
+    try {
+      const forms = frameRatifiedForms(dirname(p));
+      if (forms.length > 1) {
+        const text = String(c ?? "");
+        // The alternative the dictation offers, matched on its own terms rather than by a fixed
+        // sentence: a narrative may state the reads are alike instead of splitting them.
+        const alike = /\bthe reads are the same for both forms\b/i.test(text);
+        if (!alike) {
+          const unnamed = forms.filter((f) => !text.toLowerCase().includes(f.toLowerCase()));
+          if (unnamed.length)
+            return fail(`ratified_form_unread:${unnamed.length}:of:${forms.length}:${abbrev(unnamed[0], 60)}`);
+        }
+      }
+    } catch { /* no frame / unreadable — gate off, exactly as above */ }
+
     // V4-4 item 6 — narrative coverage contract (code-checked, conditional on the closure receipt):
     // a marketplace coverage gap may be stated ONLY as an attempted-and-unreachable fact, never as
     // "commission a re-run" work for a human — the driver already closed or proved-unclosable every

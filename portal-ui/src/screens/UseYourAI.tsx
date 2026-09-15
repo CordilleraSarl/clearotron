@@ -38,7 +38,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { api } from '../contract/api.ts'
-import type { McpAccess, ConnectOffer, ConnectCopy } from '../contract/api.ts'
+import type { McpAccess, ConnectOffer, ConnectCopy, ConnectStep } from '../contract/api.ts'
 import { Icon } from '../components/Icon.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
 
@@ -136,8 +136,57 @@ function StepsPanel({
     <div className="steps-panel" data-for={measuring ? undefined : offer.id}>
       <div className="eyebrow">Steps for</div>
       <h3 className="steps-name">{offer.name}</h3>
-      <ol className="steps">
-        {offer.steps.map((s, i) => {
+      {/* THE PAGE SAYS WHEN IT COULD NOT TELL. `doorKind` answers null for "not read", and its contract
+          says the caller offers both rather than guessing — but the wire carried no door and this panel
+          had no branch for one, so the sign-in steps were drawn as though the door had been read. The
+          steps themselves already carried a sentence promising both ways were shown, which made it a
+          promise the page did not keep: a reader went looking for an alternative that was not there. */}
+      {offer.door === null && offer.altSteps?.length ? (
+        <p className="steps-unknown">
+          We could not check how this Clearotron lets an assistant in, so both ways are below. Try the
+          first — your assistant will tell you if it needs the other.
+        </p>
+      ) : null}
+      <StepList
+        steps={offer.steps} offset={0} measuring={measuring} state={state} onBlock={onBlock} onSecret={onSecret} />
+
+      {/* THE OTHER DOOR'S STEPS, under a heading that says what they are for. OFFSET INDICES, because
+          the copy-flash state is keyed by step index and the two lists share one panel: without it,
+          pressing Copy on the alternative's second step flashes the primary's second step. */}
+      {offer.door === null && offer.altSteps?.length ? (
+        <div className="steps-alt">
+          <h4 className="steps-alt-head">If your assistant asks to be let in another way</h4>
+          <StepList
+            steps={offer.altSteps} offset={offer.steps.length} measuring={measuring} state={state}
+            onBlock={onBlock} onSecret={onSecret} />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+/**
+ * One ordered list of steps. Extracted so the alternative an unknown door carries renders through the
+ * SAME code as the primary set — a second copy of this markup is how one of the two lists quietly stops
+ * flashing on copy, or loses a hint, and the one that rots is the fallback nobody looks at.
+ *
+ * `offset` moves this list's indices clear of the other's: the copy-flash state is keyed by step index
+ * and both lists live in one panel.
+ */
+function StepList({
+  steps, offset, measuring = false, state = AT_REST, onBlock, onSecret,
+}: {
+  readonly steps: readonly ConnectStep[]
+  readonly offset: number
+  readonly measuring?: boolean
+  readonly state?: PressState
+  readonly onBlock?: ((i: number, text: string) => void) | undefined
+  readonly onSecret?: ((i: number, c: Secret) => void) | undefined
+}) {
+  return (
+    <ol className="steps">
+      {steps.map((s, n) => {
+        const i = n + offset
           const c = s.copy
           const flashed = !measuring && state.copiedAt === i
           const landed = measuring && c?.kind === 'secret' ? fill(c, mask('')) : state.landedAt === i ? state.landed : null
@@ -190,8 +239,7 @@ function StepsPanel({
             </li>
           )
         })}
-      </ol>
-    </div>
+    </ol>
   )
 }
 

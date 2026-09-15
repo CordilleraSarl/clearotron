@@ -857,6 +857,19 @@ export type ConnectOffer = {
    */
   readonly steps: readonly ConnectStep[]
   /**
+   * WHAT THE CONNECTOR ASKS FOR — "sign-in", "key", or null for "could not be read". Present only on the
+   * web route, where it decides the steps. The reading is the server's: the page renders what it is
+   * given and never probes a door itself.
+   */
+  readonly door?: 'sign-in' | 'key' | null
+  /**
+   * THE OTHER DOOR'S STEPS, present only when `door` is null. The steps above then carry a sentence
+   * saying both ways are shown, and this is the other way — so the sentence is true. Absent whenever the
+   * door was read: offering an alternative to a reader whose door is known is a second set of
+   * instructions that cannot work for them.
+   */
+  readonly altSteps?: readonly ConnectStep[]
+  /**
    * A page a press can open so the reader lands in their assistant with the connector in front of them.
    *  settled 8. Null for every vendor today — the mechanism is built and the
    * table is deliberately empty, because a launch URL nobody has driven is a button that looks like it
@@ -1726,6 +1739,34 @@ export function decodeAccess(b: Record<string, unknown>): readonly AccessPoint[]
 }
 
 /** One person as the server sends them — the switches and the points decoded by the rules `me` uses. */
+/**
+ * One route's steps, validated field by field. A malformed step is dropped rather than rendered — a step
+ * reading "[object Object]" is worse than one fewer — and a malformed COPY drops the whole step, since a
+ * step whose one job is to hand something over is a false instruction without it.
+ *
+ * SHARED BY BOTH SETS. The alternative steps an unknown door carries are the same shape and must not get
+ * a second, looser reader: the half of this page a reader falls back to is the half least likely to have
+ * been looked at.
+ */
+const decodeSteps = (raw: unknown): ConnectStep[] =>
+  asArray(raw).flatMap((x): ConnectStep[] => {
+    const s = asRecord(x)
+    const text = asString(s['text'])
+    if (!text) return []
+    const hint = asString(s['hint'])
+    const c = s['copy'] == null ? null : asRecord(s['copy'])
+    let copy: ConnectCopy | undefined
+    if (c) {
+      const kind = asString(c['kind'])
+      if (kind === 'block' && asString(c['text'])) copy = { kind, text: asString(c['text']) as string }
+      else if (kind === 'secret' && asString(c['label']) && asString(c['template']) && asString(c['slot'])
+        && (asString(c['template']) as string).includes(asString(c['slot']) as string)) {
+        copy = { kind, label: asString(c['label']) as string, template: asString(c['template']) as string, slot: asString(c['slot']) as string }
+      } else return []
+    }
+    return [{ text, ...(hint ? { hint } : {}), ...(copy ? { copy } : {}) }]
+  })
+
 function decodePerson(r: Record<string, unknown>): Person {
   return {
     email: asString(r['email']) ?? '',
@@ -2297,23 +2338,18 @@ export const api = {
           // than rendered, because a step that reads "[object Object]" is worse than one fewer step — and
           // a malformed COPY drops the whole step, since a step whose one job is to hand something over
           // is a false instruction without it.
-          steps: asArray(r['steps']).flatMap((x): ConnectStep[] => {
-            const s = asRecord(x)
-            const text = asString(s['text'])
-            if (!text) return []
-            const hint = asString(s['hint'])
-            const c = s['copy'] == null ? null : asRecord(s['copy'])
-            let copy: ConnectCopy | undefined
-            if (c) {
-              const kind = asString(c['kind'])
-              if (kind === 'block' && asString(c['text'])) copy = { kind, text: asString(c['text']) as string }
-              else if (kind === 'secret' && asString(c['label']) && asString(c['template']) && asString(c['slot'])
-                && (asString(c['template']) as string).includes(asString(c['slot']) as string)) {
-                copy = { kind, label: asString(c['label']) as string, template: asString(c['template']) as string, slot: asString(c['slot']) as string }
-              } else return []
-            }
-            return [{ text, ...(hint ? { hint } : {}), ...(copy ? { copy } : {}) }]
-          }),
+          steps: decodeSteps(r['steps']),
+          // THE DOOR AND THE ALTERNATIVE, THROUGH THE SAME VALIDATION. `door` is a closed set, so an
+          // unrecognised value decodes as null — "could not be read" — which is the reading that shows
+          // the reader both ways rather than one that might be wrong. `altSteps` is dropped unless the
+          // door is unknown: an alternative offered beside a door we DID read is a set of instructions
+          // that cannot work, presented as though it might.
+          ...(r['door'] === 'sign-in' || r['door'] === 'key'
+            ? { door: r['door'] as 'sign-in' | 'key' }
+            : Object.hasOwn(r, 'door') ? { door: null } : {}),
+          ...(!(r['door'] === 'sign-in' || r['door'] === 'key') && Object.hasOwn(r, 'altSteps')
+            ? (() => { const a = decodeSteps(r['altSteps']); return a.length ? { altSteps: a } : {} })()
+            : {}),
           // Only an https page survives. A wire value of any other shape is dropped rather than opened:
           // this is the one field on this screen that navigates a reader somewhere.
           launch: (() => {

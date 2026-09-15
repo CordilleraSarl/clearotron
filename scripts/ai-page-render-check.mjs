@@ -55,7 +55,7 @@
 import { navigateOrRefuse } from './headless-page.mjs'   // Page.navigate returns an errorText, and nothing read it
 import { createServer } from 'node:http'
 import { reapOnExit } from "../shared/reap-on-exit.mjs";   // — a detached group dies with this script
-import { readFileSync, existsSync, rmSync } from 'node:fs'
+import { readFileSync, existsSync, rmSync, writeFileSync } from 'node:fs'
 import { join, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
@@ -264,14 +264,24 @@ const panelProbe = (expect) => `(() => {
   const screen = document.querySelector('.screen')
   const panels = [...screen.querySelectorAll('.steps-panel[data-for]')].filter((el) => !el.closest('.ai-probe'))
   const panel = panels[0]
-  const steps = panel ? [...panel.querySelectorAll('ol.steps > li')] : []
+  // THE PRIMARY LIST ONLY. Where the door could not be read the panel holds a second list — the other
+  // way in — so a panel-wide query counts both and the step-count assertion below compares one number
+  // against the other list's total as well. The two are measured apart because they say different
+  // things: the first is what to try, the second is what to fall back to.
+  const alt = panel?.querySelector('.steps-alt')
+  const steps = panel ? [...panel.querySelectorAll('ol.steps > li')].filter((li) => !alt || !alt.contains(li)) : []
+  const altSteps = alt ? [...alt.querySelectorAll('ol.steps > li')] : []
   return {
     panelCount: panels.length,
     panelFor: panel?.getAttribute('data-for') ?? null,
     // textContent, not innerText: the eyebrow is uppercased by CSS, and innerText reports the drawn case.
     head: flat(panel?.querySelector('.eyebrow')?.textContent) + ' ' + flat(panel?.querySelector('.steps-name')?.textContent),
     stepCount: steps.length,
+    altStepCount: altSteps.length,
+    altHeading: flat(panel?.querySelector('.steps-alt-head')?.textContent) || null,
+    unknownDoorNote: flat(panel?.querySelector('.steps-unknown')?.textContent) || null,
     firstStepCopies: !!steps[0]?.querySelector('.codeblock, .secret-btn'),
+    altFirstStepCopies: !!altSteps[0]?.querySelector('.codeblock, .secret-btn'),
     stepsPointingNowhere: steps.map((li) => flat(li.innerText)).filter((l) => /\\b(below|advanced)\\b/i.test(l)),
     stamp: /Checked \\d{4}|These steps name no button/.test(flat(panel?.innerText ?? '')),
     selectedElsewhere: [...screen.querySelectorAll('button.ai-app[aria-pressed="true"]')].filter((b) => b.getAttribute('data-id') !== EXPECT.id).length,
@@ -323,6 +333,10 @@ let secretPresses = 0
 // it was never established — three plants each failed to reproduce it — so zero is counted and named as an
 // ENVIRONMENT failure rather than explained.
 let clipboardReached = 0
+// A FRAME PER DECK, for a reader rather than for an assertion. Any change here is one a person sees, and
+// a diff cannot show placement — the rule that came from a release shipping a button in the wrong place.
+const shotDir = process.argv.includes('--shot-dir') ? process.argv[process.argv.indexOf('--shot-dir') + 1] : null
+
 let clipboardRefused = 0
 
 const out = {}
@@ -403,6 +417,43 @@ for (const state of Object.keys(STATES)) {
       ok(s.panelCount === 1 && s.panelFor === o.id, `the panel that opened is "${o.id}"'s, and only it (saw ${s.panelCount}, ${s.panelFor})`)
       ok(s.head === `Steps for ${o.name}`, `the panel is headed "Steps for ${o.name}" (saw "${s.head}")`)
       ok(s.stepCount === o.steps.length && s.firstStepCopies, `all ${o.steps.length} steps render and step 1 is the copy (saw ${s.stepCount}, copy: ${s.firstStepCopies})`)
+      // ── WHERE THE DOOR COULD NOT BE READ, BOTH WAYS ARE ON THE SCREEN ──────────────────────────
+      //
+      // doorKind answers null for "not read" and its contract says the caller offers both. The wire
+      // carried no door and the panel had no branch for one, so a deck whose door is silent drew the
+      // sign-in steps exactly as a deck that had been read — while the step text underneath promised
+      // the reader that both ways were shown. Asserted on the NULL decks and asserted ABSENT on the
+      // others: an alternative beside a door we did read is a set of instructions that cannot work.
+      // KEYED ON THE DECK, NEVER ON THE OFFER. `o` comes from the same `offersForWire` call that feeds
+      // the page, so an expectation read off it moves with the thing it is checking: dropping both
+      // fields from the wire — the exact pre-fix state — left every assertion here passing, because
+      // `wantsBoth` went false at the same moment the page stopped drawing them. The DECK states what
+      // this deployment is; that is the fact the page is supposed to honour.
+      if (shotDir) {
+        const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+        const data = shot.result?.result?.data ?? shot.result?.data
+        if (data) writeFileSync(join(shotDir, `ai-${state}-${o.id}.png`), Buffer.from(data, 'base64'))
+      }
+      const wantsBoth = STATES[state].url !== null && STATES[state].door === null && o.route === 'public-http'
+      if (wantsBoth) {
+        ok(s.altStepCount > 0 && s.altFirstStepCopies,
+          `"${o.name}" on a door nobody could read shows the other way's steps, copy first (saw ${s.altStepCount}, copy: ${s.altFirstStepCopies})`)
+        // AND THE WIRE ACTUALLY CARRIED THEM. Asserted against the deck above, so this cannot go quiet
+        // by the resolver simply ceasing to produce an alternative.
+        ok((o.altSteps?.length ?? 0) > 0 && o.door === null,
+          `the wire dropped the other way in for "${o.name}" — the page has nothing to draw and nothing to say`)
+        // NULL-SAFE ON THE WIRE'S OWN FIELD. Reading `.length` off an absent `altSteps` threw here, and a
+        // check that throws stops reporting: the two decks after this one were never measured, so the
+        // run said less about the page than it had already learned. A missing alternative is a finding
+        // the assertion above states; it must not also be an exception.
+        ok(s.altStepCount === (o.altSteps?.length ?? 0),
+          `"${o.name}" drew ${s.altStepCount} of the ${o.altSteps?.length ?? 0} steps the wire carried`)
+        ok(!!s.unknownDoorNote, `"${o.name}" says the door could not be checked rather than drawing one way as though it had been`)
+        ok(!!s.altHeading, `the second list on "${o.name}" is headed, so a reader can tell which set is which`)
+      } else {
+        ok(s.altStepCount === 0 && !s.unknownDoorNote,
+          `"${o.name}" offers a second way in beside a door that WAS read (saw ${s.altStepCount} extra steps)`)
+      }
       ok(s.stepsPointingNowhere.length === 0, `no step points at a section this page does not have: ${JSON.stringify(s.stepsPointingNowhere)}`)
       ok(!s.stamp, 'no checked or unchecked stamp')
       ok(s.selectedElsewhere === 0, `no other row is still selected (${s.selectedElsewhere})`)

@@ -68,51 +68,52 @@ export const VOCABULARY = [
   { token: "missing", stages: ["matter-frame", "prelim-variants", "common-law", "common-law-half", "placement-inquiry", "register-digest", "doubt-closure", "report-overview", "report-card"], site: "driver/verify.mjs:164" },
 
   // ── common-law / common-law-half ───────────────────────────────────────────────────────────────────
-  { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs:231" },
+  { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs" },
   { token: "grid_spec_unreadable", stages: CL, site: "driver/verify.mjs:257" },
   { token: "grid_ledger_missing", stages: CL, site: "driver/verify.mjs:297" },
   { token: "grid_ledger_unparseable", stages: CL, site: "driver/verify.mjs:266" },
-  { token: "connotation_query_unrecorded", stages: ["common-law-half"], site: "driver/verify.mjs:269" },
-  { token: "profile_unparseable", stages: ["common-law"], site: "driver/verify.mjs:301" },
+  { token: "connotation_query_unrecorded", stages: ["common-law-half"], site: "driver/verify.mjs" },
+  { token: "profile_unparseable", stages: ["common-law"], site: "driver/verify.mjs" },
   { token: "grid_join_missing", stages: CL, site: "driver/verify.mjs:318" },
   { token: "platform_identity_error", stages: CL, site: "driver/verify.mjs:323" },
   { token: "platforms_missing", stages: CL, site: "driver/verify.mjs:334" },
-  { token: "connotation_search_missing", stages: ["common-law"], site: "driver/verify.mjs:362" },
-  { token: "receipts_short", stages: ["common-law"], site: "driver/verify.mjs:388" },
+  { token: "connotation_search_missing", stages: ["common-law"], site: "driver/verify.mjs" },
+  { token: "receipts_short", stages: ["common-law"], site: "driver/verify.mjs" },
   { token: "half_path_unrecognized", stages: ["common-law-half"], site: "driver/verify.mjs:395" },
   { token: "no_coverage_status_row", stages: [...CL, "register-digest"], site: "driver/verify.mjs:452, 1416" },
   // B — `connotation_form_unparseable` and `connotation_form_untouched` are GONE: they
   // were states only a hand-authored document could be in, and the form path is deleted (ruling
   // 2026-08-17). Their subject matter is carried by the call tokens under the D1 family row below.
-  { token: "connotation_form_damaged", stages: CL, site: "driver/verify.mjs:889" },
-  { token: "connotation_", stages: CL, site: "driver/verify.mjs:898", family: "driver/connotation-search.mjs:894 (CONNOTATION_FORM_REASONS, exported at :819)", dynamic: "D1" },
-  { token: "connotation_quote_unbound", stages: CL, site: "driver/verify.mjs:914" },
+  { token: "connotation_form_damaged", stages: CL, site: "driver/verify.mjs" },
+  { token: "connotation_", stages: CL, site: "driver/verify.mjs", family: "driver/connotation-search.mjs CONNOTATION_FORM_REASONS", dynamic: "D1" },
+  { token: "connotation_quote_unbound", stages: CL, site: "driver/verify.mjs" },
 
   // ── synthesis ──────────────────────────────────────────────────────────────────────────────────────
   { token: "framework_manifest_unreadable", stages: ["synthesis"], site: "driver/verify.mjs:691" },
   { token: "framework_manifest_missing_for_v4", stages: ["synthesis"], site: "driver/verify.mjs:706" },
-  { token: "finding_use_check_source_missing", stages: ["synthesis"], site: "driver/verify.mjs:713" },
-  { token: "finding_own_rights_source_missing", stages: ["synthesis"], site: "driver/verify.mjs:715" },
-  { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs:779" },
-  { token: "finding_use_check_missing", stages: ["synthesis"], site: "driver/verify.mjs:729" },
-  { token: "intake_ask_unanswered", stages: ["synthesis"], site: "driver/verify.mjs:1636" },
-  { token: "coverage_recommendation", stages: ["synthesis"], site: "driver/verify.mjs:1648" },
-  { token: "coverage_gap_unexplained", stages: ["synthesis"], site: "driver/verify.mjs:1649" },
+  { token: "finding_use_check_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "finding_own_rights_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "finding_use_check_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "intake_ask_unanswered", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "ratified_form_unread", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "coverage_recommendation", stages: ["synthesis"], site: "driver/verify.mjs" },
+  { token: "coverage_gap_unexplained", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding", stages: ["synthesis"], site: "driver/verify.mjs:704", family: "driver/findings-model.mjs (token-first throws; `finding_*` and `findings_*`)", dynamic: "D2" },
 
   // ── register-digest ────────────────────────────────────────────────────────────────────────────────
-  { token: "coverage_form_damaged", stages: ["register-digest"], site: "driver/verify.mjs:976" },
-  { token: "coverage_form_engine_vocabulary", stages: ["register-digest"], site: "driver/verify.mjs:1021" },
-  { token: "coverage_form_axis_invalid", stages: ["register-digest"], site: "driver/verify.mjs:1029" },
-  { token: "coverage_no_status", stages: ["register-digest"], site: "driver/verify.mjs:1062" },
-  { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs:1445" },
-  { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs:1449" },
+  { token: "coverage_form_damaged", stages: ["register-digest"], site: "driver/verify.mjs" },
+  { token: "coverage_form_engine_vocabulary", stages: ["register-digest"], site: "driver/verify.mjs" },
+  { token: "coverage_form_axis_invalid", stages: ["register-digest"], site: "driver/verify.mjs" },
+  { token: "coverage_no_status", stages: ["register-digest"], site: "driver/verify.mjs" },
+  { token: "coverage_form_missing", stages: ["register-digest"], site: "driver/verify.mjs" },
+  { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:2050" },
   { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1504 coverageFormFail", family: "driver/register-plan.mjs:1642 PROVIDER_HARD_ERROR_PREFIX — token on a data row", dynamic: "D5" },
   { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1417 validatePlanFeasibility", dynamic: "D6" },
   { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:1766 searchedJurisdictionsFromPlan", dynamic: "D6" },
   { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs, the matterContext validator", family: "driver/register-plan.mjs:2018 disclosureTextByAxis", dynamic: "D7" },
-  { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs:1578" },
+  { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs" },
   { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs (parseCoverageLedgerJson token-first throws)", dynamic: "D4" },
   { token: "coverage_key_unknown", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
   { token: "coverage_axis_", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs", dynamic: "D4" },
@@ -122,11 +123,11 @@ export const VOCABULARY = [
 
   // ── matter-frame / prelim-variants / blind-frame / frame-diff ──────────────────────────────────────
   { token: "stagecontracts_invalid", stages: ["matter-frame", "prelim-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539, 1170, 1366, 1677" },
-  { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1103" },
+  { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs" },
   { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1119" },
-  { token: "variantmodel_romanization_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1237" },
-  { token: "variantmodel_family_incomplete", stages: ["prelim-variants"], site: "driver/verify.mjs:1196" },
-  { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs:1263" },
+  { token: "variantmodel_romanization_missing", stages: ["prelim-variants"], site: "driver/verify.mjs" },
+  { token: "variantmodel_family_incomplete", stages: ["prelim-variants"], site: "driver/verify.mjs" },
+  { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs" },
   { token: "variantmodel_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1153, 1212" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
   // through checkSiblingJson (verify.mjs:1136) → checkJson (:742), so the WHOLE variantmodel_* family
@@ -164,16 +165,16 @@ export const VOCABULARY = [
   // the frame never reaches disk. They are declared here for the same reason the two families below are —
   // verify.mjs reaches the module, so a family that could grow a member no row covers must be readable.
   { token: "matterframe_", stages: ["matter-frame"], site: "driver/matter-frame-record.mjs acceptMatterFrame", family: "driver/matter-frame-record.mjs", dynamic: "D3" },
-  { token: "framediff_model_missing", stages: ["frame-diff"], site: "driver/verify.mjs:1224" },
+  { token: "framediff_model_missing", stages: ["frame-diff"], site: "driver/verify.mjs" },
   { token: "framediff_", stages: ["frame-diff"], site: "driver/verify.mjs:1224 → 742", family: "driver/frame-diff-model.mjs", dynamic: "D3" },
 
   // ── register-unit ──────────────────────────────────────────────────────────────────────────────────
-  { token: "declared_not_executed", stages: ["register-unit"], site: "driver/verify.mjs:1236" },
+  { token: "declared_not_executed", stages: ["register-unit"], site: "driver/verify.mjs" },
   { token: "tool_timeout", stages: ["register-unit"], site: "driver/verify.mjs:1788" },
-  { token: "named_band_missing", stages: ["register-unit"], site: "driver/verify.mjs:1731" },
-  { token: "named_band_invalid", stages: ["register-unit"], site: "driver/verify.mjs:1736" },
-  { token: "named_band_collapsed", stages: ["register-unit"], site: "driver/verify.mjs:1747" },
-  { token: "band_block_unplanned", stages: ["register-unit"], site: "driver/verify.mjs:1761" },
+  { token: "named_band_missing", stages: ["register-unit"], site: "driver/verify.mjs" },
+  { token: "named_band_invalid", stages: ["register-unit"], site: "driver/verify.mjs" },
+  { token: "named_band_collapsed", stages: ["register-unit"], site: "driver/verify.mjs" },
+  { token: "band_block_unplanned", stages: ["register-unit"], site: "driver/verify.mjs" },
   { token: "named_band_", stages: ["register-unit"], site: "driver/verify.mjs:1736 → 742", family: "driver/named-band.mjs", dynamic: "D3" },
 
   // ── placement-inquiry ──────────────────────────────────────────────────────────────────────────────
@@ -182,10 +183,10 @@ export const VOCABULARY = [
 
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
   { token: "caselaw_ledger_missing", stages: ["case-law"], site: "driver/verify.mjs:1682, 1685" },
-  { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs:1745" },
+  { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs" },
   { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs:1692", family: "driver/case-law-ledger.mjs:204 (census reasons)", dynamic: "D8" },
-  { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs:1754" },
-  { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs:1771" },
+  { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
+  { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
 
   // ── delivery ───────────────────────────────────────────────────────────────────────────────────────
   // EMPTY SINCE, and that is the finding rather than an omission: the only delivery-side token was
@@ -193,7 +194,7 @@ export const VOCABULARY = [
   // its own send. Delivery is code and a packet now, so there is no stage to emit a delivery token.
 
   // ── the gateway wrapper, emittable by EVERY stage and not in verify.mjs at all ─────────────────────
-  { token: "missing_file", stages: ALL_STAGES, site: "driver/gateway.mjs:1037" },
+  { token: "missing_file", stages: ALL_STAGES, site: "driver/gateway.mjs" },
 ];
 
 /**

@@ -105,9 +105,11 @@ const BRIEF = "ask it to brief you on your clearances.";
 export const DOOR_KINDS = Object.freeze(["sign-in", "key"]);
 const SIGNIN_HINT = "No key: this connector signs you in through your browser, and the sign-in is the "
   + "authentication your assistant is asking about.";
-const UNKNOWN_DOOR_HINT = "This deployment's connector could not be read just now, so both ways are "
-  + "shown: sign-in is what a hosted connector answers, a key is what a self-hosted one takes. Try the "
-  + "sign-in first — an assistant that needs a key will say so.";
+// THE UNKNOWN DOOR IS THE PAGE'S SENTENCE NOW, NOT A STEP HINT. This hint said "both ways are shown"
+// while one set was drawn — a promise the page could not keep — and it said it in the words that screen
+// is not allowed to show a reader. The panel states it once, above both lists, and the lists make it
+// true. A hint under step one repeating it would be the same sentence twice, the second time in
+// vocabulary the reader did not ask for.
 
 /**
  * Every app we can speak to, and the steps for each route. Adding one is a row.
@@ -159,7 +161,7 @@ export const CONNECT_CLIENTS = Object.freeze([
         ] : [
           // THE SIGN-IN DOOR. No key is minted and no header is set: the warning the old steps told the
           // reader to ignore IS the sign-in, and following it is the whole of the connection.
-          { text: "Copy the address.", copy: "address", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy the address.", copy: "address", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "In Claude, open **Settings → Connectors → Add custom connector**." },
           { text: "Paste the address and press **Add**." },
           { text: `Sign in when the browser opens — use ${operator ?? "your work email"}.` },
@@ -185,7 +187,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
         ] : [
           // The command carries no header, because a door that signs its reader in never honours one.
-          { text: "Copy this command.", copy: "claude-cli-http-signin", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy this command.", copy: "claude-cli-http-signin", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "Paste it into a terminal and press Enter." },
           { text: "Sign in when the browser opens." },
           { text: `Start Claude Code and ${BRIEF}`, hint: CHECK_HINT },
@@ -220,7 +222,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: "Add a custom connector and paste the address." },
           { text: "Give the key as the connector's bearer token — the second line." },
         ] : [
-          { text: "Copy the address.", copy: "address", hint: door === null ? UNKNOWN_DOOR_HINT : undefined },
+          { text: "Copy the address.", copy: "address", hint: undefined },
           { text: "In ChatGPT on the web, turn on **Settings → Security and login → Developer mode**.",
             hint: "Needs a Plus, Pro, Business, Enterprise or Edu plan. On a company plan, your admin may have to allow it." },
           { text: "Add a custom connector and paste the address." },
@@ -252,7 +254,7 @@ export const CONNECT_CLIENTS = Object.freeze([
             hint: "Codex reads the key from there, so it never sits in the settings file." },
           { text: `Restart Codex and ${BRIEF}` },
         ] : [
-          { text: "Copy this.", copy: "codex-toml-http-signin", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy this.", copy: "codex-toml-http-signin", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "Open `~/.codex/config.toml` and paste it at the end." },
           // ITS OWN STEP, not a hint on the one before it. The sign-in IS the connection here, and a
           // reader skimming numbered steps does not read the small print under one of them.
@@ -282,7 +284,7 @@ export const CONNECT_CLIENTS = Object.freeze([
           { text: "Paste the address and the key wherever your app adds a custom MCP server.",
             hint: "It may call them “server URL” and “bearer token”." },
         ] : [
-          { text: "Copy the address.", copy: "address", hint: door === null ? UNKNOWN_DOOR_HINT : SIGNIN_HINT },
+          { text: "Copy the address.", copy: "address", hint: door === null ? undefined : SIGNIN_HINT },
           { text: "Paste it wherever your app adds a custom MCP server, and sign in when the browser opens.",
             hint: "It may call the address the “server URL”. There is no token to give it." },
         ]),
@@ -311,14 +313,24 @@ export const offersForWire = (offers) =>
     id: client.id,
     name: client.name,
     ...(client.sub ? { sub: client.sub } : {}),
-    steps: (Array.isArray(steps) ? steps : []).map((s) => ({
-      text: s.text,
-      ...(s.hint ? { hint: s.hint } : {}),
-      ...(s.copy ? { copy: s.copy.kind === "secret"
-        ? { kind: "secret", label: s.copy.label, template: s.copy.template, slot: s.copy.slot }
-        : { kind: "block", text: s.copy.text } } : {}),
-    })),
+    steps: stepsForWire(steps),
     ...rest,
+    // THE ALTERNATIVE TRAVELS, AND SO DOES THE FACT THAT THE DOOR IS UNKNOWN. `...rest` carried neither:
+    // `altSteps` needs the same copy-shape mapping the primary set gets, and `door` was dropped on the
+    // floor, so the page had nothing to branch on and drew one set of steps as though the door had been
+    // read. Both are stated after the spread so a row cannot pass its own raw shape through.
+    ...(Array.isArray(rest.altSteps) ? { altSteps: stepsForWire(rest.altSteps) } : {}),
+    ...(Object.hasOwn(rest, "door") ? { door: rest.door ?? null } : {}),
+  }));
+
+/** One route's steps, in the shape the browser reads. The alternative set gets the same mapping. */
+const stepsForWire = (steps) =>
+  (Array.isArray(steps) ? steps : []).map((s) => ({
+    text: s.text,
+    ...(s.hint ? { hint: s.hint } : {}),
+    ...(s.copy ? { copy: s.copy.kind === "secret"
+      ? { kind: "secret", label: s.copy.label, template: s.copy.template, slot: s.copy.slot }
+      : { kind: "block", text: s.copy.text } } : {}),
   }));
 
 const ALIAS_ROUTE = new Map(CONNECT_CLIENTS.flatMap((c) =>
@@ -395,6 +407,30 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
   const asked = author.steps({ operator, door: route === "public-http" ? door : null });
   const steps = asked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s }));
   const resolved = steps.every((s, i) => !asked[i].copy || s.copy);
+
+  // ── WHEN THE DOOR COULD NOT BE READ, BOTH WAYS ARE ACTUALLY SHOWN ────────────────────────────────
+  //
+  // `doorKind` returns null for "not known" and its own contract says the caller offers both rather than
+  // guessing. The steps above already carry the sentence that says so — and it reads "both ways are
+  // shown" while one set was rendered. A page that promises the reader the alternative and then does not
+  // draw it is worse than one that never mentioned it: the reader goes looking for what they were told
+  // is there.
+  //
+  // So the OTHER door's steps are composed here and ride beside them. The sign-in set leads, because
+  // that is what every hosted connector answers and what the hint tells the reader to try first; the key
+  // set is the alternative rather than a second equal choice. Composed by asking the same author with
+  // the other answer, never by a second copy of the steps — one table, one author, as everything else in
+  // this file.
+  const altAsked = route === "public-http" && door === null
+    ? author.steps({ operator, door: "key" })
+    : null;
+  const altSteps = altAsked
+    ? altAsked.map((s) => (s.copy ? { ...s, copy: resolve(s.copy) } : { ...s }))
+    : null;
+  // A step whose copy this deployment cannot produce is not offered at all — the same rule the primary
+  // set follows two lines up. Half an alternative is a reader following steps that stop.
+  const altResolved = !altAsked || altSteps.every((s, i) => !altAsked[i].copy || s.copy);
+  const alt = altResolved && altSteps?.length ? { door: null, altSteps } : { ...(route === "public-http" ? { door } : {}) };
   const evidence = { ...(author.verifiedOn ? { verifiedOn: author.verifiedOn } : {}), ...(author.by ? { by: author.by } : {}) };
 
   if (route === "disk") {
@@ -431,7 +467,7 @@ export function whatItNeeds(client, have = {}, route = client?.lead) {
       fix: "whoever installed it can put it online — it takes about a minute and needs no account",
       operatorFix: "put it online and set CLEAROTRON_CLIENT_MCP_URL to the public URL of this install — INSTALL.md §7 walks the tunnel" };
   }
-  return { client, served: true, route, steps, launch: client.launch ?? null, enables: null, ...evidence,
+  return { client, served: true, route, steps, ...alt, launch: client.launch ?? null, enables: null, ...evidence,
     command: null, stdio: null, address: publicAddress, key: "issued",
     note: "This assistant connects through its maker's service, so it reaches this installation at its web address rather than from your machine." };
 }
