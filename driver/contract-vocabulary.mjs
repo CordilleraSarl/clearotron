@@ -193,7 +193,7 @@ export const VOCABULARY = [
   // its own send. Delivery is code and a packet now, so there is no stage to emit a delivery token.
 
   // ── the gateway wrapper, emittable by EVERY stage and not in verify.mjs at all ─────────────────────
-  { token: "missing_file", stages: ALL_STAGES, site: "driver/gateway.mjs:1037" },
+  { token: "missing_file", stages: ALL_STAGES, site: "driver/gateway.mjs" },
 ];
 
 /**
