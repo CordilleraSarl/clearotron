@@ -470,21 +470,25 @@ test("servedModels: a deployment named after its tier reads as the tier its stag
 // older models spell them, including a context-window mark the program may report beside the model.
 const CLAUDE_IDS = ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5-20251001", "claude-opus-4-8",
   "claude-opus-4-1-20250805", "claude-sonnet-4-20250514", "claude-sonnet-4-5-20250929", "claude-3-5-sonnet-20241022",
-  "claude-3-opus-20240229", "claude-3-5-haiku-20241022", "claude-3-7-sonnet-latest", "claude-opus-5[1m]"];
-// Names that only begin like one, each with the tier its turn asked for.
+  "claude-3-opus-20240229", "claude-3-5-haiku-20241022", "claude-opus-5[1m]"];
+// Names that only begin like one, each with the tier its turn asked for. A `latest` alias is among them:
+// it is a pointer the provider moves, never the name of the model a turn reports.
 const NOT_CLAUDE_IDS = [["claude-acme-prod", "opus"], ["Claude-Acme-EU", "sonnet"], ["claude-opus-4-1-acmelegal", "opus"],
-  ["anthropic.claude-acme-private-v1:0", "haiku"], ["claude-sonnet-4-5@latest", "sonnet"], ["claude-opus-5[acme]", "opus"]];
+  ["anthropic.claude-acme-private-v1:0", "haiku"], ["claude-opus-5[acme]", "opus"],
+  ["claude-sonnet-4-5@latest", "sonnet"], ["claude-3-7-sonnet-latest", "sonnet"]];
+// Each table is read whole and compared once, so a failure shows every entry, not only the first.
+const readEach = (tag, pairs) => Object.fromEntries(pairs.map(([id, tier], i) =>
+  [id, servedModels(runWith(`${tag}-${i}`, { "x.jsonl": [stageRow(1, tier, id)] }))]));
 
 test("servedModels: an id shaped like a Claude model id prints as itself", () => {
-  CLAUDE_IDS.forEach((id, i) =>
-    assert.deepEqual(servedModels(runWith(`claude-shape-${i}`, { "x.jsonl": [stageRow(1, "sonnet", id)] })), [id], id));
+  assert.deepEqual(readEach("claude-shape", CLAUDE_IDS.map((id) => [id, "sonnet"])),
+    Object.fromEntries(CLAUDE_IDS.map((id) => [id, [id]])));
 });
 
 test("servedModels: a name that only begins like a Claude id reads as the tier its turn asked for", () => {
-  NOT_CLAUDE_IDS.forEach(([id, tier], i) => {
-    const ids = servedModels(runWith(`not-claude-${i}`, { "x.jsonl": [stageRow(1, tier, id)] }));
-    assert.deepEqual(ids, [tier[0].toUpperCase() + tier.slice(1)], `${id} is not a Claude model's name`);
-  });
+  assert.deepEqual(readEach("not-claude", NOT_CLAUDE_IDS),
+    Object.fromEntries(NOT_CLAUDE_IDS.map(([id, tier]) => [id, [tier[0].toUpperCase() + tier.slice(1)]])),
+    "none of these is a Claude model's name");
 });
 
 test("servedModels: one model in two cases, or with a cloud's version mark, is one entry", () => {

@@ -260,11 +260,13 @@ const AMAZON_CLAUDE_ID_RE = /^(?:arn:aws[\w-]*:bedrock:[^/]*\/)?(?:[a-z]{2,6}(?:
 const GOOGLE_CLAUDE_ID_RE = /^(claude-[a-z0-9.-]+?)(?:-v\d+)?@(\d{8})$/i;
 // THE SHAPE OF A CLAUDE MODEL ID, which is what lets an id be printed as itself. A family and up to two
 // version numbers (`claude-opus-4-1`), or the older order of version before family
-// (`claude-3-5-sonnet`); then an optional date or `-latest`; then an optional context-window mark
-// (`[1m]`), which the program may report beside the model and is kept as reported. Tested lower-cased,
-// after the cloud spellings above are rewritten. A prefix test is not enough: a company may name its own
-// deployment `claude-acme-prod`, or wrap its own name in Amazon's form, and neither is a Claude model.
-const CLAUDE_MODEL_ID_RE = /^claude-(?:(?:opus|sonnet|haiku|fable)(?:-\d{1,2}){0,2}|\d(?:-\d)?-(?:opus|sonnet|haiku))(?:-\d{8}|-latest)?(?:\[\d+[km]\])?$/;
+// (`claude-3-5-sonnet`); then an optional date; then an optional context-window mark (`[1m]`), which
+// the program may report beside the model and is kept as reported. Tested lower-cased, after the cloud
+// spellings above are rewritten. A prefix test is not enough: a company may name its own deployment
+// `claude-acme-prod`, or wrap its own name in Amazon's form, and neither is a Claude model. A `latest`
+// alias, `-latest` or Google's `@latest`, is a pointer the provider moves, never the name of the model a
+// turn reports, so it reads as the tier too.
+const CLAUDE_MODEL_ID_RE = /^claude-(?:(?:opus|sonnet|haiku|fable)(?:-\d{1,2}){0,2}|\d(?:-\d)?-(?:opus|sonnet|haiku))(?:-\d{8})?(?:\[\d+[km]\])?$/;
 // The engine names a Claude turn's row carries: the stage rows' engine, and the native-language rows'
 // vendor (jxBillingStamp in jx-lanes.mjs), which is "anthropic" under every way of paying, a cloud included.
 const CLAUDE_ENGINES = new Set(["anthropic-agent", "anthropic"]);
